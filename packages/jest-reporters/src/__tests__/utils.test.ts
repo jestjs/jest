@@ -5,10 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import chalk from 'chalk';
-import stripAnsi from 'strip-ansi';
+import * as path from 'path';
+import chalk = require('chalk');
+import stripAnsi = require('strip-ansi');
 import {printDisplayName, trimAndFormatPath, wrapAnsiString} from '../utils';
+import {makeProjectConfig} from '../../../../TestUtils';
 
 describe('wrapAnsiString()', () => {
   it('wraps a long string containing ansi chars', () => {
@@ -37,7 +38,7 @@ describe('trimAndFormatPath()', () => {
     const columns = 25;
     const result = trimAndFormatPath(
       pad,
-      {rootDir: ''},
+      makeProjectConfig({cwd: '', rootDir: ''}),
       path.join(dirname, basename),
       columns,
     );
@@ -53,7 +54,7 @@ describe('trimAndFormatPath()', () => {
     const columns = 30;
     const result = trimAndFormatPath(
       pad,
-      {rootDir: ''},
+      makeProjectConfig({cwd: '', rootDir: ''}),
       path.join(dirname, basename),
       columns,
     );
@@ -69,7 +70,7 @@ describe('trimAndFormatPath()', () => {
     const columns = 15;
     const result = trimAndFormatPath(
       pad,
-      {rootDir: ''},
+      makeProjectConfig({cwd: '', rootDir: ''}),
       path.join(dirname, basename),
       columns,
     );
@@ -86,7 +87,7 @@ describe('trimAndFormatPath()', () => {
     const totalLength = basename.length + path.sep.length + dirname.length;
     const result = trimAndFormatPath(
       pad,
-      {rootDir: ''},
+      makeProjectConfig({cwd: '', rootDir: ''}),
       path.join(dirname, basename),
       columns,
     );
@@ -102,7 +103,7 @@ describe('trimAndFormatPath()', () => {
     const columns = 16;
     const result = trimAndFormatPath(
       pad,
-      {rootDir: ''},
+      makeProjectConfig({cwd: '', rootDir: ''}),
       path.join(dirname, basename),
       columns,
     );
@@ -114,32 +115,38 @@ describe('trimAndFormatPath()', () => {
 
 describe('printDisplayName', () => {
   it('should default displayName color to white when displayName is a string', () => {
-    const config = {
-      displayName: 'hello',
-    };
-
-    expect(printDisplayName(config)).toMatchSnapshot();
+    expect(
+      printDisplayName(
+        makeProjectConfig({
+          displayName: 'hello',
+        }),
+      ),
+    ).toMatchSnapshot();
   });
 
   it('should default displayName color to white when color is not a valid value', () => {
-    const config = {
-      displayName: {
-        color: 'rubbish',
-        name: 'hello',
-      },
-    };
-
-    expect(printDisplayName(config)).toMatchSnapshot();
+    expect(
+      printDisplayName(
+        makeProjectConfig({
+          displayName: {
+            color: 'rubbish' as any,
+            name: 'hello',
+          },
+        }),
+      ),
+    ).toMatchSnapshot();
   });
 
   it('should correctly print the displayName when color and name are valid values', () => {
-    const config = {
-      displayName: {
-        color: 'green',
-        name: 'hello',
-      },
-    };
-
-    expect(printDisplayName(config)).toMatchSnapshot();
+    expect(
+      printDisplayName(
+        makeProjectConfig({
+          displayName: {
+            color: 'green',
+            name: 'hello',
+          },
+        }),
+      ),
+    ).toMatchSnapshot();
   });
 });
