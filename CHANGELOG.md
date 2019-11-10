@@ -22,6 +22,7 @@
 - `[@jest/fake-timers]` Add Lolex as implementation of fake timers ([#8897](https://github.com/facebook/jest/pull/8897))
 - `[jest-get-type]` Add `BigInt` support. ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[jest-matcher-utils]` Add `BigInt` support to `ensureNumbers` `ensureActualIsNumber`, `ensureExpectedIsNumber` ([#8382](https://github.com/facebook/jest/pull/8382))
+- `[jest-reporters]` Export utils for path formatting ([#9162](https://github.com/facebook/jest/pull/9162))
 - `[jest-runner]` Warn if a worker had to be force exited ([#8206](https://github.com/facebook/jest/pull/8206))
 - `[jest-snapshot]` Display change counts in annotation lines ([#8982](https://github.com/facebook/jest/pull/8982))
 - `[jest-snapshot]` [**BREAKING**] Improve report when the matcher has properties ([#9104](https://github.com/facebook/jest/pull/9104))
