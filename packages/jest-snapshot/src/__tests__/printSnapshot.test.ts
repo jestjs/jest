@@ -11,10 +11,14 @@ import chalk = require('chalk');
 import format = require('pretty-format');
 
 import jestSnapshot = require('../index');
-import {printSnapshotAndReceived} from '../printSnapshot';
+import {
+  getReceivedColorForChalkInstance,
+  getSnapshotColorForChalkInstance,
+  noColor,
+  printSnapshotAndReceived,
+} from '../printSnapshot';
 import {serialize} from '../utils';
-
-const {
+import {
   aBackground2,
   aBackground3,
   aForeground2,
@@ -23,13 +27,11 @@ const {
   bBackground3,
   bForeground2,
   bForeground3,
-  getSnapshotColor,
-  getReceivedColor,
-  noColor,
-} = require('../printSnapshot');
+} from '../colors';
 
 // Format escape sequences for tests to avoid TypeScript problem
-// `styles.code` is undefined, maybe because it is non-enumerable?
+// `styles.color` and `styles.bgColor` are undefined,
+// maybe because they are defined as non-enumerable properties?
 
 const openForeground2 = index => `\x1b[38;5;${index}m`;
 const openBackground2 = index => `\x1b[48;5;${index}m`;
@@ -136,8 +138,8 @@ describe('chalk', () => {
 
   // Simulate comparison lines from printSnapshotAndReceived.
   const formatLines = chalkInstance => {
-    const aColor = getSnapshotColor(chalkInstance);
-    const bColor = getReceivedColor(chalkInstance);
+    const aColor = getSnapshotColorForChalkInstance(chalkInstance);
+    const bColor = getReceivedColorForChalkInstance(chalkInstance);
     const cColor = chalkInstance.dim;
     const changeLineTrailingSpaceColor = noColor;
     const commonLineTrailingSpaceColor = chalkInstance.bgYellow;

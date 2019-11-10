@@ -27,7 +27,7 @@ Inline snapshot has value: Symbol(is not a string)
 `;
 
 exports[`matcher error toMatchInlineSnapshot Snapshot matchers cannot be used with not 1`] = `
-<d>expect(</><r>received</><d>).</>not<d>.</>toMatchInlineSnapshot<d>(</>snapshot<d>)</>
+<d>expect(</><r>received</><d>).</>not<d>.</>toMatchInlineSnapshot<d>(</><g>snapshot</><d>)</>
 
 <b>Matcher error</>: Snapshot matchers cannot be used with <b>not</>
 `;
@@ -94,7 +94,7 @@ Inline snapshot has value: 404
 `;
 
 exports[`matcher error toThrowErrorMatchingInlineSnapshot Snapshot state must be initialized 1`] = `
-<d>expect(</><r>received</><d>).</>rejects<d>.</>toThrowErrorMatchingInlineSnapshot<d>(</>snapshot<d>)</>
+<d>expect(</><r>received</><d>).</>rejects<d>.</>toThrowErrorMatchingInlineSnapshot<d>(</><g>snapshot</><d>)</>
 
 Snapshot state must be initialized
 

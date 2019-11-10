@@ -27,47 +27,60 @@ import {
   matcherHint,
 } from 'jest-matcher-utils';
 import prettyFormat = require('pretty-format');
+
+import {
+  aBackground2,
+  aBackground3,
+  aForeground2,
+  aForeground3,
+  bBackground2,
+  bBackground3,
+  bForeground2,
+  bForeground3,
+} from './colors';
 import {MatchSnapshotConfig} from './types';
 import {deserializeString, minify, serialize} from './utils';
 
 type Chalk = chalk.Chalk;
 
-// https://jonasjacek.github.io/colors/
-// https://webaim.org/resources/contrastchecker/
+export const getSnapshotColorForChalkInstance = (
+  chalkInstance: Chalk,
+): DiffOptionsColor => {
+  const level = chalkInstance.level;
 
-// Contrast 6.89 AA
-export const aForeground2 = 90; // #870087
-export const aBackground2 = 225; // #ffd7ff
+  if (level === 3) {
+    return chalkInstance
+      .rgb(aForeground3[0], aForeground3[1], aForeground3[2])
+      .bgRgb(aBackground3[0], aBackground3[1], aBackground3[2]);
+  }
 
-// Contrast 7.27 AAA
-export const bForeground2 = 22; // #005f00
-export const bBackground2 = 194; // #d7ffd7
+  if (level === 2) {
+    return chalkInstance.ansi256(aForeground2).bgAnsi256(aBackground2);
+  }
 
-// Contast 7.36 AAA
-export const aForeground3 = [128, 0, 128]; // #800080
-export const aBackground3 = [255, 215, 255]; // #ffd7ff
+  return chalkInstance.magenta.bgYellowBright;
+};
 
-// Contrast 7.27 AAA
-export const bForeground3 = [0, 95, 0]; // #005f00
-export const bBackground3 = [215, 255, 215]; // #d7ffd7
+export const getReceivedColorForChalkInstance = (
+  chalkInstance: Chalk,
+): DiffOptionsColor => {
+  const level = chalkInstance.level;
 
-export const getSnapshotColor = (chalkInstance: Chalk): DiffOptionsColor =>
-  chalkInstance.level === 3
-    ? chalkInstance
-        .rgb(aForeground3[0], aForeground3[1], aForeground3[2])
-        .bgRgb(aBackground3[0], aBackground3[1], aBackground3[2])
-    : chalkInstance.level === 2
-    ? chalkInstance.ansi256(aForeground2).bgAnsi256(aBackground2)
-    : chalkInstance.magenta.bgYellowBright;
+  if (level === 3) {
+    return chalkInstance
+      .rgb(bForeground3[0], bForeground3[1], bForeground3[2])
+      .bgRgb(bBackground3[0], bBackground3[1], bBackground3[2]);
+  }
 
-export const getReceivedColor = (chalkInstance: Chalk): DiffOptionsColor =>
-  chalkInstance.level === 3
-    ? chalkInstance
-        .rgb(bForeground3[0], bForeground3[1], bForeground3[2])
-        .bgRgb(bBackground3[0], bBackground3[1], bBackground3[2])
-    : chalkInstance.level === 2
-    ? chalkInstance.ansi256(bForeground2).bgAnsi256(bBackground2)
-    : chalkInstance.green.bgWhiteBright;
+  if (level === 2) {
+    return chalkInstance.ansi256(bForeground2).bgAnsi256(bBackground2);
+  }
+
+  return chalkInstance.green.bgWhiteBright;
+};
+
+export const getSnapshotColor = () => getSnapshotColorForChalkInstance(chalk);
+export const getReceivedColor = () => getReceivedColorForChalkInstance(chalk);
 
 export const noColor = (string: string) => string;
 
@@ -87,7 +100,7 @@ export const matcherHintFromConfig = (
 ): string => {
   const options: MatcherHintOptions = {isNot, promise};
   if (isUpdatable) {
-    options.receivedColor = getReceivedColor(chalk);
+    options.receivedColor = getReceivedColor();
   }
 
   let expectedArgument = '';
@@ -103,9 +116,11 @@ export const matcherHintFromConfig = (
       options.secondArgumentColor = BOLD_WEIGHT;
     } else if (typeof inlineSnapshot === 'string') {
       options.secondArgument = SNAPSHOT_ARG;
-      options.secondArgumentColor = isUpdatable
-        ? getSnapshotColor(chalk)
-        : noColor;
+      if (isUpdatable) {
+        options.secondArgumentColor = getSnapshotColor();
+      } else {
+        options.secondArgumentColor = noColor;
+      }
     }
   } else {
     if (typeof hint === 'string' && hint.length !== 0) {
@@ -113,7 +128,9 @@ export const matcherHintFromConfig = (
       options.expectedColor = BOLD_WEIGHT;
     } else if (typeof inlineSnapshot === 'string') {
       expectedArgument = SNAPSHOT_ARG;
-      options.expectedColor = isUpdatable ? getSnapshotColor(chalk) : noColor;
+      if (isUpdatable) {
+        options.expectedColor = getSnapshotColor();
+      }
     }
   }
 
@@ -221,8 +238,8 @@ export const printSnapshotAndReceived = (
 ): string => {
   const aAnnotation = 'Snapshot';
   const bAnnotation = 'Received';
-  const aColor = getSnapshotColor(chalk);
-  const bColor = getReceivedColor(chalk);
+  const aColor = getSnapshotColor();
+  const bColor = getReceivedColor();
   const options = {
     aAnnotation,
     aColor,
