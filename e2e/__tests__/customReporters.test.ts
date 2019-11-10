@@ -121,6 +121,21 @@ describe('Custom Reporters Integration', () => {
     expect(wrap(stdout)).toMatchSnapshot();
   });
 
+  test('reporters can be default exports', () => {
+    const {stderr, stdout, exitCode} = runJest('custom-reporters', [
+      '--no-cache',
+      '--config',
+      JSON.stringify({
+        reporters: ['<rootDir>/reporters/DefaultExportReporter.js'],
+      }),
+      'add.test.js',
+    ]);
+
+    expect(stderr).toBe('');
+    expect(exitCode).toBe(0);
+    expect(wrap(stdout)).toMatchSnapshot();
+  });
+
   test('prints reporter errors', () => {
     writeFiles(DIR, {
       '__tests__/test.test.js': `test('test', () => {});`,
