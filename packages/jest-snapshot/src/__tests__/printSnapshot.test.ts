@@ -6,7 +6,7 @@
  */
 
 import ansiRegex = require('ansi-regex');
-import * as styles from 'ansi-styles';
+import styles = require('ansi-styles');
 import chalk = require('chalk');
 import format = require('pretty-format');
 
@@ -29,30 +29,36 @@ import {
   bForeground3,
 } from '../colors';
 
-// Format escape sequences for tests to avoid TypeScript problem
-// `styles.color` and `styles.bgColor` are undefined,
-// maybe because they are defined as non-enumerable properties?
-
-const openForeground2 = index => `\x1b[38;5;${index}m`;
-const openBackground2 = index => `\x1b[48;5;${index}m`;
-
-const openForeground3 = rgb => `\x1b[38;2;${rgb[0]};${rgb[1]};${rgb[2]}m`;
-const openBackground3 = rgb => `\x1b[48;2;${rgb[0]};${rgb[1]};${rgb[2]}m`;
-
 const aOpenForeground1 = styles.magenta.open;
 const aOpenBackground1 = styles.bgYellowBright.open;
 const bOpenForeground1 = styles.green.open;
 const bOpenBackground1 = styles.bgWhiteBright.open;
 
-const aOpenForeground2 = openForeground2(aForeground2);
-const aOpenBackground2 = openBackground2(aBackground2);
-const bOpenForeground2 = openForeground2(bForeground2);
-const bOpenBackground2 = openBackground2(bBackground2);
+const aOpenForeground2 = styles.color.ansi256.ansi256(aForeground2);
+const bOpenForeground2 = styles.color.ansi256.ansi256(bForeground2);
+const aOpenBackground2 = styles.bgColor.ansi256.ansi256(aBackground2);
+const bOpenBackground2 = styles.bgColor.ansi256.ansi256(bBackground2);
 
-const aOpenForeground3 = openForeground3(aForeground3);
-const aOpenBackground3 = openBackground3(aBackground3);
-const bOpenForeground3 = openForeground3(bForeground3);
-const bOpenBackground3 = openBackground3(bBackground3);
+const aOpenForeground3 = styles.color.ansi16m.rgb(
+  aForeground3[0],
+  aForeground3[1],
+  aForeground3[2],
+);
+const bOpenForeground3 = styles.color.ansi16m.rgb(
+  bForeground3[0],
+  bForeground3[1],
+  bForeground3[2],
+);
+const aOpenBackground3 = styles.bgColor.ansi16m.rgb(
+  aBackground3[0],
+  aBackground3[1],
+  aBackground3[2],
+);
+const bOpenBackground3 = styles.bgColor.ansi16m.rgb(
+  bBackground3[0],
+  bBackground3[1],
+  bBackground3[2],
+);
 
 const convertAnsi = (val: string): string => {
   // Trailing spaces in common lines have yellow background color.

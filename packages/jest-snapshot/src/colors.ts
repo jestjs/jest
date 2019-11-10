@@ -6,22 +6,17 @@
  */
 
 // https://jonasjacek.github.io/colors/
-// https://webaim.org/resources/contrastchecker/
 
-// Contrast 6.89 AA
-export const aForeground2 = 90; // #870087
-export const aBackground2 = 225; // #ffd7ff
+export const aForeground2 = 90;
+export const aBackground2 = 225;
 
-// Contrast 7.27 AAA
-export const bForeground2 = 22; // #005f00
-export const bBackground2 = 194; // #d7ffd7
+export const bForeground2 = 22;
+export const bBackground2 = 194;
 
 export type RGB = [number, number, number];
 
-// Contast 7.36 AAA
-export const aForeground3: RGB = [128, 0, 128]; // #800080
-export const aBackground3: RGB = [255, 215, 255]; // #ffd7ff
+export const aForeground3: RGB = [0x80, 0x0, 0x80];
+export const aBackground3: RGB = [0xff, 0xd7, 0xff];
 
-// Contrast 7.27 AAA
-export const bForeground3: RGB = [0, 95, 0]; // #005f00
-export const bBackground3: RGB = [215, 255, 215]; // #d7ffd7
+export const bForeground3: RGB = [0x0, 0x5f, 0x0];
+export const bBackground3: RGB = [0xd7, 0xff, 0xd7];
