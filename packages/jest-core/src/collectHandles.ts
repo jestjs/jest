@@ -8,7 +8,7 @@
 import {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';
-import stripAnsi from 'strip-ansi';
+import stripAnsi = require('strip-ansi');
 
 type AsyncHook = import('async_hooks').AsyncHook;
 

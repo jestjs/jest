@@ -5,7 +5,7 @@ exports[`SnapshotInteractiveMode skip 1 test, then quit 1`] = `
 [MOCK - eraseDown]
 
 <bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining<bold></>
+ › <bold><dim>1 snapshot remaining</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>u<dim> to update failing snapshots for this test.</>
@@ -19,7 +19,7 @@ exports[`SnapshotInteractiveMode skip 1 test, then quit 2`] = `
 "[MOCK - clear]
 
 <bold>Interactive Snapshot Result</>
- › <bold><dim>1 snapshot reviewed<bold></>, <bold><yellow>1 snapshot skipped</></>
+ › <bold><dim>1 snapshot reviewed</></>, <bold><yellow>1 snapshot skipped</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>r<dim> to restart Interactive Snapshot Mode.</>
@@ -32,7 +32,7 @@ exports[`SnapshotInteractiveMode skip 1 test, then restart 1`] = `
 [MOCK - eraseDown]
 
 <bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining<bold></>
+ › <bold><dim>1 snapshot remaining</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>u<dim> to update failing snapshots for this test.</>
@@ -46,7 +46,7 @@ exports[`SnapshotInteractiveMode skip 1 test, then restart 2`] = `
 "[MOCK - clear]
 
 <bold>Interactive Snapshot Result</>
- › <bold><dim>1 snapshot reviewed<bold></>, <bold><yellow>1 snapshot skipped</></>
+ › <bold><dim>1 snapshot reviewed</></>, <bold><yellow>1 snapshot skipped</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>r<dim> to restart Interactive Snapshot Mode.</>
@@ -59,7 +59,7 @@ exports[`SnapshotInteractiveMode skip 1 test, then restart 3`] = `
 [MOCK - eraseDown]
 
 <bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining<bold></>
+ › <bold><dim>1 snapshot remaining</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>u<dim> to update failing snapshots for this test.</>
@@ -74,7 +74,7 @@ exports[`SnapshotInteractiveMode skip 1 test, update 1 test, then finish and res
 [MOCK - eraseDown]
 
 <bold>Interactive Snapshot Progress</>
- › <bold><dim>2 snapshots remaining<bold></>
+ › <bold><dim>2 snapshots remaining</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>u<dim> to update failing snapshots for this test.</>
@@ -89,7 +89,7 @@ exports[`SnapshotInteractiveMode skip 1 test, update 1 test, then finish and res
 [MOCK - eraseDown]
 
 <bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining<bold></>, <bold><yellow>1 snapshot skipped</></>
+ › <bold><dim>1 snapshot remaining</></>, <bold><yellow>1 snapshot skipped</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>u<dim> to update failing snapshots for this test.</>
@@ -103,7 +103,7 @@ exports[`SnapshotInteractiveMode skip 1 test, update 1 test, then finish and res
 "[MOCK - clear]
 
 <bold>Interactive Snapshot Result</>
- › <bold><dim>2 snapshots reviewed<bold></>, <bold><green>1 snapshot updated</></>, <bold><yellow>1 snapshot skipped</></>
+ › <bold><dim>2 snapshots reviewed</></>, <bold><green>1 snapshot updated</></>, <bold><yellow>1 snapshot skipped</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>r<dim> to restart Interactive Snapshot Mode.</>
@@ -116,7 +116,7 @@ exports[`SnapshotInteractiveMode skip 1 test, update 1 test, then finish and res
 [MOCK - eraseDown]
 
 <bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining<bold></>
+ › <bold><dim>1 snapshot remaining</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>u<dim> to update failing snapshots for this test.</>
@@ -131,7 +131,7 @@ exports[`SnapshotInteractiveMode skip 2 tests, then finish and restart 1`] = `
 [MOCK - eraseDown]
 
 <bold>Interactive Snapshot Progress</>
- › <bold><dim>2 snapshots remaining<bold></>
+ › <bold><dim>2 snapshots remaining</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>u<dim> to update failing snapshots for this test.</>
@@ -146,7 +146,7 @@ exports[`SnapshotInteractiveMode skip 2 tests, then finish and restart 2`] = `
 [MOCK - eraseDown]
 
 <bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining<bold></>, <bold><yellow>1 snapshot skipped</></>
+ › <bold><dim>1 snapshot remaining</></>, <bold><yellow>1 snapshot skipped</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>u<dim> to update failing snapshots for this test.</>
@@ -160,7 +160,7 @@ exports[`SnapshotInteractiveMode skip 2 tests, then finish and restart 3`] = `
 "[MOCK - clear]
 
 <bold>Interactive Snapshot Result</>
- › <bold><dim>2 snapshots reviewed<bold></>, <bold><yellow>2 snapshots skipped</></>
+ › <bold><dim>2 snapshots reviewed</></>, <bold><yellow>2 snapshots skipped</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>r<dim> to restart Interactive Snapshot Mode.</>
@@ -173,7 +173,7 @@ exports[`SnapshotInteractiveMode skip 2 tests, then finish and restart 4`] = `
 [MOCK - eraseDown]
 
 <bold>Interactive Snapshot Progress</>
- › <bold><dim>2 snapshots remaining<bold></>
+ › <bold><dim>2 snapshots remaining</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>u<dim> to update failing snapshots for this test.</>
@@ -188,7 +188,7 @@ exports[`SnapshotInteractiveMode update 1 test, skip 1 test, then finish and res
 [MOCK - eraseDown]
 
 <bold>Interactive Snapshot Progress</>
- › <bold><dim>2 snapshots remaining<bold></>
+ › <bold><dim>2 snapshots remaining</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>u<dim> to update failing snapshots for this test.</>
@@ -203,7 +203,7 @@ exports[`SnapshotInteractiveMode update 1 test, skip 1 test, then finish and res
 [MOCK - eraseDown]
 
 <bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining<bold></>, <bold><green>1 snapshot updated</></>
+ › <bold><dim>1 snapshot remaining</></>, <bold><green>1 snapshot updated</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>u<dim> to update failing snapshots for this test.</>
@@ -217,7 +217,7 @@ exports[`SnapshotInteractiveMode update 1 test, skip 1 test, then finish and res
 "[MOCK - clear]
 
 <bold>Interactive Snapshot Result</>
- › <bold><dim>2 snapshots reviewed<bold></>, <bold><green>1 snapshot updated</></>, <bold><yellow>1 snapshot skipped</></>
+ › <bold><dim>2 snapshots reviewed</></>, <bold><green>1 snapshot updated</></>, <bold><yellow>1 snapshot skipped</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>r<dim> to restart Interactive Snapshot Mode.</>
@@ -230,7 +230,7 @@ exports[`SnapshotInteractiveMode update 1 test, skip 1 test, then finish and res
 [MOCK - eraseDown]
 
 <bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining<bold></>
+ › <bold><dim>1 snapshot remaining</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>u<dim> to update failing snapshots for this test.</>
@@ -245,7 +245,7 @@ exports[`SnapshotInteractiveMode update 1 test, then finish and return 1`] = `
 [MOCK - eraseDown]
 
 <bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining<bold></>
+ › <bold><dim>1 snapshot remaining</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>u<dim> to update failing snapshots for this test.</>
@@ -259,7 +259,7 @@ exports[`SnapshotInteractiveMode update 1 test, then finish and return 2`] = `
 "[MOCK - clear]
 
 <bold>Interactive Snapshot Result</>
- › <bold><dim>1 snapshot reviewed<bold></>, <bold><green>1 snapshot updated</></>
+ › <bold><dim>1 snapshot reviewed</></>, <bold><green>1 snapshot updated</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>Enter<dim> to return to watch mode.</>
@@ -271,7 +271,7 @@ exports[`SnapshotInteractiveMode update 2 tests, then finish and return 1`] = `
 [MOCK - eraseDown]
 
 <bold>Interactive Snapshot Progress</>
- › <bold><dim>2 snapshots remaining<bold></>
+ › <bold><dim>2 snapshots remaining</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>u<dim> to update failing snapshots for this test.</>
@@ -286,7 +286,7 @@ exports[`SnapshotInteractiveMode update 2 tests, then finish and return 2`] = `
 [MOCK - eraseDown]
 
 <bold>Interactive Snapshot Progress</>
- › <bold><dim>1 snapshot remaining<bold></>, <bold><green>1 snapshot updated</></>
+ › <bold><dim>1 snapshot remaining</></>, <bold><green>1 snapshot updated</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>u<dim> to update failing snapshots for this test.</>
@@ -300,7 +300,7 @@ exports[`SnapshotInteractiveMode update 2 tests, then finish and return 3`] = `
 "[MOCK - clear]
 
 <bold>Interactive Snapshot Result</>
- › <bold><dim>2 snapshots reviewed<bold></>, <bold><green>2 snapshots updated</></>
+ › <bold><dim>2 snapshots reviewed</></>, <bold><green>2 snapshots updated</></>
 
 <bold>Watch Usage</>
 <dim> › Press </>Enter<dim> to return to watch mode.</>

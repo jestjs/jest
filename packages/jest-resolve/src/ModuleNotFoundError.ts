@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
-
-export default function getNoTestFoundPassWithNoTests() {
-  return chalk.bold('No tests found, exiting with code 0');
+export default class ModuleNotFoundError extends Error {
+  code = 'MODULE_NOT_FOUND';
 }

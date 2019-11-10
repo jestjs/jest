@@ -12,7 +12,7 @@ import {clearLine} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries} from 'jest-config';
 import {getVersion, runCLI} from '@jest/core';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import exit = require('exit');
 import yargs = require('yargs');
 import {sync as realpath} from 'realpath-native';
@@ -71,15 +71,12 @@ export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
   );
 
   // strip dashed args
-  return Object.keys(argv).reduce(
-    (result, key) => {
-      if (!key.includes('-')) {
-        result[key] = argv[key];
-      }
-      return result;
-    },
-    {} as Config.Argv,
-  );
+  return Object.keys(argv).reduce((result, key) => {
+    if (!key.includes('-')) {
+      result[key] = argv[key];
+    }
+    return result;
+  }, {} as Config.Argv);
 };
 
 const getProjectListFromCLIArgs = (
