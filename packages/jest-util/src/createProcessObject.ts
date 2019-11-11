@@ -112,5 +112,17 @@ export default function() {
   newProcess.env = createProcessEnv();
   newProcess.send = () => {};
 
+  const domainPropertyDescriptor = Object.getOwnPropertyDescriptor(
+    newProcess,
+    'domain',
+  );
+  if (domainPropertyDescriptor && !domainPropertyDescriptor.enumerable) {
+    Object.defineProperty(newProcess, 'domain', {
+      get() {
+        return process.domain;
+      },
+    });
+  }
+
   return newProcess;
 }
