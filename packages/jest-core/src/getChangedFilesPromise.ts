@@ -16,7 +16,12 @@ export default (
 ): ChangedFilesPromise | undefined => {
   if (globalConfig.onlyChanged) {
     const allRootsForAllProjects = configs.reduce<Array<Config.Path>>(
-      (roots, config) => [...roots, ...(config.roots || [])],
+      (roots, config) => {
+        if (config.roots) {
+          roots.push(...config.roots);
+        }
+        return roots;
+      },
       [],
     );
     return getChangedFilesForRoots(allRootsForAllProjects, {
