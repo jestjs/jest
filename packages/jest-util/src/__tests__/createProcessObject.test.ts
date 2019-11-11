@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import { EventEmitter } from 'events';
+import {EventEmitter} from 'events';
 
 let createProcessObject;
 
@@ -42,7 +42,7 @@ it('fakes require("process") so it is equal to "global.process"', () => {
 });
 
 it('checks that process.env works as expected on Linux platforms', () => {
-  Object.defineProperty(process, 'platform', { get: () => 'linux' });
+  Object.defineProperty(process, 'platform', {get: () => 'linux'});
   requireCreateProcessObject();
 
   // Existing properties inside process.env are copied to the fake environment.
@@ -81,7 +81,7 @@ it('checks that process.env works as expected on Linux platforms', () => {
 });
 
 it('checks that process.env works as expected in Windows platforms', () => {
-  Object.defineProperty(process, 'platform', { get: () => 'win32' });
+  Object.defineProperty(process, 'platform', {get: () => 'win32'});
   requireCreateProcessObject();
 
   // Windows is not case sensitive when it comes to property names.
