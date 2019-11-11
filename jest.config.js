@@ -18,7 +18,6 @@ module.exports = {
     '!**/vendor/**',
     '!e2e/**',
   ],
-  globalSetup: '<rootDir>/globalSetupFile.js',
   modulePathIgnorePatterns: [
     'examples/.*',
     'packages/.*/build',
@@ -64,8 +63,5 @@ module.exports = {
   transform: {
     '^.+\\.[jt]sx?$': '<rootDir>/packages/babel-jest',
   },
-  watchPlugins: [
-    'jest-watch-typeahead/filename',
-    'jest-watch-typeahead/testname',
-  ],
+  watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],
 };
