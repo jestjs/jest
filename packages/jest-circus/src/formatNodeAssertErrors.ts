@@ -39,32 +39,30 @@ const humanReadableOperators: Record<string, string> = {
 };
 
 const formatNodeAssertErrors = (event: Circus.Event, state: Circus.State) => {
-  switch (event.name) {
-    case 'test_done': {
-      event.test.errors = event.test.errors.map((errors: Circus.TestError) => {
-        let error;
-        if (Array.isArray(errors)) {
-          const [originalError, asyncError] = errors;
+  if (event.name === 'test_done') {
+    event.test.errors = event.test.errors.map((errors: Circus.TestError) => {
+      let error;
+      if (Array.isArray(errors)) {
+        const [originalError, asyncError] = errors;
 
-          if (originalError == null) {
-            error = asyncError;
-          } else if (!originalError.stack) {
-            error = asyncError;
+        if (originalError == null) {
+          error = asyncError;
+        } else if (!originalError.stack) {
+          error = asyncError;
 
-            error.message = originalError.message
-              ? originalError.message
-              : `thrown: ${prettyFormat(originalError, {maxDepth: 3})}`;
-          } else {
-            error = originalError;
-          }
+          error.message = originalError.message
+            ? originalError.message
+            : `thrown: ${prettyFormat(originalError, {maxDepth: 3})}`;
         } else {
-          error = errors;
+          error = originalError;
         }
-        return isAssertionError(error)
-          ? {message: assertionErrorMessage(error, {expand: state.expand})}
-          : errors;
-      });
-    }
+      } else {
+        error = errors;
+      }
+      return isAssertionError(error)
+        ? {message: assertionErrorMessage(error, {expand: state.expand})}
+        : errors;
+    });
   }
 };
 
