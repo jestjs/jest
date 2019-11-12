@@ -19,7 +19,6 @@
     "jest-regex-util": "^24.9.0"
   },
   "devDependencies": {
-    "@types/ansi-styles": "^3.2.1",
     "immutable": "^4.0.0-rc.12"
   },
   "engines": {
