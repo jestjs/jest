@@ -33,6 +33,7 @@
 
 ### Fixes
 
+- `[jest-config]` skip argv config option on projects if JSON config ([#9096](https://github.com/facebook/jest/pull/9096))
 - `[expect]` Display `expectedDiff` more carefully in `toBeCloseTo` ([#8389](https://github.com/facebook/jest/pull/8389))
 - `[expect]` Avoid incorrect difference for subset when `toMatchObject` fails ([#9005](https://github.com/facebook/jest/pull/9005))
 - `[jest-config]` Use half of the available cores when `watchAll` mode is enabled ([#9117](https://github.com/facebook/jest/pull/9117))
