@@ -8,8 +8,5 @@
   "dependencies": {
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.1.0"
-  },
-  "devDependencies": {
-    "@types/ansi-styles": "^3.2.1"
   }
 }

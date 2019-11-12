@@ -19,7 +19,6 @@
     "react-is": "^16.8.4"
   },
   "devDependencies": {
-    "@types/ansi-styles": "^3.2.1",
     "@types/react": "*",
     "@types/react-is": "^16.7.1",
     "@types/react-test-renderer": "*",

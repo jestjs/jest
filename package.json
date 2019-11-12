@@ -18,7 +18,7 @@
     "@typescript-eslint/eslint-plugin": "^2.2.0",
     "@typescript-eslint/parser": "^2.2.0",
     "ansi-regex": "^5.0.0",
-    "ansi-styles": "^4.0.0",
+    "ansi-styles": "^4.2.0",
     "babel-eslint": "^10.0.3",
     "babel-loader": "^8.0.5",
     "babel-plugin-replace-ts-export-assignment": "^0.0.2",

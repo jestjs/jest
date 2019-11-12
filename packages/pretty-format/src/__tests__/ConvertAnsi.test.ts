@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ansiStyle from 'ansi-styles';
-
-import prettyFormat from '../';
+import ansiStyle = require('ansi-styles');
+import prettyFormat = require('../');
 
 const {ConvertAnsi} = prettyFormat.plugins;
 

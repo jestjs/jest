@@ -6,7 +6,7 @@
  */
 
 import ansiRegex = require('ansi-regex');
-import * as style from 'ansi-styles';
+import style = require('ansi-styles');
 import {Config, NewPlugin, Printer, Refs} from '../types';
 
 const toHumanReadableAnsi = (text: string) =>
