@@ -15,8 +15,8 @@ export const bBackground2 = 194;
 
 export type RGB = [number, number, number];
 
-export const aForeground3: RGB = [0x80, 0x0, 0x80];
+export const aForeground3: RGB = [0x80, 0, 0x80];
 export const aBackground3: RGB = [0xff, 0xd7, 0xff];
 
-export const bForeground3: RGB = [0x0, 0x5f, 0x0];
+export const bForeground3: RGB = [0, 0x5f, 0];
 export const bBackground3: RGB = [0xd7, 0xff, 0xd7];
