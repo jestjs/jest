@@ -20,7 +20,13 @@ export {default as DefaultReporter} from './default_reporter';
 export {default as NotifyReporter} from './notify_reporter';
 export {default as SummaryReporter} from './summary_reporter';
 export {default as VerboseReporter} from './verbose_reporter';
-export {Reporter, ReporterOnStartOptions, SummaryOptions, Test} from './types';
+export {
+  Context,
+  Reporter,
+  ReporterOnStartOptions,
+  SummaryOptions,
+  Test,
+} from './types';
 export const utils = {
   formatTestPath,
   printDisplayName,
