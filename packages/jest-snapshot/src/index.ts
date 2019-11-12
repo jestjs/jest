@@ -30,7 +30,7 @@ import {addSerializer, getSerializers} from './plugins';
 import {
   PROPERTIES_ARG,
   SNAPSHOT_ARG,
-  getReceivedColor,
+  bReceivedColor,
   matcherHintFromConfig,
   noColor,
   printExpected,
@@ -385,7 +385,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
           `must be explicitly passed to write a new snapshot.\n\n` +
           `This is likely because this test is run in a continuous integration ` +
           `(CI) environment in which snapshots are not written by default.\n\n` +
-          `Received:${actual.includes('\n') ? '\n' : ' '}${getReceivedColor()(
+          `Received:${actual.includes('\n') ? '\n' : ' '}${bReceivedColor(
             actual,
           )}`
       : () =>

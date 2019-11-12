@@ -79,8 +79,8 @@ export const getReceivedColorForChalkInstance = (
   return chalkInstance.green.bgWhiteBright;
 };
 
-export const getSnapshotColor = () => getSnapshotColorForChalkInstance(chalk);
-export const getReceivedColor = () => getReceivedColorForChalkInstance(chalk);
+export const aSnapshotColor = getSnapshotColorForChalkInstance(chalk);
+export const bReceivedColor = getReceivedColorForChalkInstance(chalk);
 
 export const noColor = (string: string) => string;
 
@@ -100,7 +100,7 @@ export const matcherHintFromConfig = (
 ): string => {
   const options: MatcherHintOptions = {isNot, promise};
   if (isUpdatable) {
-    options.receivedColor = getReceivedColor();
+    options.receivedColor = bReceivedColor;
   }
 
   let expectedArgument = '';
@@ -117,7 +117,7 @@ export const matcherHintFromConfig = (
     } else if (typeof inlineSnapshot === 'string') {
       options.secondArgument = SNAPSHOT_ARG;
       if (isUpdatable) {
-        options.secondArgumentColor = getSnapshotColor();
+        options.secondArgumentColor = aSnapshotColor;
       } else {
         options.secondArgumentColor = noColor;
       }
@@ -129,7 +129,7 @@ export const matcherHintFromConfig = (
     } else if (typeof inlineSnapshot === 'string') {
       expectedArgument = SNAPSHOT_ARG;
       if (isUpdatable) {
-        options.expectedColor = getSnapshotColor();
+        options.expectedColor = aSnapshotColor;
       }
     }
   }
@@ -238,8 +238,8 @@ export const printSnapshotAndReceived = (
 ): string => {
   const aAnnotation = 'Snapshot';
   const bAnnotation = 'Received';
-  const aColor = getSnapshotColor();
-  const bColor = getReceivedColor();
+  const aColor = aSnapshotColor;
+  const bColor = bReceivedColor;
   const options = {
     aAnnotation,
     aColor,
