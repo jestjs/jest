@@ -393,7 +393,7 @@ const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
         basedir: options.rootDir,
       });
       if (!reporter) {
-        throw new Error(
+        throw new Resolver.ModuleNotFoundError(
           `Could not resolve a module for a custom reporter.\n` +
             `  Module name: ${reporterPath}`,
         );

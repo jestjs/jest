@@ -627,6 +627,7 @@ class MyCustomReporter {
 }
 
 module.exports = MyCustomReporter;
+// or export default MyCustomReporter;
 ```
 
 Custom reporters can also force Jest to exit with non-0 code by returning an Error from `getLastError()` methods
