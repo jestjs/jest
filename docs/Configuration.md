@@ -1085,6 +1085,7 @@ Example:
 Sort test path alphabetically.
 
 ```js
+// testSequencer.js
 const Sequencer = require('@jest/test-sequencer').default;
 
 class CustomSequencer extends Sequencer {
@@ -1097,6 +1098,16 @@ class CustomSequencer extends Sequencer {
 }
 
 module.exports = CustomSequencer;
+```
+
+update your jest testSequencer config with as below
+
+```json
+// jest.config.js
+{
+  "roots": ["<rootDir>/src"],
+  "testSequencer": "<path/to/testSequencer.js>"
+}
 ```
 
 ### `testTimeout` [number]
