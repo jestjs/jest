@@ -140,11 +140,12 @@ it('tests error with async/await', async () => {
 
 ## `.rejects`
 
-The`.rejects` helper works like the `.resolves` helper. If the promise is fulfilled, the test will automatically fail.
+The`.rejects` helper works like the `.resolves` helper. If the promise is fulfilled, the test will automatically fail. `expect.assertions(number)` is not required but recommended to verify that a certain number of [assertions](https://jestjs.io/docs/en/expect#expectassertionsnumber) are called during a test.
 
 ```js
 // Testing for async errors using `.rejects`.
 it('tests error with rejects', () => {
+  expect.assertions(1);
   return expect(user.getUserName(3)).rejects.toEqual({
     error: 'User with 3 not found.',
   });
@@ -152,6 +153,7 @@ it('tests error with rejects', () => {
 
 // Or using async/await with `.rejects`.
 it('tests error with async/await and rejects', async () => {
+  expect.assertions(1);
   await expect(user.getUserName(3)).rejects.toEqual({
     error: 'User with 3 not found.',
   });
