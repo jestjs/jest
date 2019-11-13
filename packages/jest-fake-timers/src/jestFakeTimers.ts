@@ -369,13 +369,13 @@ export default class FakeTimers<TimerRef> {
       // @ts-ignore TODO: figure out better typings here
       this._moduleMocker.fn().mockImplementation(impl);
 
-    const promisifedFakeTimeout = fn(this._fakeSetTimeout.bind(this));
-    promisifedFakeTimeout[util.promisify.custom] = (
+    const promisifiedFakeSetTimeout = fn(this._fakeSetTimeout.bind(this));
+    promisifiedFakeSetTimeout[util.promisify.custom] = (
       delay?: number,
       arg?: any,
     ) =>
       new Promise(resolve =>
-        promisifedFakeTimeout(() => {}, delay, resolve(arg)),
+        promisifiedFakeSetTimeout(() => {}, delay, resolve(arg)),
       );
 
     // TODO: add better typings; these are mocks, but typed as regular timers
@@ -386,7 +386,7 @@ export default class FakeTimers<TimerRef> {
       nextTick: fn(this._fakeNextTick.bind(this)),
       setImmediate: fn(this._fakeSetImmediate.bind(this)),
       setInterval: fn(this._fakeSetInterval.bind(this)),
-      setTimeout: promisifedFakeTimeout,
+      setTimeout: promisifiedFakeSetTimeout,
     };
   }
 
