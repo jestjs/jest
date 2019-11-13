@@ -1103,7 +1103,6 @@ module.exports = CustomSequencer;
 update your jest config
 
 ```json
-// jest.config.js
 {
   "roots": ["<rootDir>/src"],
   "testSequencer": "<path/to/testSequencer.js>"
