@@ -11,6 +11,7 @@ import {
   anythingSettings,
   assertSettings,
 } from './__arbitraries__/sharedSettings';
+import expect from '..';
 
 describe('toEqual', () => {
   it('should be reflexive', () => {

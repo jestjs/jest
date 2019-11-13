@@ -100,29 +100,29 @@ function eq(
     return false;
   }
   switch (className) {
-    // Strings, numbers, dates, and booleans are compared by value.
-    case '[object String]':
-      // Primitives and their corresponding object wrappers are equivalent; thus, `"5"` is
-      // equivalent to `new String("5")`.
-      return a == String(b);
-    case '[object Number]':
-      return Object.is(Number(a), Number(b));
-    case '[object Date]':
     case '[object Boolean]':
-      // Coerce dates and booleans to numeric primitive values. Dates are compared by their
+    case '[object String]':
+    case '[object Number]':
+      if (typeof a !== typeof b) {
+        // One is a primitive, one a `new Primitive()`
+        return false;
+      } else if (typeof a !== 'object' && typeof b !== 'object') {
+        // both are proper primitives
+        return Object.is(a, b);
+      } else {
+        // both are `new Primitive()`s
+        return Object.is(a.valueOf(), b.valueOf());
+      }
+    case '[object Date]':
+      // Coerce dates to numeric primitive values. Dates are compared by their
       // millisecond representations. Note that invalid dates with millisecond representations
       // of `NaN` are not equivalent.
       return +a == +b;
     // RegExps are compared by their source patterns and flags.
     case '[object RegExp]':
-      return (
-        a.source == b.source &&
-        a.global == b.global &&
-        a.multiline == b.multiline &&
-        a.ignoreCase == b.ignoreCase
-      );
+      return a.source === b.source && a.flags === b.flags;
   }
-  if (typeof a != 'object' || typeof b != 'object') {
+  if (typeof a !== 'object' || typeof b !== 'object') {
     return false;
   }
 
