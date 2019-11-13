@@ -53,7 +53,6 @@ const mergeModuleNameMapperWithPreset = (
 ) => {
   if (options['moduleNameMapper'] && preset['moduleNameMapper']) {
     options['moduleNameMapper'] = {
-      ...options['moduleNameMapper'],
       ...preset['moduleNameMapper'],
       ...options['moduleNameMapper'],
     };
@@ -66,7 +65,6 @@ const mergeTransformWithPreset = (
 ) => {
   if (options['transform'] && preset['transform']) {
     options['transform'] = {
-      ...options['transform'],
       ...preset['transform'],
       ...options['transform'],
     };
