@@ -41,6 +41,20 @@ describe('FakeTimers', () => {
       expect(global.setTimeout).not.toBe(undefined);
     });
 
+    it('accepts to promisify setTimeout mock', () => {
+      const global = ({process} as unknown) as NodeJS.Global;
+      const timers = new FakeTimers({
+        config,
+        global,
+        moduleMocker,
+        timerConfig,
+      });
+      timers.useFakeTimers();
+      const promisifiedTimeout = util.promisify(global.setTimeout)(0);
+      timers.runAllTimers();
+      expect(promisifiedTimeout).not.toBe(undefined);
+    });
+
     it('installs clearTimeout mock', () => {
       const global = ({process} as unknown) as NodeJS.Global;
       const timers = new FakeTimers({
@@ -565,25 +579,6 @@ describe('FakeTimers', () => {
 
       timers.runAllTimers();
       expect(fn).toHaveBeenCalledTimes(1);
-    });
-
-    it('runs promisified setTimeout callbacks', async () => {
-      expect.assertions(1);
-      const global = ({process} as unknown) as NodeJS.Global;
-      const timers = new FakeTimers({
-        config,
-        global,
-        moduleMocker,
-        timerConfig,
-      });
-      timers.useFakeTimers();
-
-      const promisifiedTimeout = util.promisify(global.setTimeout)(100000);
-
-      timers.runAllTimers();
-
-      await promisifiedTimeout;
-      expect(1).toBe(1);
     });
   });
 
