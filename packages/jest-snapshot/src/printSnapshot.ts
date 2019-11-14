@@ -76,7 +76,7 @@ export const getReceivedColorForChalkInstance = (
     return chalkInstance.ansi256(bForeground2).bgAnsi256(bBackground2);
   }
 
-  return chalkInstance.green.bgWhiteBright;
+  return chalkInstance.cyan.bgWhiteBright; // also known as teal
 };
 
 export const aSnapshotColor = getSnapshotColorForChalkInstance(chalk);

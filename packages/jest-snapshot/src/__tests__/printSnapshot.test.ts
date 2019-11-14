@@ -31,7 +31,7 @@ import {
 
 const aOpenForeground1 = styles.magenta.open;
 const aOpenBackground1 = styles.bgYellowBright.open;
-const bOpenForeground1 = styles.green.open;
+const bOpenForeground1 = styles.cyan.open;
 const bOpenBackground1 = styles.bgWhiteBright.open;
 
 const aOpenForeground2 = styles.color.ansi256.ansi256(aForeground2);
@@ -79,9 +79,7 @@ const convertAnsi = (val: string): string => {
       case styles.dim.close:
         return '</>';
 
-      case bOpenForeground1:
-      case bOpenForeground2:
-      case bOpenForeground3:
+      case styles.green.open:
         return '<g>';
       case aOpenForeground1:
       case aOpenForeground2:
@@ -89,8 +87,13 @@ const convertAnsi = (val: string): string => {
         return '<m>';
       case styles.red.open:
         return '<r>';
+      case bOpenForeground1:
+      case bOpenForeground2:
+      case bOpenForeground3:
+        return '<t>'; // teal/cyan/aqua
       case styles.yellow.open:
         return '<y>';
+      case styles.cyan.close:
       case styles.green.close:
       case styles.magenta.close:
       case styles.red.close:
@@ -159,7 +162,7 @@ describe('chalk', () => {
 
   const expected0 = '- delete 1 \n  common 2  \n+ insert 0';
   const expected1 =
-    '<m>- delete 1 </>\n<d>  common 2<Y>  </Y></>\n<g>+ insert 0</>';
+    '<m>- delete 1 </>\n<d>  common 2<Y>  </Y></>\n<t>+ insert 0</>';
 
   test('level 0', () => {
     const chalkInstance = new chalk.Instance({level: 0});
