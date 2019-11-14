@@ -75,6 +75,9 @@
     "webpack": "^4.28.4",
     "which": "^2.0.1"
   },
+  "resolutions": {
+    "**/**/handlebars": "^4.5.2"
+  },
   "scripts": {
     "build-clean": "rm -rf ./packages/*/build ./packages/*/build-es5 ./packages/*/tsconfig.tsbuildinfo",
     "prebuild": "yarn build:ts",
