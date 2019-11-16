@@ -67,7 +67,6 @@ describe('generateEmptyCoverage', () => {
     }
 
     expect(coverage.data).toMatchSnapshot({
-      hash: expect.any(String),
       path: expect.any(String),
     });
   });

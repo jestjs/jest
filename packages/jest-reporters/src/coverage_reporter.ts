@@ -77,14 +77,13 @@ export default class CoverageReporter extends BaseReporter {
     aggregatedResults: AggregatedResult,
   ) {
     await this._addUntestedFiles(this._globalConfig, contexts);
-    const {map, sourceFinder} = this._sourceMapStore.transformCoverage(
-      this._coverageMap,
-    );
+    const map = await this._sourceMapStore.transformCoverage(this._coverageMap);
 
     try {
       const reportContext = istanbulReport.createContext({
+        coverageMap: map,
         dir: this._globalConfig.coverageDirectory,
-        sourceFinder,
+        sourceFinder: this._sourceMapStore.sourceFinder,
       });
       const coverageReporters = this._globalConfig.coverageReporters || [];
 
@@ -92,9 +91,10 @@ export default class CoverageReporter extends BaseReporter {
         coverageReporters.push('text-summary');
       }
 
-      const tree = istanbulReport.summarizers.pkg(map);
       coverageReporters.forEach(reporter => {
-        tree.visit(istanbulReports.create(reporter, {}), reportContext);
+        istanbulReports
+          .create(reporter, {maxCols: process.stdout.columns || Infinity})
+          .execute(reportContext);
       });
       aggregatedResults.coverageMap = map;
     } catch (e) {
