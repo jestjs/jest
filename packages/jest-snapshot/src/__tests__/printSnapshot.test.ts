@@ -609,7 +609,7 @@ describe('printPropertiesAndReceived', () => {
       branchMap: {},
       f: {},
       fnMap: {},
-      //hash: '0123456789abcdef',
+      // hash is missing
       path: '…',
       s: {},
       statementMap: {},
