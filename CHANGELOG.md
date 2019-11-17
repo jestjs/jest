@@ -52,6 +52,7 @@
 - `[jest-snapshot]` Distinguish empty string from external snapshot not written ([#8880](https://github.com/facebook/jest/pull/8880))
 - `[jest-snapshot]` [**BREAKING**] Distinguish empty string from internal snapshot not written ([#8898](https://github.com/facebook/jest/pull/8898))
 - `[jest-snapshot]` [**BREAKING**] Remove `report` method and throw matcher errors ([#9049](https://github.com/facebook/jest/pull/9049))
+- `[jest-snapshot]` Omit irrelevant `received` properties ([#9198](https://github.com/facebook/jest/pull/9198))
 - `[jest-transform]` Properly cache transformed files across tests ([#8890](https://github.com/facebook/jest/pull/8890))
 - `[jest-transform]` Don't fail the test suite when a generated source map is invalid ([#9058](https://github.com/facebook/jest/pull/9058))
 - `[jest-utils]` Allow querying process.domain ([#9136](https://github.com/facebook/jest/pull/9136))
