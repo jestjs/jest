@@ -347,6 +347,7 @@ export default class ScriptTransformer {
   ): TransformResult {
     const isInternalModule = !!(options && options.isInternalModule);
     const isCoreModule = !!(options && options.isCoreModule);
+    const extraGlobals = (options && options.extraGlobals) || [];
     const content = stripShebang(
       fileSource || fs.readFileSync(filename, 'utf8'),
     );
@@ -361,8 +362,6 @@ export default class ScriptTransformer {
       (this.shouldTransform(filename) || instrument);
 
     try {
-      const extraGlobals = options ? options.extraGlobals : [];
-
       if (willTransform) {
         const transformedSource = this.transformSource(
           filename,

@@ -13,14 +13,11 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "/node_modules/"
       ],
       "cwd": "<<REPLACED_ROOT_DIR>>",
-      "dependencyExtractor": null,
       "detectLeaks": false,
       "detectOpenHandles": false,
       "errorOnDeprecated": false,
-      "filter": null,
+      "extraGlobals": [],
       "forceCoverageMatch": [],
-      "globalSetup": null,
-      "globalTeardown": null,
       "globals": {},
       "haste": {
         "computeSha1": false,
@@ -38,13 +35,12 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "tsx",
         "node"
       ],
-      "moduleNameMapper": {},
+      "moduleNameMapper": [],
       "modulePathIgnorePatterns": [],
       "name": "[md5 hash]",
       "prettierPath": "prettier",
       "resetMocks": false,
       "resetModules": false,
-      "resolver": null,
       "restoreMocks": false,
       "rootDir": "<<REPLACED_ROOT_DIR>>",
       "roots": [
@@ -72,7 +68,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "transform": [
         [
           "^.+\\\\.[jt]sx?$",
-          "<<REPLACED_JEST_PACKAGES_DIR>>/babel-jest/build/index.js"
+          "<<REPLACED_JEST_PACKAGES_DIR>>/babel-jest/build/index.js",
+          {}
         ]
       ],
       "transformIgnorePatterns": [
@@ -93,35 +90,37 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "lcov",
       "clover"
     ],
-    "coverageThreshold": null,
     "detectLeaks": false,
     "detectOpenHandles": false,
     "errorOnDeprecated": false,
     "expand": false,
-    "filter": null,
-    "globalSetup": null,
-    "globalTeardown": null,
+    "extraGlobals": [],
+    "findRelatedTests": false,
+    "forceExit": false,
     "json": false,
+    "lastCommit": false,
     "listTests": false,
+    "logHeapUsage": false,
     "maxConcurrency": 5,
     "maxWorkers": "[maxWorkers]",
     "noStackTrace": false,
     "nonFlagArgs": [],
     "notify": false,
     "notifyMode": "failure-change",
+    "onlyChanged": false,
+    "onlyFailures": false,
     "passWithNoTests": false,
-    "projects": null,
+    "projects": [],
     "rootDir": "<<REPLACED_ROOT_DIR>>",
     "runTestsByPath": false,
     "skipFilter": false,
     "testFailureExitCode": 1,
     "testPathPattern": "",
-    "testResultsProcessor": null,
     "testSequencer": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-test-sequencer/build/index.js",
     "updateSnapshot": "all",
     "useStderr": false,
-    "verbose": null,
     "watch": false,
+    "watchAll": false,
     "watchman": true
   },
   "version": "[version]"

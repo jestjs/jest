@@ -19,7 +19,7 @@ FAIL __tests__/index.js
       "moduleNameMapper": {
         "/\\.(css|less)$/": "no-such-module"
       },
-      "resolver": null
+      "resolver": undefined
     }
 
        8 | 'use strict';

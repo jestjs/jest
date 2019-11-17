@@ -328,12 +328,12 @@ describe('transform', () => {
     );
 
     expect(options.transform).toEqual([
-      [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util'],
-      [DEFAULT_JS_PATTERN, require.resolve('babel-jest')],
-      ['abs-path', '/qux/quux'],
+      [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util', {}],
+      [DEFAULT_JS_PATTERN, require.resolve('babel-jest'), {}],
+      ['abs-path', '/qux/quux', {}],
     ]);
   });
-  it("pulls in config if it's passed as an array", () => {
+  it("pulls in config if it's passed as an array, and defaults to empty object", () => {
     const {options} = normalize(
       {
         rootDir: '/root/',
@@ -346,9 +346,9 @@ describe('transform', () => {
       {},
     );
     expect(options.transform).toEqual([
-      [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util'],
+      [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util', {}],
       [DEFAULT_JS_PATTERN, require.resolve('babel-jest'), {rootMode: 'upward'}],
-      ['abs-path', '/qux/quux'],
+      ['abs-path', '/qux/quux', {}],
     ]);
   });
 });
@@ -822,7 +822,7 @@ describe('Upgrade help', () => {
       {},
     );
 
-    expect(options.transform).toEqual([['.*', '/node_modules/bar/baz']]);
+    expect(options.transform).toEqual([['.*', '/node_modules/bar/baz', {}]]);
     expect(options.transformIgnorePatterns).toEqual([
       joinForPattern('bar', 'baz'),
       joinForPattern('qux', 'quux'),
@@ -1152,8 +1152,8 @@ describe('preset', () => {
       '/node_modules/b',
     ]);
     expect(options.transform).toEqual([
-      ['a', '/node_modules/a'],
-      ['b', '/node_modules/b'],
+      ['a', '/node_modules/a', {}],
+      ['b', '/node_modules/b', {}],
     ]);
   });
 
@@ -1202,10 +1202,10 @@ describe('preset', () => {
     );
 
     expect(options.transform).toEqual([
-      ['e', '/node_modules/ee'],
-      ['b', '/node_modules/bb'],
-      ['c', '/node_modules/cc'],
-      ['a', '/node_modules/aa'],
+      ['e', '/node_modules/ee', {}],
+      ['b', '/node_modules/bb', {}],
+      ['c', '/node_modules/cc', {}],
+      ['a', '/node_modules/aa', {}],
     ]);
   });
 
