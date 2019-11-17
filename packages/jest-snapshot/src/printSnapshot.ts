@@ -6,6 +6,7 @@
  */
 
 import chalk = require('chalk');
+import {getObjectSubset} from 'expect/build/utils';
 import {
   DIFF_DELETE,
   DIFF_EQUAL,
@@ -145,7 +146,7 @@ export const printPropertiesAndReceived = (
   if (isLineDiffable(properties) && isLineDiffable(received)) {
     return diffLinesUnified(
       serialize(properties).split('\n'),
-      serialize(received).split('\n'),
+      serialize(getObjectSubset(received, properties)).split('\n'),
       {
         aAnnotation,
         aColor: EXPECTED_COLOR,

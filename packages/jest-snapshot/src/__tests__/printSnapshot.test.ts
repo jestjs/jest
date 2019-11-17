@@ -11,7 +11,10 @@ import chalk = require('chalk');
 import format = require('pretty-format');
 
 import jestSnapshot = require('../index');
-import {printSnapshotAndReceived} from '../printSnapshot';
+import {
+  printPropertiesAndReceived,
+  printSnapshotAndReceived,
+} from '../printSnapshot';
 import {serialize} from '../utils';
 
 const convertAnsi = (val: string): string =>
@@ -596,6 +599,29 @@ describe('pass true', () => {
       const {pass} = toMatchSnapshot.call(context, received);
       expect(pass).toBe(true);
     });
+  });
+});
+
+describe('printPropertiesAndReceived', () => {
+  test('omit missing properties', () => {
+    const received = {
+      b: {},
+      branchMap: {},
+      f: {},
+      fnMap: {},
+      //hash: '0123456789abcdef',
+      path: '…',
+      s: {},
+      statementMap: {},
+    };
+    const properties = {
+      hash: expect.any(String),
+      path: expect.any(String),
+    };
+
+    expect(
+      printPropertiesAndReceived(properties, received, false),
+    ).toMatchSnapshot();
   });
 });
 
