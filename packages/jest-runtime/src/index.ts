@@ -178,14 +178,7 @@ class Runtime {
     }
   }
 
-  // TODO: Make this `static shouldInstrument = shouldInstrument;` after https://github.com/facebook/jest/issues/7846
-  static shouldInstrument(
-    filename: Config.Path,
-    options: ShouldInstrumentOptions,
-    config: Config.ProjectConfig,
-  ) {
-    return shouldInstrument(filename, options, config);
-  }
+  static shouldInstrument = shouldInstrument;
 
   static createContext(
     config: Config.ProjectConfig,
