@@ -6,6 +6,9 @@
  */
 
 import chalk = require('chalk');
+// Temporary hack because getObjectSubset has known limitations,
+// is not in the public interface of the expect package,
+// and the long-term goal is to use a non-serialization diff.
 import {getObjectSubset} from 'expect/build/utils';
 import {
   DIFF_DELETE,
