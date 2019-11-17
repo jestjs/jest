@@ -361,7 +361,7 @@ export default class ScriptTransformer {
       (this.shouldTransform(filename) || instrument);
 
     try {
-      const extraGlobals = (options && options.extraGlobals) || [];
+      const extraGlobals = options ? options.extraGlobals : [];
 
       if (willTransform) {
         const transformedSource = this.transformSource(

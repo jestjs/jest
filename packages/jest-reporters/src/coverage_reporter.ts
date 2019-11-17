@@ -107,7 +107,7 @@ export default class CoverageReporter extends BaseReporter {
       );
     }
 
-    this._checkThreshold(this._globalConfig, map);
+    this._checkThreshold(map);
   }
 
   private async _addUntestedFiles(
@@ -209,11 +209,10 @@ export default class CoverageReporter extends BaseReporter {
     }
   }
 
-  private _checkThreshold(
-    globalConfig: Config.GlobalConfig,
-    map: istanbulCoverage.CoverageMap,
-  ) {
-    if (globalConfig.coverageThreshold) {
+  private _checkThreshold(map: istanbulCoverage.CoverageMap) {
+    const {coverageThreshold} = this._globalConfig;
+
+    if (coverageThreshold) {
       function check(
         name: string,
         thresholds: Config.CoverageThresholdValue,
@@ -250,7 +249,7 @@ export default class CoverageReporter extends BaseReporter {
         PATH: 'path',
       };
       const coveredFiles = map.files();
-      const thresholdGroups = Object.keys(globalConfig.coverageThreshold);
+      const thresholdGroups = Object.keys(coverageThreshold);
       const groupTypeByThresholdGroup: {[index: string]: string} = {};
       const filesByGlob: {[index: string]: Array<string>} = {};
 
@@ -342,7 +341,7 @@ export default class CoverageReporter extends BaseReporter {
               errors = errors.concat(
                 check(
                   thresholdGroup,
-                  globalConfig.coverageThreshold[thresholdGroup],
+                  coverageThreshold[thresholdGroup],
                   coverage,
                 ),
               );
@@ -357,7 +356,7 @@ export default class CoverageReporter extends BaseReporter {
               errors = errors.concat(
                 check(
                   thresholdGroup,
-                  globalConfig.coverageThreshold[thresholdGroup],
+                  coverageThreshold[thresholdGroup],
                   coverage,
                 ),
               );
@@ -370,7 +369,7 @@ export default class CoverageReporter extends BaseReporter {
                 errors = errors.concat(
                   check(
                     fileMatchingGlob,
-                    globalConfig.coverageThreshold[thresholdGroup],
+                    coverageThreshold[thresholdGroup],
                     map.fileCoverageFor(fileMatchingGlob).toSummary(),
                   ),
                 );
