@@ -1176,6 +1176,152 @@ describe('printSnapshotAndReceived', () => {
     expect(testWithStringify(expected, received, false)).toMatchSnapshot();
   });
 
+  describe('ignore indentation', () => {
+    const $$typeof = Symbol.for('react.test.json');
+
+    test('markup delete', () => {
+      const expected = {
+        $$typeof,
+        children: [
+          {
+            $$typeof,
+            children: [
+              {
+                $$typeof,
+                children: ['Ignore indentation for most serialized objects'],
+                type: 'h3',
+              },
+              {
+                $$typeof,
+                children: [
+                  'Call ',
+                  {
+                    $$typeof,
+                    children: ['diffLinesUnified2'],
+                    type: 'code',
+                  },
+                  ' to compare without indentation',
+                ],
+                type: 'p',
+              },
+            ],
+            type: 'div',
+          },
+        ],
+        type: 'div',
+      };
+      const received = {
+        $$typeof,
+        children: [
+          {
+            $$typeof,
+            children: ['Ignore indentation for most serialized objects'],
+            type: 'h3',
+          },
+          {
+            $$typeof,
+            children: [
+              'Call ',
+              {
+                $$typeof,
+                children: ['diffLinesUnified2'],
+                type: 'code',
+              },
+              ' to compare without indentation',
+            ],
+            type: 'p',
+          },
+        ],
+        type: 'div',
+      };
+
+      expect(testWithStringify(expected, received, false)).toMatchSnapshot();
+    });
+
+    test('markup fall back', () => {
+      // Because text has more than one adjacent line.
+      const text = [
+        'for (key in foo) {',
+        '  if (Object.prototype.hasOwnProperty.call(foo, key)) {',
+        '    doSomething(key);',
+        '  }',
+        '}',
+      ].join('\n');
+
+      const expected = {
+        $$typeof,
+        children: [text],
+        props: {
+          className: 'language-js',
+        },
+        type: 'pre',
+      };
+      const received = {
+        $$typeof,
+        children: [expected],
+        type: 'div',
+      };
+
+      expect(testWithStringify(expected, received, false)).toMatchSnapshot();
+    });
+
+    test('markup insert', () => {
+      const text = 'when';
+      const expected = {
+        $$typeof,
+        children: [text],
+        type: 'th',
+      };
+      const received = {
+        $$typeof,
+        children: [
+          {
+            $$typeof,
+            children: [text],
+            type: 'span',
+          },
+          {
+            $$typeof,
+            children: ['↓'],
+            props: {
+              title: 'ascending from older to newer',
+            },
+            type: 'abbr',
+          },
+        ],
+        type: 'th',
+      };
+
+      expect(testWithStringify(expected, received, false)).toMatchSnapshot();
+    });
+
+    describe('object', () => {
+      const text = 'Ignore indentation in snapshot';
+      const time = '2019-11-11';
+      const type = 'CREATE_ITEM';
+      const less = {
+        text,
+        time,
+        type,
+      };
+      const more = {
+        payload: {
+          text,
+          time,
+        },
+        type,
+      };
+
+      test('delete', () => {
+        expect(testWithStringify(more, less, false)).toMatchSnapshot();
+      });
+
+      test('insert', () => {
+        expect(testWithStringify(less, more, false)).toMatchSnapshot();
+      });
+    });
+  });
+
   describe('without serialize', () => {
     test('backtick single line expected and received', () => {
       const expected = 'var foo = `backtick`;';

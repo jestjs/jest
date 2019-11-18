@@ -17,6 +17,7 @@ import {
   Diff,
   DiffOptionsColor,
   diffLinesUnified,
+  diffLinesUnified2,
   diffStringsRaw,
   diffStringsUnified,
 } from 'jest-diff';
@@ -42,6 +43,7 @@ import {
   bForeground2,
   bForeground3,
 } from './colors';
+import {dedentLines} from './dedentLines';
 import {MatchSnapshotConfig} from './types';
 import {deserializeString, minify, serialize} from './utils';
 
@@ -306,8 +308,22 @@ export const printSnapshotAndReceived = (
   }
 
   if (isLineDiffable(received)) {
-    // TODO future PR will replace with diffLinesUnified2 to ignore indentation
-    return diffLinesUnified(a.split('\n'), b.split('\n'), options);
+    const aLines2 = a.split('\n');
+    const bLines2 = b.split('\n');
+
+    const aLines0 = dedentLines(aLines2);
+
+    if (aLines0 !== null) {
+      // Compare lines without indentation.
+      const bLines0 = serialize(received, 0).split('\n');
+      return diffLinesUnified2(aLines2, bLines2, aLines0, bLines0, options);
+    }
+
+    // Fall back because:
+    // * props include a multiline string
+    // * text has more than one adjacent line
+    // * markup does not close
+    return diffLinesUnified(aLines2, bLines2, options);
   }
 
   const printLabel = getLabelPrinter(aAnnotation, bAnnotation);

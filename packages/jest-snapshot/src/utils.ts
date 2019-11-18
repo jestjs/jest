@@ -139,10 +139,11 @@ export const removeExtraLineBreaks = (string: string): string =>
 const escapeRegex = true;
 const printFunctionName = false;
 
-export const serialize = (val: unknown): string =>
+export const serialize = (val: unknown, indent = 2): string =>
   normalizeNewlines(
     prettyFormat(val, {
       escapeRegex,
+      indent,
       plugins: getSerializers(),
       printFunctionName,
     }),
