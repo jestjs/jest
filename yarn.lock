@@ -6990,7 +6990,7 @@ gzip-size@5.1.1:
     duplexer "^0.1.1"
     pify "^4.0.1"
 
-handlebars@^4.4.0, handlebars@^4.4.2:
+handlebars@^4.4.0:
   version "4.5.2"
   resolved "https://registry.yarnpkg.com/handlebars/-/handlebars-4.5.2.tgz#5a4eb92ab5962ca3415ac188c86dc7f784f76a0f"
   integrity sha512-29Zxv/cynYB7mkT1rVWQnV7mGX6v7H/miQ6dbEpYTKq5eJBN7PsRB+ViYJlcT6JINTSu4dVB9kOqEun78h6Exg==
@@ -7176,6 +7176,11 @@ html-encoding-sniffer@^1.0.2:
   integrity sha512-71lZziiDnsuabfdYiUeWdCVyKuqwWi23L8YeIgV9jSSZHCtb6wB1BKWooH7L3tn4/FuZJMVWyNaIDr4RGmaSYw==
   dependencies:
     whatwg-encoding "^1.0.1"
+
+html-escaper@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/html-escaper/-/html-escaper-2.0.0.tgz#71e87f931de3fe09e56661ab9a29aadec707b491"
+  integrity sha512-a4u9BeERWGu/S8JiWEAQcdrg9v4QArtP9keViQjGMdff20fBdd8waotXaNmODqBe6uZ3Nafi7K/ho4gCQHV3Ig==
 
 htmlparser2@^3.9.1:
   version "3.10.1"
@@ -8163,12 +8168,12 @@ istanbul-lib-source-maps@^4.0.0-alpha.4:
     istanbul-lib-coverage "^3.0.0-alpha.1"
     source-map "^0.6.1"
 
-istanbul-reports@^3.0.0-alpha.3:
-  version "3.0.0-alpha.3"
-  resolved "https://registry.yarnpkg.com/istanbul-reports/-/istanbul-reports-3.0.0-alpha.3.tgz#4e50001f2aeb390b26dcc3e4841f2ec76274e7bb"
-  integrity sha512-rZVjflOwhnHDS9Ch8aCP71yzr9BpKKGyptl1CvXYgIM6WA6glg+yDv7hblAoG0jWOzfsC1NiGG9Wy7fue2l5KA==
+istanbul-reports@^3.0.0-alpha.4:
+  version "3.0.0-alpha.4"
+  resolved "https://registry.yarnpkg.com/istanbul-reports/-/istanbul-reports-3.0.0-alpha.4.tgz#f703c04cc76b27e89b88c4fa74efec7865582e73"
+  integrity sha512-TPIUdttWC1oUvTL163ZtS0FqTlYaaAQBQdlVpF9Enu+w6oPOUR0p//WRdRyT/hbDG83PoQoSyatYzV6FrICDKg==
   dependencies:
-    handlebars "^4.4.2"
+    html-escaper "^2.0.0"
     istanbul-lib-report "^3.0.0-alpha.1"
 
 isurl@^1.0.0-alpha5:

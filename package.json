@@ -45,7 +45,7 @@
     "isbinaryfile": "^4.0.0",
     "istanbul-lib-coverage": "^3.0.0-alpha.1",
     "istanbul-lib-report": "^3.0.0-alpha.1",
-    "istanbul-reports": "^3.0.0-alpha.3",
+    "istanbul-reports": "^3.0.0-alpha.4",
     "jest-junit": "^9.0.0",
     "jest-silent-reporter": "^0.1.2",
     "jest-snapshot-serializer-raw": "^1.1.0",
