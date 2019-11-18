@@ -81,8 +81,10 @@ export default class CoverageReporter extends BaseReporter {
 
     try {
       const reportContext = istanbulReport.createContext({
+        // @ts-ignore
         coverageMap: map,
         dir: this._globalConfig.coverageDirectory,
+        // @ts-ignore
         sourceFinder: this._sourceMapStore.sourceFinder,
       });
       const coverageReporters = this._globalConfig.coverageReporters || [];
@@ -94,8 +96,10 @@ export default class CoverageReporter extends BaseReporter {
       coverageReporters.forEach(reporter => {
         istanbulReports
           .create(reporter, {maxCols: process.stdout.columns || Infinity})
+          // @ts-ignore
           .execute(reportContext);
       });
+      // @ts-ignore
       aggregatedResults.coverageMap = map;
     } catch (e) {
       console.error(
@@ -107,6 +111,7 @@ export default class CoverageReporter extends BaseReporter {
       );
     }
 
+    // @ts-ignore
     this._checkThreshold(this._globalConfig, map);
   }
 
