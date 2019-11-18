@@ -92,7 +92,7 @@ _Note: CLI options take precedence over values from the [Configuration](Configur
 
 ## Reference
 
-### `jest <regexForTestFiles>`
+### `jest &lt;regexForTestFiles&gt;`
 
 When you run `jest` with an argument, that argument is treated as a regular expression to match against files in your project. It is possible to run test suites by providing a pattern. Only the files that the pattern matches will be picked up and executed. Depending on your terminal, you may need to quote this argument: `jest "my.*(complex)?pattern"`. On Windows, you will need to use `/` as a path separator or escape `\` as `\\`.
 
@@ -122,7 +122,7 @@ When this option is provided, Jest will assume it is running in a CI environment
 
 Deletes the Jest cache directory and then exits without running tests. Will delete `cacheDirectory` if the option is passed, or Jest's default cache directory. The default cache directory can be found by calling `jest --showConfig`. _Note: clearing the cache will reduce performance._
 
-### `--collectCoverageFrom=<glob>`
+### `--collectCoverageFrom=&lt;glob&gt;`
 
 An array of glob patterns relative to <rootDir> matching the files that coverage info needs to be collected from.
 
@@ -130,7 +130,7 @@ An array of glob patterns relative to <rootDir> matching the files that coverage
 
 Forces test results output highlighting even if stdout is not a TTY.
 
-### `--config=<path>`
+### `--config=&lt;path&gt;`
 
 Alias: `-c`. The path to a Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the directory containing the config file is assumed to be the rootDir for the project. This can also be a JSON-encoded value which Jest will use as configuration.
 
@@ -142,7 +142,7 @@ Indicates that test coverage information should be collected and reported in the
 
 Print debugging info about your Jest config.
 
-### `--env=<environment>`
+### `--env=&lt;environment&gt;`
 
 The test environment used for all tests. This can point to any file or node module. Examples: `jsdom`, `node` or `path/to/my-environment.js`.
 
@@ -150,7 +150,7 @@ The test environment used for all tests. This can point to any file or node modu
 
 Alias: `-e`. Use this flag to show full diffs and errors instead of a patch.
 
-### `--findRelatedTests <spaceSeparatedListOfSourceFiles>`
+### `--findRelatedTests &lt;spaceSeparatedListOfSourceFiles&gt;`
 
 Find and run the tests that cover a space separated list of source files that were passed in as arguments. Useful for pre-commit hook integration to run the minimal amount of tests necessary.
 
@@ -166,7 +166,7 @@ Show the help information, similar to this page.
 
 Prints the test results in JSON. This mode will send all other test output and user messages to stderr.
 
-### `--outputFile=<filename>`
+### `--outputFile=&lt;filename&gt;`
 
 Write test results to a file when the `--json` option is also specified. The returned JSON structure is documented in [testResultsProcessor](Configuration.md#testResultsProcessor-string).
 
@@ -182,7 +182,7 @@ Lists all tests as JSON that Jest will run given the arguments, and exits. This 
 
 Logs the heap usage after every test. Useful to debug memory leaks. Use together with `--runInBand` and `--expose-gc` in node.
 
-### `--maxWorkers=<num>`
+### `--maxWorkers=&lt;num&gt;`
 
 Alias: `-w`. Specifies the maximum number of workers the worker-pool will spawn for running tests. In single run mode, this defaults to the number of the cores available on your machine minus one for the main thread. In watch mode, this defaults to half of the available cores on your machine to ensure Jest is unobtrusive and does not grind your machine to a halt. It may be useful to adjust this in resource limited environments like CIs but the defaults should be adequate for most use-cases.
 
@@ -202,7 +202,7 @@ Alias: `-o`. Attempts to identify which tests to run based on which files have c
 
 Allows the test suite to pass when no files are found.
 
-### `--projects <project1> ... <projectN>`
+### `--projects &lt;project1&gt; ... &lt;projectN&gt;`
 
 Run tests from one or more projects.
 
@@ -216,7 +216,7 @@ Run only the tests that were specified with their exact paths.
 
 _Note: The default regex matching works fine on small runs, but becomes slow if provided with multiple patterns and/or against a lot of tests. This option replaces the regex matching logic and by that optimizes the time it takes Jest to filter specific test files_
 
-### `--setupTestFrameworkScriptFile=<file>`
+### `--setupTestFrameworkScriptFile=&lt;file&gt;`
 
 The path to a module that runs some code to configure or set up the testing framework before each test. Beware that files imported by the setup script will not be mocked during testing.
 
@@ -228,7 +228,7 @@ Print your Jest config and then exits.
 
 Prevent tests from printing messages through the console.
 
-### `--testNamePattern=<regex>`
+### `--testNamePattern=&lt;regex&gt;`
 
 Alias: `-t`. Run only tests and test suites with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like `"GET /api/posts with auth"`, then you can use `jest -t=auth`.
 
@@ -245,11 +245,11 @@ Note that `column` is 0-indexed while `line` is not.
 }
 ```
 
-### `--testPathPattern=<regex>`
+### `--testPathPattern=&lt;regex&gt;`
 
 A regexp pattern string that is matched against all tests paths before executing the test. On Windows, you will need to use `/` as a path separator or escape `\` as `\\`.
 
-### `--testRunner=<path>`
+### `--testRunner=&lt;path&gt;`
 
 Lets you specify a custom test runner.
 

@@ -623,8 +623,7 @@ We skipped 24.2.0 because a draft was accidentally published. Please use `24.3.0
 - `[diff-sequences]` Add performance benchmark to package ([#7603](https://github.com/facebook/jest/pull/7603))
 - `[*]` Replace as many `Object.assign` with object spread as possible ([#7627](https://github.com/facebook/jest/pull/7627))
 - `[ci]` Initial support for Azure Pipelines ([#7556](https://github.com/facebook/jest/pull/7556))
-- `[docs]` updating tag delimter to &lt; &gt; in Configuration.md to make docusaurus's table of content work correctly  ([#9202](https://github.com/facebook/jest/pull/9202))
-
+- `[docs]` updating tag delimter to &lt; &gt; in docs(md) file to make docusaurus's table of content work correctly  ([#9202](https://github.com/facebook/jest/pull/9202))
 
 ### Performance
 
