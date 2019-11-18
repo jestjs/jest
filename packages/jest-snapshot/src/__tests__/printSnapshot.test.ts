@@ -12,13 +12,60 @@ import format = require('pretty-format');
 
 import jestSnapshot = require('../index');
 import {
+  getReceivedColorForChalkInstance,
+  getSnapshotColorForChalkInstance,
+  noColor,
   printPropertiesAndReceived,
   printSnapshotAndReceived,
 } from '../printSnapshot';
 import {serialize} from '../utils';
+import {
+  aBackground2,
+  aBackground3,
+  aForeground2,
+  aForeground3,
+  bBackground2,
+  bBackground3,
+  bForeground2,
+  bForeground3,
+} from '../colors';
 
-const convertAnsi = (val: string): string =>
-  val.replace(ansiRegex(), match => {
+const aOpenForeground1 = styles.magenta.open;
+const aOpenBackground1 = styles.bgYellowBright.open;
+const bOpenForeground1 = styles.cyan.open;
+const bOpenBackground1 = styles.bgWhiteBright.open;
+
+const aOpenForeground2 = styles.color.ansi256.ansi256(aForeground2);
+const bOpenForeground2 = styles.color.ansi256.ansi256(bForeground2);
+const aOpenBackground2 = styles.bgColor.ansi256.ansi256(aBackground2);
+const bOpenBackground2 = styles.bgColor.ansi256.ansi256(bBackground2);
+
+const aOpenForeground3 = styles.color.ansi16m.rgb(
+  aForeground3[0],
+  aForeground3[1],
+  aForeground3[2],
+);
+const bOpenForeground3 = styles.color.ansi16m.rgb(
+  bForeground3[0],
+  bForeground3[1],
+  bForeground3[2],
+);
+const aOpenBackground3 = styles.bgColor.ansi16m.rgb(
+  aBackground3[0],
+  aBackground3[1],
+  aBackground3[2],
+);
+const bOpenBackground3 = styles.bgColor.ansi16m.rgb(
+  bBackground3[0],
+  bBackground3[1],
+  bBackground3[2],
+);
+
+const convertAnsi = (val: string): string => {
+  // Trailing spaces in common lines have yellow background color.
+  let isYellowBackground = false;
+
+  return val.replace(ansiRegex(), match => {
     switch (match) {
       case styles.inverse.open:
         return '<i>';
@@ -29,27 +76,53 @@ const convertAnsi = (val: string): string =>
         return '<b>';
       case styles.dim.open:
         return '<d>';
-      case styles.green.open:
-        return '<g>';
-      case styles.red.open:
-        return '<r>';
-      case styles.yellow.open:
-        return '<y>';
-      case styles.bgYellow.open:
-        return '<Y>';
-
       case styles.bold.close:
       case styles.dim.close:
+        return '</>';
+
+      case styles.green.open:
+        return '<g>';
+      case aOpenForeground1:
+      case aOpenForeground2:
+      case aOpenForeground3:
+        return '<m>';
+      case styles.red.open:
+        return '<r>';
+      case bOpenForeground1:
+      case bOpenForeground2:
+      case bOpenForeground3:
+        return '<t>'; // teal/cyan/aqua
+      case styles.yellow.open:
+        return '<y>';
+      case styles.cyan.close:
       case styles.green.close:
+      case styles.magenta.close:
       case styles.red.close:
       case styles.yellow.close:
-      case styles.bgYellow.close:
         return '</>';
+
+      case styles.bgYellow.open:
+        isYellowBackground = true;
+        return '<Y>';
+
+      case aOpenBackground1:
+      case bOpenBackground1:
+      case aOpenBackground2:
+      case bOpenBackground2:
+      case aOpenBackground3:
+      case bOpenBackground3:
+        isYellowBackground = false;
+        return '';
+
+      case styles.bgYellow.close:
+        // The same code closes any background color.
+        return isYellowBackground ? '</Y>' : '';
 
       default:
         return match;
     }
   });
+};
 
 expect.addSnapshotSerializer({
   serialize(val: string): string {
@@ -66,6 +139,77 @@ const {
   toThrowErrorMatchingInlineSnapshot,
   toThrowErrorMatchingSnapshot,
 } = jestSnapshot;
+
+describe('chalk', () => {
+  // Because these tests give code coverage of get functions
+  // and give confidence that the escape sequences are correct,
+  // convertAnsi can return same serialization for any chalk level
+  // so snapshot tests pass in any environment with chalk level >= 1.
+
+  // Simulate comparison lines from printSnapshotAndReceived.
+  const formatLines = chalkInstance => {
+    const aColor = getSnapshotColorForChalkInstance(chalkInstance);
+    const bColor = getReceivedColorForChalkInstance(chalkInstance);
+    const cColor = chalkInstance.dim;
+    const changeLineTrailingSpaceColor = noColor;
+    const commonLineTrailingSpaceColor = chalkInstance.bgYellow;
+
+    return [
+      aColor(`- delete 1${changeLineTrailingSpaceColor(' ')}`),
+      cColor(`  common 2${commonLineTrailingSpaceColor('  ')}`),
+      bColor(`+ insert 0`),
+    ].join('\n');
+  };
+
+  const expected0 = '- delete 1 \n  common 2  \n+ insert 0';
+  const expected1 =
+    '<m>- delete 1 </>\n<d>  common 2<Y>  </Y></>\n<t>+ insert 0</>';
+
+  test('level 0', () => {
+    const chalkInstance = new chalk.Instance({level: 0});
+    const formatted = formatLines(chalkInstance);
+    const converted = convertAnsi(formatted);
+
+    expect(converted).toBe(expected0);
+    expect(formatted).toBe(expected0);
+  });
+
+  test('level 1', () => {
+    const chalkInstance = new chalk.Instance({level: 1});
+    const formatted = formatLines(chalkInstance);
+    const converted = convertAnsi(formatted);
+
+    expect(converted).toBe(expected1);
+    expect(formatted).toMatch(aOpenForeground1 + aOpenBackground1 + '-');
+    expect(formatted).toMatch(bOpenForeground1 + bOpenBackground1 + '+');
+    expect(formatted).not.toMatch(chalkInstance.bgYellow(' ')); // noColor
+    expect(formatted).toMatch(chalkInstance.bgYellow('  '));
+  });
+
+  test('level 2', () => {
+    const chalkInstance = new chalk.Instance({level: 2});
+    const formatted = formatLines(chalkInstance);
+    const converted = convertAnsi(formatted);
+
+    expect(converted).toBe(expected1);
+    expect(formatted).toMatch(aOpenForeground2 + aOpenBackground2 + '-');
+    expect(formatted).toMatch(bOpenForeground2 + bOpenBackground2 + '+');
+    expect(formatted).not.toMatch(chalkInstance.bgYellow(' ')); // noColor
+    expect(formatted).toMatch(chalkInstance.bgYellow('  '));
+  });
+
+  test('level 3', () => {
+    const chalkInstance = new chalk.Instance({level: 3});
+    const formatted = formatLines(chalkInstance);
+    const converted = convertAnsi(formatted);
+
+    expect(converted).toBe(expected1);
+    expect(formatted).toMatch(aOpenForeground3 + aOpenBackground3 + '-');
+    expect(formatted).toMatch(bOpenForeground3 + bOpenBackground3 + '+');
+    expect(formatted).not.toMatch(chalkInstance.bgYellow(' ')); // noColor
+    expect(formatted).toMatch(chalkInstance.bgYellow('  '));
+  });
+});
 
 describe('matcher error', () => {
   describe('toMatchInlineSnapshot', () => {
