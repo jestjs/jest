@@ -13,7 +13,7 @@ export type ShouldInstrumentOptions = Pick<
   Config.GlobalConfig,
   'collectCoverage' | 'collectCoverageFrom' | 'collectCoverageOnlyFrom'
 > & {
-  changedFiles: Set<Config.Path> | undefined;
+  changedFiles?: Set<Config.Path>;
 };
 
 export type Options = ShouldInstrumentOptions &

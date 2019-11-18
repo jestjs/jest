@@ -36,6 +36,8 @@
 
 - `[expect]` Display `expectedDiff` more carefully in `toBeCloseTo` ([#8389](https://github.com/facebook/jest/pull/8389))
 - `[expect]` Avoid incorrect difference for subset when `toMatchObject` fails ([#9005](https://github.com/facebook/jest/pull/9005))
+- `[expect]` Consider all RegExp flags for equality ([#9167](https://github.com/facebook/jest/pull/9167))
+- `[expect]` [**BREAKING**] Consider primitives different from wrappers instantiated with `new` ([#9167](https://github.com/facebook/jest/pull/9167))
 - `[jest-config]` Use half of the available cores when `watchAll` mode is enabled ([#9117](https://github.com/facebook/jest/pull/9117))
 - `[jest-console]` Add missing `console.group` calls to `NullConsole` ([#9024](https://github.com/facebook/jest/pull/9024))
 - `[jest-core]` Don't include unref'd timers in --detectOpenHandles results ([#8941](https://github.com/facebook/jest/pull/8941))
@@ -51,9 +53,11 @@
 - `[jest-snapshot]` Distinguish empty string from external snapshot not written ([#8880](https://github.com/facebook/jest/pull/8880))
 - `[jest-snapshot]` [**BREAKING**] Distinguish empty string from internal snapshot not written ([#8898](https://github.com/facebook/jest/pull/8898))
 - `[jest-snapshot]` [**BREAKING**] Remove `report` method and throw matcher errors ([#9049](https://github.com/facebook/jest/pull/9049))
+- `[jest-snapshot]` Omit irrelevant `received` properties when property matchers fail ([#9198](https://github.com/facebook/jest/pull/9198))
 - `[jest-transform]` Properly cache transformed files across tests ([#8890](https://github.com/facebook/jest/pull/8890))
-- `[jest-utils]` Allow querying process.domain ([#9136](https://github.com/facebook/jest/pull/9136))
 - `[jest-transform]` Don't fail the test suite when a generated source map is invalid ([#9058](https://github.com/facebook/jest/pull/9058))
+- `[jest-utils]` Allow querying process.domain ([#9136](https://github.com/facebook/jest/pull/9136))
+- `[pretty-format]` Correctly detect memoized elements ([#9196](https://github.com/facebook/jest/pull/9196))
 
 ### Chore & Maintenance
 
@@ -64,6 +68,7 @@
 - `[docs]` Add alias and optional boolean value to `coverage` CLI Reference ([#8996](https://github.com/facebook/jest/pull/8996))
 - `[docs]` Fix broken link pointing to legacy JS file in "Snapshot Testing".
 - `[docs]` Add `setupFilesAfterEnv` and `jest.setTimeout` example ([#8971](https://github.com/facebook/jest/pull/8971))
+- `[expect]` Test that `toStrictEqual` is equivalent to Node's `assert.deepStrictEqual` ([#9167](https://github.com/facebook/jest/pull/9167))
 - `[jest]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
 - `[jest-cli]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
 - `[jest-cli]` [**BREAKING**] Remove re-exports from `@jest/core` ([#8874](https://github.com/facebook/jest/pull/8874))

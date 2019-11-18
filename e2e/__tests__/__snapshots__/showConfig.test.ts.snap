@@ -85,7 +85,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "bail": 0,
     "changedFilesWithAncestor": false,
     "collectCoverage": false,
-    "collectCoverageFrom": null,
+    "collectCoverageFrom": [],
     "coverageDirectory": "<<REPLACED_ROOT_DIR>>/coverage",
     "coverageReporters": [
       "json",

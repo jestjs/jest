@@ -128,13 +128,11 @@ exports[`pass false toMatchInlineSnapshot with properties equals false with snap
 Snapshot name: \`with properties 1\`
 
 <g>- Expected properties  - 1</>
-<r>+ Received value       + 3</>
+<r>+ Received value       + 1</>
 
 <d>  Object {</>
 <g>-   "id": "abcdef",</>
 <r>+   "id": "abcdefg",</>
-<r>+   "text": "Increase code coverage",</>
-<r>+   "type": "ADD_ITEM",</>
 <d>  }</>
 `;
 
@@ -144,13 +142,11 @@ exports[`pass false toMatchInlineSnapshot with properties equals false without s
 Snapshot name: \`with properties 1\`
 
 <g>- Expected properties  - 1</>
-<r>+ Received value       + 3</>
+<r>+ Received value       + 1</>
 
 <d>  Object {</>
 <g>-   "id": "abcdef",</>
 <r>+   "id": "abcdefg",</>
-<r>+   "text": "Increase code coverage",</>
-<r>+   "type": "ADD_ITEM",</>
 <d>  }</>
 `;
 
@@ -211,13 +207,11 @@ exports[`pass false toMatchSnapshot with properties equals false isLineDiffable 
 Snapshot name: \`with properties 1\`
 
 <g>- Expected properties  - 1</>
-<r>+ Received value       + 3</>
+<r>+ Received value       + 1</>
 
 <d>  Object {</>
 <g>-   "id": "abcdef",</>
 <r>+   "id": "abcdefg",</>
-<r>+   "text": "Increase code coverage",</>
-<r>+   "type": "ADD_ITEM",</>
 <d>  }</>
 `;
 
@@ -244,6 +238,17 @@ Snapshot name: \`with snapshot 1\`
 
 Snapshot: <m>"inline snapshot"</>
 Received: <t>"received"</>
+`;
+
+exports[`printPropertiesAndReceived omit missing properties 1`] = `
+<g>- Expected properties  - 2</>
+<r>+ Received value       + 1</>
+
+<d>  Object {</>
+<g>-   "hash": Any<String>,</>
+<g>-   "path": Any<String>,</>
+<r>+   "path": "…",</>
+<d>  }</>
 `;
 
 exports[`printSnapshotAndReceived backtick single line expected and received 1`] = `

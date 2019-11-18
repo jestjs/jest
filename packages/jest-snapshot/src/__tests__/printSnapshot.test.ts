@@ -15,6 +15,7 @@ import {
   getReceivedColorForChalkInstance,
   getSnapshotColorForChalkInstance,
   noColor,
+  printPropertiesAndReceived,
   printSnapshotAndReceived,
 } from '../printSnapshot';
 import {serialize} from '../utils';
@@ -742,6 +743,29 @@ describe('pass true', () => {
       const {pass} = toMatchSnapshot.call(context, received);
       expect(pass).toBe(true);
     });
+  });
+});
+
+describe('printPropertiesAndReceived', () => {
+  test('omit missing properties', () => {
+    const received = {
+      b: {},
+      branchMap: {},
+      f: {},
+      fnMap: {},
+      // hash is missing
+      path: '…',
+      s: {},
+      statementMap: {},
+    };
+    const properties = {
+      hash: expect.any(String),
+      path: expect.any(String),
+    };
+
+    expect(
+      printPropertiesAndReceived(properties, received, false),
+    ).toMatchSnapshot();
   });
 });
 
