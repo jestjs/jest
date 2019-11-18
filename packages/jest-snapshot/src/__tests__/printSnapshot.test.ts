@@ -1180,36 +1180,6 @@ describe('printSnapshotAndReceived', () => {
     const $$typeof = Symbol.for('react.test.json');
 
     test('markup delete', () => {
-      const expected = {
-        $$typeof,
-        children: [
-          {
-            $$typeof,
-            children: [
-              {
-                $$typeof,
-                children: ['Ignore indentation for most serialized objects'],
-                type: 'h3',
-              },
-              {
-                $$typeof,
-                children: [
-                  'Call ',
-                  {
-                    $$typeof,
-                    children: ['diffLinesUnified2'],
-                    type: 'code',
-                  },
-                  ' to compare without indentation',
-                ],
-                type: 'p',
-              },
-            ],
-            type: 'div',
-          },
-        ],
-        type: 'div',
-      };
       const received = {
         $$typeof,
         children: [
@@ -1232,6 +1202,11 @@ describe('printSnapshotAndReceived', () => {
             type: 'p',
           },
         ],
+        type: 'div',
+      };
+      const expected = {
+        $$typeof,
+        children: [received],
         type: 'div',
       };
 
