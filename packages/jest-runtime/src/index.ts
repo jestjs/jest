@@ -123,7 +123,7 @@ class Runtime {
       changedFiles: undefined,
       collectCoverage: false,
       collectCoverageFrom: [],
-      collectCoverageOnlyFrom: null,
+      collectCoverageOnlyFrom: undefined,
     };
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
@@ -489,7 +489,7 @@ class Runtime {
       collectCoverage: this._coverageOptions.collectCoverage,
       collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
       collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
-      extraGlobals: this._config.extraGlobals || [],
+      extraGlobals: this._config.extraGlobals,
     };
   }
 
@@ -713,7 +713,6 @@ class Runtime {
     Object.defineProperty(localModule, 'require', {
       value: this._createRequireImplementation(localModule, options),
     });
-    const extraGlobals = this._config.extraGlobals || [];
     const transformedFile = this._scriptTransformer.transform(
       filename,
       this._getFullTransformationOptions(options),
@@ -750,7 +749,7 @@ class Runtime {
         filename,
         localModule.require as LocalModuleRequire,
       ), // jest object
-      ...extraGlobals.map(globalVariable => {
+      ...this._config.extraGlobals.map(globalVariable => {
         if (this._environment.global[globalVariable]) {
           return this._environment.global[globalVariable];
         }

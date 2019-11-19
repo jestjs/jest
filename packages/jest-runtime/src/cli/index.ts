@@ -68,10 +68,9 @@ export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
   const options = readConfig(argv, root);
   const globalConfig = options.globalConfig;
   // Always disable automocking in scripts.
-  const config = {
+  const config: Config.ProjectConfig = {
     ...options.projectConfig,
     automock: false,
-    unmockedModulePathPatterns: null,
   };
 
   // Break circular dependency
