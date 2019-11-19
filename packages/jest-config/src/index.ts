@@ -312,11 +312,11 @@ export async function readConfigs(
             return false;
           }
 
-        return true;
-      })
-      .map(async (root, projectIndex) =>
-        readConfig(argv, root, true, configPath, projectIndex),
-      ),
+          return true;
+        })
+        .map(async (root, projectIndex) =>
+          readConfig(argv, root, true, configPath, projectIndex),
+        ),
     );
 
     ensureNoDuplicateConfigs(parsedConfigs, projects);
