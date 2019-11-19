@@ -375,6 +375,90 @@ Snapshot: <m>"delete"</>
 Received: <t>"insert"</>
 `;
 
+exports[`printSnapshotAndReceived ignore indentation markup delete 1`] = `
+<m>- Snapshot  - 2</>
+<t>+ Received  + 0</>
+
+<d>  <div></>
+<m>-   <div></>
+<d>    <h3></>
+<d>      Ignore indentation for most serialized objects</>
+<d>    </h3></>
+<d>    <p></>
+<d>      Call<Y> </Y></>
+<d>      <code></>
+<d>        diffLinesUnified2</>
+<d>      </code></>
+<d>       to compare without indentation</>
+<d>    </p></>
+<m>-   </div></>
+<d>  </div></>
+`;
+
+exports[`printSnapshotAndReceived ignore indentation markup fall back 1`] = `
+<m>- Snapshot  - 5</>
+<t>+ Received  + 7</>
+
+<m>- <pre</>
+<m>-   className="language-js"</>
+<m>- ></>
+<m>-   for (key in foo) {</>
+<t>+ <div></>
+<t>+   <pre</>
+<t>+     className="language-js"</>
+<t>+   ></>
+<t>+     for (key in foo) {</>
+<d>    if (Object.prototype.hasOwnProperty.call(foo, key)) {</>
+<d>      doSomething(key);</>
+<d>    }</>
+<d>  }</>
+<m>- </pre></>
+<t>+   </pre></>
+<t>+ </div></>
+`;
+
+exports[`printSnapshotAndReceived ignore indentation markup insert 1`] = `
+<m>- Snapshot  - 0</>
+<t>+ Received  + 7</>
+
+<d>  <th></>
+<t>+   <span></>
+<d>      when</>
+<t>+   </span></>
+<t>+   <abbr</>
+<t>+     title="ascending from older to newer"</>
+<t>+   ></>
+<t>+     ↓</>
+<t>+   </abbr></>
+<d>  </th></>
+`;
+
+exports[`printSnapshotAndReceived ignore indentation object delete 1`] = `
+<m>- Snapshot  - 2</>
+<t>+ Received  + 0</>
+
+<d>  Object {</>
+<m>-   "payload": Object {</>
+<d>    "text": "Ignore indentation in snapshot",</>
+<d>    "time": "2019-11-11",</>
+<m>-   },</>
+<d>    "type": "CREATE_ITEM",</>
+<d>  }</>
+`;
+
+exports[`printSnapshotAndReceived ignore indentation object insert 1`] = `
+<m>- Snapshot  - 0</>
+<t>+ Received  + 2</>
+
+<d>  Object {</>
+<t>+   "payload": Object {</>
+<d>      "text": "Ignore indentation in snapshot",</>
+<d>      "time": "2019-11-11",</>
+<t>+   },</>
+<d>    "type": "CREATE_ITEM",</>
+<d>  }</>
+`;
+
 exports[`printSnapshotAndReceived isLineDiffable false asymmetric matcher 1`] = `
 Snapshot: <m>null</>
 Received: <t>Object {</>
