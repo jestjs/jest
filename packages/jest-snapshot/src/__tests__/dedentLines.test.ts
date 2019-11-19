@@ -125,31 +125,12 @@ describe('dedentLines non-null', () => {
 });
 
 describe('dedentLines null', () => {
-  test('object key multi-line', () => {
-    const val = {
-      'multi\nline\nstring': false,
-    };
-    const indented = formatLines2(val);
-
-    expect(dedentLines(indented)).toEqual(null);
-  });
-
-  test('object value multi-line', () => {
-    const val = {
-      key: 'multi\nline\nstring',
-    };
-    const indented = formatLines2(val);
-
-    expect(dedentLines(indented)).toEqual(null);
-  });
-
-  test('object key and value multi-line', () => {
-    const val = {
-      'multi\nline\nstring': '\nleading newline',
-    };
-    const indented = formatLines2(val);
-
-    expect(dedentLines(indented)).toEqual(null);
+  test.each([
+    ['object key multi-line', {'multi\nline\nkey': false}],
+    ['object value multi-line', {key: 'multi\nline\nvalue'}],
+    ['object key and value multi-line', {'multi\nline': '\nleading nl'}],
+  ])('%s', (name, val) => {
+    expect(dedentLines(formatLines2(val))).toEqual(null);
   });
 
   test('markup prop multi-line', () => {
