@@ -27,7 +27,7 @@ type ReadConfig = {
   projectConfig: Config.ProjectConfig;
 };
 
-export function readConfig(
+export async function readConfig(
   argv: Config.Argv,
   packageRootOrConfig: Config.Path | Config.InitialOptions,
   // Whether it needs to look into `--config` arg passed to CLI.
@@ -37,7 +37,7 @@ export function readConfig(
   skipArgvConfigOption?: boolean,
   parentConfigPath?: Config.Path | null,
   projectIndex: number = Infinity,
-): ReadConfig {
+): Promise<ReadConfig> {
   let rawOptions;
   let configPath = null;
 
@@ -72,11 +72,11 @@ export function readConfig(
     // or a path to directory containing `package.json` or `jest.config.js`
   } else if (!skipArgvConfigOption && typeof argv.config == 'string') {
     configPath = resolveConfigPath(argv.config, process.cwd());
-    rawOptions = readConfigFileAndSetRootDir(configPath);
+    rawOptions = await readConfigFileAndSetRootDir(configPath);
   } else {
     // Otherwise just try to find config in the current rootDir.
     configPath = resolveConfigPath(packageRootOrConfig, process.cwd());
-    rawOptions = readConfigFileAndSetRootDir(configPath);
+    rawOptions = await readConfigFileAndSetRootDir(configPath);
   }
 
   const {options, hasDeprecationWarnings} = normalize(
@@ -260,14 +260,14 @@ This usually means that your ${chalk.bold(
 //
 // If no projects are specified, process.cwd() will be used as the default
 // (and only) project.
-export function readConfigs(
+export async function readConfigs(
   argv: Config.Argv,
   projectPaths: Array<Config.Path>,
-): {
+): Promise<{
   globalConfig: Config.GlobalConfig;
   configs: Array<Config.ProjectConfig>;
   hasDeprecationWarnings: boolean;
-} {
+}> {
   let globalConfig;
   let hasDeprecationWarnings;
   let configs: Array<Config.ProjectConfig> = [];
@@ -275,7 +275,7 @@ export function readConfigs(
   let configPath: Config.Path | null | undefined;
 
   if (projectPaths.length === 1) {
-    const parsedConfig = readConfig(argv, projects[0]);
+    const parsedConfig = await readConfig(argv, projects[0]);
     configPath = parsedConfig.configPath;
 
     if (parsedConfig.globalConfig.projects) {
@@ -298,24 +298,26 @@ export function readConfigs(
     projects.length > 1 ||
     (projects.length && typeof projects[0] === 'object')
   ) {
-    const parsedConfigs = projects
-      .filter(root => {
-        // Ignore globbed files that cannot be `require`d.
-        if (
-          typeof root === 'string' &&
-          fs.existsSync(root) &&
-          !fs.lstatSync(root).isDirectory() &&
-          !root.endsWith('.js') &&
-          !root.endsWith('.json')
-        ) {
-          return false;
-        }
+    const parsedConfigs = await Promise.all(
+      projects
+        .filter(root => {
+          // Ignore globbed files that cannot be `require`d.
+          if (
+            typeof root === 'string' &&
+            fs.existsSync(root) &&
+            !fs.lstatSync(root).isDirectory() &&
+            !root.endsWith('.js') &&
+            !root.endsWith('.json')
+          ) {
+            return false;
+          }
 
         return true;
       })
-      .map((root, projectIndex) =>
+      .map(async (root, projectIndex) =>
         readConfig(argv, root, true, configPath, projectIndex),
-      );
+      ),
+    );
 
     ensureNoDuplicateConfigs(parsedConfigs, projects);
     configs = parsedConfigs.map(({projectConfig}) => projectConfig);

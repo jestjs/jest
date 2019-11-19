@@ -7,9 +7,10 @@
 
 import {readConfigs} from '../index';
 
-test('readConfigs() throws when called without project paths', () => {
-  expect(() => {
-    // @ts-ignore
-    readConfigs(null /* argv */, [] /* projectPaths */);
-  }).toThrowError('jest: No configuration found for any project.');
+test('readConfigs() throws when called without project paths', async () => {
+  // @ts-ignore
+  const asyncConfig = readConfigs(null /* argv */, [] /* projectPaths */);
+  await expect(asyncConfig).rejects.toThrowError(
+    'jest: No configuration found for any project.',
+  );
 });

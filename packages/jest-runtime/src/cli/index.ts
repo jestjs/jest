@@ -20,7 +20,7 @@ import {VERSION} from '../version';
 import {Context} from '../types';
 import * as args from './args';
 
-export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
+export async function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
   const realFs = require('fs');
   const fs = require('graceful-fs');
   fs.gracefulify(realFs);
@@ -65,7 +65,7 @@ export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
   }
   // TODO: Figure this out
   // @ts-ignore: this might not have the correct arguments
-  const options = readConfig(argv, root);
+  const options = await readConfig(argv, root);
   const globalConfig = options.globalConfig;
   // Always disable automocking in scripts.
   const config: Config.ProjectConfig = {

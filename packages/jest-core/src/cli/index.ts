@@ -49,7 +49,7 @@ export const runCLI = async (
   const outputStream =
     argv.json || argv.useStderr ? process.stderr : process.stdout;
 
-  const {globalConfig, configs, hasDeprecationWarnings} = readConfigs(
+  const {globalConfig, configs, hasDeprecationWarnings} = await readConfigs(
     argv,
     projects,
   );

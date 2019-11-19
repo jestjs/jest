@@ -15,7 +15,9 @@ import {PACKAGE_JSON} from './constants';
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
 // 2. For any other file, we just require it.
-export default (configPath: Config.Path): Config.InitialOptions => {
+export default async (
+  configPath: Config.Path,
+): Promise<Config.InitialOptions> => {
   const isJSON = configPath.endsWith('.json');
   let configObject;
 
