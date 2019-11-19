@@ -749,7 +749,7 @@ class Runtime {
         filename,
         localModule.require as LocalModuleRequire,
       ), // jest object
-      ...this._config.extraGlobals.map(globalVariable => {
+      ...(this._config.extraGlobals || []).map(globalVariable => {
         if (this._environment.global[globalVariable]) {
           return this._environment.global[globalVariable];
         }
