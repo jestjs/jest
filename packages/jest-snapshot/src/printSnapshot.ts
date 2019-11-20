@@ -6,12 +6,18 @@
  */
 
 import chalk = require('chalk');
+// Temporary hack because getObjectSubset has known limitations,
+// is not in the public interface of the expect package,
+// and the long-term goal is to use a non-serialization diff.
+import {getObjectSubset} from 'expect/build/utils';
 import {
   DIFF_DELETE,
   DIFF_EQUAL,
   DIFF_INSERT,
   Diff,
+  DiffOptionsColor,
   diffLinesUnified,
+  diffLinesUnified2,
   diffStringsRaw,
   diffStringsUnified,
 } from 'jest-diff';
@@ -26,8 +32,61 @@ import {
   matcherHint,
 } from 'jest-matcher-utils';
 import prettyFormat = require('pretty-format');
+
+import {
+  aBackground2,
+  aBackground3,
+  aForeground2,
+  aForeground3,
+  bBackground2,
+  bBackground3,
+  bForeground2,
+  bForeground3,
+} from './colors';
+import {dedentLines} from './dedentLines';
 import {MatchSnapshotConfig} from './types';
 import {deserializeString, minify, serialize} from './utils';
+
+type Chalk = chalk.Chalk;
+
+export const getSnapshotColorForChalkInstance = (
+  chalkInstance: Chalk,
+): DiffOptionsColor => {
+  const level = chalkInstance.level;
+
+  if (level === 3) {
+    return chalkInstance
+      .rgb(aForeground3[0], aForeground3[1], aForeground3[2])
+      .bgRgb(aBackground3[0], aBackground3[1], aBackground3[2]);
+  }
+
+  if (level === 2) {
+    return chalkInstance.ansi256(aForeground2).bgAnsi256(aBackground2);
+  }
+
+  return chalkInstance.magenta.bgYellowBright;
+};
+
+export const getReceivedColorForChalkInstance = (
+  chalkInstance: Chalk,
+): DiffOptionsColor => {
+  const level = chalkInstance.level;
+
+  if (level === 3) {
+    return chalkInstance
+      .rgb(bForeground3[0], bForeground3[1], bForeground3[2])
+      .bgRgb(bBackground3[0], bBackground3[1], bBackground3[2]);
+  }
+
+  if (level === 2) {
+    return chalkInstance.ansi256(bForeground2).bgAnsi256(bBackground2);
+  }
+
+  return chalkInstance.cyan.bgWhiteBright; // also known as teal
+};
+
+export const aSnapshotColor = getSnapshotColorForChalkInstance(chalk);
+export const bReceivedColor = getReceivedColorForChalkInstance(chalk);
 
 export const noColor = (string: string) => string;
 
@@ -46,6 +105,9 @@ export const matcherHintFromConfig = (
   isUpdatable: boolean,
 ): string => {
   const options: MatcherHintOptions = {isNot, promise};
+  if (isUpdatable) {
+    options.receivedColor = bReceivedColor;
+  }
 
   let expectedArgument = '';
 
@@ -60,7 +122,9 @@ export const matcherHintFromConfig = (
       options.secondArgumentColor = BOLD_WEIGHT;
     } else if (typeof inlineSnapshot === 'string') {
       options.secondArgument = SNAPSHOT_ARG;
-      if (!isUpdatable) {
+      if (isUpdatable) {
+        options.secondArgumentColor = aSnapshotColor;
+      } else {
         options.secondArgumentColor = noColor;
       }
     }
@@ -70,8 +134,8 @@ export const matcherHintFromConfig = (
       options.expectedColor = BOLD_WEIGHT;
     } else if (typeof inlineSnapshot === 'string') {
       expectedArgument = SNAPSHOT_ARG;
-      if (!isUpdatable) {
-        options.expectedColor = noColor;
+      if (isUpdatable) {
+        options.expectedColor = aSnapshotColor;
       }
     }
   }
@@ -145,7 +209,7 @@ export const printPropertiesAndReceived = (
   if (isLineDiffable(properties) && isLineDiffable(received)) {
     return diffLinesUnified(
       serialize(properties).split('\n'),
-      serialize(received).split('\n'),
+      serialize(getObjectSubset(received, properties)).split('\n'),
       {
         aAnnotation,
         aColor: EXPECTED_COLOR,
@@ -180,14 +244,14 @@ export const printSnapshotAndReceived = (
 ): string => {
   const aAnnotation = 'Snapshot';
   const bAnnotation = 'Received';
-  const aColor = EXPECTED_COLOR;
-  const bColor = RECEIVED_COLOR;
+  const aColor = aSnapshotColor;
+  const bColor = bReceivedColor;
   const options = {
     aAnnotation,
     aColor,
     bAnnotation,
     bColor,
-    changeLineTrailingSpaceColor: chalk.bgYellow,
+    changeLineTrailingSpaceColor: noColor,
     commonLineTrailingSpaceColor: chalk.bgYellow,
     emptyFirstOrLastLinePlaceholder: '↵', // U+21B5
     expand,
@@ -244,8 +308,22 @@ export const printSnapshotAndReceived = (
   }
 
   if (isLineDiffable(received)) {
-    // TODO future PR will replace with diffLinesUnified2 to ignore indentation
-    return diffLinesUnified(a.split('\n'), b.split('\n'), options);
+    const aLines2 = a.split('\n');
+    const bLines2 = b.split('\n');
+
+    const aLines0 = dedentLines(aLines2);
+
+    if (aLines0 !== null) {
+      // Compare lines without indentation.
+      const bLines0 = serialize(received, 0).split('\n');
+      return diffLinesUnified2(aLines2, bLines2, aLines0, bLines0, options);
+    }
+
+    // Fall back because:
+    // * props include a multiline string
+    // * text has more than one adjacent line
+    // * markup does not close
+    return diffLinesUnified(aLines2, bLines2, options);
   }
 
   const printLabel = getLabelPrinter(aAnnotation, bAnnotation);

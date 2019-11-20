@@ -14,7 +14,7 @@ export type ResolverConfig = {
   hasCoreModules: boolean;
   moduleDirectories: Array<string>;
   moduleNameMapper?: Array<ModuleNameMapperConfig> | null;
-  modulePaths: Array<Config.Path>;
+  modulePaths?: Array<Config.Path>;
   platforms?: Array<string>;
   resolver?: Config.Path | null;
   rootDir: Config.Path;
