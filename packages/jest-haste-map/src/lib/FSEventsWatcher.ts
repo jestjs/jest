@@ -14,6 +14,7 @@ import micromatch = require('micromatch');
 // @ts-ignore no types
 import walker from 'walker';
 
+// @ts-ignore: this is for CI which runs linux and might not have this
 let fsevents: typeof import('fsevents') | null = null;
 try {
   fsevents = require('fsevents');
