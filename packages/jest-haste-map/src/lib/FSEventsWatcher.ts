@@ -11,7 +11,6 @@ import * as path from 'path';
 import {EventEmitter} from 'events';
 import anymatch, {Matcher} from 'anymatch';
 import micromatch = require('micromatch');
-import {Watcher} from 'fsevents';
 // @ts-ignore no types
 import walker from 'walker';
 
@@ -44,7 +43,7 @@ class FSEventsWatcher extends EventEmitter {
   public readonly dot: boolean;
   public readonly hasIgnore: boolean;
   public readonly doIgnore: (path: string) => boolean;
-  public readonly watcher: Watcher;
+  public readonly fsEventsWatchStopper: () => Promise<void>;
   private _tracked: Set<string>;
 
   static isSupported() {
@@ -104,9 +103,11 @@ class FSEventsWatcher extends EventEmitter {
     this.doIgnore = opts.ignored ? anymatch(opts.ignored) : () => false;
 
     this.root = path.resolve(dir);
-    this.watcher = fsevents(this.root);
+    this.fsEventsWatchStopper = fsevents.watch(
+      this.root,
+      this.handleEvent.bind(this),
+    );
 
-    this.watcher.start().on('change', this.handleEvent.bind(this));
     this._tracked = new Set();
     FSEventsWatcher.recReaddir(
       this.root,
@@ -126,11 +127,12 @@ class FSEventsWatcher extends EventEmitter {
    * End watching.
    */
   close(callback?: () => void) {
-    this.watcher.stop();
-    this.removeAllListeners();
-    if (typeof callback === 'function') {
-      process.nextTick(callback.bind(null, null, true));
-    }
+    this.fsEventsWatchStopper().then(() => {
+      this.removeAllListeners();
+      if (typeof callback === 'function') {
+        process.nextTick(callback.bind(null, null, true));
+      }
+    });
   }
 
   private isFileIncluded(relativePath: string) {
