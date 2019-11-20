@@ -77,14 +77,15 @@ export default class CoverageReporter extends BaseReporter {
     aggregatedResults: AggregatedResult,
   ) {
     await this._addUntestedFiles(this._globalConfig, contexts);
-    const {map, sourceFinder} = this._sourceMapStore.transformCoverage(
-      this._coverageMap,
-    );
+    const map = await this._sourceMapStore.transformCoverage(this._coverageMap);
 
     try {
       const reportContext = istanbulReport.createContext({
+        // @ts-ignore
+        coverageMap: map,
         dir: this._globalConfig.coverageDirectory,
-        sourceFinder,
+        // @ts-ignore
+        sourceFinder: this._sourceMapStore.sourceFinder,
       });
       const coverageReporters = this._globalConfig.coverageReporters || [];
 
@@ -92,10 +93,13 @@ export default class CoverageReporter extends BaseReporter {
         coverageReporters.push('text-summary');
       }
 
-      const tree = istanbulReport.summarizers.pkg(map);
       coverageReporters.forEach(reporter => {
-        tree.visit(istanbulReports.create(reporter, {}), reportContext);
+        istanbulReports
+          .create(reporter, {maxCols: process.stdout.columns || Infinity})
+          // @ts-ignore
+          .execute(reportContext);
       });
+      // @ts-ignore
       aggregatedResults.coverageMap = map;
     } catch (e) {
       console.error(
@@ -107,6 +111,7 @@ export default class CoverageReporter extends BaseReporter {
       );
     }
 
+    // @ts-ignore
     this._checkThreshold(map);
   }
 

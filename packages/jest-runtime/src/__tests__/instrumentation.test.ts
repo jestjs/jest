@@ -23,7 +23,8 @@ it('instruments files', () => {
   const config = makeProjectConfig({
     cache: false,
     cacheDirectory: os.tmpdir(),
-    rootDir: '/',
+    cwd: __dirname,
+    rootDir: __dirname,
   });
   const instrumented = new ScriptTransformer(config).transform(
     FILE_PATH_TO_INSTRUMENT,
