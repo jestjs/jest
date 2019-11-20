@@ -80,6 +80,7 @@
 - `[jest-validate]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
 - `[jest-types]` Mark `InitialOptions` as `Partial` ([#8848](https://github.com/facebook/jest/pull/8848))
 - `[jest-config]` Refactor `normalize` to be more type safe ([#8848](https://github.com/facebook/jest/pull/8848))
+- `[website]` Update pictures of reports when matchers fail ([#9214](https://github.com/facebook/jest/pull/9214))
 
 ### Performance
 
