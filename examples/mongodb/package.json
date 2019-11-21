@@ -7,10 +7,10 @@
   "dependencies": {
     "mongodb": "^3.1.13",
     "mongodb-memory-server": "^3.0.0",
-    "jest-environment-node": "^24.0.0"
+    "jest-environment-node": "*"
   },
   "devDependencies": {
-    "jest": "^24.1.0"
+    "jest": "*"
   },
   "scripts": {
     "test": "jest"
