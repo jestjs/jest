@@ -3,23 +3,27 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
+import {Config} from '@jest/types';
 import shouldInstrument from '../shouldInstrument';
-import {makeProjectConfig} from '../../../../TestUtils';
+import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
+import {Options} from '../types';
 
 describe('shouldInstrument', () => {
   const defaultFilename = 'source_file.test.js';
-  const defaultOptions = {
-    collectCoverage: true,
+  const defaultOptions: Options = {
+    ...makeGlobalConfig({
+      collectCoverage: true,
+    }),
+    changedFiles: undefined,
   };
   const defaultConfig = makeProjectConfig({rootDir: '/'});
   describe('should return true', () => {
     const testShouldInstrument = (
       filename = defaultFilename,
-      options,
-      config,
+      options: Partial<Options>,
+      config: Partial<Config.ProjectConfig>,
     ) => {
       const result = shouldInstrument(
         filename,
@@ -110,8 +114,8 @@ describe('shouldInstrument', () => {
   describe('should return false', () => {
     const testShouldInstrument = (
       filename = defaultFilename,
-      options,
-      config,
+      options: Partial<Options>,
+      config: Partial<Config.ProjectConfig>,
     ) => {
       const result = shouldInstrument(
         filename,

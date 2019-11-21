@@ -118,7 +118,7 @@ describe('onRunComplete', () => {
 
     libSourceMaps.createSourceMapStore = jest.fn(() => ({
       transformCoverage(map) {
-        return {map};
+        return Promise.resolve(map);
       },
     }));
   });

@@ -122,7 +122,7 @@ const testSchedulerContext: TestSchedulerContext = {
   previousSuccess: true,
 };
 
-export default (async function runJest({
+export default async function runJest({
   contexts,
   globalConfig,
   outputStream,
@@ -268,4 +268,4 @@ export default (async function runJest({
     outputStream,
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
-});
+}
