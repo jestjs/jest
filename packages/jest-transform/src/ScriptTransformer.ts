@@ -366,7 +366,7 @@ export default class ScriptTransformer {
         const transformedSource = this.transformSource(
           filename,
           content,
-          instrument,
+          instrument
         );
 
         wrappedCode = wrap(transformedSource.code, ...extraGlobals);
