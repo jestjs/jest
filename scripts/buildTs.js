@@ -36,7 +36,6 @@ console.log(chalk.inverse('Building TypeScript definition files'));
 
 try {
   execa.sync('node', args, {stdio: 'inherit'});
-  console.log('Successfully built TypeScript definition files');
   console.log(
     chalk.inverse.green('Successfully built TypeScript definition files')
   );
