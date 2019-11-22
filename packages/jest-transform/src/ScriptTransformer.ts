@@ -367,6 +367,7 @@ export default class ScriptTransformer {
           filename,
           content,
           instrument,
+          'some extra arg',
         );
 
         wrappedCode = wrap(transformedSource.code, ...extraGlobals);
