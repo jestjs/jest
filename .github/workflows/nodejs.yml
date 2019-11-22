@@ -66,10 +66,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: install
-        run: |
-          node scripts/remove-postinstall
-          yarn --no-progress --frozen-lockfile --ignore-engines
-          node scripts/build
+        run: yarn install-no-ts-build
       - name: run tests
         run: yarn test-ci-partial
         env:
