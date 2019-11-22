@@ -28,11 +28,15 @@ jobs:
         with:
           node-version: 12.x
       - name: install
-        run: yarn
+        run: yarn install-no-ts-build
+      - name: build
+        run: node scripts/build.js
+      - name: run tsc
+        run: yarn build:ts
       - name: run eslint
-        run: |
-          yarn lint
-          yarn lint-es5-build
+        run: yarn lint
+      - name: run eslint on browser builds
+        run: yarn lint-es5-build
       - name: run prettier
         run: yarn lint:prettier:ci
       - name: check copyright headers
