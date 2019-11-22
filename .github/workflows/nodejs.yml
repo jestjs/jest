@@ -1,0 +1,39 @@
+name: Node CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  lint-and-typecheck:
+    name: Running TypeScript compiler & ESLint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Get yarn cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn cache dir)"
+      - uses: actions/cache@v1
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ubuntu-latest-node-12.x-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ubuntu-latest-node-12.x-yarn-
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: install
+        run: yarn
+      - name: run eslint
+        run: |
+          yarn lint
+          yarn lint-es5-build
+      - name: run prettier
+        run: yarn lint:prettier:ci
+      - name: check copyright headers
+        run: yarn check-copyright-headers
