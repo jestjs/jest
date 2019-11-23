@@ -142,13 +142,6 @@ export const getObjectSubset = (
   return object;
 };
 
-// NOTE: Should be removed after dropping node@6.x support,
-// and we should use (Object.entries)
-export const getObjectEntries: typeof Object.entries = (
-  object: any,
-): Array<[string, any]> =>
-  object == null ? [] : Object.keys(object).map(key => [key, object[key]]);
-
 const IteratorSymbol = Symbol.iterator;
 
 const hasIterator = (object: any) =>
@@ -267,8 +260,8 @@ export const iterableEquality = (
     return false;
   }
 
-  const aEntries = getObjectEntries(a);
-  const bEntries = getObjectEntries(b);
+  const aEntries = Object.entries(a);
+  const bEntries = Object.entries(b);
   if (!equals(aEntries, bEntries)) {
     return false;
   }

@@ -11,7 +11,6 @@
 const {stringify} = require('jest-matcher-utils');
 const {
   emptyObject,
-  getObjectEntries,
   getObjectSubset,
   getPath,
   hasOwnProperty,
@@ -273,18 +272,6 @@ describe('getObjectSubset', () => {
         nestedObj: {otherProp: {}},
       });
     });
-  });
-});
-
-describe('getObjectEntries', () => {
-  test('returns an empty array when called with null', () => {
-    expect(getObjectEntries(null)).toEqual([]);
-  });
-  test('returns an empty array when called with undefined', () => {
-    expect(getObjectEntries(undefined)).toEqual([]);
-  });
-  test('returns object entries', () => {
-    expect(getObjectEntries({a: 1, b: 2})).toEqual([['a', 1], ['b', 2]]);
   });
 });
 
