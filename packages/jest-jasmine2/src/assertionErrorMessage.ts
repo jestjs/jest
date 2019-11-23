@@ -11,7 +11,7 @@ import {
   printExpected,
   printReceived,
 } from 'jest-matcher-utils';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {AssertionErrorWithStack} from './types';
 
 const assertOperatorsMap: Record<string, string> = {

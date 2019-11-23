@@ -12,7 +12,7 @@ const path = require('path');
 
 const chalk = require('chalk');
 const execa = require('execa');
-const {getPackages, adjustToTerminalWidth, OK} = require('./buildUtils');
+const {getPackages} = require('./buildUtils');
 
 const packages = getPackages();
 
@@ -33,13 +33,13 @@ const args = [
 ];
 
 console.log(chalk.inverse('Building TypeScript definition files'));
-process.stdout.write(adjustToTerminalWidth('Building\n'));
 
 try {
   execa.sync('node', args, {stdio: 'inherit'});
-  process.stdout.write(`${OK}\n`);
+  console.log(
+    chalk.inverse.green('Successfully built TypeScript definition files')
+  );
 } catch (e) {
-  process.stdout.write('\n');
   console.error(
     chalk.inverse.red('Unable to build TypeScript definition files')
   );

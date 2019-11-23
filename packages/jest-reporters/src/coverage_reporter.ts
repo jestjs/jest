@@ -11,7 +11,7 @@ import {AggregatedResult, TestResult} from '@jest/test-result';
 import {clearLine, isInteractive} from 'jest-util';
 import istanbulReport = require('istanbul-lib-report');
 import istanbulReports = require('istanbul-reports');
-import chalk from 'chalk';
+import chalk = require('chalk');
 import istanbulCoverage = require('istanbul-lib-coverage');
 import libSourceMaps = require('istanbul-lib-source-maps');
 import Worker from 'jest-worker';
@@ -77,14 +77,15 @@ export default class CoverageReporter extends BaseReporter {
     aggregatedResults: AggregatedResult,
   ) {
     await this._addUntestedFiles(this._globalConfig, contexts);
-    const {map, sourceFinder} = this._sourceMapStore.transformCoverage(
-      this._coverageMap,
-    );
+    const map = await this._sourceMapStore.transformCoverage(this._coverageMap);
 
     try {
       const reportContext = istanbulReport.createContext({
+        // @ts-ignore
+        coverageMap: map,
         dir: this._globalConfig.coverageDirectory,
-        sourceFinder,
+        // @ts-ignore
+        sourceFinder: this._sourceMapStore.sourceFinder,
       });
       const coverageReporters = this._globalConfig.coverageReporters || [];
 
@@ -92,10 +93,13 @@ export default class CoverageReporter extends BaseReporter {
         coverageReporters.push('text-summary');
       }
 
-      const tree = istanbulReport.summarizers.pkg(map);
       coverageReporters.forEach(reporter => {
-        tree.visit(istanbulReports.create(reporter, {}), reportContext);
+        istanbulReports
+          .create(reporter, {maxCols: process.stdout.columns || Infinity})
+          // @ts-ignore
+          .execute(reportContext);
       });
+      // @ts-ignore
       aggregatedResults.coverageMap = map;
     } catch (e) {
       console.error(
@@ -107,7 +111,8 @@ export default class CoverageReporter extends BaseReporter {
       );
     }
 
-    this._checkThreshold(this._globalConfig, map);
+    // @ts-ignore
+    this._checkThreshold(map);
   }
 
   private async _addUntestedFiles(
@@ -209,11 +214,10 @@ export default class CoverageReporter extends BaseReporter {
     }
   }
 
-  private _checkThreshold(
-    globalConfig: Config.GlobalConfig,
-    map: istanbulCoverage.CoverageMap,
-  ) {
-    if (globalConfig.coverageThreshold) {
+  private _checkThreshold(map: istanbulCoverage.CoverageMap) {
+    const {coverageThreshold} = this._globalConfig;
+
+    if (coverageThreshold) {
       function check(
         name: string,
         thresholds: Config.CoverageThresholdValue,
@@ -250,7 +254,7 @@ export default class CoverageReporter extends BaseReporter {
         PATH: 'path',
       };
       const coveredFiles = map.files();
-      const thresholdGroups = Object.keys(globalConfig.coverageThreshold);
+      const thresholdGroups = Object.keys(coverageThreshold);
       const groupTypeByThresholdGroup: {[index: string]: string} = {};
       const filesByGlob: {[index: string]: Array<string>} = {};
 
@@ -342,7 +346,7 @@ export default class CoverageReporter extends BaseReporter {
               errors = errors.concat(
                 check(
                   thresholdGroup,
-                  globalConfig.coverageThreshold[thresholdGroup],
+                  coverageThreshold[thresholdGroup],
                   coverage,
                 ),
               );
@@ -357,7 +361,7 @@ export default class CoverageReporter extends BaseReporter {
               errors = errors.concat(
                 check(
                   thresholdGroup,
-                  globalConfig.coverageThreshold[thresholdGroup],
+                  coverageThreshold[thresholdGroup],
                   coverage,
                 ),
               );
@@ -370,7 +374,7 @@ export default class CoverageReporter extends BaseReporter {
                 errors = errors.concat(
                   check(
                     fileMatchingGlob,
-                    globalConfig.coverageThreshold[thresholdGroup],
+                    coverageThreshold[thresholdGroup],
                     map.fileCoverageFor(fileMatchingGlob).toSummary(),
                   ),
                 );

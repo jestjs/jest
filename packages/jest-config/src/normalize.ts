@@ -11,7 +11,7 @@ import {sync as glob} from 'glob';
 import {Config} from '@jest/types';
 import {ValidationError, validate} from 'jest-validate';
 import {clearLine, replacePathSepForGlob} from 'jest-util';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import micromatch = require('micromatch');
 import {sync as realpath} from 'realpath-native';
 import Resolver = require('jest-resolve');
@@ -48,7 +48,7 @@ const createConfigError = (message: string) =>
 
 // TS 3.5 forces us to split these into 2
 const mergeModuleNameMapperWithPreset = (
-  options: Config.InitialOptions,
+  options: Config.InitialOptionsWithRootDir,
   preset: Config.InitialOptions,
 ) => {
   if (options['moduleNameMapper'] && preset['moduleNameMapper']) {
@@ -61,7 +61,7 @@ const mergeModuleNameMapperWithPreset = (
 };
 
 const mergeTransformWithPreset = (
-  options: Config.InitialOptions,
+  options: Config.InitialOptionsWithRootDir,
   preset: Config.InitialOptions,
 ) => {
   if (options['transform'] && preset['transform']) {
@@ -73,10 +73,24 @@ const mergeTransformWithPreset = (
   }
 };
 
-const setupPreset = (
+const mergeGlobalsWithPreset = (
   options: Config.InitialOptions,
+  preset: Config.InitialOptions,
+) => {
+  if (options['globals'] && preset['globals']) {
+    for (const p in preset['globals']) {
+      options['globals'][p] = {
+        ...preset['globals'][p],
+        ...options['globals'][p],
+      };
+    }
+  }
+};
+
+const setupPreset = (
+  options: Config.InitialOptionsWithRootDir,
   optionsPreset: string,
-): Config.InitialOptions => {
+): Config.InitialOptionsWithRootDir => {
   let preset: Config.InitialOptions;
   const presetPath = replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
@@ -149,11 +163,12 @@ const setupPreset = (
   }
   mergeModuleNameMapperWithPreset(options, preset);
   mergeTransformWithPreset(options, preset);
+  mergeGlobalsWithPreset(options, preset);
 
   return {...preset, ...options};
 };
 
-const setupBabelJest = (options: Config.InitialOptions) => {
+const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
   const transform = options.transform;
   let babelJest;
   if (transform) {
@@ -195,7 +210,7 @@ const setupBabelJest = (options: Config.InitialOptions) => {
 };
 
 const normalizeCollectCoverageOnlyFrom = (
-  options: Config.InitialOptions &
+  options: Config.InitialOptionsWithRootDir &
     Required<Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>>,
   key: keyof Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>,
 ) => {
@@ -248,7 +263,7 @@ const normalizeCollectCoverageFrom = (
 };
 
 const normalizeUnmockedModulePathPatterns = (
-  options: Config.InitialOptions,
+  options: Config.InitialOptionsWithRootDir,
   key: keyof Pick<
     Config.InitialOptions,
     | 'coveragePathIgnorePatterns'
@@ -270,8 +285,8 @@ const normalizeUnmockedModulePathPatterns = (
   );
 
 const normalizePreprocessor = (
-  options: Config.InitialOptions,
-): Config.InitialOptions => {
+  options: Config.InitialOptionsWithRootDir,
+): Config.InitialOptionsWithRootDir => {
   if (options.scriptPreprocessor && options.transform) {
     throw createConfigError(
       `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold(
@@ -308,10 +323,10 @@ const normalizePreprocessor = (
 };
 
 const normalizeMissingOptions = (
-  options: Config.InitialOptions,
+  options: Config.InitialOptionsWithRootDir,
   configPath: Config.Path | null | undefined,
   projectIndex: number,
-): Config.InitialOptions => {
+): Config.InitialOptionsWithRootDir => {
   if (!options.name) {
     options.name = createHash('md5')
       .update(options.rootDir)
@@ -330,9 +345,9 @@ const normalizeMissingOptions = (
 
 const normalizeRootDir = (
   options: Config.InitialOptions,
-): Config.InitialOptions => {
+): Config.InitialOptionsWithRootDir => {
   // Assert that there *is* a rootDir
-  if (!options.hasOwnProperty('rootDir')) {
+  if (!options.rootDir) {
     throw createConfigError(
       `  Configuration option ${chalk.bold('rootDir')} must be specified.`,
     );
@@ -346,10 +361,13 @@ const normalizeRootDir = (
     // ignored
   }
 
-  return options;
+  return {
+    ...options,
+    rootDir: options.rootDir,
+  };
 };
 
-const normalizeReporters = (options: Config.InitialOptions) => {
+const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
   const reporters = options.reporters;
   if (!reporters || !Array.isArray(reporters)) {
     return options;
@@ -375,7 +393,7 @@ const normalizeReporters = (options: Config.InitialOptions) => {
         basedir: options.rootDir,
       });
       if (!reporter) {
-        throw new Error(
+        throw new Resolver.ModuleNotFoundError(
           `Could not resolve a module for a custom reporter.\n` +
             `  Module name: ${reporterPath}`,
         );
@@ -426,7 +444,7 @@ const showTestPathPatternError = (testPathPattern: string) => {
 };
 
 export default function normalize(
-  options: Config.InitialOptions,
+  initialOptions: Config.InitialOptions,
   argv: Config.Argv,
   configPath?: Config.Path | null,
   projectIndex: number = Infinity,
@@ -434,7 +452,7 @@ export default function normalize(
   hasDeprecationWarnings: boolean;
   options: AllOptions;
 } {
-  const {hasDeprecationWarnings} = validate(options, {
+  const {hasDeprecationWarnings} = validate(initialOptions, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
@@ -450,10 +468,10 @@ export default function normalize(
     ],
   });
 
-  options = normalizePreprocessor(
+  let options = normalizePreprocessor(
     normalizeReporters(
       normalizeMissingOptions(
-        normalizeRootDir(setFromArgv(options, argv)),
+        normalizeRootDir(setFromArgv(initialOptions, argv)),
         configPath,
         projectIndex,
       ),
@@ -655,7 +673,7 @@ export default function normalize(
                 key,
                 rootDir: options.rootDir,
               }),
-              ...(Array.isArray(transformElement) ? [transformElement[1]] : []),
+              Array.isArray(transformElement) ? transformElement[1] : {},
             ];
           });
         break;
@@ -689,19 +707,14 @@ export default function normalize(
               ? _replaceRootDirTags(options.rootDir, project)
               : project,
           )
-          .reduce(
-            (projects, project) => {
-              // Project can be specified as globs. If a glob matches any files,
-              // We expand it to these paths. If not, we keep the original path
-              // for the future resolution.
-              const globMatches =
-                typeof project === 'string' ? glob(project) : [];
-              return projects.concat(
-                globMatches.length ? globMatches : project,
-              );
-            },
-            [] as Array<string>,
-          );
+          .reduce((projects, project) => {
+            // Project can be specified as globs. If a glob matches any files,
+            // We expand it to these paths. If not, we keep the original path
+            // for the future resolution.
+            const globMatches =
+              typeof project === 'string' ? glob(project) : [];
+            return projects.concat(globMatches.length ? globMatches : project);
+          }, [] as Array<string>);
         break;
       case 'moduleDirectories':
       case 'testMatch':
@@ -934,6 +947,29 @@ export default function normalize(
     newOptions.onlyChanged = newOptions.watch;
   }
 
+  if (!newOptions.onlyChanged) {
+    newOptions.onlyChanged = false;
+  }
+
+  if (!newOptions.lastCommit) {
+    newOptions.lastCommit = false;
+  }
+
+  if (!newOptions.onlyFailures) {
+    newOptions.onlyFailures = false;
+  }
+
+  if (!newOptions.watchAll) {
+    newOptions.watchAll = false;
+  }
+
+  // as any since it can happen. We really need to fix the types here
+  if (
+    newOptions.moduleNameMapper === (DEFAULT_CONFIG.moduleNameMapper as any)
+  ) {
+    newOptions.moduleNameMapper = [];
+  }
+
   newOptions.updateSnapshot =
     argv.ci && !argv.updateSnapshot
       ? 'none'
@@ -997,6 +1033,28 @@ export default function normalize(
     }
 
     newOptions.collectCoverageFrom = collectCoverageFrom;
+  } else if (!newOptions.collectCoverageFrom) {
+    newOptions.collectCoverageFrom = [];
+  }
+
+  if (!newOptions.findRelatedTests) {
+    newOptions.findRelatedTests = false;
+  }
+
+  if (!newOptions.projects) {
+    newOptions.projects = [];
+  }
+
+  if (!newOptions.extraGlobals) {
+    newOptions.extraGlobals = [];
+  }
+
+  if (!newOptions.forceExit) {
+    newOptions.forceExit = false;
+  }
+
+  if (!newOptions.logHeapUsage) {
+    newOptions.logHeapUsage = false;
   }
 
   return {

@@ -247,9 +247,18 @@ const createSpy = fn => {
     test(`works with Map`, () => {
       const fn = jest.fn();
 
-      const m1 = new Map([[1, 2], [2, 1]]);
-      const m2 = new Map([[1, 2], [2, 1]]);
-      const m3 = new Map([['a', 'b'], ['b', 'a']]);
+      const m1 = new Map([
+        [1, 2],
+        [2, 1],
+      ]);
+      const m2 = new Map([
+        [1, 2],
+        [2, 1],
+      ]);
+      const m3 = new Map([
+        ['a', 'b'],
+        ['b', 'a'],
+      ]);
 
       fn(m1);
 
@@ -794,9 +803,18 @@ const createSpy = fn => {
     });
 
     test(`works with Map`, () => {
-      const m1 = new Map([[1, 2], [2, 1]]);
-      const m2 = new Map([[1, 2], [2, 1]]);
-      const m3 = new Map([['a', 'b'], ['b', 'a']]);
+      const m1 = new Map([
+        [1, 2],
+        [2, 1],
+      ]);
+      const m2 = new Map([
+        [1, 2],
+        [2, 1],
+      ]);
+      const m3 = new Map([
+        ['a', 'b'],
+        ['b', 'a'],
+      ]);
 
       const fn = jest.fn(() => m1);
       fn();

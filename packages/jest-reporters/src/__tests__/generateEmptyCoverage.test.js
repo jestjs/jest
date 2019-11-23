@@ -22,7 +22,7 @@ jest.mock('@jest/transform', () => ({
 describe('generateEmptyCoverage', () => {
   const coverageMap = istanbulCoverage.createCoverageMap({});
   const sourceMapStore = libSourceMaps.createSourceMapStore();
-  const rootDir = '/tmp';
+  const rootDir = __dirname;
   const filepath = path.join(rootDir, './sum.js');
 
   it('generates an empty coverage object for a file without running it', () => {
@@ -49,6 +49,7 @@ describe('generateEmptyCoverage', () => {
       makeGlobalConfig(),
       makeProjectConfig({
         cacheDirectory: os.tmpdir(),
+        cwd: rootDir,
         rootDir,
         transform: [['^.+\\.js$', require.resolve('babel-jest')]],
       }),
@@ -67,7 +68,6 @@ describe('generateEmptyCoverage', () => {
     }
 
     expect(coverage.data).toMatchSnapshot({
-      hash: expect.any(String),
       path: expect.any(String),
     });
   });
@@ -93,6 +93,7 @@ describe('generateEmptyCoverage', () => {
       makeGlobalConfig(),
       makeProjectConfig({
         cacheDirectory: os.tmpdir(),
+        cwd: rootDir,
         rootDir,
         transform: [['^.+\\.js$', require.resolve('babel-jest')]],
       }),
@@ -121,6 +122,7 @@ describe('generateEmptyCoverage', () => {
       makeGlobalConfig(),
       makeProjectConfig({
         cacheDirectory: os.tmpdir(),
+        cwd: rootDir,
         rootDir,
         transform: [['^.+\\.js$', require.resolve('babel-jest')]],
       }),

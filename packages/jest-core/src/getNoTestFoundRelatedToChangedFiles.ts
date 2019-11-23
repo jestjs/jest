@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {Config} from '@jest/types';
 import {isInteractive} from 'jest-util';
 

@@ -12,6 +12,7 @@ import pnpResolver from 'jest-pnp-resolver';
 import {Config} from '@jest/types';
 import isBuiltinModule from './isBuiltinModule';
 import nodeModulesPaths from './nodeModulesPaths';
+import ModuleNotFoundError from './ModuleNotFoundError';
 
 type ResolverOptions = {
   basedir: Config.Path;
@@ -84,11 +85,9 @@ function resolveSync(
     return target;
   }
 
-  const err: Error & {code?: string} = new Error(
+  throw new ModuleNotFoundError(
     "Cannot find module '" + target + "' from '" + basedir + "'",
   );
-  err.code = 'MODULE_NOT_FOUND';
-  throw err;
 
   /*
    * contextual helper functions

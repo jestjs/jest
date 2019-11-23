@@ -9,7 +9,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {Config} from '@jest/types';
 import {AssertionResult, SerializableError} from '@jest/test-result';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import micromatch = require('micromatch');
 import slash = require('slash');
 import {codeFrameColumns} from '@babel/code-frame';
@@ -296,13 +296,10 @@ export const formatResultsErrors = (
     result: AssertionResult;
   }>;
 
-  const failedResults: FailedResults = testResults.reduce(
-    (errors, result) => {
-      result.failureMessages.forEach(content => errors.push({content, result}));
-      return errors;
-    },
-    [] as FailedResults,
-  );
+  const failedResults: FailedResults = testResults.reduce((errors, result) => {
+    result.failureMessages.forEach(content => errors.push({content, result}));
+    return errors;
+  }, [] as FailedResults);
 
   if (!failedResults.length) {
     return null;

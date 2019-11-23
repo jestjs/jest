@@ -11,7 +11,7 @@ import * as fs from 'fs';
 import {Writable} from 'stream';
 import execa = require('execa');
 import {FormattedTestResults} from '@jest/test-result';
-import stripAnsi from 'strip-ansi';
+import stripAnsi = require('strip-ansi');
 import {normalizeIcons} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
@@ -136,28 +136,79 @@ export const json = function(
   }
 };
 
-// Runs `jest` until a given output is achieved, then kills it with `SIGTERM`
-export const until = async function(
+type StdErrAndOutString = {stderr: string; stdout: string};
+type ConditionFunction = (arg: StdErrAndOutString) => boolean;
+
+// Runs `jest` continously (watch mode) and allows the caller to wait for
+// conditions on stdout and stderr and to end the process.
+export const runContinuous = function(
   dir: string,
-  args: Array<string> | undefined,
-  text: string,
+  args?: Array<string>,
   options: RunJestOptions = {},
 ) {
   const jestPromise = spawnJest(dir, args, {timeout: 30000, ...options}, true);
 
-  jestPromise.stderr!.pipe(
+  let stderr = '';
+  let stdout = '';
+  const pending = new Set<(arg: StdErrAndOutString) => void>();
+
+  const dispatch = () => {
+    for (const fn of pending) {
+      fn({stderr, stdout});
+    }
+  };
+
+  jestPromise.stdout!.pipe(
     new Writable({
       write(chunk, _encoding, callback) {
-        const output = chunk.toString('utf8');
-
-        if (output.includes(text)) {
-          jestPromise.kill();
-        }
-
+        stdout += chunk.toString('utf8');
+        dispatch();
         callback();
       },
     }),
   );
 
-  return normalizeStdoutAndStderr(await jestPromise, options);
+  jestPromise.stderr!.pipe(
+    new Writable({
+      write(chunk, _encoding, callback) {
+        stderr += chunk.toString('utf8');
+        dispatch();
+        callback();
+      },
+    }),
+  );
+
+  return {
+    async end() {
+      jestPromise.kill();
+
+      const result = await jestPromise;
+
+      // Not sure why we have to assign here... The ones on `result` are empty strings
+      result.stdout = stdout;
+      result.stderr = stderr;
+
+      return normalizeStdoutAndStderr(result, options);
+    },
+
+    getCurrentOutput(): StdErrAndOutString {
+      return {stderr, stdout};
+    },
+
+    getInput() {
+      return jestPromise.stdin;
+    },
+
+    async waitUntil(fn: ConditionFunction) {
+      await new Promise(resolve => {
+        const check = (state: StdErrAndOutString) => {
+          if (fn(state)) {
+            pending.delete(check);
+            resolve();
+          }
+        };
+        pending.add(check);
+      });
+    },
+  };
 };

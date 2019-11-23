@@ -11,7 +11,7 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "callsites": "^3.0.0",
-    "graceful-fs": "^4.1.15",
+    "graceful-fs": "^4.2.3",
     "source-map": "^0.6.0"
   },
   "devDependencies": {

@@ -6,18 +6,22 @@
  */
 
 import prettyFormat = require('pretty-format');
-import chalk from 'chalk';
+import chalk = require('chalk');
 import getType = require('jest-get-type');
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import {diffLinesRaw, diffLinesUnified, diffLinesUnified2} from './diffLines';
-import {diffStringsRaw, diffStringsUnified, splitLines0} from './printDiffs';
+import {diffStringsRaw, diffStringsUnified} from './printDiffs';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
-import {DiffOptions as ImportDiffOptions} from './types';
+import {
+  DiffOptions as ImportDiffOptions,
+  DiffOptionsColor as ImportDiffOptionsColor,
+} from './types';
 
 export type DiffOptions = ImportDiffOptions;
+export type DiffOptionsColor = ImportDiffOptionsColor;
 
 export {diffLinesRaw, diffLinesUnified, diffLinesUnified2};
-export {diffStringsRaw, diffStringsUnified, splitLines0};
+export {diffStringsRaw, diffStringsUnified};
 export {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff};
 
 const {
@@ -87,7 +91,7 @@ function diff(a: any, b: any, options?: DiffOptions): string | null {
 
   switch (aType) {
     case 'string':
-      return diffLinesUnified(splitLines0(a), splitLines0(b), options);
+      return diffLinesUnified(a.split('\n'), b.split('\n'), options);
     case 'boolean':
     case 'number':
       return comparePrimitive(a, b, options);
@@ -109,7 +113,7 @@ function comparePrimitive(
   const bFormat = prettyFormat(b, FORMAT_OPTIONS);
   return aFormat === bFormat
     ? NO_DIFF_MESSAGE
-    : diffLinesUnified(splitLines0(aFormat), splitLines0(bFormat), options);
+    : diffLinesUnified(aFormat.split('\n'), bFormat.split('\n'), options);
 }
 
 function sortMap(map: Map<unknown, unknown>) {

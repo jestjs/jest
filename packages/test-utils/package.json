@@ -6,11 +6,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "ansi-regex": "^4.1.0",
+    "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.1.0"
-  },
-  "devDependencies": {
-    "@types/ansi-regex": "^4.0.0",
-    "@types/ansi-styles": "^3.2.1"
   }
 }

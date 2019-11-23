@@ -6,7 +6,7 @@
  */
 
 import ansiRegex = require('ansi-regex');
-import * as style from 'ansi-styles';
+import style = require('ansi-styles');
 
 export const alignedAnsiStyleSerializer = {
   serialize(val: string): string {

@@ -150,15 +150,15 @@ FAIL __tests__/failure.test.js
     Expected: false
     Received: true
 
-       9 |   'array table fails on one row: expected %s == %s',
-      10 |   (left, right) => {
-    > 11 |     expect(left).toBe(right);
-         |                  ^
-      12 |   }
-      13 | );
+      10 |   [true, false],
+      11 | ])('array table fails on one row: expected %s == %s', (left, right) => {
+    > 12 |   expect(left).toBe(right);
+         |                ^
+      13 | });
       14 |
+      15 | it.each([
 
-      at toBe (__tests__/failure.test.js:11:18)
+      at toBe (__tests__/failure.test.js:12:16)
 
   ● array table fails on all rows expected 1 == 2
 
@@ -167,15 +167,15 @@ FAIL __tests__/failure.test.js
     Expected: 2
     Received: 1
 
-      16 |   'array table fails on all rows expected %s == %s',
-      17 |   (left, right) => {
-    > 18 |     expect(left).toBe(right);
-         |                  ^
-      19 |   }
-      20 | );
+      17 |   [3, 4],
+      18 | ])('array table fails on all rows expected %s == %s', (left, right) => {
+    > 19 |   expect(left).toBe(right);
+         |                ^
+      20 | });
       21 |
+      22 | it.each\`
 
-      at toBe (__tests__/failure.test.js:18:18)
+      at toBe (__tests__/failure.test.js:19:16)
 
   ● array table fails on all rows expected 3 == 4
 
@@ -184,15 +184,15 @@ FAIL __tests__/failure.test.js
     Expected: 4
     Received: 3
 
-      16 |   'array table fails on all rows expected %s == %s',
-      17 |   (left, right) => {
-    > 18 |     expect(left).toBe(right);
-         |                  ^
-      19 |   }
-      20 | );
+      17 |   [3, 4],
+      18 | ])('array table fails on all rows expected %s == %s', (left, right) => {
+    > 19 |   expect(left).toBe(right);
+         |                ^
+      20 | });
       21 |
+      22 | it.each\`
 
-      at toBe (__tests__/failure.test.js:18:18)
+      at toBe (__tests__/failure.test.js:19:16)
 
   ● template table fails on one row expected: true == false
 
@@ -337,15 +337,15 @@ FAIL __tests__/failure.test.js
     Expected: "b"
     Received: "a"
 
-      66 |   (left, right) => {
-      67 |     it('fails', () => {
-    > 68 |       expect(left).toBe(right);
+      69 |   (left, right) => {
+      70 |     it('fails', () => {
+    > 71 |       expect(left).toBe(right);
          |                    ^
-      69 |     });
-      70 |   }
-      71 | );
+      72 |     });
+      73 |   }
+      74 | );
 
-      at Object.toBe (__tests__/failure.test.js:68:20)
+      at Object.toBe (__tests__/failure.test.js:71:20)
 
   ● array table describe fails on all rows expected c == d › fails
 
@@ -354,13 +354,13 @@ FAIL __tests__/failure.test.js
     Expected: "d"
     Received: "c"
 
-      66 |   (left, right) => {
-      67 |     it('fails', () => {
-    > 68 |       expect(left).toBe(right);
+      69 |   (left, right) => {
+      70 |     it('fails', () => {
+    > 71 |       expect(left).toBe(right);
          |                    ^
-      69 |     });
-      70 |   }
-      71 | );
+      72 |     });
+      73 |   }
+      74 | );
 
-      at Object.toBe (__tests__/failure.test.js:68:20)
+      at Object.toBe (__tests__/failure.test.js:71:20)
 `;

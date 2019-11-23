@@ -105,6 +105,7 @@ module.exports = {
         ],
       },
     ],
+    'import/no-unresolved': [2, {ignore: ['fsevents']}],
     // This has to be disabled until all type and module imports are combined
     // https://github.com/benmosher/eslint-plugin-import/issues/645
     'import/order': 0,

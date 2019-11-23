@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import slash = require('slash');
 import {ConsoleBuffer} from './types';
 

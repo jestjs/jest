@@ -7,7 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import chalk from 'chalk';
+import chalk = require('chalk');
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const replacePathSepForRegex = (string: string) => {

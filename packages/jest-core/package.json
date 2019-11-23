@@ -11,9 +11,9 @@
     "@jest/transform": "^24.9.0",
     "@jest/types": "^24.9.0",
     "ansi-escapes": "^4.2.1",
-    "chalk": "^2.0.1",
+    "chalk": "^3.0.0",
     "exit": "^0.1.2",
-    "graceful-fs": "^4.1.15",
+    "graceful-fs": "^4.2.3",
     "jest-changed-files": "^24.9.0",
     "jest-config": "^24.9.0",
     "jest-haste-map": "^24.9.0",
@@ -32,7 +32,7 @@
     "realpath-native": "^1.1.0",
     "rimraf": "^3.0.0",
     "slash": "^3.0.0",
-    "strip-ansi": "^5.0.0"
+    "strip-ansi": "^6.0.0"
   },
   "devDependencies": {
     "@jest/test-sequencer": "^24.9.0",

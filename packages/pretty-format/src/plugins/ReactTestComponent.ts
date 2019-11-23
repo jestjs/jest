@@ -24,7 +24,10 @@ import {
   printProps,
 } from './lib/markup';
 
-const testSymbol = Symbol.for('react.test.json');
+const testSymbol =
+  typeof Symbol === 'function' && Symbol.for
+    ? Symbol.for('react.test.json')
+    : 0xea71357;
 
 const getPropKeys = (object: ReactTestObject) => {
   const {props} = object;

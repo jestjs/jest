@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import ansiEscapes = require('ansi-escapes');
-import chalk from 'chalk';
+import chalk = require('chalk');
 import exit = require('exit');
 import slash = require('slash');
 import HasteMap = require('jest-haste-map');
@@ -345,9 +345,10 @@ export default function watch(
     }
 
     // Abort test run
-    const pluginKeys = getSortedUsageRows(watchPlugins, globalConfig).map(
-      usage => Number(usage.key).toString(16),
-    );
+    const pluginKeys = getSortedUsageRows(
+      watchPlugins,
+      globalConfig,
+    ).map(usage => Number(usage.key).toString(16));
     if (
       isRunning &&
       testWatcher &&

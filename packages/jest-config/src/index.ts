@@ -8,7 +8,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {Config} from '@jest/types';
-import chalk from 'chalk';
+import chalk = require('chalk');
+import {sync as realpath} from 'realpath-native';
 import {isJSONString, replaceRootDirInPath} from './utils';
 import normalize from './normalize';
 import resolveConfigPath from './resolveConfigPath';
@@ -278,26 +279,24 @@ export function readConfigs(
     const parsedConfig = readConfig(argv, projects[0]);
     configPath = parsedConfig.configPath;
 
-    if (parsedConfig.globalConfig.projects) {
-      // If this was a single project, and its config has `projects`
-      // settings, use that value instead.
-      projects = parsedConfig.globalConfig.projects;
-    }
-
     hasDeprecationWarnings = parsedConfig.hasDeprecationWarnings;
     globalConfig = parsedConfig.globalConfig;
     configs = [parsedConfig.projectConfig];
     if (globalConfig.projects && globalConfig.projects.length) {
       // Even though we had one project in CLI args, there might be more
       // projects defined in the config.
+      // In other words, if this was a single project,
+      // and its config has `projects` settings, use that value instead.
       projects = globalConfig.projects;
     }
   }
 
-  if (
-    projects.length > 1 ||
-    (projects.length && typeof projects[0] === 'object')
-  ) {
+  if (projects.length > 0) {
+    const projectIsCwd =
+      process.platform === 'win32'
+        ? projects[0] === realpath(process.cwd())
+        : projects[0] === process.cwd();
+
     const parsedConfigs = projects
       .filter(root => {
         // Ignore globbed files that cannot be `require`d.
@@ -313,9 +312,19 @@ export function readConfigs(
 
         return true;
       })
-      .map((root, projectIndex) =>
-        readConfig(argv, root, true, configPath, projectIndex),
-      );
+      .map((root, projectIndex) => {
+        const projectIsTheOnlyProject =
+          projectIndex === 0 && projects.length === 1;
+        const skipArgvConfigOption = !(projectIsTheOnlyProject && projectIsCwd);
+
+        return readConfig(
+          argv,
+          root,
+          skipArgvConfigOption,
+          configPath,
+          projectIndex,
+        );
+      });
 
     ensureNoDuplicateConfigs(parsedConfigs, projects);
     configs = parsedConfigs.map(({projectConfig}) => projectConfig);

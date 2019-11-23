@@ -16,7 +16,7 @@ export type Mapper = (item: string) => Array<string> | null;
 export type WorkerMessage = {
   computeDependencies: boolean;
   computeSha1: boolean;
-  dependencyExtractor?: string;
+  dependencyExtractor?: string | null;
   rootDir: string;
   filePath: string;
   hasteImplModulePath?: string;

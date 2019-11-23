@@ -5,19 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-it.each([[true, true], [true, false]])(
-  'array table fails on one row: expected %s == %s',
-  (left, right) => {
-    expect(left).toBe(right);
-  }
-);
+it.each([
+  [true, true],
+  [true, false],
+])('array table fails on one row: expected %s == %s', (left, right) => {
+  expect(left).toBe(right);
+});
 
-it.each([[1, 2], [3, 4]])(
-  'array table fails on all rows expected %s == %s',
-  (left, right) => {
-    expect(left).toBe(right);
-  }
-);
+it.each([
+  [1, 2],
+  [3, 4],
+])('array table fails on all rows expected %s == %s', (left, right) => {
+  expect(left).toBe(right);
+});
 
 it.each`
   left    | right
@@ -61,7 +61,10 @@ describe.each`
   }
 );
 
-describe.each([['a', 'b'], ['c', 'd']])(
+describe.each([
+  ['a', 'b'],
+  ['c', 'd'],
+])(
   'array table describe fails on all rows expected %s == %s',
   (left, right) => {
     it('fails', () => {

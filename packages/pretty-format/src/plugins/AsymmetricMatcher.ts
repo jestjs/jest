@@ -9,7 +9,10 @@ import {Config, NewPlugin, Printer, Refs} from '../types';
 
 import {printListItems, printObjectProperties} from '../collections';
 
-const asymmetricMatcher = Symbol.for('jest.asymmetricMatcher');
+const asymmetricMatcher =
+  typeof Symbol === 'function' && Symbol.for
+    ? Symbol.for('jest.asymmetricMatcher')
+    : 0x1357a5;
 const SPACE = ' ';
 
 export const serialize = (

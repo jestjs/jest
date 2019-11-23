@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as style from 'ansi-styles';
+import style = require('ansi-styles');
 import * as PrettyFormat from './types';
 
 import {
@@ -27,7 +27,6 @@ const toString = Object.prototype.toString;
 const toISOString = Date.prototype.toISOString;
 const errorToString = Error.prototype.toString;
 const regExpToString = RegExp.prototype.toString;
-const symbolToString = Symbol.prototype.toString;
 
 /**
  * Explicitly comparing typeof constructor to function avoids undefined as name
@@ -84,7 +83,7 @@ function printFunction(val: Function, printFunctionName: boolean): string {
 }
 
 function printSymbol(val: symbol): string {
-  return symbolToString.call(val).replace(SYMBOL_REGEXP, 'Symbol($1)');
+  return String(val).replace(SYMBOL_REGEXP, 'Symbol($1)');
 }
 
 function printError(val: Error): string {

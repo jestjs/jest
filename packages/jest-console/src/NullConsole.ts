@@ -18,4 +18,7 @@ export default class NullConsole extends CustomConsole {
   timeEnd() {}
   trace() {}
   warn() {}
+  group() {}
+  groupCollapsed() {}
+  groupEnd() {}
 }

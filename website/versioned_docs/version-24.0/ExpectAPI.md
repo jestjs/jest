@@ -130,7 +130,7 @@ These helper functions and properties can be found on `this` inside a custom mat
 
 #### `this.isNot`
 
-A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to flip your assertion and display a clear and correct matcher hint (see example code).
+A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to display a clear and correct matcher hint (see example code).
 
 #### `this.promise`
 
@@ -170,7 +170,7 @@ expect.extend({
       ? () =>
           this.utils.matcherHint('toBe', undefined, undefined, options) +
           '\n\n' +
-          `Expected: ${this.utils.printExpected(expected)}\n` +
+          `Expected: not ${this.utils.printExpected(expected)}\n` +
           `Received: ${this.utils.printReceived(received)}`
       : () => {
           const diffString = diff(expected, received, {

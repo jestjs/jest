@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
+import chalk = require('chalk');
 import ansiEscapes = require('ansi-escapes');
 import {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import {KEYS} from 'jest-watcher';

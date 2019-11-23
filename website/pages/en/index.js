@@ -420,8 +420,8 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      Tests fail, when they do Jest provides rich context why,
-                      here’s some examples:
+                      Tests fail—when they do, Jest provides rich context why.
+                      Here are some examples:
                     </translate>
                   ),
                   image: '/img/content/matchers/different-types.png',

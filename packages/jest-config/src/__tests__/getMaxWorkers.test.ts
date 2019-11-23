@@ -33,6 +33,7 @@ describe('getMaxWorkers', () => {
   it('Returns based on the number of cpus', () => {
     expect(getMaxWorkers({})).toBe(3);
     expect(getMaxWorkers({watch: true})).toBe(2);
+    expect(getMaxWorkers({watchAll: true})).toBe(2);
   });
 
   describe('% based', () => {

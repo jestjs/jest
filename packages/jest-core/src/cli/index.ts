@@ -13,7 +13,7 @@ import {readConfigs} from 'jest-config';
 import Runtime = require('jest-runtime');
 import {ChangedFilesPromise} from 'jest-changed-files';
 import HasteMap = require('jest-haste-map');
-import chalk from 'chalk';
+import chalk = require('chalk');
 import rimraf = require('rimraf');
 import exit = require('exit');
 import {Filter} from '../types';

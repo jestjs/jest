@@ -296,12 +296,21 @@ export default class ScriptTransformer {
     }
 
     if (!transformed.map) {
-      //Could be a potential freeze here.
-      //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
-      const inlineSourceMap = sourcemapFromSource(transformed.code);
+      try {
+        //Could be a potential freeze here.
+        //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
+        const inlineSourceMap = sourcemapFromSource(transformed.code);
 
-      if (inlineSourceMap) {
-        transformed.map = inlineSourceMap.toJSON();
+        if (inlineSourceMap) {
+          transformed.map = inlineSourceMap.toJSON();
+        }
+      } catch (e) {
+        const transformPath = this._getTransformPath(filename);
+        console.warn(
+          `jest-transform: The source map produced for the file ${filename} ` +
+            `by ${transformPath} was invalid. Proceeding without source ` +
+            'mapping for that file.',
+        );
       }
     }
 
@@ -338,6 +347,7 @@ export default class ScriptTransformer {
   ): TransformResult {
     const isInternalModule = !!(options && options.isInternalModule);
     const isCoreModule = !!(options && options.isCoreModule);
+    const extraGlobals = (options && options.extraGlobals) || [];
     const content = stripShebang(
       fileSource || fs.readFileSync(filename, 'utf8'),
     );
@@ -352,8 +362,6 @@ export default class ScriptTransformer {
       (this.shouldTransform(filename) || instrument);
 
     try {
-      const extraGlobals = (options && options.extraGlobals) || [];
-
       if (willTransform) {
         const transformedSource = this.transformSource(
           filename,

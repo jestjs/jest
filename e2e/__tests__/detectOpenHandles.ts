@@ -7,7 +7,7 @@
 
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {onNodeVersions} from '@jest/test-utils';
-import runJest, {until} from '../runJest';
+import runJest, {runContinuous} from '../runJest';
 
 try {
   require('async_hooks');
@@ -27,33 +27,34 @@ function getTextAfterTest(stderr: string) {
 }
 
 it('prints message about flag on slow tests', async () => {
-  const {stderr} = await until(
-    'detect-open-handles',
-    ['outside'],
-    'Jest did not exit one second after the test run has completed.',
+  const run = runContinuous('detect-open-handles', ['outside']);
+  await run.waitUntil(({stderr}) =>
+    stderr.includes(
+      'Jest did not exit one second after the test run has completed.',
+    ),
   );
+  const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
   expect(wrap(textAfterTest)).toMatchSnapshot();
 });
 
 it('prints message about flag on forceExit', async () => {
-  const {stderr} = await until(
-    'detect-open-handles',
-    ['outside', '--forceExit'],
-    'Force exiting Jest',
-  );
+  const run = runContinuous('detect-open-handles', ['outside', '--forceExit']);
+  await run.waitUntil(({stderr}) => stderr.includes('Force exiting Jest'));
+  const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
   expect(wrap(textAfterTest)).toMatchSnapshot();
 });
 
 it('prints out info about open handlers', async () => {
-  const {stderr} = await until(
-    'detect-open-handles',
-    ['outside', '--detectOpenHandles'],
-    'Jest has detected',
-  );
+  const run = runContinuous('detect-open-handles', [
+    'outside',
+    '--detectOpenHandles',
+  ]);
+  await run.waitUntil(({stderr}) => stderr.includes('Jest has detected'));
+  const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
   expect(wrap(textAfterTest)).toMatchSnapshot();
@@ -84,11 +85,12 @@ onNodeVersions('>=11', () => {
 });
 
 it('prints out info about open handlers from inside tests', async () => {
-  const {stderr} = await until(
-    'detect-open-handles',
-    ['inside', '--detectOpenHandles'],
-    'Jest has detected',
-  );
+  const run = runContinuous('detect-open-handles', [
+    'inside',
+    '--detectOpenHandles',
+  ]);
+  await run.waitUntil(({stderr}) => stderr.includes('Jest has detected'));
+  const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 
   expect(wrap(textAfterTest)).toMatchSnapshot();

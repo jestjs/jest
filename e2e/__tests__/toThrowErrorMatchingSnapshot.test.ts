@@ -67,14 +67,16 @@ test('accepts custom snapshot name', () => {
 test('cannot be used with .not', () => {
   const filename = 'cannot-be-used-with-not.test.js';
   const template = makeTemplate(`test('cannot be used with .not', () => {
-       expect('').not.toThrowErrorMatchingSnapshot();
+       expect(() => { throw new Error('apple'); })
+         .not
+         .toThrowErrorMatchingSnapshot();
     });
     `);
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
     const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('.not cannot be used with snapshot matchers');
+    expect(stderr).toMatch('Snapshot matchers cannot be used with not');
     expect(exitCode).toBe(1);
   }
 });

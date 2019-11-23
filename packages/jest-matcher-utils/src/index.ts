@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
+import chalk = require('chalk');
 import diffDefault, {
   DIFF_DELETE,
   DIFF_EQUAL,
@@ -324,6 +324,9 @@ export const printDiffOrStringify = (
       return diffStringsUnified(expected, received, {
         aAnnotation: expectedLabel,
         bAnnotation: receivedLabel,
+        changeLineTrailingSpaceColor: chalk.bgYellow,
+        commonLineTrailingSpaceColor: chalk.bgYellow,
+        emptyFirstOrLastLinePlaceholder: '↵', // U+21B5
         expand,
         includeChangeCounts: true,
       });
@@ -415,8 +418,11 @@ export const getLabelPrinter = (...strings: Array<string>): PrintLabel => {
 export const matcherErrorMessage = (
   hint: string, // assertion returned from call to matcherHint
   generic: string, // condition which correct value must fulfill
-  specific: string, // incorrect value returned from call to printWithType
-) => `${hint}\n\n${chalk.bold('Matcher error')}: ${generic}\n\n${specific}`;
+  specific?: string, // incorrect value returned from call to printWithType
+) =>
+  `${hint}\n\n${chalk.bold('Matcher error')}: ${generic}${
+    typeof specific === 'string' ? '\n\n' + specific : ''
+  }`;
 
 // Display assertion for the report when a test fails.
 // New format: rejects/resolves, not, and matcher name have black color

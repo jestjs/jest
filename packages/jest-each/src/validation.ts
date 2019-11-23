@@ -6,7 +6,7 @@
  *
  */
 
-import chalk from 'chalk';
+import chalk = require('chalk');
 import pretty = require('pretty-format');
 import {Global} from '@jest/types';
 

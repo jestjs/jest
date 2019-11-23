@@ -9,7 +9,7 @@ import {Config} from '@jest/types';
 import {AggregatedResult, TestResult} from '@jest/test-result';
 import {clearLine, isInteractive} from 'jest-util';
 import {getConsoleOutput} from '@jest/console';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {ReporterOnStartOptions, Test} from './types';
 import BaseReporter from './base_reporter';
 import Status from './Status';

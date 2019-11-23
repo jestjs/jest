@@ -7,7 +7,7 @@
 
 import {cpus} from 'os';
 import * as path from 'path';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {sync as realpath} from 'realpath-native';
 import yargs = require('yargs');
 import {Config} from '@jest/types';
@@ -68,10 +68,9 @@ export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
   const options = readConfig(argv, root);
   const globalConfig = options.globalConfig;
   // Always disable automocking in scripts.
-  const config = {
+  const config: Config.ProjectConfig = {
     ...options.projectConfig,
     automock: false,
-    unmockedModulePathPatterns: null,
   };
 
   // Break circular dependency

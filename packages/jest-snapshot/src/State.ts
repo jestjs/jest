@@ -10,6 +10,7 @@ import {Config} from '@jest/types';
 
 import {getStackTraceLines, getTopFrame} from 'jest-message-util';
 import {
+  addExtraLineBreaks,
   getSnapshotData,
   keyToTestName,
   removeExtraLineBreaks,
@@ -198,7 +199,7 @@ export default class SnapshotState {
       this._uncheckedKeys.delete(key);
     }
 
-    const receivedSerialized = serialize(received);
+    const receivedSerialized = addExtraLineBreaks(serialize(received));
     const expected = isInline ? inlineSnapshot : this._snapshotData[key];
     const pass = expected === receivedSerialized;
     const hasSnapshot = expected !== undefined;

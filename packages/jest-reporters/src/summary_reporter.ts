@@ -7,7 +7,7 @@
 
 import {Config} from '@jest/types';
 import {AggregatedResult, SnapshotSummary} from '@jest/test-result';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {testPathPatternToRegExp} from 'jest-util';
 import {Context, ReporterOnStartOptions} from './types';
 import BaseReporter from './base_reporter';

@@ -12,7 +12,7 @@
   "dependencies": {
     "@babel/types": "^7.0.0",
     "@jest/types": "^24.9.0",
-    "chalk": "^2.0.1",
+    "chalk": "^3.0.0",
     "expect": "^24.9.0",
     "jest-diff": "^24.9.0",
     "jest-get-type": "^24.9.0",

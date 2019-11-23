@@ -3,7 +3,7 @@
 exports[`code coverage for transform instrumented code 1`] = `
 Object {
   "covered.js": Object {
-    "_coverageSchema": "43e27e138ebf9cfc5966b082cf9a028302ed4184",
+    "_coverageSchema": "1a1c01bbd47fc00a2c39e90264f33305004495a9",
     "b": Object {},
     "branchMap": Object {},
     "f": Object {

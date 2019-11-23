@@ -24,7 +24,10 @@ An array containing the call arguments of all calls that have been made to this 
 For example: A mock function `f` that has been called twice, with the arguments `f('arg1', 'arg2')`, and then with the arguments `f('arg3', 'arg4')`, would have a `mock.calls` array that looks like this:
 
 ```js
-[['arg1', 'arg2'], ['arg3', 'arg4']];
+[
+  ['arg1', 'arg2'],
+  ['arg3', 'arg4'],
+];
 ```
 
 ### `mockFn.mock.results`

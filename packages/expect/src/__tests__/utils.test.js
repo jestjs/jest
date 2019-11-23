@@ -148,12 +148,16 @@ describe('hasOwnProperty', () => {
   });
 });
 
-describe('getObjectSubset()', () => {
+describe('getObjectSubset', () => {
   [
     [{a: 'b', c: 'd'}, {a: 'd'}, {a: 'b'}],
     [{a: [1, 2], b: 'b'}, {a: [3, 4]}, {a: [1, 2]}],
     [[{a: 'b', c: 'd'}], [{a: 'z'}], [{a: 'b'}]],
-    [[1, 2], [1, 2, 3], [1, 2]],
+    [
+      [1, 2],
+      [1, 2, 3],
+      [1, 2],
+    ],
     [{a: [1]}, {a: [1, 2]}, {a: [1]}],
     [new Date('2015-11-30'), new Date('2016-12-30'), new Date('2015-11-30')],
   ].forEach(([object, subset, expected]) => {
@@ -164,6 +168,43 @@ describe('getObjectSubset()', () => {
         expect(getObjectSubset(object, subset)).toEqual(expected);
       },
     );
+  });
+
+  describe('returns the object instance if the subset has no extra properties', () => {
+    test('Date', () => {
+      const object = new Date('2015-11-30');
+      const subset = new Date('2016-12-30');
+
+      expect(getObjectSubset(object, subset)).toBe(object);
+    });
+  });
+
+  describe('returns the subset instance if its property values are equal', () => {
+    test('Object', () => {
+      const object = {key0: 'zero', key1: 'one', key2: 'two'};
+      const subset = {key0: 'zero', key2: 'two'};
+
+      expect(getObjectSubset(object, subset)).toBe(subset);
+    });
+
+    describe('Uint8Array', () => {
+      const equalObject = {'0': 0, '1': 0, '2': 0};
+      const typedArray = new Uint8Array(3);
+
+      test('expected', () => {
+        const object = equalObject;
+        const subset = typedArray;
+
+        expect(getObjectSubset(object, subset)).toBe(subset);
+      });
+
+      test('received', () => {
+        const object = typedArray;
+        const subset = equalObject;
+
+        expect(getObjectSubset(object, subset)).toBe(subset);
+      });
+    });
   });
 
   describe('calculating subsets of objects with circular references', () => {

@@ -9,7 +9,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {sync as mkdirp} from 'mkdirp';
 import naturalCompare = require('natural-compare');
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {Config} from '@jest/types';
 import prettyFormat = require('pretty-format');
 import {getSerializers} from './plugins';
@@ -136,20 +136,29 @@ export const removeExtraLineBreaks = (string: string): string =>
     ? string.slice(1, -1)
     : string;
 
-export const serialize = (val: unknown): string =>
-  addExtraLineBreaks(stringify(val));
+const escapeRegex = true;
+const printFunctionName = false;
 
-export const stringify = (val: unknown): string =>
+export const serialize = (val: unknown, indent = 2): string =>
   normalizeNewlines(
     prettyFormat(val, {
-      escapeRegex: true,
+      escapeRegex,
+      indent,
       plugins: getSerializers(),
-      printFunctionName: false,
+      printFunctionName,
     }),
   );
 
+export const minify = (val: unknown): string =>
+  prettyFormat(val, {
+    escapeRegex,
+    min: true,
+    plugins: getSerializers(),
+    printFunctionName,
+  });
+
 // Remove double quote marks and unescape double quotes and backslashes.
-export const unstringifyString = (stringified: string): string =>
+export const deserializeString = (stringified: string): string =>
   stringified.slice(1, -1).replace(/\\("|\\)/g, '$1');
 
 export const escapeBacktickString = (str: string): string =>

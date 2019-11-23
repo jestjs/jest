@@ -22,7 +22,13 @@ const objs = [
   {minusInf: -Infinity, nan: NaN, plusInf: +Infinity},
   {date: new Date(1234567890), re: /foo/gi},
   // @ts-ignore - testing NaN
-  {map: new Map([[NaN, 4], [undefined, 'm']]), set: new Set([undefined, NaN])},
+  {
+    map: new Map([
+      [NaN, 4],
+      [undefined, 'm'],
+    ]),
+    set: new Set([undefined, NaN]),
+  },
   {buf: Buffer.from([0, 255, 127])},
 ];
 

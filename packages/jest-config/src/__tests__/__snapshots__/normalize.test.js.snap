@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`preprocessorIgnorePatterns\` are used 1`] = `
-"<yellow><bold><bold>●<bold> Deprecation Warning</>:</>
+"<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
 <yellow></>
 <yellow>  Option <bold>\\"preprocessorIgnorePatterns\\"</> was replaced by <bold>\\"transformIgnorePatterns\\"</>, which support multiple preprocessors.</>
 <yellow></>
@@ -28,7 +28,7 @@ exports[`displayName generates a default color for the runner jest-runner-tslint
 exports[`displayName generates a default color for the runner undefined 1`] = `"white"`;
 
 exports[`displayName should throw an error when displayName is is an empty object 1`] = `
-"<red><bold><bold>● <bold>Validation Error</>:</>
+"<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
 <red>  Option \\"<bold>displayName</>\\" must be of type:</>
 <red></>
@@ -44,7 +44,7 @@ exports[`displayName should throw an error when displayName is is an empty objec
 `;
 
 exports[`displayName should throw an error when displayName is missing color 1`] = `
-"<red><bold><bold>● <bold>Validation Error</>:</>
+"<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
 <red>  Option \\"<bold>displayName</>\\" must be of type:</>
 <red></>
@@ -60,7 +60,7 @@ exports[`displayName should throw an error when displayName is missing color 1`]
 `;
 
 exports[`displayName should throw an error when displayName is missing name 1`] = `
-"<red><bold><bold>● <bold>Validation Error</>:</>
+"<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
 <red>  Option \\"<bold>displayName</>\\" must be of type:</>
 <red></>
@@ -76,7 +76,7 @@ exports[`displayName should throw an error when displayName is missing name 1`] 
 `;
 
 exports[`displayName should throw an error when displayName is using invalid values 1`] = `
-"<red><bold><bold>● <bold>Validation Error</>:</>
+"<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
 <red>  Option \\"<bold>displayName</>\\" must be of type:</>
 <red></>
@@ -92,7 +92,7 @@ exports[`displayName should throw an error when displayName is using invalid val
 `;
 
 exports[`preset throws when module was found but no "jest-preset.js" or "jest-preset.json" files 1`] = `
-"<red><bold><bold>● <bold>Validation Error</>:</>
+"<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
 <red>  Module <bold>exist-but-no-jest-preset</> should have \\"jest-preset.js\\" or \\"jest-preset.json\\" file at the root.</>
 <red></>
@@ -102,7 +102,7 @@ exports[`preset throws when module was found but no "jest-preset.js" or "jest-pr
 `;
 
 exports[`preset throws when preset not found 1`] = `
-"<red><bold><bold>● <bold>Validation Error</>:</>
+"<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
 <red>  Preset <bold>doesnt-exist</> not found.</>
 <red></>
@@ -112,7 +112,7 @@ exports[`preset throws when preset not found 1`] = `
 `;
 
 exports[`rootDir throws if the options is missing a rootDir property 1`] = `
-"<red><bold><bold>● <bold>Validation Error</>:</>
+"<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
 <red>  Configuration option <bold>rootDir</> must be specified.</>
 <red></>
@@ -122,7 +122,7 @@ exports[`rootDir throws if the options is missing a rootDir property 1`] = `
 `;
 
 exports[`runner throw error when a runner is not found 1`] = `
-"<red><bold><bold>● <bold>Validation Error</>:</>
+"<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
 <red>  Jest Runner <bold>missing-runner</> cannot be found. Make sure the <bold>runner</> configuration option points to an existing node module.</>
 <red></>
@@ -132,7 +132,7 @@ exports[`runner throw error when a runner is not found 1`] = `
 `;
 
 exports[`setupTestFrameworkScriptFile logs a deprecation warning when \`setupTestFrameworkScriptFile\` is used 1`] = `
-"<yellow><bold><bold>●<bold> Deprecation Warning</>:</>
+"<yellow><bold><bold>●</><bold> Deprecation Warning</>:</>
 <yellow></>
 <yellow>  Option <bold>\\"setupTestFrameworkScriptFile\\"</> was replaced by configuration <bold>\\"setupFilesAfterEnv\\"</>, which supports multiple paths.</>
 <yellow></>
@@ -144,7 +144,7 @@ exports[`setupTestFrameworkScriptFile logs a deprecation warning when \`setupTes
 `;
 
 exports[`setupTestFrameworkScriptFile logs an error when \`setupTestFrameworkScriptFile\` and \`setupFilesAfterEnv\` are used 1`] = `
-"<red><bold><bold>● <bold>Validation Error</>:</>
+"<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
 <red>  Options: <bold>setupTestFrameworkScriptFile</> and <bold>setupFilesAfterEnv</> cannot be used together.</>
 <red>  Please change your configuration to only use <bold>setupFilesAfterEnv</>.</>
@@ -155,7 +155,7 @@ exports[`setupTestFrameworkScriptFile logs an error when \`setupTestFrameworkScr
 `;
 
 exports[`testEnvironment throws on invalid environment names 1`] = `
-"<red><bold><bold>● <bold>Validation Error</>:</>
+"<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
 <red>  Test environment <bold>phantom</> cannot be found. Make sure the <bold>testEnvironment</> configuration option points to an existing node module.</>
 <red></>
@@ -165,7 +165,7 @@ exports[`testEnvironment throws on invalid environment names 1`] = `
 `;
 
 exports[`testMatch throws if testRegex and testMatch are both specified 1`] = `
-"<red><bold><bold>● <bold>Validation Error</>:</>
+"<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
 <red>  Configuration options <bold>testMatch</> and <bold>testRegex</> cannot be used together.</>
 <red></>
@@ -179,7 +179,7 @@ exports[`testPathPattern <regexForTestFiles> ignores invalid regular expressions
 exports[`testPathPattern --testPathPattern ignores invalid regular expressions and logs a warning 1`] = `"<red>  Invalid testPattern a( supplied. Running all tests instead.</>"`;
 
 exports[`testTimeout should throw an error if timeout is a negative number 1`] = `
-"<red><bold><bold>● <bold>Validation Error</>:</>
+"<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
 <red>  Option \\"<bold>testTimeout</>\\" must be a natural number.</>
 <red></>
@@ -189,7 +189,7 @@ exports[`testTimeout should throw an error if timeout is a negative number 1`] =
 `;
 
 exports[`watchPlugins throw error when a watch plugin is not found 1`] = `
-"<red><bold><bold>● <bold>Validation Error</>:</>
+"<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
 <red>  Watch plugin <bold>missing-plugin</> cannot be found. Make sure the <bold>watchPlugins</> configuration option points to an existing node module.</>
 <red></>
