@@ -14,7 +14,10 @@ export default function getProjectsRunningMessage(
   if (projectNames.length === 1) {
     return `Will run one project: ${projectNames[0]}`;
   }
-  const projectsList = projectNames.map(getListElement).join('\n');
+  const projectsList = projectNames
+    .map(getListElement)
+    .sort()
+    .join('\n');
   return `Will run ${projectNames.length} projects:\n` + projectsList;
 }
 
