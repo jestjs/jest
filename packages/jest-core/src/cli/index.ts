@@ -19,7 +19,6 @@ import exit = require('exit');
 import type {Filter} from '../types';
 import createContext from '../lib/create_context';
 import getChangedFilesPromise from '../getChangedFilesPromise';
-import getConfigsOfProjectsToRun from '../getConfigsOfProjectsToRun';
 import {formatHandleErrors} from '../collectHandles';
 import handleDeprecationWarnings from '../lib/handle_deprecation_warnings';
 import runJest from '../runJest';
@@ -27,6 +26,8 @@ import TestWatcher from '../TestWatcher';
 import watch from '../watch';
 import pluralize from '../pluralize';
 import logDebugMessages from '../lib/log_debug_messages';
+import getConfigsOfProjectsToRun from '../getConfigsOfProjectsToRun';
+import getProjectsRunningMessage from '../getProjectsRunningMessage';
 
 const {print: preRunMessagePrint} = preRunMessage;
 
@@ -70,6 +71,10 @@ export async function runCLI(
   }
 
   const configsOfProjectsToRun = getConfigsOfProjectsToRun(argv, configs);
+  if (argv.runProjects) {
+    const projectNames = configsOfProjectsToRun.map(config => config.name);
+    outputStream.write(getProjectsRunningMessage(projectNames) + '\n');
+  }
 
   await _run(
     globalConfig,

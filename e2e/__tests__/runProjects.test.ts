@@ -7,54 +7,82 @@
 
 import {resolve} from 'path';
 
-import {json as runWithJson} from '../runJest';
+import {RunJestJsonResult, json as runWithJson} from '../runJest';
 
 const dir = resolve(__dirname, '..', 'run-projects');
 
-test('run first project when runProjects is [first-project]', () => {
-  const {json} = runWithJson('run-projects', [
-    `--runProjects`,
-    'first-project',
-  ]);
-  expect(json.success).toBe(true);
-  expect(json.numTotalTests).toBe(1);
-  expect(json.testResults.map(({name}) => name)).toEqual([
-    resolve(dir, '__tests__/first-project.test.js'),
-  ]);
+describe('when Jest is started with `--runProjects first-project`', () => {
+  let result: RunJestJsonResult;
+  beforeAll(() => {
+    result = runWithJson('run-projects', [`--runProjects`, 'first-project']);
+  });
+  it('runs the tests in the first project only', () => {
+    expect(result.json.success).toBe(true);
+    expect(result.json.numTotalTests).toBe(1);
+    expect(result.json.testResults.map(({name}) => name)).toEqual([
+      resolve(dir, '__tests__/first-project.test.js'),
+    ]);
+  });
+  it('prints that only first-project will run', () => {
+    expect(result.stderr).toMatch(/^Will run one project: first-project/);
+  });
 });
 
-test('run second project when runProjects is [second-project]', () => {
-  const {json} = runWithJson('run-projects', [
-    '--runProjects',
-    'second-project',
-  ]);
-  expect(json.success).toBe(true);
-  expect(json.numTotalTests).toBe(1);
-  expect(json.testResults.map(({name}) => name)).toEqual([
-    resolve(dir, '__tests__/second-project.test.js'),
-  ]);
+describe('when Jest is started with `--runProjects second-project`', () => {
+  let result: RunJestJsonResult;
+  beforeAll(() => {
+    result = runWithJson('run-projects', [`--runProjects`, 'second-project']);
+  });
+  it('runs the tests in the second project only', () => {
+    expect(result.json.success).toBe(true);
+    expect(result.json.numTotalTests).toBe(1);
+    expect(result.json.testResults.map(({name}) => name)).toEqual([
+      resolve(dir, '__tests__/second-project.test.js'),
+    ]);
+  });
+  it('prints that only second-project will run', () => {
+    expect(result.stderr).toMatch(/^Will run one project: second-project/);
+  });
 });
 
-test('run first and second project when runProjects is [first-project, second-project]', () => {
-  const {json} = runWithJson('run-projects', [
-    '--runProjects',
-    'first-project',
-    'second-project',
-  ]);
-  expect(json.success).toBe(true);
-  expect(json.numTotalTests).toBe(2);
-  expect(json.testResults.map(({name}) => name).sort()).toEqual([
-    resolve(dir, '__tests__/first-project.test.js'),
-    resolve(dir, '__tests__/second-project.test.js'),
-  ]);
+describe('when Jest is started with `--runProjects first-project second-project`', () => {
+  let result: RunJestJsonResult;
+  beforeAll(() => {
+    result = runWithJson('run-projects', [
+      `--runProjects`,
+      'first-project',
+      'second-project',
+    ]);
+  });
+  it('runs the tests in the first and second projects', () => {
+    expect(result.json.success).toBe(true);
+    expect(result.json.numTotalTests).toBe(2);
+    expect(result.json.testResults.map(({name}) => name).sort()).toEqual([
+      resolve(dir, '__tests__/first-project.test.js'),
+      resolve(dir, '__tests__/second-project.test.js'),
+    ]);
+  });
+  it('prints that both first-project and second-project will run', () => {
+    expect(result.stderr).toMatch(
+      /^Will run 2 projects:\n- first-project\n- second-project/,
+    );
+  });
 });
 
-test('run first and second project when runProjects is not specified', () => {
-  const {json} = runWithJson('run-projects', []);
-  expect(json.success).toBe(true);
-  expect(json.numTotalTests).toBe(2);
-  expect(json.testResults.map(({name}) => name).sort()).toEqual([
-    resolve(dir, '__tests__/first-project.test.js'),
-    resolve(dir, '__tests__/second-project.test.js'),
-  ]);
+describe('when Jest is started without providing `--runProjects`', () => {
+  let result: RunJestJsonResult;
+  beforeAll(() => {
+    result = runWithJson('run-projects', []);
+  });
+  it('runs the tests in the first and second projects', () => {
+    expect(result.json.success).toBe(true);
+    expect(result.json.numTotalTests).toBe(2);
+    expect(result.json.testResults.map(({name}) => name).sort()).toEqual([
+      resolve(dir, '__tests__/first-project.test.js'),
+      resolve(dir, '__tests__/second-project.test.js'),
+    ]);
+  });
+  it('does not print which projects are run', () => {
+    expect(result.stderr).not.toMatch(/^Will run/);
+  });
 });
