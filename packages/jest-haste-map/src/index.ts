@@ -12,7 +12,6 @@ import * as fs from 'fs';
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
-import invariant = require('invariant');
 import {Config} from '@jest/types';
 import serializer from 'jest-serializer';
 import Worker from 'jest-worker';
@@ -152,6 +151,12 @@ const getWhiteList = (list: Array<string> | undefined): RegExp | null => {
   }
   return null;
 };
+
+function invariant(condition: unknown, message?: string): asserts condition {
+  if (!condition) {
+    throw new Error(message);
+  }
+}
 
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
@@ -950,8 +955,8 @@ class HasteMap extends EventEmitter {
             );
             const fileMetadata: FileMetaData = [
               '',
-              stat ? stat.mtime.getTime() : -1,
-              stat ? stat.size : 0,
+              stat.mtime.getTime(),
+              stat.size,
               0,
               '',
               null,
