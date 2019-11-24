@@ -6,8 +6,6 @@
  *
  */
 
-/* eslint-disable no-useless-concat */
-
 'use strict';
 
 import React from 'react';
@@ -53,6 +51,7 @@ jest.mock('has-flow-types', () => (props: {children: mixed}) => 3, {
 
 // These will not be hoisted
 jest.unmock('../__test_modules__/a').dontMock('../__test_modules__/b');
+// eslint-disable-next-line no-useless-concat
 jest.unmock('../__test_modules__/' + 'c');
 jest.dontMock('../__test_modules__/Mocked');
 

@@ -1191,7 +1191,7 @@ describe('preset', () => {
       c: 'cc',
       a: 'aa',
     };
-    /* eslint-disable sort-keys */
+    /* eslint-enable */
     const {options} = normalize(
       {
         preset: 'react-native',
@@ -1252,14 +1252,14 @@ describe('preset with globals', () => {
   test('should merge the globals preset correctly', () => {
     const {options} = normalize(
       {
-        preset: 'global-foo',
-        rootDir: '/root/path/foo',
         globals: {
-          textValue: 'This is just text',
           config: {
             sideBySide: 'This should also live another day',
           },
+          textValue: 'This is just text',
         },
+        preset: 'global-foo',
+        rootDir: '/root/path/foo',
       },
       {},
     );
@@ -1267,11 +1267,11 @@ describe('preset with globals', () => {
     expect(options).toEqual(
       expect.objectContaining({
         globals: {
-          textValue: 'This is just text',
           config: {
             hereToStay: 'This should stay here',
             sideBySide: 'This should also live another day',
           },
+          textValue: 'This is just text',
         },
       }),
     );
@@ -1590,8 +1590,8 @@ describe('moduleFileExtensions', () => {
       expect(() =>
         normalize(
           {
-            rootDir: '/root/',
             moduleFileExtensions: ['json', 'jsx'],
+            rootDir: '/root/',
             runner,
           },
           {},
@@ -1604,8 +1604,8 @@ describe('moduleFileExtensions', () => {
     expect(() =>
       normalize(
         {
-          rootDir: '/root/',
           moduleFileExtensions: ['json', 'jsx'],
+          rootDir: '/root/',
           runner: './', // does not need to be a valid runner for this validation
         },
         {},
@@ -1624,8 +1624,8 @@ describe('cwd', () => {
     console.warn.mockImplementation(() => {});
     const {options} = normalize(
       {
-        rootDir: '/root/',
         cwd: '/tmp/config-sets-cwd-itself',
+        rootDir: '/root/',
       },
       {},
     );
@@ -1655,8 +1655,8 @@ describe('displayName', () => {
       expect(() => {
         normalize(
           {
-            rootDir: '/root/',
             displayName,
+            rootDir: '/root/',
           },
           {},
         );
@@ -1676,8 +1676,8 @@ describe('displayName', () => {
       options: {displayName},
     } = normalize(
       {
-        rootDir: '/root/',
         displayName: 'project',
+        rootDir: '/root/',
         runner,
       },
       {},

@@ -63,13 +63,15 @@ describe('promise it', () => {
 
   it('fails with thrown error with done - sync', done => {
     throw new Error('sync fail');
-    done(); // eslint-disable-line
+    // eslint-disable-next-line no-unreachable
+    done();
   });
 
   it('fails with thrown error with done - async', done => {
     setTimeout(() => {
       throw new Error('async fail');
-      done(); // eslint-disable-line
+      // eslint-disable-next-line no-unreachable
+      done();
     }, 1);
   });
 

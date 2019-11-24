@@ -14,14 +14,14 @@ Object {
         "decl": Object {
           "end": Object {
             "column": 36,
-            "line": 9,
+            "line": 8,
           },
           "start": Object {
             "column": 26,
-            "line": 9,
+            "line": 8,
           },
         },
-        "line": 9,
+        "line": 8,
         "loc": Object {
           "end": Object {
             "column": 1,
@@ -29,7 +29,7 @@ Object {
           },
           "start": Object {
             "column": 58,
-            "line": 9,
+            "line": 8,
           },
         },
         "name": "doES6Stuff",
@@ -49,7 +49,7 @@ Object {
         },
         "start": Object {
           "column": 0,
-          "line": 9,
+          "line": 8,
         },
       },
       "1": Object {
