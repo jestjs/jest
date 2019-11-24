@@ -23,3 +23,5 @@ describe.only('describe only', () => {
     expect(1).toBe(1);
   });
 });
+
+/* eslint-enable */
