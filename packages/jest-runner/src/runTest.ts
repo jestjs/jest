@@ -260,12 +260,19 @@ async function runTestInternal(
     result.skipped = testCount === result.numPendingTests;
     result.displayName = config.displayName;
 
-    const coverage = await runtime.getAllCoverageInfoCopy();
+    const coverage = runtime.getAllCoverageInfoCopy();
     if (coverage) {
       const coverageKeys = Object.keys(coverage);
       if (coverageKeys.length) {
         result.coverage = coverage;
         result.sourceMaps = runtime.getSourceMapInfo(new Set(coverageKeys));
+      }
+    }
+
+    if (globalConfig.v8Coverage) {
+      const v8Coverage = runtime.getAllV8CoverageInfoCopy();
+      if (v8Coverage && v8Coverage.length > 0) {
+        result.v8Coverage = v8Coverage;
       }
     }
 

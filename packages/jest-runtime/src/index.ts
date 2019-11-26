@@ -32,23 +32,14 @@ import {
   handlePotentialSyntaxError,
   shouldInstrument,
 } from '@jest/transform';
+import {V8CoverageResult} from '@jest/test-result';
 import {CoverageInstrumenter, V8Coverage} from '@jest/coverage';
 import * as fs from 'graceful-fs';
 import stripBOM = require('strip-bom');
-import libCoverage = require('istanbul-lib-coverage');
-import v8toIstanbul = require('v8-to-istanbul');
-import {RawSourceMap} from 'source-map';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
 import {findSiblingsWithFileExtension} from './helpers';
 import {Context as JestContext} from './types';
-
-// This is fixed in a newer version, but that depends on Node 8 which is a
-// breaking change (engine warning when installing)
-interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
-  version: number;
-  file: string;
-}
 
 type HasteMapOptions = {
   console?: Console;
@@ -592,17 +583,15 @@ class Runtime {
     this._v8CoverageResult = await this._v8CoverageInstrumenter.stopInstrumenting();
   }
 
-  async getAllCoverageInfoCopy() {
-    if (this._v8CoverageResult) {
-      return this._mapV8CoverageToIstanbul();
-    }
+  getAllCoverageInfoCopy() {
     return deepCyclicCopy(this._environment.global.__coverage__);
   }
 
-  private async _mapV8CoverageToIstanbul() {
+  getAllV8CoverageInfoCopy(): V8CoverageResult {
     if (!this._v8CoverageResult) {
       throw new Error('You need to `stopCollectingV8Coverage` first');
     }
+
     const filtered = this._v8CoverageResult
       .filter(res => res.url.startsWith('file://'))
       .map(res => ({...res, url: fileURLToPath(res.url)}))
@@ -611,47 +600,14 @@ class Runtime {
         shouldInstrument(res.url, this._coverageOptions, this._config),
       );
 
-    const result = await Promise.all(
-      filtered.map(async res => {
-        // this is safe since we filter out those missing this above
-        const istanbulStuff = this._fileTransforms.get(res.url)!;
+    return filtered.map(result => {
+      const transformedFile = this._fileTransforms.get(result.url);
 
-        let sourcemapContent: FixedRawSourceMap | undefined = undefined;
-
-        if (
-          istanbulStuff.sourceMapPath &&
-          fs.existsSync(istanbulStuff.sourceMapPath)
-        ) {
-          sourcemapContent = JSON.parse(
-            fs.readFileSync(istanbulStuff.sourceMapPath, 'utf8'),
-          );
-        }
-
-        const converter = v8toIstanbul(
-          res.url,
-          istanbulStuff.scriptWrapperLength,
-          sourcemapContent
-            ? {
-                originalSource: istanbulStuff.rawContent,
-                source: istanbulStuff.scriptContent,
-                sourceMap: {sourcemap: sourcemapContent},
-              }
-            : {source: istanbulStuff.scriptContent},
-        );
-
-        await converter.load();
-
-        converter.applyCoverage(res.functions);
-
-        return converter.toIstanbul();
-      }),
-    );
-
-    const map = libCoverage.createCoverageMap({});
-
-    result.forEach(res => map.merge(res));
-
-    return map.toJSON();
+      return {
+        codeTransformResult: transformedFile,
+        result,
+      };
+    });
   }
 
   getSourceMapInfo(coveredFiles: Set<string>) {

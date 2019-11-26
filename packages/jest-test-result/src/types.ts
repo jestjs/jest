@@ -9,6 +9,13 @@
 import {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
 import {ConsoleBuffer} from '@jest/console';
 import {Config} from '@jest/types';
+import {V8Coverage} from '@jest/coverage';
+import {TransformResult} from '@jest/transform';
+
+export type V8CoverageResult = Array<{
+  codeTransformResult: TransformResult | undefined;
+  result: V8Coverage[number];
+}>;
 
 export type SerializableError = {
   code?: unknown;
@@ -132,6 +139,7 @@ export type TestResult = {
   testExecError?: SerializableError;
   testFilePath: string;
   testResults: Array<AssertionResult>;
+  v8Coverage?: V8CoverageResult;
 };
 
 export type FormattedTestResult = {

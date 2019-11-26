@@ -11,6 +11,8 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@jest/console": "^24.9.0",
+    "@jest/coverage": "^24.9.0",
+    "@jest/transform": "^24.9.0",
     "@jest/types": "^24.9.0",
     "@types/istanbul-lib-coverage": "^2.0.0"
   },
