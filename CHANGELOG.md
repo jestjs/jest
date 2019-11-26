@@ -53,6 +53,7 @@
 - `[jest-transform]` Properly cache transformed files across tests ([#8890](https://github.com/facebook/jest/pull/8890))
 - `[jest-utils]` Allow querying process.domain ([#9136](https://github.com/facebook/jest/pull/9136))
 - `[jest-transform]` Don't fail the test suite when a generated source map is invalid ([#9058](https://github.com/facebook/jest/pull/9058))
+- `[jest-fake-timers]` Make `setTimeout` available to be promisified ([#9180](https://github.com/facebook/jest/pull/9180))
 
 ### Chore & Maintenance
 
