@@ -92,7 +92,7 @@ const saveSnapshotsForFile = (
   const formattedNewSourceFile = prettier.format(newSourceFile, {
     ...config,
     filepath: sourceFilePath,
-    parser: createFormattingParser(inferredParser, babelTraverse),
+    parser: createFormattingParser(snapshots, inferredParser, babelTraverse),
   });
 
   if (formattedNewSourceFile !== sourceFile) {
@@ -228,6 +228,7 @@ const createInsertionParser = (
 
 // This parser formats snapshots to the correct indentation.
 const createFormattingParser = (
+  snapshots: Array<InlineSnapshot>,
   inferredParser: string,
   babelTraverse: Function,
 ) => (
@@ -238,16 +239,20 @@ const createFormattingParser = (
   // Workaround for https://github.com/prettier/prettier/issues/3150
   options.parser = inferredParser;
 
+  const groupedSnapshots = groupSnapshotsByFrame(snapshots);
+
   const ast = getAst(parsers, inferredParser, text);
   babelTraverse(ast, {
     CallExpression({node: {arguments: args, callee}}: {node: CallExpression}) {
       if (
         callee.type !== 'MemberExpression' ||
-        callee.property.type !== 'Identifier' ||
-        callee.property.name !== 'toMatchInlineSnapshot' ||
-        !callee.loc ||
-        callee.computed
+        callee.property.type !== 'Identifier'
       ) {
+        return;
+      }
+      const {line, column} = callee.property.loc.start;
+      const snapshotsForFrame = groupedSnapshots[`${line}:${column}`];
+      if (!snapshotsForFrame) {
         return;
       }
 
