@@ -419,12 +419,19 @@ describe('.toStrictEqual()', () => {
 });
 
 describe('.toEqual()', () => {
+  /* eslint-disable no-new-wrappers */
   [
     [true, false],
     [1, 2],
     [0, -0],
     [0, Number.MIN_VALUE], // issues/7941
     [Number.MIN_VALUE, 0],
+    [0, new Number(0)],
+    [new Number(0), 0],
+    [new Number(0), new Number(1)],
+    ['abc', new String('abc')],
+    [new String('abc'), 'abc'],
+    [/abc/gsy, /abc/g],
     [{a: 1}, {a: 2}],
     [{a: 5}, {b: 6}],
     ['banana', 'apple'],
@@ -548,15 +555,12 @@ describe('.toEqual()', () => {
     [true, true],
     [1, 1],
     [NaN, NaN],
-    // eslint-disable-next-line no-new-wrappers
-    [0, new Number(0)],
-    // eslint-disable-next-line no-new-wrappers
-    [new Number(0), 0],
+    [0, Number(0)],
+    [Number(0), 0],
+    [new Number(0), new Number(0)],
     ['abc', 'abc'],
-    // eslint-disable-next-line no-new-wrappers
-    [new String('abc'), 'abc'],
-    // eslint-disable-next-line no-new-wrappers
-    ['abc', new String('abc')],
+    [String('abc'), 'abc'],
+    ['abc', String('abc')],
     [[1], [1]],
     [
       [1, 2],
@@ -856,6 +860,7 @@ describe('.toEqual()', () => {
       expect(d).not.toEqual(c);
     });
   });
+  /* eslint-enable */
 });
 
 describe('.toBeInstanceOf()', () => {

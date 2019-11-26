@@ -7,8 +7,6 @@
 
 'use strict';
 
-/* eslint-disable no-new */
-
 // eslint-disable-next-line import/default
 import getStream from 'get-stream';
 
@@ -59,6 +57,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
 
   process.execArgv = ['--inspect', '-p'];
 
+  // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {
       cwd: '/tmp',
@@ -85,6 +84,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
 });
 
 it('passes workerId to the thread and assign it to env.JEST_WORKER_ID', () => {
+  // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {},
     maxRetries: 3,

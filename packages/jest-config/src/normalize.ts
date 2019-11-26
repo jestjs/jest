@@ -673,7 +673,7 @@ export default function normalize(
                 key,
                 rootDir: options.rootDir,
               }),
-              ...(Array.isArray(transformElement) ? [transformElement[1]] : []),
+              Array.isArray(transformElement) ? transformElement[1] : {},
             ];
           });
         break;
@@ -947,6 +947,29 @@ export default function normalize(
     newOptions.onlyChanged = newOptions.watch;
   }
 
+  if (!newOptions.onlyChanged) {
+    newOptions.onlyChanged = false;
+  }
+
+  if (!newOptions.lastCommit) {
+    newOptions.lastCommit = false;
+  }
+
+  if (!newOptions.onlyFailures) {
+    newOptions.onlyFailures = false;
+  }
+
+  if (!newOptions.watchAll) {
+    newOptions.watchAll = false;
+  }
+
+  // as any since it can happen. We really need to fix the types here
+  if (
+    newOptions.moduleNameMapper === (DEFAULT_CONFIG.moduleNameMapper as any)
+  ) {
+    newOptions.moduleNameMapper = [];
+  }
+
   newOptions.updateSnapshot =
     argv.ci && !argv.updateSnapshot
       ? 'none'
@@ -1010,6 +1033,28 @@ export default function normalize(
     }
 
     newOptions.collectCoverageFrom = collectCoverageFrom;
+  } else if (!newOptions.collectCoverageFrom) {
+    newOptions.collectCoverageFrom = [];
+  }
+
+  if (!newOptions.findRelatedTests) {
+    newOptions.findRelatedTests = false;
+  }
+
+  if (!newOptions.projects) {
+    newOptions.projects = [];
+  }
+
+  if (!newOptions.extraGlobals) {
+    newOptions.extraGlobals = [];
+  }
+
+  if (!newOptions.forceExit) {
+    newOptions.forceExit = false;
+  }
+
+  if (!newOptions.logHeapUsage) {
+    newOptions.logHeapUsage = false;
   }
 
   return {

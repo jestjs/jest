@@ -177,3 +177,5 @@ describe('init', () => {
     });
   });
 });
+
+/* eslint-enable */

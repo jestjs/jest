@@ -34,6 +34,7 @@ export default function(
     const {code, mapCoverage, sourceMapPath} = new ScriptTransformer(
       config,
     ).transformSource(filename, source, true);
+    // TODO: consider passing AST
     const extracted = readInitialCoverage(code);
     // Check extracted initial coverage is not null, this can happen when using /* istanbul ignore file */
     if (extracted) {

@@ -179,7 +179,7 @@ test('escaping', () => {
   );
 
   // @ts-ignore
-  const exports = {}; // eslint-disable-line
+  const exports = {}; // eslint-disable-line @typescript-eslint/no-unused-vars
   // eslint-disable-next-line no-eval
   const readData = eval('var exports = {}; ' + writtenData + ' exports');
   expect(readData).toEqual({key: data});

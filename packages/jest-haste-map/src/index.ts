@@ -12,7 +12,6 @@ import * as fs from 'fs';
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
-import invariant = require('invariant');
 import {Config} from '@jest/types';
 import serializer from 'jest-serializer';
 import Worker from 'jest-worker';
@@ -54,7 +53,7 @@ type Options = {
   computeDependencies?: boolean;
   computeSha1?: boolean;
   console?: Console;
-  dependencyExtractor?: string;
+  dependencyExtractor?: string | null;
   extensions: Array<string>;
   forceNodeFilesystemAPI?: boolean;
   hasteImplModulePath?: string;
@@ -79,7 +78,7 @@ type InternalOptions = {
   cacheDirectory: string;
   computeDependencies: boolean;
   computeSha1: boolean;
-  dependencyExtractor?: string;
+  dependencyExtractor: string | null;
   extensions: Array<string>;
   forceNodeFilesystemAPI: boolean;
   hasteImplModulePath?: string;
@@ -152,6 +151,12 @@ const getWhiteList = (list: Array<string> | undefined): RegExp | null => {
   }
   return null;
 };
+
+function invariant(condition: unknown, message?: string): asserts condition {
+  if (!condition) {
+    throw new Error(message);
+  }
+}
 
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
@@ -251,7 +256,7 @@ class HasteMap extends EventEmitter {
           ? true
           : options.computeDependencies,
       computeSha1: options.computeSha1 || false,
-      dependencyExtractor: options.dependencyExtractor,
+      dependencyExtractor: options.dependencyExtractor || null,
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
@@ -950,8 +955,8 @@ class HasteMap extends EventEmitter {
             );
             const fileMetadata: FileMetaData = [
               '',
-              stat ? stat.mtime.getTime() : -1,
-              stat ? stat.size : 0,
+              stat.mtime.getTime(),
+              stat.size,
               0,
               '',
               null,

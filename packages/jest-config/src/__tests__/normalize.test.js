@@ -328,12 +328,12 @@ describe('transform', () => {
     );
 
     expect(options.transform).toEqual([
-      [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util'],
-      [DEFAULT_JS_PATTERN, require.resolve('babel-jest')],
-      ['abs-path', '/qux/quux'],
+      [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util', {}],
+      [DEFAULT_JS_PATTERN, require.resolve('babel-jest'), {}],
+      ['abs-path', '/qux/quux', {}],
     ]);
   });
-  it("pulls in config if it's passed as an array", () => {
+  it("pulls in config if it's passed as an array, and defaults to empty object", () => {
     const {options} = normalize(
       {
         rootDir: '/root/',
@@ -346,9 +346,9 @@ describe('transform', () => {
       {},
     );
     expect(options.transform).toEqual([
-      [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util'],
+      [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util', {}],
       [DEFAULT_JS_PATTERN, require.resolve('babel-jest'), {rootMode: 'upward'}],
-      ['abs-path', '/qux/quux'],
+      ['abs-path', '/qux/quux', {}],
     ]);
   });
 });
@@ -822,7 +822,7 @@ describe('Upgrade help', () => {
       {},
     );
 
-    expect(options.transform).toEqual([['.*', '/node_modules/bar/baz']]);
+    expect(options.transform).toEqual([['.*', '/node_modules/bar/baz', {}]]);
     expect(options.transformIgnorePatterns).toEqual([
       joinForPattern('bar', 'baz'),
       joinForPattern('qux', 'quux'),
@@ -1152,8 +1152,8 @@ describe('preset', () => {
       '/node_modules/b',
     ]);
     expect(options.transform).toEqual([
-      ['a', '/node_modules/a'],
-      ['b', '/node_modules/b'],
+      ['a', '/node_modules/a', {}],
+      ['b', '/node_modules/b', {}],
     ]);
   });
 
@@ -1191,7 +1191,7 @@ describe('preset', () => {
       c: 'cc',
       a: 'aa',
     };
-    /* eslint-disable sort-keys */
+    /* eslint-enable */
     const {options} = normalize(
       {
         preset: 'react-native',
@@ -1202,10 +1202,10 @@ describe('preset', () => {
     );
 
     expect(options.transform).toEqual([
-      ['e', '/node_modules/ee'],
-      ['b', '/node_modules/bb'],
-      ['c', '/node_modules/cc'],
-      ['a', '/node_modules/aa'],
+      ['e', '/node_modules/ee', {}],
+      ['b', '/node_modules/bb', {}],
+      ['c', '/node_modules/cc', {}],
+      ['a', '/node_modules/aa', {}],
     ]);
   });
 
@@ -1252,14 +1252,14 @@ describe('preset with globals', () => {
   test('should merge the globals preset correctly', () => {
     const {options} = normalize(
       {
-        preset: 'global-foo',
-        rootDir: '/root/path/foo',
         globals: {
-          textValue: 'This is just text',
           config: {
             sideBySide: 'This should also live another day',
           },
+          textValue: 'This is just text',
         },
+        preset: 'global-foo',
+        rootDir: '/root/path/foo',
       },
       {},
     );
@@ -1267,11 +1267,11 @@ describe('preset with globals', () => {
     expect(options).toEqual(
       expect.objectContaining({
         globals: {
-          textValue: 'This is just text',
           config: {
             hereToStay: 'This should stay here',
             sideBySide: 'This should also live another day',
           },
+          textValue: 'This is just text',
         },
       }),
     );
@@ -1590,8 +1590,8 @@ describe('moduleFileExtensions', () => {
       expect(() =>
         normalize(
           {
-            rootDir: '/root/',
             moduleFileExtensions: ['json', 'jsx'],
+            rootDir: '/root/',
             runner,
           },
           {},
@@ -1604,8 +1604,8 @@ describe('moduleFileExtensions', () => {
     expect(() =>
       normalize(
         {
-          rootDir: '/root/',
           moduleFileExtensions: ['json', 'jsx'],
+          rootDir: '/root/',
           runner: './', // does not need to be a valid runner for this validation
         },
         {},
@@ -1624,8 +1624,8 @@ describe('cwd', () => {
     console.warn.mockImplementation(() => {});
     const {options} = normalize(
       {
-        rootDir: '/root/',
         cwd: '/tmp/config-sets-cwd-itself',
+        rootDir: '/root/',
       },
       {},
     );
@@ -1655,8 +1655,8 @@ describe('displayName', () => {
       expect(() => {
         normalize(
           {
-            rootDir: '/root/',
             displayName,
+            rootDir: '/root/',
           },
           {},
         );
@@ -1676,8 +1676,8 @@ describe('displayName', () => {
       options: {displayName},
     } = normalize(
       {
-        rootDir: '/root/',
         displayName: 'project',
+        rootDir: '/root/',
         runner,
       },
       {},

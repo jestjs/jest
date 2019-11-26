@@ -1,0 +1,18 @@
+{
+  "name": "example-mongodb",
+  "version": "0.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "mongodb": "^3.1.13",
+    "mongodb-memory-server": "^3.0.0",
+    "jest-environment-node": "*"
+  },
+  "devDependencies": {
+    "jest": "*"
+  },
+  "scripts": {
+    "test": "jest"
+  }
+}

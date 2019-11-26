@@ -9,7 +9,7 @@ import {createHash} from 'crypto';
 import * as path from 'path';
 import {Script} from 'vm';
 import {Config} from '@jest/types';
-import {createDirectory, isPromise} from 'jest-util';
+import {createDirectory, interopRequireDefault, isPromise} from 'jest-util';
 import * as fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
 // @ts-ignore: should just be `require.resolve`, but the tests mess that up
@@ -347,6 +347,7 @@ export default class ScriptTransformer {
   ): TransformResult {
     const isInternalModule = !!(options && options.isInternalModule);
     const isCoreModule = !!(options && options.isCoreModule);
+    const extraGlobals = (options && options.extraGlobals) || [];
     const content = stripShebang(
       fileSource || fs.readFileSync(filename, 'utf8'),
     );
@@ -361,8 +362,6 @@ export default class ScriptTransformer {
       (this.shouldTransform(filename) || instrument);
 
     try {
-      const extraGlobals = (options && options.extraGlobals) || [];
-
       if (willTransform) {
         const transformedSource = this.transformSource(
           filename,
@@ -533,6 +532,23 @@ export default class ScriptTransformer {
       !!this._config.transform && !!this._config.transform.length && !isIgnored
     );
   }
+}
+
+export function createTranspilingRequire(config: Config.ProjectConfig) {
+  const transformer = new ScriptTransformer(config);
+
+  return function requireAndTranspileModule<TModuleType = unknown>(
+    resolverPath: string,
+    applyInteropRequireDefault: boolean = false,
+  ): TModuleType {
+    const transpiledModule = transformer.requireAndTranspileModule<TModuleType>(
+      resolverPath,
+    );
+
+    return applyInteropRequireDefault
+      ? interopRequireDefault(transpiledModule).default
+      : transpiledModule;
+  };
 }
 
 const removeFile = (path: Config.Path) => {
