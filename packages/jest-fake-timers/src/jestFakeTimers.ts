@@ -373,7 +373,8 @@ export default class FakeTimers<TimerRef> {
     promisifiableFakeSetTimeout[util.promisify.custom] = (
       delay?: number,
       arg?: any,
-    ) => new Promise(resolve => promisifiableFakeSetTimeout(resolve, delay, arg));
+    ) =>
+      new Promise(resolve => promisifiableFakeSetTimeout(resolve, delay, arg));
 
     // TODO: add better typings; these are mocks, but typed as regular timers
     this._fakeTimerAPIs = {
