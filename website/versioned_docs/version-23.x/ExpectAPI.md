@@ -468,7 +468,7 @@ If you add a snapshot serializer in individual test files instead of to adding i
 - You make the dependency explicit instead of implicit.
 - You avoid limits to configuration that might cause you to eject from [create-react-app](https://github.com/facebookincubator/create-react-app).
 
-See [configuring Jest](Configuration.md#snapshotserializers-array-string) for more information.
+See [configuring Jest](Configuration.md#snapshotserializers-arraystring) for more information.
 
 ### `.not`
 

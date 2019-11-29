@@ -134,7 +134,7 @@ The preset sets up the environment and is very opinionated and based on what we 
 
 ### transformIgnorePatterns customization
 
-The [`transformIgnorePatterns`](configuration.html#transformignorepatterns-array-string) option can be used to whitelist or blacklist files from being transformed with Babel. Many react-native npm modules unfortunately don't pre-compile their source code before publishing.
+The [`transformIgnorePatterns`](configuration.html#transformignorepatterns-arraystring) option can be used to whitelist or blacklist files from being transformed with Babel. Many react-native npm modules unfortunately don't pre-compile their source code before publishing.
 
 By default the jest-react-native preset only processes the project's own source files and react-native. If you have npm dependencies that have to be transformed you can customize this configuration option by whitelisting modules other than react-native:
 
@@ -150,7 +150,7 @@ If you'd like to provide additional configuration for every test file, the [`set
 
 ### moduleNameMapper
 
-The [`moduleNameMapper`](configuration.html#modulenamemapper-object-string-string) can be used to map a module path to a different module. By default the preset maps all images to an image stub module but if a module cannot be found this configuration option can help:
+The [`moduleNameMapper`](configuration.html#modulenamemapper-objectstring-string) can be used to map a module path to a different module. By default the preset maps all images to an image stub module but if a module cannot be found this configuration option can help:
 
 ```json
 "moduleNameMapper": {

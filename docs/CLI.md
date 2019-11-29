@@ -194,7 +194,7 @@ Prints the test results in JSON. This mode will send all other test output and u
 
 ### `--outputFile=<filename>`
 
-Write test results to a file when the `--json` option is also specified. The returned JSON structure is documented in [testResultsProcessor](Configuration.md#testResultsProcessor-string).
+Write test results to a file when the `--json` option is also specified. The returned JSON structure is documented in [testResultsProcessor](Configuration.md#testresultsprocessor-string).
 
 ### `--lastCommit`
 
@@ -240,7 +240,7 @@ Run tests from one or more projects, found in the specified paths; also takes pa
 
 ### `--reporters`
 
-Run tests with specified reporters. [Reporter options](configuration#reporters-array-modulename-modulename-options) are not available via CLI. Example with multiple reporters:
+Run tests with specified reporters. [Reporter options](configuration#reporters-arraymodulename--modulename-options) are not available via CLI. Example with multiple reporters:
 
 `jest --reporters="default" --reporters="jest-junit"`
 
