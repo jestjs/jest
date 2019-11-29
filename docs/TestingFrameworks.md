@@ -36,7 +36,6 @@ Although Jest may be considered a React-specific test runner, in fact it is a un
 
 - [Unit Testing](https://www.gatsbyjs.org/docs/unit-testing/) by GatsbyJS docs
 
-
 ## Hapi.js
 
-- [Testing Hapi.js With Jest](http://niralar.com/testing-hapi-js-with-jest/) by Niralar ([Şivā SankĂr](https://twitter.com/siva01sankar))
+- [Testing Hapi.js With Jest](http://niralar.com/testing-hapi-js-with-jest/) by Niralar ([Sivasankar](http://sivasankar.in/))
