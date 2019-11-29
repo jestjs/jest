@@ -25,6 +25,8 @@ export type HasteConfig = {
 export type ReporterConfig = [string, Record<string, unknown>];
 export type TransformerConfig = [string, Record<string, unknown>];
 
+export type WatchPluginsConfig = string | [string, Record<string, any>];
+
 export type ConfigGlobals = Record<string, any>;
 
 export type DefaultOptions = {
@@ -200,7 +202,7 @@ export type InitialOptions = Partial<{
   watch: boolean;
   watchAll: boolean;
   watchman: boolean;
-  watchPlugins: Array<string | [string, Record<string, any>]>;
+  watchPlugins: Array<WatchPluginsConfig>;
 }>;
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -287,10 +289,7 @@ export type GlobalConfig = {
   watch: boolean;
   watchAll: boolean;
   watchman: boolean;
-  watchPlugins?: Array<{
-    path: string;
-    config: Record<string, any>;
-  }> | null;
+  watchPlugins?: Array<WatchPluginsConfig> | null;
 };
 
 export type ProjectConfig = {
