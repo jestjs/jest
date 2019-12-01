@@ -371,7 +371,7 @@ describe('Runtime requireModule', () => {
       '__filename',
       'global',
       'jest',
-      'Math'
+      'Math',
     ]);
   });
 });
