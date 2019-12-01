@@ -6,6 +6,7 @@
  *
  */
 
+import {wrap} from 'jest-snapshot-serializer-raw';
 import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
 
 jest
@@ -46,7 +47,7 @@ jest.mock(
 
     return {
       getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
-      process: (content, filename, config) => `
+      process: (content, filename, config) => jest.requireActual('dedent')`
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
@@ -81,7 +82,7 @@ jest.mock(
   'css-preprocessor',
   () => ({
     getCacheKey: jest.fn((content, filename, configStr) => 'cd'),
-    process: (content, filename, config) => `
+    process: (content, filename, config) => jest.requireActual('dedent')`
           module.exports = {
             filename: ${filename},
             rawFirstLine: ${content.split('\n')[0]},
@@ -218,7 +219,7 @@ describe('ScriptTransformer', () => {
     ).script;
 
     expect(response instanceof vm.Script).toBe(true);
-    expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
+    expect(wrap(vm.Script.mock.calls[0][0])).toMatchSnapshot();
 
     // no-cache case
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
@@ -236,7 +237,7 @@ describe('ScriptTransformer', () => {
       makeGlobalConfig({collectCoverage: true}),
     );
     const snapshot = vm.Script.mock.calls[1][0];
-    expect(snapshot).toMatchSnapshot();
+    expect(wrap(snapshot)).toMatchSnapshot();
 
     scriptTransformer.transform(
       '/fruits/kiwi.js',
@@ -257,7 +258,7 @@ describe('ScriptTransformer', () => {
       // to make sure jest isn't declared twice
       extraGlobals: ['Math', 'jest'],
     }).script;
-    expect(vm.Script.mock.calls[3][0]).toMatchSnapshot();
+    expect(wrap(vm.Script.mock.calls[3][0])).toMatchSnapshot();
   });
 
   it('does not transform Node core modules', () => {
@@ -361,11 +362,11 @@ describe('ScriptTransformer', () => {
 
     expect(require('test_preprocessor').getCacheKey).toBeCalled();
 
-    expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
+    expect(wrap(vm.Script.mock.calls[0][0])).toMatchSnapshot();
 
     scriptTransformer.transform('/node_modules/react.js', {});
     // ignores preprocessor
-    expect(vm.Script.mock.calls[1][0]).toMatchSnapshot();
+    expect(wrap(vm.Script.mock.calls[1][0])).toMatchSnapshot();
   });
 
   it('uses multiple preprocessors', () => {
@@ -383,12 +384,12 @@ describe('ScriptTransformer', () => {
 
     expect(require('test_preprocessor').getCacheKey).toBeCalled();
     expect(require('css-preprocessor').getCacheKey).toBeCalled();
-    expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
-    expect(vm.Script.mock.calls[1][0]).toMatchSnapshot();
+    expect(wrap(vm.Script.mock.calls[0][0])).toMatchSnapshot();
+    expect(wrap(vm.Script.mock.calls[1][0])).toMatchSnapshot();
 
     scriptTransformer.transform('/node_modules/react.js', {});
     // ignores preprocessor
-    expect(vm.Script.mock.calls[2][0]).toMatchSnapshot();
+    expect(wrap(vm.Script.mock.calls[2][0])).toMatchSnapshot();
   });
 
   it('writes source map if preprocessor supplies it', () => {
@@ -491,7 +492,7 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).toBeCalledTimes(1);
 
     expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+    expect(wrap(console.warn.mock.calls[0][0])).toMatchSnapshot();
     console.warn = warn;
   });
 
