@@ -14,17 +14,21 @@ describe('Runtime', () => {
     createRuntime = require('createRuntime');
   });
 
-  describe('wrap', () => {
+  describe('wrapCodeInModuleWrapper', () => {
     it('generates the correct args for the module wrapper', async () => {
       const runtime = await createRuntime(__filename);
 
-      expect(wrap(runtime.wrap('module.exports = "Hello!"'))).toMatchSnapshot();
+      expect(
+        wrap(runtime.wrapCodeInModuleWrapper('module.exports = "Hello!"')),
+      ).toMatchSnapshot();
     });
 
     it('injects "extra globals"', async () => {
       const runtime = await createRuntime(__filename, {extraGlobals: ['Math']});
 
-      expect(wrap(runtime.wrap('module.exports = "Hello!"'))).toMatchSnapshot();
+      expect(
+        wrap(runtime.wrapCodeInModuleWrapper('module.exports = "Hello!"')),
+      ).toMatchSnapshot();
     });
   });
 });

@@ -731,12 +731,15 @@ class Runtime {
       }
     }
 
-    const script = new Script(this.wrap(transformedFile.code), {
-      displayErrors: true,
-      filename: this._resolver.isCoreModule(filename)
-        ? `jest-nodejs-core-${filename}`
-        : filename,
-    });
+    const script = new Script(
+      this.wrapCodeInModuleWrapper(transformedFile.code),
+      {
+        displayErrors: true,
+        filename: this._resolver.isCoreModule(filename)
+          ? `jest-nodejs-core-${filename}`
+          : filename,
+      },
+    );
 
     const runScript = this._environment.runScript<RunScriptEvalResult>(script);
 
@@ -1099,7 +1102,7 @@ class Runtime {
     );
   }
 
-  private wrap(content: string) {
+  private wrapCodeInModuleWrapper(content: string) {
     const args = [
       'module',
       'exports',
