@@ -636,7 +636,7 @@ Automatically reset mock state between every test. Equivalent to calling `jest.r
 
 Default: `false`
 
-By default, each test file gets its own independent module registry. Enabling `resetModules` goes a step further and resets the module registry before running each individual test. This is useful to isolate modules for every test so that local module state doesn't conflict between tests. This can be done programmatically using [`jest.resetModules()`](#jest-resetmodules).
+By default, each test file gets its own independent module registry. Enabling `resetModules` goes a step further and resets the module registry before running each individual test. This is useful to isolate modules for every test so that local module state doesn't conflict between tests. This can be done programmatically using [`jest.resetModules()`](JestObjectAPI.md#jestresetmodules).
 
 ### `resolver` [string]
 
@@ -722,7 +722,7 @@ Default: `[]`
 
 A list of paths to modules that run some code to configure or set up the testing environment. Each setupFile will be run once per test file. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
 
-It's also worth noting that `setupFiles` will execute _before_ [`setupFilesAfterEnv`](#setupFilesAfterEnv-array).
+It's also worth noting that `setupFiles` will execute _before_ [`setupFilesAfterEnv`](#setupfilesafterenv-array).
 
 ### `setupFilesAfterEnv` [array]
 
@@ -917,7 +917,7 @@ The glob patterns Jest uses to detect test files. By default it looks for `.js`,
 
 See the [micromatch](https://github.com/jonschlinkert/micromatch) package for details of the patterns you can specify.
 
-See also [`testRegex` [string | array\<string>]](#testregex-string-array-string), but note that you cannot specify both options.
+See also [`testRegex` [string | array\<string>]](#testregex-string--arraystring), but note that you cannot specify both options.
 
 ### `testPathIgnorePatterns` [array\<string>]
 
@@ -931,7 +931,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$`
 
-The pattern or patterns Jest uses to detect test files. By default it looks for `.js`, `.jsx`, `.ts` and `.tsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`. See also [`testMatch` [array\<string>]](#testmatch-array-string), but note that you cannot specify both options.
+The pattern or patterns Jest uses to detect test files. By default it looks for `.js`, `.jsx`, `.ts` and `.tsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`. See also [`testMatch` [array\<string>]](#testmatch-arraystring), but note that you cannot specify both options.
 
 The following is a visualization of the default regex:
 

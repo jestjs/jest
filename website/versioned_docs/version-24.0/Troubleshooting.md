@@ -135,7 +135,7 @@ If you are using Facebook's [`create-react-app`](https://github.com/facebookincu
 
 The transform script was changed or Babel was updated and the changes aren't being recognized by Jest?
 
-Retry with [`--no-cache`](CLI.md#cache). Jest caches transformed module files to speed up test execution. If you are using your own custom transformer, consider adding a `getCacheKey` function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61).
+Retry with [`--no-cache`](CLI.md#--cache). Jest caches transformed module files to speed up test execution. If you are using your own custom transformer, consider adding a `getCacheKey` function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61).
 
 ## Unresolved Promises
 
@@ -155,7 +155,7 @@ jest.setTimeout(10000); // 10 second timeout
 
 ## Watchman Issues
 
-Try running Jest with [`--no-watchman`](CLI.md#watchman) or set the `watchman` configuration option to `false`.
+Try running Jest with [`--no-watchman`](CLI.md#--watchman) or set the `watchman` configuration option to `false`.
 
 Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/troubleshooting.html).
 
@@ -165,7 +165,7 @@ While Jest is most of the time extremely fast on modern multi-core computers wit
 
 Based on the [findings](https://github.com/facebook/jest/issues/1524#issuecomment-262366820), one way to mitigate this issue and improve the speed by up to 50% is to run tests sequentially.
 
-In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#runinband):
+In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#--runinband):
 
 ```bash
 # Using Jest CLI
