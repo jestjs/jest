@@ -9,7 +9,9 @@ import chalk = require('chalk');
 
 const DOT = ' \u2022 ';
 
-export default function handlePotentialSyntaxError(e: Error & {codeFrame?: string}) {
+export default function handlePotentialSyntaxError(
+  e: Error & {codeFrame?: string},
+) {
   if (e.codeFrame) {
     e.stack = e.message + '\n' + e.codeFrame;
   }
