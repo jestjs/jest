@@ -6,12 +6,14 @@
  */
 
 import * as path from 'path';
+import {Script} from 'vm';
 import {Config} from '@jest/types';
 import {
   Jest,
   JestEnvironment,
   LocalModuleRequire,
   Module,
+  ModuleWrapper,
 } from '@jest/environment';
 import {SourceMapRegistry} from '@jest/source-map';
 import jestMock = require('jest-mock');
@@ -25,6 +27,7 @@ import {
   ScriptTransformer,
   ShouldInstrumentOptions,
   TransformationOptions,
+  handlePotentialSyntaxError,
   shouldInstrument,
 } from '@jest/transform';
 import * as fs from 'graceful-fs';
@@ -77,6 +80,10 @@ const getModuleNameMapper = (config: Config.ProjectConfig) => {
 };
 
 const unmockRegExpCache = new WeakMap();
+
+const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
+
+type RunScriptEvalResult = {[EVAL_RESULT_VARIABLE]: ModuleWrapper};
 
 /* eslint-disable-next-line no-redeclare */
 class Runtime {
@@ -487,7 +494,6 @@ class Runtime {
       collectCoverage: this._coverageOptions.collectCoverage,
       collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
       collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
-      extraGlobals: this._config.extraGlobals,
     };
   }
 
@@ -724,7 +730,9 @@ class Runtime {
       }
     }
 
-    const runScript = this._environment.runScript(transformedFile.script);
+    const script = this.createScriptFromCode(transformedFile.code, filename);
+
+    const runScript = this._environment.runScript<RunScriptEvalResult>(script);
 
     if (runScript === null) {
       this._logFormattedReferenceError(
@@ -735,7 +743,7 @@ class Runtime {
     }
 
     //Wrapper
-    runScript[ScriptTransformer.EVAL_RESULT_VARIABLE].call(
+    runScript[EVAL_RESULT_VARIABLE].call(
       localModule.exports,
       localModule as NodeModule, // module object
       localModule.exports, // module exports
@@ -760,6 +768,19 @@ class Runtime {
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
     this._currentlyExecutingModulePath = lastExecutingModulePath;
+  }
+
+  private createScriptFromCode(scriptSource: string, filename: string) {
+    try {
+      return new Script(this.wrapCodeInModuleWrapper(scriptSource), {
+        displayErrors: true,
+        filename: this._resolver.isCoreModule(filename)
+          ? `jest-nodejs-core-${filename}`
+          : filename,
+      });
+    } catch (e) {
+      throw handlePotentialSyntaxError(e);
+    }
   }
 
   private _requireCoreModule(moduleName: string) {
@@ -1082,6 +1103,27 @@ class Runtime {
     console.error(
       `\n${message}\n` +
         formatStackTrace(stack, this._config, {noStackTrace: false}),
+    );
+  }
+
+  private wrapCodeInModuleWrapper(content: string) {
+    const args = [
+      'module',
+      'exports',
+      'require',
+      '__dirname',
+      '__filename',
+      'global',
+      'jest',
+      ...this._config.extraGlobals,
+    ];
+
+    return (
+      '({"' +
+      EVAL_RESULT_VARIABLE +
+      `":function(${args.join(',')}){` +
+      content +
+      '\n}});'
     );
   }
 }

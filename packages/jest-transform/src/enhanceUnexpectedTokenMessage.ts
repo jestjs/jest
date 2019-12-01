@@ -9,7 +9,26 @@ import chalk = require('chalk');
 
 const DOT = ' \u2022 ';
 
-export default function enhanceUnexpectedTokenMessage(e: Error) {
+export default function handlePotentialSyntaxError(
+  e: Error & {codeFrame?: string},
+) {
+  if (e.codeFrame) {
+    e.stack = e.message + '\n' + e.codeFrame;
+  }
+
+  if (
+    e instanceof SyntaxError &&
+    (e.message.includes('Unexpected token') ||
+      e.message.includes('Cannot use import')) &&
+    !e.message.includes(' expected')
+  ) {
+    throw enhanceUnexpectedTokenMessage(e);
+  }
+
+  return e;
+}
+
+export function enhanceUnexpectedTokenMessage(e: Error) {
   e.stack =
     `${chalk.bold.red('Jest encountered an unexpected token')}
 

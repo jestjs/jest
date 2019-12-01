@@ -7,7 +7,6 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import {Script} from 'vm';
 import {Config} from '@jest/types';
 import {createDirectory, interopRequireDefault, isPromise} from 'jest-util';
 import * as fs from 'graceful-fs';
@@ -28,7 +27,7 @@ import {
   Transformer,
 } from './types';
 import shouldInstrument from './shouldInstrument';
-import enhanceUnexpectedTokenMessage from './enhanceUnexpectedTokenMessage';
+import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';
 
 type ProjectCache = {
   configString: string;
@@ -60,7 +59,6 @@ async function waitForPromiseWithCleanup(
 }
 
 export default class ScriptTransformer {
-  static EVAL_RESULT_VARIABLE: 'Object.<anonymous>';
   private _cache: ProjectCache;
   private _config: Config.ProjectConfig;
   private _transformCache: Map<Config.Path, Transformer>;
@@ -347,12 +345,11 @@ export default class ScriptTransformer {
   ): TransformResult {
     const isInternalModule = !!(options && options.isInternalModule);
     const isCoreModule = !!(options && options.isCoreModule);
-    const extraGlobals = (options && options.extraGlobals) || [];
     const content = stripShebang(
       fileSource || fs.readFileSync(filename, 'utf8'),
     );
 
-    let wrappedCode: string;
+    let code = content;
     let sourceMapPath: string | null = null;
     let mapCoverage = false;
 
@@ -369,36 +366,18 @@ export default class ScriptTransformer {
           instrument,
         );
 
-        wrappedCode = wrap(transformedSource.code, ...extraGlobals);
+        code = transformedSource.code;
         sourceMapPath = transformedSource.sourceMapPath;
         mapCoverage = transformedSource.mapCoverage;
-      } else {
-        wrappedCode = wrap(content, ...extraGlobals);
       }
 
       return {
+        code,
         mapCoverage,
-        script: new Script(wrappedCode, {
-          displayErrors: true,
-          filename: isCoreModule ? 'jest-nodejs-core-' + filename : filename,
-        }),
         sourceMapPath,
       };
     } catch (e) {
-      if (e.codeFrame) {
-        e.stack = e.message + '\n' + e.codeFrame;
-      }
-
-      if (
-        e instanceof SyntaxError &&
-        (e.message.includes('Unexpected token') ||
-          e.message.includes('Cannot use import')) &&
-        !e.message.includes(' expected')
-      ) {
-        throw enhanceUnexpectedTokenMessage(e);
-      }
-
-      throw e;
+      throw handlePotentialSyntaxError(e);
     }
   }
 
@@ -698,27 +677,3 @@ const calcTransformRegExp = (config: Config.ProjectConfig) => {
 
   return transformRegexp;
 };
-
-const wrap = (content: string, ...extras: Array<string>) => {
-  const globals = new Set([
-    'module',
-    'exports',
-    'require',
-    '__dirname',
-    '__filename',
-    'global',
-    'jest',
-    ...extras,
-  ]);
-
-  return (
-    '({"' +
-    ScriptTransformer.EVAL_RESULT_VARIABLE +
-    `":function(${Array.from(globals).join(',')}){` +
-    content +
-    '\n}});'
-  );
-};
-
-// TODO: Can this be added to the static property?
-ScriptTransformer.EVAL_RESULT_VARIABLE = 'Object.<anonymous>';

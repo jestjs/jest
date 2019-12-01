@@ -37,7 +37,6 @@ jest
     ...jest.requireActual('jest-util'),
     createDirectory: jest.fn(),
   }))
-  .mock('vm')
   .mock('path', () => jest.requireActual('path').posix);
 
 jest.mock(
@@ -142,7 +141,6 @@ let config;
 let fs;
 let mockFs;
 let object;
-let vm;
 let writeFileAtomic;
 
 jest.mock('write-file-atomic', () => ({
@@ -156,8 +154,6 @@ describe('ScriptTransformer', () => {
     jest.resetModules();
 
     object = data => Object.assign(Object.create(null), data);
-
-    vm = require('vm');
 
     mockFs = object({
       '/fruits/banana.js': ['module.exports = "banana";'].join('\n'),
@@ -213,52 +209,46 @@ describe('ScriptTransformer', () => {
 
   it('transforms a file properly', () => {
     const scriptTransformer = new ScriptTransformer(config);
-    const response = scriptTransformer.transform(
+    const transformedBananaWithCoverage = scriptTransformer.transform(
       '/fruits/banana.js',
       makeGlobalConfig({collectCoverage: true}),
-    ).script;
+    );
 
-    expect(response instanceof vm.Script).toBe(true);
-    expect(wrap(vm.Script.mock.calls[0][0])).toMatchSnapshot();
+    expect(wrap(transformedBananaWithCoverage.code)).toMatchSnapshot();
 
     // no-cache case
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
 
     // in-memory cache
-    const response2 = scriptTransformer.transform(
+    const transformedBananaWithCoverageAgain = scriptTransformer.transform(
       '/fruits/banana.js',
       makeGlobalConfig({collectCoverage: true}),
-    ).script;
-    expect(response2).toBe(response);
+    );
+    expect(transformedBananaWithCoverageAgain).toBe(
+      transformedBananaWithCoverage,
+    );
 
-    scriptTransformer.transform(
+    const transformedKiwiWithCoverage = scriptTransformer.transform(
       '/fruits/kiwi.js',
       makeGlobalConfig({collectCoverage: true}),
     );
-    const snapshot = vm.Script.mock.calls[1][0];
-    expect(wrap(snapshot)).toMatchSnapshot();
+    expect(wrap(transformedKiwiWithCoverage.code)).toMatchSnapshot();
 
-    scriptTransformer.transform(
-      '/fruits/kiwi.js',
-      makeGlobalConfig({collectCoverage: true}),
+    expect(transformedBananaWithCoverage.code).not.toEqual(
+      transformedKiwiWithCoverage.code,
     );
-
-    expect(vm.Script.mock.calls[0][0]).not.toEqual(snapshot);
-    expect(vm.Script.mock.calls[0][0]).not.toMatch(/instrumented kiwi/);
+    expect(transformedBananaWithCoverage.code).not.toMatch(/instrumented kiwi/);
 
     // If we disable coverage, we get a different result.
-    scriptTransformer.transform(
+    const transformedKiwiWithoutCoverage = scriptTransformer.transform(
       '/fruits/kiwi.js',
       makeGlobalConfig({collectCoverage: false}),
     );
-    expect(vm.Script.mock.calls[1][0]).toEqual(snapshot);
 
-    scriptTransformer.transform('/fruits/banana.js', {
-      // to make sure jest isn't declared twice
-      extraGlobals: ['Math', 'jest'],
-    }).script;
-    expect(wrap(vm.Script.mock.calls[3][0])).toMatchSnapshot();
+    expect(transformedKiwiWithoutCoverage.code).not.toEqual(
+      transformedKiwiWithCoverage.code,
+    );
   });
 
   it('does not transform Node core modules', () => {
@@ -272,10 +262,9 @@ describe('ScriptTransformer', () => {
       'fs',
       {isCoreModule: true},
       fsSourceCode,
-    ).script;
+    );
 
-    expect(response instanceof vm.Script).toBe(true);
-    expect(vm.Script.mock.calls[0][0]).toContain(fsSourceCode);
+    expect(response.code).toEqual(fsSourceCode);
 
     // Native files should never be transformed.
     expect(shouldInstrument).toHaveBeenCalledTimes(0);
@@ -358,15 +347,15 @@ describe('ScriptTransformer', () => {
   it('uses the supplied preprocessor', () => {
     config = {...config, transform: [['^.+\\.js$', 'test_preprocessor']]};
     const scriptTransformer = new ScriptTransformer(config);
-    scriptTransformer.transform('/fruits/banana.js', {});
+    const res1 = scriptTransformer.transform('/fruits/banana.js', {});
 
     expect(require('test_preprocessor').getCacheKey).toBeCalled();
 
-    expect(wrap(vm.Script.mock.calls[0][0])).toMatchSnapshot();
+    expect(wrap(res1.code)).toMatchSnapshot();
 
-    scriptTransformer.transform('/node_modules/react.js', {});
+    const res2 = scriptTransformer.transform('/node_modules/react.js', {});
     // ignores preprocessor
-    expect(wrap(vm.Script.mock.calls[1][0])).toMatchSnapshot();
+    expect(wrap(res2.code)).toMatchSnapshot();
   });
 
   it('uses multiple preprocessors', () => {
@@ -379,17 +368,17 @@ describe('ScriptTransformer', () => {
     };
     const scriptTransformer = new ScriptTransformer(config);
 
-    scriptTransformer.transform('/fruits/banana.js', {});
-    scriptTransformer.transform('/styles/App.css', {});
+    const res1 = scriptTransformer.transform('/fruits/banana.js', {});
+    const res2 = scriptTransformer.transform('/styles/App.css', {});
 
     expect(require('test_preprocessor').getCacheKey).toBeCalled();
     expect(require('css-preprocessor').getCacheKey).toBeCalled();
-    expect(wrap(vm.Script.mock.calls[0][0])).toMatchSnapshot();
-    expect(wrap(vm.Script.mock.calls[1][0])).toMatchSnapshot();
+    expect(wrap(res1.code)).toMatchSnapshot();
+    expect(wrap(res2.code)).toMatchSnapshot();
 
-    scriptTransformer.transform('/node_modules/react.js', {});
+    const res3 = scriptTransformer.transform('/node_modules/react.js', {});
     // ignores preprocessor
-    expect(wrap(vm.Script.mock.calls[2][0])).toMatchSnapshot();
+    expect(wrap(res3.code)).toMatchSnapshot();
   });
 
   it('writes source map if preprocessor supplies it', () => {
