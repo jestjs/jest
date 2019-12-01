@@ -27,6 +27,7 @@ import {
   ScriptTransformer,
   ShouldInstrumentOptions,
   TransformationOptions,
+  handlePotentialSyntaxError,
   shouldInstrument,
 } from '@jest/transform';
 import * as fs from 'graceful-fs';
@@ -731,15 +732,7 @@ class Runtime {
       }
     }
 
-    const script = new Script(
-      this.wrapCodeInModuleWrapper(transformedFile.code),
-      {
-        displayErrors: true,
-        filename: this._resolver.isCoreModule(filename)
-          ? `jest-nodejs-core-${filename}`
-          : filename,
-      },
-    );
+    const script = this.createScriptFromCode(transformedFile.code, filename);
 
     const runScript = this._environment.runScript<RunScriptEvalResult>(script);
 
@@ -777,6 +770,19 @@ class Runtime {
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
     this._currentlyExecutingModulePath = lastExecutingModulePath;
+  }
+
+  private createScriptFromCode(scriptSource: string, filename: string) {
+    try {
+      return new Script(this.wrapCodeInModuleWrapper(scriptSource), {
+        displayErrors: true,
+        filename: this._resolver.isCoreModule(filename)
+          ? `jest-nodejs-core-${filename}`
+          : filename,
+      });
+    } catch (e) {
+      throw handlePotentialSyntaxError(e);
+    }
   }
 
   private _requireCoreModule(moduleName: string) {

@@ -27,7 +27,7 @@ import {
   Transformer,
 } from './types';
 import shouldInstrument from './shouldInstrument';
-import enhanceUnexpectedTokenMessage from './enhanceUnexpectedTokenMessage';
+import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';
 
 type ProjectCache = {
   configString: string;
@@ -377,20 +377,7 @@ export default class ScriptTransformer {
         sourceMapPath,
       };
     } catch (e) {
-      if (e.codeFrame) {
-        e.stack = e.message + '\n' + e.codeFrame;
-      }
-
-      if (
-        e instanceof SyntaxError &&
-        (e.message.includes('Unexpected token') ||
-          e.message.includes('Cannot use import')) &&
-        !e.message.includes(' expected')
-      ) {
-        throw enhanceUnexpectedTokenMessage(e);
-      }
-
-      throw e;
+      throw handlePotentialSyntaxError(e);
     }
   }
 
