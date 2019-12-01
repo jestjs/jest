@@ -80,8 +80,6 @@ const unmockRegExpCache = new WeakMap();
 
 /* eslint-disable-next-line no-redeclare */
 class Runtime {
-  static ScriptTransformer: typeof ScriptTransformer;
-
   private _cacheFS: CacheFS;
   private _config: Config.ProjectConfig;
   private _coverageOptions: ShouldInstrumentOptions;
@@ -1087,7 +1085,5 @@ class Runtime {
     );
   }
 }
-
-Runtime.ScriptTransformer = ScriptTransformer;
 
 export = Runtime;
