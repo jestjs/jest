@@ -47,7 +47,7 @@ jest.mock(
 
     return {
       getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
-      process: (content, filename, config) => jest.requireActual('dedent')`
+      process: (content, filename, config) => require('dedent')`
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
@@ -82,7 +82,7 @@ jest.mock(
   'css-preprocessor',
   () => ({
     getCacheKey: jest.fn((content, filename, configStr) => 'cd'),
-    process: (content, filename, config) => jest.requireActual('dedent')`
+    process: (content, filename, config) => require('dedent')`
           module.exports = {
             filename: ${filename},
             rawFirstLine: ${content.split('\n')[0]},
