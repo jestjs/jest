@@ -246,7 +246,6 @@ export type GlobalConfig = {
     };
   };
   expand: boolean;
-  extraGlobals: Array<string>;
   filter?: Path;
   findRelatedTests: boolean;
   forceExit: boolean;
