@@ -27,6 +27,7 @@ export type EnvironmentContext = Partial<{
 
 // Different Order than https://nodejs.org/api/modules.html#modules_the_module_wrapper , however needs to be in the form [jest-transform]ScriptTransformer accepts
 export type ModuleWrapper = (
+  this: Module['exports'],
   module: Module,
   exports: Module['exports'],
   require: Module['require'],
