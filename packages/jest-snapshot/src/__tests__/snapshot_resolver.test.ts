@@ -6,16 +6,16 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
+import {makeProjectConfig} from '../../../../TestUtils';
 
 import {SnapshotResolver, buildSnapshotResolver} from '../snapshot_resolver';
 
 describe('defaults', () => {
   let snapshotResolver: SnapshotResolver;
-  const projectConfig = {
+  const projectConfig = makeProjectConfig({
     rootDir: 'default',
     // snapshotResolver: null,
-  } as Config.ProjectConfig;
+  });
 
   beforeEach(() => {
     snapshotResolver = buildSnapshotResolver(projectConfig);
@@ -45,10 +45,10 @@ describe('custom resolver in project config', () => {
     'fixtures',
     'customSnapshotResolver.js',
   );
-  const projectConfig = {
+  const projectConfig = makeProjectConfig({
     rootDir: 'custom1',
     snapshotResolver: customSnapshotResolverFile,
-  } as Config.ProjectConfig;
+  });
 
   beforeEach(() => {
     snapshotResolver = buildSnapshotResolver(projectConfig);
@@ -82,10 +82,10 @@ describe('malformed custom resolver in project config', () => {
       'fixtures',
       filename,
     );
-    return {
+    return makeProjectConfig({
       rootDir: 'missing-resolveSnapshotPath',
       snapshotResolver: customSnapshotResolverFile,
-    } as Config.ProjectConfig;
+    });
   };
 
   it('missing resolveSnapshotPath throws ', () => {
