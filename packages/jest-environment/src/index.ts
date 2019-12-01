@@ -44,6 +44,11 @@ export declare class JestEnvironment {
   fakeTimersLolex: LolexFakeTimers | null;
   moduleMocker: jestMock.ModuleMocker | null;
   runScript<T = unknown>(script: Script): T | null;
+  compileFunction?<T = unknown>(
+    code: string,
+    params: Array<string>,
+    filename: string,
+  ): T | null;
   setup(): Promise<void>;
   teardown(): Promise<void>;
   handleTestEvent?(event: Circus.Event, state: Circus.State): void;
