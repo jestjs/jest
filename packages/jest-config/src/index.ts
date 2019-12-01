@@ -117,7 +117,6 @@ const groupOptions = (
     enabledTestsMap: options.enabledTestsMap,
     errorOnDeprecated: options.errorOnDeprecated,
     expand: options.expand,
-    extraGlobals: options.extraGlobals,
     filter: options.filter,
     findRelatedTests: options.findRelatedTests,
     forceExit: options.forceExit,

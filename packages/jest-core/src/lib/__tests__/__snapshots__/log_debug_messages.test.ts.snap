@@ -80,7 +80,6 @@ exports[`prints the config object 1`] = `
     "enabledTestsMap": null,
     "errorOnDeprecated": false,
     "expand": false,
-    "extraGlobals": [],
     "filter": null,
     "findRelatedTests": false,
     "forceExit": false,

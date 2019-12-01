@@ -17,7 +17,7 @@ export type ShouldInstrumentOptions = Pick<
 };
 
 export type Options = ShouldInstrumentOptions &
-  Partial<Pick<Config.GlobalConfig, 'extraGlobals'>> & {
+  Partial<Pick<Config.ProjectConfig, 'extraGlobals'>> & {
     isCoreModule?: boolean;
     isInternalModule?: boolean;
   };
