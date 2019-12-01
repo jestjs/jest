@@ -12,6 +12,7 @@ import {
   JestEnvironment,
   LocalModuleRequire,
   Module,
+  ModuleWrapper,
 } from '@jest/environment';
 import {SourceMapRegistry} from '@jest/source-map';
 import jestMock = require('jest-mock');
@@ -736,9 +737,7 @@ class Runtime {
       return;
     }
 
-    //Wrapper
-    runScript[ScriptTransformer.EVAL_RESULT_VARIABLE].call(
-      localModule.exports,
+    const args: Parameters<ModuleWrapper> = [
       localModule as NodeModule, // module object
       localModule.exports, // module exports
       localModule.require as NodeRequireFunction, // require implementation
@@ -758,6 +757,20 @@ class Runtime {
           `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
         );
       }),
+    ];
+
+    const injectedModuleArguments = this.constructInjectedModuleArguments();
+
+    if (injectedModuleArguments.length !== args.length) {
+      throw new ReferenceError(
+        `We are injecting ${args.length} arguments into module wrapper, expected ${injectedModuleArguments.length}.\n\nThis is a bug in Jest, please report it`,
+      );
+    }
+
+    //Wrapper
+    runScript[ScriptTransformer.EVAL_RESULT_VARIABLE].apply(
+      localModule.exports,
+      args,
     );
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
