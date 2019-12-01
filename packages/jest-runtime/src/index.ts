@@ -489,7 +489,7 @@ class Runtime {
       collectCoverage: this._coverageOptions.collectCoverage,
       collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
       collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
-      extraGlobals: this._config.extraGlobals,
+      moduleArguments: this.constructInjectedModuleArguments(),
     };
   }
 
@@ -1085,6 +1085,19 @@ class Runtime {
       `\n${message}\n` +
         formatStackTrace(stack, this._config, {noStackTrace: false}),
     );
+  }
+
+  private constructInjectedModuleArguments() {
+    return [
+      'module',
+      'exports',
+      'require',
+      '__dirname',
+      '__filename',
+      'global',
+      'jest',
+      ...this._config.extraGlobals,
+    ];
   }
 }
 

@@ -686,4 +686,34 @@ describe('ScriptTransformer', () => {
       ['test_preprocessor', expect.any(Object)],
     ]);
   });
+
+  it('adds `moduleArguments` to transform wrapper', () => {
+    config = {...config, transform: [['^.+\\.js$', 'test_preprocessor']]};
+    const scriptTransformer = new ScriptTransformer(config);
+    const {scriptContent} = scriptTransformer.transform('/fruits/banana.js', {
+      moduleArguments: ['foo', 'bar', 'foobar'],
+    });
+
+    expect(scriptContent.split('\n')[0]).toEqual(
+      '({"Object.<anonymous>":function(foo,bar,foobar){const TRANSFORMED = {',
+    );
+  });
+
+  it('moduleArguments should be part of cache key', () => {
+    config = {...config, transform: [['^.+\\.js$', 'test_preprocessor']]};
+    const scriptTransformer = new ScriptTransformer(config);
+    let result = scriptTransformer.transform('/fruits/banana.js', {});
+
+    expect(result.scriptContent.split('\n')[0]).toEqual(
+      '({"Object.<anonymous>":function(){const TRANSFORMED = {',
+    );
+
+    result = scriptTransformer.transform('/fruits/banana.js', {
+      moduleArguments: ['foo', 'bar', 'foobar'],
+    });
+
+    expect(result.scriptContent.split('\n')[0]).toEqual(
+      '({"Object.<anonymous>":function(foo,bar,foobar){const TRANSFORMED = {',
+    );
+  });
 });

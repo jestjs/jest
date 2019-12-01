@@ -12,15 +12,14 @@ import {Config} from '@jest/types';
 export type ShouldInstrumentOptions = Pick<
   Config.GlobalConfig,
   'collectCoverage' | 'collectCoverageFrom' | 'collectCoverageOnlyFrom'
-> & {
-  changedFiles?: Set<Config.Path>;
-};
+> & {changedFiles?: Set<Config.Path>};
 
 export type Options = ShouldInstrumentOptions &
-  Partial<Pick<Config.ProjectConfig, 'extraGlobals'>> & {
-    isCoreModule?: boolean;
-    isInternalModule?: boolean;
-  };
+  Partial<{
+    isCoreModule: boolean;
+    isInternalModule: boolean;
+    moduleArguments: Array<string>;
+  }>;
 
 // https://stackoverflow.com/a/48216010/1850276
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
@@ -38,6 +37,7 @@ export type TransformedSource = {
 
 export type TransformResult = {
   script: Script;
+  scriptContent: string;
   mapCoverage: boolean;
   sourceMapPath: string | null;
 };
