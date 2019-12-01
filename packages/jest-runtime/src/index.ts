@@ -1100,17 +1100,7 @@ class Runtime {
   }
 
   private wrap(content: string) {
-    return (
-      '({"' +
-      EVAL_RESULT_VARIABLE +
-      `":function(${this.constructInjectedModuleArguments().join(',')}){` +
-      content +
-      '\n}});'
-    );
-  }
-
-  private constructInjectedModuleArguments() {
-    return [
+    const args = [
       'module',
       'exports',
       'require',
@@ -1120,6 +1110,14 @@ class Runtime {
       'jest',
       ...this._config.extraGlobals,
     ];
+
+    return (
+      '({"' +
+      EVAL_RESULT_VARIABLE +
+      `":function(${args.join(',')}){` +
+      content +
+      '\n}});'
+    );
   }
 }
 

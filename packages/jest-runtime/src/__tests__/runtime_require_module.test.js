@@ -347,31 +347,4 @@ describe('Runtime requireModule', () => {
       );
       expect(exports.isJSONModuleEncodedInUTF8WithBOM).toBe(true);
     }));
-
-  it('generates the correct args for the module wrapper', async () => {
-    let runtime = await createRuntime(__filename);
-
-    expect(runtime.constructInjectedModuleArguments()).toEqual([
-      'module',
-      'exports',
-      'require',
-      '__dirname',
-      '__filename',
-      'global',
-      'jest',
-    ]);
-
-    runtime = await createRuntime(__filename, {extraGlobals: ['Math']});
-
-    expect(runtime.constructInjectedModuleArguments()).toEqual([
-      'module',
-      'exports',
-      'require',
-      '__dirname',
-      '__filename',
-      'global',
-      'jest',
-      'Math',
-    ]);
-  });
 });
