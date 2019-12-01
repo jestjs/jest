@@ -141,7 +141,6 @@ let config;
 let fs;
 let mockFs;
 let object;
-let vm;
 let writeFileAtomic;
 
 jest.mock('write-file-atomic', () => ({
@@ -155,8 +154,6 @@ describe('ScriptTransformer', () => {
     jest.resetModules();
 
     object = data => Object.assign(Object.create(null), data);
-
-    vm = require('vm');
 
     mockFs = object({
       '/fruits/banana.js': ['module.exports = "banana";'].join('\n'),
@@ -237,11 +234,6 @@ describe('ScriptTransformer', () => {
       makeGlobalConfig({collectCoverage: true}),
     );
     expect(wrap(transformedKiwiWithCoverage.code)).toMatchSnapshot();
-
-    const transformedKiwiWithCoverageAgain = scriptTransformer.transform(
-      '/fruits/kiwi.js',
-      makeGlobalConfig({collectCoverage: true}),
-    );
 
     expect(transformedBananaWithCoverage.code).not.toEqual(
       transformedKiwiWithCoverage.code,
