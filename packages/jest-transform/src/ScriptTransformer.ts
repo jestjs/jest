@@ -7,7 +7,6 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import {Script} from 'vm';
 import {Config} from '@jest/types';
 import {createDirectory, interopRequireDefault, isPromise} from 'jest-util';
 import * as fs from 'graceful-fs';
@@ -60,7 +59,6 @@ async function waitForPromiseWithCleanup(
 }
 
 export default class ScriptTransformer {
-  static EVAL_RESULT_VARIABLE: 'Object.<anonymous>';
   private _cache: ProjectCache;
   private _config: Config.ProjectConfig;
   private _transformCache: Map<Config.Path, Transformer>;
@@ -347,12 +345,11 @@ export default class ScriptTransformer {
   ): TransformResult {
     const isInternalModule = !!(options && options.isInternalModule);
     const isCoreModule = !!(options && options.isCoreModule);
-    const moduleArguments = (options && options.moduleArguments) || [];
     const content = stripShebang(
       fileSource || fs.readFileSync(filename, 'utf8'),
     );
 
-    let scriptContent: string;
+    let code = content;
     let sourceMapPath: string | null = null;
     let mapCoverage = false;
 
@@ -369,20 +366,14 @@ export default class ScriptTransformer {
           instrument,
         );
 
-        scriptContent = wrap(transformedSource.code, moduleArguments);
+        code = transformedSource.code;
         sourceMapPath = transformedSource.sourceMapPath;
         mapCoverage = transformedSource.mapCoverage;
-      } else {
-        scriptContent = wrap(content, moduleArguments);
       }
 
       return {
+        code,
         mapCoverage,
-        script: new Script(scriptContent, {
-          displayErrors: true,
-          filename: isCoreModule ? 'jest-nodejs-core-' + filename : filename,
-        }),
-        scriptContent,
         sourceMapPath,
       };
     } catch (e) {
@@ -413,7 +404,7 @@ export default class ScriptTransformer {
 
     if (!options.isCoreModule) {
       instrument = shouldInstrument(filename, options, this._config);
-      scriptCacheKey = getScriptCacheKey(filename, instrument, options);
+      scriptCacheKey = getScriptCacheKey(filename, instrument);
       const result = this._cache.transformedFiles.get(scriptCacheKey);
       if (result) {
         return result;
@@ -667,19 +658,9 @@ const readCacheFile = (cachePath: Config.Path): string | null => {
   return fileData;
 };
 
-const getScriptCacheKey = (
-  filename: Config.Path,
-  instrument: boolean,
-  options: Options,
-) => {
+const getScriptCacheKey = (filename: Config.Path, instrument: boolean) => {
   const mtime = fs.statSync(filename).mtime;
-  return (
-    filename +
-    '_' +
-    mtime.getTime() +
-    (instrument ? '_instrumented' : '') +
-    (options.moduleArguments ? options.moduleArguments.join('') : '')
-  );
+  return filename + '_' + mtime.getTime() + (instrument ? '_instrumented' : '');
 };
 
 const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
@@ -709,13 +690,3 @@ const calcTransformRegExp = (config: Config.ProjectConfig) => {
 
   return transformRegexp;
 };
-
-const wrap = (content: string, moduleArguments: Array<string>) =>
-  '({"' +
-  ScriptTransformer.EVAL_RESULT_VARIABLE +
-  `":function(${moduleArguments.join(',')}){` +
-  content +
-  '\n}});';
-
-// TODO: Can this be added to the static property?
-ScriptTransformer.EVAL_RESULT_VARIABLE = 'Object.<anonymous>';

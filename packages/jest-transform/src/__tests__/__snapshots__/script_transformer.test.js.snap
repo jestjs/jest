@@ -75,7 +75,7 @@ Object {
 `;
 
 exports[`ScriptTransformer transforms a file properly 1`] = `
-({"Object.<anonymous>":function(){/* istanbul ignore next */
+/* istanbul ignore next */
 function cov_25u22311x4() {
   var path = "/fruits/banana.js";
   var hash = "4be0f6184160be573fc43f7c2a5877c28b7ce249";
@@ -122,11 +122,10 @@ function cov_25u22311x4() {
 
 cov_25u22311x4().s[0]++;
 module.exports = "banana";
-}});
 `;
 
 exports[`ScriptTransformer transforms a file properly 2`] = `
-({"Object.<anonymous>":function(){/* istanbul ignore next */
+/* istanbul ignore next */
 function cov_23yvu8etmu() {
   var path = "/fruits/kiwi.js";
   var hash = "7705dd5fcfbc884dcea7062944cfb8cc5d141d1a";
@@ -217,48 +216,33 @@ module.exports = () => {
   cov_23yvu8etmu().s[1]++;
   return "kiwi";
 };
-}});
-`;
-
-exports[`ScriptTransformer transforms a file properly 3`] = `
-({"Object.<anonymous>":function(){module.exports = "banana";
-}});
 `;
 
 exports[`ScriptTransformer uses multiple preprocessors 1`] = `
-({"Object.<anonymous>":function(){const TRANSFORMED = {
+const TRANSFORMED = {
   filename: '/fruits/banana.js',
   script: 'module.exports = "banana";',
   config: '{"automock":false,"browser":false,"cache":true,"cacheDirectory":"/cache/","clearMocks":false,"coveragePathIgnorePatterns":[],"cwd":"/test_root_dir/","detectLeaks":false,"detectOpenHandles":false,"errorOnDeprecated":false,"extraGlobals":[],"filter":null,"forceCoverageMatch":[],"globalSetup":null,"globalTeardown":null,"globals":{},"haste":{"providesModuleNodeModules":[]},"moduleDirectories":[],"moduleFileExtensions":["js"],"moduleLoader":"/test_module_loader_path","moduleNameMapper":[],"modulePathIgnorePatterns":[],"modulePaths":[],"name":"test","prettierPath":"prettier","resetMocks":false,"resetModules":false,"resolver":null,"restoreMocks":false,"rootDir":"/","roots":[],"runner":"jest-runner","setupFiles":[],"setupFilesAfterEnv":[],"skipFilter":false,"skipNodeResolution":false,"snapshotResolver":null,"snapshotSerializers":[],"testEnvironment":"node","testEnvironmentOptions":{},"testLocationInResults":false,"testMatch":[],"testPathIgnorePatterns":[],"testRegex":["\\\\.test\\\\.js$"],"testRunner":"jest-jasmine2","testURL":"http://localhost","timers":"real","transform":[["^.+\\\\.js$","test_preprocessor"],["^.+\\\\.css$","css-preprocessor"]],"transformIgnorePatterns":["/node_modules/"],"unmockedModulePathPatterns":null,"watchPathIgnorePatterns":[]}',
 };
-}});
 `;
 
 exports[`ScriptTransformer uses multiple preprocessors 2`] = `
-({"Object.<anonymous>":function(){module.exports = {
+module.exports = {
   filename: /styles/App.css,
   rawFirstLine: root {,
 };
-}});
 `;
 
-exports[`ScriptTransformer uses multiple preprocessors 3`] = `
-({"Object.<anonymous>":function(){module.exports = "react";
-}});
-`;
+exports[`ScriptTransformer uses multiple preprocessors 3`] = `module.exports = "react";`;
 
 exports[`ScriptTransformer uses the supplied preprocessor 1`] = `
-({"Object.<anonymous>":function(){const TRANSFORMED = {
+const TRANSFORMED = {
   filename: '/fruits/banana.js',
   script: 'module.exports = "banana";',
   config: '{"automock":false,"browser":false,"cache":true,"cacheDirectory":"/cache/","clearMocks":false,"coveragePathIgnorePatterns":[],"cwd":"/test_root_dir/","detectLeaks":false,"detectOpenHandles":false,"errorOnDeprecated":false,"extraGlobals":[],"filter":null,"forceCoverageMatch":[],"globalSetup":null,"globalTeardown":null,"globals":{},"haste":{"providesModuleNodeModules":[]},"moduleDirectories":[],"moduleFileExtensions":["js"],"moduleLoader":"/test_module_loader_path","moduleNameMapper":[],"modulePathIgnorePatterns":[],"modulePaths":[],"name":"test","prettierPath":"prettier","resetMocks":false,"resetModules":false,"resolver":null,"restoreMocks":false,"rootDir":"/","roots":[],"runner":"jest-runner","setupFiles":[],"setupFilesAfterEnv":[],"skipFilter":false,"skipNodeResolution":false,"snapshotResolver":null,"snapshotSerializers":[],"testEnvironment":"node","testEnvironmentOptions":{},"testLocationInResults":false,"testMatch":[],"testPathIgnorePatterns":[],"testRegex":["\\\\.test\\\\.js$"],"testRunner":"jest-jasmine2","testURL":"http://localhost","timers":"real","transform":[["^.+\\\\.js$","test_preprocessor"]],"transformIgnorePatterns":["/node_modules/"],"unmockedModulePathPatterns":null,"watchPathIgnorePatterns":[]}',
 };
-}});
 `;
 
-exports[`ScriptTransformer uses the supplied preprocessor 2`] = `
-({"Object.<anonymous>":function(){module.exports = "react";
-}});
-`;
+exports[`ScriptTransformer uses the supplied preprocessor 2`] = `module.exports = "react";`;
 
 exports[`ScriptTransformer warns of unparseable inlined source maps from the preprocessor 1`] = `jest-transform: The source map produced for the file /fruits/banana.js by preprocessor-with-sourcemaps was invalid. Proceeding without source mapping for that file.`;

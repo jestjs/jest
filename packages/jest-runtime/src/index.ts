@@ -6,12 +6,14 @@
  */
 
 import * as path from 'path';
+import {Script} from 'vm';
 import {Config} from '@jest/types';
 import {
   Jest,
   JestEnvironment,
   LocalModuleRequire,
   Module,
+  ModuleWrapper,
 } from '@jest/environment';
 import {SourceMapRegistry} from '@jest/source-map';
 import jestMock = require('jest-mock');
@@ -77,6 +79,10 @@ const getModuleNameMapper = (config: Config.ProjectConfig) => {
 };
 
 const unmockRegExpCache = new WeakMap();
+
+const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
+
+type RunScriptEvalResult = {[EVAL_RESULT_VARIABLE]: ModuleWrapper};
 
 /* eslint-disable-next-line no-redeclare */
 class Runtime {
@@ -489,7 +495,6 @@ class Runtime {
       collectCoverage: this._coverageOptions.collectCoverage,
       collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
       collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
-      moduleArguments: this.constructInjectedModuleArguments(),
     };
   }
 
@@ -726,7 +731,14 @@ class Runtime {
       }
     }
 
-    const runScript = this._environment.runScript(transformedFile.script);
+    const script = new Script(this.wrap(transformedFile.code), {
+      displayErrors: true,
+      filename: this._resolver.isCoreModule(filename)
+        ? `jest-nodejs-core-${filename}`
+        : filename,
+    });
+
+    const runScript = this._environment.runScript<RunScriptEvalResult>(script);
 
     if (runScript === null) {
       this._logFormattedReferenceError(
@@ -737,7 +749,7 @@ class Runtime {
     }
 
     //Wrapper
-    runScript[ScriptTransformer.EVAL_RESULT_VARIABLE].call(
+    runScript[EVAL_RESULT_VARIABLE].call(
       localModule.exports,
       localModule as NodeModule, // module object
       localModule.exports, // module exports
@@ -1084,6 +1096,16 @@ class Runtime {
     console.error(
       `\n${message}\n` +
         formatStackTrace(stack, this._config, {noStackTrace: false}),
+    );
+  }
+
+  private wrap(content: string) {
+    return (
+      '({"' +
+      EVAL_RESULT_VARIABLE +
+      `":function(${this.constructInjectedModuleArguments().join(',')}){` +
+      content +
+      '\n}});'
     );
   }
 

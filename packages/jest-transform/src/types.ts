@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Script} from 'vm';
 import {RawSourceMap} from 'source-map';
 import {Config} from '@jest/types';
 
@@ -18,7 +17,6 @@ export type Options = ShouldInstrumentOptions &
   Partial<{
     isCoreModule: boolean;
     isInternalModule: boolean;
-    moduleArguments: Array<string>;
   }>;
 
 // https://stackoverflow.com/a/48216010/1850276
@@ -36,8 +34,7 @@ export type TransformedSource = {
 };
 
 export type TransformResult = {
-  script: Script;
-  scriptContent: string;
+  code: string;
   mapCoverage: boolean;
   sourceMapPath: string | null;
 };

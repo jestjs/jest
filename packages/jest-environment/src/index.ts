@@ -8,7 +8,6 @@
 import {Script} from 'vm';
 import {Circus, Config, Global} from '@jest/types';
 import jestMock = require('jest-mock');
-import {ScriptTransformer} from '@jest/transform';
 import {
   JestFakeTimers as LegacyFakeTimers,
   LolexFakeTimers,
@@ -44,9 +43,7 @@ export declare class JestEnvironment {
   fakeTimers: LegacyFakeTimers<unknown> | null;
   fakeTimersLolex: LolexFakeTimers | null;
   moduleMocker: jestMock.ModuleMocker | null;
-  runScript(
-    script: Script,
-  ): {[ScriptTransformer.EVAL_RESULT_VARIABLE]: ModuleWrapper} | null;
+  runScript<T = unknown>(script: Script): T | null;
   setup(): Promise<void>;
   teardown(): Promise<void>;
   handleTestEvent?(event: Circus.Event, state: Circus.State): void;
