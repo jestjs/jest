@@ -17,7 +17,7 @@
 - `[jest-diff]` Add `changeColor` and `patchColor` options ([#8911](https://github.com/facebook/jest/pull/8911))
 - `[jest-diff]` Add `trailingSpaceFormatter` option and replace cyan with `commonColor` ([#8927](https://github.com/facebook/jest/pull/8927))
 - `[jest-diff]` Add `firstOrLastEmptyLineReplacement` option and export 3 `diffLines` functions ([#8955](https://github.com/facebook/jest/pull/8955))
-- `[jest-environment]` Add optional `compileFunction` next ro `runScript` ([#9252](https://github.com/facebook/jest/pull/9252))
+- `[jest-environment]` Add optional `compileFunction` next to `runScript` ([#9252](https://github.com/facebook/jest/pull/9252))
 - `[jest-environment-jsdom]` Add `fakeTimersLolex` ([#8925](https://github.com/facebook/jest/pull/8925))
 - `[jest-environment-node]` Add `fakeTimersLolex` ([#8925](https://github.com/facebook/jest/pull/8925))
 - `[jest-environment-node]` Add `queueMicrotask` ([#9140](https://github.com/facebook/jest/pull/9140))
