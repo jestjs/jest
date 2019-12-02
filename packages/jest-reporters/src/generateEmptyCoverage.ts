@@ -16,10 +16,14 @@ type SingleV8Coverage = V8Coverage[number];
 
 export type CoverageWorkerResult =
   | {
+      kind: 'BabelCoverage';
       coverage: FileCoverage;
       sourceMapPath?: string | null;
     }
-  | SingleV8Coverage;
+  | {
+      kind: 'V8Coverage';
+      result: SingleV8Coverage;
+    };
 
 export default function(
   source: string,
@@ -40,21 +44,24 @@ export default function(
     if (coverageOptions.v8Coverage) {
       const stat = fs.statSync(filename);
       return {
-        functions: [
-          {
-            functionName: '(empty-report)',
-            isBlockCoverage: true,
-            ranges: [
-              {
-                count: 0,
-                endOffset: stat.size,
-                startOffset: 0,
-              },
-            ],
-          },
-        ],
-        scriptId: '0',
-        url: filename,
+        kind: 'V8Coverage',
+        result: {
+          functions: [
+            {
+              functionName: '(empty-report)',
+              isBlockCoverage: true,
+              ranges: [
+                {
+                  count: 0,
+                  endOffset: stat.size,
+                  startOffset: 0,
+                },
+              ],
+            },
+          ],
+          scriptId: '0',
+          url: filename,
+        },
       };
     }
 
@@ -68,6 +75,7 @@ export default function(
     if (extracted) {
       coverageWorkerResult = {
         coverage: createFileCoverage(extracted.coverageData),
+        kind: 'BabelCoverage',
         sourceMapPath: mapCoverage ? sourceMapPath : null,
       };
     }

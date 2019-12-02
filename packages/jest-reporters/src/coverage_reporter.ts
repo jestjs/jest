@@ -197,8 +197,10 @@ export default class CoverageReporter extends BaseReporter {
           });
 
           if (result) {
-            if (this._globalConfig.v8Coverage) {
-              this._v8CoverageResults.push([{result}]);
+            if (result.kind === 'V8Coverage') {
+              this._v8CoverageResults.push([
+                {codeTransformResult: undefined, result: result.result},
+              ]);
             } else {
               this._coverageMap.addFileCoverage(result.coverage);
 
@@ -235,7 +237,7 @@ export default class CoverageReporter extends BaseReporter {
     }
 
     if (worker && 'end' in worker && typeof worker.end === 'function') {
-      worker.end();
+      await worker.end();
     }
   }
 

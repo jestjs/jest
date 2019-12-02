@@ -274,7 +274,7 @@ async function runTestInternal(
       }
     }
 
-    if (globalConfig.v8Coverage) {
+    if (collectV8Coverage) {
       const v8Coverage = runtime.getAllV8CoverageInfoCopy();
       if (v8Coverage && v8Coverage.length > 0) {
         result.v8Coverage = v8Coverage;
