@@ -128,6 +128,8 @@ class NodeEnvironment implements JestEnvironment {
   }
 }
 
+// `jest-runtime` checks for `compileFunction`, so this makes sure to not expose that function if it's unsupported by this version of node
+// Should be removed when we drop support for node 8
 if (typeof compileFunction !== 'function') {
   delete NodeEnvironment.prototype.compileFunction;
 }
