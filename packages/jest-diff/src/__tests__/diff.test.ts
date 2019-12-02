@@ -192,24 +192,104 @@ line 4`;
 });
 
 describe('objects', () => {
-  const a = {a: {b: {c: 5}}};
-  const b = {a: {b: {c: 6}}};
-  const expected = [
-    '  Object {',
-    '    "a": Object {',
-    '      "b": Object {',
-    '-       "c": 5,',
-    '+       "c": 6,',
-    '      },',
-    '    },',
-    '  }',
-  ].join('\n');
+  describe('expand', () => {
+    const a = {a: {b: {c: 5}}};
+    const b = {a: {b: {c: 6}}};
+    const expected = [
+      '  Object {',
+      '    "a": Object {',
+      '      "b": Object {',
+      '-       "c": 5,',
+      '+       "c": 6,',
+      '      },',
+      '    },',
+      '  }',
+    ].join('\n');
 
-  test('(unexpanded)', () => {
-    expect(diff(a, b, unexpandedBe)).toBe(expected);
+    test('(unexpanded)', () => {
+      expect(diff(a, b, unexpandedBe)).toBe(expected);
+    });
+    test('(expanded)', () => {
+      expect(diff(a, b, expandedBe)).toBe(expected);
+    });
   });
-  test('(expanded)', () => {
-    expect(diff(a, b, expandedBe)).toBe(expected);
+
+  describe('asymmetricMatcher', () => {
+    test('jest asymmetricMatcher', () => {
+      const a = {
+        a: expect.any(Number),
+        b: expect.anything(),
+        c: expect.arrayContaining([1, 3]),
+        d: 'jest is awesome',
+        e: 'jest is awesome',
+        f: {
+          a: new Date(),
+          b: 'jest is awesome',
+        },
+        g: true,
+      };
+      const b = {
+        a: 1,
+        b: 'anything',
+        c: [1, 2, 3],
+        d: expect.stringContaining('jest'),
+        e: expect.stringMatching(/^jest/),
+        f: expect.objectContaining({
+          a: expect.any(Date),
+        }),
+        g: false,
+      };
+      const expected = [
+        '  Object {',
+        '    "a": Any<Number>,',
+        '    "b": Anything,',
+        '    "c": ArrayContaining [',
+        '      1,',
+        '      3,',
+        '    ],',
+        '    "d": StringContaining "jest",',
+        '    "e": StringMatching /^jest/,',
+        '    "f": ObjectContaining {',
+        '      "a": Any<Date>,',
+        '    },',
+        '-   "g": true,',
+        '+   "g": false,',
+        '  }',
+      ].join('\n');
+      expect(diff(a, b, optionsBe)).toBe(expected);
+    });
+
+    test('custom asymmetricMatcher', () => {
+      expect.extend({
+        equal5(received: any) {
+          if (received === 5)
+            return {
+              message: () => `expected ${received} not to be 5`,
+              pass: true,
+            };
+          return {
+            message: () => `expected ${received} to be 5`,
+            pass: false,
+          };
+        },
+      });
+      const a = {
+        a: 5,
+        b: true,
+      };
+      const b = {
+        a: expect.equal5(),
+        b: false,
+      };
+      const expected = [
+        '  Object {',
+        '    "a": equal5<>,',
+        '-   "b": true,',
+        '+   "b": false,',
+        '  }',
+      ].join('\n');
+      expect(diff(a, b, optionsBe)).toBe(expected);
+    });
   });
 });
 

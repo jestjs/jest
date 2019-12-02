@@ -131,16 +131,17 @@ function compareObjects(
 ) {
   let difference;
   let hasThrown = false;
+  const {replacedA, replacedB} = replaceMatchedToAsymmetricMatcher(a, b);
 
   try {
-    const aCompare = prettyFormat(a, FORMAT_OPTIONS_0);
-    const bCompare = prettyFormat(b, FORMAT_OPTIONS_0);
+    const aCompare = prettyFormat(replacedA, FORMAT_OPTIONS_0);
+    const bCompare = prettyFormat(replacedB, FORMAT_OPTIONS_0);
 
     if (aCompare === bCompare) {
       difference = NO_DIFF_MESSAGE;
     } else {
-      const aDisplay = prettyFormat(a, FORMAT_OPTIONS);
-      const bDisplay = prettyFormat(b, FORMAT_OPTIONS);
+      const aDisplay = prettyFormat(replacedA, FORMAT_OPTIONS);
+      const bDisplay = prettyFormat(replacedB, FORMAT_OPTIONS);
 
       difference = diffLinesUnified2(
         aDisplay.split('\n'),
@@ -181,6 +182,28 @@ function compareObjects(
   }
 
   return difference;
+}
+
+function replaceMatchedToAsymmetricMatcher(
+  a: Record<string, any>,
+  b: Record<string, any>,
+) {
+  const replacedA = {...a};
+  const replacedB = {...b};
+  Object.entries(replacedB).forEach(([key, bValue]) => {
+    const aValue = a[key];
+    if (isAsymmetricMatcher(bValue)) {
+      if (bValue.asymmetricMatch(aValue)) replacedA[key] = bValue;
+    } else if (isAsymmetricMatcher(aValue)) {
+      if (aValue.asymmetricMatch(bValue)) replacedB[key] = aValue;
+    }
+  });
+  return {replacedA, replacedB};
+}
+
+function isAsymmetricMatcher(data: any) {
+  const type = getType(data);
+  return type === 'object' && typeof data.asymmetricMatch === 'function';
 }
 
 export default diff;
