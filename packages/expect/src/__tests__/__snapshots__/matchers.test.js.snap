@@ -364,6 +364,9 @@ exports[`.toBe() fails for: {"a": [Function a], "b": 2} and {"a": Any<Function>,
 
 <d>If it should pass with deep equality, replace "toBe" with "toStrictEqual"</>
 
+<d>Compared values serialize to the same structure.</>
+<d>Printing internal object structure without calling \`toJSON\` instead.</>
+
 <g>- Expected  - 1</>
 <r>+ Received  + 1</>
 
