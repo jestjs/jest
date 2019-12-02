@@ -33,6 +33,12 @@ function deepCyclicCopyObject<T>(
   options: DeepCyclicCopyOptions,
   cycles: WeakMap<any, any>,
 ): T {
+  if (object instanceof RegExp && options.keepPrototype) {
+    const result = new RegExp(object.source, object.flags);
+    result.lastIndex = object.lastIndex;
+    return result as typeof object;
+  }
+
   const newObject = options.keepPrototype
     ? Object.create(Object.getPrototypeOf(object))
     : {};

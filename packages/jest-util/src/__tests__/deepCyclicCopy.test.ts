@@ -235,3 +235,8 @@ it('keeps the prototype for objects when keepPrototype = true', () => {
   );
   spy.mockRestore();
 });
+
+it('RegExp should work correctly after copied', () => {
+  const regExp = deepCyclicCopy(/jest/i, {keepPrototype: true});
+  expect(regExp.test('JEST is awesome')).toBe(true);
+});
