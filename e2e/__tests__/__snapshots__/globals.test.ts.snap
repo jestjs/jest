@@ -18,20 +18,6 @@ Ran all test suites.
 `;
 
 exports[`cannot have describe with no implementation 1`] = `
-FAIL __tests__/onlyConstructs.test.js
-  ● Test suite failed to run
-
-    Missing second argument. It must be a callback function.
-
-      1 | 
-    > 2 |     describe('describe, no implementation');
-        |              ^
-      3 |   
-
-      at Object.<anonymous> (__tests__/onlyConstructs.test.js:2:14)
-`;
-
-exports[`cannot have describe with no implementation 2`] = `
 Test Suites: 1 failed, 1 total
 Tests:       0 total
 Snapshots:   0 total

@@ -17,7 +17,8 @@ export default function handlePotentialSyntaxError(
   }
 
   if (
-    e instanceof SyntaxError &&
+    // `instanceof` might come from the wrong context
+    e.name === 'SyntaxError' &&
     (e.message.includes('Unexpected token') ||
       e.message.includes('Cannot use import')) &&
     !e.message.includes(' expected')
