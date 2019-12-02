@@ -38,7 +38,7 @@ export type TransformedSource = {
 
 export type TransformResult = {
   code: string;
-  rawCode: string;
+  originalCode: string;
   mapCoverage: boolean;
   sourceMapPath: string | null;
 };

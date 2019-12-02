@@ -174,7 +174,15 @@ export default class CoverageReporter extends BaseReporter {
       const filename = fileObj.path;
       const config = fileObj.config;
 
-      if (!this._coverageMap.data[filename] && 'worker' in worker) {
+      const hasCoverageData = this._v8CoverageResults.some(v8Res =>
+        v8Res.some(innerRes => innerRes.result.url === filename),
+      );
+
+      if (
+        !hasCoverageData &&
+        !this._coverageMap.data[filename] &&
+        'worker' in worker
+      ) {
         try {
           const result = await worker.worker({
             config,
@@ -459,11 +467,11 @@ export default class CoverageReporter extends BaseReporter {
 
           const converter = v8toIstanbul(
             res.url,
-            fileTransform ? fileTransform.scriptWrapperLength : 0,
+            0,
             fileTransform && sourcemapContent
               ? {
-                  originalSource: fileTransform.rawContent,
-                  source: fileTransform.scriptContent,
+                  originalSource: fileTransform.originalCode,
+                  source: fileTransform.code,
                   sourceMap: {sourcemap: sourcemapContent},
                 }
               : {source: fs.readFileSync(res.url, 'utf8')},

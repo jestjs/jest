@@ -373,8 +373,8 @@ export default class ScriptTransformer {
 
       return {
         code,
-        rawCode: content,
         mapCoverage,
+        originalCode: content,
         sourceMapPath,
       };
     } catch (e) {

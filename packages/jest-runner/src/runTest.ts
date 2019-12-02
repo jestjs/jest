@@ -219,13 +219,18 @@ async function runTestInternal(
     };
   }
 
+  // if we don't have `compileFunction` on the env, skip coverage
+  const collectV8Coverage =
+    globalConfig.v8Coverage &&
+    typeof environment.compileFunction === 'function';
+
   try {
     await environment.setup();
 
     let result: TestResult;
 
     try {
-      if (globalConfig.v8Coverage) {
+      if (collectV8Coverage) {
         await runtime.collectV8Coverage();
       }
       result = await testFramework(
@@ -235,15 +240,15 @@ async function runTestInternal(
         runtime,
         path,
       );
-
-      if (globalConfig.v8Coverage) {
-        await runtime.stopCollectingV8Coverage();
-      }
     } catch (err) {
       // Access stack before uninstalling sourcemaps
       err.stack;
 
       throw err;
+    } finally {
+      if (collectV8Coverage) {
+        await runtime.stopCollectingV8Coverage();
+      }
     }
 
     freezeConsole(testConsole, config);
