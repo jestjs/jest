@@ -68,7 +68,6 @@
 - `[jest-diff]` Do not highlight matched asymmetricMatcher in diffs ([#9257](https://github.com/facebook/jest/pull/9257))
 - `[jest-util]` Use `new` to `deepCyclicCopy` RegExp. Fix error of calling method after copied by `Object.create` ([#9257](https://github.com/facebook/jest/pull/9257))
 
-
 ### Chore & Maintenance
 
 - `[*]` [**BREAKING**] Drop support for Node 6 ([#8455](https://github.com/facebook/jest/pull/8455))
