@@ -23,7 +23,6 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   enabledTestsMap: null,
   errorOnDeprecated: false,
   expand: false,
-  extraGlobals: [],
   filter: null,
   findRelatedTests: false,
   forceExit: false,

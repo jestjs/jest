@@ -25,11 +25,13 @@
 - `[jest-matcher-utils]` Add `BigInt` support to `ensureNumbers` `ensureActualIsNumber`, `ensureExpectedIsNumber` ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[jest-reporters]` Export utils for path formatting ([#9162](https://github.com/facebook/jest/pull/9162))
 - `[jest-runner]` Warn if a worker had to be force exited ([#8206](https://github.com/facebook/jest/pull/8206))
+- `[jest-runtime]` [**BREAKING**] Do not export `ScriptTransformer` - it can be imported from `@jest/transform` instead ([#9256](https://github.com/facebook/jest/pull/9256))
 - `[jest-snapshot]` Display change counts in annotation lines ([#8982](https://github.com/facebook/jest/pull/8982))
 - `[jest-snapshot]` [**BREAKING**] Improve report when the matcher has properties ([#9104](https://github.com/facebook/jest/pull/9104))
 - `[jest-snapshot]` Improve colors when snapshots are updatable ([#9132](https://github.com/facebook/jest/pull/9132))
 - `[jest-snapshot]` Ignore indentation for most serialized objects ([#9203](https://github.com/facebook/jest/pull/9203))
 - `[jest-transform]` Create `createTranspilingRequire` function for easy transpiling modules ([#9194](https://github.com/facebook/jest/pull/9194))
+- `[jest-transform]` [**BREAKING**] Return transformed code as a string, do not wrap in `vm.Script` ([#9253](https://github.com/facebook/jest/pull/9253))
 - `[@jest/test-result]` Create method to create empty `TestResult` ([#8867](https://github.com/facebook/jest/pull/8867))
 - `[jest-worker]` [**BREAKING**] Return a promise from `end()`, resolving with the information whether workers exited gracefully ([#8206](https://github.com/facebook/jest/pull/8206))
 - `[jest-reporters]` Transform file paths into hyperlinks ([#8980](https://github.com/facebook/jest/pull/8980))
@@ -62,6 +64,7 @@
 - `[jest-types]` [**BREAKING**] Use less `null | undefined` in config types ([#9200](https://github.com/facebook/jest/pull/9200))
 - `[jest-utils]` Allow querying process.domain ([#9136](https://github.com/facebook/jest/pull/9136))
 - `[pretty-format]` Correctly detect memoized elements ([#9196](https://github.com/facebook/jest/pull/9196))
+- `[jest-fake-timers]` Support `util.promisify` on `setTimeout` ([#9180](https://github.com/facebook/jest/pull/9180))
 
 ### Chore & Maintenance
 

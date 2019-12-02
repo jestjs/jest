@@ -6,7 +6,6 @@
   },
   "references": [
     {"path": "../jest-fake-timers"},
-    {"path": "../jest-transform"},
     {"path": "../jest-types"},
     {"path": "../jest-util"}
   ]

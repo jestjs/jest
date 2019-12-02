@@ -101,6 +101,7 @@ module.exports = {
   plugins: ['markdown', 'import', 'prettier', 'eslint-comments'],
   rules: {
     'arrow-body-style': 2,
+    'eslint-comments/no-unused-disable': 2,
     'flowtype/boolean-style': 2,
     'flowtype/no-primitive-constructor-types': 2,
     'flowtype/require-valid-file-annotation': 2,

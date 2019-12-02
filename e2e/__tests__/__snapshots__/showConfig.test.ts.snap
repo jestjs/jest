@@ -94,7 +94,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "detectOpenHandles": false,
     "errorOnDeprecated": false,
     "expand": false,
-    "extraGlobals": [],
     "findRelatedTests": false,
     "forceExit": false,
     "json": false,

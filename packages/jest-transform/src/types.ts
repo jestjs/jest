@@ -5,22 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Script} from 'vm';
 import {RawSourceMap} from 'source-map';
 import {Config} from '@jest/types';
 
 export type ShouldInstrumentOptions = Pick<
   Config.GlobalConfig,
   'collectCoverage' | 'collectCoverageFrom' | 'collectCoverageOnlyFrom'
-> & {
-  changedFiles?: Set<Config.Path>;
-};
+> & {changedFiles?: Set<Config.Path>};
 
 export type Options = ShouldInstrumentOptions &
-  Partial<Pick<Config.GlobalConfig, 'extraGlobals'>> & {
-    isCoreModule?: boolean;
-    isInternalModule?: boolean;
-  };
+  Partial<{
+    isCoreModule: boolean;
+    isInternalModule: boolean;
+  }>;
 
 // https://stackoverflow.com/a/48216010/1850276
 type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
@@ -37,7 +34,7 @@ export type TransformedSource = {
 };
 
 export type TransformResult = {
-  script: Script;
+  code: string;
   mapCoverage: boolean;
   sourceMapPath: string | null;
 };
