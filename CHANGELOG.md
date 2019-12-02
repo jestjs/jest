@@ -65,6 +65,9 @@
 - `[jest-utils]` Allow querying process.domain ([#9136](https://github.com/facebook/jest/pull/9136))
 - `[pretty-format]` Correctly detect memoized elements ([#9196](https://github.com/facebook/jest/pull/9196))
 - `[jest-fake-timers]` Support `util.promisify` on `setTimeout` ([#9180](https://github.com/facebook/jest/pull/9180))
+- `[jest-diff]` Do not highlight matched asymmetricMatcher in diffs ([#9257](https://github.com/facebook/jest/pull/9257))
+- `[jest-util]` Use `new` to `deepCyclicCopy` RegExp. Fix error of calling method after copied by `Object.create` ([#9257](https://github.com/facebook/jest/pull/9257))
+
 
 ### Chore & Maintenance
 
