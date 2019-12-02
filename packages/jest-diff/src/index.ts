@@ -8,6 +8,7 @@
 import prettyFormat = require('pretty-format');
 import chalk = require('chalk');
 import getType = require('jest-get-type');
+import {deepCyclicCopy} from 'jest-util';
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import {diffLinesRaw, diffLinesUnified, diffLinesUnified2} from './diffLines';
 import {diffStringsRaw, diffStringsUnified} from './printDiffs';
@@ -188,8 +189,8 @@ function replaceMatchedToAsymmetricMatcher(
   a: Record<string, any>,
   b: Record<string, any>,
 ) {
-  const replacedA = {...a};
-  const replacedB = {...b};
+  const replacedA = deepCyclicCopy(a, {keepPrototype: true});
+  const replacedB = deepCyclicCopy(b, {keepPrototype: true});
   Object.entries(replacedB).forEach(([key, bValue]) => {
     const aValue = a[key];
     if (isAsymmetricMatcher(bValue)) {
