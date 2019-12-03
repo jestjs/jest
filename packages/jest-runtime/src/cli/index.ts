@@ -35,7 +35,6 @@ export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
       .version(false)
       .options(args.options).argv;
 
-    // @ts-ignore: fix this at some point
     validateCLIOptions(argv, {...args.options, deprecationEntries});
   }
 
@@ -63,8 +62,6 @@ export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
     const info = cliInfo ? ', ' + cliInfo.join(', ') : '';
     console.log(`Using Jest Runtime v${VERSION}${info}`);
   }
-  // TODO: Figure this out
-  // @ts-ignore: this might not have the correct arguments
   const options = readConfig(argv, root);
   const globalConfig = options.globalConfig;
   // Always disable automocking in scripts.
