@@ -48,7 +48,9 @@
 - `[jest-core]` Don't include unref'd timers in --detectOpenHandles results ([#8941](https://github.com/facebook/jest/pull/8941))
 - `[jest-diff]` Do not inverse format if line consists of one change ([#8903](https://github.com/facebook/jest/pull/8903))
 - `[jest-diff]` Rename some new options and change their default values ([#9077](https://github.com/facebook/jest/pull/9077))
+- `[jest-diff]` Do not highlight matched asymmetricMatcher in diffs ([#9257](https://github.com/facebook/jest/pull/9257))
 - `[jest-fake-timers]` `getTimerCount` will not include cancelled immediates ([#8764](https://github.com/facebook/jest/pull/8764))
+- `[jest-fake-timers]` Support `util.promisify` on `setTimeout` ([#9180](https://github.com/facebook/jest/pull/9180))
 - `[jest-leak-detector]` [**BREAKING**] Use `weak-napi` instead of `weak` package ([#8686](https://github.com/facebook/jest/pull/8686))
 - `[jest-mock]` Fix for mockReturnValue overriding mockImplementationOnce ([#8398](https://github.com/facebook/jest/pull/8398))
 - `[jest-reporters]` Make node-notifier an optional dependency ([#8918](https://github.com/facebook/jest/pull/8918))
@@ -62,11 +64,9 @@
 - `[jest-transform]` Properly cache transformed files across tests ([#8890](https://github.com/facebook/jest/pull/8890))
 - `[jest-transform]` Don't fail the test suite when a generated source map is invalid ([#9058](https://github.com/facebook/jest/pull/9058))
 - `[jest-types]` [**BREAKING**] Use less `null | undefined` in config types ([#9200](https://github.com/facebook/jest/pull/9200))
-- `[jest-utils]` Allow querying process.domain ([#9136](https://github.com/facebook/jest/pull/9136))
-- `[pretty-format]` Correctly detect memoized elements ([#9196](https://github.com/facebook/jest/pull/9196))
-- `[jest-fake-timers]` Support `util.promisify` on `setTimeout` ([#9180](https://github.com/facebook/jest/pull/9180))
-- `[jest-diff]` Do not highlight matched asymmetricMatcher in diffs ([#9257](https://github.com/facebook/jest/pull/9257))
+- `[jest-util]` Allow querying process.domain ([#9136](https://github.com/facebook/jest/pull/9136))
 - `[jest-util]` Use `new` to `deepCyclicCopy` RegExp. Fix error of calling method after copied by `Object.create` ([#9257](https://github.com/facebook/jest/pull/9257))
+- `[pretty-format]` Correctly detect memoized elements ([#9196](https://github.com/facebook/jest/pull/9196))
 
 ### Chore & Maintenance
 
