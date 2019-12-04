@@ -24,6 +24,7 @@ afterAll(() => {
 
 /* global BigInt */
 const isBigIntDefined = typeof BigInt === 'function';
+const isTextEncoderDefined = typeof TextEncoder === 'function';
 
 it('should throw if passed two arguments', () => {
   expect(() => jestExpect('foo', 'bar')).toThrow(
@@ -689,8 +690,6 @@ describe('.toEqual()', () => {
       Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
       Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
     ],
-    [new Uint8Array([1, 2, 3]), new Uint8Array([1, 2, 3])],
-    [new TextEncoder().encode('abc'), new Uint8Array([97, 98, 99])],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 1})],
     [[1, 2, 3], jestExpect.arrayContaining([2, 3])],
     ['abcd', jestExpect.stringContaining('bc')],
@@ -735,6 +734,22 @@ describe('.toEqual()', () => {
       expect(() => jestExpect(a).not.toEqual(b)).toThrowErrorMatchingSnapshot();
     });
   });
+
+  if (isTextEncoderDefined) {
+    [
+      [new Uint8Array([97, 98, 99]), new Uint8Array([97, 98, 99])],
+      [new TextEncoder().encode('abc'), new Uint8Array([97, 98, 99])],
+    ].forEach(([a, b]) => {
+      test(`{pass: true} expect(${stringify(a)}).not.toEqual(${stringify(
+        b,
+      )})`, () => {
+        jestExpect(a).toEqual(b);
+        expect(() =>
+          jestExpect(a).not.toEqual(b),
+        ).toThrowErrorMatchingSnapshot();
+      });
+    });
+  }
 
   if (isBigIntDefined) {
     [
