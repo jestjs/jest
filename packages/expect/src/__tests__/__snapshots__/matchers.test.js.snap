@@ -2537,6 +2537,13 @@ Expected: not <g>StringMatching /bc/</>
 Received:     <r>"abcd"</>
 `;
 
+exports[`.toEqual() {pass: true} expect([1, 2, 3]).not.toEqual([1, 2, 3]) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>[1, 2, 3]</>
+
+`;
+
 exports[`.toEqual() {pass: true} expect([1, 2, 3]).not.toEqual(ArrayContaining [2, 3]) 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
@@ -2555,6 +2562,13 @@ exports[`.toEqual() {pass: true} expect([1]).not.toEqual([1]) 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 Expected: not <g>[1]</>
+
+`;
+
+exports[`.toEqual() {pass: true} expect([97, 98, 99]).not.toEqual([97, 98, 99]) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>[97, 98, 99]</>
 
 `;
 

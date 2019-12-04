@@ -58,6 +58,7 @@ class NodeEnvironment implements JestEnvironment {
     ) {
       global.TextEncoder = TextEncoder;
       global.TextDecoder = TextDecoder;
+      global.Uint8Array = Uint8Array;
     }
     // queueMicrotask is global in Node >= 11
     if (typeof queueMicrotask !== 'undefined') {
