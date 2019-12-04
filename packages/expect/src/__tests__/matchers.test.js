@@ -744,9 +744,7 @@ describe('.toEqual()', () => {
         b,
       )})`, () => {
         jestExpect(a).toEqual(b);
-        expect(() =>
-          jestExpect(a).not.toEqual(b),
-        ).toThrowErrorMatchingSnapshot();
+        expect(() => jestExpect(a).not.toEqual(b)).toThrowError('toEqual');
       });
     });
   }
