@@ -155,6 +155,14 @@ function assertionErrorMessage(
     );
   }
 
+  if (operatorName === 'fail') {
+    return (
+      buildHintString(assertMatcherHint(operator, operatorName, expected)) +
+      chalk.reset(hasCustomMessage ? 'Message:\n  ' + message : '') +
+      trimmedStack
+    );
+  }
+
   return (
     buildHintString(assertMatcherHint(operator, operatorName, expected)) +
     chalk.reset(`Expected value ${operatorMessage(operator)}`) +
