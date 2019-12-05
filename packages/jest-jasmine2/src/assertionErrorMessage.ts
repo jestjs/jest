@@ -42,6 +42,9 @@ const getOperatorName = (operator: string | null, stack: string) => {
   if (stack.match('.throws')) {
     return 'throws';
   }
+  if (stack.match('.fail')) {
+    return 'fail';
+  }
   return '';
 };
 
