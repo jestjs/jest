@@ -488,6 +488,7 @@ describe('.toEqual()', () => {
       Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
       Immutable.Map({1: Immutable.Map({2: {a: 11}})}),
     ],
+    [new Uint8Array([97, 98, 99]), new Uint8Array([97, 98, 100])],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 2})],
     [false, jestExpect.objectContaining({a: 2})],
     [[1, 3], jestExpect.arrayContaining([1, 2])],
