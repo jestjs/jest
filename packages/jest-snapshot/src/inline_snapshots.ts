@@ -19,6 +19,8 @@ import {Frame} from 'jest-message-util';
 import {Config} from '@jest/types';
 import {escapeBacktickString} from './utils';
 
+const SNAPSHOT_TOKEN = `$__SNAPSHOT_TOKEN__$`;
+
 export type InlineSnapshot = {
   snapshot: string;
   frame: Frame;
@@ -92,7 +94,7 @@ const saveSnapshotsForFile = (
   const formattedNewSourceFile = prettier.format(newSourceFile, {
     ...config,
     filepath: sourceFilePath,
-    parser: createFormattingParser(snapshots, inferredParser, babelTraverse),
+    parser: createFormattingParser(inferredParser, babelTraverse),
   });
 
   if (formattedNewSourceFile !== sourceFile) {
@@ -198,6 +200,7 @@ const createInsertionParser = (
           'Jest: Multiple inline snapshots for the same call are not supported.',
         );
       }
+      callee.property.name = SNAPSHOT_TOKEN + callee.property.name;
       const snapshotIndex = args.findIndex(
         ({type}) => type === 'TemplateLiteral',
       );
@@ -228,7 +231,6 @@ const createInsertionParser = (
 
 // This parser formats snapshots to the correct indentation.
 const createFormattingParser = (
-  snapshots: Array<InlineSnapshot>,
   inferredParser: string,
   babelTraverse: Function,
 ) => (
@@ -239,22 +241,20 @@ const createFormattingParser = (
   // Workaround for https://github.com/prettier/prettier/issues/3150
   options.parser = inferredParser;
 
-  const groupedSnapshots = groupSnapshotsByFrame(snapshots);
-
   const ast = getAst(parsers, inferredParser, text);
   babelTraverse(ast, {
     CallExpression({node: {arguments: args, callee}}: {node: CallExpression}) {
       if (
         callee.type !== 'MemberExpression' ||
-        callee.property.type !== 'Identifier'
+        callee.property.type !== 'Identifier' ||
+        !callee.property.name.startsWith(SNAPSHOT_TOKEN) ||
+        !callee.loc ||
+        callee.computed
       ) {
         return;
       }
-      const {line, column} = callee.property.loc.start;
-      const snapshotsForFrame = groupedSnapshots[`${line}:${column}`];
-      if (!snapshotsForFrame) {
-        return;
-      }
+
+      callee.property.name = callee.property.name.slice(SNAPSHOT_TOKEN.length);
 
       let snapshotIndex: number | undefined;
       let snapshot: string | undefined;
