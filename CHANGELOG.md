@@ -69,6 +69,7 @@
 - `[jest-utils]` Allow querying process.domain ([#9136](https://github.com/facebook/jest/pull/9136))
 - `[pretty-format]` Correctly detect memoized elements ([#9196](https://github.com/facebook/jest/pull/9196))
 - `[jest-fake-timers]` Support `util.promisify` on `setTimeout` ([#9180](https://github.com/facebook/jest/pull/9180))
+- `[jest-environment-node]` Fix `TextEncoder.encode` not referencing same global `Uint8Array` constructor ([#9261](https://github.com/facebook/jest/pull/9261))
 
 ### Chore & Maintenance
 
