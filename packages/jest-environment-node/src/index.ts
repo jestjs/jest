@@ -46,6 +46,11 @@ class NodeEnvironment implements JestEnvironment {
     global.setInterval = setInterval;
     global.setTimeout = setTimeout;
     global.ArrayBuffer = ArrayBuffer;
+    // TextEncoder (global or via 'util') references a Uint8Array constructor
+    // different than the global one used by users in tests. This makes sure the
+    // same constructor is referenced by both.
+    global.Uint8Array = Uint8Array;
+
     // URL and URLSearchParams are global in Node >= 10
     if (typeof URL !== 'undefined' && typeof URLSearchParams !== 'undefined') {
       global.URL = URL;
@@ -58,7 +63,6 @@ class NodeEnvironment implements JestEnvironment {
     ) {
       global.TextEncoder = TextEncoder;
       global.TextDecoder = TextDecoder;
-      global.Uint8Array = Uint8Array;
     }
     // queueMicrotask is global in Node >= 11
     if (typeof queueMicrotask !== 'undefined') {
