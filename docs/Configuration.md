@@ -435,6 +435,7 @@ Default: `false`
 If setting this option true, it will not highlight asymmetric matches
 
 ignoreAsymmetricMatches = `true`
+
 ```diff
   Object {
     a: expect.any(Number),
@@ -444,6 +445,7 @@ ignoreAsymmetricMatches = `true`
 ```
 
 ignoreAsymmetricMatches = `false`
+
 ```diff
   Object {
 -   a: expect.any(Number),
