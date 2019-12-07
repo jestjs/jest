@@ -25,6 +25,7 @@ const INITIAL_STATE: Circus.State = {
   currentlyRunningTest: null,
   expand: undefined,
   hasFocusedTests: false, // whether .only has been used on any test/describe
+  ignoreAsymmetricMatches: false,
   includeTestLocationInResult: false,
   parentProcess: null,
   rootDescribeBlock: ROOT_DESCRIBE_BLOCK,

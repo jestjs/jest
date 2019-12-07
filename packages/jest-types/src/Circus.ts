@@ -183,6 +183,7 @@ export type State = {
   // Store process error handlers. During the run we inject our own
   // handlers (so we could fail tests on unhandled errors) and later restore
   // the original ones.
+  ignoreAsymmetricMatches: boolean;
   originalGlobalErrorHandlers?: GlobalErrorHandlers;
   parentProcess: Process | null; // process object from the outer scope
   rootDescribeBlock: DescribeBlock;

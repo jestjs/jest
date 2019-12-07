@@ -30,6 +30,7 @@ const jestAdapter = async (
     .requireInternalModule(path.resolve(__dirname, './jestExpect.js'))
     .default({
       expand: globalConfig.expand,
+      ignoreAsymmetricMatches: globalConfig.ignoreAsymmetricMatches
     });
 
   const getPrettier = () =>
