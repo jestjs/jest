@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`should ignore with --ignoreAsymmetricMatches cli option 1`] = `
-"FAIL ./asymmetrictMatcher.test.js
+"FAIL __tests__/asymmetrictMatcher.test.js
   ✕ minimal test
   ✕ jest asymmetricMatcher
   ✕ custom asymmetricMatcher
@@ -30,7 +30,7 @@ exports[`should ignore with --ignoreAsymmetricMatches cli option 1`] = `
       6 | 
       7 | test('jest asymmetricMatcher', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:4:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:4:20)
 
   ● jest asymmetricMatcher
 
@@ -57,7 +57,7 @@ exports[`should ignore with --ignoreAsymmetricMatches cli option 1`] = `
       34 | 
       35 | test('custom asymmetricMatcher', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:32:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:32:20)
 
   ● custom asymmetricMatcher
 
@@ -80,7 +80,7 @@ exports[`should ignore with --ignoreAsymmetricMatches cli option 1`] = `
       60 | 
       61 | test('nested object', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:58:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:58:20)
 
   ● nested object
 
@@ -107,7 +107,7 @@ exports[`should ignore with --ignoreAsymmetricMatches cli option 1`] = `
       80 | 
       81 | test('circular', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:78:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:78:20)
 
   ● circular
 
@@ -131,7 +131,7 @@ exports[`should ignore with --ignoreAsymmetricMatches cli option 1`] = `
       94 | 
       95 | test('transitive circular', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:92:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:92:20)
 
   ● transitive circular
 
@@ -156,11 +156,11 @@ exports[`should ignore with --ignoreAsymmetricMatches cli option 1`] = `
       105 | });
       106 | 
 
-      at Object.toEqual (asymmetrictMatcher.test.js:104:20)"
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:104:20)"
 `;
 
 exports[`should ignore with ignoreAsymmetricMatches=true in config 1`] = `
-"FAIL ./asymmetrictMatcher.test.js
+"FAIL __tests__/asymmetrictMatcher.test.js
   ✕ minimal test
   ✕ jest asymmetricMatcher
   ✕ custom asymmetricMatcher
@@ -189,7 +189,7 @@ exports[`should ignore with ignoreAsymmetricMatches=true in config 1`] = `
       6 | 
       7 | test('jest asymmetricMatcher', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:4:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:4:20)
 
   ● jest asymmetricMatcher
 
@@ -216,7 +216,7 @@ exports[`should ignore with ignoreAsymmetricMatches=true in config 1`] = `
       34 | 
       35 | test('custom asymmetricMatcher', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:32:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:32:20)
 
   ● custom asymmetricMatcher
 
@@ -239,7 +239,7 @@ exports[`should ignore with ignoreAsymmetricMatches=true in config 1`] = `
       60 | 
       61 | test('nested object', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:58:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:58:20)
 
   ● nested object
 
@@ -266,7 +266,7 @@ exports[`should ignore with ignoreAsymmetricMatches=true in config 1`] = `
       80 | 
       81 | test('circular', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:78:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:78:20)
 
   ● circular
 
@@ -290,7 +290,7 @@ exports[`should ignore with ignoreAsymmetricMatches=true in config 1`] = `
       94 | 
       95 | test('transitive circular', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:92:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:92:20)
 
   ● transitive circular
 
@@ -315,11 +315,11 @@ exports[`should ignore with ignoreAsymmetricMatches=true in config 1`] = `
       105 | });
       106 | 
 
-      at Object.toEqual (asymmetrictMatcher.test.js:104:20)"
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:104:20)"
 `;
 
 exports[`should not ignore in default 1`] = `
-"FAIL ./asymmetrictMatcher.test.js
+"FAIL __tests__/asymmetrictMatcher.test.js
   ✕ minimal test
   ✕ jest asymmetricMatcher
   ✕ custom asymmetricMatcher
@@ -349,7 +349,7 @@ exports[`should not ignore in default 1`] = `
       6 | 
       7 | test('jest asymmetricMatcher', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:4:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:4:20)
 
   ● jest asymmetricMatcher
 
@@ -391,7 +391,7 @@ exports[`should not ignore in default 1`] = `
       34 | 
       35 | test('custom asymmetricMatcher', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:32:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:32:20)
 
   ● custom asymmetricMatcher
 
@@ -415,7 +415,7 @@ exports[`should not ignore in default 1`] = `
       60 | 
       61 | test('nested object', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:58:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:58:20)
 
   ● nested object
 
@@ -444,7 +444,7 @@ exports[`should not ignore in default 1`] = `
       80 | 
       81 | test('circular', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:78:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:78:20)
 
   ● circular
 
@@ -469,7 +469,7 @@ exports[`should not ignore in default 1`] = `
       94 | 
       95 | test('transitive circular', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:92:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:92:20)
 
   ● transitive circular
 
@@ -495,11 +495,11 @@ exports[`should not ignore in default 1`] = `
       105 | });
       106 | 
 
-      at Object.toEqual (asymmetrictMatcher.test.js:104:20)"
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:104:20)"
 `;
 
 exports[`should not ignore with ignoreAsymmetricMatches=false in config 1`] = `
-"FAIL ./asymmetrictMatcher.test.js
+"FAIL __tests__/asymmetrictMatcher.test.js
   ✕ minimal test
   ✕ jest asymmetricMatcher
   ✕ custom asymmetricMatcher
@@ -529,7 +529,7 @@ exports[`should not ignore with ignoreAsymmetricMatches=false in config 1`] = `
       6 | 
       7 | test('jest asymmetricMatcher', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:4:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:4:20)
 
   ● jest asymmetricMatcher
 
@@ -571,7 +571,7 @@ exports[`should not ignore with ignoreAsymmetricMatches=false in config 1`] = `
       34 | 
       35 | test('custom asymmetricMatcher', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:32:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:32:20)
 
   ● custom asymmetricMatcher
 
@@ -595,7 +595,7 @@ exports[`should not ignore with ignoreAsymmetricMatches=false in config 1`] = `
       60 | 
       61 | test('nested object', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:58:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:58:20)
 
   ● nested object
 
@@ -624,7 +624,7 @@ exports[`should not ignore with ignoreAsymmetricMatches=false in config 1`] = `
       80 | 
       81 | test('circular', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:78:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:78:20)
 
   ● circular
 
@@ -649,7 +649,7 @@ exports[`should not ignore with ignoreAsymmetricMatches=false in config 1`] = `
       94 | 
       95 | test('transitive circular', () => {
 
-      at Object.toEqual (asymmetrictMatcher.test.js:92:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:92:20)
 
   ● transitive circular
 
@@ -675,5 +675,5 @@ exports[`should not ignore with ignoreAsymmetricMatches=false in config 1`] = `
       105 | });
       106 | 
 
-      at Object.toEqual (asymmetrictMatcher.test.js:104:20)"
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:104:20)"
 `;
