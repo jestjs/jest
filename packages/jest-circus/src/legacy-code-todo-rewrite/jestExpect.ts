@@ -15,10 +15,14 @@ import {
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
 
-export default (config: {expand: boolean}) => {
+export default (config: {
+  expand: boolean;
+  ignoreAsymmetricMatches: boolean;
+}) => {
   global.expect = expect;
   expect.setState({
     expand: config.expand,
+    ignoreAsymmetricMatches: config.ignoreAsymmetricMatches,
   });
   expect.extend({
     toMatchInlineSnapshot,

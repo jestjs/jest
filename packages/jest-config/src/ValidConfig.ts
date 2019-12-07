@@ -59,6 +59,7 @@ const initialOptions: Config.InitialOptions = {
     providesModuleNodeModules: ['react', 'react-native'],
     throwOnModuleCollision: false,
   },
+  ignoreAsymmetricMatches: false,
   json: false,
   lastCommit: false,
   logHeapUsage: true,

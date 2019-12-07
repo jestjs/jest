@@ -35,6 +35,7 @@ import {
 import {isError} from './utils';
 
 const DID_NOT_THROW = 'Received function did not throw';
+const ignoreAsymmetricMatches = (ignore?: boolean): boolean => ignore === true;
 
 type Thrown =
   | {
@@ -120,7 +121,13 @@ export const createMatcher = (
     ) {
       return toThrowExpectedAsymmetric(matcherName, options, thrown, expected);
     } else if (expected !== null && typeof expected === 'object') {
-      return toThrowExpectedObject(matcherName, options, thrown, expected);
+      return toThrowExpectedObject(
+        matcherName,
+        options,
+        thrown,
+        expected,
+        ignoreAsymmetricMatches(this.ignoreAsymmetricMatches),
+      );
     } else {
       throw new Error(
         matcherErrorMessage(
@@ -218,6 +225,7 @@ const toThrowExpectedObject = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: any,
+  ignoreAsymmetricMatches: boolean,
 ): SyncExpectationResult => {
   const pass = thrown !== null && thrown.message === expected.message;
 
@@ -243,6 +251,7 @@ const toThrowExpectedObject = (
               'Expected message',
               'Received message',
               true,
+              ignoreAsymmetricMatches,
             ) +
             '\n' +
             formatStack(thrown)

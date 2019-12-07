@@ -96,6 +96,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "expand": false,
     "findRelatedTests": false,
     "forceExit": false,
+    "ignoreAsymmetricMatches": false,
     "json": false,
     "lastCommit": false,
     "listTests": false,

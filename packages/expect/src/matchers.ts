@@ -54,6 +54,7 @@ const RECEIVED_VALUE_LABEL = 'Received value';
 
 // The optional property of matcher context is true if undefined.
 const isExpand = (expand?: boolean): boolean => expand !== false;
+const ignoreAsymmetricMatches = (ignore?: boolean): boolean => ignore === true;
 
 const toStrictEqualTesters = [
   iterableEquality,
@@ -112,6 +113,7 @@ const matchers: MatchersObject = {
               EXPECTED_LABEL,
               RECEIVED_LABEL,
               isExpand(this.expand),
+              ignoreAsymmetricMatches(this.ignoreAsymmetricMatches),
             )
           );
         };
@@ -612,6 +614,7 @@ const matchers: MatchersObject = {
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
+            ignoreAsymmetricMatches(this.ignoreAsymmetricMatches),
           );
 
     // Passing the actual and expected objects so that a custom reporter
@@ -786,6 +789,7 @@ const matchers: MatchersObject = {
                 EXPECTED_VALUE_LABEL,
                 RECEIVED_VALUE_LABEL,
                 isExpand(this.expand),
+                ignoreAsymmetricMatches(this.ignoreAsymmetricMatches),
               )
             : `Received path: ${printReceived(
                 expectedPathType === 'array' || receivedPath.length === 0
@@ -921,6 +925,7 @@ const matchers: MatchersObject = {
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
+            ignoreAsymmetricMatches(this.ignoreAsymmetricMatches),
           );
 
     return {message, pass};
@@ -953,6 +958,7 @@ const matchers: MatchersObject = {
             EXPECTED_LABEL,
             RECEIVED_LABEL,
             isExpand(this.expand),
+            ignoreAsymmetricMatches(this.ignoreAsymmetricMatches),
           );
 
     // Passing the actual and expected objects so that a custom reporter

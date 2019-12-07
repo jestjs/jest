@@ -43,6 +43,7 @@ export type DefaultOptions = {
   forceCoverageMatch: Array<Glob>;
   globals: ConfigGlobals;
   haste: HasteConfig;
+  ignoreAsymmetricMatches: boolean;
   maxConcurrency: number;
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
@@ -128,6 +129,7 @@ export type InitialOptions = Partial<{
   globalSetup: string | null | undefined;
   globalTeardown: string | null | undefined;
   haste: HasteConfig;
+  ignoreAsymmetricMatches: boolean;
   reporters: Array<string | ReporterConfig>;
   logHeapUsage: boolean;
   lastCommit: boolean;
@@ -252,6 +254,7 @@ export type GlobalConfig = {
   json: boolean;
   globalSetup?: string;
   globalTeardown?: string;
+  ignoreAsymmetricMatches: boolean;
   lastCommit: boolean;
   logHeapUsage: boolean;
   listTests: boolean;
@@ -381,6 +384,7 @@ export type Argv = Arguments<
     globalSetup: string | null | undefined;
     globalTeardown: string | null | undefined;
     haste: string;
+    ignoreAsymmetricMatches: boolean;
     init: boolean;
     json: boolean;
     lastCommit: boolean;
