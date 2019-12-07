@@ -266,3 +266,25 @@ test('handles mocking native modules prettier relies on', () => {
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
   expect(exitCode).toBe(0);
 });
+
+test('supports custom matchers', () => {
+  const filename = 'custom-matchers.test.js';
+  const test = `
+    const { toMatchInlineSnapshot } = require('jest-snapshot');
+    expect.extend({
+      toMatchCustomInlineSnapshot(received, ...args) {
+        return toMatchInlineSnapshot.call(this, received, ...args);
+      }
+    });
+    test('inline snapshots', () => {
+      expect({apple: "original value"}).toMatchCustomInlineSnapshot();
+    });
+  `;
+
+  writeFiles(TESTS_DIR, {[filename]: test});
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const fileAfter = readFile(filename);
+  expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+  expect(exitCode).toBe(0);
+  expect(wrap(fileAfter)).toMatchSnapshot('custom matchers');
+});

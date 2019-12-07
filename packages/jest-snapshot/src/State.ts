@@ -14,7 +14,7 @@ import {
   getSnapshotData,
   keyToTestName,
   removeExtraLineBreaks,
-  removeLinesBeforeExternalMatcherMark,
+  removeLinesBeforeExternalMatcherTrap,
   saveSnapshotFile,
   serialize,
   testNameToKey,
@@ -106,7 +106,7 @@ export default class SnapshotState {
     if (options.isInline) {
       const error = options.error || new Error();
       const lines = getStackTraceLines(
-        removeLinesBeforeExternalMatcherMark(error.stack || ''),
+        removeLinesBeforeExternalMatcherTrap(error.stack || ''),
       );
       const frame = getTopFrame(lines);
       if (!frame) {

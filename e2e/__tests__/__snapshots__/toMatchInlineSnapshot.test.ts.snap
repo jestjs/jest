@@ -160,6 +160,23 @@ test('inline snapshots', async () => {
 
 `;
 
+exports[`supports custom matchers: custom matchers 1`] = `
+const {toMatchInlineSnapshot} = require('jest-snapshot');
+expect.extend({
+  toMatchCustomInlineSnapshot(received, ...args) {
+    return toMatchInlineSnapshot.call(this, received, ...args);
+  },
+});
+test('inline snapshots', () => {
+  expect({apple: 'original value'}).toMatchCustomInlineSnapshot(\`
+    Object {
+      "apple": "original value",
+    }
+  \`);
+});
+
+`;
+
 exports[`writes snapshots with non-literals in expect(...) 1`] = `
 it('works with inline snapshots', () => {
   expect({a: 1}).toMatchInlineSnapshot(\`

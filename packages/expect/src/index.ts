@@ -47,7 +47,6 @@ import {
   setState,
 } from './jestMatchersObject';
 import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
-import externalMatcherMark from './externalMatcherMark';
 
 class JestAssertionError extends Error {
   matcherResult?: SyncExpectationResult;
@@ -318,7 +317,9 @@ const makeThrowingMatcher = (
       potentialResult =
         matcher[INTERNAL_MATCHER_FLAG] === true
           ? matcher.call(matcherContext, actual, ...args)
-          : externalMatcherMark(matcher.call(matcherContext, actual, ...args));
+          : (function __EXTERNAL_MATCHER_TRAP__() {
+              return matcher.call(matcherContext, actual, ...args);
+            })();
 
       if (isPromise(potentialResult)) {
         const asyncResult = potentialResult as AsyncExpectationResult;

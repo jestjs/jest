@@ -19,8 +19,6 @@ import {Frame} from 'jest-message-util';
 import {Config} from '@jest/types';
 import {escapeBacktickString} from './utils';
 
-const SNAPSHOT_TOKEN = `$__SNAPSHOT_TOKEN__$`;
-
 export type InlineSnapshot = {
   snapshot: string;
   frame: Frame;
@@ -80,6 +78,10 @@ const saveSnapshotsForFile = (
     ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
     : (config && config.parser) || simpleDetectParser(sourceFilePath);
 
+  // Record the matcher names seen in insertion parser and pass them down one
+  // by one to formatting parser.
+  const snapshotMatcherNames: Array<string> = [];
+
   // Insert snapshots using the custom parser API. After insertion, the code is
   // formatted, except snapshot indentation. Snapshots cannot be formatted until
   // after the initial format because we don't know where the call expression
@@ -87,14 +89,23 @@ const saveSnapshotsForFile = (
   const newSourceFile = prettier.format(sourceFile, {
     ...config,
     filepath: sourceFilePath,
-    parser: createInsertionParser(snapshots, inferredParser, babelTraverse),
+    parser: createInsertionParser(
+      snapshots,
+      snapshotMatcherNames,
+      inferredParser,
+      babelTraverse,
+    ),
   });
 
   // Format the snapshots using the custom parser API.
   const formattedNewSourceFile = prettier.format(newSourceFile, {
     ...config,
     filepath: sourceFilePath,
-    parser: createFormattingParser(inferredParser, babelTraverse),
+    parser: createFormattingParser(
+      snapshotMatcherNames,
+      inferredParser,
+      babelTraverse,
+    ),
   });
 
   if (formattedNewSourceFile !== sourceFile) {
@@ -168,6 +179,7 @@ const getAst = (
 // This parser inserts snapshots into the AST.
 const createInsertionParser = (
   snapshots: Array<InlineSnapshot>,
+  snapshotMatcherNames: Array<string>,
   inferredParser: string,
   babelTraverse: Function,
 ) => (
@@ -200,7 +212,9 @@ const createInsertionParser = (
           'Jest: Multiple inline snapshots for the same call are not supported.',
         );
       }
-      callee.property.name = SNAPSHOT_TOKEN + callee.property.name;
+
+      snapshotMatcherNames.push(callee.property.name);
+
       const snapshotIndex = args.findIndex(
         ({type}) => type === 'TemplateLiteral',
       );
@@ -231,6 +245,7 @@ const createInsertionParser = (
 
 // This parser formats snapshots to the correct indentation.
 const createFormattingParser = (
+  snapshotMatcherNames: Array<string>,
   inferredParser: string,
   babelTraverse: Function,
 ) => (
@@ -247,14 +262,12 @@ const createFormattingParser = (
       if (
         callee.type !== 'MemberExpression' ||
         callee.property.type !== 'Identifier' ||
-        !callee.property.name.startsWith(SNAPSHOT_TOKEN) ||
+        callee.property.name !== snapshotMatcherNames[0] ||
         !callee.loc ||
         callee.computed
       ) {
         return;
       }
-
-      callee.property.name = callee.property.name.slice(SNAPSHOT_TOKEN.length);
 
       let snapshotIndex: number | undefined;
       let snapshot: string | undefined;
@@ -268,6 +281,8 @@ const createFormattingParser = (
       if (snapshot === undefined || snapshotIndex === undefined) {
         return;
       }
+
+      snapshotMatcherNames.shift();
 
       const useSpaces = !options.useTabs;
       snapshot = indent(

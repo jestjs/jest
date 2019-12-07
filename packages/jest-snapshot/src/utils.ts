@@ -136,11 +136,11 @@ export const removeExtraLineBreaks = (string: string): string =>
     ? string.slice(1, -1)
     : string;
 
-export const removeLinesBeforeExternalMatcherMark = (stack: string): string => {
+export const removeLinesBeforeExternalMatcherTrap = (stack: string): string => {
   const lines = stack.split('\n');
 
   for (let i = 0; i < lines.length; i += 1) {
-    if (lines[i].match(/\/externalMatcherMark\.js:\d+:\d+\)$/)) {
+    if (lines[i].includes('__EXTERNAL_MATCHER_TRAP__')) {
       lines.splice(1, i);
       break;
     }
