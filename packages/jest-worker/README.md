@@ -83,7 +83,7 @@ By default, no process is bound to any worker.
 
 The arguments that will be passed to the `setup` method during initialization.
 
-#### `workerPool: (workerPath: string, options?: WorkerPoolOptions) => WorkerPoolInterface` (optional)
+#### `WorkerPool: (workerPath: string, options?: WorkerPoolOptions) => WorkerPoolInterface` (optional)
 
 Provide a custom worker pool to be used for spawning child processes. By default, Jest will use a node thread pool if available and fall back to child process threads.
 

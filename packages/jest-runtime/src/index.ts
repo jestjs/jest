@@ -730,11 +730,33 @@ class Runtime {
       }
     }
 
-    const script = this.createScriptFromCode(transformedFile.code, filename);
+    let compiledFunction: ModuleWrapper | null;
 
-    const runScript = this._environment.runScript<RunScriptEvalResult>(script);
+    if (typeof this._environment.compileFunction === 'function') {
+      try {
+        compiledFunction = this._environment.compileFunction<ModuleWrapper>(
+          transformedFile.code,
+          this.constructInjectedModuleParameters(),
+          filename,
+        );
+      } catch (e) {
+        throw handlePotentialSyntaxError(e);
+      }
+    } else {
+      const script = this.createScriptFromCode(transformedFile.code, filename);
 
-    if (runScript === null) {
+      const runScript = this._environment.runScript<RunScriptEvalResult>(
+        script,
+      );
+
+      if (runScript === null) {
+        compiledFunction = null;
+      } else {
+        compiledFunction = runScript[EVAL_RESULT_VARIABLE];
+      }
+    }
+
+    if (compiledFunction === null) {
       this._logFormattedReferenceError(
         'You are trying to `import` a file after the Jest environment has been torn down.',
       );
@@ -742,8 +764,7 @@ class Runtime {
       return;
     }
 
-    //Wrapper
-    runScript[EVAL_RESULT_VARIABLE].call(
+    compiledFunction.call(
       localModule.exports,
       localModule as NodeModule, // module object
       localModule.exports, // module exports
@@ -1107,7 +1128,19 @@ class Runtime {
   }
 
   private wrapCodeInModuleWrapper(content: string) {
-    const args = [
+    const args = this.constructInjectedModuleParameters();
+
+    return (
+      '({"' +
+      EVAL_RESULT_VARIABLE +
+      `":function(${args.join(',')}){` +
+      content +
+      '\n}});'
+    );
+  }
+
+  private constructInjectedModuleParameters() {
+    return [
       'module',
       'exports',
       'require',
@@ -1117,14 +1150,6 @@ class Runtime {
       'jest',
       ...this._config.extraGlobals,
     ];
-
-    return (
-      '({"' +
-      EVAL_RESULT_VARIABLE +
-      `":function(${args.join(',')}){` +
-      content +
-      '\n}});'
-    );
   }
 }
 
