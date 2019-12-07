@@ -22,15 +22,15 @@ exports[`should ignore with --ignoreAsymmetricMatches cli option 1`] = `
     +   \\"b\\": 2,
       }
 
-      2 |   const expected = {a: expect.any(Number), b: 2};
-      3 |   const received = {a: 1, b: 1};
-    > 4 |   expect(expected).toEqual(received);
-        |                    ^
-      5 | });
-      6 | 
-      7 | test('jest asymmetricMatcher', () => {
+       9 |   const expected = {a: expect.any(Number), b: 2};
+      10 |   const received = {a: 1, b: 1};
+    > 11 |   expect(expected).toEqual(received);
+         |                    ^
+      12 | });
+      13 | 
+      14 | test('jest asymmetricMatcher', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:4:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:11:20)
 
   ● jest asymmetricMatcher
 
@@ -49,15 +49,15 @@ exports[`should ignore with --ignoreAsymmetricMatches cli option 1`] = `
     +   \\"g\\": true,
       }
 
-      30 |   };
-      31 | 
-    > 32 |   expect(expected).toEqual(received);
+      37 |   };
+      38 | 
+    > 39 |   expect(expected).toEqual(received);
          |                    ^
-      33 | });
-      34 | 
-      35 | test('custom asymmetricMatcher', () => {
+      40 | });
+      41 | 
+      42 | test('custom asymmetricMatcher', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:32:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:39:20)
 
   ● custom asymmetricMatcher
 
@@ -72,15 +72,15 @@ exports[`should ignore with --ignoreAsymmetricMatches cli option 1`] = `
     +   \\"b\\": false,
       }
 
-      56 |   };
-      57 | 
-    > 58 |   expect(expected).toEqual(received);
+      63 |   };
+      64 | 
+    > 65 |   expect(expected).toEqual(received);
          |                    ^
-      59 | });
-      60 | 
-      61 | test('nested object', () => {
+      66 | });
+      67 | 
+      68 | test('nested object', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:58:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:65:20)
 
   ● nested object
 
@@ -99,15 +99,15 @@ exports[`should ignore with --ignoreAsymmetricMatches cli option 1`] = `
     +   \\"c\\": 2,
       }
 
-      76 |     c: 1,
-      77 |   };
-    > 78 |   expect(expected).toEqual(received);
+      83 |     c: 1,
+      84 |   };
+    > 85 |   expect(expected).toEqual(received);
          |                    ^
-      79 | });
-      80 | 
-      81 | test('circular', () => {
+      86 | });
+      87 | 
+      88 | test('circular', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:78:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:85:20)
 
   ● circular
 
@@ -123,15 +123,15 @@ exports[`should ignore with --ignoreAsymmetricMatches cli option 1`] = `
     +   \\"c\\": 3,
       }
 
-      90 |   };
-      91 |   received.a = received;
-    > 92 |   expect(expected).toEqual(received);
-         |                    ^
-      93 | });
-      94 | 
-      95 | test('transitive circular', () => {
+       97 |   };
+       98 |   received.a = received;
+    >  99 |   expect(expected).toEqual(received);
+          |                    ^
+      100 | });
+      101 | 
+      102 | test('transitive circular', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:92:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:99:20)
 
   ● transitive circular
 
@@ -149,14 +149,14 @@ exports[`should ignore with --ignoreAsymmetricMatches cli option 1`] = `
         },
       }
 
-      102 |   };
-      103 |   received.nested = {b: 2, parent: received};
-    > 104 |   expect(expected).toEqual(received);
+      109 |   };
+      110 |   received.nested = {b: 2, parent: received};
+    > 111 |   expect(expected).toEqual(received);
           |                    ^
-      105 | });
-      106 | 
+      112 | });
+      113 | 
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:104:20)"
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:111:20)"
 `;
 
 exports[`should ignore with ignoreAsymmetricMatches=true in config 1`] = `
@@ -181,15 +181,15 @@ exports[`should ignore with ignoreAsymmetricMatches=true in config 1`] = `
     +   \\"b\\": 2,
       }
 
-      2 |   const expected = {a: expect.any(Number), b: 2};
-      3 |   const received = {a: 1, b: 1};
-    > 4 |   expect(expected).toEqual(received);
-        |                    ^
-      5 | });
-      6 | 
-      7 | test('jest asymmetricMatcher', () => {
+       9 |   const expected = {a: expect.any(Number), b: 2};
+      10 |   const received = {a: 1, b: 1};
+    > 11 |   expect(expected).toEqual(received);
+         |                    ^
+      12 | });
+      13 | 
+      14 | test('jest asymmetricMatcher', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:4:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:11:20)
 
   ● jest asymmetricMatcher
 
@@ -208,15 +208,15 @@ exports[`should ignore with ignoreAsymmetricMatches=true in config 1`] = `
     +   \\"g\\": true,
       }
 
-      30 |   };
-      31 | 
-    > 32 |   expect(expected).toEqual(received);
+      37 |   };
+      38 | 
+    > 39 |   expect(expected).toEqual(received);
          |                    ^
-      33 | });
-      34 | 
-      35 | test('custom asymmetricMatcher', () => {
+      40 | });
+      41 | 
+      42 | test('custom asymmetricMatcher', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:32:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:39:20)
 
   ● custom asymmetricMatcher
 
@@ -231,15 +231,15 @@ exports[`should ignore with ignoreAsymmetricMatches=true in config 1`] = `
     +   \\"b\\": false,
       }
 
-      56 |   };
-      57 | 
-    > 58 |   expect(expected).toEqual(received);
+      63 |   };
+      64 | 
+    > 65 |   expect(expected).toEqual(received);
          |                    ^
-      59 | });
-      60 | 
-      61 | test('nested object', () => {
+      66 | });
+      67 | 
+      68 | test('nested object', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:58:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:65:20)
 
   ● nested object
 
@@ -258,15 +258,15 @@ exports[`should ignore with ignoreAsymmetricMatches=true in config 1`] = `
     +   \\"c\\": 2,
       }
 
-      76 |     c: 1,
-      77 |   };
-    > 78 |   expect(expected).toEqual(received);
+      83 |     c: 1,
+      84 |   };
+    > 85 |   expect(expected).toEqual(received);
          |                    ^
-      79 | });
-      80 | 
-      81 | test('circular', () => {
+      86 | });
+      87 | 
+      88 | test('circular', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:78:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:85:20)
 
   ● circular
 
@@ -282,15 +282,15 @@ exports[`should ignore with ignoreAsymmetricMatches=true in config 1`] = `
     +   \\"c\\": 3,
       }
 
-      90 |   };
-      91 |   received.a = received;
-    > 92 |   expect(expected).toEqual(received);
-         |                    ^
-      93 | });
-      94 | 
-      95 | test('transitive circular', () => {
+       97 |   };
+       98 |   received.a = received;
+    >  99 |   expect(expected).toEqual(received);
+          |                    ^
+      100 | });
+      101 | 
+      102 | test('transitive circular', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:92:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:99:20)
 
   ● transitive circular
 
@@ -308,14 +308,14 @@ exports[`should ignore with ignoreAsymmetricMatches=true in config 1`] = `
         },
       }
 
-      102 |   };
-      103 |   received.nested = {b: 2, parent: received};
-    > 104 |   expect(expected).toEqual(received);
+      109 |   };
+      110 |   received.nested = {b: 2, parent: received};
+    > 111 |   expect(expected).toEqual(received);
           |                    ^
-      105 | });
-      106 | 
+      112 | });
+      113 | 
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:104:20)"
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:111:20)"
 `;
 
 exports[`should not ignore in default 1`] = `
@@ -341,15 +341,15 @@ exports[`should not ignore in default 1`] = `
     +   \\"b\\": 2,
       }
 
-      2 |   const expected = {a: expect.any(Number), b: 2};
-      3 |   const received = {a: 1, b: 1};
-    > 4 |   expect(expected).toEqual(received);
-        |                    ^
-      5 | });
-      6 | 
-      7 | test('jest asymmetricMatcher', () => {
+       9 |   const expected = {a: expect.any(Number), b: 2};
+      10 |   const received = {a: 1, b: 1};
+    > 11 |   expect(expected).toEqual(received);
+         |                    ^
+      12 | });
+      13 | 
+      14 | test('jest asymmetricMatcher', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:4:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:11:20)
 
   ● jest asymmetricMatcher
 
@@ -383,15 +383,15 @@ exports[`should not ignore in default 1`] = `
     +   \\"g\\": true,
       }
 
-      30 |   };
-      31 | 
-    > 32 |   expect(expected).toEqual(received);
+      37 |   };
+      38 | 
+    > 39 |   expect(expected).toEqual(received);
          |                    ^
-      33 | });
-      34 | 
-      35 | test('custom asymmetricMatcher', () => {
+      40 | });
+      41 | 
+      42 | test('custom asymmetricMatcher', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:32:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:39:20)
 
   ● custom asymmetricMatcher
 
@@ -407,15 +407,15 @@ exports[`should not ignore in default 1`] = `
     +   \\"b\\": false,
       }
 
-      56 |   };
-      57 | 
-    > 58 |   expect(expected).toEqual(received);
+      63 |   };
+      64 | 
+    > 65 |   expect(expected).toEqual(received);
          |                    ^
-      59 | });
-      60 | 
-      61 | test('nested object', () => {
+      66 | });
+      67 | 
+      68 | test('nested object', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:58:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:65:20)
 
   ● nested object
 
@@ -436,15 +436,15 @@ exports[`should not ignore in default 1`] = `
     +   \\"c\\": 2,
       }
 
-      76 |     c: 1,
-      77 |   };
-    > 78 |   expect(expected).toEqual(received);
+      83 |     c: 1,
+      84 |   };
+    > 85 |   expect(expected).toEqual(received);
          |                    ^
-      79 | });
-      80 | 
-      81 | test('circular', () => {
+      86 | });
+      87 | 
+      88 | test('circular', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:78:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:85:20)
 
   ● circular
 
@@ -461,15 +461,15 @@ exports[`should not ignore in default 1`] = `
     +   \\"c\\": 3,
       }
 
-      90 |   };
-      91 |   received.a = received;
-    > 92 |   expect(expected).toEqual(received);
-         |                    ^
-      93 | });
-      94 | 
-      95 | test('transitive circular', () => {
+       97 |   };
+       98 |   received.a = received;
+    >  99 |   expect(expected).toEqual(received);
+          |                    ^
+      100 | });
+      101 | 
+      102 | test('transitive circular', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:92:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:99:20)
 
   ● transitive circular
 
@@ -488,14 +488,14 @@ exports[`should not ignore in default 1`] = `
         },
       }
 
-      102 |   };
-      103 |   received.nested = {b: 2, parent: received};
-    > 104 |   expect(expected).toEqual(received);
+      109 |   };
+      110 |   received.nested = {b: 2, parent: received};
+    > 111 |   expect(expected).toEqual(received);
           |                    ^
-      105 | });
-      106 | 
+      112 | });
+      113 | 
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:104:20)"
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:111:20)"
 `;
 
 exports[`should not ignore with ignoreAsymmetricMatches=false in config 1`] = `
@@ -521,15 +521,15 @@ exports[`should not ignore with ignoreAsymmetricMatches=false in config 1`] = `
     +   \\"b\\": 2,
       }
 
-      2 |   const expected = {a: expect.any(Number), b: 2};
-      3 |   const received = {a: 1, b: 1};
-    > 4 |   expect(expected).toEqual(received);
-        |                    ^
-      5 | });
-      6 | 
-      7 | test('jest asymmetricMatcher', () => {
+       9 |   const expected = {a: expect.any(Number), b: 2};
+      10 |   const received = {a: 1, b: 1};
+    > 11 |   expect(expected).toEqual(received);
+         |                    ^
+      12 | });
+      13 | 
+      14 | test('jest asymmetricMatcher', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:4:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:11:20)
 
   ● jest asymmetricMatcher
 
@@ -563,15 +563,15 @@ exports[`should not ignore with ignoreAsymmetricMatches=false in config 1`] = `
     +   \\"g\\": true,
       }
 
-      30 |   };
-      31 | 
-    > 32 |   expect(expected).toEqual(received);
+      37 |   };
+      38 | 
+    > 39 |   expect(expected).toEqual(received);
          |                    ^
-      33 | });
-      34 | 
-      35 | test('custom asymmetricMatcher', () => {
+      40 | });
+      41 | 
+      42 | test('custom asymmetricMatcher', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:32:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:39:20)
 
   ● custom asymmetricMatcher
 
@@ -587,15 +587,15 @@ exports[`should not ignore with ignoreAsymmetricMatches=false in config 1`] = `
     +   \\"b\\": false,
       }
 
-      56 |   };
-      57 | 
-    > 58 |   expect(expected).toEqual(received);
+      63 |   };
+      64 | 
+    > 65 |   expect(expected).toEqual(received);
          |                    ^
-      59 | });
-      60 | 
-      61 | test('nested object', () => {
+      66 | });
+      67 | 
+      68 | test('nested object', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:58:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:65:20)
 
   ● nested object
 
@@ -616,15 +616,15 @@ exports[`should not ignore with ignoreAsymmetricMatches=false in config 1`] = `
     +   \\"c\\": 2,
       }
 
-      76 |     c: 1,
-      77 |   };
-    > 78 |   expect(expected).toEqual(received);
+      83 |     c: 1,
+      84 |   };
+    > 85 |   expect(expected).toEqual(received);
          |                    ^
-      79 | });
-      80 | 
-      81 | test('circular', () => {
+      86 | });
+      87 | 
+      88 | test('circular', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:78:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:85:20)
 
   ● circular
 
@@ -641,15 +641,15 @@ exports[`should not ignore with ignoreAsymmetricMatches=false in config 1`] = `
     +   \\"c\\": 3,
       }
 
-      90 |   };
-      91 |   received.a = received;
-    > 92 |   expect(expected).toEqual(received);
-         |                    ^
-      93 | });
-      94 | 
-      95 | test('transitive circular', () => {
+       97 |   };
+       98 |   received.a = received;
+    >  99 |   expect(expected).toEqual(received);
+          |                    ^
+      100 | });
+      101 | 
+      102 | test('transitive circular', () => {
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:92:20)
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:99:20)
 
   ● transitive circular
 
@@ -668,12 +668,12 @@ exports[`should not ignore with ignoreAsymmetricMatches=false in config 1`] = `
         },
       }
 
-      102 |   };
-      103 |   received.nested = {b: 2, parent: received};
-    > 104 |   expect(expected).toEqual(received);
+      109 |   };
+      110 |   received.nested = {b: 2, parent: received};
+    > 111 |   expect(expected).toEqual(received);
           |                    ^
-      105 | });
-      106 | 
+      112 | });
+      113 | 
 
-      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:104:20)"
+      at Object.toEqual (__tests__/asymmetrictMatcher.test.js:111:20)"
 `;
