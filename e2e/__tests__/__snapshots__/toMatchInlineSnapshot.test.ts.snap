@@ -195,6 +195,54 @@ test('inline snapshots', async () => {
 
 `;
 
+exports[`supports custom matchers with property matcher: custom matchers with property matcher 1`] = `
+const {toMatchInlineSnapshot} = require('jest-snapshot');
+expect.extend({
+  toMatchCustomInlineSnapshot(received, ...args) {
+    return toMatchInlineSnapshot.call(this, received, ...args);
+  },
+  toMatchUserInlineSnapshot(received, ...args) {
+    return toMatchInlineSnapshot.call(
+      this,
+      received,
+      {
+        createdAt: expect.any(Date),
+        id: expect.any(Number),
+      },
+      ...args
+    );
+  },
+});
+test('inline snapshots', () => {
+  const user = {
+    createdAt: new Date(),
+    id: Math.floor(Math.random() * 20),
+    name: 'LeBron James',
+  };
+  expect(user).toMatchCustomInlineSnapshot(
+    {
+      createdAt: expect.any(Date),
+      id: expect.any(Number),
+    },
+    \`
+    Object {
+      "createdAt": Any<Date>,
+      "id": Any<Number>,
+      "name": "LeBron James",
+    }
+  \`
+  );
+  expect(user).toMatchUserInlineSnapshot(\`
+    Object {
+      "createdAt": Any<Date>,
+      "id": Any<Number>,
+      "name": "LeBron James",
+    }
+  \`);
+});
+
+`;
+
 exports[`supports custom matchers: custom matchers 1`] = `
 const {toMatchInlineSnapshot} = require('jest-snapshot');
 expect.extend({
