@@ -88,6 +88,7 @@ export default class TestScheduler {
     );
 
     const runInBand = shouldRunInBand(tests, timings, this._globalConfig);
+    process.env.JEST_RUN_IN_BAND = runInBand ? '1' : '0';
 
     const onResult = async (test: TestRunner.Test, testResult: TestResult) => {
       if (watcher.isInterrupted()) {

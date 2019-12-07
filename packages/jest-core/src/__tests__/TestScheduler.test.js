@@ -207,6 +207,7 @@ test('should set runInBand to run in serial', async () => {
   expect(spyShouldRunInBand).toHaveBeenCalled();
   expect(mockParallelRunner.runTests).toHaveBeenCalled();
   expect(mockParallelRunner.runTests.mock.calls[0][5].serial).toBeTruthy();
+  expect(process.env.JEST_RUN_IN_BAND).toBe('1');
 });
 
 test('should set runInBand to not run in serial', async () => {
@@ -231,4 +232,5 @@ test('should set runInBand to not run in serial', async () => {
   expect(spyShouldRunInBand).toHaveBeenCalled();
   expect(mockParallelRunner.runTests).toHaveBeenCalled();
   expect(mockParallelRunner.runTests.mock.calls[0][5].serial).toBeFalsy();
+  expect(process.env.JEST_RUN_IN_BAND).toBe('0');
 });
