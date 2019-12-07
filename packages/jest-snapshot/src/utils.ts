@@ -143,12 +143,11 @@ export const removeLinesBeforeExternalMatcherTrap = (stack: string): string => {
     // It's a function name specified in `packages/expect/src/index.ts`
     // for external custom matchers.
     if (lines[i].includes('__EXTERNAL_MATCHER_TRAP__')) {
-      return lines.slice(i).join('\n');
-      break;
+      return lines.slice(i + 1).join('\n');
     }
   }
 
-  return lines;
+  return lines.join('\n');
 };
 
 const escapeRegex = true;
