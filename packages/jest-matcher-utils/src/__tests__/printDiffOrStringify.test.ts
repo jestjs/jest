@@ -203,11 +203,11 @@ describe('printDiffOrStringify', () => {
       const expected: any = {
         a: 3,
       };
-      expected.nested = {parent: expected, b: expect.any(Number)};
+      expected.nested = {b: expect.any(Number), parent: expected};
       const received: any = {
         a: 2,
       };
-      received.nested = {parent: received, b: 2};
+      received.nested = {b: 2, parent: received};
       expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
     });
 
