@@ -184,6 +184,10 @@ Force Jest to exit after all tests have completed running. This is useful when r
 
 Show the help information, similar to this page.
 
+### `--ignoreAsymmetricMatches`
+
+Ignore asymmetric matches in diffing.
+
 ### `--init`
 
 Generate a basic configuration file. Based on your project, Jest will ask you a few questions that will help to generate a `jest.config.js` file with a short description for each option.
