@@ -317,7 +317,10 @@ const makeThrowingMatcher = (
       potentialResult =
         matcher[INTERNAL_MATCHER_FLAG] === true
           ? matcher.call(matcherContext, actual, ...args)
-          : (function __EXTERNAL_MATCHER_TRAP__() {
+          : // It's a trap specifically for inline snapshot to capture this name
+            // in the stack trace, so that it can correctly get the custom matcher
+            // function call.
+            (function __EXTERNAL_MATCHER_TRAP__() {
               return matcher.call(matcherContext, actual, ...args);
             })();
 

@@ -140,6 +140,8 @@ export const removeLinesBeforeExternalMatcherTrap = (stack: string): string => {
   const lines = stack.split('\n');
 
   for (let i = 0; i < lines.length; i += 1) {
+    // It's a function name specified in `packages/expect/src/index.ts`
+    // for external custom matchers.
     if (lines[i].includes('__EXTERNAL_MATCHER_TRAP__')) {
       lines.splice(1, i);
       break;
