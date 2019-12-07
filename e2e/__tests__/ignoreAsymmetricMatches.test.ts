@@ -1,6 +1,5 @@
 import * as path from 'path';
 import runJest from '../runJest';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
 
 const dir = path.resolve(__dirname, '../ignore-asymmetric-matches');
