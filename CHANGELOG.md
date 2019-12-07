@@ -11,6 +11,7 @@
 - `[jest-config]` [**BREAKING**] Set default display name color based on runner ([#8689](https://github.com/facebook/jest/pull/8689))
 - `[jest-config]` Merge preset globals with project globals ([#9027](https://github.com/facebook/jest/pull/9027))
 - `[jest-core]` Support reporters as default exports ([#9161](https://github.com/facebook/jest/pull/9161))
+- `[jest-core]` Assign `process.env.JEST_RUN_IN_BAND` value. It can be used to check if testing is running serially. ([#9280](https://github.com/facebook/jest/pull/9280))
 - `[jest-diff]` Add options for colors and symbols ([#8841](https://github.com/facebook/jest/pull/8841))
 - `[jest-diff]` [**BREAKING**] Export as ECMAScript module ([#8873](https://github.com/facebook/jest/pull/8873))
 - `[jest-diff]` Add `includeChangeCounts` and rename `Indicator` options ([#8881](https://github.com/facebook/jest/pull/8881))
