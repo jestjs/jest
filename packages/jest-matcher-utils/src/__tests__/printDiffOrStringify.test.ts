@@ -11,8 +11,25 @@ import {INVERTED_COLOR, printDiffOrStringify} from '../index';
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 describe('printDiffOrStringify', () => {
-  const testDiffOrStringify = (expected: string, received: string): string =>
-    printDiffOrStringify(expected, received, 'Expected', 'Received', true);
+  const testDiffOrStringify = (expected: any, received: any): string =>
+    printDiffOrStringify(
+      expected,
+      received,
+      'Expected',
+      'Received',
+      true,
+      true,
+    );
+
+  const testDiffOrStringifyNotIgnore = (expected: any, received: any): string =>
+    printDiffOrStringify(
+      expected,
+      received,
+      'Expected',
+      'Received',
+      true,
+      false,
+    );
 
   test('expected is empty and received is single line', () => {
     const expected = '';
@@ -84,6 +101,122 @@ describe('printDiffOrStringify', () => {
 
       // diffLinesUnified does not have substring change
       expect(difference).not.toMatch(lessChange);
+    });
+  });
+
+  describe('asymmetricMatcher', () => {
+    test('minimal test', () => {
+      const expected = {a: expect.any(Number), b: 2};
+      const received = {a: 1, b: 1};
+      expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
+    });
+
+    test('jest asymmetricMatcher', () => {
+      const expected = {
+        a: expect.any(Number),
+        b: expect.anything(),
+        c: expect.arrayContaining([1, 3]),
+        d: 'jest is awesome',
+        e: 'jest is awesome',
+        f: {
+          a: new Date(),
+          b: 'jest is awesome',
+        },
+        g: true,
+      };
+      const received = {
+        a: 1,
+        b: 'anything',
+        c: [1, 2, 3],
+        d: expect.stringContaining('jest'),
+        e: expect.stringMatching(/^jest/),
+        f: expect.objectContaining({
+          a: expect.any(Date),
+        }),
+        g: false,
+      };
+
+      expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
+    });
+
+    test('custom asymmetricMatcher', () => {
+      expect.extend({
+        equal5(received: any) {
+          if (received === 5)
+            return {
+              message: () => `expected ${received} not to be 5`,
+              pass: true,
+            };
+          return {
+            message: () => `expected ${received} to be 5`,
+            pass: false,
+          };
+        },
+      });
+      const expected = {
+        a: expect.equal5(),
+        b: false,
+      };
+      const received = {
+        a: 5,
+        b: true,
+      };
+
+      expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
+    });
+
+    test('nested object', () => {
+      const expected = {
+        a: 1,
+        b: {
+          a: 1,
+          b: expect.any(Number),
+        },
+        c: 2,
+      };
+      const received = {
+        a: expect.any(Number),
+        b: {
+          a: 1,
+          b: 2,
+        },
+        c: 1,
+      };
+      expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
+    });
+
+    test('circular', () => {
+      const expected: any = {
+        b: expect.any(Number),
+        c: 3,
+      };
+      expected.a = expected;
+      const received: any = {
+        b: 2,
+        c: 2,
+      };
+      received.a = received;
+      expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
+    });
+
+    test('transitive circular', () => {
+      const expected: any = {
+        a: 3,
+      };
+      expected.nested = {parent: expected, b: expect.any(Number)};
+      const received: any = {
+        a: 2,
+      };
+      received.nested = {parent: received, b: 2};
+      expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
+    });
+
+    test('should not ignore asymmetric match', () => {
+      const expected = {a: expect.any(Number), b: 2};
+      const received = {a: 1, b: 1};
+      expect(
+        testDiffOrStringifyNotIgnore(expected, received),
+      ).toMatchSnapshot();
     });
   });
 });

@@ -16,6 +16,7 @@ import diffDefault, {
   diffStringsUnified,
 } from 'jest-diff';
 import getType = require('jest-get-type');
+import {deepCyclicCopy} from 'jest-util';
 import prettyFormat = require('pretty-format');
 
 const {
@@ -310,6 +311,7 @@ export const printDiffOrStringify = (
   expectedLabel: string,
   receivedLabel: string,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
+  ignoreAsymmetricMatches: boolean,
 ): string => {
   if (
     typeof expected === 'string' &&
@@ -351,12 +353,31 @@ export const printDiffOrStringify = (
   }
 
   if (isLineDiffable(expected, received)) {
-    const difference = diffDefault(expected, received, {
-      aAnnotation: expectedLabel,
-      bAnnotation: receivedLabel,
-      expand,
-      includeChangeCounts: true,
-    });
+    let difference;
+    if (ignoreAsymmetricMatches) {
+      const {
+        replacedExpected,
+        replacedReceived,
+      } = replaceMatchedToAsymmetricMatcher(
+        deepCyclicCopy(expected, {keepPrototype: true}),
+        deepCyclicCopy(received, {keepPrototype: true}),
+        [],
+        [],
+      );
+      difference = diffDefault(replacedExpected, replacedReceived, {
+        aAnnotation: expectedLabel,
+        bAnnotation: receivedLabel,
+        expand,
+        includeChangeCounts: true,
+      });
+    } else {
+      difference = diffDefault(expected, received, {
+        aAnnotation: expectedLabel,
+        bAnnotation: receivedLabel,
+        expand,
+        includeChangeCounts: true,
+      });
+    }
 
     if (
       typeof difference === 'string' &&
@@ -393,6 +414,59 @@ const shouldPrintDiff = (actual: unknown, expected: unknown) => {
   }
   return true;
 };
+
+function replaceMatchedToAsymmetricMatcher(
+  replacedExpected: any,
+  replacedReceived: any,
+  expectedCycles: Array<any>,
+  receivedCycles: Array<any>,
+) {
+  if (
+    getType(replacedExpected) !== 'object' ||
+    getType(replacedReceived) !== 'object'
+  )
+    return {replacedExpected, replacedReceived};
+
+  if (
+    expectedCycles.includes(replacedExpected) ||
+    receivedCycles.includes(replacedReceived)
+  )
+    return {replacedExpected, replacedReceived};
+
+  expectedCycles.push(replacedExpected);
+  receivedCycles.push(replacedReceived);
+
+  Object.entries(replacedExpected).forEach(
+    ([key, expectedAttribute]: [string, any]) => {
+      const receivedAttribute = replacedReceived[key];
+      if (isAsymmetricMatcher(expectedAttribute)) {
+        if (expectedAttribute.asymmetricMatch(receivedAttribute))
+          replacedReceived[key] = expectedAttribute;
+      } else if (isAsymmetricMatcher(receivedAttribute)) {
+        if (receivedAttribute.asymmetricMatch(expectedAttribute))
+          replacedExpected[key] = receivedAttribute;
+      } else if (
+        getType(expectedAttribute) === 'object' &&
+        getType(receivedAttribute) === 'object'
+      ) {
+        const replacedAttribute = replaceMatchedToAsymmetricMatcher(
+          expectedAttribute,
+          receivedAttribute,
+          expectedCycles,
+          receivedCycles,
+        );
+        replacedExpected[key] = replacedAttribute.replacedExpected;
+        replacedReceived[key] = replacedAttribute.replacedReceived;
+      }
+    },
+  );
+  return {replacedExpected, replacedReceived};
+}
+
+function isAsymmetricMatcher(data: any) {
+  const type = getType(data);
+  return type === 'object' && typeof data.asymmetricMatch === 'function';
+}
 
 export const diff = (a: any, b: any, options?: DiffOptions): string | null =>
   shouldPrintDiff(a, b) ? diffDefault(a, b, options) : null;
