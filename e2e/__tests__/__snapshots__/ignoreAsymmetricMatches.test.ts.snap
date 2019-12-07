@@ -1,0 +1,679 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should ignore with --ignoreAsymmetricMatches cli option 1`] = `
+"FAIL ./asymmetrictMatcher.test.js
+  ✕ minimal test
+  ✕ jest asymmetricMatcher
+  ✕ custom asymmetricMatcher
+  ✕ nested object
+  ✕ circular
+  ✕ transitive circular
+
+  ● minimal test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        \\"a\\": Any<Number>,
+    -   \\"b\\": 1,
+    +   \\"b\\": 2,
+      }
+
+      2 |   const expected = {a: expect.any(Number), b: 2};
+      3 |   const received = {a: 1, b: 1};
+    > 4 |   expect(expected).toEqual(received);
+        |                    ^
+      5 | });
+      6 | 
+      7 | test('jest asymmetricMatcher', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:4:20)
+
+  ● jest asymmetricMatcher
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+    @@ -8,7 +8,7 @@
+        \\"d\\": StringContaining \\"jest\\",
+        \\"e\\": StringMatching /^jest/,
+        \\"f\\": ObjectContaining {
+          \\"a\\": Any<Date>,
+        },
+    -   \\"g\\": false,
+    +   \\"g\\": true,
+      }
+
+      30 |   };
+      31 | 
+    > 32 |   expect(expected).toEqual(received);
+         |                    ^
+      33 | });
+      34 | 
+      35 | test('custom asymmetricMatcher', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:32:20)
+
+  ● custom asymmetricMatcher
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        \\"a\\": equal5<>,
+    -   \\"b\\": true,
+    +   \\"b\\": false,
+      }
+
+      56 |   };
+      57 | 
+    > 58 |   expect(expected).toEqual(received);
+         |                    ^
+      59 | });
+      60 | 
+      61 | test('nested object', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:58:20)
+
+  ● nested object
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+    @@ -2,7 +2,7 @@
+        \\"a\\": Any<Number>,
+        \\"b\\": Object {
+          \\"a\\": 1,
+          \\"b\\": Any<Number>,
+        },
+    -   \\"c\\": 1,
+    +   \\"c\\": 2,
+      }
+
+      76 |     c: 1,
+      77 |   };
+    > 78 |   expect(expected).toEqual(received);
+         |                    ^
+      79 | });
+      80 | 
+      81 | test('circular', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:78:20)
+
+  ● circular
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        \\"a\\": [Circular],
+        \\"b\\": Any<Number>,
+    -   \\"c\\": 2,
+    +   \\"c\\": 3,
+      }
+
+      90 |   };
+      91 |   received.a = received;
+    > 92 |   expect(expected).toEqual(received);
+         |                    ^
+      93 | });
+      94 | 
+      95 | test('transitive circular', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:92:20)
+
+  ● transitive circular
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   \\"a\\": 2,
+    +   \\"a\\": 3,
+        \\"nested\\": Object {
+          \\"b\\": Any<Number>,
+          \\"parent\\": [Circular],
+        },
+      }
+
+      102 |   };
+      103 |   received.nested = {b: 2, parent: received};
+    > 104 |   expect(expected).toEqual(received);
+          |                    ^
+      105 | });
+      106 | 
+
+      at Object.toEqual (asymmetrictMatcher.test.js:104:20)"
+`;
+
+exports[`should ignore with ignoreAsymmetricMatches=true in config 1`] = `
+"FAIL ./asymmetrictMatcher.test.js
+  ✕ minimal test
+  ✕ jest asymmetricMatcher
+  ✕ custom asymmetricMatcher
+  ✕ nested object
+  ✕ circular
+  ✕ transitive circular
+
+  ● minimal test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        \\"a\\": Any<Number>,
+    -   \\"b\\": 1,
+    +   \\"b\\": 2,
+      }
+
+      2 |   const expected = {a: expect.any(Number), b: 2};
+      3 |   const received = {a: 1, b: 1};
+    > 4 |   expect(expected).toEqual(received);
+        |                    ^
+      5 | });
+      6 | 
+      7 | test('jest asymmetricMatcher', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:4:20)
+
+  ● jest asymmetricMatcher
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+    @@ -8,7 +8,7 @@
+        \\"d\\": StringContaining \\"jest\\",
+        \\"e\\": StringMatching /^jest/,
+        \\"f\\": ObjectContaining {
+          \\"a\\": Any<Date>,
+        },
+    -   \\"g\\": false,
+    +   \\"g\\": true,
+      }
+
+      30 |   };
+      31 | 
+    > 32 |   expect(expected).toEqual(received);
+         |                    ^
+      33 | });
+      34 | 
+      35 | test('custom asymmetricMatcher', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:32:20)
+
+  ● custom asymmetricMatcher
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        \\"a\\": equal5<>,
+    -   \\"b\\": true,
+    +   \\"b\\": false,
+      }
+
+      56 |   };
+      57 | 
+    > 58 |   expect(expected).toEqual(received);
+         |                    ^
+      59 | });
+      60 | 
+      61 | test('nested object', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:58:20)
+
+  ● nested object
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+    @@ -2,7 +2,7 @@
+        \\"a\\": Any<Number>,
+        \\"b\\": Object {
+          \\"a\\": 1,
+          \\"b\\": Any<Number>,
+        },
+    -   \\"c\\": 1,
+    +   \\"c\\": 2,
+      }
+
+      76 |     c: 1,
+      77 |   };
+    > 78 |   expect(expected).toEqual(received);
+         |                    ^
+      79 | });
+      80 | 
+      81 | test('circular', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:78:20)
+
+  ● circular
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        \\"a\\": [Circular],
+        \\"b\\": Any<Number>,
+    -   \\"c\\": 2,
+    +   \\"c\\": 3,
+      }
+
+      90 |   };
+      91 |   received.a = received;
+    > 92 |   expect(expected).toEqual(received);
+         |                    ^
+      93 | });
+      94 | 
+      95 | test('transitive circular', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:92:20)
+
+  ● transitive circular
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+    -   \\"a\\": 2,
+    +   \\"a\\": 3,
+        \\"nested\\": Object {
+          \\"b\\": Any<Number>,
+          \\"parent\\": [Circular],
+        },
+      }
+
+      102 |   };
+      103 |   received.nested = {b: 2, parent: received};
+    > 104 |   expect(expected).toEqual(received);
+          |                    ^
+      105 | });
+      106 | 
+
+      at Object.toEqual (asymmetrictMatcher.test.js:104:20)"
+`;
+
+exports[`should not ignore in default 1`] = `
+"FAIL ./asymmetrictMatcher.test.js
+  ✕ minimal test
+  ✕ jest asymmetricMatcher
+  ✕ custom asymmetricMatcher
+  ✕ nested object
+  ✕ circular
+  ✕ transitive circular
+
+  ● minimal test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   \\"a\\": 1,
+    -   \\"b\\": 1,
+    +   \\"a\\": Any<Number>,
+    +   \\"b\\": 2,
+      }
+
+      2 |   const expected = {a: expect.any(Number), b: 2};
+      3 |   const received = {a: 1, b: 1};
+    > 4 |   expect(expected).toEqual(received);
+        |                    ^
+      5 | });
+      6 | 
+      7 | test('jest asymmetricMatcher', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:4:20)
+
+  ● jest asymmetricMatcher
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 9
+    + Received  + 9
+
+      Object {
+    -   \\"a\\": 1,
+    -   \\"b\\": \\"anything\\",
+    -   \\"c\\": Array [
+    +   \\"a\\": Any<Number>,
+    +   \\"b\\": Anything,
+    +   \\"c\\": ArrayContaining [
+          1,
+    -     2,
+          3,
+        ],
+    -   \\"d\\": StringContaining \\"jest\\",
+    -   \\"e\\": StringMatching /^jest/,
+    -   \\"f\\": ObjectContaining {
+    -     \\"a\\": Any<Date>,
+    +   \\"d\\": \\"jest is awesome\\",
+    +   \\"e\\": \\"jest is awesome\\",
+    +   \\"f\\": Object {
+    +     \\"a\\": 1970-01-01T00:00:00.000Z,
+    +     \\"b\\": \\"jest is awesome\\",
+        },
+    -   \\"g\\": false,
+    +   \\"g\\": true,
+      }
+
+      30 |   };
+      31 | 
+    > 32 |   expect(expected).toEqual(received);
+         |                    ^
+      33 | });
+      34 | 
+      35 | test('custom asymmetricMatcher', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:32:20)
+
+  ● custom asymmetricMatcher
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   \\"a\\": 5,
+    -   \\"b\\": true,
+    +   \\"a\\": equal5<>,
+    +   \\"b\\": false,
+      }
+
+      56 |   };
+      57 | 
+    > 58 |   expect(expected).toEqual(received);
+         |                    ^
+      59 | });
+      60 | 
+      61 | test('nested object', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:58:20)
+
+  ● nested object
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 3
+    + Received  + 3
+
+      Object {
+    -   \\"a\\": Any<Number>,
+    +   \\"a\\": 1,
+        \\"b\\": Object {
+          \\"a\\": 1,
+    -     \\"b\\": 2,
+    +     \\"b\\": Any<Number>,
+        },
+    -   \\"c\\": 1,
+    +   \\"c\\": 2,
+      }
+
+      76 |     c: 1,
+      77 |   };
+    > 78 |   expect(expected).toEqual(received);
+         |                    ^
+      79 | });
+      80 | 
+      81 | test('circular', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:78:20)
+
+  ● circular
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+        \\"a\\": [Circular],
+    -   \\"b\\": 2,
+    -   \\"c\\": 2,
+    +   \\"b\\": Any<Number>,
+    +   \\"c\\": 3,
+      }
+
+      90 |   };
+      91 |   received.a = received;
+    > 92 |   expect(expected).toEqual(received);
+         |                    ^
+      93 | });
+      94 | 
+      95 | test('transitive circular', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:92:20)
+
+  ● transitive circular
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   \\"a\\": 2,
+    +   \\"a\\": 3,
+        \\"nested\\": Object {
+    -     \\"b\\": 2,
+    +     \\"b\\": Any<Number>,
+          \\"parent\\": [Circular],
+        },
+      }
+
+      102 |   };
+      103 |   received.nested = {b: 2, parent: received};
+    > 104 |   expect(expected).toEqual(received);
+          |                    ^
+      105 | });
+      106 | 
+
+      at Object.toEqual (asymmetrictMatcher.test.js:104:20)"
+`;
+
+exports[`should not ignore with ignoreAsymmetricMatches=false in config 1`] = `
+"FAIL ./asymmetrictMatcher.test.js
+  ✕ minimal test
+  ✕ jest asymmetricMatcher
+  ✕ custom asymmetricMatcher
+  ✕ nested object
+  ✕ circular
+  ✕ transitive circular
+
+  ● minimal test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   \\"a\\": 1,
+    -   \\"b\\": 1,
+    +   \\"a\\": Any<Number>,
+    +   \\"b\\": 2,
+      }
+
+      2 |   const expected = {a: expect.any(Number), b: 2};
+      3 |   const received = {a: 1, b: 1};
+    > 4 |   expect(expected).toEqual(received);
+        |                    ^
+      5 | });
+      6 | 
+      7 | test('jest asymmetricMatcher', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:4:20)
+
+  ● jest asymmetricMatcher
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 9
+    + Received  + 9
+
+      Object {
+    -   \\"a\\": 1,
+    -   \\"b\\": \\"anything\\",
+    -   \\"c\\": Array [
+    +   \\"a\\": Any<Number>,
+    +   \\"b\\": Anything,
+    +   \\"c\\": ArrayContaining [
+          1,
+    -     2,
+          3,
+        ],
+    -   \\"d\\": StringContaining \\"jest\\",
+    -   \\"e\\": StringMatching /^jest/,
+    -   \\"f\\": ObjectContaining {
+    -     \\"a\\": Any<Date>,
+    +   \\"d\\": \\"jest is awesome\\",
+    +   \\"e\\": \\"jest is awesome\\",
+    +   \\"f\\": Object {
+    +     \\"a\\": 1970-01-01T00:00:00.000Z,
+    +     \\"b\\": \\"jest is awesome\\",
+        },
+    -   \\"g\\": false,
+    +   \\"g\\": true,
+      }
+
+      30 |   };
+      31 | 
+    > 32 |   expect(expected).toEqual(received);
+         |                    ^
+      33 | });
+      34 | 
+      35 | test('custom asymmetricMatcher', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:32:20)
+
+  ● custom asymmetricMatcher
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   \\"a\\": 5,
+    -   \\"b\\": true,
+    +   \\"a\\": equal5<>,
+    +   \\"b\\": false,
+      }
+
+      56 |   };
+      57 | 
+    > 58 |   expect(expected).toEqual(received);
+         |                    ^
+      59 | });
+      60 | 
+      61 | test('nested object', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:58:20)
+
+  ● nested object
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 3
+    + Received  + 3
+
+      Object {
+    -   \\"a\\": Any<Number>,
+    +   \\"a\\": 1,
+        \\"b\\": Object {
+          \\"a\\": 1,
+    -     \\"b\\": 2,
+    +     \\"b\\": Any<Number>,
+        },
+    -   \\"c\\": 1,
+    +   \\"c\\": 2,
+      }
+
+      76 |     c: 1,
+      77 |   };
+    > 78 |   expect(expected).toEqual(received);
+         |                    ^
+      79 | });
+      80 | 
+      81 | test('circular', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:78:20)
+
+  ● circular
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+        \\"a\\": [Circular],
+    -   \\"b\\": 2,
+    -   \\"c\\": 2,
+    +   \\"b\\": Any<Number>,
+    +   \\"c\\": 3,
+      }
+
+      90 |   };
+      91 |   received.a = received;
+    > 92 |   expect(expected).toEqual(received);
+         |                    ^
+      93 | });
+      94 | 
+      95 | test('transitive circular', () => {
+
+      at Object.toEqual (asymmetrictMatcher.test.js:92:20)
+
+  ● transitive circular
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+    -   \\"a\\": 2,
+    +   \\"a\\": 3,
+        \\"nested\\": Object {
+    -     \\"b\\": 2,
+    +     \\"b\\": Any<Number>,
+          \\"parent\\": [Circular],
+        },
+      }
+
+      102 |   };
+      103 |   received.nested = {b: 2, parent: received};
+    > 104 |   expect(expected).toEqual(received);
+          |                    ^
+      105 | });
+      106 | 
+
+      at Object.toEqual (asymmetrictMatcher.test.js:104:20)"
+`;
