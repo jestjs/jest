@@ -288,3 +288,31 @@ test('supports custom matchers', () => {
   expect(exitCode).toBe(0);
   expect(wrap(fileAfter)).toMatchSnapshot('custom matchers');
 });
+
+test('multiple custom matchers and native matchers', () => {
+  const filename = 'multiple-matchers.test.js';
+  const test = `
+    const { toMatchInlineSnapshot } = require('jest-snapshot');
+    expect.extend({
+      toMatchCustomInlineSnapshot(received, ...args) {
+        return toMatchInlineSnapshot.call(this, received, ...args);
+      },
+      toMatchCustomInlineSnapshot2(received, ...args) {
+        return toMatchInlineSnapshot.call(this, received, ...args);
+      },
+    });
+    test('inline snapshots', () => {
+      expect({apple: "value 1"}).toMatchCustomInlineSnapshot();
+      expect({apple: "value 2"}).toMatchInlineSnapshot();
+      expect({apple: "value 3"}).toMatchCustomInlineSnapshot2();
+      expect({apple: "value 4"}).toMatchInlineSnapshot();
+    });
+  `;
+
+  writeFiles(TESTS_DIR, {[filename]: test});
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const fileAfter = readFile(filename);
+  expect(stderr).toMatch('4 snapshots written from 1 test suite.');
+  expect(exitCode).toBe(0);
+  expect(wrap(fileAfter)).toMatchSnapshot('multiple matchers');
+});

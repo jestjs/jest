@@ -120,6 +120,41 @@ test('handles property matchers', () => {
 
 `;
 
+exports[`multiple custom matchers and native matchers: multiple matchers 1`] = `
+const {toMatchInlineSnapshot} = require('jest-snapshot');
+expect.extend({
+  toMatchCustomInlineSnapshot(received, ...args) {
+    return toMatchInlineSnapshot.call(this, received, ...args);
+  },
+  toMatchCustomInlineSnapshot2(received, ...args) {
+    return toMatchInlineSnapshot.call(this, received, ...args);
+  },
+});
+test('inline snapshots', () => {
+  expect({apple: 'value 1'}).toMatchCustomInlineSnapshot(\`
+    Object {
+      "apple": "value 1",
+    }
+  \`);
+  expect({apple: 'value 2'}).toMatchInlineSnapshot(\`
+    Object {
+      "apple": "value 2",
+    }
+  \`);
+  expect({apple: 'value 3'}).toMatchCustomInlineSnapshot2(\`
+    Object {
+      "apple": "value 3",
+    }
+  \`);
+  expect({apple: 'value 4'}).toMatchInlineSnapshot(\`
+    Object {
+      "apple": "value 4",
+    }
+  \`);
+});
+
+`;
+
 exports[`removes obsolete external snapshots: external snapshot cleaned 1`] = `
 test('removes obsolete external snapshots', () => {
   expect('1').toMatchInlineSnapshot(\`"1"\`);
