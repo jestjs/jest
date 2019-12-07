@@ -147,7 +147,7 @@ export const removeLinesBeforeExternalMatcherTrap = (stack: string): string => {
     }
   }
 
-  return lines.join('\n');
+  return stack;
 };
 
 const escapeRegex = true;
