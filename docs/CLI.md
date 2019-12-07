@@ -248,6 +248,8 @@ Run tests with specified reporters. [Reporter options](configuration#reporters-a
 
 Alias: `-i`. Run all tests serially in the current process, rather than creating a worker pool of child processes that run tests. This can be useful for debugging.
 
+It will set `process.env.JEST_RUN_IN_BAND` to `'1'`
+
 ### `--runTestsByPath`
 
 Run only the tests that were specified with their exact paths.
