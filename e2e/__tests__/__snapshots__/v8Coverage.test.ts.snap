@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`does not explode on missing sourcemap 1`] = `
+exports[`prints coverage 1`] = `
   console.log __tests__/Thing.test.js:10
     42
 
