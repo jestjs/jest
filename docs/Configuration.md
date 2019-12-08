@@ -1129,7 +1129,10 @@ It is possible to override this setting in individual tests by explicitly callin
 
 Indicates whether the coverage information should be collected while executing the test.
 
-This uses V8's builtin code coverage rather than one based on Babel. Note that it only works in Node test environments.
+This uses V8's builtin code coverage rather than one based on Babel. Note that there are a few caveats
+
+1. Your node version must include `vm.compileFunction`, which was introduced in [node 10.10](https://nodejs.org/dist/latest-v12.x/docs/api/vm.html#vm_vm_compilefunction_code_params_options)
+1. Tests needs to run in Node test environment (support for jsdom is in the works)
 
 Cannot be used together with `collectCoverage`.
 
