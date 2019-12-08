@@ -525,7 +525,7 @@ export const options = {
   runProjects: {
     description:
       'Run only the tests of the specified projects.' +
-      'Jest uses the attribute `name` in the configuration to identify each project.',
+      'Jest uses the attribute `displayName` in the configuration to identify each project.',
     string: true,
     type: 'array',
   },
