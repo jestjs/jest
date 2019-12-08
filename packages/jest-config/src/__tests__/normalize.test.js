@@ -458,6 +458,19 @@ describe('setupTestFrameworkScriptFile', () => {
       ),
     ).toThrowErrorMatchingSnapshot();
   });
+
+  it('logs an error when `collectCoverage` and `v8COverage` are used', () => {
+    expect(() =>
+      normalize(
+        {
+          collectCoverage: true,
+          rootDir: '/root/path/foo',
+          v8Coverage: true,
+        },
+        {},
+      ),
+    ).toThrowErrorMatchingSnapshot();
+  });
 });
 
 describe('coveragePathIgnorePatterns', () => {

@@ -5,17 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
+import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../v8-coverage');
 
 test('does not explode on missing sourcemap', () => {
   const sourcemapDir = path.join(DIR, 'no-sourcemap');
-  const {stderr, exitCode} = runJest(sourcemapDir, ['--v8-coverage'], {
+  const {stdout, exitCode} = runJest(sourcemapDir, ['--v8-coverage'], {
     stripAnsi: true,
   });
 
-  expect(stderr).not.toContain('no such file or directory');
   expect(exitCode).toBe(0);
+  expect(wrap(stdout)).toMatchSnapshot();
 });

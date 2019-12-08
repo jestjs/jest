@@ -595,7 +595,6 @@ class Runtime {
     const filtered = this._v8CoverageResult
       .filter(res => res.url.startsWith('file://'))
       .map(res => ({...res, url: fileURLToPath(res.url)}))
-      .filter(res => this._fileTransforms.has(res.url))
       .filter(res =>
         shouldInstrument(res.url, this._coverageOptions, this._config),
       );
