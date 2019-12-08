@@ -131,6 +131,8 @@ Default: `false`
 
 Indicates whether the coverage information should be collected while executing the test. Because this retrofits all executed files with coverage collection statements, it may significantly slow down your tests.
 
+Cannot be used together with `v8Coverage`.
+
 ### `collectCoverageFrom` [array]
 
 Default: `undefined`
@@ -1120,6 +1122,16 @@ An array of regexp pattern strings that are matched against all modules before t
 This is useful for some commonly used 'utility' modules that are almost always used as implementation details almost all the time (like underscore/lo-dash, etc). It's generally a best practice to keep this list as small as possible and always use explicit `jest.mock()`/`jest.unmock()` calls in individual tests. Explicit per-test setup is far easier for other readers of the test to reason about the environment the test will run in.
 
 It is possible to override this setting in individual tests by explicitly calling `jest.mock()` at the top of the test file.
+
+### `v8Coverage` [boolean]
+
+> _Experimental_
+
+Indicates whether the coverage information should be collected while executing the test.
+
+This uses V8's builtin code coverage rather than one based on Babel. Note that it only works in Node test environments.
+
+Cannot be used together with `collectCoverage`.
 
 ### `verbose` [boolean]
 

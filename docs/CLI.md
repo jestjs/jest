@@ -152,6 +152,8 @@ Alias: `-c`. The path to a Jest config file specifying how to find and execute t
 
 Alias: `--collectCoverage`. Indicates that test coverage information should be collected and reported in the output. Optionally pass `<boolean>` to override option set in configuration.
 
+Cannot be used together with `--v8-coverage`.
+
 ### `--debug`
 
 Print debugging info about your Jest config.
@@ -316,6 +318,16 @@ Divert all output to stderr.
 ### `--verbose`
 
 Display individual test results with the test suite hierarchy.
+
+### `--v8-coverage[=<boolean>]`
+
+> _Experimental_
+
+Indicates that test coverage information should be collected and reported in the output. Optionally pass `<boolean>` to override option set in configuration.
+
+This uses V8's builtin code coverage rather than one based on Babel. Note that it only works in Node test environments.
+
+Cannot be used together with `--coverage`.
 
 ### `--version`
 
