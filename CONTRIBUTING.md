@@ -92,6 +92,8 @@ For significant changes to the documentation or website and things like cleanup,
 
 You can add or edit the changelog entry in the GitHub web interface once you have opened the pull request and know the number and link to it.
 
+Make sure to alphabetically order your entry based on package name. If you have changed multiple packages, separate them with a comma.
+
 #### Testing
 
 Code that is written needs to be tested to ensure that it achieves the desired behaviour. Tests either fall into a unit test or an integration test.
