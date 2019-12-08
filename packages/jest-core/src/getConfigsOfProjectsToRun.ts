@@ -6,6 +6,7 @@
  */
 
 import {Config} from '@jest/types';
+import getProjectDisplayName from './getProjectDisplayName';
 
 export default function getConfigsOfProjectsToRun(
   argv: Config.Argv,
@@ -14,6 +15,9 @@ export default function getConfigsOfProjectsToRun(
   if (!argv.runProjects) {
     return projectConfigs;
   }
-  const namesOfProjectsToRun = new Set(argv.runProjects);
-  return projectConfigs.filter(config => namesOfProjectsToRun.has(config.name));
+  const namesOfProjectsToRun = new Set<string>(argv.runProjects);
+  return projectConfigs.filter(config => {
+    const name = getProjectDisplayName(config);
+    return name && namesOfProjectsToRun.has(name);
+  });
 }

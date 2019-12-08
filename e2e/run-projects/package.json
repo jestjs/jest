@@ -2,14 +2,17 @@
   "jest": {
     "projects": [
       {
-        "name": "first-project",
+        "displayName": "first-project",
         "testMatch": [
           "<rootDir>/__tests__/first-project.test.js"
         ],
         "testEnvironment": "node"
       },
       {
-        "name": "second-project",
+        "displayName": {
+          "name": "second-project",
+          "color": "blue"
+        },
         "testMatch": [
           "<rootDir>/__tests__/second-project.test.js"
         ],

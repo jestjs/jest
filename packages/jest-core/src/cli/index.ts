@@ -72,8 +72,9 @@ export async function runCLI(
 
   const configsOfProjectsToRun = getConfigsOfProjectsToRun(argv, configs);
   if (argv.runProjects) {
-    const projectNames = configsOfProjectsToRun.map(config => config.name);
-    outputStream.write(getProjectsRunningMessage(projectNames) + '\n');
+    outputStream.write(
+      getProjectsRunningMessage(configsOfProjectsToRun) + '\n',
+    );
   }
 
   await _run(

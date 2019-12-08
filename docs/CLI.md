@@ -256,7 +256,7 @@ Alias: `-i`. Run all tests serially in the current process, rather than creating
 
 ### `--runProjects <project1> ... <projectN>`
 
-Run only the tests of the specified projects. Jest uses the attribute `name` in the configuration to identify each project.
+Run only the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project.
 
 ### `--runTestsByPath`
 

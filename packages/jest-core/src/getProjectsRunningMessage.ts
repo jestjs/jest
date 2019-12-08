@@ -1,3 +1,6 @@
+import {Config} from '@jest/types';
+import getProjectDisplayName from './getProjectDisplayName';
+
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
@@ -6,21 +9,26 @@
  */
 
 export default function getProjectsRunningMessage(
-  projectNames: Array<string>,
+  projectConfigs: Array<Config.ProjectConfig>,
 ): string {
-  if (projectNames.length === 0) {
+  if (projectConfigs.length === 0) {
     return 'No project to run';
   }
-  if (projectNames.length === 1) {
-    return `Will run one project: ${projectNames[0]}`;
+  if (projectConfigs.length === 1) {
+    const name = getProjectDisplayName(projectConfigs[0]);
+    return `Will run one project: ${name}`;
   }
-  const projectsList = projectNames
-    .map(getListElement)
+  const projectsList = projectConfigs
+    .map(getProjectNameListElement)
     .sort()
     .join('\n');
-  return `Will run ${projectNames.length} projects:\n` + projectsList;
+  return `Will run ${projectConfigs.length} projects:\n` + projectsList;
 }
 
-function getListElement(content: string): string {
-  return `- ${content}`;
+function getProjectNameListElement(
+  projectConfig: Config.ProjectConfig,
+): string {
+  const name = getProjectDisplayName(projectConfig);
+  const elementContent = name || '<unnamed project>';
+  return `- ${elementContent}`;
 }
