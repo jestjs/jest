@@ -2,7 +2,6 @@
   "name": "no-sourcemap",
   "version": "1.0.0",
   "jest": {
-    "collectCoverageFrom": ["Thing.js"],
     "testEnvironment": "node",
     "transform": {
       "^.+\\.[jt]sx?$": "babel-jest",
