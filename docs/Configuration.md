@@ -187,6 +187,15 @@ An array of regexp pattern strings that are matched against all file paths befor
 
 These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/", "<rootDir>/node_modules/"]`.
 
+### `coverageProvider` [string]
+
+Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
+
+Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel and comes with a few caveats
+
+1. Your node version must include `vm.compileFunction`, which was introduced in [node 10.10](https://nodejs.org/dist/latest-v12.x/docs/api/vm.html#vm_vm_compilefunction_code_params_options)
+1. Tests needs to run in Node test environment (support for `jsdom` is in the works)
+
 ### `coverageReporters` [array\<string>]
 
 Default: `["json", "lcov", "text", "clover"]`
@@ -1122,19 +1131,6 @@ An array of regexp pattern strings that are matched against all modules before t
 This is useful for some commonly used 'utility' modules that are almost always used as implementation details almost all the time (like underscore/lo-dash, etc). It's generally a best practice to keep this list as small as possible and always use explicit `jest.mock()`/`jest.unmock()` calls in individual tests. Explicit per-test setup is far easier for other readers of the test to reason about the environment the test will run in.
 
 It is possible to override this setting in individual tests by explicitly calling `jest.mock()` at the top of the test file.
-
-### `v8Coverage` [boolean]
-
-> _Experimental_
-
-Indicates whether the coverage information should be collected while executing the test.
-
-This uses V8's builtin code coverage rather than one based on Babel. Note that there are a few caveats
-
-1. Your node version must include `vm.compileFunction`, which was introduced in [node 10.10](https://nodejs.org/dist/latest-v12.x/docs/api/vm.html#vm_vm_compilefunction_code_params_options)
-1. Tests needs to run in Node test environment (support for jsdom is in the works)
-
-Cannot be used together with `collectCoverage`.
 
 ### `verbose` [boolean]
 
