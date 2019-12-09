@@ -22,7 +22,7 @@ export default function getProjectsRunningMessage(
     .map(getProjectNameListElement)
     .sort()
     .join('\n');
-  return `Will run ${projectConfigs.length} projects:\n` + projectsList;
+  return `Running ${projectConfigs.length} projects:\n` + projectsList;
 }
 
 function getProjectNameListElement(
