@@ -24,6 +24,18 @@ onNodeVersions('>=10', () => {
     );
 
     expect(exitCode).toBe(0);
-    expect(wrap(stdout)).toMatchSnapshot();
+    expect(wrap(stdout)).toMatchInlineSnapshot(`
+        console.log __tests__/Thing.test.js:10
+          42
+
+      -----------------|---------|----------|---------|---------|-------------------
+      File             | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+      -----------------|---------|----------|---------|---------|-------------------
+      All files        |     100 |      100 |      50 |     100 |                   
+       Thing.js        |     100 |      100 |     100 |     100 |                   
+       cssTransform.js |     100 |      100 |      50 |     100 |                   
+       x.css           |     100 |      100 |     100 |     100 |                   
+      -----------------|---------|----------|---------|---------|-------------------
+    `);
   });
 });
