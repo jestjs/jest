@@ -42,7 +42,7 @@
     "@types/rimraf": "^2.0.2"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">= 8.3"
   },
   "repository": {
     "type": "git",

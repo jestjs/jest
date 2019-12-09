@@ -8,7 +8,7 @@
     "directory": "packages/jest-get-type"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">= 8.3"
   },
   "license": "MIT",
   "main": "build/index.js",

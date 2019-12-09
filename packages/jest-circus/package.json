@@ -36,7 +36,7 @@
     "jest-runtime": "^24.9.0"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">= 8.3"
   },
   "publishConfig": {
     "access": "public"

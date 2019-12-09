@@ -32,7 +32,7 @@
     "fsevents": "^2.1.2"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">= 8.3"
   },
   "publishConfig": {
     "access": "public"
