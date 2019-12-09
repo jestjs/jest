@@ -10,8 +10,6 @@ import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';
 import stripAnsi = require('strip-ansi');
 
-type AsyncHook = import('async_hooks').AsyncHook;
-
 function stackIsFromUser(stack: string) {
   // Either the test file, or something required by it
   if (stack.includes('Runtime.requireModule')) {
@@ -44,57 +42,44 @@ export default function collectHandles(): () => Array<Error> {
     {error: Error; isActive: () => boolean}
   > = new Map();
 
-  let hook: AsyncHook;
+  const asyncHooks: typeof import('async_hooks') = require('async_hooks');
+  const hook = asyncHooks.createHook({
+    destroy(asyncId) {
+      activeHandles.delete(asyncId);
+    },
+    init: function initHook(
+      asyncId,
+      type,
+      _triggerAsyncId,
+      resource: {} | NodeJS.Timeout,
+    ) {
+      if (type === 'PROMISE' || type === 'TIMERWRAP') {
+        return;
+      }
+      const error = new ErrorWithStack(type, initHook);
 
-  try {
-    const asyncHooks: typeof import('async_hooks') = require('async_hooks');
-    hook = asyncHooks.createHook({
-      destroy(asyncId) {
-        activeHandles.delete(asyncId);
-      },
-      init: function initHook(
-        asyncId,
-        type,
-        _triggerAsyncId,
-        resource: {} | NodeJS.Timeout,
-      ) {
-        if (type === 'PROMISE' || type === 'TIMERWRAP') {
-          return;
-        }
-        const error = new ErrorWithStack(type, initHook);
+      if (stackIsFromUser(error.stack || '')) {
+        let isActive: () => boolean;
 
-        if (stackIsFromUser(error.stack || '')) {
-          let isActive: () => boolean;
-
-          if (type === 'Timeout' || type === 'Immediate') {
-            if ('hasRef' in resource) {
-              // Timer that supports hasRef (Node v11+)
-              isActive = resource.hasRef.bind(resource);
-            } else {
-              // Timer that doesn't support hasRef
-              isActive = alwaysActive;
-            }
+        if (type === 'Timeout' || type === 'Immediate') {
+          if ('hasRef' in resource) {
+            // Timer that supports hasRef (Node v11+)
+            isActive = resource.hasRef.bind(resource);
           } else {
-            // Any other async resource
+            // Timer that doesn't support hasRef
             isActive = alwaysActive;
           }
-
-          activeHandles.set(asyncId, {error, isActive});
+        } else {
+          // Any other async resource
+          isActive = alwaysActive;
         }
-      },
-    });
 
-    hook.enable();
-  } catch (e) {
-    const nodeMajor = Number(process.versions.node.split('.')[0]);
-    if (e.code === 'MODULE_NOT_FOUND' && nodeMajor < 8) {
-      throw new Error(
-        'You can only use --detectOpenHandles on Node 8 and newer.',
-      );
-    } else {
-      throw e;
-    }
-  }
+        activeHandles.set(asyncId, {error, isActive});
+      }
+    },
+  });
+
+  hook.enable();
 
   return () => {
     hook.disable();

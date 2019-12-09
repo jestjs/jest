@@ -7,8 +7,8 @@
 
 'use strict';
 
-// Object spread is just node 8
-module.exports = Object.assign({}, require('./jest.config'), {
+module.exports = {
+  ...require('./jest.config'),
   coverageReporters: ['json'],
   reporters: [
     [
@@ -17,4 +17,4 @@ module.exports = Object.assign({}, require('./jest.config'), {
     ],
     ['jest-silent-reporter', {useDots: true}],
   ],
-});
+};
