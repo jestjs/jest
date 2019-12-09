@@ -16,7 +16,7 @@ export default function getProjectsRunningMessage(
   }
   if (projectConfigs.length === 1) {
     const name = getProjectDisplayName(projectConfigs[0]);
-    return `Will run one project: ${name}`;
+    return `Running one project: ${name}`;
   }
   const projectsList = projectConfigs
     .map(getProjectNameListElement)
