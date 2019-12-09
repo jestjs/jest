@@ -28,6 +28,7 @@ const initialOptions: Config.InitialOptions = {
   },
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
+  coverageProvider: 'v8',
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   coverageThreshold: {
     global: {
@@ -124,7 +125,6 @@ const initialOptions: Config.InitialOptions = {
   unmockedModulePathPatterns: ['mock'],
   updateSnapshot: true,
   useStderr: false,
-  v8Coverage: false,
   verbose: false,
   watch: false,
   watchPathIgnorePatterns: ['<rootDir>/e2e/'],

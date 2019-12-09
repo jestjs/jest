@@ -836,6 +836,7 @@ export default function normalize(
       case 'changedFilesWithAncestor':
       case 'clearMocks':
       case 'collectCoverage':
+      case 'coverageProvider':
       case 'coverageReporters':
       case 'coverageThreshold':
       case 'detectLeaks':
@@ -878,7 +879,6 @@ export default function normalize(
       case 'timers':
       case 'useStderr':
       case 'verbose':
-      case 'v8Coverage':
       case 'watch':
       case 'watchAll':
       case 'watchman':
@@ -1010,10 +1010,7 @@ export default function normalize(
   // Is transformed to: `--findRelatedTests '/rootDir/file1.js' --coverage --collectCoverageFrom 'file1.js'`
   // where arguments to `--collectCoverageFrom` should be globs (or relative
   // paths to the rootDir)
-  if (
-    (newOptions.collectCoverage || newOptions.v8Coverage) &&
-    argv.findRelatedTests
-  ) {
+  if (newOptions.collectCoverage && argv.findRelatedTests) {
     let collectCoverageFrom = argv._.map(filename => {
       filename = replaceRootDirInPath(options.rootDir, filename);
       return path.isAbsolute(filename)
@@ -1059,13 +1056,6 @@ export default function normalize(
 
   if (!newOptions.logHeapUsage) {
     newOptions.logHeapUsage = false;
-  }
-
-  if (newOptions.collectCoverage && newOptions.v8Coverage) {
-    throw createConfigError(
-      `  Configuration options ${chalk.bold('collectCoverage')} and` +
-        ` ${chalk.bold('v8Coverage')} cannot be used together.`,
-    );
   }
 
   return {

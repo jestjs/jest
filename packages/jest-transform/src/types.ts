@@ -13,8 +13,10 @@ export type ShouldInstrumentOptions = Pick<
   | 'collectCoverage'
   | 'collectCoverageFrom'
   | 'collectCoverageOnlyFrom'
-  | 'v8Coverage'
-> & {changedFiles?: Set<Config.Path>};
+  | 'coverageProvider'
+> & {
+  changedFiles?: Set<Config.Path>;
+};
 
 export type Options = ShouldInstrumentOptions &
   Partial<{

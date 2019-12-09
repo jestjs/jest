@@ -9,6 +9,8 @@ import {Arguments} from 'yargs';
 import {ReportOptions} from 'istanbul-reports';
 import chalk = require('chalk');
 
+type CoverageProvider = 'babel' | 'v8';
+
 export type Path = string;
 
 export type Glob = string;
@@ -38,6 +40,7 @@ export type DefaultOptions = {
   collectCoverage: boolean;
   coveragePathIgnorePatterns: Array<string>;
   coverageReporters: Array<string>;
+  coverageProvider: CoverageProvider;
   errorOnDeprecated: boolean;
   expand: boolean;
   forceCoverageMatch: Array<Glob>;
@@ -76,7 +79,6 @@ export type DefaultOptions = {
   timers: 'real' | 'fake';
   transformIgnorePatterns: Array<Glob>;
   useStderr: boolean;
-  v8Coverage: boolean;
   watch: boolean;
   watchPathIgnorePatterns: Array<string>;
   watchman: boolean;
@@ -108,6 +110,7 @@ export type InitialOptions = Partial<{
   };
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
+  coverageProvider: CoverageProvider;
   coverageReporters: Array<string>;
   coverageThreshold: {
     global: {
@@ -193,7 +196,6 @@ export type InitialOptions = Partial<{
     [regex: string]: Path | TransformerConfig;
   };
   transformIgnorePatterns: Array<Glob>;
-  v8Coverage?: boolean;
   watchPathIgnorePatterns: Array<string>;
   unmockedModulePathPatterns: Array<string>;
   updateSnapshot: boolean;
@@ -238,6 +240,7 @@ export type GlobalConfig = {
   };
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
+  coverageProvider: CoverageProvider;
   coverageReporters: Array<keyof ReportOptions>;
   coverageThreshold?: CoverageThreshold;
   detectLeaks: boolean;
@@ -285,7 +288,6 @@ export type GlobalConfig = {
   updateSnapshot: SnapshotUpdateState;
   useStderr: boolean;
   verbose?: boolean;
-  v8Coverage: boolean;
   watch: boolean;
   watchAll: boolean;
   watchman: boolean;
@@ -434,7 +436,6 @@ export type Argv = Arguments<
     useStderr: boolean;
     verbose: boolean;
     version: boolean;
-    v8Coverage: boolean;
     watch: boolean;
     watchAll: boolean;
     watchman: boolean;

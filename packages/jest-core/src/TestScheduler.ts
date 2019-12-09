@@ -259,15 +259,14 @@ export default class TestScheduler {
   }
 
   private _setupReporters() {
-    const {collectCoverage, notify, reporters, v8Coverage} = this._globalConfig;
+    const {collectCoverage, notify, reporters} = this._globalConfig;
     const isDefault = this._shouldAddDefaultReporters(reporters);
-    const willCollectCoverage = collectCoverage || v8Coverage;
 
     if (isDefault) {
-      this._setupDefaultReporters(willCollectCoverage);
+      this._setupDefaultReporters(collectCoverage);
     }
 
-    if (!isDefault && willCollectCoverage) {
+    if (!isDefault && collectCoverage) {
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
           changedFiles: this._context && this._context.changedFiles,

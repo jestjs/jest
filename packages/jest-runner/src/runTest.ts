@@ -157,7 +157,7 @@ async function runTestInternal(
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
-    v8Coverage: globalConfig.v8Coverage,
+    coverageProvider: globalConfig.coverageProvider,
   });
 
   const start = Date.now();
@@ -221,7 +221,7 @@ async function runTestInternal(
 
   // if we don't have `compileFunction` on the env, skip coverage
   const collectV8Coverage =
-    globalConfig.v8Coverage &&
+    globalConfig.coverageProvider === 'v8' &&
     typeof environment.compileFunction === 'function';
 
   try {

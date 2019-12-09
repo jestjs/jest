@@ -392,8 +392,8 @@ export default class ScriptTransformer {
 
     if (!options.isCoreModule) {
       instrument =
-        shouldInstrument(filename, options, this._config) &&
-        !options.v8Coverage;
+        options.coverageProvider === 'babel' &&
+        shouldInstrument(filename, options, this._config);
       scriptCacheKey = getScriptCacheKey(filename, instrument);
       const result = this._cache.transformedFiles.get(scriptCacheKey);
       if (result) {

@@ -37,11 +37,11 @@ export default function(
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
-    v8Coverage: globalConfig.v8Coverage,
+    coverageProvider: globalConfig.coverageProvider,
   };
   let coverageWorkerResult: CoverageWorkerResult | null = null;
   if (shouldInstrument(filename, coverageOptions, config)) {
-    if (coverageOptions.v8Coverage) {
+    if (coverageOptions.coverageProvider === 'v8') {
       const stat = fs.statSync(filename);
       return {
         kind: 'V8Coverage',

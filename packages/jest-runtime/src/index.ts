@@ -136,7 +136,7 @@ class Runtime {
       collectCoverage: false,
       collectCoverageFrom: [],
       collectCoverageOnlyFrom: undefined,
-      v8Coverage: false,
+      coverageProvider: 'babel',
     };
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
@@ -503,7 +503,7 @@ class Runtime {
       collectCoverage: this._coverageOptions.collectCoverage,
       collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
       collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
-      v8Coverage: this._coverageOptions.v8Coverage,
+      coverageProvider: this._coverageOptions.coverageProvider,
     };
   }
 

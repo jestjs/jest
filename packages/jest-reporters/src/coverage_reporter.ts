@@ -28,8 +28,7 @@ import {TransformResult} from '@jest/transform';
 import BaseReporter from './base_reporter';
 import {Context, CoverageReporterOptions, CoverageWorker, Test} from './types';
 
-// This is fixed in a newer version, but that depends on Node 8 which is a
-// breaking change (engine warning when installing)
+// This is fixed in a newer versions of source-map, but our dependencies are still stuck on old versions
 interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
   version: number;
   file: string;
@@ -436,7 +435,7 @@ export default class CoverageReporter extends BaseReporter {
     map: istanbulCoverage.CoverageMap;
     reportContext: istanbulReport.Context;
   }> {
-    if (this._globalConfig.v8Coverage) {
+    if (this._globalConfig.coverageProvider === 'v8') {
       const mergedCoverages = mergeProcessCovs(
         this._v8CoverageResults.map(cov => ({result: cov.map(r => r.result)})),
       );

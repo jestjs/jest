@@ -71,6 +71,7 @@ exports[`prints the config object 1`] = `
     "collectCoverageFrom": [],
     "collectCoverageOnlyFrom": null,
     "coverageDirectory": "coverage",
+    "coverageProvider": "babel",
     "coverageReporters": [],
     "coverageThreshold": {
       "global": {}
@@ -115,7 +116,6 @@ exports[`prints the config object 1`] = `
     "testTimeout": 5000,
     "updateSnapshot": "none",
     "useStderr": false,
-    "v8Coverage": false,
     "verbose": false,
     "watch": true,
     "watchAll": false,

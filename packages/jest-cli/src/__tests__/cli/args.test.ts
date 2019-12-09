@@ -65,13 +65,6 @@ describe('check', () => {
       'The --config option requires a JSON string literal, or a file path with a .js or .json extension',
     );
   });
-
-  it('raises an exception if both coverage and v8-coverage is specified', () => {
-    const argv = {collectCoverage: true, v8Coverage: true} as Config.Argv;
-    expect(() => check(argv)).toThrow(
-      'Both --coverage and --v8Coverage were specified, but these two options do not make sense together. Which is it?',
-    );
-  });
 });
 
 describe('buildArgv', () => {

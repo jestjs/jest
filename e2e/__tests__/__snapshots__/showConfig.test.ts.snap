@@ -12,6 +12,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "coveragePathIgnorePatterns": [
         "/node_modules/"
       ],
+      "coverageProvider": "babel",
       "cwd": "<<REPLACED_ROOT_DIR>>",
       "detectLeaks": false,
       "detectOpenHandles": false,
@@ -118,7 +119,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "testSequencer": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-test-sequencer/build/index.js",
     "updateSnapshot": "all",
     "useStderr": false,
-    "v8Coverage": false,
     "watch": false,
     "watchAll": false,
     "watchman": true

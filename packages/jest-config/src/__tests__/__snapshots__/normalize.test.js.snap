@@ -143,16 +143,6 @@ exports[`setupTestFrameworkScriptFile logs a deprecation warning when \`setupTes
 <yellow></>"
 `;
 
-exports[`setupTestFrameworkScriptFile logs an error when \`collectCoverage\` and \`v8COverage\` are used 1`] = `
-"<red><bold><bold>● </><bold>Validation Error</>:</>
-<red></>
-<red>  Configuration options <bold>collectCoverage</> and <bold>v8Coverage</> cannot be used together.</>
-<red></>
-<red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration.html</>
-<red></>"
-`;
-
 exports[`setupTestFrameworkScriptFile logs an error when \`setupTestFrameworkScriptFile\` and \`setupFilesAfterEnv\` are used 1`] = `
 "<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>
