@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as asyncHooks from 'async_hooks';
 import {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';
@@ -41,8 +42,6 @@ export default function collectHandles(): () => Array<Error> {
     number,
     {error: Error; isActive: () => boolean}
   > = new Map();
-
-  const asyncHooks: typeof import('async_hooks') = require('async_hooks');
   const hook = asyncHooks.createHook({
     destroy(asyncId) {
       activeHandles.delete(asyncId);
