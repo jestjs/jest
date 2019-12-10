@@ -1617,6 +1617,12 @@ describe('.toMatch()', () => {
   it('escapes strings properly', () => {
     jestExpect('this?: throws').toMatch('this?: throws');
   });
+
+  it('matches consistently when re-using a regex with the "g" flag', () => {
+    const regex = /foo/g;
+    jestExpect('foo').toMatch(regex);
+    jestExpect('foo').toMatch(regex);
+  });
 });
 
 describe('.toHaveLength', () => {
