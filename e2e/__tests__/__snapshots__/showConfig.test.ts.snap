@@ -12,7 +12,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "coveragePathIgnorePatterns": [
         "/node_modules/"
       ],
-      "coverageProvider": "babel",
       "cwd": "<<REPLACED_ROOT_DIR>>",
       "detectLeaks": false,
       "detectOpenHandles": false,
@@ -85,6 +84,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
     "collectCoverage": false,
     "collectCoverageFrom": [],
     "coverageDirectory": "<<REPLACED_ROOT_DIR>>/coverage",
+    "coverageProvider": "babel",
     "coverageReporters": [
       "json",
       "text",
