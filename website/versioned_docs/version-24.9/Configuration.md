@@ -1137,6 +1137,8 @@ An array of RegExp patterns that are matched against all source file paths befor
 
 These patterns match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/node_modules/"]`.
 
+Even if nothing is specified here, the watcher will ignore changes to any file and folder that begins with a dot (`.`).
+
 ### `watchPlugins` [array\<string | [string, Object]>]
 
 Default: `[]`
