@@ -12,7 +12,13 @@ import prompts = require('prompts');
 import {sync as realpath} from 'realpath-native';
 import defaultQuestions, {testScriptQuestion} from './questions';
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
-import {JEST_CONFIG, PACKAGE_JSON} from './constants';
+import {
+  JEST_CONFIG_BASE_NAME,
+  JEST_CONFIG_EXT_CJS,
+  JEST_CONFIG_EXT_JS,
+  JEST_CONFIG_EXT_ORDER,
+  PACKAGE_JSON,
+} from './constants';
 import generateConfigFile from './generate_config_file';
 import modifyPackageJson from './modify_package_json';
 import {ProjectPackageJson} from './types';
@@ -24,10 +30,11 @@ type PromptsResults = {
   scripts: boolean;
 };
 
+const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
+
 export default async (rootDir: string = realpath(process.cwd())) => {
   // prerequisite checks
   const projectPackageJsonPath: string = path.join(rootDir, PACKAGE_JSON);
-  const jestConfigPath: string = path.join(rootDir, JEST_CONFIG);
 
   if (!fs.existsSync(projectPackageJsonPath)) {
     throw new NotFoundPackageJsonError(rootDir);
@@ -35,7 +42,6 @@ export default async (rootDir: string = realpath(process.cwd())) => {
 
   const questions = defaultQuestions.slice(0);
   let hasJestProperty: boolean = false;
-  let hasJestConfig: boolean = false;
   let projectPackageJson: ProjectPackageJson;
 
   try {
@@ -50,11 +56,21 @@ export default async (rootDir: string = realpath(process.cwd())) => {
     hasJestProperty = true;
   }
 
-  if (fs.existsSync(jestConfigPath)) {
-    hasJestConfig = true;
-  }
+  const existingJestConfigPath = JEST_CONFIG_EXT_ORDER.find(ext =>
+    fs.existsSync(getConfigFilename(ext)),
+  );
+  const jestConfigPath =
+    existingJestConfigPath ||
+    path.join(
+      rootDir,
+      getConfigFilename(
+        projectPackageJson.type === 'module'
+          ? JEST_CONFIG_EXT_CJS
+          : JEST_CONFIG_EXT_JS,
+      ),
+    );
 
-  if (hasJestProperty || hasJestConfig) {
+  if (hasJestProperty || existingJestConfigPath) {
     const result: {continue: boolean} = await prompts({
       initial: true,
       message:

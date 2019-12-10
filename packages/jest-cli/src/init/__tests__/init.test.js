@@ -10,6 +10,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import prompts from 'prompts';
 import init from '../';
+import {JEST_CONFIG_EXT_ORDER} from '../constants';
 
 jest.mock('prompts');
 jest.mock('../../../../jest-config/build/getCacheDirectory', () => () =>
@@ -125,29 +126,31 @@ describe('init', () => {
     });
   });
 
-  describe('has-jest-config-file', () => {
-    describe('ask the user whether to override config or not', () => {
-      it('user answered with "Yes"', async () => {
-        prompts.mockReturnValueOnce({continue: true}).mockReturnValueOnce({});
+  JEST_CONFIG_EXT_ORDER.forEach(extension =>
+    describe(`has-jest-config-file-${extension}`, () => {
+      describe('ask the user whether to override config or not', () => {
+        it('user answered with "Yes"', async () => {
+          prompts.mockReturnValueOnce({continue: true}).mockReturnValueOnce({});
 
-        await init(resolveFromFixture('has_jest_config_file'));
+          await init(resolveFromFixture(`has_jest_config_file_${extension}`));
 
-        expect(prompts.mock.calls[0][0]).toMatchSnapshot();
+          expect(prompts.mock.calls[0][0]).toMatchSnapshot();
 
-        const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
+          const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
 
-        expect(writtenJestConfig).toBeDefined();
+          expect(writtenJestConfig).toBeDefined();
+        });
+
+        it('user answered with "No"', async () => {
+          prompts.mockReturnValueOnce({continue: false});
+
+          await init(resolveFromFixture(`has_jest_config_file_${extension}`));
+          // return after first prompt
+          expect(prompts).toHaveBeenCalledTimes(1);
+        });
       });
-
-      it('user answered with "No"', async () => {
-        prompts.mockReturnValueOnce({continue: false});
-
-        await init(resolveFromFixture('has_jest_config_file'));
-        // return after first prompt
-        expect(prompts).toHaveBeenCalledTimes(1);
-      });
-    });
-  });
+    }),
+  );
 
   describe('has jest config in package.json', () => {
     it('should ask the user whether to override config or not', async () => {
