@@ -126,7 +126,7 @@ describe('init', () => {
     });
   });
 
-  JEST_CONFIG_EXT_ORDER.forEach(extension =>
+  JEST_CONFIG_EXT_ORDER.map(e => e.substring(1)).forEach(extension =>
     describe(`has-jest-config-file-${extension}`, () => {
       describe('ask the user whether to override config or not', () => {
         it('user answered with "Yes"', async () => {
