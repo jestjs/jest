@@ -45,6 +45,7 @@
 - `[expect]` Avoid incorrect difference for subset when `toMatchObject` fails ([#9005](https://github.com/facebook/jest/pull/9005))
 - `[expect]` Consider all RegExp flags for equality ([#9167](https://github.com/facebook/jest/pull/9167))
 - `[expect]` [**BREAKING**] Consider primitives different from wrappers instantiated with `new` ([#9167](https://github.com/facebook/jest/pull/9167))
+- `[expect]` Prevent maintaining RegExp state between multiple tests ([#9289](https://github.com/facebook/jest/pull/9289))
 - `[jest-config]` Use half of the available cores when `watchAll` mode is enabled ([#9117](https://github.com/facebook/jest/pull/9117))
 - `[jest-config]` Fix Jest multi project runner still cannot handle exactly one project ([#8894](https://github.com/facebook/jest/pull/8894))
 - `[jest-console]` Add missing `console.group` calls to `NullConsole` ([#9024](https://github.com/facebook/jest/pull/9024))
