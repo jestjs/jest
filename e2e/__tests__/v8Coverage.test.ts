@@ -8,7 +8,22 @@
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {onNodeVersions} from '@jest/test-utils';
+import {toMatchInlineSnapshot} from 'jest-snapshot';
 import runJest from '../runJest';
+
+expect.extend({
+  toMatchRightTrimmedInlineSnapshot(received: string) {
+    return toMatchInlineSnapshot.call(
+      this,
+      wrap(
+        received
+          .split('\n')
+          .map(s => s.trimRight())
+          .join('\n'),
+      ),
+    );
+  },
+});
 
 const DIR = path.resolve(__dirname, '../v8-coverage');
 
@@ -24,17 +39,17 @@ onNodeVersions('>=10', () => {
     );
 
     expect(exitCode).toBe(0);
-    expect(wrap(stdout)).toMatchInlineSnapshot(`
+    expect(stdout).toMatchRightTrimmedInlineSnapshot(`
         console.log __tests__/Thing.test.js:10
           42
 
       -----------------|---------|----------|---------|---------|-------------------
-      File             | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+      File             | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
       -----------------|---------|----------|---------|---------|-------------------
-      All files        |     100 |      100 |      50 |     100 |                   
-       Thing.js        |     100 |      100 |     100 |     100 |                   
-       cssTransform.js |     100 |      100 |      50 |     100 |                   
-       x.css           |     100 |      100 |     100 |     100 |                   
+      All files        |     100 |      100 |      50 |     100 |
+       Thing.js        |     100 |      100 |     100 |     100 |
+       cssTransform.js |     100 |      100 |      50 |     100 |
+       x.css           |     100 |      100 |     100 |     100 |
       -----------------|---------|----------|---------|---------|-------------------
     `);
   });
