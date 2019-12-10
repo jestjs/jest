@@ -57,7 +57,7 @@ export default async (rootDir: string = realpath(process.cwd())) => {
   }
 
   const existingJestConfigPath = JEST_CONFIG_EXT_ORDER.find(ext =>
-    fs.existsSync(getConfigFilename(ext)),
+    fs.existsSync(path.join(rootDir, getConfigFilename(ext))),
   );
   const jestConfigPath =
     existingJestConfigPath ||
