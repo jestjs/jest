@@ -143,7 +143,7 @@ In this case, mocking `matchMedia` in the test file should solve the issue:
 ```js
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: {
+  value: query => ({
     matches: false,
     media: query,
     onchange: null,
@@ -152,7 +152,7 @@ Object.defineProperty(window, 'matchMedia', {
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
     dispatchEvent: jest.fn(),
-  },
+  }),
 });
 ```
 
