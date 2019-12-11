@@ -592,23 +592,25 @@ class Runtime {
       throw new Error('You need to `stopCollectingV8Coverage` first');
     }
 
-    const filtered = this._v8CoverageResult
-      .filter(res => res.url.startsWith('file://'))
-      .map(res => ({...res, url: fileURLToPath(res.url)}))
-      // TODO: will this work on windows? It might be better if `shouldInstrument` deals with it anyways
-      .filter(res => res.url.startsWith(this._config.rootDir))
-      .filter(res =>
-        shouldInstrument(res.url, this._coverageOptions, this._config),
-      );
+    return (
+      this._v8CoverageResult
+        .filter(res => res.url.startsWith('file://'))
+        .map(res => ({...res, url: fileURLToPath(res.url)}))
+        // TODO: will this work on windows? It might be better if `shouldInstrument` deals with it anyways
+        .filter(res => res.url.startsWith(this._config.rootDir))
+        .filter(res => this._fileTransforms.has(res.url))
+        .filter(res =>
+          shouldInstrument(res.url, this._coverageOptions, this._config),
+        )
+        .map(result => {
+          const transformedFile = this._fileTransforms.get(result.url);
 
-    return filtered.map(result => {
-      const transformedFile = this._fileTransforms.get(result.url);
-
-      return {
-        codeTransformResult: transformedFile,
-        result,
-      };
-    });
+          return {
+            codeTransformResult: transformedFile,
+            result,
+          };
+        })
+    );
   }
 
   getSourceMapInfo(coveredFiles: Set<string>) {
