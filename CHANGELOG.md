@@ -11,6 +11,7 @@
 - `[jest-config]` Throw the full error message and stack when a Jest preset is missing a dependency ([#8924](https://github.com/facebook/jest/pull/8924))
 - `[jest-config]` [**BREAKING**] Set default display name color based on runner ([#8689](https://github.com/facebook/jest/pull/8689))
 - `[jest-config]` Merge preset globals with project globals ([#9027](https://github.com/facebook/jest/pull/9027))
+- `[jest-config]` Support `.cjs` config files ([#9291](https://github.com/facebook/jest/pull/9291))
 - `[jest-core]` Support reporters as default exports ([#9161](https://github.com/facebook/jest/pull/9161))
 - `[jest-diff]` Add options for colors and symbols ([#8841](https://github.com/facebook/jest/pull/8841))
 - `[jest-diff]` [**BREAKING**] Export as ECMAScript module ([#8873](https://github.com/facebook/jest/pull/8873))
