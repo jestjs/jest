@@ -9,6 +9,7 @@
 - `[jest-circus, jest-console, jest-jasmine2, jest-reporters, jest-util, pretty-format]` Fix time durating formatting and consolidate time formatting code ([#9765](https://github.com/facebook/jest/pull/9765))
 - `[jest-circus]` [**BREAKING**] Fail tests if a test takes a done callback and have return values ([#9129](https://github.com/facebook/jest/pull/9129))
 - `[jest-config, jest-resolve]` [**BREAKING**] Remove support for `browser` field ([#9943](https://github.com/facebook/jest/pull/9943))
+- `[jest-reporters]` Revert: Transform file paths into hyperlinks ([#9294](https://github.com/facebook/jest/pull/9294))
 
 ### Chore & Maintenance
 
