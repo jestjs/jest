@@ -131,8 +131,6 @@ Default: `false`
 
 Indicates whether the coverage information should be collected while executing the test. Because this retrofits all executed files with coverage collection statements, it may significantly slow down your tests.
 
-Cannot be used together with `v8Coverage`.
-
 ### `collectCoverageFrom` [array]
 
 Default: `undefined`
