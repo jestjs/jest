@@ -142,8 +142,9 @@ If some code uses a method which JSDOM (the DOM implementation used by Jest) has
 In this case, mocking `matchMedia` in the test file should solve the issue:
 
 ```js
-window.matchMedia = jest.fn().mockImplementation(query => {
-  return {
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: query => ({
     matches: false,
     media: query,
     onchange: null,
@@ -152,7 +153,7 @@ window.matchMedia = jest.fn().mockImplementation(query => {
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
     dispatchEvent: jest.fn(),
-  };
+  }),
 });
 ```
 
