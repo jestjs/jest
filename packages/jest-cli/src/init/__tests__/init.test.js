@@ -126,8 +126,9 @@ describe('init', () => {
     });
   });
 
-  JEST_CONFIG_EXT_ORDER.map(e => e.substring(1)).forEach(extension =>
-    describe(`has-jest-config-file-${extension}`, () => {
+  describe.each(JEST_CONFIG_EXT_ORDER.map(e => e.substring(1)))(
+    'has-jest-config-file-%s',
+    extension => {
       describe('ask the user whether to override config or not', () => {
         it('user answered with "Yes"', async () => {
           prompts.mockReturnValueOnce({continue: true}).mockReturnValueOnce({});
@@ -149,7 +150,7 @@ describe('init', () => {
           expect(prompts).toHaveBeenCalledTimes(1);
         });
       });
-    }),
+    },
   );
 
   describe('has jest config in package.json', () => {
