@@ -592,25 +592,24 @@ class Runtime {
       throw new Error('You need to `stopCollectingV8Coverage` first');
     }
 
-    return (
-      this._v8CoverageResult
-        .filter(res => res.url.startsWith('file://'))
-        .map(res => ({...res, url: fileURLToPath(res.url)}))
-        // TODO: will this work on windows? It might be better if `shouldInstrument` deals with it anyways
-        .filter(res => res.url.startsWith(this._config.rootDir))
-        .filter(res => this._fileTransforms.has(res.url))
-        .filter(res =>
+    return this._v8CoverageResult
+      .filter(res => res.url.startsWith('file://'))
+      .map(res => ({...res, url: fileURLToPath(res.url)}))
+      .filter(
+        res =>
+          // TODO: will this work on windows? It might be better if `shouldInstrument` deals with it anyways
+          res.url.startsWith(this._config.rootDir) &&
+          this._fileTransforms.has(res.url) &&
           shouldInstrument(res.url, this._coverageOptions, this._config),
-        )
-        .map(result => {
-          const transformedFile = this._fileTransforms.get(result.url);
+      )
+      .map(result => {
+        const transformedFile = this._fileTransforms.get(result.url);
 
-          return {
-            codeTransformResult: transformedFile,
-            result,
-          };
-        })
-    );
+        return {
+          codeTransformResult: transformedFile,
+          result,
+        };
+      });
   }
 
   getSourceMapInfo(coveredFiles: Set<string>) {
@@ -772,7 +771,10 @@ class Runtime {
       this._cacheFS[filename],
     );
 
-    this._fileTransforms.set(filename, transformedFile);
+    // we only care about non-internal modules
+    if (!options || !options.isInternalModule) {
+      this._fileTransforms.set(filename, transformedFile);
+    }
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry[filename] = transformedFile.sourceMapPath;
