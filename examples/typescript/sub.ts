@@ -2,8 +2,6 @@
 
 import sum from './sum';
 
-const sub = (a: number, b: number): number => {
-  return sum(a, -b);
-};
+const sub = (a: number, b: number): number => sum(a, -b);
 
 export default sub;
