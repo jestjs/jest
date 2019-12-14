@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 test('loading a file with a dynamic local require should work', () => {
   const {withStandardResolution} = require('../dynamicRequire');
   expect(withStandardResolution()).toBe(1);
