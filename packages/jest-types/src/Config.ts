@@ -257,6 +257,7 @@ export type GlobalConfig = {
   listTests: boolean;
   maxConcurrency: number;
   maxWorkers: number;
+  noJestGlobals?: boolean;
   noStackTrace: boolean;
   nonFlagArgs: Array<string>;
   noSCM?: boolean;
@@ -319,6 +320,7 @@ export type ProjectConfig = {
   modulePathIgnorePatterns: Array<string>;
   modulePaths?: Array<string>;
   name: string;
+  noJestGlobals?: boolean;
   prettierPath: string;
   resetMocks: boolean;
   resetModules: boolean;

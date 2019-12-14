@@ -53,16 +53,18 @@ export const initialize = ({
   testPath: Config.Path;
   parentProcess: Process;
 }) => {
+  if (!globalConfig.noJestGlobals && !config.noJestGlobals) {
+    const nodeGlobal = global as Global.Global;
+    Object.assign(nodeGlobal, globals);
+  }
+
   if (globalConfig.testTimeout) {
     getRunnerState().testTimeout = globalConfig.testTimeout;
   }
 
   const mutex = throat(globalConfig.maxConcurrency);
 
-  const nodeGlobal = global as Global.Global;
-  Object.assign(nodeGlobal, globals);
-
-  nodeGlobal.test.concurrent = (test => {
+  (globals.test as Global.ItConcurrent).concurrent = (test => {
     const concurrent = (
       testName: string,
       testFn: () => Promise<any>,
@@ -75,7 +77,7 @@ export const initialize = ({
       // that will result in this test to be skipped, so we'll be executing the promise function anyway,
       // even if it ends up being skipped.
       const promise = mutex(() => testFn());
-      nodeGlobal.test(testName, () => promise, timeout);
+      globals.test(testName, () => promise, timeout);
     };
 
     concurrent.only = (
@@ -91,7 +93,7 @@ export const initialize = ({
     concurrent.skip = test.skip;
 
     return concurrent;
-  })(nodeGlobal.test);
+  })(globals.test);
 
   addEventHandler(eventHandler);
 
