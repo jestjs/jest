@@ -12,6 +12,8 @@ import {ErrorWithStack, isPromise} from 'jest-util';
 import {Circus, Global} from '@jest/types';
 import {dispatch} from './state';
 
+import expect = require('expect');
+
 type THook = (fn: Circus.HookFn, timeout?: number) => void;
 type DescribeFn = (
   blockName: Circus.BlockName,
@@ -215,6 +217,7 @@ export {
   beforeAll,
   beforeEach,
   describe,
+  expect,
   fdescribe,
   fit,
   it,
@@ -229,6 +232,7 @@ export default {
   beforeAll,
   beforeEach,
   describe,
+  expect,
   fdescribe,
   fit,
   it,
