@@ -62,12 +62,6 @@ export const initialize = ({
   const nodeGlobal = global as Global.Global;
   Object.assign(nodeGlobal, globals);
 
-  nodeGlobal.xit = nodeGlobal.it.skip;
-  nodeGlobal.xtest = nodeGlobal.it.skip;
-  nodeGlobal.xdescribe = nodeGlobal.describe.skip;
-  nodeGlobal.fit = nodeGlobal.it.only;
-  nodeGlobal.fdescribe = nodeGlobal.describe.only;
-
   nodeGlobal.test.concurrent = (test => {
     const concurrent = (
       testName: string,

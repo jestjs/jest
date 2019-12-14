@@ -199,17 +199,41 @@ const test: Global.It = (() => {
   return test;
 })();
 
-const it: Global.It = test;
+const it = test;
+
+const fdescribe = describe.only;
+const fit = it.only;
+const xit = it.skip;
+const xdescribe = describe.skip;
+const xtest = it.skip;
 
 export type Event = Circus.Event;
 export type State = Circus.State;
-export {afterAll, afterEach, beforeAll, beforeEach, describe, it, test};
+export {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  fdescribe,
+  fit,
+  it,
+  test,
+  xdescribe,
+  xit,
+  xtest,
+};
 export default {
   afterAll,
   afterEach,
   beforeAll,
   beforeEach,
   describe,
+  fdescribe,
+  fit,
   it,
   test,
+  xdescribe,
+  xit,
+  xtest,
 };
