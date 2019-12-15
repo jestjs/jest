@@ -1095,7 +1095,7 @@ Examples of such compilers include [Babel](https://babeljs.io/), [TypeScript](ht
 
 You can pass configuration to a transformer like `{filePattern: ['path-to-transformer', {options}]}` For example, to configure babel-jest for non-default behavior, `{"\\.js$": ['babel-jest', {rootMode: "upward"}]}`
 
-If you need more advanced functionality or want to build a transformer with babel support, Please visit our [Custom Transformer](https://jestjs.io/docs/en/tutorial-react.html#custom-transformers) section.
+If you need more advanced functionality or want to build a transformer with babel support, Please visit our [Custom Transformer](TutorialReact.md#custom-transformers) section.
 
 _Note: a transformer is only run once per file unless the file has changed. During development of a transformer it can be useful to run Jest with `--no-cache` to frequently [delete Jest's cache](Troubleshooting.md#caching-issues)._
 
