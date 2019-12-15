@@ -115,7 +115,7 @@ Returns a Promise that resolves with `{ forceExited: boolean }` once all workers
 
 **Note:**
 
-`await`ing the `end()` Promise immediately after the workers are no longer needed before proceeding to do other useful things in your program may not be a good idea. If workers have to be force exited, `jest-worker` may go through multiple stages of force exiting (e.g. SIGTERM, later SIGKILL) and give the worker overall around 1 second time to exit on its own, during this time your program will wait even though it may not be necessary that all workers are dead before continuing execution.
+`await`ing the `end()` Promise immediately after the workers are no longer needed before proceeding to do other useful things in your program may not be a good idea. If workers have to be force exited, `jest-worker` may go through multiple stages of force exiting (e.g. SIGTERM, later SIGKILL) and give the worker overall around 1 second time to exit on its own. During this time your program will wait even though it may not be necessary that all workers are dead before continuing execution.
 
 Consider deliberately leaving this Promise floating (unhandled resolution). After your program has done the rest of its work and is about to exit, the Node process will wait for the Promise to resolve after all workers are dead as the last event loop task. This way you parallelized computation time of your program and waiting time and you didn't delay the outputs of your program unnecessarily.
 
