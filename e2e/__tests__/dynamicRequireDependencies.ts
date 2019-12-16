@@ -8,9 +8,9 @@
 import * as path from 'path';
 import {json as runWithJson} from '../runJest';
 
-const dir = path.resolve(__dirname, '../watch-dynamic-requires');
+const dir = path.resolve(__dirname, '../dynamic-require-dependencies');
 
-test('successfully transpiles async', () => {
+test('successfully runs tests with dynamic dependencies', () => {
   const {json} = runWithJson(dir, ['--findRelatedTests', 'dynamicRequire.js']);
   expect(json.success).toBe(true);
   expect(json.numTotalTests).toBe(2);
