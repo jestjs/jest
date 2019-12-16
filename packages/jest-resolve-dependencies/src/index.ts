@@ -62,7 +62,7 @@ class DependencyResolver {
         try {
           resolvedDependency = this._resolver.getMockModule(file, dependency);
         } catch {
-          resolvedDependency = null;
+          // leave resolvedDependency as undefined if nothing can be found
         }
       }
 
