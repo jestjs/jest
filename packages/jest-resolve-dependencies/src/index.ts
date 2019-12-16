@@ -58,10 +58,10 @@ class DependencyResolver {
           dependency,
           options,
         );
-      } catch (e1) {
+      } catch {
         try {
           resolvedDependency = this._resolver.getMockModule(file, dependency);
-        } catch (e2) {
+        } catch {
           resolvedDependency = null;
         }
       }
