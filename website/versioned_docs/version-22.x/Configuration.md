@@ -412,7 +412,7 @@ _Note: When using multi project runner, it's recommended to add a `displayName` 
 
 Default: `false`
 
-Automatically clear mock calls and instances between every test. Equivalent to calling `jest.clearAllMocks()` between each test. This does not remove any mock implementation that may have been provided.
+Automatically clear mock calls and instances before every test. Equivalent to calling `jest.clearAllMocks()` before each test. This does not remove any mock implementation that may have been provided.
 
 ### `reporters` [array\<moduleName | [moduleName, options]>]
 
@@ -490,7 +490,7 @@ For the full list of methods and argument types see `Reporter` interface in [pac
 
 Default: `false`
 
-Automatically reset mock state between every test. Equivalent to calling `jest.resetAllMocks()` between each test. This will lead to any mocks having their fake implementations removed but does not restore their initial implementation.
+Automatically reset mock state before every test. Equivalent to calling `jest.resetAllMocks()` before each test. This will lead to any mocks having their fake implementations removed but does not restore their initial implementation.
 
 ### `resetModules` [boolean]
 
@@ -521,7 +521,7 @@ The function should either return a path to the module that should be resolved o
 
 Default: `false`
 
-Automatically restore mock state between every test. Equivalent to calling `jest.restoreAllMocks()` between each test. This will lead to any mocks having their fake implementations removed and restores their initial implementation.
+Automatically restore mock state before every test. Equivalent to calling `jest.restoreAllMocks()` before each test. This will lead to any mocks having their fake implementations removed and restores their initial implementation.
 
 ### `rootDir` [string]
 
