@@ -10,7 +10,7 @@ import {Config} from '@jest/types';
 import {readInitialCoverage} from 'istanbul-lib-instrument';
 import {FileCoverage, createFileCoverage} from 'istanbul-lib-coverage';
 import {ScriptTransformer, shouldInstrument} from '@jest/transform';
-import {V8Coverage} from '@jest/coverage';
+import {V8Coverage} from 'collect-v8-coverage';
 
 type SingleV8Coverage = V8Coverage[number];
 

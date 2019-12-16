@@ -6,7 +6,6 @@
   },
   "references": [
     {"path": "../jest-console"},
-    {"path": "../jest-coverage"},
     {"path": "../jest-environment"},
     {"path": "../jest-haste-map"},
     {"path": "../jest-resolve"},

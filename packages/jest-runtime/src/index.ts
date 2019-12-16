@@ -33,7 +33,7 @@ import {
   shouldInstrument,
 } from '@jest/transform';
 import {V8CoverageResult} from '@jest/test-result';
-import {CoverageInstrumenter, V8Coverage} from '@jest/coverage';
+import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
 import stripBOM = require('strip-bom');
 import {run as cliRun} from './cli';

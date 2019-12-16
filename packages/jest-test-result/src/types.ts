@@ -9,7 +9,7 @@
 import {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
 import {ConsoleBuffer} from '@jest/console';
 import {Config} from '@jest/types';
-import {V8Coverage} from '@jest/coverage';
+import {V8Coverage} from 'collect-v8-coverage';
 import {TransformResult} from '@jest/transform';
 
 export type V8CoverageResult = Array<{
