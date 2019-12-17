@@ -10,8 +10,13 @@ import {Config} from '@jest/types';
 
 export type ShouldInstrumentOptions = Pick<
   Config.GlobalConfig,
-  'collectCoverage' | 'collectCoverageFrom' | 'collectCoverageOnlyFrom'
-> & {changedFiles?: Set<Config.Path>};
+  | 'collectCoverage'
+  | 'collectCoverageFrom'
+  | 'collectCoverageOnlyFrom'
+  | 'coverageProvider'
+> & {
+  changedFiles?: Set<Config.Path>;
+};
 
 export type Options = ShouldInstrumentOptions &
   Partial<{
@@ -31,6 +36,7 @@ export type TransformedSource = {
 
 export type TransformResult = {
   code: string;
+  originalCode: string;
   mapCoverage: boolean;
   sourceMapPath: string | null;
 };

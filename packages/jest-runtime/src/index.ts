@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import {Script} from 'vm';
+import {fileURLToPath} from 'url';
 import {Config} from '@jest/types';
 import {
   Jest,
@@ -26,10 +27,13 @@ import Snapshot = require('jest-snapshot');
 import {
   ScriptTransformer,
   ShouldInstrumentOptions,
+  TransformResult,
   TransformationOptions,
   handlePotentialSyntaxError,
   shouldInstrument,
 } from '@jest/transform';
+import {V8CoverageResult} from '@jest/test-result';
+import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
 import stripBOM = require('strip-bom');
 import {run as cliRun} from './cli';
@@ -111,6 +115,9 @@ class Runtime {
   private _shouldUnmockTransitiveDependenciesCache: BooleanObject;
   private _sourceMapRegistry: SourceMapRegistry;
   private _scriptTransformer: ScriptTransformer;
+  private _fileTransforms: Map<string, TransformResult>;
+  private _v8CoverageInstrumenter: CoverageInstrumenter | undefined;
+  private _v8CoverageResult: V8Coverage | undefined;
   private _transitiveShouldMock: BooleanObject;
   private _unmockList: RegExp | undefined;
   private _virtualMocks: BooleanObject;
@@ -129,6 +136,7 @@ class Runtime {
       collectCoverage: false,
       collectCoverageFrom: [],
       collectCoverageOnlyFrom: undefined,
+      coverageProvider: 'babel',
     };
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
@@ -147,6 +155,7 @@ class Runtime {
     this._scriptTransformer = new ScriptTransformer(config);
     this._shouldAutoMock = config.automock;
     this._sourceMapRegistry = Object.create(null);
+    this._fileTransforms = new Map();
     this._virtualMocks = Object.create(null);
 
     this._mockMetaDataCache = Object.create(null);
@@ -494,6 +503,7 @@ class Runtime {
       collectCoverage: this._coverageOptions.collectCoverage,
       collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
       collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
+      coverageProvider: this._coverageOptions.coverageProvider,
     };
   }
 
@@ -560,8 +570,46 @@ class Runtime {
     }
   }
 
+  async collectV8Coverage() {
+    this._v8CoverageInstrumenter = new CoverageInstrumenter();
+
+    await this._v8CoverageInstrumenter.startInstrumenting();
+  }
+
+  async stopCollectingV8Coverage() {
+    if (!this._v8CoverageInstrumenter) {
+      throw new Error('You need to call `collectV8Coverage` first.');
+    }
+    this._v8CoverageResult = await this._v8CoverageInstrumenter.stopInstrumenting();
+  }
+
   getAllCoverageInfoCopy() {
     return deepCyclicCopy(this._environment.global.__coverage__);
+  }
+
+  getAllV8CoverageInfoCopy(): V8CoverageResult {
+    if (!this._v8CoverageResult) {
+      throw new Error('You need to `stopCollectingV8Coverage` first');
+    }
+
+    return this._v8CoverageResult
+      .filter(res => res.url.startsWith('file://'))
+      .map(res => ({...res, url: fileURLToPath(res.url)}))
+      .filter(
+        res =>
+          // TODO: will this work on windows? It might be better if `shouldInstrument` deals with it anyways
+          res.url.startsWith(this._config.rootDir) &&
+          this._fileTransforms.has(res.url) &&
+          shouldInstrument(res.url, this._coverageOptions, this._config),
+      )
+      .map(result => {
+        const transformedFile = this._fileTransforms.get(result.url);
+
+        return {
+          codeTransformResult: transformedFile,
+          result,
+        };
+      });
   }
 
   getSourceMapInfo(coveredFiles: Set<string>) {
@@ -722,6 +770,11 @@ class Runtime {
       this._getFullTransformationOptions(options),
       this._cacheFS[filename],
     );
+
+    // we only care about non-internal modules
+    if (!options || !options.isInternalModule) {
+      this._fileTransforms.set(filename, transformedFile);
+    }
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry[filename] = transformedFile.sourceMapPath;
