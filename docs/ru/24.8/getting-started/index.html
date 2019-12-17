@@ -80,7 +80,7 @@
 <p>Или <a href="https://www.npmjs.com/"><code>npm</code></a>:</p>
 <pre><code class="hljs css language-bash">npm install --save-dev jest
 </code></pre>
-<p>Note: Jest documentation uses <code>yarn</code> commands, but <code>npm</code> will also work. You can compare <code>yarn</code> and <code>npm</code> commands in the <a href="https://yarnpkg.com/en/docs/migrating-from-npm#toc-cli-commands-comparison">yarn docs, here</a>.</p>
+<p>Примечание: документация Jest использует команды <code>yarn</code>, но <code>npm</code> также будет работать. Вы можете сравнить команды <code>yarn</code> и <code>npm</code> в документах <a href="https://yarnpkg.com/en/docs/migrating-from-npm#toc-cli-commands-comparison">yarn, здесь</a>.</p>
 <p>Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a <code>sum.js</code> file:</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">a, b</span>) </span>{
   <span class="hljs-keyword">return</span> a + b;
@@ -101,28 +101,28 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
   }
 }
 </code></pre>
-<p>Finally, run <code>yarn test</code> or <code>npm run test</code> and Jest will print this message:</p>
+<p>Наконец, запустите <code>yarn test</code> или <code>npm run test</code> и Jest выведет это сообщение:</p>
 <pre><code class="hljs css language-bash">PASS  ./sum.test.js
 ✓ adds 1 + 2 to equal 3 (5ms)
 </code></pre>
 <p><strong>Вы только что успешно написали первый тест с использованием Jest!</strong></p>
 <p>Данный тест использует <code>expect</code> и <code>toBe</code> для проверки идентичности двух данных значений. Чтобы узнать об остальных вещах, которые можно протестировать с использованием Jest, смотрите <a href="/docs/ru/24.8/using-matchers">использование вычислителей</a>.</p>
 <h2><a class="anchor" aria-hidden="true" id="запуск-из-командной-строки"></a><a href="#запуск-из-командной-строки" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Запуск из командной строки</h2>
-<p>You can run Jest directly from the CLI (if it's globally available in your <code>PATH</code>, e.g. by <code>yarn global add jest</code> or <code>npm install jest --global</code>) with a variety of useful options.</p>
+<p>Вы можете запустить Jest прямо из командной строки (если он глобально доступен в <code>PATH</code>, например <code>yarn global add jest</code> или <code>npm install jest --global</code>) с множеством полезных опций.</p>
 <p>Вот так можно запустить Jest для проверки файлов совпадающих с <code>my-test</code>, используя <code>config.json</code> в качестве файла конфигурации и для отображения нативного уведомления ОС после завершения:</p>
 <pre><code class="hljs css language-bash">jest my-test --notify --config=config.json
 </code></pre>
 <p>If you'd like to learn more about running <code>jest</code> through the command line, take a look at the <a href="/docs/ru/24.8/cli">Jest CLI Options</a> page.</p>
 <h2><a class="anchor" aria-hidden="true" id="дополнительная-конфигурация"></a><a href="#дополнительная-конфигурация" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Дополнительная конфигурация</h2>
-<h3><a class="anchor" aria-hidden="true" id="generate-a-basic-configuration-file"></a><a href="#generate-a-basic-configuration-file" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Generate a basic configuration file</h3>
+<h3><a class="anchor" aria-hidden="true" id="создание-базового-файла-конфигурации"></a><a href="#создание-базового-файла-конфигурации" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Создание базового файла конфигурации</h3>
 <p>Based on your project, Jest will ask you a few questions and will create a basic configuration file with a short description for each option:</p>
 <pre><code class="hljs css language-bash">jest --init
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="с-использованием-babel"></a><a href="#с-использованием-babel" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>С использованием Babel</h3>
-<p>To use <a href="http://babeljs.io/">Babel</a>, install required dependencies via <code>yarn</code>:</p>
-<pre><code class="hljs css language-bash">yarn add --dev babel-jest @babel/core @babel/preset-env
+<p>Для использования <a href="http://babeljs.io/">Babel</a>, установите необходимые зависимости через <code>yarn</code>:</p>
+<pre><code class="hljs css language-bash">yarn add --dev babel-jest @babel/core @babel/core @babel/preset-env
 </code></pre>
-<p>Configure Babel to target your current version of Node by creating a <code>babel.config.js</code> file in the root of your project:</p>
+<p>Настройте Babel на вашу текущую версию Node Js, создав файл <code>babel.config.js</code> в корне вашего проекта:</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// babel.config.js</span>
 <span class="hljs-built_in">module</span>.exports = {
   <span class="hljs-attr">presets</span>: [
@@ -137,8 +137,8 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
   ],
 };
 </code></pre>
-<p><strong>The ideal configuration for Babel will depend on your project.</strong> See <a href="https://babeljs.io/docs/en/">Babel's docs</a> for more details.</p>
-<p><details><summary markdown="span"><strong>Making your Babel config jest-aware</strong></summary></p>
+<p><strong>Идеальная конфигурация для Babel будет зависеть от вашего проекта.</strong> Смотрите <a href="https://babeljs.io/docs/en/">документацию Babel</a> для получения дополнительной информации.</p>
+<p><details><summary markdown="span"><strong>Сделать ваш jest-файл конфигурации Babel</strong></summary></p>
 <p>Jest will set <code>process.env.NODE_ENV</code> to <code>'test'</code> if it's not set to something else. You can use that in your configuration to conditionally setup only the compilation needed for Jest, e.g.</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// babel.config.js</span>
 <span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-params">api</span> =&gt;</span> {
@@ -159,13 +159,13 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 };
 </code></pre>
 <p></details></p>
-<p><details><summary markdown="span"><strong>Babel 6 support</strong></summary></p>
+<p><details><summary markdown="span"><strong>Поддержка Babel 6</strong></summary></p>
 <p>Jest 24 dropped support for Babel 6. We highly recommend you to upgrade to Babel 7, which is actively maintained. However, if you cannot upgrade to Babel 7, either keep using Jest 23 or upgrade to Jest 24 with <code>babel-jest</code> locked at version 23, like in the example below:</p>
 <pre><code class="hljs">&quot;dependencies&quot;: {
   &quot;babel-core&quot;: &quot;^6.26.3&quot;,
   &quot;babel-jest&quot;: &quot;^23.6.0&quot;,
   &quot;babel-preset-env&quot;: &quot;^1.7.0&quot;,
-  &quot;jest&quot;: &quot;^24.0.0&quot;
+  &quot;jest&quot;: &quot;^24.0&quot;
 }
 </code></pre>
 <p>While we generally recommend using the same version of every Jest package, this workaround will allow you to continue using the latest version of Jest with Babel 6 for now.</p>
@@ -181,12 +181,12 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 module.exports = {
   presets: [
     ['@babel/preset-env', {targets: {node: 'current'}}],
-<span class="hljs-addition">+    '@babel/preset-typescript',</span>
+<span class="hljs-addition">+ '@babel/preset-typescript',</span>
   ],
 };
 </code></pre>
 <p>However, there are some <a href="https://babeljs.io/docs/en/next/babel-plugin-transform-typescript.html#caveats">caveats</a> to using TypeScript with Babel. Because TypeScript support in Babel is transpilation, Jest will not type-check your tests as they are run. If you want that, you can use <a href="https://github.com/kulshekhar/ts-jest">ts-jest</a>.</p>
-</span></div></article></div><div class="docs-prevnext"><a class="docs-next button" href="/docs/ru/24.8/using-matchers"><span>Using Matchers</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#запуск-из-командной-строки">Запуск из командной строки</a></li><li><a href="#дополнительная-конфигурация">Дополнительная конфигурация</a><ul class="toc-headings"><li><a href="#generate-a-basic-configuration-file">Generate a basic configuration file</a></li><li><a href="#с-использованием-babel">С использованием Babel</a></li><li><a href="#с-использованием-webpack">С использованием Webpack</a></li><li><a href="#с-использованием-typescript">С использованием TypeScript</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/ru/getting-started.html">Getting Started</a><a href="/docs/ru/snapshot-testing.html">Guides</a><a href="/docs/ru/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2019 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-next button" href="/docs/ru/24.8/using-matchers"><span>Using Matchers</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#запуск-из-командной-строки">Запуск из командной строки</a></li><li><a href="#дополнительная-конфигурация">Дополнительная конфигурация</a><ul class="toc-headings"><li><a href="#создание-базового-файла-конфигурации">Создание базового файла конфигурации</a></li><li><a href="#с-использованием-babel">С использованием Babel</a></li><li><a href="#с-использованием-webpack">С использованием Webpack</a></li><li><a href="#с-использованием-typescript">С использованием TypeScript</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/ru/getting-started.html">Getting Started</a><a href="/docs/ru/snapshot-testing.html">Guides</a><a href="/docs/ru/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2019 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;
