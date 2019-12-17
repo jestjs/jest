@@ -201,6 +201,10 @@ We will be using GitHub Issues for our public bugs. We will keep a close eye on 
 
 The best way to get your bug fixed is to provide a reduced test case. Please provide a public repository with a runnable example.
 
+### Docs translation
+
+We get translations from crowdin, see https://crowdin.com/project/jest. Any and all help is very much appreciated!
+
 ### Security Bugs
 
 Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe disclosure of security bugs. With that in mind, please do not file public issues; go through the process outlined on that page.
