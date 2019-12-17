@@ -193,7 +193,7 @@ Note that using `v8` is considered experimental. This uses V8's builtin code cov
 
 1. Your node version must include `vm.compileFunction`, which was introduced in [node 10.10](https://nodejs.org/dist/latest-v12.x/docs/api/vm.html#vm_vm_compilefunction_code_params_options)
 1. Tests needs to run in Node test environment (support for `jsdom` is in the works)
-1. V8 has way better data in the later versions, so using the latets versions of node (v13 at the time of this writing) will yield better results
+1. V8 has way better data in the later versions, so using the latest versions of node (v13 at the time of this writing) will yield better results
 
 ### `coverageReporters` [array\<string>]
 
