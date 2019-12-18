@@ -73,6 +73,7 @@
 - `[jest-utils]` Allow querying process.domain ([#9136](https://github.com/facebook/jest/pull/9136))
 - `[pretty-format]` Correctly detect memoized elements ([#9196](https://github.com/facebook/jest/pull/9196))
 - `[jest-fake-timers]` Support `util.promisify` on `setTimeout` ([#9180](https://github.com/facebook/jest/pull/9180))
+- `[expect]` Fix subsetEquality: fix circular reference handling logic ([#9322](https://github.com/facebook/jest/pull/9322))
 
 ### Chore & Maintenance
 
