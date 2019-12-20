@@ -49,7 +49,7 @@ File                                 | % Stmts | % Branch | % Funcs | % Lines | 
 All files                            |      60 |        0 |      50 |      60 |                   
  coverage-report                     |   47.37 |        0 |      25 |      50 |                   
   file.js                            |     100 |      100 |     100 |     100 |                   
-  notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 8,15,16,17,19     
+  notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 8,15-17,19        
   otherFile.js                       |     100 |      100 |     100 |     100 |                   
   sum.js                             |    87.5 |      100 |      50 |     100 |                   
   sumDependency.js                   |       0 |        0 |       0 |       0 | 8,10,12           
@@ -75,7 +75,7 @@ File                                 | % Stmts | % Branch | % Funcs | % Lines | 
 All files                            |      60 |        0 |      50 |      60 |                   
  coverage-report                     |   47.37 |        0 |      25 |      50 |                   
   file.js                            |     100 |      100 |     100 |     100 |                   
-  notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 8,15,16,17,19     
+  notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 8,15-17,19        
   otherFile.js                       |     100 |      100 |     100 |     100 |                   
   sum.js                             |    87.5 |      100 |      50 |     100 |                   
   sumDependency.js                   |       0 |        0 |       0 |       0 | 8,10,12           
@@ -100,7 +100,7 @@ File                                 | % Stmts | % Branch | % Funcs | % Lines | 
 All files                            |      60 |        0 |      50 |      60 |                   
  coverage-report                     |   47.37 |        0 |      25 |      50 |                   
   file.js                            |     100 |      100 |     100 |     100 |                   
-  notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 8,15,16,17,19     
+  notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 8,15-17,19        
   otherFile.js                       |     100 |      100 |     100 |     100 |                   
   sum.js                             |    87.5 |      100 |      50 |     100 |                   
   sumDependency.js                   |       0 |        0 |       0 |       0 | 8,10,12           
@@ -118,7 +118,7 @@ File                                 | % Stmts | % Branch | % Funcs | % Lines | 
 All files                            |      60 |        0 |      50 |      60 |                   
  coverage-report                     |   47.37 |        0 |      25 |      50 |                   
   file.js                            |     100 |      100 |     100 |     100 |                   
-  notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 8,15,16,17,19     
+  notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 8,15-17,19        
   otherFile.js                       |     100 |      100 |     100 |     100 |                   
   sum.js                             |    87.5 |      100 |      50 |     100 |                   
   sumDependency.js                   |       0 |        0 |       0 |       0 | 8,10,12           
