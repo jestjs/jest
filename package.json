@@ -48,7 +48,7 @@
     "istanbul-lib-coverage": "^3.0.0",
     "istanbul-lib-report": "^3.0.0",
     "istanbul-reports": "^3.0.0",
-    "jest-junit": "^9.0.0",
+    "jest-junit": "^10.0.0",
     "jest-silent-reporter": "^0.1.2",
     "jest-snapshot-serializer-raw": "^1.1.0",
     "jest-watch-typeahead": "^0.4.0",

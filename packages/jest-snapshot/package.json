@@ -22,7 +22,7 @@
     "mkdirp": "^0.5.1",
     "natural-compare": "^1.4.0",
     "pretty-format": "^24.9.0",
-    "semver": "^6.2.0"
+    "semver": "^7.1.1"
   },
   "devDependencies": {
     "@babel/traverse": "^7.3.4",
