@@ -2,31 +2,30 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://jestjs.io/blog</id>
     <title>Jest Blog</title>
-    <updated>2019-01-25T06:00:00Z</updated>
-    <generator>Feed for Node.js</generator>
+    <updated>2019-01-25T06:00:00.000Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://jestjs.io/blog"/>
     <subtitle>The best place to stay up-to-date with the latest Jest news and events.</subtitle>
     <logo>https://jestjs.io/img/jest.svg</logo>
     <entry>
         <title type="html"><![CDATA[Jest 24: 💅 Refreshing, Polished, TypeScript-friendly]]></title>
         <id>https://jestjs.io/blog/2019/01/25/jest-24-refreshing-polished-typescript-friendly.html</id>
-        <link href="https://jestjs.io/blog/2019/01/25/jest-24-refreshing-polished-typescript-friendly.html">
-        </link>
-        <updated>2019-01-25T06:00:00Z</updated>
+        <link href="https://jestjs.io/blog/2019/01/25/jest-24-refreshing-polished-typescript-friendly.html"/>
+        <updated>2019-01-25T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>Today we are happy to announce the next major release of Jest - version 24! It's been 4 months since the last minor release, and 8 months since Jest 23, so this upgrade is a big one, with something for everyone! Highlights include built-in support for TypeScript by upgrading the Jest internals to Babel 7, fixing some long-standing issues with missing console output and performance issues when computing large diffs, and a brand new sparkling website. ✨</p>
 <p>For a full list of all changes see the <a href="https://github.com/facebook/jest/blob/master/CHANGELOG.md">changelog</a>.</p>
 ]]></summary>
         <author>
             <name>Simen Bekkhus</name>
+            <email/>
             <uri>https://github.com/SimenB</uri>
         </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[Supporting Jest Open Source]]></title>
         <id>https://jestjs.io/blog/2018/06/27/supporting-jest-open-source.html</id>
-        <link href="https://jestjs.io/blog/2018/06/27/supporting-jest-open-source.html">
-        </link>
-        <updated>2018-06-27T06:00:00Z</updated>
+        <link href="https://jestjs.io/blog/2018/06/27/supporting-jest-open-source.html"/>
+        <updated>2018-06-27T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>Jest is maintained by a community of open source contributors and Facebook employees.</p>
 <p>Our open source contributors work on behalf of the community to create new features, fix bugs, and maintain the issue backlog. Facebook employees do the same, focused on the problems specific to Facebook's scale, and run all proposed releases on Facebook's enormous test suite before publishing.</p>
 <p>All of us do our part to make testing delightful.</p>
@@ -35,43 +34,43 @@
 ]]></summary>
         <author>
             <name>Rick Hanlon II</name>
+            <email/>
             <uri>https://twitter.com/rickhanlonii</uri>
         </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[Jest 23: 🔥 Blazing Fast Delightful Testing]]></title>
         <id>https://jestjs.io/blog/2018/05/29/jest-23-blazing-fast-delightful-testing.html</id>
-        <link href="https://jestjs.io/blog/2018/05/29/jest-23-blazing-fast-delightful-testing.html">
-        </link>
-        <updated>2018-05-29T06:00:00Z</updated>
+        <link href="https://jestjs.io/blog/2018/05/29/jest-23-blazing-fast-delightful-testing.html"/>
+        <updated>2018-05-29T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>Today we are excited to announce Jest 23, our largest major release to date! Together with over 100 contributors, we've shipped a ton of features and bug fixes. Thank you to everyone in the community for helping make JavaScript Testing Delightful.</p>
 <p>We would also like to welcome both <a href="https://babeljs.io/">Babel</a> and <a href="https://webpack.js.org/">Webpack</a> to the Jest community! After converting from Mocha to Jest 23 Beta, Webpack saw their total test suite time reduced 6x from over 13 minutes to 2 minutes 20 seconds. <a href="https://twitter.com/search?q=%23blazingmeansgood">#blazingmeansgood</a></p>
 <p>Here's are some of the Jest 23 highlights and breaking changes.</p>
 ]]></summary>
         <author>
             <name>Rick Hanlon II</name>
+            <email/>
             <uri>https://twitter.com/rickhanlonii</uri>
         </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[Jest 22: Refinements & Custom Runners]]></title>
         <id>https://jestjs.io/blog/2017/12/18/jest-22.html</id>
-        <link href="https://jestjs.io/blog/2017/12/18/jest-22.html">
-        </link>
-        <updated>2017-12-18T06:00:00Z</updated>
+        <link href="https://jestjs.io/blog/2017/12/18/jest-22.html"/>
+        <updated>2017-12-18T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>Today we are announcing a new major version of Jest which refines almost all parts of Jest to provide a more solid testing foundation. Together with the Jest community we made a number of changes across the board that will help you get more out of Jest. We are also graduating the custom runners feature out of the experimental stage and added a new package, <code>jest-worker</code>, for parallelizing work across multiple processes. We have compiled a list of highlights below but make sure to check out the (as always) <a href="https://github.com/facebook/jest/blob/master/CHANGELOG.md">massive changelog</a>.</p>
 ]]></summary>
         <author>
             <name>Simen Bekkhus</name>
+            <email/>
             <uri>https://github.com/SimenB</uri>
         </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[Jest 20: 💖 Delightful Testing & 🏃🏽 Multi-Project-Runner]]></title>
         <id>https://jestjs.io/blog/2017/05/06/jest-20-delightful-testing-multi-project-runner.html</id>
-        <link href="https://jestjs.io/blog/2017/05/06/jest-20-delightful-testing-multi-project-runner.html">
-        </link>
-        <updated>2017-05-06T06:00:00Z</updated>
+        <link href="https://jestjs.io/blog/2017/05/06/jest-20-delightful-testing-multi-project-runner.html"/>
+        <updated>2017-05-06T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>A few months ago we announced <a href="https://jestjs.io/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements.html">Jest 19</a> which came with major new features and was the biggest Jest release until today. Jest 20 has twice the amount of changes compared to the previous version, features a complete rewrite of the test runner, adds new testing APIs. The new release enables a new level of customization and configuration for projects all while making it effortless to upgrade. Beyond Painless JavaScript Testing, we believe Jest is now delivering a <strong>Delightful JavaScript Testing experience</strong>. Let's take a look at the best new features and changes in depth:</p>
 <h2><a class="anchor" aria-hidden="true" id="multi-project-runner--configuration-overhaul"></a><a href="#multi-project-runner--configuration-overhaul" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Multi-Project-Runner &amp; Configuration Overhaul</h2>
 <p>Until now, Jest could only operate in one project at a time. This is often cumbersome if you are working on many smaller projects that each have their own setup and configuration. With Jest 20, we rewrote the test runner completely to run many projects at the same time within a single instance of Jest, for example if you are working on a React frontend and a node.js backend. Here is a video of Jest running tests for <a href="https://github.com/facebook/react">React</a>, <a href="https://github.com/facebook/relay">Relay</a>, <a href="https://github.com/yarnpkg/yarn">Yarn</a> and Jest all at the same time:</p>
@@ -79,30 +78,30 @@
 ]]></summary>
         <author>
             <name>Christoph Pojer</name>
+            <email/>
             <uri>http://twitter.com/cpojer</uri>
         </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[🃏 Jest 19: Immersive Watch Mode & Test Platform Improvements]]></title>
         <id>https://jestjs.io/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements.html</id>
-        <link href="https://jestjs.io/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements.html">
-        </link>
-        <updated>2017-02-21T06:00:00Z</updated>
+        <link href="https://jestjs.io/blog/2017/02/21/jest-19-immersive-watch-mode-test-platform-improvements.html"/>
+        <updated>2017-02-21T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>Today we are pleased to ship version 19 of the Jest testing platform. It's the biggest Jest release we have shipped so far and we are quite excited to show you what we've built over the last two months:</p>
 <h2><a class="anchor" aria-hidden="true" id="immersive-watch-mode"></a><a href="#immersive-watch-mode" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Immersive Watch Mode</h2>
 <p>We <a href="https://github.com/facebook/jest/pull/2362">completely rewrote the watch mode</a> to make it instant and more extensible. As a result, the experience of using it really is immersive: tests re-run instantly after a file change and we made it easy to select the right tests.</p>
 ]]></summary>
         <author>
             <name>Rogelio Guzman</name>
+            <email/>
             <uri>http://twitter.com/rogeliog</uri>
         </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[A Great Developer Experience]]></title>
         <id>https://jestjs.io/blog/2017/01/30/a-great-developer-experience.html</id>
-        <link href="https://jestjs.io/blog/2017/01/30/a-great-developer-experience.html">
-        </link>
-        <updated>2017-01-30T06:00:00Z</updated>
+        <link href="https://jestjs.io/blog/2017/01/30/a-great-developer-experience.html"/>
+        <updated>2017-01-30T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>We strongly believe that great documentation is crucial to providing a great developer experience. The docs should be clear, concise, and useful to new users and veterans alike. With that in mind, we recently took some time to overhaul the Jest website.</p>
 <h2><a class="anchor" aria-hidden="true" id="improved-docs"></a><a href="#improved-docs" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Improved docs</h2>
 <p>One of the changes you'll notice upon visiting our docs is the updated sidebar. The documentation is now divided into three main areas: an introduction to Jest, detailed guides to Jest's features, and a comprehensive API reference.</p>
@@ -112,29 +111,29 @@
 ]]></summary>
         <author>
             <name>Héctor Ramos</name>
+            <email/>
             <uri>http://twitter.com/hectorramos</uri>
         </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[2016 in Jest]]></title>
         <id>https://jestjs.io/blog/2016/12/15/2016-in-jest.html</id>
-        <link href="https://jestjs.io/blog/2016/12/15/2016-in-jest.html">
-        </link>
-        <updated>2016-12-15T06:00:00Z</updated>
+        <link href="https://jestjs.io/blog/2016/12/15/2016-in-jest.html"/>
+        <updated>2016-12-15T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>2016 was a big year for JavaScript testing with Jest. In the first six months of the year we rewrote Jest and built a solid foundation to significantly improve performance and the developer experience of testing JavaScript code. We flow-typed the entire codebase, built a ton of integration tests for Jest itself and adopted <a href="https://lernajs.io/">lerna</a> to turn Jest from a framework into a <a href="https://github.com/facebook/jest/tree/master/packages"><em>Painless JavaScript Testing platform</em></a>.</p>
 <p>The newly created <a href="https://yarnpkg.com/en/package/react-test-renderer">react-test-renderer</a> finally enabled testing of react-native components. Through the jest-react-native preset (now merged directly into react-native) Jest now works out of the box for any React project and comes pre-configured in <a href="https://github.com/facebookincubator/create-react-app">create-react-app</a> and <a href="https://github.com/facebook/react-native">react-native</a> projects. We integrated core pieces of Jest into <a href="https://github.com/facebook/react-native/tree/master/packager/react-packager/src">react-native's packager</a> and the completely new snapshot testing feature has since been used outside of Jest: It was integrated with React Storybook as “<a href="https://github.com/storybooks/storyshots">storyshots</a>” and is being adopted by other test runners like <a href="https://github.com/avajs/ava/pull/1113">ava</a>.</p>
 ]]></summary>
         <author>
             <name>Christoph Pojer</name>
+            <email/>
             <uri>http://twitter.com/cpojer</uri>
         </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[Jest 16.0: Turbocharged CLI & Community Update]]></title>
         <id>https://jestjs.io/blog/2016/10/03/jest-16.html</id>
-        <link href="https://jestjs.io/blog/2016/10/03/jest-16.html">
-        </link>
-        <updated>2016-10-03T06:00:00Z</updated>
+        <link href="https://jestjs.io/blog/2016/10/03/jest-16.html"/>
+        <updated>2016-10-03T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>It's been one month since the last major release and we've made significant improvements to Jest since. In this major release we are updating the snapshot format we are using which will likely require snapshots to be updated when upgrading Jest. We don't make these changes lightly and don't expect this to happen often but we think it is necessary to improve the format from time to time.</p>
 <h2><a class="anchor" aria-hidden="true" id="upgraded-cli"></a><a href="#upgraded-cli" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Upgraded CLI</h2>
 <p><img src="/img/blog/16-reporter.gif" alt="reporter"></p>
@@ -142,57 +141,57 @@
 ]]></summary>
         <author>
             <name>Christoph Pojer</name>
+            <email/>
             <uri>http://twitter.com/cpojer</uri>
         </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[Jest 15.0: New Defaults for Jest]]></title>
         <id>https://jestjs.io/blog/2016/09/01/jest-15.html</id>
-        <link href="https://jestjs.io/blog/2016/09/01/jest-15.html">
-        </link>
-        <updated>2016-09-01T06:00:00Z</updated>
+        <link href="https://jestjs.io/blog/2016/09/01/jest-15.html"/>
+        <updated>2016-09-01T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>We spent the past year making Jest <a href="https://jestjs.io/blog/2016/03/11/javascript-unit-testing-performance.html">faster</a>, <a href="https://jestjs.io/blog/2016/04/12/jest-11.html">easier to configure</a>, <a href="https://jestjs.io/blog/2016/06/22/jest-13.html">added tons of features</a> and built <a href="https://jestjs.io/blog/2016/07/27/jest-14.html">snapshot testing</a>. However, there were two areas where we invested very little: the CLI output and user experience. With Jest 15 we are changing the framework radically to make it easier to use both for beginners and experienced users. We are excited that our investment in Jest is now paying off: we can move fast and improve the framework for Facebook and the open source community at light-speed. Jest's goal is to come with batteries included and to require as little configuration as necessary. We recently got a chance to explain our philosophy on a <a href="https://github.com/facebookincubator/create-react-app/pull/250#issuecomment-237098619">create-react-app issue</a>.</p>
 <p>The most important change to talk about is a set of <a href="https://github.com/facebook/jest/pull/1511">new defaults</a>. If you are an existing Jest user you will very likely need to update your configuration for Jest 15. In most cases it will simplify your setup and Jest will provide useful error messages during the upgrade. All of the new defaults can be disabled to suit your needs, but we still consider the disabled features critical for Jest in certain situations and will continue to use and support them at Facebook long-term. Our <a href="https://jestjs.io/docs/api.html">API documentation</a> was also completely rewritten to reflect these changes. <a href="https://github.com/facebook/react/pull/7625/files">This pull request for React</a> highlights some of the changes necessary for existing projects.</p>
 ]]></summary>
         <author>
             <name>Christoph Pojer</name>
+            <email/>
             <uri>http://twitter.com/cpojer</uri>
         </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[Jest 14.0: React Tree Snapshot Testing]]></title>
         <id>https://jestjs.io/blog/2016/07/27/jest-14.html</id>
-        <link href="https://jestjs.io/blog/2016/07/27/jest-14.html">
-        </link>
-        <updated>2016-07-27T06:00:00Z</updated>
+        <link href="https://jestjs.io/blog/2016/07/27/jest-14.html"/>
+        <updated>2016-07-27T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>One of Jest's philosophies is to provide an integrated “zero-configuration” experience. We want to make it as frictionless as possible to write good tests that are useful. We observed that when engineers are provided with ready-to-use tools, they end up writing more tests, which in turn results in stable and healthy code bases.</p>
 <p>One of the big open questions was how to write React tests efficiently. There are plenty of tools such as <a href="https://facebook.github.io/react/docs/test-utils.html">ReactTestUtils</a> and <a href="http://airbnb.io/enzyme/">enzyme</a>. Both of these tools are great and are actively being used. However engineers frequently told us that they spend more time writing a test than the component itself. As a result many people stopped writing tests altogether which eventually led to instabilities. Engineers told us all they wanted was to make sure their components don't change unexpectedly.</p>
 ]]></summary>
         <author>
             <name>Christoph Pojer</name>
+            <email/>
             <uri>http://twitter.com/cpojer</uri>
         </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[Jest 13.0: Flow & REPL]]></title>
         <id>https://jestjs.io/blog/2016/06/22/jest-13.html</id>
-        <link href="https://jestjs.io/blog/2016/06/22/jest-13.html">
-        </link>
-        <updated>2016-06-22T06:00:00Z</updated>
+        <link href="https://jestjs.io/blog/2016/06/22/jest-13.html"/>
+        <updated>2016-06-22T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>Today we are happy to announce the next major release of Jest. We have made major changes to Jest which are going to benefit you and all of Facebook's JavaScript test infrastructure. Most importantly, we added static types to all of Jest's code during a recent Jest hackathon at Facebook. Fifteen people worked for a day and night to add <a href="https://flowtype.org/">Flow</a> types to Jest and to add new features to Jest. The Flow types serve two purposes: First, we believe that code is written to be read. Most of the time, code is written only once but read by dozens of people over the course of years. Adding static types to the project helps document the code and helps explain some of the architecture in Jest. Second, adding static types makes maintenance easier and will allow us to more confidently refactor parts of Jest without fear of breakages.</p>
 <p>The Flow project has evolved a lot within Facebook and has been successfully adopted across many of our frameworks and almost all of our product code. Adoption can be parallelized incredibly well – it can be done file-by-file until enough of the codebase is well-typed. Then, Flow provides real value and helps guide through large changes. Through this, many small edge cases and bugs were found.</p>
 ]]></summary>
         <author>
             <name>Christoph Pojer</name>
+            <email/>
             <uri>http://twitter.com/cpojer</uri>
         </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[Jest 11.0]]></title>
         <id>https://jestjs.io/blog/2016/04/12/jest-11.html</id>
-        <link href="https://jestjs.io/blog/2016/04/12/jest-11.html">
-        </link>
-        <updated>2016-04-12T06:00:00Z</updated>
+        <link href="https://jestjs.io/blog/2016/04/12/jest-11.html"/>
+        <updated>2016-04-12T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>Today we're announcing a switch to major revisions for Jest with Jest 11.0 being the first major release. Jest has been used by Facebook engineers and on our continuous integration systems for years and we believe Jest has been way beyond a “1.0 release” for a long time. This is similar to a change <a href="http://facebook.github.io/react/blog/2016/02/19/new-versioning-scheme.html">the React team has made</a>.</p>
 <p>If you are using Jest 0.9 or Jest 0.10 the upgrade should be seamless. All changes from the last few months were rolled into Jest 11.0.</p>
 <h3><a class="anchor" aria-hidden="true" id="new-in-jest-110"></a><a href="#new-in-jest-110" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>New in Jest 11.0.</h3>
@@ -201,20 +200,21 @@
 ]]></summary>
         <author>
             <name>Christoph Pojer</name>
+            <email/>
             <uri>http://twitter.com/cpojer</uri>
         </author>
     </entry>
     <entry>
         <title type="html"><![CDATA[JavaScript Unit Testing Performance]]></title>
         <id>https://jestjs.io/blog/2016/03/11/javascript-unit-testing-performance.html</id>
-        <link href="https://jestjs.io/blog/2016/03/11/javascript-unit-testing-performance.html">
-        </link>
-        <updated>2016-03-11T06:00:00Z</updated>
+        <link href="https://jestjs.io/blog/2016/03/11/javascript-unit-testing-performance.html"/>
+        <updated>2016-03-11T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>Jest is running thousands of tests at Facebook at all times, either through continuous integration or invoked by engineers manually during development. This worked well for years even as the people working on Jest moved on to other projects within Facebook.</p>
 <p>As engineers added more and more tests though, we noticed the performance of Jest wasn't going to scale. Additionally, in the last year the JavaScript ecosystem has changed dramatically with the introduction of things like npm3 and Babel, which we hadn't anticipated. We formed a new Jest team to address all of these issues and we'll be sharing our progress and plans on this blog from now on.</p>
 ]]></summary>
         <author>
             <name>Christoph Pojer</name>
+            <email/>
             <uri>http://twitter.com/cpojer</uri>
         </author>
     </entry>

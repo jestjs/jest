@@ -6,7 +6,7 @@
         <description>The best place to stay up-to-date with the latest Jest news and events.</description>
         <lastBuildDate>Fri, 25 Jan 2019 06:00:00 GMT</lastBuildDate>
         <docs>http://blogs.law.harvard.edu/tech/rss</docs>
-        <generator>Feed for Node.js</generator>
+        <generator>https://github.com/jpmonette/feed</generator>
         <image>
             <title>Jest Blog</title>
             <url>https://jestjs.io/img/jest.svg</url>

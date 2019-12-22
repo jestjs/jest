@@ -556,7 +556,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p>テスト実行時に使用されるテスト環境を指定します。 Jestのデフォルトの環境は <a href="https://github.com/tmpvar/jsdom">jsdom</a>を経由したブラウザライクな環境です。 Node環境によるサービスを構築する場合は、 <code>node</code>オプションを指定することでnodeライクな環境を代わりに使うことができます。</p>
 <p>一部のテストで他の環境が必要となる場合、コメント部に<code>@jest-environment</code>を追加することができます。</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">/**
- * @jest-environment jsdom
+ * <span class="hljs-doctag">@jest</span>-environment jsdom
  */</span>
 
 test(<span class="hljs-string">'use jsdom in this test file'</span>, () =&gt; {
@@ -687,7 +687,13 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <h3><a class="anchor" aria-hidden="true" id="transform-objectstring-string"></a><a href="#transform-objectstring-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>transform</code> [object&lt;string, string&gt;]</h3>
 <p>デフォルト: <code>undefined</code></p>
 <p>正規表現からtransformerへのパスへのマップを指定します。 transformerはソースファイルを変換する同期処理を行う関数を提供するモジュールです。 例えばまだnodeではサポートされていない新しい言語の機能をモジュールやテストで使用したい時、将来のJavaScriptのバージョンを現在のものに変換する多くのコンパイラの中の１つをプラグインとして利用するでしょう。 例: <a href="https://github.com/facebook/jest/blob/master/examples/typescript/package.json#L16">examples/typescript</a> の例や <a href="/docs/ja/22.x/webpack">webpack tutorial</a> を参照してください。</p>
-<p>このようなコンパイラの例には、<a href="https://babeljs.io/">babel</a>、 <a href="http://www.typescriptlang.org/">typescript</a>、や <a href="http://github.com/leebyron/async-to-gen#jest">async-to-gen</a> が含まれます。</p>
+<p>Examples of such compilers include:</p>
+<ul>
+<li><a href="https://babeljs.io/">Babel</a></li>
+<li><a href="http://www.typescriptlang.org/">TypeScript</a></li>
+<li><a href="http://github.com/leebyron/async-to-gen#jest">async-to-gen</a></li>
+<li>To build your own please visit the <a href="/docs/ja/22.x/tutorial-react#custom-transformers">Custom Transformer</a> section</li>
+</ul>
 <p><em>Note: a transformer is only run once per file unless the file has changed. During development of a transformer it can be useful to run Jest with <code>--no-cache</code> to frequently <a href="/docs/ja/22.x/troubleshooting#caching-issues">delete Jest's cache</a>.</em></p>
 <p><em>注意: <code>babel-jest</code> transformerを使用しながら追加でコードのプリプロセッサを使用したい場合は、何らかの方法で &quot;transform&quot; フィールドが上書きされると<code>babel-jest</code> は自動的には読み込まれなってしまうことに注意して下さい。 JavaScriptコードのコンパイルに<code>babel-jest</code> を使用したい場合は明示的に定義されなければなりません。 <a href="https://github.com/facebook/jest/tree/master/packages/babel-jest#setup">babel-jest plugin</a>を参照して下さい。</em></p>
 <h3><a class="anchor" aria-hidden="true" id="transformignorepatterns-配列string"></a><a href="#transformignorepatterns-配列string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>transformIgnorePatterns</code> [配列&lt;string&gt;]</h3>
