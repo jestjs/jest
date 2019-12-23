@@ -7,6 +7,7 @@
   },
   "devDependencies": {
     "@babel/core": "*",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
     "@babel/preset-env": "*",
     "@babel/preset-react": "*",
     "babel-jest": "*",
