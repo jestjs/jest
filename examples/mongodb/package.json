@@ -10,6 +10,8 @@
     "jest-environment-node": "*"
   },
   "devDependencies": {
+    "@babel/preset-env": "*",
+    "babel-jest": "*",
     "jest": "*"
   },
   "scripts": {

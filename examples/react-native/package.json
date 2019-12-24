@@ -16,6 +16,6 @@
     "babel-jest": "*",
     "jest": "*",
     "metro-react-native-babel-preset": "*",
-    "react-test-renderer": "*"
+    "react-test-renderer": "16.6.3"
   }
 }
