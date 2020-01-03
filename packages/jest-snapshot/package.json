@@ -19,6 +19,7 @@
     "jest-matcher-utils": "^24.9.0",
     "jest-message-util": "^24.9.0",
     "jest-resolve": "^24.9.0",
+    "jest-util": "^24.9.0",
     "mkdirp": "^0.5.1",
     "natural-compare": "^1.4.0",
     "pretty-format": "^24.9.0",

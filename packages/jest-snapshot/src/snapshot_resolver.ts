@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import {interopRequireDefault} from 'jest-util';
 import {Config} from '@jest/types';
 import chalk = require('chalk');
 
@@ -66,7 +67,9 @@ function createDefaultSnapshotResolver(): SnapshotResolver {
 function createCustomSnapshotResolver(
   snapshotResolverPath: Config.Path,
 ): SnapshotResolver {
-  const custom: SnapshotResolver = require(snapshotResolverPath);
+  const custom: SnapshotResolver = interopRequireDefault(
+    require(snapshotResolverPath),
+  ).default;
 
   const keys: Array<[keyof SnapshotResolver, string]> = [
     ['resolveSnapshotPath', 'function'],
