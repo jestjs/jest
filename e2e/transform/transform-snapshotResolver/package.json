@@ -1,9 +1,0 @@
-{
-  "jest": {
-    "snapshotResolver": "<rootDir>/snapshotResolver.ts"
-  },
-  "dependencies": {
-    "@babel/preset-env": "^7.0.0",
-    "@babel/preset-typescript": "^7.0.0"
-  }
-}

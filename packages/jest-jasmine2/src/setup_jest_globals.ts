@@ -101,7 +101,7 @@ export default ({
 
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;
-  const snapshotResolver = buildSnapshotResolver(config, localRequire);
+  const snapshotResolver = buildSnapshotResolver(config);
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
