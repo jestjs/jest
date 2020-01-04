@@ -1,0 +1,5 @@
+enum Example {
+  Value
+}
+
+foo;

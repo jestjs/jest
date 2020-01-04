@@ -1,0 +1,15 @@
+{
+  "name": "@babel/helper-regex",
+  "version": "7.5.5",
+  "description": "Helper function to check for literal RegEx",
+  "repository": "https://github.com/babel/babel/tree/master/packages/babel-helper-regex",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "lodash": "^4.17.13"
+  },
+  "gitHead": "0407f034f09381b95e9cabefbf6b176c76485a43"
+}

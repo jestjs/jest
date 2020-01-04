@@ -1,0 +1,25 @@
+{
+  "name": "@babel/plugin-transform-destructuring",
+  "version": "7.5.0",
+  "description": "Compile ES2015 destructuring to ES5",
+  "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-destructuring",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "lib/index.js",
+  "keywords": [
+    "babel-plugin"
+  ],
+  "dependencies": {
+    "@babel/helper-plugin-utils": "^7.0.0"
+  },
+  "peerDependencies": {
+    "@babel/core": "^7.0.0-0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.4",
+    "@babel/helper-plugin-test-runner": "^7.0.0"
+  },
+  "gitHead": "49da9a07c81156e997e60146eb001ea77b7044c4"
+}

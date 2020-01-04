@@ -1,0 +1,15 @@
+{
+  "name": "@babel/helper-hoist-variables",
+  "version": "7.4.4",
+  "description": "Helper function to hoist variables",
+  "repository": "https://github.com/babel/babel/tree/master/packages/babel-helper-hoist-variables",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "@babel/types": "^7.4.4"
+  },
+  "gitHead": "2c88694388831b1e5b88e4bbed6781eb2be1edba"
+}

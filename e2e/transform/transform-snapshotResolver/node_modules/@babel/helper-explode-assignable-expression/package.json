@@ -1,0 +1,15 @@
+{
+  "name": "@babel/helper-explode-assignable-expression",
+  "version": "7.1.0",
+  "description": "Helper function to explode an assignable expression",
+  "repository": "https://github.com/babel/babel/tree/master/packages/babel-helper-explode-assignable-expression",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "@babel/traverse": "^7.1.0",
+    "@babel/types": "^7.0.0"
+  }
+}

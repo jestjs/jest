@@ -1,0 +1,26 @@
+{
+  "name": "@babel/plugin-proposal-async-generator-functions",
+  "version": "7.2.0",
+  "description": "Turn async generator functions into ES2015 generators",
+  "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-async-generator-functions",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "lib/index.js",
+  "keywords": [
+    "babel-plugin"
+  ],
+  "dependencies": {
+    "@babel/helper-plugin-utils": "^7.0.0",
+    "@babel/helper-remap-async-to-generator": "^7.1.0",
+    "@babel/plugin-syntax-async-generators": "^7.2.0"
+  },
+  "peerDependencies": {
+    "@babel/core": "^7.0.0-0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.0",
+    "@babel/helper-plugin-test-runner": "^7.0.0"
+  }
+}

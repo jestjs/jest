@@ -1,0 +1,4 @@
+{
+  "presets": [["flow", {}, "before"], "typescript", ["flow", {}, "after"]],
+  "throws": "Unexpected reserved word 'enum' (1:0)"
+}

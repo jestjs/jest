@@ -1,0 +1,10 @@
+{
+  "name": "@babel/helper-plugin-utils",
+  "version": "7.0.0",
+  "description": "General utilities for plugins to use",
+  "author": "Logan Smyth <loganfsmyth@gmail.com>",
+  "homepage": "https://babeljs.io/",
+  "license": "MIT",
+  "repository": "https://github.com/babel/babel/tree/master/packages/babel-helper-plugin-utils",
+  "main": "lib/index.js"
+}

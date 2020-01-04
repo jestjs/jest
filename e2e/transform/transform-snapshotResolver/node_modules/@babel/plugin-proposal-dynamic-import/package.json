@@ -1,0 +1,26 @@
+{
+  "name": "@babel/plugin-proposal-dynamic-import",
+  "version": "7.5.0",
+  "description": "Transform import() expressions",
+  "repository": "https://github.com/babel/babel/tree/master/packages/babel-plugin-proposal-dynamic-import",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "lib/index.js",
+  "keywords": [
+    "babel-plugin"
+  ],
+  "dependencies": {
+    "@babel/helper-plugin-utils": "^7.0.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0"
+  },
+  "peerDependencies": {
+    "@babel/core": "^7.0.0-0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.5.0",
+    "@babel/helper-plugin-test-runner": "^7.0.0"
+  },
+  "gitHead": "49da9a07c81156e997e60146eb001ea77b7044c4"
+}
