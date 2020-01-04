@@ -32,7 +32,6 @@ const defaultConfig = {
   haste: {
     providesModuleNodeModules: [],
   },
-  ignoreAsymmetricMatches: false,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
   moduleNameMapper: {},
@@ -86,7 +85,6 @@ const validConfig = {
   haste: {
     providesModuleNodeModules: ['react', 'react-native'],
   },
-  ignoreAsymmetricMatches: false,
   logHeapUsage: true,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],

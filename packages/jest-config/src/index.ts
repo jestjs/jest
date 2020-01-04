@@ -122,7 +122,6 @@ const groupOptions = (
     forceExit: options.forceExit,
     globalSetup: options.globalSetup,
     globalTeardown: options.globalTeardown,
-    ignoreAsymmetricMatches: options.ignoreAsymmetricMatches,
     json: options.json,
     lastCommit: options.lastCommit,
     listTests: options.listTests,

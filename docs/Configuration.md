@@ -428,33 +428,6 @@ _Note: A global teardown module configured in a project (using multi-project run
 
 _Note: The same caveat concerning transformation of `node_modules` as for `globalSetup` applies to `globalTeardown`._
 
-### `ignoreAsymmetricMatches` [boolean]
-
-Default: `false`
-
-If setting this option true, it will not highlight asymmetric matches
-
-ignoreAsymmetricMatches = `true`
-
-```diff
-  Object {
-    a: expect.any(Number),
--   b: 2,
-+   b: 1,
-  }
-```
-
-ignoreAsymmetricMatches = `false`
-
-```diff
-  Object {
--   a: expect.any(Number),
--   b: 2,
-+   a: 1,
-+   b: 1,
-  }
-```
-
 ### `maxConcurrency` [number]
 
 Default: `5`

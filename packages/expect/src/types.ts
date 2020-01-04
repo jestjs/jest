@@ -40,7 +40,6 @@ export type MatcherState = {
     strictCheck?: boolean,
   ) => boolean;
   expand?: boolean;
-  ignoreAsymmetricMatches?: boolean;
   expectedAssertionsNumber?: number;
   isExpectingAssertions?: boolean;
   isNot: boolean;

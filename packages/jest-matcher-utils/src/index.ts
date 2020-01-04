@@ -311,7 +311,6 @@ export const printDiffOrStringify = (
   expectedLabel: string,
   receivedLabel: string,
   expand: boolean, // CLI options: true if `--expand` or false if `--no-expand`
-  ignoreAsymmetricMatches: boolean,
 ): string => {
   if (
     typeof expected === 'string' &&
@@ -354,30 +353,21 @@ export const printDiffOrStringify = (
 
   if (isLineDiffable(expected, received)) {
     let difference;
-    if (ignoreAsymmetricMatches) {
-      const {
-        replacedExpected,
-        replacedReceived,
-      } = replaceMatchedToAsymmetricMatcher(
-        deepCyclicCopy(expected, {keepPrototype: true}),
-        deepCyclicCopy(received, {keepPrototype: true}),
-        [],
-        [],
-      );
-      difference = diffDefault(replacedExpected, replacedReceived, {
-        aAnnotation: expectedLabel,
-        bAnnotation: receivedLabel,
-        expand,
-        includeChangeCounts: true,
-      });
-    } else {
-      difference = diffDefault(expected, received, {
-        aAnnotation: expectedLabel,
-        bAnnotation: receivedLabel,
-        expand,
-        includeChangeCounts: true,
-      });
-    }
+    const {
+      replacedExpected,
+      replacedReceived,
+    } = replaceMatchedToAsymmetricMatcher(
+      deepCyclicCopy(expected, {keepPrototype: true}),
+      deepCyclicCopy(received, {keepPrototype: true}),
+      [],
+      [],
+    );
+    difference = diffDefault(replacedExpected, replacedReceived, {
+      aAnnotation: expectedLabel,
+      bAnnotation: receivedLabel,
+      expand,
+      includeChangeCounts: true,
+    });
 
     if (
       typeof difference === 'string' &&
@@ -435,6 +425,8 @@ function replaceMatchedToAsymmetricMatcher(
 
   expectedCycles.push(replacedExpected);
   receivedCycles.push(replacedReceived);
+
+  console.log(replacedExpected, replacedReceived);
 
   Object.entries(replacedExpected).forEach(
     ([key, expectedAttribute]: [string, any]) => {

@@ -12,24 +12,7 @@ expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 describe('printDiffOrStringify', () => {
   const testDiffOrStringify = (expected: any, received: any): string =>
-    printDiffOrStringify(
-      expected,
-      received,
-      'Expected',
-      'Received',
-      true,
-      true,
-    );
-
-  const testDiffOrStringifyNotIgnore = (expected: any, received: any): string =>
-    printDiffOrStringify(
-      expected,
-      received,
-      'Expected',
-      'Received',
-      true,
-      false,
-    );
+    printDiffOrStringify(expected, received, 'Expected', 'Received', true);
 
   test('expected is empty and received is single line', () => {
     const expected = '';
@@ -185,6 +168,20 @@ describe('printDiffOrStringify', () => {
       expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
     });
 
+    test('array', () => {
+      const expected: Array<any> = [1, expect.any(Number), 3];
+      const received: Array<any> = [1, 2, 3];
+      console.log(testDiffOrStringify(expected, received));
+      expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
+    });
+
+    test('object in array', () => {
+      const expected: Array<any> = [1, {a: 1, b: expect.any(Number)}, 3];
+      const received: Array<any> = [1, {a: 1, b: 2}, 3];
+      console.log(testDiffOrStringify(expected, received));
+      expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
+    });
+
     test('circular', () => {
       const expected: any = {
         b: expect.any(Number),
@@ -209,14 +206,6 @@ describe('printDiffOrStringify', () => {
       };
       received.nested = {b: 2, parent: received};
       expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
-    });
-
-    test('should not ignore asymmetric match', () => {
-      const expected = {a: expect.any(Number), b: 2};
-      const received = {a: 1, b: 1};
-      expect(
-        testDiffOrStringifyNotIgnore(expected, received),
-      ).toMatchSnapshot();
     });
   });
 });

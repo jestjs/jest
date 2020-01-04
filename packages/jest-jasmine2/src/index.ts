@@ -123,7 +123,6 @@ async function jasmine2(
     .requireInternalModule(path.resolve(__dirname, './jestExpect.js'))
     .default({
       expand: globalConfig.expand,
-      ignoreAsymmetricMatches: globalConfig.ignoreAsymmetricMatches,
     });
 
   if (globalConfig.errorOnDeprecated) {

@@ -847,7 +847,6 @@ export default function normalize(
       case 'findRelatedTests':
       case 'forceCoverageMatch':
       case 'forceExit':
-      case 'ignoreAsymmetricMatches':
       case 'lastCommit':
       case 'listTests':
       case 'logHeapUsage':

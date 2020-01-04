@@ -32,7 +32,6 @@ const defaultOptions: Config.DefaultOptions = {
     providesModuleNodeModules: [],
     throwOnModuleCollision: false,
   },
-  ignoreAsymmetricMatches: false,
   maxConcurrency: 5,
   maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
