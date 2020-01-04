@@ -205,3 +205,7 @@ describe('transformer caching', () => {
     expect(loggedFiles).toHaveLength(2);
   });
 });
+
+test('passes', () => {
+  expect(true).toBe(true);
+});
