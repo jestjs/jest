@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import {createTranspilingRequire} from '@jest/transform';
 import {interopRequireDefault} from 'jest-util';
 import {Config} from '@jest/types';
 import chalk = require('chalk');
@@ -23,21 +24,27 @@ export const isSnapshotPath = (path: string): boolean =>
   path.endsWith(DOT_EXTENSION);
 
 const cache: Map<Config.Path, SnapshotResolver> = new Map();
+
 export const buildSnapshotResolver = (
   config: Config.ProjectConfig,
+  localRequire: (module: string) => any = createTranspilingRequire(config),
 ): SnapshotResolver => {
   const key = config.rootDir;
   if (!cache.has(key)) {
-    cache.set(key, createSnapshotResolver(config.snapshotResolver));
+    cache.set(
+      key,
+      createSnapshotResolver(localRequire, config.snapshotResolver),
+    );
   }
   return cache.get(key)!;
 };
 
 function createSnapshotResolver(
+  localRequire: (moduleName: string) => SnapshotResolver,
   snapshotResolverPath?: Config.Path | null,
 ): SnapshotResolver {
   return typeof snapshotResolverPath === 'string'
-    ? createCustomSnapshotResolver(snapshotResolverPath)
+    ? createCustomSnapshotResolver(snapshotResolverPath, localRequire)
     : createDefaultSnapshotResolver();
 }
 
@@ -66,9 +73,10 @@ function createDefaultSnapshotResolver(): SnapshotResolver {
 
 function createCustomSnapshotResolver(
   snapshotResolverPath: Config.Path,
+  localRequire: (moduleName: string) => SnapshotResolver,
 ): SnapshotResolver {
   const custom: SnapshotResolver = interopRequireDefault(
-    require(snapshotResolverPath),
+    localRequire(snapshotResolverPath),
   ).default;
 
   const keys: Array<[keyof SnapshotResolver, string]> = [
