@@ -37,6 +37,7 @@ jobs:
         uses: samuelmeuli/lint-action@v0.4
         with:
           github_token: ${{ secrets.github_token }}
+          auto_fix: true
           eslint: true
           eslint_extensions: js,jsx,ts,tsx,md
           prettier: true
