@@ -11,7 +11,7 @@ import {INVERTED_COLOR, printDiffOrStringify} from '../index';
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 describe('printDiffOrStringify', () => {
-  const testDiffOrStringify = (expected: any, received: any): string =>
+  const testDiffOrStringify = (expected: unknown, received: unknown): string =>
     printDiffOrStringify(expected, received, 'Expected', 'Received', true);
 
   test('expected is empty and received is single line', () => {

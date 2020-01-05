@@ -406,8 +406,8 @@ const shouldPrintDiff = (actual: unknown, expected: unknown) => {
 };
 
 function replaceMatchedToAsymmetricMatcher(
-  replacedExpected: any,
-  replacedReceived: any,
+  replacedExpected: unknown,
+  replacedReceived: unknown,
   expectedCycles: Array<any>,
   receivedCycles: Array<any>,
 ) {
@@ -426,7 +426,7 @@ function replaceMatchedToAsymmetricMatcher(
   const expectedReplaceable = new Replaceable(replacedExpected);
   const receivedReplaceable = new Replaceable(replacedReceived);
 
-  expectedReplaceable.forEach((expectedValue: any, key: any) => {
+  expectedReplaceable.forEach((expectedValue: unknown, key: unknown) => {
     const receivedValue = receivedReplaceable.get(key);
     if (isAsymmetricMatcher(expectedValue)) {
       if (expectedValue.asymmetricMatch(receivedValue))
@@ -452,7 +452,11 @@ function replaceMatchedToAsymmetricMatcher(
   };
 }
 
-function isAsymmetricMatcher(data: any) {
+type AsymmetricMatcher = {
+  asymmetricMatch: Function;
+};
+
+function isAsymmetricMatcher(data: any): data is AsymmetricMatcher {
   const type = getType(data);
   return type === 'object' && typeof data.asymmetricMatch === 'function';
 }
