@@ -18,8 +18,9 @@ export default class Replaceable {
   constructor(object: any) {
     this.object = object;
     this.type = getType(object);
-    if (!supportTypes.includes(this.type))
+    if (!supportTypes.includes(this.type)) {
       throw new Error(`Type ${this.type} is not support in Replaceable!`);
+    }
   }
 
   static isReplaceable(obj1: any, obj2: any): boolean {
@@ -29,20 +30,27 @@ export default class Replaceable {
   }
 
   forEach(cb: ReplaceableForEachCallBack): void {
-    if (this.type === 'object')
+    if (this.type === 'object') {
       Object.entries(this.object).forEach(([key, value]) => {
         cb(value, key, this.object);
       });
-    else this.object.forEach(cb);
+    } else {
+      this.object.forEach(cb);
+    }
   }
 
   get(key: any): any {
-    if (this.type === 'map') return this.object.get(key);
+    if (this.type === 'map') {
+      return this.object.get(key);
+    }
     return this.object[key];
   }
 
   set(key: any, value: any): void {
-    if (this.type === 'map') this.object.set(key, value);
-    else this.object[key] = value;
+    if (this.type === 'map') {
+      this.object.set(key, value);
+    } else {
+      this.object[key] = value;
+    }
   }
 }
