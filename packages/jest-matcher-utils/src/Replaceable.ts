@@ -22,7 +22,7 @@ export default class Replaceable {
       throw new Error(`Type ${this.type} is not support in Replaceable!`);
   }
 
-  static isReplaceable(obj1: any, obj2: any): Boolean {
+  static isReplaceable(obj1: any, obj2: any): boolean {
     const obj1Type = getType(obj1);
     const obj2Type = getType(obj2);
     return obj1Type === obj2Type && supportTypes.includes(obj1Type);
@@ -37,13 +37,12 @@ export default class Replaceable {
   }
 
   get(key: any): any {
-    if (['object', 'array'].includes(this.type)) return this.object[key];
-    else if (this.type === 'map') return this.object.get(key);
+    if (this.type === 'map') return this.object.get(key);
+    return this.object[key];
   }
 
-  set(key: any, value: any): any {
-    if (['object', 'array'].includes(this.type))
-      return (this.object[key] = value);
-    else if (this.type === 'map') return this.object.set(key, value);
+  set(key: any, value: any): void {
+    if (this.type === 'map') this.object.set(key, value);
+    else this.object[key] = value;
   }
 }

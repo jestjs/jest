@@ -153,7 +153,7 @@ function deepCyclicCopyRegExp<T>(regExp: RegExp): T {
   return newRegExp as any;
 }
 
-function isNumberArray(value: any): Boolean {
+function isNumberArray(value: any): boolean {
   return [
     Int8Array,
     Uint8Array,
@@ -164,7 +164,5 @@ function isNumberArray(value: any): Boolean {
     Uint32Array,
     Float32Array,
     Float64Array,
-    BigInt64Array,
-    BigUint64Array,
   ].includes(value.constructor);
 }

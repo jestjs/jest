@@ -39,7 +39,8 @@ describe('Replaceable', () => {
 
     test('init with other type should throw error', () => {
       expect(() => {
-        new Replaceable(new Date());
+        //eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const replaceable = new Replaceable(new Date());
       }).toThrow('Type date is not support in Replaceable!');
     });
   });
@@ -114,7 +115,7 @@ describe('Replaceable', () => {
       expect(cb.mock.calls[2]).toEqual([3, 2, [1, 2, 3]]);
     });
 
-    test('array forEach', () => {
+    test('map forEach', () => {
       const map = new Map([
         ['a', 1],
         ['b', 2],

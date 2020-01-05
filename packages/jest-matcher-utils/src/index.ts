@@ -353,7 +353,6 @@ export const printDiffOrStringify = (
   }
 
   if (isLineDiffable(expected, received)) {
-    let difference;
     const {
       replacedExpected,
       replacedReceived,
@@ -363,7 +362,7 @@ export const printDiffOrStringify = (
       [],
       [],
     );
-    difference = diffDefault(replacedExpected, replacedReceived, {
+    const difference = diffDefault(replacedExpected, replacedReceived, {
       aAnnotation: expectedLabel,
       bAnnotation: receivedLabel,
       expand,
