@@ -1,6 +1,50 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`printDiffOrStringify asymmetricMatcher circular 1`] = `
+exports[`printDiffOrStringify asymmetricMatcher array 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Array [</>
+<d>    1,</>
+<d>    Any<Number>,</>
+<g>-   3,</>
+<r>+   2,</>
+<d>  ]</>
+`;
+
+exports[`printDiffOrStringify asymmetricMatcher circular array 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Array [</>
+<d>    1,</>
+<d>    Any<Number>,</>
+<g>-   3,</>
+<r>+   2,</>
+<d>    [Circular],</>
+<d>  ]</>
+`;
+
+exports[`printDiffOrStringify asymmetricMatcher circular map 1`] = `
+<g>- Expected  - 2</>
+<r>+ Received  + 2</>
+
+<d>  Map {</>
+<d>    "a" => 1,</>
+<d>    "b" => Any<Number>,</>
+<g>-   "c" => 3,</>
+<r>+   "c" => 2,</>
+<d>    "circular" => Map {</>
+<d>      "a" => 1,</>
+<d>      "b" => Any<Number>,</>
+<g>-     "c" => 3,</>
+<r>+     "c" => 2,</>
+<d>      "circular" => [Circular],</>
+<d>    },</>
+<d>  }</>
+`;
+
+exports[`printDiffOrStringify asymmetricMatcher circular object 1`] = `
 <g>- Expected  - 1</>
 <r>+ Received  + 1</>
 
@@ -44,6 +88,18 @@ exports[`printDiffOrStringify asymmetricMatcher jest asymmetricMatcher 1`] = `
 <d>  }</>
 `;
 
+exports[`printDiffOrStringify asymmetricMatcher map 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Map {</>
+<d>    "a" => 1,</>
+<d>    "b" => Any<Number>,</>
+<g>-   "c" => 3,</>
+<r>+   "c" => 2,</>
+<d>  }</>
+`;
+
 exports[`printDiffOrStringify asymmetricMatcher minimal test 1`] = `
 <g>- Expected  - 1</>
 <r>+ Received  + 1</>
@@ -70,16 +126,19 @@ exports[`printDiffOrStringify asymmetricMatcher nested object 1`] = `
 <d>  }</>
 `;
 
-exports[`printDiffOrStringify asymmetricMatcher should not ignore asymmetric match 1`] = `
-<g>- Expected  - 2</>
-<r>+ Received  + 2</>
+exports[`printDiffOrStringify asymmetricMatcher object in array 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
-<d>  Object {</>
-<g>-   "a": Any<Number>,</>
-<g>-   "b": 2,</>
-<r>+   "a": 1,</>
-<r>+   "b": 1,</>
-<d>  }</>
+<d>  Array [</>
+<d>    1,</>
+<d>    Object {</>
+<d>      "a": 1,</>
+<d>      "b": Any<Number>,</>
+<d>    },</>
+<g>-   3,</>
+<r>+   2,</>
+<d>  ]</>
 `;
 
 exports[`printDiffOrStringify asymmetricMatcher transitive circular 1`] = `

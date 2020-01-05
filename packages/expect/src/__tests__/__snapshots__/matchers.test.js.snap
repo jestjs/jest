@@ -364,14 +364,8 @@ exports[`.toBe() fails for: {"a": [Function a], "b": 2} and {"a": Any<Function>,
 
 <d>If it should pass with deep equality, replace "toBe" with "toStrictEqual"</>
 
-<g>- Expected  - 1</>
-<r>+ Received  + 1</>
-
-<d>  Object {</>
-<g>-   "a": Any<Function>,</>
-<r>+   "a": [Function a],</>
-<d>    "b": 2,</>
-<d>  }</>
+Expected: <g>{"a": Any<Function>, "b": 2}</>
+Received: <r>{"a": [Function a], "b": 2}</>
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 1} 1`] = `

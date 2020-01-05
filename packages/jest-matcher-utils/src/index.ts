@@ -18,6 +18,7 @@ import diffDefault, {
 import getType = require('jest-get-type');
 import deepCyclicCopy from 'jest-util/build/deepCyclicCopy';
 import prettyFormat = require('pretty-format');
+import Replaceable from './Replaceable';
 
 const {
   AsymmetricMatcher,
@@ -411,10 +412,7 @@ function replaceMatchedToAsymmetricMatcher(
   expectedCycles: Array<any>,
   receivedCycles: Array<any>,
 ) {
-  if (
-    getType(replacedExpected) !== 'object' ||
-    getType(replacedReceived) !== 'object'
-  )
+  if (!Replaceable.isReplaceable(replacedExpected, replacedReceived))
     return {replacedExpected, replacedReceived};
 
   if (
@@ -426,33 +424,33 @@ function replaceMatchedToAsymmetricMatcher(
   expectedCycles.push(replacedExpected);
   receivedCycles.push(replacedReceived);
 
-  console.log(replacedExpected, replacedReceived);
+  const expectedReplaceable = new Replaceable(replacedExpected);
+  const receivedReplaceable = new Replaceable(replacedReceived);
 
-  Object.entries(replacedExpected).forEach(
-    ([key, expectedAttribute]: [string, any]) => {
-      const receivedAttribute = replacedReceived[key];
-      if (isAsymmetricMatcher(expectedAttribute)) {
-        if (expectedAttribute.asymmetricMatch(receivedAttribute))
-          replacedReceived[key] = expectedAttribute;
-      } else if (isAsymmetricMatcher(receivedAttribute)) {
-        if (receivedAttribute.asymmetricMatch(expectedAttribute))
-          replacedExpected[key] = receivedAttribute;
-      } else if (
-        getType(expectedAttribute) === 'object' &&
-        getType(receivedAttribute) === 'object'
-      ) {
-        const replacedAttribute = replaceMatchedToAsymmetricMatcher(
-          expectedAttribute,
-          receivedAttribute,
-          expectedCycles,
-          receivedCycles,
-        );
-        replacedExpected[key] = replacedAttribute.replacedExpected;
-        replacedReceived[key] = replacedAttribute.replacedReceived;
-      }
-    },
-  );
-  return {replacedExpected, replacedReceived};
+  expectedReplaceable.forEach((expectedValue: any, key: any) => {
+    const receivedValue = receivedReplaceable.get(key);
+    if (isAsymmetricMatcher(expectedValue)) {
+      if (expectedValue.asymmetricMatch(receivedValue))
+        receivedReplaceable.set(key, expectedValue);
+    } else if (isAsymmetricMatcher(receivedValue)) {
+      if (receivedValue.asymmetricMatch(expectedValue))
+        expectedReplaceable.set(key, receivedValue);
+    } else if (Replaceable.isReplaceable(expectedValue, receivedValue)) {
+      const replaced = replaceMatchedToAsymmetricMatcher(
+        expectedValue,
+        receivedValue,
+        expectedCycles,
+        receivedCycles,
+      );
+      expectedReplaceable.set(key, replaced.replacedExpected);
+      receivedReplaceable.set(key, replaced.replacedReceived);
+    }
+  });
+
+  return {
+    replacedExpected: expectedReplaceable.object,
+    replacedReceived: receivedReplaceable.object,
+  };
 }
 
 function isAsymmetricMatcher(data: any) {
