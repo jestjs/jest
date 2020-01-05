@@ -7,4 +7,8 @@
 
 import isCI = require('is-ci');
 
-export default !!process.stdout.isTTY && process.env.TERM !== 'dumb' && !isCI;
+export default process &&
+  process.stdout &&
+  !!process.stdout.isTTY &&
+  process.env.TERM !== 'dumb' &&
+  !isCI;
