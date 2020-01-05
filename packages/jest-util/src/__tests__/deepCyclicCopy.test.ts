@@ -240,3 +240,65 @@ it('RegExp should work correctly after copied', () => {
   const regExp = deepCyclicCopy(/jest/i, {keepPrototype: true});
   expect(regExp.test('JEST is awesome')).toBe(true);
 });
+
+it('Copy Map', () => {
+  const map = new Map([
+    ['a', 1],
+    ['b', 2],
+  ]);
+  const copy = deepCyclicCopy(map);
+  expect(copy).toEqual(map);
+  expect(copy.constructor).toBe(Map);
+});
+
+it('Copy Map with backlist', () => {
+  const map = new Map([
+    ['a', 1],
+    ['b', 2],
+  ]);
+  const copy = deepCyclicCopy(map, {blacklist: new Set(['b'])});
+  expect(copy).toEqual(new Map([['a', 1]]));
+});
+
+it('Copy cyclic Map', () => {
+  const map: Map<any, any> = new Map([
+    ['a', 1],
+    ['b', 2],
+  ]);
+  map.set('map', map);
+  expect(deepCyclicCopy(map)).toEqual(map);
+});
+
+it('Copy Set', () => {
+  const set = new Set([1, 2, 3]);
+  const copy = deepCyclicCopy(set);
+  expect(copy).toEqual(set);
+  expect(set.constructor).toBe(Set);
+});
+
+it('Copy cyclic Set', () => {
+  const set: Set<any> = new Set([1, 2, 3]);
+  set.add(set);
+  expect(deepCyclicCopy(set)).toEqual(set);
+});
+
+it('Copy Buffer', () => {
+  const buffer = Buffer.from('hello');
+  const copy = deepCyclicCopy(buffer);
+  expect(copy).toEqual(buffer);
+  expect(copy.constructor).toBe(Buffer);
+});
+
+it('Copy Date', () => {
+  const date = new Date(0);
+  const copy = deepCyclicCopy(date);
+  expect(copy).toEqual(date);
+  expect(copy.constructor).toBe(Date);
+});
+
+it('Copy number array', () => {
+  const uInt8Array = new Uint8Array([0, 1, 2, 3]);
+  const copy = deepCyclicCopy(uInt8Array);
+  expect(copy).toEqual(uInt8Array);
+  expect(copy.constructor).toBe(Uint8Array);
+});

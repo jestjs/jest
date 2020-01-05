@@ -7,6 +7,11 @@
 
 const EMPTY = new Set<string>();
 
+const isDate = (value: any): value is Date => value.constructor === Date;
+const isMap = (value: any): value is Map<any, any> => value.constructor === Map;
+const isSet = (value: any): value is Set<any> => value.constructor === Set;
+const isRegExp = (value: any): value is RegExp => value.constructor === RegExp;
+
 export type DeepCyclicCopyOptions = {
   blacklist?: Set<string>;
   keepPrototype?: boolean;
@@ -23,9 +28,20 @@ export default function deepCyclicCopy<T>(
     return cycles.get(value);
   } else if (Array.isArray(value)) {
     return deepCyclicCopyArray(value, options, cycles);
-  } else {
-    return deepCyclicCopyObject(value, options, cycles);
+  } else if (isMap(value)) {
+    return deepCyclicCopyMap(value, options, cycles);
+  } else if (isSet(value)) {
+    return deepCyclicCopySet(value, options, cycles);
+  } else if (Buffer.isBuffer(value)) {
+    return Buffer.from(value) as any;
+  } else if (isDate(value)) {
+    return new Date(value.getTime()) as any;
+  } else if (isNumberArray(value)) {
+    return new (Object.getPrototypeOf(value).constructor)(value);
+  } else if (isRegExp(value)) {
+    return deepCyclicCopyRegExp(value);
   }
+  return deepCyclicCopyObject(value, options, cycles);
 }
 
 function deepCyclicCopyObject<T>(
@@ -33,12 +49,6 @@ function deepCyclicCopyObject<T>(
   options: DeepCyclicCopyOptions,
   cycles: WeakMap<any, any>,
 ): T {
-  if (object instanceof RegExp && options.keepPrototype) {
-    const result = new RegExp(object.source, object.flags);
-    result.lastIndex = object.lastIndex;
-    return result as typeof object;
-  }
-
   const newObject = options.keepPrototype
     ? Object.create(Object.getPrototypeOf(object))
     : {};
@@ -89,4 +99,72 @@ function deepCyclicCopyArray<T>(
   }
 
   return newArray;
+}
+
+function deepCyclicCopyMap<T>(
+  map: Map<any, any>,
+  options: DeepCyclicCopyOptions,
+  cycles: WeakMap<any, any>,
+): T {
+  const newMap = new Map();
+
+  cycles.set(map, newMap);
+
+  map.forEach((value, key) => {
+    if (options.blacklist && options.blacklist.has(key)) return;
+    newMap.set(
+      key,
+      deepCyclicCopy(
+        value,
+        {blacklist: EMPTY, keepPrototype: options.keepPrototype},
+        cycles,
+      ),
+    );
+  });
+
+  return newMap as any;
+}
+
+function deepCyclicCopySet<T>(
+  set: Set<T>,
+  options: DeepCyclicCopyOptions,
+  cycles: WeakMap<any, any>,
+): T {
+  const newSet = new Set();
+
+  cycles.set(set, newSet);
+
+  set.forEach(value => {
+    newSet.add(
+      deepCyclicCopy(
+        value,
+        {blacklist: EMPTY, keepPrototype: options.keepPrototype},
+        cycles,
+      ),
+    );
+  });
+
+  return newSet as any;
+}
+
+function deepCyclicCopyRegExp<T>(regExp: RegExp): T {
+  const newRegExp = new RegExp(regExp.source, regExp.flags);
+  newRegExp.lastIndex = regExp.lastIndex;
+  return newRegExp as any;
+}
+
+function isNumberArray(value: any): Boolean {
+  return [
+    Int8Array,
+    Uint8Array,
+    Uint8ClampedArray,
+    Int16Array,
+    Uint16Array,
+    Int32Array,
+    Uint32Array,
+    Float32Array,
+    Float64Array,
+    BigInt64Array,
+    BigUint64Array,
+  ].includes(value.constructor);
 }
