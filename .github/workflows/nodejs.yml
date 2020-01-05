@@ -38,7 +38,7 @@ jobs:
         with:
           github_token: ${{ secrets.github_token }}
           eslint: true
-          eslint_extenstions: js,jsx,ts,tsx,md
+          eslint_extensions: js,jsx,ts,tsx,md
           prettier: true
           prettier_extensions: md,yml,yaml
       - name: run eslint on browser builds
