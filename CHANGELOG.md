@@ -72,6 +72,7 @@
 - `[jest-types]` [**BREAKING**] Use less `null | undefined` in config types ([#9200](https://github.com/facebook/jest/pull/9200))
 - `[jest-util]` Allow querying process.domain ([#9136](https://github.com/facebook/jest/pull/9136))
 - `[jest-util]` Copy built-in objects will keep their prototypes and value ([#9257](https://github.com/facebook/jest/pull/9257))
+- `[jest-util]` Avoid browser read Node.js `process` and `stream` property ([#9257](https://github.com/facebook/jest/pull/9257))
 - `[pretty-format]` Correctly detect memoized elements ([#9196](https://github.com/facebook/jest/pull/9196))
 
 ### Chore & Maintenance
