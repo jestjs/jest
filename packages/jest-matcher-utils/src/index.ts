@@ -16,7 +16,7 @@ import diffDefault, {
   diffStringsUnified,
 } from 'jest-diff';
 import getType = require('jest-get-type');
-import deepCyclicCopy from 'jest-util/build/deepCyclicCopy';
+import {deepCyclicCopy} from 'jest-util';
 import prettyFormat = require('pretty-format');
 import Replaceable from './Replaceable';
 
