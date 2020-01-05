@@ -34,7 +34,7 @@ test('the data is peanut butter', done => {
     try {
       expect(data).toBe('peanut butter');
       done();
-    } catch(error) {
+    } catch (error) {
       done(error);
     }
   }
