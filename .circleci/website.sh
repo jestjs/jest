@@ -13,7 +13,7 @@ else
         git config --global user.name "Website Deployment Script"
         echo "machine github.com login docusaurus-bot password $DOCUSAURUS_PUBLISH_TOKEN" > ~/.netrc
         # install Docusaurus and generate file of English strings
-        yarn && cd website && yarn write-translations
+        yarn && cd website && node fetchSupporters.js && yarn write-translations
         # crowdin install
         sudo apt-get update
         sudo apt-get install default-jre rsync
