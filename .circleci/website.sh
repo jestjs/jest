@@ -30,6 +30,6 @@ else
         GIT_USER=docusaurus-bot USE_SSH=false yarn publish-gh-pages
     else
         echo "Skipping deploy. Test website build"
-        cd website && yarn && node fetchSupporters.js && syarn build
+        cd website && yarn && node fetchSupporters.js && yarn build
     fi
 fi
