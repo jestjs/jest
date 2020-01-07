@@ -2032,10 +2032,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/micromatch@^3.1.0":
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/@types/micromatch/-/micromatch-3.1.1.tgz#98eac88894da6606c2690624a9893a59c812d9fa"
-  integrity sha512-Wr5y4uv3r7JP4jEUqv7rZeYiMBGRHcbojDVsl11wq6gw1v/ZZQvJexd9rtvVx3EIVqw8dwtcRjSs8m2DV9qHjQ==
+"@types/micromatch@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/micromatch/-/micromatch-4.0.0.tgz#c57e0b11518c930465ce923f44342e1bb4bef309"
+  integrity sha512-bavSCssCRRlbUI639WG0Y30AOowkI5CdxyyrC5eVbsb0BJIbgS5ROfwlwDYHsOmgS59iYlre9sstIA5wfVNKBA==
   dependencies:
     "@types/braces" "*"
 
