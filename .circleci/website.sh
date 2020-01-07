@@ -3,7 +3,7 @@
 set -e
 
 git diff-tree --no-commit-id --name-only -r HEAD > files_changed.txt
-if ! grep -E "(^docs\/.*)|(^website\/.*)" files_changed.txt; then
+if ! grep -E "(^docs\/.*)|(^website\/.*)|(^\.circleci/website\.sh$)" files_changed.txt; then
     echo "Skipping deploy & test. No relevant website files have changed"
 else
     echo "Relevant website files have changed"
@@ -30,6 +30,6 @@ else
         GIT_USER=docusaurus-bot USE_SSH=false yarn publish-gh-pages
     else
         echo "Skipping deploy. Test website build"
-        cd website && yarn && yarn build
+        cd website && yarn && node fetchSupporters.js && syarn build
     fi
 fi
