@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "postinstall": "node fetchSupporters.js",
     "start": "docusaurus-start",
     "build": "docusaurus-build",
     "gh-pages": "docusaurus-publish",
