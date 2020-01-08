@@ -20,6 +20,6 @@
   },
   "devDependencies": {
     "crowdin-cli": "^0.3.0",
-    "request": "^2.88.0"
+    "graphql-request": "^1.8.2"
   }
 }
