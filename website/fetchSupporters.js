@@ -7,7 +7,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const fs = require('fs').promises;
+const fs = require('fs');
+const {promisify} = require('util');
 const {request} = require('graphql-request');
 const path = require('path');
 
@@ -34,11 +35,13 @@ const graphqlQuery = `
   }
 `;
 
+const writeFile = promisify(fs.writeFile);
+
 request('https://api.opencollective.com/graphql/v2', graphqlQuery)
   .then(data => {
     const backers = data.account.orders.nodes;
 
-    return fs.writeFile(
+    return writeFile(
       path.resolve(__dirname, 'backers.json'),
       JSON.stringify(backers)
     );
