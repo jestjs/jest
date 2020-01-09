@@ -137,9 +137,11 @@ Once we mock the module we can provide a `mockResolvedValue` for `.get` that ret
 
 ```js
 // users.test.js
+//This axios is the original module used in users.js
 import axios from 'axios';
 import Users from './users';
 
+//The next line override the module, if is a custom component we have to import the real one: '../../Foo'
 jest.mock('axios');
 
 test('should fetch users', () => {
