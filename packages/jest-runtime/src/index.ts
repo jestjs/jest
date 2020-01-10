@@ -821,7 +821,7 @@ class Runtime {
       localModule.exports,
       localModule as NodeModule, // module object
       localModule.exports, // module exports
-      localModule.require as NodeRequireFunction, // require implementation
+      localModule.require as typeof require, // require implementation
       dirname, // __dirname
       filename, // __filename
       this._environment.global, // global object
