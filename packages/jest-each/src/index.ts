@@ -15,15 +15,32 @@ const install = (
   table: Global.EachTable,
   ...data: Global.TemplateData
 ) => {
-  const test = (title: string, test: Global.EachTestFn, timeout?: number) =>
-    bind(g.test)(table, ...data)(title, test, timeout);
+  const test = (
+    title: string,
+    test: Global.EachTestFn<Global.TestFn>,
+    timeout?: number,
+  ) => bind(g.test)(table, ...data)(title, test, timeout);
   test.skip = bind(g.test.skip)(table, ...data);
   test.only = bind(g.test.only)(table, ...data);
 
-  const it = (title: string, test: Global.EachTestFn, timeout?: number) =>
-    bind(g.it)(table, ...data)(title, test, timeout);
+  const testConcurrent = (
+    title: string,
+    test: Global.EachTestFn<Global.ConcurrentTestFn>,
+    timeout?: number,
+  ) => bind(g.test.concurrent)(table, ...data)(title, test, timeout);
+
+  test.concurrent = testConcurrent;
+  testConcurrent.only = bind(g.test.concurrent.only)(table, ...data);
+  testConcurrent.skip = bind(g.test.concurrent.skip)(table, ...data);
+
+  const it = (
+    title: string,
+    test: Global.EachTestFn<Global.TestFn>,
+    timeout?: number,
+  ) => bind(g.it)(table, ...data)(title, test, timeout);
   it.skip = bind(g.it.skip)(table, ...data);
   it.only = bind(g.it.only)(table, ...data);
+  it.concurrent = testConcurrent;
 
   const xit = bind(g.xit)(table, ...data);
   const fit = bind(g.fit)(table, ...data);
@@ -31,7 +48,7 @@ const install = (
 
   const describe = (
     title: string,
-    suite: Global.EachTestFn,
+    suite: Global.EachTestFn<Global.BlockFn>,
     timeout?: number,
   ) => bind(g.describe, false)(table, ...data)(title, suite, timeout);
   describe.skip = bind(g.describe.skip, false)(table, ...data);

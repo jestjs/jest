@@ -24,4 +24,17 @@ export default (environment: JestEnvironment): void => {
     environment.global.fdescribe,
     false,
   );
+
+  environment.global.it.concurrent.each = bindEach(
+    environment.global.it.concurrent,
+    false,
+  )
+  environment.global.it.concurrent.only.each = bindEach(
+    environment.global.it.concurrent.only,
+    false,
+  )
+  environment.global.it.concurrent.skip.each = bindEach(
+    environment.global.it.concurrent.skip,
+    false,
+  )
 };

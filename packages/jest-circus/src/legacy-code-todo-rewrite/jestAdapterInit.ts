@@ -31,6 +31,7 @@ import {
 import {getTestID} from '../utils';
 import run from '../run';
 import globals from '..';
+import { bind } from 'jest-each/src';
 
 type Process = NodeJS.Process;
 
@@ -71,7 +72,7 @@ export const initialize = ({
   nodeGlobal.test.concurrent = (test => {
     const concurrent = (
       testName: string,
-      testFn: () => Promise<any>,
+      testFn: Global.ConcurrentTestFn,
       timeout?: number,
     ) => {
       // For concurrent tests we first run the function that returns promise, and then register a
@@ -84,9 +85,9 @@ export const initialize = ({
       nodeGlobal.test(testName, () => promise, timeout);
     };
 
-    concurrent.only = (
+    const only = (
       testName: string,
-      testFn: () => Promise<any>,
+      testFn: Global.ConcurrentTestFn,
       timeout?: number,
     ) => {
       const promise = mutex(() => testFn());
@@ -94,7 +95,13 @@ export const initialize = ({
       test.only(testName, () => promise, timeout);
     };
 
+    concurrent.only = only;
+
     concurrent.skip = test.skip;
+
+    concurrent.each = bind(concurrent, false);
+    concurrent.skip.each = bind(concurrent.skip, false);
+    only.each = bind(concurrent.only, false);
 
     return concurrent;
   })(nodeGlobal.test);
