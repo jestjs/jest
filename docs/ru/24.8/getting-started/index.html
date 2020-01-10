@@ -138,7 +138,7 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 };
 </code></pre>
 <p><strong>Идеальная конфигурация для Babel будет зависеть от вашего проекта.</strong> Смотрите <a href="https://babeljs.io/docs/en/">документацию Babel</a> для получения дополнительной информации.</p>
-<p><details><summary markdown="span"><strong>Сделать ваш jest-файл конфигурации Babel</strong></summary></p>
+<p><details><summary markdown="span"><strong>Добавление отдельной конфигурации для Babel только на время запуска Jest</strong></summary></p>
 <p>Jest will set <code>process.env.NODE_ENV</code> to <code>'test'</code> if it's not set to something else. You can use that in your configuration to conditionally setup only the compilation needed for Jest, e.g.</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// babel.config.js</span>
 <span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-params">api</span> =&gt;</span> {
@@ -165,7 +165,7 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
   &quot;babel-core&quot;: &quot;^6.26.3&quot;,
   &quot;babel-jest&quot;: &quot;^23.6.0&quot;,
   &quot;babel-preset-env&quot;: &quot;^1.7.0&quot;,
-  &quot;jest&quot;: &quot;^24.0&quot;
+  &quot;jest&quot;: &quot;^24.0.0&quot;
 }
 </code></pre>
 <p>While we generally recommend using the same version of every Jest package, this workaround will allow you to continue using the latest version of Jest with Babel 6 for now.</p>
@@ -181,7 +181,7 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 module.exports = {
   presets: [
     ['@babel/preset-env', {targets: {node: 'current'}}],
-<span class="hljs-addition">+ '@babel/preset-typescript',</span>
+<span class="hljs-addition">+    '@babel/preset-typescript',</span>
   ],
 };
 </code></pre>
