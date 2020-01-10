@@ -16,7 +16,7 @@
     "@jest/test-result": "^24.9.0",
     "@jest/transform": "^24.9.0",
     "@jest/types": "^24.9.0",
-    "@types/yargs": "^13.0.0",
+    "@types/yargs": "^15.0.0",
     "chalk": "^3.0.0",
     "collect-v8-coverage": "^1.0.0",
     "exit": "^0.1.2",
