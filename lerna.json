@@ -1,5 +1,5 @@
 {
-  "lerna": "3.18.4",
+  "lerna": "3.20.2",
   "version": "24.9.0",
   "npmClient": "yarn",
   "packages": [

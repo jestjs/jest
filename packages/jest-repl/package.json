@@ -19,7 +19,7 @@
     "yargs": "^15.0.0"
   },
   "devDependencies": {
-    "@types/yargs": "^13.0.0"
+    "@types/yargs": "^15.0.0"
   },
   "bin": {
     "jest-repl": "./bin/jest-repl.js"
