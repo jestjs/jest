@@ -800,6 +800,12 @@ Example `jest.setup.js` file
 jest.setTimeout(10000); // in milliseconds
 ```
 
+### `slowTestThreshold` [number]
+
+Default: `5`
+
+A number of seconds after which a test is considered as slow and reported as such in the results.
+
 ### `snapshotResolver` [string]
 
 Default: `undefined`

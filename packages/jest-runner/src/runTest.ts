@@ -266,7 +266,12 @@ async function runTestInternal(
       result.numPendingTests +
       result.numTodoTests;
 
-    result.perfStats = {end: Date.now(), start};
+    const end = Date.now();
+    result.perfStats = {
+      end,
+      slow: (end - start) / 1000 > config.slowTestThreshold,
+      start,
+    };
     result.testFilePath = path;
     result.console = testConsole.getBuffer();
     result.skipped = testCount === result.numPendingTests;

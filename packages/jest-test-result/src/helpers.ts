@@ -58,6 +58,7 @@ export const buildFailureTestResult = (
   openHandles: [],
   perfStats: {
     end: 0,
+    slow: false,
     start: 0,
   },
   skipped: false,
@@ -155,6 +156,7 @@ export const createEmptyTestResult = (): TestResult => ({
   openHandles: [],
   perfStats: {
     end: 0,
+    slow: false,
     start: 0,
   },
   skipped: false,
