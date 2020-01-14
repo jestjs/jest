@@ -187,18 +187,18 @@ export default class SearchSource {
         return;
       }
 
-      testModule.dependencies
-        .filter(p => allPathsAbsolute.includes(p))
-        .map(filename => {
-          filename = replaceRootDirInPath(
-            this._context.config.rootDir,
-            filename,
-          );
-          return path.isAbsolute(filename)
+      testModule.dependencies.forEach(p => {
+        if (!allPathsAbsolute.includes(p)) {
+          return;
+        }
+
+        const filename = replaceRootDirInPath(this._context.config.rootDir, p);
+        collectCoverageFrom.add(
+          path.isAbsolute(filename)
             ? path.relative(this._context.config.rootDir, filename)
-            : filename;
-        })
-        .forEach(filename => collectCoverageFrom.add(filename));
+            : filename,
+        );
+      });
     });
 
     return {
