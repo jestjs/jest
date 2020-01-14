@@ -263,9 +263,7 @@ export default function watch(
     });
   }
 
-  const startRun = (
-    globalConfig: GlobalConfig,
-  ): Promise<void | null> => {
+  const startRun = (globalConfig: GlobalConfig): Promise<void | null> => {
     if (isRunning) {
       return Promise.resolve(null);
     }
@@ -505,10 +503,7 @@ const getPluginIdentifier = (plugin: WatchPlugin) =>
   // @ts-ignore: leave `displayName` be.
   plugin.constructor.displayName || plugin.constructor.name;
 
-const getPluginKey = (
-  plugin: WatchPlugin,
-  globalConfig: GlobalConfig,
-) => {
+const getPluginKey = (plugin: WatchPlugin, globalConfig: GlobalConfig) => {
   if (typeof plugin.getUsageInfo === 'function') {
     return (plugin.getUsageInfo(globalConfig) || {key: null}).key;
   }

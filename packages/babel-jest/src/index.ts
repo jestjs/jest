@@ -43,10 +43,7 @@ const createTransformer = (
     sourceMaps: 'both',
   };
 
-  function loadBabelConfig(
-    cwd: Path,
-    filename: Path,
-  ): PartialConfig {
+  function loadBabelConfig(cwd: Path, filename: Path): PartialConfig {
     // `cwd` first to allow incoming options to override it
     const babelConfig = loadPartialConfig({cwd, ...options, filename});
 

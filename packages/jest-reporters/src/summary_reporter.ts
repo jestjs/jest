@@ -190,10 +190,7 @@ export default class SummaryReporter extends BaseReporter {
     }
   }
 
-  private _getTestSummary(
-    contexts: Set<Context>,
-    globalConfig: GlobalConfig,
-  ) {
+  private _getTestSummary(contexts: Set<Context>, globalConfig: GlobalConfig) {
     const getMatchingTestsInfo = () => {
       const prefix = globalConfig.findRelatedTests
         ? ' related to files matching '

@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {Global} from '@jest/types';
-import {GlobalConfig, ProjectConfig, Path} from '@jest/config-utils';
+import {GlobalConfig, Path, ProjectConfig} from '@jest/config-utils';
 import {AssertionResult, TestResult} from '@jest/test-result';
 import {JestEnvironment} from '@jest/environment';
 import {SnapshotStateType} from 'jest-snapshot';

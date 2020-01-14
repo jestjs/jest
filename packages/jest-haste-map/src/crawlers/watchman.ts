@@ -66,9 +66,7 @@ export = async function watchmanCrawl(
     }
   }
 
-  async function getWatchmanRoots(
-    roots: Array<Path>,
-  ): Promise<WatchmanRoots> {
+  async function getWatchmanRoots(roots: Array<Path>): Promise<WatchmanRoots> {
     const watchmanRoots = new Map();
     await Promise.all(
       roots.map(async root => {
