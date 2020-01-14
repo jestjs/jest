@@ -164,5 +164,5 @@ function isNumberArray(value: any): boolean {
     Uint32Array,
     Float32Array,
     Float64Array,
-  ].includes(value.constructor);
+  ].includes(value && value.constructor);
 }
