@@ -9,6 +9,7 @@ import {createHash} from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import {Transformer} from '@jest/transform';
+import {Path} from '@jest/config-utils';
 import {
   PartialConfig,
   TransformOptions,
@@ -17,7 +18,6 @@ import {
 } from '@babel/core';
 import chalk = require('chalk');
 import slash = require('slash');
-import {Path} from '@jest/config-utils';
 
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
