@@ -100,7 +100,7 @@ const CUSTOM_IGNORED_PATTERNS = [
   '^examples/.*',
   '^flow-typed/.*',
   '^packages/expect/src/jasmineUtils\\.ts$',
-  '^packages/jest-config/src/vendor/jsonlint\\.js$',
+  '^packages/jest-config-utils/src/vendor/jsonlint\\.js$',
   '^packages/jest-diff/src/cleanupSemantic\\.ts$',
 ].map(createRegExp);
 
