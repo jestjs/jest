@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
 import {
   AggregatedResult,
   AssertionResult,
@@ -20,13 +19,6 @@ import DefaultReporter from './default_reporter';
 const {ICONS} = specialChars;
 
 export default class VerboseReporter extends DefaultReporter {
-  protected _globalConfig: Config.GlobalConfig;
-
-  constructor(globalConfig: Config.GlobalConfig) {
-    super(globalConfig);
-    this._globalConfig = globalConfig;
-  }
-
   static filterTestResults(
     testResults: Array<AssertionResult>,
   ): Array<AssertionResult> {

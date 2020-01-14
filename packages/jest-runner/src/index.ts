@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import {SerializableError} from '@jest/test-result';
 import exit = require('exit');
 import chalk = require('chalk');
@@ -42,13 +42,10 @@ namespace TestRunner {
 
 /* eslint-disable-next-line no-redeclare */
 class TestRunner {
-  private _globalConfig: Config.GlobalConfig;
+  private _globalConfig: GlobalConfig;
   private _context: JestTestRunnerContext;
 
-  constructor(
-    globalConfig: Config.GlobalConfig,
-    context?: JestTestRunnerContext,
-  ) {
+  constructor(globalConfig: GlobalConfig, context?: JestTestRunnerContext) {
     this._globalConfig = globalConfig;
     this._context = context || {};
   }

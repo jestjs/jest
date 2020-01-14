@@ -11,8 +11,8 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
+    "@jest/config-utils": "^24.9.0",
     "@jest/transform": "^24.9.0",
-    "@jest/types": "^24.9.0",
     "@types/babel__core": "^7.1.0",
     "babel-plugin-istanbul": "^6.0.0",
     "babel-preset-jest": "^24.9.0",

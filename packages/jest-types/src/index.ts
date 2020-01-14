@@ -6,7 +6,6 @@
  */
 
 import * as Circus from './Circus';
-import * as Config from './Config';
 import * as Global from './Global';
 
-export {Circus, Config, Global};
+export {Circus, Global};

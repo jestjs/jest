@@ -7,7 +7,11 @@
 
 import * as path from 'path';
 import * as fs from 'fs';
-import {Config} from '@jest/types';
+import {
+  CoverageThresholdValue,
+  GlobalConfig,
+  ProjectConfig,
+} from '@jest/config-utils';
 import {
   AggregatedResult,
   TestResult,
@@ -39,15 +43,12 @@ const RUNNING_TEST_COLOR = chalk.bold.dim;
 
 export default class CoverageReporter extends BaseReporter {
   private _coverageMap: istanbulCoverage.CoverageMap;
-  private _globalConfig: Config.GlobalConfig;
+  private _globalConfig: GlobalConfig;
   private _sourceMapStore: libSourceMaps.MapStore;
   private _options: CoverageReporterOptions;
   private _v8CoverageResults: Array<V8CoverageResult>;
 
-  constructor(
-    globalConfig: Config.GlobalConfig,
-    options?: CoverageReporterOptions,
-  ) {
+  constructor(globalConfig: GlobalConfig, options?: CoverageReporterOptions) {
     super();
     this._coverageMap = istanbulCoverage.createCoverageMap({});
     this._globalConfig = globalConfig;
@@ -125,7 +126,7 @@ export default class CoverageReporter extends BaseReporter {
   }
 
   private async _addUntestedFiles(contexts: Set<Context>): Promise<void> {
-    const files: Array<{config: Config.ProjectConfig; path: string}> = [];
+    const files: Array<{config: ProjectConfig; path: string}> = [];
 
     contexts.forEach(context => {
       const config = context.config;
@@ -246,7 +247,7 @@ export default class CoverageReporter extends BaseReporter {
     if (coverageThreshold) {
       function check(
         name: string,
-        thresholds: Config.CoverageThresholdValue,
+        thresholds: CoverageThresholdValue,
         actuals: istanbulCoverage.CoverageSummaryData,
       ) {
         return (['statements', 'branches', 'lines', 'functions'] as Array<

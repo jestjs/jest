@@ -15,7 +15,7 @@ import * as fs from 'graceful-fs';
 import {JestHook, JestHookEmitter} from 'jest-watcher';
 import {Context} from 'jest-runtime';
 import {Test} from 'jest-runner';
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import {
   AggregatedResult,
   formatTestResults,
@@ -34,7 +34,7 @@ import TestWatcher from './TestWatcher';
 import {Filter, TestRunData} from './types';
 
 const getTestPaths = async (
-  globalConfig: Config.GlobalConfig,
+  globalConfig: GlobalConfig,
   context: Context,
   outputStream: NodeJS.WriteStream,
   changedFiles: ChangedFiles | undefined,
@@ -70,7 +70,7 @@ const getTestPaths = async (
 };
 
 type ProcessResultOptions = Pick<
-  Config.GlobalConfig,
+  GlobalConfig,
   'json' | 'outputFile' | 'testResultsProcessor'
 > & {
   collectHandles?: () => Array<Error>;
@@ -134,12 +134,12 @@ export default async function runJest({
   failedTestsCache,
   filter,
 }: {
-  globalConfig: Config.GlobalConfig;
+  globalConfig: GlobalConfig;
   contexts: Array<Context>;
   outputStream: NodeJS.WriteStream;
   testWatcher: TestWatcher;
   jestHooks?: JestHookEmitter;
-  startRun: (globalConfig: Config.GlobalConfig) => void;
+  startRun: (globalConfig: GlobalConfig) => void;
   changedFilesPromise?: ChangedFilesPromise;
   onComplete: (testResults: AggregatedResult) => void;
   failedTestsCache?: FailedTestsCache;
@@ -228,7 +228,7 @@ export default async function runJest({
     globalConfig.silent !== true &&
     globalConfig.verbose !== false
   ) {
-    const newConfig: Config.GlobalConfig = {...globalConfig, verbose: true};
+    const newConfig: GlobalConfig = {...globalConfig, verbose: true};
     globalConfig = Object.freeze(newConfig);
   }
 

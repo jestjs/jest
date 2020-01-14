@@ -10,7 +10,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/types": "^24.9.0",
+    "@jest/config-utils": "^24.9.0",
     "execa": "^3.2.0",
     "throat": "^5.0.0"
   },

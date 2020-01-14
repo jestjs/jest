@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
+import {Path, ProjectConfig} from '@jest/config-utils';
 import {escapePathForRegex} from 'jest-regex-util';
 import {replacePathSepForGlob} from 'jest-util';
 import micromatch = require('micromatch');
@@ -17,9 +17,9 @@ const MOCKS_PATTERN = new RegExp(
 );
 
 export default function shouldInstrument(
-  filename: Config.Path,
+  filename: Path,
   options: ShouldInstrumentOptions,
-  config: Config.ProjectConfig,
+  config: ProjectConfig,
 ): boolean {
   if (!options.collectCoverage) {
     return false;

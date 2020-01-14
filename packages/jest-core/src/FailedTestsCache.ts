@@ -6,7 +6,7 @@
  */
 
 import {Test} from 'jest-runner';
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import {TestResult} from '@jest/test-result';
 
 type TestMap = Record<string, Record<string, boolean>>;
@@ -39,11 +39,11 @@ export default class FailedTestsCache {
     this._enabledTestsMap = Object.freeze(this._enabledTestsMap);
   }
 
-  updateConfig(globalConfig: Config.GlobalConfig): Config.GlobalConfig {
+  updateConfig(globalConfig: GlobalConfig): GlobalConfig {
     if (!this._enabledTestsMap) {
       return globalConfig;
     }
-    const newConfig: Config.GlobalConfig = {...globalConfig};
+    const newConfig: GlobalConfig = {...globalConfig};
     newConfig.enabledTestsMap = this._enabledTestsMap;
     return Object.freeze(newConfig);
   }

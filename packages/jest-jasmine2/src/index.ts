@@ -6,7 +6,8 @@
  */
 
 import * as path from 'path';
-import {Config, Global} from '@jest/types';
+import {Global} from '@jest/types';
+import {GlobalConfig, ProjectConfig, Path} from '@jest/config-utils';
 import {AssertionResult, TestResult} from '@jest/test-result';
 import {JestEnvironment} from '@jest/environment';
 import {SnapshotStateType} from 'jest-snapshot';
@@ -23,8 +24,8 @@ import {Jasmine as JestJasmine} from './types';
 const JASMINE = require.resolve('./jasmine/jasmineLight');
 
 async function jasmine2(
-  globalConfig: Config.GlobalConfig,
-  config: Config.ProjectConfig,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
   environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
@@ -149,7 +150,7 @@ async function jasmine2(
       testPath,
     });
 
-  config.setupFilesAfterEnv.forEach((path: Config.Path) =>
+  config.setupFilesAfterEnv.forEach((path: Path) =>
     runtime.requireModule(path),
   );
 

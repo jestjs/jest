@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Circus, Config, Global} from '@jest/types';
+import {GlobalConfig, Path, ProjectConfig} from '@jest/config-utils';
+import {Circus, Global} from '@jest/types';
 import {JestEnvironment} from '@jest/environment';
 import {
   AssertionResult,
@@ -44,13 +45,13 @@ export const initialize = ({
   parentProcess,
   testPath,
 }: {
-  config: Config.ProjectConfig;
+  config: ProjectConfig;
   environment: JestEnvironment;
   getPrettier: () => null | any;
   getBabelTraverse: () => Function;
-  globalConfig: Config.GlobalConfig;
-  localRequire: (path: Config.Path) => any;
-  testPath: Config.Path;
+  globalConfig: GlobalConfig;
+  localRequire: (path: Path) => any;
+  testPath: Path;
   parentProcess: Process;
 }) => {
   if (globalConfig.testTimeout) {
@@ -148,8 +149,8 @@ export const runAndTransformResultsToJestFormat = async ({
   globalConfig,
   testPath,
 }: {
-  config: Config.ProjectConfig;
-  globalConfig: Config.GlobalConfig;
+  config: ProjectConfig;
+  globalConfig: GlobalConfig;
   testPath: string;
 }): Promise<TestResult> => {
   const runResult: Circus.RunResult = await run();

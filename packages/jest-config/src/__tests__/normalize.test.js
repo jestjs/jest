@@ -8,11 +8,11 @@
 
 import crypto from 'crypto';
 import path from 'path';
+import {constants, defaults} from '@jest/config-utils';
 import {escapeStrForRegex} from 'jest-regex-util';
 import normalize from '../normalize';
-import Defaults from '../Defaults';
 
-import {DEFAULT_JS_PATTERN} from '../constants';
+const {DEFAULT_JS_PATTERN} = constants;
 
 const DEFAULT_CSS_PATTERN = '^.+\\.(css)$';
 
@@ -1636,7 +1636,7 @@ describe('cwd', () => {
 
 describe('Defaults', () => {
   it('should be accepted by normalize', () => {
-    normalize({...Defaults, rootDir: '/root'}, {});
+    normalize({...defaults, rootDir: '/root'}, {});
 
     expect(console.warn).not.toHaveBeenCalled();
   });

@@ -5,16 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import {Config} from '@jest/types';
+import {Path, replaceRootDirInPath} from '@jest/config-utils';
 import {ValidationError} from 'jest-validate';
 import Resolver = require('jest-resolve');
 import chalk = require('chalk');
 
 type ResolveOptions = {
-  rootDir: Config.Path;
+  rootDir: Path;
   key: string;
-  filePath: Config.Path;
+  filePath: Path;
   optional?: boolean;
 };
 
@@ -52,25 +51,8 @@ export const resolve = (
   return module as string;
 };
 
-export const escapeGlobCharacters = (path: Config.Path): Config.Glob =>
-  path.replace(/([()*{}\[\]!?\\])/g, '\\$1');
-
-export const replaceRootDirInPath = (
-  rootDir: Config.Path,
-  filePath: Config.Path,
-): string => {
-  if (!/^<rootDir>/.test(filePath)) {
-    return filePath;
-  }
-
-  return path.resolve(
-    rootDir,
-    path.normalize('./' + filePath.substr('<rootDir>'.length)),
-  );
-};
-
 const _replaceRootDirInObject = <T extends ReplaceRootDirConfigObj>(
-  rootDir: Config.Path,
+  rootDir: Path,
   config: T,
 ): T => {
   const newConfig = {} as T;
@@ -84,14 +66,14 @@ const _replaceRootDirInObject = <T extends ReplaceRootDirConfigObj>(
 };
 
 type OrArray<T> = T | Array<T>;
-type ReplaceRootDirConfigObj = Record<string, Config.Path>;
+type ReplaceRootDirConfigObj = Record<string, Path>;
 type ReplaceRootDirConfigValues =
   | OrArray<ReplaceRootDirConfigObj>
   | OrArray<RegExp>
-  | OrArray<Config.Path>;
+  | OrArray<Path>;
 
 export const _replaceRootDirTags = <T extends ReplaceRootDirConfigValues>(
-  rootDir: Config.Path,
+  rootDir: Path,
   config: T,
 ): T => {
   if (config == null) {
@@ -130,7 +112,7 @@ export const resolveWithPrefix = (
     humanOptionName: string;
     optionName: string;
     prefix: string;
-    rootDir: Config.Path;
+    rootDir: Path;
   },
 ) => {
   const fileName = replaceRootDirInPath(rootDir, filePath);
@@ -179,7 +161,7 @@ export const getTestEnvironment = ({
   rootDir,
   testEnvironment: filePath,
 }: {
-  rootDir: Config.Path;
+  rootDir: Path;
   testEnvironment: string;
 }) =>
   resolveWithPrefix(undefined, {
@@ -200,7 +182,7 @@ export const getTestEnvironment = ({
  */
 export const getWatchPlugin = (
   resolver: string | undefined | null,
-  {filePath, rootDir}: {filePath: string; rootDir: Config.Path},
+  {filePath, rootDir}: {filePath: string; rootDir: Path},
 ) =>
   resolveWithPrefix(resolver, {
     filePath,
@@ -220,7 +202,7 @@ export const getWatchPlugin = (
  */
 export const getRunner = (
   resolver: string | undefined | null,
-  {filePath, rootDir}: {filePath: string; rootDir: Config.Path},
+  {filePath, rootDir}: {filePath: string; rootDir: Path},
 ) =>
   resolveWithPrefix(resolver, {
     filePath,
@@ -230,16 +212,9 @@ export const getRunner = (
     rootDir,
   });
 
-type JSONString = string & {readonly $$type: never}; // newtype
-export const isJSONString = (text?: JSONString | string): text is JSONString =>
-  text != null &&
-  typeof text === 'string' &&
-  text.startsWith('{') &&
-  text.endsWith('}');
-
 export const getSequencer = (
   resolver: string | undefined | null,
-  {filePath, rootDir}: {filePath: string; rootDir: Config.Path},
+  {filePath, rootDir}: {filePath: string; rootDir: Path},
 ) =>
   resolveWithPrefix(resolver, {
     filePath,

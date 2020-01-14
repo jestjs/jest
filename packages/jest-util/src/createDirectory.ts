@@ -6,9 +6,9 @@
  */
 
 import {sync as mkdirp} from 'mkdirp';
-import {Config} from '@jest/types';
+import {Path} from '@jest/config-utils';
 
-export default function createDirectory(path: Config.Path) {
+export default function createDirectory(path: Path) {
   try {
     mkdirp(path, '777');
   } catch (e) {

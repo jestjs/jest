@@ -6,13 +6,13 @@
  */
 
 import chalk = require('chalk');
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import pluralize from './pluralize';
 import {Stats, TestRunData} from './types';
 
 export default function getNoTestFoundVerbose(
   testRunData: TestRunData,
-  globalConfig: Config.GlobalConfig,
+  globalConfig: GlobalConfig,
 ): string {
   const individualResults = testRunData.map(testRun => {
     const stats = testRun.matches.stats || ({} as Stats);

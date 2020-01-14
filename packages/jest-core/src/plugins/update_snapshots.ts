@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import {
   BaseWatchPlugin,
   JestHookSubscriber,
@@ -23,7 +23,7 @@ class UpdateSnapshotsPlugin extends BaseWatchPlugin {
   }
 
   run(
-    _globalConfig: Config.GlobalConfig,
+    _globalConfig: GlobalConfig,
     updateConfigAndRun: UpdateConfigCallback,
   ): Promise<boolean> {
     updateConfigAndRun({updateSnapshot: 'all'});

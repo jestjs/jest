@@ -5,15 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {Argv, InitialOptions, isJSONString} from '@jest/config-utils';
 
 const specialArgs = ['_', '$0', 'h', 'help', 'config'];
-import {isJSONString} from './utils';
 
 export default function setFromArgv(
-  options: Config.InitialOptions,
-  argv: Config.Argv,
-): Config.InitialOptions {
+  options: InitialOptions,
+  argv: Argv,
+): InitialOptions {
   const argvToOptions = Object.keys(argv)
     .filter(key => argv[key] !== undefined && specialArgs.indexOf(key) === -1)
     .reduce((options: Record<string, unknown>, key) => {

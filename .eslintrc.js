@@ -68,7 +68,10 @@ module.exports = {
       },
     },
     {
-      files: 'packages/jest-types/**/*',
+      files: [
+        'packages/jest-types/**/*',
+        'packages/jest-config-utils/src/types.ts',
+      ],
       rules: {
         'import/no-extraneous-dependencies': 0,
       },

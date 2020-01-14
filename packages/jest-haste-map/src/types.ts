@@ -6,7 +6,7 @@
  */
 
 import * as fs from 'fs';
-import {Config} from '@jest/types';
+import {Path} from '@jest/config-utils';
 import ModuleMap from './ModuleMap';
 import HasteFS from './HasteFS';
 
@@ -41,10 +41,10 @@ export type CrawlerOptions = {
 };
 
 export type HasteImpl = {
-  getHasteName(filePath: Config.Path): string | undefined;
+  getHasteName(filePath: Path): string | undefined;
 };
 
-export type FileData = Map<Config.Path, FileMetaData>;
+export type FileData = Map<Path, FileMetaData>;
 
 export type FileMetaData = [
   /* id */ string,
@@ -55,9 +55,9 @@ export type FileMetaData = [
   /* sha1 */ string | null | undefined,
 ];
 
-export type MockData = Map<string, Config.Path>;
+export type MockData = Map<string, Path>;
 export type ModuleMapData = Map<string, ModuleMapItem>;
-export type WatchmanClocks = Map<Config.Path, string>;
+export type WatchmanClocks = Map<Path, string>;
 export type HasteRegExp = RegExp | ((str: string) => boolean);
 
 export type DuplicatesSet = Map<string, /* type */ number>;
@@ -78,14 +78,14 @@ export type HasteMap = {
 };
 
 export type RawModuleMap = {
-  rootDir: Config.Path;
+  rootDir: Path;
   duplicates: DuplicatesIndex;
   map: ModuleMapData;
   mocks: MockData;
 };
 
 type ModuleMapItem = {[platform: string]: ModuleMetaData};
-export type ModuleMetaData = [Config.Path, /* type */ number];
+export type ModuleMetaData = [Path, /* type */ number];
 
 export type HType = {
   ID: 0;
@@ -106,7 +106,7 @@ export type HType = {
 export type HTypeValue = HType[keyof HType];
 
 export type EventsQueue = Array<{
-  filePath: Config.Path;
+  filePath: Path;
   stat: fs.Stats | undefined;
   type: string;
 }>;

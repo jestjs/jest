@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
+import {Argv, GlobalConfig, Path} from '@jest/config-utils';
 import {AggregatedResult} from '@jest/test-result';
 import {clearLine} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
@@ -19,9 +19,9 @@ import {sync as realpath} from 'realpath-native';
 import init from '../init';
 import * as args from './args';
 
-export async function run(maybeArgv?: Array<string>, project?: Config.Path) {
+export async function run(maybeArgv?: Array<string>, project?: Path) {
   try {
-    const argv: Config.Argv = buildArgv(maybeArgv);
+    const argv: Argv = buildArgv(maybeArgv);
 
     if (argv.init) {
       await init();
@@ -46,14 +46,13 @@ export async function run(maybeArgv?: Array<string>, project?: Config.Path) {
   }
 }
 
-export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
+export const buildArgv = (maybeArgv?: Array<string>): Argv => {
   const version =
     getVersion() +
     (__dirname.includes(`packages${path.sep}jest-cli`) ? '-dev' : '');
 
-  const rawArgv: Config.Argv | Array<string> =
-    maybeArgv || process.argv.slice(2);
-  const argv: Config.Argv = yargs(rawArgv)
+  const rawArgv: Argv | Array<string> = maybeArgv || process.argv.slice(2);
+  const argv: Argv = yargs(rawArgv)
     .usage(args.usage)
     .version(version)
     .alias('help', 'h')
@@ -76,13 +75,10 @@ export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
       result[key] = argv[key];
     }
     return result;
-  }, {} as Config.Argv);
+  }, {} as Argv);
 };
 
-const getProjectListFromCLIArgs = (
-  argv: Config.Argv,
-  project?: Config.Path,
-) => {
+const getProjectListFromCLIArgs = (argv: Argv, project?: Path) => {
   const projects = argv.projects ? argv.projects : [];
 
   if (project) {
@@ -107,7 +103,7 @@ const getProjectListFromCLIArgs = (
 
 const readResultsAndExit = (
   result: AggregatedResult | null,
-  globalConfig: Config.GlobalConfig,
+  globalConfig: GlobalConfig,
 ) => {
   const code = !result || result.success ? 0 : globalConfig.testFailureExitCode;
 

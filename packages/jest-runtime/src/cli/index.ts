@@ -10,7 +10,7 @@ import * as path from 'path';
 import chalk = require('chalk');
 import {sync as realpath} from 'realpath-native';
 import yargs = require('yargs');
-import {Config} from '@jest/types';
+import {Argv, ProjectConfig} from '@jest/config-utils';
 import {JestEnvironment} from '@jest/environment';
 import {CustomConsole} from '@jest/console';
 import {setGlobal} from 'jest-util';
@@ -20,7 +20,7 @@ import {VERSION} from '../version';
 import {Context} from '../types';
 import * as args from './args';
 
-export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
+export function run(cliArgv?: Argv, cliInfo?: Array<string>) {
   const realFs = require('fs');
   const fs = require('graceful-fs');
   fs.gracefulify(realFs);
@@ -29,7 +29,7 @@ export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
   if (cliArgv) {
     argv = cliArgv;
   } else {
-    argv = <Config.Argv>yargs
+    argv = <Argv>yargs
       .usage(args.usage)
       .help(false)
       .version(false)
@@ -65,7 +65,7 @@ export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
   const options = readConfig(argv, root);
   const globalConfig = options.globalConfig;
   // Always disable automocking in scripts.
-  const config: Config.ProjectConfig = {
+  const config: ProjectConfig = {
     ...options.projectConfig,
     automock: false,
   };

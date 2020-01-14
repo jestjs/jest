@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import {BaseWatchPlugin, Prompt, UpdateConfigCallback} from 'jest-watcher';
 import TestPathPatternPrompt from '../TestPathPatternPrompt';
 import activeFilters from '../lib/active_filters_message';
@@ -32,7 +32,7 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
   }
 
   run(
-    globalConfig: Config.GlobalConfig,
+    globalConfig: GlobalConfig,
     updateConfigAndRun: UpdateConfigCallback,
   ): Promise<void> {
     return new Promise((res, rej) => {

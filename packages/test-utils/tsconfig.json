@@ -3,6 +3,5 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "build"
-  },
-  "references": [{"path": "../jest-types"}]
+  }
 }

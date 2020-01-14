@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {ReporterConfig} from '@jest/config-utils';
 import {ValidationError} from 'jest-validate';
 import chalk = require('chalk');
 import getType = require('jest-get-type');
@@ -24,7 +24,7 @@ const ERROR = `${BULLET}Reporter Validation Error`;
  */
 export function createReporterError(
   reporterIndex: number,
-  reporterValue: Array<Config.ReporterConfig> | string,
+  reporterValue: Array<ReporterConfig> | string,
 ) {
   const errorMessage =
     `  Reporter at index ${reporterIndex} must be of type:\n` +
@@ -36,7 +36,7 @@ export function createReporterError(
 }
 
 export function createArrayReporterError(
-  arrayReporter: Config.ReporterConfig,
+  arrayReporter: ReporterConfig,
   reporterIndex: number,
   valueIndex: number,
   value: string | Record<string, any>,
@@ -61,7 +61,7 @@ export function createArrayReporterError(
 }
 
 export function validateReporters(
-  reporterConfig: Array<Config.ReporterConfig | string>,
+  reporterConfig: Array<ReporterConfig | string>,
 ): boolean {
   return reporterConfig.every((reporter, index) => {
     if (Array.isArray(reporter)) {
@@ -75,7 +75,7 @@ export function validateReporters(
 }
 
 function validateArrayReporter(
-  arrayReporter: Config.ReporterConfig,
+  arrayReporter: ReporterConfig,
   reporterIndex: number,
 ) {
   const [path, options] = arrayReporter;

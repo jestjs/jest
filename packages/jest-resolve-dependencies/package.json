@@ -10,7 +10,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/types": "^24.9.0",
+    "@jest/config-utils": "^24.9.0",
     "jest-regex-util": "^24.3.0",
     "jest-snapshot": "^24.9.0"
   },

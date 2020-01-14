@@ -8,12 +8,16 @@
 import * as path from 'path';
 import micromatch = require('micromatch');
 import {Context} from 'jest-runtime';
-import {Config} from '@jest/types';
+import {
+  Glob,
+  GlobalConfig,
+  Path,
+  replaceRootDirInPath,
+} from '@jest/config-utils';
 import {Test} from 'jest-runner';
 import {ChangedFiles} from 'jest-changed-files';
 import DependencyResolver = require('jest-resolve-dependencies');
 import {escapePathForRegex} from 'jest-regex-util';
-import {replaceRootDirInPath} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {replacePathSepForGlob, testPathPatternToRegExp} from 'jest-util';
 import {Filter, Stats, TestPathCases} from './types';
@@ -30,19 +34,19 @@ export type TestSelectionConfig = {
   input?: string;
   findRelatedTests?: boolean;
   onlyChanged?: boolean;
-  paths?: Array<Config.Path>;
+  paths?: Array<Path>;
   shouldTreatInputAsPattern?: boolean;
   testPathPattern?: string;
   watch?: boolean;
 };
 
-const globsToMatcher = (globs: Array<Config.Glob>) => (path: Config.Path) =>
+const globsToMatcher = (globs: Array<Glob>) => (path: Path) =>
   micromatch([replacePathSepForGlob(path)], globs, {dot: true}).length > 0;
 
-const regexToMatcher = (testRegex: Array<string>) => (path: Config.Path) =>
+const regexToMatcher = (testRegex: Array<string>) => (path: Path) =>
   testRegex.some(testRegex => new RegExp(testRegex).test(path));
 
-const toTests = (context: Context, tests: Array<Config.Path>) =>
+const toTests = (context: Context, tests: Array<Path>) =>
   tests.map(path => ({
     context,
     duration: undefined,
@@ -113,7 +117,7 @@ export default class SearchSource {
     if (testPathPattern) {
       const regex = testPathPatternToRegExp(testPathPattern);
       testCases.push({
-        isMatch: (path: Config.Path) => regex.test(path),
+        isMatch: (path: Path) => regex.test(path),
         stat: 'testPathPattern',
       });
       data.stats.testPathPattern = 0;
@@ -141,7 +145,7 @@ export default class SearchSource {
     );
   }
 
-  isTestFilePath(path: Config.Path): boolean {
+  isTestFilePath(path: Path): boolean {
     return this._testPathCases.every(testCase => testCase.isMatch(path));
   }
 
@@ -150,7 +154,7 @@ export default class SearchSource {
   }
 
   findRelatedTests(
-    allPaths: Set<Config.Path>,
+    allPaths: Set<Path>,
     collectCoverage: boolean,
   ): SearchResult {
     const dependencyResolver = new DependencyResolver(
@@ -210,7 +214,7 @@ export default class SearchSource {
     };
   }
 
-  findTestsByPaths(paths: Array<Config.Path>): SearchResult {
+  findTestsByPaths(paths: Array<Path>): SearchResult {
     return {
       tests: toTests(
         this._context,
@@ -222,7 +226,7 @@ export default class SearchSource {
   }
 
   findRelatedTestsFromPattern(
-    paths: Array<Config.Path>,
+    paths: Array<Path>,
     collectCoverage: boolean,
   ): SearchResult {
     if (Array.isArray(paths) && paths.length) {
@@ -249,7 +253,7 @@ export default class SearchSource {
   }
 
   private _getTestPaths(
-    globalConfig: Config.GlobalConfig,
+    globalConfig: GlobalConfig,
     changedFiles?: ChangedFiles,
   ): SearchResult {
     const paths = globalConfig.nonFlagArgs;
@@ -278,7 +282,7 @@ export default class SearchSource {
   }
 
   async getTestPaths(
-    globalConfig: Config.GlobalConfig,
+    globalConfig: GlobalConfig,
     changedFiles: ChangedFiles | undefined,
     filter?: Filter,
   ): Promise<SearchResult> {

@@ -8,7 +8,7 @@
 import Resolver = require('jest-resolve');
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {Config} from '@jest/types';
+import {Path, ProjectConfig} from '@jest/config-utils';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {makeProjectConfig} from '../../../../TestUtils';
 
@@ -18,12 +18,12 @@ const maxWorkers = 1;
 let dependencyResolver: DependencyResolver;
 let runtimeContextResolver: Resolver;
 let Runtime;
-let config: Config.ProjectConfig;
+let config: ProjectConfig;
 const cases: Record<string, jest.Mock> = {
   fancyCondition: jest.fn(path => path.length > 10),
   testRegex: jest.fn(path => /.test.js$/.test(path)),
 };
-const filter = (path: Config.Path) =>
+const filter = (path: Path) =>
   Object.keys(cases).every(key => cases[key](path));
 
 beforeEach(() => {

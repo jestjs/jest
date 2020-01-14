@@ -5,7 +5,7 @@
     "outDir": "build"
   },
   "references": [
-    {"path": "../jest-config"},
+    {"path": "../jest-config-utils"},
     {"path": "../jest-console"},
     {"path": "../jest-environment"},
     {"path": "../jest-environment-node"},
@@ -17,7 +17,6 @@
     {"path": "../jest-snapshot"},
     {"path": "../jest-source-map"},
     {"path": "../jest-test-result"},
-    {"path": "../jest-types"},
     {"path": "../jest-util"},
     {"path": "../jest-validate"},
     {"path": "../pretty-format"}

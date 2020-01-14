@@ -8,7 +8,7 @@
 
 import * as path from 'path';
 import execa = require('execa');
-import {Config} from '@jest/types';
+import {Path} from '@jest/config-utils';
 
 import {SCMAdapter} from './types';
 
@@ -16,8 +16,7 @@ const env = {...process.env, HGPLAIN: '1'};
 
 const adapter: SCMAdapter = {
   findChangedFiles: async (cwd, options) => {
-    const includePaths: Array<Config.Path> =
-      (options && options.includePaths) || [];
+    const includePaths: Array<Path> = (options && options.includePaths) || [];
 
     const args = ['status', '-amnu'];
     if (options && options.withAncestor) {

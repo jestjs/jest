@@ -5,6 +5,7 @@
     "rootDir": "src"
   },
   "references": [
+    {"path": "../jest-config-utils"},
     {"path": "../jest-environment"},
     {"path": "../jest-fake-timers"},
     {"path": "../jest-mock"},

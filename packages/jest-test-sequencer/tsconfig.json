@@ -7,7 +7,6 @@
   "references": [
     {"path": "../jest-haste-map"},
     {"path": "../jest-runner"},
-    {"path": "../jest-test-result"},
-    {"path": "../jest-types"}
+    {"path": "../jest-test-result"}
   ]
 }

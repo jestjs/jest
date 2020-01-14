@@ -10,7 +10,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/types": "^24.9.0",
+    "@jest/config-utils": "^24.9.0",
     "browser-resolve": "^1.11.3",
     "chalk": "^3.0.0",
     "jest-pnp-resolver": "^1.2.1",

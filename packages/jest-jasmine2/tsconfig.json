@@ -6,6 +6,7 @@
   },
   "references": [
     {"path": "../expect"},
+    {"path": "../jest-config-utils"},
     {"path": "../jest-each"},
     {"path": "../jest-environment"},
     {"path": "../jest-matcher-utils"},

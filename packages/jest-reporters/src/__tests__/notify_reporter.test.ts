@@ -6,7 +6,7 @@
  */
 
 import {AggregatedResult} from '@jest/test-result';
-import {Config} from '@jest/types';
+import {GlobalConfig, ProjectConfig} from '@jest/config-utils';
 import NotifyReporter from '../notify_reporter';
 import {makeGlobalConfig} from '../../../../TestUtils';
 
@@ -71,10 +71,10 @@ const testModes = ({
   rootDir,
   moduleName,
 }: {arl: Array<AggregatedResult>; moduleName?: string} & Pick<
-  Config.GlobalConfig,
+  GlobalConfig,
   'notifyMode'
 > &
-  Partial<Pick<Config.ProjectConfig, 'rootDir'>>) => {
+  Partial<Pick<ProjectConfig, 'rootDir'>>) => {
   const notify = require('node-notifier');
 
   const config = makeGlobalConfig({notify: true, notifyMode, rootDir});

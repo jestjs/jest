@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {Path, ProjectConfig} from '@jest/config-utils';
 import {AggregatedResult, TestResult} from '@jest/test-result';
 import chalk = require('chalk');
 import stringLength = require('string-length');
@@ -27,15 +27,15 @@ const RUNNING = chalk.reset.inverse.yellow.bold(RUNNING_TEXT) + ' ';
  */
 class CurrentTestList {
   private _array: Array<{
-    testPath: Config.Path;
-    config: Config.ProjectConfig;
+    testPath: Path;
+    config: ProjectConfig;
   } | null>;
 
   constructor() {
     this._array = [];
   }
 
-  add(testPath: Config.Path, config: Config.ProjectConfig) {
+  add(testPath: Path, config: ProjectConfig) {
     const index = this._array.indexOf(null);
     const record = {config, testPath};
     if (index !== -1) {
@@ -45,7 +45,7 @@ class CurrentTestList {
     }
   }
 
-  delete(testPath: Config.Path) {
+  delete(testPath: Path) {
     const record = this._array.find(
       record => record !== null && record.testPath === testPath,
     );
@@ -103,7 +103,7 @@ export default class Status {
     this._emit();
   }
 
-  testStarted(testPath: Config.Path, config: Config.ProjectConfig) {
+  testStarted(testPath: Path, config: ProjectConfig) {
     this._currentTests.add(testPath, config);
     if (!this._showStatus) {
       this._emit();
@@ -113,7 +113,7 @@ export default class Status {
   }
 
   testFinished(
-    _config: Config.ProjectConfig,
+    _config: ProjectConfig,
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ) {

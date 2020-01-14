@@ -5,17 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig, Path, ProjectConfig} from '@jest/config-utils';
 import {ChangedFilesPromise, getChangedFilesForRoots} from 'jest-changed-files';
 import {formatExecError} from 'jest-message-util';
 import chalk = require('chalk');
 
 export default (
-  globalConfig: Config.GlobalConfig,
-  configs: Array<Config.ProjectConfig>,
+  globalConfig: GlobalConfig,
+  configs: Array<ProjectConfig>,
 ): ChangedFilesPromise | undefined => {
   if (globalConfig.onlyChanged) {
-    const allRootsForAllProjects = configs.reduce<Array<Config.Path>>(
+    const allRootsForAllProjects = configs.reduce<Array<Path>>(
       (roots, config) => {
         if (config.roots) {
           roots.push(...config.roots);

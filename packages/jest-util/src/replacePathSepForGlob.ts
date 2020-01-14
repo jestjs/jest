@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {Glob, Path} from '@jest/config-utils';
 
-export default function replacePathSepForGlob(path: Config.Path): Config.Glob {
+export default function replacePathSepForGlob(path: Path): Glob {
   return path.replace(/\\(?![{}()+?.^$])/g, '/');
 }

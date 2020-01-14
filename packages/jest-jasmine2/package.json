@@ -11,6 +11,7 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@babel/traverse": "^7.1.0",
+    "@jest/config-utils": "^24.9.0",
     "@jest/environment": "^24.9.0",
     "@jest/source-map": "^24.9.0",
     "@jest/test-result": "^24.9.0",

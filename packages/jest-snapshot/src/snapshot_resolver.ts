@@ -6,13 +6,13 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
+import {Path, ProjectConfig} from '@jest/config-utils';
 import chalk = require('chalk');
 
 export type SnapshotResolver = {
   testPathForConsistencyCheck: string;
-  resolveSnapshotPath(testPath: Config.Path, extension?: string): Config.Path;
-  resolveTestPath(snapshotPath: Config.Path, extension?: string): Config.Path;
+  resolveSnapshotPath(testPath: Path, extension?: string): Path;
+  resolveTestPath(snapshotPath: Path, extension?: string): Path;
 };
 
 export const EXTENSION = 'snap';
@@ -21,9 +21,9 @@ export const DOT_EXTENSION = '.' + EXTENSION;
 export const isSnapshotPath = (path: string): boolean =>
   path.endsWith(DOT_EXTENSION);
 
-const cache: Map<Config.Path, SnapshotResolver> = new Map();
+const cache: Map<Path, SnapshotResolver> = new Map();
 export const buildSnapshotResolver = (
-  config: Config.ProjectConfig,
+  config: ProjectConfig,
 ): SnapshotResolver => {
   const key = config.rootDir;
   if (!cache.has(key)) {
@@ -33,7 +33,7 @@ export const buildSnapshotResolver = (
 };
 
 function createSnapshotResolver(
-  snapshotResolverPath?: Config.Path | null,
+  snapshotResolverPath?: Path | null,
 ): SnapshotResolver {
   return typeof snapshotResolverPath === 'string'
     ? createCustomSnapshotResolver(snapshotResolverPath)
@@ -42,13 +42,13 @@ function createSnapshotResolver(
 
 function createDefaultSnapshotResolver(): SnapshotResolver {
   return {
-    resolveSnapshotPath: (testPath: Config.Path) =>
+    resolveSnapshotPath: (testPath: Path) =>
       path.join(
         path.join(path.dirname(testPath), '__snapshots__'),
         path.basename(testPath) + DOT_EXTENSION,
       ),
 
-    resolveTestPath: (snapshotPath: Config.Path) =>
+    resolveTestPath: (snapshotPath: Path) =>
       path.resolve(
         path.dirname(snapshotPath),
         '..',
@@ -64,7 +64,7 @@ function createDefaultSnapshotResolver(): SnapshotResolver {
 }
 
 function createCustomSnapshotResolver(
-  snapshotResolverPath: Config.Path,
+  snapshotResolverPath: Path,
 ): SnapshotResolver {
   const custom: SnapshotResolver = require(snapshotResolverPath);
 
@@ -80,9 +80,9 @@ function createCustomSnapshotResolver(
   });
 
   const customResolver = {
-    resolveSnapshotPath: (testPath: Config.Path) =>
+    resolveSnapshotPath: (testPath: Path) =>
       custom.resolveSnapshotPath(testPath, DOT_EXTENSION),
-    resolveTestPath: (snapshotPath: Config.Path) =>
+    resolveTestPath: (snapshotPath: Path) =>
       custom.resolveTestPath(snapshotPath, DOT_EXTENSION),
     testPathForConsistencyCheck: custom.testPathForConsistencyCheck,
   };

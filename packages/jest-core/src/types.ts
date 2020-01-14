@@ -7,7 +7,7 @@
 
 import {Context} from 'jest-runtime';
 import {Test} from 'jest-runner';
-import {Config} from '@jest/types';
+import {Path} from '@jest/config-utils';
 
 export type Stats = {
   roots: number;
@@ -29,11 +29,11 @@ export type TestRunData = Array<{
 
 export type TestPathCases = Array<{
   stat: keyof Stats;
-  isMatch: (path: Config.Path) => boolean;
+  isMatch: (path: Path) => boolean;
 }>;
 
 export type TestPathCasesWithPathPattern = TestPathCases & {
-  testPathPattern: (path: Config.Path) => boolean;
+  testPathPattern: (path: Path) => boolean;
 };
 
 export type FilterResult = {

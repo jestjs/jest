@@ -8,11 +8,11 @@
 import * as path from 'path';
 import slash = require('slash');
 import glob = require('glob');
-import {Config} from '@jest/types';
+import {Path, ProjectConfig} from '@jest/config-utils';
 
 export const findSiblingsWithFileExtension = (
-  moduleFileExtensions: Config.ProjectConfig['moduleFileExtensions'],
-  from: Config.Path,
+  moduleFileExtensions: ProjectConfig['moduleFileExtensions'],
+  from: Path,
   moduleName: string,
 ): string => {
   if (!path.isAbsolute(moduleName) && path.extname(moduleName) === '') {

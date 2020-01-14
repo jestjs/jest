@@ -5,12 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {defaults, descriptions} from 'jest-config';
+import {InitialOptions, defaults, descriptions} from '@jest/config-utils';
 
 const stringifyOption = (
-  option: keyof Config.InitialOptions,
-  map: Partial<Config.InitialOptions>,
+  option: keyof InitialOptions,
+  map: Partial<InitialOptions>,
   linePrefix: string = '',
 ): string => {
   const optionDescription = `  // ${descriptions[option]}`;
@@ -54,9 +53,7 @@ const generateConfigFile = (results: Record<string, unknown>): string => {
     });
   }
 
-  const overrideKeys = Object.keys(overrides) as Array<
-    keyof Config.InitialOptions
-  >;
+  const overrideKeys = Object.keys(overrides) as Array<keyof InitialOptions>;
 
   const properties: Array<string> = [];
 
@@ -66,9 +63,7 @@ const generateConfigFile = (results: Record<string, unknown>): string => {
     if (overrideKeys.includes(opt)) {
       properties.push(stringifyOption(opt, overrides));
     } else {
-      properties.push(
-        stringifyOption(opt, defaults as Config.InitialOptions, '// '),
-      );
+      properties.push(stringifyOption(opt, defaults as InitialOptions, '// '));
     }
   }
 

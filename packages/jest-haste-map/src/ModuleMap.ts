@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {Path} from '@jest/config-utils';
 import {
   DuplicatesSet,
   HTypeValue,
@@ -27,7 +27,7 @@ export type SerializableModuleMap = {
   duplicates: ReadonlyArray<[string, [string, [string, [string, number]]]]>;
   map: ReadonlyArray<[string, ValueType<ModuleMapData>]>;
   mocks: ReadonlyArray<[string, ValueType<MockData>]>;
-  rootDir: Config.Path;
+  rootDir: Path;
 };
 
 export default class ModuleMap {
@@ -68,7 +68,7 @@ export default class ModuleMap {
     platform?: string | null,
     supportsNativePlatform?: boolean | null,
     type?: HTypeValue | null,
-  ): Config.Path | null {
+  ): Path | null {
     if (type == null) {
       type = H.MODULE;
     }
@@ -88,11 +88,11 @@ export default class ModuleMap {
     name: string,
     platform: string | null | undefined,
     _supportsNativePlatform: boolean | null,
-  ): Config.Path | null {
+  ): Path | null {
     return this.getModule(name, platform, null, H.PACKAGE);
   }
 
-  getMockModule(name: string): Config.Path | undefined {
+  getMockModule(name: string): Path | undefined {
     const mockPath =
       this._raw.mocks.get(name) || this._raw.mocks.get(name + '/index');
     return mockPath && fastPath.resolve(this._raw.rootDir, mockPath);
@@ -207,7 +207,7 @@ export default class ModuleMap {
     );
   }
 
-  static create(rootDir: Config.Path) {
+  static create(rootDir: Path) {
     return new ModuleMap({
       duplicates: new Map(),
       map: new Map(),

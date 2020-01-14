@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
+import {GlobalConfig, ProjectConfig} from '@jest/config-utils';
 import {JestEnvironment} from '@jest/environment';
 import {TestResult} from '@jest/test-result';
 import Runtime = require('jest-runtime');
@@ -15,8 +15,8 @@ import {SnapshotStateType} from 'jest-snapshot';
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 
 const jestAdapter = async (
-  globalConfig: Config.GlobalConfig,
-  config: Config.ProjectConfig,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
   environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,

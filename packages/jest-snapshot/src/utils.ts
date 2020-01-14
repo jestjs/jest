@@ -10,7 +10,7 @@ import * as path from 'path';
 import {sync as mkdirp} from 'mkdirp';
 import naturalCompare = require('natural-compare');
 import chalk = require('chalk');
-import {Config} from '@jest/types';
+import {Path, SnapshotUpdateState} from '@jest/config-utils';
 import prettyFormat = require('pretty-format');
 import {getSerializers} from './plugins';
 import {SnapshotData} from './types';
@@ -78,7 +78,7 @@ function isObject(item: unknown): boolean {
   return item && typeof item === 'object' && !Array.isArray(item);
 }
 
-export const testNameToKey = (testName: Config.Path, count: number): string =>
+export const testNameToKey = (testName: Path, count: number): string =>
   testName + ' ' + count;
 
 export const keyToTestName = (key: string): string => {
@@ -90,8 +90,8 @@ export const keyToTestName = (key: string): string => {
 };
 
 export const getSnapshotData = (
-  snapshotPath: Config.Path,
-  update: Config.SnapshotUpdateState,
+  snapshotPath: Path,
+  update: SnapshotUpdateState,
 ): {
   data: SnapshotData;
   dirty: boolean;
@@ -181,7 +181,7 @@ export const escapeBacktickString = (str: string): string =>
 const printBacktickString = (str: string): string =>
   '`' + escapeBacktickString(str) + '`';
 
-export const ensureDirectoryExists = (filePath: Config.Path) => {
+export const ensureDirectoryExists = (filePath: Path) => {
   try {
     mkdirp(path.join(path.dirname(filePath)), '777');
   } catch (e) {}
@@ -191,7 +191,7 @@ const normalizeNewlines = (string: string) => string.replace(/\r\n|\r/g, '\n');
 
 export const saveSnapshotFile = (
   snapshotData: SnapshotData,
-  snapshotPath: Config.Path,
+  snapshotPath: Path,
 ) => {
   const snapshots = Object.keys(snapshotData)
     .sort(naturalCompare)

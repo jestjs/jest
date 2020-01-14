@@ -6,18 +6,18 @@
  */
 
 import {replacePathSepForRegex} from 'jest-regex-util';
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import {AllowedConfigOptions} from 'jest-watcher';
 
 type ExtraConfigOptions = Partial<
-  Pick<Config.GlobalConfig, 'noSCM' | 'passWithNoTests'>
+  Pick<GlobalConfig, 'noSCM' | 'passWithNoTests'>
 >;
 
 export default (
-  globalConfig: Config.GlobalConfig,
+  globalConfig: GlobalConfig,
   options: AllowedConfigOptions & ExtraConfigOptions = {},
-): Config.GlobalConfig => {
-  const newConfig: Config.GlobalConfig = {...globalConfig};
+): GlobalConfig => {
+  const newConfig: GlobalConfig = {...globalConfig};
 
   if (options.mode === 'watch') {
     newConfig.watch = true;

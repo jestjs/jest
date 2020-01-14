@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import {UsageData, WatchPlugin} from 'jest-watcher';
 
 export const filterInteractivePlugins = (
   watchPlugins: Array<WatchPlugin>,
-  globalConfig: Config.GlobalConfig,
+  globalConfig: GlobalConfig,
 ): Array<WatchPlugin> => {
   const usageInfos = watchPlugins.map(
     p => p.getUsageInfo && p.getUsageInfo(globalConfig),
@@ -33,7 +33,7 @@ function notEmpty<T>(value: T | null | undefined): value is T {
 
 export const getSortedUsageRows = (
   watchPlugins: Array<WatchPlugin>,
-  globalConfig: Config.GlobalConfig,
+  globalConfig: GlobalConfig,
 ): Array<UsageData> =>
   filterInteractivePlugins(watchPlugins, globalConfig)
     .sort((a: WatchPlugin, b: WatchPlugin) => {

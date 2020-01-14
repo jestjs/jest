@@ -6,13 +6,13 @@
   },
   "references": [
     {"path": "../expect"},
+    {"path": "../jest-config-utils"},
     {"path": "../jest-diff"},
     {"path": "../jest-get-type"},
     {"path": "../jest-haste-map"},
     {"path": "../jest-matcher-utils"},
     {"path": "../jest-message-util"},
     {"path": "../jest-resolve"},
-    {"path": "../jest-types"},
     {"path": "../pretty-format"}
   ]
 }

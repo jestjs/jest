@@ -5,24 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {Path} from '@jest/config-utils';
 
 export type Options = {
   lastCommit?: boolean;
   withAncestor?: boolean;
   changedSince?: string;
-  includePaths?: Array<Config.Path>;
+  includePaths?: Array<Path>;
 };
 
-type Paths = Set<Config.Path>;
+type Paths = Set<Path>;
 export type Repos = {git: Paths; hg: Paths};
 export type ChangedFiles = {repos: Repos; changedFiles: Paths};
 export type ChangedFilesPromise = Promise<ChangedFiles>;
 
 export type SCMAdapter = {
-  findChangedFiles: (
-    cwd: Config.Path,
-    options: Options,
-  ) => Promise<Array<Config.Path>>;
-  getRoot: (cwd: Config.Path) => Promise<Config.Path | null>;
+  findChangedFiles: (cwd: Path, options: Options) => Promise<Array<Path>>;
+  getRoot: (cwd: Path) => Promise<Path | null>;
 };

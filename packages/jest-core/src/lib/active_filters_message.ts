@@ -6,10 +6,10 @@
  */
 
 import chalk = require('chalk');
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 
 const activeFilters = (
-  globalConfig: Config.GlobalConfig,
+  globalConfig: GlobalConfig,
   delimiter: string = '\n',
 ) => {
   const {testNamePattern, testPathPattern} = globalConfig;

@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {InitialOptions, constants} from '@jest/config-utils';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {multipleValidOptions} from 'jest-validate';
-import {NODE_MODULES} from './constants';
 
+const {NODE_MODULES} = constants;
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 
-const initialOptions: Config.InitialOptions = {
+const initialOptions: InitialOptions = {
   automock: false,
   bail: multipleValidOptions(false, 0),
   browser: false,

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import {SnapshotSummary} from '@jest/test-result';
 import chalk = require('chalk');
 import {pluralize} from 'jest-util';
@@ -24,7 +24,7 @@ const SNAPSHOT_UPDATED = chalk.bold.green;
 
 export default (
   snapshots: SnapshotSummary,
-  globalConfig: Config.GlobalConfig,
+  globalConfig: GlobalConfig,
   updateCommand: string,
 ): Array<string> => {
   const summary = [];

@@ -5,10 +5,10 @@
     "outDir": "build"
   },
   "references": [
+    {"path": "../jest-config-utils"},
     {"path": "../jest-config"},
     {"path": "../jest-runtime"},
     {"path": "../jest-transform"},
-    {"path": "../jest-types"},
     {"path": "../jest-validate"}
   ]
 }

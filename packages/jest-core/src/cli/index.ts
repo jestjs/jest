@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {Argv, GlobalConfig, Path, ProjectConfig} from '@jest/config-utils';
 import {AggregatedResult} from '@jest/test-result';
 import {CustomConsole} from '@jest/console';
 import {createDirectory, preRunMessage} from 'jest-util';
@@ -32,11 +32,11 @@ const {print: preRunMessagePrint} = preRunMessage;
 type OnCompleteCallback = (results: AggregatedResult) => void;
 
 export const runCLI = async (
-  argv: Config.Argv,
-  projects: Array<Config.Path>,
+  argv: Argv,
+  projects: Array<Path>,
 ): Promise<{
   results: AggregatedResult;
-  globalConfig: Config.GlobalConfig;
+  globalConfig: GlobalConfig;
 }> => {
   const realFs = require('fs');
   const fs = require('graceful-fs');
@@ -112,8 +112,8 @@ export const runCLI = async (
 };
 
 const buildContextsAndHasteMaps = async (
-  configs: Array<Config.ProjectConfig>,
-  globalConfig: Config.GlobalConfig,
+  configs: Array<ProjectConfig>,
+  globalConfig: GlobalConfig,
   outputStream: NodeJS.WriteStream,
 ) => {
   const hasteMapInstances = Array(configs.length);
@@ -139,8 +139,8 @@ const buildContextsAndHasteMaps = async (
 };
 
 const _run = async (
-  globalConfig: Config.GlobalConfig,
-  configs: Array<Config.ProjectConfig>,
+  globalConfig: GlobalConfig,
+  configs: Array<ProjectConfig>,
   hasDeprecationWarnings: boolean,
   outputStream: NodeJS.WriteStream,
   onComplete: OnCompleteCallback,
@@ -207,9 +207,9 @@ const _run = async (
 
 const runWatch = async (
   contexts: Array<Runtime.Context>,
-  _configs: Array<Config.ProjectConfig>,
+  _configs: Array<ProjectConfig>,
   hasDeprecationWarnings: boolean,
-  globalConfig: Config.GlobalConfig,
+  globalConfig: GlobalConfig,
   outputStream: NodeJS.WriteStream,
   hasteMapInstances: Array<HasteMap>,
   filter?: Filter,
@@ -243,7 +243,7 @@ const runWatch = async (
 };
 
 const runWithoutWatch = async (
-  globalConfig: Config.GlobalConfig,
+  globalConfig: GlobalConfig,
   contexts: Array<Runtime.Context>,
   outputStream: NodeJS.WriteStream,
   onComplete: OnCompleteCallback,

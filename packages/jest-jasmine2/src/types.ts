@@ -6,8 +6,7 @@
  */
 
 import {AssertionError} from 'assert';
-import {Config} from '@jest/types';
-
+import {Path} from '@jest/config-utils';
 import expect = require('expect');
 import Spec, {SpecResult} from './jasmine/Spec';
 import JsApiReporter from './jasmine/JsApiReporter';
@@ -78,7 +77,7 @@ export type Jasmine = {
   Suite: typeof Suite;
   Timer: typeof Timer;
   version: string;
-  testPath: Config.Path;
+  testPath: Path;
   addMatchers: Function;
 } & typeof expect &
   NodeJS.Global;

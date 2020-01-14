@@ -7,15 +7,15 @@
 
 import * as path from 'path';
 import * as fs from 'fs';
-import {Config} from '@jest/types';
 // @ts-ignore: vendored
 import jsonlint from './vendor/jsonlint';
 import {PACKAGE_JSON} from './constants';
+import {InitialOptions, Path} from './types';
 
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
 // 2. For any other file, we just require it.
-export default (configPath: Config.Path): Config.InitialOptions => {
+export default (configPath: Path): InitialOptions => {
   const isJSON = configPath.endsWith('.json');
   let configObject;
 

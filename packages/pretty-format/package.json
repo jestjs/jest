@@ -13,7 +13,6 @@
   "browser": "build-es5/index.js",
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
-    "@jest/types": "^24.9.0",
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.0.0",
     "react-is": "^16.12.0"

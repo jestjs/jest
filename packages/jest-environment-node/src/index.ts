@@ -12,7 +12,8 @@ import {
   createContext,
   runInContext,
 } from 'vm';
-import {Config, Global} from '@jest/types';
+import {Global} from '@jest/types';
+import {ProjectConfig} from '@jest/config-utils';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
 import {
@@ -34,7 +35,7 @@ class NodeEnvironment implements JestEnvironment {
   global: Global.Global;
   moduleMocker: ModuleMocker | null;
 
-  constructor(config: Config.ProjectConfig) {
+  constructor(config: ProjectConfig) {
     this.context = createContext();
     const global = (this.global = runInContext(
       'this',

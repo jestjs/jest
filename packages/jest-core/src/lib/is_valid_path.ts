@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig, Path} from '@jest/config-utils';
 import {isSnapshotPath} from 'jest-snapshot';
 
 export default function isValidPath(
-  globalConfig: Config.GlobalConfig,
-  filePath: Config.Path,
+  globalConfig: GlobalConfig,
+  filePath: Path,
 ) {
   return (
     !filePath.includes(globalConfig.coverageDirectory) &&

@@ -8,14 +8,14 @@
 
 import * as path from 'path';
 import execa = require('execa');
-import {Config} from '@jest/types';
+import {Path} from '@jest/config-utils';
 
 import {SCMAdapter} from './types';
 
 const findChangedFilesUsingCommand = async (
   args: Array<string>,
-  cwd: Config.Path,
-): Promise<Array<Config.Path>> => {
+  cwd: Path,
+): Promise<Array<Path>> => {
   let result: execa.ExecaReturnValue;
 
   try {
@@ -38,7 +38,7 @@ const adapter: SCMAdapter = {
     const changedSince: string | undefined =
       options && (options.withAncestor ? 'HEAD^' : options.changedSince);
 
-    const includePaths: Array<Config.Path> = (
+    const includePaths: Array<Path> = (
       (options && options.includePaths) ||
       []
     ).map(absoluteRoot => path.normalize(path.relative(cwd, absoluteRoot)));

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import {BaseWatchPlugin, JestHookSubscriber} from 'jest-watcher';
 import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
@@ -59,7 +59,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
   }
 
   run(
-    _globalConfig: Config.GlobalConfig,
+    _globalConfig: GlobalConfig,
     updateConfigAndRun: Function,
   ): Promise<void> {
     if (this._failedSnapshotTestAssertions.length) {

@@ -9,7 +9,6 @@ import {createHash} from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
 import {Transformer} from '@jest/transform';
-import {Config} from '@jest/types';
 import {
   PartialConfig,
   TransformOptions,
@@ -18,6 +17,7 @@ import {
 } from '@babel/core';
 import chalk = require('chalk');
 import slash = require('slash');
+import {Path} from '@jest/config-utils';
 
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
@@ -44,8 +44,8 @@ const createTransformer = (
   };
 
   function loadBabelConfig(
-    cwd: Config.Path,
-    filename: Config.Path,
+    cwd: Path,
+    filename: Path,
   ): PartialConfig {
     // `cwd` first to allow incoming options to override it
     const babelConfig = loadPartialConfig({cwd, ...options, filename});

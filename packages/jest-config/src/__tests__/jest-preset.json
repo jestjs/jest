@@ -3,5 +3,5 @@
     "b": "b"
   },
   "modulePathIgnorePatterns": ["b"],
-  "setupFiles": ["b"],
+  "setupFiles": ["b"]
 }

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig, Path, ProjectConfig} from '@jest/config-utils';
 import {
   AggregatedResult,
   SerializableError,
@@ -23,7 +23,7 @@ export type ReporterOnStartOptions = {
 };
 
 export type Context = {
-  config: Config.ProjectConfig;
+  config: ProjectConfig;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
   resolver: HasteResolver;
@@ -32,17 +32,17 @@ export type Context = {
 export type Test = {
   context: Context;
   duration?: number;
-  path: Config.Path;
+  path: Path;
 };
 
 export type CoverageWorker = {worker: typeof worker};
 
 export type CoverageReporterOptions = {
-  changedFiles?: Set<Config.Path>;
+  changedFiles?: Set<Path>;
 };
 
 export type CoverageReporterSerializedOptions = {
-  changedFiles?: Array<Config.Path>;
+  changedFiles?: Array<Path>;
 };
 
 export type OnTestStart = (test: Test) => Promise<void>;
@@ -77,8 +77,8 @@ export type SummaryOptions = {
 };
 
 export type TestFramework = (
-  globalConfig: Config.GlobalConfig,
-  config: Config.ProjectConfig,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
   environment: Environment,
   runtime: Runtime,
   testPath: string,
@@ -89,7 +89,7 @@ export type TestRunnerOptions = {
 };
 
 export type TestRunnerContext = {
-  changedFiles?: Set<Config.Path>;
+  changedFiles?: Set<Path>;
 };
 
 export type TestRunData = Array<{
@@ -100,5 +100,5 @@ export type TestRunData = Array<{
 export type TestSchedulerContext = {
   firstRun: boolean;
   previousSuccess: boolean;
-  changedFiles?: Set<Config.Path>;
+  changedFiles?: Set<Path>;
 };

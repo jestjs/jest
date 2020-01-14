@@ -6,7 +6,7 @@
  */
 
 import * as fs from 'fs';
-import {Config} from '@jest/types';
+import {ConfigGlobals} from '@jest/config-utils';
 import createProcessObject from './createProcessObject';
 import deepCyclicCopy from './deepCyclicCopy';
 
@@ -14,8 +14,8 @@ const DTRACE = Object.keys(global).filter(key => key.startsWith('DTRACE'));
 
 export default function(
   globalObject: NodeJS.Global,
-  globals: Config.ConfigGlobals,
-): NodeJS.Global & Config.ConfigGlobals {
+  globals: ConfigGlobals,
+): NodeJS.Global & ConfigGlobals {
   globalObject.process = createProcessObject();
 
   const symbol = (globalObject.Symbol as unknown) as SymbolConstructor;

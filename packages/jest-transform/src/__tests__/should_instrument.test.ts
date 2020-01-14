@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {ProjectConfig} from '@jest/config-utils';
 import shouldInstrument from '../shouldInstrument';
 import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
 import {Options} from '../types';
@@ -23,7 +23,7 @@ describe('shouldInstrument', () => {
     const testShouldInstrument = (
       filename = defaultFilename,
       options: Partial<Options>,
-      config: Partial<Config.ProjectConfig>,
+      config: Partial<ProjectConfig>,
     ) => {
       const result = shouldInstrument(
         filename,
@@ -115,7 +115,7 @@ describe('shouldInstrument', () => {
     const testShouldInstrument = (
       filename = defaultFilename,
       options: Partial<Options>,
-      config: Partial<Config.ProjectConfig>,
+      config: Partial<ProjectConfig>,
     ) => {
       const result = shouldInstrument(
         filename,

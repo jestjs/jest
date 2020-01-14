@@ -5,6 +5,7 @@
     "outDir": "build"
   },
   "references": [
+    {"path": "../jest-config-utils"},
     {"path": "../jest-fake-timers"},
     {"path": "../jest-types"},
     {"path": "../jest-util"}

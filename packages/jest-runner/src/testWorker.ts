@@ -6,7 +6,7 @@
  *
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig, Path, ProjectConfig} from '@jest/config-utils';
 import {SerializableError, TestResult} from '@jest/test-result';
 import HasteMap = require('jest-haste-map');
 import exit = require('exit');
@@ -17,14 +17,14 @@ import {ErrorWithCode, TestRunnerSerializedContext} from './types';
 import runTest from './runTest';
 
 export type SerializableResolver = {
-  config: Config.ProjectConfig;
+  config: ProjectConfig;
   serializableModuleMap: HasteMap.SerializableModuleMap;
 };
 
 type WorkerData = {
-  config: Config.ProjectConfig;
-  globalConfig: Config.GlobalConfig;
-  path: Config.Path;
+  config: ProjectConfig;
+  globalConfig: GlobalConfig;
+  path: Path;
   context?: TestRunnerSerializedContext;
 };
 
@@ -53,7 +53,7 @@ const formatError = (error: string | ErrorWithCode): SerializableError => {
 };
 
 const resolvers = new Map<string, Resolver>();
-const getResolver = (config: Config.ProjectConfig) => {
+const getResolver = (config: ProjectConfig) => {
   const resolver = resolvers.get(config.name);
   if (!resolver) {
     throw new Error('Cannot find resolver for: ' + config.name);

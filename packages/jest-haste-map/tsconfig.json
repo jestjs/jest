@@ -5,9 +5,9 @@
     "outDir": "build"
   },
   "references": [
-    {"path": "../jest-worker"},
+    {"path": "../jest-config-utils"},
     {"path": "../jest-serializer"},
     {"path": "../jest-util"},
-    {"path": "../jest-types"}
+    {"path": "../jest-worker"}
   ]
 }

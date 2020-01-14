@@ -6,13 +6,13 @@
  */
 
 import chalk = require('chalk');
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import {TestRunData} from './types';
 import pluralize from './pluralize';
 
 export default function getNoTestFound(
   testRunData: TestRunData,
-  globalConfig: Config.GlobalConfig,
+  globalConfig: GlobalConfig,
 ): string {
   const testFiles = testRunData.reduce(
     (current, testRun) => current + (testRun.matches.total || 0),

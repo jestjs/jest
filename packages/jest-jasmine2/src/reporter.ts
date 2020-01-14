@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig, Path, ProjectConfig} from '@jest/config-utils';
 import {
   AssertionResult,
   TestResult,
@@ -20,18 +20,18 @@ type Microseconds = number;
 
 export default class Jasmine2Reporter implements Reporter {
   private _testResults: Array<AssertionResult>;
-  private _globalConfig: Config.GlobalConfig;
-  private _config: Config.ProjectConfig;
+  private _globalConfig: GlobalConfig;
+  private _config: ProjectConfig;
   private _currentSuites: Array<string>;
   private _resolve: any;
   private _resultsPromise: Promise<TestResult>;
   private _startTimes: Map<string, Microseconds>;
-  private _testPath: Config.Path;
+  private _testPath: Path;
 
   constructor(
-    globalConfig: Config.GlobalConfig,
-    config: Config.ProjectConfig,
-    testPath: Config.Path,
+    globalConfig: GlobalConfig,
+    config: ProjectConfig,
+    testPath: Path,
   ) {
     this._globalConfig = globalConfig;
     this._config = config;

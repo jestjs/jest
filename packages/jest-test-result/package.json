@@ -10,9 +10,9 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
+    "@jest/config-utils": "^24.9.0",
     "@jest/console": "^24.9.0",
     "@jest/transform": "^24.9.0",
-    "@jest/types": "^24.9.0",
     "@types/istanbul-lib-coverage": "^2.0.0",
     "collect-v8-coverage": "^1.0.0"
   },

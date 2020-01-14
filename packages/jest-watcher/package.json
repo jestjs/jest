@@ -4,8 +4,8 @@
   "version": "24.9.0",
   "main": "build/index.js",
   "dependencies": {
+    "@jest/config-utils": "^24.9.0",
     "@jest/test-result": "^24.9.0",
-    "@jest/types": "^24.9.0",
     "ansi-escapes": "^4.2.1",
     "chalk": "^3.0.0",
     "jest-util": "^24.9.0",

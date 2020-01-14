@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {Argv} from '@jest/config-utils';
 import chalk = require('chalk');
 import camelcase from 'camelcase';
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -52,7 +52,7 @@ const createCLIValidationError = (
 const logDeprecatedOptions = (
   deprecatedOptions: Array<string>,
   deprecationEntries: DeprecatedOptions,
-  argv: Config.Argv,
+  argv: Argv,
 ) => {
   deprecatedOptions.forEach(opt => {
     deprecationWarning(argv, opt, deprecationEntries, {
@@ -63,7 +63,7 @@ const logDeprecatedOptions = (
 };
 
 export default function validateCLIOptions(
-  argv: Config.Argv,
+  argv: Argv,
   options: {
     deprecationEntries: DeprecatedOptions;
     [s: string]: Options;

@@ -7,37 +7,43 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import {Config} from '@jest/types';
+import {
+  Argv,
+  GlobalConfig,
+  InitialOptions,
+  Path,
+  ProjectConfig,
+  constants,
+  isJSONString,
+  readConfigFileAndSetRootDir,
+  replaceRootDirInPath,
+  resolveConfigPath,
+} from '@jest/config-utils';
 import chalk = require('chalk');
 import {sync as realpath} from 'realpath-native';
-import {isJSONString, replaceRootDirInPath} from './utils';
 import normalize from './normalize';
-import resolveConfigPath from './resolveConfigPath';
-import readConfigFileAndSetRootDir from './readConfigFileAndSetRootDir';
-export {getTestEnvironment, isJSONString} from './utils';
+export {getTestEnvironment} from './utils';
 export {default as normalize} from './normalize';
 export {default as deprecationEntries} from './Deprecated';
-export {replaceRootDirInPath} from './utils';
-export {default as defaults} from './Defaults';
-export {default as descriptions} from './Descriptions';
-import {JEST_CONFIG_EXT_ORDER} from './constants';
+
+const {JEST_CONFIG_EXT_ORDER} = constants;
 
 type ReadConfig = {
-  configPath: Config.Path | null | undefined;
-  globalConfig: Config.GlobalConfig;
+  configPath: Path | null | undefined;
+  globalConfig: GlobalConfig;
   hasDeprecationWarnings: boolean;
-  projectConfig: Config.ProjectConfig;
+  projectConfig: ProjectConfig;
 };
 
 export function readConfig(
-  argv: Config.Argv,
-  packageRootOrConfig: Config.Path | Config.InitialOptions,
+  argv: Argv,
+  packageRootOrConfig: Path | InitialOptions,
   // Whether it needs to look into `--config` arg passed to CLI.
   // It only used to read initial config. If the initial config contains
   // `project` property, we don't want to read `--config` value and rather
   // read individual configs for every project.
   skipArgvConfigOption?: boolean,
-  parentConfigPath?: Config.Path | null,
+  parentConfigPath?: Path | null,
   projectIndex: number = Infinity,
 ): ReadConfig {
   let rawOptions;
@@ -98,10 +104,10 @@ export function readConfig(
 }
 
 const groupOptions = (
-  options: Config.ProjectConfig & Config.GlobalConfig,
+  options: ProjectConfig & GlobalConfig,
 ): {
-  globalConfig: Config.GlobalConfig;
-  projectConfig: Config.ProjectConfig;
+  globalConfig: GlobalConfig;
+  projectConfig: ProjectConfig;
 } => ({
   globalConfig: Object.freeze({
     bail: options.bail,
@@ -219,7 +225,7 @@ const groupOptions = (
 
 const ensureNoDuplicateConfigs = (
   parsedConfigs: Array<ReadConfig>,
-  projects: Config.GlobalConfig['projects'],
+  projects: GlobalConfig['projects'],
 ) => {
   if (projects.length <= 1) {
     return;
@@ -263,18 +269,18 @@ This usually means that your ${chalk.bold(
 // If no projects are specified, process.cwd() will be used as the default
 // (and only) project.
 export function readConfigs(
-  argv: Config.Argv,
-  projectPaths: Array<Config.Path>,
+  argv: Argv,
+  projectPaths: Array<Path>,
 ): {
-  globalConfig: Config.GlobalConfig;
-  configs: Array<Config.ProjectConfig>;
+  globalConfig: GlobalConfig;
+  configs: Array<ProjectConfig>;
   hasDeprecationWarnings: boolean;
 } {
   let globalConfig;
   let hasDeprecationWarnings;
-  let configs: Array<Config.ProjectConfig> = [];
+  let configs: Array<ProjectConfig> = [];
   let projects = projectPaths;
-  let configPath: Config.Path | null | undefined;
+  let configPath: Path | null | undefined;
 
   if (projectPaths.length === 1) {
     const parsedConfig = readConfig(argv, projects[0]);

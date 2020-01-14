@@ -6,8 +6,7 @@
  */
 
 import * as fs from 'fs';
-import {Config} from '@jest/types';
-
+import {Path, SnapshotUpdateState} from '@jest/config-utils';
 import {getStackTraceLines, getTopFrame} from 'jest-message-util';
 import {
   addExtraLineBreaks,
@@ -23,7 +22,7 @@ import {InlineSnapshot, saveInlineSnapshots} from './inline_snapshots';
 import {SnapshotData} from './types';
 
 export type SnapshotStateOptions = {
-  updateSnapshot: Config.SnapshotUpdateState;
+  updateSnapshot: SnapshotUpdateState;
   getPrettier: () => null | any;
   getBabelTraverse: () => Function;
   expand?: boolean;
@@ -51,10 +50,10 @@ export default class SnapshotState {
   private _dirty: boolean;
   // @ts-ignore
   private _index: number;
-  private _updateSnapshot: Config.SnapshotUpdateState;
+  private _updateSnapshot: SnapshotUpdateState;
   private _snapshotData: SnapshotData;
   private _initialData: SnapshotData;
-  private _snapshotPath: Config.Path;
+  private _snapshotPath: Path;
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _uncheckedKeys: Set<string>;
   private _getBabelTraverse: () => Function;
@@ -66,7 +65,7 @@ export default class SnapshotState {
   unmatched: number;
   updated: number;
 
-  constructor(snapshotPath: Config.Path, options: SnapshotStateOptions) {
+  constructor(snapshotPath: Path, options: SnapshotStateOptions) {
     this._snapshotPath = snapshotPath;
     const {data, dirty} = getSnapshotData(
       this._snapshotPath,

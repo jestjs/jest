@@ -6,7 +6,7 @@
  */
 
 import * as fs from 'fs';
-import {Config} from '@jest/types';
+import {GlobalConfig, Path, ProjectConfig} from '@jest/config-utils';
 import exit = require('exit');
 import {CoverageReporterSerializedOptions} from './types';
 
@@ -15,9 +15,9 @@ import generateEmptyCoverage, {
 } from './generateEmptyCoverage';
 
 export type CoverageWorkerData = {
-  globalConfig: Config.GlobalConfig;
-  config: Config.ProjectConfig;
-  path: Config.Path;
+  globalConfig: GlobalConfig;
+  config: ProjectConfig;
+  path: Path;
   options?: CoverageReporterSerializedOptions;
 };
 

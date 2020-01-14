@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-declare const jestGlobalConfig: Config.GlobalConfig;
-declare const jestProjectConfig: Config.ProjectConfig;
+declare const jestGlobalConfig: GlobalConfig;
+declare const jestProjectConfig: ProjectConfig;
 
 import * as path from 'path';
 import * as repl from 'repl';
 import {runInThisContext} from 'vm';
 import {Transformer} from '@jest/transform';
-import {Config} from '@jest/types';
+import {GlobalConfig, ProjectConfig} from '@jest/config-utils';
 
 let transformer: Transformer;
 

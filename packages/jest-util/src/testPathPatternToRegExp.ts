@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 
 // Because we serialize/deserialize globalConfig when we spawn workers,
 // we can't pass regular expression. Using this shared function on both sides
 // will ensure that we produce consistent regexp for testPathPattern.
-export default (testPathPattern: Config.GlobalConfig['testPathPattern']) =>
+export default (testPathPattern: GlobalConfig['testPathPattern']) =>
   new RegExp(testPathPattern, 'i');

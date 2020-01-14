@@ -6,11 +6,11 @@
  */
 
 import chalk = require('chalk');
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import {isInteractive} from 'jest-util';
 
 export default function getNoTestFoundRelatedToChangedFiles(
-  globalConfig: Config.GlobalConfig,
+  globalConfig: GlobalConfig,
 ) {
   const ref = globalConfig.changedSince
     ? `"${globalConfig.changedSince}"`

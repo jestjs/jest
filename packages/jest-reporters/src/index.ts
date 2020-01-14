@@ -12,7 +12,7 @@ import {
   trimAndFormatPath,
 } from './utils';
 
-export {Config} from '@jest/types';
+export {GlobalConfig, ProjectConfig, ReporterConfig} from '@jest/config-utils';
 export {AggregatedResult, SnapshotSummary, TestResult} from '@jest/test-result';
 export {default as BaseReporter} from './base_reporter';
 export {default as CoverageReporter} from './coverage_reporter';

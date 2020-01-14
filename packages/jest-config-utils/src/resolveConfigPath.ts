@@ -7,19 +7,19 @@
 
 import * as path from 'path';
 import * as fs from 'fs';
-import {Config} from '@jest/types';
 import {
   JEST_CONFIG_BASE_NAME,
   JEST_CONFIG_EXT_ORDER,
   PACKAGE_JSON,
 } from './constants';
+import {Path} from './types';
 
-const isFile = (filePath: Config.Path) =>
+const isFile = (filePath: Path) =>
   fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
 
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
-export default (pathToResolve: Config.Path, cwd: Config.Path): Config.Path => {
+export default (pathToResolve: Path, cwd: Path): Path => {
   if (!path.isAbsolute(cwd)) {
     throw new Error(`"cwd" must be an absolute path. cwd: ${cwd}`);
   }
@@ -53,10 +53,10 @@ export default (pathToResolve: Config.Path, cwd: Config.Path): Config.Path => {
 };
 
 const resolveConfigPathByTraversing = (
-  pathToResolve: Config.Path,
-  initialPath: Config.Path,
-  cwd: Config.Path,
-): Config.Path => {
+  pathToResolve: Path,
+  initialPath: Path,
+  cwd: Path,
+): Path => {
   const jestConfig = JEST_CONFIG_EXT_ORDER.map(ext =>
     path.resolve(pathToResolve, getConfigFilename(ext)),
   ).find(isFile);
@@ -83,10 +83,7 @@ const resolveConfigPathByTraversing = (
   );
 };
 
-const makeResolutionErrorMessage = (
-  initialPath: Config.Path,
-  cwd: Config.Path,
-) =>
+const makeResolutionErrorMessage = (initialPath: Path, cwd: Path) =>
   'Could not find a config file based on provided values:\n' +
   `path: "${initialPath}"\n` +
   `cwd: "${cwd}"\n` +

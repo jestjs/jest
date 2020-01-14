@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, Global} from '@jest/types';
+import {GlobalConfig, Path, ProjectConfig} from '@jest/config-utils';
+import {Global} from '@jest/types';
 import {Plugin} from 'pretty-format';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {
@@ -19,10 +20,10 @@ import {Jasmine} from './types';
 declare const global: Global.Global;
 
 export type SetupOptions = {
-  config: Config.ProjectConfig;
-  globalConfig: Config.GlobalConfig;
+  config: ProjectConfig;
+  globalConfig: GlobalConfig;
   localRequire: (moduleName: string) => Plugin;
-  testPath: Config.Path;
+  testPath: Path;
 };
 
 // Get suppressed errors form  jest-matchers that weren't throw during

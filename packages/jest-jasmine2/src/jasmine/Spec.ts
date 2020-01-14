@@ -31,7 +31,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import {AssertionError} from 'assert';
-import {Config} from '@jest/types';
+import {Path} from '@jest/config-utils';
 import {FailedAssertion, Milliseconds, Status} from '@jest/test-result';
 
 import ExpectationFailed from '../ExpectationFailed';
@@ -47,7 +47,7 @@ export type Attributes = {
   resultCallback: (result: Spec['result']) => void;
   description: string;
   throwOnExpectationFailure: unknown;
-  getTestPath: () => Config.Path;
+  getTestPath: () => Path;
   queueableFn: QueueableFn;
   beforeAndAfterFns: () => {
     befores: Array<QueueableFn>;
@@ -65,7 +65,7 @@ export type SpecResult = {
   fullName: string;
   duration?: Milliseconds;
   failedExpectations: Array<FailedAssertion>;
-  testPath: Config.Path;
+  testPath: Path;
   passedExpectations: Array<ReturnType<typeof expectationResultFactory>>;
   pendingReason: string;
   status: Status;

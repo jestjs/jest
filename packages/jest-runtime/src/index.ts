@@ -8,7 +8,7 @@
 import * as path from 'path';
 import {Script} from 'vm';
 import {fileURLToPath} from 'url';
-import {Config} from '@jest/types';
+import {Argv, Path, ProjectConfig} from '@jest/config-utils';
 import {
   Jest,
   JestEnvironment,
@@ -70,7 +70,7 @@ const retryTimesSymbol = Symbol.for('RETRY_TIMES');
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 
-const getModuleNameMapper = (config: Config.ProjectConfig) => {
+const getModuleNameMapper = (config: ProjectConfig) => {
   if (
     Array.isArray(config.moduleNameMapper) &&
     config.moduleNameMapper.length
@@ -92,7 +92,7 @@ type RunScriptEvalResult = {[EVAL_RESULT_VARIABLE]: ModuleWrapper};
 /* eslint-disable-next-line no-redeclare */
 class Runtime {
   private _cacheFS: CacheFS;
-  private _config: Config.ProjectConfig;
+  private _config: ProjectConfig;
   private _coverageOptions: ShouldInstrumentOptions;
   private _currentlyExecutingModulePath: string;
   private _environment: JestEnvironment;
@@ -123,7 +123,7 @@ class Runtime {
   private _virtualMocks: BooleanObject;
 
   constructor(
-    config: Config.ProjectConfig,
+    config: ProjectConfig,
     environment: JestEnvironment,
     resolver: Resolver,
     cacheFS?: CacheFS,
@@ -195,7 +195,7 @@ class Runtime {
   static shouldInstrument = shouldInstrument;
 
   static createContext(
-    config: Config.ProjectConfig,
+    config: ProjectConfig,
     options: {
       console?: Console;
       maxWorkers: number;
@@ -225,7 +225,7 @@ class Runtime {
   }
 
   static createHasteMap(
-    config: Config.ProjectConfig,
+    config: ProjectConfig,
     options?: HasteMapOptions,
   ): HasteMap {
     const ignorePatternParts = [
@@ -263,7 +263,7 @@ class Runtime {
   }
 
   static createResolver(
-    config: Config.ProjectConfig,
+    config: ProjectConfig,
     moduleMap: HasteMap.ModuleMap,
   ): Resolver {
     return new Resolver(moduleMap, {
@@ -280,7 +280,7 @@ class Runtime {
     });
   }
 
-  static runCLI(args?: Config.Argv, info?: Array<string>) {
+  static runCLI(args?: Argv, info?: Array<string>) {
     return cliRun(args, info);
   }
 
@@ -289,7 +289,7 @@ class Runtime {
   }
 
   requireModule(
-    from: Config.Path,
+    from: Path,
     moduleName?: string,
     options?: InternalModuleOptions,
     isRequireActual?: boolean | null,
@@ -369,15 +369,15 @@ class Runtime {
     return localModule.exports;
   }
 
-  requireInternalModule(from: Config.Path, to?: string) {
+  requireInternalModule(from: Path, to?: string) {
     return this.requireModule(from, to, {isInternalModule: true});
   }
 
-  requireActual(from: Config.Path, moduleName: string) {
+  requireActual(from: Path, moduleName: string) {
     return this.requireModule(from, moduleName, undefined, true);
   }
 
-  requireMock(from: Config.Path, moduleName: string) {
+  requireMock(from: Path, moduleName: string) {
     const moduleID = this._resolver.getModuleID(
       this._virtualMocks,
       from,
@@ -466,9 +466,9 @@ class Runtime {
 
   private _loadModule(
     localModule: InitialModule,
-    from: Config.Path,
+    from: Path,
     moduleName: string | undefined,
-    modulePath: Config.Path,
+    modulePath: Path,
     options: InternalModuleOptions | undefined,
     moduleRegistry: ModuleRegistry,
   ) {
@@ -507,7 +507,7 @@ class Runtime {
     };
   }
 
-  requireModuleOrMock(from: Config.Path, moduleName: string) {
+  requireModuleOrMock(from: Path, moduleName: string) {
     try {
       if (this._shouldMock(from, moduleName)) {
         return this.requireMock(from, moduleName);
@@ -662,12 +662,12 @@ class Runtime {
     this._moduleMocker.clearAllMocks();
   }
 
-  private _resolveModule(from: Config.Path, to?: string) {
+  private _resolveModule(from: Path, to?: string) {
     return to ? this._resolver.resolveModule(from, to) : from;
   }
 
   private _requireResolve(
-    from: Config.Path,
+    from: Path,
     moduleName?: string,
     options: ResolveOptions = {},
   ) {
@@ -712,7 +712,7 @@ class Runtime {
     }
   }
 
-  private _requireResolvePaths(from: Config.Path, moduleName?: string) {
+  private _requireResolvePaths(from: Path, moduleName?: string) {
     if (moduleName == null) {
       throw new Error(
         'The first argument to require.resolve.paths must be a string. Received null or undefined.',
@@ -737,7 +737,7 @@ class Runtime {
     localModule: InitialModule,
     options: InternalModuleOptions | undefined,
     moduleRegistry: ModuleRegistry,
-    from: Config.Path | null,
+    from: Path | null,
   ) {
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
@@ -865,7 +865,7 @@ class Runtime {
     return require(moduleName);
   }
 
-  private _generateMock(from: Config.Path, moduleName: string) {
+  private _generateMock(from: Path, moduleName: string) {
     const modulePath =
       this._resolver.resolveStubModuleName(from, moduleName) ||
       this._resolveModule(from, moduleName);
@@ -905,7 +905,7 @@ class Runtime {
     );
   }
 
-  private _shouldMock(from: Config.Path, moduleName: string) {
+  private _shouldMock(from: Path, moduleName: string) {
     const explicitShouldMock = this._explicitShouldMock;
     const moduleID = this._resolver.getModuleID(
       this._virtualMocks,
@@ -1008,7 +1008,7 @@ class Runtime {
   }
 
   private _createJestObjectFor(
-    from: Config.Path,
+    from: Path,
     localRequire: LocalModuleRequire,
   ): Jest {
     const disableAutomock = () => {

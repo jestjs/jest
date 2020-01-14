@@ -7,7 +7,7 @@
  */
 
 import throat from 'throat';
-import {Config} from '@jest/types';
+import {Path} from '@jest/config-utils';
 
 import {ChangedFilesPromise, Options, Repos, SCMAdapter} from './types';
 import git from './git';
@@ -29,7 +29,7 @@ const findGitRoot = (dir: string) => mutex(() => git.getRoot(dir));
 const findHgRoot = (dir: string) => mutex(() => hg.getRoot(dir));
 
 export const getChangedFilesForRoots = async (
-  roots: Array<Config.Path>,
+  roots: Array<Path>,
   options: Options,
 ): ChangedFilesPromise => {
   const repos = await findRepos(roots);
@@ -57,7 +57,7 @@ export const getChangedFilesForRoots = async (
   return {changedFiles, repos};
 };
 
-export const findRepos = async (roots: Array<Config.Path>): Promise<Repos> => {
+export const findRepos = async (roots: Array<Path>): Promise<Repos> => {
   const gitRepos = await Promise.all(
     roots.reduce<Array<RootPromise>>(
       (promises, root) => promises.concat(findGitRoot(root)),

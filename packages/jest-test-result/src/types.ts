@@ -8,7 +8,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
 import {ConsoleBuffer} from '@jest/console';
-import {Config} from '@jest/types';
+import {DisplayName} from '@jest/config-utils';
 import {V8Coverage} from 'collect-v8-coverage';
 import {TransformResult} from '@jest/transform';
 
@@ -110,7 +110,7 @@ export type Suite = {
 export type TestResult = {
   console?: ConsoleBuffer;
   coverage?: CoverageMapData;
-  displayName?: Config.DisplayName;
+  displayName?: DisplayName;
   failureMessage?: string | null;
   leaks: boolean;
   memoryUsage?: Bytes;

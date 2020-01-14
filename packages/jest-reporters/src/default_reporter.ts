@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig, Path, ProjectConfig} from '@jest/config-utils';
 import {AggregatedResult, TestResult} from '@jest/test-result';
 import {clearLine, isInteractive} from 'jest-util';
 import {getConsoleOutput} from '@jest/console';
@@ -24,12 +24,12 @@ const TITLE_BULLET = chalk.bold('\u25cf ');
 export default class DefaultReporter extends BaseReporter {
   private _clear: string; // ANSI clear sequence for the last printed status
   private _err: write;
-  protected _globalConfig: Config.GlobalConfig;
+  protected _globalConfig: GlobalConfig;
   private _out: write;
   private _status: Status;
   private _bufferedOutput: Set<FlushBufferedOutput>;
 
-  constructor(globalConfig: Config.GlobalConfig) {
+  constructor(globalConfig: GlobalConfig) {
     super();
     this._globalConfig = globalConfig;
     this._clear = '';
@@ -160,7 +160,7 @@ export default class DefaultReporter extends BaseReporter {
   }
 
   testFinished(
-    config: Config.ProjectConfig,
+    config: ProjectConfig,
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
   ) {
@@ -168,8 +168,8 @@ export default class DefaultReporter extends BaseReporter {
   }
 
   printTestFileHeader(
-    _testPath: Config.Path,
-    config: Config.ProjectConfig,
+    _testPath: Path,
+    config: ProjectConfig,
     result: TestResult,
   ) {
     this.log(getResultHeader(result, this._globalConfig, config));
@@ -188,8 +188,8 @@ export default class DefaultReporter extends BaseReporter {
   }
 
   printTestFileFailureMessage(
-    _testPath: Config.Path,
-    _config: Config.ProjectConfig,
+    _testPath: Path,
+    _config: ProjectConfig,
     result: TestResult,
   ) {
     if (result.failureMessage) {

@@ -10,7 +10,8 @@
  * returning a promise from `it/test` and `before/afterEach/All` blocks.
  */
 
-import {Config, Global} from '@jest/types';
+import {Global} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
 import throat from 'throat';
@@ -173,7 +174,7 @@ function makeConcurrent(
 }
 
 export default function jasmineAsyncInstall(
-  globalConfig: Config.GlobalConfig,
+  globalConfig: GlobalConfig,
   global: Global.Global,
 ) {
   const jasmine = global.jasmine as Jasmine;

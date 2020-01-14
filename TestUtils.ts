@@ -6,9 +6,9 @@
  */
 
 // eslint-disable-next-line import/no-extraneous-dependencies
-import {Config} from '@jest/types';
+import {GlobalConfig, ProjectConfig} from '@jest/config-utils';
 
-const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
+const DEFAULT_GLOBAL_CONFIG: GlobalConfig = {
   bail: 0,
   changedFilesWithAncestor: false,
   changedSince: '',
@@ -66,7 +66,7 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   watchman: false,
 };
 
-const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
+const DEFAULT_PROJECT_CONFIG: ProjectConfig = {
   automock: false,
   browser: false,
   cache: false,
@@ -124,8 +124,8 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
 };
 
 export const makeGlobalConfig = (
-  overrides: Partial<Config.GlobalConfig> = {},
-): Config.GlobalConfig => {
+  overrides: Partial<GlobalConfig> = {},
+): GlobalConfig => {
   const overridesKeys = new Set(Object.keys(overrides));
   Object.keys(DEFAULT_GLOBAL_CONFIG).forEach(key => overridesKeys.delete(key));
 
@@ -140,8 +140,8 @@ export const makeGlobalConfig = (
 };
 
 export const makeProjectConfig = (
-  overrides: Partial<Config.ProjectConfig> = {},
-): Config.ProjectConfig => {
+  overrides: Partial<ProjectConfig> = {},
+): ProjectConfig => {
   const overridesKeys = new Set(Object.keys(overrides));
   Object.keys(DEFAULT_PROJECT_CONFIG).forEach(key => overridesKeys.delete(key));
 

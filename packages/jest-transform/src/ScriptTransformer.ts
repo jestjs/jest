@@ -7,7 +7,7 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import {Config} from '@jest/types';
+import {Path, ProjectConfig} from '@jest/config-utils';
 import {createDirectory, interopRequireDefault, isPromise} from 'jest-util';
 import * as fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
@@ -60,11 +60,11 @@ async function waitForPromiseWithCleanup(
 
 export default class ScriptTransformer {
   private _cache: ProjectCache;
-  private _config: Config.ProjectConfig;
-  private _transformCache: Map<Config.Path, Transformer>;
-  private _transformConfigCache: Map<Config.Path, unknown>;
+  private _config: ProjectConfig;
+  private _transformCache: Map<Path, Transformer>;
+  private _transformConfigCache: Map<Path, unknown>;
 
-  constructor(config: Config.ProjectConfig) {
+  constructor(config: ProjectConfig) {
     this._config = config;
     this._transformCache = new Map();
     this._transformConfigCache = new Map();
@@ -88,7 +88,7 @@ export default class ScriptTransformer {
 
   private _getCacheKey(
     fileData: string,
-    filename: Config.Path,
+    filename: Path,
     instrument: boolean,
   ): string {
     const configString = this._cache.configString;
@@ -117,10 +117,10 @@ export default class ScriptTransformer {
   }
 
   private _getFileCachePath(
-    filename: Config.Path,
+    filename: Path,
     content: string,
     instrument: boolean,
-  ): Config.Path {
+  ): Path {
     const baseCacheDir = HasteMap.getCacheFilePath(
       this._config.cacheDirectory,
       'jest-transform-cache-' + this._config.name,
@@ -141,7 +141,7 @@ export default class ScriptTransformer {
     return cachePath;
   }
 
-  private _getTransformPath(filename: Config.Path) {
+  private _getTransformPath(filename: Path) {
     const transformRegExp = this._cache.transformRegExp;
     if (!transformRegExp) {
       return undefined;
@@ -159,7 +159,7 @@ export default class ScriptTransformer {
     return undefined;
   }
 
-  private _getTransformer(filename: Config.Path) {
+  private _getTransformer(filename: Path) {
     let transform: Transformer | null = null;
     if (!this._config.transform || !this._config.transform.length) {
       return null;
@@ -191,7 +191,7 @@ export default class ScriptTransformer {
     return transform;
   }
 
-  private _instrumentFile(filename: Config.Path, content: string): string {
+  private _instrumentFile(filename: Path, content: string): string {
     const result = babelTransform(content, {
       auxiliaryCommentBefore: ' istanbul ignore next ',
       babelrc: false,
@@ -226,7 +226,7 @@ export default class ScriptTransformer {
     return content;
   }
 
-  private _getRealPath(filepath: Config.Path): Config.Path {
+  private _getRealPath(filepath: Path): Path {
     try {
       return realpath(filepath) || filepath;
     } catch (err) {
@@ -236,15 +236,15 @@ export default class ScriptTransformer {
 
   // We don't want to expose transformers to the outside - this function is just
   // to warm up `this._transformCache`
-  preloadTransformer(filepath: Config.Path): void {
+  preloadTransformer(filepath: Path): void {
     this._getTransformer(filepath);
   }
 
-  transformSource(filepath: Config.Path, content: string, instrument: boolean) {
+  transformSource(filepath: Path, content: string, instrument: boolean) {
     const filename = this._getRealPath(filepath);
     const transform = this._getTransformer(filename);
     const cacheFilePath = this._getFileCachePath(filename, content, instrument);
-    let sourceMapPath: Config.Path | null = cacheFilePath + '.map';
+    let sourceMapPath: Path | null = cacheFilePath + '.map';
     // Ignore cache if `config.cache` is set (--no-cache)
     let code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
@@ -338,7 +338,7 @@ export default class ScriptTransformer {
   }
 
   private _transformAndBuildScript(
-    filename: Config.Path,
+    filename: Path,
     options: Options | null,
     instrument: boolean,
     fileSource?: string,
@@ -383,7 +383,7 @@ export default class ScriptTransformer {
   }
 
   transform(
-    filename: Config.Path,
+    filename: Path,
     options: Options,
     fileSource?: string,
   ): TransformResult {
@@ -415,11 +415,7 @@ export default class ScriptTransformer {
     return result;
   }
 
-  transformJson(
-    filename: Config.Path,
-    options: Options,
-    fileSource: string,
-  ): string {
+  transformJson(filename: Path, options: Options, fileSource: string): string {
     const isInternalModule = options.isInternalModule;
     const isCoreModule = options.isCoreModule;
     const willTransform =
@@ -502,11 +498,11 @@ export default class ScriptTransformer {
    * @deprecated use `this.shouldTransform` instead
    */
   // @ts-ignore: Unused and private - remove in Jest 25
-  private _shouldTransform(filename: Config.Path): boolean {
+  private _shouldTransform(filename: Path): boolean {
     return this.shouldTransform(filename);
   }
 
-  shouldTransform(filename: Config.Path): boolean {
+  shouldTransform(filename: Path): boolean {
     const ignoreRegexp = this._cache.ignorePatternsRegExp;
     const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
 
@@ -516,7 +512,7 @@ export default class ScriptTransformer {
   }
 }
 
-export function createTranspilingRequire(config: Config.ProjectConfig) {
+export function createTranspilingRequire(config: ProjectConfig) {
   const transformer = new ScriptTransformer(config);
 
   return function requireAndTranspileModule<TModuleType = unknown>(
@@ -533,7 +529,7 @@ export function createTranspilingRequire(config: Config.ProjectConfig) {
   };
 }
 
-const removeFile = (path: Config.Path) => {
+const removeFile = (path: Path) => {
   try {
     fs.unlinkSync(path);
   } catch (e) {}
@@ -556,7 +552,7 @@ const stripShebang = (content: string) => {
  * it right away. This is not a great system, because source map cache file
  * could get corrupted, out-of-sync, etc.
  */
-function writeCodeCacheFile(cachePath: Config.Path, code: string) {
+function writeCodeCacheFile(cachePath: Path, code: string) {
   const checksum = createHash('md5')
     .update(code)
     .digest('hex');
@@ -569,7 +565,7 @@ function writeCodeCacheFile(cachePath: Config.Path, code: string) {
  * could happen if an older version of `jest-runtime` writes non-atomically to
  * the same cache, for example.
  */
-function readCodeCacheFile(cachePath: Config.Path): string | null {
+function readCodeCacheFile(cachePath: Path): string | null {
   const content = readCacheFile(cachePath);
   if (content == null) {
     return null;
@@ -590,7 +586,7 @@ function readCodeCacheFile(cachePath: Config.Path): string | null {
  * two processes to write to the same file at the same time. It also reduces
  * the risk of reading a file that's being overwritten at the same time.
  */
-const writeCacheFile = (cachePath: Config.Path, fileData: string) => {
+const writeCacheFile = (cachePath: Path, fileData: string) => {
   try {
     writeFileAtomic(cachePath, fileData, {encoding: 'utf8'});
   } catch (e) {
@@ -616,13 +612,13 @@ const writeCacheFile = (cachePath: Config.Path, fileData: string) => {
  */
 const cacheWriteErrorSafeToIgnore = (
   e: Error & {code: string},
-  cachePath: Config.Path,
+  cachePath: Path,
 ) =>
   process.platform === 'win32' &&
   e.code === 'EPERM' &&
   fs.existsSync(cachePath);
 
-const readCacheFile = (cachePath: Config.Path): string | null => {
+const readCacheFile = (cachePath: Path): string | null => {
   if (!fs.existsSync(cachePath)) {
     return null;
   }
@@ -648,12 +644,12 @@ const readCacheFile = (cachePath: Config.Path): string | null => {
   return fileData;
 };
 
-const getScriptCacheKey = (filename: Config.Path, instrument: boolean) => {
+const getScriptCacheKey = (filename: Path, instrument: boolean) => {
   const mtime = fs.statSync(filename).mtime;
   return filename + '_' + mtime.getTime() + (instrument ? '_instrumented' : '');
 };
 
-const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
+const calcIgnorePatternRegExp = (config: ProjectConfig) => {
   if (
     !config.transformIgnorePatterns ||
     config.transformIgnorePatterns.length === 0
@@ -664,7 +660,7 @@ const calcIgnorePatternRegExp = (config: Config.ProjectConfig) => {
   return new RegExp(config.transformIgnorePatterns.join('|'));
 };
 
-const calcTransformRegExp = (config: Config.ProjectConfig) => {
+const calcTransformRegExp = (config: ProjectConfig) => {
   if (!config.transform.length) {
     return undefined;
   }

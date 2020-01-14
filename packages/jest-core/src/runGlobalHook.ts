@@ -6,7 +6,7 @@
  */
 
 import pEachSeries = require('p-each-series');
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import {Test} from 'jest-runner';
 import {ScriptTransformer} from '@jest/transform';
 import {interopRequireDefault} from 'jest-util';
@@ -17,7 +17,7 @@ export default async ({
   moduleName,
 }: {
   allTests: Array<Test>;
-  globalConfig: Config.GlobalConfig;
+  globalConfig: GlobalConfig;
   moduleName: 'globalSetup' | 'globalTeardown';
 }): Promise<void> => {
   const globalModulePaths = new Set(

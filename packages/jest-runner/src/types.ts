@@ -6,7 +6,7 @@
  */
 
 import {EventEmitter} from 'events';
-import {Config} from '@jest/types';
+import {GlobalConfig, Path, ProjectConfig} from '@jest/config-utils';
 import {SerializableError, TestResult} from '@jest/test-result';
 import {JestEnvironment} from '@jest/environment';
 import {FS as HasteFS, ModuleMap} from 'jest-haste-map';
@@ -17,11 +17,11 @@ export type ErrorWithCode = Error & {code?: string};
 export type Test = {
   context: Context;
   duration?: number;
-  path: Config.Path;
+  path: Path;
 };
 
 export type Context = {
-  config: Config.ProjectConfig;
+  config: ProjectConfig;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
   resolver: HasteResolver;
@@ -38,8 +38,8 @@ export type OnTestSuccess = (
 ) => Promise<void>;
 
 export type TestFramework = (
-  globalConfig: Config.GlobalConfig,
-  config: Config.ProjectConfig,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
   environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
@@ -50,11 +50,11 @@ export type TestRunnerOptions = {
 };
 
 export type TestRunnerContext = {
-  changedFiles?: Set<Config.Path>;
+  changedFiles?: Set<Path>;
 };
 
 export type TestRunnerSerializedContext = {
-  changedFiles?: Array<Config.Path>;
+  changedFiles?: Array<Path>;
 };
 
 // TODO: Should live in `@jest/core` or `jest-watcher`

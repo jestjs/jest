@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {ProjectConfig} from '@jest/config-utils';
 import Runtime = require('jest-runtime');
 import {HasteMapObject} from 'jest-haste-map';
 
 export default (
-  config: Config.ProjectConfig,
+  config: ProjectConfig,
   {hasteFS, moduleMap}: HasteMapObject,
 ): Runtime.Context => ({
   config,

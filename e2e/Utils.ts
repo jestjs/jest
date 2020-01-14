@@ -8,7 +8,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import {Config} from '@jest/types';
+import {Path} from '@jest/config-utils';
 
 // eslint-disable-next-line import/named
 import {ExecaReturnValue, sync as spawnSync} from 'execa';
@@ -19,7 +19,7 @@ interface RunResult extends ExecaReturnValue {
   status: number;
   error: Error;
 }
-export const run = (cmd: string, cwd?: Config.Path): RunResult => {
+export const run = (cmd: string, cwd?: Path): RunResult => {
   const args = cmd.split(/\s/).slice(1);
   const spawnOptions = {cwd, preferLocal: false, reject: false};
   const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions) as RunResult;
@@ -41,7 +41,7 @@ export const run = (cmd: string, cwd?: Config.Path): RunResult => {
   return result;
 };
 
-export const linkJestPackage = (packageName: string, cwd: Config.Path) => {
+export const linkJestPackage = (packageName: string, cwd: Path) => {
   const packagesDir = path.resolve(__dirname, '../packages');
   const packagePath = path.resolve(packagesDir, packageName);
   const destination = path.resolve(cwd, 'node_modules/', packageName);
@@ -134,7 +134,7 @@ export const sortLines = (output: string) =>
     .join('\n');
 
 export const createEmptyPackage = (
-  directory: Config.Path,
+  directory: Path,
   packageJson?: {[keys: string]: any},
 ) => {
   const DEFAULT_PACKAGE_JSON = {

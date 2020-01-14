@@ -16,7 +16,7 @@ import {isInteractive, preRunMessage, specialChars} from 'jest-util';
 import {ValidationError} from 'jest-validate';
 import {Context} from 'jest-runtime';
 import Resolver = require('jest-resolve');
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import {
   AllowedConfigOptions,
   JestHook,
@@ -81,7 +81,7 @@ const RESERVED_KEY_PLUGINS = new Map<
 ]);
 
 export default function watch(
-  initialGlobalConfig: Config.GlobalConfig,
+  initialGlobalConfig: GlobalConfig,
   contexts: Array<Context>,
   outputStream: NodeJS.WriteStream,
   hasteMapInstances: Array<HasteMap>,
@@ -264,7 +264,7 @@ export default function watch(
   }
 
   const startRun = (
-    globalConfig: Config.GlobalConfig,
+    globalConfig: GlobalConfig,
   ): Promise<void | null> => {
     if (isRunning) {
       return Promise.resolve(null);
@@ -457,7 +457,7 @@ export default function watch(
 const checkForConflicts = (
   watchPluginKeys: WatchPluginKeysMap,
   plugin: WatchPlugin,
-  globalConfig: Config.GlobalConfig,
+  globalConfig: GlobalConfig,
 ) => {
   const key = getPluginKey(plugin, globalConfig);
   if (!key) {
@@ -507,7 +507,7 @@ const getPluginIdentifier = (plugin: WatchPlugin) =>
 
 const getPluginKey = (
   plugin: WatchPlugin,
-  globalConfig: Config.GlobalConfig,
+  globalConfig: GlobalConfig,
 ) => {
   if (typeof plugin.getUsageInfo === 'function') {
     return (plugin.getUsageInfo(globalConfig) || {key: null}).key;
@@ -517,7 +517,7 @@ const getPluginKey = (
 };
 
 const usage = (
-  globalConfig: Config.GlobalConfig,
+  globalConfig: GlobalConfig,
   watchPlugins: Array<WatchPlugin>,
   delimiter = '\n',
 ) => {

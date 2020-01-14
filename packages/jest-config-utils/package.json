@@ -1,0 +1,26 @@
+{
+  "name": "@jest/config-utils",
+  "version": "24.9.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/jest-config-utils"
+  },
+  "license": "MIT",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "dependencies": {
+    "@types/istanbul-reports": "^1.1.1",
+    "@types/yargs": "^15.0.0",
+    "chalk": "^3.0.0",
+    "jest-regex-util": "^24.3.0",
+    "realpath-native": "^1.1.0"
+  },
+  "engines": {
+    "node": ">= 8.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "gitHead": "9ad0f4bc6b8bdd94989804226c28c9960d9da7d1"
+}

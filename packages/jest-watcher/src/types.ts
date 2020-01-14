@@ -5,19 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig, Path, ProjectConfig} from '@jest/config-utils';
 import {AggregatedResult} from '@jest/test-result';
 
 type TestSuiteInfo = {
-  config: Config.ProjectConfig;
+  config: ProjectConfig;
   duration?: number;
   testPath: string;
 };
 
 export type JestHookExposedFS = {
   projects: Array<{
-    config: Config.ProjectConfig;
-    testPaths: Array<Config.Path>;
+    config: ProjectConfig;
+    testPaths: Array<Path>;
   }>;
 };
 
@@ -46,7 +46,7 @@ export type UsageData = {
 
 export type AllowedConfigOptions = Partial<
   Pick<
-    Config.GlobalConfig,
+    GlobalConfig,
     | 'bail'
     | 'changedSince'
     | 'collectCoverage'
@@ -70,10 +70,10 @@ export type UpdateConfigCallback = (config?: AllowedConfigOptions) => void;
 export interface WatchPlugin {
   isInternal?: boolean;
   apply?: (hooks: JestHookSubscriber) => void;
-  getUsageInfo?: (globalConfig: Config.GlobalConfig) => UsageData | null;
+  getUsageInfo?: (globalConfig: GlobalConfig) => UsageData | null;
   onKey?: (value: string) => void;
   run?: (
-    globalConfig: Config.GlobalConfig,
+    globalConfig: GlobalConfig,
     updateConfigAndRun: UpdateConfigCallback,
   ) => Promise<void | boolean>;
 }

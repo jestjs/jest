@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import {Config} from '@jest/types';
+
+import {Path} from '@jest/config-utils';
 import * as jestMatcherUtils from 'jest-matcher-utils';
 import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
 
@@ -45,7 +46,7 @@ export type MatcherState = {
   isNot: boolean;
   promise: string;
   suppressedErrors: Array<Error>;
-  testPath?: Config.Path;
+  testPath?: Path;
   utils: typeof jestMatcherUtils & {
     iterableEquality: Tester;
     subsetEquality: Tester;

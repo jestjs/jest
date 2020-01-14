@@ -15,8 +15,7 @@ import {
   templateLiteral,
 } from '@babel/types';
 import {Frame} from 'jest-message-util';
-
-import {Config} from '@jest/types';
+import {Path} from '@jest/config-utils';
 import {escapeBacktickString} from './utils';
 
 export type InlineSnapshot = {
@@ -58,7 +57,7 @@ export const saveInlineSnapshots = (
 
 const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
-  sourceFilePath: Config.Path,
+  sourceFilePath: Path,
   prettier: any,
   babelTraverse: Function,
 ) => {
@@ -310,7 +309,7 @@ const createFormattingParser = (
   return ast;
 };
 
-const simpleDetectParser = (filePath: Config.Path) => {
+const simpleDetectParser = (filePath: Path) => {
   const extname = path.extname(filePath);
   if (/tsx?$/.test(extname)) {
     return 'typescript';

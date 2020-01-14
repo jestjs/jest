@@ -10,12 +10,12 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
+    "@jest/config-utils": "^24.9.0",
     "@jest/console": "^24.7.1",
     "@jest/environment": "^24.9.0",
     "@jest/source-map": "^24.3.0",
     "@jest/test-result": "^24.9.0",
     "@jest/transform": "^24.9.0",
-    "@jest/types": "^24.9.0",
     "@types/yargs": "^15.0.0",
     "chalk": "^3.0.0",
     "collect-v8-coverage": "^1.0.0",

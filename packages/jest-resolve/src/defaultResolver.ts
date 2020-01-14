@@ -9,25 +9,25 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {sync as browserResolve} from 'browser-resolve';
 import pnpResolver from 'jest-pnp-resolver';
-import {Config} from '@jest/types';
+import {Path} from '@jest/config-utils';
 import isBuiltinModule from './isBuiltinModule';
 import nodeModulesPaths from './nodeModulesPaths';
 import ModuleNotFoundError from './ModuleNotFoundError';
 
 type ResolverOptions = {
-  basedir: Config.Path;
+  basedir: Path;
   browser?: boolean;
   defaultResolver: typeof defaultResolver;
   extensions?: Array<string>;
   moduleDirectory?: Array<string>;
-  paths?: Array<Config.Path>;
-  rootDir?: Config.Path;
+  paths?: Array<Path>;
+  rootDir?: Path;
 };
 
 export default function defaultResolver(
-  path: Config.Path,
+  path: Path,
   options: ResolverOptions,
-): Config.Path {
+): Path {
   // @ts-ignore: the "pnp" version named isn't in DefinitelyTyped
   if (process.versions.pnp) {
     return pnpResolver(path, options);
@@ -51,10 +51,7 @@ export const clearDefaultResolverCache = () => {
 
 const REGEX_RELATIVE_IMPORT = /^(?:\.\.?(?:\/|$)|\/|([A-Za-z]:)?[\\\/])/;
 
-function resolveSync(
-  target: Config.Path,
-  options: ResolverOptions,
-): Config.Path {
+function resolveSync(target: Path, options: ResolverOptions): Path {
   const basedir = options.basedir;
   const extensions = options.extensions || ['.js'];
   const paths = options.paths || [];
@@ -92,7 +89,7 @@ function resolveSync(
   /*
    * contextual helper functions
    */
-  function tryResolve(name: Config.Path): Config.Path | undefined {
+  function tryResolve(name: Path): Path | undefined {
     const dir = path.dirname(name);
     let result;
     if (isDirectory(dir)) {
@@ -106,7 +103,7 @@ function resolveSync(
     return result;
   }
 
-  function resolveAsFile(name: Config.Path): Config.Path | undefined {
+  function resolveAsFile(name: Path): Path | undefined {
     if (isFile(name)) {
       return name;
     }
@@ -121,7 +118,7 @@ function resolveSync(
     return undefined;
   }
 
-  function resolveAsDirectory(name: Config.Path): Config.Path | undefined {
+  function resolveAsDirectory(name: Path): Path | undefined {
     if (!isDirectory(name)) {
       return undefined;
     }
@@ -183,15 +180,15 @@ function statSyncCached(path: string): number {
 /*
  * helper functions
  */
-function isFile(file: Config.Path): boolean {
+function isFile(file: Path): boolean {
   return statSyncCached(file) === IPathType.FILE;
 }
 
-function isDirectory(dir: Config.Path): boolean {
+function isDirectory(dir: Path): boolean {
   return statSyncCached(dir) === IPathType.DIRECTORY;
 }
 
 const CURRENT_DIRECTORY = path.resolve('.');
-function isCurrentDirectory(testPath: Config.Path): boolean {
+function isCurrentDirectory(testPath: Path): boolean {
   return CURRENT_DIRECTORY === path.resolve(testPath);
 }

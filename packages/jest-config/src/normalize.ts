@@ -8,7 +8,22 @@
 import {createHash} from 'crypto';
 import * as path from 'path';
 import {sync as glob} from 'glob';
-import {Config} from '@jest/types';
+import {
+  Argv,
+  DisplayName,
+  Glob,
+  GlobalConfig,
+  InitialOptions,
+  InitialOptionsWithRootDir,
+  Path,
+  ProjectConfig,
+  ReporterConfig,
+  constants,
+  defaults,
+  escapeGlobCharacters,
+  replaceRootDirInPath,
+  validatePattern,
+} from '@jest/config-utils';
 import {ValidationError, validate} from 'jest-validate';
 import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk = require('chalk');
@@ -16,23 +31,18 @@ import micromatch = require('micromatch');
 import {sync as realpath} from 'realpath-native';
 import Resolver = require('jest-resolve');
 import {replacePathSepForRegex} from 'jest-regex-util';
-import validatePattern from './validatePattern';
 import getMaxWorkers from './getMaxWorkers';
 import {
   BULLET,
   DOCUMENTATION_NOTE,
   _replaceRootDirTags,
-  escapeGlobCharacters,
   getRunner,
   getSequencer,
   getTestEnvironment,
   getWatchPlugin,
-  replaceRootDirInPath,
   resolve,
 } from './utils';
-import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
 import {validateReporters} from './ReporterValidationErrors';
-import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
 import setFromArgv from './setFromArgv';
 import VALID_CONFIG from './ValidConfig';
@@ -40,16 +50,17 @@ import {getDisplayNameColor} from './color';
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js'];
 const PRESET_NAME = 'jest-preset';
+const {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} = constants;
 
-type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
+type AllOptions = ProjectConfig & GlobalConfig;
 
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
 
 // TS 3.5 forces us to split these into 2
 const mergeModuleNameMapperWithPreset = (
-  options: Config.InitialOptionsWithRootDir,
-  preset: Config.InitialOptions,
+  options: InitialOptionsWithRootDir,
+  preset: InitialOptions,
 ) => {
   if (options['moduleNameMapper'] && preset['moduleNameMapper']) {
     options['moduleNameMapper'] = {
@@ -61,8 +72,8 @@ const mergeModuleNameMapperWithPreset = (
 };
 
 const mergeTransformWithPreset = (
-  options: Config.InitialOptionsWithRootDir,
-  preset: Config.InitialOptions,
+  options: InitialOptionsWithRootDir,
+  preset: InitialOptions,
 ) => {
   if (options['transform'] && preset['transform']) {
     options['transform'] = {
@@ -74,8 +85,8 @@ const mergeTransformWithPreset = (
 };
 
 const mergeGlobalsWithPreset = (
-  options: Config.InitialOptions,
-  preset: Config.InitialOptions,
+  options: InitialOptions,
+  preset: InitialOptions,
 ) => {
   if (options['globals'] && preset['globals']) {
     for (const p in preset['globals']) {
@@ -88,10 +99,10 @@ const mergeGlobalsWithPreset = (
 };
 
 const setupPreset = (
-  options: Config.InitialOptionsWithRootDir,
+  options: InitialOptionsWithRootDir,
   optionsPreset: string,
-): Config.InitialOptionsWithRootDir => {
-  let preset: Config.InitialOptions;
+): InitialOptionsWithRootDir => {
+  let preset: InitialOptions;
   const presetPath = replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
     presetPath.startsWith('.')
@@ -168,7 +179,7 @@ const setupPreset = (
   return {...preset, ...options};
 };
 
-const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
+const setupBabelJest = (options: InitialOptionsWithRootDir) => {
   const transform = options.transform;
   let babelJest;
   if (transform) {
@@ -210,12 +221,12 @@ const setupBabelJest = (options: Config.InitialOptionsWithRootDir) => {
 };
 
 const normalizeCollectCoverageOnlyFrom = (
-  options: Config.InitialOptionsWithRootDir &
-    Required<Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>>,
-  key: keyof Pick<Config.InitialOptions, 'collectCoverageOnlyFrom'>,
+  options: InitialOptionsWithRootDir &
+    Required<Pick<InitialOptions, 'collectCoverageOnlyFrom'>>,
+  key: keyof Pick<InitialOptions, 'collectCoverageOnlyFrom'>,
 ) => {
   const initialCollectCoverageFrom = options[key];
-  const collectCoverageOnlyFrom: Array<Config.Glob> = Array.isArray(
+  const collectCoverageOnlyFrom: Array<Glob> = Array.isArray(
     initialCollectCoverageFrom,
   )
     ? initialCollectCoverageFrom // passed from argv
@@ -231,12 +242,12 @@ const normalizeCollectCoverageOnlyFrom = (
 };
 
 const normalizeCollectCoverageFrom = (
-  options: Config.InitialOptions &
-    Required<Pick<Config.InitialOptions, 'collectCoverageFrom'>>,
-  key: keyof Pick<Config.InitialOptions, 'collectCoverageFrom'>,
+  options: InitialOptions &
+    Required<Pick<InitialOptions, 'collectCoverageFrom'>>,
+  key: keyof Pick<InitialOptions, 'collectCoverageFrom'>,
 ) => {
   const initialCollectCoverageFrom = options[key];
-  let value: Array<Config.Glob> | undefined;
+  let value: Array<Glob> | undefined;
   if (!initialCollectCoverageFrom) {
     value = [];
   }
@@ -263,9 +274,9 @@ const normalizeCollectCoverageFrom = (
 };
 
 const normalizeUnmockedModulePathPatterns = (
-  options: Config.InitialOptionsWithRootDir,
+  options: InitialOptionsWithRootDir,
   key: keyof Pick<
-    Config.InitialOptions,
+    InitialOptions,
     | 'coveragePathIgnorePatterns'
     | 'modulePathIgnorePatterns'
     | 'testPathIgnorePatterns'
@@ -285,8 +296,8 @@ const normalizeUnmockedModulePathPatterns = (
   );
 
 const normalizePreprocessor = (
-  options: Config.InitialOptionsWithRootDir,
-): Config.InitialOptionsWithRootDir => {
+  options: InitialOptionsWithRootDir,
+): InitialOptionsWithRootDir => {
   if (options.scriptPreprocessor && options.transform) {
     throw createConfigError(
       `  Options: ${chalk.bold('scriptPreprocessor')} and ${chalk.bold(
@@ -323,10 +334,10 @@ const normalizePreprocessor = (
 };
 
 const normalizeMissingOptions = (
-  options: Config.InitialOptionsWithRootDir,
-  configPath: Config.Path | null | undefined,
+  options: InitialOptionsWithRootDir,
+  configPath: Path | null | undefined,
   projectIndex: number,
-): Config.InitialOptionsWithRootDir => {
+): InitialOptionsWithRootDir => {
   if (!options.name) {
     options.name = createHash('md5')
       .update(options.rootDir)
@@ -344,8 +355,8 @@ const normalizeMissingOptions = (
 };
 
 const normalizeRootDir = (
-  options: Config.InitialOptions,
-): Config.InitialOptionsWithRootDir => {
+  options: InitialOptions,
+): InitialOptionsWithRootDir => {
   // Assert that there *is* a rootDir
   if (!options.rootDir) {
     throw createConfigError(
@@ -367,7 +378,7 @@ const normalizeRootDir = (
   };
 };
 
-const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
+const normalizeReporters = (options: InitialOptionsWithRootDir) => {
   const reporters = options.reporters;
   if (!reporters || !Array.isArray(reporters)) {
     return options;
@@ -375,7 +386,7 @@ const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
 
   validateReporters(reporters);
   options.reporters = reporters.map(reporterConfig => {
-    const normalizedReporterConfig: Config.ReporterConfig =
+    const normalizedReporterConfig: ReporterConfig =
       typeof reporterConfig === 'string'
         ? // if reporter config is a string, we wrap it in an array
           // and pass an empty object for options argument, to normalize
@@ -406,7 +417,7 @@ const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
   return options;
 };
 
-const buildTestPathPattern = (argv: Config.Argv): string => {
+const buildTestPathPattern = (argv: Argv): string => {
   const patterns = [];
 
   if (argv._) {
@@ -444,9 +455,9 @@ const showTestPathPatternError = (testPathPattern: string) => {
 };
 
 export default function normalize(
-  initialOptions: Config.InitialOptions,
-  argv: Config.Argv,
-  configPath?: Config.Path | null,
+  initialOptions: InitialOptions,
+  argv: Argv,
+  configPath?: Path | null,
   projectIndex: number = Infinity,
 ): {
   hasDeprecationWarnings: boolean;
@@ -504,7 +515,7 @@ export default function normalize(
 
   options.testEnvironment = getTestEnvironment({
     rootDir: options.rootDir,
-    testEnvironment: options.testEnvironment || DEFAULT_CONFIG.testEnvironment,
+    testEnvironment: options.testEnvironment || defaults.testEnvironment,
   });
 
   if (!options.roots && options.testPathDirs) {
@@ -527,7 +538,7 @@ export default function normalize(
   setupBabelJest(options);
   // TODO: Type this properly
   const newOptions = ({
-    ...DEFAULT_CONFIG,
+    ...defaults,
   } as unknown) as AllOptions;
 
   if (options.resolver) {
@@ -538,9 +549,9 @@ export default function normalize(
     });
   }
 
-  const optionKeys = Object.keys(options) as Array<keyof Config.InitialOptions>;
+  const optionKeys = Object.keys(options) as Array<keyof InitialOptions>;
 
-  optionKeys.reduce((newOptions, key: keyof Config.InitialOptions) => {
+  optionKeys.reduce((newOptions, key: keyof InitialOptions) => {
     // The resolver has been resolved separately; skip it
     if (key === 'resolver') {
       return newOptions;
@@ -549,8 +560,8 @@ export default function normalize(
     // This is cheating, because it claims that all keys of InitialOptions are Required.
     // We only really know it's Required for oldOptions[key], not for oldOptions.someOtherKey,
     // so oldOptions[key] is the only way it should be used.
-    const oldOptions = options as Config.InitialOptions &
-      Required<Pick<Config.InitialOptions, typeof key>>;
+    const oldOptions = options as InitialOptions &
+      Required<Pick<InitialOptions, typeof key>>;
     let value;
     switch (key) {
       case 'collectCoverageOnlyFrom':
@@ -644,7 +655,7 @@ export default function normalize(
             resolve(newOptions.resolver, {
               filePath: option,
               key,
-              optional: option === DEFAULT_CONFIG[key],
+              optional: option === defaults[key],
               rootDir: options.rootDir,
             });
         }
@@ -749,7 +760,7 @@ export default function normalize(
         if (
           Array.isArray(value) && // If it's the wrong type, it can throw at a later time
           (options.runner === undefined ||
-            options.runner === DEFAULT_CONFIG.runner) && // Only require 'js' for the default jest-runner
+            options.runner === defaults.runner) && // Only require 'js' for the default jest-runner
           !value.includes('js')
         ) {
           const errorMessage =
@@ -789,7 +800,7 @@ export default function normalize(
         break;
       }
       case 'displayName': {
-        const displayName = oldOptions[key] as Config.DisplayName;
+        const displayName = oldOptions[key] as DisplayName;
         /**
          * Ensuring that displayName shape is correct here so that the
          * reporters can trust the shape of the data
@@ -919,7 +930,7 @@ export default function normalize(
   }
 
   newOptions.testSequencer = getSequencer(newOptions.resolver, {
-    filePath: options.testSequencer || DEFAULT_CONFIG.testSequencer,
+    filePath: options.testSequencer || defaults.testSequencer,
     rootDir: options.rootDir,
   });
 
@@ -965,9 +976,7 @@ export default function normalize(
   }
 
   // as any since it can happen. We really need to fix the types here
-  if (
-    newOptions.moduleNameMapper === (DEFAULT_CONFIG.moduleNameMapper as any)
-  ) {
+  if (newOptions.moduleNameMapper === (defaults.moduleNameMapper as any)) {
     newOptions.moduleNameMapper = [];
   }
 

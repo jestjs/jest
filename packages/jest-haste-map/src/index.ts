@@ -12,7 +12,7 @@ import * as fs from 'fs';
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
-import {Config} from '@jest/types';
+import {Path} from '@jest/config-utils';
 import serializer from 'jest-serializer';
 import Worker from 'jest-worker';
 import {getSha1, worker} from './worker';
@@ -239,7 +239,7 @@ function invariant(condition: unknown, message?: string): asserts condition {
 /* eslint-disable-next-line no-redeclare */
 class HasteMap extends EventEmitter {
   private _buildPromise: Promise<InternalHasteMapObject> | null;
-  private _cachePath: Config.Path;
+  private _cachePath: Path;
   private _changeInterval?: NodeJS.Timeout;
   private _console: Console;
   private _options: InternalOptions;
@@ -328,7 +328,7 @@ class HasteMap extends EventEmitter {
   }
 
   static getCacheFilePath(
-    tmpdir: Config.Path,
+    tmpdir: Path,
     name: string,
     ...extra: Array<string>
   ): string {
@@ -436,7 +436,7 @@ class HasteMap extends EventEmitter {
     hasteMap: InternalHasteMap,
     map: ModuleMapData,
     mocks: MockData,
-    filePath: Config.Path,
+    filePath: Path,
     workerOptions?: {forceInBand: boolean},
   ): Promise<void> | null {
     const rootDir = this._options.rootDir;
@@ -820,7 +820,7 @@ class HasteMap extends EventEmitter {
     // We only need to copy the entire haste map once on every "frame".
     let mustCopy = true;
 
-    const createWatcher = (root: Config.Path): Promise<Watcher> => {
+    const createWatcher = (root: Path): Promise<Watcher> => {
       // @ts-ignore: TODO how? "Cannot use 'new' with an expression whose type lacks a call or construct signature."
       const watcher = new Watcher(root, {
         dot: false,
@@ -865,8 +865,8 @@ class HasteMap extends EventEmitter {
 
     const onChange = (
       type: string,
-      filePath: Config.Path,
-      root: Config.Path,
+      filePath: Path,
+      root: Path,
       stat?: fs.Stats,
     ) => {
       filePath = path.join(root, normalizePathSep(filePath));
@@ -1073,7 +1073,7 @@ class HasteMap extends EventEmitter {
   /**
    * Helpers
    */
-  private _ignore(filePath: Config.Path): boolean {
+  private _ignore(filePath: Path): boolean {
     const ignorePattern = this._options.ignorePattern;
     const ignoreMatched =
       ignorePattern instanceof RegExp
@@ -1086,7 +1086,7 @@ class HasteMap extends EventEmitter {
     );
   }
 
-  private _isNodeModulesDir(filePath: Config.Path): boolean {
+  private _isNodeModulesDir(filePath: Path): boolean {
     if (!filePath.includes(NODE_MODULES)) {
       return false;
     }

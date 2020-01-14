@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig, ProjectConfig} from '@jest/config-utils';
 
 const VERSION = require('../../package.json').version;
 
 export default function logDebugMessages(
-  globalConfig: Config.GlobalConfig,
-  configs: Array<Config.ProjectConfig> | Config.ProjectConfig,
+  globalConfig: GlobalConfig,
+  configs: Array<ProjectConfig> | ProjectConfig,
   outputStream: NodeJS.WriteStream,
 ): void {
   const output = {

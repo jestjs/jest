@@ -6,7 +6,7 @@
  *
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig, Path, ProjectConfig} from '@jest/config-utils';
 import {TestResult} from '@jest/test-result';
 import {
   BufferedConsole,
@@ -36,7 +36,7 @@ type RunTestInternalResult = {
 
 function freezeConsole(
   testConsole: BufferedConsole | CustomConsole | NullConsole,
-  config: Config.ProjectConfig,
+  config: ProjectConfig,
 ) {
   // @ts-ignore: `_log` is `private` - we should figure out some proper API here
   testConsole._log = function fakeConsolePush(
@@ -76,9 +76,9 @@ function freezeConsole(
 // references to verify if there is a leak, which is not maintainable and error
 // prone. That's why "runTestInternal" CANNOT be inlined inside "runTest".
 async function runTestInternal(
-  path: Config.Path,
-  globalConfig: Config.GlobalConfig,
-  config: Config.ProjectConfig,
+  path: Path,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
   resolver: Resolver,
   context?: TestRunnerContext,
 ): Promise<RunTestInternalResult> {
@@ -300,9 +300,9 @@ async function runTestInternal(
 }
 
 export default async function runTest(
-  path: Config.Path,
-  globalConfig: Config.GlobalConfig,
-  config: Config.ProjectConfig,
+  path: Path,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
   resolver: Resolver,
   context?: TestRunnerContext,
 ): Promise<TestResult> {

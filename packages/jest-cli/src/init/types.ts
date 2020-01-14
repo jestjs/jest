@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {InitialOptions} from '@jest/config-utils';
 
 export type ProjectPackageJson = {
-  jest?: Partial<Config.InitialOptions>;
+  jest?: Partial<InitialOptions>;
   scripts?: Record<string, string>;
   type?: 'commonjs' | 'module';
 };

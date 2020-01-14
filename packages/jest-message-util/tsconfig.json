@@ -5,7 +5,7 @@
     "outDir": "build"
   },
   "references": [
-    {"path": "../jest-test-result"},
-    {"path": "../jest-types"}
+    {"path": "../jest-config-utils"},
+    {"path": "../jest-test-result"}
   ]
 }

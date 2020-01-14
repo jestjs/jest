@@ -7,7 +7,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import {Config} from '@jest/types';
+import {Path, ProjectConfig} from '@jest/config-utils';
 import {AssertionResult, SerializableError} from '@jest/test-result';
 import chalk = require('chalk');
 import micromatch = require('micromatch');
@@ -17,8 +17,6 @@ import StackUtils = require('stack-utils');
 import {Frame} from './types';
 
 export {Frame} from './types';
-
-type Path = Config.Path;
 
 // stack utils tries to create pretty stack by making paths relative.
 const stackUtils = new StackUtils({cwd: 'something which does not exist'});
@@ -32,10 +30,7 @@ try {
   // node internals in the browser though, so no issue.
 }
 
-export type StackTraceConfig = Pick<
-  Config.ProjectConfig,
-  'rootDir' | 'testMatch'
->;
+export type StackTraceConfig = Pick<ProjectConfig, 'rootDir' | 'testMatch'>;
 
 export type StackTraceOptions = {
   noStackTrace: boolean;

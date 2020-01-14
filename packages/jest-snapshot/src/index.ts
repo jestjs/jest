@@ -6,7 +6,7 @@
  */
 
 import * as fs from 'fs';
-import {Config} from '@jest/types';
+import {Path, ProjectConfig, SnapshotUpdateState} from '@jest/config-utils';
 import {FS as HasteFS} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
 
 import {
@@ -111,14 +111,14 @@ function stripAddedIndentation(inlineSnapshot: string) {
   return inlineSnapshot;
 }
 
-const fileExists = (filePath: Config.Path, hasteFS: HasteFS): boolean =>
+const fileExists = (filePath: Path, hasteFS: HasteFS): boolean =>
   hasteFS.exists(filePath) || fs.existsSync(filePath);
 
 const cleanup = (
   hasteFS: HasteFS,
-  update: Config.SnapshotUpdateState,
+  update: SnapshotUpdateState,
   snapshotResolver: JestSnapshotResolver,
-  testPathIgnorePatterns?: Config.ProjectConfig['testPathIgnorePatterns'],
+  testPathIgnorePatterns?: ProjectConfig['testPathIgnorePatterns'],
 ): {
   filesRemoved: number;
   filesRemovedList: Array<string>;
@@ -157,8 +157,8 @@ const cleanup = (
 const toMatchSnapshot = function(
   this: Context,
   received: any,
-  propertiesOrHint?: object | Config.Path,
-  hint?: Config.Path,
+  propertiesOrHint?: object | Path,
+  hint?: Path,
 ) {
   const matcherName = 'toMatchSnapshot';
   let properties;

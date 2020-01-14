@@ -6,13 +6,11 @@
  */
 
 import {cpus} from 'os';
-import {Config} from '@jest/types';
+import {Argv} from '@jest/config-utils';
 
 export default function getMaxWorkers(
-  argv: Partial<
-    Pick<Config.Argv, 'maxWorkers' | 'runInBand' | 'watch' | 'watchAll'>
-  >,
-  defaultOptions?: Partial<Pick<Config.Argv, 'maxWorkers'>>,
+  argv: Partial<Pick<Argv, 'maxWorkers' | 'runInBand' | 'watch' | 'watchAll'>>,
+  defaultOptions?: Partial<Pick<Argv, 'maxWorkers'>>,
 ): number {
   if (argv.runInBand) {
     return 1;

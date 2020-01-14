@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import {
   JestHookSubscriber,
   UpdateConfigCallback,
@@ -30,14 +30,14 @@ class BaseWatchPlugin implements WatchPlugin {
 
   apply(_hooks: JestHookSubscriber) {}
 
-  getUsageInfo(_globalConfig: Config.GlobalConfig): UsageData | null {
+  getUsageInfo(_globalConfig: GlobalConfig): UsageData | null {
     return null;
   }
 
   onKey(_key: string) {}
 
   run(
-    _globalConfig: Config.GlobalConfig,
+    _globalConfig: GlobalConfig,
     _updateConfigAndRun: UpdateConfigCallback,
   ): Promise<void | boolean> {
     return Promise.resolve();

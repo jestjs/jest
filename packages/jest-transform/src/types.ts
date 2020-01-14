@@ -6,16 +6,16 @@
  */
 
 import {RawSourceMap} from 'source-map';
-import {Config} from '@jest/types';
+import {GlobalConfig, Path, ProjectConfig} from '@jest/config-utils';
 
 export type ShouldInstrumentOptions = Pick<
-  Config.GlobalConfig,
+  GlobalConfig,
   | 'collectCoverage'
   | 'collectCoverageFrom'
   | 'collectCoverageOnlyFrom'
   | 'coverageProvider'
 > & {
-  changedFiles?: Set<Config.Path>;
+  changedFiles?: Set<Path>;
 };
 
 export type Options = ShouldInstrumentOptions &
@@ -46,7 +46,7 @@ export type TransformOptions = {
 };
 
 export type CacheKeyOptions = {
-  config: Config.ProjectConfig;
+  config: ProjectConfig;
   instrument: boolean;
   rootDir: string;
 };
@@ -57,15 +57,15 @@ export interface Transformer {
 
   getCacheKey?: (
     fileData: string,
-    filePath: Config.Path,
+    filePath: Path,
     configStr: string,
     options: CacheKeyOptions,
   ) => string;
 
   process: (
     sourceText: string,
-    sourcePath: Config.Path,
-    config: Config.ProjectConfig,
+    sourcePath: Path,
+    config: ProjectConfig,
     options?: TransformOptions,
   ) => string | TransformedSource;
 }

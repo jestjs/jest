@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import {AggregatedResult, SnapshotSummary} from '@jest/test-result';
 import chalk = require('chalk');
 import {testPathPatternToRegExp} from 'jest-util';
@@ -52,9 +52,9 @@ const {
 
 export default class SummaryReporter extends BaseReporter {
   private _estimatedTime: number;
-  private _globalConfig: Config.GlobalConfig;
+  private _globalConfig: GlobalConfig;
 
-  constructor(globalConfig: Config.GlobalConfig) {
+  constructor(globalConfig: GlobalConfig) {
     super();
     this._globalConfig = globalConfig;
     this._estimatedTime = 0;
@@ -119,7 +119,7 @@ export default class SummaryReporter extends BaseReporter {
 
   private _printSnapshotSummary(
     snapshots: SnapshotSummary,
-    globalConfig: Config.GlobalConfig,
+    globalConfig: GlobalConfig,
   ) {
     if (
       snapshots.added ||
@@ -164,7 +164,7 @@ export default class SummaryReporter extends BaseReporter {
 
   private _printSummary(
     aggregatedResults: AggregatedResult,
-    globalConfig: Config.GlobalConfig,
+    globalConfig: GlobalConfig,
   ) {
     // If there were any failing tests and there was a large number of tests
     // executed, re-print the failing results at the end of execution output.
@@ -192,7 +192,7 @@ export default class SummaryReporter extends BaseReporter {
 
   private _getTestSummary(
     contexts: Set<Context>,
-    globalConfig: Config.GlobalConfig,
+    globalConfig: GlobalConfig,
   ) {
     const getMatchingTestsInfo = () => {
       const prefix = globalConfig.findRelatedTests

@@ -4,5 +4,8 @@
     "rootDir": "src",
     "outDir": "build"
   },
-  "references": [{"path":  "../jest-types"}, {"path":  "../jest-haste-map"}]
+  "references": [
+    {"path": "../jest-config-utils"},
+    {"path": "../jest-haste-map"}
+  ]
 }

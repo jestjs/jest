@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
+import {GlobalConfig, Path, ProjectConfig} from '@jest/config-utils';
 import {AggregatedResult} from '@jest/test-result';
 import chalk = require('chalk');
 import slash = require('slash');
@@ -15,7 +15,7 @@ import {SummaryOptions} from './types';
 
 const PROGRESS_BAR_WIDTH = 40;
 
-export const printDisplayName = (config: Config.ProjectConfig) => {
+export const printDisplayName = (config: ProjectConfig) => {
   const {displayName} = config;
   const white = chalk.reset.inverse.white;
   if (!displayName) {
@@ -35,8 +35,8 @@ export const printDisplayName = (config: Config.ProjectConfig) => {
 
 export const trimAndFormatPath = (
   pad: number,
-  config: Config.ProjectConfig | Config.GlobalConfig,
-  testPath: Config.Path,
+  config: ProjectConfig | GlobalConfig,
+  testPath: Path,
   columns: number,
 ): string => {
   const maxLength = columns - pad;
@@ -71,22 +71,22 @@ export const trimAndFormatPath = (
 };
 
 export const formatTestPath = (
-  config: Config.GlobalConfig | Config.ProjectConfig,
-  testPath: Config.Path,
+  config: GlobalConfig | ProjectConfig,
+  testPath: Path,
 ) => {
   const {dirname, basename} = relativePath(config, testPath);
   return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
 };
 
 export const relativePath = (
-  config: Config.GlobalConfig | Config.ProjectConfig,
-  testPath: Config.Path,
+  config: GlobalConfig | ProjectConfig,
+  testPath: Path,
 ) => {
   // this function can be called with ProjectConfigs or GlobalConfigs. GlobalConfigs
   // do not have config.cwd, only config.rootDir. Try using config.cwd, fallback
   // to config.rootDir. (Also, some unit just use config.rootDir, which is ok)
   testPath = path.relative(
-    (config as Config.ProjectConfig).cwd || config.rootDir,
+    (config as ProjectConfig).cwd || config.rootDir,
     testPath,
   );
   const dirname = path.dirname(testPath);

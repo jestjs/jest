@@ -31,7 +31,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import {convertDescriptorToString} from 'jest-util';
-import {Config} from '@jest/types';
+import {Path} from '@jest/config-utils';
 import ExpectationFailed from '../ExpectationFailed';
 import expectationResultFactory from '../expectationResultFactory';
 import {QueueableFn} from '../queueRunner';
@@ -42,7 +42,7 @@ export type SuiteResult = {
   description: string;
   fullName: string;
   failedExpectations: Array<ReturnType<typeof expectationResultFactory>>;
-  testPath: Config.Path;
+  testPath: Path;
   status?: string;
 };
 
@@ -51,7 +51,7 @@ export type Attributes = {
   parentSuite?: Suite;
   description: string;
   throwOnExpectationFailure?: boolean;
-  getTestPath: () => Config.Path;
+  getTestPath: () => Path;
 };
 
 export default class Suite {

@@ -6,7 +6,8 @@
  */
 
 import {Script} from 'vm';
-import {Circus, Config, Global} from '@jest/types';
+import {Circus, Global} from '@jest/types';
+import {Path, ProjectConfig} from '@jest/config-utils';
 import jestMock = require('jest-mock');
 import {
   JestFakeTimers as LegacyFakeTimers,
@@ -21,7 +22,7 @@ type JestMockSpyOn = typeof jestMock.spyOn;
 export type EnvironmentContext = Partial<{
   console: Console;
   docblockPragmas: Record<string, string | Array<string>>;
-  testPath: Config.Path;
+  testPath: Path;
 }>;
 
 // Different Order than https://nodejs.org/api/modules.html#modules_the_module_wrapper , however needs to be in the form [jest-transform]ScriptTransformer accepts
@@ -38,7 +39,7 @@ export type ModuleWrapper = (
 ) => unknown;
 
 export declare class JestEnvironment {
-  constructor(config: Config.ProjectConfig, context?: EnvironmentContext);
+  constructor(config: ProjectConfig, context?: EnvironmentContext);
   global: Global.Global;
   fakeTimers: LegacyFakeTimers<unknown> | null;
   fakeTimersLolex: LolexFakeTimers | null;

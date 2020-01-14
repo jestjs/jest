@@ -8,7 +8,7 @@
 import * as path from 'path';
 import * as util from 'util';
 import exit = require('exit');
-import {Config} from '@jest/types';
+import {GlobalConfig} from '@jest/config-utils';
 import {AggregatedResult} from '@jest/test-result';
 import {Context, TestSchedulerContext} from './types';
 import BaseReporter from './base_reporter';
@@ -19,13 +19,13 @@ const icon = path.resolve(__dirname, '../assets/jest_logo.png');
 
 export default class NotifyReporter extends BaseReporter {
   private _notifier = loadNotifier();
-  private _startRun: (globalConfig: Config.GlobalConfig) => any;
-  private _globalConfig: Config.GlobalConfig;
+  private _startRun: (globalConfig: GlobalConfig) => unknown;
+  private _globalConfig: GlobalConfig;
   private _context: TestSchedulerContext;
 
   constructor(
-    globalConfig: Config.GlobalConfig,
-    startRun: (globalConfig: Config.GlobalConfig) => any,
+    globalConfig: GlobalConfig,
+    startRun: (globalConfig: GlobalConfig) => unknown,
     context: TestSchedulerContext,
   ) {
     super();

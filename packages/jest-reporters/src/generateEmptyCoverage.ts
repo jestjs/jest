@@ -6,7 +6,7 @@
  */
 
 import * as fs from 'fs';
-import {Config} from '@jest/types';
+import {GlobalConfig, Path, ProjectConfig} from '@jest/config-utils';
 import {readInitialCoverage} from 'istanbul-lib-instrument';
 import {FileCoverage, createFileCoverage} from 'istanbul-lib-coverage';
 import {ScriptTransformer, shouldInstrument} from '@jest/transform';
@@ -27,10 +27,10 @@ export type CoverageWorkerResult =
 
 export default function(
   source: string,
-  filename: Config.Path,
-  globalConfig: Config.GlobalConfig,
-  config: Config.ProjectConfig,
-  changedFiles?: Set<Config.Path>,
+  filename: Path,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
+  changedFiles?: Set<Path>,
 ): CoverageWorkerResult | null {
   const coverageOptions = {
     changedFiles,

@@ -7,6 +7,7 @@
   "references": [
     {"path": "../jest-changed-files"},
     {"path": "../jest-config"},
+    {"path": "../jest-config-utils"},
     {"path": "../jest-console"},
     {"path": "../jest-haste-map"},
     {"path": "../jest-message-util"},
@@ -18,7 +19,6 @@
     {"path": "../jest-snapshot"},
     {"path": "../jest-test-result"},
     {"path": "../jest-test-sequencer"},
-    {"path": "../jest-types"},
     {"path": "../jest-transform"},
     {"path": "../jest-util"},
     {"path": "../jest-validate"},

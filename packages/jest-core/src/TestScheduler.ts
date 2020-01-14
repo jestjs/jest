@@ -7,7 +7,7 @@
 
 import chalk = require('chalk');
 import {formatExecError} from 'jest-message-util';
-import {Config} from '@jest/types';
+import {GlobalConfig, Path, ReporterConfig} from '@jest/config-utils';
 import snapshot = require('jest-snapshot');
 import TestRunner = require('jest-runner');
 import {Context} from 'jest-runtime';
@@ -38,21 +38,21 @@ import {shouldRunInBand} from './testSchedulerHelper';
 TestRunner;
 
 export type TestSchedulerOptions = {
-  startRun: (globalConfig: Config.GlobalConfig) => void;
+  startRun: (globalConfig: GlobalConfig) => void;
 };
 export type TestSchedulerContext = {
   firstRun: boolean;
   previousSuccess: boolean;
-  changedFiles?: Set<Config.Path>;
+  changedFiles?: Set<Path>;
 };
 export default class TestScheduler {
   private _dispatcher: ReporterDispatcher;
-  private _globalConfig: Config.GlobalConfig;
+  private _globalConfig: GlobalConfig;
   private _options: TestSchedulerOptions;
   private _context: TestSchedulerContext;
 
   constructor(
-    globalConfig: Config.GlobalConfig,
+    globalConfig: GlobalConfig,
     options: TestSchedulerOptions,
     context: TestSchedulerContext,
   ) {
@@ -248,7 +248,7 @@ export default class TestScheduler {
   }
 
   private _shouldAddDefaultReporters(
-    reporters?: Array<string | Config.ReporterConfig>,
+    reporters?: Array<string | ReporterConfig>,
   ): boolean {
     return (
       !reporters ||
@@ -307,9 +307,7 @@ export default class TestScheduler {
     this.addReporter(new SummaryReporter(this._globalConfig));
   }
 
-  private _addCustomReporters(
-    reporters: Array<string | Config.ReporterConfig>,
-  ) {
+  private _addCustomReporters(reporters: Array<string | ReporterConfig>) {
     reporters.forEach(reporter => {
       const {options, path} = this._getReporterProps(reporter);
 
@@ -335,7 +333,7 @@ export default class TestScheduler {
    * to make dealing with them less painful.
    */
   private _getReporterProps(
-    reporter: string | Config.ReporterConfig,
+    reporter: string | ReporterConfig,
   ): {path: string; options: Record<string, unknown>} {
     if (typeof reporter === 'string') {
       return {options: this._options, path: reporter};

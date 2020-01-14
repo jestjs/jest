@@ -10,6 +10,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
+    "@jest/config-utils": "^24.9.0",
     "@jest/fake-timers": "^24.9.0",
     "@jest/types": "^24.9.0",
     "jest-mock": "^24.9.0"

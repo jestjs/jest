@@ -5,11 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {isJSONString} from 'jest-config';
+import {Argv, isJSONString} from '@jest/config-utils';
 import isCI = require('is-ci');
 
-export const check = (argv: Config.Argv) => {
+export const check = (argv: Argv) => {
   if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
     throw new Error(
       'Both --runInBand and --maxWorkers were specified, but these two ' +

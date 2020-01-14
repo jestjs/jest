@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import watchman = require('fb-watchman');
-import {Config} from '@jest/types';
+import {Path} from '@jest/config-utils';
 import * as fastPath from '../lib/fast_path';
 import normalizePathSep from '../lib/normalizePathSep';
 import H from '../constants';
@@ -67,7 +67,7 @@ export = async function watchmanCrawl(
   }
 
   async function getWatchmanRoots(
-    roots: Array<Config.Path>,
+    roots: Array<Path>,
   ): Promise<WatchmanRoots> {
     const watchmanRoots = new Map();
     await Promise.all(

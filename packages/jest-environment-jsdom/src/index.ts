@@ -6,7 +6,8 @@
  */
 
 import {Script} from 'vm';
-import {Config, Global} from '@jest/types';
+import {Global} from '@jest/types';
+import {ProjectConfig} from '@jest/config-utils';
 import {installCommonGlobals} from 'jest-util';
 import {ModuleMocker} from 'jest-mock';
 import {
@@ -33,7 +34,7 @@ class JSDOMEnvironment implements JestEnvironment {
   errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
 
-  constructor(config: Config.ProjectConfig, options: EnvironmentContext = {}) {
+  constructor(config: ProjectConfig, options: EnvironmentContext = {}) {
     this.dom = new JSDOM('<!DOCTYPE html>', {
       pretendToBeVisual: true,
       runScripts: 'dangerously',

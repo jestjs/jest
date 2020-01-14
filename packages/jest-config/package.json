@@ -11,8 +11,8 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@babel/core": "^7.1.0",
+    "@jest/config-utils": "^24.9.0",
     "@jest/test-sequencer": "^24.9.0",
-    "@jest/types": "^24.9.0",
     "babel-jest": "^24.9.0",
     "chalk": "^3.0.0",
     "glob": "^7.1.1",
