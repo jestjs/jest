@@ -5,22 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 import getWatermarks from '../get_watermarks';
+import {makeGlobalConfig} from '../../../../TestUtils';
 
 describe('getWatermarks', () => {
   test(`that watermarks use thresholds as upper target`, () => {
-    const watermarks = getWatermarks({
-      coverageThreshold: {
-        global: {
-          branches: 100,
-          functions: 100,
-          lines: 100,
-          statements: 100,
+    const watermarks = getWatermarks(
+      makeGlobalConfig({
+        coverageThreshold: {
+          global: {
+            branches: 100,
+            functions: 100,
+            lines: 100,
+            statements: 100,
+          },
         },
-      },
-    });
+      }),
+    );
 
     expect(watermarks).toEqual({
       branches: [expect.any(Number), 100],
@@ -31,7 +32,7 @@ describe('getWatermarks', () => {
   });
 
   test(`that watermars are created always created`, () => {
-    const watermarks = getWatermarks({});
+    const watermarks = getWatermarks(makeGlobalConfig());
 
     expect(watermarks).toEqual({
       branches: [expect.any(Number), expect.any(Number)],
