@@ -28,6 +28,7 @@
 - `[jest-get-type]` Add `BigInt` support. ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[jest-matcher-utils]` Add `BigInt` support to `ensureNumbers` `ensureActualIsNumber`, `ensureExpectedIsNumber` ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[jest-reporters]` Export utils for path formatting ([#9162](https://github.com/facebook/jest/pull/9162))
+- `[jest-reporters]` Provides global coverage thresholds as watermarks for istanbul ([#9416](https://github.com/facebook/jest/pull/9416))
 - `[jest-runner]` Warn if a worker had to be force exited ([#8206](https://github.com/facebook/jest/pull/8206))
 - `[jest-runtime]` [**BREAKING**] Do not export `ScriptTransformer` - it can be imported from `@jest/transform` instead ([#9256](https://github.com/facebook/jest/pull/9256))
 - `[jest-runtime]` Use `JestEnvironment.compileFunction` if available to avoid the module wrapper ([#9252](https://github.com/facebook/jest/pull/9252))
