@@ -1099,7 +1099,6 @@ class CustomSequencer extends Sequencer {
 
 module.exports = CustomSequencer;
 ```
-
 update your jest config
 
 ```json
