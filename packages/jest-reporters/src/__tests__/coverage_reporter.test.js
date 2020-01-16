@@ -17,7 +17,6 @@ jest
 let libCoverage;
 let libSourceMaps;
 let CoverageReporter;
-let consoleError;
 
 import path from 'path';
 import mock from 'mock-fs';
@@ -41,15 +40,11 @@ beforeEach(() => {
     'relative_path_file.js': '',
   };
 
-  consoleError = console.error;
-  console.error = jest.fn();
-
   mock(fileTree);
 });
 
 afterEach(() => {
   mock.restore();
-  console.error = consoleError;
 });
 
 describe('onRunComplete', () => {
