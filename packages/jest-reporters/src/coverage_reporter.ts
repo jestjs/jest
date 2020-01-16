@@ -27,6 +27,7 @@ import {RawSourceMap} from 'source-map';
 import {TransformResult} from '@jest/transform';
 import BaseReporter from './base_reporter';
 import {Context, CoverageReporterOptions, CoverageWorker, Test} from './types';
+import getWatermarks from './get_watermarks';
 
 // This is fixed in a newer versions of source-map, but our dependencies are still stuck on old versions
 interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
@@ -494,6 +495,7 @@ export default class CoverageReporter extends BaseReporter {
         // @ts-ignore
         coverageMap: map,
         dir: this._globalConfig.coverageDirectory,
+        watermarks: getWatermarks(this._globalConfig),
       });
 
       return {map, reportContext};
@@ -506,6 +508,7 @@ export default class CoverageReporter extends BaseReporter {
       dir: this._globalConfig.coverageDirectory,
       // @ts-ignore
       sourceFinder: this._sourceMapStore.sourceFinder,
+      watermarks: getWatermarks(this._globalConfig),
     });
 
     // @ts-ignore
