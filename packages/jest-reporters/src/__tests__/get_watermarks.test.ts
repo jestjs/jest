@@ -31,7 +31,7 @@ describe('getWatermarks', () => {
     });
   });
 
-  test(`that watermars are created always created`, () => {
+  test(`that watermarks are created always created`, () => {
     const watermarks = getWatermarks(makeGlobalConfig());
 
     expect(watermarks).toEqual({
