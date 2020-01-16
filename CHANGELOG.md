@@ -70,7 +70,6 @@
 - `[jest-snapshot]` [**BREAKING**] Distinguish empty string from internal snapshot not written ([#8898](https://github.com/facebook/jest/pull/8898))
 - `[jest-snapshot]` [**BREAKING**] Remove `report` method and throw matcher errors ([#9049](https://github.com/facebook/jest/pull/9049))
 - `[jest-snapshot]` Omit irrelevant `received` properties when property matchers fail ([#9198](https://github.com/facebook/jest/pull/9198))
-- `[jest-snapshot]` Fix regression in diff for `jest-snapshot-serializer-raw` ([#9419](https://github.com/facebook/jest/pull/9419))
 - `[jest-transform]` Properly cache transformed files across tests ([#8890](https://github.com/facebook/jest/pull/8890))
 - `[jest-transform]` Don't fail the test suite when a generated source map is invalid ([#9058](https://github.com/facebook/jest/pull/9058))
 - `[jest-types]` [**BREAKING**] Use less `null | undefined` in config types ([#9200](https://github.com/facebook/jest/pull/9200))
