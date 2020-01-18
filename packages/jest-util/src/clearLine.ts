@@ -6,7 +6,7 @@
  */
 
 export default function clearLine(stream: NodeJS.WriteStream) {
-  if (stream && stream.isTTY) {
+  if (stream.isTTY) {
     stream.write('\x1b[999D\x1b[K');
   }
 }

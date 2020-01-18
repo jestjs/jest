@@ -28,7 +28,9 @@ const jestAdapter = async (
 
   runtime
     .requireInternalModule(path.resolve(__dirname, './jestExpect.js'))
-    .default({expand: globalConfig.expand});
+    .default({
+      expand: globalConfig.expand,
+    });
 
   const getPrettier = () =>
     config.prettierPath ? require(config.prettierPath) : null;
