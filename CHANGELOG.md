@@ -14,6 +14,7 @@
 - `[jest-config]` Merge preset globals with project globals ([#9027](https://github.com/facebook/jest/pull/9027))
 - `[jest-config]` Support `.cjs` config files ([#9291](https://github.com/facebook/jest/pull/9291))
 - `[jest-core]` Support reporters as default exports ([#9161](https://github.com/facebook/jest/pull/9161))
+- `[jest-core]` Support `--findRelatedTests` paths case insensitivity on Windows ([#8900](https://github.com/facebook/jest/issues/8900))
 - `[jest-diff]` Add options for colors and symbols ([#8841](https://github.com/facebook/jest/pull/8841))
 - `[jest-diff]` [**BREAKING**] Export as ECMAScript module ([#8873](https://github.com/facebook/jest/pull/8873))
 - `[jest-diff]` Add `includeChangeCounts` and rename `Indicator` options ([#8881](https://github.com/facebook/jest/pull/8881))
@@ -29,6 +30,7 @@
 - `[jest-get-type]` Add `BigInt` support. ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[jest-matcher-utils]` Add `BigInt` support to `ensureNumbers` `ensureActualIsNumber`, `ensureExpectedIsNumber` ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[jest-reporters]` Export utils for path formatting ([#9162](https://github.com/facebook/jest/pull/9162))
+- `[jest-reporters]` Provides global coverage thresholds as watermarks for istanbul ([#9416](https://github.com/facebook/jest/pull/9416))
 - `[jest-runner]` Warn if a worker had to be force exited ([#8206](https://github.com/facebook/jest/pull/8206))
 - `[jest-runtime]` [**BREAKING**] Do not export `ScriptTransformer` - it can be imported from `@jest/transform` instead ([#9256](https://github.com/facebook/jest/pull/9256))
 - `[jest-runtime]` Use `JestEnvironment.compileFunction` if available to avoid the module wrapper ([#9252](https://github.com/facebook/jest/pull/9252))
@@ -41,6 +43,7 @@
 - `[@jest/test-result]` Create method to create empty `TestResult` ([#8867](https://github.com/facebook/jest/pull/8867))
 - `[jest-worker]` [**BREAKING**] Return a promise from `end()`, resolving with the information whether workers exited gracefully ([#8206](https://github.com/facebook/jest/pull/8206))
 - `[jest-reporters]` Transform file paths into hyperlinks ([#8980](https://github.com/facebook/jest/pull/8980))
+- `[pretty-format]` Fix pretty-format to respect displayName on forwardRef ([#9422](https://github.com/facebook/jest/pull/9422))
 
 ### Fixes
 
@@ -64,6 +67,7 @@
 - `[jest-reporters]` Make node-notifier an optional dependency ([#8918](https://github.com/facebook/jest/pull/8918))
 - `[jest-reporters]` Make all arguments to methods on `BaseReporter` optional ([#9159](https://github.com/facebook/jest/pull/9159))
 - `[jest-resolve]`: Set MODULE_NOT_FOUND as error code when module is not resolved from paths ([#8487](https://github.com/facebook/jest/pull/8487))
+- `[jest-resolve-dependencies]` Handle dynamic dependencies correctly even when using module maps ([#9303](https://github.com/facebook/jest/pull/9303))
 - `[jest-snapshot]` Remove only the added newlines in multiline snapshots ([#8859](https://github.com/facebook/jest/pull/8859))
 - `[jest-snapshot]` Distinguish empty string from external snapshot not written ([#8880](https://github.com/facebook/jest/pull/8880))
 - `[jest-snapshot]` [**BREAKING**] Distinguish empty string from internal snapshot not written ([#8898](https://github.com/facebook/jest/pull/8898))

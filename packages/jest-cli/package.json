@@ -23,7 +23,7 @@
     "@types/exit": "^0.1.30",
     "@types/is-ci": "^2.0.0",
     "@types/prompts": "^2.0.1",
-    "@types/yargs": "^13.0.0"
+    "@types/yargs": "^15.0.0"
   },
   "bin": {
     "jest": "./bin/jest.js"
