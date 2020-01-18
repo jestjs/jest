@@ -21,7 +21,7 @@
     "@types/jsdom": "^12.2.4"
   },
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.3"
   },
   "publishConfig": {
     "access": "public"

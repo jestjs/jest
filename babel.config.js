@@ -30,7 +30,7 @@ module.exports = {
       '@babel/preset-env',
       {
         shippedProposals: true,
-        targets: {node: 8},
+        targets: {node: 10},
       },
     ],
   ],

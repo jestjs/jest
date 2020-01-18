@@ -17,7 +17,7 @@
     "@babel/core": "^7.0.0"
   },
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.3"
   },
   "publishConfig": {
     "access": "public"

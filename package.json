@@ -144,6 +144,6 @@
     "logo": "https://opencollective.com/jest/logo.txt"
   },
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.3"
   }
 }
