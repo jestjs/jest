@@ -34,7 +34,7 @@ jobs:
       - name: run tsc
         run: yarn build:ts
       - name: run eslint & prettier
-        uses: samuelmeuli/lint-action@v0.4
+        uses: samuelmeuli/lint-action@v1
         with:
           github_token: ${{ secrets.github_token }}
           auto_fix: true
