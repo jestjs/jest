@@ -12,7 +12,7 @@
     "detect-newline": "^3.0.0"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">= 8.3"
   },
   "publishConfig": {
     "access": "public"

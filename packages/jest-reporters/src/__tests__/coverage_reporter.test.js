@@ -8,6 +8,7 @@
 jest
   .mock('istanbul-lib-source-maps')
   .mock('istanbul-lib-report', () => ({
+    ...jest.requireActual('istanbul-lib-report'),
     createContext: jest.fn(),
     summarizers: {pkg: jest.fn(() => ({visit: jest.fn()}))},
   }))

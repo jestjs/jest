@@ -374,6 +374,7 @@ export default class ScriptTransformer {
       return {
         code,
         mapCoverage,
+        originalCode: content,
         sourceMapPath,
       };
     } catch (e) {
@@ -390,7 +391,9 @@ export default class ScriptTransformer {
     let instrument = false;
 
     if (!options.isCoreModule) {
-      instrument = shouldInstrument(filename, options, this._config);
+      instrument =
+        options.coverageProvider === 'babel' &&
+        shouldInstrument(filename, options, this._config);
       scriptCacheKey = getScriptCacheKey(filename, instrument);
       const result = this._cache.transformedFiles.get(scriptCacheKey);
       if (result) {

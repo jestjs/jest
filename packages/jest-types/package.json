@@ -7,7 +7,7 @@
     "directory": "packages/jest-types"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">= 8.3"
   },
   "license": "MIT",
   "main": "build/index.js",
@@ -15,7 +15,7 @@
   "dependencies": {
     "@types/istanbul-lib-coverage": "^2.0.0",
     "@types/istanbul-reports": "^1.1.1",
-    "@types/yargs": "^13.0.0",
+    "@types/yargs": "^15.0.0",
     "chalk": "^3.0.0"
   },
   "publishConfig": {

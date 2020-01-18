@@ -20,6 +20,7 @@ export {default as deprecationEntries} from './Deprecated';
 export {replaceRootDirInPath} from './utils';
 export {default as defaults} from './Defaults';
 export {default as descriptions} from './Descriptions';
+import {JEST_CONFIG_EXT_ORDER} from './constants';
 
 type ReadConfig = {
   configPath: Config.Path | null | undefined;
@@ -110,6 +111,7 @@ const groupOptions = (
     collectCoverageFrom: options.collectCoverageFrom,
     collectCoverageOnlyFrom: options.collectCoverageOnlyFrom,
     coverageDirectory: options.coverageDirectory,
+    coverageProvider: options.coverageProvider,
     coverageReporters: options.coverageReporters,
     coverageThreshold: options.coverageThreshold,
     detectLeaks: options.detectLeaks,
@@ -303,8 +305,7 @@ export function readConfigs(
           typeof root === 'string' &&
           fs.existsSync(root) &&
           !fs.lstatSync(root).isDirectory() &&
-          !root.endsWith('.js') &&
-          !root.endsWith('.json')
+          !JEST_CONFIG_EXT_ORDER.some(ext => root.endsWith(ext))
         ) {
           return false;
         }

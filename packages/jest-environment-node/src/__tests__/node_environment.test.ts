@@ -8,6 +8,8 @@
 import NodeEnvironment = require('../');
 import {makeProjectConfig} from '../../../../TestUtils';
 
+const isTextEncoderDefined = typeof TextEncoder === 'function';
+
 describe('NodeEnvironment', () => {
   it('uses a copy of the process object', () => {
     const env1 = new NodeEnvironment(makeProjectConfig());
@@ -49,4 +51,10 @@ describe('NodeEnvironment', () => {
 
     expect(env.fakeTimersLolex).toBeDefined();
   });
+
+  if (isTextEncoderDefined) {
+    test('TextEncoder references the same global Uint8Array constructor', () => {
+      expect(new TextEncoder().encode('abc')).toBeInstanceOf(Uint8Array);
+    });
+  }
 });
