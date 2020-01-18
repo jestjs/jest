@@ -7,7 +7,6 @@
   "references": [
     {"path": "../jest-diff"},
     {"path": "../jest-get-type"},
-    {"path": "../jest-util"},
     {"path": "../pretty-format"},
     {"path": "../test-utils"}
   ]
