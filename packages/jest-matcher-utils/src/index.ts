@@ -16,9 +16,9 @@ import diffDefault, {
   diffStringsUnified,
 } from 'jest-diff';
 import getType = require('jest-get-type');
-import {deepCyclicCopy} from 'jest-util';
 import prettyFormat = require('pretty-format');
 import Replaceable from './Replaceable';
+import deepCyclicCopyReplaceable from './deepCyclicCopyReplaceable';
 
 const {
   AsymmetricMatcher,
@@ -357,8 +357,8 @@ export const printDiffOrStringify = (
       replacedExpected,
       replacedReceived,
     } = replaceMatchedToAsymmetricMatcher(
-      deepCyclicCopy(expected, {keepPrototype: true}),
-      deepCyclicCopy(received, {keepPrototype: true}),
+      deepCyclicCopyReplaceable(expected),
+      deepCyclicCopyReplaceable(received),
       [],
       [],
     );
