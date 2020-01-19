@@ -1617,6 +1617,13 @@ describe('.toMatch()', () => {
   it('escapes strings properly', () => {
     jestExpect('this?: throws').toMatch('this?: throws');
   });
+
+  it('does not maintain RegExp state between calls', () => {
+    const regex = /[f]\d+/gi;
+    jestExpect('f123').toMatch(regex);
+    jestExpect('F456').toMatch(regex);
+    jestExpect(regex.lastIndex).toBe(0);
+  });
 });
 
 describe('.toHaveLength', () => {
