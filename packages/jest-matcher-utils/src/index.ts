@@ -411,14 +411,16 @@ function replaceMatchedToAsymmetricMatcher(
   expectedCycles: Array<any>,
   receivedCycles: Array<any>,
 ) {
-  if (!Replaceable.isReplaceable(replacedExpected, replacedReceived))
+  if (!Replaceable.isReplaceable(replacedExpected, replacedReceived)) {
     return {replacedExpected, replacedReceived};
+  }
 
   if (
     expectedCycles.includes(replacedExpected) ||
     receivedCycles.includes(replacedReceived)
-  )
+  ) {
     return {replacedExpected, replacedReceived};
+  }
 
   expectedCycles.push(replacedExpected);
   receivedCycles.push(replacedReceived);
@@ -429,11 +431,13 @@ function replaceMatchedToAsymmetricMatcher(
   expectedReplaceable.forEach((expectedValue: unknown, key: unknown) => {
     const receivedValue = receivedReplaceable.get(key);
     if (isAsymmetricMatcher(expectedValue)) {
-      if (expectedValue.asymmetricMatch(receivedValue))
+      if (expectedValue.asymmetricMatch(receivedValue)) {
         receivedReplaceable.set(key, expectedValue);
+      }
     } else if (isAsymmetricMatcher(receivedValue)) {
-      if (receivedValue.asymmetricMatch(expectedValue))
+      if (receivedValue.asymmetricMatch(expectedValue)) {
         expectedReplaceable.set(key, receivedValue);
+      }
     } else if (Replaceable.isReplaceable(expectedValue, receivedValue)) {
       const replaced = replaceMatchedToAsymmetricMatcher(
         expectedValue,
