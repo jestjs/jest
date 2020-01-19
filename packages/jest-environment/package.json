@@ -14,6 +14,9 @@
     "@jest/types": "^24.9.0",
     "jest-mock": "^24.9.0"
   },
+  "devDependencies": {
+    "@types/node": "*"
+  },
   "engines": {
     "node": ">= 8.3"
   },

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Script} from 'vm';
+import {Context, Script} from 'vm';
 import {Circus, Config, Global} from '@jest/types';
 import jestMock = require('jest-mock');
 import {
@@ -43,12 +43,11 @@ export declare class JestEnvironment {
   fakeTimers: LegacyFakeTimers<unknown> | null;
   fakeTimersLolex: LolexFakeTimers | null;
   moduleMocker: jestMock.ModuleMocker | null;
+  /**
+   * @deprecated implement getVmContext instead
+   */
   runScript<T = unknown>(script: Script): T | null;
-  compileFunction?<T = unknown>(
-    code: string,
-    params: Array<string>,
-    filename: string,
-  ): T | null;
+  getVmContext?(): Context | null;
   setup(): Promise<void>;
   teardown(): Promise<void>;
   handleTestEvent?(event: Circus.Event, state: Circus.State): void;

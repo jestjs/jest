@@ -219,10 +219,10 @@ async function runTestInternal(
     };
   }
 
-  // if we don't have `compileFunction` on the env, skip coverage
+  // if we don't have `getVmContext` on the env, skip coverage
   const collectV8Coverage =
     globalConfig.coverageProvider === 'v8' &&
-    typeof environment.compileFunction === 'function';
+    typeof environment.getVmContext === 'function';
 
   try {
     await environment.setup();

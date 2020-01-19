@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import {Script} from 'vm';
+import {Script, compileFunction} from 'vm';
 import {fileURLToPath} from 'url';
 import {Config} from '@jest/types';
 import {
@@ -783,17 +783,27 @@ class Runtime {
       }
     }
 
-    let compiledFunction: ModuleWrapper | null;
+    let compiledFunction: ModuleWrapper | null = null;
 
-    if (typeof this._environment.compileFunction === 'function') {
-      try {
-        compiledFunction = this._environment.compileFunction<ModuleWrapper>(
-          transformedFile.code,
-          this.constructInjectedModuleParameters(),
-          filename,
-        );
-      } catch (e) {
-        throw handlePotentialSyntaxError(e);
+    if (
+      typeof compileFunction === 'function' &&
+      typeof this._environment.getVmContext === 'function'
+    ) {
+      const vmContext = this._environment.getVmContext();
+
+      if (vmContext) {
+        try {
+          compiledFunction = compileFunction(
+            transformedFile.code,
+            this.constructInjectedModuleParameters(),
+            {
+              filename,
+              parsingContext: vmContext,
+            },
+          ) as ModuleWrapper;
+        } catch (e) {
+          throw handlePotentialSyntaxError(e);
+        }
       }
     } else {
       const script = this.createScriptFromCode(transformedFile.code, filename);
