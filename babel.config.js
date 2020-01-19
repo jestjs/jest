@@ -33,7 +33,7 @@ module.exports = {
           },
         ],
       ],
-      test: 'packages/jest-config/src/readConfigFileAndSetRootDir.ts',
+      test: 'packages/jest-config/src/importMjs.ts',
     },
   ],
   plugins: [

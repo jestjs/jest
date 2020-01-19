@@ -15,6 +15,7 @@ import {
   JEST_CONFIG_EXT_MJS,
   PACKAGE_JSON,
 } from './constants';
+import importMjs from './importMjs';
 
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
@@ -28,7 +29,7 @@ export default async function readConfigFileAndSetRootDir(
 
   if (isMjs) {
     try {
-      const importedConfig = await import(configPath);
+      const importedConfig = await importMjs(configPath);
 
       if (!importedConfig.default) {
         throw new Error(
