@@ -11,11 +11,13 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@jest/console": "^24.9.0",
+    "@jest/transform": "^24.9.0",
     "@jest/types": "^24.9.0",
-    "@types/istanbul-lib-coverage": "^2.0.0"
+    "@types/istanbul-lib-coverage": "^2.0.0",
+    "collect-v8-coverage": "^1.0.0"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">= 8.3"
   },
   "publishConfig": {
     "access": "public"

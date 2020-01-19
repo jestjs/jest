@@ -7,7 +7,7 @@
     "directory": "packages/jest-mock"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">= 8.3"
   },
   "dependencies": {
     "@jest/types": "^24.9.0"

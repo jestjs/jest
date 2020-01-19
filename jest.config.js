@@ -65,6 +65,7 @@ module.exports = {
   transform: {
     '^.+\\.[jt]sx?$': '<rootDir>/packages/babel-jest',
   },
+  watchPathIgnorePatterns: ['coverage'],
   watchPlugins: [
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',

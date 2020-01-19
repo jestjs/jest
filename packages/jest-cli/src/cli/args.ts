@@ -202,6 +202,11 @@ export const options = {
     string: true,
     type: 'array',
   },
+  coverageProvider: {
+    choices: ['babel', 'v8'],
+    default: 'babel',
+    description: 'Select between Babel and V8 to collect coverage',
+  },
   coverageReporters: {
     description:
       'A list of reporter names that Jest uses when writing ' +

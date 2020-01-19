@@ -38,11 +38,11 @@
     "@jest/test-sequencer": "^24.9.0",
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
-    "@types/micromatch": "^3.1.0",
+    "@types/micromatch": "^4.0.0",
     "@types/rimraf": "^2.0.2"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">= 8.3"
   },
   "repository": {
     "type": "git",

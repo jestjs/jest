@@ -31,10 +31,10 @@
   "devDependencies": {
     "@types/babel__core": "^7.0.4",
     "@types/glob": "^7.1.1",
-    "@types/micromatch": "^3.1.0"
+    "@types/micromatch": "^4.0.0"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">= 8.3"
   },
   "publishConfig": {
     "access": "public"

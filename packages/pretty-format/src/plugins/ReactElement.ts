@@ -53,6 +53,10 @@ const getType = (element: any) => {
     }
 
     if (ReactIs.isForwardRef(element)) {
+      if (type.displayName) {
+        return type.displayName;
+      }
+
       const functionName = type.render.displayName || type.render.name || '';
 
       return functionName !== ''
