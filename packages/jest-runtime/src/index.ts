@@ -785,24 +785,39 @@ class Runtime {
 
     let compiledFunction: ModuleWrapper | null = null;
 
-    if (
-      typeof compileFunction === 'function' &&
-      typeof this._environment.getVmContext === 'function'
-    ) {
+    // Use this if available instead of deprecated `JestEnvironment.runScript`
+    if (typeof this._environment.getVmContext === 'function') {
       const vmContext = this._environment.getVmContext();
 
       if (vmContext) {
-        try {
-          compiledFunction = compileFunction(
+        if (typeof compileFunction === 'function') {
+          try {
+            compiledFunction = compileFunction(
+              transformedFile.code,
+              this.constructInjectedModuleParameters(),
+              {
+                filename,
+                parsingContext: vmContext,
+              },
+            ) as ModuleWrapper;
+          } catch (e) {
+            throw handlePotentialSyntaxError(e);
+          }
+        } else {
+          const script = this.createScriptFromCode(
             transformedFile.code,
-            this.constructInjectedModuleParameters(),
-            {
-              filename,
-              parsingContext: vmContext,
-            },
-          ) as ModuleWrapper;
-        } catch (e) {
-          throw handlePotentialSyntaxError(e);
+            filename,
+          );
+
+          const runScript = script.runInContext(
+            vmContext,
+          ) as RunScriptEvalResult;
+
+          if (runScript === null) {
+            compiledFunction = null;
+          } else {
+            compiledFunction = runScript[EVAL_RESULT_VARIABLE];
+          }
         }
       }
     } else {
