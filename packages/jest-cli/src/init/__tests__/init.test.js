@@ -56,7 +56,7 @@ describe('init', () => {
         expect(evaluatedConfig).toEqual({});
       });
 
-      onNodeVersions('^13.1.0', () => {
+      onNodeVersions('^13.2.0', () => {
         it('should generate empty config with mjs extension', async () => {
           prompts.mockReturnValueOnce({});
 
