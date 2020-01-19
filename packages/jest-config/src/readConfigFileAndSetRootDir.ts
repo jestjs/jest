@@ -19,9 +19,9 @@ import {
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
 // 2. For any other file, we just require it.
-export default async (
+export default async function readConfigFileAndSetRootDir(
   configPath: Config.Path,
-): Promise<Config.InitialOptions> => {
+): Promise<Config.InitialOptions> {
   const isJSON = configPath.endsWith(JEST_CONFIG_EXT_JSON);
   const isMjs = configPath.endsWith(JEST_CONFIG_EXT_MJS);
   let configObject;
@@ -82,4 +82,4 @@ export default async (
   }
 
   return configObject;
-};
+}
