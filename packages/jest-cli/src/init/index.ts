@@ -58,8 +58,6 @@ export default async (rootDir: string = realpath(process.cwd())) => {
     hasJestProperty = true;
   }
 
-  console.log(projectPackageJson)
-
   const existingJestConfigPath = JEST_CONFIG_EXT_ORDER.find(ext =>
     fs.existsSync(path.join(rootDir, getConfigFilename(ext))),
   );
