@@ -10,18 +10,20 @@ import * as path from 'path';
 import chalk = require('chalk');
 import prompts = require('prompts');
 import {sync as realpath} from 'realpath-native';
+import {constants} from 'jest-config';
 import defaultQuestions, {testScriptQuestion} from './questions';
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
-import {
-  JEST_CONFIG_BASE_NAME,
-  JEST_CONFIG_EXT_CJS,
-  JEST_CONFIG_EXT_JS,
-  JEST_CONFIG_EXT_ORDER,
-  PACKAGE_JSON,
-} from './constants';
 import generateConfigFile from './generate_config_file';
 import modifyPackageJson from './modify_package_json';
 import {ProjectPackageJson} from './types';
+
+const {
+  JEST_CONFIG_BASE_NAME,
+  JEST_CONFIG_EXT_MJS,
+  JEST_CONFIG_EXT_JS,
+  JEST_CONFIG_EXT_ORDER,
+  PACKAGE_JSON,
+} = constants;
 
 type PromptsResults = {
   clearMocks: boolean;
@@ -56,6 +58,8 @@ export default async (rootDir: string = realpath(process.cwd())) => {
     hasJestProperty = true;
   }
 
+  console.log(projectPackageJson)
+
   const existingJestConfigPath = JEST_CONFIG_EXT_ORDER.find(ext =>
     fs.existsSync(path.join(rootDir, getConfigFilename(ext))),
   );
@@ -65,7 +69,7 @@ export default async (rootDir: string = realpath(process.cwd())) => {
       rootDir,
       getConfigFilename(
         projectPackageJson.type === 'module'
-          ? JEST_CONFIG_EXT_CJS
+          ? JEST_CONFIG_EXT_MJS
           : JEST_CONFIG_EXT_JS,
       ),
     );
@@ -131,7 +135,11 @@ export default async (rootDir: string = realpath(process.cwd())) => {
     console.log(`✏️  Modified ${chalk.cyan(projectPackageJsonPath)}`);
   }
 
-  const generatedConfig = generateConfigFile(results);
+  const generatedConfig = generateConfigFile(
+    results,
+    projectPackageJson.type === 'module' ||
+      jestConfigPath.endsWith(JEST_CONFIG_EXT_MJS),
+  );
 
   fs.writeFileSync(jestConfigPath, generatedConfig);
 

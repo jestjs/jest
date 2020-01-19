@@ -9,8 +9,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import prompts from 'prompts';
+import {constants} from 'jest-config';
 import init from '../';
-import {JEST_CONFIG_EXT_ORDER} from '../constants';
+import {onNodeVersions} from '@jest/test-utils';
+
+const {JEST_CONFIG_EXT_ORDER} = constants;
 
 jest.mock('prompts');
 jest.mock('../../../../jest-config/build/getCacheDirectory', () => () =>
@@ -51,6 +54,20 @@ describe('init', () => {
         const evaluatedConfig = eval(writtenJestConfig);
 
         expect(evaluatedConfig).toEqual({});
+      });
+
+      onNodeVersions('^13.1.0', () => {
+        it('should generate empty config with mjs extension', async () => {
+          prompts.mockReturnValueOnce({});
+
+          await init(resolveFromFixture('type_module'));
+
+          expect(fs.writeFileSync.mock.calls[0][0].endsWith('.mjs')).toBe(true);
+
+          const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
+
+          expect(writtenJestConfig).toMatchSnapshot();
+        });
       });
     });
 
