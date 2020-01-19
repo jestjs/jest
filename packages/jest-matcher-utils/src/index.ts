@@ -17,6 +17,8 @@ import diffDefault, {
 } from 'jest-diff';
 import getType = require('jest-get-type');
 import prettyFormat = require('pretty-format');
+import Replaceable from './Replaceable';
+import deepCyclicCopyReplaceable from './deepCyclicCopyReplaceable';
 
 const {
   AsymmetricMatcher,
@@ -351,7 +353,16 @@ export const printDiffOrStringify = (
   }
 
   if (isLineDiffable(expected, received)) {
-    const difference = diffDefault(expected, received, {
+    const {
+      replacedExpected,
+      replacedReceived,
+    } = replaceMatchedToAsymmetricMatcher(
+      deepCyclicCopyReplaceable(expected),
+      deepCyclicCopyReplaceable(received),
+      [],
+      [],
+    );
+    const difference = diffDefault(replacedExpected, replacedReceived, {
       aAnnotation: expectedLabel,
       bAnnotation: receivedLabel,
       expand,
@@ -393,6 +404,66 @@ const shouldPrintDiff = (actual: unknown, expected: unknown) => {
   }
   return true;
 };
+
+function replaceMatchedToAsymmetricMatcher(
+  replacedExpected: unknown,
+  replacedReceived: unknown,
+  expectedCycles: Array<any>,
+  receivedCycles: Array<any>,
+) {
+  if (!Replaceable.isReplaceable(replacedExpected, replacedReceived)) {
+    return {replacedExpected, replacedReceived};
+  }
+
+  if (
+    expectedCycles.includes(replacedExpected) ||
+    receivedCycles.includes(replacedReceived)
+  ) {
+    return {replacedExpected, replacedReceived};
+  }
+
+  expectedCycles.push(replacedExpected);
+  receivedCycles.push(replacedReceived);
+
+  const expectedReplaceable = new Replaceable(replacedExpected);
+  const receivedReplaceable = new Replaceable(replacedReceived);
+
+  expectedReplaceable.forEach((expectedValue: unknown, key: unknown) => {
+    const receivedValue = receivedReplaceable.get(key);
+    if (isAsymmetricMatcher(expectedValue)) {
+      if (expectedValue.asymmetricMatch(receivedValue)) {
+        receivedReplaceable.set(key, expectedValue);
+      }
+    } else if (isAsymmetricMatcher(receivedValue)) {
+      if (receivedValue.asymmetricMatch(expectedValue)) {
+        expectedReplaceable.set(key, receivedValue);
+      }
+    } else if (Replaceable.isReplaceable(expectedValue, receivedValue)) {
+      const replaced = replaceMatchedToAsymmetricMatcher(
+        expectedValue,
+        receivedValue,
+        expectedCycles,
+        receivedCycles,
+      );
+      expectedReplaceable.set(key, replaced.replacedExpected);
+      receivedReplaceable.set(key, replaced.replacedReceived);
+    }
+  });
+
+  return {
+    replacedExpected: expectedReplaceable.object,
+    replacedReceived: receivedReplaceable.object,
+  };
+}
+
+type AsymmetricMatcher = {
+  asymmetricMatch: Function;
+};
+
+function isAsymmetricMatcher(data: any): data is AsymmetricMatcher {
+  const type = getType(data);
+  return type === 'object' && typeof data.asymmetricMatch === 'function';
+}
 
 export const diff = (a: any, b: any, options?: DiffOptions): string | null =>
   shouldPrintDiff(a, b) ? diffDefault(a, b, options) : null;
