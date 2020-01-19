@@ -62,11 +62,13 @@ describe('init', () => {
 
           await init(resolveFromFixture('type_module'));
 
-          expect(fs.writeFileSync.mock.calls[0][0].endsWith('.mjs')).toBe(true);
-
+          const writtenJestConfigFilename = fs.writeFileSync.mock.calls[0][0];
           const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
 
-          expect(writtenJestConfig).toMatchSnapshot();
+          expect(writtenJestConfigFilename.endsWith('.mjs')).toBe(true);
+
+          expect(typeof writtenJestConfig).toBe('string');
+          expect(writtenJestConfig.split('\n')[3]).toBe('export default {');
         });
       });
     });
