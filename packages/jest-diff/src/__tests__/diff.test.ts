@@ -192,26 +192,24 @@ line 4`;
 });
 
 describe('objects', () => {
-  describe('expand', () => {
-    const a = {a: {b: {c: 5}}};
-    const b = {a: {b: {c: 6}}};
-    const expected = [
-      '  Object {',
-      '    "a": Object {',
-      '      "b": Object {',
-      '-       "c": 5,',
-      '+       "c": 6,',
-      '      },',
-      '    },',
-      '  }',
-    ].join('\n');
+  const a = {a: {b: {c: 5}}};
+  const b = {a: {b: {c: 6}}};
+  const expected = [
+    '  Object {',
+    '    "a": Object {',
+    '      "b": Object {',
+    '-       "c": 5,',
+    '+       "c": 6,',
+    '      },',
+    '    },',
+    '  }',
+  ].join('\n');
 
-    test('(unexpanded)', () => {
-      expect(diff(a, b, unexpandedBe)).toBe(expected);
-    });
-    test('(expanded)', () => {
-      expect(diff(a, b, expandedBe)).toBe(expected);
-    });
+  test('(unexpanded)', () => {
+    expect(diff(a, b, unexpandedBe)).toBe(expected);
+  });
+  test('(expanded)', () => {
+    expect(diff(a, b, expandedBe)).toBe(expected);
   });
 });
 
