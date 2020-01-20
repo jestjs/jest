@@ -7,6 +7,8 @@
 
 import {readConfigs} from '../index';
 
+jest.mock('../importMjs', () => (s: string) => import(s));
+
 test('readConfigs() throws when called without project paths', async () => {
   await expect(
     // @ts-ignore
