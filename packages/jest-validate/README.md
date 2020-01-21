@@ -112,7 +112,7 @@ This will output:
 ```bash
 ● Validation Warning:
 
-  Unknown option transformx with value "<rootDir>/node_modules/babel-jest" was found.
+  Unknown option transforms with value "<rootDir>/node_modules/babel-jest" was found.
   This is either a typing error or a user mistake. Fixing it will remove this message.
 
   Documentation: http://custom-docs.com
