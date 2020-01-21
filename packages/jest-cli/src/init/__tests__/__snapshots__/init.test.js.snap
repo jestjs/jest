@@ -36,6 +36,15 @@ Object {
 }
 `;
 
+exports[`init has-jest-config-file-mjs ask the user whether to override config or not user answered with "Yes" 1`] = `
+Object {
+  "initial": true,
+  "message": "It seems that you already have a jest configuration, do you want to override it?",
+  "name": "continue",
+  "type": "confirm",
+}
+`;
+
 exports[`init project with package.json and no jest config all questions answered with answer: "No" should return the default configuration (an empty config) 1`] = `
 "// For a detailed explanation regarding each configuration property, visit:
 // https://jestjs.io/docs/en/configuration.html

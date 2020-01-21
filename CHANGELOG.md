@@ -12,6 +12,7 @@
 - `[jest-config]` [**BREAKING**] Set default display name color based on runner ([#8689](https://github.com/facebook/jest/pull/8689))
 - `[jest-config]` Merge preset globals with project globals ([#9027](https://github.com/facebook/jest/pull/9027))
 - `[jest-config]` Support `.cjs` config files ([#9291](https://github.com/facebook/jest/pull/9291))
+- `[jest-config]` [**BREAKING**] Support `.mjs` config files ([#9431](https://github.com/facebook/jest/pull/9431))
 - `[jest-core]` Support reporters as default exports ([#9161](https://github.com/facebook/jest/pull/9161))
 - `[jest-core]` Support `--findRelatedTests` paths case insensitivity on Windows ([#8900](https://github.com/facebook/jest/issues/8900))
 - `[jest-diff]` Add options for colors and symbols ([#8841](https://github.com/facebook/jest/pull/8841))

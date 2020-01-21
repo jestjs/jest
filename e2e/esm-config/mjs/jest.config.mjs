@@ -5,10 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {defaults} from '../index';
-
-jest.mock('../importMjs', () => (s: string) => import(s));
-
-test('get configuration defaults', () => {
-  expect(defaults).toBeDefined();
-});
+export default {
+  displayName: 'Config from mjs file',
+  testEnvironment: 'node',
+};

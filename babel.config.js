@@ -19,6 +19,22 @@ module.exports = {
       presets: ['@babel/preset-typescript'],
       test: /\.tsx?$/,
     },
+    // we want this file to keep `import()`, so exclude the transform for it
+    {
+      plugins: ['@babel/plugin-syntax-dynamic-import'],
+      presets: [
+        '@babel/preset-typescript',
+        [
+          '@babel/preset-env',
+          {
+            exclude: ['@babel/plugin-proposal-dynamic-import'],
+            shippedProposals: true,
+            targets: {node: 8},
+          },
+        ],
+      ],
+      test: 'packages/jest-config/src/importMjs.ts',
+    },
   ],
   plugins: [
     ['@babel/plugin-transform-modules-commonjs', {allowTopLevelThis: true}],

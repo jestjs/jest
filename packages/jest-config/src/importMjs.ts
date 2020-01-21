@@ -5,10 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {defaults} from '../index';
-
-jest.mock('../importMjs', () => (s: string) => import(s));
-
-test('get configuration defaults', () => {
-  expect(defaults).toBeDefined();
-});
+// this is in a separate file so that node 8 don't explode with a syntax error.
+// Remove this file when we drop support for Node 8
+export default (specifier: string) => import(specifier);
