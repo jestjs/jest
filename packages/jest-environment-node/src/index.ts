@@ -5,13 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  Context,
-  Script,
-  compileFunction,
-  createContext,
-  runInContext,
-} from 'vm';
+import {Context, Script, createContext, runInContext} from 'vm';
 import {Config, Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
@@ -122,21 +116,9 @@ class NodeEnvironment implements JestEnvironment {
     return null;
   }
 
-  compileFunction(code: string, params: Array<string>, filename: string) {
-    if (this.context) {
-      return compileFunction(code, params, {
-        filename,
-        parsingContext: this.context,
-      }) as any;
-    }
-    return null;
+  getVmContext() {
+    return this.context;
   }
-}
-
-// `jest-runtime` checks for `compileFunction`, so this makes sure to not expose that function if it's unsupported by this version of node
-// Should be removed when we drop support for node 8
-if (typeof compileFunction !== 'function') {
-  delete NodeEnvironment.prototype.compileFunction;
 }
 
 export = NodeEnvironment;
