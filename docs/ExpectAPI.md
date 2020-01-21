@@ -1098,7 +1098,7 @@ describe('an essay on the best flavor', () => {
 This matcher also accepts a string, which it will try to match:
 
 ```js
-describe('pamplemousse are healthy', () => {
+describe('pamplemousses are healthy', () => {
   test('pamplemousses are a fruit', () => {
     expect('pamplemousses').toMatch('fruit');
   });
