@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+// the point here is that it's the node core module
+// eslint-disable-next-line no-restricted-imports
 import {readFileSync} from 'fs';
 import {createRequire} from 'module';
 import {dirname, resolve} from 'path';

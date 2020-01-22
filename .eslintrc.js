@@ -142,6 +142,13 @@ module.exports = {
     // https://github.com/benmosher/eslint-plugin-import/issues/645
     'import/order': 0,
     'no-console': 0,
+    'no-restricted-imports': [
+      2,
+      {
+        message: 'Please use graceful-fs instead.',
+        name: 'fs',
+      },
+    ],
     'no-unused-vars': 2,
     'prettier/prettier': 2,
     'sort-imports': [2, {ignoreDeclarationSort: true}],

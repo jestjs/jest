@@ -4,13 +4,12 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use strict';
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import TestSequencer from '../index';
 
-jest.mock('fs', () => ({
+jest.mock('graceful-fs', () => ({
   ...jest.genMockFromModule('fs'),
   existsSync: jest.fn(() => true),
   readFileSync: jest.fn(() => '{}'),

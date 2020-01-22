@@ -64,6 +64,7 @@ function browserBuild(pkgName, entryPath, destination) {
               __dirname,
               '../packages/expect/build/fakeChalk.js',
             ),
+            'graceful-fs': 'fs',
           },
           extensions: ['.js', '.json', '.ts'],
         },
