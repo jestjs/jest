@@ -428,9 +428,7 @@ describe('onRunComplete', () => {
     return testReporter
       .onRunComplete(new Set(), {}, mockAggResults)
       .then(() => {
-        expect(istanbulReports.create).toHaveBeenCalledWith('json', {
-          maxCols: process.stdout.columns || Infinity,
-        });
+        expect(istanbulReports.create).toHaveBeenCalledWith('json', {});
         expect(istanbulReports.create).toHaveBeenCalledWith('lcov', {
           maxCols: 10,
           projectRoot: './',

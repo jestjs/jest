@@ -94,10 +94,7 @@ export default class CoverageReporter extends BaseReporter {
           [reporter, additionalOptions] = reporter;
         }
         istanbulReports
-          .create(reporter, {
-            maxCols: process.stdout.columns || Infinity,
-            ...additionalOptions,
-          })
+          .create(reporter, additionalOptions)
           .execute(reportContext);
       });
       aggregatedResults.coverageMap = map;
