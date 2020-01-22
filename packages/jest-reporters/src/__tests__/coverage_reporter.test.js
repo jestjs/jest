@@ -12,7 +12,10 @@ jest
     createContext: jest.fn(),
     summarizers: {pkg: jest.fn(() => ({visit: jest.fn()}))},
   }))
-  .mock('istanbul-reports');
+  .mock('istanbul-reports', () => ({
+    ...jest.genMockFromModule('istanbul-reports'),
+    create: jest.fn(() => ({execute: jest.fn()})),
+  }));
 
 let libCoverage;
 let libSourceMaps;
