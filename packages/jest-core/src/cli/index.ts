@@ -49,7 +49,7 @@ export const runCLI = async (
   const outputStream =
     argv.json || argv.useStderr ? process.stderr : process.stdout;
 
-  const {globalConfig, configs, hasDeprecationWarnings} = readConfigs(
+  const {globalConfig, configs, hasDeprecationWarnings} = await readConfigs(
     argv,
     projects,
   );
@@ -122,7 +122,10 @@ const buildContextsAndHasteMaps = async (
       createDirectory(config.cacheDirectory);
       const hasteMapInstance = Runtime.createHasteMap(config, {
         console: new CustomConsole(outputStream, outputStream),
-        maxWorkers: globalConfig.maxWorkers,
+        maxWorkers: Math.max(
+          1,
+          Math.floor(globalConfig.maxWorkers / configs.length),
+        ),
         resetCache: !config.cache,
         watch: globalConfig.watch || globalConfig.watchAll,
         watchman: globalConfig.watchman,

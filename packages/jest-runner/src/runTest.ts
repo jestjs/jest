@@ -6,6 +6,7 @@
  *
  */
 
+import {compileFunction} from 'vm';
 import {Config} from '@jest/types';
 import {TestResult} from '@jest/test-result';
 import {
@@ -157,6 +158,7 @@ async function runTestInternal(
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
+    coverageProvider: globalConfig.coverageProvider,
   });
 
   const start = Date.now();
@@ -218,12 +220,21 @@ async function runTestInternal(
     };
   }
 
+  // if we don't have `getVmContext` on the env,or `compileFunction` available skip coverage
+  const collectV8Coverage =
+    globalConfig.coverageProvider === 'v8' &&
+    typeof environment.getVmContext === 'function' &&
+    typeof compileFunction === 'function';
+
   try {
     await environment.setup();
 
     let result: TestResult;
 
     try {
+      if (collectV8Coverage) {
+        await runtime.collectV8Coverage();
+      }
       result = await testFramework(
         globalConfig,
         config,
@@ -236,6 +247,10 @@ async function runTestInternal(
       err.stack;
 
       throw err;
+    } finally {
+      if (collectV8Coverage) {
+        await runtime.stopCollectingV8Coverage();
+      }
     }
 
     freezeConsole(testConsole, config);
@@ -258,6 +273,13 @@ async function runTestInternal(
       if (coverageKeys.length) {
         result.coverage = coverage;
         result.sourceMaps = runtime.getSourceMapInfo(new Set(coverageKeys));
+      }
+    }
+
+    if (collectV8Coverage) {
+      const v8Coverage = runtime.getAllV8CoverageInfoCopy();
+      if (v8Coverage && v8Coverage.length > 0) {
+        result.v8Coverage = v8Coverage;
       }
     }
 

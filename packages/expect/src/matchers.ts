@@ -835,7 +835,7 @@ const matchers: MatchersObject = {
     const pass =
       typeof expected === 'string'
         ? received.includes(expected)
-        : expected.test(received);
+        : new RegExp(expected).test(received);
 
     const message = pass
       ? () =>

@@ -9,7 +9,34 @@ Object {
 }
 `;
 
-exports[`init has-jest-config-file ask the user whether to override config or not user answered with "Yes" 1`] = `
+exports[`init has-jest-config-file-cjs ask the user whether to override config or not user answered with "Yes" 1`] = `
+Object {
+  "initial": true,
+  "message": "It seems that you already have a jest configuration, do you want to override it?",
+  "name": "continue",
+  "type": "confirm",
+}
+`;
+
+exports[`init has-jest-config-file-js ask the user whether to override config or not user answered with "Yes" 1`] = `
+Object {
+  "initial": true,
+  "message": "It seems that you already have a jest configuration, do you want to override it?",
+  "name": "continue",
+  "type": "confirm",
+}
+`;
+
+exports[`init has-jest-config-file-json ask the user whether to override config or not user answered with "Yes" 1`] = `
+Object {
+  "initial": true,
+  "message": "It seems that you already have a jest configuration, do you want to override it?",
+  "name": "continue",
+  "type": "confirm",
+}
+`;
+
+exports[`init has-jest-config-file-mjs ask the user whether to override config or not user answered with "Yes" 1`] = `
 Object {
   "initial": true,
   "message": "It seems that you already have a jest configuration, do you want to override it?",

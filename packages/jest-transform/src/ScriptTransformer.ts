@@ -7,9 +7,8 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import {Script} from 'vm';
 import {Config} from '@jest/types';
-import {createDirectory, isPromise} from 'jest-util';
+import {createDirectory, interopRequireDefault, isPromise} from 'jest-util';
 import * as fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
 // @ts-ignore: should just be `require.resolve`, but the tests mess that up
@@ -28,7 +27,7 @@ import {
   Transformer,
 } from './types';
 import shouldInstrument from './shouldInstrument';
-import enhanceUnexpectedTokenMessage from './enhanceUnexpectedTokenMessage';
+import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';
 
 type ProjectCache = {
   configString: string;
@@ -60,7 +59,6 @@ async function waitForPromiseWithCleanup(
 }
 
 export default class ScriptTransformer {
-  static EVAL_RESULT_VARIABLE: 'Object.<anonymous>';
   private _cache: ProjectCache;
   private _config: Config.ProjectConfig;
   private _transformCache: Map<Config.Path, Transformer>;
@@ -347,12 +345,11 @@ export default class ScriptTransformer {
   ): TransformResult {
     const isInternalModule = !!(options && options.isInternalModule);
     const isCoreModule = !!(options && options.isCoreModule);
-    const extraGlobals = (options && options.extraGlobals) || [];
     const content = stripShebang(
       fileSource || fs.readFileSync(filename, 'utf8'),
     );
 
-    let wrappedCode: string;
+    let code = content;
     let sourceMapPath: string | null = null;
     let mapCoverage = false;
 
@@ -369,36 +366,19 @@ export default class ScriptTransformer {
           instrument,
         );
 
-        wrappedCode = wrap(transformedSource.code, ...extraGlobals);
+        code = transformedSource.code;
         sourceMapPath = transformedSource.sourceMapPath;
         mapCoverage = transformedSource.mapCoverage;
-      } else {
-        wrappedCode = wrap(content, ...extraGlobals);
       }
 
       return {
+        code,
         mapCoverage,
-        script: new Script(wrappedCode, {
-          displayErrors: true,
-          filename: isCoreModule ? 'jest-nodejs-core-' + filename : filename,
-        }),
+        originalCode: content,
         sourceMapPath,
       };
     } catch (e) {
-      if (e.codeFrame) {
-        e.stack = e.message + '\n' + e.codeFrame;
-      }
-
-      if (
-        e instanceof SyntaxError &&
-        (e.message.includes('Unexpected token') ||
-          e.message.includes('Cannot use import')) &&
-        !e.message.includes(' expected')
-      ) {
-        throw enhanceUnexpectedTokenMessage(e);
-      }
-
-      throw e;
+      throw handlePotentialSyntaxError(e);
     }
   }
 
@@ -411,7 +391,9 @@ export default class ScriptTransformer {
     let instrument = false;
 
     if (!options.isCoreModule) {
-      instrument = shouldInstrument(filename, options, this._config);
+      instrument =
+        options.coverageProvider === 'babel' &&
+        shouldInstrument(filename, options, this._config);
       scriptCacheKey = getScriptCacheKey(filename, instrument);
       const result = this._cache.transformedFiles.get(scriptCacheKey);
       if (result) {
@@ -532,6 +514,23 @@ export default class ScriptTransformer {
       !!this._config.transform && !!this._config.transform.length && !isIgnored
     );
   }
+}
+
+export function createTranspilingRequire(config: Config.ProjectConfig) {
+  const transformer = new ScriptTransformer(config);
+
+  return function requireAndTranspileModule<TModuleType = unknown>(
+    resolverPath: string,
+    applyInteropRequireDefault: boolean = false,
+  ): TModuleType {
+    const transpiledModule = transformer.requireAndTranspileModule<TModuleType>(
+      resolverPath,
+    );
+
+    return applyInteropRequireDefault
+      ? interopRequireDefault(transpiledModule).default
+      : transpiledModule;
+  };
 }
 
 const removeFile = (path: Config.Path) => {
@@ -681,27 +680,3 @@ const calcTransformRegExp = (config: Config.ProjectConfig) => {
 
   return transformRegexp;
 };
-
-const wrap = (content: string, ...extras: Array<string>) => {
-  const globals = new Set([
-    'module',
-    'exports',
-    'require',
-    '__dirname',
-    '__filename',
-    'global',
-    'jest',
-    ...extras,
-  ]);
-
-  return (
-    '({"' +
-    ScriptTransformer.EVAL_RESULT_VARIABLE +
-    `":function(${Array.from(globals).join(',')}){` +
-    content +
-    '\n}});'
-  );
-};
-
-// TODO: Can this be added to the static property?
-ScriptTransformer.EVAL_RESULT_VARIABLE = 'Object.<anonymous>';

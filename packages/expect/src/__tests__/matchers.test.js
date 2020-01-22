@@ -488,6 +488,7 @@ describe('.toEqual()', () => {
       Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
       Immutable.Map({1: Immutable.Map({2: {a: 11}})}),
     ],
+    [new Uint8Array([97, 98, 99]), new Uint8Array([97, 98, 100])],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 2})],
     [false, jestExpect.objectContaining({a: 2})],
     [[1, 3], jestExpect.arrayContaining([1, 2])],
@@ -689,6 +690,7 @@ describe('.toEqual()', () => {
       Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
       Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
     ],
+    [new Uint8Array([97, 98, 99]), new Uint8Array([97, 98, 99])],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 1})],
     [[1, 2, 3], jestExpect.arrayContaining([2, 3])],
     ['abcd', jestExpect.stringContaining('bc')],
@@ -1614,6 +1616,13 @@ describe('.toMatch()', () => {
 
   it('escapes strings properly', () => {
     jestExpect('this?: throws').toMatch('this?: throws');
+  });
+
+  it('does not maintain RegExp state between calls', () => {
+    const regex = /[f]\d+/gi;
+    jestExpect('f123').toMatch(regex);
+    jestExpect('F456').toMatch(regex);
+    jestExpect(regex.lastIndex).toBe(0);
   });
 });
 

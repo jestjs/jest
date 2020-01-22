@@ -6,7 +6,6 @@
  *
  */
 
-import * as vm from 'vm';
 import * as path from 'path';
 import * as os from 'os';
 import {ScriptTransformer} from '@jest/transform';
@@ -23,7 +22,8 @@ it('instruments files', () => {
   const config = makeProjectConfig({
     cache: false,
     cacheDirectory: os.tmpdir(),
-    rootDir: '/',
+    cwd: __dirname,
+    rootDir: __dirname,
   });
   const instrumented = new ScriptTransformer(config).transform(
     FILE_PATH_TO_INSTRUMENT,
@@ -31,10 +31,9 @@ it('instruments files', () => {
       ...makeGlobalConfig({collectCoverage: true}),
       changedFiles: undefined,
     },
-  ).script;
-  expect(instrumented instanceof vm.Script).toBe(true);
+  );
   // We can't really snapshot the resulting coverage, because it depends on
   // absolute path of the file, which will be different on different
   // machines
-  expect(vm.Script.mock.calls[0][0]).toMatch(`gcv = "__coverage__"`);
+  expect(instrumented.code).toMatch(`gcv = "__coverage__"`);
 });

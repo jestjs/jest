@@ -10,10 +10,11 @@
  */
 
 const fs = require('fs');
+const chokidar = require('chokidar');
 const {execSync} = require('child_process');
 const path = require('path');
 const chalk = require('chalk');
-const {getPackages} = require('./buildUtils');
+const {PACKAGES_DIR, getPackages} = require('./buildUtils');
 
 const BUILD_CMD = `node ${path.resolve(__dirname, './build.js')}`;
 
@@ -27,34 +28,43 @@ const exists = filename => {
 };
 const rebuild = filename => filesToBuild.set(filename, true);
 
-const packages = getPackages();
-packages.forEach(p => {
-  const srcDir = path.resolve(p, 'src');
-  try {
-    fs.accessSync(srcDir, fs.F_OK);
-    fs.watch(srcDir, {recursive: true}, (event, filename) => {
-      const filePath = path.resolve(srcDir, filename);
-
-      if ((event === 'change' || event === 'rename') && exists(filePath)) {
-        console.log(chalk.green('->'), `${event}: ${filename}`);
-        rebuild(filePath);
-      } else {
-        const buildFile = path.resolve(srcDir, '..', 'build', filename);
-        try {
-          fs.unlinkSync(buildFile);
-          process.stdout.write(
-            chalk.red('  \u2022 ') +
-              path.relative(path.resolve(srcDir, '..', '..'), buildFile) +
-              ' (deleted)' +
-              '\n'
-          );
-        } catch (e) {}
-      }
-    });
-  } catch (e) {
-    // doesn't exist
-  }
-});
+chokidar
+  .watch(
+    getPackages().map(p => path.resolve(p, 'src')),
+    {
+      ignoreInitial: true,
+      ignored: /(^|[\/\\])\../, // ignore dotfiles
+    }
+  )
+  .on('all', (event, filePath) => {
+    if (
+      (event === 'change' || event === 'rename' || event === 'add') &&
+      exists(filePath)
+    ) {
+      console.log(
+        chalk.green('->'),
+        `${event}: ${path.relative(PACKAGES_DIR, filePath)}`
+      );
+      rebuild(filePath);
+    } else {
+      filePath.split(path.join(path.sep, 'src', path.sep));
+      const buildFile = filePath
+        .replace(
+          path.join(path.sep, 'src', path.sep),
+          path.join(path.sep, 'build', path.sep)
+        )
+        .replace(/\.ts$/, '.js');
+      try {
+        fs.unlinkSync(buildFile);
+        process.stdout.write(
+          `${chalk.red('  \u2022 ')}${path.relative(
+            PACKAGES_DIR,
+            buildFile
+          )} (deleted)\n`
+        );
+      } catch (e) {}
+    }
+  });
 
 setInterval(() => {
   const files = Array.from(filesToBuild.keys());

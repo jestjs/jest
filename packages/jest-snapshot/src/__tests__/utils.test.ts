@@ -24,6 +24,7 @@ import {
   getSnapshotData,
   keyToTestName,
   removeExtraLineBreaks,
+  removeLinesBeforeExternalMatcherTrap,
   saveSnapshotFile,
   serialize,
   testNameToKey,
@@ -179,7 +180,7 @@ test('escaping', () => {
   );
 
   // @ts-ignore
-  const exports = {}; // eslint-disable-line
+  const exports = {}; // eslint-disable-line @typescript-eslint/no-unused-vars
   // eslint-disable-next-line no-eval
   const readData = eval('var exports = {}; ' + writtenData + ' exports');
   expect(readData).toEqual({key: data});
@@ -263,6 +264,43 @@ describe('ExtraLineBreaks', () => {
 
     expect(added).toBe('\n' + expected + '\n');
     expect(removed).toBe(expected);
+  });
+});
+
+describe('removeLinesBeforeExternalMatcherTrap', () => {
+  test('contains external matcher trap', () => {
+    const stack = `Error:
+    at SnapshotState._addSnapshot (/jest/packages/jest-snapshot/build/State.js:150:9)
+    at SnapshotState.match (/jest/packages/jest-snapshot/build/State.js:303:14)
+    at _toMatchSnapshot (/jest/packages/jest-snapshot/build/index.js:399:32)
+    at _toThrowErrorMatchingSnapshot (/jest/packages/jest-snapshot/build/index.js:585:10)
+    at Object.toThrowErrorMatchingInlineSnapshot (/jest/packages/jest-snapshot/build/index.js:504:10)
+    at Object.<anonymous> (/jest/packages/expect/build/index.js:138:20)
+    at __EXTERNAL_MATCHER_TRAP__ (/jest/packages/expect/build/index.js:378:30)
+    at throwingMatcher (/jest/packages/expect/build/index.js:379:15)
+    at /jest/packages/expect/build/index.js:285:72
+    at Object.<anonymous> (/jest/e2e/to-throw-error-matching-inline-snapshot/__tests__/should-support-rejecting-promises.test.js:3:7)`;
+
+    const expected = `    at throwingMatcher (/jest/packages/expect/build/index.js:379:15)
+    at /jest/packages/expect/build/index.js:285:72
+    at Object.<anonymous> (/jest/e2e/to-throw-error-matching-inline-snapshot/__tests__/should-support-rejecting-promises.test.js:3:7)`;
+
+    expect(removeLinesBeforeExternalMatcherTrap(stack)).toBe(expected);
+  });
+
+  test("doesn't contain external matcher trap", () => {
+    const stack = `Error:
+    at SnapshotState._addSnapshot (/jest/packages/jest-snapshot/build/State.js:150:9)
+    at SnapshotState.match (/jest/packages/jest-snapshot/build/State.js:303:14)
+    at _toMatchSnapshot (/jest/packages/jest-snapshot/build/index.js:399:32)
+    at _toThrowErrorMatchingSnapshot (/jest/packages/jest-snapshot/build/index.js:585:10)
+    at Object.toThrowErrorMatchingInlineSnapshot (/jest/packages/jest-snapshot/build/index.js:504:10)
+    at Object.<anonymous> (/jest/packages/expect/build/index.js:138:20)
+    at throwingMatcher (/jest/packages/expect/build/index.js:379:15)
+    at /jest/packages/expect/build/index.js:285:72
+    at Object.<anonymous> (/jest/e2e/to-throw-error-matching-inline-snapshot/__tests__/should-support-rejecting-promises.test.js:3:7)`;
+
+    expect(removeLinesBeforeExternalMatcherTrap(stack)).toBe(stack);
   });
 });
 

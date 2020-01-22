@@ -12,6 +12,7 @@ module.exports = {
     'plugin:import/typescript',
     'prettier',
     'prettier/flowtype',
+    'plugin:eslint-comments/recommended',
   ],
   overrides: [
     {
@@ -67,9 +68,21 @@ module.exports = {
       },
     },
     {
-      files: ['packages/jest-types/**/*'],
+      files: 'packages/jest-types/**/*',
       rules: {
         'import/no-extraneous-dependencies': 0,
+      },
+    },
+    {
+      files: [
+        'packages/jest-jasmine2/src/jasmine/**/*',
+        'packages/expect/src/jasmineUtils.ts',
+        'e2e/browser-support/browserTest.js',
+        '**/vendor/**/*',
+      ],
+      rules: {
+        'eslint-comments/disable-enable-pair': 0,
+        'eslint-comments/no-unlimited-disable': 0,
       },
     },
     {
@@ -85,9 +98,10 @@ module.exports = {
     },
   ],
   parser: 'babel-eslint',
-  plugins: ['markdown', 'import', 'prettier'],
+  plugins: ['markdown', 'import', 'prettier', 'eslint-comments'],
   rules: {
     'arrow-body-style': 2,
+    'eslint-comments/no-unused-disable': 2,
     'flowtype/boolean-style': 2,
     'flowtype/no-primitive-constructor-types': 2,
     'flowtype/require-valid-file-annotation': 2,

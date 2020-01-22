@@ -311,12 +311,18 @@ export const printSnapshotAndReceived = (
     const aLines2 = a.split('\n');
     const bLines2 = b.split('\n');
 
-    const aLines0 = dedentLines(aLines2);
+    // Fall through to fix a regression for custom serializers
+    // like jest-snapshot-serializer-raw that ignore the indent option.
+    const b0 = serialize(received, 0);
+    if (b0 !== b) {
+      const aLines0 = dedentLines(aLines2);
 
-    if (aLines0 !== null) {
-      // Compare lines without indentation.
-      const bLines0 = serialize(received, 0).split('\n');
-      return diffLinesUnified2(aLines2, bLines2, aLines0, bLines0, options);
+      if (aLines0 !== null) {
+        // Compare lines without indentation.
+        const bLines0 = b0.split('\n');
+
+        return diffLinesUnified2(aLines2, bLines2, aLines0, bLines0, options);
+      }
     }
 
     // Fall back because:

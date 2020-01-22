@@ -6,12 +6,15 @@
  */
 
 import * as path from 'path';
+import {Script, compileFunction} from 'vm';
+import {fileURLToPath} from 'url';
 import {Config} from '@jest/types';
 import {
   Jest,
   JestEnvironment,
   LocalModuleRequire,
   Module,
+  ModuleWrapper,
 } from '@jest/environment';
 import {SourceMapRegistry} from '@jest/source-map';
 import jestMock = require('jest-mock');
@@ -24,9 +27,13 @@ import Snapshot = require('jest-snapshot');
 import {
   ScriptTransformer,
   ShouldInstrumentOptions,
+  TransformResult,
   TransformationOptions,
+  handlePotentialSyntaxError,
   shouldInstrument,
 } from '@jest/transform';
+import {V8CoverageResult} from '@jest/test-result';
+import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
 import stripBOM = require('strip-bom');
 import {run as cliRun} from './cli';
@@ -78,10 +85,12 @@ const getModuleNameMapper = (config: Config.ProjectConfig) => {
 
 const unmockRegExpCache = new WeakMap();
 
+const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
+
+type RunScriptEvalResult = {[EVAL_RESULT_VARIABLE]: ModuleWrapper};
+
 /* eslint-disable-next-line no-redeclare */
 class Runtime {
-  static ScriptTransformer: typeof ScriptTransformer;
-
   private _cacheFS: CacheFS;
   private _config: Config.ProjectConfig;
   private _coverageOptions: ShouldInstrumentOptions;
@@ -106,6 +115,9 @@ class Runtime {
   private _shouldUnmockTransitiveDependenciesCache: BooleanObject;
   private _sourceMapRegistry: SourceMapRegistry;
   private _scriptTransformer: ScriptTransformer;
+  private _fileTransforms: Map<string, TransformResult>;
+  private _v8CoverageInstrumenter: CoverageInstrumenter | undefined;
+  private _v8CoverageResult: V8Coverage | undefined;
   private _transitiveShouldMock: BooleanObject;
   private _unmockList: RegExp | undefined;
   private _virtualMocks: BooleanObject;
@@ -124,6 +136,7 @@ class Runtime {
       collectCoverage: false,
       collectCoverageFrom: [],
       collectCoverageOnlyFrom: undefined,
+      coverageProvider: 'babel',
     };
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
@@ -142,6 +155,7 @@ class Runtime {
     this._scriptTransformer = new ScriptTransformer(config);
     this._shouldAutoMock = config.automock;
     this._sourceMapRegistry = Object.create(null);
+    this._fileTransforms = new Map();
     this._virtualMocks = Object.create(null);
 
     this._mockMetaDataCache = Object.create(null);
@@ -489,7 +503,7 @@ class Runtime {
       collectCoverage: this._coverageOptions.collectCoverage,
       collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
       collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
-      extraGlobals: this._config.extraGlobals,
+      coverageProvider: this._coverageOptions.coverageProvider,
     };
   }
 
@@ -556,8 +570,46 @@ class Runtime {
     }
   }
 
+  async collectV8Coverage() {
+    this._v8CoverageInstrumenter = new CoverageInstrumenter();
+
+    await this._v8CoverageInstrumenter.startInstrumenting();
+  }
+
+  async stopCollectingV8Coverage() {
+    if (!this._v8CoverageInstrumenter) {
+      throw new Error('You need to call `collectV8Coverage` first.');
+    }
+    this._v8CoverageResult = await this._v8CoverageInstrumenter.stopInstrumenting();
+  }
+
   getAllCoverageInfoCopy() {
     return deepCyclicCopy(this._environment.global.__coverage__);
+  }
+
+  getAllV8CoverageInfoCopy(): V8CoverageResult {
+    if (!this._v8CoverageResult) {
+      throw new Error('You need to `stopCollectingV8Coverage` first');
+    }
+
+    return this._v8CoverageResult
+      .filter(res => res.url.startsWith('file://'))
+      .map(res => ({...res, url: fileURLToPath(res.url)}))
+      .filter(
+        res =>
+          // TODO: will this work on windows? It might be better if `shouldInstrument` deals with it anyways
+          res.url.startsWith(this._config.rootDir) &&
+          this._fileTransforms.has(res.url) &&
+          shouldInstrument(res.url, this._coverageOptions, this._config),
+      )
+      .map(result => {
+        const transformedFile = this._fileTransforms.get(result.url);
+
+        return {
+          codeTransformResult: transformedFile,
+          result,
+        };
+      });
   }
 
   getSourceMapInfo(coveredFiles: Set<string>) {
@@ -719,6 +771,11 @@ class Runtime {
       this._cacheFS[filename],
     );
 
+    // we only care about non-internal modules
+    if (!options || !options.isInternalModule) {
+      this._fileTransforms.set(filename, transformedFile);
+    }
+
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry[filename] = transformedFile.sourceMapPath;
       if (transformedFile.mapCoverage) {
@@ -726,9 +783,58 @@ class Runtime {
       }
     }
 
-    const runScript = this._environment.runScript(transformedFile.script);
+    let compiledFunction: ModuleWrapper | null = null;
 
-    if (runScript === null) {
+    // Use this if available instead of deprecated `JestEnvironment.runScript`
+    if (typeof this._environment.getVmContext === 'function') {
+      const vmContext = this._environment.getVmContext();
+
+      if (vmContext) {
+        if (typeof compileFunction === 'function') {
+          try {
+            compiledFunction = compileFunction(
+              transformedFile.code,
+              this.constructInjectedModuleParameters(),
+              {
+                filename,
+                parsingContext: vmContext,
+              },
+            ) as ModuleWrapper;
+          } catch (e) {
+            throw handlePotentialSyntaxError(e);
+          }
+        } else {
+          const script = this.createScriptFromCode(
+            transformedFile.code,
+            filename,
+          );
+
+          const runScript = script.runInContext(
+            vmContext,
+          ) as RunScriptEvalResult;
+
+          if (runScript === null) {
+            compiledFunction = null;
+          } else {
+            compiledFunction = runScript[EVAL_RESULT_VARIABLE];
+          }
+        }
+      }
+    } else {
+      const script = this.createScriptFromCode(transformedFile.code, filename);
+
+      const runScript = this._environment.runScript<RunScriptEvalResult>(
+        script,
+      );
+
+      if (runScript === null) {
+        compiledFunction = null;
+      } else {
+        compiledFunction = runScript[EVAL_RESULT_VARIABLE];
+      }
+    }
+
+    if (compiledFunction === null) {
       this._logFormattedReferenceError(
         'You are trying to `import` a file after the Jest environment has been torn down.',
       );
@@ -736,12 +842,11 @@ class Runtime {
       return;
     }
 
-    //Wrapper
-    runScript[ScriptTransformer.EVAL_RESULT_VARIABLE].call(
+    compiledFunction.call(
       localModule.exports,
       localModule as NodeModule, // module object
       localModule.exports, // module exports
-      localModule.require as NodeRequireFunction, // require implementation
+      localModule.require as typeof require, // require implementation
       dirname, // __dirname
       filename, // __filename
       this._environment.global, // global object
@@ -762,6 +867,19 @@ class Runtime {
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
     this._currentlyExecutingModulePath = lastExecutingModulePath;
+  }
+
+  private createScriptFromCode(scriptSource: string, filename: string) {
+    try {
+      return new Script(this.wrapCodeInModuleWrapper(scriptSource), {
+        displayErrors: true,
+        filename: this._resolver.isCoreModule(filename)
+          ? `jest-nodejs-core-${filename}`
+          : filename,
+      });
+    } catch (e) {
+      throw handlePotentialSyntaxError(e);
+    }
   }
 
   private _requireCoreModule(moduleName: string) {
@@ -1086,8 +1204,31 @@ class Runtime {
         formatStackTrace(stack, this._config, {noStackTrace: false}),
     );
   }
-}
 
-Runtime.ScriptTransformer = ScriptTransformer;
+  private wrapCodeInModuleWrapper(content: string) {
+    const args = this.constructInjectedModuleParameters();
+
+    return (
+      '({"' +
+      EVAL_RESULT_VARIABLE +
+      `":function(${args.join(',')}){` +
+      content +
+      '\n}});'
+    );
+  }
+
+  private constructInjectedModuleParameters() {
+    return [
+      'module',
+      'exports',
+      'require',
+      '__dirname',
+      '__filename',
+      'global',
+      'jest',
+      ...this._config.extraGlobals,
+    ];
+  }
+}
 
 export = Runtime;

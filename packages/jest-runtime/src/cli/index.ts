@@ -20,7 +20,7 @@ import {VERSION} from '../version';
 import {Context} from '../types';
 import * as args from './args';
 
-export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
+export async function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
   const realFs = require('fs');
   const fs = require('graceful-fs');
   fs.gracefulify(realFs);
@@ -35,7 +35,6 @@ export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
       .version(false)
       .options(args.options).argv;
 
-    // @ts-ignore: fix this at some point
     validateCLIOptions(argv, {...args.options, deprecationEntries});
   }
 
@@ -63,9 +62,7 @@ export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
     const info = cliInfo ? ', ' + cliInfo.join(', ') : '';
     console.log(`Using Jest Runtime v${VERSION}${info}`);
   }
-  // TODO: Figure this out
-  // @ts-ignore: this might not have the correct arguments
-  const options = readConfig(argv, root);
+  const options = await readConfig(argv, root);
   const globalConfig = options.globalConfig;
   // Always disable automocking in scripts.
   const config: Config.ProjectConfig = {
@@ -76,26 +73,26 @@ export function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
   // Break circular dependency
   const Runtime: any = require('..');
 
-  (Runtime.createContext(config, {
-    maxWorkers: Math.max(cpus().length - 1, 1),
-    watchman: globalConfig.watchman,
-  }) as Promise<Context>)
-    .then(hasteMap => {
-      const Environment: typeof JestEnvironment = require(config.testEnvironment);
-      const environment = new Environment(config);
-      setGlobal(
-        environment.global,
-        'console',
-        new CustomConsole(process.stdout, process.stderr),
-      );
-      setGlobal(environment.global, 'jestProjectConfig', config);
-      setGlobal(environment.global, 'jestGlobalConfig', globalConfig);
-
-      const runtime = new Runtime(config, environment, hasteMap.resolver);
-      runtime.requireModule(filePath);
-    })
-    .catch(e => {
-      console.error(chalk.red(e.stack || e));
-      process.on('exit', () => (process.exitCode = 1));
+  try {
+    const hasteMap: Context = await Runtime.createContext(config, {
+      maxWorkers: Math.max(cpus().length - 1, 1),
+      watchman: globalConfig.watchman,
     });
+
+    const Environment: typeof JestEnvironment = require(config.testEnvironment);
+    const environment = new Environment(config);
+    setGlobal(
+      environment.global,
+      'console',
+      new CustomConsole(process.stdout, process.stderr),
+    );
+    setGlobal(environment.global, 'jestProjectConfig', config);
+    setGlobal(environment.global, 'jestGlobalConfig', globalConfig);
+
+    const runtime = new Runtime(config, environment, hasteMap.resolver);
+    runtime.requireModule(filePath);
+  } catch (e) {
+    console.error(chalk.red(e.stack || e));
+    process.on('exit', () => (process.exitCode = 1));
+  }
 }

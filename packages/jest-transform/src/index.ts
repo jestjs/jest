@@ -5,10 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export {default as ScriptTransformer} from './ScriptTransformer';
+export {
+  default as ScriptTransformer,
+  createTranspilingRequire,
+} from './ScriptTransformer';
 export {default as shouldInstrument} from './shouldInstrument';
 export {
   Transformer,
   ShouldInstrumentOptions,
   Options as TransformationOptions,
+  TransformResult,
 } from './types';
+export {default as handlePotentialSyntaxError} from './enhanceUnexpectedTokenMessage';

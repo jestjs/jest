@@ -7,16 +7,18 @@
 
 import {readConfig} from '../index';
 
-test('readConfig() throws when an object is passed without a file path', () => {
-  expect(() => {
+jest.mock('../importMjs', () => (s: string) => import(s));
+
+test('readConfig() throws when an object is passed without a file path', async () => {
+  await expect(
     readConfig(
       // @ts-ignore
       null /* argv */,
       {} /* packageRootOrConfig */,
       false /* skipArgvConfigOption */,
       null /* parentConfigPath */,
-    );
-  }).toThrowError(
+    ),
+  ).rejects.toThrowError(
     'Jest: Cannot use configuration as an object without a file path',
   );
 });

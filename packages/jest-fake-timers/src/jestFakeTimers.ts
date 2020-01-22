@@ -8,6 +8,7 @@
 import {ModuleMocker} from 'jest-mock';
 import {StackTraceConfig, formatStackTrace} from 'jest-message-util';
 import {setGlobal} from 'jest-util';
+import util = require('util');
 
 type Callback = (...args: Array<unknown>) => void;
 
@@ -368,6 +369,13 @@ export default class FakeTimers<TimerRef> {
       // @ts-ignore TODO: figure out better typings here
       this._moduleMocker.fn().mockImplementation(impl);
 
+    const promisifiableFakeSetTimeout = fn(this._fakeSetTimeout.bind(this));
+    promisifiableFakeSetTimeout[util.promisify.custom] = (
+      delay?: number,
+      arg?: any,
+    ) =>
+      new Promise(resolve => promisifiableFakeSetTimeout(resolve, delay, arg));
+
     // TODO: add better typings; these are mocks, but typed as regular timers
     this._fakeTimerAPIs = {
       clearImmediate: fn(this._fakeClearImmediate.bind(this)),
@@ -376,7 +384,7 @@ export default class FakeTimers<TimerRef> {
       nextTick: fn(this._fakeNextTick.bind(this)),
       setImmediate: fn(this._fakeSetImmediate.bind(this)),
       setInterval: fn(this._fakeSetInterval.bind(this)),
-      setTimeout: fn(this._fakeSetTimeout.bind(this)),
+      setTimeout: promisifiableFakeSetTimeout,
     };
   }
 

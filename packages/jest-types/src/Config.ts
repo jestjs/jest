@@ -9,6 +9,8 @@ import {Arguments} from 'yargs';
 import {ReportOptions} from 'istanbul-reports';
 import chalk = require('chalk');
 
+type CoverageProvider = 'babel' | 'v8';
+
 export type Path = string;
 
 export type Glob = string;
@@ -38,6 +40,7 @@ export type DefaultOptions = {
   collectCoverage: boolean;
   coveragePathIgnorePatterns: Array<string>;
   coverageReporters: Array<string>;
+  coverageProvider: CoverageProvider;
   errorOnDeprecated: boolean;
   expand: boolean;
   forceCoverageMatch: Array<Glob>;
@@ -107,6 +110,7 @@ export type InitialOptions = Partial<{
   };
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
+  coverageProvider: CoverageProvider;
   coverageReporters: Array<string>;
   coverageThreshold: {
     global: {
@@ -236,6 +240,7 @@ export type GlobalConfig = {
   };
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
+  coverageProvider: CoverageProvider;
   coverageReporters: Array<keyof ReportOptions>;
   coverageThreshold?: CoverageThreshold;
   detectLeaks: boolean;
@@ -246,7 +251,6 @@ export type GlobalConfig = {
     };
   };
   expand: boolean;
-  extraGlobals: Array<string>;
   filter?: Path;
   findRelatedTests: boolean;
   forceExit: boolean;

@@ -364,14 +364,8 @@ exports[`.toBe() fails for: {"a": [Function a], "b": 2} and {"a": Any<Function>,
 
 <d>If it should pass with deep equality, replace "toBe" with "toStrictEqual"</>
 
-<g>- Expected  - 1</>
-<r>+ Received  + 1</>
-
-<d>  Object {</>
-<g>-   "a": Any<Function>,</>
-<r>+   "a": [Function a],</>
-<d>    "b": 2,</>
-<d>  }</>
+Expected: <g>{"a": Any<Function>, "b": 2}</>
+Received: <r>{"a": [Function a], "b": 2}</>
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 1} 1`] = `
@@ -2067,6 +2061,20 @@ exports[`.toEqual() {pass: false} expect([1]).toEqual([2]) 1`] = `
 <d>  ]</>
 `;
 
+exports[`.toEqual() {pass: false} expect([97, 98, 99]).toEqual([97, 98, 100]) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Uint8Array [</>
+<d>    97,</>
+<d>    98,</>
+<g>-   100,</>
+<r>+   99,</>
+<d>  ]</>
+`;
+
 exports[`.toEqual() {pass: false} expect({"0": "a", "1": "b", "2": "c"}).toEqual("abc") 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
@@ -2555,6 +2563,13 @@ exports[`.toEqual() {pass: true} expect([1]).not.toEqual([1]) 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 Expected: not <g>[1]</>
+
+`;
+
+exports[`.toEqual() {pass: true} expect([97, 98, 99]).not.toEqual([97, 98, 99]) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>[97, 98, 99]</>
 
 `;
 
