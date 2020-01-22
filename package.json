@@ -93,7 +93,7 @@
     "check-copyright-headers": "node ./scripts/checkCopyrightHeaders.js",
     "clean-all": "yarn clean-e2e && yarn build-clean && rimraf ./packages/*/node_modules && rimraf ./node_modules",
     "clean-e2e": "node ./scripts/cleanE2e.js",
-    "jest": "node ./packages/jest-cli/bin/jest.js",
+    "jest": "node ./packages/jest-cli/bin/jest.js --log-heap-usage",
     "jest-coverage": "yarn jest --coverage",
     "lint": "eslint . --cache --ext js,jsx,ts,tsx,md",
     "lint-es5-build": "eslint --no-eslintrc --no-ignore --env=browser packages/*/build-es5",
