@@ -241,6 +241,7 @@
 .button.landing {
   margin: 4px 10px;
   cursor: pointer;
+  text-transform: none;
 }
 
 .container .gridBlock .blockContent p.buttons-wrapper {

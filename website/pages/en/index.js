@@ -424,7 +424,7 @@ class Index extends React.Component {
                       Here are some examples:
                     </translate>
                   ),
-                  image: '/img/content/matchers/different-types.png',
+                  image: '/img/content/matchers/toBe.png',
                   imageAlign: 'right',
                   title: <translate>Great Exceptions</translate>,
                 },

@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[website]` Update pictures of reports when matchers fail ([#9214](https://github.com/facebook/jest/pull/9214))
+
 ### Performance
 
 ## 25.1.0
