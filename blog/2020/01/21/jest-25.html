@@ -1,0 +1,167 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Jest 25: 🚀 Laying foundations for the future · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Jest 25 is laying the groundwork for many major changes in the future. As such, we kept breaking changes to a minimum, but internal architecture changes may require attention during the upgrade. The main changes are an upgrade of JSDOM from v11 to v15, 10-15% faster test runs, a new diff view for outdated snapshots and dropped Node 6 support."/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Jest 25: 🚀 Laying foundations for the future · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/blog/2020/01/21/jest-25"/><meta property="og:description" content="Jest 25 is laying the groundwork for many major changes in the future. As such, we kept breaking changes to a minimum, but internal architecture changes may require attention during the upgrade. The main changes are an upgrade of JSDOM from v11 to v15, 10-15% faster test runs, a new diff view for outdated snapshots and dropped Node 6 support."/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/en"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/en/versions"><h3>25.1</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="/docs/en/getting-started" target="_self">Docs</a></li><li class=""><a href="/docs/en/api" target="_self">API</a></li><li class=""><a href="/en/help" target="_self">Help</a></li><li class="siteNavGroupActive"><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>English</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/ja">日本語</a></li><li><a href="/es-ES">Español</a></li><li><a href="/pt-BR">Português (Brasil)</a></li><li><a href="/ro">Română</a></li><li><a href="/ru">Русский</a></li><li><a href="/uk">Українська</a></li><li><a href="/zh-Hans">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(event) {
+          event.preventDefault();
+
+          if (languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Recent Posts</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Recent Posts</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/blog/2020/01/21/jest-25">Jest 25: 🚀 Laying foundations for the future</a></li><li class="navListItem"><a class="navItem" href="/blog/2019/01/25/jest-24-refreshing-polished-typescript-friendly">Jest 24: 💅 Refreshing, Polished, TypeScript-friendly</a></li><li class="navListItem"><a class="navItem" href="/blog/2018/06/27/supporting-jest-open-source">Supporting Jest Open Source</a></li><li class="navListItem"><a class="navItem" href="/blog/2018/05/29/jest-23-blazing-fast-delightful-testing">Jest 23: 🔥 Blazing Fast Delightful Testing</a></li><li class="navListItem"><a class="navItem" href="/blog/2017/12/18/jest-22">Jest 22: Refinements &amp; Custom Runners</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer postContainer blogContainer"><div class="wrapper"><div class="lonePost"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle"><a href="/blog/2020/01/21/jest-25">Jest 25: 🚀 Laying foundations for the future</a></h1><p class="post-meta">January 21, 2020</p><div class="authorBlock"><p class="post-authorName"><a href="https://github.com/SimenB" target="_blank" rel="noreferrer noopener">Simen Bekkhus</a></p><div class="authorPhoto"><a href="https://github.com/SimenB" target="_blank" rel="noreferrer noopener"><img src="https://graph.facebook.com/100003004880942/picture/?height=200&amp;width=200" alt="Simen Bekkhus"/></a></div></div></header><div><span><p>Jest 25 is laying the groundwork for many major changes in the future. As such, we kept breaking changes to a minimum, but internal architecture changes may require attention during the upgrade. The main changes are an upgrade of JSDOM from v11 to v15, 10-15% faster test runs, a new diff view for outdated snapshots and dropped Node 6 support.</p>
+<p>There has been more than 200 commits since Jest 24.9 by more than 80 different contributors, so as always, take a look at the <a href="https://github.com/facebook/jest/blob/master/CHANGELOG.md">changelog</a> for a full list of changes.</p>
+<!--truncate-->
+<h2><a class="anchor" aria-hidden="true" id="bye-node-6"></a><a href="#bye-node-6" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Bye Node 6</h2>
+<p>Node 6 has been EOL since April 30th 2019, and Jest 25 leaves it behind. Dropping Node 6 means we can upgrade our dependencies, the main one being JSDOM, which has been upgraded to version 15. Upgrading also means we no longer have to transpile <code>async-await</code> syntax, which results in both faster code execution and less memory consumption. As a bonus, Jest’s transpiled code should be easier to debug if anyone finds themselves tumbling down that particular rabbit hole.</p>
+<p>Even though Node 8 has also entered EOL, Jest 25 will keep support for it to make the upgrade as easy as possible for those of us who still support Node 8. It does come with some tradeoffs though, such as JSDOM v16 having been released without Node 8 support, so you'll need to use <a href="https://www.npmjs.com/package/jest-environment-jsdom-sixteen"><code>jest-environment-jsdom-sixteen</code></a> if you want to use the latest version.</p>
+<h2><a class="anchor" aria-hidden="true" id="performance-improvements"></a><a href="#performance-improvements" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Performance improvements</h2>
+<p>We’ve gotten reports that Jest has slowed down over the last couple of releases. Jest 25 includes upgraded Micromatch, which brings huge gains in startup time, and some bug fixes and performance tweaks which brings Jest back to the speed it was at for Jest 23. For Jest itself, like mentioned at the beginning of this post, that means a 10-15% reduction of test runtime. We're always looking to improve here of course, so please check how it stacks up against earlier versions and create issues if we should be better!</p>
+<h2><a class="anchor" aria-hidden="true" id="v8-code-coverage"></a><a href="#v8-code-coverage" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>V8 Code Coverage</h2>
+<p>Jest’s current code coverage instrumentation is powered by <code>babel-plugin-istanbul</code> inserting code coverage collection code before creating reports. However, this is quite slow and memory-intensive, especially for large files and code bases. Luckily, V8 has built-in code coverage, which is becoming more and more usable in Node thanks to the hard work of <a href="https://github.com/bcoe">Benjamin Coe</a> and others on the V8 and Node.js teams. Jest 25 comes with experimental support for this via a new <code>--coverage-provider</code> flag. Please see its <a href="/docs/en/configuration#coverageprovider-string">documentation</a> for caveats and how to use it.</p>
+<h2><a class="anchor" aria-hidden="true" id="thinking-fast-and-slow-when-tests-fail"></a><a href="#thinking-fast-and-slow-when-tests-fail" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Thinking fast and slow when tests fail</h2>
+<p>Unnecessary effort to interpret the reports when tests fail hinders:</p>
+<ul>
+<li>“thinking fast” to recognize patterns from your past experience</li>
+<li>“thinking slow” to analyze changes and decide whether they are expected progress or unexpected regressions</li>
+</ul>
+<p>Jest 25 completes the second half of an effort begun in Jest 24 to improve all matchers:</p>
+<ul>
+<li>correct description line, including <code>.rejects</code>, <code>.resolves</code>, and <code>.not</code> modifiers</li>
+<li>concise labels and consistent alignment for expected and received values</li>
+<li>inverse highlight of substring differences when expected and received are strings</li>
+<li>counts of change lines in differences to know if they are only delete or insert</li>
+</ul>
+<p>Special thanks to Jest maintainer <a href="https://github.com/pedrottimark">Mark Pedrotti</a> for driving this effort and his continued work towards making expectation errors as good as they can be.</p>
+<h2><a class="anchor" aria-hidden="true" id="colors-of-differences-when-snapshot-tests-fail"></a><a href="#colors-of-differences-when-snapshot-tests-fail" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Colors of differences when snapshot tests fail</h2>
+<p>The most obvious change to replace confusion with confidence is the colors of change lines in differences when snapshot tests fail:</p>
+<ul>
+<li><code>- Snapshot</code> changes from green to <strong>magenta</strong></li>
+<li><code>+ Received</code> changes from red to <strong>teal</strong> foreground on cyan/aqua background</li>
+</ul>
+<p>Examples of snapshot test reports (before at left and after at right)</p>
+<ol>
+<li>Counts of changed lines confirm your first impression which way did the snapshot change (that is, deleted or inserted lines)</li>
+</ol>
+<p><img src="/img/blog/25-snapshot-insert-lines.png" alt="snapshot-insert-lines"></p>
+<ol start="2">
+<li>Background colors attract your eyes to compare adjacent changed lines</li>
+</ol>
+<p><img src="/img/blog/25-snapshot-change-lines.png" alt="snapshot-change-lines"></p>
+<ol start="3">
+<li>Background colors also help you see which <code>toThrow</code> tests require a decision whether or not to update the snapshot</li>
+</ol>
+<p><img src="/img/blog/25-snapshot-change-substrings.png" alt="snapshot-change-substrings"></p>
+<p>Here are some reasons why we chose unique colors:</p>
+<ul>
+<li>The 95% of people who have full color vision can quickly recognize which reports are from snapshot tests versus all other matchers.</li>
+<li>It solves the direct conflict between meaning of green/red in Jest tests versus red/green in code review.</li>
+<li>Unlike a reversal to red/green which suggests that update is the default decision, it suggests that differences require more careful review for possible regression in local snapshot test failures than in code review (when problems have already been fixed).</li>
+</ul>
+<p>The difference in hue from magenta at 300° to teal/cyan/aqua at 180° gives better color vision accessibility and the light background tint for changed lines gives consistent contrast on light and dark themes.</p>
+<p>If you maintain a command line tool, you might find inspiration to improve its accessibility in <a href="https://github.com/facebook/jest/pull/9132">#9132</a>.</p>
+<h2><a class="anchor" aria-hidden="true" id="ecmascript-modules-support"></a><a href="#ecmascript-modules-support" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ECMAScript Modules support</h2>
+<p>Node 13 has unflagged ESM support, and we have started a tiny bit working towards native support in Jest. Jest 25 includes support for <code>jest.config.cjs</code> and <code>jest.config.mjs</code> configuration files, but tests themselves cannot yet be written using ESM without something like Babel or TypeScript transforming it into CJS.</p>
+<p>The APIs Jest will use are still flagged and experimental, so don't expect support right away. These APIs are something the <a href="https://github.com/nodejs/modules">Node.js Modules team</a> is actively working on, and we'll be keeping an eye on it moving forward and experiment with them so we can provide feedback. You can subscribe to <a href="https://github.com/facebook/jest/issues/9430">this issue</a> to get any updates about the implementation status in Jest.</p>
+<h2><a class="anchor" aria-hidden="true" id="other-improvements-and-updates"></a><a href="#other-improvements-and-updates" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Other improvements and updates</h2>
+<ul>
+<li>Jest has passed <a href="https://github.com/facebook/jest/graphs/contributors">1000 unique contributors</a>. This is an incredible milestone! Thank you to everybody who helps us make testing as delightful as possible.</li>
+<li>Thanks to community member <a href="https://github.com/JoshRosenstein">Josh Rosenstein</a>, Jest now comes with support for <code>BigInt</code> in most matchers, such as <code>toBeGreaterThan</code>. Jest will also understand bigint literals out of the box.</li>
+<li>Jest’s feature <code>--detect-leaks</code> has been broken for Node 12 and newer - this has been fixed in Jest 25.</li>
+<li>As announced in the blog post for Jest 24, Jest’s code base has been rewritten in TypeScript - this work was completed in Jest 24.3. So if you use any of Jest’s individual parts, you should get great IDE integration. Looking forward, we really want to make Jest mocks play nicer with type systems, and we’d love the community’s help with this. Please chime in <a href="https://github.com/facebook/jest/issues/7832">here</a> with ideas and send PRs! We’ll also be investigating moving the typings for using Jest as a test runner from DefinitelyTyped into Jest itself.</li>
+<li>The <code>jest-diff</code> package now exports functions like <code>diffLinesUnified</code> and <code>diffStringsUnified</code> which have configuration options, so other applications can format differences in a custom way. For more information and code examples, see its new <code>README.md</code> file in the Jest repository or on package repositories.</li>
+<li>Thanks to community member <a href="https://github.com/WeiAnAn">Wei An Yen</a>, Jest will no longer highlight passing asymmetric matchers in expectation errors. This has been a long-standing pain point with asmmetric matchers and we're very happy it's finally solved.</li>
+<li>For the second year running, Jest won the Highest Satisfaction award from <a href="https://2019.stateofjs.com/awards/">State of JS</a>. We are incredibly grateful for the support from the community, and hope we can build on this momentum to make 2020 even better!</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="plans-for-the-future"></a><a href="#plans-for-the-future" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Plans for the future</h2>
+<ul>
+<li>Jest’s configuration is vast and somewhat clunky - there is often <em>at least</em> two ways of doing the same thing, oftentimes even more. For Jest 26 we hope to condense the config down, and make it more predictable. See this <a href="https://github.com/facebook/jest/issues/7185">issue</a> for details.</li>
+<li>We also hope to be able to provide a proper programmatic API for running Jest, to make integration into IDEs and other tooling easier. Please see <a href="https://github.com/facebook/jest/issues/5048">this</a> tracking issue.</li>
+<li>There’s been an open PR for adding Lolex as an implementation of Jest’s fake timers since December 2017. While we’re not adding it to any public APIs in Jest 25, support for it is technically included and you we're looking into how to expose this so people can test and experiment with it. Using it means you can mock out <code>Date</code> and other timer function Jest currently doesn’t touch. Note that this should be considered experimental, and a proper API support will come in a later release. Follow <a href="https://github.com/facebook/jest/pull/7776">this PR</a> for the latest updates on the status.</li>
+</ul>
+<p>Happy Jesting! 🃏</p>
+</span></div></div><div class="blogSocialSection"><div class="blogSocialSectionItem"><a href="https://twitter.com/share" class="twitter-share-button" data-text="Jest 25: 🚀 Laying foundations for the future" data-url="https://jestjs.io/blog/2020/01/21/jest-25" data-related="true" data-show-count="false">Tweet</a></div></div></div><div class="blog-recent"><a class="button" href="/blog/">Recent Posts</a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#bye-node-6">Bye Node 6</a></li><li><a href="#performance-improvements">Performance improvements</a></li><li><a href="#v8-code-coverage">V8 Code Coverage</a></li><li><a href="#thinking-fast-and-slow-when-tests-fail">Thinking fast and slow when tests fail</a></li><li><a href="#colors-of-differences-when-snapshot-tests-fail">Colors of differences when snapshot tests fail</a></li><li><a href="#ecmascript-modules-support">ECMAScript Modules support</a></li><li><a href="#other-improvements-and-updates">Other improvements and updates</a></li><li><a href="#plans-for-the-future">Plans for the future</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/en/getting-started.html">Getting Started</a><a href="/docs/en/snapshot-testing.html">Guides</a><a href="/docs/en/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {"facetFilters":["language:en","version:25.1"]}
+              });
+            </script></body></html>

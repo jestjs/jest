@@ -2,11 +2,25 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://jestjs.io/blog</id>
     <title>Jest Blog</title>
-    <updated>2019-01-25T06:00:00.000Z</updated>
+    <updated>2020-01-21T06:00:00.000Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://jestjs.io/blog"/>
     <subtitle>The best place to stay up-to-date with the latest Jest news and events.</subtitle>
     <logo>https://jestjs.io/img/jest.svg</logo>
+    <entry>
+        <title type="html"><![CDATA[Jest 25: 🚀 Laying foundations for the future]]></title>
+        <id>https://jestjs.io/blog/2020/01/21/jest-25.html</id>
+        <link href="https://jestjs.io/blog/2020/01/21/jest-25.html"/>
+        <updated>2020-01-21T06:00:00.000Z</updated>
+        <summary type="html"><![CDATA[<p>Jest 25 is laying the groundwork for many major changes in the future. As such, we kept breaking changes to a minimum, but internal architecture changes may require attention during the upgrade. The main changes are an upgrade of JSDOM from v11 to v15, 10-15% faster test runs, a new diff view for outdated snapshots and dropped Node 6 support.</p>
+<p>There has been more than 200 commits since Jest 24.9 by more than 80 different contributors, so as always, take a look at the <a href="https://github.com/facebook/jest/blob/master/CHANGELOG.md">changelog</a> for a full list of changes.</p>
+]]></summary>
+        <author>
+            <name>Simen Bekkhus</name>
+            <email/>
+            <uri>https://github.com/SimenB</uri>
+        </author>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Jest 24: 💅 Refreshing, Polished, TypeScript-friendly]]></title>
         <id>https://jestjs.io/blog/2019/01/25/jest-24-refreshing-polished-typescript-friendly.html</id>

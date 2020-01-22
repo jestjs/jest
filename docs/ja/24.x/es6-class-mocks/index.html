@@ -1,0 +1,362 @@
+<!DOCTYPE html><html lang="ja"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>ES6 Class Mocks · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Jest は、テストしたいファイルにインポートした ES6 クラスをモックすることもできます。"/><meta name="docsearch:version" content="24.x"/><meta name="docsearch:language" content="ja"/><meta property="og:title" content="ES6 Class Mocks · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="Jest は、テストしたいファイルにインポートした ES6 クラスをモックすることもできます。"/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/ja"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/ja/versions"><h3>24.x</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/ja/24.x/getting-started" target="_self">ドキュメント</a></li><li class="siteNavGroupActive"><a href="/docs/ja/24.x/api" target="_self">API</a></li><li class=""><a href="/ja/help" target="_self">ヘルプ</a></li><li class=""><a href="/blog/" target="_self">ブログ</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>日本語</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/24.x/es6-class-mocks">English</a></li><li><a href="/docs/es-ES/24.x/es6-class-mocks">Español</a></li><li><a href="/docs/pt-BR/24.x/es6-class-mocks">Português (Brasil)</a></li><li><a href="/docs/ro/24.x/es6-class-mocks">Română</a></li><li><a href="/docs/ru/24.x/es6-class-mocks">Русский</a></li><li><a href="/docs/uk/24.x/es6-class-mocks">Українська</a></li><li><a href="/docs/zh-Hans/24.x/es6-class-mocks">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(event) {
+          event.preventDefault();
+
+          if (languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Guides</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/snapshot-testing">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/manual-mocks">Manual Mocks</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/ja/24.x/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/dynamodb">Using with DynamoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/architecture">Architecture</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Framework Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/api">Globals</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/24.x/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/Es6ClassMocks.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">ES6 Class Mocks</h1></header><article><div><span><p>Jest は、テストしたいファイルにインポートした ES6 クラスをモックすることもできます。</p>
+<p>ES6 クラスというのは、いくつかの糖衣構文を加えたコンストラクタ関数です。 したがって、ES6 クラスのモックは、何らかの関数であるか、もう一つの ES6 クラス (繰り返しますが、これは別の関数です) になります。 そのため、<a href="/docs/ja/24.x/mock-functions">モック関数</a>を使用することでモックを作成できます。</p>
+<h2><a class="anchor" aria-hidden="true" id="es6-クラスの例"></a><a href="#es6-クラスの例" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ES6 クラスの例</h2>
+<p>具体例として、音楽ファイルを再生するクラス <code>SoundPlayer</code> とそのクラスを使用する消費者クラス <code>SoundPlayerConsumer</code> について考えてみましょう。 <code>SoundPlayerConsumer</code> のテスト内で、<code>SoundPlayer</code> クラスをモックするには、次のようなコードを書きます。</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// sound-player.js</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SoundPlayer</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.foo = <span class="hljs-string">'bar'</span>;
+  }
+
+  playSoundFile(fileName) {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Playing sound file '</span> + fileName);
+  }
+}
+</code></pre>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// sound-player-consumer.js</span>
+<span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SoundPlayerConsumer</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.soundPlayer = <span class="hljs-keyword">new</span> SoundPlayer();
+  }
+
+  playSomethingCool() {
+    <span class="hljs-keyword">const</span> coolSoundFileName = <span class="hljs-string">'song.mp3'</span>;
+    <span class="hljs-keyword">this</span>.soundPlayer.playSoundFile(coolSoundFileName);
+  }
+}
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="es6-クラスのモックを作る4つの方法"></a><a href="#es6-クラスのモックを作る4つの方法" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ES6 クラスのモックを作る4つの方法</h2>
+<h3><a class="anchor" aria-hidden="true" id="自動モック"></a><a href="#自動モック" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>自動モック</h3>
+<p><code>jest.mock('./sound-player')</code> を呼ぶと、便利な &quot;自動モック&quot; を返してくれます。これは、クラスのコンストラクタおよびすべてのメソッドの呼び出しをスパイするのに使用できます。 この関数は ES6 クラスをモックコンストラクタに置き換え、すべてのメソッドを、常に <code>undefined</code> を返す<a href="/docs/ja/24.x/mock-functions">モック関数</a>に置き換えます。 メソッドの呼び出しは <code>theAutomaticMock.mock.instances[index].methodName.mock.calls</code> に保存されます。</p>
+<p>クラス内でアロー関数を使用する場合、アロー関数は<em>モックの一部にはならない</em>ということに注意してください。 なぜなら、アロー関数はオブジェクトのプロトタイプには現れず、単に関数への参照を保持しているプロパティに過ぎないためです。</p>
+<p>If you don't need to replace the implementation of the class, this is the easiest option to set up. 例：</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">import</span> SoundPlayerConsumer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player-consumer'</span>;
+jest.mock(<span class="hljs-string">'./sound-player'</span>); <span class="hljs-comment">// SoundPlayer is now a mock constructor</span>
+
+beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-comment">// Clear all instances and calls to constructor and all methods:</span>
+  SoundPlayer.mockClear();
+});
+
+it(<span class="hljs-string">'We can check if the consumer called the class constructor'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+  expect(SoundPlayer).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
+});
+
+it(<span class="hljs-string">'We can check if the consumer called a method on the class instance'</span>, () =&gt; {
+  <span class="hljs-comment">// Show that mockClear() is working:</span>
+  expect(SoundPlayer).not.toHaveBeenCalled();
+
+  <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+  <span class="hljs-comment">// Constructor should have been called again:</span>
+  expect(SoundPlayer).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
+
+  <span class="hljs-keyword">const</span> coolSoundFileName = <span class="hljs-string">'song.mp3'</span>;
+  soundPlayerConsumer.playSomethingCool();
+
+  <span class="hljs-comment">// mock.instances is available with automatic mocks:</span>
+  <span class="hljs-keyword">const</span> mockSoundPlayerInstance = SoundPlayer.mock.instances[<span class="hljs-number">0</span>];
+  <span class="hljs-keyword">const</span> mockPlaySoundFile = mockSoundPlayerInstance.playSoundFile;
+  expect(mockPlaySoundFile.mock.calls[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>]).toEqual(coolSoundFileName);
+  <span class="hljs-comment">// Equivalent to above check:</span>
+  expect(mockPlaySoundFile).toHaveBeenCalledWith(coolSoundFileName);
+  expect(mockPlaySoundFile).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="マニュアルモック"></a><a href="#マニュアルモック" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>マニュアルモック</h3>
+<p><a href="/docs/ja/24.x/manual-mocks">マニュアルモック</a>を作るには、モックの実装を <code>__mocks__</code> ディレクトリに保存します。 これにより、特定の実装をテストファイル全体で使用することができるようになります。</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// __mocks__/sound-player.js</span>
+
+<span class="hljs-comment">// Import this named export into your test file:</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mockPlaySoundFile = jest.fn();
+<span class="hljs-keyword">const</span> mock = jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: mockPlaySoundFile};
+});
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> mock;
+</code></pre>
+<p>すべてのインスタンスで共有される、モックとモックメソッドをインポートします。</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// sound-player-consumer.test.js</span>
+<span class="hljs-keyword">import</span> SoundPlayer, {mockPlaySoundFile} <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">import</span> SoundPlayerConsumer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player-consumer'</span>;
+jest.mock(<span class="hljs-string">'./sound-player'</span>); <span class="hljs-comment">// SoundPlayer is now a mock constructor</span>
+
+beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-comment">// Clear all instances and calls to constructor and all methods:</span>
+  SoundPlayer.mockClear();
+  mockPlaySoundFile.mockClear();
+});
+
+it(<span class="hljs-string">'We can check if the consumer called the class constructor'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+  expect(SoundPlayer).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
+});
+
+it(<span class="hljs-string">'We can check if the consumer called a method on the class instance'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+  <span class="hljs-keyword">const</span> coolSoundFileName = <span class="hljs-string">'song.mp3'</span>;
+  soundPlayerConsumer.playSomethingCool();
+  expect(mockPlaySoundFile).toHaveBeenCalledWith(coolSoundFileName);
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="jestmockdocsja24xjest-objectjestmockmodulename-factory-options-をモジュールファクトリ引数で呼ぶ"></a><a href="#jestmockdocsja24xjest-objectjestmockmodulename-factory-options-をモジュールファクトリ引数で呼ぶ" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><a href="/docs/ja/24.x/jest-object#jestmockmodulename-factory-options"><code>jest.mock()</code></a> をモジュールファクトリ引数で呼ぶ</h3>
+<p><code>jest.mock(path, moduleFactory)</code> takes a <strong>module factory</strong> argument. A module factory is a function that returns the mock.</p>
+<p>コンストラクタ関数をモックするためには、モジュールファクトリはコンストラクタ関数を返さなければなりません。 言い換えると、モジュールファクトリは関数を返す関数、つまり高階関数 (high-order function; HOF) でなければなりません。</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">const</span> mockPlaySoundFile = jest.fn();
+jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: mockPlaySoundFile};
+  });
+});
+</code></pre>
+<p>ファクトリ引数の制限は、<code>jest.mock()</code> が呼ばれるのがファイルの先頭であるため、最初に変数を定義してからファクトリの中で使うことができないことです。 そのため、'mock' から始まる名前の変数は例外となっています。 それらの変数を初期化することは、あなたの責任です。 For example, the following will throw an out-of-scope error due to the use of 'fake' instead of 'mock' in the variable declaration:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// Note: this will fail</span>
+<span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">const</span> fakePlaySoundFile = jest.fn();
+jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: fakePlaySoundFile};
+  });
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="mockimplementationdocsja24xmock-function-apimockfnmockimplementationfn-または-mockimplementationoncedocsja24xmock-function-apimockfnmockimplementationoncefn-を使用したモックを置き換える"></a><a href="#mockimplementationdocsja24xmock-function-apimockfnmockimplementationfn-または-mockimplementationoncedocsja24xmock-function-apimockfnmockimplementationoncefn-を使用したモックを置き換える" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><a href="/docs/ja/24.x/mock-function-api#mockfnmockimplementationfn"><code>mockImplementation()</code></a> または <a href="/docs/ja/24.x/mock-function-api#mockfnmockimplementationoncefn"><code>mockImplementationOnce()</code></a> を使用したモックを置き換える</h3>
+<p>以上すべてのモックで実装を変更するには、1つのテストまたはすべてのテストに対して、既存のモックの中で <code>mockImplementation()</code> を呼び出します。</p>
+<p>jest.mock の呼び出しはコードのトップに引き上げられます。 たとえば <code>beforeAll()</code> の中などで後からモックを指定するには、ファクトリ引数で指定するのではなく、<code>mockImplementation()</code> (または <code>mockImplementationOnce()</code>) を既存のモックの中で呼び出します。 これにより、テスト間で必要に応じてモックを変更することができるようになります。</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">import</span> SoundPlayerConsumer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player-consumer'</span>;
+
+jest.mock(<span class="hljs-string">'./sound-player'</span>);
+
+describe(<span class="hljs-string">'When SoundPlayer throws an error'</span>, () =&gt; {
+  beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    SoundPlayer.mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">playSoundFile</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+          <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Test error'</span>);
+        },
+      };
+    });
+  });
+
+  it(<span class="hljs-string">'Should throw an error when calling playSomethingCool'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+    expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> soundPlayerConsumer.playSomethingCool()).toThrow();
+  });
+});
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="踏み込んだ話-モックコンストラクタ関数を理解する"></a><a href="#踏み込んだ話-モックコンストラクタ関数を理解する" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>踏み込んだ話: モックコンストラクタ関数を理解する</h2>
+<p>コンストラクタ関数を構築する時、<code>jest.fn().mockImplementation()</code> を使用したモックは実際よりも複雑な見た目になります。 This section shows how you can create your own mocks to illustrate how mocking works.</p>
+<h3><a class="anchor" aria-hidden="true" id="マニュアルモックは1つの-es6-クラスである"></a><a href="#マニュアルモックは1つの-es6-クラスである" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>マニュアルモックは1つの ES6 クラスである</h3>
+<p><code>__mocks__</code> ディレクトリ内にモッククラスと同じファイル名を使用した ES6 クラスを定義すると、モックとして機能します。 このクラスは実際のクラスの代わりに使われます。 これにより、クラスにテスト実装を注入できますが、関数呼び出しをスパイする手段は提供されません。</p>
+<p>具体例として、モックは次のようになります。</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// __mocks__/sound-player.js</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SoundPlayer</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Mock SoundPlayer: constructor was called'</span>);
+  }
+
+  playSoundFile() {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Mock SoundPlayer: playSoundFile was called'</span>);
+  }
+}
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="mock-using-module-factory-parameter"></a><a href="#mock-using-module-factory-parameter" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Mock using module factory parameter</h3>
+<p><code>jest.mock(path, moduleFactory)</code> に渡されたモジュールファクトリ関数は、function* を返す高階関数にすることもできます。 こうすることで、モックに対して <code>new</code> を呼ぶことができます。 繰り返しますが、こうすることで、テストに異なる動作を挿入することができますが、関数の呼び出しをスパイすることはできません。</p>
+<h4><a class="anchor" aria-hidden="true" id="-モジュールファクトリ関数は関数を返さなければならない"></a><a href="#-モジュールファクトリ関数は関数を返さなければならない" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>* モジュールファクトリ関数は関数を返さなければならない</h4>
+<p>コンストラクタ関数をモックするためには、モジュールファクトリはコンストラクタ関数を返さなければなりません。 言い換えると、モジュールファクトリは関数を返す関数、つまり高階関数 (high-order function; HOF) でなければなりません。</p>
+<pre><code class="hljs css language-javascript">jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {}};
+  };
+});
+</code></pre>
+<p><strong><em>注意: アロー関数は機能しません</em></strong></p>
+<p>Note that the mock can't be an arrow function because calling <code>new</code> on an arrow function is not allowed in JavaScript. So this won't work:</p>
+<pre><code class="hljs css language-javascript">jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-comment">// Does not work; arrow functions can't be called with new</span>
+    <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {}};
+  };
+});
+</code></pre>
+<p>This will throw <strong><em>TypeError: _soundPlayer2.default is not a constructor</em></strong>, unless the code is transpiled to ES5, e.g. by <code>@babel/preset-env</code>. (ES5 にはアロー関数やクラスが存在しないため、両方とも単純な関数に変換されるためです。)</p>
+<h2><a class="anchor" aria-hidden="true" id="使用状況をトラックし続ける-モックをスパイする"></a><a href="#使用状況をトラックし続ける-モックをスパイする" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>使用状況をトラックし続ける (モックをスパイする)</h2>
+<p>テストの実装を注入するのは便利ですが、おそらく、クラスのコンストラクタやメソッドが正しい引数で呼ばれたかどうかも確認したいと考えるでしょう。</p>
+<h3><a class="anchor" aria-hidden="true" id="コンストラクタをスパイする"></a><a href="#コンストラクタをスパイする" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>コンストラクタをスパイする</h3>
+<p>コンストラクタの呼び出しを追跡するには、高階関数が返す関数を Jest のモック関数に置換します。 モック関数は <a href="/docs/ja/24.x/jest-object#jestfnimplementation"><code>jest.fn()</code></a> で作ることができ、関数の実装は <code>mockImplementation()</code> で指定します。</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
+  <span class="hljs-comment">// Works and lets you check for constructor calls:</span>
+  <span class="hljs-keyword">return</span> jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {}};
+  });
+});
+</code></pre>
+<p>これにより、<code>SoundPlayer.mock.calls</code>: <code>expect(SoundPlayer).toHaveBeenCalled();</code> または、それと同等のコード <code>expect(SoundPlayer.mock.calls.length).toEqual(1);</code> によってモッククラスの使用状況が確認できます。</p>
+<h3><a class="anchor" aria-hidden="true" id="クラスのメソッドをスパイする"></a><a href="#クラスのメソッドをスパイする" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>クラスのメソッドをスパイする</h3>
+<p>モッククラスは、任意のメンバー関数 (コード例では <code>playSoundFile</code>) を提供する必要があります。もし必要な関数がなければ、存在しない関数を呼び出した時にエラーが起こります。 しかし、おそらく期待通りの引数で呼び出されたことを確認するために、これらのメソッドの呼び出しに対してもスパイしたいと考えるでしょう。</p>
+<p>テスト中は、モックコンストラクタ関数が呼ばれるたびに、新しいオブジェクトが作られます。 これらすべてのオブジェクトのメソッドの呼び出しをスパイするために、<code>playSoundFile</code> とその他のモック関数を作成し、テスト中に利用できるようにその同一のモック関数への参照を保存しておきます。</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">const</span> mockPlaySoundFile = jest.fn();
+jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: mockPlaySoundFile};
+    <span class="hljs-comment">// Now we can track calls to playSoundFile</span>
+  });
+});
+</code></pre>
+<p>このコードと同等のマニュアルモックは、次のように書けるでしょう。</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// __mocks__/sound-player.js</span>
+
+<span class="hljs-comment">// Import this named export into your test file</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mockPlaySoundFile = jest.fn();
+<span class="hljs-keyword">const</span> mock = jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: mockPlaySoundFile};
+});
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> mock;
+</code></pre>
+<p>使用例は、モジュールファクトリ関数と同様ですが、<code>jest.mock()</code> の第2引数を省略することができる点と、モックしたメソッドがテストファイル内にはないので、それをインポートする必要がある点が異なります。 <code>__mocks__</code> を含まない、オリジナルのモジュールパスを使用してください。</p>
+<h3><a class="anchor" aria-hidden="true" id="テスト間でのクリーンアップ"></a><a href="#テスト間でのクリーンアップ" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>テスト間でのクリーンアップ</h3>
+<p>モックコンストラクタ関数とメソッドの呼び出しの記録をクリアするには、<a href="/docs/ja/24.x/mock-function-api#mockfnmockclear"><code>mockClear()</code></a> を <code>beforeEach()</code> 関数の中で呼びます。</p>
+<pre><code class="hljs css language-javascript">beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  SoundPlayer.mockClear();
+  mockPlaySoundFile.mockClear();
+});
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="完全に動作するコード例"></a><a href="#完全に動作するコード例" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>完全に動作するコード例</h2>
+<p>以下に完全に動作するテストファイルの例を挙げます。このコードでは、<code>jest.mock</code> に対してモジュールファクトリ引数を与えています。</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// sound-player-consumer.test.js</span>
+<span class="hljs-keyword">import</span> SoundPlayerConsumer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player-consumer'</span>;
+<span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+
+<span class="hljs-keyword">const</span> mockPlaySoundFile = jest.fn();
+jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: mockPlaySoundFile};
+  });
+});
+
+beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  SoundPlayer.mockClear();
+  mockPlaySoundFile.mockClear();
+});
+
+it(<span class="hljs-string">'The consumer should be able to call new() on SoundPlayer'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+  <span class="hljs-comment">// Ensure constructor created the object:</span>
+  expect(soundPlayerConsumer).toBeTruthy();
+});
+
+it(<span class="hljs-string">'We can check if the consumer called the class constructor'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+  expect(SoundPlayer).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
+});
+
+it(<span class="hljs-string">'We can check if the consumer called a method on the class instance'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+  <span class="hljs-keyword">const</span> coolSoundFileName = <span class="hljs-string">'song.mp3'</span>;
+  soundPlayerConsumer.playSomethingCool();
+  expect(mockPlaySoundFile.mock.calls[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>]).toEqual(coolSoundFileName);
+});
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/ja/24.x/manual-mocks"><span class="arrow-prev">← </span><span>Manual Mocks</span></a><a class="docs-next button" href="/docs/ja/24.x/bypassing-module-mocks"><span>Bypassing module mocks</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#es6-クラスの例">ES6 クラスの例</a></li><li><a href="#es6-クラスのモックを作る4つの方法">ES6 クラスのモックを作る4つの方法</a><ul class="toc-headings"><li><a href="#自動モック">自動モック</a></li><li><a href="#マニュアルモック">マニュアルモック</a></li><li><a href="#jestmockdocsja24xjest-objectjestmockmodulename-factory-options-をモジュールファクトリ引数で呼ぶ"><a href="/docs/ja/24.x/jest-object#jestmockmodulename-factory-options"><code>jest.mock()</code></a> をモジュールファクトリ引数で呼ぶ</a></li><li><a href="#mockimplementationdocsja24xmock-function-apimockfnmockimplementationfn-または-mockimplementationoncedocsja24xmock-function-apimockfnmockimplementationoncefn-を使用したモックを置き換える"><a href="/docs/ja/24.x/mock-function-api#mockfnmockimplementationfn"><code>mockImplementation()</code></a> または <a href="/docs/ja/24.x/mock-function-api#mockfnmockimplementationoncefn"><code>mockImplementationOnce()</code></a> を使用したモックを置き換える</a></li></ul></li><li><a href="#踏み込んだ話-モックコンストラクタ関数を理解する">踏み込んだ話: モックコンストラクタ関数を理解する</a><ul class="toc-headings"><li><a href="#マニュアルモックは1つの-es6-クラスである">マニュアルモックは1つの ES6 クラスである</a></li><li><a href="#mock-using-module-factory-parameter">Mock using module factory parameter</a></li></ul></li><li><a href="#使用状況をトラックし続ける-モックをスパイする">使用状況をトラックし続ける (モックをスパイする)</a><ul class="toc-headings"><li><a href="#コンストラクタをスパイする">コンストラクタをスパイする</a></li><li><a href="#クラスのメソッドをスパイする">クラスのメソッドをスパイする</a></li><li><a href="#テスト間でのクリーンアップ">テスト間でのクリーンアップ</a></li></ul></li><li><a href="#完全に動作するコード例">完全に動作するコード例</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/ja/getting-started.html">Getting Started</a><a href="/docs/ja/snapshot-testing.html">Guides</a><a href="/docs/ja/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {"facetFilters":["language:ja","version:24.x"]}
+              });
+            </script></body></html>

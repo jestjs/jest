@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>The Jest Object · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest&#x27;s overall behavior."/><meta name="docsearch:version" content="24.9"/><meta name="docsearch:language" content="pt-BR"/><meta property="og:title" content="The Jest Object · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest&#x27;s overall behavior."/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+<!DOCTYPE html><html lang="pt-BR"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>The Jest Object · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest&#x27;s overall behavior."/><meta name="docsearch:version" content="25.1"/><meta name="docsearch:language" content="pt-BR"/><meta property="og:title" content="The Jest Object · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest&#x27;s overall behavior."/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -6,7 +6,7 @@
 
               ga('create', 'UA-44373548-17', 'auto');
               ga('send', 'pageview');
-            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/pt-BR"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/pt-BR/versions"><h3>24.9</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/pt-BR/getting-started" target="_self">Documentação</a></li><li class="siteNavGroupActive"><a href="/docs/pt-BR/api" target="_self">API</a></li><li class=""><a href="/pt-BR/help" target="_self">Ajuda</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Português (Brasil)</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/jest-object">English</a></li><li><a href="/docs/ja/jest-object">日本語</a></li><li><a href="/docs/es-ES/jest-object">Español</a></li><li><a href="/docs/ro/jest-object">Română</a></li><li><a href="/docs/ru/jest-object">Русский</a></li><li><a href="/docs/uk/jest-object">Українська</a></li><li><a href="/docs/zh-Hans/jest-object">简体中文</a></li></ul></div></li><script>
+            </script><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/pt-BR"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/pt-BR/versions"><h3>25.1</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/pt-BR/getting-started" target="_self">Documentação</a></li><li class="siteNavGroupActive"><a href="/docs/pt-BR/api" target="_self">API</a></li><li class=""><a href="/pt-BR/help" target="_self">Ajuda</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Português (Brasil)</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/jest-object">English</a></li><li><a href="/docs/ja/jest-object">日本語</a></li><li><a href="/docs/es-ES/jest-object">Español</a></li><li><a href="/docs/ro/jest-object">Română</a></li><li><a href="/docs/ru/jest-object">Русский</a></li><li><a href="/docs/uk/jest-object">Українська</a></li><li><a href="/docs/zh-Hans/jest-object">简体中文</a></li></ul></div></li><script>
         const languagesMenuItem = document.getElementById("languages-menu");
         const languagesDropDown = document.getElementById("languages-dropdown");
         languagesMenuItem.addEventListener("click", function(event) {
@@ -170,33 +170,33 @@ test(<span class="hljs-string">'implementation created by jest.genMockFromModule
 <h4><a class="anchor" aria-hidden="true" id="primitives"></a><a href="#primitives" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>Primitives</code></h4>
 <p>Creates a new property with the same primitive value as the original property.</p>
 <p>Exemplo:</p>
-<pre><code class="hljs">// example.js
-module.exports = {
-  function: function square(a, b) {
-    return a * b;
+<pre><code class="hljs"><span class="hljs-comment">// example.js</span>
+<span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-function"><span class="hljs-keyword">function</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">square</span>(<span class="hljs-params">a, b</span>) </span>{
+    <span class="hljs-title">return</span> <span class="hljs-title">a</span> * <span class="hljs-title">b</span></span>;
   },
-  asyncFunction: async function asyncSquare(a, b) {
-    const result = await a * b;
-    return result;
+  asyncFunction: <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">asyncSquare</span>(<span class="hljs-params">a, b</span>) </span>{
+    <span class="hljs-keyword">const</span> result = <span class="hljs-keyword">await</span> a * b;
+    <span class="hljs-keyword">return</span> result;
   },
-  class: new class Bar {
-    constructor() {
-      this.array = [1, 2, 3];
+  <span class="hljs-keyword">class</span>: <span class="hljs-keyword">new</span> <span class="hljs-keyword">class</span> Bar {
+    <span class="hljs-keyword">constructor</span>(<span class="hljs-params"></span>) {
+      <span class="hljs-keyword">this</span>.array = [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>];
     }
     foo() {}
   },
   object: {
-    baz: 'foo',
+    baz: <span class="hljs-string">'foo'</span>,
     bar: {
-      fiz: 1,
-      buzz: [1, 2, 3],
+      fiz: <span class="hljs-number">1</span>,
+      buzz: [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>],
     },
   },
-  array: [1, 2, 3],
-  number: 123,
-  string: 'baz',
-  boolean: true,
-  symbol: Symbol.for('a.b.c'),
+  array: [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>],
+  <span class="hljs-built_in">number</span>: <span class="hljs-number">123</span>,
+  <span class="hljs-built_in">string</span>: <span class="hljs-string">'baz'</span>,
+  <span class="hljs-built_in">boolean</span>: <span class="hljs-literal">true</span>,
+  symbol: Symbol.for(<span class="hljs-string">'a.b.c'</span>),
 };
 </code></pre>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// __tests__/example.test.js</span>
@@ -577,6 +577,6 @@ test(<span class="hljs-string">'will fail'</span>, () =&gt; {
                 apiKey: '833906d7486e4059359fa58823c4ef56',
                 indexName: 'jest',
                 inputSelector: '#search_input_react',
-                algoliaOptions: {"facetFilters":["language:pt-BR","version:24.9"]}
+                algoliaOptions: {"facetFilters":["language:pt-BR","version:25.1"]}
               });
             </script></body></html>
