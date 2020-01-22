@@ -21,7 +21,7 @@
     "jest-util": "^25.1.0",
     "micromatch": "^4.0.2",
     "pirates": "^4.0.1",
-    "realpath-native": "^1.1.0",
+    "realpath-native": "^2.0.0",
     "slash": "^3.0.0",
     "source-map": "^0.6.1",
     "write-file-atomic": "^3.0.0"

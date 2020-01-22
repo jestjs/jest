@@ -31,7 +31,7 @@
     "jest-snapshot": "^25.1.0",
     "jest-util": "^25.1.0",
     "jest-validate": "^25.1.0",
-    "realpath-native": "^1.1.0",
+    "realpath-native": "^2.0.0",
     "slash": "^3.0.0",
     "strip-bom": "^4.0.0",
     "yargs": "^15.0.0"

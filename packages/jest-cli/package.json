@@ -16,7 +16,7 @@
     "jest-util": "^25.1.0",
     "jest-validate": "^25.1.0",
     "prompts": "^2.0.1",
-    "realpath-native": "^1.1.0",
+    "realpath-native": "^2.0.0",
     "yargs": "^15.0.0"
   },
   "devDependencies": {

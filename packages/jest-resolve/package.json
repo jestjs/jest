@@ -14,7 +14,7 @@
     "browser-resolve": "^1.11.3",
     "chalk": "^3.0.0",
     "jest-pnp-resolver": "^1.2.1",
-    "realpath-native": "^1.1.0"
+    "realpath-native": "^2.0.0"
   },
   "devDependencies": {
     "@types/browser-resolve": "^0.0.5",

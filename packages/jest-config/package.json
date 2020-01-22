@@ -26,7 +26,7 @@
     "jest-validate": "^25.1.0",
     "micromatch": "^4.0.2",
     "pretty-format": "^25.1.0",
-    "realpath-native": "^1.1.0"
+    "realpath-native": "^2.0.0"
   },
   "devDependencies": {
     "@types/babel__core": "^7.0.4",
