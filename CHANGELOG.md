@@ -9,6 +9,7 @@
 ### Chore & Maintenance
 
 - `[website]` Update pictures of reports when matchers fail ([#9214](https://github.com/facebook/jest/pull/9214))
+- `[docs]` Warn about unexpected behavior / bug of node-notifier when using the `notify` options.
 
 ### Performance
 
