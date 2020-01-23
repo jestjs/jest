@@ -4,10 +4,11 @@
 
 ### Fixes
 
+- `[jest-snapshot]` Downgrade semver to v6 to support node 8 ([#9451](https://github.com/facebook/jest/pull/9451))
+
 ### Chore & Maintenance
 
 - `[website]` Update pictures of reports when matchers fail ([#9214](https://github.com/facebook/jest/pull/9214))
-- `[jest-snapshot]` downgrade semver to v6 to support node 8 ([#9451](https://github.com/facebook/jest/pull/9451))
 
 ### Performance
 
