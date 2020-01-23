@@ -92,7 +92,7 @@
     "lint:prettier": "yarn --silent lint:prettier:ci --fix",
     "lint:prettier:ci": "prettylint '**/*.{md,yml,yaml}' --ignore-path .gitignore",
     "postinstall": "opencollective postinstall && yarn build",
-    "install-no-ts-build": "node scripts/remove-postinstall && yarn --no-progress --frozen-lockfile --ignore-engines && node scripts/build",
+    "install-no-ts-build": "node scripts/remove-postinstall && yarn --no-progress --frozen-lockfile && node scripts/build",
     "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-ci-es5-build-in-browser": "karma start --single-run",
     "test-ci": "yarn jest-coverage --color -i --config jest.config.ci.js && yarn test-leak && node scripts/mapCoverage.js && codecov",
