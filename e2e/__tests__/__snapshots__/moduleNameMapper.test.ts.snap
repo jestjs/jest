@@ -30,6 +30,6 @@ FAIL __tests__/index.js
       12 | module.exports = () => 'test';
       13 | 
 
-      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/index.js:487:17)
+      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/index.js:514:17)
       at Object.require (index.js:10:1)
 `;
