@@ -7,7 +7,6 @@
   "dependencies": {
     "@bcoe/v8-coverage": "^0.2.3",
     "@jest/console": "^25.1.0",
-    "@jest/environment": "^25.1.0",
     "@jest/test-result": "^25.1.0",
     "@jest/transform": "^25.1.0",
     "@jest/types": "^25.1.0",
@@ -22,7 +21,6 @@
     "istanbul-reports": "^3.0.0",
     "jest-haste-map": "^25.1.0",
     "jest-resolve": "^25.1.0",
-    "jest-runtime": "^25.1.0",
     "jest-util": "^25.1.0",
     "jest-worker": "^25.1.0",
     "slash": "^3.0.0",
