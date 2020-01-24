@@ -1083,6 +1083,12 @@ class CustomSequencer extends Sequencer {
 module.exports = CustomSequencer;
 ```
 
+### `testTimeout` [number]
+
+Default: `5000`
+
+Default timeout of a test in milliseconds.
+
 ### `testURL` [string]
 
 Default: `http://localhost`
