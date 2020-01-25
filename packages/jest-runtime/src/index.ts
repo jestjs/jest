@@ -17,13 +17,9 @@ import {
   ModuleWrapper,
 } from '@jest/environment';
 import {SourceMapRegistry} from '@jest/source-map';
-import jestMock = require('jest-mock');
-import HasteMap = require('jest-haste-map');
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
-import Resolver = require('jest-resolve');
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
-import Snapshot = require('jest-snapshot');
 import {
   ScriptTransformer,
   ShouldInstrumentOptions,
@@ -35,11 +31,16 @@ import {
 import {V8CoverageResult} from '@jest/test-result';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
-import stripBOM = require('strip-bom');
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
 import {findSiblingsWithFileExtension} from './helpers';
 import {Context as JestContext} from './types';
+import jestMock = require('jest-mock');
+import HasteMap = require('jest-haste-map');
+import Resolver = require('jest-resolve');
+import Snapshot = require('jest-snapshot');
+import stripBOM = require('strip-bom');
+import { builtinModules } from 'module';
 
 type HasteMapOptions = {
   console?: Console;
@@ -885,6 +886,28 @@ class Runtime {
   private _requireCoreModule(moduleName: string) {
     if (moduleName === 'process') {
       return this._environment.global.process;
+    }
+
+    if (moduleName === 'module') {
+      const createRequire = (modulePath: string) =>
+        this._createRequireImplementation({
+          children: [],
+          exports: {},
+          filename: modulePath,
+          id: modulePath,
+          loaded: false,
+        });
+      return {
+        builtinModules,
+        createRequire,
+        createRequireFromPath: (modulePath: string) => {
+          console.info(
+            '[DEP0130] DeprecationWarning: Module.createRequireFromPath() is deprecated. Use Module.createRequire() instead.',
+          );
+          return createRequire(modulePath);
+        },
+        syncBuiltinESMExports() {},
+      };
     }
 
     return require(moduleName);
