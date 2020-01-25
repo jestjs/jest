@@ -536,11 +536,11 @@ describe('ScriptTransformer', () => {
   });
 
   it('should write a source map for the instrumented file when transformed', () => {
-    config = {
+    const transformerConfig = {
       ...config,
       transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
     };
-    const scriptTransformer = new ScriptTransformer(config);
+    const scriptTransformer = new ScriptTransformer(transformerConfig);
 
     const map = {
       mappings: ';AAAA',
@@ -556,7 +556,7 @@ describe('ScriptTransformer', () => {
       mappings: ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAA,OAAO',
       sourcesContent: ['content'],
     };
-    /* eslint-enable sort-keys */
+    /* eslint-enable */
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue({
       code: 'content',
@@ -596,7 +596,7 @@ describe('ScriptTransformer', () => {
         ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
       sourcesContent: ['module.exports = "banana";'],
     };
-    /* eslint-enable sort-keys */
+    /* eslint-enable */
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue({
       code: 'content',

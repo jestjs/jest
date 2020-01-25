@@ -220,18 +220,17 @@ export default class ScriptTransformer {
         ],
       ],
       /**
-       * Necessary to be able to map back to original source from the instrumented code
-       * the inline map is needed for debugging functionality
-       * and exposing it as a separate file is needed for e.g. mapping stack traces
-       * convenient to use 'both' here and avoid extracting the source map
+       * It's necessary to be able to map back to original source from the instrumented code.
+       * The inline map is needed for debugging functionality, and exposing it as a separate file is needed
+       * for mapping stack traces. It's convenient to use 'both' here and avoid extracting the source map.
        *
-       * Prior behavior of emitting no map when we can't map back to original source is preserved
+       * Previous behavior of emitting no map when we can't map back to original source is preserved.
        */
       sourceMaps: canMapToInput ? 'both' : false,
     });
 
     if (result && result.code) {
-      return {code: result.code, map: result.map};
+      return result as TransformResult;
     }
 
     return {code: input.code};
@@ -331,8 +330,8 @@ export default class ScriptTransformer {
        * - the process of transforming the code produced a source map e.g. ts-jest
        * - we did not transform the source code
        *
-       * Otherwise we cannot make any statements about how the instrumented code
-       * corresponds to the original code, and should NOT emit any source maps
+       * Otherwise we cannot make any statements about how the instrumented code corresponds to the original code,
+       * and we should NOT emit any source maps
        *
        */
       const shouldEmitSourceMaps = (!!transform && !!map) || !transform;
