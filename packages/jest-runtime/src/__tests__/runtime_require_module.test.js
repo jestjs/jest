@@ -371,6 +371,13 @@ describe('Runtime requireModule', () => {
           expect(customRequire('./create_require_module').foo).toBe('foo');
         }
 
+        {
+          const customRequire = exports.createRequireFromPath(
+            runtime.__mockRootPath,
+          );
+          expect(customRequire('./create_require_module').foo).toBe('foo');
+        }
+
         expect(exports.syncBuiltinESMExports).not.toThrow();
         expect(exports.builtinModules).toEqual(builtinModules);
       }));
