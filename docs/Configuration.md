@@ -506,6 +506,8 @@ Default: `false`
 
 Activates notifications for test results.
 
+**Beware:** Jest uses [node-notifier](https://github.com/mikaelbr/node-notifier) to display desktop notifications. On Windows, it creates a new start menu entry on the first use and not display the notification. Notifications will be properly displayed on subsequent runs
+
 ### `notifyMode` [string]
 
 Default: `failure-change`
