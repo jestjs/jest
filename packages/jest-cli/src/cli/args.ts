@@ -377,7 +377,7 @@ export const options = {
   moduleNameMapper: {
     description:
       'A JSON string with a map from regular expressions to ' +
-      'module names or an array of module names that allow to stub ' +
+      'module names or to arrays of module names that allow to stub ' +
       'out resources, like images or styles with a single module',
     type: 'string',
   },
