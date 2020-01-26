@@ -5,9 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {URL, fileURLToPath} from 'url';
 import * as path from 'path';
 import {Script, compileFunction} from 'vm';
-import {fileURLToPath} from 'url';
+import * as nativeModule from 'module';
 import {Config} from '@jest/types';
 import {
   Jest,
@@ -40,7 +41,6 @@ import HasteMap = require('jest-haste-map');
 import Resolver = require('jest-resolve');
 import Snapshot = require('jest-snapshot');
 import stripBOM = require('strip-bom');
-import { builtinModules } from 'module';
 
 type HasteMapOptions = {
   console?: Console;
@@ -889,25 +889,39 @@ class Runtime {
     }
 
     if (moduleName === 'module') {
-      const createRequire = (modulePath: string) =>
-        this._createRequireImplementation({
+      const createRequire = (modulePath: string | URL) => {
+        const filename =
+          typeof modulePath === 'string'
+            ? modulePath
+            : fileURLToPath(modulePath);
+
+        return this._createRequireImplementation({
           children: [],
           exports: {},
-          filename: modulePath,
-          id: modulePath,
+          filename,
+          id: filename,
           loaded: false,
         });
-      return {
-        builtinModules,
-        createRequire,
-        createRequireFromPath: (modulePath: string) => {
-          console.info(
-            '[DEP0130] DeprecationWarning: Module.createRequireFromPath() is deprecated. Use Module.createRequire() instead.',
-          );
-          return createRequire(modulePath);
-        },
-        syncBuiltinESMExports() {},
       };
+
+      const overriddenModule = {...nativeModule};
+
+      if ('createRequire' in nativeModule) {
+        Object.defineProperty(overriddenModule, 'createRequire', {
+          value: createRequire,
+        });
+      }
+      if ('createRequireFromPath' in nativeModule) {
+        Object.defineProperty(overriddenModule, 'createRequireFromPath', {
+          value: (filename: string) => createRequire(filename),
+        });
+      }
+      if ('syncBuiltinESMExports' in nativeModule) {
+        Object.defineProperty(overriddenModule, 'syncBuiltinESMExports', {
+          value: () => {},
+        });
+      }
+      return overriddenModule;
     }
 
     return require(moduleName);

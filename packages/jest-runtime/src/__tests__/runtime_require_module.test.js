@@ -12,6 +12,7 @@ import {builtinModules, createRequire} from 'module';
 import path from 'path';
 // eslint-disable-next-line import/default
 import slash from 'slash';
+import {onNodeVersions} from '@jest/test-utils';
 
 let createRuntime;
 
@@ -349,15 +350,29 @@ describe('Runtime requireModule', () => {
       expect(exports.isJSONModuleEncodedInUTF8WithBOM).toBe(true);
     }));
 
-  it('overrides module.createRequire', () =>
-    createRuntime(__filename).then(runtime => {
-      const exports = runtime.requireModule(runtime.__mockRootPath, 'module');
+  onNodeVersions('>=12.12.0', () => {
+    it('overrides module.createRequire', () =>
+      createRuntime(__filename).then(runtime => {
+        const exports = runtime.requireModule(runtime.__mockRootPath, 'module');
 
-      expect(exports.createRequire).not.toBe(createRequire);
-      const customRequire = exports.createRequire(runtime.__mockRootPath);
-      expect(customRequire('./create_require_module').foo).toBe('foo');
+        expect(exports.createRequire).not.toBe(createRequire);
 
-      expect(exports.syncBuiltinESMExports).not.toThrow();
-      expect(exports.builtinModules).toEqual(builtinModules);
-    }));
+        // createRequire with string
+        {
+          const customRequire = exports.createRequire(runtime.__mockRootPath);
+          expect(customRequire('./create_require_module').foo).toBe('foo');
+        }
+
+        // createRequire with URL
+        {
+          const customRequire = exports.createRequire(
+            new URL(runtime.__mockRootPath, 'file:'),
+          );
+          expect(customRequire('./create_require_module').foo).toBe('foo');
+        }
+
+        expect(exports.syncBuiltinESMExports).not.toThrow();
+        expect(exports.builtinModules).toEqual(builtinModules);
+      }));
+  });
 });
