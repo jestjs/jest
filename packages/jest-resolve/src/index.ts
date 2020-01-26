@@ -433,19 +433,13 @@ const createNoMappedModuleFoundError = (
   regex: RegExp,
   resolver?: Function | string | null,
 ) => {
-  let mappedAs: string;
-  let original: string;
-
-  if (Array.isArray(mappedModuleName)) {
-    mappedAs = JSON.stringify(mappedModuleName.map(mapModuleName), null, 2);
-    original = JSON.stringify(mappedModuleName, null, 2)
-      .split('\n')
-      .map((line, i) => (i === 0 ? line : ' '.repeat(4) + line)) /// fix alignment
-      .join('\n');
-  } else {
-    mappedAs = mapModuleName(mappedModuleName);
-    original = mappedModuleName;
-  }
+  const mappedAs = Array.isArray(mappedModuleName)
+    ? JSON.stringify(mappedModuleName.map(mapModuleName), null, 2)
+    : mappedModuleName;
+  const original = Array.isArray(mappedModuleName)
+    ? JSON.stringify(mappedModuleName, null, 6) // using 6 because of misalignment when nested below
+        .slice(0, -1) + '    ]' /// align last bracket correctly as well
+    : mappedModuleName;
 
   const error = new Error(
     chalk.red(`${chalk.bold('Configuration error')}:
