@@ -9,9 +9,7 @@
     "import-local": "^3.0.2",
     "jest-cli": "^25.1.0"
   },
-  "bin": {
-    "jest": "./bin/jest.js"
-  },
+  "bin": "./bin/jest.js",
   "engines": {
     "node": ">= 8.3"
   },

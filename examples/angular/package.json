@@ -18,13 +18,14 @@
     "zone.js": "~0.9.1"
   },
   "devDependencies": {
+    "@babel/core": "*",
     "@babel/plugin-proposal-class-properties": "*",
     "@babel/plugin-proposal-decorators": "*",
     "@babel/preset-env": "*",
     "@babel/preset-typescript": "*",
+    "@types/jest": "*",
     "babel-jest": "*",
     "babel-plugin-transform-typescript-metadata": "*",
-    "@types/jest": "*",
     "jest": "*",
     "jest-zone-patch": "*"
   }
