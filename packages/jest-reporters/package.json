@@ -34,7 +34,7 @@
     "@types/glob": "^7.1.1",
     "@types/istanbul-lib-coverage": "^2.0.0",
     "@types/istanbul-lib-instrument": "^1.7.2",
-    "@types/istanbul-lib-report": "^1.1.0",
+    "@types/istanbul-lib-report": "^3.0.0",
     "@types/istanbul-lib-source-maps": "^1.2.1",
     "@types/istanbul-reports": "^1.1.0",
     "@types/node-notifier": "^5.4.0",
