@@ -13,12 +13,11 @@
     "@jest/types": "^25.1.0",
     "chalk": "^3.0.0",
     "is-ci": "^2.0.0",
-    "mkdirp": "^0.5.1"
+    "make-dir": "^3.0.0"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.2",
-    "@types/is-ci": "^2.0.0",
-    "@types/mkdirp": "^0.5.2"
+    "@types/is-ci": "^2.0.0"
   },
   "engines": {
     "node": ">= 8.3"
