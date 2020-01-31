@@ -19,14 +19,13 @@
     "jest-matcher-utils": "^25.1.0",
     "jest-message-util": "^25.1.0",
     "jest-resolve": "^25.1.0",
-    "mkdirp": "^0.5.1",
+    "make-dir": "^3.0.0",
     "natural-compare": "^1.4.0",
     "pretty-format": "^25.1.0",
     "semver": "^6.3.0"
   },
   "devDependencies": {
     "@babel/traverse": "^7.3.4",
-    "@types/mkdirp": "^0.5.2",
     "@types/natural-compare": "^1.4.0",
     "@types/prettier": "^1.16.1",
     "@types/semver": "^6.0.1",
