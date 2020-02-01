@@ -191,8 +191,12 @@ export default class ScriptTransformer {
     return transform;
   }
 
-  private _instrumentFile(filename: Config.Path, content: string): string {
-    const result = babelTransform(content, {
+  private _instrumentFile(
+    filename: Config.Path,
+    input: TransformedSource,
+    canMapToInput: boolean,
+  ): TransformedSource {
+    const result = babelTransform(input.code, {
       auxiliaryCommentBefore: ' istanbul ignore next ',
       babelrc: false,
       caller: {
@@ -209,21 +213,27 @@ export default class ScriptTransformer {
             // files outside `cwd` will not be instrumented
             cwd: this._config.rootDir,
             exclude: [],
+            // Needed for correct coverage as soon as we start storing a source map of the instrumented code
+            inputSourceMap: input.map,
             useInlineSourceMaps: false,
           },
         ],
       ],
+      /**
+       * It's necessary to be able to map back to original source from the instrumented code.
+       * The inline map is needed for debugging functionality, and exposing it as a separate file is needed
+       * for mapping stack traces. It's convenient to use 'both' here and avoid extracting the source map.
+       *
+       * Previous behavior of emitting no map when we can't map back to original source is preserved.
+       */
+      sourceMaps: canMapToInput ? 'both' : false,
     });
 
-    if (result) {
-      const {code} = result;
-
-      if (code) {
-        return code;
-      }
+    if (result && result.code) {
+      return result as TransformResult;
     }
 
-    return content;
+    return {code: input.code};
   }
 
   private _getRealPath(filepath: Config.Path): Config.Path {
@@ -312,17 +322,36 @@ export default class ScriptTransformer {
       }
     }
 
+    // Apply instrumentation to the code if necessary, keeping the instrumented code and new map
+    let map = transformed.map;
     if (!transformWillInstrument && instrument) {
-      code = this._instrumentFile(filename, transformed.code);
+      /**
+       * We can map the original source code to the instrumented code ONLY if
+       * - the process of transforming the code produced a source map e.g. ts-jest
+       * - we did not transform the source code
+       *
+       * Otherwise we cannot make any statements about how the instrumented code corresponds to the original code,
+       * and we should NOT emit any source maps
+       *
+       */
+      const shouldEmitSourceMaps = (!!transform && !!map) || !transform;
+      const instrumented = this._instrumentFile(
+        filename,
+        transformed,
+        shouldEmitSourceMaps,
+      );
+      code = instrumented.code;
+
+      if (instrumented.map) {
+        map = instrumented.map;
+      }
     } else {
       code = transformed.code;
     }
 
-    if (transformed.map) {
+    if (map) {
       const sourceMapContent =
-        typeof transformed.map === 'string'
-          ? transformed.map
-          : JSON.stringify(transformed.map);
+        typeof map === 'string' ? map : JSON.stringify(map);
       writeCacheFile(sourceMapPath, sourceMapContent);
     } else {
       sourceMapPath = null;

@@ -7,7 +7,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import {sync as mkdirp} from 'mkdirp';
+import makeDir = require('make-dir');
 import naturalCompare = require('natural-compare');
 import chalk = require('chalk');
 import {Config} from '@jest/types';
@@ -183,7 +183,7 @@ const printBacktickString = (str: string): string =>
 
 export const ensureDirectoryExists = (filePath: Config.Path) => {
   try {
-    mkdirp(path.join(path.dirname(filePath)), '777');
+    makeDir.sync(path.join(path.dirname(filePath)));
   } catch (e) {}
 };
 

@@ -4,9 +4,15 @@
 
 ### Fixes
 
+- `[jest-snapshot]` Downgrade semver to v6 to support node 8 ([#9451](https://github.com/facebook/jest/pull/9451))
+- `[jest-transform]` Correct sourcemap behavior for transformed and instrumented code ([#9460](https://github.com/facebook/jest/pull/9460))
+- `[pretty-format]` Export `OldPlugin` type ([#9491](https://github.com/facebook/jest/pull/9491))
+
 ### Chore & Maintenance
 
+- `[@jest/reporters]` Remove unused dependencies and type exports ([#9462](https://github.com/facebook/jest/pull/9462))
 - `[website]` Update pictures of reports when matchers fail ([#9214](https://github.com/facebook/jest/pull/9214))
+- `[docs]` Warn about unexpected behavior / bug of node-notifier when using the `notify` options.
 
 ### Performance
 

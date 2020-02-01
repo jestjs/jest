@@ -492,7 +492,6 @@ export default class CoverageReporter extends BaseReporter {
       transformedCoverage.forEach(res => map.merge(res));
 
       const reportContext = istanbulReport.createContext({
-        // @ts-ignore
         coverageMap: map,
         dir: this._globalConfig.coverageDirectory,
         watermarks: getWatermarks(this._globalConfig),
@@ -502,14 +501,16 @@ export default class CoverageReporter extends BaseReporter {
     }
 
     const map = await this._sourceMapStore.transformCoverage(this._coverageMap);
-    const reportContext = istanbulReport.createContext({
+    const reportContext = istanbulReport.createContext(
       // @ts-ignore
-      coverageMap: map,
-      dir: this._globalConfig.coverageDirectory,
-      // @ts-ignore
-      sourceFinder: this._sourceMapStore.sourceFinder,
-      watermarks: getWatermarks(this._globalConfig),
-    });
+      {
+        coverageMap: map,
+        dir: this._globalConfig.coverageDirectory,
+        // @ts-ignore
+        sourceFinder: this._sourceMapStore.sourceFinder,
+        watermarks: getWatermarks(this._globalConfig),
+      },
+    );
 
     // @ts-ignore
     return {map, reportContext};

@@ -31,15 +31,21 @@ There is an alternate form of `test` that fixes this. Instead of putting the tes
 ```js
 test('the data is peanut butter', done => {
   function callback(data) {
-    expect(data).toBe('peanut butter');
-    done();
+    try {
+      expect(data).toBe('peanut butter');
+      done();
+    } catch (error) {
+      done(error);
+    }
   }
 
   fetchData(callback);
 });
 ```
 
-If `done()` is never called, the test will fail, which is what you want to happen.
+If `done()` is never called, the test will fail (with timeout error), which is what you want to happen.
+
+In case `expect` statement fails it throws an error and `done()` is not called. If we want to see in the test log why it failed, we have to wrap `expect` in `try` block and pass error in `catch` block to `done`. Otherwise, we end up with opaque timeout error and no knowledge of what value was received by `expect(data)`.
 
 ## Promises
 
