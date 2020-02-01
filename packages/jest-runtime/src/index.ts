@@ -892,8 +892,16 @@ class Runtime {
       const createRequire = (modulePath: string | URL) => {
         const filename =
           typeof modulePath === 'string'
-            ? modulePath
+            ? modulePath.startsWith('file:///')
+              ? fileURLToPath(new URL(modulePath))
+              : modulePath
             : fileURLToPath(modulePath);
+
+        if (!path.isAbsolute(filename)) {
+          throw new TypeError(
+            `[ERR_INVALID_ARG_VALUE] The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received '${filename}'`,
+          );
+        }
 
         return this._createRequireImplementation({
           children: [],
@@ -904,24 +912,32 @@ class Runtime {
         });
       };
 
-      const overriddenModule = {...nativeModule};
+      const overriddenModules: Partial<typeof nativeModule> = {};
 
       if ('createRequire' in nativeModule) {
-        Object.defineProperty(overriddenModule, 'createRequire', {
-          value: createRequire,
-        });
+        overriddenModules.createRequire = createRequire;
       }
       if ('createRequireFromPath' in nativeModule) {
-        Object.defineProperty(overriddenModule, 'createRequireFromPath', {
-          value: (filename: string) => createRequire(filename),
-        });
+        overriddenModules.createRequireFromPath = (filename: string | URL) => {
+          if (typeof filename !== 'string') {
+            throw new TypeError(
+              `[ERR_INVALID_ARG_VALUE] The argument 'filename' must be string. Received '${filename}'.${
+                filename instanceof URL
+                  ? ' Use createRequire for URL filename.'
+                  : ''
+              }`,
+            );
+          }
+          return createRequire(filename);
+        };
       }
       if ('syncBuiltinESMExports' in nativeModule) {
-        Object.defineProperty(overriddenModule, 'syncBuiltinESMExports', {
-          value: () => {},
-        });
+        overriddenModules.syncBuiltinESMExports = () => {};
       }
-      return overriddenModule;
+
+      return Object.keys(overriddenModules).length > 0
+        ? {...nativeModule, ...overriddenModules}
+        : nativeModule;
     }
 
     return require(moduleName);

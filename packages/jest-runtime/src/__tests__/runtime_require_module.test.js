@@ -364,7 +364,7 @@ describe('Runtime requireModule', () => {
           expect(customRequire('./create_require_module').foo).toBe('foo');
         }
 
-        // createRequire with URL
+        // createRequire with URL object
         {
           const customRequire = exports.createRequire(
             pathToFileURL(runtime.__mockRootPath),
@@ -372,12 +372,45 @@ describe('Runtime requireModule', () => {
           expect(customRequire('./create_require_module').foo).toBe('foo');
         }
 
+        // createRequire with file URL string
+        {
+          const customRequire = exports.createRequire(
+            pathToFileURL(runtime.__mockRootPath).toString(),
+          );
+          expect(customRequire('./create_require_module').foo).toBe('foo');
+        }
+
+        // createRequire with absolute module path
+        {
+          const customRequire = exports.createRequire(runtime.__mockRootPath);
+          expect(customRequire('./create_require_module').foo).toBe('foo');
+        }
+
+        // createRequire with relative module path
+        expect(() => exports.createRequireFromPath('./relative/path')).toThrow(
+          new TypeError(
+            `[ERR_INVALID_ARG_VALUE] The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received './relative/path'`,
+          ),
+        );
+
+        // createRequireFromPath with absolute module path
         {
           const customRequire = exports.createRequireFromPath(
             runtime.__mockRootPath,
           );
           expect(customRequire('./create_require_module').foo).toBe('foo');
         }
+
+        // createRequireFromPath with file URL object
+        expect(() =>
+          exports.createRequireFromPath(pathToFileURL(runtime.__mockRootPath)),
+        ).toThrow(
+          new TypeError(
+            `[ERR_INVALID_ARG_VALUE] The argument 'filename' must be string. Received '${pathToFileURL(
+              runtime.__mockRootPath,
+            )}'. Use createRequire for URL filename.`,
+          ),
+        );
 
         expect(exports.syncBuiltinESMExports).not.toThrow();
         expect(exports.builtinModules).toEqual(builtinModules);
