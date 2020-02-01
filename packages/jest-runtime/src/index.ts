@@ -915,7 +915,7 @@ class Runtime {
         });
       };
 
-      const overriddenModules: Record<string, any> = {};
+      const overriddenModules: Partial<typeof nativeModule> = {};
 
       if ('createRequire' in nativeModule) {
         overriddenModules.createRequire = createRequire;
