@@ -34,6 +34,6 @@ Issues without a reproduction link are likely to stall.
 
 Paste the results here:
 
-```bash
+```
 
 ```

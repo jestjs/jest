@@ -32,6 +32,6 @@ Run npx envinfo --preset jest
 Paste the results here:
 -->
 
-```bash
+```
 
 ```

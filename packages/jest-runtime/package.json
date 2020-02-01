@@ -42,9 +42,7 @@
     "@types/graceful-fs": "^4.1.2",
     "jest-environment-node": "^25.1.0"
   },
-  "bin": {
-    "jest-runtime": "./bin/jest-runtime.js"
-  },
+  "bin": "./bin/jest-runtime.js",
   "engines": {
     "node": ">= 8.3"
   },
