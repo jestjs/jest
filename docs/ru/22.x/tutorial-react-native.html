@@ -134,10 +134,10 @@
 <span class="hljs-keyword">import</span> renderer <span class="hljs-keyword">from</span> <span class="hljs-string">'react-test-renderer'</span>;
 
 test(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
-  <span class="hljs-keyword">const</span> tree = renderer.create(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Intro</span> /&gt;</span>).toJSON();
+  <span class="hljs-keyword">const</span> tree = renderer.create(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Intro</span> /&gt;</span></span>).toJSON();
   expect(tree).toMatchSnapshot();
 });
-</span></code></pre>
+</code></pre>
 <p>When you run <code>yarn test</code> or <code>jest</code>, this will produce an output file like this:</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// __tests__/__snapshots__/Intro-test.js.snap</span>
 exports[<span class="hljs-string">`отображается корректно 1`</span>] = <span class="hljs-string">`

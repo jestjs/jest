@@ -134,10 +134,10 @@
 <span class="hljs-keyword">import</span> renderer <span class="hljs-keyword">from</span> <span class="hljs-string">'react-test-renderer'</span>;
 
 test(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
-  <span class="hljs-keyword">const</span> tree = renderer.create(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Intro</span> /&gt;</span>).toJSON();
+  <span class="hljs-keyword">const</span> tree = renderer.create(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Intro</span> /&gt;</span></span>).toJSON();
   expect(tree).toMatchSnapshot();
 });
-</span></code></pre>
+</code></pre>
 <p>当你运行 <code>npm test</code> 或者 <code>jest</code>，将产生一个像下面的文件：</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// __tests__/__snapshots__/Intro-test.js.snap</span>
 exports[<span class="hljs-string">`Intro renders correctly 1`</span>] = <span class="hljs-string">`

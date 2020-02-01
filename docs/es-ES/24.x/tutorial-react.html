@@ -229,8 +229,8 @@ Warning: The tag &lt;SomeComponent&gt; is unrecognized <span class="hljs-keyword
 <pre><code class="hljs css language-js">jest.mock(<span class="hljs-string">'./SomeComponent'</span>, () =&gt; <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'SomeComponent'</span>);
 </code></pre></li>
 <li>Render as a custom element. DOM &quot;custom elements&quot; aren't checked for anything and shouldn't fire warnings. They are lowercase and have a dash in the name.
-<pre><code class="hljs css language-js">jest.mock(<span class="hljs-string">'./Widget'</span>, () =&gt; <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">mock-widget</span> /&gt;</span>);
-</span></code></pre></li>
+<pre><code class="hljs css language-js">jest.mock(<span class="hljs-string">'./Widget'</span>, () =&gt; <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">mock-widget</span> /&gt;</span></span>);
+</code></pre></li>
 <li>Use <code>react-test-renderer</code>. The test renderer doesn't care about element types and will happily accept e.g. <code>SomeComponent</code>. You could check snapshots using the test renderer, and check component behavior separately using Enzyme.</li>
 <li>Disable warnings all together (should be done in your jest setup file):
 <pre><code class="hljs css language-js">jest.mock(<span class="hljs-string">'fbjs/lib/warning'</span>, () =&gt; <span class="hljs-built_in">require</span>(<span class="hljs-string">'fbjs/lib/emptyFunction'</span>));
@@ -269,11 +269,11 @@ This shouldn't normally be your option of choice as useful warnings could be los
           <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.onChange}</span>
         /&gt;</span>
         {this.state.isChecked ? this.props.labelOn : this.props.labelOff}
-      <span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span></span>
     );
   }
 }
-</span></code></pre>
+</code></pre>
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// __tests__/CheckboxWithLabel-test.js</span>
 <span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> {cleanup, fireEvent, render} <span class="hljs-keyword">from</span> <span class="hljs-string">'@testing-library/react'</span>;
@@ -284,16 +284,16 @@ afterEach(cleanup);
 
 it(<span class="hljs-string">'CheckboxWithLabel changes the text after click'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> {queryByLabelText, getByLabelText} = render(
-    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">CheckboxWithLabel</span> <span class="hljs-attr">labelOn</span>=<span class="hljs-string">"On"</span> <span class="hljs-attr">labelOff</span>=<span class="hljs-string">"Off"</span> /&gt;</span>,
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">CheckboxWithLabel</span> <span class="hljs-attr">labelOn</span>=<span class="hljs-string">"On"</span> <span class="hljs-attr">labelOff</span>=<span class="hljs-string">"Off"</span> /&gt;</span></span>,
   );
 
-  expect(queryByLabelText(/off/i)).toBeTruthy();
+  expect(queryByLabelText(<span class="hljs-regexp">/off/i</span>)).toBeTruthy();
 
-  fireEvent.click(getByLabelText(/off/i));
+  fireEvent.click(getByLabelText(<span class="hljs-regexp">/off/i</span>));
 
-  expect(queryByLabelText(/on/i)).toBeTruthy();
+  expect(queryByLabelText(<span class="hljs-regexp">/on/i</span>)).toBeTruthy();
 });
-</span></code></pre>
+</code></pre>
 <p>The code for this example is available at <a href="https://github.com/facebook/jest/tree/master/examples/react-testing-library">examples/react-testing-library</a>.</p>
 <h4><a class="anchor" aria-hidden="true" id="enzyme"></a><a href="#enzyme" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Enzyme</h4>
 <p>You have to run <code>yarn add --dev enzyme</code> to use Enzyme. If you are using a React version below 15.5.0, you will also need to install <code>react-addons-test-utils</code>.</p>
@@ -306,15 +306,15 @@ it(<span class="hljs-string">'CheckboxWithLabel changes the text after click'</s
 
 test(<span class="hljs-string">'CheckboxWithLabel changes the text after click'</span>, () =&gt; {
   <span class="hljs-comment">// Render a checkbox with label in the document</span>
-  <span class="hljs-keyword">const</span> checkbox = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">CheckboxWithLabel</span> <span class="hljs-attr">labelOn</span>=<span class="hljs-string">"On"</span> <span class="hljs-attr">labelOff</span>=<span class="hljs-string">"Off"</span> /&gt;</span>);
+  <span class="hljs-keyword">const</span> checkbox = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">CheckboxWithLabel</span> <span class="hljs-attr">labelOn</span>=<span class="hljs-string">"On"</span> <span class="hljs-attr">labelOff</span>=<span class="hljs-string">"Off"</span> /&gt;</span></span>);
 
-  expect(checkbox.text()).toEqual('Off');
+  expect(checkbox.text()).toEqual(<span class="hljs-string">'Off'</span>);
 
-  checkbox.find('input').simulate('change');
+  checkbox.find(<span class="hljs-string">'input'</span>).simulate(<span class="hljs-string">'change'</span>);
 
-  expect(checkbox.text()).toEqual('On');
+  expect(checkbox.text()).toEqual(<span class="hljs-string">'On'</span>);
 });
-</span></code></pre>
+</code></pre>
 <p>The code for this example is available at <a href="https://github.com/facebook/jest/tree/master/examples/enzyme">examples/enzyme</a>.</p>
 <h3><a class="anchor" aria-hidden="true" id="transformers-personalizados"></a><a href="#transformers-personalizados" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Transformers personalizados</h3>
 <p>If you need more advanced functionality, you can also build your own transformer. Instead of using babel-jest, here is an example of using babel:</p>

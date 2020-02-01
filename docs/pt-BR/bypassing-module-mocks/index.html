@@ -77,37 +77,37 @@
         </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/BypassingModuleMocks.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Bypassing module mocks</h1></header><article><div><span><p>Jest allows you to mock out whole modules in your tests, which can be useful for testing if your code is calling functions from that module correctly. Entretanto, as vezes você deseja usar partes do módulo mockado em seus <em>arquivo de teste</em>, nesse caso você precisa acessar a implementação original, ao invés de uma versão mockada.</p>
 <p>Considere escrever um caso de testes para a função <code>createUser</code>:</p>
 <pre><code class="hljs css language-javascript">&lt;code&gt;
-<span class="hljs-comment">// createUser.js</span>
-<span class="hljs-keyword">import</span> fetch <span class="hljs-keyword">from</span> <span class="hljs-string">'node-fetch'</span>;
+// createUser.js
+import fetch from 'node-fetch';
 
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> createUser = <span class="hljs-keyword">async</span> () =&gt; {
-  <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> fetch(<span class="hljs-string">'http://website.com/users'</span>, {<span class="hljs-attr">method</span>: <span class="hljs-string">'POST'</span>});
-  <span class="hljs-keyword">const</span> userId = <span class="hljs-keyword">await</span> response.text();
-  <span class="hljs-keyword">return</span> userId;
+export const createUser = async () =&gt; {
+  const response = await fetch('http://website.com/users', {method: 'POST'});
+  const userId = await response.text();
+  return userId;
 };
-<span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">code</span>&gt;</span></span>;
-<span class="hljs-string">``</span><span class="hljs-string">`;
+&lt;/code&gt;;
+```;
 &lt;/code&gt;
 
-Seu teste provavelm, ente irá "mockar" (mock) a função `</span>fetch<span class="hljs-string">` para que possamos ter certeza que esta será chamada sem realmente fazer um request ao endpoint. Contudo, você também precisará "mockar" o valor de retorno da função `</span>fetch<span class="hljs-string">` com uma `</span>Response<span class="hljs-string">` (encapsulada em uma `</span><span class="hljs-built_in">Promise</span><span class="hljs-string">`). Então você pode inicialmente tentar escrever um teste como este:
+Seu teste provavelm, ente irá "mockar" (mock) a função `fetch` para que possamos ter certeza que esta será chamada sem realmente fazer um request ao endpoint. Contudo, você também precisará "mockar" o valor de retorno da função `fetch` com uma `Response` (encapsulada em uma `Promise`). Então você pode inicialmente tentar escrever um teste como este:
 
-`</span><span class="hljs-string">``</span>javascript
-jest.mock(<span class="hljs-string">'node-fetch'</span>);
+```javascript
+jest.mock('node-fetch');
 
-<span class="hljs-keyword">import</span> fetch, {Response} <span class="hljs-keyword">from</span> <span class="hljs-string">'node-fetch'</span>;
+import fetch, {Response} from 'node-fetch';
 
-<span class="hljs-keyword">import</span> {createUser} <span class="hljs-keyword">from</span> <span class="hljs-string">'./createUser'</span>;
+import {createUser} from './createUser';
 
-test(<span class="hljs-string">'createUser chama a busta com os argumentos corretos e retorna o id do usuário'</span>, <span class="hljs-keyword">async</span> () =&gt; {
-  fetch.mockReturnValue(<span class="hljs-built_in">Promise</span>.resolve(<span class="hljs-keyword">new</span> Response(<span class="hljs-string">'4'</span>)));
+test('createUser chama a busta com os argumentos corretos e retorna o id do usuário', async () =&gt; {
+  fetch.mockReturnValue(Promise.resolve(new Response('4')));
 
-  <span class="hljs-keyword">const</span> userId = <span class="hljs-keyword">await</span> createUser();
+  const userId = await createUser();
 
-  expect(fetch).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
-  expect(fetch).toHaveBeenCalledWith(<span class="hljs-string">'http://website.com/users'</span>, {
-    <span class="hljs-attr">method</span>: <span class="hljs-string">'POST'</span>,
+  expect(fetch).toHaveBeenCalledTimes(1);
+  expect(fetch).toHaveBeenCalledWith('http://website.com/users', {
+    method: 'POST',
   });
-  expect(userId).toBe(<span class="hljs-string">'4'</span>);
+  expect(userId).toBe('4');
 });
 </code></pre>
 <p>Se você rodar este teste você verá que a função <code>createUser</code> falhará, disparando a excessão: <code>TypeError: response.text is not a function</code>. Isto porque o <code>Response</code> que você importou de <code>node-fetch</code> foi &quot;mockado&quot; (através do script <code>jest.mock</code> chamado no começo do arquivo) então não se comporta mais como deveria.</p>
