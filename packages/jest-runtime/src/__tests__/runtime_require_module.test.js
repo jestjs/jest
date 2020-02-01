@@ -389,7 +389,7 @@ describe('Runtime requireModule', () => {
         // createRequire with relative module path
         expect(() => exports.createRequireFromPath('./relative/path')).toThrow(
           new TypeError(
-            `[ERR_INVALID_ARG_VALUE] The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received './relative/path'`,
+            `The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received './relative/path'`,
           ),
         );
 
@@ -406,7 +406,7 @@ describe('Runtime requireModule', () => {
           exports.createRequireFromPath(pathToFileURL(runtime.__mockRootPath)),
         ).toThrow(
           new TypeError(
-            `[ERR_INVALID_ARG_VALUE] The argument 'filename' must be string. Received '${pathToFileURL(
+            `The argument 'filename' must be string. Received '${pathToFileURL(
               runtime.__mockRootPath,
             )}'. Use createRequire for URL filename.`,
           ),

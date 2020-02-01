@@ -898,9 +898,12 @@ class Runtime {
             : fileURLToPath(modulePath);
 
         if (!path.isAbsolute(filename)) {
-          throw new TypeError(
-            `[ERR_INVALID_ARG_VALUE] The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received '${filename}'`,
+          const error = new TypeError(
+            `The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received '${filename}'`,
           );
+          // @ts-ignore
+          error.code = 'ERR_INVALID_ARG_TYPE';
+          throw error;
         }
 
         return this._createRequireImplementation({
@@ -920,13 +923,16 @@ class Runtime {
       if ('createRequireFromPath' in nativeModule) {
         overriddenModules.createRequireFromPath = (filename: string | URL) => {
           if (typeof filename !== 'string') {
-            throw new TypeError(
-              `[ERR_INVALID_ARG_VALUE] The argument 'filename' must be string. Received '${filename}'.${
+            const error = new TypeError(
+              `The argument 'filename' must be string. Received '${filename}'.${
                 filename instanceof URL
                   ? ' Use createRequire for URL filename.'
                   : ''
               }`,
             );
+            // @ts-ignore
+            error.code = 'ERR_INVALID_ARG_TYPE';
+            throw error;
           }
           return createRequire(filename);
         };
