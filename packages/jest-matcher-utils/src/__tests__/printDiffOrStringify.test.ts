@@ -106,6 +106,7 @@ describe('printDiffOrStringify', () => {
           b: 'jest is awesome',
         },
         g: true,
+        [Symbol.for('h')]: 'jest is awesome',
       };
       const received = {
         a: 1,
@@ -117,6 +118,7 @@ describe('printDiffOrStringify', () => {
           a: expect.any(Date),
         }),
         g: false,
+        [Symbol.for('h')]: expect.any(String),
       };
 
       expect(testDiffOrStringify(expected, received)).toMatchSnapshot();

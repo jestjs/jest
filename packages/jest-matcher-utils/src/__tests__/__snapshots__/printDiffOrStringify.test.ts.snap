@@ -85,6 +85,7 @@ exports[`printDiffOrStringify asymmetricMatcher jest asymmetricMatcher 1`] = `
 <d>    },</>
 <g>-   "g": true,</>
 <r>+   "g": false,</>
+<d>    Symbol(h): Any<String>,</>
 <d>  }</>
 `;
 
