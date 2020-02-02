@@ -2155,6 +2155,19 @@ Expected: <g>0</>
 Received: <r>{}</>
 `;
 
+exports[`.toEqual() {pass: false} expect({Symbol(foo): 1, Symbol(bar): 2}).toEqual({Symbol(foo): Any<Number>, Symbol(bar): 1}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<d>    Symbol(foo): Any<Number>,</>
+<g>-   Symbol(bar): 1,</>
+<r>+   Symbol(bar): 2,</>
+<d>  }</>
+`;
+
 exports[`.toEqual() {pass: false} expect(0).toEqual({}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
@@ -2620,6 +2633,13 @@ exports[`.toEqual() {pass: true} expect({}).not.toEqual({}) 2`] = `
 
 Expected: not <g>{}</>
 
+`;
+
+exports[`.toEqual() {pass: true} expect({Symbol(foo): 1, Symbol(bar): 2}).not.toEqual({Symbol(foo): Any<Number>, Symbol(bar): 2}) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>{Symbol(foo): Any<Number>, Symbol(bar): 2}</>
+Received:     <r>{Symbol(foo): 1, Symbol(bar): 2}</>
 `;
 
 exports[`.toEqual() {pass: true} expect(0).not.toEqual(0) 1`] = `
@@ -3778,6 +3798,19 @@ exports[`toMatchObject() {pass: false} expect({"a": "a", "c": "d"}).toMatchObjec
 <d>  }</>
 `;
 
+exports[`toMatchObject() {pass: false} expect({"a": "b", "c": "d", Symbol(jest): "jest"}).toMatchObject({"a": "c", Symbol(jest): Any<String>}) 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
+
+<g>- Expected  - 2</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "a": "c",</>
+<g>-   Symbol(jest): Any<String>,</>
+<r>+   "a": "b",</>
+<d>  }</>
+`;
+
 exports[`toMatchObject() {pass: false} expect({"a": "b", "c": "d"}).toMatchObject({"a": "b!", "c": "d"}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
@@ -4066,6 +4099,19 @@ exports[`toMatchObject() {pass: true} expect([Error: foo]).toMatchObject([Error:
 <d>expect(</><r>received</><d>).</>not<d>.</>toMatchObject<d>(</><g>expected</><d>)</>
 
 Expected: not <g>[Error: foo]</>
+`;
+
+exports[`toMatchObject() {pass: true} expect({"a": "b", "c": "d", Symbol(jest): "jest"}).toMatchObject({"a": "b", "c": "d", Symbol(jest): "jest"}) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toMatchObject<d>(</><g>expected</><d>)</>
+
+Expected: not <g>{"a": "b", "c": "d", Symbol(jest): "jest"}</>
+`;
+
+exports[`toMatchObject() {pass: true} expect({"a": "b", "c": "d", Symbol(jest): "jest"}).toMatchObject({"a": "b", Symbol(jest): "jest"}) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toMatchObject<d>(</><g>expected</><d>)</>
+
+Expected: not <g>{"a": "b", Symbol(jest): "jest"}</>
+Received:     <r>{"a": "b", "c": "d", Symbol(jest): "jest"}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": "b", "c": "d"}).toMatchObject({"a": "b", "c": "d"}) 1`] = `
