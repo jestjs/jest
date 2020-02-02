@@ -458,11 +458,11 @@ An array of file extensions your modules use. If you require modules without spe
 
 We recommend placing the extensions most commonly used in your project on the left, so if you are using TypeScript, you may want to consider moving "ts" and/or "tsx" to the beginning of the array.
 
-### `moduleNameMapper` [object\<string, string>]
+### `moduleNameMapper` [object\<string, string | array\<string>>]
 
 Default: `null`
 
-A map from regular expressions to module names that allow to stub out resources, like images or styles with a single module.
+A map from regular expressions to module names or to arrays of module names that allow to stub out resources, like images or styles with a single module.
 
 Modules that are mapped to an alias are unmocked by default, regardless of whether automocking is enabled or not.
 
@@ -477,12 +477,17 @@ Example:
   "moduleNameMapper": {
     "^image![a-zA-Z0-9$_-]+$": "GlobalImageStub",
     "^[./a-zA-Z0-9$_-]+\\.png$": "<rootDir>/RelativeImageStub.js",
-    "module_name_(.*)": "<rootDir>/substituted_module_$1.js"
+    "module_name_(.*)": "<rootDir>/substituted_module_$1.js",
+    "assets/(.*)": [
+      "<rootDir>/images/$1",
+      "<rootDir>/photos/$1",
+      "<rootDir>/recipes/$1"
+    ]
   }
 }
 ```
 
-The order in which the mappings are defined matters. Patterns are checked one by one until one fits. The most specific rule should be listed first.
+The order in which the mappings are defined matters. Patterns are checked one by one until one fits. The most specific rule should be listed first. This is true for arrays of modules names as.
 
 _Note: If you provide module name without boundaries `^$` it may cause hard to spot errors. E.g. `relay` will replace all modules which contain `relay` as a substring in its name: `relay`, `react-relay` and `graphql-relay` will all be pointed to your stub._
 
