@@ -50,7 +50,7 @@ export type DefaultOptions = {
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
-  moduleNameMapper: Record<string, string>;
+  moduleNameMapper: Record<string, string | Array<string>>;
   modulePathIgnorePatterns: Array<string>;
   noStackTrace: boolean;
   notify: boolean;
@@ -143,7 +143,7 @@ export type InitialOptions = Partial<{
   moduleFileExtensions: Array<string>;
   moduleLoader: Path;
   moduleNameMapper: {
-    [key: string]: string;
+    [key: string]: string | Array<string>;
   };
   modulePathIgnorePatterns: Array<string>;
   modulePaths: Array<string>;

@@ -8,6 +8,5 @@
 'use strict';
 
 require('./style.css');
-require('./style.sass');
 
 module.exports = () => 'test';
