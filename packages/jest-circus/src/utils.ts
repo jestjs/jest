@@ -316,6 +316,7 @@ export const makeSingleTestResult = (
   return {
     duration: test.duration,
     errors: test.errors.map(_formatError),
+    errorsDetailed: test.errors,
     invocations: test.invocations,
     location,
     status,
@@ -433,6 +434,7 @@ export const parseSingleTestResult = (
   return {
     ancestorTitles,
     duration: testResult.duration,
+    failureDetails: testResult.errorsDetailed,
     failureMessages: Array.from(testResult.errors),
     fullName: title
       ? ancestorTitles.concat(title).join(' ')
