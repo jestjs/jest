@@ -7,7 +7,8 @@
 
 'use strict';
 
-require('./style.css');
-require('./style.sass');
+const importedFn = require('../');
 
-module.exports = () => 'test';
+test('moduleNameMapping wrong configuration', () => {
+  expect(importedFn).toBeDefined();
+});
