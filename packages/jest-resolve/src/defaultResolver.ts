@@ -35,7 +35,7 @@ export default function defaultResolver(
 
   const resolve = options.browser ? browserResolve : resolveSync;
 
-  return resolve(path, {
+  let result = resolve(path, {
     basedir: options.basedir,
     defaultResolver,
     extensions: options.extensions,
@@ -43,6 +43,12 @@ export default function defaultResolver(
     paths: options.paths,
     rootDir: options.rootDir,
   });
+  if (result) {
+    // Dereference symlinks to ensure we don't create a separate
+    // module instance depending on how it was referenced.
+    result = fs.realpathSync(result);
+  }
+  return result;
 }
 
 export const clearDefaultResolverCache = () => {
@@ -97,11 +103,6 @@ function resolveSync(
     let result;
     if (isDirectory(dir)) {
       result = resolveAsFile(name) || resolveAsDirectory(name);
-    }
-    if (result) {
-      // Dereference symlinks to ensure we don't create a separate
-      // module instance depending on how it was referenced.
-      result = fs.realpathSync(result);
     }
     return result;
   }
