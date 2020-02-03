@@ -43,7 +43,7 @@ export default function defaultResolver(
     paths: options.paths,
     rootDir: options.rootDir,
   });
-  if (result) {
+  if (options.browser && result) {
     // Dereference symlinks to ensure we don't create a separate
     // module instance depending on how it was referenced.
     result = fs.realpathSync(result);
@@ -103,6 +103,11 @@ function resolveSync(
     let result;
     if (isDirectory(dir)) {
       result = resolveAsFile(name) || resolveAsDirectory(name);
+    }
+    if (result) {
+      // Dereference symlinks to ensure we don't create a separate
+      // module instance depending on how it was referenced.
+      result = fs.realpathSync(result);
     }
     return result;
   }
