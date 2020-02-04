@@ -129,7 +129,7 @@ export const options = {
     description:
       'Whether to run Jest in continuous integration (CI) mode. ' +
       'This option is on by default in most popular CI environments. It will ' +
-      ' prevent snapshots from being written unless explicitly requested.',
+      'prevent snapshots from being written unless explicitly requested.',
     type: 'boolean',
   },
   clearCache: {
