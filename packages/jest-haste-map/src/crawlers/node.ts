@@ -61,26 +61,17 @@ function find(
           }
         }
 
-        // If we made it here and had dirent support, we know that
-        // this is a normal file and can skip some checks in the lstat callback below
-        let passedFiletypeChecks = typeof entry !== 'string';
-
         activeCalls++;
 
         fs.lstat(file, (err, stat) => {
           activeCalls--;
 
-          if (!err && stat) {
-            if (!passedFiletypeChecks) {
-              if (stat.isSymbolicLink()) {
-                // do nothing
-              } else if (stat.isDirectory()) {
-                search(file);
-              } else {
-                passedFiletypeChecks = true;
-              }
-            }
-            if (passedFiletypeChecks) {
+          // This logic is unnecessary for node > v10.10, but leaving it in
+          // since we need it for backwards-compatibility still.
+          if (!err && stat && !stat.isSymbolicLink()) {
+            if (stat.isDirectory()) {
+              search(file);
+            } else {
               const ext = path.extname(file).substr(1);
               if (extensions.indexOf(ext) !== -1) {
                 result.push([file, stat.mtime.getTime(), stat.size]);
