@@ -56,7 +56,16 @@ jest.mock('fs', () => {
   };
   return {
     lstat: jest.fn(stat),
-    readdir: jest.fn((dir, callback) => {
+    readdir: jest.fn((dir, options, callback) => {
+      // readdir has an optional `options` arg that's in the middle of the args list.
+      // we always provide it in practice, but let's try to handle the case where it's not
+      // provided too
+      if (typeof callback === 'undefined') {
+        if (typeof options === 'function') {
+          callback = options;
+        }
+        throw new Error('readdir: callback is not a function!');
+      }
       if (dir === '/project/fruits') {
         setTimeout(() => callback(null, ['directory', 'tomato.js']), 0);
       } else if (dir === '/project/fruits/directory') {

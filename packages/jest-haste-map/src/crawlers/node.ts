@@ -38,19 +38,19 @@ function find(
         callback(result);
         return;
       }
+      // node < v10.10 does not support the withFileTypes option, and
+      // entry will be a string.
       entries.forEach((entry: string | fs.Dirent) => {
-        let file: string;
-        // node < v10.10 does not support the withFileTypes option, and
-        // entry will be a string.
-        if (typeof entry === 'string') {
-          file = path.join(directory, entry);
-        } else {
-          file = path.join(directory, entry.name);
+        const file = path.join(
+          directory,
+          typeof entry === 'string' ? entry : entry.name,
+        );
 
-          if (ignore(file)) {
-            return;
-          }
+        if (ignore(file)) {
+          return;
+        }
 
+        if (typeof entry !== 'string') {
           if (entry.isSymbolicLink()) {
             return;
           }
