@@ -47,7 +47,7 @@ test('preserves module identity for symlinks when using browser field resolution
       });
     `,
   });
-  /* eslint-enable sort-keys */
+  /* eslint-enable */
 
   writeSymlinks(DIR, {
     'packages/has-browser-field': 'node_modules/has-browser-field',
