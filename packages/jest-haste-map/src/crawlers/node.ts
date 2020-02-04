@@ -32,7 +32,7 @@ function find(
 
   function search(directory: string): void {
     activeCalls++;
-    fs.readdir(directory, { withFileTypes: true }, (err, entries) => {
+    fs.readdir(directory, {withFileTypes: true}, (err, entries) => {
       activeCalls--;
       if (err) {
         callback(result);
