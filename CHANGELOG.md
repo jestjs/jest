@@ -12,7 +12,6 @@
 - `[jest-snapshot]` Downgrade semver to v6 to support node 8 ([#9451](https://github.com/facebook/jest/pull/9451))
 - `[jest-transform]` Correct sourcemap behavior for transformed and instrumented code ([#9460](https://github.com/facebook/jest/pull/9460))
 - `[pretty-format]` Export `OldPlugin` type ([#9491](https://github.com/facebook/jest/pull/9491))
-- `[jest-haste-map]` Reduce number of lstat calls in node crawler
 
 ### Chore & Maintenance
 
@@ -21,6 +20,8 @@
 - `[docs]` Warn about unexpected behavior / bug of node-notifier when using the `notify` options.
 
 ### Performance
+
+- `[jest-haste-map]` Reduce number of `lstat` calls in node crawler ([#9514](https://github.com/facebook/jest/pull/9514))
 
 ## 25.1.0
 
