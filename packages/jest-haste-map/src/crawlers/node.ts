@@ -38,20 +38,27 @@ function find(
         callback(result);
         return;
       }
-      entries.forEach(entry => {
-        const file = path.join(directory, entry.name);
+      entries.forEach((entry: string | fs.Dirent) => {
+        let file: string;
+        // node < v10.10 does not support the withFileTypes option, and
+        // entry will be a string.
+        if (typeof entry === 'string') {
+          file = path.join(directory, entry);
+        } else {
+          file = path.join(directory, entry.name);
 
-        if (ignore(file)) {
-          return;
-        }
+          if (ignore(file)) {
+            return;
+          }
 
-        if (entry.isSymbolicLink()) {
-          return;
-        }
+          if (entry.isSymbolicLink()) {
+            return;
+          }
 
-        if (entry.isDirectory()) {
-          search(file);
-          return;
+          if (entry.isDirectory()) {
+            search(file);
+            return;
+          }
         }
 
         activeCalls++;
@@ -59,9 +66,17 @@ function find(
         fs.lstat(file, (err, stat) => {
           activeCalls--;
 
-          const ext = path.extname(file).substr(1);
-          if (extensions.indexOf(ext) !== -1) {
-            result.push([file, stat.mtime.getTime(), stat.size]);
+          // This logic is unnecessary for node > v10.10, but leaving it in
+          // since we need it for backwards-compatibility still.
+          if (!err && stat && !stat.isSymbolicLink()) {
+            if (stat.isDirectory()) {
+              search(file);
+            } else {
+              const ext = path.extname(file).substr(1);
+              if (extensions.indexOf(ext) !== -1) {
+                result.push([file, stat.mtime.getTime(), stat.size]);
+              }
+            }
           }
 
           if (activeCalls === 0) {
