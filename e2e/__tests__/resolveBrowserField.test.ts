@@ -16,14 +16,15 @@ beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
 test('preserves module identity for symlinks when using browser field resolution', () => {
+  /* eslint-disable sort-keys */
   writeFiles(DIR, {
-    'packages/needs-preserved-id/package.json': JSON.stringify({
-      name: 'needs-preserved-id',
-    }),
     'packages/needs-preserved-id/index.js': `
       console.log("needs-preserved-id executed");
       module.exports = {};
     `,
+    'packages/needs-preserved-id/package.json': JSON.stringify({
+      name: 'needs-preserved-id',
+    }),
     'packages/has-browser-field/package.json': JSON.stringify({
       name: 'has-browser-field',
       browser: 'browser.js',
@@ -46,10 +47,11 @@ test('preserves module identity for symlinks when using browser field resolution
       });
     `,
   });
+  /* eslint-enable sort-keys */
 
   writeSymlinks(DIR, {
-    'packages/needs-preserved-id': 'node_modules/needs-preserved-id',
     'packages/has-browser-field': 'node_modules/has-browser-field',
+    'packages/needs-preserved-id': 'node_modules/needs-preserved-id',
   });
 
   writeSymlinks(DIR, {
