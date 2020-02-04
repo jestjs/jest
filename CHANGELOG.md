@@ -12,6 +12,7 @@
 - `[jest-snapshot]` Downgrade semver to v6 to support node 8 ([#9451](https://github.com/facebook/jest/pull/9451))
 - `[jest-transform]` Correct sourcemap behavior for transformed and instrumented code ([#9460](https://github.com/facebook/jest/pull/9460))
 - `[pretty-format]` Export `OldPlugin` type ([#9491](https://github.com/facebook/jest/pull/9491))
+- `[jest-haste-map]` Reduce number of lstat calls in node crawler
 
 ### Chore & Maintenance
 
