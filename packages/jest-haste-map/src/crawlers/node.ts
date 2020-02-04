@@ -32,32 +32,38 @@ function find(
 
   function search(directory: string): void {
     activeCalls++;
-    fs.readdir(directory, (err, names) => {
+    fs.readdir(directory, { withFileTypes: true }, (err, entries) => {
       activeCalls--;
       if (err) {
         callback(result);
         return;
       }
-      names.forEach(file => {
-        file = path.join(directory, file);
+      entries.forEach(entry => {
+        const file = path.join(directory, entry.name);
+
         if (ignore(file)) {
           return;
         }
+
+        if (entry.isSymbolicLink()) {
+          return;
+        }
+
+        if (entry.isDirectory()) {
+          search(file);
+          return;
+        }
+
         activeCalls++;
 
         fs.lstat(file, (err, stat) => {
           activeCalls--;
 
-          if (!err && stat && !stat.isSymbolicLink()) {
-            if (stat.isDirectory()) {
-              search(file);
-            } else {
-              const ext = path.extname(file).substr(1);
-              if (extensions.indexOf(ext) !== -1) {
-                result.push([file, stat.mtime.getTime(), stat.size]);
-              }
-            }
+          const ext = path.extname(file).substr(1);
+          if (extensions.indexOf(ext) !== -1) {
+            result.push([file, stat.mtime.getTime(), stat.size]);
           }
+
           if (activeCalls === 0) {
             callback(result);
           }
