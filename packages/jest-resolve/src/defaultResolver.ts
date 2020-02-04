@@ -8,6 +8,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {sync as browserResolve} from 'browser-resolve';
+import {sync as realpath} from 'realpath-native';
 import pnpResolver from 'jest-pnp-resolver';
 import {Config} from '@jest/types';
 import isBuiltinModule from './isBuiltinModule';
@@ -46,7 +47,7 @@ export default function defaultResolver(
   if (options.browser && result) {
     // Dereference symlinks to ensure we don't create a separate
     // module instance depending on how it was referenced.
-    result = fs.realpathSync(result);
+    result = realpath(result);
   }
   return result;
 }
@@ -107,7 +108,7 @@ function resolveSync(
     if (result) {
       // Dereference symlinks to ensure we don't create a separate
       // module instance depending on how it was referenced.
-      result = fs.realpathSync(result);
+      result = realpath(result);
     }
     return result;
   }
