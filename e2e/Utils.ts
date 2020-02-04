@@ -90,6 +90,25 @@ export const writeFiles = (
   });
 };
 
+export const writeSymlinks = (
+  directory: string,
+  symlinks: {[existingFile: string]: string},
+) => {
+  createDirectory(directory);
+  Object.keys(symlinks).forEach(fileOrPath => {
+    const symLinkPath = symlinks[fileOrPath];
+    const dirname = path.dirname(symLinkPath);
+
+    if (dirname !== '/') {
+      createDirectory(path.join(directory, dirname));
+    }
+    fs.symlinkSync(
+      path.resolve(directory, ...fileOrPath.split('/')),
+      path.resolve(directory, ...symLinkPath.split('/')),
+    );
+  });
+};
+
 const NUMBER_OF_TESTS_TO_FORCE_USING_WORKERS = 25;
 /**
  * Forces Jest to use workers by generating many test files to run.
