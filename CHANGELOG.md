@@ -22,6 +22,8 @@
 
 ### Performance
 
+- `[jest-haste-map]` Reduce number of `lstat` calls in node crawler ([#9514](https://github.com/facebook/jest/pull/9514))
+
 ## 25.1.0
 
 ### Features
