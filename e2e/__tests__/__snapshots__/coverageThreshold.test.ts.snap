@@ -20,7 +20,7 @@ exports[`excludes tests matched by path threshold groups from global group: stdo
 File       | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -----------|---------|----------|---------|---------|-------------------
 All files  |      50 |      100 |      50 |      50 |                   
- apple.js  |       0 |      100 |       0 |       0 | 2,3               
+ apple.js  |       0 |      100 |       0 |       0 | 1,2               
  banana.js |     100 |      100 |     100 |     100 |                   
 -----------|---------|----------|---------|---------|-------------------
 `;
@@ -54,7 +54,7 @@ exports[`exits with 1 if coverage threshold is not met: stdout 1`] = `
 File            | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ----------------|---------|----------|---------|---------|-------------------
 All files       |      50 |      100 |       0 |      50 |                   
- not-covered.js |      50 |      100 |       0 |      50 | 3                 
+ not-covered.js |      50 |      100 |       0 |      50 | 2                 
 ----------------|---------|----------|---------|---------|-------------------
 `;
 
@@ -104,6 +104,6 @@ exports[`file is matched by all path and glob threshold groups: stdout 1`] = `
 File       | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -----------|---------|----------|---------|---------|-------------------
 All files  |      50 |      100 |       0 |      50 |                   
- banana.js |      50 |      100 |       0 |      50 | 3                 
+ banana.js |      50 |      100 |       0 |      50 | 2                 
 -----------|---------|----------|---------|---------|-------------------
 `;

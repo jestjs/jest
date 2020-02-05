@@ -141,12 +141,10 @@ FAIL __tests__/onlyConstructs.test.js
 
     Missing second argument. It must be a callback function.
 
-      1 |
-    > 2 |     describe('describe, no implementation');
-        |     ^
-      3 |
+    > 1 | describe('describe, no implementation');
+        | ^
 
-      at Object.describe (__tests__/onlyConstructs.test.js:2:5)
+      at Object.describe (__tests__/onlyConstructs.test.js:1:1)
     `.trim(),
     );
   } else {
