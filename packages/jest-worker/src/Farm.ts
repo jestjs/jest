@@ -12,7 +12,6 @@ import {
   OnEnd,
   OnStart,
   QueueChildMessage,
-  QueueItem,
   WorkerInterface,
 } from './types';
 
@@ -20,11 +19,10 @@ export default class Farm {
   private _computeWorkerKey: FarmOptions['computeWorkerKey'];
   private _cacheKeys: Record<string, WorkerInterface>;
   private _callback: Function;
-  private _last: Array<QueueItem>;
   private _locks: Array<boolean>;
   private _numOfWorkers: number;
   private _offset: number;
-  private _queue: Array<QueueItem | null>;
+  private _queue: Array<Array<QueueChildMessage | null>>;
 
   constructor(
     numOfWorkers: number,
@@ -33,7 +31,6 @@ export default class Farm {
   ) {
     this._cacheKeys = Object.create(null);
     this._callback = callback;
-    this._last = [];
     this._locks = [];
     this._numOfWorkers = numOfWorkers;
     this._offset = 0;
@@ -81,16 +78,18 @@ export default class Farm {
     });
   }
 
-  private _getNextTask(workerId: number): QueueChildMessage | null {
-    let queueHead = this._queue[workerId];
+  private _shiftQueue(workerId: number) {
+    return (this._queue[workerId] || []).shift();
+  }
 
-    while (queueHead && queueHead.task.request[1]) {
-      queueHead = queueHead.next || null;
+  private _getNextTask(workerId: number) {
+    let queueHead = this._shiftQueue(workerId);
+
+    while (queueHead && queueHead.request[1]) {
+      queueHead = this._shiftQueue(workerId);
     }
 
-    this._queue[workerId] = queueHead;
-
-    return queueHead && queueHead.task;
+    return queueHead;
   }
 
   private _process(workerId: number): Farm {
@@ -99,7 +98,6 @@ export default class Farm {
     }
 
     const task = this._getNextTask(workerId);
-
     if (!task) {
       return this;
     }
@@ -120,19 +118,15 @@ export default class Farm {
   }
 
   private _enqueue(task: QueueChildMessage, workerId: number): Farm {
-    const item = {next: null, task};
-
     if (task.request[1]) {
       return this;
     }
 
-    if (this._queue[workerId]) {
-      this._last[workerId].next = item;
-    } else {
-      this._queue[workerId] = item;
+    if (!this._queue[workerId]) {
+      this._queue[workerId] = [];
     }
 
-    this._last[workerId] = item;
+    this._queue[workerId].push(task);
     this._process(workerId);
 
     return this;

@@ -112,11 +112,9 @@ export default class BaseWorkerPool {
     });
 
     const workerExits = await Promise.all(workerExitPromises);
-    return workerExits.reduce<PoolExitResult>(
-      (result, forceExited) => ({
-        forceExited: result.forceExited || forceExited,
-      }),
-      {forceExited: false},
-    );
+    const forceExited = workerExits.some(isExited => isExited);
+    return {
+      forceExited,
+    };
   }
 }

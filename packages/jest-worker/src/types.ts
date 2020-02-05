@@ -153,8 +153,3 @@ export type QueueChildMessage = {
   onStart: OnStart;
   onEnd: OnEnd;
 };
-
-export type QueueItem = {
-  task: QueueChildMessage;
-  next: QueueItem | null;
-};
