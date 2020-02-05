@@ -10,6 +10,7 @@ import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
+import dedent = require('dedent');
 
 const DIR = path.resolve(__dirname, '../to-match-inline-snapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');
@@ -363,7 +364,7 @@ test('multiple custom matchers and native matchers', () => {
 
 test('indentation is correct in the presences of existing snapshots', () => {
   const filename = 'existing-snapshot.test.js';
-  const test = `
+  const test = dedent(`
     test('existing snapshot', () => {
       expect({ hello: 'world' }).toMatchInlineSnapshot(\`
         Object {
@@ -372,7 +373,7 @@ test('indentation is correct in the presences of existing snapshots', () => {
       \`);
       expect({ hello: 'world' }).toMatchInlineSnapshot();
     });
-  `;
+  `);
 
   writeFiles(TESTS_DIR, {[filename]: test});
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);

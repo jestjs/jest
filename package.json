@@ -29,6 +29,7 @@
     "chokidar": "^3.3.0",
     "codecov": "^3.0.0",
     "debug": "^4.0.1",
+    "dedent": "^0.7.0",
     "eslint": "^6.2.2",
     "eslint-config-prettier": "^6.1.0",
     "eslint-plugin-babel": "^5.1.0",

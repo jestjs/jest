@@ -123,10 +123,10 @@ test('handles property matchers', () => {
 exports[`indentation is correct in the presences of existing snapshots: existing snapshot 1`] = `
 test('existing snapshot', () => {
   expect({hello: 'world'}).toMatchInlineSnapshot(\`
-        Object {
-          "hello": "world",
-        }
-      \`);
+    Object {
+      "hello": "world",
+    }
+  \`);
   expect({hello: 'world'}).toMatchInlineSnapshot(\`
     Object {
       "hello": "world",
