@@ -262,7 +262,7 @@ const createFormattingParser = (
       if (
         callee.type !== 'MemberExpression' ||
         callee.property.type !== 'Identifier' ||
-        callee.property.name !== snapshotMatcherNames[0] ||
+        !snapshotMatcherNames.includes(callee.property.name) ||
         !callee.loc ||
         callee.computed
       ) {
@@ -281,8 +281,6 @@ const createFormattingParser = (
       if (snapshot === undefined || snapshotIndex === undefined) {
         return;
       }
-
-      snapshotMatcherNames.shift();
 
       const useSpaces = !options.useTabs;
       snapshot = indent(
