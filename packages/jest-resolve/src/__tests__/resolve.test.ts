@@ -9,7 +9,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {ModuleMap} from 'jest-haste-map';
-import Resolver from '../';
+import Resolver = require('../');
 // @ts-ignore: js file
 import userResolver from '../__mocks__/userResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
@@ -83,7 +83,7 @@ describe('findNodeModule', () => {
 });
 
 describe('resolveModule', () => {
-  let moduleMap: typeof ModuleMap;
+  let moduleMap: ModuleMap;
   beforeEach(() => {
     moduleMap = ModuleMap.create('/');
   });
@@ -195,7 +195,7 @@ describe('nodeModulesPaths', () => {
 
 describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   const _path = path;
-  let moduleMap: typeof ModuleMap;
+  let moduleMap: ModuleMap;
 
   beforeEach(() => {
     jest.resetModules();

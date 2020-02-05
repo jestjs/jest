@@ -2297,7 +2297,7 @@
     "@types/prop-types" "*"
     csstype "^2.2.0"
 
-"@types/resolve@*":
+"@types/resolve@*", "@types/resolve@^1.14.0":
   version "1.14.0"
   resolved "https://registry.yarnpkg.com/@types/resolve/-/resolve-1.14.0.tgz#c95d696264f8e53e764a7c0b83e9317b458b76c3"
   integrity sha512-bmjNBW6tok+67iOsASeYSJxSgY++BIR35nGyGLORTDirhra9reJ0shgGL3U7KPDUbOBCx8JrlCjd4d/y5uiMRQ==

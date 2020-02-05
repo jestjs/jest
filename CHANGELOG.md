@@ -16,9 +16,10 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Warn about unexpected behavior / bug of node-notifier when using the `notify` options.
+- `[jest-resolver]` Use `resolve` package to implement custom module resolution
 - `[@jest/reporters]` Remove unused dependencies and type exports ([#9462](https://github.com/facebook/jest/pull/9462))
 - `[website]` Update pictures of reports when matchers fail ([#9214](https://github.com/facebook/jest/pull/9214))
-- `[docs]` Warn about unexpected behavior / bug of node-notifier when using the `notify` options.
 
 ### Performance
 
