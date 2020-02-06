@@ -16,21 +16,23 @@ export default class Queue {
     this.offset = 0;
   }
 
-  public push = (item: QueueChildMessage) => this.data.push(item);
+  push(item: QueueChildMessage) {
+    return this.data.push(item);
+  }
 
-  public shift = () => {
+  shift() {
     const item = this.data[this.offset];
 
     this.data[this.offset] = null;
     this.offset++;
 
     return item;
-  };
+  }
 
-  public flush = () => {
+  flush() {
     if (this.offset === this.data.length) {
       this.data = [];
       this.offset = 0;
     }
-  };
+  }
 }
