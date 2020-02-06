@@ -14,7 +14,7 @@ import runJest from '../runJest';
 const DIR = path.resolve(__dirname, '../to-match-inline-snapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');
 
-const readFile = filename =>
+const readFile = (filename: string) =>
   fs.readFileSync(path.join(TESTS_DIR, filename), 'utf8');
 
 beforeEach(() => cleanup(TESTS_DIR));
@@ -359,4 +359,25 @@ test('multiple custom matchers and native matchers', () => {
   expect(stderr).toMatch('4 snapshots written from 1 test suite.');
   expect(exitCode).toBe(0);
   expect(wrap(fileAfter)).toMatchSnapshot('multiple matchers');
+});
+
+test('indentation is correct in the presences of existing snapshots', () => {
+  const filename = 'existing-snapshot.test.js';
+  const test = `
+    test('existing snapshot', () => {
+      expect({ hello: 'world' }).toMatchInlineSnapshot(\`
+        Object {
+          "hello": "world",
+        }
+      \`);
+      expect({ hello: 'world' }).toMatchInlineSnapshot();
+    });
+  `;
+
+  writeFiles(TESTS_DIR, {[filename]: test});
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const fileAfter = readFile(filename);
+  expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+  expect(exitCode).toBe(0);
+  expect(wrap(fileAfter)).toMatchSnapshot('existing snapshot');
 });

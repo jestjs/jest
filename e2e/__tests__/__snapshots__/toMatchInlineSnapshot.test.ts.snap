@@ -118,6 +118,22 @@ test('handles property matchers', () => {
 
 `;
 
+exports[`indentation is correct in the presences of existing snapshots: existing snapshot 1`] = `
+test('existing snapshot', () => {
+  expect({hello: 'world'}).toMatchInlineSnapshot(\`
+    Object {
+      "hello": "world",
+    }
+  \`);
+  expect({hello: 'world'}).toMatchInlineSnapshot(\`
+    Object {
+      "hello": "world",
+    }
+  \`);
+});
+
+`;
+
 exports[`multiple custom matchers and native matchers: multiple matchers 1`] = `
 const {toMatchInlineSnapshot} = require('jest-snapshot');
 expect.extend({
