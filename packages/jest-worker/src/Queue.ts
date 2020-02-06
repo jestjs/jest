@@ -25,5 +25,5 @@ export default class Queue {
       this.data = [];
       this.offset = 0;
     }
-  }
+  };
 }
