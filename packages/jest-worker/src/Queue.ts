@@ -8,17 +8,17 @@
 import {QueueChildMessage} from './types';
 
 export default class Queue {
-  data: Array<QueueChildMessage | null>;
-  offset: number;
+  private data: Array<QueueChildMessage | null>;
+  private offset: number;
 
   constructor() {
     this.data = [];
     this.offset = 0;
   }
 
-  push = (item: QueueChildMessage) => this.data.push(item);
+  public push = (item: QueueChildMessage) => this.data.push(item);
 
-  shift = () => {
+  public shift = () => {
     const item = this.data[this.offset];
 
     this.data[this.offset] = null;
@@ -27,7 +27,7 @@ export default class Queue {
     return item;
   };
 
-  flush = () => {
+  public flush = () => {
     if (this.offset === this.data.length) {
       this.data = [];
       this.offset = 0;
