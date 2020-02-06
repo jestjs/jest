@@ -15,6 +15,8 @@ import {
   WorkerInterface,
 } from './types';
 
+import Queue from './Queue';
+
 export default class Farm {
   private _computeWorkerKey: FarmOptions['computeWorkerKey'];
   private _cacheKeys: Record<string, WorkerInterface>;
@@ -22,7 +24,7 @@ export default class Farm {
   private _locks: Array<boolean>;
   private _numOfWorkers: number;
   private _offset: number;
-  private _queue: Array<Array<QueueChildMessage | null>>;
+  private _queue: Array<Queue>;
 
   constructor(
     numOfWorkers: number,
@@ -78,15 +80,11 @@ export default class Farm {
     });
   }
 
-  private _shiftQueue(workerId: number) {
-    return (this._queue[workerId] || []).shift();
-  }
-
   private _getNextTask(workerId: number) {
-    let queueHead = this._shiftQueue(workerId);
+    let queueHead = this._queue[workerId].shift();
 
     while (queueHead && queueHead.request[1]) {
-      queueHead = this._shiftQueue(workerId);
+      queueHead = this._queue[workerId].shift();
     }
 
     return queueHead;
@@ -114,6 +112,8 @@ export default class Farm {
     this._lock(workerId);
     this._callback(workerId, task.request, task.onStart, onEnd);
 
+    this._queue[workerId].flush();
+
     return this;
   }
 
@@ -123,7 +123,7 @@ export default class Farm {
     }
 
     if (!this._queue[workerId]) {
-      this._queue[workerId] = [];
+      this._queue[workerId] = new Queue();
     }
 
     this._queue[workerId].push(task);
