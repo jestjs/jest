@@ -20,7 +20,7 @@ import {
 const DIR = path.resolve(tmpdir(), 'globalVariables.test');
 const TEST_DIR = path.resolve(DIR, '__tests__');
 
-function cleanStderr(stderr) {
+function cleanStderr(stderr: string) {
   const {rest} = extractSummary(stderr);
   return rest.replace(/.*(jest-jasmine2).*\n/g, '');
 }
@@ -155,12 +155,10 @@ FAIL __tests__/onlyConstructs.test.js
 
     Missing second argument. It must be a callback function.
 
-      1 |
-    > 2 |     describe('describe, no implementation');
-        |              ^
-      3 |
+    > 1 | describe('describe, no implementation');
+        |          ^
 
-      at Object.<anonymous> (__tests__/onlyConstructs.test.js:2:14)
+      at Object.<anonymous> (__tests__/onlyConstructs.test.js:1:10)
     `.trim(),
     );
   }
