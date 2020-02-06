@@ -156,6 +156,20 @@ describe('resolveModule', () => {
     });
     expect(resolved).toBe(require.resolve('../__mocks__/mockJsDependency.js'));
   });
+
+  it('does not confuse directories with files', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    } as ResolverConfig);
+    const mocksDirectory = path.resolve(__dirname, '../__mocks__');
+    const fooSlashFoo = path.join(mocksDirectory, 'foo/foo.js');
+    const fooSlashIndex = path.join(mocksDirectory, 'foo/index.js');
+
+    const resolvedWithSlash = resolver.resolveModule(fooSlashFoo, './');
+    const resolvedWithDot = resolver.resolveModule(fooSlashFoo, '.');
+    expect(resolvedWithSlash).toBe(fooSlashIndex);
+    expect(resolvedWithSlash).toBe(resolvedWithDot);
+  });
 });
 
 describe('getMockModule', () => {
