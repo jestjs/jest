@@ -7,6 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
+import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, writeFiles, writeSymlinks} from '../Utils';
 import runJest from '../runJest';
 
@@ -61,10 +62,9 @@ test('preserves module identity for symlinks when using browser field resolution
 
   const {stdout, stderr, exitCode} = runJest(DIR, ['--no-watchman']);
   expect(stderr).toContain('Test Suites: 1 passed, 1 total');
-  expect(stdout).toMatchInlineSnapshot(`
-    "  console.log packages/needs-preserved-id/index.js:2
+  expect(wrap(stdout.trim())).toMatchInlineSnapshot(`
+    console.log packages/needs-preserved-id/index.js:1
         needs-preserved-id executed
-    "
   `);
   expect(exitCode).toEqual(0);
 });

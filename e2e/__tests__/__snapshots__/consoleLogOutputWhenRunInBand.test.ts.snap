@@ -17,7 +17,7 @@ Ran all test suites.
 `;
 
 exports[`prints console.logs when run with forceExit 3`] = `
-  console.log __tests__/a-banana.js:2
+  console.log __tests__/a-banana.js:1
     Hey
 
 `;
