@@ -54,28 +54,4 @@ describe('Queue', () => {
       }
     });
   });
-
-  it('flush when queues is empty', () => {
-    const msg = createQueueMessage();
-    const queue = new Queue();
-
-    queue.push(msg);
-
-    queue.shift();
-
-    queue.flush();
-
-    expect(queue.shift()).toEqual(undefined);
-  });
-
-  it('flush when queues is not empty', () => {
-    const msg = createQueueMessage();
-    const queue = new Queue();
-
-    queue.push(msg);
-
-    queue.flush();
-
-    expect(queue.shift()).toEqual(msg);
-  });
 });

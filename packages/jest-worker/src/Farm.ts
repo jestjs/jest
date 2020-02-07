@@ -112,8 +112,6 @@ export default class Farm {
     this._lock(workerId);
     this._callback(workerId, task.request, task.onStart, onEnd);
 
-    this._queue[workerId].flush();
-
     return this;
   }
 

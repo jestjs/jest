@@ -8,31 +8,26 @@
 import {QueueChildMessage} from './types';
 
 export default class Queue {
-  private data: Array<QueueChildMessage | null>;
-  private offset: number;
+  private data: Set<QueueChildMessage | null>;
+  private iterator: IterableIterator<QueueChildMessage | null>;
 
   constructor() {
-    this.data = [];
-    this.offset = 0;
+    this.data = new Set();
+    this.iterator = this.data.values();
   }
 
   push(item: QueueChildMessage) {
-    return this.data.push(item);
+    return this.data.add(item);
   }
 
   shift() {
-    const item = this.data[this.offset];
+    const item = this.iterator.next();
 
-    this.data[this.offset] = null;
-    this.offset++;
-
-    return item;
-  }
-
-  flush() {
-    if (this.offset === this.data.length) {
-      this.data = [];
-      this.offset = 0;
+    if (item.done) {
+      this.data.clear();
+      this.iterator = this.data.values();
     }
+
+    return item.value;
   }
 }
