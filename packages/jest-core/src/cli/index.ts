@@ -114,7 +114,7 @@ export async function runCLI(
 
     const message =
       chalk.red(
-        `\nJest has detected the following ${openHandlesString} potentially keeping Jest from exiting:\n\n`,
+        `\nJest has detected the following ${openHandlesString} potentially preventing Jest from exiting:\n\n`,
       ) + formatted.join('\n\n');
 
     console.error(message);

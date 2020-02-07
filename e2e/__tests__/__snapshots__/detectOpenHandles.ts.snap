@@ -9,7 +9,7 @@ This usually means that there are asynchronous operations that weren't stopped i
 `;
 
 exports[`prints out info about open handlers 1`] = `
-Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+Jest has detected the following 1 open handle potentially preventing Jest from exiting:
 
   ●  GETADDRINFOREQWRAP
 
@@ -24,7 +24,7 @@ Jest has detected the following 1 open handle potentially keeping Jest from exit
 `;
 
 exports[`prints out info about open handlers from inside tests 1`] = `
-Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+Jest has detected the following 1 open handle potentially preventing Jest from exiting:
 
   ●  Timeout
 

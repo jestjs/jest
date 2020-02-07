@@ -273,6 +273,11 @@ export default async function runJest({
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});
   }
 
+  if (collectHandles) {
+    // wait 100ms to allow some handles to be cleaned up, including Jest's internal timeouts
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+
   await processResults(results, {
     collectHandles,
     json: globalConfig.json,

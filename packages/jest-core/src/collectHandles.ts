@@ -11,28 +11,6 @@ import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';
 import stripAnsi = require('strip-ansi');
 
-function stackIsFromUser(stack: string) {
-  // Either the test file, or something required by it
-  if (stack.includes('Runtime.requireModule')) {
-    return true;
-  }
-
-  // jest-jasmine it or describe call
-  if (stack.includes('asyncJestTest') || stack.includes('asyncJestLifecycle')) {
-    return true;
-  }
-
-  // An async function call from within circus
-  if (stack.includes('callAsyncCircusFn')) {
-    // jest-circus it or describe call
-    return (
-      stack.includes('_callCircusTest') || stack.includes('_callCircusHook')
-    );
-  }
-
-  return false;
-}
-
 const alwaysActive = () => true;
 
 // Inspired by https://github.com/mafintosh/why-is-node-running/blob/master/index.js
@@ -61,7 +39,7 @@ export default function collectHandles(): () => Array<Error> {
       }
       const error = new ErrorWithStack(type, initHook);
 
-      if (stackIsFromUser(error.stack || '')) {
+      if ((error.stack || '').trim().length > 0) {
         let isActive: () => boolean;
 
         if (type === 'Timeout' || type === 'Immediate') {
@@ -130,5 +108,7 @@ export function formatHandleErrors(
 
         return true;
       })
+      // only keep stacks with at least one frame. `length === 1` means just the heading (normally meaning node internal), which is useless
+      .filter(stack => stack.trim().split('\n').length > 1)
   );
 }
