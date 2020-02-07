@@ -18,7 +18,7 @@ const colors: Array<keyof typeof chalk> = [
   'white',
 ];
 
-export const getDisplayNameColor = (seed?: string) => {
+export const getDisplayNameColor = (seed?: string): typeof colors[number] => {
   if (seed === undefined) {
     return 'white';
   }

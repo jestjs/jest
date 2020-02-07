@@ -74,6 +74,24 @@ module.exports = {
       },
     },
     {
+      files: 'packages/**/*.ts',
+      rules: {
+        '@typescript-eslint/explicit-module-boundary-types': 2,
+      },
+    },
+    {
+      files: [
+        '**/__tests__/**',
+        '**/__mocks__/**',
+        'packages/jest-jasmine2/src/jasmine/**/*',
+        'packages/expect/src/jasmineUtils.ts',
+        '**/vendor/**/*',
+      ],
+      rules: {
+        '@typescript-eslint/explicit-module-boundary-types': 0,
+      },
+    },
+    {
       files: [
         'packages/jest-jasmine2/src/jasmine/**/*',
         'packages/expect/src/jasmineUtils.ts',

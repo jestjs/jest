@@ -198,7 +198,7 @@ export const joinAlignedDiffsNoExpand = (
 export const joinAlignedDiffsExpand = (
   diffs: Array<Diff>,
   options: DiffOptionsNormalized,
-) =>
+): string =>
   diffs
     .map((diff: Diff, i: number, diffs: Array<Diff>): string => {
       const line = diff[1];

@@ -12,7 +12,7 @@ import colorize from './colorize';
 const DOTS = '...';
 const ENTER = '⏎';
 
-export default (testName: string, pattern: string, width: number) => {
+export default (testName: string, pattern: string, width: number): string => {
   const inlineTestName = testName.replace(/(\r\n|\n|\r)/gm, ENTER);
 
   let regexp;

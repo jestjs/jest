@@ -31,12 +31,12 @@ export default class TestPathPatternPrompt extends PatternPrompt {
     this._entityName = 'filenames';
   }
 
-  _onChange(pattern: string, options: ScrollOptions) {
+  _onChange(pattern: string, options: ScrollOptions): void {
     super._onChange(pattern, options);
     this._printPrompt(pattern);
   }
 
-  _printPrompt(pattern: string) {
+  _printPrompt(pattern: string): void {
     const pipe = this._pipe;
     printPatternCaret(pattern, pipe);
     printRestoredPatternCaret(pattern, this._currentUsageRows, pipe);
@@ -59,7 +59,7 @@ export default class TestPathPatternPrompt extends PatternPrompt {
     return tests;
   }
 
-  updateSearchSources(searchSources: SearchSources) {
+  updateSearchSources(searchSources: SearchSources): void {
     this._searchSources = searchSources;
   }
 }

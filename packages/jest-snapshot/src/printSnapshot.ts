@@ -88,7 +88,7 @@ export const getReceivedColorForChalkInstance = (
 export const aSnapshotColor = getSnapshotColorForChalkInstance(chalk);
 export const bReceivedColor = getReceivedColorForChalkInstance(chalk);
 
-export const noColor = (string: string) => string;
+export const noColor = (string: string): string => string;
 
 export const HINT_ARG = 'hint';
 export const SNAPSHOT_ARG = 'snapshot';
@@ -195,8 +195,10 @@ const isLineDiffable = (received: any): boolean => {
   return true;
 };
 
-export const printExpected = (val: unknown) => EXPECTED_COLOR(minify(val));
-export const printReceived = (val: unknown) => RECEIVED_COLOR(minify(val));
+export const printExpected = (val: unknown): string =>
+  EXPECTED_COLOR(minify(val));
+export const printReceived = (val: unknown): string =>
+  RECEIVED_COLOR(minify(val));
 
 export const printPropertiesAndReceived = (
   properties: object,

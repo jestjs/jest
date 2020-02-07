@@ -250,7 +250,11 @@ export default class ScriptTransformer {
     this._getTransformer(filepath);
   }
 
-  transformSource(filepath: Config.Path, content: string, instrument: boolean) {
+  transformSource(
+    filepath: Config.Path,
+    content: string,
+    instrument: boolean,
+  ): TransformResult {
     const filename = this._getRealPath(filepath);
     const transform = this._getTransformer(filename);
     const cacheFilePath = this._getFileCachePath(filename, content, instrument);
@@ -277,6 +281,7 @@ export default class ScriptTransformer {
       return {
         code,
         mapCoverage,
+        originalCode: content,
         sourceMapPath,
       };
     }
@@ -362,6 +367,7 @@ export default class ScriptTransformer {
     return {
       code,
       mapCoverage,
+      originalCode: content,
       sourceMapPath,
     };
   }
@@ -545,7 +551,13 @@ export default class ScriptTransformer {
   }
 }
 
-export function createTranspilingRequire(config: Config.ProjectConfig) {
+// TODO: do we need to define the generics twice?
+export function createTranspilingRequire(
+  config: Config.ProjectConfig,
+): <TModuleType = unknown>(
+  resolverPath: string,
+  applyInteropRequireDefault?: boolean,
+) => TModuleType {
   const transformer = new ScriptTransformer(config);
 
   return function requireAndTranspileModule<TModuleType = unknown>(

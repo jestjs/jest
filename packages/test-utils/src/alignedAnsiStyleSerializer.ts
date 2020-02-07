@@ -44,7 +44,7 @@ export const alignedAnsiStyleSerializer = {
       }
     });
   },
-  test(val: any): val is string {
+  test(val: unknown): val is string {
     return typeof val === 'string';
   },
 };

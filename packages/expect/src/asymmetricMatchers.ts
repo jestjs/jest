@@ -239,21 +239,23 @@ class StringMatching extends AsymmetricMatcher<RegExp> {
   }
 }
 
-export const any = (expectedObject: any) => new Any(expectedObject);
-export const anything = () => new Anything();
-export const arrayContaining = (sample: Array<unknown>) =>
+export const any = (expectedObject: unknown): Any => new Any(expectedObject);
+export const anything = (): Anything => new Anything();
+export const arrayContaining = (sample: Array<unknown>): ArrayContaining =>
   new ArrayContaining(sample);
-export const arrayNotContaining = (sample: Array<unknown>) =>
+export const arrayNotContaining = (sample: Array<unknown>): ArrayContaining =>
   new ArrayContaining(sample, true);
-export const objectContaining = (sample: Record<string, any>) =>
-  new ObjectContaining(sample);
-export const objectNotContaining = (sample: Record<string, any>) =>
-  new ObjectContaining(sample, true);
-export const stringContaining = (expected: string) =>
+export const objectContaining = (
+  sample: Record<string, any>,
+): ObjectContaining => new ObjectContaining(sample);
+export const objectNotContaining = (
+  sample: Record<string, any>,
+): ObjectContaining => new ObjectContaining(sample, true);
+export const stringContaining = (expected: string): StringContaining =>
   new StringContaining(expected);
-export const stringNotContaining = (expected: string) =>
+export const stringNotContaining = (expected: string): StringContaining =>
   new StringContaining(expected, true);
-export const stringMatching = (expected: string | RegExp) =>
+export const stringMatching = (expected: string | RegExp): StringMatching =>
   new StringMatching(expected);
-export const stringNotMatching = (expected: string | RegExp) =>
+export const stringNotMatching = (expected: string | RegExp): StringMatching =>
   new StringMatching(expected, true);

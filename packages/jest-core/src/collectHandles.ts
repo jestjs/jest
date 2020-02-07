@@ -80,7 +80,7 @@ export default function collectHandles(): () => Array<Error> {
 
   hook.enable();
 
-  return () => {
+  return (): Array<Error> => {
     hook.disable();
 
     // Get errors for every async resource still referenced at this moment

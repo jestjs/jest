@@ -785,7 +785,7 @@ export default (
   bLength: number,
   isCommon: IsCommon,
   foundSubsequence: FoundSubsequence,
-) => {
+): void => {
   validateLength('aLength', aLength);
   validateLength('bLength', bLength);
   validateCallback('isCommon', isCommon);

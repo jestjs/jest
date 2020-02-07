@@ -11,7 +11,7 @@ import {isInteractive} from 'jest-util';
 
 export default function getNoTestFoundRelatedToChangedFiles(
   globalConfig: Config.GlobalConfig,
-) {
+): string {
   const ref = globalConfig.changedSince
     ? `"${globalConfig.changedSince}"`
     : 'last commit';

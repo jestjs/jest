@@ -43,9 +43,9 @@ export default class Jasmine2Reporter implements Reporter {
     this._startTimes = new Map();
   }
 
-  jasmineStarted(_runDetails: RunDetails) {}
+  jasmineStarted(_runDetails: RunDetails): void {}
 
-  specStarted(spec: SpecResult) {
+  specStarted(spec: SpecResult): void {
     this._startTimes.set(spec.id, Date.now());
   }
 

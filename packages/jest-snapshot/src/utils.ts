@@ -181,7 +181,7 @@ export const escapeBacktickString = (str: string): string =>
 const printBacktickString = (str: string): string =>
   '`' + escapeBacktickString(str) + '`';
 
-export const ensureDirectoryExists = (filePath: Config.Path) => {
+export const ensureDirectoryExists = (filePath: Config.Path): void => {
   try {
     makeDir.sync(path.join(path.dirname(filePath)));
   } catch (e) {}
@@ -192,7 +192,7 @@ const normalizeNewlines = (string: string) => string.replace(/\r\n|\r/g, '\n');
 export const saveSnapshotFile = (
   snapshotData: SnapshotData,
   snapshotPath: Config.Path,
-) => {
+): void => {
   const snapshots = Object.keys(snapshotData)
     .sort(naturalCompare)
     .map(
@@ -230,7 +230,8 @@ const deepMergeArray = (target: Array<any>, source: Array<any>) => {
   return mergedOutput;
 };
 
-export const deepMerge = (target: any, source: any) => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const deepMerge = (target: any, source: any): any => {
   const mergedOutput = {...target};
   if (isObject(target) && isObject(source)) {
     Object.keys(source).forEach(key => {

@@ -20,7 +20,10 @@ import {VERSION} from '../version';
 import {Context} from '../types';
 import * as args from './args';
 
-export async function run(cliArgv?: Config.Argv, cliInfo?: Array<string>) {
+export async function run(
+  cliArgv?: Config.Argv,
+  cliInfo?: Array<string>,
+): Promise<void> {
   const realFs = require('fs');
   const fs = require('graceful-fs');
   fs.gracefulify(realFs);

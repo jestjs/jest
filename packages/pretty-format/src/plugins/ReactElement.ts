@@ -82,14 +82,14 @@ const getPropKeys = (element: any) => {
     .sort();
 };
 
-export const serialize = (
+export const serialize: NewPlugin['serialize'] = (
   element: any,
   config: Config,
   indentation: string,
   depth: number,
   refs: Refs,
   printer: Printer,
-): string =>
+) =>
   ++depth > config.maxDepth
     ? printElementAsLeaf(getType(element), config)
     : printElement(
@@ -115,7 +115,8 @@ export const serialize = (
         indentation,
       );
 
-export const test = (val: any) => val && ReactIs.isElement(val);
+export const test: NewPlugin['test'] = (val: any) =>
+  val && ReactIs.isElement(val);
 
 const plugin: NewPlugin = {serialize, test};
 

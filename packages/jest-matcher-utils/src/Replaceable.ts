@@ -11,6 +11,7 @@ const supportTypes = ['map', 'array', 'object'];
 
 type ReplaceableForEachCallBack = (value: any, key: any, object: any) => void;
 
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export default class Replaceable {
   object: any;
   type: string;
@@ -60,3 +61,4 @@ export default class Replaceable {
     }
   }
 }
+/* eslint-enable */

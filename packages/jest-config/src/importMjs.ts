@@ -7,4 +7,5 @@
 
 // this is in a separate file so that node 8 don't explode with a syntax error.
 // Remove this file when we drop support for Node 8
-export default (specifier: string) => import(specifier);
+export default (specifier: string): Promise<{default: unknown}> =>
+  import(specifier);

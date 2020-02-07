@@ -26,9 +26,9 @@ export type InlineSnapshot = {
 
 export const saveInlineSnapshots = (
   snapshots: Array<InlineSnapshot>,
-  prettier: any,
+  prettier: typeof import('prettier') | null,
   babelTraverse: Function,
-) => {
+): void => {
   if (!prettier) {
     throw new Error(
       `Jest: Inline Snapshots requires Prettier.\n` +

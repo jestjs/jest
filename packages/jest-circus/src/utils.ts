@@ -73,11 +73,15 @@ const hasEnabledTest = (describeBlock: Circus.DescribeBlock): boolean => {
   return hasOwnEnabledTests || describeBlock.children.some(hasEnabledTest);
 };
 
-export const getAllHooksForDescribe = (describe: Circus.DescribeBlock) => {
-  const result: {
-    beforeAll: Array<Circus.Hook>;
-    afterAll: Array<Circus.Hook>;
-  } = {
+type DescribeHooks = {
+  beforeAll: Array<Circus.Hook>;
+  afterAll: Array<Circus.Hook>;
+};
+
+export const getAllHooksForDescribe = (
+  describe: Circus.DescribeBlock,
+): DescribeHooks => {
+  const result: DescribeHooks = {
     afterAll: [],
     beforeAll: [],
   };
@@ -98,11 +102,13 @@ export const getAllHooksForDescribe = (describe: Circus.DescribeBlock) => {
   return result;
 };
 
-export const getEachHooksForTest = (test: Circus.TestEntry) => {
-  const result: {
-    beforeEach: Array<Circus.Hook>;
-    afterEach: Array<Circus.Hook>;
-  } = {afterEach: [], beforeEach: []};
+type TestHooks = {
+  beforeEach: Array<Circus.Hook>;
+  afterEach: Array<Circus.Hook>;
+};
+
+export const getEachHooksForTest = (test: Circus.TestEntry): TestHooks => {
+  const result: TestHooks = {afterEach: [], beforeEach: []};
   let block: Circus.DescribeBlock | undefined | null = test.parent;
 
   do {
@@ -298,7 +304,7 @@ const makeTestResults = (
 
 // Return a string that identifies the test (concat of parent describe block
 // names + test title)
-export const getTestID = (test: Circus.TestEntry) => {
+export const getTestID = (test: Circus.TestEntry): string => {
   const titles = [];
   let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
   do {
@@ -341,7 +347,7 @@ export const addErrorToEachTestUnderDescribe = (
   describeBlock: Circus.DescribeBlock,
   error: Circus.Exception,
   asyncError: Circus.Exception,
-) => {
+): void => {
   for (const test of describeBlock.tests) {
     test.errors.push([error, asyncError]);
   }

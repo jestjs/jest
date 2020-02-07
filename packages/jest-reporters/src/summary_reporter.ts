@@ -74,12 +74,15 @@ export default class SummaryReporter extends BaseReporter {
   onRunStart(
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
-  ) {
+  ): void {
     super.onRunStart(aggregatedResults, options);
     this._estimatedTime = options.estimatedTime;
   }
 
-  onRunComplete(contexts: Set<Context>, aggregatedResults: AggregatedResult) {
+  onRunComplete(
+    contexts: Set<Context>,
+    aggregatedResults: AggregatedResult,
+  ): void {
     const {numTotalTestSuites, testResults, wasInterrupted} = aggregatedResults;
     if (numTotalTestSuites) {
       const lastResult = testResults[testResults.length - 1];

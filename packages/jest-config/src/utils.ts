@@ -31,7 +31,7 @@ const createValidationError = (message: string) =>
 export const resolve = (
   resolver: string | null | undefined,
   {key, filePath, rootDir, optional}: ResolveOptions,
-) => {
+): string => {
   const module = Resolver.findNodeModule(
     replaceRootDirInPath(rootDir, filePath),
     {
@@ -132,7 +132,7 @@ export const resolveWithPrefix = (
     prefix: string;
     rootDir: Config.Path;
   },
-) => {
+): string => {
   const fileName = replaceRootDirInPath(rootDir, filePath);
   let module = Resolver.findNodeModule(`${prefix}${fileName}`, {
     basedir: rootDir,
@@ -181,7 +181,7 @@ export const getTestEnvironment = ({
 }: {
   rootDir: Config.Path;
   testEnvironment: string;
-}) =>
+}): string =>
   resolveWithPrefix(undefined, {
     filePath,
     humanOptionName: 'Test environment',
@@ -201,7 +201,7 @@ export const getTestEnvironment = ({
 export const getWatchPlugin = (
   resolver: string | undefined | null,
   {filePath, rootDir}: {filePath: string; rootDir: Config.Path},
-) =>
+): string =>
   resolveWithPrefix(resolver, {
     filePath,
     humanOptionName: 'Watch plugin',
@@ -221,7 +221,7 @@ export const getWatchPlugin = (
 export const getRunner = (
   resolver: string | undefined | null,
   {filePath, rootDir}: {filePath: string; rootDir: Config.Path},
-) =>
+): string =>
   resolveWithPrefix(resolver, {
     filePath,
     humanOptionName: 'Jest Runner',
@@ -240,7 +240,7 @@ export const isJSONString = (text?: JSONString | string): text is JSONString =>
 export const getSequencer = (
   resolver: string | undefined | null,
   {filePath, rootDir}: {filePath: string; rootDir: Config.Path},
-) =>
+): string =>
   resolveWithPrefix(resolver, {
     filePath,
     humanOptionName: 'Jest Sequencer',

@@ -8,17 +8,17 @@
 import CustomConsole from './CustomConsole';
 
 export default class NullConsole extends CustomConsole {
-  assert() {}
-  debug() {}
-  dir() {}
-  error() {}
-  info() {}
-  log() {}
-  time() {}
-  timeEnd() {}
-  trace() {}
-  warn() {}
-  group() {}
-  groupCollapsed() {}
-  groupEnd() {}
+  assert(): void {}
+  debug(): void {}
+  dir(): void {}
+  error(): void {}
+  info(): void {}
+  log(): void {}
+  time(): void {}
+  timeEnd(): void {}
+  trace(): void {}
+  warn(): void {}
+  group(): void {}
+  groupCollapsed(): void {}
+  groupEnd(): void {}
 }

@@ -10,6 +10,7 @@ import {Plugin} from 'pretty-format';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {
   SnapshotState,
+  SnapshotStateType,
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
@@ -89,7 +90,7 @@ export default ({
   globalConfig,
   localRequire,
   testPath,
-}: SetupOptions) => {
+}: SetupOptions): SnapshotStateType => {
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
   config.snapshotSerializers
