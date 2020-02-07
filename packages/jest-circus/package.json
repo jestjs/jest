@@ -24,7 +24,7 @@
     "jest-snapshot": "^25.1.0",
     "jest-util": "^25.1.0",
     "pretty-format": "^25.1.0",
-    "stack-utils": "^1.0.1",
+    "stack-utils": "^2.0.1",
     "throat": "^5.0.0"
   },
   "devDependencies": {
