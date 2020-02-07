@@ -131,7 +131,7 @@ async function main() {
   const wFResults = [];
   const jWResults = [];
 
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 10; i++) {
     console.log('-'.repeat(75));
 
     profile('worker farm');
@@ -160,7 +160,7 @@ async function main() {
   let jWGT = 0;
   let jWPT = 0;
 
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 10; i++) {
     wFGT += wFResults[i].globalTime;
     wFPT += wFResults[i].processingTime;
 
