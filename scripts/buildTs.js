@@ -20,12 +20,7 @@ const packagesWithTs = packages.filter(p =>
   fs.existsSync(path.resolve(p, 'tsconfig.json'))
 );
 
-const args = [
-  'tsc',
-  '-b',
-  ...packagesWithTs,
-  ...process.argv.slice(2),
-];
+const args = ['tsc', '-b', ...packagesWithTs, ...process.argv.slice(2)];
 
 console.log(chalk.inverse('Building TypeScript definition files'));
 
