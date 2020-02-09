@@ -182,7 +182,7 @@ function buildFile(file, silent) {
 const files = process.argv.slice(2);
 
 if (files.length) {
-  files.forEach(buildFile);
+  files.forEach(file => buildFile(file));
 } else {
   const packages = getPackages();
   process.stdout.write(chalk.inverse(' Building packages \n'));
