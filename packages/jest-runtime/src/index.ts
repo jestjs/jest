@@ -541,8 +541,6 @@ class Runtime {
     this._isolatedMockRegistry = new Map();
     try {
       fn();
-    } catch (e) {
-      throw e;
     } finally {
       this._isolatedModuleRegistry = null;
       this._isolatedMockRegistry = null;
