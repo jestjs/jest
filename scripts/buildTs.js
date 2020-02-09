@@ -22,16 +22,16 @@ const packagesWithTs = packages.filter(p =>
 
 const args = ['tsc', '-b', ...packagesWithTs, ...process.argv.slice(2)];
 
-console.log(chalk.inverse('Building TypeScript definition files'));
+console.log(chalk.inverse(' Building TypeScript definition files '));
 
 try {
   execa.sync('yarn', args, {stdio: 'inherit'});
   console.log(
-    chalk.inverse.green('Successfully built TypeScript definition files')
+    chalk.inverse.green(' Successfully built TypeScript definition files ')
   );
 } catch (e) {
   console.error(
-    chalk.inverse.red('Unable to build TypeScript definition files')
+    chalk.inverse.red(' Unable to build TypeScript definition files ')
   );
   console.error(e.stack);
   process.exitCode = 1;
