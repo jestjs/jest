@@ -22,6 +22,7 @@
 - `[jest-resolver]` Use `resolve` package to implement custom module resolution ([#9520](https://github.com/facebook/jest/pull/9520))
 - `[@jest/reporters]` Remove unused dependencies and type exports ([#9462](https://github.com/facebook/jest/pull/9462))
 - `[website]` Update pictures of reports when matchers fail ([#9214](https://github.com/facebook/jest/pull/9214))
+- `[docs]` Add [jest-runner-vscode](https://github.com/bmealhouse/jest-runner-vscode) to list of example runners ([#9542](https://github.com/facebook/jest/pull/9542))
 
 ### Performance
 

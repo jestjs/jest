@@ -734,6 +734,7 @@ This option allows you to use a custom runner instead of Jest's default test run
 - [`jest-runner-mocha`](https://github.com/rogeliog/jest-runner-mocha)
 - [`jest-runner-tsc`](https://github.com/azz/jest-runner-tsc)
 - [`jest-runner-prettier`](https://github.com/keplersj/jest-runner-prettier)
+- [`jest-runner-vscode`](https://github.com/bmealhouse/jest-runner-vscode)
 
 _Note: The `runner` property value can omit the `jest-runner-` prefix of the package name._
 
