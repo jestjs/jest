@@ -6,6 +6,7 @@ let db;
 beforeAll(async () => {
   connection = await MongoClient.connect(global.__MONGO_URI__, {
     useNewUrlParser: true,
+    useUnifiedTopology: true,
   });
   db = await connection.db(global.__MONGO_DB_NAME__);
 });
