@@ -31,7 +31,7 @@ export default class Prompt {
     this._onCancel = () => {};
   }
 
-  private _onResize = () => {
+  private _onResize = (): void => {
     this._onChange();
   };
 
@@ -39,7 +39,7 @@ export default class Prompt {
     onChange: (pattern: string, options: ScrollOptions) => void,
     onSuccess: (pattern: string) => void,
     onCancel: () => void,
-  ) {
+  ): void {
     this._entering = true;
     this._value = '';
     this._onSuccess = onSuccess;
@@ -58,15 +58,15 @@ export default class Prompt {
     process.stdout.on('resize', this._onResize);
   }
 
-  setPromptLength(length: number) {
+  setPromptLength(length: number): void {
     this._promptLength = length;
   }
 
-  setPromptSelection(selected: string) {
+  setPromptSelection(selected: string): void {
     this._selection = selected;
   }
 
-  put(key: string) {
+  put(key: string): void {
     switch (key) {
       case KEYS.ENTER:
         this._entering = false;
@@ -99,13 +99,13 @@ export default class Prompt {
     }
   }
 
-  abort() {
+  abort(): void {
     this._entering = false;
     this._value = '';
     process.stdout.removeListener('resize', this._onResize);
   }
 
-  isEntering() {
+  isEntering(): boolean {
     return this._entering;
   }
 }

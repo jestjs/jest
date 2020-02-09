@@ -29,7 +29,7 @@ export default (
   result: TestResult,
   globalConfig: Config.GlobalConfig,
   projectConfig?: Config.ProjectConfig,
-) => {
+): string => {
   const testPath = result.testFilePath;
   const formattedTestPath = formatTestPath(
     projectConfig ? projectConfig : globalConfig,

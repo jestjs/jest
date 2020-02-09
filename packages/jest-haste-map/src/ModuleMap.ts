@@ -121,7 +121,7 @@ export default class ModuleMap {
     return this.json;
   }
 
-  static fromJSON(serializableModuleMap: SerializableModuleMap) {
+  static fromJSON(serializableModuleMap: SerializableModuleMap): ModuleMap {
     return new ModuleMap({
       duplicates: ModuleMap.mapFromArrayRecursive(
         serializableModuleMap.duplicates,
@@ -207,7 +207,7 @@ export default class ModuleMap {
     );
   }
 
-  static create(rootDir: Config.Path) {
+  static create(rootDir: Config.Path): ModuleMap {
     return new ModuleMap({
       duplicates: new Map(),
       map: new Map(),

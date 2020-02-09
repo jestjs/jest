@@ -7,7 +7,10 @@
 
 import {ScrollOptions} from '../types';
 
-export default function scroll(size: number, {offset, max}: ScrollOptions) {
+export default function scroll(
+  size: number,
+  {offset, max}: ScrollOptions,
+): {end: number; index: number; start: number} {
   let start = 0;
   let index = Math.min(offset, size);
 

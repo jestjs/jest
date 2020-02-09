@@ -15,14 +15,14 @@ const asymmetricMatcher =
     : 0x1357a5;
 const SPACE = ' ';
 
-export const serialize = (
+export const serialize: NewPlugin['serialize'] = (
   val: any,
   config: Config,
   indentation: string,
   depth: number,
   refs: Refs,
   printer: Printer,
-): string => {
+) => {
   const stringedValue = val.toString();
 
   if (
@@ -89,7 +89,8 @@ export const serialize = (
   return val.toAsymmetricMatcher();
 };
 
-export const test = (val: any) => val && val.$$typeof === asymmetricMatcher;
+export const test: NewPlugin['test'] = (val: any) =>
+  val && val.$$typeof === asymmetricMatcher;
 
 const plugin: NewPlugin = {serialize, test};
 

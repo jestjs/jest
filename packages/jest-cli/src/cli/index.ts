@@ -19,7 +19,10 @@ import {sync as realpath} from 'realpath-native';
 import init from '../init';
 import * as args from './args';
 
-export async function run(maybeArgv?: Array<string>, project?: Config.Path) {
+export async function run(
+  maybeArgv?: Array<string>,
+  project?: Config.Path,
+): Promise<void> {
   try {
     const argv: Config.Argv = buildArgv(maybeArgv);
 

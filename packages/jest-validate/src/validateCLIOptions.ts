@@ -69,7 +69,7 @@ export default function validateCLIOptions(
     [s: string]: Options;
   },
   rawArgv: Array<string> = [],
-) {
+): boolean {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
   const deprecationEntries = options.deprecationEntries || {};
   const allowedOptions = Object.keys(options).reduce(

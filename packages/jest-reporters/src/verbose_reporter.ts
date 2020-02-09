@@ -33,7 +33,7 @@ export default class VerboseReporter extends DefaultReporter {
     return testResults.filter(({status}) => status !== 'pending');
   }
 
-  static groupTestsBySuites(testResults: Array<AssertionResult>) {
+  static groupTestsBySuites(testResults: Array<AssertionResult>): Suite {
     const root: Suite = {suites: [], tests: [], title: ''};
     testResults.forEach(testResult => {
       let targetSuite = root;
@@ -58,7 +58,7 @@ export default class VerboseReporter extends DefaultReporter {
     test: Test,
     result: TestResult,
     aggregatedResults: AggregatedResult,
-  ) {
+  ): void {
     super.testFinished(test.context.config, result, aggregatedResults);
     if (!result.skipped) {
       this.printTestFileHeader(
@@ -144,7 +144,7 @@ export default class VerboseReporter extends DefaultReporter {
   }
 
   private _logTodoOrPendingTest(indentLevel: number) {
-    return (test: AssertionResult) => {
+    return (test: AssertionResult): void => {
       const printedTestStatus =
         test.status === 'pending' ? 'skipped' : test.status;
       const icon = this._getIcon(test.status);

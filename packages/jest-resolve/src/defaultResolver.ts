@@ -58,7 +58,7 @@ export default function defaultResolver(
   return result;
 }
 
-export function clearDefaultResolverCache() {
+export function clearDefaultResolverCache(): void {
   checkedPaths.clear();
 }
 
@@ -68,7 +68,7 @@ enum IPathType {
   OTHER = 3,
 }
 const checkedPaths = new Map<string, IPathType>();
-function statSyncCached(path: string): number {
+function statSyncCached(path: string): IPathType {
   const result = checkedPaths.get(path);
   if (result !== undefined) {
     return result;

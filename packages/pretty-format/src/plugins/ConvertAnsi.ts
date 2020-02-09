@@ -56,10 +56,10 @@ const toHumanReadableAnsi = (text: string) =>
     }
   });
 
-export const test = (val: any): boolean =>
+export const test: NewPlugin['test'] = (val: any) =>
   typeof val === 'string' && !!val.match(ansiRegex());
 
-export const serialize = (
+export const serialize: NewPlugin['serialize'] = (
   val: string,
   config: Config,
   indentation: string,

@@ -17,7 +17,7 @@ const ARRAY_REGEXP = /^(HTML\w*Collection|NodeList)$/;
 const testName = (name: any) =>
   OBJECT_NAMES.indexOf(name) !== -1 || ARRAY_REGEXP.test(name);
 
-export const test = (val: any) =>
+export const test: NewPlugin['test'] = (val: any) =>
   val &&
   val.constructor &&
   val.constructor.name &&
@@ -29,14 +29,14 @@ const propsReducer = (props: any, attribute: any) => {
   return props;
 };
 
-export const serialize = (
+export const serialize: NewPlugin['serialize'] = (
   collection: any,
   config: Config,
   indentation: string,
   depth: number,
   refs: Refs,
   printer: Printer,
-): string => {
+) => {
   const name = collection.constructor.name;
   if (++depth > config.maxDepth) {
     return '[' + name + ']';

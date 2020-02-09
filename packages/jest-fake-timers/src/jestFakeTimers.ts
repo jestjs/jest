@@ -95,17 +95,17 @@ export default class FakeTimers<TimerRef> {
     this._createMocks();
   }
 
-  clearAllTimers() {
+  clearAllTimers(): void {
     this._immediates = [];
     this._timers.clear();
   }
 
-  dispose() {
+  dispose(): void {
     this._disposed = true;
     this.clearAllTimers();
   }
 
-  reset() {
+  reset(): void {
     this._cancelledTicks = {};
     this._now = 0;
     this._ticks = [];
@@ -113,7 +113,7 @@ export default class FakeTimers<TimerRef> {
     this._timers = new Map();
   }
 
-  runAllTicks() {
+  runAllTicks(): void {
     this._checkFakeTimers();
     // Only run a generous number of ticks and then bail.
     // This is just to help avoid recursive loops
@@ -142,7 +142,7 @@ export default class FakeTimers<TimerRef> {
     }
   }
 
-  runAllImmediates() {
+  runAllImmediates(): void {
     this._checkFakeTimers();
     // Only run a generous number of immediates and then bail.
     let i;
@@ -172,7 +172,7 @@ export default class FakeTimers<TimerRef> {
     }
   }
 
-  runAllTimers() {
+  runAllTimers(): void {
     this._checkFakeTimers();
     this.runAllTicks();
     this.runAllImmediates();
@@ -212,7 +212,7 @@ export default class FakeTimers<TimerRef> {
     }
   }
 
-  runOnlyPendingTimers() {
+  runOnlyPendingTimers(): void {
     // We need to hold the current shape of `this._timers` because existing
     // timers can add new ones to the map and hence would run more than necessary.
     // See https://github.com/facebook/jest/pull/4608 for details
@@ -225,7 +225,7 @@ export default class FakeTimers<TimerRef> {
       .forEach(([timerHandle]) => this._runTimerHandle(timerHandle));
   }
 
-  advanceTimersToNextTimer(steps = 1) {
+  advanceTimersToNextTimer(steps = 1): void {
     if (steps < 1) {
       return;
     }
@@ -242,7 +242,7 @@ export default class FakeTimers<TimerRef> {
     }
   }
 
-  advanceTimersByTime(msToRun: number) {
+  advanceTimersByTime(msToRun: number): void {
     this._checkFakeTimers();
     // Only run a generous number of timers and then bail.
     // This is just to help avoid recursive loops
@@ -281,7 +281,7 @@ export default class FakeTimers<TimerRef> {
     }
   }
 
-  runWithRealTimers(cb: Callback) {
+  runWithRealTimers(cb: Callback): void {
     const prevClearImmediate = this._global.clearImmediate;
     const prevClearInterval = this._global.clearInterval;
     const prevClearTimeout = this._global.clearTimeout;
@@ -314,7 +314,7 @@ export default class FakeTimers<TimerRef> {
     }
   }
 
-  useRealTimers() {
+  useRealTimers(): void {
     const global = this._global;
     setGlobal(global, 'clearImmediate', this._timerAPIs.clearImmediate);
     setGlobal(global, 'clearInterval', this._timerAPIs.clearInterval);
@@ -326,7 +326,7 @@ export default class FakeTimers<TimerRef> {
     global.process.nextTick = this._timerAPIs.nextTick;
   }
 
-  useFakeTimers() {
+  useFakeTimers(): void {
     this._createMocks();
 
     const global = this._global;
@@ -340,7 +340,7 @@ export default class FakeTimers<TimerRef> {
     global.process.nextTick = this._fakeTimerAPIs.nextTick;
   }
 
-  getTimerCount() {
+  getTimerCount(): number {
     this._checkFakeTimers();
 
     return this._timers.size + this._immediates.length + this._ticks.length;

@@ -23,7 +23,7 @@ export default class FailedTestsCache {
     return tests.filter(testResult => enabledTestsMap[testResult.path]);
   }
 
-  setTestResults(testResults: Array<TestResult>) {
+  setTestResults(testResults: Array<TestResult>): void {
     this._enabledTestsMap = (testResults || [])
       .filter(testResult => testResult.numFailingTests)
       .reduce<TestMap>((suiteMap, testResult) => {

@@ -9,7 +9,7 @@ export default (
   globalToMutate: NodeJS.Global | Window,
   key: string,
   value: unknown,
-) => {
+): void => {
   // @ts-ignore: no index
   globalToMutate[key] = value;
 };
