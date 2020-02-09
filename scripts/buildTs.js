@@ -21,12 +21,7 @@ const packagesWithTs = packages.filter(p =>
 );
 
 const args = [
-  '--max-old-space-size=4096',
-  path.resolve(
-    require.resolve('typescript/package.json'),
-    '..',
-    require('typescript/package.json').bin.tsc
-  ),
+  'tsc',
   '-b',
   ...packagesWithTs,
   ...process.argv.slice(2),
@@ -35,7 +30,7 @@ const args = [
 console.log(chalk.inverse('Building TypeScript definition files'));
 
 try {
-  execa.sync('node', args, {stdio: 'inherit'});
+  execa.sync('yarn', args, {stdio: 'inherit'});
   console.log(
     chalk.inverse.green('Successfully built TypeScript definition files')
   );

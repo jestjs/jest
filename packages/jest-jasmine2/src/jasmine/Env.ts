@@ -588,7 +588,7 @@ export default function(j$: Jasmine) {
         if (arguments.length !== 1 || typeof description !== 'string') {
           throw new ErrorWithStack(
             'Todo must be called with only a description.',
-            test.todo,
+            this.todo,
           );
         }
 

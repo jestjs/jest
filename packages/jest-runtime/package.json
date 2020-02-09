@@ -40,6 +40,7 @@
     "@types/exit": "^0.1.30",
     "@types/glob": "^7.1.1",
     "@types/graceful-fs": "^4.1.2",
+    "@types/yargs": "^15.0.3",
     "jest-environment-node": "^25.1.0"
   },
   "bin": "./bin/jest-runtime.js",

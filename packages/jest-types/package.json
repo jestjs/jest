@@ -18,6 +18,9 @@
     "@types/yargs": "^15.0.0",
     "chalk": "^3.0.0"
   },
+  "devDependencies": {
+    "@types/node": "*"
+  },
   "publishConfig": {
     "access": "public"
   },

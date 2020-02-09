@@ -11,6 +11,9 @@
   "dependencies": {
     "detect-newline": "^3.0.0"
   },
+  "devDependencies": {
+    "@types/node": "*"
+  },
   "engines": {
     "node": ">= 8.3"
   },
