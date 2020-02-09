@@ -539,9 +539,14 @@ class Runtime {
     }
     this._isolatedModuleRegistry = new Map();
     this._isolatedMockRegistry = new Map();
-    fn();
-    this._isolatedModuleRegistry = null;
-    this._isolatedMockRegistry = null;
+    try {
+      fn();
+    } catch (e) {
+      throw e;
+    } finally {
+      this._isolatedModuleRegistry = null;
+      this._isolatedMockRegistry = null;
+    }
   }
 
   resetModules() {
