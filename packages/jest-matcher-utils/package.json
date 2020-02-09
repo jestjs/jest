@@ -19,6 +19,7 @@
     "pretty-format": "^25.1.0"
   },
   "devDependencies": {
+    "@jest/test-utils": "^25.1.0",
     "@types/node": "*"
   },
   "publishConfig": {

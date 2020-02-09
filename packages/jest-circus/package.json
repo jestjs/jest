@@ -28,6 +28,8 @@
     "throat": "^5.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.1.0",
+    "@babel/register": "^7.0.0",
     "@jest/test-utils": "^25.1.0",
     "@types/babel__traverse": "^7.0.4",
     "@types/co": "^4.6.0",

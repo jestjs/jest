@@ -33,7 +33,8 @@
     "@types/graceful-fs": "^4.1.2",
     "@types/micromatch": "^4.0.0",
     "@types/write-file-atomic": "^3.0.0",
-    "dedent": "^0.7.0"
+    "dedent": "^0.7.0",
+    "jest-snapshot-serializer-raw": "^1.1.0"
   },
   "engines": {
     "node": ">= 8.3"

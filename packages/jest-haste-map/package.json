@@ -22,6 +22,7 @@
     "walker": "^1.0.7"
   },
   "devDependencies": {
+    "@jest/test-utils": "^25.1.0",
     "@types/anymatch": "^1.3.1",
     "@types/fb-watchman": "^2.0.0",
     "@types/graceful-fs": "^4.1.2",
