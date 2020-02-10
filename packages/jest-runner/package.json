@@ -33,6 +33,7 @@
   "devDependencies": {
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
+    "@types/node": "*",
     "@types/source-map-support": "^0.5.0"
   },
   "engines": {

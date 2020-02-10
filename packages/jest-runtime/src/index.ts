@@ -285,7 +285,7 @@ class Runtime {
     return cliRun(args, info);
   }
 
-  static getCLIOptions() {
+  static getCLIOptions(): typeof cliOptions {
     return cliOptions;
   }
 
@@ -587,7 +587,7 @@ class Runtime {
     this._v8CoverageResult = await this._v8CoverageInstrumenter.stopInstrumenting();
   }
 
-  getAllCoverageInfoCopy() {
+  getAllCoverageInfoCopy(): JestEnvironment['global']['__coverage__'] {
     return deepCyclicCopy(this._environment.global.__coverage__);
   }
 

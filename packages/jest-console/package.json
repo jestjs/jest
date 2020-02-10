@@ -15,6 +15,9 @@
     "jest-util": "^25.1.0",
     "slash": "^3.0.0"
   },
+  "devDependencies": {
+    "@types/node": "*"
+  },
   "engines": {
     "node": ">= 8.3"
   },

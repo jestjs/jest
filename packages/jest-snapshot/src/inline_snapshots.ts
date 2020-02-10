@@ -24,11 +24,11 @@ export type InlineSnapshot = {
   frame: Frame;
 };
 
-export const saveInlineSnapshots = (
+export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
   prettier: typeof import('prettier') | null,
   babelTraverse: Function,
-): void => {
+): void {
   if (!prettier) {
     throw new Error(
       `Jest: Inline Snapshots requires Prettier.\n` +
@@ -54,7 +54,7 @@ export const saveInlineSnapshots = (
       babelTraverse,
     );
   }
-};
+}
 
 const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,

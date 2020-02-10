@@ -29,7 +29,8 @@
     "throat": "^5.0.0"
   },
   "devDependencies": {
-    "@types/babel__traverse": "^7.0.4"
+    "@types/babel__traverse": "^7.0.4",
+    "@types/co": "^4.6.2"
   },
   "engines": {
     "node": ">= 8.3"
