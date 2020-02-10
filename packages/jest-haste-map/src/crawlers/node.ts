@@ -35,7 +35,9 @@ function find(
     fs.readdir(directory, {withFileTypes: true}, (err, entries) => {
       activeCalls--;
       if (err) {
-        callback(result);
+        if (activeCalls === 0) {
+          callback(result);
+        }
         return;
       }
       // node < v10.10 does not support the withFileTypes option, and
