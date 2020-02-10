@@ -82,7 +82,7 @@ class Resolver {
 
   static ModuleNotFoundError = ModuleNotFoundError;
 
-  static clearDefaultResolverCache() {
+  static clearDefaultResolverCache(): void {
     clearDefaultResolverCache();
   }
 
@@ -230,7 +230,7 @@ class Resolver {
     );
   }
 
-  getModulePath(from: Config.Path, moduleName: string) {
+  getModulePath(from: Config.Path, moduleName: string): Config.Path {
     if (moduleName[0] !== '.' || path.isAbsolute(moduleName)) {
       return moduleName;
     }

@@ -61,7 +61,7 @@ export default function(j$: Jasmine) {
     randomTests: () => boolean;
     seed: (value: unknown) => unknown;
     execute: (
-      runnablesToRun: Array<string>,
+      runnablesToRun?: Array<string>,
       suiteTree?: Suite,
     ) => Promise<void>;
     fdescribe: (description: string, specDefinitions: Function) => Suite;

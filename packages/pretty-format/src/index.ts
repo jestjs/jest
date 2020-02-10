@@ -491,7 +491,7 @@ function createIndent(indent: number): string {
  * @param options Custom settings
  */
 function prettyFormat(
-  val: any,
+  val: unknown,
   options?: PrettyFormat.OptionsReceived,
 ): string {
   if (options) {

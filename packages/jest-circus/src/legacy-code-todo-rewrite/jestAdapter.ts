@@ -27,7 +27,9 @@ const jestAdapter = async (
   } = runtime.requireInternalModule(FRAMEWORK_INITIALIZER);
 
   runtime
-    .requireInternalModule(path.resolve(__dirname, './jestExpect.js'))
+    .requireInternalModule<typeof import('./jestExpect')>(
+      path.resolve(__dirname, './jestExpect.js'),
+    )
     .default({
       expand: globalConfig.expand,
     });
