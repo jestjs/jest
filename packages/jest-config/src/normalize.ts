@@ -425,7 +425,7 @@ const buildTestPathPattern = (argv: Config.Argv): string => {
     if (path.sep === '/') {
       return pattern;
     }
-    return pattern.replace(/\//g, '\\\\');
+    return pattern.toString().replace(/\//g, '\\\\');
   };
 
   const testPathPattern = patterns.map(replacePosixSep).join('|');
