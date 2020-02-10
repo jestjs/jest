@@ -93,9 +93,9 @@ class NodeEnvironment implements JestEnvironment {
     this.fakeTimersLolex = new LolexFakeTimers({config, global});
   }
 
-  async setup() {}
+  async setup(): Promise<void> {}
 
-  async teardown() {
+  async teardown(): Promise<void> {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
@@ -109,14 +109,14 @@ class NodeEnvironment implements JestEnvironment {
 
   // TS infers the return type to be `any`, since that's what `runInContext`
   // returns.
-  runScript(script: Script) {
+  runScript<T = unknown>(script: Script): T | null {
     if (this.context) {
       return script.runInContext(this.context);
     }
     return null;
   }
 
-  getVmContext() {
+  getVmContext(): Context | null {
     return this.context;
   }
 }
