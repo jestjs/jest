@@ -849,7 +849,8 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <p>This option allows use of a custom test runner. The default is jasmine2. A custom test runner can be provided by specifying a path to a test runner implementation.</p>
 <p>El modulo que ejecuta pruebas debe exportar una función con la siguiente estructura:</p>
 <pre><code class="hljs css language-ts"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">testRunner</span>(<span class="hljs-params">
-  config: Config,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
   environment: Environment,
   runtime: Runtime,
   testPath: <span class="hljs-built_in">string</span>,

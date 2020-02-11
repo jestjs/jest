@@ -854,7 +854,8 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <p>Esta opción permite especificar el modulo que ejecuta las pruebas. El ocupado por defecto es jasmine2. Un modulo personalizado puede especificarse a través de una ruta que apunte a una implementación.</p>
 <p>El modulo que ejecuta pruebas debe exportar una función con la siguiente estructura:</p>
 <pre><code class="hljs css language-ts"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">testRunner</span>(<span class="hljs-params">
-  config: Config,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
   environment: Environment,
   runtime: Runtime,
   testPath: <span class="hljs-built_in">string</span>,

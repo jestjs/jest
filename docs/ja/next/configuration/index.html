@@ -853,7 +853,8 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <p>このオプションでカスタムのテストランナーを指定できます。既定値は jasmine2 です。カスタムのテストランナーは、テストランナーの実装へのパスを指定することによって提供されます。</p>
 <p>テストランナーのモジュールは、下記のシグネチャを持つ関数をエクスポートしなければなりません:</p>
 <pre><code class="hljs css language-ts"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">testRunner</span>(<span class="hljs-params">
-  config: Config,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
   environment: Environment,
   runtime: Runtime,
   testPath: <span class="hljs-built_in">string</span>,
