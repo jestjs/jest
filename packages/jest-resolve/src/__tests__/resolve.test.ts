@@ -45,6 +45,20 @@ describe('isCoreModule', () => {
     const isCore = resolver.isCoreModule('not-a-core-module');
     expect(isCore).toEqual(false);
   });
+
+  it('returns false if `hasCoreModules` is true and `moduleNameMapper` alias a module same name with core module', () => {
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {
+      moduleNameMapper: [
+        {
+          moduleName: '$1',
+          regex: /^constants$/,
+        },
+      ],
+    } as ResolverConfig);
+    const isCore = resolver.isCoreModule('constants');
+    expect(isCore).toEqual(false);
+  });
 });
 
 describe('findNodeModule', () => {
