@@ -169,18 +169,18 @@ async function main() {
   }
 
   console.log('-'.repeat(75));
-  console.log('total worker-farm:', {wFGT, wFPT});
-  console.log('total jest-worker:', {jWGT, jWPT});
+  console.log('total worker-farm:', {globalTime: wFGT, processingTime: wFPT});
+  console.log('total jest-worker:', {globalTime: jWGT, processingTime: jWPT});
 
   console.log('-'.repeat(75));
   console.log(
-    `% improvement over ${calls} calls (global time):`,
-    (100 * (wFGT - jWGT)) / wFGT,
+    `Over ${calls} calls (global time) jest-worker is faster than worker-farm by:`,
+    (100 * (wFGT - jWGT)) / wFGT + '%',
   );
 
   console.log(
-    `% improvement over ${calls} calls (processing time):`,
-    (100 * (wFPT - jWPT)) / wFPT,
+    `Over ${calls} calls (processing time) jest-worker is faster than worker-farm by:`,
+    (100 * (wFPT - jWPT)) / wFPT + '%',
   );
 }
 
