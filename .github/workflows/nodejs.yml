@@ -65,7 +65,7 @@ jobs:
         run: |
           git config --global core.autocrlf false
           git config --global core.symlinks true
-        if: runner.os == windows-latest
+        if: runner.os == 'windows-latest'
       - uses: actions/checkout@v2
       - name: Get yarn cache
         id: yarn-cache
