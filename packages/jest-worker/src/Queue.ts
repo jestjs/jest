@@ -16,10 +16,12 @@ export default class Queue {
     this.iterator = this.data.values();
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   push(item: QueueChildMessage) {
     return this.data.add(item);
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   shift() {
     const item = this.iterator.next();
 
