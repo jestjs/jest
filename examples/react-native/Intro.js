@@ -3,7 +3,6 @@
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
- * @flow
  */
 
 import React, {Component} from 'react';
@@ -28,7 +27,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class Intro extends Component<{}> {
+export default class Intro extends Component {
   render() {
     return (
       <View style={styles.container}>
