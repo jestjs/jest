@@ -18,6 +18,7 @@
 - `[jest-snapshot]` Properly indent new snapshots in the presences of existing ones ([#9523](https://github.com/facebook/jest/pull/9523))
 - `[jest-transform]` Correct sourcemap behavior for transformed and instrumented code ([#9460](https://github.com/facebook/jest/pull/9460))
 - `[pretty-format]` Export `OldPlugin` type ([#9491](https://github.com/facebook/jest/pull/9491))
+- `[jest-resolve]` Fix `moduleNameMapper` does not work with core modules name ([#9563](https://github.com/facebook/jest/pull/9563))
 
 ### Chore & Maintenance
 
