@@ -204,7 +204,6 @@ export const options = {
   },
   coverageProvider: {
     choices: ['babel', 'v8'],
-    default: 'babel',
     description: 'Select between Babel and V8 to collect coverage',
   },
   coverageReporters: {
