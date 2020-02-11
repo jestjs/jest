@@ -56,11 +56,16 @@ jobs:
       matrix:
         # https://github.com/actions/setup-node/issues/27
         node-version: [8.17.0, 10.x, 12.x, 13.x]
-        # Windows tests are failing for whatever reason, so just do linux and mac for now
-        os: [ubuntu-latest, macOS-latest]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
+      - name: Set git config
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.symlinks true
+        if: runner.os == 'Windows'
       - uses: actions/checkout@v2
       - name: Get yarn cache
         id: yarn-cache
