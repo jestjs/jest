@@ -1050,7 +1050,8 @@ The test runner module must export a function with the following signature:
 
 ```ts
 function testRunner(
-  config: Config,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
   environment: Environment,
   runtime: Runtime,
   testPath: string,
