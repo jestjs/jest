@@ -7,6 +7,8 @@
 
 module.exports = {
   babelrcRoots: ['examples/*'],
+  // we don't wanna run the transforms in this file over react native
+  exclude: /react-native/,
   overrides: [
     {
       plugins: [
