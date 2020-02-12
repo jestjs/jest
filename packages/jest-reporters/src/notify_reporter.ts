@@ -10,6 +10,7 @@ import * as util from 'util';
 import exit = require('exit');
 import {Config} from '@jest/types';
 import {AggregatedResult} from '@jest/test-result';
+import {pluralize} from 'jest-util';
 import {Context, TestSchedulerContext} from './types';
 import BaseReporter from './base_reporter';
 
@@ -73,10 +74,10 @@ export default class NotifyReporter extends BaseReporter {
         (notifyMode === 'failure-change' && statusChanged))
     ) {
       const title = util.format('%s%d%% Passed', packageName, 100);
-      const message = util.format(
-        (isDarwin ? '\u2705 ' : '') + '%d tests passed',
+      const message = `${isDarwin ? '\u2705 ' : ''}${pluralize(
+        'test',
         result.numPassedTests,
-      );
+      )} passed`;
 
       // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/42303
       this._notifier.notify({icon, message, timeout: false, title});
