@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import {tmpdir} from 'os';
+import {skipSuiteOnWindows} from '@jest/test-utils';
 import {cleanup, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -14,6 +15,8 @@ const DIR = path.resolve(tmpdir(), 'existent-roots');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
+
+skipSuiteOnWindows();
 
 function writeConfig(rootDir: string, roots?: Array<string>) {
   writeFiles(DIR, {
