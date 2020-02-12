@@ -15,6 +15,21 @@ import SearchSource, {SearchResult} from '../SearchSource';
 
 jest.setTimeout(15000);
 
+jest.mock('fs', () => {
+  const realFs = jest.requireActual('fs');
+
+  return {
+    ...realFs,
+    statSync: path => {
+      if (path === '/foo/bar/prefix') {
+        return {isDirectory: () => true};
+      }
+
+      return realFs.statSync(path);
+    },
+  };
+});
+
 const rootDir = path.resolve(__dirname, 'test_root');
 const testRegex = path.sep + '__testtests__' + path.sep;
 const testMatch = ['**/__testtests__/**/*'];
