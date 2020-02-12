@@ -16,7 +16,17 @@ import {DEFAULT_JS_PATTERN} from '../constants';
 
 const DEFAULT_CSS_PATTERN = '^.+\\.(css)$';
 
-jest.mock('jest-resolve').mock('path', () => jest.requireActual('path').posix);
+jest
+  .mock('jest-resolve')
+  .mock('path', () => jest.requireActual('path').posix)
+  .mock('fs', () => {
+    const realFs = jest.requireActual('fs');
+
+    return {
+      ...realFs,
+      statSync: () => ({isDirectory: () => true}),
+    };
+  });
 
 let root;
 let expectedPathFooBar;
