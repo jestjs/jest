@@ -218,8 +218,21 @@ class Resolver {
     );
   }
 
+  private _isAliasModule(moduleName: string): boolean {
+    const moduleNameMapper = this._options.moduleNameMapper;
+    if (!moduleNameMapper) {
+      return false;
+    }
+
+    return moduleNameMapper.some(({regex}) => regex.test(moduleName));
+  }
+
   isCoreModule(moduleName: string): boolean {
-    return this._options.hasCoreModules && isBuiltinModule(moduleName);
+    return (
+      this._options.hasCoreModules &&
+      isBuiltinModule(moduleName) &&
+      !this._isAliasModule(moduleName)
+    );
   }
 
   getModule(name: string): Config.Path | null {
