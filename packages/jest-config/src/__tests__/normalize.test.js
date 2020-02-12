@@ -1557,6 +1557,13 @@ describe('testPathPattern', () => {
 
           expect(options.testPathPattern).toBe('a\\\\b|c\\\\d');
         });
+
+        it('coerces all patterns to strings', () => {
+          const argv = {[opt.property]: [1]};
+          const {options} = normalize(initialOptions, argv);
+
+          expect(options.testPathPattern).toBe('1');
+        });
       });
     });
   }
