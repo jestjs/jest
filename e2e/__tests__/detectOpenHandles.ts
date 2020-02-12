@@ -6,7 +6,7 @@
  */
 
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {onNodeVersions} from '@jest/test-utils';
+import {onNodeVersions, skipSuiteOnWindows} from '@jest/test-utils';
 import runJest, {runContinuous} from '../runJest';
 
 try {
@@ -69,6 +69,18 @@ it('does not report promises', () => {
   const textAfterTest = getTextAfterTest(stderr);
 
   expect(textAfterTest).toBe('');
+});
+
+describe('notify', () => {
+  skipSuiteOnWindows();
+
+  it('does not report --notify flag', () => {
+    // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
+    const {stderr} = runJest('detect-open-handles', ['notify', '--notify']);
+    const textAfterTest = getTextAfterTest(stderr);
+
+    expect(textAfterTest).toBe('');
+  });
 });
 
 onNodeVersions('>=11', () => {
