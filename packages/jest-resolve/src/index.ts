@@ -218,7 +218,7 @@ class Resolver {
     );
   }
 
-  private _isAliasModule(moduleName: string) {
+  private _isAliasModule(moduleName: string): boolean {
     const moduleNameMapper = this._options.moduleNameMapper;
     if (!moduleNameMapper) {
       return false;
