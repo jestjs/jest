@@ -10,6 +10,7 @@
 - `[jest-config]` Treat `setupFilesAfterEnv` like `setupFiles` when normalizing configs against presets ([#9495](https://github.com/facebook/jest/pull/9495))
 - `[jest-config]` Support `.mjs` config files on Windows as well ([#9558](https://github.com/facebook/jest/pull/9558))
 - `[jest-cli]` Set `coverageProvider` correctly when provided in config ([#9562](https://github.com/facebook/jest/pull/9562))
+- `[jest-config]` Ensure pattern of `replacePosixSep` is a string ([#9546]https://github.com/facebook/jest/pull/9546)
 - `[jest-matcher-utils]` Fix diff highlight of symbol-keyed object. ([#9499](https://github.com/facebook/jest/pull/9499))
 - `[@jest/reporters]` Notifications should be fire&forget rather than having a timeout ([#9567](https://github.com/facebook/jest/pull/9567))
 - `[jest-resolve]` Fix module identity preservation with symlinks and browser field resolution ([#9511](https://github.com/facebook/jest/pull/9511))
