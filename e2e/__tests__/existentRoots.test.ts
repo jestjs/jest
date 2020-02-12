@@ -7,10 +7,15 @@
 
 import * as path from 'path';
 import {tmpdir} from 'os';
+import {sync as realpath} from 'realpath-native';
 import {cleanup, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-const DIR = path.resolve(tmpdir(), 'existent-roots');
+let DIR = path.resolve(tmpdir(), 'existent-roots');
+
+try {
+  DIR = realpath(DIR);
+} catch {}
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
