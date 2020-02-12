@@ -16,15 +16,10 @@ beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
 function writeConfig(rootDir: string, roots?: Array<string>) {
-  const config = {rootDir, roots};
-  const testFiles = {
-    'jest.config.js': `
-      module.exports = ${JSON.stringify(config, null, 2)};
-    `,
-  };
-
   writeFiles(DIR, {
-    ...testFiles,
+    'jest.config.js': `
+      module.exports = ${JSON.stringify({rootDir, roots}, null, 2)};
+    `,
     'package.json': '{}',
   });
 }
