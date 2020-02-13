@@ -1,7 +1,6 @@
 // Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
 
 import * as React from 'react';
-// import * as ReactDOM from 'react-dom';
 import * as TestUtils from 'react-dom/test-utils';
 
 const CheckboxWithLabel = require('../CheckboxWithLabel').default;
