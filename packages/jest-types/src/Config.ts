@@ -28,7 +28,7 @@ export type ReporterConfig = [string, Record<string, unknown>];
 export type TransformerConfig = [string, Record<string, unknown>];
 
 export interface ConfigGlobals {
-  [K: string]: any;
+  [K: string]: unknown;
 }
 
 export type DefaultOptions = {
