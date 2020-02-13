@@ -27,7 +27,9 @@ export type HasteConfig = {
 export type ReporterConfig = [string, Record<string, unknown>];
 export type TransformerConfig = [string, Record<string, unknown>];
 
-export type ConfigGlobals = Record<string, any>;
+export interface ConfigGlobals {
+  [K: string]: any;
+}
 
 export type DefaultOptions = {
   automock: boolean;
