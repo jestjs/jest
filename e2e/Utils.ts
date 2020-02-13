@@ -3,7 +3,6 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
 import * as fs from 'fs';
@@ -14,6 +13,7 @@ import {Config} from '@jest/types';
 import {ExecaReturnValue, sync as spawnSync} from 'execa';
 import {createDirectory} from 'jest-util';
 import rimraf = require('rimraf');
+import dedent = require('dedent');
 
 interface RunResult extends ExecaReturnValue {
   status: number;
@@ -85,7 +85,26 @@ export const writeFiles = (
     }
     fs.writeFileSync(
       path.resolve(directory, ...fileOrPath.split('/')),
-      files[fileOrPath],
+      dedent(files[fileOrPath]),
+    );
+  });
+};
+
+export const writeSymlinks = (
+  directory: string,
+  symlinks: {[existingFile: string]: string},
+) => {
+  createDirectory(directory);
+  Object.keys(symlinks).forEach(fileOrPath => {
+    const symLinkPath = symlinks[fileOrPath];
+    const dirname = path.dirname(symLinkPath);
+
+    if (dirname !== '/') {
+      createDirectory(path.join(directory, dirname));
+    }
+    fs.symlinkSync(
+      path.resolve(directory, ...fileOrPath.split('/')),
+      path.resolve(directory, ...symLinkPath.split('/')),
     );
   });
 };

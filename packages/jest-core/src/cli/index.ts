@@ -31,13 +31,13 @@ const {print: preRunMessagePrint} = preRunMessage;
 
 type OnCompleteCallback = (results: AggregatedResult) => void;
 
-export const runCLI = async (
+export async function runCLI(
   argv: Config.Argv,
   projects: Array<Config.Path>,
 ): Promise<{
   results: AggregatedResult;
   globalConfig: Config.GlobalConfig;
-}> => {
+}> {
   const realFs = require('fs');
   const fs = require('graceful-fs');
   fs.gracefulify(realFs);
@@ -49,7 +49,7 @@ export const runCLI = async (
   const outputStream =
     argv.json || argv.useStderr ? process.stderr : process.stdout;
 
-  const {globalConfig, configs, hasDeprecationWarnings} = readConfigs(
+  const {globalConfig, configs, hasDeprecationWarnings} = await readConfigs(
     argv,
     projects,
   );
@@ -109,7 +109,7 @@ export const runCLI = async (
   }
 
   return {globalConfig, results};
-};
+}
 
 const buildContextsAndHasteMaps = async (
   configs: Array<Config.ProjectConfig>,

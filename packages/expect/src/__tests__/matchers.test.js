@@ -529,6 +529,16 @@ describe('.toEqual()', () => {
         nodeType: 1,
       },
     ],
+    [
+      {
+        [Symbol.for('foo')]: 1,
+        [Symbol.for('bar')]: 2,
+      },
+      {
+        [Symbol.for('foo')]: jestExpect.any(Number),
+        [Symbol.for('bar')]: 1,
+      },
+    ],
   ].forEach(([a, b]) => {
     test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
       b,
@@ -725,6 +735,16 @@ describe('.toEqual()', () => {
       {
         nodeName: 'div',
         nodeType: 1,
+      },
+    ],
+    [
+      {
+        [Symbol.for('foo')]: 1,
+        [Symbol.for('bar')]: 2,
+      },
+      {
+        [Symbol.for('foo')]: jestExpect.any(Number),
+        [Symbol.for('bar')]: 2,
       },
     ],
   ].forEach(([a, b]) => {
@@ -1617,6 +1637,13 @@ describe('.toMatch()', () => {
   it('escapes strings properly', () => {
     jestExpect('this?: throws').toMatch('this?: throws');
   });
+
+  it('does not maintain RegExp state between calls', () => {
+    const regex = /[f]\d+/gi;
+    jestExpect('f123').toMatch(regex);
+    jestExpect('F456').toMatch(regex);
+    jestExpect(regex.lastIndex).toBe(0);
+  });
 });
 
 describe('.toHaveLength', () => {
@@ -1999,6 +2026,14 @@ describe('toMatchObject()', () => {
     [new Error('bar'), {message: 'bar'}],
     [new Foo(), {a: undefined, b: 'b'}],
     [Object.assign(Object.create(null), {a: 'b'}), {a: 'b'}],
+    [
+      {a: 'b', c: 'd', [Symbol.for('jest')]: 'jest'},
+      {a: 'b', [Symbol.for('jest')]: 'jest'},
+    ],
+    [
+      {a: 'b', c: 'd', [Symbol.for('jest')]: 'jest'},
+      {a: 'b', c: 'd', [Symbol.for('jest')]: 'jest'},
+    ],
   ]);
 
   testToMatchSnapshots([
@@ -2042,6 +2077,10 @@ describe('toMatchObject()', () => {
     ],
     [new Error('foo'), new Error('bar')],
     [Object.assign(Object.create(null), {a: 'b'}), {c: 'd'}],
+    [
+      {a: 'b', c: 'd', [Symbol.for('jest')]: 'jest'},
+      {a: 'c', [Symbol.for('jest')]: expect.any(String)},
+    ],
   ]);
 
   [

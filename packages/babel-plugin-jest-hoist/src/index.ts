@@ -155,7 +155,7 @@ FUNCTIONS.deepUnmock = args => args.length === 1 && args[0].isStringLiteral();
 FUNCTIONS.disableAutomock = FUNCTIONS.enableAutomock = args =>
   args.length === 0;
 
-export default () => {
+export default (): {visitor: Visitor} => {
   const shouldHoistExpression = (expr: NodePath): boolean => {
     if (!expr.isCallExpression()) {
       return false;

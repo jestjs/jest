@@ -99,9 +99,9 @@ class JSDOMEnvironment implements JestEnvironment {
     this.fakeTimersLolex = new LolexFakeTimers({config, global});
   }
 
-  async setup() {}
+  async setup(): Promise<void> {}
 
-  async teardown() {
+  async teardown(): Promise<void> {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
@@ -124,7 +124,7 @@ class JSDOMEnvironment implements JestEnvironment {
     this.fakeTimersLolex = null;
   }
 
-  runScript(script: Script) {
+  runScript<T = unknown>(script: Script): T | null {
     if (this.dom) {
       return this.dom.runVMScript(script) as any;
     }

@@ -57,13 +57,18 @@ class CurrentTestList {
   }
 }
 
+type Cache = {
+  content: string;
+  clear: string;
+};
+
 /**
  * A class that generates the CLI status of currently running tests
  * and also provides an ANSI escape sequence to remove status lines
  * from the terminal.
  */
 export default class Status {
-  private _cache: {content: string; clear: string} | null;
+  private _cache: Cache | null;
   private _callback?: () => void;
   private _currentTests: CurrentTestList;
   private _done: boolean;
@@ -82,14 +87,14 @@ export default class Status {
     this._showStatus = false;
   }
 
-  onChange(callback: () => void) {
+  onChange(callback: () => void): void {
     this._callback = callback;
   }
 
   runStarted(
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
-  ) {
+  ): void {
     this._estimatedTime = (options && options.estimatedTime) || 0;
     this._showStatus = options && options.showStatus;
     this._interval = setInterval(() => this._tick(), 1000);
@@ -97,13 +102,13 @@ export default class Status {
     this._debouncedEmit();
   }
 
-  runFinished() {
+  runFinished(): void {
     this._done = true;
     if (this._interval) clearInterval(this._interval);
     this._emit();
   }
 
-  testStarted(testPath: Config.Path, config: Config.ProjectConfig) {
+  testStarted(testPath: Config.Path, config: Config.ProjectConfig): void {
     this._currentTests.add(testPath, config);
     if (!this._showStatus) {
       this._emit();
@@ -116,14 +121,14 @@ export default class Status {
     _config: Config.ProjectConfig,
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
-  ) {
+  ): void {
     const {testFilePath} = testResult;
     this._aggregatedResults = aggregatedResults;
     this._currentTests.delete(testFilePath);
     this._debouncedEmit();
   }
 
-  get() {
+  get(): Cache {
     if (this._cache) {
       return this._cache;
     }

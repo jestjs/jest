@@ -45,12 +45,14 @@ test('maps regular values to themselves', () => {
 test('works with string objects', () => {
   const options = {} as Config.InitialOptions;
   const argv = {
-    moduleNameMapper: '{"types/(.*)": "<rootDir>/src/types/$1"}',
+    moduleNameMapper:
+      '{"types/(.*)": "<rootDir>/src/types/$1", "types2/(.*)": ["<rootDir>/src/types2/$1", "<rootDir>/src/types3/$1"]}',
     transform: '{"*.js": "<rootDir>/transformer"}',
   } as Config.Argv;
   expect(setFromArgv(options, argv)).toMatchObject({
     moduleNameMapper: {
       'types/(.*)': '<rootDir>/src/types/$1',
+      'types2/(.*)': ['<rootDir>/src/types2/$1', '<rootDir>/src/types3/$1'],
     },
     transform: {
       '*.js': '<rootDir>/transformer',

@@ -150,7 +150,7 @@ If you'd like to provide additional configuration for every test file, the [`set
 
 ### moduleNameMapper
 
-The [`moduleNameMapper`](configuration.html#modulenamemapper-objectstring-string) can be used to map a module path to a different module. By default the preset maps all images to an image stub module but if a module cannot be found this configuration option can help:
+The [`moduleNameMapper`](configuration.html#modulenamemapper-objectstring-string--arraystring) can be used to map a module path to a different module. By default the preset maps all images to an image stub module but if a module cannot be found this configuration option can help:
 
 ```json
 "moduleNameMapper": {

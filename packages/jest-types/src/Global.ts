@@ -67,7 +67,7 @@ export interface Describe extends DescribeBase {
 }
 
 // TODO: Maybe add `| Window` in the future?
-export interface Global extends NodeJS.Global {
+export interface GlobalAdditions {
   it: ItConcurrent;
   test: ItConcurrent;
   fit: ItBase & {concurrent?: ItConcurrentBase};
@@ -82,5 +82,9 @@ export interface Global extends NodeJS.Global {
   pending: () => void;
   spyOn: () => void;
   spyOnProperty: () => void;
+}
+export interface Global
+  extends GlobalAdditions,
+    Omit<NodeJS.Global, keyof GlobalAdditions> {
   [extras: string]: any;
 }

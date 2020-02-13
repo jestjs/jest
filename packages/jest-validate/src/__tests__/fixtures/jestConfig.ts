@@ -91,6 +91,7 @@ const validConfig = {
   moduleLoader: '<rootDir>',
   moduleNameMapper: {
     '^React$': '<rootDir>/node_modules/react',
+    '^Vue$': ['<rootDir>/node_modules/vue', '<rootDir>/node_modules/vue3'],
   },
   modulePathIgnorePatterns: ['<rootDir>/build/'],
   modulePaths: ['/shared/vendor/modules'],

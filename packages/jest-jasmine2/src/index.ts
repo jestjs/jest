@@ -30,7 +30,9 @@ async function jasmine2(
   testPath: string,
 ): Promise<TestResult> {
   const reporter = new JasmineReporter(globalConfig, config, testPath);
-  const jasmineFactory = runtime.requireInternalModule(JASMINE);
+  const jasmineFactory = runtime.requireInternalModule<
+    typeof import('./jasmine/jasmineLight')
+  >(JASMINE);
   const jasmine = jasmineFactory.create({
     process,
     testPath,
@@ -120,7 +122,9 @@ async function jasmine2(
   env.addReporter(reporter);
 
   runtime
-    .requireInternalModule(path.resolve(__dirname, './jestExpect.js'))
+    .requireInternalModule<typeof import('./jestExpect')>(
+      path.resolve(__dirname, './jestExpect.js'),
+    )
     .default({
       expand: globalConfig.expand,
     });
@@ -141,7 +145,9 @@ async function jasmine2(
   }
 
   const snapshotState: SnapshotStateType = runtime
-    .requireInternalModule(path.resolve(__dirname, './setup_jest_globals.js'))
+    .requireInternalModule<typeof import('./setup_jest_globals')>(
+      path.resolve(__dirname, './setup_jest_globals.js'),
+    )
     .default({
       config,
       globalConfig,
@@ -158,7 +164,7 @@ async function jasmine2(
       const suiteMap =
         globalConfig.enabledTestsMap &&
         globalConfig.enabledTestsMap[spec.result.testPath];
-      return suiteMap && suiteMap[spec.result.fullName];
+      return (suiteMap && suiteMap[spec.result.fullName]) || false;
     };
   } else if (globalConfig.testNamePattern) {
     const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');

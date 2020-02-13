@@ -13,8 +13,8 @@ import {ValidationOptions} from './types';
 
 export const errorMessage = (
   option: string,
-  received: any,
-  defaultValue: any,
+  received: unknown,
+  defaultValue: unknown,
   options: ValidationOptions,
   path?: Array<string>,
 ): void => {

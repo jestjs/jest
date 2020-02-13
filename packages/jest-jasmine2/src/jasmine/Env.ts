@@ -61,7 +61,7 @@ export default function(j$: Jasmine) {
     randomTests: () => boolean;
     seed: (value: unknown) => unknown;
     execute: (
-      runnablesToRun: Array<string>,
+      runnablesToRun?: Array<string>,
       suiteTree?: Suite,
     ) => Promise<void>;
     fdescribe: (description: string, specDefinitions: Function) => Suite;
@@ -588,7 +588,7 @@ export default function(j$: Jasmine) {
         if (arguments.length !== 1 || typeof description !== 'string') {
           throw new ErrorWithStack(
             'Todo must be called with only a description.',
-            test.todo,
+            this.todo,
           );
         }
 

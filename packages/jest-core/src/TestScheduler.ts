@@ -63,15 +63,18 @@ export default class TestScheduler {
     this._setupReporters();
   }
 
-  addReporter(reporter: Reporter) {
+  addReporter(reporter: Reporter): void {
     this._dispatcher.register(reporter);
   }
 
-  removeReporter(ReporterClass: Function) {
+  removeReporter(ReporterClass: Function): void {
     this._dispatcher.unregister(ReporterClass);
   }
 
-  async scheduleTests(tests: Array<TestRunner.Test>, watcher: TestWatcher) {
+  async scheduleTests(
+    tests: Array<TestRunner.Test>,
+    watcher: TestWatcher,
+  ): Promise<AggregatedResult> {
     const onStart = this._dispatcher.onTestStart.bind(this._dispatcher);
     const timings: Array<number> = [];
     const contexts = new Set<Context>();

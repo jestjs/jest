@@ -101,7 +101,7 @@ type PluginOptions = {
   spacing: string;
 };
 
-type OldPlugin = {
+export type OldPlugin = {
   print: (
     val: any,
     print: Print,

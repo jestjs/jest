@@ -15,7 +15,7 @@ import {
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
 
-export default (config: {expand: boolean}) => {
+export default (config: {expand: boolean}): void => {
   global.expect = expect;
   expect.setState({
     expand: config.expand,

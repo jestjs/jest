@@ -63,7 +63,7 @@ const getResolver = (config: Config.ProjectConfig) => {
 
 export function setup(setupData: {
   serializableResolvers: Array<SerializableResolver>;
-}) {
+}): void {
   // Module maps that will be needed for the test runs are passed.
   for (const {
     config,

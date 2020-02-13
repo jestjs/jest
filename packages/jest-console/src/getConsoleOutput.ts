@@ -10,7 +10,11 @@ import chalk = require('chalk');
 import slash = require('slash');
 import {ConsoleBuffer} from './types';
 
-export default (root: string, verbose: boolean, buffer: ConsoleBuffer) => {
+export default (
+  root: string,
+  verbose: boolean,
+  buffer: ConsoleBuffer,
+): string => {
   const TITLE_INDENT = verbose ? '  ' : '    ';
   const CONSOLE_INDENT = TITLE_INDENT + '  ';
 

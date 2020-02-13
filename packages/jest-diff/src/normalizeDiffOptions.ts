@@ -9,7 +9,7 @@ import chalk = require('chalk');
 
 import {DiffOptions, DiffOptionsNormalized} from './types';
 
-export const noColor = (string: string) => string;
+export const noColor = (string: string): string => string;
 
 const DIFF_CONTEXT_DEFAULT = 5;
 

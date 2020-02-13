@@ -71,6 +71,7 @@ exports[`prints the config object 1`] = `
     "collectCoverageFrom": [],
     "collectCoverageOnlyFrom": null,
     "coverageDirectory": "coverage",
+    "coverageProvider": "babel",
     "coverageReporters": [],
     "coverageThreshold": {
       "global": {}

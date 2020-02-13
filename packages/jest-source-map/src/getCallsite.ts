@@ -46,7 +46,10 @@ const addSourceMapConsumer = (
   });
 };
 
-export default (level: number, sourceMaps?: SourceMapRegistry | null) => {
+export default (
+  level: number,
+  sourceMaps?: SourceMapRegistry | null,
+): callsites.CallSite => {
   const levelAfterThisCall = level + 1;
   const stack = callsites()[levelAfterThisCall];
   const sourceMapFileName = sourceMaps && sourceMaps[stack.getFileName() || ''];

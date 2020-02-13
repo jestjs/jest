@@ -9,6 +9,8 @@ import {Arguments} from 'yargs';
 import {ReportOptions} from 'istanbul-reports';
 import chalk = require('chalk');
 
+type CoverageProvider = 'babel' | 'v8';
+
 export type Path = string;
 
 export type Glob = string;
@@ -38,6 +40,7 @@ export type DefaultOptions = {
   collectCoverage: boolean;
   coveragePathIgnorePatterns: Array<string>;
   coverageReporters: Array<string>;
+  coverageProvider: CoverageProvider;
   errorOnDeprecated: boolean;
   expand: boolean;
   forceCoverageMatch: Array<Glob>;
@@ -47,7 +50,7 @@ export type DefaultOptions = {
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
-  moduleNameMapper: Record<string, string>;
+  moduleNameMapper: Record<string, string | Array<string>>;
   modulePathIgnorePatterns: Array<string>;
   noStackTrace: boolean;
   notify: boolean;
@@ -107,6 +110,7 @@ export type InitialOptions = Partial<{
   };
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
+  coverageProvider: CoverageProvider;
   coverageReporters: Array<string>;
   coverageThreshold: {
     global: {
@@ -139,7 +143,7 @@ export type InitialOptions = Partial<{
   moduleFileExtensions: Array<string>;
   moduleLoader: Path;
   moduleNameMapper: {
-    [key: string]: string;
+    [key: string]: string | Array<string>;
   };
   modulePathIgnorePatterns: Array<string>;
   modulePaths: Array<string>;
@@ -236,6 +240,7 @@ export type GlobalConfig = {
   };
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
+  coverageProvider: CoverageProvider;
   coverageReporters: Array<keyof ReportOptions>;
   coverageThreshold?: CoverageThreshold;
   detectLeaks: boolean;

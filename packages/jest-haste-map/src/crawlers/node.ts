@@ -32,22 +32,42 @@ function find(
 
   function search(directory: string): void {
     activeCalls++;
-    fs.readdir(directory, (err, names) => {
+    fs.readdir(directory, {withFileTypes: true}, (err, entries) => {
       activeCalls--;
       if (err) {
         callback(result);
         return;
       }
-      names.forEach(file => {
-        file = path.join(directory, file);
+      // node < v10.10 does not support the withFileTypes option, and
+      // entry will be a string.
+      entries.forEach((entry: string | fs.Dirent) => {
+        const file = path.join(
+          directory,
+          typeof entry === 'string' ? entry : entry.name,
+        );
+
         if (ignore(file)) {
           return;
         }
+
+        if (typeof entry !== 'string') {
+          if (entry.isSymbolicLink()) {
+            return;
+          }
+
+          if (entry.isDirectory()) {
+            search(file);
+            return;
+          }
+        }
+
         activeCalls++;
 
         fs.lstat(file, (err, stat) => {
           activeCalls--;
 
+          // This logic is unnecessary for node > v10.10, but leaving it in
+          // since we need it for backwards-compatibility still.
           if (!err && stat && !stat.isSymbolicLink()) {
             if (stat.isDirectory()) {
               search(file);
@@ -58,6 +78,7 @@ function find(
               }
             }
           }
+
           if (activeCalls === 0) {
             callback(result);
           }

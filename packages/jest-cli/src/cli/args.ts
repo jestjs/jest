@@ -9,7 +9,7 @@ import {Config} from '@jest/types';
 import {isJSONString} from 'jest-config';
 import isCI = require('is-ci');
 
-export const check = (argv: Config.Argv) => {
+export function check(argv: Config.Argv): true {
   if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
     throw new Error(
       'Both --runInBand and --maxWorkers were specified, but these two ' +
@@ -61,7 +61,7 @@ export const check = (argv: Config.Argv) => {
   }
 
   return true;
-};
+}
 
 export const usage =
   'Usage: $0 [--config=<pathToConfigFile>] [TestPathPattern]';
@@ -129,7 +129,7 @@ export const options = {
     description:
       'Whether to run Jest in continuous integration (CI) mode. ' +
       'This option is on by default in most popular CI environments. It will ' +
-      ' prevent snapshots from being written unless explicitly requested.',
+      'prevent snapshots from being written unless explicitly requested.',
     type: 'boolean',
   },
   clearCache: {
@@ -201,6 +201,10 @@ export const options = {
       'matches any of the patterns, coverage information will be skipped.',
     string: true,
     type: 'array',
+  },
+  coverageProvider: {
+    choices: ['babel', 'v8'],
+    description: 'Select between Babel and V8 to collect coverage',
   },
   coverageReporters: {
     description:
@@ -372,8 +376,8 @@ export const options = {
   moduleNameMapper: {
     description:
       'A JSON string with a map from regular expressions to ' +
-      'module names that allow to stub out resources, like images or ' +
-      'styles with a single module',
+      'module names or to arrays of module names that allow to stub ' +
+      'out resources, like images or styles with a single module',
     type: 'string',
   },
   modulePathIgnorePatterns: {

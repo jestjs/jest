@@ -5,11 +5,14 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "jest-environment-node": "*",
     "mongodb": "^3.1.13",
-    "mongodb-memory-server": "^3.0.0",
-    "jest-environment-node": "*"
+    "mongodb-memory-server": "^6.1.1"
   },
   "devDependencies": {
+    "@babel/core": "*",
+    "@babel/preset-env": "*",
+    "babel-jest": "*",
     "jest": "*"
   },
   "scripts": {

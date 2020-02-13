@@ -23,7 +23,7 @@
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
-const mkdirp = require('mkdirp');
+const makeDir = require('make-dir');
 
 const babel = require('@babel/core');
 const chalk = require('chalk');
@@ -118,7 +118,7 @@ function buildFile(file, silent) {
     return;
   }
 
-  mkdirp.sync(path.dirname(destPath), '777');
+  makeDir.sync(path.dirname(destPath));
   if (
     !micromatch.isMatch(file, JS_FILES_PATTERN) &&
     !micromatch.isMatch(file, TS_FILES_PATTERN)
@@ -149,7 +149,14 @@ function buildFile(file, silent) {
           Array.isArray(plugin) &&
           plugin[0] === '@babel/plugin-transform-modules-commonjs'
         ) {
-          return [plugin[0], Object.assign({}, plugin[1], {lazy: true})];
+          return [
+            plugin[0],
+            Object.assign({}, plugin[1], {
+              lazy: string =>
+                // we want to lazyload all non-local modules plus `importMjs` - the latter to avoid syntax errors. Set to just `true` when we drop support for node 8
+                !string.startsWith('./') || string === './importMjs',
+            }),
+          ];
         }
 
         return plugin;
@@ -175,7 +182,7 @@ function buildFile(file, silent) {
 const files = process.argv.slice(2);
 
 if (files.length) {
-  files.forEach(buildFile);
+  files.forEach(file => buildFile(file));
 } else {
   const packages = getPackages();
   process.stdout.write(chalk.inverse(' Building packages \n'));

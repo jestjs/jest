@@ -40,7 +40,7 @@ export default class PatternPrompt {
     onSuccess: (value: string) => void,
     onCancel: () => void,
     options?: {header: string},
-  ) {
+  ): void {
     this._pipe.write(ansiEscapes.cursorHide);
     this._pipe.write(CLEAR);
 
@@ -57,7 +57,7 @@ export default class PatternPrompt {
     this._prompt.enter(this._onChange.bind(this), onSuccess, onCancel);
   }
 
-  protected _onChange(_pattern: string, _options: ScrollOptions) {
+  protected _onChange(_pattern: string, _options: ScrollOptions): void {
     this._pipe.write(ansiEscapes.eraseLine);
     this._pipe.write(ansiEscapes.cursorLeft);
   }

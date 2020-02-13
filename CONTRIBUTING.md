@@ -92,6 +92,8 @@ For significant changes to the documentation or website and things like cleanup,
 
 You can add or edit the changelog entry in the GitHub web interface once you have opened the pull request and know the number and link to it.
 
+Make sure to alphabetically order your entry based on package name. If you have changed multiple packages, separate them with a comma.
+
 #### Testing
 
 Code that is written needs to be tested to ensure that it achieves the desired behaviour. Tests either fall into a unit test or an integration test.
@@ -198,6 +200,10 @@ We will be using GitHub Issues for our public bugs. We will keep a close eye on 
 ### Reporting New Issues
 
 The best way to get your bug fixed is to provide a reduced test case. Please provide a public repository with a runnable example.
+
+### Docs translation
+
+We get translations from crowdin, see https://crowdin.com/project/jest. Any and all help is very much appreciated!
 
 ### Security Bugs
 

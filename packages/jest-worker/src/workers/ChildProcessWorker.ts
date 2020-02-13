@@ -79,7 +79,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     this.initialize();
   }
 
-  initialize() {
+  initialize(): void {
     const forceColor = stdoutSupportsColor ? {FORCE_COLOR: '1'} : {};
     const child = fork(require.resolve('./processChild'), [], {
       cwd: process.cwd(),
@@ -215,7 +215,11 @@ export default class ChildProcessWorker implements WorkerInterface {
     }
   }
 
-  send(request: ChildMessage, onProcessStart: OnStart, onProcessEnd: OnEnd) {
+  send(
+    request: ChildMessage,
+    onProcessStart: OnStart,
+    onProcessEnd: OnEnd,
+  ): void {
     onProcessStart(this);
     this._onProcessEnd = (...args) => {
       // Clean the request to avoid sending past requests to workers that fail
@@ -229,11 +233,11 @@ export default class ChildProcessWorker implements WorkerInterface {
     this._child.send(request);
   }
 
-  waitForExit() {
+  waitForExit(): Promise<void> {
     return this._exitPromise;
   }
 
-  forceExit() {
+  forceExit(): void {
     this._child.kill('SIGTERM');
     const sigkillTimeout = setTimeout(
       () => this._child.kill('SIGKILL'),
@@ -242,7 +246,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     this._exitPromise.then(() => clearTimeout(sigkillTimeout));
   }
 
-  getWorkerId() {
+  getWorkerId(): number {
     return this._options.workerId;
   }
 

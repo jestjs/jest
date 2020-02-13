@@ -22,5 +22,5 @@ export type ResolverConfig = {
 
 type ModuleNameMapperConfig = {
   regex: RegExp;
-  moduleName: string;
+  moduleName: string | Array<string>;
 };

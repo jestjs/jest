@@ -412,7 +412,7 @@ _Note: When using multi project runner, it's recommended to add a `displayName` 
 
 Default: `false`
 
-Automatically clear mock calls and instances between every test. Equivalent to calling `jest.clearAllMocks()` between each test. This does not remove any mock implementation that may have been provided.
+Automatically clear mock calls and instances before every test. Equivalent to calling `jest.clearAllMocks()` before each test. This does not remove any mock implementation that may have been provided.
 
 ### `reporters` [array\<moduleName | [moduleName, options]>]
 
@@ -490,7 +490,7 @@ For the full list of methods and argument types see `Reporter` interface in [pac
 
 Default: `false`
 
-Automatically reset mock state between every test. Equivalent to calling `jest.resetAllMocks()` between each test. This will lead to any mocks having their fake implementations removed but does not restore their initial implementation.
+Automatically reset mock state before every test. Equivalent to calling `jest.resetAllMocks()` before each test. This will lead to any mocks having their fake implementations removed but does not restore their initial implementation.
 
 ### `resetModules` [boolean]
 
@@ -521,7 +521,7 @@ The function should either return a path to the module that should be resolved o
 
 Default: `false`
 
-Automatically restore mock state between every test. Equivalent to calling `jest.restoreAllMocks()` between each test. This will lead to any mocks having their fake implementations removed and restores their initial implementation.
+Automatically restore mock state before every test. Equivalent to calling `jest.restoreAllMocks()` before each test. This will lead to any mocks having their fake implementations removed and restores their initial implementation.
 
 ### `rootDir` [string]
 
@@ -809,7 +809,8 @@ The test runner module must export a function with the following signature:
 
 ```ts
 function testRunner(
-  config: Config,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
   environment: Environment,
   runtime: Runtime,
   testPath: string,
@@ -836,7 +837,12 @@ Default: `undefined`
 
 A map from regular expressions to paths to transformers. A transformer is a module that provides a synchronous function for transforming source files. For example, if you wanted to be able to use a new language feature in your modules or tests that isn't yet supported by node, you might plug in one of many compilers that compile a future version of JavaScript to a current one. Example: see the [examples/typescript](https://github.com/facebook/jest/blob/master/examples/typescript/package.json#L16) example or the [webpack tutorial](Webpack.md).
 
-Examples of such compilers include [Babel](https://babeljs.io/), [TypeScript](http://www.typescriptlang.org/) and [async-to-gen](http://github.com/leebyron/async-to-gen#jest).
+Examples of such compilers include:
+
+- [Babel](https://babeljs.io/)
+- [TypeScript](http://www.typescriptlang.org/)
+- [async-to-gen](http://github.com/leebyron/async-to-gen#jest)
+- To build your own please visit the [Custom Transformer](TutorialReact.md#custom-transformers) section
 
 _Note: a transformer is only run once per file unless the file has changed. During development of a transformer it can be useful to run Jest with `--no-cache` to frequently [delete Jest's cache](Troubleshooting.md#caching-issues)._
 

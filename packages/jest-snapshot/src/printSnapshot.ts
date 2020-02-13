@@ -88,7 +88,7 @@ export const getReceivedColorForChalkInstance = (
 export const aSnapshotColor = getSnapshotColorForChalkInstance(chalk);
 export const bReceivedColor = getReceivedColorForChalkInstance(chalk);
 
-export const noColor = (string: string) => string;
+export const noColor = (string: string): string => string;
 
 export const HINT_ARG = 'hint';
 export const SNAPSHOT_ARG = 'snapshot';
@@ -195,8 +195,10 @@ const isLineDiffable = (received: any): boolean => {
   return true;
 };
 
-export const printExpected = (val: unknown) => EXPECTED_COLOR(minify(val));
-export const printReceived = (val: unknown) => RECEIVED_COLOR(minify(val));
+export const printExpected = (val: unknown): string =>
+  EXPECTED_COLOR(minify(val));
+export const printReceived = (val: unknown): string =>
+  RECEIVED_COLOR(minify(val));
 
 export const printPropertiesAndReceived = (
   properties: object,
@@ -311,12 +313,18 @@ export const printSnapshotAndReceived = (
     const aLines2 = a.split('\n');
     const bLines2 = b.split('\n');
 
-    const aLines0 = dedentLines(aLines2);
+    // Fall through to fix a regression for custom serializers
+    // like jest-snapshot-serializer-raw that ignore the indent option.
+    const b0 = serialize(received, 0);
+    if (b0 !== b) {
+      const aLines0 = dedentLines(aLines2);
 
-    if (aLines0 !== null) {
-      // Compare lines without indentation.
-      const bLines0 = serialize(received, 0).split('\n');
-      return diffLinesUnified2(aLines2, bLines2, aLines0, bLines0, options);
+      if (aLines0 !== null) {
+        // Compare lines without indentation.
+        const bLines0 = b0.split('\n');
+
+        return diffLinesUnified2(aLines2, bLines2, aLines0, bLines0, options);
+      }
     }
 
     // Fall back because:
