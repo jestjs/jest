@@ -39,7 +39,7 @@ export type DefaultOptions = {
   clearMocks: boolean;
   collectCoverage: boolean;
   coveragePathIgnorePatterns: Array<string>;
-  coverageReporters: Array<string>;
+  coverageReporters: Array<string | [string, any]>;
   coverageProvider: CoverageProvider;
   errorOnDeprecated: boolean;
   expand: boolean;
@@ -241,7 +241,7 @@ export type GlobalConfig = {
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
   coverageProvider: CoverageProvider;
-  coverageReporters: Array<keyof ReportOptions>;
+  coverageReporters: Array<keyof ReportOptions | [keyof ReportOptions, any]>;
   coverageThreshold?: CoverageThreshold;
   detectLeaks: boolean;
   detectOpenHandles: boolean;

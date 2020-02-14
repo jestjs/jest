@@ -195,13 +195,19 @@ Note that using `v8` is considered experimental. This uses V8's builtin code cov
 1. Tests needs to run in Node test environment (support for `jsdom` requires [`jest-environment-jsdom-sixteen`](https://www.npmjs.com/package/jest-environment-jsdom-sixteen))
 1. V8 has way better data in the later versions, so using the latest versions of node (v13 at the time of this writing) will yield better results
 
-### `coverageReporters` [array\<string>]
+### `coverageReporters` [array\<string | [string,any]>]
 
 Default: `["json", "lcov", "text", "clover"]`
 
 A list of reporter names that Jest uses when writing coverage reports. Any [istanbul reporter](https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-reports/lib) can be used.
 
 _Note: Setting this option overwrites the default values. Add `"text"` or `"text-summary"` to see a coverage summary in the console output._
+
+_Nost: You can pass additional options to the istanbul reporter using the tuple form. For example:
+
+```js
+["json", ["lcov", { "projectRoot": "../../"}]]
+```
 
 ### `coverageThreshold` [object]
 
