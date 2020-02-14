@@ -203,10 +203,10 @@ A list of reporter names that Jest uses when writing coverage reports. Any [ista
 
 _Note: Setting this option overwrites the default values. Add `"text"` or `"text-summary"` to see a coverage summary in the console output._
 
-_Nost: You can pass additional options to the istanbul reporter using the tuple form. For example:
+_Note: You can pass additional options to the istanbul reporter using the tuple form. For example:_
 
-```js
-["json", ["lcov", { "projectRoot": "../../"}]]
+```json
+["json", ["lcov", {"projectRoot": "../../"}]]
 ```
 
 ### `coverageThreshold` [object]
