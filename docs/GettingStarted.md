@@ -12,7 +12,7 @@ yarn add --dev jest
 Or [`npm`](https://www.npmjs.com/):
 
 ```bash
-npm install --save-dev jest
+npm i --save-dev jest
 ```
 
 Note: Jest documentation uses `yarn` commands, but `npm` will also work. You can compare `yarn` and `npm` commands in the [yarn docs, here](https://yarnpkg.com/en/docs/migrating-from-npm#toc-cli-commands-comparison).
