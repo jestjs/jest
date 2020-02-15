@@ -104,8 +104,15 @@ export default class CoverageReporter extends BaseReporter {
         coverageReporters.push('text-summary');
       }
       coverageReporters.forEach(reporter => {
+        let additionalOptions = {};
+        if (Array.isArray(reporter)) {
+          [reporter, additionalOptions] = reporter;
+        }
         istanbulReports
-          .create(reporter, {maxCols: process.stdout.columns || Infinity})
+          .create(reporter, {
+            maxCols: process.stdout.columns || Infinity,
+            ...additionalOptions,
+          })
           // @ts-ignore
           .execute(reportContext);
       });
