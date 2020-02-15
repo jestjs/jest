@@ -59,6 +59,10 @@ function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, any>): T {
       descriptor.value = deepCyclicCopyReplaceable(descriptor.value, cycles);
     }
 
+    if (!('set' in descriptor)) {
+      descriptor.writable = true;
+    }
+
     descriptor.configurable = true;
   });
 
