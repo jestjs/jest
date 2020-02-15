@@ -37,14 +37,14 @@ export default async function readConfigFileAndSetRootDir(
         }
 
         configObject = importedConfig.default;
-      } catch (error) {
-        if (error.message === 'Not supported') {
+      } catch (innerError) {
+        if (innerError.message === 'Not supported') {
           throw new Error(
             `Jest: Your version of Node does not support dynamic import - please enable it or use a .cjs file extension for file ${configPath}`,
           );
         }
 
-        throw error;
+        throw innerError;
       }
     } else if (isJSON) {
       throw new Error(
