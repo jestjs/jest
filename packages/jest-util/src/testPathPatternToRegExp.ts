@@ -10,5 +10,6 @@ import {Config} from '@jest/types';
 // Because we serialize/deserialize globalConfig when we spawn workers,
 // we can't pass regular expression. Using this shared function on both sides
 // will ensure that we produce consistent regexp for testPathPattern.
-export default (testPathPattern: Config.GlobalConfig['testPathPattern']) =>
-  new RegExp(testPathPattern, 'i');
+export default (
+  testPathPattern: Config.GlobalConfig['testPathPattern'],
+): RegExp => new RegExp(testPathPattern, 'i');

@@ -11,6 +11,9 @@
     "jest-util": "^25.1.0",
     "string-length": "^3.1.0"
   },
+  "devDependencies": {
+    "@types/node": "*"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest",

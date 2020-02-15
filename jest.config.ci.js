@@ -15,6 +15,9 @@ module.exports = {
       'jest-junit',
       {outputDirectory: 'reports/junit', outputName: 'js-test-results.xml'},
     ],
-    ['jest-silent-reporter', {useDots: true}],
+    [
+      'jest-silent-reporter',
+      {showPaths: true, showWarnings: true, useDots: true},
+    ],
   ],
 };

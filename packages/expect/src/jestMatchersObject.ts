@@ -31,19 +31,20 @@ if (!global.hasOwnProperty(JEST_MATCHERS_OBJECT)) {
   });
 }
 
-export const getState = () => (global as any)[JEST_MATCHERS_OBJECT].state;
+export const getState = (): any => (global as any)[JEST_MATCHERS_OBJECT].state;
 
-export const setState = (state: object) => {
+export const setState = (state: object): void => {
   Object.assign((global as any)[JEST_MATCHERS_OBJECT].state, state);
 };
 
-export const getMatchers = () => (global as any)[JEST_MATCHERS_OBJECT].matchers;
+export const getMatchers = (): MatchersObject =>
+  (global as any)[JEST_MATCHERS_OBJECT].matchers;
 
 export const setMatchers = (
   matchers: MatchersObject,
   isInternal: boolean,
   expect: Expect,
-) => {
+): void => {
   Object.keys(matchers).forEach(key => {
     const matcher = matchers[key];
     Object.defineProperty(matcher, INTERNAL_MATCHER_FLAG, {

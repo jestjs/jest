@@ -7,6 +7,6 @@
 
 import chalk = require('chalk');
 
-export default function getNoTestFoundPassWithNoTests() {
+export default function getNoTestFoundPassWithNoTests(): string {
   return chalk.bold('No tests found, exiting with code 0');
 }

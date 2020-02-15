@@ -17,6 +17,9 @@
     "leven": "^3.1.0",
     "pretty-format": "^25.1.0"
   },
+  "devDependencies": {
+    "@types/yargs": "^15.0.3"
+  },
   "engines": {
     "node": ">= 8.3"
   },

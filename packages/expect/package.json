@@ -19,6 +19,9 @@
     "jest-regex-util": "^25.1.0"
   },
   "devDependencies": {
+    "@jest/test-utils": "^25.1.0",
+    "chalk": "^3.0.0",
+    "fast-check": "^1.13.0",
     "immutable": "^4.0.0-rc.12"
   },
   "engines": {

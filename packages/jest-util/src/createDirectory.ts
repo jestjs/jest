@@ -8,7 +8,7 @@
 import makeDir = require('make-dir');
 import {Config} from '@jest/types';
 
-export default function createDirectory(path: Config.Path) {
+export default function createDirectory(path: Config.Path): void {
   try {
     makeDir.sync(path);
   } catch (e) {

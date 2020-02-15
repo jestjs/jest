@@ -6,6 +6,9 @@
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-regex-util"
   },
+  "devDependencies": {
+    "@types/node": "*"
+  },
   "engines": {
     "node": ">= 8.3"
   },

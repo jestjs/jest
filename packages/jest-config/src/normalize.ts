@@ -6,6 +6,7 @@
  */
 
 import {createHash} from 'crypto';
+import {statSync} from 'fs';
 import * as path from 'path';
 import {sync as glob} from 'glob';
 import {Config} from '@jest/types';
@@ -45,6 +46,39 @@ type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
+
+function verifyDirectoryExists(path: Config.Path, key: string) {
+  try {
+    const rootStat = statSync(path);
+
+    if (!rootStat.isDirectory()) {
+      throw createConfigError(
+        `  ${chalk.bold(path)} in the ${chalk.bold(
+          key,
+        )} option is not a directory.`,
+      );
+    }
+  } catch (err) {
+    if (err instanceof ValidationError) {
+      throw err;
+    }
+
+    if (err.code === 'ENOENT') {
+      throw createConfigError(
+        `  Directory ${chalk.bold(path)} in the ${chalk.bold(
+          key,
+        )} option was not found.`,
+      );
+    }
+
+    // Not sure in which cases `statSync` can throw, so let's just show the underlying error to the user
+    throw createConfigError(
+      `  Got an error trying to find ${chalk.bold(path)} in the ${chalk.bold(
+        key,
+      )} option.\n\n  Error was: ${err.message}`,
+    );
+  }
+}
 
 // TS 3.5 forces us to split these into 2
 const mergeModuleNameMapperWithPreset = (
@@ -366,6 +400,8 @@ const normalizeRootDir = (
     // ignored
   }
 
+  verifyDirectoryExists(options.rootDir, 'rootDir');
+
   return {
     ...options,
     rootDir: options.rootDir,
@@ -421,11 +457,13 @@ const buildTestPathPattern = (argv: Config.Argv): string => {
     patterns.push(...argv.testPathPattern);
   }
 
-  const replacePosixSep = (pattern: string) => {
+  const replacePosixSep = (pattern: string | number) => {
+    // yargs coerces positional args into numbers
+    const patternAsString = pattern.toString();
     if (path.sep === '/') {
-      return pattern;
+      return patternAsString;
     }
-    return pattern.replace(/\//g, '\\\\');
+    return patternAsString.replace(/\//g, '\\\\');
   };
 
   const testPathPattern = patterns.map(replacePosixSep).join('|');
@@ -915,6 +953,10 @@ export default function normalize(
     newOptions[key] = value;
     return newOptions;
   }, newOptions);
+
+  newOptions.roots.forEach((root, i) => {
+    verifyDirectoryExists(root, `roots[${i}]`);
+  });
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)

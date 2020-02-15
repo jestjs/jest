@@ -238,7 +238,7 @@ export default class SearchSource {
   findTestRelatedToChangedFiles(
     changedFilesInfo: ChangedFiles,
     collectCoverage: boolean,
-  ) {
+  ): SearchResult {
     const {repos, changedFiles} = changedFilesInfo;
     // no SCM (git/hg/...) is found in any of the roots.
     const noSCM = (Object.keys(repos) as Array<

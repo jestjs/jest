@@ -16,7 +16,17 @@ import {DEFAULT_JS_PATTERN} from '../constants';
 
 const DEFAULT_CSS_PATTERN = '^.+\\.(css)$';
 
-jest.mock('jest-resolve').mock('path', () => jest.requireActual('path').posix);
+jest
+  .mock('jest-resolve')
+  .mock('path', () => jest.requireActual('path').posix)
+  .mock('fs', () => {
+    const realFs = jest.requireActual('fs');
+
+    return {
+      ...realFs,
+      statSync: () => ({isDirectory: () => true}),
+    };
+  });
 
 let root;
 let expectedPathFooBar;
@@ -1556,6 +1566,13 @@ describe('testPathPattern', () => {
           );
 
           expect(options.testPathPattern).toBe('a\\\\b|c\\\\d');
+        });
+
+        it('coerces all patterns to strings', () => {
+          const argv = {[opt.property]: [1]};
+          const {options} = normalize(initialOptions, argv);
+
+          expect(options.testPathPattern).toBe('1');
         });
       });
     });

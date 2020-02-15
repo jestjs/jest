@@ -878,7 +878,8 @@ The test runner module must export a function with the following signature:
 
 ```ts
 function testRunner(
-  config: Config,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
   environment: Environment,
   runtime: Runtime,
   testPath: string,
@@ -942,7 +943,7 @@ It is possible to override this setting in individual tests by explicitly callin
 
 Default: `false`
 
-Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
+Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution. Note that if there is only one test file being run it will default to `true`.
 
 ### `watchPathIgnorePatterns` [array\<string>]
 
@@ -951,6 +952,8 @@ Default: `[]`
 An array of RegExp patterns that are matched against all source file paths before re-running tests in watch mode. If the file path matches any of the patterns, when it is updated, it will not trigger a re-run of tests.
 
 These patterns match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/node_modules/"]`.
+
+Even if nothing is specified here, the watcher will ignore changes to any hidden files and directories, i.e. files and folders that begins with a dot (`.`).
 
 ### `watchPlugins` [array\<string | [string, Object]>]
 

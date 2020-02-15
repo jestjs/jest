@@ -26,6 +26,8 @@ export type QueueableFn = {
   initError?: Error;
 };
 
+// har to type :(
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function queueRunner(options: Options) {
   const token = new PCancelable((onCancel: Function, resolve: Function) => {
     onCancel(resolve);

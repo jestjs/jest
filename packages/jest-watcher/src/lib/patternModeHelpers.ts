@@ -12,7 +12,7 @@ import stringLength = require('string-length');
 export const printPatternCaret = (
   pattern: string,
   pipe: NodeJS.WritableStream,
-) => {
+): void => {
   const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
 
   pipe.write(ansiEscapes.eraseDown);
@@ -24,7 +24,7 @@ export const printRestoredPatternCaret = (
   pattern: string,
   currentUsageRows: number,
   pipe: NodeJS.WritableStream,
-) => {
+): void => {
   const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
 
   pipe.write(

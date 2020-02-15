@@ -16,7 +16,8 @@
     "@types/babel__traverse": "^7.0.6"
   },
   "devDependencies": {
-    "@babel/types": "^7.3.3"
+    "@babel/types": "^7.3.3",
+    "@types/node": "*"
   },
   "publishConfig": {
     "access": "public"

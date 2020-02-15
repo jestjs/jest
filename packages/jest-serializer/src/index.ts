@@ -33,7 +33,7 @@ export function readFileSync(filePath: Path): any {
   return v8Deserialize(fs.readFileSync(filePath));
 }
 
-export function writeFileSync(filePath: Path, content: any) {
+export function writeFileSync(filePath: Path, content: unknown): void {
   return fs.writeFileSync(filePath, v8Serialize(content));
 }
 

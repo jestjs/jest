@@ -6,16 +6,17 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/common": "^8.2.5",
-    "@angular/compiler": "^8.2.5",
-    "@angular/core": "^8.2.5",
-    "@angular/forms": "^8.2.5",
-    "@angular/platform-browser": "^8.2.5",
-    "@angular/platform-browser-dynamic": "^8.2.5",
+    "@angular/common": "^9.0.0",
+    "@angular/compiler": "^9.0.0",
+    "@angular/core": "^9.0.0",
+    "@angular/forms": "^9.0.0",
+    "@angular/platform-browser": "^9.0.0",
+    "@angular/platform-browser-dynamic": "^9.0.0",
     "core-js": "^3.2.1",
     "rxjs": "^6.5.3",
+    "tslib": "^1.10.0",
     "typescript": "*",
-    "zone.js": "~0.9.1"
+    "zone.js": "~0.10.2"
   },
   "devDependencies": {
     "@babel/core": "*",

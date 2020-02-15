@@ -34,7 +34,9 @@ type PromptsResults = {
 
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
-export default async (rootDir: string = realpath(process.cwd())) => {
+export default async (
+  rootDir: string = realpath(process.cwd()),
+): Promise<void> => {
   // prerequisite checks
   const projectPackageJsonPath: string = path.join(rootDir, PACKAGE_JSON);
 

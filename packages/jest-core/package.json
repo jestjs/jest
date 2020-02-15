@@ -39,7 +39,9 @@
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
     "@types/micromatch": "^4.0.0",
-    "@types/rimraf": "^2.0.2"
+    "@types/node": "*",
+    "@types/rimraf": "^2.0.2",
+    "jest-snapshot-serializer-raw": "^1.1.0"
   },
   "engines": {
     "node": ">= 8.3"

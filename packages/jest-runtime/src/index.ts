@@ -281,20 +281,20 @@ class Runtime {
     });
   }
 
-  static runCLI(args?: Config.Argv, info?: Array<string>) {
+  static runCLI(args?: Config.Argv, info?: Array<string>): Promise<void> {
     return cliRun(args, info);
   }
 
-  static getCLIOptions() {
+  static getCLIOptions(): typeof cliOptions {
     return cliOptions;
   }
 
-  requireModule(
+  requireModule<T = unknown>(
     from: Config.Path,
     moduleName?: string,
     options?: InternalModuleOptions,
     isRequireActual?: boolean | null,
-  ) {
+  ): T {
     const moduleID = this._resolver.getModuleID(
       this._virtualMocks,
       from,
@@ -370,15 +370,15 @@ class Runtime {
     return localModule.exports;
   }
 
-  requireInternalModule(from: Config.Path, to?: string) {
+  requireInternalModule<T = unknown>(from: Config.Path, to?: string): T {
     return this.requireModule(from, to, {isInternalModule: true});
   }
 
-  requireActual(from: Config.Path, moduleName: string) {
+  requireActual<T = unknown>(from: Config.Path, moduleName: string): T {
     return this.requireModule(from, moduleName, undefined, true);
   }
 
-  requireMock(from: Config.Path, moduleName: string) {
+  requireMock<T = unknown>(from: Config.Path, moduleName: string): T {
     const moduleID = this._resolver.getModuleID(
       this._virtualMocks,
       from,
@@ -399,7 +399,7 @@ class Runtime {
     if (moduleID in this._mockFactories) {
       const module = this._mockFactories[moduleID]();
       mockRegistry.set(moduleID, module);
-      return module;
+      return module as T;
     }
 
     const manualMockOrStub = this._resolver.getMockModule(from, moduleName);
@@ -508,7 +508,7 @@ class Runtime {
     };
   }
 
-  requireModuleOrMock(from: Config.Path, moduleName: string) {
+  requireModuleOrMock(from: Config.Path, moduleName: string): unknown {
     try {
       if (this._shouldMock(from, moduleName)) {
         return this.requireMock(from, moduleName);
@@ -531,7 +531,7 @@ class Runtime {
     }
   }
 
-  isolateModules(fn: () => void) {
+  isolateModules(fn: () => void): void {
     if (this._isolatedModuleRegistry || this._isolatedMockRegistry) {
       throw new Error(
         'isolateModules cannot be nested inside another isolateModules.',
@@ -539,12 +539,15 @@ class Runtime {
     }
     this._isolatedModuleRegistry = new Map();
     this._isolatedMockRegistry = new Map();
-    fn();
-    this._isolatedModuleRegistry = null;
-    this._isolatedMockRegistry = null;
+    try {
+      fn();
+    } finally {
+      this._isolatedModuleRegistry = null;
+      this._isolatedMockRegistry = null;
+    }
   }
 
-  resetModules() {
+  resetModules(): void {
     this._isolatedModuleRegistry = null;
     this._isolatedMockRegistry = null;
     this._mockRegistry.clear();
@@ -571,20 +574,20 @@ class Runtime {
     }
   }
 
-  async collectV8Coverage() {
+  async collectV8Coverage(): Promise<void> {
     this._v8CoverageInstrumenter = new CoverageInstrumenter();
 
     await this._v8CoverageInstrumenter.startInstrumenting();
   }
 
-  async stopCollectingV8Coverage() {
+  async stopCollectingV8Coverage(): Promise<void> {
     if (!this._v8CoverageInstrumenter) {
       throw new Error('You need to call `collectV8Coverage` first.');
     }
     this._v8CoverageResult = await this._v8CoverageInstrumenter.stopInstrumenting();
   }
 
-  getAllCoverageInfoCopy() {
+  getAllCoverageInfoCopy(): JestEnvironment['global']['__coverage__'] {
     return deepCyclicCopy(this._environment.global.__coverage__);
   }
 
@@ -613,19 +616,20 @@ class Runtime {
       });
   }
 
-  getSourceMapInfo(coveredFiles: Set<string>) {
-    return Object.keys(this._sourceMapRegistry).reduce<{
-      [path: string]: string;
-    }>((result, sourcePath) => {
-      if (
-        coveredFiles.has(sourcePath) &&
-        this._needsCoverageMapped.has(sourcePath) &&
-        fs.existsSync(this._sourceMapRegistry[sourcePath])
-      ) {
-        result[sourcePath] = this._sourceMapRegistry[sourcePath];
-      }
-      return result;
-    }, {});
+  getSourceMapInfo(coveredFiles: Set<string>): Record<string, string> {
+    return Object.keys(this._sourceMapRegistry).reduce<Record<string, string>>(
+      (result, sourcePath) => {
+        if (
+          coveredFiles.has(sourcePath) &&
+          this._needsCoverageMapped.has(sourcePath) &&
+          fs.existsSync(this._sourceMapRegistry[sourcePath])
+        ) {
+          result[sourcePath] = this._sourceMapRegistry[sourcePath];
+        }
+        return result;
+      },
+      {},
+    );
   }
 
   getSourceMaps(): SourceMapRegistry {
@@ -637,7 +641,7 @@ class Runtime {
     moduleName: string,
     mockFactory: () => unknown,
     options?: {virtual?: boolean},
-  ) {
+  ): void {
     if (options && options.virtual) {
       const mockPath = this._resolver.getModulePath(from, moduleName);
       this._virtualMocks[mockPath] = true;
@@ -651,15 +655,15 @@ class Runtime {
     this._mockFactories[moduleID] = mockFactory;
   }
 
-  restoreAllMocks() {
+  restoreAllMocks(): void {
     this._moduleMocker.restoreAllMocks();
   }
 
-  resetAllMocks() {
+  resetAllMocks(): void {
     this._moduleMocker.resetAllMocks();
   }
 
-  clearAllMocks() {
+  clearAllMocks(): void {
     this._moduleMocker.clearAllMocks();
   }
 

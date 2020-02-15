@@ -82,7 +82,7 @@ class Resolver {
 
   static ModuleNotFoundError = ModuleNotFoundError;
 
-  static clearDefaultResolverCache() {
+  static clearDefaultResolverCache(): void {
     clearDefaultResolverCache();
   }
 
@@ -218,8 +218,21 @@ class Resolver {
     );
   }
 
+  private _isAliasModule(moduleName: string): boolean {
+    const moduleNameMapper = this._options.moduleNameMapper;
+    if (!moduleNameMapper) {
+      return false;
+    }
+
+    return moduleNameMapper.some(({regex}) => regex.test(moduleName));
+  }
+
   isCoreModule(moduleName: string): boolean {
-    return this._options.hasCoreModules && isBuiltinModule(moduleName);
+    return (
+      this._options.hasCoreModules &&
+      isBuiltinModule(moduleName) &&
+      !this._isAliasModule(moduleName)
+    );
   }
 
   getModule(name: string): Config.Path | null {
@@ -230,7 +243,7 @@ class Resolver {
     );
   }
 
-  getModulePath(from: Config.Path, moduleName: string) {
+  getModulePath(from: Config.Path, moduleName: string): Config.Path {
     if (moduleName[0] !== '.' || path.isAbsolute(moduleName)) {
       return moduleName;
     }

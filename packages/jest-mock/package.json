@@ -12,6 +12,9 @@
   "dependencies": {
     "@jest/types": "^25.1.0"
   },
+  "devDependencies": {
+    "@types/node": "*"
+  },
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",

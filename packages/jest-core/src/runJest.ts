@@ -144,7 +144,7 @@ export default async function runJest({
   onComplete: (testResults: AggregatedResult) => void;
   failedTestsCache?: FailedTestsCache;
   filter?: Filter;
-}) {
+}): Promise<void> {
   const Sequencer: typeof TestSequencer = interopRequireDefault(
     require(globalConfig.testSequencer),
   ).default;
@@ -195,7 +195,7 @@ export default async function runJest({
     }
 
     onComplete && onComplete(makeEmptyAggregatedTestResult());
-    return null;
+    return;
   }
 
   if (globalConfig.onlyFailures && failedTestsCache) {
@@ -260,7 +260,7 @@ export default async function runJest({
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});
   }
 
-  return processResults(results, {
+  await processResults(results, {
     collectHandles,
     json: globalConfig.json,
     onComplete,

@@ -34,12 +34,12 @@ type Cache = {
 export default class TestSequencer {
   private _cache: Map<Context, Cache> = new Map();
 
-  _getCachePath(context: Context) {
+  _getCachePath(context: Context): string {
     const {config} = context;
     return getCacheFilePath(config.cacheDirectory, 'perf-cache-' + config.name);
   }
 
-  _getCache(test: Test) {
+  _getCache(test: Test): Cache {
     const {context} = test;
     if (!this._cache.has(context) && context.config.cache) {
       const cachePath = this._getCachePath(context);
@@ -109,7 +109,7 @@ export default class TestSequencer {
     });
   }
 
-  cacheResults(tests: Array<Test>, results: AggregatedResult) {
+  cacheResults(tests: Array<Test>, results: AggregatedResult): void {
     const map = Object.create(null);
     tests.forEach(test => (map[test.path] = test));
     results.testResults.forEach(testResult => {

@@ -27,6 +27,7 @@ import {
   printReceivedStringContainExpectedSubstring,
 } from './print';
 import {
+  ExpectationResult,
   MatcherState,
   MatchersObject,
   RawMatcherFn,
@@ -75,7 +76,12 @@ export const createMatcher = (
   matcherName: string,
   fromPromise?: boolean,
 ): RawMatcherFn =>
-  function(this: MatcherState, received: Function, expected: any) {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  function(
+    this: MatcherState,
+    received: Function,
+    expected: any,
+  ): ExpectationResult {
     const options = {
       isNot: this.isNot,
       promise: this.promise,

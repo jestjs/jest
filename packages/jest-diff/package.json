@@ -16,6 +16,7 @@
     "pretty-format": "^25.1.0"
   },
   "devDependencies": {
+    "@jest/test-utils": "^25.1.0",
     "strip-ansi": "^6.0.0"
   },
   "engines": {

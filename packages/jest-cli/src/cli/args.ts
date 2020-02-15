@@ -9,7 +9,7 @@ import {Config} from '@jest/types';
 import {isJSONString} from 'jest-config';
 import isCI = require('is-ci');
 
-export const check = (argv: Config.Argv) => {
+export function check(argv: Config.Argv): true {
   if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
     throw new Error(
       'Both --runInBand and --maxWorkers were specified, but these two ' +
@@ -61,7 +61,7 @@ export const check = (argv: Config.Argv) => {
   }
 
   return true;
-};
+}
 
 export const usage =
   'Usage: $0 [--config=<pathToConfigFile>] [TestPathPattern]';
@@ -204,7 +204,6 @@ export const options = {
   },
   coverageProvider: {
     choices: ['babel', 'v8'],
-    default: 'babel',
     description: 'Select between Babel and V8 to collect coverage',
   },
   coverageReporters: {
