@@ -110,8 +110,8 @@ export default class CoverageReporter extends BaseReporter {
         }
         istanbulReports
           .create(reporter, {
-            ...additionalOptions,
             maxCols: process.stdout.columns || Infinity,
+            ...additionalOptions,
           })
           // @ts-ignore
           .execute(reportContext);

@@ -432,7 +432,7 @@ describe('onRunComplete', () => {
           maxCols: process.stdout.columns || Infinity,
         });
         expect(istanbulReports.create).toHaveBeenCalledWith('lcov', {
-          maxCols: process.stdout.columns || Infinity,
+          maxCols: 10,
           projectRoot: './',
         });
         expect(testReporter.getLastError()).toBeUndefined();
