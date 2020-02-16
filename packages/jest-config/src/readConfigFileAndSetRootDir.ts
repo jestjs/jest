@@ -11,7 +11,7 @@ import {Config} from '@jest/types';
 // @ts-ignore: vendored
 import jsonlint from './vendor/jsonlint';
 import {JEST_CONFIG_EXT_JSON, PACKAGE_JSON} from './constants';
-import importMjs from './importMjs';
+import importEsm from './importEsm';
 
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
@@ -28,7 +28,7 @@ export default async function readConfigFileAndSetRootDir(
   } catch (error) {
     if (error.code === 'ERR_REQUIRE_ESM') {
       try {
-        const importedConfig = await importMjs(configPath);
+        const importedConfig = await importEsm(configPath);
 
         if (!importedConfig.default) {
           throw new Error(

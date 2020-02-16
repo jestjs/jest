@@ -35,4 +35,17 @@ onNodeVersions('^13.2.0', () => {
       name: 'Config from mjs file',
     });
   });
+
+  test('reads config from js file when package.json#type=module', () => {
+    const {json, exitCode} = runWithJson('esm-config/js', ['--show-config'], {
+      skipPkgJsonCheck: true,
+    });
+
+    expect(exitCode).toBe(0);
+    expect(json.configs).toHaveLength(1);
+    expect(json.configs[0].displayName).toEqual({
+      color: 'white',
+      name: 'Config from js file',
+    });
+  });
 });
