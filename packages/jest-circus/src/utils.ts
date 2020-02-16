@@ -280,7 +280,7 @@ export const makeRunResult = (
   unhandledErrors: Array<Error>,
 ): Circus.RunResult => ({
   testResults: makeTestResults(describeBlock),
-  unhandledErrors: unhandledErrors.map(_formatError),
+  unhandledErrors: unhandledErrors.map(_getError).map(getErrorStack),
 });
 
 export const makeSingleTestResult = (
@@ -313,10 +313,12 @@ export const makeSingleTestResult = (
     }
   }
 
+  const errorsDetailed = test.errors.map(_getError);
+
   return {
     duration: test.duration,
-    errors: test.errors.map(_formatError),
-    errorsDetailed: test.errors.map(_getError),
+    errors: errorsDetailed.map(getErrorStack),
+    errorsDetailed,
     invocations: test.invocations,
     location,
     status,
@@ -381,13 +383,7 @@ const _getError = (
   return asyncError;
 };
 
-function _formatError(
-  errors?: Circus.Exception | [Circus.Exception | undefined, Circus.Exception],
-): string {
-  const error = _getError(errors);
-
-  return error.stack || error.message;
-}
+const getErrorStack = (error: Error): string => error.stack || error.message;
 
 export const addErrorToEachTestUnderDescribe = (
   describeBlock: Circus.DescribeBlock,
