@@ -6,7 +6,7 @@
  */
 
 import {Config} from '@jest/types';
-import {isJSONString} from 'jest-config';
+import {constants, isJSONString} from 'jest-config';
 import isCI = require('is-ci');
 
 export function check(argv: Config.Argv): true {
@@ -52,11 +52,19 @@ export function check(argv: Config.Argv): true {
   if (
     argv.config &&
     !isJSONString(argv.config) &&
-    !argv.config.match(/\.js(on)?$/)
+    !argv.config.match(
+      new RegExp(
+        `\\.(${constants.JEST_CONFIG_EXT_ORDER.map(e => e.substring(1)).join(
+          '|',
+        )})$`,
+        'i',
+      ),
+    )
   ) {
     throw new Error(
-      'The --config option requires a JSON string literal, or a file path with a .js or .json extension.\n' +
-        'Example usage: jest --config ./jest.config.js',
+      `The --config option requires a JSON string literal, or a file path with one of these extensions: ${constants.JEST_CONFIG_EXT_ORDER.join(
+        ', ',
+      )}.\nExample usage: jest --config ./jest.config.js`,
     );
   }
 
