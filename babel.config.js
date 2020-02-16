@@ -35,7 +35,7 @@ module.exports = {
           },
         ],
       ],
-      test: 'packages/jest-config/src/importMjs.ts',
+      test: 'packages/jest-config/src/importEsm.ts',
     },
   ],
   plugins: [

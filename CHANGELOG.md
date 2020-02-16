@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-config]` Support ESM config files with `.js` extension ([#9573](https://github.com/facebook/jest/9573)).
 - `[jest-runtime]` Override `module.createRequire` to return a Jest-compatible `require` function ([#9469](https://github.com/facebook/jest/pull/9469))
 - `[*]` Support array of paths for `moduleNameMapper` aliases ([#9465](https://github.com/facebook/jest/pull/9465))
 - `[jest-reporters]` Adds ability to pass options to the istanbul-reporter through `coverageReporters` ([#9572](https://github.com/facebook/jest/pull/9572))
