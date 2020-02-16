@@ -7,6 +7,7 @@
 
 ### Fixes
 
+- `[expect]` Handle readonly properties correctly ([#9575](https://github.com/facebook/jest/pull/9575))
 - `[jest-config]` Treat `setupFilesAfterEnv` like `setupFiles` when normalizing configs against presets ([#9495](https://github.com/facebook/jest/pull/9495))
 - `[jest-config]` Support `.mjs` config files on Windows as well ([#9558](https://github.com/facebook/jest/pull/9558))
 - `[jest-config]` Verify `rootDir` and all `roots` are directories ([#9569](https://github.com/facebook/jest/pull/9569))
