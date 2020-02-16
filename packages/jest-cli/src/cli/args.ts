@@ -52,10 +52,10 @@ export function check(argv: Config.Argv): true {
   if (
     argv.config &&
     !isJSONString(argv.config) &&
-    !argv.config.match(/\.js(on)?$/)
+    !argv.config.match(/\.(js|cjs|json)$/)
   ) {
     throw new Error(
-      'The --config option requires a JSON string literal, or a file path with a .js or .json extension.\n' +
+      'The --config option requires a JSON string literal, or a file path with a .js, .cjs, or .json extension.\n' +
         'Example usage: jest --config ./jest.config.js',
     );
   }

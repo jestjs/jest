@@ -62,7 +62,32 @@ describe('check', () => {
   it('raises an exception if config is not a valid JSON string', () => {
     const argv = {config: 'x:1'} as Config.Argv;
     expect(() => check(argv)).toThrow(
-      'The --config option requires a JSON string literal, or a file path with a .js or .json extension',
+      'The --config option requires a JSON string literal, or a file path with a .js, .cjs, or .json extension',
+    );
+  });
+
+  it('raises an exception if config is not a js/cjs/json file path', () => {
+    expect(() =>
+      check({config: 'jest.config.js'} as Config.Argv),
+    ).not.toThrow();
+    expect(() =>
+      check({config: '../test/test/my_conf.js'} as Config.Argv),
+    ).not.toThrow();
+    expect(() =>
+      check({config: 'jest.config.cjs'} as Config.Argv),
+    ).not.toThrow();
+    expect(() =>
+      check({config: 'jest.config.json'} as Config.Argv),
+    ).not.toThrow();
+
+    const message =
+      'The --config option requires a JSON string literal, or a file path with a .js, .cjs, or .json extension';
+
+    expect(() => check({config: 'jest.config.mjs'} as Config.Argv)).toThrow(
+      message,
+    );
+    expect(() => check({config: 'jest.config.ts'} as Config.Argv)).toThrow(
+      message,
     );
   });
 });
