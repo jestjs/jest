@@ -153,8 +153,8 @@ function buildFile(file, silent) {
             plugin[0],
             Object.assign({}, plugin[1], {
               lazy: string =>
-                // we want to lazyload all non-local modules plus `importMjs` - the latter to avoid syntax errors. Set to just `true` when we drop support for node 8
-                !string.startsWith('./') || string === './importMjs',
+                // we want to lazyload all non-local modules plus `importEsm` - the latter to avoid syntax errors. Set to just `true` when we drop support for node 8
+                !string.startsWith('./') || string === './importEsm',
             }),
           ];
         }

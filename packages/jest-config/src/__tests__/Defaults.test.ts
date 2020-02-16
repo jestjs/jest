@@ -7,7 +7,7 @@
 
 import {defaults} from '../index';
 
-jest.mock('../importMjs', () => (s: string) => import(s));
+jest.mock('../importEsm', () => (s: string) => import(s));
 
 test('get configuration defaults', () => {
   expect(defaults).toBeDefined();
