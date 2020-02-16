@@ -2113,6 +2113,20 @@ exports[`.toEqual() {pass: false} expect({"a": 5}).toEqual({"b": 6}) 1`] = `
 <d>  }</>
 `;
 
+exports[`.toEqual() {pass: false} expect({"foo": {"bar": 1}}).toEqual({"foo": {}}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 1</>
+<r>+ Received  + 3</>
+
+<d>  Object {</>
+<g>-   "foo": Object {},</>
+<r>+   "foo": Object {</>
+<r>+     "bar": 1,</>
+<r>+   },</>
+<d>  }</>
+`;
+
 exports[`.toEqual() {pass: false} expect({"nodeName": "div", "nodeType": 1}).toEqual({"nodeName": "p", "nodeType": 1}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
