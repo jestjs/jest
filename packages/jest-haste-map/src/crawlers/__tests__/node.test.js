@@ -124,7 +124,7 @@ jest.mock('fs', () => {
   };
 });
 
-jest.mock('which', () => jest.fn().mockResolvedValue());
+jest.mock('which');
 
 const pearMatcher = path => /pear/.test(path);
 const createMap = obj => new Map(Object.keys(obj).map(key => [key, obj[key]]));
@@ -296,7 +296,9 @@ describe('node crawler', () => {
   it('uses node fs APIs on Unix based OS without find binary', () => {
     process.platform = 'linux';
     const which = require('which');
-    which.mockReturnValueOnce(Promise.reject());
+    which.sync.mockImplementation(() => {
+      throw new Error();
+    });
 
     nodeCrawl = require('../node');
 
@@ -316,7 +318,7 @@ describe('node crawler', () => {
         }),
       );
       expect(removedFiles).toEqual(new Map());
-      expect(which).toBeCalledWith('find');
+      expect(which.sync).toBeCalledWith('find');
     });
   });
 
