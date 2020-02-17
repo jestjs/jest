@@ -8,6 +8,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {spawn} from 'child_process';
+import which = require('which');
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
 import {
@@ -20,6 +21,14 @@ import {
 type Result = Array<[/* id */ string, /* mtime */ number, /* size */ number]>;
 
 type Callback = (result: Result) => void;
+
+function hasNativeFindSupport(forceNodeFilesystemAPI: boolean): Promise<void> {
+  if (forceNodeFilesystemAPI) return Promise.reject();
+
+  return process.platform === 'win32'
+    ? Promise.reject()
+    : ((which('find') as unknown) as Promise<void>);
+}
 
 function find(
   roots: Array<string>,
@@ -193,10 +202,8 @@ export = function nodeCrawl(
       });
     };
 
-    if (forceNodeFilesystemAPI || process.platform === 'win32') {
-      find(roots, extensions, ignore, callback);
-    } else {
-      findNative(roots, extensions, ignore, callback);
-    }
+    hasNativeFindSupport(forceNodeFilesystemAPI)
+      .then(() => findNative(roots, extensions, ignore, callback))
+      .catch(() => find(roots, extensions, ignore, callback));
   });
 };

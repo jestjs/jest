@@ -16,6 +16,7 @@
 - `[jest-cli]` Set `coverageProvider` correctly when provided in config ([#9562](https://github.com/facebook/jest/pull/9562))
 - `[jest-cli]` Allow specifying `.cjs` and `.mjs` config files by `--config` CLI option ([#9578](https://github.com/facebook/jest/pull/9578))
 - `[jest-config]` Ensure pattern of `replacePosixSep` is a string ([#9546]https://github.com/facebook/jest/pull/9546)
+- `[jest-haste-map]` Fix crash on unix based systems without find ([#9571](https://github.com/facebook/jest/pull/9571))
 - `[jest-matcher-utils]` Fix diff highlight of symbol-keyed object. ([#9499](https://github.com/facebook/jest/pull/9499))
 - `[@jest/reporters]` Notifications should be fire&forget rather than having a timeout ([#9567](https://github.com/facebook/jest/pull/9567))
 - `[jest-resolve]` Fix module identity preservation with symlinks and browser field resolution ([#9511](https://github.com/facebook/jest/pull/9511))
