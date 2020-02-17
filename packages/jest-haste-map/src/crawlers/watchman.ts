@@ -235,23 +235,8 @@ export = async function watchmanCrawl(
           nextData = ['', mtime, size, 0, '', sha1hex];
         }
 
-        const mappings = options.mapper ? options.mapper(filePath) : null;
-
-        if (mappings) {
-          for (const absoluteVirtualFilePath of mappings) {
-            if (!ignore(absoluteVirtualFilePath)) {
-              const relativeVirtualFilePath = fastPath.relative(
-                rootDir,
-                absoluteVirtualFilePath,
-              );
-              files.set(relativeVirtualFilePath, nextData);
-              changedFiles.set(relativeVirtualFilePath, nextData);
-            }
-          }
-        } else {
-          files.set(relativeFilePath, nextData);
-          changedFiles.set(relativeFilePath, nextData);
-        }
+        files.set(relativeFilePath, nextData);
+        changedFiles.set(relativeFilePath, nextData);
       }
     }
   }

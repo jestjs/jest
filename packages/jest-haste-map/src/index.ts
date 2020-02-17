@@ -39,7 +39,6 @@ import {
   HasteRegExp,
   InternalHasteMap,
   HasteMap as InternalHasteMapObject,
-  Mapper,
   MockData,
   ModuleMapData,
   ModuleMetaData,
@@ -58,7 +57,6 @@ type Options = {
   forceNodeFilesystemAPI?: boolean;
   hasteImplModulePath?: string;
   ignorePattern?: HasteRegExp;
-  mapper?: Mapper;
   maxWorkers: number;
   mocksPattern?: string;
   name: string;
@@ -83,7 +81,6 @@ type InternalOptions = {
   forceNodeFilesystemAPI: boolean;
   hasteImplModulePath?: string;
   ignorePattern?: HasteRegExp;
-  mapper?: Mapper;
   maxWorkers: number;
   mocksPattern: RegExp | null;
   name: string;
@@ -261,7 +258,6 @@ class HasteMap extends EventEmitter {
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
       ignorePattern: options.ignorePattern,
-      mapper: options.mapper,
       maxWorkers: options.maxWorkers,
       mocksPattern: options.mocksPattern
         ? new RegExp(options.mocksPattern)
@@ -755,7 +751,6 @@ class HasteMap extends EventEmitter {
       extensions: options.extensions,
       forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
       ignore,
-      mapper: options.mapper,
       rootDir: options.rootDir,
       roots: options.roots,
     };

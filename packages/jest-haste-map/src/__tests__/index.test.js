@@ -426,7 +426,6 @@ describe('HasteMap', () => {
         const hasteMap = new HasteMap({
           ...defaultConfig,
           computeSha1: true,
-          mapper: file => [file],
           maxWorkers: 1,
           useWatchman,
         });
