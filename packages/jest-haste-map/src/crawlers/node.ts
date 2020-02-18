@@ -8,6 +8,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {spawn} from 'child_process';
+import which = require('which');
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
 import {
@@ -20,6 +21,21 @@ import {
 type Result = Array<[/* id */ string, /* mtime */ number, /* size */ number]>;
 
 type Callback = (result: Result) => void;
+
+async function hasNativeFindSupport(
+  forceNodeFilesystemAPI: boolean,
+): Promise<boolean> {
+  if (forceNodeFilesystemAPI || process.platform === 'win32') {
+    return false;
+  }
+
+  try {
+    await which('find');
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 function find(
   roots: Array<string>,
@@ -154,7 +170,7 @@ function findNative(
   });
 }
 
-export = function nodeCrawl(
+export = async function nodeCrawl(
   options: CrawlerOptions,
 ): Promise<{
   removedFiles: FileData;
@@ -168,6 +184,8 @@ export = function nodeCrawl(
     rootDir,
     roots,
   } = options;
+
+  const useNativeFind = await hasNativeFindSupport(forceNodeFilesystemAPI);
 
   return new Promise(resolve => {
     const callback = (list: Result) => {
@@ -193,10 +211,10 @@ export = function nodeCrawl(
       });
     };
 
-    if (forceNodeFilesystemAPI || process.platform === 'win32') {
-      find(roots, extensions, ignore, callback);
-    } else {
+    if (useNativeFind) {
       findNative(roots, extensions, ignore, callback);
+    } else {
+      find(roots, extensions, ignore, callback);
     }
   });
 };

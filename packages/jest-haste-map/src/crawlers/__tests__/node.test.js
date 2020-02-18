@@ -124,6 +124,8 @@ jest.mock('fs', () => {
   };
 });
 
+jest.mock('which', () => jest.fn().mockResolvedValue());
+
 const pearMatcher = path => /pear/.test(path);
 const createMap = obj => new Map(Object.keys(obj).map(key => [key, obj[key]]));
 
@@ -288,6 +290,33 @@ describe('node crawler', () => {
         }),
       );
       expect(removedFiles).toEqual(new Map());
+    });
+  });
+
+  it('uses node fs APIs on Unix based OS without find binary', () => {
+    process.platform = 'linux';
+    const which = require('which');
+    which.mockReturnValueOnce(Promise.reject());
+
+    nodeCrawl = require('../node');
+
+    return nodeCrawl({
+      data: {
+        files: new Map(),
+      },
+      extensions: ['js'],
+      ignore: pearMatcher,
+      rootDir,
+      roots: ['/project/fruits'],
+    }).then(({hasteMap, removedFiles}) => {
+      expect(hasteMap.files).toEqual(
+        createMap({
+          'fruits/directory/strawberry.js': ['', 33, 42, 0, '', null],
+          'fruits/tomato.js': ['', 32, 42, 0, '', null],
+        }),
+      );
+      expect(removedFiles).toEqual(new Map());
+      expect(which).toBeCalledWith('find');
     });
   });
 
