@@ -22,17 +22,12 @@ type Result = Array<[/* id */ string, /* mtime */ number, /* size */ number]>;
 
 type Callback = (result: Result) => void;
 
-function hasNativeFindSupport(forceNodeFilesystemAPI: boolean): boolean {
-  if (forceNodeFilesystemAPI || process.platform === 'win32') {
-    return false;
-  }
+function hasNativeFindSupport(forceNodeFilesystemAPI: boolean): Promise<void> {
+  if (forceNodeFilesystemAPI) return Promise.reject();
 
-  try {
-    which.sync('find');
-    return true;
-  } catch {
-    return false;
-  }
+  return process.platform === 'win32'
+    ? Promise.reject()
+    : ((which('find') as unknown) as Promise<void>);
 }
 
 function find(
@@ -207,10 +202,8 @@ export = function nodeCrawl(
       });
     };
 
-    if (hasNativeFindSupport(forceNodeFilesystemAPI)) {
-      findNative(roots, extensions, ignore, callback);
-    } else {
-      find(roots, extensions, ignore, callback);
-    }
+    hasNativeFindSupport(forceNodeFilesystemAPI)
+      .then(() => findNative(roots, extensions, ignore, callback))
+      .catch(() => find(roots, extensions, ignore, callback));
   });
 };
