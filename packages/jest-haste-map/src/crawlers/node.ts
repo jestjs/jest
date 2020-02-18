@@ -22,12 +22,19 @@ type Result = Array<[/* id */ string, /* mtime */ number, /* size */ number]>;
 
 type Callback = (result: Result) => void;
 
-function hasNativeFindSupport(forceNodeFilesystemAPI: boolean): Promise<void> {
-  if (forceNodeFilesystemAPI) return Promise.reject();
+async function hasNativeFindSupport(
+  forceNodeFilesystemAPI: boolean,
+): Promise<boolean> {
+  if (forceNodeFilesystemAPI || process.platform === 'win32') {
+    return false;
+  }
 
-  return process.platform === 'win32'
-    ? Promise.reject()
-    : ((which('find') as unknown) as Promise<void>);
+  try {
+    await which('find');
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function find(
@@ -163,7 +170,7 @@ function findNative(
   });
 }
 
-export = function nodeCrawl(
+export = async function nodeCrawl(
   options: CrawlerOptions,
 ): Promise<{
   removedFiles: FileData;
@@ -177,6 +184,8 @@ export = function nodeCrawl(
     rootDir,
     roots,
   } = options;
+
+  const useNativeFind = await hasNativeFindSupport(forceNodeFilesystemAPI);
 
   return new Promise(resolve => {
     const callback = (list: Result) => {
@@ -202,8 +211,10 @@ export = function nodeCrawl(
       });
     };
 
-    hasNativeFindSupport(forceNodeFilesystemAPI)
-      .then(() => findNative(roots, extensions, ignore, callback))
-      .catch(() => find(roots, extensions, ignore, callback));
+    if (useNativeFind) {
+      findNative(roots, extensions, ignore, callback);
+    } else {
+      find(roots, extensions, ignore, callback);
+    }
   });
 };
