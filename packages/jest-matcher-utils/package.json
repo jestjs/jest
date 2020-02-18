@@ -12,6 +12,7 @@
   },
   "license": "MIT",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "dependencies": {
     "chalk": "^3.0.0",
     "jest-diff": "^25.1.0",
