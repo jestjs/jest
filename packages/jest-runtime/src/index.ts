@@ -497,11 +497,7 @@ class Runtime {
   ): TransformationOptions {
     return {
       ...options,
-      changedFiles: this._coverageOptions.changedFiles,
-      collectCoverage: this._coverageOptions.collectCoverage,
-      collectCoverageFrom: this._coverageOptions.collectCoverageFrom,
-      collectCoverageOnlyFrom: this._coverageOptions.collectCoverageOnlyFrom,
-      coverageProvider: this._coverageOptions.coverageProvider,
+      ...this._coverageOptions,
     };
   }
 

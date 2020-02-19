@@ -14,8 +14,8 @@ import {
   PartialConfig,
   TransformOptions,
   transformSync as babelTransform,
-  loadPartialConfig,
 } from '@babel/core';
+import {loadPartialConfig} from './loadBabelConfig';
 import chalk = require('chalk');
 import slash = require('slash');
 
@@ -35,7 +35,9 @@ const createTransformer = (
     ...options,
     caller: {
       name: 'babel-jest',
+      supportsDynamicImport: false,
       supportsStaticESM: false,
+      ...options.caller,
     },
     compact: false,
     plugins: (options && options.plugins) || [],
@@ -46,9 +48,23 @@ const createTransformer = (
   function loadBabelConfig(
     cwd: Config.Path,
     filename: Config.Path,
+    supportsDynamicImport?: boolean,
+    supportsStaticESM?: boolean,
   ): PartialConfig {
     // `cwd` first to allow incoming options to override it
-    const babelConfig = loadPartialConfig({cwd, ...options, filename});
+    const babelConfig = loadPartialConfig({
+      cwd,
+      ...options,
+      caller: {
+        name: 'babel-jest',
+        ...options.caller,
+        supportsDynamicImport:
+          supportsDynamicImport ?? options.caller?.supportsDynamicImport,
+        supportsStaticESM:
+          supportsStaticESM ?? options.caller?.supportsStaticESM,
+      },
+      filename,
+    });
 
     if (!babelConfig) {
       throw new Error(
@@ -69,9 +85,14 @@ const createTransformer = (
       fileData,
       filename,
       configString,
-      {config, instrument, rootDir},
+      {config, instrument, rootDir, supportsDynamicImport, supportsStaticESM},
     ) {
-      const babelOptions = loadBabelConfig(config.cwd, filename);
+      const babelOptions = loadBabelConfig(
+        config.cwd,
+        filename,
+        supportsDynamicImport,
+        supportsStaticESM,
+      );
       const configPath = [
         babelOptions.config || '',
         babelOptions.babelrc || '',
@@ -98,7 +119,14 @@ const createTransformer = (
         .digest('hex');
     },
     process(src, filename, config, transformOptions) {
-      const babelOptions = {...loadBabelConfig(config.cwd, filename).options};
+      const babelOptions = {
+        ...loadBabelConfig(
+          config.cwd,
+          filename,
+          transformOptions?.supportsDynamicImport,
+          transformOptions?.supportsStaticESM,
+        ).options,
+      };
 
       if (transformOptions && transformOptions.instrument) {
         babelOptions.auxiliaryCommentBefore = ' istanbul ignore next ';

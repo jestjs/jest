@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[babel-jest]` Support passing `supportsDynamicImport` and `supportsStaticESM`
+
 ### Fixes
 
 ### Chore & Maintenance

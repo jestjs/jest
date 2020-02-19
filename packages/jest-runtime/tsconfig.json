@@ -17,6 +17,7 @@
     {"path": "../jest-snapshot"},
     {"path": "../jest-source-map"},
     {"path": "../jest-test-result"},
+    {"path": "../jest-transform"},
     {"path": "../jest-types"},
     {"path": "../jest-util"},
     {"path": "../jest-validate"},
