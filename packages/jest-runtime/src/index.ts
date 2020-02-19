@@ -185,12 +185,6 @@ class Runtime {
     }
 
     this.resetModules();
-
-    if (config.setupFiles.length) {
-      for (let i = 0; i < config.setupFiles.length; i++) {
-        this.requireModule(config.setupFiles[i]);
-      }
-    }
   }
 
   static shouldInstrument = shouldInstrument;

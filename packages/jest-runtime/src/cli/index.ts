@@ -93,6 +93,9 @@ export async function run(
     setGlobal(environment.global, 'jestGlobalConfig', globalConfig);
 
     const runtime = new Runtime(config, environment, hasteMap.resolver);
+
+    config.setupFiles.forEach(path => runtime.requireModule(path));
+
     runtime.requireModule(filePath);
   } catch (e) {
     console.error(chalk.red(e.stack || e));
