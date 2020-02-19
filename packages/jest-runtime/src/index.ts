@@ -52,6 +52,14 @@ type HasteMapOptions = {
 
 type InternalModuleOptions = {
   isInternalModule: boolean;
+  supportsDynamicImport: boolean;
+  supportsStaticESM: boolean;
+};
+
+const defaultTransformOptions: InternalModuleOptions = {
+  isInternalModule: false,
+  supportsDynamicImport: false,
+  supportsStaticESM: false,
 };
 
 type InitialModule = Partial<Module> &
@@ -368,7 +376,11 @@ class Runtime {
   }
 
   requireInternalModule<T = unknown>(from: Config.Path, to?: string): T {
-    return this.requireModule(from, to, {isInternalModule: true});
+    return this.requireModule(from, to, {
+      isInternalModule: true,
+      supportsDynamicImport: false,
+      supportsStaticESM: false,
+    });
   }
 
   requireActual<T = unknown>(from: Config.Path, moduleName: string): T {
@@ -493,7 +505,7 @@ class Runtime {
   }
 
   private _getFullTransformationOptions(
-    options: InternalModuleOptions | undefined,
+    options: InternalModuleOptions = defaultTransformOptions,
   ): TransformationOptions {
     return {
       ...options,
