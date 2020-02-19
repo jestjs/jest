@@ -213,6 +213,7 @@ export default class ScriptTransformer {
             // files outside `cwd` will not be instrumented
             cwd: this._config.rootDir,
             exclude: [],
+            extension: false,
             // Needed for correct coverage as soon as we start storing a source map of the instrumented code
             inputSourceMap: input.map,
             useInlineSourceMaps: false,
