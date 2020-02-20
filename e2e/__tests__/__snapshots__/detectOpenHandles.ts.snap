@@ -36,9 +36,6 @@ These are sometimes useful to look at as they might have spawned other handles t
 
   ●  DNSCHANNEL (uncollected, potential leak)
 
-      at internal/dns/utils.js:101:23
-      at dns.js:38:5
-
   ●  TCPSERVERWRAP (uncollected, potential leak)
 
   ●  GETADDRINFOREQWRAP (collected within 100ms)
