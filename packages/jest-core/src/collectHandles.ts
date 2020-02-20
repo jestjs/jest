@@ -22,8 +22,9 @@ function isSafeJestInternal(stack: string) {
     .split('\n')
     .some(
       line =>
-        line.includes('at Status._debouncedEmit') &&
-        line.includes('build/Status.js'),
+        line.includes('build/Status.js') &&
+        (line.includes('at Status._debouncedEmit') ||
+          line.includes('at Status.runStarted')),
     );
 }
 
