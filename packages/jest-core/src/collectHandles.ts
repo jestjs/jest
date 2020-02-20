@@ -10,12 +10,25 @@ import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';
 import stripAnsi = require('strip-ansi');
+import type {AggregatedResult} from '@jest/test-result';
+
+export type OpenHandleError = AggregatedResult['openHandles'][number];
 
 const alwaysActive = () => true;
 
+function isSafeJestInternal(stack: string) {
+  return stack
+    .split('\n')
+    .some(
+      line =>
+        line.includes('at Status._debouncedEmit') &&
+        line.includes('build/Status.js'),
+    );
+}
+
 // Inspired by https://github.com/mafintosh/why-is-node-running/blob/master/index.js
 // Extracted as we want to format the result ourselves
-export default function collectHandles(): () => Array<Error> {
+export default function collectHandles(): (keepOpen: boolean) => Array<Error> {
   const activeHandles: Map<
     number,
     {error: Error; isActive: () => boolean}
@@ -33,7 +46,9 @@ export default function collectHandles(): () => Array<Error> {
       if (
         type === 'PROMISE' ||
         type === 'TIMERWRAP' ||
-        type === 'ELDHISTOGRAM'
+        type === 'SHUTDOWNWRAP' ||
+        type === 'ELDHISTOGRAM' ||
+        type === 'TickObject'
       ) {
         return;
       }
@@ -63,34 +78,51 @@ export default function collectHandles(): () => Array<Error> {
 
   hook.enable();
 
-  return (): Array<Error> => {
-    hook.disable();
+  return (keepOpen: boolean): Array<Error> => {
+    if (!keepOpen) {
+      hook.disable();
+    }
 
     // Get errors for every async resource still referenced at this moment
     const result = Array.from(activeHandles.values())
       .filter(({isActive}) => isActive())
       .map(({error}) => error);
 
-    activeHandles.clear();
+    if (!keepOpen) {
+      activeHandles.clear();
+    }
+
     return result;
   };
 }
 
 export function formatHandleErrors(
-  errors: Array<Error>,
+  errors: Array<OpenHandleError>,
   config: Config.ProjectConfig,
-): Array<string> {
+): Array<{stack: string; wasCollected: boolean}> {
   const stacks = new Set();
 
   return (
     errors
-      .map(err =>
-        formatExecError(err, config, {noStackTrace: false}, undefined, true),
-      )
+      .map(err => {
+        const stack = formatExecError(
+          err,
+          config,
+          {noStackTrace: false},
+          undefined,
+          true,
+        );
+
+        return {stack, wasCollected: err.wasCollected};
+      })
       // E.g. timeouts might give multiple traces to the same line of code
       // This hairy filtering tries to remove entries with duplicate stack traces
-      .filter(handle => {
-        const ansiFree: string = stripAnsi(handle);
+      .filter(({stack, wasCollected}) => {
+        const ansiFree: string = stripAnsi(stack);
+
+        if (isSafeJestInternal(ansiFree)) {
+          return false;
+        }
 
         const match = ansiFree.match(/\s+at(.*)/);
 
@@ -98,17 +130,17 @@ export function formatHandleErrors(
           return true;
         }
 
-        const stack = ansiFree.substr(ansiFree.indexOf(match[1])).trim();
+        const stackWithoutHeading =
+          // include `wasCollected` as a "vary"
+          ansiFree.substr(ansiFree.indexOf(match[1])).trim() + wasCollected;
 
-        if (stacks.has(stack)) {
+        if (stacks.has(stackWithoutHeading)) {
           return false;
         }
 
-        stacks.add(stack);
+        stacks.add(stackWithoutHeading);
 
         return true;
       })
-      // only keep stacks with at least one frame. `length === 1` means just the heading (normally meaning node internal), which is useless
-      .filter(stack => stack.trim().split('\n').length > 1)
   );
 }

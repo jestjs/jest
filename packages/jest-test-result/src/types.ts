@@ -49,6 +49,10 @@ export type FormattedAssertionResult = Pick<
   failureMessages: AssertionResult['failureMessages'] | null;
 };
 
+interface OpenHandleError extends Error {
+  wasCollected: boolean;
+}
+
 export type AggregatedResultWithoutCoverage = {
   numFailedTests: number;
   numFailedTestSuites: number;
@@ -60,7 +64,7 @@ export type AggregatedResultWithoutCoverage = {
   numRuntimeErrorTestSuites: number;
   numTotalTests: number;
   numTotalTestSuites: number;
-  openHandles: Array<Error>;
+  openHandles: Array<OpenHandleError>;
   snapshot: SnapshotSummary;
   startTime: number;
   success: boolean;

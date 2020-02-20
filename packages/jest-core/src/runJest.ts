@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import {promisify} from 'util';
 import chalk = require('chalk');
 import {CustomConsole} from '@jest/console';
 import {interopRequireDefault, tryRealpath} from 'jest-util';
@@ -27,7 +28,7 @@ import runGlobalHook from './runGlobalHook';
 import SearchSource from './SearchSource';
 import TestScheduler, {TestSchedulerContext} from './TestScheduler';
 import type FailedTestsCache from './FailedTestsCache';
-import collectNodeHandles from './collectHandles';
+import collectNodeHandles, {OpenHandleError} from './collectHandles';
 import type TestWatcher from './TestWatcher';
 import type {Filter, TestRunData} from './types';
 
@@ -70,15 +71,55 @@ type ProcessResultOptions = Pick<
   Config.GlobalConfig,
   'json' | 'outputFile' | 'testResultsProcessor'
 > & {
-  collectHandles?: () => Array<Error>;
+  collectHandles?: (keepOpen: boolean) => Array<Error>;
   onComplete?: (result: AggregatedResult) => void;
   outputStream: NodeJS.WriteStream;
 };
 
-const processResults = (
+const wait = promisify(setTimeout);
+
+async function createOpenHandlesResult(
+  collectHandles: (keepOpen: boolean) => Array<Error>,
+): Promise<Array<OpenHandleError>> {
+  const handlesBeforeWait = collectHandles(true);
+
+  const handlesBeforeStack = handlesBeforeWait.map(handle => handle.stack);
+
+  // wait 100ms to allow some handles to be cleaned up, including Jest's internal timeouts
+  await wait(100);
+
+  const handlesAfterWait = collectHandles(false);
+  const handlesAfterStack = handlesAfterWait.map(handle => handle.stack);
+
+  const collectedHandled = handlesBeforeWait
+    .map(handle => {
+      const handleError = handle as OpenHandleError;
+
+      handleError.wasCollected = !handlesAfterStack.includes(handle.stack);
+
+      return handleError;
+    })
+    .sort(({wasCollected: aCollected}, {wasCollected: bCollected}) =>
+      aCollected === bCollected ? 0 : aCollected ? -1 : 1,
+    );
+
+  const newHandles = handlesAfterWait
+    .filter(handle => !handlesBeforeStack.includes(handle.stack))
+    .map(handle => {
+      const handleError = handle as OpenHandleError;
+
+      handleError.wasCollected = false;
+
+      return handleError;
+    });
+
+  return [...collectedHandled, ...newHandles];
+}
+
+async function processResults(
   runResults: AggregatedResult,
   options: ProcessResultOptions,
-) => {
+) {
   const {
     outputFile,
     json: isJSON,
@@ -89,7 +130,7 @@ const processResults = (
   } = options;
 
   if (collectHandles) {
-    runResults.openHandles = collectHandles();
+    runResults.openHandles = await createOpenHandlesResult(collectHandles);
   } else {
     runResults.openHandles = [];
   }
@@ -111,8 +152,10 @@ const processResults = (
     }
   }
 
-  return onComplete && onComplete(runResults);
-};
+  if (onComplete) {
+    onComplete(runResults);
+  }
+}
 
 const testSchedulerContext: TestSchedulerContext = {
   firstRun: true,
@@ -271,11 +314,6 @@ export default async function runJest({
 
   if (hasTests) {
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});
-  }
-
-  if (collectHandles) {
-    // wait 100ms to allow some handles to be cleaned up, including Jest's internal timeouts
-    await new Promise(resolve => setTimeout(resolve, 100));
   }
 
   await processResults(results, {

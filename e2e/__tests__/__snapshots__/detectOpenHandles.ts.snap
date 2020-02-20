@@ -1,5 +1,26 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`deals with http servers and promises 1`] = `
+Jest has detected the following 1 open handle potentially preventing Jest from exiting:
+Of them 1 was collected within 100ms of the tests completing.
+These are sometimes useful to look at as they might have spawned other handles that remain open, but that we have lost the origin of.
+There were no uncollected handles - this is unexpected if your tests do not exit cleanly.
+
+Collected handles:
+  ●  TCPSERVERWRAP
+
+      4 |   const server = http.createServer();
+      5 |   await new Promise(resolve => {
+    > 6 |     server.listen(resolve);
+        |            ^
+      7 |   });
+      8 |   await new Promise((resolve, reject) => {
+      9 |     server.close(err => {
+
+      at listen (__tests__/http.js:6:12)
+      at Object.<anonymous> (__tests__/http.js:5:9)
+`;
+
 exports[`prints message about flag on forceExit 1`] = `Force exiting Jest: Have you considered using \`--detectOpenHandles\` to detect async operations that kept running after all tests finished?`;
 
 exports[`prints message about flag on slow tests 1`] = `
@@ -9,8 +30,15 @@ This usually means that there are asynchronous operations that weren't stopped i
 `;
 
 exports[`prints out info about open handlers 1`] = `
-Jest has detected the following 1 open handle potentially preventing Jest from exiting:
+Jest has detected the following 3 open handles potentially preventing Jest from exiting:
+Of them 1 was collected within 100ms of the tests completing.
+These are sometimes useful to look at as they might have spawned other handles that remain open, but that we have lost the origin of.
+Uncollected handles:
+  ●  DNSCHANNEL
 
+  ●  TCPSERVERWRAP
+
+Collected handles:
   ●  GETADDRINFOREQWRAP
 
       12 | const app = new Server();
@@ -25,7 +53,7 @@ Jest has detected the following 1 open handle potentially preventing Jest from e
 
 exports[`prints out info about open handlers from inside tests 1`] = `
 Jest has detected the following 1 open handle potentially preventing Jest from exiting:
-
+Uncollected handles:
   ●  Timeout
 
        7 | 

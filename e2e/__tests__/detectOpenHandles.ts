@@ -68,7 +68,7 @@ it('does not report promises', () => {
   ]);
   const textAfterTest = getTextAfterTest(stderr);
 
-  expect(textAfterTest).toBe('');
+  expect(textAfterTest).toBe('Jest was unable to detect any open handles');
 });
 
 onNodeVersions('>=11.10.0', () => {
@@ -108,13 +108,25 @@ onNodeVersions('>=11', () => {
     ]);
     const textAfterTest = getTextAfterTest(stderr);
 
-    expect(textAfterTest).toBe('');
+    expect(textAfterTest).toBe('Jest was unable to detect any open handles');
   });
 });
 
 it('prints out info about open handlers from inside tests', async () => {
   const run = runContinuous('detect-open-handles', [
     'inside',
+    '--detectOpenHandles',
+  ]);
+  await run.waitUntil(({stderr}) => stderr.includes('Jest has detected'));
+  const {stderr} = await run.end();
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(wrap(textAfterTest)).toMatchSnapshot();
+});
+
+it('deals with http servers and promises', async () => {
+  const run = runContinuous('detect-open-handles', [
+    'http',
     '--detectOpenHandles',
   ]);
   await run.waitUntil(({stderr}) => stderr.includes('Jest has detected'));

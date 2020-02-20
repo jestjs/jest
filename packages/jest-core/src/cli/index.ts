@@ -105,19 +105,56 @@ export async function runCLI(
     );
   }
 
-  const {openHandles} = results;
+  if (globalConfig.detectOpenHandles) {
+    const formatted = formatHandleErrors(results.openHandles, configs[0]);
 
-  if (openHandles && openHandles.length) {
-    const formatted = formatHandleErrors(openHandles, configs[0]);
+    if (formatted.length > 0) {
+      const uncollectedHandles = formatted
+        .filter(({wasCollected}) => !wasCollected)
+        .map(({stack}) => stack);
+      const collectedHandles = formatted
+        .filter(({wasCollected}) => wasCollected)
+        .map(({stack}) => stack);
 
-    const openHandlesString = pluralize('open handle', formatted.length, 's');
+      const openHandlesString = pluralize('open handle', formatted.length, 's');
 
-    const message =
-      chalk.red(
-        `\nJest has detected the following ${openHandlesString} potentially preventing Jest from exiting:\n\n`,
-      ) + formatted.join('\n\n');
+      const alreadyCollectedString =
+        collectedHandles.length === 0
+          ? ''
+          : collectedHandles.length === 1
+          ? '1 was'
+          : `${collectedHandles.length} were`;
 
-    console.error(message);
+      let heading = chalk.red(
+        `Jest has detected the following ${openHandlesString} potentially preventing Jest from exiting:`,
+      );
+
+      if (alreadyCollectedString) {
+        heading += chalk.yellow(
+          `\nOf them ${alreadyCollectedString} collected within 100ms of the tests completing.\nThese are sometimes useful to look at as they might have spawned other handles that remain open, but that we have lost the origin of.`,
+        );
+      }
+
+      const uncollectedHandlesString =
+        uncollectedHandles.length > 0
+          ? `Uncollected handles:\n${uncollectedHandles
+              .map(line => line.trimRight())
+              .join('\n\n')}`
+          : 'There were no uncollected handles - this is unexpected if your tests do not exit cleanly.';
+
+      const collectedHandlesString =
+        collectedHandles.length > 0
+          ? `\n\nCollected handles:\n${collectedHandles
+              .map(line => line.trimRight())
+              .join('\n\n')}`
+          : '';
+
+      const message = `\n\n${heading}\n${uncollectedHandlesString}${collectedHandlesString}`;
+
+      console.error(message);
+    } else {
+      console.error(chalk.red('\nJest was unable to detect any open handles'));
+    }
   }
 
   return {globalConfig, results};
