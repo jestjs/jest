@@ -85,6 +85,8 @@ async function createOpenHandlesResult(
   // wait 100ms to allow some handles to be cleaned up, including Jest's internal timeouts
   // make sure _not_ to unref it, otherwise the promise won't actually be waited for if there's nothing else to do
   await new Promise(resolve => setTimeout(resolve, 100));
+  // wait one extra tick so the timeout ^ is not counted.
+  await Promise.resolve();
 
   const handlesAfterWait = collectHandles(false);
   const handlesAfterStack = handlesAfterWait.map(handle => handle.stack);
