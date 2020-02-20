@@ -296,11 +296,11 @@ const runWithoutWatch = async (
   changedFilesPromise?: ChangedFilesPromise,
   filter?: Filter,
 ) => {
-  const startRun = async (): Promise<void | null> => {
+  const startRun = async (): Promise<void> => {
     if (!globalConfig.listTests) {
       preRunMessagePrint(outputStream);
     }
-    return runJest({
+    await runJest({
       changedFilesPromise,
       contexts,
       failedTestsCache: undefined,

@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import {promisify} from 'util';
 import chalk = require('chalk');
 import {CustomConsole} from '@jest/console';
 import {interopRequireDefault, tryRealpath} from 'jest-util';
@@ -76,8 +75,6 @@ type ProcessResultOptions = Pick<
   outputStream: NodeJS.WriteStream;
 };
 
-const wait = promisify(setTimeout);
-
 async function createOpenHandlesResult(
   collectHandles: (keepOpen: boolean) => Array<Error>,
 ): Promise<Array<OpenHandleError>> {
@@ -86,7 +83,8 @@ async function createOpenHandlesResult(
   const handlesBeforeStack = handlesBeforeWait.map(handle => handle.stack);
 
   // wait 100ms to allow some handles to be cleaned up, including Jest's internal timeouts
-  await wait(100);
+  // make sure _not_ to unref it, otherwise the promise won't actually be waited for if there's nothing else to do
+  await new Promise(resolve => setTimeout(resolve, 100));
 
   const handlesAfterWait = collectHandles(false);
   const handlesAfterStack = handlesAfterWait.map(handle => handle.stack);
@@ -153,7 +151,7 @@ async function processResults(
   }
 
   if (onComplete) {
-    onComplete(runResults);
+    await onComplete(runResults);
   }
 }
 
