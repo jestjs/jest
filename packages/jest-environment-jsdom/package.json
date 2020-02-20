@@ -15,10 +15,10 @@
     "@jest/types": "^25.1.0",
     "jest-mock": "^25.1.0",
     "jest-util": "^25.1.0",
-    "jsdom": "^15.1.1"
+    "jsdom": "^16.2.0"
   },
   "devDependencies": {
-    "@types/jsdom": "^12.2.4"
+    "@types/jsdom": "^16.1.0"
   },
   "engines": {
     "node": ">= 8.3"
