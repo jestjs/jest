@@ -7,7 +7,7 @@
 
 import {Config} from '@jest/types';
 import {TestResult} from '@jest/test-result';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {formatTestPath, printDisplayName} from './utils';
 import terminalLink = require('terminal-link');
 
@@ -29,7 +29,7 @@ export default (
   result: TestResult,
   globalConfig: Config.GlobalConfig,
   projectConfig?: Config.ProjectConfig,
-) => {
+): string => {
   const testPath = result.testFilePath;
   const formattedTestPath = formatTestPath(
     projectConfig ? projectConfig : globalConfig,

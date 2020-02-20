@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
@@ -7,6 +6,7 @@
  */
 
 module.exports = function doES6Stuff(testObj, multiplier) {
+  // eslint-disable-next-line no-unused-vars
   const {someNumber, ...others} = testObj;
   return someNumber * multiplier;
 };

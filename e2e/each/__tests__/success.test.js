@@ -12,28 +12,28 @@ test.each(['red', 'green', 'bean'])(
   }
 );
 
-it.each([[true, true], [true, true]])(
-  'passes one row expected %s == %s',
-  (left, right) => {
-    expect(left).toBe(right);
-  }
-);
+it.each([
+  [true, true],
+  [true, true],
+])('passes one row expected %s == %s', (left, right) => {
+  expect(left).toBe(right);
+});
 
-it.each([[true, true], [true, true]])(
-  'passes all rows expected %s == %s',
-  (left, right) => {
-    expect(left).toBe(right);
-  }
-);
+it.each([
+  [true, true],
+  [true, true],
+])('passes all rows expected %s == %s', (left, right) => {
+  expect(left).toBe(right);
+});
 
-describe.each([[true, true], [true, true]])(
-  'passes all rows expected %s == %s',
-  (left, right) => {
-    it('passes', () => {
-      expect(left).toBe(right);
-    });
-  }
-);
+describe.each([
+  [true, true],
+  [true, true],
+])('passes all rows expected %s == %s', (left, right) => {
+  it('passes', () => {
+    expect(left).toBe(right);
+  });
+});
 
 it.each`
   left    | right

@@ -1,6 +1,6 @@
 {
   "name": "jest-util",
-  "version": "24.9.0",
+  "version": "25.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,21 +10,21 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/types": "^24.9.0",
-    "chalk": "^2.0.1",
+    "@jest/types": "^25.1.0",
+    "chalk": "^3.0.0",
     "is-ci": "^2.0.0",
-    "mkdirp": "^0.5.1"
+    "make-dir": "^3.0.0"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.2",
     "@types/is-ci": "^2.0.0",
-    "@types/mkdirp": "^0.5.2"
+    "@types/node": "*"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">= 8.3"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "9ad0f4bc6b8bdd94989804226c28c9960d9da7d1"
+  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
 }

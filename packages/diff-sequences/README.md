@@ -34,9 +34,8 @@ To use `diff` as the name of the default export from this package, do either of 
 Call `diff` with the **lengths** of sequences and your **callback** functions:
 
 ```js
-/* eslint-disable no-var */
-var a = ['a', 'b', 'c', 'a', 'b', 'b', 'a'];
-var b = ['c', 'b', 'a', 'b', 'a', 'c'];
+const a = ['a', 'b', 'c', 'a', 'b', 'b', 'a'];
+const b = ['c', 'b', 'a', 'b', 'a', 'c'];
 
 function isCommon(aIndex, bIndex) {
   return a[aIndex] === b[bIndex];
@@ -73,10 +72,9 @@ Various packages which implement the Myers algorithm will **always agree** on th
 ## Example of callback functions to count common items
 
 ```js
-/* eslint-disable no-var */
 // Return length of longest common subsequence according to === operator.
 function countCommonItems(a, b) {
-  var n = 0;
+  let n = 0;
   function isCommon(aIndex, bIndex) {
     return a[aIndex] === b[bIndex];
   }
@@ -89,7 +87,7 @@ function countCommonItems(a, b) {
   return n;
 }
 
-var commonLength = countCommonItems(
+const commonLength = countCommonItems(
   ['a', 'b', 'c', 'a', 'b', 'b', 'a'],
   ['c', 'b', 'a', 'b', 'a', 'c'],
 );

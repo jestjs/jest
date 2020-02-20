@@ -155,7 +155,7 @@ const _callCircusTest = (
     return Promise.resolve();
   }
 
-  return callAsyncCircusFn(test.fn!, testContext, {isHook: false, timeout})
+  return callAsyncCircusFn(test.fn, testContext, {isHook: false, timeout})
     .then(() => dispatch({name: 'test_fn_success', test}))
     .catch(error => dispatch({error, name: 'test_fn_failure', test}));
 };

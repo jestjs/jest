@@ -7,9 +7,9 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import {sync as mkdirp} from 'mkdirp';
+import makeDir = require('make-dir');
 import naturalCompare = require('natural-compare');
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {Config} from '@jest/types';
 import prettyFormat = require('pretty-format');
 import {getSerializers} from './plugins';
@@ -136,20 +136,43 @@ export const removeExtraLineBreaks = (string: string): string =>
     ? string.slice(1, -1)
     : string;
 
-export const serialize = (val: unknown): string =>
-  addExtraLineBreaks(stringify(val));
+export const removeLinesBeforeExternalMatcherTrap = (stack: string): string => {
+  const lines = stack.split('\n');
 
-export const stringify = (val: unknown): string =>
+  for (let i = 0; i < lines.length; i += 1) {
+    // It's a function name specified in `packages/expect/src/index.ts`
+    // for external custom matchers.
+    if (lines[i].includes('__EXTERNAL_MATCHER_TRAP__')) {
+      return lines.slice(i + 1).join('\n');
+    }
+  }
+
+  return stack;
+};
+
+const escapeRegex = true;
+const printFunctionName = false;
+
+export const serialize = (val: unknown, indent = 2): string =>
   normalizeNewlines(
     prettyFormat(val, {
-      escapeRegex: true,
+      escapeRegex,
+      indent,
       plugins: getSerializers(),
-      printFunctionName: false,
+      printFunctionName,
     }),
   );
 
+export const minify = (val: unknown): string =>
+  prettyFormat(val, {
+    escapeRegex,
+    min: true,
+    plugins: getSerializers(),
+    printFunctionName,
+  });
+
 // Remove double quote marks and unescape double quotes and backslashes.
-export const unstringifyString = (stringified: string): string =>
+export const deserializeString = (stringified: string): string =>
   stringified.slice(1, -1).replace(/\\("|\\)/g, '$1');
 
 export const escapeBacktickString = (str: string): string =>
@@ -158,9 +181,9 @@ export const escapeBacktickString = (str: string): string =>
 const printBacktickString = (str: string): string =>
   '`' + escapeBacktickString(str) + '`';
 
-export const ensureDirectoryExists = (filePath: Config.Path) => {
+export const ensureDirectoryExists = (filePath: Config.Path): void => {
   try {
-    mkdirp(path.join(path.dirname(filePath)), '777');
+    makeDir.sync(path.join(path.dirname(filePath)));
   } catch (e) {}
 };
 
@@ -169,7 +192,7 @@ const normalizeNewlines = (string: string) => string.replace(/\r\n|\r/g, '\n');
 export const saveSnapshotFile = (
   snapshotData: SnapshotData,
   snapshotPath: Config.Path,
-) => {
+): void => {
   const snapshots = Object.keys(snapshotData)
     .sort(naturalCompare)
     .map(
@@ -207,7 +230,8 @@ const deepMergeArray = (target: Array<any>, source: Array<any>) => {
   return mergedOutput;
 };
 
-export const deepMerge = (target: any, source: any) => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const deepMerge = (target: any, source: any): any => {
   const mergedOutput = {...target};
   if (isObject(target) && isObject(source)) {
     Object.keys(source).forEach(key => {

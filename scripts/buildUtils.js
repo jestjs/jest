@@ -37,3 +37,4 @@ module.exports.adjustToTerminalWidth = function adjustToTerminalWidth(str) {
 };
 
 module.exports.OK = OK;
+module.exports.PACKAGES_DIR = PACKAGES_DIR;

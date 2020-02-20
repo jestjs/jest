@@ -5,10 +5,31 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {
+  formatTestPath,
+  printDisplayName,
+  relativePath,
+  trimAndFormatPath,
+} from './utils';
+
+export {Config} from '@jest/types';
+export {AggregatedResult, SnapshotSummary, TestResult} from '@jest/test-result';
 export {default as BaseReporter} from './base_reporter';
 export {default as CoverageReporter} from './coverage_reporter';
 export {default as DefaultReporter} from './default_reporter';
 export {default as NotifyReporter} from './notify_reporter';
 export {default as SummaryReporter} from './summary_reporter';
 export {default as VerboseReporter} from './verbose_reporter';
-export {Reporter, ReporterOnStartOptions} from './types';
+export {
+  Context,
+  Reporter,
+  ReporterOnStartOptions,
+  SummaryOptions,
+  Test,
+} from './types';
+export const utils = {
+  formatTestPath,
+  printDisplayName,
+  relativePath,
+  trimAndFormatPath,
+};

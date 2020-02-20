@@ -35,3 +35,9 @@ test('throws an error if the module cannot be found from given paths', () => {
     "Cannot resolve module './mod.js' from paths ['..'] from "
   );
 });
+
+test('throws module not found error if the module cannot be found from given paths', () => {
+  expect(() => require.resolve('./mod.js', {paths: ['..']})).toThrow(
+    expect.objectContaining({code: 'MODULE_NOT_FOUND'})
+  );
+});

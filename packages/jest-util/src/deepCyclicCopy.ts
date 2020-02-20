@@ -68,7 +68,7 @@ function deepCyclicCopyArray<T>(
   cycles: WeakMap<any, any>,
 ): T {
   const newArray = options.keepPrototype
-    ? new (Object.getPrototypeOf(array)).constructor(array.length)
+    ? new (Object.getPrototypeOf(array).constructor)(array.length)
     : [];
   const length = array.length;
 

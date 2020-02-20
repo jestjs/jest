@@ -40,6 +40,11 @@ class NodeEnvironment implements JestEnvironment {
     global.setInterval = setInterval;
     global.setTimeout = setTimeout;
     global.ArrayBuffer = ArrayBuffer;
+    // TextEncoder (global or via 'util') references a Uint8Array constructor
+    // different than the global one used by users in tests. This makes sure the
+    // same constructor is referenced by both.
+    global.Uint8Array = Uint8Array;
+
     // URL and URLSearchParams are global in Node >= 10
     if (typeof URL !== 'undefined' && typeof URLSearchParams !== 'undefined') {
       global.URL = URL;
@@ -52,6 +57,10 @@ class NodeEnvironment implements JestEnvironment {
     ) {
       global.TextEncoder = TextEncoder;
       global.TextDecoder = TextDecoder;
+    }
+    // queueMicrotask is global in Node >= 11
+    if (typeof queueMicrotask !== 'undefined') {
+      global.queueMicrotask = queueMicrotask;
     }
     installCommonGlobals(global, config.globals);
     this.moduleMocker = new ModuleMocker(global);
@@ -84,9 +93,9 @@ class NodeEnvironment implements JestEnvironment {
     this.fakeTimersLolex = new LolexFakeTimers({config, global});
   }
 
-  async setup() {}
+  async setup(): Promise<void> {}
 
-  async teardown() {
+  async teardown(): Promise<void> {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
@@ -100,11 +109,15 @@ class NodeEnvironment implements JestEnvironment {
 
   // TS infers the return type to be `any`, since that's what `runInContext`
   // returns.
-  runScript(script: Script) {
+  runScript<T = unknown>(script: Script): T | null {
     if (this.context) {
       return script.runInContext(this.context);
     }
     return null;
+  }
+
+  getVmContext(): Context | null {
+    return this.context;
   }
 }
 

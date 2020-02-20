@@ -179,7 +179,7 @@ function makeConcurrent(
 export default function jasmineAsyncInstall(
   globalConfig: Config.GlobalConfig,
   global: Global.Global,
-) {
+): void {
   const jasmine = global.jasmine as Jasmine;
   const mutex = throat(globalConfig.maxConcurrency);
 

@@ -7,7 +7,7 @@
 
 import {Config} from '@jest/types';
 import {AggregatedResult, SnapshotSummary} from '@jest/test-result';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {testPathPatternToRegExp} from 'jest-util';
 import {Context, ReporterOnStartOptions} from './types';
 import BaseReporter from './base_reporter';
@@ -74,12 +74,15 @@ export default class SummaryReporter extends BaseReporter {
   onRunStart(
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
-  ) {
+  ): void {
     super.onRunStart(aggregatedResults, options);
     this._estimatedTime = options.estimatedTime;
   }
 
-  onRunComplete(contexts: Set<Context>, aggregatedResults: AggregatedResult) {
+  onRunComplete(
+    contexts: Set<Context>,
+    aggregatedResults: AggregatedResult,
+  ): void {
     const {numTotalTestSuites, testResults, wasInterrupted} = aggregatedResults;
     if (numTotalTestSuites) {
       const lastResult = testResults[testResults.length - 1];

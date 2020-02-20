@@ -152,7 +152,11 @@ describe('getObjectSubset', () => {
     [{a: 'b', c: 'd'}, {a: 'd'}, {a: 'b'}],
     [{a: [1, 2], b: 'b'}, {a: [3, 4]}, {a: [1, 2]}],
     [[{a: 'b', c: 'd'}], [{a: 'z'}], [{a: 'b'}]],
-    [[1, 2], [1, 2, 3], [1, 2]],
+    [
+      [1, 2],
+      [1, 2, 3],
+      [1, 2],
+    ],
     [{a: [1]}, {a: [1, 2]}, {a: [1]}],
     [new Date('2015-11-30'), new Date('2016-12-30'), new Date('2015-11-30')],
   ].forEach(([object, subset, expected]) => {
@@ -327,6 +331,19 @@ describe('subsetEquality()', () => {
       expect(subsetEquality(circularObjA2, circularObjA1)).toBe(true);
       expect(subsetEquality(circularObjB, circularObjA1)).toBe(false);
       expect(subsetEquality(primitiveInsteadOfRef, circularObjA1)).toBe(false);
+    });
+
+    test('referenced object on same level should not regarded as circular reference', () => {
+      const referencedObj = {abc: 'def'};
+      const object = {
+        a: {abc: 'def'},
+        b: {abc: 'def', zzz: 'zzz'},
+      };
+      const thisIsNotCircular = {
+        a: referencedObj,
+        b: referencedObj,
+      };
+      expect(subsetEquality(object, thisIsNotCircular)).toBeTruthy();
     });
 
     test('transitive circular references', () => {

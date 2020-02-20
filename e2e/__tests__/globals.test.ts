@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import {tmpdir} from 'os';
+import {compileFunction} from 'vm';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest from '../runJest';
 import {
@@ -19,7 +20,7 @@ import {
 const DIR = path.resolve(tmpdir(), 'globalVariables.test');
 const TEST_DIR = path.resolve(DIR, '__tests__');
 
-function cleanStderr(stderr) {
+function cleanStderr(stderr: string) {
   const {rest} = extractSummary(stderr);
   return rest.replace(/.*(jest-jasmine2).*\n/g, '');
 }
@@ -125,7 +126,42 @@ test('cannot have describe with no implementation', () => {
 
   const rest = cleanStderr(stderr);
   const {summary} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
+
+  const rightTrimmedRest = rest
+    .split('\n')
+    .map(l => l.trimRight())
+    .join('\n')
+    .trim();
+
+  if (typeof compileFunction === 'function') {
+    expect(rightTrimmedRest).toEqual(
+      `
+FAIL __tests__/onlyConstructs.test.js
+  ● Test suite failed to run
+
+    Missing second argument. It must be a callback function.
+
+    > 1 | describe('describe, no implementation');
+        | ^
+
+      at Object.describe (__tests__/onlyConstructs.test.js:1:1)
+    `.trim(),
+    );
+  } else {
+    expect(rightTrimmedRest).toEqual(
+      `
+FAIL __tests__/onlyConstructs.test.js
+  ● Test suite failed to run
+
+    Missing second argument. It must be a callback function.
+
+    > 1 | describe('describe, no implementation');
+        |          ^
+
+      at Object.<anonymous> (__tests__/onlyConstructs.test.js:1:10)
+    `.trim(),
+    );
+  }
   expect(wrap(summary)).toMatchSnapshot();
 });
 

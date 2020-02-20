@@ -10,19 +10,19 @@ import {
   joinAlignedDiffsExpand,
   joinAlignedDiffsNoExpand,
 } from '../joinAlignedDiffs';
-import {normalizeDiffOptions} from '../normalizeDiffOptions';
+import {noColor, normalizeDiffOptions} from '../normalizeDiffOptions';
 
 // To align columns so people can review snapshots confidently:
 
 // 1. Use options to omit line colors.
-const identity = (string: string) => string;
 const changeColor = (string: string) => '<i>' + string + '</i>';
 const optionsNoColor = {
-  aColor: identity,
-  bColor: identity,
+  aColor: noColor,
+  bColor: noColor,
   changeColor,
-  commonColor: identity,
-  patchColor: identity,
+  commonColor: noColor,
+  emptyFirstOrLastLinePlaceholder: '↵', // U+21B5
+  patchColor: noColor,
 };
 
 // 2. Add string serializer to omit double quote marks.

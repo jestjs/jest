@@ -31,7 +31,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import {AssertionError} from 'assert';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack, isPromise} from 'jest-util';
 import queueRunner, {
@@ -61,7 +61,7 @@ export default function(j$: Jasmine) {
     randomTests: () => boolean;
     seed: (value: unknown) => unknown;
     execute: (
-      runnablesToRun: Array<string>,
+      runnablesToRun?: Array<string>,
       suiteTree?: Suite,
     ) => Promise<void>;
     fdescribe: (description: string, specDefinitions: Function) => Suite;
@@ -588,7 +588,7 @@ export default function(j$: Jasmine) {
         if (arguments.length !== 1 || typeof description !== 'string') {
           throw new ErrorWithStack(
             'Todo must be called with only a description.',
-            test.todo,
+            this.todo,
           );
         }
 

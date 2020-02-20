@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
+import chalk = require('chalk');
 import ansiEscapes = require('ansi-escapes');
 import {specialChars} from 'jest-util';
 import Prompt from './lib/Prompt';
@@ -40,7 +40,7 @@ export default class PatternPrompt {
     onSuccess: (value: string) => void,
     onCancel: () => void,
     options?: {header: string},
-  ) {
+  ): void {
     this._pipe.write(ansiEscapes.cursorHide);
     this._pipe.write(CLEAR);
 
@@ -57,7 +57,7 @@ export default class PatternPrompt {
     this._prompt.enter(this._onChange.bind(this), onSuccess, onCancel);
   }
 
-  protected _onChange(_pattern: string, _options: ScrollOptions) {
+  protected _onChange(_pattern: string, _options: ScrollOptions): void {
     this._pipe.write(ansiEscapes.eraseLine);
     this._pipe.write(ansiEscapes.cursorLeft);
   }

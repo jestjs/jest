@@ -17,6 +17,14 @@ test('moduleNameMapper wrong configuration', () => {
   expect(wrap(rest)).toMatchSnapshot();
 });
 
+test('moduleNameMapper wrong array configuration', () => {
+  const {stderr, exitCode} = runJest('module-name-mapper-wrong-array-config');
+  const {rest} = extractSummary(stderr);
+
+  expect(exitCode).toBe(1);
+  expect(wrap(rest)).toMatchSnapshot();
+});
+
 test('moduleNameMapper correct configuration', () => {
   const {stderr, exitCode} = runJest('module-name-mapper-correct-config', [], {
     stripAnsi: true,

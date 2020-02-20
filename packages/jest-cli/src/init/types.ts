@@ -10,4 +10,5 @@ import {Config} from '@jest/types';
 export type ProjectPackageJson = {
   jest?: Partial<Config.InitialOptions>;
   scripts?: Record<string, string>;
+  type?: 'commonjs' | 'module';
 };

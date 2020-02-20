@@ -5,7 +5,7 @@ title: Testing React Native Apps
 
 At Facebook, we use Jest to test [React Native](http://facebook.github.io/react-native/) applications.
 
-Get a deeper insight into testing a working React Native app example by reading the following series: [Part 1: Jest – Snapshot come into play](https://blog.callstack.io/unit-testing-react-native-with-the-new-jest-i-snapshots-come-into-play-68ba19b1b9fe#.12zbnbgwc) and [Part 2: Jest – Redux Snapshots for your Actions and Reducers](https://blog.callstack.io/unit-testing-react-native-with-the-new-jest-ii-redux-snapshots-for-your-actions-and-reducers-8559f6f8050b).
+Get a deeper insight into testing a working React Native app example by reading the following series: [Part 1: Jest – Snapshot come into play](https://callstack.com/blog/testing-react-native-with-the-new-jest-part-1-snapshots-come-into-play/) and [Part 2: Jest – Redux Snapshots for your Actions and Reducers](https://callstack.com/blog/testing-react-native-with-the-new-jest-part-2-redux-snapshots-for-your-actions-and-reducers/).
 
 ## Setup
 
@@ -134,7 +134,7 @@ The preset sets up the environment and is very opinionated and based on what we 
 
 ### transformIgnorePatterns customization
 
-The [`transformIgnorePatterns`](configuration.html#transformignorepatterns-array-string) option can be used to whitelist or blacklist files from being transformed with Babel. Many react-native npm modules unfortunately don't pre-compile their source code before publishing.
+The [`transformIgnorePatterns`](configuration.html#transformignorepatterns-arraystring) option can be used to whitelist or blacklist files from being transformed with Babel. Many react-native npm modules unfortunately don't pre-compile their source code before publishing.
 
 By default the jest-react-native preset only processes the project's own source files and react-native. If you have npm dependencies that have to be transformed you can customize this configuration option by whitelisting modules other than react-native:
 
@@ -150,7 +150,7 @@ If you'd like to provide additional configuration for every test file, the [`set
 
 ### moduleNameMapper
 
-The [`moduleNameMapper`](configuration.html#modulenamemapper-object-string-string) can be used to map a module path to a different module. By default the preset maps all images to an image stub module but if a module cannot be found this configuration option can help:
+The [`moduleNameMapper`](configuration.html#modulenamemapper-objectstring-string--arraystring) can be used to map a module path to a different module. By default the preset maps all images to an image stub module but if a module cannot be found this configuration option can help:
 
 ```json
 "moduleNameMapper": {

@@ -85,7 +85,7 @@ describe('prettyFormat()', () => {
     /* eslint-disable no-new-func */
     const val = new Function();
     /* eslint-enable no-new-func */
-    // In Node 8.1.4: val.name === 'anonymous'
+    // In Node >=8.1.4: val.name === 'anonymous'
     expect(prettyFormat(val)).toEqual('[Function anonymous]');
   });
 
@@ -95,7 +95,7 @@ describe('prettyFormat()', () => {
       val = cb;
     }
     f(() => {});
-    // In Node 8.1.4: val.name === ''
+    // In Node >=8.1.4: val.name === ''
     expect(prettyFormat(val)).toEqual('[Function anonymous]');
   });
 
@@ -661,7 +661,10 @@ describe('prettyFormat()', () => {
   });
 
   it('supports plugins with deeply nested arrays (#24)', () => {
-    const val = [[1, 2], [3, 4]];
+    const val = [
+      [1, 2],
+      [3, 4],
+    ];
     expect(
       prettyFormat(val, {
         plugins: [

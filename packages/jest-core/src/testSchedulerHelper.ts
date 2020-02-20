@@ -14,7 +14,7 @@ export function shouldRunInBand(
   tests: Array<Test>,
   timings: Array<number>,
   {detectOpenHandles, maxWorkers, watch, watchAll}: Config.GlobalConfig,
-) {
+): boolean {
   // detectOpenHandles makes no sense without runInBand, because it cannot detect leaks in workers
   if (detectOpenHandles) {
     return true;

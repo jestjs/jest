@@ -129,7 +129,7 @@ These helper functions and properties can be found on `this` inside a custom mat
 
 #### `this.isNot`
 
-A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to flip your assertion and display a clear and correct matcher hint (see example code).
+A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to display a clear and correct matcher hint (see example code).
 
 #### `this.promise`
 
@@ -169,7 +169,7 @@ expect.extend({
       ? () =>
           this.utils.matcherHint('toBe', undefined, undefined, options) +
           '\n\n' +
-          `Expected: ${this.utils.printExpected(expected)}\n` +
+          `Expected: not ${this.utils.printExpected(expected)}\n` +
           `Received: ${this.utils.printReceived(received)}`
       : () => {
           const diffString = diff(expected, received, {
@@ -231,6 +231,28 @@ Stored snapshot will look like:
 
 exports[`stores only 10 characters: toMatchTrimmedSnapshot 1`] = `"extra long"`;
 */
+```
+
+It's also possible to create custom matchers for inline snapshots, the snapshots will be correctly added to the custom matchers. However, inline snapshot will always try to append to the first argument or the second when the first argument is the property matcher, so it's not possible to accept custom arguments in the custom matchers.
+
+```js
+const {toMatchInlineSnapshot} = require('jest-snapshot');
+
+expect.extend({
+  toMatchTrimmedInlineSnapshot(received) {
+    return toMatchInlineSnapshot.call(this, received.substring(0, 10));
+  },
+});
+
+it('stores only 10 characters', () => {
+  expect('extra long string oh my gerd').toMatchTrimmedInlineSnapshot();
+  /*
+  The snapshot will be added inline like
+  expect('extra long string oh my gerd').toMatchTrimmedInlineSnapshot(
+    `"extra long"`
+  );
+  */
+});
 ```
 
 ### `expect.anything()`
@@ -478,7 +500,7 @@ If you add a snapshot serializer in individual test files instead of to adding i
 - You make the dependency explicit instead of implicit.
 - You avoid limits to configuration that might cause you to eject from [create-react-app](https://github.com/facebookincubator/create-react-app).
 
-See [configuring Jest](Configuration.md#snapshotserializers-array-string) for more information.
+See [configuring Jest](Configuration.md#snapshotserializers-arraystring) for more information.
 
 ### `.not`
 

@@ -14,7 +14,7 @@ import runJest from '../runJest';
 const DIR = path.resolve(__dirname, '../to-match-inline-snapshot');
 const TESTS_DIR = path.resolve(DIR, '__tests__');
 
-const readFile = filename =>
+const readFile = (filename: string) =>
   fs.readFileSync(path.join(TESTS_DIR, filename), 'utf8');
 
 beforeEach(() => cleanup(TESTS_DIR));
@@ -265,4 +265,119 @@ test('handles mocking native modules prettier relies on', () => {
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
   expect(stderr).toMatch('1 snapshot written from 1 test suite.');
   expect(exitCode).toBe(0);
+});
+
+test('supports custom matchers', () => {
+  const filename = 'custom-matchers.test.js';
+  const test = `
+    const { toMatchInlineSnapshot } = require('jest-snapshot');
+    expect.extend({
+      toMatchCustomInlineSnapshot(received, ...args) {
+        return toMatchInlineSnapshot.call(this, received, ...args);
+      }
+    });
+    test('inline snapshots', () => {
+      expect({apple: "original value"}).toMatchCustomInlineSnapshot();
+    });
+  `;
+
+  writeFiles(TESTS_DIR, {[filename]: test});
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const fileAfter = readFile(filename);
+  expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+  expect(exitCode).toBe(0);
+  expect(wrap(fileAfter)).toMatchSnapshot('custom matchers');
+});
+
+test('supports custom matchers with property matcher', () => {
+  const filename = 'custom-matchers-with-property-matcher.test.js';
+  const test = `
+    const { toMatchInlineSnapshot } = require('jest-snapshot');
+    expect.extend({
+      toMatchCustomInlineSnapshot(received, ...args) {
+        return toMatchInlineSnapshot.call(this, received, ...args);
+      },
+      toMatchUserInlineSnapshot(received, ...args) {
+        return toMatchInlineSnapshot.call(
+          this,
+          received,
+          {
+            createdAt: expect.any(Date),
+            id: expect.any(Number),
+          },
+          ...args
+        );
+      },
+    });
+    test('inline snapshots', () => {
+      const user = {
+        createdAt: new Date(),
+        id: Math.floor(Math.random() * 20),
+        name: 'LeBron James',
+      };
+      expect(user).toMatchCustomInlineSnapshot({
+        createdAt: expect.any(Date),
+        id: expect.any(Number),
+      });
+      expect(user).toMatchUserInlineSnapshot();
+    });
+  `;
+
+  writeFiles(TESTS_DIR, {[filename]: test});
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const fileAfter = readFile(filename);
+  expect(stderr).toMatch('2 snapshots written from 1 test suite.');
+  expect(exitCode).toBe(0);
+  expect(wrap(fileAfter)).toMatchSnapshot(
+    'custom matchers with property matcher',
+  );
+});
+
+test('multiple custom matchers and native matchers', () => {
+  const filename = 'multiple-matchers.test.js';
+  const test = `
+    const { toMatchInlineSnapshot } = require('jest-snapshot');
+    expect.extend({
+      toMatchCustomInlineSnapshot(received, ...args) {
+        return toMatchInlineSnapshot.call(this, received, ...args);
+      },
+      toMatchCustomInlineSnapshot2(received, ...args) {
+        return toMatchInlineSnapshot.call(this, received, ...args);
+      },
+    });
+    test('inline snapshots', () => {
+      expect({apple: "value 1"}).toMatchCustomInlineSnapshot();
+      expect({apple: "value 2"}).toMatchInlineSnapshot();
+      expect({apple: "value 3"}).toMatchCustomInlineSnapshot2();
+      expect({apple: "value 4"}).toMatchInlineSnapshot();
+    });
+  `;
+
+  writeFiles(TESTS_DIR, {[filename]: test});
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const fileAfter = readFile(filename);
+  expect(stderr).toMatch('4 snapshots written from 1 test suite.');
+  expect(exitCode).toBe(0);
+  expect(wrap(fileAfter)).toMatchSnapshot('multiple matchers');
+});
+
+test('indentation is correct in the presences of existing snapshots', () => {
+  const filename = 'existing-snapshot.test.js';
+  const test = `
+    test('existing snapshot', () => {
+      expect({ hello: 'world' }).toMatchInlineSnapshot(\`
+        Object {
+          "hello": "world",
+        }
+      \`);
+      expect({ hello: 'world' }).toMatchInlineSnapshot();
+    });
+  `;
+
+  writeFiles(TESTS_DIR, {[filename]: test});
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const fileAfter = readFile(filename);
+  expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+  expect(exitCode).toBe(0);
+  expect(wrap(fileAfter)).toMatchSnapshot('existing snapshot');
 });

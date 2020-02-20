@@ -28,7 +28,7 @@ export const injectGlobalErrorHandlers = (
 export const restoreGlobalErrorHandlers = (
   parentProcess: NodeJS.Process,
   originalErrorHandlers: Circus.GlobalErrorHandlers,
-) => {
+): void => {
   parentProcess.removeListener('uncaughtException', uncaught);
   parentProcess.removeListener('unhandledRejection', uncaught);
 

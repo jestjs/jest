@@ -297,7 +297,7 @@ const makeThrowingMatcher = (
       }
     };
 
-    const handlError = (error: Error) => {
+    const handleError = (error: Error) => {
       if (
         matcher[INTERNAL_MATCHER_FLAG] === true &&
         !(error instanceof JestAssertionError) &&
@@ -314,7 +314,15 @@ const makeThrowingMatcher = (
     let potentialResult: ExpectationResult;
 
     try {
-      potentialResult = matcher.call(matcherContext, actual, ...args);
+      potentialResult =
+        matcher[INTERNAL_MATCHER_FLAG] === true
+          ? matcher.call(matcherContext, actual, ...args)
+          : // It's a trap specifically for inline snapshot to capture this name
+            // in the stack trace, so that it can correctly get the custom matcher
+            // function call.
+            (function __EXTERNAL_MATCHER_TRAP__() {
+              return matcher.call(matcherContext, actual, ...args);
+            })();
 
       if (isPromise(potentialResult)) {
         const asyncResult = potentialResult as AsyncExpectationResult;
@@ -325,14 +333,14 @@ const makeThrowingMatcher = (
 
         return asyncResult
           .then(aResult => processResult(aResult, asyncError))
-          .catch(error => handlError(error));
+          .catch(error => handleError(error));
       } else {
         const syncResult = potentialResult as SyncExpectationResult;
 
         return processResult(syncResult);
       }
     } catch (error) {
-      return handlError(error);
+      return handleError(error);
     }
   };
 
@@ -359,8 +367,8 @@ const _validateResult = (result: any) => {
     typeof result !== 'object' ||
     typeof result.pass !== 'boolean' ||
     (result.message &&
-      (typeof result.message !== 'string' &&
-        typeof result.message !== 'function'))
+      typeof result.message !== 'string' &&
+      typeof result.message !== 'function')
   ) {
     throw new Error(
       'Unexpected return from a matcher function.\n' +

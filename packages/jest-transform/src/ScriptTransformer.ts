@@ -7,9 +7,8 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import {Script} from 'vm';
 import {Config} from '@jest/types';
-import {createDirectory, isPromise} from 'jest-util';
+import {createDirectory, interopRequireDefault, isPromise} from 'jest-util';
 import * as fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
 // @ts-ignore: should just be `require.resolve`, but the tests mess that up
@@ -28,7 +27,7 @@ import {
   Transformer,
 } from './types';
 import shouldInstrument from './shouldInstrument';
-import enhanceUnexpectedTokenMessage from './enhanceUnexpectedTokenMessage';
+import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';
 
 type ProjectCache = {
   configString: string;
@@ -60,7 +59,6 @@ async function waitForPromiseWithCleanup(
 }
 
 export default class ScriptTransformer {
-  static EVAL_RESULT_VARIABLE: 'Object.<anonymous>';
   private _cache: ProjectCache;
   private _config: Config.ProjectConfig;
   private _transformCache: Map<Config.Path, Transformer>;
@@ -193,8 +191,12 @@ export default class ScriptTransformer {
     return transform;
   }
 
-  private _instrumentFile(filename: Config.Path, content: string): string {
-    const result = babelTransform(content, {
+  private _instrumentFile(
+    filename: Config.Path,
+    input: TransformedSource,
+    canMapToInput: boolean,
+  ): TransformedSource {
+    const result = babelTransform(input.code, {
       auxiliaryCommentBefore: ' istanbul ignore next ',
       babelrc: false,
       caller: {
@@ -211,21 +213,28 @@ export default class ScriptTransformer {
             // files outside `cwd` will not be instrumented
             cwd: this._config.rootDir,
             exclude: [],
+            extension: false,
+            // Needed for correct coverage as soon as we start storing a source map of the instrumented code
+            inputSourceMap: input.map,
             useInlineSourceMaps: false,
           },
         ],
       ],
+      /**
+       * It's necessary to be able to map back to original source from the instrumented code.
+       * The inline map is needed for debugging functionality, and exposing it as a separate file is needed
+       * for mapping stack traces. It's convenient to use 'both' here and avoid extracting the source map.
+       *
+       * Previous behavior of emitting no map when we can't map back to original source is preserved.
+       */
+      sourceMaps: canMapToInput ? 'both' : false,
     });
 
-    if (result) {
-      const {code} = result;
-
-      if (code) {
-        return code;
-      }
+    if (result && result.code) {
+      return result as TransformResult;
     }
 
-    return content;
+    return {code: input.code};
   }
 
   private _getRealPath(filepath: Config.Path): Config.Path {
@@ -242,7 +251,11 @@ export default class ScriptTransformer {
     this._getTransformer(filepath);
   }
 
-  transformSource(filepath: Config.Path, content: string, instrument: boolean) {
+  transformSource(
+    filepath: Config.Path,
+    content: string,
+    instrument: boolean,
+  ): TransformResult {
     const filename = this._getRealPath(filepath);
     const transform = this._getTransformer(filename);
     const cacheFilePath = this._getFileCachePath(filename, content, instrument);
@@ -269,6 +282,7 @@ export default class ScriptTransformer {
       return {
         code,
         mapCoverage,
+        originalCode: content,
         sourceMapPath,
       };
     }
@@ -296,26 +310,54 @@ export default class ScriptTransformer {
     }
 
     if (!transformed.map) {
-      //Could be a potential freeze here.
-      //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
-      const inlineSourceMap = sourcemapFromSource(transformed.code);
+      try {
+        //Could be a potential freeze here.
+        //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
+        const inlineSourceMap = sourcemapFromSource(transformed.code);
 
-      if (inlineSourceMap) {
-        transformed.map = inlineSourceMap.toJSON();
+        if (inlineSourceMap) {
+          transformed.map = inlineSourceMap.toJSON();
+        }
+      } catch (e) {
+        const transformPath = this._getTransformPath(filename);
+        console.warn(
+          `jest-transform: The source map produced for the file ${filename} ` +
+            `by ${transformPath} was invalid. Proceeding without source ` +
+            'mapping for that file.',
+        );
       }
     }
 
+    // Apply instrumentation to the code if necessary, keeping the instrumented code and new map
+    let map = transformed.map;
     if (!transformWillInstrument && instrument) {
-      code = this._instrumentFile(filename, transformed.code);
+      /**
+       * We can map the original source code to the instrumented code ONLY if
+       * - the process of transforming the code produced a source map e.g. ts-jest
+       * - we did not transform the source code
+       *
+       * Otherwise we cannot make any statements about how the instrumented code corresponds to the original code,
+       * and we should NOT emit any source maps
+       *
+       */
+      const shouldEmitSourceMaps = (!!transform && !!map) || !transform;
+      const instrumented = this._instrumentFile(
+        filename,
+        transformed,
+        shouldEmitSourceMaps,
+      );
+      code = instrumented.code;
+
+      if (instrumented.map) {
+        map = instrumented.map;
+      }
     } else {
       code = transformed.code;
     }
 
-    if (transformed.map) {
+    if (map) {
       const sourceMapContent =
-        typeof transformed.map === 'string'
-          ? transformed.map
-          : JSON.stringify(transformed.map);
+        typeof map === 'string' ? map : JSON.stringify(map);
       writeCacheFile(sourceMapPath, sourceMapContent);
     } else {
       sourceMapPath = null;
@@ -326,6 +368,7 @@ export default class ScriptTransformer {
     return {
       code,
       mapCoverage,
+      originalCode: content,
       sourceMapPath,
     };
   }
@@ -342,7 +385,7 @@ export default class ScriptTransformer {
       fileSource || fs.readFileSync(filename, 'utf8'),
     );
 
-    let wrappedCode: string;
+    let code = content;
     let sourceMapPath: string | null = null;
     let mapCoverage = false;
 
@@ -352,8 +395,6 @@ export default class ScriptTransformer {
       (this.shouldTransform(filename) || instrument);
 
     try {
-      const extraGlobals = (options && options.extraGlobals) || [];
-
       if (willTransform) {
         const transformedSource = this.transformSource(
           filename,
@@ -361,36 +402,19 @@ export default class ScriptTransformer {
           instrument,
         );
 
-        wrappedCode = wrap(transformedSource.code, ...extraGlobals);
+        code = transformedSource.code;
         sourceMapPath = transformedSource.sourceMapPath;
         mapCoverage = transformedSource.mapCoverage;
-      } else {
-        wrappedCode = wrap(content, ...extraGlobals);
       }
 
       return {
+        code,
         mapCoverage,
-        script: new Script(wrappedCode, {
-          displayErrors: true,
-          filename: isCoreModule ? 'jest-nodejs-core-' + filename : filename,
-        }),
+        originalCode: content,
         sourceMapPath,
       };
     } catch (e) {
-      if (e.codeFrame) {
-        e.stack = e.message + '\n' + e.codeFrame;
-      }
-
-      if (
-        e instanceof SyntaxError &&
-        (e.message.includes('Unexpected token') ||
-          e.message.includes('Cannot use import')) &&
-        !e.message.includes(' expected')
-      ) {
-        throw enhanceUnexpectedTokenMessage(e);
-      }
-
-      throw e;
+      throw handlePotentialSyntaxError(e);
     }
   }
 
@@ -403,7 +427,9 @@ export default class ScriptTransformer {
     let instrument = false;
 
     if (!options.isCoreModule) {
-      instrument = shouldInstrument(filename, options, this._config);
+      instrument =
+        options.coverageProvider === 'babel' &&
+        shouldInstrument(filename, options, this._config);
       scriptCacheKey = getScriptCacheKey(filename, instrument);
       const result = this._cache.transformedFiles.get(scriptCacheKey);
       if (result) {
@@ -524,6 +550,29 @@ export default class ScriptTransformer {
       !!this._config.transform && !!this._config.transform.length && !isIgnored
     );
   }
+}
+
+// TODO: do we need to define the generics twice?
+export function createTranspilingRequire(
+  config: Config.ProjectConfig,
+): <TModuleType = unknown>(
+  resolverPath: string,
+  applyInteropRequireDefault?: boolean,
+) => TModuleType {
+  const transformer = new ScriptTransformer(config);
+
+  return function requireAndTranspileModule<TModuleType = unknown>(
+    resolverPath: string,
+    applyInteropRequireDefault: boolean = false,
+  ): TModuleType {
+    const transpiledModule = transformer.requireAndTranspileModule<TModuleType>(
+      resolverPath,
+    );
+
+    return applyInteropRequireDefault
+      ? interopRequireDefault(transpiledModule).default
+      : transpiledModule;
+  };
 }
 
 const removeFile = (path: Config.Path) => {
@@ -673,27 +722,3 @@ const calcTransformRegExp = (config: Config.ProjectConfig) => {
 
   return transformRegexp;
 };
-
-const wrap = (content: string, ...extras: Array<string>) => {
-  const globals = new Set([
-    'module',
-    'exports',
-    'require',
-    '__dirname',
-    '__filename',
-    'global',
-    'jest',
-    ...extras,
-  ]);
-
-  return (
-    '({"' +
-    ScriptTransformer.EVAL_RESULT_VARIABLE +
-    `":function(${Array.from(globals).join(',')}){` +
-    content +
-    '\n}});'
-  );
-};
-
-// TODO: Can this be added to the static property?
-ScriptTransformer.EVAL_RESULT_VARIABLE = 'Object.<anonymous>';

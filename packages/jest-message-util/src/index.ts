@@ -9,7 +9,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {Config} from '@jest/types';
 import {AssertionResult, SerializableError} from '@jest/test-result';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import micromatch = require('micromatch');
 import slash = require('slash');
 import {codeFrameColumns} from '@babel/code-frame';
@@ -101,7 +101,7 @@ export const formatExecError = (
   options: StackTraceOptions,
   testPath?: Path,
   reuseMessage?: boolean,
-) => {
+): string => {
   if (!error || typeof error === 'number') {
     error = new Error(`Expected an Error, but "${String(error)}" was thrown`);
     error.stack = '';
@@ -227,7 +227,7 @@ const formatPaths = (
 export const getStackTraceLines = (
   stack: string,
   options: StackTraceOptions = {noStackTrace: false},
-) => removeInternalStackEntries(stack.split(/\n/), options);
+): Array<string> => removeInternalStackEntries(stack.split(/\n/), options);
 
 export const getTopFrame = (lines: Array<string>): Frame | null => {
   for (const line of lines) {
@@ -250,7 +250,7 @@ export const formatStackTrace = (
   config: StackTraceConfig,
   options: StackTraceOptions,
   testPath?: Path,
-) => {
+): string => {
   const lines = getStackTraceLines(stack, options);
   const topFrame = getTopFrame(lines);
   let renderedCallsite = '';
@@ -296,13 +296,10 @@ export const formatResultsErrors = (
     result: AssertionResult;
   }>;
 
-  const failedResults: FailedResults = testResults.reduce(
-    (errors, result) => {
-      result.failureMessages.forEach(content => errors.push({content, result}));
-      return errors;
-    },
-    [] as FailedResults,
-  );
+  const failedResults: FailedResults = testResults.reduce((errors, result) => {
+    result.failureMessages.forEach(content => errors.push({content, result}));
+    return errors;
+  }, [] as FailedResults);
 
   if (!failedResults.length) {
     return null;
@@ -346,7 +343,9 @@ const removeBlankErrorLine = (str: string) =>
 // jasmine and worker farm sometimes don't give us access to the actual
 // Error object, so we have to regexp out the message from the stack string
 // to format it.
-export const separateMessageFromStack = (content: string) => {
+export const separateMessageFromStack = (
+  content: string,
+): {message: string; stack: string} => {
   if (!content) {
     return {message: '', stack: ''};
   }

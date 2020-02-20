@@ -6,8 +6,7 @@
  *
  */
 
-/* eslint-disable no-unused-vars */
-
+// eslint-disable-next-line no-unused-vars
 const createPlugin = require('../utils').createPlugin;
 
 // We inject the call to "createPlugin('bar') through the transformer"

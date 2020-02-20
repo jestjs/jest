@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable no-new */
-
 import EventEmitter from 'events';
 import supportsColor from 'supports-color';
 // eslint-disable-next-line import/default
@@ -56,6 +54,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
 
   process.execArgv = ['--inspect', '-p'];
 
+  // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {
       cwd: '/tmp',
@@ -77,6 +76,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
 });
 
 it('passes workerId to the child process and assign it to 1-indexed env.JEST_WORKER_ID', () => {
+  // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {},
     maxRetries: 3,
@@ -88,6 +88,7 @@ it('passes workerId to the child process and assign it to 1-indexed env.JEST_WOR
 });
 
 it('initializes the child process with the given workerPath', () => {
+  // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {},
     maxRetries: 3,
@@ -161,7 +162,11 @@ it('sends the task to the child process', () => {
 
   const request = [CHILD_MESSAGE_CALL, false, 'foo', []];
 
-  worker.send(request, () => {}, () => {});
+  worker.send(
+    request,
+    () => {},
+    () => {},
+  );
 
   // Skipping call "0" because it corresponds to the "initialize" one.
   expect(forkInterface.send.mock.calls[1][0]).toEqual(request);
@@ -176,7 +181,11 @@ it('resends the task to the child process after a retry', () => {
 
   const request = [CHILD_MESSAGE_CALL, false, 'foo', []];
 
-  worker.send(request, () => {}, () => {});
+  worker.send(
+    request,
+    () => {},
+    () => {},
+  );
 
   // Skipping call "0" because it corresponds to the "initialize" one.
   expect(forkInterface.send.mock.calls[1][0]).toEqual(request);
@@ -281,7 +290,11 @@ it('throws when the child process returns a strange message', () => {
     workerPath: '/tmp/foo',
   });
 
-  worker.send([CHILD_MESSAGE_CALL, false, 'method', []], () => {}, () => {});
+  worker.send(
+    [CHILD_MESSAGE_CALL, false, 'method', []],
+    () => {},
+    () => {},
+  );
 
   // Type 27 does not exist.
   expect(() => {
@@ -290,6 +303,7 @@ it('throws when the child process returns a strange message', () => {
 });
 
 it('does not restart the child if it cleanly exited', () => {
+  // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {},
     maxRetries: 3,
@@ -314,6 +328,7 @@ it('resolves waitForExit() after the child process cleanly exited', async () => 
 });
 
 it('restarts the child when the child process dies', () => {
+  // eslint-disable-next-line no-new
   new Worker({
     workerPath: '/tmp/foo',
   });

@@ -32,8 +32,8 @@ const printDiffLine = (
   isFirstOrLast: boolean,
   color: DiffOptionsColor,
   indicator: string,
-  firstOrLastEmptyLineReplacement: string,
   trailingSpaceFormatter: DiffOptionsColor,
+  emptyFirstOrLastLinePlaceholder: string,
 ): string =>
   line.length !== 0
     ? color(
@@ -41,8 +41,8 @@ const printDiffLine = (
       )
     : indicator !== ' '
     ? color(indicator)
-    : isFirstOrLast && firstOrLastEmptyLineReplacement.length !== 0
-    ? color(indicator + ' ' + firstOrLastEmptyLineReplacement)
+    : isFirstOrLast && emptyFirstOrLastLinePlaceholder.length !== 0
+    ? color(indicator + ' ' + emptyFirstOrLastLinePlaceholder)
     : '';
 
 export const printDeleteLine = (
@@ -51,8 +51,8 @@ export const printDeleteLine = (
   {
     aColor,
     aIndicator,
-    firstOrLastEmptyLineReplacement,
-    trailingSpaceFormatter,
+    changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
   }: DiffOptionsNormalized,
 ): string =>
   printDiffLine(
@@ -60,8 +60,8 @@ export const printDeleteLine = (
     isFirstOrLast,
     aColor,
     aIndicator,
-    firstOrLastEmptyLineReplacement,
-    trailingSpaceFormatter,
+    changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
   );
 
 export const printInsertLine = (
@@ -70,8 +70,8 @@ export const printInsertLine = (
   {
     bColor,
     bIndicator,
-    firstOrLastEmptyLineReplacement,
-    trailingSpaceFormatter,
+    changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
   }: DiffOptionsNormalized,
 ): string =>
   printDiffLine(
@@ -79,8 +79,8 @@ export const printInsertLine = (
     isFirstOrLast,
     bColor,
     bIndicator,
-    firstOrLastEmptyLineReplacement,
-    trailingSpaceFormatter,
+    changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
   );
 
 export const printCommonLine = (
@@ -89,8 +89,8 @@ export const printCommonLine = (
   {
     commonColor,
     commonIndicator,
-    firstOrLastEmptyLineReplacement,
-    trailingSpaceFormatter,
+    commonLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
   }: DiffOptionsNormalized,
 ): string =>
   printDiffLine(
@@ -98,11 +98,14 @@ export const printCommonLine = (
     isFirstOrLast,
     commonColor,
     commonIndicator,
-    firstOrLastEmptyLineReplacement,
-    trailingSpaceFormatter,
+    commonLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
   );
 
-export const hasCommonDiff = (diffs: Array<Diff>, isMultiline: boolean) => {
+export const hasCommonDiff = (
+  diffs: Array<Diff>,
+  isMultiline: boolean,
+): boolean => {
   if (isMultiline) {
     // Important: Ignore common newline that was appended to multiline strings!
     const iLast = diffs.length - 1;
@@ -207,9 +210,6 @@ export const createPatchMark = (
     `@@ -${aStart + 1},${aEnd - aStart} +${bStart + 1},${bEnd - bStart} @@`,
   );
 
-export const splitLines0 = (string: string) =>
-  string.length === 0 ? [] : string.split('\n');
-
 // Compare two strings character-by-character.
 // Format as comparison lines in which changed substrings have inverse colors.
 export const diffStringsUnified = (
@@ -235,7 +235,7 @@ export const diffStringsUnified = (
   }
 
   // Fall back to line-by-line diff.
-  return diffLinesUnified(splitLines0(a), splitLines0(b), options);
+  return diffLinesUnified(a.split('\n'), b.split('\n'), options);
 };
 
 // Compare two strings character-by-character.

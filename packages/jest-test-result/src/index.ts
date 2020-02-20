@@ -24,4 +24,5 @@ export {
   Status,
   Suite,
   TestResult,
+  V8CoverageResult,
 } from './types';

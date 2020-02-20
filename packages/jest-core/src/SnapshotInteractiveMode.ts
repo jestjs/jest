@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
+import chalk = require('chalk');
 import ansiEscapes = require('ansi-escapes');
 import {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import {KEYS} from 'jest-watcher';
@@ -30,11 +30,11 @@ export default class SnapshotInteractiveMode {
     this._skippedNum = 0;
   }
 
-  isActive() {
+  isActive(): boolean {
     return this._isActive;
   }
 
-  getSkippedNum() {
+  getSkippedNum(): number {
     return this._skippedNum;
   }
 
@@ -154,7 +154,7 @@ export default class SnapshotInteractiveMode {
     return this._drawUIProgress();
   }
 
-  put(key: string) {
+  put(key: string): void {
     switch (key) {
       case 's':
         if (this._skippedNum === this._testAssertions.length) break;
@@ -191,19 +191,19 @@ export default class SnapshotInteractiveMode {
     }
   }
 
-  abort() {
+  abort(): void {
     this._isActive = false;
     this._skippedNum = 0;
     this._updateTestRunnerConfig(null, false);
   }
 
-  restart() {
+  restart(): void {
     this._skippedNum = 0;
     this._countPaths = this._testAssertions.length;
     this._run(false);
   }
 
-  updateWithResults(results: AggregatedResult) {
+  updateWithResults(results: AggregatedResult): void {
     const hasSnapshotFailure = !!results.snapshot.failure;
     if (hasSnapshotFailure) {
       this._drawUIOverlay();
@@ -231,7 +231,7 @@ export default class SnapshotInteractiveMode {
       assertion: AssertionLocation | null,
       shouldUpdateSnapshot: boolean,
     ) => unknown,
-  ) {
+  ): void {
     if (!failedSnapshotTestAssertions.length) {
       return;
     }

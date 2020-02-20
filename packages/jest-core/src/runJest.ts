@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {sync as realpath} from 'realpath-native';
 import {CustomConsole} from '@jest/console';
 import {interopRequireDefault} from 'jest-util';
@@ -122,7 +122,7 @@ const testSchedulerContext: TestSchedulerContext = {
   previousSuccess: true,
 };
 
-export default (async function runJest({
+export default async function runJest({
   contexts,
   globalConfig,
   outputStream,
@@ -144,7 +144,7 @@ export default (async function runJest({
   onComplete: (testResults: AggregatedResult) => void;
   failedTestsCache?: FailedTestsCache;
   filter?: Filter;
-}) {
+}): Promise<void> {
   const Sequencer: typeof TestSequencer = interopRequireDefault(
     require(globalConfig.testSequencer),
   ).default;
@@ -195,7 +195,7 @@ export default (async function runJest({
     }
 
     onComplete && onComplete(makeEmptyAggregatedTestResult());
-    return null;
+    return;
   }
 
   if (globalConfig.onlyFailures && failedTestsCache) {
@@ -243,7 +243,9 @@ export default (async function runJest({
   }
 
   if (changedFilesPromise) {
-    testSchedulerContext.changedFiles = (await changedFilesPromise).changedFiles;
+    testSchedulerContext.changedFiles = (
+      await changedFilesPromise
+    ).changedFiles;
   }
 
   const results = await new TestScheduler(
@@ -258,7 +260,7 @@ export default (async function runJest({
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});
   }
 
-  return processResults(results, {
+  await processResults(results, {
     collectHandles,
     json: globalConfig.json,
     onComplete,
@@ -266,4 +268,4 @@ export default (async function runJest({
     outputStream,
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
-});
+}

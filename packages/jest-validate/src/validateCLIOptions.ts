@@ -6,7 +6,7 @@
  */
 
 import {Config} from '@jest/types';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import camelcase from 'camelcase';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {Options} from 'yargs';
@@ -69,7 +69,7 @@ export default function validateCLIOptions(
     [s: string]: Options;
   },
   rawArgv: Array<string> = [],
-) {
+): boolean {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
   const deprecationEntries = options.deprecationEntries || {};
   const allowedOptions = Object.keys(options).reduce(

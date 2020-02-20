@@ -25,7 +25,7 @@ export type TreeNode = {
   children?: Array<TreeNode>;
 } & Pick<Suite, 'getResult' | 'parentSuite' | 'result'>;
 
-export default function treeProcessor(options: Options) {
+export default function treeProcessor(options: Options): void {
   const {
     nodeComplete,
     nodeStart,
