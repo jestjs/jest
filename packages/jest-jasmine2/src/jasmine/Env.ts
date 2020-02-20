@@ -55,7 +55,7 @@ export default function(j$: Jasmine) {
     fail: (error: Error | AssertionErrorWithStack) => void;
     pending: (message: string) => void;
     afterAll: (afterAllFunction: QueueableFn['fn'], timeout?: number) => void;
-    fit: (description: string, fn: QueueableFn['fn'], timeout?: number) => void;
+    fit: (description: string, fn: QueueableFn['fn'], timeout?: number) => Spec;
     throwingExpectationFailures: () => boolean;
     randomizeTests: (value: unknown) => void;
     randomTests: () => boolean;
@@ -79,7 +79,7 @@ export default function(j$: Jasmine) {
     addReporter: (reporterToAdd: Reporter) => void;
     it: (description: string, fn: QueueableFn['fn'], timeout?: number) => Spec;
     xdescribe: (description: string, specDefinitions: Function) => Suite;
-    xit: (description: string, fn: QueueableFn['fn'], timeout?: number) => any;
+    xit: (description: string, fn: QueueableFn['fn'], timeout?: number) => Spec;
     beforeAll: (beforeAllFunction: QueueableFn['fn'], timeout?: number) => void;
     todo: () => Spec;
     provideFallbackReporter: (reporterToAdd: Reporter) => void;

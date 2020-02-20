@@ -17,6 +17,7 @@ import throat from 'throat';
 import isError from './isError';
 import {Jasmine} from './types';
 import Spec from './jasmine/Spec';
+import {QueueableFn} from './queueRunner';
 
 interface DoneFn {
   (): void;
@@ -141,19 +142,22 @@ function promisifyIt(
 }
 
 function makeConcurrent(
-  originalFn: Function,
+  originalFn: (
+    description: string,
+    fn: QueueableFn['fn'],
+    timeout?: number,
+  ) => Spec,
   env: Jasmine['currentEnv_'],
   mutex: ReturnType<typeof throat>,
 ): Global.ItConcurrentBase {
   return function(specName, fn, timeout) {
-    if (
-      env != null &&
-      !env.specFilter({getFullName: () => specName || ''} as Spec)
-    ) {
-      return originalFn.call(env, specName, () => Promise.resolve(), timeout);
+    let promise: Promise<unknown> = Promise.resolve();
+
+    const spec = originalFn.call(env, specName, () => promise, timeout);
+    if (env != null && !env.specFilter(spec)) {
+      return spec;
     }
 
-    let promise: Promise<unknown>;
     try {
       promise = mutex(() => {
         const promise = fn();
@@ -161,14 +165,14 @@ function makeConcurrent(
           return promise;
         }
         throw new Error(
-          `Jest: concurrent test "${specName}" must return a Promise.`,
+          `Jest: concurrent test "${spec.getFullName()}" must return a Promise.`,
         );
       });
     } catch (error) {
-      return originalFn.call(env, specName, () => Promise.reject(error));
+      promise = Promise.reject(error);
     }
 
-    return originalFn.call(env, specName, () => promise, timeout);
+    return spec;
   };
 }
 
