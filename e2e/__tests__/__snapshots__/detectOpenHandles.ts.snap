@@ -9,16 +9,16 @@ There were no uncollected handles - this is unexpected if your tests do not exit
 Collected handles:
   ●  TCPSERVERWRAP
 
-      4 |   const server = http.createServer();
-      5 |   await new Promise(resolve => {
-    > 6 |     server.listen(resolve);
-        |            ^
-      7 |   });
-      8 |   await new Promise((resolve, reject) => {
-      9 |     server.close(err => {
+      11 |   const server = http.createServer();
+      12 |   await new Promise(resolve => {
+    > 13 |     server.listen(resolve);
+         |            ^
+      14 |   });
+      15 |   await new Promise((resolve, reject) => {
+      16 |     server.close(err => {
 
-      at listen (__tests__/http.js:6:12)
-      at Object.<anonymous> (__tests__/http.js:5:9)
+      at listen (__tests__/http.js:13:12)
+      at Object.<anonymous> (__tests__/http.js:12:9)
 `;
 
 exports[`prints message about flag on forceExit 1`] = `Force exiting Jest: Have you considered using \`--detectOpenHandles\` to detect async operations that kept running after all tests finished?`;
