@@ -33,6 +33,7 @@ exports[`prints out info about open handlers 1`] = `
 Jest has detected the following 3 open handles potentially preventing Jest from exiting:
 Of them 1 was collected within 100ms of the tests completing.
 These are sometimes useful to look at as they might have spawned other handles that remain open, but that we have lost the origin of.
+
   ●  DNSCHANNEL (uncollected, potential leak)
 
       at internal/dns/utils.js:101:23
@@ -54,6 +55,7 @@ These are sometimes useful to look at as they might have spawned other handles t
 
 exports[`prints out info about open handlers from inside tests 1`] = `
 Jest has detected the following 1 open handle potentially preventing Jest from exiting:
+
   ●  Timeout (uncollected, potential leak)
 
        7 | 

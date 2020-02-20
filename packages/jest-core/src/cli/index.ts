@@ -126,13 +126,13 @@ export async function runCLI(
           : `${collectedHandles.length} were`;
 
       let heading = chalk.red(
-        `Jest has detected the following ${openHandlesString} potentially preventing Jest from exiting:`,
+        `Jest has detected the following ${openHandlesString} potentially preventing Jest from exiting:\n`,
       );
 
       if (alreadyCollectedString) {
-        heading += `\n${chalk.yellow(
+        heading += `${chalk.yellow(
           `Of them ${alreadyCollectedString} collected within 100ms of the tests completing.\nThese are sometimes useful to look at as they might have spawned other handles that remain open, but that we have lost the origin of.`,
-        )}`;
+        )}\n`;
       }
 
       const uncollectedHandlesWarning =
@@ -140,13 +140,13 @@ export async function runCLI(
           ? `\n${chalk.red(
               'There were no uncollected handles - this is unexpected if your tests do not exit cleanly!',
             )}\n\n`
-          : '';
+          : '\n';
 
       const handles = [...uncollectedHandles, ...collectedHandles]
         .map(line => line.trimRight())
         .join('\n\n');
 
-      const message = `\n${heading}\n${uncollectedHandlesWarning}${handles}`;
+      const message = `\n${heading}${uncollectedHandlesWarning}${handles}`;
 
       console.error(message);
     } else {
