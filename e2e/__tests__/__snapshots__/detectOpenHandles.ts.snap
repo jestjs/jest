@@ -4,10 +4,10 @@ exports[`deals with http servers and promises 1`] = `
 Jest has detected the following 1 open handle potentially preventing Jest from exiting:
 Of them 1 was collected within 100ms of the tests completing.
 These are sometimes useful to look at as they might have spawned other handles that remain open, but that we have lost the origin of.
-There were no uncollected handles - this is unexpected if your tests do not exit cleanly.
 
-Collected handles:
-  ●  TCPSERVERWRAP
+There were no uncollected handles - this is unexpected if your tests do not exit cleanly!
+
+  ●  TCPSERVERWRAP (collected within 100ms)
 
       11 |   const server = http.createServer();
       12 |   await new Promise(resolve => {
@@ -33,16 +33,14 @@ exports[`prints out info about open handlers 1`] = `
 Jest has detected the following 3 open handles potentially preventing Jest from exiting:
 Of them 1 was collected within 100ms of the tests completing.
 These are sometimes useful to look at as they might have spawned other handles that remain open, but that we have lost the origin of.
-Uncollected handles:
-  ●  DNSCHANNEL
+  ●  DNSCHANNEL (uncollected, potential leak)
 
       at internal/dns/utils.js:101:23
       at dns.js:38:5
 
-  ●  TCPSERVERWRAP
+  ●  TCPSERVERWRAP (uncollected, potential leak)
 
-Collected handles:
-  ●  GETADDRINFOREQWRAP
+  ●  GETADDRINFOREQWRAP (collected within 100ms)
 
       12 | const app = new Server();
       13 | 
@@ -56,8 +54,7 @@ Collected handles:
 
 exports[`prints out info about open handlers from inside tests 1`] = `
 Jest has detected the following 1 open handle potentially preventing Jest from exiting:
-Uncollected handles:
-  ●  Timeout
+  ●  Timeout (uncollected, potential leak)
 
        7 | 
        8 | test('something', () => {

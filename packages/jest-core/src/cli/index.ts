@@ -130,26 +130,23 @@ export async function runCLI(
       );
 
       if (alreadyCollectedString) {
-        heading += chalk.yellow(
-          `\nOf them ${alreadyCollectedString} collected within 100ms of the tests completing.\nThese are sometimes useful to look at as they might have spawned other handles that remain open, but that we have lost the origin of.`,
-        );
+        heading += `\n${chalk.yellow(
+          `Of them ${alreadyCollectedString} collected within 100ms of the tests completing.\nThese are sometimes useful to look at as they might have spawned other handles that remain open, but that we have lost the origin of.`,
+        )}`;
       }
 
-      const uncollectedHandlesString =
-        uncollectedHandles.length > 0
-          ? `Uncollected handles:\n${uncollectedHandles
-              .map(line => line.trimRight())
-              .join('\n\n')}`
-          : 'There were no uncollected handles - this is unexpected if your tests do not exit cleanly.';
-
-      const collectedHandlesString =
-        collectedHandles.length > 0
-          ? `\n\nCollected handles:\n${collectedHandles
-              .map(line => line.trimRight())
-              .join('\n\n')}`
+      const uncollectedHandlesWarning =
+        uncollectedHandles.length === 0
+          ? `\n${chalk.red(
+              'There were no uncollected handles - this is unexpected if your tests do not exit cleanly!',
+            )}\n\n`
           : '';
 
-      const message = `\n\n${heading}\n${uncollectedHandlesString}${collectedHandlesString}`;
+      const handles = [...uncollectedHandles, ...collectedHandles]
+        .map(line => line.trimRight())
+        .join('\n\n');
+
+      const message = `\n${heading}\n${uncollectedHandlesWarning}${handles}`;
 
       console.error(message);
     } else {

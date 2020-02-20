@@ -11,6 +11,7 @@ import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';
 import stripAnsi = require('strip-ansi');
 import type {AggregatedResult} from '@jest/test-result';
+import chalk = require('chalk');
 
 export type OpenHandleError = AggregatedResult['openHandles'][number];
 
@@ -141,6 +142,15 @@ export function formatHandleErrors(
         stacks.add(stackWithoutHeading);
 
         return true;
+      })
+      .map(({stack, wasCollected}) => {
+        const [heading, ...rest] = stack.split('\n');
+
+        const tweakedHeading = wasCollected
+          ? chalk.yellow(`${heading} (collected within 100ms)`)
+          : chalk.red(`${heading} (uncollected, potential leak)`);
+
+        return {stack: [tweakedHeading, ...rest].join('\n'), wasCollected};
       })
   );
 }
