@@ -22,23 +22,10 @@ type Path = Config.Path;
 // stack utils tries to create pretty stack by making paths relative.
 const stackUtils = new StackUtils({cwd: 'something which does not exist'});
 
-let nodeInternals: ReadonlyArray<RegExp> = [];
+let nodeInternals: Array<RegExp> = [];
 
 try {
-  // `reduce` is workaround for https://github.com/tapjs/stack-utils/issues/48
-  nodeInternals = StackUtils.nodeInternals().reduce<Array<RegExp>>(
-    (internals, internal) => {
-      const sourceWithoutParens = internal.source
-        // remove leading and trailing parens (which are escaped) and the $
-        .slice(2, internal.source.length - 3);
-
-      return internals.concat(
-        internal,
-        new RegExp(`at ${sourceWithoutParens}$`),
-      );
-    },
-    [],
-  );
+  nodeInternals = StackUtils.nodeInternals();
 } catch {
   // `StackUtils.nodeInternals()` fails in browsers. We don't need to remove
   // node internals in the browser though, so no issue.

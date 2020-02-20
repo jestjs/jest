@@ -36,6 +36,9 @@ These are sometimes useful to look at as they might have spawned other handles t
 Uncollected handles:
   ●  DNSCHANNEL
 
+      at internal/dns/utils.js:101:23
+      at dns.js:38:5
+
   ●  TCPSERVERWRAP
 
 Collected handles:
