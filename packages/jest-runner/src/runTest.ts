@@ -304,9 +304,9 @@ async function runTestInternal(
     }
 
     // Delay the resolution to allow log messages to be output.
-    return new Promise(resolve => {
-      setImmediate(() => resolve({leakDetector, result}));
-    });
+    await new Promise(resolve => setImmediate(resolve));
+
+    return {leakDetector, result};
   } finally {
     await environment.teardown();
     // TODO: this function might be missing, remove ? in Jest 26
