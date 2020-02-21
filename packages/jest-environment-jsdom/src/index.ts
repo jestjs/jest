@@ -127,6 +127,7 @@ class JSDOMEnvironment implements JestEnvironment {
     // @ts-ignore
     this.global = null;
     this.dom = null;
+    this.vm = null;
     this.fakeTimers = null;
     this.fakeTimersLolex = null;
   }
@@ -135,7 +136,12 @@ class JSDOMEnvironment implements JestEnvironment {
     if (this.vm) {
       return script.runInContext(this.vm);
     }
+
     return null;
+  }
+
+  getVmContext() {
+    return this.vm;
   }
 }
 
