@@ -23,7 +23,6 @@ test('check is not leaking memory', () => {
   });
 
   const {stderr} = runJest(DIR, ['--detect-leaks', '--runInBand']);
-  console.log({stderr});
   expect(stderr).toMatch(/PASS\s__tests__\/a.test.js/);
   expect(stderr).toMatch(/PASS\s__tests__\/b.test.js/);
 });
