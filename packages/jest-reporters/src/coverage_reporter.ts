@@ -511,6 +511,7 @@ export default class CoverageReporter extends BaseReporter {
     const reportContext = istanbulReport.createContext(
       // @ts-ignore
       {
+        // @ts-ignore
         coverageMap: map,
         dir: this._globalConfig.coverageDirectory,
         // @ts-ignore
