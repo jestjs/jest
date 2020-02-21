@@ -29,6 +29,7 @@
 - `[jest-transform]` Correct sourcemap behavior for transformed and instrumented code ([#9460](https://github.com/facebook/jest/pull/9460))
 - `[jest-transform]` Allow instrumentation of transformed files with weird file extensions ([#9589](https://github.com/facebook/jest/pull/9589))
 - `[pretty-format]` Export `OldPlugin` type ([#9491](https://github.com/facebook/jest/pull/9491))
+- `[jest-environment-jsdom]` Upgrade `jsdom` v16 to fix memory leak ([#9606](https://github.com/facebook/jest/pull/9606))
 
 ### Chore & Maintenance
 
