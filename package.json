@@ -100,7 +100,7 @@
     "lint:prettier": "prettier '**/*.{md,yml,yaml}' 'website/static/**/*.{css,js}' --write --ignore-path .gitignore",
     "lint:prettier:ci": "prettier '**/*.{md,yml,yaml}' 'website/static/**/*.{css,js}' --check --ignore-path .gitignore",
     "postinstall": "opencollective postinstall && yarn build",
-    "install-no-ts-build": "node ./scripts/remove-postinstall && yarn --no-progress && node ./scripts/build",
+    "install-no-ts-build": "node ./scripts/remove-postinstall && yarn --no-progress --frozen-lockfile && node ./scripts/build",
     "remove-prettier-dep": "node ./scripts/remove-prettier-dep",
     "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-ci-es5-build-in-browser": "karma start --single-run",
@@ -142,8 +142,5 @@
   },
   "engines": {
     "node": ">= 8.3"
-  },
-  "resolutions": {
-    "graceful-fs": "~4.1.15"
   }
 }
