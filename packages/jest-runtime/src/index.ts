@@ -481,7 +481,10 @@ class Runtime {
       modulePath = manualMock;
     }
 
-    if (moduleName && this._resolver.isCoreModule(moduleName)) {
+    if (
+      moduleName === 'graceful-fs' ||
+      (moduleName && this._resolver.isCoreModule(moduleName))
+    ) {
       return this._requireCoreModule(moduleName);
     }
 
