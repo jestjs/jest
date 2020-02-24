@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-config]` Support ESM config files with `.js` extension ([#9573](https://github.com/facebook/jest/9573)).
+- `[jest-config]` Support ESM config files with `.js` extension ([#9573](https://github.com/facebook/jest/pull/9573)).
 - `[jest-runtime]` Override `module.createRequire` to return a Jest-compatible `require` function ([#9469](https://github.com/facebook/jest/pull/9469))
 - `[jest-haste-map]` [**BREAKING**] Remove `mapper` option ([#9581](https://github.com/facebook/jest/pull/9581))
 - `[*]` Support array of paths for `moduleNameMapper` aliases ([#9465](https://github.com/facebook/jest/pull/9465))
@@ -16,7 +16,7 @@
 - `[jest-config]` Verify `rootDir` and all `roots` are directories ([#9569](https://github.com/facebook/jest/pull/9569))
 - `[jest-cli]` Set `coverageProvider` correctly when provided in config ([#9562](https://github.com/facebook/jest/pull/9562))
 - `[jest-cli]` Allow specifying `.cjs` and `.mjs` config files by `--config` CLI option ([#9578](https://github.com/facebook/jest/pull/9578))
-- `[jest-config]` Ensure pattern of `replacePosixSep` is a string ([#9546]https://github.com/facebook/jest/pull/9546)
+- `[jest-config]` Ensure pattern of `replacePosixSep` is a string ([#9546](https://github.com/facebook/jest/pull/9546)
 - `[jest-haste-map]` Fix crash on unix based systems without find ([#9579](https://github.com/facebook/jest/pull/9579))
 - `[jest-jasmine2]` Fix `--testNamePattern` matching with `concurrent` tests ([#9090](https://github.com/facebook/jest/pull/9090))
 - `[jest-matcher-utils]` Fix diff highlight of symbol-keyed object. ([#9499](https://github.com/facebook/jest/pull/9499))
