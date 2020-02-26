@@ -57,7 +57,6 @@ export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
   const rawArgv: Config.Argv | Array<string> =
     maybeArgv || process.argv.slice(2);
   const argv: Config.Argv = yargs(rawArgv)
-    .parserConfiguration({'duplicate-arguments-array': false})
     .usage(args.usage)
     .version(version)
     .alias('help', 'h')
