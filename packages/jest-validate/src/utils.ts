@@ -52,7 +52,7 @@ export const createDidYouMeanMessage = (
 ): string => {
   const suggestion = allowedOptions.find(option => {
     const steps: number = leven(option, unrecognized);
-    return steps < 3;
+    return steps < option.length * 0.4;
   });
 
   return suggestion ? `Did you mean ${chalk.bold(format(suggestion))}?` : '';
