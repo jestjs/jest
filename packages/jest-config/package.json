@@ -15,6 +15,7 @@
     "@jest/types": "^25.1.0",
     "babel-jest": "^25.1.0",
     "chalk": "^3.0.0",
+    "deepmerge": "^4.2.2",
     "glob": "^7.1.1",
     "jest-environment-jsdom": "^25.1.0",
     "jest-environment-node": "^25.1.0",
