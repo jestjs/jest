@@ -50,14 +50,15 @@ export const createDidYouMeanMessage = (
   unrecognized: string,
   allowedOptions: Array<string>,
 ): string => {
-  let isBestMatch: boolean, suggestion: string;
-  
+  let isBestMatch: boolean;
+  let suggestion: string = '';
+
   allowedOptions.forEach(option => {
-    isBestMatch = leven(option, unrecognized) < leven(suggestion || '', unrecognized); 
+    isBestMatch =
+      leven(option, unrecognized) < leven(suggestion || '', unrecognized);
     if (leven(option, unrecognized) < option.length * 0.4 && isBestMatch) {
       suggestion = option;
-    } 
+    }
   });
-  // @ts-ignore
   return suggestion ? `Did you mean ${chalk.bold(format(suggestion))}?` : '';
 };
