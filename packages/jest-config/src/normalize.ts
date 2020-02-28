@@ -17,6 +17,7 @@ import micromatch = require('micromatch');
 import {sync as realpath} from 'realpath-native';
 import Resolver = require('jest-resolve');
 import {replacePathSepForRegex} from 'jest-regex-util';
+import merge = require('deepmerge');
 import validatePattern from './validatePattern';
 import getMaxWorkers from './getMaxWorkers';
 import {
@@ -112,12 +113,7 @@ const mergeGlobalsWithPreset = (
   preset: Config.InitialOptions,
 ) => {
   if (options['globals'] && preset['globals']) {
-    for (const p in preset['globals']) {
-      options['globals'][p] = {
-        ...preset['globals'][p],
-        ...options['globals'][p],
-      };
-    }
+    options['globals'] = merge(preset['globals'], options['globals']);
   }
 };
 
