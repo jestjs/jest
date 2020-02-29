@@ -18,7 +18,7 @@ const ltrimNewlineRe = /^(\r?\n)+/;
 const multilineRe = /(?:^|\r?\n) *(@[^\r\n]*?) *\r?\n *(?![^@\r\n]*\/\/[^]*)([^@\r\n\s][^@\r\n]+?) *\r?\n/g;
 const propertyRe = /(?:^|\r?\n) *@(\S+) *([^\r\n]*)/g;
 const stringStartRe = /(\r?\n|^) *\* ?/g;
-const STRING_ARRAY: Array<string> = [];
+const STRING_ARRAY: ReadonlyArray<string> = [];
 
 export function extract(contents: string): string {
   const match = contents.match(docblockRe);
