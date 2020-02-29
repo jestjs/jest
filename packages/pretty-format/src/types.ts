@@ -13,8 +13,8 @@ export type Colors = {
   value: {close: string; open: string};
 };
 type Indent = (arg0: string) => string;
-export type Refs = Array<any>;
-type Print = (arg0: any) => string;
+export type Refs = Array<unknown>;
+type Print = (arg0: unknown) => string;
 
 export type Theme = {
   comment: string;
@@ -73,7 +73,7 @@ export type Config = {
 };
 
 export type Printer = (
-  val: any,
+  val: unknown,
   config: Config,
   indentation: string,
   depth: number,
@@ -103,7 +103,7 @@ type PluginOptions = {
 
 export type OldPlugin = {
   print: (
-    val: any,
+    val: unknown,
     print: Print,
     indent: Indent,
     options: PluginOptions,
