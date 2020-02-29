@@ -39,7 +39,7 @@ const formatErrorMsg = (domain: string, usage?: string) => {
   return (msg: string) => domain + ' : ' + msg + usageDefinition;
 };
 
-function isSpy(putativeSpy: any) {
+function isSpy(putativeSpy: Spy) {
   if (!putativeSpy) {
     return false;
   }
@@ -54,7 +54,7 @@ const getErrorMsg = formatErrorMsg('<spyOn>', 'spyOn(<object>, <methodName>)');
 export default class SpyRegistry {
   allowRespy: (allow: unknown) => void;
   spyOn: (
-    obj: Record<string, any>,
+    obj: Record<string, Spy>,
     methodName: string,
     accessType?: keyof PropertyDescriptor,
   ) => Spy;
@@ -62,7 +62,7 @@ export default class SpyRegistry {
   respy: unknown;
 
   private _spyOnProperty: (
-    obj: Record<string, any>,
+    obj: Record<string, Spy>,
     propertyName: string,
     accessType: keyof PropertyDescriptor,
   ) => Spy;

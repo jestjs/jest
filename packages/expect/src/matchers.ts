@@ -64,7 +64,7 @@ const toStrictEqualTesters = [
 type ContainIterable =
   | Array<unknown>
   | Set<unknown>
-  | NodeListOf<any>
+  | NodeListOf<Node>
   | DOMTokenList
   | HTMLCollectionOf<any>;
 
@@ -277,7 +277,11 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeInstanceOf(this: MatcherState, received: any, expected: Function) {
+  toBeInstanceOf(
+    this: MatcherState,
+    received: new () => unknown,
+    expected: Function,
+  ) {
     const matcherName = 'toBeInstanceOf';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -376,7 +380,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeNaN(this: MatcherState, received: any, expected: void) {
+  toBeNaN(this: MatcherState, received: number, expected: void) {
     const matcherName = 'toBeNaN';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -620,7 +624,11 @@ const matchers: MatchersObject = {
     return {actual: received, expected, message, name: matcherName, pass};
   },
 
-  toHaveLength(this: MatcherState, received: any, expected: number) {
+  toHaveLength(
+    this: MatcherState,
+    received: string | {length: unknown} | undefined,
+    expected: number,
+  ) {
     const matcherName = 'toHaveLength';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
