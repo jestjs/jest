@@ -68,3 +68,16 @@ test('works with jsdom testEnvironmentOptions config JSON', () => {
   expect(result.exitCode).toBe(0);
   expect(result.stderr).toContain('found url jestjs.io');
 });
+
+test('negated flags override previous flags', () => {
+  const {stdout} = runJest('verbose-reporter', [
+    '--show-config',
+    '--silent',
+    '--no-silent',
+    '--silent',
+  ]);
+
+  const parsedConfig = JSON.parse(stdout);
+
+  expect(parsedConfig.globalConfig.silent).toEqual(true);
+});

@@ -34,7 +34,7 @@
     "realpath-native": "^2.0.0",
     "slash": "^3.0.0",
     "strip-bom": "^4.0.0",
-    "yargs": "^15.0.0"
+    "yargs": "^15.2.0"
   },
   "devDependencies": {
     "@jest/test-utils": "^25.1.0",
