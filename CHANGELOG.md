@@ -13,7 +13,7 @@
 - `[expect]` Handle readonly properties correctly ([#9575](https://github.com/facebook/jest/pull/9575))
 - `[jest-cli]` Set `coverageProvider` correctly when provided in config ([#9562](https://github.com/facebook/jest/pull/9562))
 - `[jest-cli]` Allow specifying `.cjs` and `.mjs` config files by `--config` CLI option ([#9578](https://github.com/facebook/jest/pull/9578))
-- `[jest-cli]` Rollback yargs from v15 to v13 to fix CLI flag overriding ([#9519](https://github.com/facebook/jest/pull/9519))
+- `[jest-cli]` Update yargs to fix CLI flag overriding ([#9519](https://github.com/facebook/jest/pull/9519))
 - `[jest-config]` Treat `setupFilesAfterEnv` like `setupFiles` when normalizing configs against presets ([#9495](https://github.com/facebook/jest/pull/9495))
 - `[jest-config]` Support `.mjs` config files on Windows as well ([#9558](https://github.com/facebook/jest/pull/9558))
 - `[jest-config]` Verify `rootDir` and all `roots` are directories ([#9569](https://github.com/facebook/jest/pull/9569))
