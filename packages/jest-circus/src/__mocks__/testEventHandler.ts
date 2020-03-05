@@ -7,7 +7,10 @@
 
 import {Circus} from '@jest/types';
 
-const testEventHandler: Circus.EventHandler = (event, state) => {
+const testEventHandler: Circus.EventHandler = (
+  event: Circus.Event,
+  state: Circus.State,
+) => {
   switch (event.name) {
     case 'start_describe_definition':
     case 'finish_describe_definition': {

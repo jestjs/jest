@@ -38,7 +38,7 @@ const jestAdapter = async (
     config.prettierPath ? require(config.prettierPath) : null;
   const getBabelTraverse = () => require('@babel/traverse').default;
 
-  const {globals, snapshotState} = initialize({
+  const {globals, snapshotState} = await initialize({
     config,
     environment,
     getBabelTraverse,

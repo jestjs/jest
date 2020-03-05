@@ -21,7 +21,10 @@ import {
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
 
-const eventHandler: Circus.EventHandler = (event, state): void => {
+const eventHandler: Circus.EventHandler = (
+  event: Circus.Event,
+  state: Circus.State,
+): void => {
   switch (event.name) {
     case 'include_test_location_in_result': {
       state.includeTestLocationInResult = true;

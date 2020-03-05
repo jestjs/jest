@@ -50,7 +50,10 @@ export declare class JestEnvironment {
   getVmContext?(): Context | null;
   setup(): Promise<void>;
   teardown(): Promise<void>;
-  handleTestEvent?(event: Circus.Event, state: Circus.State): void;
+  handleTestEvent?(
+    event: Circus.Event,
+    state: Circus.State,
+  ): void | Promise<void>;
 }
 
 export type Module = NodeModule;

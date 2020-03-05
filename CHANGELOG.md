@@ -7,6 +7,7 @@
 - `[jest-haste-map]` [**BREAKING**] Remove `mapper` option ([#9581](https://github.com/facebook/jest/pull/9581))
 - `[*]` Support array of paths for `moduleNameMapper` aliases ([#9465](https://github.com/facebook/jest/pull/9465))
 - `[jest-reporters]` Adds ability to pass options to the istanbul-reporter through `coverageReporters` ([#9572](https://github.com/facebook/jest/pull/9572))
+- `[jest-circus]` Enable writing async test event handlers ([#9392](https://github.com/facebook/jest/pull/9392))
 
 ### Fixes
 
