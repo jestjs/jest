@@ -10,6 +10,7 @@ import runJest from '../runJest';
 
 skipSuiteOnJasmine();
 
+
 it('calls testEnvironment handleTestEvent', () => {
   const result = runJest('test-environment-circus');
   expect(result.failed).toEqual(false);
