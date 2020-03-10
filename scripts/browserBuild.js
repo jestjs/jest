@@ -18,7 +18,10 @@ const babelEs5Options = {
   babelrc: false,
   configFile: false,
   overrides: transformOptions.overrides,
-  plugins: ['@babel/plugin-transform-strict-mode'],
+  plugins: [
+    '@babel/plugin-transform-strict-mode',
+    [require.resolve('@babel/plugin-transform-runtime'), {corejs: 3}],
+  ],
   presets: [
     [
       '@babel/preset-env',
