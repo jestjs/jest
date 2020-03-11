@@ -573,7 +573,7 @@ async runTests(
 
 Default: `[]`
 
-The paths to modules that run some code to configure or set up the testing environment before each test. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
+The paths to modules that run some code to configure or set up the testing environment before each test file in the suite is executed. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
 
 It's worth noting that this code will execute _before_ [`setupTestFrameworkScriptFile`](#setuptestframeworkscriptfile-string).
 
