@@ -1,7 +1,7 @@
 {
   "jest": {
-    "snapshotResolver": "<rootDir>/snapshotResolver.ts",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "snapshotResolver": "<rootDir>/customSnapshotResolver.ts"
   },
   "dependencies": {
     "@babel/preset-env": "^7.0.0",

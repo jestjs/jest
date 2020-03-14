@@ -7,6 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {onNodeVersions} from '@jest/test-utils';
 import {
@@ -213,12 +214,30 @@ describe('transform-snapshotResolver', () => {
     '..',
     'transform/transform-snapshotResolver',
   );
+  const snapshotDir = path.resolve(dir, '__snapshots__');
+  const snapshotFile = path.resolve(snapshotDir, 'snapshot.test.js.snap');
+
+  const cleanupTest = () => {
+    if (fs.existsSync(snapshotFile)) {
+      fs.unlinkSync(snapshotFile);
+    }
+    if (fs.existsSync(snapshotDir)) {
+      fs.rmdirSync(snapshotDir);
+    }
+  };
+
+  beforeEach(cleanupTest);
+  afterAll(cleanupTest);
 
   it('should transform the snapshotResolver', () => {
-    const {json, stderr} = runWithJson(dir, ['--no-cache']);
-    expect(stderr).toMatch(/PASS/);
-    expect(json.success).toBe(true);
-    expect(json.numPassedTests).toBe(1);
+    const result = runJest(dir, ['-w=1', '--no-cache', '--ci=false']);
+
+    expect(result.stderr).toMatch('1 snapshot written from 1 test suite');
+
+    const contents = require(snapshotFile);
+    expect(contents).toHaveProperty(
+      'snapshots are written to custom location 1',
+    );
   });
 });
 

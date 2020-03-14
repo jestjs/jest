@@ -5,6 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-it('should add two numbers', () => {
-  expect('hello world').toMatchSnapshot();
+test('snapshots are written to custom location', () => {
+  expect('foobar').toMatchSnapshot();
 });
