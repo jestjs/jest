@@ -186,7 +186,7 @@ yarn test --maxWorkers=4
 
 ## Compatibility issues
 
-Jest takes advantage of new features added to Node 6. We recommend that you upgrade to the latest stable release of Node. The minimum supported version is `v8.0.0`. Earlier versions (e.g. `0.x.x`, `4.x.x`, and `6.x.x` are not supported because the `jsdom` version used in Jest doesn't support Node 6. However, if you need to run Jest on Node 6, you can use the `testEnvironment` config to use a [custom environment](https://jestjs.io/docs/en/configuration.html#testenvironment-string) that supports Node 6, such as [`jest-environment-node`](https://yarnpkg.com/en/package/jest-environment-node).
+Jest takes advantage of new features added to Node 8. We recommend that you upgrade to the latest stable release of Node. The minimum supported version is `v8.0.0`. Earlier versions (e.g. `0.x.x`, `4.x.x`, and `6.x.x`) are not supported because the `jsdom` version used in Jest doesn't support Node 6. However, if you need to run Jest on Node 6, you can use the `testEnvironment` config to use a [custom environment](https://jestjs.io/docs/en/configuration.html#testenvironment-string) that supports Node 6, such as [`jest-environment-node`](https://yarnpkg.com/en/package/jest-environment-node).
 
 ## `coveragePathIgnorePatterns` seems to not have any effect.
 
