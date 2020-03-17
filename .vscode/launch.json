@@ -9,8 +9,9 @@
       "request": "launch",
       "name": "Debug Jest with current test file",
       "program": "${workspaceFolder}/packages/jest-cli/bin/jest.js",
-      "args": ["--runInBand", "${file}"],
-      "runtimeArgs": ["-r", "flow-remove-types/register"]
+      "cwd": "${workspaceFolder}/e2e/resolve",
+      "sourceMaps": true,
+      "outFiles": ["${workspaceFolder}/packages/**/build/**"]
     }
   ]
 }

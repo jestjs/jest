@@ -34,7 +34,7 @@ import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
-import {findSiblingsWithFileExtension} from './helpers';
+import {findSiblingsWithFileExtension, printRequireStack} from './helpers';
 import {Context as JestContext} from './types';
 import jestMock = require('jest-mock');
 import HasteMap = require('jest-haste-map');
@@ -122,6 +122,7 @@ class Runtime {
   private _transitiveShouldMock: BooleanObject;
   private _unmockList: RegExp | undefined;
   private _virtualMocks: BooleanObject;
+  private _requireStack: Array<string>;
 
   constructor(
     config: Config.ProjectConfig,
@@ -158,6 +159,7 @@ class Runtime {
     this._sourceMapRegistry = Object.create(null);
     this._fileTransforms = new Map();
     this._virtualMocks = Object.create(null);
+    this._requireStack = [];
 
     this._mockMetaDataCache = Object.create(null);
     this._shouldMockModuleCache = Object.create(null);
@@ -504,13 +506,30 @@ class Runtime {
 
   requireModuleOrMock(from: Config.Path, moduleName: string): unknown {
     try {
-      if (this._shouldMock(from, moduleName)) {
-        return this.requireMock(from, moduleName);
-      } else {
-        return this.requireModule(from, moduleName);
+      let result;
+
+      if (this._requireStack[this._requireStack.length - 1] !== from) {
+        this._requireStack.push(from);
       }
+
+      if (this._shouldMock(from, moduleName)) {
+        result = this.requireMock(from, moduleName);
+      } else {
+        result = this.requireModule(from, moduleName);
+      }
+
+      this._requireStack.pop();
+      return result;
     } catch (e) {
       if (e.code === 'MODULE_NOT_FOUND') {
+        if (!e.requireStack) {
+          e.requireStack = [...this._requireStack].reverse();
+
+          if (e.requireStack.length > 1) {
+            e.message += printRequireStack(e.requireStack);
+          }
+        }
+
         const appendedMessage = findSiblingsWithFileExtension(
           this._config.moduleFileExtensions,
           from,
@@ -521,6 +540,7 @@ class Runtime {
           e.message += appendedMessage;
         }
       }
+      this._requireStack.pop();
       throw e;
     }
   }

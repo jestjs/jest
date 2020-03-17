@@ -6,6 +6,8 @@
  */
 'use strict';
 
+const path = require('path');
+
 let platform;
 
 function testRequire(filename) {
@@ -99,11 +101,40 @@ test('should require resolve haste mocks correctly', () => {
   expect(require('Test6').key).toBe('mock');
 });
 
+test('should throw module not found error if the module has dependencies that cannot be found', () => {
+  try {
+    require('Test7');
+    throw new Error('Requiring Test7 should have thrown an error');
+  } catch (error) {
+    expect(error.code).toBe('MODULE_NOT_FOUND');
+
+    expect(error.message).toMatchInlineSnapshot(`
+      "Cannot find module 'nope' from 'requiresUnexistingModule.js'
+
+      Require stack:
+        jest/e2e/resolve/e2e/resolve/requiresUnexistingModule.js
+        jest/e2e/resolve/e2e/resolve/Test7.js
+        jest/e2e/resolve/e2e/resolve/__tests__/resolve.test.js
+
+
+      However, Jest was able to find:
+      	'./requiresUnexistingModule.js'
+
+      You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['js', 'json', 'jsx', 'ts', 'tsx', 'node'].
+
+      See https://jestjs.io/docs/en/configuration#modulefileextensions-arraystring"
+    `);
+  }
+});
+
 test('should throw module not found error if the module cannot be found', () => {
-  expect(() => require('Test7')).toThrow(
-    expect.objectContaining({
-      code: 'MODULE_NOT_FOUND',
-      message: "Cannot find module 'Test7' from 'resolve.test.js'",
-    })
-  );
+  try {
+    require('Test8');
+    throw new Error('Requiring Test8 should have thrown an error');
+  } catch (error) {
+    expect(error.code).toBe('MODULE_NOT_FOUND');
+    expect(error.message.split('\n')[0]).toBe(
+      "Cannot find module 'Test8' from 'resolve.test.js'"
+    );
+  }
 });

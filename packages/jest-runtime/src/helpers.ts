@@ -53,3 +53,9 @@ export const findSiblingsWithFileExtension = (
 
   return '';
 };
+
+export const printRequireStack = (requireStack: Array<string>): string => `
+
+Require stack:
+  ${requireStack.join('\n  ')}
+`;
