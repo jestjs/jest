@@ -6,8 +6,6 @@
  */
 'use strict';
 
-const path = require('path');
-
 let platform;
 
 function testRequire(filename) {

@@ -3,7 +3,7 @@
   "files.exclude": {
     "**/.git": true,
     "**/node_modules": true,
-    "**/build": false
+    "**/build": true
   },
   "javascript.validate.enable": false,
   "jest.pathToJest": "yarn jest --",
