@@ -110,9 +110,9 @@ test('should throw module not found error if the module has dependencies that ca
       "Cannot find module 'nope' from 'requiresUnexistingModule.js'
 
       Require stack:
-        jest/e2e/resolve/e2e/resolve/requiresUnexistingModule.js
-        jest/e2e/resolve/e2e/resolve/Test7.js
-        jest/e2e/resolve/e2e/resolve/__tests__/resolve.test.js
+        requiresUnexistingModule.js
+        Test7.js
+        __tests__/resolve.test.js
 
 
       However, Jest was able to find:

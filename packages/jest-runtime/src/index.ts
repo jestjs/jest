@@ -526,7 +526,10 @@ class Runtime {
           e.requireStack = [...this._requireStack].reverse();
 
           if (e.requireStack.length > 1) {
-            e.message += printRequireStack(e.requireStack);
+            e.message += printRequireStack(
+              e.requireStack,
+              this._config.rootDir,
+            );
           }
         }
 
