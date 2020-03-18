@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-runtime]` Require stack in the errors message when a module cannot be resolved ([#9681](https://github.com/facebook/jest/pull/9681))
 - `[jest-config]` Support ESM config files with `.js` extension ([#9573](https://github.com/facebook/jest/pull/9573)).
 - `[jest-runtime]` Override `module.createRequire` to return a Jest-compatible `require` function ([#9469](https://github.com/facebook/jest/pull/9469))
 - `[jest-haste-map]` [**BREAKING**] Remove `mapper` option ([#9581](https://github.com/facebook/jest/pull/9581))
@@ -10,6 +11,7 @@
 
 ### Fixes
 
+- `[jest-runtime]` Yarn PnP errors surfaced to the user ([#9681](https://github.com/facebook/jest/pull/9681))
 - `[expect]` Handle readonly properties correctly ([#9575](https://github.com/facebook/jest/pull/9575))
 - `[jest-cli]` Set `coverageProvider` correctly when provided in config ([#9562](https://github.com/facebook/jest/pull/9562))
 - `[jest-cli]` Allow specifying `.cjs` and `.mjs` config files by `--config` CLI option ([#9578](https://github.com/facebook/jest/pull/9578))
