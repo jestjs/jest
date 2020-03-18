@@ -14,7 +14,7 @@ import {
   LolexFakeTimers,
 } from '@jest/fake-timers';
 import {EnvironmentContext, JestEnvironment} from '@jest/environment';
-import {DOMWindow, JSDOM, VirtualConsole} from 'jsdom';
+import {JSDOM, VirtualConsole} from 'jsdom';
 
 // The `Window` interface does not have an `Error.stackTraceLimit` property, but
 // `JSDOMEnvironment` assumes it is there.
