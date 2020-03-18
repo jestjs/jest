@@ -6,6 +6,6 @@
  *
  */
 
-const nope = require('jest');
+const nope = require('unesitent_module__');
 
 module.exports = () => nope;

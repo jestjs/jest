@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "foo": "link:./lib",
-    "undeclared": "link:./underclared-dependency"
+    "undeclared": "link:./undeclared-dependency"
   },
   "installConfig": {
     "pnp": true

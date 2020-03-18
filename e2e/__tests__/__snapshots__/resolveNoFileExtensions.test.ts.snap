@@ -19,6 +19,11 @@ FAIL __tests__/test.js
 
     Cannot find module './some-json-file' from 'index.js'
 
+    Require stack:
+      index.js
+      __tests__/test.js
+
+
     However, Jest was able to find:
     	'./some-json-file.json'
 
@@ -32,6 +37,6 @@ FAIL __tests__/test.js
         |                  ^
       9 | 
 
-      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:276:11)
+      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:282:11)
       at Object.require (index.js:8:18)
 `;
