@@ -8,6 +8,8 @@
 
 let platform;
 
+const path = require('path');
+
 function testRequire(filename) {
   return () => (platform = require(filename));
 }
@@ -112,7 +114,7 @@ test('should throw module not found error if the module has dependencies that ca
       Require stack:
         requiresUnexistingModule.js
         Test7.js
-        __tests__/resolve.test.js
+        __tests__${path.sep}resolve.test.js
 
 
       However, Jest was able to find:
