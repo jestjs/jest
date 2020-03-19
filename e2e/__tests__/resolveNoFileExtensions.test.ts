@@ -22,13 +22,63 @@ test('show error message with matching files', () => {
   expect(exitCode).toBe(1);
 
   if (process.platform === 'win32') {
-    expect(wrap(rest)).toMatchSnapshot(
-      'show error message with matching files - windows',
-    );
+    expect(wrap(rest)).toMatchInlineSnapshot(`
+FAIL __tests__/test.js
+  ● Test suite failed to run
+
+    Cannot find module './some-json-file' from 'index.js'
+
+    Require stack:
+      index.js
+      __tests__\\test.js
+
+
+    However, Jest was able to find:
+      './some-json-file.json'
+
+    You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['js'].
+
+    See https://jestjs.io/docs/en/configuration#modulefileextensions-arraystring
+
+      6 |  */
+      7 | 
+    > 8 | module.exports = require('./some-json-file');
+        |                  ^
+      9 | 
+
+      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:282:11)
+      at Object.require (index.js:8:18)
+`);
     return;
   }
 
-  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(rest)).toMatchInlineSnapshot(`
+FAIL __tests__/test.js
+  ● Test suite failed to run
+
+    Cannot find module './some-json-file' from 'index.js'
+
+    Require stack:
+      index.js
+      __tests__/test.js
+
+
+    However, Jest was able to find:
+      './some-json-file.json'
+
+    You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['js'].
+
+    See https://jestjs.io/docs/en/configuration#modulefileextensions-arraystring
+
+      6 |  */
+      7 | 
+    > 8 | module.exports = require('./some-json-file');
+        |                  ^
+      9 | 
+
+      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:282:11)
+      at Object.require (index.js:8:18)
+`);
 });
 
 test('show error message when no js moduleFileExtensions', () => {
