@@ -6,9 +6,9 @@
  */
 
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest from '../runJest';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
+import {wrap} from 'jest-snapshot-serializer-raw';
 
 const DIR = path.resolve(__dirname, '../resolve-no-extensions-no-js');
 
@@ -20,33 +20,15 @@ test('show error message with matching files', () => {
   const {rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(1);
-  expect(wrap(rest)).toMatchInlineSnapshot(`
-    FAIL __tests__/test.js
-      ● Test suite failed to run
 
-        Cannot find module './some-json-file' from 'index.js'
+  if (process.platform === 'win32') {
+    expect(wrap(rest)).toMatchSnapshot(
+      'show error message with matching files - windows',
+    );
+    return;
+  }
 
-        Require stack:
-          index.js
-          __tests__${path.sep}test.js
-
-
-        However, Jest was able to find:
-        	'./some-json-file.json'
-
-        You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['js'].
-
-        See https://jestjs.io/docs/en/configuration#modulefileextensions-arraystring
-
-          6 |  */
-          7 | 
-        > 8 | module.exports = require('./some-json-file');
-            |                  ^
-          9 | 
-
-          at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:282:11)
-          at Object.require (index.js:8:18)
-  `);
+  expect(wrap(rest)).toMatchSnapshot();
 });
 
 test('show error message when no js moduleFileExtensions', () => {

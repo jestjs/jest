@@ -8,8 +8,6 @@
 
 let platform;
 
-const path = require('path');
-
 function testRequire(filename) {
   return () => (platform = require(filename));
 }
@@ -108,13 +106,14 @@ test('should throw module not found error if the module has dependencies that ca
   } catch (error) {
     expect(error.code).toBe('MODULE_NOT_FOUND');
 
-    expect(error.message).toMatchInlineSnapshot(`
+    if (process.platform === 'win32') {
+      expect(error.message).toMatchInlineSnapshot(`
       "Cannot find module 'nope' from 'requiresUnexistingModule.js'
 
       Require stack:
         requiresUnexistingModule.js
         Test7.js
-        __tests__${path.sep}resolve.test.js
+        __tests__\\\\resolve.test.js
 
 
       However, Jest was able to find:
@@ -124,6 +123,10 @@ test('should throw module not found error if the module has dependencies that ca
 
       See https://jestjs.io/docs/en/configuration#modulefileextensions-arraystring"
     `);
+      return;
+    }
+
+    expect(error.message).toMatchInlineSnapshot();
   }
 });
 
