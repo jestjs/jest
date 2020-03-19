@@ -34,7 +34,7 @@ test('show error message with matching files', () => {
 
 
           However, Jest was able to find:
-            './some-json-file.json'
+          	'./some-json-file.json'
 
           You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['js'].
 
