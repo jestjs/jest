@@ -14,7 +14,7 @@ import {
   LolexFakeTimers,
 } from '@jest/fake-timers';
 import {EnvironmentContext, JestEnvironment} from '@jest/environment';
-import {DOMWindow, JSDOM, VirtualConsole} from 'jsdom';
+import {JSDOM, VirtualConsole} from 'jsdom';
 
 // The `Window` interface does not have an `Error.stackTraceLimit` property, but
 // `JSDOMEnvironment` assumes it is there.
@@ -27,7 +27,6 @@ type Win = Window &
 
 class JSDOMEnvironment implements JestEnvironment {
   dom: JSDOM | null;
-  vm: DOMWindow | null;
   fakeTimers: LegacyFakeTimers<number> | null;
   fakeTimersLolex: LolexFakeTimers | null;
   global: Win;
@@ -42,8 +41,6 @@ class JSDOMEnvironment implements JestEnvironment {
       virtualConsole: new VirtualConsole().sendTo(options.console || console),
       ...config.testEnvironmentOptions,
     });
-
-    this.vm = this.dom.getInternalVMContext();
 
     const global = (this.global = this.dom.window.document.defaultView as Win);
     if (!global) {
@@ -127,21 +124,22 @@ class JSDOMEnvironment implements JestEnvironment {
     // @ts-ignore
     this.global = null;
     this.dom = null;
-    this.vm = null;
     this.fakeTimers = null;
     this.fakeTimersLolex = null;
   }
 
   runScript<T = unknown>(script: Script): T | null {
-    if (this.vm) {
-      return script.runInContext(this.vm);
+    if (this.dom) {
+      return script.runInContext(this.dom.getInternalVMContext());
     }
-
     return null;
   }
 
   getVmContext() {
-    return this.vm;
+    if (this.dom) {
+      return this.dom.getInternalVMContext();
+    }
+    return null;
   }
 }
 
