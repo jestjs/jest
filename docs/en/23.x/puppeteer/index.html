@@ -124,7 +124,7 @@
 
 <span class="hljs-keyword">const</span> DIR = path.join(os.tmpdir(), <span class="hljs-string">'jest_puppeteer_global_setup'</span>);
 
-<span class="hljs-built_in">module</span>.exports = <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">const</span> browser = <span class="hljs-keyword">await</span> puppeteer.launch();
   <span class="hljs-comment">// store the browser instance so we can teardown it later</span>
   <span class="hljs-comment">// this global is only available in the teardown but not in TestEnvironments</span>
@@ -180,7 +180,7 @@
 <span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
 
 <span class="hljs-keyword">const</span> DIR = path.join(os.tmpdir(), <span class="hljs-string">'jest_puppeteer_global_setup'</span>);
-<span class="hljs-built_in">module</span>.exports = <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
   <span class="hljs-comment">// close the browser instance</span>
   <span class="hljs-keyword">await</span> global.__BROWSER_GLOBAL__.close();
 
