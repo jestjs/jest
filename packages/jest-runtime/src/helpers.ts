@@ -9,7 +9,6 @@ import * as path from 'path';
 import slash = require('slash');
 import glob = require('glob');
 import {Config} from '@jest/types';
-import {Path} from '@jest/types/src/Config';
 
 export const findSiblingsWithFileExtension = (
   moduleFileExtensions: Config.ProjectConfig['moduleFileExtensions'],
@@ -54,15 +53,3 @@ export const findSiblingsWithFileExtension = (
 
   return '';
 };
-
-export const printRequireStack = (
-  requireStack: Array<string>,
-  rootDir: Path,
-): string => `
-
-Require stack:
-  ${requireStack
-    .map(p => p.replace(`${rootDir}${path.sep}`, ''))
-    .map(slash)
-    .join('\n  ')}
-`;

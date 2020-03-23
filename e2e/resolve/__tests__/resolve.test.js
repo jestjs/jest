@@ -106,26 +106,6 @@ test('should throw module not found error if the module has dependencies that ca
   } catch (error) {
     expect(error.code).toBe('MODULE_NOT_FOUND');
 
-    if (process.platform === 'win32') {
-      expect(error.message).toMatchInlineSnapshot(`
-              "Cannot find module 'nope' from 'requiresUnexistingModule.js'
-
-              Require stack:
-                requiresUnexistingModule.js
-                Test7.js
-                __tests__\\\\resolve.test.js
-
-
-              However, Jest was able to find:
-              	'./requiresUnexistingModule.js'
-
-              You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['js', 'json', 'jsx', 'ts', 'tsx', 'node'].
-
-              See https://jestjs.io/docs/en/configuration#modulefileextensions-arraystring"
-          `);
-      return;
-    }
-
     expect(error.message).toMatchInlineSnapshot(`
       "Cannot find module 'nope' from 'requiresUnexistingModule.js'
 
