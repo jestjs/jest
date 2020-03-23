@@ -24,10 +24,10 @@ jobs:
       - image: circleci/node:8
     steps:
       - checkout
-      - restore-cache: *restore-cache
       - run:
-          - yarn remove-prettier-dep
-          - *install
+          command: yarn remove-prettier-dep
+      - restore-cache: *restore-cache
+      - run: *install
       - save-cache: *save-cache
       - run:
           command: yarn test-ci-partial
