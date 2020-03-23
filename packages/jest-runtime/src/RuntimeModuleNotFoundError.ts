@@ -13,18 +13,21 @@ import slash = require('slash');
 export default class RuntimeModuleNotFoundError extends ModuleNotFoundError {
   public hint?: string;
   public requireStack?: Array<Config.Path>;
-  public stackTraceBuilt?: boolean;
+
+  private _originalMessage?: string;
 
   public static buildMessage(
     error: RuntimeModuleNotFoundError,
     rootDir: Config.Path,
   ): void {
-    if (
-      !error.stackTraceBuilt &&
-      error?.requireStack?.length &&
-      error?.requireStack?.length > 1
-    ) {
-      error.message += `
+    if (!error._originalMessage) {
+      error._originalMessage = error.message || '';
+    }
+
+    let message = error._originalMessage;
+
+    if (error?.requireStack?.length && error?.requireStack?.length > 1) {
+      message += `
 
 Require stack:
   ${(error.requireStack as Array<string>)
@@ -32,11 +35,12 @@ Require stack:
     .map(slash)
     .join('\n  ')}
 `;
-      error.stackTraceBuilt = true;
     }
 
     if (error.hint) {
-      error.message += error.hint;
+      message += error.hint;
     }
+
+    error.message = message;
   }
 }

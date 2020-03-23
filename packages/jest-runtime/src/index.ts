@@ -512,11 +512,14 @@ class Runtime {
       }
     } catch (e) {
       if (e.code === 'MODULE_NOT_FOUND') {
-        e.hint = findSiblingsWithFileExtension(
-          this._config.moduleFileExtensions,
-          from,
-          moduleName,
-        );
+        if (!e.hint) {
+          e.hint = findSiblingsWithFileExtension(
+            this._config.moduleFileExtensions,
+            from,
+            moduleName,
+          );
+        }
+        RuntimeModuleNotFoundError.buildMessage(e, this._config.rootDir);
       }
       throw e;
     }
@@ -1291,20 +1294,22 @@ class Runtime {
   private handleExecutionError(e: Error, module: InitialModule): void {
     const runtimeModuleNotFoundError = e as RuntimeModuleNotFoundError;
     if (runtimeModuleNotFoundError.code === 'MODULE_NOT_FOUND') {
-      runtimeModuleNotFoundError.requireStack = [module.filename || module.id];
+      if (!runtimeModuleNotFoundError.requireStack) {
+        runtimeModuleNotFoundError.requireStack = [
+          module.filename || module.id,
+        ];
 
-      for (let cursor = module.parent; cursor; cursor = cursor.parent) {
-        runtimeModuleNotFoundError.requireStack.push(
-          cursor.filename || cursor.id,
+        for (let cursor = module.parent; cursor; cursor = cursor.parent) {
+          runtimeModuleNotFoundError.requireStack.push(
+            cursor.filename || cursor.id,
+          );
+        }
+
+        RuntimeModuleNotFoundError.buildMessage(
+          runtimeModuleNotFoundError,
+          this._config.rootDir,
         );
       }
-
-      RuntimeModuleNotFoundError.buildMessage(
-        runtimeModuleNotFoundError,
-        this._config.rootDir,
-      );
-
-      throw runtimeModuleNotFoundError;
     }
 
     throw e;
