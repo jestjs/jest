@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 
-import type {DataService} from './shared/data.service';
+import {DataService} from './shared/data.service';
 
 @Component({
   selector: 'app-root',
