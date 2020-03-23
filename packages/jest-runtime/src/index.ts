@@ -1291,7 +1291,7 @@ class Runtime {
     ];
   }
 
-  private handleExecutionError(e: Error, module: InitialModule): void {
+  private handleExecutionError(e: Error, module: InitialModule): never {
     const runtimeModuleNotFoundError = e as RuntimeModuleNotFoundError;
     if (runtimeModuleNotFoundError.code === 'MODULE_NOT_FOUND') {
       if (!runtimeModuleNotFoundError.requireStack) {
