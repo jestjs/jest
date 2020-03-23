@@ -20,7 +20,6 @@ test('show error message with matching files', () => {
   const {rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(1);
-
   expect(wrap(rest)).toMatchSnapshot();
 });
 

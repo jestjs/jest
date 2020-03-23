@@ -32,6 +32,7 @@ import {
 import type {V8CoverageResult} from '@jest/test-result';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
+import type ModuleNotFoundError from 'jest-resolve/build/ModuleNotFoundError';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
 import {findSiblingsWithFileExtension} from './helpers';
@@ -41,7 +42,6 @@ import HasteMap = require('jest-haste-map');
 import Resolver = require('jest-resolve');
 import Snapshot = require('jest-snapshot');
 import stripBOM = require('strip-bom');
-import RuntimeModuleNotFoundError from './RuntimeModuleNotFoundError';
 
 type HasteMapOptions = {
   console?: Console;
@@ -511,17 +511,18 @@ class Runtime {
         return this.requireModule(from, moduleName);
       }
     } catch (e) {
-      if (e.code === 'MODULE_NOT_FOUND') {
-        if (!e.hint) {
-          e.hint = findSiblingsWithFileExtension(
+      const moduleNotFound = e as ModuleNotFoundError;
+      if (moduleNotFound.code === 'MODULE_NOT_FOUND') {
+        if (!moduleNotFound.hint) {
+          moduleNotFound.hint = findSiblingsWithFileExtension(
             this._config.moduleFileExtensions,
             from,
             moduleName,
           );
         }
-        RuntimeModuleNotFoundError.buildMessage(e, this._config.rootDir);
+        moduleNotFound.buildMessage(this._config.rootDir);
       }
-      throw e;
+      throw moduleNotFound;
     }
   }
 
@@ -1292,23 +1293,16 @@ class Runtime {
   }
 
   private handleExecutionError(e: Error, module: InitialModule): never {
-    const runtimeModuleNotFoundError = e as RuntimeModuleNotFoundError;
-    if (runtimeModuleNotFoundError.code === 'MODULE_NOT_FOUND') {
-      if (!runtimeModuleNotFoundError.requireStack) {
-        runtimeModuleNotFoundError.requireStack = [
-          module.filename || module.id,
-        ];
+    const moduleNotFoundError: ModuleNotFoundError = e as ModuleNotFoundError;
+    if (moduleNotFoundError.code === 'MODULE_NOT_FOUND') {
+      if (!moduleNotFoundError.requireStack) {
+        moduleNotFoundError.requireStack = [module.filename || module.id];
 
         for (let cursor = module.parent; cursor; cursor = cursor.parent) {
-          runtimeModuleNotFoundError.requireStack.push(
-            cursor.filename || cursor.id,
-          );
+          moduleNotFoundError.requireStack.push(cursor.filename || cursor.id);
         }
 
-        RuntimeModuleNotFoundError.buildMessage(
-          runtimeModuleNotFoundError,
-          this._config.rootDir,
-        );
+        moduleNotFoundError.buildMessage(this._config.rootDir);
       }
     }
 
