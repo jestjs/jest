@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {EventEmitter} from 'events';
-import {Config} from '@jest/types';
-import {SerializableError, TestResult} from '@jest/test-result';
-import {JestEnvironment} from '@jest/environment';
-import {FS as HasteFS, ModuleMap} from 'jest-haste-map';
+import type {EventEmitter} from 'events';
+import type {Config} from '@jest/types';
+import type {SerializableError, TestResult} from '@jest/test-result';
+import type {JestEnvironment} from '@jest/environment';
+import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
 import HasteResolver = require('jest-resolve');
 import Runtime = require('jest-runtime');
 

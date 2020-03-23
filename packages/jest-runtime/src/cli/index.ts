@@ -10,14 +10,14 @@ import * as path from 'path';
 import chalk = require('chalk');
 import {sync as realpath} from 'realpath-native';
 import yargs = require('yargs');
-import {Config} from '@jest/types';
-import {JestEnvironment} from '@jest/environment';
+import type {Config} from '@jest/types';
+import type {JestEnvironment} from '@jest/environment';
 import {CustomConsole} from '@jest/console';
 import {setGlobal} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries, readConfig} from 'jest-config';
 import {VERSION} from '../version';
-import {Context} from '../types';
+import type {Context} from '../types';
 import * as args from './args';
 
 export async function run(

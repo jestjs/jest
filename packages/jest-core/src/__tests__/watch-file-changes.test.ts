@@ -14,7 +14,7 @@ import Runtime = require('jest-runtime');
 import {normalize} from 'jest-config';
 import HasteMap = require('jest-haste-map');
 import rimraf = require('rimraf');
-import {AggregatedResult} from '@jest/test-result';
+import type {AggregatedResult} from '@jest/test-result';
 
 describe('Watch mode flows with changed files', () => {
   jest.resetModules();
@@ -56,8 +56,8 @@ describe('Watch mode flows with changed files', () => {
       `
         require('./lost-file.js');
         describe('Fake test', () => {
-            it('Hey', () => {  
-            
+            it('Hey', () => {
+
             });
         });
       `,

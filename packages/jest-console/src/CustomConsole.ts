@@ -10,7 +10,7 @@ import {format} from 'util';
 import {Console} from 'console';
 import chalk = require('chalk');
 import {clearLine} from 'jest-util';
-import {LogCounters, LogMessage, LogTimers, LogType} from './types';
+import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
 
 type Formatter = (type: LogType, message: LogMessage) => string;
 

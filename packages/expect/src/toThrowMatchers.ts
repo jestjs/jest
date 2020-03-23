@@ -26,7 +26,7 @@ import {
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
 } from './print';
-import {
+import type {
   ExpectationResult,
   MatcherState,
   MatchersObject,

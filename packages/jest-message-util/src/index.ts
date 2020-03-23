@@ -7,16 +7,16 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import {Config} from '@jest/types';
-import {AssertionResult, SerializableError} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {AssertionResult, SerializableError} from '@jest/test-result';
 import chalk = require('chalk');
 import micromatch = require('micromatch');
 import slash = require('slash');
 import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils = require('stack-utils');
-import {Frame} from './types';
+import type {Frame} from './types';
 
-export {Frame} from './types';
+export type {Frame} from './types';
 
 type Path = Config.Path;
 

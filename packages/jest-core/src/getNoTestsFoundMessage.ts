@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {TestRunData} from './types';
+import type {Config} from '@jest/types';
+import type {TestRunData} from './types';
 import getNoTestFound from './getNoTestFound';
 import getNoTestFoundRelatedToChangedFiles from './getNoTestFoundRelatedToChangedFiles';
 import getNoTestFoundVerbose from './getNoTestFoundVerbose';

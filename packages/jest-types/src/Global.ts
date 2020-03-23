@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {CoverageMapData} from 'istanbul-lib-coverage';
+import type {CoverageMapData} from 'istanbul-lib-coverage';
 
 export type DoneFn = (reason?: string | Error) => void;
 export type TestName = string;

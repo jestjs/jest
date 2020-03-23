@@ -5,15 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Script} from 'vm';
-import {Config, Global} from '@jest/types';
+import type {Script} from 'vm';
+import type {Config, Global} from '@jest/types';
 import {installCommonGlobals} from 'jest-util';
 import {ModuleMocker} from 'jest-mock';
 import {
   JestFakeTimers as LegacyFakeTimers,
   LolexFakeTimers,
 } from '@jest/fake-timers';
-import {EnvironmentContext, JestEnvironment} from '@jest/environment';
+import type {EnvironmentContext, JestEnvironment} from '@jest/environment';
 import {JSDOM, VirtualConsole} from 'jsdom';
 
 // The `Window` interface does not have an `Error.stackTraceLimit` property, but

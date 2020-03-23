@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AggregatedResult} from '@jest/test-result';
+import type {AggregatedResult} from '@jest/test-result';
 
 type CoverageMap = AggregatedResult['coverageMap'];
 

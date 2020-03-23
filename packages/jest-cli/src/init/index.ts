@@ -15,7 +15,7 @@ import defaultQuestions, {testScriptQuestion} from './questions';
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
 import generateConfigFile from './generate_config_file';
 import modifyPackageJson from './modify_package_json';
-import {ProjectPackageJson} from './types';
+import type {ProjectPackageJson} from './types';
 
 const {
   JEST_CONFIG_BASE_NAME,

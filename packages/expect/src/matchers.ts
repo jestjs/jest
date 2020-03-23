@@ -25,7 +25,7 @@ import {
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
-import {MatcherState, MatchersObject} from './types';
+import type {MatcherState, MatchersObject} from './types';
 import {
   printCloseTo,
   printExpectedConstructorName,

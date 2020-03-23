@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 
 const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   bail: 0,
@@ -14,38 +13,30 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   changedSince: '',
   collectCoverage: false,
   collectCoverageFrom: [],
-  collectCoverageOnlyFrom: null,
   coverageDirectory: 'coverage',
   coverageProvider: 'babel',
   coverageReporters: [],
   coverageThreshold: {global: {}},
   detectLeaks: false,
   detectOpenHandles: false,
-  enabledTestsMap: null,
   errorOnDeprecated: false,
   expand: false,
-  filter: null,
   findRelatedTests: false,
   forceExit: false,
-  globalSetup: null,
-  globalTeardown: null,
   json: false,
   lastCommit: false,
   listTests: false,
   logHeapUsage: false,
   maxConcurrency: 5,
   maxWorkers: 2,
-  noSCM: null,
   noStackTrace: false,
   nonFlagArgs: [],
   notify: false,
   notifyMode: 'failure-change',
   onlyChanged: false,
   onlyFailures: false,
-  outputFile: null,
   passWithNoTests: false,
   projects: [],
-  replname: null,
   reporters: [],
   rootDir: '/test_root_dir/',
   runTestsByPath: false,
@@ -54,7 +45,6 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   testFailureExitCode: 1,
   testNamePattern: '',
   testPathPattern: '',
-  testResultsProcessor: null,
   testSequencer: '@jest/test-sequencer',
   testTimeout: 5000,
   updateSnapshot: 'none',
@@ -79,10 +69,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   displayName: undefined,
   errorOnDeprecated: false,
   extraGlobals: [],
-  filter: null,
   forceCoverageMatch: [],
-  globalSetup: null,
-  globalTeardown: null,
   globals: {},
   haste: {
     providesModuleNodeModules: [],
@@ -97,7 +84,6 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   prettierPath: 'prettier',
   resetMocks: false,
   resetModules: false,
-  resolver: null,
   restoreMocks: false,
   rootDir: '/test_root_dir/',
   roots: [],
@@ -106,7 +92,6 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   setupFilesAfterEnv: [],
   skipFilter: false,
   skipNodeResolution: false,
-  snapshotResolver: null,
   snapshotSerializers: [],
   testEnvironment: 'node',
   testEnvironmentOptions: {},
@@ -119,7 +104,6 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   timers: 'real',
   transform: [],
   transformIgnorePatterns: [],
-  unmockedModulePathPatterns: null,
   watchPathIgnorePatterns: [],
 };
 

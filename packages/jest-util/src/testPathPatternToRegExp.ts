@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 
 // Because we serialize/deserialize globalConfig when we spawn workers,
 // we can't pass regular expression. Using this shared function on both sides

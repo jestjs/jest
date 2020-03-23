@@ -10,14 +10,14 @@
  * returning a promise from `it/test` and `before/afterEach/All` blocks.
  */
 
-import {Config, Global} from '@jest/types';
+import type {Config, Global} from '@jest/types';
 import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
 import throat from 'throat';
 import isError from './isError';
-import {Jasmine} from './types';
-import Spec from './jasmine/Spec';
-import {QueueableFn} from './queueRunner';
+import type {Jasmine} from './types';
+import type Spec from './jasmine/Spec';
+import type {QueueableFn} from './queueRunner';
 
 interface DoneFn {
   (): void;

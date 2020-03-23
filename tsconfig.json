@@ -7,7 +7,8 @@
     "declarationMap": true,
     "composite": true,
     "emitDeclarationOnly": true,
-    // "isolatedModules": true,
+    "isolatedModules": true,
+    "importsNotUsedAsValues": "error",
 
     "strict": true,
 

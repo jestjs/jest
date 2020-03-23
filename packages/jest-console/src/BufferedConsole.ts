@@ -10,7 +10,7 @@ import {Console} from 'console';
 import {format} from 'util';
 import chalk = require('chalk');
 import {SourceMapRegistry, getCallsite} from '@jest/source-map';
-import {
+import type {
   ConsoleBuffer,
   LogCounters,
   LogMessage,

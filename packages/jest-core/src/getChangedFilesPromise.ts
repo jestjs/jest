@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {ChangedFilesPromise, getChangedFilesForRoots} from 'jest-changed-files';
 import {formatExecError} from 'jest-message-util';
 import chalk = require('chalk');

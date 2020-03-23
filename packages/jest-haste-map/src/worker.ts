@@ -8,7 +8,7 @@
 import {createHash} from 'crypto';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
+import type {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
 import blacklist from './blacklist';
 import H from './constants';
 import * as dependencyExtractor from './lib/dependencyExtractor';

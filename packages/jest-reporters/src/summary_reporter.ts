@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {AggregatedResult, SnapshotSummary} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {AggregatedResult, SnapshotSummary} from '@jest/test-result';
 import chalk = require('chalk');
 import {testPathPatternToRegExp} from 'jest-util';
-import {Context, ReporterOnStartOptions} from './types';
+import type {Context, ReporterOnStartOptions} from './types';
 import BaseReporter from './base_reporter';
 import {getSummary} from './utils';
 import getResultHeader from './get_result_header';

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ScrollOptions} from '../types';
+import type {ScrollOptions} from '../types';
 
 export default function scroll(
   size: number,

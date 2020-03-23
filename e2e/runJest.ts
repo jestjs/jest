@@ -10,7 +10,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import {Writable} from 'stream';
 import execa = require('execa');
-import {FormattedTestResults} from '@jest/test-result';
+import type {FormattedTestResults} from '@jest/test-result';
 import stripAnsi = require('strip-ansi');
 import {normalizeIcons} from './Utils';
 

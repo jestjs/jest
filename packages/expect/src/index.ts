@@ -7,7 +7,7 @@
  */
 
 import * as matcherUtils from 'jest-matcher-utils';
-import {
+import type {
   AsyncExpectationResult,
   Expect,
   ExpectationResult,

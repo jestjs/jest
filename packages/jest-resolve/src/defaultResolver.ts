@@ -10,7 +10,7 @@ import {sync as resolveSync} from 'resolve';
 import {sync as browserResolve} from 'browser-resolve';
 import {sync as realpath} from 'realpath-native';
 import pnpResolver from 'jest-pnp-resolver';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 
 type ResolverOptions = {
   basedir: Config.Path;

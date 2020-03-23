@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {DeprecatedOptions, ValidationOptions} from './types';
+import type {DeprecatedOptions, ValidationOptions} from './types';
 
 import {DEPRECATION, logValidationWarning} from './utils';
 

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as Global from './Global';
+import type * as Global from './Global';
 
 type Process = NodeJS.Process;
 

@@ -7,7 +7,7 @@
 
 import ansiRegex = require('ansi-regex');
 import style = require('ansi-styles');
-import {Config, NewPlugin, Printer, Refs} from '../types';
+import type {Config, NewPlugin, Printer, Refs} from '../types';
 
 const toHumanReadableAnsi = (text: string) =>
   text.replace(ansiRegex(), match => {

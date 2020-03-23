@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Circus, Config, Global} from '@jest/types';
-import {JestEnvironment} from '@jest/environment';
+import type {Circus, Config, Global} from '@jest/types';
+import type {JestEnvironment} from '@jest/environment';
 import {
   AssertionResult,
   Status,

@@ -8,16 +8,16 @@
 import * as os from 'os';
 import * as path from 'path';
 import micromatch = require('micromatch');
-import {Context} from 'jest-runtime';
-import {Config} from '@jest/types';
-import {Test} from 'jest-runner';
-import {ChangedFiles} from 'jest-changed-files';
+import type {Context} from 'jest-runtime';
+import type {Config} from '@jest/types';
+import type {Test} from 'jest-runner';
+import type {ChangedFiles} from 'jest-changed-files';
 import DependencyResolver = require('jest-resolve-dependencies');
 import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {replacePathSepForGlob, testPathPatternToRegExp} from 'jest-util';
-import {Filter, Stats, TestPathCases} from './types';
+import type {Filter, Stats, TestPathCases} from './types';
 
 export type SearchResult = {
   noSCM?: boolean;

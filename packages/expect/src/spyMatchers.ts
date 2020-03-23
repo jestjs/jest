@@ -21,7 +21,11 @@ import {
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
-import {MatcherState, MatchersObject, SyncExpectationResult} from './types';
+import type {
+  MatcherState,
+  MatchersObject,
+  SyncExpectationResult,
+} from './types';
 import {equals} from './jasmineUtils';
 import {iterableEquality} from './utils';
 

@@ -9,15 +9,15 @@ import {URL, fileURLToPath} from 'url';
 import * as path from 'path';
 import {Script, compileFunction} from 'vm';
 import * as nativeModule from 'module';
-import {Config} from '@jest/types';
-import {
+import type {Config} from '@jest/types';
+import type {
   Jest,
   JestEnvironment,
   LocalModuleRequire,
   Module,
   ModuleWrapper,
 } from '@jest/environment';
-import {SourceMapRegistry} from '@jest/source-map';
+import type {SourceMapRegistry} from '@jest/source-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
@@ -29,13 +29,13 @@ import {
   handlePotentialSyntaxError,
   shouldInstrument,
 } from '@jest/transform';
-import {V8CoverageResult} from '@jest/test-result';
+import type {V8CoverageResult} from '@jest/test-result';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
 import {findSiblingsWithFileExtension} from './helpers';
-import {Context as JestContext} from './types';
+import type {Context as JestContext} from './types';
 import jestMock = require('jest-mock');
 import HasteMap = require('jest-haste-map');
 import Resolver = require('jest-resolve');

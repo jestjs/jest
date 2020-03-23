@@ -7,10 +7,10 @@
 
 import chalk = require('chalk');
 import {formatExecError} from 'jest-message-util';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import snapshot = require('jest-snapshot');
 import TestRunner = require('jest-runner');
-import {Context} from 'jest-runtime';
+import type {Context} from 'jest-runtime';
 import {
   CoverageReporter,
   DefaultReporter,
@@ -30,7 +30,7 @@ import {
 } from '@jest/test-result';
 import {interopRequireDefault} from 'jest-util';
 import ReporterDispatcher from './ReporterDispatcher';
-import TestWatcher from './TestWatcher';
+import type TestWatcher from './TestWatcher';
 import {shouldRunInBand} from './testSchedulerHelper';
 
 // The default jest-runner is required because it is the default test runner

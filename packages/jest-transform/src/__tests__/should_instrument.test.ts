@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import shouldInstrument from '../shouldInstrument';
 import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
 import {Options} from '../types';

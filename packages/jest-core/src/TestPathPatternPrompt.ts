@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Context} from 'jest-runtime';
-import {Test} from 'jest-runner';
+import type {Context} from 'jest-runtime';
+import type {Test} from 'jest-runner';
 
 import {
   PatternPrompt,
@@ -15,7 +15,7 @@ import {
   printPatternCaret,
   printRestoredPatternCaret,
 } from 'jest-watcher';
-import SearchSource from './SearchSource';
+import type SearchSource from './SearchSource';
 
 type SearchSources = Array<{
   context: Context;
