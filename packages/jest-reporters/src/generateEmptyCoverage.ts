@@ -25,7 +25,7 @@ export type CoverageWorkerResult =
       result: SingleV8Coverage;
     };
 
-export default function(
+export default function (
   source: string,
   filename: Config.Path,
   globalConfig: Config.GlobalConfig,

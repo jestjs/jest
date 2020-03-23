@@ -7,7 +7,7 @@ Internally creates a weak reference to the object, and forces garbage collection
 ## Example
 
 ```javascript
-(async function() {
+(async function () {
   let reference = {};
   let isLeaking;
 

@@ -65,7 +65,7 @@ class JSDOMEnvironment implements JestEnvironment {
     const originalAddListener = global.addEventListener;
     const originalRemoveListener = global.removeEventListener;
     let userErrorListenerCount = 0;
-    global.addEventListener = function(
+    global.addEventListener = function (
       ...args: Parameters<typeof originalAddListener>
     ) {
       if (args[0] === 'error') {
@@ -73,7 +73,7 @@ class JSDOMEnvironment implements JestEnvironment {
       }
       return originalAddListener.apply(this, args);
     };
-    global.removeEventListener = function(
+    global.removeEventListener = function (
       ...args: Parameters<typeof originalRemoveListener>
     ) {
       if (args[0] === 'error') {

@@ -140,7 +140,7 @@ describe('moduleMocker', () => {
     });
 
     it('wont interfere with previous mocks on a shared prototype', () => {
-      const ClassFoo = function() {};
+      const ClassFoo = function () {};
       ClassFoo.prototype.x = () => {};
       const ClassFooMock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(ClassFoo),
@@ -986,7 +986,7 @@ describe('moduleMocker', () => {
       const mock1 = jest.fn();
       const mock2 = jest.fn();
       const Module = jest.fn(() => ({someFn: mock1}));
-      const testFn = function() {
+      const testFn = function () {
         const m = new Module();
         m.someFn();
       };
@@ -1183,7 +1183,7 @@ describe('moduleMocker', () => {
       let originalCallArguments;
       const obj = {
         get method() {
-          return function() {
+          return function () {
             isOriginalCalled = true;
             originalCallThis = this;
             originalCallArguments = arguments;
@@ -1256,12 +1256,12 @@ describe('moduleMocker', () => {
       let methodTwoCalls = 0;
       const obj = {
         get methodOne() {
-          return function() {
+          return function () {
             methodOneCalls++;
           };
         },
         get methodTwo() {
-          return function() {
+          return function () {
             methodTwoCalls++;
           };
         },
@@ -1297,7 +1297,7 @@ describe('moduleMocker', () => {
       let originalCallArguments;
       const prototype = {
         get method() {
-          return function() {
+          return function () {
             isOriginalCalled = true;
             originalCallThis = this;
             originalCallArguments = arguments;
@@ -1360,12 +1360,12 @@ describe('moduleMocker', () => {
       let methodTwoCalls = 0;
       const prototype = {
         get methodOne() {
-          return function() {
+          return function () {
             methodOneCalls++;
           };
         },
         get methodTwo() {
-          return function() {
+          return function () {
             methodTwoCalls++;
           };
         },

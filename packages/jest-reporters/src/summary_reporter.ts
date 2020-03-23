@@ -145,11 +145,9 @@ export default class SummaryReporter extends BaseReporter {
       if (globalConfig.watch || globalConfig.watchAll) {
         updateCommand = 'press `u`';
       } else if (event && scriptUsesJest) {
-        updateCommand = `run \`${client +
-          ' ' +
-          prefix +
-          event +
-          (isYarn ? '' : ' --')} -u\``;
+        updateCommand = `run \`${
+          client + ' ' + prefix + event + (isYarn ? '' : ' --')
+        } -u\``;
       } else {
         updateCommand = 're-run jest with `-u`';
       }

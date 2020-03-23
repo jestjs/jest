@@ -461,9 +461,7 @@ describe('ScriptTransformer', () => {
     const content =
       'var x = 1;\n' +
       '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap)
-        .toString('base64')
-        .slice(0, 16);
+      Buffer.from(sourceMap).toString('base64').slice(0, 16);
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
 

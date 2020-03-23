@@ -5,6 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-global.Promise = function() {
+global.Promise = function () {
   throw new Error('Booo');
 };

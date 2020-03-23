@@ -10,10 +10,7 @@ import crypto from 'crypto';
 import {skipSuiteOnWindows} from '@jest/test-utils';
 
 function mockHashContents(contents) {
-  return crypto
-    .createHash('sha1')
-    .update(contents)
-    .digest('hex');
+  return crypto.createHash('sha1').update(contents).digest('hex');
 }
 
 jest.mock('child_process', () => ({

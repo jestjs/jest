@@ -67,7 +67,7 @@
     "mocha": "^7.0.0",
     "mock-fs": "^4.4.1",
     "opencollective": "^1.0.3",
-    "prettier": "^1.19.0",
+    "prettier": "^2.0.1",
     "progress": "^2.0.0",
     "promise": "^8.0.2",
     "realpath-native": "^2.0.0",
@@ -96,6 +96,7 @@
     "lint:prettier:ci": "prettier '**/*.{md,yml,yaml}' --check --ignore-path .gitignore",
     "postinstall": "opencollective postinstall && yarn build",
     "install-no-ts-build": "node ./scripts/remove-postinstall && yarn --no-progress --frozen-lockfile && node ./scripts/build",
+    "remove-prettier-dep": "node ./scripts/remove-prettier-dep",
     "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-ci-es5-build-in-browser": "karma start --single-run",
     "test-ci": "yarn jest-coverage --color -i --config jest.config.ci.js && yarn test-leak && node ./scripts/mapCoverage.js && codecov",
@@ -118,6 +119,7 @@
     "proseWrap": "never",
     "singleQuote": true,
     "trailingComma": "all",
+    "arrowParens": "avoid",
     "overrides": [
       {
         "excludeFiles": [

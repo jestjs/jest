@@ -19,9 +19,7 @@ let hasteImpl: HasteImpl | null = null;
 let hasteImplModulePath: string | null = null;
 
 function sha1hex(content: string | Buffer): string {
-  return createHash('sha1')
-    .update(content)
-    .digest('hex');
+  return createHash('sha1').update(content).digest('hex');
 }
 
 export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {

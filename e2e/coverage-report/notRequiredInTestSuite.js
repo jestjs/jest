@@ -12,7 +12,7 @@ throw new Error(
 
 // Flow annotations to make sure istanbul can instrument non ES6 source
 // eslint-disable-next-line no-unreachable
-module.exports = function(j: string, d: string): string {
+module.exports = function (j: string, d: string): string {
   if (j) {
     return d;
   } else {
