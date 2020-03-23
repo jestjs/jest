@@ -47,7 +47,7 @@ export default (config: {expand: boolean}): void => {
   jasmine.addMatchers = (jasmineMatchersObject: JasmineMatchersObject) => {
     const jestMatchersObject = Object.create(null);
     Object.keys(jasmineMatchersObject).forEach(name => {
-      jestMatchersObject[name] = function(
+      jestMatchersObject[name] = function (
         this: expect.MatcherState,
         ...args: Array<unknown>
       ): RawMatcherFn {

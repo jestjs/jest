@@ -67,7 +67,7 @@
     "mocha": "^7.0.0",
     "mock-fs": "^4.4.1",
     "opencollective": "^1.0.3",
-    "prettier": "^1.19.0",
+    "prettier": "^2.0.1",
     "progress": "^2.0.0",
     "promise": "^8.0.2",
     "realpath-native": "^2.0.0",
@@ -118,6 +118,7 @@
     "proseWrap": "never",
     "singleQuote": true,
     "trailingComma": "all",
+    "arrowParens": "avoid",
     "overrides": [
       {
         "excludeFiles": [

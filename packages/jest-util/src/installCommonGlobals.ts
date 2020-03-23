@@ -12,7 +12,7 @@ import deepCyclicCopy from './deepCyclicCopy';
 
 const DTRACE = Object.keys(global).filter(key => key.startsWith('DTRACE'));
 
-export default function(
+export default function (
   globalObject: NodeJS.Global,
   globals: Config.ConfigGlobals,
 ): NodeJS.Global & Config.ConfigGlobals {
@@ -56,7 +56,7 @@ export default function(
   // Forward some APIs.
   DTRACE.forEach(dtrace => {
     // @ts-ignore: no index
-    globalObject[dtrace] = function(...args: Array<any>) {
+    globalObject[dtrace] = function (...args: Array<any>) {
       // @ts-ignore: no index
       return global[dtrace].apply(this, args);
     };

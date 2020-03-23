@@ -32,11 +32,10 @@ export async function run(
   if (cliArgv) {
     argv = cliArgv;
   } else {
-    argv = <Config.Argv>yargs
-      .usage(args.usage)
-      .help(false)
-      .version(false)
-      .options(args.options).argv;
+    argv = <Config.Argv>(
+      yargs.usage(args.usage).help(false).version(false).options(args.options)
+        .argv
+    );
 
     validateCLIOptions(argv, {...args.options, deprecationEntries});
   }

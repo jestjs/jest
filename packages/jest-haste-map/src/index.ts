@@ -281,9 +281,7 @@ class HasteMap extends EventEmitter {
       );
     }
 
-    const rootDirHash = createHash('md5')
-      .update(options.rootDir)
-      .digest('hex');
+    const rootDirHash = createHash('md5').update(options.rootDir).digest('hex');
     let hasteImplHash = '';
     let dependencyExtractorHash = '';
 

@@ -202,7 +202,7 @@ Expected mock function "mockedFunction" to have been called, but it was not call
 Syntactic sugar function for:
 
 ```js
-jest.fn(function() {
+jest.fn(function () {
   return this;
 });
 ```

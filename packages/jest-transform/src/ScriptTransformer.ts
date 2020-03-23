@@ -599,9 +599,7 @@ const stripShebang = (content: string) => {
  * could get corrupted, out-of-sync, etc.
  */
 function writeCodeCacheFile(cachePath: Config.Path, code: string) {
-  const checksum = createHash('md5')
-    .update(code)
-    .digest('hex');
+  const checksum = createHash('md5').update(code).digest('hex');
   writeCacheFile(cachePath, checksum + '\n' + code);
 }
 
@@ -617,9 +615,7 @@ function readCodeCacheFile(cachePath: Config.Path): string | null {
     return null;
   }
   const code = content.substr(33);
-  const checksum = createHash('md5')
-    .update(code)
-    .digest('hex');
+  const checksum = createHash('md5').update(code).digest('hex');
   if (checksum === content.substr(0, 32)) {
     return code;
   }

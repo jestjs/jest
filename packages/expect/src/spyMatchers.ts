@@ -170,12 +170,7 @@ const printExpectedReceivedCallsPositive = (
               difference.includes('+ Received')
             ) {
               // Omit annotation in case multiple args have diff.
-              lines.push(
-                difference
-                  .split('\n')
-                  .slice(3)
-                  .join('\n') + ',',
-              );
+              lines.push(difference.split('\n').slice(3).join('\n') + ',');
               continue;
             }
           }
@@ -357,7 +352,7 @@ const printReceivedResults = (
 };
 
 const createToBeCalledMatcher = (matcherName: string) =>
-  function(
+  function (
     this: MatcherState,
     received: any,
     expected: unknown,
@@ -404,7 +399,7 @@ const createToBeCalledMatcher = (matcherName: string) =>
   };
 
 const createToReturnMatcher = (matcherName: string) =>
-  function(
+  function (
     this: MatcherState,
     received: any,
     expected: unknown,
@@ -462,7 +457,7 @@ const createToReturnMatcher = (matcherName: string) =>
   };
 
 const createToBeCalledTimesMatcher = (matcherName: string) =>
-  function(
+  function (
     this: MatcherState,
     received: any,
     expected: number,
@@ -498,7 +493,7 @@ const createToBeCalledTimesMatcher = (matcherName: string) =>
   };
 
 const createToReturnTimesMatcher = (matcherName: string) =>
-  function(
+  function (
     this: MatcherState,
     received: any,
     expected: number,
@@ -546,7 +541,7 @@ const createToReturnTimesMatcher = (matcherName: string) =>
   };
 
 const createToBeCalledWithMatcher = (matcherName: string) =>
-  function(
+  function (
     this: MatcherState,
     received: any,
     ...expected: Array<unknown>
@@ -619,7 +614,7 @@ const createToBeCalledWithMatcher = (matcherName: string) =>
   };
 
 const createToReturnWithMatcher = (matcherName: string) =>
-  function(
+  function (
     this: MatcherState,
     received: any,
     expected: unknown,
@@ -692,7 +687,7 @@ const createToReturnWithMatcher = (matcherName: string) =>
   };
 
 const createLastCalledWithMatcher = (matcherName: string) =>
-  function(
+  function (
     this: MatcherState,
     received: any,
     ...expected: Array<unknown>
@@ -775,7 +770,7 @@ const createLastCalledWithMatcher = (matcherName: string) =>
   };
 
 const createLastReturnedMatcher = (matcherName: string) =>
-  function(
+  function (
     this: MatcherState,
     received: any,
     expected: unknown,
@@ -859,7 +854,7 @@ const createLastReturnedMatcher = (matcherName: string) =>
   };
 
 const createNthCalledWithMatcher = (matcherName: string) =>
-  function(
+  function (
     this: MatcherState,
     received: any,
     nth: number,
@@ -989,7 +984,7 @@ const createNthCalledWithMatcher = (matcherName: string) =>
   };
 
 const createNthReturnedWithMatcher = (matcherName: string) =>
-  function(
+  function (
     this: MatcherState,
     received: any,
     nth: number,

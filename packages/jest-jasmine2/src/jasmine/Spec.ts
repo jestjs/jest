@@ -108,27 +108,27 @@ export default class Spec {
   }
 
   constructor(attrs: Attributes) {
-    this.resultCallback = attrs.resultCallback || function() {};
+    this.resultCallback = attrs.resultCallback || function () {};
     this.id = attrs.id;
     this.description = attrs.description || '';
     this.queueableFn = attrs.queueableFn;
     this.beforeAndAfterFns =
       attrs.beforeAndAfterFns ||
-      function() {
+      function () {
         return {befores: [], afters: []};
       };
     this.userContext =
       attrs.userContext ||
-      function() {
+      function () {
         return {};
       };
-    this.onStart = attrs.onStart || function() {};
+    this.onStart = attrs.onStart || function () {};
     this.getSpecName =
       attrs.getSpecName ||
-      function() {
+      function () {
         return '';
       };
-    this.queueRunnerFactory = attrs.queueRunnerFactory || function() {};
+    this.queueRunnerFactory = attrs.queueRunnerFactory || function () {};
     this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
     this.initError = new Error();
@@ -302,7 +302,7 @@ export default class Spec {
 
 Spec.pendingSpecExceptionMessage = '=> marked Pending';
 
-const extractCustomPendingMessage = function(e: Error) {
+const extractCustomPendingMessage = function (e: Error) {
   const fullMessage = e.toString();
   const boilerplateStart = fullMessage.indexOf(
     Spec.pendingSpecExceptionMessage,

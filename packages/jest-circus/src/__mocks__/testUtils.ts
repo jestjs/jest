@@ -27,9 +27,7 @@ interface Result extends ExecaSyncReturnValue {
 }
 
 export const runTest = (source: string) => {
-  const filename = createHash('md5')
-    .update(source)
-    .digest('hex');
+  const filename = createHash('md5').update(source).digest('hex');
   const tmpFilename = path.join(tmpdir(), filename);
 
   const content = `
