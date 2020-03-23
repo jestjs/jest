@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, Global} from '@jest/types';
-import {Plugin} from 'pretty-format';
+import type {Config, Global} from '@jest/types';
+import type {Plugin} from 'pretty-format';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {
   SnapshotState,
@@ -14,8 +14,12 @@ import {
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
-import JasmineSpec, {Attributes, SpecResult} from './jasmine/Spec';
-import {Jasmine} from './types';
+import type {
+  Attributes,
+  default as JasmineSpec,
+  SpecResult,
+} from './jasmine/Spec';
+import type {Jasmine} from './types';
 
 declare const global: Global.Global;
 
@@ -67,7 +71,7 @@ const patchJasmine = () => {
     class Spec extends realSpec {
       constructor(attr: Attributes) {
         const resultCallback = attr.resultCallback;
-        attr.resultCallback = function(result: SpecResult) {
+        attr.resultCallback = function (result: SpecResult) {
           addSuppressedErrors(result);
           addAssertionErrors(result);
           resultCallback.call(attr, result);

@@ -6,7 +6,7 @@
  */
 
 import {AssertionError} from 'assert';
-import {Circus} from '@jest/types';
+import type {Circus} from '@jest/types';
 import {
   DiffOptions,
   diff,

@@ -6,7 +6,7 @@
  */
 
 import expect = require('expect');
-import {Global} from '@jest/types';
+import type {Global} from '@jest/types';
 import {
   addSerializer,
   toMatchInlineSnapshot,
@@ -14,7 +14,7 @@ import {
   toThrowErrorMatchingInlineSnapshot,
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
-import {Jasmine, RawMatcherFn} from './types';
+import type {Jasmine, RawMatcherFn} from './types';
 
 declare const global: Global.Global;
 
@@ -47,7 +47,7 @@ export default (config: {expand: boolean}): void => {
   jasmine.addMatchers = (jasmineMatchersObject: JasmineMatchersObject) => {
     const jestMatchersObject = Object.create(null);
     Object.keys(jasmineMatchersObject).forEach(name => {
-      jestMatchersObject[name] = function(
+      jestMatchersObject[name] = function (
         this: expect.MatcherState,
         ...args: Array<unknown>
       ): RawMatcherFn {

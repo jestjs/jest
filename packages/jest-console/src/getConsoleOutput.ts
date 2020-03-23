@@ -8,7 +8,7 @@
 import * as path from 'path';
 import chalk = require('chalk');
 import slash = require('slash');
-import {ConsoleBuffer} from './types';
+import type {ConsoleBuffer} from './types';
 
 export default (
   root: string,

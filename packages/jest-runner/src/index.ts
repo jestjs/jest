@@ -5,15 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {SerializableError} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {SerializableError} from '@jest/test-result';
 import exit = require('exit');
 import chalk = require('chalk');
 import throat from 'throat';
 import Worker from 'jest-worker';
 import runTest from './runTest';
-import {SerializableResolver, worker} from './testWorker';
-import {
+import type {SerializableResolver, worker} from './testWorker';
+import type {
   OnTestFailure as JestOnTestFailure,
   OnTestStart as JestOnTestStart,
   OnTestSuccess as JestOnTestSuccess,

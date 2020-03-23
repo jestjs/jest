@@ -10,7 +10,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import {Writable} from 'stream';
 import execa = require('execa');
-import {FormattedTestResults} from '@jest/test-result';
+import type {FormattedTestResults} from '@jest/test-result';
 import stripAnsi = require('strip-ansi');
 import {normalizeIcons} from './Utils';
 
@@ -112,7 +112,7 @@ function normalizeStdoutAndStderr(
 //   'success', 'startTime', 'numTotalTests', 'numTotalTestSuites',
 //   'numRuntimeErrorTestSuites', 'numPassedTests', 'numFailedTests',
 //   'numPendingTests', 'testResults'
-export const json = function(
+export const json = function (
   dir: string,
   args: Array<string> | undefined,
   options: RunJestOptions = {},
@@ -141,7 +141,7 @@ type ConditionFunction = (arg: StdErrAndOutString) => boolean;
 
 // Runs `jest` continously (watch mode) and allows the caller to wait for
 // conditions on stdout and stderr and to end the process.
-export const runContinuous = function(
+export const runContinuous = function (
   dir: string,
   args?: Array<string>,
   options: RunJestOptions = {},

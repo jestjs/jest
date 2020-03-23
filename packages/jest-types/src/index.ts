@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as Circus from './Circus';
-import * as Config from './Config';
-import * as Global from './Global';
+import type * as Circus from './Circus';
+import type * as Config from './Config';
+import type * as Global from './Global';
 
-export {Circus, Config, Global};
+export type {Circus, Config, Global};

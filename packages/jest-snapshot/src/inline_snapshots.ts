@@ -14,9 +14,9 @@ import {
   templateElement,
   templateLiteral,
 } from '@babel/types';
-import {Frame} from 'jest-message-util';
+import type {Frame} from 'jest-message-util';
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {escapeBacktickString} from './utils';
 
 export type InlineSnapshot = {

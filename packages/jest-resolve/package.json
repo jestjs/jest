@@ -18,7 +18,7 @@
     "resolve": "^1.15.1"
   },
   "devDependencies": {
-    "@types/browser-resolve": "^0.0.5",
+    "@types/browser-resolve": "^1.11.0",
     "@types/resolve": "^1.14.0",
     "jest-haste-map": "^25.1.0"
   },

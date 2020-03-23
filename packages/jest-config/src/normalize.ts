@@ -9,7 +9,7 @@ import {createHash} from 'crypto';
 import {statSync} from 'fs';
 import * as path from 'path';
 import {sync as glob} from 'glob';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {ValidationError, validate} from 'jest-validate';
 import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk = require('chalk');

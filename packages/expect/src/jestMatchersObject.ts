@@ -7,7 +7,7 @@
  */
 
 import {AsymmetricMatcher} from './asymmetricMatchers';
-import {Expect, MatchersObject, SyncExpectationResult} from './types';
+import type {Expect, MatchersObject, SyncExpectationResult} from './types';
 
 // Global matchers object holds the list of available matchers and
 // the state, that can hold matcher specific values that change over time.

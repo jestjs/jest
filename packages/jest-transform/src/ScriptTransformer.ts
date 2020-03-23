@@ -7,7 +7,7 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {createDirectory, interopRequireDefault, isPromise} from 'jest-util';
 import * as fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
@@ -20,7 +20,7 @@ import slash = require('slash');
 import {sync as writeFileAtomic} from 'write-file-atomic';
 import {sync as realpath} from 'realpath-native';
 import {addHook} from 'pirates';
-import {
+import type {
   Options,
   TransformResult,
   TransformedSource,
@@ -599,9 +599,7 @@ const stripShebang = (content: string) => {
  * could get corrupted, out-of-sync, etc.
  */
 function writeCodeCacheFile(cachePath: Config.Path, code: string) {
-  const checksum = createHash('md5')
-    .update(code)
-    .digest('hex');
+  const checksum = createHash('md5').update(code).digest('hex');
   writeCacheFile(cachePath, checksum + '\n' + code);
 }
 
@@ -617,9 +615,7 @@ function readCodeCacheFile(cachePath: Config.Path): string | null {
     return null;
   }
   const code = content.substr(33);
-  const checksum = createHash('md5')
-    .update(code)
-    .digest('hex');
+  const checksum = createHash('md5').update(code).digest('hex');
   if (checksum === content.substr(0, 32)) {
     return code;
   }

@@ -6,7 +6,7 @@
  *
  */
 
-import {Global} from '@jest/types';
+import type {Global} from '@jest/types';
 import bind from './bind';
 
 type Global = Global.Global;

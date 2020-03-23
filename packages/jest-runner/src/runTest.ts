@@ -7,8 +7,8 @@
  */
 
 import {compileFunction} from 'vm';
-import {Config} from '@jest/types';
-import {TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {TestResult} from '@jest/test-result';
 import {
   BufferedConsole,
   CustomConsole,
@@ -17,7 +17,7 @@ import {
   NullConsole,
   getConsoleOutput,
 } from '@jest/console';
-import {JestEnvironment} from '@jest/environment';
+import type {JestEnvironment} from '@jest/environment';
 import RuntimeClass = require('jest-runtime');
 import * as fs from 'graceful-fs';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
@@ -28,7 +28,7 @@ import * as docblock from 'jest-docblock';
 import {formatExecError} from 'jest-message-util';
 import sourcemapSupport = require('source-map-support');
 import chalk = require('chalk');
-import {TestFramework, TestRunnerContext} from './types';
+import type {TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {
   leakDetector: LeakDetector | null;

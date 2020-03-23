@@ -221,7 +221,7 @@ In order to mock a constructor function, the module factory must return a constr
 
 ```javascript
 jest.mock('./sound-player', () => {
-  return function() {
+  return function () {
     return {playSoundFile: () => {}};
   };
 });

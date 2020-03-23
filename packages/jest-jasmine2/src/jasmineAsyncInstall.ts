@@ -10,14 +10,14 @@
  * returning a promise from `it/test` and `before/afterEach/All` blocks.
  */
 
-import {Config, Global} from '@jest/types';
+import type {Config, Global} from '@jest/types';
 import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
 import throat from 'throat';
 import isError from './isError';
-import {Jasmine} from './types';
-import Spec from './jasmine/Spec';
-import {QueueableFn} from './queueRunner';
+import type {Jasmine} from './types';
+import type Spec from './jasmine/Spec';
+import type {QueueableFn} from './queueRunner';
 
 interface DoneFn {
   (): void;
@@ -32,7 +32,7 @@ function promisifyLifeCycleFunction(
   originalFn: Function,
   env: Jasmine['currentEnv_'],
 ) {
-  return function<T>(
+  return function <T>(
     fn: Function | (() => Promise<T>) | GeneratorFunction | undefined,
     timeout?: number,
   ) {
@@ -57,7 +57,7 @@ function promisifyLifeCycleFunction(
 
     // We make *all* functions async and run `done` right away if they
     // didn't return a promise.
-    const asyncJestLifecycle = function(done: DoneFn) {
+    const asyncJestLifecycle = function (done: DoneFn) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
       const returnValue = wrappedFn.call({});
 
@@ -86,7 +86,7 @@ function promisifyIt(
   env: Jasmine['currentEnv_'],
   jasmine: Jasmine,
 ) {
-  return function(specName: string, fn: Function, timeout?: number) {
+  return function (specName: string, fn: Function, timeout?: number) {
     if (!fn) {
       const spec = originalFn.call(env, specName);
       spec.pend('not implemented');
@@ -107,7 +107,7 @@ function promisifyIt(
     // https://crbug.com/v8/7142
     extraError.stack = extraError.stack;
 
-    const asyncJestTest = function(done: DoneFn) {
+    const asyncJestTest = function (done: DoneFn) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
       const returnValue = wrappedFn.call({});
 
@@ -150,7 +150,7 @@ function makeConcurrent(
   env: Jasmine['currentEnv_'],
   mutex: ReturnType<typeof throat>,
 ): Global.ItConcurrentBase {
-  return function(specName, fn, timeout) {
+  return function (specName, fn, timeout) {
     let promise: Promise<unknown> = Promise.resolve();
 
     const spec = originalFn.call(env, specName, () => promise, timeout);

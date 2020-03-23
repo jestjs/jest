@@ -6,11 +6,11 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
-import {JestEnvironment} from '@jest/environment';
-import {TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {JestEnvironment} from '@jest/environment';
+import type {TestResult} from '@jest/test-result';
 import Runtime = require('jest-runtime');
-import {SnapshotStateType} from 'jest-snapshot';
+import type {SnapshotStateType} from 'jest-snapshot';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 

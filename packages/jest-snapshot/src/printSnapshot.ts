@@ -44,7 +44,7 @@ import {
   bForeground3,
 } from './colors';
 import {dedentLines} from './dedentLines';
-import {MatchSnapshotConfig} from './types';
+import type {MatchSnapshotConfig} from './types';
 import {deserializeString, minify, serialize} from './utils';
 
 type Chalk = chalk.Chalk;

@@ -30,10 +30,7 @@ module.exports.adjustToTerminalWidth = function adjustToTerminalWidth(str) {
   if (lastString.length < WIDTH) {
     lastString += Array(WIDTH - lastString.length).join(chalk.dim('.'));
   }
-  return strs
-    .slice(0, -1)
-    .concat(lastString)
-    .join('\n');
+  return strs.slice(0, -1).concat(lastString).join('\n');
 };
 
 module.exports.OK = OK;

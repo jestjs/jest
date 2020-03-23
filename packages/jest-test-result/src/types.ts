@@ -5,12 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
-import {ConsoleBuffer} from '@jest/console';
-import {Config} from '@jest/types';
-import {V8Coverage} from 'collect-v8-coverage';
-import {TransformResult} from '@jest/transform';
+import type {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
+import type {ConsoleBuffer} from '@jest/console';
+import type {Config} from '@jest/types';
+import type {V8Coverage} from 'collect-v8-coverage';
+import type {TransformResult} from '@jest/transform';
 
 export type V8CoverageResult = Array<{
   codeTransformResult: TransformResult | undefined;

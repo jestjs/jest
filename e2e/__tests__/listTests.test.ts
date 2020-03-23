@@ -24,12 +24,7 @@ describe('--listTests flag', () => {
 
     expect(exitCode).toBe(0);
     expect(
-      wrap(
-        normalizePaths(stdout)
-          .split('\n')
-          .sort()
-          .join('\n'),
-      ),
+      wrap(normalizePaths(stdout).split('\n').sort().join('\n')),
     ).toMatchSnapshot();
   });
 
@@ -39,13 +34,7 @@ describe('--listTests flag', () => {
     expect(exitCode).toBe(0);
     expect(() => JSON.parse(stdout)).not.toThrow();
     expect(
-      wrap(
-        JSON.stringify(
-          JSON.parse(stdout)
-            .map(normalizePaths)
-            .sort(),
-        ),
-      ),
+      wrap(JSON.stringify(JSON.parse(stdout).map(normalizePaths).sort())),
     ).toMatchSnapshot();
   });
 });

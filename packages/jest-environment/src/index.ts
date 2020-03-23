@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Context, Script} from 'vm';
-import {Circus, Config, Global} from '@jest/types';
+import type {Context, Script} from 'vm';
+import type {Circus, Config, Global} from '@jest/types';
 import jestMock = require('jest-mock');
-import {
+import type {
   JestFakeTimers as LegacyFakeTimers,
   LolexFakeTimers,
 } from '@jest/fake-timers';

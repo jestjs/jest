@@ -46,7 +46,7 @@ jest.doMock('chalk', () => new chalk.Instance({level: 0}));
 jest.doMock(
   '../runJest',
   () =>
-    function() {
+    function () {
       const args = Array.from(arguments);
       const [{onComplete}] = args;
       runJestMock.apply(null, args);

@@ -7,7 +7,7 @@
  */
 
 import * as matcherUtils from 'jest-matcher-utils';
-import {
+import type {
   AsyncExpectationResult,
   Expect,
   ExpectationResult,
@@ -57,10 +57,10 @@ const isPromise = <T extends any>(obj: any): obj is PromiseLike<T> =>
   (typeof obj === 'object' || typeof obj === 'function') &&
   typeof obj.then === 'function';
 
-const createToThrowErrorMatchingSnapshotMatcher = function(
+const createToThrowErrorMatchingSnapshotMatcher = function (
   matcher: RawMatcherFn,
 ) {
-  return function(
+  return function (
     this: JestMatcherState,
     received: any,
     testNameOrInlineSnapshot?: string,

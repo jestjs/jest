@@ -14,9 +14,9 @@ import HasteMap = require('jest-haste-map');
 import {formatExecError} from 'jest-message-util';
 import {isInteractive, preRunMessage, specialChars} from 'jest-util';
 import {ValidationError} from 'jest-validate';
-import {Context} from 'jest-runtime';
+import type {Context} from 'jest-runtime';
 import Resolver = require('jest-resolve');
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {
   AllowedConfigOptions,
   JestHook,
@@ -42,7 +42,7 @@ import {
   getSortedUsageRows,
 } from './lib/watch_plugins_helpers';
 import activeFilters from './lib/active_filters_message';
-import {Filter} from './types';
+import type {Filter} from './types';
 
 type ReservedInfo = {
   forbiddenOverwriteMessage?: string;

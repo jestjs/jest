@@ -7,7 +7,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 
 // eslint-disable-next-line import/named
 import {ExecaReturnValue, sync as spawnSync} from 'execa';

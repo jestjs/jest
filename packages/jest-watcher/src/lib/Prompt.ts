@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ScrollOptions} from '../types';
+import type {ScrollOptions} from '../types';
 import {KEYS} from '../constants';
 
 export default class Prompt {

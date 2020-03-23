@@ -6,14 +6,14 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
-import {ModuleMap} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
+import type {Config} from '@jest/types';
+import type {ModuleMap} from 'jest-haste-map';
 import {sync as realpath} from 'realpath-native';
 import chalk = require('chalk');
 import nodeModulesPaths from './nodeModulesPaths';
 import isBuiltinModule from './isBuiltinModule';
 import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
-import {ResolverConfig} from './types';
+import type {ResolverConfig} from './types';
 import ModuleNotFoundError from './ModuleNotFoundError';
 
 type FindNodeModuleConfig = {

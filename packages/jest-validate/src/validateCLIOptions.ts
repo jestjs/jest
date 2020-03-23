@@ -5,15 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import chalk = require('chalk');
 import camelcase from 'camelcase';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {Options} from 'yargs';
+import type {Options} from 'yargs';
 import {ValidationError, createDidYouMeanMessage, format} from './utils';
 import {deprecationWarning} from './deprecated';
 import defaultConfig from './defaultConfig';
-import {DeprecatedOptions} from './types';
+import type {DeprecatedOptions} from './types';
 
 const BULLET: string = chalk.bold('\u25cf');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold('CLI Options Documentation:')}

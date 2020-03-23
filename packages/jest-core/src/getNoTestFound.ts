@@ -6,8 +6,8 @@
  */
 
 import chalk = require('chalk');
-import {Config} from '@jest/types';
-import {TestRunData} from './types';
+import type {Config} from '@jest/types';
+import type {TestRunData} from './types';
 import pluralize from './pluralize';
 
 export default function getNoTestFound(

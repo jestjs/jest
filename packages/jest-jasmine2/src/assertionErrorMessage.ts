@@ -12,7 +12,7 @@ import {
   printReceived,
 } from 'jest-matcher-utils';
 import chalk = require('chalk');
-import {AssertionErrorWithStack} from './types';
+import type {AssertionErrorWithStack} from './types';
 
 const assertOperatorsMap: Record<string, string> = {
   '!=': 'notEqual',

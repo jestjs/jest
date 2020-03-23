@@ -7,7 +7,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import chalk = require('chalk');
 import {sync as realpath} from 'realpath-native';
 import {isJSONString, replaceRootDirInPath} from './utils';

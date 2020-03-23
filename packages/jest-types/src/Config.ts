@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Arguments} from 'yargs';
-import {ReportOptions} from 'istanbul-reports';
+import type {Arguments} from 'yargs';
+import type {ReportOptions} from 'istanbul-reports';
 import chalk = require('chalk');
 
 type CoverageProvider = 'babel' | 'v8';

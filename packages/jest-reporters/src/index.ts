@@ -12,15 +12,19 @@ import {
   trimAndFormatPath,
 } from './utils';
 
-export {Config} from '@jest/types';
-export {AggregatedResult, SnapshotSummary, TestResult} from '@jest/test-result';
+export type {Config} from '@jest/types';
+export type {
+  AggregatedResult,
+  SnapshotSummary,
+  TestResult,
+} from '@jest/test-result';
 export {default as BaseReporter} from './base_reporter';
 export {default as CoverageReporter} from './coverage_reporter';
 export {default as DefaultReporter} from './default_reporter';
 export {default as NotifyReporter} from './notify_reporter';
 export {default as SummaryReporter} from './summary_reporter';
 export {default as VerboseReporter} from './verbose_reporter';
-export {
+export type {
   Context,
   Reporter,
   ReporterOnStartOptions,

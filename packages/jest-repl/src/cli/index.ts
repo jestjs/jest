@@ -11,14 +11,14 @@ import Runtime = require('jest-runtime');
 import yargs = require('yargs');
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries} from 'jest-config';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import * as args from './args';
 
 const {version: VERSION} = require('../../package.json');
 
 const REPL_SCRIPT = require.resolve('./repl.js');
 
-export = function(): void {
+export = function (): void {
   const argv = <Config.Argv>yargs.usage(args.usage).options(args.options).argv;
 
   // @ts-ignore: fix this at some point

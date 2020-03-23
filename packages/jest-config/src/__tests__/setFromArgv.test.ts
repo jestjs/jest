@@ -6,7 +6,7 @@
  *
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import setFromArgv from '../setFromArgv';
 
 test('maps special values to valid options', () => {
