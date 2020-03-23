@@ -16,6 +16,11 @@ export default class ModuleNotFoundError extends Error {
 
   private _originalMessage?: string;
 
+  constructor(message: string) {
+    super(message);
+    this._originalMessage = message;
+  }
+
   public buildMessage(rootDir: Config.Path): void {
     if (!this._originalMessage) {
       this._originalMessage = this.message || '';
