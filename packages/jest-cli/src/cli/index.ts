@@ -6,8 +6,8 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
-import {AggregatedResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {AggregatedResult} from '@jest/test-result';
 import {clearLine} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries} from 'jest-config';

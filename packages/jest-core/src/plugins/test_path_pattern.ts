@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {BaseWatchPlugin, Prompt, UpdateConfigCallback} from 'jest-watcher';
 import TestPathPatternPrompt from '../TestPathPatternPrompt';
 import activeFilters from '../lib/active_filters_message';

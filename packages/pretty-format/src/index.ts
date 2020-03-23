@@ -6,7 +6,7 @@
  */
 
 import style = require('ansi-styles');
-import * as PrettyFormat from './types';
+import type * as PrettyFormat from './types';
 
 import {
   printIteratorEntries,

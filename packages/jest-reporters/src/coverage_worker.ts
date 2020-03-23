@@ -6,9 +6,9 @@
  */
 
 import * as fs from 'fs';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import exit = require('exit');
-import {CoverageReporterSerializedOptions} from './types';
+import type {CoverageReporterSerializedOptions} from './types';
 
 import generateEmptyCoverage, {
   CoverageWorkerResult,
@@ -21,7 +21,7 @@ export type CoverageWorkerData = {
   options?: CoverageReporterSerializedOptions;
 };
 
-export {CoverageWorkerResult};
+export type {CoverageWorkerResult};
 
 // Make sure uncaught errors are logged before we exit.
 process.on('uncaughtException', err => {

@@ -10,10 +10,10 @@ import * as path from 'path';
 import makeDir = require('make-dir');
 import naturalCompare = require('natural-compare');
 import chalk = require('chalk');
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import prettyFormat = require('pretty-format');
 import {getSerializers} from './plugins';
-import {SnapshotData} from './types';
+import type {SnapshotData} from './types';
 
 export const SNAPSHOT_VERSION = '1';
 const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;

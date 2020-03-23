@@ -8,8 +8,8 @@
 import {createHash} from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
-import {Transformer} from '@jest/transform';
-import {Config} from '@jest/types';
+import type {Transformer} from '@jest/transform';
+import type {Config} from '@jest/types';
 import {
   PartialConfig,
   TransformOptions,

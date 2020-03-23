@@ -10,7 +10,7 @@ export {
   createTranspilingRequire,
 } from './ScriptTransformer';
 export {default as shouldInstrument} from './shouldInstrument';
-export {
+export type {
   Transformer,
   ShouldInstrumentOptions,
   Options as TransformationOptions,

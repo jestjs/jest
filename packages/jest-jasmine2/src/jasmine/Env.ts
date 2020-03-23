@@ -41,9 +41,9 @@ import queueRunner, {
 import treeProcessor, {TreeNode} from '../treeProcessor';
 import isError from '../isError';
 import assertionErrorMessage from '../assertionErrorMessage';
-import {AssertionErrorWithStack, Jasmine, Reporter, Spy} from '../types';
-import Spec, {SpecResult} from './Spec';
-import Suite from './Suite';
+import type {AssertionErrorWithStack, Jasmine, Reporter, Spy} from '../types';
+import type {default as Spec, SpecResult} from './Spec';
+import type Suite from './Suite';
 
 export default function (j$: Jasmine) {
   return class Env {

@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {ValidationError} from 'jest-validate';
 import Resolver = require('jest-resolve');
 import chalk = require('chalk');

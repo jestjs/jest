@@ -7,7 +7,7 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {createDirectory, interopRequireDefault, isPromise} from 'jest-util';
 import * as fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
@@ -20,7 +20,7 @@ import slash = require('slash');
 import {sync as writeFileAtomic} from 'write-file-atomic';
 import {sync as realpath} from 'realpath-native';
 import {addHook} from 'pirates';
-import {
+import type {
   Options,
   TransformResult,
   TransformedSource,

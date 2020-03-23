@@ -12,7 +12,7 @@ export {
   createEmptyTestResult,
   makeEmptyAggregatedTestResult,
 } from './helpers';
-export {
+export type {
   AggregatedResult,
   AssertionLocation,
   AssertionResult,

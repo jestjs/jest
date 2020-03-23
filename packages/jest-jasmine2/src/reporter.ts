@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {
   AssertionResult,
   TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
 import {formatResultsErrors} from 'jest-message-util';
-import {SpecResult} from './jasmine/Spec';
-import {SuiteResult} from './jasmine/Suite';
-import {Reporter, RunDetails} from './types';
+import type {SpecResult} from './jasmine/Spec';
+import type {SuiteResult} from './jasmine/Suite';
+import type {Reporter, RunDetails} from './types';
 
 type Microseconds = number;
 

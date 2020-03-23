@@ -30,7 +30,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys */
 
-import {Jasmine} from '../types';
+import type {Jasmine} from '../types';
 import createSpy from './createSpy';
 import Env from './Env';
 import JsApiReporter from './JsApiReporter';

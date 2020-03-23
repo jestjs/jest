@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 
 const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   automock: 'All imported modules in your tests should be mocked automatically',

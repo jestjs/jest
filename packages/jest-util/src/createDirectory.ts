@@ -6,7 +6,7 @@
  */
 
 import makeDir = require('make-dir');
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 
 export default function createDirectory(path: Config.Path): void {
   try {

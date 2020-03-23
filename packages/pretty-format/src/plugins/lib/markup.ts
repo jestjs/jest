@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, Printer, Refs} from '../../types';
+import type {Config, Printer, Refs} from '../../types';
 
 import escapeHTML from './escapeHTML';
 

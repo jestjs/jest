@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AggregatedResult, TestResult} from '@jest/test-result';
-import {Test} from 'jest-runner';
-import {Context} from 'jest-runtime';
-import {Reporter, ReporterOnStartOptions} from '@jest/reporters';
+import type {AggregatedResult, TestResult} from '@jest/test-result';
+import type {Test} from 'jest-runner';
+import type {Context} from 'jest-runtime';
+import type {Reporter, ReporterOnStartOptions} from '@jest/reporters';
 
 export default class ReporterDispatcher {
   private _reporters: Array<Reporter>;

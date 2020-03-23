@@ -29,10 +29,10 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys */
-import {Reporter, RunDetails} from '../types';
-import {SpecResult} from './Spec';
-import {SuiteResult} from './Suite';
-import Timer from './Timer';
+import type {Reporter, RunDetails} from '../types';
+import type {SpecResult} from './Spec';
+import type {SuiteResult} from './Suite';
+import type Timer from './Timer';
 
 const noopTimer = {
   start() {},

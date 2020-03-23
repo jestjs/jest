@@ -6,7 +6,7 @@
  */
 
 import * as fs from 'fs';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import createProcessObject from './createProcessObject';
 import deepCyclicCopy from './deepCyclicCopy';
 

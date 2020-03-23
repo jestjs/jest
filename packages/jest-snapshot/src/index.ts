@@ -6,8 +6,8 @@
  */
 
 import * as fs from 'fs';
-import {Config} from '@jest/types';
-import {FS as HasteFS} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
+import type {Config} from '@jest/types';
+import type {FS as HasteFS} from 'jest-haste-map';
 
 import {
   BOLD_WEIGHT,
@@ -38,7 +38,7 @@ import {
   printReceived,
   printSnapshotAndReceived,
 } from './printSnapshot';
-import {Context, MatchSnapshotConfig} from './types';
+import type {Context, MatchSnapshotConfig} from './types';
 import * as utils from './utils';
 
 const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow

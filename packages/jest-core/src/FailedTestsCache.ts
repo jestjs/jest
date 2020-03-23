@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Test} from 'jest-runner';
-import {Config} from '@jest/types';
-import {TestResult} from '@jest/test-result';
+import type {Test} from 'jest-runner';
+import type {Config} from '@jest/types';
+import type {TestResult} from '@jest/test-result';
 
 type TestMap = Record<string, Record<string, boolean>>;
 

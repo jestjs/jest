@@ -29,7 +29,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import {Spy} from '../types';
+import type {Spy} from '../types';
 import CallTracker from './CallTracker';
 import createSpy from './createSpy';
 import SpyStrategy from './SpyStrategy';

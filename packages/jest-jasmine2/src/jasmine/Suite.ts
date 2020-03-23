@@ -31,11 +31,11 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import {convertDescriptorToString} from 'jest-util';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import ExpectationFailed from '../ExpectationFailed';
 import expectationResultFactory from '../expectationResultFactory';
-import {QueueableFn} from '../queueRunner';
-import Spec from './Spec';
+import type {QueueableFn} from '../queueRunner';
+import type Spec from './Spec';
 
 export type SuiteResult = {
   id: string;

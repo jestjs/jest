@@ -28,9 +28,9 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-import {Reporter, RunDetails} from '../types';
-import {SpecResult} from './Spec';
-import {SuiteResult} from './Suite';
+import type {Reporter, RunDetails} from '../types';
+import type {SpecResult} from './Spec';
+import type {SuiteResult} from './Suite';
 
 export default class ReportDispatcher implements Reporter {
   addReporter: (reporter: Reporter) => void;

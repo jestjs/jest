@@ -6,8 +6,8 @@
  */
 
 import pEachSeries = require('p-each-series');
-import {Config} from '@jest/types';
-import {Test} from 'jest-runner';
+import type {Config} from '@jest/types';
+import type {Test} from 'jest-runner';
 import {ScriptTransformer} from '@jest/transform';
 import {interopRequireDefault} from 'jest-util';
 

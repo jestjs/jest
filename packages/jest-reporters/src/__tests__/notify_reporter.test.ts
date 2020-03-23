@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AggregatedResult} from '@jest/test-result';
-import {Config} from '@jest/types';
+import type {AggregatedResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import NotifyReporter from '../notify_reporter';
 import {makeGlobalConfig} from '../../../../TestUtils';
 
