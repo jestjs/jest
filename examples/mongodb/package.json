@@ -7,7 +7,7 @@
   "dependencies": {
     "jest-environment-node": "*",
     "mongodb": "^3.1.13",
-    "mongodb-memory-server": "^6.1.1"
+    "mongodb-memory-server": "^6.3.2"
   },
   "devDependencies": {
     "@babel/core": "*",
