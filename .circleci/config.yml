@@ -25,7 +25,9 @@ jobs:
     steps:
       - checkout
       - restore-cache: *restore-cache
-      - run: *install
+      - run:
+          - yarn remove-prettier-dep
+          - *install
       - save-cache: *save-cache
       - run:
           command: yarn test-ci-partial
