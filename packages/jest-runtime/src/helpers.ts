@@ -61,5 +61,8 @@ export const printRequireStack = (
 ): string => `
 
 Require stack:
-  ${requireStack.map(p => p.replace(`${rootDir}${path.sep}`, '')).join('\n  ')}
+  ${requireStack
+    .map(p => p.replace(`${rootDir}${path.sep}`, ''))
+    .map(slash)
+    .join('\n  ')}
 `;
