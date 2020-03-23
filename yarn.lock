@@ -2341,15 +2341,7 @@
     "@types/istanbul-lib-coverage" "*"
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@*":
-  version "25.1.4"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-25.1.4.tgz#9e9f1e59dda86d3fd56afce71d1ea1b331f6f760"
-  integrity sha512-QDDY2uNAhCV7TMCITrxz+MRk1EizcsevzfeS6LykIlq2V1E5oO4wXG8V2ZEd9w7Snxeeagk46YbMgZ8ESHx3sw==
-  dependencies:
-    jest-diff "^25.1.0"
-    pretty-format "^25.1.0"
-
-"@types/jest@24.0.2":
+"@types/jest@*", "@types/jest@24.0.2":
   version "24.0.2"
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-24.0.2.tgz#a10ad017ee020b2dfa97655323dbf1f38f14f588"
   integrity sha512-YCGS1XGfAnDLUy8IL7iZf+Tnl0jhnaWUhrx8H/WyaDnjsu9dQBO8jiQqgJi/4BEryY6gvaqf1OvB1B2BvsW4dg==
