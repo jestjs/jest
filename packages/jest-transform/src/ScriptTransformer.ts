@@ -630,7 +630,7 @@ function readCodeCacheFile(cachePath: Config.Path): string | null {
  */
 const writeCacheFile = (cachePath: Config.Path, fileData: string) => {
   try {
-    writeFileAtomic(cachePath, fileData, {encoding: 'utf8'});
+    writeFileAtomic(cachePath, fileData, {encoding: 'utf8', fsync: false});
   } catch (e) {
     if (cacheWriteErrorSafeToIgnore(e, cachePath)) {
       return;
