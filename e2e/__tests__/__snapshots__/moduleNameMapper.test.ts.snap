@@ -36,7 +36,7 @@ FAIL __tests__/index.js
       12 | module.exports = () => 'test';
       13 | 
 
-      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/index.js:519:17)
+      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/index.js:540:17)
       at Object.require (index.js:10:1)
 `;
 
@@ -65,6 +65,6 @@ FAIL __tests__/index.js
       12 | module.exports = () => 'test';
       13 | 
 
-      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/index.js:519:17)
+      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/index.js:540:17)
       at Object.require (index.js:10:1)
 `;
