@@ -512,11 +512,17 @@ class Runtime {
     } catch (e) {
       const moduleNotFound = Resolver.tryCastModuleNotFoundError(e);
       if (moduleNotFound) {
-        if (!moduleNotFound.hint) {
+        if (
+          moduleNotFound.siblingWithSimilarExtensionFound === null ||
+          moduleNotFound.siblingWithSimilarExtensionFound === undefined
+        ) {
           moduleNotFound.hint = findSiblingsWithFileExtension(
             this._config.moduleFileExtensions,
             from,
             moduleNotFound.moduleName || moduleName,
+          );
+          moduleNotFound.siblingWithSimilarExtensionFound = Boolean(
+            moduleNotFound.hint,
           );
         }
         moduleNotFound.buildMessage(this._config.rootDir);

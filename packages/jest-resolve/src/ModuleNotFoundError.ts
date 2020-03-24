@@ -13,6 +13,7 @@ export default class ModuleNotFoundError extends Error {
   code = 'MODULE_NOT_FOUND';
   public hint?: string;
   public requireStack?: Array<Config.Path>;
+  public siblingWithSimilarExtensionFound?: boolean;
   public moduleName?: string;
 
   private _originalMessage?: string;
