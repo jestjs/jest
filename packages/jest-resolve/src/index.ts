@@ -83,6 +83,21 @@ class Resolver {
 
   static ModuleNotFoundError = ModuleNotFoundError;
 
+  static tryCastModuleNotFoundError(
+    error: unknown,
+  ): ModuleNotFoundError | null {
+    if (error instanceof ModuleNotFoundError) {
+      return error as ModuleNotFoundError;
+    }
+
+    const casted = error as ModuleNotFoundError;
+    if (casted.code === 'MODULE_NOT_FOUND') {
+      return ModuleNotFoundError.duckType(casted);
+    }
+
+    return null;
+  }
+
   static clearDefaultResolverCache(): void {
     clearDefaultResolverCache();
   }
@@ -222,6 +237,7 @@ class Resolver {
 
     throw new ModuleNotFoundError(
       `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
+      moduleName,
     );
   }
 

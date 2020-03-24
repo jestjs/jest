@@ -13,12 +13,14 @@ export default class ModuleNotFoundError extends Error {
   code = 'MODULE_NOT_FOUND';
   public hint?: string;
   public requireStack?: Array<Config.Path>;
+  public moduleName?: string;
 
   private _originalMessage?: string;
 
-  constructor(message: string) {
+  constructor(message: string, moduleName?: string) {
     super(message);
     this._originalMessage = message;
+    this.moduleName = moduleName;
   }
 
   public buildMessage(rootDir: Config.Path): void {
@@ -44,5 +46,10 @@ Require stack:
     }
 
     this.message = message;
+  }
+
+  public static duckType(error: ModuleNotFoundError): ModuleNotFoundError {
+    error.buildMessage = ModuleNotFoundError.prototype.buildMessage;
+    return error;
   }
 }

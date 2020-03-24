@@ -113,14 +113,7 @@ test('should throw module not found error if the module has dependencies that ca
         requiresUnexistingModule.js
         Test7.js
         __tests__/resolve.test.js
-
-
-      However, Jest was able to find:
-      	'./requiresUnexistingModule.js'
-
-      You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['js', 'json', 'jsx', 'ts', 'tsx', 'node'].
-
-      See https://jestjs.io/docs/en/configuration#modulefileextensions-arraystring"
+      "
     `);
   }
 });

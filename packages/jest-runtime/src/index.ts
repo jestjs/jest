@@ -32,7 +32,6 @@ import {
 import type {V8CoverageResult} from '@jest/test-result';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
-import type ModuleNotFoundError from 'jest-resolve/build/ModuleNotFoundError';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
 import {findSiblingsWithFileExtension} from './helpers';
@@ -511,18 +510,19 @@ class Runtime {
         return this.requireModule(from, moduleName);
       }
     } catch (e) {
-      const moduleNotFound = e as ModuleNotFoundError;
-      if (moduleNotFound.code === 'MODULE_NOT_FOUND') {
+      const moduleNotFound = Resolver.tryCastModuleNotFoundError(e);
+      if (moduleNotFound) {
         if (!moduleNotFound.hint) {
           moduleNotFound.hint = findSiblingsWithFileExtension(
             this._config.moduleFileExtensions,
             from,
-            moduleName,
+            moduleNotFound.moduleName || moduleName,
           );
         }
         moduleNotFound.buildMessage(this._config.rootDir);
+        throw moduleNotFound;
       }
-      throw moduleNotFound;
+      throw e;
     }
   }
 
@@ -1293,8 +1293,8 @@ class Runtime {
   }
 
   private handleExecutionError(e: Error, module: InitialModule): never {
-    const moduleNotFoundError: ModuleNotFoundError = e as ModuleNotFoundError;
-    if (moduleNotFoundError.code === 'MODULE_NOT_FOUND') {
+    const moduleNotFoundError = Resolver.tryCastModuleNotFoundError(e);
+    if (moduleNotFoundError) {
       if (!moduleNotFoundError.requireStack) {
         moduleNotFoundError.requireStack = [module.filename || module.id];
 
@@ -1304,6 +1304,7 @@ class Runtime {
 
         moduleNotFoundError.buildMessage(this._config.rootDir);
       }
+      throw moduleNotFoundError;
     }
 
     throw e;
