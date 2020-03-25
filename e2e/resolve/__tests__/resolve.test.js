@@ -102,9 +102,7 @@ test('should require resolve haste mocks correctly', () => {
 });
 
 test('should throw module not found error if the module has dependencies that cannot be found', () => {
-  expect(() => {
-    require('Test7');
-  }).toThrow(
+  expect(() => require('Test7')).toThrow(
     expect.objectContaining({
       code: 'MODULE_NOT_FOUND',
       message: dedent`
@@ -120,9 +118,7 @@ test('should throw module not found error if the module has dependencies that ca
 });
 
 test('should throw module not found error if the module cannot be found', () => {
-  expect(() => {
-    require('Test8');
-  }).toThrow(
+  expect(() => require('Test8')).toThrow(
     expect.objectContaining({
       code: 'MODULE_NOT_FOUND',
       message: "Cannot find module 'Test8' from 'resolve.test.js'",
