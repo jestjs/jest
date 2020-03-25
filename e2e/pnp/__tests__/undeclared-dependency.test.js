@@ -7,10 +7,7 @@
  */
 
 it('should surface pnp errors', () => {
-  try {
+  expect(() => {
     require('undeclared');
-    throw new Error('UNDECLARED_DEPENDENCY should have been thrown');
-  } catch (error) {
-    expect(error.code).toBe('UNDECLARED_DEPENDENCY');
-  }
+  }).toThrow(expect.objectContaining({code: 'UNDECLARED_DEPENDENCY'}));
 });

@@ -6,6 +6,8 @@
  */
 'use strict';
 
+const dedent = require('dedent');
+
 let platform;
 
 function testRequire(filename) {
@@ -100,32 +102,30 @@ test('should require resolve haste mocks correctly', () => {
 });
 
 test('should throw module not found error if the module has dependencies that cannot be found', () => {
-  try {
+  expect(() => {
     require('Test7');
-    throw new Error('Requiring Test7 should have thrown an error');
-  } catch (error) {
-    expect(error.code).toBe('MODULE_NOT_FOUND');
+  }).toThrow(
+    expect.objectContaining({
+      code: 'MODULE_NOT_FOUND',
+      message: dedent`
+        Cannot find module 'nope' from 'requiresUnexistingModule.js'
 
-    expect(error.message).toMatchInlineSnapshot(`
-      "Cannot find module 'nope' from 'requiresUnexistingModule.js'
-
-      Require stack:
-        requiresUnexistingModule.js
-        Test7.js
-        __tests__/resolve.test.js
-      "
-    `);
-  }
+        Require stack:
+          requiresUnexistingModule.js
+          Test7.js
+          __tests__/resolve.test.js\n
+        `,
+    })
+  );
 });
 
 test('should throw module not found error if the module cannot be found', () => {
-  try {
+  expect(() => {
     require('Test8');
-    throw new Error('Requiring Test8 should have thrown an error');
-  } catch (error) {
-    expect(error.code).toBe('MODULE_NOT_FOUND');
-    expect(error.message.split('\n')[0]).toBe(
-      "Cannot find module 'Test8' from 'resolve.test.js'"
-    );
-  }
+  }).toThrow(
+    expect.objectContaining({
+      code: 'MODULE_NOT_FOUND',
+      message: "Cannot find module 'Test8' from 'resolve.test.js'",
+    })
+  );
 });
