@@ -7,11 +7,11 @@
 
 import * as path from 'path';
 import watchman = require('fb-watchman');
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import * as fastPath from '../lib/fast_path';
 import normalizePathSep from '../lib/normalizePathSep';
 import H from '../constants';
-import {
+import type {
   CrawlerOptions,
   FileData,
   FileMetaData,

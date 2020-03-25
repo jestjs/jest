@@ -13,25 +13,24 @@ import {interopRequireDefault} from 'jest-util';
 import exit = require('exit');
 import * as fs from 'graceful-fs';
 import {JestHook, JestHookEmitter} from 'jest-watcher';
-import {Context} from 'jest-runtime';
-import {Test} from 'jest-runner';
-import {Config} from '@jest/types';
+import type {Context} from 'jest-runtime';
+import type {Test} from 'jest-runner';
+import type {Config} from '@jest/types';
 import {
   AggregatedResult,
   formatTestResults,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import TestSequencer from '@jest/test-sequencer';
-import {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
+import type TestSequencer from '@jest/test-sequencer';
+import type {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import runGlobalHook from './runGlobalHook';
 import SearchSource from './SearchSource';
 import TestScheduler, {TestSchedulerContext} from './TestScheduler';
-import FailedTestsCache from './FailedTestsCache';
+import type FailedTestsCache from './FailedTestsCache';
 import collectNodeHandles from './collectHandles';
-import TestWatcher from './TestWatcher';
-import {Filter, TestRunData} from './types';
+import type TestWatcher from './TestWatcher';
+import type {Filter, TestRunData} from './types';
 
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,

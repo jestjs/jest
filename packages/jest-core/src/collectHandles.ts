@@ -6,7 +6,7 @@
  */
 
 import * as asyncHooks from 'async_hooks';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';
 import stripAnsi = require('strip-ansi');

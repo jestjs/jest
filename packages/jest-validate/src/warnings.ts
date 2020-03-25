@@ -6,7 +6,7 @@
  */
 
 import chalk = require('chalk');
-import {ValidationOptions} from './types';
+import type {ValidationOptions} from './types';
 import {
   WARNING,
   createDidYouMeanMessage,

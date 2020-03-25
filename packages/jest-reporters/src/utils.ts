@@ -6,12 +6,12 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
-import {AggregatedResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {AggregatedResult} from '@jest/test-result';
 import chalk = require('chalk');
 import slash = require('slash');
 import {pluralize} from 'jest-util';
-import {SummaryOptions} from './types';
+import type {SummaryOptions} from './types';
 
 const PROGRESS_BAR_WIDTH = 40;
 

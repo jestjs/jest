@@ -478,12 +478,8 @@ describe('.toEqual()', () => {
     [Immutable.Map({a: 0}), Immutable.Map({b: 0})],
     [Immutable.Map({v: 1}), Immutable.Map({v: 2})],
     [
-      Immutable.OrderedMap()
-        .set(1, 'one')
-        .set(2, 'two'),
-      Immutable.OrderedMap()
-        .set(2, 'two')
-        .set(1, 'one'),
+      Immutable.OrderedMap().set(1, 'one').set(2, 'two'),
+      Immutable.OrderedMap().set(2, 'two').set(1, 'one'),
     ],
     [
       Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
@@ -674,28 +670,16 @@ describe('.toEqual()', () => {
     ],
     [Immutable.Map(), Immutable.Map()],
     [
-      Immutable.Map()
-        .set(1, 'one')
-        .set(2, 'two'),
-      Immutable.Map()
-        .set(1, 'one')
-        .set(2, 'two'),
+      Immutable.Map().set(1, 'one').set(2, 'two'),
+      Immutable.Map().set(1, 'one').set(2, 'two'),
     ],
     [
-      Immutable.Map()
-        .set(1, 'one')
-        .set(2, 'two'),
-      Immutable.Map()
-        .set(2, 'two')
-        .set(1, 'one'),
+      Immutable.Map().set(1, 'one').set(2, 'two'),
+      Immutable.Map().set(2, 'two').set(1, 'one'),
     ],
     [
-      Immutable.OrderedMap()
-        .set(1, 'one')
-        .set(2, 'two'),
-      Immutable.OrderedMap()
-        .set(1, 'one')
-        .set(2, 'two'),
+      Immutable.OrderedMap().set(1, 'one').set(2, 'two'),
+      Immutable.OrderedMap().set(1, 'one').set(2, 'two'),
     ],
     [
       Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
@@ -941,7 +925,7 @@ describe('.toBeInstanceOf()', () => {
     [Object.create(null), A],
     [undefined, String],
     [null, String],
-    [/\w+/, function() {}],
+    [/\w+/, function () {}],
     [new DefinesNameProp(), RegExp],
   ].forEach(([a, b]) => {
     test(`failing ${stringify(a)} and ${stringify(b)}`, () => {
@@ -1761,7 +1745,7 @@ describe('.toHaveProperty()', () => {
   }
   E.prototype.nodeType = 1;
 
-  const memoized = function() {};
+  const memoized = function () {};
   memoized.memo = [];
 
   const pathDiff = ['children', 0];

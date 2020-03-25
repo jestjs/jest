@@ -6,9 +6,9 @@
  */
 
 import chalk = require('chalk');
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import pluralize from './pluralize';
-import {Stats, TestRunData} from './types';
+import type {Stats, TestRunData} from './types';
 
 export default function getNoTestFoundVerbose(
   testRunData: TestRunData,

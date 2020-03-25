@@ -85,11 +85,11 @@ it('uses the blacklist to avoid copying properties on the first level', () => {
 
 it('does not keep the prototype by default when top level is object', () => {
   // @ts-ignore
-  const sourceObject = new (function() {})();
+  const sourceObject = new (function () {})();
   // @ts-ignore
-  sourceObject.nestedObject = new (function() {})();
+  sourceObject.nestedObject = new (function () {})();
   // @ts-ignore
-  sourceObject.nestedArray = new (function() {
+  sourceObject.nestedArray = new (function () {
     // @ts-ignore
     this.length = 0;
   })();
@@ -125,7 +125,7 @@ it('does not keep the prototype by default when top level is array', () => {
   const spy = jest.spyOn(Array, 'isArray').mockImplementation(() => true);
 
   // @ts-ignore
-  const sourceArray = new (function() {
+  const sourceArray = new (function () {
     // @ts-ignore
     this.length = 0;
   })();
@@ -143,7 +143,7 @@ it('does not keep the prototype of arrays when keepPrototype = false', () => {
   const spy = jest.spyOn(Array, 'isArray').mockImplementation(() => true);
 
   // @ts-ignore
-  const sourceArray = new (function() {
+  const sourceArray = new (function () {
     // @ts-ignore
     this.length = 0;
   })();
@@ -161,7 +161,7 @@ it('keeps the prototype of arrays when keepPrototype = true', () => {
   const spy = jest.spyOn(Array, 'isArray').mockImplementation(() => true);
 
   // @ts-ignore
-  const sourceArray = new (function() {
+  const sourceArray = new (function () {
     // @ts-ignore
     this.length = 0;
   })();
@@ -174,11 +174,11 @@ it('keeps the prototype of arrays when keepPrototype = true', () => {
 
 it('does not keep the prototype for objects when keepPrototype = false', () => {
   // @ts-ignore
-  const sourceobject = new (function() {})();
+  const sourceobject = new (function () {})();
   // @ts-ignore
-  sourceobject.nestedObject = new (function() {})();
+  sourceobject.nestedObject = new (function () {})();
   // @ts-ignore
-  sourceobject.nestedArray = new (function() {
+  sourceobject.nestedArray = new (function () {
     // @ts-ignore
     this.length = 0;
   })();
@@ -211,11 +211,11 @@ it('does not keep the prototype for objects when keepPrototype = false', () => {
 
 it('keeps the prototype for objects when keepPrototype = true', () => {
   // @ts-ignore
-  const sourceObject = new (function() {})();
+  const sourceObject = new (function () {})();
   // @ts-ignore
-  sourceObject.nestedObject = new (function() {})();
+  sourceObject.nestedObject = new (function () {})();
   // @ts-ignore
-  sourceObject.nestedArray = new (function() {
+  sourceObject.nestedArray = new (function () {
     // @ts-ignore
     this.length = 0;
   })();

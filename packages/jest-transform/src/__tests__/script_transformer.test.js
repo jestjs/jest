@@ -407,6 +407,7 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).toBeCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(result.sourceMapPath, mapStr, {
       encoding: 'utf8',
+      fsync: false,
     });
   });
 
@@ -438,7 +439,7 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       sourceMap,
-      {encoding: 'utf8'},
+      {encoding: 'utf8', fsync: false},
     );
   });
 
@@ -461,9 +462,7 @@ describe('ScriptTransformer', () => {
     const content =
       'var x = 1;\n' +
       '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap)
-        .toString('base64')
-        .slice(0, 16);
+      Buffer.from(sourceMap).toString('base64').slice(0, 16);
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
 
@@ -509,6 +508,7 @@ describe('ScriptTransformer', () => {
       JSON.stringify(map),
       {
         encoding: 'utf8',
+        fsync: false,
       },
     );
   });
@@ -576,6 +576,7 @@ describe('ScriptTransformer', () => {
       JSON.stringify(instrumentedCodeMap),
       {
         encoding: 'utf8',
+        fsync: false,
       },
     );
 
@@ -616,6 +617,7 @@ describe('ScriptTransformer', () => {
       JSON.stringify(instrumentedCodeMap),
       {
         encoding: 'utf8',
+        fsync: false,
       },
     );
 

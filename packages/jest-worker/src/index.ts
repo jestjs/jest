@@ -8,7 +8,7 @@
 import {cpus} from 'os';
 import WorkerPool from './WorkerPool';
 import Farm from './Farm';
-import {
+import type {
   FarmOptions,
   PoolExitResult,
   WorkerPoolInterface,

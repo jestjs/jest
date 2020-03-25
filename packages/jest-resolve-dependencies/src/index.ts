@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {FS as HasteFS} from 'jest-haste-map';
+import type {Config} from '@jest/types';
+import type {FS as HasteFS} from 'jest-haste-map';
 import Resolver = require('jest-resolve');
 import {SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
 

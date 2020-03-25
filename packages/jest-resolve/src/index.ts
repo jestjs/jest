@@ -6,14 +6,14 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
-import {ModuleMap} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
+import type {Config} from '@jest/types';
+import type {ModuleMap} from 'jest-haste-map';
 import {sync as realpath} from 'realpath-native';
 import chalk = require('chalk');
 import nodeModulesPaths from './nodeModulesPaths';
 import isBuiltinModule from './isBuiltinModule';
 import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
-import {ResolverConfig} from './types';
+import type {ResolverConfig} from './types';
 import ModuleNotFoundError from './ModuleNotFoundError';
 
 type FindNodeModuleConfig = {
@@ -24,6 +24,7 @@ type FindNodeModuleConfig = {
   paths?: Array<Config.Path>;
   resolver?: Config.Path | null;
   rootDir?: Config.Path;
+  throwIfNotFound?: boolean;
 };
 
 type BooleanObject = Record<string, boolean>;
@@ -82,6 +83,21 @@ class Resolver {
 
   static ModuleNotFoundError = ModuleNotFoundError;
 
+  static tryCastModuleNotFoundError(
+    error: unknown,
+  ): ModuleNotFoundError | null {
+    if (error instanceof ModuleNotFoundError) {
+      return error as ModuleNotFoundError;
+    }
+
+    const casted = error as ModuleNotFoundError;
+    if (casted.code === 'MODULE_NOT_FOUND') {
+      return ModuleNotFoundError.duckType(casted);
+    }
+
+    return null;
+  }
+
   static clearDefaultResolverCache(): void {
     clearDefaultResolverCache();
   }
@@ -105,7 +121,11 @@ class Resolver {
         paths: paths ? (nodePaths || []).concat(paths) : nodePaths,
         rootDir: options.rootDir,
       });
-    } catch (e) {}
+    } catch (e) {
+      if (options.throwIfNotFound) {
+        throw e;
+      }
+    }
     return null;
   }
 
@@ -155,7 +175,7 @@ class Resolver {
     const skipResolution =
       options && options.skipNodeResolution && !moduleName.includes(path.sep);
 
-    const resolveNodeModule = (name: Config.Path) =>
+    const resolveNodeModule = (name: Config.Path, throwIfNotFound = false) =>
       Resolver.findNodeModule(name, {
         basedir: dirname,
         browser: this._options.browser,
@@ -164,10 +184,12 @@ class Resolver {
         paths,
         resolver: this._options.resolver,
         rootDir: this._options.rootDir,
+        throwIfNotFound,
       });
 
     if (!skipResolution) {
-      module = resolveNodeModule(moduleName);
+      // @ts-ignore: the "pnp" version named isn't in DefinitelyTyped
+      module = resolveNodeModule(moduleName, Boolean(process.versions.pnp));
 
       if (module) {
         this._moduleNameCache.set(key, module);
@@ -215,6 +237,7 @@ class Resolver {
 
     throw new ModuleNotFoundError(
       `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
+      moduleName,
     );
   }
 

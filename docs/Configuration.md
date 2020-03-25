@@ -429,7 +429,7 @@ module.exports = async () => {
 
 ```js
 // teardown.js
-module.exports = async function() {
+module.exports = async function () {
   await global.__MONGOD__.stop();
 };
 ```
@@ -756,7 +756,7 @@ async runTests(
 ): Promise<void>
 ```
 
-If you need to restrict your test-runner to only run in serial rather then being executed in parallel your class should have the property `isSerial` to be set as `true`.
+If you need to restrict your test-runner to only run in serial rather than being executed in parallel your class should have the property `isSerial` to be set as `true`.
 
 ### `setupFiles` [array]
 
@@ -770,7 +770,7 @@ It's also worth noting that `setupFiles` will execute _before_ [`setupFilesAfter
 
 Default: `[]`
 
-A list of paths to modules that run some code to configure or set up the testing framework before each test. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
+A list of paths to modules that run some code to configure or set up the testing framework before each test file in the suite is executed. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
 
 If you want a path to be [relative to the root directory of your project](#rootdir-string), please include `<rootDir>` inside a path's string, like `"<rootDir>/a-configs-folder"`.
 

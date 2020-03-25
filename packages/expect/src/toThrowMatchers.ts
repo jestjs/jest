@@ -26,7 +26,7 @@ import {
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
 } from './print';
-import {
+import type {
   ExpectationResult,
   MatcherState,
   MatchersObject,
@@ -77,7 +77,7 @@ export const createMatcher = (
   fromPromise?: boolean,
 ): RawMatcherFn =>
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  function(
+  function (
     this: MatcherState,
     received: Function,
     expected: any,

@@ -24,5 +24,5 @@ it('sucessfully runs the tests inside `pnp/`', () => {
     nodeOptions: `--require ${DIR}/.pnp.js`,
   });
   expect(json.success).toBe(true);
-  expect(json.numTotalTestSuites).toBe(1);
+  expect(json.numTotalTestSuites).toBe(2);
 });

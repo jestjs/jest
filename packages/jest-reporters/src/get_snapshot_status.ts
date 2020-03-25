@@ -6,7 +6,7 @@
  */
 
 import chalk = require('chalk');
-import {TestResult} from '@jest/test-result';
+import type {TestResult} from '@jest/test-result';
 import {pluralize} from 'jest-util';
 
 const ARROW = ' \u203A ';

@@ -7,8 +7,8 @@
 
 import * as path from 'path';
 import * as fs from 'fs';
-import {Config} from '@jest/types';
-import {
+import type {Config} from '@jest/types';
+import type {
   AggregatedResult,
   TestResult,
   V8CoverageResult,
@@ -23,10 +23,15 @@ import {mergeProcessCovs} from '@bcoe/v8-coverage';
 import Worker from 'jest-worker';
 import glob = require('glob');
 import v8toIstanbul = require('v8-to-istanbul');
-import {RawSourceMap} from 'source-map';
-import {TransformResult} from '@jest/transform';
+import type {RawSourceMap} from 'source-map';
+import type {TransformResult} from '@jest/transform';
 import BaseReporter from './base_reporter';
-import {Context, CoverageReporterOptions, CoverageWorker, Test} from './types';
+import type {
+  Context,
+  CoverageReporterOptions,
+  CoverageWorker,
+  Test,
+} from './types';
 import getWatermarks from './get_watermarks';
 
 // This is fixed in a newer versions of source-map, but our dependencies are still stuck on old versions

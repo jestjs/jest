@@ -12,7 +12,7 @@ import {
   printPatternCaret,
   printRestoredPatternCaret,
 } from 'jest-watcher';
-import {TestResult} from '@jest/test-result';
+import type {TestResult} from '@jest/test-result';
 
 // TODO: Make underscored props `private`
 export default class TestNamePatternPrompt extends PatternPrompt {

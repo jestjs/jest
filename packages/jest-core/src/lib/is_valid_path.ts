@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {isSnapshotPath} from 'jest-snapshot';
 
 export default function isValidPath(

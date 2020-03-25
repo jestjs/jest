@@ -8,7 +8,7 @@
 import * as path from 'path';
 import slash = require('slash');
 import glob = require('glob');
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 
 export const findSiblingsWithFileExtension = (
   moduleFileExtensions: Config.ProjectConfig['moduleFileExtensions'],

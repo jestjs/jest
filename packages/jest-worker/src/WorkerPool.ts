@@ -7,7 +7,7 @@
 
 import BaseWorkerPool from './base/BaseWorkerPool';
 
-import {
+import type {
   ChildMessage,
   OnEnd,
   OnStart,

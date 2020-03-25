@@ -29,7 +29,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-import {Spy} from '../types';
+import type {Spy} from '../types';
 import CallTracker from './CallTracker';
 import createSpy from './createSpy';
 import SpyStrategy from './SpyStrategy';
@@ -72,7 +72,7 @@ export default class SpyRegistry {
   }: {
     currentSpies?: () => Array<Spy>;
   } = {}) {
-    this.allowRespy = function(allow) {
+    this.allowRespy = function (allow) {
       this.respy = allow;
     };
 
@@ -127,11 +127,11 @@ export default class SpyRegistry {
       let restoreStrategy;
 
       if (Object.prototype.hasOwnProperty.call(obj, methodName)) {
-        restoreStrategy = function() {
+        restoreStrategy = function () {
           obj[methodName] = originalMethod;
         };
       } else {
-        restoreStrategy = function() {
+        restoreStrategy = function () {
           if (!delete obj[methodName]) {
             obj[methodName] = originalMethod;
           }
@@ -147,7 +147,7 @@ export default class SpyRegistry {
       return spiedMethod;
     };
 
-    this._spyOnProperty = function(obj, propertyName, accessType = 'get') {
+    this._spyOnProperty = function (obj, propertyName, accessType = 'get') {
       if (!obj) {
         throw new Error(
           getErrorMsg(
@@ -203,11 +203,11 @@ export default class SpyRegistry {
       let restoreStrategy;
 
       if (Object.prototype.hasOwnProperty.call(obj, propertyName)) {
-        restoreStrategy = function() {
+        restoreStrategy = function () {
           Object.defineProperty(obj, propertyName, originalDescriptor);
         };
       } else {
-        restoreStrategy = function() {
+        restoreStrategy = function () {
           delete obj[propertyName];
         };
       }
@@ -223,7 +223,7 @@ export default class SpyRegistry {
       return spiedProperty;
     };
 
-    this.clearSpies = function() {
+    this.clearSpies = function () {
       const spies = currentSpies();
       for (let i = spies.length - 1; i >= 0; i--) {
         const spyEntry = spies[i];

@@ -11,7 +11,7 @@ import {spawn} from 'child_process';
 import which = require('which');
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
-import {
+import type {
   CrawlerOptions,
   FileData,
   IgnoreMatcher,

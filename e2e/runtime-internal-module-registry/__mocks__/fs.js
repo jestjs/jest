@@ -17,7 +17,7 @@ function mkdirSync() {
 }
 
 fs.mkdirSync = mkdirSync;
-fs.__wasMkdirCalled = function() {
+fs.__wasMkdirCalled = function () {
   return mkdirWasCalled;
 };
 

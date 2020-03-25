@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {
+import type {Config} from '@jest/types';
+import type {
   AggregatedResult,
   AssertionResult,
   Suite,
@@ -14,7 +14,7 @@ import {
 } from '@jest/test-result';
 import chalk = require('chalk');
 import {specialChars} from 'jest-util';
-import {Test} from './types';
+import type {Test} from './types';
 import DefaultReporter from './default_reporter';
 
 const {ICONS} = specialChars;

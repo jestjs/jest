@@ -6,11 +6,8 @@
  *
  */
 
-// Only used for types
-/* eslint-disable import/no-extraneous-dependencies */
-import {NodePath, Visitor} from '@babel/traverse';
-import {Identifier} from '@babel/types';
-/* eslint-enable */
+import type {NodePath, Visitor} from '@babel/traverse';
+import type {Identifier} from '@babel/types';
 
 // We allow `jest`, `expect`, `require`, all default Node.js globals and all
 // ES2015 built-ins to be used inside of a `jest.mock` factory.

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, NewPlugin, Printer, Refs} from '../types';
+import type {Config, NewPlugin, Printer, Refs} from '../types';
 
 import {printListItems, printObjectProperties} from '../collections';
 

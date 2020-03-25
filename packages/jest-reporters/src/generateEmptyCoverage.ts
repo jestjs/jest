@@ -6,11 +6,11 @@
  */
 
 import * as fs from 'fs';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {readInitialCoverage} from 'istanbul-lib-instrument';
 import {FileCoverage, createFileCoverage} from 'istanbul-lib-coverage';
 import {ScriptTransformer, shouldInstrument} from '@jest/transform';
-import {V8Coverage} from 'collect-v8-coverage';
+import type {V8Coverage} from 'collect-v8-coverage';
 
 type SingleV8Coverage = V8Coverage[number];
 
@@ -25,7 +25,7 @@ export type CoverageWorkerResult =
       result: SingleV8Coverage;
     };
 
-export default function(
+export default function (
   source: string,
   filename: Config.Path,
   globalConfig: Config.GlobalConfig,

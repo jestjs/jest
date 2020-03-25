@@ -7,15 +7,15 @@
  */
 
 import throat from 'throat';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 
-import {ChangedFilesPromise, Options, Repos, SCMAdapter} from './types';
+import type {ChangedFilesPromise, Options, Repos, SCMAdapter} from './types';
 import git from './git';
 import hg from './hg';
 
 type RootPromise = ReturnType<SCMAdapter['getRoot']>;
 
-export {ChangedFiles, ChangedFilesPromise} from './types';
+export type {ChangedFiles, ChangedFilesPromise} from './types';
 
 function notEmpty<T>(value: T | null | undefined): value is T {
   return value != null;

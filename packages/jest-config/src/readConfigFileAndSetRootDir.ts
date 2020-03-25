@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import * as fs from 'fs';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 // @ts-ignore: vendored
 import jsonlint from './vendor/jsonlint';
 import {JEST_CONFIG_EXT_JSON, PACKAGE_JSON} from './constants';
