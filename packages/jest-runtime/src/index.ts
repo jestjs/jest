@@ -510,16 +510,23 @@ class Runtime {
         return this.requireModule(from, moduleName);
       }
     } catch (e) {
-      if (e.code === 'MODULE_NOT_FOUND') {
-        const appendedMessage = findSiblingsWithFileExtension(
-          this._config.moduleFileExtensions,
-          from,
-          moduleName,
-        );
-
-        if (appendedMessage) {
-          e.message += appendedMessage;
+      const moduleNotFound = Resolver.tryCastModuleNotFoundError(e);
+      if (moduleNotFound) {
+        if (
+          moduleNotFound.siblingWithSimilarExtensionFound === null ||
+          moduleNotFound.siblingWithSimilarExtensionFound === undefined
+        ) {
+          moduleNotFound.hint = findSiblingsWithFileExtension(
+            this._config.moduleFileExtensions,
+            from,
+            moduleNotFound.moduleName || moduleName,
+          );
+          moduleNotFound.siblingWithSimilarExtensionFound = Boolean(
+            moduleNotFound.hint,
+          );
         }
+        moduleNotFound.buildMessage(this._config.rootDir);
+        throw moduleNotFound;
       }
       throw e;
     }
@@ -841,28 +848,32 @@ class Runtime {
       return;
     }
 
-    compiledFunction.call(
-      localModule.exports,
-      localModule as NodeModule, // module object
-      localModule.exports, // module exports
-      localModule.require as typeof require, // require implementation
-      dirname, // __dirname
-      filename, // __filename
-      this._environment.global, // global object
-      this._createJestObjectFor(
-        filename,
-        localModule.require as LocalModuleRequire,
-      ), // jest object
-      ...this._config.extraGlobals.map(globalVariable => {
-        if (this._environment.global[globalVariable]) {
-          return this._environment.global[globalVariable];
-        }
+    try {
+      compiledFunction.call(
+        localModule.exports,
+        localModule as NodeModule, // module object
+        localModule.exports, // module exports
+        localModule.require as typeof require, // require implementation
+        dirname, // __dirname
+        filename, // __filename
+        this._environment.global, // global object
+        this._createJestObjectFor(
+          filename,
+          localModule.require as LocalModuleRequire,
+        ), // jest object
+        ...this._config.extraGlobals.map(globalVariable => {
+          if (this._environment.global[globalVariable]) {
+            return this._environment.global[globalVariable];
+          }
 
-        throw new Error(
-          `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
-        );
-      }),
-    );
+          throw new Error(
+            `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
+          );
+        }),
+      );
+    } catch (error) {
+      this.handleExecutionError(error, localModule);
+    }
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
     this._currentlyExecutingModulePath = lastExecutingModulePath;
@@ -1285,6 +1296,24 @@ class Runtime {
       'jest',
       ...this._config.extraGlobals,
     ];
+  }
+
+  private handleExecutionError(e: Error, module: InitialModule): never {
+    const moduleNotFoundError = Resolver.tryCastModuleNotFoundError(e);
+    if (moduleNotFoundError) {
+      if (!moduleNotFoundError.requireStack) {
+        moduleNotFoundError.requireStack = [module.filename || module.id];
+
+        for (let cursor = module.parent; cursor; cursor = cursor.parent) {
+          moduleNotFoundError.requireStack.push(cursor.filename || cursor.id);
+        }
+
+        moduleNotFoundError.buildMessage(this._config.rootDir);
+      }
+      throw moduleNotFoundError;
+    }
+
+    throw e;
   }
 }
 
