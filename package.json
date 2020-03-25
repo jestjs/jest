@@ -86,7 +86,7 @@
     "build": "node ./scripts/build.js",
     "build:ts": "node ./scripts/buildTs.js",
     "check-copyright-headers": "node ./scripts/checkCopyrightHeaders.js",
-    "clean-all": "rimraf ./node_modules && rimraf ./packages/*/node_modules && yarn clean-e2e && yarn build-clean",
+    "clean-all": "yarn clean-e2e && yarn build-clean && rimraf ./packages/*/node_modules && rimraf ./node_modules",
     "clean-e2e": "node ./scripts/cleanE2e.js",
     "jest": "node ./packages/jest-cli/bin/jest.js",
     "jest-coverage": "yarn jest --coverage",
