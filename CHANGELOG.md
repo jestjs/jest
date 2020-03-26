@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[*]` Downlevel TypeScript definitions files for compatibility with TS<3.8 ([#9705](https://github.com/facebook/jest/pull/9705))
+
 ### Chore & Maintenance
 
 ### Performance
