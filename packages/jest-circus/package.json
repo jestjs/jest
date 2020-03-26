@@ -1,6 +1,6 @@
 {
   "name": "jest-circus",
-  "version": "25.2.1",
+  "version": "25.2.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -42,7 +42,7 @@
     "@types/co": "^4.6.0",
     "@types/stack-utils": "^1.0.1",
     "execa": "^3.2.0",
-    "jest-runtime": "^25.2.1"
+    "jest-runtime": "^25.2.2"
   },
   "engines": {
     "node": ">= 8.3"
