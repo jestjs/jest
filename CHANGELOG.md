@@ -4,11 +4,15 @@
 
 ### Fixes
 
-- `[*]` Verify all packages are properly downleveled for older versions of TypeScript
-
 ### Chore & Maintenance
 
 ### Performance
+
+## 25.2.3
+
+### Fixes
+
+- `[*]` Verify all packages are properly downleveled for older versions of TypeScript ([#9715](https://github.com/facebook/jest/pull/9715))
 
 ## 25.2.2
 
