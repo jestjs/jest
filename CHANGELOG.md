@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Mention caveat about `beforeAll` order in nested `describe` (https://github.com/facebook/jest/pull/9713))
+
 ### Performance
 
 ## 25.2.2
