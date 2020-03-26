@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve-dependencies",
-  "version": "25.2.0",
+  "version": "25.2.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,14 +17,14 @@
     }
   },
   "dependencies": {
-    "@jest/types": "^25.2.0",
-    "jest-regex-util": "^25.2.0",
-    "jest-snapshot": "^25.2.0"
+    "@jest/types": "^25.2.1",
+    "jest-regex-util": "^25.2.1",
+    "jest-snapshot": "^25.2.1"
   },
   "devDependencies": {
-    "jest-haste-map": "^25.2.0",
-    "jest-resolve": "^25.2.0",
-    "jest-runtime": "^25.2.0"
+    "jest-haste-map": "^25.2.1",
+    "jest-resolve": "^25.2.1",
+    "jest-runtime": "^25.2.1"
   },
   "engines": {
     "node": ">= 8.3"
