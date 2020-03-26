@@ -127,6 +127,44 @@ describe('Scoped / Nested block', () => {
 // 1 - afterAll
 ```
 
+Consider the case where you modify the test environment state in the `beforeAll` hook. Note that 2 top-level `describe` blocks are executed serially. 
+
+```js
+describe('1 Scoped / Nested block', () => {
+  beforeAll(() => console.log('1 - beforeAll'));
+  it('', () => console.log('1 - test'));
+});
+describe('2 Scoped / Nested block', () => {
+  beforeAll(() => console.log('2 - beforeAll'));
+  it('', () => console.log('2 - test'));
+});
+
+// 1 - beforeAll
+// 1 - test
+// 2 - beforeAll
+// 2 - test
+```
+
+While the same 2 `describe` blocks nested inside another `describe` block make Jest group `beforeAll` invocations together.
+
+```js
+describe('order', () => {
+  describe('1 Scoped / Nested block', () => {
+    beforeAll(() => console.log('1 - beforeAll'));
+    test('', () => console.log('1 - test'));
+  });
+  describe('2 Scoped / Nested block', () => {
+    beforeAll(() => console.log('2 - beforeAll'));
+    test('', () => console.log('2 - test'));
+  });
+});
+
+// 1 - beforeAll
+// 2 - beforeAll
+// 1 - test
+// 2 - test
+```
+
 ## Order of execution of describe and test blocks
 
 Jest executes all describe handlers in a test file _before_ it executes any of the actual tests. This is another reason to do setup and teardown inside `before*` and `after*` handlers rather than inside the describe blocks. Once the describe blocks are complete, by default Jest runs all the tests serially in the order they were encountered in the collection phase, waiting for each to finish and be tidied up before moving on.
