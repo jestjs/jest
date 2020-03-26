@@ -1,6 +1,6 @@
 {
   "name": "@jest/console",
-  "version": "25.2.1",
+  "version": "25.2.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -19,7 +19,7 @@
   "dependencies": {
     "@jest/source-map": "^25.2.1",
     "chalk": "^3.0.0",
-    "jest-util": "^25.2.1",
+    "jest-util": "^25.2.3",
     "slash": "^3.0.0"
   },
   "devDependencies": {

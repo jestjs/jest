@@ -1,6 +1,6 @@
 {
   "name": "@jest/test-result",
-  "version": "25.2.1",
+  "version": "25.2.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,9 +17,9 @@
     }
   },
   "dependencies": {
-    "@jest/console": "^25.2.1",
-    "@jest/transform": "^25.2.1",
-    "@jest/types": "^25.2.1",
+    "@jest/console": "^25.2.3",
+    "@jest/transform": "^25.2.3",
+    "@jest/types": "^25.2.3",
     "@types/istanbul-lib-coverage": "^2.0.0",
     "collect-v8-coverage": "^1.0.0"
   },

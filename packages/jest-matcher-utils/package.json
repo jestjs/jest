@@ -1,7 +1,7 @@
 {
   "name": "jest-matcher-utils",
   "description": "A set of utility functions for expect and related packages",
-  "version": "25.2.1",
+  "version": "25.2.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -22,9 +22,9 @@
   },
   "dependencies": {
     "chalk": "^3.0.0",
-    "jest-diff": "^25.2.1",
+    "jest-diff": "^25.2.3",
     "jest-get-type": "^25.2.1",
-    "pretty-format": "^25.2.1"
+    "pretty-format": "^25.2.3"
   },
   "devDependencies": {
     "@jest/test-utils": "^25.2.1",

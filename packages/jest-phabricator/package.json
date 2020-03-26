@@ -1,6 +1,6 @@
 {
   "name": "jest-phabricator",
-  "version": "25.2.1",
+  "version": "25.2.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -15,7 +15,7 @@
     }
   },
   "dependencies": {
-    "@jest/test-result": "^25.2.1"
+    "@jest/test-result": "^25.2.3"
   },
   "engines": {
     "node": ">= 8.3"
