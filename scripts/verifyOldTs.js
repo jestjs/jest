@@ -10,6 +10,7 @@
 const fs = require('fs');
 const path = require('path');
 
+const chalk = require('chalk');
 const execa = require('execa');
 const rimraf = require('rimraf');
 const tempy = require('tempy');
@@ -41,6 +42,10 @@ try {
     `import jest = require('${jestDirectory}');`
   );
   execa.sync('yarn', ['tsc', '--project', '.'], {cwd, stdio: 'inherit'});
+
+  console.log(
+    chalk.inverse.green(' Successfully compiled Jest with TypeScript 3.4 ')
+  );
 } finally {
   rimraf.sync(cwd);
 }
