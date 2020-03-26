@@ -20,7 +20,13 @@ const packagesWithTs = packages.filter(p =>
   fs.existsSync(path.resolve(p, 'tsconfig.json'))
 );
 
-const args = ['tsc', '-b', ...packagesWithTs, ...process.argv.slice(2)];
+const args = [
+  '--silent',
+  'tsc',
+  '-b',
+  ...packagesWithTs,
+  ...process.argv.slice(2),
+];
 
 console.log(chalk.inverse(' Building TypeScript definition files '));
 
@@ -32,6 +38,28 @@ try {
 } catch (e) {
   console.error(
     chalk.inverse.red(' Unable to build TypeScript definition files ')
+  );
+  console.error(e.stack);
+  process.exitCode = 1;
+}
+
+console.log(chalk.inverse(' Downleveling TypeScript definition files '));
+
+try {
+  packagesWithTs.forEach(pkgDir => {
+    execa.sync('yarn', ['--silent', 'downlevel-dts', 'build', 'build/ts3.4'], {
+      cwd: pkgDir,
+      stdio: 'inherit',
+    });
+  });
+  console.log(
+    chalk.inverse.green(
+      ' Successfully downleveled TypeScript definition files '
+    )
+  );
+} catch (e) {
+  console.error(
+    chalk.inverse.red(' Unable to downlevel TypeScript definition files ')
   );
   console.error(e.stack);
   process.exitCode = 1;

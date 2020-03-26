@@ -20,6 +20,13 @@
   },
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "typesVersions": {
+    "<3.8": {
+      "*": [
+        "ts3.4/*"
+      ]
+    }
+  },
   "scripts": {
     "perf": "node --expose-gc perf/index.js"
   },
