@@ -83,8 +83,10 @@ export interface GlobalAdditions {
   spyOn: () => void;
   spyOnProperty: () => void;
 }
-export interface Global
-  extends GlobalAdditions,
-    Omit<NodeJS.Global, keyof GlobalAdditions> {
+
+// extends directly after https://github.com/sandersn/downlevel-dts/issues/33 is fixed
+type NodeGlobalWithoutAdditions = Omit<NodeJS.Global, keyof GlobalAdditions>;
+
+export interface Global extends GlobalAdditions, NodeGlobalWithoutAdditions {
   [extras: string]: any;
 }

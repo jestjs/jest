@@ -4,6 +4,13 @@
   "version": "25.2.2",
   "main": "build/jest.js",
   "types": "build/jest.d.ts",
+  "typesVersions": {
+    "<3.8": {
+      "build/*": [
+        "build/ts3.4/*"
+      ]
+    }
+  },
   "dependencies": {
     "@jest/console": "^25.2.1",
     "@jest/reporters": "^25.2.1",

@@ -24,8 +24,11 @@ export type Options = ShouldInstrumentOptions &
     isInternalModule: boolean;
   }>;
 
+// extends directly after https://github.com/sandersn/downlevel-dts/issues/33 is fixed
+type SourceMapWithVersion = Omit<RawSourceMap, 'version'>;
+
 // This is fixed in source-map@0.7.x, but we can't upgrade yet since it's async
-interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
+interface FixedRawSourceMap extends SourceMapWithVersion {
   version: number;
 }
 

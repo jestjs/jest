@@ -51,7 +51,8 @@ export default class CustomConsole extends Console {
     );
   }
 
-  assert(value: unknown, message?: string | Error): asserts value {
+  // use `asserts` when https://github.com/sandersn/downlevel-dts/issues/32 is fixed
+  assert(value: unknown, message?: string | Error): void {
     try {
       assert(value, message);
     } catch (error) {

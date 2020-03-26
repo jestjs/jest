@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[*]` Verify all packages are properly downleveled for older versions of TypeScript
+
 ### Chore & Maintenance
 
 ### Performance
@@ -12,7 +14,7 @@
 
 ### Fixes
 
-- `[jest-environment-node]` Remove `getVmContext` from Node env on older versions of Node ([#9706](https://github.com/facebook/jest/pull/9706))
+- `[jest-environment-node]` Remove `getVmContext` from Node env on older versions of Node ([#9708](https://github.com/facebook/jest/pull/9708))
 - `[jest-runtime]` Return constructable class from `require('module')` ([#9711](https://github.com/facebook/jest/pull/9711))
 
 ## 25.2.1
