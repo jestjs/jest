@@ -14,8 +14,8 @@
   "types": "build/index.d.ts",
   "typesVersions": {
     "<3.8": {
-      "*": [
-        "ts3.4/*"
+      "build/*": [
+        "build/ts3.4/*"
       ]
     }
   },
