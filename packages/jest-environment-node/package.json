@@ -21,7 +21,11 @@
     "@jest/fake-timers": "^25.2.1",
     "@jest/types": "^25.2.1",
     "jest-mock": "^25.2.1",
-    "jest-util": "^25.2.1"
+    "jest-util": "^25.2.1",
+    "semver": "^6.3.0"
+  },
+  "devDependencies": {
+    "@types/semver": "^6.2.1"
   },
   "engines": {
     "node": ">= 8.3"
