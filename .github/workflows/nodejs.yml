@@ -49,6 +49,8 @@ jobs:
         run: yarn lint:prettier:ci
       - name: check copyright headers
         run: yarn check-copyright-headers
+      - name: verify ts 3.4 compatibility
+        run: yarn verify-old-ts
   test:
     name: Node v${{ matrix.node-version }} on ${{ matrix.os }}
     strategy:
