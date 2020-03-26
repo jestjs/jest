@@ -351,11 +351,19 @@ describe('Runtime requireModule', () => {
       expect(exports.isJSONModuleEncodedInUTF8WithBOM).toBe(true);
     }));
 
-  it('should export a constructible Module class', () =>
+  it('should export a constructable Module class', () =>
     createRuntime(__filename).then(runtime => {
       const Module = runtime.requireModule(runtime.__mockRootPath, 'module');
 
       expect(() => new Module()).not.toThrow();
+    }));
+
+  it('caches Module correctly', () =>
+    createRuntime(__filename).then(runtime => {
+      const Module1 = runtime.requireModule(runtime.__mockRootPath, 'module');
+      const Module2 = runtime.requireModule(runtime.__mockRootPath, 'module');
+
+      expect(Module1).toBe(Module2);
     }));
 
   onNodeVersions('>=12.12.0', () => {
