@@ -13,6 +13,13 @@
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "typesVersions": {
+    "<3.8": {
+      "build/*": [
+        "build/ts3.4/*"
+      ]
+    }
+  },
   "dependencies": {
     "chalk": "^3.0.0",
     "jest-diff": "^25.2.0",
