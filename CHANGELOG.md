@@ -6,7 +6,7 @@
 
 ### Chore & Maintenance
 
-- `[docs]` Mention caveat about `beforeAll` order in nested `describe` (https://github.com/facebook/jest/pull/9713))
+- `[docs]` Mention caveat about `beforeAll` order in nested `describe` ([#9713](https://github.com/facebook/jest/pull/9713))
 
 ### Performance
 
