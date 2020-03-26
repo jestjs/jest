@@ -127,7 +127,7 @@ describe('Scoped / Nested block', () => {
 // 1 - afterAll
 ```
 
-Consider the case where you modify the test environment state in the `beforeAll` hook. Note that 2 top-level `describe` blocks are executed serially. 
+Consider the case where you modify the test environment state in the `beforeAll` hook. Note that 2 top-level `describe` blocks are executed serially.
 
 ```js
 describe('1 Scoped / Nested block', () => {
