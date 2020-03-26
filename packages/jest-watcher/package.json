@@ -3,6 +3,14 @@
   "description": "Delightful JavaScript Testing.",
   "version": "25.2.1",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "typesVersions": {
+    "<3.8": {
+      "build/*": [
+        "build/ts3.4/*"
+      ]
+    }
+  },
   "dependencies": {
     "@jest/test-result": "^25.2.1",
     "@jest/types": "^25.2.1",
