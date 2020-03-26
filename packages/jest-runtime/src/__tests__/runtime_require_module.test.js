@@ -351,6 +351,13 @@ describe('Runtime requireModule', () => {
       expect(exports.isJSONModuleEncodedInUTF8WithBOM).toBe(true);
     }));
 
+  it('should export a constructible Module class', () =>
+    createRuntime(__filename).then(runtime => {
+      const Module = runtime.requireModule(runtime.__mockRootPath, 'module');
+
+      expect(() => new Module()).not.toThrow();
+    }));
+
   onNodeVersions('>=12.12.0', () => {
     it('overrides module.createRequire', () =>
       createRuntime(__filename).then(runtime => {
