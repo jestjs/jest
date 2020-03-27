@@ -9,7 +9,7 @@ import * as path from 'path';
 import type {Config} from '@jest/types';
 import type {JestEnvironment} from '@jest/environment';
 import type {TestResult} from '@jest/test-result';
-import Runtime = require('jest-runtime');
+import type {RuntimeType as Runtime} from 'jest-runtime';
 import type {SnapshotStateType} from 'jest-snapshot';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
