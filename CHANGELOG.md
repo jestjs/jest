@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-circus]` Fix type ellision of jest-runtime imports ([#9717](https://github.com/facebook/jest/pull/9717))
+
 ### Chore & Maintenance
 
 ### Performance

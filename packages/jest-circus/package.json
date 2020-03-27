@@ -28,6 +28,7 @@
     "jest-each": "^25.2.3",
     "jest-matcher-utils": "^25.2.3",
     "jest-message-util": "^25.2.3",
+    "jest-runtime": "^25.2.3",
     "jest-snapshot": "^25.2.3",
     "jest-util": "^25.2.3",
     "pretty-format": "^25.2.3",
@@ -41,8 +42,7 @@
     "@types/babel__traverse": "^7.0.4",
     "@types/co": "^4.6.0",
     "@types/stack-utils": "^1.0.1",
-    "execa": "^3.2.0",
-    "jest-runtime": "^25.2.3"
+    "execa": "^3.2.0"
   },
   "engines": {
     "node": ">= 8.3"
