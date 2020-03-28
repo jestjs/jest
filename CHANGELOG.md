@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-message-util]` Check for common errors when using the wrong test environment ([#8245](https://github.com/facebook/jest/pull/8245))
+
 ### Fixes
 
 - `[jest-circus]` Fix type ellision of jest-runtime imports ([#9717](https://github.com/facebook/jest/pull/9717))
