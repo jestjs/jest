@@ -51,7 +51,7 @@ function spawnJest(
 // Spawns Jest and returns either a Promise (if spawnAsync is true) or the completed child process
 function spawnJest(
   dir: string,
-  args?: Array<string>,
+  args: Array<string> = [],
   options: RunJestOptions = {},
   spawnAsync: boolean = false,
 ): execa.ExecaSyncReturnValue | execa.ExecaChildProcess {
@@ -77,7 +77,7 @@ function spawnJest(
   if (options.nodeOptions) env['NODE_OPTIONS'] = options.nodeOptions;
   if (options.nodePath) env['NODE_PATH'] = options.nodePath;
 
-  const spawnArgs = [JEST_PATH, ...(args || [])];
+  const spawnArgs = [JEST_PATH, ...args];
   const spawnOptions = {
     cwd: dir,
     env,
@@ -116,7 +116,7 @@ function normalizeStdoutAndStderr(
 //   'numPendingTests', 'testResults'
 export const json = function (
   dir: string,
-  args: Array<string> | undefined = [],
+  args?: Array<string>,
   options: RunJestOptions = {},
 ): RunJestJsonResult {
   args = [...(args || []), '--json'];
