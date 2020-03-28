@@ -11,25 +11,25 @@ import {extractSummary} from '../Utils';
 describe('Wrong globals for environment', () => {
   it('print useful error for window', () => {
     const result = runJest('wrong-env', ['node', '-t=window']);
-    expect(result.status).toBe(1);
+    expect(result.exitCode).toBe(1);
     expect(extractSummary(result.stderr).rest).toMatchSnapshot();
   });
 
   it('print useful error for document', () => {
     const result = runJest('wrong-env', ['node', '-t=document']);
-    expect(result.status).toBe(1);
+    expect(result.exitCode).toBe(1);
     expect(extractSummary(result.stderr).rest).toMatchSnapshot();
   });
 
   it('print useful error for unref', () => {
     const result = runJest('wrong-env', ['jsdom', '-t=unref']);
-    expect(result.status).toBe(1);
+    expect(result.exitCode).toBe(1);
     expect(extractSummary(result.stderr).rest).toMatchSnapshot();
   });
 
   it('print useful error when it explodes during evaluation', () => {
     const result = runJest('wrong-env', ['beforeTest']);
-    expect(result.status).toBe(1);
+    expect(result.exitCode).toBe(1);
     expect(extractSummary(result.stderr).rest).toMatchSnapshot();
   });
 });
