@@ -31,7 +31,7 @@ export default function runJest(
   dir: string,
   args?: Array<string>,
   options: RunJestOptions = {},
-) {
+): RunJestResult {
   return normalizeStdoutAndStderr(spawnJest(dir, args, options), options);
 }
 
@@ -40,7 +40,7 @@ function spawnJest(
   args?: Array<string>,
   options?: RunJestOptions,
   spawnAsync?: false,
-): execa.ExecaReturnValue;
+): RunJestResult;
 function spawnJest(
   dir: string,
   args?: Array<string>,
@@ -92,14 +92,16 @@ function spawnJest(
   );
 }
 
-interface RunJestJsonResult extends execa.ExecaReturnValue {
+export type RunJestResult = execa.ExecaReturnValue;
+
+interface RunJestJsonResult extends RunJestResult {
   json: FormattedTestResults;
 }
 
 function normalizeStdoutAndStderr(
-  result: execa.ExecaReturnValue,
+  result: RunJestResult,
   options: RunJestOptions,
-) {
+): RunJestResult {
   result.stdout = normalizeIcons(result.stdout);
   if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);
   result.stderr = normalizeIcons(result.stderr);
@@ -114,7 +116,7 @@ function normalizeStdoutAndStderr(
 //   'numPendingTests', 'testResults'
 export const json = function (
   dir: string,
-  args: Array<string> | undefined,
+  args: Array<string> | undefined = [],
   options: RunJestOptions = {},
 ): RunJestJsonResult {
   args = [...(args || []), '--json'];

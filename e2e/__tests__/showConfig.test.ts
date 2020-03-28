@@ -37,8 +37,8 @@ test('--showConfig outputs config info and exits', () => {
     .replace(/"name": "(.+)"/g, '"name": "[md5 hash]"')
     .replace(/"version": "(.+)"/g, '"version": "[version]"')
     .replace(/"maxWorkers": (\d+)/g, '"maxWorkers": "[maxWorkers]"')
-    .replace(/\"\S*show-config-test/gm, '"<<REPLACED_ROOT_DIR>>')
-    .replace(/\"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>');
+    .replace(/"\S*show-config-test/gm, '"<<REPLACED_ROOT_DIR>>')
+    .replace(/"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>');
 
   expect(wrap(stdout)).toMatchSnapshot();
 });
