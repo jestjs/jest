@@ -27,3 +27,11 @@ test('use window', () => {
 
   expect(1).toBe(1);
 });
+
+test('use navigator', () => {
+  const userAgent = navigator.userAgent;
+
+  console.log(userAgent);
+
+  expect(1).toBe(1);
+});

@@ -24,6 +24,10 @@ describe('Wrong globals for environment', () => {
     assertFailuresAndSnapshot(['node', '-t=document']);
   });
 
+  it('print useful error for navigator', () => {
+    assertFailuresAndSnapshot(['node', '-t=navigator']);
+  });
+
   it('print useful error for unref', () => {
     assertFailuresAndSnapshot(['jsdom', '-t=unref']);
   });

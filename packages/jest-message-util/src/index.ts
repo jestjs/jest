@@ -95,7 +95,8 @@ const blankStringRegexp = /^\s*$/;
 function checkForCommonEnvironmentErrors(error: string) {
   if (
     error.includes('ReferenceError: document is not defined') ||
-    error.includes('ReferenceError: window is not defined')
+    error.includes('ReferenceError: window is not defined') ||
+    error.includes('ReferenceError: navigator is not defined')
   ) {
     return warnAboutWrongTestEnvironment(error, 'jsdom');
   } else if (error.includes('.unref is not a function')) {
