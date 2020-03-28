@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Wrong globals for environment print useful error for document 1`] = `
-"FAIL __tests__/node.js
+FAIL __tests__/node.js
   ✕ use document
   ○ skipped use window
 
   ● use document
 
     The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.
-    Consider using the \\"jsdom\\" test environment.
+    Consider using the "jsdom" test environment.
 
     ReferenceError: document is not defined
 
@@ -20,17 +20,17 @@ exports[`Wrong globals for environment print useful error for document 1`] = `
       18 |   console.log(div);
       19 | 
 
-      at Object.document (__tests__/node.js:16:15)"
+      at Object.document (__tests__/node.js:16:15)
 `;
 
 exports[`Wrong globals for environment print useful error for unref 1`] = `
-"FAIL __tests__/jsdom.js
+FAIL __tests__/jsdom.js
   ✕ use unref
 
   ● use unref
 
     The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.
-    Consider using the \\"node\\" test environment.
+    Consider using the "node" test environment.
 
     TypeError: setTimeout(...).unref is not a function
 
@@ -42,18 +42,18 @@ exports[`Wrong globals for environment print useful error for unref 1`] = `
       15 |   expect(1).toBe(1);
       16 | });
 
-      at Object.unref (__tests__/jsdom.js:13:27)"
+      at Object.unref (__tests__/jsdom.js:13:27)
 `;
 
 exports[`Wrong globals for environment print useful error for window 1`] = `
-"FAIL __tests__/node.js
+FAIL __tests__/node.js
   ✕ use window
   ○ skipped use document
 
   ● use window
 
     The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.
-    Consider using the \\"jsdom\\" test environment.
+    Consider using the "jsdom" test environment.
 
     ReferenceError: window is not defined
 
@@ -65,15 +65,15 @@ exports[`Wrong globals for environment print useful error for window 1`] = `
       26 |   console.log(location);
       27 | 
 
-      at Object.window (__tests__/node.js:24:20)"
+      at Object.window (__tests__/node.js:24:20)
 `;
 
 exports[`Wrong globals for environment print useful error when it explodes during evaluation 1`] = `
-"FAIL __tests__/beforeTest.js
+FAIL __tests__/beforeTest.js
   ● Test suite failed to run
 
     The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.
-    Consider using the \\"jsdom\\" test environment.
+    Consider using the "jsdom" test environment.
 
     ReferenceError: document is not defined
 
@@ -85,5 +85,5 @@ exports[`Wrong globals for environment print useful error when it explodes durin
       15 | console.log(div);
       16 | 
 
-      at Object.document (__tests__/beforeTest.js:13:13)"
+      at Object.document (__tests__/beforeTest.js:13:13)
 `;
