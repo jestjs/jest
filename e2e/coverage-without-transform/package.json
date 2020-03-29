@@ -1,0 +1,7 @@
+{
+  "jest": {
+    "collectCoverageFrom": ["*.js"],
+    "transform": {},
+    "testEnvironment": "node"
+  }
+}
