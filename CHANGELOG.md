@@ -6,7 +6,8 @@
 
 ### Fixes
 
-- `[jest-circus]` Fix type ellision of jest-runtime imports ([#9717](https://github.com/facebook/jest/pull/9717))
+- `[jest-circus]` Fix type elision of jest-runtime imports ([#9717](https://github.com/facebook/jest/pull/9717))
+- `[@jest/transform]` Fix coverage reporter for uncovered files without transformers, reverting ([#9460](https://github.com/facebook/jest/pull/9460)) ([#9724](https://github.com/facebook/jest/pull/9724))
 
 ### Chore & Maintenance
 
