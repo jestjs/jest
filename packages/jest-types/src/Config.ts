@@ -22,9 +22,9 @@ export type RPth = {
   // 2. filename - just the file name w/o the containing directies
   // 3. extname - just the extension (to speed up a bit)
   // 4. dirname - just the dir name (to speed up a bit)
-  readonly path: string
+  readonly path: string;
   // prob. the real path + the query string
-  readonly id: PathID,
+  readonly id: PathID;
 };
 
 export type Glob = string;
