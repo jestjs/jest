@@ -675,8 +675,8 @@ class Runtime {
     this._moduleMocker.clearAllMocks();
   }
 
-  private _resolveModule(from: Config.Path, to?: string) {
-    return to ? this._resolver.resolveModule(from, to) : from;
+  private _resolveModule(from: Config.Path, to?: string): string {
+    return to ? this._resolver.resolveModule(from, to).path : from;
   }
 
   private _requireResolve(
@@ -702,7 +702,7 @@ class Runtime {
           {paths: [absolutePath]},
         );
         if (module) {
-          return module;
+          return module.path;
         }
       }
 
@@ -939,6 +939,7 @@ class Runtime {
         filename,
         id: filename,
         loaded: false,
+        rpth: {id: 'InitialModule', path: filename}
       });
     };
 
@@ -978,7 +979,7 @@ class Runtime {
 
   private _generateMock(from: Config.Path, moduleName: string) {
     const modulePath =
-      this._resolver.resolveStubModuleName(from, moduleName) ||
+      this._resolver.resolveStubModuleName(from, moduleName)?.path ||
       this._resolveModule(from, moduleName);
     if (!(modulePath in this._mockMetaDataCache)) {
       // This allows us to handle circular dependencies while generating an
