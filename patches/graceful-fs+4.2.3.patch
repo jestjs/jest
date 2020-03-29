@@ -1,0 +1,42 @@
+diff --git a/node_modules/graceful-fs/graceful-fs.js b/node_modules/graceful-fs/graceful-fs.js
+index 8c75ee2..7bf8838 100644
+--- a/node_modules/graceful-fs/graceful-fs.js
++++ b/node_modules/graceful-fs/graceful-fs.js
+@@ -32,10 +32,10 @@ else if (/\bgfs4\b/i.test(process.env.NODE_DEBUG || ''))
+   }
+ 
+ // Once time initialization
+-if (!global[gracefulQueue]) {
++if (!fs[gracefulQueue]) {
+   // This queue can be shared by multiple loaded instances
+   var queue = []
+-  Object.defineProperty(global, gracefulQueue, {
++  Object.defineProperty(fs, gracefulQueue, {
+     get: function() {
+       return queue
+     }
+@@ -79,8 +79,8 @@ if (!global[gracefulQueue]) {
+ 
+   if (/\bgfs4\b/i.test(process.env.NODE_DEBUG || '')) {
+     process.on('exit', function() {
+-      debug(global[gracefulQueue])
+-      require('assert').equal(global[gracefulQueue].length, 0)
++      debug(fs[gracefulQueue])
++      require('assert').equal(fs[gracefulQueue].length, 0)
+     })
+   }
+ }
+@@ -334,11 +334,11 @@ function patch (fs) {
+ 
+ function enqueue (elem) {
+   debug('ENQUEUE', elem[0].name, elem[1])
+-  global[gracefulQueue].push(elem)
++  fs[gracefulQueue].push(elem)
+ }
+ 
+ function retry () {
+-  var elem = global[gracefulQueue].shift()
++  var elem = fs[gracefulQueue].shift()
+   if (elem) {
+     debug('RETRY', elem[0].name, elem[1])
+     elem[0].apply(null, elem[1])
