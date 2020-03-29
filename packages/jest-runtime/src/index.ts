@@ -939,7 +939,7 @@ class Runtime {
         filename,
         id: filename,
         loaded: false,
-        rpth: {id: 'InitialModule', path: filename}
+        rpth: {id: 'InitialModule', path: filename},
       });
     };
 

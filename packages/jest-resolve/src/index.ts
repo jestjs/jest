@@ -50,9 +50,9 @@ const nodePaths = NODE_PATH
   : undefined;
 
 function parseOutQuery(pathQithQuery: string) {
-  const [path, ...queryParts] = pathQithQuery.split('?')
-  const query = queryParts.join('')
-  return [path, query]
+  const [path, ...queryParts] = pathQithQuery.split('?');
+  const query = queryParts.join('');
+  return [path, query];
 }
 
 /* eslint-disable-next-line no-redeclare */
@@ -118,7 +118,7 @@ class Resolver {
     const paths = options.paths;
 
     try {
-      const [nativePath, query] = parseOutQuery(path)
+      const [nativePath, query] = parseOutQuery(path);
       const realpath = resolver(nativePath, {
         basedir: options.basedir,
         browser: options.browser,
@@ -130,9 +130,9 @@ class Resolver {
       });
 
       return {
+        id: `${realpath}?${query}`,
         path: realpath,
-        id: `${realpath}?${query}`
-      }
+      };
     } catch (e) {
       if (options.throwIfNotFound) {
         throw e;
@@ -176,9 +176,9 @@ class Resolver {
     const hasteModule = this.getModule(nativeName);
     if (hasteModule) {
       const resolvedPath = {
+        id: `haste:${hasteModule}?${query}`,
         path: hasteModule,
-        id: `haste:${hasteModule}?${query}`
-      }
+      };
       this._moduleNameCache.set(key, resolvedPath);
       return resolvedPath;
     }
@@ -206,7 +206,10 @@ class Resolver {
 
     if (!skipResolution) {
       // @ts-ignore: the "pnp" version named isn't in DefinitelyTyped
-      const nodeModule = resolveNodeModule(moduleName, Boolean(process.versions.pnp));
+      const nodeModule = resolveNodeModule(
+        moduleName,
+        Boolean(process.versions.pnp),
+      );
 
       if (nodeModule) {
         this._moduleNameCache.set(key, nodeModule);
@@ -220,12 +223,12 @@ class Resolver {
     const hastePackage = this.getPackage(parts.shift()!);
     if (hastePackage) {
       const requireResolve = (name: string) => {
-        const path = require.resolve(name)
+        const path = require.resolve(name);
         return {
+          id: `haste:${path}?${query}`,
           path,
-          id: `haste:${path}?${query}`
-        }
-      }
+        };
+      };
       try {
         const hastePackageModule = path.join.apply(
           path,
@@ -234,7 +237,8 @@ class Resolver {
         // try resolving with custom resolver first to support extensions,
         // then fallback to require.resolve
         const resolvedModule =
-          resolveNodeModule(hastePackageModule) || requireResolve(hastePackageModule);
+          resolveNodeModule(hastePackageModule) ||
+          requireResolve(hastePackageModule);
         this._moduleNameCache.set(key, resolvedModule);
         return resolvedModule;
       } catch (ignoredError) {}
@@ -454,28 +458,27 @@ class Resolver {
           for (const possibleModuleName of possibleModuleNames) {
             const updatedName = mapModuleName(possibleModuleName);
 
-            const hasteModule = this.getModule(updatedName)
+            const hasteModule = this.getModule(updatedName);
             if (hasteModule) {
               module = {
+                id: `haste:${hasteModule}?${query}`,
                 path: hasteModule,
-                id: `haste:${hasteModule}?${query}`
-              }
-              break
+              };
+              break;
             }
 
-            const nodeModule =
-              Resolver.findNodeModule(updatedName, {
-                basedir: dirname,
-                browser: this._options.browser,
-                extensions,
-                moduleDirectory,
-                paths,
-                resolver,
-                rootDir: this._options.rootDir,
-              });
+            const nodeModule = Resolver.findNodeModule(updatedName, {
+              basedir: dirname,
+              browser: this._options.browser,
+              extensions,
+              moduleDirectory,
+              paths,
+              resolver,
+              rootDir: this._options.rootDir,
+            });
 
             if (nodeModule) {
-              module = nodeModule
+              module = nodeModule;
               break;
             }
           }
