@@ -2,16 +2,22 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 25.2.4
+
+### Features
+
 - `[jest-message-util]` Check for common errors when using the wrong test environment ([#8245](https://github.com/facebook/jest/pull/8245))
 
 ### Fixes
 
 - `[jest-circus]` Fix type elision of jest-runtime imports ([#9717](https://github.com/facebook/jest/pull/9717))
 - `[@jest/transform]` Fix coverage reporter for uncovered files without transformers, reverting ([#9460](https://github.com/facebook/jest/pull/9460)) ([#9724](https://github.com/facebook/jest/pull/9724))
-
-### Chore & Maintenance
-
-### Performance
 
 ## 25.2.3
 
