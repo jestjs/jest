@@ -1,7 +1,7 @@
 {
   "name": "@jest/reporters",
   "description": "Jest's reporters",
-  "version": "25.2.3",
+  "version": "25.2.4",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "typesVersions": {
@@ -14,8 +14,8 @@
   "dependencies": {
     "@bcoe/v8-coverage": "^0.2.3",
     "@jest/console": "^25.2.3",
-    "@jest/test-result": "^25.2.3",
-    "@jest/transform": "^25.2.3",
+    "@jest/test-result": "^25.2.4",
+    "@jest/transform": "^25.2.4",
     "@jest/types": "^25.2.3",
     "chalk": "^3.0.0",
     "collect-v8-coverage": "^1.0.0",
