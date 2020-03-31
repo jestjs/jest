@@ -39,7 +39,10 @@ const formatErrorMsg = (domain: string, usage?: string) => {
   return (msg: string) => domain + ' : ' + msg + usageDefinition;
 };
 
-function isSpy(putativeSpy: Spy) {
+function isSpy(putativeSpy: {
+  and: unknown;
+  calls: unknown;
+}): putativeSpy is Spy {
   if (!putativeSpy) {
     return false;
   }
