@@ -32,10 +32,9 @@ interface FixedRawSourceMap extends SourceMapWithVersion {
   version: number;
 }
 
-export type TransformedSource = {
-  code: string;
-  map?: FixedRawSourceMap | string | null;
-};
+export type TransformedSource =
+  | {code: string; map?: FixedRawSourceMap | string | null}
+  | string;
 
 export type TransformResult = {
   code: string;
@@ -70,5 +69,5 @@ export interface Transformer {
     sourcePath: Config.Path,
     config: Config.ProjectConfig,
     options?: TransformOptions,
-  ) => string | TransformedSource;
+  ) => TransformedSource;
 }

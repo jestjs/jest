@@ -15,5 +15,6 @@ export type {
   ShouldInstrumentOptions,
   Options as TransformationOptions,
   TransformResult,
+  TransformedSource,
 } from './types';
 export {default as handlePotentialSyntaxError} from './enhanceUnexpectedTokenMessage';

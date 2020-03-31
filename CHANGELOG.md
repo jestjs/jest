@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[@jest/transform]` Expose type `TransformedSource`
+
 ### Performance
 
 ## 25.2.4
