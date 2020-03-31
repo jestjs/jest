@@ -30,7 +30,7 @@ test('outputs coverage report', () => {
   //  with 0 % coverage.
   expect(wrap(stdout)).toMatchSnapshot();
 
-  expect(() => fs.accessSync(coverageDir, fs.F_OK)).not.toThrow();
+  expect(() => fs.accessSync(coverageDir, fs.constants.F_OK)).not.toThrow();
   expect(exitCode).toBe(0);
 });
 

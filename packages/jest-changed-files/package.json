@@ -1,6 +1,6 @@
 {
   "name": "jest-changed-files",
-  "version": "25.1.0",
+  "version": "25.2.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -9,8 +9,15 @@
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "typesVersions": {
+    "<3.8": {
+      "build/*": [
+        "build/ts3.4/*"
+      ]
+    }
+  },
   "dependencies": {
-    "@jest/types": "^25.1.0",
+    "@jest/types": "^25.2.3",
     "execa": "^3.2.0",
     "throat": "^5.0.0"
   },

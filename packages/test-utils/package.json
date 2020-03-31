@@ -1,10 +1,17 @@
 {
   "name": "@jest/test-utils",
-  "version": "25.1.0",
+  "version": "25.2.1",
   "private": true,
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "typesVersions": {
+    "<3.8": {
+      "build/*": [
+        "build/ts3.4/*"
+      ]
+    }
+  },
   "dependencies": {
     "@types/jest": "*",
     "@types/node": "*",

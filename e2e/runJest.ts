@@ -31,7 +31,7 @@ export default function runJest(
   dir: string,
   args?: Array<string>,
   options: RunJestOptions = {},
-) {
+): RunJestResult {
   return normalizeStdoutAndStderr(spawnJest(dir, args, options), options);
 }
 
@@ -40,7 +40,7 @@ function spawnJest(
   args?: Array<string>,
   options?: RunJestOptions,
   spawnAsync?: false,
-): execa.ExecaReturnValue;
+): RunJestResult;
 function spawnJest(
   dir: string,
   args?: Array<string>,
@@ -51,7 +51,7 @@ function spawnJest(
 // Spawns Jest and returns either a Promise (if spawnAsync is true) or the completed child process
 function spawnJest(
   dir: string,
-  args?: Array<string>,
+  args: Array<string> = [],
   options: RunJestOptions = {},
   spawnAsync: boolean = false,
 ): execa.ExecaSyncReturnValue | execa.ExecaChildProcess {
@@ -77,7 +77,7 @@ function spawnJest(
   if (options.nodeOptions) env['NODE_OPTIONS'] = options.nodeOptions;
   if (options.nodePath) env['NODE_PATH'] = options.nodePath;
 
-  const spawnArgs = [JEST_PATH, ...(args || [])];
+  const spawnArgs = [JEST_PATH, ...args];
   const spawnOptions = {
     cwd: dir,
     env,
@@ -92,14 +92,16 @@ function spawnJest(
   );
 }
 
-interface RunJestJsonResult extends execa.ExecaReturnValue {
+export type RunJestResult = execa.ExecaReturnValue;
+
+interface RunJestJsonResult extends RunJestResult {
   json: FormattedTestResults;
 }
 
 function normalizeStdoutAndStderr(
-  result: execa.ExecaReturnValue,
+  result: RunJestResult,
   options: RunJestOptions,
-) {
+): RunJestResult {
   result.stdout = normalizeIcons(result.stdout);
   if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);
   result.stderr = normalizeIcons(result.stderr);
@@ -114,7 +116,7 @@ function normalizeStdoutAndStderr(
 //   'numPendingTests', 'testResults'
 export const json = function (
   dir: string,
-  args: Array<string> | undefined,
+  args?: Array<string>,
   options: RunJestOptions = {},
 ): RunJestJsonResult {
   args = [...(args || []), '--json'];

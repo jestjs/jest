@@ -1,6 +1,6 @@
 {
   "name": "jest-validate",
-  "version": "25.1.0",
+  "version": "25.2.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -9,13 +9,20 @@
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "typesVersions": {
+    "<3.8": {
+      "build/*": [
+        "build/ts3.4/*"
+      ]
+    }
+  },
   "dependencies": {
-    "@jest/types": "^25.1.0",
+    "@jest/types": "^25.2.3",
     "camelcase": "^5.3.1",
     "chalk": "^3.0.0",
-    "jest-get-type": "^25.1.0",
+    "jest-get-type": "^25.2.1",
     "leven": "^3.1.0",
-    "pretty-format": "^25.1.0"
+    "pretty-format": "^25.2.3"
   },
   "devDependencies": {
     "@types/yargs": "^15.0.3"

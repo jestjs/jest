@@ -1,6 +1,6 @@
 {
   "name": "@jest/environment",
-  "version": "25.1.0",
+  "version": "25.2.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -9,10 +9,17 @@
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "typesVersions": {
+    "<3.8": {
+      "build/*": [
+        "build/ts3.4/*"
+      ]
+    }
+  },
   "dependencies": {
-    "@jest/fake-timers": "^25.1.0",
-    "@jest/types": "^25.1.0",
-    "jest-mock": "^25.1.0"
+    "@jest/fake-timers": "^25.2.4",
+    "@jest/types": "^25.2.3",
+    "jest-mock": "^25.2.3"
   },
   "devDependencies": {
     "@types/node": "*"

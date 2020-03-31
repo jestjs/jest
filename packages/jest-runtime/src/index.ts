@@ -64,6 +64,8 @@ type CacheFS = {[path: string]: string};
 
 namespace Runtime {
   export type Context = JestContext;
+  // ditch this export when moving to esm - for now we need it for to avoid faulty type elision
+  export type RuntimeType = Runtime;
 }
 
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
@@ -122,6 +124,7 @@ class Runtime {
   private _transitiveShouldMock: BooleanObject;
   private _unmockList: RegExp | undefined;
   private _virtualMocks: BooleanObject;
+  private _moduleImplementation?: typeof nativeModule.Module;
 
   constructor(
     config: Config.ProjectConfig,
@@ -898,64 +901,75 @@ class Runtime {
     }
 
     if (moduleName === 'module') {
-      const createRequire = (modulePath: string | URL) => {
-        const filename =
-          typeof modulePath === 'string'
-            ? modulePath.startsWith('file:///')
-              ? fileURLToPath(new URL(modulePath))
-              : modulePath
-            : fileURLToPath(modulePath);
+      return this._getMockedNativeModule();
+    }
 
-        if (!path.isAbsolute(filename)) {
+    return require(moduleName);
+  }
+
+  private _getMockedNativeModule(): typeof nativeModule.Module {
+    if (this._moduleImplementation) {
+      return this._moduleImplementation;
+    }
+
+    const createRequire = (modulePath: string | URL) => {
+      const filename =
+        typeof modulePath === 'string'
+          ? modulePath.startsWith('file:///')
+            ? fileURLToPath(new URL(modulePath))
+            : modulePath
+          : fileURLToPath(modulePath);
+
+      if (!path.isAbsolute(filename)) {
+        const error = new TypeError(
+          `The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received '${filename}'`,
+        );
+        // @ts-ignore
+        error.code = 'ERR_INVALID_ARG_TYPE';
+        throw error;
+      }
+
+      return this._createRequireImplementation({
+        children: [],
+        exports: {},
+        filename,
+        id: filename,
+        loaded: false,
+      });
+    };
+
+    // should we implement the class ourselves?
+    class Module extends nativeModule.Module {}
+
+    Module.Module = Module;
+
+    if ('createRequire' in nativeModule) {
+      Module.createRequire = createRequire;
+    }
+    if ('createRequireFromPath' in nativeModule) {
+      Module.createRequireFromPath = (filename: string | URL) => {
+        if (typeof filename !== 'string') {
           const error = new TypeError(
-            `The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received '${filename}'`,
+            `The argument 'filename' must be string. Received '${filename}'.${
+              filename instanceof URL
+                ? ' Use createRequire for URL filename.'
+                : ''
+            }`,
           );
           // @ts-ignore
           error.code = 'ERR_INVALID_ARG_TYPE';
           throw error;
         }
-
-        return this._createRequireImplementation({
-          children: [],
-          exports: {},
-          filename,
-          id: filename,
-          loaded: false,
-        });
+        return createRequire(filename);
       };
-
-      const overriddenModules: Partial<typeof nativeModule> = {};
-
-      if ('createRequire' in nativeModule) {
-        overriddenModules.createRequire = createRequire;
-      }
-      if ('createRequireFromPath' in nativeModule) {
-        overriddenModules.createRequireFromPath = (filename: string | URL) => {
-          if (typeof filename !== 'string') {
-            const error = new TypeError(
-              `The argument 'filename' must be string. Received '${filename}'.${
-                filename instanceof URL
-                  ? ' Use createRequire for URL filename.'
-                  : ''
-              }`,
-            );
-            // @ts-ignore
-            error.code = 'ERR_INVALID_ARG_TYPE';
-            throw error;
-          }
-          return createRequire(filename);
-        };
-      }
-      if ('syncBuiltinESMExports' in nativeModule) {
-        overriddenModules.syncBuiltinESMExports = () => {};
-      }
-
-      return Object.keys(overriddenModules).length > 0
-        ? {...nativeModule, ...overriddenModules}
-        : nativeModule;
+    }
+    if ('syncBuiltinESMExports' in nativeModule) {
+      Module.syncBuiltinESMExports = () => {};
     }
 
-    return require(moduleName);
+    this._moduleImplementation = Module;
+
+    return Module;
   }
 
   private _generateMock(from: Config.Path, moduleName: string) {

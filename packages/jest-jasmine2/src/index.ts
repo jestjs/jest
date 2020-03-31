@@ -10,7 +10,7 @@ import type {Config, Global} from '@jest/types';
 import type {AssertionResult, TestResult} from '@jest/test-result';
 import type {JestEnvironment} from '@jest/environment';
 import type {SnapshotStateType} from 'jest-snapshot';
-import Runtime = require('jest-runtime');
+import type {RuntimeType as Runtime} from 'jest-runtime';
 
 import {getCallsite} from '@jest/source-map';
 import installEach from './each';

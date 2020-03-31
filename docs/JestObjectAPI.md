@@ -643,7 +643,7 @@ Returns the number of fake timers still left to run.
 
 ### `jest.setTimeout(timeout)`
 
-Set the default timeout interval for tests and before/after hooks in milliseconds.
+Set the default timeout interval for tests and before/after hooks in milliseconds. This only affects the test file from which this function is called.
 
 _Note: The default timeout interval is 5 seconds if this method is not called._
 

@@ -11,7 +11,7 @@ import runJest from '../runJest';
 
 const testRootDir = path.resolve(__dirname, '..', '..');
 
-const normalizePaths = rawPaths =>
+const normalizePaths = (rawPaths: string) =>
   rawPaths
     .split(testRootDir)
     .join(`${path.sep}MOCK_ABOLUTE_PATH`)

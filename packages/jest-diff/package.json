@@ -1,6 +1,6 @@
 {
   "name": "jest-diff",
-  "version": "25.1.0",
+  "version": "25.2.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -9,14 +9,21 @@
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "typesVersions": {
+    "<3.8": {
+      "build/*": [
+        "build/ts3.4/*"
+      ]
+    }
+  },
   "dependencies": {
     "chalk": "^3.0.0",
-    "diff-sequences": "^25.1.0",
-    "jest-get-type": "^25.1.0",
-    "pretty-format": "^25.1.0"
+    "diff-sequences": "^25.2.1",
+    "jest-get-type": "^25.2.1",
+    "pretty-format": "^25.2.3"
   },
   "devDependencies": {
-    "@jest/test-utils": "^25.1.0",
+    "@jest/test-utils": "^25.2.1",
     "strip-ansi": "^6.0.0"
   },
   "engines": {
