@@ -5,17 +5,28 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/**
+ * This is a temporary file to prevent breaking change
+ * TODO: 
+ * 1) move formatResultErrors to jest-test-result so that jest-message-util no
+ *    longer depends on jest-test-result
+ * 2) make jest-console depend on jest-message-util
+ * 3) remove this file
+ */
+
 import * as fs from 'fs';
 import * as path from 'path';
-import type {Config, TestResult} from '@jest/types';
+import type {Config} from '@jest/types';
 import chalk = require('chalk');
 import micromatch = require('micromatch');
 import slash = require('slash');
 import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils = require('stack-utils');
-import type {Frame} from './types';
 
-export type {Frame} from './types';
+
+export interface Frame extends StackUtils.StackData {
+  file: string;
+}
 
 type Path = Config.Path;
 
@@ -38,7 +49,6 @@ export type StackTraceConfig = Pick<
 
 export type StackTraceOptions = {
   noStackTrace: boolean;
-  noCodeFrame?: boolean;
 };
 
 const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
@@ -51,14 +61,10 @@ const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
 const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
 const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
 const NATIVE_NEXT_IGNORE = /^\s+at next \(native\).*$/;
-const TITLE_INDENT = '  ';
 const MESSAGE_INDENT = '    ';
 const STACK_INDENT = '      ';
-const ANCESTRY_SEPARATOR = ' \u203A ';
-const TITLE_BULLET = chalk.bold('\u25cf ');
 const STACK_TRACE_COLOR = chalk.dim;
 const STACK_PATH_REGEXP = /\s*at.*\(?(\:\d*\:\d*|native)\)?/;
-const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
 const NOT_EMPTY_LINE_REGEXP = /^(?!$)/gm;
 
 const indentAllLines = (lines: string, indent: string) =>
@@ -90,90 +96,7 @@ const getRenderedCallsite = (
   return renderedCallsite;
 };
 
-const blankStringRegexp = /^\s*$/;
 
-function checkForCommonEnvironmentErrors(error: string) {
-  if (
-    error.includes('ReferenceError: document is not defined') ||
-    error.includes('ReferenceError: window is not defined') ||
-    error.includes('ReferenceError: navigator is not defined')
-  ) {
-    return warnAboutWrongTestEnvironment(error, 'jsdom');
-  } else if (error.includes('.unref is not a function')) {
-    return warnAboutWrongTestEnvironment(error, 'node');
-  }
-
-  return error;
-}
-
-function warnAboutWrongTestEnvironment(error: string, env: 'jsdom' | 'node') {
-  return (
-    chalk.bold.red(
-      `The error below may be caused by using the wrong test environment, see ${chalk.dim.underline(
-        'https://jestjs.io/docs/en/configuration#testenvironment-string',
-      )}.\nConsider using the "${env}" test environment.\n\n`,
-    ) + error
-  );
-}
-
-// ExecError is an error thrown outside of the test suite (not inside an `it` or
-// `before/after each` hooks). If it's thrown, none of the tests in the file
-// are executed.
-export const formatExecError = (
-  error: Error | TestResult.SerializableError | string | undefined,
-  config: StackTraceConfig,
-  options: StackTraceOptions,
-  testPath?: Path,
-  reuseMessage?: boolean,
-): string => {
-  if (!error || typeof error === 'number') {
-    error = new Error(`Expected an Error, but "${String(error)}" was thrown`);
-    error.stack = '';
-  }
-
-  let message, stack;
-
-  if (typeof error === 'string' || !error) {
-    error || (error = 'EMPTY ERROR');
-    message = '';
-    stack = error;
-  } else {
-    message = error.message;
-    stack = error.stack;
-  }
-
-  const separated = separateMessageFromStack(stack || '');
-  stack = separated.stack;
-
-  if (separated.message.includes(trim(message))) {
-    // Often stack trace already contains the duplicate of the message
-    message = separated.message;
-  }
-
-  message = checkForCommonEnvironmentErrors(message);
-
-  message = indentAllLines(message, MESSAGE_INDENT);
-
-  stack =
-    stack && !options.noStackTrace
-      ? '\n' + formatStackTrace(stack, config, options, testPath)
-      : '';
-
-  if (blankStringRegexp.test(message) && blankStringRegexp.test(stack)) {
-    // this can happen if an empty object is thrown.
-    message = MESSAGE_INDENT + 'Error: No message was provided';
-  }
-
-  let messageToUse;
-
-  if (reuseMessage) {
-    messageToUse = ` ${message.trim()}`;
-  } else {
-    messageToUse = `${EXEC_ERROR_MESSAGE}\n\n${message}`;
-  }
-
-  return TITLE_INDENT + TITLE_BULLET + messageToUse + stack + '\n';
-};
 
 const removeInternalStackEntries = (
   lines: Array<string>,
@@ -252,7 +175,7 @@ const formatPaths = (
 
 export const getStackTraceLines = (
   stack: string,
-  options: StackTraceOptions = {noStackTrace: false, noCodeFrame: false},
+  options: StackTraceOptions = {noStackTrace: false},
 ): Array<string> => removeInternalStackEntries(stack.split(/\n/), options);
 
 export const getTopFrame = (lines: Array<string>): Frame | null => {
@@ -284,7 +207,7 @@ export const formatStackTrace = (
     ? slash(path.relative(config.rootDir, testPath))
     : null;
 
-  if (topFrame && !options.noStackTrace) {
+  if (topFrame) {
     const {column, file: filename, line} = topFrame;
 
     if (line && filename && path.isAbsolute(filename)) {
@@ -308,67 +231,19 @@ export const formatStackTrace = (
     )
     .join('\n');
 
-  return (options.noCodeFrame) ? 
-    `${stacktrace}` : `${renderedCallsite}\n${stacktrace}`;
+  return `${renderedCallsite}\n${stacktrace}`;
 };
 
-type FailedResults = Array<{
-  content: string;
-  result: TestResult.AssertionResult;
-}>;
 
-export const formatResultsErrors = (
-  testResults: Array<TestResult.AssertionResult>,
-  config: StackTraceConfig,
-  options: StackTraceOptions,
-  testPath?: Path,
-): string | null => {
-  const failedResults: FailedResults = testResults.reduce<FailedResults>(
-    (errors, result) => {
-      result.failureMessages
-        .map(checkForCommonEnvironmentErrors)
-        .forEach(content => errors.push({content, result}));
-      return errors;
-    },
-    [],
-  );
-
-  if (!failedResults.length) {
-    return null;
-  }
-
-  return failedResults
-    .map(({result, content}) => {
-      let {message, stack} = separateMessageFromStack(content);
-      stack = options.noStackTrace
-        ? ''
-        : STACK_TRACE_COLOR(
-            formatStackTrace(stack, config, options, testPath),
-          ) + '\n';
-
-      message = indentAllLines(message, MESSAGE_INDENT);
-
-      const title =
-        chalk.bold.red(
-          TITLE_INDENT +
-            TITLE_BULLET +
-            result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
-            (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
-            result.title,
-        ) + '\n';
-
-      return title + '\n' + message + '\n' + stack;
-    })
-    .join('\n');
-};
 
 const errorRegexp = /^Error:?\s*$/;
 
-const removeBlankErrorLine = (str: string) =>
+export const removeBlankErrorLine = (str: string) =>
   str
     .split('\n')
     // Lines saying just `Error:` are useless
-    .filter(line => !errorRegexp.test(line))
+    .filter(line => 
+        !errorRegexp.test(line))
     .join('\n')
     .trimRight();
 

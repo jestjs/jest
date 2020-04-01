@@ -9,7 +9,8 @@ import assert = require('assert');
 import {Console} from 'console';
 import {format} from 'util';
 import chalk = require('chalk');
-import {SourceMapRegistry, getCallsite} from '@jest/source-map';
+import {SourceMapRegistry, getSourceMappedStack} from '@jest/source-map';
+
 import type {
   ConsoleBuffer,
   LogCounters,
@@ -48,8 +49,8 @@ export default class BufferedConsole extends Console {
     level?: number | null,
     sourceMaps?: SourceMapRegistry | null,
   ): ConsoleBuffer {
-    const callsite = getCallsite(level != null ? level : 2, sourceMaps);
-    const origin = callsite.getFileName() + ':' + callsite.getLineNumber();
+
+    const origin = getSourceMappedStack(level != null ? level : 2, sourceMaps);
 
     buffer.push({
       message,
