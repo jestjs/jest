@@ -437,14 +437,22 @@ describe('.toEqual()', () => {
     [Object.freeze({foo: {bar: 1}}), {foo: {}}],
     [
       {
-        get a() {
+        get foo() {
           return 'foo';
         },
-        set a(value) {
+        set foo(value) {
           throw new Error('noo');
         },
       },
-      {a: 'bar'},
+      {foo: 'bar'},
+    ],
+    [
+      Object.freeze({
+        get foobar() {
+          return 'foo';
+        },
+      }),
+      {foobar: 'bar'},
     ],
     ['banana', 'apple'],
     ['1\u{00A0}234,57\u{00A0}$', '1 234,57 $'], // issues/6881

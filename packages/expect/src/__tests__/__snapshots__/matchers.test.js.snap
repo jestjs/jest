@@ -2082,18 +2082,6 @@ Expected: <g>"abc"</>
 Received: <r>{"0": "a", "1": "b", "2": "c"}</>
 `;
 
-exports[`.toEqual() {pass: false} expect({"a": "foo"}).toEqual({"a": "bar"}) 1`] = `
-<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
-
-<g>- Expected  - 1</>
-<r>+ Received  + 1</>
-
-<d>  Object {</>
-<g>-   "a": "bar",</>
-<r>+   "a": "foo",</>
-<d>  }</>
-`;
-
 exports[`.toEqual() {pass: false} expect({"a": 1, "b": 2}).toEqual(ObjectContaining {"a": 2}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
@@ -2125,6 +2113,18 @@ exports[`.toEqual() {pass: false} expect({"a": 5}).toEqual({"b": 6}) 1`] = `
 <d>  }</>
 `;
 
+exports[`.toEqual() {pass: false} expect({"foo": "foo"}).toEqual({"foo": "bar"}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "foo": "bar",</>
+<r>+   "foo": "foo",</>
+<d>  }</>
+`;
+
 exports[`.toEqual() {pass: false} expect({"foo": {"bar": 1}}).toEqual({"foo": {}}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
@@ -2136,6 +2136,18 @@ exports[`.toEqual() {pass: false} expect({"foo": {"bar": 1}}).toEqual({"foo": {}
 <r>+   "foo": Object {</>
 <r>+     "bar": 1,</>
 <r>+   },</>
+<d>  }</>
+`;
+
+exports[`.toEqual() {pass: false} expect({"foobar": "foo"}).toEqual({"foobar": "bar"}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "foobar": "bar",</>
+<r>+   "foobar": "foo",</>
 <d>  }</>
 `;
 

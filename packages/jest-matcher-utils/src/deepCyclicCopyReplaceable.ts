@@ -61,7 +61,7 @@ function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, any>): T {
 
     if ('set' in descriptor) {
       descriptor.set = undefined;
-    } else {
+    } else if (!('get' in descriptor)) {
       descriptor.writable = true;
     }
 
