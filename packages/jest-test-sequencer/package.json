@@ -1,6 +1,6 @@
 {
   "name": "@jest/test-sequencer",
-  "version": "25.2.4",
+  "version": "25.2.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,10 +17,10 @@
     }
   },
   "dependencies": {
-    "@jest/test-result": "^25.2.4",
-    "jest-haste-map": "^25.2.3",
-    "jest-runner": "^25.2.4",
-    "jest-runtime": "^25.2.4"
+    "@jest/test-result": "^25.2.5",
+    "jest-haste-map": "^25.2.5",
+    "jest-runner": "^25.2.5",
+    "jest-runtime": "^25.2.5"
   },
   "engines": {
     "node": ">= 8.3"
