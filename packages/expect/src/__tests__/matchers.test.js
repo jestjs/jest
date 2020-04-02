@@ -437,22 +437,59 @@ describe('.toEqual()', () => {
     [Object.freeze({foo: {bar: 1}}), {foo: {}}],
     [
       {
-        get foo() {
+        get getterAndSetter() {
           return 'foo';
         },
-        set foo(value) {
+        set getterAndSetter(value) {
           throw new Error('noo');
         },
       },
-      {foo: 'bar'},
+      {getterAndSetter: 'bar'},
     ],
     [
       Object.freeze({
-        get foobar() {
+        get frozenGetterAndSetter() {
+          return 'foo';
+        },
+        set frozenGetterAndSetter(value) {
+          throw new Error('noo');
+        },
+      }),
+      {frozenGetterAndSetter: 'bar'},
+    ],
+    [
+      {
+        get getter() {
+          return 'foo';
+        },
+      },
+      {getter: 'bar'},
+    ],
+    [
+      Object.freeze({
+        get frozenGetter() {
           return 'foo';
         },
       }),
-      {foobar: 'bar'},
+      {frozenGetter: 'bar'},
+    ],
+    [
+      {
+        // eslint-disable-next-line accessor-pairs
+        set setter(value) {
+          throw new Error('noo');
+        },
+      },
+      {setter: 'bar'},
+    ],
+    [
+      Object.freeze({
+        // eslint-disable-next-line accessor-pairs
+        set frozenSetter(value) {
+          throw new Error('noo');
+        },
+      }),
+      {frozenSetter: 'bar'},
     ],
     ['banana', 'apple'],
     ['1\u{00A0}234,57\u{00A0}$', '1 234,57 $'], // issues/6881
