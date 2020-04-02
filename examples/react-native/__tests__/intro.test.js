@@ -31,11 +31,15 @@ it('renders the ActivityIndicator component', () => {
 });
 
 it('renders the Image component', done => {
-  Image.getSize('path.jpg', (width, height) => {
-    const tree = renderer.create(<Image style={{height, width}} />).toJSON();
-    expect(tree).toMatchSnapshot();
-    done();
-  });
+  Image.getSize(
+    'path.jpg',
+    (width, height) => {
+      const tree = renderer.create(<Image style={{height, width}} />).toJSON();
+      expect(tree).toMatchSnapshot();
+      done();
+    },
+    done
+  );
 });
 
 it('renders the TextInput component', () => {
