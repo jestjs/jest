@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[@jest/watcher]` Correct return type of `shouldRunTestSuite` for `JestHookEmitter`.
+
 ### Chore & Maintenance
 
 ### Performance
