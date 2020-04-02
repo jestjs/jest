@@ -55,7 +55,7 @@ function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, any>): T {
 
   Object.keys(descriptors).forEach(key => {
     const descriptor = descriptors[key];
-    if (typeof descriptor.value !== 'undefined') {
+    if (descriptor.hasOwnProperty('value')) {
       descriptor.value = deepCyclicCopyReplaceable(descriptor.value, cycles);
     }
 
