@@ -20,20 +20,6 @@ test('returns the same value for primitive or function values', () => {
   expect(deepCyclicCopyReplaceable(fn)).toBe(fn);
 });
 
-test('does not execute getters/setters, but copies them', () => {
-  const fn = jest.fn();
-  const obj = {
-    // @ts-ignore
-    get foo() {
-      fn();
-    },
-  };
-  const copy = deepCyclicCopyReplaceable(obj);
-
-  expect(Object.getOwnPropertyDescriptor(copy, 'foo')).toBeDefined();
-  expect(fn).not.toBeCalled();
-});
-
 test('copies symbols', () => {
   const symbol = Symbol('foo');
   const obj = {[symbol]: 42};

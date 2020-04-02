@@ -36,7 +36,10 @@ export default class Replaceable {
         cb(value, key, this.object);
       });
       Object.getOwnPropertySymbols(this.object).forEach(key => {
-        cb(this.object[key], key, this.object);
+        const descriptor = Object.getOwnPropertyDescriptor(this.object, key);
+        if (descriptor?.enumerable) {
+          cb(this.object[key], key, this.object);
+        }
       });
     } else {
       this.object.forEach(cb);

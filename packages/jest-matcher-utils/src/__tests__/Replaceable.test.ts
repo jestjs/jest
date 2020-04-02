@@ -104,7 +104,7 @@ describe('Replaceable', () => {
       const replaceable = new Replaceable(object);
       const cb = jest.fn();
       replaceable.forEach(cb);
-      expect(cb.mock.calls.length).toBe(3);
+      expect(cb).toHaveBeenCalledTimes(3);
       expect(cb.mock.calls[0]).toEqual([1, 'a', object]);
       expect(cb.mock.calls[1]).toEqual([2, 'b', object]);
       expect(cb.mock.calls[2]).toEqual([3, symbolKey, object]);
@@ -117,7 +117,7 @@ describe('Replaceable', () => {
       const replaceable = new Replaceable(object);
       const cb = jest.fn();
       replaceable.forEach(cb);
-      expect(cb.mock.calls.length).toBe(2);
+      expect(cb).toHaveBeenCalledTimes(2);
       expect(cb.mock.calls[0]).toEqual([1, 'a', object]);
       expect(cb.mock.calls[1]).toEqual([2, 'b', object]);
     });
