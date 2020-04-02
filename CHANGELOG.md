@@ -10,13 +10,13 @@
 
 ## master
 
-### 25.2.6
+## 25.2.6
 
 ### Chore & Maintenance
 
 - `[*]` 25.2.5 was published without changes from 25.2.4 - 25.2.6 includes all changes from that version.
 
-### 25.2.5
+## 25.2.5
 
 ### Fixes
 
