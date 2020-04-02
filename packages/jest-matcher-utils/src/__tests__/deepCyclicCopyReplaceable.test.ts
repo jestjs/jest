@@ -43,6 +43,15 @@ test('convert accessor descriptor into value descriptor', () => {
   });
 });
 
+test('skips non-enumerables', () => {
+  const obj = {};
+  Object.defineProperty(obj, 'foo', {enumerable: false, value: 'bar'});
+
+  const copy = deepCyclicCopyReplaceable(obj);
+
+  expect(Object.getOwnPropertyDescriptors(copy)).toEqual({});
+});
+
 test('copies symbols', () => {
   const symbol = Symbol('foo');
   const obj = {[symbol]: 42};
