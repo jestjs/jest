@@ -277,11 +277,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeInstanceOf(
-    this: MatcherState,
-    received: new () => unknown,
-    expected: Function,
-  ) {
+  toBeInstanceOf(this: MatcherState, received: any, expected: Function) {
     const matcherName = 'toBeInstanceOf';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -380,7 +376,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeNaN(this: MatcherState, received: number, expected: void) {
+  toBeNaN(this: MatcherState, received: any, expected: void) {
     const matcherName = 'toBeNaN';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -624,11 +620,7 @@ const matchers: MatchersObject = {
     return {actual: received, expected, message, name: matcherName, pass};
   },
 
-  toHaveLength(
-    this: MatcherState,
-    received: string | {length: unknown} | undefined,
-    expected: number,
-  ) {
+  toHaveLength(this: MatcherState, received: any, expected: number) {
     const matcherName = 'toHaveLength';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
@@ -638,7 +630,7 @@ const matchers: MatchersObject = {
 
     if (
       typeof received !== 'string' &&
-      (!received || typeof received.length !== 'number')
+      (typeof received !== 'object' || typeof received.length !== 'number')
     ) {
       throw new Error(
         matcherErrorMessage(
