@@ -56,15 +56,21 @@ function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, any>): T {
   cycles.set(object, newObject);
 
   Object.keys(descriptors).forEach(key => {
-    descriptors[key] = {
-      configurable: true,
-      enumerable: true,
-      value: deepCyclicCopyReplaceable(
-        (object as Record<string, unknown>)[key],
-        cycles,
-      ),
-      writable: true,
-    };
+    if (descriptors[key].enumerable) {
+      descriptors[key] = {
+        configurable: true,
+        enumerable: true,
+        value: deepCyclicCopyReplaceable(
+          // this accesses the value or getter, depending. We just care about the value anyways, and this allows us to not mess with accessors
+          // it has the side effect of invoking the getter here though, rather than copying it over
+          (object as Record<string, unknown>)[key],
+          cycles,
+        ),
+        writable: true,
+      };
+    } else {
+      delete descriptors[key];
+    }
   });
 
   return Object.defineProperties(newObject, descriptors);
