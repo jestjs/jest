@@ -6,6 +6,9 @@
 
 ### Chore & Maintenance
 
+- `[@jest/test-result]` Remove dependency on `@jest/transform`, which lead to a sprawling dependency tree ([#9747](https://github.com/facebook/jest/pull/9747))
+- `[@jest/transform]` Expose type `TransformedSource` ([#9736](https://github.com/facebook/jest/pull/9736))
+
 ### Performance
 
 ## 25.2.4
@@ -17,7 +20,7 @@
 ### Fixes
 
 - `[jest-circus]` Fix type elision of jest-runtime imports ([#9717](https://github.com/facebook/jest/pull/9717))
-- `[@jest/transform]` Fix coverage reporter for uncovered files without transformers, reverting ([#9460](https://github.com/facebook/jest/pull/9460)) ([#9724](https://github.com/facebook/jest/pull/9724))
+- `[@jest/transform]` Fix coverage reporter for uncovered files without transformers, reverting [#9460](https://github.com/facebook/jest/pull/9460) ([#9724](https://github.com/facebook/jest/pull/9724))
 
 ## 25.2.3
 

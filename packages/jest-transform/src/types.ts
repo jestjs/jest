@@ -6,7 +6,7 @@
  */
 
 import type {RawSourceMap} from 'source-map';
-import type {Config} from '@jest/types';
+import type {Config, TransformTypes} from '@jest/types';
 
 export type ShouldInstrumentOptions = Pick<
   Config.GlobalConfig,
@@ -32,17 +32,11 @@ interface FixedRawSourceMap extends SourceMapWithVersion {
   version: number;
 }
 
-export type TransformedSource = {
-  code: string;
-  map?: FixedRawSourceMap | string | null;
-};
+export type TransformedSource =
+  | {code: string; map?: FixedRawSourceMap | string | null}
+  | string;
 
-export type TransformResult = {
-  code: string;
-  originalCode: string;
-  mapCoverage: boolean;
-  sourceMapPath: string | null;
-};
+export type TransformResult = TransformTypes.TransformResult;
 
 export type TransformOptions = {
   instrument: boolean;
@@ -70,5 +64,5 @@ export interface Transformer {
     sourcePath: Config.Path,
     config: Config.ProjectConfig,
     options?: TransformOptions,
-  ) => string | TransformedSource;
+  ) => TransformedSource;
 }
