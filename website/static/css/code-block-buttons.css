@@ -13,7 +13,7 @@ pre .btnIcon {
   color: var(--green);
   background-color: transparent;
   height: 30px;
-  transition: all .25s ease-out;
+  transition: all 0.25s ease-out;
 }
 
 pre .btnIcon:hover {
@@ -27,7 +27,7 @@ pre .btnIcon:hover {
 
 .btnIcon svg {
   fill: currentColor;
-  margin-right: .4em;
+  margin-right: 0.4em;
 }
 
 .btnIcon__label {
