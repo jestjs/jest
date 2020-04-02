@@ -37,7 +37,7 @@ export default class Replaceable {
       });
       Object.getOwnPropertySymbols(this.object).forEach(key => {
         const descriptor = Object.getOwnPropertyDescriptor(this.object, key);
-        if ((descriptor as PropertyDescriptor).enumerable) {
+        if (descriptor?.enumerable) {
           cb(this.object[key], key, this.object);
         }
       });
@@ -57,7 +57,12 @@ export default class Replaceable {
     if (this.type === 'map') {
       this.object.set(key, value);
     } else {
-      this.object[key] = value;
+      const descriptor = Object.getOwnPropertyDescriptor(this.object, key);
+
+      // do not try to assign to anything that has a setter
+      if (descriptor?.set === undefined) {
+        this.object[key] = value;
+      }
     }
   }
 }

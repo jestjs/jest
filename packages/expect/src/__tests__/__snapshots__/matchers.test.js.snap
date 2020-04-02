@@ -2082,6 +2082,18 @@ Expected: <g>"abc"</>
 Received: <r>{"0": "a", "1": "b", "2": "c"}</>
 `;
 
+exports[`.toEqual() {pass: false} expect({"a": "foo"}).toEqual({"a": "bar"}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "a": "bar",</>
+<r>+   "a": "foo",</>
+<d>  }</>
+`;
+
 exports[`.toEqual() {pass: false} expect({"a": 1, "b": 2}).toEqual(ObjectContaining {"a": 2}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
