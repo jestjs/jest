@@ -34,7 +34,7 @@ export type AssertionLocation = {
   path: string;
 };
 
-export type Status = TestResult.Status;
+export type Status = AssertionResult['status'];
 
 export type Bytes = number;
 
