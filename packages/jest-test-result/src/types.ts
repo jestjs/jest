@@ -7,12 +7,11 @@
 
 import type {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
 import type {ConsoleBuffer} from '@jest/console';
-import type {Config} from '@jest/types';
+import type {Config, TransformTypes} from '@jest/types';
 import type {V8Coverage} from 'collect-v8-coverage';
-import type {TransformResult} from '@jest/transform';
 
 export type V8CoverageResult = Array<{
-  codeTransformResult: TransformResult | undefined;
+  codeTransformResult: TransformTypes.TransformResult | undefined;
   result: V8Coverage[number];
 }>;
 
