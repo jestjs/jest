@@ -21,7 +21,7 @@
     "@jest/environment": "^25.2.6",
     "@jest/test-result": "^25.2.6",
     "@jest/types": "^25.2.6",
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "co": "^4.6.0",
     "expect": "^25.2.6",
     "is-generator-fn": "^2.0.0",

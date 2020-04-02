@@ -15,7 +15,7 @@
     "@jest/test-result": "^25.2.6",
     "@jest/types": "^25.2.6",
     "ansi-escapes": "^4.2.1",
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "jest-util": "^25.2.6",
     "string-length": "^3.1.0"
   },

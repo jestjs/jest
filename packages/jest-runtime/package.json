@@ -24,7 +24,7 @@
     "@jest/transform": "^25.2.6",
     "@jest/types": "^25.2.6",
     "@types/yargs": "^15.0.0",
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "collect-v8-coverage": "^1.0.0",
     "exit": "^0.1.2",
     "glob": "^7.1.3",

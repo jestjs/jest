@@ -23,7 +23,7 @@
     "@types/babel__core": "^7.1.0",
     "babel-plugin-istanbul": "^6.0.0",
     "babel-preset-jest": "^25.2.6",
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "slash": "^3.0.0"
   },
   "devDependencies": {

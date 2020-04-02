@@ -17,7 +17,7 @@
     }
   },
   "dependencies": {
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "diff-sequences": "^25.2.6",
     "jest-get-type": "^25.2.6",
     "pretty-format": "^25.2.6"
