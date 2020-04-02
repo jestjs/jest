@@ -36,7 +36,9 @@ export type JestHookSubscriber = {
 export type JestHookEmitter = {
   onFileChange: (fs: JestHookExposedFS) => void;
   onTestRunComplete: (results: AggregatedResult) => void;
-  shouldRunTestSuite: (testSuiteInfo: TestSuiteInfo) => Promise<boolean>;
+  shouldRunTestSuite: (
+    testSuiteInfo: TestSuiteInfo,
+  ) => Promise<boolean> | boolean;
 };
 
 export type UsageData = {
