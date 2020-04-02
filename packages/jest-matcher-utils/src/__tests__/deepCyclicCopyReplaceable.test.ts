@@ -20,6 +20,29 @@ test('returns the same value for primitive or function values', () => {
   expect(deepCyclicCopyReplaceable(fn)).toBe(fn);
 });
 
+test('convert accessor descriptor into value descriptor', () => {
+  const obj = {
+    set foo(_) {},
+    get foo() {
+      return 'bar';
+    },
+  };
+  expect(Object.getOwnPropertyDescriptor(obj, 'foo')).toEqual({
+    configurable: true,
+    enumerable: true,
+    get: expect.any(Function),
+    set: expect.any(Function),
+  });
+  const copy = deepCyclicCopyReplaceable(obj);
+
+  expect(Object.getOwnPropertyDescriptor(copy, 'foo')).toEqual({
+    configurable: true,
+    enumerable: true,
+    value: 'bar',
+    writable: true,
+  });
+});
+
 test('copies symbols', () => {
   const symbol = Symbol('foo');
   const obj = {[symbol]: 42};
