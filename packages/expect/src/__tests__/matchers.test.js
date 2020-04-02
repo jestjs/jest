@@ -438,40 +438,40 @@ describe('.toEqual()', () => {
     [
       {
         get getterAndSetter() {
-          return 'foo';
+          return {};
         },
         set getterAndSetter(value) {
           throw new Error('noo');
         },
       },
-      {getterAndSetter: 'bar'},
+      {getterAndSetter: {foo: 'bar'}},
     ],
     [
       Object.freeze({
         get frozenGetterAndSetter() {
-          return 'foo';
+          return {};
         },
         set frozenGetterAndSetter(value) {
           throw new Error('noo');
         },
       }),
-      {frozenGetterAndSetter: 'bar'},
+      {frozenGetterAndSetter: {foo: 'bar'}},
     ],
     [
       {
         get getter() {
-          return 'foo';
+          return {};
         },
       },
-      {getter: 'bar'},
+      {getter: {foo: 'bar'}},
     ],
     [
       Object.freeze({
         get frozenGetter() {
-          return 'foo';
+          return {};
         },
       }),
-      {frozenGetter: 'bar'},
+      {frozenGetter: {foo: 'bar'}},
     ],
     [
       {
@@ -480,7 +480,7 @@ describe('.toEqual()', () => {
           throw new Error('noo');
         },
       },
-      {setter: 'bar'},
+      {setter: {foo: 'bar'}},
     ],
     [
       Object.freeze({
@@ -489,7 +489,7 @@ describe('.toEqual()', () => {
           throw new Error('noo');
         },
       }),
-      {frozenSetter: 'bar'},
+      {frozenSetter: {foo: 'bar'}},
     ],
     ['banana', 'apple'],
     ['1\u{00A0}234,57\u{00A0}$', '1 234,57 $'], // issues/6881
