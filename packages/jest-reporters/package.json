@@ -25,7 +25,7 @@
     "istanbul-lib-instrument": "^4.0.0",
     "istanbul-lib-report": "^3.0.0",
     "istanbul-lib-source-maps": "^4.0.0",
-    "istanbul-reports": "^3.0.0",
+    "istanbul-reports": "^3.0.2",
     "jest-haste-map": "^25.2.6",
     "jest-resolve": "^25.2.6",
     "jest-util": "^25.2.6",
