@@ -57,12 +57,7 @@ export default class Replaceable {
     if (this.type === 'map') {
       this.object.set(key, value);
     } else {
-      const descriptor = Object.getOwnPropertyDescriptor(this.object, key);
-
-      // do not try to assign to anything that has a setter
-      if (descriptor?.set === undefined) {
-        this.object[key] = value;
-      }
+      this.object[key] = value;
     }
   }
 }
