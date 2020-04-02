@@ -7,8 +7,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import type {Config} from '@jest/types';
-import type {AssertionResult, SerializableError} from '@jest/test-result';
+import type {Config, TestResult} from '@jest/types';
 import chalk = require('chalk');
 import micromatch = require('micromatch');
 import slash = require('slash');
@@ -120,7 +119,7 @@ function warnAboutWrongTestEnvironment(error: string, env: 'jsdom' | 'node') {
 // `before/after each` hooks). If it's thrown, none of the tests in the file
 // are executed.
 export const formatExecError = (
-  error: Error | SerializableError | string | undefined,
+  error: Error | TestResult.SerializableError | string | undefined,
   config: StackTraceConfig,
   options: StackTraceOptions,
   testPath?: Path,
@@ -313,11 +312,11 @@ export const formatStackTrace = (
 
 type FailedResults = Array<{
   content: string;
-  result: AssertionResult;
+  result: TestResult.AssertionResult;
 }>;
 
 export const formatResultsErrors = (
-  testResults: Array<AssertionResult>,
+  testResults: Array<TestResult.AssertionResult>,
   config: StackTraceConfig,
   options: StackTraceOptions,
   testPath?: Path,
