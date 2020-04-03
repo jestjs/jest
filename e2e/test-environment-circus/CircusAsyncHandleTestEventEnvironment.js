@@ -32,7 +32,7 @@ class TestEnvironment extends BaseTestEnvironment {
       await sleep(0).then(() => this.pendingEvents.delete(event));
     }
 
-    super.handleTestEvent(event);
+    await super.handleTestEvent(event);
   }
 }
 
