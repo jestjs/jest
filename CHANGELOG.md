@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[jest-matcher-utils]` Do not override properties with setters when diffing objects ([#9757](https://github.com/facebook/jest/pull/9757))
+- `[jest-matcher-utils]` Replace accessors with values to avoid calling setters in object descriptors when computing diffs for error reporting ([#9757](https://github.com/facebook/jest/pull/9757))
 - `[@jest/watcher]` Correct return type of `shouldRunTestSuite` for `JestHookEmitter` ([#9753](https://github.com/facebook/jest/pull/9753))
 
 ### Chore & Maintenance
