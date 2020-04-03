@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[@jest/transform]` Expose type `TransformedSource` ([#9762](https://github.com/facebook/jest/pull/9762))
+
 ### Performance
 
 ## 25.2.7
