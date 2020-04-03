@@ -20,18 +20,36 @@ test('returns the same value for primitive or function values', () => {
   expect(deepCyclicCopyReplaceable(fn)).toBe(fn);
 });
 
-test('does not execute getters/setters, but copies them', () => {
-  const fn = jest.fn();
+test('convert accessor descriptor into value descriptor', () => {
   const obj = {
-    // @ts-ignore
+    set foo(_) {},
     get foo() {
-      fn();
+      return 'bar';
     },
   };
+  expect(Object.getOwnPropertyDescriptor(obj, 'foo')).toEqual({
+    configurable: true,
+    enumerable: true,
+    get: expect.any(Function),
+    set: expect.any(Function),
+  });
   const copy = deepCyclicCopyReplaceable(obj);
 
-  expect(Object.getOwnPropertyDescriptor(copy, 'foo')).toBeDefined();
-  expect(fn).not.toBeCalled();
+  expect(Object.getOwnPropertyDescriptor(copy, 'foo')).toEqual({
+    configurable: true,
+    enumerable: true,
+    value: 'bar',
+    writable: true,
+  });
+});
+
+test('skips non-enumerables', () => {
+  const obj = {};
+  Object.defineProperty(obj, 'foo', {enumerable: false, value: 'bar'});
+
+  const copy = deepCyclicCopyReplaceable(obj);
+
+  expect(Object.getOwnPropertyDescriptors(copy)).toEqual({});
 });
 
 test('copies symbols', () => {
