@@ -30,7 +30,7 @@ class TestEnvironment extends BaseTestEnvironment {
     if (isAsyncEvent(event)) {
       this.pendingEvents.add(event);
       await sleep(0);
-      await this.pendingEvents.delete(event);
+      this.pendingEvents.delete(event);
     }
 
     await super.handleTestEvent(event);
