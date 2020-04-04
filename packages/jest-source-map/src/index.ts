@@ -5,5 +5,5 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export {default as getCallsite, getSourceMappedStack} from './getCallsite';
+export {default as getCallsite} from './getCallsite';
 export type {SourceMapRegistry} from './types';

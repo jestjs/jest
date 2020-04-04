@@ -179,9 +179,10 @@ export default class DefaultReporter extends BaseReporter {
           TITLE_BULLET +
           'Console\n\n' +
           getConsoleOutput(
+            config.cwd,
             !!this._globalConfig.verbose,
-            config,
             result.console,
+            config,
           ),
       );
     }

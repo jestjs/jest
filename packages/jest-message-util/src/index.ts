@@ -252,7 +252,7 @@ const formatPaths = (
 
 export const getStackTraceLines = (
   stack: string,
-  options: StackTraceOptions = {noStackTrace: false, noCodeFrame: false},
+  options: StackTraceOptions = {noCodeFrame: false, noStackTrace: false},
 ): Array<string> => removeInternalStackEntries(stack.split(/\n/), options);
 
 export const getTopFrame = (lines: Array<string>): Frame | null => {
@@ -284,7 +284,7 @@ export const formatStackTrace = (
     ? slash(path.relative(config.rootDir, testPath))
     : null;
 
-  if (topFrame && !options.noStackTrace) {
+  if (topFrame && !options.noCodeFrame) {
     const {column, file: filename, line} = topFrame;
 
     if (line && filename && path.isAbsolute(filename)) {
@@ -308,8 +308,9 @@ export const formatStackTrace = (
     )
     .join('\n');
 
-  return (options.noCodeFrame) ? 
-    `${stacktrace}` : `${renderedCallsite}\n${stacktrace}`;
+  return options.noCodeFrame
+    ? `${stacktrace}`
+    : `${renderedCallsite}\n${stacktrace}`;
 };
 
 type FailedResults = Array<{

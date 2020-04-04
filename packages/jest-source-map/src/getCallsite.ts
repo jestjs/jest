@@ -9,8 +9,6 @@ import {readFileSync} from 'graceful-fs';
 import callsites = require('callsites');
 import {SourceMapConsumer} from 'source-map';
 import type {SourceMapRegistry} from './types';
-import StackUtils = require('stack-utils');
-import {ErrorWithStack} from 'jest-util';
 
 // Copied from https://github.com/rexxars/sourcemap-decorate-callsites/blob/5b9735a156964973a75dc62fd2c7f0c1975458e8/lib/index.js#L113-L158
 const addSourceMapConsumer = (
@@ -67,43 +65,4 @@ export default (
   }
 
   return stack;
-};
-
-export const getSourceMappedStack = (
-  level: number,
-  sourceMaps ?: SourceMapRegistry | null,
-): string => {
-
-  const rawStack = new ErrorWithStack(
-    undefined, 
-    getSourceMappedStack)
-    .stack || '';
-
-  const stackUtils = new StackUtils({
-    cwd: 'something which does not exist',
-    wrapCallSite: (callsite: StackUtils.CallSite) => {
-      const sourceMapFileName = sourceMaps && 
-        sourceMaps[callsite.getFileName() || ''];
-
-      if (sourceMapFileName) {
-        try {
-          const sourceMap = readFileSync(sourceMapFileName, 'utf8');
-          // @ts-ignore: Not allowed to pass string
-          addSourceMapConsumer(stack, new SourceMapConsumer(sourceMap));
-        } catch (e) {
-          // ignore
-        }
-      }
-      return callsite;
-    }
-  });
-  
-  const sourceMapped = stackUtils.clean(rawStack)
-  .split('\n')
-  .slice(level)
-  .filter(Boolean)
-  .map(s=>'\tat '+s)
-  .join('\n');
-
-  return sourceMapped;
 };

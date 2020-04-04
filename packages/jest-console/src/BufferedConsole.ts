@@ -9,7 +9,8 @@ import assert = require('assert');
 import {Console} from 'console';
 import {format} from 'util';
 import chalk = require('chalk');
-import {SourceMapRegistry, getSourceMappedStack} from '@jest/source-map';
+import type {SourceMapRegistry} from '@jest/source-map';
+import {ErrorWithStack} from 'jest-util';
 
 import type {
   ConsoleBuffer,
@@ -47,10 +48,18 @@ export default class BufferedConsole extends Console {
     type: LogType,
     message: LogMessage,
     level?: number | null,
-    sourceMaps?: SourceMapRegistry | null,
+    // @ts-ignore: To avoid breaking change. It's actually not used.
+    _sourceMaps?: SourceMapRegistry | null,
   ): ConsoleBuffer {
+    const stackLevel = level != null ? level : 2;
+    const rawStack =
+      new ErrorWithStack(undefined, BufferedConsole.write).stack || '';
 
-    const origin = getSourceMappedStack(level != null ? level : 2, sourceMaps);
+    const origin = rawStack
+      .split('\n')
+      .slice(stackLevel)
+      .filter(Boolean)
+      .join('\n');
 
     buffer.push({
       message,

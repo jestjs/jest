@@ -6,21 +6,32 @@
  */
 
 import chalk = require('chalk');
+import {
+  StackTraceConfig,
+  StackTraceOptions,
+  formatStackTrace,
+} from 'jest-message-util';
 import type {ConsoleBuffer} from './types';
 
-import {
-  formatStackTrace, 
-  StackTraceConfig} from 'jest-message-util';
-
 export default (
+  root: string,
   verbose: boolean,
-  stackTraceConfig: StackTraceConfig,
   buffer: ConsoleBuffer,
+  optionalStackTraceConfig?: StackTraceConfig,
 ): string => {
   const TITLE_INDENT = verbose ? '  ' : '    ';
   const CONSOLE_INDENT = TITLE_INDENT + '  ';
 
-  return buffer.reduce((output, {type, message, origin}) => {   
+  // TODO: make sure all callers pass correct config and remove this
+  const stackTraceConfig: StackTraceConfig =
+    optionalStackTraceConfig != null
+      ? optionalStackTraceConfig
+      : {
+          rootDir: root,
+          testMatch: [],
+        };
+
+  return buffer.reduce((output, {type, message, origin}) => {
     message = message
       .split(/\n/)
       .map(line => CONSOLE_INDENT + line)
@@ -40,15 +51,18 @@ export default (
       typeMessage = chalk.red(typeMessage);
       noStackTrace = false;
       noCodeFrame = false;
-    } 
-    
+    }
+
+    const options: StackTraceOptions = {
+      noCodeFrame,
+      noStackTrace,
+    };
+
     const formattedStackTrace = formatStackTrace(
-      origin, 
-      stackTraceConfig, 
-      {
-        noStackTrace: noStackTrace, 
-        noCodeFrame: noCodeFrame
-      });
+      origin,
+      stackTraceConfig,
+      options,
+    );
 
     return (
       output +
