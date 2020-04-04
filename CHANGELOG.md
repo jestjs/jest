@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-circus]` Enable writing async test event handlers ([#9392](https://github.com/facebook/jest/pull/9392))
+
 ### Fixes
 
 ### Chore & Maintenance
@@ -49,7 +51,6 @@
 - `[jest-reporters]` Adds ability to pass options to the istanbul-reporter through `coverageReporters` ([#9572](https://github.com/facebook/jest/pull/9572))
 - `[jest-runtime]` Require stack when a module cannot be resolved ([#9681](https://github.com/facebook/jest/pull/9681))
 - `[jest-transform]` `writeCacheFile` no longer calls `fsync` ([#9695](https://github.com/facebook/jest/pull/9695))
-- `[jest-circus]` Enable writing async test event handlers ([#9392](https://github.com/facebook/jest/pull/9392))
 
 ### Fixes
 
