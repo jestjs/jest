@@ -12,6 +12,8 @@ import type {Transformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {
   PartialConfig,
+  PluginItem,
+  TransformCaller,
   TransformOptions,
   transformSync as babelTransform,
 } from '@babel/core';
@@ -27,21 +29,28 @@ const babelIstanbulPlugin = require.resolve('babel-plugin-istanbul');
 interface BabelJestTransformer extends Transformer {
   canInstrument: true;
 }
+interface BabelJestTransformOptions extends TransformOptions {
+  caller: TransformCaller;
+  compact: false;
+  plugins: Array<PluginItem>;
+  presets: Array<PluginItem>;
+  sourceMaps: 'both';
+}
 
 const createTransformer = (
-  options: TransformOptions = {},
+  inputOptions: TransformOptions = {},
 ): BabelJestTransformer => {
-  options = {
-    ...options,
+  const options: BabelJestTransformOptions = {
+    ...inputOptions,
     caller: {
       name: 'babel-jest',
       supportsDynamicImport: false,
       supportsStaticESM: false,
-      ...options.caller,
+      ...inputOptions.caller,
     },
     compact: false,
-    plugins: (options && options.plugins) || [],
-    presets: ((options && options.presets) || []).concat(jestPresetPath),
+    plugins: inputOptions.plugins ?? [],
+    presets: (inputOptions.presets ?? []).concat(jestPresetPath),
     sourceMaps: 'both',
   };
 
@@ -59,9 +68,9 @@ const createTransformer = (
         name: 'babel-jest',
         ...options.caller,
         supportsDynamicImport:
-          supportsDynamicImport ?? options.caller?.supportsDynamicImport,
+          supportsDynamicImport ?? options.caller.supportsDynamicImport,
         supportsStaticESM:
-          supportsStaticESM ?? options.caller?.supportsStaticESM,
+          supportsStaticESM ?? options.caller.supportsStaticESM,
       },
       filename,
     });
