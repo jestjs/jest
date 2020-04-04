@@ -2,7 +2,7 @@
 
 ### Features
 
--- `[jest-config]` Verify if `testSequencer` exists as `projects` config option
+-- `[jest-config]` Verify if `testSequencer` exists as `projects` config option ([9767](https://github.com/facebook/jest/pull/9767))
 
 ### Fixes
 
