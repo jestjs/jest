@@ -34,6 +34,7 @@ import globals from '..';
 
 type Process = NodeJS.Process;
 
+// TODO: hard to type
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const initialize = async ({
   config,
