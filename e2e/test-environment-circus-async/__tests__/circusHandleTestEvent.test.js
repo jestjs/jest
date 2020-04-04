@@ -9,7 +9,9 @@
 
 describe('suite', () => {
   beforeEach(() => {});
-  afterEach(() => { throw new Error(); });
+  afterEach(() => {
+    throw new Error();
+  });
 
   test('passing test', () => {
     expect(true).toBe(true);
