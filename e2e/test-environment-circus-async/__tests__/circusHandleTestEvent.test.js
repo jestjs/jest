@@ -7,13 +7,15 @@
  * @jest-environment ./CircusAsyncHandleTestEventEnvironment.js
  */
 
-beforeEach(() => {});
-afterEach(() => {});
+describe('suite', () => {
+  beforeEach(() => {});
+  afterEach(() => { throw new Error(); });
 
-test('test name here', () => {
-  expect(true).toBe(true);
-});
+  test('passing test', () => {
+    expect(true).toBe(true);
+  });
 
-test('second test name here', () => {
-  expect(true).toBe(false);
+  test('failing test', () => {
+    expect(true).toBe(false);
+  });
 });
