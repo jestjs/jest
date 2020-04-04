@@ -140,7 +140,7 @@ export const copyDir = (src: string, dest: string) => {
 
 export const replaceTime = (str: string) =>
   str
-    .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
+    .replace(/\d*\.?\d+ m?s\b/g, '<<REPLACED>>')
     .replace(/, estimated <<REPLACED>>/g, '');
 
 // Since Jest does not guarantee the order of tests we'll sort the output.
@@ -192,7 +192,7 @@ export const extractSummary = (stdout: string) => {
   const rest = stdout
     .replace(match[0], '')
     // remove all timestamps
-    .replace(/\s*\(\d*\.?\d+m?s\)$/gm, '');
+    .replace(/\s*\(\d*\.?\d+ m?s\b\)$/gm, '');
 
   return {
     rest: rest.trim(),

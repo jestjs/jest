@@ -6,7 +6,7 @@
  */
 
 import type {Circus} from '@jest/types';
-import {convertDescriptorToString} from 'jest-util';
+import {convertDescriptorToString, formatTime} from 'jest-util';
 import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
 import StackUtils = require('stack-utils');
@@ -138,7 +138,7 @@ export const describeBlockHasTests = (
   describe.tests.length > 0 || describe.children.some(describeBlockHasTests);
 
 const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
-  `Exceeded timeout of ${timeout}ms for a ${
+  `Exceeded timeout of ${formatTime(timeout)} for a ${
     isHook ? 'hook' : 'test'
   }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`;
 

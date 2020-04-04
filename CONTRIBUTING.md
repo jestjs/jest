@@ -117,7 +117,7 @@ PASS  __tests__/clear_cache.test.js
 Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
-Time:        0.232s, estimated 1s
+Time:        0.232 s, estimated 1 s
 Ran all test suites.
 ```
 
