@@ -15,6 +15,7 @@ export type {
   Transformer,
   ShouldInstrumentOptions,
   Options as TransformationOptions,
+  TransformOptions,
   TransformResult,
   TransformedSource,
 } from './types';

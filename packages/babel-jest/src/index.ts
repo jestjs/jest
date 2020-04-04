@@ -8,7 +8,10 @@
 import {createHash} from 'crypto';
 import * as fs from 'fs';
 import * as path from 'path';
-import type {Transformer} from '@jest/transform';
+import type {
+  TransformOptions as JestTransformOptions,
+  Transformer,
+} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {
   PartialConfig,
@@ -57,8 +60,7 @@ const createTransformer = (
   function loadBabelConfig(
     cwd: Config.Path,
     filename: Config.Path,
-    supportsDynamicImport?: boolean,
-    supportsStaticESM?: boolean,
+    transformOptions?: JestTransformOptions,
   ): PartialConfig {
     // `cwd` first to allow incoming options to override it
     const babelConfig = loadPartialConfig({
@@ -67,9 +69,11 @@ const createTransformer = (
       caller: {
         ...options.caller,
         supportsDynamicImport:
-          supportsDynamicImport ?? options.caller.supportsDynamicImport,
+          transformOptions?.supportsDynamicImport ??
+          options.caller.supportsDynamicImport,
         supportsStaticESM:
-          supportsStaticESM ?? options.caller.supportsStaticESM,
+          transformOptions?.supportsStaticESM ??
+          options.caller.supportsStaticESM,
       },
       filename,
     });
@@ -89,17 +93,13 @@ const createTransformer = (
 
   return {
     canInstrument: true,
-    getCacheKey(
-      fileData,
-      filename,
-      configString,
-      {config, instrument, rootDir, supportsDynamicImport, supportsStaticESM},
-    ) {
+    getCacheKey(fileData, filename, configString, cacheKeyOptions) {
+      const {config, instrument, rootDir} = cacheKeyOptions;
+
       const babelOptions = loadBabelConfig(
         config.cwd,
         filename,
-        supportsDynamicImport,
-        supportsStaticESM,
+        cacheKeyOptions,
       );
       const configPath = [
         babelOptions.config || '',
@@ -128,15 +128,10 @@ const createTransformer = (
     },
     process(src, filename, config, transformOptions) {
       const babelOptions = {
-        ...loadBabelConfig(
-          config.cwd,
-          filename,
-          transformOptions?.supportsDynamicImport,
-          transformOptions?.supportsStaticESM,
-        ).options,
+        ...loadBabelConfig(config.cwd, filename, transformOptions).options,
       };
 
-      if (transformOptions && transformOptions.instrument) {
+      if (transformOptions?.instrument) {
         babelOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
         // Copied from jest-runtime transform.js
         babelOptions.plugins = (babelOptions.plugins || []).concat([
