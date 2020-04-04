@@ -65,7 +65,6 @@ const createTransformer = (
       cwd,
       ...options,
       caller: {
-        name: 'babel-jest',
         ...options.caller,
         supportsDynamicImport:
           supportsDynamicImport ?? options.caller.supportsDynamicImport,
