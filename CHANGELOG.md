@@ -1,6 +1,7 @@
 ## master
 
 ### Features
+
 -- `[jest-config]` Verify if `testSequencer` exists as `projects` config option
 
 ### Fixes
