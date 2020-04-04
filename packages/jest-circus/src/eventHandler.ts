@@ -21,6 +21,7 @@ import {
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
 
+// TODO: investigate why a shorter (event, state) signature results into TS7006 compiler error
 const eventHandler: Circus.EventHandler = (
   event: Circus.Event,
   state: Circus.State,
