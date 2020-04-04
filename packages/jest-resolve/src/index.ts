@@ -15,6 +15,7 @@ import isBuiltinModule from './isBuiltinModule';
 import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
 import type {ResolverConfig} from './types';
 import ModuleNotFoundError from './ModuleNotFoundError';
+import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
 
 type FindNodeModuleConfig = {
   basedir: Config.Path;
@@ -100,6 +101,7 @@ class Resolver {
 
   static clearDefaultResolverCache(): void {
     clearDefaultResolverCache();
+    clearCachedLookups();
   }
 
   static findNodeModule(
@@ -128,6 +130,9 @@ class Resolver {
     }
     return null;
   }
+
+  // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
+  static unstable_shouldLoadAsEsm = shouldLoadAsEsm;
 
   resolveModuleFromDirIfExists(
     dirname: Config.Path,

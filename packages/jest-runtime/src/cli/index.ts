@@ -93,9 +93,22 @@ export async function run(
 
     const runtime = new Runtime(config, environment, hasteMap.resolver);
 
-    config.setupFiles.forEach(path => runtime.requireModule(path));
+    for (const path of config.setupFiles) {
+      const esm = runtime.unstable_shouldLoadAsEsm(path);
 
-    runtime.requireModule(filePath);
+      if (esm) {
+        await runtime.unstable_importModule(path);
+      } else {
+        runtime.requireModule(path);
+      }
+    }
+    const esm = runtime.unstable_shouldLoadAsEsm(filePath);
+
+    if (esm) {
+      await runtime.unstable_importModule(filePath);
+    } else {
+      runtime.requireModule(filePath);
+    }
   } catch (e) {
     console.error(chalk.red(e.stack || e));
     process.on('exit', () => (process.exitCode = 1));

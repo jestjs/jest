@@ -5,9 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {URL, fileURLToPath} from 'url';
+import {URL, fileURLToPath, pathToFileURL} from 'url';
 import * as path from 'path';
-import {Script, compileFunction} from 'vm';
+import {
+  Script,
+  // @ts-ignore: experimental, not added to the types
+  SourceTextModule,
+  // @ts-ignore: experimental, not added to the types
+  Module as VMModule,
+  compileFunction,
+} from 'vm';
 import * as nativeModule from 'module';
 import type {Config, Global} from '@jest/types';
 import type {
@@ -46,6 +53,10 @@ import stripBOM = require('strip-bom');
 interface JestGlobalsValues extends Global.TestFrameworkGlobals {
   jest: JestGlobals.jest;
   expect: JestGlobals.expect;
+}
+
+interface JestImportMeta extends ImportMeta {
+  jest: Jest;
 }
 
 type HasteMapOptions = {
@@ -106,6 +117,8 @@ const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
 
 type RunScriptEvalResult = {[EVAL_RESULT_VARIABLE]: ModuleWrapper};
 
+const runtimeSupportsVmModules = typeof SourceTextModule === 'function';
+
 /* eslint-disable-next-line no-redeclare */
 class Runtime {
   private _cacheFS: CacheFS;
@@ -125,6 +138,7 @@ class Runtime {
   private _moduleMocker: typeof jestMock;
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
+  private _esmoduleRegistry: Map<string, VMModule>;
   private _needsCoverageMapped: Set<string>;
   private _resolver: Resolver;
   private _shouldAutoMock: boolean;
@@ -169,6 +183,7 @@ class Runtime {
     this._isolatedModuleRegistry = null;
     this._isolatedMockRegistry = null;
     this._moduleRegistry = new Map();
+    this._esmoduleRegistry = new Map();
     this._needsCoverageMapped = new Set();
     this._resolver = resolver;
     this._scriptTransformer = new ScriptTransformer(config);
@@ -300,6 +315,77 @@ class Runtime {
 
   static getCLIOptions(): typeof cliOptions {
     return cliOptions;
+  }
+
+  // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
+  unstable_shouldLoadAsEsm = Resolver.unstable_shouldLoadAsEsm;
+
+  private async loadEsmModule(
+    modulePath: Config.Path,
+    query = '',
+  ): Promise<VMModule> {
+    const cacheKey = modulePath + query;
+
+    if (!this._esmoduleRegistry.has(cacheKey)) {
+      const context = this._environment.getVmContext!();
+
+      invariant(context);
+
+      const transformedFile = this.transformFile(modulePath, {
+        isInternalModule: false,
+        supportsDynamicImport: true,
+        supportsStaticESM: true,
+      });
+
+      const module = new SourceTextModule(transformedFile.code, {
+        context,
+        identifier: modulePath,
+        importModuleDynamically: (
+          specifier: string,
+          referencingModule: VMModule,
+        ) =>
+          this.loadEsmModule(
+            this._resolveModule(referencingModule.identifier, specifier),
+          ),
+        initializeImportMeta(meta: JestImportMeta) {
+          meta.url = pathToFileURL(modulePath).href;
+          // @ts-ignore TODO: fill this
+          meta.jest = {};
+        },
+      });
+
+      this._esmoduleRegistry.set(cacheKey, module);
+    }
+
+    const module = this._esmoduleRegistry.get(cacheKey);
+
+    invariant(module);
+
+    return module;
+  }
+
+  async unstable_importModule(
+    from: Config.Path,
+    moduleName?: string,
+  ): Promise<void> {
+    invariant(
+      runtimeSupportsVmModules,
+      'You need to run with a version of node that supports ES Modules in the VM API.',
+    );
+    invariant(
+      typeof this._environment.getVmContext === 'function',
+      'ES Modules are only supported if your test environment has the `getVmContext` function',
+    );
+
+    const modulePath = this._resolveModule(from, moduleName);
+
+    const module = await this.loadEsmModule(modulePath);
+    await module.link((specifier: string, referencingModule: VMModule) =>
+      this.loadEsmModule(
+        this._resolveModule(referencingModule.identifier, specifier),
+      ),
+    );
+    await module.evaluate();
   }
 
   requireModule<T = unknown>(
@@ -795,23 +881,8 @@ class Runtime {
     Object.defineProperty(localModule, 'require', {
       value: this._createRequireImplementation(localModule, options),
     });
-    const transformedFile = this._scriptTransformer.transform(
-      filename,
-      this._getFullTransformationOptions(options),
-      this._cacheFS[filename],
-    );
 
-    // we only care about non-internal modules
-    if (!options || !options.isInternalModule) {
-      this._fileTransforms.set(filename, transformedFile);
-    }
-
-    if (transformedFile.sourceMapPath) {
-      this._sourceMapRegistry[filename] = transformedFile.sourceMapPath;
-      if (transformedFile.mapCoverage) {
-        this._needsCoverageMapped.add(filename);
-      }
-    }
+    const transformedFile = this.transformFile(filename, options);
 
     let compiledFunction: ModuleWrapper | null = null;
 
@@ -905,6 +976,27 @@ class Runtime {
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
     this._currentlyExecutingModulePath = lastExecutingModulePath;
+  }
+
+  private transformFile(filename: string, options?: InternalModuleOptions) {
+    const transformedFile = this._scriptTransformer.transform(
+      filename,
+      this._getFullTransformationOptions(options),
+      this._cacheFS[filename],
+    );
+
+    // we only care about non-internal modules
+    if (!options || !options.isInternalModule) {
+      this._fileTransforms.set(filename, transformedFile);
+    }
+
+    if (transformedFile.sourceMapPath) {
+      this._sourceMapRegistry[filename] = transformedFile.sourceMapPath;
+      if (transformedFile.mapCoverage) {
+        this._needsCoverageMapped.add(filename);
+      }
+    }
+    return transformedFile;
   }
 
   private createScriptFromCode(scriptSource: string, filename: string) {
