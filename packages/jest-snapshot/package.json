@@ -1,6 +1,6 @@
 {
   "name": "jest-snapshot",
-  "version": "25.2.6",
+  "version": "25.2.7",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -21,10 +21,10 @@
     "@jest/types": "^25.2.6",
     "@types/prettier": "^1.19.0",
     "chalk": "^3.0.0",
-    "expect": "^25.2.6",
+    "expect": "^25.2.7",
     "jest-diff": "^25.2.6",
     "jest-get-type": "^25.2.6",
-    "jest-matcher-utils": "^25.2.6",
+    "jest-matcher-utils": "^25.2.7",
     "jest-message-util": "^25.2.6",
     "jest-resolve": "^25.2.6",
     "make-dir": "^3.0.0",

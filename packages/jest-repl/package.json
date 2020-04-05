@@ -1,6 +1,6 @@
 {
   "name": "jest-repl",
-  "version": "25.2.6",
+  "version": "25.2.7",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -19,8 +19,8 @@
   "dependencies": {
     "@jest/transform": "^25.2.6",
     "@jest/types": "^25.2.6",
-    "jest-config": "^25.2.6",
-    "jest-runtime": "^25.2.6",
+    "jest-config": "^25.2.7",
+    "jest-runtime": "^25.2.7",
     "jest-validate": "^25.2.6",
     "repl": "^0.1.3",
     "yargs": "^15.3.1"
