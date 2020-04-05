@@ -531,4 +531,77 @@ describe('SearchSource', () => {
       }
     });
   });
+
+  describe('findRelatedSourcesFromTestsInChangedFiles', () => {
+    const rootDir = path.join(
+      __dirname,
+      '..',
+      '..',
+      '..',
+      'jest-runtime',
+      'src',
+      '__tests__',
+      'test_root',
+    );
+
+    beforeEach(done => {
+      const {options: config} = normalize(
+        {
+          haste: {
+            hasteImplModulePath: path.join(
+              __dirname,
+              '..',
+              '..',
+              '..',
+              'jest-haste-map',
+              'src',
+              '__tests__',
+              'haste_impl.js',
+            ),
+            providesModuleNodeModules: [],
+          },
+          name: 'SearchSource-findRelatedSourcesFromTestsInChangedFiles-tests',
+          rootDir,
+        },
+        {} as Config.Argv,
+      );
+      Runtime.createContext(config, {maxWorkers, watchman: false}).then(
+        context => {
+          searchSource = new SearchSource(context);
+          done();
+        },
+      );
+    });
+
+    it('return empty set if no SCM', () => {
+      const requireRegularModule = path.join(
+        rootDir,
+        'RequireRegularModule.js',
+      );
+      const sources = searchSource.findRelatedSourcesFromTestsInChangedFiles({
+        changedFiles: new Set([requireRegularModule]),
+        repos: {
+          git: new Set(),
+          hg: new Set(),
+        },
+      });
+      expect(sources).toEqual([]);
+    });
+
+    it('return sources required by tests', () => {
+      const regularModule = path.join(rootDir, 'RegularModule.js');
+      const requireRegularModule = path.join(
+        rootDir,
+        'RequireRegularModule.js',
+      );
+      const sources = searchSource.findRelatedSourcesFromTestsInChangedFiles({
+        changedFiles: new Set([requireRegularModule]),
+        repos: {
+          git: new Set('/path/to/git'),
+          hg: new Set(),
+        },
+      });
+      expect(sources).toEqual([regularModule]);
+    });
+  });
 });
