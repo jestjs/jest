@@ -66,7 +66,7 @@ export default function (j$: Jasmine) {
     ) => Promise<void>;
     fdescribe: (description: string, specDefinitions: Function) => Suite;
     spyOn: (
-      obj: Record<string, any>,
+      obj: Record<string, Spy>,
       methodName: string,
       accessType?: keyof PropertyDescriptor,
     ) => Spy;

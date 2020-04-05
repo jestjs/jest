@@ -321,12 +321,15 @@ export const formatResultsErrors = (
   options: StackTraceOptions,
   testPath?: Path,
 ): string | null => {
-  const failedResults: FailedResults = testResults.reduce((errors, result) => {
-    result.failureMessages
-      .map(checkForCommonEnvironmentErrors)
-      .forEach(content => errors.push({content, result}));
-    return errors;
-  }, [] as FailedResults);
+  const failedResults: FailedResults = testResults.reduce<FailedResults>(
+    (errors, result) => {
+      result.failureMessages
+        .map(checkForCommonEnvironmentErrors)
+        .forEach(content => errors.push({content, result}));
+      return errors;
+    },
+    [],
+  );
 
   if (!failedResults.length) {
     return null;

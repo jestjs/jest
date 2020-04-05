@@ -158,9 +158,11 @@ export default function watch(
   if (globalConfig.watchPlugins != null) {
     const watchPluginKeys: WatchPluginKeysMap = new Map();
     for (const plugin of watchPlugins) {
-      const reservedInfo =
-        RESERVED_KEY_PLUGINS.get(plugin.constructor as WatchPluginClass) ||
-        ({} as ReservedInfo);
+      const reservedInfo: Pick<
+        ReservedInfo,
+        'forbiddenOverwriteMessage' | 'key'
+      > =
+        RESERVED_KEY_PLUGINS.get(plugin.constructor as WatchPluginClass) || {};
       const key = reservedInfo.key || getPluginKey(plugin, globalConfig);
       if (!key) {
         continue;

@@ -10,7 +10,7 @@ import type {Config, NewPlugin, Printer, Refs} from '../types';
 export type ReactTestObject = {
   $$typeof: symbol;
   type: string;
-  props?: Record<string, any>;
+  props?: Record<string, unknown>;
   children?: null | Array<ReactTestChild>;
 };
 

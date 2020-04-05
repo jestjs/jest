@@ -64,7 +64,7 @@ const toStrictEqualTesters = [
 type ContainIterable =
   | Array<unknown>
   | Set<unknown>
-  | NodeListOf<any>
+  | NodeListOf<Node>
   | DOMTokenList
   | HTMLCollectionOf<any>;
 
@@ -630,7 +630,7 @@ const matchers: MatchersObject = {
 
     if (
       typeof received !== 'string' &&
-      (!received || typeof received.length !== 'number')
+      (typeof received !== 'object' || typeof received.length !== 'number')
     ) {
       throw new Error(
         matcherErrorMessage(
