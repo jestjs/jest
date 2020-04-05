@@ -20,7 +20,7 @@
   "dependencies": {
     "@jest/transform": "^25.2.6",
     "@jest/types": "^25.2.6",
-    "@types/babel__core": "^7.1.0",
+    "@types/babel__core": "^7.1.7",
     "babel-plugin-istanbul": "^6.0.0",
     "babel-preset-jest": "^25.2.6",
     "chalk": "^3.0.0",

@@ -101,6 +101,8 @@ export default class ScriptTransformer {
             config: this._config,
             instrument,
             rootDir: this._config.rootDir,
+            supportsDynamicImport: false,
+            supportsStaticESM: false,
           }),
         )
         .update(CACHE_VERSION)
@@ -285,6 +287,8 @@ export default class ScriptTransformer {
     if (transform && shouldCallTransform) {
       const processed = transform.process(content, filename, this._config, {
         instrument,
+        supportsDynamicImport: false,
+        supportsStaticESM: false,
       });
 
       if (typeof processed === 'string') {
