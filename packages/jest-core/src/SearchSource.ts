@@ -247,14 +247,11 @@ export default class SearchSource {
     changedFilesInfo: ChangedFiles,
     collectCoverage: boolean,
   ): SearchResult {
-    const {repos, changedFiles} = changedFilesInfo;
-    // no SCM (git/hg/...) is found in any of the roots.
-    const noSCM = (Object.keys(repos) as Array<
-      keyof ChangedFiles['repos']
-    >).every(scm => repos[scm].size === 0);
-    return noSCM
-      ? {noSCM: true, tests: []}
-      : this.findRelatedTests(changedFiles, collectCoverage);
+    if (!hasSCM(changedFilesInfo)) {
+      return {noSCM: true, tests: []};
+    }
+    const {changedFiles} = changedFilesInfo;
+    return this.findRelatedTests(changedFiles, collectCoverage);
   }
 
   private _getTestPaths(
