@@ -9,7 +9,7 @@ import {tmpdir} from 'os';
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummary, sortLines, writeFiles} from '../Utils';
-import runJest from '../runJest';
+import runJest, {getConfig} from '../runJest';
 
 const DIR = path.resolve(tmpdir(), 'multi-project-runner-test');
 
@@ -509,14 +509,7 @@ describe("doesn't bleed module file extensions resolution with multiple workers"
       };`,
     });
 
-    const {stdout: configOutput} = runJest(DIR, [
-      '--show-config',
-      '--projects',
-      'project1',
-      'project2',
-    ]);
-
-    const {configs} = JSON.parse(configOutput);
+    const {configs} = getConfig(DIR, ['--projects', 'project1', 'project2']);
 
     expect(configs).toHaveLength(2);
 
@@ -559,9 +552,7 @@ describe("doesn't bleed module file extensions resolution with multiple workers"
     `,
     });
 
-    const {stdout: configOutput} = runJest(DIR, ['--show-config']);
-
-    const {configs} = JSON.parse(configOutput);
+    const {configs} = getConfig(DIR);
 
     expect(configs).toHaveLength(2);
 
