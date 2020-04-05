@@ -137,6 +137,39 @@ test('report test coverage for only changed files', () => {
   expect(stdout).not.toMatch('b.js');
 });
 
+test('report test coverage of source on test file change under only changed files', () => {
+  writeFiles(DIR, {
+    '__tests__/a.test.js': `
+    require('../a');
+    test('a1', () => expect(1).toBe(1));
+  `,
+    'a.js': 'module.exports = {}',
+    'package.json': JSON.stringify({
+      jest: {
+        collectCoverage: true,
+        coverageReporters: ['text'],
+        testEnvironment: 'node',
+      },
+    }),
+  });
+
+  run(`${GIT} init`, DIR);
+  run(`${GIT} add .`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
+
+  writeFiles(DIR, {
+    '__tests__/a.test.js': `
+    require('../a');
+    test('a1', () => expect(1).toBe(1));
+    test('a2', () => expect(2).toBe(2));
+  `,
+  });
+
+  const {stdout} = runJest(DIR, ['-o']);
+
+  expect(stdout).toMatch('a.js');
+});
+
 test('do not pickup non-tested files when reporting coverage on only changed files', () => {
   writeFiles(DIR, {
     'a.js': 'module.exports = {}',

@@ -16,6 +16,7 @@ export type ShouldInstrumentOptions = Pick<
   | 'coverageProvider'
 > & {
   changedFiles?: Set<Config.Path>;
+  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
 };
 
 export type Options = ShouldInstrumentOptions &

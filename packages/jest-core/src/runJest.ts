@@ -242,9 +242,22 @@ export default async function runJest({
   }
 
   if (changedFilesPromise) {
-    testSchedulerContext.changedFiles = (
-      await changedFilesPromise
-    ).changedFiles;
+    const changedFilesInfo = await changedFilesPromise;
+    testSchedulerContext.changedFiles = changedFilesInfo.changedFiles;
+    if (testSchedulerContext.changedFiles) {
+      const sourcesRelatedToTestsInChangedFilesArray = contexts
+        .map(context => {
+          const searchSource = new SearchSource(context);
+          const relatedSourceFromTestsInChangedFiles = searchSource.findRelatedSourcesFromTestsInChangedFiles(
+            changedFilesInfo,
+          );
+          return relatedSourceFromTestsInChangedFiles;
+        })
+        .reduce((total, paths) => [...total, ...paths], []);
+      testSchedulerContext.sourcesRelatedToTestsInChangedFiles = new Set(
+        sourcesRelatedToTestsInChangedFilesArray,
+      );
+    }
   }
 
   const results = await new TestScheduler(

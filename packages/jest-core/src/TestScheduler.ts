@@ -44,6 +44,7 @@ export type TestSchedulerContext = {
   firstRun: boolean;
   previousSuccess: boolean;
   changedFiles?: Set<Config.Path>;
+  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
 };
 export default class TestScheduler {
   private _dispatcher: ReporterDispatcher;
@@ -181,6 +182,8 @@ export default class TestScheduler {
         const Runner: typeof TestRunner = require(config.runner);
         testRunners[config.runner] = new Runner(this._globalConfig, {
           changedFiles: this._context && this._context.changedFiles,
+          sourcesRelatedToTestsInChangedFiles:
+            this._context && this._context.sourcesRelatedToTestsInChangedFiles,
         });
       }
     });
@@ -273,6 +276,8 @@ export default class TestScheduler {
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
           changedFiles: this._context && this._context.changedFiles,
+          sourcesRelatedToTestsInChangedFiles:
+            this._context && this._context.sourcesRelatedToTestsInChangedFiles,
         }),
       );
     }
@@ -303,6 +308,8 @@ export default class TestScheduler {
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
           changedFiles: this._context && this._context.changedFiles,
+          sourcesRelatedToTestsInChangedFiles:
+            this._context && this._context.sourcesRelatedToTestsInChangedFiles,
         }),
       );
     }

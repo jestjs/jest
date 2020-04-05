@@ -152,6 +152,8 @@ async function runTestInternal(
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
     coverageProvider: globalConfig.coverageProvider,
+    sourcesRelatedToTestsInChangedFiles:
+      context && context.sourcesRelatedToTestsInChangedFiles,
   });
 
   const start = Date.now();

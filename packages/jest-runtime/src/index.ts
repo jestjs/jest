@@ -171,6 +171,7 @@ class Runtime {
       collectCoverageFrom: [],
       collectCoverageOnlyFrom: undefined,
       coverageProvider: 'babel',
+      sourcesRelatedToTestsInChangedFiles: undefined,
     };
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
