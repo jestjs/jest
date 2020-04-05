@@ -54,9 +54,7 @@ const toTests = (context: Context, tests: Array<Config.Path>) =>
 const hasSCM = (changedFilesInfo: ChangedFiles) => {
   const {repos} = changedFilesInfo;
   // no SCM (git/hg/...) is found in any of the roots.
-  const noSCM = (Object.keys(repos) as Array<
-    keyof ChangedFiles['repos']
-  >).every(scm => repos[scm].size === 0);
+  const noSCM = Object.values(repos).every(scm => scm.size === 0);
   return !noSCM;
 };
 
@@ -352,7 +350,7 @@ export default class SearchSource {
     );
     const relatedSourcesSet = new Set<string>();
     changedFiles.forEach(filePath => {
-      const isTestFile = this.isTestFilePath.bind(this)(filePath);
+      const isTestFile = this.isTestFilePath(filePath);
       if (isTestFile) {
         const sourcePaths = dependencyResolver.resolve(filePath, {
           skipNodeResolution: this._context.config.skipNodeResolution,

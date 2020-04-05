@@ -165,7 +165,7 @@ test('report test coverage of source on test file change under only changed file
   `,
   });
 
-  const {stdout} = runJest(DIR, ['-o']);
+  const {stdout} = runJest(DIR, ['--only-changed']);
 
   expect(stdout).toMatch('a.js');
 });

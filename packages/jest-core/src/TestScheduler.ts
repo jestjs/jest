@@ -181,9 +181,9 @@ export default class TestScheduler {
       if (!testRunners[config.runner]) {
         const Runner: typeof TestRunner = require(config.runner);
         testRunners[config.runner] = new Runner(this._globalConfig, {
-          changedFiles: this._context && this._context.changedFiles,
-          sourcesRelatedToTestsInChangedFiles:
-            this._context && this._context.sourcesRelatedToTestsInChangedFiles,
+          changedFiles: this._context?.changedFiles,
+          sourcesRelatedToTestsInChangedFiles: this._context
+            ?.sourcesRelatedToTestsInChangedFiles,
         });
       }
     });
@@ -275,9 +275,9 @@ export default class TestScheduler {
     if (!isDefault && collectCoverage) {
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
-          changedFiles: this._context && this._context.changedFiles,
-          sourcesRelatedToTestsInChangedFiles:
-            this._context && this._context.sourcesRelatedToTestsInChangedFiles,
+          changedFiles: this._context?.changedFiles,
+          sourcesRelatedToTestsInChangedFiles: this._context
+            ?.sourcesRelatedToTestsInChangedFiles,
         }),
       );
     }
@@ -307,9 +307,9 @@ export default class TestScheduler {
     if (collectCoverage) {
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
-          changedFiles: this._context && this._context.changedFiles,
-          sourcesRelatedToTestsInChangedFiles:
-            this._context && this._context.sourcesRelatedToTestsInChangedFiles,
+          changedFiles: this._context?.changedFiles,
+          sourcesRelatedToTestsInChangedFiles: this._context
+            ?.sourcesRelatedToTestsInChangedFiles,
         }),
       );
     }

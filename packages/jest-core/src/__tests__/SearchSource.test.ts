@@ -533,30 +533,18 @@ describe('SearchSource', () => {
   });
 
   describe('findRelatedSourcesFromTestsInChangedFiles', () => {
-    const rootDir = path.join(
+    const rootDir = path.resolve(
       __dirname,
-      '..',
-      '..',
-      '..',
-      'jest-runtime',
-      'src',
-      '__tests__',
-      'test_root',
+      '../../../jest-runtime/src/__tests__/test_root',
     );
 
     beforeEach(done => {
       const {options: config} = normalize(
         {
           haste: {
-            hasteImplModulePath: path.join(
+            hasteImplModulePath: path.resolve(
               __dirname,
-              '..',
-              '..',
-              '..',
-              'jest-haste-map',
-              'src',
-              '__tests__',
-              'haste_impl.js',
+              '../../../jest-haste-map/src/__tests__/haste_impl.js',
             ),
             providesModuleNodeModules: [],
           },
