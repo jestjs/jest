@@ -3,6 +3,7 @@
 ### Features
 
 - `[babel-jest]` Support passing `supportsDynamicImport` and `supportsStaticESM` ([#9766](https://github.com/facebook/jest/pull/9766))
+- `[jest-runtime, @jest/transformer]` Support passing `supportsDynamicImport` and `supportsStaticESM` ([#9597](https://github.com/facebook/jest/pull/9597))
 
 ### Fixes
 
