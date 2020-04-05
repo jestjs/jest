@@ -51,6 +51,15 @@ const toTests = (context: Context, tests: Array<Config.Path>) =>
     path,
   }));
 
+const hasSCM = (changedFilesInfo: ChangedFiles) => {
+  const {repos} = changedFilesInfo;
+  // no SCM (git/hg/...) is found in any of the roots.
+  const noSCM = (Object.keys(repos) as Array<
+    keyof ChangedFiles['repos']
+  >).every(scm => repos[scm].size === 0);
+  return !noSCM;
+};
+
 export default class SearchSource {
   private _context: Context;
   private _testPathCases: TestPathCases = [];
@@ -327,5 +336,30 @@ export default class SearchSource {
     }
 
     return searchResult;
+  }
+
+  findRelatedSourcesFromTestsInChangedFiles(
+    changedFilesInfo: ChangedFiles,
+  ): Array<string> {
+    if (!hasSCM(changedFilesInfo)) {
+      return [];
+    }
+    const {changedFiles} = changedFilesInfo;
+    const dependencyResolver = new DependencyResolver(
+      this._context.resolver,
+      this._context.hasteFS,
+      buildSnapshotResolver(this._context.config),
+    );
+    const relatedSourcesSet = new Set<string>();
+    changedFiles.forEach(filePath => {
+      const isTestFile = this.isTestFilePath.bind(this)(filePath);
+      if (isTestFile) {
+        const sourcePaths = dependencyResolver.resolve(filePath, {
+          skipNodeResolution: this._context.config.skipNodeResolution,
+        });
+        sourcePaths.forEach(sourcePath => relatedSourcesSet.add(sourcePath));
+      }
+    });
+    return Array.from(relatedSourcesSet);
   }
 }
