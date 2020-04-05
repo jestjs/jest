@@ -23,7 +23,7 @@ test('reads config from cjs file', () => {
 // not unflagged for other versions yet. Update this range if that changes
 onNodeVersions('^13.2.0', () => {
   test('reads config from mjs file', () => {
-    const {configs} = getConfig('esm-config/cjs', [], {
+    const {configs} = getConfig('esm-config/mjs', [], {
       skipPkgJsonCheck: true,
     });
 
@@ -35,7 +35,7 @@ onNodeVersions('^13.2.0', () => {
   });
 
   test('reads config from js file when package.json#type=module', () => {
-    const {configs} = getConfig('esm-config/cjs', [], {
+    const {configs} = getConfig('esm-config/js', [], {
       skipPkgJsonCheck: true,
     });
 
