@@ -55,7 +55,7 @@
     invariant "^2.2.4"
     semver "^5.5.0"
 
-"@babel/core@*", "@babel/core@^7.0.0", "@babel/core@^7.1.0", "@babel/core@^7.3.4", "@babel/core@^7.7.4", "@babel/core@^7.7.5", "@babel/core@^7.8.0":
+"@babel/core@*", "@babel/core@^7.0.0", "@babel/core@^7.1.0", "@babel/core@^7.3.4", "@babel/core@^7.7.4", "@babel/core@^7.7.5":
   version "7.9.0"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.9.0.tgz#ac977b538b77e132ff706f3b8a4dbad09c03c56e"
   integrity sha512-kWc7L0fw1xwvI0zi8OKVBuxRVefwGOrKSQMvrQ3dW+bIIavBY3/NpXmpjMy7bQnLgwgzWQZ8TlM57YHpHNHz4w==
