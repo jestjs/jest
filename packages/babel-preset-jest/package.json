@@ -10,6 +10,9 @@
   "main": "index.js",
   "dependencies": {
     "@babel/plugin-syntax-bigint": "^7.0.0",
+    "@babel/plugin-syntax-class-properties": "^7.0.0",
+    "@babel/plugin-syntax-logical-assignment-operators": "^7.0.0",
+    "@babel/plugin-syntax-numeric-separator": "^7.0.0",
     "@babel/plugin-syntax-object-rest-spread": "^7.0.0",
     "babel-plugin-jest-hoist": "^25.2.6"
   },
