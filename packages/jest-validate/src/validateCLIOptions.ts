@@ -87,19 +87,18 @@ export default function validateCLIOptions(
     throw createCLIValidationError(unrecognizedOptions, allowedOptions);
   }
 
-  const CLIDeprecations = Object.keys(deprecationEntries).reduce(
-    (acc, entry) => {
-      if (options[entry]) {
-        acc[entry] = deprecationEntries[entry];
-        const alias = options[entry].alias as string;
-        if (alias) {
-          acc[alias] = deprecationEntries[entry];
-        }
+  const CLIDeprecations = Object.keys(deprecationEntries).reduce<
+    Record<string, Function>
+  >((acc, entry) => {
+    if (options[entry]) {
+      acc[entry] = deprecationEntries[entry];
+      const alias = options[entry].alias as string;
+      if (alias) {
+        acc[alias] = deprecationEntries[entry];
       }
-      return acc;
-    },
-    {} as Record<string, Function>,
-  );
+    }
+    return acc;
+  }, {});
   const deprecations = new Set(Object.keys(CLIDeprecations));
   const deprecatedOptions = Object.keys(argv).filter(
     arg => deprecations.has(arg) && argv[arg] != null,

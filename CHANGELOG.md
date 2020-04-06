@@ -2,13 +2,44 @@
 
 ### Features
 
+- `[babel-jest]` Support passing `supportsDynamicImport` and `supportsStaticESM` ([#9766](https://github.com/facebook/jest/pull/9766))
 - `[jest-circus]` Enable writing async test event handlers ([#9392](https://github.com/facebook/jest/pull/9392))
+- `[jest-runtime, @jest/transformer]` Support passing `supportsDynamicImport` and `supportsStaticESM` ([#9597](https://github.com/facebook/jest/pull/9597))
 
 ### Fixes
 
 ### Chore & Maintenance
 
+- `[*]` Replace `any`s with `unknown`s ([#9626](https://github.com/facebook/jest/pull/9626))
+- `[@jest/transform]` Expose type `CacheKeyOptions` for `getCacheKey` ([#9762](https://github.com/facebook/jest/pull/9762))
+
 ### Performance
+
+## 25.2.7
+
+### Fixes
+
+- `[jest-matcher-utils]` Replace accessors with values to avoid calling setters in object descriptors when computing diffs for error reporting ([#9757](https://github.com/facebook/jest/pull/9757))
+- `[@jest/watcher]` Correct return type of `shouldRunTestSuite` for `JestHookEmitter` ([#9753](https://github.com/facebook/jest/pull/9753))
+
+## 25.2.6
+
+### Chore & Maintenance
+
+- `[*]` 25.2.5 was published without changes from 25.2.4 - 25.2.6 includes all changes from that version.
+
+## 25.2.5
+
+### Fixes
+
+- `[@jest/console]` Fix `typescript<@3.8` compatibility in published types
+
+### Chore & Maintenance
+
+- `[docs]` Update link to watchman troubleshooting docs ([#9727](https://github.com/facebook/jest/pull/9727))
+- `[@jest/message-util]` Remove dependency on `@jest/test-result`, which lead to a sprawling dependency tree ([#9749](https://github.com/facebook/jest/pull/9749))
+- `[@jest/test-result]` Remove dependency on `@jest/transform`, which lead to a sprawling dependency tree ([#9747](https://github.com/facebook/jest/pull/9747))
+- `[@jest/transform]` Expose type `TransformedSource` ([#9736](https://github.com/facebook/jest/pull/9736))
 
 ## 25.2.4
 
@@ -19,7 +50,7 @@
 ### Fixes
 
 - `[jest-circus]` Fix type elision of jest-runtime imports ([#9717](https://github.com/facebook/jest/pull/9717))
-- `[@jest/transform]` Fix coverage reporter for uncovered files without transformers, reverting ([#9460](https://github.com/facebook/jest/pull/9460)) ([#9724](https://github.com/facebook/jest/pull/9724))
+- `[@jest/transform]` Fix coverage reporter for uncovered files without transformers, reverting [#9460](https://github.com/facebook/jest/pull/9460) ([#9724](https://github.com/facebook/jest/pull/9724))
 
 ## 25.2.3
 

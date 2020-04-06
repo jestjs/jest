@@ -74,12 +74,15 @@ export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
   );
 
   // strip dashed args
-  return Object.keys(argv).reduce((result, key) => {
-    if (!key.includes('-')) {
-      result[key] = argv[key];
-    }
-    return result;
-  }, {} as Config.Argv);
+  return Object.keys(argv).reduce<Config.Argv>(
+    (result, key) => {
+      if (!key.includes('-')) {
+        result[key] = argv[key];
+      }
+      return result;
+    },
+    {$0: argv.$0, _: argv._},
+  );
 };
 
 const getProjectListFromCLIArgs = (

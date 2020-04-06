@@ -41,12 +41,15 @@ export function onNodeVersions(
   versionRange: string,
   testBody: () => void,
 ): void {
+  const description = `on node ${versionRange}`;
   if (!semver.satisfies(process.versions.node, versionRange)) {
-    describe.skip(`[SKIP] tests that require node ${versionRange}`, () => {
+    describe.skip(description, () => {
       testBody();
     });
   } else {
-    testBody();
+    describe(description, () => {
+      testBody();
+    });
   }
 }
 

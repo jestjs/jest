@@ -20,8 +20,7 @@ import type {
 
 type WatchmanRoots = Map<string, Array<string>>;
 
-const watchmanURL =
-  'https://facebook.github.io/watchman/docs/troubleshooting.html';
+const watchmanURL = 'https://facebook.github.io/watchman/docs/troubleshooting';
 
 function WatchmanError(error: Error): Error {
   error.message =
