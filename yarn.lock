@@ -55,7 +55,7 @@
     invariant "^2.2.4"
     semver "^5.5.0"
 
-"@babel/core@*", "@babel/core@^7.0.0", "@babel/core@^7.1.0", "@babel/core@^7.3.4", "@babel/core@^7.7.4", "@babel/core@^7.7.5":
+"@babel/core@*", "@babel/core@^7.0.0", "@babel/core@^7.1.0", "@babel/core@^7.3.4", "@babel/core@^7.7.4", "@babel/core@^7.7.5", "@babel/core@^7.8.0":
   version "7.9.0"
   resolved "https://registry.yarnpkg.com/@babel/core/-/core-7.9.0.tgz#ac977b538b77e132ff706f3b8a4dbad09c03c56e"
   integrity sha512-kWc7L0fw1xwvI0zi8OKVBuxRVefwGOrKSQMvrQ3dW+bIIavBY3/NpXmpjMy7bQnLgwgzWQZ8TlM57YHpHNHz4w==
@@ -423,14 +423,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.8.0"
 
-"@babel/plugin-syntax-bigint@^7.0.0":
-  version "7.8.3"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-bigint/-/plugin-syntax-bigint-7.8.3.tgz#4c9a6f669f5d0cdf1b90a1671e9a146be5300cea"
-  integrity sha512-wnTnFlG+YxQm3vDxpGE57Pj0srRU4sHE/mDkt1qv2YJJSeUAec2ma4WLUnUPeKjyrfntVwe/N6dCXpU+zL3Npg==
-  dependencies:
-    "@babel/helper-plugin-utils" "^7.8.0"
-
-"@babel/plugin-syntax-class-properties@^7.0.0":
+"@babel/plugin-syntax-class-properties@^7.0.0", "@babel/plugin-syntax-class-properties@^7.8.3":
   version "7.8.3"
   resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-class-properties/-/plugin-syntax-class-properties-7.8.3.tgz#6cb933a8872c8d359bfde69bbeaae5162fd1e8f7"
   integrity sha512-UcAyQWg2bAN647Q+O811tG9MrJ38Z10jjhQdKNAL8fsyPzE3cCN/uT+f55cFVY4aGO4jqJAvmqsuY3GQDwAoXg==
@@ -476,6 +469,13 @@
   version "7.8.3"
   resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-jsx/-/plugin-syntax-jsx-7.8.3.tgz#521b06c83c40480f1e58b4fd33b92eceb1d6ea94"
   integrity sha512-WxdW9xyLgBdefoo0Ynn3MRSkhe5tFVxxKNVdnZSh318WrG2e2jH+E9wd/++JsqcLJZPfz87njQJ8j2Upjm0M0A==
+  dependencies:
+    "@babel/helper-plugin-utils" "^7.8.3"
+
+"@babel/plugin-syntax-logical-assignment-operators@^7.8.3":
+  version "7.8.3"
+  resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-logical-assignment-operators/-/plugin-syntax-logical-assignment-operators-7.8.3.tgz#3995d7d7ffff432f6ddc742b47e730c054599897"
+  integrity sha512-Zpg2Sgc++37kuFl6ppq2Q7Awc6E6AIW671x5PY8E/f7MCIyPPGK/EoeZXvvY3P42exZ3Q4/t3YOzP/HiN79jDg==
   dependencies:
     "@babel/helper-plugin-utils" "^7.8.3"
 
@@ -3442,6 +3442,15 @@ babel-polyfill@6.23.0:
     babel-runtime "^6.22.0"
     core-js "^2.4.0"
     regenerator-runtime "^0.10.0"
+
+babel-preset-current-node-syntax@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/babel-preset-current-node-syntax/-/babel-preset-current-node-syntax-0.1.0.tgz#744b43eda7a164e5f90ad416dcd9615e8b7842c1"
+  integrity sha512-gVdIosHhVr8ZFaMo8FVOihafV0UOj26/v4A1etZAPy/XqrJO5dvTLfxGaIApumZ66n7AEkFy3e+SPGOv46YhKQ==
+  dependencies:
+    "@babel/plugin-syntax-class-properties" "^7.8.3"
+    "@babel/plugin-syntax-logical-assignment-operators" "^7.8.3"
+    "@babel/plugin-syntax-numeric-separator" "^7.8.3"
 
 babel-preset-fbjs@^3.1.2, babel-preset-fbjs@^3.2.0:
   version "3.3.0"

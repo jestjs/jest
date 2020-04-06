@@ -27,10 +27,10 @@
     "slash": "^3.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.0"
+    "@babel/core": "^7.8.0"
   },
   "peerDependencies": {
-    "@babel/core": "^7.0.0"
+    "@babel/core": "^7.8.0"
   },
   "engines": {
     "node": ">= 8.3"
