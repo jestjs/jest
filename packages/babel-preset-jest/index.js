@@ -5,10 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const plugins = [
-  require.resolve('babel-plugin-jest-hoist'),
-  require.resolve('babel-preset-current-node-syntax'),
-];
+const plugins = [require.resolve('babel-plugin-jest-hoist')];
+const presets = [require.resolve('babel-preset-current-node-syntax')];
 
 // @babel/core requires us to export a function
-module.exports = () => ({plugins});
+module.exports = () => ({plugins, presets});
