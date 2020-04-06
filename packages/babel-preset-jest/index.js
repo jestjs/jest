@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-module.exports = {
+module.exports = () =>({
   plugins: [
     require.resolve('babel-plugin-jest-hoist'),
     // TODO: replace all the below with a single preset in Jest 26: https://github.com/facebook/jest/pull/9774
@@ -15,4 +15,4 @@ module.exports = {
     require.resolve('@babel/plugin-syntax-logical-assignment-operators'),
     require.resolve('@babel/plugin-syntax-numeric-separator'),
   ],
-};
+});
