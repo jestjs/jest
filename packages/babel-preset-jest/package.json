@@ -10,7 +10,7 @@
   "main": "index.js",
   "dependencies": {
     "babel-plugin-jest-hoist": "^25.2.6",
-    "babel-preset-current-node-syntax": "^0.1.1"
+    "babel-preset-current-node-syntax": "^0.1.2"
   },
   "peerDependencies": {
     "@babel/core": "^7.0.0"
