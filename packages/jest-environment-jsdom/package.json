@@ -1,6 +1,6 @@
 {
   "name": "jest-environment-jsdom",
-  "version": "25.2.6",
+  "version": "25.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,11 +17,11 @@
     }
   },
   "dependencies": {
-    "@jest/environment": "^25.2.6",
-    "@jest/fake-timers": "^25.2.6",
-    "@jest/types": "^25.2.6",
-    "jest-mock": "^25.2.6",
-    "jest-util": "^25.2.6",
+    "@jest/environment": "^25.3.0",
+    "@jest/fake-timers": "^25.3.0",
+    "@jest/types": "^25.3.0",
+    "jest-mock": "^25.3.0",
+    "jest-util": "^25.3.0",
     "jsdom": "^15.2.1"
   },
   "devDependencies": {

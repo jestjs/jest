@@ -1,6 +1,6 @@
 {
   "name": "jest-repl",
-  "version": "25.2.7",
+  "version": "25.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,16 +17,16 @@
     }
   },
   "dependencies": {
-    "@jest/transform": "^25.2.6",
-    "@jest/types": "^25.2.6",
-    "jest-config": "^25.2.7",
-    "jest-runtime": "^25.2.7",
-    "jest-validate": "^25.2.6",
+    "@jest/transform": "^25.3.0",
+    "@jest/types": "^25.3.0",
+    "jest-config": "^25.3.0",
+    "jest-runtime": "^25.3.0",
+    "jest-validate": "^25.3.0",
     "repl": "^0.1.3",
     "yargs": "^15.3.1"
   },
   "devDependencies": {
-    "@jest/test-utils": "^25.2.6",
+    "@jest/test-utils": "^25.3.0",
     "@types/yargs": "^15.0.0"
   },
   "bin": "./bin/jest-repl.js",

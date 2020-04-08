@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve",
-  "version": "25.2.6",
+  "version": "25.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,7 +17,7 @@
     }
   },
   "dependencies": {
-    "@jest/types": "^25.2.6",
+    "@jest/types": "^25.3.0",
     "browser-resolve": "^1.11.3",
     "chalk": "^3.0.0",
     "jest-pnp-resolver": "^1.2.1",
@@ -27,7 +27,7 @@
   "devDependencies": {
     "@types/browser-resolve": "^1.11.0",
     "@types/resolve": "^1.14.0",
-    "jest-haste-map": "^25.2.6"
+    "jest-haste-map": "^25.3.0"
   },
   "engines": {
     "node": ">= 8.3"

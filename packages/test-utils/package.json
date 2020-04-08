@@ -1,6 +1,6 @@
 {
   "name": "@jest/test-utils",
-  "version": "25.2.6",
+  "version": "25.3.0",
   "private": true,
   "license": "MIT",
   "main": "build/index.js",
