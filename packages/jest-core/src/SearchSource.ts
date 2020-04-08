@@ -40,8 +40,9 @@ export type TestSelectionConfig = {
 const globsToMatcher = (globs: Array<Config.Glob>) => (path: Config.Path) =>
   micromatch([replacePathSepForGlob(path)], globs, {dot: true}).length > 0;
 
-const regexToMatcher = (testRegex: Array<string>) => (path: Config.Path) =>
-  testRegex.some(testRegex => new RegExp(testRegex).test(path));
+const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => (
+  path: Config.Path,
+) => testRegex.some(testRegex => new RegExp(testRegex).test(path));
 
 const toTests = (context: Context, tests: Array<Config.Path>) =>
   tests.map(path => ({
