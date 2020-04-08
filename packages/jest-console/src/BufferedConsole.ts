@@ -53,7 +53,9 @@ export default class BufferedConsole extends Console {
   ): ConsoleBuffer {
     const stackLevel = level != null ? level : 2;
     const rawStack =
-      new ErrorWithStack(undefined, BufferedConsole.write).stack || '';
+       new ErrorWithStack(undefined, BufferedConsole.write).stack;
+
+    invariant(rawStack, 'always have a stack trace');
 
     const origin = rawStack
       .split('\n')
@@ -171,5 +173,14 @@ export default class BufferedConsole extends Console {
 
   getBuffer(): ConsoleBuffer | undefined {
     return this._buffer.length ? this._buffer : undefined;
+  }
+}
+
+function invariant(
+  condition: unknown,
+  message?: string,
+): asserts condition {
+  if (!condition) {
+    throw new Error(message);
   }
 }

@@ -20,6 +20,7 @@
     "@jest/source-map": "^25.2.6",
     "chalk": "^3.0.0",
     "jest-message-util": "^25.2.6",
+    "jest-types": "^25.2.6",
     "jest-util": "^25.2.6",
     "slash": "^3.0.0"
   },

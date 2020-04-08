@@ -6,30 +6,23 @@
  */
 
 import chalk = require('chalk');
+import type {Config} from '@jest/types';
 import {
-  StackTraceConfig,
   StackTraceOptions,
   formatStackTrace,
 } from 'jest-message-util';
 import type {ConsoleBuffer} from './types';
 
 export default (
+  // @ts-ignore: cleanup after 26
   root: string,
   verbose: boolean,
   buffer: ConsoleBuffer,
-  optionalStackTraceConfig?: StackTraceConfig,
+  config: Config.ProjectConfig,
 ): string => {
   const TITLE_INDENT = verbose ? '  ' : '    ';
   const CONSOLE_INDENT = TITLE_INDENT + '  ';
 
-  // TODO: make sure all callers pass correct config and remove this
-  const stackTraceConfig: StackTraceConfig =
-    optionalStackTraceConfig != null
-      ? optionalStackTraceConfig
-      : {
-          rootDir: root,
-          testMatch: [],
-        };
 
   return buffer.reduce((output, {type, message, origin}) => {
     message = message
@@ -60,7 +53,7 @@ export default (
 
     const formattedStackTrace = formatStackTrace(
       origin,
-      stackTraceConfig,
+      config,
       options,
     );
 
