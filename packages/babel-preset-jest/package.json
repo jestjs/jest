@@ -9,9 +9,8 @@
   "license": "MIT",
   "main": "index.js",
   "dependencies": {
-    "@babel/plugin-syntax-bigint": "^7.0.0",
-    "@babel/plugin-syntax-object-rest-spread": "^7.0.0",
-    "babel-plugin-jest-hoist": "^25.2.6"
+    "babel-plugin-jest-hoist": "^25.2.6",
+    "babel-preset-current-node-syntax": "^0.1.2"
   },
   "peerDependencies": {
     "@babel/core": "^7.0.0"
