@@ -2,20 +2,26 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 25.3.0
+
+### Features
+
 - `[babel-jest]` Support passing `supportsDynamicImport` and `supportsStaticESM` ([#9766](https://github.com/facebook/jest/pull/9766))
 - `[babel-preset-jest]` Enable all syntax plugins not enabled by default that works on current version of Node ([#9774](https://github.com/facebook/jest/pull/9774))
 - `[jest-circus]` Enable writing async test event handlers ([#9392](https://github.com/facebook/jest/pull/9392))
 - `[jest-runtime, @jest/transformer]` Support passing `supportsDynamicImport` and `supportsStaticESM` ([#9597](https://github.com/facebook/jest/pull/9597))
-
-### Fixes
 
 ### Chore & Maintenance
 
 - `[*]` Replace `any`s with `unknown`s ([#9626](https://github.com/facebook/jest/pull/9626))
 - `[@jest/transform]` Expose type `CacheKeyOptions` for `getCacheKey` ([#9762](https://github.com/facebook/jest/pull/9762))
 - `[@jest/types]` Correct type `testRegex` for `ProjectConfig` ([#9780](https://github.com/facebook/jest/pull/9780))
-
-### Performance
 
 ## 25.2.7
 
