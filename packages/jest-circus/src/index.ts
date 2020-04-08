@@ -10,7 +10,7 @@ import {bind as bindEach} from 'jest-each';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack, isPromise} from 'jest-util';
 import type {Circus, Global} from '@jest/types';
-import {dispatch} from './state';
+import {dispatchSync} from './state';
 
 type THook = (fn: Circus.HookFn, timeout?: number) => void;
 type DescribeFn = (
@@ -52,7 +52,7 @@ const _dispatchDescribe = (
     asyncError.message = `Invalid second argument, ${blockFn}. It must be a callback function.`;
     throw asyncError;
   }
-  dispatch({
+  dispatchSync({
     asyncError,
     blockName,
     mode,
@@ -91,7 +91,7 @@ const _dispatchDescribe = (
     );
   }
 
-  dispatch({blockName, mode, name: 'finish_describe_definition'});
+  dispatchSync({blockName, mode, name: 'finish_describe_definition'});
 };
 
 const _addHook = (
@@ -109,7 +109,7 @@ const _addHook = (
     throw asyncError;
   }
 
-  dispatch({asyncError, fn, hookType, name: 'add_hook', timeout});
+  dispatchSync({asyncError, fn, hookType, name: 'add_hook', timeout});
 };
 
 // Hooks have to pass themselves to the HOF in order for us to trim stack traces.
@@ -179,7 +179,7 @@ const test: Global.It = (() => {
       throw asyncError;
     }
 
-    return dispatch({
+    return dispatchSync({
       asyncError,
       fn,
       mode,
