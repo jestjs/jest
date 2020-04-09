@@ -14,8 +14,8 @@ import {
 import type {ConsoleBuffer} from './types';
 
 export default (
-  // @ts-ignore: cleanup after 26
-  root: string,
+  // TODO: remove in 26
+  _root: string,
   verbose: boolean,
   buffer: ConsoleBuffer,
   config: Config.ProjectConfig,
