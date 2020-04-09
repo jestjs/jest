@@ -29,7 +29,7 @@ export default class BufferedConsole extends Console {
     const buffer: ConsoleBuffer = [];
     super({
       write: (message: string) => {
-        BufferedConsole.write(buffer, 'log', message, null); 
+        BufferedConsole.write(buffer, 'log', message, null);
 
         return true;
       },
@@ -47,8 +47,7 @@ export default class BufferedConsole extends Console {
     level?: number | null,
   ): ConsoleBuffer {
     const stackLevel = level != null ? level : 2;
-    const rawStack =
-       new ErrorWithStack(undefined, BufferedConsole.write).stack;
+    const rawStack = new ErrorWithStack(undefined, BufferedConsole.write).stack;
 
     invariant(rawStack, 'always have a stack trace');
 
@@ -72,7 +71,7 @@ export default class BufferedConsole extends Console {
       this._buffer,
       type,
       '  '.repeat(this._groupDepth) + message,
-      3
+      3,
     );
   }
 
@@ -170,10 +169,7 @@ export default class BufferedConsole extends Console {
   }
 }
 
-function invariant(
-  condition: unknown,
-  message?: string,
-): asserts condition {
+function invariant(condition: unknown, message?: string): asserts condition {
   if (!condition) {
     throw new Error(message);
   }

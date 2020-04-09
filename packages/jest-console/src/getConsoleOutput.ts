@@ -7,10 +7,7 @@
 
 import chalk = require('chalk');
 import type {Config} from '@jest/types';
-import {
-  StackTraceOptions,
-  formatStackTrace,
-} from 'jest-message-util';
+import {StackTraceOptions, formatStackTrace} from 'jest-message-util';
 import type {ConsoleBuffer} from './types';
 
 export default (
@@ -50,11 +47,7 @@ export default (
       noStackTrace,
     };
 
-    const formattedStackTrace = formatStackTrace(
-      origin,
-      config,
-      options,
-    );
+    const formattedStackTrace = formatStackTrace(origin, config, options);
 
     return (
       output +

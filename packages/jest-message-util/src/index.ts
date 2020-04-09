@@ -288,7 +288,7 @@ export const formatStackTrace = (
 
     if (topFrame) {
       const {column, file: filename, line} = topFrame;
-  
+
       if (line && filename && path.isAbsolute(filename)) {
         let fileContent;
         try {
@@ -301,7 +301,7 @@ export const formatStackTrace = (
         }
       }
     }
-  }  
+  }
 
   const stacktrace = lines
     .filter(Boolean)
