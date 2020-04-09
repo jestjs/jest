@@ -63,8 +63,9 @@ test('preserves module identity for symlinks when using browser field resolution
   const {stdout, stderr, exitCode} = runJest(DIR, ['--no-watchman']);
   expect(stderr).toContain('Test Suites: 1 passed, 1 total');
   expect(wrap(stdout.trim())).toMatchInlineSnapshot(`
-    console.log packages/needs-preserved-id/index.js:1
+    console.log
         needs-preserved-id executed
+          at Object.<anonymous> (packages/needs-preserved-id/index.js:1:13)
   `);
   expect(exitCode).toEqual(0);
 });
