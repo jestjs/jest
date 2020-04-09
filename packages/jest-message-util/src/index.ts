@@ -278,27 +278,30 @@ export const formatStackTrace = (
   testPath?: Path,
 ): string => {
   const lines = getStackTraceLines(stack, options);
-  const topFrame = getTopFrame(lines);
   let renderedCallsite = '';
   const relativeTestPath = testPath
     ? slash(path.relative(config.rootDir, testPath))
     : null;
 
-  if (topFrame && !options.noCodeFrame) {
-    const {column, file: filename, line} = topFrame;
+  if (!options.noCodeFrame) {
+    const topFrame = getTopFrame(lines);
 
-    if (line && filename && path.isAbsolute(filename)) {
-      let fileContent;
-      try {
-        // TODO: check & read HasteFS instead of reading the filesystem:
-        // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
-        fileContent = fs.readFileSync(filename, 'utf8');
-        renderedCallsite = getRenderedCallsite(fileContent, line, column);
-      } catch (e) {
-        // the file does not exist or is inaccessible, we ignore
+    if (topFrame) {
+      const {column, file: filename, line} = topFrame;
+  
+      if (line && filename && path.isAbsolute(filename)) {
+        let fileContent;
+        try {
+          // TODO: check & read HasteFS instead of reading the filesystem:
+          // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
+          fileContent = fs.readFileSync(filename, 'utf8');
+          renderedCallsite = getRenderedCallsite(fileContent, line, column);
+        } catch (e) {
+          // the file does not exist or is inaccessible, we ignore
+        }
       }
     }
-  }
+  }  
 
   const stacktrace = lines
     .filter(Boolean)
