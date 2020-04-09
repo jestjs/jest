@@ -48,8 +48,6 @@ export default class BufferedConsole extends Console {
     type: LogType,
     message: LogMessage,
     level?: number | null,
-    // @ts-ignore: To avoid breaking change. It's actually not used.
-    _sourceMaps?: SourceMapRegistry | null,
   ): ConsoleBuffer {
     const stackLevel = level != null ? level : 2;
     const rawStack =
