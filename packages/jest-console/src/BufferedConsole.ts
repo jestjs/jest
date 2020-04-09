@@ -9,7 +9,6 @@ import assert = require('assert');
 import {Console} from 'console';
 import {format} from 'util';
 import chalk = require('chalk');
-import type {SourceMapRegistry} from '@jest/source-map';
 import {ErrorWithStack} from 'jest-util';
 
 import type {
@@ -25,18 +24,16 @@ export default class BufferedConsole extends Console {
   private _counters: LogCounters;
   private _timers: LogTimers;
   private _groupDepth: number;
-  private _getSourceMaps: () => SourceMapRegistry | null | undefined;
 
-  constructor(getSourceMaps: () => SourceMapRegistry | null | undefined) {
+  constructor() {
     const buffer: ConsoleBuffer = [];
     super({
       write: (message: string) => {
-        BufferedConsole.write(buffer, 'log', message, null, getSourceMaps());
+        BufferedConsole.write(buffer, 'log', message, null); 
 
         return true;
       },
     } as NodeJS.WritableStream);
-    this._getSourceMaps = getSourceMaps;
     this._buffer = buffer;
     this._counters = {};
     this._timers = {};
@@ -48,8 +45,6 @@ export default class BufferedConsole extends Console {
     type: LogType,
     message: LogMessage,
     level?: number | null,
-    // TODO: remove in 26
-    _sourceMaps?: SourceMapRegistry | null
   ): ConsoleBuffer {
     const stackLevel = level != null ? level : 2;
     const rawStack =
@@ -77,8 +72,7 @@ export default class BufferedConsole extends Console {
       this._buffer,
       type,
       '  '.repeat(this._groupDepth) + message,
-      3,
-      this._getSourceMaps(),
+      3
     );
   }
 

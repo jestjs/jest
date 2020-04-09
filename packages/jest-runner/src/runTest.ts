@@ -126,8 +126,7 @@ async function runTestInternal(
         [],
         type,
         message,
-        4,
-        runtime && runtime.getSourceMaps(),
+        4
       ),
       config,
     );
@@ -139,7 +138,7 @@ async function runTestInternal(
   } else if (globalConfig.verbose) {
     testConsole = new CustomConsole(consoleOut, consoleOut, consoleFormatter);
   } else {
-    testConsole = new BufferedConsole(() => runtime && runtime.getSourceMaps());
+    testConsole = new BufferedConsole();
   }
 
   const environment = new TestEnvironment(config, {

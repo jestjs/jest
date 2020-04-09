@@ -6,7 +6,6 @@
   },
   "references": [
     {"path": "../jest-message-util"},
-    {"path": "../jest-source-map"},
     {"path": "../jest-types"},
     {"path": "../jest-util"}
   ]
