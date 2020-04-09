@@ -23,7 +23,6 @@ export default (
   const TITLE_INDENT = verbose ? '  ' : '    ';
   const CONSOLE_INDENT = TITLE_INDENT + '  ';
 
-
   return buffer.reduce((output, {type, message, origin}) => {
     message = message
       .split(/\n/)
