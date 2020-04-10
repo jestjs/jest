@@ -12,6 +12,9 @@ import {
   // @ts-ignore: experimental, not added to the types
   SourceTextModule,
   // @ts-ignore: experimental, not added to the types
+  SyntheticModule,
+  Context as VMContext,
+  // @ts-ignore: experimental, not added to the types
   Module as VMModule,
   compileFunction,
 } from 'vm';
@@ -330,6 +333,12 @@ class Runtime {
       const context = this._environment.getVmContext!();
 
       invariant(context);
+
+      if (this._resolver.isCoreModule(modulePath)) {
+        const core = await this._importCoreModule(modulePath, context);
+        this._esmoduleRegistry.set(cacheKey, core);
+        return core;
+      }
 
       const transformedFile = this.transformFile(modulePath, {
         isInternalModule: false,
@@ -1024,6 +1033,24 @@ class Runtime {
     return require(moduleName);
   }
 
+  private _importCoreModule(moduleName: string, context: VMContext) {
+    const required = this._requireCoreModule(moduleName);
+
+    return new SyntheticModule(
+      ['default', ...Object.keys(required)],
+      function () {
+        // @ts-ignore: TS doesn't know what `this` is
+        this.setExport('default', required);
+        Object.entries(required).forEach(([key, value]) => {
+          // @ts-ignore: TS doesn't know what `this` is
+          this.setExport(key, value);
+        });
+      },
+      // should identifier be `node://${moduleName}`?
+      {context, identifier: moduleName},
+    );
+  }
+
   private _getMockedNativeModule(): typeof nativeModule.Module {
     if (this._moduleImplementation) {
       return this._moduleImplementation;
@@ -1058,13 +1085,20 @@ class Runtime {
     // should we implement the class ourselves?
     class Module extends nativeModule.Module {}
 
+    Object.entries(nativeModule.Module).forEach(([key, value]) => {
+      // @ts-ignore
+      Module[key] = value;
+    });
+
     Module.Module = Module;
 
     if ('createRequire' in nativeModule) {
       Module.createRequire = createRequire;
     }
     if ('createRequireFromPath' in nativeModule) {
-      Module.createRequireFromPath = (filename: string | URL) => {
+      Module.createRequireFromPath = function createRequireFromPath(
+        filename: string | URL,
+      ) {
         if (typeof filename !== 'string') {
           const error = new TypeError(
             `The argument 'filename' must be string. Received '${filename}'.${
@@ -1081,7 +1115,7 @@ class Runtime {
       };
     }
     if ('syncBuiltinESMExports' in nativeModule) {
-      Module.syncBuiltinESMExports = () => {};
+      Module.syncBuiltinESMExports = function syncBuiltinESMExports() {};
     }
 
     this._moduleImplementation = Module;
