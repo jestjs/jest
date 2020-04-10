@@ -10,7 +10,6 @@ import {Console} from 'console';
 import {format} from 'util';
 import chalk = require('chalk');
 import {ErrorWithStack} from 'jest-util';
-
 import type {
   ConsoleBuffer,
   LogCounters,

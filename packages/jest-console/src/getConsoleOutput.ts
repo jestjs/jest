@@ -6,8 +6,11 @@
  */
 
 import chalk = require('chalk');
-import type {Config} from '@jest/types';
-import {StackTraceOptions, formatStackTrace} from 'jest-message-util';
+import {
+  StackTraceConfig,
+  StackTraceOptions,
+  formatStackTrace,
+} from 'jest-message-util';
 import type {ConsoleBuffer} from './types';
 
 export default (
@@ -15,10 +18,20 @@ export default (
   _root: string,
   verbose: boolean,
   buffer: ConsoleBuffer,
-  config: Config.ProjectConfig,
+  // TODO: make mandatory and take Config.ProjectConfig in 26
+  config?: StackTraceConfig,
 ): string => {
   const TITLE_INDENT = verbose ? '  ' : '    ';
   const CONSOLE_INDENT = TITLE_INDENT + '  ';
+
+  //TODO: remove in 26
+  const stackTraceConfig: StackTraceConfig =
+    config != null
+      ? config
+      : {
+          rootDir: _root,
+          testMatch: [],
+        };
 
   return buffer.reduce((output, {type, message, origin}) => {
     message = message
@@ -47,7 +60,11 @@ export default (
       noStackTrace,
     };
 
-    const formattedStackTrace = formatStackTrace(origin, config, options);
+    const formattedStackTrace = formatStackTrace(
+      origin,
+      stackTraceConfig,
+      options,
+    );
 
     return (
       output +
