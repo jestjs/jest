@@ -357,13 +357,27 @@ class Runtime {
       const module = new SourceTextModule(transformedFile.code, {
         context,
         identifier: modulePath,
-        importModuleDynamically: (
+        importModuleDynamically: async (
           specifier: string,
           referencingModule: VMModule,
-        ) =>
-          this.loadEsmModule(
-            this._resolveModule(referencingModule.identifier, specifier),
-          ),
+        ) => {
+          const resolved = this._resolveModule(
+            referencingModule.identifier,
+            specifier,
+          );
+          if (
+            this._resolver.isCoreModule(resolved) ||
+            this.unstable_shouldLoadAsEsm(resolved)
+          ) {
+            return this.loadEsmModule(resolved);
+          }
+
+          return this.loadCjsAsEsm(
+            referencingModule.identifier,
+            resolved,
+            context,
+          );
+        },
         initializeImportMeta(meta: ImportMeta) {
           meta.url = pathToFileURL(modulePath).href;
         },
@@ -397,6 +411,32 @@ class Runtime {
       ),
     );
     await module.evaluate();
+  }
+
+  private async loadCjsAsEsm(
+    from: Config.Path,
+    modulePath: Config.Path,
+    context: VMContext,
+  ) {
+    // CJS loaded via `import` should share cache with other CJS: https://github.com/nodejs/modules/issues/503
+    const cjs = this.requireModuleOrMock(from, modulePath);
+
+    const module = new SyntheticModule(
+      ['default'],
+      function () {
+        // @ts-ignore: TS doesn't know what `this` is
+        this.setExport('default', cjs);
+      },
+      {context, identifier: modulePath},
+    );
+
+    await module.link(() => {
+      throw new Error('This should never happen');
+    });
+
+    await module.evaluate();
+
+    return module;
   }
 
   requireModule<T = unknown>(
