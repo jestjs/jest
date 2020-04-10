@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-worker]` Correct `Worker` to `JestWorker` for `README.md` ([#9788](https://github.com/facebook/jest/pull/9788))
+
 ### Performance
 
 ## 25.3.0
