@@ -14,6 +14,7 @@ const DIR = path.resolve(__dirname, '../v8-coverage');
 onNodeVersions('>=10', () => {
   test('prints coverage', () => {
     const sourcemapDir = path.join(DIR, 'no-sourcemap');
+
     const {stdout, exitCode} = runJest(
       sourcemapDir,
       ['--coverage', '--coverage-provider', 'v8'],
@@ -31,8 +32,9 @@ onNodeVersions('>=10', () => {
           .join('\n') +
         '\n',
     ).toEqual(`
-  console.log __tests__/Thing.test.js:10
+  console.log
     42
+      at Object.log (__tests__/Thing.test.js:10:9)
 
 ----------|---------|----------|---------|---------|-------------------
 File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
