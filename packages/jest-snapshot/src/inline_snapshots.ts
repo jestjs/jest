@@ -66,14 +66,13 @@ const saveSnapshotsForFile = (
   }
 
   // TypeScript projects may not have a babel config; make sure they can be parsed anyway.
-  if (
-    /\.tsx?$/.test(sourceFilePath) &&
-    options.plugins.indexOf('typescript') === -1
-  ) {
-    options.plugins.push('typescript');
-  }
-  if (/\.tsx/.test(sourceFilePath) && options.plugins.indexOf('jsx') === -1) {
-    options.plugins.push('jsx');
+  if (/\.tsx?$/.test(sourceFilePath)) {
+    options.plugins.push([
+      require.resolve('@babel/plugin-syntax-typescript'),
+      {isTSX: /\.tsx$/.test(sourceFilePath)},
+      // unique name to make sure Babel does not complain about a possible duplicate plugin.
+      'TypeScript syntax plugin added by Jest snapshot',
+    ]);
   }
 
   // Record the matcher names seen during traversal and pass them down one
@@ -333,7 +332,7 @@ const createFormattingParser = (
 
 const simpleDetectParser = (filePath: Config.Path) => {
   const extname = path.extname(filePath);
-  if (/tsx?$/.test(extname)) {
+  if (/\.tsx?$/.test(extname)) {
     return 'typescript';
   }
   return 'babylon';
