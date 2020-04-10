@@ -101,44 +101,15 @@ const saveSnapshotsForFile = (
     sourceFile,
   );
 
-  let newSourceFile = sourceFileWithSnapshots;
-  if (prettier) {
-    // Resolve project configuration.
-    // For older versions of Prettier, do not load configuration.
-    const config = prettier.resolveConfig
-      ? prettier.resolveConfig.sync(sourceFilePath, {
-          editorconfig: true,
-        })
-      : null;
-
-    // Detect the parser for the test file.
-    // For older versions of Prettier, fallback to a simple parser detection.
-    const inferredParser = prettier.getFileInfo
-      ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
-      : (config && config.parser) || simpleDetectParser(sourceFilePath);
-
-    // Snapshots have now been inserted. Run prettier to make sure that the code is
-    // formatted, except snapshot indentation. Snapshots cannot be formatted until
-    // after the initial format because we don't know where the call expression
-    // will be placed (specifically its indentation).
-    newSourceFile = prettier.format(newSourceFile, {
-      ...config,
-      filepath: sourceFilePath,
-    });
-
-    if (newSourceFile !== sourceFileWithSnapshots) {
-      // prettier moved things around, run it again to fix snapshot indentations.
-      newSourceFile = prettier.format(newSourceFile, {
-        ...config,
-        filepath: sourceFilePath,
-        parser: createFormattingParser(
-          snapshotMatcherNames,
-          inferredParser,
-          babelTraverse,
-        ),
-      });
-    }
-  }
+  const newSourceFile = prettier
+    ? runPrettier(
+        prettier,
+        sourceFilePath,
+        sourceFileWithSnapshots,
+        snapshotMatcherNames,
+        babelTraverse,
+      )
+    : sourceFileWithSnapshots;
 
   if (newSourceFile !== sourceFile) {
     fs.writeFileSync(sourceFilePath, newSourceFile);
@@ -263,6 +234,52 @@ const traverseAst = (
   if (remainingSnapshots.size) {
     throw new Error(`Jest: Couldn't locate all inline snapshots.`);
   }
+};
+
+const runPrettier = (
+  prettier: any,
+  sourceFilePath: string,
+  sourceFileWithSnapshots: string,
+  snapshotMatcherNames: Array<string>,
+  babelTraverse: BabelTraverse,
+) => {
+  // Resolve project configuration.
+  // For older versions of Prettier, do not load configuration.
+  const config = prettier.resolveConfig
+    ? prettier.resolveConfig.sync(sourceFilePath, {
+        editorconfig: true,
+      })
+    : null;
+
+  // Detect the parser for the test file.
+  // For older versions of Prettier, fallback to a simple parser detection.
+  const inferredParser = prettier.getFileInfo
+    ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
+    : (config && config.parser) || simpleDetectParser(sourceFilePath);
+
+  // Snapshots have now been inserted. Run prettier to make sure that the code is
+  // formatted, except snapshot indentation. Snapshots cannot be formatted until
+  // after the initial format because we don't know where the call expression
+  // will be placed (specifically its indentation).
+  let newSourceFile = prettier.format(sourceFileWithSnapshots, {
+    ...config,
+    filepath: sourceFilePath,
+  });
+
+  if (newSourceFile !== sourceFileWithSnapshots) {
+    // prettier moved things around, run it again to fix snapshot indentations.
+    newSourceFile = prettier.format(newSourceFile, {
+      ...config,
+      filepath: sourceFilePath,
+      parser: createFormattingParser(
+        snapshotMatcherNames,
+        inferredParser,
+        babelTraverse,
+      ),
+    });
+  }
+
+  return newSourceFile;
 };
 
 // This parser formats snapshots to the correct indentation.
