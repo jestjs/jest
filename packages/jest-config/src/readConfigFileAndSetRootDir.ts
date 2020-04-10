@@ -7,22 +7,46 @@
 
 import * as path from 'path';
 import * as fs from 'fs';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 // @ts-ignore: vendored
 import jsonlint from './vendor/jsonlint';
-import {PACKAGE_JSON} from './constants';
+import {JEST_CONFIG_EXT_JSON, PACKAGE_JSON} from './constants';
+import importEsm from './importEsm';
 
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
-// 2. For any other file, we just require it.
-export default (configPath: Config.Path): Config.InitialOptions => {
-  const isJSON = configPath.endsWith('.json');
+// 2. For any other file, we just require it. If we receive an 'ERR_REQUIRE_ESM'
+//    from node, perform a dynamic import instead.
+export default async function readConfigFileAndSetRootDir(
+  configPath: Config.Path,
+): Promise<Config.InitialOptions> {
+  const isJSON = configPath.endsWith(JEST_CONFIG_EXT_JSON);
   let configObject;
 
   try {
     configObject = require(configPath);
   } catch (error) {
-    if (isJSON) {
+    if (error.code === 'ERR_REQUIRE_ESM') {
+      try {
+        const importedConfig = await importEsm(configPath);
+
+        if (!importedConfig.default) {
+          throw new Error(
+            `Jest: Failed to load mjs config file ${configPath} - did you use a default export?`,
+          );
+        }
+
+        configObject = importedConfig.default;
+      } catch (innerError) {
+        if (innerError.message === 'Not supported') {
+          throw new Error(
+            `Jest: Your version of Node does not support dynamic import - please enable it or use a .cjs file extension for file ${configPath}`,
+          );
+        }
+
+        throw innerError;
+      }
+    } else if (isJSON) {
       throw new Error(
         `Jest: Failed to parse config file ${configPath}\n` +
           `  ${jsonlint.errors(fs.readFileSync(configPath, 'utf8'))}`,
@@ -53,4 +77,4 @@ export default (configPath: Config.Path): Config.InitialOptions => {
   }
 
   return configObject;
-};
+}

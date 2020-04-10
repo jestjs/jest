@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AggregatedResult} from '@jest/test-result';
+import type {AggregatedResult} from '@jest/test-result';
 
 type CoverageMap = AggregatedResult['coverageMap'];
 
@@ -38,6 +38,6 @@ function summarize(coverageMap: CoverageMap): CoverageMap {
   return summaries;
 }
 
-export = function(results: AggregatedResult): AggregatedResult {
+export = function (results: AggregatedResult): AggregatedResult {
   return {...results, coverageMap: summarize(results.coverageMap)};
 };

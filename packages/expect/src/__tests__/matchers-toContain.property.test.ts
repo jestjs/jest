@@ -11,6 +11,7 @@ import {
   anythingSettings,
   assertSettings,
 } from './__arbitraries__/sharedSettings';
+import expect from '..';
 
 describe('toContain', () => {
   it('should always find the value when inside the array', () => {

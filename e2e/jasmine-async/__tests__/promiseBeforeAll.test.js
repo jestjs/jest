@@ -35,7 +35,8 @@ describe('promise beforeAll', () => {
   describe('done - with error thrown', () => {
     beforeAll(done => {
       throw new Error('fail');
-      done(); // eslint-disable-line
+      // eslint-disable-next-line no-unreachable
+      done();
     });
     it('fails', () => {});
   });

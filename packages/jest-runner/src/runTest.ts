@@ -6,8 +6,9 @@
  *
  */
 
-import {Config} from '@jest/types';
-import {TestResult} from '@jest/test-result';
+import {compileFunction} from 'vm';
+import type {Config} from '@jest/types';
+import type {TestResult} from '@jest/test-result';
 import {
   BufferedConsole,
   CustomConsole,
@@ -16,7 +17,7 @@ import {
   NullConsole,
   getConsoleOutput,
 } from '@jest/console';
-import {JestEnvironment} from '@jest/environment';
+import type {JestEnvironment} from '@jest/environment';
 import RuntimeClass = require('jest-runtime');
 import * as fs from 'graceful-fs';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
@@ -26,8 +27,8 @@ import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import {formatExecError} from 'jest-message-util';
 import sourcemapSupport = require('source-map-support');
-import chalk from 'chalk';
-import {TestFramework, TestRunnerContext} from './types';
+import chalk = require('chalk');
+import type {TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {
   leakDetector: LeakDetector | null;
@@ -157,9 +158,12 @@ async function runTestInternal(
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
+    coverageProvider: globalConfig.coverageProvider,
   });
 
   const start = Date.now();
+
+  config.setupFiles.forEach(path => runtime!.requireModule(path));
 
   const sourcemapOptions: sourcemapSupport.Options = {
     environment: 'node',
@@ -182,7 +186,7 @@ async function runTestInternal(
 
   // For tests
   runtime
-    .requireInternalModule(
+    .requireInternalModule<typeof import('source-map-support')>(
       require.resolve('source-map-support'),
       'source-map-support',
     )
@@ -218,12 +222,21 @@ async function runTestInternal(
     };
   }
 
+  // if we don't have `getVmContext` on the env,or `compileFunction` available skip coverage
+  const collectV8Coverage =
+    globalConfig.coverageProvider === 'v8' &&
+    typeof environment.getVmContext === 'function' &&
+    typeof compileFunction === 'function';
+
   try {
     await environment.setup();
 
     let result: TestResult;
 
     try {
+      if (collectV8Coverage) {
+        await runtime.collectV8Coverage();
+      }
       result = await testFramework(
         globalConfig,
         config,
@@ -236,6 +249,10 @@ async function runTestInternal(
       err.stack;
 
       throw err;
+    } finally {
+      if (collectV8Coverage) {
+        await runtime.stopCollectingV8Coverage();
+      }
     }
 
     freezeConsole(testConsole, config);
@@ -258,6 +275,13 @@ async function runTestInternal(
       if (coverageKeys.length) {
         result.coverage = coverage;
         result.sourceMaps = runtime.getSourceMapInfo(new Set(coverageKeys));
+      }
+    }
+
+    if (collectV8Coverage) {
+      const v8Coverage = runtime.getAllV8CoverageInfoCopy();
+      if (v8Coverage && v8Coverage.length > 0) {
+        result.v8Coverage = v8Coverage;
       }
     }
 

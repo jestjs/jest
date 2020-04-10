@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AggregatedResult, TestResult} from '@jest/test-result';
-import {Test} from 'jest-runner';
-import {Context} from 'jest-runtime';
-import {Reporter, ReporterOnStartOptions} from '@jest/reporters';
+import type {AggregatedResult, TestResult} from '@jest/test-result';
+import type {Test} from 'jest-runner';
+import type {Context} from 'jest-runtime';
+import type {Reporter, ReporterOnStartOptions} from '@jest/reporters';
 
 export default class ReporterDispatcher {
   private _reporters: Array<Reporter>;
@@ -21,7 +21,7 @@ export default class ReporterDispatcher {
     this._reporters.push(reporter);
   }
 
-  unregister(ReporterClass: Function) {
+  unregister(ReporterClass: Function): void {
     this._reporters = this._reporters.filter(
       reporter => !(reporter instanceof ReporterClass),
     );
@@ -31,7 +31,7 @@ export default class ReporterDispatcher {
     test: Test,
     testResult: TestResult,
     results: AggregatedResult,
-  ) {
+  ): Promise<void> {
     for (const reporter of this._reporters) {
       reporter.onTestResult &&
         (await reporter.onTestResult(test, testResult, results));
@@ -43,19 +43,25 @@ export default class ReporterDispatcher {
     testResult.console = undefined;
   }
 
-  async onTestStart(test: Test) {
+  async onTestStart(test: Test): Promise<void> {
     for (const reporter of this._reporters) {
       reporter.onTestStart && (await reporter.onTestStart(test));
     }
   }
 
-  async onRunStart(results: AggregatedResult, options: ReporterOnStartOptions) {
+  async onRunStart(
+    results: AggregatedResult,
+    options: ReporterOnStartOptions,
+  ): Promise<void> {
     for (const reporter of this._reporters) {
       reporter.onRunStart && (await reporter.onRunStart(results, options));
     }
   }
 
-  async onRunComplete(contexts: Set<Context>, results: AggregatedResult) {
+  async onRunComplete(
+    contexts: Set<Context>,
+    results: AggregatedResult,
+  ): Promise<void> {
     for (const reporter of this._reporters) {
       reporter.onRunComplete &&
         (await reporter.onRunComplete(contexts, results));

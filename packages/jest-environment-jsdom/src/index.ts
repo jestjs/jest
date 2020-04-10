@@ -5,15 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Script} from 'vm';
-import {Config, Global} from '@jest/types';
+import type {Script} from 'vm';
+import type {Config, Global} from '@jest/types';
 import {installCommonGlobals} from 'jest-util';
 import {ModuleMocker} from 'jest-mock';
 import {
   JestFakeTimers as LegacyFakeTimers,
   LolexFakeTimers,
 } from '@jest/fake-timers';
-import {EnvironmentContext, JestEnvironment} from '@jest/environment';
+import type {EnvironmentContext, JestEnvironment} from '@jest/environment';
 import {JSDOM, VirtualConsole} from 'jsdom';
 
 // The `Window` interface does not have an `Error.stackTraceLimit` property, but
@@ -65,7 +65,7 @@ class JSDOMEnvironment implements JestEnvironment {
     const originalAddListener = global.addEventListener;
     const originalRemoveListener = global.removeEventListener;
     let userErrorListenerCount = 0;
-    global.addEventListener = function(
+    global.addEventListener = function (
       ...args: Parameters<typeof originalAddListener>
     ) {
       if (args[0] === 'error') {
@@ -73,7 +73,7 @@ class JSDOMEnvironment implements JestEnvironment {
       }
       return originalAddListener.apply(this, args);
     };
-    global.removeEventListener = function(
+    global.removeEventListener = function (
       ...args: Parameters<typeof originalRemoveListener>
     ) {
       if (args[0] === 'error') {
@@ -99,9 +99,9 @@ class JSDOMEnvironment implements JestEnvironment {
     this.fakeTimersLolex = new LolexFakeTimers({config, global});
   }
 
-  async setup() {}
+  async setup(): Promise<void> {}
 
-  async teardown() {
+  async teardown(): Promise<void> {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
@@ -124,7 +124,7 @@ class JSDOMEnvironment implements JestEnvironment {
     this.fakeTimersLolex = null;
   }
 
-  runScript(script: Script) {
+  runScript<T = unknown>(script: Script): T | null {
     if (this.dom) {
       return this.dom.runVMScript(script) as any;
     }

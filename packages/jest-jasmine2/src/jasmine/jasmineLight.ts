@@ -30,7 +30,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys */
 
-import {Jasmine} from '../types';
+import type {Jasmine} from '../types';
 import createSpy from './createSpy';
 import Env from './Env';
 import JsApiReporter from './JsApiReporter';
@@ -40,12 +40,12 @@ import SpyRegistry from './spyRegistry';
 import Suite from './Suite';
 import Timer from './Timer';
 
-export const create = function(createOptions: Record<string, any>): Jasmine {
+export const create = function (createOptions: Record<string, any>): Jasmine {
   const j$ = {...createOptions} as Jasmine;
 
   j$._DEFAULT_TIMEOUT_INTERVAL = createOptions.testTimeout || 5000;
 
-  j$.getEnv = function(options?: object) {
+  j$.getEnv = function (options?: object) {
     const env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options));
     //jasmine. singletons in here (setTimeout blah blah).
     return env;
@@ -64,7 +64,7 @@ export const create = function(createOptions: Record<string, any>): Jasmine {
 };
 
 // Interface is a reserved word in strict mode, so can't export it as ESM
-export const _interface = function(jasmine: Jasmine, env: any) {
+export const _interface = function (jasmine: Jasmine, env: any) {
   const jasmineInterface = {
     describe(description: string, specDefinitions: Function) {
       return env.describe(description, specDefinitions);

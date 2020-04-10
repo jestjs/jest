@@ -7,16 +7,15 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import {Config} from '@jest/types';
-import {AssertionResult, SerializableError} from '@jest/test-result';
-import chalk from 'chalk';
+import type {Config, TestResult} from '@jest/types';
+import chalk = require('chalk');
 import micromatch = require('micromatch');
 import slash = require('slash');
 import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils = require('stack-utils');
-import {Frame} from './types';
+import type {Frame} from './types';
 
-export {Frame} from './types';
+export type {Frame} from './types';
 
 type Path = Config.Path;
 
@@ -92,16 +91,40 @@ const getRenderedCallsite = (
 
 const blankStringRegexp = /^\s*$/;
 
+function checkForCommonEnvironmentErrors(error: string) {
+  if (
+    error.includes('ReferenceError: document is not defined') ||
+    error.includes('ReferenceError: window is not defined') ||
+    error.includes('ReferenceError: navigator is not defined')
+  ) {
+    return warnAboutWrongTestEnvironment(error, 'jsdom');
+  } else if (error.includes('.unref is not a function')) {
+    return warnAboutWrongTestEnvironment(error, 'node');
+  }
+
+  return error;
+}
+
+function warnAboutWrongTestEnvironment(error: string, env: 'jsdom' | 'node') {
+  return (
+    chalk.bold.red(
+      `The error below may be caused by using the wrong test environment, see ${chalk.dim.underline(
+        'https://jestjs.io/docs/en/configuration#testenvironment-string',
+      )}.\nConsider using the "${env}" test environment.\n\n`,
+    ) + error
+  );
+}
+
 // ExecError is an error thrown outside of the test suite (not inside an `it` or
 // `before/after each` hooks). If it's thrown, none of the tests in the file
 // are executed.
 export const formatExecError = (
-  error: Error | SerializableError | string | undefined,
+  error: Error | TestResult.SerializableError | string | undefined,
   config: StackTraceConfig,
   options: StackTraceOptions,
   testPath?: Path,
   reuseMessage?: boolean,
-) => {
+): string => {
   if (!error || typeof error === 'number') {
     error = new Error(`Expected an Error, but "${String(error)}" was thrown`);
     error.stack = '';
@@ -125,6 +148,8 @@ export const formatExecError = (
     // Often stack trace already contains the duplicate of the message
     message = separated.message;
   }
+
+  message = checkForCommonEnvironmentErrors(message);
 
   message = indentAllLines(message, MESSAGE_INDENT);
 
@@ -227,7 +252,7 @@ const formatPaths = (
 export const getStackTraceLines = (
   stack: string,
   options: StackTraceOptions = {noStackTrace: false},
-) => removeInternalStackEntries(stack.split(/\n/), options);
+): Array<string> => removeInternalStackEntries(stack.split(/\n/), options);
 
 export const getTopFrame = (lines: Array<string>): Frame | null => {
   for (const line of lines) {
@@ -250,7 +275,7 @@ export const formatStackTrace = (
   config: StackTraceConfig,
   options: StackTraceOptions,
   testPath?: Path,
-) => {
+): string => {
   const lines = getStackTraceLines(stack, options);
   const topFrame = getTopFrame(lines);
   let renderedCallsite = '';
@@ -285,21 +310,26 @@ export const formatStackTrace = (
   return `${renderedCallsite}\n${stacktrace}`;
 };
 
+type FailedResults = Array<{
+  content: string;
+  result: TestResult.AssertionResult;
+}>;
+
 export const formatResultsErrors = (
-  testResults: Array<AssertionResult>,
+  testResults: Array<TestResult.AssertionResult>,
   config: StackTraceConfig,
   options: StackTraceOptions,
   testPath?: Path,
 ): string | null => {
-  type FailedResults = Array<{
-    content: string;
-    result: AssertionResult;
-  }>;
-
-  const failedResults: FailedResults = testResults.reduce((errors, result) => {
-    result.failureMessages.forEach(content => errors.push({content, result}));
-    return errors;
-  }, [] as FailedResults);
+  const failedResults: FailedResults = testResults.reduce<FailedResults>(
+    (errors, result) => {
+      result.failureMessages
+        .map(checkForCommonEnvironmentErrors)
+        .forEach(content => errors.push({content, result}));
+      return errors;
+    },
+    [],
+  );
 
   if (!failedResults.length) {
     return null;
@@ -343,7 +373,9 @@ const removeBlankErrorLine = (str: string) =>
 // jasmine and worker farm sometimes don't give us access to the actual
 // Error object, so we have to regexp out the message from the stack string
 // to format it.
-export const separateMessageFromStack = (content: string) => {
+export const separateMessageFromStack = (
+  content: string,
+): {message: string; stack: string} => {
   if (!content) {
     return {message: '', stack: ''};
   }

@@ -8,12 +8,11 @@
 import {execSync} from 'child_process';
 import {createHash} from 'crypto';
 import {EventEmitter} from 'events';
-import * as fs from 'fs';
+import type {Stats} from 'fs';
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
-import invariant = require('invariant');
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import serializer from 'jest-serializer';
 import Worker from 'jest-worker';
 import {getSha1, worker} from './worker';
@@ -31,7 +30,7 @@ import watchmanCrawl = require('./crawlers/watchman');
 import WatchmanWatcher from './lib/WatchmanWatcher';
 import FSEventsWatcher = require('./lib/FSEventsWatcher');
 import * as fastPath from './lib/fast_path';
-import {
+import type {
   ChangeEvent,
   CrawlerOptions,
   EventsQueue,
@@ -40,7 +39,6 @@ import {
   HasteRegExp,
   InternalHasteMap,
   HasteMap as InternalHasteMapObject,
-  Mapper,
   MockData,
   ModuleMapData,
   ModuleMetaData,
@@ -54,12 +52,11 @@ type Options = {
   computeDependencies?: boolean;
   computeSha1?: boolean;
   console?: Console;
-  dependencyExtractor?: string;
+  dependencyExtractor?: string | null;
   extensions: Array<string>;
   forceNodeFilesystemAPI?: boolean;
   hasteImplModulePath?: string;
   ignorePattern?: HasteRegExp;
-  mapper?: Mapper;
   maxWorkers: number;
   mocksPattern?: string;
   name: string;
@@ -79,12 +76,11 @@ type InternalOptions = {
   cacheDirectory: string;
   computeDependencies: boolean;
   computeSha1: boolean;
-  dependencyExtractor?: string;
+  dependencyExtractor: string | null;
   extensions: Array<string>;
   forceNodeFilesystemAPI: boolean;
   hasteImplModulePath?: string;
   ignorePattern?: HasteRegExp;
-  mapper?: Mapper;
   maxWorkers: number;
   mocksPattern: RegExp | null;
   name: string;
@@ -152,6 +148,12 @@ const getWhiteList = (list: Array<string> | undefined): RegExp | null => {
   }
   return null;
 };
+
+function invariant(condition: unknown, message?: string): asserts condition {
+  if (!condition) {
+    throw new Error(message);
+  }
+}
 
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
@@ -251,12 +253,11 @@ class HasteMap extends EventEmitter {
           ? true
           : options.computeDependencies,
       computeSha1: options.computeSha1 || false,
-      dependencyExtractor: options.dependencyExtractor,
+      dependencyExtractor: options.dependencyExtractor || null,
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
       ignorePattern: options.ignorePattern,
-      mapper: options.mapper,
       maxWorkers: options.maxWorkers,
       mocksPattern: options.mocksPattern
         ? new RegExp(options.mocksPattern)
@@ -280,9 +281,7 @@ class HasteMap extends EventEmitter {
       );
     }
 
-    const rootDirHash = createHash('md5')
-      .update(options.rootDir)
-      .digest('hex');
+    const rootDirHash = createHash('md5').update(options.rootDir).digest('hex');
     let hasteImplHash = '';
     let dependencyExtractorHash = '';
 
@@ -750,7 +749,6 @@ class HasteMap extends EventEmitter {
       extensions: options.extensions,
       forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
       ignore,
-      mapper: options.mapper,
       rootDir: options.rootDir,
       roots: options.roots,
     };
@@ -862,7 +860,7 @@ class HasteMap extends EventEmitter {
       type: string,
       filePath: Config.Path,
       root: Config.Path,
-      stat?: fs.Stats,
+      stat?: Stats,
     ) => {
       filePath = path.join(root, normalizePathSep(filePath));
       if (
@@ -950,8 +948,8 @@ class HasteMap extends EventEmitter {
             );
             const fileMetadata: FileMetaData = [
               '',
-              stat ? stat.mtime.getTime() : -1,
-              stat ? stat.size : 0,
+              stat.mtime.getTime(),
+              stat.size,
               0,
               '',
               null,

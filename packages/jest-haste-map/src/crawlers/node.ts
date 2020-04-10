@@ -8,9 +8,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import {spawn} from 'child_process';
+import which = require('which');
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
-import {
+import type {
   CrawlerOptions,
   FileData,
   IgnoreMatcher,
@@ -20,6 +21,21 @@ import {
 type Result = Array<[/* id */ string, /* mtime */ number, /* size */ number]>;
 
 type Callback = (result: Result) => void;
+
+async function hasNativeFindSupport(
+  forceNodeFilesystemAPI: boolean,
+): Promise<boolean> {
+  if (forceNodeFilesystemAPI || process.platform === 'win32') {
+    return false;
+  }
+
+  try {
+    await which('find');
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 function find(
   roots: Array<string>,
@@ -32,22 +48,42 @@ function find(
 
   function search(directory: string): void {
     activeCalls++;
-    fs.readdir(directory, (err, names) => {
+    fs.readdir(directory, {withFileTypes: true}, (err, entries) => {
       activeCalls--;
       if (err) {
         callback(result);
         return;
       }
-      names.forEach(file => {
-        file = path.join(directory, file);
+      // node < v10.10 does not support the withFileTypes option, and
+      // entry will be a string.
+      entries.forEach((entry: string | fs.Dirent) => {
+        const file = path.join(
+          directory,
+          typeof entry === 'string' ? entry : entry.name,
+        );
+
         if (ignore(file)) {
           return;
         }
+
+        if (typeof entry !== 'string') {
+          if (entry.isSymbolicLink()) {
+            return;
+          }
+
+          if (entry.isDirectory()) {
+            search(file);
+            return;
+          }
+        }
+
         activeCalls++;
 
         fs.lstat(file, (err, stat) => {
           activeCalls--;
 
+          // This logic is unnecessary for node > v10.10, but leaving it in
+          // since we need it for backwards-compatibility still.
           if (!err && stat && !stat.isSymbolicLink()) {
             if (stat.isDirectory()) {
               search(file);
@@ -58,6 +94,7 @@ function find(
               }
             }
           }
+
           if (activeCalls === 0) {
             callback(result);
           }
@@ -133,7 +170,7 @@ function findNative(
   });
 }
 
-export = function nodeCrawl(
+export = async function nodeCrawl(
   options: CrawlerOptions,
 ): Promise<{
   removedFiles: FileData;
@@ -147,6 +184,8 @@ export = function nodeCrawl(
     rootDir,
     roots,
   } = options;
+
+  const useNativeFind = await hasNativeFindSupport(forceNodeFilesystemAPI);
 
   return new Promise(resolve => {
     const callback = (list: Result) => {
@@ -172,10 +211,10 @@ export = function nodeCrawl(
       });
     };
 
-    if (forceNodeFilesystemAPI || process.platform === 'win32') {
-      find(roots, extensions, ignore, callback);
-    } else {
+    if (useNativeFind) {
       findNative(roots, extensions, ignore, callback);
+    } else {
+      find(roots, extensions, ignore, callback);
     }
   });
 };

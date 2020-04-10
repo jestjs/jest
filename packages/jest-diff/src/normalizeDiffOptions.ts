@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
+import chalk = require('chalk');
 
-import {DiffOptions, DiffOptionsNormalized} from './types';
+import type {DiffOptions, DiffOptionsNormalized} from './types';
 
-export const noColor = (string: string) => string;
+export const noColor = (string: string): string => string;
 
 const DIFF_CONTEXT_DEFAULT = 5;
 

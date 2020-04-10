@@ -12,7 +12,7 @@ const path = require('path');
 
 const DIR = path.join(os.tmpdir(), 'jest-global-setup-custom-transform');
 
-module.exports = function() {
+module.exports = function () {
   return new Promise(resolve => {
     createDirectory(DIR);
     const fileId = crypto.randomBytes(20).toString('hex');

@@ -8,6 +8,7 @@
 import {runInNewContext} from 'vm';
 import mock = require('jest-mock');
 import FakeTimers from '../jestFakeTimers';
+import util = require('util');
 
 const timerConfig = {
   idToRef: (id: number) => id,
@@ -38,6 +39,20 @@ describe('FakeTimers', () => {
       });
       timers.useFakeTimers();
       expect(global.setTimeout).not.toBe(undefined);
+    });
+
+    it('accepts to promisify setTimeout mock', async () => {
+      const global = ({process} as unknown) as NodeJS.Global;
+      const timers = new FakeTimers({
+        config,
+        global,
+        moduleMocker,
+        timerConfig,
+      });
+      timers.useFakeTimers();
+      const timeoutPromise = util.promisify(global.setTimeout)(0, 'resolved');
+      timers.runAllTimers();
+      await expect(timeoutPromise).resolves.toBe('resolved');
     });
 
     it('installs clearTimeout mock', () => {

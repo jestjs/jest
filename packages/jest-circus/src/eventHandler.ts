@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Circus} from '@jest/types';
+import type {Circus} from '@jest/types';
 import {TEST_TIMEOUT_SYMBOL} from './types';
 
 import {
@@ -21,7 +21,11 @@ import {
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
 
-const eventHandler: Circus.EventHandler = (event, state): void => {
+// TODO: investigate why a shorter (event, state) signature results into TS7006 compiler error
+const eventHandler: Circus.EventHandler = (
+  event: Circus.Event,
+  state: Circus.State,
+): void => {
   switch (event.name) {
     case 'include_test_location_in_result': {
       state.includeTestLocationInResult = true;
@@ -106,14 +110,14 @@ const eventHandler: Circus.EventHandler = (event, state): void => {
 
       if (type === 'beforeAll') {
         invariant(describeBlock, 'always present for `*All` hooks');
-        addErrorToEachTestUnderDescribe(describeBlock!, error, asyncError);
+        addErrorToEachTestUnderDescribe(describeBlock, error, asyncError);
       } else if (type === 'afterAll') {
         // Attaching `afterAll` errors to each test makes execution flow
         // too complicated, so we'll consider them to be global.
         state.unhandledErrors.push([error, asyncError]);
       } else {
         invariant(test, 'always present for `*Each` hooks');
-        test!.errors.push([error, asyncError]);
+        test.errors.push([error, asyncError]);
       }
       break;
     }
@@ -178,8 +182,8 @@ const eventHandler: Circus.EventHandler = (event, state): void => {
       invariant(state.originalGlobalErrorHandlers);
       invariant(state.parentProcess);
       restoreGlobalErrorHandlers(
-        state.parentProcess!,
-        state.originalGlobalErrorHandlers!,
+        state.parentProcess,
+        state.originalGlobalErrorHandlers,
       );
       break;
     }

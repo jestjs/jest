@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {PromptObject} from 'prompts';
+import type {PromptObject} from 'prompts';
 
 const defaultQuestions: Array<PromptObject> = [
   {

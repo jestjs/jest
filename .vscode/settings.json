@@ -5,10 +5,9 @@
     "**/node_modules": true,
     "**/build": true
   },
-  "editor.formatOnSave": true,
-  "flow.useNPMPackagedFlow": true,
   "javascript.validate.enable": false,
   "jest.pathToJest": "yarn jest --",
-  "prettier.eslintIntegration": true,
-  "typescript.format.insertSpaceAfterOpeningAndBeforeClosingNonemptyBraces": false
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
 }

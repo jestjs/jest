@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import Suite from './jasmine/Suite';
+import type Suite from './jasmine/Suite';
 
 type Options = {
   nodeComplete: (suite: TreeNode) => void;
@@ -25,7 +25,7 @@ export type TreeNode = {
   children?: Array<TreeNode>;
 } & Pick<Suite, 'getResult' | 'parentSuite' | 'result'>;
 
-export default function treeProcessor(options: Options) {
+export default function treeProcessor(options: Options): void {
   const {
     nodeComplete,
     nodeStart,

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {CoverageMapData} from 'istanbul-lib-coverage';
+import type {CoverageMapData} from 'istanbul-lib-coverage';
 
 export type DoneFn = (reason?: string | Error) => void;
 export type TestName = string;
@@ -67,7 +67,7 @@ export interface Describe extends DescribeBase {
 }
 
 // TODO: Maybe add `| Window` in the future?
-export interface Global extends NodeJS.Global {
+export interface GlobalAdditions {
   it: ItConcurrent;
   test: ItConcurrent;
   fit: ItBase & {concurrent?: ItConcurrentBase};
@@ -82,5 +82,11 @@ export interface Global extends NodeJS.Global {
   pending: () => void;
   spyOn: () => void;
   spyOnProperty: () => void;
+}
+
+// extends directly after https://github.com/sandersn/downlevel-dts/issues/33 is fixed
+type NodeGlobalWithoutAdditions = Omit<NodeJS.Global, keyof GlobalAdditions>;
+
+export interface Global extends GlobalAdditions, NodeGlobalWithoutAdditions {
   [extras: string]: any;
 }

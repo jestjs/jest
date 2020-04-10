@@ -8,11 +8,14 @@
 'use strict';
 
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 
 const chalk = require('chalk');
 const execa = require('execa');
-const {getPackages, adjustToTerminalWidth, OK} = require('./buildUtils');
+const rimraf = require('rimraf');
+const throat = require('throat');
+const {getPackages} = require('./buildUtils');
 
 const packages = getPackages();
 
@@ -21,28 +24,75 @@ const packagesWithTs = packages.filter(p =>
 );
 
 const args = [
-  '--max-old-space-size=4096',
-  path.resolve(
-    require.resolve('typescript/package.json'),
-    '..',
-    require('typescript/package.json').bin.tsc
-  ),
+  '--silent',
+  'tsc',
   '-b',
   ...packagesWithTs,
   ...process.argv.slice(2),
 ];
 
-console.log(chalk.inverse('Building TypeScript definition files'));
-process.stdout.write(adjustToTerminalWidth('Building\n'));
+console.log(chalk.inverse(' Building TypeScript definition files '));
 
 try {
-  execa.sync('node', args, {stdio: 'inherit'});
-  process.stdout.write(`${OK}\n`);
+  execa.sync('yarn', args, {stdio: 'inherit'});
+  console.log(
+    chalk.inverse.green(' Successfully built TypeScript definition files ')
+  );
 } catch (e) {
-  process.stdout.write('\n');
   console.error(
-    chalk.inverse.red('Unable to build TypeScript definition files')
+    chalk.inverse.red(' Unable to build TypeScript definition files ')
   );
   console.error(e.stack);
   process.exitCode = 1;
+  return;
 }
+
+const downlevelArgs = ['--silent', 'downlevel-dts', 'build', 'build/ts3.4'];
+
+console.log(chalk.inverse(' Downleveling TypeScript definition files '));
+
+packagesWithTs.forEach(pkgDir => {
+  const pkg = require(pkgDir + '/package.json');
+
+  if (!pkg.types) {
+    throw new Error(`Package ${pkg.name} is missing \`types\` field`);
+  }
+
+  if (!pkg.typesVersions) {
+    throw new Error(`Package ${pkg.name} is missing \`typesVersions\` field`);
+  }
+
+  if (pkg.main.replace(/\.js$/, '.d.ts') !== pkg.types) {
+    throw new Error(
+      `\`main\` and \`types\` field of ${pkg.name} does not match`
+    );
+  }
+});
+
+// we want to limit the number of processes we spawn
+const cpus = Math.max(1, os.cpus().length - 1);
+
+Promise.all(
+  packagesWithTs.map(
+    throat(cpus, pkgDir => {
+      // otherwise we get nested `ts3.4` directories
+      rimraf.sync(path.resolve(pkgDir, 'build/ts3.4'));
+
+      return execa('yarn', downlevelArgs, {cwd: pkgDir, stdio: 'inherit'});
+    })
+  )
+)
+  .then(() => {
+    console.log(
+      chalk.inverse.green(
+        ' Successfully downleveled TypeScript definition files '
+      )
+    );
+  })
+  .catch(e => {
+    console.error(
+      chalk.inverse.red(' Unable to downlevel TypeScript definition files ')
+    );
+    console.error(e.stack);
+    process.exitCode = 1;
+  });

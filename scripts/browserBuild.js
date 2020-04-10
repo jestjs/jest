@@ -53,7 +53,7 @@ function browserBuild(pkgName, entryPath, destination) {
           rules: [
             {
               test: /\.[jt]sx?$/,
-              loader: 'babel-loader',
+              loader: require.resolve('babel-loader'),
               options: babelEs5Options,
             },
           ],

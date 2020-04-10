@@ -7,7 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import JestHasteMap from 'jest-haste-map';
+import JestHasteMap = require('jest-haste-map');
 import {cleanup, writeFiles} from '../Utils';
 
 const DIR = path.resolve(tmpdir(), 'haste_map_sha1');

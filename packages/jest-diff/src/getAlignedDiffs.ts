@@ -6,7 +6,7 @@
  */
 
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
-import {DiffOptionsColor} from './types';
+import type {DiffOptionsColor} from './types';
 
 // Given change op and array of diffs, return concatenated string:
 // * include common strings

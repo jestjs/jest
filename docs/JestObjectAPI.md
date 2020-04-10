@@ -469,7 +469,7 @@ Determines if the given function is a mocked function.
 
 ### `jest.spyOn(object, methodName)`
 
-Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest mock function.
+Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest [mock function](MockFunctionAPI.md).
 
 _Note: By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`_
 
@@ -643,7 +643,7 @@ Returns the number of fake timers still left to run.
 
 ### `jest.setTimeout(timeout)`
 
-Set the default timeout interval for tests and before/after hooks in milliseconds.
+Set the default timeout interval for tests and before/after hooks in milliseconds. This only affects the test file from which this function is called.
 
 _Note: The default timeout interval is 5 seconds if this method is not called._
 

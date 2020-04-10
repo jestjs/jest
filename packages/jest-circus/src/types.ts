@@ -9,7 +9,7 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import expect = require('expect');
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import {Circus} from '@jest/types';
+import type {Circus} from '@jest/types';
 
 export const STATE_SYM = (Symbol(
   'JEST_STATE_SYMBOL',

@@ -7,7 +7,7 @@
 
 import path from 'path';
 
-module.exports = function createRuntime(filename, config) {
+module.exports = async function createRuntime(filename, config) {
   const NodeEnvironment = require('jest-environment-node');
   const Runtime = require('../');
 
@@ -37,22 +37,26 @@ module.exports = function createRuntime(filename, config) {
 
   const environment = new NodeEnvironment(config);
   environment.global.console = console;
-  return Runtime.createHasteMap(config, {maxWorkers: 1, resetCache: false})
-    .build()
-    .then(hasteMap => {
-      const runtime = new Runtime(
-        config,
-        environment,
-        Runtime.createResolver(config, hasteMap.moduleMap),
-      );
 
-      runtime.__mockRootPath = path.join(config.rootDir, 'root.js');
-      runtime.__mockSubdirPath = path.join(
-        config.rootDir,
-        'subdir2',
-        'module_dir',
-        'module_dir_module.js',
-      );
-      return runtime;
-    });
+  const hasteMap = await Runtime.createHasteMap(config, {
+    maxWorkers: 1,
+    resetCache: false,
+  }).build();
+
+  const runtime = new Runtime(
+    config,
+    environment,
+    Runtime.createResolver(config, hasteMap.moduleMap),
+  );
+
+  config.setupFiles.forEach(path => runtime.requireModule(path));
+
+  runtime.__mockRootPath = path.join(config.rootDir, 'root.js');
+  runtime.__mockSubdirPath = path.join(
+    config.rootDir,
+    'subdir2',
+    'module_dir',
+    'module_dir_module.js',
+  );
+  return runtime;
 };

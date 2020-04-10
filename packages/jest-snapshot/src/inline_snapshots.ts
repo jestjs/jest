@@ -11,7 +11,7 @@ import semver = require('semver');
 import {loadPartialConfig} from '@babel/core';
 import generate from '@babel/generator';
 import {ParserOptions, parse} from '@babel/parser';
-import traverse from '@babel/traverse';
+import type traverse from '@babel/traverse';
 import {
   CallExpression,
   Expression,
@@ -21,9 +21,9 @@ import {
   templateElement,
   templateLiteral,
 } from '@babel/types';
-import {Frame} from 'jest-message-util';
+import type {Frame} from 'jest-message-util';
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {escapeBacktickString} from './utils';
 
 export type InlineSnapshot = {
@@ -33,11 +33,11 @@ export type InlineSnapshot = {
 };
 type BabelTraverse = typeof traverse;
 
-export const saveInlineSnapshots = (
+export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
-  prettier: any,
+  prettier: typeof import('prettier') | null,
   babelTraverse: Function,
-) => {
+): void {
   const snapshotsByFile = groupSnapshotsByFile(snapshots);
 
   for (const sourceFilePath of Object.keys(snapshotsByFile)) {
@@ -48,7 +48,7 @@ export const saveInlineSnapshots = (
       babelTraverse as BabelTraverse,
     );
   }
-};
+}
 
 const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
@@ -76,8 +76,12 @@ const saveSnapshotsForFile = (
     options.plugins.push('jsx');
   }
 
+  // Record the matcher names seen during traversal and pass them down one
+  // by one to formatting parser.
+  const snapshotMatcherNames: Array<string> = [];
+
   const ast = parse(sourceFile, options as ParserOptions);
-  traverseAst(snapshots, ast, babelTraverse);
+  traverseAst(snapshots, ast, snapshotMatcherNames, babelTraverse);
 
   // substitute in the snapshots in reverse order, so slice calculations aren't thrown off.
   const sourceFileWithSnapshots = snapshots.reduceRight(
@@ -128,7 +132,11 @@ const saveSnapshotsForFile = (
       newSourceFile = prettier.format(newSourceFile, {
         ...config,
         filepath: sourceFilePath,
-        parser: createFormattingParser(inferredParser, babelTraverse),
+        parser: createFormattingParser(
+          snapshotMatcherNames,
+          inferredParser,
+          babelTraverse,
+        ),
       });
     }
   }
@@ -158,7 +166,7 @@ const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => file);
 
 const indent = (snapshot: string, numIndents: number, indentation: string) => {
   const lines = snapshot.split('\n');
-  // Prevent re-identation of inline snapshots.
+  // Prevent re-indentation of inline snapshots.
   if (
     lines.length >= 2 &&
     lines[1].startsWith(indentation.repeat(numIndents + 1))
@@ -200,6 +208,7 @@ const resolveAst = (fileOrProgram: any): File => {
 const traverseAst = (
   snapshots: Array<InlineSnapshot>,
   fileOrProgram: File | Program,
+  snapshotMatcherNames: Array<string>,
   babelTraverse: BabelTraverse,
 ) => {
   const ast = resolveAst(fileOrProgram);
@@ -226,6 +235,9 @@ const traverseAst = (
           'Jest: Multiple inline snapshots for the same call are not supported.',
         );
       }
+
+      snapshotMatcherNames.push(callee.property.name);
+
       const snapshotIndex = args.findIndex(
         ({type}) => type === 'TemplateLiteral',
       );
@@ -256,6 +268,7 @@ const traverseAst = (
 
 // This parser formats snapshots to the correct indentation.
 const createFormattingParser = (
+  snapshotMatcherNames: Array<string>,
   inferredParser: string,
   babelTraverse: BabelTraverse,
 ) => (
@@ -272,7 +285,7 @@ const createFormattingParser = (
       if (
         callee.type !== 'MemberExpression' ||
         callee.property.type !== 'Identifier' ||
-        callee.property.name !== 'toMatchInlineSnapshot' ||
+        !snapshotMatcherNames.includes(callee.property.name) ||
         !callee.loc ||
         callee.computed
       ) {

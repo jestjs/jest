@@ -8,7 +8,7 @@
 import * as path from 'path';
 import slash = require('slash');
 import glob = require('glob');
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 
 export const findSiblingsWithFileExtension = (
   moduleFileExtensions: Config.ProjectConfig['moduleFileExtensions'],
@@ -45,7 +45,7 @@ export const findSiblingsWithFileExtension = (
         return (
           foundMessage +
           "\n\nYou might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently " +
-          `[${mappedModuleFileExtensions}].\n\nSee https://jestjs.io/docs/en/configuration#modulefileextensions-array-string`
+          `[${mappedModuleFileExtensions}].\n\nSee https://jestjs.io/docs/en/configuration#modulefileextensions-arraystring`
         );
       }
     } catch (ignored) {}

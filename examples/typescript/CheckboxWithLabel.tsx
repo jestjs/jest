@@ -3,6 +3,8 @@
 import * as React from 'react';
 
 interface CheckboxWithLabelProps {
+  labelRef: React.LegacyRef<HTMLLabelElement>;
+  inputRef: React.LegacyRef<HTMLInputElement>;
   labelOff: string;
   labelOn: string;
 }
@@ -22,8 +24,9 @@ class CheckboxWithLabel extends React.Component<
 
   render() {
     return (
-      <label>
+      <label ref={this.props.labelRef}>
         <input
+          ref={this.props.inputRef}
           type="checkbox"
           checked={this.state.isChecked}
           onChange={() =>

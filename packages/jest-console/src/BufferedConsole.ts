@@ -8,9 +8,9 @@
 import assert = require('assert');
 import {Console} from 'console';
 import {format} from 'util';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {SourceMapRegistry, getCallsite} from '@jest/source-map';
-import {
+import type {
   ConsoleBuffer,
   LogCounters,
   LogMessage,
@@ -47,7 +47,7 @@ export default class BufferedConsole extends Console {
     message: LogMessage,
     level?: number | null,
     sourceMaps?: SourceMapRegistry | null,
-  ) {
+  ): ConsoleBuffer {
     const callsite = getCallsite(level != null ? level : 2, sourceMaps);
     const origin = callsite.getFileName() + ':' + callsite.getLineNumber();
 
@@ -70,7 +70,7 @@ export default class BufferedConsole extends Console {
     );
   }
 
-  assert(value: any, message?: string | Error) {
+  assert(value: unknown, message?: string | Error): void {
     try {
       assert(value, message);
     } catch (error) {
@@ -78,7 +78,7 @@ export default class BufferedConsole extends Console {
     }
   }
 
-  count(label: string = 'default') {
+  count(label: string = 'default'): void {
     if (!this._counters[label]) {
       this._counters[label] = 0;
     }
@@ -86,27 +86,27 @@ export default class BufferedConsole extends Console {
     this._log('count', format(`${label}: ${++this._counters[label]}`));
   }
 
-  countReset(label: string = 'default') {
+  countReset(label: string = 'default'): void {
     this._counters[label] = 0;
   }
 
-  debug(firstArg: any, ...rest: Array<any>) {
+  debug(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('debug', format(firstArg, ...rest));
   }
 
-  dir(firstArg: any, ...rest: Array<any>) {
+  dir(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('dir', format(firstArg, ...rest));
   }
 
-  dirxml(firstArg: any, ...rest: Array<any>) {
+  dirxml(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('dirxml', format(firstArg, ...rest));
   }
 
-  error(firstArg: any, ...rest: Array<any>) {
+  error(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('error', format(firstArg, ...rest));
   }
 
-  group(title?: string, ...rest: Array<any>) {
+  group(title?: string, ...rest: Array<unknown>): void {
     this._groupDepth++;
 
     if (title || rest.length > 0) {
@@ -114,7 +114,7 @@ export default class BufferedConsole extends Console {
     }
   }
 
-  groupCollapsed(title?: string, ...rest: Array<any>) {
+  groupCollapsed(title?: string, ...rest: Array<unknown>): void {
     this._groupDepth++;
 
     if (title || rest.length > 0) {
@@ -122,21 +122,21 @@ export default class BufferedConsole extends Console {
     }
   }
 
-  groupEnd() {
+  groupEnd(): void {
     if (this._groupDepth > 0) {
       this._groupDepth--;
     }
   }
 
-  info(firstArg: any, ...rest: Array<any>) {
+  info(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('info', format(firstArg, ...rest));
   }
 
-  log(firstArg: any, ...rest: Array<any>) {
+  log(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('log', format(firstArg, ...rest));
   }
 
-  time(label: string = 'default') {
+  time(label: string = 'default'): void {
     if (this._timers[label]) {
       return;
     }
@@ -144,7 +144,7 @@ export default class BufferedConsole extends Console {
     this._timers[label] = new Date();
   }
 
-  timeEnd(label: string = 'default') {
+  timeEnd(label: string = 'default'): void {
     const startTime = this._timers[label];
 
     if (startTime) {
@@ -155,11 +155,11 @@ export default class BufferedConsole extends Console {
     }
   }
 
-  warn(firstArg: any, ...rest: Array<any>) {
+  warn(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('warn', format(firstArg, ...rest));
   }
 
-  getBuffer() {
+  getBuffer(): ConsoleBuffer | undefined {
     return this._buffer.length ? this._buffer : undefined;
   }
 }

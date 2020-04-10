@@ -7,7 +7,7 @@
  */
 
 import * as matcherUtils from 'jest-matcher-utils';
-import {
+import type {
   AsyncExpectationResult,
   Expect,
   ExpectationResult,
@@ -57,10 +57,10 @@ const isPromise = <T extends any>(obj: any): obj is PromiseLike<T> =>
   (typeof obj === 'object' || typeof obj === 'function') &&
   typeof obj.then === 'function';
 
-const createToThrowErrorMatchingSnapshotMatcher = function(
+const createToThrowErrorMatchingSnapshotMatcher = function (
   matcher: RawMatcherFn,
 ) {
-  return function(
+  return function (
     this: JestMatcherState,
     received: any,
     testNameOrInlineSnapshot?: string,
@@ -297,7 +297,7 @@ const makeThrowingMatcher = (
       }
     };
 
-    const handlError = (error: Error) => {
+    const handleError = (error: Error) => {
       if (
         matcher[INTERNAL_MATCHER_FLAG] === true &&
         !(error instanceof JestAssertionError) &&
@@ -314,7 +314,15 @@ const makeThrowingMatcher = (
     let potentialResult: ExpectationResult;
 
     try {
-      potentialResult = matcher.call(matcherContext, actual, ...args);
+      potentialResult =
+        matcher[INTERNAL_MATCHER_FLAG] === true
+          ? matcher.call(matcherContext, actual, ...args)
+          : // It's a trap specifically for inline snapshot to capture this name
+            // in the stack trace, so that it can correctly get the custom matcher
+            // function call.
+            (function __EXTERNAL_MATCHER_TRAP__() {
+              return matcher.call(matcherContext, actual, ...args);
+            })();
 
       if (isPromise(potentialResult)) {
         const asyncResult = potentialResult as AsyncExpectationResult;
@@ -325,14 +333,14 @@ const makeThrowingMatcher = (
 
         return asyncResult
           .then(aResult => processResult(aResult, asyncError))
-          .catch(error => handlError(error));
+          .catch(error => handleError(error));
       } else {
         const syncResult = potentialResult as SyncExpectationResult;
 
         return processResult(syncResult);
       }
     } catch (error) {
-      return handlError(error);
+      return handleError(error);
     }
   };
 

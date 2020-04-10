@@ -28,9 +28,9 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-import {Reporter, RunDetails} from '../types';
-import {SpecResult} from './Spec';
-import {SuiteResult} from './Suite';
+import type {Reporter, RunDetails} from '../types';
+import type {SpecResult} from './Spec';
+import type {SuiteResult} from './Suite';
 
 export default class ReportDispatcher implements Reporter {
   addReporter: (reporter: Reporter) => void;
@@ -55,8 +55,8 @@ export default class ReportDispatcher implements Reporter {
 
     for (let i = 0; i < dispatchedMethods.length; i++) {
       const method = dispatchedMethods[i];
-      this[method] = (function(m) {
-        return function() {
+      this[method] = (function (m) {
+        return function () {
           dispatch(m, arguments);
         };
       })(method);
@@ -65,15 +65,15 @@ export default class ReportDispatcher implements Reporter {
     let reporters: Array<Reporter> = [];
     let fallbackReporter: Reporter | null = null;
 
-    this.addReporter = function(reporter) {
+    this.addReporter = function (reporter) {
       reporters.push(reporter);
     };
 
-    this.provideFallbackReporter = function(reporter) {
+    this.provideFallbackReporter = function (reporter) {
       fallbackReporter = reporter;
     };
 
-    this.clearReporters = function() {
+    this.clearReporters = function () {
       reporters = [];
     };
 

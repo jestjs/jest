@@ -6,32 +6,31 @@
  */
 
 import * as path from 'path';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import {sync as realpath} from 'realpath-native';
 import {CustomConsole} from '@jest/console';
 import {interopRequireDefault} from 'jest-util';
 import exit = require('exit');
 import * as fs from 'graceful-fs';
 import {JestHook, JestHookEmitter} from 'jest-watcher';
-import {Context} from 'jest-runtime';
-import {Test} from 'jest-runner';
-import {Config} from '@jest/types';
+import type {Context} from 'jest-runtime';
+import type {Test} from 'jest-runner';
+import type {Config} from '@jest/types';
 import {
   AggregatedResult,
   formatTestResults,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import TestSequencer from '@jest/test-sequencer';
-import {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
+import type TestSequencer from '@jest/test-sequencer';
+import type {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import runGlobalHook from './runGlobalHook';
 import SearchSource from './SearchSource';
 import TestScheduler, {TestSchedulerContext} from './TestScheduler';
-import FailedTestsCache from './FailedTestsCache';
+import type FailedTestsCache from './FailedTestsCache';
 import collectNodeHandles from './collectHandles';
-import TestWatcher from './TestWatcher';
-import {Filter, TestRunData} from './types';
+import type TestWatcher from './TestWatcher';
+import type {Filter, TestRunData} from './types';
 
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,
@@ -122,7 +121,7 @@ const testSchedulerContext: TestSchedulerContext = {
   previousSuccess: true,
 };
 
-export default (async function runJest({
+export default async function runJest({
   contexts,
   globalConfig,
   outputStream,
@@ -144,7 +143,7 @@ export default (async function runJest({
   onComplete: (testResults: AggregatedResult) => void;
   failedTestsCache?: FailedTestsCache;
   filter?: Filter;
-}) {
+}): Promise<void> {
   const Sequencer: typeof TestSequencer = interopRequireDefault(
     require(globalConfig.testSequencer),
   ).default;
@@ -195,7 +194,7 @@ export default (async function runJest({
     }
 
     onComplete && onComplete(makeEmptyAggregatedTestResult());
-    return null;
+    return;
   }
 
   if (globalConfig.onlyFailures && failedTestsCache) {
@@ -260,7 +259,7 @@ export default (async function runJest({
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});
   }
 
-  return processResults(results, {
+  await processResults(results, {
     collectHandles,
     json: globalConfig.json,
     onComplete,
@@ -268,4 +267,4 @@ export default (async function runJest({
     outputStream,
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
-});
+}

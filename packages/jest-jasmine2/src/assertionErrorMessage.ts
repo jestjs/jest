@@ -11,8 +11,8 @@ import {
   printExpected,
   printReceived,
 } from 'jest-matcher-utils';
-import chalk from 'chalk';
-import {AssertionErrorWithStack} from './types';
+import chalk = require('chalk');
+import type {AssertionErrorWithStack} from './types';
 
 const assertOperatorsMap: Record<string, string> = {
   '!=': 'notEqual',
@@ -41,6 +41,10 @@ const getOperatorName = (operator: string | null, stack: string) => {
   }
   if (stack.match('.throws')) {
     return 'throws';
+  }
+  // this fallback is only needed for versions older than node 10
+  if (stack.match('.fail')) {
+    return 'fail';
   }
   return '';
 };
@@ -117,6 +121,14 @@ function assertionErrorMessage(
       chalk.reset(`Expected the function to throw an error.\n`) +
       chalk.reset(`But it didn't throw anything.`) +
       chalk.reset(hasCustomMessage ? '\n\nMessage:\n  ' + message : '') +
+      trimmedStack
+    );
+  }
+
+  if (operatorName === 'fail') {
+    return (
+      buildHintString(assertMatcherHint(operator, operatorName, expected)) +
+      chalk.reset(hasCustomMessage ? 'Message:\n  ' + message : '') +
       trimmedStack
     );
   }

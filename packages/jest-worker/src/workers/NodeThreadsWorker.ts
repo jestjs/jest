@@ -56,7 +56,7 @@ export default class ExperimentalWorker implements WorkerInterface {
     this.initialize();
   }
 
-  initialize() {
+  initialize(): void {
     this._worker = new Worker(path.resolve(__dirname, './threadChild.js'), {
       eval: false,
       stderr: true,
@@ -187,16 +187,20 @@ export default class ExperimentalWorker implements WorkerInterface {
     }
   }
 
-  waitForExit() {
+  waitForExit(): Promise<void> {
     return this._exitPromise;
   }
 
-  forceExit() {
+  forceExit(): void {
     this._forceExited = true;
     this._worker.terminate();
   }
 
-  send(request: ChildMessage, onProcessStart: OnStart, onProcessEnd: OnEnd) {
+  send(
+    request: ChildMessage,
+    onProcessStart: OnStart,
+    onProcessEnd: OnEnd,
+  ): void {
     onProcessStart(this);
     this._onProcessEnd = (...args) => {
       // Clean the request to avoid sending past requests to workers that fail
@@ -211,7 +215,7 @@ export default class ExperimentalWorker implements WorkerInterface {
     this._worker.postMessage(request);
   }
 
-  getWorkerId() {
+  getWorkerId(): number {
     return this._options.workerId;
   }
 

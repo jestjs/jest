@@ -5,18 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as os from 'os';
 import * as path from 'path';
 import micromatch = require('micromatch');
-import {Context} from 'jest-runtime';
-import {Config} from '@jest/types';
-import {Test} from 'jest-runner';
-import {ChangedFiles} from 'jest-changed-files';
+import type {Context} from 'jest-runtime';
+import type {Config} from '@jest/types';
+import type {Test} from 'jest-runner';
+import type {ChangedFiles} from 'jest-changed-files';
 import DependencyResolver = require('jest-resolve-dependencies');
 import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {replacePathSepForGlob, testPathPatternToRegExp} from 'jest-util';
-import {Filter, Stats, TestPathCases} from './types';
+import type {Filter, Stats, TestPathCases} from './types';
 
 export type SearchResult = {
   noSCM?: boolean;
@@ -39,8 +40,9 @@ export type TestSelectionConfig = {
 const globsToMatcher = (globs: Array<Config.Glob>) => (path: Config.Path) =>
   micromatch([replacePathSepForGlob(path)], globs, {dot: true}).length > 0;
 
-const regexToMatcher = (testRegex: Array<string>) => (path: Config.Path) =>
-  testRegex.some(testRegex => new RegExp(testRegex).test(path));
+const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => (
+  path: Config.Path,
+) => testRegex.some(testRegex => new RegExp(testRegex).test(path));
 
 const toTests = (context: Context, tests: Array<Config.Path>) =>
   tests.map(path => ({
@@ -187,18 +189,18 @@ export default class SearchSource {
         return;
       }
 
-      testModule.dependencies
-        .filter(p => allPathsAbsolute.includes(p))
-        .map(filename => {
-          filename = replaceRootDirInPath(
-            this._context.config.rootDir,
-            filename,
-          );
-          return path.isAbsolute(filename)
+      testModule.dependencies.forEach(p => {
+        if (!allPathsAbsolute.includes(p)) {
+          return;
+        }
+
+        const filename = replaceRootDirInPath(this._context.config.rootDir, p);
+        collectCoverageFrom.add(
+          path.isAbsolute(filename)
             ? path.relative(this._context.config.rootDir, filename)
-            : filename;
-        })
-        .forEach(filename => collectCoverageFrom.add(filename));
+            : filename,
+        );
+      });
     });
 
     return {
@@ -237,7 +239,7 @@ export default class SearchSource {
   findTestRelatedToChangedFiles(
     changedFilesInfo: ChangedFiles,
     collectCoverage: boolean,
-  ) {
+  ): SearchResult {
     const {repos, changedFiles} = changedFilesInfo;
     // no SCM (git/hg/...) is found in any of the roots.
     const noSCM = (Object.keys(repos) as Array<
@@ -252,8 +254,6 @@ export default class SearchSource {
     globalConfig: Config.GlobalConfig,
     changedFiles?: ChangedFiles,
   ): SearchResult {
-    const paths = globalConfig.nonFlagArgs;
-
     if (globalConfig.onlyChanged) {
       if (!changedFiles) {
         throw new Error('Changed files must be set when running with -o.');
@@ -263,7 +263,21 @@ export default class SearchSource {
         changedFiles,
         globalConfig.collectCoverage,
       );
-    } else if (globalConfig.runTestsByPath && paths && paths.length) {
+    }
+
+    let paths = globalConfig.nonFlagArgs;
+
+    if (globalConfig.findRelatedTests && 'win32' === os.platform()) {
+      const allFiles = this._context.hasteFS.getAllFiles();
+      const options = {nocase: true, windows: false};
+
+      paths = paths
+        .map(p => path.resolve(this._context.config.cwd, p))
+        .map(p => micromatch(allFiles, p.replace(/\\/g, '\\\\'), options)[0])
+        .filter(p => p);
+    }
+
+    if (globalConfig.runTestsByPath && paths && paths.length) {
       return this.findTestsByPaths(paths);
     } else if (globalConfig.findRelatedTests && paths && paths.length) {
       return this.findRelatedTestsFromPattern(

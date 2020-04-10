@@ -71,20 +71,22 @@ Object {
   },
   "instrument": true,
   "rootDir": "/",
+  "supportsDynamicImport": false,
+  "supportsStaticESM": false,
 }
 `;
 
 exports[`ScriptTransformer transforms a file properly 1`] = `
-"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */
-var cov_25u22311x4 = function () {
-  var path = \\"/fruits/banana.js\\";
-  var hash = \\"ef12c7f3c0d46c0ac007781d50b4e524293578c6\\";
-  var global = new Function(\\"return this\\")();
-  var gcv = \\"__coverage__\\";
+/* istanbul ignore next */
+function cov_25u22311x4() {
+  var path = "/fruits/banana.js";
+  var hash = "4be0f6184160be573fc43f7c2a5877c28b7ce249";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
   var coverageData = {
-    path: \\"/fruits/banana.js\\",
+    path: "/fruits/banana.js",
     statementMap: {
-      \\"0\\": {
+      "0": {
         start: {
           line: 1,
           column: 0
@@ -98,38 +100,44 @@ var cov_25u22311x4 = function () {
     fnMap: {},
     branchMap: {},
     s: {
-      \\"0\\": 0
+      "0": 0
     },
     f: {},
     b: {},
-    _coverageSchema: \\"43e27e138ebf9cfc5966b082cf9a028302ed4184\\",
-    hash: \\"ef12c7f3c0d46c0ac007781d50b4e524293578c6\\"
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "4be0f6184160be573fc43f7c2a5877c28b7ce249"
   };
   var coverage = global[gcv] || (global[gcv] = {});
 
-  if (coverage[path] && coverage[path].hash === hash) {
-    return coverage[path];
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
   }
 
-  return coverage[path] = coverageData;
-}();
+  var actualCoverage = coverage[path];
 
-cov_25u22311x4.s[0]++;
-module.exports = \\"banana\\";
-}});"
+  cov_25u22311x4 = function () {
+    return actualCoverage;
+  };
+
+  return actualCoverage;
+}
+
+cov_25u22311x4();
+cov_25u22311x4().s[0]++;
+module.exports = "banana";
 `;
 
 exports[`ScriptTransformer transforms a file properly 2`] = `
-"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){/* istanbul ignore next */
-var cov_23yvu8etmu = function () {
-  var path = \\"/fruits/kiwi.js\\";
-  var hash = \\"90cf6273dfbcd93e4510a6c5503c2125aab1f1b8\\";
-  var global = new Function(\\"return this\\")();
-  var gcv = \\"__coverage__\\";
+/* istanbul ignore next */
+function cov_23yvu8etmu() {
+  var path = "/fruits/kiwi.js";
+  var hash = "7705dd5fcfbc884dcea7062944cfb8cc5d141d1a";
+  var global = new Function("return this")();
+  var gcv = "__coverage__";
   var coverageData = {
-    path: \\"/fruits/kiwi.js\\",
+    path: "/fruits/kiwi.js",
     statementMap: {
-      \\"0\\": {
+      "0": {
         start: {
           line: 1,
           column: 0
@@ -139,7 +147,7 @@ var cov_23yvu8etmu = function () {
           column: 30
         }
       },
-      \\"1\\": {
+      "1": {
         start: {
           line: 1,
           column: 23
@@ -151,8 +159,8 @@ var cov_23yvu8etmu = function () {
       }
     },
     fnMap: {
-      \\"0\\": {
-        name: \\"(anonymous_0)\\",
+      "0": {
+        name: "(anonymous_0)",
         decl: {
           start: {
             line: 1,
@@ -178,81 +186,67 @@ var cov_23yvu8etmu = function () {
     },
     branchMap: {},
     s: {
-      \\"0\\": 0,
-      \\"1\\": 0
+      "0": 0,
+      "1": 0
     },
     f: {
-      \\"0\\": 0
+      "0": 0
     },
     b: {},
-    _coverageSchema: \\"43e27e138ebf9cfc5966b082cf9a028302ed4184\\",
-    hash: \\"90cf6273dfbcd93e4510a6c5503c2125aab1f1b8\\"
+    _coverageSchema: "1a1c01bbd47fc00a2c39e90264f33305004495a9",
+    hash: "7705dd5fcfbc884dcea7062944cfb8cc5d141d1a"
   };
   var coverage = global[gcv] || (global[gcv] = {});
 
-  if (coverage[path] && coverage[path].hash === hash) {
-    return coverage[path];
+  if (!coverage[path] || coverage[path].hash !== hash) {
+    coverage[path] = coverageData;
   }
 
-  return coverage[path] = coverageData;
-}();
+  var actualCoverage = coverage[path];
 
-cov_23yvu8etmu.s[0]++;
+  cov_23yvu8etmu = function () {
+    return actualCoverage;
+  };
+
+  return actualCoverage;
+}
+
+cov_23yvu8etmu();
+cov_23yvu8etmu().s[0]++;
 
 module.exports = () => {
   /* istanbul ignore next */
-  cov_23yvu8etmu.f[0]++;
-  cov_23yvu8etmu.s[1]++;
-  return \\"kiwi\\";
+  cov_23yvu8etmu().f[0]++;
+  cov_23yvu8etmu().s[1]++;
+  return "kiwi";
 };
-}});"
-`;
-
-exports[`ScriptTransformer transforms a file properly 3`] = `
-"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest,Math){module.exports = \\"banana\\";
-}});"
 `;
 
 exports[`ScriptTransformer uses multiple preprocessors 1`] = `
-"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){
-          const TRANSFORMED = {
-            filename: '/fruits/banana.js',
-            script: 'module.exports = \\"banana\\";',
-            config: '{\\"automock\\":false,\\"browser\\":false,\\"cache\\":true,\\"cacheDirectory\\":\\"/cache/\\",\\"clearMocks\\":false,\\"coveragePathIgnorePatterns\\":[],\\"cwd\\":\\"/test_root_dir/\\",\\"detectLeaks\\":false,\\"detectOpenHandles\\":false,\\"errorOnDeprecated\\":false,\\"extraGlobals\\":[],\\"filter\\":null,\\"forceCoverageMatch\\":[],\\"globalSetup\\":null,\\"globalTeardown\\":null,\\"globals\\":{},\\"haste\\":{\\"providesModuleNodeModules\\":[]},\\"moduleDirectories\\":[],\\"moduleFileExtensions\\":[\\"js\\"],\\"moduleLoader\\":\\"/test_module_loader_path\\",\\"moduleNameMapper\\":[],\\"modulePathIgnorePatterns\\":[],\\"modulePaths\\":[],\\"name\\":\\"test\\",\\"prettierPath\\":\\"prettier\\",\\"resetMocks\\":false,\\"resetModules\\":false,\\"resolver\\":null,\\"restoreMocks\\":false,\\"rootDir\\":\\"/\\",\\"roots\\":[],\\"runner\\":\\"jest-runner\\",\\"setupFiles\\":[],\\"setupFilesAfterEnv\\":[],\\"skipFilter\\":false,\\"skipNodeResolution\\":false,\\"snapshotResolver\\":null,\\"snapshotSerializers\\":[],\\"testEnvironment\\":\\"node\\",\\"testEnvironmentOptions\\":{},\\"testLocationInResults\\":false,\\"testMatch\\":[],\\"testPathIgnorePatterns\\":[],\\"testRegex\\":[\\"\\\\\\\\.test\\\\\\\\.js$\\"],\\"testRunner\\":\\"jest-jasmine2\\",\\"testURL\\":\\"http://localhost\\",\\"timers\\":\\"real\\",\\"transform\\":[[\\"^.+\\\\\\\\.js$\\",\\"test_preprocessor\\"],[\\"^.+\\\\\\\\.css$\\",\\"css-preprocessor\\"]],\\"transformIgnorePatterns\\":[\\"/node_modules/\\"],\\"unmockedModulePathPatterns\\":null,\\"watchPathIgnorePatterns\\":[]}',
-          };
-        
-}});"
+const TRANSFORMED = {
+  filename: '/fruits/banana.js',
+  script: 'module.exports = "banana";',
+  config: '{"automock":false,"browser":false,"cache":true,"cacheDirectory":"/cache/","clearMocks":false,"coveragePathIgnorePatterns":[],"cwd":"/test_root_dir/","detectLeaks":false,"detectOpenHandles":false,"errorOnDeprecated":false,"extraGlobals":[],"filter":null,"forceCoverageMatch":[],"globalSetup":null,"globalTeardown":null,"globals":{},"haste":{"providesModuleNodeModules":[]},"moduleDirectories":[],"moduleFileExtensions":["js"],"moduleLoader":"/test_module_loader_path","moduleNameMapper":[],"modulePathIgnorePatterns":[],"modulePaths":[],"name":"test","prettierPath":"prettier","resetMocks":false,"resetModules":false,"resolver":null,"restoreMocks":false,"rootDir":"/","roots":[],"runner":"jest-runner","setupFiles":[],"setupFilesAfterEnv":[],"skipFilter":false,"skipNodeResolution":false,"snapshotResolver":null,"snapshotSerializers":[],"testEnvironment":"node","testEnvironmentOptions":{},"testLocationInResults":false,"testMatch":[],"testPathIgnorePatterns":[],"testRegex":["\\\\.test\\\\.js$"],"testRunner":"jest-jasmine2","testURL":"http://localhost","timers":"real","transform":[["^.+\\\\.js$","test_preprocessor"],["^.+\\\\.css$","css-preprocessor"]],"transformIgnorePatterns":["/node_modules/"],"unmockedModulePathPatterns":null,"watchPathIgnorePatterns":[]}',
+};
 `;
 
 exports[`ScriptTransformer uses multiple preprocessors 2`] = `
-"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){
-          module.exports = {
-            filename: /styles/App.css,
-            rawFirstLine: root {,
-          };
-        
-}});"
+module.exports = {
+  filename: /styles/App.css,
+  rawFirstLine: root {,
+};
 `;
 
-exports[`ScriptTransformer uses multiple preprocessors 3`] = `
-"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){module.exports = \\"react\\";
-}});"
-`;
+exports[`ScriptTransformer uses multiple preprocessors 3`] = `module.exports = "react";`;
 
 exports[`ScriptTransformer uses the supplied preprocessor 1`] = `
-"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){
-          const TRANSFORMED = {
-            filename: '/fruits/banana.js',
-            script: 'module.exports = \\"banana\\";',
-            config: '{\\"automock\\":false,\\"browser\\":false,\\"cache\\":true,\\"cacheDirectory\\":\\"/cache/\\",\\"clearMocks\\":false,\\"coveragePathIgnorePatterns\\":[],\\"cwd\\":\\"/test_root_dir/\\",\\"detectLeaks\\":false,\\"detectOpenHandles\\":false,\\"errorOnDeprecated\\":false,\\"extraGlobals\\":[],\\"filter\\":null,\\"forceCoverageMatch\\":[],\\"globalSetup\\":null,\\"globalTeardown\\":null,\\"globals\\":{},\\"haste\\":{\\"providesModuleNodeModules\\":[]},\\"moduleDirectories\\":[],\\"moduleFileExtensions\\":[\\"js\\"],\\"moduleLoader\\":\\"/test_module_loader_path\\",\\"moduleNameMapper\\":[],\\"modulePathIgnorePatterns\\":[],\\"modulePaths\\":[],\\"name\\":\\"test\\",\\"prettierPath\\":\\"prettier\\",\\"resetMocks\\":false,\\"resetModules\\":false,\\"resolver\\":null,\\"restoreMocks\\":false,\\"rootDir\\":\\"/\\",\\"roots\\":[],\\"runner\\":\\"jest-runner\\",\\"setupFiles\\":[],\\"setupFilesAfterEnv\\":[],\\"skipFilter\\":false,\\"skipNodeResolution\\":false,\\"snapshotResolver\\":null,\\"snapshotSerializers\\":[],\\"testEnvironment\\":\\"node\\",\\"testEnvironmentOptions\\":{},\\"testLocationInResults\\":false,\\"testMatch\\":[],\\"testPathIgnorePatterns\\":[],\\"testRegex\\":[\\"\\\\\\\\.test\\\\\\\\.js$\\"],\\"testRunner\\":\\"jest-jasmine2\\",\\"testURL\\":\\"http://localhost\\",\\"timers\\":\\"real\\",\\"transform\\":[[\\"^.+\\\\\\\\.js$\\",\\"test_preprocessor\\"]],\\"transformIgnorePatterns\\":[\\"/node_modules/\\"],\\"unmockedModulePathPatterns\\":null,\\"watchPathIgnorePatterns\\":[]}',
-          };
-        
-}});"
+const TRANSFORMED = {
+  filename: '/fruits/banana.js',
+  script: 'module.exports = "banana";',
+  config: '{"automock":false,"browser":false,"cache":true,"cacheDirectory":"/cache/","clearMocks":false,"coveragePathIgnorePatterns":[],"cwd":"/test_root_dir/","detectLeaks":false,"detectOpenHandles":false,"errorOnDeprecated":false,"extraGlobals":[],"filter":null,"forceCoverageMatch":[],"globalSetup":null,"globalTeardown":null,"globals":{},"haste":{"providesModuleNodeModules":[]},"moduleDirectories":[],"moduleFileExtensions":["js"],"moduleLoader":"/test_module_loader_path","moduleNameMapper":[],"modulePathIgnorePatterns":[],"modulePaths":[],"name":"test","prettierPath":"prettier","resetMocks":false,"resetModules":false,"resolver":null,"restoreMocks":false,"rootDir":"/","roots":[],"runner":"jest-runner","setupFiles":[],"setupFilesAfterEnv":[],"skipFilter":false,"skipNodeResolution":false,"snapshotResolver":null,"snapshotSerializers":[],"testEnvironment":"node","testEnvironmentOptions":{},"testLocationInResults":false,"testMatch":[],"testPathIgnorePatterns":[],"testRegex":["\\\\.test\\\\.js$"],"testRunner":"jest-jasmine2","testURL":"http://localhost","timers":"real","transform":[["^.+\\\\.js$","test_preprocessor"]],"transformIgnorePatterns":["/node_modules/"],"unmockedModulePathPatterns":null,"watchPathIgnorePatterns":[]}',
+};
 `;
 
-exports[`ScriptTransformer uses the supplied preprocessor 2`] = `
-"({\\"Object.<anonymous>\\":function(module,exports,require,__dirname,__filename,global,jest){module.exports = \\"react\\";
-}});"
-`;
+exports[`ScriptTransformer uses the supplied preprocessor 2`] = `module.exports = "react";`;
 
-exports[`ScriptTransformer warns of unparseable inlined source maps from the preprocessor 1`] = `"jest-transform: The source map produced for the file /fruits/banana.js by preprocessor-with-sourcemaps was invalid. Proceeding without source mapping for that file."`;
+exports[`ScriptTransformer warns of unparseable inlined source maps from the preprocessor 1`] = `jest-transform: The source map produced for the file /fruits/banana.js by preprocessor-with-sourcemaps was invalid. Proceeding without source mapping for that file.`;

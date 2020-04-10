@@ -7,7 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import chalk from 'chalk';
+import chalk = require('chalk');
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const replacePathSepForRegex = (string: string) => {
@@ -91,6 +91,7 @@ const validConfig = {
   moduleLoader: '<rootDir>',
   moduleNameMapper: {
     '^React$': '<rootDir>/node_modules/react',
+    '^Vue$': ['<rootDir>/node_modules/vue', '<rootDir>/node_modules/vue3'],
   },
   modulePathIgnorePatterns: ['<rootDir>/build/'],
   modulePaths: ['/shared/vendor/modules'],

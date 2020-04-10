@@ -6,11 +6,11 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
-import {JestEnvironment} from '@jest/environment';
-import {TestResult} from '@jest/test-result';
-import Runtime = require('jest-runtime');
-import {SnapshotStateType} from 'jest-snapshot';
+import type {Config} from '@jest/types';
+import type {JestEnvironment} from '@jest/environment';
+import type {TestResult} from '@jest/test-result';
+import type {RuntimeType as Runtime} from 'jest-runtime';
+import type {SnapshotStateType} from 'jest-snapshot';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 
@@ -27,7 +27,9 @@ const jestAdapter = async (
   } = runtime.requireInternalModule(FRAMEWORK_INITIALIZER);
 
   runtime
-    .requireInternalModule(path.resolve(__dirname, './jestExpect.js'))
+    .requireInternalModule<typeof import('./jestExpect')>(
+      path.resolve(__dirname, './jestExpect.js'),
+    )
     .default({
       expand: globalConfig.expand,
     });
@@ -36,7 +38,7 @@ const jestAdapter = async (
     config.prettierPath ? require(config.prettierPath) : null;
   const getBabelTraverse = () => require('@babel/traverse').default;
 
-  const {globals, snapshotState} = initialize({
+  const {globals, snapshotState} = await initialize({
     config,
     environment,
     getBabelTraverse,

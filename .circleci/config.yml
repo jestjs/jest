@@ -18,25 +18,14 @@ aliases:
 
 version: 2
 jobs:
-  lint-and-typecheck:
-    working_directory: ~/jest
-    docker:
-      - image: circleci/node:12
-    steps:
-      - checkout
-      - restore-cache: *restore-cache
-      - run: yarn --no-progress --frozen-lockfile
-      - save-cache: *save-cache
-      - run: yarn lint --format junit -o reports/junit/js-lint-results.xml && yarn lint-es5-build --format junit -o reports/junit/js-es5-lint-results.xml  && yarn lint:prettier:ci && yarn check-copyright-headers
-      - store_test_results:
-          path: reports/junit
-
   test-node-8:
     working_directory: ~/jest
     docker:
       - image: circleci/node:8
     steps:
       - checkout
+      - run:
+          command: yarn remove-prettier-dep
       - restore-cache: *restore-cache
       - run: *install
       - save-cache: *save-cache
@@ -131,7 +120,6 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - lint-and-typecheck
       - test-node-8
       - test-node-10
       - test-node-12

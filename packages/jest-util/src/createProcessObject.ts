@@ -79,7 +79,7 @@ function createProcessEnv(): NodeJS.ProcessEnv {
   return Object.assign(proxy, process.env);
 }
 
-export default function() {
+export default function (): NodeJS.Process {
   const process = require('process');
   const newProcess = deepCyclicCopy(process, {
     blacklist: BLACKLIST,
@@ -111,6 +111,18 @@ export default function() {
 
   newProcess.env = createProcessEnv();
   newProcess.send = () => {};
+
+  const domainPropertyDescriptor = Object.getOwnPropertyDescriptor(
+    newProcess,
+    'domain',
+  );
+  if (domainPropertyDescriptor && !domainPropertyDescriptor.enumerable) {
+    Object.defineProperty(newProcess, 'domain', {
+      get() {
+        return process.domain;
+      },
+    });
+  }
 
   return newProcess;
 }

@@ -183,17 +183,17 @@ function matchArity(fn: Function, length: number): Function {
 
   switch (length) {
     case 1:
-      mockConstructor = function(this: unknown, _a: unknown) {
+      mockConstructor = function (this: unknown, _a: unknown) {
         return fn.apply(this, arguments);
       };
       break;
     case 2:
-      mockConstructor = function(this: unknown, _a: unknown, _b: unknown) {
+      mockConstructor = function (this: unknown, _a: unknown, _b: unknown) {
         return fn.apply(this, arguments);
       };
       break;
     case 3:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -203,7 +203,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 4:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -214,7 +214,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 5:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -226,7 +226,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 6:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -239,7 +239,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 7:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -253,7 +253,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 8:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -268,7 +268,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 9:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -284,7 +284,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     default:
-      mockConstructor = function(this: unknown) {
+      mockConstructor = function (this: unknown) {
         return fn.apply(this, arguments);
       };
       break;
@@ -528,7 +528,7 @@ class ModuleMockerClass {
         {};
       const prototypeSlots = this._getSlots(prototype);
       const mocker = this;
-      const mockConstructor = matchArity(function(this: T, ...args: Y) {
+      const mockConstructor = matchArity(function (this: T, ...args: Y) {
         const mockState = mocker._ensureMockState(f);
         const mockConfig = mocker._ensureMockConfig(f);
         mockState.instances.push(this);
@@ -692,7 +692,7 @@ class ModuleMockerClass {
       };
 
       f.mockReturnThis = () =>
-        f.mockImplementation(function(this: T) {
+        f.mockImplementation(function (this: T) {
           return this;
         });
 
@@ -805,7 +805,7 @@ class ModuleMockerClass {
       const slotMetadata = (metadata.members && metadata.members[slot]) || {};
       if (slotMetadata.ref != null) {
         callbacks.push(
-          (function(ref) {
+          (function (ref) {
             return () => (mock[slot] = refs[ref]);
           })(slotMetadata.ref),
         );
@@ -988,7 +988,7 @@ class ModuleMockerClass {
       });
 
       // @ts-ignore original method is now a Mock
-      object[methodName].mockImplementation(function(this: unknown) {
+      object[methodName].mockImplementation(function (this: unknown) {
         return original.apply(this, arguments);
       });
     }
@@ -1059,7 +1059,7 @@ class ModuleMockerClass {
         Object.defineProperty(obj, propertyName, descriptor!);
       });
 
-      (descriptor[accessType] as Mock<T>).mockImplementation(function(
+      (descriptor[accessType] as Mock<T>).mockImplementation(function (
         this: unknown,
       ) {
         // @ts-ignore

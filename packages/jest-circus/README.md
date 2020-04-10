@@ -18,7 +18,7 @@ import {Event, State} from 'jest-circus';
 class MyCustomEnvironment extends NodeEnvironment {
   //...
 
-  handleTestEvent(event: Event, state: State) {
+  async handleTestEvent(event: Event, state: State) {
     if (event.name === 'test_start') {
       // ...
     }
@@ -27,6 +27,8 @@ class MyCustomEnvironment extends NodeEnvironment {
 ```
 
 Mutating event or state data is currently unsupported and may cause unexpected behavior or break in a future release without warning. New events, event data, and/or state data will not be considered a breaking change and may be added in any minor release.
+
+Note, that `jest-circus` test runner would pause until a promise returned from `handleTestEvent` gets fulfilled. **However, there are a few events that do not conform to this rule, namely**: `start_describe_definition`, `finish_describe_definition`, `add_hook`, `add_test` or `error` (for the up-to-date list you can look at [SyncEvent type in the types definitions](https://github.com/facebook/jest/tree/master/packages/jest-types/src/Circus.ts)). That is caused by backward compatibility reasons and `process.on('unhandledRejection', callback)` signature, but that usually should not be a problem for most of the use cases.
 
 ## Installation
 

@@ -8,9 +8,12 @@
 
 'use strict';
 
+import {builtinModules, createRequire} from 'module';
 import path from 'path';
+import {pathToFileURL} from 'url';
 // eslint-disable-next-line import/default
 import slash from 'slash';
+import {onNodeVersions} from '@jest/test-utils';
 
 let createRuntime;
 
@@ -347,4 +350,85 @@ describe('Runtime requireModule', () => {
       );
       expect(exports.isJSONModuleEncodedInUTF8WithBOM).toBe(true);
     }));
+
+  it('should export a constructable Module class', () =>
+    createRuntime(__filename).then(runtime => {
+      const Module = runtime.requireModule(runtime.__mockRootPath, 'module');
+
+      expect(() => new Module()).not.toThrow();
+    }));
+
+  it('caches Module correctly', () =>
+    createRuntime(__filename).then(runtime => {
+      const Module1 = runtime.requireModule(runtime.__mockRootPath, 'module');
+      const Module2 = runtime.requireModule(runtime.__mockRootPath, 'module');
+
+      expect(Module1).toBe(Module2);
+    }));
+
+  onNodeVersions('>=12.12.0', () => {
+    it('overrides module.createRequire', () =>
+      createRuntime(__filename).then(runtime => {
+        const exports = runtime.requireModule(runtime.__mockRootPath, 'module');
+
+        expect(exports.createRequire).not.toBe(createRequire);
+
+        // createRequire with string
+        {
+          const customRequire = exports.createRequire(runtime.__mockRootPath);
+          expect(customRequire('./create_require_module').foo).toBe('foo');
+        }
+
+        // createRequire with URL object
+        {
+          const customRequire = exports.createRequire(
+            pathToFileURL(runtime.__mockRootPath),
+          );
+          expect(customRequire('./create_require_module').foo).toBe('foo');
+        }
+
+        // createRequire with file URL string
+        {
+          const customRequire = exports.createRequire(
+            pathToFileURL(runtime.__mockRootPath).toString(),
+          );
+          expect(customRequire('./create_require_module').foo).toBe('foo');
+        }
+
+        // createRequire with absolute module path
+        {
+          const customRequire = exports.createRequire(runtime.__mockRootPath);
+          expect(customRequire('./create_require_module').foo).toBe('foo');
+        }
+
+        // createRequire with relative module path
+        expect(() => exports.createRequireFromPath('./relative/path')).toThrow(
+          new TypeError(
+            `The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received './relative/path'`,
+          ),
+        );
+
+        // createRequireFromPath with absolute module path
+        {
+          const customRequire = exports.createRequireFromPath(
+            runtime.__mockRootPath,
+          );
+          expect(customRequire('./create_require_module').foo).toBe('foo');
+        }
+
+        // createRequireFromPath with file URL object
+        expect(() =>
+          exports.createRequireFromPath(pathToFileURL(runtime.__mockRootPath)),
+        ).toThrow(
+          new TypeError(
+            `The argument 'filename' must be string. Received '${pathToFileURL(
+              runtime.__mockRootPath,
+            )}'. Use createRequire for URL filename.`,
+          ),
+        );
+
+        expect(exports.syncBuiltinESMExports).not.toThrow();
+        expect(exports.builtinModules).toEqual(builtinModules);
+      }));
+  });
 });
