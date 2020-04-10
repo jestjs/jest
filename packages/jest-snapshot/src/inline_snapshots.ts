@@ -8,9 +8,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import semver = require('semver');
-import {loadPartialConfig} from '@babel/core';
+import {parseSync} from '@babel/core';
 import generate from '@babel/generator';
-import {ParserOptions, parse} from '@babel/parser';
 import type traverse from '@babel/traverse';
 import {
   CallExpression,
@@ -58,16 +57,10 @@ const saveSnapshotsForFile = (
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
-  const {options} = loadPartialConfig({filename: sourceFilePath}) || {
-    options: {},
-  };
-  if (!options.plugins) {
-    options.plugins = [];
-  }
-
   // TypeScript projects may not have a babel config; make sure they can be parsed anyway.
+  const plugins = [];
   if (/\.tsx?$/.test(sourceFilePath)) {
-    options.plugins.push([
+    plugins.push([
       require.resolve('@babel/plugin-syntax-typescript'),
       {isTSX: /\.tsx$/.test(sourceFilePath)},
       // unique name to make sure Babel does not complain about a possible duplicate plugin.
@@ -79,7 +72,14 @@ const saveSnapshotsForFile = (
   // by one to formatting parser.
   const snapshotMatcherNames: Array<string> = [];
 
-  const ast = parse(sourceFile, options as ParserOptions);
+  const ast = parseSync(sourceFile, {
+    filename: sourceFilePath,
+    plugins,
+    root: path.dirname(sourceFilePath),
+  });
+  if (!ast) {
+    throw new Error(`jest-snapshot: Failed to parse ${sourceFilePath}`);
+  }
   traverseAst(snapshots, ast, snapshotMatcherNames, babelTraverse);
 
   // substitute in the snapshots in reverse order, so slice calculations aren't thrown off.
