@@ -38,3 +38,10 @@ test('should support importing node core modules', () => {
     type: 'module',
   });
 });
+
+test('dynamic import should work', async () => {
+  const {double: importedDouble} = await import('../index');
+
+  expect(importedDouble).toBe(double);
+  expect(importedDouble(1)).toBe(2);
+});
