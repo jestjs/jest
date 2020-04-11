@@ -19,19 +19,13 @@ export default (
   verbose: boolean,
   buffer: ConsoleBuffer,
   // TODO: make mandatory and take Config.ProjectConfig in 26
-  config?: StackTraceConfig,
+  config: StackTraceConfig = {
+    rootDir: root,
+    testMatch: [],
+  },
 ): string => {
   const TITLE_INDENT = verbose ? '  ' : '    ';
   const CONSOLE_INDENT = TITLE_INDENT + '  ';
-
-  //TODO: remove in 26
-  const stackTraceConfig: StackTraceConfig =
-    config != null
-      ? config
-      : {
-          rootDir: root,
-          testMatch: [],
-        };
 
   const logEntries = buffer.reduce((output, {type, message, origin}) => {
     message = message
@@ -60,11 +54,7 @@ export default (
       noStackTrace,
     };
 
-    const formattedStackTrace = formatStackTrace(
-      origin,
-      stackTraceConfig,
-      options,
-    );
+    const formattedStackTrace = formatStackTrace(origin, config, options);
 
     return (
       output +
