@@ -12,7 +12,8 @@ const normalizeCircusJasmine = (str: string) =>
   wrap(
     str
       .replace(/console\.log .+:\d+/, 'console.log')
-      .replace(/.+addSpecsToSuite (.+:\d+:\d+).+\n/g, ''),
+      .replace(/.+addSpecsToSuite (.+:\d+:\d+).+\n/g, '')
+      .replace(/.+_dispatchDescribe (.+:\d+:\d+).+\n/g, ''),
   );
 
 it('warns if describe returns a Promise', () => {
