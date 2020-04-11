@@ -313,7 +313,7 @@ export const formatStackTrace = (
 
   return renderedCallsite
     ? `${renderedCallsite}\n${stacktrace}`
-    : `${stacktrace}`;
+    : `\n${stacktrace}`;
 };
 
 type FailedResults = Array<{
