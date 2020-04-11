@@ -114,8 +114,6 @@ async function runTestInternal(
     ? require(config.moduleLoader)
     : require('jest-runtime');
 
-  let runtime: RuntimeClass | undefined = undefined;
-
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
   const consoleFormatter = (type: LogType, message: LogMessage) =>
     getConsoleOutput(
@@ -148,7 +146,7 @@ async function runTestInternal(
   const cacheFS = {[path]: testSource};
   setGlobal(environment.global, 'console', testConsole);
 
-  runtime = new Runtime(config, environment, resolver, cacheFS, {
+  const runtime = new Runtime(config, environment, resolver, cacheFS, {
     changedFiles: context && context.changedFiles,
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
@@ -158,13 +156,13 @@ async function runTestInternal(
 
   const start = Date.now();
 
-  config.setupFiles.forEach(path => runtime!.requireModule(path));
+  config.setupFiles.forEach(path => runtime.requireModule(path));
 
   const sourcemapOptions: sourcemapSupport.Options = {
     environment: 'node',
     handleUncaughtExceptions: false,
     retrieveSourceMap: source => {
-      const sourceMaps = runtime && runtime.getSourceMaps();
+      const sourceMaps = runtime.getSourceMaps();
       const sourceMapSource = sourceMaps && sourceMaps[source];
 
       if (sourceMapSource) {
