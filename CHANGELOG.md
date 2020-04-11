@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[expect]` Restore support for passing functions to `toHaveLength` matcher ([#9796](https://github.com/facebook/jest/pull/9796))
+
 ### Chore & Maintenance
 
 ### Performance

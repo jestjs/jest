@@ -7,6 +7,7 @@
  */
 
 import crypto from 'crypto';
+import wrap from 'jest-snapshot-serializer-raw';
 import {skipSuiteOnWindows} from '@jest/test-utils';
 
 function mockHashContents(contents) {
@@ -545,7 +546,7 @@ describe('HasteMap', () => {
     })
       .build()
       .catch(() => {
-        expect(console.error.mock.calls[0][0]).toMatchSnapshot();
+        expect(wrap(console.error.mock.calls[0][0])).toMatchSnapshot();
       });
   });
 
@@ -563,7 +564,7 @@ describe('HasteMap', () => {
           data.map.get('Strawberry')[H.GENERIC_PLATFORM],
         ).not.toBeDefined();
 
-        expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+        expect(wrap(console.warn.mock.calls[0][0])).toMatchSnapshot();
       });
   });
 
@@ -580,6 +581,7 @@ describe('HasteMap', () => {
   });
 
   it('throws on duplicate module ids if "throwOnModuleCollision" is set to true', () => {
+    expect.assertions(1);
     // Raspberry thinks it is a Strawberry
     mockFs['/project/fruits/another/Strawberry.js'] = `
       const Banana = require("Banana");
@@ -588,7 +590,9 @@ describe('HasteMap', () => {
     return new HasteMap({throwOnModuleCollision: true, ...defaultConfig})
       .build()
       .catch(err => {
-        expect(err).toMatchSnapshot();
+        expect(err.message).toBe(
+          'Duplicated files or mocks. Please check the console for more info',
+        );
       });
   });
 
@@ -1089,7 +1093,7 @@ describe('HasteMap', () => {
           }),
         );
 
-        expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+        expect(wrap(console.warn.mock.calls[0][0])).toMatchSnapshot();
       });
   });
 
@@ -1359,7 +1363,7 @@ describe('HasteMap', () => {
               '/project/fruits/another/Pear.js': H.MODULE,
             }),
           );
-          expect(error.message).toMatchSnapshot();
+          expect(wrap(error.message)).toMatchSnapshot();
         }
       }
 
