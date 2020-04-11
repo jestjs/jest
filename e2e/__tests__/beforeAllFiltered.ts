@@ -10,7 +10,11 @@ import runJest from '../runJest';
 
 describe('Correct BeforeAll run', () => {
   it('ensures the BeforeAll of ignored suite is not run', () => {
-    const result = runJest('before-all-filtered');
-    expect(wrap(result.stdout.replace(/\\/g, '/'))).toMatchSnapshot();
+    let {stdout} = runJest('before-all-filtered');
+
+    // for some reason Circus does not have the `Object` part
+    stdout = stdout.replace(/at Object.log \(/g, 'at log (');
+
+    expect(wrap(stdout)).toMatchSnapshot();
   });
 });
