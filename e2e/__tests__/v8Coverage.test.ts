@@ -24,26 +24,6 @@ onNodeVersions('>=10', () => {
     );
 
     expect(exitCode).toBe(0);
-    expect(
-      '\n' +
-        stdout
-          .split('\n')
-          .map(s => s.trimRight())
-          .join('\n') +
-        '\n',
-    ).toEqual(`
-  console.log
-    42
-
-      at Object.log (__tests__/Thing.test.js:10:9)
-
-----------|---------|----------|---------|---------|-------------------
-File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
-----------|---------|----------|---------|---------|-------------------
-All files |     100 |      100 |     100 |     100 |
- Thing.js |     100 |      100 |     100 |     100 |
- x.css    |     100 |      100 |     100 |     100 |
-----------|---------|----------|---------|---------|-------------------
-`);
+    expect(stdout).toMatchSnapshot();
   });
 });
