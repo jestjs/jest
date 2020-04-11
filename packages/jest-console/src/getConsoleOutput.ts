@@ -33,7 +33,7 @@ export default (
           testMatch: [],
         };
 
-  return buffer.reduce((output, {type, message, origin}) => {
+  const logEntries = buffer.reduce((output, {type, message, origin}) => {
     message = message
       .split(/\n/)
       .map(line => CONSOLE_INDENT + line)
@@ -71,10 +71,12 @@ export default (
       TITLE_INDENT +
       chalk.dim(typeMessage) +
       '\n' +
-      message +
+      message.trimRight() +
       '\n' +
-      chalk.dim(formattedStackTrace) +
-      '\n'
+      chalk.dim(formattedStackTrace.trimRight()) +
+      '\n\n'
     );
   }, '');
+
+  return logEntries.trimRight() + '\n';
 };

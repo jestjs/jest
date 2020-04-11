@@ -8,10 +8,12 @@ PASS __tests__/console.test.js
       This is a log message.
 
       at Object.log (__tests__/console.test.js:10:11)
+
     console.info
       This is an info message.
 
       at Object.info (__tests__/console.test.js:12:11)
+
     console.warn
       This is a warning message.
 
@@ -24,6 +26,7 @@ PASS __tests__/console.test.js
       17 | });
 
       at Object.warn (__tests__/console.test.js:14:11)
+
     console.error
       This is an error message.
 
@@ -104,22 +107,21 @@ PASS __tests__/console.test.js
 
     console.log
       {"level":"info","message":"Log message from winston"}
-      
 
       at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
     console.log
       {"message":"Info message from winston","level":"info"}
-      
 
       at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
     console.log
       {"message":"Warn message from winston","level":"warn"}
-      
 
       at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
+
     console.log
       {"message":"Error message from winston","level":"error"}
-      
 
       at Console.log (node_modules/winston/lib/winston/transports/console.js:79:23)
 `;

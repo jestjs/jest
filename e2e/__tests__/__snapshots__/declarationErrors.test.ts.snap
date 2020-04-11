@@ -16,7 +16,6 @@ exports[`warns if describe returns a Promise 1`] = `
           14 | });
     
           at Object.describe (__tests__/describeReturnPromise.test.js:11:1)
-    
 
 
 `;
@@ -37,7 +36,6 @@ exports[`warns if describe returns something 1`] = `
           14 | });
     
           at Object.describe (__tests__/describeReturnSomething.test.js:11:1)
-    
 
 
 `;
