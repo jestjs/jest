@@ -311,9 +311,9 @@ export const formatStackTrace = (
     )
     .join('\n');
 
-  return options.noCodeFrame
-    ? `${stacktrace}`
-    : `${renderedCallsite}\n${stacktrace}`;
+  return renderedCallsite
+    ? `${renderedCallsite}\n${stacktrace}`
+    : `${stacktrace}`;
 };
 
 type FailedResults = Array<{

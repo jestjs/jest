@@ -15,7 +15,7 @@ import type {ConsoleBuffer} from './types';
 
 export default (
   // TODO: remove in 26
-  _root: string,
+  root: string,
   verbose: boolean,
   buffer: ConsoleBuffer,
   // TODO: make mandatory and take Config.ProjectConfig in 26
@@ -29,7 +29,7 @@ export default (
     config != null
       ? config
       : {
-          rootDir: _root,
+          rootDir: root,
           testMatch: [],
         };
 
