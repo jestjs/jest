@@ -34,6 +34,7 @@ onNodeVersions('>=10', () => {
     ).toEqual(`
   console.log
     42
+
       at Object.log (__tests__/Thing.test.js:10:9)
 
 ----------|---------|----------|---------|---------|-------------------
