@@ -5,7 +5,7 @@
 ### Fixes
 
 - `[expect]` Restore support for passing functions to `toHaveLength` matcher ([#9796](https://github.com/facebook/jest/pull/9796))
-- `[jest-changed-files]` `--only-changed` should include staged files
+- `[jest-changed-files]` `--only-changed` should include staged files ([#9799](https://github.com/facebook/jest/pull/9799))
 
 ### Chore & Maintenance
 
