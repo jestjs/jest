@@ -62,7 +62,7 @@ const saveSnapshotsForFile = (
   if (/\.tsx?$/.test(sourceFilePath)) {
     plugins.push([
       require.resolve('@babel/plugin-syntax-typescript'),
-      {isTSX: /\.tsx$/.test(sourceFilePath)},
+      {isTSX: sourceFilePath.endsWith('x')},
       // unique name to make sure Babel does not complain about a possible duplicate plugin.
       'TypeScript syntax plugin added by Jest snapshot',
     ]);
