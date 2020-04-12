@@ -16,7 +16,7 @@ export type BlockMode = void | 'skip' | 'only' | 'todo';
 export type TestMode = BlockMode;
 export type TestName = Global.TestName;
 export type TestFn = Global.TestFn;
-export type HookFn = (done?: DoneFn) => Promise<any> | null | undefined;
+export type HookFn = Global.HookFn;
 export type AsyncFn = TestFn | HookFn;
 export type SharedHookType = 'afterAll' | 'beforeAll';
 export type HookType = SharedHookType | 'afterEach' | 'beforeEach';
