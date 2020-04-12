@@ -17,8 +17,9 @@
     }
   },
   "dependencies": {
-    "@jest/source-map": "^25.2.6",
+    "@jest/types": "^25.3.0",
     "chalk": "^3.0.0",
+    "jest-message-util": "^25.3.0",
     "jest-util": "^25.3.0",
     "slash": "^3.0.0"
   },
