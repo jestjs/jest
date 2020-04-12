@@ -76,8 +76,8 @@ const saveSnapshotsForFile = (
 
   const ast = parseSync(sourceFile, {
     filename: sourceFilePath,
-    presets,
     plugins,
+    presets,
     root: path.dirname(sourceFilePath),
   });
   if (!ast) {
