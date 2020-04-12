@@ -1694,6 +1694,7 @@ describe('.toHaveLength', () => {
     [['a', 'b'], 2],
     ['abc', 3],
     ['', 0],
+    [() => {}, 0],
   ].forEach(([received, length]) => {
     test(`{pass: true} expect(${stringify(
       received,

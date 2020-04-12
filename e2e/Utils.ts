@@ -11,7 +11,7 @@ import type {Config} from '@jest/types';
 
 // eslint-disable-next-line import/named
 import {ExecaReturnValue, sync as spawnSync} from 'execa';
-import {createDirectory} from 'jest-util';
+import makeDir = require('make-dir');
 import rimraf = require('rimraf');
 import dedent = require('dedent');
 
@@ -45,7 +45,7 @@ export const linkJestPackage = (packageName: string, cwd: Config.Path) => {
   const packagesDir = path.resolve(__dirname, '../packages');
   const packagePath = path.resolve(packagesDir, packageName);
   const destination = path.resolve(cwd, 'node_modules/', packageName);
-  createDirectory(destination);
+  makeDir.sync(destination);
   rimraf.sync(destination);
   fs.symlinkSync(packagePath, destination, 'dir');
 };
@@ -76,12 +76,12 @@ export const writeFiles = (
   directory: string,
   files: {[filename: string]: string},
 ) => {
-  createDirectory(directory);
+  makeDir.sync(directory);
   Object.keys(files).forEach(fileOrPath => {
     const dirname = path.dirname(fileOrPath);
 
     if (dirname !== '/') {
-      createDirectory(path.join(directory, dirname));
+      makeDir.sync(path.join(directory, dirname));
     }
     fs.writeFileSync(
       path.resolve(directory, ...fileOrPath.split('/')),
@@ -94,13 +94,13 @@ export const writeSymlinks = (
   directory: string,
   symlinks: {[existingFile: string]: string},
 ) => {
-  createDirectory(directory);
+  makeDir.sync(directory);
   Object.keys(symlinks).forEach(fileOrPath => {
     const symLinkPath = symlinks[fileOrPath];
     const dirname = path.dirname(symLinkPath);
 
     if (dirname !== '/') {
-      createDirectory(path.join(directory, dirname));
+      makeDir.sync(path.join(directory, dirname));
     }
     fs.symlinkSync(
       path.resolve(directory, ...fileOrPath.split('/')),
@@ -163,7 +163,7 @@ export const createEmptyPackage = (
     },
   };
 
-  createDirectory(directory);
+  makeDir.sync(directory);
   packageJson || (packageJson = DEFAULT_PACKAGE_JSON);
   fs.writeFileSync(
     path.resolve(directory, 'package.json'),

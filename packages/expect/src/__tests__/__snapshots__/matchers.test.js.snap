@@ -3046,6 +3046,13 @@ Expected length: not <g>2</>
 Received array:      <r>[1, 2]</>
 `;
 
+exports[`.toHaveLength {pass: true} expect([Function anonymous]).toHaveLength(0) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toHaveLength<d>(</><g>expected</><d>)</>
+
+Expected length:   not <g>0</>
+Received function:     <r>[Function anonymous]</>
+`;
+
 exports[`.toHaveLength error cases 1`] = `
 <d>expect(</><r>received</><d>).</>toHaveLength<d>(</><g>expected</><d>)</>
 
