@@ -158,9 +158,9 @@ export default (): {visitor: Visitor} => {
       return false;
     }
 
-    const callee = expr.get('callee');
-    const expressionArguments = expr.get('arguments');
     // TODO: avoid type casts - the types can be arrays (is it possible to ignore that without casting?)
+    const callee = expr.get('callee') as NodePath;
+    const expressionArguments = expr.get('arguments');
     const object = callee.get('object') as NodePath;
     const property = callee.get('property') as NodePath;
     return (
@@ -168,13 +168,17 @@ export default (): {visitor: Visitor} => {
       FUNCTIONS[property.node.name] &&
       (object.isIdentifier(JEST_GLOBAL) ||
         (callee.isMemberExpression() && shouldHoistExpression(object))) &&
-      FUNCTIONS[property.node.name](expressionArguments)
+      FUNCTIONS[property.node.name](
+        Array.isArray(expressionArguments)
+          ? expressionArguments
+          : [expressionArguments],
+      )
     );
   };
 
   const visitor: Visitor = {
     ExpressionStatement(path) {
-      if (shouldHoistExpression(path.get('expression'))) {
+      if (shouldHoistExpression(path.get('expression') as NodePath)) {
         // @ts-ignore: private, magical property
         path.node._blockHoist = Infinity;
       }
