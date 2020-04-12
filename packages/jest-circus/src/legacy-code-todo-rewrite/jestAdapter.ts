@@ -12,7 +12,8 @@ import type {TestResult} from '@jest/test-result';
 import type {RuntimeType as Runtime} from 'jest-runtime';
 import type {SnapshotStateType} from 'jest-snapshot';
 
-const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
+const FRAMEWORK_INITIALIZER = path.resolve(__dirname, './jestAdapterInit.js');
+const EXPECT_INITIALIZER = path.resolve(__dirname, './jestExpect.js');
 
 const jestAdapter = async (
   globalConfig: Config.GlobalConfig,
@@ -24,15 +25,13 @@ const jestAdapter = async (
   const {
     initialize,
     runAndTransformResultsToJestFormat,
-  } = runtime.requireInternalModule(FRAMEWORK_INITIALIZER);
+  } = runtime.requireInternalModule<typeof import('./jestAdapterInit')>(
+    FRAMEWORK_INITIALIZER,
+  );
 
   runtime
-    .requireInternalModule<typeof import('./jestExpect')>(
-      path.resolve(__dirname, './jestExpect.js'),
-    )
-    .default({
-      expand: globalConfig.expand,
-    });
+    .requireInternalModule<typeof import('./jestExpect')>(EXPECT_INITIALIZER)
+    .default({expand: globalConfig.expand});
 
   const getPrettier = () =>
     config.prettierPath ? require(config.prettierPath) : null;
