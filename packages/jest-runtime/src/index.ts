@@ -179,6 +179,7 @@ class Runtime {
   private _virtualMocks: BooleanMap;
   private _moduleImplementation?: typeof nativeModule.Module;
   private jestObjectCaches: Map<string, Jest>;
+  private jestGlobals?: JestGlobals;
 
   constructor(
     config: Config.ProjectConfig,
@@ -1049,6 +1050,19 @@ class Runtime {
 
     this.jestObjectCaches.set(filename, jestObject);
 
+    const lastArgs: [Jest | undefined, ...Array<any>] = [
+      this._config.injectGlobals ? jestObject : undefined, // jest object
+      this._config.extraGlobals.map<unknown>(globalVariable => {
+        if (this._environment.global[globalVariable]) {
+          return this._environment.global[globalVariable];
+        }
+
+        throw new Error(
+          `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
+        );
+      }),
+    ];
+
     try {
       compiledFunction.call(
         localModule.exports,
@@ -1058,16 +1072,7 @@ class Runtime {
         dirname, // __dirname
         filename, // __filename
         this._environment.global, // global object
-        jestObject, // jest object
-        ...this._config.extraGlobals.map(globalVariable => {
-          if (this._environment.global[globalVariable]) {
-            return this._environment.global[globalVariable];
-          }
-
-          throw new Error(
-            `You have requested '${globalVariable}' as a global variable, but it was not present. Please check your config or your global environment.`,
-          );
-        }),
+        ...lastArgs.filter(notEmpty),
       );
     } catch (error) {
       this.handleExecutionError(error, localModule);
@@ -1609,7 +1614,7 @@ class Runtime {
     );
   }
 
-  private constructInjectedModuleParameters() {
+  private constructInjectedModuleParameters(): Array<string> {
     return [
       'module',
       'exports',
@@ -1617,9 +1622,9 @@ class Runtime {
       '__dirname',
       '__filename',
       'global',
-      'jest',
+      this._config.injectGlobals ? 'jest' : undefined,
       ...this._config.extraGlobals,
-    ];
+    ].filter(notEmpty);
   }
 
   private handleExecutionError(e: Error, module: InitialModule): never {
@@ -1686,6 +1691,10 @@ class Runtime {
   }
 
   private getGlobalsFromEnvironment(): JestGlobals {
+    if (this.jestGlobals) {
+      return {...this.jestGlobals};
+    }
+
     return {
       afterAll: this._environment.global.afterAll,
       afterEach: this._environment.global.afterEach,
@@ -1714,12 +1723,20 @@ class Runtime {
 
     return source;
   }
+
+  setGlobalsForRuntime(globals: JestGlobals): void {
+    this.jestGlobals = globals;
+  }
 }
 
 function invariant(condition: unknown, message?: string): asserts condition {
   if (!condition) {
     throw new Error(message);
   }
+}
+
+function notEmpty<T>(value: T | null | undefined): value is T {
+  return value !== null && value !== undefined;
 }
 
 export = Runtime;
