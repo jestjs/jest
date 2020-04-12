@@ -9,7 +9,9 @@ import type {CoverageMapData} from 'istanbul-lib-coverage';
 
 export type DoneFn = (reason?: string | Error) => void;
 export type TestName = string;
-export type TestFn = (done?: DoneFn) => Promise<void | unknown> | void;
+export type TestFn = (
+  done?: DoneFn,
+) => Promise<void | undefined | unknown> | void | undefined;
 export type BlockFn = () => void;
 export type BlockName = string;
 export type HookFn = TestFn;
