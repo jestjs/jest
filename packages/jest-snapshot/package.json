@@ -17,6 +17,7 @@
     }
   },
   "dependencies": {
+    "@babel/core": "^7.7.2",
     "@babel/generator": "^7.7.2",
     "@babel/parser": "^7.7.2",
     "@babel/plugin-syntax-typescript": "^7.7.2",
@@ -24,6 +25,7 @@
     "@babel/types": "^7.0.0",
     "@jest/types": "^25.3.0",
     "@types/prettier": "^1.19.0",
+    "babel-preset-current-node-syntax": "^0.1.2",
     "chalk": "^3.0.0",
     "expect": "^25.3.0",
     "jest-diff": "^25.3.0",
@@ -45,14 +47,6 @@
     "ansi-styles": "^4.2.0",
     "jest-haste-map": "^25.3.0",
     "prettier": "^1.13.4"
-  },
-  "peerDependencies": {
-    "@babel/core": "7.x"
-  },
-  "peerDependenciesMeta": {
-    "@babel/core": {
-      "optional": true
-    }
   },
   "engines": {
     "node": ">= 8.3"

@@ -9,6 +9,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import semver = require('semver');
 import {parseSync} from '@babel/core';
+import type {PluginItem} from '@babel/core';
 import generate from '@babel/generator';
 import type traverse from '@babel/traverse';
 import {
@@ -20,9 +21,9 @@ import {
   templateElement,
   templateLiteral,
 } from '@babel/types';
-import type {Frame} from 'jest-message-util';
 
 import type {Config} from '@jest/types';
+import type {Frame} from 'jest-message-util';
 import {escapeBacktickString} from './utils';
 
 export type InlineSnapshot = {
@@ -58,7 +59,8 @@ const saveSnapshotsForFile = (
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
   // TypeScript projects may not have a babel config; make sure they can be parsed anyway.
-  const plugins = [];
+  const presets = [require.resolve('babel-preset-current-node-syntax')];
+  const plugins: Array<PluginItem> = [];
   if (/\.tsx?$/.test(sourceFilePath)) {
     plugins.push([
       require.resolve('@babel/plugin-syntax-typescript'),
@@ -74,6 +76,7 @@ const saveSnapshotsForFile = (
 
   const ast = parseSync(sourceFile, {
     filename: sourceFilePath,
+    presets,
     plugins,
     root: path.dirname(sourceFilePath),
   });
