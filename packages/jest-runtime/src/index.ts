@@ -54,6 +54,10 @@ type JestGlobalsValues = {
   describe: JestGlobals.describe;
   xdescribe: JestGlobals.xdescribe;
   fdescribe: JestGlobals.fdescribe;
+  beforeAll: JestGlobals.beforeAll;
+  beforeEach: JestGlobals.beforeEach;
+  afterEach: JestGlobals.afterEach;
+  afterAll: JestGlobals.afterAll;
 };
 
 type HasteMapOptions = {
@@ -1369,6 +1373,10 @@ class Runtime {
     invariant(jest, 'There should always be a Jest object already');
 
     return {
+      afterAll: this._environment.global.afterAll,
+      afterEach: this._environment.global.afterEach,
+      beforeAll: this._environment.global.beforeAll,
+      beforeEach: this._environment.global.beforeEach,
       describe: this._environment.global.describe,
       expect: this._environment.global.expect,
       fdescribe: this._environment.global.fdescribe,

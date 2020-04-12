@@ -66,7 +66,6 @@ export interface Describe extends DescribeBase {
   skip: DescribeBase;
 }
 
-// TODO: Maybe add `| Window` in the future?
 export interface GlobalAdditions {
   it: ItConcurrent;
   test: ItConcurrent;
@@ -76,6 +75,10 @@ export interface GlobalAdditions {
   describe: Describe;
   xdescribe: DescribeBase;
   fdescribe: DescribeBase;
+  beforeAll: TestFn;
+  beforeEach: TestFn;
+  afterEach: TestFn;
+  afterAll: TestFn;
   __coverage__: CoverageMapData;
   jasmine: Jasmine;
   fail: () => void;
@@ -84,6 +87,7 @@ export interface GlobalAdditions {
   spyOnProperty: () => void;
 }
 
+// TODO: Maybe add `| Window` in the future?
 // extends directly after https://github.com/sandersn/downlevel-dts/issues/33 is fixed
 type NodeGlobalWithoutAdditions = Omit<NodeJS.Global, keyof GlobalAdditions>;
 

@@ -21,6 +21,10 @@ export declare type xtest = Global.GlobalAdditions['xtest'];
 export declare type describe = Global.GlobalAdditions['describe'];
 export declare type xdescribe = Global.GlobalAdditions['xdescribe'];
 export declare type fdescribe = Global.GlobalAdditions['fdescribe'];
+export declare type beforeAll = Global.GlobalAdditions['beforeAll'];
+export declare type beforeEach = Global.GlobalAdditions['beforeEach'];
+export declare type afterEach = Global.GlobalAdditions['afterEach'];
+export declare type afterAll = Global.GlobalAdditions['afterAll'];
 
 throw new Error(
   'Do not import `@jest/globals` outside of the Jest test environment',
