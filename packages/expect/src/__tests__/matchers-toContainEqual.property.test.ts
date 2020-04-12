@@ -7,11 +7,11 @@
  */
 
 import fc from 'fast-check';
+import expect from '..';
 import {
   anythingSettings,
   assertSettings,
 } from './__arbitraries__/sharedSettings';
-import expect from '..';
 
 describe('toContainEqual', () => {
   it('should always find the value when inside the array', () => {
