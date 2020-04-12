@@ -12,6 +12,7 @@ export type TestName = string;
 export type TestFn = (done?: DoneFn) => Promise<any> | void | undefined;
 export type BlockFn = () => void;
 export type BlockName = string;
+export type HookFn = TestFn;
 
 export type Col = unknown;
 export type Row = Array<Col>;
@@ -66,7 +67,7 @@ export interface Describe extends DescribeBase {
   skip: DescribeBase;
 }
 
-export interface GlobalAdditions {
+export interface TestFrameworkGlobals {
   it: ItConcurrent;
   test: ItConcurrent;
   fit: ItBase & {concurrent?: ItConcurrentBase};
@@ -75,10 +76,13 @@ export interface GlobalAdditions {
   describe: Describe;
   xdescribe: DescribeBase;
   fdescribe: DescribeBase;
-  beforeAll: TestFn;
-  beforeEach: TestFn;
-  afterEach: TestFn;
-  afterAll: TestFn;
+  beforeAll: HookFn;
+  beforeEach: HookFn;
+  afterEach: HookFn;
+  afterAll: HookFn;
+}
+
+export interface GlobalAdditions extends TestFrameworkGlobals {
   __coverage__: CoverageMapData;
   jasmine: Jasmine;
   fail: () => void;

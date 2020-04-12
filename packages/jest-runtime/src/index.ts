@@ -9,7 +9,7 @@ import {URL, fileURLToPath} from 'url';
 import * as path from 'path';
 import {Script, compileFunction} from 'vm';
 import * as nativeModule from 'module';
-import type {Config} from '@jest/types';
+import type {Config, Global} from '@jest/types';
 import type {
   Jest,
   JestEnvironment,
@@ -43,22 +43,10 @@ import Resolver = require('jest-resolve');
 import Snapshot = require('jest-snapshot');
 import stripBOM = require('strip-bom');
 
-type JestGlobalsValues = {
+interface JestGlobalsValues extends Global.TestFrameworkGlobals {
   jest: JestGlobals.jest;
   expect: JestGlobals.expect;
-  it: JestGlobals.it;
-  test: JestGlobals.test;
-  fit: JestGlobals.fit;
-  xit: JestGlobals.xit;
-  xtest: JestGlobals.xtest;
-  describe: JestGlobals.describe;
-  xdescribe: JestGlobals.xdescribe;
-  fdescribe: JestGlobals.fdescribe;
-  beforeAll: JestGlobals.beforeAll;
-  beforeEach: JestGlobals.beforeEach;
-  afterEach: JestGlobals.afterEach;
-  afterAll: JestGlobals.afterAll;
-};
+}
 
 type HasteMapOptions = {
   console?: Console;
