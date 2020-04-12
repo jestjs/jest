@@ -15,8 +15,8 @@ exports[`codeframe 1`] = `
     </><red><bold>></></><gray> 1 | </><cyan>throw</> <cyan>new</> <yellow>Error</>(<green>\\"Whoops!\\"</>)<yellow>;</></>
     </> <gray>   | </>      <red><bold>^</></></>
 
-      <dim>at Object.<anonymous> (</>../../../Jester/jest/file.js<dim>:1:7)</>
-      <dim>at </>internal/main/run_main_module.js<dim>:18:47</>
+      <dim>at Object.<anonymous> (</>../../../../../Jester/jest/file.js<dim>:1:7)</>
+      <dim>at </>../../internal/main/run_main_module.js<dim>:18:47</>
 "
 `;
 
@@ -41,8 +41,8 @@ exports[`no codeframe 1`] = `
 
     Whoops!
 
-      <dim>at Object.<anonymous> (</>../../../Jester/jest/file.js<dim>:1:7)</>
-      <dim>at </>internal/main/run_main_module.js<dim>:18:47</>
+      <dim>at Object.<anonymous> (</>../../../../../Jester/jest/file.js<dim>:1:7)</>
+      <dim>at </>../../internal/main/run_main_module.js<dim>:18:47</>
 "
 `;
 

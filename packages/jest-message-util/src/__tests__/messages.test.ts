@@ -7,7 +7,10 @@
  */
 
 import {readFileSync} from 'fs';
+import {resolve} from 'path';
 import {formatExecError, formatResultsErrors} from '..';
+
+const rootDir = resolve(__dirname, '../../')
 
 jest.mock('fs');
 
@@ -212,7 +215,7 @@ it('codeframe', () => {
 `,
     },
     {
-      rootDir: '',
+      rootDir,
       testMatch: [],
     },
     {
@@ -242,7 +245,7 @@ it('no codeframe', () => {
 `,
     },
     {
-      rootDir: '',
+      rootDir,
       testMatch: [],
     },
     {
@@ -272,7 +275,7 @@ it('no stack', () => {
 `,
     },
     {
-      rootDir: '',
+      rootDir,
       testMatch: [],
     },
     {
