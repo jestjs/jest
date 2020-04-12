@@ -7,12 +7,16 @@
  */
 
 import {readFileSync} from 'fs';
-import {resolve} from 'path';
+import slash = require('slash');
+import tempy = require('tempy');
 import {formatExecError, formatResultsErrors} from '..';
 
-const rootDir = resolve(__dirname, '../../');
+const rootDir = tempy.directory();
 
-jest.mock('fs');
+jest.mock('fs', () => ({
+  ...jest.requireActual('fs'),
+  readFileSync: jest.fn(),
+}));
 
 const unixStackTrace =
   `  ` +
@@ -205,13 +209,12 @@ it('codeframe', () => {
     {
       message: 'Whoops!',
       stack: `
-    at Object.<anonymous> (/Users/Jester/jest/file.js:1:7)
+    at Object.<anonymous> (${slash(rootDir)}/file.js:1:7)
     at Module._compile (internal/modules/cjs/loader.js:1158:30)
     at Object.Module._extensions..js (internal/modules/cjs/loader.js:1178:10)
     at Module.load (internal/modules/cjs/loader.js:1002:32)
     at Function.Module._load (internal/modules/cjs/loader.js:901:14)
     at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:74:12)
-    at internal/main/run_main_module.js:18:47
 `,
     },
     {
@@ -235,13 +238,12 @@ it('no codeframe', () => {
     {
       message: 'Whoops!',
       stack: `
-    at Object.<anonymous> (/Users/Jester/jest/file.js:1:7)
+    at Object.<anonymous> (${slash(rootDir)}/file.js:1:7)
     at Module._compile (internal/modules/cjs/loader.js:1158:30)
     at Object.Module._extensions..js (internal/modules/cjs/loader.js:1178:10)
     at Module.load (internal/modules/cjs/loader.js:1002:32)
     at Function.Module._load (internal/modules/cjs/loader.js:901:14)
     at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:74:12)
-    at internal/main/run_main_module.js:18:47
 `,
     },
     {
@@ -265,13 +267,12 @@ it('no stack', () => {
     {
       message: 'Whoops!',
       stack: `
-    at Object.<anonymous> (/Users/Jester/jest/file.js:1:7)
+    at Object.<anonymous> (${slash(rootDir)}/file.js:1:7)
     at Module._compile (internal/modules/cjs/loader.js:1158:30)
     at Object.Module._extensions..js (internal/modules/cjs/loader.js:1178:10)
     at Module.load (internal/modules/cjs/loader.js:1002:32)
     at Function.Module._load (internal/modules/cjs/loader.js:901:14)
     at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:74:12)
-    at internal/main/run_main_module.js:18:47
 `,
     },
     {
