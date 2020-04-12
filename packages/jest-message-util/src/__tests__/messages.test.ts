@@ -10,7 +10,7 @@ import {readFileSync} from 'fs';
 import {resolve} from 'path';
 import {formatExecError, formatResultsErrors} from '..';
 
-const rootDir = resolve(__dirname, '../../')
+const rootDir = resolve(__dirname, '../../');
 
 jest.mock('fs');
 
