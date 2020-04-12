@@ -17,7 +17,6 @@
     }
   },
   "dependencies": {
-    "@babel/core": "^7.7.2",
     "@babel/generator": "^7.7.2",
     "@babel/parser": "^7.7.2",
     "@babel/plugin-syntax-typescript": "^7.7.2",
@@ -39,6 +38,7 @@
     "semver": "^6.3.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.7.2",
     "@babel/preset-flow": "^7.7.2",
     "@babel/preset-react": "^7.7.2",
     "@types/natural-compare": "^1.4.0",
@@ -47,6 +47,9 @@
     "ansi-styles": "^4.2.0",
     "jest-haste-map": "^25.3.0",
     "prettier": "^1.13.4"
+  },
+  "peerDependencies": {
+    "@babel/core": "^7.7.2"
   },
   "engines": {
     "node": ">= 8.3"
