@@ -672,6 +672,7 @@ class Runtime {
     this._isolatedMockRegistry = null;
     this._mockRegistry.clear();
     this._moduleRegistry.clear();
+    this._esmoduleRegistry.clear();
 
     if (this._environment) {
       if (this._environment.global) {
