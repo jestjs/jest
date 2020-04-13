@@ -59,7 +59,7 @@ interface JestGlobalsValues extends Global.TestFrameworkGlobals {
 }
 
 interface JestImportMeta extends ImportMeta {
-  jest: Jest;
+  jest: JestGlobals.jest;
 }
 
 type HasteMapOptions = {
@@ -330,7 +330,12 @@ class Runtime {
     const cacheKey = modulePath + query;
 
     if (!this._esmoduleRegistry.has(cacheKey)) {
-      const context = this._environment.getVmContext!();
+      invariant(
+        typeof this._environment.getVmContext === 'function',
+        'ES Modules are only supported if your test environment has the `getVmContext` function',
+      );
+
+      const context = this._environment.getVmContext();
 
       invariant(context);
 
@@ -380,10 +385,6 @@ class Runtime {
     invariant(
       runtimeSupportsVmModules,
       'You need to run with a version of node that supports ES Modules in the VM API.',
-    );
-    invariant(
-      typeof this._environment.getVmContext === 'function',
-      'ES Modules are only supported if your test environment has the `getVmContext` function',
     );
 
     const modulePath = this._resolveModule(from, moduleName);
