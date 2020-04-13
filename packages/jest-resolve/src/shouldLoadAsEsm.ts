@@ -13,18 +13,20 @@ import readPkgUp = require('read-pkg-up');
 
 const runtimeSupportsVmModules = typeof SourceTextModule === 'function';
 
-const cachedLookups = new Map<string, boolean>();
+const cachedFileLookups = new Map<string, boolean>();
+const cachedDirLookups = new Map<string, boolean>();
 
 export function clearCachedLookups(): void {
-  cachedLookups.clear();
+  cachedFileLookups.clear();
+  cachedDirLookups.clear();
 }
 
 export default function cachedShouldLoadAsEsm(path: Config.Path): boolean {
-  let cachedLookup = cachedLookups.get(path);
+  let cachedLookup = cachedFileLookups.get(path);
 
   if (cachedLookup === undefined) {
     cachedLookup = shouldLoadAsEsm(path);
-    cachedLookups.set(path, cachedLookup);
+    cachedFileLookups.set(path, cachedLookup);
   }
 
   return cachedLookup;
@@ -54,12 +56,23 @@ function shouldLoadAsEsm(path: Config.Path): boolean {
 
   const cwd = dirname(path);
 
+  const cachedLookup = cachedDirLookups.get(cwd);
+
+  if (cachedLookup !== undefined) {
+    return cachedLookup;
+  }
+
   // TODO: can we cache lookups somehow?
   const pkg = readPkgUp.sync({cwd, normalize: false});
 
   if (!pkg) {
+    cachedDirLookups.set(cwd, false);
     return false;
   }
 
-  return pkg.packageJson.type === 'module';
+  const isTypeModule = pkg.packageJson.type === 'module';
+
+  cachedDirLookups.set(cwd, isTypeModule);
+
+  return isTypeModule;
 }
