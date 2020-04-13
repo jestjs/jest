@@ -189,6 +189,36 @@ export default (): {visitor: Visitor} => {
         path.node._blockHoist = Infinity;
       }
     },
+    VariableDeclaration(path) {
+      const declarations = path.get('declarations');
+
+      if (declarations.length === 1) {
+        const declarationInit = declarations[0].get('init');
+
+        if (declarationInit.isCallExpression()) {
+          const callee = declarationInit.get('callee') as NodePath;
+          const callArguments = declarationInit.get('arguments') as Array<
+            NodePath
+          >;
+
+          if (
+            callee.isIdentifier() &&
+            callee.node.name === 'require' &&
+            callArguments.length === 1
+          ) {
+            const [argument] = callArguments;
+
+            if (
+              argument.isStringLiteral() &&
+              argument.node.value === '@jest/globals'
+            ) {
+              // @ts-ignore: private, magical property
+              path.node._blockHoist = Infinity;
+            }
+          }
+        }
+      }
+    },
   };
 
   return {visitor};
