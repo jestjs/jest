@@ -183,6 +183,12 @@ export default (): {visitor: Visitor} => {
         path.node._blockHoist = Infinity;
       }
     },
+    ImportDeclaration(path) {
+      if (path.node.source.value === '@jest/globals') {
+        // @ts-ignore: private, magical property
+        path.node._blockHoist = Infinity;
+      }
+    },
   };
 
   return {visitor};

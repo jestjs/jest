@@ -331,11 +331,6 @@ class Runtime {
       modulePath = manualMock;
     }
 
-    if (moduleName === '@jest/globals') {
-      // @ts-ignore: we don't care that it's not assignable to T
-      return this.getGlobalsForFile(from);
-    }
-
     if (moduleName && this._resolver.isCoreModule(moduleName)) {
       return this._requireCoreModule(moduleName);
     }
@@ -526,12 +521,18 @@ class Runtime {
     };
   }
 
-  requireModuleOrMock(from: Config.Path, moduleName: string): unknown {
+  requireModuleOrMock<T = unknown>(from: Config.Path, moduleName: string): T {
+    // this module is unmockable
+    if (moduleName === '@jest/globals') {
+      // @ts-ignore: we don't care that it's not assignable to T
+      return this.getGlobalsForFile(from);
+    }
+
     try {
       if (this._shouldMock(from, moduleName)) {
-        return this.requireMock(from, moduleName);
+        return this.requireMock<T>(from, moduleName);
       } else {
-        return this.requireModule(from, moduleName);
+        return this.requireModule<T>(from, moduleName);
       }
     } catch (e) {
       const moduleNotFound = Resolver.tryCastModuleNotFoundError(e);
