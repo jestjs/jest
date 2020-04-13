@@ -44,6 +44,7 @@ namespace TestRunner {
 class TestRunner {
   private _globalConfig: Config.GlobalConfig;
   private _context: JestTestRunnerContext;
+  readonly isSerial?: boolean;
 
   constructor(
     globalConfig: Config.GlobalConfig,
