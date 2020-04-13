@@ -14,7 +14,6 @@ test('should have correct import.meta', () => {
   expect(typeof require).toBe('undefined');
   expect(typeof jest).toBe('undefined');
   expect(import.meta).toEqual({
-    jest: expect.anything(),
     url: expect.any(String),
   });
   expect(

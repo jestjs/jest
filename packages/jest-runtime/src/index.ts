@@ -58,10 +58,6 @@ interface JestGlobalsValues extends Global.TestFrameworkGlobals {
   expect: JestGlobals.expect;
 }
 
-interface JestImportMeta extends ImportMeta {
-  jest: JestGlobals.jest;
-}
-
 type HasteMapOptions = {
   console?: Console;
   maxWorkers: number;
@@ -327,6 +323,13 @@ class Runtime {
     modulePath: Config.Path,
     query = '',
   ): Promise<VMModule> {
+    if (modulePath === '@jest/globals') {
+      // TODO: create a Synthetic Module for this. Will need to create a `jest` object without a `LocalModuleRequire`
+      throw new Error(
+        'Importing `@jest/globals` is not supported from ESM yet',
+      );
+    }
+
     const cacheKey = modulePath + query;
 
     if (!this._esmoduleRegistry.has(cacheKey)) {
@@ -361,10 +364,8 @@ class Runtime {
           this.loadEsmModule(
             this._resolveModule(referencingModule.identifier, specifier),
           ),
-        initializeImportMeta(meta: JestImportMeta) {
+        initializeImportMeta(meta: ImportMeta) {
           meta.url = pathToFileURL(modulePath).href;
-          // @ts-ignore TODO: fill this
-          meta.jest = {};
         },
       });
 
@@ -1486,6 +1487,7 @@ class Runtime {
   private getGlobalsForFile(from: Config.Path): JestGlobalsValues {
     const jest = this.jestObjectCaches.get(from);
 
+    // This won't exist in ESM
     invariant(jest, 'There should always be a Jest object already');
 
     return {
