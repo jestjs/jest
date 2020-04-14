@@ -205,11 +205,15 @@ export default class ScriptTransformer {
 
   private _instrumentFile(
     filename: Config.Path,
-    content: string,
+    input: TransformedSource,
     supportsDynamicImport: boolean,
     supportsStaticESM: boolean,
-  ): string {
-    const result = babelTransform(content, {
+    canMapToInput: boolean,
+  ): TransformedSource {
+    const inputCode = typeof input === 'string' ? input : input.code;
+    const inputMap = typeof input === 'string' ? null : input.map;
+
+    const result = babelTransform(inputCode, {
       auxiliaryCommentBefore: ' istanbul ignore next ',
       babelrc: false,
       caller: {
@@ -228,21 +232,19 @@ export default class ScriptTransformer {
             cwd: this._config.rootDir,
             exclude: [],
             extension: false,
+            inputSourceMap: inputMap,
             useInlineSourceMaps: false,
           },
         ],
       ],
+      sourceMaps: canMapToInput ? 'both' : false,
     });
 
-    if (result) {
-      const {code} = result;
-
-      if (code) {
-        return code;
-      }
+    if (result && result.code) {
+      return result as TransformResult;
     }
 
-    return content;
+    return input;
   }
 
   private _getRealPath(filepath: Config.Path): Config.Path {
@@ -287,10 +289,6 @@ export default class ScriptTransformer {
     const transformWillInstrument =
       shouldCallTransform && transform && transform.canInstrument;
 
-    // If we handle the coverage instrumentation, we should try to map code
-    // coverage against original source with any provided source map
-    const mapCoverage = instrument && !transformWillInstrument;
-
     if (code) {
       // This is broken: we return the code, and a path for the source map
       // directly from the cache. But, nothing ensures the source map actually
@@ -298,7 +296,7 @@ export default class ScriptTransformer {
       // two separate processes write concurrently to the same cache files.
       return {
         code,
-        mapCoverage,
+        mapCoverage: false,
         originalCode: content,
         sourceMapPath,
       };
@@ -333,9 +331,8 @@ export default class ScriptTransformer {
         //Could be a potential freeze here.
         //See: https://github.com/facebook/jest/pull/5177#discussion_r158883570
         const inlineSourceMap = sourcemapFromSource(transformed.code);
-
         if (inlineSourceMap) {
-          transformed.map = inlineSourceMap.toJSON();
+          transformed.map = inlineSourceMap.toObject();
         }
       } catch (e) {
         const transformPath = this._getTransformPath(filename);
@@ -347,22 +344,38 @@ export default class ScriptTransformer {
       }
     }
 
+    // Apply instrumentation to the code if necessary, keeping the instrumented code and new map
+    let map = transformed.map;
     if (!transformWillInstrument && instrument) {
-      code = this._instrumentFile(
+      /**
+       * We can map the original source code to the instrumented code ONLY if
+       * - the process of transforming the code produced a source map e.g. ts-jest
+       * - we did not transform the source code
+       *
+       * Otherwise we cannot make any statements about how the instrumented code corresponds to the original code,
+       * and we should NOT emit any source maps
+       *
+       */
+      const shouldEmitSourceMaps = (!!transform && !!map) || !transform;
+
+      const instrumented = this._instrumentFile(
         filename,
-        transformed.code,
+        transformed,
         supportsDynamicImport,
         supportsStaticESM,
+        shouldEmitSourceMaps,
       );
+
+      code =
+        typeof instrumented === 'string' ? instrumented : instrumented.code;
+      map = typeof instrumented === 'string' ? null : instrumented.map;
     } else {
       code = transformed.code;
     }
 
-    if (transformed.map) {
+    if (map) {
       const sourceMapContent =
-        typeof transformed.map === 'string'
-          ? transformed.map
-          : JSON.stringify(transformed.map);
+        typeof map === 'string' ? map : JSON.stringify(map);
       writeCacheFile(sourceMapPath, sourceMapContent);
     } else {
       sourceMapPath = null;
@@ -372,7 +385,7 @@ export default class ScriptTransformer {
 
     return {
       code,
-      mapCoverage,
+      mapCoverage: false,
       originalCode: content,
       sourceMapPath,
     };
@@ -396,7 +409,6 @@ export default class ScriptTransformer {
 
     let code = content;
     let sourceMapPath: string | null = null;
-    let mapCoverage = false;
 
     const willTransform =
       !isInternalModule &&
@@ -415,12 +427,11 @@ export default class ScriptTransformer {
 
         code = transformedSource.code;
         sourceMapPath = transformedSource.sourceMapPath;
-        mapCoverage = transformedSource.mapCoverage;
       }
 
       return {
         code,
-        mapCoverage,
+        mapCoverage: false,
         originalCode: content,
         sourceMapPath,
       };
