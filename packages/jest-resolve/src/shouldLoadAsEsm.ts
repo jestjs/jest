@@ -56,23 +56,23 @@ function shouldLoadAsEsm(path: Config.Path): boolean {
 
   const cwd = dirname(path);
 
-  const cachedLookup = cachedDirLookups.get(cwd);
+  let cachedLookup = cachedDirLookups.get(cwd);
 
-  if (cachedLookup !== undefined) {
-    return cachedLookup;
+  if (cachedLookup === undefined) {
+    cachedLookup = cachedPkgCheck(cwd);
+    cachedFileLookups.set(cwd, cachedLookup);
   }
 
+  return cachedLookup;
+}
+
+function cachedPkgCheck(cwd: Config.Path): boolean {
   // TODO: can we cache lookups somehow?
   const pkg = readPkgUp.sync({cwd, normalize: false});
 
   if (!pkg) {
-    cachedDirLookups.set(cwd, false);
     return false;
   }
 
-  const isTypeModule = pkg.packageJson.type === 'module';
-
-  cachedDirLookups.set(cwd, isTypeModule);
-
-  return isTypeModule;
+  return pkg.packageJson.type === 'module';
 }
