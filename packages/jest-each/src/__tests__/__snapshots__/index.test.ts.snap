@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`throws an error when not called with the right number of arguments 1`] = `"\`.each\` must only be called with an Array or Tagged Template Literal."`;
