@@ -9,7 +9,6 @@
 import * as matcherUtils from 'jest-matcher-utils';
 import type {
   AsyncExpectationResult,
-  AsyncFunction,
   Expect,
   ExpectationResult,
   MatcherState as JestMatcherState,
@@ -58,8 +57,9 @@ const isPromise = <T extends any>(obj: any): obj is PromiseLike<T> =>
   (typeof obj === 'object' || typeof obj === 'function') &&
   typeof obj.then === 'function';
 
-const isAsyncFunction = (fn: any): boolean =>
-  !!fn && fn.constructor && fn.constructor.name == 'AsyncFunction';
+function returnPromise(fn: Function): boolean {
+  return isPromise(fn());
+}
 
 const createToThrowErrorMatchingSnapshotMatcher = function (
   matcher: RawMatcherFn,
@@ -193,7 +193,7 @@ const makeRejectMatcher = (
   matcherName: string,
   matcher: RawMatcherFn,
   isNot: boolean,
-  actual: Promise<any> | AsyncFunction,
+  actual: Promise<any> | (() => any),
   outerErr: JestAssertionError,
 ): PromiseMatcherFn => (...args) => {
   const options = {
@@ -202,8 +202,12 @@ const makeRejectMatcher = (
   };
   let actualWrapper: Promise<any>;
 
-  if (!isPromise(actual)) {
-    if (!isAsyncFunction(actual)) {
+  if (isPromise(actual)) {
+    actualWrapper = actual;
+  } else {
+    if (typeof actual === 'function' && returnPromise(actual)) {
+      actualWrapper = actual();
+    } else {
       throw new JestAssertionError(
         matcherUtils.matcherErrorMessage(
           matcherUtils.matcherHint(matcherName, undefined, '', options),
@@ -217,11 +221,7 @@ const makeRejectMatcher = (
           ),
         ),
       );
-    } else {
-      actualWrapper = Promise.resolve().then(actual);
     }
-  } else {
-    actualWrapper = actual;
   }
 
   const innerErr = new JestAssertionError();

@@ -16,8 +16,6 @@ export type SyncExpectationResult = {
 
 export type AsyncExpectationResult = Promise<SyncExpectationResult>;
 
-export type AsyncFunction = (...args: Array<any>) => Promise<any>;
-
 export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
 export type RawMatcherFn = {
