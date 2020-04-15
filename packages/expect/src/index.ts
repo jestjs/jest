@@ -9,6 +9,7 @@
 import * as matcherUtils from 'jest-matcher-utils';
 import type {
   AsyncExpectationResult,
+  AsyncFunction,
   Expect,
   ExpectationResult,
   MatcherState as JestMatcherState,
@@ -56,6 +57,9 @@ const isPromise = <T extends any>(obj: any): obj is PromiseLike<T> =>
   !!obj &&
   (typeof obj === 'object' || typeof obj === 'function') &&
   typeof obj.then === 'function';
+
+const isAsyncFunction = (fn: any): boolean =>
+  !!fn && fn.constructor && fn.constructor.name == 'AsyncFunction';
 
 const createToThrowErrorMatchingSnapshotMatcher = function (
   matcher: RawMatcherFn,
@@ -189,31 +193,40 @@ const makeRejectMatcher = (
   matcherName: string,
   matcher: RawMatcherFn,
   isNot: boolean,
-  actual: Promise<any>,
+  actual: Promise<any> | AsyncFunction,
   outerErr: JestAssertionError,
 ): PromiseMatcherFn => (...args) => {
   const options = {
     isNot,
     promise: 'rejects',
   };
+  let actualWrapper: Promise<any>;
 
   if (!isPromise(actual)) {
-    throw new JestAssertionError(
-      matcherUtils.matcherErrorMessage(
-        matcherUtils.matcherHint(matcherName, undefined, '', options),
-        `${matcherUtils.RECEIVED_COLOR('received')} value must be a promise`,
-        matcherUtils.printWithType(
-          'Received',
-          actual,
-          matcherUtils.printReceived,
+    if (!isAsyncFunction(actual)) {
+      throw new JestAssertionError(
+        matcherUtils.matcherErrorMessage(
+          matcherUtils.matcherHint(matcherName, undefined, '', options),
+          `${matcherUtils.RECEIVED_COLOR(
+            'received',
+          )} value must be a promise or an async function`,
+          matcherUtils.printWithType(
+            'Received',
+            actual,
+            matcherUtils.printReceived,
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      actualWrapper = Promise.resolve().then(actual);
+    }
+  } else {
+    actualWrapper = actual;
   }
 
   const innerErr = new JestAssertionError();
 
-  return actual.then(
+  return actualWrapper.then(
     result => {
       outerErr.message =
         matcherUtils.matcherHint(matcherName, undefined, '', options) +
