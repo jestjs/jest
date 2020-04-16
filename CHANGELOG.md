@@ -14,6 +14,7 @@
 ### Chore & Maintenance
 
 - `[*]` Do not generate TypeScript declaration source maps ([#9822](https://github.com/facebook/jest/pull/9822))
+- `[*]` [**BREAKING**] TypeScript definitions requires a minimum of TypeScript v3.8 ([#9823](https://github.com/facebook/jest/pull/9823))
 
 ### Performance
 

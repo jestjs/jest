@@ -4,13 +4,6 @@
   "version": "25.3.0",
   "main": "build/jest.js",
   "types": "build/jest.d.ts",
-  "typesVersions": {
-    "<3.8": {
-      "build/*": [
-        "build/ts3.4/*"
-      ]
-    }
-  },
   "dependencies": {
     "@jest/core": "^25.3.0",
     "import-local": "^3.0.2",
