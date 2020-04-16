@@ -13,6 +13,8 @@
 
 ### Chore & Maintenance
 
+- `[*]` Do not generate TypeScript declaration source maps ([#9822](https://github.com/facebook/jest/pull/9822))
+
 ### Performance
 
 ## 25.3.0
