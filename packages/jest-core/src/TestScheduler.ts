@@ -175,7 +175,7 @@ export default class TestScheduler {
       showStatus: !runInBand,
     });
 
-    const testRunners = Object.create(null);
+    const testRunners: {[key: string]: TestRunner} = Object.create(null);
     contexts.forEach(({config}) => {
       if (!testRunners[config.runner]) {
         const Runner: typeof TestRunner = require(config.runner);

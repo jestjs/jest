@@ -2,11 +2,18 @@
 
 ### Features
 
+- `[jest-console]` Add code frame to `console.error` and `console.warn` ([#9741](https://github.com/facebook/jest/pull/9741))
+- `[@jest/globals]` New package so Jest's globals can be explicitly imported ([#9801](https://github.com/facebook/jest/pull/9801))
+
 ### Fixes
+
+- `[expect]` Restore support for passing functions to `toHaveLength` matcher ([#9796](https://github.com/facebook/jest/pull/9796))
+- `[jest-changed-files]` `--only-changed` should include staged files ([#9799](https://github.com/facebook/jest/pull/9799))
+- `[jest-each]` `each` will throw an error when called with too many arguments ([#9818](https://github.com/facebook/jest/pull/9818))
 
 ### Chore & Maintenance
 
-- `[jest-worker]` Correct `Worker` to `JestWorker` for `README.md` ([#9788](https://github.com/facebook/jest/pull/9788))
+- `[*]` Do not generate TypeScript declaration source maps ([#9822](https://github.com/facebook/jest/pull/9822))
 
 ### Performance
 

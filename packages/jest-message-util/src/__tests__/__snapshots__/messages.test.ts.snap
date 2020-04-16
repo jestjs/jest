@@ -7,6 +7,18 @@ exports[`.formatExecError() 1`] = `
 "
 `;
 
+exports[`codeframe 1`] = `
+"  <bold>● </>Test suite failed to run
+
+    Whoops!
+
+    </><red><bold>></></><gray> 1 | </><cyan>throw</> <cyan>new</> <yellow>Error</>(<green>\\"Whoops!\\"</>)<yellow>;</></>
+    </> <gray>   | </>      <red><bold>^</></></>
+
+      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
+"
+`;
+
 exports[`formatStackTrace should strip node internals 1`] = `
 "<bold><red>  <bold>● </><bold>Unix test</></>
 
@@ -23,6 +35,22 @@ exports[`formatStackTrace should strip node internals 1`] = `
 "
 `;
 
+exports[`no codeframe 1`] = `
+"  <bold>● </>Test suite failed to run
+
+    Whoops!
+
+      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
+"
+`;
+
+exports[`no stack 1`] = `
+"  <bold>● </>Test suite failed to run
+
+    Whoops!
+"
+`;
+
 exports[`retains message in babel code frame error 1`] = `
 "<bold><red>  <bold>● </><bold>Babel test</></>
 
@@ -30,7 +58,7 @@ exports[`retains message in babel code frame error 1`] = `
         packages/react/src/forwardRef.js: Unexpected token, expected , (20:10)
 <dim></>
 <dim>          </> <gray> 18 | </>        <cyan>false</><yellow>,</></>
-<dim>           <gray> 19 | </>        <green>'forwardRef requires a render function but received a \`memo\` '</> </>
+<dim>           <gray> 19 | </>        <green>'forwardRef requires a render function but received a \`memo\` '</></>
 <dim>          <red><bold>></><dim></><gray> 20 | </>          <green>'component. Instead of forwardRef(memo(...)), use '</> <yellow>+</></>
 <dim>           <gray>    | </>          <red><bold>^</><dim></></>
 <dim>           <gray> 21 | </>          <green>'memo(forwardRef(...)).'</><yellow>,</></>

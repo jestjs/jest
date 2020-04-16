@@ -9,9 +9,12 @@ import type {CoverageMapData} from 'istanbul-lib-coverage';
 
 export type DoneFn = (reason?: string | Error) => void;
 export type TestName = string;
-export type TestFn = (done?: DoneFn) => Promise<any> | void | undefined;
+export type TestFn = (
+  done?: DoneFn,
+) => Promise<void | undefined | unknown> | void | undefined;
 export type BlockFn = () => void;
 export type BlockName = string;
+export type HookFn = TestFn;
 
 export type Col = unknown;
 export type Row = Array<Col>;
@@ -66,8 +69,7 @@ export interface Describe extends DescribeBase {
   skip: DescribeBase;
 }
 
-// TODO: Maybe add `| Window` in the future?
-export interface GlobalAdditions {
+export interface TestFrameworkGlobals {
   it: ItConcurrent;
   test: ItConcurrent;
   fit: ItBase & {concurrent?: ItConcurrentBase};
@@ -76,6 +78,13 @@ export interface GlobalAdditions {
   describe: Describe;
   xdescribe: DescribeBase;
   fdescribe: DescribeBase;
+  beforeAll: HookFn;
+  beforeEach: HookFn;
+  afterEach: HookFn;
+  afterAll: HookFn;
+}
+
+export interface GlobalAdditions extends TestFrameworkGlobals {
   __coverage__: CoverageMapData;
   jasmine: Jasmine;
   fail: () => void;
@@ -84,6 +93,7 @@ export interface GlobalAdditions {
   spyOnProperty: () => void;
 }
 
+// TODO: Maybe add `| Window` in the future?
 // extends directly after https://github.com/sandersn/downlevel-dts/issues/33 is fixed
 type NodeGlobalWithoutAdditions = Omit<NodeJS.Global, keyof GlobalAdditions>;
 

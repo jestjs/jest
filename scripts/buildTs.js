@@ -23,6 +23,24 @@ const packagesWithTs = packages.filter(p =>
   fs.existsSync(path.resolve(p, 'tsconfig.json'))
 );
 
+packagesWithTs.forEach(pkgDir => {
+  const pkg = require(pkgDir + '/package.json');
+
+  if (!pkg.types) {
+    throw new Error(`Package ${pkg.name} is missing \`types\` field`);
+  }
+
+  if (!pkg.typesVersions) {
+    throw new Error(`Package ${pkg.name} is missing \`typesVersions\` field`);
+  }
+
+  if (pkg.main.replace(/\.js$/, '.d.ts') !== pkg.types) {
+    throw new Error(
+      `\`main\` and \`types\` field of ${pkg.name} does not match`
+    );
+  }
+});
+
 const args = [
   '--silent',
   'tsc',
@@ -50,24 +68,6 @@ try {
 const downlevelArgs = ['--silent', 'downlevel-dts', 'build', 'build/ts3.4'];
 
 console.log(chalk.inverse(' Downleveling TypeScript definition files '));
-
-packagesWithTs.forEach(pkgDir => {
-  const pkg = require(pkgDir + '/package.json');
-
-  if (!pkg.types) {
-    throw new Error(`Package ${pkg.name} is missing \`types\` field`);
-  }
-
-  if (!pkg.typesVersions) {
-    throw new Error(`Package ${pkg.name} is missing \`typesVersions\` field`);
-  }
-
-  if (pkg.main.replace(/\.js$/, '.d.ts') !== pkg.types) {
-    throw new Error(
-      `\`main\` and \`types\` field of ${pkg.name} does not match`
-    );
-  }
-});
 
 // we want to limit the number of processes we spawn
 const cpus = Math.max(1, os.cpus().length - 1);

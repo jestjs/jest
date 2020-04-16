@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`on node >=10 prints coverage 1`] = `
+"  console.log
+    42
+
+      at Object.log (__tests__/Thing.test.js:10:9)
+
+----------|---------|----------|---------|---------|-------------------
+File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+----------|---------|----------|---------|---------|-------------------
+All files |     100 |      100 |     100 |     100 |                   
+ Thing.js |     100 |      100 |     100 |     100 |                   
+ x.css    |     100 |      100 |     100 |     100 |                   
+----------|---------|----------|---------|---------|-------------------"
+`;

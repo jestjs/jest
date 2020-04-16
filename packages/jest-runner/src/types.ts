@@ -63,7 +63,6 @@ export type WatcherState = {
 };
 export interface TestWatcher extends EventEmitter {
   state: WatcherState;
-  new ({isWatchMode}: {isWatchMode: boolean}): TestWatcher;
   setState(state: WatcherState): void;
   isInterrupted(): boolean;
   isWatchMode(): boolean;
