@@ -5,6 +5,7 @@
 - `[expect]` Support `async function`s in `toThrow` ([#9817](https://github.com/facebook/jest/pull/9817))
 - `[jest-console]` Add code frame to `console.error` and `console.warn` ([#9741](https://github.com/facebook/jest/pull/9741))
 - `[@jest/globals]` New package so Jest's globals can be explicitly imported ([#9801](https://github.com/facebook/jest/pull/9801))
+- `[jest-runtime, jest-jasmine2, jest-circus]` Experimental, limited ECMAScript Modules support ([#9772](https://github.com/facebook/jest/pull/9772))
 
 ### Fixes
 
