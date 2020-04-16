@@ -88,8 +88,15 @@ const eventHandler: Circus.EventHandler = (
       break;
     }
     case 'add_test': {
-      const {currentDescribeBlock} = state;
+      const {currentDescribeBlock, currentlyRunningTest} = state;
       const {asyncError, fn, mode, testName: name, timeout} = event;
+
+      if (currentlyRunningTest) {
+        throw new Error(
+          `Tests cannot be nested. Test \`${name}\` cannot run because it is nested within \`${currentlyRunningTest.name}\`.`,
+        );
+      }
+
       const test = makeTest(
         fn,
         mode,
