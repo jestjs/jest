@@ -57,10 +57,6 @@ const isPromise = <T extends any>(obj: any): obj is PromiseLike<T> =>
   (typeof obj === 'object' || typeof obj === 'function') &&
   typeof obj.then === 'function';
 
-function returnPromise(fn: Function): boolean {
-  return isPromise(fn());
-}
-
 const createToThrowErrorMatchingSnapshotMatcher = function (
   matcher: RawMatcherFn,
 ) {
@@ -193,35 +189,31 @@ const makeRejectMatcher = (
   matcherName: string,
   matcher: RawMatcherFn,
   isNot: boolean,
-  actual: Promise<any> | (() => any),
+  actual: Promise<any> | (() => Promise<any>),
   outerErr: JestAssertionError,
 ): PromiseMatcherFn => (...args) => {
   const options = {
     isNot,
     promise: 'rejects',
   };
-  let actualWrapper: Promise<any>;
 
-  if (isPromise(actual)) {
-    actualWrapper = actual;
-  } else {
-    if (typeof actual === 'function' && returnPromise(actual)) {
-      actualWrapper = actual();
-    } else {
-      throw new JestAssertionError(
-        matcherUtils.matcherErrorMessage(
-          matcherUtils.matcherHint(matcherName, undefined, '', options),
-          `${matcherUtils.RECEIVED_COLOR(
-            'received',
-          )} value must be a promise or an async function`,
-          matcherUtils.printWithType(
-            'Received',
-            actual,
-            matcherUtils.printReceived,
-          ),
+  const actualWrapper: Promise<any> =
+    typeof actual === 'function' ? actual() : actual;
+
+  if (!isPromise(actualWrapper)) {
+    throw new JestAssertionError(
+      matcherUtils.matcherErrorMessage(
+        matcherUtils.matcherHint(matcherName, undefined, '', options),
+        `${matcherUtils.RECEIVED_COLOR(
+          'received',
+        )} value must be a promise or a function returning a promise`,
+        matcherUtils.printWithType(
+          'Received',
+          actual,
+          matcherUtils.printReceived,
         ),
-      );
-    }
+      ),
+    );
   }
 
   const innerErr = new JestAssertionError();
