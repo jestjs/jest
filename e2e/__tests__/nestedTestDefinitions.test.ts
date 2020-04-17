@@ -55,17 +55,3 @@ test('print correct message when nesting describe inside it', () => {
     'Cannot nest a describe inside a test. Describe block "inner describe" cannot run because it is nested within "test".',
   );
 });
-
-test('print correct message when nesting a hook inside it', () => {
-  if (!isJestCircusRun()) {
-    return;
-  }
-
-  const result = runJest('nested-test-definitions', ['nestedHookInTest']);
-
-  expect(result.exitCode).toBe(1);
-
-  expect(result.stderr).toContain(
-    'Hooks cannot be defined inside tests. Hook of type "beforeEach" is nested within "test".',
-  );
-});
