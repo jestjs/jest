@@ -7,7 +7,7 @@ FAIL __tests__/nestedTestWithinDescribe.js
 
   ● in describe › outer test
 
-    Tests cannot be nested. Test \`inner test\` cannot run because it is nested within \`outer test\`.
+    Tests cannot be nested. Test "inner test" cannot run because it is nested within "outer test".
 
       14 |     expect(getTruthy()).toBeTruthy();
       15 | 
@@ -26,7 +26,7 @@ FAIL __tests__/nestedTestOutsideDescribe.js
 
   ● outer test
 
-    Tests cannot be nested. Test \`inner test\` cannot run because it is nested within \`outer test\`.
+    Tests cannot be nested. Test "inner test" cannot run because it is nested within "outer test".
 
       13 |   expect(getTruthy()).toBeTruthy();
       14 | 
