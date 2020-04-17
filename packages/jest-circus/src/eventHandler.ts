@@ -36,7 +36,14 @@ const eventHandler: Circus.EventHandler = (
     }
     case 'start_describe_definition': {
       const {blockName, mode} = event;
-      const {currentDescribeBlock} = state;
+      const {currentDescribeBlock, currentlyRunningTest} = state;
+
+      if (currentlyRunningTest) {
+        throw new Error(
+          `Cannot nest a describe inside a test. Describe block "${blockName}" cannot run because it is nested within "${currentlyRunningTest.name}".`,
+        );
+      }
+
       const describeBlock = makeDescribe(blockName, currentDescribeBlock, mode);
       currentDescribeBlock.children.push(describeBlock);
       state.currentDescribeBlock = describeBlock;
@@ -81,8 +88,15 @@ const eventHandler: Circus.EventHandler = (
       break;
     }
     case 'add_hook': {
-      const {currentDescribeBlock} = state;
+      const {currentDescribeBlock, currentlyRunningTest} = state;
       const {asyncError, fn, hookType: type, timeout} = event;
+
+      if (currentlyRunningTest) {
+        throw new Error(
+          `Hooks cannot be defined inside tests. Hook of type "${type}" is nested within "${currentlyRunningTest.name}".`,
+        );
+      }
+
       const parent = currentDescribeBlock;
       currentDescribeBlock.hooks.push({asyncError, fn, parent, timeout, type});
       break;
