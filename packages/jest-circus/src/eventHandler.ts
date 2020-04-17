@@ -93,7 +93,7 @@ const eventHandler: Circus.EventHandler = (
 
       if (currentlyRunningTest) {
         throw new Error(
-          `Tests cannot be nested. Test \`${name}\` cannot run because it is nested within \`${currentlyRunningTest.name}\`.`,
+          `Tests cannot be nested. Test "${name}" cannot run because it is nested within "${currentlyRunningTest.name}".`,
         );
       }
 
