@@ -88,8 +88,15 @@ const eventHandler: Circus.EventHandler = (
       break;
     }
     case 'add_hook': {
-      const {currentDescribeBlock, hasStarted} = state;
+      const {currentDescribeBlock, currentlyRunningTest, hasStarted} = state;
       const {asyncError, fn, hookType: type, timeout} = event;
+
+      if (currentlyRunningTest) {
+        throw new Error(
+          `Hooks cannot be defined inside tests. Hook of type "${type}" is nested within "${currentlyRunningTest.name}".`,
+        );
+      }
+
       const parent = currentDescribeBlock;
 
       if (hasStarted) {
