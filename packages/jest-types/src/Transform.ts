@@ -9,6 +9,5 @@
 export type TransformResult = {
   code: string;
   originalCode: string;
-  mapCoverage: boolean;
   sourceMapPath: string | null;
 };

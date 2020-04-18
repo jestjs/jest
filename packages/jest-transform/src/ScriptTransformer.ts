@@ -296,7 +296,6 @@ export default class ScriptTransformer {
       // two separate processes write concurrently to the same cache files.
       return {
         code,
-        mapCoverage: false,
         originalCode: content,
         sourceMapPath,
       };
@@ -385,7 +384,6 @@ export default class ScriptTransformer {
 
     return {
       code,
-      mapCoverage: false,
       originalCode: content,
       sourceMapPath,
     };
@@ -431,7 +429,6 @@ export default class ScriptTransformer {
 
       return {
         code,
-        mapCoverage: false,
         originalCode: content,
         sourceMapPath,
       };

@@ -215,13 +215,6 @@ export default class CoverageReporter extends BaseReporter {
               ]);
             } else {
               this._coverageMap.addFileCoverage(result.coverage);
-
-              if (result.sourceMapPath) {
-                this._sourceMapStore.registerURL(
-                  filename,
-                  result.sourceMapPath,
-                );
-              }
             }
           }
         } catch (error) {
