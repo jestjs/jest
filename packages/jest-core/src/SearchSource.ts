@@ -273,10 +273,11 @@ export default class SearchSource {
 
       paths = paths
         .map(p => {
-          const releativePath = path
+          const relativePath = path
             .resolve(this._context.config.cwd, p)
             .replace(/\\/g, '\\\\');
-          return micromatch(allFiles, releativePath, options)[0];
+          const match = micromatch(allFiles, relativePath, options);
+          return match[0];
         })
         .filter(Boolean);
     }
