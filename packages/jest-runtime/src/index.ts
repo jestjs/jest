@@ -357,7 +357,7 @@ class Runtime {
       const module = new SourceTextModule(transformedFile.code, {
         context,
         identifier: modulePath,
-        importModuleDynamically: async (
+        importModuleDynamically: (
           specifier: string,
           referencingModule: VMModule,
         ) => {
