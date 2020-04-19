@@ -77,3 +77,11 @@ test('import from mjs and import(mjs) should share caches', async () => {
   expect(staticImportedStateful()).toBe(5);
   expect(staticImportedStateful()).toBe(6);
 });
+
+test('handle unlinked dynamic imports', async () => {
+  const {double: deepDouble} = await import('../dynamicImport');
+
+  expect(deepDouble).toBe(double);
+
+  expect(deepDouble(4)).toBe(8);
+});

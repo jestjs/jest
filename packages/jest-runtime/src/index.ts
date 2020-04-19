@@ -384,6 +384,14 @@ class Runtime {
       });
 
       this._esmoduleRegistry.set(cacheKey, module);
+
+      await module.link((specifier: string, referencingModule: VMModule) =>
+        this.loadEsmModule(
+          this._resolveModule(referencingModule.identifier, specifier),
+        ),
+      );
+
+      await module.evaluate();
     }
 
     const module = this._esmoduleRegistry.get(cacheKey);
@@ -404,13 +412,7 @@ class Runtime {
 
     const modulePath = this._resolveModule(from, moduleName);
 
-    const module = await this.loadEsmModule(modulePath);
-    await module.link((specifier: string, referencingModule: VMModule) =>
-      this.loadEsmModule(
-        this._resolveModule(referencingModule.identifier, specifier),
-      ),
-    );
-    await module.evaluate();
+    return this.loadEsmModule(modulePath);
   }
 
   private async loadCjsAsEsm(
