@@ -19,7 +19,6 @@
   "dependencies": {
     "@jest/console": "^25.3.0",
     "@jest/environment": "^25.3.0",
-    "@jest/globals": "^25.3.0",
     "@jest/source-map": "^25.2.6",
     "@jest/test-result": "^25.3.0",
     "@jest/transform": "^25.3.0",
