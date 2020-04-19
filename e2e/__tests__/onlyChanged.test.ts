@@ -7,6 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
+import which = require('which');
 import runJest from '../runJest';
 import {cleanup, run, writeFiles} from '../Utils';
 
@@ -16,6 +17,14 @@ const HG = 'hg --config ui.username=jest_test';
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
+
+// Certain environments (like CITGM and GH Actions) do not come with mercurial installed
+const hgIsInstalled = which.sync('hg', {nothrow: true}) !== null;
+const testIfHg = hgIsInstalled ? test : test.skip;
+
+if (!hgIsInstalled) {
+  console.warn('Mercurial (hg) is not installed - skipping some tests');
+}
 
 test('run for "onlyChanged" and "changedSince"', () => {
   writeFiles(DIR, {
@@ -252,7 +261,7 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 });
 
-test('gets changed files for hg', async () => {
+testIfHg('gets changed files for hg', async () => {
   if (process.env.CI) {
     // Circle and Travis have very old version of hg (v2, and current
     // version is v4.2) and its API changed since then and not compatible
