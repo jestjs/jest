@@ -12,6 +12,7 @@
 - `[jest-circus]` Throw on nested test definitions ([#9828](https://github.com/facebook/jest/pull/9828))
 - `[jest-changed-files]` `--only-changed` should include staged files ([#9799](https://github.com/facebook/jest/pull/9799))
 - `[jest-each]` `each` will throw an error when called with too many arguments ([#9818](https://github.com/facebook/jest/pull/9818))
+- `[jest-runner]` Don't print warning to stdout when using `--json` ([#9843](https://github.com/facebook/jest/pull/9843))
 
 ### Chore & Maintenance
 
