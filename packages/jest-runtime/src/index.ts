@@ -1238,6 +1238,8 @@ class Runtime {
     resolve.paths = (moduleName: string) =>
       this._requireResolvePaths(from.filename, moduleName);
 
+    const moduleRegistry = this._moduleRegistry;
+    const esmoduleRegistry = this._esmoduleRegistry;
     const moduleRequire = (options && options.isInternalModule
       ? (moduleName: string) =>
           this.requireInternalModule(from.filename, moduleName)
@@ -1245,11 +1247,39 @@ class Runtime {
           this,
           from.filename,
         )) as LocalModuleRequire;
-    moduleRequire.cache = Object.create(null);
     moduleRequire.extensions = Object.create(null);
     moduleRequire.requireActual = this.requireActual.bind(this, from.filename);
     moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
     moduleRequire.resolve = resolve;
+
+    Object.defineProperty(moduleRequire, 'cache', {
+      enumerable: true,
+      get() {
+        const cache: {[key: string]: any} = {};
+        const notPermittedMethod = () => {
+          console.warn('`require.cache` modification is not permitted');
+          return true;
+        };
+        moduleRegistry.forEach((value, key) => {
+          cache[key] = value;
+        });
+        esmoduleRegistry.forEach((value, key) => {
+          cache[key] = value;
+        });
+
+        return new Proxy(cache, {
+          defineProperty: notPermittedMethod,
+          deleteProperty: notPermittedMethod,
+          get(target, key) {
+            return typeof key === 'string' ? target[key] : undefined;
+          },
+          has(target, key) {
+            return typeof key === 'string' && !!target[key];
+          },
+          set: notPermittedMethod,
+        });
+      },
+    });
 
     Object.defineProperty(moduleRequire, 'main', {
       enumerable: true,
