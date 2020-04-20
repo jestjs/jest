@@ -5,8 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-test('throw when directly imported', () => {
-  expect(() => require('../')).toThrowError(
-    'Do not import `@jest/globals` outside of the Jest test environment',
-  );
-});
+let num = 0;
+
+module.exports = function inc() {
+  num++;
+  return num;
+};

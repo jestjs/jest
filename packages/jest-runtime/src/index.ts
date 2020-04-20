@@ -19,7 +19,7 @@ import {
   compileFunction,
 } from 'vm';
 import * as nativeModule from 'module';
-import type {Config, Global} from '@jest/types';
+import type {Config} from '@jest/types';
 import type {
   Jest,
   JestEnvironment,
@@ -27,7 +27,6 @@ import type {
   Module,
   ModuleWrapper,
 } from '@jest/environment';
-import type * as JestGlobals from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {createDirectory, deepCyclicCopy} from 'jest-util';
@@ -52,11 +51,6 @@ import HasteMap = require('jest-haste-map');
 import Resolver = require('jest-resolve');
 import Snapshot = require('jest-snapshot');
 import stripBOM = require('strip-bom');
-
-interface JestGlobalsValues extends Global.TestFrameworkGlobals {
-  jest: JestGlobals.jest;
-  expect: JestGlobals.expect;
-}
 
 type HasteMapOptions = {
   console?: Console;
@@ -152,7 +146,6 @@ class Runtime {
   private _unmockList: RegExp | undefined;
   private _virtualMocks: BooleanObject;
   private _moduleImplementation?: typeof nativeModule.Module;
-  private jestObjectCaches: Map<string, Jest>;
 
   constructor(
     config: Config.ProjectConfig,
@@ -190,7 +183,6 @@ class Runtime {
     this._sourceMapRegistry = Object.create(null);
     this._fileTransforms = new Map();
     this._virtualMocks = Object.create(null);
-    this.jestObjectCaches = new Map();
 
     this._mockMetaDataCache = Object.create(null);
     this._shouldMockModuleCache = Object.create(null);
@@ -360,16 +352,38 @@ class Runtime {
         importModuleDynamically: (
           specifier: string,
           referencingModule: VMModule,
-        ) =>
-          this.loadEsmModule(
-            this._resolveModule(referencingModule.identifier, specifier),
-          ),
+        ) => {
+          const resolved = this._resolveModule(
+            referencingModule.identifier,
+            specifier,
+          );
+          if (
+            this._resolver.isCoreModule(resolved) ||
+            this.unstable_shouldLoadAsEsm(resolved)
+          ) {
+            return this.loadEsmModule(resolved);
+          }
+
+          return this.loadCjsAsEsm(
+            referencingModule.identifier,
+            resolved,
+            context,
+          );
+        },
         initializeImportMeta(meta: ImportMeta) {
           meta.url = pathToFileURL(modulePath).href;
         },
       });
 
       this._esmoduleRegistry.set(cacheKey, module);
+
+      await module.link((specifier: string, referencingModule: VMModule) =>
+        this.loadEsmModule(
+          this._resolveModule(referencingModule.identifier, specifier),
+        ),
+      );
+
+      await module.evaluate();
     }
 
     const module = this._esmoduleRegistry.get(cacheKey);
@@ -390,13 +404,33 @@ class Runtime {
 
     const modulePath = this._resolveModule(from, moduleName);
 
-    const module = await this.loadEsmModule(modulePath);
-    await module.link((specifier: string, referencingModule: VMModule) =>
-      this.loadEsmModule(
-        this._resolveModule(referencingModule.identifier, specifier),
-      ),
+    return this.loadEsmModule(modulePath);
+  }
+
+  private async loadCjsAsEsm(
+    from: Config.Path,
+    modulePath: Config.Path,
+    context: VMContext,
+  ) {
+    // CJS loaded via `import` should share cache with other CJS: https://github.com/nodejs/modules/issues/503
+    const cjs = this.requireModuleOrMock(from, modulePath);
+
+    const module = new SyntheticModule(
+      ['default'],
+      function () {
+        // @ts-ignore: TS doesn't know what `this` is
+        this.setExport('default', cjs);
+      },
+      {context, identifier: modulePath},
     );
+
+    await module.link(() => {
+      throw new Error('This should never happen');
+    });
+
     await module.evaluate();
+
+    return module;
   }
 
   requireModule<T = unknown>(
@@ -426,11 +460,6 @@ class Runtime {
       this._explicitShouldMock[moduleID] !== false
     ) {
       modulePath = manualMock;
-    }
-
-    if (moduleName === '@jest/globals') {
-      // @ts-ignore: we don't care that it's not assignable to T
-      return this.getGlobalsForFile(from);
     }
 
     if (moduleName && this._resolver.isCoreModule(moduleName)) {
@@ -955,13 +984,6 @@ class Runtime {
       return;
     }
 
-    const jestObject = this._createJestObjectFor(
-      filename,
-      localModule.require as LocalModuleRequire,
-    );
-
-    this.jestObjectCaches.set(filename, jestObject);
-
     try {
       compiledFunction.call(
         localModule.exports,
@@ -971,7 +993,10 @@ class Runtime {
         dirname, // __dirname
         filename, // __filename
         this._environment.global, // global object
-        jestObject, // jest object
+        this._createJestObjectFor(
+          filename,
+          localModule.require as LocalModuleRequire,
+        ), // jest object
         ...this._config.extraGlobals.map(globalVariable => {
           if (this._environment.global[globalVariable]) {
             return this._environment.global[globalVariable];
@@ -1508,30 +1533,6 @@ class Runtime {
     }
 
     throw e;
-  }
-
-  private getGlobalsForFile(from: Config.Path): JestGlobalsValues {
-    const jest = this.jestObjectCaches.get(from);
-
-    // This won't exist in ESM
-    invariant(jest, 'There should always be a Jest object already');
-
-    return {
-      afterAll: this._environment.global.afterAll,
-      afterEach: this._environment.global.afterEach,
-      beforeAll: this._environment.global.beforeAll,
-      beforeEach: this._environment.global.beforeEach,
-      describe: this._environment.global.describe,
-      expect: this._environment.global.expect,
-      fdescribe: this._environment.global.fdescribe,
-      fit: this._environment.global.fit,
-      it: this._environment.global.it,
-      jest,
-      test: this._environment.global.test,
-      xdescribe: this._environment.global.xdescribe,
-      xit: this._environment.global.xit,
-      xtest: this._environment.global.xtest,
-    };
   }
 }
 

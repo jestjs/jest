@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import runJest from '../runJest';
+let num = 0;
 
-test('imported globals', () => {
-  const result = runJest('imported-globals');
-  expect(result.exitCode).toBe(0);
-});
+export default function inc() {
+  num++;
+  return num;
+}
