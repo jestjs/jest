@@ -6,15 +6,17 @@
  *
  */
 
-import type {NodePath, Visitor} from '@babel/traverse';
+import type {NodePath} from '@babel/traverse';
 import {
   Expression,
   Identifier,
   Node,
+  Program,
   callExpression,
   identifier,
 } from '@babel/types';
 import {statement} from '@babel/template';
+import type {PluginObj} from '@babel/core';
 
 const JEST_GLOBAL_NAME = 'jest';
 const JEST_GLOBALS_MODULE_NAME = '@jest/globals';
@@ -235,37 +237,33 @@ const getJestIdentifierIfHoistable = <T extends Node>(
   return functionLooksHoistable ? jestObject : null;
 };
 
-export default (): {
-  visitor: Visitor;
-} => ({
-  visitor: {
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    Program(program) {
-      const jestObjGetterName = program.scope.generateUid('getJestObj');
-      program.unshiftContainer('body', [
-        createJestObjectGetter({
-          GETTER_NAME: jestObjGetterName,
-          JEST_GLOBALS_MODULE_JEST_EXPORT_NAME,
-          JEST_GLOBALS_MODULE_NAME,
-        }),
-      ]);
-
-      program.traverse({
-        ExpressionStatement(stmt) {
-          const jestIdentifier = getJestIdentifierIfHoistable(
-            stmt.get<'expression'>('expression'),
+export default (): PluginObj => ({
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  post({path: program}: {path: NodePath<Program>}) {
+    const jestObjGetterName = program.scope.generateUid('getJestObj');
+    program.unshiftContainer('body', [
+      createJestObjectGetter({
+        GETTER_NAME: jestObjGetterName,
+        JEST_GLOBALS_MODULE_JEST_EXPORT_NAME,
+        JEST_GLOBALS_MODULE_NAME,
+      }),
+    ]);
+    program.traverse({
+      ExpressionStatement(stmt) {
+        const jestIdentifier = getJestIdentifierIfHoistable(
+          stmt.get<'expression'>('expression'),
+        );
+        if (jestIdentifier) {
+          jestIdentifier.replaceWith(
+            callExpression(identifier(jestObjGetterName), []),
           );
-          if (jestIdentifier) {
-            jestIdentifier.replaceWith(
-              callExpression(identifier(jestObjGetterName), []),
-            );
-            const {node: mockStmt} = stmt;
+          const {node: mockStmt} = stmt;
 
-            stmt.remove();
-            program.unshiftContainer('body', [mockStmt]);
-          }
-        },
-      });
-    },
+          stmt.remove();
+          program.unshiftContainer('body', [mockStmt]);
+        }
+      },
+    });
   },
+  visitor: {},
 });
