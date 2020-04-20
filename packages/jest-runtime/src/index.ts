@@ -1294,7 +1294,7 @@ class Runtime {
         },
         has: (_target, key) =>
           typeof key === 'string' && this._moduleRegistry.has(key),
-        ownKeys: () => [...this._moduleRegistry.keys()],
+        ownKeys: () => Array.from(this._moduleRegistry.keys()),
         set: notPermittedMethod,
       });
     })();
