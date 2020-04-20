@@ -80,6 +80,8 @@ type ResolveOptions = Parameters<typeof require.resolve>[1];
 type BooleanObject = Record<string, boolean>;
 type CacheFS = {[path: string]: string};
 
+type RequireCache = {[key: string]: Module};
+
 namespace Runtime {
   export type Context = JestContext;
   // ditch this export when moving to esm - for now we need it for to avoid faulty type elision
@@ -1270,11 +1272,25 @@ class Runtime {
           this,
           from.filename,
         )) as LocalModuleRequire;
-    moduleRequire.cache = Object.create(null);
     moduleRequire.extensions = Object.create(null);
     moduleRequire.requireActual = this.requireActual.bind(this, from.filename);
     moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
     moduleRequire.resolve = resolve;
+    moduleRequire.cache = (() => {
+      const notPermittedMethod = () => {
+        console.warn('`require.cache` modification is not permitted');
+        return true;
+      };
+      return new Proxy<RequireCache>(Object.create(null), {
+        defineProperty: notPermittedMethod,
+        deleteProperty: notPermittedMethod,
+        get: (_target, key) =>
+          typeof key === 'string' ? this._moduleRegistry.get(key) : undefined,
+        has: (_target, key) =>
+          typeof key === 'string' && this._moduleRegistry.has(key),
+        set: notPermittedMethod,
+      });
+    })();
 
     Object.defineProperty(moduleRequire, 'main', {
       enumerable: true,
