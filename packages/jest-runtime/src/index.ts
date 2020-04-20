@@ -378,17 +378,13 @@ class Runtime {
     return module;
   }
 
-  private async linkModules(specifier: string, referencingModule: VMModule) {
+  private linkModules(specifier: string, referencingModule: VMModule) {
     if (specifier === '@jest/globals') {
-      if (!this._esmoduleRegistry.has(specifier)) {
-        const module = await this.getGlobalsForEsm(
-          referencingModule.identifier,
-          referencingModule.context,
-        );
-        this._esmoduleRegistry.set(specifier, module);
-      }
-
-      return this._esmoduleRegistry.get(specifier);
+      // should we cache this?
+      return this.getGlobalsForEsm(
+        referencingModule.identifier,
+        referencingModule.context,
+      );
     }
 
     const resolved = this._resolveModule(
@@ -1593,7 +1589,7 @@ class Runtime {
           this.setExport(key, value);
         });
       },
-      {context, identifier: from},
+      {context, identifier: '@jest/globals'},
     );
 
     await module.link(() => {
