@@ -11,7 +11,6 @@ import {
   Expression,
   Identifier,
   Node,
-  Program,
   callExpression,
   identifier,
 } from '@babel/types';
@@ -236,11 +235,11 @@ const getJestIdentifierIfHoistable = <T extends Node>(
   return functionLooksHoistable ? jestObject : null;
 };
 
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export default (): {
   visitor: Visitor;
 } => ({
   visitor: {
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     Program(program) {
       const jestObjGetterName = program.scope.generateUid('getJestObj');
       program.unshiftContainer('body', [
@@ -270,4 +269,3 @@ export default (): {
     },
   },
 });
-/* eslint-enable @typescript-eslint/explicit-module-boundary-types */
