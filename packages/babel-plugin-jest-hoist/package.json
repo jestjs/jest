@@ -22,11 +22,9 @@
   "dependencies": {
     "@babel/template": "^7.3.3",
     "@babel/types": "^7.3.3",
-    "@types/babel__traverse": "^7.0.6",
-    "lodash.sortby": "^4.7.0"
+    "@types/babel__traverse": "^7.0.6"
   },
   "devDependencies": {
-    "@types/lodash.sortby": "^4.7.6",
     "@types/node": "*"
   },
   "publishConfig": {
