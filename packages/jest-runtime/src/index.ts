@@ -1265,7 +1265,6 @@ class Runtime {
     resolve.paths = (moduleName: string) =>
       this._requireResolvePaths(from.filename, moduleName);
 
-    const moduleRegistry = this._moduleRegistry;
     const moduleRequire = (options && options.isInternalModule
       ? (moduleName: string) =>
           this.requireInternalModule(from.filename, moduleName)
@@ -1277,7 +1276,8 @@ class Runtime {
     moduleRequire.requireActual = this.requireActual.bind(this, from.filename);
     moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
     moduleRequire.resolve = resolve;
-    moduleRequire.cache = (target => {
+    moduleRequire.cache = ((target: RequireCache) => {
+      const moduleRegistry = this._moduleRegistry;
       const notPermittedMethod = () => {
         console.warn('`require.cache` modification is not permitted');
         return true;
@@ -1285,15 +1285,19 @@ class Runtime {
       return new Proxy(target, {
         defineProperty: notPermittedMethod,
         deleteProperty: notPermittedMethod,
-        get(_target, key) {
-          return typeof key === 'string' ? moduleRegistry.get(key) : undefined;
+        get(target, key) {
+          return typeof key === 'string'
+            ? moduleRegistry.get(key) || target[key]
+            : undefined;
         },
-        has(_target, key) {
-          return typeof key === 'string' && moduleRegistry.has(key);
+        has(target, key) {
+          return typeof key === 'string'
+            ? moduleRegistry.has(key) || !!target[key]
+            : false;
         },
         set: notPermittedMethod,
       });
-    })(Object.create(null)) as RequireCache;
+    })(Object.create(null));
 
     Object.defineProperty(moduleRequire, 'main', {
       enumerable: true,
