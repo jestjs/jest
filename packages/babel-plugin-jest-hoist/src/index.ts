@@ -241,9 +241,9 @@ export default (): {
   visitor: Visitor;
 } => ({
   visitor: {
-    Program(path) {
-      const jestObjGetterName = path.scope.generateUid('getJestObj');
-      path.unshiftContainer('body', [
+    Program(program) {
+      const jestObjGetterName = program.scope.generateUid('getJestObj');
+      program.unshiftContainer('body', [
         createJestObjectGetter({
           GETTER_NAME: jestObjGetterName,
           JEST_GLOBALS_MODULE_JEST_EXPORT_NAME,
@@ -251,21 +251,18 @@ export default (): {
         }),
       ]);
 
-      path.traverse({
-        ExpressionStatement(path) {
+      program.traverse({
+        ExpressionStatement(stmt) {
           const jestIdentifier = getJestIdentifierIfHoistable(
-            path.get<'expression'>('expression'),
+            stmt.get<'expression'>('expression'),
           );
           if (jestIdentifier) {
             jestIdentifier.replaceWith(
               callExpression(identifier(jestObjGetterName), []),
             );
-            const {node: mockStmt} = path;
+            const {node: mockStmt} = stmt;
 
-            path.remove();
-            const program = path.scope.getProgramParent().path as NodePath<
-              Program
-            >;
+            stmt.remove();
             program.unshiftContainer('body', [mockStmt]);
           }
         },
