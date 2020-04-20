@@ -7,11 +7,11 @@
 
 import {dirname, extname} from 'path';
 // @ts-ignore: experimental, not added to the types
-import {SourceTextModule} from 'vm';
+import {SyntheticModule} from 'vm';
 import type {Config} from '@jest/types';
 import readPkgUp = require('read-pkg-up');
 
-const runtimeSupportsVmModules = typeof SourceTextModule === 'function';
+const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
 const cachedFileLookups = new Map<string, boolean>();
 const cachedDirLookups = new Map<string, boolean>();

@@ -10,6 +10,7 @@ import {createRequire} from 'module';
 import {dirname, resolve} from 'path';
 import {fileURLToPath} from 'url';
 import staticImportedStateful from '../stateful.mjs';
+import staticImportedStatefulFromCjs from '../fromCjs.mjs';
 import {double} from '../index';
 
 test('should have correct import.meta', () => {
@@ -76,6 +77,10 @@ test('import from mjs and import(mjs) should share caches', async () => {
   expect(importedStateful()).toBe(4);
   expect(staticImportedStateful()).toBe(5);
   expect(staticImportedStateful()).toBe(6);
+});
+
+test('import cjs via import statement', () => {
+  expect(staticImportedStatefulFromCjs(4)).toBe(2);
 });
 
 test('handle unlinked dynamic imports', async () => {

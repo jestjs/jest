@@ -118,7 +118,7 @@ const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
 
 type RunScriptEvalResult = {[EVAL_RESULT_VARIABLE]: ModuleWrapper};
 
-const runtimeSupportsVmModules = typeof SourceTextModule === 'function';
+const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
 /* eslint-disable-next-line no-redeclare */
 class Runtime {
@@ -359,27 +359,7 @@ class Runtime {
       const module = new SourceTextModule(transformedFile.code, {
         context,
         identifier: modulePath,
-        importModuleDynamically: (
-          specifier: string,
-          referencingModule: VMModule,
-        ) => {
-          const resolved = this._resolveModule(
-            referencingModule.identifier,
-            specifier,
-          );
-          if (
-            this._resolver.isCoreModule(resolved) ||
-            this.unstable_shouldLoadAsEsm(resolved)
-          ) {
-            return this.loadEsmModule(resolved);
-          }
-
-          return this.loadCjsAsEsm(
-            referencingModule.identifier,
-            resolved,
-            context,
-          );
-        },
+        importModuleDynamically: this.linkModules.bind(this),
         initializeImportMeta(meta: ImportMeta) {
           meta.url = pathToFileURL(modulePath).href;
         },
@@ -387,11 +367,7 @@ class Runtime {
 
       this._esmoduleRegistry.set(cacheKey, module);
 
-      await module.link((specifier: string, referencingModule: VMModule) =>
-        this.loadEsmModule(
-          this._resolveModule(referencingModule.identifier, specifier),
-        ),
-      );
+      await module.link(this.linkModules.bind(this));
 
       await module.evaluate();
     }
@@ -401,6 +377,25 @@ class Runtime {
     invariant(module);
 
     return module;
+  }
+
+  private async linkModules(specifier: string, referencingModule: VMModule) {
+    const resolved = this._resolveModule(
+      referencingModule.identifier,
+      specifier,
+    );
+    if (
+      this._resolver.isCoreModule(resolved) ||
+      this.unstable_shouldLoadAsEsm(resolved)
+    ) {
+      return this.loadEsmModule(resolved);
+    }
+
+    return this.loadCjsAsEsm(
+      referencingModule.identifier,
+      resolved,
+      referencingModule.context,
+    );
   }
 
   async unstable_importModule(
