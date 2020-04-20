@@ -27,7 +27,7 @@ jest.unmock('react');
 jest.deepUnmock('../__test_modules__/Unmocked');
 jest.unmock('../__test_modules__/c').unmock('../__test_modules__/d');
 (function () {
-  jest.mock('../__test_modules__/e');
+  jest.unmock('../__test_modules__/e');
 });
 jest.mock('../__test_modules__/f', () => {
   if (!global.CALLS) {
@@ -93,7 +93,7 @@ describe('babel-plugin-jest-hoist', () => {
     expect(d._isMockFunction).toBe(undefined);
     expect(d()).toEqual('unmocked');
 
-    expect(e._isMockFunction).toBe(undefined);
+    expect(e._isMock).toBe(undefined);
     expect(e()).toEqual('unmocked');
   });
 
@@ -111,10 +111,10 @@ describe('babel-plugin-jest-hoist', () => {
 
     global.CALLS = 0;
 
-    require('../__test_modules__/e');
+    require('../__test_modules__/f');
     expect(global.CALLS).toEqual(1);
 
-    require('../__test_modules__/e');
+    require('../__test_modules__/f');
     expect(global.CALLS).toEqual(1);
 
     delete global.CALLS;
