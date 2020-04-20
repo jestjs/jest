@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-runtime]` Populate `require.cache` ([#9841](https://github.com/facebook/jest/pull/9841))
+
 ### Fixes
 
 ### Chore & Maintenance
