@@ -1276,28 +1276,24 @@ class Runtime {
     moduleRequire.requireActual = this.requireActual.bind(this, from.filename);
     moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
     moduleRequire.resolve = resolve;
-    moduleRequire.cache = ((target: RequireCache) => {
+    moduleRequire.cache = ((): RequireCache => {
       const moduleRegistry = this._moduleRegistry;
       const notPermittedMethod = () => {
         console.warn('`require.cache` modification is not permitted');
         return true;
       };
-      return new Proxy(target, {
+      return new Proxy(Object.create(null), {
         defineProperty: notPermittedMethod,
         deleteProperty: notPermittedMethod,
-        get(target, key) {
-          return typeof key === 'string'
-            ? moduleRegistry.get(key) || target[key]
-            : undefined;
+        get(_target, key) {
+          return typeof key === 'string' ? moduleRegistry.get(key) : undefined;
         },
-        has(target, key) {
-          return typeof key === 'string'
-            ? moduleRegistry.has(key) || !!target[key]
-            : false;
+        has(_target, key) {
+          return typeof key === 'string' && moduleRegistry.has(key);
         },
         set: notPermittedMethod,
       });
-    })(Object.create(null));
+    })();
 
     Object.defineProperty(moduleRequire, 'main', {
       enumerable: true,
