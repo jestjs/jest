@@ -9,6 +9,7 @@ import {readFileSync} from 'fs';
 import {createRequire} from 'module';
 import {dirname, resolve} from 'path';
 import {fileURLToPath} from 'url';
+import {jest as jestObject} from '@jest/globals';
 import staticImportedStateful from '../stateful.mjs';
 import staticImportedStatefulFromCjs from '../fromCjs.mjs';
 import {double} from '../index';
@@ -89,4 +90,8 @@ test('handle unlinked dynamic imports', async () => {
   expect(deepDouble).toBe(double);
 
   expect(deepDouble(4)).toBe(8);
+});
+
+test('can import `jest` object', () => {
+  expect(jestObject).toBeDefined();
 });

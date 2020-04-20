@@ -326,7 +326,6 @@ class Runtime {
     query = '',
   ): Promise<VMModule> {
     if (modulePath === '@jest/globals') {
-      // TODO: create a Synthetic Module for this. Will need to create a `jest` object without a `LocalModuleRequire`
       throw new Error(
         'Importing `@jest/globals` is not supported from ESM yet',
       );
@@ -380,10 +379,23 @@ class Runtime {
   }
 
   private async linkModules(specifier: string, referencingModule: VMModule) {
+    if (specifier === '@jest/globals') {
+      if (!this._esmoduleRegistry.has(specifier)) {
+        const module = await this.getGlobalsForEsm(
+          referencingModule.identifier,
+          referencingModule.context,
+        );
+        this._esmoduleRegistry.set(specifier, module);
+      }
+
+      return this._esmoduleRegistry.get(specifier);
+    }
+
     const resolved = this._resolveModule(
       referencingModule.identifier,
       specifier,
     );
+
     if (
       this._resolver.isCoreModule(resolved) ||
       this.unstable_shouldLoadAsEsm(resolved)
@@ -661,7 +673,7 @@ class Runtime {
     // this module is unmockable
     if (moduleName === '@jest/globals') {
       // @ts-ignore: we don't care that it's not assignable to T
-      return this.getGlobalsForFile(from);
+      return this.getGlobalsForCjs(from);
     }
 
     try {
@@ -1545,12 +1557,55 @@ class Runtime {
     throw e;
   }
 
-  private getGlobalsForFile(from: Config.Path): JestGlobalsValues {
+  private getGlobalsForCjs(from: Config.Path): JestGlobalsValues {
     const jest = this.jestObjectCaches.get(from);
 
-    // This won't exist in ESM
     invariant(jest, 'There should always be a Jest object already');
 
+    return {...this.getGlobalsFromEnvironment(), jest};
+  }
+
+  private async getGlobalsForEsm(
+    from: Config.Path,
+    context: VMContext,
+  ): Promise<VMModule> {
+    let jest = this.jestObjectCaches.get(from);
+
+    if (!jest) {
+      jest = this._createJestObjectFor(
+        from,
+        this._getMockedNativeModule().createRequire(from),
+      );
+
+      this.jestObjectCaches.set(from, jest);
+    }
+
+    const globals: JestGlobalsValues = {
+      ...this.getGlobalsFromEnvironment(),
+      jest,
+    };
+
+    const module = new SyntheticModule(
+      Object.keys(globals),
+      function () {
+        Object.entries(globals).forEach(([key, value]) => {
+          // @ts-ignore: TS doesn't know what `this` is
+          this.setExport(key, value);
+        });
+      },
+      {context, identifier: from},
+    );
+
+    await module.link(() => {
+      throw new Error('This should never happen');
+    });
+
+    await module.evaluate();
+
+    return module;
+  }
+
+  private getGlobalsFromEnvironment(): Omit<JestGlobalsValues, 'jest'> {
     return {
       afterAll: this._environment.global.afterAll,
       afterEach: this._environment.global.afterEach,
@@ -1561,7 +1616,6 @@ class Runtime {
       fdescribe: this._environment.global.fdescribe,
       fit: this._environment.global.fit,
       it: this._environment.global.it,
-      jest,
       test: this._environment.global.test,
       xdescribe: this._environment.global.xdescribe,
       xit: this._environment.global.xit,
