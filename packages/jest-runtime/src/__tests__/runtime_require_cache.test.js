@@ -21,8 +21,13 @@ describe('Runtime require.cache', () => {
         runtime.__mockRootPath,
         'RegularModule',
       ).module;
+      const id = regularModule.id;
+      const cache = regularModule.require.cache;
 
-      expect(regularModule.require.cache[regularModule.id]).toBe(regularModule);
+      expect(cache[id]).toBe(regularModule);
+      expect(id in cache).toBeTruthy();
+      expect(Object.keys(cache).includes(id)).toBeTruthy();
+      expect(Object.getOwnPropertyNames(cache).includes(id)).toBeTruthy();
     }));
 
   it('require.cache is tolerant readonly', () =>

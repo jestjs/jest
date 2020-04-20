@@ -1286,8 +1286,15 @@ class Runtime {
         deleteProperty: notPermittedMethod,
         get: (_target, key) =>
           typeof key === 'string' ? this._moduleRegistry.get(key) : undefined,
+        getOwnPropertyDescriptor() {
+          return {
+            configurable: true,
+            enumerable: true,
+          };
+        },
         has: (_target, key) =>
           typeof key === 'string' && this._moduleRegistry.has(key),
+        ownKeys: () => Array.from(this._moduleRegistry.keys()),
         set: notPermittedMethod,
       });
     })();
