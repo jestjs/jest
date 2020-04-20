@@ -1276,21 +1276,18 @@ class Runtime {
     moduleRequire.requireActual = this.requireActual.bind(this, from.filename);
     moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
     moduleRequire.resolve = resolve;
-    moduleRequire.cache = ((): RequireCache => {
-      const moduleRegistry = this._moduleRegistry;
+    moduleRequire.cache = (() => {
       const notPermittedMethod = () => {
         console.warn('`require.cache` modification is not permitted');
         return true;
       };
-      return new Proxy(Object.create(null), {
+      return new Proxy<RequireCache>(Object.create(null), {
         defineProperty: notPermittedMethod,
         deleteProperty: notPermittedMethod,
-        get(_target, key) {
-          return typeof key === 'string' ? moduleRegistry.get(key) : undefined;
-        },
-        has(_target, key) {
-          return typeof key === 'string' && moduleRegistry.has(key);
-        },
+        get: (_target, key) =>
+          typeof key === 'string' ? this._moduleRegistry.get(key) : undefined,
+        has: (_target, key) =>
+          typeof key === 'string' && this._moduleRegistry.has(key),
         set: notPermittedMethod,
       });
     })();
