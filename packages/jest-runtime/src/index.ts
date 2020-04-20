@@ -1239,7 +1239,6 @@ class Runtime {
       this._requireResolvePaths(from.filename, moduleName);
 
     const moduleRegistry = this._moduleRegistry;
-    const esmoduleRegistry = this._esmoduleRegistry;
     const moduleRequire = (options && options.isInternalModule
       ? (moduleName: string) =>
           this.requireInternalModule(from.filename, moduleName)
@@ -1255,15 +1254,12 @@ class Runtime {
     Object.defineProperty(moduleRequire, 'cache', {
       enumerable: true,
       get() {
-        const cache: {[key: string]: any} = {};
+        const cache: {[key: string]: InitialModule | Module} = {};
         const notPermittedMethod = () => {
           console.warn('`require.cache` modification is not permitted');
           return true;
         };
         moduleRegistry.forEach((value, key) => {
-          cache[key] = value;
-        });
-        esmoduleRegistry.forEach((value, key) => {
           cache[key] = value;
         });
 
