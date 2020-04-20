@@ -1,0 +1,30 @@
+{
+  "name": "@jest/globals",
+  "version": "25.4.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/facebook/jest.git",
+    "directory": "packages/jest-globals"
+  },
+  "engines": {
+    "node": ">= 8.3"
+  },
+  "license": "MIT",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "typesVersions": {
+    "<3.8": {
+      "build/*": [
+        "build/ts3.4/*"
+      ]
+    }
+  },
+  "dependencies": {
+    "@jest/environment": "^25.4.0",
+    "@jest/types": "^25.4.0",
+    "expect": "^25.4.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
