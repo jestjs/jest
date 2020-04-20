@@ -80,6 +80,8 @@ type ResolveOptions = Parameters<typeof require.resolve>[1];
 type BooleanObject = Record<string, boolean>;
 type CacheFS = {[path: string]: string};
 
+type RequireCache = {[key: string]: Module};
+
 namespace Runtime {
   export type Context = JestContext;
   // ditch this export when moving to esm - for now we need it for to avoid faulty type elision
@@ -1275,32 +1277,23 @@ class Runtime {
     moduleRequire.requireActual = this.requireActual.bind(this, from.filename);
     moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
     moduleRequire.resolve = resolve;
-
-    Object.defineProperty(moduleRequire, 'cache', {
-      enumerable: true,
-      get() {
-        const cache: {[key: string]: InitialModule | Module} = {};
-        const notPermittedMethod = () => {
-          console.warn('`require.cache` modification is not permitted');
-          return true;
-        };
-        moduleRegistry.forEach((value, key) => {
-          cache[key] = value;
-        });
-
-        return new Proxy(cache, {
-          defineProperty: notPermittedMethod,
-          deleteProperty: notPermittedMethod,
-          get(target, key) {
-            return typeof key === 'string' ? target[key] : undefined;
-          },
-          has(target, key) {
-            return typeof key === 'string' && !!target[key];
-          },
-          set: notPermittedMethod,
-        });
-      },
-    });
+    moduleRequire.cache = (target => {
+      const notPermittedMethod = () => {
+        console.warn('`require.cache` modification is not permitted');
+        return true;
+      };
+      return new Proxy(target, {
+        defineProperty: notPermittedMethod,
+        deleteProperty: notPermittedMethod,
+        get(_target, key) {
+          return typeof key === 'string' ? moduleRegistry.get(key) : undefined;
+        },
+        has(_target, key) {
+          return typeof key === 'string' && moduleRegistry.has(key);
+        },
+        set: notPermittedMethod,
+      });
+    })(Object.create(null)) as RequireCache;
 
     Object.defineProperty(moduleRequire, 'main', {
       enumerable: true,
