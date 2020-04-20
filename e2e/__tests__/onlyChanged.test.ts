@@ -7,9 +7,8 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import which = require('which');
 import runJest from '../runJest';
-import {cleanup, run, writeFiles} from '../Utils';
+import {cleanup, hgIsInstalled, run, testIfHg, writeFiles} from '../Utils';
 
 const DIR = path.resolve(tmpdir(), 'jest_only_changed');
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
@@ -17,10 +16,6 @@ const HG = 'hg --config ui.username=jest_test';
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
-
-// Certain environments (like CITGM and GH Actions) do not come with mercurial installed
-const hgIsInstalled = which.sync('hg', {nothrow: true}) !== null;
-const testIfHg = hgIsInstalled ? test : test.skip;
 
 if (!hgIsInstalled) {
   console.warn('Mercurial (hg) is not installed - skipping some tests');

@@ -14,6 +14,7 @@ import {ExecaReturnValue, sync as spawnSync} from 'execa';
 import makeDir = require('make-dir');
 import rimraf = require('rimraf');
 import dedent = require('dedent');
+import which = require('which');
 
 interface RunResult extends ExecaReturnValue {
   status: number;
@@ -260,3 +261,7 @@ export const normalizeIcons = (str: string) => {
     .replace(new RegExp('\u00D7', 'g'), '\u2715')
     .replace(new RegExp('\u221A', 'g'), '\u2713');
 };
+
+// Certain environments (like CITGM and GH Actions) do not come with mercurial installed
+export const hgIsInstalled = which.sync('hg', {nothrow: true}) !== null;
+export const testIfHg = hgIsInstalled ? test : test.skip;
