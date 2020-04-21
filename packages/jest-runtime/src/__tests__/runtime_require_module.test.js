@@ -237,7 +237,7 @@ describe('Runtime requireModule', () => {
       automock: true,
     }).then(runtime => {
       const root = runtime.requireModule(runtime.__mockRootPath, './root.js');
-      root.jest.resetModuleRegistry();
+      root.jest.resetModules();
       root.jest.unmock('ManuallyMocked');
       const exports = runtime.requireModule(
         runtime.__mockRootPath,

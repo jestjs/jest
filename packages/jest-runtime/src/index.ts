@@ -1565,8 +1565,6 @@ class Runtime {
     };
 
     const jestObject: Jest = {
-      addMatchers: (matchers: Record<string, unknown>) =>
-        this._environment.global.jasmine.addMatchers(matchers),
       advanceTimersByTime: (msToRun: number) =>
         _getFakeTimers().advanceTimersByTime(msToRun),
       advanceTimersToNextTimer: (steps?: number) =>
@@ -1603,7 +1601,6 @@ class Runtime {
       requireActual: this.requireActual.bind(this, from),
       requireMock: this.requireMock.bind(this, from),
       resetAllMocks,
-      resetModuleRegistry: resetModules,
       resetModules,
       restoreAllMocks,
       retryTimes,
@@ -1621,8 +1618,6 @@ class Runtime {
       runAllTicks: () => _getFakeTimers().runAllTicks(),
       runAllTimers: () => _getFakeTimers().runAllTimers(),
       runOnlyPendingTimers: () => _getFakeTimers().runOnlyPendingTimers(),
-      runTimersToTime: (msToRun: number) =>
-        _getFakeTimers().advanceTimersByTime(msToRun),
       setMock: (moduleName: string, mock: unknown) =>
         setMockFactory(moduleName, () => mock),
       setSystemTime: (now?: number | Date) => {

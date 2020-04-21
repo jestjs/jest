@@ -693,7 +693,7 @@ describe('ScriptTransformer', () => {
 
     // Cache the state in `mockFsCopy`
     const mockFsCopy = mockFs;
-    jest.resetModuleRegistry();
+    jest.resetModules();
     reset();
 
     // Restore the cached fs
@@ -707,7 +707,7 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).not.toBeCalled();
 
     // Don't read from the cache when `config.cache` is false.
-    jest.resetModuleRegistry();
+    jest.resetModules();
     reset();
     mockFs = mockFsCopy;
     transformConfig.cache = false;
@@ -737,7 +737,7 @@ describe('ScriptTransformer', () => {
 
     // Cache the state in `mockFsCopy`
     const mockFsCopy = mockFs;
-    jest.resetModuleRegistry();
+    jest.resetModules();
     reset();
 
     // Restore the cached fs
