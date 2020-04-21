@@ -355,7 +355,8 @@ export default class ScriptTransformer {
        * and we should NOT emit any source maps
        *
        */
-      const shouldEmitSourceMaps = (!!transform && !!map) || !transform;
+      const shouldEmitSourceMaps =
+        (transform != null && map != null) || transform == null;
 
       const instrumented = this._instrumentFile(
         filename,
