@@ -325,12 +325,6 @@ class Runtime {
     modulePath: Config.Path,
     query = '',
   ): Promise<VMModule> {
-    if (modulePath === '@jest/globals') {
-      throw new Error(
-        'Importing `@jest/globals` is not supported from ESM yet',
-      );
-    }
-
     const cacheKey = modulePath + query;
 
     if (!this._esmoduleRegistry.has(cacheKey)) {
