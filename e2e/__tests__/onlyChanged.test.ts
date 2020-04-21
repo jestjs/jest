@@ -8,18 +8,15 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import runJest from '../runJest';
-import {cleanup, hgIsInstalled, run, testIfHg, writeFiles} from '../Utils';
+import {buildTestIfHg, cleanup, run, writeFiles} from '../Utils';
 
 const DIR = path.resolve(tmpdir(), 'jest_only_changed');
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';
+const testIfHg = buildTestIfHg();
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
-
-if (!hgIsInstalled) {
-  console.warn('Mercurial (hg) is not installed - skipping some tests');
-}
 
 test('run for "onlyChanged" and "changedSince"', () => {
   writeFiles(DIR, {

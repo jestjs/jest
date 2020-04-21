@@ -263,5 +263,10 @@ export const normalizeIcons = (str: string) => {
 };
 
 // Certain environments (like CITGM and GH Actions) do not come with mercurial installed
-export const hgIsInstalled = which.sync('hg', {nothrow: true}) !== null;
-export const testIfHg = hgIsInstalled ? test : test.skip;
+export const buildTestIfHg = () => {
+  const hgIsInstalled = which.sync('hg', {nothrow: true}) !== null;
+  if (!hgIsInstalled) {
+    console.warn('Mercurial (hg) is not installed - skipping some tests');
+  }
+  return hgIsInstalled ? test : test.skip;
+};
