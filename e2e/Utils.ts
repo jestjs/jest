@@ -267,15 +267,15 @@ let hgIsInstalled: boolean | null = null;
 
 export const testIfHg = (
   ...args: Parameters<typeof test>
-): ReturnType<typeof test> => {
+) => {
   if (hgIsInstalled === null) {
     hgIsInstalled = which.sync('hg', {nothrow: true}) !== null;
   }
 
   if (hgIsInstalled) {
-    return test(...args);
+    test(...args);
   } else {
     console.warn('Mercurial (hg) is not installed - skipping some tests');
-    return test.skip(...args);
+    test.skip(...args);
   }
 };
