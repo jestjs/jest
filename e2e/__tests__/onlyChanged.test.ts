@@ -8,12 +8,11 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import runJest from '../runJest';
-import {buildTestIfHg, cleanup, run, writeFiles} from '../Utils';
+import {cleanup, run, testIfHg, writeFiles} from '../Utils';
 
 const DIR = path.resolve(tmpdir(), 'jest_only_changed');
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';
-const testIfHg = buildTestIfHg();
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));

@@ -10,7 +10,7 @@ import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {findRepos, getChangedFilesForRoots} from 'jest-changed-files';
 import {skipSuiteOnWindows} from '@jest/test-utils';
-import {buildTestIfHg, cleanup, run, writeFiles} from '../Utils';
+import {cleanup, run, testIfHg, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
 skipSuiteOnWindows();
@@ -19,7 +19,6 @@ const DIR = path.resolve(tmpdir(), 'jest-changed-files-test-dir');
 
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';
-const testIfHg = buildTestIfHg();
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
