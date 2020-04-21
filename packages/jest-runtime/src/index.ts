@@ -1273,7 +1273,9 @@ class Runtime {
     moduleRequire.resolve = resolve;
     moduleRequire.cache = (() => {
       const notPermittedMethod = () => {
-        console.warn('`require.cache` modification is not permitted');
+        this._environment.global.console.warn(
+          '`require.cache` modification is not permitted',
+        );
         return true;
       };
       return new Proxy<RequireCache>(Object.create(null), {
