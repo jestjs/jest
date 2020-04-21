@@ -7,6 +7,7 @@
 ### Fixes
 
 - `[jest-runtime]` Support importing CJS from ESM using `import` statements ([#9850](https://github.com/facebook/jest/pull/9850))
+- `[jest-transform]` Improve source map handling when instrumenting transformed code ([#9811](https://github.com/facebook/jest/pull/9811))
 
 ### Chore & Maintenance
 
