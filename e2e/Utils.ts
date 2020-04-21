@@ -265,9 +265,7 @@ export const normalizeIcons = (str: string) => {
 // Certain environments (like CITGM and GH Actions) do not come with mercurial installed
 let hgIsInstalled: boolean | null = null;
 
-export const testIfHg = (
-  ...args: Parameters<typeof test>
-) => {
+export const testIfHg = (...args: Parameters<typeof test>) => {
   if (hgIsInstalled === null) {
     hgIsInstalled = which.sync('hg', {nothrow: true}) !== null;
   }
