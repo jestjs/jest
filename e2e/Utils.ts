@@ -47,7 +47,7 @@ export const linkJestPackage = (packageName: string, cwd: Config.Path) => {
   const destination = path.resolve(cwd, 'node_modules/', packageName);
   makeDir.sync(destination);
   rimraf.sync(destination);
-  fs.symlinkSync(packagePath, destination, 'dir');
+  fs.symlinkSync(packagePath, destination, 'junction');
 };
 
 export const makeTemplate = (
@@ -105,6 +105,7 @@ export const writeSymlinks = (
     fs.symlinkSync(
       path.resolve(directory, ...fileOrPath.split('/')),
       path.resolve(directory, ...symLinkPath.split('/')),
+      'junction',
     );
   });
 };
