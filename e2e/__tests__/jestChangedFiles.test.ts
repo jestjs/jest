@@ -10,8 +10,7 @@ import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {findRepos, getChangedFilesForRoots} from 'jest-changed-files';
 import {skipSuiteOnWindows} from '@jest/test-utils';
-import which = require('which');
-import {cleanup, run, writeFiles} from '../Utils';
+import {cleanup, run, testIfHg, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
 skipSuiteOnWindows();
@@ -23,14 +22,6 @@ const HG = 'hg --config ui.username=jest_test';
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
-
-// Certain environments (like CITGM and GH Actions) do not come with mercurial installed
-const hgIsInstalled = which.sync('hg', {nothrow: true}) !== null;
-const testIfHg = hgIsInstalled ? test : test.skip;
-
-if (!hgIsInstalled) {
-  console.warn('Mercurial (hg) is not installed - skipping some tests');
-}
 
 testIfHg('gets hg SCM roots and dedupes them', async () => {
   writeFiles(DIR, {
