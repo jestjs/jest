@@ -990,10 +990,7 @@ class Runtime {
         dirname, // __dirname
         filename, // __filename
         this._environment.global, // global object
-        this._createJestObjectFor(
-          filename,
-          localModule.require as LocalModuleRequire,
-        ), // jest object
+        this._createJestObjectFor(filename), // jest object
         ...this._config.extraGlobals.map(globalVariable => {
           if (this._environment.global[globalVariable]) {
             return this._environment.global[globalVariable];
@@ -1311,10 +1308,7 @@ class Runtime {
     return moduleRequire;
   }
 
-  private _createJestObjectFor(
-    from: Config.Path,
-    localRequire: LocalModuleRequire,
-  ): Jest {
+  private _createJestObjectFor(from: Config.Path): Jest {
     const disableAutomock = () => {
       this._shouldAutoMock = false;
       return jestObject;
@@ -1445,8 +1439,8 @@ class Runtime {
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,
       mock,
-      requireActual: localRequire.requireActual,
-      requireMock: localRequire.requireMock,
+      requireActual: this.requireActual.bind(this, from),
+      requireMock: this.requireMock.bind(this, from),
       resetAllMocks,
       resetModuleRegistry: resetModules,
       resetModules,
