@@ -173,24 +173,35 @@ function GETTER_NAME() {
 }
 `;
 
-const isIdentifierJestObject = (identifier: NodePath<Identifier>): boolean => {
+const isJestObject = (expression: NodePath<Expression>): boolean => {
   // global
   if (
-    identifier.node.name === JEST_GLOBAL_NAME &&
-    !identifier.scope.hasBinding(JEST_GLOBAL_NAME)
+    expression.isIdentifier() &&
+    expression.node.name === JEST_GLOBAL_NAME &&
+    !expression.scope.hasBinding(JEST_GLOBAL_NAME)
   ) {
     return true;
   }
-  // import from '@jest/globals'
+  // import { jest } from '@jest/globals'
   if (
-    identifier.referencesImport(
+    expression.referencesImport(
       JEST_GLOBALS_MODULE_NAME,
       JEST_GLOBALS_MODULE_JEST_EXPORT_NAME,
     )
   ) {
     return true;
   }
-  // TODO require('@jest/globals')
+  // import * as JestGlobals from '@jest/globals'
+  if (
+    expression.isMemberExpression() &&
+    expression.node.computed &&
+    expression
+      .get<'object'>('object')
+      .referencesImport(JEST_GLOBALS_MODULE_NAME, '*') &&
+    expression.node.property === JEST_GLOBALS_MODULE_JEST_EXPORT_NAME
+  ) {
+    return true;
+  }
 
   return false;
 };
@@ -219,11 +230,10 @@ const getJestIdentifierIfHoistable = <T extends Node>(
   }
   const propertyName = property.node.name;
 
-  const jestObject =
-    object.isIdentifier() && isIdentifierJestObject(object)
-      ? object
-      : // The Jest object could be returned from another call since the functions are all chainable.
-        getJestIdentifierIfHoistable(object);
+  const jestObject = isJestObject(object)
+    ? object
+    : // The Jest object could be returned from another call since the functions are all chainable.
+      getJestIdentifierIfHoistable(object);
   if (!jestObject) {
     return null;
   }
