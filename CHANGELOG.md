@@ -10,6 +10,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-runtime]` [**BREAKING**] Remove long-deprecated `require.requireActual` and `require.requireMock` methods ([#9854](https://github.com/facebook/jest/pull/9854))
+
 ### Performance
 
 ## 25.4.0

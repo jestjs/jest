@@ -23,7 +23,6 @@ import type {Config} from '@jest/types';
 import type {
   Jest,
   JestEnvironment,
-  LocalModuleRequire,
   Module,
   ModuleWrapper,
 } from '@jest/environment';
@@ -1250,7 +1249,7 @@ class Runtime {
   private _createRequireImplementation(
     from: InitialModule,
     options?: InternalModuleOptions,
-  ): LocalModuleRequire {
+  ): NodeRequire {
     // TODO: somehow avoid having to type the arguments - they should come from `NodeRequire/LocalModuleRequire.resolve`
     const resolve = (moduleName: string, options: ResolveOptions) =>
       this._requireResolve(from.filename, moduleName, options);
@@ -1260,13 +1259,8 @@ class Runtime {
     const moduleRequire = (options && options.isInternalModule
       ? (moduleName: string) =>
           this.requireInternalModule(from.filename, moduleName)
-      : this.requireModuleOrMock.bind(
-          this,
-          from.filename,
-        )) as LocalModuleRequire;
+      : this.requireModuleOrMock.bind(this, from.filename)) as NodeRequire;
     moduleRequire.extensions = Object.create(null);
-    moduleRequire.requireActual = this.requireActual.bind(this, from.filename);
-    moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
     moduleRequire.resolve = resolve;
     moduleRequire.cache = (() => {
       const notPermittedMethod = () => {
