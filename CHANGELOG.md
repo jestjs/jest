@@ -8,6 +8,7 @@
 ### Fixes
 
 - `[jest-runtime]` Support importing CJS from ESM using `import` statements ([#9850](https://github.com/facebook/jest/pull/9850))
+- `[jest-runtime]` Support importing parallel dynamic `import`s ([#9858](https://github.com/facebook/jest/pull/9858))
 
 ### Chore & Maintenance
 

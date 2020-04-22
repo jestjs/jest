@@ -139,7 +139,7 @@ class Runtime {
   private _moduleMocker: typeof jestMock;
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
-  private _esmoduleRegistry: Map<string, VMModule>;
+  private _esmoduleRegistry: Map<string, Promise<VMModule>>;
   private _needsCoverageMapped: Set<string>;
   private _resolver: Resolver;
   private _shouldAutoMock: boolean;
@@ -358,11 +358,16 @@ class Runtime {
         },
       });
 
-      this._esmoduleRegistry.set(cacheKey, module);
-
-      await module.link(this.linkModules.bind(this));
-
-      await module.evaluate();
+      this._esmoduleRegistry.set(
+        cacheKey,
+        // we wanna put the linking promise in the cache so modules loaded in
+        // parallel can all await it. We then await it synchronously below, so
+        // we shouldn't get any unhandled rejections
+        module
+          .link(this.linkModules.bind(this))
+          .then(() => module.evaluate())
+          .then(() => module),
+      );
     }
 
     const module = this._esmoduleRegistry.get(cacheKey);
