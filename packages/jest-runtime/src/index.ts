@@ -997,10 +997,7 @@ class Runtime {
       return;
     }
 
-    const jestObject = this._createJestObjectFor(
-      filename,
-      localModule.require as LocalModuleRequire,
-    );
+    const jestObject = this._createJestObjectFor(filename);
 
     this.jestObjectCaches.set(filename, jestObject);
 
@@ -1331,10 +1328,7 @@ class Runtime {
     return moduleRequire;
   }
 
-  private _createJestObjectFor(
-    from: Config.Path,
-    localRequire: LocalModuleRequire,
-  ): Jest {
+  private _createJestObjectFor(from: Config.Path): Jest {
     const disableAutomock = () => {
       this._shouldAutoMock = false;
       return jestObject;
@@ -1465,8 +1459,8 @@ class Runtime {
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,
       mock,
-      requireActual: localRequire.requireActual,
-      requireMock: localRequire.requireMock,
+      requireActual: this.requireActual.bind(this, from),
+      requireMock: this.requireMock.bind(this, from),
       resetAllMocks,
       resetModuleRegistry: resetModules,
       resetModules,
@@ -1562,10 +1556,7 @@ class Runtime {
     let jest = this.jestObjectCaches.get(from);
 
     if (!jest) {
-      jest = this._createJestObjectFor(
-        from,
-        this._getMockedNativeModule().createRequire(from),
-      );
+      jest = this._createJestObjectFor(from);
 
       this.jestObjectCaches.set(from, jest);
     }
