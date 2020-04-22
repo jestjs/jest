@@ -290,7 +290,7 @@ it('no stack', () => {
   expect(message).toMatchSnapshot();
 });
 
-describe('getConsoleOutput', () =>{
+describe('getConsoleOutput', () => {
   it('prints code frame and stacktrace', () => {
     readFileSync.mockImplementationOnce(() => 'throw new Error("Whoops!");');
     const message = formatStackTrace(
@@ -312,10 +312,10 @@ describe('getConsoleOutput', () =>{
       },
       'path_test',
     );
-  
+
     expect(message).toMatchSnapshot();
   });
-  
+
   it('does not print code frame when noCodeFrame = true', () => {
     readFileSync.mockImplementationOnce(() => 'throw new Error("Whoops!");');
     const message = formatStackTrace(
@@ -337,10 +337,10 @@ describe('getConsoleOutput', () =>{
       },
       'path_test',
     );
-  
+
     expect(message).toMatchSnapshot();
   });
-  
+
   it('does not print codeframe when noStackTrace = true', () => {
     readFileSync.mockImplementationOnce(() => 'throw new Error("Whoops!");');
     const message = formatStackTrace(
@@ -361,7 +361,7 @@ describe('getConsoleOutput', () =>{
       },
       'path_test',
     );
-  
+
     expect(message).toMatchSnapshot();
   });
 });

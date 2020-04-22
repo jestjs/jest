@@ -283,7 +283,7 @@ export const formatStackTrace = (
     ? slash(path.relative(config.rootDir, testPath))
     : null;
 
-  if ((!options.noStackTrace) && (!options.noCodeFrame)) {
+  if (!options.noStackTrace && !options.noCodeFrame) {
     const topFrame = getTopFrame(lines);
     if (topFrame) {
       const {column, file: filename, line} = topFrame;
