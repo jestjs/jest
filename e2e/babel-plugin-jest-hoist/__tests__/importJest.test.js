@@ -9,29 +9,35 @@
 import {jest} from '@jest/globals';
 import * as JestGlobals from '@jest/globals';
 
-// The virtual mock call below will be hoisted above this `require` call.
-const virtualModule = require('virtual-module');
-const virtualModule2 = require('virtual-module-2');
+import a from '../__test_modules__/a';
+import b from '../__test_modules__/b';
+import c from '../__test_modules__/c';
 
-jest.mock('virtual-module', () => 'kiwi', {virtual: true});
-JestGlobals.jest.mock('virtual-module-2', () => 'banana', {virtual: true});
+// These will be hoisted above imports
 
-// The mock call below will not be hoisted
-const a = require('../__test_modules__/a');
+jest.unmock('../__test_modules__/a');
+JestGlobals.jest.unmock('../__test_modules__/b');
+
+// These will not be hoisted above imports
 
 {
-  const jest = {mock: () => {}};
-  jest.mock('../__test_modules__/a', () => 'too late');
+  const jest = {unmock: () => {}};
+  jest.unmock('../__test_modules__/c');
 }
 
+// tests
+
 test('named import', () => {
-  expect(virtualModule).toBe('kiwi');
+  expect(a._isMockFunction).toBe(undefined);
+  expect(a()).toBe('unmocked');
 });
 
 test('namespace import', () => {
-  expect(virtualModule2).toBe('banana');
+  expect(b._isMockFunction).toBe(undefined);
+  expect(b()).toBe('unmocked');
 });
 
 test('fake jest, shadowed import', () => {
-  expect(a()).toBe('unmocked');
+  expect(c._isMockFunction).toBe(true);
+  expect(c()).toBe(undefined);
 });

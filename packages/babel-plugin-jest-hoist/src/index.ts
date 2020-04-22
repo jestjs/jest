@@ -14,6 +14,7 @@ import {
   Program,
   callExpression,
   identifier,
+  isIdentifier,
 } from '@babel/types';
 import {statement} from '@babel/template';
 import type {PluginObj} from '@babel/core';
@@ -194,11 +195,11 @@ const isJestObject = (expression: NodePath<Expression>): boolean => {
   // import * as JestGlobals from '@jest/globals'
   if (
     expression.isMemberExpression() &&
-    expression.node.computed &&
+    !expression.node.computed &&
     expression
       .get<'object'>('object')
       .referencesImport(JEST_GLOBALS_MODULE_NAME, '*') &&
-    expression.node.property === JEST_GLOBALS_MODULE_JEST_EXPORT_NAME
+    expression.node.property.name === JEST_GLOBALS_MODULE_JEST_EXPORT_NAME
   ) {
     return true;
   }
@@ -206,7 +207,7 @@ const isJestObject = (expression: NodePath<Expression>): boolean => {
   return false;
 };
 
-const getJestIdentifierIfHoistable = <T extends Node>(
+const extractJestObjExprIfHoistable = <T extends Node>(
   expr: NodePath<T>,
 ): NodePath<Expression> | null => {
   if (!expr.isCallExpression()) {
@@ -230,11 +231,11 @@ const getJestIdentifierIfHoistable = <T extends Node>(
   }
   const propertyName = property.node.name;
 
-  const jestObject = isJestObject(object)
+  const jestObjExpr = isJestObject(object)
     ? object
     : // The Jest object could be returned from another call since the functions are all chainable.
-      getJestIdentifierIfHoistable(object);
-  if (!jestObject) {
+      extractJestObjExprIfHoistable(object);
+  if (!jestObjExpr) {
     return null;
   }
 
@@ -244,36 +245,52 @@ const getJestIdentifierIfHoistable = <T extends Node>(
   const functionLooksHoistable =
     FUNCTIONS[propertyName] && FUNCTIONS[propertyName](args);
 
-  return functionLooksHoistable ? jestObject : null;
+  return functionLooksHoistable ? jestObjExpr : null;
 };
 
-export default (): PluginObj => ({
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  post({path: program}: {path: NodePath<Program>}) {
-    const jestObjGetterName = program.scope.generateUid('getJestObj');
+/* eslint-disable sort-keys,@typescript-eslint/explicit-module-boundary-types */
+export default (): PluginObj<{jestObjGetterIdentifier: Identifier}> => ({
+  pre({path: program}: {path: NodePath<Program>}) {
+    this.jestObjGetterIdentifier = program.scope.generateUidIdentifier(
+      'getJestObj',
+    );
     program.unshiftContainer('body', [
       createJestObjectGetter({
-        GETTER_NAME: jestObjGetterName,
+        GETTER_NAME: this.jestObjGetterIdentifier.name,
         JEST_GLOBALS_MODULE_JEST_EXPORT_NAME,
         JEST_GLOBALS_MODULE_NAME,
       }),
     ]);
-    program.traverse({
-      ExpressionStatement(stmt) {
-        const jestIdentifier = getJestIdentifierIfHoistable(
-          stmt.get<'expression'>('expression'),
+  },
+  visitor: {
+    ExpressionStatement(exprStmt) {
+      const jestObjExpr = extractJestObjExprIfHoistable(
+        exprStmt.get<'expression'>('expression'),
+      );
+      if (jestObjExpr) {
+        jestObjExpr.replaceWith(
+          callExpression(this.jestObjGetterIdentifier, []),
         );
-        if (jestIdentifier) {
-          jestIdentifier.replaceWith(
-            callExpression(identifier(jestObjGetterName), []),
-          );
-          const {node: mockStmt} = stmt;
-
-          stmt.remove();
-          program.unshiftContainer('body', [mockStmt]);
+      }
+    },
+  },
+  post({path: program}: {path: NodePath<Program>}) {
+    program.traverse({
+      CallExpression: callExpr => {
+        const {
+          node: {callee},
+        } = callExpr;
+        if (
+          isIdentifier(callee) &&
+          callee.name === this.jestObjGetterIdentifier.name
+        ) {
+          const mockStmt = callExpr.getStatementParent();
+          const mockStmtNode = mockStmt.node;
+          mockStmt.remove();
+          program.unshiftContainer('body', [mockStmtNode]);
         }
       },
     });
   },
-  visitor: {},
 });
+/* eslint-enable sort-keys,@typescript-eslint/explicit-module-boundary-types */
