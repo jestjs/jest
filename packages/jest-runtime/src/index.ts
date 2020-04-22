@@ -19,7 +19,7 @@ import {
   compileFunction,
 } from 'vm';
 import * as nativeModule from 'module';
-import type {Config} from '@jest/types';
+import type {Config, Global} from '@jest/types';
 import type {
   Jest,
   JestEnvironment,
@@ -27,6 +27,7 @@ import type {
   Module,
   ModuleWrapper,
 } from '@jest/environment';
+import type * as JestGlobals from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {createDirectory, deepCyclicCopy} from 'jest-util';
@@ -51,6 +52,11 @@ import HasteMap = require('jest-haste-map');
 import Resolver = require('jest-resolve');
 import Snapshot = require('jest-snapshot');
 import stripBOM = require('strip-bom');
+
+interface JestGlobalsValues extends Global.TestFrameworkGlobals {
+  jest: JestGlobals.jest;
+  expect: JestGlobals.expect;
+}
 
 type HasteMapOptions = {
   console?: Console;
@@ -148,6 +154,7 @@ class Runtime {
   private _unmockList: RegExp | undefined;
   private _virtualMocks: BooleanObject;
   private _moduleImplementation?: typeof nativeModule.Module;
+  private jestObjectCaches: Map<string, Jest>;
 
   constructor(
     config: Config.ProjectConfig,
@@ -185,6 +192,7 @@ class Runtime {
     this._sourceMapRegistry = Object.create(null);
     this._fileTransforms = new Map();
     this._virtualMocks = Object.create(null);
+    this.jestObjectCaches = new Map();
 
     this._mockMetaDataCache = Object.create(null);
     this._shouldMockModuleCache = Object.create(null);
@@ -317,13 +325,6 @@ class Runtime {
     modulePath: Config.Path,
     query = '',
   ): Promise<VMModule> {
-    if (modulePath === '@jest/globals') {
-      // TODO: create a Synthetic Module for this. Will need to create a `jest` object without a `LocalModuleRequire`
-      throw new Error(
-        'Importing `@jest/globals` is not supported from ESM yet',
-      );
-    }
-
     const cacheKey = modulePath + query;
 
     if (!this._esmoduleRegistry.has(cacheKey)) {
@@ -371,11 +372,27 @@ class Runtime {
     return module;
   }
 
-  private async linkModules(specifier: string, referencingModule: VMModule) {
+  private linkModules(specifier: string, referencingModule: VMModule) {
+    if (specifier === '@jest/globals') {
+      const fromCache = this._esmoduleRegistry.get('@jest/globals');
+
+      if (fromCache) {
+        return fromCache;
+      }
+      const globals = this.getGlobalsForEsm(
+        referencingModule.identifier,
+        referencingModule.context,
+      );
+      this._esmoduleRegistry.set('@jest/globals', globals);
+
+      return globals;
+    }
+
     const resolved = this._resolveModule(
       referencingModule.identifier,
       specifier,
     );
+
     if (
       this._resolver.isCoreModule(resolved) ||
       this.unstable_shouldLoadAsEsm(resolved)
@@ -649,12 +666,18 @@ class Runtime {
     };
   }
 
-  requireModuleOrMock(from: Config.Path, moduleName: string): unknown {
+  requireModuleOrMock<T = unknown>(from: Config.Path, moduleName: string): T {
+    // this module is unmockable
+    if (moduleName === '@jest/globals') {
+      // @ts-ignore: we don't care that it's not assignable to T
+      return this.getGlobalsForCjs(from);
+    }
+
     try {
       if (this._shouldMock(from, moduleName)) {
-        return this.requireMock(from, moduleName);
+        return this.requireMock<T>(from, moduleName);
       } else {
-        return this.requireModule(from, moduleName);
+        return this.requireModule<T>(from, moduleName);
       }
     } catch (e) {
       const moduleNotFound = Resolver.tryCastModuleNotFoundError(e);
@@ -981,6 +1004,10 @@ class Runtime {
       return;
     }
 
+    const jestObject = this._createJestObjectFor(filename);
+
+    this.jestObjectCaches.set(filename, jestObject);
+
     try {
       compiledFunction.call(
         localModule.exports,
@@ -990,7 +1017,7 @@ class Runtime {
         dirname, // __dirname
         filename, // __filename
         this._environment.global, // global object
-        this._createJestObjectFor(filename), // jest object
+        jestObject, // jest object
         ...this._config.extraGlobals.map(globalVariable => {
           if (this._environment.global[globalVariable]) {
             return this._environment.global[globalVariable];
@@ -1519,6 +1546,69 @@ class Runtime {
     }
 
     throw e;
+  }
+
+  private getGlobalsForCjs(from: Config.Path): JestGlobalsValues {
+    const jest = this.jestObjectCaches.get(from);
+
+    invariant(jest, 'There should always be a Jest object already');
+
+    return {...this.getGlobalsFromEnvironment(), jest};
+  }
+
+  private async getGlobalsForEsm(
+    from: Config.Path,
+    context: VMContext,
+  ): Promise<VMModule> {
+    let jest = this.jestObjectCaches.get(from);
+
+    if (!jest) {
+      jest = this._createJestObjectFor(from);
+
+      this.jestObjectCaches.set(from, jest);
+    }
+
+    const globals: JestGlobalsValues = {
+      ...this.getGlobalsFromEnvironment(),
+      jest,
+    };
+
+    const module = new SyntheticModule(
+      Object.keys(globals),
+      function () {
+        Object.entries(globals).forEach(([key, value]) => {
+          // @ts-ignore: TS doesn't know what `this` is
+          this.setExport(key, value);
+        });
+      },
+      {context, identifier: '@jest/globals'},
+    );
+
+    await module.link(() => {
+      throw new Error('This should never happen');
+    });
+
+    await module.evaluate();
+
+    return module;
+  }
+
+  private getGlobalsFromEnvironment(): Omit<JestGlobalsValues, 'jest'> {
+    return {
+      afterAll: this._environment.global.afterAll,
+      afterEach: this._environment.global.afterEach,
+      beforeAll: this._environment.global.beforeAll,
+      beforeEach: this._environment.global.beforeEach,
+      describe: this._environment.global.describe,
+      expect: this._environment.global.expect,
+      fdescribe: this._environment.global.fdescribe,
+      fit: this._environment.global.fit,
+      it: this._environment.global.it,
+      test: this._environment.global.test,
+      xdescribe: this._environment.global.xdescribe,
+      xit: this._environment.global.xit,
+      xtest: this._environment.global.xtest,
+    };
   }
 }
 
