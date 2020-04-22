@@ -374,11 +374,18 @@ class Runtime {
 
   private linkModules(specifier: string, referencingModule: VMModule) {
     if (specifier === '@jest/globals') {
-      // should we cache this?
-      return this.getGlobalsForEsm(
+      const fromCache = this._esmoduleRegistry.get('@jest/globals');
+
+      if (fromCache) {
+        return fromCache;
+      }
+      const globals = this.getGlobalsForEsm(
         referencingModule.identifier,
         referencingModule.context,
       );
+      this._esmoduleRegistry.set('@jest/globals', globals);
+
+      return globals;
     }
 
     const resolved = this._resolveModule(
