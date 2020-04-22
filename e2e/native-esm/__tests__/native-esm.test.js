@@ -95,3 +95,13 @@ test('handle unlinked dynamic imports', async () => {
 test('can import `jest` object', () => {
   expect(jestObject).toBeDefined();
 });
+
+test('handle dynamic imports of the same module in parallel', async () => {
+  const [{double: first}, {double: second}] = await Promise.all([
+    import('../anotherDynamicImport.js'),
+    import('../anotherDynamicImport.js'),
+  ]);
+
+  expect(first).toBe(second);
+  expect(first(2)).toBe(4);
+});
