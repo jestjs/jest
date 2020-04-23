@@ -41,6 +41,8 @@ export default function defaultResolver(
     moduleDirectory: options.moduleDirectory,
     paths: options.paths,
     preserveSymlinks: false,
+    // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44137
+    realpathSync: realpath,
   });
 
   try {

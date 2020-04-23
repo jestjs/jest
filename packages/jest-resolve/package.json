@@ -23,7 +23,7 @@
     "jest-pnp-resolver": "^1.2.1",
     "read-pkg-up": "^7.0.1",
     "realpath-native": "^2.0.0",
-    "resolve": "^1.16.1",
+    "resolve": "^1.17.0",
     "slash": "^3.0.0"
   },
   "devDependencies": {
