@@ -216,18 +216,12 @@ const extractJestObjExprIfHoistable = <T extends Node>(
   const callee = expr.get<'callee'>('callee');
   const args = expr.get<'arguments'>('arguments');
 
-  if (!callee.isMemberExpression()) {
+  if (!callee.isMemberExpression() || callee.node.computed) {
     return null;
   }
 
   const object = callee.get<'object'>('object');
-  const property = callee.get<'property'>('property') as
-    | NodePath<Expression>
-    | NodePath<Identifier>;
-
-  if (!property.isIdentifier()) {
-    return null;
-  }
+  const property = callee.get<'property'>('property') as NodePath<Identifier>;
   const propertyName = property.node.name;
 
   const jestObjExpr = isJestObject(object)
