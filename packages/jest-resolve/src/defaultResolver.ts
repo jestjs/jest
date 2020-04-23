@@ -52,6 +52,7 @@ export default function defaultResolver(
 
 export function clearDefaultResolverCache(): void {
   checkedPaths.clear();
+  checkedRealpathPaths.clear();
 }
 
 enum IPathType {
@@ -89,8 +90,14 @@ function statSyncCached(path: string): IPathType {
   return IPathType.OTHER;
 }
 
-function tolerantRealpath(path: Config.Path): Config.Path {
-  let result: Config.Path | undefined = undefined;
+const checkedRealpathPaths = new Map<string, string>();
+function realpathCached(path: Config.Path): Config.Path {
+  let result = checkedRealpathPaths.get(path);
+
+  if (result !== undefined) {
+    return result;
+  }
+
   try {
     result = realpath(path);
   } catch (error) {
@@ -101,6 +108,13 @@ function tolerantRealpath(path: Config.Path): Config.Path {
 
   if (!result) {
     result = path;
+  }
+
+  checkedRealpathPaths.set(path, result);
+
+  if (path !== result) {
+    // also cache the result in case it's ever referenced directly - no reason to `realpath` that as well
+    checkedRealpathPaths.set(result, result);
   }
 
   return result;
@@ -118,5 +132,5 @@ function isDirectory(dir: Config.Path): boolean {
 }
 
 function realpathSync(file: Config.Path): Config.Path {
-  return tolerantRealpath(file);
+  return realpathCached(file);
 }
