@@ -15,5 +15,7 @@ it('processes stack traces and code frames with source maps with coverage', () =
   );
   run('yarn', dir);
   const {stderr} = runJest(dir, ['--no-cache', '--coverage']);
+
+  // Should report an error at source line 13 in lib.ts at line 10 of the test
   expect(extractSummary(stderr)).toMatchSnapshot();
 });
