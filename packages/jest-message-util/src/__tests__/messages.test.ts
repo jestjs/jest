@@ -9,6 +9,7 @@
 import {readFileSync} from 'fs';
 import slash = require('slash');
 import tempy = require('tempy');
+import {wrap} from 'jest-snapshot-serializer-raw';
 import {formatExecError, formatResultsErrors, formatStackTrace} from '..';
 
 const rootDir = tempy.directory();
@@ -313,7 +314,7 @@ describe('getConsoleOutput', () => {
       'path_test',
     );
 
-    expect(message).toMatchSnapshot();
+    expect(wrap(message)).toMatchSnapshot();
   });
 
   it('does not print code frame when noCodeFrame = true', () => {
@@ -338,7 +339,7 @@ describe('getConsoleOutput', () => {
       'path_test',
     );
 
-    expect(message).toMatchSnapshot();
+    expect(wrap(message)).toMatchSnapshot();
   });
 
   it('does not print codeframe when noStackTrace = true', () => {
@@ -362,6 +363,6 @@ describe('getConsoleOutput', () => {
       'path_test',
     );
 
-    expect(message).toMatchSnapshot();
+    expect(wrap(message)).toMatchSnapshot();
   });
 });

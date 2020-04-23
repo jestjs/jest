@@ -36,24 +36,24 @@ exports[`formatStackTrace should strip node internals 1`] = `
 `;
 
 exports[`getConsoleOutput does not print code frame when noCodeFrame = true 1`] = `
-"
-      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
-        "
+
+      [2mat Object.<anonymous> ([22mfile.js[2m:1:7)[22m
+        
 `;
 
 exports[`getConsoleOutput does not print codeframe when noStackTrace = true 1`] = `
-"
-      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
-        "
+
+      [2mat Object.<anonymous> ([22mfile.js[2m:1:7)[22m
+        
 `;
 
 exports[`getConsoleOutput prints code frame and stacktrace 1`] = `
-"
-    </><red><bold>></></><gray> 1 | </><cyan>throw</> <cyan>new</> <yellow>Error</>(<green>\\"Whoops!\\"</>)<yellow>;</></>
-    </> <gray>   | </>      <red><bold>^</></></>
 
-      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
-        "
+    [0m[31m[1m>[22m[39m[90m 1 | [39m[36mthrow[39m [36mnew[39m [33mError[39m([32m"Whoops!"[39m)[33m;[39m[0m
+    [0m [90m   | [39m      [31m[1m^[22m[39m[0m
+
+      [2mat Object.<anonymous> ([22mfile.js[2m:1:7)[22m
+        
 `;
 
 exports[`no codeframe 1`] = `
