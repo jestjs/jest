@@ -57,9 +57,9 @@ const generateConfigFile = (
     });
   }
 
-  if (environment === 'node') {
+  if (environment === 'jsdom') {
     Object.assign(overrides, {
-      testEnvironment: 'node',
+      testEnvironment: 'jsdom',
     });
   }
 

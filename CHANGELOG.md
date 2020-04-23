@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config]` [**BREAKING**] Default to Node testing environment instead of browser (JSDOM) ([#9874](https://github.com/facebook/jest/pull/9874))
+
 ### Fixes
 
 ### Chore & Maintenance

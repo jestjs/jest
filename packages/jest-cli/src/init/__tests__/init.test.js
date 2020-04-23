@@ -124,8 +124,7 @@ describe('init', () => {
 
         const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
         const evaluatedConfig = eval(writtenJestConfig);
-        // should modify when the default environment will be changed to "node"
-        expect(evaluatedConfig).toEqual({});
+        expect(evaluatedConfig).toEqual({testEnvironment: 'jsdom'});
       });
 
       it('should create configuration for {environment: "node"}', async () => {
@@ -135,8 +134,7 @@ describe('init', () => {
 
         const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
         const evaluatedConfig = eval(writtenJestConfig);
-        // should modify when the default environment will be changed to "node"
-        expect(evaluatedConfig).toEqual({testEnvironment: 'node'});
+        expect(evaluatedConfig).toEqual({});
       });
 
       it('should create package.json with configured test command when {scripts: true}', async () => {
