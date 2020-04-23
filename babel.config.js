@@ -31,7 +31,7 @@ module.exports = {
           {
             exclude: ['@babel/plugin-proposal-dynamic-import'],
             shippedProposals: true,
-            targets: {node: 8},
+            targets: {node: '8.3'},
           },
         ],
       ],
@@ -48,7 +48,7 @@ module.exports = {
       '@babel/preset-env',
       {
         shippedProposals: true,
-        targets: {node: 8},
+        targets: {node: '8.3'},
       },
     ],
   ],

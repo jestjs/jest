@@ -232,7 +232,7 @@ describe('dependencyExtractor', () => {
         "dep2",
       );
       if (jest.requireActual(\`dep3\`).cond) {}
-      require
+      jest
         .requireActual('dep4');
 
       // Bad
@@ -252,7 +252,7 @@ describe('dependencyExtractor', () => {
         "dep2",
       );
       if (jest.requireMock(\`dep3\`).cond) {}
-      require
+      jest
         .requireMock('dep4');
 
       // Bad
@@ -272,7 +272,7 @@ describe('dependencyExtractor', () => {
         "dep2",
       );
       if (jest.genMockFromModule(\`dep3\`).cond) {}
-      require
+      jest
         .requireMock('dep4');
 
       // Bad

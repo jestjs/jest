@@ -4,7 +4,6 @@
     "module": "commonjs",
     "lib": ["dom", "es2017"],
     "declaration": true,
-    "declarationMap": true,
     "composite": true,
     "emitDeclarationOnly": true,
     // blocked by https://github.com/chalk/chalk/pull/390

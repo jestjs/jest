@@ -272,9 +272,14 @@ export default class SearchSource {
       const options = {nocase: true, windows: false};
 
       paths = paths
-        .map(p => path.resolve(this._context.config.cwd, p))
-        .map(p => micromatch(allFiles, p.replace(/\\/g, '\\\\'), options)[0])
-        .filter(p => p);
+        .map(p => {
+          const relativePath = path
+            .resolve(this._context.config.cwd, p)
+            .replace(/\\/g, '\\\\');
+          const match = micromatch(allFiles, relativePath, options);
+          return match[0];
+        })
+        .filter(Boolean);
     }
 
     if (globalConfig.runTestsByPath && paths && paths.length) {

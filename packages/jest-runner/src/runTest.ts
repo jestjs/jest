@@ -156,7 +156,15 @@ async function runTestInternal(
 
   const start = Date.now();
 
-  config.setupFiles.forEach(path => runtime.requireModule(path));
+  for (const path of config.setupFiles) {
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
+
+    if (esm) {
+      await runtime.unstable_importModule(path);
+    } else {
+      runtime.requireModule(path);
+    }
+  }
 
   const sourcemapOptions: sourcemapSupport.Options = {
     environment: 'node',
