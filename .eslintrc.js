@@ -147,6 +147,6 @@ module.exports = {
     'sort-imports': [2, {ignoreDeclarationSort: true}],
   },
   settings: {
-    'import/ignore': ['node_modules', 'react-native'],
+    'import/ignore': ['react-native'],
   },
 };
