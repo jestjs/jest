@@ -275,7 +275,6 @@ async function runTestInternal(
       const coverageKeys = Object.keys(coverage);
       if (coverageKeys.length) {
         result.coverage = coverage;
-        result.sourceMaps = runtime.getSourceMapInfo(new Set(coverageKeys));
       }
     }
 

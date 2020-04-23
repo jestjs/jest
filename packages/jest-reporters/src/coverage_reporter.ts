@@ -71,28 +71,6 @@ export default class CoverageReporter extends BaseReporter {
     if (testResult.coverage) {
       this._coverageMap.merge(testResult.coverage);
     }
-
-    const sourceMaps = testResult.sourceMaps;
-    if (sourceMaps) {
-      Object.keys(sourceMaps).forEach(sourcePath => {
-        let inputSourceMap: RawSourceMap | undefined;
-        try {
-          const coverage: istanbulCoverage.FileCoverage = this._coverageMap.fileCoverageFor(
-            sourcePath,
-          );
-          inputSourceMap = (coverage.toJSON() as any).inputSourceMap;
-        } finally {
-          if (inputSourceMap) {
-            this._sourceMapStore.registerMap(sourcePath, inputSourceMap);
-          } else {
-            this._sourceMapStore.registerURL(
-              sourcePath,
-              sourceMaps[sourcePath],
-            );
-          }
-        }
-      });
-    }
   }
 
   async onRunComplete(
@@ -215,13 +193,6 @@ export default class CoverageReporter extends BaseReporter {
               ]);
             } else {
               this._coverageMap.addFileCoverage(result.coverage);
-
-              if (result.sourceMapPath) {
-                this._sourceMapStore.registerURL(
-                  filename,
-                  result.sourceMapPath,
-                );
-              }
             }
           }
         } catch (error) {

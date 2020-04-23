@@ -140,7 +140,6 @@ class Runtime {
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
   private _esmoduleRegistry: Map<string, Promise<VMModule>>;
-  private _needsCoverageMapped: Set<string>;
   private _resolver: Resolver;
   private _shouldAutoMock: boolean;
   private _shouldMockModuleCache: BooleanObject;
@@ -155,6 +154,7 @@ class Runtime {
   private _virtualMocks: BooleanObject;
   private _moduleImplementation?: typeof nativeModule.Module;
   private jestObjectCaches: Map<string, Jest>;
+  private _hasWarnedAboutRequireCacheModification = false;
 
   constructor(
     config: Config.ProjectConfig,
@@ -185,7 +185,6 @@ class Runtime {
     this._isolatedMockRegistry = null;
     this._moduleRegistry = new Map();
     this._esmoduleRegistry = new Map();
-    this._needsCoverageMapped = new Set();
     this._resolver = resolver;
     this._scriptTransformer = new ScriptTransformer(config);
     this._shouldAutoMock = config.automock;
@@ -793,20 +792,9 @@ class Runtime {
       });
   }
 
-  getSourceMapInfo(coveredFiles: Set<string>): Record<string, string> {
-    return Object.keys(this._sourceMapRegistry).reduce<Record<string, string>>(
-      (result, sourcePath) => {
-        if (
-          coveredFiles.has(sourcePath) &&
-          this._needsCoverageMapped.has(sourcePath) &&
-          fs.existsSync(this._sourceMapRegistry[sourcePath])
-        ) {
-          result[sourcePath] = this._sourceMapRegistry[sourcePath];
-        }
-        return result;
-      },
-      {},
-    );
+  // TODO - remove in Jest 26
+  getSourceMapInfo(_coveredFiles: Set<string>): Record<string, string> {
+    return {};
   }
 
   getSourceMaps(): SourceMapRegistry {
@@ -1055,9 +1043,6 @@ class Runtime {
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry[filename] = transformedFile.sourceMapPath;
-      if (transformedFile.mapCoverage) {
-        this._needsCoverageMapped.add(filename);
-      }
     }
     return transformedFile;
   }
@@ -1302,7 +1287,13 @@ class Runtime {
     moduleRequire.resolve = resolve;
     moduleRequire.cache = (() => {
       const notPermittedMethod = () => {
-        console.warn('`require.cache` modification is not permitted');
+        if (!this._hasWarnedAboutRequireCacheModification) {
+          this._environment.global.console.warn(
+            '`require.cache` modification is not permitted',
+          );
+
+          this._hasWarnedAboutRequireCacheModification = true;
+        }
         return true;
       };
       return new Proxy<RequireCache>(Object.create(null), {

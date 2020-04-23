@@ -4,10 +4,8 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use strict';
+import {error} from '../lib';
 
-test('jasmine.objectContaining', () => {
-  expect({input: 'trash', output: 'trash'}).toEqual(
-    jasmine.objectContaining({output: 'trash'}),
-  );
+it('fails', () => {
+  error();
 });

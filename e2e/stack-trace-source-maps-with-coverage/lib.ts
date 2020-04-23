@@ -4,10 +4,11 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-'use strict';
+interface NotUsedButTakesUpLines {
+  a: number;
+  b: string;
+}
 
-test('jasmine.objectContaining', () => {
-  expect({input: 'trash', output: 'trash'}).toEqual(
-    jasmine.objectContaining({output: 'trash'}),
-  );
-});
+export function error() {
+  throw new Error('This did not work!');
+}
