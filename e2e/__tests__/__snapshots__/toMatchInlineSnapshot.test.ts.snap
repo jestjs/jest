@@ -71,7 +71,7 @@ test('handles property matchers', () => {
     Object {
       "createdAt": Any<Date>,
     }
-  \`
+  \`,
   );
 });
 
@@ -85,7 +85,7 @@ expect({createdAt: "string"}).toMatchInlineSnapshot(
   Object {
     "createdAt": Any<Date>,
   }
-\`
+\`,
 );
 });
 `;
@@ -98,7 +98,7 @@ test('handles property matchers', () => {
     Object {
       "createdAt": Any<Date>,
     }
-  \`
+  \`,
   );
 });
 
@@ -112,7 +112,7 @@ test('handles property matchers', () => {
     Object {
       "createdAt": Any<String>,
     }
-  \`
+  \`,
   );
 });
 
@@ -192,7 +192,7 @@ test('removes obsolete external snapshots', () => {
 exports[`supports async matchers 1`] = `
 test('inline snapshots', async () => {
   expect(Promise.resolve('success')).resolves.toMatchInlineSnapshot(
-    \`"success"\`
+    \`"success"\`,
   );
   expect(Promise.reject('fail')).rejects.toMatchInlineSnapshot(\`"fail"\`);
 });
@@ -221,7 +221,7 @@ expect.extend({
         createdAt: expect.any(Date),
         id: expect.any(Number),
       },
-      ...args
+      ...args,
     );
   },
 });
@@ -242,7 +242,7 @@ test('inline snapshots', () => {
       "id": Any<Number>,
       "name": "LeBron James",
     }
-  \`
+  \`,
   );
   expect(user).toMatchUserInlineSnapshot(\`
     Object {
