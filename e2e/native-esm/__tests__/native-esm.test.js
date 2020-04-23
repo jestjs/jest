@@ -21,7 +21,7 @@ test('should have correct import.meta', () => {
     url: expect.any(String),
   });
   expect(
-    import.meta.url.endsWith('/e2e/native-esm/__tests__/native-esm.test.js')
+    import.meta.url.endsWith('/e2e/native-esm/__tests__/native-esm.test.js'),
   ).toBe(true);
 });
 

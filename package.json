@@ -124,29 +124,7 @@
     "proseWrap": "never",
     "singleQuote": true,
     "trailingComma": "all",
-    "arrowParens": "avoid",
-    "overrides": [
-      {
-        "excludeFiles": [
-          "e2e/__tests__/**/*",
-          "website/versioned_docs/**/*.md"
-        ],
-        "files": [
-          "examples/**/*",
-          "scripts/**/*",
-          "e2e/*/**/*",
-          "website/*.js",
-          "website/*/**/*",
-          "eslintImportResolver.js",
-          "babel.config.js"
-        ],
-        "options": {
-          "printWidth": 80,
-          "singleQuote": true,
-          "trailingComma": "es5"
-        }
-      }
-    ]
+    "arrowParens": "avoid"
   },
   "collective": {
     "type": "opencollective",

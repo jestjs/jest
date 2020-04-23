@@ -110,7 +110,7 @@ class Contributors extends React.Component {
               b =>
                 b.tier &&
                 b.tier.slug === 'backer' &&
-                !b.fromAccount.slug.includes('adult')
+                !b.fromAccount.slug.includes('adult'),
             )
             .map(Backer)}
         </div>

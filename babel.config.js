@@ -20,7 +20,7 @@ module.exports = {
         'babel-plugin-typescript-strip-namespaces',
         'babel-plugin-replace-ts-export-assignment',
         require.resolve(
-          './scripts/babel-plugin-jest-replace-ts-require-assignment.js'
+          './scripts/babel-plugin-jest-replace-ts-require-assignment.js',
         ),
       ],
       presets: ['@babel/preset-typescript'],

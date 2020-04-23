@@ -15,7 +15,7 @@ it('CheckboxWithLabel changes the text after click', () => {
       inputRef={checkboxInputRef}
       labelOn="On"
       labelOff="Off"
-    />
+    />,
   );
 
   const labelNode = checkboxLabelRef.current;

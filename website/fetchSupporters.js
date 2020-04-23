@@ -43,7 +43,7 @@ request('https://api.opencollective.com/graphql/v2', graphqlQuery)
 
     return writeFile(
       path.resolve(__dirname, 'backers.json'),
-      JSON.stringify(backers)
+      JSON.stringify(backers),
     );
   })
   .then(() => {

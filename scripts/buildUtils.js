@@ -35,7 +35,7 @@ module.exports.getPackages = function getPackages() {
     assert.equal(
       pkg.engines.node,
       nodeEngineRequiremnt,
-      `Engine requirement in ${pkg.name} should match root`
+      `Engine requirement in ${pkg.name} should match root`,
     );
   });
 
