@@ -57,7 +57,7 @@ jobs:
       fail-fast: false
       matrix:
         # https://github.com/actions/setup-node/issues/27
-        node-version: [8.17.0, 10.x, 12.x, 13.x]
+        node-version: [8.17.0, 10.x, 12.x, 13.x, 14.x]
         os: [ubuntu-latest, macOS-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
