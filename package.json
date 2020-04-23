@@ -124,7 +124,15 @@
     "proseWrap": "never",
     "singleQuote": true,
     "trailingComma": "all",
-    "arrowParens": "avoid"
+    "arrowParens": "avoid",
+    "overrides": [
+      {
+        "files": "website/**/*.js",
+        "options": {
+          "trailingComma": "es5"
+        }
+      }
+    ]
   },
   "collective": {
     "type": "opencollective",

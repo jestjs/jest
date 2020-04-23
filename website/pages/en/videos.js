@@ -73,7 +73,7 @@ class Videos extends React.Component {
             )}
           </Container>
         );
-      },
+      }
     );
 
     return (

@@ -87,7 +87,7 @@ class Versions extends React.Component {
                           </a>
                         </td>
                       </tr>
-                    ),
+                    )
                 )}
               </tbody>
             </table>
