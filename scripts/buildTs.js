@@ -7,6 +7,7 @@
 
 'use strict';
 
+const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
@@ -26,19 +27,17 @@ const packagesWithTs = packages.filter(p =>
 packagesWithTs.forEach(pkgDir => {
   const pkg = require(pkgDir + '/package.json');
 
-  if (!pkg.types) {
-    throw new Error(`Package ${pkg.name} is missing \`types\` field`);
-  }
+  assert.ok(pkg.types, `Package ${pkg.name} is missing \`types\` field`);
+  assert.ok(
+    pkg.typesVersions,
+    `Package ${pkg.name} is missing \`typesVersions\` field`
+  );
 
-  if (!pkg.typesVersions) {
-    throw new Error(`Package ${pkg.name} is missing \`typesVersions\` field`);
-  }
-
-  if (pkg.main.replace(/\.js$/, '.d.ts') !== pkg.types) {
-    throw new Error(
-      `\`main\` and \`types\` field of ${pkg.name} does not match`
-    );
-  }
+  assert.equal(
+    pkg.types,
+    pkg.main.replace(/\.js$/, '.d.ts'),
+    `\`main\` and \`types\` field of ${pkg.name} does not match`
+  );
 });
 
 const args = [

@@ -5,6 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const semver = require('semver');
+const pkg = require('./package.json');
+
+const supportedNodeVersion = semver.minVersion(pkg.engines.node).version;
+
 module.exports = {
   babelrcRoots: ['examples/*'],
   // we don't wanna run the transforms in this file over react native
@@ -31,7 +36,7 @@ module.exports = {
           {
             exclude: ['@babel/plugin-proposal-dynamic-import'],
             shippedProposals: true,
-            targets: {node: '8.3'},
+            targets: {node: supportedNodeVersion},
           },
         ],
       ],
@@ -48,7 +53,7 @@ module.exports = {
       '@babel/preset-env',
       {
         shippedProposals: true,
-        targets: {node: '8.3'},
+        targets: {node: supportedNodeVersion},
       },
     ],
   ],

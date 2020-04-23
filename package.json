@@ -74,6 +74,7 @@
     "realpath-native": "^2.0.0",
     "resolve": "^1.15.0",
     "rimraf": "^3.0.0",
+    "semver": "^6.3.0",
     "slash": "^3.0.0",
     "string-length": "^3.1.0",
     "strip-ansi": "^6.0.0",
