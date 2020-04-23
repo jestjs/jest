@@ -7,6 +7,7 @@
 import * as path from 'path';
 import {extractSummary, run} from '../Utils';
 import runJest from '../runJest';
+import wrap from 'jest-snapshot-serializer-raw';
 
 it('processes stack traces and code frames with source maps with coverage', () => {
   const dir = path.resolve(
@@ -17,5 +18,5 @@ it('processes stack traces and code frames with source maps with coverage', () =
   const {stderr} = runJest(dir, ['--no-cache', '--coverage']);
 
   // Should report an error at source line 13 in lib.ts at line 10 of the test
-  expect(extractSummary(stderr)).toMatchSnapshot();
+  expect(wrap(extractSummary(stderr).rest)).toMatchSnapshot();
 });
