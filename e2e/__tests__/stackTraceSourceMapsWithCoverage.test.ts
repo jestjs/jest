@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 import * as path from 'path';
-import {run} from '../Utils';
+import {extractSummary, run} from '../Utils';
 import runJest from '../runJest';
 
 it('processes stack traces and code frames with source maps with coverage', () => {
@@ -15,9 +15,5 @@ it('processes stack traces and code frames with source maps with coverage', () =
   );
   run('yarn', dir);
   const {stderr} = runJest(dir, ['--no-cache', '--coverage']);
-
-  // Should report an error at source line 13 in lib.ts at line 10 of the test
-  expect(stderr).toMatch("13 |   throw new Error('This did not work!');\n");
-  expect(stderr).toMatch(`at Object.error (lib.ts:13:9)
-      at Object.<anonymous> (__tests__/fails.ts:10:3)`);
+  expect(extractSummary(stderr)).toMatchSnapshot();
 });
