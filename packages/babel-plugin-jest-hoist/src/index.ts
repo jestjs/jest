@@ -235,8 +235,7 @@ const extractJestObjExprIfHoistable = <T extends Node>(
   // Important: Call the function check last
   // It might throw an error to display to the user,
   // which should only happen if we're already sure it's a call on the Jest object.
-  const functionLooksHoistable =
-    FUNCTIONS[propertyName] && FUNCTIONS[propertyName](args);
+  const functionLooksHoistable = FUNCTIONS[propertyName]?.(args);
 
   return functionLooksHoistable ? jestObjExpr : null;
 };
