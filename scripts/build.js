@@ -84,7 +84,7 @@ function buildBrowserPackage(p) {
   if (browser) {
     if (browser.indexOf(BUILD_ES5_DIR) !== 0) {
       throw new Error(
-        `browser field for ${pkgJsonPath} should start with "${BUILD_ES5_DIR}"`
+        `browser field for ${pkgJsonPath} should start with "${BUILD_ES5_DIR}"`,
       );
     }
     let indexFile = path.resolve(srcDir, 'index.js');
@@ -113,7 +113,7 @@ function buildFile(file, silent) {
       process.stdout.write(
         chalk.dim('  \u2022 ') +
           path.relative(PACKAGES_DIR, file) +
-          ' (ignore)\n'
+          ' (ignore)\n',
       );
     return;
   }
@@ -131,7 +131,7 @@ function buildFile(file, silent) {
           chalk.red(' \u21D2 ') +
           path.relative(PACKAGES_DIR, destPath) +
           ' (copy)' +
-          '\n'
+          '\n',
       );
   } else {
     const options = Object.assign({}, transformOptions);
@@ -141,7 +141,7 @@ function buildFile(file, silent) {
       // The modules in the blacklist are injected into the user's sandbox
       // We need to guard some globals there.
       options.plugins.push(
-        require.resolve('./babel-plugin-jest-native-globals')
+        require.resolve('./babel-plugin-jest-native-globals'),
       );
     } else {
       options.plugins = options.plugins.map(plugin => {
@@ -174,7 +174,7 @@ function buildFile(file, silent) {
           path.relative(PACKAGES_DIR, file) +
           chalk.green(' \u21D2 ') +
           path.relative(PACKAGES_DIR, destPath) +
-          '\n'
+          '\n',
       );
   }
 }

@@ -138,7 +138,7 @@ FAIL __tests__/jasmine.objectContaining.test.js
 
        9 | test('jasmine.objectContaining', () => {
       10 |   expect({input: 'trash', output: 'trash'}).toEqual(
-    > 11 |     jasmine.objectContaining({output: 'trash'})
+    > 11 |     jasmine.objectContaining({output: 'trash'}),
          |             ^
       12 |   );
       13 | });

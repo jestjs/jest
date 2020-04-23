@@ -9,7 +9,7 @@ test.each(['red', 'green', 'bean'])(
   "The word %s contains the letter 'e'",
   word => {
     expect(/e/.test(word)).toBe(true);
-  }
+  },
 );
 
 it.each([
