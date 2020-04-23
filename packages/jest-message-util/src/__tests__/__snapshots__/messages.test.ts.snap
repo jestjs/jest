@@ -35,6 +35,27 @@ exports[`formatStackTrace should strip node internals 1`] = `
 "
 `;
 
+exports[`getConsoleOutput does not print code frame when noCodeFrame = true 1`] = `
+"
+      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
+        "
+`;
+
+exports[`getConsoleOutput does not print codeframe when noStackTrace = true 1`] = `
+"
+      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
+        "
+`;
+
+exports[`getConsoleOutput prints code frame and stacktrace 1`] = `
+"
+    </><red><bold>></></><gray> 1 | </><cyan>throw</> <cyan>new</> <yellow>Error</>(<green>\\"Whoops!\\"</>)<yellow>;</></>
+    </> <gray>   | </>      <red><bold>^</></></>
+
+      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
+        "
+`;
+
 exports[`no codeframe 1`] = `
 "  <bold>● </>Test suite failed to run
 
