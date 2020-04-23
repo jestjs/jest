@@ -5,13 +5,7 @@
  */
 
 import React from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  Text,
-  TextInput,
-} from 'react-native';
+import {ActivityIndicator, FlatList, Text, TextInput} from 'react-native';
 import renderer from 'react-test-renderer';
 import Intro from '../Intro';
 
