@@ -148,6 +148,7 @@ class Runtime {
   private _unmockList: RegExp | undefined;
   private _virtualMocks: BooleanObject;
   private _moduleImplementation?: typeof nativeModule.Module;
+  private _hasWarnedAboutRequireCacheModification = false;
 
   constructor(
     config: Config.ProjectConfig,
@@ -1273,9 +1274,13 @@ class Runtime {
     moduleRequire.resolve = resolve;
     moduleRequire.cache = (() => {
       const notPermittedMethod = () => {
-        this._environment.global.console.warn(
-          '`require.cache` modification is not permitted',
-        );
+        if (!this._hasWarnedAboutRequireCacheModification) {
+          this._environment.global.console.warn(
+            '`require.cache` modification is not permitted',
+          );
+
+          this._hasWarnedAboutRequireCacheModification = true;
+        }
         return true;
       };
       return new Proxy<RequireCache>(Object.create(null), {
