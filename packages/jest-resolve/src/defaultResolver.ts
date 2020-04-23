@@ -22,22 +22,6 @@ type ResolverOptions = {
   rootDir?: Config.Path;
 };
 
-function tolerantRealpath(path: Config.Path): Config.Path {
-  try {
-    const resolved = realpath(path);
-
-    if (resolved) {
-      return resolved;
-    }
-  } catch (error) {
-    if (error.code !== 'ENOENT') {
-      throw error;
-    }
-  }
-
-  return path;
-}
-
 export default function defaultResolver(
   path: Config.Path,
   options: ResolverOptions,
@@ -58,12 +42,12 @@ export default function defaultResolver(
     paths: options.paths,
     preserveSymlinks: false,
     // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44137
-    realpathSync: tolerantRealpath,
+    realpathSync,
   });
 
   // Dereference symlinks to ensure we don't create a separate
   // module instance depending on how it was referenced.
-  return tolerantRealpath(result);
+  return realpathSync(result);
 }
 
 export function clearDefaultResolverCache(): void {
@@ -105,6 +89,23 @@ function statSyncCached(path: string): IPathType {
   return IPathType.OTHER;
 }
 
+function tolerantRealpath(path: Config.Path): Config.Path {
+  let result: Config.Path | undefined = undefined;
+  try {
+    result = realpath(path);
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      throw error;
+    }
+  }
+
+  if (!result) {
+    result = path;
+  }
+
+  return result;
+}
+
 /*
  * helper functions
  */
@@ -114,4 +115,8 @@ function isFile(file: Config.Path): boolean {
 
 function isDirectory(dir: Config.Path): boolean {
   return statSyncCached(dir) === IPathType.DIRECTORY;
+}
+
+function realpathSync(file: Config.Path): Config.Path {
+  return tolerantRealpath(file);
 }
