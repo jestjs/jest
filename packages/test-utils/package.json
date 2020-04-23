@@ -19,5 +19,8 @@
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.1.0",
     "semver": "^6.3.0"
+  },
+  "engines": {
+    "node": ">= 8.3"
   }
 }

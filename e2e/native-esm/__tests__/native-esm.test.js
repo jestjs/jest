@@ -9,6 +9,7 @@ import {readFileSync} from 'fs';
 import {createRequire} from 'module';
 import {dirname, resolve} from 'path';
 import {fileURLToPath} from 'url';
+import {jest as jestObject} from '@jest/globals';
 import staticImportedStateful from '../stateful.mjs';
 import staticImportedStatefulFromCjs from '../fromCjs.mjs';
 import {double} from '../index';
@@ -20,7 +21,7 @@ test('should have correct import.meta', () => {
     url: expect.any(String),
   });
   expect(
-    import.meta.url.endsWith('/e2e/native-esm/__tests__/native-esm.test.js')
+    import.meta.url.endsWith('/e2e/native-esm/__tests__/native-esm.test.js'),
   ).toBe(true);
 });
 
@@ -89,4 +90,18 @@ test('handle unlinked dynamic imports', async () => {
   expect(deepDouble).toBe(double);
 
   expect(deepDouble(4)).toBe(8);
+});
+
+test('can import `jest` object', () => {
+  expect(jestObject).toBeDefined();
+});
+
+test('handle dynamic imports of the same module in parallel', async () => {
+  const [{double: first}, {double: second}] = await Promise.all([
+    import('../anotherDynamicImport.js'),
+    import('../anotherDynamicImport.js'),
+  ]);
+
+  expect(first).toBe(second);
+  expect(first(2)).toBe(4);
 });

@@ -9,6 +9,7 @@
     {"path": "../jest-console"},
     {"path": "../jest-environment"},
     {"path": "../jest-environment-node"},
+    {"path": "../jest-globals"},
     {"path": "../jest-haste-map"},
     {"path": "../jest-message-util"},
     {"path": "../jest-mock"},

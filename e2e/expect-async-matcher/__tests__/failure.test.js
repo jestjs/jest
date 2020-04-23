@@ -20,5 +20,5 @@ it('fail with expected promise values', () =>
 
 it('fail with expected promise values and not', () =>
   expect(Promise.resolve([1, 2])).resolves.not.toHaveLengthAsync(
-    Promise.resolve(2)
+    Promise.resolve(2),
   ));

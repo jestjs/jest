@@ -132,7 +132,7 @@ module.exports = {
           '**/__mocks__/**',
           '**/?(*.)(spec|test).js?(x)',
           'scripts/**',
-          'eslintImportResolver.js',
+          'babel.config.js',
           'testSetupFile.js',
         ],
       },

@@ -34,7 +34,7 @@ chokidar
     {
       ignoreInitial: true,
       ignored: /(^|[\/\\])\../, // ignore dotfiles
-    }
+    },
   )
   .on('all', (event, filePath) => {
     if (
@@ -43,7 +43,7 @@ chokidar
     ) {
       console.log(
         chalk.green('->'),
-        `${event}: ${path.relative(PACKAGES_DIR, filePath)}`
+        `${event}: ${path.relative(PACKAGES_DIR, filePath)}`,
       );
       rebuild(filePath);
     } else {
@@ -51,7 +51,7 @@ chokidar
       const buildFile = filePath
         .replace(
           path.join(path.sep, 'src', path.sep),
-          path.join(path.sep, 'build', path.sep)
+          path.join(path.sep, 'build', path.sep),
         )
         .replace(/\.ts$/, '.js');
       try {
@@ -59,8 +59,8 @@ chokidar
         process.stdout.write(
           `${chalk.red('  \u2022 ')}${path.relative(
             PACKAGES_DIR,
-            buildFile
-          )} (deleted)\n`
+            buildFile,
+          )} (deleted)\n`,
         );
       } catch (e) {}
     }
