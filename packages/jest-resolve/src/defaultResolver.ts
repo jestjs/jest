@@ -22,6 +22,22 @@ type ResolverOptions = {
   rootDir?: Config.Path;
 };
 
+function tolerantRealpath(path: Config.Path): Config.Path {
+  try {
+    const resolved = realpath(path);
+
+    if (resolved) {
+      return resolved;
+    }
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      throw error;
+    }
+  }
+
+  return path;
+}
+
 export default function defaultResolver(
   path: Config.Path,
   options: ResolverOptions,
@@ -42,22 +58,12 @@ export default function defaultResolver(
     paths: options.paths,
     preserveSymlinks: false,
     // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44137
-    realpathSync: realpath,
+    realpathSync: tolerantRealpath,
   });
 
-  try {
-    // Dereference symlinks to ensure we don't create a separate
-    // module instance depending on how it was referenced.
-    const resolved = realpath(result);
-
-    if (resolved) {
-      return resolved;
-    }
-  } catch {
-    // ignore
-  }
-
-  return result;
+  // Dereference symlinks to ensure we don't create a separate
+  // module instance depending on how it was referenced.
+  return tolerantRealpath(result);
 }
 
 export function clearDefaultResolverCache(): void {
