@@ -30,18 +30,6 @@ it('renders the ActivityIndicator component', () => {
   expect(tree).toMatchSnapshot();
 });
 
-it('renders the Image component', done => {
-  Image.getSize(
-    'path.jpg',
-    (width, height) => {
-      const tree = renderer.create(<Image style={{height, width}} />).toJSON();
-      expect(tree).toMatchSnapshot();
-      done();
-    },
-    done
-  );
-});
-
 it('renders the TextInput component', () => {
   const tree = renderer
     .create(<TextInput autoCorrect={false} value="apple banana kiwi" />)

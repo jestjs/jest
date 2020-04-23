@@ -105,17 +105,6 @@ exports[`renders the FlatList component 1`] = `
 </RCTScrollView>
 `;
 
-exports[`renders the Image component 1`] = `
-<Image
-  style={
-    Object {
-      "height": 240,
-      "width": 320,
-    }
-  }
-/>
-`;
-
 exports[`renders the TextInput component 1`] = `
 <TextInput
   allowFontScaling={true}
