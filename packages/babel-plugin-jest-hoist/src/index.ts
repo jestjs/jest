@@ -13,7 +13,6 @@ import {
   Node,
   Program,
   callExpression,
-  identifier,
   isIdentifier,
 } from '@babel/types';
 import {statement} from '@babel/template';
