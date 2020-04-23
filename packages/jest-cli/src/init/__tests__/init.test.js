@@ -11,7 +11,6 @@ import * as path from 'path';
 import prompts from 'prompts';
 import {constants} from 'jest-config';
 import init from '../';
-import {onNodeVersions} from '@jest/test-utils';
 
 const {JEST_CONFIG_EXT_ORDER} = constants;
 
@@ -56,20 +55,18 @@ describe('init', () => {
         expect(evaluatedConfig).toEqual({});
       });
 
-      onNodeVersions('^13.2.0', () => {
-        it('should generate empty config with mjs extension', async () => {
-          prompts.mockReturnValueOnce({});
+      it('should generate empty config with mjs extension', async () => {
+        prompts.mockReturnValueOnce({});
 
-          await init(resolveFromFixture('type_module'));
+        await init(resolveFromFixture('type_module'));
 
-          const writtenJestConfigFilename = fs.writeFileSync.mock.calls[0][0];
-          const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
+        const writtenJestConfigFilename = fs.writeFileSync.mock.calls[0][0];
+        const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
 
-          expect(writtenJestConfigFilename.endsWith('.mjs')).toBe(true);
+        expect(writtenJestConfigFilename.endsWith('.mjs')).toBe(true);
 
-          expect(typeof writtenJestConfig).toBe('string');
-          expect(writtenJestConfig.split('\n')[3]).toBe('export default {');
-        });
+        expect(typeof writtenJestConfig).toBe('string');
+        expect(writtenJestConfig.split('\n')[3]).toBe('export default {');
       });
     });
 

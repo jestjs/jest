@@ -6,7 +6,6 @@
   },
   "references": [
     {"path": "../jest-console"},
-    {"path": "../jest-transform"},
     {"path": "../jest-types"}
   ]
 }

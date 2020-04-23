@@ -54,7 +54,7 @@ export default function nodeModulesPaths(
   }
 
   const dirs = paths
-    .reduce(
+    .reduce<Array<Config.Path>>(
       (dirs, aPath) =>
         dirs.concat(
           modules.map(moduleDir =>
@@ -65,7 +65,7 @@ export default function nodeModulesPaths(
               : path.join(prefix, aPath, moduleDir),
           ),
         ),
-      [] as Array<Config.Path>,
+      [],
     )
     .filter(dir => dir !== '');
 

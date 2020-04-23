@@ -1,6 +1,6 @@
 {
   "name": "@jest/source-map",
-  "version": "25.2.1",
+  "version": "25.2.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",

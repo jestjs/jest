@@ -6,7 +6,7 @@
  */
 
 import type {RawSourceMap} from 'source-map';
-import type {Config} from '@jest/types';
+import type {Config, TransformTypes} from '@jest/types';
 
 export type ShouldInstrumentOptions = Pick<
   Config.GlobalConfig,
@@ -22,6 +22,8 @@ export type Options = ShouldInstrumentOptions &
   Partial<{
     isCoreModule: boolean;
     isInternalModule: boolean;
+    supportsDynamicImport: boolean;
+    supportsStaticESM: boolean;
   }>;
 
 // extends directly after https://github.com/sandersn/downlevel-dts/issues/33 is fixed
@@ -36,22 +38,20 @@ export type TransformedSource =
   | {code: string; map?: FixedRawSourceMap | string | null}
   | string;
 
-export type TransformResult = {
-  code: string;
-  originalCode: string;
-  mapCoverage: boolean;
-  sourceMapPath: string | null;
-};
+export type TransformResult = TransformTypes.TransformResult;
 
-export type TransformOptions = {
+export interface TransformOptions {
   instrument: boolean;
-};
+  // names are copied from babel
+  supportsDynamicImport?: boolean;
+  supportsStaticESM?: boolean;
+}
 
-export type CacheKeyOptions = {
+// TODO: For Jest 26 we should combine these into one options shape
+export interface CacheKeyOptions extends TransformOptions {
   config: Config.ProjectConfig;
-  instrument: boolean;
   rootDir: string;
-};
+}
 
 export interface Transformer {
   canInstrument?: boolean;

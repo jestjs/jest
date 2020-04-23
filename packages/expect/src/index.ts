@@ -189,7 +189,7 @@ const makeRejectMatcher = (
   matcherName: string,
   matcher: RawMatcherFn,
   isNot: boolean,
-  actual: Promise<any>,
+  actual: Promise<any> | (() => Promise<any>),
   outerErr: JestAssertionError,
 ): PromiseMatcherFn => (...args) => {
   const options = {
@@ -197,11 +197,16 @@ const makeRejectMatcher = (
     promise: 'rejects',
   };
 
-  if (!isPromise(actual)) {
+  const actualWrapper: Promise<any> =
+    typeof actual === 'function' ? actual() : actual;
+
+  if (!isPromise(actualWrapper)) {
     throw new JestAssertionError(
       matcherUtils.matcherErrorMessage(
         matcherUtils.matcherHint(matcherName, undefined, '', options),
-        `${matcherUtils.RECEIVED_COLOR('received')} value must be a promise`,
+        `${matcherUtils.RECEIVED_COLOR(
+          'received',
+        )} value must be a promise or a function returning a promise`,
         matcherUtils.printWithType(
           'Received',
           actual,
@@ -213,7 +218,7 @@ const makeRejectMatcher = (
 
   const innerErr = new JestAssertionError();
 
-  return actual.then(
+  return actualWrapper.then(
     result => {
       outerErr.message =
         matcherUtils.matcherHint(matcherName, undefined, '', options) +

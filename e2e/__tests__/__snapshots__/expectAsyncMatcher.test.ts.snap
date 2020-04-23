@@ -77,7 +77,7 @@ FAIL __tests__/failure.test.js
       21 | it('fail with expected promise values and not', () =>
     > 22 |   expect(Promise.resolve([1, 2])).resolves.not.toHaveLengthAsync(
          |                                                ^
-      23 |     Promise.resolve(2)
+      23 |     Promise.resolve(2),
       24 |   ));
       25 | 
 

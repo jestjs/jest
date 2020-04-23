@@ -27,7 +27,7 @@ it.each`
   'template table fails on one row expected: $left == $right',
   ({left, right}) => {
     expect(left).toBe(right);
-  }
+  },
 );
 
 it.each`
@@ -38,14 +38,14 @@ it.each`
   'template table fails on all rows expected: $left == $right',
   ({left, right}) => {
     expect(left).toBe(right);
-  }
+  },
 );
 
 test.each(['red', 'green', 'bean'])(
   "The word %s contains the letter 'z'",
   word => {
     expect(/z/.test(word)).toBe(true);
-  }
+  },
 );
 
 describe.each`
@@ -58,7 +58,7 @@ describe.each`
     it('fails ', () => {
       expect(left).toBe(right);
     });
-  }
+  },
 );
 
 describe.each([
@@ -70,5 +70,5 @@ describe.each([
     it('fails', () => {
       expect(left).toBe(right);
     });
-  }
+  },
 );

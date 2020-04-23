@@ -39,7 +39,13 @@ export const getState = (): Circus.State => global[STATE_SYM];
 export const setState = (state: Circus.State): Circus.State =>
   (global[STATE_SYM] = state);
 
-export const dispatch = (event: Circus.Event): void => {
+export const dispatch = async (event: Circus.AsyncEvent): Promise<void> => {
+  for (const handler of eventHandlers) {
+    await handler(event, getState());
+  }
+};
+
+export const dispatchSync = (event: Circus.SyncEvent): void => {
   for (const handler of eventHandlers) {
     handler(event, getState());
   }

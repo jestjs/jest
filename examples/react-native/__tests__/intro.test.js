@@ -56,7 +56,7 @@ it('renders the FlatList component', () => {
         data={['apple', 'banana', 'kiwi']}
         keyExtractor={item => item}
         renderItem={({item}) => <Text>{item}</Text>}
-      />
+      />,
     )
     .toJSON();
   expect(tree).toMatchSnapshot();

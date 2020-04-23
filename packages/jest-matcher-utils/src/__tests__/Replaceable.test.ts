@@ -104,28 +104,17 @@ describe('Replaceable', () => {
       const replaceable = new Replaceable(object);
       const cb = jest.fn();
       replaceable.forEach(cb);
-      expect(cb.mock.calls.length).toBe(3);
+      expect(cb).toHaveBeenCalledTimes(3);
       expect(cb.mock.calls[0]).toEqual([1, 'a', object]);
       expect(cb.mock.calls[1]).toEqual([2, 'b', object]);
       expect(cb.mock.calls[2]).toEqual([3, symbolKey, object]);
-    });
-
-    test('object forEach do not iterate none enumerable symbol key', () => {
-      const symbolKey = Symbol('jest');
-      const object = {a: 1, b: 2};
-      Object.defineProperty(object, symbolKey, {enumerable: false});
-      const replaceable = new Replaceable(object);
-      const cb = jest.fn();
-      replaceable.forEach(cb);
-      expect(cb.mock.calls.length).toBe(2);
-      expect(cb.mock.calls[0]).toEqual([1, 'a', object]);
-      expect(cb.mock.calls[1]).toEqual([2, 'b', object]);
     });
 
     test('array forEach', () => {
       const replaceable = new Replaceable([1, 2, 3]);
       const cb = jest.fn();
       replaceable.forEach(cb);
+      expect(cb).toHaveBeenCalledTimes(3);
       expect(cb.mock.calls[0]).toEqual([1, 0, [1, 2, 3]]);
       expect(cb.mock.calls[1]).toEqual([2, 1, [1, 2, 3]]);
       expect(cb.mock.calls[2]).toEqual([3, 2, [1, 2, 3]]);
@@ -139,6 +128,7 @@ describe('Replaceable', () => {
       const replaceable = new Replaceable(map);
       const cb = jest.fn();
       replaceable.forEach(cb);
+      expect(cb).toHaveBeenCalledTimes(2);
       expect(cb.mock.calls[0]).toEqual([1, 'a', map]);
       expect(cb.mock.calls[1]).toEqual([2, 'b', map]);
     });

@@ -29,10 +29,10 @@ export default class FailedTestsCache {
       .reduce<TestMap>((suiteMap, testResult) => {
         suiteMap[testResult.testFilePath] = testResult.testResults
           .filter(test => test.status === 'failed')
-          .reduce((testMap, test) => {
+          .reduce<{[name: string]: true}>((testMap, test) => {
             testMap[test.fullName] = true;
             return testMap;
-          }, {} as {[name: string]: true});
+          }, {});
         return suiteMap;
       }, {});
 

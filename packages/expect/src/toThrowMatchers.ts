@@ -223,7 +223,7 @@ const toThrowExpectedObject = (
   matcherName: string,
   options: MatcherHintOptions,
   thrown: Thrown | null,
-  expected: any,
+  expected: Error,
 ): SyncExpectationResult => {
   const pass = thrown !== null && thrown.message === expected.message;
 

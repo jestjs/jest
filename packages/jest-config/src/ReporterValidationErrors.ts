@@ -39,7 +39,7 @@ export function createArrayReporterError(
   arrayReporter: Config.ReporterConfig,
   reporterIndex: number,
   valueIndex: number,
-  value: string | Record<string, any>,
+  value: string | Record<string, unknown>,
   expectedType: string,
   valueName: string,
 ): ValidationError {

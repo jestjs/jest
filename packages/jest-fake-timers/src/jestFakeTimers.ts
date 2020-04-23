@@ -372,7 +372,7 @@ export default class FakeTimers<TimerRef> {
     const promisifiableFakeSetTimeout = fn(this._fakeSetTimeout.bind(this));
     promisifiableFakeSetTimeout[util.promisify.custom] = (
       delay?: number,
-      arg?: any,
+      arg?: unknown,
     ) =>
       new Promise(resolve => promisifiableFakeSetTimeout(resolve, delay, arg));
 

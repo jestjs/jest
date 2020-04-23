@@ -40,8 +40,9 @@ export type TestSelectionConfig = {
 const globsToMatcher = (globs: Array<Config.Glob>) => (path: Config.Path) =>
   micromatch([replacePathSepForGlob(path)], globs, {dot: true}).length > 0;
 
-const regexToMatcher = (testRegex: Array<string>) => (path: Config.Path) =>
-  testRegex.some(testRegex => new RegExp(testRegex).test(path));
+const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => (
+  path: Config.Path,
+) => testRegex.some(testRegex => new RegExp(testRegex).test(path));
 
 const toTests = (context: Context, tests: Array<Config.Path>) =>
   tests.map(path => ({
@@ -271,9 +272,14 @@ export default class SearchSource {
       const options = {nocase: true, windows: false};
 
       paths = paths
-        .map(p => path.resolve(this._context.config.cwd, p))
-        .map(p => micromatch(allFiles, p.replace(/\\/g, '\\\\'), options)[0])
-        .filter(p => p);
+        .map(p => {
+          const relativePath = path
+            .resolve(this._context.config.cwd, p)
+            .replace(/\\/g, '\\\\');
+          const match = micromatch(allFiles, relativePath, options);
+          return match[0];
+        })
+        .filter(Boolean);
     }
 
     if (globalConfig.runTestsByPath && paths && paths.length) {
