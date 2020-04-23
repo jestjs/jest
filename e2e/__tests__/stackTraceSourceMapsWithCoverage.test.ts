@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 import * as path from 'path';
+import wrap from 'jest-snapshot-serializer-raw';
 import {extractSummary, run} from '../Utils';
 import runJest from '../runJest';
-import wrap from 'jest-snapshot-serializer-raw';
 
 it('processes stack traces and code frames with source maps with coverage', () => {
   const dir = path.resolve(
