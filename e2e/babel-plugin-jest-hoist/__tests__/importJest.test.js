@@ -6,9 +6,11 @@
  *
  */
 
+/* eslint-disable import/no-duplicates */
 import {jest} from '@jest/globals';
 import {jest as aliasedJest} from '@jest/globals';
 import * as JestGlobals from '@jest/globals';
+/* eslint-enable import/no-duplicates */
 
 import a from '../__test_modules__/a';
 import b from '../__test_modules__/b';
@@ -35,7 +37,7 @@ test('named import', () => {
   expect(a()).toBe('unmocked');
 });
 
-test('namespace import', () => {
+test('aliased named import', () => {
   expect(b._isMockFunction).toBe(undefined);
   expect(b()).toBe('unmocked');
 });
