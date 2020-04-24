@@ -11,12 +11,16 @@ const assert = require('assert');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
+const util = require('util');
 
 const chalk = require('chalk');
 const execa = require('execa');
+const globby = require('globby');
 const rimraf = require('rimraf');
 const throat = require('throat');
 const {getPackages} = require('./buildUtils');
+
+const readFilePromise = util.promisify(fs.readFile);
 
 const packages = getPackages();
 
@@ -64,23 +68,66 @@ try {
   return;
 }
 
-const downlevelArgs = ['--silent', 'downlevel-dts', 'build', 'build/ts3.4'];
-
-console.log(chalk.inverse(' Downleveling TypeScript definition files '));
-
 // we want to limit the number of processes we spawn
 const cpus = Math.max(1, os.cpus().length - 1);
 
 Promise.all(
   packagesWithTs.map(
-    throat(cpus, pkgDir => {
-      // otherwise we get nested `ts3.4` directories
-      rimraf.sync(path.resolve(pkgDir, 'build/ts3.4'));
+    throat(cpus, async pkgDir => {
+      const buildDir = path.resolve(pkgDir, 'build/**/*.d.ts');
+      const ts3dot4 = path.resolve(pkgDir, 'build/ts3.4');
 
-      return execa('yarn', downlevelArgs, {cwd: pkgDir, stdio: 'inherit'});
+      const globbed = await globby([buildDir, `!${ts3dot4}`]);
+
+      const files = await Promise.all(
+        globbed.map(file => Promise.all([file, readFilePromise(file, 'utf8')])),
+      );
+
+      const filesWithReferences = files
+        .filter(([, content]) => content.includes('/// <reference types'))
+        .map(([name, content]) => [
+          name,
+          content
+            .split('\n')
+            .filter(line => line !== '/// <reference types="node" />')
+            .filter(line => line.includes('/// <reference types'))
+            .join('\n'),
+        ])
+        .filter(([, content]) => content.length > 0)
+        .filter(hit => hit.length > 0)
+        .map(([file, references]) =>
+          chalk.red(
+            `${chalk.bold(
+              file,
+            )} has the following non-node type references:\n\n${references}\n`,
+          ),
+        )
+        .join('\n\n');
+
+      if (filesWithReferences) {
+        console.error(filesWithReferences);
+
+        process.exit(1);
+      }
     }),
   ),
 )
+  .then(() => {
+    const downlevelArgs = ['--silent', 'downlevel-dts', 'build', 'build/ts3.4'];
+
+    console.log(chalk.inverse(' Downleveling TypeScript definition files '));
+
+    return Promise.all(
+      packagesWithTs.map(
+        throat(cpus, pkgDir => {
+          // otherwise we get nested `ts3.4` directories
+          rimraf.sync(path.resolve(pkgDir, 'build/ts3.4'));
+
+          return execa('yarn', downlevelArgs, {cwd: pkgDir, stdio: 'inherit'});
+        }),
+      ),
+    );
+  })
   .then(() => {
     console.log(
       chalk.inverse.green(
