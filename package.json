@@ -48,6 +48,7 @@
     "fast-check": "^1.13.0",
     "find-process": "^1.4.1",
     "glob": "^7.1.1",
+    "globby": "^10.0.2",
     "graceful-fs": "^4.2.3",
     "isbinaryfile": "^4.0.0",
     "istanbul-lib-coverage": "^3.0.0",
