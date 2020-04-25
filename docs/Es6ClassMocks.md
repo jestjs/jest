@@ -272,10 +272,9 @@ jest.mock('./sound-player', () => {
   // Works and lets you check for constructor calls:
   return {
     SoundPlayer: jest.fn().mockImplementation(() => {
-      return { playSoundFile: () => {} }
-    })
+      return { playSoundFile: () => {}};
+    });
   }
-}
 });
 ```
 
