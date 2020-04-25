@@ -267,14 +267,14 @@ This will let us inspect usage of our mocked class, using `SoundPlayer.mock.call
 If the class is **not** the default export from the module then you need to return an object with the key that is the same as the class export name.
 
 ```javascript
-import { SoundPlayer } from './sound-player';
+import {SoundPlayer} from './sound-player';
 jest.mock('./sound-player', () => {
   // Works and lets you check for constructor calls:
   return {
     SoundPlayer: jest.fn().mockImplementation(() => {
-      return { playSoundFile: () => {}};
-    });
-  }
+      return {playSoundFile: () => {}};
+    }),
+  };
 });
 ```
 
