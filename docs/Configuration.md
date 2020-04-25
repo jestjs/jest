@@ -762,7 +762,7 @@ If you need to restrict your test-runner to only run in serial rather than being
 
 Default: `[]`
 
-A list of paths to modules that run some code to configure or set up the testing environment. Each setupFile will be run once per test file. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
+A list of paths to modules that run some code to configure or set up the testing environment. Each setupFile will be run once per test file. The absolute path to test file that will be running after the current setupFile is accessible through `JEST_TEST_PATH` environment variable. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
 
 It's also worth noting that `setupFiles` will execute _before_ [`setupFilesAfterEnv`](#setupfilesafterenv-array).
 
@@ -770,7 +770,7 @@ It's also worth noting that `setupFiles` will execute _before_ [`setupFilesAfter
 
 Default: `[]`
 
-A list of paths to modules that run some code to configure or set up the testing framework before each test file in the suite is executed. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
+A list of paths to modules that run some code to configure or set up the testing framework before each test file in the suite is executed. The absolute path to test file that will be running after the current setupFile is accessible through `JEST_TEST_PATH` environment variable. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
 
 If you want a path to be [relative to the root directory of your project](#rootdir-string), please include `<rootDir>` inside a path's string, like `"<rootDir>/a-configs-folder"`.
 

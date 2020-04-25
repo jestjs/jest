@@ -7,6 +7,7 @@
  */
 
 import {TestWatcher} from '@jest/core';
+import {Config} from '@jest/types';
 import TestRunner from '../index';
 
 let mockWorkerFarm;
@@ -82,4 +83,30 @@ test('assign process.env.JEST_WORKER_ID = 1 when in runInBand mode', async () =>
   );
 
   expect(process.env.JEST_WORKER_ID).toBe('1');
+});
+
+test('put absolute path to test file in process.env.JEST_TEST_PATH', async () => {
+  const globalConfig = {maxWorkers: 2} as Config.GlobalConfig;
+  const context = {
+    config: {} as Config.ProjectConfig,
+    hasteFS: null,
+    moduleMap: null,
+    resolver: null,
+  };
+
+  const paths: Array<string> = [];
+
+  await new TestRunner(globalConfig).runTests(
+    [
+      {context, path: '/path/file.test.js'},
+      {context, path: '/path/file2.test.js'},
+    ],
+    new TestWatcher({isWatchMode: true}),
+    async () => {},
+    async () => {},
+    async () => void paths.push(process.env.JEST_TEST_PATH),
+    {serial: true},
+  );
+
+  expect(paths).toEqual(['/path/file.test.js', '/path/file2.test.js']);
 });
