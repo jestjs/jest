@@ -3,6 +3,7 @@
 ### Features
 
 - `[@jest/globals]` New package so Jest's globals can be explicitly imported ([#9801](https://github.com/facebook/jest/pull/9801))
+- `[jest-runner]` Add path to current test file in `process.env.JEST_TEST_PATH` ([#9886](https://github.com/facebook/jest/pull/9886))
 - `[jest-runtime]` Populate `require.cache` ([#9841](https://github.com/facebook/jest/pull/9841))
 
 ### Fixes
