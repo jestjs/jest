@@ -264,7 +264,7 @@ This will let us inspect usage of our mocked class, using `SoundPlayer.mock.call
 
 ### Mocking non default class exports
 
-If the class is the default export from the module then you need to return an object with the key that is the same as the module export name.
+If the class is **not** the default export from the module then you need to return an object with the key that is the same as the class export name.
 
 ```javascript
 import { SoundPlayer } from './sound-player';
