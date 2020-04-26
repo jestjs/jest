@@ -682,8 +682,8 @@ Jest: Coverage data for global was not found.
 <p>Example serializer module:</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// my-serializer-module</span>
 <span class="hljs-built_in">module</span>.exports = {
-  print(val, serialize, indent) {
-    <span class="hljs-keyword">return</span> <span class="hljs-string">'Pretty foo: '</span> + serialize(val.foo);
+  serialize(val, config, indentation, depth, refs, printer) {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">'Pretty foo: '</span> + printer(val.foo);
   },
 
   test(val) {
@@ -691,7 +691,7 @@ Jest: Coverage data for global was not found.
   },
 };
 </code></pre>
-<p><code>serialize</code> is a function that serializes a value using existing plugins.</p>
+<p><code>printer</code> is a function that serializes a value using existing plugins.</p>
 <p>To use <code>my-serializer-module</code> as a serializer, configuration would be as follows:</p>
 <pre><code class="hljs css language-json">{
   ...
@@ -719,6 +719,7 @@ Jest: Coverage data for global was not found.
 }
 </code></pre>
 <p>To make a dependency explicit instead of implicit, you can call <a href="/docs/zh-Hans/expect#expectaddsnapshotserializerserializer"><code>expect.addSnapshotSerializer</code></a> to add a module for an individual test file instead of adding its path to <code>snapshotSerializers</code> in Jest configuration.</p>
+<p>More about serializers API can be found <a href="https://github.com/facebook/jest/tree/master/packages/pretty-format#serialize">here</a>.</p>
 <h3><a class="anchor" aria-hidden="true" id="testenvironment-string"></a><a href="#testenvironment-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testEnvironment</code> [string]</h3>
 <p>默认值︰<code>&quot;jsdom&quot;</code></p>
 <p>The test environment that will be used for testing. The default environment in Jest is a browser-like environment through <a href="https://github.com/tmpvar/jsdom">jsdom</a>. If you are building a node service, you can use the <code>node</code> option to use a node-like environment instead.</p>

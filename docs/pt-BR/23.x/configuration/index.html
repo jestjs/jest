@@ -554,10 +554,10 @@ Jest: Coverage data for global was not found.
 <p>A list of paths to snapshot serializer modules Jest should use for snapshot testing.</p>
 <p>Jest has default serializers for built-in JavaScript types, HTML elements (Jest 20.0.0+), ImmutableJS (Jest 20.0.0+) and for React elements. See <a href="/docs/pt-BR/23.x/tutorial-react-native#snapshot-test">snapshot test tutorial</a> for more information.</p>
 <p>Exemplo de módulo serializador:</p>
-<pre><code class="hljs css language-js"><span class="hljs-comment">// meu-modulo-serializador</span>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// my-serializer-module</span>
 <span class="hljs-built_in">module</span>.exports = {
-  print(val, serialize, indent) {
-    <span class="hljs-keyword">return</span> <span class="hljs-string">'foo arrumado: '</span> + serialize(val.foo);
+  serialize(val, config, indentation, depth, refs, printer) {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">'Pretty foo: '</span> + printer(val.foo);
   },
 
   test(val) {
@@ -565,7 +565,7 @@ Jest: Coverage data for global was not found.
   },
 };
 </code></pre>
-<p><code>serialize</code> é uma função que serializa um valor usando plugins existentes.</p>
+<p><code>printer</code> is a function that serializes a value using existing plugins.</p>
 <p>To use <code>my-serializer-module</code> as a serializer, configuration would be as follows:</p>
 <pre><code class="hljs css language-json">{
   ...
@@ -593,6 +593,7 @@ Jest: Coverage data for global was not found.
 }
 </code></pre>
 <p>Para tornar uma dependência explícita ao invés de implícita, você pode chamar <a href="/docs/pt-BR/23.x/expect#expectaddsnapshotserializerserializer"> <code>expect.addSnapshotSerializer</code></a> para adicionar um módulo para um arquivo de teste individual em vez de adicionar o seu caminho para <code>snapshotSerializers</code> na configuração do Jest.</p>
+<p>More about serializers API can be found <a href="https://github.com/facebook/jest/tree/master/packages/pretty-format#serialize">here</a>.</p>
 <h3><a class="anchor" aria-hidden="true" id="testenvironment-string"></a><a href="#testenvironment-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testEnvironment</code> [string]</h3>
 <p>Padrão: <code>&quot;jsdom&quot;</code></p>
 <p>O ambiente de teste que será usado para testes. O ambiente padrão em Jest é um ambiente semelhante com um navegador através de <a href="https://github.com/tmpvar/jsdom">jsdom</a>. Se você estiver criando um serviço node, você pode usar a opção <code>node</code> para usar um ambiente semelhante ao node em vez disso.</p>
