@@ -66,7 +66,7 @@ test('preserves module identity for symlinks when using browser field resolution
     console.log
         needs-preserved-id executed
 
-          at Object.log (packages/needs-preserved-id/index.js:1:9)
+          at Object.<anonymous> (packages/needs-preserved-id/index.js:1:13)
   `);
   expect(exitCode).toEqual(0);
 });
