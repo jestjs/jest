@@ -18,5 +18,5 @@ beforeEach(() => {
 it('successfully runs the tests inside `babel-plugin-jest-hoist/`', () => {
   const {json} = runWithJson(DIR, ['--no-cache', '--coverage']);
   expect(json.success).toBe(true);
-  expect(json.numTotalTestSuites).toBe(3);
+  expect(json.numTotalTestSuites).toBe(4);
 });
