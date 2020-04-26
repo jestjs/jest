@@ -241,18 +241,30 @@ const extractJestObjExprIfHoistable = <T extends Node>(
 };
 
 /* eslint-disable sort-keys,@typescript-eslint/explicit-module-boundary-types */
-export default (): PluginObj<{jestObjGetterIdentifier: Identifier}> => ({
+export default (): PluginObj<{
+  declareJestObjGetterIdentifier: () => Identifier;
+  jestObjGetterIdentifier?: Identifier;
+}> => ({
   pre({path: program}: {path: NodePath<Program>}) {
-    this.jestObjGetterIdentifier = program.scope.generateUidIdentifier(
-      'getJestObj',
-    );
-    program.unshiftContainer('body', [
-      createJestObjectGetter({
-        GETTER_NAME: this.jestObjGetterIdentifier.name,
-        JEST_GLOBALS_MODULE_JEST_EXPORT_NAME,
-        JEST_GLOBALS_MODULE_NAME,
-      }),
-    ]);
+    this.declareJestObjGetterIdentifier = () => {
+      if (this.jestObjGetterIdentifier) {
+        return this.jestObjGetterIdentifier;
+      }
+
+      this.jestObjGetterIdentifier = program.scope.generateUidIdentifier(
+        'getJestObj',
+      );
+
+      program.unshiftContainer('body', [
+        createJestObjectGetter({
+          GETTER_NAME: this.jestObjGetterIdentifier.name,
+          JEST_GLOBALS_MODULE_JEST_EXPORT_NAME,
+          JEST_GLOBALS_MODULE_NAME,
+        }),
+      ]);
+
+      return this.jestObjGetterIdentifier;
+    };
   },
   visitor: {
     ExpressionStatement(exprStmt) {
@@ -261,7 +273,7 @@ export default (): PluginObj<{jestObjGetterIdentifier: Identifier}> => ({
       );
       if (jestObjExpr) {
         jestObjExpr.replaceWith(
-          callExpression(this.jestObjGetterIdentifier, []),
+          callExpression(this.declareJestObjGetterIdentifier(), []),
         );
       }
     },
@@ -275,7 +287,7 @@ export default (): PluginObj<{jestObjGetterIdentifier: Identifier}> => ({
         } = callExpr;
         if (
           isIdentifier(callee) &&
-          callee.name === this.jestObjGetterIdentifier.name
+          callee.name === this.jestObjGetterIdentifier?.name
         ) {
           const mockStmt = callExpr.getStatementParent();
           const mockStmtNode = mockStmt.node;
