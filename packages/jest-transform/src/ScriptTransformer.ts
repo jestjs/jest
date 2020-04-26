@@ -31,6 +31,8 @@ import type {
   Options,
   ReducedTransformOptions,
   StringMap,
+  SyncTransformer,
+  TransformOptions,
   TransformResult,
   TransformedSource,
   Transformer,
@@ -66,18 +68,16 @@ async function waitForPromiseWithCleanup(
 
 class ScriptTransformer {
   private readonly _cache: ProjectCache;
-  private readonly _transformCache: Map<
+  private readonly _transformCache = new Map<
     Config.Path,
     {transformer: Transformer; transformerConfig: unknown}
-  >;
+  >();
   private _transformsAreLoaded = false;
 
   constructor(
     private readonly _config: Config.ProjectConfig,
     private readonly _cacheFS: StringMap,
   ) {
-    this._transformCache = new Map();
-
     const configString = stableStringify(this._config);
     let projectCache = projectCaches.get(configString);
 
@@ -95,6 +95,28 @@ class ScriptTransformer {
     this._cache = projectCache;
   }
 
+  private _buildCacheKeyFromFileInfo(
+    fileData: string,
+    filename: Config.Path,
+    transformOptions: TransformOptions,
+    transformerCacheKey: string | undefined,
+  ): string {
+    if (transformerCacheKey) {
+      return createHash('md5')
+        .update(transformerCacheKey)
+        .update(CACHE_VERSION)
+        .digest('hex');
+    }
+
+    return createHash('md5')
+      .update(fileData)
+      .update(transformOptions.configString)
+      .update(transformOptions.instrument ? 'instrument' : '')
+      .update(filename)
+      .update(CACHE_VERSION)
+      .digest('hex');
+  }
+
   private _getCacheKey(
     fileData: string,
     filename: Config.Path,
@@ -103,42 +125,80 @@ class ScriptTransformer {
     const configString = this._cache.configString;
     const {transformer, transformerConfig = {}} =
       this._getTransformer(filename) || {};
+    let transformerCacheKey = undefined;
 
-    if (transformer && typeof transformer.getCacheKey === 'function') {
-      return createHash('md5')
-        .update(
-          transformer.getCacheKey(fileData, filename, {
-            ...options,
-            cacheFS: this._cacheFS,
-            config: this._config,
-            configString,
-            transformerConfig,
-          }),
-        )
-        .update(CACHE_VERSION)
-        .digest('hex');
-    } else {
-      return createHash('md5')
-        .update(fileData)
-        .update(configString)
-        .update(options.instrument ? 'instrument' : '')
-        .update(filename)
-        .update(CACHE_VERSION)
-        .digest('hex');
+    const transformOptions: TransformOptions = {
+      ...options,
+      cacheFS: this._cacheFS,
+      config: this._config,
+      configString,
+      transformerConfig,
+    };
+
+    if (typeof transformer?.getCacheKey === 'function') {
+      transformerCacheKey = transformer.getCacheKey(
+        fileData,
+        filename,
+        transformOptions,
+      );
     }
+
+    return this._buildCacheKeyFromFileInfo(
+      fileData,
+      filename,
+      transformOptions,
+      transformerCacheKey,
+    );
   }
 
-  private _getFileCachePath(
+  private async _getCacheKeyAsync(
+    fileData: string,
     filename: Config.Path,
-    content: string,
     options: ReducedTransformOptions,
+  ): Promise<string> {
+    const configString = this._cache.configString;
+    const {transformer, transformerConfig = {}} =
+      this._getTransformer(filename) || {};
+    let transformerCacheKey = undefined;
+
+    const transformOptions: TransformOptions = {
+      ...options,
+      cacheFS: this._cacheFS,
+      config: this._config,
+      configString,
+      transformerConfig,
+    };
+
+    if (transformer) {
+      const getCacheKey =
+        transformer.getCacheKeyAsync || transformer.getCacheKey;
+
+      if (typeof getCacheKey === 'function') {
+        transformerCacheKey = await getCacheKey(
+          fileData,
+          filename,
+          transformOptions,
+        );
+      }
+    }
+
+    return this._buildCacheKeyFromFileInfo(
+      fileData,
+      filename,
+      transformOptions,
+      transformerCacheKey,
+    );
+  }
+
+  private _createFolderFromCacheKey(
+    filename: Config.Path,
+    cacheKey: string,
   ): Config.Path {
     const baseCacheDir = HasteMap.getCacheFilePath(
       this._config.cacheDirectory,
       'jest-transform-cache-' + this._config.name,
       VERSION,
     );
-    const cacheKey = this._getCacheKey(content, filename, options);
     // Create sub folders based on the cacheKey to avoid creating one
     // directory with many files.
     const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
@@ -151,6 +211,26 @@ class ScriptTransformer {
     createDirectory(cacheDir);
 
     return cachePath;
+  }
+
+  private _getFileCachePath(
+    filename: Config.Path,
+    content: string,
+    options: ReducedTransformOptions,
+  ): Config.Path {
+    const cacheKey = this._getCacheKey(content, filename, options);
+
+    return this._createFolderFromCacheKey(filename, cacheKey);
+  }
+
+  private async _getFileCachePathAsync(
+    filename: Config.Path,
+    content: string,
+    options: ReducedTransformOptions,
+  ): Promise<Config.Path> {
+    const cacheKey = await this._getCacheKeyAsync(content, filename, options);
+
+    return this._createFolderFromCacheKey(filename, cacheKey);
   }
 
   private _getTransformPath(filename: Config.Path) {
@@ -201,12 +281,14 @@ class ScriptTransformer {
           if (typeof transformer.createTransformer === 'function') {
             transformer = transformer.createTransformer(transformerConfig);
           }
-          if (typeof transformer.process !== 'function') {
+          if (
+            typeof transformer.process !== 'function' &&
+            typeof transformer.processAsync !== 'function'
+          ) {
             throw new TypeError(
-              'Jest: a transform must export a `process` function.',
+              'Jest: a transform must export a `process` or `processAsync` function.',
             );
           }
-
           const res = {transformer, transformerConfig};
           this._transformCache.set(transformPath, res);
         },
@@ -288,52 +370,22 @@ class ScriptTransformer {
     return input;
   }
 
-  transformSource(
-    filepath: Config.Path,
+  private _buildTransformResult(
+    filename: string,
+    cacheFilePath: string,
     content: string,
+    transformer: Transformer | undefined,
+    shouldCallTransform: boolean,
     options: ReducedTransformOptions,
+    processed: TransformedSource | null,
+    sourceMapPath: Config.Path | null,
   ): TransformResult {
-    const filename = tryRealpath(filepath);
-    const {transformer, transformerConfig = {}} =
-      this._getTransformer(filename) || {};
-    const cacheFilePath = this._getFileCachePath(filename, content, options);
-    let sourceMapPath: Config.Path | null = cacheFilePath + '.map';
-    // Ignore cache if `config.cache` is set (--no-cache)
-    let code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
-
-    const shouldCallTransform = transformer && this.shouldTransform(filename);
-
-    // That means that the transform has a custom instrumentation
-    // logic and will handle it based on `config.collectCoverage` option
-    const transformWillInstrument =
-      shouldCallTransform && transformer && transformer.canInstrument;
-
-    if (code) {
-      // This is broken: we return the code, and a path for the source map
-      // directly from the cache. But, nothing ensures the source map actually
-      // matches that source code. They could have gotten out-of-sync in case
-      // two separate processes write concurrently to the same cache files.
-      return {
-        code,
-        originalCode: content,
-        sourceMapPath,
-      };
-    }
-
     let transformed: TransformedSource = {
       code: content,
       map: null,
     };
 
     if (transformer && shouldCallTransform) {
-      const processed = transformer.process(content, filename, {
-        ...options,
-        cacheFS: this._cacheFS,
-        config: this._config,
-        configString: this._cache.configString,
-        transformerConfig,
-      });
-
       if (typeof processed === 'string') {
         transformed.code = processed;
       } else if (processed != null && typeof processed.code === 'string') {
@@ -341,7 +393,8 @@ class ScriptTransformer {
       } else {
         throw new TypeError(
           "Jest: a transform's `process` function must return a string, " +
-            'or an object with `code` key containing this string.',
+            'or an object with `code` key containing this string. ' +
+            "It's `processAsync` function must return a Promise resolving to it.",
         );
       }
     }
@@ -364,8 +417,14 @@ class ScriptTransformer {
       }
     }
 
+    // That means that the transform has a custom instrumentation
+    // logic and will handle it based on `config.collectCoverage` option
+    const transformWillInstrument =
+      shouldCallTransform && transformer && transformer.canInstrument;
+
     // Apply instrumentation to the code if necessary, keeping the instrumented code and new map
     let map = transformed.map;
+    let code;
     if (!transformWillInstrument && options.instrument) {
       /**
        * We can map the original source code to the instrumented code ONLY if
@@ -396,6 +455,9 @@ class ScriptTransformer {
     if (map) {
       const sourceMapContent =
         typeof map === 'string' ? map : JSON.stringify(map);
+
+      invariant(sourceMapPath, 'We should always have default sourceMapPath');
+
       writeCacheFile(sourceMapPath, sourceMapContent);
     } else {
       sourceMapPath = null;
@@ -408,6 +470,168 @@ class ScriptTransformer {
       originalCode: content,
       sourceMapPath,
     };
+  }
+
+  transformSource(
+    filepath: Config.Path,
+    content: string,
+    options: ReducedTransformOptions,
+  ): TransformResult {
+    const filename = tryRealpath(filepath);
+    const {transformer, transformerConfig = {}} =
+      this._getTransformer(filename) || {};
+    const cacheFilePath = this._getFileCachePath(filename, content, options);
+    const sourceMapPath: Config.Path = cacheFilePath + '.map';
+    // Ignore cache if `config.cache` is set (--no-cache)
+    const code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
+
+    if (code) {
+      // This is broken: we return the code, and a path for the source map
+      // directly from the cache. But, nothing ensures the source map actually
+      // matches that source code. They could have gotten out-of-sync in case
+      // two separate processes write concurrently to the same cache files.
+      return {
+        code,
+        originalCode: content,
+        sourceMapPath,
+      };
+    }
+
+    let processed = null;
+
+    let shouldCallTransform = false;
+
+    if (transformer && this.shouldTransform(filename)) {
+      shouldCallTransform = true;
+
+      assertSyncTransformer(transformer, this._getTransformPath(filename));
+
+      processed = transformer.process(content, filename, {
+        ...options,
+        cacheFS: this._cacheFS,
+        config: this._config,
+        configString: this._cache.configString,
+        transformerConfig,
+      });
+    }
+
+    return this._buildTransformResult(
+      filename,
+      cacheFilePath,
+      content,
+      transformer,
+      shouldCallTransform,
+      options,
+      processed,
+      sourceMapPath,
+    );
+  }
+
+  async transformSourceAsync(
+    filepath: Config.Path,
+    content: string,
+    options: ReducedTransformOptions,
+  ): Promise<TransformResult> {
+    const filename = tryRealpath(filepath);
+    const {transformer, transformerConfig = {}} =
+      this._getTransformer(filename) || {};
+    const cacheFilePath = await this._getFileCachePathAsync(
+      filename,
+      content,
+      options,
+    );
+    const sourceMapPath: Config.Path = cacheFilePath + '.map';
+    // Ignore cache if `config.cache` is set (--no-cache)
+    const code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
+
+    if (code) {
+      // This is broken: we return the code, and a path for the source map
+      // directly from the cache. But, nothing ensures the source map actually
+      // matches that source code. They could have gotten out-of-sync in case
+      // two separate processes write concurrently to the same cache files.
+      return {
+        code,
+        originalCode: content,
+        sourceMapPath,
+      };
+    }
+
+    let processed = null;
+
+    let shouldCallTransform = false;
+
+    if (transformer && this.shouldTransform(filename)) {
+      shouldCallTransform = true;
+      const process = transformer.processAsync || transformer.process;
+
+      // This is probably dead code since `_getTransformerAsync` already asserts this
+      invariant(
+        typeof process === 'function',
+        'A transformer must always export either a `process` or `processAsync`',
+      );
+
+      processed = await process(content, filename, {
+        ...options,
+        cacheFS: this._cacheFS,
+        config: this._config,
+        configString: this._cache.configString,
+        transformerConfig,
+      });
+    }
+
+    return this._buildTransformResult(
+      filename,
+      cacheFilePath,
+      content,
+      transformer,
+      shouldCallTransform,
+      options,
+      processed,
+      sourceMapPath,
+    );
+  }
+
+  private async _transformAndBuildScriptAsync(
+    filename: Config.Path,
+    options: Options,
+    transformOptions: ReducedTransformOptions,
+    fileSource?: string,
+  ): Promise<TransformResult> {
+    const {isInternalModule} = options;
+    let fileContent = fileSource ?? this._cacheFS.get(filename);
+    if (!fileContent) {
+      fileContent = fs.readFileSync(filename, 'utf8');
+      this._cacheFS.set(filename, fileContent);
+    }
+    const content = stripShebang(fileContent);
+
+    let code = content;
+    let sourceMapPath: string | null = null;
+
+    const willTransform =
+      !isInternalModule &&
+      (transformOptions.instrument || this.shouldTransform(filename));
+
+    try {
+      if (willTransform) {
+        const transformedSource = await this.transformSourceAsync(
+          filename,
+          content,
+          transformOptions,
+        );
+
+        code = transformedSource.code;
+        sourceMapPath = transformedSource.sourceMapPath;
+      }
+
+      return {
+        code,
+        originalCode: content,
+        sourceMapPath,
+      };
+    } catch (e) {
+      throw handlePotentialSyntaxError(e);
+    }
   }
 
   private _transformAndBuildScript(
@@ -451,6 +675,34 @@ class ScriptTransformer {
     } catch (e) {
       throw handlePotentialSyntaxError(e);
     }
+  }
+
+  async transformAsync(
+    filename: Config.Path,
+    options: Options,
+    fileSource?: string,
+  ): Promise<TransformResult> {
+    const instrument =
+      options.coverageProvider === 'babel' &&
+      shouldInstrument(filename, options, this._config);
+    const scriptCacheKey = getScriptCacheKey(filename, instrument);
+    let result = this._cache.transformedFiles.get(scriptCacheKey);
+    if (result) {
+      return result;
+    }
+
+    result = await this._transformAndBuildScriptAsync(
+      filename,
+      options,
+      {...options, instrument},
+      fileSource,
+    );
+
+    if (scriptCacheKey) {
+      this._cache.transformedFiles.set(scriptCacheKey, result);
+    }
+
+    return result;
   }
 
   transform(
@@ -574,9 +826,7 @@ class ScriptTransformer {
     const ignoreRegexp = this._cache.ignorePatternsRegExp;
     const isIgnored = ignoreRegexp ? ignoreRegexp.test(filename) : false;
 
-    return (
-      !!this._config.transform && !!this._config.transform.length && !isIgnored
-    );
+    return this._config.transform.length !== 0 && !isIgnored;
   }
 }
 
@@ -748,6 +998,23 @@ const calcTransformRegExp = (config: Config.ProjectConfig) => {
 
   return transformRegexp;
 };
+
+function invariant(condition: unknown, message?: string): asserts condition {
+  if (!condition) {
+    throw new Error(message);
+  }
+}
+
+function assertSyncTransformer(
+  transformer: Transformer,
+  name: string | undefined,
+): asserts transformer is SyncTransformer {
+  invariant(name);
+  invariant(
+    typeof transformer.process === 'function',
+    `Jest: synchronous transformer ${name} must export a "process" function.`,
+  );
+}
 
 export type TransformerType = ScriptTransformer;
 
