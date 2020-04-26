@@ -551,6 +551,10 @@ export default function normalize(
     delete options.testPathDirs;
   }
 
+  if (!options.modulePathIgnorePatterns) {
+    options.modulePathIgnorePatterns = DEFAULT_CONFIG.modulePathIgnorePatterns;
+  }
+
   if (!options.roots) {
     options.roots = [options.rootDir];
   }

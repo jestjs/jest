@@ -499,11 +499,14 @@ _Note: If you provide module name without boundaries `^$` it may cause hard to s
 
 ### `modulePathIgnorePatterns` [array\<string>]
 
-Default: `[]`
+Default: `['<rootDir>/\\.']`
 
 An array of regexp pattern strings that are matched against all module paths before those paths are to be considered 'visible' to the module loader. If a given module's path matches any of the patterns, it will not be `require()`-able in the test environment.
 
-These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/"]`.
+These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/"]
+
+Note: By default jest ignores hidden files, but if you need not to ignore hidden files you can change this option to `[]` or any other value, so the default value will not be applied.
+`.
 
 ### `modulePaths` [array\<string>]
 

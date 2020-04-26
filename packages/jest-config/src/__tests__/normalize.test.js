@@ -624,6 +624,25 @@ describe('testPathIgnorePatterns', () => {
 });
 
 describe('modulePathIgnorePatterns', () => {
+  it('defaults to ignore hidden files', () => {
+    const {options} = normalize({rootDir: '/root'}, {});
+
+    expect(options.modulePathIgnorePatterns).toEqual([
+      joinForPattern('', 'root', '\\.'),
+    ]);
+  });
+
+  it('is overwritten by argv', () => {
+    const {options} = normalize(
+      {rootDir: '/root'},
+      {
+        modulePathIgnorePatterns: [],
+      },
+    );
+
+    expect(options.modulePathIgnorePatterns).toEqual([]);
+  });
+
   it('does not normalize paths relative to rootDir', () => {
     // This is a list of patterns, so we can't assume any of them are
     // directories

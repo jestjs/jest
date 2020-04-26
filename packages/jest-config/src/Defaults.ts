@@ -38,7 +38,7 @@ const defaultOptions: Config.DefaultOptions = {
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
   moduleNameMapper: {},
-  modulePathIgnorePatterns: [],
+  modulePathIgnorePatterns: ['<rootDir>/\\.'],
   noStackTrace: false,
   notify: false,
   notifyMode: 'failure-change',
