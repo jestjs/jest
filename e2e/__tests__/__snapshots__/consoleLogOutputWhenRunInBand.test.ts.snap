@@ -20,6 +20,6 @@ exports[`prints console.logs when run with forceExit 3`] = `
   console.log
     Hey
 
-      at Object.<anonymous> (__tests__/a-banana.js:1:1)
+      at Object.log (__tests__/a-banana.js:1:30)
 
 `;
