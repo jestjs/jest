@@ -53,3 +53,15 @@ exports[`is available globally when matcher is unary 1`] = `expected 15 to be di
 exports[`is available globally when matcher is variadic 1`] = `expected 15 to be within range 1 - 3`;
 
 exports[`is ok if there is no message specified 1`] = `<r>No message was specified for this matcher.</>`;
+
+exports[`prints the Symbol into the error message 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "a": toBeSymbol<Symbol(bar)>,</>
+<r>+   "a": Symbol(foo),</>
+<d>  }</>
+`;
