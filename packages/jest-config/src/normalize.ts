@@ -16,7 +16,7 @@ import chalk = require('chalk');
 import micromatch = require('micromatch');
 import {sync as realpath} from 'realpath-native';
 import Resolver = require('jest-resolve');
-import {replacePathSepForRegex} from 'jest-regex-util';
+import {escapePathForRegex, replacePathSepForRegex} from 'jest-regex-util';
 import merge = require('deepmerge');
 import validatePattern from './validatePattern';
 import getMaxWorkers from './getMaxWorkers';
@@ -308,6 +308,7 @@ const normalizeUnmockedModulePathPatterns = (
     | 'watchPathIgnorePatterns'
     | 'unmockedModulePathPatterns'
   >,
+  escapeRootDirPath = false,
 ) =>
   // _replaceRootDirTags is specifically well-suited for substituting
   // <rootDir> in paths (it deals with properly interpreting relative path
@@ -316,7 +317,14 @@ const normalizeUnmockedModulePathPatterns = (
   // For patterns, direct global substitution is far more ideal, so we
   // special case substitutions for patterns here.
   options[key]!.map(pattern =>
-    replacePathSepForRegex(pattern.replace(/<rootDir>/g, options.rootDir)),
+    replacePathSepForRegex(
+      pattern.replace(
+        /<rootDir>/g,
+        escapeRootDirPath
+          ? escapePathForRegex(options.rootDir)
+          : options.rootDir,
+      ),
+    ),
   );
 
 const normalizePreprocessor = (
@@ -720,8 +728,10 @@ export default function normalize(
             ];
           });
         break;
-      case 'coveragePathIgnorePatterns':
       case 'modulePathIgnorePatterns':
+        value = normalizeUnmockedModulePathPatterns(oldOptions, key, true);
+        break;
+      case 'coveragePathIgnorePatterns':
       case 'testPathIgnorePatterns':
       case 'transformIgnorePatterns':
       case 'watchPathIgnorePatterns':

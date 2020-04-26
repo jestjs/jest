@@ -118,6 +118,7 @@ describe('SearchSource', () => {
       const {options: config} = normalize(
         {
           moduleFileExtensions: ['js', 'jsx', 'txt'],
+          modulePathIgnorePatterns: [],
           name,
           rootDir,
           testMatch: undefined,
@@ -142,6 +143,7 @@ describe('SearchSource', () => {
       const {options: config} = normalize(
         {
           moduleFileExtensions: ['js', 'jsx', 'txt'],
+          modulePathIgnorePatterns: [],
           name,
           rootDir,
           testMatch: ['**/not-really-a-test.txt', '!**/do-not-match-me.txt'],

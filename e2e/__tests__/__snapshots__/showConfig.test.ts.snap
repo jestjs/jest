@@ -36,7 +36,9 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "node"
       ],
       "moduleNameMapper": [],
-      "modulePathIgnorePatterns": [],
+      "modulePathIgnorePatterns": [
+        "<<REPLACED_ROOT_DIR>>/\\\\."
+      ],
       "name": "[md5 hash]",
       "prettierPath": "prettier",
       "resetMocks": false,
