@@ -78,7 +78,7 @@ export const setMatchers = (
         }
 
         toAsymmetricMatcher() {
-          return `${this.toString()}<${this.sample.join(', ')}>`;
+          return `${this.toString()}<${this.sample.map(String).join(', ')}>`;
         }
       }
 

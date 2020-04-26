@@ -51,6 +51,7 @@ export type TestRunnerOptions = {
 
 export type TestRunnerContext = {
   changedFiles?: Set<Config.Path>;
+  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
 };
 
 export type TestRunnerSerializedContext = {
