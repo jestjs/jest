@@ -56,16 +56,23 @@ export interface CacheKeyOptions extends TransformOptions {
   rootDir: string;
 }
 
-export interface Transformer {
+export interface SyncTransformer {
   canInstrument?: boolean;
-  createTransformer?: (options?: any) => Transformer;
+  createTransformer?: (options?: any) => SyncTransformer;
 
   getCacheKey?: (
-    fileData: string,
+    content: string,
     filePath: Config.Path,
     configStr: string,
     options: CacheKeyOptions,
   ) => string;
+
+  getCacheKeyAsync?: (
+    content: string,
+    filePath: Config.Path,
+    configStr: string,
+    options: CacheKeyOptions,
+  ) => Promise<string>;
 
   process: (
     sourceText: string,
@@ -73,4 +80,46 @@ export interface Transformer {
     config: Config.ProjectConfig,
     options?: TransformOptions,
   ) => TransformedSource;
+
+  processAsync?: (
+    sourceText: string,
+    sourcePath: Config.Path,
+    config: Config.ProjectConfig,
+    options?: TransformOptions,
+  ) => Promise<TransformedSource>;
 }
+
+export interface AsyncTransformer {
+  canInstrument?: boolean;
+  createTransformer?: (options?: any) => AsyncTransformer;
+
+  getCacheKey?: (
+    content: string,
+    filePath: Config.Path,
+    configStr: string,
+    options: CacheKeyOptions,
+  ) => string;
+
+  getCacheKeyAsync?: (
+    content: string,
+    filePath: Config.Path,
+    configStr: string,
+    options: CacheKeyOptions,
+  ) => Promise<string>;
+
+  process?: (
+    sourceText: string,
+    sourcePath: Config.Path,
+    config: Config.ProjectConfig,
+    options?: TransformOptions,
+  ) => TransformedSource;
+
+  processAsync: (
+    sourceText: string,
+    sourcePath: Config.Path,
+    config: Config.ProjectConfig,
+    options?: TransformOptions,
+  ) => Promise<TransformedSource>;
+}
+
+export type Transformer = SyncTransformer | AsyncTransformer;

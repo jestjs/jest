@@ -19,7 +19,7 @@ import * as fs from 'graceful-fs';
 import slash = require('slash');
 import type {
   TransformOptions as JestTransformOptions,
-  Transformer,
+  SyncTransformer,
 } from '@jest/transform';
 import type {Config} from '@jest/types';
 import {loadPartialConfig} from './loadBabelConfig';
@@ -29,7 +29,7 @@ const jestPresetPath = require.resolve('babel-preset-jest');
 const babelIstanbulPlugin = require.resolve('babel-plugin-istanbul');
 
 // Narrow down the types
-interface BabelJestTransformer extends Transformer {
+interface BabelJestTransformer extends SyncTransformer {
   canInstrument: true;
 }
 interface BabelJestTransformOptions extends TransformOptions {

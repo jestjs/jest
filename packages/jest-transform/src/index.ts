@@ -14,6 +14,8 @@ export type {
   CacheKeyOptions,
   CallerTransformOptions,
   Transformer,
+  SyncTransformer,
+  AsyncTransformer,
   ShouldInstrumentOptions,
   Options as TransformationOptions,
   TransformOptions,

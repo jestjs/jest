@@ -25,17 +25,25 @@ const evalCommand: repl.REPLEval = (
   let result;
   try {
     if (transformer) {
-      const transformResult = transformer.process(
-        cmd,
-        jestGlobalConfig.replname || 'jest.js',
-        jestProjectConfig,
-      );
-      cmd =
-        typeof transformResult === 'string'
-          ? transformResult
-          : transformResult.code;
+      if (!transformer.process) {
+        throw new TypeError(
+          'Jest: currently only sync transforms are supported; a transform must export a `process function',
+        );
+      }
+      // TODO: support async as well
+      if (transformer.process) {
+        const transformResult = transformer.process(
+          cmd,
+          jestGlobalConfig.replname || 'jest.js',
+          jestProjectConfig,
+        );
+        cmd =
+          typeof transformResult === 'string'
+            ? transformResult
+            : transformResult.code;
+      }
+      result = runInThisContext(cmd);
     }
-    result = runInThisContext(cmd);
   } catch (e) {
     return callback(isRecoverableError(e) ? new repl.Recoverable(e) : e);
   }
