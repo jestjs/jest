@@ -8,6 +8,7 @@
 
 ### Fixes
 
+- `[jest-config]` [**BREAKING**] Ignore hidden files by default ([#9887](https://github.com/facebook/jest/pull/9887))
 - `[@jest/environment]` Make sure not to reference Jest types ([#9875](https://github.com/facebook/jest/pull/9875))
 - `[jest-message-util]` Code frame printing should respect `--noStackTrace` flag ([#9866](https://github.com/facebook/jest/pull/9866))
 - `[jest-runtime]` Support importing CJS from ESM using `import` statements ([#9850](https://github.com/facebook/jest/pull/9850))
