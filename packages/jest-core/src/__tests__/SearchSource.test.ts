@@ -538,7 +538,7 @@ describe('SearchSource', () => {
       '../../../jest-runtime/src/__tests__/test_root',
     );
 
-    beforeEach(done => {
+    beforeEach(async () => {
       const {options: config} = normalize(
         {
           haste: {
@@ -553,12 +553,11 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      Runtime.createContext(config, {maxWorkers, watchman: false}).then(
-        context => {
-          searchSource = new SearchSource(context);
-          done();
-        },
-      );
+      const context = await Runtime.createContext(config, {
+        maxWorkers,
+        watchman: false,
+      });
+      searchSource = new SearchSource(context);
     });
 
     it('return empty set if no SCM', () => {

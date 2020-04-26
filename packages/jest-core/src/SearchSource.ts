@@ -352,8 +352,7 @@ export default class SearchSource {
     const dependencyResolver = this._getOrBuildDependencyResolver();
     const relatedSourcesSet = new Set<string>();
     changedFiles.forEach(filePath => {
-      const isTestFile = this.isTestFilePath(filePath);
-      if (isTestFile) {
+      if (this.isTestFilePath(filePath)) {
         const sourcePaths = dependencyResolver.resolve(filePath, {
           skipNodeResolution: this._context.config.skipNodeResolution,
         });
