@@ -60,11 +60,13 @@ const hasSCM = (changedFilesInfo: ChangedFiles) => {
 
 export default class SearchSource {
   private _context: Context;
+  private _dependencyResolver: DependencyResolver | null;
   private _testPathCases: TestPathCases = [];
 
   constructor(context: Context) {
     const {config} = context;
     this._context = context;
+    this._dependencyResolver = null;
 
     const rootPattern = new RegExp(
       config.roots.map(dir => escapePathForRegex(dir + path.sep)).join('|'),
@@ -97,6 +99,17 @@ export default class SearchSource {
         stat: 'testRegex',
       });
     }
+  }
+
+  private _getOrBuildDependencyResolver(): DependencyResolver {
+    if (!this._dependencyResolver) {
+      this._dependencyResolver = new DependencyResolver(
+        this._context.resolver,
+        this._context.hasteFS,
+        buildSnapshotResolver(this._context.config),
+      );
+    }
+    return this._dependencyResolver;
   }
 
   private _filterTestPathsWithStats(
@@ -162,11 +175,7 @@ export default class SearchSource {
     allPaths: Set<Config.Path>,
     collectCoverage: boolean,
   ): SearchResult {
-    const dependencyResolver = new DependencyResolver(
-      this._context.resolver,
-      this._context.hasteFS,
-      buildSnapshotResolver(this._context.config),
-    );
+    const dependencyResolver = this._getOrBuildDependencyResolver();
 
     if (!collectCoverage) {
       return {
@@ -340,11 +349,7 @@ export default class SearchSource {
       return [];
     }
     const {changedFiles} = changedFilesInfo;
-    const dependencyResolver = new DependencyResolver(
-      this._context.resolver,
-      this._context.hasteFS,
-      buildSnapshotResolver(this._context.config),
-    );
+    const dependencyResolver = this._getOrBuildDependencyResolver();
     const relatedSourcesSet = new Set<string>();
     changedFiles.forEach(filePath => {
       const isTestFile = this.isTestFilePath(filePath);
