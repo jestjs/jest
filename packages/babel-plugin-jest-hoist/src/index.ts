@@ -266,6 +266,7 @@ export default (): PluginObj<{jestObjGetterIdentifier: Identifier}> => ({
       }
     },
   },
+  // in `post` to make sure we come after an import transform and can unshift above the `require`s
   post({path: program}: {path: NodePath<Program>}) {
     program.traverse({
       CallExpression: callExpr => {
@@ -278,8 +279,11 @@ export default (): PluginObj<{jestObjGetterIdentifier: Identifier}> => ({
         ) {
           const mockStmt = callExpr.getStatementParent();
           const mockStmtNode = mockStmt.node;
-          mockStmt.remove();
-          program.unshiftContainer('body', [mockStmtNode]);
+          const mockStmtParent = mockStmt.parentPath;
+          if (mockStmtParent.isBlock()) {
+            mockStmt.remove();
+            mockStmtParent.unshiftContainer('body', [mockStmtNode]);
+          }
         }
       },
     });
