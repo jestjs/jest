@@ -505,8 +505,7 @@ An array of regexp pattern strings that are matched against all module paths bef
 
 These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/"]
 
-Note: By default jest ignores hidden files, but if you need not to ignore hidden files you can change this option to `[]` or any other value, so the default value will not be applied.
-`.
+Note: By default jest ignores hidden files, but if you need not to ignore hidden files you can change this option to `[]` or any other value, so the default value will not be applied .
 
 ### `modulePaths` [array\<string>]
 
