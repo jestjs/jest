@@ -44,6 +44,7 @@ namespace TestRunner {
 class TestRunner {
   private _globalConfig: Config.GlobalConfig;
   private _context: JestTestRunnerContext;
+  readonly isSerial?: boolean;
 
   constructor(
     globalConfig: Config.GlobalConfig,
@@ -193,7 +194,7 @@ class TestRunner {
     const cleanup = async () => {
       const {forceExited} = await worker.end();
       if (forceExited) {
-        console.log(
+        console.error(
           chalk.yellow(
             'A worker process has failed to exit gracefully and has been force exited. ' +
               'This is likely caused by tests leaking due to improper teardown. ' +

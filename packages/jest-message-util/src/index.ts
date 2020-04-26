@@ -38,6 +38,7 @@ export type StackTraceConfig = Pick<
 
 export type StackTraceOptions = {
   noStackTrace: boolean;
+  noCodeFrame?: boolean;
 };
 
 const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
@@ -251,7 +252,7 @@ const formatPaths = (
 
 export const getStackTraceLines = (
   stack: string,
-  options: StackTraceOptions = {noStackTrace: false},
+  options: StackTraceOptions = {noCodeFrame: false, noStackTrace: false},
 ): Array<string> => removeInternalStackEntries(stack.split(/\n/), options);
 
 export const getTopFrame = (lines: Array<string>): Frame | null => {
@@ -277,24 +278,26 @@ export const formatStackTrace = (
   testPath?: Path,
 ): string => {
   const lines = getStackTraceLines(stack, options);
-  const topFrame = getTopFrame(lines);
   let renderedCallsite = '';
   const relativeTestPath = testPath
     ? slash(path.relative(config.rootDir, testPath))
     : null;
 
-  if (topFrame) {
-    const {column, file: filename, line} = topFrame;
+  if (!options.noStackTrace && !options.noCodeFrame) {
+    const topFrame = getTopFrame(lines);
+    if (topFrame) {
+      const {column, file: filename, line} = topFrame;
 
-    if (line && filename && path.isAbsolute(filename)) {
-      let fileContent;
-      try {
-        // TODO: check & read HasteFS instead of reading the filesystem:
-        // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
-        fileContent = fs.readFileSync(filename, 'utf8');
-        renderedCallsite = getRenderedCallsite(fileContent, line, column);
-      } catch (e) {
-        // the file does not exist or is inaccessible, we ignore
+      if (line && filename && path.isAbsolute(filename)) {
+        let fileContent;
+        try {
+          // TODO: check & read HasteFS instead of reading the filesystem:
+          // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
+          fileContent = fs.readFileSync(filename, 'utf8');
+          renderedCallsite = getRenderedCallsite(fileContent, line, column);
+        } catch (e) {
+          // the file does not exist or is inaccessible, we ignore
+        }
       }
     }
   }
@@ -307,7 +310,9 @@ export const formatStackTrace = (
     )
     .join('\n');
 
-  return `${renderedCallsite}\n${stacktrace}`;
+  return renderedCallsite
+    ? `${renderedCallsite}\n${stacktrace}`
+    : `\n${stacktrace}`;
 };
 
 type FailedResults = Array<{

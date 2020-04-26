@@ -566,11 +566,7 @@ export default function (j$: Jasmine) {
         // This check throws an error to warn the user about the edge-case.
         if (currentSpec !== null) {
           throw new Error(
-            'Tests cannot be nested. Test `' +
-              spec.description +
-              '` cannot run because it is nested within `' +
-              currentSpec.description +
-              '`.',
+            `Tests cannot be nested. Test "${spec.description}" cannot run because it is nested within "${currentSpec.description}".`,
           );
         }
         currentDeclarationSuite.addChild(spec);

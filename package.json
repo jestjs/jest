@@ -48,6 +48,7 @@
     "fast-check": "^1.13.0",
     "find-process": "^1.4.1",
     "glob": "^7.1.1",
+    "globby": "^10.0.2",
     "graceful-fs": "^4.2.3",
     "isbinaryfile": "^4.0.0",
     "istanbul-lib-coverage": "^3.0.0",
@@ -74,6 +75,7 @@
     "realpath-native": "^2.0.0",
     "resolve": "^1.15.0",
     "rimraf": "^3.0.0",
+    "semver": "^6.3.0",
     "slash": "^3.0.0",
     "string-length": "^3.1.0",
     "strip-ansi": "^6.0.0",
@@ -126,22 +128,8 @@
     "arrowParens": "avoid",
     "overrides": [
       {
-        "excludeFiles": [
-          "e2e/__tests__/**/*",
-          "website/versioned_docs/**/*.md"
-        ],
-        "files": [
-          "examples/**/*",
-          "scripts/**/*",
-          "e2e/*/**/*",
-          "website/*.js",
-          "website/*/**/*",
-          "eslintImportResolver.js",
-          "babel.config.js"
-        ],
+        "files": "website/**/*.js",
         "options": {
-          "printWidth": 80,
-          "singleQuote": true,
           "trailingComma": "es5"
         }
       }

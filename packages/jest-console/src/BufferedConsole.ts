@@ -9,7 +9,7 @@ import assert = require('assert');
 import {Console} from 'console';
 import {format} from 'util';
 import chalk = require('chalk');
-import {SourceMapRegistry, getCallsite} from '@jest/source-map';
+import {ErrorWithStack} from 'jest-util';
 import type {
   ConsoleBuffer,
   LogCounters,
@@ -23,18 +23,16 @@ export default class BufferedConsole extends Console {
   private _counters: LogCounters;
   private _timers: LogTimers;
   private _groupDepth: number;
-  private _getSourceMaps: () => SourceMapRegistry | null | undefined;
 
-  constructor(getSourceMaps: () => SourceMapRegistry | null | undefined) {
+  constructor() {
     const buffer: ConsoleBuffer = [];
     super({
       write: (message: string) => {
-        BufferedConsole.write(buffer, 'log', message, null, getSourceMaps());
+        BufferedConsole.write(buffer, 'log', message, null);
 
         return true;
       },
     } as NodeJS.WritableStream);
-    this._getSourceMaps = getSourceMaps;
     this._buffer = buffer;
     this._counters = {};
     this._timers = {};
@@ -46,10 +44,17 @@ export default class BufferedConsole extends Console {
     type: LogType,
     message: LogMessage,
     level?: number | null,
-    sourceMaps?: SourceMapRegistry | null,
   ): ConsoleBuffer {
-    const callsite = getCallsite(level != null ? level : 2, sourceMaps);
-    const origin = callsite.getFileName() + ':' + callsite.getLineNumber();
+    const stackLevel = level != null ? level : 2;
+    const rawStack = new ErrorWithStack(undefined, BufferedConsole.write).stack;
+
+    invariant(rawStack, 'always have a stack trace');
+
+    const origin = rawStack
+      .split('\n')
+      .slice(stackLevel)
+      .filter(Boolean)
+      .join('\n');
 
     buffer.push({
       message,
@@ -66,7 +71,6 @@ export default class BufferedConsole extends Console {
       type,
       '  '.repeat(this._groupDepth) + message,
       3,
-      this._getSourceMaps(),
     );
   }
 
@@ -161,5 +165,11 @@ export default class BufferedConsole extends Console {
 
   getBuffer(): ConsoleBuffer | undefined {
     return this._buffer.length ? this._buffer : undefined;
+  }
+}
+
+function invariant(condition: unknown, message?: string): asserts condition {
+  if (!condition) {
+    throw new Error(message);
   }
 }

@@ -628,10 +628,7 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
 
-    if (
-      typeof received !== 'string' &&
-      (!received || typeof received.length !== 'number')
-    ) {
+    if (typeof received?.length !== 'number') {
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),

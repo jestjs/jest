@@ -76,9 +76,24 @@ const jestAdapter = async (
     }
   });
 
-  config.setupFilesAfterEnv.forEach(path => runtime.requireModule(path));
+  for (const path of config.setupFilesAfterEnv) {
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
 
-  runtime.requireModule(testPath);
+    if (esm) {
+      await runtime.unstable_importModule(path);
+    } else {
+      runtime.requireModule(path);
+    }
+  }
+
+  const esm = runtime.unstable_shouldLoadAsEsm(testPath);
+
+  if (esm) {
+    await runtime.unstable_importModule(testPath);
+  } else {
+    runtime.requireModule(testPath);
+  }
+
   const results = await runAndTransformResultsToJestFormat({
     config,
     globalConfig,

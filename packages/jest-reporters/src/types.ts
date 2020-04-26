@@ -37,10 +37,12 @@ export type CoverageWorker = {worker: typeof worker};
 
 export type CoverageReporterOptions = {
   changedFiles?: Set<Config.Path>;
+  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
 };
 
 export type CoverageReporterSerializedOptions = {
   changedFiles?: Array<Config.Path>;
+  sourcesRelatedToTestsInChangedFiles?: Array<Config.Path>;
 };
 
 export type OnTestStart = (test: Test) => Promise<void>;

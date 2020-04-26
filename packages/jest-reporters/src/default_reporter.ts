@@ -182,6 +182,7 @@ export default class DefaultReporter extends BaseReporter {
             config.cwd,
             !!this._globalConfig.verbose,
             result.console,
+            config,
           ),
       );
     }

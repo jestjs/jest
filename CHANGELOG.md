@@ -3,14 +3,44 @@
 ### Features
 
 - `[@jest/globals]` New package so Jest's globals can be explicitly imported ([#9801](https://github.com/facebook/jest/pull/9801))
+- `[jest-core]` Show coverage of sources related to tests in changed files ([#9769](https://github.com/facebook/jest/pull/9769))
+- `[jest-runtime]` Populate `require.cache` ([#9841](https://github.com/facebook/jest/pull/9841))
 - `[jest-snapshot]`: Make prettier optional for inline snapshots - fall back to string replacement ([#7792](https://github.com/facebook/jest/pull/7792))
+
+### Fixes
+
+- `[expect]` Prints the Symbol name into the error message with a custom asymmetric matcher ([#9888](https://github.com/facebook/jest/pull/9888))
+- `[@jest/environment]` Make sure not to reference Jest types ([#9875](https://github.com/facebook/jest/pull/9875))
+- `[jest-message-util]` Code frame printing should respect `--noStackTrace` flag ([#9866](https://github.com/facebook/jest/pull/9866))
+- `[jest-runtime]` Support importing CJS from ESM using `import` statements ([#9850](https://github.com/facebook/jest/pull/9850))
+- `[jest-runtime]` Support importing parallel dynamic `import`s ([#9858](https://github.com/facebook/jest/pull/9858))
+- `[jest-transform]` Improve source map handling when instrumenting transformed code ([#9811](https://github.com/facebook/jest/pull/9811))
+
+### Chore & Maintenance
+
+### Performance
+
+- `[jest-resolve]` Update `resolve` to a version using native `realpath`, which is faster than the default JS implementation ([#9872](https://github.com/facebook/jest/pull/9872))
+- `[jest-resolve]` Pass custom cached `realpath` function to `resolve` ([#9873](https://github.com/facebook/jest/pull/9873))
+
+## 25.4.0
+
+- `[expect]` Support `async function`s in `toThrow` ([#9817](https://github.com/facebook/jest/pull/9817))
+- `[jest-console]` Add code frame to `console.error` and `console.warn` ([#9741](https://github.com/facebook/jest/pull/9741))
+- `[jest-runtime, jest-jasmine2, jest-circus]` Experimental, limited ECMAScript Modules support ([#9772](https://github.com/facebook/jest/pull/9772) & [#9842](https://github.com/facebook/jest/pull/9842))
 
 ### Fixes
 
 - `[expect]` Restore support for passing functions to `toHaveLength` matcher ([#9796](https://github.com/facebook/jest/pull/9796))
 - `[jest-changed-files]` `--only-changed` should include staged files ([#9799](https://github.com/facebook/jest/pull/9799))
+- `[jest-circus]` Throw on nested test definitions ([#9828](https://github.com/facebook/jest/pull/9828))
+- `[jest-each]` `each` will throw an error when called with too many arguments ([#9818](https://github.com/facebook/jest/pull/9818))
+- `[jest-runner]` Don't print warning to stdout when using `--json` ([#9843](https://github.com/facebook/jest/pull/9843))
 
 ### Chore & Maintenance
+
+- `[*]` Do not generate TypeScript declaration source maps ([#9822](https://github.com/facebook/jest/pull/9822))
+- `[*]` Transpile code for Node 8.3, not 8.0 ([#9827](https://github.com/facebook/jest/pull/9827))
 
 ### Performance
 

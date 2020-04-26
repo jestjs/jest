@@ -132,7 +132,7 @@ module.exports = {
           '**/__mocks__/**',
           '**/?(*.)(spec|test).js?(x)',
           'scripts/**',
-          'eslintImportResolver.js',
+          'babel.config.js',
           'testSetupFile.js',
         ],
       },
@@ -145,5 +145,8 @@ module.exports = {
     'no-unused-vars': 2,
     'prettier/prettier': 2,
     'sort-imports': [2, {ignoreDeclarationSort: true}],
+  },
+  settings: {
+    'import/ignore': ['react-native'],
   },
 };

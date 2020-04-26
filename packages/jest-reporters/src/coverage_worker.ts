@@ -40,6 +40,8 @@ export function worker({
     path,
     globalConfig,
     config,
-    options && options.changedFiles && new Set(options.changedFiles),
+    options?.changedFiles && new Set(options.changedFiles),
+    options?.sourcesRelatedToTestsInChangedFiles &&
+      new Set(options.sourcesRelatedToTestsInChangedFiles),
   );
 }
