@@ -41,6 +41,7 @@ test('resolves to the result of generateEmptyCoverage upon success', async () =>
     globalConfig,
     config,
     undefined,
+    undefined,
   );
 
   expect(result).toEqual(42);
