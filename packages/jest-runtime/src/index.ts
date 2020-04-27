@@ -641,7 +641,7 @@ class Runtime {
     moduleRegistry: ModuleRegistry,
   ) {
     if (path.extname(modulePath) === '.json') {
-      const text = stripBOM(this.readFile(modulePath));
+      const text = stripBOM(fs.readFileSync(modulePath, 'utf8'));
 
       const transformedFile = this._scriptTransformer.transformJson(
         modulePath,
@@ -1059,16 +1059,14 @@ class Runtime {
     filename: string,
     options?: InternalModuleOptions,
   ): string {
-    const source = this.readFile(filename);
-
     if (options?.isInternalModule) {
-      return source;
+      return this._cacheFS[filename] ?? fs.readFileSync(filename, 'utf8');
     }
 
     const transformedFile = this._scriptTransformer.transform(
       filename,
       this._getFullTransformationOptions(options),
-      source,
+      this._cacheFS[filename],
     );
 
     this._fileTransforms.set(filename, transformedFile);
@@ -1637,18 +1635,6 @@ class Runtime {
       xit: this._environment.global.xit,
       xtest: this._environment.global.xtest,
     };
-  }
-
-  private readFile(filename: Config.Path): string {
-    let source = this._cacheFS[filename];
-
-    if (!source) {
-      source = fs.readFileSync(filename, 'utf8');
-
-      this._cacheFS[filename] = source;
-    }
-
-    return source;
   }
 }
 
