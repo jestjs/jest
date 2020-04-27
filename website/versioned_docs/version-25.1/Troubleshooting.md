@@ -1,6 +1,7 @@
 ---
-id: troubleshooting
+id: version-25.1-troubleshooting
 title: Troubleshooting
+original_id: troubleshooting
 ---
 
 Uh oh, something went wrong? Use this guide to resolve issues with Jest.
