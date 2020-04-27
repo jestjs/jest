@@ -44,4 +44,25 @@ describe('Runtime require.resolve', () => {
       require.resolve('./test_root/mapped_dir/moduleInMapped.js'),
     );
   });
+
+  describe('with the outsideJestVm option', () => {
+    it('forwards to the real Node require in an internal context', async () => {
+      const runtime = await createRuntime(__filename);
+      const module = runtime.requireInternalModule(
+        runtime.__mockRootPath,
+        './resolve_and_require_outside.js',
+      );
+      expect(module).toBe(require('./test_root/create_require_module'));
+    });
+
+    it('ignores the option in an external context', async () => {
+      const runtime = await createRuntime(__filename);
+      const module = runtime.requireModule(
+        runtime.__mockRootPath,
+        './resolve_and_require_outside.js',
+      );
+      expect(module.foo).toBe('foo');
+      expect(module).not.toBe(require('./test_root/create_require_module'));
+    });
+  });
 });

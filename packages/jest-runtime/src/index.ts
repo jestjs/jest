@@ -81,7 +81,11 @@ const defaultTransformOptions: InternalModuleOptions = {
 type InitialModule = Partial<Module> &
   Pick<Module, 'children' | 'exports' | 'filename' | 'id' | 'loaded'>;
 type ModuleRegistry = Map<string, InitialModule | Module>;
-type ResolveOptions = Parameters<typeof require.resolve>[1];
+
+type ResolveOptions = Parameters<typeof require.resolve>[1] & {
+  outsideJestVm?: true;
+};
+const OUTSIDE_JEST_VM_PROTOCOL = 'outside-jest-vm:';
 
 type BooleanObject = Record<string, boolean>;
 type CacheFS = {[path: string]: string};
@@ -534,6 +538,13 @@ class Runtime {
   }
 
   requireInternalModule<T = unknown>(from: Config.Path, to?: string): T {
+    if (to) {
+      const outsideJestVmPath = this._decodePossibleOutsideJestVmPath(to);
+      if (outsideJestVmPath) {
+        return require(outsideJestVmPath);
+      }
+    }
+
     return this.requireModule(from, to, {
       isInternalModule: true,
       supportsDynamicImport: false,
@@ -831,6 +842,31 @@ class Runtime {
 
   clearAllMocks(): void {
     this._moduleMocker.clearAllMocks();
+  }
+
+  // fileUrl.protocol cannot be set to a non-standard protocol, so we use string manipulation
+  private _createOutsideJestVmPath(path: string) {
+    return pathToFileURL(path)
+      .toString()
+      .replace(/^file:/, OUTSIDE_JEST_VM_PROTOCOL);
+  }
+  private _decodePossibleOutsideJestVmPath(
+    maybeUrl: string,
+  ): string | undefined {
+    let url: URL;
+    try {
+      url = new URL(maybeUrl);
+    } catch {
+      return undefined;
+    }
+    if (url.protocol !== OUTSIDE_JEST_VM_PROTOCOL) {
+      return undefined;
+    }
+    return fileURLToPath(
+      url
+        .toString()
+        .replace(new RegExp('^' + OUTSIDE_JEST_VM_PROTOCOL), 'file:'),
+    );
   }
 
   private _resolveModule(from: Config.Path, to?: string) {
@@ -1269,9 +1305,17 @@ class Runtime {
     from: InitialModule,
     options?: InternalModuleOptions,
   ): LocalModuleRequire {
-    // TODO: somehow avoid having to type the arguments - they should come from `NodeRequire/LocalModuleRequire.resolve`
-    const resolve = (moduleName: string, options: ResolveOptions) =>
-      this._requireResolve(from.filename, moduleName, options);
+    const resolve = (moduleName: string, resolveOptions?: ResolveOptions) => {
+      const resolved = this._requireResolve(
+        from.filename,
+        moduleName,
+        resolveOptions,
+      );
+      if (resolveOptions?.outsideJestVm && options?.isInternalModule) {
+        return this._createOutsideJestVmPath(resolved);
+      }
+      return resolved;
+    };
     resolve.paths = (moduleName: string) =>
       this._requireResolvePaths(from.filename, moduleName);
 
