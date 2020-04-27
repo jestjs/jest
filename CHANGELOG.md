@@ -21,6 +21,7 @@
 
 - `[jest-resolve]` Update `resolve` to a version using native `realpath`, which is faster than the default JS implementation ([#9872](https://github.com/facebook/jest/pull/9872))
 - `[jest-resolve]` Pass custom cached `realpath` function to `resolve` ([#9873](https://github.com/facebook/jest/pull/9873))
+- `[jest-runtime]` Add `teardown` method to clear any caches when tests complete ([#9906](https://github.com/facebook/jest/pull/9906))
 
 ## 25.4.0
 
