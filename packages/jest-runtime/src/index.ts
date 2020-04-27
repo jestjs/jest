@@ -343,13 +343,13 @@ class Runtime {
         return core;
       }
 
-      const transformedFile = this.transformFile(modulePath, {
+      const transformedCode = this.transformFile(modulePath, {
         isInternalModule: false,
         supportsDynamicImport: true,
         supportsStaticESM: true,
       });
 
-      const module = new SourceTextModule(transformedFile.code, {
+      const module = new SourceTextModule(transformedCode, {
         context,
         identifier: modulePath,
         importModuleDynamically: this.linkModules.bind(this),
@@ -471,7 +471,7 @@ class Runtime {
     const manualMock =
       moduleName && this._resolver.getMockModule(from, moduleName);
     if (
-      (!options || !options.isInternalModule) &&
+      !options?.isInternalModule &&
       !isRequireActual &&
       !moduleResource &&
       manualMock &&
@@ -491,7 +491,9 @@ class Runtime {
 
     let moduleRegistry;
 
-    if (!options || !options.isInternalModule) {
+    if (options?.isInternalModule) {
+      moduleRegistry = this._internalModuleRegistry;
+    } else {
       if (
         this._moduleRegistry.get(modulePath) ||
         !this._isolatedModuleRegistry
@@ -500,8 +502,6 @@ class Runtime {
       } else {
         moduleRegistry = this._isolatedModuleRegistry;
       }
-    } else {
-      moduleRegistry = this._internalModuleRegistry;
     }
 
     const module = moduleRegistry.get(modulePath);
@@ -641,7 +641,7 @@ class Runtime {
     moduleRegistry: ModuleRegistry,
   ) {
     if (path.extname(modulePath) === '.json') {
-      const text = stripBOM(fs.readFileSync(modulePath, 'utf8'));
+      const text = stripBOM(this.readFile(modulePath));
 
       const transformedFile = this._scriptTransformer.transformJson(
         modulePath,
@@ -965,7 +965,7 @@ class Runtime {
       value: this._createRequireImplementation(localModule, options),
     });
 
-    const transformedFile = this.transformFile(filename, options);
+    const transformedCode = this.transformFile(filename, options);
 
     let compiledFunction: ModuleWrapper | null = null;
 
@@ -977,7 +977,7 @@ class Runtime {
         if (typeof compileFunction === 'function') {
           try {
             compiledFunction = compileFunction(
-              transformedFile.code,
+              transformedCode,
               this.constructInjectedModuleParameters(),
               {
                 filename,
@@ -988,10 +988,7 @@ class Runtime {
             throw handlePotentialSyntaxError(e);
           }
         } else {
-          const script = this.createScriptFromCode(
-            transformedFile.code,
-            filename,
-          );
+          const script = this.createScriptFromCode(transformedCode, filename);
 
           const runScript = script.runInContext(
             vmContext,
@@ -1005,7 +1002,7 @@ class Runtime {
         }
       }
     } else {
-      const script = this.createScriptFromCode(transformedFile.code, filename);
+      const script = this.createScriptFromCode(transformedCode, filename);
 
       const runScript = this._environment.runScript<RunScriptEvalResult>(
         script,
@@ -1058,22 +1055,28 @@ class Runtime {
     this._currentlyExecutingModulePath = lastExecutingModulePath;
   }
 
-  private transformFile(filename: string, options?: InternalModuleOptions) {
+  private transformFile(
+    filename: string,
+    options?: InternalModuleOptions,
+  ): string {
+    const source = this.readFile(filename);
+
+    if (options?.isInternalModule) {
+      return source;
+    }
+
     const transformedFile = this._scriptTransformer.transform(
       filename,
       this._getFullTransformationOptions(options),
-      this._cacheFS[filename],
+      source,
     );
 
-    // we only care about non-internal modules
-    if (!options || !options.isInternalModule) {
-      this._fileTransforms.set(filename, transformedFile);
-    }
+    this._fileTransforms.set(filename, transformedFile);
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry[filename] = transformedFile.sourceMapPath;
     }
-    return transformedFile;
+    return transformedFile.code;
   }
 
   private createScriptFromCode(scriptSource: string, filename: string) {
@@ -1303,7 +1306,7 @@ class Runtime {
     resolve.paths = (moduleName: string) =>
       this._requireResolvePaths(from.filename, moduleName);
 
-    const moduleRequire = (options && options.isInternalModule
+    const moduleRequire = (options?.isInternalModule
       ? (moduleName: string) =>
           this.requireInternalModule(from.filename, moduleName)
       : this.requireModuleOrMock.bind(
@@ -1634,6 +1637,18 @@ class Runtime {
       xit: this._environment.global.xit,
       xtest: this._environment.global.xtest,
     };
+  }
+
+  private readFile(filename: Config.Path): string {
+    let source = this._cacheFS[filename];
+
+    if (!source) {
+      source = fs.readFileSync(filename, 'utf8');
+
+      this._cacheFS[filename] = source;
+    }
+
+    return source;
   }
 }
 
