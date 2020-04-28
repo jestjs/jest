@@ -46,9 +46,9 @@ import * as fs from 'graceful-fs';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
 import {
-  findSiblingsWithFileExtension,
-  decodePossibleOutsideJestVmPath,
   createOutsideJestVmPath,
+  decodePossibleOutsideJestVmPath,
+  findSiblingsWithFileExtension,
 } from './helpers';
 import type {Context as JestContext} from './types';
 import jestMock = require('jest-mock');
