@@ -86,8 +86,11 @@ type InitialModule = Partial<Module> &
   Pick<Module, 'children' | 'exports' | 'filename' | 'id' | 'loaded'>;
 type ModuleRegistry = Map<string, InitialModule | Module>;
 
+const OUTSIDE_JEST_VM_RESOLVE_OPTION = Symbol.for(
+  'OUTSIDE_JEST_VM_RESOLVE_OPTION',
+);
 type ResolveOptions = Parameters<typeof require.resolve>[1] & {
-  outsideJestVm?: true;
+  [OUTSIDE_JEST_VM_RESOLVE_OPTION]?: true;
 };
 
 type BooleanObject = Record<string, boolean>;
@@ -1289,7 +1292,10 @@ class Runtime {
         moduleName,
         resolveOptions,
       );
-      if (resolveOptions?.outsideJestVm && options?.isInternalModule) {
+      if (
+        resolveOptions?.[OUTSIDE_JEST_VM_RESOLVE_OPTION] &&
+        options?.isInternalModule
+      ) {
         return createOutsideJestVmPath(resolved);
       }
       return resolved;

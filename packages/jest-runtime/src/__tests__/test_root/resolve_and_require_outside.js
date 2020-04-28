@@ -7,7 +7,9 @@
 
 'use strict';
 
-const path = require.resolve('./create_require_module', {outsideJestVm: true});
+const path = require.resolve('./create_require_module', {
+  [Symbol.for('OUTSIDE_JEST_VM_RESOLVE_OPTION')]: true,
+});
 if (typeof path !== 'string') {
   throw new Error('require.resolve not spec-compliant: must return a string');
 }

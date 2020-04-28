@@ -21,20 +21,21 @@ type BabelTraverse = typeof traverse;
 const babelTraverse: BabelTraverse = require(require.resolve(
   '@babel/traverse',
   {
-    outsideJestVm: true,
+    [Symbol.for('OUTSIDE_JEST_VM_RESOLVE_OPTION')]: true,
   } as any,
 )).default;
 const generate: typeof import('@babel/generator')['default'] = require(require.resolve(
   '@babel/generator',
-  {outsideJestVm: true} as any,
+  {[Symbol.for('OUTSIDE_JEST_VM_RESOLVE_OPTION')]: true} as any,
 )).default;
-const {
-  file,
-  templateElement,
-  templateLiteral,
-} = require(require.resolve('@babel/types', {outsideJestVm: true} as any));
+const {file, templateElement, templateLiteral} = require(require.resolve(
+  '@babel/types',
+  {
+    [Symbol.for('OUTSIDE_JEST_VM_RESOLVE_OPTION')]: true,
+  } as any,
+));
 const {parseSync} = require(require.resolve('@babel/core', {
-  outsideJestVm: true,
+  [Symbol.for('OUTSIDE_JEST_VM_RESOLVE_OPTION')]: true,
 } as any)) as typeof import('@babel/core');
 
 export type InlineSnapshot = {
@@ -50,7 +51,7 @@ export function saveInlineSnapshots(
   // TODO same as above
   const prettier = prettierPath
     ? (require(require.resolve(prettierPath, {
-        outsideJestVm: true,
+        [Symbol.for('OUTSIDE_JEST_VM_RESOLVE_OPTION')]: true,
       } as any)) as typeof import('prettier'))
     : null;
 
