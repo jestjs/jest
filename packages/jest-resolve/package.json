@@ -20,7 +20,7 @@
     "@jest/types": "^25.4.0",
     "browser-resolve": "^1.11.3",
     "chalk": "^3.0.0",
-    "graceful-fs": "^4.2.3",
+    "graceful-fs": "^4.2.4",
     "jest-pnp-resolver": "^1.2.1",
     "read-pkg-up": "^7.0.1",
     "realpath-native": "^2.0.0",

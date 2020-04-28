@@ -22,7 +22,7 @@
     "@types/prettier": "^1.19.0",
     "chalk": "^3.0.0",
     "expect": "^25.4.0",
-    "graceful-fs": "^4.2.3",
+    "graceful-fs": "^4.2.4",
     "jest-diff": "^25.4.0",
     "jest-get-type": "^25.2.6",
     "jest-matcher-utils": "^25.4.0",

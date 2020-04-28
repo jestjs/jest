@@ -24,7 +24,7 @@
     "chalk": "^3.0.0",
     "deepmerge": "^4.2.2",
     "glob": "^7.1.1",
-    "graceful-fs": "^4.2.3",
+    "graceful-fs": "^4.2.4",
     "jest-environment-jsdom": "^25.4.0",
     "jest-environment-node": "^25.4.0",
     "jest-get-type": "^25.2.6",

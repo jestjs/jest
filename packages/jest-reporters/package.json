@@ -20,7 +20,7 @@
     "chalk": "^3.0.0",
     "collect-v8-coverage": "^1.0.0",
     "exit": "^0.1.2",
-    "graceful-fs": "^4.2.3",
+    "graceful-fs": "^4.2.4",
     "glob": "^7.1.2",
     "istanbul-lib-coverage": "^3.0.0",
     "istanbul-lib-instrument": "^4.0.0",

@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@jest/test-result": "^25.4.0",
-    "graceful-fs": "^4.2.3",
+    "graceful-fs": "^4.2.4",
     "jest-haste-map": "^25.4.0",
     "jest-runner": "^25.4.0",
     "jest-runtime": "^25.4.0"

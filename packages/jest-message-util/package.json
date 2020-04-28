@@ -24,7 +24,7 @@
     "@jest/types": "^25.4.0",
     "@types/stack-utils": "^1.0.1",
     "chalk": "^3.0.0",
-    "graceful-fs": "^4.2.3",
+    "graceful-fs": "^4.2.4",
     "micromatch": "^4.0.2",
     "slash": "^3.0.0",
     "stack-utils": "^1.0.1"

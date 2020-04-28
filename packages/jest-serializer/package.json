@@ -11,7 +11,7 @@
     "@types/node": "*"
   },
   "dependencies": {
-    "graceful-fs": "^4.2.3"
+    "graceful-fs": "^4.2.4"
   },
   "engines": {
     "node": ">= 8.3"
