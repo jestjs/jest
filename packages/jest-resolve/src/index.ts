@@ -28,6 +28,7 @@ type FindNodeModuleConfig = {
   throwIfNotFound?: boolean;
 };
 
+// TODO: replace with a Map in Jest 26
 type BooleanObject = Record<string, boolean>;
 
 namespace Resolver {
