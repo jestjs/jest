@@ -20,7 +20,11 @@ import {
   joinAlignedDiffsNoExpand,
 } from './joinAlignedDiffs';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
-import {DiffOptions, DiffOptionsColor, DiffOptionsNormalized} from './types';
+import type {
+  DiffOptions,
+  DiffOptionsColor,
+  DiffOptionsNormalized,
+} from './types';
 
 const formatTrailingSpaces = (
   line: string,
@@ -102,7 +106,10 @@ export const printCommonLine = (
     emptyFirstOrLastLinePlaceholder,
   );
 
-export const hasCommonDiff = (diffs: Array<Diff>, isMultiline: boolean) => {
+export const hasCommonDiff = (
+  diffs: Array<Diff>,
+  isMultiline: boolean,
+): boolean => {
   if (isMultiline) {
     // Important: Ignore common newline that was appended to multiline strings!
     const iLast = diffs.length - 1;

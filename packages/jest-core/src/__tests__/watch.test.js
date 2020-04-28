@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 import chalk from 'chalk';
 import TestWatcher from '../TestWatcher';
 import {JestHook, KEYS} from 'jest-watcher';
@@ -46,7 +44,7 @@ jest.doMock('chalk', () => new chalk.Instance({level: 0}));
 jest.doMock(
   '../runJest',
   () =>
-    function() {
+    function () {
       const args = Array.from(arguments);
       const [{onComplete}] = args;
       runJestMock.apply(null, args);
@@ -92,6 +90,14 @@ const updateGlobalConfig = jest.fn(regularUpdateGlobalConfig);
 jest.doMock('../lib/update_global_config', () => updateGlobalConfig);
 
 const nextTick = () => new Promise(res => process.nextTick(res));
+
+beforeAll(() => {
+  jest.spyOn(process, 'on').mockImplementation(() => {});
+});
+
+afterAll(() => {
+  jest.restoreAllMocks();
+});
 
 afterEach(runJestMock.mockReset);
 

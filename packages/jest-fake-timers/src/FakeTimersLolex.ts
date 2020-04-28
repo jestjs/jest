@@ -37,29 +37,29 @@ export default class FakeTimers {
     this._lolex = lolexWithGlobal(global);
   }
 
-  clearAllTimers() {
+  clearAllTimers(): void {
     if (this._fakingTime) {
       this._clock.reset();
     }
   }
 
-  dispose() {
+  dispose(): void {
     this.useRealTimers();
   }
 
-  runAllTimers() {
+  runAllTimers(): void {
     if (this._checkFakeTimers()) {
       this._clock.runAll();
     }
   }
 
-  runOnlyPendingTimers() {
+  runOnlyPendingTimers(): void {
     if (this._checkFakeTimers()) {
       this._clock.runToLast();
     }
   }
 
-  advanceTimersToNextTimer(steps = 1) {
+  advanceTimersToNextTimer(steps = 1): void {
     if (this._checkFakeTimers()) {
       for (let i = steps; i > 0; i--) {
         this._clock.next();
@@ -73,27 +73,27 @@ export default class FakeTimers {
     }
   }
 
-  advanceTimersByTime(msToRun: number) {
+  advanceTimersByTime(msToRun: number): void {
     if (this._checkFakeTimers()) {
       this._clock.tick(msToRun);
     }
   }
 
-  runAllTicks() {
+  runAllTicks(): void {
     if (this._checkFakeTimers()) {
       // @ts-ignore
       this._clock.runMicrotasks();
     }
   }
 
-  useRealTimers() {
+  useRealTimers(): void {
     if (this._fakingTime) {
       this._clock.uninstall();
       this._fakingTime = false;
     }
   }
 
-  useFakeTimers() {
+  useFakeTimers(): void {
     if (!this._fakingTime) {
       const toFake = Object.keys(this._lolex.timers) as Array<
         keyof LolexWithContext['timers']
@@ -110,7 +110,7 @@ export default class FakeTimers {
     }
   }
 
-  reset() {
+  reset(): void {
     if (this._checkFakeTimers()) {
       const {now} = this._clock;
       this._clock.reset();
@@ -118,17 +118,17 @@ export default class FakeTimers {
     }
   }
 
-  setSystemTime(now?: number) {
+  setSystemTime(now?: number): void {
     if (this._checkFakeTimers()) {
       this._clock.setSystemTime(now);
     }
   }
 
-  getRealSystemTime() {
+  getRealSystemTime(): number {
     return Date.now();
   }
 
-  getTimerCount() {
+  getTimerCount(): number {
     if (this._checkFakeTimers()) {
       return this._clock.countTimers();
     }

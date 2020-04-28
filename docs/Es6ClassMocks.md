@@ -221,7 +221,7 @@ In order to mock a constructor function, the module factory must return a constr
 
 ```javascript
 jest.mock('./sound-player', () => {
-  return function() {
+  return function () {
     return {playSoundFile: () => {}};
   };
 });
@@ -261,6 +261,22 @@ jest.mock('./sound-player', () => {
 ```
 
 This will let us inspect usage of our mocked class, using `SoundPlayer.mock.calls`: `expect(SoundPlayer).toHaveBeenCalled();` or near-equivalent: `expect(SoundPlayer.mock.calls.length).toEqual(1);`
+
+### Mocking non default class exports
+
+If the class is **not** the default export from the module then you need to return an object with the key that is the same as the class export name.
+
+```javascript
+import {SoundPlayer} from './sound-player';
+jest.mock('./sound-player', () => {
+  // Works and lets you check for constructor calls:
+  return {
+    SoundPlayer: jest.fn().mockImplementation(() => {
+      return {playSoundFile: () => {}};
+    }),
+  };
+});
+```
 
 ### Spying on methods of our class
 

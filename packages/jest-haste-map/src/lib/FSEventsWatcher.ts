@@ -6,9 +6,9 @@
  *
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
 import {EventEmitter} from 'events';
+import * as fs from 'graceful-fs';
 import anymatch, {Matcher} from 'anymatch';
 import micromatch = require('micromatch');
 // @ts-ignore no types
@@ -47,14 +47,14 @@ class FSEventsWatcher extends EventEmitter {
   public readonly fsEventsWatchStopper: () => Promise<void>;
   private _tracked: Set<string>;
 
-  static isSupported() {
+  static isSupported(): boolean {
     return fsevents !== null;
   }
 
   private static normalizeProxy(
     callback: (normalizedPath: string, stats: fs.Stats) => void,
   ) {
-    return (filepath: string, stats: fs.Stats) =>
+    return (filepath: string, stats: fs.Stats): void =>
       callback(path.normalize(filepath), stats);
   }
 
@@ -127,7 +127,7 @@ class FSEventsWatcher extends EventEmitter {
   /**
    * End watching.
    */
-  close(callback?: () => void) {
+  close(callback?: () => void): void {
     this.fsEventsWatchStopper().then(() => {
       this.removeAllListeners();
       if (typeof callback === 'function') {

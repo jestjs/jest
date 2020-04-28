@@ -9,10 +9,10 @@
 
 const pi = require('./pi');
 
-module.exports.loadTest = function() {
+module.exports.loadTest = function () {
   return pi();
 };
 
-module.exports.empty = function() {
+module.exports.empty = function () {
   // Do nothing.
 };

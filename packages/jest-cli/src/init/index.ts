@@ -5,23 +5,25 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import chalk = require('chalk');
 import prompts = require('prompts');
 import {sync as realpath} from 'realpath-native';
+import {constants} from 'jest-config';
 import defaultQuestions, {testScriptQuestion} from './questions';
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
-import {
+import generateConfigFile from './generate_config_file';
+import modifyPackageJson from './modify_package_json';
+import type {ProjectPackageJson} from './types';
+
+const {
   JEST_CONFIG_BASE_NAME,
-  JEST_CONFIG_EXT_CJS,
+  JEST_CONFIG_EXT_MJS,
   JEST_CONFIG_EXT_JS,
   JEST_CONFIG_EXT_ORDER,
   PACKAGE_JSON,
-} from './constants';
-import generateConfigFile from './generate_config_file';
-import modifyPackageJson from './modify_package_json';
-import {ProjectPackageJson} from './types';
+} = constants;
 
 type PromptsResults = {
   clearMocks: boolean;
@@ -32,7 +34,9 @@ type PromptsResults = {
 
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
-export default async (rootDir: string = realpath(process.cwd())) => {
+export default async (
+  rootDir: string = realpath(process.cwd()),
+): Promise<void> => {
   // prerequisite checks
   const projectPackageJsonPath: string = path.join(rootDir, PACKAGE_JSON);
 
@@ -65,7 +69,7 @@ export default async (rootDir: string = realpath(process.cwd())) => {
       rootDir,
       getConfigFilename(
         projectPackageJson.type === 'module'
-          ? JEST_CONFIG_EXT_CJS
+          ? JEST_CONFIG_EXT_MJS
           : JEST_CONFIG_EXT_JS,
       ),
     );
@@ -131,7 +135,11 @@ export default async (rootDir: string = realpath(process.cwd())) => {
     console.log(`✏️  Modified ${chalk.cyan(projectPackageJsonPath)}`);
   }
 
-  const generatedConfig = generateConfigFile(results);
+  const generatedConfig = generateConfigFile(
+    results,
+    projectPackageJson.type === 'module' ||
+      jestConfigPath.endsWith(JEST_CONFIG_EXT_MJS),
+  );
 
   fs.writeFileSync(jestConfigPath, generatedConfig);
 

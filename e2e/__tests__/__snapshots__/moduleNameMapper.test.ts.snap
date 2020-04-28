@@ -5,6 +5,41 @@ PASS __tests__/index.js
   ✓ moduleNameMapping correct configuration
 `;
 
+exports[`moduleNameMapper wrong array configuration 1`] = `
+FAIL __tests__/index.js
+  ● Test suite failed to run
+
+    Configuration error:
+
+    Could not locate module ./style.css mapped as:
+    [
+      "no-such-module",
+      "no-such-module-2"
+    ].
+
+    Please check your configuration for these entries:
+    {
+      "moduleNameMapper": {
+        "/\\.(css|less)$/": "[
+          "no-such-module",
+          "no-such-module-2"
+        ]"
+      },
+      "resolver": undefined
+    }
+
+       8 | 'use strict';
+       9 | 
+    > 10 | require('./style.css');
+         | ^
+      11 | 
+      12 | module.exports = () => 'test';
+      13 | 
+
+      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/index.js:545:17)
+      at Object.require (index.js:10:1)
+`;
+
 exports[`moduleNameMapper wrong configuration 1`] = `
 FAIL __tests__/index.js
   ● Test suite failed to run
@@ -30,6 +65,6 @@ FAIL __tests__/index.js
       12 | module.exports = () => 'test';
       13 | 
 
-      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/index.js:487:17)
+      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/index.js:545:17)
       at Object.require (index.js:10:1)
 `;

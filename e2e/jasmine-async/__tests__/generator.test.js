@@ -12,12 +12,12 @@ function* someFunc() {
 }
 
 describe('generators', () => {
-  beforeEach(function*() {
+  beforeEach(function* () {
     // This shouldn't throw
     yield someFunc();
   });
 
-  it('in spec', function*() {
+  it('in spec', function* () {
     const data = yield someFunc();
 
     expect(data).toBe(3);

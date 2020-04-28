@@ -6,7 +6,7 @@
  *
  */
 
-import {Color} from '../types';
+import type {Color} from '../types';
 import {color} from '../entry';
 
 jest.mock('some-module', () => ({} as Partial<{}>), {virtual: true});

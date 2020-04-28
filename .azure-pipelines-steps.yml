@@ -6,7 +6,7 @@ steps:
   - checkout: self
     path: jest
 
-  # Ensure Node.js 10 is active
+  # Ensure Node.js 12 is active
   - task: NodeTool@0
     inputs:
       versionSpec: '12.x'

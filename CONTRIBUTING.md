@@ -82,7 +82,7 @@ _Before_ submitting a pull request, please make sure the following is done…
     $ yarn test
     ```
 
-1.  If you haven't already, complete the CLA.
+1.  If you haven't already, complete the [CLA](https://code.facebook.com/cla/).
 
 #### Changelog entries
 
@@ -200,6 +200,10 @@ We will be using GitHub Issues for our public bugs. We will keep a close eye on 
 ### Reporting New Issues
 
 The best way to get your bug fixed is to provide a reduced test case. Please provide a public repository with a runnable example.
+
+### Docs translation
+
+We get translations from crowdin, see https://crowdin.com/project/jest. Any and all help is very much appreciated!
 
 ### Security Bugs
 

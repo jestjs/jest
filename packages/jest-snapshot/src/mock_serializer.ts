@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {NewPlugin} from 'pretty-format';
+import type {NewPlugin} from 'pretty-format';
 
 export const serialize: NewPlugin['serialize'] = (
   val,

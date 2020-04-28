@@ -6,18 +6,20 @@
  */
 
 /* eslint-disable no-eval */
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import prompts from 'prompts';
+import {constants} from 'jest-config';
 import init from '../';
-import {JEST_CONFIG_EXT_ORDER} from '../constants';
+
+const {JEST_CONFIG_EXT_ORDER} = constants;
 
 jest.mock('prompts');
 jest.mock('../../../../jest-config/build/getCacheDirectory', () => () =>
   '/tmp/jest',
 );
 jest.mock('path', () => ({...jest.requireActual('path'), sep: '/'}));
-jest.mock('fs', () => ({
+jest.mock('graceful-fs', () => ({
   ...jest.requireActual('fs'),
   writeFileSync: jest.fn(),
 }));
@@ -51,6 +53,20 @@ describe('init', () => {
         const evaluatedConfig = eval(writtenJestConfig);
 
         expect(evaluatedConfig).toEqual({});
+      });
+
+      it('should generate empty config with mjs extension', async () => {
+        prompts.mockReturnValueOnce({});
+
+        await init(resolveFromFixture('type_module'));
+
+        const writtenJestConfigFilename = fs.writeFileSync.mock.calls[0][0];
+        const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
+
+        expect(writtenJestConfigFilename.endsWith('.mjs')).toBe(true);
+
+        expect(typeof writtenJestConfig).toBe('string');
+        expect(writtenJestConfig.split('\n')[3]).toBe('export default {');
       });
     });
 

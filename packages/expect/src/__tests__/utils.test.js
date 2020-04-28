@@ -333,6 +333,19 @@ describe('subsetEquality()', () => {
       expect(subsetEquality(primitiveInsteadOfRef, circularObjA1)).toBe(false);
     });
 
+    test('referenced object on same level should not regarded as circular reference', () => {
+      const referencedObj = {abc: 'def'};
+      const object = {
+        a: {abc: 'def'},
+        b: {abc: 'def', zzz: 'zzz'},
+      };
+      const thisIsNotCircular = {
+        a: referencedObj,
+        b: referencedObj,
+      };
+      expect(subsetEquality(object, thisIsNotCircular)).toBeTruthy();
+    });
+
     test('transitive circular references', () => {
       const transitiveCircularObjA1 = {a: 'hello'};
       transitiveCircularObjA1.nestedObj = {parentObj: transitiveCircularObjA1};

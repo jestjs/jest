@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {
+import type {Config} from '@jest/types';
+import type {
   DuplicatesSet,
   HTypeValue,
   MockData,
@@ -18,7 +18,7 @@ import {
 import * as fastPath from './lib/fast_path';
 import H from './constants';
 
-const EMPTY_OBJ = {} as Record<string, any>;
+const EMPTY_OBJ: Record<string, ModuleMetaData> = {};
 const EMPTY_MAP = new Map();
 
 type ValueType<T> = T extends Map<string, infer V> ? V : never;
@@ -121,7 +121,7 @@ export default class ModuleMap {
     return this.json;
   }
 
-  static fromJSON(serializableModuleMap: SerializableModuleMap) {
+  static fromJSON(serializableModuleMap: SerializableModuleMap): ModuleMap {
     return new ModuleMap({
       duplicates: ModuleMap.mapFromArrayRecursive(
         serializableModuleMap.duplicates,
@@ -207,7 +207,7 @@ export default class ModuleMap {
     );
   }
 
-  static create(rootDir: Config.Path) {
+  static create(rootDir: Config.Path): ModuleMap {
     return new ModuleMap({
       duplicates: new Map(),
       map: new Map(),

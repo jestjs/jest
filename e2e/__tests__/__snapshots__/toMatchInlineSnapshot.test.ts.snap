@@ -12,12 +12,11 @@ test('inline snapshots', () =>
 
 exports[`basic support: snapshot mismatch 1`] = `
 test('inline snapshots', () =>
-  expect({apple: 'updated value'}).toMatchInlineSnapshot(\`
-    Object {
-      "apple": "original value",
-    }
-  \`));
-
+expect({apple: 'updated value'}).toMatchInlineSnapshot(\`
+  Object {
+    "apple": "original value",
+  }
+\`));
 `;
 
 exports[`basic support: snapshot passed 1`] = `
@@ -72,7 +71,7 @@ test('handles property matchers', () => {
     Object {
       "createdAt": Any<Date>,
     }
-  \`
+  \`,
   );
 });
 
@@ -80,16 +79,15 @@ test('handles property matchers', () => {
 
 exports[`handles property matchers: snapshot failed 1`] = `
 test('handles property matchers', () => {
-  expect({createdAt: "string"}).toMatchInlineSnapshot(
-    {createdAt: expect.any(Date)},
-    \`
-    Object {
-      "createdAt": Any<Date>,
-    }
+expect({createdAt: "string"}).toMatchInlineSnapshot(
+  {createdAt: expect.any(Date)},
   \`
-  );
+  Object {
+    "createdAt": Any<Date>,
+  }
+\`,
+);
 });
-
 `;
 
 exports[`handles property matchers: snapshot passed 1`] = `
@@ -100,7 +98,7 @@ test('handles property matchers', () => {
     Object {
       "createdAt": Any<Date>,
     }
-  \`
+  \`,
   );
 });
 
@@ -114,8 +112,24 @@ test('handles property matchers', () => {
     Object {
       "createdAt": Any<String>,
     }
-  \`
+  \`,
   );
+});
+
+`;
+
+exports[`indentation is correct in the presences of existing snapshots: existing snapshot 1`] = `
+test('existing snapshot', () => {
+  expect({hello: 'world'}).toMatchInlineSnapshot(\`
+    Object {
+      "hello": "world",
+    }
+  \`);
+  expect({hello: 'world'}).toMatchInlineSnapshot(\`
+    Object {
+      "hello": "world",
+    }
+  \`);
 });
 
 `;
@@ -163,11 +177,9 @@ test('removes obsolete external snapshots', () => {
 `;
 
 exports[`removes obsolete external snapshots: initial write 1`] = `
-
-    test('removes obsolete external snapshots', () => {
-      expect('1').toMatchSnapshot();
-    });
-  
+test('removes obsolete external snapshots', () => {
+  expect('1').toMatchSnapshot();
+});
 `;
 
 exports[`removes obsolete external snapshots: inline snapshot written 1`] = `
@@ -180,7 +192,7 @@ test('removes obsolete external snapshots', () => {
 exports[`supports async matchers 1`] = `
 test('inline snapshots', async () => {
   expect(Promise.resolve('success')).resolves.toMatchInlineSnapshot(
-    \`"success"\`
+    \`"success"\`,
   );
   expect(Promise.reject('fail')).rejects.toMatchInlineSnapshot(\`"fail"\`);
 });
@@ -209,7 +221,7 @@ expect.extend({
         createdAt: expect.any(Date),
         id: expect.any(Number),
       },
-      ...args
+      ...args,
     );
   },
 });
@@ -230,7 +242,7 @@ test('inline snapshots', () => {
       "id": Any<Number>,
       "name": "LeBron James",
     }
-  \`
+  \`,
   );
   expect(user).toMatchUserInlineSnapshot(\`
     Object {

@@ -12,7 +12,7 @@ export {
   createEmptyTestResult,
   makeEmptyAggregatedTestResult,
 } from './helpers';
-export {
+export type {
   AggregatedResult,
   AssertionLocation,
   AssertionResult,
@@ -24,4 +24,5 @@ export {
   Status,
   Suite,
   TestResult,
+  V8CoverageResult,
 } from './types';

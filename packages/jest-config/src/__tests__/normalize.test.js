@@ -16,7 +16,17 @@ import {DEFAULT_JS_PATTERN} from '../constants';
 
 const DEFAULT_CSS_PATTERN = '^.+\\.(css)$';
 
-jest.mock('jest-resolve').mock('path', () => jest.requireActual('path').posix);
+jest
+  .mock('jest-resolve')
+  .mock('path', () => jest.requireActual('path').posix)
+  .mock('graceful-fs', () => {
+    const realFs = jest.requireActual('fs');
+
+    return {
+      ...realFs,
+      statSync: () => ({isDirectory: () => true}),
+    };
+  });
 
 let root;
 let expectedPathFooBar;
@@ -1137,6 +1147,7 @@ describe('preset', () => {
         preset: 'react-native',
         rootDir: '/root/path/foo',
         setupFiles: ['a'],
+        setupFilesAfterEnv: ['a'],
         transform: {a: 'a'},
       },
       {},
@@ -1148,6 +1159,10 @@ describe('preset', () => {
     ]);
     expect(options.modulePathIgnorePatterns).toEqual(['b', 'a']);
     expect(options.setupFiles.sort()).toEqual([
+      '/node_modules/a',
+      '/node_modules/b',
+    ]);
+    expect(options.setupFilesAfterEnv.sort()).toEqual([
       '/node_modules/a',
       '/node_modules/b',
     ]);
@@ -1236,9 +1251,11 @@ describe('preset with globals', () => {
       '/node_modules/global-foo/jest-preset.json',
       () => ({
         globals: {
+          __DEV__: false,
           config: {
             hereToStay: 'This should stay here',
           },
+          myString: 'hello world',
         },
       }),
       {virtual: true},
@@ -1253,9 +1270,11 @@ describe('preset with globals', () => {
     const {options} = normalize(
       {
         globals: {
+          __DEV__: true,
           config: {
             sideBySide: 'This should also live another day',
           },
+          myString: 'hello sunshine',
           textValue: 'This is just text',
         },
         preset: 'global-foo',
@@ -1264,59 +1283,60 @@ describe('preset with globals', () => {
       {},
     );
 
-    expect(options).toEqual(
-      expect.objectContaining({
-        globals: {
-          config: {
-            hereToStay: 'This should stay here',
-            sideBySide: 'This should also live another day',
-          },
-          textValue: 'This is just text',
-        },
-      }),
-    );
-  });
-});
-
-describe('preset without setupFiles', () => {
-  let Resolver;
-  beforeEach(() => {
-    Resolver = require('jest-resolve');
-    Resolver.findNodeModule = jest.fn(
-      name => path.sep + 'node_modules' + path.sep + name,
-    );
-  });
-
-  beforeAll(() => {
-    jest.doMock(
-      '/node_modules/react-foo/jest-preset',
-      () => ({
-        moduleNameMapper: {b: 'b'},
-        modulePathIgnorePatterns: ['b'],
-      }),
-      {virtual: true},
-    );
-  });
-
-  afterAll(() => {
-    jest.dontMock('/node_modules/react-foo/jest-preset');
-  });
-
-  it('should normalize setupFiles correctly', () => {
-    const {options} = normalize(
-      {
-        preset: 'react-foo',
-        rootDir: '/root/path/foo',
-        setupFiles: ['a'],
+    expect(options.globals).toEqual({
+      __DEV__: true,
+      config: {
+        hereToStay: 'This should stay here',
+        sideBySide: 'This should also live another day',
       },
-      {},
-    );
-
-    expect(options).toEqual(
-      expect.objectContaining({setupFiles: ['/node_modules/a']}),
-    );
+      myString: 'hello sunshine',
+      textValue: 'This is just text',
+    });
   });
 });
+
+describe.each(['setupFiles', 'setupFilesAfterEnv'])(
+  'preset without %s',
+  configKey => {
+    let Resolver;
+    beforeEach(() => {
+      Resolver = require('jest-resolve');
+      Resolver.findNodeModule = jest.fn(
+        name => path.sep + 'node_modules' + path.sep + name,
+      );
+    });
+
+    beforeAll(() => {
+      jest.doMock(
+        '/node_modules/react-foo/jest-preset',
+        () => ({
+          moduleNameMapper: {b: 'b'},
+          modulePathIgnorePatterns: ['b'],
+        }),
+        {virtual: true},
+      );
+    });
+
+    afterAll(() => {
+      jest.dontMock('/node_modules/react-foo/jest-preset');
+    });
+
+    it(`should normalize ${configKey} correctly`, () => {
+      const {options} = normalize(
+        {
+          [configKey]: ['a'],
+          preset: 'react-foo',
+          rootDir: '/root/path/foo',
+        },
+        {},
+      );
+
+      expect(options).toEqual(
+        expect.objectContaining({[configKey]: ['/node_modules/a']}),
+      );
+    });
+  },
+);
 
 describe('runner', () => {
   let Resolver;
@@ -1548,6 +1568,13 @@ describe('testPathPattern', () => {
           );
 
           expect(options.testPathPattern).toBe('a\\\\b|c\\\\d');
+        });
+
+        it('coerces all patterns to strings', () => {
+          const argv = {[opt.property]: [1]};
+          const {options} = normalize(initialOptions, argv);
+
+          expect(options.testPathPattern).toBe('1');
         });
       });
     });

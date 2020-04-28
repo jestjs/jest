@@ -23,7 +23,7 @@
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
-const mkdirp = require('mkdirp');
+const makeDir = require('make-dir');
 
 const babel = require('@babel/core');
 const chalk = require('chalk');
@@ -84,7 +84,7 @@ function buildBrowserPackage(p) {
   if (browser) {
     if (browser.indexOf(BUILD_ES5_DIR) !== 0) {
       throw new Error(
-        `browser field for ${pkgJsonPath} should start with "${BUILD_ES5_DIR}"`
+        `browser field for ${pkgJsonPath} should start with "${BUILD_ES5_DIR}"`,
       );
     }
     let indexFile = path.resolve(srcDir, 'index.js');
@@ -113,12 +113,12 @@ function buildFile(file, silent) {
       process.stdout.write(
         chalk.dim('  \u2022 ') +
           path.relative(PACKAGES_DIR, file) +
-          ' (ignore)\n'
+          ' (ignore)\n',
       );
     return;
   }
 
-  mkdirp.sync(path.dirname(destPath), '777');
+  makeDir.sync(path.dirname(destPath));
   if (
     !micromatch.isMatch(file, JS_FILES_PATTERN) &&
     !micromatch.isMatch(file, TS_FILES_PATTERN)
@@ -131,7 +131,7 @@ function buildFile(file, silent) {
           chalk.red(' \u21D2 ') +
           path.relative(PACKAGES_DIR, destPath) +
           ' (copy)' +
-          '\n'
+          '\n',
       );
   } else {
     const options = Object.assign({}, transformOptions);
@@ -141,7 +141,7 @@ function buildFile(file, silent) {
       // The modules in the blacklist are injected into the user's sandbox
       // We need to guard some globals there.
       options.plugins.push(
-        require.resolve('./babel-plugin-jest-native-globals')
+        require.resolve('./babel-plugin-jest-native-globals'),
       );
     } else {
       options.plugins = options.plugins.map(plugin => {
@@ -149,7 +149,14 @@ function buildFile(file, silent) {
           Array.isArray(plugin) &&
           plugin[0] === '@babel/plugin-transform-modules-commonjs'
         ) {
-          return [plugin[0], Object.assign({}, plugin[1], {lazy: true})];
+          return [
+            plugin[0],
+            Object.assign({}, plugin[1], {
+              lazy: string =>
+                // we want to lazyload all non-local modules plus `importEsm` - the latter to avoid syntax errors. Set to just `true` when we drop support for node 8
+                !string.startsWith('./') || string === './importEsm',
+            }),
+          ];
         }
 
         return plugin;
@@ -167,7 +174,7 @@ function buildFile(file, silent) {
           path.relative(PACKAGES_DIR, file) +
           chalk.green(' \u21D2 ') +
           path.relative(PACKAGES_DIR, destPath) +
-          '\n'
+          '\n',
       );
   }
 }
@@ -175,7 +182,7 @@ function buildFile(file, silent) {
 const files = process.argv.slice(2);
 
 if (files.length) {
-  files.forEach(buildFile);
+  files.forEach(file => buildFile(file));
 } else {
   const packages = getPackages();
   process.stdout.write(chalk.inverse(' Building packages \n'));

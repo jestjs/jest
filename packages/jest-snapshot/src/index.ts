@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
-import {Config} from '@jest/types';
-import {FS as HasteFS} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
+import * as fs from 'graceful-fs';
+import type {Config} from '@jest/types';
+import type {FS as HasteFS} from 'jest-haste-map';
 
 import {
   BOLD_WEIGHT,
@@ -38,7 +38,7 @@ import {
   printReceived,
   printSnapshotAndReceived,
 } from './printSnapshot';
-import {Context, MatchSnapshotConfig} from './types';
+import type {Context, MatchSnapshotConfig} from './types';
 import * as utils from './utils';
 
 const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
@@ -154,7 +154,7 @@ const cleanup = (
   };
 };
 
-const toMatchSnapshot = function(
+const toMatchSnapshot = function (
   this: Context,
   received: any,
   propertiesOrHint?: object | Config.Path,
@@ -212,7 +212,7 @@ const toMatchSnapshot = function(
   });
 };
 
-const toMatchInlineSnapshot = function(
+const toMatchInlineSnapshot = function (
   this: Context,
   received: any,
   propertiesOrSnapshot?: object | string,
@@ -412,7 +412,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
   };
 };
 
-const toThrowErrorMatchingSnapshot = function(
+const toThrowErrorMatchingSnapshot = function (
   this: Context,
   received: any,
   hint: string | undefined, // because error TS1016 for hint?: string
@@ -435,7 +435,7 @@ const toThrowErrorMatchingSnapshot = function(
   );
 };
 
-const toThrowErrorMatchingInlineSnapshot = function(
+const toThrowErrorMatchingInlineSnapshot = function (
   this: Context,
   received: any,
   inlineSnapshot?: string,

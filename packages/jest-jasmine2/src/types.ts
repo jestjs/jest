@@ -5,20 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AssertionError} from 'assert';
-import {Config} from '@jest/types';
+import type {AssertionError} from 'assert';
+import type {Config} from '@jest/types';
 
 import expect = require('expect');
-import Spec, {SpecResult} from './jasmine/Spec';
-import JsApiReporter from './jasmine/JsApiReporter';
-import Timer from './jasmine/Timer';
-import Env from './jasmine/Env';
-import createSpy from './jasmine/createSpy';
-import ReportDispatcher from './jasmine/ReportDispatcher';
-import SpyRegistry from './jasmine/spyRegistry';
-import Suite, {SuiteResult} from './jasmine/Suite';
-import SpyStrategy from './jasmine/SpyStrategy';
-import CallTracker from './jasmine/CallTracker';
+import type {default as Spec, SpecResult} from './jasmine/Spec';
+import type JsApiReporter from './jasmine/JsApiReporter';
+import type Timer from './jasmine/Timer';
+import type Env from './jasmine/Env';
+import type createSpy from './jasmine/createSpy';
+import type ReportDispatcher from './jasmine/ReportDispatcher';
+import type SpyRegistry from './jasmine/spyRegistry';
+import type {default as Suite, SuiteResult} from './jasmine/Suite';
+import type SpyStrategy from './jasmine/SpyStrategy';
+import type CallTracker from './jasmine/CallTracker';
 
 export interface AssertionErrorWithStack extends AssertionError {
   stack: string;

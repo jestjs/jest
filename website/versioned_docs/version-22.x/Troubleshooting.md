@@ -155,7 +155,7 @@ jest.setTimeout(10000); // 10 second timeout
 
 Try running Jest with [`--no-watchman`](CLI.md#--watchman) or set the `watchman` configuration option to `false`.
 
-Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/troubleshooting.html).
+Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/troubleshooting).
 
 ## Tests are Extremely Slow on Docker and/or Continuous Integration (CI) server.
 

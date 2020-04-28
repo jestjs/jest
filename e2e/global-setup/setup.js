@@ -12,7 +12,7 @@ const path = require('path');
 
 const DIR = path.join(os.tmpdir(), 'jest-global-setup');
 
-module.exports = function() {
+module.exports = function () {
   // This uses a flow annotation to show it can be transpiled
   return new Promise((resolve, reject: any) => {
     createDirectory(DIR);

@@ -5,45 +5,55 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {RawSourceMap} from 'source-map';
-import {Config} from '@jest/types';
+import type {RawSourceMap} from 'source-map';
+import type {Config, TransformTypes} from '@jest/types';
 
 export type ShouldInstrumentOptions = Pick<
   Config.GlobalConfig,
-  'collectCoverage' | 'collectCoverageFrom' | 'collectCoverageOnlyFrom'
-> & {changedFiles?: Set<Config.Path>};
+  | 'collectCoverage'
+  | 'collectCoverageFrom'
+  | 'collectCoverageOnlyFrom'
+  | 'coverageProvider'
+> & {
+  changedFiles?: Set<Config.Path>;
+  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
+};
 
 export type Options = ShouldInstrumentOptions &
   Partial<{
     isCoreModule: boolean;
     isInternalModule: boolean;
+    supportsDynamicImport: boolean;
+    supportsStaticESM: boolean;
   }>;
 
+// extends directly after https://github.com/sandersn/downlevel-dts/issues/33 is fixed
+type SourceMapWithVersion = Omit<RawSourceMap, 'version'>;
+
 // This is fixed in source-map@0.7.x, but we can't upgrade yet since it's async
-interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
+interface FixedRawSourceMap extends SourceMapWithVersion {
   version: number;
 }
 
-export type TransformedSource = {
-  code: string;
-  map?: FixedRawSourceMap | string | null;
-};
+// TODO: For Jest 26 normalize this (always structured data, never a string)
+export type TransformedSource =
+  | {code: string; map?: FixedRawSourceMap | string | null}
+  | string;
 
-export type TransformResult = {
-  code: string;
-  mapCoverage: boolean;
-  sourceMapPath: string | null;
-};
+export type TransformResult = TransformTypes.TransformResult;
 
-export type TransformOptions = {
+export interface TransformOptions {
   instrument: boolean;
-};
+  // names are copied from babel
+  supportsDynamicImport?: boolean;
+  supportsStaticESM?: boolean;
+}
 
-export type CacheKeyOptions = {
+// TODO: For Jest 26 we should combine these into one options shape
+export interface CacheKeyOptions extends TransformOptions {
   config: Config.ProjectConfig;
-  instrument: boolean;
   rootDir: string;
-};
+}
 
 export interface Transformer {
   canInstrument?: boolean;
@@ -61,5 +71,5 @@ export interface Transformer {
     sourcePath: Config.Path,
     config: Config.ProjectConfig,
     options?: TransformOptions,
-  ) => string | TransformedSource;
+  ) => TransformedSource;
 }

@@ -6,7 +6,7 @@
  */
 
 import * as ReactIs from 'react-is';
-import {Config, NewPlugin, Printer, Refs} from '../types';
+import type {Config, NewPlugin, Printer, Refs} from '../types';
 
 import {
   printChildren,
@@ -17,7 +17,7 @@ import {
 
 // Given element.props.children, or subtree during recursive traversal,
 // return flattened array of children.
-const getChildren = (arg: Array<any>, children = []) => {
+const getChildren = (arg: Array<unknown>, children = []) => {
   if (Array.isArray(arg)) {
     arg.forEach(item => {
       getChildren(item, children);
@@ -53,6 +53,10 @@ const getType = (element: any) => {
     }
 
     if (ReactIs.isForwardRef(element)) {
+      if (type.displayName) {
+        return type.displayName;
+      }
+
       const functionName = type.render.displayName || type.render.name || '';
 
       return functionName !== ''
@@ -78,14 +82,14 @@ const getPropKeys = (element: any) => {
     .sort();
 };
 
-export const serialize = (
+export const serialize: NewPlugin['serialize'] = (
   element: any,
   config: Config,
   indentation: string,
   depth: number,
   refs: Refs,
   printer: Printer,
-): string =>
+) =>
   ++depth > config.maxDepth
     ? printElementAsLeaf(getType(element), config)
     : printElement(
@@ -111,7 +115,8 @@ export const serialize = (
         indentation,
       );
 
-export const test = (val: any) => val && ReactIs.isElement(val);
+export const test: NewPlugin['test'] = (val: unknown) =>
+  val && ReactIs.isElement(val);
 
 const plugin: NewPlugin = {serialize, test};
 

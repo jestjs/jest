@@ -6,7 +6,7 @@
  */
 
 import chalk = require('chalk');
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 
 const activeFilters = (
   globalConfig: Config.GlobalConfig,

@@ -9,9 +9,13 @@ import chalk = require('chalk');
 
 const DOT = ' \u2022 ';
 
+interface ErrorWithCodeFrame extends Error {
+  codeFrame?: string;
+}
+
 export default function handlePotentialSyntaxError(
-  e: Error & {codeFrame?: string},
-) {
+  e: ErrorWithCodeFrame,
+): ErrorWithCodeFrame {
   if (e.codeFrame) {
     e.stack = e.message + '\n' + e.codeFrame;
   }
@@ -29,7 +33,7 @@ export default function handlePotentialSyntaxError(
   return e;
 }
 
-export function enhanceUnexpectedTokenMessage(e: Error) {
+export function enhanceUnexpectedTokenMessage(e: Error): Error {
   e.stack =
     `${chalk.bold.red('Jest encountered an unexpected token')}
 

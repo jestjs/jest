@@ -5,9 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Arguments} from 'yargs';
-import {ReportOptions} from 'istanbul-reports';
+import type {Arguments} from 'yargs';
+import type {ReportOptions} from 'istanbul-reports';
 import chalk = require('chalk');
+
+type CoverageProvider = 'babel' | 'v8';
 
 export type Path = string;
 
@@ -25,7 +27,9 @@ export type HasteConfig = {
 export type ReporterConfig = [string, Record<string, unknown>];
 export type TransformerConfig = [string, Record<string, unknown>];
 
-export type ConfigGlobals = Record<string, any>;
+export interface ConfigGlobals {
+  [K: string]: unknown;
+}
 
 export type DefaultOptions = {
   automock: boolean;
@@ -37,7 +41,8 @@ export type DefaultOptions = {
   clearMocks: boolean;
   collectCoverage: boolean;
   coveragePathIgnorePatterns: Array<string>;
-  coverageReporters: Array<string>;
+  coverageReporters: Array<string | [string, any]>;
+  coverageProvider: CoverageProvider;
   errorOnDeprecated: boolean;
   expand: boolean;
   forceCoverageMatch: Array<Glob>;
@@ -47,7 +52,7 @@ export type DefaultOptions = {
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
-  moduleNameMapper: Record<string, string>;
+  moduleNameMapper: Record<string, string | Array<string>>;
   modulePathIgnorePatterns: Array<string>;
   noStackTrace: boolean;
   notify: boolean;
@@ -107,6 +112,7 @@ export type InitialOptions = Partial<{
   };
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
+  coverageProvider: CoverageProvider;
   coverageReporters: Array<string>;
   coverageThreshold: {
     global: {
@@ -139,7 +145,7 @@ export type InitialOptions = Partial<{
   moduleFileExtensions: Array<string>;
   moduleLoader: Path;
   moduleNameMapper: {
-    [key: string]: string;
+    [key: string]: string | Array<string>;
   };
   modulePathIgnorePatterns: Array<string>;
   modulePaths: Array<string>;
@@ -236,7 +242,8 @@ export type GlobalConfig = {
   };
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
-  coverageReporters: Array<keyof ReportOptions>;
+  coverageProvider: CoverageProvider;
+  coverageReporters: Array<keyof ReportOptions | [keyof ReportOptions, any]>;
   coverageThreshold?: CoverageThreshold;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
@@ -338,7 +345,7 @@ export type ProjectConfig = {
   testMatch: Array<Glob>;
   testLocationInResults: boolean;
   testPathIgnorePatterns: Array<string>;
-  testRegex: Array<string>;
+  testRegex: Array<string | RegExp>;
   testRunner: string;
   testURL: string;
   timers: 'real' | 'fake';

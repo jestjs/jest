@@ -47,7 +47,7 @@ test('Any.toAsymmetricMatcher() with function name', () => {
     ['$someFunc', function $someFunc() {}],
     [
       '$someFunc2',
-      (function() {
+      (function () {
         function $someFunc2() {}
         Object.defineProperty($someFunc2, 'name', {value: ''});
         return $someFunc2;
@@ -55,7 +55,7 @@ test('Any.toAsymmetricMatcher() with function name', () => {
     ],
     [
       '$someAsyncFunc',
-      (function() {
+      (function () {
         async function $someAsyncFunc() {}
         Object.defineProperty($someAsyncFunc, 'name', {value: ''});
         return $someAsyncFunc;
@@ -63,7 +63,7 @@ test('Any.toAsymmetricMatcher() with function name', () => {
     ],
     [
       '$someGeneratorFunc',
-      (function() {
+      (function () {
         function* $someGeneratorFunc() {}
         Object.defineProperty($someGeneratorFunc, 'name', {value: ''});
         return $someGeneratorFunc;
@@ -71,7 +71,7 @@ test('Any.toAsymmetricMatcher() with function name', () => {
     ],
     [
       '$someFuncWithFakeToString',
-      (function() {
+      (function () {
         function $someFuncWithFakeToString() {}
         $someFuncWithFakeToString.toString = () => 'Fake to string';
         return $someFuncWithFakeToString;

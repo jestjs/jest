@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {AggregatedResult, AssertionLocation} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import {BaseWatchPlugin, JestHookSubscriber} from 'jest-watcher';
 import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
 

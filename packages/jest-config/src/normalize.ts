@@ -7,8 +7,9 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
+import {statSync} from 'graceful-fs';
 import {sync as glob} from 'glob';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {ValidationError, validate} from 'jest-validate';
 import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk = require('chalk');
@@ -16,6 +17,7 @@ import micromatch = require('micromatch');
 import {sync as realpath} from 'realpath-native';
 import Resolver = require('jest-resolve');
 import {replacePathSepForRegex} from 'jest-regex-util';
+import merge = require('deepmerge');
 import validatePattern from './validatePattern';
 import getMaxWorkers from './getMaxWorkers';
 import {
@@ -45,6 +47,39 @@ type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
+
+function verifyDirectoryExists(path: Config.Path, key: string) {
+  try {
+    const rootStat = statSync(path);
+
+    if (!rootStat.isDirectory()) {
+      throw createConfigError(
+        `  ${chalk.bold(path)} in the ${chalk.bold(
+          key,
+        )} option is not a directory.`,
+      );
+    }
+  } catch (err) {
+    if (err instanceof ValidationError) {
+      throw err;
+    }
+
+    if (err.code === 'ENOENT') {
+      throw createConfigError(
+        `  Directory ${chalk.bold(path)} in the ${chalk.bold(
+          key,
+        )} option was not found.`,
+      );
+    }
+
+    // Not sure in which cases `statSync` can throw, so let's just show the underlying error to the user
+    throw createConfigError(
+      `  Got an error trying to find ${chalk.bold(path)} in the ${chalk.bold(
+        key,
+      )} option.\n\n  Error was: ${err.message}`,
+    );
+  }
+}
 
 // TS 3.5 forces us to split these into 2
 const mergeModuleNameMapperWithPreset = (
@@ -78,12 +113,7 @@ const mergeGlobalsWithPreset = (
   preset: Config.InitialOptions,
 ) => {
   if (options['globals'] && preset['globals']) {
-    for (const p in preset['globals']) {
-      options['globals'][p] = {
-        ...preset['globals'][p],
-        ...options['globals'][p],
-      };
-    }
+    options['globals'] = merge(preset['globals'], options['globals']);
   }
 };
 
@@ -155,6 +185,11 @@ const setupPreset = (
 
   if (options.setupFiles) {
     options.setupFiles = (preset.setupFiles || []).concat(options.setupFiles);
+  }
+  if (options.setupFilesAfterEnv) {
+    options.setupFilesAfterEnv = (preset.setupFilesAfterEnv || []).concat(
+      options.setupFilesAfterEnv,
+    );
   }
   if (options.modulePathIgnorePatterns && preset.modulePathIgnorePatterns) {
     options.modulePathIgnorePatterns = preset.modulePathIgnorePatterns.concat(
@@ -361,6 +396,8 @@ const normalizeRootDir = (
     // ignored
   }
 
+  verifyDirectoryExists(options.rootDir, 'rootDir');
+
   return {
     ...options,
     rootDir: options.rootDir,
@@ -416,11 +453,13 @@ const buildTestPathPattern = (argv: Config.Argv): string => {
     patterns.push(...argv.testPathPattern);
   }
 
-  const replacePosixSep = (pattern: string) => {
+  const replacePosixSep = (pattern: string | number) => {
+    // yargs coerces positional args into numbers
+    const patternAsString = pattern.toString();
     if (path.sep === '/') {
-      return pattern;
+      return patternAsString;
     }
-    return pattern.replace(/\//g, '\\\\');
+    return patternAsString.replace(/\//g, '\\\\');
   };
 
   const testPathPattern = patterns.map(replacePosixSep).join('|');
@@ -707,14 +746,14 @@ export default function normalize(
               ? _replaceRootDirTags(options.rootDir, project)
               : project,
           )
-          .reduce((projects, project) => {
+          .reduce<Array<string>>((projects, project) => {
             // Project can be specified as globs. If a glob matches any files,
             // We expand it to these paths. If not, we keep the original path
             // for the future resolution.
             const globMatches =
               typeof project === 'string' ? glob(project) : [];
             return projects.concat(globMatches.length ? globMatches : project);
-          }, [] as Array<string>);
+          }, []);
         break;
       case 'moduleDirectories':
       case 'testMatch':
@@ -836,6 +875,7 @@ export default function normalize(
       case 'changedFilesWithAncestor':
       case 'clearMocks':
       case 'collectCoverage':
+      case 'coverageProvider':
       case 'coverageReporters':
       case 'coverageThreshold':
       case 'detectLeaks':
@@ -909,6 +949,10 @@ export default function normalize(
     newOptions[key] = value;
     return newOptions;
   }, newOptions);
+
+  newOptions.roots.forEach((root, i) => {
+    verifyDirectoryExists(root, `roots[${i}]`);
+  });
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)

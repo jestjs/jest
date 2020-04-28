@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import semver = require('semver');
 import {
   CallExpression,
@@ -14,9 +14,9 @@ import {
   templateElement,
   templateLiteral,
 } from '@babel/types';
-import {Frame} from 'jest-message-util';
+import type {Frame} from 'jest-message-util';
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {escapeBacktickString} from './utils';
 
 export type InlineSnapshot = {
@@ -24,11 +24,11 @@ export type InlineSnapshot = {
   frame: Frame;
 };
 
-export const saveInlineSnapshots = (
+export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
-  prettier: any,
+  prettier: typeof import('prettier') | null,
   babelTraverse: Function,
-) => {
+): void {
   if (!prettier) {
     throw new Error(
       `Jest: Inline Snapshots requires Prettier.\n` +
@@ -54,7 +54,7 @@ export const saveInlineSnapshots = (
       babelTraverse,
     );
   }
-};
+}
 
 const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
@@ -262,7 +262,7 @@ const createFormattingParser = (
       if (
         callee.type !== 'MemberExpression' ||
         callee.property.type !== 'Identifier' ||
-        callee.property.name !== snapshotMatcherNames[0] ||
+        !snapshotMatcherNames.includes(callee.property.name) ||
         !callee.loc ||
         callee.computed
       ) {
@@ -281,8 +281,6 @@ const createFormattingParser = (
       if (snapshot === undefined || snapshotIndex === undefined) {
         return;
       }
-
-      snapshotMatcherNames.shift();
 
       const useSpaces = !options.useTabs;
       snapshot = indent(

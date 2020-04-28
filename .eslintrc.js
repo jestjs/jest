@@ -74,6 +74,24 @@ module.exports = {
       },
     },
     {
+      files: 'packages/**/*.ts',
+      rules: {
+        '@typescript-eslint/explicit-module-boundary-types': 2,
+      },
+    },
+    {
+      files: [
+        '**/__tests__/**',
+        '**/__mocks__/**',
+        'packages/jest-jasmine2/src/jasmine/**/*',
+        'packages/expect/src/jasmineUtils.ts',
+        '**/vendor/**/*',
+      ],
+      rules: {
+        '@typescript-eslint/explicit-module-boundary-types': 0,
+      },
+    },
+    {
       files: [
         'packages/jest-jasmine2/src/jasmine/**/*',
         'packages/expect/src/jasmineUtils.ts',
@@ -114,7 +132,7 @@ module.exports = {
           '**/__mocks__/**',
           '**/?(*.)(spec|test).js?(x)',
           'scripts/**',
-          'eslintImportResolver.js',
+          'babel.config.js',
           'testSetupFile.js',
         ],
       },
@@ -124,8 +142,18 @@ module.exports = {
     // https://github.com/benmosher/eslint-plugin-import/issues/645
     'import/order': 0,
     'no-console': 0,
+    'no-restricted-imports': [
+      2,
+      {
+        message: 'Please use graceful-fs instead.',
+        name: 'fs',
+      },
+    ],
     'no-unused-vars': 2,
     'prettier/prettier': 2,
     'sort-imports': [2, {ignoreDeclarationSort: true}],
+  },
+  settings: {
+    'import/ignore': ['react-native'],
   },
 };

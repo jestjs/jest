@@ -19,12 +19,17 @@ FAIL __tests__/test.js
 
     Cannot find module './some-json-file' from 'index.js'
 
+    Require stack:
+      index.js
+      __tests__/test.js
+
+
     However, Jest was able to find:
     	'./some-json-file.json'
 
     You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['js'].
 
-    See https://jestjs.io/docs/en/configuration#modulefileextensions-array-string
+    See https://jestjs.io/docs/en/configuration#modulefileextensions-arraystring
 
       6 |  */
       7 | 
@@ -32,6 +37,6 @@ FAIL __tests__/test.js
         |                  ^
       9 | 
 
-      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:276:11)
+      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:299:11)
       at Object.require (index.js:8:18)
 `;

@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
-import {Config} from '@jest/types';
+import * as fs from 'graceful-fs';
+import type {Config} from '@jest/types';
 
 import {getStackTraceLines, getTopFrame} from 'jest-message-util';
 import {
@@ -20,11 +20,11 @@ import {
   testNameToKey,
 } from './utils';
 import {InlineSnapshot, saveInlineSnapshots} from './inline_snapshots';
-import {SnapshotData} from './types';
+import type {SnapshotData} from './types';
 
 export type SnapshotStateOptions = {
   updateSnapshot: Config.SnapshotUpdateState;
-  getPrettier: () => null | any;
+  getPrettier: () => null | typeof import('prettier');
   getBabelTraverse: () => Function;
   expand?: boolean;
 };
@@ -46,6 +46,11 @@ type SnapshotReturnOptions = {
   pass: boolean;
 };
 
+type SaveStatus = {
+  deleted: boolean;
+  saved: boolean;
+};
+
 export default class SnapshotState {
   private _counters: Map<string, number>;
   private _dirty: boolean;
@@ -58,7 +63,7 @@ export default class SnapshotState {
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _uncheckedKeys: Set<string>;
   private _getBabelTraverse: () => Function;
-  private _getPrettier: () => null | any;
+  private _getPrettier: () => null | typeof import('prettier');
 
   added: number;
   expand: boolean;
@@ -89,7 +94,7 @@ export default class SnapshotState {
     this.updated = 0;
   }
 
-  markSnapshotsAsCheckedForTest(testName: string) {
+  markSnapshotsAsCheckedForTest(testName: string): void {
     this._uncheckedKeys.forEach(uncheckedKey => {
       if (keyToTestName(uncheckedKey) === testName) {
         this._uncheckedKeys.delete(uncheckedKey);
@@ -101,7 +106,7 @@ export default class SnapshotState {
     key: string,
     receivedSerialized: string,
     options: {isInline: boolean; error?: Error},
-  ) {
+  ): void {
     this._dirty = true;
     if (options.isInline) {
       const error = options.error || new Error();
@@ -123,7 +128,7 @@ export default class SnapshotState {
     }
   }
 
-  clear() {
+  clear(): void {
     this._snapshotData = this._initialData;
     this._inlineSnapshots = [];
     this._counters = new Map();
@@ -134,12 +139,12 @@ export default class SnapshotState {
     this.updated = 0;
   }
 
-  save() {
+  save(): SaveStatus {
     const hasExternalSnapshots = Object.keys(this._snapshotData).length;
     const hasInlineSnapshots = this._inlineSnapshots.length;
     const isEmpty = !hasExternalSnapshots && !hasInlineSnapshots;
 
-    const status = {
+    const status: SaveStatus = {
       deleted: false,
       saved: false,
     };
@@ -279,7 +284,7 @@ export default class SnapshotState {
     }
   }
 
-  fail(testName: string, _received: any, key?: string) {
+  fail(testName: string, _received: unknown, key?: string): string {
     this._counters.set(testName, (this._counters.get(testName) || 0) + 1);
     const count = Number(this._counters.get(testName));
 

@@ -65,7 +65,7 @@ it('correctly checks simple leaks', async () => {
 
 it('tests different objects', async () => {
   const refs = [
-    function() {},
+    function () {},
     () => {},
     Object.create(null),
     [],

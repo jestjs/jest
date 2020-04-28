@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Options} from 'yargs';
+import type {Options} from 'yargs';
 
 export const usage = 'Usage: $0 [--config=<pathToConfigFile>] <file>';
 

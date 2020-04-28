@@ -11,7 +11,7 @@ import runJest from '../runJest';
 
 const testRootDir = path.resolve(__dirname, '..', '..');
 
-const normalizePaths = rawPaths =>
+const normalizePaths = (rawPaths: string) =>
   rawPaths
     .split(testRootDir)
     .join(`${path.sep}MOCK_ABOLUTE_PATH`)
@@ -24,12 +24,7 @@ describe('--listTests flag', () => {
 
     expect(exitCode).toBe(0);
     expect(
-      wrap(
-        normalizePaths(stdout)
-          .split('\n')
-          .sort()
-          .join('\n'),
-      ),
+      wrap(normalizePaths(stdout).split('\n').sort().join('\n')),
     ).toMatchSnapshot();
   });
 
@@ -39,13 +34,7 @@ describe('--listTests flag', () => {
     expect(exitCode).toBe(0);
     expect(() => JSON.parse(stdout)).not.toThrow();
     expect(
-      wrap(
-        JSON.stringify(
-          JSON.parse(stdout)
-            .map(normalizePaths)
-            .sort(),
-        ),
-      ),
+      wrap(JSON.stringify(JSON.parse(stdout).map(normalizePaths).sort())),
     ).toMatchSnapshot();
   });
 });

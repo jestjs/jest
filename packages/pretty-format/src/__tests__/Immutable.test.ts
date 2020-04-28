@@ -8,8 +8,8 @@
 import React from 'react';
 import Immutable from 'immutable';
 
-import setPrettyPrint from './setPrettyPrint';
 import prettyFormat from '..';
+import setPrettyPrint from './setPrettyPrint';
 
 const {Immutable: ImmutablePlugin, ReactElement} = prettyFormat.plugins;
 
