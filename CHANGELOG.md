@@ -8,7 +8,7 @@
 
 ### Performance
 
-## 24.5.0
+## 25.5.0
 
 ### Features
 
