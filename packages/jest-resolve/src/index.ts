@@ -218,7 +218,7 @@ class Resolver {
           resolveNodeModule(module) || require.resolve(module);
         this._moduleNameCache.set(key, resolvedModule);
         return resolvedModule;
-      } catch (ignoredError) {}
+      } catch {}
     }
 
     return null;
