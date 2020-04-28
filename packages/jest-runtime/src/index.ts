@@ -718,8 +718,9 @@ class Runtime {
     try {
       fn();
     } finally {
-      this._isolatedModuleRegistry.clear();
-      this._isolatedMockRegistry.clear();
+      // might be cleared within the callback
+      this._isolatedModuleRegistry?.clear();
+      this._isolatedMockRegistry?.clear();
       this._isolatedModuleRegistry = null;
       this._isolatedMockRegistry = null;
     }
