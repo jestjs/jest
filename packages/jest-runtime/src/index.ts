@@ -45,7 +45,11 @@ import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
-import {findSiblingsWithFileExtension} from './helpers';
+import {
+  findSiblingsWithFileExtension,
+  decodePossibleOutsideJestVmPath,
+  createOutsideJestVmPath,
+} from './helpers';
 import type {Context as JestContext} from './types';
 import jestMock = require('jest-mock');
 import HasteMap = require('jest-haste-map');
@@ -85,7 +89,6 @@ type ModuleRegistry = Map<string, InitialModule | Module>;
 type ResolveOptions = Parameters<typeof require.resolve>[1] & {
   outsideJestVm?: true;
 };
-const OUTSIDE_JEST_VM_PROTOCOL = 'outside-jest-vm:';
 
 type BooleanObject = Record<string, boolean>;
 type CacheFS = {[path: string]: string};
@@ -539,7 +542,7 @@ class Runtime {
 
   requireInternalModule<T = unknown>(from: Config.Path, to?: string): T {
     if (to) {
-      const outsideJestVmPath = this._decodePossibleOutsideJestVmPath(to);
+      const outsideJestVmPath = decodePossibleOutsideJestVmPath(to);
       if (outsideJestVmPath) {
         return require(outsideJestVmPath);
       }
@@ -842,31 +845,6 @@ class Runtime {
 
   clearAllMocks(): void {
     this._moduleMocker.clearAllMocks();
-  }
-
-  // fileUrl.protocol cannot be set to a non-standard protocol, so we use string manipulation
-  private _createOutsideJestVmPath(path: string) {
-    return pathToFileURL(path)
-      .toString()
-      .replace(/^file:/, OUTSIDE_JEST_VM_PROTOCOL);
-  }
-  private _decodePossibleOutsideJestVmPath(
-    maybeUrl: string,
-  ): string | undefined {
-    let url: URL;
-    try {
-      url = new URL(maybeUrl);
-    } catch {
-      return undefined;
-    }
-    if (url.protocol !== OUTSIDE_JEST_VM_PROTOCOL) {
-      return undefined;
-    }
-    return fileURLToPath(
-      url
-        .toString()
-        .replace(new RegExp('^' + OUTSIDE_JEST_VM_PROTOCOL), 'file:'),
-    );
   }
 
   private _resolveModule(from: Config.Path, to?: string) {
@@ -1312,7 +1290,7 @@ class Runtime {
         resolveOptions,
       );
       if (resolveOptions?.outsideJestVm && options?.isInternalModule) {
-        return this._createOutsideJestVmPath(resolved);
+        return createOutsideJestVmPath(resolved);
       }
       return resolved;
     };

@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 import type {Config} from '@jest/types';
 import type Runtime from '..';
 
@@ -57,7 +55,7 @@ describe('Runtime require.resolve', () => {
 
     it('ignores the option in an external context', async () => {
       const runtime = await createRuntime(__filename);
-      const module = runtime.requireModule(
+      const module = runtime.requireModule<any>(
         runtime.__mockRootPath,
         './resolve_and_require_outside.js',
       );
