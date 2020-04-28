@@ -856,6 +856,7 @@ class Runtime {
     this._mockMetaDataCache.clear();
     this._shouldMockModuleCache.clear();
     this._shouldUnmockTransitiveDependenciesCache.clear();
+    this._explicitShouldMock.clear();
     this._transitiveShouldMock.clear();
     this._virtualMocks.clear();
     this._cacheFS.clear();
