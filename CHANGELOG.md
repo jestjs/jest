@@ -19,6 +19,8 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Add an example for mocking non-default export class
+
 ### Performance
 
 - `[jest-resolve]` Update `resolve` to a version using native `realpath`, which is faster than the default JS implementation ([#9872](https://github.com/facebook/jest/pull/9872))
