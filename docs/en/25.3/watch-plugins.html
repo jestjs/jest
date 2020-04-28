@@ -1,0 +1,270 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Watch Plugins · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="The Jest watch plugin system provides a way to hook into specific parts of Jest and to define watch mode menu prompts that execute code on key press. Combined, these features allow you to develop interactive experiences custom for your workflow."/><meta name="docsearch:version" content="25.3"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Watch Plugins · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="The Jest watch plugin system provides a way to hook into specific parts of Jest and to define watch mode menu prompts that execute code on key press. Combined, these features allow you to develop interactive experiences custom for your workflow."/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/en"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/en/versions"><h3>25.3</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/en/25.3/getting-started" target="_self">Docs</a></li><li class="siteNavGroupActive"><a href="/docs/en/25.3/api" target="_self">API</a></li><li class=""><a href="/en/help" target="_self">Help</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>English</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/ja/25.3/watch-plugins">日本語</a></li><li><a href="/docs/es-ES/25.3/watch-plugins">Español</a></li><li><a href="/docs/pt-BR/25.3/watch-plugins">Português (Brasil)</a></li><li><a href="/docs/ro/25.3/watch-plugins">Română</a></li><li><a href="/docs/ru/25.3/watch-plugins">Русский</a></li><li><a href="/docs/uk/25.3/watch-plugins">Українська</a></li><li><a href="/docs/zh-Hans/25.3/watch-plugins">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(event) {
+          event.preventDefault();
+
+          if (languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Guides</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/en/25.3/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/en/25.3/snapshot-testing">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/dynamodb">Using with DynamoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/en/25.3/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/architecture">Architecture</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Framework Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/en/25.3/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/en/25.3/api">Globals</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.3/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/WatchPlugins.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Watch Plugins</h1></header><article><div><span><p>The Jest watch plugin system provides a way to hook into specific parts of Jest and to define watch mode menu prompts that execute code on key press. Combined, these features allow you to develop interactive experiences custom for your workflow.</p>
+<h2><a class="anchor" aria-hidden="true" id="watch-plugin-interface"></a><a href="#watch-plugin-interface" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Watch Plugin Interface</h2>
+<pre><code class="hljs css language-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyWatchPlugin</span> </span>{
+  <span class="hljs-comment">// Add hooks to Jest lifecycle events</span>
+  apply(jestHooks) {}
+
+  <span class="hljs-comment">// Get the prompt information for interactive plugins</span>
+  getUsageInfo(globalConfig) {}
+
+  <span class="hljs-comment">// Executed when the key from `getUsageInfo` is input</span>
+  run(globalConfig, updateConfigAndRun) {}
+}
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="hooking-into-jest"></a><a href="#hooking-into-jest" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Hooking into Jest</h2>
+<p>To connect your watch plugin to Jest, add its path under <code>watchPlugins</code> in your Jest configuration:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// jest.config.js</span>
+<span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-comment">// ...</span>
+  <span class="hljs-attr">watchPlugins</span>: [<span class="hljs-string">'path/to/yourWatchPlugin'</span>],
+};
+</code></pre>
+<p>Custom watch plugins can add hooks to Jest events. These hooks can be added either with or without having an interactive key in the watch mode menu.</p>
+<h3><a class="anchor" aria-hidden="true" id="applyjesthooks"></a><a href="#applyjesthooks" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>apply(jestHooks)</code></h3>
+<p>Jest hooks can be attached by implementing the <code>apply</code> method. This method receives a <code>jestHooks</code> argument that allows the plugin to hook into specific parts of the lifecycle of a test run.</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyWatchPlugin</span> </span>{
+  apply(jestHooks) {}
+}
+</code></pre>
+<p>Below are the hooks available in Jest.</p>
+<h4><a class="anchor" aria-hidden="true" id="jesthooksshouldruntestsuitetestsuiteinfo"></a><a href="#jesthooksshouldruntestsuitetestsuiteinfo" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>jestHooks.shouldRunTestSuite(testSuiteInfo)</code></h4>
+<p>Returns a boolean (or <code>Promise&lt;boolean&gt;</code> for handling asynchronous operations) to specify if a test should be run or not.</p>
+<p>For example:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyWatchPlugin</span> </span>{
+  apply(jestHooks) {
+    jestHooks.shouldRunTestSuite(<span class="hljs-function"><span class="hljs-params">testSuiteInfo</span> =&gt;</span> {
+      <span class="hljs-keyword">return</span> testSuiteInfo.testPath.includes(<span class="hljs-string">'my-keyword'</span>);
+    });
+
+    <span class="hljs-comment">// or a promise</span>
+    jestHooks.shouldRunTestSuite(<span class="hljs-function"><span class="hljs-params">testSuiteInfo</span> =&gt;</span> {
+      <span class="hljs-keyword">return</span> <span class="hljs-built_in">Promise</span>.resolve(testSuiteInfo.testPath.includes(<span class="hljs-string">'my-keyword'</span>));
+    });
+  }
+}
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="jesthooksontestruncompleteresults"></a><a href="#jesthooksontestruncompleteresults" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>jestHooks.onTestRunComplete(results)</code></h4>
+<p>Gets called at the end of every test run. It has the test results as an argument.</p>
+<p>For example:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyWatchPlugin</span> </span>{
+  apply(jestHooks) {
+    jestHooks.onTestRunComplete(<span class="hljs-function"><span class="hljs-params">results</span> =&gt;</span> {
+      <span class="hljs-keyword">this</span>._hasSnapshotFailure = results.snapshot.failure;
+    });
+  }
+}
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="jesthooksonfilechangeprojects"></a><a href="#jesthooksonfilechangeprojects" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>jestHooks.onFileChange({projects})</code></h4>
+<p>Gets called whenever there is a change in the file system</p>
+<ul>
+<li><code>projects: Array&lt;config: ProjectConfig, testPaths: Array&lt;string&gt;</code>: Includes all the test paths that Jest is watching.</li>
+</ul>
+<p>For example:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyWatchPlugin</span> </span>{
+  apply(jestHooks) {
+    jestHooks.onFileChange(<span class="hljs-function">(<span class="hljs-params">{projects}</span>) =&gt;</span> {
+      <span class="hljs-keyword">this</span>._projects = projects;
+    });
+  }
+}
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="watch-menu-integration"></a><a href="#watch-menu-integration" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Watch Menu Integration</h2>
+<p>Custom watch plugins can also add or override functionality to the watch menu by specifying a key/prompt pair in <code>getUsageInfo</code> method and a <code>run</code> method for the execution of the key.</p>
+<h3><a class="anchor" aria-hidden="true" id="getusageinfoglobalconfig"></a><a href="#getusageinfoglobalconfig" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>getUsageInfo(globalConfig)</code></h3>
+<p>To add a key to the watch menu, implement the <code>getUsageInfo</code> method, returning a key and the prompt:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyWatchPlugin</span> </span>{
+  getUsageInfo(globalConfig) {
+    <span class="hljs-keyword">return</span> {
+      <span class="hljs-attr">key</span>: <span class="hljs-string">'s'</span>,
+      <span class="hljs-attr">prompt</span>: <span class="hljs-string">'do something'</span>,
+    };
+  }
+}
+</code></pre>
+<p>This will add a line in the watch mode menu <em>(<code>› Press s to do something.</code>)</em></p>
+<pre><code class="hljs css language-text">Watch Usage
+ › Press p to filter by a filename regex pattern.
+ › Press t to filter by a test name regex pattern.
+ › Press q to quit watch mode.
+ › Press s to do something. // <-- This is our plugin
+ › Press Enter to trigger a test run.
+</code></pre>
+<p><strong>Note</strong>: If the key for your plugin already exists as a default key, your plugin will override that key.</p>
+<h3><a class="anchor" aria-hidden="true" id="runglobalconfig-updateconfigandrun"></a><a href="#runglobalconfig-updateconfigandrun" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>run(globalConfig, updateConfigAndRun)</code></h3>
+<p>To handle key press events from the key returned by <code>getUsageInfo</code>, you can implement the <code>run</code> method. This method returns a <code>Promise&lt;boolean&gt;</code> that can be resolved when the plugin wants to return control to Jest. The <code>boolean</code> specifies if Jest should rerun the tests after it gets the control back.</p>
+<ul>
+<li><code>globalConfig</code>: A representation of Jest's current global configuration</li>
+<li><code>updateConfigAndRun</code>: Allows you to trigger a test run while the interactive plugin is running.</li>
+</ul>
+<pre><code class="hljs css language-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyWatchPlugin</span> </span>{
+  run(globalConfig, updateConfigAndRun) {
+    <span class="hljs-comment">// do something.</span>
+  }
+}
+</code></pre>
+<p><strong>Note</strong>: If you do call <code>updateConfigAndRun</code>, your <code>run</code> method should not resolve to a truthy value, as that would trigger a double-run.</p>
+<h4><a class="anchor" aria-hidden="true" id="authorized-configuration-keys"></a><a href="#authorized-configuration-keys" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Authorized configuration keys</h4>
+<p>For stability and safety reasons, only part of the global configuration keys can be updated with <code>updateConfigAndRun</code>. The current white list is as follows:</p>
+<ul>
+<li><a href="configuration.html#bail-number--boolean"><code>bail</code></a></li>
+<li><a href="cli.html#--changedsince"><code>changedSince</code></a></li>
+<li><a href="configuration.html#collectcoverage-boolean"><code>collectCoverage</code></a></li>
+<li><a href="configuration.html#collectcoveragefrom-array"><code>collectCoverageFrom</code></a></li>
+<li><a href="configuration.html#collectcoverageonlyfrom-array"><code>collectCoverageOnlyFrom</code></a></li>
+<li><a href="configuration.html#coveragedirectory-string"><code>coverageDirectory</code></a></li>
+<li><a href="configuration.html#coveragereporters-arraystring"><code>coverageReporters</code></a></li>
+<li><a href="configuration.html#notify-boolean"><code>notify</code></a></li>
+<li><a href="configuration.html#notifymode-string"><code>notifyMode</code></a></li>
+<li><a href="configuration.html#onlyfailures-boolean"><code>onlyFailures</code></a></li>
+<li><a href="configuration.html#reporters-arraymodulename--modulename-options"><code>reporters</code></a></li>
+<li><a href="cli.html#--testnamepatternregex"><code>testNamePattern</code></a></li>
+<li><a href="cli.html#--testpathpatternregex"><code>testPathPattern</code></a></li>
+<li><a href="cli.html#--updatesnapshot"><code>updateSnapshot</code></a></li>
+<li><a href="configuration.html#verbose-boolean"><code>verbose</code></a></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="customization"></a><a href="#customization" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Customization</h2>
+<p>Plugins can be customized via your Jest configuration.</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// jest.config.js</span>
+<span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-comment">// ...</span>
+  <span class="hljs-attr">watchPlugins</span>: [
+    [
+      <span class="hljs-string">'path/to/yourWatchPlugin'</span>,
+      {
+        <span class="hljs-attr">key</span>: <span class="hljs-string">'k'</span>, <span class="hljs-comment">// &lt;- your custom key</span>
+        <span class="hljs-attr">prompt</span>: <span class="hljs-string">'show a custom prompt'</span>,
+      },
+    ],
+  ],
+};
+</code></pre>
+<p>Recommended config names:</p>
+<ul>
+<li><code>key</code>: Modifies the plugin key.</li>
+<li><code>prompt</code>: Allows user to customize the text in the plugin prompt.</li>
+</ul>
+<p>If the user provided a custom configuration, it will be passed as an argument to the plugin constructor.</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyWatchPlugin</span> </span>{
+  <span class="hljs-keyword">constructor</span>({config}) {}
+}
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="choosing-a-good-key"></a><a href="#choosing-a-good-key" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Choosing a good key</h2>
+<p>Jest allows third-party plugins to override some of its built-in feature keys, but not all. Specifically, the following keys are <strong>not overwritable</strong> :</p>
+<ul>
+<li><code>c</code> (clears filter patterns)</li>
+<li><code>i</code> (updates non-matching snapshots interactively)</li>
+<li><code>q</code> (quits)</li>
+<li><code>u</code> (updates all non-matching snapshots)</li>
+<li><code>w</code> (displays watch mode usage / available actions)</li>
+</ul>
+<p>The following keys for built-in functionality <strong>can be overwritten</strong> :</p>
+<ul>
+<li><code>p</code> (test filename pattern)</li>
+<li><code>t</code> (test name pattern)</li>
+</ul>
+<p>Any key not used by built-in functionality can be claimed, as you would expect. Try to avoid using keys that are difficult to obtain on various keyboards (e.g. <code>é</code>, <code>€</code>), or not visible by default (e.g. many Mac keyboards do not have visual hints for characters such as <code>|</code>, <code>\</code>, <code>[</code>, etc.)</p>
+<h3><a class="anchor" aria-hidden="true" id="when-a-conflict-happens"></a><a href="#when-a-conflict-happens" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>When a conflict happens</h3>
+<p>Should your plugin attempt to overwrite a reserved key, Jest will error out with a descriptive message, something like:</p>
+<blockquote>
+<p>Watch plugin YourFaultyPlugin attempted to register key <q>, that is reserved internally for quitting watch mode. Please change the configuration key for this plugin.</p>
+</blockquote>
+<p>Third-party plugins are also forbidden to overwrite a key reserved already by another third-party plugin present earlier in the configured plugins list (<code>watchPlugins</code> array setting). When this happens, you’ll also get an error message that tries to help you fix that:</p>
+<blockquote>
+<p>Watch plugins YourFaultyPlugin and TheirFaultyPlugin both attempted to register key <x>. Please change the key configuration for one of the conflicting plugins to avoid overlap.</p>
+</blockquote>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/en/25.3/tutorial-jquery"><span class="arrow-prev">← </span><span>DOM Manipulation</span></a><a class="docs-next button" href="/docs/en/25.3/migration-guide"><span>Migrating to Jest</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#watch-plugin-interface">Watch Plugin Interface</a></li><li><a href="#hooking-into-jest">Hooking into Jest</a><ul class="toc-headings"><li><a href="#applyjesthooks"><code>apply(jestHooks)</code></a></li></ul></li><li><a href="#watch-menu-integration">Watch Menu Integration</a><ul class="toc-headings"><li><a href="#getusageinfoglobalconfig"><code>getUsageInfo(globalConfig)</code></a></li><li><a href="#runglobalconfig-updateconfigandrun"><code>run(globalConfig, updateConfigAndRun)</code></a></li></ul></li><li><a href="#customization">Customization</a></li><li><a href="#choosing-a-good-key">Choosing a good key</a><ul class="toc-headings"><li><a href="#when-a-conflict-happens">When a conflict happens</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/en/getting-started.html">Getting Started</a><a href="/docs/en/snapshot-testing.html">Guides</a><a href="/docs/en/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {"facetFilters":["language:en","version:25.3"]}
+              });
+            </script></body></html>

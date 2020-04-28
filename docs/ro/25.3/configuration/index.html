@@ -1,0 +1,972 @@
+<!DOCTYPE html><html lang="ro"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Configuring Jest · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Jest&#x27;s configuration can be defined in the `package.json` file of your project, or through a `jest.config.js` file or through the `--config &lt;path/to/file.js|cjs|mjs|json&gt;` option. If you&#x27;d like to use your `package.json` to store Jest&#x27;s config, the `&quot;jest&quot;` key should be used on the top level so Jest will know how to find your settings:"/><meta name="docsearch:version" content="25.3"/><meta name="docsearch:language" content="ro"/><meta property="og:title" content="Configuring Jest · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="Jest&#x27;s configuration can be defined in the `package.json` file of your project, or through a `jest.config.js` file or through the `--config &lt;path/to/file.js|cjs|mjs|json&gt;` option. If you&#x27;d like to use your `package.json` to store Jest&#x27;s config, the `&quot;jest&quot;` key should be used on the top level so Jest will know how to find your settings:"/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/ro"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/ro/versions"><h3>25.3</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/ro/25.3/getting-started" target="_self">Documentație</a></li><li class="siteNavGroupActive"><a href="/docs/ro/25.3/api" target="_self">API</a></li><li class=""><a href="/ro/help" target="_self">Ajutor</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Română</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/25.3/configuration">English</a></li><li><a href="/docs/ja/25.3/configuration">日本語</a></li><li><a href="/docs/es-ES/25.3/configuration">Español</a></li><li><a href="/docs/pt-BR/25.3/configuration">Português (Brasil)</a></li><li><a href="/docs/ru/25.3/configuration">Русский</a></li><li><a href="/docs/uk/25.3/configuration">Українська</a></li><li><a href="/docs/zh-Hans/25.3/configuration">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(event) {
+          event.preventDefault();
+
+          if (languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>API Reference</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/snapshot-testing">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/dynamodb">Using with DynamoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/architecture">Architecture</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Framework Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/api">Globals</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/jest-object">The Jest Object</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/ro/25.3/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/25.3/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/Configuration.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Configuring Jest</h1></header><article><div><span><p>Jest's configuration can be defined in the <code>package.json</code> file of your project, or through a <code>jest.config.js</code> file or through the <code>--config &lt;path/to/file.js|cjs|mjs|json&gt;</code> option. If you'd like to use your <code>package.json</code> to store Jest's config, the <code>&quot;jest&quot;</code> key should be used on the top level so Jest will know how to find your settings:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"name"</span>: <span class="hljs-string">"my-project"</span>,
+  <span class="hljs-attr">"jest"</span>: {
+    <span class="hljs-attr">"verbose"</span>: <span class="hljs-literal">true</span>
+  }
+}
+</code></pre>
+<p>Sau prin intermediul JavaScript:</p>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// jest.config.js</span>
+<span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">verbose</span>: <span class="hljs-literal">true</span>,
+};
+</code></pre>
+<p>Reţineţi că toată configuraţia care rezultă trebuie să fie serializabilă JSON.</p>
+<p>When using the <code>--config</code> option, the JSON file must not contain a &quot;jest&quot; key:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"bail"</span>: <span class="hljs-number">1</span>,
+  <span class="hljs-attr">"verbose"</span>: <span class="hljs-literal">true</span>
+}
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="opțiuni"></a><a href="#opțiuni" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Opțiuni</h2>
+<p>These options let you control Jest's behavior in your <code>package.json</code> file. The Jest philosophy is to work great by default, but sometimes you just need more configuration power.</p>
+<h3><a class="anchor" aria-hidden="true" id="defaults"></a><a href="#defaults" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Defaults</h3>
+<p>You can retrieve Jest's default options to expand them if needed:</p>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// jest.config.js</span>
+<span class="hljs-keyword">const</span> {defaults} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-config'</span>);
+<span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-comment">// ...</span>
+  <span class="hljs-attr">moduleFileExtensions</span>: [...defaults.moduleFileExtensions, <span class="hljs-string">'ts'</span>, <span class="hljs-string">'tsx'</span>],
+  <span class="hljs-comment">// ...</span>
+};
+</code></pre>
+<ul>
+<li><a href="#automock-boolean"><code>automock</code> [boolean]</a></li>
+<li><a href="#bail-number--boolean"><code>bail</code> [number | boolean]</a></li>
+<li><a href="#browser-boolean"><code>browser</code> [boolean]</a></li>
+<li><a href="#cachedirectory-string"><code>cacheDirectory</code> [string]</a></li>
+<li><a href="#clearmocks-boolean"><code>clearMocks</code> [boolean]</a></li>
+<li><a href="#collectcoverage-boolean"><code>collectCoverage</code> [boolean]</a></li>
+<li><a href="#collectcoveragefrom-array"><code>collectCoverageFrom</code> [array]</a></li>
+<li><a href="#coveragedirectory-string"><code>coverageDirectory</code> [string]</a></li>
+<li><a href="#coveragepathignorepatterns-arraystring"><code>coveragePathIgnorePatterns</code> [array&lt;string&gt;]</a></li>
+<li><a href="#coverageprovider-string"><code>coverageProvider</code> [string]</a></li>
+<li><a href="#coveragereporters-arraystring--stringany"><code>coverageReporters</code> [array&lt;string | [string,any]&gt;]</a></li>
+<li><a href="#coveragethreshold-object"><code>coverageThreshold</code> [object]</a></li>
+<li><a href="#dependencyextractor-string"><code>dependencyExtractor</code> [string]</a></li>
+<li><a href="#displayname-string-object"><code>displayName</code> [string, object]</a></li>
+<li><a href="#errorondeprecated-boolean"><code>errorOnDeprecated</code> [boolean]</a></li>
+<li><a href="#extraglobals-arraystring"><code>extraGlobals</code> [array&lt;string&gt;]</a></li>
+<li><a href="#forcecoveragematch-arraystring"><code>forceCoverageMatch</code> [array&lt;string&gt;]</a></li>
+<li><a href="#globals-object"><code>globals</code> [object]</a></li>
+<li><a href="#globalsetup-string"><code>globalSetup</code> [string]</a></li>
+<li><a href="#globalteardown-string"><code>globalTeardown</code> [string]</a></li>
+<li><a href="#maxconcurrency-number"><code>maxConcurrency</code> [number]</a></li>
+<li><a href="#moduledirectories-arraystring"><code>moduleDirectories</code> [array&lt;string&gt;]</a></li>
+<li><a href="#modulefileextensions-arraystring"><code>moduleFileExtensions</code> [array&lt;string&gt;]</a></li>
+<li><a href="#modulenamemapper-objectstring-string--arraystring"><code>moduleNameMapper</code> [object&lt;string, string | array&lt;string&gt;&gt;]</a></li>
+<li><a href="#modulepathignorepatterns-arraystring"><code>modulePathIgnorePatterns</code> [array&lt;string&gt;]</a></li>
+<li><a href="#modulepaths-arraystring"><code>modulePaths</code> [array&lt;string&gt;]</a></li>
+<li><a href="#notify-boolean"><code>notify</code> [boolean]</a></li>
+<li><a href="#notifymode-string"><code>notifyMode</code> [string]</a></li>
+<li><a href="#preset-string"><code>preset</code> [string]</a></li>
+<li><a href="#prettierpath-string"><code>prettierPath</code> [string]</a></li>
+<li><a href="#projects-arraystring--projectconfig"><code>projects</code> [array&lt;string | ProjectConfig&gt;]</a></li>
+<li><a href="#reporters-arraymodulename--modulename-options"><code>reporters</code> [array&lt;moduleName | [moduleName, options]&gt;]</a></li>
+<li><a href="#resetmocks-boolean"><code>resetMocks</code> [boolean]</a></li>
+<li><a href="#resetmodules-boolean"><code>resetModules</code> [boolean]</a></li>
+<li><a href="#resolver-string"><code>resolver</code> [string]</a></li>
+<li><a href="#restoremocks-boolean"><code>restoreMocks</code> [boolean]</a></li>
+<li><a href="#rootdir-string"><code>rootDir</code> [string]</a></li>
+<li><a href="#roots-arraystring"><code>roots</code> [array&lt;string&gt;]</a></li>
+<li><a href="#runner-string"><code>runner</code> [string]</a></li>
+<li><a href="#setupfiles-array"><code>setupFiles</code> [array]</a></li>
+<li><a href="#setupfilesafterenv-array"><code>setupFilesAfterEnv</code> [array]</a></li>
+<li><a href="#snapshotresolver-string"><code>snapshotResolver</code> [string]</a></li>
+<li><a href="#snapshotserializers-arraystring"><code>snapshotSerializers</code> [array&lt;string&gt;]</a></li>
+<li><a href="#testenvironment-string"><code>testEnvironment</code> [string]</a></li>
+<li><a href="#testenvironmentoptions-object"><code>testEnvironmentOptions</code> [Object]</a></li>
+<li><a href="#testmatch-arraystring"><code>testMatch</code> [array&lt;string&gt;]</a></li>
+<li><a href="#testpathignorepatterns-arraystring"><code>testPathIgnorePatterns</code> [array&lt;string&gt;]</a></li>
+<li><a href="#testregex-string--arraystring"><code>testRegex</code> [string | array&lt;string&gt;]</a></li>
+<li><a href="#testresultsprocessor-string"><code>testResultsProcessor</code> [string]</a></li>
+<li><a href="#testrunner-string"><code>testRunner</code> [string]</a></li>
+<li><a href="#testsequencer-string"><code>testSequencer</code> [string]</a></li>
+<li><a href="#testtimeout-number"><code>testTimeout</code> [number]</a></li>
+<li><a href="#testurl-string"><code>testURL</code> [string]</a></li>
+<li><a href="#timers-string"><code>timers</code> [string]</a></li>
+<li><a href="#transform-objectstring-pathtotransformer--pathtotransformer-object"><code>transform</code> [object&lt;string, pathToTransformer | [pathToTransformer, object]&gt;]</a></li>
+<li><a href="#transformignorepatterns-arraystring"><code>transformIgnorePatterns</code> [array&lt;string&gt;]</a></li>
+<li><a href="#unmockedmodulepathpatterns-arraystring"><code>unmockedModulePathPatterns</code> [array&lt;string&gt;]</a></li>
+<li><a href="#verbose-boolean"><code>verbose</code> [boolean]</a></li>
+<li><a href="#watchpathignorepatterns-arraystring"><code>watchPathIgnorePatterns</code> [array&lt;string&gt;]</a></li>
+<li><a href="#watchplugins-arraystring--string-object"><code>watchPlugins</code> [array&lt;string | [string, Object]&gt;]</a></li>
+<li><a href="#-string"><code>//</code> [string]</a></li>
+</ul>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="referințe"></a><a href="#referințe" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Referințe</h2>
+<h3><a class="anchor" aria-hidden="true" id="automock-boolean"></a><a href="#automock-boolean" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>automock</code> [boolean]</h3>
+<p>Implicit: <code>false</code></p>
+<p>This option tells Jest that all imported modules in your tests should be mocked automatically. All modules used in your tests will have a replacement implementation, keeping the API surface.</p>
+<p>Exemplu:</p>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// utils.js</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> {
+  <span class="hljs-attr">authorize</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">'token'</span>;
+  },
+  <span class="hljs-attr">isAuthorized</span>: <span class="hljs-function"><span class="hljs-params">secret</span> =&gt;</span> secret === <span class="hljs-string">'wizard'</span>,
+};
+</code></pre>
+<pre><code class="hljs css language-js"><span class="hljs-comment">//__tests__/automocking.test.js</span>
+<span class="hljs-keyword">import</span> utils <span class="hljs-keyword">from</span> <span class="hljs-string">'../utils'</span>;
+
+test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; {
+  <span class="hljs-comment">// Public methods of `utils` are now mock functions</span>
+  expect(utils.authorize.mock).toBeTruthy();
+  expect(utils.isAuthorized.mock).toBeTruthy();
+
+  <span class="hljs-comment">// You can provide them with your own implementation</span>
+  <span class="hljs-comment">// or pass the expected return value</span>
+  utils.authorize.mockReturnValue(<span class="hljs-string">'mocked_token'</span>);
+  utils.isAuthorized.mockReturnValue(<span class="hljs-literal">true</span>);
+
+  expect(utils.authorize()).toBe(<span class="hljs-string">'mocked_token'</span>);
+  expect(utils.isAuthorized(<span class="hljs-string">'not_wizard'</span>)).toBeTruthy();
+});
+</code></pre>
+<p><em>Note: Node modules are automatically mocked when you have a manual mock in place (e.g.: <code>__mocks__/lodash.js</code>). More info <a href="manual-mocks.html#mocking-node-modules">here</a>.</em></p>
+<p><em>Note: Core modules, like <code>fs</code>, are not mocked by default. They can be mocked explicitly, like <code>jest.mock('fs')</code>.</em></p>
+<h3><a class="anchor" aria-hidden="true" id="bail-number--boolean"></a><a href="#bail-number--boolean" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>bail</code> [number | boolean]</h3>
+<p>Default: <code>0</code></p>
+<p>By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after <code>n</code> failures. Setting bail to <code>true</code> is the same as setting bail to <code>1</code>.</p>
+<h3><a class="anchor" aria-hidden="true" id="browser-boolean"></a><a href="#browser-boolean" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>browser</code> [boolean]</h3>
+<p>Implicit: <code>false</code></p>
+<p>Respectă <a href="https://github.com/substack/browserify-handbook#browser-field"> câmpul <code>&quot;browser&quot;</code></a> al Browserify în <code>package.json</code> când se rezolvă modulele. Unele module exportă versiuni diferite dacă operează în Node sau browser.</p>
+<h3><a class="anchor" aria-hidden="true" id="cachedirectory-string"></a><a href="#cachedirectory-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>cacheDirectory</code> [string]</h3>
+<p>Implicit: <code>&quot;/tmp/&lt;path&gt;&quot;</code></p>
+<p>Directorul unde Jest va stoca informaţiile sale de dependenţe.</p>
+<p>Jest încearcă să scaneze arborele de dependenţe o dată şi îl memorează pentru a ușura lucrul cu sistemul de fişiere care trebuie să se întâmple în timp ce rulează teste. Această opţiune de configurare vă permite să particularizaţi unde Jest stochează datele pe disc.</p>
+<h3><a class="anchor" aria-hidden="true" id="clearmocks-boolean"></a><a href="#clearmocks-boolean" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>clearMocks</code> [boolean]</h3>
+<p>Implicit: <code>false</code></p>
+<p>Automatically clear mock calls and instances before every test. Equivalent to calling <code>jest.clearAllMocks()</code> before each test. Aceasta nu elimină nicio implementare de dubluri, ce a fost furnizată.</p>
+<h3><a class="anchor" aria-hidden="true" id="collectcoverage-boolean"></a><a href="#collectcoverage-boolean" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>collectCoverage</code> [boolean]</h3>
+<p>Implicit: <code>false</code></p>
+<p>Indică dacă informaţiile de acoperire a codului trebuie să fie colectate în timpul execuției. Deoarece aceasta adaugă în toate fişierele executate declaraţii de colectare a acoperirii, poate încetini semnificativ testele.</p>
+<h3><a class="anchor" aria-hidden="true" id="collectcoveragefrom-array"></a><a href="#collectcoveragefrom-array" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>collectCoverageFrom</code> [array]</h3>
+<p>Implicit: <code>undefined</code></p>
+<p>An array of <a href="https://github.com/jonschlinkert/micromatch">glob patterns</a> indicating a set of files for which coverage information should be collected. If a file matches the specified glob pattern, coverage information will be collected for it even if no tests exist for this file and it's never required in the test suite.</p>
+<p>Exemplu:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"collectCoverageFrom"</span>: [
+    <span class="hljs-string">"**/*.{js,jsx}"</span>,
+    <span class="hljs-string">"!**/node_modules/**"</span>,
+    <span class="hljs-string">"!**/vendor/**"</span>
+  ]
+}
+</code></pre>
+<p>This will collect coverage information for all the files inside the project's <code>rootDir</code>, except the ones that match <code>**/node_modules/**</code> or <code>**/vendor/**</code>.</p>
+<p><em>Notă: Această opţiune necesită ca opțiunea <code>collectCoverage</code> să fie setată &quot;true&quot; sau Jest să fie invocat cu <code>--coverage</code>.</em></p>
+<p><details>
+<summary>Help:</summary>
+If you are seeing coverage output such as...</p>
+<pre><code class="hljs">=============================== Coverage summary ===============================
+Statements   : Unknown% ( 0/0 )
+Branches     : Unknown% ( 0/0 )
+Functions    : Unknown% ( 0/0 )
+<span class="hljs-section">Lines        : Unknown% ( 0/0 )
+================================================================================</span>
+Jest: Coverage data for global was not found.
+</code></pre>
+<p>Most likely your glob patterns are not matching any files. Refer to the <a href="https://github.com/jonschlinkert/micromatch">micromatch</a> documentation to ensure your globs are compatible.</p>
+<p></details></p>
+<h3><a class="anchor" aria-hidden="true" id="coveragedirectory-string"></a><a href="#coveragedirectory-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coverageDirectory</code> [string]</h3>
+<p>Implicit: <code>undefined</code></p>
+<p>Directorul unde Jest ar trebui să salveze fişierele sale de acoperire.</p>
+<h3><a class="anchor" aria-hidden="true" id="coveragepathignorepatterns-arraystring"></a><a href="#coveragepathignorepatterns-arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coveragePathIgnorePatterns</code> [array&lt;string&gt;]</h3>
+<p>Implicit: <code>[&quot;/node_modules/&quot;]</code></p>
+<p>An array of regexp pattern strings that are matched against all file paths before executing the test. If the file path matches any of the patterns, coverage information will be skipped.</p>
+<p>Aceste reguli sunt comparate față de calea completă. Utilizaţi cuvântul cheie <code>&lt;rootDir&gt;</code> pentru a include calea către directorul rădăcină din proiectul vostru pentru a preveni ignorarea accidentală a fișierelor în medii diferite, care pot avea diferite directoare rădăcină. Exemplu: <code>[&quot;&lt;rootDir&gt;/build/&quot;, &quot;&lt;rootDir&gt;/node_modules/&quot;]</code>.</p>
+<h3><a class="anchor" aria-hidden="true" id="coverageprovider-string"></a><a href="#coverageprovider-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coverageProvider</code> [string]</h3>
+<p>Indicates which provider should be used to instrument code for coverage. Allowed values are <code>babel</code> (default) or <code>v8</code>.</p>
+<p>Note that using <code>v8</code> is considered experimental. This uses V8's builtin code coverage rather than one based on Babel and comes with a few caveats</p>
+<ol>
+<li>Your node version must include <code>vm.compileFunction</code>, which was introduced in <a href="https://nodejs.org/dist/latest-v12.x/docs/api/vm.html#vm_vm_compilefunction_code_params_options">node 10.10</a></li>
+<li>Tests needs to run in Node test environment (support for <code>jsdom</code> requires <a href="https://www.npmjs.com/package/jest-environment-jsdom-sixteen"><code>jest-environment-jsdom-sixteen</code></a>)</li>
+<li>V8 has way better data in the later versions, so using the latest versions of node (v13 at the time of this writing) will yield better results</li>
+</ol>
+<h3><a class="anchor" aria-hidden="true" id="coveragereporters-arraystring--stringany"></a><a href="#coveragereporters-arraystring--stringany" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coverageReporters</code> [array&lt;string | [string,any]&gt;]</h3>
+<p>Default: <code>[&quot;json&quot;, &quot;lcov&quot;, &quot;text&quot;, &quot;clover&quot;]</code></p>
+<p>A list of reporter names that Jest uses when writing coverage reports. Any <a href="https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-reports/lib">istanbul reporter</a> can be used.</p>
+<p><em>Note: Setting this option overwrites the default values. Add <code>&quot;text&quot;</code> or <code>&quot;text-summary&quot;</code> to see a coverage summary in the console output.</em></p>
+<p><em>Note: You can pass additional options to the istanbul reporter using the tuple form. De exemplu:</em></p>
+<pre><code class="hljs css language-json">[<span class="hljs-string">"json"</span>, [<span class="hljs-string">"lcov"</span>, {<span class="hljs-attr">"projectRoot"</span>: <span class="hljs-string">"../../"</span>}]]
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="coveragethreshold-object"></a><a href="#coveragethreshold-object" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coverageThreshold</code> [object]</h3>
+<p>Implicit: <code>undefined</code></p>
+<p>Acesta va fi utilizat pentru a configura pragul minim de acoperire. Thresholds can be specified as <code>global</code>, as a <a href="https://github.com/isaacs/node-glob#glob-primer">glob</a>, and as a directory or file path. If thresholds aren't met, jest will fail. Thresholds specified as a positive number are taken to be the minimum percentage required. Thresholds specified as a negative number represent the maximum number of uncovered entities allowed.</p>
+<p>For example, with the following configuration jest will fail if there is less than 80% branch, line, and function coverage, or if there are more than 10 uncovered statements:</p>
+<pre><code class="hljs css language-json">{
+  ...
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": -10
+      }
+    }
+  }
+}
+</code></pre>
+<p>If globs or paths are specified alongside <code>global</code>, coverage data for matching paths will be subtracted from overall coverage and thresholds will be applied independently. Thresholds for globs are applied to all files matching the glob. Dacă nu se regăsește fișierul specificat în cale, se returnează eroare.</p>
+<p>For example, with the following configuration:</p>
+<pre><code class="hljs css language-json">{
+  ...
+  "jest": {
+    "coverageThreshold": {
+      "global": {
+        "branches": 50,
+        "functions": 50,
+        "lines": 50,
+        "statements": 50
+      },
+      "./src/components/": {
+        "branches": 40,
+        "statements": 40
+      },
+      "./src/reducers/**/*.js": {
+        "statements": 90
+      },
+      "./src/api/very-important-module.js": {
+        "branches": 100,
+        "functions": 100,
+        "lines": 100,
+        "statements": 100
+      }
+    }
+  }
+}
+</code></pre>
+<p>Jest will fail if:</p>
+<ul>
+<li>The <code>./src/components</code> directory has less than 40% branch or statement coverage.</li>
+<li>One of the files matching the <code>./src/reducers/**/*.js</code> glob has less than 90% statement coverage.</li>
+<li>The <code>./src/api/very-important-module.js</code> file has less than 100% coverage.</li>
+<li>Every remaining file combined has less than 50% coverage (<code>global</code>).</li>
+</ul>
+<h3><a class="anchor" aria-hidden="true" id="dependencyextractor-string"></a><a href="#dependencyextractor-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>dependencyExtractor</code> [string]</h3>
+<p>Implicit: <code>undefined</code></p>
+<p>This option allows the use of a custom dependency extractor. It must be a node module that exports an object with an <code>extract</code> function. E.g.:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
+<span class="hljs-keyword">const</span> crypto = <span class="hljs-built_in">require</span>(<span class="hljs-string">'crypto'</span>);
+
+<span class="hljs-built_in">module</span>.exports = {
+  extract(code, filePath, defaultExtract) {
+    <span class="hljs-keyword">const</span> deps = defaultExtract(code, filePath);
+    <span class="hljs-comment">// Scan the file and add dependencies in `deps` (which is a `Set`)</span>
+    <span class="hljs-keyword">return</span> deps;
+  },
+  getCacheKey() {
+    <span class="hljs-keyword">return</span> crypto
+      .createHash(<span class="hljs-string">'md5'</span>)
+      .update(fs.readFileSync(__filename))
+      .digest(<span class="hljs-string">'hex'</span>);
+  },
+};
+</code></pre>
+<p>The <code>extract</code> function should return an iterable (<code>Array</code>, <code>Set</code>, etc.) with the dependencies found in the code.</p>
+<p>That module can also contain a <code>getCacheKey</code> function to generate a cache key to determine if the logic has changed and any cached artifacts relying on it should be discarded.</p>
+<h3><a class="anchor" aria-hidden="true" id="displayname-string-object"></a><a href="#displayname-string-object" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>displayName</code> [string, object]</h3>
+<p>implicit: <code>undefined</code></p>
+<p>Allows for a label to be printed along side a test while it is running. This becomes more useful in multiproject repositories where there can be many jest configuration files. This visually tells which project a test belongs to. Here are sample valid values.</p>
+<pre><code class="hljs css language-js"><span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">displayName</span>: <span class="hljs-string">'CLIENT'</span>,
+};
+</code></pre>
+<p>sau</p>
+<pre><code class="hljs css language-js"><span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">displayName</span>: {
+    <span class="hljs-attr">name</span>: <span class="hljs-string">'CLIENT'</span>,
+    <span class="hljs-attr">color</span>: <span class="hljs-string">'blue'</span>,
+  },
+};
+</code></pre>
+<p>As a secondary option, an object with the properties <code>name</code> and <code>color</code> can be passed. This allows for a custom configuration of the background color of the displayName. <code>displayName</code> defaults to white when its value is a string. Jest uses <a href="https://github.com/chalk/chalk">chalk</a> to provide the color. As such, all of the valid options for colors supported by chalk are also supported by jest.</p>
+<h3><a class="anchor" aria-hidden="true" id="errorondeprecated-boolean"></a><a href="#errorondeprecated-boolean" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>errorOnDeprecated</code> [boolean]</h3>
+<p>Implicit: <code>false</code></p>
+<p>Make calling deprecated APIs throw helpful error messages. Useful for easing the upgrade process.</p>
+<h3><a class="anchor" aria-hidden="true" id="extraglobals-arraystring"></a><a href="#extraglobals-arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>extraGlobals</code> [array&lt;string&gt;]</h3>
+<p>Implicit: <code>undefined</code></p>
+<p>Test files run inside a <a href="https://nodejs.org/api/vm.html">vm</a>, which slows calls to global context properties (e.g. <code>Math</code>). With this option you can specify extra properties to be defined inside the vm for faster lookups.</p>
+<p>For example, if your tests call <code>Math</code> often, you can pass it by setting <code>extraGlobals</code>.</p>
+<pre><code class="hljs css language-json">{
+  ...
+  "jest": {
+    "extraGlobals": ["Math"]
+  }
+}
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="forcecoveragematch-arraystring"></a><a href="#forcecoveragematch-arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>forceCoverageMatch</code> [array&lt;string&gt;]</h3>
+<p>Default: <code>['']</code></p>
+<p>Test files are normally ignored from collecting code coverage. With this option, you can overwrite this behavior and include otherwise ignored files in code coverage.</p>
+<p>For example, if you have tests in source files named with <code>.t.js</code> extension as following:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// sum.t.js</span>
+
+<span class="hljs-keyword">export</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">a, b</span>) </span>{
+  <span class="hljs-keyword">return</span> a + b;
+}
+
+<span class="hljs-keyword">if</span> (process.env.NODE_ENV === <span class="hljs-string">'test'</span>) {
+  test(<span class="hljs-string">'sum'</span>, () =&gt; {
+    expect(sum(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>)).toBe(<span class="hljs-number">3</span>);
+  });
+}
+</code></pre>
+<p>You can collect coverage from those files with setting <code>forceCoverageMatch</code>.</p>
+<pre><code class="hljs css language-json">{
+  ...
+  "jest": {
+    "forceCoverageMatch": ["**/*.t.js"]
+  }
+}
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="globals-object"></a><a href="#globals-object" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>globals</code> [object]</h3>
+<p>Implicit: <code>{}</code></p>
+<p>Un set de variabile globale care trebuie să fie disponibile în toate mediile de testare.</p>
+<p>De exemplu, următorul cod ar crea o variabilă globală <code>__DEV__</code> cu valoarea <code>true</code> în toate mediile de testare:</p>
+<pre><code class="hljs css language-json">{
+  ...
+  "jest": {
+    "globals": {
+      "__DEV__": true
+    }
+  }
+}
+</code></pre>
+<p>Reţineţi că, dacă specificaţi o valoare de referinţă la nivel global (cum ar fi un obiect sau un array), şi în mijlocul execuției unui test se modifică această valoare, modificarea <em>nu</em> va persista în rularea testelor pentru alte fişiere de test. In addition the <code>globals</code> object must be json-serializable, so it can't be used to specify global functions. For that you should use <code>setupFiles</code>.</p>
+<h3><a class="anchor" aria-hidden="true" id="globalsetup-string"></a><a href="#globalsetup-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>globalSetup</code> [string]</h3>
+<p>Implicit: <code>undefined</code></p>
+<p>This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's <code>globalConfig</code> object as a parameter.</p>
+<p><em>Note: A global setup module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project.</em></p>
+<p><em>Note: Any global variables that are defined through <code>globalSetup</code> can only be read in <code>globalTeardown</code>. You cannot retrieve globals defined here in your test suites.</em></p>
+<p><em>Note: While code transformation is applied to the linked setup-file, Jest will <strong>not</strong> transform any code in <code>node_modules</code>. This is due to the need to load the actual transformers (e.g. <code>babel</code> or <code>typescript</code>) to perform transformation.</em></p>
+<p>Exemplu:</p>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// setup.js</span>
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-comment">// ...</span>
+  <span class="hljs-comment">// Set reference to mongod in order to close the server during teardown.</span>
+  global.__MONGOD__ = mongod;
+};
+</code></pre>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// teardown.js</span>
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">await</span> global.__MONGOD__.stop();
+};
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="globalteardown-string"></a><a href="#globalteardown-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>globalTeardown</code> [string]</h3>
+<p>Implicit: <code>undefined</code></p>
+<p>This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's <code>globalConfig</code> object as a parameter.</p>
+<p><em>Note: A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project.</em></p>
+<p><em>Note: The same caveat concerning transformation of <code>node_modules</code> as for <code>globalSetup</code> applies to <code>globalTeardown</code>.</em></p>
+<h3><a class="anchor" aria-hidden="true" id="maxconcurrency-number"></a><a href="#maxconcurrency-number" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>maxConcurrency</code> [number]</h3>
+<p>Default: <code>5</code></p>
+<p>A number limiting the number of tests that are allowed to run at the same time when using <code>test.concurrent</code>. Any test above this limit will be queued and executed once a slot is released.</p>
+<h3><a class="anchor" aria-hidden="true" id="moduledirectories-arraystring"></a><a href="#moduledirectories-arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>moduleDirectories</code> [array&lt;string&gt;]</h3>
+<p>Implicit: <code>[&quot;node_modules&quot;]</code></p>
+<p>O serie de nume de directoare care vor fi cautate recursiv pentru locaţia modulelor incluse. Setting this option will <em>override</em> the default, if you wish to still search <code>node_modules</code> for packages include it along with any other options: <code>[&quot;node_modules&quot;, &quot;bower_components&quot;]</code></p>
+<h3><a class="anchor" aria-hidden="true" id="modulefileextensions-arraystring"></a><a href="#modulefileextensions-arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>moduleFileExtensions</code> [array&lt;string&gt;]</h3>
+<p>Default: <code>[&quot;js&quot;, &quot;json&quot;, &quot;jsx&quot;, &quot;ts&quot;, &quot;tsx&quot;, &quot;node&quot;]</code></p>
+<p>An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for, in left-to-right order.</p>
+<p>We recommend placing the extensions most commonly used in your project on the left, so if you are using TypeScript, you may want to consider moving &quot;ts&quot; and/or &quot;tsx&quot; to the beginning of the array.</p>
+<h3><a class="anchor" aria-hidden="true" id="modulenamemapper-objectstring-string--arraystring"></a><a href="#modulenamemapper-objectstring-string--arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>moduleNameMapper</code> [object&lt;string, string | array&lt;string&gt;&gt;]</h3>
+<p>Implicit: <code>null</code></p>
+<p>A map from regular expressions to module names or to arrays of module names that allow to stub out resources, like images or styles with a single module.</p>
+<p>Modulele care sunt mapate la un alias sunt de-dublate în mod implicit, indiferent dacă dublarea automată este activată sau nu.</p>
+<p>Utilizaţi <code>&lt;rootDir&gt;</code> pentru a vă referi la valoarea <a href="#rootdir-string"><code>rootDir</code></a>, dacă doriţi să utilizaţi căi de fişier.</p>
+<p>În plus, puteţi înlocui grupuri capturate cu regex folosind referințe numerotate.</p>
+<p>Exemplu:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"moduleNameMapper"</span>: {
+    <span class="hljs-attr">"^image![a-zA-Z0-9$_-]+$"</span>: <span class="hljs-string">"GlobalImageStub"</span>,
+    <span class="hljs-attr">"^[./a-zA-Z0-9$_-]+\\.png$"</span>: <span class="hljs-string">"&lt;rootDir&gt;/RelativeImageStub.js"</span>,
+    <span class="hljs-attr">"module_name_(.*)"</span>: <span class="hljs-string">"&lt;rootDir&gt;/substituted_module_$1.js"</span>,
+    <span class="hljs-attr">"assets/(.*)"</span>: [
+      <span class="hljs-string">"&lt;rootDir&gt;/images/$1"</span>,
+      <span class="hljs-string">"&lt;rootDir&gt;/photos/$1"</span>,
+      <span class="hljs-string">"&lt;rootDir&gt;/recipes/$1"</span>
+    ]
+  }
+}
+</code></pre>
+<p>The order in which the mappings are defined matters. Patterns are checked one by one until one fits. The most specific rule should be listed first. This is true for arrays of module names as well.</p>
+<p><em>Notă: Dacă folosiți nume fără limite <code>^$</code> pot apărea erori greu de identificat. Ex. <code>relay</code> va înlocui toate modulele care contin <code>relay</code> în nume: <code>relay</code>, <code>react-relay</code> şi <code>graphql-relay</code> vor fi redirecționate către dublură.</em></p>
+<h3><a class="anchor" aria-hidden="true" id="modulepathignorepatterns-arraystring"></a><a href="#modulepathignorepatterns-arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>modulePathIgnorePatterns</code> [array&lt;string&gt;]</h3>
+<p>Implicit: <code>[]</code></p>
+<p>Un array de expresii regulate care sunt comparate cu toate căile de module, înainte de acestea să fie considerate 'vizibile' pentru încărcătorul de module. În cazul în care calea unui modul se potriveşte cu oricare dintre modele, acesta nu va fi <code>require()</code>-uit în mediul de testare.</p>
+<p>Aceste reguli sunt comparate față de calea completă. Utilizaţi cuvântul cheie <code>&lt;rootDir&gt;</code> pentru a include calea către directorul rădăcină din proiectul vostru pentru a preveni ignorarea accidentală a fișierelor în medii diferite, care pot avea diferite directoare rădăcină. Exemplu: <code>[&quot;&lt;rootDir&gt;/build/&quot;]</code>.</p>
+<h3><a class="anchor" aria-hidden="true" id="modulepaths-arraystring"></a><a href="#modulepaths-arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>modulePaths</code> [array&lt;string&gt;]</h3>
+<p>Implicit: <code>[]</code></p>
+<p>An alternative API to setting the <code>NODE_PATH</code> env variable, <code>modulePaths</code> is an array of absolute paths to additional locations to search when resolving modules. Utilizaţi atributul <code>&lt;rootDir&gt;</code> pentru a include rădăcina proiectului vostru. Exemplu: <code>[&quot;&lt;rootDir&gt;/app/&quot;]</code>.</p>
+<h3><a class="anchor" aria-hidden="true" id="notify-boolean"></a><a href="#notify-boolean" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>notify</code> [boolean]</h3>
+<p>Implicit: <code>false</code></p>
+<p>Activează afișsarea de notificări pentru rezultatele testelor.</p>
+<p><strong>Beware:</strong> Jest uses <a href="https://github.com/mikaelbr/node-notifier">node-notifier</a> to display desktop notifications. On Windows, it creates a new start menu entry on the first use and not display the notification. Notifications will be properly displayed on subsequent runs</p>
+<h3><a class="anchor" aria-hidden="true" id="notifymode-string"></a><a href="#notifymode-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>notifyMode</code> [string]</h3>
+<p>Default: <code>failure-change</code></p>
+<p>Specifies notification mode. Requires <code>notify: true</code>.</p>
+<h4><a class="anchor" aria-hidden="true" id="modes"></a><a href="#modes" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Modes</h4>
+<ul>
+<li><code>always</code>: always send a notification.</li>
+<li><code>failure</code>: send a notification when tests fail.</li>
+<li><code>success</code>: send a notification when tests pass.</li>
+<li><code>change</code>: send a notification when the status changed.</li>
+<li><code>success-change</code>: send a notification when tests pass or once when it fails.</li>
+<li><code>failure-change</code>: send a notification when tests fail or once when it passes.</li>
+</ul>
+<h3><a class="anchor" aria-hidden="true" id="preset-string"></a><a href="#preset-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>preset</code> [string]</h3>
+<p>Implicit: <code>undefined</code></p>
+<p>A preset that is used as a base for Jest's configuration. A preset should point to an npm module that has a <code>jest-preset.json</code> or <code>jest-preset.js</code> file at the root.</p>
+<p>For example, this preset <code>foo-bar/jest-preset.js</code> will be configured as follows:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"preset"</span>: <span class="hljs-string">"foo-bar"</span>
+}
+</code></pre>
+<p>Presets may also be relative filesystem paths.</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"preset"</span>: <span class="hljs-string">"./node_modules/foo-bar/jest-preset.js"</span>
+}
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="prettierpath-string"></a><a href="#prettierpath-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>prettierPath</code> [string]</h3>
+<p>Default: <code>'prettier'</code></p>
+<p>Sets the path to the <a href="https://prettier.io/"><code>prettier</code></a> node module used to update inline snapshots.</p>
+<h3><a class="anchor" aria-hidden="true" id="projects-arraystring--projectconfig"></a><a href="#projects-arraystring--projectconfig" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>projects</code> [array&lt;string | ProjectConfig&gt;]</h3>
+<p>Implicit: <code>undefined</code></p>
+<p>Atunci când configuraţia <code>projects</code> este completată cu o serie de căi sau tipare glob, Jest va rula testele în toate proiectele specificate, în acelaşi timp. Acest lucru este util pentru proiecte monolit sau atunci când se lucrează pe mai multe proiecte în acelaşi timp.</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"projects"</span>: [<span class="hljs-string">"&lt;rootDir&gt;"</span>, <span class="hljs-string">"&lt;rootDir&gt;/examples/*"</span>]
+}
+</code></pre>
+<p>This example configuration will run Jest in the root directory as well as in every folder in the examples directory. You can have an unlimited amount of projects running in the same Jest instance.</p>
+<p>The projects feature can also be used to run multiple configurations or multiple <a href="#runner-string">runners</a>. For this purpose you can pass an array of configuration objects. For example, to run both tests and ESLint (via <a href="https://github.com/jest-community/jest-runner-eslint">jest-runner-eslint</a>) in the same invocation of Jest:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"projects"</span>: [
+    {
+      <span class="hljs-attr">"displayName"</span>: <span class="hljs-string">"test"</span>
+    },
+    {
+      <span class="hljs-attr">"displayName"</span>: <span class="hljs-string">"lint"</span>,
+      <span class="hljs-attr">"runner"</span>: <span class="hljs-string">"jest-runner-eslint"</span>,
+      <span class="hljs-attr">"testMatch"</span>: [<span class="hljs-string">"&lt;rootDir&gt;/**/*.js"</span>]
+    }
+  ]
+}
+</code></pre>
+<p><em>Note: When using multi project runner, it's recommended to add a <code>displayName</code> for each project. This will show the <code>displayName</code> of a project next to its tests.</em></p>
+<h3><a class="anchor" aria-hidden="true" id="reporters-arraymodulename--modulename-options"></a><a href="#reporters-arraymodulename--modulename-options" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>reporters</code> [array&lt;moduleName | [moduleName, options]&gt;]</h3>
+<p>Implicit: <code>undefined</code></p>
+<p>Utilizaţi această opţiune de configurare pentru a adăuga tipuri personalizate de raportări Jest. Un reporter personalizat este o clasă care implementează metodele <code>onRunStart</code>, <code>onTestStart</code>, <code>onTestResult</code>, <code>onRunComplete</code>, ce vor fi apelate atunci când oricare din aceste evenimente survine.</p>
+<p>If custom reporters are specified, the default Jest reporters will be overridden. To keep default reporters, <code>default</code> can be passed as a module name.</p>
+<p>Acest lucru va suprascrie reporterii impliciți:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"reporters"</span>: [<span class="hljs-string">"&lt;rootDir&gt;/my-custom-reporter.js"</span>]
+}
+</code></pre>
+<p>Acest lucru va utiliza reporterul personalizat în plus faţă de cei impliciți pe care Jest îi oferă:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"reporters"</span>: [<span class="hljs-string">"default"</span>, <span class="hljs-string">"&lt;rootDir&gt;/my-custom-reporter.js"</span>]
+}
+</code></pre>
+<p>În plus, reporterii personalizați pot fi configurați prin pasarea unui obiect <code>options</code> ca al doilea argument:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"reporters"</span>: [
+    <span class="hljs-string">"default"</span>,
+    [<span class="hljs-string">"&lt;rootDir&gt;/my-custom-reporter.js"</span>, {<span class="hljs-attr">"banana"</span>: <span class="hljs-string">"yes"</span>, <span class="hljs-attr">"pineapple"</span>: <span class="hljs-string">"no"</span>}]
+  ]
+}
+</code></pre>
+<p>Modulele pentru reporteri personalizați trebuie să definească o clasă care primește <code>GlobalConfig</code> şi un obiect &quot;options&quot; ca argumente în constructor:</p>
+<p>Exemplu de reporter:</p>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// my-custom-reporter.js</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyCustomReporter</span> </span>{
+  <span class="hljs-keyword">constructor</span>(globalConfig, options) {
+    <span class="hljs-keyword">this</span>._globalConfig = globalConfig;
+    <span class="hljs-keyword">this</span>._options = options;
+  }
+
+  onRunComplete(contexts, results) {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Custom reporter output:'</span>);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'GlobalConfig: '</span>, <span class="hljs-keyword">this</span>._globalConfig);
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Options: '</span>, <span class="hljs-keyword">this</span>._options);
+  }
+}
+
+<span class="hljs-built_in">module</span>.exports = MyCustomReporter;
+<span class="hljs-comment">// or export default MyCustomReporter;</span>
+</code></pre>
+<p>Reporterii personalizați pot forţa Jest să-ți termine execuția cu cod non-0 prin returnarea unui obiect Error în metoda <code>getLastError()</code></p>
+<pre><code class="hljs css language-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyCustomReporter</span> </span>{
+  <span class="hljs-comment">// ...</span>
+  getLastError() {
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._shouldFail) {
+      <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'my-custom-reporter.js reported an error'</span>);
+    }
+  }
+}
+</code></pre>
+<p>For the full list of methods and argument types see <code>Reporter</code> interface in <a href="https://github.com/facebook/jest/blob/master/packages/jest-reporters/src/types.ts">packages/jest-reporters/src/types.ts</a></p>
+<h3><a class="anchor" aria-hidden="true" id="resetmocks-boolean"></a><a href="#resetmocks-boolean" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>resetMocks</code> [boolean]</h3>
+<p>Implicit: <code>false</code></p>
+<p>Automatically reset mock state before every test. Equivalent to calling <code>jest.resetAllMocks()</code> before each test. Acest lucru va conduce la eliminearea implementării false pentru toate dublurile, dar nu restaurează implementarea lor iniţială.</p>
+<h3><a class="anchor" aria-hidden="true" id="resetmodules-boolean"></a><a href="#resetmodules-boolean" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>resetModules</code> [boolean]</h3>
+<p>Implicit: <code>false</code></p>
+<p>By default, each test file gets its own independent module registry. Enabling <code>resetModules</code> goes a step further and resets the module registry before running each individual test. Acest lucru este util pentru a izola modulele pentru fiecare test, astfel încât starea locală a modului nu intră în conflict între teste. Acest lucru se poate face programatic folosind <a href="/docs/ro/25.3/jest-object#jestresetmodules"> <code>jest.resetModules()</code></a>.</p>
+<h3><a class="anchor" aria-hidden="true" id="resolver-string"></a><a href="#resolver-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>resolver</code> [string]</h3>
+<p>Implicit: <code>undefined</code></p>
+<p>Această opţiune permite utilizarea unei metode personalizate pentru rezolvarea modulelor. Acest instrument de rezolvare trebuie să fie un modul Node care exportă o funcţie ce aşteaptă ca prim argument un şir de caractere pentru calea de rezolvat şi un obiect cu următoarea structură ca al doilea argument:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"basedir"</span>: string,
+  <span class="hljs-attr">"browser"</span>: bool,
+  <span class="hljs-attr">"defaultResolver"</span>: <span class="hljs-string">"function(request, options)"</span>,
+  <span class="hljs-attr">"extensions"</span>: [string],
+  <span class="hljs-attr">"moduleDirectory"</span>: [string],
+  <span class="hljs-attr">"paths"</span>: [string],
+  <span class="hljs-attr">"rootDir"</span>: [string]
+}
+</code></pre>
+<p>Funcţia ar trebui să returneze fie calea către modulul care ar trebui să fie rezolvat sau să arunce o eroare în cazul în care modulul nu poate fi găsit.</p>
+<p>Note: the defaultResolver passed as options is the jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom one, e.g. (request, options).</p>
+<h3><a class="anchor" aria-hidden="true" id="restoremocks-boolean"></a><a href="#restoremocks-boolean" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>restoreMocks</code> [boolean]</h3>
+<p>Implicit: <code>false</code></p>
+<p>Automatically restore mock state before every test. Equivalent to calling <code>jest.restoreAllMocks()</code> before each test. This will lead to any mocks having their fake implementations removed and restores their initial implementation.</p>
+<h3><a class="anchor" aria-hidden="true" id="rootdir-string"></a><a href="#rootdir-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>rootDir</code> [string]</h3>
+<p>Default: The root of the directory containing your Jest <a href="#">config file</a> <em>or</em> the <code>package.json</code> <em>or</em> the <a href="http://en.wikipedia.org/wiki/Pwd"><code>pwd</code></a> if no <code>package.json</code> is found</p>
+<p>Directorul rădăcină în care Jest ar trebui să caute teste şi module. Dacă puneți configurarea Jest în interiorul fișierului <code>package.json</code> şi doriţi ca directorul rădăcină a fie rădăcina proiectului vostru, valoarea pentru această configurare va fi implicit directorul cu <code>package.json</code>.</p>
+<p>Deseori, veţi dori să setați această valoare la <code>&quot;src&quot;</code> sau <code>&quot;lib&quot;</code>, corespunzător locației unde stocați codul sursă.</p>
+<p><em>Reţineţi că folosind <code>'&lt;rootDir&gt;'</code> în orice altă configurare de căi, va referi înapoi la această valoare. De exemplu, dacă doriţi configurarea <a href="#setupfiles-array"> <code>setupFiles</code></a> să indice către fișierul <code>env-setup.js</code> din rădăcina proiectul vostru, puteți seta valoarea sa la <code>[&quot;&lt;rootDir&gt;/env-setup.js&quot;]</code>.</em></p>
+<h3><a class="anchor" aria-hidden="true" id="roots-arraystring"></a><a href="#roots-arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>roots</code> [array&lt;string&gt;]</h3>
+<p>Implicit: <code>[&quot;&lt;rootDir&gt;&quot;]</code></p>
+<p>O listă de căi de directoare pe care Jest ar trebui să le utilizeze pentru a căuta fișiere.</p>
+<p>Există cazuri în care doriţi ca Jest să căute într-un singur sub-director (în cazul în care aveţi un director <code>src/</code>), dar doriți să preveniți accesarea celorlalte directoare.</p>
+<p><em>Notă: În timp ce <code>rootDir</code> este folosit mai ales ca un simbol pentru reutilizare în alte opţiuni de configurare, <code>roots</code> este folosit intern de Jest pentru a localiza <strong>fişierele test și sursă</strong>. Acest lucru se aplică și atunci când se caută mock-uri manuale pentru module din <code>node_modules</code> (<code>__mocks__</code> va trebui să fie într-una din <code>rădăcini</code>).</em></p>
+<p><em>Notă: În mod implicit, <code>roots</code> are o singură intrare <code>&lt;rootDir&gt;</code>, dar există cazuri în care v-ați dori să aveţi mai multe rădăcini într-un proiect, de exemplu <code>roots: [&quot;&lt;rootDir&gt; /src/&quot;, &quot;&lt; rootDir&gt;/tests/&quot;]</code>.</em></p>
+<h3><a class="anchor" aria-hidden="true" id="runner-string"></a><a href="#runner-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>runner</code> [string]</h3>
+<p>Default: <code>&quot;jest-runner&quot;</code></p>
+<p>This option allows you to use a custom runner instead of Jest's default test runner. Examples of runners include:</p>
+<ul>
+<li><a href="https://github.com/jest-community/jest-runner-eslint"><code>jest-runner-eslint</code></a></li>
+<li><a href="https://github.com/rogeliog/jest-runner-mocha"><code>jest-runner-mocha</code></a></li>
+<li><a href="https://github.com/azz/jest-runner-tsc"><code>jest-runner-tsc</code></a></li>
+<li><a href="https://github.com/keplersj/jest-runner-prettier"><code>jest-runner-prettier</code></a></li>
+</ul>
+<p><em>Note: The <code>runner</code> property value can omit the <code>jest-runner-</code> prefix of the package name.</em></p>
+<p>To write a test-runner, export a class with which accepts <code>globalConfig</code> in the constructor, and has a <code>runTests</code> method with the signature:</p>
+<pre><code class="hljs css language-ts"><span class="hljs-keyword">async</span> runTests(
+  tests: <span class="hljs-built_in">Array</span>&lt;Test&gt;,
+  watcher: TestWatcher,
+  onStart: OnTestStart,
+  onResult: OnTestSuccess,
+  onFailure: OnTestFailure,
+  options: TestRunnerOptions,
+): <span class="hljs-built_in">Promise</span>&lt;<span class="hljs-built_in">void</span>&gt;
+</code></pre>
+<p>If you need to restrict your test-runner to only run in serial rather than being executed in parallel your class should have the property <code>isSerial</code> to be set as <code>true</code>.</p>
+<h3><a class="anchor" aria-hidden="true" id="setupfiles-array"></a><a href="#setupfiles-array" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>setupFiles</code> [array]</h3>
+<p>Implicit: <code>[]</code></p>
+<p>A list of paths to modules that run some code to configure or set up the testing environment. Each setupFile will be run once per test file. Deoarece fiecare test se execută în propriul său mediu, aceste module vor fi executate în mediul de testare imediat înainte de execuția codului de testare în sine.</p>
+<p>It's also worth noting that <code>setupFiles</code> will execute <em>before</em> <a href="#setupfilesafterenv-array"><code>setupFilesAfterEnv</code></a>.</p>
+<h3><a class="anchor" aria-hidden="true" id="setupfilesafterenv-array"></a><a href="#setupfilesafterenv-array" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>setupFilesAfterEnv</code> [array]</h3>
+<p>Implicit: <code>[]</code></p>
+<p>A list of paths to modules that run some code to configure or set up the testing framework before each test file in the suite is executed. Deoarece <a href="#setupfiles-array"><code>setupFiles</code></a> se execută înainte de instalarea framework-ului în mediul de testare, această opțiune vă oferă posibilitatea de a rula bucăți de cod imediat după ce framework-ul a fost instalat în mediul de testare.</p>
+<p>If you want a path to be <a href="#rootdir-string">relative to the root directory of your project</a>, please include <code>&lt;rootDir&gt;</code> inside a path's string, like <code>&quot;&lt;rootDir&gt;/a-configs-folder&quot;</code>.</p>
+<p>De exemplu, Jest este livrat cu mai multe plug-in-uri <code>jasmine</code>, care modifică API-ul jasmine. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in these modules.</p>
+<p><em>Note: <code>setupTestFrameworkScriptFile</code> is deprecated in favor of <code>setupFilesAfterEnv</code>.</em></p>
+<p>Example <code>setupFilesAfterEnv</code> array in a jest.config.js:</p>
+<pre><code class="hljs css language-js"><span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">setupFilesAfterEnv</span>: [<span class="hljs-string">'./jest.setup.js'</span>],
+};
+</code></pre>
+<p>Example <code>jest.setup.js</code> file</p>
+<pre><code class="hljs css language-js">jest.setTimeout(<span class="hljs-number">10000</span>); <span class="hljs-comment">// in milliseconds</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="snapshotresolver-string"></a><a href="#snapshotresolver-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>snapshotResolver</code> [string]</h3>
+<p>Implicit: <code>undefined</code></p>
+<p>The path to a module that can resolve test&lt;-&gt;snapshot path. This config option lets you customize where Jest stores snapshot files on disk.</p>
+<p>Example snapshot resolver module:</p>
+<pre><code class="hljs css language-js"><span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-comment">// resolves from test to snapshot path</span>
+  <span class="hljs-attr">resolveSnapshotPath</span>: <span class="hljs-function">(<span class="hljs-params">testPath, snapshotExtension</span>) =&gt;</span>
+    testPath.replace(<span class="hljs-string">'__tests__'</span>, <span class="hljs-string">'__snapshots__'</span>) + snapshotExtension,
+
+  <span class="hljs-comment">// resolves from snapshot to test path</span>
+  <span class="hljs-attr">resolveTestPath</span>: <span class="hljs-function">(<span class="hljs-params">snapshotFilePath, snapshotExtension</span>) =&gt;</span>
+    snapshotFilePath
+      .replace(<span class="hljs-string">'__snapshots__'</span>, <span class="hljs-string">'__tests__'</span>)
+      .slice(<span class="hljs-number">0</span>, -snapshotExtension.length),
+
+  <span class="hljs-comment">// Example test path, used for preflight consistency check of the implementation above</span>
+  <span class="hljs-attr">testPathForConsistencyCheck</span>: <span class="hljs-string">'some/__tests__/example.test.js'</span>,
+};
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="snapshotserializers-arraystring"></a><a href="#snapshotserializers-arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>snapshotSerializers</code> [array&lt;string&gt;]</h3>
+<p>Implicit: <code>[]</code></p>
+<p>A list of paths to snapshot serializer modules Jest should use for snapshot testing.</p>
+<p>Jest has default serializers for built-in JavaScript types, HTML elements (Jest 20.0.0+), ImmutableJS (Jest 20.0.0+) and for React elements. See <a href="/docs/ro/25.3/tutorial-react-native#snapshot-test">snapshot test tutorial</a> for more information.</p>
+<p>Exemplu de modul serializator:</p>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// my-serializer-module</span>
+<span class="hljs-built_in">module</span>.exports = {
+  serialize(val, config, indentation, depth, refs, printer) {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">'Pretty foo: '</span> + printer(val.foo);
+  },
+
+  test(val) {
+    <span class="hljs-keyword">return</span> val &amp;&amp; val.hasOwnProperty(<span class="hljs-string">'foo'</span>);
+  },
+};
+</code></pre>
+<p><code>printer</code> is a function that serializes a value using existing plugins.</p>
+<p>To use <code>my-serializer-module</code> as a serializer, configuration would be as follows:</p>
+<pre><code class="hljs css language-json">{
+  ...
+  "jest": {
+    "snapshotSerializers": ["my-serializer-module"]
+  }
+}
+</code></pre>
+<p>În cele din urmă testul ar arăta după cum urmează:</p>
+<pre><code class="hljs css language-js">test(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-keyword">const</span> bar = {
+    <span class="hljs-attr">foo</span>: {
+      <span class="hljs-attr">x</span>: <span class="hljs-number">1</span>,
+      <span class="hljs-attr">y</span>: <span class="hljs-number">2</span>,
+    },
+  };
+
+  expect(bar).toMatchSnapshot();
+});
+</code></pre>
+<p>Imaginea obținută:</p>
+<pre><code class="hljs css language-json">Pretty foo: Object {
+  "x": 1,
+  "y": 2,
+}
+</code></pre>
+<p>Pentru a face o dependenţă explicită, nu implicită, puteţi apela <a href="/docs/ro/25.3/expect#expectaddsnapshotserializerserializer"> <code>expect.addSnapshotSerializer</code></a> pentru a adăuga un modul pentru un fişier individual de test, în loc de adăugarea sa în configurarea <code>snapshotSerializers</code>.</p>
+<p>More about serializers API can be found <a href="https://github.com/facebook/jest/tree/master/packages/pretty-format#serialize">here</a>.</p>
+<h3><a class="anchor" aria-hidden="true" id="testenvironment-string"></a><a href="#testenvironment-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testEnvironment</code> [string]</h3>
+<p>Implicit: <code>&quot;jsdom&quot;</code></p>
+<p>Mediul de testare care va fi utilizat pentru testare. Mediul implicit în Jest este un mediu similar unui browser, și anume <a href="https://github.com/tmpvar/jsdom">jsdom</a>. În cazul în care dezvoltați un serviciu nodejs, utilizaţi opţiunea <code>node</code> pentru a folosi un mediu similar cu nodejs.</p>
+<p>By adding a <code>@jest-environment</code> docblock at the top of the file, you can specify another environment to be used for all tests in that file:</p>
+<pre><code class="hljs css language-js"><span class="hljs-comment">/**
+ * <span class="hljs-doctag">@jest</span>-environment jsdom
+ */</span>
+
+test(<span class="hljs-string">'use jsdom in this test file'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> element = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">'div'</span>);
+  expect(element).not.toBeNull();
+});
+</code></pre>
+<p>Puteţi crea propriile module care vor fi folosite pentru configurarea mediul de testare. The module must export a class with <code>setup</code>, <code>teardown</code> and <code>runScript</code> methods. You can also pass variables from this module to your test suites by assigning them to <code>this.global</code> object – this will make them available in your test suites as global variables.</p>
+<p>The class may optionally expose an asynchronous <code>handleTestEvent</code> method to bind to events fired by <a href="https://github.com/facebook/jest/tree/master/packages/jest-circus"><code>jest-circus</code></a>. Normally, <code>jest-circus</code> test runner would pause until a promise returned from <code>handleTestEvent</code> gets fulfilled, <strong>except for the next events</strong>: <code>start_describe_definition</code>, <code>finish_describe_definition</code>, <code>add_hook</code>, <code>add_test</code> or <code>error</code> (for the up-to-date list you can look at <a href="https://github.com/facebook/jest/tree/master/packages/jest-types/src/Circus.ts">SyncEvent type in the types definitions</a>). That is caused by backward compatibility reasons and <code>process.on('unhandledRejection', callback)</code> signature, but that usually should not be a problem for most of the use cases.</p>
+<p>Any docblock pragmas in test files will be passed to the environment constructor and can be used for per-test configuration. If the pragma does not have a value, it will be present in the object with it's value set to an empty string. If the pragma is not present, it will not be present in the object.</p>
+<p><em>Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment.</em></p>
+<p>Exemplu:</p>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// my-custom-environment</span>
+<span class="hljs-keyword">const</span> NodeEnvironment = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-environment-node'</span>);
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CustomEnvironment</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">NodeEnvironment</span> </span>{
+  <span class="hljs-keyword">constructor</span>(config, context) {
+    <span class="hljs-keyword">super</span>(config, context);
+    <span class="hljs-keyword">this</span>.testPath = context.testPath;
+    <span class="hljs-keyword">this</span>.docblockPragmas = context.docblockPragmas;
+  }
+
+  <span class="hljs-keyword">async</span> setup() {
+    <span class="hljs-keyword">await</span> <span class="hljs-keyword">super</span>.setup();
+    <span class="hljs-keyword">await</span> someSetupTasks(<span class="hljs-keyword">this</span>.testPath);
+    <span class="hljs-keyword">this</span>.global.someGlobalObject = createGlobalObject();
+
+    <span class="hljs-comment">// Will trigger if docblock contains @my-custom-pragma my-pragma-value</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>.docblockPragmas[<span class="hljs-string">'my-custom-pragma'</span>] === <span class="hljs-string">'my-pragma-value'</span>) {
+      <span class="hljs-comment">// ...</span>
+    }
+  }
+
+  <span class="hljs-keyword">async</span> teardown() {
+    <span class="hljs-keyword">this</span>.global.someGlobalObject = destroyGlobalObject();
+    <span class="hljs-keyword">await</span> someTeardownTasks();
+    <span class="hljs-keyword">await</span> <span class="hljs-keyword">super</span>.teardown();
+  }
+
+  runScript(script) {
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">super</span>.runScript(script);
+  }
+
+  <span class="hljs-keyword">async</span> handleTestEvent(event, state) {
+    <span class="hljs-keyword">if</span> (event.name === <span class="hljs-string">'test_start'</span>) {
+      <span class="hljs-comment">// ...</span>
+    }
+  }
+}
+
+<span class="hljs-built_in">module</span>.exports = CustomEnvironment;
+</code></pre>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// my-test-suite</span>
+<span class="hljs-keyword">let</span> someGlobalObject;
+
+beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  someGlobalObject = global.someGlobalObject;
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="testenvironmentoptions-object"></a><a href="#testenvironmentoptions-object" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testEnvironmentOptions</code> [Object]</h3>
+<p>Implicit: <code>{}</code></p>
+<p>Test environment options that will be passed to the <code>testEnvironment</code>. The relevant options depend on the environment. For example you can override options given to <a href="https://github.com/tmpvar/jsdom">jsdom</a> such as <code>{userAgent: &quot;Agent/007&quot;}</code>.</p>
+<h3><a class="anchor" aria-hidden="true" id="testmatch-arraystring"></a><a href="#testmatch-arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testMatch</code> [array&lt;string&gt;]</h3>
+<p>(default: <code>[ &quot;**/__tests__/**/*.[jt]s?(x)&quot;, &quot;**/?(*.)+(spec|test).[jt]s?(x)&quot; ]</code>)</p>
+<p>Modele glob pe care Jest le utilizează pentru a detecta fişiere de test. By default it looks for <code>.js</code>, <code>.jsx</code>, <code>.ts</code> and <code>.tsx</code> files inside of <code>__tests__</code> folders, as well as any files with a suffix of <code>.test</code> or <code>.spec</code> (e.g. <code>Component.test.js</code> or <code>Component.spec.js</code>). It will also find files called <code>test.js</code> or <code>spec.js</code>.</p>
+<p>See the <a href="https://github.com/jonschlinkert/micromatch">micromatch</a> package for details of the patterns you can specify.</p>
+<p>See also <a href="#testregex-string--arraystring"><code>testRegex</code> [string | array&lt;string&gt;]</a>, but note that you cannot specify both options.</p>
+<h3><a class="anchor" aria-hidden="true" id="testpathignorepatterns-arraystring"></a><a href="#testpathignorepatterns-arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testPathIgnorePatterns</code> [array&lt;string&gt;]</h3>
+<p>Implicit: <code>[&quot;/node_modules/&quot;]</code></p>
+<p>An array of regexp pattern strings that are matched against all test paths before executing the test. If the test path matches any of the patterns, it will be skipped.</p>
+<p>Aceste reguli sunt comparate față de calea completă. Utilizaţi cuvântul cheie <code>&lt;rootDir&gt;</code> pentru a include calea către directorul rădăcină din proiectul vostru pentru a preveni ignorarea accidentală a fișierelor în medii diferite, care pot avea diferite directoare rădăcină. Exemplu: <code>[&quot;&lt;rootDir&gt;/build/&quot;, &quot;&lt;rootDir&gt;/node_modules/&quot;]</code>.</p>
+<h3><a class="anchor" aria-hidden="true" id="testregex-string--arraystring"></a><a href="#testregex-string--arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testRegex</code> [string | array&lt;string&gt;]</h3>
+<p>Default: <code>(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$</code></p>
+<p>The pattern or patterns Jest uses to detect test files. By default it looks for <code>.js</code>, <code>.jsx</code>, <code>.ts</code> and <code>.tsx</code> files inside of <code>__tests__</code> folders, as well as any files with a suffix of <code>.test</code> or <code>.spec</code> (e.g. <code>Component.test.js</code> or <code>Component.spec.js</code>). It will also find files called <code>test.js</code> or <code>spec.js</code>. See also <a href="#testmatch-arraystring"><code>testMatch</code> [array&lt;string&gt;]</a>, but note that you cannot specify both options.</p>
+<p>Aceasta este o vizualizare a opțiunii implicite:</p>
+<pre><code class="hljs css language-bash">├── __tests__
+│   └── component.spec.js <span class="hljs-comment"># test</span>
+│   └── anything <span class="hljs-comment"># test</span>
+├── package.json <span class="hljs-comment"># not test</span>
+├── foo.test.js <span class="hljs-comment"># test</span>
+├── bar.spec.jsx <span class="hljs-comment"># test</span>
+└── component.js <span class="hljs-comment"># not test</span>
+</code></pre>
+<p><em>Note: <code>testRegex</code> will try to detect test files using the <strong>absolute file path</strong> therefore having a folder with name that match it will run all the files as tests</em></p>
+<h3><a class="anchor" aria-hidden="true" id="testresultsprocessor-string"></a><a href="#testresultsprocessor-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testResultsProcessor</code> [string]</h3>
+<p>Implicit: <code>undefined</code></p>
+<p>This option allows the use of a custom results processor. This processor must be a node module that exports a function expecting an object with the following structure as the first argument and return it:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"success"</span>: bool,
+  <span class="hljs-attr">"startTime"</span>: epoch,
+  <span class="hljs-attr">"numTotalTestSuites"</span>: number,
+  <span class="hljs-attr">"numPassedTestSuites"</span>: number,
+  <span class="hljs-attr">"numFailedTestSuites"</span>: number,
+  <span class="hljs-attr">"numRuntimeErrorTestSuites"</span>: number,
+  <span class="hljs-attr">"numTotalTests"</span>: number,
+  <span class="hljs-attr">"numPassedTests"</span>: number,
+  <span class="hljs-attr">"numFailedTests"</span>: number,
+  <span class="hljs-attr">"numPendingTests"</span>: number,
+  <span class="hljs-attr">"numTodoTests"</span>: number,
+  <span class="hljs-attr">"openHandles"</span>: Array&lt;Error&gt;,
+  <span class="hljs-attr">"testResults"</span>: [{
+    <span class="hljs-attr">"numFailingTests"</span>: number,
+    <span class="hljs-attr">"numPassingTests"</span>: number,
+    <span class="hljs-attr">"numPendingTests"</span>: number,
+    <span class="hljs-attr">"testResults"</span>: [{
+      <span class="hljs-attr">"title"</span>: string (message in it block),
+      <span class="hljs-attr">"status"</span>: <span class="hljs-string">"failed"</span> | <span class="hljs-string">"pending"</span> | <span class="hljs-string">"passed"</span>,
+      <span class="hljs-attr">"ancestorTitles"</span>: [string (message in describe blocks)],
+      <span class="hljs-attr">"failureMessages"</span>: [string],
+      <span class="hljs-attr">"numPassingAsserts"</span>: number,
+      <span class="hljs-attr">"location"</span>: {
+        <span class="hljs-attr">"column"</span>: number,
+        <span class="hljs-attr">"line"</span>: number
+      }
+    },
+    ...
+    ],
+    <span class="hljs-attr">"perfStats"</span>: {
+      <span class="hljs-attr">"start"</span>: epoch,
+      <span class="hljs-attr">"end"</span>: epoch
+    },
+    <span class="hljs-attr">"testFilePath"</span>: absolute path to test file,
+    <span class="hljs-attr">"coverage"</span>: {}
+  },
+  ...
+  ]
+}
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="testrunner-string"></a><a href="#testrunner-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testRunner</code> [string]</h3>
+<p>Implicit: <code>jasmine2</code></p>
+<p>This option allows use of a custom test runner. The default is jasmine2. A custom test runner can be provided by specifying a path to a test runner implementation.</p>
+<p>Un astfel de modul trebuie să exporte o funcţie cu următoarea semnătură:</p>
+<pre><code class="hljs css language-ts"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">testRunner</span>(<span class="hljs-params">
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
+  environment: Environment,
+  runtime: Runtime,
+  testPath: <span class="hljs-built_in">string</span>,
+</span>): <span class="hljs-title">Promise</span>&lt;<span class="hljs-title">TestResult</span>&gt;</span>;
+</code></pre>
+<p>Un exemplu de astfel de funcţie poate fi găsită în modulul nostru implicit <a href="https://github.com/facebook/jest/blob/master/packages/jest-jasmine2/src/index.ts">jasmine2</a>.</p>
+<h3><a class="anchor" aria-hidden="true" id="testsequencer-string"></a><a href="#testsequencer-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testSequencer</code> [string]</h3>
+<p>Default: <code>@jest/test-sequencer</code></p>
+<p>This option allows you to use a custom sequencer instead of Jest's default. <code>sort</code> may optionally return a Promise.</p>
+<p>Exemplu:</p>
+<p>Sort test path alphabetically.</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> Sequencer = <span class="hljs-built_in">require</span>(<span class="hljs-string">'@jest/test-sequencer'</span>).default;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CustomSequencer</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Sequencer</span> </span>{
+  sort(tests) {
+    <span class="hljs-comment">// Test structure information</span>
+    <span class="hljs-comment">// https://github.com/facebook/jest/blob/6b8b1404a1d9254e7d5d90a8934087a9c9899dab/packages/jest-runner/src/types.ts#L17-L21</span>
+    <span class="hljs-keyword">const</span> copyTests = <span class="hljs-built_in">Array</span>.from(tests);
+    <span class="hljs-keyword">return</span> copyTests.sort(<span class="hljs-function">(<span class="hljs-params">testA, testB</span>) =&gt;</span> (testA.path &gt; testB.path ? <span class="hljs-number">1</span> : <span class="hljs-number">-1</span>));
+  }
+}
+
+<span class="hljs-built_in">module</span>.exports = CustomSequencer;
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="testtimeout-number"></a><a href="#testtimeout-number" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testTimeout</code> [number]</h3>
+<p>Default: <code>5000</code></p>
+<p>Default timeout of a test in milliseconds.</p>
+<h3><a class="anchor" aria-hidden="true" id="testurl-string"></a><a href="#testurl-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testURL</code> [string]</h3>
+<p>Default: <code>http://localhost</code></p>
+<p>This option sets the URL for the jsdom environment. It is reflected in properties such as <code>location.href</code>.</p>
+<h3><a class="anchor" aria-hidden="true" id="timers-string"></a><a href="#timers-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>timers</code> [string]</h3>
+<p>Implicit: <code>real</code></p>
+<p>Setarea acestei valori cu <code>fake</code> permite utilizarea de cronometre false pentru funcţii precum <code>setTimeout</code>. Cronometrele false sunt utile atunci când o bucată de cod stabileşte o pauză lungă pe care nu dorim să o aşteptăm într-un test.</p>
+<h3><a class="anchor" aria-hidden="true" id="transform-objectstring-pathtotransformer--pathtotransformer-object"></a><a href="#transform-objectstring-pathtotransformer--pathtotransformer-object" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>transform</code> [object&lt;string, pathToTransformer | [pathToTransformer, object]&gt;]</h3>
+<p>Implicit: <code>undefined</code></p>
+<p>O mapare între expresii regulate către căi de transformatoare. Un transformator este un modul care oferă o funcţie sincron pentru transformarea fişierele sursă. De exemplu, dacă vreți să utilizați o nouă caracteristică de limbaj în module sau teste, care nu este suportată deocamdata de nodejs, puteți introduce unul din multele compilatoare care vor compila o versiune viitoare a limbajului JavaScript într-una curentă. Example: see the <a href="https://github.com/facebook/jest/blob/master/examples/typescript/package.json#L16">examples/typescript</a> example or the <a href="/docs/ro/25.3/webpack">webpack tutorial</a>.</p>
+<p>Examples of such compilers include:</p>
+<ul>
+<li><a href="https://babeljs.io/">Babel</a></li>
+<li><a href="http://www.typescriptlang.org/">TypeScript</a></li>
+<li><a href="http://github.com/leebyron/async-to-gen#jest">async-to-gen</a></li>
+<li>To build your own please visit the <a href="/docs/ro/25.3/tutorial-react#custom-transformers">Custom Transformer</a> section</li>
+</ul>
+<p>You can pass configuration to a transformer like <code>{filePattern: ['path-to-transformer', {options}]}</code> For example, to configure babel-jest for non-default behavior, <code>{&quot;\\.js$&quot;: ['babel-jest', {rootMode: &quot;upward&quot;}]}</code></p>
+<p><em>Note: a transformer is only run once per file unless the file has changed. During development of a transformer it can be useful to run Jest with <code>--no-cache</code> to frequently <a href="/docs/ro/25.3/troubleshooting#caching-issues">delete Jest's cache</a>.</em></p>
+<p><em>Notă: dacă utilizaţi transformatorul <code>babel-jest</code> şi doriţi să utilizaţi un preprocesor suplimentar de cod, ţineţi minte că atunci când &quot;transform&quot; este suprascris, <code>babel-jest</code> nu mai este încărcat automat. Dacă doriţi să-l utilizaţi pentru a compila codul JavaScript trebuie să fie definit în mod explicit. A se vedea <a href="https://github.com/facebook/jest/tree/master/packages/babel-jest#setup">babel-jest plugin</a></em></p>
+<h3><a class="anchor" aria-hidden="true" id="transformignorepatterns-arraystring"></a><a href="#transformignorepatterns-arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>transformIgnorePatterns</code> [array&lt;string&gt;]</h3>
+<p>Implicit: <code>[&quot;/node_modules/&quot;]</code></p>
+<p>An array of regexp pattern strings that are matched against all source file paths before transformation. If the test path matches any of the patterns, it will not be transformed.</p>
+<p>Aceste reguli sunt comparate față de calea completă. Utilizaţi cuvântul cheie <code>&lt;rootDir&gt;</code> pentru a include calea către directorul rădăcină din proiectul vostru pentru a preveni ignorarea accidentală a fișierelor în medii diferite, care pot avea diferite directoare rădăcină.</p>
+<p>Exemplu: <code>[&quot;&lt;rootDir&gt;/bower_components/&quot;, &quot;&lt;rootDir&gt;/node_modules/&quot;]</code>.</p>
+<p>Sometimes it happens (especially in React Native or TypeScript projects) that 3rd party modules are published as untranspiled. Since all files inside <code>node_modules</code> are not transformed by default, Jest will not understand the code in these modules, resulting in syntax errors. To overcome this, you may use <code>transformIgnorePatterns</code> to whitelist such modules. You'll find a good example of this use case in <a href="https://jestjs.io/docs/en/tutorial-react-native#transformignorepatterns-customization">React Native Guide</a>.</p>
+<h3><a class="anchor" aria-hidden="true" id="unmockedmodulepathpatterns-arraystring"></a><a href="#unmockedmodulepathpatterns-arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>unmockedModulePathPatterns</code> [array&lt;string&gt;]</h3>
+<p>Implicit: <code>[]</code></p>
+<p>O serie de expresii regulate care sunt comparate cu toate modulele inainte sa se returneze o dublare automată a lor. Pentru toate fișierele care se potrivesc cu oricare dintre modele din această listă, acesta nu va fi dublat automat.</p>
+<p>Aceasta este utilă pentru unele module 'utilitare' frecvente, care sunt aproape întotdeauna utilizate ca detalii de implementare (cum ar fi underscore/lo-dash, etc). În general este o bună practică pentru a păstra această listă cât mai scurtă posibil şi folosirea explicită a <code>jest.mock()</code> / <code>jest.unmock()</code> în teste individuale. Configurare explicită per test este mult mai uşoară pentru alţi cititori ai testului privind înțelegerea mediului în care va rula testul.</p>
+<p>Este posibilă suprascrierea aceastei setări în teste individuale prin apelul explicit <code>jest.mock()</code> în partea de sus a fişierului de testare.</p>
+<h3><a class="anchor" aria-hidden="true" id="verbose-boolean"></a><a href="#verbose-boolean" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>verbose</code> [boolean]</h3>
+<p>Implicit: <code>false</code></p>
+<p>Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution. Note that if there is only one test file being run it will default to <code>true</code>.</p>
+<h3><a class="anchor" aria-hidden="true" id="watchpathignorepatterns-arraystring"></a><a href="#watchpathignorepatterns-arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>watchPathIgnorePatterns</code> [array&lt;string&gt;]</h3>
+<p>Implicit: <code>[]</code></p>
+<p>O listă de tipare RegExp care sunt comparate cu toate căile fişierelor sursă înainte de a re-rula testele în modul de veghe. În cazul în care calea de fişier se potriveşte cu oricare dintre modele, atunci când acesta este actualizat, nu se va declanşa o re-rulare a testelor.</p>
+<p>Aceste tipare sunt comparate față de calea completă. Utilizaţi cuvântul cheie <code>&lt;rootDir&gt;</code> pentru a include calea către directorul rădăcină din proiectul vostru pentru a preveni ignorarea accidentală a fișierelor în medii diferite, care pot avea diferite directoare rădăcină. Exemplu: <code>[&quot;&lt;rootDir&gt;/node_modules/&quot;]</code>.</p>
+<p>Even if nothing is specified here, the watcher will ignore changes to any hidden files and directories, i.e. files and folders that begins with a dot (<code>.</code>).</p>
+<h3><a class="anchor" aria-hidden="true" id="watchplugins-arraystring--string-object"></a><a href="#watchplugins-arraystring--string-object" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>watchPlugins</code> [array&lt;string | [string, Object]&gt;]</h3>
+<p>Implicit: <code>[]</code></p>
+<p>This option allows you to use a custom watch plugins. Read more about watch plugins <a href="watch-plugins">here</a>.</p>
+<p>Examples of watch plugins include:</p>
+<ul>
+<li><a href="https://github.com/rickhanlonii/jest-watch-master"><code>jest-watch-master</code></a></li>
+<li><a href="https://github.com/rogeliog/jest-watch-select-projects"><code>jest-watch-select-projects</code></a></li>
+<li><a href="https://github.com/unional/jest-watch-suspend"><code>jest-watch-suspend</code></a></li>
+<li><a href="https://github.com/jest-community/jest-watch-typeahead"><code>jest-watch-typeahead</code></a></li>
+<li><a href="https://github.com/cameronhunter/jest-watch-directories/tree/master/packages/jest-watch-yarn-workspaces"><code>jest-watch-yarn-workspaces</code></a></li>
+</ul>
+<p><em>Note: The values in the <code>watchPlugins</code> property value can omit the <code>jest-watch-</code> prefix of the package name.</em></p>
+<h3><a class="anchor" aria-hidden="true" id="-string"></a><a href="#-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>//</code> [string]</h3>
+<p>No default</p>
+<p>This option allow comments in <code>package.json</code>. Include the comment text as the value of this key anywhere in <code>package.json</code>.</p>
+<p>Exemplu:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"name"</span>: <span class="hljs-string">"my-project"</span>,
+  <span class="hljs-attr">"jest"</span>: {
+    <span class="hljs-attr">"//"</span>: <span class="hljs-string">"Comment goes here"</span>,
+    <span class="hljs-attr">"verbose"</span>: <span class="hljs-literal">true</span>
+  }
+}
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/ro/25.3/jest-object"><span class="arrow-prev">← </span><span>The Jest Object</span></a><a class="docs-next button" href="/docs/ro/25.3/cli"><span>Jest CLI Options</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#opțiuni">Opțiuni</a><ul class="toc-headings"><li><a href="#defaults">Defaults</a></li></ul></li><li><a href="#referințe">Referințe</a><ul class="toc-headings"><li><a href="#automock-boolean"><code>automock</code> [boolean]</a></li><li><a href="#bail-number--boolean"><code>bail</code> [number | boolean]</a></li><li><a href="#browser-boolean"><code>browser</code> [boolean]</a></li><li><a href="#cachedirectory-string"><code>cacheDirectory</code> [string]</a></li><li><a href="#clearmocks-boolean"><code>clearMocks</code> [boolean]</a></li><li><a href="#collectcoverage-boolean"><code>collectCoverage</code> [boolean]</a></li><li><a href="#collectcoveragefrom-array"><code>collectCoverageFrom</code> [array]</a></li><li><a href="#coveragedirectory-string"><code>coverageDirectory</code> [string]</a></li><li><a href="#coveragepathignorepatterns-arraystring"><code>coveragePathIgnorePatterns</code> [array&lt;string&gt;]</a></li><li><a href="#coverageprovider-string"><code>coverageProvider</code> [string]</a></li><li><a href="#coveragereporters-arraystring--stringany"><code>coverageReporters</code> [array&lt;string | [string,any]&gt;]</a></li><li><a href="#coveragethreshold-object"><code>coverageThreshold</code> [object]</a></li><li><a href="#dependencyextractor-string"><code>dependencyExtractor</code> [string]</a></li><li><a href="#displayname-string-object"><code>displayName</code> [string, object]</a></li><li><a href="#errorondeprecated-boolean"><code>errorOnDeprecated</code> [boolean]</a></li><li><a href="#extraglobals-arraystring"><code>extraGlobals</code> [array&lt;string&gt;]</a></li><li><a href="#forcecoveragematch-arraystring"><code>forceCoverageMatch</code> [array&lt;string&gt;]</a></li><li><a href="#globals-object"><code>globals</code> [object]</a></li><li><a href="#globalsetup-string"><code>globalSetup</code> [string]</a></li><li><a href="#globalteardown-string"><code>globalTeardown</code> [string]</a></li><li><a href="#maxconcurrency-number"><code>maxConcurrency</code> [number]</a></li><li><a href="#moduledirectories-arraystring"><code>moduleDirectories</code> [array&lt;string&gt;]</a></li><li><a href="#modulefileextensions-arraystring"><code>moduleFileExtensions</code> [array&lt;string&gt;]</a></li><li><a href="#modulenamemapper-objectstring-string--arraystring"><code>moduleNameMapper</code> [object&lt;string, string | array&lt;string&gt;&gt;]</a></li><li><a href="#modulepathignorepatterns-arraystring"><code>modulePathIgnorePatterns</code> [array&lt;string&gt;]</a></li><li><a href="#modulepaths-arraystring"><code>modulePaths</code> [array&lt;string&gt;]</a></li><li><a href="#notify-boolean"><code>notify</code> [boolean]</a></li><li><a href="#notifymode-string"><code>notifyMode</code> [string]</a></li><li><a href="#preset-string"><code>preset</code> [string]</a></li><li><a href="#prettierpath-string"><code>prettierPath</code> [string]</a></li><li><a href="#projects-arraystring--projectconfig"><code>projects</code> [array&lt;string | ProjectConfig&gt;]</a></li><li><a href="#reporters-arraymodulename--modulename-options"><code>reporters</code> [array&lt;moduleName | [moduleName, options]&gt;]</a></li><li><a href="#resetmocks-boolean"><code>resetMocks</code> [boolean]</a></li><li><a href="#resetmodules-boolean"><code>resetModules</code> [boolean]</a></li><li><a href="#resolver-string"><code>resolver</code> [string]</a></li><li><a href="#restoremocks-boolean"><code>restoreMocks</code> [boolean]</a></li><li><a href="#rootdir-string"><code>rootDir</code> [string]</a></li><li><a href="#roots-arraystring"><code>roots</code> [array&lt;string&gt;]</a></li><li><a href="#runner-string"><code>runner</code> [string]</a></li><li><a href="#setupfiles-array"><code>setupFiles</code> [array]</a></li><li><a href="#setupfilesafterenv-array"><code>setupFilesAfterEnv</code> [array]</a></li><li><a href="#snapshotresolver-string"><code>snapshotResolver</code> [string]</a></li><li><a href="#snapshotserializers-arraystring"><code>snapshotSerializers</code> [array&lt;string&gt;]</a></li><li><a href="#testenvironment-string"><code>testEnvironment</code> [string]</a></li><li><a href="#testenvironmentoptions-object"><code>testEnvironmentOptions</code> [Object]</a></li><li><a href="#testmatch-arraystring"><code>testMatch</code> [array&lt;string&gt;]</a></li><li><a href="#testpathignorepatterns-arraystring"><code>testPathIgnorePatterns</code> [array&lt;string&gt;]</a></li><li><a href="#testregex-string--arraystring"><code>testRegex</code> [string | array&lt;string&gt;]</a></li><li><a href="#testresultsprocessor-string"><code>testResultsProcessor</code> [string]</a></li><li><a href="#testrunner-string"><code>testRunner</code> [string]</a></li><li><a href="#testsequencer-string"><code>testSequencer</code> [string]</a></li><li><a href="#testtimeout-number"><code>testTimeout</code> [number]</a></li><li><a href="#testurl-string"><code>testURL</code> [string]</a></li><li><a href="#timers-string"><code>timers</code> [string]</a></li><li><a href="#transform-objectstring-pathtotransformer--pathtotransformer-object"><code>transform</code> [object&lt;string, pathToTransformer | [pathToTransformer, object]&gt;]</a></li><li><a href="#transformignorepatterns-arraystring"><code>transformIgnorePatterns</code> [array&lt;string&gt;]</a></li><li><a href="#unmockedmodulepathpatterns-arraystring"><code>unmockedModulePathPatterns</code> [array&lt;string&gt;]</a></li><li><a href="#verbose-boolean"><code>verbose</code> [boolean]</a></li><li><a href="#watchpathignorepatterns-arraystring"><code>watchPathIgnorePatterns</code> [array&lt;string&gt;]</a></li><li><a href="#watchplugins-arraystring--string-object"><code>watchPlugins</code> [array&lt;string | [string, Object]&gt;]</a></li><li><a href="#-string"><code>//</code> [string]</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/ro/getting-started.html">Getting Started</a><a href="/docs/ro/snapshot-testing.html">Guides</a><a href="/docs/ro/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {"facetFilters":["language:ro","version:25.3"]}
+              });
+            </script></body></html>
