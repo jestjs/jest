@@ -216,12 +216,10 @@ class Runtime {
     }
 
     if (config.automock) {
+      const virtualMocks = fromEntries(this._virtualMocks);
       config.setupFiles.forEach(filePath => {
         if (filePath && filePath.includes(NODE_MODULES)) {
-          const moduleID = this._resolver.getModuleID(
-            fromEntries(this._virtualMocks),
-            filePath,
-          );
+          const moduleID = this._resolver.getModuleID(virtualMocks, filePath);
           this._transitiveShouldMock.set(moduleID, false);
         }
       });
