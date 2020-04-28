@@ -90,7 +90,8 @@ export async function run(
     const runtime = new Runtime(config, environment, hasteMap.resolver);
 
     for (const path of config.setupFiles) {
-      const esm = runtime.unstable_shouldLoadAsEsm(path);
+      // TODO: remove ? in Jest 26
+      const esm = runtime.unstable_shouldLoadAsEsm?.(path);
 
       if (esm) {
         await runtime.unstable_importModule(path);
@@ -98,7 +99,8 @@ export async function run(
         runtime.requireModule(path);
       }
     }
-    const esm = runtime.unstable_shouldLoadAsEsm(filePath);
+    // TODO: remove ? in Jest 26
+    const esm = runtime.unstable_shouldLoadAsEsm?.(filePath);
 
     if (esm) {
       await runtime.unstable_importModule(filePath);

@@ -159,7 +159,8 @@ async function runTestInternal(
   const start = Date.now();
 
   for (const path of config.setupFiles) {
-    const esm = runtime.unstable_shouldLoadAsEsm(path);
+    // TODO: remove ? in Jest 26
+    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);
@@ -300,6 +301,8 @@ async function runTestInternal(
     });
   } finally {
     await environment.teardown();
+    // TODO: this function might be missing, remove ? in Jest 26
+    runtime.teardown?.();
 
     sourcemapSupport.resetRetrieveHandlers();
   }

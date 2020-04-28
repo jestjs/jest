@@ -156,7 +156,8 @@ async function jasmine2(
     });
 
   for (const path of config.setupFilesAfterEnv) {
-    const esm = runtime.unstable_shouldLoadAsEsm(path);
+    // TODO: remove ? in Jest 26
+    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);
@@ -177,7 +178,8 @@ async function jasmine2(
     env.specFilter = (spec: Spec) => testNameRegex.test(spec.getFullName());
   }
 
-  const esm = runtime.unstable_shouldLoadAsEsm(testPath);
+  // TODO: remove ? in Jest 26
+  const esm = runtime.unstable_shouldLoadAsEsm?.(testPath);
 
   if (esm) {
     await runtime.unstable_importModule(testPath);
