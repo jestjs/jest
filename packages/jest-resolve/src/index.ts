@@ -8,14 +8,20 @@
 import * as path from 'path';
 import type {Config} from '@jest/types';
 import type {ModuleMap} from 'jest-haste-map';
-import {sync as realpath} from 'realpath-native';
+import {sync as _realpath} from 'realpath-native';
 import chalk = require('chalk');
+import shouldPreserveSymlinks from 'should-preserve-links';
 import nodeModulesPaths from './nodeModulesPaths';
 import isBuiltinModule from './isBuiltinModule';
 import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
 import type {ResolverConfig} from './types';
 import ModuleNotFoundError from './ModuleNotFoundError';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
+
+const preserveSymlinks = shouldPreserveSymlinks();
+function realpath(p: string) {
+  return preserveSymlinks ? p : _realpath(p);
+}
 
 type FindNodeModuleConfig = {
   basedir: Config.Path;

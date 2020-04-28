@@ -8,9 +8,16 @@
 import * as fs from 'graceful-fs';
 import {sync as resolveSync} from 'resolve';
 import {sync as browserResolve} from 'browser-resolve';
-import {sync as realpath} from 'realpath-native';
+import {sync as _realpath} from 'realpath-native';
 import pnpResolver from 'jest-pnp-resolver';
 import type {Config} from '@jest/types';
+
+import shouldPreserveSymlinks from 'should-preserve-links';
+
+const preserveSymlinks = shouldPreserveSymlinks();
+function realpath(p: string) {
+  return preserveSymlinks ? p : _realpath(p);
+}
 
 type ResolverOptions = {
   basedir: Config.Path;
@@ -40,7 +47,7 @@ export default function defaultResolver(
     isFile,
     moduleDirectory: options.moduleDirectory,
     paths: options.paths,
-    preserveSymlinks: false,
+    preserveSymlinks,
     // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44137
     realpathSync,
   });

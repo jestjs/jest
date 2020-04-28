@@ -14,10 +14,11 @@ import {ValidationError, validate} from 'jest-validate';
 import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk = require('chalk');
 import micromatch = require('micromatch');
-import {sync as realpath} from 'realpath-native';
+import {sync as _realpath} from 'realpath-native';
 import Resolver = require('jest-resolve');
 import {replacePathSepForRegex} from 'jest-regex-util';
 import merge = require('deepmerge');
+import shouldPreserveSymlinks from 'should-preserve-links';
 import validatePattern from './validatePattern';
 import getMaxWorkers from './getMaxWorkers';
 import {
@@ -44,6 +45,11 @@ const PRESET_EXTENSIONS = ['.json', '.js'];
 const PRESET_NAME = 'jest-preset';
 
 type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
+
+const preserveSymlinks = shouldPreserveSymlinks();
+function realpath(p: string) {
+  return preserveSymlinks ? p : _realpath(p);
+}
 
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);

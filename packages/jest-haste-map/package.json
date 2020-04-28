@@ -27,6 +27,7 @@
     "jest-worker": "^25.5.0",
     "micromatch": "^4.0.2",
     "sane": "^4.0.3",
+    "should-preserve-links": "^1.0.4",
     "walker": "^1.0.7",
     "which": "^2.0.2"
   },

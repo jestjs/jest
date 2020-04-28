@@ -41,6 +41,7 @@ function find(
   roots: Array<string>,
   extensions: Array<string>,
   ignore: IgnoreMatcher,
+  preserveSymlinks: boolean,
   callback: Callback,
 ): void {
   const result: Result = [];
@@ -67,7 +68,7 @@ function find(
         }
 
         if (typeof entry !== 'string') {
-          if (entry.isSymbolicLink()) {
+          if (!preserveSymlinks && entry.isSymbolicLink()) {
             return;
           }
 
@@ -84,7 +85,7 @@ function find(
 
           // This logic is unnecessary for node > v10.10, but leaving it in
           // since we need it for backwards-compatibility still.
-          if (!err && stat && !stat.isSymbolicLink()) {
+          if (!err && stat && (preserveSymlinks || !stat.isSymbolicLink())) {
             if (stat.isDirectory()) {
               search(file);
             } else {
@@ -118,10 +119,17 @@ function findNative(
   roots: Array<string>,
   extensions: Array<string>,
   ignore: IgnoreMatcher,
+  preserveSymlinks: boolean,
   callback: Callback,
 ): void {
   const args = Array.from(roots);
-  args.push('-type', 'f');
+  if (preserveSymlinks) {
+    // follow symlinks to determine file type
+    args.unshift('-L');
+    args.push('( -not -type d )');
+  } else {
+    args.push('-type', 'f');
+  }
   if (extensions.length) {
     args.push('(');
   }
@@ -181,6 +189,7 @@ export = async function nodeCrawl(
     extensions,
     forceNodeFilesystemAPI,
     ignore,
+    preserveSymlinks,
     rootDir,
     roots,
   } = options;
@@ -212,9 +221,9 @@ export = async function nodeCrawl(
     };
 
     if (useNativeFind) {
-      findNative(roots, extensions, ignore, callback);
+      findNative(roots, extensions, ignore, preserveSymlinks, callback);
     } else {
-      find(roots, extensions, ignore, callback);
+      find(roots, extensions, ignore, preserveSymlinks, callback);
     }
   });
 };

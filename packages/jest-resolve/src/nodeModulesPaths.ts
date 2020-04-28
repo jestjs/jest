@@ -9,12 +9,19 @@
 
 import * as path from 'path';
 import type {Config} from '@jest/types';
-import {sync as realpath} from 'realpath-native';
+import {sync as _realpath} from 'realpath-native';
 
 type NodeModulesPathsOptions = {
   moduleDirectory?: Array<string>;
   paths?: Array<Config.Path>;
 };
+
+import shouldPreserveSymlinks from 'should-preserve-links';
+
+const preserveSymlinks = shouldPreserveSymlinks();
+function realpath(p: string) {
+  return preserveSymlinks ? p : _realpath(p);
+}
 
 export default function nodeModulesPaths(
   basedir: Config.Path,

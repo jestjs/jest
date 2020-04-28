@@ -43,6 +43,7 @@ import {
 import type {V8CoverageResult} from '@jest/test-result';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
+import shouldPreserveSymlinks from 'should-preserve-links';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
 import {findSiblingsWithFileExtension} from './helpers';
@@ -85,6 +86,8 @@ type ResolveOptions = Parameters<typeof require.resolve>[1];
 
 type StringMap = Map<string, string>;
 type BooleanMap = Map<string, boolean>;
+
+const preserveSymlinks = shouldPreserveSymlinks();
 
 const fromEntries: typeof Object.fromEntries =
   Object.fromEntries ??
@@ -287,6 +290,7 @@ class Runtime {
       mocksPattern: escapePathForRegex(path.sep + '__mocks__' + path.sep),
       name: config.name,
       platforms: config.haste.platforms || ['ios', 'android'],
+      preserveSymlinks,
       providesModuleNodeModules: config.haste.providesModuleNodeModules,
       resetCache: options && options.resetCache,
       retainAllFiles: false,

@@ -9,7 +9,8 @@ import * as path from 'path';
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import chalk = require('chalk');
-import {sync as realpath} from 'realpath-native';
+import {sync as _realpath} from 'realpath-native';
+import shouldPreserveSymlinks from 'should-preserve-links';
 import {isJSONString, replaceRootDirInPath} from './utils';
 import normalize from './normalize';
 import resolveConfigPath from './resolveConfigPath';
@@ -22,6 +23,11 @@ export {default as defaults} from './Defaults';
 export {default as descriptions} from './Descriptions';
 import * as constants from './constants';
 export {constants};
+
+const preserveSymlinks = shouldPreserveSymlinks();
+function realpath(p: string) {
+  return preserveSymlinks ? p : _realpath(p);
+}
 
 type ReadConfig = {
   configPath: Config.Path | null | undefined;

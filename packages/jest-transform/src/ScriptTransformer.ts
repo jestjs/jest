@@ -18,8 +18,9 @@ import HasteMap = require('jest-haste-map');
 import stableStringify = require('fast-json-stable-stringify');
 import slash = require('slash');
 import {sync as writeFileAtomic} from 'write-file-atomic';
-import {sync as realpath} from 'realpath-native';
+import {sync as _realpath} from 'realpath-native';
 import {addHook} from 'pirates';
+import shouldPreserveSymlinks from 'should-preserve-links';
 import type {
   Options,
   TransformResult,
@@ -28,6 +29,11 @@ import type {
 } from './types';
 import shouldInstrument from './shouldInstrument';
 import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';
+
+const preserveSymlinks = shouldPreserveSymlinks();
+function realpath(p: string) {
+  return preserveSymlinks ? p : _realpath(p);
+}
 
 type ProjectCache = {
   configString: string;

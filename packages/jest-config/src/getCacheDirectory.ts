@@ -7,7 +7,14 @@
 
 import * as path from 'path';
 import {tmpdir} from 'os';
-import {sync as realpath} from 'realpath-native';
+import {sync as _realpath} from 'realpath-native';
+
+import shouldPreserveSymlinks from 'should-preserve-links';
+
+const preserveSymlinks = shouldPreserveSymlinks();
+function realpath(p: string) {
+  return preserveSymlinks ? p : _realpath(p);
+}
 
 const getCacheDirectory = () => {
   const {getuid} = process;

@@ -15,6 +15,7 @@ import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
 import type {Config} from '@jest/types';
 import serializer from 'jest-serializer';
 import Worker from 'jest-worker';
+import shouldPreserveSymlinks from 'should-preserve-links';
 import {getSha1, worker} from './worker';
 import getMockName from './getMockName';
 import getPlatformExtension from './lib/getPlatformExtension';
@@ -45,6 +46,8 @@ import type {
   WorkerMetadata,
 } from './types';
 
+const preserveSymlinks = shouldPreserveSymlinks();
+
 type HType = typeof H;
 
 type Options = {
@@ -61,6 +64,7 @@ type Options = {
   mocksPattern?: string;
   name: string;
   platforms: Array<string>;
+  preserveSymlinks?: boolean;
   providesModuleNodeModules?: Array<string>;
   resetCache?: boolean;
   retainAllFiles: boolean;
@@ -85,6 +89,7 @@ type InternalOptions = {
   mocksPattern: RegExp | null;
   name: string;
   platforms: Array<string>;
+  preserveSymlinks: boolean;
   resetCache?: boolean;
   retainAllFiles: boolean;
   rootDir: string;
@@ -264,6 +269,7 @@ class HasteMap extends EventEmitter {
         : null,
       name: options.name,
       platforms: options.platforms,
+      preserveSymlinks: options.preserveSymlinks || preserveSymlinks,
       resetCache: options.resetCache,
       retainAllFiles: options.retainAllFiles,
       rootDir: options.rootDir,
@@ -749,6 +755,7 @@ class HasteMap extends EventEmitter {
       extensions: options.extensions,
       forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
       ignore,
+      preserveSymlinks: options.preserveSymlinks,
       rootDir: options.rootDir,
       roots: options.roots,
     };

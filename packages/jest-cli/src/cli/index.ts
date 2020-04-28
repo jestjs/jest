@@ -15,9 +15,15 @@ import {getVersion, runCLI} from '@jest/core';
 import chalk = require('chalk');
 import exit = require('exit');
 import yargs = require('yargs');
-import {sync as realpath} from 'realpath-native';
+import {sync as _realpath} from 'realpath-native';
+import shouldPreserveSymlinks from 'should-preserve-links';
 import init from '../init';
 import * as args from './args';
+
+const preserveSymlinks = shouldPreserveSymlinks();
+function realpath(p: string) {
+  return preserveSymlinks ? p : _realpath(p);
+}
 
 export async function run(
   maybeArgv?: Array<string>,

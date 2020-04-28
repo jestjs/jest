@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[*]` Respect NODE_PRESERVE_SYMLINKS environment variable and --preserve-symlinks flag when resolving file paths ([#9732](https://github.com/facebook/jest/pull/9732))
+
 ### Fixes
 
 - `[jest-jasmine2]` Don't run `beforeAll` / `afterAll` in skipped describe block ([#9931](https://github.com/facebook/jest/pull/9931))

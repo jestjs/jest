@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import chalk = require('chalk');
-import {sync as realpath} from 'realpath-native';
+import {sync as _realpath} from 'realpath-native';
 import {CustomConsole} from '@jest/console';
 import {interopRequireDefault} from 'jest-util';
 import exit = require('exit');
@@ -23,6 +23,7 @@ import {
 } from '@jest/test-result';
 import type TestSequencer from '@jest/test-sequencer';
 import type {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
+import shouldPreserveSymlinks from 'should-preserve-links';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import runGlobalHook from './runGlobalHook';
 import SearchSource from './SearchSource';
@@ -31,6 +32,11 @@ import type FailedTestsCache from './FailedTestsCache';
 import collectNodeHandles from './collectHandles';
 import type TestWatcher from './TestWatcher';
 import type {Filter, TestRunData} from './types';
+
+const preserveSymlinks = shouldPreserveSymlinks();
+function realpath(p: string) {
+  return preserveSymlinks ? p : _realpath(p);
+}
 
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,

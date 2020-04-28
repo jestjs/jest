@@ -9,8 +9,9 @@ import * as path from 'path';
 import * as fs from 'graceful-fs';
 import chalk = require('chalk');
 import prompts = require('prompts');
-import {sync as realpath} from 'realpath-native';
+import {sync as _realpath} from 'realpath-native';
 import {constants} from 'jest-config';
+import shouldPreserveSymlinks from 'should-preserve-links';
 import defaultQuestions, {testScriptQuestion} from './questions';
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
 import generateConfigFile from './generate_config_file';
@@ -31,6 +32,11 @@ type PromptsResults = {
   environment: boolean;
   scripts: boolean;
 };
+
+const preserveSymlinks = shouldPreserveSymlinks();
+function realpath(p: string) {
+  return preserveSymlinks ? p : _realpath(p);
+}
 
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 

@@ -13165,6 +13165,11 @@ shellwords@^0.1.1:
   resolved "https://registry.yarnpkg.com/shellwords/-/shellwords-0.1.1.tgz#d6b9181c1a48d397324c84871efbcfc73fc0654b"
   integrity sha512-vFwSUfQvqybiICwZY5+DAWIPLKsWO31Q91JSKl3UYv+K5c2QRPzn0qzec6QPu1Qc9eHYItiP3NdJqNVqetYAww==
 
+should-preserve-links@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/should-preserve-links/-/should-preserve-links-1.0.4.tgz#7b2a0b44efb9f0edd94332a06af92d84cc988876"
+  integrity sha512-73GxeFbAj4PAj/q4lHvui1hd1X6TWRgG41znftUvwQa+lNRz+X73od8Z5N4CyD2xCFE2PDMUvIfkYSyhwJaI4A==
+
 side-channel@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/side-channel/-/side-channel-1.0.2.tgz#df5d1abadb4e4bf4af1cd8852bf132d2f7876947"

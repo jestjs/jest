@@ -25,6 +25,7 @@
     "read-pkg-up": "^7.0.1",
     "realpath-native": "^2.0.0",
     "resolve": "^1.17.0",
+    "should-preserve-links": "^1.0.4",
     "slash": "^3.0.0"
   },
   "devDependencies": {
