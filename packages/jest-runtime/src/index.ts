@@ -866,21 +866,10 @@ class Runtime {
 
     this._fileTransforms.clear();
     this.jestObjectCaches.clear();
-    // @ts-ignore
-    this._scriptTransformer = undefined;
 
     this._v8CoverageResult = [];
     this._v8CoverageInstrumenter = undefined;
     this._moduleImplementation = undefined;
-
-    // @ts-ignore
-    this._config = undefined;
-    // @ts-ignore
-    this._coverageOptions = undefined;
-    // @ts-ignore
-    this._environment = undefined;
-    // @ts-ignore
-    this._resolver = undefined;
   }
 
   private _resolveModule(from: Config.Path, to?: string) {
