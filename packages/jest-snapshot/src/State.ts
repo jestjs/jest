@@ -24,8 +24,7 @@ import type {SnapshotData} from './types';
 
 export type SnapshotStateOptions = {
   updateSnapshot: Config.SnapshotUpdateState;
-  getPrettier: () => null | typeof import('prettier');
-  getBabelTraverse: () => Function;
+  prettierPath: Config.Path;
   expand?: boolean;
 };
 
@@ -62,8 +61,7 @@ export default class SnapshotState {
   private _snapshotPath: Config.Path;
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _uncheckedKeys: Set<string>;
-  private _getBabelTraverse: () => Function;
-  private _getPrettier: () => null | typeof import('prettier');
+  private _prettierPath: Config.Path;
 
   added: number;
   expand: boolean;
@@ -80,8 +78,7 @@ export default class SnapshotState {
     this._initialData = data;
     this._snapshotData = data;
     this._dirty = dirty;
-    this._getBabelTraverse = options.getBabelTraverse;
-    this._getPrettier = options.getPrettier;
+    this._prettierPath = options.prettierPath;
     this._inlineSnapshots = [];
     this._uncheckedKeys = new Set(Object.keys(this._snapshotData));
     this._counters = new Map();
@@ -154,9 +151,7 @@ export default class SnapshotState {
         saveSnapshotFile(this._snapshotData, this._snapshotPath);
       }
       if (hasInlineSnapshots) {
-        const prettier = this._getPrettier(); // Load lazily
-        const babelTraverse = this._getBabelTraverse(); // Load lazily
-        saveInlineSnapshots(this._inlineSnapshots, prettier, babelTraverse);
+        saveInlineSnapshots(this._inlineSnapshots, this._prettierPath);
       }
       status.saved = true;
     } else if (!hasExternalSnapshots && fs.existsSync(this._snapshotPath)) {

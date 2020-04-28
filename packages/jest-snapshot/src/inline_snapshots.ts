@@ -8,36 +8,52 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import semver = require('semver');
-import {parseSync} from '@babel/core';
 import type {PluginItem} from '@babel/core';
-import generate from '@babel/generator';
 import type traverse from '@babel/traverse';
-import {
-  CallExpression,
-  Expression,
-  File,
-  Program,
-  file,
-  templateElement,
-  templateLiteral,
-} from '@babel/types';
+import type {CallExpression, Expression, File, Program} from '@babel/types';
 
 import type {Config} from '@jest/types';
 import type {Frame} from 'jest-message-util';
 import {escapeBacktickString} from './utils';
+
+// TODO ignore this mess - with a Babel plugin, these will be MUCH, MUCH nicer for TS
+type BabelTraverse = typeof traverse;
+const babelTraverse: BabelTraverse = require(require.resolve(
+  '@babel/traverse',
+  {
+    outsideJestVm: true,
+  } as any,
+)).default;
+const generate: typeof import('@babel/generator')['default'] = require(require.resolve(
+  '@babel/generator',
+  {outsideJestVm: true} as any,
+)).default;
+const {
+  file,
+  templateElement,
+  templateLiteral,
+} = require(require.resolve('@babel/types', {outsideJestVm: true} as any));
+const {parseSync} = require(require.resolve('@babel/core', {
+  outsideJestVm: true,
+} as any)) as typeof import('@babel/core');
 
 export type InlineSnapshot = {
   snapshot: string;
   frame: Frame;
   node?: Expression;
 };
-type BabelTraverse = typeof traverse;
 
 export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
-  prettier: typeof import('prettier') | null,
-  babelTraverse: Function,
+  prettierPath: Config.Path,
 ): void {
+  // TODO same as above
+  const prettier = prettierPath
+    ? (require(require.resolve(prettierPath, {
+        outsideJestVm: true,
+      } as any)) as typeof import('prettier'))
+    : null;
+
   const snapshotsByFile = groupSnapshotsByFile(snapshots);
 
   for (const sourceFilePath of Object.keys(snapshotsByFile)) {
@@ -45,7 +61,6 @@ export function saveInlineSnapshots(
       snapshotsByFile[sourceFilePath],
       sourceFilePath,
       prettier && semver.gte(prettier.version, '1.5.0') ? prettier : null,
-      babelTraverse as BabelTraverse,
     );
   }
 }
@@ -54,7 +69,6 @@ const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
   sourceFilePath: Config.Path,
   prettier: any,
-  babelTraverse: BabelTraverse,
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
@@ -83,7 +97,7 @@ const saveSnapshotsForFile = (
   if (!ast) {
     throw new Error(`jest-snapshot: Failed to parse ${sourceFilePath}`);
   }
-  traverseAst(snapshots, ast, snapshotMatcherNames, babelTraverse);
+  traverseAst(snapshots, ast, snapshotMatcherNames);
 
   // substitute in the snapshots in reverse order, so slice calculations aren't thrown off.
   const sourceFileWithSnapshots = snapshots.reduceRight(
@@ -110,7 +124,6 @@ const saveSnapshotsForFile = (
         sourceFilePath,
         sourceFileWithSnapshots,
         snapshotMatcherNames,
-        babelTraverse,
       )
     : sourceFileWithSnapshots;
 
@@ -182,7 +195,6 @@ const traverseAst = (
   snapshots: Array<InlineSnapshot>,
   fileOrProgram: File | Program,
   snapshotMatcherNames: Array<string>,
-  babelTraverse: BabelTraverse,
 ) => {
   const ast = resolveAst(fileOrProgram);
 
@@ -244,7 +256,6 @@ const runPrettier = (
   sourceFilePath: string,
   sourceFileWithSnapshots: string,
   snapshotMatcherNames: Array<string>,
-  babelTraverse: BabelTraverse,
 ) => {
   // Resolve project configuration.
   // For older versions of Prettier, do not load configuration.
@@ -274,11 +285,7 @@ const runPrettier = (
     newSourceFile = prettier.format(newSourceFile, {
       ...config,
       filepath: sourceFilePath,
-      parser: createFormattingParser(
-        snapshotMatcherNames,
-        inferredParser,
-        babelTraverse,
-      ),
+      parser: createFormattingParser(snapshotMatcherNames, inferredParser),
     });
   }
 
@@ -289,7 +296,6 @@ const runPrettier = (
 const createFormattingParser = (
   snapshotMatcherNames: Array<string>,
   inferredParser: string,
-  babelTraverse: BabelTraverse,
 ) => (
   text: string,
   parsers: Record<string, (text: string) => any>,

@@ -39,21 +39,19 @@ type Process = NodeJS.Process;
 export const initialize = async ({
   config,
   environment,
-  getPrettier,
-  getBabelTraverse,
   globalConfig,
   localRequire,
   parentProcess,
+  prettierPath,
   testPath,
 }: {
   config: Config.ProjectConfig;
   environment: JestEnvironment;
-  getPrettier: () => null | any;
-  getBabelTraverse: () => Function;
   globalConfig: Config.GlobalConfig;
   localRequire: (path: Config.Path) => any;
   testPath: Config.Path;
   parentProcess: Process;
+  prettierPath: Config.Path;
 }) => {
   if (globalConfig.testTimeout) {
     getRunnerState().testTimeout = globalConfig.testTimeout;
@@ -133,8 +131,7 @@ export const initialize = async ({
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
-    getBabelTraverse,
-    getPrettier,
+    prettierPath,
     updateSnapshot,
   });
   setState({snapshotState, testPath});

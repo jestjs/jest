@@ -5,14 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-jest.mock('prettier');
+// TODO this is annoying
+// (but a general require(require.resolve()) problem)
+jest.mock(require.resolve('prettier'), () => require('../__mocks__/prettier'));
 
 import * as fs from 'fs';
 import {tmpdir} from 'os';
 import * as path from 'path';
-import prettier from 'prettier';
-import babelTraverse from '@babel/traverse';
 import {Frame} from 'jest-message-util';
+const prettier = require(require.resolve('prettier'));
 
 let dir;
 import {saveInlineSnapshots} from '../inline_snapshots';
@@ -36,8 +37,7 @@ test('saveInlineSnapshots() replaces empty function call with a template literal
         snapshot: `1`,
       },
     ],
-    prettier,
-    babelTraverse,
+    'prettier',
   );
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
@@ -64,7 +64,6 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
       snapshot: `[1, 2]`,
     })),
     null,
-    babelTraverse,
   );
 
   expect(fs.readFileSync(filename, 'utf8')).toBe(
@@ -97,7 +96,6 @@ expect(a).toMatchInlineSnapshot();
       },
     ],
     null,
-    babelTraverse,
   );
 
   expect(fs.readFileSync(filename, 'utf8')).toBe(
@@ -132,7 +130,6 @@ it('foos', async () => {
       },
     ],
     null,
-    babelTraverse,
   );
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
@@ -174,7 +171,6 @@ expect(a).toMatchInlineSnapshot();
       },
     ],
     null,
-    babelTraverse,
   );
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
@@ -204,8 +200,7 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
       frame: {column: 11, file: filename, line} as Frame,
       snapshot: `[1, 2]`,
     })),
-    prettier,
-    babelTraverse,
+    'prettier',
   );
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
@@ -232,8 +227,7 @@ test.each([['babel'], ['flow'], ['typescript']])(
           snapshot: `1`,
         },
       ],
-      prettier,
-      babelTraverse,
+      'prettier',
     );
 
     expect(
@@ -257,8 +251,7 @@ test('saveInlineSnapshots() replaces existing template literal with property mat
         snapshot: `1`,
       },
     ],
-    prettier,
-    babelTraverse,
+    'prettier',
   );
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
@@ -266,7 +259,7 @@ test('saveInlineSnapshots() replaces existing template literal with property mat
   );
 });
 
-test.each([prettier, null])(
+test.each(['prettier', null])(
   'saveInlineSnapshots() creates template literal with property matchers',
   prettierModule => {
     const filename = path.join(dir, 'my.test.js');
@@ -280,7 +273,6 @@ test.each([prettier, null])(
         },
       ],
       prettierModule,
-      babelTraverse,
     );
 
     expect(fs.readFileSync(filename, 'utf-8')).toBe(
@@ -301,8 +293,7 @@ test('saveInlineSnapshots() throws if frame does not match', () => {
           snapshot: `1`,
         },
       ],
-      prettier,
-      babelTraverse,
+      'prettier',
     );
 
   expect(save).toThrowError(/Couldn't locate all inline snapshots./);
@@ -319,8 +310,7 @@ test('saveInlineSnapshots() throws if multiple calls to to the same location', (
         {frame, snapshot: `1`},
         {frame, snapshot: `2`},
       ],
-      prettier,
-      babelTraverse,
+      'prettier',
     );
 
   expect(save).toThrowError(
@@ -333,7 +323,7 @@ test('saveInlineSnapshots() uses escaped backticks', () => {
   fs.writeFileSync(filename, 'expect("`").toMatchInlineSnapshot();\n');
 
   const frame = {column: 13, file: filename, line: 1} as Frame;
-  saveInlineSnapshots([{frame, snapshot: '`'}], prettier, babelTraverse);
+  saveInlineSnapshots([{frame, snapshot: '`'}], 'prettier');
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
     'expect("`").toMatchInlineSnapshot(`\\``);\n',
@@ -355,8 +345,7 @@ test('saveInlineSnapshots() works with non-literals in expect call', () => {
         snapshot: `{a: 'a'}`,
       },
     ],
-    prettier,
-    babelTraverse,
+    'prettier',
   );
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
@@ -384,8 +373,7 @@ test('saveInlineSnapshots() indents multi-line snapshots with spaces', () => {
         snapshot: `\nObject {\n  a: 'a'\n}\n`,
       },
     ],
-    prettier,
-    babelTraverse,
+    'prettier',
   );
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
@@ -426,8 +414,7 @@ test('saveInlineSnapshots() does not re-indent already indented snapshots', () =
         snapshot: `\nObject {\n  a: 'a'\n}\n`,
       },
     ],
-    prettier,
-    babelTraverse,
+    'prettier',
   );
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
@@ -469,8 +456,7 @@ test('saveInlineSnapshots() indents multi-line snapshots with tabs', () => {
         snapshot: `\nObject {\n  a: 'a'\n}\n`,
       },
     ],
-    prettier,
-    babelTraverse,
+    'prettier',
   );
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
@@ -502,8 +488,7 @@ test('saveInlineSnapshots() indents snapshots after prettier reformats', () => {
         snapshot: `\nObject {\n  a: 'a'\n}\n`,
       },
     ],
-    prettier,
-    babelTraverse,
+    'prettier',
   );
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
@@ -534,8 +519,7 @@ test('saveInlineSnapshots() does not indent empty lines', () => {
         snapshot: `\nhello\n\nworld\n`,
       },
     ],
-    prettier,
-    babelTraverse,
+    'prettier',
   );
 
   expect(fs.readFileSync(filename, 'utf-8')).toBe(
