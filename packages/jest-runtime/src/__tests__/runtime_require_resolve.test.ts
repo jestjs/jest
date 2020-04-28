@@ -43,7 +43,7 @@ describe('Runtime require.resolve', () => {
     );
   });
 
-  describe('with the outsideJestVm option', () => {
+  describe('with the OUTSIDE_JEST_VM_RESOLVE_OPTION', () => {
     it('forwards to the real Node require in an internal context', async () => {
       const runtime = await createRuntime(__filename);
       const module = runtime.requireInternalModule(
