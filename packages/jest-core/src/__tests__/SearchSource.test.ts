@@ -15,7 +15,7 @@ import SearchSource, {SearchResult} from '../SearchSource';
 
 jest.setTimeout(15000);
 
-jest.mock('fs', () => {
+jest.mock('graceful-fs', () => {
   const realFs = jest.requireActual('fs');
 
   return {

@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-jest.mock('fs', () => ({
-  ...jest.genMockFromModule('fs'),
+jest.mock('graceful-fs', () => ({
+  ...jest.genMockFromModule<typeof import('fs')>('fs'),
   existsSync: jest.fn().mockReturnValue(true),
 }));
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import assert = require('assert');
 import chalk = require('chalk');
 

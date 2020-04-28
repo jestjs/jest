@@ -23,7 +23,7 @@
     "chalk": "^3.0.0",
     "convert-source-map": "^1.4.0",
     "fast-json-stable-stringify": "^2.0.0",
-    "graceful-fs": "^4.2.3",
+    "graceful-fs": "^4.2.4",
     "jest-haste-map": "^25.4.0",
     "jest-regex-util": "^25.2.6",
     "jest-util": "^25.4.0",

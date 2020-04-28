@@ -19,7 +19,7 @@ const DEFAULT_CSS_PATTERN = '^.+\\.(css)$';
 jest
   .mock('jest-resolve')
   .mock('path', () => jest.requireActual('path').posix)
-  .mock('fs', () => {
+  .mock('graceful-fs', () => {
     const realFs = jest.requireActual('fs');
 
     return {

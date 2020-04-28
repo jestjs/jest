@@ -20,7 +20,7 @@
     "@jest/types": "^25.4.0",
     "anymatch": "^3.0.3",
     "fb-watchman": "^2.0.0",
-    "graceful-fs": "^4.2.3",
+    "graceful-fs": "^4.2.4",
     "jest-serializer": "^25.2.6",
     "jest-util": "^25.4.0",
     "jest-worker": "^25.4.0",

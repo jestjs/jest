@@ -10,7 +10,7 @@ import {wrap} from 'jest-snapshot-serializer-raw';
 import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
 
 jest
-  .mock('fs', () =>
+  .mock('graceful-fs', () =>
     // Node 10.5.x compatibility
     ({
       ...jest.genMockFromModule('fs'),

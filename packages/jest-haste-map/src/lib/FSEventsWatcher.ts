@@ -6,9 +6,9 @@
  *
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
 import {EventEmitter} from 'events';
+import * as fs from 'graceful-fs';
 import anymatch, {Matcher} from 'anymatch';
 import micromatch = require('micromatch');
 // @ts-ignore no types
