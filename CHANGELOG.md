@@ -8,6 +8,7 @@
 
 ### Fixes
 
+- `[*]` Use `graceful-fs` directly in every package instead of relying on `fs` being monkey patched ([#9443](https://github.com/facebook/jest/pull/9443))
 - `[expect]` Prints the Symbol name into the error message with a custom asymmetric matcher ([#9888](https://github.com/facebook/jest/pull/9888))
 - `[jest-circus, jest-jasmine2]` Support older version of `jest-runtime` ([#9903](https://github.com/facebook/jest/pull/9903) & [#9842](https://github.com/facebook/jest/pull/9842))
 - `[@jest/environment]` Make sure not to reference Jest types ([#9875](https://github.com/facebook/jest/pull/9875))
@@ -34,7 +35,6 @@
 
 ### Fixes
 
-- `[*]` Use `graceful-fs` directly in every package instead of relying on `fs` being monkey patched ([#9443](https://github.com/facebook/jest/pull/9443))
 - `[expect]` Restore support for passing functions to `toHaveLength` matcher ([#9796](https://github.com/facebook/jest/pull/9796))
 - `[jest-changed-files]` `--only-changed` should include staged files ([#9799](https://github.com/facebook/jest/pull/9799))
 - `[jest-circus]` Throw on nested test definitions ([#9828](https://github.com/facebook/jest/pull/9828))
@@ -45,8 +45,6 @@
 
 - `[*]` Do not generate TypeScript declaration source maps ([#9822](https://github.com/facebook/jest/pull/9822))
 - `[*]` Transpile code for Node 8.3, not 8.0 ([#9827](https://github.com/facebook/jest/pull/9827))
-
-### Performance
 
 ## 25.3.0
 
