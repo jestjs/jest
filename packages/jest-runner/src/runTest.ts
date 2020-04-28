@@ -301,6 +301,8 @@ async function runTestInternal(
     });
   } finally {
     await environment.teardown();
+    // TODO: this function might be missing, remove ? in Jest 26
+    runtime.teardown?.();
 
     sourcemapSupport.resetRetrieveHandlers();
   }

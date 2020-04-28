@@ -718,12 +718,17 @@ class Runtime {
     try {
       fn();
     } finally {
+      // might be cleared within the callback
+      this._isolatedModuleRegistry?.clear();
+      this._isolatedMockRegistry?.clear();
       this._isolatedModuleRegistry = null;
       this._isolatedMockRegistry = null;
     }
   }
 
   resetModules(): void {
+    this._isolatedModuleRegistry?.clear();
+    this._isolatedMockRegistry?.clear();
     this._isolatedModuleRegistry = null;
     this._isolatedMockRegistry = null;
     this._mockRegistry.clear();
@@ -831,6 +836,29 @@ class Runtime {
 
   clearAllMocks(): void {
     this._moduleMocker.clearAllMocks();
+  }
+
+  teardown(): void {
+    this.restoreAllMocks();
+    this.resetAllMocks();
+    this.resetModules();
+
+    this._internalModuleRegistry.clear();
+    this._mockFactories = {};
+    this._mockMetaDataCache = {};
+    this._shouldMockModuleCache = {};
+    this._shouldUnmockTransitiveDependenciesCache = {};
+    this._transitiveShouldMock = {};
+    this._virtualMocks = {};
+    this._cacheFS = {};
+
+    this._sourceMapRegistry = {};
+
+    this._fileTransforms.clear();
+    this.jestObjectCaches.clear();
+
+    this._v8CoverageResult = [];
+    this._moduleImplementation = undefined;
   }
 
   private _resolveModule(from: Config.Path, to?: string) {
