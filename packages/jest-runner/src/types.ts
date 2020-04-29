@@ -49,7 +49,7 @@ export type TestRunnerOptions = {
   serial: boolean;
 };
 
-// make sure all props in in this is present in the type below it as well
+// make sure all props here are present in the type below it as well
 export type TestRunnerContext = {
   changedFiles?: Set<Config.Path>;
   sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
