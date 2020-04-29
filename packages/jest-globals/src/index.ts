@@ -9,22 +9,22 @@ import importedExpect = require('expect');
 import type {Jest} from '@jest/environment';
 import type {Global} from '@jest/types';
 
-export declare type jest = Jest;
+export declare const jest: Jest;
 
-export declare type expect = typeof importedExpect;
+export declare const expect: typeof importedExpect;
 
-export declare type it = Global.GlobalAdditions['it'];
-export declare type test = Global.GlobalAdditions['test'];
-export declare type fit = Global.GlobalAdditions['fit'];
-export declare type xit = Global.GlobalAdditions['xit'];
-export declare type xtest = Global.GlobalAdditions['xtest'];
-export declare type describe = Global.GlobalAdditions['describe'];
-export declare type xdescribe = Global.GlobalAdditions['xdescribe'];
-export declare type fdescribe = Global.GlobalAdditions['fdescribe'];
-export declare type beforeAll = Global.GlobalAdditions['beforeAll'];
-export declare type beforeEach = Global.GlobalAdditions['beforeEach'];
-export declare type afterEach = Global.GlobalAdditions['afterEach'];
-export declare type afterAll = Global.GlobalAdditions['afterAll'];
+export declare const it: Global.GlobalAdditions['it'];
+export declare const test: Global.GlobalAdditions['test'];
+export declare const fit: Global.GlobalAdditions['fit'];
+export declare const xit: Global.GlobalAdditions['xit'];
+export declare const xtest: Global.GlobalAdditions['xtest'];
+export declare const describe: Global.GlobalAdditions['describe'];
+export declare const xdescribe: Global.GlobalAdditions['xdescribe'];
+export declare const fdescribe: Global.GlobalAdditions['fdescribe'];
+export declare const beforeAll: Global.GlobalAdditions['beforeAll'];
+export declare const beforeEach: Global.GlobalAdditions['beforeEach'];
+export declare const afterEach: Global.GlobalAdditions['afterEach'];
+export declare const afterAll: Global.GlobalAdditions['afterAll'];
 
 throw new Error(
   'Do not import `@jest/globals` outside of the Jest test environment',

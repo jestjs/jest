@@ -54,8 +54,8 @@ import Snapshot = require('jest-snapshot');
 import stripBOM = require('strip-bom');
 
 interface JestGlobalsValues extends Global.TestFrameworkGlobals {
-  jest: JestGlobals.jest;
-  expect: JestGlobals.expect;
+  jest: typeof JestGlobals.jest;
+  expect: typeof JestGlobals.expect;
 }
 
 type HasteMapOptions = {
