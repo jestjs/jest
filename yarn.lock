@@ -4464,13 +4464,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/ci-info@npm:*":
-  version: 2.0.0
-  resolution: "@types/ci-info@npm:2.0.0"
-  checksum: 89efcab6fdc38ae27febdf87e1de9b49bfff13778ca807f4a2236340d4fa53d446f4abe3c19a1b19619a295f1fac72d64c88eb49927e5f54a29c9cedb2ccd685
-  languageName: node
-  linkType: hard
-
 "@types/co@npm:^4.6.0, @types/co@npm:^4.6.2":
   version: 4.6.2
   resolution: "@types/co@npm:4.6.2"
@@ -4600,12 +4593,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/is-ci@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@types/is-ci@npm:2.0.0"
+"@types/is-ci@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@types/is-ci@npm:3.0.0"
   dependencies:
-    "@types/ci-info": "*"
-  checksum: 870279b2fb690288351bca6c06e83c50d706ebe5c6da59fdfef2b4ced65572a459005b8fc020863b4f84fc59a3a71e565210c18dafd4fe85e86e4bf579803e74
+    ci-info: ^3.1.0
+  checksum: 661e9cc9ba61e1c283f3814fbb1355aca70b281b5d71def665348f8e17db1fbdf5e62db496b0c2ab7b913e49ad626faa28478c06b9fecf70f860f4386469973f
   languageName: node
   linkType: hard
 
@@ -7147,7 +7140,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ci-info@npm:^3.0.0, ci-info@npm:^3.1.1":
+"ci-info@npm:^3.0.0, ci-info@npm:^3.1.0, ci-info@npm:^3.1.1":
   version: 3.1.1
   resolution: "ci-info@npm:3.1.1"
   checksum: 417d2bf17c320d477bc32997d3831bcc1b174d6b48616c2f0463765f042f073bfbfb15e06abdeea55b05ca9c8e054057eb9e0672e4e6031457e87216b2faddda
@@ -12793,14 +12786,12 @@ fsevents@^1.2.7:
     "@jest/types": ^27.0.0-next.8
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.3
-    "@types/is-ci": ^2.0.0
     "@types/prompts": ^2.0.1
     "@types/yargs": ^16.0.0
     chalk: ^4.0.0
     exit: ^0.1.2
     graceful-fs: ^4.2.4
     import-local: ^3.0.2
-    is-ci: ^3.0.0
     jest-config: ^27.0.0-next.9
     jest-util: ^27.0.0-next.9
     jest-validate: ^27.0.0-next.9
@@ -12826,12 +12817,14 @@ fsevents@^1.2.7:
     "@types/babel__core": ^7.0.4
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.3
+    "@types/is-ci": ^3.0.0
     "@types/micromatch": ^4.0.1
     babel-jest: ^27.0.0-next.9
     chalk: ^4.0.0
     deepmerge: ^4.2.2
     glob: ^7.1.1
     graceful-fs: ^4.2.4
+    is-ci: ^3.0.0
     jest-circus: ^27.0.0-next.9
     jest-environment-jsdom: ^27.0.0-next.9
     jest-environment-node: ^27.0.0-next.9
@@ -13380,7 +13373,7 @@ fsevents@^1.2.7:
   dependencies:
     "@jest/types": ^27.0.0-next.8
     "@types/graceful-fs": ^4.1.2
-    "@types/is-ci": ^2.0.0
+    "@types/is-ci": ^3.0.0
     "@types/micromatch": ^4.0.1
     "@types/node": "*"
     "@types/picomatch": ^2.2.2

@@ -64,11 +64,14 @@ export type DefaultOptions = {
   cache: boolean;
   cacheDirectory: Path;
   changedFilesWithAncestor: boolean;
+  ci: boolean;
   clearMocks: boolean;
   collectCoverage: boolean;
   coveragePathIgnorePatterns: Array<string>;
   coverageReporters: Array<CoverageReporterName>;
   coverageProvider: CoverageProvider;
+  detectLeaks: boolean;
+  detectOpenHandles: boolean;
   errorOnDeprecated: boolean;
   expand: boolean;
   extensionsToTreatAsEsm: Array<Path>;
@@ -76,6 +79,7 @@ export type DefaultOptions = {
   globals: ConfigGlobals;
   haste: HasteConfig;
   injectGlobals: boolean;
+  listTests: boolean;
   maxConcurrency: number;
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
@@ -85,6 +89,7 @@ export type DefaultOptions = {
   noStackTrace: boolean;
   notify: boolean;
   notifyMode: NotifyMode;
+  passWithNoTests: boolean;
   prettierPath: string;
   resetMocks: boolean;
   resetModules: boolean;
@@ -133,6 +138,7 @@ export type InitialOptions = Partial<{
   bail: boolean | number;
   cache: boolean;
   cacheDirectory: Path;
+  ci: boolean;
   clearMocks: boolean;
   changedFilesWithAncestor: boolean;
   changedSince: string;
