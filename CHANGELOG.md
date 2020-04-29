@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-haste-map]` Add missing `@types/graceful-fs` dependency
+
 ### Chore & Maintenance
 
 ### Performance
