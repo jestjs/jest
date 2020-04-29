@@ -1,7 +1,7 @@
 {
   "name": "@jest/reporters",
   "description": "Jest's reporters",
-  "version": "25.5.0",
+  "version": "25.5.1",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "typesVersions": {
@@ -15,7 +15,7 @@
     "@bcoe/v8-coverage": "^0.2.3",
     "@jest/console": "^25.5.0",
     "@jest/test-result": "^25.5.0",
-    "@jest/transform": "^25.5.0",
+    "@jest/transform": "^25.5.1",
     "@jest/types": "^25.5.0",
     "chalk": "^3.0.0",
     "collect-v8-coverage": "^1.0.0",
@@ -27,8 +27,8 @@
     "istanbul-lib-report": "^3.0.0",
     "istanbul-lib-source-maps": "^4.0.0",
     "istanbul-reports": "^3.0.2",
-    "jest-haste-map": "^25.5.0",
-    "jest-resolve": "^25.5.0",
+    "jest-haste-map": "^25.5.1",
+    "jest-resolve": "^25.5.1",
     "jest-util": "^25.5.0",
     "jest-worker": "^25.5.0",
     "slash": "^3.0.0",

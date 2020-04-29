@@ -1,6 +1,6 @@
 {
   "name": "jest-snapshot",
-  "version": "25.5.0",
+  "version": "25.5.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -27,7 +27,7 @@
     "jest-get-type": "^25.2.6",
     "jest-matcher-utils": "^25.5.0",
     "jest-message-util": "^25.5.0",
-    "jest-resolve": "^25.5.0",
+    "jest-resolve": "^25.5.1",
     "make-dir": "^3.0.0",
     "natural-compare": "^1.4.0",
     "pretty-format": "^25.5.0",
@@ -40,7 +40,7 @@
     "@types/semver": "^6.0.1",
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.2.0",
-    "jest-haste-map": "^25.5.0",
+    "jest-haste-map": "^25.5.1",
     "prettier": "^1.13.4"
   },
   "engines": {
