@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-globals]` Export globals as values, not types ([#9925](https://github.com/facebook/jest/pull/9925))
+
 ### Chore & Maintenance
 
 ### Performance
