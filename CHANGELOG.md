@@ -4,13 +4,17 @@
 
 ### Fixes
 
-- `[jest-haste-map]` Add missing `@types/graceful-fs` dependency ([#9913](https://github.com/facebook/jest/pull/9913))
-- `[jest-runner]` Correctly serialize `Set` passed to worker ([#9915](https://github.com/facebook/jest/pull/9915))
-- `[jest-runtime]` Vary ESM cache by query ([#9914](https://github.com/facebook/jest/pull/9914))
-
 ### Chore & Maintenance
 
 ### Performance
+
+## 25.5.1
+
+### Fixes
+
+- `[jest-haste-map]` Add missing `@types/graceful-fs` dependency ([#9913](https://github.com/facebook/jest/pull/9913))
+- `[jest-runner]` Correctly serialize `Set` passed to worker ([#9915](https://github.com/facebook/jest/pull/9915))
+- `[jest-runtime]` Vary ESM cache by query ([#9914](https://github.com/facebook/jest/pull/9914))
 
 ## 25.5.0
 
