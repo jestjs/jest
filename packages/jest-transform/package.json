@@ -7,8 +7,12 @@
     "directory": "packages/jest-transform"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
     "@babel/core": "^7.1.0",
     "@jest/types": "^26.6.2",

@@ -7,8 +7,12 @@
     "directory": "packages/jest-source-map"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
     "callsites": "^3.0.0",
     "graceful-fs": "^4.2.4",

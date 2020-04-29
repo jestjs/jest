@@ -8,8 +8,12 @@
   },
   "license": "MIT",
   "description": "Stringify any JavaScript value.",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
     "@jest/types": "^26.6.2",
