@@ -89,6 +89,9 @@ export async function worker({
       context && {
         ...context,
         changedFiles: context.changedFiles && new Set(context.changedFiles),
+        sourcesRelatedToTestsInChangedFiles:
+          context.sourcesRelatedToTestsInChangedFiles &&
+          new Set(context.sourcesRelatedToTestsInChangedFiles),
       },
     );
   } catch (error) {
