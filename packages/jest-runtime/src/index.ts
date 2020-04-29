@@ -399,16 +399,15 @@ class Runtime {
       return globals;
     }
 
-    const resolved = this._resolveModule(
-      referencingModule.identifier,
-      specifier,
-    );
+    const [path, query] = specifier.split('?');
+
+    const resolved = this._resolveModule(referencingModule.identifier, path);
 
     if (
       this._resolver.isCoreModule(resolved) ||
       this.unstable_shouldLoadAsEsm(resolved)
     ) {
-      return this.loadEsmModule(resolved);
+      return this.loadEsmModule(resolved, query);
     }
 
     return this.loadCjsAsEsm(
@@ -427,9 +426,11 @@ class Runtime {
       'You need to run with a version of node that supports ES Modules in the VM API.',
     );
 
-    const modulePath = this._resolveModule(from, moduleName);
+    const [path, query] = (moduleName ?? '').split('?');
 
-    return this.loadEsmModule(modulePath);
+    const modulePath = this._resolveModule(from, path);
+
+    return this.loadEsmModule(modulePath, query);
   }
 
   private async loadCjsAsEsm(
