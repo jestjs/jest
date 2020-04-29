@@ -14,6 +14,8 @@ import {fileURLToPath} from 'url';
 import {jest as jestObject} from '@jest/globals';
 import staticImportedStateful from '../stateful.mjs';
 import staticImportedStatefulFromCjs from '../fromCjs.mjs';
+import staticImportedStatefulWithQuery from '../stateful.mjs?query=1';
+import staticImportedStatefulWithAnotherQuery from '../stateful.mjs?query=2';
 import {double} from '../index';
 
 test('should have correct import.meta', () => {
@@ -106,4 +108,17 @@ test('handle dynamic imports of the same module in parallel', async () => {
 
   expect(first).toBe(second);
   expect(first(2)).toBe(4);
+});
+
+test('varies module cache by query', () => {
+  expect(staticImportedStatefulWithQuery).not.toBe(
+    staticImportedStatefulWithAnotherQuery,
+  );
+
+  expect(staticImportedStatefulWithQuery()).toBe(1);
+  expect(staticImportedStatefulWithQuery()).toBe(2);
+  expect(staticImportedStatefulWithAnotherQuery()).toBe(1);
+  expect(staticImportedStatefulWithQuery()).toBe(3);
+  expect(staticImportedStatefulWithAnotherQuery()).toBe(2);
+  expect(staticImportedStatefulWithAnotherQuery()).toBe(3);
 });
