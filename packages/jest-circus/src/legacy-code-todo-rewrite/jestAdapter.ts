@@ -11,6 +11,7 @@ import type {JestEnvironment} from '@jest/environment';
 import type {TestResult} from '@jest/test-result';
 import type {RuntimeType as Runtime} from 'jest-runtime';
 import type {SnapshotStateType} from 'jest-snapshot';
+import {deepCyclicCopy} from 'jest-util';
 
 const FRAMEWORK_INITIALIZER = path.resolve(__dirname, './jestAdapterInit.js');
 const EXPECT_INITIALIZER = path.resolve(__dirname, './jestExpect.js');
@@ -101,7 +102,13 @@ const jestAdapter = async (
     globalConfig,
     testPath,
   });
-  return _addSnapshotData(results, snapshotState);
+
+  _addSnapshotData(results, snapshotState);
+
+  // We need to copy the results object to ensure we don't leaks the prototypes
+  // from the VM. Jasmine creates the result objects in the parent process, we
+  // should consider doing that for circus as well.
+  return deepCyclicCopy(results, {keepPrototype: false});
 };
 
 const _addSnapshotData = (
@@ -131,7 +138,6 @@ const _addSnapshotData = (
   results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
   // Copy the array to prevent memory leaks
   results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
-  return results;
 };
 
 export = jestAdapter;

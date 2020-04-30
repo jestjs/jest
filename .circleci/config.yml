@@ -58,7 +58,7 @@ jobs:
       - run: *install
       - save-cache: *save-cache
       - run:
-          command: JEST_CIRCUS=1 yarn test-ci-partial
+          command: JEST_CIRCUS=1 yarn test-ci-partial && JEST_CIRCUS=1 yarn test-leak
       - store_test_results:
           path: reports/junit
 
