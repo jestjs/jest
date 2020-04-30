@@ -105,7 +105,10 @@ const jestAdapter = async (
 
   _addSnapshotData(results, snapshotState);
 
-  return deepCyclicCopy(results);
+  // We need to copy the results object to ensure we don't leaks the prototypes
+  // from the VM. Jasmine creates the result objects in the parent process, we
+  // should consider doing that for circus as well.
+  return deepCyclicCopy(results, {keepPrototype: false});
 };
 
 const _addSnapshotData = (
