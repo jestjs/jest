@@ -8,6 +8,10 @@
 
 ### Performance
 
+## 25.5.3
+
+### Chore & Maintenance
+
 - `[jest-circus]` Fix memory leak when running in band ([#9934](https://github.com/facebook/jest/pull/9934))
 
 ## 25.5.2
