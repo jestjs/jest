@@ -7,11 +7,11 @@
 
 import * as path from 'path';
 import watchman = require('fb-watchman');
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import * as fastPath from '../lib/fast_path';
 import normalizePathSep from '../lib/normalizePathSep';
 import H from '../constants';
-import {
+import type {
   CrawlerOptions,
   FileData,
   FileMetaData,
@@ -20,8 +20,7 @@ import {
 
 type WatchmanRoots = Map<string, Array<string>>;
 
-const watchmanURL =
-  'https://facebook.github.io/watchman/docs/troubleshooting.html';
+const watchmanURL = 'https://facebook.github.io/watchman/docs/troubleshooting';
 
 function WatchmanError(error: Error): Error {
   error.message =

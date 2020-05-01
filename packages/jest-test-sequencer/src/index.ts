@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
-import {AggregatedResult} from '@jest/test-result';
+import * as fs from 'graceful-fs';
+import type {AggregatedResult} from '@jest/test-result';
 import {getCacheFilePath} from 'jest-haste-map';
-import {Context} from 'jest-runtime';
-import {Test} from 'jest-runner';
+import type {Context} from 'jest-runtime';
+import type {Test} from 'jest-runner';
 
 const FAIL = 0;
 const SUCCESS = 1;

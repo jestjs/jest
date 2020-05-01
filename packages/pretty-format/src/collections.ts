@@ -6,7 +6,7 @@
  *
  */
 
-import {Config, Printer, Refs} from './types';
+import type {Config, Printer, Refs} from './types';
 
 const getKeysOfEnumerableProperties = (object: Record<string, any>) => {
   const keys: Array<string | symbol> = Object.keys(object).sort();
@@ -28,7 +28,7 @@ const getKeysOfEnumerableProperties = (object: Record<string, any>) => {
  * without surrounding punctuation (for example, braces)
  */
 export function printIteratorEntries(
-  iterator: Iterator<any>,
+  iterator: Iterator<[unknown, unknown]>,
   config: Config,
   indentation: string,
   depth: number,
@@ -86,7 +86,7 @@ export function printIteratorEntries(
  * without surrounding punctuation (braces or brackets)
  */
 export function printIteratorValues(
-  iterator: Iterator<any>,
+  iterator: Iterator<unknown>,
   config: Config,
   indentation: string,
   depth: number,
@@ -165,7 +165,7 @@ export function printListItems(
  * without surrounding punctuation (for example, braces)
  */
 export function printObjectProperties(
-  val: Record<string, any>,
+  val: Record<string, unknown>,
   config: Config,
   indentation: string,
   depth: number,

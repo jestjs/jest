@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import chalk = require('chalk');
 import prompts = require('prompts');
 import {sync as realpath} from 'realpath-native';
@@ -15,7 +15,7 @@ import defaultQuestions, {testScriptQuestion} from './questions';
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
 import generateConfigFile from './generate_config_file';
 import modifyPackageJson from './modify_package_json';
-import {ProjectPackageJson} from './types';
+import type {ProjectPackageJson} from './types';
 
 const {
   JEST_CONFIG_BASE_NAME,

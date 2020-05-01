@@ -7,8 +7,8 @@
 // TODO: Remove this
 /// <reference path="../v8.d.ts" />
 
-import * as fs from 'fs';
 import {deserialize as v8Deserialize, serialize as v8Serialize} from 'v8';
+import * as fs from 'graceful-fs';
 
 type Path = string;
 

@@ -45,7 +45,7 @@ test('the data is peanut butter', done => {
 
 If `done()` is never called, the test will fail (with timeout error), which is what you want to happen.
 
-In case `expect` statement fails it throws an error and `done()` is not called. If we want to see in the test log why it failed, we have to wrap `expect` in `try` block and pass error in `catch` block to `done`. Otherwise, we end up with opaque timeout error and no knowledge of what value was received by `expect(data)`.
+If the `expect` statement fails, it throws an error and `done()` is not called. If we want to see in the test log why it failed, we have to wrap `expect` in a `try` block and pass the error in the `catch` block to `done`. Otherwise, we end up with an opaque timeout error that doesn't show what value was received by `expect(data)`.
 
 ## Promises
 
@@ -63,7 +63,7 @@ test('the data is peanut butter', () => {
 
 Be sure to return the promise - if you omit this `return` statement, your test will complete before the promise returned from `fetchData` resolves and then() has a chance to execute the callback.
 
-If you expect a promise to be rejected use the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of assertions are called. Otherwise a fulfilled promise would not fail the test.
+If you expect a promise to be rejected, use the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of assertions are called. Otherwise a fulfilled promise would not fail the test.
 
 ```js
 test('the fetch fails with an error', () => {
@@ -84,7 +84,7 @@ test('the data is peanut butter', () => {
 
 Be sure to return the assertion—if you omit this `return` statement, your test will complete before the promise returned from `fetchData` is resolved and then() has a chance to execute the callback.
 
-If you expect a promise to be rejected use the `.rejects` matcher. It works analogically to the `.resolves` matcher. If the promise is fulfilled, the test will automatically fail.
+If you expect a promise to be rejected, use the `.rejects` matcher. It works analogically to the `.resolves` matcher. If the promise is fulfilled, the test will automatically fail.
 
 ```js
 test('the fetch fails with an error', () => {

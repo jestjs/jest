@@ -6,14 +6,14 @@
  *
  */
 
-import {Config} from '@jest/types';
-import {SerializableError, TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {SerializableError, TestResult} from '@jest/test-result';
 import HasteMap = require('jest-haste-map');
 import exit = require('exit');
 import {separateMessageFromStack} from 'jest-message-util';
 import Runtime = require('jest-runtime');
 import Resolver = require('jest-resolve');
-import {ErrorWithCode, TestRunnerSerializedContext} from './types';
+import type {ErrorWithCode, TestRunnerSerializedContext} from './types';
 import runTest from './runTest';
 
 export type SerializableResolver = {
@@ -89,6 +89,9 @@ export async function worker({
       context && {
         ...context,
         changedFiles: context.changedFiles && new Set(context.changedFiles),
+        sourcesRelatedToTestsInChangedFiles:
+          context.sourcesRelatedToTestsInChangedFiles &&
+          new Set(context.sourcesRelatedToTestsInChangedFiles),
       },
     );
   } catch (error) {

@@ -10,33 +10,28 @@ import * as path from 'path';
 import chalk = require('chalk');
 import {sync as realpath} from 'realpath-native';
 import yargs = require('yargs');
-import {Config} from '@jest/types';
-import {JestEnvironment} from '@jest/environment';
+import type {Config} from '@jest/types';
+import type {JestEnvironment} from '@jest/environment';
 import {CustomConsole} from '@jest/console';
 import {setGlobal} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries, readConfig} from 'jest-config';
 import {VERSION} from '../version';
-import {Context} from '../types';
+import type {Context} from '../types';
 import * as args from './args';
 
 export async function run(
   cliArgv?: Config.Argv,
   cliInfo?: Array<string>,
 ): Promise<void> {
-  const realFs = require('fs');
-  const fs = require('graceful-fs');
-  fs.gracefulify(realFs);
-
   let argv;
   if (cliArgv) {
     argv = cliArgv;
   } else {
-    argv = <Config.Argv>yargs
-      .usage(args.usage)
-      .help(false)
-      .version(false)
-      .options(args.options).argv;
+    argv = <Config.Argv>(
+      yargs.usage(args.usage).help(false).version(false).options(args.options)
+        .argv
+    );
 
     validateCLIOptions(argv, {...args.options, deprecationEntries});
   }
@@ -94,9 +89,24 @@ export async function run(
 
     const runtime = new Runtime(config, environment, hasteMap.resolver);
 
-    config.setupFiles.forEach(path => runtime.requireModule(path));
+    for (const path of config.setupFiles) {
+      // TODO: remove ? in Jest 26
+      const esm = runtime.unstable_shouldLoadAsEsm?.(path);
 
-    runtime.requireModule(filePath);
+      if (esm) {
+        await runtime.unstable_importModule(path);
+      } else {
+        runtime.requireModule(path);
+      }
+    }
+    // TODO: remove ? in Jest 26
+    const esm = runtime.unstable_shouldLoadAsEsm?.(filePath);
+
+    if (esm) {
+      await runtime.unstable_importModule(filePath);
+    } else {
+      runtime.requireModule(filePath);
+    }
   } catch (e) {
     console.error(chalk.red(e.stack || e));
     process.on('exit', () => (process.exitCode = 1));

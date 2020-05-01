@@ -7,7 +7,7 @@
 
 import ansiRegex = require('ansi-regex');
 import style = require('ansi-styles');
-import {Config, NewPlugin, Printer, Refs} from '../types';
+import type {Config, NewPlugin, Printer, Refs} from '../types';
 
 const toHumanReadableAnsi = (text: string) =>
   text.replace(ansiRegex(), match => {
@@ -56,7 +56,7 @@ const toHumanReadableAnsi = (text: string) =>
     }
   });
 
-export const test: NewPlugin['test'] = (val: any) =>
+export const test: NewPlugin['test'] = (val: unknown) =>
   typeof val === 'string' && !!val.match(ansiRegex());
 
 export const serialize: NewPlugin['serialize'] = (

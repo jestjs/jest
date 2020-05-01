@@ -414,7 +414,7 @@ module.exports = async () => {
 
 ```js
 // teardown.js
-module.exports = async function() {
+module.exports = async function () {
   await global.__MONGOD__.stop();
 };
 ```
@@ -747,7 +747,7 @@ It's also worth noting that `setupFiles` will execute _before_ [`setupFilesAfter
 
 Default: `[]`
 
-A list of paths to modules that run some code to configure or set up the testing framework before each test. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
+A list of paths to modules that run some code to configure or set up the testing framework before each test file in the suite is executed. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
 
 If you want a path to be [relative to the root directory of your project](#rootdir-string), please include `<rootDir>` inside a path's string, like `"<rootDir>/a-configs-folder"`.
 
@@ -807,8 +807,8 @@ Example serializer module:
 ```js
 // my-serializer-module
 module.exports = {
-  print(val, serialize, indent) {
-    return 'Pretty foo: ' + serialize(val.foo);
+  serialize(val, config, indentation, depth, refs, printer) {
+    return 'Pretty foo: ' + printer(val.foo);
   },
 
   test(val) {
@@ -817,7 +817,7 @@ module.exports = {
 };
 ```
 
-`serialize` is a function that serializes a value using existing plugins.
+`printer` is a function that serializes a value using existing plugins.
 
 To use `my-serializer-module` as a serializer, configuration would be as follows:
 
@@ -855,6 +855,8 @@ Pretty foo: Object {
 ```
 
 To make a dependency explicit instead of implicit, you can call [`expect.addSnapshotSerializer`](ExpectAPI.md#expectaddsnapshotserializerserializer) to add a module for an individual test file instead of adding its path to `snapshotSerializers` in Jest configuration.
+
+More about serializers API can be found [here](https://github.com/facebook/jest/tree/master/packages/pretty-format#serialize).
 
 ### `testEnvironment` [string]
 

@@ -3,13 +3,13 @@ id: tutorial-react
 title: Testing React Apps
 ---
 
-At Facebook, we use Jest to test [React](http://facebook.github.io/react/) applications.
+At Facebook, we use Jest to test [React](https://reactjs.org/) applications.
 
 ## Setup
 
 ### Setup with Create React App
 
-If you are new to React, we recommend using [Create React App](https://github.com/facebookincubator/create-react-app). It is ready to use and [ships with Jest](https://facebook.github.io/create-react-app/docs/running-tests#docsNav)! You will only need to add `react-test-renderer` for rendering snapshots.
+If you are new to React, we recommend using [Create React App](https://create-react-app.dev/). It is ready to use and [ships with Jest](https://create-react-app.dev/docs/running-tests/#docsNav)! You will only need to add `react-test-renderer` for rendering snapshots.
 
 Run
 
@@ -208,7 +208,7 @@ React 16 triggers these warnings due to how it checks element types, and the moc
 
 ### DOM Testing
 
-If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](http://airbnb.io/enzyme/), or React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
+If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](http://airbnb.io/enzyme/), or React's [TestUtils](https://reactjs.org/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
 
 #### react-testing-library
 
@@ -227,7 +227,7 @@ export default class CheckboxWithLabel extends React.Component {
     this.state = {isChecked: false};
 
     // bind manually because React class components don't auto-bind
-    // http://facebook.github.io/react/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding
+    // https://reactjs.org/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding
     this.onChange = this.onChange.bind(this);
   }
 

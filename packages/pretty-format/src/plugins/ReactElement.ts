@@ -6,7 +6,7 @@
  */
 
 import * as ReactIs from 'react-is';
-import {Config, NewPlugin, Printer, Refs} from '../types';
+import type {Config, NewPlugin, Printer, Refs} from '../types';
 
 import {
   printChildren,
@@ -17,7 +17,7 @@ import {
 
 // Given element.props.children, or subtree during recursive traversal,
 // return flattened array of children.
-const getChildren = (arg: Array<any>, children = []) => {
+const getChildren = (arg: Array<unknown>, children = []) => {
   if (Array.isArray(arg)) {
     arg.forEach(item => {
       getChildren(item, children);
@@ -115,7 +115,7 @@ export const serialize: NewPlugin['serialize'] = (
         indentation,
       );
 
-export const test: NewPlugin['test'] = (val: any) =>
+export const test: NewPlugin['test'] = (val: unknown) =>
   val && ReactIs.isElement(val);
 
 const plugin: NewPlugin = {serialize, test};

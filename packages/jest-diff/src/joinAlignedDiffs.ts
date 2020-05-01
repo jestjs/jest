@@ -12,7 +12,7 @@ import {
   printDeleteLine,
   printInsertLine,
 } from './printDiffs';
-import {DiffOptionsNormalized} from './types';
+import type {DiffOptionsNormalized} from './types';
 
 // jest --no-expand
 //

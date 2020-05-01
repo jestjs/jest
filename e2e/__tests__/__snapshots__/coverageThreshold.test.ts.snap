@@ -20,7 +20,7 @@ exports[`excludes tests matched by path threshold groups from global group: stdo
 File       | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -----------|---------|----------|---------|---------|-------------------
 All files  |      50 |      100 |      50 |      50 |                   
- apple.js  |       0 |      100 |       0 |       0 | 1,2               
+ apple.js  |       0 |      100 |       0 |       0 | 1-2               
  banana.js |     100 |      100 |     100 |     100 |                   
 -----------|---------|----------|---------|---------|-------------------
 `;

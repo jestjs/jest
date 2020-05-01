@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, NewPlugin, Printer, Refs} from '../types';
+import type {Config, NewPlugin, Printer, Refs} from '../types';
 
 import {printListItems, printObjectProperties} from '../collections';
 
@@ -17,20 +17,17 @@ const ARRAY_REGEXP = /^(HTML\w*Collection|NodeList)$/;
 const testName = (name: any) =>
   OBJECT_NAMES.indexOf(name) !== -1 || ARRAY_REGEXP.test(name);
 
-export const test: NewPlugin['test'] = (val: any) =>
+export const test: NewPlugin['test'] = (val: object) =>
   val &&
   val.constructor &&
-  val.constructor.name &&
+  !!val.constructor.name &&
   testName(val.constructor.name);
 
-// Convert array of attribute objects to props object.
-const propsReducer = (props: any, attribute: any) => {
-  props[attribute.name] = attribute.value;
-  return props;
-};
+const isNamedNodeMap = (collection: object): collection is NamedNodeMap =>
+  collection.constructor.name === 'NamedNodeMap';
 
 export const serialize: NewPlugin['serialize'] = (
-  collection: any,
+  collection: any | NamedNodeMap,
   config: Config,
   indentation: string,
   depth: number,
@@ -47,8 +44,14 @@ export const serialize: NewPlugin['serialize'] = (
     (OBJECT_NAMES.indexOf(name) !== -1
       ? '{' +
         printObjectProperties(
-          name === 'NamedNodeMap'
-            ? Array.prototype.reduce.call(collection, propsReducer, {})
+          isNamedNodeMap(collection)
+            ? Array.from(collection).reduce<Record<string, string>>(
+                (props, attribute) => {
+                  props[attribute.name] = attribute.value;
+                  return props;
+                },
+                {},
+              )
             : {...collection},
           config,
           indentation,

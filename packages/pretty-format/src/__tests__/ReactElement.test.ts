@@ -6,8 +6,8 @@
  */
 
 import React from 'react';
-import setPrettyPrint from './setPrettyPrint';
 import prettyFormat from '..';
+import setPrettyPrint from './setPrettyPrint';
 
 const {ReactElement} = prettyFormat.plugins;
 

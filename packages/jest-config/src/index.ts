@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
-import {Config} from '@jest/types';
+import * as fs from 'graceful-fs';
+import type {Config} from '@jest/types';
 import chalk = require('chalk');
 import {sync as realpath} from 'realpath-native';
 import {isJSONString, replaceRootDirInPath} from './utils';

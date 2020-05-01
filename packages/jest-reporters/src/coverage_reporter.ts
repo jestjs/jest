@@ -6,9 +6,9 @@
  */
 
 import * as path from 'path';
-import * as fs from 'fs';
-import {Config} from '@jest/types';
-import {
+import * as fs from 'graceful-fs';
+import type {Config} from '@jest/types';
+import type {
   AggregatedResult,
   TestResult,
   V8CoverageResult,
@@ -23,10 +23,15 @@ import {mergeProcessCovs} from '@bcoe/v8-coverage';
 import Worker from 'jest-worker';
 import glob = require('glob');
 import v8toIstanbul = require('v8-to-istanbul');
-import {RawSourceMap} from 'source-map';
-import {TransformResult} from '@jest/transform';
+import type {RawSourceMap} from 'source-map';
+import type {TransformResult} from '@jest/transform';
 import BaseReporter from './base_reporter';
-import {Context, CoverageReporterOptions, CoverageWorker, Test} from './types';
+import type {
+  Context,
+  CoverageReporterOptions,
+  CoverageWorker,
+  Test,
+} from './types';
 import getWatermarks from './get_watermarks';
 
 // This is fixed in a newer versions of source-map, but our dependencies are still stuck on old versions
@@ -65,28 +70,6 @@ export default class CoverageReporter extends BaseReporter {
 
     if (testResult.coverage) {
       this._coverageMap.merge(testResult.coverage);
-    }
-
-    const sourceMaps = testResult.sourceMaps;
-    if (sourceMaps) {
-      Object.keys(sourceMaps).forEach(sourcePath => {
-        let inputSourceMap: RawSourceMap | undefined;
-        try {
-          const coverage: istanbulCoverage.FileCoverage = this._coverageMap.fileCoverageFor(
-            sourcePath,
-          );
-          inputSourceMap = (coverage.toJSON() as any).inputSourceMap;
-        } finally {
-          if (inputSourceMap) {
-            this._sourceMapStore.registerMap(sourcePath, inputSourceMap);
-          } else {
-            this._sourceMapStore.registerURL(
-              sourcePath,
-              sourceMaps[sourcePath],
-            );
-          }
-        }
-      });
     }
   }
 
@@ -199,6 +182,9 @@ export default class CoverageReporter extends BaseReporter {
               changedFiles:
                 this._options.changedFiles &&
                 Array.from(this._options.changedFiles),
+              sourcesRelatedToTestsInChangedFiles:
+                this._options.sourcesRelatedToTestsInChangedFiles &&
+                Array.from(this._options.sourcesRelatedToTestsInChangedFiles),
             },
             path: filename,
           });
@@ -210,13 +196,6 @@ export default class CoverageReporter extends BaseReporter {
               ]);
             } else {
               this._coverageMap.addFileCoverage(result.coverage);
-
-              if (result.sourceMapPath) {
-                this._sourceMapStore.registerURL(
-                  filename,
-                  result.sourceMapPath,
-                );
-              }
             }
           }
         } catch (error) {
@@ -511,6 +490,7 @@ export default class CoverageReporter extends BaseReporter {
     const reportContext = istanbulReport.createContext(
       // @ts-ignore
       {
+        // @ts-ignore
         coverageMap: map,
         dir: this._globalConfig.coverageDirectory,
         // @ts-ignore

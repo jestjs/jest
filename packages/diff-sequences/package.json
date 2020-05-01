@@ -1,6 +1,6 @@
 {
   "name": "diff-sequences",
-  "version": "25.1.0",
+  "version": "25.2.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -20,6 +20,13 @@
   },
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "typesVersions": {
+    "<3.8": {
+      "build/*": [
+        "build/ts3.4/*"
+      ]
+    }
+  },
   "scripts": {
     "perf": "node --expose-gc perf/index.js"
   },

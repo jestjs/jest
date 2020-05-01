@@ -56,6 +56,12 @@ describe('.rejects', () => {
     await jestExpect(fn()).rejects.toThrow('some error');
   });
 
+  it('should reject async function to toThrow', async () => {
+    await expect(async () => {
+      throw new Error('Test');
+    }).rejects.toThrow('Test');
+  });
+
   ['a', [1], () => {}, {a: 1}].forEach(value => {
     it(`fails non-promise value ${stringify(value)} synchronously`, () => {
       let error;
@@ -435,6 +441,62 @@ describe('.toEqual()', () => {
     [{a: 1}, {a: 2}],
     [{a: 5}, {b: 6}],
     [Object.freeze({foo: {bar: 1}}), {foo: {}}],
+    [
+      {
+        get getterAndSetter() {
+          return {};
+        },
+        set getterAndSetter(value) {
+          throw new Error('noo');
+        },
+      },
+      {getterAndSetter: {foo: 'bar'}},
+    ],
+    [
+      Object.freeze({
+        get frozenGetterAndSetter() {
+          return {};
+        },
+        set frozenGetterAndSetter(value) {
+          throw new Error('noo');
+        },
+      }),
+      {frozenGetterAndSetter: {foo: 'bar'}},
+    ],
+    [
+      {
+        get getter() {
+          return {};
+        },
+      },
+      {getter: {foo: 'bar'}},
+    ],
+    [
+      Object.freeze({
+        get frozenGetter() {
+          return {};
+        },
+      }),
+      {frozenGetter: {foo: 'bar'}},
+    ],
+    [
+      {
+        // eslint-disable-next-line accessor-pairs
+        set setter(value) {
+          throw new Error('noo');
+        },
+      },
+      {setter: {foo: 'bar'}},
+    ],
+    [
+      Object.freeze({
+        // eslint-disable-next-line accessor-pairs
+        set frozenSetter(value) {
+          throw new Error('noo');
+        },
+      }),
+      {frozenSetter: {foo: 'bar'}},
+    ],
     ['banana', 'apple'],
     ['1\u{00A0}234,57\u{00A0}$', '1 234,57 $'], // issues/6881
     [
@@ -478,12 +540,8 @@ describe('.toEqual()', () => {
     [Immutable.Map({a: 0}), Immutable.Map({b: 0})],
     [Immutable.Map({v: 1}), Immutable.Map({v: 2})],
     [
-      Immutable.OrderedMap()
-        .set(1, 'one')
-        .set(2, 'two'),
-      Immutable.OrderedMap()
-        .set(2, 'two')
-        .set(1, 'one'),
+      Immutable.OrderedMap().set(1, 'one').set(2, 'two'),
+      Immutable.OrderedMap().set(2, 'two').set(1, 'one'),
     ],
     [
       Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
@@ -674,28 +732,16 @@ describe('.toEqual()', () => {
     ],
     [Immutable.Map(), Immutable.Map()],
     [
-      Immutable.Map()
-        .set(1, 'one')
-        .set(2, 'two'),
-      Immutable.Map()
-        .set(1, 'one')
-        .set(2, 'two'),
+      Immutable.Map().set(1, 'one').set(2, 'two'),
+      Immutable.Map().set(1, 'one').set(2, 'two'),
     ],
     [
-      Immutable.Map()
-        .set(1, 'one')
-        .set(2, 'two'),
-      Immutable.Map()
-        .set(2, 'two')
-        .set(1, 'one'),
+      Immutable.Map().set(1, 'one').set(2, 'two'),
+      Immutable.Map().set(2, 'two').set(1, 'one'),
     ],
     [
-      Immutable.OrderedMap()
-        .set(1, 'one')
-        .set(2, 'two'),
-      Immutable.OrderedMap()
-        .set(1, 'one')
-        .set(2, 'two'),
+      Immutable.OrderedMap().set(1, 'one').set(2, 'two'),
+      Immutable.OrderedMap().set(1, 'one').set(2, 'two'),
     ],
     [
       Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
@@ -941,7 +987,7 @@ describe('.toBeInstanceOf()', () => {
     [Object.create(null), A],
     [undefined, String],
     [null, String],
-    [/\w+/, function() {}],
+    [/\w+/, function () {}],
     [new DefinesNameProp(), RegExp],
   ].forEach(([a, b]) => {
     test(`failing ${stringify(a)} and ${stringify(b)}`, () => {
@@ -1654,6 +1700,7 @@ describe('.toHaveLength', () => {
     [['a', 'b'], 2],
     ['abc', 3],
     ['', 0],
+    [() => {}, 0],
   ].forEach(([received, length]) => {
     test(`{pass: true} expect(${stringify(
       received,
@@ -1761,7 +1808,7 @@ describe('.toHaveProperty()', () => {
   }
   E.prototype.nodeType = 1;
 
-  const memoized = function() {};
+  const memoized = function () {};
   memoized.memo = [];
 
   const pathDiff = ['children', 0];

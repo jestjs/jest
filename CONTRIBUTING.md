@@ -82,7 +82,7 @@ _Before_ submitting a pull request, please make sure the following is done…
     $ yarn test
     ```
 
-1.  If you haven't already, complete the CLA.
+1.  If you haven't already, complete the [CLA](https://code.facebook.com/cla/).
 
 #### Changelog entries
 

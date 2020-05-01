@@ -71,6 +71,8 @@ Object {
   },
   "instrument": true,
   "rootDir": "/",
+  "supportsDynamicImport": false,
+  "supportsStaticESM": false,
 }
 `;
 

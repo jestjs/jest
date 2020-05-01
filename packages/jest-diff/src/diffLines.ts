@@ -9,7 +9,7 @@ import diff from 'diff-sequences';
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
 import {printDiffLines} from './printDiffs';
-import {DiffOptions} from './types';
+import type {DiffOptions} from './types';
 
 const isEmptyString = (lines: Array<string>) =>
   lines.length === 1 && lines[0].length === 0;

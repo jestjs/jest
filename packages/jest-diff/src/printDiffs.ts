@@ -20,7 +20,11 @@ import {
   joinAlignedDiffsNoExpand,
 } from './joinAlignedDiffs';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
-import {DiffOptions, DiffOptionsColor, DiffOptionsNormalized} from './types';
+import type {
+  DiffOptions,
+  DiffOptionsColor,
+  DiffOptionsNormalized,
+} from './types';
 
 const formatTrailingSpaces = (
   line: string,

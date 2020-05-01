@@ -87,10 +87,7 @@ const myMock = jest.fn();
 console.log(myMock());
 // > undefined
 
-myMock
-  .mockReturnValueOnce(10)
-  .mockReturnValueOnce('x')
-  .mockReturnValue(true);
+myMock.mockReturnValueOnce(10).mockReturnValueOnce('x').mockReturnValue(true);
 
 console.log(myMock(), myMock(), myMock(), myMock());
 // > 10, 'x', true, true
@@ -173,7 +170,7 @@ The `mockImplementation` method is useful when you need to define the default im
 
 ```js
 // foo.js
-module.exports = function() {
+module.exports = function () {
   // some implementation;
 };
 
@@ -224,7 +221,7 @@ const myObj = {
 // is the same as
 
 const otherObj = {
-  myMethod: jest.fn(function() {
+  myMethod: jest.fn(function () {
     return this;
   }),
 };

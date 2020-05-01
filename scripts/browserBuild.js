@@ -62,8 +62,9 @@ function browserBuild(pkgName, entryPath, destination) {
           alias: {
             chalk: path.resolve(
               __dirname,
-              '../packages/expect/build/fakeChalk.js'
+              '../packages/expect/build/fakeChalk.js',
             ),
+            'graceful-fs': 'fs',
           },
           extensions: ['.js', '.json', '.ts'],
         },
@@ -78,7 +79,7 @@ function browserBuild(pkgName, entryPath, destination) {
           return;
         }
         resolve(stats);
-      }
+      },
     );
   });
 }

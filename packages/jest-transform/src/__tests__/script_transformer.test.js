@@ -10,7 +10,7 @@ import {wrap} from 'jest-snapshot-serializer-raw';
 import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
 
 jest
-  .mock('fs', () =>
+  .mock('graceful-fs', () =>
     // Node 10.5.x compatibility
     ({
       ...jest.genMockFromModule('fs'),
@@ -407,6 +407,7 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).toBeCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(result.sourceMapPath, mapStr, {
       encoding: 'utf8',
+      fsync: false,
     });
   });
 
@@ -438,7 +439,7 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       sourceMap,
-      {encoding: 'utf8'},
+      {encoding: 'utf8', fsync: false},
     );
   });
 
@@ -461,9 +462,7 @@ describe('ScriptTransformer', () => {
     const content =
       'var x = 1;\n' +
       '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap)
-        .toString('base64')
-        .slice(0, 16);
+      Buffer.from(sourceMap).toString('base64').slice(0, 16);
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
 
@@ -509,6 +508,7 @@ describe('ScriptTransformer', () => {
       JSON.stringify(map),
       {
         encoding: 'utf8',
+        fsync: false,
       },
     );
   });
@@ -574,9 +574,7 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
-      {
-        encoding: 'utf8',
-      },
+      expect.anything(),
     );
 
     // Inline source map allows debugging of original source when running instrumented code
@@ -614,9 +612,7 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       JSON.stringify(instrumentedCodeMap),
-      {
-        encoding: 'utf8',
-      },
+      expect.anything(),
     );
 
     // Inline source map allows debugging of original source when running instrumented code

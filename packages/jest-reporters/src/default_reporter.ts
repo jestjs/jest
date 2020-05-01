@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {AggregatedResult, TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {AggregatedResult, TestResult} from '@jest/test-result';
 import {clearLine, isInteractive} from 'jest-util';
 import {getConsoleOutput} from '@jest/console';
 import chalk = require('chalk');
-import {ReporterOnStartOptions, Test} from './types';
+import type {ReporterOnStartOptions, Test} from './types';
 import BaseReporter from './base_reporter';
 import Status from './Status';
 import getResultHeader from './get_result_header';
@@ -182,6 +182,7 @@ export default class DefaultReporter extends BaseReporter {
             config.cwd,
             !!this._globalConfig.verbose,
             result.console,
+            config,
           ),
       );
     }

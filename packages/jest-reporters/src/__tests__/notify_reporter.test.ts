@@ -5,8 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AggregatedResult} from '@jest/test-result';
-import {Config} from '@jest/types';
+import type {AggregatedResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import Resolver from 'jest-resolve';
 import NotifyReporter from '../notify_reporter';
 import {makeGlobalConfig} from '../../../../TestUtils';
 
@@ -223,8 +224,9 @@ describe('node-notifier is an optional dependency', () => {
 
   test('without node-notifier uses mock function that throws an error', () => {
     jest.doMock('node-notifier', () => {
-      const error: any = new Error("Cannot find module 'node-notifier'");
-      error.code = 'MODULE_NOT_FOUND';
+      const error: any = new Resolver.ModuleNotFoundError(
+        "Cannot find module 'node-notifier'",
+      );
       throw error;
     });
 

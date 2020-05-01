@@ -8,9 +8,9 @@
 
 import * as path from 'path';
 import execa = require('execa');
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 
-import {SCMAdapter} from './types';
+import type {SCMAdapter} from './types';
 
 const env = {...process.env, HGPLAIN: '1'};
 

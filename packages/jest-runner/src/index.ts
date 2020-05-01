@@ -5,15 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {SerializableError} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {SerializableError} from '@jest/test-result';
 import exit = require('exit');
 import chalk = require('chalk');
 import throat from 'throat';
 import Worker from 'jest-worker';
 import runTest from './runTest';
-import {SerializableResolver, worker} from './testWorker';
-import {
+import type {SerializableResolver, worker} from './testWorker';
+import type {
   OnTestFailure as JestOnTestFailure,
   OnTestStart as JestOnTestStart,
   OnTestSuccess as JestOnTestSuccess,
@@ -44,6 +44,7 @@ namespace TestRunner {
 class TestRunner {
   private _globalConfig: Config.GlobalConfig;
   private _context: JestTestRunnerContext;
+  readonly isSerial?: boolean;
 
   constructor(
     globalConfig: Config.GlobalConfig,
@@ -157,6 +158,9 @@ class TestRunner {
             changedFiles:
               this._context.changedFiles &&
               Array.from(this._context.changedFiles),
+            sourcesRelatedToTestsInChangedFiles:
+              this._context.sourcesRelatedToTestsInChangedFiles &&
+              Array.from(this._context.sourcesRelatedToTestsInChangedFiles),
           },
           globalConfig: this._globalConfig,
           path: test.path,
@@ -193,7 +197,7 @@ class TestRunner {
     const cleanup = async () => {
       const {forceExited} = await worker.end();
       if (forceExited) {
-        console.log(
+        console.error(
           chalk.yellow(
             'A worker process has failed to exit gracefully and has been force exited. ' +
               'This is likely caused by tests leaking due to improper teardown. ' +

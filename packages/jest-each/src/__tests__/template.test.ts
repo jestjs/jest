@@ -346,7 +346,7 @@ describe('jest-each', () => {
         ${0} | ${1} | ${1}
       `;
         const testFunction = get(eachObject, keyPath);
-        testFunction('expected string', function({a, b, expected}, done) {
+        testFunction('expected string', function ({a, b, expected}, done) {
           expect(a).toBe(0);
           expect(b).toBe(1);
           expect(expected).toBe(1);

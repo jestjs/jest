@@ -6,7 +6,7 @@
  */
 
 import {cpus} from 'os';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 
 export default function getMaxWorkers(
   argv: Partial<

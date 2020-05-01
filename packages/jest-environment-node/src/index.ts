@@ -6,14 +6,15 @@
  */
 
 import {Context, Script, createContext, runInContext} from 'vm';
-import {Config, Global} from '@jest/types';
+import type {Config, Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
 import {
   JestFakeTimers as LegacyFakeTimers,
   LolexFakeTimers,
 } from '@jest/fake-timers';
-import {JestEnvironment} from '@jest/environment';
+import type {JestEnvironment} from '@jest/environment';
+import {lt as semverLt} from 'semver';
 
 type Timer = {
   id: number;
@@ -119,6 +120,13 @@ class NodeEnvironment implements JestEnvironment {
   getVmContext(): Context | null {
     return this.context;
   }
+}
+
+// node 10 had a bug in `vm.compileFunction` that was fixed in https://github.com/nodejs/node/pull/23206.
+// Let's just pretend the env doesn't support the function.
+// Make sure engine requirement is high enough when we drop node 8 so we can remove this condition
+if (semverLt(process.version, '10.14.2')) {
+  delete NodeEnvironment.prototype.getVmContext;
 }
 
 export = NodeEnvironment;

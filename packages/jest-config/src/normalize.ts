@@ -6,10 +6,10 @@
  */
 
 import {createHash} from 'crypto';
-import {statSync} from 'fs';
 import * as path from 'path';
+import {statSync} from 'graceful-fs';
 import {sync as glob} from 'glob';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {ValidationError, validate} from 'jest-validate';
 import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk = require('chalk');
@@ -17,6 +17,7 @@ import micromatch = require('micromatch');
 import {sync as realpath} from 'realpath-native';
 import Resolver = require('jest-resolve');
 import {replacePathSepForRegex} from 'jest-regex-util';
+import merge = require('deepmerge');
 import validatePattern from './validatePattern';
 import getMaxWorkers from './getMaxWorkers';
 import {
@@ -112,12 +113,7 @@ const mergeGlobalsWithPreset = (
   preset: Config.InitialOptions,
 ) => {
   if (options['globals'] && preset['globals']) {
-    for (const p in preset['globals']) {
-      options['globals'][p] = {
-        ...preset['globals'][p],
-        ...options['globals'][p],
-      };
-    }
+    options['globals'] = merge(preset['globals'], options['globals']);
   }
 };
 
@@ -750,14 +746,14 @@ export default function normalize(
               ? _replaceRootDirTags(options.rootDir, project)
               : project,
           )
-          .reduce((projects, project) => {
+          .reduce<Array<string>>((projects, project) => {
             // Project can be specified as globs. If a glob matches any files,
             // We expand it to these paths. If not, we keep the original path
             // for the future resolution.
             const globMatches =
               typeof project === 'string' ? glob(project) : [];
             return projects.concat(globMatches.length ? globMatches : project);
-          }, [] as Array<string>);
+          }, []);
         break;
       case 'moduleDirectories':
       case 'testMatch':

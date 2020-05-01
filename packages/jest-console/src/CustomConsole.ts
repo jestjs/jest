@@ -10,7 +10,7 @@ import {format} from 'util';
 import {Console} from 'console';
 import chalk = require('chalk');
 import {clearLine} from 'jest-util';
-import {LogCounters, LogMessage, LogTimers, LogType} from './types';
+import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
 
 type Formatter = (type: LogType, message: LogMessage) => string;
 
@@ -51,7 +51,8 @@ export default class CustomConsole extends Console {
     );
   }
 
-  assert(value: unknown, message?: string | Error): asserts value {
+  // use `asserts` when https://github.com/sandersn/downlevel-dts/issues/32 is fixed
+  assert(value: unknown, message?: string | Error): void {
     try {
       assert(value, message);
     } catch (error) {

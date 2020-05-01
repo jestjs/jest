@@ -7,10 +7,10 @@
 
 import chalk = require('chalk');
 import {formatExecError} from 'jest-message-util';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import snapshot = require('jest-snapshot');
 import TestRunner = require('jest-runner');
-import {Context} from 'jest-runtime';
+import type {Context} from 'jest-runtime';
 import {
   CoverageReporter,
   DefaultReporter,
@@ -30,7 +30,7 @@ import {
 } from '@jest/test-result';
 import {interopRequireDefault} from 'jest-util';
 import ReporterDispatcher from './ReporterDispatcher';
-import TestWatcher from './TestWatcher';
+import type TestWatcher from './TestWatcher';
 import {shouldRunInBand} from './testSchedulerHelper';
 
 // The default jest-runner is required because it is the default test runner
@@ -44,6 +44,7 @@ export type TestSchedulerContext = {
   firstRun: boolean;
   previousSuccess: boolean;
   changedFiles?: Set<Config.Path>;
+  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
 };
 export default class TestScheduler {
   private _dispatcher: ReporterDispatcher;
@@ -175,12 +176,14 @@ export default class TestScheduler {
       showStatus: !runInBand,
     });
 
-    const testRunners = Object.create(null);
+    const testRunners: {[key: string]: TestRunner} = Object.create(null);
     contexts.forEach(({config}) => {
       if (!testRunners[config.runner]) {
         const Runner: typeof TestRunner = require(config.runner);
         testRunners[config.runner] = new Runner(this._globalConfig, {
-          changedFiles: this._context && this._context.changedFiles,
+          changedFiles: this._context?.changedFiles,
+          sourcesRelatedToTestsInChangedFiles: this._context
+            ?.sourcesRelatedToTestsInChangedFiles,
         });
       }
     });
@@ -272,7 +275,9 @@ export default class TestScheduler {
     if (!isDefault && collectCoverage) {
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
-          changedFiles: this._context && this._context.changedFiles,
+          changedFiles: this._context?.changedFiles,
+          sourcesRelatedToTestsInChangedFiles: this._context
+            ?.sourcesRelatedToTestsInChangedFiles,
         }),
       );
     }
@@ -302,7 +307,9 @@ export default class TestScheduler {
     if (collectCoverage) {
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
-          changedFiles: this._context && this._context.changedFiles,
+          changedFiles: this._context?.changedFiles,
+          sourcesRelatedToTestsInChangedFiles: this._context
+            ?.sourcesRelatedToTestsInChangedFiles,
         }),
       );
     }

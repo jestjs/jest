@@ -6,19 +6,19 @@
  */
 
 import * as path from 'path';
-import {Config, Global} from '@jest/types';
-import {AssertionResult, TestResult} from '@jest/test-result';
-import {JestEnvironment} from '@jest/environment';
-import {SnapshotStateType} from 'jest-snapshot';
-import Runtime = require('jest-runtime');
+import type {Config, Global} from '@jest/types';
+import type {AssertionResult, TestResult} from '@jest/test-result';
+import type {JestEnvironment} from '@jest/environment';
+import type {SnapshotStateType} from 'jest-snapshot';
+import type {RuntimeType as Runtime} from 'jest-runtime';
 
 import {getCallsite} from '@jest/source-map';
 import installEach from './each';
 import {installErrorOnPrivate} from './errorOnPrivate';
 import JasmineReporter from './reporter';
 import jasmineAsyncInstall from './jasmineAsyncInstall';
-import Spec from './jasmine/Spec';
-import {Jasmine as JestJasmine} from './types';
+import type Spec from './jasmine/Spec';
+import type {Jasmine as JestJasmine} from './types';
 
 const JASMINE = require.resolve('./jasmine/jasmineLight');
 
@@ -155,7 +155,16 @@ async function jasmine2(
       testPath,
     });
 
-  config.setupFilesAfterEnv.forEach(path => runtime.requireModule(path));
+  for (const path of config.setupFilesAfterEnv) {
+    // TODO: remove ? in Jest 26
+    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+
+    if (esm) {
+      await runtime.unstable_importModule(path);
+    } else {
+      runtime.requireModule(path);
+    }
+  }
 
   if (globalConfig.enabledTestsMap) {
     env.specFilter = (spec: Spec) => {
@@ -169,7 +178,15 @@ async function jasmine2(
     env.specFilter = (spec: Spec) => testNameRegex.test(spec.getFullName());
   }
 
-  runtime.requireModule(testPath);
+  // TODO: remove ? in Jest 26
+  const esm = runtime.unstable_shouldLoadAsEsm?.(testPath);
+
+  if (esm) {
+    await runtime.unstable_importModule(testPath);
+  } else {
+    runtime.requireModule(testPath);
+  }
+
   await env.execute();
 
   const results = await reporter.getResults();

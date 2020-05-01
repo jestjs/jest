@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
+import * as fs from 'graceful-fs';
 import {sync as resolveSync} from 'resolve';
 import {sync as browserResolve} from 'browser-resolve';
 import {sync as realpath} from 'realpath-native';
 import pnpResolver from 'jest-pnp-resolver';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 
 type ResolverOptions = {
   basedir: Config.Path;
@@ -41,25 +41,18 @@ export default function defaultResolver(
     moduleDirectory: options.moduleDirectory,
     paths: options.paths,
     preserveSymlinks: false,
+    // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44137
+    realpathSync,
   });
 
-  try {
-    // Dereference symlinks to ensure we don't create a separate
-    // module instance depending on how it was referenced.
-    const resolved = realpath(result);
-
-    if (resolved) {
-      return resolved;
-    }
-  } catch {
-    // ignore
-  }
-
-  return result;
+  // Dereference symlinks to ensure we don't create a separate
+  // module instance depending on how it was referenced.
+  return realpathSync(result);
 }
 
 export function clearDefaultResolverCache(): void {
   checkedPaths.clear();
+  checkedRealpathPaths.clear();
 }
 
 enum IPathType {
@@ -97,6 +90,36 @@ function statSyncCached(path: string): IPathType {
   return IPathType.OTHER;
 }
 
+const checkedRealpathPaths = new Map<string, string>();
+function realpathCached(path: Config.Path): Config.Path {
+  let result = checkedRealpathPaths.get(path);
+
+  if (result !== undefined) {
+    return result;
+  }
+
+  try {
+    result = realpath(path);
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      throw error;
+    }
+  }
+
+  if (!result) {
+    result = path;
+  }
+
+  checkedRealpathPaths.set(path, result);
+
+  if (path !== result) {
+    // also cache the result in case it's ever referenced directly - no reason to `realpath` that as well
+    checkedRealpathPaths.set(result, result);
+  }
+
+  return result;
+}
+
 /*
  * helper functions
  */
@@ -106,4 +129,8 @@ function isFile(file: Config.Path): boolean {
 
 function isDirectory(dir: Config.Path): boolean {
   return statSyncCached(dir) === IPathType.DIRECTORY;
+}
+
+function realpathSync(file: Config.Path): Config.Path {
+  return realpathCached(file);
 }

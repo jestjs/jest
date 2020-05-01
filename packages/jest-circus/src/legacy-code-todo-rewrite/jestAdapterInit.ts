@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Circus, Config, Global} from '@jest/types';
-import {JestEnvironment} from '@jest/environment';
+import type {Circus, Config, Global} from '@jest/types';
+import type {JestEnvironment} from '@jest/environment';
 import {
   AssertionResult,
   Status,
@@ -36,7 +36,7 @@ type Process = NodeJS.Process;
 
 // TODO: hard to type
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const initialize = ({
+export const initialize = async ({
   config,
   environment,
   getPrettier,
@@ -107,14 +107,14 @@ export const initialize = ({
     addEventHandler(environment.handleTestEvent.bind(environment));
   }
 
-  dispatch({
+  await dispatch({
     name: 'setup',
     parentProcess,
     testNamePattern: globalConfig.testNamePattern,
   });
 
   if (config.testLocationInResults) {
-    dispatch({
+    await dispatch({
       name: 'include_test_location_in_result',
     });
   }
@@ -220,7 +220,8 @@ export const runAndTransformResultsToJestFormat = async ({
         .join('\n');
   }
 
-  dispatch({name: 'teardown'});
+  await dispatch({name: 'teardown'});
+
   return {
     ...createEmptyTestResult(),
     console: undefined,
@@ -248,7 +249,7 @@ const handleSnapshotStateAfterRetry = (snapshotState: SnapshotStateType) => (
   }
 };
 
-const eventHandler = (event: Circus.Event) => {
+const eventHandler = async (event: Circus.Event) => {
   switch (event.name) {
     case 'test_start': {
       setState({currentTestName: getTestID(event.test)});

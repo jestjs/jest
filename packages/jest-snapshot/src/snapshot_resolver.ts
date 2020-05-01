@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import chalk = require('chalk');
 
 export type SnapshotResolver = {

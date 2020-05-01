@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AggregatedResult, TestResult} from '@jest/test-result';
+import type {AggregatedResult, TestResult} from '@jest/test-result';
 import {preRunMessage} from 'jest-util';
-import {Context, Reporter, ReporterOnStartOptions, Test} from './types';
+import type {Context, Reporter, ReporterOnStartOptions, Test} from './types';
 
 const {remove: preRunMessageRemove} = preRunMessage;
 

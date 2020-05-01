@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Arguments} from 'yargs';
-import {ReportOptions} from 'istanbul-reports';
+import type {Arguments} from 'yargs';
+import type {ReportOptions} from 'istanbul-reports';
 import chalk = require('chalk');
 
 type CoverageProvider = 'babel' | 'v8';
@@ -27,7 +27,9 @@ export type HasteConfig = {
 export type ReporterConfig = [string, Record<string, unknown>];
 export type TransformerConfig = [string, Record<string, unknown>];
 
-export type ConfigGlobals = Record<string, any>;
+export interface ConfigGlobals {
+  [K: string]: unknown;
+}
 
 export type DefaultOptions = {
   automock: boolean;
@@ -343,7 +345,7 @@ export type ProjectConfig = {
   testMatch: Array<Glob>;
   testLocationInResults: boolean;
   testPathIgnorePatterns: Array<string>;
-  testRegex: Array<string>;
+  testRegex: Array<string | RegExp>;
   testRunner: string;
   testURL: string;
   timers: 'real' | 'fake';

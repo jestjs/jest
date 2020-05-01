@@ -6,4 +6,4 @@
  */
 
 export {default as getCallsite} from './getCallsite';
-export {SourceMapRegistry} from './types';
+export type {SourceMapRegistry} from './types';

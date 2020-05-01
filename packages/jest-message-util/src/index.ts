@@ -5,18 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
-import {Config} from '@jest/types';
-import {AssertionResult, SerializableError} from '@jest/test-result';
+import * as fs from 'graceful-fs';
+import type {Config, TestResult} from '@jest/types';
 import chalk = require('chalk');
 import micromatch = require('micromatch');
 import slash = require('slash');
 import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils = require('stack-utils');
-import {Frame} from './types';
+import type {Frame} from './types';
 
-export {Frame} from './types';
+export type {Frame} from './types';
 
 type Path = Config.Path;
 
@@ -39,6 +38,7 @@ export type StackTraceConfig = Pick<
 
 export type StackTraceOptions = {
   noStackTrace: boolean;
+  noCodeFrame?: boolean;
 };
 
 const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
@@ -92,11 +92,35 @@ const getRenderedCallsite = (
 
 const blankStringRegexp = /^\s*$/;
 
+function checkForCommonEnvironmentErrors(error: string) {
+  if (
+    error.includes('ReferenceError: document is not defined') ||
+    error.includes('ReferenceError: window is not defined') ||
+    error.includes('ReferenceError: navigator is not defined')
+  ) {
+    return warnAboutWrongTestEnvironment(error, 'jsdom');
+  } else if (error.includes('.unref is not a function')) {
+    return warnAboutWrongTestEnvironment(error, 'node');
+  }
+
+  return error;
+}
+
+function warnAboutWrongTestEnvironment(error: string, env: 'jsdom' | 'node') {
+  return (
+    chalk.bold.red(
+      `The error below may be caused by using the wrong test environment, see ${chalk.dim.underline(
+        'https://jestjs.io/docs/en/configuration#testenvironment-string',
+      )}.\nConsider using the "${env}" test environment.\n\n`,
+    ) + error
+  );
+}
+
 // ExecError is an error thrown outside of the test suite (not inside an `it` or
 // `before/after each` hooks). If it's thrown, none of the tests in the file
 // are executed.
 export const formatExecError = (
-  error: Error | SerializableError | string | undefined,
+  error: Error | TestResult.SerializableError | string | undefined,
   config: StackTraceConfig,
   options: StackTraceOptions,
   testPath?: Path,
@@ -125,6 +149,8 @@ export const formatExecError = (
     // Often stack trace already contains the duplicate of the message
     message = separated.message;
   }
+
+  message = checkForCommonEnvironmentErrors(message);
 
   message = indentAllLines(message, MESSAGE_INDENT);
 
@@ -226,7 +252,7 @@ const formatPaths = (
 
 export const getStackTraceLines = (
   stack: string,
-  options: StackTraceOptions = {noStackTrace: false},
+  options: StackTraceOptions = {noCodeFrame: false, noStackTrace: false},
 ): Array<string> => removeInternalStackEntries(stack.split(/\n/), options);
 
 export const getTopFrame = (lines: Array<string>): Frame | null => {
@@ -252,24 +278,26 @@ export const formatStackTrace = (
   testPath?: Path,
 ): string => {
   const lines = getStackTraceLines(stack, options);
-  const topFrame = getTopFrame(lines);
   let renderedCallsite = '';
   const relativeTestPath = testPath
     ? slash(path.relative(config.rootDir, testPath))
     : null;
 
-  if (topFrame) {
-    const {column, file: filename, line} = topFrame;
+  if (!options.noStackTrace && !options.noCodeFrame) {
+    const topFrame = getTopFrame(lines);
+    if (topFrame) {
+      const {column, file: filename, line} = topFrame;
 
-    if (line && filename && path.isAbsolute(filename)) {
-      let fileContent;
-      try {
-        // TODO: check & read HasteFS instead of reading the filesystem:
-        // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
-        fileContent = fs.readFileSync(filename, 'utf8');
-        renderedCallsite = getRenderedCallsite(fileContent, line, column);
-      } catch (e) {
-        // the file does not exist or is inaccessible, we ignore
+      if (line && filename && path.isAbsolute(filename)) {
+        let fileContent;
+        try {
+          // TODO: check & read HasteFS instead of reading the filesystem:
+          // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
+          fileContent = fs.readFileSync(filename, 'utf8');
+          renderedCallsite = getRenderedCallsite(fileContent, line, column);
+        } catch (e) {
+          // the file does not exist or is inaccessible, we ignore
+        }
       }
     }
   }
@@ -282,24 +310,31 @@ export const formatStackTrace = (
     )
     .join('\n');
 
-  return `${renderedCallsite}\n${stacktrace}`;
+  return renderedCallsite
+    ? `${renderedCallsite}\n${stacktrace}`
+    : `\n${stacktrace}`;
 };
 
+type FailedResults = Array<{
+  content: string;
+  result: TestResult.AssertionResult;
+}>;
+
 export const formatResultsErrors = (
-  testResults: Array<AssertionResult>,
+  testResults: Array<TestResult.AssertionResult>,
   config: StackTraceConfig,
   options: StackTraceOptions,
   testPath?: Path,
 ): string | null => {
-  type FailedResults = Array<{
-    content: string;
-    result: AssertionResult;
-  }>;
-
-  const failedResults: FailedResults = testResults.reduce((errors, result) => {
-    result.failureMessages.forEach(content => errors.push({content, result}));
-    return errors;
-  }, [] as FailedResults);
+  const failedResults: FailedResults = testResults.reduce<FailedResults>(
+    (errors, result) => {
+      result.failureMessages
+        .map(checkForCommonEnvironmentErrors)
+        .forEach(content => errors.push({content, result}));
+      return errors;
+    },
+    [],
+  );
 
   if (!failedResults.length) {
     return null;

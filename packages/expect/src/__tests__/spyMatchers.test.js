@@ -13,7 +13,7 @@ expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 // Given a Jest mock function, return a minimal mock of a Jasmine spy.
 const createSpy = fn => {
-  const spy = function() {};
+  const spy = function () {};
 
   spy.calls = {
     all() {
@@ -177,7 +177,7 @@ const createSpy = fn => {
   'toBeCalledWith',
   'toHaveBeenCalledWith',
 ].forEach(calledWith => {
-  const caller = function(callee, ...args) {
+  const caller = function (callee, ...args) {
     if (
       calledWith === 'nthCalledWith' ||
       calledWith === 'toHaveBeenNthCalledWith'
@@ -734,7 +734,7 @@ const createSpy = fn => {
   'toReturnWith',
   'toHaveReturnedWith',
 ].forEach(returnedWith => {
-  const caller = function(callee, ...args) {
+  const caller = function (callee, ...args) {
     if (
       returnedWith === 'nthReturnedWith' ||
       returnedWith === 'toHaveNthReturnedWith'

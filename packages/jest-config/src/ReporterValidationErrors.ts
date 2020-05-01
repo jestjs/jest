@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {ValidationError} from 'jest-validate';
 import chalk = require('chalk');
 import getType = require('jest-get-type');
@@ -39,7 +39,7 @@ export function createArrayReporterError(
   arrayReporter: Config.ReporterConfig,
   reporterIndex: number,
   valueIndex: number,
-  value: string | Record<string, any>,
+  value: string | Record<string, unknown>,
   expectedType: string,
   valueName: string,
 ): ValidationError {
@@ -52,9 +52,7 @@ export function createArrayReporterError(
     `    ${chalk.bold.green(getType(value))}\n` +
     `  Reporter configuration:\n` +
     `    ${chalk.bold.green(
-      JSON.stringify(arrayReporter, null, 2)
-        .split('\n')
-        .join('\n    '),
+      JSON.stringify(arrayReporter, null, 2).split('\n').join('\n    '),
     )}`;
 
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);

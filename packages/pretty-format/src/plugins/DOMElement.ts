@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, NewPlugin, Printer, Refs} from '../types';
+import type {Config, NewPlugin, Printer, Refs} from '../types';
 
 import {
   printChildren,
@@ -23,7 +23,7 @@ const FRAGMENT_NODE = 11;
 
 const ELEMENT_REGEXP = /^((HTML|SVG)\w*)?Element$/;
 
-const testNode = (nodeType: any, name: any) =>
+const testNode = (nodeType: number, name: string) =>
   (nodeType === ELEMENT_NODE && ELEMENT_REGEXP.test(name)) ||
   (nodeType === TEXT_NODE && name === 'Text') ||
   (nodeType === COMMENT_NODE && name === 'Comment') ||
@@ -82,11 +82,14 @@ export const serialize: NewPlugin['serialize'] = (
             .map(attr => attr.name)
             .sort(),
       nodeIsFragment(node)
-        ? []
-        : Array.from(node.attributes).reduce((props, attribute) => {
-            props[attribute.name] = attribute.value;
-            return props;
-          }, {} as any),
+        ? {}
+        : Array.from(node.attributes).reduce<Record<string, string>>(
+            (props, attribute) => {
+              props[attribute.name] = attribute.value;
+              return props;
+            },
+            {},
+          ),
       config,
       indentation + config.indent,
       depth,

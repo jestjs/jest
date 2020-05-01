@@ -573,7 +573,7 @@ async runTests(
 
 Default: `[]`
 
-The paths to modules that run some code to configure or set up the testing environment before each test. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
+The paths to modules that run some code to configure or set up the testing environment before each test file in the suite is executed. Since every test runs in its own environment, these scripts will be executed in the testing environment immediately before executing the test code itself.
 
 It's worth noting that this code will execute _before_ [`setupTestFrameworkScriptFile`](#setuptestframeworkscriptfile-string).
 
@@ -598,8 +598,8 @@ Example serializer module:
 ```js
 // my-serializer-module
 module.exports = {
-  print(val, serialize, indent) {
-    return 'Pretty foo: ' + serialize(val.foo);
+  serialize(val, config, indentation, depth, refs, printer) {
+    return 'Pretty foo: ' + printer(val.foo);
   },
 
   test(val) {
@@ -608,7 +608,7 @@ module.exports = {
 };
 ```
 
-`serialize` is a function that serializes a value using existing plugins.
+`printer` is a function that serializes a value using existing plugins.
 
 To use `my-serializer-module` as a serializer, configuration would be as follows:
 
@@ -646,6 +646,8 @@ Pretty foo: Object {
 ```
 
 To make a dependency explicit instead of implicit, you can call [`expect.addSnapshotSerializer`](ExpectAPI.md#expectaddsnapshotserializerserializer) to add a module for an individual test file instead of adding its path to `snapshotSerializers` in Jest configuration.
+
+More about serializers API can be found [here](https://github.com/facebook/jest/tree/master/packages/pretty-format#serialize).
 
 ### `testEnvironment` [string]
 

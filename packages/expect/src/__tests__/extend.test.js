@@ -23,6 +23,12 @@ jestExpect.extend({
 
     return {message, pass};
   },
+  toBeSymbol(actual, expected) {
+    const pass = actual === expected;
+    const message = () => `expected ${actual} to be Symbol ${expected}`;
+
+    return {message, pass};
+  },
   toBeWithinRange(actual, floor, ceiling) {
     const pass = actual >= floor && actual <= ceiling;
     const message = pass
@@ -136,4 +142,15 @@ it('defines asymmetric variadic matchers that can be prefixed by not', () => {
       value: jestExpect.not.toBeWithinRange(5, 7),
     }),
   ).not.toThrow();
+});
+
+it('prints the Symbol into the error message', () => {
+  const foo = Symbol('foo');
+  const bar = Symbol('bar');
+
+  expect(() =>
+    jestExpect({a: foo}).toEqual({
+      a: jestExpect.toBeSymbol(bar),
+    }),
+  ).toThrowErrorMatchingSnapshot();
 });

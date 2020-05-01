@@ -25,7 +25,7 @@ import {
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
-import {MatcherState, MatchersObject} from './types';
+import type {MatcherState, MatchersObject} from './types';
 import {
   printCloseTo,
   printExpectedConstructorName,
@@ -64,7 +64,7 @@ const toStrictEqualTesters = [
 type ContainIterable =
   | Array<unknown>
   | Set<unknown>
-  | NodeListOf<any>
+  | NodeListOf<Node>
   | DOMTokenList
   | HTMLCollectionOf<any>;
 
@@ -628,10 +628,7 @@ const matchers: MatchersObject = {
       promise: this.promise,
     };
 
-    if (
-      typeof received !== 'string' &&
-      (!received || typeof received.length !== 'number')
-    ) {
+    if (typeof received?.length !== 'number') {
       throw new Error(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, undefined, options),

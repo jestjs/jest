@@ -8,8 +8,8 @@
 import chalk = require('chalk');
 import ansiEscapes = require('ansi-escapes');
 import {specialChars} from 'jest-util';
-import Prompt from './lib/Prompt';
-import {ScrollOptions} from './types';
+import type Prompt from './lib/Prompt';
+import type {ScrollOptions} from './types';
 
 const {CLEAR} = specialChars;
 

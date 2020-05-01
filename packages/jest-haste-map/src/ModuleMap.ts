@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {
+import type {Config} from '@jest/types';
+import type {
   DuplicatesSet,
   HTypeValue,
   MockData,
@@ -18,7 +18,7 @@ import {
 import * as fastPath from './lib/fast_path';
 import H from './constants';
 
-const EMPTY_OBJ = {} as Record<string, any>;
+const EMPTY_OBJ: Record<string, ModuleMetaData> = {};
 const EMPTY_MAP = new Map();
 
 type ValueType<T> = T extends Map<string, infer V> ? V : never;

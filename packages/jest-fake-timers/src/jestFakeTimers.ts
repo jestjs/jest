@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ModuleMocker} from 'jest-mock';
+import type {ModuleMocker} from 'jest-mock';
 import {StackTraceConfig, formatStackTrace} from 'jest-message-util';
 import {setGlobal} from 'jest-util';
 import util = require('util');
@@ -372,7 +372,7 @@ export default class FakeTimers<TimerRef> {
     const promisifiableFakeSetTimeout = fn(this._fakeSetTimeout.bind(this));
     promisifiableFakeSetTimeout[util.promisify.custom] = (
       delay?: number,
-      arg?: any,
+      arg?: unknown,
     ) =>
       new Promise(resolve => promisifiableFakeSetTimeout(resolve, delay, arg));
 

@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
 import {spawn} from 'child_process';
+import * as fs from 'graceful-fs';
 import which = require('which');
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
-import {
+import type {
   CrawlerOptions,
   FileData,
   IgnoreMatcher,

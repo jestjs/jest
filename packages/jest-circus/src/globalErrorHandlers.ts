@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Circus} from '@jest/types';
-import {dispatch} from './state';
+import type {Circus} from '@jest/types';
+import {dispatchSync} from './state';
 
 const uncaught: NodeJS.UncaughtExceptionListener &
   NodeJS.UnhandledRejectionListener = (error: unknown) => {
-  dispatch({error, name: 'error'});
+  dispatchSync({error, name: 'error'});
 };
 
 export const injectGlobalErrorHandlers = (
