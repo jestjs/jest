@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-config, jest-resolve]` [**BREAKING**] Remove support for `browser` field ([#9943](https://github.com/facebook/jest/pull/9943))
+
 ### Chore & Maintenance
 
 ### Performance

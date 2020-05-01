@@ -303,7 +303,6 @@ class Runtime {
     moduleMap: HasteMap.ModuleMap,
   ): Resolver {
     return new Resolver(moduleMap, {
-      browser: config.browser,
       defaultPlatform: config.haste.defaultPlatform,
       extensions: config.moduleFileExtensions.map(extension => '.' + extension),
       hasCoreModules: true,

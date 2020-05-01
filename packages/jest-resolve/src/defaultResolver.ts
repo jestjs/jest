@@ -7,7 +7,6 @@
 
 import * as fs from 'graceful-fs';
 import {sync as resolveSync} from 'resolve';
-import {sync as browserResolve} from 'browser-resolve';
 import {sync as realpath} from 'realpath-native';
 import pnpResolver from 'jest-pnp-resolver';
 import type {Config} from '@jest/types';
@@ -31,9 +30,7 @@ export default function defaultResolver(
     return pnpResolver(path, options);
   }
 
-  const resolve = options.browser ? browserResolve : resolveSync;
-
-  const result = resolve(path, {
+  const result = resolveSync(path, {
     basedir: options.basedir,
     extensions: options.extensions,
     isDirectory,

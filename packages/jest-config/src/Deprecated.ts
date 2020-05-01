@@ -11,6 +11,18 @@ import prettyFormat = require('pretty-format');
 const format = (value: unknown) => prettyFormat(value, {min: true});
 
 export default {
+  browser: () => `  Option ${chalk.bold(
+    '"browser"',
+  )} has been deprecated. Please install \`browser-resolve\` and use the \`resolver\` option.
+
+  Jest now treats your current configuration as:
+  {
+    ${chalk.bold('"resolve"')}: ${chalk.bold('"browser-resolve"')}
+  }
+
+  Please update your configuration.
+  `,
+
   mapCoverage: () => `  Option ${chalk.bold(
     '"mapCoverage"',
   )} has been removed, as it's no longer necessary.
