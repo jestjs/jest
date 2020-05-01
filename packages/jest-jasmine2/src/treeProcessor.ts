@@ -23,7 +23,7 @@ export type TreeNode = {
   onException: (error: Error) => void;
   sharedUserContext: () => any;
   children?: Array<TreeNode>;
-} & Pick<Suite, 'getResult' | 'parentSuite' | 'result'>;
+} & Pick<Suite, 'getResult' | 'parentSuite' | 'result' | 'markedPending'>;
 
 export default function treeProcessor(options: Options): void {
   const {
@@ -64,11 +64,11 @@ export default function treeProcessor(options: Options): void {
     };
   }
 
-  function hasEnabledTest(node: TreeNode): boolean {
+  function hasNoEnabledTest(node: TreeNode): boolean {
     if (node.children) {
-      return node.children.some(hasEnabledTest);
+      return node.children.every(hasNoEnabledTest);
     }
-    return !node.disabled;
+    return node.disabled || node.markedPending;
   }
 
   function wrapChildren(node: TreeNode, enabled: boolean) {
@@ -78,7 +78,7 @@ export default function treeProcessor(options: Options): void {
     const children = node.children.map(child => ({
       fn: getNodeHandler(child, enabled),
     }));
-    if (!hasEnabledTest(node)) {
+    if (hasNoEnabledTest(node)) {
       return children;
     }
     return node.beforeAllFns.concat(children).concat(node.afterAllFns);
