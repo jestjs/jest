@@ -22,10 +22,10 @@
     "@jest/types": "^25.5.0",
     "jest-mock": "^25.5.0",
     "jest-util": "^25.5.0",
-    "jsdom": "^16.2.1"
+    "jsdom": "^16.2.2"
   },
   "devDependencies": {
-    "@types/jsdom": "^16.1.0"
+    "@types/jsdom": "^16.2.1"
   },
   "engines": {
     "node": ">= 8.3"
