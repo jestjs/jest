@@ -30,11 +30,9 @@ const chalk = require('chalk');
 const micromatch = require('micromatch');
 const prettier = require('prettier');
 const {getPackages, adjustToTerminalWidth, OK} = require('./buildUtils');
-const browserBuild = require('./browserBuild');
 
 const SRC_DIR = 'src';
 const BUILD_DIR = 'build';
-const BUILD_ES5_DIR = 'build-es5';
 const JS_FILES_PATTERN = '**/*.js';
 const TS_FILES_PATTERN = '**/*.ts';
 const IGNORE_PATTERN = '**/__{tests,mocks}__/**';
@@ -70,39 +68,6 @@ function buildNodePackage(p) {
   files.forEach(file => buildFile(file, true));
 
   process.stdout.write(`${OK}\n`);
-}
-
-function buildBrowserPackage(p) {
-  const srcDir = path.resolve(p, SRC_DIR);
-  const pkgJsonPath = path.resolve(p, 'package.json');
-
-  if (!fs.existsSync(pkgJsonPath)) {
-    return;
-  }
-
-  const browser = require(pkgJsonPath).browser;
-  if (browser) {
-    if (browser.indexOf(BUILD_ES5_DIR) !== 0) {
-      throw new Error(
-        `browser field for ${pkgJsonPath} should start with "${BUILD_ES5_DIR}"`,
-      );
-    }
-    let indexFile = path.resolve(srcDir, 'index.js');
-
-    if (!fs.existsSync(indexFile)) {
-      indexFile = indexFile.replace(/\.js$/, '.ts');
-    }
-
-    browserBuild(p.split('/').pop(), indexFile, path.resolve(p, browser))
-      .then(() => {
-        process.stdout.write(adjustToTerminalWidth(`${path.basename(p)}\n`));
-        process.stdout.write(`${OK}\n`);
-      })
-      .catch(e => {
-        console.error(e);
-        process.exit(1);
-      });
-  }
 }
 
 function buildFile(file, silent) {
@@ -187,8 +152,4 @@ if (files.length) {
   const packages = getPackages();
   process.stdout.write(chalk.inverse(' Building packages \n'));
   packages.forEach(buildNodePackage);
-  process.stdout.write('\n');
-
-  process.stdout.write(chalk.inverse(' Building browser packages \n'));
-  packages.forEach(buildBrowserPackage);
 }

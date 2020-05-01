@@ -8,6 +8,8 @@
 
 ### Chore & Maintenance
 
+- `[expect, jest-mock, pretty-format]` [**BREAKING**] Remove `build-es5` from package ([#9945](https://github.com/facebook/jest/pull/9945))
+
 ### Performance
 
 ## 25.5.3
