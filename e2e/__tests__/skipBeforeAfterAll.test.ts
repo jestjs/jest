@@ -5,54 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-let hasBeforeAllRun = false;
-let hasAfterAllRun = false;
+import * as path from 'path';
+import {json as runWithJson} from '../runJest';
 
-describe.skip('in describe.skip', () => {
-  describe('in describe', () => {
-    beforeAll(() => {
-      hasBeforeAllRun = true;
-    });
+const DIR = path.resolve(__dirname, '../before-all-skipped');
 
-    afterAll(() => {
-      hasAfterAllRun = true;
-    });
+test('correctly skip `beforeAll`s in skipped tests', () => {
+  const {json} = runWithJson(DIR);
 
-    test('it should be skipped', () => {
-      throw new Error('This should never happen');
-    });
-  });
-});
-
-test('describe.skip should not run beforeAll', () => {
-  expect(hasBeforeAllRun).toBe(false);
-});
-
-test('describe.skip should not run afterAll', () => {
-  expect(hasAfterAllRun).toBe(false);
-});
-
-let hasBeforeAllRun2 = false;
-let hasAfterAllRun2 = false;
-
-describe('in describe', () => {
-  beforeAll(() => {
-    hasBeforeAllRun2 = true;
-  });
-
-  afterAll(() => {
-    hasAfterAllRun2 = true;
-  });
-
-  test.skip('it should be skipped', () => {
-    throw new Error('This should never happen');
-  });
-});
-
-test('describe having only skipped test should not run beforeAll', () => {
-  expect(hasBeforeAllRun2).toBe(false);
-});
-
-test('describe having only skipped test should not run afterAll', () => {
-  expect(hasAfterAllRun2).toBe(false);
+  expect(json.numTotalTests).toBe(6);
+  expect(json.numPassedTests).toBe(4);
+  expect(json.numPendingTests).toBe(2);
 });
