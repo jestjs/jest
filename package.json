@@ -107,7 +107,7 @@
     "test-ci": "yarn jest-coverage --color -i --config jest.config.ci.js && yarn test-leak && node ./scripts/mapCoverage.js && codecov",
     "test-ci-partial": "yarn jest --color -i --config jest.config.ci.js",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
-    "test-leak": "yarn jest -i --detectLeaks jest-mock jest-diff jest-repl",
+    "test-leak": "yarn jest -i --detectLeaks jest-mock jest-diff jest-repl pretty-format",
     "test": "yarn lint && yarn jest",
     "verify-old-ts": "node ./scripts/verifyOldTs.js",
     "watch": "yarn build && node ./scripts/watch.js",
