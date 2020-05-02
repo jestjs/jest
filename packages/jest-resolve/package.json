@@ -18,7 +18,6 @@
   },
   "dependencies": {
     "@jest/types": "^25.5.0",
-    "browser-resolve": "^1.11.3",
     "chalk": "^3.0.0",
     "graceful-fs": "^4.2.4",
     "jest-pnp-resolver": "^1.2.1",
@@ -28,7 +27,6 @@
     "slash": "^3.0.0"
   },
   "devDependencies": {
-    "@types/browser-resolve": "^1.11.0",
     "@types/graceful-fs": "^4.1.3",
     "@types/resolve": "^1.14.0",
     "jest-haste-map": "^25.5.1"
