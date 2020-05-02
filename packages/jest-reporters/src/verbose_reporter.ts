@@ -13,7 +13,7 @@ import type {
   TestResult,
 } from '@jest/test-result';
 import chalk = require('chalk');
-import {specialChars} from 'jest-util';
+import {formatTime, specialChars} from 'jest-util';
 import type {Test} from './types';
 import DefaultReporter from './default_reporter';
 
@@ -107,7 +107,9 @@ export default class VerboseReporter extends DefaultReporter {
 
   private _logTest(test: AssertionResult, indentLevel: number) {
     const status = this._getIcon(test.status);
-    const time = test.duration ? ` (${test.duration.toFixed(0)}ms)` : '';
+    const time = test.duration
+      ? ` (${formatTime(Math.round(test.duration))})`
+      : '';
     this._logLine(status + ' ' + chalk.dim(test.title + time), indentLevel);
   }
 

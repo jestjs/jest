@@ -20,5 +20,6 @@ export {default as replacePathSepForGlob} from './replacePathSepForGlob';
 export {default as testPathPatternToRegExp} from './testPathPatternToRegExp';
 import * as preRunMessage from './preRunMessage';
 export {default as pluralize} from './pluralize';
+export {default as formatTime} from './formatTime';
 
 export {preRunMessage, specialChars};

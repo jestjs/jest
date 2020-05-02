@@ -9,7 +9,7 @@ import assert = require('assert');
 import {format} from 'util';
 import {Console} from 'console';
 import chalk = require('chalk');
-import {clearLine} from 'jest-util';
+import {clearLine, formatTime} from 'jest-util';
 import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
 
 type Formatter = (type: LogType, message: LogMessage) => string;
@@ -131,7 +131,7 @@ export default class CustomConsole extends Console {
     if (startTime) {
       const endTime = new Date().getTime();
       const time = endTime - startTime.getTime();
-      this._log('time', format(`${label}: ${time}ms`));
+      this._log('time', format(`${label}: ${formatTime(time)}`));
       delete this._timers[label];
     }
   }

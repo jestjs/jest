@@ -10,7 +10,7 @@ import type {Config} from '@jest/types';
 import type {AggregatedResult} from '@jest/test-result';
 import chalk = require('chalk');
 import slash = require('slash');
-import {pluralize} from 'jest-util';
+import {formatTime, pluralize} from 'jest-util';
 import type {SummaryOptions} from './types';
 
 const PROGRESS_BAR_WIDTH = 40;
@@ -185,11 +185,11 @@ const renderTime = (runTime: number, estimatedTime: number, width: number) => {
   // If we are more than one second over the estimated time, highlight it.
   const renderedTime =
     estimatedTime && runTime >= estimatedTime + 1
-      ? chalk.bold.yellow(runTime + 's')
-      : runTime + 's';
+      ? chalk.bold.yellow(formatTime(runTime, 0))
+      : formatTime(runTime, 0);
   let time = chalk.bold(`Time:`) + `        ${renderedTime}`;
   if (runTime < estimatedTime) {
-    time += `, estimated ${estimatedTime}s`;
+    time += `, estimated ${formatTime(estimatedTime, 0)}`;
   }
 
   // Only show a progress bar if the test run is actually going to take

@@ -8,6 +8,7 @@
 import type {Config} from '@jest/types';
 import type {TestResult} from '@jest/test-result';
 import chalk = require('chalk');
+import {formatTime} from 'jest-util';
 import {formatTestPath, printDisplayName} from './utils';
 import terminalLink = require('terminal-link');
 
@@ -47,7 +48,7 @@ export default (
 
   const testDetail = [];
   if (runTime !== null && runTime > 5) {
-    testDetail.push(LONG_TEST_COLOR(runTime + 's'));
+    testDetail.push(LONG_TEST_COLOR(formatTime(runTime, 0)));
   }
 
   if (result.memoryUsage) {
