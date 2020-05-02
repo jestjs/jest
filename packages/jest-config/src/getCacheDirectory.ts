@@ -8,7 +8,7 @@
 import * as path from 'path';
 import {tmpdir} from 'os';
 import type {Config} from '@jest/types';
-import {tryRealpath} from './utils';
+import {tryRealpath} from 'jest-util';
 
 const tmpdirPath = path.join(tryRealpath(tmpdir()), 'jest');
 

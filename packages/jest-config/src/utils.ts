@@ -10,7 +10,6 @@ import type {Config} from '@jest/types';
 import {ValidationError} from 'jest-validate';
 import Resolver = require('jest-resolve');
 import chalk = require('chalk');
-import {realpathSync} from 'graceful-fs';
 
 type ResolveOptions = {
   rootDir: Config.Path;
@@ -249,15 +248,3 @@ export const getSequencer = (
     prefix: 'jest-sequencer-',
     rootDir,
   });
-
-export function tryRealpath(path: Config.Path): Config.Path {
-  try {
-    path = realpathSync.native(path);
-  } catch (error) {
-    if (error.code !== 'ENOENT') {
-      throw error;
-    }
-  }
-
-  return path;
-}

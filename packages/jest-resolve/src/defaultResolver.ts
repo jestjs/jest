@@ -8,19 +8,8 @@
 import * as fs from 'graceful-fs';
 import {sync as resolveSync} from 'resolve';
 import pnpResolver from 'jest-pnp-resolver';
+import {tryRealpath} from 'jest-util';
 import type {Config} from '@jest/types';
-
-function tryRealpath(path: Config.Path): Config.Path {
-  try {
-    path = fs.realpathSync.native(path);
-  } catch (error) {
-    if (error.code !== 'ENOENT') {
-      throw error;
-    }
-  }
-
-  return path;
-}
 
 type ResolverOptions = {
   basedir: Config.Path;

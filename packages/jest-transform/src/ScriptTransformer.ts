@@ -8,7 +8,12 @@
 import {createHash} from 'crypto';
 import * as path from 'path';
 import type {Config} from '@jest/types';
-import {createDirectory, interopRequireDefault, isPromise} from 'jest-util';
+import {
+  createDirectory,
+  interopRequireDefault,
+  isPromise,
+  tryRealpath,
+} from 'jest-util';
 import * as fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
 // @ts-ignore: should just be `require.resolve`, but the tests mess that up
@@ -19,7 +24,6 @@ import stableStringify = require('fast-json-stable-stringify');
 import slash = require('slash');
 import {sync as writeFileAtomic} from 'write-file-atomic';
 import {addHook} from 'pirates';
-import {realpathSync} from 'graceful-fs';
 import type {
   Options,
   TransformResult,
@@ -28,18 +32,6 @@ import type {
 } from './types';
 import shouldInstrument from './shouldInstrument';
 import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';
-
-function tryRealpath(path: Config.Path): Config.Path {
-  try {
-    path = realpathSync.native(path);
-  } catch (error) {
-    if (error.code !== 'ENOENT') {
-      throw error;
-    }
-  }
-
-  return path;
-}
 
 type ProjectCache = {
   configString: string;

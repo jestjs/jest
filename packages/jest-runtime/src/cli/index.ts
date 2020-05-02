@@ -12,25 +12,13 @@ import yargs = require('yargs');
 import type {Config} from '@jest/types';
 import type {JestEnvironment} from '@jest/environment';
 import {CustomConsole} from '@jest/console';
-import {setGlobal} from 'jest-util';
+import {setGlobal, tryRealpath} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries, readConfig} from 'jest-config';
-import {realpathSync} from 'graceful-fs';
 import {VERSION} from '../version';
 import type {Context} from '../types';
 import * as args from './args';
 
-function tryRealpath(path: Config.Path): Config.Path {
-  try {
-    path = realpathSync.native(path);
-  } catch (error) {
-    if (error.code !== 'ENOENT') {
-      throw error;
-    }
-  }
-
-  return path;
-}
 export async function run(
   cliArgv?: Config.Argv,
   cliInfo?: Array<string>,

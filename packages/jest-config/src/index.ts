@@ -8,8 +8,9 @@
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
+import {tryRealpath} from 'jest-util';
 import chalk = require('chalk');
-import {isJSONString, replaceRootDirInPath, tryRealpath} from './utils';
+import {isJSONString, replaceRootDirInPath} from './utils';
 import normalize from './normalize';
 import resolveConfigPath from './resolveConfigPath';
 import readConfigFileAndSetRootDir from './readConfigFileAndSetRootDir';

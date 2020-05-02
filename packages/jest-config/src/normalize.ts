@@ -11,7 +11,7 @@ import {statSync} from 'graceful-fs';
 import {sync as glob} from 'glob';
 import type {Config} from '@jest/types';
 import {ValidationError, validate} from 'jest-validate';
-import {clearLine, replacePathSepForGlob} from 'jest-util';
+import {clearLine, replacePathSepForGlob, tryRealpath} from 'jest-util';
 import chalk = require('chalk');
 import micromatch = require('micromatch');
 import Resolver = require('jest-resolve');
@@ -30,7 +30,6 @@ import {
   getWatchPlugin,
   replaceRootDirInPath,
   resolve,
-  tryRealpath,
 } from './utils';
 import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
 import {validateReporters} from './ReporterValidationErrors';

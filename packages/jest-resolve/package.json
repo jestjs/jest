@@ -11,6 +11,7 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@jest/types": "^26.0.0-alpha.0",
+    "jest-util": "^26.0.0-alpha.0",
     "chalk": "^4.0.0",
     "graceful-fs": "^4.2.4",
     "jest-pnp-resolver": "^1.2.1",

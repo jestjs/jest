@@ -9,24 +9,12 @@
 
 import * as path from 'path';
 import type {Config} from '@jest/types';
-import {realpathSync} from 'graceful-fs';
+import {tryRealpath} from 'jest-util';
 
 type NodeModulesPathsOptions = {
   moduleDirectory?: Array<string>;
   paths?: Array<Config.Path>;
 };
-
-function tryRealpath(path: Config.Path): Config.Path {
-  try {
-    path = realpathSync.native(path);
-  } catch (error) {
-    if (error.code !== 'ENOENT') {
-      throw error;
-    }
-  }
-
-  return path;
-}
 
 export default function nodeModulesPaths(
   basedir: Config.Path,
