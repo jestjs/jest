@@ -7,9 +7,20 @@
 
 import * as fs from 'graceful-fs';
 import {sync as resolveSync} from 'resolve';
-import {sync as realpath} from 'realpath-native';
 import pnpResolver from 'jest-pnp-resolver';
 import type {Config} from '@jest/types';
+
+function tryRealpath(path: Config.Path): Config.Path {
+  try {
+    path = fs.realpathSync.native(path);
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      throw error;
+    }
+  }
+
+  return path;
+}
 
 type ResolverOptions = {
   basedir: Config.Path;
@@ -95,17 +106,7 @@ function realpathCached(path: Config.Path): Config.Path {
     return result;
   }
 
-  try {
-    result = realpath(path);
-  } catch (error) {
-    if (error.code !== 'ENOENT') {
-      throw error;
-    }
-  }
-
-  if (!result) {
-    result = path;
-  }
+  result = tryRealpath(path);
 
   checkedRealpathPaths.set(path, result);
 

@@ -9,12 +9,24 @@
 
 import * as path from 'path';
 import type {Config} from '@jest/types';
-import {sync as realpath} from 'realpath-native';
+import {realpathSync} from 'graceful-fs';
 
 type NodeModulesPathsOptions = {
   moduleDirectory?: Array<string>;
   paths?: Array<Config.Path>;
 };
+
+function tryRealpath(path: Config.Path): Config.Path {
+  try {
+    path = realpathSync.native(path);
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      throw error;
+    }
+  }
+
+  return path;
+}
 
 export default function nodeModulesPaths(
   basedir: Config.Path,
@@ -40,7 +52,7 @@ export default function nodeModulesPaths(
   // traverses parents of the physical path, not the symlinked path
   let physicalBasedir;
   try {
-    physicalBasedir = realpath(basedirAbs);
+    physicalBasedir = tryRealpath(basedirAbs);
   } catch (err) {
     // realpath can throw, e.g. on mapped drives
     physicalBasedir = basedirAbs;

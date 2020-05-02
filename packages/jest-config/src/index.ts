@@ -9,8 +9,7 @@ import * as path from 'path';
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import chalk = require('chalk');
-import {sync as realpath} from 'realpath-native';
-import {isJSONString, replaceRootDirInPath} from './utils';
+import {isJSONString, replaceRootDirInPath, tryRealpath} from './utils';
 import normalize from './normalize';
 import resolveConfigPath from './resolveConfigPath';
 import readConfigFileAndSetRootDir from './readConfigFileAndSetRootDir';
@@ -295,7 +294,7 @@ export async function readConfigs(
   if (projects.length > 0) {
     const projectIsCwd =
       process.platform === 'win32'
-        ? projects[0] === realpath(process.cwd())
+        ? projects[0] === tryRealpath(process.cwd())
         : projects[0] === process.cwd();
 
     const parsedConfigs = await Promise.all(

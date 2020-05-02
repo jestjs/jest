@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import chalk = require('chalk');
-import {sync as realpath} from 'realpath-native';
 import {CustomConsole} from '@jest/console';
 import {interopRequireDefault} from 'jest-util';
 import exit = require('exit');
@@ -23,6 +22,7 @@ import {
 } from '@jest/test-result';
 import type TestSequencer from '@jest/test-sequencer';
 import type {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
+import {realpathSync} from 'graceful-fs';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import runGlobalHook from './runGlobalHook';
 import SearchSource from './SearchSource';
@@ -31,6 +31,18 @@ import type FailedTestsCache from './FailedTestsCache';
 import collectNodeHandles from './collectHandles';
 import type TestWatcher from './TestWatcher';
 import type {Filter, TestRunData} from './types';
+
+function tryRealpath(path: Config.Path): Config.Path {
+  try {
+    path = realpathSync.native(path);
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      throw error;
+    }
+  }
+
+  return path;
+}
 
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,
@@ -100,7 +112,7 @@ const processResults = (
   }
   if (isJSON) {
     if (outputFile) {
-      const cwd = realpath(process.cwd());
+      const cwd = tryRealpath(process.cwd());
       const filePath = path.resolve(cwd, outputFile);
 
       fs.writeFileSync(filePath, JSON.stringify(formatTestResults(runResults)));

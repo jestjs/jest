@@ -7,11 +7,11 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
+import {readFileSync} from 'graceful-fs';
 import HasteMap = require('jest-haste-map');
-import {sync as realpath} from 'realpath-native';
 import {cleanup, writeFiles} from '../Utils';
 
-const DIR = path.resolve(realpath(tmpdir()), 'haste_map_size');
+const DIR = path.resolve(readFileSync.native(tmpdir()), 'haste_map_size');
 
 beforeEach(() => {
   cleanup(DIR);

@@ -15,7 +15,7 @@ import {getVersion, runCLI} from '@jest/core';
 import chalk = require('chalk');
 import exit = require('exit');
 import yargs = require('yargs');
-import {sync as realpath} from 'realpath-native';
+import {realpathSync} from 'graceful-fs';
 import init from '../init';
 import * as args from './args';
 
@@ -97,7 +97,17 @@ const getProjectListFromCLIArgs = (
 
   if (!projects.length && process.platform === 'win32') {
     try {
-      projects.push(realpath(process.cwd()));
+      let path = process.cwd();
+
+      try {
+        path = realpathSync.native(path);
+      } catch (error) {
+        if (error.code !== 'ENOENT') {
+          throw error;
+        }
+      }
+
+      projects.push(path);
     } catch (err) {
       // do nothing, just catch error
       // process.binding('fs').realpath can throw, e.g. on mapped drives

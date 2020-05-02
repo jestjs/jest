@@ -18,8 +18,8 @@ import HasteMap = require('jest-haste-map');
 import stableStringify = require('fast-json-stable-stringify');
 import slash = require('slash');
 import {sync as writeFileAtomic} from 'write-file-atomic';
-import {sync as realpath} from 'realpath-native';
 import {addHook} from 'pirates';
+import {realpathSync} from 'graceful-fs';
 import type {
   Options,
   TransformResult,
@@ -28,6 +28,18 @@ import type {
 } from './types';
 import shouldInstrument from './shouldInstrument';
 import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';
+
+function tryRealpath(path: Config.Path): Config.Path {
+  try {
+    path = realpathSync.native(path);
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      throw error;
+    }
+  }
+
+  return path;
+}
 
 type ProjectCache = {
   configString: string;
@@ -247,14 +259,6 @@ export default class ScriptTransformer {
     return input;
   }
 
-  private _getRealPath(filepath: Config.Path): Config.Path {
-    try {
-      return realpath(filepath) || filepath;
-    } catch (err) {
-      return filepath;
-    }
-  }
-
   // We don't want to expose transformers to the outside - this function is just
   // to warm up `this._transformCache`
   preloadTransformer(filepath: Config.Path): void {
@@ -269,7 +273,7 @@ export default class ScriptTransformer {
     supportsDynamicImport = false,
     supportsStaticESM = false,
   ): TransformResult {
-    const filename = this._getRealPath(filepath);
+    const filename = tryRealpath(filepath);
     const transform = this._getTransformer(filename);
     const cacheFilePath = this._getFileCachePath(
       filename,

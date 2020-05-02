@@ -8,7 +8,6 @@
 import {cpus} from 'os';
 import * as path from 'path';
 import chalk = require('chalk');
-import {sync as realpath} from 'realpath-native';
 import yargs = require('yargs');
 import type {Config} from '@jest/types';
 import type {JestEnvironment} from '@jest/environment';
@@ -16,10 +15,22 @@ import {CustomConsole} from '@jest/console';
 import {setGlobal} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries, readConfig} from 'jest-config';
+import {realpathSync} from 'graceful-fs';
 import {VERSION} from '../version';
 import type {Context} from '../types';
 import * as args from './args';
 
+function tryRealpath(path: Config.Path): Config.Path {
+  try {
+    path = realpathSync.native(path);
+  } catch (error) {
+    if (error.code !== 'ENOENT') {
+      throw error;
+    }
+  }
+
+  return path;
+}
 export async function run(
   cliArgv?: Config.Argv,
   cliInfo?: Array<string>,
@@ -53,7 +64,7 @@ export async function run(
     return;
   }
 
-  const root = realpath(process.cwd());
+  const root = tryRealpath(process.cwd());
   const filePath = path.resolve(root, argv._[0]);
 
   if (argv.debug) {
