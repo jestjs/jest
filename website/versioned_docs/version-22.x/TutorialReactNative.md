@@ -201,22 +201,3 @@ jest.mock('Text', () => {
 In other cases you may want to mock a native module that isn't a React component. The same technique can be applied. We recommend inspecting the native module's source code and logging the module when running a react native app on a real device and then modeling a manual mock after the real module.
 
 If you end up mocking the same modules over and over it is recommended to define these mocks in a separate file and add it to the list of `setupFiles`.
-
-### `@providesModule`
-
-If you'd like to use Facebook's `@providesModule` module system through an npm package, the default haste config option must be overwritten and npm modules must be added to `providesModuleNodeModules`:
-
-```json
-"haste": {
-  "defaultPlatform": "ios",
-  "platforms": ["android", "ios"],
-  "providesModuleNodeModules": [
-    "react",
-    "react-native",
-    "my-awesome-module",
-    "my-text-component"
-  ]
-},
-```
-
-If you'd like to test a different default platform or if you are building for other platforms, the `defaultPlatform` and `platforms` configuration option can be updated.

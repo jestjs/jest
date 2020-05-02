@@ -75,8 +75,8 @@ test('omits null and undefined config values', () => {
 
 test('recursively omits null and undefined config values', () => {
   const config = {
-    haste: {
-      providesModuleNodeModules: null,
+    coverageThreshold: {
+      global: null,
     },
   };
   expect(

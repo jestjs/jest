@@ -401,7 +401,6 @@ describe('SearchSource', () => {
               '__tests__',
               'haste_impl.js',
             ),
-            providesModuleNodeModules: [],
           },
           name: 'SearchSource-findRelatedTests-tests',
           rootDir,
