@@ -16,7 +16,7 @@
     "diff"
   ],
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.14.2"
   },
   "main": "build/index.js",
   "types": "build/index.d.ts",

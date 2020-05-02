@@ -2022,11 +2022,11 @@ exports[`.toEqual() {pass: false} expect("type TypeName<T> = T extends Function 
 <r>+ type TypeName<T> = T extends Function<i> </i>? "function"<i> </i>: "object";</>
 `;
 
-exports[`.toEqual() {pass: false} expect(/abc/gy).toEqual(/abc/g) 1`] = `
+exports[`.toEqual() {pass: false} expect(/abc/gsy).toEqual(/abc/g) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 Expected: <g>/abc/g</>
-Received: <r>/abc/gy</>
+Received: <r>/abc/gsy</>
 `;
 
 exports[`.toEqual() {pass: false} expect([1, 2]).toEqual([2, 1]) 1`] = `

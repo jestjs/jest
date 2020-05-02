@@ -14,7 +14,7 @@
     "graceful-fs": "^4.2.4"
   },
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.14.2"
   },
   "license": "MIT",
   "main": "build/index.js",
