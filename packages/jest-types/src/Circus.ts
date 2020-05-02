@@ -187,6 +187,7 @@ export type State = {
   currentlyRunningTest?: TestEntry | null; // including when hooks are being executed
   expand?: boolean; // expand error messages
   hasFocusedTests: boolean; // that are defined using test.only
+  hasStarted: boolean; // whether the rootDescribeBlock has started running
   // Store process error handlers. During the run we inject our own
   // handlers (so we could fail tests on unhandled errors) and later restore
   // the original ones.

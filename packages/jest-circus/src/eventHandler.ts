@@ -88,20 +88,34 @@ const eventHandler: Circus.EventHandler = (
       break;
     }
     case 'add_hook': {
-      const {currentDescribeBlock} = state;
+      const {currentDescribeBlock, hasStarted} = state;
       const {asyncError, fn, hookType: type, timeout} = event;
       const parent = currentDescribeBlock;
+
+      if (hasStarted) {
+        asyncError.message =
+          'Cannot add a hook after tests have started running. Hooks must be defined synchronously.';
+        state.unhandledErrors.push(asyncError);
+        break;
+      }
+
       currentDescribeBlock.hooks.push({asyncError, fn, parent, timeout, type});
       break;
     }
     case 'add_test': {
-      const {currentDescribeBlock, currentlyRunningTest} = state;
+      const {currentDescribeBlock, currentlyRunningTest, hasStarted} = state;
       const {asyncError, fn, mode, testName: name, timeout} = event;
 
       if (currentlyRunningTest) {
         throw new Error(
           `Tests cannot be nested. Test "${name}" cannot run because it is nested within "${currentlyRunningTest.name}".`,
         );
+      }
+      if (hasStarted) {
+        asyncError.message =
+          'Cannot add a test after tests have started running. Tests must be defined synchronously.';
+        state.unhandledErrors.push(asyncError);
+        break;
       }
 
       const test = makeTest(
@@ -168,6 +182,7 @@ const eventHandler: Circus.EventHandler = (
       break;
     }
     case 'run_start': {
+      state.hasStarted = true;
       global[TEST_TIMEOUT_SYMBOL] &&
         (state.testTimeout = global[TEST_TIMEOUT_SYMBOL]);
       break;
