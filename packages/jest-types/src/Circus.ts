@@ -208,7 +208,7 @@ export type DescribeBlock = {
   tests: Array<TestEntry>;
 };
 
-export type TestError = Exception | Array<[Exception | undefined, Exception]>; // the error from the test, as well as a backup error for async
+export type TestError = Exception | [Exception | undefined, Exception]; // the error from the test, as well as a backup error for async
 
 export type TestEntry = {
   asyncError: Exception; // Used if the test failure contains no usable stack trace

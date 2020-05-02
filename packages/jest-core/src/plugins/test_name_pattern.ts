@@ -6,7 +6,12 @@
  */
 
 import type {Config} from '@jest/types';
-import {BaseWatchPlugin, Prompt, UpdateConfigCallback} from 'jest-watcher';
+import {
+  BaseWatchPlugin,
+  Prompt,
+  UpdateConfigCallback,
+  UsageData,
+} from 'jest-watcher';
 import TestNamePatternPrompt from '../TestNamePatternPrompt';
 import activeFilters from '../lib/active_filters_message';
 
@@ -20,14 +25,14 @@ class TestNamePatternPlugin extends BaseWatchPlugin {
     this.isInternal = true;
   }
 
-  getUsageInfo() {
+  getUsageInfo(): UsageData {
     return {
       key: 't',
       prompt: 'filter by a test name regex pattern',
     };
   }
 
-  onKey(key: string) {
+  onKey(key: string): void {
     this._prompt.put(key);
   }
 
