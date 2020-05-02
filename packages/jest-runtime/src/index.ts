@@ -1314,7 +1314,7 @@ class Runtime {
     moduleRequire.cache = (() => {
       // TODO: consider warning somehow that this does nothing. We should support deletions, anyways
       const notPermittedMethod = () => true;
-      return new Proxy<NodeJS.NodeRequireCache>(Object.create(null), {
+      return new Proxy<typeof moduleRequire['cache']>(Object.create(null), {
         defineProperty: notPermittedMethod,
         deleteProperty: notPermittedMethod,
         get: (_target, key) =>
