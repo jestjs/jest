@@ -8,6 +8,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-runtime]` Remove warning about `require.cache` modifications
+
 ### Performance
 
 ## 25.5.3
