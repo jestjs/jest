@@ -38,7 +38,7 @@
     "jest-circus": "^25.5.4"
   },
   "engines": {
-    "node": ">= 10.14.3"
+    "node": ">= 10.14.2"
   },
   "publishConfig": {
     "access": "public"

@@ -7,7 +7,7 @@
     "directory": "packages/jest-types"
   },
   "engines": {
-    "node": ">= 10.14.3"
+    "node": ">= 10.14.2"
   },
   "license": "MIT",
   "main": "build/index.js",

@@ -11,7 +11,7 @@
   },
   "bin": "./bin/jest.js",
   "engines": {
-    "node": ">= 10.14.3"
+    "node": ">= 10.14.2"
   },
   "repository": {
     "type": "git",

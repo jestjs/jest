@@ -131,6 +131,6 @@
     "logo": "https://opencollective.com/jest/logo.txt"
   },
   "engines": {
-    "node": ">= 10.14.3"
+    "node": ">= 10.14.2"
   }
 }

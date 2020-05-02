@@ -16,7 +16,7 @@
     "collect-v8-coverage": "^1.0.0"
   },
   "engines": {
-    "node": ">= 10.14.3"
+    "node": ">= 10.14.2"
   },
   "publishConfig": {
     "access": "public"

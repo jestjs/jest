@@ -24,7 +24,7 @@
     "immutable": "^4.0.0-rc.12"
   },
   "engines": {
-    "node": ">= 10.14.3"
+    "node": ">= 10.14.2"
   },
   "publishConfig": {
     "access": "public"
