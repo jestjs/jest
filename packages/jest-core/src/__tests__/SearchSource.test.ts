@@ -545,7 +545,6 @@ describe('SearchSource', () => {
               __dirname,
               '../../../jest-haste-map/src/__tests__/haste_impl.js',
             ),
-            providesModuleNodeModules: [],
           },
           name: 'SearchSource-findRelatedSourcesFromTestsInChangedFiles-tests',
           rootDir,
