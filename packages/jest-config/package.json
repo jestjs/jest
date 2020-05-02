@@ -1,6 +1,6 @@
 {
   "name": "jest-config",
-  "version": "25.5.3",
+  "version": "25.5.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -9,16 +9,9 @@
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "typesVersions": {
-    "<3.8": {
-      "build/*": [
-        "build/ts3.4/*"
-      ]
-    }
-  },
   "dependencies": {
     "@babel/core": "^7.1.0",
-    "@jest/test-sequencer": "^25.5.3",
+    "@jest/test-sequencer": "^25.5.4",
     "@jest/types": "^25.5.0",
     "babel-jest": "^25.5.1",
     "chalk": "^3.0.0",
@@ -28,7 +21,7 @@
     "jest-environment-jsdom": "^25.5.0",
     "jest-environment-node": "^25.5.0",
     "jest-get-type": "^25.2.6",
-    "jest-jasmine2": "^25.5.2",
+    "jest-jasmine2": "^25.5.4",
     "jest-regex-util": "^25.2.6",
     "jest-resolve": "^25.5.1",
     "jest-util": "^25.5.0",
@@ -44,7 +37,7 @@
     "@types/micromatch": "^4.0.0"
   },
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.14.2"
   },
   "publishConfig": {
     "access": "public"

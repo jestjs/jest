@@ -184,46 +184,6 @@ describe('dependencyExtractor', () => {
     expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3']));
   });
 
-  it('should extract dependencies from `require.requireActual` calls', () => {
-    const code = `
-      // Good
-      require.requireActual('dep1');
-      const dep2 = require.requireActual(
-        "dep2",
-      );
-      if (require.requireActual(\`dep3\`).cond) {}
-      require
-        .requireActual('dep4');
-
-      // Bad
-      ${COMMENT_NO_NEG_LB} foo . require.requireActual('inv1')
-      xrequire.requireActual('inv2');
-      require.requireActualx('inv3');
-      require.requireActual('inv4', 'inv5');
-    `;
-    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
-  });
-
-  it('should extract dependencies from `require.requireMock` calls', () => {
-    const code = `
-      // Good
-      require.requireMock('dep1');
-      const dep2 = require.requireMock(
-        "dep2",
-      );
-      if (require.requireMock(\`dep3\`).cond) {}
-      require
-        .requireMock('dep4');
-
-      // Bad
-      ${COMMENT_NO_NEG_LB} foo . require.requireMock('inv1')
-      xrequire.requireMock('inv2');
-      require.requireMockx('inv3');
-      require.requireMock('inv4', 'inv5');
-    `;
-    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
-  });
-
   it('should extract dependencies from `jest.requireActual` calls', () => {
     const code = `
       // Good

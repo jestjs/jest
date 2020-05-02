@@ -23,7 +23,6 @@
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.2.0",
     "babel-eslint": "^10.0.3",
-    "babel-loader": "^8.0.5",
     "babel-plugin-replace-ts-export-assignment": "^0.0.2",
     "babel-plugin-typescript-strip-namespaces": "^1.1.1",
     "camelcase": "^5.0.0",
@@ -32,7 +31,6 @@
     "codecov": "^3.0.0",
     "debug": "^4.0.1",
     "dedent": "^0.7.0",
-    "downlevel-dts": "^0.4.0",
     "eslint": "^6.2.2",
     "eslint-config-prettier": "^6.1.0",
     "eslint-plugin-babel": "^5.1.0",
@@ -59,10 +57,6 @@
     "jest-snapshot-serializer-raw": "^1.1.0",
     "jest-watch-typeahead": "^0.5.0",
     "jquery": "^3.2.1",
-    "karma": "^4.0.1",
-    "karma-chrome-launcher": "^3.0.0",
-    "karma-mocha": "^1.3.0",
-    "karma-webpack": "^4.0.2",
     "lerna": "^3.20.2",
     "make-dir": "^3.0.0",
     "micromatch": "^4.0.2",
@@ -82,7 +76,6 @@
     "tempy": "~0.3.0",
     "throat": "^5.0.0",
     "typescript": "^3.8.2",
-    "webpack": "^4.28.4",
     "which": "^2.0.1"
   },
   "scripts": {
@@ -96,14 +89,11 @@
     "jest": "node ./packages/jest-cli/bin/jest.js",
     "jest-coverage": "yarn jest --coverage",
     "lint": "eslint . --cache --ext js,jsx,ts,tsx,md",
-    "lint-es5-build": "eslint --no-eslintrc --no-ignore --env=browser packages/*/build-es5",
     "lint:prettier": "prettier '**/*.{md,yml,yaml}' 'website/static/**/*.{css,js}' --write --ignore-path .gitignore",
     "lint:prettier:ci": "prettier '**/*.{md,yml,yaml}' 'website/static/**/*.{css,js}' --check --ignore-path .gitignore",
     "postinstall": "opencollective postinstall && yarn build",
     "install-no-ts-build": "node ./scripts/remove-postinstall && yarn --no-progress --frozen-lockfile && node ./scripts/build",
-    "remove-prettier-dep": "node ./scripts/remove-prettier-dep",
     "publish": "yarn build-clean && yarn build && lerna publish --silent",
-    "test-ci-es5-build-in-browser": "karma start --single-run",
     "test-ci": "yarn jest-coverage --color -i --config jest.config.ci.js && yarn test-leak && node ./scripts/mapCoverage.js && codecov",
     "test-ci-partial": "yarn jest --color -i --config jest.config.ci.js",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
@@ -141,6 +131,6 @@
     "logo": "https://opencollective.com/jest/logo.txt"
   },
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.14.2"
   }
 }
