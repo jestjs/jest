@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Script} from 'vm';
+import type {Context, Script} from 'vm';
 import type {Config, Global} from '@jest/types';
 import {installCommonGlobals} from 'jest-util';
 import {ModuleMocker} from 'jest-mock';
@@ -135,7 +135,7 @@ class JSDOMEnvironment implements JestEnvironment {
     return null;
   }
 
-  getVmContext() {
+  getVmContext(): Context | null {
     if (this.dom) {
       return this.dom.getInternalVMContext();
     }

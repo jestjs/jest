@@ -95,7 +95,7 @@ const assertMatcherHint = (
 function assertionErrorMessage(
   error: AssertionErrorWithStack,
   options: DiffOptions,
-) {
+): string {
   const {expected, actual, generatedMessage, message, operator, stack} = error;
   const diffString = diff(expected, actual, options);
   const hasCustomMessage = !generatedMessage;
