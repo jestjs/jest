@@ -8,7 +8,7 @@
 
 ### Chore & Maintenance
 
-- `[jest-runtime]` Remove warning about `require.cache` modifications ([#9946](https://github.com/facebook/jest/pull/9946))
+- `[jest-runtime]` Do not warn when mutating `require.cache` ([#9946](https://github.com/facebook/jest/pull/9946))
 
 ### Performance
 
