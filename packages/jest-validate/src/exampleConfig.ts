@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ValidationOptions} from './types';
+import type {ValidationOptions} from './types';
 
 const config: ValidationOptions = {
   comment: '  A comment',

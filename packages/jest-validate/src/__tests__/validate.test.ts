@@ -88,10 +88,10 @@ test('recursively omits null and undefined config values', () => {
 });
 
 test.each([
-  [function() {}, function() {}],
-  [async function() {}, function() {}],
-  [function() {}, async function() {}],
-  [async function() {}, async function() {}],
+  [function () {}, function () {}],
+  [async function () {}, function () {}],
+  [function () {}, async function () {}],
+  [async function () {}, async function () {}],
 ])(
   'treat async and non-async functions as equivalent',
   (value, exampleValue) => {

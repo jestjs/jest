@@ -10,7 +10,7 @@ const vm = jest.requireActual('vm');
 
 const JSDOMEnvironment = jest.genMockFromModule('../index') as jest.Mock;
 
-JSDOMEnvironment.mockImplementation(function(config) {
+JSDOMEnvironment.mockImplementation(function (config) {
   // @ts-ignore
   this.global = {
     JSON,
@@ -24,7 +24,7 @@ JSDOMEnvironment.mockImplementation(function(config) {
   }
 });
 
-JSDOMEnvironment.prototype.runSourceText.mockImplementation(function(
+JSDOMEnvironment.prototype.runSourceText.mockImplementation(function (
   sourceText: string,
   filename: string,
 ) {

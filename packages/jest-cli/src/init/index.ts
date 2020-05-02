@@ -5,17 +5,25 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
-import chalk from 'chalk';
+import * as fs from 'graceful-fs';
+import chalk = require('chalk');
 import prompts = require('prompts');
 import {sync as realpath} from 'realpath-native';
+import {constants} from 'jest-config';
 import defaultQuestions, {testScriptQuestion} from './questions';
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
-import {JEST_CONFIG, PACKAGE_JSON} from './constants';
 import generateConfigFile from './generate_config_file';
 import modifyPackageJson from './modify_package_json';
-import {ProjectPackageJson} from './types';
+import type {ProjectPackageJson} from './types';
+
+const {
+  JEST_CONFIG_BASE_NAME,
+  JEST_CONFIG_EXT_MJS,
+  JEST_CONFIG_EXT_JS,
+  JEST_CONFIG_EXT_ORDER,
+  PACKAGE_JSON,
+} = constants;
 
 type PromptsResults = {
   clearMocks: boolean;
@@ -24,10 +32,13 @@ type PromptsResults = {
   scripts: boolean;
 };
 
-export default async (rootDir: string = realpath(process.cwd())) => {
+const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
+
+export default async (
+  rootDir: string = realpath(process.cwd()),
+): Promise<void> => {
   // prerequisite checks
   const projectPackageJsonPath: string = path.join(rootDir, PACKAGE_JSON);
-  const jestConfigPath: string = path.join(rootDir, JEST_CONFIG);
 
   if (!fs.existsSync(projectPackageJsonPath)) {
     throw new NotFoundPackageJsonError(rootDir);
@@ -35,7 +46,6 @@ export default async (rootDir: string = realpath(process.cwd())) => {
 
   const questions = defaultQuestions.slice(0);
   let hasJestProperty: boolean = false;
-  let hasJestConfig: boolean = false;
   let projectPackageJson: ProjectPackageJson;
 
   try {
@@ -50,11 +60,21 @@ export default async (rootDir: string = realpath(process.cwd())) => {
     hasJestProperty = true;
   }
 
-  if (fs.existsSync(jestConfigPath)) {
-    hasJestConfig = true;
-  }
+  const existingJestConfigPath = JEST_CONFIG_EXT_ORDER.find(ext =>
+    fs.existsSync(path.join(rootDir, getConfigFilename(ext))),
+  );
+  const jestConfigPath =
+    existingJestConfigPath ||
+    path.join(
+      rootDir,
+      getConfigFilename(
+        projectPackageJson.type === 'module'
+          ? JEST_CONFIG_EXT_MJS
+          : JEST_CONFIG_EXT_JS,
+      ),
+    );
 
-  if (hasJestProperty || hasJestConfig) {
+  if (hasJestProperty || existingJestConfigPath) {
     const result: {continue: boolean} = await prompts({
       initial: true,
       message:
@@ -115,7 +135,11 @@ export default async (rootDir: string = realpath(process.cwd())) => {
     console.log(`✏️  Modified ${chalk.cyan(projectPackageJsonPath)}`);
   }
 
-  const generatedConfig = generateConfigFile(results);
+  const generatedConfig = generateConfigFile(
+    results,
+    projectPackageJson.type === 'module' ||
+      jestConfigPath.endsWith(JEST_CONFIG_EXT_MJS),
+  );
 
   fs.writeFileSync(jestConfigPath, generatedConfig);
 

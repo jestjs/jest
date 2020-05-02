@@ -1,11 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`warns if describe returns a Promise 1`] = `
-"  console.log
+  console.log
       ● Test suite failed to run
     
-        Returning a Promise from \\"describe\\" is not supported. Tests must be defined synchronously.
-        Returning a value from \\"describe\\" will fail the test in a future version of Jest.
+        Returning a Promise from "describe" is not supported. Tests must be defined synchronously.
+        Returning a value from "describe" will fail the test in a future version of Jest.
     
            9 | 'use strict';
           10 | 
@@ -16,16 +16,16 @@ exports[`warns if describe returns a Promise 1`] = `
           14 | });
     
           at Object.describe (__tests__/describeReturnPromise.test.js:11:1)
-    
-"
+
+
 `;
 
 exports[`warns if describe returns something 1`] = `
-"  console.log
+  console.log
       ● Test suite failed to run
     
-        A \\"describe\\" callback must not return a value.
-        Returning a value from \\"describe\\" will fail the test in a future version of Jest.
+        A "describe" callback must not return a value.
+        Returning a value from "describe" will fail the test in a future version of Jest.
     
            9 | 'use strict';
           10 | 
@@ -36,6 +36,6 @@ exports[`warns if describe returns something 1`] = `
           14 | });
     
           at Object.describe (__tests__/describeReturnSomething.test.js:11:1)
-    
-"
+
+
 `;

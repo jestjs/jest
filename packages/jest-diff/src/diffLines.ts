@@ -9,7 +9,10 @@ import diff from 'diff-sequences';
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
 import {printDiffLines} from './printDiffs';
-import {DiffOptions} from './types';
+import type {DiffOptions} from './types';
+
+const isEmptyString = (lines: Array<string>) =>
+  lines.length === 1 && lines[0].length === 0;
 
 // Compare two arrays of strings line-by-line. Format as comparison lines.
 export const diffLinesUnified = (
@@ -17,7 +20,13 @@ export const diffLinesUnified = (
   bLines: Array<string>,
   options?: DiffOptions,
 ): string =>
-  printDiffLines(diffLinesRaw(aLines, bLines), normalizeDiffOptions(options));
+  printDiffLines(
+    diffLinesRaw(
+      isEmptyString(aLines) ? [] : aLines,
+      isEmptyString(bLines) ? [] : bLines,
+    ),
+    normalizeDiffOptions(options),
+  );
 
 // Given two pairs of arrays of strings:
 // Compare the pair of comparison arrays line-by-line.
@@ -29,6 +38,15 @@ export const diffLinesUnified2 = (
   bLinesCompare: Array<string>,
   options?: DiffOptions,
 ): string => {
+  if (isEmptyString(aLinesDisplay) && isEmptyString(aLinesCompare)) {
+    aLinesDisplay = [];
+    aLinesCompare = [];
+  }
+  if (isEmptyString(bLinesDisplay) && isEmptyString(bLinesCompare)) {
+    bLinesDisplay = [];
+    bLinesCompare = [];
+  }
+
   if (
     aLinesDisplay.length !== aLinesCompare.length ||
     bLinesDisplay.length !== bLinesCompare.length

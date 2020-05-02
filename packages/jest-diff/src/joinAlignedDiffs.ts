@@ -12,7 +12,7 @@ import {
   printDeleteLine,
   printInsertLine,
 } from './printDiffs';
-import {DiffOptionsNormalized} from './types';
+import type {DiffOptionsNormalized} from './types';
 
 // jest --no-expand
 //
@@ -198,7 +198,7 @@ export const joinAlignedDiffsNoExpand = (
 export const joinAlignedDiffsExpand = (
   diffs: Array<Diff>,
   options: DiffOptionsNormalized,
-) =>
+): string =>
   diffs
     .map((diff: Diff, i: number, diffs: Array<Diff>): string => {
       const line = diff[1];

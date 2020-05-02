@@ -7,11 +7,12 @@
  */
 
 import * as path from 'path';
-import * as fs from 'fs';
 import {Writable} from 'stream';
+import * as fs from 'graceful-fs';
 import execa = require('execa');
-import {FormattedTestResults} from '@jest/test-result';
-import stripAnsi from 'strip-ansi';
+import type {Config} from '@jest/types';
+import type {FormattedTestResults} from '@jest/test-result';
+import stripAnsi = require('strip-ansi');
 import {normalizeIcons} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
@@ -31,7 +32,7 @@ export default function runJest(
   dir: string,
   args?: Array<string>,
   options: RunJestOptions = {},
-) {
+): RunJestResult {
   return normalizeStdoutAndStderr(spawnJest(dir, args, options), options);
 }
 
@@ -40,7 +41,7 @@ function spawnJest(
   args?: Array<string>,
   options?: RunJestOptions,
   spawnAsync?: false,
-): execa.ExecaReturnValue;
+): RunJestResult;
 function spawnJest(
   dir: string,
   args?: Array<string>,
@@ -51,7 +52,7 @@ function spawnJest(
 // Spawns Jest and returns either a Promise (if spawnAsync is true) or the completed child process
 function spawnJest(
   dir: string,
-  args?: Array<string>,
+  args: Array<string> = [],
   options: RunJestOptions = {},
   spawnAsync: boolean = false,
 ): execa.ExecaSyncReturnValue | execa.ExecaChildProcess {
@@ -77,7 +78,7 @@ function spawnJest(
   if (options.nodeOptions) env['NODE_OPTIONS'] = options.nodeOptions;
   if (options.nodePath) env['NODE_PATH'] = options.nodePath;
 
-  const spawnArgs = [JEST_PATH, ...(args || [])];
+  const spawnArgs = [JEST_PATH, ...args];
   const spawnOptions = {
     cwd: dir,
     env,
@@ -92,14 +93,16 @@ function spawnJest(
   );
 }
 
-interface RunJestJsonResult extends execa.ExecaReturnValue {
+export type RunJestResult = execa.ExecaReturnValue;
+
+interface RunJestJsonResult extends RunJestResult {
   json: FormattedTestResults;
 }
 
 function normalizeStdoutAndStderr(
-  result: execa.ExecaReturnValue,
+  result: RunJestResult,
   options: RunJestOptions,
-) {
+): RunJestResult {
   result.stdout = normalizeIcons(result.stdout);
   if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);
   result.stderr = normalizeIcons(result.stderr);
@@ -112,9 +115,9 @@ function normalizeStdoutAndStderr(
 //   'success', 'startTime', 'numTotalTests', 'numTotalTestSuites',
 //   'numRuntimeErrorTestSuites', 'numPassedTests', 'numFailedTests',
 //   'numPendingTests', 'testResults'
-export const json = function(
+export const json = function (
   dir: string,
-  args: Array<string> | undefined,
+  args?: Array<string>,
   options: RunJestOptions = {},
 ): RunJestJsonResult {
   args = [...(args || []), '--json'];
@@ -136,28 +139,100 @@ export const json = function(
   }
 };
 
-// Runs `jest` until a given output is achieved, then kills it with `SIGTERM`
-export const until = async function(
+type StdErrAndOutString = {stderr: string; stdout: string};
+type ConditionFunction = (arg: StdErrAndOutString) => boolean;
+
+// Runs `jest` continously (watch mode) and allows the caller to wait for
+// conditions on stdout and stderr and to end the process.
+export const runContinuous = function (
   dir: string,
-  args: Array<string> | undefined,
-  text: string,
+  args?: Array<string>,
   options: RunJestOptions = {},
 ) {
   const jestPromise = spawnJest(dir, args, {timeout: 30000, ...options}, true);
 
-  jestPromise.stderr!.pipe(
+  let stderr = '';
+  let stdout = '';
+  const pending = new Set<(arg: StdErrAndOutString) => void>();
+
+  const dispatch = () => {
+    for (const fn of pending) {
+      fn({stderr, stdout});
+    }
+  };
+
+  jestPromise.stdout!.pipe(
     new Writable({
       write(chunk, _encoding, callback) {
-        const output = chunk.toString('utf8');
-
-        if (output.includes(text)) {
-          jestPromise.kill();
-        }
-
+        stdout += chunk.toString('utf8');
+        dispatch();
         callback();
       },
     }),
   );
 
-  return normalizeStdoutAndStderr(await jestPromise, options);
+  jestPromise.stderr!.pipe(
+    new Writable({
+      write(chunk, _encoding, callback) {
+        stderr += chunk.toString('utf8');
+        dispatch();
+        callback();
+      },
+    }),
+  );
+
+  return {
+    async end() {
+      jestPromise.kill();
+
+      const result = await jestPromise;
+
+      // Not sure why we have to assign here... The ones on `result` are empty strings
+      result.stdout = stdout;
+      result.stderr = stderr;
+
+      return normalizeStdoutAndStderr(result, options);
+    },
+
+    getCurrentOutput(): StdErrAndOutString {
+      return {stderr, stdout};
+    },
+
+    getInput() {
+      return jestPromise.stdin;
+    },
+
+    async waitUntil(fn: ConditionFunction) {
+      await new Promise(resolve => {
+        const check = (state: StdErrAndOutString) => {
+          if (fn(state)) {
+            pending.delete(check);
+            resolve();
+          }
+        };
+        pending.add(check);
+      });
+    },
+  };
 };
+
+// return type matches output of logDebugMessages
+export function getConfig(
+  dir: string,
+  args: Array<string> = [],
+  options?: RunJestOptions,
+): {
+  globalConfig: Config.GlobalConfig;
+  configs: Array<Config.ProjectConfig>;
+  version: string;
+} {
+  const {exitCode, stdout} = runJest(
+    dir,
+    args.concat('--show-config'),
+    options,
+  );
+
+  expect(exitCode).toBe(0);
+
+  return JSON.parse(stdout);
+}

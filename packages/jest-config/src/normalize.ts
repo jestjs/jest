@@ -7,15 +7,17 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
+import {statSync} from 'graceful-fs';
 import {sync as glob} from 'glob';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {ValidationError, validate} from 'jest-validate';
 import {clearLine, replacePathSepForGlob} from 'jest-util';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import micromatch = require('micromatch');
 import {sync as realpath} from 'realpath-native';
 import Resolver = require('jest-resolve');
 import {replacePathSepForRegex} from 'jest-regex-util';
+import merge = require('deepmerge');
 import validatePattern from './validatePattern';
 import getMaxWorkers from './getMaxWorkers';
 import {
@@ -45,6 +47,39 @@ type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
 
 const createConfigError = (message: string) =>
   new ValidationError(ERROR, message, DOCUMENTATION_NOTE);
+
+function verifyDirectoryExists(path: Config.Path, key: string) {
+  try {
+    const rootStat = statSync(path);
+
+    if (!rootStat.isDirectory()) {
+      throw createConfigError(
+        `  ${chalk.bold(path)} in the ${chalk.bold(
+          key,
+        )} option is not a directory.`,
+      );
+    }
+  } catch (err) {
+    if (err instanceof ValidationError) {
+      throw err;
+    }
+
+    if (err.code === 'ENOENT') {
+      throw createConfigError(
+        `  Directory ${chalk.bold(path)} in the ${chalk.bold(
+          key,
+        )} option was not found.`,
+      );
+    }
+
+    // Not sure in which cases `statSync` can throw, so let's just show the underlying error to the user
+    throw createConfigError(
+      `  Got an error trying to find ${chalk.bold(path)} in the ${chalk.bold(
+        key,
+      )} option.\n\n  Error was: ${err.message}`,
+    );
+  }
+}
 
 // TS 3.5 forces us to split these into 2
 const mergeModuleNameMapperWithPreset = (
@@ -78,12 +113,7 @@ const mergeGlobalsWithPreset = (
   preset: Config.InitialOptions,
 ) => {
   if (options['globals'] && preset['globals']) {
-    for (const p in preset['globals']) {
-      options['globals'][p] = {
-        ...preset['globals'][p],
-        ...options['globals'][p],
-      };
-    }
+    options['globals'] = merge(preset['globals'], options['globals']);
   }
 };
 
@@ -155,6 +185,11 @@ const setupPreset = (
 
   if (options.setupFiles) {
     options.setupFiles = (preset.setupFiles || []).concat(options.setupFiles);
+  }
+  if (options.setupFilesAfterEnv) {
+    options.setupFilesAfterEnv = (preset.setupFilesAfterEnv || []).concat(
+      options.setupFilesAfterEnv,
+    );
   }
   if (options.modulePathIgnorePatterns && preset.modulePathIgnorePatterns) {
     options.modulePathIgnorePatterns = preset.modulePathIgnorePatterns.concat(
@@ -361,6 +396,8 @@ const normalizeRootDir = (
     // ignored
   }
 
+  verifyDirectoryExists(options.rootDir, 'rootDir');
+
   return {
     ...options,
     rootDir: options.rootDir,
@@ -393,7 +430,7 @@ const normalizeReporters = (options: Config.InitialOptionsWithRootDir) => {
         basedir: options.rootDir,
       });
       if (!reporter) {
-        throw new Error(
+        throw new Resolver.ModuleNotFoundError(
           `Could not resolve a module for a custom reporter.\n` +
             `  Module name: ${reporterPath}`,
         );
@@ -416,11 +453,13 @@ const buildTestPathPattern = (argv: Config.Argv): string => {
     patterns.push(...argv.testPathPattern);
   }
 
-  const replacePosixSep = (pattern: string) => {
+  const replacePosixSep = (pattern: string | number) => {
+    // yargs coerces positional args into numbers
+    const patternAsString = pattern.toString();
     if (path.sep === '/') {
-      return pattern;
+      return patternAsString;
     }
-    return pattern.replace(/\//g, '\\\\');
+    return patternAsString.replace(/\//g, '\\\\');
   };
 
   const testPathPattern = patterns.map(replacePosixSep).join('|');
@@ -673,7 +712,7 @@ export default function normalize(
                 key,
                 rootDir: options.rootDir,
               }),
-              ...(Array.isArray(transformElement) ? [transformElement[1]] : []),
+              Array.isArray(transformElement) ? transformElement[1] : {},
             ];
           });
         break;
@@ -707,19 +746,14 @@ export default function normalize(
               ? _replaceRootDirTags(options.rootDir, project)
               : project,
           )
-          .reduce(
-            (projects, project) => {
-              // Project can be specified as globs. If a glob matches any files,
-              // We expand it to these paths. If not, we keep the original path
-              // for the future resolution.
-              const globMatches =
-                typeof project === 'string' ? glob(project) : [];
-              return projects.concat(
-                globMatches.length ? globMatches : project,
-              );
-            },
-            [] as Array<string>,
-          );
+          .reduce<Array<string>>((projects, project) => {
+            // Project can be specified as globs. If a glob matches any files,
+            // We expand it to these paths. If not, we keep the original path
+            // for the future resolution.
+            const globMatches =
+              typeof project === 'string' ? glob(project) : [];
+            return projects.concat(globMatches.length ? globMatches : project);
+          }, []);
         break;
       case 'moduleDirectories':
       case 'testMatch':
@@ -835,12 +869,12 @@ export default function normalize(
         break;
       }
       case 'automock':
-      case 'browser':
       case 'cache':
       case 'changedSince':
       case 'changedFilesWithAncestor':
       case 'clearMocks':
       case 'collectCoverage':
+      case 'coverageProvider':
       case 'coverageReporters':
       case 'coverageThreshold':
       case 'detectLeaks':
@@ -915,6 +949,10 @@ export default function normalize(
     return newOptions;
   }, newOptions);
 
+  newOptions.roots.forEach((root, i) => {
+    verifyDirectoryExists(root, `roots[${i}]`);
+  });
+
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
     newOptions.cwd = realpath(process.cwd());
@@ -950,6 +988,29 @@ export default function normalize(
     // When passing a test path pattern we don't want to only monitor changed
     // files unless `--watch` is also passed.
     newOptions.onlyChanged = newOptions.watch;
+  }
+
+  if (!newOptions.onlyChanged) {
+    newOptions.onlyChanged = false;
+  }
+
+  if (!newOptions.lastCommit) {
+    newOptions.lastCommit = false;
+  }
+
+  if (!newOptions.onlyFailures) {
+    newOptions.onlyFailures = false;
+  }
+
+  if (!newOptions.watchAll) {
+    newOptions.watchAll = false;
+  }
+
+  // as any since it can happen. We really need to fix the types here
+  if (
+    newOptions.moduleNameMapper === (DEFAULT_CONFIG.moduleNameMapper as any)
+  ) {
+    newOptions.moduleNameMapper = [];
   }
 
   newOptions.updateSnapshot =
@@ -1015,6 +1076,28 @@ export default function normalize(
     }
 
     newOptions.collectCoverageFrom = collectCoverageFrom;
+  } else if (!newOptions.collectCoverageFrom) {
+    newOptions.collectCoverageFrom = [];
+  }
+
+  if (!newOptions.findRelatedTests) {
+    newOptions.findRelatedTests = false;
+  }
+
+  if (!newOptions.projects) {
+    newOptions.projects = [];
+  }
+
+  if (!newOptions.extraGlobals) {
+    newOptions.extraGlobals = [];
+  }
+
+  if (!newOptions.forceExit) {
+    newOptions.forceExit = false;
+  }
+
+  if (!newOptions.logHeapUsage) {
+    newOptions.logHeapUsage = false;
   }
 
   return {

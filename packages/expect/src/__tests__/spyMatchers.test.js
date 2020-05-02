@@ -13,7 +13,7 @@ expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 // Given a Jest mock function, return a minimal mock of a Jasmine spy.
 const createSpy = fn => {
-  const spy = function() {};
+  const spy = function () {};
 
   spy.calls = {
     all() {
@@ -177,7 +177,7 @@ const createSpy = fn => {
   'toBeCalledWith',
   'toHaveBeenCalledWith',
 ].forEach(calledWith => {
-  const caller = function(callee, ...args) {
+  const caller = function (callee, ...args) {
     if (
       calledWith === 'nthCalledWith' ||
       calledWith === 'toHaveBeenNthCalledWith'
@@ -247,9 +247,18 @@ const createSpy = fn => {
     test(`works with Map`, () => {
       const fn = jest.fn();
 
-      const m1 = new Map([[1, 2], [2, 1]]);
-      const m2 = new Map([[1, 2], [2, 1]]);
-      const m3 = new Map([['a', 'b'], ['b', 'a']]);
+      const m1 = new Map([
+        [1, 2],
+        [2, 1],
+      ]);
+      const m2 = new Map([
+        [1, 2],
+        [2, 1],
+      ]);
+      const m3 = new Map([
+        ['a', 'b'],
+        ['b', 'a'],
+      ]);
 
       fn(m1);
 
@@ -725,7 +734,7 @@ const createSpy = fn => {
   'toReturnWith',
   'toHaveReturnedWith',
 ].forEach(returnedWith => {
-  const caller = function(callee, ...args) {
+  const caller = function (callee, ...args) {
     if (
       returnedWith === 'nthReturnedWith' ||
       returnedWith === 'toHaveNthReturnedWith'
@@ -794,9 +803,18 @@ const createSpy = fn => {
     });
 
     test(`works with Map`, () => {
-      const m1 = new Map([[1, 2], [2, 1]]);
-      const m2 = new Map([[1, 2], [2, 1]]);
-      const m3 = new Map([['a', 'b'], ['b', 'a']]);
+      const m1 = new Map([
+        [1, 2],
+        [2, 1],
+      ]);
+      const m2 = new Map([
+        [1, 2],
+        [2, 1],
+      ]);
+      const m3 = new Map([
+        ['a', 'b'],
+        ['b', 'a'],
+      ]);
 
       const fn = jest.fn(() => m1);
       fn();

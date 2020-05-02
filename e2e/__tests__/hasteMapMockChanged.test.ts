@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import JestHasteMap from 'jest-haste-map';
+import JestHasteMap = require('jest-haste-map');
 import {cleanup, writeFiles} from '../Utils';
 
 // Directory must be here for Watchman to be enabled.

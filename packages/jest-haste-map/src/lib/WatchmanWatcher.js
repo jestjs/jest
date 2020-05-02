@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
 import path from 'path';
 import assert from 'assert';
 import {EventEmitter} from 'events';
+import * as fs from 'graceful-fs';
 import watchman from 'fb-watchman';
 import common from 'sane/src/common';
 import RecrawlWarning from 'sane/src/utils/recrawl-warning-dedupe';
@@ -43,7 +43,7 @@ WatchmanWatcher.prototype.__proto__ = EventEmitter.prototype;
  * @private
  */
 
-WatchmanWatcher.prototype.init = function() {
+WatchmanWatcher.prototype.init = function () {
   if (this.client) {
     this.client.removeAllListeners();
   }
@@ -187,7 +187,7 @@ WatchmanWatcher.prototype.init = function() {
  * @private
  */
 
-WatchmanWatcher.prototype.handleChangeEvent = function(resp) {
+WatchmanWatcher.prototype.handleChangeEvent = function (resp) {
   assert.equal(resp.subscription, SUB_NAME, 'Invalid subscription event.');
   if (resp.is_fresh_instance) {
     this.emit('fresh_instance');
@@ -207,7 +207,7 @@ WatchmanWatcher.prototype.handleChangeEvent = function(resp) {
  * @private
  */
 
-WatchmanWatcher.prototype.handleFileChange = function(changeDescriptor) {
+WatchmanWatcher.prototype.handleFileChange = function (changeDescriptor) {
   const self = this;
   let absPath;
   let relativePath;
@@ -265,7 +265,7 @@ WatchmanWatcher.prototype.handleFileChange = function(changeDescriptor) {
  * @private
  */
 
-WatchmanWatcher.prototype.emitEvent = function(
+WatchmanWatcher.prototype.emitEvent = function (
   eventType,
   filepath,
   root,
@@ -282,7 +282,7 @@ WatchmanWatcher.prototype.emitEvent = function(
  * @private
  */
 
-WatchmanWatcher.prototype.close = function(callback) {
+WatchmanWatcher.prototype.close = function (callback) {
   this.client.removeAllListeners();
   this.client.end();
   callback && callback(null, true);

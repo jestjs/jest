@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
-import {Config} from '@jest/types';
+import chalk = require('chalk');
+import type {Config} from '@jest/types';
 
 const activeFilters = (
   globalConfig: Config.GlobalConfig,

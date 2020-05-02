@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-module.exports = function(results) {
+module.exports = function (results) {
   results.processed = true;
   return results;
 };

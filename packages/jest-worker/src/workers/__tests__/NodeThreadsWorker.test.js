@@ -7,8 +7,6 @@
 
 'use strict';
 
-/* eslint-disable no-new */
-
 // eslint-disable-next-line import/default
 import getStream from 'get-stream';
 
@@ -59,6 +57,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
 
   process.execArgv = ['--inspect', '-p'];
 
+  // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {
       cwd: '/tmp',
@@ -85,6 +84,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
 });
 
 it('passes workerId to the thread and assign it to env.JEST_WORKER_ID', () => {
+  // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {},
     maxRetries: 3,
@@ -170,7 +170,11 @@ it('sends the task to the thread', () => {
 
   const request = [CHILD_MESSAGE_CALL, false, 'foo', []];
 
-  worker.send(request, () => {}, () => {});
+  worker.send(
+    request,
+    () => {},
+    () => {},
+  );
 
   // Skipping call "0" because it corresponds to the "initialize" one.
   expect(worker._worker.postMessage.mock.calls[1][0]).toEqual(request);
@@ -185,7 +189,11 @@ it('resends the task to the thread after a retry', () => {
 
   const request = [CHILD_MESSAGE_CALL, false, 'foo', []];
 
-  worker.send(request, () => {}, () => {});
+  worker.send(
+    request,
+    () => {},
+    () => {},
+  );
 
   // Skipping call "0" because it corresponds to the "initialize" one.
   expect(worker._worker.postMessage.mock.calls[1][0]).toEqual(request);
@@ -290,7 +298,11 @@ it('throws when the thread returns a strange message', () => {
     workerPath: '/tmp/foo',
   });
 
-  worker.send([CHILD_MESSAGE_CALL, false, 'method', []], () => {}, () => {});
+  worker.send(
+    [CHILD_MESSAGE_CALL, false, 'method', []],
+    () => {},
+    () => {},
+  );
 
   // Type 27 does not exist.
   expect(() => {

@@ -15,6 +15,8 @@ const DIR = path.resolve(__dirname, '../console-log-output-when-run-in-band');
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
+const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
+
 test('prints console.logs when run with forceExit', () => {
   writeFiles(DIR, {
     '__tests__/a-banana.js': `
@@ -23,12 +25,26 @@ test('prints console.logs when run with forceExit', () => {
     'package.json': '{}',
   });
 
-  const {stderr, stdout, exitCode} = runJest(DIR, [
+  const {stderr, exitCode, ...res} = runJest(DIR, [
     '-i',
     '--ci=false',
     '--forceExit',
   ]);
+  let {stdout} = res;
+
   const {rest, summary} = extractSummary(stderr);
+
+  if (nodeMajorVersion < 12) {
+    expect(stdout).toContain(
+      'at Object.<anonymous>.test (__tests__/a-banana.js:1:1)',
+    );
+
+    stdout = stdout.replace(
+      'at Object.<anonymous>.test (__tests__/a-banana.js:1:1)',
+      'at Object.<anonymous> (__tests__/a-banana.js:1:1)',
+    );
+  }
+
   expect(exitCode).toBe(0);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();

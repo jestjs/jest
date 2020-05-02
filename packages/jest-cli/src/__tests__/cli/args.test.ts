@@ -6,7 +6,8 @@
  *
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
+import {constants} from 'jest-config';
 import {check} from '../../cli/args';
 import {buildArgv} from '../../cli';
 
@@ -59,10 +60,34 @@ describe('check', () => {
     expect(() => check(argv)).not.toThrow();
   });
 
+  test.each(constants.JEST_CONFIG_EXT_ORDER.map(e => e.substring(1)))(
+    'allows using "%s" file for --config option',
+    ext => {
+      expect(() =>
+        check({config: `jest.config.${ext}`} as Config.Argv),
+      ).not.toThrow();
+      expect(() =>
+        check({config: `../test/test/my_conf.${ext}`} as Config.Argv),
+      ).not.toThrow();
+    },
+  );
+
   it('raises an exception if config is not a valid JSON string', () => {
     const argv = {config: 'x:1'} as Config.Argv;
     expect(() => check(argv)).toThrow(
-      'The --config option requires a JSON string literal, or a file path with a .js or .json extension',
+      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .mjs, .cjs, .json',
+    );
+  });
+
+  it('raises an exception if config is not a supported file type', () => {
+    const message =
+      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .mjs, .cjs, .json';
+
+    expect(() => check({config: 'jest.configjs'} as Config.Argv)).toThrow(
+      message,
+    );
+    expect(() => check({config: 'jest.config.exe'} as Config.Argv)).toThrow(
+      message,
     );
   });
 });

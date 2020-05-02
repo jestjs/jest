@@ -3,11 +3,11 @@
 bin/
 flow-typed/**
 packages/*/build/**
-packages/*/build-es5/**
 packages/jest-diff/src/cleanupSemantic.ts
 website/blog
 website/build
 website/node_modules
 website/i18n/*.js
 website/translated_docs
+website/static
 !.eslintrc.js

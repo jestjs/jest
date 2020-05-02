@@ -1,5 +1,6 @@
 **/__mocks__/**
 **/__tests__/**
 src
+perf
 tsconfig.json
 tsconfig.tsbuildinfo

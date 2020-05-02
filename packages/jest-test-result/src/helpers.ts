@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {AggregatedResult, SerializableError, TestResult} from './types';
+import type {Config} from '@jest/types';
+import type {AggregatedResult, SerializableError, TestResult} from './types';
 
 export const makeEmptyAggregatedTestResult = (): AggregatedResult => ({
   numFailedTestSuites: 0,

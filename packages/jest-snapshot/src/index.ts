@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
-import {Config} from '@jest/types';
-import {FS as HasteFS} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
+import * as fs from 'graceful-fs';
+import type {Config} from '@jest/types';
+import type {FS as HasteFS} from 'jest-haste-map';
 
 import {
   BOLD_WEIGHT,
@@ -16,8 +16,6 @@ import {
   RECEIVED_COLOR,
   matcherErrorMessage,
   matcherHint,
-  printExpected,
-  printReceived,
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
@@ -32,11 +30,15 @@ import {addSerializer, getSerializers} from './plugins';
 import {
   PROPERTIES_ARG,
   SNAPSHOT_ARG,
+  bReceivedColor,
   matcherHintFromConfig,
   noColor,
-  printDiffOrStringified,
+  printExpected,
+  printPropertiesAndReceived,
+  printReceived,
+  printSnapshotAndReceived,
 } from './printSnapshot';
-import {Context, MatchSnapshotConfig} from './types';
+import type {Context, MatchSnapshotConfig} from './types';
 import * as utils from './utils';
 
 const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
@@ -152,7 +154,7 @@ const cleanup = (
   };
 };
 
-const toMatchSnapshot = function(
+const toMatchSnapshot = function (
   this: Context,
   received: any,
   propertiesOrHint?: object | Config.Path,
@@ -210,7 +212,7 @@ const toMatchSnapshot = function(
   });
 };
 
-const toMatchInlineSnapshot = function(
+const toMatchInlineSnapshot = function (
   this: Context,
   received: any,
   propertiesOrSnapshot?: object | string,
@@ -254,7 +256,7 @@ const toMatchInlineSnapshot = function(
         matcherErrorMessage(
           matcherHint(matcherName, undefined, PROPERTIES_ARG, options),
           `Inline snapshot must be a string`,
-          printWithType('Inline snapshot', inlineSnapshot, stringify),
+          printWithType('Inline snapshot', inlineSnapshot, utils.serialize),
         ),
       );
     }
@@ -301,6 +303,8 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
 
   if (snapshotState == null) {
     // Because the state is the problem, this is not a matcher error.
+    // Call generic stringify from jest-matcher-utils package
+    // because uninitialized snapshot state does not need snapshot serializers.
     throw new Error(
       matcherHintFromConfig(config, false) +
         '\n\n' +
@@ -316,6 +320,20 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
       : currentTestName || ''; // future BREAKING change: || hint
 
   if (typeof properties === 'object') {
+    if (typeof received !== 'object' || received === null) {
+      throw new Error(
+        matcherErrorMessage(
+          matcherHintFromConfig(config, false),
+          `${RECEIVED_COLOR(
+            'received',
+          )} value must be an object when the matcher has ${EXPECTED_COLOR(
+            'properties',
+          )}`,
+          printWithType('Received', received, printReceived),
+        ),
+      );
+    }
+
     const propertyPass = context.equals(received, properties, [
       context.utils.iterableEquality,
       context.utils.subsetEquality,
@@ -331,8 +349,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
         '\n\n' +
         printSnapshotName(currentTestName, hint, count) +
         '\n\n' +
-        `Expected properties: ${printExpected(properties)}\n` +
-        `Received value:      ${printReceived(received)}`;
+        printPropertiesAndReceived(properties, received, snapshotState.expand);
 
       return {
         message,
@@ -368,7 +385,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
           `must be explicitly passed to write a new snapshot.\n\n` +
           `This is likely because this test is run in a continuous integration ` +
           `(CI) environment in which snapshots are not written by default.\n\n` +
-          `Received:${actual.includes('\n') ? '\n' : ' '}${RECEIVED_COLOR(
+          `Received:${actual.includes('\n') ? '\n' : ' '}${bReceivedColor(
             actual,
           )}`
       : () =>
@@ -376,7 +393,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
           '\n\n' +
           printSnapshotName(currentTestName, hint, count) +
           '\n\n' +
-          printDiffOrStringified(
+          printSnapshotAndReceived(
             expected,
             actual,
             received,
@@ -395,7 +412,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
   };
 };
 
-const toThrowErrorMatchingSnapshot = function(
+const toThrowErrorMatchingSnapshot = function (
   this: Context,
   received: any,
   hint: string | undefined, // because error TS1016 for hint?: string
@@ -418,7 +435,7 @@ const toThrowErrorMatchingSnapshot = function(
   );
 };
 
-const toThrowErrorMatchingInlineSnapshot = function(
+const toThrowErrorMatchingInlineSnapshot = function (
   this: Context,
   received: any,
   inlineSnapshot?: string,
@@ -437,7 +454,7 @@ const toThrowErrorMatchingInlineSnapshot = function(
       matcherErrorMessage(
         matcherHint(matcherName, undefined, SNAPSHOT_ARG, options),
         `Inline snapshot must be a string`,
-        printWithType('Inline snapshot', inlineSnapshot, stringify),
+        printWithType('Inline snapshot', inlineSnapshot, utils.serialize),
       ),
     );
   }

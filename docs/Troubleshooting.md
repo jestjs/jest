@@ -134,7 +134,7 @@ If you are using Facebook's [`create-react-app`](https://github.com/facebookincu
 
 The transform script was changed or Babel was updated and the changes aren't being recognized by Jest?
 
-Retry with [`--no-cache`](CLI.md#cache). Jest caches transformed module files to speed up test execution. If you are using your own custom transformer, consider adding a `getCacheKey` function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61).
+Retry with [`--no-cache`](CLI.md#--cache). Jest caches transformed module files to speed up test execution. If you are using your own custom transformer, consider adding a `getCacheKey` function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61).
 
 ## Unresolved Promises
 
@@ -154,9 +154,9 @@ jest.setTimeout(10000); // 10 second timeout
 
 ## Watchman Issues
 
-Try running Jest with [`--no-watchman`](CLI.md#watchman) or set the `watchman` configuration option to `false`.
+Try running Jest with [`--no-watchman`](CLI.md#--watchman) or set the `watchman` configuration option to `false`.
 
-Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/troubleshooting.html).
+Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/troubleshooting).
 
 ## Tests are Extremely Slow on Docker and/or Continuous Integration (CI) server.
 
@@ -164,7 +164,7 @@ While Jest is most of the time extremely fast on modern multi-core computers wit
 
 Based on the [findings](https://github.com/facebook/jest/issues/1524#issuecomment-262366820), one way to mitigate this issue and improve the speed by up to 50% is to run tests sequentially.
 
-In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#runinband):
+In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#--runinband):
 
 ```bash
 # Using Jest CLI
@@ -183,10 +183,6 @@ jest --maxWorkers=4
 # Using yarn test (e.g. with create-react-app)
 yarn test --maxWorkers=4
 ```
-
-## Compatibility issues
-
-Jest takes advantage of new features added to Node 6. We recommend that you upgrade to the latest stable release of Node. The minimum supported version is `v6.0.0`. Versions `0.x.x` and `4.x.x` are not supported because the `jsdom` version used in Jest doesn't support Node 4. However, if you need to run Jest on Node 4, you can use the `testEnvironment` config to use a [custom environment](https://jestjs.io/docs/en/configuration.html#testenvironment-string) that supports Node 4, such as [`jest-environment-node`](https://yarnpkg.com/en/package/jest-environment-node).
 
 ## `coveragePathIgnorePatterns` seems to not have any effect.
 

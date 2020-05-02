@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -16,7 +16,7 @@ const DIR = path.resolve(
 );
 const TESTS_DIR = path.resolve(DIR, '__tests__');
 
-const readFile = filename =>
+const readFile = (filename: string) =>
   fs.readFileSync(path.join(TESTS_DIR, filename), 'utf8');
 
 beforeEach(() => cleanup(TESTS_DIR));

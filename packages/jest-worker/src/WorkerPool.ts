@@ -7,7 +7,7 @@
 
 import BaseWorkerPool from './base/BaseWorkerPool';
 
-import {
+import type {
   ChildMessage,
   OnEnd,
   OnStart,
@@ -20,7 +20,7 @@ const canUseWorkerThreads = () => {
   try {
     require('worker_threads');
     return true;
-  } catch (_) {
+  } catch {
     return false;
   }
 };

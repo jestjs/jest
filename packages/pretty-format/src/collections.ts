@@ -6,7 +6,7 @@
  *
  */
 
-import {Config, Printer, Refs} from './types';
+import type {Config, Printer, Refs} from './types';
 
 const getKeysOfEnumerableProperties = (object: Record<string, any>) => {
   const keys: Array<string | symbol> = Object.keys(object).sort();
@@ -28,10 +28,7 @@ const getKeysOfEnumerableProperties = (object: Record<string, any>) => {
  * without surrounding punctuation (for example, braces)
  */
 export function printIteratorEntries(
-  // Flow 0.51.0: property `@@iterator` of $Iterator not found in Object
-  // To allow simplistic getRecordIterator in immutable.js
-  // replaced Iterator<[any, any]> with any
-  iterator: any,
+  iterator: Iterator<[unknown, unknown]>,
   config: Config,
   indentation: string,
   depth: number,
@@ -89,7 +86,7 @@ export function printIteratorEntries(
  * without surrounding punctuation (braces or brackets)
  */
 export function printIteratorValues(
-  iterator: Iterator<any>,
+  iterator: Iterator<unknown>,
   config: Config,
   indentation: string,
   depth: number,
@@ -130,7 +127,7 @@ export function printIteratorValues(
  * without surrounding punctuation (for example, brackets)
  **/
 export function printListItems(
-  list: any,
+  list: ArrayLike<unknown>,
   config: Config,
   indentation: string,
   depth: number,
@@ -168,7 +165,7 @@ export function printListItems(
  * without surrounding punctuation (for example, braces)
  */
 export function printObjectProperties(
-  val: Record<string, any>,
+  val: Record<string, unknown>,
   config: Config,
   indentation: string,
   depth: number,

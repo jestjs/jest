@@ -82,7 +82,7 @@ _Before_ submitting a pull request, please make sure the following is done…
     $ yarn test
     ```
 
-1.  If you haven't already, complete the CLA.
+1.  If you haven't already, complete the [CLA](https://code.facebook.com/cla/).
 
 #### Changelog entries
 
@@ -91,6 +91,8 @@ All changes that add a feature to or fix a bug in any of Jest's packages require
 For significant changes to the documentation or website and things like cleanup, refactoring, and dependency updates, the "Chore & Maintenance" section of the changelog can be used.
 
 You can add or edit the changelog entry in the GitHub web interface once you have opened the pull request and know the number and link to it.
+
+Make sure to alphabetically order your entry based on package name. If you have changed multiple packages, separate them with a comma.
 
 #### Testing
 
@@ -199,6 +201,10 @@ We will be using GitHub Issues for our public bugs. We will keep a close eye on 
 
 The best way to get your bug fixed is to provide a reduced test case. Please provide a public repository with a runnable example.
 
+### Docs translation
+
+We get translations from crowdin, see https://crowdin.com/project/jest. Any and all help is very much appreciated!
+
 ### Security Bugs
 
 Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe disclosure of security bugs. With that in mind, please do not file public issues; go through the process outlined on that page.
@@ -213,7 +219,7 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 - 80 character line length strongly preferred.
 - Prefer `'` over `"`.
 - ES6 syntax when possible.
-- Use [Flow types](http://flowtype.org/).
+- Use [TypeScript](https://www.typescriptlang.org/).
 - Use semicolons;
 - Trailing commas,
 - Avd abbr wrds.

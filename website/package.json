@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "postinstall": "node fetchSupporters.js",
     "start": "docusaurus-start",
     "build": "docusaurus-build",
     "gh-pages": "docusaurus-publish",
@@ -16,10 +15,10 @@
     "rename-version": "docusaurus-rename-version"
   },
   "dependencies": {
-    "docusaurus": "^1.12.0"
+    "docusaurus": "^1.14.2"
   },
   "devDependencies": {
     "crowdin-cli": "^0.3.0",
-    "request": "^2.88.0"
+    "graphql-request": "^1.8.2"
   }
 }

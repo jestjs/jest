@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
+import chalk = require('chalk');
 import prettyFormat = require('pretty-format');
 import leven from 'leven';
 
@@ -14,17 +14,15 @@ export const DEPRECATION = `${BULLET} Deprecation Warning`;
 export const ERROR = `${BULLET} Validation Error`;
 export const WARNING = `${BULLET} Validation Warning`;
 
-export const format = (value: any): string =>
+export const format = (value: unknown): string =>
   typeof value === 'function'
     ? value.toString()
     : prettyFormat(value, {min: true});
 
-export const formatPrettyObject = (value: any): string =>
+export const formatPrettyObject = (value: unknown): string =>
   typeof value === 'function'
     ? value.toString()
-    : JSON.stringify(value, null, 2)
-        .split('\n')
-        .join('\n    ');
+    : JSON.stringify(value, null, 2).split('\n').join('\n    ');
 
 export class ValidationError extends Error {
   name: string;
@@ -43,7 +41,7 @@ export const logValidationWarning = (
   name: string,
   message: string,
   comment?: string | null,
-) => {
+): void => {
   comment = comment ? '\n\n' + comment : '\n';
   console.warn(chalk.yellow(chalk.bold(name) + ':\n\n' + message + comment));
 };
@@ -51,7 +49,7 @@ export const logValidationWarning = (
 export const createDidYouMeanMessage = (
   unrecognized: string,
   allowedOptions: Array<string>,
-) => {
+): string => {
   const suggestion = allowedOptions.find(option => {
     const steps: number = leven(option, unrecognized);
     return steps < 3;

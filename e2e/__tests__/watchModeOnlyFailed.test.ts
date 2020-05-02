@@ -22,7 +22,7 @@ expect.addSnapshotSerializer({
   test: val => typeof val === 'string' && val.includes('[s[u'),
 });
 
-const setupFiles = input => {
+const setupFiles = (input: Array<{keys: Array<string>}>) => {
   writeFiles(DIR, {
     '__tests__/bar.spec.js': `
       test('bar 1', () => { expect('bar').toBe('foo'); });
