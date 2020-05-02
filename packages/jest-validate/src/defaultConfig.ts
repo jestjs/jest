@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ValidationOptions} from './types';
+import type {ValidationOptions} from './types';
 
 import {deprecationWarning} from './deprecated';
 import {unknownOptionWarning} from './warnings';
 import {errorMessage} from './errors';
 import {validationCondition} from './condition';
-import {ERROR, DEPRECATION, WARNING} from './utils';
+import {DEPRECATION, ERROR, WARNING} from './utils';
 
 const validationOptions: ValidationOptions = {
   comment: '',

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import EventEmitter from 'events';
+import {EventEmitter} from 'events';
 
 let createProcessObject;
 

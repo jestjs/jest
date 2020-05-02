@@ -9,5 +9,5 @@ import runJest from '../runJest';
 
 test('expect works correctly with RegExps created inside a VM', () => {
   const result = runJest('expect-in-vm');
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });

@@ -1,10 +1,39 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
-import chalk from 'chalk';
+import chalk = require('chalk');
 
 const DOT = ' \u2022 ';
 
-export default function enhanceUnexpectedTokenMessage(e: Error) {
+interface ErrorWithCodeFrame extends Error {
+  codeFrame?: string;
+}
+
+export default function handlePotentialSyntaxError(
+  e: ErrorWithCodeFrame,
+): ErrorWithCodeFrame {
+  if (e.codeFrame) {
+    e.stack = e.message + '\n' + e.codeFrame;
+  }
+
+  if (
+    // `instanceof` might come from the wrong context
+    e.name === 'SyntaxError' &&
+    (e.message.includes('Unexpected token') ||
+      e.message.includes('Cannot use import')) &&
+    !e.message.includes(' expected')
+  ) {
+    throw enhanceUnexpectedTokenMessage(e);
+  }
+
+  return e;
+}
+
+export function enhanceUnexpectedTokenMessage(e: Error): Error {
   e.stack =
     `${chalk.bold.red('Jest encountered an unexpected token')}
 

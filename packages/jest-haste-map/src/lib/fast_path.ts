@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 
 // rootDir and filename must be absolute paths (resolved)
 export function relative(rootDir: string, filename: string): string {

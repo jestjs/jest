@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {json as runWithJson} from '../runJest';
 import {run} from '../Utils';
 
@@ -15,8 +15,8 @@ beforeEach(() => {
   run('yarn', DIR);
 });
 
-it('sucessfully runs the tests inside `babel-plugin-jest-hoist/`', () => {
+it('successfully runs the tests inside `babel-plugin-jest-hoist/`', () => {
   const {json} = runWithJson(DIR, ['--no-cache', '--coverage']);
   expect(json.success).toBe(true);
-  expect(json.numTotalTestSuites).toBe(3);
+  expect(json.numTotalTestSuites).toBe(4);
 });

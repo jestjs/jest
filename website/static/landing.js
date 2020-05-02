@@ -1,4 +1,9 @@
-/* Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved. */
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 /* global document, window, localStorage */
 
@@ -134,32 +139,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const buttons = [
       {
-        title: 'Equals',
-        url: '/img/content/matchers/equals.png',
+        title: 'toBe',
+        url: '/img/content/matchers/toBe.png',
       },
       {
-        title: 'Mocks',
-        url: '/img/content/matchers/mocks.png',
+        title: 'toBeCloseTo',
+        url: '/img/content/matchers/toBeCloseTo.png',
       },
       {
-        title: 'Types',
-        url: '/img/content/matchers/different-types.png',
+        title: 'toEqual',
+        url: '/img/content/matchers/toEqual.png',
       },
       {
-        title: 'Properties',
-        url: '/img/content/matchers/missing-properties.png',
+        title: 'toStrictEqual',
+        url: '/img/content/matchers/toStrictEqual.png',
       },
       {
-        title: 'Snapshots',
-        url: '/img/content/matchers/snapshot.png',
+        title: 'toHaveProperty',
+        url: '/img/content/matchers/toHaveProperty.png',
       },
       {
-        title: 'Inline Snapshots',
-        url: '/img/content/matchers/inline-snapshot.png',
+        title: 'toMatchSnapshot',
+        url: '/img/content/matchers/toMatchSnapshot.png',
       },
       {
-        title: 'Functions',
-        url: '/img/content/matchers/functions.png',
+        title: 'toThrowError',
+        url: '/img/content/matchers/toThrowError.png',
       },
     ];
 

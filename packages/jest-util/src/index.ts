@@ -5,55 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// TODO: Remove these exports in the next major
-import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
-import {getCallsite} from '@jest/source-map';
-import {
-  BufferedConsole,
-  CustomConsole,
-  NullConsole,
-  getConsoleOutput,
-} from '@jest/console';
-import {formatTestResults} from '@jest/test-result';
-import clearLine from './clearLine';
-import createDirectory from './createDirectory';
-import ErrorWithStack from './ErrorWithStack';
-import getFailedSnapshotTests from './getFailedSnapshotTests';
-import installCommonGlobals from './installCommonGlobals';
-import interopRequireDefault from './interopRequireDefault';
-import isInteractive from './isInteractive';
-import isPromise from './isPromise';
-import setGlobal from './setGlobal';
-import deepCyclicCopy from './deepCyclicCopy';
-import convertDescriptorToString from './convertDescriptorToString';
+export {default as clearLine} from './clearLine';
+export {default as createDirectory} from './createDirectory';
+export {default as ErrorWithStack} from './ErrorWithStack';
+export {default as installCommonGlobals} from './installCommonGlobals';
+export {default as interopRequireDefault} from './interopRequireDefault';
+export {default as isInteractive} from './isInteractive';
+export {default as isPromise} from './isPromise';
+export {default as setGlobal} from './setGlobal';
+export {default as deepCyclicCopy} from './deepCyclicCopy';
+export {default as convertDescriptorToString} from './convertDescriptorToString';
 import * as specialChars from './specialChars';
-import replacePathSepForGlob from './replacePathSepForGlob';
-import testPathPatternToRegExp from './testPathPatternToRegExp';
+export {default as replacePathSepForGlob} from './replacePathSepForGlob';
+export {default as testPathPatternToRegExp} from './testPathPatternToRegExp';
 import * as preRunMessage from './preRunMessage';
-import pluralize from './pluralize';
+export {default as pluralize} from './pluralize';
+export {default as formatTime} from './formatTime';
+export {default as tryRealpath} from './tryRealpath';
 
-export = {
-  BufferedConsole,
-  Console: CustomConsole,
-  ErrorWithStack,
-  FakeTimers,
-  NullConsole,
-  clearLine,
-  convertDescriptorToString,
-  createDirectory,
-  deepCyclicCopy,
-  formatTestResults,
-  getCallsite,
-  getConsoleOutput,
-  getFailedSnapshotTests,
-  installCommonGlobals,
-  interopRequireDefault,
-  isInteractive,
-  isPromise,
-  pluralize,
-  preRunMessage,
-  replacePathSepForGlob,
-  setGlobal,
-  specialChars,
-  testPathPatternToRegExp,
-};
+export {preRunMessage, specialChars};

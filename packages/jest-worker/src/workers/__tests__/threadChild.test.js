@@ -25,11 +25,11 @@ const uninitializedParam = {};
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 import {
-  CHILD_MESSAGE_INITIALIZE,
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
-  PARENT_MESSAGE_OK,
+  CHILD_MESSAGE_INITIALIZE,
   PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_OK,
 } from '../../types';
 
 let ended;
@@ -114,14 +114,11 @@ beforeEach(() => {
 
   thread = require('worker_threads').parentPort;
 
-  process.exit = jest.fn();
-
   // Require the child!
   require('../threadChild');
 });
 
 beforeEach(() => {
-  process.exit.mockClear();
   thread.postMessage.mockClear();
 });
 
@@ -341,7 +338,8 @@ it('calls the main export if the method call is "default" and it is a Babel tran
   ]);
 });
 
-it('finishes the process with exit code 0 if requested', () => {
+it('removes the message listener on END message', () => {
+  // So that there are no more open handles preventing Node from exiting
   thread.emit('message', [
     CHILD_MESSAGE_INITIALIZE,
     true, // Not really used here, but for flow type purity.
@@ -353,7 +351,7 @@ it('finishes the process with exit code 0 if requested', () => {
     true, // Not really used here, but for flow type purity.
   ]);
 
-  expect(process.exit).toHaveBeenCalledWith(0);
+  expect(thread.listenerCount('message')).toBe(0);
 });
 
 it('calls the teardown method ', () => {

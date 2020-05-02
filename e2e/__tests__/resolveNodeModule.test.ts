@@ -9,5 +9,5 @@ import runJest from '../runJest';
 
 test('resolve node module', () => {
   const result = runJest('resolve-node-module');
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });

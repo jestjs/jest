@@ -5,23 +5,30 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import childProcess, {ChildProcess} from 'child_process';
+import {ChildProcess, fork} from 'child_process';
 import {PassThrough} from 'stream';
-import mergeStream from 'merge-stream';
-import supportsColor from 'supports-color';
+import mergeStream = require('merge-stream');
+import {stdout as stdoutSupportsColor} from 'supports-color';
 
 import {
   CHILD_MESSAGE_INITIALIZE,
-  PARENT_MESSAGE_CLIENT_ERROR,
-  PARENT_MESSAGE_SETUP_ERROR,
-  PARENT_MESSAGE_OK,
-  WorkerInterface,
   ChildMessage,
   OnEnd,
   OnStart,
-  WorkerOptions,
+  PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_OK,
+  PARENT_MESSAGE_SETUP_ERROR,
   ParentMessage,
+  WorkerInterface,
+  WorkerOptions,
 } from '../types';
+
+const SIGNAL_BASE_EXIT_CODE = 128;
+const SIGKILL_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 9;
+const SIGTERM_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 15;
+
+// How long to wait after SIGTERM before sending SIGKILL
+const SIGKILL_DELAY = 500;
 
 /**
  * This class wraps the child process and provides a nice interface to
@@ -44,26 +51,37 @@ import {
 export default class ChildProcessWorker implements WorkerInterface {
   private _child!: ChildProcess;
   private _options: WorkerOptions;
-  private _onProcessEnd!: OnEnd;
-  private _fakeStream: PassThrough | null;
+
   private _request: ChildMessage | null;
   private _retries!: number;
-  private _stderr: ReturnType<typeof mergeStream> | null;
+  private _onProcessEnd!: OnEnd;
+
+  private _fakeStream: PassThrough | null;
   private _stdout: ReturnType<typeof mergeStream> | null;
+  private _stderr: ReturnType<typeof mergeStream> | null;
+
+  private _exitPromise: Promise<void>;
+  private _resolveExitPromise!: () => void;
 
   constructor(options: WorkerOptions) {
     this._options = options;
-    this._fakeStream = null;
+
     this._request = null;
-    this._stderr = null;
+
+    this._fakeStream = null;
     this._stdout = null;
+    this._stderr = null;
+
+    this._exitPromise = new Promise(resolve => {
+      this._resolveExitPromise = resolve;
+    });
 
     this.initialize();
   }
 
-  initialize() {
-    const forceColor = supportsColor.stdout ? {FORCE_COLOR: '1'} : {};
-    const child = childProcess.fork(require.resolve('./processChild'), [], {
+  initialize(): void {
+    const forceColor = stdoutSupportsColor ? {FORCE_COLOR: '1'} : {};
+    const child = fork(require.resolve('./processChild'), [], {
       cwd: process.cwd(),
       env: {
         ...process.env,
@@ -96,8 +114,8 @@ export default class ChildProcessWorker implements WorkerInterface {
       this._stderr.add(child.stderr);
     }
 
-    child.on('message', this.onMessage.bind(this));
-    child.on('exit', this.onExit.bind(this));
+    child.on('message', this._onMessage.bind(this));
+    child.on('exit', this._onExit.bind(this));
 
     child.send([
       CHILD_MESSAGE_INITIALIZE,
@@ -116,7 +134,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     if (this._retries > this._options.maxRetries) {
       const error = new Error('Call retries were exceeded');
 
-      this.onMessage([
+      this._onMessage([
         PARENT_MESSAGE_CLIENT_ERROR,
         error.name,
         error.message,
@@ -132,9 +150,11 @@ export default class ChildProcessWorker implements WorkerInterface {
       this._fakeStream.end();
       this._fakeStream = null;
     }
+
+    this._resolveExitPromise();
   }
 
-  onMessage(response: ParentMessage) {
+  private _onMessage(response: ParentMessage) {
     let error;
 
     switch (response[0]) {
@@ -179,8 +199,12 @@ export default class ChildProcessWorker implements WorkerInterface {
     }
   }
 
-  onExit(exitCode: number) {
-    if (exitCode !== 0) {
+  private _onExit(exitCode: number) {
+    if (
+      exitCode !== 0 &&
+      exitCode !== SIGTERM_EXIT_CODE &&
+      exitCode !== SIGKILL_EXIT_CODE
+    ) {
       this.initialize();
 
       if (this._request) {
@@ -191,7 +215,11 @@ export default class ChildProcessWorker implements WorkerInterface {
     }
   }
 
-  send(request: ChildMessage, onProcessStart: OnStart, onProcessEnd: OnEnd) {
+  send(
+    request: ChildMessage,
+    onProcessStart: OnStart,
+    onProcessEnd: OnEnd,
+  ): void {
     onProcessStart(this);
     this._onProcessEnd = (...args) => {
       // Clean the request to avoid sending past requests to workers that fail
@@ -205,7 +233,20 @@ export default class ChildProcessWorker implements WorkerInterface {
     this._child.send(request);
   }
 
-  getWorkerId() {
+  waitForExit(): Promise<void> {
+    return this._exitPromise;
+  }
+
+  forceExit(): void {
+    this._child.kill('SIGTERM');
+    const sigkillTimeout = setTimeout(
+      () => this._child.kill('SIGKILL'),
+      SIGKILL_DELAY,
+    );
+    this._exitPromise.then(() => clearTimeout(sigkillTimeout));
+  }
+
+  getWorkerId(): number {
     return this._options.workerId;
   }
 

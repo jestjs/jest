@@ -12,8 +12,7 @@ describe('async jasmine with pending during test', () => {
   skipSuiteOnJestCircus();
 
   it('should be reported as a pending test', () => {
-    const result = runWithJson('jasmine-async', ['pendingInPromise.test.js']);
-    const json = result.json;
+    const {json} = runWithJson('jasmine-async', ['pendingInPromise.test.js']);
 
     expect(json.numTotalTests).toBe(1);
     expect(json.numPassedTests).toBe(0);

@@ -8,8 +8,8 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import prettyFormat from '..';
 import {OptionsReceived} from '../types';
+import prettyFormat from '..';
 
 const elementSymbol = Symbol.for('react.element');
 const fragmentSymbol = Symbol.for('react.fragment');

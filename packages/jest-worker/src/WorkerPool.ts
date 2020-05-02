@@ -7,20 +7,20 @@
 
 import BaseWorkerPool from './base/BaseWorkerPool';
 
-import {
+import type {
   ChildMessage,
-  WorkerOptions,
-  OnStart,
   OnEnd,
-  WorkerPoolInterface,
+  OnStart,
   WorkerInterface,
+  WorkerOptions,
+  WorkerPoolInterface,
 } from './types';
 
 const canUseWorkerThreads = () => {
   try {
     require('worker_threads');
     return true;
-  } catch (_) {
+  } catch {
     return false;
   }
 };

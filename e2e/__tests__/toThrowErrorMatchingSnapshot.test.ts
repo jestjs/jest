@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import fs from 'fs';
+import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
@@ -27,9 +27,9 @@ test('works fine when function throws error', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
   }
 });
 
@@ -42,9 +42,9 @@ test(`throws the error if tested function didn't throw error`, () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('Received function did not throw');
-    expect(status).toBe(1);
+    expect(exitCode).toBe(1);
   }
 });
 
@@ -58,24 +58,26 @@ test('accepts custom snapshot name', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
   }
 });
 
 test('cannot be used with .not', () => {
   const filename = 'cannot-be-used-with-not.test.js';
   const template = makeTemplate(`test('cannot be used with .not', () => {
-       expect('').not.toThrowErrorMatchingSnapshot();
+       expect(() => { throw new Error('apple'); })
+         .not
+         .toThrowErrorMatchingSnapshot();
     });
     `);
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('.not cannot be used with snapshot matchers');
-    expect(status).toBe(1);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stderr).toMatch('Snapshot matchers cannot be used with not');
+    expect(exitCode).toBe(1);
   }
 });
 
@@ -88,7 +90,7 @@ test('should support rejecting promises', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
-    const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
 
     const snapshot = fs.readFileSync(
       `${TESTS_DIR}/__snapshots__/${filename}.snap`,
@@ -97,6 +99,6 @@ test('should support rejecting promises', () => {
 
     expect(stderr).toMatch('1 snapshot written from 1 test suite.');
     expect(wrap(snapshot)).toMatchSnapshot();
-    expect(status).toBe(0);
+    expect(exitCode).toBe(0);
   }
 });

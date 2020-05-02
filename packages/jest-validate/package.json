@@ -1,6 +1,6 @@
 {
   "name": "jest-validate",
-  "version": "24.8.0",
+  "version": "26.0.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,22 +10,21 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/types": "^24.8.0",
-    "camelcase": "^5.0.0",
-    "chalk": "^2.0.1",
-    "jest-get-type": "^24.8.0",
-    "leven": "^2.1.0",
-    "pretty-format": "^24.8.0"
+    "@jest/types": "^26.0.0-alpha.0",
+    "camelcase": "^6.0.0",
+    "chalk": "^4.0.0",
+    "jest-get-type": "^26.0.0-alpha.0",
+    "leven": "^3.1.0",
+    "pretty-format": "^26.0.0-alpha.0"
   },
   "devDependencies": {
-    "@types/camelcase": "^4.1.0",
-    "@types/leven": "^2.1.1"
+    "@types/yargs": "^15.0.3"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 10.14.2"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "845728f24b3ef41e450595c384e9b5c9fdf248a4"
+  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
 }

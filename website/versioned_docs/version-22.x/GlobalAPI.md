@@ -124,7 +124,7 @@ test('can find things', () => {
 });
 ```
 
-Here the `beforeAll` ensures that the database is set up before tests run. If setup was synchronous, you could just do this without `beforeAll`. The key is that Jest will wait for a promise to resolve, so you can have asynchronous setup as well.
+Here the `beforeAll` ensures that the database is set up before tests run. If setup was synchronous, you could do this without `beforeAll`. The key is that Jest will wait for a promise to resolve, so you can have asynchronous setup as well.
 
 If `beforeAll` is inside a `describe` block, it runs at the beginning of the describe block.
 
@@ -191,7 +191,7 @@ describe('my beverage', () => {
 });
 ```
 
-This isn't required - you can just write the `test` blocks directly at the top level. But this can be handy if you prefer your tests to be organized into groups.
+This isn't required - you can write the `test` blocks directly at the top level. But this can be handy if you prefer your tests to be organized into groups.
 
 You can also nest `describe` blocks if you have a hierarchy of tests:
 
@@ -317,13 +317,13 @@ test('it is not snowing', () => {
 
 Only the "it is raining" test will run in that test file, since it is run with `test.only`.
 
-Usually you wouldn't check code using `test.only` into source control - you would use it just for debugging, and remove it once you have fixed the broken tests.
+Usually you wouldn't check code using `test.only` into source control - you would use it for debugging, and remove it once you have fixed the broken tests.
 
 ### `test.skip(name, fn)`
 
 Also under the aliases: `it.skip(name, fn)` or `xit(name, fn)` or `xtest(name, fn)`
 
-When you are maintaining a large codebase, you may sometimes find a test that is temporarily broken for some reason. If you want to skip running this test, but you don't want to just delete this code, you can use `test.skip` to specify some tests to skip.
+When you are maintaining a large codebase, you may sometimes find a test that is temporarily broken for some reason. If you want to skip running this test, but you don't want to delete this code, you can use `test.skip` to specify some tests to skip.
 
 For example, let's say you had these tests:
 
@@ -339,4 +339,4 @@ test.skip('it is not snowing', () => {
 
 Only the "it is raining" test will run, since the other test is run with `test.skip`.
 
-You could simply comment the test out, but it's often a bit nicer to use `test.skip` because it will maintain indentation and syntax highlighting.
+You could comment the test out, but it's often a bit nicer to use `test.skip` because it will maintain indentation and syntax highlighting.

@@ -5,19 +5,41 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Diff, DIFF_DELETE, DIFF_INSERT} from './cleanupSemantic';
-import {MULTILINE_REGEXP, getHighlightedString} from './printDiffs';
+import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
+import type {DiffOptionsColor} from './types';
+
+// Given change op and array of diffs, return concatenated string:
+// * include common strings
+// * include change strings which have argument op with changeColor
+// * exclude change strings which have opposite op
+const concatenateRelevantDiffs = (
+  op: number,
+  diffs: Array<Diff>,
+  changeColor: DiffOptionsColor,
+): string =>
+  diffs.reduce(
+    (reduced: string, diff: Diff): string =>
+      reduced +
+      (diff[0] === DIFF_EQUAL
+        ? diff[1]
+        : diff[0] === op && diff[1].length !== 0 // empty if change is newline
+        ? changeColor(diff[1])
+        : ''),
+    '',
+  );
 
 // Encapsulate change lines until either a common newline or the end.
 class ChangeBuffer {
   private op: number;
   private line: Array<Diff>; // incomplete line
   private lines: Array<Diff>; // complete lines
+  private changeColor: DiffOptionsColor;
 
-  constructor(op: number) {
+  constructor(op: number, changeColor: DiffOptionsColor) {
     this.op = op;
     this.line = [];
     this.lines = [];
+    this.changeColor = changeColor;
   }
 
   private pushSubstring(substring: string): void {
@@ -27,8 +49,19 @@ class ChangeBuffer {
   private pushLine(): void {
     // Assume call only if line has at least one diff,
     // therefore an empty line must have a diff which has an empty string.
+
+    // If line has multiple diffs, then assume it has a common diff,
+    // therefore change diffs have change color;
+    // otherwise then it has line color only.
     this.lines.push(
-      new Diff(this.op, getHighlightedString(this.op, this.line)),
+      this.line.length !== 1
+        ? new Diff(
+            this.op,
+            concatenateRelevantDiffs(this.op, this.line, this.changeColor),
+          )
+        : this.line[0][0] === this.op
+        ? this.line[0] // can use instance
+        : new Diff(this.op, this.line[0][1]), // was common diff
     );
     this.line.length = 0;
   }
@@ -46,7 +79,7 @@ class ChangeBuffer {
   align(diff: Diff): void {
     const string = diff[1];
 
-    if (MULTILINE_REGEXP.test(string)) {
+    if (string.includes('\n')) {
       const substrings = string.split('\n');
       const iLast = substrings.length - 1;
       substrings.forEach((substring, i) => {
@@ -117,7 +150,7 @@ class CommonBuffer {
     const op = diff[0];
     const string = diff[1];
 
-    if (MULTILINE_REGEXP.test(string)) {
+    if (string.includes('\n')) {
       const substrings = string.split('\n');
       const iLast = substrings.length - 1;
       substrings.forEach((substring, i) => {
@@ -172,9 +205,12 @@ class CommonBuffer {
 // Assume the function is not called:
 // * if either expected or received is empty string
 // * if neither expected nor received is multiline string
-const getAlignedDiffs = (diffs: Array<Diff>): Array<Diff> => {
-  const deleteBuffer = new ChangeBuffer(DIFF_DELETE);
-  const insertBuffer = new ChangeBuffer(DIFF_INSERT);
+const getAlignedDiffs = (
+  diffs: Array<Diff>,
+  changeColor: DiffOptionsColor,
+): Array<Diff> => {
+  const deleteBuffer = new ChangeBuffer(DIFF_DELETE, changeColor);
+  const insertBuffer = new ChangeBuffer(DIFF_INSERT, changeColor);
   const commonBuffer = new CommonBuffer(deleteBuffer, insertBuffer);
 
   diffs.forEach(diff => {

@@ -1,6 +1,6 @@
 {
   "name": "@jest/console",
-  "version": "24.7.1",
+  "version": "26.0.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,18 +10,20 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/source-map": "^24.3.0",
-    "chalk": "^2.0.1",
-    "slash": "^2.0.0"
+    "@jest/types": "^26.0.0-alpha.0",
+    "chalk": "^4.0.0",
+    "jest-message-util": "^26.0.0-alpha.0",
+    "jest-util": "^26.0.0-alpha.0",
+    "slash": "^3.0.0"
   },
   "devDependencies": {
-    "@types/slash": "^2.0.0"
+    "@types/node": "*"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 10.14.2"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "0efb1d7809cb96ae87a7601e7802f1dab3774280"
+  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
 }

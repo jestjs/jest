@@ -10,13 +10,14 @@
  * returning a promise from `it/test` and `before/afterEach/All` blocks.
  */
 
-import {Global, Config} from '@jest/types';
+import type {Config, Global} from '@jest/types';
 import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
 import throat from 'throat';
 import isError from './isError';
-import {Jasmine} from './types';
-import Spec from './jasmine/Spec';
+import type {Jasmine} from './types';
+import type Spec from './jasmine/Spec';
+import type {QueueableFn} from './queueRunner';
 
 interface DoneFn {
   (): void;
@@ -31,7 +32,7 @@ function promisifyLifeCycleFunction(
   originalFn: Function,
   env: Jasmine['currentEnv_'],
 ) {
-  return function<T>(
+  return function <T>(
     fn: Function | (() => Promise<T>) | GeneratorFunction | undefined,
     timeout?: number,
   ) {
@@ -56,9 +57,9 @@ function promisifyLifeCycleFunction(
 
     // We make *all* functions async and run `done` right away if they
     // didn't return a promise.
-    const asyncJestLifecycle = function(done: DoneFn) {
+    const asyncJestLifecycle = function (done: DoneFn) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
-      const returnValue = wrappedFn.call({}) as Promise<any>;
+      const returnValue = wrappedFn.call({});
 
       if (isPromise(returnValue)) {
         returnValue.then(done.bind(null, null), (error: Error) => {
@@ -85,7 +86,7 @@ function promisifyIt(
   env: Jasmine['currentEnv_'],
   jasmine: Jasmine,
 ) {
-  return function(specName: string, fn: Function, timeout?: number) {
+  return function (specName: string, fn: Function, timeout?: number) {
     if (!fn) {
       const spec = originalFn.call(env, specName);
       spec.pend('not implemented');
@@ -106,7 +107,7 @@ function promisifyIt(
     // https://crbug.com/v8/7142
     extraError.stack = extraError.stack;
 
-    const asyncJestTest = function(done: DoneFn) {
+    const asyncJestTest = function (done: DoneFn) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
       const returnValue = wrappedFn.call({});
 
@@ -141,19 +142,22 @@ function promisifyIt(
 }
 
 function makeConcurrent(
-  originalFn: Function,
+  originalFn: (
+    description: string,
+    fn: QueueableFn['fn'],
+    timeout?: number,
+  ) => Spec,
   env: Jasmine['currentEnv_'],
   mutex: ReturnType<typeof throat>,
 ): Global.ItConcurrentBase {
-  return function(specName, fn, timeout) {
-    if (
-      env != null &&
-      !env.specFilter({getFullName: () => specName || ''} as Spec)
-    ) {
-      return originalFn.call(env, specName, () => Promise.resolve(), timeout);
+  return function (specName, fn, timeout) {
+    let promise: Promise<unknown> = Promise.resolve();
+
+    const spec = originalFn.call(env, specName, () => promise, timeout);
+    if (env != null && !env.specFilter(spec)) {
+      return spec;
     }
 
-    let promise: Promise<unknown>;
     try {
       promise = mutex(() => {
         const promise = fn();
@@ -161,21 +165,21 @@ function makeConcurrent(
           return promise;
         }
         throw new Error(
-          `Jest: concurrent test "${specName}" must return a Promise.`,
+          `Jest: concurrent test "${spec.getFullName()}" must return a Promise.`,
         );
       });
     } catch (error) {
-      return originalFn.call(env, specName, () => Promise.reject(error));
+      promise = Promise.reject(error);
     }
 
-    return originalFn.call(env, specName, () => promise, timeout);
+    return spec;
   };
 }
 
 export default function jasmineAsyncInstall(
   globalConfig: Config.GlobalConfig,
   global: Global.Global,
-) {
+): void {
   const jasmine = global.jasmine as Jasmine;
   const mutex = throat(globalConfig.maxConcurrency);
 

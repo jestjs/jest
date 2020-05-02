@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ProjectPackageJson} from './types';
+import type {ProjectPackageJson} from './types';
 
 const modifyPackageJson = ({
   projectPackageJson,

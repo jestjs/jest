@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  JestHookSubscriber,
-  JestHookEmitter,
+import type {
   FileChange,
+  JestHookEmitter,
+  JestHookSubscriber,
   ShouldRunTestSuite,
   TestRunComplete,
 } from './types';
@@ -25,20 +25,17 @@ class JestHooks {
     shouldRunTestSuite: Array<ShouldRunTestSuite>;
   };
 
+  private _subscriber: JestHookSubscriber;
+  private _emitter: JestHookEmitter;
+
   constructor() {
     this._listeners = {
       onFileChange: [],
       onTestRunComplete: [],
       shouldRunTestSuite: [],
     };
-  }
 
-  isUsed(hook: AvailableHooks) {
-    return this._listeners[hook] && this._listeners[hook].length;
-  }
-
-  getSubscriber(): JestHookSubscriber {
-    return {
+    this._subscriber = {
       onFileChange: fn => {
         this._listeners.onFileChange.push(fn);
       },
@@ -49,10 +46,8 @@ class JestHooks {
         this._listeners.shouldRunTestSuite.push(fn);
       },
     };
-  }
 
-  getEmitter(): JestHookEmitter {
-    return {
+    this._emitter = {
       onFileChange: fs =>
         this._listeners.onFileChange.forEach(listener => listener(fs)),
       onTestRunComplete: results =>
@@ -69,6 +64,18 @@ class JestHooks {
         return result.every(Boolean);
       },
     };
+  }
+
+  isUsed(hook: AvailableHooks) {
+    return this._listeners[hook] && this._listeners[hook].length;
+  }
+
+  getSubscriber(): Readonly<JestHookSubscriber> {
+    return this._subscriber;
+  }
+
+  getEmitter(): Readonly<JestHookEmitter> {
+    return this._emitter;
   }
 }
 

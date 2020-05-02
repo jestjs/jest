@@ -8,7 +8,7 @@
 import runJest from '../runJest';
 
 it('prints a usable stack trace even if no Error.captureStackTrace', () => {
-  const {stderr, status} = runJest('stack-trace-no-capture-stack-trace');
+  const {stderr, exitCode} = runJest('stack-trace-no-capture-stack-trace');
   expect(stderr).not.toMatch('Error.captureStackTrace is not a function');
-  expect(status).toBe(1);
+  expect(exitCode).toBe(1);
 });

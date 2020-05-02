@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import os from 'os';
+import * as path from 'path';
+import {tmpdir} from 'os';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {skipSuiteOnWindows} from '@jest/test-utils';
 import runJest from '../runJest';
@@ -14,7 +14,7 @@ import {cleanup, writeFiles} from '../Utils';
 
 skipSuiteOnWindows();
 
-const DIR = path.resolve(os.tmpdir(), 'show-config-test');
+const DIR = path.resolve(tmpdir(), 'show-config-test');
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
@@ -37,8 +37,8 @@ test('--showConfig outputs config info and exits', () => {
     .replace(/"name": "(.+)"/g, '"name": "[md5 hash]"')
     .replace(/"version": "(.+)"/g, '"version": "[version]"')
     .replace(/"maxWorkers": (\d+)/g, '"maxWorkers": "[maxWorkers]"')
-    .replace(/\"\S*show-config-test/gm, '"<<REPLACED_ROOT_DIR>>')
-    .replace(/\"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>');
+    .replace(/"\S*show-config-test/gm, '"<<REPLACED_ROOT_DIR>>')
+    .replace(/"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>');
 
   expect(wrap(stdout)).toMatchSnapshot();
 });

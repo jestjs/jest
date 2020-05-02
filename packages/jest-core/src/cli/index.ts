@@ -5,18 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {AggregatedResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {AggregatedResult} from '@jest/test-result';
 import {CustomConsole} from '@jest/console';
 import {createDirectory, preRunMessage} from 'jest-util';
 import {readConfigs} from 'jest-config';
-import Runtime, {Context} from 'jest-runtime';
-import {ChangedFilesPromise} from 'jest-changed-files';
-import HasteMap from 'jest-haste-map';
-import chalk from 'chalk';
-import rimraf from 'rimraf';
-import exit from 'exit';
-import {Filter} from '../types';
+import Runtime = require('jest-runtime');
+import type {ChangedFilesPromise} from 'jest-changed-files';
+import HasteMap = require('jest-haste-map');
+import chalk = require('chalk');
+import rimraf = require('rimraf');
+import exit = require('exit');
+import type {Filter} from '../types';
 import createContext from '../lib/create_context';
 import getChangedFilesPromise from '../getChangedFilesPromise';
 import {formatHandleErrors} from '../collectHandles';
@@ -31,17 +31,13 @@ const {print: preRunMessagePrint} = preRunMessage;
 
 type OnCompleteCallback = (results: AggregatedResult) => void;
 
-export const runCLI = async (
+export async function runCLI(
   argv: Config.Argv,
   projects: Array<Config.Path>,
 ): Promise<{
   results: AggregatedResult;
   globalConfig: Config.GlobalConfig;
-}> => {
-  const realFs = require('fs');
-  const fs = require('graceful-fs');
-  fs.gracefulify(realFs);
-
+}> {
   let results: AggregatedResult | undefined;
 
   // If we output a JSON object, we can't write anything to stdout, since
@@ -49,7 +45,7 @@ export const runCLI = async (
   const outputStream =
     argv.json || argv.useStderr ? process.stderr : process.stdout;
 
-  const {globalConfig, configs, hasDeprecationWarnings} = readConfigs(
+  const {globalConfig, configs, hasDeprecationWarnings} = await readConfigs(
     argv,
     projects,
   );
@@ -109,12 +105,12 @@ export const runCLI = async (
   }
 
   return {globalConfig, results};
-};
+}
 
 const buildContextsAndHasteMaps = async (
   configs: Array<Config.ProjectConfig>,
   globalConfig: Config.GlobalConfig,
-  outputStream: NodeJS.WritableStream,
+  outputStream: NodeJS.WriteStream,
 ) => {
   const hasteMapInstances = Array(configs.length);
   const contexts = await Promise.all(
@@ -122,7 +118,10 @@ const buildContextsAndHasteMaps = async (
       createDirectory(config.cacheDirectory);
       const hasteMapInstance = Runtime.createHasteMap(config, {
         console: new CustomConsole(outputStream, outputStream),
-        maxWorkers: globalConfig.maxWorkers,
+        maxWorkers: Math.max(
+          1,
+          Math.floor(globalConfig.maxWorkers / configs.length),
+        ),
         resetCache: !config.cache,
         watch: globalConfig.watch || globalConfig.watchAll,
         watchman: globalConfig.watchman,
@@ -203,7 +202,7 @@ const _run = async (
 };
 
 const runWatch = async (
-  contexts: Array<Context>,
+  contexts: Array<Runtime.Context>,
   _configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,
   globalConfig: Config.GlobalConfig,
@@ -241,8 +240,8 @@ const runWatch = async (
 
 const runWithoutWatch = async (
   globalConfig: Config.GlobalConfig,
-  contexts: Array<Context>,
-  outputStream: NodeJS.WritableStream,
+  contexts: Array<Runtime.Context>,
+  outputStream: NodeJS.WriteStream,
   onComplete: OnCompleteCallback,
   changedFilesPromise?: ChangedFilesPromise,
   filter?: Filter,

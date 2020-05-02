@@ -5,21 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import ansiEscapes from 'ansi-escapes';
-import chalk from 'chalk';
-import exit from 'exit';
-import slash from 'slash';
-import HasteMap, {HasteChangeEvent} from 'jest-haste-map';
+import * as path from 'path';
+import ansiEscapes = require('ansi-escapes');
+import chalk = require('chalk');
+import exit = require('exit');
+import slash = require('slash');
+import HasteMap = require('jest-haste-map');
 import {formatExecError} from 'jest-message-util';
 import {isInteractive, preRunMessage, specialChars} from 'jest-util';
 import {ValidationError} from 'jest-validate';
-import {Context} from 'jest-runtime';
-import {Config} from '@jest/types';
+import type {Context} from 'jest-runtime';
+import Resolver = require('jest-resolve');
+import type {Config} from '@jest/types';
 import {
   AllowedConfigOptions,
-  KEYS,
   JestHook,
+  KEYS,
   WatchPlugin,
   WatchPluginClass,
 } from 'jest-watcher';
@@ -37,11 +38,11 @@ import UpdateSnapshotsPlugin from './plugins/update_snapshots';
 import UpdateSnapshotsInteractivePlugin from './plugins/update_snapshots_interactive';
 import QuitPlugin from './plugins/quit';
 import {
-  getSortedUsageRows,
   filterInteractivePlugins,
+  getSortedUsageRows,
 } from './lib/watch_plugins_helpers';
 import activeFilters from './lib/active_filters_message';
-import {Filter} from './types';
+import type {Filter} from './types';
 
 type ReservedInfo = {
   forbiddenOverwriteMessage?: string;
@@ -157,9 +158,11 @@ export default function watch(
   if (globalConfig.watchPlugins != null) {
     const watchPluginKeys: WatchPluginKeysMap = new Map();
     for (const plugin of watchPlugins) {
-      const reservedInfo =
-        RESERVED_KEY_PLUGINS.get(plugin.constructor as WatchPluginClass) ||
-        ({} as ReservedInfo);
+      const reservedInfo: Pick<
+        ReservedInfo,
+        'forbiddenOverwriteMessage' | 'key'
+      > =
+        RESERVED_KEY_PLUGINS.get(plugin.constructor as WatchPluginClass) || {};
       const key = reservedInfo.key || getPluginKey(plugin, globalConfig);
       if (!key) {
         continue;
@@ -227,7 +230,7 @@ export default function watch(
   hasteMapInstances.forEach((hasteMapInstance, index) => {
     hasteMapInstance.on(
       'change',
-      ({eventsQueue, hasteFS, moduleMap}: HasteChangeEvent) => {
+      ({eventsQueue, hasteFS, moduleMap}: HasteMap.HasteChangeEvent) => {
         const validPaths = eventsQueue.filter(({filePath}) =>
           isValidPath(globalConfig, filePath),
         );
@@ -275,6 +278,9 @@ export default function watch(
     isRunning = true;
     const configs = contexts.map(context => context.config);
     const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
+    // Clear cache for required modules
+    Resolver.clearDefaultResolverCache();
+
     return runJest({
       changedFilesPromise,
       contexts,
@@ -341,9 +347,10 @@ export default function watch(
     }
 
     // Abort test run
-    const pluginKeys = getSortedUsageRows(watchPlugins, globalConfig).map(
-      usage => Number(usage.key).toString(16),
-    );
+    const pluginKeys = getSortedUsageRows(
+      watchPlugins,
+      globalConfig,
+    ).map(usage => Number(usage.key).toString(16));
     if (
       isRunning &&
       testWatcher &&

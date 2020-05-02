@@ -126,43 +126,43 @@ FAIL __tests__/duringTests.test.js
 
     thrown: Promise {}
 
-       7 | };
-       8 | 
-    >  9 | test('Promise thrown during test', () => {
+      12 | };
+      13 | 
+    > 14 | test('Promise thrown during test', () => {
          | ^
-      10 |   throw Promise.resolve(5);
-      11 | });
-      12 | 
+      15 |   throw Promise.resolve(5);
+      16 | });
+      17 | 
 
-      at Object.test (__tests__/duringTests.test.js:9:1)
+      at Object.test (__tests__/duringTests.test.js:14:1)
 
   ● Boolean thrown during test
 
     thrown: false
 
-      11 | });
-      12 | 
-    > 13 | test('Boolean thrown during test', () => {
-         | ^
-      14 |   // eslint-disable-next-line no-throw-literal
-      15 |   throw false;
       16 | });
+      17 | 
+    > 18 | test('Boolean thrown during test', () => {
+         | ^
+      19 |   // eslint-disable-next-line no-throw-literal
+      20 |   throw false;
+      21 | });
 
-      at Object.test (__tests__/duringTests.test.js:13:1)
+      at Object.test (__tests__/duringTests.test.js:18:1)
 
   ● undefined thrown during test
 
     thrown: undefined
 
-      16 | });
-      17 | 
-    > 18 | test('undefined thrown during test', () => {
-         | ^
-      19 |   // eslint-disable-next-line no-throw-literal
-      20 |   throw undefined;
       21 | });
+      22 | 
+    > 23 | test('undefined thrown during test', () => {
+         | ^
+      24 |   // eslint-disable-next-line no-throw-literal
+      25 |   throw undefined;
+      26 | });
 
-      at Object.test (__tests__/duringTests.test.js:18:1)
+      at Object.test (__tests__/duringTests.test.js:23:1)
 
   ● Object thrown during test
 
@@ -175,43 +175,43 @@ FAIL __tests__/duringTests.test.js
       ],
     }
 
-      21 | });
-      22 | 
-    > 23 | test('Object thrown during test', () => {
+      26 | });
+      27 | 
+    > 28 | test('Object thrown during test', () => {
          | ^
-      24 |   throw deepObject;
-      25 | });
-      26 | 
+      29 |   throw deepObject;
+      30 | });
+      31 | 
 
-      at Object.test (__tests__/duringTests.test.js:23:1)
+      at Object.test (__tests__/duringTests.test.js:28:1)
 
   ● Error during test
 
     ReferenceError: doesNotExist is not defined
 
-      27 | test('Error during test', () => {
-      28 |   // eslint-disable-next-line no-undef
-    > 29 |   doesNotExist.alsoThisNot;
+      32 | test('Error during test', () => {
+      33 |   // eslint-disable-next-line no-undef
+    > 34 |   doesNotExist.alsoThisNot;
          |   ^
-      30 | });
-      31 | 
-      32 | test('done(Error)', done => {
+      35 | });
+      36 | 
+      37 | test('done(Error)', done => {
 
-      at Object.doesNotExist (__tests__/duringTests.test.js:29:3)
+      at Object.doesNotExist (__tests__/duringTests.test.js:34:3)
 
   ● done(Error)
 
     this is an error
 
-      31 | 
-      32 | test('done(Error)', done => {
-    > 33 |   done(new Error('this is an error'));
+      36 | 
+      37 | test('done(Error)', done => {
+    > 38 |   done(new Error('this is an error'));
          |        ^
-      34 | });
-      35 | 
-      36 | test('done(non-error)', done => {
+      39 | });
+      40 | 
+      41 | test('done(non-error)', done => {
 
-      at Object.<anonymous>.done (__tests__/duringTests.test.js:33:8)
+      at Object.<anonymous> (__tests__/duringTests.test.js:38:8)
 
   ● done(non-error)
 
@@ -224,15 +224,15 @@ FAIL __tests__/duringTests.test.js
       ],
     }
 
-      35 | 
-      36 | test('done(non-error)', done => {
-    > 37 |   done(deepObject);
+      40 | 
+      41 | test('done(non-error)', done => {
+    > 42 |   done(deepObject);
          |   ^
-      38 | });
-      39 | 
-      40 | test('returned promise rejection', () => Promise.reject(deepObject));
+      43 | });
+      44 | 
+      45 | test('returned promise rejection', () => Promise.reject(deepObject));
 
-      at Object.done (__tests__/duringTests.test.js:37:3)
+      at Object.done (__tests__/duringTests.test.js:42:3)
 
   ● returned promise rejection
 
@@ -245,13 +245,13 @@ FAIL __tests__/duringTests.test.js
       ],
     }
 
-      38 | });
-      39 | 
-    > 40 | test('returned promise rejection', () => Promise.reject(deepObject));
+      43 | });
+      44 | 
+    > 45 | test('returned promise rejection', () => Promise.reject(deepObject));
          | ^
-      41 | 
+      46 | 
 
-      at Object.test (__tests__/duringTests.test.js:40:1)
+      at Object.test (__tests__/duringTests.test.js:45:1)
 `;
 
 exports[`works with assertions in separate files 1`] = `
@@ -265,14 +265,14 @@ FAIL __tests__/testMacro.test.js
     Expected: 2
     Received: 1
 
-      10 | 
-      11 | module.exports = (one: any, two: any) => {
-    > 12 |   expect(one).toEqual(two);
+       8 | 
+       9 | module.exports = (one: any, two: any) => {
+    > 10 |   expect(one).toEqual(two);
          |               ^
-      13 | };
-      14 | 
+      11 | };
+      12 | 
 
-      at toEqual (macros.js:12:15)
+      at toEqual (macros.js:10:15)
       at Object.shouldEqual (__tests__/testMacro.test.js:13:3)
 `;
 
@@ -288,8 +288,8 @@ FAIL __tests__/asyncFailures.test.js
 
     expect(received).resolves.toEqual(expected) // deep equality
 
-    - Expected
-    + Received
+    - Expected  - 1
+    + Received  + 1
 
       Object {
     -   "baz": "bar",
@@ -310,8 +310,8 @@ FAIL __tests__/asyncFailures.test.js
 
     expect(received).rejects.toEqual(expected) // deep equality
 
-    - Expected
-    + Received
+    - Expected  - 1
+    + Received  + 1
 
       Object {
     -   "baz": "bar",
@@ -396,10 +396,12 @@ FAIL __tests__/assertionError.test.js
   ✕ assert.doesNotThrow
   ✕ assert.throws
   ✕ async
+  ✕ assert.fail
+  ✕ assert.fail with a message
 
   ● assert
 
-    assert.equal(received, expected) or assert(received) 
+    assert(received)
 
     Expected value to be equal to:
       true
@@ -418,7 +420,7 @@ FAIL __tests__/assertionError.test.js
 
   ● assert with a message
 
-    assert.equal(received, expected) or assert(received) 
+    assert(received)
 
     Expected value to be equal to:
       true
@@ -440,7 +442,7 @@ FAIL __tests__/assertionError.test.js
 
   ● assert.ok
 
-    assert.equal(received, expected) or assert(received) 
+    assert(received)
 
     Expected value to be equal to:
       true
@@ -459,7 +461,7 @@ FAIL __tests__/assertionError.test.js
 
   ● assert.ok with a message
 
-    assert.equal(received, expected) or assert(received) 
+    assert(received)
 
     Expected value to be equal to:
       true
@@ -481,7 +483,7 @@ FAIL __tests__/assertionError.test.js
 
   ● assert.equal
 
-    assert.equal(received, expected) or assert(received) 
+    assert.equal(received, expected)
 
     Expected value to be equal to:
       2
@@ -747,7 +749,7 @@ FAIL __tests__/assertionError.test.js
 
   ● async
 
-    assert.equal(received, expected) or assert(received) 
+    assert.equal(received, expected)
 
     Expected value to be equal to:
       "hello"
@@ -772,12 +774,39 @@ FAIL __tests__/assertionError.test.js
          |          ^
       81 | });
       82 | 
+      83 | test('assert.fail', () => {
 
       at Object.equal (__tests__/assertionError.test.js:80:10)
-      at asyncGeneratorStep (__tests__/assertionError.test.js:10:103)
-      at _next (__tests__/assertionError.test.js:12:194)
-      at __tests__/assertionError.test.js:12:364
-      at Object.<anonymous> (__tests__/assertionError.test.js:12:97)
+
+  ● assert.fail
+
+    assert.fail(received, expected)
+
+      82 | 
+      83 | test('assert.fail', () => {
+    > 84 |   assert.fail();
+         |          ^
+      85 | });
+      86 | 
+      87 | test('assert.fail with a message', () => {
+
+      at Object.fail (__tests__/assertionError.test.js:84:10)
+
+  ● assert.fail with a message
+
+    assert.fail(received, expected)
+
+    Message:
+      error!
+
+      86 | 
+      87 | test('assert.fail with a message', () => {
+    > 88 |   assert.fail('error!');
+         |          ^
+      89 | });
+      90 | 
+
+      at Object.fail (__tests__/assertionError.test.js:88:10)
 `;
 
 exports[`works with snapshot failures 1`] = `

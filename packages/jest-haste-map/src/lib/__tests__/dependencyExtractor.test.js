@@ -14,9 +14,13 @@ describe('dependencyExtractor', () => {
   it('should not extract dependencies inside comments', () => {
     const code = `
       // import a from 'ignore-line-comment';
+      // import 'ignore-line-comment';
+      // import './ignore-line-comment';
       // require('ignore-line-comment');
       /*
        * import a from 'ignore-block-comment';
+       * import './ignore-block-comment';
+       * import 'ignore-block-comment';
        * require('ignore-block-comment');
        */
     `;
@@ -65,6 +69,23 @@ describe('dependencyExtractor', () => {
       ${COMMENT_NO_NEG_LB} foo . export ('inv2');
     `;
     expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
+  });
+
+  // https://github.com/facebook/jest/issues/8547
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import#Import_a_module_for_its_side_effects_only
+  it('should extract dependencies from side-effect only `import` statements', () => {
+    const code = `
+        // Good
+        import './side-effect-dep1';
+        import 'side-effect-dep2';
+
+        // Bad
+        import ./inv1;
+        import inv2
+      `;
+    expect(extract(code)).toEqual(
+      new Set(['./side-effect-dep1', 'side-effect-dep2']),
+    );
   });
 
   it('should not extract dependencies from `import type/typeof` statements', () => {
@@ -163,46 +184,6 @@ describe('dependencyExtractor', () => {
     expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3']));
   });
 
-  it('should extract dependencies from `require.requireActual` calls', () => {
-    const code = `
-      // Good
-      require.requireActual('dep1');
-      const dep2 = require.requireActual(
-        "dep2",
-      );
-      if (require.requireActual(\`dep3\`).cond) {}
-      require
-        .requireActual('dep4');
-
-      // Bad
-      ${COMMENT_NO_NEG_LB} foo . require.requireActual('inv1')
-      xrequire.requireActual('inv2');
-      require.requireActualx('inv3');
-      require.requireActual('inv4', 'inv5');
-    `;
-    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
-  });
-
-  it('should extract dependencies from `require.requireMock` calls', () => {
-    const code = `
-      // Good
-      require.requireMock('dep1');
-      const dep2 = require.requireMock(
-        "dep2",
-      );
-      if (require.requireMock(\`dep3\`).cond) {}
-      require
-        .requireMock('dep4');
-
-      // Bad
-      ${COMMENT_NO_NEG_LB} foo . require.requireMock('inv1')
-      xrequire.requireMock('inv2');
-      require.requireMockx('inv3');
-      require.requireMock('inv4', 'inv5');
-    `;
-    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
-  });
-
   it('should extract dependencies from `jest.requireActual` calls', () => {
     const code = `
       // Good
@@ -211,7 +192,7 @@ describe('dependencyExtractor', () => {
         "dep2",
       );
       if (jest.requireActual(\`dep3\`).cond) {}
-      require
+      jest
         .requireActual('dep4');
 
       // Bad
@@ -231,7 +212,7 @@ describe('dependencyExtractor', () => {
         "dep2",
       );
       if (jest.requireMock(\`dep3\`).cond) {}
-      require
+      jest
         .requireMock('dep4');
 
       // Bad
@@ -251,7 +232,7 @@ describe('dependencyExtractor', () => {
         "dep2",
       );
       if (jest.genMockFromModule(\`dep3\`).cond) {}
-      require
+      jest
         .requireMock('dep4');
 
       // Bad

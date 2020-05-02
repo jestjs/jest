@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, Printer, NewPlugin, Refs} from '../types';
+import type {Config, NewPlugin, Printer, Refs} from '../types';
 import {printIteratorEntries, printIteratorValues} from '../collections';
 
 // SENTINEL constants are from https://github.com/facebook/immutable-js
@@ -50,7 +50,7 @@ const printImmutableEntries = (
 
 // Record has an entries method because it is a collection in immutable v3.
 // Return an iterator for Immutable Record from version v3 or v4.
-const getRecordEntries = (val: any) => {
+function getRecordEntries(val: any): Iterator<any> {
   let i = 0;
   return {
     next() {
@@ -58,10 +58,10 @@ const getRecordEntries = (val: any) => {
         const key = val._keys[i++];
         return {done: false, value: [key, val.get(key)]};
       }
-      return {done: true};
+      return {done: true, value: undefined};
     },
   };
-};
+}
 
 const printImmutableRecord = (
   val: any,
@@ -169,14 +169,14 @@ const printImmutableValues = (
       ) +
       ']';
 
-export const serialize = (
+export const serialize: NewPlugin['serialize'] = (
   val: any,
   config: Config,
   indentation: string,
   depth: number,
   refs: Refs,
   printer: Printer,
-): string => {
+) => {
   if (val[IS_MAP_SENTINEL]) {
     return printImmutableEntries(
       val,
@@ -233,7 +233,7 @@ export const serialize = (
 
 // Explicitly comparing sentinel properties to true avoids false positive
 // when mock identity-obj-proxy returns the key as the value for any key.
-export const test = (val: any) =>
+export const test: NewPlugin['test'] = (val: any) =>
   val &&
   (val[IS_ITERABLE_SENTINEL] === true || val[IS_RECORD_SENTINEL] === true);
 

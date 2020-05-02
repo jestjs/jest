@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {ValidationError} from 'jest-validate';
-import chalk from 'chalk';
-import getType from 'jest-get-type';
-import {DOCUMENTATION_NOTE, BULLET} from './utils';
+import chalk = require('chalk');
+import getType = require('jest-get-type');
+import {BULLET, DOCUMENTATION_NOTE} from './utils';
 
 const validReporterTypes = ['array', 'string'];
 const ERROR = `${BULLET}Reporter Validation Error`;
@@ -25,7 +25,7 @@ const ERROR = `${BULLET}Reporter Validation Error`;
 export function createReporterError(
   reporterIndex: number,
   reporterValue: Array<Config.ReporterConfig> | string,
-) {
+): ValidationError {
   const errorMessage =
     `  Reporter at index ${reporterIndex} must be of type:\n` +
     `    ${chalk.bold.green(validReporterTypes.join(' or '))}\n` +
@@ -39,10 +39,10 @@ export function createArrayReporterError(
   arrayReporter: Config.ReporterConfig,
   reporterIndex: number,
   valueIndex: number,
-  value: string | Record<string, any>,
+  value: string | Record<string, unknown>,
   expectedType: string,
   valueName: string,
-) {
+): ValidationError {
   const errorMessage =
     `  Unexpected value for ${valueName} ` +
     `at index ${valueIndex} of reporter at index ${reporterIndex}\n` +
@@ -52,9 +52,7 @@ export function createArrayReporterError(
     `    ${chalk.bold.green(getType(value))}\n` +
     `  Reporter configuration:\n` +
     `    ${chalk.bold.green(
-      JSON.stringify(arrayReporter, null, 2)
-        .split('\n')
-        .join('\n    '),
+      JSON.stringify(arrayReporter, null, 2).split('\n').join('\n    '),
     )}`;
 
   return new ValidationError(ERROR, errorMessage, DOCUMENTATION_NOTE);

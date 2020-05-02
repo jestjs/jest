@@ -6,7 +6,7 @@
  *
  */
 
-import {Global} from '@jest/types';
+import type {Global} from '@jest/types';
 import {ErrorWithStack} from 'jest-util';
 
 import convertArrayTable from './table/array';

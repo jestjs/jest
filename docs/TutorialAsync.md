@@ -5,7 +5,7 @@ title: An Async Example
 
 First, enable Babel support in Jest as documented in the [Getting Started](GettingStarted.md#using-babel) guide.
 
-Let's implement a simple module that fetches user data from an API and returns the user name.
+Let's implement a module that fetches user data from an API and returns the user name.
 
 ```js
 // user.js
@@ -91,7 +91,7 @@ it('works with resolves', () => {
 
 ## `async`/`await`
 
-Writing tests using the `async`/`await` syntax is easy. Here is how you'd write the same examples from before:
+Writing tests using the `async`/`await` syntax is also possible. Here is how you'd write the same examples from before:
 
 ```js
 // async/await can be used.
@@ -116,7 +116,7 @@ Errors can be handled using the `.catch` method. Make sure to add `expect.assert
 
 ```js
 // Testing for async errors using Promise.catch.
-test('tests error with promises', () => {
+it('tests error with promises', () => {
   expect.assertions(1);
   return user.getUserName(2).catch(e =>
     expect(e).toEqual({
@@ -140,7 +140,7 @@ it('tests error with async/await', async () => {
 
 ## `.rejects`
 
-The`.rejects` helper works like the `.resolves` helper. If the promise is fulfilled, the test will automatically fail.
+The`.rejects` helper works like the `.resolves` helper. If the promise is fulfilled, the test will automatically fail. `expect.assertions(number)` is not required but recommended to verify that a certain number of [assertions](https://jestjs.io/docs/en/expect#expectassertionsnumber) are called during a test. It is otherwise easy to forget to `return`/`await` the `.resolves` assertions.
 
 ```js
 // Testing for async errors using `.rejects`.

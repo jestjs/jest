@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ansiStyles from 'ansi-styles';
+import ansiStyles = require('ansi-styles');
 
 const returnInput = (str: string) => str;
 

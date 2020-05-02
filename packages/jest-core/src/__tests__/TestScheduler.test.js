@@ -9,6 +9,7 @@
 import {SummaryReporter} from '@jest/reporters';
 import TestScheduler from '../TestScheduler';
 import * as testSchedulerHelper from '../testSchedulerHelper';
+import {makeProjectConfig} from '../../../../TestUtils';
 
 jest.mock('@jest/reporters');
 const mockSerialRunner = {
@@ -86,9 +87,9 @@ test('schedule tests run in parallel per default', async () => {
   const scheduler = new TestScheduler({}, {});
   const test = {
     context: {
-      config: {
+      config: makeProjectConfig({
         runner: 'jest-runner-parallel',
-      },
+      }),
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },
@@ -107,9 +108,9 @@ test('schedule tests run in serial if the runner flags them', async () => {
   const scheduler = new TestScheduler({}, {});
   const test = {
     context: {
-      config: {
+      config: makeProjectConfig({
         runner: 'jest-runner-serial',
-      },
+      }),
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },
@@ -128,10 +129,10 @@ test('should bail after `n` failures', async () => {
   const scheduler = new TestScheduler({bail: 2}, {});
   const test = {
     context: {
-      config: {
+      config: makeProjectConfig({
         rootDir: './',
         runner: 'jest-runner-serial',
-      },
+      }),
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },
@@ -158,10 +159,10 @@ test('should not bail if less than `n` failures', async () => {
   const scheduler = new TestScheduler({bail: 2}, {});
   const test = {
     context: {
-      config: {
+      config: makeProjectConfig({
         rootDir: './',
         runner: 'jest-runner-serial',
-      },
+      }),
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },
@@ -188,9 +189,9 @@ test('should set runInBand to run in serial', async () => {
   const scheduler = new TestScheduler({}, {});
   const test = {
     context: {
-      config: {
+      config: makeProjectConfig({
         runner: 'jest-runner-parallel',
-      },
+      }),
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },
@@ -212,9 +213,9 @@ test('should set runInBand to not run in serial', async () => {
   const scheduler = new TestScheduler({}, {});
   const test = {
     context: {
-      config: {
+      config: makeProjectConfig({
         runner: 'jest-runner-parallel',
-      },
+      }),
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },

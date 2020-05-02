@@ -5,92 +5,111 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
-
 import {
-  cleanupSemantic,
-  DIFF_EQUAL,
   DIFF_DELETE,
+  DIFF_EQUAL,
   DIFF_INSERT,
   Diff,
+  cleanupSemantic,
 } from './cleanupSemantic';
+import {diffLinesUnified} from './diffLines';
 import diffStrings from './diffStrings';
 import getAlignedDiffs from './getAlignedDiffs';
 import {
   joinAlignedDiffsExpand,
   joinAlignedDiffsNoExpand,
 } from './joinAlignedDiffs';
-import {DiffOptions} from './types';
+import {normalizeDiffOptions} from './normalizeDiffOptions';
+import type {
+  DiffOptions,
+  DiffOptionsColor,
+  DiffOptionsNormalized,
+} from './types';
 
-export const DIM_COLOR = chalk.dim;
-export const EXPECTED_COLOR = chalk.green;
-export const INVERTED_COLOR = chalk.inverse;
-export const RECEIVED_COLOR = chalk.red;
-const PATCH_COLOR = chalk.yellow;
+const formatTrailingSpaces = (
+  line: string,
+  trailingSpaceFormatter: DiffOptionsColor,
+): string => line.replace(/\s+$/, match => trailingSpaceFormatter(match));
 
-// Given change op and array of diffs, return concatenated string:
-// * include common strings
-// * include change strings which have argument op (inverse highlight)
-// * exclude change strings which have opposite op
-export const getHighlightedString = (op: number, diffs: Array<Diff>): string =>
-  diffs.reduce(
-    (reduced: string, diff: Diff): string =>
-      reduced +
-      (diff[0] === DIFF_EQUAL
-        ? diff[1]
-        : diff[0] === op
-        ? INVERTED_COLOR(diff[1])
-        : ''),
-    '',
-  );
-
-export const getExpectedString = (diffs: Array<Diff>): string =>
-  getHighlightedString(DIFF_DELETE, diffs);
-
-export const getReceivedString = (diffs: Array<Diff>): string =>
-  getHighlightedString(DIFF_INSERT, diffs);
-
-export const MULTILINE_REGEXP = /\n/;
-
-const NEWLINE_SYMBOL = '\u{21B5}'; // downwards arrow with corner leftwards
-const SPACE_SYMBOL = '\u{00B7}'; // middle dot
-
-// Instead of inverse highlight which now implies a change,
-// replace common spaces with middle dot at the end of the line.
-const replaceSpacesAtEnd = (line: string): string =>
-  line.replace(/\s+$/, spaces => SPACE_SYMBOL.repeat(spaces.length));
-
-export const printDeleteLine = (line: string) =>
-  EXPECTED_COLOR(line.length !== 0 ? '- ' + replaceSpacesAtEnd(line) : '-');
-
-export const printInsertLine = (line: string) =>
-  RECEIVED_COLOR(line.length !== 0 ? '+ ' + replaceSpacesAtEnd(line) : '+');
-
-// Prevent visually ambiguous empty line as the first or the last.
-export const printCommonLine = (line: string, isFirstOrLast: boolean = false) =>
+const printDiffLine = (
+  line: string,
+  isFirstOrLast: boolean,
+  color: DiffOptionsColor,
+  indicator: string,
+  trailingSpaceFormatter: DiffOptionsColor,
+  emptyFirstOrLastLinePlaceholder: string,
+): string =>
   line.length !== 0
-    ? DIM_COLOR('  ' + replaceSpacesAtEnd(line))
-    : isFirstOrLast
-    ? DIM_COLOR('  ' + NEWLINE_SYMBOL)
+    ? color(
+        indicator + ' ' + formatTrailingSpaces(line, trailingSpaceFormatter),
+      )
+    : indicator !== ' '
+    ? color(indicator)
+    : isFirstOrLast && emptyFirstOrLastLinePlaceholder.length !== 0
+    ? color(indicator + ' ' + emptyFirstOrLastLinePlaceholder)
     : '';
 
-export const computeStringDiffs = (expected: string, received: string) => {
-  const isMultiline =
-    MULTILINE_REGEXP.test(expected) || MULTILINE_REGEXP.test(received);
+export const printDeleteLine = (
+  line: string,
+  isFirstOrLast: boolean,
+  {
+    aColor,
+    aIndicator,
+    changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
+  }: DiffOptionsNormalized,
+): string =>
+  printDiffLine(
+    line,
+    isFirstOrLast,
+    aColor,
+    aIndicator,
+    changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
+  );
 
-  // getAlignedDiffs assumes that a newline was appended to the strings.
-  if (isMultiline) {
-    expected += '\n';
-    received += '\n';
-  }
+export const printInsertLine = (
+  line: string,
+  isFirstOrLast: boolean,
+  {
+    bColor,
+    bIndicator,
+    changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
+  }: DiffOptionsNormalized,
+): string =>
+  printDiffLine(
+    line,
+    isFirstOrLast,
+    bColor,
+    bIndicator,
+    changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
+  );
 
-  const diffs = diffStrings(expected, received);
-  cleanupSemantic(diffs); // impure function
+export const printCommonLine = (
+  line: string,
+  isFirstOrLast: boolean,
+  {
+    commonColor,
+    commonIndicator,
+    commonLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
+  }: DiffOptionsNormalized,
+): string =>
+  printDiffLine(
+    line,
+    isFirstOrLast,
+    commonColor,
+    commonIndicator,
+    commonLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
+  );
 
-  return {diffs, isMultiline};
-};
-
-export const hasCommonDiff = (diffs: Array<Diff>, isMultiline: boolean) => {
+export const hasCommonDiff = (
+  diffs: Array<Diff>,
+  isMultiline: boolean,
+): boolean => {
   if (isMultiline) {
     // Important: Ignore common newline that was appended to multiline strings!
     const iLast = diffs.length - 1;
@@ -102,11 +121,86 @@ export const hasCommonDiff = (diffs: Array<Diff>, isMultiline: boolean) => {
   return diffs.some(diff => diff[0] === DIFF_EQUAL);
 };
 
-export const printAnnotation = (options?: DiffOptions): string =>
-  EXPECTED_COLOR('- ' + ((options && options.aAnnotation) || 'Expected')) +
-  '\n' +
-  RECEIVED_COLOR('+ ' + ((options && options.bAnnotation) || 'Received')) +
-  '\n\n';
+export type ChangeCounts = {
+  a: number;
+  b: number;
+};
+
+export const countChanges = (diffs: Array<Diff>): ChangeCounts => {
+  let a = 0;
+  let b = 0;
+
+  diffs.forEach(diff => {
+    switch (diff[0]) {
+      case DIFF_DELETE:
+        a += 1;
+        break;
+
+      case DIFF_INSERT:
+        b += 1;
+        break;
+    }
+  });
+
+  return {a, b};
+};
+
+export const printAnnotation = (
+  {
+    aAnnotation,
+    aColor,
+    aIndicator,
+    bAnnotation,
+    bColor,
+    bIndicator,
+    includeChangeCounts,
+    omitAnnotationLines,
+  }: DiffOptionsNormalized,
+  changeCounts: ChangeCounts,
+): string => {
+  if (omitAnnotationLines) {
+    return '';
+  }
+
+  let aRest = '';
+  let bRest = '';
+
+  if (includeChangeCounts) {
+    const aCount = String(changeCounts.a);
+    const bCount = String(changeCounts.b);
+
+    // Padding right aligns the ends of the annotations.
+    const baAnnotationLengthDiff = bAnnotation.length - aAnnotation.length;
+    const aAnnotationPadding = ' '.repeat(Math.max(0, baAnnotationLengthDiff));
+    const bAnnotationPadding = ' '.repeat(Math.max(0, -baAnnotationLengthDiff));
+
+    // Padding left aligns the ends of the counts.
+    const baCountLengthDiff = bCount.length - aCount.length;
+    const aCountPadding = ' '.repeat(Math.max(0, baCountLengthDiff));
+    const bCountPadding = ' '.repeat(Math.max(0, -baCountLengthDiff));
+
+    aRest =
+      aAnnotationPadding + '  ' + aIndicator + ' ' + aCountPadding + aCount;
+    bRest =
+      bAnnotationPadding + '  ' + bIndicator + ' ' + bCountPadding + bCount;
+  }
+
+  return (
+    aColor(aIndicator + ' ' + aAnnotation + aRest) +
+    '\n' +
+    bColor(bIndicator + ' ' + bAnnotation + bRest) +
+    '\n\n'
+  );
+};
+
+export const printDiffLines = (
+  diffs: Array<Diff>,
+  options: DiffOptionsNormalized,
+): string =>
+  printAnnotation(options, countChanges(diffs)) +
+  (options.expand
+    ? joinAlignedDiffsExpand(diffs, options)
+    : joinAlignedDiffsNoExpand(diffs, options));
 
 // In GNU diff format, indexes are one-based instead of zero-based.
 export const createPatchMark = (
@@ -114,68 +208,52 @@ export const createPatchMark = (
   aEnd: number,
   bStart: number,
   bEnd: number,
+  {patchColor}: DiffOptionsNormalized,
 ): string =>
-  PATCH_COLOR(
+  patchColor(
     `@@ -${aStart + 1},${aEnd - aStart} +${bStart + 1},${bEnd - bStart} @@`,
   );
 
-// Return formatted diff lines without labels.
-export const printMultilineStringDiffs = (
-  diffs: Array<Diff>,
-  expand: boolean,
+// Compare two strings character-by-character.
+// Format as comparison lines in which changed substrings have inverse colors.
+export const diffStringsUnified = (
+  a: string,
+  b: string,
+  options?: DiffOptions,
 ): string => {
-  const lines = getAlignedDiffs(diffs);
-  return expand
-    ? joinAlignedDiffsExpand(lines)
-    : joinAlignedDiffsNoExpand(lines);
+  if (a !== b && a.length !== 0 && b.length !== 0) {
+    const isMultiline = a.includes('\n') || b.includes('\n');
+
+    // getAlignedDiffs assumes that a newline was appended to the strings.
+    const diffs = diffStringsRaw(
+      isMultiline ? a + '\n' : a,
+      isMultiline ? b + '\n' : b,
+      true, // cleanupSemantic
+    );
+
+    if (hasCommonDiff(diffs, isMultiline)) {
+      const optionsNormalized = normalizeDiffOptions(options);
+      const lines = getAlignedDiffs(diffs, optionsNormalized.changeColor);
+      return printDiffLines(lines, optionsNormalized);
+    }
+  }
+
+  // Fall back to line-by-line diff.
+  return diffLinesUnified(a.split('\n'), b.split('\n'), options);
 };
 
-const MAX_DIFF_STRING_LENGTH = 20000;
+// Compare two strings character-by-character.
+// Optionally clean up small common substrings, also known as chaff.
+export const diffStringsRaw = (
+  a: string,
+  b: string,
+  cleanup: boolean,
+): Array<Diff> => {
+  const diffs = diffStrings(a, b);
 
-type StringDiffResult =
-  | {isMultiline: true; annotatedDiff: string}
-  | {isMultiline: false; a: string; b: string}
-  | null;
-
-// Print specific substring diff for strings only:
-// * if strings are not equal
-// * if neither string is empty
-// * if neither string is too long
-// * if there is a common string after semantic cleanup
-export const getStringDiff = (
-  expected: string,
-  received: string,
-  options?: DiffOptions,
-): StringDiffResult => {
-  if (
-    expected === received ||
-    expected.length === 0 ||
-    received.length === 0 ||
-    expected.length > MAX_DIFF_STRING_LENGTH ||
-    received.length > MAX_DIFF_STRING_LENGTH
-  ) {
-    return null;
+  if (cleanup) {
+    cleanupSemantic(diffs); // impure function
   }
 
-  const {diffs, isMultiline} = computeStringDiffs(expected, received);
-
-  if (!hasCommonDiff(diffs, isMultiline)) {
-    return null;
-  }
-
-  return isMultiline
-    ? {
-        annotatedDiff:
-          printAnnotation(options) +
-          printMultilineStringDiffs(
-            diffs,
-            options === undefined || options.expand !== false,
-          ),
-        isMultiline,
-      }
-    : {
-        a: getExpectedString(diffs),
-        b: getReceivedString(diffs),
-        isMultiline,
-      };
+  return diffs;
 };

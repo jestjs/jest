@@ -11,7 +11,7 @@ describe('Dynamic test filtering', () => {
   it('uses the default JSON option', () => {
     const result = runJest('filter', []);
 
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
     expect(result.stderr).toContain('1 total');
   });
 
@@ -20,7 +20,7 @@ describe('Dynamic test filtering', () => {
       '--filter=<rootDir>/my-secondary-filter.js',
     ]);
 
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
     expect(result.stderr).toContain('1 total');
   });
 
@@ -30,7 +30,7 @@ describe('Dynamic test filtering', () => {
       '--skipFilter',
     ]);
 
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
     expect(result.stderr).toContain('2 total');
   });
 
@@ -39,7 +39,7 @@ describe('Dynamic test filtering', () => {
       '--filter=<rootDir>/my-clowny-filter.js',
     ]);
 
-    expect(result.status).toBe(1);
+    expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain('did not return a valid test list');
     expect(result.stderr).toContain('my-clowny-filter');
   });
@@ -47,7 +47,7 @@ describe('Dynamic test filtering', () => {
   it('will call setup on filter before filtering', () => {
     const result = runJest('filter', ['--filter=<rootDir>/my-setup-filter.js']);
 
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
     expect(result.stderr).toContain('1 total');
   });
 
@@ -56,7 +56,7 @@ describe('Dynamic test filtering', () => {
       '--filter=<rootDir>/my-broken-filter.js',
     ]);
 
-    expect(result.status).toBe(1);
+    expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain('Error: My broken filter error.');
   });
 
@@ -65,7 +65,7 @@ describe('Dynamic test filtering', () => {
       '--filter=<rootDir>/my-broken-setup-filter.js',
     ]);
 
-    expect(result.status).toBe(1);
+    expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain('Error: My broken setup filter error.');
   });
 });

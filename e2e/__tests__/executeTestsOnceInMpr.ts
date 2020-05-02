@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
@@ -47,9 +47,9 @@ test('Tests are executed only once even in an MPR', () => {
   });
   /* eslint-enable sort-keys */
 
-  const {stderr, status} = runJest(DIR, ['foo/folder/my-test-bar.js']);
+  const {stderr, exitCode} = runJest(DIR, ['foo/folder/my-test-bar.js']);
 
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 
   const {rest, summary} = extractSummary(stderr);
 

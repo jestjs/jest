@@ -6,10 +6,10 @@
  *
  */
 
-import pretty from 'pretty-format';
+import pretty = require('pretty-format');
 import {isPrimitive} from 'jest-get-type';
-import {Global} from '@jest/types';
-import {EachTests} from '../bind';
+import type {Global} from '@jest/types';
+import type {EachTests} from '../bind';
 
 type Template = Record<string, unknown>;
 type Templates = Array<Template>;

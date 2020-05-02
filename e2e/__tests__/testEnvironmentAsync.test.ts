@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
-import os from 'os';
+import * as path from 'path';
+import {tmpdir} from 'os';
+import * as fs from 'graceful-fs';
 import runJest from '../runJest';
 import {cleanup} from '../Utils';
 
-const DIR = os.tmpdir() + '/jest-test-environment';
+const DIR = tmpdir() + '/jest-test-environment';
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
@@ -26,7 +26,7 @@ it('triggers setup/teardown hooks', () => {
   const testFile = path.join(testDir, 'custom.test.js');
 
   const result = runJest('test-environment-async');
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
   expect(result.stdout).toContain(`TestEnvironment.setup: ${testFile}`);
 
   const teardown = fs.readFileSync(DIR + '/teardown', 'utf8');

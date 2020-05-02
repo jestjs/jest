@@ -11,6 +11,11 @@ jest.useFakeTimers();
 import pTimeout from '../pTimeout';
 
 describe('pTimeout', () => {
+  beforeEach(() => {
+    jest.spyOn(global, 'setTimeout');
+    jest.spyOn(global, 'clearTimeout');
+  });
+
   it('calls `clearTimeout` and resolves when `promise` resolves.', async () => {
     const onTimeout = jest.fn();
     const promise = Promise.resolve();

@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import vm from 'vm';
+import {createContext, runInContext} from 'vm';
 
 let installCommonGlobals: any;
 let fake: jest.Mock;
 
 function getGlobal(): NodeJS.Global {
-  return vm.runInContext('this', vm.createContext());
+  return runInContext('this', createContext());
 }
 
 beforeEach(() => {

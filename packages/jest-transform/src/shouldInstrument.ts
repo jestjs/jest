@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import {Config} from '@jest/types';
+import * as path from 'path';
+import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {replacePathSepForGlob} from 'jest-util';
-import micromatch from 'micromatch';
-import {ShouldInstrumentOptions} from './types';
+import micromatch = require('micromatch');
+import type {ShouldInstrumentOptions} from './types';
 
 const MOCKS_PATTERN = new RegExp(
   escapePathForRegex(path.sep + '__mocks__' + path.sep),
@@ -39,7 +39,9 @@ export default function shouldInstrument(
       return false;
     }
 
-    if (micromatch.some(replacePathSepForGlob(filename), config.testMatch)) {
+    if (
+      micromatch([replacePathSepForGlob(filename)], config.testMatch).length
+    ) {
       return false;
     }
   }
@@ -56,11 +58,11 @@ export default function shouldInstrument(
   if (
     // still cover if `only` is specified
     !options.collectCoverageOnlyFrom &&
-    options.collectCoverageFrom &&
-    !micromatch.some(
-      replacePathSepForGlob(path.relative(config.rootDir, filename)),
+    options.collectCoverageFrom.length &&
+    micromatch(
+      [replacePathSepForGlob(path.relative(config.rootDir, filename))],
       options.collectCoverageFrom,
-    )
+    ).length === 0
   ) {
     return false;
   }
@@ -92,7 +94,12 @@ export default function shouldInstrument(
   }
 
   if (options.changedFiles && !options.changedFiles.has(filename)) {
-    return false;
+    if (!options.sourcesRelatedToTestsInChangedFiles) {
+      return false;
+    }
+    if (!options.sourcesRelatedToTestsInChangedFiles.has(filename)) {
+      return false;
+    }
   }
 
   return true;

@@ -11,7 +11,6 @@ exports[`show error message when no js moduleFileExtensions 1`] = `
   Configuration Documentation:
   https://jestjs.io/docs/configuration.html
 
-
 `;
 
 exports[`show error message with matching files 1`] = `
@@ -20,19 +19,24 @@ FAIL __tests__/test.js
 
     Cannot find module './some-json-file' from 'index.js'
 
+    Require stack:
+      index.js
+      __tests__/test.js
+
+
     However, Jest was able to find:
     	'./some-json-file.json'
 
     You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['js'].
 
-    See https://jestjs.io/docs/en/configuration#modulefileextensions-array-string
+    See https://jestjs.io/docs/en/configuration#modulefileextensions-arraystring
 
-      1 | // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
-      2 | 
-    > 3 | module.exports = require('./some-json-file');
+      6 |  */
+      7 | 
+    > 8 | module.exports = require('./some-json-file');
         |                  ^
-      4 | 
+      9 | 
 
-      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:230:17)
-      at Object.require (index.js:3:18)
+      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:296:11)
+      at Object.require (index.js:8:18)
 `;

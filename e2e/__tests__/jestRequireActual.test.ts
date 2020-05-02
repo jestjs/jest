@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import os from 'os';
+import * as path from 'path';
+import {tmpdir} from 'os';
 import {cleanup, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'jest-require-actual-test');
+const DIR = path.resolve(tmpdir(), 'jest-require-actual-test');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));

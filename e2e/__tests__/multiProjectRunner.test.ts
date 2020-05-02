@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummary, sortLines, writeFiles} from '../Utils';
-import runJest from '../runJest';
+import runJest, {getConfig} from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'multi-project-runner-test');
+const DIR = path.resolve(tmpdir(), 'multi-project-runner-test');
 
 const SAMPLE_FILE_CONTENT = 'module.exports = {};';
 
@@ -198,11 +198,61 @@ test.each([{projectPath: 'packages/somepackage'}, {projectPath: 'packages/*'}])(
       `,
     });
 
-    const {stdout, stderr, status} = runJest(DIR, ['--no-watchman']);
-    expect(stderr).toContain('PASS packages/somepackage/test.js');
+    const {stdout, stderr, exitCode} = runJest(DIR, ['--no-watchman']);
+    expect(stderr).toContain('PASS somepackage packages/somepackage/test.js');
     expect(stderr).toContain('Test Suites: 1 passed, 1 total');
     expect(stdout).toEqual('');
-    expect(status).toEqual(0);
+    expect(exitCode).toEqual(0);
+  },
+);
+
+test.each([
+  {displayName: 'p1', projectPath: 'packages/p1'},
+  {displayName: 'p2', projectPath: 'packages/p2'},
+])(
+  'correctly runs a single non-root project',
+  ({projectPath, displayName}: {projectPath: string; displayName: string}) => {
+    writeFiles(DIR, {
+      'package.json': `
+        {
+          "jest": {
+            "projects": [
+              "${projectPath}"
+            ]
+          }
+        }
+      `,
+      'packages/p1/package.json': `
+        {
+          "jest": {
+            "displayName": "p1"
+          }
+        }
+      `,
+      'packages/p1/test.js': `
+        test('1+1', () => {
+          expect(1).toBe(1);
+        });
+      `,
+      'packages/p2/package.json': `
+        {
+          "jest": {
+            "displayName": "p2"
+          }
+        }
+      `,
+      'packages/p2/test.js': `
+        test('1+1', () => {
+          expect(1).toBe(1);
+        });
+      `,
+    });
+
+    const {stdout, stderr, exitCode} = runJest(DIR, ['--no-watchman']);
+    expect(stderr).toContain(`PASS ${displayName} ${projectPath}/test.js`);
+    expect(stderr).toContain('Test Suites: 1 passed, 1 total');
+    expect(stdout).toEqual('');
+    expect(exitCode).toEqual(0);
   },
 );
 
@@ -229,14 +279,14 @@ test('projects can be workspaces with non-JS/JSON files', () => {
     'packages/project2/package.json': '{}',
   });
 
-  const {status, stdout, stderr} = runJest(DIR, ['--no-watchman']);
+  const {exitCode, stdout, stderr} = runJest(DIR, ['--no-watchman']);
 
   expect(stderr).toContain('Test Suites: 2 passed, 2 total');
   expect(stderr).toContain('PASS packages/project1/__tests__/file1.test.js');
   expect(stderr).toContain('PASS packages/project2/__tests__/file2.test.js');
   expect(stderr).toContain('Ran all test suites in 2 projects.');
   expect(stdout).toEqual('');
-  expect(status).toEqual(0);
+  expect(exitCode).toEqual(0);
 });
 
 test('objects in project configuration', () => {
@@ -256,13 +306,13 @@ test('objects in project configuration', () => {
     'package.json': '{}',
   });
 
-  const {stdout, stderr, status} = runJest(DIR, ['--no-watchman']);
+  const {stdout, stderr, exitCode} = runJest(DIR, ['--no-watchman']);
   expect(stderr).toContain('Test Suites: 2 passed, 2 total');
   expect(stderr).toContain('PASS __tests__/file1.test.js');
   expect(stderr).toContain('PASS __tests__/file2.test.js');
   expect(stderr).toContain('Ran all test suites in 2 projects.');
   expect(stdout).toEqual('');
-  expect(status).toEqual(0);
+  expect(exitCode).toEqual(0);
 });
 
 test('allows a single project', () => {
@@ -278,11 +328,11 @@ test('allows a single project', () => {
     'package.json': '{}',
   });
 
-  const {stdout, stderr, status} = runJest(DIR, ['--no-watchman']);
+  const {stdout, stderr, exitCode} = runJest(DIR, ['--no-watchman']);
   expect(stderr).toContain('PASS __tests__/file1.test.js');
   expect(stderr).toContain('Test Suites: 1 passed, 1 total');
   expect(stdout).toEqual('');
-  expect(status).toEqual(0);
+  expect(exitCode).toEqual(0);
 });
 
 test('resolves projects and their <rootDir> properly', () => {
@@ -459,14 +509,7 @@ describe("doesn't bleed module file extensions resolution with multiple workers"
       };`,
     });
 
-    const {stdout: configOutput} = runJest(DIR, [
-      '--show-config',
-      '--projects',
-      'project1',
-      'project2',
-    ]);
-
-    const {configs} = JSON.parse(configOutput);
+    const {configs} = getConfig(DIR, ['--projects', 'project1', 'project2']);
 
     expect(configs).toHaveLength(2);
 
@@ -509,9 +552,7 @@ describe("doesn't bleed module file extensions resolution with multiple workers"
     `,
     });
 
-    const {stdout: configOutput} = runJest(DIR, ['--show-config']);
-
-    const {configs} = JSON.parse(configOutput);
+    const {configs} = getConfig(DIR);
 
     expect(configs).toHaveLength(2);
 

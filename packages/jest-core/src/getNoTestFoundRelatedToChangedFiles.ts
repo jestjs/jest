@@ -1,12 +1,17 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
-import chalk from 'chalk';
-import {Config} from '@jest/types';
+import chalk = require('chalk');
+import type {Config} from '@jest/types';
 import {isInteractive} from 'jest-util';
 
 export default function getNoTestFoundRelatedToChangedFiles(
   globalConfig: Config.GlobalConfig,
-) {
+): string {
   const ref = globalConfig.changedSince
     ? `"${globalConfig.changedSince}"`
     : 'last commit';

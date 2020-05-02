@@ -8,7 +8,10 @@
 
 'use strict';
 
+const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
 const jestExpect = require('../');
+
+expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 describe('.assertions()', () => {
   it('does not throw', () => {

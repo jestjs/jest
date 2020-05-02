@@ -1,3 +1,12 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
-module.exports = require('../../babel.config');
+const baseConfig = require('../../babel.config');
+
+module.exports = Object.assign({}, baseConfig, {
+  presets: baseConfig.presets.concat('@babel/preset-flow'),
+});

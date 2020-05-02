@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {extractSummary, run} from '../Utils';
 import runJest from '../runJest';
 

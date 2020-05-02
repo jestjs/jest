@@ -3,13 +3,13 @@ id: tutorial-react
 title: Testing React Apps
 ---
 
-At Facebook, we use Jest to test [React](http://facebook.github.io/react/) applications.
+At Facebook, we use Jest to test [React](https://reactjs.org/) applications.
 
 ## Setup
 
 ### Setup with Create React App
 
-If you are just getting started with React, we recommend using [Create React App](https://github.com/facebookincubator/create-react-app). It is ready to use and [ships with Jest](https://facebook.github.io/create-react-app/docs/running-tests#docsNav)! You will only need to add `react-test-renderer` for rendering snapshots.
+If you are new to React, we recommend using [Create React App](https://create-react-app.dev/). It is ready to use and [ships with Jest](https://create-react-app.dev/docs/running-tests/#docsNav)! You will only need to add `react-test-renderer` for rendering snapshots.
 
 Run
 
@@ -204,17 +204,17 @@ React 16 triggers these warnings due to how it checks element types, and the moc
     ```js
     jest.mock('fbjs/lib/warning', () => require('fbjs/lib/emptyFunction'));
     ```
-    This shouldn't normally be your option of choice as useful warnings could be lost. However, in some cases, for example when testing react-native's components we are rendering react-native tags into the DOM and many warnings are irrelevant. Another option is to swizzling console.warn and suppress specific warnings.
+    This shouldn't normally be your option of choice as useful warnings could be lost. However, in some cases, for example when testing react-native's components we are rendering react-native tags into the DOM and many warnings are irrelevant. Another option is to swizzle the console.warn and suppress specific warnings.
 
 ### DOM Testing
 
-If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](http://airbnb.io/enzyme/), or React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
+If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](http://airbnb.io/enzyme/), or React's [TestUtils](https://reactjs.org/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
 
 #### react-testing-library
 
-You have to run `yarn add --dev react-testing-library` to use react-testing-library.
+You have to run `yarn add --dev @testing-library/react` to use react-testing-library.
 
-Let's implement a simple checkbox which swaps between two labels:
+Let's implement a checkbox which swaps between two labels:
 
 ```javascript
 // CheckboxWithLabel.js
@@ -227,7 +227,7 @@ export default class CheckboxWithLabel extends React.Component {
     this.state = {isChecked: false};
 
     // bind manually because React class components don't auto-bind
-    // http://facebook.github.io/react/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding
+    // https://reactjs.org/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding
     this.onChange = this.onChange.bind(this);
   }
 
@@ -253,10 +253,11 @@ export default class CheckboxWithLabel extends React.Component {
 ```javascript
 // __tests__/CheckboxWithLabel-test.js
 import React from 'react';
-import {render, fireEvent, cleanup} from 'react-testing-library';
+import {cleanup, fireEvent, render} from '@testing-library/react';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
-// automatically unmount and cleanup DOM after the test is finished.
+// Note: running cleanup afterEach is done automatically for you in @testing-library/react@9.0.0 or higher
+// unmount and cleanup DOM after the test is finished.
 afterEach(cleanup);
 
 it('CheckboxWithLabel changes the text after click', () => {

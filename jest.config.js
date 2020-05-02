@@ -1,4 +1,9 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 'use strict';
 
@@ -18,7 +23,6 @@ module.exports = {
   modulePathIgnorePatterns: [
     'examples/.*',
     'packages/.*/build',
-    'packages/.*/build-es5',
     'packages/jest-runtime/src/__tests__/test_root.*',
     'website/.*',
     'e2e/runtime-internal-module-registry/__mocks__',
@@ -39,7 +43,6 @@ module.exports = {
     '/e2e/global-teardown',
     '\\.snap$',
     '/packages/.*/build',
-    '/packages/.*/build-es5',
     '/packages/.*/src/__tests__/setPrettyPrint.ts',
     '/packages/jest-core/src/__tests__/test_root',
     '/packages/jest-core/src/__tests__/__fixtures__/',
@@ -60,6 +63,7 @@ module.exports = {
   transform: {
     '^.+\\.[jt]sx?$': '<rootDir>/packages/babel-jest',
   },
+  watchPathIgnorePatterns: ['coverage'],
   watchPlugins: [
     'jest-watch-typeahead/filename',
     'jest-watch-typeahead/testname',

@@ -11,5 +11,8 @@
     "setupFiles": [
       "<rootDir>/setup.js"
     ]
+  },
+  "devDependencies": {
+    "@babel/preset-flow": "^7.0.0"
   }
 }

@@ -8,9 +8,9 @@
 import runJest from '../runJest';
 
 test('Verbose Reporter', () => {
-  const {status, stderr} = runJest('verbose-reporter');
+  const {exitCode, stderr} = runJest('verbose-reporter');
 
-  expect(status).toBe(1);
+  expect(exitCode).toBe(1);
   expect(stderr).toMatch('works just fine');
   expect(stderr).toMatch('does not work');
   expect(stderr).toMatch(/Verbose\n.*?works/);

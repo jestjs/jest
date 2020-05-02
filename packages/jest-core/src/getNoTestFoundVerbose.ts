@@ -1,9 +1,14 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
-import chalk from 'chalk';
-import {Config} from '@jest/types';
+import chalk = require('chalk');
+import type {Config} from '@jest/types';
 import pluralize from './pluralize';
-import {Stats, TestRunData} from './types';
+import type {Stats, TestRunData} from './types';
 
 export default function getNoTestFoundVerbose(
   testRunData: TestRunData,

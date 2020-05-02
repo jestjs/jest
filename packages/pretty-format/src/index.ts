@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import style from 'ansi-styles';
-import * as PrettyFormat from './types';
+import style = require('ansi-styles');
+import type * as PrettyFormat from './types';
 
 import {
   printIteratorEntries,
@@ -27,7 +27,6 @@ const toString = Object.prototype.toString;
 const toISOString = Date.prototype.toISOString;
 const errorToString = Error.prototype.toString;
 const regExpToString = RegExp.prototype.toString;
-const symbolToString = Symbol.prototype.toString;
 
 /**
  * Explicitly comparing typeof constructor to function avoids undefined as name
@@ -84,7 +83,7 @@ function printFunction(val: Function, printFunctionName: boolean): string {
 }
 
 function printSymbol(val: symbol): string {
-  return symbolToString.call(val).replace(SYMBOL_REGEXP, 'Symbol($1)');
+  return String(val).replace(SYMBOL_REGEXP, 'Symbol($1)');
 }
 
 function printError(val: Error): string {
@@ -492,7 +491,7 @@ function createIndent(indent: number): string {
  * @param options Custom settings
  */
 function prettyFormat(
-  val: any,
+  val: unknown,
   options?: PrettyFormat.OptionsReceived,
 ): string {
   if (options) {
@@ -528,12 +527,13 @@ prettyFormat.plugins = {
   ReactTestComponent,
 };
 
-/* eslint-disable-next-line no-redeclare */
+// eslint-disable-next-line no-redeclare
 namespace prettyFormat {
   export type Colors = PrettyFormat.Colors;
   export type Config = PrettyFormat.Config;
   export type Options = PrettyFormat.Options;
   export type OptionsReceived = PrettyFormat.OptionsReceived;
+  export type OldPlugin = PrettyFormat.OldPlugin;
   export type NewPlugin = PrettyFormat.NewPlugin;
   export type Plugin = PrettyFormat.Plugin;
   export type Plugins = PrettyFormat.Plugins;

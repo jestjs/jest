@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import runJest from '../runJest';
-import {cleanup, run, writeFiles} from '../Utils';
+import {cleanup, run, testIfHg, writeFiles} from '../Utils';
 
-const DIR = path.resolve(os.tmpdir(), 'jest_only_changed');
+const DIR = path.resolve(tmpdir(), 'jest_only_changed');
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';
 
@@ -137,6 +137,39 @@ test('report test coverage for only changed files', () => {
   expect(stdout).not.toMatch('b.js');
 });
 
+test('report test coverage of source on test file change under only changed files', () => {
+  writeFiles(DIR, {
+    '__tests__/a.test.js': `
+    require('../a');
+    test('a1', () => expect(1).toBe(1));
+  `,
+    'a.js': 'module.exports = {}',
+    'package.json': JSON.stringify({
+      jest: {
+        collectCoverage: true,
+        coverageReporters: ['text'],
+        testEnvironment: 'node',
+      },
+    }),
+  });
+
+  run(`${GIT} init`, DIR);
+  run(`${GIT} add .`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
+
+  writeFiles(DIR, {
+    '__tests__/a.test.js': `
+    require('../a');
+    test('a1', () => expect(1).toBe(1));
+    test('a2', () => expect(2).toBe(2));
+  `,
+  });
+
+  const {stdout} = runJest(DIR, ['--only-changed']);
+
+  expect(stdout).toMatch('a.js');
+});
+
 test('do not pickup non-tested files when reporting coverage on only changed files', () => {
   writeFiles(DIR, {
     'a.js': 'module.exports = {}',
@@ -153,12 +186,12 @@ test('do not pickup non-tested files when reporting coverage on only changed fil
     'package.json': JSON.stringify({name: 'new name'}),
   });
 
-  const {stderr, stdout, status} = runJest(DIR, ['-o', '--coverage']);
+  const {stderr, stdout, exitCode} = runJest(DIR, ['-o', '--coverage']);
   expect(stderr).toEqual(
     expect.not.stringContaining('Failed to collect coverage from'),
   );
   expect(stdout).toEqual(expect.not.stringContaining('package.json'));
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });
 
 test('collect test coverage when using onlyChanged', () => {
@@ -180,11 +213,11 @@ test('collect test coverage when using onlyChanged', () => {
     'b.test.js': 'it("passes", () => {expect(1).toBe(1)})',
   });
 
-  const {stderr, status} = runJest(DIR, ['-o', '--coverage']);
+  const {stderr, exitCode} = runJest(DIR, ['-o', '--coverage']);
   expect(stderr).toEqual(
     expect.not.stringContaining('Failed to collect coverage from'),
   );
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });
 
 test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
@@ -252,7 +285,7 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 });
 
-test('gets changed files for hg', async () => {
+testIfHg('gets changed files for hg', async () => {
   if (process.env.CI) {
     // Circle and Travis have very old version of hg (v2, and current
     // version is v4.2) and its API changed since then and not compatible

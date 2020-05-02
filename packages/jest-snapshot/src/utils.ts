@@ -5,15 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
-import mkdirp from 'mkdirp';
-import naturalCompare from 'natural-compare';
-import chalk from 'chalk';
-import {Config} from '@jest/types';
-import prettyFormat from 'pretty-format';
+import * as path from 'path';
+import * as fs from 'graceful-fs';
+import makeDir = require('make-dir');
+import naturalCompare = require('natural-compare');
+import chalk = require('chalk');
+import type {Config} from '@jest/types';
+import prettyFormat = require('pretty-format');
 import {getSerializers} from './plugins';
-import {SnapshotData} from './types';
+import type {SnapshotData} from './types';
 
 export const SNAPSHOT_VERSION = '1';
 const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
@@ -123,24 +123,57 @@ export const getSnapshotData = (
   return {data, dirty};
 };
 
-// Extra line breaks at the beginning and at the end of the snapshot are useful
-// to make the content of the snapshot easier to read
-const addExtraLineBreaks = (string: string): string =>
+// Add extra line breaks at beginning and end of multiline snapshot
+// to make the content easier to read.
+export const addExtraLineBreaks = (string: string): string =>
   string.includes('\n') ? `\n${string}\n` : string;
 
-export const serialize = (data: string): string =>
-  addExtraLineBreaks(
-    normalizeNewlines(
-      prettyFormat(data, {
-        escapeRegex: true,
-        plugins: getSerializers(),
-        printFunctionName: false,
-      }),
-    ),
+// Remove extra line breaks at beginning and end of multiline snapshot.
+// Instead of trim, which can remove additional newlines or spaces
+// at beginning or end of the content from a custom serializer.
+export const removeExtraLineBreaks = (string: string): string =>
+  string.length > 2 && string.startsWith('\n') && string.endsWith('\n')
+    ? string.slice(1, -1)
+    : string;
+
+export const removeLinesBeforeExternalMatcherTrap = (stack: string): string => {
+  const lines = stack.split('\n');
+
+  for (let i = 0; i < lines.length; i += 1) {
+    // It's a function name specified in `packages/expect/src/index.ts`
+    // for external custom matchers.
+    if (lines[i].includes('__EXTERNAL_MATCHER_TRAP__')) {
+      return lines.slice(i + 1).join('\n');
+    }
+  }
+
+  return stack;
+};
+
+const escapeRegex = true;
+const printFunctionName = false;
+
+export const serialize = (val: unknown, indent = 2): string =>
+  normalizeNewlines(
+    prettyFormat(val, {
+      escapeRegex,
+      indent,
+      plugins: getSerializers(),
+      printFunctionName,
+    }),
   );
 
-// unescape double quotes
-export const unescape = (data: string): string => data.replace(/\\(")/g, '$1');
+export const minify = (val: unknown): string =>
+  prettyFormat(val, {
+    escapeRegex,
+    min: true,
+    plugins: getSerializers(),
+    printFunctionName,
+  });
+
+// Remove double quote marks and unescape double quotes and backslashes.
+export const deserializeString = (stringified: string): string =>
+  stringified.slice(1, -1).replace(/\\("|\\)/g, '$1');
 
 export const escapeBacktickString = (str: string): string =>
   str.replace(/`|\\|\${/g, '\\$&');
@@ -148,9 +181,9 @@ export const escapeBacktickString = (str: string): string =>
 const printBacktickString = (str: string): string =>
   '`' + escapeBacktickString(str) + '`';
 
-export const ensureDirectoryExists = (filePath: Config.Path) => {
+export const ensureDirectoryExists = (filePath: Config.Path): void => {
   try {
-    mkdirp.sync(path.join(path.dirname(filePath)), '777');
+    makeDir.sync(path.join(path.dirname(filePath)));
   } catch (e) {}
 };
 
@@ -159,7 +192,7 @@ const normalizeNewlines = (string: string) => string.replace(/\r\n|\r/g, '\n');
 export const saveSnapshotFile = (
   snapshotData: SnapshotData,
   snapshotPath: Config.Path,
-) => {
+): void => {
   const snapshots = Object.keys(snapshotData)
     .sort(naturalCompare)
     .map(
@@ -197,7 +230,8 @@ const deepMergeArray = (target: Array<any>, source: Array<any>) => {
   return mergedOutput;
 };
 
-export const deepMerge = (target: any, source: any) => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const deepMerge = (target: any, source: any): any => {
   const mergedOutput = {...target};
   if (isObject(target) && isObject(source)) {
     Object.keys(source).forEach(key => {

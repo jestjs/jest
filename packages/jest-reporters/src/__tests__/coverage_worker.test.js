@@ -7,7 +7,7 @@
 
 'use strict';
 
-jest.mock('fs').mock('../generateEmptyCoverage');
+jest.mock('graceful-fs').mock('../generateEmptyCoverage');
 
 const globalConfig = {collectCoverage: true};
 const config = {};
@@ -20,7 +20,7 @@ let worker;
 beforeEach(() => {
   jest.resetModules();
 
-  fs = require('fs');
+  fs = require('graceful-fs');
   generateEmptyCoverage = require('../generateEmptyCoverage').default;
   worker = require('../coverage_worker').worker;
 });
@@ -40,6 +40,7 @@ test('resolves to the result of generateEmptyCoverage upon success', async () =>
     'banana.js',
     globalConfig,
     config,
+    undefined,
     undefined,
   );
 

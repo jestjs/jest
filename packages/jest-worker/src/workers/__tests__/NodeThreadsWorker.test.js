@@ -7,19 +7,18 @@
 
 'use strict';
 
-/* eslint-disable no-new */
-
+// eslint-disable-next-line import/default
 import getStream from 'get-stream';
 
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
-  PARENT_MESSAGE_OK,
   PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_OK,
 } from '../../types';
 
 let Worker;
-let childProcess;
+let workerThreads;
 let originalExecArgv;
 
 beforeEach(() => {
@@ -30,6 +29,7 @@ beforeEach(() => {
 
       const thread = new EventEmitter();
       thread.postMessage = jest.fn();
+      thread.terminate = jest.fn();
       thread.stdout = new PassThrough();
       thread.stderr = new PassThrough();
       return thread;
@@ -41,8 +41,8 @@ beforeEach(() => {
   });
   originalExecArgv = process.execArgv;
 
-  childProcess = require('worker_threads').Worker;
-  childProcess.postMessage = jest.fn();
+  workerThreads = require('worker_threads').Worker;
+  workerThreads.postMessage = jest.fn();
 
   Worker = require('../NodeThreadsWorker').default;
 });
@@ -53,10 +53,11 @@ afterEach(() => {
 });
 
 it('passes fork options down to child_process.fork, adding the defaults', () => {
-  const child = require.resolve('../threadChild');
+  const thread = require.resolve('../threadChild');
 
   process.execArgv = ['--inspect', '-p'];
 
+  // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {
       cwd: '/tmp',
@@ -67,8 +68,8 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
-  expect(childProcess.mock.calls[0][0]).toBe(child.replace(/\.ts$/, '.js'));
-  expect(childProcess.mock.calls[0][1]).toEqual({
+  expect(workerThreads.mock.calls[0][0]).toBe(thread.replace(/\.ts$/, '.js'));
+  expect(workerThreads.mock.calls[0][1]).toEqual({
     eval: false,
     stderr: true,
     stdout: true,
@@ -82,7 +83,8 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
   });
 });
 
-it('passes workerId to the child process and assign it to env.JEST_WORKER_ID', () => {
+it('passes workerId to the thread and assign it to env.JEST_WORKER_ID', () => {
+  // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {},
     maxRetries: 3,
@@ -90,12 +92,12 @@ it('passes workerId to the child process and assign it to env.JEST_WORKER_ID', (
     workerPath: '/tmp/foo',
   });
 
-  expect(childProcess.mock.calls[0][1].workerData.env.JEST_WORKER_ID).toEqual(
+  expect(workerThreads.mock.calls[0][1].workerData.env.JEST_WORKER_ID).toEqual(
     '3',
   );
 });
 
-it('initializes the child process with the given workerPath', () => {
+it('initializes the thread with the given workerPath', () => {
   const worker = new Worker({
     forkOptions: {},
     maxRetries: 3,
@@ -130,7 +132,7 @@ it('stops initializing the worker after the amount of retries is exceeded', () =
   worker._worker.emit('exit');
   worker._worker.emit('exit');
 
-  expect(childProcess).toHaveBeenCalledTimes(5);
+  expect(workerThreads).toHaveBeenCalledTimes(5);
   expect(onProcessStart).toBeCalledWith(worker);
   expect(onProcessEnd).toHaveBeenCalledTimes(1);
   expect(onProcessEnd.mock.calls[0][0]).toBeInstanceOf(Error);
@@ -138,7 +140,7 @@ it('stops initializing the worker after the amount of retries is exceeded', () =
   expect(onProcessEnd.mock.calls[0][1]).toBe(null);
 });
 
-it('provides stdout and stderr from the child processes', async () => {
+it('provides stdout and stderr from the threads', async () => {
   const worker = new Worker({
     forkOptions: {},
     maxRetries: 3,
@@ -159,7 +161,7 @@ it('provides stdout and stderr from the child processes', async () => {
   await expect(getStream(stderr)).resolves.toEqual('Jest Workers!');
 });
 
-it('sends the task to the child process', () => {
+it('sends the task to the thread', () => {
   const worker = new Worker({
     forkOptions: {},
     maxRetries: 3,
@@ -168,13 +170,17 @@ it('sends the task to the child process', () => {
 
   const request = [CHILD_MESSAGE_CALL, false, 'foo', []];
 
-  worker.send(request, () => {}, () => {});
+  worker.send(
+    request,
+    () => {},
+    () => {},
+  );
 
   // Skipping call "0" because it corresponds to the "initialize" one.
   expect(worker._worker.postMessage.mock.calls[1][0]).toEqual(request);
 });
 
-it('resends the task to the child process after a retry', () => {
+it('resends the task to the thread after a retry', () => {
   const worker = new Worker({
     forkOptions: {},
     maxRetries: 3,
@@ -183,7 +189,11 @@ it('resends the task to the child process after a retry', () => {
 
   const request = [CHILD_MESSAGE_CALL, false, 'foo', []];
 
-  worker.send(request, () => {}, () => {});
+  worker.send(
+    request,
+    () => {},
+    () => {},
+  );
 
   // Skipping call "0" because it corresponds to the "initialize" one.
   expect(worker._worker.postMessage.mock.calls[1][0]).toEqual(request);
@@ -281,14 +291,18 @@ it('creates error instances for known errors', () => {
   expect(callback3.mock.calls[0][0]).toBe(412);
 });
 
-it('throws when the child process returns a strange message', () => {
+it('throws when the thread returns a strange message', () => {
   const worker = new Worker({
     forkOptions: {},
     maxRetries: 3,
     workerPath: '/tmp/foo',
   });
 
-  worker.send([CHILD_MESSAGE_CALL, false, 'method', []], () => {}, () => {});
+  worker.send(
+    [CHILD_MESSAGE_CALL, false, 'method', []],
+    () => {},
+    () => {},
+  );
 
   // Type 27 does not exist.
   expect(() => {
@@ -296,24 +310,47 @@ it('throws when the child process returns a strange message', () => {
   }).toThrow(TypeError);
 });
 
-it('does not restart the child if it cleanly exited', () => {
+it('does not restart the thread if it cleanly exited', () => {
   const worker = new Worker({
     forkOptions: {},
     maxRetries: 3,
     workerPath: '/tmp/foo',
   });
 
-  expect(childProcess).toHaveBeenCalledTimes(1);
+  expect(workerThreads).toHaveBeenCalledTimes(1);
   worker._worker.emit('exit', 0);
-  expect(childProcess).toHaveBeenCalledTimes(1);
+  expect(workerThreads).toHaveBeenCalledTimes(1);
 });
 
-it('restarts the child when the child process dies', () => {
+it('resolves waitForExit() after the thread cleanly exited', async () => {
+  const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+  });
+
+  expect(workerThreads).toHaveBeenCalledTimes(1);
+  worker._worker.emit('exit', 0);
+  await worker.waitForExit(); // should not timeout
+});
+
+it('restarts the thread when the thread dies', () => {
   const worker = new Worker({
     workerPath: '/tmp/foo',
   });
 
-  expect(childProcess).toHaveBeenCalledTimes(1);
+  expect(workerThreads).toHaveBeenCalledTimes(1);
   worker._worker.emit('exit', 1);
-  expect(childProcess).toHaveBeenCalledTimes(2);
+  expect(workerThreads).toHaveBeenCalledTimes(2);
+});
+
+it('terminates the thread when forceExit() is called', () => {
+  const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+  });
+
+  worker.forceExit();
+  expect(worker._worker.terminate).toHaveBeenCalled();
 });

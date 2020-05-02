@@ -8,11 +8,9 @@ FAIL __tests__/bar.spec.js
     Snapshot name: \`bar 1\`
     Snapshot: "foo"
     Received: "bar"
-      1 |
-    > 2 |       test('bar', () => { expect('bar').toMatchSnapshot(); });
-        |                                         ^
-      3 |
-      at Object.toMatchSnapshot (__tests__/bar.spec.js:2:41)
+    > 1 | test('bar', () => { expect('bar').toMatchSnapshot(); });
+        |                                   ^
+      at Object.toMatchSnapshot (__tests__/bar.spec.js:1:35)
  › 1 snapshot failed.
 Snapshot Summary
  › 1 snapshot failed from 1 test suite. Inspect your code changes or press \`u\` to update them.

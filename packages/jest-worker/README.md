@@ -21,10 +21,10 @@ This example covers the minimal usage:
 ### File `parent.js`
 
 ```javascript
-import Worker from 'jest-worker';
+import JestWorker from 'jest-worker';
 
 async function main() {
-  const worker = new Worker(require.resolve('./Worker'));
+  const worker = new JestWorker(require.resolve('./Worker'));
   const result = await worker.hello('Alice'); // "Hello, Alice"
 }
 
@@ -47,7 +47,7 @@ Since `worker_threads` are considered experimental in Node, you have to opt-in t
 
 ## API
 
-The only exposed method is a constructor (`Worker`) that is initialized by passing the worker path, plus an options object.
+The only exposed method is a constructor (`JestWorker`) that is initialized by passing the worker path, plus an options object.
 
 ### `workerPath: string` (required)
 
@@ -83,7 +83,7 @@ By default, no process is bound to any worker.
 
 The arguments that will be passed to the `setup` method during initialization.
 
-#### `workerPool: (workerPath: string, options?: WorkerPoolOptions) => WorkerPoolInterface` (optional)
+#### `WorkerPool: (workerPath: string, options?: WorkerPoolOptions) => WorkerPoolInterface` (optional)
 
 Provide a custom worker pool to be used for spawning child processes. By default, Jest will use a node thread pool if available and fall back to child process threads.
 
@@ -93,23 +93,35 @@ The arguments that will be passed to the `setup` method during initialization.
 
 `jest-worker` will automatically detect if `worker_threads` are available, but will not use them unless passed `enableWorkerThreads: true`.
 
-## Worker
+## JestWorker
 
-The returned `Worker` instance has all the exposed methods, plus some additional ones to interact with the workers itself:
+### Methods
 
-### `getStdout(): Readable`
+The returned `JestWorker` instance has all the exposed methods, plus some additional ones to interact with the workers itself:
+
+#### `getStdout(): Readable`
 
 Returns a `ReadableStream` where the standard output of all workers is piped. Note that the `silent` option of the child workers must be set to `true` to make it work. This is the default set by `jest-worker`, but keep it in mind when overriding options through `forkOptions`.
 
-### `getStderr(): Readable`
+#### `getStderr(): Readable`
 
 Returns a `ReadableStream` where the standard error of all workers is piped. Note that the `silent` option of the child workers must be set to `true` to make it work. This is the default set by `jest-worker`, but keep it in mind when overriding options through `forkOptions`.
 
-### `end()`
+#### `end()`
 
 Finishes the workers by killing all workers. No further calls can be done to the `Worker` instance.
 
-**Note:** Each worker has a unique id (index that starts with `1`) which is available on `process.env.JEST_WORKER_ID`
+Returns a Promise that resolves with `{ forceExited: boolean }` once all workers are dead. If `forceExited` is `true`, at least one of the workers did not exit gracefully, which likely happened because it executed a leaky task that left handles open. This should be avoided, force exiting workers is a last resort to prevent creating lots of orphans.
+
+**Note:**
+
+`await`ing the `end()` Promise immediately after the workers are no longer needed before proceeding to do other useful things in your program may not be a good idea. If workers have to be force exited, `jest-worker` may go through multiple stages of force exiting (e.g. SIGTERM, later SIGKILL) and give the worker overall around 1 second time to exit on its own. During this time, your program will wait, even though it may not be necessary that all workers are dead before continuing execution.
+
+Consider deliberately leaving this Promise floating (unhandled resolution). After your program has done the rest of its work and is about to exit, the Node process will wait for the Promise to resolve after all workers are dead as the last event loop task. That way you parallelized computation time of your program and waiting time and you didn't delay the outputs of your program unnecessarily.
+
+### Worker IDs
+
+Each worker has a unique id (index that starts with `1`), which is available inside the worker as `process.env.JEST_WORKER_ID`.
 
 ## Setting up and tearing down the child process
 
@@ -127,10 +139,10 @@ This example covers the standard usage:
 ### File `parent.js`
 
 ```javascript
-import Worker from 'jest-worker';
+import JestWorker from 'jest-worker';
 
 async function main() {
-  const myWorker = new Worker(require.resolve('./Worker'), {
+  const myWorker = new JestWorker(require.resolve('./Worker'), {
     exposedMethods: ['foo', 'bar', 'getWorkerId'],
     numWorkers: 4,
   });
@@ -139,7 +151,10 @@ async function main() {
   console.log(await myWorker.bar('Bob')); // "Hello from bar: Bob"
   console.log(await myWorker.getWorkerId()); // "3" -> this message has sent from the 3rd worker
 
-  myWorker.end();
+  const {forceExited} = await myWorker.end();
+  if (forceExited) {
+    console.error('Workers failed to exit gracefully');
+  }
 }
 
 main();
@@ -168,10 +183,10 @@ This example covers the usage with a `computeWorkerKey` method:
 ### File `parent.js`
 
 ```javascript
-import Worker from 'jest-worker';
+import JestWorker from 'jest-worker';
 
 async function main() {
-  const myWorker = new Worker(require.resolve('./Worker'), {
+  const myWorker = new JestWorker(require.resolve('./Worker'), {
     computeWorkerKey: (method, filename) => filename,
   });
 
@@ -186,7 +201,10 @@ async function main() {
   // the same worker that processed the file the first time will process it now.
   console.log(await myWorker.transform('/tmp/foo.js'));
 
-  myWorker.end();
+  const {forceExited} = await myWorker.end();
+  if (forceExited) {
+    console.error('Workers failed to exit gracefully');
+  }
 }
 
 main();

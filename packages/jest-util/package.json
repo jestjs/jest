@@ -1,6 +1,6 @@
 {
   "name": "jest-util",
-  "version": "24.8.0",
+  "version": "26.0.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,30 +10,22 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/console": "^24.7.1",
-    "@jest/fake-timers": "^24.8.0",
-    "@jest/source-map": "^24.3.0",
-    "@jest/test-result": "^24.8.0",
-    "@jest/types": "^24.8.0",
-    "callsites": "^3.0.0",
-    "chalk": "^2.0.1",
-    "graceful-fs": "^4.1.15",
+    "@jest/types": "^26.0.0-alpha.0",
+    "chalk": "^4.0.0",
+    "graceful-fs": "^4.2.4",
     "is-ci": "^2.0.0",
-    "mkdirp": "^0.5.1",
-    "slash": "^2.0.0",
-    "source-map": "^0.6.0"
+    "make-dir": "^3.0.0"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.2",
-    "@types/is-ci": "^1.0.10",
-    "@types/mkdirp": "^0.5.2",
-    "@types/slash": "^2.0.0"
+    "@types/is-ci": "^2.0.0",
+    "@types/node": "*"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 10.14.2"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "845728f24b3ef41e450595c384e9b5c9fdf248a4"
+  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
 }

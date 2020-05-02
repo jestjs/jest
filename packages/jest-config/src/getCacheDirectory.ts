@@ -5,20 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import os from 'os';
-import {sync as realpath} from 'realpath-native';
+import * as path from 'path';
+import {tmpdir} from 'os';
+import type {Config} from '@jest/types';
+import {tryRealpath} from 'jest-util';
 
-const getCacheDirectory = () => {
+const getCacheDirectory: () => Config.Path = () => {
   const {getuid} = process;
-  const tmpdir = path.join(realpath(os.tmpdir()), 'jest');
+  const tmpdirPath = path.join(tryRealpath(tmpdir()), 'jest');
   if (getuid == null) {
-    return tmpdir;
+    return tmpdirPath;
   } else {
     // On some platforms tmpdir() is `/tmp`, causing conflicts between different
     // users and permission issues. Adding an additional subdivision by UID can
     // help.
-    return `${tmpdir}_${getuid.call(process).toString(36)}`;
+    return `${tmpdirPath}_${getuid.call(process).toString(36)}`;
   }
 };
 

@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import crypto from 'crypto';
-import path from 'path';
-import fs from 'graceful-fs';
-import {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
+import {createHash} from 'crypto';
+import * as path from 'path';
+import * as fs from 'graceful-fs';
+import type {HasteImpl, WorkerMessage, WorkerMetadata} from './types';
 import blacklist from './blacklist';
 import H from './constants';
 import * as dependencyExtractor from './lib/dependencyExtractor';
@@ -19,10 +19,7 @@ let hasteImpl: HasteImpl | null = null;
 let hasteImplModulePath: string | null = null;
 
 function sha1hex(content: string | Buffer): string {
-  return crypto
-    .createHash('sha1')
-    .update(content)
-    .digest('hex');
+  return createHash('sha1').update(content).digest('hex');
 }
 
 export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {

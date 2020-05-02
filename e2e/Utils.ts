@@ -3,28 +3,30 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
-import fs from 'fs';
-import path from 'path';
-import {Config} from '@jest/types';
+import * as path from 'path';
+import * as fs from 'graceful-fs';
+import type {Config} from '@jest/types';
 
-import {sync as spawnSync, ExecaReturns} from 'execa';
-import {createDirectory} from 'jest-util';
-import rimraf from 'rimraf';
+// eslint-disable-next-line import/named
+import {ExecaReturnValue, sync as spawnSync} from 'execa';
+import makeDir = require('make-dir');
+import rimraf = require('rimraf');
+import dedent = require('dedent');
+import which = require('which');
 
-export type RunResult = ExecaReturns & {
+interface RunResult extends ExecaReturnValue {
   status: number;
   error: Error;
-};
+}
 export const run = (cmd: string, cwd?: Config.Path): RunResult => {
   const args = cmd.split(/\s/).slice(1);
   const spawnOptions = {cwd, preferLocal: false, reject: false};
   const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions) as RunResult;
 
   // For compat with cross-spawn
-  result.status = result.code;
+  result.status = result.exitCode;
 
   if (result.status !== 0) {
     const message = `
@@ -44,9 +46,9 @@ export const linkJestPackage = (packageName: string, cwd: Config.Path) => {
   const packagesDir = path.resolve(__dirname, '../packages');
   const packagePath = path.resolve(packagesDir, packageName);
   const destination = path.resolve(cwd, 'node_modules/', packageName);
-  createDirectory(destination);
+  makeDir.sync(destination);
   rimraf.sync(destination);
-  fs.symlinkSync(packagePath, destination, 'dir');
+  fs.symlinkSync(packagePath, destination, 'junction');
 };
 
 export const makeTemplate = (
@@ -75,18 +77,53 @@ export const writeFiles = (
   directory: string,
   files: {[filename: string]: string},
 ) => {
-  createDirectory(directory);
+  makeDir.sync(directory);
   Object.keys(files).forEach(fileOrPath => {
     const dirname = path.dirname(fileOrPath);
 
     if (dirname !== '/') {
-      createDirectory(path.join(directory, dirname));
+      makeDir.sync(path.join(directory, dirname));
     }
     fs.writeFileSync(
       path.resolve(directory, ...fileOrPath.split('/')),
-      files[fileOrPath],
+      dedent(files[fileOrPath]),
     );
   });
+};
+
+export const writeSymlinks = (
+  directory: string,
+  symlinks: {[existingFile: string]: string},
+) => {
+  makeDir.sync(directory);
+  Object.keys(symlinks).forEach(fileOrPath => {
+    const symLinkPath = symlinks[fileOrPath];
+    const dirname = path.dirname(symLinkPath);
+
+    if (dirname !== '/') {
+      makeDir.sync(path.join(directory, dirname));
+    }
+    fs.symlinkSync(
+      path.resolve(directory, ...fileOrPath.split('/')),
+      path.resolve(directory, ...symLinkPath.split('/')),
+      'junction',
+    );
+  });
+};
+
+const NUMBER_OF_TESTS_TO_FORCE_USING_WORKERS = 25;
+/**
+ * Forces Jest to use workers by generating many test files to run.
+ * Slow and modifies the test output. Use sparingly.
+ */
+export const generateTestFilesToForceUsingWorkers = () => {
+  const testFiles: Record<string, string> = {};
+  for (let i = 0; i <= NUMBER_OF_TESTS_TO_FORCE_USING_WORKERS; i++) {
+    testFiles[`__tests__/test${i}.test.js`] = `
+      test.todo('test ${i}');
+    `;
+  }
+  return testFiles;
 };
 
 export const copyDir = (src: string, dest: string) => {
@@ -105,7 +142,7 @@ export const copyDir = (src: string, dest: string) => {
 
 export const replaceTime = (str: string) =>
   str
-    .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
+    .replace(/\d*\.?\d+ m?s\b/g, '<<REPLACED>>')
     .replace(/, estimated <<REPLACED>>/g, '');
 
 // Since Jest does not guarantee the order of tests we'll sort the output.
@@ -128,7 +165,7 @@ export const createEmptyPackage = (
     },
   };
 
-  createDirectory(directory);
+  makeDir.sync(directory);
   packageJson || (packageJson = DEFAULT_PACKAGE_JSON);
   fs.writeFileSync(
     path.resolve(directory, 'package.json'),
@@ -157,7 +194,7 @@ export const extractSummary = (stdout: string) => {
   const rest = stdout
     .replace(match[0], '')
     // remove all timestamps
-    .replace(/\s*\(\d*\.?\d+m?s\)$/gm, '');
+    .replace(/\s*\(\d*\.?\d+ m?s\b\)$/gm, '');
 
   return {
     rest: rest.trim(),
@@ -224,4 +261,20 @@ export const normalizeIcons = (str: string) => {
   return str
     .replace(new RegExp('\u00D7', 'g'), '\u2715')
     .replace(new RegExp('\u221A', 'g'), '\u2713');
+};
+
+// Certain environments (like CITGM and GH Actions) do not come with mercurial installed
+let hgIsInstalled: boolean | null = null;
+
+export const testIfHg = (...args: Parameters<typeof test>) => {
+  if (hgIsInstalled === null) {
+    hgIsInstalled = which.sync('hg', {nothrow: true}) !== null;
+  }
+
+  if (hgIsInstalled) {
+    test(...args);
+  } else {
+    console.warn('Mercurial (hg) is not installed - skipping some tests');
+    test.skip(...args);
+  }
 };

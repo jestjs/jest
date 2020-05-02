@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import JestHasteMap from 'jest-haste-map';
+import * as path from 'path';
+import JestHasteMap = require('jest-haste-map');
 import {cleanup, writeFiles} from '../Utils';
 
 // Directory must be here for Watchman to be enabled.

@@ -5,9 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Circus, Config, Global} from '@jest/types';
-import {JestEnvironment} from '@jest/environment';
-import {AssertionResult, Status, TestResult} from '@jest/test-result';
+import type {Circus, Config, Global} from '@jest/types';
+import type {JestEnvironment} from '@jest/environment';
+import {
+  AssertionResult,
+  Status,
+  TestResult,
+  createEmptyTestResult,
+} from '@jest/test-result';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import {
@@ -18,10 +23,10 @@ import {
 } from 'jest-snapshot';
 import throat from 'throat';
 import {
+  ROOT_DESCRIBE_BLOCK_NAME,
   addEventHandler,
   dispatch,
   getState as getRunnerState,
-  ROOT_DESCRIBE_BLOCK_NAME,
 } from '../state';
 import {getTestID} from '../utils';
 import run from '../run';
@@ -29,7 +34,9 @@ import globals from '..';
 
 type Process = NodeJS.Process;
 
-export const initialize = ({
+// TODO: hard to type
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const initialize = async ({
   config,
   environment,
   getPrettier,
@@ -100,14 +107,14 @@ export const initialize = ({
     addEventHandler(environment.handleTestEvent.bind(environment));
   }
 
-  dispatch({
+  await dispatch({
     name: 'setup',
     parentProcess,
     testNamePattern: globalConfig.testNamePattern,
   });
 
   if (config.testLocationInResults) {
-    dispatch({
+    await dispatch({
       name: 'include_test_location_in_result',
     });
   }
@@ -213,32 +220,17 @@ export const runAndTransformResultsToJestFormat = async ({
         .join('\n');
   }
 
-  dispatch({name: 'teardown'});
+  await dispatch({name: 'teardown'});
+
   return {
+    ...createEmptyTestResult(),
     console: undefined,
     displayName: config.displayName,
     failureMessage,
-    leaks: false, // That's legacy code, just adding it so Flow is happy.
     numFailingTests,
     numPassingTests,
     numPendingTests,
     numTodoTests,
-    openHandles: [],
-    perfStats: {
-      // populated outside
-      end: 0,
-      start: 0,
-    },
-    skipped: false,
-    snapshot: {
-      added: 0,
-      fileDeleted: false,
-      matched: 0,
-      unchecked: 0,
-      uncheckedKeys: [],
-      unmatched: 0,
-      updated: 0,
-    },
     sourceMaps: {},
     testExecError,
     testFilePath: testPath,
@@ -257,7 +249,7 @@ const handleSnapshotStateAfterRetry = (snapshotState: SnapshotStateType) => (
   }
 };
 
-const eventHandler = (event: Circus.Event) => {
+const eventHandler = async (event: Circus.Event) => {
   switch (event.name) {
     case 'test_start': {
       setState({currentTestName: getTestID(event.test)});

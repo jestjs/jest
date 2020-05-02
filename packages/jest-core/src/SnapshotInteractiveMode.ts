@@ -1,14 +1,13 @@
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
-import ansiEscapes from 'ansi-escapes';
-import {AggregatedResult, AssertionLocation} from '@jest/test-result';
+import chalk = require('chalk');
+import ansiEscapes = require('ansi-escapes');
+import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import {KEYS} from 'jest-watcher';
 import {pluralize, specialChars} from 'jest-util';
 
@@ -31,11 +30,11 @@ export default class SnapshotInteractiveMode {
     this._skippedNum = 0;
   }
 
-  isActive() {
+  isActive(): boolean {
     return this._isActive;
   }
 
-  getSkippedNum() {
+  getSkippedNum(): number {
     return this._skippedNum;
   }
 
@@ -155,7 +154,7 @@ export default class SnapshotInteractiveMode {
     return this._drawUIProgress();
   }
 
-  put(key: string) {
+  put(key: string): void {
     switch (key) {
       case 's':
         if (this._skippedNum === this._testAssertions.length) break;
@@ -192,19 +191,19 @@ export default class SnapshotInteractiveMode {
     }
   }
 
-  abort() {
+  abort(): void {
     this._isActive = false;
     this._skippedNum = 0;
     this._updateTestRunnerConfig(null, false);
   }
 
-  restart() {
+  restart(): void {
     this._skippedNum = 0;
     this._countPaths = this._testAssertions.length;
     this._run(false);
   }
 
-  updateWithResults(results: AggregatedResult) {
+  updateWithResults(results: AggregatedResult): void {
     const hasSnapshotFailure = !!results.snapshot.failure;
     if (hasSnapshotFailure) {
       this._drawUIOverlay();
@@ -232,7 +231,7 @@ export default class SnapshotInteractiveMode {
       assertion: AssertionLocation | null,
       shouldUpdateSnapshot: boolean,
     ) => unknown,
-  ) {
+  ): void {
     if (!failedSnapshotTestAssertions.length) {
       return;
     }

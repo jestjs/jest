@@ -7,9 +7,12 @@
  */
 
 const matcherUtils = require('jest-matcher-utils');
+const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
 const {iterableEquality, subsetEquality} = require('../utils');
 const {equals} = require('../jasmineUtils');
 const jestExpect = require('../');
+
+expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 jestExpect.extend({
   toBeDivisibleBy(actual, expected) {
@@ -17,6 +20,12 @@ jestExpect.extend({
     const message = pass
       ? () => `expected ${actual} not to be divisible by ${expected}`
       : () => `expected ${actual} to be divisible by ${expected}`;
+
+    return {message, pass};
+  },
+  toBeSymbol(actual, expected) {
+    const pass = actual === expected;
+    const message = () => `expected ${actual} to be Symbol ${expected}`;
 
     return {message, pass};
   },
@@ -133,4 +142,15 @@ it('defines asymmetric variadic matchers that can be prefixed by not', () => {
       value: jestExpect.not.toBeWithinRange(5, 7),
     }),
   ).not.toThrow();
+});
+
+it('prints the Symbol into the error message', () => {
+  const foo = Symbol('foo');
+  const bar = Symbol('bar');
+
+  expect(() =>
+    jestExpect({a: foo}).toEqual({
+      a: jestExpect.toBeSymbol(bar),
+    }),
+  ).toThrowErrorMatchingSnapshot();
 });

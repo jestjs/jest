@@ -6,17 +6,16 @@
  *
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as path from 'path';
 import {EventEmitter} from 'events';
-import anymatch from 'anymatch';
-import micromatch from 'micromatch';
-// eslint-disable-next-line
-import {Watcher} from 'fsevents';
+import * as fs from 'graceful-fs';
+import anymatch, {Matcher} from 'anymatch';
+import micromatch = require('micromatch');
 // @ts-ignore no types
 import walker from 'walker';
 
-let fsevents: (path: string) => Watcher;
+// @ts-ignore: this is for CI which runs linux and might not have this
+let fsevents: typeof import('fsevents') | null = null;
 try {
   fsevents = require('fsevents');
 } catch (e) {
@@ -40,22 +39,22 @@ type FsEventsWatcherEvent =
  */
 class FSEventsWatcher extends EventEmitter {
   public readonly root: string;
-  public readonly ignored?: anymatch.Matcher;
+  public readonly ignored?: Matcher;
   public readonly glob: Array<string>;
   public readonly dot: boolean;
   public readonly hasIgnore: boolean;
   public readonly doIgnore: (path: string) => boolean;
-  public readonly watcher: Watcher;
+  public readonly fsEventsWatchStopper: () => Promise<void>;
   private _tracked: Set<string>;
 
-  static isSupported() {
-    return fsevents !== undefined;
+  static isSupported(): boolean {
+    return fsevents !== null;
   }
 
   private static normalizeProxy(
     callback: (normalizedPath: string, stats: fs.Stats) => void,
   ) {
-    return (filepath: string, stats: fs.Stats) =>
+    return (filepath: string, stats: fs.Stats): void =>
       callback(path.normalize(filepath), stats);
   }
 
@@ -65,7 +64,7 @@ class FSEventsWatcher extends EventEmitter {
     fileCallback: (normalizedPath: string, stats: fs.Stats) => void,
     endCallback: Function,
     errorCallback: Function,
-    ignored?: anymatch.Matcher,
+    ignored?: Matcher,
   ) {
     walker(dir)
       .filterDir(
@@ -83,7 +82,7 @@ class FSEventsWatcher extends EventEmitter {
     dir: string,
     opts: {
       root: string;
-      ignored?: anymatch.Matcher;
+      ignored?: Matcher;
       glob: string | Array<string>;
       dot: boolean;
     },
@@ -105,9 +104,11 @@ class FSEventsWatcher extends EventEmitter {
     this.doIgnore = opts.ignored ? anymatch(opts.ignored) : () => false;
 
     this.root = path.resolve(dir);
-    this.watcher = fsevents(this.root);
+    this.fsEventsWatchStopper = fsevents.watch(
+      this.root,
+      this.handleEvent.bind(this),
+    );
 
-    this.watcher.start().on('change', this.handleEvent.bind(this));
     this._tracked = new Set();
     FSEventsWatcher.recReaddir(
       this.root,
@@ -126,12 +127,13 @@ class FSEventsWatcher extends EventEmitter {
   /**
    * End watching.
    */
-  close(callback?: () => void) {
-    this.watcher.stop();
-    this.removeAllListeners();
-    if (typeof callback === 'function') {
-      process.nextTick(callback.bind(null, null, true));
-    }
+  close(callback?: () => void): void {
+    this.fsEventsWatchStopper().then(() => {
+      this.removeAllListeners();
+      if (typeof callback === 'function') {
+        process.nextTick(callback.bind(null, null, true));
+      }
+    });
   }
 
   private isFileIncluded(relativePath: string) {
@@ -139,8 +141,8 @@ class FSEventsWatcher extends EventEmitter {
       return false;
     }
     return this.glob.length
-      ? micromatch.some(relativePath, this.glob, {dot: this.dot})
-      : this.dot || micromatch.some(relativePath, '**/*');
+      ? micromatch([relativePath], this.glob, {dot: this.dot}).length > 0
+      : this.dot || micromatch([relativePath], '**/*').length > 0;
   }
 
   private handleEvent(filepath: string) {

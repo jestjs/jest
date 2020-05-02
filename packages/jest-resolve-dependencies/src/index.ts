@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {FS as HasteFS} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
-import Resolver from 'jest-resolve'; // eslint-disable-line import/no-extraneous-dependencies
-import {isSnapshotPath, SnapshotResolver} from 'jest-snapshot';
+import type {Config} from '@jest/types';
+import type {FS as HasteFS} from 'jest-haste-map';
+import Resolver = require('jest-resolve');
+import {SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
 
 namespace DependencyResolver {
   export type ResolvedModule = {
@@ -57,8 +57,12 @@ class DependencyResolver {
           dependency,
           options,
         );
-      } catch (e) {
-        resolvedDependency = this._resolver.getMockModule(file, dependency);
+      } catch {
+        try {
+          resolvedDependency = this._resolver.getMockModule(file, dependency);
+        } catch {
+          // leave resolvedDependency as undefined if nothing can be found
+        }
       }
 
       if (resolvedDependency) {

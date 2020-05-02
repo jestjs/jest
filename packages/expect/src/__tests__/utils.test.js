@@ -147,12 +147,16 @@ describe('hasOwnProperty', () => {
   });
 });
 
-describe('getObjectSubset()', () => {
+describe('getObjectSubset', () => {
   [
     [{a: 'b', c: 'd'}, {a: 'd'}, {a: 'b'}],
     [{a: [1, 2], b: 'b'}, {a: [3, 4]}, {a: [1, 2]}],
     [[{a: 'b', c: 'd'}], [{a: 'z'}], [{a: 'b'}]],
-    [[1, 2], [1, 2, 3], [1, 2]],
+    [
+      [1, 2],
+      [1, 2, 3],
+      [1, 2],
+    ],
     [{a: [1]}, {a: [1, 2]}, {a: [1]}],
     [new Date('2015-11-30'), new Date('2016-12-30'), new Date('2015-11-30')],
   ].forEach(([object, subset, expected]) => {
@@ -163,6 +167,111 @@ describe('getObjectSubset()', () => {
         expect(getObjectSubset(object, subset)).toEqual(expected);
       },
     );
+  });
+
+  describe('returns the object instance if the subset has no extra properties', () => {
+    test('Date', () => {
+      const object = new Date('2015-11-30');
+      const subset = new Date('2016-12-30');
+
+      expect(getObjectSubset(object, subset)).toBe(object);
+    });
+  });
+
+  describe('returns the subset instance if its property values are equal', () => {
+    test('Object', () => {
+      const object = {key0: 'zero', key1: 'one', key2: 'two'};
+      const subset = {key0: 'zero', key2: 'two'};
+
+      expect(getObjectSubset(object, subset)).toBe(subset);
+    });
+
+    describe('Uint8Array', () => {
+      const equalObject = {'0': 0, '1': 0, '2': 0};
+      const typedArray = new Uint8Array(3);
+
+      test('expected', () => {
+        const object = equalObject;
+        const subset = typedArray;
+
+        expect(getObjectSubset(object, subset)).toBe(subset);
+      });
+
+      test('received', () => {
+        const object = typedArray;
+        const subset = equalObject;
+
+        expect(getObjectSubset(object, subset)).toBe(subset);
+      });
+    });
+  });
+
+  describe('calculating subsets of objects with circular references', () => {
+    test('simple circular references', () => {
+      const nonCircularObj = {a: 'world', b: 'something'};
+
+      const circularObjA = {a: 'hello'};
+      circularObjA.ref = circularObjA;
+
+      const circularObjB = {a: 'world'};
+      circularObjB.ref = circularObjB;
+
+      const primitiveInsteadOfRef = {b: 'something'};
+      primitiveInsteadOfRef.ref = 'not a ref';
+
+      const nonCircularRef = {b: 'something'};
+      nonCircularRef.ref = {};
+
+      expect(getObjectSubset(circularObjA, nonCircularObj)).toEqual({
+        a: 'hello',
+      });
+      expect(getObjectSubset(nonCircularObj, circularObjA)).toEqual({
+        a: 'world',
+      });
+
+      expect(getObjectSubset(circularObjB, circularObjA)).toEqual(circularObjB);
+
+      expect(getObjectSubset(primitiveInsteadOfRef, circularObjA)).toEqual({
+        ref: 'not a ref',
+      });
+      expect(getObjectSubset(nonCircularRef, circularObjA)).toEqual({
+        ref: {},
+      });
+    });
+
+    test('transitive circular references', () => {
+      const nonCircularObj = {a: 'world', b: 'something'};
+
+      const transitiveCircularObjA = {a: 'hello'};
+      transitiveCircularObjA.nestedObj = {parentObj: transitiveCircularObjA};
+
+      const transitiveCircularObjB = {a: 'world'};
+      transitiveCircularObjB.nestedObj = {parentObj: transitiveCircularObjB};
+
+      const primitiveInsteadOfRef = {};
+      primitiveInsteadOfRef.nestedObj = {otherProp: 'not the parent ref'};
+
+      const nonCircularRef = {};
+      nonCircularRef.nestedObj = {otherProp: {}};
+
+      expect(getObjectSubset(transitiveCircularObjA, nonCircularObj)).toEqual({
+        a: 'hello',
+      });
+      expect(getObjectSubset(nonCircularObj, transitiveCircularObjA)).toEqual({
+        a: 'world',
+      });
+
+      expect(
+        getObjectSubset(transitiveCircularObjB, transitiveCircularObjA),
+      ).toEqual(transitiveCircularObjB);
+
+      expect(
+        getObjectSubset(primitiveInsteadOfRef, transitiveCircularObjA),
+      ).toEqual({nestedObj: {otherProp: 'not the parent ref'}});
+      expect(getObjectSubset(nonCircularRef, transitiveCircularObjA)).toEqual({
+        nestedObj: {otherProp: {}},
+      });
+    });
   });
 });
 
@@ -201,6 +310,73 @@ describe('subsetEquality()', () => {
 
   test('undefined does not return errors', () => {
     expect(subsetEquality(undefined, {foo: 'bar'})).not.toBeTruthy();
+  });
+
+  describe('matching subsets with circular references', () => {
+    test('simple circular references', () => {
+      const circularObjA1 = {a: 'hello'};
+      circularObjA1.ref = circularObjA1;
+
+      const circularObjA2 = {a: 'hello'};
+      circularObjA2.ref = circularObjA2;
+
+      const circularObjB = {a: 'world'};
+      circularObjB.ref = circularObjB;
+
+      const primitiveInsteadOfRef = {};
+      primitiveInsteadOfRef.ref = 'not a ref';
+
+      expect(subsetEquality(circularObjA1, {})).toBe(true);
+      expect(subsetEquality({}, circularObjA1)).toBe(false);
+      expect(subsetEquality(circularObjA2, circularObjA1)).toBe(true);
+      expect(subsetEquality(circularObjB, circularObjA1)).toBe(false);
+      expect(subsetEquality(primitiveInsteadOfRef, circularObjA1)).toBe(false);
+    });
+
+    test('referenced object on same level should not regarded as circular reference', () => {
+      const referencedObj = {abc: 'def'};
+      const object = {
+        a: {abc: 'def'},
+        b: {abc: 'def', zzz: 'zzz'},
+      };
+      const thisIsNotCircular = {
+        a: referencedObj,
+        b: referencedObj,
+      };
+      expect(subsetEquality(object, thisIsNotCircular)).toBeTruthy();
+    });
+
+    test('transitive circular references', () => {
+      const transitiveCircularObjA1 = {a: 'hello'};
+      transitiveCircularObjA1.nestedObj = {parentObj: transitiveCircularObjA1};
+
+      const transitiveCircularObjA2 = {a: 'hello'};
+      transitiveCircularObjA2.nestedObj = {
+        parentObj: transitiveCircularObjA2,
+      };
+
+      const transitiveCircularObjB = {a: 'world'};
+      transitiveCircularObjB.nestedObj = {
+        parentObj: transitiveCircularObjB,
+      };
+
+      const primitiveInsteadOfRef = {};
+      primitiveInsteadOfRef.nestedObj = {
+        parentObj: 'not the parent ref',
+      };
+
+      expect(subsetEquality(transitiveCircularObjA1, {})).toBe(true);
+      expect(subsetEquality({}, transitiveCircularObjA1)).toBe(false);
+      expect(
+        subsetEquality(transitiveCircularObjA2, transitiveCircularObjA1),
+      ).toBe(true);
+      expect(
+        subsetEquality(transitiveCircularObjB, transitiveCircularObjA1),
+      ).toBe(false);
+      expect(
+        subsetEquality(primitiveInsteadOfRef, transitiveCircularObjA1),
+      ).toBe(false);
+    });
   });
 });
 

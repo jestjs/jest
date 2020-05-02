@@ -6,14 +6,29 @@
  *
  */
 
-import path from 'path';
-import Runtime from 'jest-runtime';
+import * as path from 'path';
+import Runtime = require('jest-runtime');
 import {normalize} from 'jest-config';
 import {Test} from 'jest-runner';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import SearchSource, {SearchResult} from '../SearchSource';
 
 jest.setTimeout(15000);
+
+jest.mock('graceful-fs', () => {
+  const realFs = jest.requireActual('fs');
+
+  return {
+    ...realFs,
+    statSync: path => {
+      if (path === '/foo/bar/prefix') {
+        return {isDirectory: () => true};
+      }
+
+      return realFs.statSync(path);
+    },
+  };
+});
 
 const rootDir = path.resolve(__dirname, 'test_root');
 const testRegex = path.sep + '__testtests__' + path.sep;
@@ -386,7 +401,6 @@ describe('SearchSource', () => {
               '__tests__',
               'haste_impl.js',
             ),
-            providesModuleNodeModules: [],
           },
           name: 'SearchSource-findRelatedTests-tests',
           rootDir,
@@ -514,6 +528,65 @@ describe('SearchSource', () => {
         const data = searchSource.findTestsByPaths(input);
         expect(data.tests).toEqual([]);
       }
+    });
+  });
+
+  describe('findRelatedSourcesFromTestsInChangedFiles', () => {
+    const rootDir = path.resolve(
+      __dirname,
+      '../../../jest-runtime/src/__tests__/test_root',
+    );
+
+    beforeEach(async () => {
+      const {options: config} = normalize(
+        {
+          haste: {
+            hasteImplModulePath: path.resolve(
+              __dirname,
+              '../../../jest-haste-map/src/__tests__/haste_impl.js',
+            ),
+          },
+          name: 'SearchSource-findRelatedSourcesFromTestsInChangedFiles-tests',
+          rootDir,
+        },
+        {} as Config.Argv,
+      );
+      const context = await Runtime.createContext(config, {
+        maxWorkers,
+        watchman: false,
+      });
+      searchSource = new SearchSource(context);
+    });
+
+    it('return empty set if no SCM', () => {
+      const requireRegularModule = path.join(
+        rootDir,
+        'RequireRegularModule.js',
+      );
+      const sources = searchSource.findRelatedSourcesFromTestsInChangedFiles({
+        changedFiles: new Set([requireRegularModule]),
+        repos: {
+          git: new Set(),
+          hg: new Set(),
+        },
+      });
+      expect(sources).toEqual([]);
+    });
+
+    it('return sources required by tests', () => {
+      const regularModule = path.join(rootDir, 'RegularModule.js');
+      const requireRegularModule = path.join(
+        rootDir,
+        'RequireRegularModule.js',
+      );
+      const sources = searchSource.findRelatedSourcesFromTestsInChangedFiles({
+        changedFiles: new Set([requireRegularModule]),
+        repos: {
+          git: new Set('/path/to/git'),
+          hg: new Set(),
+        },
+      });
+      expect(sources).toEqual([regularModule]);
     });
   });
 });

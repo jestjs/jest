@@ -5,9 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import prettyFormat from 'pretty-format';
+import prettyFormat = require('pretty-format');
 
-export default function isError(potentialError: any) {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export default function isError(
+  potentialError: any,
+): {isError: boolean; message: string | null} {
   // duck-type Error, see #2549
   const isError =
     potentialError !== null &&

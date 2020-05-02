@@ -8,70 +8,54 @@
 
 'use strict';
 
-import path from 'path';
-import fs from 'graceful-fs';
+import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {skipSuiteOnWindows} from '@jest/test-utils';
 
+import {getSha1, worker} from '../worker';
 import H from '../constants';
 
-const {worker, getSha1} = require('../worker');
-
-const rootDir = '/project';
-let mockFs;
-let readFileSync;
-let readFile;
-
-describe('worker', () => {
-  skipSuiteOnWindows();
-
-  beforeEach(() => {
-    mockFs = {
-      '/project/fruits/Banana.js': `
+jest.mock('graceful-fs', () => {
+  const mockFs = {
+    '/project/fruits/Banana.js': `
         const Strawberry = require("Strawberry");
       `,
-      '/project/fruits/Pear.js': `
+    '/project/fruits/Pear.js': `
         const Banana = require("Banana");
         const Strawberry = require('Strawberry');
         const Lime = loadModule('Lime');
       `,
-      '/project/fruits/Strawberry.js': `
+    '/project/fruits/Strawberry.js': `
         // Strawberry!
       `,
-      '/project/fruits/apple.png': Buffer.from([
-        137,
-        80,
-        78,
-        71,
-        13,
-        10,
-        26,
-        10,
-      ]),
-      '/project/package.json': `
+    '/project/fruits/apple.png': Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]),
+    '/project/package.json': `
         {
           "name": "haste-package",
           "main": "foo.js"
         }
       `,
-    };
+  };
 
-    readFileSync = fs.readFileSync;
-    readFile = fs.readFile;
-
-    fs.readFileSync = jest.fn((path, options) => {
+  return {
+    ...jest.genMockFromModule('graceful-fs'),
+    readFileSync: jest.fn((path, options) => {
       if (mockFs[path]) {
         return options === 'utf8' ? mockFs[path] : Buffer.from(mockFs[path]);
       }
 
       throw new Error(`Cannot read path '${path}'.`);
-    });
+    }),
+  };
+});
 
-    fs.readFile = jest.fn(readFile);
-  });
+const rootDir = '/project';
 
-  afterEach(() => {
-    fs.readFileSync = readFileSync;
-    fs.readFile = readFile;
+describe('worker', () => {
+  skipSuiteOnWindows();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
   it('parses JavaScript files and extracts module information', async () => {

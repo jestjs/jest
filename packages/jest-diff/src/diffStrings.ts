@@ -7,7 +7,7 @@
 
 import diffSequences from 'diff-sequences';
 
-import {Diff, DIFF_EQUAL, DIFF_DELETE, DIFF_INSERT} from './cleanupSemantic';
+import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 
 const diffStrings = (a: string, b: string): Array<Diff> => {
   const isCommon = (aIndex: number, bIndex: number) => a[aIndex] === b[bIndex];

@@ -54,7 +54,7 @@ const REQUIRE_OR_DYNAMIC_IMPORT_RE = createRegExp(
 
 const IMPORT_OR_EXPORT_RE = createRegExp(
   [
-    '\\b(?:import|export)\\s+(?!type(?:of)?\\s+)[^\'"]+\\s+from\\s+',
+    '\\b(?:import|export)\\s+(?!type(?:of)?\\s+)(?:[^\'"]+\\s+from\\s+)?',
     CAPTURE_STRING_LITERAL(1),
   ],
   'g',
@@ -63,7 +63,6 @@ const IMPORT_OR_EXPORT_RE = createRegExp(
 const JEST_EXTENSIONS_RE = createRegExp(
   [
     ...functionCallStart(
-      'require\\s*\\.\\s*(?:requireActual|requireMock)',
       'jest\\s*\\.\\s*(?:requireActual|requireMock|genMockFromModule)',
     ),
     CAPTURE_STRING_LITERAL(1),

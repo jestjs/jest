@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
-import ansiEscapes from 'ansi-escapes';
-import stringLength from 'string-length';
+import chalk = require('chalk');
+import ansiEscapes = require('ansi-escapes');
+import stringLength = require('string-length');
 
 export const printPatternCaret = (
   pattern: string,
   pipe: NodeJS.WritableStream,
-) => {
+): void => {
   const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
 
   pipe.write(ansiEscapes.eraseDown);
@@ -24,7 +24,7 @@ export const printRestoredPatternCaret = (
   pattern: string,
   currentUsageRows: number,
   pipe: NodeJS.WritableStream,
-) => {
+): void => {
   const inputText = `${chalk.dim(' pattern \u203A')} ${pattern}`;
 
   pipe.write(

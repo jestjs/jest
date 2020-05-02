@@ -5,11 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Script} from 'vm';
-import {Circus, Config, Global} from '@jest/types';
-import jestMock, {ModuleMocker} from 'jest-mock';
-import {ScriptTransformer} from '@jest/transform';
-import {JestFakeTimers as FakeTimers} from '@jest/fake-timers';
+import type {Context, Script} from 'vm';
+import type {Circus, Config, Global} from '@jest/types';
+import jestMock = require('jest-mock');
+import type {
+  JestFakeTimers as LegacyFakeTimers,
+  LolexFakeTimers,
+} from '@jest/fake-timers';
 
 type JestMockFn = typeof jestMock.fn;
 type JestMockSpyOn = typeof jestMock.spyOn;
@@ -24,6 +26,7 @@ export type EnvironmentContext = Partial<{
 
 // Different Order than https://nodejs.org/api/modules.html#modules_the_module_wrapper , however needs to be in the form [jest-transform]ScriptTransformer accepts
 export type ModuleWrapper = (
+  this: Module['exports'],
   module: Module,
   exports: Module['exports'],
   require: Module['require'],
@@ -37,22 +40,23 @@ export type ModuleWrapper = (
 export declare class JestEnvironment {
   constructor(config: Config.ProjectConfig, context?: EnvironmentContext);
   global: Global.Global;
-  fakeTimers: FakeTimers<unknown> | null;
-  moduleMocker: ModuleMocker | null;
-  runScript(
-    script: Script,
-  ): {[ScriptTransformer.EVAL_RESULT_VARIABLE]: ModuleWrapper} | null;
+  fakeTimers: LegacyFakeTimers<unknown> | null;
+  fakeTimersLolex: LolexFakeTimers | null;
+  moduleMocker: jestMock.ModuleMocker | null;
+  /**
+   * @deprecated implement getVmContext instead
+   */
+  runScript<T = unknown>(script: Script): T | null;
+  getVmContext?(): Context | null;
   setup(): Promise<void>;
   teardown(): Promise<void>;
-  handleTestEvent?(event: Circus.Event, state: Circus.State): void;
+  handleTestEvent?(
+    event: Circus.Event,
+    state: Circus.State,
+  ): void | Promise<void>;
 }
 
 export type Module = NodeModule;
-
-export interface LocalModuleRequire extends NodeRequire {
-  requireActual(moduleName: string): unknown;
-  requireMock(moduleName: string): unknown;
-}
 
 // TODO: Move to some separate package
 export interface Jest {
@@ -62,6 +66,11 @@ export interface Jest {
    * @deprecated Use `expect.extend` instead
    */
   addMatchers(matchers: Record<string, any>): void;
+  /**
+   * Advances all timers by the needed milliseconds so that only the next timeouts/intervals will run.
+   * Optionally, you can provide steps, so it will run steps amount of next timeouts/intervals.
+   */
+  advanceTimersToNextTimer(steps?: number): void;
   /**
    * Disables automatic mocking in the module loader.
    */

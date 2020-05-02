@@ -10,11 +10,11 @@ import runJest from '../runJest';
 describe('Fake promises', () => {
   it('should be possible to resolve with fake timers using immediates', () => {
     const result = runJest('fake-promises/immediate');
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
   });
 
   it('should be possible to resolve with fake timers using asap', () => {
     const result = runJest('fake-promises/asap');
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
   });
 });

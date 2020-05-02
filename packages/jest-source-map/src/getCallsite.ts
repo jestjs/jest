@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'graceful-fs';
-import callsites, {CallSite} from 'callsites';
+import {readFileSync} from 'graceful-fs';
+import callsites = require('callsites');
 import {SourceMapConsumer} from 'source-map';
-import {SourceMapRegistry} from './types';
+import type {SourceMapRegistry} from './types';
 
 // Copied from https://github.com/rexxars/sourcemap-decorate-callsites/blob/5b9735a156964973a75dc62fd2c7f0c1975458e8/lib/index.js#L113-L158
 const addSourceMapConsumer = (
-  callsite: CallSite,
+  callsite: callsites.CallSite,
   consumer: SourceMapConsumer,
 ) => {
   const getLineNumber = callsite.getLineNumber;
@@ -46,14 +46,17 @@ const addSourceMapConsumer = (
   });
 };
 
-export default (level: number, sourceMaps?: SourceMapRegistry | null) => {
+export default (
+  level: number,
+  sourceMaps?: SourceMapRegistry | null,
+): callsites.CallSite => {
   const levelAfterThisCall = level + 1;
   const stack = callsites()[levelAfterThisCall];
   const sourceMapFileName = sourceMaps && sourceMaps[stack.getFileName() || ''];
 
   if (sourceMapFileName) {
     try {
-      const sourceMap = fs.readFileSync(sourceMapFileName, 'utf8');
+      const sourceMap = readFileSync(sourceMapFileName, 'utf8');
       // @ts-ignore: Not allowed to pass string
       addSourceMapConsumer(stack, new SourceMapConsumer(sourceMap));
     } catch (e) {

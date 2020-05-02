@@ -32,14 +32,37 @@ const SHOULD_NOT_PASS_IN_JEST = new Set([
   'spyOnProperty.test.js',
 ]);
 
+const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
+
 testFiles.forEach(testFile => {
   test(`${testFile} errors in errorOnDeprecated mode`, () => {
     const result = runJest('error-on-deprecated', [
       testFile,
       '--errorOnDeprecated',
     ]);
-    expect(result.status).toBe(1);
-    const {rest} = extractSummary(result.stderr);
+    expect(result.exitCode).toBe(1);
+    let {rest} = extractSummary(result.stderr);
+
+    if (testFile === 'defaultTimeoutInterval.test.js') {
+      const lineEntry = '(__tests__/defaultTimeoutInterval.test.js:10:3)';
+
+      if (nodeMajorVersion < 10) {
+        expect(rest).toContain(`at Object.<anonymous>.test ${lineEntry}`);
+
+        rest = rest.replace(
+          `at Object.<anonymous>.test ${lineEntry}`,
+          `at Object.<anonymous> ${lineEntry}`,
+        );
+      } else if (nodeMajorVersion < 12) {
+        expect(rest).toContain(`at Object.test ${lineEntry}`);
+
+        rest = rest.replace(
+          `at Object.test ${lineEntry}`,
+          `at Object.<anonymous> ${lineEntry}`,
+        );
+      }
+    }
+
     expect(wrap(rest)).toMatchSnapshot();
   });
 });
@@ -52,6 +75,6 @@ testFiles.forEach(testFile => {
 
   test(testName, () => {
     const result = runJest('error-on-deprecated', [testFile]);
-    expect(result.status).toBe(shouldPass ? 1 : 0);
+    expect(result.exitCode).toBe(shouldPass ? 1 : 0);
   });
 });

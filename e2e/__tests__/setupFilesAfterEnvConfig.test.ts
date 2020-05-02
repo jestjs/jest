@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {json as runWithJson} from '../runJest';
 import {writeFiles} from '../Utils';
 
@@ -41,7 +41,7 @@ describe('setupFilesAfterEnv', () => {
     expect(result.json.numTotalTests).toBe(2);
     expect(result.json.numPassedTests).toBe(2);
     expect(result.json.testResults.length).toBe(2);
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
   });
 
   it('requires setup files *after* the test runners are required', () => {
@@ -62,6 +62,6 @@ describe('setupFilesAfterEnv', () => {
     expect(result.json.numTotalTests).toBe(1);
     expect(result.json.numPassedTests).toBe(1);
     expect(result.json.testResults.length).toBe(1);
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
   });
 });

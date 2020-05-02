@@ -6,15 +6,15 @@
  */
 
 import {AssertionError} from 'assert';
-import {Circus} from '@jest/types';
+import type {Circus} from '@jest/types';
 import {
+  DiffOptions,
   diff,
   printExpected,
   printReceived,
-  DiffOptions,
 } from 'jest-matcher-utils';
-import chalk from 'chalk';
-import prettyFormat from 'pretty-format';
+import chalk = require('chalk');
+import prettyFormat = require('pretty-format');
 
 interface AssertionErrorWithStack extends AssertionError {
   stack: string;
@@ -39,32 +39,30 @@ const humanReadableOperators: Record<string, string> = {
 };
 
 const formatNodeAssertErrors = (event: Circus.Event, state: Circus.State) => {
-  switch (event.name) {
-    case 'test_done': {
-      event.test.errors = event.test.errors.map((errors: Circus.TestError) => {
-        let error;
-        if (Array.isArray(errors)) {
-          const [originalError, asyncError] = errors;
+  if (event.name === 'test_done') {
+    event.test.errors = event.test.errors.map((errors: Circus.TestError) => {
+      let error;
+      if (Array.isArray(errors)) {
+        const [originalError, asyncError] = errors;
 
-          if (originalError == null) {
-            error = asyncError;
-          } else if (!originalError.stack) {
-            error = asyncError;
+        if (originalError == null) {
+          error = asyncError;
+        } else if (!originalError.stack) {
+          error = asyncError;
 
-            error.message = originalError.message
-              ? originalError.message
-              : `thrown: ${prettyFormat(originalError, {maxDepth: 3})}`;
-          } else {
-            error = originalError;
-          }
+          error.message = originalError.message
+            ? originalError.message
+            : `thrown: ${prettyFormat(originalError, {maxDepth: 3})}`;
         } else {
-          error = errors;
+          error = originalError;
         }
-        return isAssertionError(error)
-          ? {message: assertionErrorMessage(error, {expand: state.expand})}
-          : errors;
-      });
-    }
+      } else {
+        error = errors;
+      }
+      return isAssertionError(error)
+        ? {message: assertionErrorMessage(error, {expand: state.expand})}
+        : errors;
+    });
   }
 };
 
@@ -77,6 +75,10 @@ const getOperatorName = (operator: string | undefined, stack: string) => {
   }
   if (stack.match('.throws')) {
     return 'throws';
+  }
+  // this fallback is only needed for versions older than node 10
+  if (stack.match('.fail')) {
+    return 'fail';
   }
   return '';
 };
@@ -101,10 +103,17 @@ const assertThrowingMatcherHint = (operatorName: string) =>
 const assertMatcherHint = (
   operator: string | undefined | null,
   operatorName: string,
+  expected: unknown,
 ) => {
   let message = '';
 
-  if (operatorName) {
+  if (operator === '==' && expected === true) {
+    message =
+      chalk.dim('assert') +
+      chalk.dim('(') +
+      chalk.red('received') +
+      chalk.dim(')');
+  } else if (operatorName) {
     message =
       chalk.dim('assert') +
       chalk.dim('.' + operatorName + '(') +
@@ -112,15 +121,6 @@ const assertMatcherHint = (
       chalk.dim(', ') +
       chalk.green('expected') +
       chalk.dim(')');
-  }
-
-  if (operator === '==') {
-    message +=
-      ' or ' +
-      chalk.dim('assert') +
-      chalk.dim('(') +
-      chalk.red('received') +
-      chalk.dim(') ');
   }
 
   return message;
@@ -159,8 +159,16 @@ function assertionErrorMessage(
     );
   }
 
+  if (operatorName === 'fail') {
+    return (
+      buildHintString(assertMatcherHint(operator, operatorName, expected)) +
+      chalk.reset(hasCustomMessage ? 'Message:\n  ' + message : '') +
+      trimmedStack
+    );
+  }
+
   return (
-    buildHintString(assertMatcherHint(operator, operatorName)) +
+    buildHintString(assertMatcherHint(operator, operatorName, expected)) +
     chalk.reset(`Expected value ${operatorMessage(operator)}`) +
     `  ${printExpected(expected)}\n` +
     chalk.reset(`Received:\n`) +

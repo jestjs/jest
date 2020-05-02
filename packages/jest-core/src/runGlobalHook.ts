@@ -5,11 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {extname} from 'path';
-import pEachSeries from 'p-each-series';
-import {addHook} from 'pirates';
-import {Config} from '@jest/types';
-import {Test} from 'jest-runner';
+import pEachSeries = require('p-each-series');
+import type {Config} from '@jest/types';
+import type {Test} from 'jest-runner';
 import {ScriptTransformer} from '@jest/transform';
 import {interopRequireDefault} from 'jest-util';
 
@@ -47,46 +45,17 @@ export default async ({
 
       const transformer = new ScriptTransformer(projectConfig);
 
-      // Load the transformer to avoid a cycle where we need to load a
-      // transformer in order to transform it in the require hooks
-      transformer.preloadTransformer(modulePath);
+      await transformer.requireAndTranspileModule(modulePath, async m => {
+        const globalModule = interopRequireDefault(m).default;
 
-      let transforming = false;
-      const revertHook = addHook(
-        (code, filename) => {
-          try {
-            transforming = true;
-            return (
-              transformer.transformSource(filename, code, false).code || code
-            );
-          } finally {
-            transforming = false;
-          }
-        },
-        {
-          exts: [extname(modulePath)],
-          ignoreNodeModules: false,
-          matcher: (...args) => {
-            if (transforming) {
-              // Don't transform any dependency required by the transformer itself
-              return false;
-            }
-            return transformer.shouldTransform(...args);
-          },
-        },
-      );
+        if (typeof globalModule !== 'function') {
+          throw new TypeError(
+            `${moduleName} file must export a function at ${modulePath}`,
+          );
+        }
 
-      const globalModule = interopRequireDefault(require(modulePath)).default;
-
-      if (typeof globalModule !== 'function') {
-        throw new TypeError(
-          `${moduleName} file must export a function at ${modulePath}`,
-        );
-      }
-
-      await globalModule(globalConfig);
-
-      revertHook();
+        await globalModule(globalConfig);
+      });
     });
   }
 

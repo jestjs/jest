@@ -5,13 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {CoverageMapData} from 'istanbul-lib-coverage';
+import type {CoverageMapData} from 'istanbul-lib-coverage';
 
 export type DoneFn = (reason?: string | Error) => void;
 export type TestName = string;
-export type TestFn = (done?: DoneFn) => Promise<any> | void | undefined;
+export type TestFn = (
+  done?: DoneFn,
+) => Promise<void | undefined | unknown> | void | undefined;
 export type BlockFn = () => void;
 export type BlockName = string;
+export type HookFn = TestFn;
 
 export type Col = unknown;
 export type Row = Array<Col>;
@@ -66,8 +69,7 @@ export interface Describe extends DescribeBase {
   skip: DescribeBase;
 }
 
-// TODO: Maybe add `| Window` in the future?
-export interface Global extends NodeJS.Global {
+export interface TestFrameworkGlobals {
   it: ItConcurrent;
   test: ItConcurrent;
   fit: ItBase & {concurrent?: ItConcurrentBase};
@@ -76,10 +78,24 @@ export interface Global extends NodeJS.Global {
   describe: Describe;
   xdescribe: DescribeBase;
   fdescribe: DescribeBase;
+  beforeAll: HookFn;
+  beforeEach: HookFn;
+  afterEach: HookFn;
+  afterAll: HookFn;
+}
+
+export interface GlobalAdditions extends TestFrameworkGlobals {
   __coverage__: CoverageMapData;
   jasmine: Jasmine;
   fail: () => void;
   pending: () => void;
   spyOn: () => void;
   spyOnProperty: () => void;
+}
+
+export interface Global
+  extends GlobalAdditions,
+    // TODO: Maybe add `| Window` in the future?
+    Omit<NodeJS.Global, keyof GlobalAdditions> {
+  [extras: string]: any;
 }

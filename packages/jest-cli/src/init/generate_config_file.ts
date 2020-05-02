@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {defaults, descriptions} from 'jest-config';
 
 const stringifyOption = (
@@ -31,7 +31,10 @@ const stringifyOption = (
   );
 };
 
-const generateConfigFile = (results: Record<string, unknown>): string => {
+const generateConfigFile = (
+  results: Record<string, unknown>,
+  generateEsm = false,
+): string => {
   const {coverage, clearMocks, environment} = results;
 
   const overrides: Record<string, any> = {};
@@ -75,7 +78,7 @@ const generateConfigFile = (results: Record<string, unknown>): string => {
   return (
     '// For a detailed explanation regarding each configuration property, visit:\n' +
     '// https://jestjs.io/docs/en/configuration.html\n\n' +
-    'module.exports = {\n' +
+    (generateEsm ? 'export default {\n' : 'module.exports = {\n') +
     properties.join('\n') +
     '};\n'
   );

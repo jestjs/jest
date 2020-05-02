@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import fs from 'fs';
-import path from 'path';
+import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
@@ -56,7 +56,7 @@ const snapshotEscapeSubstitutionFile = path.resolve(
 
 const initialTestData = fs.readFileSync(snapshotEscapeTestFile, 'utf8');
 
-const fileExists = filePath => {
+const fileExists = (filePath: string) => {
   try {
     return fs.statSync(filePath).isFile();
   } catch (e) {}
@@ -98,23 +98,24 @@ describe('Snapshot', () => {
   afterAll(cleanup);
 
   it('stores new snapshots on the first run', () => {
-    const result = runWithJson('snapshot', ['-w=1', '--ci=false']);
-    const json = result.json;
+    const {exitCode, json, stderr} = runWithJson('snapshot', [
+      '-w=1',
+      '--ci=false',
+    ]);
 
     expect(json.numTotalTests).toBe(5);
     expect(json.numPassedTests).toBe(5);
     expect(json.numFailedTests).toBe(0);
     expect(json.numPendingTests).toBe(0);
-    expect(result.status).toBe(0);
+    expect(exitCode).toBe(0);
 
-    // $FlowFixMe dynamic require
     const content = require(snapshotFile);
     expect(
       content['snapshot is not influenced by previous counter 1'],
     ).not.toBeUndefined();
 
-    expect(result.stderr).toMatch('5 snapshots written from 2 test suites');
-    expect(wrap(extractSummary(result.stderr).summary)).toMatchSnapshot();
+    expect(stderr).toMatch('5 snapshots written from 2 test suites');
+    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
   });
 
   it('works with escaped characters', () => {
@@ -127,7 +128,7 @@ describe('Snapshot', () => {
     let stderr = result.stderr;
 
     expect(stderr).toMatch('1 snapshot written');
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
     expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
 
     // Write the second snapshot
@@ -147,7 +148,7 @@ describe('Snapshot', () => {
 
     expect(stderr).toMatch('1 snapshot written');
     expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
 
     // Now let's check again if everything still passes.
     // If this test doesn't pass, some snapshot data was not properly escaped.
@@ -160,7 +161,7 @@ describe('Snapshot', () => {
 
     expect(stderr).not.toMatch('Snapshot Summary');
     expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
   });
 
   it('works with escaped regex', () => {
@@ -173,7 +174,7 @@ describe('Snapshot', () => {
     let stderr = result.stderr;
 
     expect(stderr).toMatch('2 snapshots written from 1 test suite.');
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
     expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
 
     result = runJest('snapshot-escape', [
@@ -187,7 +188,7 @@ describe('Snapshot', () => {
     // indicate that the snapshot couldn't be loaded properly.
     expect(stderr).not.toMatch('Snapshot Summary');
     expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
   });
 
   it('works with template literal substitutions', () => {
@@ -200,7 +201,7 @@ describe('Snapshot', () => {
     let stderr = result.stderr;
 
     expect(stderr).toMatch('1 snapshot written');
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
     expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
 
     result = runJest('snapshot-escape', [
@@ -214,7 +215,7 @@ describe('Snapshot', () => {
     // indicate that the snapshot couldn't be loaded properly.
     expect(stderr).not.toMatch('1 snapshot written');
     expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
-    expect(result.status).toBe(0);
+    expect(result.exitCode).toBe(0);
   });
 
   describe('Validation', () => {
@@ -238,7 +239,6 @@ describe('Snapshot', () => {
     it('works on subsequent runs without `-u`', () => {
       const firstRun = runWithJson('snapshot', ['-w=1', '--ci=false']);
 
-      // $FlowFixMe dynamic require
       const content = require(snapshotOfCopy);
       expect(content).not.toBe(undefined);
       const secondRun = runWithJson('snapshot', []);
@@ -257,7 +257,6 @@ describe('Snapshot', () => {
       const firstRun = runWithJson('snapshot', ['-w=1', '--ci=false']);
       fs.unlinkSync(copyOfTestPath);
 
-      // $FlowFixMe dynamic require
       const content = require(snapshotOfCopy);
       expect(content).not.toBe(undefined);
       const secondRun = runWithJson('snapshot', ['-w=1', '--ci=false', '-u']);

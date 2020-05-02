@@ -1,91 +1,91 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 1`] = `
-"
+
 
 
  pattern › c
 [MOCK - cursorSavePosition]
 [MOCK - cursorTo(12, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 2`] = `
-"
+
 
 
  pattern › co
 [MOCK - cursorSavePosition]
 [MOCK - cursorTo(13, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 3`] = `
-"
+
 
 
  pattern › con
 [MOCK - cursorSavePosition]
 [MOCK - cursorTo(14, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 4`] = `
-"
+
 
 
  pattern › con 
 [MOCK - cursorSavePosition]
 [MOCK - cursorTo(15, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 5`] = `
-"
+
 
 
  pattern › con 1
 [MOCK - cursorSavePosition]
 [MOCK - cursorTo(16, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 6`] = `
-"
+
 
 
  pattern › con 12
 [MOCK - cursorSavePosition]
 [MOCK - cursorTo(17, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 7`] = `
-"
+
 
 
  pattern › con 1
 [MOCK - cursorSavePosition]
 [MOCK - cursorTo(16, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 8`] = `
-"
+
 
 
  pattern › con 
 [MOCK - cursorSavePosition]
 [MOCK - cursorTo(15, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;
 
 exports[`Watch mode flows Pressing "T" enters pattern mode 9`] = `
-"
+
 
 
  pattern › con *
 [MOCK - cursorSavePosition]
 [MOCK - cursorTo(16, 5)]
-[MOCK - cursorRestorePosition]"
+[MOCK - cursorRestorePosition]
 `;

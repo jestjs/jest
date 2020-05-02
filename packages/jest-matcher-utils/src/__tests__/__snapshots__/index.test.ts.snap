@@ -1,106 +1,102 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`.ensureNoExpected() throws error when expected is not undefined with matcherName 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toBeDefined()</>
+exports[`ensureNoExpected() throws error when expected is not undefined with matcherName 1`] = `
+<d>expect(</><r>received</><d>)[.not].toBeDefined()</>
 
-<bold>Matcher error</>: this matcher must not have an expected argument
-
-Expected has type:  object
-Expected has value: <green>{\\"a\\": 1}</>"
-`;
-
-exports[`.ensureNoExpected() throws error when expected is not undefined with matcherName and options 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeDefined<dim>()</>
-
-<bold>Matcher error</>: this matcher must not have an expected argument
+<b>Matcher error</>: this matcher must not have an expected argument
 
 Expected has type:  object
-Expected has value: <green>{\\"a\\": 1}</>"
+Expected has value: <g>{"a": 1}</>
 `;
 
-exports[`.ensureNumbers() throws error when expected is not a number (backward compatibility) 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toBeCloseTo(</><green>expected</><dim>)</>
+exports[`ensureNoExpected() throws error when expected is not undefined with matcherName and options 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toBeDefined<d>()</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<b>Matcher error</>: this matcher must not have an expected argument
+
+Expected has type:  object
+Expected has value: <g>{"a": 1}</>
+`;
+
+exports[`ensureNumbers() throws error when expected is not a number (backward compatibility) 1`] = `
+<d>expect(</><r>received</><d>)[.not].toBeCloseTo(</><g>expected</><d>)</>
+
+<b>Matcher error</>: <g>expected</> value must be a number or bigint
 
 Expected has type:  string
-Expected has value: <green>\\"not_a_number\\"</>"
+Expected has value: <g>"not_a_number"</>
 `;
 
-exports[`.ensureNumbers() throws error when received is not a number (backward compatibility) 1`] = `
-"<dim>expect(</><red>received</><dim>)[.not].toBeCloseTo(</><green>expected</><dim>)</>
+exports[`ensureNumbers() throws error when received is not a number (backward compatibility) 1`] = `
+<d>expect(</><r>received</><d>)[.not].toBeCloseTo(</><g>expected</><d>)</>
 
-<bold>Matcher error</>: <red>received</> value must be a number
+<b>Matcher error</>: <r>received</> value must be a number or bigint
 
 Received has type:  string
-Received has value: <red>\\"not_a_number\\"</>"
+Received has value: <r>"not_a_number"</>
 `;
 
-exports[`.ensureNumbers() with options promise empty isNot false received 1`] = `
-"<dim>expect(</><red>received</><dim>).</>toBeCloseTo<dim>(</><green>expected</><dim>, </><green>precision</><dim>)</>
+exports[`ensureNumbers() with options promise empty isNot false received 1`] = `
+<d>expect(</><r>received</><d>).</>toBeCloseTo<d>(</><g>expected</><d>, </><g>precision</><d>)</>
 
-<bold>Matcher error</>: <red>received</> value must be a number
+<b>Matcher error</>: <r>received</> value must be a number or bigint
 
 Received has type:  string
-Received has value: <red>\\"\\"</>"
+Received has value: <r>""</>
 `;
 
-exports[`.ensureNumbers() with options promise empty isNot true expected 1`] = `
-"<dim>expect(</><red>received</><dim>).</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+exports[`ensureNumbers() with options promise empty isNot true expected 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toBeCloseTo<d>(</><g>expected</><d>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<b>Matcher error</>: <g>expected</> value must be a number or bigint
 
-Expected has value: <green>undefined</>"
+Expected has value: <g>undefined</>
 `;
 
-exports[`.ensureNumbers() with options promise rejects isNot false expected 1`] = `
-"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+exports[`ensureNumbers() with options promise rejects isNot false expected 1`] = `
+<d>expect(</><r>received</><d>).</>rejects<d>.</>toBeCloseTo<d>(</><g>expected</><d>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<b>Matcher error</>: <g>expected</> value must be a number or bigint
 
 Expected has type:  string
-Expected has value: <green>\\"0\\"</>"
+Expected has value: <g>"0"</>
 `;
 
-exports[`.ensureNumbers() with options promise rejects isNot true received 1`] = `
-"<dim>expect(</><red>received</><dim>).</>rejects<dim>.</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+exports[`ensureNumbers() with options promise rejects isNot true received 1`] = `
+<d>expect(</><r>received</><d>).</>rejects<d>.</>not<d>.</>toBeCloseTo<d>(</><g>expected</><d>)</>
 
-<bold>Matcher error</>: <red>received</> value must be a number
+<b>Matcher error</>: <r>received</> value must be a number or bigint
 
 Received has type:  symbol
-Received has value: <red>Symbol(0.1)</>"
+Received has value: <r>Symbol(0.1)</>
 `;
 
-exports[`.ensureNumbers() with options promise resolves isNot false received 1`] = `
-"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+exports[`ensureNumbers() with options promise resolves isNot false received 1`] = `
+<d>expect(</><r>received</><d>).</>resolves<d>.</>toBeCloseTo<d>(</><g>expected</><d>)</>
 
-<bold>Matcher error</>: <red>received</> value must be a number
+<b>Matcher error</>: <r>received</> value must be a number or bigint
 
 Received has type:  boolean
-Received has value: <red>false</>"
+Received has value: <r>false</>
 `;
 
-exports[`.ensureNumbers() with options promise resolves isNot true expected 1`] = `
-"<dim>expect(</><red>received</><dim>).</>resolves<dim>.</>not<dim>.</>toBeCloseTo<dim>(</><green>expected</><dim>)</>
+exports[`ensureNumbers() with options promise resolves isNot true expected 1`] = `
+<d>expect(</><r>received</><d>).</>resolves<d>.</>not<d>.</>toBeCloseTo<d>(</><g>expected</><d>)</>
 
-<bold>Matcher error</>: <green>expected</> value must be a number
+<b>Matcher error</>: <g>expected</> value must be a number or bigint
 
-Expected has value: <green>null</>"
+Expected has value: <g>null</>
 `;
 
-exports[`.stringify() reduces maxDepth if stringifying very large objects 1`] = `"{\\"a\\": 1, \\"b\\": [Object]}"`;
+exports[`stringify() toJSON errors when comparing two objects 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-exports[`.stringify() reduces maxDepth if stringifying very large objects 2`] = `"{\\"a\\": 1, \\"b\\": {\\"0\\": \\"test\\", \\"1\\": \\"test\\", \\"2\\": \\"test\\", \\"3\\": \\"test\\", \\"4\\": \\"test\\", \\"5\\": \\"test\\", \\"6\\": \\"test\\", \\"7\\": \\"test\\", \\"8\\": \\"test\\", \\"9\\": \\"test\\"}}"`;
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
-exports[`.stringify() toJSON errors when comparing two objects 1`] = `
-"<dim>expect(</><red>received</><dim>).</>toEqual<dim>(</><green>expected</><dim>) // deep equality</>
-
-<green>- Expected</>
-<red>+ Received</>
-
-<dim>  Object {</>
-<green>-   \\"b\\": 1,</>
-<red>+   \\"a\\": 1,</>
-<dim>    \\"toJSON\\": [Function toJSON],</>
-<dim>  }</>"
+<d>  Object {</>
+<g>-   "b": 1,</>
+<r>+   "a": 1,</>
+<d>    "toJSON": [Function toJSON],</>
+<d>  }</>
 `;

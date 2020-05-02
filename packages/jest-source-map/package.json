@@ -1,6 +1,6 @@
 {
   "name": "@jest/source-map",
-  "version": "24.3.0",
+  "version": "26.0.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -11,17 +11,17 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "callsites": "^3.0.0",
-    "graceful-fs": "^4.1.15",
+    "graceful-fs": "^4.2.4",
     "source-map": "^0.6.0"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.2"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 10.14.2"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "3a7a4f3a3f5489ac8e07dcddf76bb949c482ec87"
+  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
 }

@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import util from 'util';
-import exit from 'exit';
-import {Config} from '@jest/types';
-import {AggregatedResult} from '@jest/test-result';
-import notifier from 'node-notifier';
-import {TestSchedulerContext, Context} from './types';
+import * as path from 'path';
+import * as util from 'util';
+import exit = require('exit');
+import type {Config} from '@jest/types';
+import type {AggregatedResult} from '@jest/test-result';
+import {pluralize} from 'jest-util';
+import type {Context, TestSchedulerContext} from './types';
 import BaseReporter from './base_reporter';
 
 const isDarwin = process.platform === 'darwin';
@@ -19,6 +19,7 @@ const isDarwin = process.platform === 'darwin';
 const icon = path.resolve(__dirname, '../assets/jest_logo.png');
 
 export default class NotifyReporter extends BaseReporter {
+  private _notifier = loadNotifier();
   private _startRun: (globalConfig: Config.GlobalConfig) => any;
   private _globalConfig: Config.GlobalConfig;
   private _context: TestSchedulerContext;
@@ -73,12 +74,13 @@ export default class NotifyReporter extends BaseReporter {
         (notifyMode === 'failure-change' && statusChanged))
     ) {
       const title = util.format('%s%d%% Passed', packageName, 100);
-      const message = util.format(
-        (isDarwin ? '\u2705 ' : '') + '%d tests passed',
+      const message = `${isDarwin ? '\u2705 ' : ''}${pluralize(
+        'test',
         result.numPassedTests,
-      );
+      )} passed`;
 
-      notifier.notify({icon, message, title});
+      // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/42303
+      this._notifier.notify({icon, message, timeout: false, title});
     } else if (
       testsHaveRun &&
       !success &&
@@ -106,20 +108,19 @@ export default class NotifyReporter extends BaseReporter {
       const quitAnswer = 'Exit tests';
 
       if (!watchMode) {
-        notifier.notify({
-          icon,
-          message,
-          title,
-        });
+        // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/42303
+        this._notifier.notify({icon, message, timeout: false, title});
       } else {
-        notifier.notify(
+        this._notifier.notify(
           {
             actions: [restartAnswer, quitAnswer],
             closeLabel: 'Close',
             icon,
             message,
+            timeout: false,
             title,
-          },
+            // https://github.com/DefinitelyTyped/DefinitelyTyped/pull/42303
+          } as any,
           (err, _, metadata) => {
             if (err || !metadata) {
               return;
@@ -138,5 +139,19 @@ export default class NotifyReporter extends BaseReporter {
 
     this._context.previousSuccess = success;
     this._context.firstRun = false;
+  }
+}
+
+function loadNotifier(): typeof import('node-notifier') {
+  try {
+    return require('node-notifier');
+  } catch (err) {
+    if (err.code !== 'MODULE_NOT_FOUND') {
+      throw err;
+    } else {
+      throw Error(
+        'notify reporter requires optional dependeny node-notifier but it was not found',
+      );
+    }
   }
 }

@@ -9,6 +9,7 @@
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {
   EXPECTED_COLOR,
+  MatcherHintOptions,
   RECEIVED_COLOR,
   matcherErrorMessage,
   matcherHint,
@@ -16,7 +17,6 @@ import {
   printExpected,
   printReceived,
   printWithType,
-  MatcherHintOptions,
 } from 'jest-matcher-utils';
 import {
   printExpectedConstructorName,
@@ -26,9 +26,10 @@ import {
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
 } from './print';
-import {
-  MatchersObject,
+import type {
+  ExpectationResult,
   MatcherState,
+  MatchersObject,
   RawMatcherFn,
   SyncExpectationResult,
 } from './types';
@@ -75,7 +76,12 @@ export const createMatcher = (
   matcherName: string,
   fromPromise?: boolean,
 ): RawMatcherFn =>
-  function(this: MatcherState, received: Function, expected: any) {
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  function (
+    this: MatcherState,
+    received: Function,
+    expected: any,
+  ): ExpectationResult {
     const options = {
       isNot: this.isNot,
       promise: this.promise,
@@ -217,7 +223,7 @@ const toThrowExpectedObject = (
   matcherName: string,
   options: MatcherHintOptions,
   thrown: Thrown | null,
-  expected: any,
+  expected: Error,
 ): SyncExpectationResult => {
   const pass = thrown !== null && thrown.message === expected.message;
 

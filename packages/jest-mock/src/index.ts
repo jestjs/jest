@@ -71,8 +71,6 @@ type MockFunctionState<T, Y extends Array<unknown>> = {
 };
 
 type MockFunctionConfig = {
-  isReturnValueLastSet: boolean;
-  defaultReturnValue: unknown;
   mockImpl: Function | undefined;
   mockName: string;
   specificReturnValues: Array<unknown>;
@@ -185,17 +183,17 @@ function matchArity(fn: Function, length: number): Function {
 
   switch (length) {
     case 1:
-      mockConstructor = function(this: unknown, _a: unknown) {
+      mockConstructor = function (this: unknown, _a: unknown) {
         return fn.apply(this, arguments);
       };
       break;
     case 2:
-      mockConstructor = function(this: unknown, _a: unknown, _b: unknown) {
+      mockConstructor = function (this: unknown, _a: unknown, _b: unknown) {
         return fn.apply(this, arguments);
       };
       break;
     case 3:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -205,7 +203,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 4:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -216,7 +214,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 5:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -228,7 +226,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 6:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -241,7 +239,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 7:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -255,7 +253,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 8:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -270,7 +268,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 9:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -286,7 +284,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     default:
-      mockConstructor = function(this: unknown) {
+      mockConstructor = function (this: unknown) {
         return fn.apply(this, arguments);
       };
       break;
@@ -456,8 +454,6 @@ class ModuleMockerClass {
 
   private _defaultMockConfig(): MockFunctionConfig {
     return {
-      defaultReturnValue: undefined,
-      isReturnValueLastSet: false,
       mockImpl: undefined,
       mockName: 'jest.fn()',
       specificMockImpls: [],
@@ -532,7 +528,7 @@ class ModuleMockerClass {
         {};
       const prototypeSlots = this._getSlots(prototype);
       const mocker = this;
-      const mockConstructor = matchArity(function(this: T, ...args: Y) {
+      const mockConstructor = matchArity(function (this: T, ...args: Y) {
         const mockState = mocker._ensureMockState(f);
         const mockConfig = mocker._ensureMockConfig(f);
         mockState.instances.push(this);
@@ -586,40 +582,21 @@ class ModuleMockerClass {
               return mockImpl && mockImpl.apply(this, arguments);
             }
 
-            const returnValue = mockConfig.defaultReturnValue;
-            // If return value is last set, either specific or default, i.e.
-            // mockReturnValueOnce()/mockReturnValue() is called and no
-            // mockImplementationOnce()/mockImplementation() is called after
-            // that.
-            // use the set return value.
-            if (mockConfig.specificReturnValues.length) {
-              return mockConfig.specificReturnValues.shift();
-            }
-
-            if (mockConfig.isReturnValueLastSet) {
-              return mockConfig.defaultReturnValue;
-            }
-
             // If mockImplementationOnce()/mockImplementation() is last set,
-            // or specific return values are used up, use the mock
-            // implementation.
-            let specificMockImpl;
-            if (returnValue === undefined) {
-              specificMockImpl = mockConfig.specificMockImpls.shift();
-              if (specificMockImpl === undefined) {
-                specificMockImpl = mockConfig.mockImpl;
-              }
-              if (specificMockImpl) {
-                return specificMockImpl.apply(this, arguments);
-              }
+            // implementation use the mock
+            let specificMockImpl = mockConfig.specificMockImpls.shift();
+            if (specificMockImpl === undefined) {
+              specificMockImpl = mockConfig.mockImpl;
             }
-
+            if (specificMockImpl) {
+              return specificMockImpl.apply(this, arguments);
+            }
             // Otherwise use prototype implementation
-            if (returnValue === undefined && f._protoImpl) {
+            if (f._protoImpl) {
               return f._protoImpl.apply(this, arguments);
             }
 
-            return returnValue;
+            return undefined;
           })();
         } catch (error) {
           // Store the thrown error so we can record it, then re-throw it.
@@ -675,12 +652,9 @@ class ModuleMockerClass {
         return restore ? restore() : undefined;
       };
 
-      f.mockReturnValueOnce = (value: T) => {
+      f.mockReturnValueOnce = (value: T) =>
         // next function call will return this value or default return value
-        const mockConfig = this._ensureMockConfig(f);
-        mockConfig.specificReturnValues.push(value);
-        return f;
-      };
+        f.mockImplementationOnce(() => value);
 
       f.mockResolvedValueOnce = (value: T) =>
         f.mockImplementationOnce(() => Promise.resolve(value));
@@ -688,13 +662,9 @@ class ModuleMockerClass {
       f.mockRejectedValueOnce = (value: T) =>
         f.mockImplementationOnce(() => Promise.reject(value));
 
-      f.mockReturnValue = (value: T) => {
+      f.mockReturnValue = (value: T) =>
         // next function call will return specified return value or this one
-        const mockConfig = this._ensureMockConfig(f);
-        mockConfig.isReturnValueLastSet = true;
-        mockConfig.defaultReturnValue = value;
-        return f;
-      };
+        f.mockImplementation(() => value);
 
       f.mockResolvedValue = (value: T) =>
         f.mockImplementation(() => Promise.resolve(value));
@@ -708,7 +678,6 @@ class ModuleMockerClass {
         // next function call will use this mock implementation return value
         // or default mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
-        mockConfig.isReturnValueLastSet = false;
         mockConfig.specificMockImpls.push(fn);
         return f;
       };
@@ -718,14 +687,12 @@ class ModuleMockerClass {
       ): Mock<T, Y> => {
         // next function call will use mock implementation return value
         const mockConfig = this._ensureMockConfig(f);
-        mockConfig.isReturnValueLastSet = false;
-        mockConfig.defaultReturnValue = undefined;
         mockConfig.mockImpl = fn;
         return f;
       };
 
       f.mockReturnThis = () =>
-        f.mockImplementation(function(this: T) {
+        f.mockImplementation(function (this: T) {
           return this;
         });
 
@@ -838,7 +805,7 @@ class ModuleMockerClass {
       const slotMetadata = (metadata.members && metadata.members[slot]) || {};
       if (slotMetadata.ref != null) {
         callbacks.push(
-          (function(ref) {
+          (function (ref) {
             return () => (mock[slot] = refs[ref]);
           })(slotMetadata.ref),
         );
@@ -1009,13 +976,19 @@ class ModuleMockerClass {
         );
       }
 
+      const isMethodOwner = object.hasOwnProperty(methodName);
+
       // @ts-ignore overriding original method with a Mock
       object[methodName] = this._makeComponent({type: 'function'}, () => {
-        object[methodName] = original;
+        if (isMethodOwner) {
+          object[methodName] = original;
+        } else {
+          delete object[methodName];
+        }
       });
 
       // @ts-ignore original method is now a Mock
-      object[methodName].mockImplementation(function(this: unknown) {
+      object[methodName].mockImplementation(function (this: unknown) {
         return original.apply(this, arguments);
       });
     }
@@ -1086,7 +1059,7 @@ class ModuleMockerClass {
         Object.defineProperty(obj, propertyName, descriptor!);
       });
 
-      (descriptor[accessType] as Mock<T>).mockImplementation(function(
+      (descriptor[accessType] as Mock<T>).mockImplementation(function (
         this: unknown,
       ) {
         // @ts-ignore

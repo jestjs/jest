@@ -5,15 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import chalk from 'chalk';
-import camelcase from 'camelcase';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {Options} from 'yargs';
-import {createDidYouMeanMessage, format, ValidationError} from './utils';
+import type {Config} from '@jest/types';
+import chalk = require('chalk');
+import camelcase = require('camelcase');
+import type {Options} from 'yargs';
+import {ValidationError, createDidYouMeanMessage, format} from './utils';
 import {deprecationWarning} from './deprecated';
 import defaultConfig from './defaultConfig';
-import {DeprecatedOptions} from './types';
+import type {DeprecatedOptions} from './types';
 
 const BULLET: string = chalk.bold('\u25cf');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold('CLI Options Documentation:')}
@@ -69,7 +68,7 @@ export default function validateCLIOptions(
     [s: string]: Options;
   },
   rawArgv: Array<string> = [],
-) {
+): boolean {
   const yargsSpecialOptions = ['$0', '_', 'help', 'h'];
   const deprecationEntries = options.deprecationEntries || {};
   const allowedOptions = Object.keys(options).reduce(
@@ -88,19 +87,18 @@ export default function validateCLIOptions(
     throw createCLIValidationError(unrecognizedOptions, allowedOptions);
   }
 
-  const CLIDeprecations = Object.keys(deprecationEntries).reduce(
-    (acc, entry) => {
-      if (options[entry]) {
-        acc[entry] = deprecationEntries[entry];
-        const alias = options[entry].alias as string;
-        if (alias) {
-          acc[alias] = deprecationEntries[entry];
-        }
+  const CLIDeprecations = Object.keys(deprecationEntries).reduce<
+    Record<string, Function>
+  >((acc, entry) => {
+    if (options[entry]) {
+      acc[entry] = deprecationEntries[entry];
+      const alias = options[entry].alias as string;
+      if (alias) {
+        acc[alias] = deprecationEntries[entry];
       }
-      return acc;
-    },
-    {} as Record<string, Function>,
-  );
+    }
+    return acc;
+  }, {});
   const deprecations = new Set(Object.keys(CLIDeprecations));
   const deprecatedOptions = Object.keys(argv).filter(
     arg => deprecations.has(arg) && argv[arg] != null,

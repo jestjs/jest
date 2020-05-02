@@ -1,5 +1,5 @@
 /**
- * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -102,6 +102,8 @@ const CUSTOM_IGNORED_PATTERNS = [
   '^packages/expect/src/jasmineUtils\\.ts$',
   '^packages/jest-config/src/vendor/jsonlint\\.js$',
   '^packages/jest-diff/src/cleanupSemantic\\.ts$',
+  '^website/static/css/code-block-buttons\\.css$',
+  '^website/static/js/code-block-buttons\\.js',
 ].map(createRegExp);
 
 const IGNORED_PATTERNS = [
@@ -115,12 +117,16 @@ const INCLUDED_PATTERNS = [
   /\.[^/]+$/,
 ];
 
-const COPYRIGHT_HEADER =
-  'Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.';
+const COPYRIGHT_LICENSE = [
+  ' * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.',
+  ' *',
+  ' * This source code is licensed under the MIT license found in the',
+  ' * LICENSE file in the root directory of this source tree.',
+].join('\n');
 
 function needsCopyrightHeader(file) {
   const contents = getFileContents(file);
-  return contents.trim().length > 0 && !contents.includes(COPYRIGHT_HEADER);
+  return contents.trim().length > 0 && !contents.includes(COPYRIGHT_LICENSE);
 }
 
 function check() {
@@ -134,7 +140,7 @@ function check() {
       !IGNORED_PATTERNS.some(pattern => pattern.test(file)) &&
       !isDirectory(file) &&
       !isBinaryFileSync(file) &&
-      needsCopyrightHeader(file)
+      needsCopyrightHeader(file),
   );
 
   if (invalidFiles.length > 0) {

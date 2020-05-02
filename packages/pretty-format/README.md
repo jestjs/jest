@@ -1,18 +1,9 @@
 # pretty-format
 
-> Stringify any JavaScript value.
+Stringify any JavaScript value.
 
-- Supports all built-in JavaScript types
-  - primitive types: `Boolean`, `null`, `Number`, `String`, `Symbol`, `undefined`
-  - other non-collection types: `Date`, `Error`, `Function`, `RegExp`
-  - collection types:
-    - `arguments`, `Array`, `ArrayBuffer`, `DataView`, `Float32Array`, `Float64Array`, `Int8Array`, `Int16Array`, `Int32Array`, `Uint8Array`, `Uint8ClampedArray`, `Uint16Array`, `Uint32Array`,
-    - `Map`, `Set`, `WeakMap`, `WeakSet`
-    - `Object`
-- [Blazingly fast](https://gist.github.com/thejameskyle/2b04ffe4941aafa8f970de077843a8fd)
-  - similar performance to `JSON.stringify` in v8
-  - significantly faster than `util.format` in Node.js
-- Serialize application-specific data types with built-in or user-defined plugins
+- Serialize built-in JavaScript types.
+- Serialize application-specific data types with built-in or user-defined plugins.
 
 ## Installation
 
@@ -239,7 +230,7 @@ Some properties in `config` are derived from `min` in `options`:
 
 ### Example of serialize and test
 
-This plugin is a pattern you can apply to serialize composite data types. Of course, `pretty-format` does not need a plugin to serialize arrays :)
+This plugin is a pattern you can apply to serialize composite data types. Side note: `pretty-format` does not need a plugin to serialize arrays.
 
 ```js
 // We reused more code when we factored out a function for child items

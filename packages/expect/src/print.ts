@@ -61,27 +61,55 @@ export const printReceivedArrayContainExpectedItem = (
       ']',
   );
 
+export const printCloseTo = (
+  receivedDiff: number,
+  expectedDiff: number,
+  precision: number,
+  isNot: boolean,
+): string => {
+  const receivedDiffString = stringify(receivedDiff);
+  const expectedDiffString = receivedDiffString.includes('e')
+    ? // toExponential arg is number of digits after the decimal point.
+      expectedDiff.toExponential(0)
+    : 0 <= precision && precision < 20
+    ? // toFixed arg is number of digits after the decimal point.
+      // It may be a value between 0 and 20 inclusive.
+      // Implementations may optionally support a larger range of values.
+      expectedDiff.toFixed(precision + 1)
+    : stringify(expectedDiff);
+
+  return (
+    `Expected precision:  ${isNot ? '    ' : ''}  ${stringify(precision)}\n` +
+    `Expected difference: ${isNot ? 'not ' : ''}< ${EXPECTED_COLOR(
+      expectedDiffString,
+    )}\n` +
+    `Received difference: ${isNot ? '    ' : ''}  ${RECEIVED_COLOR(
+      receivedDiffString,
+    )}`
+  );
+};
+
 export const printExpectedConstructorName = (
   label: string,
   expected: Function,
-) => printConstructorName(label, expected, false, true) + '\n';
+): string => printConstructorName(label, expected, false, true) + '\n';
 
 export const printExpectedConstructorNameNot = (
   label: string,
   expected: Function,
-) => printConstructorName(label, expected, true, true) + '\n';
+): string => printConstructorName(label, expected, true, true) + '\n';
 
 export const printReceivedConstructorName = (
   label: string,
   received: Function,
-) => printConstructorName(label, received, false, false) + '\n';
+): string => printConstructorName(label, received, false, false) + '\n';
 
 // Do not call function if received is equal to expected.
 export const printReceivedConstructorNameNot = (
   label: string,
   received: Function,
   expected: Function,
-) =>
+): string =>
   typeof expected.name === 'string' &&
   expected.name.length !== 0 &&
   typeof received.name === 'string' &&

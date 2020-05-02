@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest from '../runJest';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
@@ -22,9 +22,9 @@ test('works with jest.config.js', () => {
     'package.json': '{}',
   });
 
-  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
   const {rest, summary} = extractSummary(stderr);
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
 });
@@ -41,7 +41,7 @@ test('traverses directory tree up until it finds jest.config', () => {
     'some/nested/directory/file.js': '// nothing special',
   });
 
-  const {stderr, status, stdout} = runJest(
+  const {stderr, exitCode, stdout} = runJest(
     path.join(DIR, 'some', 'nested', 'directory'),
     ['-w=1', '--ci=false'],
     {skipPkgJsonCheck: true},
@@ -53,7 +53,7 @@ test('traverses directory tree up until it finds jest.config', () => {
   ).toMatchSnapshot();
 
   const {rest, summary} = extractSummary(stderr);
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
 });
@@ -65,7 +65,7 @@ test('invalid JS in jest.config.js', () => {
     'package.json': '{}',
   });
 
-  const {stderr, status} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
   expect(stderr).toMatch('SyntaxError: ');
-  expect(status).toBe(1);
+  expect(exitCode).toBe(1);
 });

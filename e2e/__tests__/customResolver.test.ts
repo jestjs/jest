@@ -9,5 +9,5 @@ import runJest from '../runJest';
 
 test('use the custom resolver', () => {
   const result = runJest('custom-resolver');
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });

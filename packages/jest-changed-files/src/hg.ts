@@ -6,11 +6,11 @@
  *
  */
 
-import path from 'path';
-import execa from 'execa';
-import {Config} from '@jest/types';
+import * as path from 'path';
+import execa = require('execa');
+import type {Config} from '@jest/types';
 
-import {SCMAdapter} from './types';
+import type {SCMAdapter} from './types';
 
 const env = {...process.env, HGPLAIN: '1'};
 
@@ -29,7 +29,16 @@ const adapter: SCMAdapter = {
     }
     args.push(...includePaths);
 
-    const result = await execa('hg', args, {cwd, env});
+    let result: execa.ExecaReturnValue;
+
+    try {
+      result = await execa('hg', args, {cwd, env});
+    } catch (e) {
+      // TODO: Should we keep the original `message`?
+      e.message = e.stderr;
+
+      throw e;
+    }
 
     return result.stdout
       .split('\n')

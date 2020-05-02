@@ -11,11 +11,7 @@ import {CHILD_MESSAGE_END} from '../../types';
 
 import BaseWorkerPool from '../BaseWorkerPool';
 
-const Worker = jest.fn(() => ({
-  getStderr: () => ({once() {}, pipe() {}}),
-  getStdout: () => ({once() {}, pipe() {}}),
-  send: jest.fn(),
-}));
+const Worker = jest.fn();
 
 const mockSend = jest.fn();
 
@@ -31,6 +27,13 @@ class MockWorkerPool extends BaseWorkerPool {
 describe('BaseWorkerPool', () => {
   beforeEach(() => {
     Worker.mockClear();
+    Worker.mockImplementation(() => ({
+      forceExit: jest.fn(),
+      getStderr: () => ({once() {}, pipe() {}}),
+      getStdout: () => ({once() {}, pipe() {}}),
+      send: jest.fn(),
+      waitForExit: () => Promise.resolve(),
+    }));
   });
 
   it('throws error when createWorker is not defined', () => {
@@ -58,24 +61,6 @@ describe('BaseWorkerPool', () => {
     expect(pool.getWorkerById(1)).toBeDefined();
     expect(pool.getWorkerById(2)).toBeDefined();
     expect(pool.getWorkerById(3)).toBeDefined();
-  });
-
-  it('ends all workers', () => {
-    const pool = new MockWorkerPool('/tmp/baz.js', {
-      forkOptions: {execArgv: []},
-      maxRetries: 6,
-      numWorkers: 4,
-      setupArgs: [],
-    });
-
-    const workers = pool.getWorkers();
-    pool.end();
-
-    const endMessage = [CHILD_MESSAGE_END, false];
-    expect(workers[0].send.mock.calls[0][0]).toEqual(endMessage);
-    expect(workers[1].send.mock.calls[0][0]).toEqual(endMessage);
-    expect(workers[2].send.mock.calls[0][0]).toEqual(endMessage);
-    expect(workers[3].send.mock.calls[0][0]).toEqual(endMessage);
   });
 
   it('creates and expoeses n workers', () => {
@@ -220,5 +205,77 @@ describe('BaseWorkerPool', () => {
 
     expect(() => farm.send()).not.toThrow();
     expect(() => farm.send()).not.toThrow();
+  });
+
+  describe('end', () => {
+    it('ends all workers', async () => {
+      const pool = new MockWorkerPool('/tmp/baz.js', {
+        forkOptions: {execArgv: []},
+        maxRetries: 6,
+        numWorkers: 4,
+        setupArgs: [],
+      });
+
+      const workers = pool.getWorkers();
+      await pool.end();
+
+      const endMessage = [CHILD_MESSAGE_END, false];
+      expect(workers[0].send.mock.calls[0][0]).toEqual(endMessage);
+      expect(workers[1].send.mock.calls[0][0]).toEqual(endMessage);
+      expect(workers[2].send.mock.calls[0][0]).toEqual(endMessage);
+      expect(workers[3].send.mock.calls[0][0]).toEqual(endMessage);
+    });
+
+    it('resolves with forceExited=false if workers exited gracefully', async () => {
+      Worker.mockImplementation(() => ({
+        forceExit: jest.fn(),
+        getStderr: () => null,
+        getStdout: () => null,
+        send: jest.fn(),
+        waitForExit: () => Promise.resolve(),
+      }));
+
+      const pool = new MockWorkerPool('/tmp/baz.js', {
+        forkOptions: {execArgv: []},
+        maxRetries: 6,
+        numWorkers: 4,
+        setupArgs: [],
+      });
+
+      expect(await pool.end()).toEqual({forceExited: false});
+    });
+
+    it('force exits workers that do not exit gracefully and resolves with forceExited=true', async () => {
+      // Set it up so that the first worker does not resolve waitForExit immediately,
+      // but only when forceExit() is called
+      let worker0Exited;
+      Worker.mockImplementationOnce(() => ({
+        forceExit: () => {
+          worker0Exited();
+        },
+        getStderr: () => null,
+        getStdout: () => null,
+        send: jest.fn(),
+        waitForExit: () => new Promise(resolve => (worker0Exited = resolve)),
+      })).mockImplementation(() => ({
+        forceExit: jest.fn(),
+        getStderr: () => null,
+        getStdout: () => null,
+        send: jest.fn(),
+        waitForExit: () => Promise.resolve(),
+      }));
+
+      const pool = new MockWorkerPool('/tmp/baz.js', {
+        forkOptions: {execArgv: []},
+        maxRetries: 6,
+        numWorkers: 2,
+        setupArgs: [],
+      });
+
+      const workers = pool.getWorkers();
+      expect(await pool.end()).toEqual({forceExited: true});
+
+      expect(workers[1].forceExit).not.toHaveBeenCalled();
+    });
   });
 });

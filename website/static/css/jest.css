@@ -1,4 +1,9 @@
-/* Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved. */
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 :root {
   --yellow: #c2a813;
@@ -18,7 +23,7 @@
 }
 
 .sponsor-item img {
-  background: #095708;
+  background: white;
 }
 
 .sponsor-avatar {
@@ -236,6 +241,7 @@
 .button.landing {
   margin: 4px 10px;
   cursor: pointer;
+  text-transform: none;
 }
 
 .container .gridBlock .blockContent p.buttons-wrapper {

@@ -8,14 +8,19 @@
 jest
   .mock('istanbul-lib-source-maps')
   .mock('istanbul-lib-report', () => ({
+    ...jest.requireActual('istanbul-lib-report'),
     createContext: jest.fn(),
     summarizers: {pkg: jest.fn(() => ({visit: jest.fn()}))},
   }))
-  .mock('istanbul-reports');
+  .mock('istanbul-reports', () => ({
+    ...jest.genMockFromModule('istanbul-reports'),
+    create: jest.fn(() => ({execute: jest.fn()})),
+  }));
 
 let libCoverage;
 let libSourceMaps;
 let CoverageReporter;
+let istanbulReports;
 
 import path from 'path';
 import mock from 'mock-fs';
@@ -24,6 +29,7 @@ beforeEach(() => {
   CoverageReporter = require('../coverage_reporter').default;
   libCoverage = require('istanbul-lib-coverage');
   libSourceMaps = require('istanbul-lib-source-maps');
+  istanbulReports = require('istanbul-reports');
 
   const fileTree = {};
   fileTree[process.cwd() + '/path-test-files'] = {
@@ -118,7 +124,7 @@ describe('onRunComplete', () => {
 
     libSourceMaps.createSourceMapStore = jest.fn(() => ({
       transformCoverage(map) {
-        return {map};
+        return Promise.resolve(map);
       },
     }));
   });
@@ -410,6 +416,25 @@ describe('onRunComplete', () => {
     return testReporter
       .onRunComplete(new Set(), {}, mockAggResults)
       .then(() => {
+        expect(testReporter.getLastError()).toBeUndefined();
+      });
+  });
+
+  test(`that it passes custom options when creating reporters`, () => {
+    const testReporter = new CoverageReporter({
+      coverageReporters: ['json', ['lcov', {maxCols: 10, projectRoot: './'}]],
+    });
+    testReporter.log = jest.fn();
+    return testReporter
+      .onRunComplete(new Set(), {}, mockAggResults)
+      .then(() => {
+        expect(istanbulReports.create).toHaveBeenCalledWith('json', {
+          maxCols: process.stdout.columns || Infinity,
+        });
+        expect(istanbulReports.create).toHaveBeenCalledWith('lcov', {
+          maxCols: 10,
+          projectRoot: './',
+        });
         expect(testReporter.getLastError()).toBeUndefined();
       });
   });

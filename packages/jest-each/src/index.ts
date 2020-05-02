@@ -6,7 +6,7 @@
  *
  */
 
-import {Global} from '@jest/types';
+import type {Global} from '@jest/types';
 import bind from './bind';
 
 type Global = Global.Global;
@@ -15,6 +15,13 @@ const install = (
   table: Global.EachTable,
   ...data: Global.TemplateData
 ) => {
+  const bindingWithArray = data.length === 0;
+  const bindingWithTemplate = Array.isArray(table) && !!(table as any).raw;
+  if (!bindingWithArray && !bindingWithTemplate) {
+    throw new Error(
+      '`.each` must only be called with an Array or Tagged Template Literal.',
+    );
+  }
   const test = (title: string, test: Global.EachTestFn, timeout?: number) =>
     bind(g.test)(table, ...data)(title, test, timeout);
   test.skip = bind(g.test.skip)(table, ...data);

@@ -5,13 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import fs from 'fs';
-import {Config} from '@jest/types';
-import {JEST_CONFIG, PACKAGE_JSON} from './constants';
+import * as path from 'path';
+import * as fs from 'graceful-fs';
+import type {Config} from '@jest/types';
+import {
+  JEST_CONFIG_BASE_NAME,
+  JEST_CONFIG_EXT_ORDER,
+  PACKAGE_JSON,
+} from './constants';
 
 const isFile = (filePath: Config.Path) =>
   fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
+
+const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
 export default (pathToResolve: Config.Path, cwd: Config.Path): Config.Path => {
   if (!path.isAbsolute(cwd)) {
@@ -51,8 +57,10 @@ const resolveConfigPathByTraversing = (
   initialPath: Config.Path,
   cwd: Config.Path,
 ): Config.Path => {
-  const jestConfig = path.resolve(pathToResolve, JEST_CONFIG);
-  if (isFile(jestConfig)) {
+  const jestConfig = JEST_CONFIG_EXT_ORDER.map(ext =>
+    path.resolve(pathToResolve, getConfigFilename(ext)),
+  ).find(isFile);
+  if (jestConfig) {
     return jestConfig;
   }
 
@@ -84,5 +92,6 @@ const makeResolutionErrorMessage = (
   `cwd: "${cwd}"\n` +
   'Config paths must be specified by either a direct path to a config\n' +
   'file, or a path to a directory. If directory is given, Jest will try to\n' +
-  `traverse directory tree up, until it finds either "${JEST_CONFIG}" or\n` +
-  `"${PACKAGE_JSON}".`;
+  `traverse directory tree up, until it finds one of those files in exact order: ${JEST_CONFIG_EXT_ORDER.map(
+    ext => `"${getConfigFilename(ext)}"`,
+  ).join(' or ')}.`;

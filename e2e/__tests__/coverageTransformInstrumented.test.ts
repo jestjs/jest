@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {readFileSync} from 'fs';
-import path from 'path';
+import * as path from 'path';
+import {readFileSync} from 'graceful-fs';
 import {cleanup, run} from '../Utils';
 import runJest from '../runJest';
 
@@ -21,7 +21,7 @@ it('code coverage for transform instrumented code', () => {
   run('yarn', dir);
   const result = runJest(dir, ['--coverage', '--no-cache']);
 
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 
   const coverageMapFile = path.join(coverageDir, 'coverage-final.json');
   const coverageMap = JSON.parse(readFileSync(coverageMapFile, 'utf-8'));

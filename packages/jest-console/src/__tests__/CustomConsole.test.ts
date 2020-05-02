@@ -6,13 +6,13 @@
  */
 
 import {Writable} from 'stream';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import CustomConsole from '../CustomConsole';
 
 describe('CustomConsole', () => {
-  let _console;
-  let _stdout;
-  let _stderr;
+  let _console: CustomConsole;
+  let _stdout: string;
+  let _stderr: string;
 
   beforeEach(() => {
     _stdout = '';

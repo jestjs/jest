@@ -1,20 +1,18 @@
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
- * All rights reserved.
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
 declare const jestGlobalConfig: Config.GlobalConfig;
 declare const jestProjectConfig: Config.ProjectConfig;
 
-import path from 'path';
-import repl from 'repl';
-import vm from 'vm';
-import {Transformer} from '@jest/transform';
-import {Config} from '@jest/types';
+import * as path from 'path';
+import * as repl from 'repl';
+import {runInThisContext} from 'vm';
+import type {Transformer} from '@jest/transform';
+import type {Config} from '@jest/types';
 
 let transformer: Transformer;
 
@@ -37,7 +35,7 @@ const evalCommand: repl.REPLEval = (
           ? transformResult
           : transformResult.code;
     }
-    result = vm.runInThisContext(cmd);
+    result = runInThisContext(cmd);
   } catch (e) {
     return callback(isRecoverableError(e) ? new repl.Recoverable(e) : e);
   }

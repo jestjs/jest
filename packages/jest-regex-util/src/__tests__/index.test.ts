@@ -1,13 +1,20 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
-
-jest.mock('path');
-
-import path from 'path';
-import {replacePathSepForRegex} from '../index';
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 describe('replacePathSepForRegex()', () => {
+  let replacePathSepForRegex: (str: string) => string;
+
   describe('posix', () => {
-    beforeEach(() => ((path as any).sep = '/'));
+    beforeAll(() => {
+      jest.mock('path', () => ({...jest.genMockFromModule('path'), sep: '/'}));
+      jest.isolateModules(() => {
+        replacePathSepForRegex = require('../').replacePathSepForRegex;
+      });
+    });
 
     it('should return the path', () => {
       const expected = {};
@@ -16,7 +23,12 @@ describe('replacePathSepForRegex()', () => {
   });
 
   describe('win32', () => {
-    beforeEach(() => ((path as any).sep = '\\'));
+    beforeAll(() => {
+      jest.mock('path', () => ({...jest.genMockFromModule('path'), sep: '\\'}));
+      jest.isolateModules(() => {
+        replacePathSepForRegex = require('../').replacePathSepForRegex;
+      });
+    });
 
     it('should replace POSIX path separators', () => {
       expect(replacePathSepForRegex('a/b/c')).toBe('a\\\\b\\\\c');

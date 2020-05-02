@@ -2,13 +2,13 @@
   "compilerOptions": {
     "target": "es2017",
     "module": "commonjs",
-    "lib": ["dom", "es2017"],
+    // Object.fromEntries
+    "lib": ["dom", "es2017", "es2019.object"],
     "declaration": true,
-    "declarationMap": true,
     "composite": true,
     "emitDeclarationOnly": true,
-    // "importHelpers": true,
-    // "isolatedModules": true,
+    "isolatedModules": true,
+    "importsNotUsedAsValues": "error",
 
     "strict": true,
 
@@ -20,13 +20,14 @@
 
     /* Module Resolution Options */
     "moduleResolution": "node",
-    "esModuleInterop": true,
+    /* This needs to be false so our types are possible to consume without setting this */
+    "esModuleInterop": false,
     "resolveJsonModule": true
   },
   "exclude": [
     ".yarn/releases/*",
     "**/__tests__/**/*",
-    "**/build/**/*",
-    "**/build-es5/**/*"
+    "**/__mocks__/**/*",
+    "**/build/**/*"
   ]
 }

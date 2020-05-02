@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, Printer, Refs} from '../../types';
+import type {Config, Printer, Refs} from '../../types';
 
 import escapeHTML from './escapeHTML';
 
 // Return empty string if keys is empty.
 export const printProps = (
   keys: Array<string>,
-  props: any,
+  props: Record<string, unknown>,
   config: Config,
   indentation: string,
   depth: number,
@@ -126,7 +126,7 @@ export const printElement = (
   );
 };
 
-export const printElementAsLeaf = (type: string, config: Config) => {
+export const printElementAsLeaf = (type: string, config: Config): string => {
   const tagColor = config.colors.tag;
   return (
     tagColor.open +

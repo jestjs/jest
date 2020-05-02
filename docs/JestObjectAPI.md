@@ -3,7 +3,7 @@ id: jest-object
 title: The Jest Object
 ---
 
-The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior.
+The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior. It can also be imported explicitly by via `import {jest} from '@jest/globals'`.
 
 ## Mock Modules
 
@@ -469,7 +469,7 @@ Determines if the given function is a mocked function.
 
 ### `jest.spyOn(object, methodName)`
 
-Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest mock function.
+Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest [mock function](MockFunctionAPI.md).
 
 _Note: By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`_
 
@@ -623,6 +623,12 @@ Executes only the macro-tasks that are currently pending (i.e., only the tasks t
 
 This is useful for scenarios such as one where the module being tested schedules a `setTimeout()` whose callback schedules another `setTimeout()` recursively (meaning the scheduling never stops). In these scenarios, it's useful to be able to run forward in time by a single step at a time.
 
+### `jest.advanceTimersToNextTimer(steps)`
+
+Advances all timers by the needed milliseconds so that only the next timeouts/intervals will run.
+
+Optionally, you can provide `steps`, so it will run `steps` amount of next timeouts/intervals.
+
 ### `jest.clearAllTimers()`
 
 Removes any pending timers from the timer system.
@@ -637,11 +643,11 @@ Returns the number of fake timers still left to run.
 
 ### `jest.setTimeout(timeout)`
 
-Set the default timeout interval for tests and before/after hooks in milliseconds.
+Set the default timeout interval for tests and before/after hooks in milliseconds. This only affects the test file from which this function is called.
 
 _Note: The default timeout interval is 5 seconds if this method is not called._
 
-_Note: The method must be called after the test framework is installed in the environment and before the test runs. A good place to do this is in the `setupTestFrameworkScriptFile`._
+_Note: If you want to set the timeout for all test files, a good place to do this is in `setupFilesAfterEnv`._
 
 Example:
 

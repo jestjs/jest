@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
+import {tmpdir} from 'os';
+import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-const DIR = path.resolve(os.tmpdir(), 'find-related-tests-test');
+const DIR = path.resolve(tmpdir(), 'find-related-tests-test');
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
@@ -35,6 +35,32 @@ describe('--findRelatedTests flag', () => {
     expect(stderr).toMatch('PASS __tests__/test.test.js');
 
     const summaryMsg = 'Ran all test suites related to files matching /a.js/i.';
+    expect(stderr).toMatch(summaryMsg);
+  });
+
+  test('runs tests related to uppercased filename on case-insensitive os', () => {
+    if (process.platform !== 'win32') {
+      // This test is Windows specific, skip it on other platforms.
+      return;
+    }
+
+    writeFiles(DIR, {
+      '.watchmanconfig': '',
+      '__tests__/test.test.js': `
+      const a = require('../a');
+      test('a', () => {});
+    `,
+      'a.js': 'module.exports = {};',
+      'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
+    });
+
+    const {stdout} = runJest(DIR, ['A.JS']);
+    expect(stdout).toMatch('');
+
+    const {stderr} = runJest(DIR, ['--findRelatedTests', 'A.JS']);
+    expect(stderr).toMatch('PASS __tests__/test.test.js');
+
+    const summaryMsg = 'Ran all test suites related to files matching /A.JS/i.';
     expect(stderr).toMatch(summaryMsg);
   });
 

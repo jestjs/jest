@@ -117,7 +117,13 @@ exports[`Custom Reporters Integration invalid format for adding reporters 1`] = 
   Configuration Documentation:
   https://jestjs.io/docs/configuration.html
 
+`;
 
+exports[`Custom Reporters Integration reporters can be default exports 1`] = `
+run start
+test start
+test complete
+run complete
 `;
 
 exports[`Custom Reporters Integration valid array format for adding reporters 1`] = `

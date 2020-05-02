@@ -13,7 +13,7 @@ exports[`snapshots all have results (after update) 1`] = `
 <bold>Test Suites: </><bold><red>1 failed</></>, 1 total
 <bold>Tests:       </><bold><red>1 failed</></>, 1 total
 <bold>Snapshots:   </><bold><red>1 failed</></>, <bold><green>1 removed</></>, <bold><green>1 file removed</></>, <bold><green>1 updated</></>, <bold><green>1 written</></>, <bold><green>2 passed</></>, 2 total
-<bold>Time:</>        0.01s
+<bold>Time:</>        0.01 s
 <dim>Ran all test suites</><dim>.</>
 "
 `;
@@ -31,7 +31,7 @@ exports[`snapshots all have results (no update) 1`] = `
 <bold>Test Suites: </><bold><red>1 failed</></>, 1 total
 <bold>Tests:       </><bold><red>1 failed</></>, 1 total
 <bold>Snapshots:   </><bold><red>1 failed</></>, <bold><yellow>1 obsolete</></>, <bold><yellow>1 file obsolete</></>, <bold><green>1 updated</></>, <bold><green>1 written</></>, <bold><green>2 passed</></>, 2 total
-<bold>Time:</>        0.01s
+<bold>Time:</>        0.01 s
 <dim>Ran all test suites</><dim>.</>
 "
 `;
@@ -43,7 +43,7 @@ exports[`snapshots needs update with npm test 1`] = `
 <bold>Test Suites: </><bold><red>1 failed</></>, 1 total
 <bold>Tests:       </><bold><red>1 failed</></>, 1 total
 <bold>Snapshots:   </><bold><red>2 failed</></>, 2 total
-<bold>Time:</>        0.01s
+<bold>Time:</>        0.01 s
 <dim>Ran all test suites</><dim>.</>
 "
 `;
@@ -55,7 +55,7 @@ exports[`snapshots needs update with yarn test 1`] = `
 <bold>Test Suites: </><bold><red>1 failed</></>, 1 total
 <bold>Tests:       </><bold><red>1 failed</></>, 1 total
 <bold>Snapshots:   </><bold><red>2 failed</></>, 2 total
-<bold>Time:</>        0.01s
+<bold>Time:</>        0.01 s
 <dim>Ran all test suites</><dim>.</>
 "
 `;

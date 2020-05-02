@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import prettyFormat, {Plugin, Plugins} from 'pretty-format';
+import prettyFormat = require('pretty-format');
 
 import jestMockSerializer from './mock_serializer';
 
@@ -18,7 +18,7 @@ const {
   AsymmetricMatcher,
 } = prettyFormat.plugins;
 
-let PLUGINS: Plugins = [
+let PLUGINS: prettyFormat.Plugins = [
   ReactTestComponent,
   ReactElement,
   DOMElement,
@@ -29,8 +29,8 @@ let PLUGINS: Plugins = [
 ];
 
 // Prepend to list so the last added is the first tested.
-export const addSerializer = (plugin: Plugin) => {
+export const addSerializer = (plugin: prettyFormat.Plugin): void => {
   PLUGINS = [plugin].concat(PLUGINS);
 };
 
-export const getSerializers = () => PLUGINS;
+export const getSerializers = (): prettyFormat.Plugins => PLUGINS;

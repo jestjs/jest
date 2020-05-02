@@ -558,7 +558,7 @@ Set the default timeout interval for tests and before/after hooks in millisecond
 
 _Note: The default timeout interval is 5 seconds if this method is not called._
 
-_Note: The method must be called after the test framework is installed in the environment and before the test runs. A good place to do this is in the `setupTestFrameworkScriptFile`._
+_Note: If you want to set the timeout for all test files, a good place to do this is in `setupFilesAfterEnv`._
 
 Example:
 
@@ -580,7 +580,7 @@ Returns the `jest` object for chaining.
 
 ### `jest.spyOn(object, methodName)`
 
-Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest mock function.
+Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest [mock function](MockFunctionAPI.md).
 
 _Note: By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`_
 

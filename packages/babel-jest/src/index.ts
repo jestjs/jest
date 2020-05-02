@@ -5,19 +5,24 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import crypto from 'crypto';
-import fs from 'fs';
-import path from 'path';
-import {Transformer} from '@jest/transform';
-import {Config} from '@jest/types';
+import {createHash} from 'crypto';
+import * as path from 'path';
+import * as fs from 'graceful-fs';
+import type {
+  TransformOptions as JestTransformOptions,
+  Transformer,
+} from '@jest/transform';
+import type {Config} from '@jest/types';
 import {
-  loadPartialConfig,
   PartialConfig,
+  PluginItem,
+  TransformCaller,
   TransformOptions,
   transformSync as babelTransform,
 } from '@babel/core';
-import chalk from 'chalk';
-import slash from 'slash';
+import {loadPartialConfig} from './loadBabelConfig';
+import chalk = require('chalk');
+import slash = require('slash');
 
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
@@ -27,28 +32,51 @@ const babelIstanbulPlugin = require.resolve('babel-plugin-istanbul');
 interface BabelJestTransformer extends Transformer {
   canInstrument: true;
 }
+interface BabelJestTransformOptions extends TransformOptions {
+  caller: TransformCaller;
+  compact: false;
+  plugins: Array<PluginItem>;
+  presets: Array<PluginItem>;
+  sourceMaps: 'both';
+}
 
 const createTransformer = (
-  options: TransformOptions = {},
+  inputOptions: TransformOptions = {},
 ): BabelJestTransformer => {
-  options = {
-    ...options,
+  const options: BabelJestTransformOptions = {
+    ...inputOptions,
     caller: {
       name: 'babel-jest',
+      supportsDynamicImport: false,
       supportsStaticESM: false,
+      ...inputOptions.caller,
     },
     compact: false,
-    plugins: (options && options.plugins) || [],
-    presets: ((options && options.presets) || []).concat(jestPresetPath),
+    plugins: inputOptions.plugins ?? [],
+    presets: (inputOptions.presets ?? []).concat(jestPresetPath),
     sourceMaps: 'both',
   };
 
   function loadBabelConfig(
     cwd: Config.Path,
     filename: Config.Path,
+    transformOptions?: JestTransformOptions,
   ): PartialConfig {
     // `cwd` first to allow incoming options to override it
-    const babelConfig = loadPartialConfig({cwd, ...options, filename});
+    const babelConfig = loadPartialConfig({
+      cwd,
+      ...options,
+      caller: {
+        ...options.caller,
+        supportsDynamicImport:
+          transformOptions?.supportsDynamicImport ??
+          options.caller.supportsDynamicImport,
+        supportsStaticESM:
+          transformOptions?.supportsStaticESM ??
+          options.caller.supportsStaticESM,
+      },
+      filename,
+    });
 
     if (!babelConfig) {
       throw new Error(
@@ -65,20 +93,20 @@ const createTransformer = (
 
   return {
     canInstrument: true,
-    getCacheKey(
-      fileData,
-      filename,
-      configString,
-      {config, instrument, rootDir},
-    ) {
-      const babelOptions = loadBabelConfig(config.cwd, filename);
+    getCacheKey(fileData, filename, configString, cacheKeyOptions) {
+      const {config, instrument, rootDir} = cacheKeyOptions;
+
+      const babelOptions = loadBabelConfig(
+        config.cwd,
+        filename,
+        cacheKeyOptions,
+      );
       const configPath = [
         babelOptions.config || '',
         babelOptions.babelrc || '',
       ];
 
-      return crypto
-        .createHash('md5')
+      return createHash('md5')
         .update(THIS_FILE)
         .update('\0', 'utf8')
         .update(JSON.stringify(babelOptions.options))
@@ -99,9 +127,11 @@ const createTransformer = (
         .digest('hex');
     },
     process(src, filename, config, transformOptions) {
-      const babelOptions = {...loadBabelConfig(config.cwd, filename).options};
+      const babelOptions = {
+        ...loadBabelConfig(config.cwd, filename, transformOptions).options,
+      };
 
-      if (transformOptions && transformOptions.instrument) {
+      if (transformOptions?.instrument) {
         babelOptions.auxiliaryCommentBefore = ' istanbul ignore next ';
         // Copied from jest-runtime transform.js
         babelOptions.plugins = (babelOptions.plugins || []).concat([

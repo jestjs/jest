@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-fb-strict",
-  "version": "24.3.0",
+  "version": "26.0.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -8,23 +8,22 @@
   },
   "license": "MIT",
   "dependencies": {
-    "eslint-config-fbjs": "^2.1.0"
+    "eslint-config-fbjs": "^3.1.1"
   },
   "peerDependencies": {
     "babel-eslint": "^9.0.0 || ^10.0.0",
-    "eslint": "^4.2.0 || ^5.0.0",
+    "eslint": "^4.2.0 || ^5.0.0 || ^6.0.0",
     "eslint-plugin-babel": "^5.0.0",
-    "eslint-plugin-flowtype": "^2.35.0 || ^3.0.0",
-    "eslint-plugin-jest": "^21.0.0 || ^22.0.0",
+    "eslint-plugin-flowtype": "^2.35.0 || ^3.0.0 || ^4.0.0",
+    "eslint-plugin-jest": "^21.0.0 || ^22.0.0 || ^23.0.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
-    "eslint-plugin-react": "^7.1.0",
-    "eslint-plugin-relay": "~0.0.8 || ^1.0.0"
+    "eslint-plugin-react": "^7.1.0"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 10.14.2"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "3a7a4f3a3f5489ac8e07dcddf76bb949c482ec87"
+  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
 }

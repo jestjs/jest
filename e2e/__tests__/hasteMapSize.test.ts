@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
-import path from 'path';
-import HasteMap from 'jest-haste-map';
-import {sync as realpath} from 'realpath-native';
+import {tmpdir} from 'os';
+import * as path from 'path';
+import {realpathSync} from 'graceful-fs';
+import HasteMap = require('jest-haste-map');
 import {cleanup, writeFiles} from '../Utils';
 
-const DIR = path.resolve(realpath(os.tmpdir()), 'haste_map_size');
+const DIR = path.resolve(realpathSync.native(tmpdir()), 'haste_map_size');
 
 beforeEach(() => {
   cleanup(DIR);

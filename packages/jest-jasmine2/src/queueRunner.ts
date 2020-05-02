@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {formatTime} from 'jest-util';
 // @ts-ignore ignore vendor file
 import PCancelable from './PCancelable';
 import pTimeout from './pTimeout';
@@ -26,6 +27,8 @@ export type QueueableFn = {
   initError?: Error;
 };
 
+// har to type :(
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function queueRunner(options: Options) {
   const token = new PCancelable((onCancel: Function, resolve: Function) => {
     onCancel(resolve);
@@ -33,7 +36,7 @@ export default function queueRunner(options: Options) {
 
   const mapper = ({fn, timeout, initError = new Error()}: QueueableFn) => {
     let promise = new Promise(resolve => {
-      const next = function(...args: [Error]) {
+      const next = function (...args: [Error]) {
         const err = args[0];
         if (err) {
           options.fail.apply(null, args);
@@ -41,7 +44,7 @@ export default function queueRunner(options: Options) {
         resolve();
       };
 
-      next.fail = function(...args: [Error]) {
+      next.fail = function (...args: [Error]) {
         options.fail.apply(null, args);
         resolve();
       };
@@ -69,8 +72,8 @@ export default function queueRunner(options: Options) {
       () => {
         initError.message =
           'Timeout - Async callback was not invoked within the ' +
-          timeoutMs +
-          'ms timeout specified by jest.setTimeout.';
+          formatTime(timeoutMs) +
+          ' timeout specified by jest.setTimeout.';
         initError.stack = initError.message + initError.stack;
         options.onException(initError);
       },

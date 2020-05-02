@@ -6,11 +6,11 @@ steps:
   - checkout: self
     path: jest
 
-  # Ensure Node.js 10 is active
+  # Ensure Node.js 12 is active
   - task: NodeTool@0
     inputs:
-      versionSpec: '10.x'
-    displayName: 'Use Node.js 10'
+      versionSpec: '12.x'
+    displayName: 'Use Node.js 12'
 
   # Ensure Python 2.7 is active
   - task: UsePythonVersion@0
@@ -22,11 +22,14 @@ steps:
   - script: node scripts/remove-postinstall
     displayName: 'Remove postinstall script'
 
-  - script: yarn --no-progress --frozen-lockfile
-    displayName: 'Install dependencies'
+  - task: CacheBeta@0
+    inputs:
+      key: yarn | $(Agent.OS) | yarn.lock
+      path: $(YARN_CACHE_FOLDER)
+    displayName: Cache Yarn packages
 
-  - script: node scripts/build
-    displayName: 'Build'
+  - script: yarn install-no-ts-build
+    displayName: 'Install dependencies'
 
   # Run test-ci-partial
   - script: yarn run test-ci-partial

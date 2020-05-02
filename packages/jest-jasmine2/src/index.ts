@@ -5,20 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import {Config, Global} from '@jest/types';
-import {AssertionResult, TestResult} from '@jest/test-result';
-import {JestEnvironment} from '@jest/environment';
-import {SnapshotStateType} from 'jest-snapshot';
-import Runtime from 'jest-runtime';
+import * as path from 'path';
+import type {Config, Global} from '@jest/types';
+import type {AssertionResult, TestResult} from '@jest/test-result';
+import type {JestEnvironment} from '@jest/environment';
+import type {SnapshotStateType} from 'jest-snapshot';
+import type {RuntimeType as Runtime} from 'jest-runtime';
 
-import {getCallsite} from 'jest-util';
+import {getCallsite} from '@jest/source-map';
 import installEach from './each';
 import {installErrorOnPrivate} from './errorOnPrivate';
 import JasmineReporter from './reporter';
 import jasmineAsyncInstall from './jasmineAsyncInstall';
-import Spec from './jasmine/Spec';
-import {Jasmine as JestJasmine} from './types';
+import type Spec from './jasmine/Spec';
+import type {Jasmine as JestJasmine} from './types';
 
 const JASMINE = require.resolve('./jasmine/jasmineLight');
 
@@ -30,7 +30,9 @@ async function jasmine2(
   testPath: string,
 ): Promise<TestResult> {
   const reporter = new JasmineReporter(globalConfig, config, testPath);
-  const jasmineFactory = runtime.requireInternalModule(JASMINE);
+  const jasmineFactory = runtime.requireInternalModule<
+    typeof import('./jasmine/jasmineLight')
+  >(JASMINE);
   const jasmine = jasmineFactory.create({
     process,
     testPath,
@@ -38,7 +40,7 @@ async function jasmine2(
   });
 
   const env = jasmine.getEnv();
-  const jasmineInterface = jasmineFactory.interface(jasmine, env);
+  const jasmineInterface = jasmineFactory._interface(jasmine, env);
   Object.assign(environment.global, jasmineInterface);
   env.addReporter(jasmineInterface.jsApiReporter);
 
@@ -120,7 +122,9 @@ async function jasmine2(
   env.addReporter(reporter);
 
   runtime
-    .requireInternalModule(path.resolve(__dirname, './jestExpect.js'))
+    .requireInternalModule<typeof import('./jestExpect')>(
+      path.resolve(__dirname, './jestExpect.js'),
+    )
     .default({
       expand: globalConfig.expand,
     });
@@ -141,7 +145,9 @@ async function jasmine2(
   }
 
   const snapshotState: SnapshotStateType = runtime
-    .requireInternalModule(path.resolve(__dirname, './setup_jest_globals.js'))
+    .requireInternalModule<typeof import('./setup_jest_globals')>(
+      path.resolve(__dirname, './setup_jest_globals.js'),
+    )
     .default({
       config,
       globalConfig,
@@ -149,23 +155,38 @@ async function jasmine2(
       testPath,
     });
 
-  config.setupFilesAfterEnv.forEach((path: Config.Path) =>
-    runtime.requireModule(path),
-  );
+  for (const path of config.setupFilesAfterEnv) {
+    // TODO: remove ? in Jest 26
+    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+
+    if (esm) {
+      await runtime.unstable_importModule(path);
+    } else {
+      runtime.requireModule(path);
+    }
+  }
 
   if (globalConfig.enabledTestsMap) {
     env.specFilter = (spec: Spec) => {
       const suiteMap =
         globalConfig.enabledTestsMap &&
         globalConfig.enabledTestsMap[spec.result.testPath];
-      return suiteMap && suiteMap[spec.result.fullName];
+      return (suiteMap && suiteMap[spec.result.fullName]) || false;
     };
   } else if (globalConfig.testNamePattern) {
     const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');
     env.specFilter = (spec: Spec) => testNameRegex.test(spec.getFullName());
   }
 
-  runtime.requireModule(testPath);
+  // TODO: remove ? in Jest 26
+  const esm = runtime.unstable_shouldLoadAsEsm?.(testPath);
+
+  if (esm) {
+    await runtime.unstable_importModule(testPath);
+  } else {
+    runtime.requireModule(testPath);
+  }
+
   await env.execute();
 
   const results = await reporter.getResults();

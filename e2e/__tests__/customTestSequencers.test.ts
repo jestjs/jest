@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import runJest from '../runJest';
 import {extractSummary} from '../Utils';
 const dir = path.resolve(__dirname, '../custom-test-sequencer');
@@ -22,7 +22,7 @@ test('run prioritySequence first sync', () => {
     ],
     {},
   );
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
   const sequence = extractSummary(result.stderr)
     .rest.replace(/PASS /g, '')
     .split('\n');
@@ -47,7 +47,7 @@ test('run prioritySequence first async', () => {
     ],
     {},
   );
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
   const sequence = extractSummary(result.stderr)
     .rest.replace(/PASS /g, '')
     .split('\n');

@@ -8,7 +8,7 @@
 import runJest from '../runJest';
 
 test('suite with invalid assertions in afterAll', () => {
-  const {stderr, status} = runJest('lifecycles');
+  const {stderr, exitCode} = runJest('lifecycles');
   expect(stderr).toMatch(/afterAll just failed!/);
-  expect(status).toBe(1);
+  expect(exitCode).toBe(1);
 });

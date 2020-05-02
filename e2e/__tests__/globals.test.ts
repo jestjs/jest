@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
-import os from 'os';
+import * as path from 'path';
+import {tmpdir} from 'os';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest from '../runJest';
 import {
@@ -16,10 +16,10 @@ import {
   writeFiles,
 } from '../Utils';
 
-const DIR = path.resolve(os.tmpdir(), 'globalVariables.test');
+const DIR = path.resolve(tmpdir(), 'globalVariables.test');
 const TEST_DIR = path.resolve(DIR, '__tests__');
 
-function cleanStderr(stderr) {
+function cleanStderr(stderr: string) {
   const {rest} = extractSummary(stderr);
   return rest.replace(/.*(jest-jasmine2).*\n/g, '');
 }
@@ -44,8 +44,8 @@ test('basic test constructs', () => {
   `;
 
   writeFiles(TEST_DIR, {[filename]: content});
-  const {stderr, status} = runJest(DIR);
-  expect(status).toBe(0);
+  const {stderr, exitCode} = runJest(DIR);
+  expect(exitCode).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
@@ -75,12 +75,12 @@ test('skips', () => {
   `;
 
   writeFiles(TEST_DIR, {[filename]: content});
-  const {stderr, status} = runJest(DIR);
+  const {stderr, exitCode} = runJest(DIR);
 
   const {summary, rest} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });
 
 test('only', () => {
@@ -105,8 +105,8 @@ test('only', () => {
   `;
 
   writeFiles(TEST_DIR, {[filename]: content});
-  const {stderr, status} = runJest(DIR);
-  expect(status).toBe(0);
+  const {stderr, exitCode} = runJest(DIR);
+  expect(exitCode).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
@@ -120,11 +120,12 @@ test('cannot have describe with no implementation', () => {
   `;
 
   writeFiles(TEST_DIR, {[filename]: content});
-  const {stderr, status} = runJest(DIR);
-  expect(status).toBe(1);
+  const {stderr, exitCode} = runJest(DIR);
+  expect(exitCode).toBe(1);
 
   const rest = cleanStderr(stderr);
   const {summary} = extractSummary(stderr);
+
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
 });
@@ -138,8 +139,8 @@ test('cannot test with no implementation', () => {
   `;
 
   writeFiles(TEST_DIR, {[filename]: content});
-  const {stderr, status} = runJest(DIR);
-  expect(status).toBe(1);
+  const {stderr, exitCode} = runJest(DIR);
+  expect(exitCode).toBe(1);
 
   const {summary} = extractSummary(stderr);
   expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
@@ -169,8 +170,8 @@ test('skips with expand arg', () => {
   `;
 
   writeFiles(TEST_DIR, {[filename]: content});
-  const {stderr, status} = runJest(DIR, ['--expand']);
-  expect(status).toBe(0);
+  const {stderr, exitCode} = runJest(DIR, ['--expand']);
+  expect(exitCode).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
@@ -199,8 +200,8 @@ test('only with expand arg', () => {
   `;
 
   writeFiles(TEST_DIR, {[filename]: content});
-  const {stderr, status} = runJest(DIR, ['--expand']);
-  expect(status).toBe(0);
+  const {stderr, exitCode} = runJest(DIR, ['--expand']);
+  expect(exitCode).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
@@ -216,8 +217,8 @@ test('cannot test with no implementation with expand arg', () => {
   `;
 
   writeFiles(TEST_DIR, {[filename]: content});
-  const {stderr, status} = runJest(DIR, ['--expand']);
-  expect(status).toBe(1);
+  const {stderr, exitCode} = runJest(DIR, ['--expand']);
+  expect(exitCode).toBe(1);
 
   const {summary} = extractSummary(stderr);
   expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
@@ -234,8 +235,8 @@ test('function as descriptor', () => {
   `;
 
   writeFiles(TEST_DIR, {[filename]: content});
-  const {stderr, status} = runJest(DIR);
-  expect(status).toBe(0);
+  const {stderr, exitCode} = runJest(DIR);
+  expect(exitCode).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();

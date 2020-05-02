@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 'use strict';
-/*global window */
+/*eslint-env browser */
 
-test('found userAgent Agent/007', () => {
-  expect(window.navigator.userAgent).toBe('Agent/007');
+test('found url jestjs.io', () => {
+  expect(window.location.href).toBe('https://jestjs.io/');
 });

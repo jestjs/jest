@@ -5,10 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import os from 'os';
+import {cpus} from 'os';
 import WorkerPool from './WorkerPool';
 import Farm from './Farm';
-import {WorkerPoolInterface, WorkerPoolOptions, FarmOptions} from './types';
+import type {
+  FarmOptions,
+  PoolExitResult,
+  WorkerPoolInterface,
+  WorkerPoolOptions,
+} from './types';
 
 function getExposedMethods(
   workerPath: string,
@@ -72,7 +77,7 @@ export default class JestWorker {
       enableWorkerThreads: this._options.enableWorkerThreads || false,
       forkOptions: this._options.forkOptions || {},
       maxRetries: this._options.maxRetries || 3,
-      numWorkers: this._options.numWorkers || Math.max(os.cpus().length - 1, 1),
+      numWorkers: this._options.numWorkers || Math.max(cpus().length - 1, 1),
       setupArgs: this._options.setupArgs || [],
     };
 
@@ -132,13 +137,12 @@ export default class JestWorker {
     return this._workerPool.getStdout();
   }
 
-  end(): void {
+  async end(): Promise<PoolExitResult> {
     if (this._ending) {
       throw new Error('Farm is ended, no more calls can be done to it');
     }
-
-    this._workerPool.end();
-
     this._ending = true;
+
+    return this._workerPool.end();
   }
 }

@@ -6,6 +6,7 @@
  */
 
 import path from 'path';
+// eslint-disable-next-line import/named
 import {sync as spawnSync} from 'execa';
 import {skipSuiteOnWindows} from '@jest/test-utils';
 
@@ -24,7 +25,7 @@ describe('Runtime', () => {
   describe('cli', () => {
     it('fails with no path', () => {
       const expectedOutput =
-        'Please provide a path to a script. (See --help for details)\n';
+        'Please provide a path to a script. (See --help for details)';
       expect(run([]).stdout).toBe(expectedOutput);
     });
 

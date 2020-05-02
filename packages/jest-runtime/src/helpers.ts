@@ -1,9 +1,14 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
-import path from 'path';
-import slash from 'slash';
-import glob from 'glob';
-import {Config} from '@jest/types';
+import * as path from 'path';
+import slash = require('slash');
+import glob = require('glob');
+import type {Config} from '@jest/types';
 
 export const findSiblingsWithFileExtension = (
   moduleFileExtensions: Config.ProjectConfig['moduleFileExtensions'],
@@ -40,10 +45,10 @@ export const findSiblingsWithFileExtension = (
         return (
           foundMessage +
           "\n\nYou might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently " +
-          `[${mappedModuleFileExtensions}].\n\nSee https://jestjs.io/docs/en/configuration#modulefileextensions-array-string`
+          `[${mappedModuleFileExtensions}].\n\nSee https://jestjs.io/docs/en/configuration#modulefileextensions-arraystring`
         );
       }
-    } catch (ignored) {}
+    } catch {}
   }
 
   return '';

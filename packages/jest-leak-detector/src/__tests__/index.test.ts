@@ -1,4 +1,9 @@
-// Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 'use strict';
 
@@ -23,41 +28,44 @@ it('complains if the value is a primitive', () => {
   expect(() => new LeakDetector(NaN)).toThrowErrorMatchingSnapshot();
 });
 
-it('does not show the GC if hidden', () => {
+it('does not show the GC if hidden', async () => {
   const detector = new LeakDetector({});
 
   // @ts-ignore: purposefully removed
   global.gc = undefined;
-  detector.isLeaking();
+  await detector.isLeaking();
   expect(global.gc).not.toBeDefined();
 });
 
-it('does not hide the GC if visible', () => {
+it('does not hide the GC if visible', async () => {
   const detector = new LeakDetector({});
 
   global.gc = () => {};
-  detector.isLeaking();
+  await detector.isLeaking();
   expect(global.gc).toBeDefined();
 });
 
-it('correctly checks simple leaks', () => {
+it('correctly checks simple leaks', async () => {
   let reference: unknown = {};
+  let isLeaking: boolean;
 
   const detector = new LeakDetector(reference);
 
   // Reference is still held in memory.
-  expect(detector.isLeaking()).toBe(true);
+  isLeaking = await detector.isLeaking();
+  expect(isLeaking).toBe(true);
 
   // We destroy the only reference to the object we had.
   reference = null;
 
   // Reference should be gone.
-  expect(detector.isLeaking()).toBe(false);
+  isLeaking = await detector.isLeaking();
+  expect(isLeaking).toBe(false);
 });
 
-it('tests different objects', () => {
+it('tests different objects', async () => {
   const refs = [
-    function() {},
+    function () {},
     () => {},
     Object.create(null),
     [],
@@ -68,12 +76,20 @@ it('tests different objects', () => {
 
   const detectors = refs.map(ref => new LeakDetector(ref));
 
-  detectors.forEach(detector => expect(detector.isLeaking()).toBe(true));
-  refs.forEach((_, i) => (refs[i] = null));
-  detectors.forEach(detector => expect(detector.isLeaking()).toBe(false));
+  let isLeaking: boolean;
+  for (const i in detectors) {
+    isLeaking = await detectors[i].isLeaking();
+    expect(isLeaking).toBe(true);
+    refs[i] = null;
+  }
+
+  for (const i in detectors) {
+    isLeaking = await detectors[i].isLeaking();
+    expect(isLeaking).toBe(false);
+  }
 });
 
-it('correctly checks more complex leaks', () => {
+it('correctly checks more complex leaks', async () => {
   let ref1: any = {};
   let ref2: any = {};
 
@@ -84,21 +100,30 @@ it('correctly checks more complex leaks', () => {
   const detector1 = new LeakDetector(ref1);
   const detector2 = new LeakDetector(ref2);
 
+  let isLeaking1: boolean;
+  let isLeaking2: boolean;
+
   // References are still held in memory.
-  expect(detector1.isLeaking()).toBe(true);
-  expect(detector2.isLeaking()).toBe(true);
+  isLeaking1 = await detector1.isLeaking();
+  expect(isLeaking1).toBe(true);
+  isLeaking2 = await detector2.isLeaking();
+  expect(isLeaking2).toBe(true);
 
   // We destroy the reference to ref1.
   ref1 = null;
 
   // It will still be referenced by ref2, so both references are still leaking.
-  expect(detector1.isLeaking()).toBe(true);
-  expect(detector2.isLeaking()).toBe(true);
+  isLeaking1 = await detector1.isLeaking();
+  expect(isLeaking1).toBe(true);
+  isLeaking2 = await detector2.isLeaking();
+  expect(isLeaking2).toBe(true);
 
   // We destroy the reference to ref2.
   ref2 = null;
 
   // Now both references should be gone (yay mark & sweep!).
-  expect(detector1.isLeaking()).toBe(false);
-  expect(detector2.isLeaking()).toBe(false);
+  isLeaking1 = await detector1.isLeaking();
+  expect(isLeaking1).toBe(false);
+  isLeaking2 = await detector2.isLeaking();
+  expect(isLeaking2).toBe(false);
 });

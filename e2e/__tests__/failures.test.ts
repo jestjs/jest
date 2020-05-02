@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {extractSummary} from '../Utils';
+import {extractSummary, run} from '../Utils';
 import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../failures');
@@ -21,6 +21,12 @@ function cleanStderr(stderr: string) {
     .replace(new RegExp('Failed: Object {', 'g'), 'thrown: Object {');
 }
 
+const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
+
+beforeAll(() => {
+  run('yarn', dir);
+});
+
 test('not throwing Error objects', () => {
   let stderr;
   stderr = runJest(dir, ['throwNumber.test.js']).stderr;
@@ -32,17 +38,37 @@ test('not throwing Error objects', () => {
   stderr = runJest(dir, ['assertionCount.test.js']).stderr;
   expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
   stderr = runJest(dir, ['duringTests.test.js']).stderr;
+
+  if (nodeMajorVersion < 10) {
+    const lineEntry = '(__tests__/duringTests.test.js:38:8)';
+
+    expect(stderr).toContain(`at Object.<anonymous>.done ${lineEntry}`);
+
+    stderr = stderr.replace(
+      `at Object.<anonymous>.done ${lineEntry}`,
+      `at Object.<anonymous> ${lineEntry}`,
+    );
+  } else if (nodeMajorVersion < 12) {
+    const lineEntry = '(__tests__/duringTests.test.js:38:8)';
+
+    expect(stderr).toContain(`at Object.done ${lineEntry}`);
+
+    stderr = stderr.replace(
+      `at Object.done ${lineEntry}`,
+      `at Object.<anonymous> ${lineEntry}`,
+    );
+  }
+
   expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
 });
 
 test('works with node assert', () => {
-  const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
   const {stderr} = runJest(dir, ['assertionError.test.js']);
   let summary = normalizeDots(cleanStderr(stderr));
 
   // Node 9 started to include the error for `doesNotThrow`
   // https://github.com/nodejs/node/pull/12167
-  if (nodeMajorVersion >= 9) {
+  if (nodeMajorVersion >= 10) {
     expect(summary).toContain(`
     assert.doesNotThrow(function)
 
@@ -87,9 +113,7 @@ test('works with node assert', () => {
       expect(summary).toContain(specificErrorMessage);
       summary = summary.replace(specificErrorMessage, commonErrorMessage);
     }
-  }
 
-  if (nodeMajorVersion >= 10) {
     const ifErrorMessage = `
     assert.ifError(received, expected)
 

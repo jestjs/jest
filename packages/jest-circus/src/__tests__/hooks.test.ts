@@ -1,11 +1,11 @@
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
  */
 
+import wrap from 'jest-snapshot-serializer-raw';
 import {runTest} from '../__mocks__/testUtils';
 
 test('beforeEach is executed before each test in current/child describe blocks', () => {
@@ -34,7 +34,7 @@ test('beforeEach is executed before each test in current/child describe blocks',
     })
   `);
 
-  expect(stdout).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot();
 });
 
 test('multiple before each hooks in one describe are executed in the right order', () => {
@@ -53,7 +53,7 @@ test('multiple before each hooks in one describe are executed in the right order
     });
   `);
 
-  expect(stdout).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot();
 });
 
 test('beforeAll is exectued correctly', () => {
@@ -70,5 +70,5 @@ test('beforeAll is exectued correctly', () => {
     });
   `);
 
-  expect(stdout).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot();
 });

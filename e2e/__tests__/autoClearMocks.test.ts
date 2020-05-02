@@ -9,10 +9,10 @@ import runJest from '../runJest';
 
 test('suite with auto-clear', () => {
   const result = runJest('auto-clear-mocks/with-auto-clear');
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });
 
 test('suite without auto-clear', () => {
   const result = runJest('auto-clear-mocks/without-auto-clear');
-  expect(result.status).toBe(0);
+  expect(result.exitCode).toBe(0);
 });

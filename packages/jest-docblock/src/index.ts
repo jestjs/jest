@@ -6,7 +6,7 @@
  */
 
 import {EOL} from 'os';
-import detectNewline from 'detect-newline';
+import detectNewline = require('detect-newline');
 
 type Pragmas = Record<string, string | Array<string>>;
 
@@ -18,13 +18,14 @@ const ltrimNewlineRe = /^(\r?\n)+/;
 const multilineRe = /(?:^|\r?\n) *(@[^\r\n]*?) *\r?\n *(?![^@\r\n]*\/\/[^]*)([^@\r\n\s][^@\r\n]+?) *\r?\n/g;
 const propertyRe = /(?:^|\r?\n) *@(\S+) *([^\r\n]*)/g;
 const stringStartRe = /(\r?\n|^) *\* ?/g;
+const STRING_ARRAY: ReadonlyArray<string> = [];
 
 export function extract(contents: string): string {
   const match = contents.match(docblockRe);
   return match ? match[0].trimLeft() : '';
 }
 
-export function strip(contents: string) {
+export function strip(contents: string): string {
   const match = contents.match(docblockRe);
   return match && match[0] ? contents.substring(match[0].length) : contents;
 }
@@ -65,10 +66,7 @@ export function parseWithComments(
       typeof result[match[1]] === 'string' ||
       Array.isArray(result[match[1]])
     ) {
-      result[match[1]] = ([] as Array<string>).concat(
-        result[match[1]],
-        nextPragma,
-      );
+      result[match[1]] = STRING_ARRAY.concat(result[match[1]], nextPragma);
     } else {
       result[match[1]] = nextPragma;
     }
@@ -123,7 +121,7 @@ export function print({
 }
 
 function printKeyValues(key: string, valueOrArray: string | Array<string>) {
-  return ([] as Array<string>)
-    .concat(valueOrArray)
-    .map(value => `@${key} ${value}`.trim());
+  return STRING_ARRAY.concat(valueOrArray).map(value =>
+    `@${key} ${value}`.trim(),
+  );
 }

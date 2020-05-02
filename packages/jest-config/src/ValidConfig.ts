@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {multipleValidOptions} from 'jest-validate';
 import {NODE_MODULES} from './constants';
@@ -15,7 +15,6 @@ const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 const initialOptions: Config.InitialOptions = {
   automock: false,
   bail: multipleValidOptions(false, 0),
-  browser: false,
   cache: true,
   cacheDirectory: '/tmp/user/jest',
   changedFilesWithAncestor: false,
@@ -28,6 +27,7 @@ const initialOptions: Config.InitialOptions = {
   },
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
+  coverageProvider: 'v8',
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   coverageThreshold: {
     global: {
@@ -39,9 +39,9 @@ const initialOptions: Config.InitialOptions = {
   },
   dependencyExtractor: '<rootDir>/dependencyExtractor.js',
   displayName: multipleValidOptions('test-config', {
-    color: 'blue' as 'blue',
+    color: 'blue',
     name: 'test-config',
-  }),
+  } as const),
   errorOnDeprecated: false,
   expand: false,
   extraGlobals: [],
@@ -56,7 +56,6 @@ const initialOptions: Config.InitialOptions = {
     defaultPlatform: 'ios',
     hasteImplModulePath: '<rootDir>/haste_impl.js',
     platforms: ['ios', 'android'],
-    providesModuleNodeModules: ['react', 'react-native'],
     throwOnModuleCollision: false,
   },
   json: false,

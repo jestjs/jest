@@ -6,11 +6,9 @@ FAIL __tests__/bar.spec.js
     expect(received).toBe(expected) // Object.is equality
     Expected: "foo"
     Received: "bar"
-      1 |
-    > 2 |       test('bar 1', () => { expect('bar').toBe('foo'); });
-        |                                           ^
-      3 |
-      at Object.toBe (__tests__/bar.spec.js:2:43)
+    > 1 | test('bar 1', () => { expect('bar').toBe('foo'); });
+        |                                     ^
+      at Object.toBe (__tests__/bar.spec.js:1:37)
 
 PASS __tests__/foo.spec.js
 `;
@@ -22,11 +20,9 @@ FAIL __tests__/bar.spec.js
     expect(received).toBe(expected) // Object.is equality
     Expected: "foo"
     Received: "bar"
-      1 |
-    > 2 |       test('bar 1', () => { expect('bar').toBe('foo'); });
-        |                                           ^
-      3 |
-      at Object.toBe (__tests__/bar.spec.js:2:43)
+    > 1 | test('bar 1', () => { expect('bar').toBe('foo'); });
+        |                                     ^
+      at Object.toBe (__tests__/bar.spec.js:1:37)
 
 `;
 

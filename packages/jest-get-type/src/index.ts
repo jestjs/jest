@@ -7,6 +7,7 @@
 
 type ValueType =
   | 'array'
+  | 'bigint'
   | 'boolean'
   | 'function'
   | 'null'
@@ -37,6 +38,8 @@ function getType(value: unknown): ValueType {
     return 'number';
   } else if (typeof value === 'string') {
     return 'string';
+  } else if (typeof value === 'bigint') {
+    return 'bigint';
   } else if (typeof value === 'object') {
     if (value != null) {
       if (value.constructor === RegExp) {

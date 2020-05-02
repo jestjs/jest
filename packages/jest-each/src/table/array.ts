@@ -6,11 +6,11 @@
  *
  */
 
-import util from 'util';
-import pretty from 'pretty-format';
+import * as util from 'util';
+import pretty = require('pretty-format');
 
-import {Global} from '@jest/types';
-import {EachTests} from '../bind';
+import type {Global} from '@jest/types';
+import type {EachTests} from '../bind';
 
 const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;
 const PRETTY_PLACEHOLDER = '%p';

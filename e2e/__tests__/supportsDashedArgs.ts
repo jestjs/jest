@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
+import * as path from 'path';
 import runJest from '../runJest';
 
 const consoleDir = path.resolve(__dirname, '../console');
@@ -17,7 +17,7 @@ expect.addSnapshotSerializer({
 });
 
 test('works with passing tests', () => {
-  const result = runJest(eachDir, [
+  const {exitCode} = runJest(eachDir, [
     'success.test.js',
     '--runInBand',
     '--collect-coverage',
@@ -26,14 +26,11 @@ test('works with passing tests', () => {
     '--clear-mocks',
     '--useStderr',
   ]);
-  if (result.status !== 0) {
-    console.error(result.stderr);
-  }
-  expect(result.status).toBe(0);
+  expect(exitCode).toBe(0);
 });
 
 test('throws error for unknown dashed & camelcase args', () => {
-  const result = runJest(consoleDir, [
+  const {exitCode, stderr} = runJest(consoleDir, [
     'success.test.js',
     '--runInBand',
     '--collect-coverage',
@@ -44,16 +41,15 @@ test('throws error for unknown dashed & camelcase args', () => {
     '--also-does-not-exist',
     '--useStderr',
   ]);
-  expect(result.stderr).toMatchInlineSnapshot(`
-● Unrecognized CLI Parameters:
+  expect(stderr).toMatchInlineSnapshot(`
+    ● Unrecognized CLI Parameters:
 
-  Following options were not recognized:
-  ["doesNotExist", "also-does-not-exist"]
+      Following options were not recognized:
+      ["doesNotExist", "also-does-not-exist"]
 
-  CLI Options Documentation:
-  https://jestjs.io/docs/en/cli.html
+      CLI Options Documentation:
+      https://jestjs.io/docs/en/cli.html
 
-
-`);
-  expect(result.status).toBe(1);
+  `);
+  expect(exitCode).toBe(1);
 });

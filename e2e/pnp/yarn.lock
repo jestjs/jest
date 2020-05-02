@@ -5,3 +5,7 @@
 "foo@link:./lib":
   version "0.0.0"
   uid ""
+
+"undeclared@link:./undeclared-dependency":
+  version "0.0.0"
+  uid ""

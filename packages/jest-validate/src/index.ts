@@ -5,22 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
+export {
+  ValidationError,
   createDidYouMeanMessage,
   format,
   logValidationWarning,
-  ValidationError,
 } from './utils';
-import validate from './validate';
-import validateCLIOptions from './validateCLIOptions';
-import {multipleValidOptions} from './condition';
-
-export = {
-  ValidationError,
-  createDidYouMeanMessage,
-  format,
-  logValidationWarning,
-  multipleValidOptions,
-  validate,
-  validateCLIOptions,
-};
+export {default as validate} from './validate';
+export {default as validateCLIOptions} from './validateCLIOptions';
+export {multipleValidOptions} from './condition';

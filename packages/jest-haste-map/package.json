@@ -1,6 +1,6 @@
 {
   "name": "jest-haste-map",
-  "version": "24.8.0",
+  "version": "26.0.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,35 +10,36 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/types": "^24.8.0",
-    "anymatch": "^2.0.0",
+    "@jest/types": "^26.0.0-alpha.0",
+    "@types/graceful-fs": "^4.1.2",
+    "anymatch": "^3.0.3",
     "fb-watchman": "^2.0.0",
-    "graceful-fs": "^4.1.15",
-    "invariant": "^2.2.4",
-    "jest-serializer": "^24.4.0",
-    "jest-util": "^24.8.0",
-    "jest-worker": "^24.6.0",
-    "micromatch": "^3.1.10",
+    "graceful-fs": "^4.2.4",
+    "jest-serializer": "^26.0.0-alpha.0",
+    "jest-util": "^26.0.0-alpha.0",
+    "jest-worker": "^26.0.0-alpha.0",
+    "micromatch": "^4.0.2",
     "sane": "^4.0.3",
-    "walker": "^1.0.7"
+    "walker": "^1.0.7",
+    "which": "^2.0.2"
   },
   "devDependencies": {
+    "@jest/test-utils": "^26.0.0-alpha.0",
     "@types/anymatch": "^1.3.1",
     "@types/fb-watchman": "^2.0.0",
-    "@types/fsevents": "^1.1.0",
-    "@types/graceful-fs": "^4.1.2",
-    "@types/invariant": "^2.2.29",
-    "@types/micromatch": "^3.1.0",
-    "@types/sane": "^2.0.0"
+    "@types/micromatch": "^4.0.0",
+    "@types/node": "*",
+    "@types/sane": "^2.0.0",
+    "@types/which": "^1.3.2"
   },
   "optionalDependencies": {
-    "fsevents": "^1.2.7"
+    "fsevents": "^2.1.2"
   },
   "engines": {
-    "node": ">= 6"
+    "node": ">= 10.14.2"
   },
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "845728f24b3ef41e450595c384e9b5c9fdf248a4"
+  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
 }

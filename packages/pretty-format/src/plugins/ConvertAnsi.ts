@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import ansiRegex from 'ansi-regex';
-import style from 'ansi-styles';
-import {Config, Printer, NewPlugin, Refs} from '../types';
+import ansiRegex = require('ansi-regex');
+import style = require('ansi-styles');
+import type {Config, NewPlugin, Printer, Refs} from '../types';
 
 const toHumanReadableAnsi = (text: string) =>
   text.replace(ansiRegex(), match => {
@@ -56,10 +56,10 @@ const toHumanReadableAnsi = (text: string) =>
     }
   });
 
-export const test = (val: any): boolean =>
+export const test: NewPlugin['test'] = (val: unknown) =>
   typeof val === 'string' && !!val.match(ansiRegex());
 
-export const serialize = (
+export const serialize: NewPlugin['serialize'] = (
   val: string,
   config: Config,
   indentation: string,
