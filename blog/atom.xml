@@ -91,7 +91,7 @@
 <p><img src="/img/blog/20-multi-runner.gif" alt="multi-runner"></p>
 ]]></summary>
         <author>
-            <name>Christoph Pojer</name>
+            <name>Christoph Nakazawa</name>
             <email/>
             <uri>http://twitter.com/cpojer</uri>
         </author>
@@ -138,7 +138,7 @@
 <p>The newly created <a href="https://yarnpkg.com/en/package/react-test-renderer">react-test-renderer</a> finally enabled testing of react-native components. Through the jest-react-native preset (now merged directly into react-native) Jest now works out of the box for any React project and comes pre-configured in <a href="https://github.com/facebookincubator/create-react-app">create-react-app</a> and <a href="https://github.com/facebook/react-native">react-native</a> projects. We integrated core pieces of Jest into <a href="https://github.com/facebook/react-native/tree/master/packager/react-packager/src">react-native's packager</a> and the completely new snapshot testing feature has since been used outside of Jest: It was integrated with React Storybook as “<a href="https://github.com/storybooks/storyshots">storyshots</a>” and is being adopted by other test runners like <a href="https://github.com/avajs/ava/pull/1113">ava</a>.</p>
 ]]></summary>
         <author>
-            <name>Christoph Pojer</name>
+            <name>Christoph Nakazawa</name>
             <email/>
             <uri>http://twitter.com/cpojer</uri>
         </author>
@@ -154,7 +154,7 @@
 <p>Jest 16 features a new reporter interface that shows running tests as well as a live summary and a progress bar based on the estimated test runtime from previous test runs. We also improved the CLI output to work better with different color schemes. If there were test failures in a previous run, Jest will now always run those tests first to give useful signal to users as quickly as possible.</p>
 ]]></summary>
         <author>
-            <name>Christoph Pojer</name>
+            <name>Christoph Nakazawa</name>
             <email/>
             <uri>http://twitter.com/cpojer</uri>
         </author>
@@ -168,7 +168,7 @@
 <p>The most important change to talk about is a set of <a href="https://github.com/facebook/jest/pull/1511">new defaults</a>. If you are an existing Jest user you will very likely need to update your configuration for Jest 15. In most cases it will simplify your setup and Jest will provide useful error messages during the upgrade. All of the new defaults can be disabled to suit your needs, but we still consider the disabled features critical for Jest in certain situations and will continue to use and support them at Facebook long-term. Our <a href="https://jestjs.io/docs/api.html">API documentation</a> was also completely rewritten to reflect these changes. <a href="https://github.com/facebook/react/pull/7625/files">This pull request for React</a> highlights some of the changes necessary for existing projects.</p>
 ]]></summary>
         <author>
-            <name>Christoph Pojer</name>
+            <name>Christoph Nakazawa</name>
             <email/>
             <uri>http://twitter.com/cpojer</uri>
         </author>
@@ -182,7 +182,7 @@
 <p>One of the big open questions was how to write React tests efficiently. There are plenty of tools such as <a href="https://facebook.github.io/react/docs/test-utils.html">ReactTestUtils</a> and <a href="http://airbnb.io/enzyme/">enzyme</a>. Both of these tools are great and are actively being used. However engineers frequently told us that they spend more time writing a test than the component itself. As a result many people stopped writing tests altogether which eventually led to instabilities. Engineers told us all they wanted was to make sure their components don't change unexpectedly.</p>
 ]]></summary>
         <author>
-            <name>Christoph Pojer</name>
+            <name>Christoph Nakazawa</name>
             <email/>
             <uri>http://twitter.com/cpojer</uri>
         </author>
@@ -196,7 +196,7 @@
 <p>The Flow project has evolved a lot within Facebook and has been successfully adopted across many of our frameworks and almost all of our product code. Adoption can be parallelized incredibly well – it can be done file-by-file until enough of the codebase is well-typed. Then, Flow provides real value and helps guide through large changes. Through this, many small edge cases and bugs were found.</p>
 ]]></summary>
         <author>
-            <name>Christoph Pojer</name>
+            <name>Christoph Nakazawa</name>
             <email/>
             <uri>http://twitter.com/cpojer</uri>
         </author>
@@ -213,7 +213,7 @@
 <p><code>babel-jest</code> was adopted within the newly modularized Jest <a href="https://github.com/facebook/jest/tree/master/packages">repository</a> and it is now seamlessly integrated into Jest. If you are upgrading from an older version of Jest or are looking to adopt Jest, we recommend reading the <a href="https://jestjs.io/docs/getting-started.html">Getting Started guide</a>.</p>
 ]]></summary>
         <author>
-            <name>Christoph Pojer</name>
+            <name>Christoph Nakazawa</name>
             <email/>
             <uri>http://twitter.com/cpojer</uri>
         </author>
@@ -227,7 +227,7 @@
 <p>As engineers added more and more tests though, we noticed the performance of Jest wasn't going to scale. Additionally, in the last year the JavaScript ecosystem has changed dramatically with the introduction of things like npm3 and Babel, which we hadn't anticipated. We formed a new Jest team to address all of these issues and we'll be sharing our progress and plans on this blog from now on.</p>
 ]]></summary>
         <author>
-            <name>Christoph Pojer</name>
+            <name>Christoph Nakazawa</name>
             <email/>
             <uri>http://twitter.com/cpojer</uri>
         </author>
