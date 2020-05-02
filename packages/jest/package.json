@@ -1,7 +1,7 @@
 {
   "name": "jest",
   "description": "Delightful JavaScript Testing.",
-  "version": "25.5.3",
+  "version": "25.5.4",
   "main": "build/jest.js",
   "types": "build/jest.d.ts",
   "typesVersions": {
@@ -12,9 +12,9 @@
     }
   },
   "dependencies": {
-    "@jest/core": "^25.5.3",
+    "@jest/core": "^25.5.4",
     "import-local": "^3.0.2",
-    "jest-cli": "^25.5.3"
+    "jest-cli": "^25.5.4"
   },
   "bin": "./bin/jest.js",
   "engines": {
