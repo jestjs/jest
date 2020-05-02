@@ -55,7 +55,7 @@
   },
   "bin": "./bin/jest-runtime.js",
   "engines": {
-    "node": ">= 10.3"
+    "node": ">= 10.14.3"
   },
   "publishConfig": {
     "access": "public"

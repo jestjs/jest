@@ -31,7 +31,7 @@
     "url": "https://github.com/facebook/jest/issues"
   },
   "engines": {
-    "node": ">= 10.3"
+    "node": ">= 10.14.3"
   },
   "homepage": "https://jestjs.io/",
   "license": "MIT",

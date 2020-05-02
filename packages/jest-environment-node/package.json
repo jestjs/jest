@@ -21,14 +21,10 @@
     "@jest/fake-timers": "^25.5.0",
     "@jest/types": "^25.5.0",
     "jest-mock": "^25.5.0",
-    "jest-util": "^25.5.0",
-    "semver": "^6.3.0"
-  },
-  "devDependencies": {
-    "@types/semver": "^6.2.1"
+    "jest-util": "^25.5.0"
   },
   "engines": {
-    "node": ">= 10.3"
+    "node": ">= 10.14.3"
   },
   "publishConfig": {
     "access": "public"

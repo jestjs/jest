@@ -28,7 +28,7 @@
     "@types/yargs": "^15.0.3"
   },
   "engines": {
-    "node": ">= 10.3"
+    "node": ">= 10.14.3"
   },
   "publishConfig": {
     "access": "public"

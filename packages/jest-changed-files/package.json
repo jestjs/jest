@@ -22,7 +22,7 @@
     "throat": "^5.0.0"
   },
   "engines": {
-    "node": ">= 10.3"
+    "node": ">= 10.14.3"
   },
   "publishConfig": {
     "access": "public"

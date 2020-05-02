@@ -47,7 +47,7 @@
     "graceful-fs": "^4.2.4"
   },
   "engines": {
-    "node": ">= 10.3"
+    "node": ">= 10.14.3"
   },
   "publishConfig": {
     "access": "public"

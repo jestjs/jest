@@ -7,7 +7,7 @@
     "directory": "packages/jest-globals"
   },
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.14.3"
   },
   "license": "MIT",
   "main": "build/index.js",
