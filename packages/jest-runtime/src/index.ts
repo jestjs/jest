@@ -982,31 +982,17 @@ class Runtime {
       const vmContext = this._environment.getVmContext();
 
       if (vmContext) {
-        if (typeof compileFunction === 'function') {
-          try {
-            compiledFunction = compileFunction(
-              transformedCode,
-              this.constructInjectedModuleParameters(),
-              {
-                filename,
-                parsingContext: vmContext,
-              },
-            ) as ModuleWrapper;
-          } catch (e) {
-            throw handlePotentialSyntaxError(e);
-          }
-        } else {
-          const script = this.createScriptFromCode(transformedCode, filename);
-
-          const runScript = script.runInContext(
-            vmContext,
-          ) as RunScriptEvalResult;
-
-          if (runScript === null) {
-            compiledFunction = null;
-          } else {
-            compiledFunction = runScript[EVAL_RESULT_VARIABLE];
-          }
+        try {
+          compiledFunction = compileFunction(
+            transformedCode,
+            this.constructInjectedModuleParameters(),
+            {
+              filename,
+              parsingContext: vmContext,
+            },
+          ) as ModuleWrapper;
+        } catch (e) {
+          throw handlePotentialSyntaxError(e);
         }
       }
     } else {

@@ -6,7 +6,6 @@
  *
  */
 
-import {compileFunction} from 'vm';
 import type {Config} from '@jest/types';
 import type {TestResult} from '@jest/test-result';
 import {
@@ -226,11 +225,10 @@ async function runTestInternal(
     };
   }
 
-  // if we don't have `getVmContext` on the env,or `compileFunction` available skip coverage
+  // if we don't have `getVmContext` on the env skip coverage
   const collectV8Coverage =
     globalConfig.coverageProvider === 'v8' &&
-    typeof environment.getVmContext === 'function' &&
-    typeof compileFunction === 'function';
+    typeof environment.getVmContext === 'function';
 
   try {
     await environment.setup();
