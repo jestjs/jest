@@ -10,7 +10,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.0.0",
     "@babel/register": "^7.0.0",
-    "@jest/test-utils": "*",
+    "@jest/test-utils": "^26.0.0-alpha.0",
     "@types/babel__core": "^7.0.0",
     "@types/babel__generator": "^7.0.0",
     "@types/babel__template": "^7.0.0",

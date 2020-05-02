@@ -1333,11 +1333,6 @@
     jest-runner "^25.5.4"
     jest-runtime "^25.5.4"
 
-"@jest/test-utils@*":
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/@jest/test-utils/-/test-utils-0.0.0.tgz#3c4c3cef69fdcaf3620147ea426a60c73ad48f0b"
-  integrity sha512-I7+1ZrMNkQylj9ULDwvytutSOpEs2RxOiY6dhZs//9zASoxSZUwC5vWE/l77Bq+4ffq2a/nGjqrLGBcoAmL9Qw==
-
 "@jest/transform@^25.5.1":
   version "25.5.1"
   resolved "https://registry.yarnpkg.com/@jest/transform/-/transform-25.5.1.tgz#0469ddc17699dd2bf985db55fa0fb9309f5c2db3"
