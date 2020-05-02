@@ -104,17 +104,6 @@ jobs:
       - store_test_results:
           path: reports/junit
 
-  test-browser:
-    working_directory: ~/jest
-    docker:
-      - image: circleci/node:12-browsers
-    steps:
-      - checkout
-      - restore-cache: *restore-cache
-      - run: *install
-      - save-cache: *save-cache
-      - run: yarn test-ci-es5-build-in-browser
-
   test-or-deploy-website:
     working_directory: ~/jest
     docker:
@@ -140,6 +129,5 @@ workflows:
       - test-node-13
       - test-node-14 # current
       - test-jest-circus
-      - test-browser
       - test-or-deploy-website:
           filters: *filter-ignore-gh-pages
