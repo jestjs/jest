@@ -58,11 +58,6 @@ export declare class JestEnvironment {
 
 export type Module = NodeModule;
 
-export interface LocalModuleRequire extends NodeRequire {
-  requireActual(moduleName: string): unknown;
-  requireMock(moduleName: string): unknown;
-}
-
 // TODO: Move to some separate package
 export interface Jest {
   /**

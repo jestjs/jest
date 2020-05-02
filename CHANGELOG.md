@@ -8,6 +8,7 @@
 
 ### Chore & Maintenance
 
+- `[jest-runtime]` [**BREAKING**] Remove long-deprecated `require.requireActual` and `require.requireMock` methods ([#9854](https://github.com/facebook/jest/pull/9854))
 - `[expect, jest-mock, pretty-format]` [**BREAKING**] Remove `build-es5` from package ([#9945](https://github.com/facebook/jest/pull/9945))
 
 ### Performance
