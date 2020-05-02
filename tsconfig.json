@@ -7,8 +7,7 @@
     "declaration": true,
     "composite": true,
     "emitDeclarationOnly": true,
-    // blocked by https://github.com/chalk/chalk/pull/390
-    // "isolatedModules": true,
+    "isolatedModules": true,
     "importsNotUsedAsValues": "error",
 
     "strict": true,
