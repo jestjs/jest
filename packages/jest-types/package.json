@@ -1,24 +1,17 @@
 {
   "name": "@jest/types",
-  "version": "25.2.6",
+  "version": "25.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-types"
   },
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.14.2"
   },
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "typesVersions": {
-    "<3.8": {
-      "build/*": [
-        "build/ts3.4/*"
-      ]
-    }
-  },
   "dependencies": {
     "@types/istanbul-lib-coverage": "^2.0.0",
     "@types/istanbul-reports": "^1.1.1",

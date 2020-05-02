@@ -6,8 +6,8 @@
  */
 
 import {createHash} from 'crypto';
-import {statSync} from 'fs';
 import * as path from 'path';
+import {statSync} from 'graceful-fs';
 import {sync as glob} from 'glob';
 import type {Config} from '@jest/types';
 import {ValidationError, validate} from 'jest-validate';
@@ -746,14 +746,14 @@ export default function normalize(
               ? _replaceRootDirTags(options.rootDir, project)
               : project,
           )
-          .reduce((projects, project) => {
+          .reduce<Array<string>>((projects, project) => {
             // Project can be specified as globs. If a glob matches any files,
             // We expand it to these paths. If not, we keep the original path
             // for the future resolution.
             const globMatches =
               typeof project === 'string' ? glob(project) : [];
             return projects.concat(globMatches.length ? globMatches : project);
-          }, [] as Array<string>);
+          }, []);
         break;
       case 'moduleDirectories':
       case 'testMatch':
@@ -869,7 +869,6 @@ export default function normalize(
         break;
       }
       case 'automock':
-      case 'browser':
       case 'cache':
       case 'changedSince':
       case 'changedFilesWithAncestor':

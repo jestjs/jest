@@ -18,22 +18,6 @@ aliases:
 
 version: 2
 jobs:
-  test-node-8:
-    working_directory: ~/jest
-    docker:
-      - image: circleci/node:8
-    steps:
-      - checkout
-      - run:
-          command: yarn remove-prettier-dep
-      - restore-cache: *restore-cache
-      - run: *install
-      - save-cache: *save-cache
-      - run:
-          command: yarn test-ci-partial
-      - store_test_results:
-          path: reports/junit
-
   test-node-10:
     working_directory: ~/jest
     docker:
@@ -58,7 +42,7 @@ jobs:
       - run: *install
       - save-cache: *save-cache
       - run:
-          command: JEST_CIRCUS=1 yarn test-ci-partial
+          command: JEST_CIRCUS=1 yarn test-ci-partial && JEST_CIRCUS=1 yarn test-leak
       - store_test_results:
           path: reports/junit
 
@@ -90,16 +74,19 @@ jobs:
       - store_test_results:
           path: reports/junit
 
-  test-browser:
+  test-node-14:
     working_directory: ~/jest
     docker:
-      - image: circleci/node:12-browsers
+      - image: circleci/node:14
     steps:
       - checkout
       - restore-cache: *restore-cache
       - run: *install
       - save-cache: *save-cache
-      - run: yarn test-ci-es5-build-in-browser
+      - run:
+          command: yarn test-ci-partial
+      - store_test_results:
+          path: reports/junit
 
   test-or-deploy-website:
     working_directory: ~/jest
@@ -120,11 +107,10 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
-      - test-node-8
       - test-node-10
       - test-node-12
-      - test-node-13 # current
+      - test-node-13
+      - test-node-14 # current
       - test-jest-circus
-      - test-browser
       - test-or-deploy-website:
           filters: *filter-ignore-gh-pages

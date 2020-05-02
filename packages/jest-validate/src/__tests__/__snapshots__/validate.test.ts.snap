@@ -109,12 +109,7 @@ exports[`pretty prints valid config for Object 1`] = `
 <red></>
 <red>  Example:</>
 <red>  {</>
-<red>    <bold>\\"haste\\"</>: <bold>{</></>
-<red><bold>      \\"providesModuleNodeModules\\": [</></>
-<red><bold>        \\"react\\",</></>
-<red><bold>        \\"react-native\\"</></>
-<red><bold>      ]</></>
-<red><bold>    }</></>
+<red>    <bold>\\"haste\\"</>: <bold>{}</></>
 <red>  }</>
 <red></>"
 `;

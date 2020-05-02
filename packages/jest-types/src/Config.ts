@@ -20,7 +20,6 @@ export type HasteConfig = {
   defaultPlatform?: string | null;
   hasteImplModulePath?: string;
   platforms?: Array<string>;
-  providesModuleNodeModules: Array<string>;
   throwOnModuleCollision?: boolean;
 };
 
@@ -34,7 +33,6 @@ export interface ConfigGlobals {
 export type DefaultOptions = {
   automock: boolean;
   bail: number;
-  browser: boolean;
   cache: boolean;
   cacheDirectory: Path;
   changedFilesWithAncestor: boolean;
@@ -99,7 +97,6 @@ export type InitialOptionsWithRootDir = InitialOptions &
 export type InitialOptions = Partial<{
   automock: boolean;
   bail: boolean | number;
-  browser: boolean;
   cache: boolean;
   cacheDirectory: Path;
   clearMocks: boolean;
@@ -301,7 +298,6 @@ export type GlobalConfig = {
 
 export type ProjectConfig = {
   automock: boolean;
-  browser: boolean;
   cache: boolean;
   cacheDirectory: Path;
   clearMocks: boolean;
@@ -345,7 +341,7 @@ export type ProjectConfig = {
   testMatch: Array<Glob>;
   testLocationInResults: boolean;
   testPathIgnorePatterns: Array<string>;
-  testRegex: Array<string>;
+  testRegex: Array<string | RegExp>;
   testRunner: string;
   testURL: string;
   timers: 'real' | 'fake';
@@ -360,7 +356,6 @@ export type Argv = Arguments<
     all: boolean;
     automock: boolean;
     bail: boolean | number;
-    browser: boolean;
     cache: boolean;
     cacheDirectory: string;
     changedFilesWithAncestor: boolean;

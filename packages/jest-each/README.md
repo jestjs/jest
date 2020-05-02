@@ -274,7 +274,7 @@ each`
 
 ##### `each` takes a tagged template string with:
 
-- First row of variable name column headings seperated with `|`
+- First row of variable name column headings separated with `|`
 - One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
 
 ##### `.test`:
@@ -310,7 +310,7 @@ each`
 
 ##### `each` takes a tagged template string with:
 
-- First row of variable name column headings seperated with `|`
+- First row of variable name column headings separated with `|`
 - One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
 
 ##### `.describe`:

@@ -7,8 +7,6 @@
 
 import {readConfig} from '../index';
 
-jest.mock('../importEsm', () => (s: string) => import(s));
-
 test('readConfig() throws when an object is passed without a file path', async () => {
   await expect(
     readConfig(

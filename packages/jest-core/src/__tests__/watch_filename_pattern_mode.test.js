@@ -6,9 +6,8 @@
  *
  */
 
-'use strict';
-
 import chalk from 'chalk';
+import wrap from 'jest-snapshot-serializer-raw';
 import {KEYS} from 'jest-watcher';
 
 const runJestMock = jest.fn();
@@ -116,7 +115,7 @@ describe('Watch mode flows', () => {
     const assertPattern = hex => {
       pipe.write.mockReset();
       stdin.emit(hex);
-      expect(pipe.write.mock.calls.join('\n')).toMatchSnapshot();
+      expect(wrap(pipe.write.mock.calls.join('\n'))).toMatchSnapshot();
     };
 
     // Write a pattern

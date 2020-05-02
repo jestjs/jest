@@ -5,6 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const semver = require('semver');
+const pkg = require('./package.json');
+
+const supportedNodeVersion = semver.minVersion(pkg.engines.node).version;
+
 module.exports = {
   babelrcRoots: ['examples/*'],
   // we don't wanna run the transforms in this file over react native
@@ -15,7 +20,7 @@ module.exports = {
         'babel-plugin-typescript-strip-namespaces',
         'babel-plugin-replace-ts-export-assignment',
         require.resolve(
-          './scripts/babel-plugin-jest-replace-ts-require-assignment.js'
+          './scripts/babel-plugin-jest-replace-ts-require-assignment.js',
         ),
       ],
       presets: ['@babel/preset-typescript'],
@@ -31,11 +36,11 @@ module.exports = {
           {
             exclude: ['@babel/plugin-proposal-dynamic-import'],
             shippedProposals: true,
-            targets: {node: 8},
+            targets: {node: supportedNodeVersion},
           },
         ],
       ],
-      test: 'packages/jest-config/src/importEsm.ts',
+      test: 'packages/jest-config/src/readConfigFileAndSetRootDir.ts',
     },
   ],
   plugins: [
@@ -48,7 +53,7 @@ module.exports = {
       '@babel/preset-env',
       {
         shippedProposals: true,
-        targets: {node: 8},
+        targets: {node: supportedNodeVersion},
       },
     ],
   ],

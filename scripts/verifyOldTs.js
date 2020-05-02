@@ -32,19 +32,19 @@ const cwd = tempy.directory();
 
 try {
   execa.sync('yarn', ['init', '--yes'], {cwd, stdio: 'inherit'});
-  execa.sync('yarn', ['add', 'typescript@~3.4'], {cwd, stdio: 'inherit'});
+  execa.sync('yarn', ['add', 'typescript@~3.8'], {cwd, stdio: 'inherit'});
   fs.writeFileSync(
     path.join(cwd, 'tsconfig.json'),
-    JSON.stringify(tsConfig, null, 2)
+    JSON.stringify(tsConfig, null, 2),
   );
   fs.writeFileSync(
     path.join(cwd, 'index.ts'),
-    `import jest = require('${jestDirectory}');`
+    `import jest = require('${jestDirectory}');`,
   );
   execa.sync('yarn', ['tsc', '--project', '.'], {cwd, stdio: 'inherit'});
 
   console.log(
-    chalk.inverse.green(' Successfully compiled Jest with TypeScript 3.4 ')
+    chalk.inverse.green(' Successfully compiled Jest with TypeScript 3.4 '),
   );
 } finally {
   rimraf.sync(cwd);

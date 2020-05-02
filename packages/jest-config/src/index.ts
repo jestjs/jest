@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import chalk = require('chalk');
 import {sync as realpath} from 'realpath-native';
@@ -163,7 +163,6 @@ const groupOptions = (
   }),
   projectConfig: Object.freeze({
     automock: options.automock,
-    browser: options.browser,
     cache: options.cache,
     cacheDirectory: options.cacheDirectory,
     clearMocks: options.clearMocks,

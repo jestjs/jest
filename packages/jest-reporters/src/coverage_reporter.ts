@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import * as fs from 'fs';
+import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type {
   AggregatedResult,
@@ -70,28 +70,6 @@ export default class CoverageReporter extends BaseReporter {
 
     if (testResult.coverage) {
       this._coverageMap.merge(testResult.coverage);
-    }
-
-    const sourceMaps = testResult.sourceMaps;
-    if (sourceMaps) {
-      Object.keys(sourceMaps).forEach(sourcePath => {
-        let inputSourceMap: RawSourceMap | undefined;
-        try {
-          const coverage: istanbulCoverage.FileCoverage = this._coverageMap.fileCoverageFor(
-            sourcePath,
-          );
-          inputSourceMap = (coverage.toJSON() as any).inputSourceMap;
-        } finally {
-          if (inputSourceMap) {
-            this._sourceMapStore.registerMap(sourcePath, inputSourceMap);
-          } else {
-            this._sourceMapStore.registerURL(
-              sourcePath,
-              sourceMaps[sourcePath],
-            );
-          }
-        }
-      });
     }
   }
 
@@ -204,6 +182,9 @@ export default class CoverageReporter extends BaseReporter {
               changedFiles:
                 this._options.changedFiles &&
                 Array.from(this._options.changedFiles),
+              sourcesRelatedToTestsInChangedFiles:
+                this._options.sourcesRelatedToTestsInChangedFiles &&
+                Array.from(this._options.sourcesRelatedToTestsInChangedFiles),
             },
             path: filename,
           });
@@ -215,13 +196,6 @@ export default class CoverageReporter extends BaseReporter {
               ]);
             } else {
               this._coverageMap.addFileCoverage(result.coverage);
-
-              if (result.sourceMapPath) {
-                this._sourceMapStore.registerURL(
-                  filename,
-                  result.sourceMapPath,
-                );
-              }
             }
           }
         } catch (error) {

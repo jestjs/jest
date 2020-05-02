@@ -38,10 +38,6 @@ export async function runCLI(
   results: AggregatedResult;
   globalConfig: Config.GlobalConfig;
 }> {
-  const realFs = require('fs');
-  const fs = require('graceful-fs');
-  fs.gracefulify(realFs);
-
   let results: AggregatedResult | undefined;
 
   // If we output a JSON object, we can't write anything to stdout, since

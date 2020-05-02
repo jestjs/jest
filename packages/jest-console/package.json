@@ -1,6 +1,6 @@
 {
   "name": "@jest/console",
-  "version": "25.2.6",
+  "version": "25.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -9,24 +9,18 @@
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "typesVersions": {
-    "<3.8": {
-      "build/*": [
-        "build/ts3.4/*"
-      ]
-    }
-  },
   "dependencies": {
-    "@jest/source-map": "^25.2.6",
+    "@jest/types": "^25.5.0",
     "chalk": "^4.0.0",
-    "jest-util": "^25.2.6",
+    "jest-message-util": "^25.5.0",
+    "jest-util": "^25.5.0",
     "slash": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "*"
   },
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.14.2"
   },
   "publishConfig": {
     "access": "public"

@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import wrap from 'jest-snapshot-serializer-raw';
 import {runTest} from '../__mocks__/testUtils';
 
 test('simple test', () => {
@@ -17,7 +18,7 @@ test('simple test', () => {
     })
   `);
 
-  expect(stdout).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot();
 });
 
 test('failures', () => {
@@ -30,5 +31,5 @@ test('failures', () => {
     })
   `);
 
-  expect(stdout).toMatchSnapshot();
+  expect(wrap(stdout)).toMatchSnapshot();
 });

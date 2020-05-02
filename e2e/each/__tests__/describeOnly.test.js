@@ -23,5 +23,5 @@ describe.each([[false, true]])(
     it('fails', () => {
       expect(left).toBe(right);
     });
-  }
+  },
 );

@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, makeTemplate, writeFiles} from '../Utils';
 import runJest from '../runJest';
@@ -256,6 +256,7 @@ test('handles mocking native modules prettier relies on', () => {
   const test = `
     jest.mock('path', () => ({}));
     jest.mock('fs', () => ({}));
+    jest.mock('graceful-fs', () => ({}));
     test('inline snapshots', () => {
       expect({}).toMatchInlineSnapshot();
     });

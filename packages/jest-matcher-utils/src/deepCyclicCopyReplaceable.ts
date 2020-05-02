@@ -49,21 +49,28 @@ export default function deepCyclicCopyReplaceable<T>(
 
 function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, any>): T {
   const newObject = Object.create(Object.getPrototypeOf(object));
-  const descriptors = Object.getOwnPropertyDescriptors(object);
+  const descriptors: {
+    [x: string]: PropertyDescriptor;
+  } = Object.getOwnPropertyDescriptors(object);
 
   cycles.set(object, newObject);
 
   Object.keys(descriptors).forEach(key => {
-    const descriptor = descriptors[key];
-    if (typeof descriptor.value !== 'undefined') {
-      descriptor.value = deepCyclicCopyReplaceable(descriptor.value, cycles);
+    if (descriptors[key].enumerable) {
+      descriptors[key] = {
+        configurable: true,
+        enumerable: true,
+        value: deepCyclicCopyReplaceable(
+          // this accesses the value or getter, depending. We just care about the value anyways, and this allows us to not mess with accessors
+          // it has the side effect of invoking the getter here though, rather than copying it over
+          (object as Record<string, unknown>)[key],
+          cycles,
+        ),
+        writable: true,
+      };
+    } else {
+      delete descriptors[key];
     }
-
-    if (!('set' in descriptor)) {
-      descriptor.writable = true;
-    }
-
-    descriptor.configurable = true;
   });
 
   return Object.defineProperties(newObject, descriptors);

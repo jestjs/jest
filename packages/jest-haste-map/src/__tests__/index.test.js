@@ -7,6 +7,7 @@
  */
 
 import crypto from 'crypto';
+import wrap from 'jest-snapshot-serializer-raw';
 import {skipSuiteOnWindows} from '@jest/test-utils';
 
 function mockHashContents(contents) {
@@ -104,7 +105,6 @@ jest.mock('graceful-fs', () => ({
     mockFs[path] = data;
   }),
 }));
-jest.mock('fs', () => require('graceful-fs'));
 
 const cacheFilePath = '/cache-file';
 const object = data => Object.assign(Object.create(null), data);
@@ -329,7 +329,6 @@ describe('HasteMap', () => {
     const hasteMap = new HasteMap({
       ...defaultConfig,
       mocksPattern: '/__mocks__/',
-      providesModuleNodeModules: ['react', 'fbjs'],
     });
 
     return hasteMap.build().then(({__hasteMapForTest: data}) => {
@@ -341,23 +340,6 @@ describe('HasteMap', () => {
           'fruits/Pear.js': ['Pear', 32, 42, 1, 'Banana\0Strawberry', null],
           'fruits/Strawberry.js': ['Strawberry', 32, 42, 1, '', null],
           'fruits/__mocks__/Pear.js': ['', 32, 42, 1, 'Melon', null],
-          // node modules
-          'fruits/node_modules/fbjs/lib/flatMap.js': [
-            'flatMap',
-            32,
-            42,
-            1,
-            '',
-            null,
-          ],
-          'fruits/node_modules/react/React.js': [
-            'React',
-            32,
-            42,
-            1,
-            'Component',
-            null,
-          ],
           'vegetables/Melon.js': ['Melon', 32, 42, 1, '', null],
         }),
       );
@@ -367,20 +349,8 @@ describe('HasteMap', () => {
           Banana: {[H.GENERIC_PLATFORM]: ['fruits/Banana.js', H.MODULE]},
           Melon: {[H.GENERIC_PLATFORM]: ['vegetables/Melon.js', H.MODULE]},
           Pear: {[H.GENERIC_PLATFORM]: ['fruits/Pear.js', H.MODULE]},
-          React: {
-            [H.GENERIC_PLATFORM]: [
-              'fruits/node_modules/react/React.js',
-              H.MODULE,
-            ],
-          },
           Strawberry: {
             [H.GENERIC_PLATFORM]: ['fruits/Strawberry.js', H.MODULE],
-          },
-          flatMap: {
-            [H.GENERIC_PLATFORM]: [
-              'fruits/node_modules/fbjs/lib/flatMap.js',
-              H.MODULE,
-            ],
           },
         }),
       );
@@ -545,7 +515,7 @@ describe('HasteMap', () => {
     })
       .build()
       .catch(() => {
-        expect(console.error.mock.calls[0][0]).toMatchSnapshot();
+        expect(wrap(console.error.mock.calls[0][0])).toMatchSnapshot();
       });
   });
 
@@ -563,7 +533,7 @@ describe('HasteMap', () => {
           data.map.get('Strawberry')[H.GENERIC_PLATFORM],
         ).not.toBeDefined();
 
-        expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+        expect(wrap(console.warn.mock.calls[0][0])).toMatchSnapshot();
       });
   });
 
@@ -580,6 +550,7 @@ describe('HasteMap', () => {
   });
 
   it('throws on duplicate module ids if "throwOnModuleCollision" is set to true', () => {
+    expect.assertions(1);
     // Raspberry thinks it is a Strawberry
     mockFs['/project/fruits/another/Strawberry.js'] = `
       const Banana = require("Banana");
@@ -588,7 +559,9 @@ describe('HasteMap', () => {
     return new HasteMap({throwOnModuleCollision: true, ...defaultConfig})
       .build()
       .catch(err => {
-        expect(err).toMatchSnapshot();
+        expect(err.message).toBe(
+          'Duplicated files or mocks. Please check the console for more info',
+        );
       });
   });
 
@@ -1089,7 +1062,7 @@ describe('HasteMap', () => {
           }),
         );
 
-        expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+        expect(wrap(console.warn.mock.calls[0][0])).toMatchSnapshot();
       });
   });
 
@@ -1359,7 +1332,7 @@ describe('HasteMap', () => {
               '/project/fruits/another/Pear.js': H.MODULE,
             }),
           );
-          expect(error.message).toMatchSnapshot();
+          expect(wrap(error.message)).toMatchSnapshot();
         }
       }
 

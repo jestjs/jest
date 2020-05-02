@@ -5,7 +5,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
   "configs": [
     {
       "automock": false,
-      "browser": false,
       "cache": false,
       "cacheDirectory": "/tmp/jest",
       "clearMocks": false,
@@ -21,7 +20,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "globals": {},
       "haste": {
         "computeSha1": false,
-        "providesModuleNodeModules": [],
         "throwOnModuleCollision": false
       },
       "moduleDirectories": [

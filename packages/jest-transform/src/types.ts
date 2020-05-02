@@ -16,37 +16,41 @@ export type ShouldInstrumentOptions = Pick<
   | 'coverageProvider'
 > & {
   changedFiles?: Set<Config.Path>;
+  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
 };
 
 export type Options = ShouldInstrumentOptions &
   Partial<{
     isCoreModule: boolean;
     isInternalModule: boolean;
+    supportsDynamicImport: boolean;
+    supportsStaticESM: boolean;
   }>;
 
-// extends directly after https://github.com/sandersn/downlevel-dts/issues/33 is fixed
-type SourceMapWithVersion = Omit<RawSourceMap, 'version'>;
-
 // This is fixed in source-map@0.7.x, but we can't upgrade yet since it's async
-interface FixedRawSourceMap extends SourceMapWithVersion {
+interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
   version: number;
 }
 
+// TODO: For Jest 26 normalize this (always structured data, never a string)
 export type TransformedSource =
   | {code: string; map?: FixedRawSourceMap | string | null}
   | string;
 
 export type TransformResult = TransformTypes.TransformResult;
 
-export type TransformOptions = {
+export interface TransformOptions {
   instrument: boolean;
-};
+  // names are copied from babel
+  supportsDynamicImport?: boolean;
+  supportsStaticESM?: boolean;
+}
 
-export type CacheKeyOptions = {
+// TODO: For Jest 26 we should combine these into one options shape
+export interface CacheKeyOptions extends TransformOptions {
   config: Config.ProjectConfig;
-  instrument: boolean;
   rootDir: string;
-};
+}
 
 export interface Transformer {
   canInstrument?: boolean;

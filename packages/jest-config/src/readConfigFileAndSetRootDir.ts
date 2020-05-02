@@ -6,12 +6,12 @@
  */
 
 import * as path from 'path';
-import * as fs from 'fs';
+import {pathToFileURL} from 'url';
+import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 // @ts-ignore: vendored
 import jsonlint from './vendor/jsonlint';
 import {JEST_CONFIG_EXT_JSON, PACKAGE_JSON} from './constants';
-import importEsm from './importEsm';
 
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
@@ -28,7 +28,10 @@ export default async function readConfigFileAndSetRootDir(
   } catch (error) {
     if (error.code === 'ERR_REQUIRE_ESM') {
       try {
-        const importedConfig = await importEsm(configPath);
+        const configUrl = pathToFileURL(configPath);
+
+        // node `import()` supports URL, but TypeScript doesn't know that
+        const importedConfig = await import(configUrl.href);
 
         if (!importedConfig.default) {
           throw new Error(

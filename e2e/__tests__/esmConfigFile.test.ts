@@ -6,44 +6,41 @@
  */
 
 import {onNodeVersions} from '@jest/test-utils';
-import {json as runWithJson} from '../runJest';
+import {getConfig} from '../runJest';
 
 test('reads config from cjs file', () => {
-  const {json, exitCode} = runWithJson('esm-config/cjs', ['--show-config'], {
+  const {configs} = getConfig('esm-config/cjs', [], {
     skipPkgJsonCheck: true,
   });
 
-  expect(exitCode).toBe(0);
-  expect(json.configs).toHaveLength(1);
-  expect(json.configs[0].displayName).toEqual({
+  expect(configs).toHaveLength(1);
+  expect(configs[0].displayName).toEqual({
     color: 'white',
     name: 'Config from cjs file',
   });
 });
 
 // not unflagged for other versions yet. Update this range if that changes
-onNodeVersions('^13.2.0', () => {
+onNodeVersions('>=13.2.0', () => {
   test('reads config from mjs file', () => {
-    const {json, exitCode} = runWithJson('esm-config/mjs', ['--show-config'], {
+    const {configs} = getConfig('esm-config/mjs', [], {
       skipPkgJsonCheck: true,
     });
 
-    expect(exitCode).toBe(0);
-    expect(json.configs).toHaveLength(1);
-    expect(json.configs[0].displayName).toEqual({
+    expect(configs).toHaveLength(1);
+    expect(configs[0].displayName).toEqual({
       color: 'white',
       name: 'Config from mjs file',
     });
   });
 
   test('reads config from js file when package.json#type=module', () => {
-    const {json, exitCode} = runWithJson('esm-config/js', ['--show-config'], {
+    const {configs} = getConfig('esm-config/js', [], {
       skipPkgJsonCheck: true,
     });
 
-    expect(exitCode).toBe(0);
-    expect(json.configs).toHaveLength(1);
-    expect(json.configs[0].displayName).toEqual({
+    expect(configs).toHaveLength(1);
+    expect(configs[0].displayName).toEqual({
       color: 'white',
       name: 'Config from js file',
     });

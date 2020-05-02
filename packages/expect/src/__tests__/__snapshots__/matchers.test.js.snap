@@ -10,7 +10,7 @@ Resolved to value: <r>4</>
 exports[`.rejects fails non-promise value "a" 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  string
 Received has value: <r>"a"</>
@@ -19,7 +19,7 @@ Received has value: <r>"a"</>
 exports[`.rejects fails non-promise value [1] 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  array
 Received has value: <r>[1]</>
@@ -28,7 +28,7 @@ Received has value: <r>[1]</>
 exports[`.rejects fails non-promise value [Function anonymous] 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  function
 Received has value: <r>[Function anonymous]</>
@@ -37,7 +37,7 @@ Received has value: <r>[Function anonymous]</>
 exports[`.rejects fails non-promise value {"a": 1} 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  object
 Received has value: <r>{"a": 1}</>
@@ -46,7 +46,7 @@ Received has value: <r>{"a": 1}</>
 exports[`.rejects fails non-promise value 4 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  number
 Received has value: <r>4</>
@@ -55,7 +55,7 @@ Received has value: <r>4</>
 exports[`.rejects fails non-promise value null 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has value: <r>null</>
 `;
@@ -63,7 +63,7 @@ Received has value: <r>null</>
 exports[`.rejects fails non-promise value true 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  boolean
 Received has value: <r>true</>
@@ -72,7 +72,7 @@ Received has value: <r>true</>
 exports[`.rejects fails non-promise value undefined 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has value: <r>undefined</>
 `;
@@ -2022,11 +2022,11 @@ exports[`.toEqual() {pass: false} expect("type TypeName<T> = T extends Function 
 <r>+ type TypeName<T> = T extends Function<i> </i>? "function"<i> </i>: "object";</>
 `;
 
-exports[`.toEqual() {pass: false} expect(/abc/gy).toEqual(/abc/g) 1`] = `
+exports[`.toEqual() {pass: false} expect(/abc/gsy).toEqual(/abc/g) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 Expected: <g>/abc/g</>
-Received: <r>/abc/gy</>
+Received: <r>/abc/gsy</>
 `;
 
 exports[`.toEqual() {pass: false} expect([1, 2]).toEqual([2, 1]) 1`] = `
@@ -2127,6 +2127,76 @@ exports[`.toEqual() {pass: false} expect({"foo": {"bar": 1}}).toEqual({"foo": {}
 <d>  }</>
 `;
 
+exports[`.toEqual() {pass: false} expect({"frozenGetter": {}}).toEqual({"frozenGetter": {"foo": "bar"}}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 3</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "frozenGetter": Object {</>
+<g>-     "foo": "bar",</>
+<g>-   },</>
+<r>+   "frozenGetter": Object {},</>
+<d>  }</>
+`;
+
+exports[`.toEqual() {pass: false} expect({"frozenGetterAndSetter": {}}).toEqual({"frozenGetterAndSetter": {"foo": "bar"}}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 3</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "frozenGetterAndSetter": Object {</>
+<g>-     "foo": "bar",</>
+<g>-   },</>
+<r>+   "frozenGetterAndSetter": Object {},</>
+<d>  }</>
+`;
+
+exports[`.toEqual() {pass: false} expect({"frozenSetter": undefined}).toEqual({"frozenSetter": {"foo": "bar"}}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 3</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "frozenSetter": Object {</>
+<g>-     "foo": "bar",</>
+<g>-   },</>
+<r>+   "frozenSetter": undefined,</>
+<d>  }</>
+`;
+
+exports[`.toEqual() {pass: false} expect({"getter": {}}).toEqual({"getter": {"foo": "bar"}}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 3</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "getter": Object {</>
+<g>-     "foo": "bar",</>
+<g>-   },</>
+<r>+   "getter": Object {},</>
+<d>  }</>
+`;
+
+exports[`.toEqual() {pass: false} expect({"getterAndSetter": {}}).toEqual({"getterAndSetter": {"foo": "bar"}}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 3</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "getterAndSetter": Object {</>
+<g>-     "foo": "bar",</>
+<g>-   },</>
+<r>+   "getterAndSetter": Object {},</>
+<d>  }</>
+`;
+
 exports[`.toEqual() {pass: false} expect({"nodeName": "div", "nodeType": 1}).toEqual({"nodeName": "p", "nodeType": 1}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
@@ -2137,6 +2207,20 @@ exports[`.toEqual() {pass: false} expect({"nodeName": "div", "nodeType": 1}).toE
 <g>-   "nodeName": "p",</>
 <r>+   "nodeName": "div",</>
 <d>    "nodeType": 1,</>
+<d>  }</>
+`;
+
+exports[`.toEqual() {pass: false} expect({"setter": undefined}).toEqual({"setter": {"foo": "bar"}}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 3</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "setter": Object {</>
+<g>-     "foo": "bar",</>
+<g>-   },</>
+<r>+   "setter": undefined,</>
 <d>  }</>
 `;
 
@@ -2960,6 +3044,13 @@ exports[`.toHaveLength {pass: true} expect([1, 2]).toHaveLength(2) 1`] = `
 
 Expected length: not <g>2</>
 Received array:      <r>[1, 2]</>
+`;
+
+exports[`.toHaveLength {pass: true} expect([Function anonymous]).toHaveLength(0) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toHaveLength<d>(</><g>expected</><d>)</>
+
+Expected length:   not <g>0</>
+Received function:     <r>[Function anonymous]</>
 `;
 
 exports[`.toHaveLength error cases 1`] = `

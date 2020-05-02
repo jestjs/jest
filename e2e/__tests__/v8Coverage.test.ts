@@ -14,6 +14,7 @@ const DIR = path.resolve(__dirname, '../v8-coverage');
 onNodeVersions('>=10', () => {
   test('prints coverage', () => {
     const sourcemapDir = path.join(DIR, 'no-sourcemap');
+
     const {stdout, exitCode} = runJest(
       sourcemapDir,
       ['--coverage', '--coverage-provider', 'v8'],
@@ -23,24 +24,6 @@ onNodeVersions('>=10', () => {
     );
 
     expect(exitCode).toBe(0);
-    expect(
-      '\n' +
-        stdout
-          .split('\n')
-          .map(s => s.trimRight())
-          .join('\n') +
-        '\n',
-    ).toEqual(`
-  console.log __tests__/Thing.test.js:10
-    42
-
-----------|---------|----------|---------|---------|-------------------
-File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
-----------|---------|----------|---------|---------|-------------------
-All files |     100 |      100 |     100 |     100 |
- Thing.js |     100 |      100 |     100 |     100 |
- x.css    |     100 |      100 |     100 |     100 |
-----------|---------|----------|---------|---------|-------------------
-`);
+    expect(stdout).toMatchSnapshot();
   });
 });

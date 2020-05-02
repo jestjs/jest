@@ -50,15 +50,13 @@ export declare class JestEnvironment {
   getVmContext?(): Context | null;
   setup(): Promise<void>;
   teardown(): Promise<void>;
-  handleTestEvent?(event: Circus.Event, state: Circus.State): void;
+  handleTestEvent?(
+    event: Circus.Event,
+    state: Circus.State,
+  ): void | Promise<void>;
 }
 
 export type Module = NodeModule;
-
-export interface LocalModuleRequire extends NodeRequire {
-  requireActual(moduleName: string): unknown;
-  requireMock(moduleName: string): unknown;
-}
 
 // TODO: Move to some separate package
 export interface Jest {

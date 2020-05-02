@@ -5,10 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as util from 'util';
 import {runInNewContext} from 'vm';
+import wrap from 'jest-snapshot-serializer-raw';
 import mock = require('jest-mock');
 import FakeTimers from '../jestFakeTimers';
-import util = require('util');
 
 const timerConfig = {
   idToRef: (id: number) => id,
@@ -451,7 +452,7 @@ describe('FakeTimers', () => {
       });
       timers.runAllTimers();
       expect(
-        consoleWarn.mock.calls[0][0].split('\nStack Trace')[0],
+        wrap(consoleWarn.mock.calls[0][0].split('\nStack Trace')[0]),
       ).toMatchSnapshot();
       consoleWarn.mockRestore();
     });

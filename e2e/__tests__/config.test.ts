@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import runJest from '../runJest';
+import runJest, {getConfig} from '../runJest';
 
 test('config as JSON', () => {
   const result = runJest('verbose-reporter', [
@@ -70,14 +70,11 @@ test('works with jsdom testEnvironmentOptions config JSON', () => {
 });
 
 test('negated flags override previous flags', () => {
-  const {stdout} = runJest('verbose-reporter', [
-    '--show-config',
+  const {globalConfig} = getConfig('verbose-reporter', [
     '--silent',
     '--no-silent',
     '--silent',
   ]);
 
-  const parsedConfig = JSON.parse(stdout);
-
-  expect(parsedConfig.globalConfig.silent).toEqual(true);
+  expect(globalConfig.silent).toEqual(true);
 });

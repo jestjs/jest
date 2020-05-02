@@ -94,7 +94,12 @@ export default function shouldInstrument(
   }
 
   if (options.changedFiles && !options.changedFiles.has(filename)) {
-    return false;
+    if (!options.sourcesRelatedToTestsInChangedFiles) {
+      return false;
+    }
+    if (!options.sourcesRelatedToTestsInChangedFiles.has(filename)) {
+      return false;
+    }
   }
 
   return true;

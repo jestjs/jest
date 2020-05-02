@@ -105,12 +105,6 @@ Default: `0`
 
 By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after `n` failures. Setting bail to `true` is the same as setting bail to `1`.
 
-### `browser` [boolean]
-
-Default: `false`
-
-Respect Browserify's [`"browser"` field](https://github.com/substack/browserify-handbook#browser-field) in `package.json` when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.
-
 ### `cacheDirectory` [string]
 
 Default: `"/tmp/<path>"`
@@ -689,7 +683,6 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 ```json
 {
   "basedir": string,
-  "browser": bool,
   "defaultResolver": "function(request, options)",
   "extensions": [string],
   "moduleDirectory": [string],
@@ -700,7 +693,18 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 
 The function should either return a path to the module that should be resolved or throw an error if the module can't be found.
 
-Note: the defaultResolver passed as options is the jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom one, e.g. (request, options).
+Note: the defaultResolver passed as options is the Jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom one, e.g. `(request, options)`.
+
+For example, if you want to respect Browserify's [`"browser"` field](https://github.com/browserify/browserify-handbook/blob/master/readme.markdown#browser-field), you can use the following configuration:
+
+```json
+{
+  ...
+  "jest": {
+    "resolver": "browser-resolve"
+  }
+}
+```
 
 ### `restoreMocks` [boolean]
 
@@ -830,8 +834,8 @@ Example serializer module:
 ```js
 // my-serializer-module
 module.exports = {
-  print(val, serialize, indent) {
-    return 'Pretty foo: ' + serialize(val.foo);
+  serialize(val, config, indentation, depth, refs, printer) {
+    return 'Pretty foo: ' + printer(val.foo);
   },
 
   test(val) {
@@ -840,7 +844,7 @@ module.exports = {
 };
 ```
 
-`serialize` is a function that serializes a value using existing plugins.
+`printer` is a function that serializes a value using existing plugins.
 
 To use `my-serializer-module` as a serializer, configuration would be as follows:
 
@@ -879,6 +883,8 @@ Pretty foo: Object {
 
 To make a dependency explicit instead of implicit, you can call [`expect.addSnapshotSerializer`](ExpectAPI.md#expectaddsnapshotserializerserializer) to add a module for an individual test file instead of adding its path to `snapshotSerializers` in Jest configuration.
 
+More about serializers API can be found [here](https://github.com/facebook/jest/tree/master/packages/pretty-format/README.md#serialize).
+
 ### `testEnvironment` [string]
 
 Default: `"jsdom"`
@@ -900,7 +906,7 @@ test('use jsdom in this test file', () => {
 
 You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `runScript` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables.
 
-The class may optionally expose a `handleTestEvent` method to bind to events fired by [`jest-circus`](https://github.com/facebook/jest/tree/master/packages/jest-circus).
+The class may optionally expose an asynchronous `handleTestEvent` method to bind to events fired by [`jest-circus`](https://github.com/facebook/jest/tree/master/packages/jest-circus). Normally, `jest-circus` test runner would pause until a promise returned from `handleTestEvent` gets fulfilled, **except for the next events**: `start_describe_definition`, `finish_describe_definition`, `add_hook`, `add_test` or `error` (for the up-to-date list you can look at [SyncEvent type in the types definitions](https://github.com/facebook/jest/tree/master/packages/jest-types/src/Circus.ts)). That is caused by backward compatibility reasons and `process.on('unhandledRejection', callback)` signature, but that usually should not be a problem for most of the use cases.
 
 Any docblock pragmas in test files will be passed to the environment constructor and can be used for per-test configuration. If the pragma does not have a value, it will be present in the object with it's value set to an empty string. If the pragma is not present, it will not be present in the object.
 
@@ -940,7 +946,7 @@ class CustomEnvironment extends NodeEnvironment {
     return super.runScript(script);
   }
 
-  handleTestEvent(event, state) {
+  async handleTestEvent(event, state) {
     if (event.name === 'test_start') {
       // ...
     }

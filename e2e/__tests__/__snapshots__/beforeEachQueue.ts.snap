@@ -1,19 +1,29 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Correct beforeEach order ensures the correct order for beforeEach 1`] = `
-  console.log __tests__/beforeEachQueue.test.js:10
+  console.log
     BeforeEach
 
-  console.log __tests__/beforeEachQueue.test.js:14
+      at Object.log (__tests__/beforeEachQueue.test.js:10:13)
+
+  console.log
     It Foo
 
-  console.log __tests__/beforeEachQueue.test.js:17
+      at Object.log (__tests__/beforeEachQueue.test.js:14:13)
+
+  console.log
     BeforeEach Inline Foo
 
-  console.log __tests__/beforeEachQueue.test.js:10
+      at Object.log (__tests__/beforeEachQueue.test.js:17:15)
+
+  console.log
     BeforeEach
 
-  console.log __tests__/beforeEachQueue.test.js:22
+      at Object.log (__tests__/beforeEachQueue.test.js:10:13)
+
+  console.log
     It Bar
+
+      at Object.log (__tests__/beforeEachQueue.test.js:22:13)
 
 `;

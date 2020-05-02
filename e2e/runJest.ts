@@ -7,9 +7,10 @@
  */
 
 import * as path from 'path';
-import * as fs from 'fs';
 import {Writable} from 'stream';
+import * as fs from 'graceful-fs';
 import execa = require('execa');
+import type {Config} from '@jest/types';
 import type {FormattedTestResults} from '@jest/test-result';
 import stripAnsi = require('strip-ansi');
 import {normalizeIcons} from './Utils';
@@ -214,3 +215,24 @@ export const runContinuous = function (
     },
   };
 };
+
+// return type matches output of logDebugMessages
+export function getConfig(
+  dir: string,
+  args: Array<string> = [],
+  options?: RunJestOptions,
+): {
+  globalConfig: Config.GlobalConfig;
+  configs: Array<Config.ProjectConfig>;
+  version: string;
+} {
+  const {exitCode, stdout} = runJest(
+    dir,
+    args.concat('--show-config'),
+    options,
+  );
+
+  expect(exitCode).toBe(0);
+
+  return JSON.parse(stdout);
+}

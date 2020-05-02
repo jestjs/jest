@@ -15,7 +15,7 @@ describe('promise beforeAll', () => {
       process.nextTick(resolve);
     }).then(() => {
       flag = 1;
-    })
+    }),
   );
 
   beforeAll(() => new Promise(resolve => setTimeout(resolve, 10)), 500);

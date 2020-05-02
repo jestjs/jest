@@ -19,7 +19,7 @@ beforeEach(() => {
   run('yarn', DIR);
 });
 
-it('sucessfully runs the tests inside `pnp/`', () => {
+it('successfully runs the tests inside `pnp/`', () => {
   const {json} = runWithJson(DIR, ['--no-cache', '--coverage'], {
     nodeOptions: `--require ${DIR}/.pnp.js`,
   });
