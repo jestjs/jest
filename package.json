@@ -23,7 +23,6 @@
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.2.0",
     "babel-eslint": "^10.0.3",
-    "babel-loader": "^8.0.5",
     "babel-plugin-replace-ts-export-assignment": "^0.0.2",
     "babel-plugin-typescript-strip-namespaces": "^1.1.1",
     "camelcase": "^5.0.0",
