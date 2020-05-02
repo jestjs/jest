@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {sync as mkdirp} from 'mkdirp';
-import {Config} from '@jest/types';
+import makeDir = require('make-dir');
+import type {Config} from '@jest/types';
 
-export default function createDirectory(path: Config.Path) {
+export default function createDirectory(path: Config.Path): void {
   try {
-    mkdirp(path, '777');
+    makeDir.sync(path);
   } catch (e) {
     if (e.code !== 'EEXIST') {
       throw e;

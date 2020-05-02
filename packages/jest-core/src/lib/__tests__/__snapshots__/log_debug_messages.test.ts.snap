@@ -4,7 +4,6 @@ exports[`prints the config object 1`] = `
 {
   "configs": {
     "automock": false,
-    "browser": false,
     "cache": false,
     "cacheDirectory": "/test_cache_dir/",
     "clearMocks": false,
@@ -19,9 +18,7 @@ exports[`prints the config object 1`] = `
     "globalSetup": null,
     "globalTeardown": null,
     "globals": {},
-    "haste": {
-      "providesModuleNodeModules": []
-    },
+    "haste": {},
     "moduleDirectories": [],
     "moduleFileExtensions": [
       "js"
@@ -71,6 +68,7 @@ exports[`prints the config object 1`] = `
     "collectCoverageFrom": [],
     "collectCoverageOnlyFrom": null,
     "coverageDirectory": "coverage",
+    "coverageProvider": "babel",
     "coverageReporters": [],
     "coverageThreshold": {
       "global": {}
@@ -80,7 +78,6 @@ exports[`prints the config object 1`] = `
     "enabledTestsMap": null,
     "errorOnDeprecated": false,
     "expand": false,
-    "extraGlobals": [],
     "filter": null,
     "findRelatedTests": false,
     "forceExit": false,

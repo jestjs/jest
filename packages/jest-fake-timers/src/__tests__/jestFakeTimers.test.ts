@@ -5,7 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as util from 'util';
 import {runInNewContext} from 'vm';
+import wrap from 'jest-snapshot-serializer-raw';
 import mock = require('jest-mock');
 import FakeTimers from '../jestFakeTimers';
 
@@ -38,6 +40,20 @@ describe('FakeTimers', () => {
       });
       timers.useFakeTimers();
       expect(global.setTimeout).not.toBe(undefined);
+    });
+
+    it('accepts to promisify setTimeout mock', async () => {
+      const global = ({process} as unknown) as NodeJS.Global;
+      const timers = new FakeTimers({
+        config,
+        global,
+        moduleMocker,
+        timerConfig,
+      });
+      timers.useFakeTimers();
+      const timeoutPromise = util.promisify(global.setTimeout)(0, 'resolved');
+      timers.runAllTimers();
+      await expect(timeoutPromise).resolves.toBe('resolved');
     });
 
     it('installs clearTimeout mock', () => {
@@ -436,7 +452,7 @@ describe('FakeTimers', () => {
       });
       timers.runAllTimers();
       expect(
-        consoleWarn.mock.calls[0][0].split('\nStack Trace')[0],
+        wrap(consoleWarn.mock.calls[0][0].split('\nStack Trace')[0]),
       ).toMatchSnapshot();
       consoleWarn.mockRestore();
     });

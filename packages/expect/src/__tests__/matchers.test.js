@@ -56,6 +56,12 @@ describe('.rejects', () => {
     await jestExpect(fn()).rejects.toThrow('some error');
   });
 
+  it('should reject async function to toThrow', async () => {
+    await expect(async () => {
+      throw new Error('Test');
+    }).rejects.toThrow('Test');
+  });
+
   ['a', [1], () => {}, {a: 1}].forEach(value => {
     it(`fails non-promise value ${stringify(value)} synchronously`, () => {
       let error;
@@ -419,14 +425,78 @@ describe('.toStrictEqual()', () => {
 });
 
 describe('.toEqual()', () => {
+  /* eslint-disable no-new-wrappers */
   [
     [true, false],
     [1, 2],
     [0, -0],
     [0, Number.MIN_VALUE], // issues/7941
     [Number.MIN_VALUE, 0],
+    [0, new Number(0)],
+    [new Number(0), 0],
+    [new Number(0), new Number(1)],
+    ['abc', new String('abc')],
+    [new String('abc'), 'abc'],
+    [/abc/gsy, /abc/g],
     [{a: 1}, {a: 2}],
     [{a: 5}, {b: 6}],
+    [Object.freeze({foo: {bar: 1}}), {foo: {}}],
+    [
+      {
+        get getterAndSetter() {
+          return {};
+        },
+        set getterAndSetter(value) {
+          throw new Error('noo');
+        },
+      },
+      {getterAndSetter: {foo: 'bar'}},
+    ],
+    [
+      Object.freeze({
+        get frozenGetterAndSetter() {
+          return {};
+        },
+        set frozenGetterAndSetter(value) {
+          throw new Error('noo');
+        },
+      }),
+      {frozenGetterAndSetter: {foo: 'bar'}},
+    ],
+    [
+      {
+        get getter() {
+          return {};
+        },
+      },
+      {getter: {foo: 'bar'}},
+    ],
+    [
+      Object.freeze({
+        get frozenGetter() {
+          return {};
+        },
+      }),
+      {frozenGetter: {foo: 'bar'}},
+    ],
+    [
+      {
+        // eslint-disable-next-line accessor-pairs
+        set setter(value) {
+          throw new Error('noo');
+        },
+      },
+      {setter: {foo: 'bar'}},
+    ],
+    [
+      Object.freeze({
+        // eslint-disable-next-line accessor-pairs
+        set frozenSetter(value) {
+          throw new Error('noo');
+        },
+      }),
+      {frozenSetter: {foo: 'bar'}},
+    ],
     ['banana', 'apple'],
     ['1\u{00A0}234,57\u{00A0}$', '1 234,57 $'], // issues/6881
     [
@@ -470,17 +540,14 @@ describe('.toEqual()', () => {
     [Immutable.Map({a: 0}), Immutable.Map({b: 0})],
     [Immutable.Map({v: 1}), Immutable.Map({v: 2})],
     [
-      Immutable.OrderedMap()
-        .set(1, 'one')
-        .set(2, 'two'),
-      Immutable.OrderedMap()
-        .set(2, 'two')
-        .set(1, 'one'),
+      Immutable.OrderedMap().set(1, 'one').set(2, 'two'),
+      Immutable.OrderedMap().set(2, 'two').set(1, 'one'),
     ],
     [
       Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
       Immutable.Map({1: Immutable.Map({2: {a: 11}})}),
     ],
+    [new Uint8Array([97, 98, 99]), new Uint8Array([97, 98, 100])],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 2})],
     [false, jestExpect.objectContaining({a: 2})],
     [[1, 3], jestExpect.arrayContaining([1, 2])],
@@ -521,6 +588,16 @@ describe('.toEqual()', () => {
         nodeType: 1,
       },
     ],
+    [
+      {
+        [Symbol.for('foo')]: 1,
+        [Symbol.for('bar')]: 2,
+      },
+      {
+        [Symbol.for('foo')]: jestExpect.any(Number),
+        [Symbol.for('bar')]: 1,
+      },
+    ],
   ].forEach(([a, b]) => {
     test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
       b,
@@ -548,15 +625,12 @@ describe('.toEqual()', () => {
     [true, true],
     [1, 1],
     [NaN, NaN],
-    // eslint-disable-next-line no-new-wrappers
-    [0, new Number(0)],
-    // eslint-disable-next-line no-new-wrappers
-    [new Number(0), 0],
+    [0, Number(0)],
+    [Number(0), 0],
+    [new Number(0), new Number(0)],
     ['abc', 'abc'],
-    // eslint-disable-next-line no-new-wrappers
-    [new String('abc'), 'abc'],
-    // eslint-disable-next-line no-new-wrappers
-    ['abc', new String('abc')],
+    [String('abc'), 'abc'],
+    ['abc', String('abc')],
     [[1], [1]],
     [
       [1, 2],
@@ -658,33 +732,22 @@ describe('.toEqual()', () => {
     ],
     [Immutable.Map(), Immutable.Map()],
     [
-      Immutable.Map()
-        .set(1, 'one')
-        .set(2, 'two'),
-      Immutable.Map()
-        .set(1, 'one')
-        .set(2, 'two'),
+      Immutable.Map().set(1, 'one').set(2, 'two'),
+      Immutable.Map().set(1, 'one').set(2, 'two'),
     ],
     [
-      Immutable.Map()
-        .set(1, 'one')
-        .set(2, 'two'),
-      Immutable.Map()
-        .set(2, 'two')
-        .set(1, 'one'),
+      Immutable.Map().set(1, 'one').set(2, 'two'),
+      Immutable.Map().set(2, 'two').set(1, 'one'),
     ],
     [
-      Immutable.OrderedMap()
-        .set(1, 'one')
-        .set(2, 'two'),
-      Immutable.OrderedMap()
-        .set(1, 'one')
-        .set(2, 'two'),
+      Immutable.OrderedMap().set(1, 'one').set(2, 'two'),
+      Immutable.OrderedMap().set(1, 'one').set(2, 'two'),
     ],
     [
       Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
       Immutable.Map({1: Immutable.Map({2: {a: 99}})}),
     ],
+    [new Uint8Array([97, 98, 99]), new Uint8Array([97, 98, 99])],
     [{a: 1, b: 2}, jestExpect.objectContaining({a: 1})],
     [[1, 2, 3], jestExpect.arrayContaining([2, 3])],
     ['abcd', jestExpect.stringContaining('bc')],
@@ -719,6 +782,16 @@ describe('.toEqual()', () => {
       {
         nodeName: 'div',
         nodeType: 1,
+      },
+    ],
+    [
+      {
+        [Symbol.for('foo')]: 1,
+        [Symbol.for('bar')]: 2,
+      },
+      {
+        [Symbol.for('foo')]: jestExpect.any(Number),
+        [Symbol.for('bar')]: 2,
       },
     ],
   ].forEach(([a, b]) => {
@@ -856,6 +929,7 @@ describe('.toEqual()', () => {
       expect(d).not.toEqual(c);
     });
   });
+  /* eslint-enable */
 });
 
 describe('.toBeInstanceOf()', () => {
@@ -913,7 +987,7 @@ describe('.toBeInstanceOf()', () => {
     [Object.create(null), A],
     [undefined, String],
     [null, String],
-    [/\w+/, function() {}],
+    [/\w+/, function () {}],
     [new DefinesNameProp(), RegExp],
   ].forEach(([a, b]) => {
     test(`failing ${stringify(a)} and ${stringify(b)}`, () => {
@@ -1610,6 +1684,13 @@ describe('.toMatch()', () => {
   it('escapes strings properly', () => {
     jestExpect('this?: throws').toMatch('this?: throws');
   });
+
+  it('does not maintain RegExp state between calls', () => {
+    const regex = /[f]\d+/gi;
+    jestExpect('f123').toMatch(regex);
+    jestExpect('F456').toMatch(regex);
+    jestExpect(regex.lastIndex).toBe(0);
+  });
 });
 
 describe('.toHaveLength', () => {
@@ -1619,6 +1700,7 @@ describe('.toHaveLength', () => {
     [['a', 'b'], 2],
     ['abc', 3],
     ['', 0],
+    [() => {}, 0],
   ].forEach(([received, length]) => {
     test(`{pass: true} expect(${stringify(
       received,
@@ -1726,7 +1808,7 @@ describe('.toHaveProperty()', () => {
   }
   E.prototype.nodeType = 1;
 
-  const memoized = function() {};
+  const memoized = function () {};
   memoized.memo = [];
 
   const pathDiff = ['children', 0];
@@ -1992,6 +2074,14 @@ describe('toMatchObject()', () => {
     [new Error('bar'), {message: 'bar'}],
     [new Foo(), {a: undefined, b: 'b'}],
     [Object.assign(Object.create(null), {a: 'b'}), {a: 'b'}],
+    [
+      {a: 'b', c: 'd', [Symbol.for('jest')]: 'jest'},
+      {a: 'b', [Symbol.for('jest')]: 'jest'},
+    ],
+    [
+      {a: 'b', c: 'd', [Symbol.for('jest')]: 'jest'},
+      {a: 'b', c: 'd', [Symbol.for('jest')]: 'jest'},
+    ],
   ]);
 
   testToMatchSnapshots([
@@ -2035,6 +2125,10 @@ describe('toMatchObject()', () => {
     ],
     [new Error('foo'), new Error('bar')],
     [Object.assign(Object.create(null), {a: 'b'}), {c: 'd'}],
+    [
+      {a: 'b', c: 'd', [Symbol.for('jest')]: 'jest'},
+      {a: 'c', [Symbol.for('jest')]: expect.any(String)},
+    ],
   ]);
 
   [

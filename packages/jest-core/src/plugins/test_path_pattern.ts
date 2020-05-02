@@ -5,8 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {BaseWatchPlugin, Prompt, UpdateConfigCallback} from 'jest-watcher';
+import type {Config} from '@jest/types';
+import {
+  BaseWatchPlugin,
+  Prompt,
+  UpdateConfigCallback,
+  UsageData,
+} from 'jest-watcher';
 import TestPathPatternPrompt from '../TestPathPatternPrompt';
 import activeFilters from '../lib/active_filters_message';
 
@@ -20,14 +25,14 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
     this.isInternal = true;
   }
 
-  getUsageInfo() {
+  getUsageInfo(): UsageData {
     return {
       key: 'p',
       prompt: 'filter by a filename regex pattern',
     };
   }
 
-  onKey(key: string) {
+  onKey(key: string): void {
     this._prompt.put(key);
   }
 

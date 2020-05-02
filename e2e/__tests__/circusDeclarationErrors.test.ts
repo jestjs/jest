@@ -17,7 +17,7 @@ it('defining tests and hooks asynchronously throws', () => {
     'asyncDefinition.test.js',
   ]);
 
-  expect(result.status).toBe(1);
+  expect(result.exitCode).toBe(1);
 
   const {rest} = extractSummary(result.stderr);
   expect(wrap(rest)).toMatchSnapshot();

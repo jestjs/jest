@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import semver = require('semver');
 import {
   CallExpression,
@@ -14,9 +14,9 @@ import {
   templateElement,
   templateLiteral,
 } from '@babel/types';
-import {Frame} from 'jest-message-util';
+import type {Frame} from 'jest-message-util';
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {escapeBacktickString} from './utils';
 
 export type InlineSnapshot = {
@@ -24,11 +24,11 @@ export type InlineSnapshot = {
   frame: Frame;
 };
 
-export const saveInlineSnapshots = (
+export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
-  prettier: any,
+  prettier: typeof import('prettier') | null,
   babelTraverse: Function,
-) => {
+): void {
   if (!prettier) {
     throw new Error(
       `Jest: Inline Snapshots requires Prettier.\n` +
@@ -54,7 +54,7 @@ export const saveInlineSnapshots = (
       babelTraverse,
     );
   }
-};
+}
 
 const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
@@ -78,6 +78,10 @@ const saveSnapshotsForFile = (
     ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
     : (config && config.parser) || simpleDetectParser(sourceFilePath);
 
+  // Record the matcher names seen in insertion parser and pass them down one
+  // by one to formatting parser.
+  const snapshotMatcherNames: Array<string> = [];
+
   // Insert snapshots using the custom parser API. After insertion, the code is
   // formatted, except snapshot indentation. Snapshots cannot be formatted until
   // after the initial format because we don't know where the call expression
@@ -85,14 +89,23 @@ const saveSnapshotsForFile = (
   const newSourceFile = prettier.format(sourceFile, {
     ...config,
     filepath: sourceFilePath,
-    parser: createInsertionParser(snapshots, inferredParser, babelTraverse),
+    parser: createInsertionParser(
+      snapshots,
+      snapshotMatcherNames,
+      inferredParser,
+      babelTraverse,
+    ),
   });
 
   // Format the snapshots using the custom parser API.
   const formattedNewSourceFile = prettier.format(newSourceFile, {
     ...config,
     filepath: sourceFilePath,
-    parser: createFormattingParser(inferredParser, babelTraverse),
+    parser: createFormattingParser(
+      snapshotMatcherNames,
+      inferredParser,
+      babelTraverse,
+    ),
   });
 
   if (formattedNewSourceFile !== sourceFile) {
@@ -120,7 +133,7 @@ const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => file);
 
 const indent = (snapshot: string, numIndents: number, indentation: string) => {
   const lines = snapshot.split('\n');
-  // Prevent re-identation of inline snapshots.
+  // Prevent re-indentation of inline snapshots.
   if (
     lines.length >= 2 &&
     lines[1].startsWith(indentation.repeat(numIndents + 1))
@@ -166,6 +179,7 @@ const getAst = (
 // This parser inserts snapshots into the AST.
 const createInsertionParser = (
   snapshots: Array<InlineSnapshot>,
+  snapshotMatcherNames: Array<string>,
   inferredParser: string,
   babelTraverse: Function,
 ) => (
@@ -198,6 +212,9 @@ const createInsertionParser = (
           'Jest: Multiple inline snapshots for the same call are not supported.',
         );
       }
+
+      snapshotMatcherNames.push(callee.property.name);
+
       const snapshotIndex = args.findIndex(
         ({type}) => type === 'TemplateLiteral',
       );
@@ -228,6 +245,7 @@ const createInsertionParser = (
 
 // This parser formats snapshots to the correct indentation.
 const createFormattingParser = (
+  snapshotMatcherNames: Array<string>,
   inferredParser: string,
   babelTraverse: Function,
 ) => (
@@ -244,7 +262,7 @@ const createFormattingParser = (
       if (
         callee.type !== 'MemberExpression' ||
         callee.property.type !== 'Identifier' ||
-        callee.property.name !== 'toMatchInlineSnapshot' ||
+        !snapshotMatcherNames.includes(callee.property.name) ||
         !callee.loc ||
         callee.computed
       ) {

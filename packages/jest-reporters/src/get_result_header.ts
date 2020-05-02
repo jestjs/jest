@@ -5,9 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {TestResult} from '@jest/test-result';
-import chalk from 'chalk';
+import type {Config} from '@jest/types';
+import type {TestResult} from '@jest/test-result';
+import chalk = require('chalk');
+import {formatTime} from 'jest-util';
 import {formatTestPath, printDisplayName} from './utils';
 import terminalLink = require('terminal-link');
 
@@ -29,7 +30,7 @@ export default (
   result: TestResult,
   globalConfig: Config.GlobalConfig,
   projectConfig?: Config.ProjectConfig,
-) => {
+): string => {
   const testPath = result.testFilePath;
   const formattedTestPath = formatTestPath(
     projectConfig ? projectConfig : globalConfig,
@@ -47,7 +48,7 @@ export default (
 
   const testDetail = [];
   if (runTime !== null && runTime > 5) {
-    testDetail.push(LONG_TEST_COLOR(runTime + 's'));
+    testDetail.push(LONG_TEST_COLOR(formatTime(runTime, 0)));
   }
 
   if (result.memoryUsage) {

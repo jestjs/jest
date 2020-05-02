@@ -6,19 +6,39 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
-import {AggregatedResult, TestResult} from '@jest/test-result';
+import * as fs from 'graceful-fs';
+import type {Config} from '@jest/types';
+import type {
+  AggregatedResult,
+  TestResult,
+  V8CoverageResult,
+} from '@jest/test-result';
 import {clearLine, isInteractive} from 'jest-util';
 import istanbulReport = require('istanbul-lib-report');
 import istanbulReports = require('istanbul-reports');
-import chalk from 'chalk';
+import chalk = require('chalk');
 import istanbulCoverage = require('istanbul-lib-coverage');
 import libSourceMaps = require('istanbul-lib-source-maps');
+import {mergeProcessCovs} from '@bcoe/v8-coverage';
 import Worker from 'jest-worker';
 import glob = require('glob');
-import {RawSourceMap} from 'source-map';
+import v8toIstanbul = require('v8-to-istanbul');
+import type {RawSourceMap} from 'source-map';
+import type {TransformResult} from '@jest/transform';
 import BaseReporter from './base_reporter';
-import {Context, CoverageReporterOptions, CoverageWorker, Test} from './types';
+import type {
+  Context,
+  CoverageReporterOptions,
+  CoverageWorker,
+  Test,
+} from './types';
+import getWatermarks from './get_watermarks';
+
+// This is fixed in a newer versions of source-map, but our dependencies are still stuck on old versions
+interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
+  version: number;
+  file: string;
+}
 
 const FAIL_COLOR = chalk.bold.red;
 const RUNNING_TEST_COLOR = chalk.bold.dim;
@@ -28,6 +48,7 @@ export default class CoverageReporter extends BaseReporter {
   private _globalConfig: Config.GlobalConfig;
   private _sourceMapStore: libSourceMaps.MapStore;
   private _options: CoverageReporterOptions;
+  private _v8CoverageResults: Array<V8CoverageResult>;
 
   constructor(
     globalConfig: Config.GlobalConfig,
@@ -37,65 +58,48 @@ export default class CoverageReporter extends BaseReporter {
     this._coverageMap = istanbulCoverage.createCoverageMap({});
     this._globalConfig = globalConfig;
     this._sourceMapStore = libSourceMaps.createSourceMapStore();
+    this._v8CoverageResults = [];
     this._options = options || {};
   }
 
-  onTestResult(
-    _test: Test,
-    testResult: TestResult,
-    _aggregatedResults: AggregatedResult,
-  ) {
-    if (testResult.coverage) {
-      this._coverageMap.merge(testResult.coverage);
+  onTestResult(_test: Test, testResult: TestResult): void {
+    if (testResult.v8Coverage) {
+      this._v8CoverageResults.push(testResult.v8Coverage);
+      return;
     }
 
-    const sourceMaps = testResult.sourceMaps;
-    if (sourceMaps) {
-      Object.keys(sourceMaps).forEach(sourcePath => {
-        let inputSourceMap: RawSourceMap | undefined;
-        try {
-          const coverage: istanbulCoverage.FileCoverage = this._coverageMap.fileCoverageFor(
-            sourcePath,
-          );
-          inputSourceMap = (coverage.toJSON() as any).inputSourceMap;
-        } finally {
-          if (inputSourceMap) {
-            this._sourceMapStore.registerMap(sourcePath, inputSourceMap);
-          } else {
-            this._sourceMapStore.registerURL(
-              sourcePath,
-              sourceMaps[sourcePath],
-            );
-          }
-        }
-      });
+    if (testResult.coverage) {
+      this._coverageMap.merge(testResult.coverage);
     }
   }
 
   async onRunComplete(
     contexts: Set<Context>,
     aggregatedResults: AggregatedResult,
-  ) {
-    await this._addUntestedFiles(this._globalConfig, contexts);
-    const {map, sourceFinder} = this._sourceMapStore.transformCoverage(
-      this._coverageMap,
-    );
+  ): Promise<void> {
+    await this._addUntestedFiles(contexts);
+    const {map, reportContext} = await this._getCoverageResult();
 
     try {
-      const reportContext = istanbulReport.createContext({
-        dir: this._globalConfig.coverageDirectory,
-        sourceFinder,
-      });
       const coverageReporters = this._globalConfig.coverageReporters || [];
 
       if (!this._globalConfig.useStderr && coverageReporters.length < 1) {
         coverageReporters.push('text-summary');
       }
-
-      const tree = istanbulReport.summarizers.pkg(map);
       coverageReporters.forEach(reporter => {
-        tree.visit(istanbulReports.create(reporter, {}), reportContext);
+        let additionalOptions = {};
+        if (Array.isArray(reporter)) {
+          [reporter, additionalOptions] = reporter;
+        }
+        istanbulReports
+          .create(reporter, {
+            maxCols: process.stdout.columns || Infinity,
+            ...additionalOptions,
+          })
+          // @ts-ignore
+          .execute(reportContext);
       });
+      // @ts-ignore
       aggregatedResults.coverageMap = map;
     } catch (e) {
       console.error(
@@ -107,23 +111,24 @@ export default class CoverageReporter extends BaseReporter {
       );
     }
 
-    this._checkThreshold(this._globalConfig, map);
+    // @ts-ignore
+    this._checkThreshold(map);
   }
 
-  private async _addUntestedFiles(
-    globalConfig: Config.GlobalConfig,
-    contexts: Set<Context>,
-  ): Promise<void> {
+  private async _addUntestedFiles(contexts: Set<Context>): Promise<void> {
     const files: Array<{config: Config.ProjectConfig; path: string}> = [];
 
     contexts.forEach(context => {
       const config = context.config;
       if (
-        globalConfig.collectCoverageFrom &&
-        globalConfig.collectCoverageFrom.length
+        this._globalConfig.collectCoverageFrom &&
+        this._globalConfig.collectCoverageFrom.length
       ) {
         context.hasteFS
-          .matchFilesWithGlob(globalConfig.collectCoverageFrom, config.rootDir)
+          .matchFilesWithGlob(
+            this._globalConfig.collectCoverageFrom,
+            config.rootDir,
+          )
           .forEach(filePath =>
             files.push({
               config,
@@ -159,25 +164,38 @@ export default class CoverageReporter extends BaseReporter {
       const filename = fileObj.path;
       const config = fileObj.config;
 
-      if (!this._coverageMap.data[filename] && 'worker' in worker) {
+      const hasCoverageData = this._v8CoverageResults.some(v8Res =>
+        v8Res.some(innerRes => innerRes.result.url === filename),
+      );
+
+      if (
+        !hasCoverageData &&
+        !this._coverageMap.data[filename] &&
+        'worker' in worker
+      ) {
         try {
           const result = await worker.worker({
             config,
-            globalConfig,
+            globalConfig: this._globalConfig,
             options: {
               ...this._options,
               changedFiles:
                 this._options.changedFiles &&
                 Array.from(this._options.changedFiles),
+              sourcesRelatedToTestsInChangedFiles:
+                this._options.sourcesRelatedToTestsInChangedFiles &&
+                Array.from(this._options.sourcesRelatedToTestsInChangedFiles),
             },
             path: filename,
           });
 
           if (result) {
-            this._coverageMap.addFileCoverage(result.coverage);
-
-            if (result.sourceMapPath) {
-              this._sourceMapStore.registerURL(filename, result.sourceMapPath);
+            if (result.kind === 'V8Coverage') {
+              this._v8CoverageResults.push([
+                {codeTransformResult: undefined, result: result.result},
+              ]);
+            } else {
+              this._coverageMap.addFileCoverage(result.coverage);
             }
           }
         } catch (error) {
@@ -205,15 +223,14 @@ export default class CoverageReporter extends BaseReporter {
     }
 
     if (worker && 'end' in worker && typeof worker.end === 'function') {
-      worker.end();
+      await worker.end();
     }
   }
 
-  private _checkThreshold(
-    globalConfig: Config.GlobalConfig,
-    map: istanbulCoverage.CoverageMap,
-  ) {
-    if (globalConfig.coverageThreshold) {
+  private _checkThreshold(map: istanbulCoverage.CoverageMap) {
+    const {coverageThreshold} = this._globalConfig;
+
+    if (coverageThreshold) {
       function check(
         name: string,
         thresholds: Config.CoverageThresholdValue,
@@ -250,7 +267,7 @@ export default class CoverageReporter extends BaseReporter {
         PATH: 'path',
       };
       const coveredFiles = map.files();
-      const thresholdGroups = Object.keys(globalConfig.coverageThreshold);
+      const thresholdGroups = Object.keys(coverageThreshold);
       const groupTypeByThresholdGroup: {[index: string]: string} = {};
       const filesByGlob: {[index: string]: Array<string>} = {};
 
@@ -342,7 +359,7 @@ export default class CoverageReporter extends BaseReporter {
               errors = errors.concat(
                 check(
                   thresholdGroup,
-                  globalConfig.coverageThreshold[thresholdGroup],
+                  coverageThreshold[thresholdGroup],
                   coverage,
                 ),
               );
@@ -357,7 +374,7 @@ export default class CoverageReporter extends BaseReporter {
               errors = errors.concat(
                 check(
                   thresholdGroup,
-                  globalConfig.coverageThreshold[thresholdGroup],
+                  coverageThreshold[thresholdGroup],
                   coverage,
                 ),
               );
@@ -370,7 +387,7 @@ export default class CoverageReporter extends BaseReporter {
                 errors = errors.concat(
                   check(
                     fileMatchingGlob,
-                    globalConfig.coverageThreshold[thresholdGroup],
+                    coverageThreshold[thresholdGroup],
                     map.fileCoverageFor(fileMatchingGlob).toSummary(),
                   ),
                 );
@@ -401,8 +418,88 @@ export default class CoverageReporter extends BaseReporter {
     }
   }
 
-  // Only exposed for the internal runner. Should not be used
-  getCoverageMap(): istanbulCoverage.CoverageMap {
-    return this._coverageMap;
+  private async _getCoverageResult(): Promise<{
+    map: istanbulCoverage.CoverageMap;
+    reportContext: istanbulReport.Context;
+  }> {
+    if (this._globalConfig.coverageProvider === 'v8') {
+      const mergedCoverages = mergeProcessCovs(
+        this._v8CoverageResults.map(cov => ({result: cov.map(r => r.result)})),
+      );
+
+      const fileTransforms = new Map<string, TransformResult>();
+
+      this._v8CoverageResults.forEach(res =>
+        res.forEach(r => {
+          if (r.codeTransformResult && !fileTransforms.has(r.result.url)) {
+            fileTransforms.set(r.result.url, r.codeTransformResult);
+          }
+        }),
+      );
+
+      const transformedCoverage = await Promise.all(
+        mergedCoverages.result.map(async res => {
+          const fileTransform = fileTransforms.get(res.url);
+
+          let sourcemapContent: FixedRawSourceMap | undefined = undefined;
+
+          if (
+            fileTransform &&
+            fileTransform.sourceMapPath &&
+            fs.existsSync(fileTransform.sourceMapPath)
+          ) {
+            sourcemapContent = JSON.parse(
+              fs.readFileSync(fileTransform.sourceMapPath, 'utf8'),
+            );
+          }
+
+          const converter = v8toIstanbul(
+            res.url,
+            0,
+            fileTransform && sourcemapContent
+              ? {
+                  originalSource: fileTransform.originalCode,
+                  source: fileTransform.code,
+                  sourceMap: {sourcemap: sourcemapContent},
+                }
+              : {source: fs.readFileSync(res.url, 'utf8')},
+          );
+
+          await converter.load();
+
+          converter.applyCoverage(res.functions);
+
+          return converter.toIstanbul();
+        }),
+      );
+
+      const map = istanbulCoverage.createCoverageMap({});
+
+      transformedCoverage.forEach(res => map.merge(res));
+
+      const reportContext = istanbulReport.createContext({
+        coverageMap: map,
+        dir: this._globalConfig.coverageDirectory,
+        watermarks: getWatermarks(this._globalConfig),
+      });
+
+      return {map, reportContext};
+    }
+
+    const map = await this._sourceMapStore.transformCoverage(this._coverageMap);
+    const reportContext = istanbulReport.createContext(
+      // @ts-ignore
+      {
+        // @ts-ignore
+        coverageMap: map,
+        dir: this._globalConfig.coverageDirectory,
+        // @ts-ignore
+        sourceFinder: this._sourceMapStore.sourceFinder,
+        watermarks: getWatermarks(this._globalConfig),
+      },
+    );
+
+    // @ts-ignore
+    return {map, reportContext};
   }
 }

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as Global from './Global';
+import type * as Global from './Global';
 
 type Process = NodeJS.Process;
 
@@ -16,7 +16,7 @@ export type BlockMode = void | 'skip' | 'only' | 'todo';
 export type TestMode = BlockMode;
 export type TestName = Global.TestName;
 export type TestFn = Global.TestFn;
-export type HookFn = (done?: DoneFn) => Promise<any> | null | undefined;
+export type HookFn = Global.HookFn;
 export type AsyncFn = TestFn | HookFn;
 export type SharedHookType = 'afterAll' | 'beforeAll';
 export type HookType = SharedHookType | 'afterEach' | 'beforeEach';
@@ -31,12 +31,14 @@ export type Hook = {
   timeout: number | undefined | null;
 };
 
-export type EventHandler = (event: Event, state: State) => void;
+export interface EventHandler {
+  (event: AsyncEvent, state: State): void | Promise<void>;
+  (event: SyncEvent, state: State): void;
+}
 
-export type Event =
-  | {
-      name: 'include_test_location_in_result';
-    }
+export type Event = SyncEvent | AsyncEvent;
+
+export type SyncEvent =
   | {
       asyncError: Error;
       mode: BlockMode;
@@ -62,6 +64,23 @@ export type Event =
       fn?: TestFn;
       mode?: TestMode;
       timeout: number | undefined;
+    }
+  | {
+      // Any unhandled error that happened outside of test/hooks (unless it is
+      // an `afterAll` hook)
+      name: 'error';
+      error: Exception;
+    };
+
+export type AsyncEvent =
+  | {
+      // first action to dispatch. Good time to initialize all settings
+      name: 'setup';
+      testNamePattern?: string;
+      parentProcess: Process;
+    }
+  | {
+      name: 'include_test_location_in_result';
     }
   | {
       name: 'hook_start';
@@ -134,18 +153,6 @@ export type Event =
       name: 'run_finish';
     }
   | {
-      // Any unhandled error that happened outside of test/hooks (unless it is
-      // an `afterAll` hook)
-      name: 'error';
-      error: Exception;
-    }
-  | {
-      // first action to dispatch. Good time to initialize all settings
-      name: 'setup';
-      testNamePattern?: string;
-      parentProcess: Process;
-    }
-  | {
       // Action dispatched after everything is finished and we're about to wrap
       // things up and return test results to the parent process (caller).
       name: 'teardown';
@@ -202,7 +209,7 @@ export type DescribeBlock = {
   tests: Array<TestEntry>;
 };
 
-export type TestError = Exception | Array<[Exception | undefined, Exception]>; // the error from the test, as well as a backup error for async
+export type TestError = Exception | [Exception | undefined, Exception]; // the error from the test, as well as a backup error for async
 
 export type TestEntry = {
   asyncError: Exception; // Used if the test failure contains no usable stack trace

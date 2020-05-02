@@ -183,11 +183,11 @@ Object {
       "0": Object {
         "decl": Object {
           "end": Object {
-            "column": 29,
+            "column": 28,
             "line": 10,
           },
           "start": Object {
-            "column": 9,
+            "column": 18,
             "line": 10,
           },
         },
@@ -314,7 +314,7 @@ Object {
       },
       "5": Object {
         "end": Object {
-          "column": 43,
+          "column": 41,
           "line": 14,
         },
         "start": Object {

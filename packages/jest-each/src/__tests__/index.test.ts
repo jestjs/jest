@@ -32,3 +32,17 @@ describe('template', () => {
     });
   });
 });
+
+test('throws an error when not called with the right number of arguments', () => {
+  expect(() =>
+    each(
+      [
+        [1, 1, 2],
+        [1, 2, 3],
+        [2, 1, 3],
+      ],
+      'seems like a title but should not be here',
+      () => {},
+    ),
+  ).toThrowErrorMatchingSnapshot();
+});

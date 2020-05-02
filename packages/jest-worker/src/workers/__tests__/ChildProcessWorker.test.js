@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable no-new */
-
 import EventEmitter from 'events';
 import supportsColor from 'supports-color';
 // eslint-disable-next-line import/default
@@ -56,6 +54,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
 
   process.execArgv = ['--inspect', '-p'];
 
+  // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {
       cwd: '/tmp',
@@ -77,6 +76,7 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
 });
 
 it('passes workerId to the child process and assign it to 1-indexed env.JEST_WORKER_ID', () => {
+  // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {},
     maxRetries: 3,
@@ -88,6 +88,7 @@ it('passes workerId to the child process and assign it to 1-indexed env.JEST_WOR
 });
 
 it('initializes the child process with the given workerPath', () => {
+  // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {},
     maxRetries: 3,
@@ -302,6 +303,7 @@ it('throws when the child process returns a strange message', () => {
 });
 
 it('does not restart the child if it cleanly exited', () => {
+  // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {},
     maxRetries: 3,
@@ -326,6 +328,7 @@ it('resolves waitForExit() after the child process cleanly exited', async () => 
 });
 
 it('restarts the child when the child process dies', () => {
+  // eslint-disable-next-line no-new
   new Worker({
     workerPath: '/tmp/foo',
   });

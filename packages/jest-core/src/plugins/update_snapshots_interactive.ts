@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {AggregatedResult, AssertionLocation} from '@jest/test-result';
-import {BaseWatchPlugin, JestHookSubscriber} from 'jest-watcher';
+import type {Config} from '@jest/types';
+import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
+import {BaseWatchPlugin, JestHookSubscriber, UsageData} from 'jest-watcher';
 import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
 
 class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
@@ -41,7 +41,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     return failedTestPaths;
   }
 
-  apply(hooks: JestHookSubscriber) {
+  apply(hooks: JestHookSubscriber): void {
     hooks.onTestRunComplete(results => {
       this._failedSnapshotTestAssertions = this.getFailedSnapshotTestAssertions(
         results,
@@ -52,7 +52,7 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     });
   }
 
-  onKey(key: string) {
+  onKey(key: string): void {
     if (this._snapshotInteractiveMode.isActive()) {
       this._snapshotInteractiveMode.put(key);
     }
@@ -85,11 +85,8 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
     }
   }
 
-  getUsageInfo() {
-    if (
-      this._failedSnapshotTestAssertions &&
-      this._failedSnapshotTestAssertions.length > 0
-    ) {
+  getUsageInfo(): UsageData | null {
+    if (this._failedSnapshotTestAssertions?.length > 0) {
       return {
         key: 'i',
         prompt: 'update failing snapshots interactively',

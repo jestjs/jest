@@ -6,12 +6,11 @@
  *
  */
 
-'use strict';
-
-import {makeProjectConfig} from '../../../../TestUtils';
+import {wrap} from 'jest-snapshot-serializer-raw';
+import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
 
 jest
-  .mock('fs', () =>
+  .mock('graceful-fs', () =>
     // Node 10.5.x compatibility
     ({
       ...jest.genMockFromModule('fs'),
@@ -30,7 +29,12 @@ jest
       }),
     }),
   )
-  .mock('graceful-fs')
+  .mock('graceful-fs', () => ({
+    ...jest.requireActual('graceful-fs'),
+    realPathSync: {
+      native: dirInput => dirInput,
+    },
+  }))
   .mock('jest-haste-map', () => ({
     getCacheFilePath: (cacheDir, baseDir, version) => cacheDir + baseDir,
   }))
@@ -38,7 +42,6 @@ jest
     ...jest.requireActual('jest-util'),
     createDirectory: jest.fn(),
   }))
-  .mock('vm')
   .mock('path', () => jest.requireActual('path').posix);
 
 jest.mock(
@@ -48,7 +51,7 @@ jest.mock(
 
     return {
       getCacheKey: jest.fn((content, filename, configStr) => 'ab'),
-      process: (content, filename, config) => `
+      process: (content, filename, config) => require('dedent')`
           const TRANSFORMED = {
             filename: '${escapeStrings(filename)}',
             script: '${escapeStrings(content)}',
@@ -83,7 +86,7 @@ jest.mock(
   'css-preprocessor',
   () => ({
     getCacheKey: jest.fn((content, filename, configStr) => 'cd'),
-    process: (content, filename, config) => `
+    process: (content, filename, config) => require('dedent')`
           module.exports = {
             filename: ${filename},
             rawFirstLine: ${content.split('\n')[0]},
@@ -143,7 +146,6 @@ let config;
 let fs;
 let mockFs;
 let object;
-let vm;
 let writeFileAtomic;
 
 jest.mock('write-file-atomic', () => ({
@@ -157,8 +159,6 @@ describe('ScriptTransformer', () => {
     jest.resetModules();
 
     object = data => Object.assign(Object.create(null), data);
-
-    vm = require('vm');
 
     mockFs = object({
       '/fruits/banana.js': ['module.exports = "banana";'].join('\n'),
@@ -214,43 +214,46 @@ describe('ScriptTransformer', () => {
 
   it('transforms a file properly', () => {
     const scriptTransformer = new ScriptTransformer(config);
-    const response = scriptTransformer.transform('/fruits/banana.js', {
-      collectCoverage: true,
-    }).script;
+    const transformedBananaWithCoverage = scriptTransformer.transform(
+      '/fruits/banana.js',
+      makeGlobalConfig({collectCoverage: true}),
+    );
 
-    expect(response instanceof vm.Script).toBe(true);
-    expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
+    expect(wrap(transformedBananaWithCoverage.code)).toMatchSnapshot();
 
     // no-cache case
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
 
     // in-memory cache
-    const response2 = scriptTransformer.transform('/fruits/banana.js', {
-      collectCoverage: true,
-    }).script;
-    expect(response2).toBe(response);
+    const transformedBananaWithCoverageAgain = scriptTransformer.transform(
+      '/fruits/banana.js',
+      makeGlobalConfig({collectCoverage: true}),
+    );
+    expect(transformedBananaWithCoverageAgain).toBe(
+      transformedBananaWithCoverage,
+    );
 
-    scriptTransformer.transform('/fruits/kiwi.js', {
-      collectCoverage: true,
-    });
-    const snapshot = vm.Script.mock.calls[1][0];
-    expect(snapshot).toMatchSnapshot();
+    const transformedKiwiWithCoverage = scriptTransformer.transform(
+      '/fruits/kiwi.js',
+      makeGlobalConfig({collectCoverage: true}),
+    );
+    expect(wrap(transformedKiwiWithCoverage.code)).toMatchSnapshot();
 
-    scriptTransformer.transform('/fruits/kiwi.js', {collectCoverage: true});
-
-    expect(vm.Script.mock.calls[0][0]).not.toEqual(snapshot);
-    expect(vm.Script.mock.calls[0][0]).not.toMatch(/instrumented kiwi/);
+    expect(transformedBananaWithCoverage.code).not.toEqual(
+      transformedKiwiWithCoverage.code,
+    );
+    expect(transformedBananaWithCoverage.code).not.toMatch(/instrumented kiwi/);
 
     // If we disable coverage, we get a different result.
-    scriptTransformer.transform('/fruits/kiwi.js', {collectCoverage: false});
-    expect(vm.Script.mock.calls[1][0]).toEqual(snapshot);
+    const transformedKiwiWithoutCoverage = scriptTransformer.transform(
+      '/fruits/kiwi.js',
+      makeGlobalConfig({collectCoverage: false}),
+    );
 
-    scriptTransformer.transform('/fruits/banana.js', {
-      // to make sure jest isn't declared twice
-      extraGlobals: ['Math', 'jest'],
-    }).script;
-    expect(vm.Script.mock.calls[3][0]).toMatchSnapshot();
+    expect(transformedKiwiWithoutCoverage.code).not.toEqual(
+      transformedKiwiWithCoverage.code,
+    );
   });
 
   it('does not transform Node core modules', () => {
@@ -264,10 +267,9 @@ describe('ScriptTransformer', () => {
       'fs',
       {isCoreModule: true},
       fsSourceCode,
-    ).script;
+    );
 
-    expect(response instanceof vm.Script).toBe(true);
-    expect(vm.Script.mock.calls[0][0]).toContain(fsSourceCode);
+    expect(response.code).toEqual(fsSourceCode);
 
     // Native files should never be transformed.
     expect(shouldInstrument).toHaveBeenCalledTimes(0);
@@ -350,15 +352,15 @@ describe('ScriptTransformer', () => {
   it('uses the supplied preprocessor', () => {
     config = {...config, transform: [['^.+\\.js$', 'test_preprocessor']]};
     const scriptTransformer = new ScriptTransformer(config);
-    scriptTransformer.transform('/fruits/banana.js', {});
+    const res1 = scriptTransformer.transform('/fruits/banana.js', {});
 
     expect(require('test_preprocessor').getCacheKey).toBeCalled();
 
-    expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
+    expect(wrap(res1.code)).toMatchSnapshot();
 
-    scriptTransformer.transform('/node_modules/react.js', {});
+    const res2 = scriptTransformer.transform('/node_modules/react.js', {});
     // ignores preprocessor
-    expect(vm.Script.mock.calls[1][0]).toMatchSnapshot();
+    expect(wrap(res2.code)).toMatchSnapshot();
   });
 
   it('uses multiple preprocessors', () => {
@@ -371,17 +373,17 @@ describe('ScriptTransformer', () => {
     };
     const scriptTransformer = new ScriptTransformer(config);
 
-    scriptTransformer.transform('/fruits/banana.js', {});
-    scriptTransformer.transform('/styles/App.css', {});
+    const res1 = scriptTransformer.transform('/fruits/banana.js', {});
+    const res2 = scriptTransformer.transform('/styles/App.css', {});
 
     expect(require('test_preprocessor').getCacheKey).toBeCalled();
     expect(require('css-preprocessor').getCacheKey).toBeCalled();
-    expect(vm.Script.mock.calls[0][0]).toMatchSnapshot();
-    expect(vm.Script.mock.calls[1][0]).toMatchSnapshot();
+    expect(wrap(res1.code)).toMatchSnapshot();
+    expect(wrap(res2.code)).toMatchSnapshot();
 
-    scriptTransformer.transform('/node_modules/react.js', {});
+    const res3 = scriptTransformer.transform('/node_modules/react.js', {});
     // ignores preprocessor
-    expect(vm.Script.mock.calls[2][0]).toMatchSnapshot();
+    expect(wrap(res3.code)).toMatchSnapshot();
   });
 
   it('writes source map if preprocessor supplies it', () => {
@@ -401,14 +403,16 @@ describe('ScriptTransformer', () => {
       map,
     });
 
-    const result = scriptTransformer.transform('/fruits/banana.js', {
-      collectCoverage: true,
-    });
+    const result = scriptTransformer.transform(
+      '/fruits/banana.js',
+      makeGlobalConfig(),
+    );
     expect(result.sourceMapPath).toEqual(expect.any(String));
     const mapStr = JSON.stringify(map);
     expect(writeFileAtomic.sync).toBeCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(result.sourceMapPath, mapStr, {
       encoding: 'utf8',
+      fsync: false,
     });
   });
 
@@ -431,15 +435,16 @@ describe('ScriptTransformer', () => {
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
 
-    const result = scriptTransformer.transform('/fruits/banana.js', {
-      collectCoverage: true,
-    });
+    const result = scriptTransformer.transform(
+      '/fruits/banana.js',
+      makeGlobalConfig(),
+    );
     expect(result.sourceMapPath).toEqual(expect.any(String));
     expect(writeFileAtomic.sync).toBeCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(
       result.sourceMapPath,
       sourceMap,
-      {encoding: 'utf8'},
+      {encoding: 'utf8', fsync: false},
     );
   });
 
@@ -462,20 +467,21 @@ describe('ScriptTransformer', () => {
     const content =
       'var x = 1;\n' +
       '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap)
-        .toString('base64')
-        .slice(0, 16);
+      Buffer.from(sourceMap).toString('base64').slice(0, 16);
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
 
-    const result = scriptTransformer.transform('/fruits/banana.js', {
-      collectCoverage: true,
-    });
+    const result = scriptTransformer.transform(
+      '/fruits/banana.js',
+      makeGlobalConfig({
+        collectCoverage: true,
+      }),
+    );
     expect(result.sourceMapPath).toBeNull();
     expect(writeFileAtomic.sync).toBeCalledTimes(1);
 
     expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+    expect(wrap(console.warn.mock.calls[0][0])).toMatchSnapshot();
     console.warn = warn;
   });
 
@@ -496,9 +502,10 @@ describe('ScriptTransformer', () => {
       map,
     });
 
-    const result = scriptTransformer.transform('/fruits/banana.js', {
-      collectCoverage: true,
-    });
+    const result = scriptTransformer.transform(
+      '/fruits/banana.js',
+      makeGlobalConfig(),
+    );
     expect(result.sourceMapPath).toEqual(expect.any(String));
     expect(writeFileAtomic.sync).toBeCalledTimes(2);
     expect(writeFileAtomic.sync).toBeCalledWith(
@@ -506,6 +513,7 @@ describe('ScriptTransformer', () => {
       JSON.stringify(map),
       {
         encoding: 'utf8',
+        fsync: false,
       },
     );
   });
@@ -522,20 +530,110 @@ describe('ScriptTransformer', () => {
       map: null,
     });
 
-    const result = scriptTransformer.transform('/fruits/banana.js', {
-      collectCoverage: true,
-    });
+    const result = scriptTransformer.transform(
+      '/fruits/banana.js',
+      makeGlobalConfig({
+        collectCoverage: true,
+      }),
+    );
     expect(result.sourceMapPath).toBeFalsy();
     expect(writeFileAtomic.sync).toHaveBeenCalledTimes(1);
+  });
+
+  it('should write a source map for the instrumented file when transformed', () => {
+    const transformerConfig = {
+      ...config,
+      transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+    };
+    const scriptTransformer = new ScriptTransformer(transformerConfig);
+
+    const map = {
+      mappings: ';AAAA',
+      version: 3,
+    };
+
+    // A map from the original source to the instrumented output
+    /* eslint-disable sort-keys */
+    const instrumentedCodeMap = {
+      version: 3,
+      sources: ['banana.js'],
+      names: ['content'],
+      mappings: ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAA,OAAO',
+      sourcesContent: ['content'],
+    };
+    /* eslint-enable */
+
+    require('preprocessor-with-sourcemaps').process.mockReturnValue({
+      code: 'content',
+      map,
+    });
+
+    const result = scriptTransformer.transform(
+      '/fruits/banana.js',
+      makeGlobalConfig({
+        collectCoverage: true,
+      }),
+    );
+    expect(result.sourceMapPath).toEqual(expect.any(String));
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toBeCalledWith(
+      result.sourceMapPath,
+      JSON.stringify(instrumentedCodeMap),
+      expect.anything(),
+    );
+
+    // Inline source map allows debugging of original source when running instrumented code
+    expect(result.code).toContain('//# sourceMappingURL');
+  });
+
+  it('should write a source map for the instrumented file when not transformed', () => {
+    const scriptTransformer = new ScriptTransformer(config);
+
+    // A map from the original source to the instrumented output
+    /* eslint-disable sort-keys */
+    const instrumentedCodeMap = {
+      version: 3,
+      sources: ['banana.js'],
+      names: ['module', 'exports'],
+      mappings:
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
+      sourcesContent: ['module.exports = "banana";'],
+    };
+    /* eslint-enable */
+
+    require('preprocessor-with-sourcemaps').process.mockReturnValue({
+      code: 'content',
+      map: null,
+    });
+
+    const result = scriptTransformer.transform(
+      '/fruits/banana.js',
+      makeGlobalConfig({
+        collectCoverage: true,
+      }),
+    );
+    expect(result.sourceMapPath).toEqual(expect.any(String));
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toBeCalledWith(
+      result.sourceMapPath,
+      JSON.stringify(instrumentedCodeMap),
+      expect.anything(),
+    );
+
+    // Inline source map allows debugging of original source when running instrumented code
+    expect(result.code).toContain('//# sourceMappingURL');
   });
 
   it('passes expected transform options to getCacheKey', () => {
     config = {...config, transform: [['^.+\\.js$', 'test_preprocessor']]};
     const scriptTransformer = new ScriptTransformer(config);
 
-    scriptTransformer.transform('/fruits/banana.js', {
-      collectCoverage: true,
-    });
+    scriptTransformer.transform(
+      '/fruits/banana.js',
+      makeGlobalConfig({
+        collectCoverage: true,
+      }),
+    );
 
     const {getCacheKey} = require('test_preprocessor');
     expect(getCacheKey.mock.calls[0][3]).toMatchSnapshot();

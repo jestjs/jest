@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable jest/no-focused-tests */
-
+// eslint-disable-next-line jest/no-focused-tests
 it.only.each([
   [true, true],
   [true, true],
@@ -21,6 +20,7 @@ it.each([
   expect(left).toBe(right);
 });
 
+// eslint-disable-next-line jest/no-focused-tests
 it.only.each`
   left    | right
   ${true} | ${true}
@@ -37,5 +37,5 @@ it.each`
   'Should not be ran: fails all rows expected $left == $right',
   ({left, right}) => {
     expect(left).toBe(right);
-  }
+  },
 );

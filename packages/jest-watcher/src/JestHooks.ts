@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
+import type {
   FileChange,
   JestHookEmitter,
   JestHookSubscriber,
@@ -66,8 +66,8 @@ class JestHooks {
     };
   }
 
-  isUsed(hook: AvailableHooks) {
-    return this._listeners[hook] && this._listeners[hook].length;
+  isUsed(hook: AvailableHooks): boolean {
+    return this._listeners[hook]?.length > 0;
   }
 
   getSubscriber(): Readonly<JestHookSubscriber> {

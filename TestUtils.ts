@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 
 const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   bail: 0,
@@ -16,6 +15,7 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   collectCoverageFrom: [],
   collectCoverageOnlyFrom: null,
   coverageDirectory: 'coverage',
+  coverageProvider: 'babel',
   coverageReporters: [],
   coverageThreshold: {global: {}},
   detectLeaks: false,
@@ -23,7 +23,6 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   enabledTestsMap: null,
   errorOnDeprecated: false,
   expand: false,
-  extraGlobals: [],
   filter: null,
   findRelatedTests: false,
   forceExit: false,
@@ -68,7 +67,6 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
 
 const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   automock: false,
-  browser: false,
   cache: false,
   cacheDirectory: '/test_cache_dir/',
   clearMocks: false,
@@ -84,9 +82,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   globalSetup: null,
   globalTeardown: null,
   globals: {},
-  haste: {
-    providesModuleNodeModules: [],
-  },
+  haste: {},
   moduleDirectories: [],
   moduleFileExtensions: ['js'],
   moduleLoader: '/test_module_loader_path',

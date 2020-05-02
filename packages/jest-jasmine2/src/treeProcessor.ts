@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import Suite from './jasmine/Suite';
+import type Suite from './jasmine/Suite';
 
 type Options = {
   nodeComplete: (suite: TreeNode) => void;
@@ -23,9 +23,9 @@ export type TreeNode = {
   onException: (error: Error) => void;
   sharedUserContext: () => any;
   children?: Array<TreeNode>;
-} & Pick<Suite, 'getResult' | 'parentSuite' | 'result'>;
+} & Pick<Suite, 'getResult' | 'parentSuite' | 'result' | 'markedPending'>;
 
-export default function treeProcessor(options: Options) {
+export default function treeProcessor(options: Options): void {
   const {
     nodeComplete,
     nodeStart,
@@ -64,11 +64,11 @@ export default function treeProcessor(options: Options) {
     };
   }
 
-  function hasEnabledTest(node: TreeNode): boolean {
+  function hasNoEnabledTest(node: TreeNode): boolean {
     if (node.children) {
-      return node.children.some(hasEnabledTest);
+      return node.children.every(hasNoEnabledTest);
     }
-    return !node.disabled;
+    return node.disabled || node.markedPending;
   }
 
   function wrapChildren(node: TreeNode, enabled: boolean) {
@@ -78,7 +78,7 @@ export default function treeProcessor(options: Options) {
     const children = node.children.map(child => ({
       fn: getNodeHandler(child, enabled),
     }));
-    if (!hasEnabledTest(node)) {
+    if (hasNoEnabledTest(node)) {
       return children;
     }
     return node.beforeAllFns.concat(children).concat(node.afterAllFns);

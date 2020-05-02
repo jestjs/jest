@@ -5,17 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {
+import type {Config} from '@jest/types';
+import type {
   AggregatedResult,
   SerializableError,
   TestResult,
 } from '@jest/test-result';
-import {JestEnvironment as Environment} from '@jest/environment';
-import {FS as HasteFS, ModuleMap} from 'jest-haste-map';
+import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
 import HasteResolver = require('jest-resolve');
-import Runtime = require('jest-runtime');
-import {worker} from './coverage_worker';
+import type {worker} from './coverage_worker';
 
 export type ReporterOnStartOptions = {
   estimatedTime: number;
@@ -39,10 +37,12 @@ export type CoverageWorker = {worker: typeof worker};
 
 export type CoverageReporterOptions = {
   changedFiles?: Set<Config.Path>;
+  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
 };
 
 export type CoverageReporterSerializedOptions = {
   changedFiles?: Array<Config.Path>;
+  sourcesRelatedToTestsInChangedFiles?: Array<Config.Path>;
 };
 
 export type OnTestStart = (test: Test) => Promise<void>;
@@ -76,20 +76,8 @@ export type SummaryOptions = {
   width?: number;
 };
 
-export type TestFramework = (
-  globalConfig: Config.GlobalConfig,
-  config: Config.ProjectConfig,
-  environment: Environment,
-  runtime: Runtime,
-  testPath: string,
-) => Promise<TestResult>;
-
 export type TestRunnerOptions = {
   serial: boolean;
-};
-
-export type TestRunnerContext = {
-  changedFiles?: Set<Config.Path>;
 };
 
 export type TestRunData = Array<{

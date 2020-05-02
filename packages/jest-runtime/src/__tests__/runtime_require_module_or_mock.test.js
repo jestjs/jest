@@ -240,6 +240,21 @@ describe('isolateModules', () => {
       expect(exports.getState()).toBe(1);
     }));
 
+  it('resets module after failing', () =>
+    createRuntime(__filename, {
+      moduleNameMapper,
+    }).then(runtime => {
+      expect(() =>
+        runtime.isolateModules(() => {
+          throw new Error('Error from isolated module');
+        }),
+      ).toThrowError('Error from isolated module');
+
+      runtime.isolateModules(() => {
+        expect(true).toBe(true);
+      });
+    }));
+
   it('cannot nest isolateModules blocks', () =>
     createRuntime(__filename, {
       moduleNameMapper,

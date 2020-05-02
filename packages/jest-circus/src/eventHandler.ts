@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Circus} from '@jest/types';
+import type {Circus} from '@jest/types';
 import {TEST_TIMEOUT_SYMBOL} from './types';
 
 import {
@@ -21,7 +21,11 @@ import {
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
 
-const eventHandler: Circus.EventHandler = (event, state): void => {
+// TODO: investigate why a shorter (event, state) signature results into TS7006 compiler error
+const eventHandler: Circus.EventHandler = (
+  event: Circus.Event,
+  state: Circus.State,
+): void => {
   switch (event.name) {
     case 'include_test_location_in_result': {
       state.includeTestLocationInResult = true;
@@ -32,7 +36,14 @@ const eventHandler: Circus.EventHandler = (event, state): void => {
     }
     case 'start_describe_definition': {
       const {blockName, mode} = event;
-      const {currentDescribeBlock} = state;
+      const {currentDescribeBlock, currentlyRunningTest} = state;
+
+      if (currentlyRunningTest) {
+        throw new Error(
+          `Cannot nest a describe inside a test. Describe block "${blockName}" cannot run because it is nested within "${currentlyRunningTest.name}".`,
+        );
+      }
+
       const describeBlock = makeDescribe(blockName, currentDescribeBlock, mode);
       currentDescribeBlock.children.push(describeBlock);
       state.currentDescribeBlock = describeBlock;
@@ -77,11 +88,11 @@ const eventHandler: Circus.EventHandler = (event, state): void => {
       break;
     }
     case 'add_hook': {
-      const {currentDescribeBlock} = state;
+      const {currentDescribeBlock, hasStarted} = state;
       const {asyncError, fn, hookType: type, timeout} = event;
       const parent = currentDescribeBlock;
 
-      if (state.hasStarted) {
+      if (hasStarted) {
         asyncError.message =
           'Cannot add a hook after tests have started running. Hooks must be defined synchronously.';
         state.unhandledErrors.push(asyncError);
@@ -92,10 +103,15 @@ const eventHandler: Circus.EventHandler = (event, state): void => {
       break;
     }
     case 'add_test': {
-      const {currentDescribeBlock} = state;
+      const {currentDescribeBlock, currentlyRunningTest, hasStarted} = state;
       const {asyncError, fn, mode, testName: name, timeout} = event;
 
-      if (state.hasStarted) {
+      if (currentlyRunningTest) {
+        throw new Error(
+          `Tests cannot be nested. Test "${name}" cannot run because it is nested within "${currentlyRunningTest.name}".`,
+        );
+      }
+      if (hasStarted) {
         asyncError.message =
           'Cannot add a test after tests have started running. Tests must be defined synchronously.';
         state.unhandledErrors.push(asyncError);
@@ -122,14 +138,14 @@ const eventHandler: Circus.EventHandler = (event, state): void => {
 
       if (type === 'beforeAll') {
         invariant(describeBlock, 'always present for `*All` hooks');
-        addErrorToEachTestUnderDescribe(describeBlock!, error, asyncError);
+        addErrorToEachTestUnderDescribe(describeBlock, error, asyncError);
       } else if (type === 'afterAll') {
         // Attaching `afterAll` errors to each test makes execution flow
         // too complicated, so we'll consider them to be global.
         state.unhandledErrors.push([error, asyncError]);
       } else {
         invariant(test, 'always present for `*Each` hooks');
-        test!.errors.push([error, asyncError]);
+        test.errors.push([error, asyncError]);
       }
       break;
     }
@@ -195,8 +211,8 @@ const eventHandler: Circus.EventHandler = (event, state): void => {
       invariant(state.originalGlobalErrorHandlers);
       invariant(state.parentProcess);
       restoreGlobalErrorHandlers(
-        state.parentProcess!,
-        state.originalGlobalErrorHandlers!,
+        state.parentProcess,
+        state.originalGlobalErrorHandlers,
       );
       break;
     }

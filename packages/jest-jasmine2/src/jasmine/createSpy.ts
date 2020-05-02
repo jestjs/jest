@@ -30,7 +30,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 /* eslint-disable sort-keys */
 
-import {Spy} from '../types';
+import type {Spy} from '../types';
 import CallTracker, {Context} from './CallTracker';
 import SpyStrategy from './SpyStrategy';
 
@@ -47,7 +47,7 @@ function createSpy(name: string, originalFn: Fn): Spy {
     },
   });
   const callTracker = new CallTracker();
-  const spy: Spy = function(...args) {
+  const spy: Spy = function (...args) {
     const callData: Context = {
       object: this,
       args: Array.prototype.slice.apply(arguments),

@@ -19,7 +19,7 @@ import {
 const DIR = path.resolve(tmpdir(), 'globalVariables.test');
 const TEST_DIR = path.resolve(DIR, '__tests__');
 
-function cleanStderr(stderr) {
+function cleanStderr(stderr: string) {
   const {rest} = extractSummary(stderr);
   return rest.replace(/.*(jest-jasmine2).*\n/g, '');
 }
@@ -125,6 +125,7 @@ test('cannot have describe with no implementation', () => {
 
   const rest = cleanStderr(stderr);
   const {summary} = extractSummary(stderr);
+
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
 });

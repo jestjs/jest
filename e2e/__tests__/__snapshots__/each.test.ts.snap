@@ -205,7 +205,7 @@ FAIL __tests__/failure.test.js
       28 |   ({left, right}) => {
     > 29 |     expect(left).toBe(right);
          |                  ^
-      30 |   }
+      30 |   },
       31 | );
       32 |
 
@@ -222,7 +222,7 @@ FAIL __tests__/failure.test.js
       39 |   ({left, right}) => {
     > 40 |     expect(left).toBe(right);
          |                  ^
-      41 |   }
+      41 |   },
       42 | );
       43 |
 
@@ -239,7 +239,7 @@ FAIL __tests__/failure.test.js
       39 |   ({left, right}) => {
     > 40 |     expect(left).toBe(right);
          |                  ^
-      41 |   }
+      41 |   },
       42 | );
       43 |
 
@@ -256,7 +256,7 @@ FAIL __tests__/failure.test.js
       46 |   word => {
     > 47 |     expect(/z/.test(word)).toBe(true);
          |                            ^
-      48 |   }
+      48 |   },
       49 | );
       50 |
 
@@ -273,7 +273,7 @@ FAIL __tests__/failure.test.js
       46 |   word => {
     > 47 |     expect(/z/.test(word)).toBe(true);
          |                            ^
-      48 |   }
+      48 |   },
       49 | );
       50 |
 
@@ -290,7 +290,7 @@ FAIL __tests__/failure.test.js
       46 |   word => {
     > 47 |     expect(/z/.test(word)).toBe(true);
          |                            ^
-      48 |   }
+      48 |   },
       49 | );
       50 |
 
@@ -308,7 +308,7 @@ FAIL __tests__/failure.test.js
     > 59 |       expect(left).toBe(right);
          |                    ^
       60 |     });
-      61 |   }
+      61 |   },
       62 | );
 
       at Object.toBe (__tests__/failure.test.js:59:20)
@@ -325,7 +325,7 @@ FAIL __tests__/failure.test.js
     > 59 |       expect(left).toBe(right);
          |                    ^
       60 |     });
-      61 |   }
+      61 |   },
       62 | );
 
       at Object.toBe (__tests__/failure.test.js:59:20)
@@ -342,7 +342,7 @@ FAIL __tests__/failure.test.js
     > 71 |       expect(left).toBe(right);
          |                    ^
       72 |     });
-      73 |   }
+      73 |   },
       74 | );
 
       at Object.toBe (__tests__/failure.test.js:71:20)
@@ -359,7 +359,7 @@ FAIL __tests__/failure.test.js
     > 71 |       expect(left).toBe(right);
          |                    ^
       72 |     });
-      73 |   }
+      73 |   },
       74 | );
 
       at Object.toBe (__tests__/failure.test.js:71:20)

@@ -7,16 +7,16 @@
 
 import * as path from 'path';
 import ansiEscapes = require('ansi-escapes');
-import chalk from 'chalk';
+import chalk = require('chalk');
 import exit = require('exit');
 import slash = require('slash');
 import HasteMap = require('jest-haste-map');
 import {formatExecError} from 'jest-message-util';
 import {isInteractive, preRunMessage, specialChars} from 'jest-util';
 import {ValidationError} from 'jest-validate';
-import {Context} from 'jest-runtime';
+import type {Context} from 'jest-runtime';
 import Resolver = require('jest-resolve');
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {
   AllowedConfigOptions,
   JestHook,
@@ -42,7 +42,7 @@ import {
   getSortedUsageRows,
 } from './lib/watch_plugins_helpers';
 import activeFilters from './lib/active_filters_message';
-import {Filter} from './types';
+import type {Filter} from './types';
 
 type ReservedInfo = {
   forbiddenOverwriteMessage?: string;
@@ -158,9 +158,11 @@ export default function watch(
   if (globalConfig.watchPlugins != null) {
     const watchPluginKeys: WatchPluginKeysMap = new Map();
     for (const plugin of watchPlugins) {
-      const reservedInfo =
-        RESERVED_KEY_PLUGINS.get(plugin.constructor as WatchPluginClass) ||
-        ({} as ReservedInfo);
+      const reservedInfo: Pick<
+        ReservedInfo,
+        'forbiddenOverwriteMessage' | 'key'
+      > =
+        RESERVED_KEY_PLUGINS.get(plugin.constructor as WatchPluginClass) || {};
       const key = reservedInfo.key || getPluginKey(plugin, globalConfig);
       if (!key) {
         continue;

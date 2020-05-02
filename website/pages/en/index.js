@@ -376,7 +376,7 @@ class Index extends React.Component {
                   content: (
                     <translate>
                       Generate code coverage by adding the flag
-                      [`--coverage`](https://jestjs.io/docs/en/cli.html#coverage).
+                      [`--coverage`](https://jestjs.io/docs/en/cli.html#--coverageboolean).
                       No additional setup needed. Jest can collect code coverage
                       information from entire projects, including untested
                       files.
@@ -424,7 +424,7 @@ class Index extends React.Component {
                       Here are some examples:
                     </translate>
                   ),
-                  image: '/img/content/matchers/different-types.png',
+                  image: '/img/content/matchers/toBe.png',
                   imageAlign: 'right',
                   title: <translate>Great Exceptions</translate>,
                 },

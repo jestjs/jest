@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ValidationOptions} from './types';
+import type {ValidationOptions} from './types';
 import defaultConfig from './defaultConfig';
 import {ValidationError} from './utils';
 
@@ -95,7 +95,10 @@ const allowsMultipleTypes = (key: string): boolean => key === 'maxWorkers';
 const isOfTypeStringOrNumber = (value: any): boolean =>
   typeof value === 'number' || typeof value === 'string';
 
-const validate = (config: Record<string, any>, options: ValidationOptions) => {
+const validate = (
+  config: Record<string, any>,
+  options: ValidationOptions,
+): {hasDeprecationWarnings: boolean; isValid: boolean} => {
   hasDeprecationWarnings = false;
 
   // Preserve default blacklist entries even with user-supplied blacklist

@@ -6,11 +6,11 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {replacePathSepForGlob} from 'jest-util';
 import micromatch = require('micromatch');
-import {ShouldInstrumentOptions} from './types';
+import type {ShouldInstrumentOptions} from './types';
 
 const MOCKS_PATTERN = new RegExp(
   escapePathForRegex(path.sep + '__mocks__' + path.sep),
@@ -58,7 +58,7 @@ export default function shouldInstrument(
   if (
     // still cover if `only` is specified
     !options.collectCoverageOnlyFrom &&
-    options.collectCoverageFrom &&
+    options.collectCoverageFrom.length &&
     micromatch(
       [replacePathSepForGlob(path.relative(config.rootDir, filename))],
       options.collectCoverageFrom,
@@ -94,7 +94,12 @@ export default function shouldInstrument(
   }
 
   if (options.changedFiles && !options.changedFiles.has(filename)) {
-    return false;
+    if (!options.sourcesRelatedToTestsInChangedFiles) {
+      return false;
+    }
+    if (!options.sourcesRelatedToTestsInChangedFiles.has(filename)) {
+      return false;
+    }
   }
 
   return true;

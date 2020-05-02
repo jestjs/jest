@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {JestEnvironment} from '@jest/environment';
+import type {JestEnvironment} from '@jest/environment';
 import {bind as bindEach} from 'jest-each';
 
 export default (environment: JestEnvironment): void => {

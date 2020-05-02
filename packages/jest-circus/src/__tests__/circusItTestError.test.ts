@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Global} from '@jest/types';
+import type {Global} from '@jest/types';
 
 let circusIt: Global.It;
 let circusTest: Global.It;

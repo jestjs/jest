@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable jest/no-focused-tests */
-
+// eslint-disable-next-line jest/no-focused-tests
 describe.only.each([
   [true, true],
   [true, true],
@@ -24,5 +23,5 @@ describe.each([[false, true]])(
     it('fails', () => {
       expect(left).toBe(right);
     });
-  }
+  },
 );

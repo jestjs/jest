@@ -6,10 +6,10 @@
  *
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {ModuleMap} from 'jest-haste-map';
-import Resolver from '../';
+import Resolver = require('../');
 // @ts-ignore: js file
 import userResolver from '../__mocks__/userResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
@@ -43,6 +43,20 @@ describe('isCoreModule', () => {
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const isCore = resolver.isCoreModule('not-a-core-module');
+    expect(isCore).toEqual(false);
+  });
+
+  it('returns false if `hasCoreModules` is true and `moduleNameMapper` alias a module same name with core module', () => {
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {
+      moduleNameMapper: [
+        {
+          moduleName: '$1',
+          regex: /^constants$/,
+        },
+      ],
+    } as ResolverConfig);
+    const isCore = resolver.isCoreModule('constants');
     expect(isCore).toEqual(false);
   });
 });
@@ -83,7 +97,7 @@ describe('findNodeModule', () => {
 });
 
 describe('resolveModule', () => {
-  let moduleMap: typeof ModuleMap;
+  let moduleMap: ModuleMap;
   beforeEach(() => {
     moduleMap = ModuleMap.create('/');
   });
@@ -156,6 +170,20 @@ describe('resolveModule', () => {
     });
     expect(resolved).toBe(require.resolve('../__mocks__/mockJsDependency.js'));
   });
+
+  it('does not confuse directories with files', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    } as ResolverConfig);
+    const mocksDirectory = path.resolve(__dirname, '../__mocks__');
+    const fooSlashFoo = path.join(mocksDirectory, 'foo/foo.js');
+    const fooSlashIndex = path.join(mocksDirectory, 'foo/index.js');
+
+    const resolvedWithSlash = resolver.resolveModule(fooSlashFoo, './');
+    const resolvedWithDot = resolver.resolveModule(fooSlashFoo, '.');
+    expect(resolvedWithSlash).toBe(fooSlashIndex);
+    expect(resolvedWithSlash).toBe(resolvedWithDot);
+  });
 });
 
 describe('getMockModule', () => {
@@ -195,7 +223,7 @@ describe('nodeModulesPaths', () => {
 
 describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   const _path = path;
-  let moduleMap: typeof ModuleMap;
+  let moduleMap: ModuleMap;
 
   beforeEach(() => {
     jest.resetModules();
@@ -206,8 +234,11 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     // pathstrings instead of actually trying to access the physical directory.
     // This test suite won't work otherwise, since we cannot make assumptions
     // about the test environment when it comes to absolute paths.
-    jest.doMock('realpath-native', () => ({
-      sync: (dirInput: string) => dirInput,
+    jest.doMock('graceful-fs', () => ({
+      ...jest.requireActual('graceful-fs'),
+      realPathSync: {
+        native: (dirInput: string) => dirInput,
+      },
     }));
   });
 

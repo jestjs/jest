@@ -7,10 +7,15 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug Jest with current test file",
-      "program": "${workspaceFolder}/packages/jest-cli/bin/jest.js",
-      "args": ["--runInBand", "${file}"],
-      "runtimeArgs": ["-r", "flow-remove-types/register"]
+      "name": "Jest Current File",
+      "program": "${workspaceFolder}/node_modules/.bin/jest",
+      "args": ["${fileBasenameNoExtension}"],
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "disableOptimisticBPs": true,
+      "windows": {
+        "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+      }
     }
   ]
 }

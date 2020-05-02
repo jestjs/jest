@@ -18,3 +18,5 @@ describe('promise fit', () => {
 
   fit('will run and fail', () => Promise.reject());
 });
+
+/* eslint-enable */
