@@ -41,6 +41,8 @@ jobs:
         run: node scripts/build.js
       - name: run tsc
         run: yarn build:ts
+      - name: verify TypeScript@3.8 compatibility
+        run: yarn verify-old-ts
       - name: run eslint
         run: yarn lint
       - name: run prettier

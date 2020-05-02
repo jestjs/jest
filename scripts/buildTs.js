@@ -31,10 +31,6 @@ packagesWithTs.forEach(pkgDir => {
   const pkg = require(pkgDir + '/package.json');
 
   assert.ok(pkg.types, `Package ${pkg.name} is missing \`types\` field`);
-  assert.ok(
-    pkg.typesVersions,
-    `Package ${pkg.name} is missing \`typesVersions\` field`,
-  );
 
   assert.equal(
     pkg.types,

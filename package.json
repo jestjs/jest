@@ -99,6 +99,7 @@
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
     "test-leak": "yarn jest -i --detectLeaks jest-mock jest-diff jest-repl",
     "test": "yarn lint && yarn jest",
+    "verify-old-ts": "node ./scripts/verifyOldTs.js",
     "watch": "yarn build && node ./scripts/watch.js",
     "watch:ts": "yarn build:ts --watch"
   },
