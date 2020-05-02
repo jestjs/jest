@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-environment-jsdom]` [**BREAKING**] Upgrade `jsdom` v16 ([#9606](https://github.com/facebook/jest/pull/9606))
+
 ### Fixes
 
 - `[jest-circus]` [**BREAKING**] Fail tests if a test takes a done callback and have return values ([#9129](https://github.com/facebook/jest/pull/9129))
@@ -205,7 +207,6 @@
 - `[jest-transform]` Allow instrumentation of transformed files with weird file extensions ([#9589](https://github.com/facebook/jest/pull/9589))
 - `[@jest/types]` Make `ConfigGlobals` an interface to allow for declaration merging. ([#9570](https://github.com/facebook/jest/pull/9570))
 - `[pretty-format]` Export `OldPlugin` type ([#9491](https://github.com/facebook/jest/pull/9491))
-- `[jest-environment-jsdom]` Upgrade `jsdom` v16 to fix memory leak ([#9606](https://github.com/facebook/jest/pull/9606))
 
 ### Chore & Maintenance
 
