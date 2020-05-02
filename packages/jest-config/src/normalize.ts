@@ -869,7 +869,6 @@ export default function normalize(
         break;
       }
       case 'automock':
-      case 'browser':
       case 'cache':
       case 'changedSince':
       case 'changedFilesWithAncestor':

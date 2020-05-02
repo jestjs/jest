@@ -62,7 +62,6 @@ class Resolver {
 
   constructor(moduleMap: ModuleMap, options: ResolverConfig) {
     this._options = {
-      browser: options.browser,
       defaultPlatform: options.defaultPlatform,
       extensions: options.extensions,
       hasCoreModules:
@@ -184,7 +183,6 @@ class Resolver {
     const resolveNodeModule = (name: Config.Path, throwIfNotFound = false) =>
       Resolver.findNodeModule(name, {
         basedir: dirname,
-        browser: this._options.browser,
         extensions,
         moduleDirectory,
         paths,
@@ -438,7 +436,6 @@ class Resolver {
               this.getModule(updatedName) ||
               Resolver.findNodeModule(updatedName, {
                 basedir: dirname,
-                browser: this._options.browser,
                 extensions,
                 moduleDirectory,
                 paths,

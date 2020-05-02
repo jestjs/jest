@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import {tmpdir} from 'os';
-import {compileFunction} from 'vm';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest from '../runJest';
 import {
@@ -127,41 +126,7 @@ test('cannot have describe with no implementation', () => {
   const rest = cleanStderr(stderr);
   const {summary} = extractSummary(stderr);
 
-  const rightTrimmedRest = rest
-    .split('\n')
-    .map(l => l.trimRight())
-    .join('\n')
-    .trim();
-
-  if (typeof compileFunction === 'function') {
-    expect(rightTrimmedRest).toEqual(
-      `
-FAIL __tests__/onlyConstructs.test.js
-  ● Test suite failed to run
-
-    Missing second argument. It must be a callback function.
-
-    > 1 | describe('describe, no implementation');
-        | ^
-
-      at Object.describe (__tests__/onlyConstructs.test.js:1:1)
-    `.trim(),
-    );
-  } else {
-    expect(rightTrimmedRest).toEqual(
-      `
-FAIL __tests__/onlyConstructs.test.js
-  ● Test suite failed to run
-
-    Missing second argument. It must be a callback function.
-
-    > 1 | describe('describe, no implementation');
-        |          ^
-
-      at Object.<anonymous> (__tests__/onlyConstructs.test.js:1:10)
-    `.trim(),
-    );
-  }
+  expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
 });
 

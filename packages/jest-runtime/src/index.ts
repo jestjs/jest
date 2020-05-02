@@ -23,7 +23,6 @@ import type {Config, Global} from '@jest/types';
 import type {
   Jest,
   JestEnvironment,
-  LocalModuleRequire,
   Module,
   ModuleWrapper,
 } from '@jest/environment';
@@ -162,7 +161,6 @@ class Runtime {
   private _virtualMocks: BooleanMap;
   private _moduleImplementation?: typeof nativeModule.Module;
   private jestObjectCaches: Map<string, Jest>;
-  private _hasWarnedAboutRequireCacheModification = false;
 
   constructor(
     config: Config.ProjectConfig,
@@ -287,7 +285,6 @@ class Runtime {
       mocksPattern: escapePathForRegex(path.sep + '__mocks__' + path.sep),
       name: config.name,
       platforms: config.haste.platforms || ['ios', 'android'],
-      providesModuleNodeModules: config.haste.providesModuleNodeModules,
       resetCache: options && options.resetCache,
       retainAllFiles: false,
       rootDir: config.rootDir,
@@ -303,7 +300,6 @@ class Runtime {
     moduleMap: HasteMap.ModuleMap,
   ): Resolver {
     return new Resolver(moduleMap, {
-      browser: config.browser,
       defaultPlatform: config.haste.defaultPlatform,
       extensions: config.moduleFileExtensions.map(extension => '.' + extension),
       hasCoreModules: true,
@@ -986,31 +982,17 @@ class Runtime {
       const vmContext = this._environment.getVmContext();
 
       if (vmContext) {
-        if (typeof compileFunction === 'function') {
-          try {
-            compiledFunction = compileFunction(
-              transformedCode,
-              this.constructInjectedModuleParameters(),
-              {
-                filename,
-                parsingContext: vmContext,
-              },
-            ) as ModuleWrapper;
-          } catch (e) {
-            throw handlePotentialSyntaxError(e);
-          }
-        } else {
-          const script = this.createScriptFromCode(transformedCode, filename);
-
-          const runScript = script.runInContext(
-            vmContext,
-          ) as RunScriptEvalResult;
-
-          if (runScript === null) {
-            compiledFunction = null;
-          } else {
-            compiledFunction = runScript[EVAL_RESULT_VARIABLE];
-          }
+        try {
+          compiledFunction = compileFunction(
+            transformedCode,
+            this.constructInjectedModuleParameters(),
+            {
+              filename,
+              parsingContext: vmContext,
+            },
+          ) as ModuleWrapper;
+        } catch (e) {
+          throw handlePotentialSyntaxError(e);
         }
       }
     } else {
@@ -1316,7 +1298,7 @@ class Runtime {
   private _createRequireImplementation(
     from: InitialModule,
     options?: InternalModuleOptions,
-  ): LocalModuleRequire {
+  ): NodeRequire {
     // TODO: somehow avoid having to type the arguments - they should come from `NodeRequire/LocalModuleRequire.resolve`
     const resolve = (moduleName: string, options: ResolveOptions) =>
       this._requireResolve(from.filename, moduleName, options);
@@ -1326,25 +1308,12 @@ class Runtime {
     const moduleRequire = (options?.isInternalModule
       ? (moduleName: string) =>
           this.requireInternalModule(from.filename, moduleName)
-      : this.requireModuleOrMock.bind(
-          this,
-          from.filename,
-        )) as LocalModuleRequire;
+      : this.requireModuleOrMock.bind(this, from.filename)) as NodeRequire;
     moduleRequire.extensions = Object.create(null);
-    moduleRequire.requireActual = this.requireActual.bind(this, from.filename);
-    moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
     moduleRequire.resolve = resolve;
     moduleRequire.cache = (() => {
-      const notPermittedMethod = () => {
-        if (!this._hasWarnedAboutRequireCacheModification) {
-          this._environment.global.console.warn(
-            '`require.cache` modification is not permitted',
-          );
-
-          this._hasWarnedAboutRequireCacheModification = true;
-        }
-        return true;
-      };
+      // TODO: consider warning somehow that this does nothing. We should support deletions, anyways
+      const notPermittedMethod = () => true;
       return new Proxy<NodeJS.NodeRequireCache>(Object.create(null), {
         defineProperty: notPermittedMethod,
         deleteProperty: notPermittedMethod,

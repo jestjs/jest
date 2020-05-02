@@ -4,13 +4,6 @@
   "description": "Parameterised tests for Jest",
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "typesVersions": {
-    "<3.8": {
-      "build/*": [
-        "build/ts3.4/*"
-      ]
-    }
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -32,7 +25,7 @@
     "pretty-format": "^25.5.0"
   },
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.14.2"
   },
   "publishConfig": {
     "access": "public"

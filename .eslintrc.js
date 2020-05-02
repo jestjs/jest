@@ -95,7 +95,6 @@ module.exports = {
       files: [
         'packages/jest-jasmine2/src/jasmine/**/*',
         'packages/expect/src/jasmineUtils.ts',
-        'e2e/browser-support/browserTest.js',
         '**/vendor/**/*',
       ],
       rules: {

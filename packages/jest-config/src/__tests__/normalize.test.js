@@ -154,20 +154,6 @@ describe('automock', () => {
   });
 });
 
-describe('browser', () => {
-  it('falsy browser is not overwritten', () => {
-    const {options} = normalize(
-      {
-        browser: true,
-        rootDir: '/root/path/foo',
-      },
-      {},
-    );
-
-    expect(options.browser).toBe(true);
-  });
-});
-
 describe('collectCoverageOnlyFrom', () => {
   it('normalizes all paths relative to rootDir', () => {
     const {options} = normalize(

@@ -9,14 +9,6 @@
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "typesVersions": {
-    "<3.8": {
-      "build/*": [
-        "build/ts3.4/*"
-      ]
-    }
-  },
-  "browser": "build-es5/index.js",
   "dependencies": {
     "@jest/types": "^25.5.0",
     "ansi-styles": "^4.0.0",
@@ -32,7 +24,7 @@
     "immutable": "^4.0.0-rc.12"
   },
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.14.2"
   },
   "publishConfig": {
     "access": "public"

@@ -15,7 +15,6 @@ const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 const initialOptions: Config.InitialOptions = {
   automock: false,
   bail: multipleValidOptions(false, 0),
-  browser: false,
   cache: true,
   cacheDirectory: '/tmp/user/jest',
   changedFilesWithAncestor: false,
@@ -57,7 +56,6 @@ const initialOptions: Config.InitialOptions = {
     defaultPlatform: 'ios',
     hasteImplModulePath: '<rootDir>/haste_impl.js',
     platforms: ['ios', 'android'],
-    providesModuleNodeModules: ['react', 'react-native'],
     throwOnModuleCollision: false,
   },
   json: false,

@@ -8,7 +8,6 @@
 import type {Config} from '@jest/types';
 
 export type ResolverConfig = {
-  browser?: boolean;
   defaultPlatform?: string | null;
   extensions: Array<string>;
   hasCoreModules: boolean;

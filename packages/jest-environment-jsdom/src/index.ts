@@ -47,6 +47,10 @@ class JSDOMEnvironment implements JestEnvironment {
       throw new Error('JSDOM did not return a Window object');
     }
 
+    // In the `jsdom@16`, ArrayBuffer was not added to Window, ref: https://github.com/jsdom/jsdom/commit/3a4fd6258e6b13e9cf8341ddba60a06b9b5c7b5b
+    // Install ArrayBuffer to Window to fix it. Make sure the test is passed, ref: https://github.com/facebook/jest/pull/7626
+    global.ArrayBuffer = ArrayBuffer;
+
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
@@ -126,7 +130,14 @@ class JSDOMEnvironment implements JestEnvironment {
 
   runScript<T = unknown>(script: Script): T | null {
     if (this.dom) {
-      return this.dom.runVMScript(script) as any;
+      return script.runInContext(this.dom.getInternalVMContext());
+    }
+    return null;
+  }
+
+  getVmContext() {
+    if (this.dom) {
+      return this.dom.getInternalVMContext();
     }
     return null;
   }

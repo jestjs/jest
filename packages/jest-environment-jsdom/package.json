@@ -9,26 +9,19 @@
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "typesVersions": {
-    "<3.8": {
-      "build/*": [
-        "build/ts3.4/*"
-      ]
-    }
-  },
   "dependencies": {
     "@jest/environment": "^25.5.0",
     "@jest/fake-timers": "^25.5.0",
     "@jest/types": "^25.5.0",
     "jest-mock": "^25.5.0",
     "jest-util": "^25.5.0",
-    "jsdom": "^15.2.1"
+    "jsdom": "^16.2.2"
   },
   "devDependencies": {
-    "@types/jsdom": "^12.2.4"
+    "@types/jsdom": "^16.2.1"
   },
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.14.2"
   },
   "publishConfig": {
     "access": "public"
