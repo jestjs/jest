@@ -8,6 +8,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-runtime]` Do not warn when mutating `require.cache` ([#9946](https://github.com/facebook/jest/pull/9946))
+
 ### Performance
 
 ## 25.5.3

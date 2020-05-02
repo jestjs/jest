@@ -162,7 +162,6 @@ class Runtime {
   private _virtualMocks: BooleanMap;
   private _moduleImplementation?: typeof nativeModule.Module;
   private jestObjectCaches: Map<string, Jest>;
-  private _hasWarnedAboutRequireCacheModification = false;
 
   constructor(
     config: Config.ProjectConfig,
@@ -1335,16 +1334,8 @@ class Runtime {
     moduleRequire.requireMock = this.requireMock.bind(this, from.filename);
     moduleRequire.resolve = resolve;
     moduleRequire.cache = (() => {
-      const notPermittedMethod = () => {
-        if (!this._hasWarnedAboutRequireCacheModification) {
-          this._environment.global.console.warn(
-            '`require.cache` modification is not permitted',
-          );
-
-          this._hasWarnedAboutRequireCacheModification = true;
-        }
-        return true;
-      };
+      // TODO: consider warning somehow that this does nothing. We should support deletions, anyways
+      const notPermittedMethod = () => true;
       return new Proxy<NodeJS.NodeRequireCache>(Object.create(null), {
         defineProperty: notPermittedMethod,
         deleteProperty: notPermittedMethod,
