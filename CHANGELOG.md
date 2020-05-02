@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-environment-jsdom]` [**BREAKING**] Upgrade `jsdom` v16 ([#9606](https://github.com/facebook/jest/pull/9606))
+- `[jest-environment-jsdom]` [**BREAKING**] Upgrade `jsdom` to v16 ([#9606](https://github.com/facebook/jest/pull/9606))
 
 ### Fixes
 
