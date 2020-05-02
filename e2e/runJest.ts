@@ -7,8 +7,8 @@
  */
 
 import * as path from 'path';
-import * as fs from 'fs';
 import {Writable} from 'stream';
+import * as fs from 'graceful-fs';
 import execa = require('execa');
 import type {Config} from '@jest/types';
 import type {FormattedTestResults} from '@jest/test-result';

@@ -49,12 +49,15 @@ export type TestRunnerOptions = {
   serial: boolean;
 };
 
+// make sure all props here are present in the type below it as well
 export type TestRunnerContext = {
   changedFiles?: Set<Config.Path>;
+  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
 };
 
 export type TestRunnerSerializedContext = {
   changedFiles?: Array<Config.Path>;
+  sourcesRelatedToTestsInChangedFiles?: Array<Config.Path>;
 };
 
 // TODO: Should live in `@jest/core` or `jest-watcher`

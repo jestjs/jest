@@ -16,6 +16,7 @@ export type ShouldInstrumentOptions = Pick<
   | 'coverageProvider'
 > & {
   changedFiles?: Set<Config.Path>;
+  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
 };
 
 export type Options = ShouldInstrumentOptions &
@@ -34,6 +35,7 @@ interface FixedRawSourceMap extends SourceMapWithVersion {
   version: number;
 }
 
+// TODO: For Jest 26 normalize this (always structured data, never a string)
 export type TransformedSource =
   | {code: string; map?: FixedRawSourceMap | string | null}
   | string;

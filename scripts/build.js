@@ -30,11 +30,9 @@ const chalk = require('chalk');
 const micromatch = require('micromatch');
 const prettier = require('prettier');
 const {getPackages, adjustToTerminalWidth, OK} = require('./buildUtils');
-const browserBuild = require('./browserBuild');
 
 const SRC_DIR = 'src';
 const BUILD_DIR = 'build';
-const BUILD_ES5_DIR = 'build-es5';
 const JS_FILES_PATTERN = '**/*.js';
 const TS_FILES_PATTERN = '**/*.ts';
 const IGNORE_PATTERN = '**/__{tests,mocks}__/**';
@@ -72,39 +70,6 @@ function buildNodePackage(p) {
   process.stdout.write(`${OK}\n`);
 }
 
-function buildBrowserPackage(p) {
-  const srcDir = path.resolve(p, SRC_DIR);
-  const pkgJsonPath = path.resolve(p, 'package.json');
-
-  if (!fs.existsSync(pkgJsonPath)) {
-    return;
-  }
-
-  const browser = require(pkgJsonPath).browser;
-  if (browser) {
-    if (browser.indexOf(BUILD_ES5_DIR) !== 0) {
-      throw new Error(
-        `browser field for ${pkgJsonPath} should start with "${BUILD_ES5_DIR}"`
-      );
-    }
-    let indexFile = path.resolve(srcDir, 'index.js');
-
-    if (!fs.existsSync(indexFile)) {
-      indexFile = indexFile.replace(/\.js$/, '.ts');
-    }
-
-    browserBuild(p.split('/').pop(), indexFile, path.resolve(p, browser))
-      .then(() => {
-        process.stdout.write(adjustToTerminalWidth(`${path.basename(p)}\n`));
-        process.stdout.write(`${OK}\n`);
-      })
-      .catch(e => {
-        console.error(e);
-        process.exit(1);
-      });
-  }
-}
-
 function buildFile(file, silent) {
   const destPath = getBuildPath(file, BUILD_DIR);
 
@@ -113,7 +78,7 @@ function buildFile(file, silent) {
       process.stdout.write(
         chalk.dim('  \u2022 ') +
           path.relative(PACKAGES_DIR, file) +
-          ' (ignore)\n'
+          ' (ignore)\n',
       );
     return;
   }
@@ -131,7 +96,7 @@ function buildFile(file, silent) {
           chalk.red(' \u21D2 ') +
           path.relative(PACKAGES_DIR, destPath) +
           ' (copy)' +
-          '\n'
+          '\n',
       );
   } else {
     const options = Object.assign({}, transformOptions);
@@ -141,7 +106,7 @@ function buildFile(file, silent) {
       // The modules in the blacklist are injected into the user's sandbox
       // We need to guard some globals there.
       options.plugins.push(
-        require.resolve('./babel-plugin-jest-native-globals')
+        require.resolve('./babel-plugin-jest-native-globals'),
       );
     } else {
       options.plugins = options.plugins.map(plugin => {
@@ -174,7 +139,7 @@ function buildFile(file, silent) {
           path.relative(PACKAGES_DIR, file) +
           chalk.green(' \u21D2 ') +
           path.relative(PACKAGES_DIR, destPath) +
-          '\n'
+          '\n',
       );
   }
 }
@@ -187,8 +152,4 @@ if (files.length) {
   const packages = getPackages();
   process.stdout.write(chalk.inverse(' Building packages \n'));
   packages.forEach(buildNodePackage);
-  process.stdout.write('\n');
-
-  process.stdout.write(chalk.inverse(' Building browser packages \n'));
-  packages.forEach(buildBrowserPackage);
 }

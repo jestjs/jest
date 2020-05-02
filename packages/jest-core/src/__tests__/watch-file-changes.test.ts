@@ -7,8 +7,8 @@
  */
 
 import * as path from 'path';
-import * as fs from 'fs';
 import {tmpdir} from 'os';
+import * as fs from 'graceful-fs';
 import {JestHook} from 'jest-watcher';
 import Runtime = require('jest-runtime');
 import {normalize} from 'jest-config';

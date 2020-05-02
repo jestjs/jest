@@ -5,12 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+// the point here is that it's the node core module
+// eslint-disable-next-line no-restricted-imports
 import {readFileSync} from 'fs';
 import {createRequire} from 'module';
 import {dirname, resolve} from 'path';
 import {fileURLToPath} from 'url';
+import {jest as jestObject} from '@jest/globals';
 import staticImportedStateful from '../stateful.mjs';
 import staticImportedStatefulFromCjs from '../fromCjs.mjs';
+// https://github.com/benmosher/eslint-plugin-import/issues/1739
+/* eslint-disable import/no-unresolved */
+import staticImportedStatefulWithQuery from '../stateful.mjs?query=1';
+import staticImportedStatefulWithAnotherQuery from '../stateful.mjs?query=2';
+/* eslint-enable */
 import {double} from '../index';
 
 test('should have correct import.meta', () => {
@@ -20,7 +28,7 @@ test('should have correct import.meta', () => {
     url: expect.any(String),
   });
   expect(
-    import.meta.url.endsWith('/e2e/native-esm/__tests__/native-esm.test.js')
+    import.meta.url.endsWith('/e2e/native-esm/__tests__/native-esm.test.js'),
   ).toBe(true);
 });
 
@@ -89,4 +97,31 @@ test('handle unlinked dynamic imports', async () => {
   expect(deepDouble).toBe(double);
 
   expect(deepDouble(4)).toBe(8);
+});
+
+test('can import `jest` object', () => {
+  expect(jestObject).toBeDefined();
+});
+
+test('handle dynamic imports of the same module in parallel', async () => {
+  const [{double: first}, {double: second}] = await Promise.all([
+    import('../anotherDynamicImport.js'),
+    import('../anotherDynamicImport.js'),
+  ]);
+
+  expect(first).toBe(second);
+  expect(first(2)).toBe(4);
+});
+
+test('varies module cache by query', () => {
+  expect(staticImportedStatefulWithQuery).not.toBe(
+    staticImportedStatefulWithAnotherQuery,
+  );
+
+  expect(staticImportedStatefulWithQuery()).toBe(1);
+  expect(staticImportedStatefulWithQuery()).toBe(2);
+  expect(staticImportedStatefulWithAnotherQuery()).toBe(1);
+  expect(staticImportedStatefulWithQuery()).toBe(3);
+  expect(staticImportedStatefulWithAnotherQuery()).toBe(2);
+  expect(staticImportedStatefulWithAnotherQuery()).toBe(3);
 });

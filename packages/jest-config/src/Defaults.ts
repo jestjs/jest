@@ -15,7 +15,6 @@ const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 const defaultOptions: Config.DefaultOptions = {
   automock: false,
   bail: 0,
-  browser: false,
   cache: true,
   cacheDirectory: getCacheDirectory(),
   changedFilesWithAncestor: false,

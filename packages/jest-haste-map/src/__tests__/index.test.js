@@ -105,7 +105,6 @@ jest.mock('graceful-fs', () => ({
     mockFs[path] = data;
   }),
 }));
-jest.mock('fs', () => require('graceful-fs'));
 
 const cacheFilePath = '/cache-file';
 const object = data => Object.assign(Object.create(null), data);

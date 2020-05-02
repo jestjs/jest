@@ -147,17 +147,20 @@ async function runTestInternal(
   setGlobal(environment.global, 'console', testConsole);
 
   const runtime = new Runtime(config, environment, resolver, cacheFS, {
-    changedFiles: context && context.changedFiles,
+    changedFiles: context?.changedFiles,
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
     coverageProvider: globalConfig.coverageProvider,
+    sourcesRelatedToTestsInChangedFiles:
+      context?.sourcesRelatedToTestsInChangedFiles,
   });
 
   const start = Date.now();
 
   for (const path of config.setupFiles) {
-    const esm = runtime.unstable_shouldLoadAsEsm(path);
+    // TODO: remove ? in Jest 26
+    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);
@@ -275,7 +278,6 @@ async function runTestInternal(
       const coverageKeys = Object.keys(coverage);
       if (coverageKeys.length) {
         result.coverage = coverage;
-        result.sourceMaps = runtime.getSourceMapInfo(new Set(coverageKeys));
       }
     }
 
@@ -299,6 +301,8 @@ async function runTestInternal(
     });
   } finally {
     await environment.teardown();
+    // TODO: this function might be missing, remove ? in Jest 26
+    runtime.teardown?.();
 
     sourcemapSupport.resetRetrieveHandlers();
   }

@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import * as fs from 'fs';
+import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {
   JEST_CONFIG_BASE_NAME,

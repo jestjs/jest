@@ -34,13 +34,12 @@ import type {Filter, TestRunData} from './types';
 
 const getTestPaths = async (
   globalConfig: Config.GlobalConfig,
-  context: Context,
+  source: SearchSource,
   outputStream: NodeJS.WriteStream,
   changedFiles: ChangedFiles | undefined,
   jestHooks: JestHookEmitter,
   filter?: Filter,
 ) => {
-  const source = new SearchSource(context);
   const data = await source.getTestPaths(globalConfig, changedFiles, filter);
 
   if (!data.tests.length && globalConfig.onlyChanged && data.noSCM) {
@@ -167,11 +166,14 @@ export default async function runJest({
     }
   }
 
+  const searchSources = contexts.map(context => new SearchSource(context));
+
   const testRunData: TestRunData = await Promise.all(
-    contexts.map(async context => {
+    contexts.map(async (context, index) => {
+      const searchSource = searchSources[index];
       const matches = await getTestPaths(
         globalConfig,
-        context,
+        searchSource,
         outputStream,
         changedFilesPromise && (await changedFilesPromise),
         jestHooks,
@@ -242,9 +244,22 @@ export default async function runJest({
   }
 
   if (changedFilesPromise) {
-    testSchedulerContext.changedFiles = (
-      await changedFilesPromise
-    ).changedFiles;
+    const changedFilesInfo = await changedFilesPromise;
+    if (changedFilesInfo.changedFiles) {
+      testSchedulerContext.changedFiles = changedFilesInfo.changedFiles;
+      const sourcesRelatedToTestsInChangedFilesArray = contexts
+        .map((_, index) => {
+          const searchSource = searchSources[index];
+          const relatedSourceFromTestsInChangedFiles = searchSource.findRelatedSourcesFromTestsInChangedFiles(
+            changedFilesInfo,
+          );
+          return relatedSourceFromTestsInChangedFiles;
+        })
+        .reduce((total, paths) => total.concat(paths), []);
+      testSchedulerContext.sourcesRelatedToTestsInChangedFiles = new Set(
+        sourcesRelatedToTestsInChangedFilesArray,
+      );
+    }
   }
 
   const results = await new TestScheduler(

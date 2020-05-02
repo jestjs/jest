@@ -10,7 +10,7 @@ import {wrap} from 'jest-snapshot-serializer-raw';
 import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
 
 jest
-  .mock('fs', () =>
+  .mock('graceful-fs', () =>
     // Node 10.5.x compatibility
     ({
       ...jest.genMockFromModule('fs'),
@@ -533,6 +533,90 @@ describe('ScriptTransformer', () => {
     );
     expect(result.sourceMapPath).toBeFalsy();
     expect(writeFileAtomic.sync).toHaveBeenCalledTimes(1);
+  });
+
+  it('should write a source map for the instrumented file when transformed', () => {
+    const transformerConfig = {
+      ...config,
+      transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+    };
+    const scriptTransformer = new ScriptTransformer(transformerConfig);
+
+    const map = {
+      mappings: ';AAAA',
+      version: 3,
+    };
+
+    // A map from the original source to the instrumented output
+    /* eslint-disable sort-keys */
+    const instrumentedCodeMap = {
+      version: 3,
+      sources: ['banana.js'],
+      names: ['content'],
+      mappings: ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAA,OAAO',
+      sourcesContent: ['content'],
+    };
+    /* eslint-enable */
+
+    require('preprocessor-with-sourcemaps').process.mockReturnValue({
+      code: 'content',
+      map,
+    });
+
+    const result = scriptTransformer.transform(
+      '/fruits/banana.js',
+      makeGlobalConfig({
+        collectCoverage: true,
+      }),
+    );
+    expect(result.sourceMapPath).toEqual(expect.any(String));
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toBeCalledWith(
+      result.sourceMapPath,
+      JSON.stringify(instrumentedCodeMap),
+      expect.anything(),
+    );
+
+    // Inline source map allows debugging of original source when running instrumented code
+    expect(result.code).toContain('//# sourceMappingURL');
+  });
+
+  it('should write a source map for the instrumented file when not transformed', () => {
+    const scriptTransformer = new ScriptTransformer(config);
+
+    // A map from the original source to the instrumented output
+    /* eslint-disable sort-keys */
+    const instrumentedCodeMap = {
+      version: 3,
+      sources: ['banana.js'],
+      names: ['module', 'exports'],
+      mappings:
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
+      sourcesContent: ['module.exports = "banana";'],
+    };
+    /* eslint-enable */
+
+    require('preprocessor-with-sourcemaps').process.mockReturnValue({
+      code: 'content',
+      map: null,
+    });
+
+    const result = scriptTransformer.transform(
+      '/fruits/banana.js',
+      makeGlobalConfig({
+        collectCoverage: true,
+      }),
+    );
+    expect(result.sourceMapPath).toEqual(expect.any(String));
+    expect(writeFileAtomic.sync).toBeCalledTimes(2);
+    expect(writeFileAtomic.sync).toBeCalledWith(
+      result.sourceMapPath,
+      JSON.stringify(instrumentedCodeMap),
+      expect.anything(),
+    );
+
+    // Inline source map allows debugging of original source when running instrumented code
+    expect(result.code).toContain('//# sourceMappingURL');
   });
 
   it('passes expected transform options to getCacheKey', () => {

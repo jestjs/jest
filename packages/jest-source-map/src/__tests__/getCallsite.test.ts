@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
+import * as fs from 'graceful-fs';
 import SourceMap from 'source-map';
 import getCallsite from '../getCallsite';
 
 // Node 10.5.x compatibility
-jest.mock('fs', () => ({
-  ...jest.genMockFromModule('fs'),
+jest.mock('graceful-fs', () => ({
+  ...jest.genMockFromModule<typeof import('fs')>('fs'),
   ReadStream: jest.requireActual('fs').ReadStream,
   WriteStream: jest.requireActual('fs').WriteStream,
 }));

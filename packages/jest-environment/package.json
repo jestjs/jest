@@ -1,6 +1,6 @@
 {
   "name": "@jest/environment",
-  "version": "25.4.0",
+  "version": "25.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,9 +17,9 @@
     }
   },
   "dependencies": {
-    "@jest/fake-timers": "^25.4.0",
-    "@jest/types": "^25.4.0",
-    "jest-mock": "^25.4.0"
+    "@jest/fake-timers": "^25.5.0",
+    "@jest/types": "^25.5.0",
+    "jest-mock": "^25.5.0"
   },
   "devDependencies": {
     "@types/node": "*"

@@ -13,7 +13,7 @@ it.each`
   'throws exception when one argument too few are supplied $left == $right',
   ({left, right}) => {
     expect(left).toBe(right);
-  }
+  },
 );
 
 it.each`
@@ -23,5 +23,5 @@ it.each`
   'throws exception when not enough arguments are supplied $left == $right',
   ({left, right}) => {
     expect(left).toBe(right);
-  }
+  },
 );
