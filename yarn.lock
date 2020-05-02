@@ -5674,14 +5674,6 @@ dot-prop@^5.2.0:
   dependencies:
     is-obj "^2.0.0"
 
-downlevel-dts@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/downlevel-dts/-/downlevel-dts-0.4.0.tgz#43f9f649c8b137373d76b4ee396d5a0227c10ddb"
-  integrity sha512-nh5vM3n2pRhPwZqh0iWo5gpItPAYEGEWw9yd0YpI+lO60B7A3A6iJlxDbt7kKVNbqBXKsptL+jwE/Yg5Go66WQ==
-  dependencies:
-    shelljs "^0.8.3"
-    typescript "^3.8.0-dev.20200111"
-
 download@^6.2.2:
   version "6.2.5"
   resolved "https://registry.yarnpkg.com/download/-/download-6.2.5.tgz#acd6a542e4cd0bb42ca70cfc98c9e43b07039714"
@@ -14386,7 +14378,7 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@*, typescript@^3.8.0-dev.20200111, typescript@^3.8.2:
+typescript@*, typescript@^3.8.2:
   version "3.8.3"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.8.3.tgz#409eb8544ea0335711205869ec458ab109ee1061"
   integrity sha512-MYlEfn5VrLNsgudQTVJeNaQFUAI7DkhnOjdpAp4T+ku1TfQClewlbSuTVHiA+8skNBgaf02TL/kLOvig4y3G8w==
