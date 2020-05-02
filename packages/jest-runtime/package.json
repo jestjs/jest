@@ -42,7 +42,7 @@
     "@types/exit": "^0.1.30",
     "@types/glob": "^7.1.1",
     "@types/graceful-fs": "^4.1.2",
-    "execa": "^3.2.0",
+    "execa": "^4.0.0",
     "jest-environment-node": "^26.0.0-alpha.0",
     "jest-snapshot-serializer-raw": "^1.1.0"
   },

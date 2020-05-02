@@ -8,10 +8,10 @@
   "dependencies": {
     "@types/jest": "*",
     "@types/node": "*",
-    "@types/semver": "^6.2.1",
+    "@types/semver": "^7.1.0",
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.1.0",
-    "semver": "^6.3.0"
+    "semver": "^7.3.2"
   },
   "engines": {
     "node": ">= 10.14.2"
