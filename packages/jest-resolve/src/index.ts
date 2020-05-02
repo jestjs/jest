@@ -15,6 +15,7 @@ import isBuiltinModule from './isBuiltinModule';
 import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
 import type {ResolverConfig} from './types';
 import ModuleNotFoundError from './ModuleNotFoundError';
+import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
 
 type FindNodeModuleConfig = {
   basedir: Config.Path;
@@ -27,6 +28,7 @@ type FindNodeModuleConfig = {
   throwIfNotFound?: boolean;
 };
 
+// TODO: replace with a Map in Jest 26
 type BooleanObject = Record<string, boolean>;
 
 namespace Resolver {
@@ -60,7 +62,6 @@ class Resolver {
 
   constructor(moduleMap: ModuleMap, options: ResolverConfig) {
     this._options = {
-      browser: options.browser,
       defaultPlatform: options.defaultPlatform,
       extensions: options.extensions,
       hasCoreModules:
@@ -100,6 +101,7 @@ class Resolver {
 
   static clearDefaultResolverCache(): void {
     clearDefaultResolverCache();
+    clearCachedLookups();
   }
 
   static findNodeModule(
@@ -128,6 +130,9 @@ class Resolver {
     }
     return null;
   }
+
+  // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
+  static unstable_shouldLoadAsEsm = shouldLoadAsEsm;
 
   resolveModuleFromDirIfExists(
     dirname: Config.Path,
@@ -178,7 +183,6 @@ class Resolver {
     const resolveNodeModule = (name: Config.Path, throwIfNotFound = false) =>
       Resolver.findNodeModule(name, {
         basedir: dirname,
-        browser: this._options.browser,
         extensions,
         moduleDirectory,
         paths,
@@ -213,7 +217,7 @@ class Resolver {
           resolveNodeModule(module) || require.resolve(module);
         this._moduleNameCache.set(key, resolvedModule);
         return resolvedModule;
-      } catch (ignoredError) {}
+      } catch {}
     }
 
     return null;
@@ -432,7 +436,6 @@ class Resolver {
               this.getModule(updatedName) ||
               Resolver.findNodeModule(updatedName, {
                 basedir: dirname,
-                browser: this._options.browser,
                 extensions,
                 moduleDirectory,
                 paths,

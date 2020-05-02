@@ -6,8 +6,8 @@
  */
 
 import {createHash} from 'crypto';
-import {statSync} from 'fs';
 import * as path from 'path';
+import {statSync} from 'graceful-fs';
 import {sync as glob} from 'glob';
 import type {Config} from '@jest/types';
 import {ValidationError, validate} from 'jest-validate';
@@ -869,7 +869,6 @@ export default function normalize(
         break;
       }
       case 'automock':
-      case 'browser':
       case 'cache':
       case 'changedSince':
       case 'changedFilesWithAncestor':

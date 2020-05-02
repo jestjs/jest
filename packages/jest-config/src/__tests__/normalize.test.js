@@ -19,7 +19,7 @@ const DEFAULT_CSS_PATTERN = '^.+\\.(css)$';
 jest
   .mock('jest-resolve')
   .mock('path', () => jest.requireActual('path').posix)
-  .mock('fs', () => {
+  .mock('graceful-fs', () => {
     const realFs = jest.requireActual('fs');
 
     return {
@@ -151,20 +151,6 @@ describe('automock', () => {
     );
 
     expect(options.automock).toBe(false);
-  });
-});
-
-describe('browser', () => {
-  it('falsy browser is not overwritten', () => {
-    const {options} = normalize(
-      {
-        browser: true,
-        rootDir: '/root/path/foo',
-      },
-      {},
-    );
-
-    expect(options.browser).toBe(true);
   });
 });
 

@@ -24,10 +24,6 @@ export async function run(
   cliArgv?: Config.Argv,
   cliInfo?: Array<string>,
 ): Promise<void> {
-  const realFs = require('fs');
-  const fs = require('graceful-fs');
-  fs.gracefulify(realFs);
-
   let argv;
   if (cliArgv) {
     argv = cliArgv;
@@ -93,9 +89,24 @@ export async function run(
 
     const runtime = new Runtime(config, environment, hasteMap.resolver);
 
-    config.setupFiles.forEach(path => runtime.requireModule(path));
+    for (const path of config.setupFiles) {
+      // TODO: remove ? in Jest 26
+      const esm = runtime.unstable_shouldLoadAsEsm?.(path);
 
-    runtime.requireModule(filePath);
+      if (esm) {
+        await runtime.unstable_importModule(path);
+      } else {
+        runtime.requireModule(path);
+      }
+    }
+    // TODO: remove ? in Jest 26
+    const esm = runtime.unstable_shouldLoadAsEsm?.(filePath);
+
+    if (esm) {
+      await runtime.unstable_importModule(filePath);
+    } else {
+      runtime.requireModule(filePath);
+    }
   } catch (e) {
     console.error(chalk.red(e.stack || e));
     process.on('exit', () => (process.exitCode = 1));

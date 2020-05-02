@@ -1,6 +1,6 @@
 {
   "name": "jest-diff",
-  "version": "25.3.0",
+  "version": "25.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -13,10 +13,10 @@
     "chalk": "^3.0.0",
     "diff-sequences": "^25.2.6",
     "jest-get-type": "^25.2.6",
-    "pretty-format": "^25.3.0"
+    "pretty-format": "^25.5.0"
   },
   "devDependencies": {
-    "@jest/test-utils": "^25.3.0",
+    "@jest/test-utils": "^25.5.0",
     "strip-ansi": "^6.0.0"
   },
   "engines": {

@@ -158,6 +158,9 @@ class TestRunner {
             changedFiles:
               this._context.changedFiles &&
               Array.from(this._context.changedFiles),
+            sourcesRelatedToTestsInChangedFiles:
+              this._context.sourcesRelatedToTestsInChangedFiles &&
+              Array.from(this._context.sourcesRelatedToTestsInChangedFiles),
           },
           globalConfig: this._globalConfig,
           path: test.path,
@@ -194,7 +197,7 @@ class TestRunner {
     const cleanup = async () => {
       const {forceExited} = await worker.end();
       if (forceExited) {
-        console.log(
+        console.error(
           chalk.yellow(
             'A worker process has failed to exit gracefully and has been force exited. ' +
               'This is likely caused by tests leaking due to improper teardown. ' +

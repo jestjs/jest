@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import type {Config, TestResult} from '@jest/types';
 import chalk = require('chalk');
 import micromatch = require('micromatch');
@@ -283,9 +283,8 @@ export const formatStackTrace = (
     ? slash(path.relative(config.rootDir, testPath))
     : null;
 
-  if (!options.noCodeFrame) {
+  if (!options.noStackTrace && !options.noCodeFrame) {
     const topFrame = getTopFrame(lines);
-
     if (topFrame) {
       const {column, file: filename, line} = topFrame;
 

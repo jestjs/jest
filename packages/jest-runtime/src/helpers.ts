@@ -48,7 +48,7 @@ export const findSiblingsWithFileExtension = (
           `[${mappedModuleFileExtensions}].\n\nSee https://jestjs.io/docs/en/configuration#modulefileextensions-arraystring`
         );
       }
-    } catch (ignored) {}
+    } catch {}
   }
 
   return '';

@@ -66,7 +66,7 @@ test('should resolve filename.json', () => {
 
 test('should preserve identity for symlinks', () => {
   expect(require('../../../packages/jest-resolve')).toBe(
-    require('jest-resolve')
+    require('jest-resolve'),
   );
 });
 
@@ -113,7 +113,7 @@ test('should throw module not found error if the module has dependencies that ca
           Test7.js
           __tests__/resolve.test.js\n
         `,
-    })
+    }),
   );
 });
 
@@ -122,6 +122,6 @@ test('should throw module not found error if the module cannot be found', () => 
     expect.objectContaining({
       code: 'MODULE_NOT_FOUND',
       message: "Cannot find module 'Test8' from 'resolve.test.js'",
-    })
+    }),
   );
 });

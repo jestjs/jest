@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
+import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import exit = require('exit');
 import type {CoverageReporterSerializedOptions} from './types';
@@ -40,6 +40,8 @@ export function worker({
     path,
     globalConfig,
     config,
-    options && options.changedFiles && new Set(options.changedFiles),
+    options?.changedFiles && new Set(options.changedFiles),
+    options?.sourcesRelatedToTestsInChangedFiles &&
+      new Set(options.sourcesRelatedToTestsInChangedFiles),
   );
 }

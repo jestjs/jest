@@ -8,9 +8,9 @@
 import {execSync} from 'child_process';
 import {createHash} from 'crypto';
 import {EventEmitter} from 'events';
-import type {Stats} from 'fs';
 import {tmpdir} from 'os';
 import * as path from 'path';
+import type {Stats} from 'graceful-fs';
 import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
 import type {Config} from '@jest/types';
 import serializer from 'jest-serializer';

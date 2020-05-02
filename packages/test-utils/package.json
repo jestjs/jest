@@ -1,6 +1,6 @@
 {
   "name": "@jest/test-utils",
-  "version": "25.3.0",
+  "version": "25.5.0",
   "private": true,
   "license": "MIT",
   "main": "build/index.js",
@@ -12,5 +12,8 @@
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.1.0",
     "semver": "^6.3.0"
+  },
+  "engines": {
+    "node": ">= 8.3"
   }
 }

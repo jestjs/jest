@@ -2,21 +2,96 @@
 
 ### Features
 
-- `[jest-console]` Add code frame to `console.error` and `console.warn` ([#9741](https://github.com/facebook/jest/pull/9741))
+### Fixes
+
+- `[jest-config, jest-resolve]` [**BREAKING**] Remove support for `browser` field ([#9943](https://github.com/facebook/jest/pull/9943))
+
+### Chore & Maintenance
+
+- `[*]` [**BREAKING**] TypeScript definitions requires a minimum of TypeScript v3.8 ([#9823](https://github.com/facebook/jest/pull/9823))
+- `[expect, jest-mock, pretty-format]` [**BREAKING**] Remove `build-es5` from package ([#9945](https://github.com/facebook/jest/pull/9945))
+
+### Performance
+
+## 25.5.4
+
+### Fixes
+
+- `[jest-jasmine2]` Don't run `beforeAll` / `afterAll` in skipped describe blocks ([#9931](https://github.com/facebook/jest/pull/9931))
+
+### Chore & Maintenance
+
+- `[jest-runtime]` Do not warn when mutating `require.cache` ([#9946](https://github.com/facebook/jest/pull/9946))
+
+## 25.5.3
+
+### Chore & Maintenance
+
+- `[jest-circus]` Fix memory leak when running in band ([#9934](https://github.com/facebook/jest/pull/9934))
+
+## 25.5.2
+
+### Fixes
+
+- `[jest-globals]` Export globals as values, not types ([#9925](https://github.com/facebook/jest/pull/9925))
+
+## 25.5.1
+
+### Fixes
+
+- `[jest-haste-map]` Add missing `@types/graceful-fs` dependency ([#9913](https://github.com/facebook/jest/pull/9913))
+- `[jest-runner]` Correctly serialize `Set` passed to worker ([#9915](https://github.com/facebook/jest/pull/9915))
+- `[jest-runtime]` Vary ESM cache by query ([#9914](https://github.com/facebook/jest/pull/9914))
+
+## 25.5.0
+
+### Features
+
 - `[@jest/globals]` New package so Jest's globals can be explicitly imported ([#9801](https://github.com/facebook/jest/pull/9801))
+- `[jest-core]` Show coverage of sources related to tests in changed files ([#9769](https://github.com/facebook/jest/pull/9769))
+- `[jest-runtime]` Populate `require.cache` ([#9841](https://github.com/facebook/jest/pull/9841))
+
+### Fixes
+
+- `[*]` Use `graceful-fs` directly in every package instead of relying on `fs` being monkey patched ([#9443](https://github.com/facebook/jest/pull/9443))
+- `[expect]` Prints the Symbol name into the error message with a custom asymmetric matcher ([#9888](https://github.com/facebook/jest/pull/9888))
+- `[jest-circus, jest-jasmine2]` Support older version of `jest-runtime` ([#9903](https://github.com/facebook/jest/pull/9903) & [#9842](https://github.com/facebook/jest/pull/9842))
+- `[@jest/environment]` Make sure not to reference Jest types ([#9875](https://github.com/facebook/jest/pull/9875))
+- `[jest-message-util]` Code frame printing should respect `--noStackTrace` flag ([#9866](https://github.com/facebook/jest/pull/9866))
+- `[jest-runtime]` Support importing CJS from ESM using `import` statements ([#9850](https://github.com/facebook/jest/pull/9850))
+- `[jest-runtime]` Support importing parallel dynamic `import`s ([#9858](https://github.com/facebook/jest/pull/9858))
+- `[jest-transform]` Improve source map handling when instrumenting transformed code ([#9811](https://github.com/facebook/jest/pull/9811))
+
+### Chore & Maintenance
+
+- `[docs]` Add an example for mocking non-default export class
+
+### Performance
+
+- `[jest-resolve]` Update `resolve` to a version using native `realpath`, which is faster than the default JS implementation ([#9872](https://github.com/facebook/jest/pull/9872))
+- `[jest-resolve]` Pass custom cached `realpath` function to `resolve` ([#9873](https://github.com/facebook/jest/pull/9873))
+- `[jest-runtime]` Add `teardown` method to clear any caches when tests complete ([#9906](https://github.com/facebook/jest/pull/9906))
+- `[jest-runtime]` Do not pass files required internally through transformation when loading them ([#9900](https://github.com/facebook/jest/pull/9900))
+- `[jest-runtime]` Use `Map`s instead of object literals as cache holders ([#9901](https://github.com/facebook/jest/pull/9901))
+
+## 25.4.0
+
+- `[expect]` Support `async function`s in `toThrow` ([#9817](https://github.com/facebook/jest/pull/9817))
+- `[jest-console]` Add code frame to `console.error` and `console.warn` ([#9741](https://github.com/facebook/jest/pull/9741))
+- `[jest-runtime, jest-jasmine2, jest-circus]` Experimental, limited ECMAScript Modules support ([#9772](https://github.com/facebook/jest/pull/9772) & [#9842](https://github.com/facebook/jest/pull/9842))
 
 ### Fixes
 
 - `[expect]` Restore support for passing functions to `toHaveLength` matcher ([#9796](https://github.com/facebook/jest/pull/9796))
 - `[jest-changed-files]` `--only-changed` should include staged files ([#9799](https://github.com/facebook/jest/pull/9799))
+- `[jest-circus]` Throw on nested test definitions ([#9828](https://github.com/facebook/jest/pull/9828))
 - `[jest-each]` `each` will throw an error when called with too many arguments ([#9818](https://github.com/facebook/jest/pull/9818))
+- `[jest-runner]` Don't print warning to stdout when using `--json` ([#9843](https://github.com/facebook/jest/pull/9843))
 
 ### Chore & Maintenance
 
 - `[*]` Do not generate TypeScript declaration source maps ([#9822](https://github.com/facebook/jest/pull/9822))
-- `[*]` [**BREAKING**] TypeScript definitions requires a minimum of TypeScript v3.8 ([#9823](https://github.com/facebook/jest/pull/9823))
-
-### Performance
+- `[*]` Transpile code for Node 8.3, not 8.0 ([#9827](https://github.com/facebook/jest/pull/9827))
 
 ## 25.3.0
 
@@ -246,8 +321,6 @@
 - `[jest-validate]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
 - `[jest-types]` Mark `InitialOptions` as `Partial` ([#8848](https://github.com/facebook/jest/pull/8848))
 - `[jest-config]` Refactor `normalize` to be more type safe ([#8848](https://github.com/facebook/jest/pull/8848))
-
-### Performance
 
 ## 24.9.0
 

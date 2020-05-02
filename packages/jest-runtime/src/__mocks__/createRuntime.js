@@ -49,7 +49,15 @@ module.exports = async function createRuntime(filename, config) {
     Runtime.createResolver(config, hasteMap.moduleMap),
   );
 
-  config.setupFiles.forEach(path => runtime.requireModule(path));
+  for (const path of config.setupFiles) {
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
+
+    if (esm) {
+      await runtime.unstable_importModule(path);
+    } else {
+      runtime.requireModule(path);
+    }
+  }
 
   runtime.__mockRootPath = path.join(config.rootDir, 'root.js');
   runtime.__mockSubdirPath = path.join(

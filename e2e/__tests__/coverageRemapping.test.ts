@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {readFileSync} from 'fs';
 import * as path from 'path';
+import {readFileSync} from 'graceful-fs';
 import {cleanup, run} from '../Utils';
 import runJest from '../runJest';
 

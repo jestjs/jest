@@ -1,6 +1,6 @@
 {
   "name": "@jest/source-map",
-  "version": "25.2.6",
+  "version": "25.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -11,7 +11,7 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "callsites": "^3.0.0",
-    "graceful-fs": "^4.2.3",
+    "graceful-fs": "^4.2.4",
     "source-map": "^0.6.0"
   },
   "devDependencies": {

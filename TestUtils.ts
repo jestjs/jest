@@ -67,7 +67,6 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
 
 const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   automock: false,
-  browser: false,
   cache: false,
   cacheDirectory: '/test_cache_dir/',
   clearMocks: false,
