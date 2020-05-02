@@ -5,7 +5,10 @@
     "**/node_modules": true,
     "**/build": true
   },
-  "eslint.autoFixOnSave": true,
   "javascript.validate.enable": false,
-  "jest.pathToJest": "yarn jest --"
+  "jest.pathToJest": "yarn jest --",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

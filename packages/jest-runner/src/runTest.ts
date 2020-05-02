@@ -6,8 +6,9 @@
  *
  */
 
-import {Config} from '@jest/types';
-import {TestResult} from '@jest/test-result';
+import {compileFunction} from 'vm';
+import type {Config} from '@jest/types';
+import type {TestResult} from '@jest/test-result';
 import {
   BufferedConsole,
   CustomConsole,
@@ -16,7 +17,7 @@ import {
   NullConsole,
   getConsoleOutput,
 } from '@jest/console';
-import {JestEnvironment} from '@jest/environment';
+import type {JestEnvironment} from '@jest/environment';
 import RuntimeClass = require('jest-runtime');
 import * as fs from 'graceful-fs';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
@@ -27,7 +28,7 @@ import * as docblock from 'jest-docblock';
 import {formatExecError} from 'jest-message-util';
 import sourcemapSupport = require('source-map-support');
 import chalk = require('chalk');
-import {TestFramework, TestRunnerContext} from './types';
+import type {TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {
   leakDetector: LeakDetector | null;
@@ -113,21 +114,14 @@ async function runTestInternal(
     ? require(config.moduleLoader)
     : require('jest-runtime');
 
-  let runtime: RuntimeClass | undefined = undefined;
-
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
   const consoleFormatter = (type: LogType, message: LogMessage) =>
     getConsoleOutput(
       config.cwd,
       !!globalConfig.verbose,
       // 4 = the console call is buried 4 stack frames deep
-      BufferedConsole.write(
-        [],
-        type,
-        message,
-        4,
-        runtime && runtime.getSourceMaps(),
-      ),
+      BufferedConsole.write([], type, message, 4),
+      config,
     );
 
   let testConsole;
@@ -137,7 +131,7 @@ async function runTestInternal(
   } else if (globalConfig.verbose) {
     testConsole = new CustomConsole(consoleOut, consoleOut, consoleFormatter);
   } else {
-    testConsole = new BufferedConsole(() => runtime && runtime.getSourceMaps());
+    testConsole = new BufferedConsole();
   }
 
   const environment = new TestEnvironment(config, {
@@ -152,21 +146,34 @@ async function runTestInternal(
   const cacheFS = {[path]: testSource};
   setGlobal(environment.global, 'console', testConsole);
 
-  runtime = new Runtime(config, environment, resolver, cacheFS, {
-    changedFiles: context && context.changedFiles,
+  const runtime = new Runtime(config, environment, resolver, cacheFS, {
+    changedFiles: context?.changedFiles,
     collectCoverage: globalConfig.collectCoverage,
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
     coverageProvider: globalConfig.coverageProvider,
+    sourcesRelatedToTestsInChangedFiles:
+      context?.sourcesRelatedToTestsInChangedFiles,
   });
 
   const start = Date.now();
+
+  for (const path of config.setupFiles) {
+    // TODO: remove ? in Jest 26
+    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+
+    if (esm) {
+      await runtime.unstable_importModule(path);
+    } else {
+      runtime.requireModule(path);
+    }
+  }
 
   const sourcemapOptions: sourcemapSupport.Options = {
     environment: 'node',
     handleUncaughtExceptions: false,
     retrieveSourceMap: source => {
-      const sourceMaps = runtime && runtime.getSourceMaps();
+      const sourceMaps = runtime.getSourceMaps();
       const sourceMapSource = sourceMaps && sourceMaps[source];
 
       if (sourceMapSource) {
@@ -183,7 +190,7 @@ async function runTestInternal(
 
   // For tests
   runtime
-    .requireInternalModule(
+    .requireInternalModule<typeof import('source-map-support')>(
       require.resolve('source-map-support'),
       'source-map-support',
     )
@@ -219,10 +226,11 @@ async function runTestInternal(
     };
   }
 
-  // if we don't have `compileFunction` on the env, skip coverage
+  // if we don't have `getVmContext` on the env,or `compileFunction` available skip coverage
   const collectV8Coverage =
     globalConfig.coverageProvider === 'v8' &&
-    typeof environment.compileFunction === 'function';
+    typeof environment.getVmContext === 'function' &&
+    typeof compileFunction === 'function';
 
   try {
     await environment.setup();
@@ -270,7 +278,6 @@ async function runTestInternal(
       const coverageKeys = Object.keys(coverage);
       if (coverageKeys.length) {
         result.coverage = coverage;
-        result.sourceMaps = runtime.getSourceMapInfo(new Set(coverageKeys));
       }
     }
 
@@ -294,6 +301,8 @@ async function runTestInternal(
     });
   } finally {
     await environment.teardown();
+    // TODO: this function might be missing, remove ? in Jest 26
+    runtime.teardown?.();
 
     sourcemapSupport.resetRetrieveHandlers();
   }

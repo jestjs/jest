@@ -1,12 +1,26 @@
 {
   "name": "@jest/test-utils",
-  "version": "24.4.0",
+  "version": "25.5.0",
   "private": true,
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "typesVersions": {
+    "<3.8": {
+      "build/*": [
+        "build/ts3.4/*"
+      ]
+    }
+  },
   "dependencies": {
+    "@types/jest": "*",
+    "@types/node": "*",
+    "@types/semver": "^6.2.1",
     "ansi-regex": "^5.0.0",
-    "ansi-styles": "^4.1.0"
+    "ansi-styles": "^4.1.0",
+    "semver": "^6.3.0"
+  },
+  "engines": {
+    "node": ">= 8.3"
   }
 }

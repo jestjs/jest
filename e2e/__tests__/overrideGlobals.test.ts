@@ -18,7 +18,7 @@ test('has a duration even if time is faked', () => {
 
   expect(stderr).toMatch(regex);
 
-  const [, duration] = stderr.match(regex);
+  const [, duration] = stderr.match(regex)!;
 
   expect(Number(duration)).toBeGreaterThan(0);
 });

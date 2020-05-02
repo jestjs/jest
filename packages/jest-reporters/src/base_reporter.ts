@@ -5,20 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AggregatedResult, TestResult} from '@jest/test-result';
+import type {AggregatedResult, TestResult} from '@jest/test-result';
 import {preRunMessage} from 'jest-util';
-import {Context, Reporter, ReporterOnStartOptions, Test} from './types';
+import type {Context, Reporter, ReporterOnStartOptions, Test} from './types';
 
 const {remove: preRunMessageRemove} = preRunMessage;
 
 export default class BaseReporter implements Reporter {
   private _error?: Error;
 
-  log(message: string) {
+  log(message: string): void {
     process.stderr.write(message + '\n');
   }
 
-  onRunStart(_results?: AggregatedResult, _options?: ReporterOnStartOptions) {
+  onRunStart(
+    _results?: AggregatedResult,
+    _options?: ReporterOnStartOptions,
+  ): void {
     preRunMessageRemove(process.stderr);
   }
 
@@ -26,22 +29,22 @@ export default class BaseReporter implements Reporter {
     _test?: Test,
     _testResult?: TestResult,
     _results?: AggregatedResult,
-  ) {}
+  ): void {}
 
-  onTestStart(_test?: Test) {}
+  onTestStart(_test?: Test): void {}
 
   onRunComplete(
     _contexts?: Set<Context>,
     _aggregatedResults?: AggregatedResult,
   ): Promise<void> | void {}
 
-  protected _setError(error: Error) {
+  protected _setError(error: Error): void {
     this._error = error;
   }
 
   // Return an error that occurred during reporting. This error will
   // define whether the test run was successful or failed.
-  getLastError() {
+  getLastError(): Error | undefined {
     return this._error;
   }
 }

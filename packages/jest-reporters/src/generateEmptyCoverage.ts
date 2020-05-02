@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
-import {Config} from '@jest/types';
+import * as fs from 'graceful-fs';
+import type {Config} from '@jest/types';
 import {readInitialCoverage} from 'istanbul-lib-instrument';
 import {FileCoverage, createFileCoverage} from 'istanbul-lib-coverage';
 import {ScriptTransformer, shouldInstrument} from '@jest/transform';
-import {V8Coverage} from 'collect-v8-coverage';
+import type {V8Coverage} from 'collect-v8-coverage';
 
 type SingleV8Coverage = V8Coverage[number];
 
@@ -18,19 +18,19 @@ export type CoverageWorkerResult =
   | {
       kind: 'BabelCoverage';
       coverage: FileCoverage;
-      sourceMapPath?: string | null;
     }
   | {
       kind: 'V8Coverage';
       result: SingleV8Coverage;
     };
 
-export default function(
+export default function (
   source: string,
   filename: Config.Path,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   changedFiles?: Set<Config.Path>,
+  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>,
 ): CoverageWorkerResult | null {
   const coverageOptions = {
     changedFiles,
@@ -38,6 +38,7 @@ export default function(
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
     coverageProvider: globalConfig.coverageProvider,
+    sourcesRelatedToTestsInChangedFiles,
   };
   let coverageWorkerResult: CoverageWorkerResult | null = null;
   if (shouldInstrument(filename, coverageOptions, config)) {
@@ -66,9 +67,11 @@ export default function(
     }
 
     // Transform file with instrumentation to make sure initial coverage data is well mapped to original code.
-    const {code, mapCoverage, sourceMapPath} = new ScriptTransformer(
-      config,
-    ).transformSource(filename, source, true);
+    const {code} = new ScriptTransformer(config).transformSource(
+      filename,
+      source,
+      true,
+    );
     // TODO: consider passing AST
     const extracted = readInitialCoverage(code);
     // Check extracted initial coverage is not null, this can happen when using /* istanbul ignore file */
@@ -76,7 +79,6 @@ export default function(
       coverageWorkerResult = {
         coverage: createFileCoverage(extracted.coverageData),
         kind: 'BabelCoverage',
-        sourceMapPath: mapCoverage ? sourceMapPath : null,
       };
     }
   }

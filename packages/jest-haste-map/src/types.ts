@@ -5,13 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
-import {Config} from '@jest/types';
-import ModuleMap from './ModuleMap';
-import HasteFS from './HasteFS';
+import type {Stats} from 'graceful-fs';
+import type {Config} from '@jest/types';
+import type ModuleMap from './ModuleMap';
+import type HasteFS from './HasteFS';
 
 export type IgnoreMatcher = (item: string) => boolean;
-export type Mapper = (item: string) => Array<string> | null;
 
 export type WorkerMessage = {
   computeDependencies: boolean;
@@ -35,7 +34,6 @@ export type CrawlerOptions = {
   extensions: Array<string>;
   forceNodeFilesystemAPI: boolean;
   ignore: IgnoreMatcher;
-  mapper?: Mapper | null;
   rootDir: string;
   roots: Array<string>;
 };
@@ -107,7 +105,7 @@ export type HTypeValue = HType[keyof HType];
 
 export type EventsQueue = Array<{
   filePath: Config.Path;
-  stat: fs.Stats | undefined;
+  stat: Stats | undefined;
   type: string;
 }>;
 

@@ -6,8 +6,8 @@
  */
 
 import {replacePathSepForRegex} from 'jest-regex-util';
-import {Config} from '@jest/types';
-import {AllowedConfigOptions} from 'jest-watcher';
+import type {Config} from '@jest/types';
+import type {AllowedConfigOptions} from 'jest-watcher';
 
 type ExtraConfigOptions = Partial<
   Pick<Config.GlobalConfig, 'noSCM' | 'passWithNoTests'>

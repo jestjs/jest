@@ -10,8 +10,7 @@ import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {findRepos, getChangedFilesForRoots} from 'jest-changed-files';
 import {skipSuiteOnWindows} from '@jest/test-utils';
-import which = require('which');
-import {cleanup, run, writeFiles} from '../Utils';
+import {cleanup, run, testIfHg, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
 skipSuiteOnWindows();
@@ -24,15 +23,7 @@ const HG = 'hg --config ui.username=jest_test';
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
 
-// Certain environments (like CITGM and GH Actions) do not come with mercurial installed
-const hgIsInstalled = which.sync('hg', {nothrow: true}) !== null;
-const testIfHg = hgIsInstalled ? test : test.skip;
-
-if (!hgIsInstalled) {
-  console.warn('Mercurial (hg) is not installed - skipping some tests');
-}
-
-testIfHg('gets hg SCM roots and dedups them', async () => {
+testIfHg('gets hg SCM roots and dedupes them', async () => {
   writeFiles(DIR, {
     'first-repo/file1.txt': 'file1',
     'first-repo/nested-dir/file2.txt': 'file2',
@@ -67,7 +58,7 @@ testIfHg('gets hg SCM roots and dedups them', async () => {
   expect(hgRepos[1]).toMatch(/\/jest-changed-files-test-dir\/second-repo\/?$/);
 });
 
-test('gets git SCM roots and dedups them', async () => {
+test('gets git SCM roots and dedupes them', async () => {
   writeFiles(DIR, {
     'first-repo/file1.txt': 'file1',
     'first-repo/nested-dir/file2.txt': 'file2',
@@ -101,7 +92,7 @@ test('gets git SCM roots and dedups them', async () => {
   expect(gitRepos[1]).toMatch(/\/jest-changed-files-test-dir\/second-repo\/?$/);
 });
 
-testIfHg('gets mixed git and hg SCM roots and dedups them', async () => {
+testIfHg('gets mixed git and hg SCM roots and dedupes them', async () => {
   writeFiles(DIR, {
     'first-repo/file1.txt': 'file1',
     'first-repo/nested-dir/file2.txt': 'file2',
@@ -179,6 +170,16 @@ test('gets changed files for git', async () => {
     'file1.txt': 'modified file1',
   });
 
+  ({changedFiles: files} = await getChangedFilesForRoots(roots, {}));
+  expect(
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
+  ).toEqual(['file1.txt']);
+
+  run(`${GIT} add -A`, DIR);
+
+  // staged files should be included
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {}));
   expect(
     Array.from(files)

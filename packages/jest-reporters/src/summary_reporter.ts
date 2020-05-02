@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {AggregatedResult, SnapshotSummary} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {AggregatedResult, SnapshotSummary} from '@jest/test-result';
 import chalk = require('chalk');
 import {testPathPatternToRegExp} from 'jest-util';
-import {Context, ReporterOnStartOptions} from './types';
+import type {Context, ReporterOnStartOptions} from './types';
 import BaseReporter from './base_reporter';
 import {getSummary} from './utils';
 import getResultHeader from './get_result_header';
@@ -74,12 +74,15 @@ export default class SummaryReporter extends BaseReporter {
   onRunStart(
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
-  ) {
+  ): void {
     super.onRunStart(aggregatedResults, options);
     this._estimatedTime = options.estimatedTime;
   }
 
-  onRunComplete(contexts: Set<Context>, aggregatedResults: AggregatedResult) {
+  onRunComplete(
+    contexts: Set<Context>,
+    aggregatedResults: AggregatedResult,
+  ): void {
     const {numTotalTestSuites, testResults, wasInterrupted} = aggregatedResults;
     if (numTotalTestSuites) {
       const lastResult = testResults[testResults.length - 1];
@@ -142,11 +145,9 @@ export default class SummaryReporter extends BaseReporter {
       if (globalConfig.watch || globalConfig.watchAll) {
         updateCommand = 'press `u`';
       } else if (event && scriptUsesJest) {
-        updateCommand = `run \`${client +
-          ' ' +
-          prefix +
-          event +
-          (isYarn ? '' : ' --')} -u\``;
+        updateCommand = `run \`${
+          client + ' ' + prefix + event + (isYarn ? '' : ' --')
+        } -u\``;
       } else {
         updateCommand = 're-run jest with `-u`';
       }

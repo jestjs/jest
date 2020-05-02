@@ -7,7 +7,7 @@
 
 import chalk = require('chalk');
 
-export default function getNoTestFoundFailed() {
+export default function getNoTestFoundFailed(): string {
   return (
     chalk.bold('No failed test found.\n') +
     chalk.dim('Press `f` to quit "only failed tests" mode.')

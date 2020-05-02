@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {EventEmitter} from 'events';
-import {ForkOptions} from 'child_process';
+import type {EventEmitter} from 'events';
+import type {ForkOptions} from 'child_process';
 
 // Because of the dynamic nature of a worker communication process, all messages
 // coming from any of the other processes cannot be typed. Thus, many types
@@ -58,7 +58,7 @@ export type PoolExitResult = {
 
 // Option objects.
 
-export {ForkOptions};
+export type {ForkOptions};
 
 export type FarmOptions = {
   computeWorkerKey?: (method: string, ...args: Array<unknown>) => string | null;

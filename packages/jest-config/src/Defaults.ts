@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {NODE_MODULES} from './constants';
 import getCacheDirectory from './getCacheDirectory';
@@ -15,7 +15,6 @@ const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 const defaultOptions: Config.DefaultOptions = {
   automock: false,
   bail: 0,
-  browser: false,
   cache: true,
   cacheDirectory: getCacheDirectory(),
   changedFilesWithAncestor: false,

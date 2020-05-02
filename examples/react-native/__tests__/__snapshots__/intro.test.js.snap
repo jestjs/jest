@@ -45,37 +45,62 @@ exports[`renders the ActivityIndicator component 1`] = `
 />
 `;
 
-exports[`renders the Image component 1`] = `
-<Image
-  style={
-    Object {
-      "height": 240,
-      "width": 320,
-    }
-  }
-/>
-`;
-
-exports[`renders the ListView component 1`] = `
+exports[`renders the FlatList component 1`] = `
 <RCTScrollView
-  dataSource={
-    ListViewDataSource {
-      "items": 3,
-    }
+  data={
+    Array [
+      "apple",
+      "banana",
+      "kiwi",
+    ]
   }
-  renderRow={[Function]}
-  renderScrollComponent={[Function]}
+  disableVirtualization={false}
+  getItem={[Function]}
+  getItemCount={[Function]}
+  horizontal={false}
+  initialNumToRender={10}
+  keyExtractor={[Function]}
+  maxToRenderPerBatch={10}
+  onContentSizeChange={[Function]}
+  onEndReachedThreshold={2}
+  onLayout={[Function]}
+  onMomentumScrollEnd={[Function]}
+  onScroll={[Function]}
+  onScrollBeginDrag={[Function]}
+  onScrollEndDrag={[Function]}
+  removeClippedSubviews={false}
+  renderItem={[Function]}
+  scrollEventThrottle={50}
+  stickyHeaderIndices={Array []}
+  updateCellsBatchingPeriod={50}
+  viewabilityConfigCallbackPairs={Array []}
+  windowSize={21}
 >
   <View>
-    <Text>
-      apple
-    </Text>
-    <Text>
-      banana
-    </Text>
-    <Text>
-      kiwi
-    </Text>
+    <View
+      onLayout={[Function]}
+      style={null}
+    >
+      <Text>
+        apple
+      </Text>
+    </View>
+    <View
+      onLayout={[Function]}
+      style={null}
+    >
+      <Text>
+        banana
+      </Text>
+    </View>
+    <View
+      onLayout={[Function]}
+      style={null}
+    >
+      <Text>
+        kiwi
+      </Text>
+    </View>
   </View>
 </RCTScrollView>
 `;
@@ -84,6 +109,7 @@ exports[`renders the TextInput component 1`] = `
 <TextInput
   allowFontScaling={true}
   autoCorrect={false}
+  rejectResponderTermination={true}
   underlineColorAndroid="transparent"
   value="apple banana kiwi"
 />

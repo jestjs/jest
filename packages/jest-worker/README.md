@@ -21,10 +21,10 @@ This example covers the minimal usage:
 ### File `parent.js`
 
 ```javascript
-import Worker from 'jest-worker';
+import JestWorker from 'jest-worker';
 
 async function main() {
-  const worker = new Worker(require.resolve('./Worker'));
+  const worker = new JestWorker(require.resolve('./Worker'));
   const result = await worker.hello('Alice'); // "Hello, Alice"
 }
 
@@ -47,7 +47,7 @@ Since `worker_threads` are considered experimental in Node, you have to opt-in t
 
 ## API
 
-The only exposed method is a constructor (`Worker`) that is initialized by passing the worker path, plus an options object.
+The only exposed method is a constructor (`JestWorker`) that is initialized by passing the worker path, plus an options object.
 
 ### `workerPath: string` (required)
 
@@ -93,11 +93,11 @@ The arguments that will be passed to the `setup` method during initialization.
 
 `jest-worker` will automatically detect if `worker_threads` are available, but will not use them unless passed `enableWorkerThreads: true`.
 
-## Worker
+## JestWorker
 
 ### Methods
 
-The returned `Worker` instance has all the exposed methods, plus some additional ones to interact with the workers itself:
+The returned `JestWorker` instance has all the exposed methods, plus some additional ones to interact with the workers itself:
 
 #### `getStdout(): Readable`
 
@@ -139,10 +139,10 @@ This example covers the standard usage:
 ### File `parent.js`
 
 ```javascript
-import Worker from 'jest-worker';
+import JestWorker from 'jest-worker';
 
 async function main() {
-  const myWorker = new Worker(require.resolve('./Worker'), {
+  const myWorker = new JestWorker(require.resolve('./Worker'), {
     exposedMethods: ['foo', 'bar', 'getWorkerId'],
     numWorkers: 4,
   });
@@ -183,10 +183,10 @@ This example covers the usage with a `computeWorkerKey` method:
 ### File `parent.js`
 
 ```javascript
-import Worker from 'jest-worker';
+import JestWorker from 'jest-worker';
 
 async function main() {
-  const myWorker = new Worker(require.resolve('./Worker'), {
+  const myWorker = new JestWorker(require.resolve('./Worker'), {
     computeWorkerKey: (method, filename) => filename,
   });
 

@@ -12,7 +12,7 @@ import {
   printPatternCaret,
   printRestoredPatternCaret,
 } from 'jest-watcher';
-import {TestResult} from '@jest/test-result';
+import type {TestResult} from '@jest/test-result';
 
 // TODO: Make underscored props `private`
 export default class TestNamePatternPrompt extends PatternPrompt {
@@ -24,18 +24,18 @@ export default class TestNamePatternPrompt extends PatternPrompt {
     this._cachedTestResults = [];
   }
 
-  _onChange(pattern: string, options: ScrollOptions) {
+  _onChange(pattern: string, options: ScrollOptions): void {
     super._onChange(pattern, options);
     this._printPrompt(pattern);
   }
 
-  _printPrompt(pattern: string) {
+  _printPrompt(pattern: string): void {
     const pipe = this._pipe;
     printPatternCaret(pattern, pipe);
     printRestoredPatternCaret(pattern, this._currentUsageRows, pipe);
   }
 
-  _getMatchedTests(pattern: string) {
+  _getMatchedTests(pattern: string): Array<string> {
     let regex: RegExp;
 
     try {
@@ -57,7 +57,7 @@ export default class TestNamePatternPrompt extends PatternPrompt {
     return matchedTests;
   }
 
-  updateCachedTestResults(testResults: Array<TestResult> = []) {
+  updateCachedTestResults(testResults: Array<TestResult> = []): void {
     this._cachedTestResults = testResults;
   }
 }

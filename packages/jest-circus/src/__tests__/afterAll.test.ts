@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import wrap from 'jest-snapshot-serializer-raw';
 import {runTest} from '../__mocks__/testUtils';
 
 test('tests are not marked done until their parent afterAll runs', () => {
@@ -43,7 +44,7 @@ test('describe block cannot have hooks and no tests', () => {
     })
   `);
 
-  expect(result.stdout).toMatchSnapshot();
+  expect(wrap(result.stdout)).toMatchSnapshot();
 });
 
 test('describe block _can_ have hooks if a child describe block has tests', () => {
@@ -58,5 +59,5 @@ test('describe block _can_ have hooks if a child describe block has tests', () =
       })
     })
   `);
-  expect(result.stdout).toMatchSnapshot();
+  expect(wrap(result.stdout)).toMatchSnapshot();
 });

@@ -9,11 +9,11 @@
 import assert from 'assert';
 import {onNodeVersions} from '@jest/test-utils';
 import fc from 'fast-check';
+import expect from '..';
 import {
   anythingSettings,
   assertSettings,
 } from './__arbitraries__/sharedSettings';
-import expect from '..';
 
 describe('toStrictEqual', () => {
   const safeExpectStrictEqual = (a, b) => {

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export default function clearLine(stream: NodeJS.WriteStream) {
+export default function clearLine(stream: NodeJS.WriteStream): void {
   if (stream.isTTY) {
     stream.write('\x1b[999D\x1b[K');
   }

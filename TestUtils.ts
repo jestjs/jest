@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 
 const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   bail: 0,
@@ -68,7 +67,6 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
 
 const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   automock: false,
-  browser: false,
   cache: false,
   cacheDirectory: '/test_cache_dir/',
   clearMocks: false,

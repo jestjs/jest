@@ -643,7 +643,7 @@ It's also worth noting that `setupFiles` will execute _before_ [`setupTestFramew
 
 Default: `undefined`
 
-The path to a module that runs some code to configure or set up the testing framework before each test. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
+The path to a module that runs some code to configure or set up the testing framework before each test file in the suite is executed. Since [`setupFiles`](#setupfiles-array) executes before the test framework is installed in the environment, this script file presents you the opportunity of running some code immediately after the test framework has been installed in the environment.
 
 If you want this path to be [relative to the root directory of your project](#rootdir-string), please include `<rootDir>` inside the path string, like `"<rootDir>/a-configs-folder"`.
 
@@ -662,8 +662,8 @@ Example serializer module:
 ```js
 // my-serializer-module
 module.exports = {
-  print(val, serialize, indent) {
-    return 'Pretty foo: ' + serialize(val.foo);
+  serialize(val, config, indentation, depth, refs, printer) {
+    return 'Pretty foo: ' + printer(val.foo);
   },
 
   test(val) {
@@ -672,7 +672,7 @@ module.exports = {
 };
 ```
 
-`serialize` is a function that serializes a value using existing plugins.
+`printer` is a function that serializes a value using existing plugins.
 
 To use `my-serializer-module` as a serializer, configuration would be as follows:
 
@@ -710,6 +710,8 @@ Pretty foo: Object {
 ```
 
 To make a dependency explicit instead of implicit, you can call [`expect.addSnapshotSerializer`](ExpectAPI.md#expectaddsnapshotserializerserializer) to add a module for an individual test file instead of adding its path to `snapshotSerializers` in Jest configuration.
+
+More about serializers API can be found [here](https://github.com/facebook/jest/tree/master/packages/pretty-format#serialize).
 
 ### `testEnvironment` [string]
 
@@ -878,7 +880,8 @@ The test runner module must export a function with the following signature:
 
 ```ts
 function testRunner(
-  config: Config,
+  globalConfig: GlobalConfig,
+  config: ProjectConfig,
   environment: Environment,
   runtime: Runtime,
   testPath: string,
@@ -942,7 +945,7 @@ It is possible to override this setting in individual tests by explicitly callin
 
 Default: `false`
 
-Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution.
+Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution. Note that if there is only one test file being run it will default to `true`.
 
 ### `watchPathIgnorePatterns` [array\<string>]
 
@@ -951,6 +954,8 @@ Default: `[]`
 An array of RegExp patterns that are matched against all source file paths before re-running tests in watch mode. If the file path matches any of the patterns, when it is updated, it will not trigger a re-run of tests.
 
 These patterns match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/node_modules/"]`.
+
+Even if nothing is specified here, the watcher will ignore changes to any hidden files and directories, i.e. files and folders that begins with a dot (`.`).
 
 ### `watchPlugins` [array\<string | [string, Object]>]
 

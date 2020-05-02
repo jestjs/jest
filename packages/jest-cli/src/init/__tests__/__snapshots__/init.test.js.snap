@@ -36,6 +36,15 @@ Object {
 }
 `;
 
+exports[`init has-jest-config-file-mjs ask the user whether to override config or not user answered with "Yes" 1`] = `
+Object {
+  "initial": true,
+  "message": "It seems that you already have a jest configuration, do you want to override it?",
+  "name": "continue",
+  "type": "confirm",
+}
+`;
+
 exports[`init project with package.json and no jest config all questions answered with answer: "No" should return the default configuration (an empty config) 1`] = `
 "// For a detailed explanation regarding each configuration property, visit:
 // https://jestjs.io/docs/en/configuration.html
@@ -46,9 +55,6 @@ module.exports = {
 
   // Stop running tests after \`n\` failures
   // bail: 0,
-
-  // Respect \\"browser\\" field in package.json when resolving modules
-  // browser: false,
 
   // The directory where Jest should store its cached dependency information
   // cacheDirectory: \\"/tmp/jest\\",
@@ -117,7 +123,7 @@ module.exports = {
   //   \\"node\\"
   // ],
 
-  // A map from regular expressions to module names that allow to stub out resources with a single module
+  // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   // moduleNameMapper: {},
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader

@@ -10,10 +10,13 @@ export {
   createTranspilingRequire,
 } from './ScriptTransformer';
 export {default as shouldInstrument} from './shouldInstrument';
-export {
+export type {
+  CacheKeyOptions,
   Transformer,
   ShouldInstrumentOptions,
   Options as TransformationOptions,
+  TransformOptions,
   TransformResult,
+  TransformedSource,
 } from './types';
 export {default as handlePotentialSyntaxError} from './enhanceUnexpectedTokenMessage';

@@ -6,11 +6,13 @@
  *
  */
 
+import type {Options} from 'yargs';
 import Runtime = require('jest-runtime');
 
 export const usage = 'Usage: $0 [--config=<pathToConfigFile>]';
 
-export const options = Object.assign({}, Runtime.getCLIOptions(), {
+export const options: Record<string, Options> = {
+  ...Runtime.getCLIOptions(),
   replname: {
     alias: 'r',
     description:
@@ -18,4 +20,4 @@ export const options = Object.assign({}, Runtime.getCLIOptions(), {
       'transformed. For example, "repl.ts" if using a TypeScript transformer.',
     type: 'string',
   },
-});
+};

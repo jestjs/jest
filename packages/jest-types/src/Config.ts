@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Arguments} from 'yargs';
-import {ReportOptions} from 'istanbul-reports';
+import type {Arguments} from 'yargs';
+import type {ReportOptions} from 'istanbul-reports';
 import chalk = require('chalk');
 
 type CoverageProvider = 'babel' | 'v8';
@@ -27,19 +27,20 @@ export type HasteConfig = {
 export type ReporterConfig = [string, Record<string, unknown>];
 export type TransformerConfig = [string, Record<string, unknown>];
 
-export type ConfigGlobals = Record<string, any>;
+export interface ConfigGlobals {
+  [K: string]: unknown;
+}
 
 export type DefaultOptions = {
   automock: boolean;
   bail: number;
-  browser: boolean;
   cache: boolean;
   cacheDirectory: Path;
   changedFilesWithAncestor: boolean;
   clearMocks: boolean;
   collectCoverage: boolean;
   coveragePathIgnorePatterns: Array<string>;
-  coverageReporters: Array<string>;
+  coverageReporters: Array<string | [string, any]>;
   coverageProvider: CoverageProvider;
   errorOnDeprecated: boolean;
   expand: boolean;
@@ -50,7 +51,7 @@ export type DefaultOptions = {
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
-  moduleNameMapper: Record<string, string>;
+  moduleNameMapper: Record<string, string | Array<string>>;
   modulePathIgnorePatterns: Array<string>;
   noStackTrace: boolean;
   notify: boolean;
@@ -97,7 +98,6 @@ export type InitialOptionsWithRootDir = InitialOptions &
 export type InitialOptions = Partial<{
   automock: boolean;
   bail: boolean | number;
-  browser: boolean;
   cache: boolean;
   cacheDirectory: Path;
   clearMocks: boolean;
@@ -143,7 +143,7 @@ export type InitialOptions = Partial<{
   moduleFileExtensions: Array<string>;
   moduleLoader: Path;
   moduleNameMapper: {
-    [key: string]: string;
+    [key: string]: string | Array<string>;
   };
   modulePathIgnorePatterns: Array<string>;
   modulePaths: Array<string>;
@@ -241,7 +241,7 @@ export type GlobalConfig = {
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
   coverageProvider: CoverageProvider;
-  coverageReporters: Array<keyof ReportOptions>;
+  coverageReporters: Array<keyof ReportOptions | [keyof ReportOptions, any]>;
   coverageThreshold?: CoverageThreshold;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
@@ -299,7 +299,6 @@ export type GlobalConfig = {
 
 export type ProjectConfig = {
   automock: boolean;
-  browser: boolean;
   cache: boolean;
   cacheDirectory: Path;
   clearMocks: boolean;
@@ -343,7 +342,7 @@ export type ProjectConfig = {
   testMatch: Array<Glob>;
   testLocationInResults: boolean;
   testPathIgnorePatterns: Array<string>;
-  testRegex: Array<string>;
+  testRegex: Array<string | RegExp>;
   testRunner: string;
   testURL: string;
   timers: 'real' | 'fake';
@@ -358,7 +357,6 @@ export type Argv = Arguments<
     all: boolean;
     automock: boolean;
     bail: boolean | number;
-    browser: boolean;
     cache: boolean;
     cacheDirectory: string;
     changedFilesWithAncestor: boolean;

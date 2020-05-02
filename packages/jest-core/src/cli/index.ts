@@ -5,18 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {AggregatedResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {AggregatedResult} from '@jest/test-result';
 import {CustomConsole} from '@jest/console';
 import {createDirectory, preRunMessage} from 'jest-util';
 import {readConfigs} from 'jest-config';
 import Runtime = require('jest-runtime');
-import {ChangedFilesPromise} from 'jest-changed-files';
+import type {ChangedFilesPromise} from 'jest-changed-files';
 import HasteMap = require('jest-haste-map');
 import chalk = require('chalk');
 import rimraf = require('rimraf');
 import exit = require('exit');
-import {Filter} from '../types';
+import type {Filter} from '../types';
 import createContext from '../lib/create_context';
 import getChangedFilesPromise from '../getChangedFilesPromise';
 import {formatHandleErrors} from '../collectHandles';
@@ -31,17 +31,13 @@ const {print: preRunMessagePrint} = preRunMessage;
 
 type OnCompleteCallback = (results: AggregatedResult) => void;
 
-export const runCLI = async (
+export async function runCLI(
   argv: Config.Argv,
   projects: Array<Config.Path>,
 ): Promise<{
   results: AggregatedResult;
   globalConfig: Config.GlobalConfig;
-}> => {
-  const realFs = require('fs');
-  const fs = require('graceful-fs');
-  fs.gracefulify(realFs);
-
+}> {
   let results: AggregatedResult | undefined;
 
   // If we output a JSON object, we can't write anything to stdout, since
@@ -49,7 +45,7 @@ export const runCLI = async (
   const outputStream =
     argv.json || argv.useStderr ? process.stderr : process.stdout;
 
-  const {globalConfig, configs, hasDeprecationWarnings} = readConfigs(
+  const {globalConfig, configs, hasDeprecationWarnings} = await readConfigs(
     argv,
     projects,
   );
@@ -109,7 +105,7 @@ export const runCLI = async (
   }
 
   return {globalConfig, results};
-};
+}
 
 const buildContextsAndHasteMaps = async (
   configs: Array<Config.ProjectConfig>,

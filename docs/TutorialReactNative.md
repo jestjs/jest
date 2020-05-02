@@ -3,7 +3,7 @@ id: tutorial-react-native
 title: Testing React Native Apps
 ---
 
-At Facebook, we use Jest to test [React Native](http://facebook.github.io/react-native/) applications.
+At Facebook, we use Jest to test [React Native](https://reactnative.dev/) applications.
 
 Get a deeper insight into testing a working React Native app example by reading the following series: [Part 1: Jest – Snapshot come into play](https://callstack.com/blog/testing-react-native-with-the-new-jest-part-1-snapshots-come-into-play/) and [Part 2: Jest – Redux Snapshots for your Actions and Reducers](https://callstack.com/blog/testing-react-native-with-the-new-jest-part-2-redux-snapshots-for-your-actions-and-reducers/).
 
@@ -150,7 +150,7 @@ If you'd like to provide additional configuration for every test file, the [`set
 
 ### moduleNameMapper
 
-The [`moduleNameMapper`](configuration.html#modulenamemapper-objectstring-string) can be used to map a module path to a different module. By default the preset maps all images to an image stub module but if a module cannot be found this configuration option can help:
+The [`moduleNameMapper`](configuration.html#modulenamemapper-objectstring-string--arraystring) can be used to map a module path to a different module. By default the preset maps all images to an image stub module but if a module cannot be found this configuration option can help:
 
 ```json
 "moduleNameMapper": {

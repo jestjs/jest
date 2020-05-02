@@ -6,7 +6,7 @@
  */
 
 import style = require('ansi-styles');
-import * as PrettyFormat from './types';
+import type * as PrettyFormat from './types';
 
 import {
   printIteratorEntries,
@@ -491,7 +491,7 @@ function createIndent(indent: number): string {
  * @param options Custom settings
  */
 function prettyFormat(
-  val: any,
+  val: unknown,
   options?: PrettyFormat.OptionsReceived,
 ): string {
   if (options) {
@@ -527,12 +527,13 @@ prettyFormat.plugins = {
   ReactTestComponent,
 };
 
-/* eslint-disable-next-line no-redeclare */
+// eslint-disable-next-line no-redeclare
 namespace prettyFormat {
   export type Colors = PrettyFormat.Colors;
   export type Config = PrettyFormat.Config;
   export type Options = PrettyFormat.Options;
   export type OptionsReceived = PrettyFormat.OptionsReceived;
+  export type OldPlugin = PrettyFormat.OldPlugin;
   export type NewPlugin = PrettyFormat.NewPlugin;
   export type Plugin = PrettyFormat.Plugin;
   export type Plugins = PrettyFormat.Plugins;

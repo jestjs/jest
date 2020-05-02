@@ -39,7 +39,7 @@ const testBaseline = (a, b) => {
   return benchmark.stats;
 };
 
-const testImproved = function(a, b) {
+const testImproved = function (a, b) {
   const benchmark = new Benchmark({
     fn() {
       // Split string arguments to make fair comparison with baseline.

@@ -5,21 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {
-  Context,
-  Script,
-  compileFunction,
-  createContext,
-  runInContext,
-} from 'vm';
-import {Config, Global} from '@jest/types';
+import {Context, Script, createContext, runInContext} from 'vm';
+import type {Config, Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
 import {
   JestFakeTimers as LegacyFakeTimers,
   LolexFakeTimers,
 } from '@jest/fake-timers';
-import {JestEnvironment} from '@jest/environment';
+import type {JestEnvironment} from '@jest/environment';
+import {lt as semverLt} from 'semver';
 
 type Timer = {
   id: number;
@@ -99,9 +94,9 @@ class NodeEnvironment implements JestEnvironment {
     this.fakeTimersLolex = new LolexFakeTimers({config, global});
   }
 
-  async setup() {}
+  async setup(): Promise<void> {}
 
-  async teardown() {
+  async teardown(): Promise<void> {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
@@ -115,28 +110,23 @@ class NodeEnvironment implements JestEnvironment {
 
   // TS infers the return type to be `any`, since that's what `runInContext`
   // returns.
-  runScript(script: Script) {
+  runScript<T = unknown>(script: Script): T | null {
     if (this.context) {
       return script.runInContext(this.context);
     }
     return null;
   }
 
-  compileFunction(code: string, params: Array<string>, filename: string) {
-    if (this.context) {
-      return compileFunction(code, params, {
-        filename,
-        parsingContext: this.context,
-      }) as any;
-    }
-    return null;
+  getVmContext(): Context | null {
+    return this.context;
   }
 }
 
-// `jest-runtime` checks for `compileFunction`, so this makes sure to not expose that function if it's unsupported by this version of node
-// Should be removed when we drop support for node 8
-if (typeof compileFunction !== 'function') {
-  delete NodeEnvironment.prototype.compileFunction;
+// node 10 had a bug in `vm.compileFunction` that was fixed in https://github.com/nodejs/node/pull/23206.
+// Let's just pretend the env doesn't support the function.
+// Make sure engine requirement is high enough when we drop node 8 so we can remove this condition
+if (semverLt(process.version, '10.14.2')) {
+  delete NodeEnvironment.prototype.getVmContext;
 }
 
 export = NodeEnvironment;

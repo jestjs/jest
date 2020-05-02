@@ -44,7 +44,6 @@ const STRAWBERRY_RELATIVE = path.join(FRUITS_RELATIVE, 'strawberry.js');
 const KIWI_RELATIVE = path.join(FRUITS_RELATIVE, 'kiwi.js');
 const TOMATO_RELATIVE = path.join(FRUITS_RELATIVE, 'tomato.js');
 const MELON_RELATIVE = path.join(VEGETABLES_RELATIVE, 'melon.json');
-const DURIAN_RELATIVE = path.join(VEGETABLES_RELATIVE, 'durian.zip');
 
 const WATCH_PROJECT_MOCK = {
   [FRUITS]: {
@@ -173,56 +172,6 @@ describe('watchman watch', () => {
 
       expect(client.end).toBeCalled();
     }));
-
-  test('applies the mapper when needed', () => {
-    mockResponse = {
-      'list-capabilities': {
-        [undefined]: {
-          capabilities: ['field-content.sha1hex'],
-        },
-      },
-      query: {
-        [ROOT_MOCK]: {
-          clock: 'c:fake-clock:1',
-          files: [
-            {
-              exists: true,
-              mtime_ms: {toNumber: () => 33},
-              name: 'vegetables/durian.zip',
-              size: 43,
-            },
-          ],
-          is_fresh_instance: true,
-          version: '4.5.0',
-        },
-      },
-      'watch-project': WATCH_PROJECT_MOCK,
-    };
-
-    return watchmanCrawl({
-      data: {
-        clocks: new Map(),
-        files: new Map(),
-      },
-      extensions: ['js', 'json', 'zip'],
-      ignore: pearMatcher,
-      mapper: n =>
-        n.endsWith('.zip')
-          ? [path.join(n, 'foo.1.js'), path.join(n, 'foo.2.js')]
-          : null,
-      rootDir: ROOT_MOCK,
-      roots: ROOTS,
-    }).then(({changedFiles, hasteMap, removedFiles}) => {
-      expect(changedFiles).toEqual(undefined);
-      expect(hasteMap.files).toEqual(
-        createMap({
-          [path.join(DURIAN_RELATIVE, 'foo.1.js')]: ['', 33, 43, 0, '', null],
-          [path.join(DURIAN_RELATIVE, 'foo.2.js')]: ['', 33, 43, 0, '', null],
-        }),
-      );
-      expect(removedFiles).toEqual(new Map());
-    });
-  });
 
   test('updates file map and removedFiles when the clock is given', () => {
     mockResponse = {

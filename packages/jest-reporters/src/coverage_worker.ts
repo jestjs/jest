@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
-import {Config} from '@jest/types';
+import * as fs from 'graceful-fs';
+import type {Config} from '@jest/types';
 import exit = require('exit');
-import {CoverageReporterSerializedOptions} from './types';
+import type {CoverageReporterSerializedOptions} from './types';
 
 import generateEmptyCoverage, {
   CoverageWorkerResult,
@@ -21,7 +21,7 @@ export type CoverageWorkerData = {
   options?: CoverageReporterSerializedOptions;
 };
 
-export {CoverageWorkerResult};
+export type {CoverageWorkerResult};
 
 // Make sure uncaught errors are logged before we exit.
 process.on('uncaughtException', err => {
@@ -40,6 +40,8 @@ export function worker({
     path,
     globalConfig,
     config,
-    options && options.changedFiles && new Set(options.changedFiles),
+    options?.changedFiles && new Set(options.changedFiles),
+    options?.sourcesRelatedToTestsInChangedFiles &&
+      new Set(options.sourcesRelatedToTestsInChangedFiles),
   );
 }

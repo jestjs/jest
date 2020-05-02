@@ -9,12 +9,12 @@ import chalk = require('chalk');
 import getType = require('jest-get-type');
 import {ERROR, ValidationError, formatPrettyObject} from './utils';
 import {getValues} from './condition';
-import {ValidationOptions} from './types';
+import type {ValidationOptions} from './types';
 
 export const errorMessage = (
   option: string,
-  received: any,
-  defaultValue: any,
+  received: unknown,
+  defaultValue: unknown,
   options: ValidationOptions,
   path?: Array<string>,
 ): void => {

@@ -14,7 +14,7 @@
  * a custom serialization library.
  */
 
-import {HType} from './types';
+import type {HType} from './types';
 
 /* eslint-disable sort-keys */
 const constants: HType = {

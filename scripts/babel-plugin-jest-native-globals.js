@@ -70,7 +70,7 @@ module.exports = ({template}) => {
           path.node.name === 'fs' &&
           path.parent.property &&
           ['readFileSync', 'writeFileSync', 'existsSync'].includes(
-            path.parent.property.name
+            path.parent.property.name,
           )
         ) {
           if (

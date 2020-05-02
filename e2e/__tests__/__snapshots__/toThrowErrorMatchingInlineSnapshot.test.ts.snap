@@ -3,7 +3,7 @@
 exports[`should support rejecting promises 1`] = `
 test('should support rejecting promises', async () => {
   await expect(
-    Promise.reject(new Error('octopus'))
+    Promise.reject(new Error('octopus')),
   ).rejects.toThrowErrorMatchingInlineSnapshot(\`"octopus"\`);
 });
 

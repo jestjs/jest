@@ -24,7 +24,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /* eslint-disable */
 
-import {Tester} from './types';
+import type {Tester} from './types';
 
 // Extracted out of jasmine 2.5.2
 export function equals(
