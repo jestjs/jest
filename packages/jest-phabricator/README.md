@@ -21,7 +21,7 @@ Or use the `ArcanistConfigurationDrivenUnitTestEngine` and add an entry to your 
 ```json
 "jest": {
   "type": "jest",
-  "include": "(\\.jsx?$)"
+  "include": "(\\.js$)"
 }
 ```
 
@@ -157,7 +157,7 @@ final class JestUnitTestEngine extends ArcanistUnitTestEngine {
     $jest_paths = array();
     foreach ($paths as $path) {
       $ext = idx(pathinfo($path), 'extension');
-      if ($ext === 'js' || $ext === 'json' || $ext === 'jsx') {
+      if ($ext === 'js' || $ext === 'json') {
         // Filter deleted modules because Jest can't do anything with them.
         if (file_exists("$root/$path")) {
           $jest_paths[] = "$root/$path";
