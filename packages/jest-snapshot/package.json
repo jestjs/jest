@@ -34,7 +34,7 @@
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.2.0",
     "jest-haste-map": "^26.0.0-alpha.0",
-    "prettier": "^2.0.5"
+    "prettier": "^1.19.1"
   },
   "engines": {
     "node": ">= 10.14.2"
