@@ -9,8 +9,8 @@ import * as path from 'path';
 import * as fs from 'graceful-fs';
 import chalk = require('chalk');
 import prompts = require('prompts');
-import {sync as realpath} from 'realpath-native';
 import {constants} from 'jest-config';
+import {tryRealpath} from 'jest-util';
 import defaultQuestions, {testScriptQuestion} from './questions';
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
 import generateConfigFile from './generate_config_file';
@@ -35,7 +35,7 @@ type PromptsResults = {
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
 export default async (
-  rootDir: string = realpath(process.cwd()),
+  rootDir: string = tryRealpath(process.cwd()),
 ): Promise<void> => {
   // prerequisite checks
   const projectPackageJsonPath: string = path.join(rootDir, PACKAGE_JSON);

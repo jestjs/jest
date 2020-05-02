@@ -8,14 +8,14 @@
 import * as path from 'path';
 import type {Config} from '@jest/types';
 import type {ModuleMap} from 'jest-haste-map';
-import {sync as realpath} from 'realpath-native';
-import chalk = require('chalk');
+import {tryRealpath} from 'jest-util';
 import nodeModulesPaths from './nodeModulesPaths';
 import isBuiltinModule from './isBuiltinModule';
 import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
 import type {ResolverConfig} from './types';
 import ModuleNotFoundError from './ModuleNotFoundError';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
+import chalk = require('chalk');
 
 type FindNodeModuleConfig = {
   basedir: Config.Path;
@@ -41,8 +41,7 @@ namespace Resolver {
 const NATIVE_PLATFORM = 'native';
 
 // We might be inside a symlink.
-const cwd = process.cwd();
-const resolvedCwd = realpath(cwd) || cwd;
+const resolvedCwd = tryRealpath(process.cwd());
 const {NODE_PATH} = process.env;
 const nodePaths = NODE_PATH
   ? NODE_PATH.split(path.delimiter)

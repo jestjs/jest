@@ -29,7 +29,6 @@
     "jest-watcher": "^26.0.0-alpha.0",
     "micromatch": "^4.0.2",
     "p-each-series": "^2.1.0",
-    "realpath-native": "^2.0.0",
     "rimraf": "^3.0.0",
     "slash": "^3.0.0",
     "strip-ansi": "^6.0.0"

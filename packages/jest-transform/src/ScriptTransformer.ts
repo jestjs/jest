@@ -8,7 +8,12 @@
 import {createHash} from 'crypto';
 import * as path from 'path';
 import type {Config} from '@jest/types';
-import {createDirectory, interopRequireDefault, isPromise} from 'jest-util';
+import {
+  createDirectory,
+  interopRequireDefault,
+  isPromise,
+  tryRealpath,
+} from 'jest-util';
 import * as fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
 // @ts-ignore: should just be `require.resolve`, but the tests mess that up
@@ -18,7 +23,6 @@ import HasteMap = require('jest-haste-map');
 import stableStringify = require('fast-json-stable-stringify');
 import slash = require('slash');
 import {sync as writeFileAtomic} from 'write-file-atomic';
-import {sync as realpath} from 'realpath-native';
 import {addHook} from 'pirates';
 import type {
   Options,
@@ -247,14 +251,6 @@ export default class ScriptTransformer {
     return input;
   }
 
-  private _getRealPath(filepath: Config.Path): Config.Path {
-    try {
-      return realpath(filepath) || filepath;
-    } catch (err) {
-      return filepath;
-    }
-  }
-
   // We don't want to expose transformers to the outside - this function is just
   // to warm up `this._transformCache`
   preloadTransformer(filepath: Config.Path): void {
@@ -269,7 +265,7 @@ export default class ScriptTransformer {
     supportsDynamicImport = false,
     supportsStaticESM = false,
   ): TransformResult {
-    const filename = this._getRealPath(filepath);
+    const filename = tryRealpath(filepath);
     const transform = this._getTransformer(filename);
     const cacheFilePath = this._getFileCachePath(
       filename,

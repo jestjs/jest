@@ -11,10 +11,9 @@ import {statSync} from 'graceful-fs';
 import {sync as glob} from 'glob';
 import type {Config} from '@jest/types';
 import {ValidationError, validate} from 'jest-validate';
-import {clearLine, replacePathSepForGlob} from 'jest-util';
+import {clearLine, replacePathSepForGlob, tryRealpath} from 'jest-util';
 import chalk = require('chalk');
 import micromatch = require('micromatch');
-import {sync as realpath} from 'realpath-native';
 import Resolver = require('jest-resolve');
 import {replacePathSepForRegex} from 'jest-regex-util';
 import merge = require('deepmerge');
@@ -391,7 +390,7 @@ const normalizeRootDir = (
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
-    options.rootDir = realpath(options.rootDir);
+    options.rootDir = tryRealpath(options.rootDir);
   } catch (e) {
     // ignored
   }
@@ -955,7 +954,7 @@ export default function normalize(
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
-    newOptions.cwd = realpath(process.cwd());
+    newOptions.cwd = tryRealpath(process.cwd());
   } catch (e) {
     // ignored
   }

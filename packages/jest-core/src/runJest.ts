@@ -7,9 +7,8 @@
 
 import * as path from 'path';
 import chalk = require('chalk');
-import {sync as realpath} from 'realpath-native';
 import {CustomConsole} from '@jest/console';
-import {interopRequireDefault} from 'jest-util';
+import {interopRequireDefault, tryRealpath} from 'jest-util';
 import exit = require('exit');
 import * as fs from 'graceful-fs';
 import {JestHook, JestHookEmitter} from 'jest-watcher';
@@ -100,7 +99,7 @@ const processResults = (
   }
   if (isJSON) {
     if (outputFile) {
-      const cwd = realpath(process.cwd());
+      const cwd = tryRealpath(process.cwd());
       const filePath = path.resolve(cwd, outputFile);
 
       fs.writeFileSync(filePath, JSON.stringify(formatTestResults(runResults)));
