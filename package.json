@@ -23,7 +23,6 @@
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.2.0",
     "babel-eslint": "^10.0.3",
-    "babel-loader": "^8.0.5",
     "babel-plugin-replace-ts-export-assignment": "^0.0.2",
     "babel-plugin-typescript-strip-namespaces": "^1.1.1",
     "camelcase": "^5.0.0",
@@ -32,7 +31,6 @@
     "codecov": "^3.0.0",
     "debug": "^4.0.1",
     "dedent": "^0.7.0",
-    "downlevel-dts": "^0.4.0",
     "eslint": "^6.2.2",
     "eslint-config-prettier": "^6.1.0",
     "eslint-plugin-babel": "^5.1.0",
@@ -76,7 +74,6 @@
     "string-length": "^3.1.0",
     "strip-ansi": "^6.0.0",
     "tempy": "~0.3.0",
-    "throat": "^5.0.0",
     "typescript": "^3.8.2",
     "which": "^2.0.1"
   },
@@ -101,7 +98,6 @@
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
     "test-leak": "yarn jest -i --detectLeaks jest-mock jest-diff jest-repl",
     "test": "yarn lint && yarn jest",
-    "verify-old-ts": "node ./scripts/verifyOldTs.js",
     "watch": "yarn build && node ./scripts/watch.js",
     "watch:ts": "yarn build:ts --watch"
   },

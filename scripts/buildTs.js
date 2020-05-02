@@ -16,7 +16,6 @@ const util = require('util');
 const chalk = require('chalk');
 const execa = require('execa');
 const globby = require('globby');
-const rimraf = require('rimraf');
 const throat = require('throat');
 const {getPackages} = require('./buildUtils');
 
@@ -111,34 +110,10 @@ Promise.all(
       }
     }),
   ),
-)
-  .then(() => {
-    const downlevelArgs = ['--silent', 'downlevel-dts', 'build', 'build/ts3.4'];
-
-    console.log(chalk.inverse(' Downleveling TypeScript definition files '));
-
-    return Promise.all(
-      packagesWithTs.map(
-        throat(cpus, pkgDir => {
-          // otherwise we get nested `ts3.4` directories
-          rimraf.sync(path.resolve(pkgDir, 'build/ts3.4'));
-
-          return execa('yarn', downlevelArgs, {cwd: pkgDir, stdio: 'inherit'});
-        }),
-      ),
-    );
-  })
-  .then(() => {
-    console.log(
-      chalk.inverse.green(
-        ' Successfully downleveled TypeScript definition files ',
-      ),
-    );
-  })
-  .catch(e => {
-    console.error(
-      chalk.inverse.red(' Unable to downlevel TypeScript definition files '),
-    );
-    console.error(e.stack);
-    process.exitCode = 1;
-  });
+).catch(e => {
+  console.error(
+    chalk.inverse.red(' Unable to validate TypeScript definition files '),
+  );
+  console.error(e.stack);
+  process.exitCode = 1;
+});

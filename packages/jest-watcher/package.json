@@ -4,13 +4,6 @@
   "version": "25.5.0",
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "typesVersions": {
-    "<3.8": {
-      "build/*": [
-        "build/ts3.4/*"
-      ]
-    }
-  },
   "dependencies": {
     "@jest/test-result": "^25.5.0",
     "@jest/types": "^25.5.0",
