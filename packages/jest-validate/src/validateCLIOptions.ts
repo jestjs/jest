@@ -7,7 +7,7 @@
 
 import type {Config} from '@jest/types';
 import chalk = require('chalk');
-import camelcase from 'camelcase';
+import camelcase = require('camelcase');
 import type {Options} from 'yargs';
 import {ValidationError, createDidYouMeanMessage, format} from './utils';
 import {deprecationWarning} from './deprecated';

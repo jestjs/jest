@@ -31,7 +31,6 @@ exports[`formatStackTrace should strip node internals 1`] = `
           \\"string\\"
 <dim></>
 <dim>      <dim>at Object.it (</><dim>__tests__/test.js<dim>:8:14)</><dim></>
-<dim>      <dim>at </><dim>internal/process/next_tick.js<dim>:188:7</><dim></>
 "
 `;
 

@@ -20,7 +20,7 @@
     "graceful-fs": "^4.2.4",
     "micromatch": "^4.0.2",
     "slash": "^3.0.0",
-    "stack-utils": "^1.0.1"
+    "stack-utils": "^2.0.2"
   },
   "devDependencies": {
     "@types/babel__code-frame": "^7.0.0",
