@@ -1,6 +1,6 @@
 {
   "name": "@jest/fake-timers",
-  "version": "25.5.0",
+  "version": "26.0.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,10 +10,10 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/types": "^25.5.0",
-    "jest-message-util": "^25.5.0",
-    "jest-mock": "^25.5.0",
-    "jest-util": "^25.5.0",
+    "@jest/types": "^26.0.0-alpha.0",
+    "jest-message-util": "^26.0.0-alpha.0",
+    "jest-mock": "^26.0.0-alpha.0",
+    "jest-util": "^26.0.0-alpha.0",
     "lolex": "^5.0.0"
   },
   "devDependencies": {

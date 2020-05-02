@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-fb-strict",
-  "version": "25.2.6",
+  "version": "26.0.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",

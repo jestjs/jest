@@ -1,6 +1,6 @@
 {
   "name": "@jest/globals",
-  "version": "25.5.2",
+  "version": "26.0.0-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -13,9 +13,9 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/environment": "^25.5.0",
-    "@jest/types": "^25.5.0",
-    "expect": "^25.5.0"
+    "@jest/environment": "^26.0.0-alpha.0",
+    "@jest/types": "^26.0.0-alpha.0",
+    "expect": "^26.0.0-alpha.0"
   },
   "publishConfig": {
     "access": "public"
