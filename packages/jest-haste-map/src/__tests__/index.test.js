@@ -329,7 +329,6 @@ describe('HasteMap', () => {
     const hasteMap = new HasteMap({
       ...defaultConfig,
       mocksPattern: '/__mocks__/',
-      providesModuleNodeModules: ['react', 'fbjs'],
     });
 
     return hasteMap.build().then(({__hasteMapForTest: data}) => {
@@ -341,23 +340,6 @@ describe('HasteMap', () => {
           'fruits/Pear.js': ['Pear', 32, 42, 1, 'Banana\0Strawberry', null],
           'fruits/Strawberry.js': ['Strawberry', 32, 42, 1, '', null],
           'fruits/__mocks__/Pear.js': ['', 32, 42, 1, 'Melon', null],
-          // node modules
-          'fruits/node_modules/fbjs/lib/flatMap.js': [
-            'flatMap',
-            32,
-            42,
-            1,
-            '',
-            null,
-          ],
-          'fruits/node_modules/react/React.js': [
-            'React',
-            32,
-            42,
-            1,
-            'Component',
-            null,
-          ],
           'vegetables/Melon.js': ['Melon', 32, 42, 1, '', null],
         }),
       );
@@ -367,20 +349,8 @@ describe('HasteMap', () => {
           Banana: {[H.GENERIC_PLATFORM]: ['fruits/Banana.js', H.MODULE]},
           Melon: {[H.GENERIC_PLATFORM]: ['vegetables/Melon.js', H.MODULE]},
           Pear: {[H.GENERIC_PLATFORM]: ['fruits/Pear.js', H.MODULE]},
-          React: {
-            [H.GENERIC_PLATFORM]: [
-              'fruits/node_modules/react/React.js',
-              H.MODULE,
-            ],
-          },
           Strawberry: {
             [H.GENERIC_PLATFORM]: ['fruits/Strawberry.js', H.MODULE],
-          },
-          flatMap: {
-            [H.GENERIC_PLATFORM]: [
-              'fruits/node_modules/fbjs/lib/flatMap.js',
-              H.MODULE,
-            ],
           },
         }),
       );
