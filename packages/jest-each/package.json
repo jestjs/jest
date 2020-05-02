@@ -19,7 +19,7 @@
   "license": "MIT",
   "dependencies": {
     "@jest/types": "^25.5.0",
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "jest-get-type": "^25.2.6",
     "jest-util": "^25.5.0",
     "pretty-format": "^25.5.0"

@@ -13,7 +13,7 @@
     "@babel/core": "^7.1.0",
     "@jest/types": "^25.5.0",
     "babel-plugin-istanbul": "^6.0.0",
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "convert-source-map": "^1.4.0",
     "fast-json-stable-stringify": "^2.0.0",
     "graceful-fs": "^4.2.4",

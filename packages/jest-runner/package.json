@@ -14,7 +14,7 @@
     "@jest/environment": "^25.5.0",
     "@jest/test-result": "^25.5.0",
     "@jest/types": "^25.5.0",
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "exit": "^0.1.2",
     "graceful-fs": "^4.2.4",
     "jest-config": "^25.5.4",

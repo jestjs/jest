@@ -14,7 +14,7 @@
     "@jest/test-sequencer": "^25.5.4",
     "@jest/types": "^25.5.0",
     "babel-jest": "^25.5.1",
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "deepmerge": "^4.2.2",
     "glob": "^7.1.1",
     "graceful-fs": "^4.2.4",

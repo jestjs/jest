@@ -26,7 +26,7 @@
     "babel-plugin-replace-ts-export-assignment": "^0.0.2",
     "babel-plugin-typescript-strip-namespaces": "^1.1.1",
     "camelcase": "^5.0.0",
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "chokidar": "^3.3.0",
     "codecov": "^3.0.0",
     "debug": "^4.0.1",

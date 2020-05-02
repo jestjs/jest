@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@jest/test-utils": "^25.5.0",
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "fast-check": "^1.13.0",
     "immutable": "^4.0.0-rc.12"
   },

@@ -16,7 +16,7 @@
     "@types/babel__core": "^7.1.7",
     "babel-plugin-istanbul": "^6.0.0",
     "babel-preset-jest": "^25.5.0",
-    "chalk": "^3.0.0",
+    "chalk": "^4.0.0",
     "graceful-fs": "^4.2.4",
     "slash": "^3.0.0"
   },
