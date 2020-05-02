@@ -41,8 +41,8 @@ class JSDOMEnvironment implements JestEnvironment {
       virtualConsole: new VirtualConsole().sendTo(options.console || console),
       ...config.testEnvironmentOptions,
     });
-
     const global = (this.global = this.dom.window.document.defaultView as Win);
+
     if (!global) {
       throw new Error('JSDOM did not return a Window object');
     }
