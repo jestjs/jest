@@ -4,13 +4,19 @@
 
 ### Fixes
 
-- `[jest-jasmine2]` Don't run `beforeAll` / `afterAll` in skipped describe block ([#9931](https://github.com/facebook/jest/pull/9931))
+### Chore & Maintenance
+
+### Performance
+
+## 25.5.4
+
+### Fixes
+
+- `[jest-jasmine2]` Don't run `beforeAll` / `afterAll` in skipped describe blocks ([#9931](https://github.com/facebook/jest/pull/9931))
 
 ### Chore & Maintenance
 
 - `[jest-runtime]` Do not warn when mutating `require.cache` ([#9946](https://github.com/facebook/jest/pull/9946))
-
-### Performance
 
 ## 25.5.3
 
