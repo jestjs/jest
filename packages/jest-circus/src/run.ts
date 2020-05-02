@@ -139,9 +139,9 @@ const _callCircusHook = async ({
 
   try {
     await callAsyncCircusFn(hook.fn, testContext, hook.asyncError, {
-    isHook: true,
-    timeout,
-  });
+      isHook: true,
+      timeout,
+    });
     await dispatch({describeBlock, hook, name: 'hook_success', test});
   } catch (error) {
     await dispatch({describeBlock, error, hook, name: 'hook_failure', test});
@@ -162,9 +162,9 @@ const _callCircusTest = async (
 
   try {
     await callAsyncCircusFn(test.fn, testContext, test.asyncError, {
-    isHook: false,
-    timeout,
-  });
+      isHook: false,
+      timeout,
+    });
     await dispatch({name: 'test_fn_success', test});
   } catch (error) {
     await dispatch({error, name: 'test_fn_failure', test});
