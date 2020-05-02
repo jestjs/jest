@@ -10,10 +10,9 @@ import {tmpdir} from 'os';
 import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';
 
-const tmpdirPath = path.join(tryRealpath(tmpdir()), 'jest');
-
 const getCacheDirectory: () => Config.Path = () => {
   const {getuid} = process;
+  const tmpdirPath = path.join(tryRealpath(tmpdir()), 'jest');
   if (getuid == null) {
     return tmpdirPath;
   } else {
