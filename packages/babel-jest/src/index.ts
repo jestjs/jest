@@ -41,8 +41,9 @@ interface BabelJestTransformOptions extends TransformOptions {
 }
 
 const createTransformer = (
-  inputOptions: TransformOptions = {},
+  userOptions?: TransformOptions | null,
 ): BabelJestTransformer => {
+  const inputOptions: TransformOptions = userOptions ?? {};
   const options: BabelJestTransformOptions = {
     ...inputOptions,
     caller: {
