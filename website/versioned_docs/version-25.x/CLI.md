@@ -1,5 +1,5 @@
 ---
-id: version-25.1-cli
+id: version-25.x-cli
 title: Jest CLI Options
 original_id: cli
 ---
@@ -236,8 +236,6 @@ Disables stack trace in test results output.
 ### `--notify`
 
 Activates notifications for test results. Good for when you don't want your consciousness to be able to focus on anything except JavaScript testing.
-
-**Beware:** Jest uses [node-notifier](https://github.com/mikaelbr/node-notifier) to display desktop notifications. On Windows, it creates a new start menu entry on the first use and not display the notification. Notifications will be properly displayed on subsequent runs
 
 ### `--onlyChanged`
 

@@ -1,5 +1,5 @@
 ---
-id: version-25.1-tutorial-async
+id: version-25.x-tutorial-async
 title: An Async Example
 original_id: tutorial-async
 ---

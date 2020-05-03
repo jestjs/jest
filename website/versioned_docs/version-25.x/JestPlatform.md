@@ -1,5 +1,5 @@
 ---
-id: version-25.5-jest-platform
+id: version-25.x-jest-platform
 title: Jest Platform
 original_id: jest-platform
 ---
@@ -59,7 +59,7 @@ const code = `
  *
  * @flow
  */
- 
+
  console.log('Hello World!');
 `;
 

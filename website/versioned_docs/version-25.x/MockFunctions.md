@@ -1,5 +1,5 @@
 ---
-id: version-25.1-mock-functions
+id: version-25.x-mock-functions
 title: Mock Functions
 original_id: mock-functions
 ---

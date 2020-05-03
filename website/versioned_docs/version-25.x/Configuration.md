@@ -1,5 +1,5 @@
 ---
-id: version-25.3-configuration
+id: version-25.x-configuration
 title: Configuring Jest
 original_id: configuration
 ---
@@ -880,7 +880,7 @@ Pretty foo: Object {
 
 To make a dependency explicit instead of implicit, you can call [`expect.addSnapshotSerializer`](ExpectAPI.md#expectaddsnapshotserializerserializer) to add a module for an individual test file instead of adding its path to `snapshotSerializers` in Jest configuration.
 
-More about serializers API can be found [here](https://github.com/facebook/jest/tree/master/packages/pretty-format#serialize).
+More about serializers API can be found [here](https://github.com/facebook/jest/tree/master/packages/pretty-format/README.md#serialize).
 
 ### `testEnvironment` [string]
 
@@ -1086,6 +1086,7 @@ Example:
 Sort test path alphabetically.
 
 ```js
+// testSequencer.js
 const Sequencer = require('@jest/test-sequencer').default;
 
 class CustomSequencer extends Sequencer {
@@ -1098,6 +1099,14 @@ class CustomSequencer extends Sequencer {
 }
 
 module.exports = CustomSequencer;
+```
+
+Use it in your Jest config file like this:
+
+```json
+{
+  "testSequencer": "path/to/testSequencer.js"
+}
 ```
 
 ### `testTimeout` [number]
