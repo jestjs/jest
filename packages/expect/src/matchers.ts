@@ -1,3 +1,5 @@
+/* eslint-disable eslint-comments/disable-enable-pair */
+/* eslint-disable prettier/prettier */
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
@@ -28,6 +30,7 @@ import {
 import type {MatcherState, MatchersObject} from './types';
 import {
   printCloseTo,
+  printCloseToSigFig,
   printExpectedConstructorName,
   printExpectedConstructorNameNot,
   printReceivedArrayContainExpectedItem,
@@ -158,6 +161,8 @@ const matchers: MatchersObject = {
       );
     }
 
+
+
     let pass = false;
     let expectedDiff = 0;
     let receivedDiff = 0;
@@ -193,6 +198,141 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
+  
+  
+  toBeCloseToSigFig(
+    this: MatcherState,
+    received: number,
+    expected: number,
+    precision: number = 3,
+  ) {
+    const matcherName = 'toBeCloseToSigFig';
+    const secondArgument = arguments.length === 3 ? 'precision' : undefined;
+    const isNot = this.isNot;
+    const options: MatcherHintOptions = {
+      isNot,
+      promise: this.promise,
+      secondArgument,
+      secondArgumentColor: (arg: string) => arg,
+    };
+
+    if (typeof expected !== 'number') {
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherName, undefined, undefined, options),
+          `${EXPECTED_COLOR('expected')} value must be a number`,
+          printWithType('Expected', expected, printExpected),
+        ),
+      );
+    }
+
+    if (typeof received !== 'number') {
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherName, undefined, undefined, options),
+          `${RECEIVED_COLOR('received')} value must be a number`,
+          printWithType('Received', received, printReceived),
+        ),
+      );
+    }
+
+    if (typeof precision !== 'number') {
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherName, undefined, undefined, options),
+          `${EXPECTED_COLOR('precision')} value must be a number`,
+          printWithType('Precision', precision, printExpected),
+        ),
+      );
+    }
+
+    if (precision < 0 ) {
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherName, undefined, undefined, options),
+          `${EXPECTED_COLOR('precision')} value must be a positive number`,
+          printWithType('Precision', precision, printExpected),
+        ),
+      );
+    }
+
+    let pass = false;
+    const allowableMantissaDiff = 5 * Math.pow(10, -precision );
+
+    const expectedMagnitude = Math.floor(Math.log(Math.abs(expected))/Math.LN10);
+    const receivedMagnitude = Math.floor(Math.log(Math.abs(received))/Math.LN10);
+    
+    const normalizedMantissaExpected = expected/Math.pow(10, expectedMagnitude);
+    const normalizedMantissaRecieved = received/Math.pow(10, receivedMagnitude);
+    
+    const receivedMantissaDiff = Math.abs(normalizedMantissaExpected - normalizedMantissaRecieved);
+
+    const receivedDiff = Math.abs(expected - received);
+    
+    //special cases
+    if (received === Infinity && expected === Infinity) {
+      console.log ('Pass infinity ');
+      pass = true; // Infinity - Infinity is NaN
+    } 
+    else if (received === -Infinity && expected === -Infinity) {
+      console.log ('Pass minus infinity ');
+      pass = true; // -Infinity - -Infinity is NaN
+
+    // need to handle the cases where one of the inputs is 0 because log(0) is NaN
+    } 
+    else if ((Math.abs(received) == 0 ) && (Math.abs(expected) == 0) ) {
+      console.log ('Pass both zero ');
+      pass = true;  //both are zero
+    }
+    else if ((Math.abs(received) == 0 ) && (receivedDiff < allowableMantissaDiff)) {
+        console.log ('recieved zero, expected near zero ');
+        pass = true;  // The one that is not zero is close enough to zero to meet requirement
+    }
+     else if ((Math.abs(expected) == 0 ) && (receivedDiff < allowableMantissaDiff)) {
+      console.log ('expected zero, received near zero ');
+      pass = true;  // The one that is not zero is close enough to zero to meet requirement
+   }
+
+    // normal case
+    else {
+          pass = ((expectedMagnitude == receivedMagnitude) && 
+            (receivedMantissaDiff < allowableMantissaDiff ));
+            console.log ('normal route: pass = ' +  pass + ' expected: ' + expected + ' recieved: ' + received + 'rec<allow: ' + (receivedMantissaDiff < allowableMantissaDiff ) );
+     }
+
+     const message = pass
+     ? () =>
+         matcherHint(matcherName, undefined, undefined, options) +
+         '\n\n' +
+         `Expected: ${printExpected(expected)}\n` +
+         (receivedDiff === 0
+           ? ''
+           : `Received:     ${printReceived(received)}\n` +
+             '\n' +
+             printCloseToSigFig( receivedMagnitude,
+              expectedMagnitude,
+              allowableMantissaDiff,
+              receivedMantissaDiff,
+              precision,
+              isNot)
+          )
+     : () =>
+         matcherHint(matcherName, undefined, undefined, options) +
+         '\n\n' +
+         `Expected: ${printExpected(expected)}\n` +
+         `Received: ${printReceived(received)}\n` +
+         '\n' +
+         printCloseToSigFig( receivedMagnitude,
+          expectedMagnitude,
+          allowableMantissaDiff,
+          receivedMantissaDiff,
+          precision,
+          isNot);
+  console.log ('return: pass = ' +  pass + ' expected: ' + expected + ' recieved: ' + received );
+   return {message, pass};
+ },
+  
+  
   toBeDefined(this: MatcherState, received: unknown, expected: void) {
     const matcherName = 'toBeDefined';
     const options: MatcherHintOptions = {

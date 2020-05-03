@@ -1,3 +1,5 @@
+// eslint-disable-next-line eslint-comments/disable-enable-pair
+/* eslint-disable prettier/prettier */
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
@@ -407,6 +409,7 @@ describe('.toStrictEqual()', () => {
     expect({test: c}).not.toStrictEqual({test: d});
   });
 
+  // eslint-disable-next-line eslint-comments/disable-enable-pair
   /* eslint-disable no-sparse-arrays */
   it('passes for matching sparse arrays', () => {
     expect([, 1]).toStrictEqual([, 1]);
@@ -421,10 +424,10 @@ describe('.toStrictEqual()', () => {
   it('does not pass when equally sparse arrays have different values', () => {
     expect([, 1]).not.toStrictEqual([, 2]);
   });
-  /* eslint-enable */
 });
 
 describe('.toEqual()', () => {
+  // eslint-disable-next-line eslint-comments/disable-enable-pair
   /* eslint-disable no-new-wrappers */
   [
     [true, false],
@@ -929,7 +932,7 @@ describe('.toEqual()', () => {
       expect(d).not.toEqual(c);
     });
   });
-  /* eslint-enable */
+
 });
 
 describe('.toBeInstanceOf()', () => {
@@ -1512,8 +1515,10 @@ describe('.toBeCloseTo', () => {
     [1.23, 1.226],
     [1.23, 1.225],
     [1.23, 1.234],
+    [-1.23, -1.234],
     [Infinity, Infinity],
     [-Infinity, -Infinity],
+    [Math.log(0), Math.log(0)],
   ].forEach(([n1, n2]) => {
     it(`{pass: true} expect(${n1}).toBeCloseTo(${n2})`, () => {
       jestExpect(n1).toBeCloseTo(n2);
@@ -1528,6 +1533,8 @@ describe('.toBeCloseTo', () => {
     [0, 0.01],
     [1, 1.23],
     [1.23, 1.2249999],
+    [1.23, -1.23],
+    [-1.23, 1.23],
     [Infinity, -Infinity],
     [Infinity, 1.23],
     [-Infinity, -1.23],
@@ -1618,6 +1625,135 @@ describe('.toBeCloseTo', () => {
       const received = Promise.resolve(0.1);
       return expect(
         jestExpect(received).resolves.not.toBeCloseTo(expected, precision),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+  });
+});
+
+describe('.toBeCloseToSigFig', () => {
+  [
+    [0, 0],
+    [0, 0.001],
+    [1.23, 1.229],
+    [1.23, 1.226],
+    [1.23, 1.225],
+    [1.23, 1.234],
+    [-1.23e5, -1.234e5],
+    [-1.23e-5, -1.234e-5],
+    [Infinity, Infinity],
+    [-Infinity, -Infinity],
+  ].forEach(([n1, n2]) => {
+    it(`{pass: true} expect(${n1}).toBeCloseToSigFig(${n2})`, () => {
+      jestExpect(n1).toBeCloseToSigFig(n2);
+
+      expect(() =>
+        jestExpect(n1).not.toBeCloseToSigFig(n2),
+      ).toThrowErrorMatchingSnapshot();
+    });
+  });
+
+  [
+    [0, 0.01],
+    [1, 1.23],
+    [1.23, 1.2249999],
+    [Infinity, -Infinity],
+    [Infinity, 1.23],
+    [-Infinity, -1.23],
+    [-1.23e5, -1.234e6],
+    [-1.23e-5, -1.234e5],
+  ].forEach(([n1, n2]) => {
+    it(`{pass: false} expect(${n1}).toBeCloseToSigFig(${n2})`, () => {
+      jestExpect(n1).not.toBeCloseToSigFig(n2);
+
+      expect(() =>
+        jestExpect(n1).toBeCloseToSigFig(n2),
+      ).toThrowErrorMatchingSnapshot();
+    });
+  });
+
+  [
+    [3.141592e-7, 3e-7, 8],
+    [1.234567, 1.2345678, 8],
+    [6.02214076e23, 6.0221407e23, 8],
+    [9.109383e-31, 9.109383701528e-31, 7],
+    [1.234567, 1.2345678, 7],
+  ].forEach(([n1, n2, p]) => {
+    it(`{pass: false} expect(${n1}).toBeCloseToSigFig(${n2}, ${p})`, () => {
+      jestExpect(n1).not.toBeCloseToSigFig(n2, p);
+
+      expect(() =>
+        jestExpect(n1).toBeCloseToSigFig(n2, p),
+      ).toThrowErrorMatchingSnapshot();
+    });
+  });
+
+  [
+    [0, 0.1, 0],
+    [0, 0.0001, 3],
+    [0, 0.000004, 5],
+    [2.0000002, 2, 5],
+    [1.23, 1.2345668, 2],
+    [6.02214076e23, 6.0221408e23, 7],
+    [9.109383701528e-31, 9.109383701528e-31, 13],
+  ].forEach(([n1, n2, p]) => {
+    it(`{pass: true} expect(${n1}).toBeCloseToSigFig(${n2}, ${p})`, () => {
+      jestExpect(n1).toBeCloseToSigFig(n2, p);
+
+      expect(() =>
+        jestExpect(n1).not.toBeCloseToSigFig(n2, p),
+      ).toThrowErrorMatchingSnapshot();
+    });
+  });
+
+  describe('throws: Matcher error', () => {
+    test('promise empty isNot false received', () => {
+      const precision = 3;
+      const expected = 0;
+      const received = '';
+      expect(() => {
+        jestExpect(received).toBeCloseToSigFig(expected, precision);
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test('promise empty isNot true expected', () => {
+      const received = 0.1;
+      // expected is undefined
+      expect(() => {
+        jestExpect(received).not.toBeCloseToSigFig();
+      }).toThrowErrorMatchingSnapshot();
+    });
+
+    test('promise rejects isNot false expected', () => {
+      const expected = '0';
+      const received = Promise.reject(0.01);
+      return expect(
+        jestExpect(received).rejects.toBeCloseToSigFig(expected),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    test('promise rejects isNot true received', () => {
+      const expected = 0;
+      const received = Promise.reject(Symbol('0.1'));
+      return expect(
+        jestExpect(received).rejects.not.toBeCloseToSigFig(expected),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    test('promise resolves isNot false received', () => {
+      const precision = 3;
+      const expected = 0;
+      const received = Promise.resolve(false);
+      return expect(
+        jestExpect(received).resolves.toBeCloseToSigFig(expected, precision),
+      ).rejects.toThrowErrorMatchingSnapshot();
+    });
+
+    test('promise resolves isNot true expected', () => {
+      const precision = 3;
+      const expected = null;
+      const received = Promise.resolve(0.1);
+      return expect(
+        jestExpect(received).resolves.not.toBeCloseToSigFig(expected, precision),
       ).rejects.toThrowErrorMatchingSnapshot();
     });
   });

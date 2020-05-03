@@ -877,6 +877,20 @@ test('adding works sanely with decimals', () => {
 
 Because floating point errors are the problem that `toBeCloseTo` solves, it does not support big integer values.
 
+
+
+### `.toBeCloseToSigFig(number, sigFig?)`
+
+Use `toBeCloseToSigFig` to compare floating point numbers to be accurate to within a certain number of significant figures.
+
+This would be the natural choice for comparing real numbers thought of in scientific notation, eg  1.234e5  (1234000.0)
+
+`toBeCloseToSigFig` checks that the order of magnitude (the number after the 'e') is identcal and that the significand (the number before the e), when expressed in normalized scientific form (i.e. one digit shown before the decimal point), matches to within `sigFig` significant figures.
+
+`toBeCloseToSigFig` defaults to checking to 3 significant figures (equivilent to the behaviousr of `toBeCloseTo`) if the optional `sigFig` arguement is not given.  
+Note, `sigFig` must be positive.
+
+
 ### `.toBeDefined()`
 
 Use `.toBeDefined` to check that a variable is not undefined. For example, if you want to check that a function `fetchNewFlavorIdea()` returns _something_, you can write:

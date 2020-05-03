@@ -8,6 +8,16 @@
 
 ### Performance
 
+## float_sig_fig
+
+### Features
+
+- `[expect]` Added  `toBeCloseToSigFig` matcher for matching real numbers in scientific notation.
+
+### Chore & Maintenance
+
+- `[docs]` Added toBeCloseToSigFig to "Using Matchers" and to "ExpectAPI"
+
 ## 25.5.2
 
 ### Fixes

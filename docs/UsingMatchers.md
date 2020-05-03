@@ -103,6 +103,17 @@ test('adding floating point numbers', () => {
 });
 ```
 
+An alternative method for comparing floating points, `toBeCloseToSigFig` is available checking for floating points numbers contemplated in scientific notation to a number of significant figures.
+
+```js
+test('adding floating point numbers', () => {
+  const value = 1e5 + 23400;
+  expect(value).toBeCloseTo(1.234e5, 4);
+});
+```
+
+
+
 ## Strings
 
 You can check strings against regular expressions with `toMatch`:

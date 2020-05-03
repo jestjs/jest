@@ -89,6 +89,40 @@ export const printCloseTo = (
   );
 };
 
+export const printCloseToSigFig = (
+  receivedMagnitude: number,
+  expectedMagnitude: number,
+  allowableMantissaDiff: number,
+  receivedMantissaDiff: number,
+  precision: number,
+  isNot: boolean,
+): string => {
+  const allowableMantissaDiffString =
+    stringify(allowableMantissaDiff).includes('NaN') ||
+    stringify(allowableMantissaDiff).includes('Infinity')
+      ? stringify(allowableMantissaDiff)
+      : allowableMantissaDiff.toFixed(precision + 1);
+
+  const receivedMantissaDiffString =
+    stringify(receivedMantissaDiff).includes('NaN') ||
+    stringify(receivedMantissaDiff).includes('Infinity')
+      ? stringify(receivedMantissaDiff)
+      : receivedMantissaDiff.toFixed(precision + 1);
+
+  return (
+    `Order of magnitude: ${
+      receivedMagnitude == expectedMagnitude ? '    ' : 'not   '
+    } equal \n` +
+    `Expected precision:  ${isNot ? '    ' : ''}  ${stringify(precision)}\n` +
+    `Expected mantissa difference: ${isNot ? 'not ' : ''}< ${EXPECTED_COLOR(
+      allowableMantissaDiffString,
+    )}\n` +
+    `Expected mantissa difference: ${isNot ? '    ' : ''}  ${RECEIVED_COLOR(
+      receivedMantissaDiffString,
+    )}`
+  );
+};
+
 export const printExpectedConstructorName = (
   label: string,
   expected: Function,
