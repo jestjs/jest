@@ -9,10 +9,7 @@ import type {Context, Script} from 'vm';
 import type {Config, Global} from '@jest/types';
 import {installCommonGlobals} from 'jest-util';
 import {ModuleMocker} from 'jest-mock';
-import {
-  JestFakeTimers as LegacyFakeTimers,
-  LolexFakeTimers,
-} from '@jest/fake-timers';
+import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {EnvironmentContext, JestEnvironment} from '@jest/environment';
 import {JSDOM, VirtualConsole} from 'jsdom';
 
@@ -28,7 +25,7 @@ type Win = Window &
 class JSDOMEnvironment implements JestEnvironment {
   dom: JSDOM | null;
   fakeTimers: LegacyFakeTimers<number> | null;
-  fakeTimersLolex: LolexFakeTimers | null;
+  fakeTimersModern: ModernFakeTimers | null;
   global: Win;
   errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
@@ -100,7 +97,7 @@ class JSDOMEnvironment implements JestEnvironment {
       timerConfig,
     });
 
-    this.fakeTimersLolex = new LolexFakeTimers({config, global});
+    this.fakeTimersModern = new ModernFakeTimers({config, global});
   }
 
   async setup(): Promise<void> {}
@@ -109,8 +106,8 @@ class JSDOMEnvironment implements JestEnvironment {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
-    if (this.fakeTimersLolex) {
-      this.fakeTimersLolex.dispose();
+    if (this.fakeTimersModern) {
+      this.fakeTimersModern.dispose();
     }
     if (this.global) {
       if (this.errorEventListener) {
@@ -125,7 +122,7 @@ class JSDOMEnvironment implements JestEnvironment {
     this.global = null;
     this.dom = null;
     this.fakeTimers = null;
-    this.fakeTimersLolex = null;
+    this.fakeTimersModern = null;
   }
 
   runScript<T = unknown>(script: Script): T | null {

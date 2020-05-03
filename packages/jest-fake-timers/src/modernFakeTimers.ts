@@ -6,10 +6,10 @@
  */
 
 import {
+  FakeTimerWithContext,
   InstalledClock,
-  LolexWithContext,
-  withGlobal as lolexWithGlobal,
-} from 'lolex';
+  withGlobal,
+} from '@sinonjs/fake-timers';
 import {StackTraceConfig, formatStackTrace} from 'jest-message-util';
 
 export default class FakeTimers {
@@ -17,7 +17,7 @@ export default class FakeTimers {
   private _config: StackTraceConfig;
   private _fakingTime: boolean;
   private _global: NodeJS.Global;
-  private _lolex: LolexWithContext;
+  private _fakeTimers: FakeTimerWithContext;
   private _maxLoops: number;
 
   constructor({
@@ -34,7 +34,7 @@ export default class FakeTimers {
     this._maxLoops = maxLoops || 100000;
 
     this._fakingTime = false;
-    this._lolex = lolexWithGlobal(global);
+    this._fakeTimers = withGlobal(global);
   }
 
   clearAllTimers(): void {
@@ -63,7 +63,7 @@ export default class FakeTimers {
     if (this._checkFakeTimers()) {
       for (let i = steps; i > 0; i--) {
         this._clock.next();
-        // Fire all timers at this point: https://github.com/sinonjs/lolex/issues/250
+        // Fire all timers at this point: https://github.com/sinonjs/fake-timers/issues/250
         this._clock.tick(0);
 
         if (this._clock.countTimers() === 0) {
@@ -95,11 +95,11 @@ export default class FakeTimers {
 
   useFakeTimers(): void {
     if (!this._fakingTime) {
-      const toFake = Object.keys(this._lolex.timers) as Array<
-        keyof LolexWithContext['timers']
+      const toFake = Object.keys(this._fakeTimers.timers) as Array<
+        keyof FakeTimerWithContext['timers']
       >;
 
-      this._clock = this._lolex.install({
+      this._clock = this._fakeTimers.install({
         loopLimit: this._maxLoops,
         now: Date.now(),
         target: this._global,

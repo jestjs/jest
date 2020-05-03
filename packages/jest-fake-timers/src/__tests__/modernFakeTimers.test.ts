@@ -6,7 +6,7 @@
  *
  */
 
-import FakeTimers from '../FakeTimersLolex';
+import FakeTimers from '../modernFakeTimers';
 
 describe('FakeTimers', () => {
   describe('construction', () => {
@@ -288,7 +288,7 @@ describe('FakeTimers', () => {
       };
 
       const timers = new FakeTimers({global});
-      // Lolex uses `setTimeout` during init to figure out if it's in Node or
+      // @sinonjs/fake-timers uses `setTimeout` during init to figure out if it's in Node or
       // browser env. So clear its calls before we install them into the env
       nativeSetTimeout.mockClear();
       timers.useFakeTimers();

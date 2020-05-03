@@ -46,10 +46,10 @@ describe('NodeEnvironment', () => {
     });
   });
 
-  it('has Lolex fake timers implementation', () => {
+  it('has modern fake timers implementation', () => {
     const env = new NodeEnvironment(makeProjectConfig());
 
-    expect(env.fakeTimersLolex).toBeDefined();
+    expect(env.fakeTimersModern).toBeDefined();
   });
 
   if (isTextEncoderDefined) {
