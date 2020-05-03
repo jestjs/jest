@@ -60,24 +60,26 @@ const eventHandler: Circus.EventHandler = (
         });
       }
 
-      // inherit mode from its parent describe but
-      // do not inherit "only" mode when there is already tests with "only" mode
-      const shouldInheritMode = !(
+      // pass mode of currentDescribeBlock to tests
+      // but do not when there is already a single test with "only" mode
+      const shouldPassMode = !(
         currentDescribeBlock.mode === 'only' &&
-        currentDescribeBlock.tests.find(test => test.mode === 'only')
+        currentDescribeBlock.children.find(
+          child => child.type === 'test' && child.mode === 'only',
+        )
       );
-
-      if (shouldInheritMode) {
-        currentDescribeBlock.tests.forEach(test => {
-          if (!test.mode) {
-            test.mode = currentDescribeBlock.mode;
+      if (shouldPassMode) {
+        currentDescribeBlock.children.forEach(child => {
+          if (child.type === 'test' && !child.mode) {
+            child.mode = currentDescribeBlock.mode;
           }
         });
       }
-
       if (
         !state.hasFocusedTests &&
-        currentDescribeBlock.tests.some(test => test.mode === 'only')
+        currentDescribeBlock.children.some(
+          child => child.type === 'test' && child.mode === 'only',
+        )
       ) {
         state.hasFocusedTests = true;
       }
@@ -129,7 +131,7 @@ const eventHandler: Circus.EventHandler = (
       if (test.mode === 'only') {
         state.hasFocusedTests = true;
       }
-      currentDescribeBlock.tests.push(test);
+      currentDescribeBlock.children.push(test);
       break;
     }
     case 'hook_failure': {
