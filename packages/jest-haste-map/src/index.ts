@@ -892,6 +892,8 @@ class HasteMap extends EventEmitter {
             return null;
           };
 
+          const fileMetadata = hasteMap.files.get(relativeFilePath);
+
           // If it's not an addition, delete the file and all its metadata
           if (fileMetadata != null) {
             const moduleName = fileMetadata[H.ID];
