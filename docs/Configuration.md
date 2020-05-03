@@ -1100,11 +1100,11 @@ class CustomSequencer extends Sequencer {
 module.exports = CustomSequencer;
 ```
 
-update your jest config
+Use it in your Jest config file like this:
 
 ```json
 {
-  "testSequencer": "<path/to/testSequencer.js>"
+  "testSequencer": "path/to/testSequencer.js"
 }
 ```
 
