@@ -7,7 +7,7 @@ Jest is a universal testing platform, with the ability to adapt to any JavaScrip
 
 ## React
 
-- [Testing ReactJS components with Jest](https://github.com/testing-library/react-testing-library) by Kent C. Dodds ([@kentcdodds](https://twitter.com/kentcdodds))
+- [Testing ReactJS components with Jest](https://testing-library.com/docs/react-testing-library/example-intro) by Kent C. Dodds ([@kentcdodds](https://twitter.com/kentcdodds))
 
 ## Vue.js
 
