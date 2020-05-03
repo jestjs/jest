@@ -344,7 +344,7 @@ export type ProjectConfig = {
   testRegex: Array<string | RegExp>;
   testRunner: string;
   testURL: string;
-  timers: 'real' | 'fake';
+  timers: 'real' | 'fake' | 'modern' | 'legacy';
   transform: Array<[string, Path, Record<string, unknown>]>;
   transformIgnorePatterns: Array<Glob>;
   watchPathIgnorePatterns: Array<string>;

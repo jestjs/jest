@@ -13,6 +13,7 @@
     "@jest/console": "^26.0.0-alpha.0",
     "@jest/environment": "^26.0.0-alpha.0",
     "@jest/globals": "^26.0.0-alpha.0",
+    "@jest/fake-timers": "^26.0.0-alpha.0",
     "@jest/source-map": "^26.0.0-alpha.0",
     "@jest/test-result": "^26.0.0-alpha.0",
     "@jest/transform": "^26.0.0-alpha.0",
