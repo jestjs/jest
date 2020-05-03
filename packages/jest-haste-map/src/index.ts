@@ -852,7 +852,9 @@ class HasteMap extends EventEmitter {
       // The file has been accessed, not modified
       if (
         type === 'change' &&
-        fileMetadata?.[H.MTIME] === stat?.mtime.getTime()
+        fileMetadata &&
+        stat &&
+        fileMetadata[H.MTIME] === stat.mtime.getTime()
       ) {
         return;
       }
