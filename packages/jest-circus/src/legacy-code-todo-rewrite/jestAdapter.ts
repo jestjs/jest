@@ -52,9 +52,7 @@ const jestAdapter = async (
   if (config.timers === 'fake' || config.timers === 'legacy') {
     // during setup, this cannot be null (and it's fine to explode if it is)
     environment.fakeTimers!.useFakeTimers();
-  }
-
-  if (config.timers === 'modern') {
+  } else if (config.timers === 'modern') {
     environment.fakeTimersModern!.useFakeTimers();
   }
 
