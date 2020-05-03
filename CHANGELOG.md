@@ -18,12 +18,13 @@
 - `[*]` [**BREAKING**] Drop support for Node 8 ([#9423](https://github.com/facebook/jest/pull/9423))
 - `[*]` Upgrade to chalk@4 ([#9752](https://github.com/facebook/jest/pull/9752))
 - `[*]` Remove usage of `realpath-native` ([#9952](https://github.com/facebook/jest/pull/9952))
-- `[jest-runtime]` [**BREAKING**] Remove long-deprecated `require.requireActual` and `require.requireMock` methods ([#9854](https://github.com/facebook/jest/pull/9854))
-- `[expect, jest-mock, pretty-format]` [**BREAKING**] Remove `build-es5` from package ([#9945](https://github.com/facebook/jest/pull/9945))
-- `[jest-haste-map]` [**BREAKING**] removed `providesModuleNodeModules` ([#8535](https://github.com/facebook/jest/pull/8535))
 - `[docs]` Fix example reference implementation to use Jest with Phabricator ([#8662](https://github.com/facebook/jest/pull/8662))
 - `[docs]` Added default compiler to tranform ([#8583](https://github.com/facebook/jest/pull/8583))
 - `[docs]` Updated Testing Frameworks guide with React; make it generic ([#9106](https://github.com/facebook/jest/pull/9106))
+- `[expect, jest-mock, pretty-format]` [**BREAKING**] Remove `build-es5` from package ([#9945](https://github.com/facebook/jest/pull/9945))
+- `[@jest/fake-timers, @jest/environment]` [**BREAKING**] Rename `LolexFakeTimers` to `ModernFakeTimers` ([#9960](https://github.com/facebook/jest/pull/9960))
+- `[jest-haste-map]` [**BREAKING**] removed `providesModuleNodeModules` ([#8535](https://github.com/facebook/jest/pull/8535))
+- `[jest-runtime]` [**BREAKING**] Remove long-deprecated `require.requireActual` and `require.requireMock` methods ([#9854](https://github.com/facebook/jest/pull/9854))
 
 ### Performance
 

@@ -2309,6 +2309,13 @@
   dependencies:
     type-detect "4.0.8"
 
+"@sinonjs/fake-timers@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@sinonjs/fake-timers/-/fake-timers-6.0.1.tgz#293674fccb3262ac782c7aadfdeca86b10c75c40"
+  integrity sha512-MZPUxrmFubI36XS1DI3qmI0YdN1gks62JtFZvxR67ljjSNCeK6U08Zx4msEWOXuofgqUt6zPHSi1H9fbjR/NRA==
+  dependencies:
+    "@sinonjs/commons" "^1.7.0"
+
 "@testing-library/dom@^6.0.0":
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/@testing-library/dom/-/dom-6.0.0.tgz#34e28e69e49bd6347fc64a5dde4c4f9aabbd17d3"
@@ -2563,11 +2570,6 @@
   resolved "https://registry.yarnpkg.com/@types/lockfile/-/lockfile-1.0.1.tgz#434a3455e89843312f01976e010c60f1bcbd56f7"
   integrity sha512-65WZedEm4AnOsBDdsapJJG42MhROu3n4aSSiu87JXF/pSdlubxZxp3S1yz3kTfkJ2KBPud4CpjoHVAptOm9Zmw==
 
-"@types/lolex@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@types/lolex/-/lolex-5.1.0.tgz#11b4c4756c007306d0feeaf2f08f88350c635d2b"
-  integrity sha512-hCQ2dOEQUw1LwofdIpMMGGqENd5p5ANzvcTe1nXTjcQL84r7tcLXFJlBgi0Ggz0f7BLmE2epf0C5Q07iq2gV0g==
-
 "@types/md5-file@^4.0.1":
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@types/md5-file/-/md5-file-4.0.1.tgz#5e6cfb7949dc375049b8f6fd8f91adacfc176c63"
@@ -2708,6 +2710,11 @@
   integrity sha512-pOKLaubrAEMUItGNpgwl0HMFPrSAFic8oSVIvfu1UwcgGNmNyK9gyhBHKmBnUTwwVvpZfkzUC0GaMgnL6P86uA==
   dependencies:
     "@types/node" "*"
+
+"@types/sinonjs__fake-timers@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/@types/sinonjs__fake-timers/-/sinonjs__fake-timers-6.0.1.tgz#681df970358c82836b42f989188d133e218c458e"
+  integrity sha512-yYezQwGWty8ziyYLdZjwxyMb0CZR49h8JALHGrxjQHWlqGgc8kLdHEgWrgL0uZ29DMvEVBDnHU2Wg36zKSIUtA==
 
 "@types/source-map-support@^0.5.0":
   version "0.5.1"

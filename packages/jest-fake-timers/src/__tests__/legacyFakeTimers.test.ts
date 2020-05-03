@@ -9,7 +9,7 @@ import * as util from 'util';
 import {runInNewContext} from 'vm';
 import wrap from 'jest-snapshot-serializer-raw';
 import mock = require('jest-mock');
-import FakeTimers from '../jestFakeTimers';
+import FakeTimers from '../legacyFakeTimers';
 
 const timerConfig = {
   idToRef: (id: number) => id,

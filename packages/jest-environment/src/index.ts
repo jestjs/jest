@@ -8,10 +8,7 @@
 import type {Context, Script} from 'vm';
 import type {Circus, Config, Global} from '@jest/types';
 import jestMock = require('jest-mock');
-import type {
-  JestFakeTimers as LegacyFakeTimers,
-  LolexFakeTimers,
-} from '@jest/fake-timers';
+import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 
 type JestMockFn = typeof jestMock.fn;
 type JestMockSpyOn = typeof jestMock.spyOn;
@@ -41,7 +38,7 @@ export declare class JestEnvironment {
   constructor(config: Config.ProjectConfig, context?: EnvironmentContext);
   global: Global.Global;
   fakeTimers: LegacyFakeTimers<unknown> | null;
-  fakeTimersLolex: LolexFakeTimers | null;
+  fakeTimersModern: ModernFakeTimers | null;
   moduleMocker: jestMock.ModuleMocker | null;
   /**
    * @deprecated implement getVmContext instead
