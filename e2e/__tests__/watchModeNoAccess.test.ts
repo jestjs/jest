@@ -9,22 +9,23 @@
 
 'use strict';
 
-import fs from 'fs';
-import os from 'os';
-import path from 'path';
+import * as os from 'os';
+import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {cleanup, writeFiles} from '../Utils';
 import {runContinuous} from '../runJest';
 
 const DIR = path.resolve(os.tmpdir(), 'watch_mode_no_access');
 
-const sleep = time => new Promise(resolve => setTimeout(resolve, time));
+const sleep = (time: number) =>
+  new Promise(resolve => setTimeout(resolve, time));
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
 const setupFiles = () => {
   writeFiles(DIR, {
-    '__tests__/foo.spec.js': `
+    '__tests__/foo.test.js': `
       const foo = require('../foo');
       test('foo', () => { expect(typeof foo).toBe('number'); });
     `,
@@ -37,7 +38,7 @@ const setupFiles = () => {
   });
 };
 
-let testRun;
+let testRun: ReturnType<typeof runContinuous>;
 
 afterEach(async () => {
   if (testRun) {
@@ -62,12 +63,13 @@ test('does not re-run tests when only access time is modified', async () => {
   // Should re-run the test
   const modulePath = path.join(DIR, 'foo.js');
   const stat = fs.lstatSync(modulePath);
-  fs.utimesSync(modulePath, stat.atime, stat.mtime);
+  fs.utimesSync(modulePath, stat.atime.getTime(), stat.mtime.getTime());
+
   await testRun.waitUntil(({stderr}) => numberOfTestRuns(stderr) === 2);
 
   // Should NOT re-run the test
   const fakeATime = 1541723621;
-  fs.utimesSync(modulePath, fakeATime, stat.mtime);
+  fs.utimesSync(modulePath, fakeATime, stat.mtime.getTime());
   await sleep(3000);
   expect(numberOfTestRuns(testRun.getCurrentOutput().stderr)).toBe(2);
 
