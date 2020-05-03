@@ -3,7 +3,11 @@ id: testing-frameworks
 title: Testing Web Frameworks
 ---
 
-Although Jest may be considered a React-specific test runner, in fact it is a universal testing platform, with the ability to adapt to any JavaScript library or framework. In this section we'd like to link to community posts and articles about integrating Jest into other popular JS libraries.
+Jest is a universal testing platform, with the ability to adapt to any JavaScript library or framework. In this section we'd like to link to community posts and articles about integrating Jest into popular JS libraries.
+
+## React
+
+- [Testing ReactJS components with Jest](https://github.com/testing-library/react-testing-library) by Kent C. Dodds ([@kentcdodds](https://twitter.com/kentcdodds))
 
 ## Vue.js
 
@@ -19,10 +23,6 @@ Although Jest may be considered a React-specific test runner, in fact it is a un
 ## Angular
 
 - [Testing Angular faster with Jest](https://www.xfive.co/blog/testing-angular-faster-jest/) by Michał Pierzchała ([@thymikee](https://twitter.com/thymikee))
-
-## React
-
-- [Testing ReactJS components with Jest](https://github.com/testing-library/react-testing-library) by Kent C. Dodds ([@kentcdodds](https://twitter.com/kentcdodds))
 
 ## MobX
 
