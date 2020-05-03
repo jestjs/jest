@@ -1104,7 +1104,6 @@ update your jest config
 
 ```json
 {
-  "roots": ["<rootDir>/src"],
   "testSequencer": "<path/to/testSequencer.js>"
 }
 ```
