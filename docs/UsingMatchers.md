@@ -108,7 +108,7 @@ An alternative method for comparing floating points, `toBeCloseToSigFig` is avai
 ```js
 test('adding floating point numbers', () => {
   const value = 1e5 + 23400;
-  expect(value).toBeCloseTo(1.234e5, 4);
+  expect(value).toBeCloseToSigFig(1.234e5, 4);
 });
 ```
 
