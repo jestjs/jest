@@ -90,7 +90,11 @@ test('original implementation', () => {
 
 _Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior._
 
-### `jest.genMockFromModule(moduleName)`
+### `jest.createMockFromModule(moduleName)`
+
+##### renamed in Jest **26.0.0+**
+
+Also under the alias: `.genMockFromModule(moduleName)`
 
 Given the name of a module, use the automatic mocking system to generate a mocked version of the module for you.
 
@@ -109,17 +113,17 @@ export default {
 ```
 
 ```js
-// __tests__/genMockFromModule.test.js
-const utils = jest.genMockFromModule('../utils').default;
+// __tests__/createMockFromModule.test.js
+const utils = jest.createMockFromModule('../utils').default;
 utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
 
-test('implementation created by jest.genMockFromModule', () => {
+test('implementation created by jest.createMockFromModule', () => {
   expect(utils.authorize.mock).toBeTruthy();
   expect(utils.isAuthorized('not wizard')).toEqual(true);
 });
 ```
 
-This is how `genMockFromModule` will mock the following data types:
+This is how `createMockFromModule` will mock the following data types:
 
 #### `Function`
 
@@ -176,7 +180,7 @@ module.exports = {
 
 ```js
 // __tests__/example.test.js
-const example = jest.genMockFromModule('./example');
+const example = jest.createMockFromModule('./example');
 
 test('should run example code', () => {
   // creates a new mocked function with no formal arguments.

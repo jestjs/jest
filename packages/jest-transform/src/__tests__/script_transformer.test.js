@@ -13,7 +13,7 @@ jest
   .mock('graceful-fs', () =>
     // Node 10.5.x compatibility
     ({
-      ...jest.genMockFromModule('fs'),
+      ...jest.createMockFromModule('fs'),
       ReadStream: jest.requireActual('fs').ReadStream,
       WriteStream: jest.requireActual('fs').WriteStream,
       readFileSync: jest.fn((path, options) => {

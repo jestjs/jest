@@ -1483,6 +1483,8 @@ class Runtime {
       autoMockOn: enableAutomock,
       clearAllMocks,
       clearAllTimers: () => _getFakeTimers().clearAllTimers(),
+      createMockFromModule: (moduleName: string) =>
+        this._generateMock(from, moduleName),
       deepUnmock,
       disableAutomock,
       doMock: mock,

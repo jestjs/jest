@@ -19,7 +19,7 @@ describe('Runtime', () => {
     createRuntime = require('createRuntime');
   });
 
-  describe('genMockFromModule', () => {
+  describe('createMockFromModule', () => {
     it('does not cause side effects in the rest of the module system when generating a mock', () =>
       createRuntime(__filename).then(runtime => {
         const testRequire = runtime.requireModule.bind(
@@ -33,7 +33,7 @@ describe('Runtime', () => {
         expect(origModuleStateValue).toBe('default');
 
         // Generate a mock for a module with side effects
-        const mock = module.jest.genMockFromModule('ModuleWithSideEffects');
+        const mock = module.jest.createMockFromModule('ModuleWithSideEffects');
 
         // Make sure we get a mock.
         expect(mock.fn()).toBe(undefined);
@@ -43,8 +43,8 @@ describe('Runtime', () => {
     it('resolves mapped modules correctly', () =>
       createRuntime(__filename, {moduleNameMapper}).then(runtime => {
         const root = runtime.requireModule(runtime.__mockRootPath);
-        const mockModule = root.jest.genMockFromModule(
-          'module/name/genMockFromModule',
+        const mockModule = root.jest.createMockFromModule(
+          'module/name/createMockFromModule',
         );
 
         expect(mockModule.test.mock).toBeTruthy();
@@ -59,7 +59,7 @@ describe('Runtime', () => {
       );
 
       const module = testRequire('RegularModule');
-      const mockModule = module.jest.genMockFromModule('RegularModule');
+      const mockModule = module.jest.createMockFromModule('RegularModule');
       const testObjectPrototype = Object.getPrototypeOf(module.object);
       const mockObjectPrototype = Object.getPrototypeOf(mockModule.object);
       expect(mockObjectPrototype).toBe(testObjectPrototype);
