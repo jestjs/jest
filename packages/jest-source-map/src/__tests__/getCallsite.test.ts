@@ -11,7 +11,7 @@ import getCallsite from '../getCallsite';
 
 // Node 10.5.x compatibility
 jest.mock('graceful-fs', () => ({
-  ...jest.genMockFromModule<typeof import('fs')>('fs'),
+  ...jest.createMockFromModule<typeof import('fs')>('fs'),
   ReadStream: jest.requireActual('fs').ReadStream,
   WriteStream: jest.requireActual('fs').WriteStream,
 }));

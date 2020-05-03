@@ -13,7 +13,7 @@ jest
     summarizers: {pkg: jest.fn(() => ({visit: jest.fn()}))},
   }))
   .mock('istanbul-reports', () => ({
-    ...jest.genMockFromModule('istanbul-reports'),
+    ...jest.createMockFromModule('istanbul-reports'),
     create: jest.fn(() => ({execute: jest.fn()})),
   }));
 

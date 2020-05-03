@@ -126,8 +126,18 @@ export interface Jest {
    *
    * This is useful when you want to create a manual mock that extends the
    * automatic mock's behavior.
+   *
+   * @deprecated Use `jest.createMockFromModule()` instead
    */
   genMockFromModule(moduleName: string): unknown;
+  /**
+   * Given the name of a module, use the automatic mocking system to generate a
+   * mocked version of the module for you.
+   *
+   * This is useful when you want to create a manual mock that extends the
+   * automatic mock's behavior.
+   */
+  createMockFromModule(moduleName: string): unknown;
   /**
    * Determines if the given function is a mocked function.
    */

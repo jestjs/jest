@@ -6,7 +6,7 @@
  */
 
 jest.mock('graceful-fs', () => ({
-  ...jest.genMockFromModule<typeof import('fs')>('fs'),
+  ...jest.createMockFromModule<typeof import('fs')>('fs'),
   existsSync: jest.fn().mockReturnValue(true),
 }));
 
