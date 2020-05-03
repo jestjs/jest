@@ -1483,6 +1483,8 @@ class Runtime {
       autoMockOn: enableAutomock,
       clearAllMocks,
       clearAllTimers: () => _getFakeTimers().clearAllTimers(),
+      createMockFromModule: (moduleName: string) =>
+        this._generateMock(from, moduleName),
       deepUnmock,
       disableAutomock,
       doMock: mock,
@@ -1490,8 +1492,6 @@ class Runtime {
       enableAutomock,
       fn,
       genMockFromModule: (moduleName: string) =>
-        this._generateMock(from, moduleName),
-      createMockFromModule: (moduleName: string) =>
         this._generateMock(from, moduleName),
       getRealSystemTime: () => {
         const fakeTimers = _getFakeTimers();
