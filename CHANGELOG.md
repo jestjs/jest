@@ -324,6 +324,7 @@
 
 - `[*]` [**BREAKING**] TypeScript definitions requires a minimum of TypeScript v3.8 ([#9823](https://github.com/facebook/jest/pull/9823))
 - `[*]` [**BREAKING**] Drop support for Node 8 ([#9423](https://github.com/facebook/jest/pull/9423))
+- `[*]` [**BREAKING**] Remove deprecated `mapCoverage` ([#9968](https://github.com/facebook/jest/pull/9968))
 - `[*]` Upgrade to chalk@4 ([#9752](https://github.com/facebook/jest/pull/9752))
 - `[*]` Remove usage of `realpath-native` ([#9952](https://github.com/facebook/jest/pull/9952))
 - `[docs]` Fix example reference implementation to use Jest with Phabricator ([#8662](https://github.com/facebook/jest/pull/8662))
