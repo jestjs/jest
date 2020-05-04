@@ -810,11 +810,6 @@ class Runtime {
       });
   }
 
-  // TODO - remove in Jest 26
-  getSourceMapInfo(_coveredFiles: Set<string>): Record<string, string> {
-    return {};
-  }
-
   getSourceMaps(): SourceMapRegistry {
     return fromEntries(this._sourceMapRegistry);
   }
