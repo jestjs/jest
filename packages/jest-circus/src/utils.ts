@@ -28,12 +28,12 @@ export const makeDescribe = (
   }
 
   return {
+    type: 'describeBlock', // eslint-disable-next-line sort-keys
     children: [],
     hooks: [],
     mode: _mode,
     name: convertDescriptorToString(name),
     parent,
-    tests: [],
   };
 };
 
@@ -45,6 +45,7 @@ export const makeTest = (
   timeout: number | undefined,
   asyncError: Circus.Exception,
 ): Circus.TestEntry => ({
+  type: 'test', // eslint-disable-next-line sort-keys
   asyncError,
   duration: null,
   errors: [],
@@ -62,16 +63,15 @@ export const makeTest = (
 // block has an enabled test.
 const hasEnabledTest = (describeBlock: Circus.DescribeBlock): boolean => {
   const {hasFocusedTests, testNamePattern} = getState();
-  const hasOwnEnabledTests = describeBlock.tests.some(
-    test =>
-      !(
-        test.mode === 'skip' ||
-        (hasFocusedTests && test.mode !== 'only') ||
-        (testNamePattern && !testNamePattern.test(getTestID(test)))
-      ),
+  return describeBlock.children.some(child =>
+    child.type === 'describeBlock'
+      ? hasEnabledTest(child)
+      : !(
+          child.mode === 'skip' ||
+          (hasFocusedTests && child.mode !== 'only') ||
+          (testNamePattern && !testNamePattern.test(getTestID(child)))
+        ),
   );
-
-  return hasOwnEnabledTests || describeBlock.children.some(hasEnabledTest);
 };
 
 type DescribeHooks = {
@@ -136,7 +136,9 @@ export const getEachHooksForTest = (test: Circus.TestEntry): TestHooks => {
 export const describeBlockHasTests = (
   describe: Circus.DescribeBlock,
 ): boolean =>
-  describe.tests.length > 0 || describe.children.some(describeBlockHasTests);
+  describe.children.some(
+    child => child.type === 'test' || describeBlockHasTests(child),
+  );
 
 const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
   `Exceeded timeout of ${formatTime(timeout)} for a ${
@@ -283,48 +285,57 @@ const makeTestResults = (
   describeBlock: Circus.DescribeBlock,
 ): Circus.TestResults => {
   const {includeTestLocationInResult} = getState();
-  let testResults: Circus.TestResults = [];
-  for (const test of describeBlock.tests) {
-    const testPath = [];
-    let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
-    do {
-      testPath.unshift(parent.name);
-    } while ((parent = parent.parent));
-
-    const {status} = test;
-
-    if (!status) {
-      throw new Error('Status should be present after tests are run.');
-    }
-
-    let location = null;
-    if (includeTestLocationInResult) {
-      const stackLine = test.asyncError.stack.split('\n')[1];
-      const parsedLine = stackUtils.parseLine(stackLine);
-      if (
-        parsedLine &&
-        typeof parsedLine.column === 'number' &&
-        typeof parsedLine.line === 'number'
-      ) {
-        location = {
-          column: parsedLine.column,
-          line: parsedLine.line,
-        };
-      }
-    }
-
-    testResults.push({
-      duration: test.duration,
-      errors: test.errors.map(_formatError),
-      invocations: test.invocations,
-      location,
-      status,
-      testPath,
-    });
-  }
-
+  const testResults: Circus.TestResults = [];
   for (const child of describeBlock.children) {
-    testResults = testResults.concat(makeTestResults(child));
+    switch (child.type) {
+      case 'describeBlock': {
+        testResults.push(...makeTestResults(child));
+        break;
+      }
+      case 'test':
+        {
+          const testPath = [];
+          let parent:
+            | Circus.TestEntry
+            | Circus.DescribeBlock
+            | undefined = child;
+          do {
+            testPath.unshift(parent.name);
+          } while ((parent = parent.parent));
+
+          const {status} = child;
+
+          if (!status) {
+            throw new Error('Status should be present after tests are run.');
+          }
+
+          let location = null;
+          if (includeTestLocationInResult) {
+            const stackLine = child.asyncError.stack.split('\n')[1];
+            const parsedLine = stackUtils.parseLine(stackLine);
+            if (
+              parsedLine &&
+              typeof parsedLine.column === 'number' &&
+              typeof parsedLine.line === 'number'
+            ) {
+              location = {
+                column: parsedLine.column,
+                line: parsedLine.line,
+              };
+            }
+          }
+
+          testResults.push({
+            duration: child.duration,
+            errors: child.errors.map(_formatError),
+            invocations: child.invocations,
+            location,
+            status,
+            testPath,
+          });
+        }
+        break;
+    }
   }
 
   return testResults;
@@ -376,12 +387,15 @@ export const addErrorToEachTestUnderDescribe = (
   error: Circus.Exception,
   asyncError: Circus.Exception,
 ): void => {
-  for (const test of describeBlock.tests) {
-    test.errors.push([error, asyncError]);
-  }
-
   for (const child of describeBlock.children) {
-    addErrorToEachTestUnderDescribe(child, error, asyncError);
+    switch (child.type) {
+      case 'describeBlock':
+        addErrorToEachTestUnderDescribe(child, error, asyncError);
+        break;
+      case 'test':
+        child.errors.push([error, asyncError]);
+        break;
+    }
   }
 };
 

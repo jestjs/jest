@@ -43,16 +43,25 @@ const _runTestsForDescribeBlock = async (
   const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
   const deferredRetryTests = [];
 
-  for (const test of describeBlock.tests) {
-    const hasErrorsBeforeTestRun = test.errors.length > 0;
-    await _runTest(test);
+  for (const child of describeBlock.children) {
+    switch (child.type) {
+      case 'describeBlock': {
+        await _runTestsForDescribeBlock(child);
+        break;
+      }
+      case 'test': {
+        const hasErrorsBeforeTestRun = child.errors.length > 0;
+        await _runTest(child);
 
-    if (
-      hasErrorsBeforeTestRun === false &&
-      retryTimes > 0 &&
-      test.errors.length > 0
-    ) {
-      deferredRetryTests.push(test);
+        if (
+          hasErrorsBeforeTestRun === false &&
+          retryTimes > 0 &&
+          child.errors.length > 0
+        ) {
+          deferredRetryTests.push(child);
+        }
+        break;
+      }
     }
   }
 
@@ -67,10 +76,6 @@ const _runTestsForDescribeBlock = async (
       await _runTest(test);
       numRetriesAvailable--;
     }
-  }
-
-  for (const child of describeBlock.children) {
-    await _runTestsForDescribeBlock(child);
   }
 
   for (const hook of afterAll) {
