@@ -1,5 +1,5 @@
 ---
-id: version-25.1-jest-platform
+id: version-26.0-jest-platform
 title: Jest Platform
 original_id: jest-platform
 ---
@@ -120,7 +120,7 @@ You can read more about `jest-validate` in the [readme file](https://github.com/
 
 ## jest-worker
 
-Module used for parallelization of tasks. Exports a class `Worker` that takes the path of Node.js module and lets you call the module's exported methods as if they were class methods, returning a promise that resolves when the specified method finishes its execution in a forked process.
+Module used for parallelization of tasks. Exports a class `JestWorker` that takes the path of Node.js module and lets you call the module's exported methods as if they were class methods, returning a promise that resolves when the specified method finishes its execution in a forked process.
 
 ### Example
 

@@ -1,5 +1,5 @@
 ---
-id: version-25.3-configuration
+id: version-26.0-configuration
 title: Configuring Jest
 original_id: configuration
 ---
@@ -106,12 +106,6 @@ Default: `0`
 
 By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after `n` failures. Setting bail to `true` is the same as setting bail to `1`.
 
-### `browser` [boolean]
-
-Default: `false`
-
-Respect Browserify's [`"browser"` field](https://github.com/substack/browserify-handbook#browser-field) in `package.json` when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.
-
 ### `cacheDirectory` [string]
 
 Default: `"/tmp/<path>"`
@@ -190,11 +184,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
 
-Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel and comes with a few caveats
-
-1. Your node version must include `vm.compileFunction`, which was introduced in [node 10.10](https://nodejs.org/dist/latest-v12.x/docs/api/vm.html#vm_vm_compilefunction_code_params_options)
-1. Tests needs to run in Node test environment (support for `jsdom` requires [`jest-environment-jsdom-sixteen`](https://www.npmjs.com/package/jest-environment-jsdom-sixteen))
-1. V8 has way better data in the later versions, so using the latest versions of node (v13 at the time of this writing) will yield better results
+Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
 
 ### `coverageReporters` [array\<string | [string,any]>]
 
@@ -690,7 +680,6 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 ```json
 {
   "basedir": string,
-  "browser": bool,
   "defaultResolver": "function(request, options)",
   "extensions": [string],
   "moduleDirectory": [string],
@@ -701,7 +690,18 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 
 The function should either return a path to the module that should be resolved or throw an error if the module can't be found.
 
-Note: the defaultResolver passed as options is the jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom one, e.g. (request, options).
+Note: the defaultResolver passed as options is the Jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom one, e.g. `(request, options)`.
+
+For example, if you want to respect Browserify's [`"browser"` field](https://github.com/browserify/browserify-handbook/blob/master/readme.markdown#browser-field), you can use the following configuration:
+
+```json
+{
+  ...
+  "jest": {
+    "resolver": "browser-resolve"
+  }
+}
+```
 
 ### `restoreMocks` [boolean]
 
@@ -880,7 +880,7 @@ Pretty foo: Object {
 
 To make a dependency explicit instead of implicit, you can call [`expect.addSnapshotSerializer`](ExpectAPI.md#expectaddsnapshotserializerserializer) to add a module for an individual test file instead of adding its path to `snapshotSerializers` in Jest configuration.
 
-More about serializers API can be found [here](https://github.com/facebook/jest/tree/master/packages/pretty-format#serialize).
+More about serializers API can be found [here](https://github.com/facebook/jest/tree/master/packages/pretty-format/README.md#serialize).
 
 ### `testEnvironment` [string]
 

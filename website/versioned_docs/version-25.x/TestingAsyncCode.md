@@ -1,5 +1,5 @@
 ---
-id: version-25.3-asynchronous
+id: version-25.x-asynchronous
 title: Testing Asynchronous Code
 original_id: asynchronous
 ---

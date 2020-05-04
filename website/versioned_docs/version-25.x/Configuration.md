@@ -1,5 +1,5 @@
 ---
-id: version-25.1-configuration
+id: version-25.x-configuration
 title: Configuring Jest
 original_id: configuration
 ---
@@ -196,13 +196,19 @@ Note that using `v8` is considered experimental. This uses V8's builtin code cov
 1. Tests needs to run in Node test environment (support for `jsdom` requires [`jest-environment-jsdom-sixteen`](https://www.npmjs.com/package/jest-environment-jsdom-sixteen))
 1. V8 has way better data in the later versions, so using the latest versions of node (v13 at the time of this writing) will yield better results
 
-### `coverageReporters` [array\<string>]
+### `coverageReporters` [array\<string | [string,any]>]
 
 Default: `["json", "lcov", "text", "clover"]`
 
 A list of reporter names that Jest uses when writing coverage reports. Any [istanbul reporter](https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-reports/lib) can be used.
 
 _Note: Setting this option overwrites the default values. Add `"text"` or `"text-summary"` to see a coverage summary in the console output._
+
+_Note: You can pass additional options to the istanbul reporter using the tuple form. For example:_
+
+```json
+["json", ["lcov", {"projectRoot": "../../"}]]
+```
 
 ### `coverageThreshold` [object]
 
@@ -459,11 +465,11 @@ An array of file extensions your modules use. If you require modules without spe
 
 We recommend placing the extensions most commonly used in your project on the left, so if you are using TypeScript, you may want to consider moving "ts" and/or "tsx" to the beginning of the array.
 
-### `moduleNameMapper` [object\<string, string>]
+### `moduleNameMapper` [object\<string, string | array\<string>>]
 
 Default: `null`
 
-A map from regular expressions to module names that allow to stub out resources, like images or styles with a single module.
+A map from regular expressions to module names or to arrays of module names that allow to stub out resources, like images or styles with a single module.
 
 Modules that are mapped to an alias are unmocked by default, regardless of whether automocking is enabled or not.
 
@@ -478,12 +484,17 @@ Example:
   "moduleNameMapper": {
     "^image![a-zA-Z0-9$_-]+$": "GlobalImageStub",
     "^[./a-zA-Z0-9$_-]+\\.png$": "<rootDir>/RelativeImageStub.js",
-    "module_name_(.*)": "<rootDir>/substituted_module_$1.js"
+    "module_name_(.*)": "<rootDir>/substituted_module_$1.js",
+    "assets/(.*)": [
+      "<rootDir>/images/$1",
+      "<rootDir>/photos/$1",
+      "<rootDir>/recipes/$1"
+    ]
   }
 }
 ```
 
-The order in which the mappings are defined matters. Patterns are checked one by one until one fits. The most specific rule should be listed first.
+The order in which the mappings are defined matters. Patterns are checked one by one until one fits. The most specific rule should be listed first. This is true for arrays of module names as well.
 
 _Note: If you provide module name without boundaries `^$` it may cause hard to spot errors. E.g. `relay` will replace all modules which contain `relay` as a substring in its name: `relay`, `react-relay` and `graphql-relay` will all be pointed to your stub._
 
@@ -506,6 +517,8 @@ An alternative API to setting the `NODE_PATH` env variable, `modulePaths` is an 
 Default: `false`
 
 Activates notifications for test results.
+
+**Beware:** Jest uses [node-notifier](https://github.com/mikaelbr/node-notifier) to display desktop notifications. On Windows, it creates a new start menu entry on the first use and not display the notification. Notifications will be properly displayed on subsequent runs
 
 ### `notifyMode` [string]
 
@@ -744,7 +757,7 @@ async runTests(
 ): Promise<void>
 ```
 
-If you need to restrict your test-runner to only run in serial rather then being executed in parallel your class should have the property `isSerial` to be set as `true`.
+If you need to restrict your test-runner to only run in serial rather than being executed in parallel your class should have the property `isSerial` to be set as `true`.
 
 ### `setupFiles` [array]
 
@@ -867,7 +880,7 @@ Pretty foo: Object {
 
 To make a dependency explicit instead of implicit, you can call [`expect.addSnapshotSerializer`](ExpectAPI.md#expectaddsnapshotserializerserializer) to add a module for an individual test file instead of adding its path to `snapshotSerializers` in Jest configuration.
 
-More about serializers API can be found [here](https://github.com/facebook/jest/tree/master/packages/pretty-format#serialize).
+More about serializers API can be found [here](https://github.com/facebook/jest/tree/master/packages/pretty-format/README.md#serialize).
 
 ### `testEnvironment` [string]
 
@@ -890,7 +903,7 @@ test('use jsdom in this test file', () => {
 
 You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `runScript` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables.
 
-The class may optionally expose a `handleTestEvent` method to bind to events fired by [`jest-circus`](https://github.com/facebook/jest/tree/master/packages/jest-circus).
+The class may optionally expose an asynchronous `handleTestEvent` method to bind to events fired by [`jest-circus`](https://github.com/facebook/jest/tree/master/packages/jest-circus). Normally, `jest-circus` test runner would pause until a promise returned from `handleTestEvent` gets fulfilled, **except for the next events**: `start_describe_definition`, `finish_describe_definition`, `add_hook`, `add_test` or `error` (for the up-to-date list you can look at [SyncEvent type in the types definitions](https://github.com/facebook/jest/tree/master/packages/jest-types/src/Circus.ts)). That is caused by backward compatibility reasons and `process.on('unhandledRejection', callback)` signature, but that usually should not be a problem for most of the use cases.
 
 Any docblock pragmas in test files will be passed to the environment constructor and can be used for per-test configuration. If the pragma does not have a value, it will be present in the object with it's value set to an empty string. If the pragma is not present, it will not be present in the object.
 
@@ -930,7 +943,7 @@ class CustomEnvironment extends NodeEnvironment {
     return super.runScript(script);
   }
 
-  handleTestEvent(event, state) {
+  async handleTestEvent(event, state) {
     if (event.name === 'test_start') {
       // ...
     }
@@ -1073,6 +1086,7 @@ Example:
 Sort test path alphabetically.
 
 ```js
+// testSequencer.js
 const Sequencer = require('@jest/test-sequencer').default;
 
 class CustomSequencer extends Sequencer {
@@ -1085,6 +1099,14 @@ class CustomSequencer extends Sequencer {
 }
 
 module.exports = CustomSequencer;
+```
+
+Use it in your Jest config file like this:
+
+```json
+{
+  "testSequencer": "path/to/testSequencer.js"
+}
 ```
 
 ### `testTimeout` [number]

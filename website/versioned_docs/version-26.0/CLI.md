@@ -1,5 +1,5 @@
 ---
-id: version-25.3-cli
+id: version-26.0-cli
 title: Jest CLI Options
 original_id: cli
 ---
@@ -157,11 +157,7 @@ Alias: `--collectCoverage`. Indicates that test coverage information should be c
 
 Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
 
-Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel and comes with a few caveats
-
-1. Your node version must include `vm.compileFunction`, which was introduced in [node 10.10](https://nodejs.org/dist/latest-v12.x/docs/api/vm.html#vm_vm_compilefunction_code_params_options)
-1. Tests needs to run in Node test environment (support for `jsdom` requires [`jest-environment-jsdom-sixteen`](https://www.npmjs.com/package/jest-environment-jsdom-sixteen))
-1. V8 has way better data in the later versions, so using the latest versions of node (v13 at the time of this writing) will yield better results
+Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
 
 ### `--debug`
 

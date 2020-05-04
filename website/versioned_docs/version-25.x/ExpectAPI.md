@@ -1,5 +1,5 @@
 ---
-id: version-25.1-expect
+id: version-25.x-expect
 title: Expect
 original_id: expect
 ---

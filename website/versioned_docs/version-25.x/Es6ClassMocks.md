@@ -1,5 +1,5 @@
 ---
-id: version-25.5-es6-class-mocks
+id: version-25.x-es6-class-mocks
 title: ES6 Class Mocks
 original_id: es6-class-mocks
 ---

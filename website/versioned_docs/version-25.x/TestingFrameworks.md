@@ -1,5 +1,5 @@
 ---
-id: version-25.1-testing-frameworks
+id: version-25.x-testing-frameworks
 title: Testing Web Frameworks
 original_id: testing-frameworks
 ---
