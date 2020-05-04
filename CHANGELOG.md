@@ -32,6 +32,7 @@
 - `[@jest/fake-timers, @jest/environment]` [**BREAKING**] Rename `LolexFakeTimers` to `ModernFakeTimers` ([#9960](https://github.com/facebook/jest/pull/9960))
 - `[jest-haste-map]` [**BREAKING**] removed `providesModuleNodeModules` ([#8535](https://github.com/facebook/jest/pull/8535))
 - `[jest-runtime]` [**BREAKING**] Remove long-deprecated `require.requireActual` and `require.requireMock` methods ([#9854](https://github.com/facebook/jest/pull/9854))
+- `[jest-runtime]` [**BREAKING**] Remove useless `getSourceMapInfo` from Runtime ([#9969](https://github.com/facebook/jest/pull/9969))
 
 ### Performance
 
