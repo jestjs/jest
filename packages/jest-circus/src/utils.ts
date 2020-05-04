@@ -34,6 +34,7 @@ export const makeDescribe = (
     mode: _mode,
     name: convertDescriptorToString(name),
     parent,
+    tests: [],
   };
 };
 

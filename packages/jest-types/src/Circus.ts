@@ -207,6 +207,8 @@ export type DescribeBlock = {
   mode: BlockMode;
   name: BlockName;
   parent?: DescribeBlock;
+  /** @deprecated Please get from `children` array instead */
+  tests: Array<TestEntry>;
 };
 
 export type TestError = Exception | [Exception | undefined, Exception]; // the error from the test, as well as a backup error for async

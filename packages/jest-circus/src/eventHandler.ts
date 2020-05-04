@@ -148,6 +148,7 @@ const eventHandler: Circus.EventHandler = (
         state.hasFocusedTests = true;
       }
       currentDescribeBlock.children.push(test);
+      currentDescribeBlock.tests.push(test);
       break;
     }
     case 'hook_failure': {
