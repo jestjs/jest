@@ -1,6 +1,6 @@
 {
   "name": "pretty-format",
-  "version": "26.0.0",
+  "version": "26.0.1-alpha.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -12,7 +12,7 @@
   "types": "build/index.d.ts",
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
-    "@jest/types": "^26.0.0",
+    "@jest/types": "^26.0.1-alpha.0",
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.0.0",
     "react-is": "^16.12.0"
