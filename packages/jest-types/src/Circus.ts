@@ -214,7 +214,7 @@ export type TestError = Exception | [Exception | undefined, Exception]; // the e
 export type TestEntry = {
   type: 'test';
   asyncError: Exception; // Used if the test failure contains no usable stack trace
-  errors: TestError;
+  errors: Array<TestError>;
   fn?: TestFn;
   invocations: number;
   mode: TestMode;
