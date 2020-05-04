@@ -1,13 +1,13 @@
 {
   "name": "jest",
   "description": "Delightful JavaScript Testing.",
-  "version": "26.0.0-alpha.1",
+  "version": "26.0.0-alpha.2",
   "main": "build/jest.js",
   "types": "build/jest.d.ts",
   "dependencies": {
-    "@jest/core": "^26.0.0-alpha.1",
+    "@jest/core": "^26.0.0-alpha.2",
     "import-local": "^3.0.2",
-    "jest-cli": "^26.0.0-alpha.1"
+    "jest-cli": "^26.0.0-alpha.2"
   },
   "bin": "./bin/jest.js",
   "engines": {
