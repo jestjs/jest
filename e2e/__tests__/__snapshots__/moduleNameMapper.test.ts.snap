@@ -5,6 +5,11 @@ PASS __tests__/index.js
   ✓ moduleNameMapping correct configuration
 `;
 
+exports[`moduleNameMapper correct configuration mocking module of absolute path 1`] = `
+PASS __tests__/index.js
+  ✓ moduleNameMapping correct configuration
+`;
+
 exports[`moduleNameMapper wrong array configuration 1`] = `
 FAIL __tests__/index.js
   ● Test suite failed to run

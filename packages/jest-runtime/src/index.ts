@@ -584,12 +584,10 @@ class Runtime {
     }
 
     const manualMockOrStub = this._resolver.getMockModule(from, moduleName);
-    let modulePath;
-    if (manualMockOrStub) {
-      modulePath = this._resolveModule(from, manualMockOrStub);
-    } else {
-      modulePath = this._resolveModule(from, moduleName);
-    }
+
+    let modulePath =
+      this._resolver.getMockModule(from, moduleName) ||
+      this._resolveModule(from, moduleName);
 
     let isManualMock =
       manualMockOrStub &&

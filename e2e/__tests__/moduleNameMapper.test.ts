@@ -35,6 +35,20 @@ test('moduleNameMapper correct configuration', () => {
   expect(wrap(rest)).toMatchSnapshot();
 });
 
+test('moduleNameMapper correct configuration mocking module of absolute path', () => {
+  const {stderr, exitCode} = runJest(
+    'module-name-mapper-correct-mock-absolute-path',
+    [],
+    {
+      stripAnsi: true,
+    },
+  );
+  const {rest} = extractSummary(stderr);
+
+  expect(exitCode).toBe(0);
+  expect(wrap(rest)).toMatchSnapshot();
+});
+
 test('moduleNameMapper with mocking', () => {
   const {json} = runWithJson('module-name-mapper-mock');
   expect(json.numTotalTests).toBe(2);
