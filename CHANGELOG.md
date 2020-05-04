@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-each]` [**BREAKING**] Ignore excess words in headings ([#8766](https://github.com/facebook/jest/pull/8766))
+
 ### Chore & Maintenance
 
 ### Performance
@@ -383,7 +385,6 @@
 
 ### Fixes
 
-- `[jest-each]` Ignore excess words in headings ([#8766](https://github.com/facebook/jest/pull/8766))
 - `[jest-cli]` Detect side-effect only imports when running `--onlyChanged` or `--changedSince` ([#8670](https://github.com/facebook/jest/pull/8670))
 - `[jest-cli]` Allow `--maxWorkers` to work with % input again ([#8565](https://github.com/facebook/jest/pull/8565))
 - `[babel-plugin-jest-hoist]` Expand list of whitelisted globals in global mocks ([#8429](https://github.com/facebook/jest/pull/8429))
