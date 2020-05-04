@@ -55,16 +55,15 @@ test('print correct error message with nested test definitions inside describe',
   },
 );
 
-test('print correct message when nesting a hook inside it', () => {
-  if (!isJestCircusRun()) {
-    return;
-  }
+(isJestCircusRun() ? test : test.skip)(
+  'print correct message when nesting a hook inside it',
+  () => {
+    const result = runJest('nested-test-definitions', ['nestedHookInTest']);
 
-  const result = runJest('nested-test-definitions', ['nestedHookInTest']);
+    expect(result.exitCode).toBe(1);
 
-  expect(result.exitCode).toBe(1);
-
-  expect(result.stderr).toContain(
-    'Hooks cannot be defined inside tests. Hook of type "beforeEach" is nested within "test".',
-  );
-});
+    expect(result.stderr).toContain(
+      'Hooks cannot be defined inside tests. Hook of type "beforeEach" is nested within "test".',
+    );
+  },
+);
