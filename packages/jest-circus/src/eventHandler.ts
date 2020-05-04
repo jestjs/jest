@@ -39,7 +39,7 @@ const eventHandler: Circus.EventHandler = (
       const {currentDescribeBlock, currentlyRunningTest} = state;
 
       if (currentlyRunningTest) {
-        state.unhandledErrors.push(
+        currentlyRunningTest.errors.push(
           new Error(
             `Cannot nest a describe inside a test. Describe block "${blockName}" cannot run because it is nested within "${currentlyRunningTest.name}".`,
           ),
@@ -97,7 +97,7 @@ const eventHandler: Circus.EventHandler = (
       const {asyncError, fn, hookType: type, timeout} = event;
 
       if (currentlyRunningTest) {
-        state.unhandledErrors.push(
+        currentlyRunningTest.errors.push(
           new Error(
             `Hooks cannot be defined inside tests. Hook of type "${type}" is nested within "${currentlyRunningTest.name}".`,
           ),
@@ -121,7 +121,7 @@ const eventHandler: Circus.EventHandler = (
       const {asyncError, fn, mode, testName: name, timeout} = event;
 
       if (currentlyRunningTest) {
-        state.unhandledErrors.push(
+        currentlyRunningTest.errors.push(
           new Error(
             `Tests cannot be nested. Test "${name}" cannot run because it is nested within "${currentlyRunningTest.name}".`,
           ),
