@@ -13,9 +13,6 @@ import {skipSuiteOnWindows} from '@jest/test-utils';
 import {cleanup, writeFiles} from '../Utils';
 import {runContinuous} from '../runJest';
 
-// Until https://github.com/nodejs/node/issues/33227 is solved somehow
-skipSuiteOnWindows();
-
 const DIR = path.resolve(os.tmpdir(), 'watch_mode_no_access');
 
 const sleep = (time: number) =>
@@ -47,6 +44,8 @@ afterEach(async () => {
   }
 });
 
+const getOneSecondAfterMs = (ms: number) => ms / 1000 + 1;
+
 test('does not re-run tests when only access time is modified', async () => {
   setupFiles();
 
@@ -64,13 +63,21 @@ test('does not re-run tests when only access time is modified', async () => {
   // Should re-run the test
   const modulePath = path.join(DIR, 'foo.js');
   const stat = fs.lstatSync(modulePath);
-  fs.utimesSync(modulePath, stat.atime.getTime(), stat.mtime.getTime());
+  fs.utimesSync(
+    modulePath,
+    getOneSecondAfterMs(stat.atimeMs),
+    getOneSecondAfterMs(stat.mtimeMs),
+  );
 
   await testRun.waitUntil(({stderr}) => numberOfTestRuns(stderr) === 2);
 
   // Should NOT re-run the test
   const fakeATime = 1541723621;
-  fs.utimesSync(modulePath, fakeATime, stat.mtime.getTime());
+  fs.utimesSync(
+    modulePath,
+    getOneSecondAfterMs(fakeATime),
+    getOneSecondAfterMs(stat.mtimeMs),
+  );
   await sleep(3000);
   expect(numberOfTestRuns(testRun.getCurrentOutput().stderr)).toBe(2);
 
