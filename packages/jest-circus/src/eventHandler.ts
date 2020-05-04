@@ -39,9 +39,12 @@ const eventHandler: Circus.EventHandler = (
       const {currentDescribeBlock, currentlyRunningTest} = state;
 
       if (currentlyRunningTest) {
-        throw new Error(
-          `Cannot nest a describe inside a test. Describe block "${blockName}" cannot run because it is nested within "${currentlyRunningTest.name}".`,
+        state.unhandledErrors.push(
+          new Error(
+            `Cannot nest a describe inside a test. Describe block "${blockName}" cannot run because it is nested within "${currentlyRunningTest.name}".`,
+          ),
         );
+        break;
       }
 
       const describeBlock = makeDescribe(blockName, currentDescribeBlock, mode);
@@ -94,19 +97,21 @@ const eventHandler: Circus.EventHandler = (
       const {asyncError, fn, hookType: type, timeout} = event;
 
       if (currentlyRunningTest) {
-        throw new Error(
-          `Hooks cannot be defined inside tests. Hook of type "${type}" is nested within "${currentlyRunningTest.name}".`,
+        state.unhandledErrors.push(
+          new Error(
+            `Hooks cannot be defined inside tests. Hook of type "${type}" is nested within "${currentlyRunningTest.name}".`,
+          ),
         );
-      }
-
-      const parent = currentDescribeBlock;
-
-      if (hasStarted) {
-        asyncError.message =
-          'Cannot add a hook after tests have started running. Hooks must be defined synchronously.';
-        state.unhandledErrors.push(asyncError);
+        break;
+      } else if (hasStarted) {
+        state.unhandledErrors.push(
+          new Error(
+            'Cannot add a hook after tests have started running. Hooks must be defined synchronously.',
+          ),
+        );
         break;
       }
+      const parent = currentDescribeBlock;
 
       currentDescribeBlock.hooks.push({asyncError, fn, parent, timeout, type});
       break;
@@ -116,14 +121,18 @@ const eventHandler: Circus.EventHandler = (
       const {asyncError, fn, mode, testName: name, timeout} = event;
 
       if (currentlyRunningTest) {
-        throw new Error(
-          `Tests cannot be nested. Test "${name}" cannot run because it is nested within "${currentlyRunningTest.name}".`,
+        state.unhandledErrors.push(
+          new Error(
+            `Tests cannot be nested. Test "${name}" cannot run because it is nested within "${currentlyRunningTest.name}".`,
+          ),
         );
-      }
-      if (hasStarted) {
-        asyncError.message =
-          'Cannot add a test after tests have started running. Tests must be defined synchronously.';
-        state.unhandledErrors.push(asyncError);
+        break;
+      } else if (hasStarted) {
+        state.unhandledErrors.push(
+          new Error(
+            'Cannot add a test after tests have started running. Tests must be defined synchronously.',
+          ),
+        );
         break;
       }
 
