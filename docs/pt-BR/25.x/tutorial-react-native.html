@@ -1,0 +1,244 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Testing React Native Apps · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="At Facebook, we use Jest to test [React Native](https://reactnative.dev/) applications."/><meta name="docsearch:version" content="25.x"/><meta name="docsearch:language" content="pt-BR"/><meta property="og:title" content="Testing React Native Apps · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="At Facebook, we use Jest to test [React Native](https://reactnative.dev/) applications."/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/pt-BR"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/pt-BR/versions"><h3>25.x</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/pt-BR/25.x/getting-started" target="_self">Documentação</a></li><li class="siteNavGroupActive"><a href="/docs/pt-BR/25.x/api" target="_self">API</a></li><li class=""><a href="/pt-BR/help" target="_self">Ajuda</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Português (Brasil)</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/25.x/tutorial-react-native">English</a></li><li><a href="/docs/ja/25.x/tutorial-react-native">日本語</a></li><li><a href="/docs/es-ES/25.x/tutorial-react-native">Español</a></li><li><a href="/docs/ro/25.x/tutorial-react-native">Română</a></li><li><a href="/docs/ru/25.x/tutorial-react-native">Русский</a></li><li><a href="/docs/uk/25.x/tutorial-react-native">Українська</a></li><li><a href="/docs/zh-Hans/25.x/tutorial-react-native">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(event) {
+          event.preventDefault();
+
+          if (languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Guias para frameworks</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/snapshot-testing">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/dynamodb">Using with DynamoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/architecture">Architecture</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guias para frameworks</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/tutorial-react">Testing React Apps</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/pt-BR/25.x/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/api">Globals</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/TutorialReactNative.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Testing React Native Apps</h1></header><article><div><span><p>At Facebook, we use Jest to test <a href="https://reactnative.dev/">React Native</a> applications.</p>
+<p>Get a deeper insight into testing a working React Native app example by reading the following series: <a href="https://callstack.com/blog/testing-react-native-with-the-new-jest-part-1-snapshots-come-into-play/">Part 1: Jest – Snapshot come into play</a> and <a href="https://callstack.com/blog/testing-react-native-with-the-new-jest-part-2-redux-snapshots-for-your-actions-and-reducers/">Part 2: Jest – Redux Snapshots for your Actions and Reducers</a>.</p>
+<h2><a class="anchor" aria-hidden="true" id="instalação"></a><a href="#instalação" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Instalação</h2>
+<p>A partir da versão 0.38 de react-native, uma instalação Jest é incluída por padrão, ao executar <code>react-native init</code>. A seguinte configuração deve ser automaticamente adicionada ao seu arquivo package.json:</p>
+<pre><code class="hljs css language-json">// package.json
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+</code></pre>
+<p><em>Nota: Se você estiver atualizando seu aplicativo react-native e anteriormente usou a predefinição <code>jest-react-native</code>, remova a dependência de seu arquivo <code>package.json</code> e altere a predefinição para <code>react-native</code> em vez disso.</em></p>
+<p>Run <code>yarn test</code> to run tests with Jest.</p>
+<h2><a class="anchor" aria-hidden="true" id="teste-snapshot"></a><a href="#teste-snapshot" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Teste Snapshot</h2>
+<p>Vamos criar um <a href="/docs/pt-BR/25.x/snapshot-testing">teste snapshot</a> para um pequeno componente &quot;intro&quot; com alguns &quot;views&quot; e componentes de texto e alguns estilos:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// Intro.js</span>
+<span class="hljs-keyword">import</span> React, {Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> {StyleSheet, Text, View} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-native'</span>;
+
+<span class="hljs-keyword">const</span> styles = StyleSheet.create({
+  <span class="hljs-attr">container</span>: {
+    <span class="hljs-attr">alignItems</span>: <span class="hljs-string">'center'</span>,
+    <span class="hljs-attr">backgroundColor</span>: <span class="hljs-string">'#F5FCFF'</span>,
+    <span class="hljs-attr">flex</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">justifyContent</span>: <span class="hljs-string">'center'</span>,
+  },
+  <span class="hljs-attr">instructions</span>: {
+    <span class="hljs-attr">color</span>: <span class="hljs-string">'#333333'</span>,
+    <span class="hljs-attr">marginBottom</span>: <span class="hljs-number">5</span>,
+    <span class="hljs-attr">textAlign</span>: <span class="hljs-string">'center'</span>,
+  },
+  <span class="hljs-attr">welcome</span>: {
+    <span class="hljs-attr">fontSize</span>: <span class="hljs-number">20</span>,
+    <span class="hljs-attr">margin</span>: <span class="hljs-number">10</span>,
+    <span class="hljs-attr">textAlign</span>: <span class="hljs-string">'center'</span>,
+  },
+});
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Intro</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+  render() {
+    <span class="hljs-keyword">return</span> (
+      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">View</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.container}</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Text</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.welcome}</span>&gt;</span>Welcome to React Native!<span class="hljs-tag">&lt;/<span class="hljs-name">Text</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Text</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.instructions}</span>&gt;</span>
+          This is a React Native snapshot test.
+        <span class="hljs-tag">&lt;/<span class="hljs-name">Text</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">View</span>&gt;</span></span>
+    );
+  }
+}
+</code></pre>
+<p>Agora vamos usar o renderer de teste do React e o recurso de snapshot do Jest para interagir com o componente e capturar a saída renderizada e criar um arquivo de snapshot:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// __tests__/Intro-test.js</span>
+<span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> Intro <span class="hljs-keyword">from</span> <span class="hljs-string">'../Intro'</span>;
+
+<span class="hljs-keyword">import</span> renderer <span class="hljs-keyword">from</span> <span class="hljs-string">'react-test-renderer'</span>;
+
+test(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> tree = renderer.create(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Intro</span> /&gt;</span></span>).toJSON();
+  expect(tree).toMatchSnapshot();
+});
+</code></pre>
+<p>When you run <code>yarn test</code> or <code>jest</code>, this will produce an output file like this:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// __tests__/__snapshots__/Intro-test.js.snap</span>
+exports[<span class="hljs-string">`Intro renders correctly 1`</span>] = <span class="hljs-string">`
+&lt;View
+  style={
+    Object {
+      "alignItems": "center",
+      "backgroundColor": "#F5FCFF",
+      "flex": 1,
+      "justifyContent": "center",
+    }
+  }&gt;
+  &lt;Text
+    style={
+      Object {
+        "fontSize": 20,
+        "margin": 10,
+        "textAlign": "center",
+      }
+    }&gt;
+    Welcome to React Native!
+  &lt;/Text&gt;
+  &lt;Text
+    style={
+      Object {
+        "color": "#333333",
+        "marginBottom": 5,
+        "textAlign": "center",
+      }
+    }&gt;
+    This is a React Native snapshot test.
+  &lt;/Text&gt;
+&lt;/View&gt;
+`</span>;
+</code></pre>
+<p>Da próxima vez que você executar os testes, a saída renderizada será comparada ao snapshot criado anteriormente. O snapshot deve ser comitado (committed, em inglês) junto com as alterações de código. Quando um teste de snapshot falhar, você precisa inspecionar se é uma mudança pretendida ou não intencional. Se a mudança é esperada, você pode invocar Jest com <code>jest -u</code> para substituir o snapshot existente.</p>
+<p>The code for this example is available at <a href="https://github.com/facebook/jest/tree/master/examples/react-native">examples/react-native</a>.</p>
+<h2><a class="anchor" aria-hidden="true" id="configuração-predefinida"></a><a href="#configuração-predefinida" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Configuração predefinida</h2>
+<p>A predefinição configura o ambiente e é muito opinativa e baseada no que tem se mostrado ser útil no Facebook. Todas as opções de configuração podem ser substituídas assim como eles podem ser personalizados quando nenhuma predefinição é usada.</p>
+<h3><a class="anchor" aria-hidden="true" id="ambiente"></a><a href="#ambiente" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Ambiente</h3>
+<p><code>react-native</code> vem com uma pré-definição Jest, então o campo <code>jest.preset</code> de seu <code>package.json</code> deve apontar para <code>react-native</code>. The preset is a node environment that mimics the environment of a React Native app. Because it doesn't load any DOM or browser APIs, it greatly improves Jest's startup time.</p>
+<h3><a class="anchor" aria-hidden="true" id="personalização-de-transformignorepatterns"></a><a href="#personalização-de-transformignorepatterns" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>personalização de transformIgnorePatterns</h3>
+<p>The <a href="configuration.html#transformignorepatterns-arraystring"><code>transformIgnorePatterns</code></a> option can be used to whitelist or blacklist files from being transformed with Babel. Muitos módulos npm de react-native infelizmente não pre-compilam seu código fonte antes de publicar.</p>
+<p>Por padrão a predefinição jest-react-native só processa os arquivos fonte do projeto e react-native. Se você tem dependências npm que tem que ser transformadas, você pode personalizar esta opção de configuração por colocar módulos que não sejam o react-native em uma lista branca:</p>
+<pre><code class="hljs css language-json">"transformIgnorePatterns": [
+  "node_modules/(?!(react-native|my-project|react-native-button)/)"
+]
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="setupfiles"></a><a href="#setupfiles" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setupFiles</h3>
+<p>Se você gostaria de fornecer configuração adicional para cada arquivo de teste, a <a href="configuration.html#setupfiles-array">opção de configuração <code>setupFiles</code></a> pode ser usada para especificar os scripts de instalação.</p>
+<h3><a class="anchor" aria-hidden="true" id="modulenamemapper"></a><a href="#modulenamemapper" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>moduleNameMapper</h3>
+<p>The <a href="configuration.html#modulenamemapper-objectstring-string--arraystring"><code>moduleNameMapper</code></a> can be used to map a module path to a different module. Por padrão a predefinição mapeia todas as imagens para um módulo de esboço de imagem, mas se um módulo não pode ser encontrado esta opção de configuração pode ajudar:</p>
+<pre><code class="hljs css language-json">"moduleNameMapper": {
+  "my-module.js": "&lt;rootDir&gt;/path/to/my-module.js"
+}
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="dicas"></a><a href="#dicas" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Dicas</h2>
+<h3><a class="anchor" aria-hidden="true" id="simule-mock-em-inglês-módulos-nativos-usando-jestmock"></a><a href="#simule-mock-em-inglês-módulos-nativos-usando-jestmock" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Simule (mock, em inglês) módulos nativos usando jest.mock</h3>
+<p>A predefinição Jest interna do <code>react-native</code> vem com algumas simulações (mocks, em inglês) padrão que são aplicadas em um repositório react-native. No entanto, alguns componentes react-native ou componentes de terceiros dependem de código nativo para serem renderizados. Em tais casos, o sistema manual de simulação do Jest pode ajudar a simular a implementação subjacente.</p>
+<p>Por exemplo, se seu código depende de um componente de vídeo nativo de terceiros chamado <code>react-native-video</code> convém esboçar ele com um simulação manual como esta:</p>
+<pre><code class="hljs css language-js">jest.mock(<span class="hljs-string">'react-native-video'</span>, () =&gt; <span class="hljs-string">'Video'</span>);
+</code></pre>
+<p>Isto irá renderizar o componente como <code>&lt;Video {...props} /&gt;</code> com todas as suas propriedades no snapshot de saída. See also <a href="tutorial-react.html#snapshot-testing-with-mocks-enzyme-and-react-16">caveats around Enzyme and React 16</a>.</p>
+<p>Às vezes você precisa fornecer uma simulação manual mais complexa. Por exemplo, se você gostaria de transmitir os tipos das propriedades ou campos estáticos de um componente nativo para uma simulação (mock, em inglês), você pode retornar um componente React diferente a partir de uma simulação através deste auxiliar do jest-react-native:</p>
+<pre><code class="hljs css language-js">jest.mock(<span class="hljs-string">'path/to/MyNativeComponent'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> mockComponent = <span class="hljs-built_in">require</span>(<span class="hljs-string">'react-native/jest/mockComponent'</span>);
+  <span class="hljs-keyword">return</span> mockComponent(<span class="hljs-string">'path/to/MyNativeComponent'</span>);
+});
+</code></pre>
+<p>Ou se você gostaria de criar sua própria simulação manual, você pode fazer algo parecido com isto:</p>
+<pre><code class="hljs css language-js">jest.mock(<span class="hljs-string">'Text'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> RealComponent = jest.requireActual(<span class="hljs-string">'Text'</span>);
+  <span class="hljs-keyword">const</span> React = <span class="hljs-built_in">require</span>(<span class="hljs-string">'React'</span>);
+  <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Text</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+    render() {
+      <span class="hljs-keyword">return</span> React.createElement(<span class="hljs-string">'Text'</span>, <span class="hljs-keyword">this</span>.props, <span class="hljs-keyword">this</span>.props.children);
+    }
+  }
+  Text.propTypes = RealComponent.propTypes;
+  <span class="hljs-keyword">return</span> Text;
+});
+</code></pre>
+<p>Em outros casos, você pode querer simular um módulo nativo que não seja um componente React. A mesma técnica pode ser aplicada. Nós recomendamos inspecionar o código-fonte do módulo nativo e registrar o módulo ao executar um aplicativo react native em um dispositivo real e então modelar uma simulação manual após o módulo real.</p>
+<p>Se você acabar por simular os mesmos módulos repetidamente vez após vez é recomendável definir estas simulações em um arquivo separado e adicioná-lo à lista de <code>setupFiles</code>.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/pt-BR/25.x/tutorial-react"><span class="arrow-prev">← </span><span>Testing React Apps</span></a><a class="docs-next button" href="/docs/pt-BR/25.x/testing-frameworks"><span>Testing Web Frameworks</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#instalação">Instalação</a></li><li><a href="#teste-snapshot">Teste Snapshot</a></li><li><a href="#configuração-predefinida">Configuração predefinida</a><ul class="toc-headings"><li><a href="#ambiente">Ambiente</a></li><li><a href="#personalização-de-transformignorepatterns">personalização de transformIgnorePatterns</a></li><li><a href="#setupfiles">setupFiles</a></li><li><a href="#modulenamemapper">moduleNameMapper</a></li></ul></li><li><a href="#dicas">Dicas</a><ul class="toc-headings"><li><a href="#simule-mock-em-inglês-módulos-nativos-usando-jestmock">Simule (mock, em inglês) módulos nativos usando jest.mock</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/pt-BR/getting-started.html">Getting Started</a><a href="/docs/pt-BR/snapshot-testing.html">Guides</a><a href="/docs/pt-BR/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {"facetFilters":["language:pt-BR","version:25.x"]}
+              });
+            </script></body></html>

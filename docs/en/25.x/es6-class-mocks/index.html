@@ -1,0 +1,374 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>ES6 Class Mocks · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Jest can be used to mock ES6 classes that are imported into files you want to test."/><meta name="docsearch:version" content="25.x"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="ES6 Class Mocks · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="Jest can be used to mock ES6 classes that are imported into files you want to test."/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/en"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/en/versions"><h3>25.x</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/en/25.x/getting-started" target="_self">Docs</a></li><li class="siteNavGroupActive"><a href="/docs/en/25.x/api" target="_self">API</a></li><li class=""><a href="/en/help" target="_self">Help</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>English</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/ja/25.x/es6-class-mocks">日本語</a></li><li><a href="/docs/es-ES/25.x/es6-class-mocks">Español</a></li><li><a href="/docs/pt-BR/25.x/es6-class-mocks">Português (Brasil)</a></li><li><a href="/docs/ro/25.x/es6-class-mocks">Română</a></li><li><a href="/docs/ru/25.x/es6-class-mocks">Русский</a></li><li><a href="/docs/uk/25.x/es6-class-mocks">Українська</a></li><li><a href="/docs/zh-Hans/25.x/es6-class-mocks">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(event) {
+          event.preventDefault();
+
+          if (languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Guides</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/en/25.x/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/en/25.x/snapshot-testing">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/manual-mocks">Manual Mocks</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/en/25.x/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/dynamodb">Using with DynamoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/architecture">Architecture</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Framework Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/en/25.x/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/en/25.x/api">Globals</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/en/25.x/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/Es6ClassMocks.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">ES6 Class Mocks</h1></header><article><div><span><p>Jest can be used to mock ES6 classes that are imported into files you want to test.</p>
+<p>ES6 classes are constructor functions with some syntactic sugar. Therefore, any mock for an ES6 class must be a function or an actual ES6 class (which is, again, another function). So you can mock them using <a href="/docs/en/25.x/mock-functions">mock functions</a>.</p>
+<h2><a class="anchor" aria-hidden="true" id="an-es6-class-example"></a><a href="#an-es6-class-example" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>An ES6 Class Example</h2>
+<p>We'll use a contrived example of a class that plays sound files, <code>SoundPlayer</code>, and a consumer class which uses that class, <code>SoundPlayerConsumer</code>. We'll mock <code>SoundPlayer</code> in our tests for <code>SoundPlayerConsumer</code>.</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// sound-player.js</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SoundPlayer</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.foo = <span class="hljs-string">'bar'</span>;
+  }
+
+  playSoundFile(fileName) {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Playing sound file '</span> + fileName);
+  }
+}
+</code></pre>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// sound-player-consumer.js</span>
+<span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SoundPlayerConsumer</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-keyword">this</span>.soundPlayer = <span class="hljs-keyword">new</span> SoundPlayer();
+  }
+
+  playSomethingCool() {
+    <span class="hljs-keyword">const</span> coolSoundFileName = <span class="hljs-string">'song.mp3'</span>;
+    <span class="hljs-keyword">this</span>.soundPlayer.playSoundFile(coolSoundFileName);
+  }
+}
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="the-4-ways-to-create-an-es6-class-mock"></a><a href="#the-4-ways-to-create-an-es6-class-mock" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>The 4 ways to create an ES6 class mock</h2>
+<h3><a class="anchor" aria-hidden="true" id="automatic-mock"></a><a href="#automatic-mock" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Automatic mock</h3>
+<p>Calling <code>jest.mock('./sound-player')</code> returns a useful &quot;automatic mock&quot; you can use to spy on calls to the class constructor and all of its methods. It replaces the ES6 class with a mock constructor, and replaces all of its methods with <a href="/docs/en/25.x/mock-functions">mock functions</a> that always return <code>undefined</code>. Method calls are saved in <code>theAutomaticMock.mock.instances[index].methodName.mock.calls</code>.</p>
+<p>Please note that if you use arrow functions in your classes, they will <em>not</em> be part of the mock. The reason for that is that arrow functions are not present on the object's prototype, they are merely properties holding a reference to a function.</p>
+<p>If you don't need to replace the implementation of the class, this is the easiest option to set up. For example:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">import</span> SoundPlayerConsumer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player-consumer'</span>;
+jest.mock(<span class="hljs-string">'./sound-player'</span>); <span class="hljs-comment">// SoundPlayer is now a mock constructor</span>
+
+beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-comment">// Clear all instances and calls to constructor and all methods:</span>
+  SoundPlayer.mockClear();
+});
+
+it(<span class="hljs-string">'We can check if the consumer called the class constructor'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+  expect(SoundPlayer).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
+});
+
+it(<span class="hljs-string">'We can check if the consumer called a method on the class instance'</span>, () =&gt; {
+  <span class="hljs-comment">// Show that mockClear() is working:</span>
+  expect(SoundPlayer).not.toHaveBeenCalled();
+
+  <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+  <span class="hljs-comment">// Constructor should have been called again:</span>
+  expect(SoundPlayer).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
+
+  <span class="hljs-keyword">const</span> coolSoundFileName = <span class="hljs-string">'song.mp3'</span>;
+  soundPlayerConsumer.playSomethingCool();
+
+  <span class="hljs-comment">// mock.instances is available with automatic mocks:</span>
+  <span class="hljs-keyword">const</span> mockSoundPlayerInstance = SoundPlayer.mock.instances[<span class="hljs-number">0</span>];
+  <span class="hljs-keyword">const</span> mockPlaySoundFile = mockSoundPlayerInstance.playSoundFile;
+  expect(mockPlaySoundFile.mock.calls[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>]).toEqual(coolSoundFileName);
+  <span class="hljs-comment">// Equivalent to above check:</span>
+  expect(mockPlaySoundFile).toHaveBeenCalledWith(coolSoundFileName);
+  expect(mockPlaySoundFile).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="manual-mock"></a><a href="#manual-mock" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Manual mock</h3>
+<p>Create a <a href="/docs/en/25.x/manual-mocks">manual mock</a> by saving a mock implementation in the <code>__mocks__</code> folder. This allows you to specify the implementation, and it can be used across test files.</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// __mocks__/sound-player.js</span>
+
+<span class="hljs-comment">// Import this named export into your test file:</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mockPlaySoundFile = jest.fn();
+<span class="hljs-keyword">const</span> mock = jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: mockPlaySoundFile};
+});
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> mock;
+</code></pre>
+<p>Import the mock and the mock method shared by all instances:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// sound-player-consumer.test.js</span>
+<span class="hljs-keyword">import</span> SoundPlayer, {mockPlaySoundFile} <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">import</span> SoundPlayerConsumer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player-consumer'</span>;
+jest.mock(<span class="hljs-string">'./sound-player'</span>); <span class="hljs-comment">// SoundPlayer is now a mock constructor</span>
+
+beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-comment">// Clear all instances and calls to constructor and all methods:</span>
+  SoundPlayer.mockClear();
+  mockPlaySoundFile.mockClear();
+});
+
+it(<span class="hljs-string">'We can check if the consumer called the class constructor'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+  expect(SoundPlayer).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
+});
+
+it(<span class="hljs-string">'We can check if the consumer called a method on the class instance'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+  <span class="hljs-keyword">const</span> coolSoundFileName = <span class="hljs-string">'song.mp3'</span>;
+  soundPlayerConsumer.playSomethingCool();
+  expect(mockPlaySoundFile).toHaveBeenCalledWith(coolSoundFileName);
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="calling-jestmockdocsen25xjest-objectjestmockmodulename-factory-options-with-the-module-factory-parameter"></a><a href="#calling-jestmockdocsen25xjest-objectjestmockmodulename-factory-options-with-the-module-factory-parameter" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Calling <a href="/docs/en/25.x/jest-object#jestmockmodulename-factory-options"><code>jest.mock()</code></a> with the module factory parameter</h3>
+<p><code>jest.mock(path, moduleFactory)</code> takes a <strong>module factory</strong> argument. A module factory is a function that returns the mock.</p>
+<p>In order to mock a constructor function, the module factory must return a constructor function. In other words, the module factory must be a function that returns a function - a higher-order function (HOF).</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">const</span> mockPlaySoundFile = jest.fn();
+jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: mockPlaySoundFile};
+  });
+});
+</code></pre>
+<p>A limitation with the factory parameter is that, since calls to <code>jest.mock()</code> are hoisted to the top of the file, it's not possible to first define a variable and then use it in the factory. An exception is made for variables that start with the word 'mock'. It's up to you to guarantee that they will be initialized on time! For example, the following will throw an out-of-scope error due to the use of 'fake' instead of 'mock' in the variable declaration:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// Note: this will fail</span>
+<span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">const</span> fakePlaySoundFile = jest.fn();
+jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: fakePlaySoundFile};
+  });
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="replacing-the-mock-using-mockimplementationdocsen25xmock-function-apimockfnmockimplementationfn-or-mockimplementationoncedocsen25xmock-function-apimockfnmockimplementationoncefn"></a><a href="#replacing-the-mock-using-mockimplementationdocsen25xmock-function-apimockfnmockimplementationfn-or-mockimplementationoncedocsen25xmock-function-apimockfnmockimplementationoncefn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Replacing the mock using <a href="/docs/en/25.x/mock-function-api#mockfnmockimplementationfn"><code>mockImplementation()</code></a> or <a href="/docs/en/25.x/mock-function-api#mockfnmockimplementationoncefn"><code>mockImplementationOnce()</code></a></h3>
+<p>You can replace all of the above mocks in order to change the implementation, for a single test or all tests, by calling <code>mockImplementation()</code> on the existing mock.</p>
+<p>Calls to jest.mock are hoisted to the top of the code. You can specify a mock later, e.g. in <code>beforeAll()</code>, by calling <code>mockImplementation()</code> (or <code>mockImplementationOnce()</code>) on the existing mock instead of using the factory parameter. This also allows you to change the mock between tests, if needed:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">import</span> SoundPlayerConsumer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player-consumer'</span>;
+
+jest.mock(<span class="hljs-string">'./sound-player'</span>);
+
+describe(<span class="hljs-string">'When SoundPlayer throws an error'</span>, () =&gt; {
+  beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    SoundPlayer.mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-keyword">return</span> {
+        <span class="hljs-attr">playSoundFile</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+          <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Test error'</span>);
+        },
+      };
+    });
+  });
+
+  it(<span class="hljs-string">'Should throw an error when calling playSomethingCool'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+    expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> soundPlayerConsumer.playSomethingCool()).toThrow();
+  });
+});
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="in-depth-understanding-mock-constructor-functions"></a><a href="#in-depth-understanding-mock-constructor-functions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>In depth: Understanding mock constructor functions</h2>
+<p>Building your constructor function mock using <code>jest.fn().mockImplementation()</code> makes mocks appear more complicated than they really are. This section shows how you can create your own mocks to illustrate how mocking works.</p>
+<h3><a class="anchor" aria-hidden="true" id="manual-mock-that-is-another-es6-class"></a><a href="#manual-mock-that-is-another-es6-class" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Manual mock that is another ES6 class</h3>
+<p>If you define an ES6 class using the same filename as the mocked class in the <code>__mocks__</code> folder, it will serve as the mock. This class will be used in place of the real class. This allows you to inject a test implementation for the class, but does not provide a way to spy on calls.</p>
+<p>For the contrived example, the mock might look like this:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// __mocks__/sound-player.js</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SoundPlayer</span> </span>{
+  <span class="hljs-keyword">constructor</span>() {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Mock SoundPlayer: constructor was called'</span>);
+  }
+
+  playSoundFile() {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Mock SoundPlayer: playSoundFile was called'</span>);
+  }
+}
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="mock-using-module-factory-parameter"></a><a href="#mock-using-module-factory-parameter" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Mock using module factory parameter</h3>
+<p>The module factory function passed to <code>jest.mock(path, moduleFactory)</code> can be a HOF that returns a function*. This will allow calling <code>new</code> on the mock. Again, this allows you to inject different behavior for testing, but does not provide a way to spy on calls.</p>
+<h4><a class="anchor" aria-hidden="true" id="-module-factory-function-must-return-a-function"></a><a href="#-module-factory-function-must-return-a-function" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>* Module factory function must return a function</h4>
+<p>In order to mock a constructor function, the module factory must return a constructor function. In other words, the module factory must be a function that returns a function - a higher-order function (HOF).</p>
+<pre><code class="hljs css language-javascript">jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {}};
+  };
+});
+</code></pre>
+<p><strong><em>Note: Arrow functions won't work</em></strong></p>
+<p>Note that the mock can't be an arrow function because calling <code>new</code> on an arrow function is not allowed in JavaScript. So this won't work:</p>
+<pre><code class="hljs css language-javascript">jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-comment">// Does not work; arrow functions can't be called with new</span>
+    <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {}};
+  };
+});
+</code></pre>
+<p>This will throw <strong><em>TypeError: _soundPlayer2.default is not a constructor</em></strong>, unless the code is transpiled to ES5, e.g. by <code>@babel/preset-env</code>. (ES5 doesn't have arrow functions nor classes, so both will be transpiled to plain functions.)</p>
+<h2><a class="anchor" aria-hidden="true" id="keeping-track-of-usage-spying-on-the-mock"></a><a href="#keeping-track-of-usage-spying-on-the-mock" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Keeping track of usage (spying on the mock)</h2>
+<p>Injecting a test implementation is helpful, but you will probably also want to test whether the class constructor and methods are called with the correct parameters.</p>
+<h3><a class="anchor" aria-hidden="true" id="spying-on-the-constructor"></a><a href="#spying-on-the-constructor" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Spying on the constructor</h3>
+<p>In order to track calls to the constructor, replace the function returned by the HOF with a Jest mock function. Create it with <a href="/docs/en/25.x/jest-object#jestfnimplementation"><code>jest.fn()</code></a>, and then specify its implementation with <code>mockImplementation()</code>.</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
+  <span class="hljs-comment">// Works and lets you check for constructor calls:</span>
+  <span class="hljs-keyword">return</span> jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {}};
+  });
+});
+</code></pre>
+<p>This will let us inspect usage of our mocked class, using <code>SoundPlayer.mock.calls</code>: <code>expect(SoundPlayer).toHaveBeenCalled();</code> or near-equivalent: <code>expect(SoundPlayer.mock.calls.length).toEqual(1);</code></p>
+<h3><a class="anchor" aria-hidden="true" id="mocking-non-default-class-exports"></a><a href="#mocking-non-default-class-exports" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Mocking non default class exports</h3>
+<p>If the class is <strong>not</strong> the default export from the module then you need to return an object with the key that is the same as the class export name.</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> {SoundPlayer} <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
+  <span class="hljs-comment">// Works and lets you check for constructor calls:</span>
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-attr">SoundPlayer</span>: jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {}};
+    }),
+  };
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="spying-on-methods-of-our-class"></a><a href="#spying-on-methods-of-our-class" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Spying on methods of our class</h3>
+<p>Our mocked class will need to provide any member functions (<code>playSoundFile</code> in the example) that will be called during our tests, or else we'll get an error for calling a function that doesn't exist. But we'll probably want to also spy on calls to those methods, to ensure that they were called with the expected parameters.</p>
+<p>A new object will be created each time the mock constructor function is called during tests. To spy on method calls in all of these objects, we populate <code>playSoundFile</code> with another mock function, and store a reference to that same mock function in our test file, so it's available during tests.</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+<span class="hljs-keyword">const</span> mockPlaySoundFile = jest.fn();
+jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: mockPlaySoundFile};
+    <span class="hljs-comment">// Now we can track calls to playSoundFile</span>
+  });
+});
+</code></pre>
+<p>The manual mock equivalent of this would be:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// __mocks__/sound-player.js</span>
+
+<span class="hljs-comment">// Import this named export into your test file</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> mockPlaySoundFile = jest.fn();
+<span class="hljs-keyword">const</span> mock = jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: mockPlaySoundFile};
+});
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> mock;
+</code></pre>
+<p>Usage is similar to the module factory function, except that you can omit the second argument from <code>jest.mock()</code>, and you must import the mocked method into your test file, since it is no longer defined there. Use the original module path for this; don't include <code>__mocks__</code>.</p>
+<h3><a class="anchor" aria-hidden="true" id="cleaning-up-between-tests"></a><a href="#cleaning-up-between-tests" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Cleaning up between tests</h3>
+<p>To clear the record of calls to the mock constructor function and its methods, we call <a href="/docs/en/25.x/mock-function-api#mockfnmockclear"><code>mockClear()</code></a> in the <code>beforeEach()</code> function:</p>
+<pre><code class="hljs css language-javascript">beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  SoundPlayer.mockClear();
+  mockPlaySoundFile.mockClear();
+});
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="complete-example"></a><a href="#complete-example" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Complete example</h2>
+<p>Here's a complete test file which uses the module factory parameter to <code>jest.mock</code>:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// sound-player-consumer.test.js</span>
+<span class="hljs-keyword">import</span> SoundPlayerConsumer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player-consumer'</span>;
+<span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'./sound-player'</span>;
+
+<span class="hljs-keyword">const</span> mockPlaySoundFile = jest.fn();
+jest.mock(<span class="hljs-string">'./sound-player'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-keyword">return</span> {<span class="hljs-attr">playSoundFile</span>: mockPlaySoundFile};
+  });
+});
+
+beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  SoundPlayer.mockClear();
+  mockPlaySoundFile.mockClear();
+});
+
+it(<span class="hljs-string">'The consumer should be able to call new() on SoundPlayer'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+  <span class="hljs-comment">// Ensure constructor created the object:</span>
+  expect(soundPlayerConsumer).toBeTruthy();
+});
+
+it(<span class="hljs-string">'We can check if the consumer called the class constructor'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+  expect(SoundPlayer).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
+});
+
+it(<span class="hljs-string">'We can check if the consumer called a method on the class instance'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+  <span class="hljs-keyword">const</span> coolSoundFileName = <span class="hljs-string">'song.mp3'</span>;
+  soundPlayerConsumer.playSomethingCool();
+  expect(mockPlaySoundFile.mock.calls[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>]).toEqual(coolSoundFileName);
+});
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/en/25.x/manual-mocks"><span class="arrow-prev">← </span><span>Manual Mocks</span></a><a class="docs-next button" href="/docs/en/25.x/bypassing-module-mocks"><span>Bypassing module mocks</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#an-es6-class-example">An ES6 Class Example</a></li><li><a href="#the-4-ways-to-create-an-es6-class-mock">The 4 ways to create an ES6 class mock</a><ul class="toc-headings"><li><a href="#automatic-mock">Automatic mock</a></li><li><a href="#manual-mock">Manual mock</a></li><li><a href="#calling-jestmockdocsen25xjest-objectjestmockmodulename-factory-options-with-the-module-factory-parameter">Calling <a href="/docs/en/25.x/jest-object#jestmockmodulename-factory-options"><code>jest.mock()</code></a> with the module factory parameter</a></li><li><a href="#replacing-the-mock-using-mockimplementationdocsen25xmock-function-apimockfnmockimplementationfn-or-mockimplementationoncedocsen25xmock-function-apimockfnmockimplementationoncefn">Replacing the mock using <a href="/docs/en/25.x/mock-function-api#mockfnmockimplementationfn"><code>mockImplementation()</code></a> or <a href="/docs/en/25.x/mock-function-api#mockfnmockimplementationoncefn"><code>mockImplementationOnce()</code></a></a></li></ul></li><li><a href="#in-depth-understanding-mock-constructor-functions">In depth: Understanding mock constructor functions</a><ul class="toc-headings"><li><a href="#manual-mock-that-is-another-es6-class">Manual mock that is another ES6 class</a></li><li><a href="#mock-using-module-factory-parameter">Mock using module factory parameter</a></li></ul></li><li><a href="#keeping-track-of-usage-spying-on-the-mock">Keeping track of usage (spying on the mock)</a><ul class="toc-headings"><li><a href="#spying-on-the-constructor">Spying on the constructor</a></li><li><a href="#mocking-non-default-class-exports">Mocking non default class exports</a></li><li><a href="#spying-on-methods-of-our-class">Spying on methods of our class</a></li><li><a href="#cleaning-up-between-tests">Cleaning up between tests</a></li></ul></li><li><a href="#complete-example">Complete example</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/en/getting-started.html">Getting Started</a><a href="/docs/en/snapshot-testing.html">Guides</a><a href="/docs/en/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {"facetFilters":["language:en","version:25.x"]}
+              });
+            </script></body></html>

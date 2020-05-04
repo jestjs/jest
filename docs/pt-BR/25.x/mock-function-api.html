@@ -1,0 +1,328 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Mock Functions · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Mock functions are also known as &quot;spies&quot;, because they let you spy on the behavior of a function that is called indirectly by some other code, rather than only testing the output. Você pode criar uma função de simulação (mock, em inglês) com `jest.fn()`. Se nenhuma implementação é dada, a função de simulação retornará `undefined` quando invocada."/><meta name="docsearch:version" content="25.x"/><meta name="docsearch:language" content="pt-BR"/><meta property="og:title" content="Mock Functions · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="Mock functions are also known as &quot;spies&quot;, because they let you spy on the behavior of a function that is called indirectly by some other code, rather than only testing the output. Você pode criar uma função de simulação (mock, em inglês) com `jest.fn()`. Se nenhuma implementação é dada, a função de simulação retornará `undefined` quando invocada."/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/pt-BR"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/pt-BR/versions"><h3>25.x</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/pt-BR/25.x/getting-started" target="_self">Documentação</a></li><li class="siteNavGroupActive"><a href="/docs/pt-BR/25.x/api" target="_self">API</a></li><li class=""><a href="/pt-BR/help" target="_self">Ajuda</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Português (Brasil)</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/25.x/mock-function-api">English</a></li><li><a href="/docs/ja/25.x/mock-function-api">日本語</a></li><li><a href="/docs/es-ES/25.x/mock-function-api">Español</a></li><li><a href="/docs/ro/25.x/mock-function-api">Română</a></li><li><a href="/docs/ru/25.x/mock-function-api">Русский</a></li><li><a href="/docs/uk/25.x/mock-function-api">Українська</a></li><li><a href="/docs/zh-Hans/25.x/mock-function-api">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(event) {
+          event.preventDefault();
+
+          if (languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>API Reference</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/snapshot-testing">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/dynamodb">Using with DynamoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/architecture">Architecture</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guias para frameworks</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/api">Globals</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/expect">Expect</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/pt-BR/25.x/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/pt-BR/25.x/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/MockFunctionAPI.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Mock Functions</h1></header><article><div><span><p>Mock functions are also known as &quot;spies&quot;, because they let you spy on the behavior of a function that is called indirectly by some other code, rather than only testing the output. Você pode criar uma função de simulação (mock, em inglês) com <code>jest.fn()</code>. Se nenhuma implementação é dada, a função de simulação retornará <code>undefined</code> quando invocada.</p>
+<h2><a class="anchor" aria-hidden="true" id="métodos"></a><a href="#métodos" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Métodos</h2>
+<ul>
+<li><a href="#mockfngetmockname"><code>mockFn.getMockName()</code></a></li>
+<li><a href="#mockfnmockcalls"><code>mockFn.mock.calls</code></a></li>
+<li><a href="#mockfnmockresults"><code>mockFn.mock.results</code></a></li>
+<li><a href="#mockfnmockinstances"><code>mockFn.mock.instances</code></a></li>
+<li><a href="#mockfnmockclear"><code>mockFn.mockClear()</code></a></li>
+<li><a href="#mockfnmockreset"><code>mockFn.mockReset()</code></a></li>
+<li><a href="#mockfnmockrestore"><code>mockFn.mockRestore()</code></a></li>
+<li><a href="#mockfnmockimplementationfn"><code>mockFn.mockImplementation(fn)</code></a></li>
+<li><a href="#mockfnmockimplementationoncefn"><code>mockFn.mockImplementationOnce(fn)</code></a></li>
+<li><a href="#mockfnmocknamevalue"><code>mockFn.mockName(value)</code></a></li>
+<li><a href="#mockfnmockreturnthis"><code>mockFn.mockReturnThis()</code></a></li>
+<li><a href="#mockfnmockreturnvaluevalue"><code>mockFn.mockReturnValue(value)</code></a></li>
+<li><a href="#mockfnmockreturnvalueoncevalue"><code>mockFn.mockReturnValueOnce(value)</code></a></li>
+<li><a href="#mockfnmockresolvedvaluevalue"><code>mockFn.mockResolvedValue(value)</code></a></li>
+<li><a href="#mockfnmockresolvedvalueoncevalue"><code>mockFn.mockResolvedValueOnce(value)</code></a></li>
+<li><a href="#mockfnmockrejectedvaluevalue"><code>mockFn.mockRejectedValue(value)</code></a></li>
+<li><a href="#mockfnmockrejectedvalueoncevalue"><code>mockFn.mockRejectedValueOnce(value)</code></a></li>
+</ul>
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="referência"></a><a href="#referência" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Referência</h2>
+<h3><a class="anchor" aria-hidden="true" id="mockfngetmockname"></a><a href="#mockfngetmockname" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.getMockName()</code></h3>
+<p>Returns the mock name string set by calling <code>mockFn.mockName(value)</code>.</p>
+<h3><a class="anchor" aria-hidden="true" id="mockfnmockcalls"></a><a href="#mockfnmockcalls" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mock.calls</code></h3>
+<p>An array containing the call arguments of all calls that have been made to this mock function. Each item in the array is an array of arguments that were passed during the call.</p>
+<p>For example: A mock function <code>f</code> that has been called twice, with the arguments <code>f('arg1', 'arg2')</code>, and then with the arguments <code>f('arg3', 'arg4')</code>, would have a <code>mock.calls</code> array that looks like this:</p>
+<pre><code class="hljs css language-js">[
+  [<span class="hljs-string">'arg1'</span>, <span class="hljs-string">'arg2'</span>],
+  [<span class="hljs-string">'arg3'</span>, <span class="hljs-string">'arg4'</span>],
+];
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="mockfnmockresults"></a><a href="#mockfnmockresults" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mock.results</code></h3>
+<p>An array containing the results of all calls that have been made to this mock function. Each entry in this array is an object containing a <code>type</code> property, and a <code>value</code> property. <code>type</code> will be one of the following:</p>
+<ul>
+<li><code>'return'</code> - Indicates that the call completed by returning normally.</li>
+<li><code>'throw'</code> - Indicates that the call completed by throwing a value.</li>
+<li><code>'incomplete'</code> - Indicates that the call has not yet completed. This occurs if you test the result from within the mock function itself, or from within a function that was called by the mock.</li>
+</ul>
+<p>The <code>value</code> property contains the value that was thrown or returned. <code>value</code> is undefined when <code>type === 'incomplete'</code>.</p>
+<p>For example: A mock function <code>f</code> that has been called three times, returning <code>'result1'</code>, throwing an error, and then returning <code>'result2'</code>, would have a <code>mock.results</code> array that looks like this:</p>
+<pre><code class="hljs css language-js">[
+  {
+    <span class="hljs-attr">type</span>: <span class="hljs-string">'return'</span>,
+    <span class="hljs-attr">value</span>: <span class="hljs-string">'result1'</span>,
+  },
+  {
+    <span class="hljs-attr">type</span>: <span class="hljs-string">'throw'</span>,
+    <span class="hljs-attr">value</span>: {
+      <span class="hljs-comment">/* Error instance */</span>
+    },
+  },
+  {
+    <span class="hljs-attr">type</span>: <span class="hljs-string">'return'</span>,
+    <span class="hljs-attr">value</span>: <span class="hljs-string">'result2'</span>,
+  },
+];
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="mockfnmockinstances"></a><a href="#mockfnmockinstances" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mock.instances</code></h3>
+<p>Um array que contém todas as instâncias de objeto que tem sido instanciados a partir desta função simulada (mock, em inglês) usando <code>new</code>.</p>
+<p>Por exemplo: uma função de simulação que foi instanciada duas vezes teria o seguinte array de <code>mock.instances</code>:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> mockFn = jest.fn();
+
+<span class="hljs-keyword">const</span> a = <span class="hljs-keyword">new</span> mockFn();
+<span class="hljs-keyword">const</span> b = <span class="hljs-keyword">new</span> mockFn();
+
+mockFn.mock.instances[<span class="hljs-number">0</span>] === a; <span class="hljs-comment">// true</span>
+mockFn.mock.instances[<span class="hljs-number">1</span>] === b; <span class="hljs-comment">// true</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="mockfnmockclear"></a><a href="#mockfnmockclear" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockClear()</code></h3>
+<p>Redefine todas as informações armazenadas nos arrays de <a href="#mockfnmockcalls"> <code>mockFn.mock.calls</code></a> e <a href="#mockfnmockinstances"> <code>mockFn.mock.instances</code></a>.</p>
+<p>Muitas vezes isto é útil quando você deseja limpar os dados de uso de uma simulação entre duas afirmações.</p>
+<p>Cuidado que <code>mockClear</code> irá substituir <code>mockFn.mock</code>, não apenas <a href="#mockfnmockcalls"><code>mockFn.mock.calls</code></a> e <a href="#mockfnmockinstances"><code>mockFn.mock.instances</code></a>. Portanto, evite atribuir <code>mockFn.mock</code> a outras variáveis, temporárias ou não, para certificar-se de que não vai acessar dados obsoletos.</p>
+<p>A opção de configuração <a href="configuration.html#clearmocks-boolean"><code>clearMocks</code></a> está disponível para limpar as simulações automaticamente entre os testes.</p>
+<h3><a class="anchor" aria-hidden="true" id="mockfnmockreset"></a><a href="#mockfnmockreset" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockReset()</code></h3>
+<p>Does everything that <a href="#mockfnmockclear"><code>mockFn.mockClear()</code></a> does, and also removes any mocked return values or implementations.</p>
+<p>This is useful when you want to completely reset a <em>mock</em> back to its initial state. (Note that resetting a <em>spy</em> will result in a function with no return value).</p>
+<p>Cuidado que <code>mockClear</code> irá substituir <code>mockFn.mock</code>, não apenas <a href="#mockfnmockcalls"><code>mockFn.mock.calls</code></a> e <a href="#mockfnmockinstances"><code>mockFn.mock.instances</code></a>. Portanto, evite atribuir <code>mockFn.mock</code> a outras variáveis, temporárias ou não, para certificar-se de que não vai acessar dados obsoletos.</p>
+<h3><a class="anchor" aria-hidden="true" id="mockfnmockrestore"></a><a href="#mockfnmockrestore" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockRestore()</code></h3>
+<p>Does everything that <a href="#mockfnmockreset"><code>mockFn.mockReset()</code></a> does, and also restores the original (non-mocked) implementation.</p>
+<p>Isso é útil quando você quer simular funções em certos casos de teste e restaurar a implementação original em outros.</p>
+<p>Beware that <code>mockFn.mockRestore</code> only works when the mock was created with <code>jest.spyOn</code>. Assim, tem que cuidar da restauração você mesmo quando atribuir manualmente <code>jest.fn()</code>.</p>
+<p>The <a href="configuration.html#restoremocks-boolean"><code>restoreMocks</code></a> configuration option is available to restore mocks automatically between tests.</p>
+<h3><a class="anchor" aria-hidden="true" id="mockfnmockimplementationfn"></a><a href="#mockfnmockimplementationfn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockImplementation(fn)</code></h3>
+<p>Aceita uma função que deve ser usada como a implementação da simulação (mock, em inglês). A simulação em si ainda irá gravar todas as chamadas que entram e instâncias que vêm dela própria – a única diferença é que a implementação também será executada quando a simulação é chamada.</p>
+<p><em>Nota: <code>jest.fn(implementation)</code> é uma forma abreviada para <code>jest.fn().mockImplementation(implementation)</code>.</em></p>
+<p>Por exemplo:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> mockFn = jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">scalar</span> =&gt;</span> <span class="hljs-number">42</span> + scalar);
+<span class="hljs-comment">// or: jest.fn(scalar =&gt; 42 + scalar);</span>
+
+<span class="hljs-keyword">const</span> a = mockFn(<span class="hljs-number">0</span>);
+<span class="hljs-keyword">const</span> b = mockFn(<span class="hljs-number">1</span>);
+
+a === <span class="hljs-number">42</span>; <span class="hljs-comment">// true</span>
+b === <span class="hljs-number">43</span>; <span class="hljs-comment">// true</span>
+
+mockFn.mock.calls[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>] === <span class="hljs-number">0</span>; <span class="hljs-comment">// true</span>
+mockFn.mock.calls[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>] === <span class="hljs-number">1</span>; <span class="hljs-comment">// true</span>
+</code></pre>
+<p><code>mockImplementation</code> também pode ser usado para simular (mock, em inglês) construtores de classe:</p>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// SomeClass.js</span>
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SomeClass</span> </span>{
+  m(a, b) {}
+};
+
+<span class="hljs-comment">// OtherModule.test.js</span>
+jest.mock(<span class="hljs-string">'./SomeClass'</span>); <span class="hljs-comment">// this happens automatically with automocking</span>
+<span class="hljs-keyword">const</span> SomeClass = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./SomeClass'</span>);
+<span class="hljs-keyword">const</span> mMock = jest.fn();
+SomeClass.mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-attr">m</span>: mMock,
+  };
+});
+
+<span class="hljs-keyword">const</span> some = <span class="hljs-keyword">new</span> SomeClass();
+some.m(<span class="hljs-string">'a'</span>, <span class="hljs-string">'b'</span>);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Calls to m: '</span>, mMock.mock.calls);
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="mockfnmockimplementationoncefn"></a><a href="#mockfnmockimplementationoncefn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockImplementationOnce(fn)</code></h3>
+<p>Accepts a function that will be used as an implementation of the mock for one call to the mocked function. Can be chained so that multiple function calls produce different results.</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> myMockFn = jest
+  .fn()
+  .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">cb</span> =&gt;</span> cb(<span class="hljs-literal">null</span>, <span class="hljs-literal">true</span>))
+  .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">cb</span> =&gt;</span> cb(<span class="hljs-literal">null</span>, <span class="hljs-literal">false</span>));
+
+myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(val)); <span class="hljs-comment">// true</span>
+
+myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(val)); <span class="hljs-comment">// false</span>
+</code></pre>
+<p>Quando a função simulada fica sem implementações definidas com mockImplementationOnce, ela irá executar o conjunto padrão de implementação com <code>jest.fn(() =&gt; defaultValue)</code> ou <code>.mockImplementation(() =&gt; defaultValue)</code> se eles foram chamados:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> myMockFn = jest
+  .fn(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'default'</span>)
+  .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'first call'</span>)
+  .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'second call'</span>);
+
+<span class="hljs-comment">// 'first call', 'second call', 'default', 'default'</span>
+<span class="hljs-built_in">console</span>.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="mockfnmocknamevalue"></a><a href="#mockfnmocknamevalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockName(value)</code></h3>
+<p>Accepts a string to use in test result output in place of &quot;jest.fn()&quot; to indicate which mock function is being referenced.</p>
+<p>Por exemplo:</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> mockFn = jest.fn().mockName(<span class="hljs-string">'mockedFunction'</span>);
+<span class="hljs-comment">// mockFn();</span>
+expect(mockFn).toHaveBeenCalled();
+</code></pre>
+<p>Will result in this error:</p>
+<pre><code class="hljs"><span class="hljs-symbol">expect</span>(mockedFunction).toHaveBeenCalled()
+
+<span class="hljs-symbol">Expected</span> mock <span class="hljs-meta">function</span> <span class="hljs-string">"mockedFunction"</span> to have <span class="hljs-keyword">been </span>called, <span class="hljs-keyword">but </span><span class="hljs-keyword">it </span>was not called.
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="mockfnmockreturnthis"></a><a href="#mockfnmockreturnthis" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockReturnThis()</code></h3>
+<p>Syntactic sugar function for:</p>
+<pre><code class="hljs css language-js">jest.fn(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="mockfnmockreturnvaluevalue"></a><a href="#mockfnmockreturnvaluevalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockReturnValue(value)</code></h3>
+<p>Aceita um valor que será retornado sempre que a função de simulação é chamada.</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> mock = jest.fn();
+mock.mockReturnValue(<span class="hljs-number">42</span>);
+mock(); <span class="hljs-comment">// 42</span>
+mock.mockReturnValue(<span class="hljs-number">43</span>);
+mock(); <span class="hljs-comment">// 43</span>
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="mockfnmockreturnvalueoncevalue"></a><a href="#mockfnmockreturnvalueoncevalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockReturnValueOnce(value)</code></h3>
+<p>Aceita um valor que será retornado por uma chamada para a função de simulação. Podem ser encadeados para que sucessivas chamadas para a função de simulação retornem valores diferentes. Quando não há mais valores <code>mockReturnValueOnce</code> para usar, chamadas irão retornar um valor especificado pelo <code>mockReturnValue</code>.</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> myMockFn = jest
+  .fn()
+  .mockReturnValue(<span class="hljs-string">'default'</span>)
+  .mockReturnValueOnce(<span class="hljs-string">'first call'</span>)
+  .mockReturnValueOnce(<span class="hljs-string">'second call'</span>);
+
+<span class="hljs-comment">// 'first call', 'second call', 'default', 'default'</span>
+<span class="hljs-built_in">console</span>.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="mockfnmockresolvedvaluevalue"></a><a href="#mockfnmockresolvedvaluevalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockResolvedValue(value)</code></h3>
+<p>Syntactic sugar function for:</p>
+<pre><code class="hljs css language-js">jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Promise</span>.resolve(value));
+</code></pre>
+<p>Useful to mock async functions in async tests:</p>
+<pre><code class="hljs css language-js">test(<span class="hljs-string">'async test'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> asyncMock = jest.fn().mockResolvedValue(<span class="hljs-number">43</span>);
+
+  <span class="hljs-keyword">await</span> asyncMock(); <span class="hljs-comment">// 43</span>
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="mockfnmockresolvedvalueoncevalue"></a><a href="#mockfnmockresolvedvalueoncevalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockResolvedValueOnce(value)</code></h3>
+<p>Syntactic sugar function for:</p>
+<pre><code class="hljs css language-js">jest.fn().mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Promise</span>.resolve(value));
+</code></pre>
+<p>Useful to resolve different values over multiple async calls:</p>
+<pre><code class="hljs css language-js">test(<span class="hljs-string">'async test'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> asyncMock = jest
+    .fn()
+    .mockResolvedValue(<span class="hljs-string">'default'</span>)
+    .mockResolvedValueOnce(<span class="hljs-string">'first call'</span>)
+    .mockResolvedValueOnce(<span class="hljs-string">'second call'</span>);
+
+  <span class="hljs-keyword">await</span> asyncMock(); <span class="hljs-comment">// first call</span>
+  <span class="hljs-keyword">await</span> asyncMock(); <span class="hljs-comment">// second call</span>
+  <span class="hljs-keyword">await</span> asyncMock(); <span class="hljs-comment">// default</span>
+  <span class="hljs-keyword">await</span> asyncMock(); <span class="hljs-comment">// default</span>
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="mockfnmockrejectedvaluevalue"></a><a href="#mockfnmockrejectedvaluevalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockRejectedValue(value)</code></h3>
+<p>Syntactic sugar function for:</p>
+<pre><code class="hljs css language-js">jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Promise</span>.reject(value));
+</code></pre>
+<p>Useful to create async mock functions that will always reject:</p>
+<pre><code class="hljs css language-js">test(<span class="hljs-string">'async test'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> asyncMock = jest.fn().mockRejectedValue(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Async error'</span>));
+
+  <span class="hljs-keyword">await</span> asyncMock(); <span class="hljs-comment">// throws "Async error"</span>
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="mockfnmockrejectedvalueoncevalue"></a><a href="#mockfnmockrejectedvalueoncevalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockRejectedValueOnce(value)</code></h3>
+<p>Syntactic sugar function for:</p>
+<pre><code class="hljs css language-js">jest.fn().mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Promise</span>.reject(value));
+</code></pre>
+<p>Example usage:</p>
+<pre><code class="hljs css language-js">test(<span class="hljs-string">'async test'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> asyncMock = jest
+    .fn()
+    .mockResolvedValueOnce(<span class="hljs-string">'first call'</span>)
+    .mockRejectedValueOnce(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Async error'</span>));
+
+  <span class="hljs-keyword">await</span> asyncMock(); <span class="hljs-comment">// first call</span>
+  <span class="hljs-keyword">await</span> asyncMock(); <span class="hljs-comment">// throws "Async error"</span>
+});
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/pt-BR/25.x/expect"><span class="arrow-prev">← </span><span>Expect</span></a><a class="docs-next button" href="/docs/pt-BR/25.x/jest-object"><span>The Jest Object</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#métodos">Métodos</a></li><li><a href="#referência">Referência</a><ul class="toc-headings"><li><a href="#mockfngetmockname"><code>mockFn.getMockName()</code></a></li><li><a href="#mockfnmockcalls"><code>mockFn.mock.calls</code></a></li><li><a href="#mockfnmockresults"><code>mockFn.mock.results</code></a></li><li><a href="#mockfnmockinstances"><code>mockFn.mock.instances</code></a></li><li><a href="#mockfnmockclear"><code>mockFn.mockClear()</code></a></li><li><a href="#mockfnmockreset"><code>mockFn.mockReset()</code></a></li><li><a href="#mockfnmockrestore"><code>mockFn.mockRestore()</code></a></li><li><a href="#mockfnmockimplementationfn"><code>mockFn.mockImplementation(fn)</code></a></li><li><a href="#mockfnmockimplementationoncefn"><code>mockFn.mockImplementationOnce(fn)</code></a></li><li><a href="#mockfnmocknamevalue"><code>mockFn.mockName(value)</code></a></li><li><a href="#mockfnmockreturnthis"><code>mockFn.mockReturnThis()</code></a></li><li><a href="#mockfnmockreturnvaluevalue"><code>mockFn.mockReturnValue(value)</code></a></li><li><a href="#mockfnmockreturnvalueoncevalue"><code>mockFn.mockReturnValueOnce(value)</code></a></li><li><a href="#mockfnmockresolvedvaluevalue"><code>mockFn.mockResolvedValue(value)</code></a></li><li><a href="#mockfnmockresolvedvalueoncevalue"><code>mockFn.mockResolvedValueOnce(value)</code></a></li><li><a href="#mockfnmockrejectedvaluevalue"><code>mockFn.mockRejectedValue(value)</code></a></li><li><a href="#mockfnmockrejectedvalueoncevalue"><code>mockFn.mockRejectedValueOnce(value)</code></a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/pt-BR/getting-started.html">Getting Started</a><a href="/docs/pt-BR/snapshot-testing.html">Guides</a><a href="/docs/pt-BR/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://discord.gg/MWRhKCj">Jest Chat</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {"facetFilters":["language:pt-BR","version:25.x"]}
+              });
+            </script></body></html>
