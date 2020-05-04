@@ -6,24 +6,15 @@
  */
 
 import chalk = require('chalk');
-import {
-  StackTraceConfig,
-  StackTraceOptions,
-  formatStackTrace,
-} from 'jest-message-util';
+import {StackTraceOptions, formatStackTrace} from 'jest-message-util';
+import type {Config} from '@jest/types';
 import type {ConsoleBuffer} from './types';
 
-export default (
-  // TODO: remove in 26
-  root: string,
+export default function getConsoleOutput(
   verbose: boolean,
   buffer: ConsoleBuffer,
-  // TODO: make mandatory and take Config.ProjectConfig in 26
-  config: StackTraceConfig = {
-    rootDir: root,
-    testMatch: [],
-  },
-): string => {
+  config: Config.ProjectConfig,
+): string {
   const TITLE_INDENT = verbose ? '  ' : '    ';
   const CONSOLE_INDENT = TITLE_INDENT + '  ';
 
@@ -69,4 +60,4 @@ export default (
   }, '');
 
   return logEntries.trimRight() + '\n';
-};
+}
