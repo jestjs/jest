@@ -64,7 +64,7 @@ const eventHandler: Circus.EventHandler = (
       // but do not when there is already a single test with "only" mode
       const shouldPassMode = !(
         currentDescribeBlock.mode === 'only' &&
-        currentDescribeBlock.children.find(
+        currentDescribeBlock.children.some(
           child => child.type === 'test' && child.mode === 'only',
         )
       );
