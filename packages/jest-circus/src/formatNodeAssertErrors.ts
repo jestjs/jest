@@ -43,7 +43,7 @@ const formatNodeAssertErrors = (
   state: Circus.State,
 ): void => {
   if (event.name === 'test_done') {
-    event.test.errors = event.test.errors.map((errors: Circus.TestError) => {
+    event.test.errors = event.test.errors.map(errors => {
       let error;
       if (Array.isArray(errors)) {
         const [originalError, asyncError] = errors;
