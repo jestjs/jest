@@ -9,8 +9,12 @@
 import * as os from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
+import {skipSuiteOnWindows} from '@jest/test-utils';
 import {cleanup, writeFiles} from '../Utils';
 import {runContinuous} from '../runJest';
+
+// Until https://github.com/nodejs/node/issues/33227 is solved somehow
+skipSuiteOnWindows();
 
 const DIR = path.resolve(os.tmpdir(), 'watch_mode_no_access');
 
