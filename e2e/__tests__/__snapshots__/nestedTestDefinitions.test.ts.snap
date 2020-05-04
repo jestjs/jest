@@ -2,10 +2,9 @@
 
 exports[`print correct error message with nested test definitions inside describe 1`] = `
 FAIL __tests__/nestedTestWithinDescribe.js
-  in describe
-    ✕ outer test
 
-  ● in describe › outer test
+
+  ● Test suite failed to run
 
     Tests cannot be nested. Test "inner test" cannot run because it is nested within "outer test".
 
@@ -22,9 +21,9 @@ FAIL __tests__/nestedTestWithinDescribe.js
 
 exports[`print correct error message with nested test definitions outside describe 1`] = `
 FAIL __tests__/nestedTestOutsideDescribe.js
-  ✕ outer test
 
-  ● outer test
+
+  ● Test suite failed to run
 
     Tests cannot be nested. Test "inner test" cannot run because it is nested within "outer test".
 
