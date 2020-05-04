@@ -1,6 +1,6 @@
 {
   "name": "jest-mock",
-  "version": "26.0.0-alpha.2",
+  "version": "26.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,7 +10,7 @@
     "node": ">= 10.14.2"
   },
   "dependencies": {
-    "@jest/types": "^26.0.0-alpha.2"
+    "@jest/types": "^26.0.0"
   },
   "devDependencies": {
     "@types/node": "*"

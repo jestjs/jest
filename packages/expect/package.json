@@ -1,6 +1,6 @@
 {
   "name": "expect",
-  "version": "26.0.0-alpha.2",
+  "version": "26.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,15 +10,15 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/types": "^26.0.0-alpha.2",
+    "@jest/types": "^26.0.0",
     "ansi-styles": "^4.0.0",
-    "jest-get-type": "^26.0.0-alpha.0",
-    "jest-matcher-utils": "^26.0.0-alpha.2",
-    "jest-message-util": "^26.0.0-alpha.2",
-    "jest-regex-util": "^26.0.0-alpha.1"
+    "jest-get-type": "^26.0.0",
+    "jest-matcher-utils": "^26.0.0",
+    "jest-message-util": "^26.0.0",
+    "jest-regex-util": "^26.0.0"
   },
   "devDependencies": {
-    "@jest/test-utils": "^26.0.0-alpha.1",
+    "@jest/test-utils": "^26.0.0",
     "chalk": "^4.0.0",
     "fast-check": "^1.13.0",
     "immutable": "^4.0.0-rc.12"
