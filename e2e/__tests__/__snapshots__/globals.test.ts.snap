@@ -95,6 +95,22 @@ Time:        <<REPLACED>>
 Ran all test suites.
 `;
 
+exports[`interleaved describe and test children order 1`] = `
+PASS __tests__/interleaved.test.js
+  ✓ above
+  ✓ below
+  describe
+    ✓ inside
+`;
+
+exports[`interleaved describe and test children order 2`] = `
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;
+
 exports[`only 1`] = `
 PASS __tests__/onlyConstructs.test.js
   ✓ test.only

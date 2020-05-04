@@ -45,6 +45,7 @@ const Sponsor = ({
     className="sponsor-item"
     title={`$${totalDonations.value} by ${name || slug}`}
     target="_blank"
+    rel="nofollow noopener"
     href={website || `https://opencollective.com/${slug}`}
   >
     {

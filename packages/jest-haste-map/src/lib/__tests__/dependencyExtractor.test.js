@@ -243,4 +243,24 @@ describe('dependencyExtractor', () => {
     `;
     expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
   });
+
+  it('should extract dependencies from `jest.createMockFromModule` calls', () => {
+    const code = `
+      // Good
+      jest.createMockFromModule('dep1');
+      const dep2 = jest.createMockFromModule(
+        "dep2",
+      );
+      if (jest.createMockFromModule(\`dep3\`).cond) {}
+      jest
+        .requireMock('dep4');
+
+      // Bad
+      ${COMMENT_NO_NEG_LB} foo . jest.createMockFromModule('inv1')
+      xjest.createMockFromModule('inv2');
+      jest.createMockFromModulex('inv3');
+      jest.createMockFromModule('inv4', 'inv5');
+    `;
+    expect(extract(code)).toEqual(new Set(['dep1', 'dep2', 'dep3', 'dep4']));
+  });
 });

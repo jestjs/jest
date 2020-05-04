@@ -8,7 +8,7 @@
 
 const vm = jest.requireActual('vm');
 
-const JSDOMEnvironment = jest.genMockFromModule('../index') as jest.Mock;
+const JSDOMEnvironment = jest.createMockFromModule('../index') as jest.Mock;
 
 JSDOMEnvironment.mockImplementation(function (config) {
   // @ts-ignore

@@ -9,6 +9,7 @@ import * as path from 'path';
 import type {Config} from '@jest/types';
 import type {ModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
+import slash = require('slash');
 import nodeModulesPaths from './nodeModulesPaths';
 import isBuiltinModule from './isBuiltinModule';
 import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
@@ -236,10 +237,11 @@ class Resolver {
     // 5. Throw an error if the module could not be found. `resolve.sync` only
     // produces an error based on the dirname but we have the actual current
     // module name available.
-    const relativePath = path.relative(dirname, from);
+    const relativePath =
+      slash(path.relative(this._options.rootDir, from)) || '.';
 
     throw new ModuleNotFoundError(
-      `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
+      `Cannot find module '${moduleName}' from '${relativePath}'`,
       moduleName,
     );
   }

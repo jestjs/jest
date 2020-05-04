@@ -10,7 +10,7 @@ import * as fs from 'graceful-fs';
 import TestSequencer from '../index';
 
 jest.mock('graceful-fs', () => ({
-  ...jest.genMockFromModule('fs'),
+  ...jest.createMockFromModule('fs'),
   existsSync: jest.fn(() => true),
   readFileSync: jest.fn(() => '{}'),
 }));

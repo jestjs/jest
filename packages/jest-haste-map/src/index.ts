@@ -846,6 +846,19 @@ class HasteMap extends EventEmitter {
         return;
       }
 
+      const relativeFilePath = fastPath.relative(rootDir, filePath);
+      const fileMetadata = hasteMap.files.get(relativeFilePath);
+
+      // The file has been accessed, not modified
+      if (
+        type === 'change' &&
+        fileMetadata &&
+        stat &&
+        fileMetadata[H.MTIME] === stat.mtime.getTime()
+      ) {
+        return;
+      }
+
       changeQueue = changeQueue
         .then(() => {
           // If we get duplicate events for the same file, ignore them.
@@ -879,7 +892,6 @@ class HasteMap extends EventEmitter {
             return null;
           };
 
-          const relativeFilePath = fastPath.relative(rootDir, filePath);
           const fileMetadata = hasteMap.files.get(relativeFilePath);
 
           // If it's not an addition, delete the file and all its metadata

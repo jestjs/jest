@@ -9,10 +9,7 @@ import {Context, Script, createContext, runInContext} from 'vm';
 import type {Config, Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
-import {
-  JestFakeTimers as LegacyFakeTimers,
-  LolexFakeTimers,
-} from '@jest/fake-timers';
+import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {JestEnvironment} from '@jest/environment';
 
 type Timer = {
@@ -24,7 +21,7 @@ type Timer = {
 class NodeEnvironment implements JestEnvironment {
   context: Context | null;
   fakeTimers: LegacyFakeTimers<Timer> | null;
-  fakeTimersLolex: LolexFakeTimers | null;
+  fakeTimersModern: ModernFakeTimers | null;
   global: Global.Global;
   moduleMocker: ModuleMocker | null;
 
@@ -90,7 +87,7 @@ class NodeEnvironment implements JestEnvironment {
       timerConfig,
     });
 
-    this.fakeTimersLolex = new LolexFakeTimers({config, global});
+    this.fakeTimersModern = new ModernFakeTimers({config, global});
   }
 
   async setup(): Promise<void> {}
@@ -99,12 +96,12 @@ class NodeEnvironment implements JestEnvironment {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
-    if (this.fakeTimersLolex) {
-      this.fakeTimersLolex.dispose();
+    if (this.fakeTimersModern) {
+      this.fakeTimersModern.dispose();
     }
     this.context = null;
     this.fakeTimers = null;
-    this.fakeTimersLolex = null;
+    this.fakeTimersModern = null;
   }
 
   // TS infers the return type to be `any`, since that's what `runInContext`
