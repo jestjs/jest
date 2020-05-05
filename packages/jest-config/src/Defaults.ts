@@ -7,6 +7,7 @@
 
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
+import {shouldPreserveSymlinks} from 'jest-util';
 import {NODE_MODULES} from './constants';
 import getCacheDirectory from './getCacheDirectory';
 
@@ -66,7 +67,7 @@ const defaultOptions: Config.DefaultOptions = {
   useStderr: false,
   watch: false,
   watchPathIgnorePatterns: [],
-  watchman: true,
+  watchman: !shouldPreserveSymlinks(),
 };
 
 export default defaultOptions;
