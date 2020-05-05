@@ -12,7 +12,7 @@
 
 ### Fixes
 
-- `[jest-circus]` Populate `DescribeBlock.tests` to not break Detox reporter
+- `[jest-circus]` Backward compatibility for deprecated `DescribeBlock.tests` to not break e.g. Detox reporter
 
 ## 26.0.0
 
