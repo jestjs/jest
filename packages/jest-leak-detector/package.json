@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@types/weak-napi": "^1.0.0",
-    "weak-napi": "^1.0.3"
+    "weak-napi": "^2.0.1"
   },
   "engines": {
     "node": ">= 10.14.2"
