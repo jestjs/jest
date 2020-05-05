@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-runtime]` Fix `isolateModules` not working correctly when module has already been imported ([#8634](https://github.com/facebook/jest/pull/8634))
+
 ### Chore & Maintenance
 
 ### Performance
@@ -34,7 +36,6 @@
 - `[jest-haste-map]` Stop reporting files as changed when they are only accessed ([#7347](https://github.com/facebook/jest/pull/7347))
 - `[jest-resolve]` Show relative path from root dir for `module not found` errors ([#9963](https://github.com/facebook/jest/pull/9963))
 - `[jest-runtime]` Fix absolute path moduleNameMapper + jest.mock bug ([#8727](https://github.com/facebook/jest/pull/8727))
-- `[jest-runtime]` Fix `isolateModules` not working correctly when module has already been imported ([#8634](https://github.com/facebook/jest/pull/8634))
 
 ### Chore & Maintenance
 
