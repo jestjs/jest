@@ -13,7 +13,7 @@
         <link href="https://jestjs.io/blog/2020/05/05/jest-26.html"/>
         <updated>2020-05-05T06:00:00.000Z</updated>
         <summary type="html"><![CDATA[<p>When we started rebuilding Jest five years ago our goal was to provide a batteries-included zero-configuration test runner that is approachable for beginners, extensible for almost all testing use cases and scalable to large projects. One of the instrumental releases was <a href="https://jestjs.io/blog/2016/09/01/jest-15">Jest 15</a> which tied everything together and provided good defaults that allowed people to run Jest often without any setup. However, this approach has a big downside as Jest installs a lot of dependencies into your projects that you may not need.</p>
-<p>We are now beginning to address this shortcoming and are working on reducing Jest’s install size while keeping it approachable and extensible. We have made the following breaking changes in Jest 26:</p>
+<p>We are now beginning to address this shortcoming and are working on reducing Jest’s install size while keeping it approachable and extensible. We have made the following <strong>breaking changes</strong> in Jest 26:</p>
 ]]></summary>
         <author>
             <name>Christoph Nakazawa</name>

@@ -75,12 +75,24 @@
               }
             });
         </script></nav></div><div class="container mainContainer postContainer blogContainer"><div class="wrapper"><div class="lonePost"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle"><a href="/blog/2020/05/05/jest-26">Jest 26: Tick Tock</a></h1><p class="post-meta">May 5, 2020</p><div class="authorBlock"><p class="post-authorName"><a href="http://twitter.com/cpojer" target="_blank" rel="noreferrer noopener">Christoph Nakazawa</a></p><div class="authorPhoto"><a href="http://twitter.com/cpojer" target="_blank" rel="noreferrer noopener"><img src="https://graph.facebook.com/100000023028168/picture/?height=200&amp;width=200" alt="Christoph Nakazawa"/></a></div></div></header><div><span><p>When we started rebuilding Jest five years ago our goal was to provide a batteries-included zero-configuration test runner that is approachable for beginners, extensible for almost all testing use cases and scalable to large projects. One of the instrumental releases was <a href="https://jestjs.io/blog/2016/09/01/jest-15">Jest 15</a> which tied everything together and provided good defaults that allowed people to run Jest often without any setup. However, this approach has a big downside as Jest installs a lot of dependencies into your projects that you may not need.</p>
-<p>We are now beginning to address this shortcoming and are working on reducing Jest’s install size while keeping it approachable and extensible. We have made the following breaking changes in Jest 26:</p>
+<p>We are now beginning to address this shortcoming and are working on reducing Jest’s install size while keeping it approachable and extensible. We have made the following <strong>breaking changes</strong> in Jest 26:</p>
 <!--truncate-->
 <ul>
-<li><code>[expect, jest-mock, pretty-format]</code> Remove <code>ES5</code> build files with a new minimum of support of ES2015 (Node 8) which were only used for browser builds (<a href="https://github.com/facebook/jest/pull/9945">#9945</a>)</li>
-<li><code>[jest-config, jest-resolve]</code> Remove support for <code>browser</code> field (<a href="https://github.com/facebook/jest/pull/9943">#9943</a>)</li>
-<li>TypeScript definitions requires a minimum of TypeScript v3.8 (<a href="https://github.com/facebook/jest/pull/9823">#9823</a>)</li>
+<li><p><code>[expect, jest-mock, pretty-format]</code> Remove <code>ES5</code> build files with a new minimum of support of ES2015 (Node 8) which were only used for browser builds (<a href="https://github.com/facebook/jest/pull/9945">#9945</a>)</p>
+<blockquote>
+<p><strong>Migration</strong>: With this change, we are pushing the responsibility to bundle the affected packages to the users, rather than Jest providing them out of the box, since they know their target environments best. If you want it back, we're open to shipping these as separate packages. PRs welcome!</p>
+</blockquote></li>
+<li><p><code>[jest-config, jest-resolve]</code> Remove support for <code>browser</code> field (<a href="https://github.com/facebook/jest/pull/9943">#9943</a>)</p>
+<blockquote>
+<p><strong>Migration</strong>: Install <code>browser-resolve</code> module and use the following configuration:</p>
+</blockquote>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"jest"</span>: {
+    <span class="hljs-attr">"resolver"</span>: <span class="hljs-string">"browser-resolve"</span>
+  }
+}
+</code></pre></li>
+<li><p>TypeScript definitions requires a minimum of TypeScript v3.8 (<a href="https://github.com/facebook/jest/pull/9823">#9823</a>)</p></li>
 </ul>
 <p>With the above changes Jest 26 is now 4 MiB smaller than Jest 25.5.4 (53 → 49 MiB). Please keep in mind that many dependencies like Babel are likely already part of your project. Jest's own size was reduced by 1.2 MiB (4.3 -&gt; 3.1 MiB).</p>
 <p>While this is a good start, it isn’t enough to make Jest meaningfully leaner. We are planning on gradually reducing Jest's and its dependency tree size by up to 70%. Most of the changes to reduce Jest’s default setup will be small breaking changes and we want to bring the community with us as much as possible. Therefore we will make the following changes in Jest 27 and Jest 28 using a <a href="https://en.wikipedia.org/wiki/Tick%E2%80%93tock_model">“Tick-Tock&quot; release process</a>:</p>
@@ -107,7 +119,7 @@
 <p>Jest has relied on globals popularized by the Jasmine testing framework and others such as <code>describe</code>, <code>it</code>, <code>test</code> and <code>expect</code>. While this is a widely used pattern, many people have expressed their preference for importing testing related functions instead. To support this use case, we added a new package <code>@jest/globals</code> that can be used to import testing functions: <code>import {expect, jest, test} from '@jest/globals';</code>.</p>
 <p>Caveats:</p>
 <ul>
-<li>Currently the globals still exist in the environment but we will introduce a mode to disable globals in the future. Similarly, you cannot use <code>const jest = require('@jest/globals')</code> as you'll get declaration orders because the <code>jest</code> variable is still a global for now.</li>
+<li>Currently the globals still exist in the environment but we will introduce a mode to disable globals in the future. Similarly, you cannot use <code>const jest = require('@jest/globals')</code> as you'll get declaration errors because the <code>jest</code> variable is still a global for now.</li>
 <li>There is currently no way to add custom matchers to the TypeScript definitions when using globals like this.</li>
 <li>While this allows running tests without globals, it does not allow running tests without Jest's test runner at this time.</li>
 </ul>
