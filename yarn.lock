@@ -3475,7 +3475,7 @@ binary-extensions@^2.0.0:
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.0.0.tgz#23c0df14f6a88077f5f986c0d167ec03c3d5537c"
   integrity sha512-Phlt0plgpIIBOGTT/ehfFnbNlfsDEiqmzE2KRXoX1bLIlir4X/MR+zSyBEkL05ffWgnRSf/DXv+WrUAVr93/ow==
 
-bindings@^1.3.0, bindings@^1.5.0:
+bindings@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/bindings/-/bindings-1.5.0.tgz#10353c9e945334bc0511a6d90b38fbc7c9c504df"
   integrity sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==
@@ -9638,10 +9638,10 @@ nice-try@^1.0.4:
   resolved "https://registry.yarnpkg.com/nice-try/-/nice-try-1.0.5.tgz#a3378a7696ce7d223e88fc9b764bd7ef1089e366"
   integrity sha512-1nh45deeb5olNY7eX82BkPO7SSxR5SSYJiPTrTdFUVYwAl8CKMA5N9PjTYkHiRjisVcxcQ1HXdLhx2qxxJzLNQ==
 
-node-addon-api@^1.1.0:
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-1.7.1.tgz#cf813cd69bb8d9100f6bdca6755fc268f54ac492"
-  integrity sha512-2+DuKodWvwRTrCfKOeR24KIc5unKjOh8mz17NCzVnHWfjAdDqbfbjqh7gUT+BkXBRQM52+xCHciKWonJ3CbJMQ==
+node-addon-api@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-3.0.0.tgz#812446a1001a54f71663bed188314bba07e09247"
+  integrity sha512-sSHCgWfJ+Lui/u+0msF3oyCgvdkhxDbkCS6Q8uiJquzOimkJBvX6hl5aSSA7DR1XbMpdM8r7phjcF63sF4rkKg==
 
 node-fetch-npm@^2.0.2:
   version "2.0.4"
@@ -9677,6 +9677,11 @@ node-fetch@^2.2.0, node-fetch@^2.3.0, node-fetch@^2.5.0, node-fetch@^2.6.0:
   version "2.6.0"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.0.tgz#e633456386d4aa55863f676a7ab0daa8fdecb0fd"
   integrity sha512-8dG4H5ujfvFiqDmVu9fQ5bOHUC15JMjMY/Zumv26oOvvVJjM67KF8koCWIabKQ1GJIa9r2mMZscBq/TbdOcmNA==
+
+node-gyp-build@^4.2.1:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-4.2.2.tgz#3f44b65adaafd42fb6c3d81afd630e45c847eb66"
+  integrity sha512-Lqh7mrByWCM8Cf9UPqpeoVBBo5Ugx+RKu885GAzmLBVYjeywScxHXPGLa4JfYNZmcNGwzR0Glu5/9GaQZMFqyA==
 
 node-gyp@^5.0.2:
   version "5.1.0"
@@ -13705,13 +13710,13 @@ wcwidth@^1.0.0, wcwidth@^1.0.1:
   dependencies:
     defaults "^1.0.3"
 
-weak-napi@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/weak-napi/-/weak-napi-1.0.3.tgz#ff4dfa818db1c509ba4166530b42414ef74cbba6"
-  integrity sha512-cyqeMaYA5qI7RoZKAKvIHwEROEKDNxK7jXj3u56nF2rGBh+HFyhYmBb1/wAN4RqzRmkYKVVKQyqHpBoJjqtGUA==
+weak-napi@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/weak-napi/-/weak-napi-2.0.1.tgz#406c69e4b6924b1b336e6c93e150334bd6e6e43e"
+  integrity sha512-5K6swEmuZrS8jjtXon9w0Q8qWUSxQYGSp5G4NUjDerNSPSmwBsb9+DXUbr6hAbrDUGFmjeLDRqxv/ma2OfZ1Xw==
   dependencies:
-    bindings "^1.3.0"
-    node-addon-api "^1.1.0"
+    node-addon-api "^3.0.0"
+    node-gyp-build "^4.2.1"
     setimmediate-napi "^1.0.3"
 
 webidl-conversions@^4.0.2:
