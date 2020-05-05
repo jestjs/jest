@@ -8,6 +8,12 @@
 
 ### Performance
 
+## 26.0.1
+
+### Fixes
+
+- `[jest-circus]` Populate `DescribeBlock.tests` to not break Detox reporter
+
 ## 26.0.0
 
 ### Features
