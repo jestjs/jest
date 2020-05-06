@@ -59,7 +59,7 @@ const code = `
  *
  * @flow
  */
- 
+
  console.log('Hello World!');
 `;
 
