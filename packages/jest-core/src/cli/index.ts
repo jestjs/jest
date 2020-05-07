@@ -27,7 +27,7 @@ import watch from '../watch';
 import pluralize from '../pluralize';
 import logDebugMessages from '../lib/log_debug_messages';
 import getConfigsOfProjectsToRun from '../getConfigsOfProjectsToRun';
-import getProjectsRunningMessage from '../getProjectsRunningMessage';
+import getSelectProjectsMessage from '../getSelectProjectsMessage';
 
 const {print: preRunMessagePrint} = preRunMessage;
 
@@ -71,10 +71,8 @@ export async function runCLI(
   }
 
   const configsOfProjectsToRun = getConfigsOfProjectsToRun(argv, configs);
-  if (argv.runProjects) {
-    outputStream.write(
-      getProjectsRunningMessage(configsOfProjectsToRun) + '\n',
-    );
+  if (argv.selectProjects) {
+    outputStream.write(getSelectProjectsMessage(configsOfProjectsToRun));
   }
 
   await _run(
