@@ -31,6 +31,9 @@ function getNoSelectionWarning(): string {
 }
 
 function getNamesMissingWarning(numberOfProjectsWithoutAName: number): string {
+  if (numberOfProjectsWithoutAName === 0) {
+    return '';
+  }
   return chalk.yellow(
     `You provided values for --selectProjects but ${
       numberOfProjectsWithoutAName === 1
