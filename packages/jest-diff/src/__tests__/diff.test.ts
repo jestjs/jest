@@ -14,12 +14,11 @@ import {diffLinesUnified, diffLinesUnified2} from '../diffLines';
 import {noColor} from '../normalizeDiffOptions';
 import {diffStringsUnified} from '../printDiffs';
 import {DiffOptions} from '../types';
+import {NO_DIFF_MESSAGE} from '../constants';
 
 const optionsCounts: DiffOptions = {
   includeChangeCounts: true,
 };
-
-const NO_DIFF_MESSAGE = 'Compared values have no visual difference.';
 
 // Use only in toBe assertions for edge case messages.
 const stripped = (a: unknown, b: unknown) => stripAnsi(diff(a, b) || '');
@@ -975,6 +974,7 @@ describe('options', () => {
   describe('change color', () => {
     const options = {
       changeColor: chalk.bold,
+      commonColor: chalk.yellow,
     };
 
     test('diffStringsUnified', () => {
@@ -982,16 +982,24 @@ describe('options', () => {
       const bChanged = b.join('\n').replace('change', 'changed');
       expect(diffStringsUnified(aChanged, bChanged, options)).toMatchSnapshot();
     });
+
+    test('no diff', () => {
+      expect(diff(a, a, options)).toMatchSnapshot();
+    });
   });
 
   describe('common', () => {
     const options = {
-      commonColor: line => line,
+      commonColor: noColor,
       commonIndicator: '=',
     };
 
     test('diff', () => {
       expect(diff(a, b, options)).toMatchSnapshot();
+    });
+
+    test('no diff', () => {
+      expect(diff(a, a, options)).toBe(NO_DIFF_MESSAGE);
     });
   });
 
