@@ -9,6 +9,7 @@ import prettyFormat = require('pretty-format');
 import chalk = require('chalk');
 import getType = require('jest-get-type');
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
+import {normalizeDiffOptions} from './normalizeDiffOptions';
 import {diffLinesRaw, diffLinesUnified, diffLinesUnified2} from './diffLines';
 import {diffStringsRaw, diffStringsUnified} from './printDiffs';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
@@ -19,6 +20,11 @@ export type {DiffOptions, DiffOptionsColor} from './types';
 export {diffLinesRaw, diffLinesUnified, diffLinesUnified2};
 export {diffStringsRaw, diffStringsUnified};
 export {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff};
+
+const getCommonMessage = (message: string, options?: DiffOptions) => {
+  const {commonColor} = normalizeDiffOptions(options);
+  return commonColor(message);
+};
 
 const {
   AsymmetricMatcher,
@@ -53,7 +59,7 @@ const FALLBACK_FORMAT_OPTIONS_0 = {...FALLBACK_FORMAT_OPTIONS, indent: 0};
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function diff(a: any, b: any, options?: DiffOptions): string | null {
   if (Object.is(a, b)) {
-    return NO_DIFF_MESSAGE;
+    return getCommonMessage(NO_DIFF_MESSAGE, options);
   }
 
   const aType = getType(a);
@@ -109,7 +115,7 @@ function comparePrimitive(
   const aFormat = prettyFormat(a, FORMAT_OPTIONS);
   const bFormat = prettyFormat(b, FORMAT_OPTIONS);
   return aFormat === bFormat
-    ? NO_DIFF_MESSAGE
+    ? getCommonMessage(NO_DIFF_MESSAGE, options)
     : diffLinesUnified(aFormat.split('\n'), bFormat.split('\n'), options);
 }
 
@@ -128,13 +134,14 @@ function compareObjects(
 ) {
   let difference;
   let hasThrown = false;
+  const noDiffMessage = getCommonMessage(NO_DIFF_MESSAGE, options);
 
   try {
     const aCompare = prettyFormat(a, FORMAT_OPTIONS_0);
     const bCompare = prettyFormat(b, FORMAT_OPTIONS_0);
 
     if (aCompare === bCompare) {
-      difference = NO_DIFF_MESSAGE;
+      difference = noDiffMessage;
     } else {
       const aDisplay = prettyFormat(a, FORMAT_OPTIONS);
       const bDisplay = prettyFormat(b, FORMAT_OPTIONS);
@@ -153,12 +160,12 @@ function compareObjects(
 
   // If the comparison yields no results, compare again but this time
   // without calling `toJSON`. It's also possible that toJSON might throw.
-  if (difference === undefined || difference === NO_DIFF_MESSAGE) {
+  if (difference === undefined || difference === noDiffMessage) {
     const aCompare = prettyFormat(a, FALLBACK_FORMAT_OPTIONS_0);
     const bCompare = prettyFormat(b, FALLBACK_FORMAT_OPTIONS_0);
 
     if (aCompare === bCompare) {
-      difference = NO_DIFF_MESSAGE;
+      difference = noDiffMessage;
     } else {
       const aDisplay = prettyFormat(a, FALLBACK_FORMAT_OPTIONS);
       const bDisplay = prettyFormat(b, FALLBACK_FORMAT_OPTIONS);
@@ -172,8 +179,9 @@ function compareObjects(
       );
     }
 
-    if (difference !== NO_DIFF_MESSAGE && !hasThrown) {
-      difference = SIMILAR_MESSAGE + '\n\n' + difference;
+    if (difference !== noDiffMessage && !hasThrown) {
+      difference =
+        getCommonMessage(SIMILAR_MESSAGE, options) + '\n\n' + difference;
     }
   }
 
