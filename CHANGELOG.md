@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[jest-jasmine2]` Stop adding `: ` after an error that has no message
+- `[jest-jasmine2]` Stop adding `:` after an error that has no message ([#9990](https://github.com/facebook/jest/pull/9990))
 
 ### Chore & Maintenance
 
