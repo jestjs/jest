@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-jasmine2]` Stop adding `: ` after an error that has no message
+
 ### Chore & Maintenance
 
 ### Performance
