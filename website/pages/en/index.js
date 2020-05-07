@@ -400,7 +400,7 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      Jest uses a custom resolver for imports in your tests
+                      Jest uses a custom resolver for imports in your tests,
                       making it simple to mock any object outside of your test’s
                       scope. You can use mocked imports with the rich [Mock
                       Functions](https://jestjs.io/docs/en/mock-functions.html)
