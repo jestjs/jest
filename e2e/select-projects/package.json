@@ -1,4 +1,5 @@
 {
+  "description": "Testing the behaviour of --selectProjects",
   "jest": {
     "projects": [
       {

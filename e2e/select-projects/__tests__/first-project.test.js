@@ -5,6 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-it('should run when first-project appears in runProjects', () => {
+it('should run when first-project appears in selectProjects', () => {
   expect(true).toBe(true);
 });

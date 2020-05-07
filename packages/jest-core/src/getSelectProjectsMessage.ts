@@ -26,13 +26,13 @@ export default function getSelectProjectsMessage(
 
 function getNoSelectionWarning(): string {
   return chalk.yellow(
-    'You provided values for --runProjects but no projects were found matching the selection.\n',
+    'You provided values for --selectProjects but no projects were found matching the selection.\n',
   );
 }
 
 function getNamesMissingWarning(numberOfProjectsWithoutAName: number): string {
   return chalk.yellow(
-    `You provided values for --runProjects but ${
+    `You provided values for --selectProjects but ${
       numberOfProjectsWithoutAName === 1
         ? 'a project has'
         : `${numberOfProjectsWithoutAName} projects have`

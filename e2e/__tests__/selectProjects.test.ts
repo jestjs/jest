@@ -9,11 +9,11 @@ import {resolve} from 'path';
 
 import {json as runWithJson} from '../runJest';
 
-const dir = resolve(__dirname, '..', 'run-projects');
+const dir = resolve(__dirname, '..', 'select-projects');
 
-describe('when Jest is started with `--runProjects first-project`', () => {
-  const result = runWithJson('run-projects', [
-    '--runProjects',
+describe('when Jest is started with `--selectProjects first-project`', () => {
+  const result = runWithJson('select-projects', [
+    '--selectProjects',
     'first-project',
   ]);
   it('runs the tests in the first project only', () => {
@@ -28,9 +28,9 @@ describe('when Jest is started with `--runProjects first-project`', () => {
   });
 });
 
-describe('when Jest is started with `--runProjects second-project`', () => {
-  const result = runWithJson('run-projects', [
-    `--runProjects`,
+describe('when Jest is started with `--selectProjects second-project`', () => {
+  const result = runWithJson('select-projects', [
+    `--selectProjects`,
     'second-project',
   ]);
   it('runs the tests in the second project only', () => {
@@ -45,9 +45,9 @@ describe('when Jest is started with `--runProjects second-project`', () => {
   });
 });
 
-describe('when Jest is started with `--runProjects first-project second-project`', () => {
-  const result = runWithJson('run-projects', [
-    `--runProjects`,
+describe('when Jest is started with `--selectProjects first-project second-project`', () => {
+  const result = runWithJson('select-projects', [
+    `--selectProjects`,
     'first-project',
     'second-project',
   ]);
@@ -66,8 +66,8 @@ describe('when Jest is started with `--runProjects first-project second-project`
   });
 });
 
-describe('when Jest is started without providing `--runProjects`', () => {
-  const result = runWithJson('run-projects', []);
+describe('when Jest is started without providing `--selectProjects`', () => {
+  const result = runWithJson('select-projects', []);
   it('runs the tests in the first and second projects', () => {
     expect(result.json.success).toBe(true);
     expect(result.json.numTotalTests).toBe(2);

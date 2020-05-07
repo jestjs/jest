@@ -72,10 +72,10 @@ describe('check', () => {
     },
   );
 
-  it('raises an exception if runProjects is not provided any project names', () => {
-    const argv: Config.Argv = {runProjects: []} as Config.Argv;
+  it('raises an exception if selectProjects is not provided any project names', () => {
+    const argv: Config.Argv = {selectProjects: []} as Config.Argv;
     expect(() => check(argv)).toThrow(
-      'The --runProjects option requires the name of at least one project to be specified.\n',
+      'The --selectProjects option requires the name of at least one project to be specified.\n',
     );
   });
 

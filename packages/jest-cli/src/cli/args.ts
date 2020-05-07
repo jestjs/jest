@@ -49,10 +49,10 @@ export function check(argv: Config.Argv): true {
     );
   }
 
-  if (argv.runProjects && argv.runProjects.length === 0) {
+  if (argv.selectProjects && argv.selectProjects.length === 0) {
     throw new Error(
-      'The --runProjects option requires the name of at least one project to be specified.\n' +
-        'Example usage: jest --runProjects my-first-project my-second-project',
+      'The --selectProjects option requires the name of at least one project to be specified.\n' +
+        'Example usage: jest --selectProjects my-first-project my-second-project',
     );
   }
 
@@ -522,13 +522,6 @@ export const options = {
       'rare.',
     type: 'boolean',
   },
-  runProjects: {
-    description:
-      'Run only the tests of the specified projects.' +
-      'Jest uses the attribute `displayName` in the configuration to identify each project.',
-    string: true,
-    type: 'array',
-  },
   runTestsByPath: {
     default: false,
     description:
@@ -541,6 +534,13 @@ export const options = {
     description:
       "Allows to use a custom runner instead of Jest's default test runner.",
     type: 'string',
+  },
+  selectProjects: {
+    description:
+      'Run only the tests of the specified projects.' +
+      'Jest uses the attribute `displayName` in the configuration to identify each project.',
+    string: true,
+    type: 'array',
   },
   setupFiles: {
     description:

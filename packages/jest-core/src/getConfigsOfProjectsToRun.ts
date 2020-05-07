@@ -12,10 +12,10 @@ export default function getConfigsOfProjectsToRun(
   argv: Config.Argv,
   projectConfigs: Array<Config.ProjectConfig>,
 ): Array<Config.ProjectConfig> {
-  if (!argv.runProjects) {
+  if (!argv.selectProjects) {
     return projectConfigs;
   }
-  const namesOfProjectsToRun = new Set<string>(argv.runProjects);
+  const namesOfProjectsToRun = new Set<string>(argv.selectProjects);
   return projectConfigs.filter(config => {
     const name = getProjectDisplayName(config);
     return name && namesOfProjectsToRun.has(name);
