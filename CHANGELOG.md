@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-cli, jest-core]` Add `--selectProjects` CLI argument to filter test suites by project name ([#8612](https://github.com/facebook/jest/pull/8612))
+
 ### Fixes
 
 - `[jest-jasmine2]` Stop adding `:` after an error that has no message ([#9990](https://github.com/facebook/jest/pull/9990))
@@ -265,7 +267,6 @@
 - `[expect]` Add `BigInt` support to `toBeGreaterThan`, `toBeGreaterThanOrEqual`, `toBeLessThan` and `toBeLessThanOrEqual` ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[expect, jest-matcher-utils]` Display change counts in annotation lines ([#9035](https://github.com/facebook/jest/pull/9035))
 - `[expect, jest-snapshot]` Support custom inline snapshot matchers ([#9278](https://github.com/facebook/jest/pull/9278))
-- `[jest-cli, jest-core]` Add `--selectProjects` CLI argument to filter test suites by project name ([#8612](https://github.com/facebook/jest/pull/8612))
 - `[jest-config]` Throw the full error message and stack when a Jest preset is missing a dependency ([#8924](https://github.com/facebook/jest/pull/8924))
 - `[jest-config]` [**BREAKING**] Set default display name color based on runner ([#8689](https://github.com/facebook/jest/pull/8689))
 - `[jest-config]` Merge preset globals with project globals ([#9027](https://github.com/facebook/jest/pull/9027))
