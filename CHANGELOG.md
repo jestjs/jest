@@ -11,6 +11,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-core]` 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉 ([#10000](https://github.com/facebook/jest/pull/10000))
+
 ### Performance
 
 ## 26.0.1

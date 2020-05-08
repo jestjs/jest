@@ -84,7 +84,7 @@ export async function runCLI(
     outputStream.write(getSelectProjectsMessage(configsOfProjectsToRun));
   }
 
-  await _run(
+  await _run10000(
     globalConfig,
     configsOfProjectsToRun,
     hasDeprecationWarnings,
@@ -150,7 +150,7 @@ const buildContextsAndHasteMaps = async (
   return {contexts, hasteMapInstances};
 };
 
-const _run = async (
+const _run10000 = async (
   globalConfig: Config.GlobalConfig,
   configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,
