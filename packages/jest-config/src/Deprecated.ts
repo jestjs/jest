@@ -15,7 +15,7 @@ export default {
     '"browser"',
   )} has been deprecated. Please install "browser-resolve" and use the "resolver" option in Jest configuration as follows:
   {
-    ${chalk.bold('"resolve"')}: ${chalk.bold('"browser-resolve"')}
+    ${chalk.bold('"resolver"')}: ${chalk.bold('"browser-resolve"')}
   }
   `,
 
