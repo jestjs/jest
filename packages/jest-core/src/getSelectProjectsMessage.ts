@@ -15,32 +15,12 @@ export default function getSelectProjectsMessage(
   if (projectConfigs.length === 0) {
     return getNoSelectionWarning();
   }
-  const numberOfProjectsWithoutAName = projectConfigs.filter(
-    config => !getProjectDisplayName(config),
-  ).length;
-  return (
-    getNamesMissingWarning(numberOfProjectsWithoutAName) +
-    getProjectsRunningMessage(projectConfigs)
-  );
+  return getProjectsRunningMessage(projectConfigs);
 }
 
 function getNoSelectionWarning(): string {
   return chalk.yellow(
     'You provided values for --selectProjects but no projects were found matching the selection.\n',
-  );
-}
-
-function getNamesMissingWarning(numberOfProjectsWithoutAName: number): string {
-  if (numberOfProjectsWithoutAName === 0) {
-    return '';
-  }
-  return chalk.yellow(
-    `You provided values for --selectProjects but ${
-      numberOfProjectsWithoutAName === 1
-        ? 'a project has'
-        : `${numberOfProjectsWithoutAName} projects have`
-    } no name.\n` +
-      'Set displayName in the config of all projects in order to disable this warning.\n',
   );
 }
 

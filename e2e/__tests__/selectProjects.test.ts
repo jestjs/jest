@@ -9,74 +9,160 @@ import {resolve} from 'path';
 
 import {json as runWithJson} from '../runJest';
 
-const dir = resolve(__dirname, '..', 'select-projects');
+describe('Given a config with two named projects, first-project and second-project', () => {
+  const dir = resolve(__dirname, '..', 'select-projects');
 
-describe('when Jest is started with `--selectProjects first-project`', () => {
-  const result = runWithJson('select-projects', [
-    '--selectProjects',
-    'first-project',
-  ]);
-  it('runs the tests in the first project only', () => {
-    expect(result.json.success).toBe(true);
-    expect(result.json.numTotalTests).toBe(1);
-    expect(result.json.testResults.map(({name}) => name)).toEqual([
-      resolve(dir, '__tests__/first-project.test.js'),
+  describe('when Jest is started with `--selectProjects first-project`', () => {
+    const result = runWithJson('select-projects', [
+      '--selectProjects',
+      'first-project',
     ]);
+    it('runs the tests in the first project only', () => {
+      expect(result.json.success).toBe(true);
+      expect(result.json.numTotalTests).toBe(1);
+      expect(result.json.testResults.map(({name}) => name)).toEqual([
+        resolve(dir, '__tests__/first-project.test.js'),
+      ]);
+    });
+    it('prints that only first-project will run', () => {
+      expect(result.stderr).toMatch(/^Running one project: first-project/);
+    });
   });
-  it('prints that only first-project will run', () => {
-    expect(result.stderr).toMatch(/^Running one project: first-project/);
+
+  describe('when Jest is started with `--selectProjects second-project`', () => {
+    const result = runWithJson('select-projects', [
+      '--selectProjects',
+      'second-project',
+    ]);
+    it('runs the tests in the second project only', () => {
+      expect(result.json.success).toBe(true);
+      expect(result.json.numTotalTests).toBe(1);
+      expect(result.json.testResults.map(({name}) => name)).toEqual([
+        resolve(dir, '__tests__/second-project.test.js'),
+      ]);
+    });
+    it('prints that only second-project will run', () => {
+      expect(result.stderr).toMatch(/^Running one project: second-project/);
+    });
+  });
+
+  describe('when Jest is started with `--selectProjects first-project second-project`', () => {
+    const result = runWithJson('select-projects', [
+      '--selectProjects',
+      'first-project',
+      'second-project',
+    ]);
+    it('runs the tests in the first and second projects', () => {
+      expect(result.json.success).toBe(true);
+      expect(result.json.numTotalTests).toBe(2);
+      expect(result.json.testResults.map(({name}) => name).sort()).toEqual([
+        resolve(dir, '__tests__/first-project.test.js'),
+        resolve(dir, '__tests__/second-project.test.js'),
+      ]);
+    });
+    it('prints that both first-project and second-project will run', () => {
+      expect(result.stderr).toMatch(
+        /^Running 2 projects:\n- first-project\n- second-project/,
+      );
+    });
+  });
+
+  describe('when Jest is started without providing `--selectProjects`', () => {
+    const result = runWithJson('select-projects', []);
+    it('runs the tests in the first and second projects', () => {
+      expect(result.json.success).toBe(true);
+      expect(result.json.numTotalTests).toBe(2);
+      expect(result.json.testResults.map(({name}) => name).sort()).toEqual([
+        resolve(dir, '__tests__/first-project.test.js'),
+        resolve(dir, '__tests__/second-project.test.js'),
+      ]);
+    });
+    it('does not print which projects are run', () => {
+      expect(result.stderr).not.toMatch(/^Running/);
+    });
+  });
+
+  describe('when Jest is started with `--selectProjects third-project`', () => {
+    const result = runWithJson('select-projects', [
+      '--passWithNoTests', // This is necessary to get a JSON output
+      '--selectProjects',
+      'third-project',
+    ]);
+    it('does not run any tests', () => {
+      expect(result.json.success).toBe(true);
+      expect(result.json.numTotalTests).toBe(0);
+    });
+    it('prints that no project was found', () => {
+      expect(result.stderr).toMatch(
+        /^You provided values for --selectProjects but no projects were found matching the selection/,
+      );
+    });
   });
 });
 
-describe('when Jest is started with `--selectProjects second-project`', () => {
-  const result = runWithJson('select-projects', [
-    `--selectProjects`,
-    'second-project',
-  ]);
-  it('runs the tests in the second project only', () => {
-    expect(result.json.success).toBe(true);
-    expect(result.json.numTotalTests).toBe(1);
-    expect(result.json.testResults.map(({name}) => name)).toEqual([
-      resolve(dir, '__tests__/second-project.test.js'),
-    ]);
-  });
-  it('prints that only second-project will run', () => {
-    expect(result.stderr).toMatch(/^Running one project: second-project/);
-  });
-});
+describe('Given a config with two projects, first-project and an unnamed project', () => {
+  const dir = resolve(__dirname, '..', 'select-projects-missing-name');
 
-describe('when Jest is started with `--selectProjects first-project second-project`', () => {
-  const result = runWithJson('select-projects', [
-    `--selectProjects`,
-    'first-project',
-    'second-project',
-  ]);
-  it('runs the tests in the first and second projects', () => {
-    expect(result.json.success).toBe(true);
-    expect(result.json.numTotalTests).toBe(2);
-    expect(result.json.testResults.map(({name}) => name).sort()).toEqual([
-      resolve(dir, '__tests__/first-project.test.js'),
-      resolve(dir, '__tests__/second-project.test.js'),
+  describe('when Jest is started with `--selectProjects first-project`', () => {
+    const result = runWithJson('select-projects-missing-name', [
+      '--selectProjects',
+      'first-project',
     ]);
+    it('runs the tests in the first project only', () => {
+      expect(result.json.success).toBe(true);
+      expect(result.json.numTotalTests).toBe(1);
+      expect(result.json.testResults.map(({name}) => name)).toEqual([
+        resolve(dir, '__tests__/first-project.test.js'),
+      ]);
+    });
+    it('prints that a project does not have name', () => {
+      expect(result.stderr).toMatch(
+        /^You provided values for --selectProjects but a project does not a have name/,
+      );
+    });
+    it('prints that only first-project will run', () => {
+      const stderrThirdLine = result.stderr.split('\n')[2];
+      expect(stderrThirdLine).toMatch(/^Running one project: first-project/);
+    });
   });
-  it('prints that both first-project and second-project will run', () => {
-    expect(result.stderr).toMatch(
-      /^Running 2 projects:\n- first-project\n- second-project/,
-    );
-  });
-});
 
-describe('when Jest is started without providing `--selectProjects`', () => {
-  const result = runWithJson('select-projects', []);
-  it('runs the tests in the first and second projects', () => {
-    expect(result.json.success).toBe(true);
-    expect(result.json.numTotalTests).toBe(2);
-    expect(result.json.testResults.map(({name}) => name).sort()).toEqual([
-      resolve(dir, '__tests__/first-project.test.js'),
-      resolve(dir, '__tests__/second-project.test.js'),
-    ]);
+  describe('when Jest is started without providing `--selectProjects`', () => {
+    const result = runWithJson('select-projects-missing-name', []);
+    it('runs the tests in the first and second projects', () => {
+      expect(result.json.success).toBe(true);
+      expect(result.json.numTotalTests).toBe(2);
+      expect(result.json.testResults.map(({name}) => name).sort()).toEqual([
+        resolve(dir, '__tests__/first-project.test.js'),
+        resolve(dir, '__tests__/second-project.test.js'),
+      ]);
+    });
+    it('does not print that a project has no name', () => {
+      expect(result.stderr).not.toMatch(
+        /^You provided values for --selectProjects but a project does not a have name/,
+      );
+    });
   });
-  it('does not print which projects are run', () => {
-    expect(result.stderr).not.toMatch(/^Running/);
+
+  describe('when Jest is started with `--selectProjects third-project`', () => {
+    const result = runWithJson('select-projects-missing-name', [
+      '--passWithNoTests',
+      '--selectProjects',
+      'third-project',
+    ]);
+    it('does not run any tests', () => {
+      expect(result.json.success).toBe(true);
+      expect(result.json.numTotalTests).toBe(0);
+    });
+    it('prints that a project does not have name', () => {
+      expect(result.stderr).toMatch(
+        /^You provided values for --selectProjects but a project does not a have name/,
+      );
+    });
+    it('prints that no project was found', () => {
+      const stderrThirdLine = result.stderr.split('\n')[2];
+      expect(stderrThirdLine).toMatch(
+        /^You provided values for --selectProjects but no projects were found matching the selection/,
+      );
+    });
   });
 });
