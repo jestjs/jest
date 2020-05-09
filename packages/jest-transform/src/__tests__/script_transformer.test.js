@@ -558,7 +558,8 @@ describe('ScriptTransformer', () => {
       version: 3,
       sources: ['banana.js'],
       names: ['content'],
-      mappings: ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAA,OAAO',
+      mappings:
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAeY;;;;;;;;;;AAfZA,OAAO',
       sourcesContent: ['content'],
     };
     /* eslint-enable */
@@ -596,7 +597,7 @@ describe('ScriptTransformer', () => {
       sources: ['banana.js'],
       names: ['module', 'exports'],
       mappings:
-        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAAAA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
+        ';;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAeY;;;;;;;;;;AAfZA,MAAM,CAACC,OAAP,GAAiB,QAAjB',
       sourcesContent: ['module.exports = "banana";'],
     };
     /* eslint-enable */
