@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-config]` By awaiting to exported default function added support for async loading of configuration  ([#10001](https://github.com/facebook/jest/pull/10001))
+- `[jest-config]` Support config files exporting (`async`) `function`s ([#10001](https://github.com/facebook/jest/pull/10001))
 
 ### Fixes
 
