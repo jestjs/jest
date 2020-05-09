@@ -171,7 +171,7 @@ describe('Given a config with two projects, first-project and an unnamed project
         'third-project',
       ]);
     });
-    it('does fails', () => {
+    it('fails', () => {
       expect(result).toHaveProperty('failed', true);
     });
     it('prints that a project does not have name', () => {
