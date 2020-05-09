@@ -41,7 +41,9 @@ export async function readConfig(
   parentConfigPath?: Config.Path | null,
   projectIndex: number = Infinity,
 ): Promise<ReadConfig> {
-  let rawOptions;
+  let rawOptions:
+    | Config.InitialOptions
+    | (() => Config.InitialOptions | Promise<Config.InitialOptions>);
   let configPath = null;
 
   if (typeof packageRootOrConfig !== 'string') {
@@ -80,6 +82,10 @@ export async function readConfig(
     // Otherwise just try to find config in the current rootDir.
     configPath = resolveConfigPath(packageRootOrConfig, process.cwd());
     rawOptions = await readConfigFileAndSetRootDir(configPath);
+  }
+
+  if (typeof rawOptions === 'function') {
+    rawOptions = await rawOptions();
   }
 
   const {options, hasDeprecationWarnings} = normalize(
