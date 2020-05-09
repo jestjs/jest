@@ -85,8 +85,16 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/doc
 </code></pre>
 <p>O a través de JavaScript:</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// jest.config.js</span>
+<span class="hljs-comment">//Sync object</span>
 <span class="hljs-built_in">module</span>.exports = {
   <span class="hljs-attr">verbose</span>: <span class="hljs-literal">true</span>,
+};
+
+<span class="hljs-comment">//Or async function</span>
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-attr">verbose</span>: <span class="hljs-literal">true</span>,
+  };
 };
 </code></pre>
 <p>Es importante notar que la configuración debe poder serializarse a un objeto JSON.</p>
