@@ -132,9 +132,9 @@ describe('Given a config with two projects, first-project and an unnamed project
         resolve(dir, '__tests__/first-project.test.js'),
       ]);
     });
-    it('prints that a project does not have name', () => {
+    it('prints that a project does not have a name', () => {
       expect(result.stderr).toMatch(
-        /^You provided values for --selectProjects but a project does not a have name/,
+        /^You provided values for --selectProjects but a project does not have a name/,
       );
     });
     it('prints that only first-project will run', () => {
@@ -158,7 +158,7 @@ describe('Given a config with two projects, first-project and an unnamed project
     });
     it('does not print that a project has no name', () => {
       expect(result.stderr).not.toMatch(
-        /^You provided values for --selectProjects but a project does not a have name/,
+        /^You provided values for --selectProjects but a project does not have a name/,
       );
     });
   });
@@ -174,9 +174,9 @@ describe('Given a config with two projects, first-project and an unnamed project
     it('fails', () => {
       expect(result).toHaveProperty('failed', true);
     });
-    it('prints that a project does not have name', () => {
+    it('prints that a project does not have a name', () => {
       expect(result.stdout).toMatch(
-        /^You provided values for --selectProjects but a project does not a have name/,
+        /^You provided values for --selectProjects but a project does not have a name/,
       );
     });
     it('prints that no project was found', () => {

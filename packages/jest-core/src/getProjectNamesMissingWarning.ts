@@ -21,7 +21,7 @@ export default function getProjectNamesMissingWarning(
   return chalk.yellow(
     `You provided values for --selectProjects but ${
       numberOfProjectsWithoutAName === 1
-        ? 'a project does not a have name'
+        ? 'a project does not have a name'
         : `${numberOfProjectsWithoutAName} projects do not have a name`
     }.\n` +
       'Set displayName in the config of all projects in order to disable this warning.\n',
