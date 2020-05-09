@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config]` By awaiting to exported default function added support for async loading of configuration  ([#10001](https://github.com/facebook/jest/pull/10001))
+
 ### Fixes
 
 - `[jest-jasmine2]` Stop adding `:` after an error that has no message ([#9990](https://github.com/facebook/jest/pull/9990))
