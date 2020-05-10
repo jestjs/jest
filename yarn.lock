@@ -12047,12 +12047,17 @@ fsevents@~2.1.2:
   version: 0.0.0-use.local
   resolution: "jest-repl@workspace:packages/jest-repl"
   dependencies:
+    "@jest/console": ^26.6.2
+    "@jest/environment": ^26.6.2
     "@jest/test-utils": ^26.6.2
     "@jest/transform": ^26.6.2
     "@jest/types": ^26.6.2
     "@types/yargs": ^15.0.0
+    chalk: ^4.0.0
+    execa: ^4.0.0
     jest-config: ^26.6.3
     jest-runtime: ^26.6.3
+    jest-util: ^26.6.2
     jest-validate: ^26.6.2
     repl: ^0.1.3
     yargs: ^16.0.3
@@ -12160,7 +12165,6 @@ fsevents@~2.1.2:
     exit: ^0.1.2
     glob: ^7.1.3
     graceful-fs: ^4.2.4
-    jest-config: ^26.6.3
     jest-environment-node: ^26.6.2
     jest-haste-map: ^26.6.2
     jest-message-util: ^26.6.2

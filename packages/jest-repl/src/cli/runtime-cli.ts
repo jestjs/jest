@@ -13,10 +13,11 @@ import {CustomConsole} from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
 import type {Config} from '@jest/types';
 import {deprecationEntries, readConfig} from 'jest-config';
+import Runtime from 'jest-runtime';
 import {setGlobal, tryRealpath} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
-import {VERSION} from '../version';
 import * as args from './args';
+import {VERSION} from './version';
 
 export async function run(
   cliArgv?: Config.Argv,
@@ -65,8 +66,6 @@ export async function run(
     ...options.projectConfig,
     automock: false,
   };
-
-  const {default: Runtime} = await import('..');
 
   try {
     const hasteMap = await Runtime.createContext(config, {
