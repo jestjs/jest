@@ -95,7 +95,7 @@ function spawnJest(
 
 export type RunJestResult = execa.ExecaReturnValue;
 
-interface RunJestJsonResult extends RunJestResult {
+export interface RunJestJsonResult extends RunJestResult {
   json: FormattedTestResults;
 }
 

@@ -26,6 +26,9 @@ import TestWatcher from '../TestWatcher';
 import watch from '../watch';
 import pluralize from '../pluralize';
 import logDebugMessages from '../lib/log_debug_messages';
+import getConfigsOfProjectsToRun from '../getConfigsOfProjectsToRun';
+import getProjectNamesMissingWarning from '../getProjectNamesMissingWarning';
+import getSelectProjectsMessage from '../getSelectProjectsMessage';
 
 const {print: preRunMessagePrint} = preRunMessage;
 
@@ -68,9 +71,22 @@ export async function runCLI(
     exit(0);
   }
 
+  let configsOfProjectsToRun = configs;
+  if (argv.selectProjects) {
+    const namesMissingWarning = getProjectNamesMissingWarning(configs);
+    if (namesMissingWarning) {
+      outputStream.write(namesMissingWarning);
+    }
+    configsOfProjectsToRun = getConfigsOfProjectsToRun(
+      argv.selectProjects,
+      configs,
+    );
+    outputStream.write(getSelectProjectsMessage(configsOfProjectsToRun));
+  }
+
   await _run10000(
     globalConfig,
-    configs,
+    configsOfProjectsToRun,
     hasDeprecationWarnings,
     outputStream,
     r => (results = r),

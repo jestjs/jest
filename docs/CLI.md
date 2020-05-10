@@ -254,6 +254,10 @@ Run tests with specified reporters. [Reporter options](configuration#reporters-a
 
 Alias: `-i`. Run all tests serially in the current process, rather than creating a worker pool of child processes that run tests. This can be useful for debugging.
 
+### `--selectProjects <project1> ... <projectN>`
+
+Run only the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
+
 ### `--runTestsByPath`
 
 Run only the tests that were specified with their exact paths.

@@ -3,6 +3,7 @@
 ### Features
 
 - `[jest-config]` Support config files exporting (`async`) `function`s ([#10001](https://github.com/facebook/jest/pull/10001))
+- `[jest-cli, jest-core]` Add `--selectProjects` CLI argument to filter test suites by project name ([#8612](https://github.com/facebook/jest/pull/8612))
 
 ### Fixes
 
