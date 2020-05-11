@@ -37,7 +37,7 @@ test('waits 1 second before ending the game', () => {
 
 Here we enable fake timers by calling `jest.useFakeTimers();`. This mocks out setTimeout and other timer functions with mock functions. If running multiple tests inside of one file or describe block, `jest.useFakeTimers();` can be called before each test manually or with a setup function such as `beforeEach`. Not doing so will result in the internal usage counter not being reset.
 
-Currently, two implementations of the fake timers are present - `modern` and `legacy`, where `legacy` is still the default one. You can read how to enable `modern` implementation [here](https://jestjs.io/blog/2020/05/05/jest-26#new-fake-timers).
+Currently, two implementations of the fake timers are present - `modern` and `legacy`, where `legacy` is still the default one. You can read how to enable `modern` implementation [here](/blog/2020/05/05/jest-26#new-fake-timers).
 
 ## Run All Timers
 
