@@ -513,7 +513,6 @@ class HasteMap extends EventEmitter {
         error.stack = ''; // Remove stack for stack-less errors.
       }
 
-      // @ts-expect-error: checking error code is OK if error comes from "fs".
       if (!['ENOENT', 'EACCES'].includes(error.code)) {
         throw error;
       }

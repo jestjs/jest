@@ -7,7 +7,7 @@
 
 import module = require('module');
 
-// @ts-expect-error: "private" api
+// "private" api
 declare const process: {
   binding(type: string): {};
 };

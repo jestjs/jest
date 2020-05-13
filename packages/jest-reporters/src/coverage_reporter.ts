@@ -99,7 +99,6 @@ export default class CoverageReporter extends BaseReporter {
           // @ts-expect-error
           .execute(reportContext);
       });
-      // @ts-expect-error
       aggregatedResults.coverageMap = map;
     } catch (e) {
       console.error(
@@ -111,7 +110,6 @@ export default class CoverageReporter extends BaseReporter {
       );
     }
 
-    // @ts-expect-error
     this._checkThreshold(map);
   }
 
@@ -487,19 +485,13 @@ export default class CoverageReporter extends BaseReporter {
     }
 
     const map = await this._sourceMapStore.transformCoverage(this._coverageMap);
-    const reportContext = istanbulReport.createContext(
-      // @ts-expect-error
-      {
-        // @ts-expect-error
-        coverageMap: map,
-        dir: this._globalConfig.coverageDirectory,
-        // @ts-expect-error
-        sourceFinder: this._sourceMapStore.sourceFinder,
-        watermarks: getWatermarks(this._globalConfig),
-      },
-    );
+    const reportContext = istanbulReport.createContext({
+      coverageMap: map,
+      dir: this._globalConfig.coverageDirectory,
+      sourceFinder: this._sourceMapStore.sourceFinder,
+      watermarks: getWatermarks(this._globalConfig),
+    });
 
-    // @ts-expect-error
     return {map, reportContext};
   }
 }
