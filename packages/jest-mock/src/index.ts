@@ -417,7 +417,6 @@ class ModuleMockerClass {
 
         if (!isReadonlyProp(object, prop)) {
           const propDesc = Object.getOwnPropertyDescriptor(object, prop);
-          // @ts-expect-error Object.__esModule
           if ((propDesc !== undefined && !propDesc.get) || object.__esModule) {
             slots.add(prop);
           }
