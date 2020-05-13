@@ -823,7 +823,7 @@ class ModuleMockerClass {
       mock.prototype.constructor = mock;
     }
 
-    return mock;
+    return mock as Mock<T, Y>;
   }
 
   /**
