@@ -19,7 +19,7 @@ jest.mock('../readConfigFileAndSetRootDir', () => jest.fn(() => mockResult));
 
 test('readConfigs() throws when called without project paths', async () => {
   await expect(
-    // @ts-ignore
+    // @ts-expect-error
     readConfigs(null /* argv */, [] /* projectPaths */),
   ).rejects.toThrowError('jest: No configuration found for any project.');
 });
@@ -29,7 +29,7 @@ test('readConfigs() loads async config file', async () => {
     rootDir: './',
   }));
   await expect(
-    // @ts-ignore
+    // @ts-expect-error
     readConfigs(
       <Config.Argv>{} /* argv */,
       ['./some-jest-config-file.js'] /* projectPaths */,
@@ -43,7 +43,7 @@ test('readConfigs() reject if async was rejected', async () => {
     throw new Error('Some error');
   });
   await expect(
-    // @ts-ignore
+    // @ts-expect-error
     readConfigs(
       <Config.Argv>{} /* argv */,
       ['./some-jest-config-file.js'] /* projectPaths */,

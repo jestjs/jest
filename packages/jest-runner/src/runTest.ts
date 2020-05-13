@@ -38,7 +38,7 @@ function freezeConsole(
   testConsole: BufferedConsole | CustomConsole | NullConsole,
   config: Config.ProjectConfig,
 ) {
-  // @ts-ignore: `_log` is `private` - we should figure out some proper API here
+  // @ts-expect-error: `_log` is `private` - we should figure out some proper API here
   testConsole._log = function fakeConsolePush(
     _type: LogType,
     message: LogMessage,

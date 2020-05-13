@@ -9,12 +9,12 @@ import {URL, fileURLToPath, pathToFileURL} from 'url';
 import * as path from 'path';
 import {
   Script,
-  // @ts-ignore: experimental, not added to the types
+  // @ts-expect-error: experimental, not added to the types
   SourceTextModule,
-  // @ts-ignore: experimental, not added to the types
+  // @ts-expect-error: experimental, not added to the types
   SyntheticModule,
   Context as VMContext,
-  // @ts-ignore: experimental, not added to the types
+  // @ts-expect-error: experimental, not added to the types
   Module as VMModule,
   compileFunction,
 } from 'vm';
@@ -450,7 +450,7 @@ class Runtime {
     const module = new SyntheticModule(
       ['default'],
       function () {
-        // @ts-ignore: TS doesn't know what `this` is
+        // @ts-expect-error: TS doesn't know what `this` is
         this.setExport('default', cjs);
       },
       {context, identifier: modulePath},
@@ -686,7 +686,7 @@ class Runtime {
   requireModuleOrMock<T = unknown>(from: Config.Path, moduleName: string): T {
     // this module is unmockable
     if (moduleName === '@jest/globals') {
-      // @ts-ignore: we don't care that it's not assignable to T
+      // @ts-expect-error: we don't care that it's not assignable to T
       return this.getGlobalsForCjs(from);
     }
 
@@ -1112,10 +1112,10 @@ class Runtime {
     return new SyntheticModule(
       ['default', ...Object.keys(required)],
       function () {
-        // @ts-ignore: TS doesn't know what `this` is
+        // @ts-expect-error: TS doesn't know what `this` is
         this.setExport('default', required);
         Object.entries(required).forEach(([key, value]) => {
-          // @ts-ignore: TS doesn't know what `this` is
+          // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(key, value);
         });
       },
@@ -1141,7 +1141,7 @@ class Runtime {
         const error = new TypeError(
           `The argument 'filename' must be a file URL object, file URL string, or absolute path string. Received '${filename}'`,
         );
-        // @ts-ignore
+        // @ts-expect-error
         error.code = 'ERR_INVALID_ARG_TYPE';
         throw error;
       }
@@ -1159,7 +1159,7 @@ class Runtime {
     class Module extends nativeModule.Module {}
 
     Object.entries(nativeModule.Module).forEach(([key, value]) => {
-      // @ts-ignore
+      // @ts-expect-error
       Module[key] = value;
     });
 
@@ -1180,7 +1180,7 @@ class Runtime {
                 : ''
             }`,
           );
-          // @ts-ignore
+          // @ts-expect-error
           error.code = 'ERR_INVALID_ARG_TYPE';
           throw error;
         }
@@ -1458,14 +1458,14 @@ class Runtime {
       if (this._environment.global.jasmine) {
         this._environment.global.jasmine._DEFAULT_TIMEOUT_INTERVAL = timeout;
       } else {
-        // @ts-ignore: https://github.com/Microsoft/TypeScript/issues/24587
+        // @ts-expect-error: https://github.com/Microsoft/TypeScript/issues/24587
         this._environment.global[testTimeoutSymbol] = timeout;
       }
       return jestObject;
     };
 
     const retryTimes = (numTestRetries: number) => {
-      // @ts-ignore: https://github.com/Microsoft/TypeScript/issues/24587
+      // @ts-expect-error: https://github.com/Microsoft/TypeScript/issues/24587
       this._environment.global[retryTimesSymbol] = numTestRetries;
       return jestObject;
     };
@@ -1638,7 +1638,7 @@ class Runtime {
       Object.keys(globals),
       function () {
         Object.entries(globals).forEach(([key, value]) => {
-          // @ts-ignore: TS doesn't know what `this` is
+          // @ts-expect-error: TS doesn't know what `this` is
           this.setExport(key, value);
         });
       },

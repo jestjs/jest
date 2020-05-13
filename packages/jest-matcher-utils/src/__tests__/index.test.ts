@@ -105,12 +105,12 @@ describe('stringify()', () => {
 describe('ensureNumbers()', () => {
   test('dont throw error when variables are numbers', () => {
     expect(() => {
-      // @ts-ignore
+      // @ts-expect-error
       ensureNumbers(1, 2);
     }).not.toThrow();
     if (isBigIntDefined) {
       expect(() => {
-        // @ts-ignore
+        // @ts-expect-error
         ensureNumbers(BigInt(1), BigInt(2));
       }).not.toThrow();
     }
@@ -118,14 +118,14 @@ describe('ensureNumbers()', () => {
 
   test('throws error when expected is not a number (backward compatibility)', () => {
     expect(() => {
-      // @ts-ignore
+      // @ts-expect-error
       ensureNumbers(1, 'not_a_number', '.toBeCloseTo');
     }).toThrowErrorMatchingSnapshot();
   });
 
   test('throws error when received is not a number (backward compatibility)', () => {
     expect(() => {
-      // @ts-ignore
+      // @ts-expect-error
       ensureNumbers('not_a_number', 3, '.toBeCloseTo');
     }).toThrowErrorMatchingSnapshot();
   });
@@ -140,7 +140,7 @@ describe('ensureNumbers()', () => {
         secondArgument: 'precision',
       };
       expect(() => {
-        // @ts-ignore
+        // @ts-expect-error
         ensureNumbers('', 0, matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -151,7 +151,7 @@ describe('ensureNumbers()', () => {
         // promise undefined is equivalent to empty string
       };
       expect(() => {
-        // @ts-ignore
+        // @ts-expect-error
         ensureNumbers(0.1, undefined, matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -162,7 +162,7 @@ describe('ensureNumbers()', () => {
         promise: 'rejects',
       };
       expect(() => {
-        // @ts-ignore
+        // @ts-expect-error
         ensureNumbers(0.01, '0', matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -173,7 +173,7 @@ describe('ensureNumbers()', () => {
         promise: 'rejects',
       };
       expect(() => {
-        // @ts-ignore
+        // @ts-expect-error
         ensureNumbers(Symbol('0.1'), 0, matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -184,7 +184,7 @@ describe('ensureNumbers()', () => {
         promise: 'resolves',
       };
       expect(() => {
-        // @ts-ignore
+        // @ts-expect-error
         ensureNumbers(false, 0, matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -195,7 +195,7 @@ describe('ensureNumbers()', () => {
         promise: 'resolves',
       };
       expect(() => {
-        // @ts-ignore
+        // @ts-expect-error
         ensureNumbers(0.1, null, matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -205,7 +205,7 @@ describe('ensureNumbers()', () => {
 describe('ensureNoExpected()', () => {
   test('dont throw error when undefined', () => {
     expect(() => {
-      // @ts-ignore
+      // @ts-expect-error
       ensureNoExpected(undefined);
     }).not.toThrow();
   });

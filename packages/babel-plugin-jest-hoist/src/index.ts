@@ -113,7 +113,7 @@ FUNCTIONS.mock = args => {
 
     const ids: Set<NodePath<Identifier>> = new Set();
     const parentScope = moduleFactory.parentPath.scope;
-    // @ts-ignore: ReferencedIdentifier is not known on visitors
+    // @ts-expect-error: ReferencedIdentifier is not known on visitors
     moduleFactory.traverse(IDVisitor, {ids});
     for (const id of ids) {
       const {name} = id.node;

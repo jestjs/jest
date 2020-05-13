@@ -26,7 +26,7 @@ import HasteModuleMap, {
 import nodeCrawl = require('./crawlers/node');
 import normalizePathSep from './lib/normalizePathSep';
 import watchmanCrawl = require('./crawlers/watchman');
-// @ts-ignore: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
+// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
 import WatchmanWatcher from './lib/WatchmanWatcher';
 import FSEventsWatcher = require('./lib/FSEventsWatcher');
 import * as fastPath from './lib/fast_path';
@@ -513,7 +513,7 @@ class HasteMap extends EventEmitter {
         error.stack = ''; // Remove stack for stack-less errors.
       }
 
-      // @ts-ignore: checking error code is OK if error comes from "fs".
+      // @ts-expect-error: checking error code is OK if error comes from "fs".
       if (!['ENOENT', 'EACCES'].includes(error.code)) {
         throw error;
       }
@@ -677,9 +677,9 @@ class HasteMap extends EventEmitter {
   private _cleanup() {
     const worker = this._worker;
 
-    // @ts-ignore
+    // @ts-expect-error
     if (worker && typeof worker.end === 'function') {
-      // @ts-ignore
+      // @ts-expect-error
       worker.end();
     }
 
@@ -701,7 +701,7 @@ class HasteMap extends EventEmitter {
       if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
         this._worker = {getSha1, worker};
       } else {
-        // @ts-ignore: assignment of a worker with custom properties.
+        // @ts-expect-error: assignment of a worker with custom properties.
         this._worker = new Worker(require.resolve('./worker'), {
           exposedMethods: ['getSha1', 'worker'],
           maxRetries: 3,
@@ -789,7 +789,7 @@ class HasteMap extends EventEmitter {
     let mustCopy = true;
 
     const createWatcher = (root: Config.Path): Promise<Watcher> => {
-      // @ts-ignore: TODO how? "Cannot use 'new' with an expression whose type lacks a call or construct signature."
+      // @ts-expect-error: TODO how? "Cannot use 'new' with an expression whose type lacks a call or construct signature."
       const watcher = new Watcher(root, {
         dot: false,
         glob: extensions.map(extension => '**/*.' + extension),
@@ -1035,7 +1035,7 @@ class HasteMap extends EventEmitter {
   }
 
   end(): Promise<void> {
-    // @ts-ignore: TODO TS cannot decide if `setInterval` and `clearInterval` comes from NodeJS or the DOM
+    // @ts-expect-error: TODO TS cannot decide if `setInterval` and `clearInterval` comes from NodeJS or the DOM
     clearInterval(this._changeInterval);
     if (!this._watchers.length) {
       return Promise.resolve();

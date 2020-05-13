@@ -118,7 +118,7 @@ class JSDOMEnvironment implements JestEnvironment {
       this.global.close();
     }
     this.errorEventListener = null;
-    // @ts-ignore
+    // @ts-expect-error
     this.global = null;
     this.dom = null;
     this.fakeTimers = null;

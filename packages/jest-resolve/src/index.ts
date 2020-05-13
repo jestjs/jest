@@ -192,7 +192,7 @@ class Resolver {
       });
 
     if (!skipResolution) {
-      // @ts-ignore: the "pnp" version named isn't in DefinitelyTyped
+      // @ts-expect-error: the "pnp" version named isn't in DefinitelyTyped
       module = resolveNodeModule(moduleName, Boolean(process.versions.pnp));
 
       if (module) {

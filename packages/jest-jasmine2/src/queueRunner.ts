@@ -6,7 +6,7 @@
  */
 
 import {formatTime} from 'jest-util';
-// @ts-ignore ignore vendor file
+// @ts-expect-error ignore vendor file
 import PCancelable from './PCancelable';
 import pTimeout from './pTimeout';
 

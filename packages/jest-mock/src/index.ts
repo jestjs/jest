@@ -417,7 +417,7 @@ class ModuleMockerClass {
 
         if (!isReadonlyProp(object, prop)) {
           const propDesc = Object.getOwnPropertyDescriptor(object, prop);
-          // @ts-ignore Object.__esModule
+          // @ts-expect-error Object.__esModule
           if ((propDesc !== undefined && !propDesc.get) || object.__esModule) {
             slots.add(prop);
           }
@@ -566,11 +566,11 @@ class ModuleMockerClass {
                 // it easier to interact with mock instance call and
                 // return values
                 if (prototype[slot].type === 'function') {
-                  // @ts-ignore no index signature
+                  // @ts-expect-error no index signature
                   const protoImpl = this[slot];
-                  // @ts-ignore no index signature
+                  // @ts-expect-error no index signature
                   this[slot] = mocker.generateFromMetadata(prototype[slot]);
-                  // @ts-ignore no index signature
+                  // @ts-expect-error no index signature
                   this[slot]._protoImpl = protoImpl;
                 }
               });
@@ -795,7 +795,7 @@ class ModuleMockerClass {
   ): Mock<T, Y> {
     // metadata not compatible but it's the same type, maybe problem with
     // overloading of _makeComponent and not _generateMock?
-    // @ts-ignore
+    // @ts-expect-error
     const mock = this._makeComponent(metadata);
     if (metadata.refID != null) {
       refs[metadata.refID] = mock;
@@ -870,11 +870,11 @@ class ModuleMockerClass {
       metadata.value = component;
       return metadata;
     } else if (type === 'function') {
-      // @ts-ignore this is a function so it has a name
+      // @ts-expect-error this is a function so it has a name
       metadata.name = component.name;
-      // @ts-ignore may be a mock
+      // @ts-expect-error may be a mock
       if (component._isMockFunction === true) {
-        // @ts-ignore may be a mock
+        // @ts-expect-error may be a mock
         metadata.mockImpl = component.getMockImplementation();
       }
     }
@@ -890,13 +890,13 @@ class ModuleMockerClass {
       this._getSlots(component).forEach(slot => {
         if (
           type === 'function' &&
-          // @ts-ignore may be a mock
+          // @ts-expect-error may be a mock
           component._isMockFunction === true &&
           slot.match(/^mock/)
         ) {
           return;
         }
-        // @ts-ignore no index signature
+        // @ts-expect-error no index signature
         const slotMetadata = this.getMetadata<T, Y>(component[slot], refs);
         if (slotMetadata) {
           if (!members) {
@@ -978,7 +978,7 @@ class ModuleMockerClass {
 
       const isMethodOwner = object.hasOwnProperty(methodName);
 
-      // @ts-ignore overriding original method with a Mock
+      // @ts-expect-error overriding original method with a Mock
       object[methodName] = this._makeComponent({type: 'function'}, () => {
         if (isMethodOwner) {
           object[methodName] = original;
@@ -987,7 +987,7 @@ class ModuleMockerClass {
         }
       });
 
-      // @ts-ignore original method is now a Mock
+      // @ts-expect-error original method is now a Mock
       object[methodName].mockImplementation(function (this: unknown) {
         return original.apply(this, arguments);
       });
@@ -1052,9 +1052,9 @@ class ModuleMockerClass {
         );
       }
 
-      // @ts-ignore: mock is assignable
+      // @ts-expect-error: mock is assignable
       descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
-        // @ts-ignore: mock is assignable
+        // @ts-expect-error: mock is assignable
         descriptor![accessType] = original;
         Object.defineProperty(obj, propertyName, descriptor!);
       });
@@ -1062,7 +1062,7 @@ class ModuleMockerClass {
       (descriptor[accessType] as Mock<T>).mockImplementation(function (
         this: unknown,
       ) {
-        // @ts-ignore
+        // @ts-expect-error
         return original.apply(this, arguments);
       });
     }

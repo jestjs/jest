@@ -179,7 +179,7 @@ test('escaping', () => {
       'exports[`key`] = `"\'\\\\`;\n',
   );
 
-  // @ts-ignore
+  // @ts-expect-error
   const exports = {}; // eslint-disable-line @typescript-eslint/no-unused-vars
   // eslint-disable-next-line no-eval
   const readData = eval('var exports = {}; ' + writtenData + ' exports');

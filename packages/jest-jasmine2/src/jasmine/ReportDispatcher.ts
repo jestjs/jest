@@ -37,17 +37,17 @@ export default class ReportDispatcher implements Reporter {
   provideFallbackReporter: (reporter: Reporter) => void;
   clearReporters: () => void;
 
-  // @ts-ignore
+  // @ts-expect-error
   jasmineDone: (runDetails: RunDetails) => void;
-  // @ts-ignore
+  // @ts-expect-error
   jasmineStarted: (runDetails: RunDetails) => void;
-  // @ts-ignore
+  // @ts-expect-error
   specDone: (result: SpecResult) => void;
-  // @ts-ignore
+  // @ts-expect-error
   specStarted: (spec: SpecResult) => void;
-  // @ts-ignore
+  // @ts-expect-error
   suiteDone: (result: SuiteResult) => void;
-  // @ts-ignore
+  // @ts-expect-error
   suiteStarted: (result: SuiteResult) => void;
 
   constructor(methods: Array<keyof Reporter>) {
@@ -86,7 +86,7 @@ export default class ReportDispatcher implements Reporter {
       for (let i = 0; i < reporters.length; i++) {
         const reporter = reporters[i];
         if (reporter[method]) {
-          // @ts-ignore
+          // @ts-expect-error
           reporter[method].apply(reporter, args);
         }
       }

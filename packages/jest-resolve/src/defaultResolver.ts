@@ -25,7 +25,7 @@ export default function defaultResolver(
   path: Config.Path,
   options: ResolverOptions,
 ): Config.Path {
-  // @ts-ignore: the "pnp" version named isn't in DefinitelyTyped
+  // @ts-expect-error: the "pnp" version named isn't in DefinitelyTyped
   if (process.versions.pnp) {
     return pnpResolver(path, options);
   }

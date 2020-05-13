@@ -11,10 +11,10 @@ import {EventEmitter} from 'events';
 import * as fs from 'graceful-fs';
 import anymatch, {Matcher} from 'anymatch';
 import micromatch = require('micromatch');
-// @ts-ignore no types
+// @ts-expect-error no types
 import walker from 'walker';
 
-// @ts-ignore: this is for CI which runs linux and might not have this
+// @ts-expect-error: this is for CI which runs linux and might not have this
 let fsevents: typeof import('fsevents') | null = null;
 try {
   fsevents = require('fsevents');

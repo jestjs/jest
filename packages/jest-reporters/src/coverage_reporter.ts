@@ -96,10 +96,10 @@ export default class CoverageReporter extends BaseReporter {
             maxCols: process.stdout.columns || Infinity,
             ...additionalOptions,
           })
-          // @ts-ignore
+          // @ts-expect-error
           .execute(reportContext);
       });
-      // @ts-ignore
+      // @ts-expect-error
       aggregatedResults.coverageMap = map;
     } catch (e) {
       console.error(
@@ -111,7 +111,7 @@ export default class CoverageReporter extends BaseReporter {
       );
     }
 
-    // @ts-ignore
+    // @ts-expect-error
     this._checkThreshold(map);
   }
 
@@ -488,18 +488,18 @@ export default class CoverageReporter extends BaseReporter {
 
     const map = await this._sourceMapStore.transformCoverage(this._coverageMap);
     const reportContext = istanbulReport.createContext(
-      // @ts-ignore
+      // @ts-expect-error
       {
-        // @ts-ignore
+        // @ts-expect-error
         coverageMap: map,
         dir: this._globalConfig.coverageDirectory,
-        // @ts-ignore
+        // @ts-expect-error
         sourceFinder: this._sourceMapStore.sourceFinder,
         watermarks: getWatermarks(this._globalConfig),
       },
     );
 
-    // @ts-ignore
+    // @ts-expect-error
     return {map, reportContext};
   }
 }

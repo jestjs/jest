@@ -108,7 +108,7 @@ export default async (
 
   let promptAborted: boolean = false;
 
-  // @ts-ignore: Return type cannot be object - faulty typings
+  // @ts-expect-error: Return type cannot be object - faulty typings
   const results: PromptsResults = await prompts(questions, {
     onCancel: () => {
       promptAborted = true;
