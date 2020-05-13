@@ -19,7 +19,7 @@ const objs = [
   {key1: 'foo', key2: 'bar', key3: {array: [null, {}]}},
   {minusInf: -Infinity, nan: NaN, plusInf: +Infinity},
   {date: new Date(1234567890), re: /foo/gi},
-  // @ts-ignore - testing NaN
+  // @ts-expect-error - testing NaN
   {
     map: new Map([
       [NaN, 4],

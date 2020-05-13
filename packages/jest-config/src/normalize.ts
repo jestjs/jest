@@ -140,7 +140,7 @@ const setupPreset = (
       }
     } catch (e) {}
 
-    // @ts-ignore: `presetModule` can be null?
+    // @ts-expect-error: `presetModule` can be null?
     preset = require(presetModule);
   } catch (error) {
     if (error instanceof SyntaxError || error instanceof TypeError) {
@@ -943,7 +943,7 @@ export default function normalize(
         });
         break;
     }
-    // @ts-ignore: automock is missing in GlobalConfig, so what
+    // @ts-expect-error: automock is missing in GlobalConfig, so what
     newOptions[key] = value;
     return newOptions;
   }, newOptions);

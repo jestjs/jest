@@ -52,7 +52,7 @@ async function jasmine2(
       const stack = getCallsite(1, runtime.getSourceMaps());
       const it = originalIt(...args);
 
-      // @ts-ignore
+      // @ts-expect-error
       it.result.__callsite = stack;
 
       return it;
@@ -63,7 +63,7 @@ async function jasmine2(
       const stack = getCallsite(1, runtime.getSourceMaps());
       const xit = originalXit(...args);
 
-      // @ts-ignore
+      // @ts-expect-error
       xit.result.__callsite = stack;
 
       return xit;
@@ -74,7 +74,7 @@ async function jasmine2(
       const stack = getCallsite(1, runtime.getSourceMaps());
       const fit = originalFit(...args);
 
-      // @ts-ignore
+      // @ts-expect-error
       fit.result.__callsite = stack;
 
       return fit;

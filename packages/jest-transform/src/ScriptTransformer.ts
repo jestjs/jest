@@ -16,7 +16,7 @@ import {
 } from 'jest-util';
 import * as fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
-// @ts-ignore: should just be `require.resolve`, but the tests mess that up
+// @ts-expect-error: should just be `require.resolve`, but the tests mess that up
 import babelPluginIstanbul from 'babel-plugin-istanbul';
 import {fromSource as sourcemapFromSource} from 'convert-source-map';
 import HasteMap = require('jest-haste-map');
@@ -563,7 +563,7 @@ export default class ScriptTransformer {
   /**
    * @deprecated use `this.shouldTransform` instead
    */
-  // @ts-ignore: Unused and private - remove in Jest 25
+  // @ts-expect-error: Unused and private - remove in Jest 25
   private _shouldTransform(filename: Config.Path): boolean {
     return this.shouldTransform(filename);
   }

@@ -366,10 +366,11 @@ export default class FakeTimers<TimerRef> {
 
   private _createMocks() {
     const fn = (impl: Function) =>
-      // @ts-ignore TODO: figure out better typings here
+      // @ts-expect-error TODO: figure out better typings here
       this._moduleMocker.fn().mockImplementation(impl);
 
     const promisifiableFakeSetTimeout = fn(this._fakeSetTimeout.bind(this));
+    // @ts-expect-error TODO: figure out better typings here
     promisifiableFakeSetTimeout[util.promisify.custom] = (
       delay?: number,
       arg?: unknown,
@@ -382,8 +383,11 @@ export default class FakeTimers<TimerRef> {
       clearInterval: fn(this._fakeClearTimer.bind(this)),
       clearTimeout: fn(this._fakeClearTimer.bind(this)),
       nextTick: fn(this._fakeNextTick.bind(this)),
+      // @ts-expect-error TODO: figure out better typings here
       setImmediate: fn(this._fakeSetImmediate.bind(this)),
+      // @ts-expect-error TODO: figure out better typings here
       setInterval: fn(this._fakeSetInterval.bind(this)),
+      // @ts-expect-error TODO: figure out better typings here
       setTimeout: promisifiableFakeSetTimeout,
     };
   }

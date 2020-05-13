@@ -81,7 +81,7 @@ export default class FakeTimers {
 
   runAllTicks(): void {
     if (this._checkFakeTimers()) {
-      // @ts-ignore
+      // @ts-expect-error
       this._clock.runMicrotasks();
     }
   }

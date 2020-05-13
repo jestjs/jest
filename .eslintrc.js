@@ -26,6 +26,7 @@ module.exports = {
           'error',
           {argsIgnorePattern: '^_'},
         ],
+        '@typescript-eslint/prefer-ts-expect-error': 'error',
         // Since we do `export =`. Remove for Jest 25
         'import/default': 'off',
         'import/order': 'error',

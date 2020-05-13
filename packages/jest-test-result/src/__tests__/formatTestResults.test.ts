@@ -20,7 +20,7 @@ describe('formatTestResults', () => {
       {
         numFailingTests: 0,
         perfStats: {end: 2, start: 1},
-        // @ts-ignore
+        // @ts-expect-error
         testResults: [assertion],
       },
     ],

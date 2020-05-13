@@ -10,7 +10,7 @@ import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {ModuleMap} from 'jest-haste-map';
 import Resolver = require('../');
-// @ts-ignore: js file
+// @ts-expect-error: js file
 import userResolver from '../__mocks__/userResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
 import defaultResolver from '../defaultResolver';

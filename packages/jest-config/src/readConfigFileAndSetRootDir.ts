@@ -9,7 +9,7 @@ import * as path from 'path';
 import {pathToFileURL} from 'url';
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
-// @ts-ignore: vendored
+// @ts-expect-error: vendored
 import jsonlint from './vendor/jsonlint';
 import {JEST_CONFIG_EXT_JSON, PACKAGE_JSON} from './constants';
 

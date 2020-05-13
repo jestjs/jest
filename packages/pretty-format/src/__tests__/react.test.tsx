@@ -634,7 +634,7 @@ test('throws if theme option is null', () => {
     'Hello, Mouse!',
   );
   expect(() => {
-    // @ts-ignore
+    // @ts-expect-error
     formatElement(jsx, {
       highlight: true,
       theme: null,
@@ -649,7 +649,7 @@ test('throws if theme option is not of type "object"', () => {
       {style: 'color:red'},
       'Hello, Mouse!',
     );
-    // @ts-ignore
+    // @ts-expect-error
     formatElement(jsx, {
       highlight: true,
       theme: 'beautiful',
