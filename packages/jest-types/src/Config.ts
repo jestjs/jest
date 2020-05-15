@@ -84,12 +84,10 @@ export type DefaultOptions = {
   watchman: boolean;
 };
 
-export type DisplayName =
-  | string
-  | {
-      name: string;
-      color: typeof chalk.Color;
-    };
+export type DisplayName = {
+  name: string;
+  color: typeof chalk.Color;
+};
 
 export type InitialOptionsWithRootDir = InitialOptions &
   Required<Pick<InitialOptions, 'rootDir'>>;
@@ -119,7 +117,7 @@ export type InitialOptions = Partial<{
   dependencyExtractor: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
-  displayName: DisplayName;
+  displayName: string | DisplayName;
   expand: boolean;
   extraGlobals: Array<string>;
   filter: Path;

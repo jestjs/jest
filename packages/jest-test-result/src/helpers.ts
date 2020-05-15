@@ -48,7 +48,7 @@ export const buildFailureTestResult = (
   err: SerializableError,
 ): TestResult => ({
   console: undefined,
-  displayName: '',
+  displayName: undefined,
   failureMessage: null,
   leaks: false,
   numFailingTests: 0,

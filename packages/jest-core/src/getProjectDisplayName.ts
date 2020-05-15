@@ -14,11 +14,5 @@ export default function getProjectDisplayName(
   if (!displayName) {
     return undefined;
   }
-  if (typeof displayName === 'string') {
-    return displayName;
-  }
-  if (typeof displayName === 'object') {
-    return displayName.name;
-  }
-  return undefined;
+  return displayName.name;
 }
