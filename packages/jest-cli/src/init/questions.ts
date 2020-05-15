@@ -25,10 +25,14 @@ const defaultQuestions: Array<PromptObject> = [
     type: 'confirm',
   },
   {
-    initial: false,
-    message: 'Do you want to use V8 based code coverage as coverageProvider?',
-    name: 'v8',
-    type: 'confirm',
+    choices: [
+      {title: 'babel', value: 'babel'},
+      {title: 'v8', value: 'v8'},
+    ],
+    initial: 0,
+    message: 'which coverageProvider should be used to instrument code for coverage?',
+    name: 'coverageProvider',
+    type: 'select',
   },
   {
     initial: false,
