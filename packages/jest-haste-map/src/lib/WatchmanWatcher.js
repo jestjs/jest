@@ -278,14 +278,12 @@ WatchmanWatcher.prototype.emitEvent = function (
 /**
  * Closes the watcher.
  *
- * @param {function} callback
- * @private
  */
 
-WatchmanWatcher.prototype.close = function (callback) {
+WatchmanWatcher.prototype.close = function () {
   this.client.removeAllListeners();
   this.client.end();
-  callback && callback(null, true);
+  return Promise.resolve();
 };
 
 /**

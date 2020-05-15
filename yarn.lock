@@ -3840,15 +3840,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/sane@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "@types/sane@npm:2.0.0"
-  dependencies:
-    "@types/node": "*"
-  checksum: 8e50935136662acd7d71fc5ccdff70c1821ceb175ad8fbab0fb43b44b1cc2a4d57c0d5916408c46444361b310d70e6b22a75dd55fc06241fc123a2fd23e29e72
-  languageName: node
-  linkType: hard
-
 "@types/semver@npm:^7.1.0":
   version: 7.3.4
   resolution: "@types/semver@npm:7.3.4"
@@ -5849,7 +5840,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chokidar@npm:^3.3.0":
+"chokidar@npm:^3.3.0, chokidar@npm:^3.4.2":
   version: 3.4.3
   resolution: "chokidar@npm:3.4.3"
   dependencies:
@@ -9364,15 +9355,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-fsevents@^2.1.2:
-  version: 2.2.1
-  resolution: "fsevents@npm:2.2.1"
-  dependencies:
-    node-gyp: latest
-  checksum: 7cc4cdc3b027f7ff6f6dee69492d460948db719393865cd29f2e6cfbcc64fecde964ef10a614f762be4212403097a2fc4088686b1b70b41a9fc117b2cc4bfecd
-  languageName: node
-  linkType: hard
-
 "fsevents@patch:fsevents@^1.2.7#builtin<compat/fsevents>":
   version: 1.2.13
   resolution: "fsevents@patch:fsevents@npm%3A1.2.13#builtin<compat/fsevents>::version=1.2.13&hash=11e9ea"
@@ -9380,24 +9362,6 @@ fsevents@^2.1.2:
     bindings: ^1.5.0
     nan: ^2.12.1
   checksum: 7bc048c164eb72f91b18ba7cd2ba30679a0afe57e9cd6352eac4bdbc4ddd4ca2ea98674d0bd3a80e96427469adc433c13532494b36aea40fceab36e198982182
-  languageName: node
-  linkType: hard
-
-"fsevents@patch:fsevents@^2.1.2#./patches/fsevents.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
-  version: 2.2.1
-  resolution: "fsevents@patch:fsevents@npm%3A2.2.1#./patches/fsevents.patch::version=2.2.1&hash=ee4332&locator=%40jest%2Fmonorepo%40workspace%3A."
-  dependencies:
-    node-gyp: latest
-  checksum: af204dab4aa0332571dd19aafcccf3e597dbf21fa975f92cb64af2151e3f65ad26a7d6fc0b6d8d9c800285996afb738f8f9db7005c6b497d9256c04910ad1416
-  languageName: node
-  linkType: hard
-
-"fsevents@patch:fsevents@patch%3Afsevents@^2.1.2%23./patches/fsevents.patch%3A%3Alocator=%2540jest%252Fmonorepo%2540workspace%253A.#builtin<compat/fsevents>":
-  version: 2.2.1
-  resolution: "fsevents@patch:fsevents@patch%3Afsevents@npm%253A2.2.1%23./patches/fsevents.patch%3A%3Aversion=2.2.1&hash=ee4332&locator=%2540jest%252Fmonorepo%2540workspace%253A.#builtin<compat/fsevents>::version=2.2.1&hash=11e9ea"
-  dependencies:
-    node-gyp: latest
-  checksum: 8e9dbb7a60968fd6758148e4d246e1c55f6aae4d258132ae3440712453c28a1c555d9c8393087ec4f1d3e90576715ba395e0cda20905ec8eae6be61d20bf4d19
   languageName: node
   linkType: hard
 
@@ -11746,10 +11710,9 @@ fsevents@~2.1.2:
     "@types/graceful-fs": ^4.1.2
     "@types/micromatch": ^4.0.0
     "@types/node": "*"
-    "@types/sane": ^2.0.0
     anymatch: ^3.0.3
+    chokidar: ^3.4.2
     fb-watchman: ^2.0.0
-    fsevents: ^2.1.2
     graceful-fs: ^4.2.4
     jest-regex-util: ^26.0.0
     jest-serializer: ^26.6.2
@@ -11757,12 +11720,7 @@ fsevents@~2.1.2:
     jest-util: ^26.6.2
     jest-worker: ^26.6.2
     micromatch: ^4.0.2
-    sane: ^4.0.3
     slash: ^3.0.0
-    walker: ^1.0.7
-  dependenciesMeta:
-    fsevents:
-      optional: true
   languageName: unknown
   linkType: soft
 

@@ -12,8 +12,8 @@ import {createHash} from 'crypto';
 import {EventEmitter} from 'events';
 import {tmpdir} from 'os';
 import * as path from 'path';
+import {FSWatcher as ChokidarFsWatcher, watch as chokidarWatch} from 'chokidar';
 import type {Stats} from 'graceful-fs';
-import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import serializer from 'jest-serializer';
@@ -24,7 +24,6 @@ import H from './constants';
 import nodeCrawl = require('./crawlers/node');
 import watchmanCrawl = require('./crawlers/watchman');
 import getMockName from './getMockName';
-import FSEventsWatcher = require('./lib/FSEventsWatcher');
 // @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
 import WatchmanWatcher from './lib/WatchmanWatcher';
 import * as fastPath from './lib/fast_path';
@@ -97,7 +96,7 @@ type InternalOptions = {
 };
 
 type Watcher = {
-  close(callback: () => void): void;
+  close(): Promise<void>;
 };
 
 type WorkerInterface = {worker: typeof worker; getSha1: typeof getSha1};
@@ -780,14 +779,6 @@ export default class HasteMap extends EventEmitter {
     this._options.throwOnModuleCollision = false;
     this._options.retainAllFiles = true;
 
-    // WatchmanWatcher > FSEventsWatcher > sane.NodeWatcher
-    const Watcher: SaneWatcher =
-      canUseWatchman && this._options.useWatchman
-        ? WatchmanWatcher
-        : FSEventsWatcher.isSupported()
-        ? FSEventsWatcher
-        : NodeWatcher;
-
     const extensions = this._options.extensions;
     const ignorePattern = this._options.ignorePattern;
     const rootDir = this._options.rootDir;
@@ -798,12 +789,21 @@ export default class HasteMap extends EventEmitter {
     let mustCopy = true;
 
     const createWatcher = (root: Config.Path): Promise<Watcher> => {
-      // @ts-expect-error: TODO how? "Cannot use 'new' with an expression whose type lacks a call or construct signature."
-      const watcher = new Watcher(root, {
-        dot: true,
-        glob: extensions.map(extension => '**/*.' + extension),
-        ignored: ignorePattern,
-      });
+      const useWatchman = canUseWatchman && this._options.useWatchman;
+      const patterns = extensions.map(extension => '**/*.' + extension);
+      // Prefer Watchman over Chokidar
+      const watcher = useWatchman
+        ? new WatchmanWatcher(root, {
+            dot: true,
+            glob: patterns,
+            ignored: ignorePattern,
+          })
+        : chokidarWatch(patterns, {
+            alwaysStat: true,
+            cwd: root,
+            ignoreInitial: true,
+            ignored: ignorePattern,
+          });
 
       return new Promise((resolve, reject) => {
         const rejectTimeout = setTimeout(
@@ -813,7 +813,14 @@ export default class HasteMap extends EventEmitter {
 
         watcher.once('ready', () => {
           clearTimeout(rejectTimeout);
-          watcher.on('all', onChange);
+
+          if (useWatchman) {
+            watcher.on('all', onChange);
+          } else {
+            (watcher as ChokidarFsWatcher).on('all', (type, filePath, stat) => {
+              onChange(type, filePath, root, stat);
+            });
+          }
           resolve(watcher);
         });
       });
@@ -824,10 +831,7 @@ export default class HasteMap extends EventEmitter {
         mustCopy = true;
         const changeEvent: ChangeEvent = {
           eventsQueue,
-          hasteFS: new HasteFS({
-            files: hasteMap.files,
-            rootDir,
-          }),
+          hasteFS: new HasteFS({files: hasteMap.files, rootDir}),
           moduleMap: new HasteModuleMap({
             duplicates: hasteMap.duplicates,
             map: hasteMap.map,
@@ -1043,20 +1047,16 @@ export default class HasteMap extends EventEmitter {
     }
   }
 
-  end(): Promise<void> {
+  async end(): Promise<void> {
     // @ts-expect-error: TODO TS cannot decide if `setInterval` and `clearInterval` comes from NodeJS or the DOM
     clearInterval(this._changeInterval);
     if (!this._watchers.length) {
-      return Promise.resolve();
+      return;
     }
 
-    return Promise.all(
-      this._watchers.map(
-        watcher => new Promise(resolve => watcher.close(resolve)),
-      ),
-    ).then(() => {
-      this._watchers = [];
-    });
+    await Promise.all(this._watchers.map(watcher => watcher.close()));
+
+    this._watchers = [];
   }
 
   /**
