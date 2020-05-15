@@ -26,6 +26,12 @@ const defaultQuestions: Array<PromptObject> = [
   },
   {
     initial: false,
+    message: 'Do you want to use V8 based code coverage as coverageProvider?',
+    name: 'v8',
+    type: 'confirm',
+  },
+  {
+    initial: false,
     message: 'Automatically clear mock calls and instances between every test?',
     name: 'clearMocks',
     type: 'confirm',
