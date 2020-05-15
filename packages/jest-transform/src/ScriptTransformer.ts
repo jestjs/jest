@@ -176,34 +176,37 @@ export default class ScriptTransformer {
   }
 
   private _getTransformer(filename: Config.Path) {
-    let transform: Transformer | null = null;
     if (!this._config.transform || !this._config.transform.length) {
       return null;
     }
 
     const transformPath = this._getTransformPath(filename);
-    if (transformPath) {
-      const transformer = this._transformCache.get(transformPath);
-      if (transformer != null) {
-        return transformer;
-      }
 
-      transform = require(transformPath);
-
-      if (!transform) {
-        throw new TypeError('Jest: a transform must export something.');
-      }
-      const transformerConfig = this._transformConfigCache.get(transformPath);
-      if (typeof transform.createTransformer === 'function') {
-        transform = transform.createTransformer(transformerConfig);
-      }
-      if (typeof transform.process !== 'function') {
-        throw new TypeError(
-          'Jest: a transform must export a `process` function.',
-        );
-      }
-      this._transformCache.set(transformPath, transform);
+    if (!transformPath) {
+      return null;
     }
+
+    const transformer = this._transformCache.get(transformPath);
+    if (transformer) {
+      return transformer;
+    }
+
+    let transform: Transformer = require(transformPath);
+
+    if (!transform) {
+      throw new TypeError('Jest: a transform must export something.');
+    }
+    const transformerConfig = this._transformConfigCache.get(transformPath);
+    if (typeof transform.createTransformer === 'function') {
+      transform = transform.createTransformer(transformerConfig);
+    }
+    if (typeof transform.process !== 'function') {
+      throw new TypeError(
+        'Jest: a transform must export a `process` function.',
+      );
+    }
+    this._transformCache.set(transformPath, transform);
+
     return transform;
   }
 
