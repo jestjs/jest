@@ -40,7 +40,7 @@ const toPaths = (tests: Array<Test>) => tests.map(({path}) => path);
 let findMatchingTests: (config: Config.ProjectConfig) => Promise<SearchResult>;
 
 describe('SearchSource', () => {
-  const name = 'SearchSource';
+  const id = 'SearchSource';
   let searchSource: SearchSource;
 
   describe('isTestFilePath', () => {
@@ -49,7 +49,7 @@ describe('SearchSource', () => {
     beforeEach(() => {
       config = normalize(
         {
-          name,
+          id,
           rootDir: '.',
           roots: [],
         },
@@ -68,7 +68,7 @@ describe('SearchSource', () => {
       if (process.platform !== 'win32') {
         config = normalize(
           {
-            name,
+            id,
             rootDir: '.',
             roots: [],
             testMatch: undefined,
@@ -118,7 +118,7 @@ describe('SearchSource', () => {
       const {options: config} = normalize(
         {
           moduleFileExtensions: ['js', 'jsx', 'txt'],
-          name,
+          id,
           rootDir,
           testMatch: undefined,
           testRegex: 'not-really-a-test',
@@ -142,7 +142,7 @@ describe('SearchSource', () => {
       const {options: config} = normalize(
         {
           moduleFileExtensions: ['js', 'jsx', 'txt'],
-          name,
+          id,
           rootDir,
           testMatch: ['**/not-really-a-test.txt', '!**/do-not-match-me.txt'],
           testRegex: '',
@@ -166,7 +166,7 @@ describe('SearchSource', () => {
       const {options: config} = normalize(
         {
           moduleFileExtensions: ['js', 'jsx'],
-          name,
+          id,
           rootDir,
           testMatch: undefined,
           testRegex: 'test.jsx?',
@@ -188,7 +188,7 @@ describe('SearchSource', () => {
       const {options: config} = normalize(
         {
           moduleFileExtensions: ['js', 'jsx'],
-          name,
+          id,
           rootDir,
           testMatch: ['**/test.js?(x)'],
           testRegex: '',
@@ -209,7 +209,7 @@ describe('SearchSource', () => {
     it('finds tests with default file extensions using testRegex', () => {
       const {options: config} = normalize(
         {
-          name,
+          id,
           rootDir,
           testMatch: undefined,
           testRegex,
@@ -230,7 +230,7 @@ describe('SearchSource', () => {
     it('finds tests with default file extensions using testMatch', () => {
       const {options: config} = normalize(
         {
-          name,
+          id,
           rootDir,
           testMatch,
           testRegex: '',
@@ -251,7 +251,7 @@ describe('SearchSource', () => {
     it('finds tests with parentheses in their rootDir when using testMatch', () => {
       const {options: config} = normalize(
         {
-          name,
+          id,
           rootDir: path.resolve(__dirname, 'test_root_with_(parentheses)'),
           testMatch: ['<rootDir>**/__testtests__/**/*'],
           testRegex: undefined,
@@ -272,7 +272,7 @@ describe('SearchSource', () => {
       const {options: config} = normalize(
         {
           moduleFileExtensions: ['js', 'jsx'],
-          name,
+          id,
           rootDir,
           testMatch,
         },
@@ -293,7 +293,7 @@ describe('SearchSource', () => {
       const {options: config} = normalize(
         {
           moduleFileExtensions: ['js', 'foobar'],
-          name,
+          id,
           rootDir,
           testMatch,
         },
@@ -314,7 +314,7 @@ describe('SearchSource', () => {
       const {options: config} = normalize(
         {
           moduleFileExtensions: ['js', 'jsx'],
-          name,
+          id,
           rootDir,
           testMatch,
         },
@@ -334,7 +334,7 @@ describe('SearchSource', () => {
     it('finds tests using a regex only', () => {
       const {options: config} = normalize(
         {
-          name,
+          id,
           rootDir,
           testMatch: undefined,
           testRegex,
@@ -355,7 +355,7 @@ describe('SearchSource', () => {
     it('finds tests using a glob only', () => {
       const {options: config} = normalize(
         {
-          name,
+          id,
           rootDir,
           testMatch,
           testRegex: '',
@@ -402,7 +402,7 @@ describe('SearchSource', () => {
               'haste_impl.js',
             ),
           },
-          name: 'SearchSource-findRelatedTests-tests',
+          id: 'SearchSource-findRelatedTests-tests',
           rootDir,
         },
         {} as Config.Argv,
@@ -455,7 +455,7 @@ describe('SearchSource', () => {
       const {options: config} = normalize(
         {
           moduleFileExtensions: ['js', 'jsx', 'foobar'],
-          name,
+          id,
           rootDir,
           testMatch,
         },
@@ -513,7 +513,7 @@ describe('SearchSource', () => {
       if (process.platform !== 'win32') {
         const config = normalize(
           {
-            name,
+            id,
             rootDir: '.',
             roots: ['/foo/bar/prefix'],
           },
@@ -546,7 +546,7 @@ describe('SearchSource', () => {
               '../../../jest-haste-map/src/__tests__/haste_impl.js',
             ),
           },
-          name: 'SearchSource-findRelatedSourcesFromTestsInChangedFiles-tests',
+          id: 'SearchSource-findRelatedSourcesFromTestsInChangedFiles-tests',
           rootDir,
         },
         {} as Config.Argv,
