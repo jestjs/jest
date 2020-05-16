@@ -23,13 +23,9 @@ test('prints console.logs when run with forceExit', () => {
     'package.json': '{}',
   });
 
-  const {stderr, stdout, exitCode} = runJest(DIR, [
-    '-i',
-    '--ci=false',
-    '--forceExit',
-  ]);
+  const {stdout, exitCode} = runJest(DIR, ['-i', '--ci=false', '--forceExit']);
 
-  const {rest, summary} = extractSummary(stderr);
+  const {rest, summary} = extractSummary(stdout);
 
   expect(exitCode).toBe(0);
   expect(wrap(rest)).toMatchSnapshot();

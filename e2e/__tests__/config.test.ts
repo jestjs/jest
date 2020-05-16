@@ -29,7 +29,7 @@ test('works with sane config JSON', () => {
   ]);
 
   expect(result.exitCode).toBe(1);
-  expect(result.stderr).toMatch('works just fine');
+  expect(result.stdout).toMatch('works just fine');
 });
 
 test('watchman config option is respected over default argv', () => {
@@ -66,7 +66,7 @@ test('works with jsdom testEnvironmentOptions config JSON', () => {
   ]);
 
   expect(result.exitCode).toBe(0);
-  expect(result.stderr).toContain('found url jestjs.io');
+  expect(result.stdout).toContain('found url jestjs.io');
 });
 
 test('negated flags override previous flags', () => {

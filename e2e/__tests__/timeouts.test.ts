@@ -29,8 +29,8 @@ test('exceeds the timeout', () => {
     'package.json': '{}',
   });
 
-  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
-  const {rest, summary} = extractSummary(stderr);
+  const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {rest, summary} = extractSummary(stdout);
   expect(rest).toMatch(
     /(jest\.setTimeout|jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout)/,
   );
@@ -52,8 +52,8 @@ test('does not exceed the timeout', () => {
     'package.json': '{}',
   });
 
-  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
-  const {rest, summary} = extractSummary(stderr);
+  const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {rest, summary} = extractSummary(stdout);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
   expect(exitCode).toBe(0);
@@ -72,12 +72,12 @@ test('exceeds the command line testTimeout', () => {
     'package.json': '{}',
   });
 
-  const {stderr, exitCode} = runJest(DIR, [
+  const {stdout, exitCode} = runJest(DIR, [
     '-w=1',
     '--ci=false',
     '--testTimeout=200',
   ]);
-  const {rest, summary} = extractSummary(stderr);
+  const {rest, summary} = extractSummary(stdout);
   expect(rest).toMatch(
     /(jest\.setTimeout|jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout)/,
   );
@@ -98,12 +98,12 @@ test('does not exceed the command line testTimeout', () => {
     'package.json': '{}',
   });
 
-  const {stderr, exitCode} = runJest(DIR, [
+  const {stdout, exitCode} = runJest(DIR, [
     '-w=1',
     '--ci=false',
     '--testTimeout=1000',
   ]);
-  const {rest, summary} = extractSummary(stderr);
+  const {rest, summary} = extractSummary(stdout);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
   expect(exitCode).toBe(0);

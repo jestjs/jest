@@ -32,7 +32,7 @@ describe('Given a config with two named projects, first-project and second-proje
       ]);
     });
     it('prints that only first-project will run', () => {
-      expect(result.stderr).toMatch(/^Running one project: first-project/);
+      expect(result.stdout).toMatch(/^Running one project: first-project/);
     });
   });
 
@@ -52,7 +52,7 @@ describe('Given a config with two named projects, first-project and second-proje
       ]);
     });
     it('prints that only second-project will run', () => {
-      expect(result.stderr).toMatch(/^Running one project: second-project/);
+      expect(result.stdout).toMatch(/^Running one project: second-project/);
     });
   });
 
@@ -74,7 +74,7 @@ describe('Given a config with two named projects, first-project and second-proje
       ]);
     });
     it('prints that both first-project and second-project will run', () => {
-      expect(result.stderr).toMatch(
+      expect(result.stdout).toMatch(
         /^Running 2 projects:\n- first-project\n- second-project/,
       );
     });
@@ -94,7 +94,7 @@ describe('Given a config with two named projects, first-project and second-proje
       ]);
     });
     it('does not print which projects are run', () => {
-      expect(result.stderr).not.toMatch(/^Running/);
+      expect(result.stdout).not.toMatch(/^Running/);
     });
   });
 
@@ -133,13 +133,13 @@ describe('Given a config with two projects, first-project and an unnamed project
       ]);
     });
     it('prints that a project does not have a name', () => {
-      expect(result.stderr).toMatch(
+      expect(result.stdout).toMatch(
         /^You provided values for --selectProjects but a project does not have a name/,
       );
     });
     it('prints that only first-project will run', () => {
-      const stderrThirdLine = result.stderr.split('\n')[2];
-      expect(stderrThirdLine).toMatch(/^Running one project: first-project/);
+      const stdoutThirdLine = result.stdout.split('\n')[2];
+      expect(stdoutThirdLine).toMatch(/^Running one project: first-project/);
     });
   });
 
@@ -157,7 +157,7 @@ describe('Given a config with two projects, first-project and an unnamed project
       ]);
     });
     it('does not print that a project has no name', () => {
-      expect(result.stderr).not.toMatch(
+      expect(result.stdout).not.toMatch(
         /^You provided values for --selectProjects but a project does not have a name/,
       );
     });

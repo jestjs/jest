@@ -137,12 +137,11 @@ describe('--findRelatedTests flag', () => {
     });
 
     let stdout;
-    let stderr;
 
-    ({stdout, stderr} = runJest(DIR, [], {stripAnsi: true}));
+    ({stdout} = runJest(DIR, [], {stripAnsi: true}));
     let summary;
     let rest;
-    ({summary, rest} = extractSummary(stderr));
+    ({summary, rest} = extractSummary(stdout));
     expect(wrap(summary)).toMatchSnapshot();
     expect(
       wrap(
@@ -157,11 +156,11 @@ describe('--findRelatedTests flag', () => {
     // both a.js and b.js should be in the coverage
     expect(wrap(stdout)).toMatchSnapshot();
 
-    ({stdout, stderr} = runJest(DIR, ['--findRelatedTests', 'a.js'], {
+    ({stdout} = runJest(DIR, ['--findRelatedTests', 'a.js'], {
       stripAnsi: true,
     }));
 
-    ({summary, rest} = extractSummary(stderr));
+    ({summary, rest} = extractSummary(stdout));
 
     expect(wrap(summary)).toMatchSnapshot();
     // should only run a.js
@@ -190,11 +189,11 @@ describe('--findRelatedTests flag', () => {
 
     let stdout;
     let stderr;
-    ({stdout, stderr} = runJest(DIR, ['--findRelatedTests', 'a.js', 'b.js'], {
+    ({stdout} = runJest(DIR, ['--findRelatedTests', 'a.js', 'b.js'], {
       stripAnsi: true,
     }));
 
-    const {summary, rest} = extractSummary(stderr);
+    const {summary, rest} = extractSummary(stdout);
     expect(wrap(summary)).toMatchSnapshot();
     expect(
       wrap(

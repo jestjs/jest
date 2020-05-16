@@ -22,8 +22,8 @@ test('works with jest.config.js', () => {
     'package.json': '{}',
   });
 
-  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
-  const {rest, summary} = extractSummary(stderr);
+  const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {rest, summary} = extractSummary(stdout);
   expect(exitCode).toBe(0);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
@@ -41,7 +41,7 @@ test('traverses directory tree up until it finds jest.config', () => {
     'some/nested/directory/file.js': '// nothing special',
   });
 
-  const {stderr, exitCode, stdout} = runJest(
+  const {exitCode, stdout} = runJest(
     path.join(DIR, 'some', 'nested', 'directory'),
     ['-w=1', '--ci=false'],
     {skipPkgJsonCheck: true},
@@ -52,7 +52,7 @@ test('traverses directory tree up until it finds jest.config', () => {
     wrap(stdout.replace(/^\W+(.*)e2e/gm, '<<REPLACED>>')),
   ).toMatchSnapshot();
 
-  const {rest, summary} = extractSummary(stderr);
+  const {rest, summary} = extractSummary(stdout);
   expect(exitCode).toBe(0);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();

@@ -14,8 +14,8 @@ const dir = path.resolve(__dirname, '../failures');
 
 const normalizeDots = (text: string) => text.replace(/\.{1,}$/gm, '.');
 
-function cleanStderr(stderr: string) {
-  const {rest} = extractSummary(stderr);
+function cleanStdout(stdout: string) {
+  const {rest} = extractSummary(stdout);
   return rest
     .replace(/.*(jest-jasmine2|jest-circus).*\n/g, '')
     .replace(new RegExp('Failed: Object {', 'g'), 'thrown: Object {');
@@ -28,43 +28,43 @@ beforeAll(() => {
 });
 
 test('not throwing Error objects', () => {
-  let stderr;
-  stderr = runJest(dir, ['throwNumber.test.js']).stderr;
-  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
-  stderr = runJest(dir, ['throwString.test.js']).stderr;
-  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
-  stderr = runJest(dir, ['throwObject.test.js']).stderr;
-  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
-  stderr = runJest(dir, ['assertionCount.test.js']).stderr;
-  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
-  stderr = runJest(dir, ['duringTests.test.js']).stderr;
+  let stdout;
+  stdout = runJest(dir, ['throwNumber.test.js']).stdout;
+  expect(wrap(cleanStdout(stdout))).toMatchSnapshot();
+  stdout = runJest(dir, ['throwString.test.js']).stdout;
+  expect(wrap(cleanStdout(stdout))).toMatchSnapshot();
+  stdout = runJest(dir, ['throwObject.test.js']).stdout;
+  expect(wrap(cleanStdout(stdout))).toMatchSnapshot();
+  stdout = runJest(dir, ['assertionCount.test.js']).stdout;
+  expect(wrap(cleanStdout(stdout))).toMatchSnapshot();
+  stdout = runJest(dir, ['duringTests.test.js']).stdout;
 
   if (nodeMajorVersion < 10) {
     const lineEntry = '(__tests__/duringTests.test.js:38:8)';
 
-    expect(stderr).toContain(`at Object.<anonymous>.done ${lineEntry}`);
+    expect(stdout).toContain(`at Object.<anonymous>.done ${lineEntry}`);
 
-    stderr = stderr.replace(
+    stdout = stdout.replace(
       `at Object.<anonymous>.done ${lineEntry}`,
       `at Object.<anonymous> ${lineEntry}`,
     );
   } else if (nodeMajorVersion < 12) {
     const lineEntry = '(__tests__/duringTests.test.js:38:8)';
 
-    expect(stderr).toContain(`at Object.done ${lineEntry}`);
+    expect(stdout).toContain(`at Object.done ${lineEntry}`);
 
-    stderr = stderr.replace(
+    stdout = stdout.replace(
       `at Object.done ${lineEntry}`,
       `at Object.<anonymous> ${lineEntry}`,
     );
   }
 
-  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
+  expect(wrap(cleanStdout(stdout))).toMatchSnapshot();
 });
 
 test('works with node assert', () => {
-  const {stderr} = runJest(dir, ['assertionError.test.js']);
-  let summary = normalizeDots(cleanStderr(stderr));
+  const {stdout} = runJest(dir, ['assertionError.test.js']);
+  let summary = normalizeDots(cleanStdout(stdout));
 
   // Node 9 started to include the error for `doesNotThrow`
   // https://github.com/nodejs/node/pull/12167
@@ -165,15 +165,15 @@ test('works with node assert', () => {
 });
 
 test('works with assertions in separate files', () => {
-  const {stderr} = runJest(dir, ['testMacro.test.js']);
+  const {stdout} = runJest(dir, ['testMacro.test.js']);
 
-  expect(wrap(normalizeDots(cleanStderr(stderr)))).toMatchSnapshot();
+  expect(wrap(normalizeDots(cleanStdout(stdout)))).toMatchSnapshot();
 });
 
 test('works with async failures', () => {
-  const {stderr} = runJest(dir, ['asyncFailures.test.js']);
+  const {stdout} = runJest(dir, ['asyncFailures.test.js']);
 
-  const rest = cleanStderr(stderr)
+  const rest = cleanStdout(stdout)
     .split('\n')
     .filter(line => line.indexOf('packages/expect/build/index.js') === -1)
     .join('\n');
@@ -188,9 +188,9 @@ test('works with async failures', () => {
 });
 
 test('works with snapshot failures', () => {
-  const {stderr} = runJest(dir, ['snapshot.test.js']);
+  const {stdout} = runJest(dir, ['snapshot.test.js']);
 
-  const result = normalizeDots(cleanStderr(stderr));
+  const result = normalizeDots(cleanStdout(stdout));
 
   expect(
     wrap(result.substring(0, result.indexOf('Snapshot Summary'))),
@@ -198,9 +198,9 @@ test('works with snapshot failures', () => {
 });
 
 test('works with snapshot failures with hint', () => {
-  const {stderr} = runJest(dir, ['snapshotWithHint.test.js']);
+  const {stdout} = runJest(dir, ['snapshotWithHint.test.js']);
 
-  const result = normalizeDots(cleanStderr(stderr));
+  const result = normalizeDots(cleanStdout(stdout));
 
   expect(
     wrap(result.substring(0, result.indexOf('Snapshot Summary'))),
@@ -208,10 +208,10 @@ test('works with snapshot failures with hint', () => {
 });
 
 test('errors after test has completed', () => {
-  const {stderr} = runJest(dir, ['errorAfterTestComplete.test.js']);
+  const {stdout} = runJest(dir, ['errorAfterTestComplete.test.js']);
 
-  expect(stderr).toMatch(
+  expect(stdout).toMatch(
     /Error: Caught error after test environment was torn down/,
   );
-  expect(stderr).toMatch(/Failed: "fail async"/);
+  expect(stdout).toMatch(/Failed: "fail async"/);
 });

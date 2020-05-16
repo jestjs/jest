@@ -41,7 +41,7 @@ testFiles.forEach(testFile => {
       '--errorOnDeprecated',
     ]);
     expect(result.exitCode).toBe(1);
-    let {rest} = extractSummary(result.stderr);
+    let {rest} = extractSummary(result.stdout);
 
     if (testFile === 'defaultTimeoutInterval.test.js') {
       const lineEntry = '(__tests__/defaultTimeoutInterval.test.js:10:3)';

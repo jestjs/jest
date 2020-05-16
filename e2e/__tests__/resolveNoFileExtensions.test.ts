@@ -16,8 +16,8 @@ beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
 
 test('show error message with matching files', () => {
-  const {exitCode, stderr} = runJest('resolve-no-extensions');
-  const {rest} = extractSummary(stderr);
+  const {exitCode, stdout} = runJest('resolve-no-extensions');
+  const {rest} = extractSummary(stdout);
 
   expect(exitCode).toBe(1);
   expect(wrap(rest)).toMatchSnapshot();

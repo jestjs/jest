@@ -80,14 +80,14 @@ test('can pass projects or global config', () => {
               hasteImplModulePath: '<rootDir>/../hasteImpl.js',
             },}`,
   });
-  let stderr;
+  let stdout;
 
-  ({stderr} = runJest(DIR, ['--no-watchman', '--config', 'base_config.js']));
-  expect(stderr).toMatch(
+  ({stdout} = runJest(DIR, ['--no-watchman', '--config', 'base_config.js']));
+  expect(stdout).toMatch(
     'The name `file1` was looked up in the Haste module map. It cannot be resolved, because there exists several different files',
   );
 
-  expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+  expect(wrap(extractSummary(stdout).summary)).toMatchSnapshot();
 
   writeFiles(DIR, {
     'global_config.js': `
@@ -100,7 +100,7 @@ test('can pass projects or global config', () => {
     `,
   });
 
-  ({stderr} = runJest(DIR, [
+  ({stdout} = runJest(DIR, [
     '--no-watchman',
     '-i',
     '--projects',
@@ -111,17 +111,17 @@ test('can pass projects or global config', () => {
     'base_config.js',
   ]));
 
-  const result1 = extractSummary(stderr);
+  const result1 = extractSummary(stdout);
   expect(wrap(result1.summary)).toMatchSnapshot();
   expect(wrap(sortLines(result1.rest))).toMatchSnapshot();
 
-  ({stderr} = runJest(DIR, [
+  ({stdout} = runJest(DIR, [
     '--no-watchman',
     '-i',
     '--config',
     'global_config.js',
   ]));
-  const result2 = extractSummary(stderr);
+  const result2 = extractSummary(stdout);
 
   expect(wrap(result2.summary)).toMatchSnapshot();
   expect(wrap(sortLines(result2.rest))).toMatchSnapshot();

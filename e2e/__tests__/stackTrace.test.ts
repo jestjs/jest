@@ -11,105 +11,105 @@ import {extractSummary} from '../Utils';
 
 describe('Stack Trace', () => {
   it('prints a stack trace for runtime errors', () => {
-    const {exitCode, stderr} = runJest('stack-trace', ['runtimeError.test.js']);
+    const {exitCode, stdout} = runJest('stack-trace', ['runtimeError.test.js']);
 
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(wrap(extractSummary(stdout).summary)).toMatchSnapshot();
 
     expect(exitCode).toBe(1);
-    expect(stderr).toMatch(
+    expect(stdout).toMatch(
       /ReferenceError: thisIsARuntimeError is not defined/,
     );
-    expect(stderr).toMatch(/> 10 \| thisIsARuntimeError\(\);/);
-    expect(stderr).toMatch(
+    expect(stdout).toMatch(/> 10 \| thisIsARuntimeError\(\);/);
+    expect(stdout).toMatch(
       /\s+at\s(?:.+?)\s\(__tests__\/runtimeError.test\.js/,
     );
   });
 
   it('does not print a stack trace for runtime errors when --noStackTrace is given', () => {
-    const {exitCode, stderr} = runJest('stack-trace', [
+    const {exitCode, stdout} = runJest('stack-trace', [
       'runtimeError.test.js',
       '--noStackTrace',
     ]);
 
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(wrap(extractSummary(stdout).summary)).toMatchSnapshot();
     expect(exitCode).toBe(1);
 
-    expect(stderr).toMatch(
+    expect(stdout).toMatch(
       /ReferenceError: thisIsARuntimeError is not defined/,
     );
-    expect(stderr).not.toMatch(
+    expect(stdout).not.toMatch(
       /\s+at\s(?:.+?)\s\(__tests__\/runtimeError.test\.js/,
     );
   });
 
   it('prints a stack trace for matching errors', () => {
-    const {exitCode, stderr} = runJest('stack-trace', ['stackTrace.test.js']);
+    const {exitCode, stdout} = runJest('stack-trace', ['stackTrace.test.js']);
 
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(wrap(extractSummary(stdout).summary)).toMatchSnapshot();
     expect(exitCode).toBe(1);
 
-    expect(stderr).toMatch(/\s+at\s(?:.+?)\s\(__tests__\/stackTrace.test\.js/);
+    expect(stdout).toMatch(/\s+at\s(?:.+?)\s\(__tests__\/stackTrace.test\.js/);
   });
 
   it('does not print a stack trace for matching errors when --noStackTrace is given', () => {
-    const {exitCode, stderr} = runJest('stack-trace', [
+    const {exitCode, stdout} = runJest('stack-trace', [
       'stackTrace.test.js',
       '--noStackTrace',
     ]);
 
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(wrap(extractSummary(stdout).summary)).toMatchSnapshot();
     expect(exitCode).toBe(1);
 
-    expect(stderr).not.toMatch(
+    expect(stdout).not.toMatch(
       /\s+at\s(?:.+?)\s\(__tests__\/stackTrace.test\.js/,
     );
   });
 
   it('prints a stack trace for errors', () => {
-    const {exitCode, stderr} = runJest('stack-trace', ['testError.test.js']);
+    const {exitCode, stdout} = runJest('stack-trace', ['testError.test.js']);
 
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(wrap(extractSummary(stdout).summary)).toMatchSnapshot();
     expect(exitCode).toBe(1);
 
-    expect(stderr).toMatch(/this is unexpected\./);
-    expect(stderr).toMatch(/this is a string\./);
+    expect(stdout).toMatch(/this is unexpected\./);
+    expect(stdout).toMatch(/this is a string\./);
 
-    expect(stderr).toMatch(/\s+at\s(?:.+?)\s\(__tests__\/testError.test\.js/);
+    expect(stdout).toMatch(/\s+at\s(?:.+?)\s\(__tests__\/testError.test\.js/);
 
     // Make sure we show Jest's jest-resolve as part of the stack trace
-    expect(stderr).toMatch(
+    expect(stdout).toMatch(
       /Cannot find module 'this-module-does-not-exist' from '__tests__\/testError\.test\.js'/,
     );
 
-    expect(stderr).toMatch(
+    expect(stdout).toMatch(
       /\s+at\s(?:.+?)\s\((?:.+?)jest-resolve\/build\/index\.js/,
     );
   });
 
   it('prints a stack trace for errors without message in stack trace', () => {
-    const {exitCode, stderr} = runJest('stack-trace', [
+    const {exitCode, stdout} = runJest('stack-trace', [
       'stackTraceWithoutMessage.test.js',
     ]);
 
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(wrap(extractSummary(stdout).summary)).toMatchSnapshot();
     expect(exitCode).toBe(1);
 
-    expect(stderr).toMatch(/important message/);
-    expect(stderr).toMatch(
+    expect(stdout).toMatch(/important message/);
+    expect(stdout).toMatch(
       /\s+at\s(?:.+?)\s\(__tests__\/stackTraceWithoutMessage.test\.js/,
     );
   });
 
   it('does not print a stack trace for errors when --noStackTrace is given', () => {
-    const {exitCode, stderr} = runJest('stack-trace', [
+    const {exitCode, stdout} = runJest('stack-trace', [
       'testError.test.js',
       '--noStackTrace',
     ]);
 
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(wrap(extractSummary(stdout).summary)).toMatchSnapshot();
     expect(exitCode).toBe(1);
 
-    expect(stderr).not.toMatch(
+    expect(stdout).not.toMatch(
       /\s+at\s(?:.+?)\s\(__tests__\/testError.test\.js/,
     );
   });

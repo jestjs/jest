@@ -19,8 +19,8 @@ test('mocks async functions', () => {
   run('yarn', dir);
 
   // --no-cache because babel can cache stuff and result in false green
-  const {stderr} = runJest(dir, ['--no-cache']);
-  expect(extractSummary(stderr).summary).toMatch(
+  const {stdout} = runJest(dir, ['--no-cache']);
+  expect(extractSummary(stdout).summary).toMatch(
     'Test Suites: 1 passed, 1 total',
   );
 });

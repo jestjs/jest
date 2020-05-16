@@ -64,7 +64,7 @@ describe('Custom Reporters Integration', () => {
   });
 
   test('default reporters enabled', () => {
-    const {stderr, stdout, exitCode} = runJest('custom-reporters', [
+    const {stdout, exitCode} = runJest('custom-reporters', [
       '--config',
       JSON.stringify({
         reporters: ['default', '<rootDir>/reporters/TestReporter.js'],
@@ -72,7 +72,7 @@ describe('Custom Reporters Integration', () => {
       'add.test.js',
     ]);
 
-    const {summary, rest} = extractSummary(stderr);
+    const {summary, rest} = extractSummary(stdout);
     const parsedJSON = JSON.parse(stdout);
 
     expect(exitCode).toBe(0);

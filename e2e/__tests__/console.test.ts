@@ -11,8 +11,8 @@ import {extractSummary, run} from '../Utils';
 import runJest from '../runJest';
 
 test('console printing', () => {
-  const {stderr, exitCode} = runJest('console');
-  const {summary, rest} = extractSummary(stderr);
+  const {stdout, exitCode} = runJest('console');
+  const {summary, rest} = extractSummary(stdout);
 
   expect(exitCode).toBe(0);
   expect(wrap(rest)).toMatchSnapshot();
@@ -20,11 +20,11 @@ test('console printing', () => {
 });
 
 test('console printing with --verbose', () => {
-  const {stderr, stdout, exitCode} = runJest('console', [
+  const {stdout, stdout, exitCode} = runJest('console', [
     '--verbose',
     '--no-cache',
   ]);
-  const {summary, rest} = extractSummary(stderr);
+  const {summary, rest} = extractSummary(stdout);
 
   expect(exitCode).toBe(0);
   expect(wrap(stdout)).toMatchSnapshot();
@@ -33,7 +33,7 @@ test('console printing with --verbose', () => {
 });
 
 test('does not print to console with --silent', () => {
-  const {stderr, stdout, exitCode} = runJest('console', [
+  const {stdout, stdout, exitCode} = runJest('console', [
     // Need to pass --config because console test specifies `verbose: false`
     '--config=' +
       JSON.stringify({
@@ -42,7 +42,7 @@ test('does not print to console with --silent', () => {
     '--silent',
     '--no-cache',
   ]);
-  const {summary, rest} = extractSummary(stderr);
+  const {summary, rest} = extractSummary(stdout);
 
   expect(exitCode).toBe(0);
   expect(wrap(stdout)).toMatchSnapshot();
@@ -52,8 +52,8 @@ test('does not print to console with --silent', () => {
 
 // issue: https://github.com/facebook/jest/issues/5223
 test('the jsdom console is the same as the test console', () => {
-  const {stderr, stdout, exitCode} = runJest('console-jsdom');
-  const {summary, rest} = extractSummary(stderr);
+  const {stdout, exitCode} = runJest('console-jsdom');
+  const {summary, rest} = extractSummary(stdout);
 
   expect(exitCode).toBe(0);
   expect(wrap(stdout)).toMatchSnapshot();
@@ -64,8 +64,8 @@ test('the jsdom console is the same as the test console', () => {
 test('does not error out when using winston', () => {
   const dir = path.resolve(__dirname, '../console-winston');
   run('yarn', dir);
-  const {stderr, stdout, exitCode} = runJest(dir);
-  const {summary, rest} = extractSummary(stderr);
+  const {stdout, exitCode} = runJest(dir);
+  const {summary, rest} = extractSummary(stdout);
 
   expect(exitCode).toBe(0);
   expect(wrap(stdout)).toMatchSnapshot();

@@ -15,7 +15,7 @@ skipSuiteOnJasmine();
 test('errors when a test both returns a promise and takes a callback', () => {
   const result = runJest('promise-and-callback');
 
-  const {rest} = extractSummary(result.stderr);
+  const {rest} = extractSummary(result.stdout);
   expect(wrap(rest)).toMatchSnapshot();
   expect(result.exitCode).toBe(1);
 });

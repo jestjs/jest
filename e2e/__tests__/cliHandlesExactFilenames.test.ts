@@ -30,7 +30,7 @@ test('CLI accepts exact file names if matchers matched', () => {
 
   expect(result.exitCode).toBe(0);
 
-  const {rest, summary} = extractSummary(result.stderr);
+  const {rest, summary} = extractSummary(result.stdout);
 
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();

@@ -17,23 +17,23 @@ skipSuiteOnJasmine();
 test('hook in empty describe', () => {
   const result = runJest(dir, ['hookInEmptyDescribe.test.js']);
   expect(result.exitCode).toBe(1);
-  expect(extractSummary(result.stderr)).toMatchSnapshot();
+  expect(extractSummary(result.stdout)).toMatchSnapshot();
 });
 
 test('hook in describe with skipped test', () => {
   const result = runJest(dir, ['hookInDescribeWithSkippedTest.test.js']);
   expect(result.exitCode).toBe(0);
-  expect(extractSummary(result.stderr)).toMatchSnapshot();
+  expect(extractSummary(result.stdout)).toMatchSnapshot();
 });
 
 test('hook in empty nested describe', () => {
   const result = runJest(dir, ['hookInEmptyNestedDescribe.test.js']);
   expect(result.exitCode).toBe(1);
-  expect(extractSummary(result.stderr)).toMatchSnapshot();
+  expect(extractSummary(result.stdout)).toMatchSnapshot();
 });
 
 test('multiple hooks in empty describe', () => {
   const result = runJest(dir, ['multipleHooksInEmptyDescribe.test.js']);
   expect(result.exitCode).toBe(1);
-  expect(extractSummary(result.stderr)).toMatchSnapshot();
+  expect(extractSummary(result.stdout)).toMatchSnapshot();
 });

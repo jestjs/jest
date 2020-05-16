@@ -14,7 +14,7 @@ test('chai assertion errors should display properly', () => {
   const dir = path.resolve(__dirname, '../chai-assertion-library-errors');
   run('yarn', dir);
 
-  const {stderr} = runJest('chai-assertion-library-errors');
-  const {rest} = extractSummary(stderr);
+  const {stdout} = runJest('chai-assertion-library-errors');
+  const {rest} = extractSummary(stdout);
   expect(wrap(rest)).toMatchSnapshot();
 });

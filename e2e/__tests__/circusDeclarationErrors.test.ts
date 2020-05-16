@@ -19,6 +19,6 @@ it('defining tests and hooks asynchronously throws', () => {
 
   expect(result.exitCode).toBe(1);
 
-  const {rest} = extractSummary(result.stderr);
+  const {rest} = extractSummary(result.stdout);
   expect(wrap(rest)).toMatchSnapshot();
 });

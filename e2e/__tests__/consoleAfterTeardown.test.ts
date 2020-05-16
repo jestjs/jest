@@ -10,8 +10,8 @@ import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
 test('console printing', () => {
-  const {stderr, exitCode} = runJest('console-after-teardown');
-  const {rest} = extractSummary(stderr);
+  const {stdout, exitCode} = runJest('console-after-teardown');
+  const {rest} = extractSummary(stdout);
 
   expect(exitCode).toBe(0);
   expect(wrap(rest)).toMatchSnapshot();

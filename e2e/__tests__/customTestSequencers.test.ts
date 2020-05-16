@@ -23,7 +23,7 @@ test('run prioritySequence first sync', () => {
     {},
   );
   expect(result.exitCode).toBe(0);
-  const sequence = extractSummary(result.stderr)
+  const sequence = extractSummary(result.stdout)
     .rest.replace(/PASS /g, '')
     .split('\n');
   expect(sequence).toEqual([
@@ -48,7 +48,7 @@ test('run prioritySequence first async', () => {
     {},
   );
   expect(result.exitCode).toBe(0);
-  const sequence = extractSummary(result.stderr)
+  const sequence = extractSummary(result.stdout)
     .rest.replace(/PASS /g, '')
     .split('\n');
   expect(sequence).toEqual([

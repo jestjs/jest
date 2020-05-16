@@ -86,10 +86,10 @@ test('collects coverage only from specified files avoiding dependencies', () => 
 });
 
 test('json reporter printing with --coverage', () => {
-  const {stderr, exitCode} = runJest('json-reporter', ['--coverage'], {
+  const {stdout, exitCode} = runJest('json-reporter', ['--coverage'], {
     stripAnsi: true,
   });
-  const {summary} = extractSummary(stderr);
+  const {summary} = extractSummary(stdout);
   expect(exitCode).toBe(1);
   expect(wrap(summary)).toMatchSnapshot();
 });

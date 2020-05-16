@@ -41,12 +41,10 @@ test('exits with 1 if coverage threshold is not met', () => {
     'package.json': JSON.stringify(pkgJson, null, 2),
   });
 
-  const {stdout, stderr, exitCode} = runJest(
-    DIR,
-    ['--coverage', '--ci=false'],
-    {stripAnsi: true},
-  );
-  const {rest, summary} = extractSummary(stderr);
+  const {stdout, exitCode} = runJest(DIR, ['--coverage', '--ci=false'], {
+    stripAnsi: true,
+  });
+  const {rest, summary} = extractSummary(stdout);
 
   expect(exitCode).toBe(1);
   expect(wrap(rest)).toMatchSnapshot();
@@ -80,12 +78,10 @@ test('exits with 1 if path threshold group is not found in coverage data', () =>
     'package.json': JSON.stringify(pkgJson, null, 2),
   });
 
-  const {stdout, stderr, exitCode} = runJest(
-    DIR,
-    ['--coverage', '--ci=false'],
-    {stripAnsi: true},
-  );
-  const {rest, summary} = extractSummary(stderr);
+  const {stdout, exitCode} = runJest(DIR, ['--coverage', '--ci=false'], {
+    stripAnsi: true,
+  });
+  const {rest, summary} = extractSummary(stdout);
 
   expect(exitCode).toBe(1);
   expect(wrap(rest)).toMatchSnapshot();
@@ -164,12 +160,10 @@ test('excludes tests matched by path threshold groups from global group', () => 
     'package.json': JSON.stringify(pkgJson, null, 2),
   });
 
-  const {stdout, stderr, exitCode} = runJest(
-    DIR,
-    ['--coverage', '--ci=false'],
-    {stripAnsi: true},
-  );
-  const {rest, summary} = extractSummary(stderr);
+  const {stdout, exitCode} = runJest(DIR, ['--coverage', '--ci=false'], {
+    stripAnsi: true,
+  });
+  const {rest, summary} = extractSummary(stdout);
 
   expect(exitCode).toBe(1);
   expect(wrap(rest)).toMatchSnapshot();
@@ -209,15 +203,13 @@ test('file is matched by all path and glob threshold groups', () => {
     'package.json': JSON.stringify(pkgJson, null, 2),
   });
 
-  const {stdout, stderr, exitCode} = runJest(
-    DIR,
-    ['--coverage', '--ci=false'],
-    {stripAnsi: true},
-  );
+  const {stdout, exitCode} = runJest(DIR, ['--coverage', '--ci=false'], {
+    stripAnsi: true,
+  });
   const {rest, summary} = extractSummary(
     /* This test also runs on windows and when the glob fails it outputs
     the system specific absolute path to the test file. */
-    stderr.replace(
+    stdout.replace(
       path.resolve(DIR, './banana.js'),
       '<<FULL_PATH_TO_BANANA_JS>>',
     ),

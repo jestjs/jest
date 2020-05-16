@@ -10,6 +10,6 @@ import runJest from '../runJest';
 test('setImmediate', () => {
   const result = runJest('set-immediate', ['--verbose']);
 
-  expect(result.stderr).toMatch('setImmediate test');
+  expect(result.stdout).toMatch('setImmediate test');
   expect(result.exitCode).toBe(0);
 });

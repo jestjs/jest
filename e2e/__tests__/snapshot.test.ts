@@ -98,7 +98,7 @@ describe('Snapshot', () => {
   afterAll(cleanup);
 
   it('stores new snapshots on the first run', () => {
-    const {exitCode, json, stderr} = runWithJson('snapshot', [
+    const {exitCode, json, stdout} = runWithJson('snapshot', [
       '-w=1',
       '--ci=false',
     ]);
@@ -114,8 +114,8 @@ describe('Snapshot', () => {
       content['snapshot is not influenced by previous counter 1'],
     ).not.toBeUndefined();
 
-    expect(stderr).toMatch('5 snapshots written from 2 test suites');
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(stdout).toMatch('5 snapshots written from 2 test suites');
+    expect(wrap(extractSummary(stdout).summary)).toMatchSnapshot();
   });
 
   it('works with escaped characters', () => {
@@ -125,11 +125,11 @@ describe('Snapshot', () => {
       '--ci=false',
       'snapshot.test.js',
     ]);
-    let stderr = result.stderr;
+    let stdout = result.stdout;
 
-    expect(stderr).toMatch('1 snapshot written');
+    expect(stdout).toMatch('1 snapshot written');
     expect(result.exitCode).toBe(0);
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(wrap(extractSummary(stdout).summary)).toMatchSnapshot();
 
     // Write the second snapshot
     const testData =
@@ -144,10 +144,10 @@ describe('Snapshot', () => {
       '--updateSnapshot',
       'snapshot.test.js',
     ]);
-    stderr = result.stderr;
+    stdout = result.stdout;
 
-    expect(stderr).toMatch('1 snapshot written');
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(stdout).toMatch('1 snapshot written');
+    expect(wrap(extractSummary(stdout).summary)).toMatchSnapshot();
     expect(result.exitCode).toBe(0);
 
     // Now let's check again if everything still passes.
@@ -157,10 +157,10 @@ describe('Snapshot', () => {
       '--ci=false',
       'snapshot.test.js',
     ]);
-    stderr = result.stderr;
+    stdout = result.stdout;
 
-    expect(stderr).not.toMatch('Snapshot Summary');
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(stdout).not.toMatch('Snapshot Summary');
+    expect(wrap(extractSummary(stdout).summary)).toMatchSnapshot();
     expect(result.exitCode).toBe(0);
   });
 
@@ -171,23 +171,23 @@ describe('Snapshot', () => {
       '--ci=false',
       'snapshotEscapeRegex.js',
     ]);
-    let stderr = result.stderr;
+    let stdout = result.stdout;
 
-    expect(stderr).toMatch('2 snapshots written from 1 test suite.');
+    expect(stdout).toMatch('2 snapshots written from 1 test suite.');
     expect(result.exitCode).toBe(0);
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(wrap(extractSummary(stdout).summary)).toMatchSnapshot();
 
     result = runJest('snapshot-escape', [
       '-w=1',
       '--ci=false',
       'snapshotEscapeRegex.js',
     ]);
-    stderr = result.stderr;
+    stdout = result.stdout;
 
     // Make sure we aren't writing a snapshot this time which would
     // indicate that the snapshot couldn't be loaded properly.
-    expect(stderr).not.toMatch('Snapshot Summary');
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(stdout).not.toMatch('Snapshot Summary');
+    expect(wrap(extractSummary(stdout).summary)).toMatchSnapshot();
     expect(result.exitCode).toBe(0);
   });
 
@@ -198,23 +198,23 @@ describe('Snapshot', () => {
       '--ci=false',
       'snapshotEscapeSubstitution.test.js',
     ]);
-    let stderr = result.stderr;
+    let stdout = result.stdout;
 
-    expect(stderr).toMatch('1 snapshot written');
+    expect(stdout).toMatch('1 snapshot written');
     expect(result.exitCode).toBe(0);
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(wrap(extractSummary(stdout).summary)).toMatchSnapshot();
 
     result = runJest('snapshot-escape', [
       '-w=1',
       '--ci=false',
       'snapshotEscapeSubstitution.test.js',
     ]);
-    stderr = result.stderr;
+    stdout = result.stdout;
 
     // Make sure we aren't writing a snapshot this time which would
     // indicate that the snapshot couldn't be loaded properly.
-    expect(stderr).not.toMatch('1 snapshot written');
-    expect(wrap(extractSummary(stderr).summary)).toMatchSnapshot();
+    expect(stdout).not.toMatch('1 snapshot written');
+    expect(wrap(extractSummary(stdout).summary)).toMatchSnapshot();
     expect(result.exitCode).toBe(0);
   });
 
@@ -230,7 +230,7 @@ describe('Snapshot', () => {
       expect(result.json.numTotalTests).toBe(9);
       expect(result.json.snapshot.added).toBe(0);
       expect(result.json.snapshot.total).toBe(9);
-      const {rest, summary} = extractSummary(result.stderr);
+      const {rest, summary} = extractSummary(result.stdout);
 
       expect(rest).toMatch('New snapshot was not written');
       expect(wrap(summary)).toMatchSnapshot();
@@ -247,10 +247,10 @@ describe('Snapshot', () => {
       expect(secondRun.json.numTotalTests).toBe(9);
       expect(secondRun.json.success).toBe(true);
 
-      expect(firstRun.stderr).toMatch('9 snapshots written from 3 test suites');
-      expect(secondRun.stderr).toMatch('9 passed, 9 total');
-      expect(wrap(extractSummary(firstRun.stderr).summary)).toMatchSnapshot();
-      expect(wrap(extractSummary(secondRun.stderr).summary)).toMatchSnapshot();
+      expect(firstRun.stdout).toMatch('9 snapshots written from 3 test suites');
+      expect(secondRun.stdout).toMatch('9 passed, 9 total');
+      expect(wrap(extractSummary(firstRun.stdout).summary)).toMatchSnapshot();
+      expect(wrap(extractSummary(secondRun.stdout).summary)).toMatchSnapshot();
     });
 
     it('deletes the snapshot if the test suite has been removed', () => {
@@ -265,12 +265,12 @@ describe('Snapshot', () => {
       expect(secondRun.json.numTotalTests).toBe(5);
       expect(fileExists(snapshotOfCopy)).toBe(false);
 
-      expect(firstRun.stderr).toMatch('9 snapshots written from 3 test suites');
-      expect(secondRun.stderr).toMatch(
+      expect(firstRun.stdout).toMatch('9 snapshots written from 3 test suites');
+      expect(secondRun.stdout).toMatch(
         '1 snapshot file removed from 1 test suite',
       );
-      expect(wrap(extractSummary(firstRun.stderr).summary)).toMatchSnapshot();
-      expect(wrap(extractSummary(secondRun.stderr).summary)).toMatchSnapshot();
+      expect(wrap(extractSummary(firstRun.stdout).summary)).toMatchSnapshot();
+      expect(wrap(extractSummary(secondRun.stdout).summary)).toMatchSnapshot();
     });
 
     it('deletes a snapshot when a test does removes all the snapshots', () => {
@@ -284,12 +284,12 @@ describe('Snapshot', () => {
       expect(secondRun.json.numTotalTests).toBe(6);
 
       expect(fileExists(snapshotOfCopy)).toBe(false);
-      expect(firstRun.stderr).toMatch('9 snapshots written from 3 test suites');
-      expect(secondRun.stderr).toMatch(
+      expect(firstRun.stdout).toMatch('9 snapshots written from 3 test suites');
+      expect(secondRun.stdout).toMatch(
         '1 snapshot file removed from 1 test suite',
       );
-      expect(wrap(extractSummary(firstRun.stderr).summary)).toMatchSnapshot();
-      expect(wrap(extractSummary(secondRun.stderr).summary)).toMatchSnapshot();
+      expect(wrap(extractSummary(firstRun.stdout).summary)).toMatchSnapshot();
+      expect(wrap(extractSummary(secondRun.stdout).summary)).toMatchSnapshot();
     });
 
     it('updates the snapshot when a test removes some snapshots', () => {
@@ -321,12 +321,12 @@ describe('Snapshot', () => {
       expect(beforeRemovingSnapshot[keyToCheck]).not.toBe(undefined);
       expect(afterRemovingSnapshot[keyToCheck]).toBe(undefined);
 
-      expect(wrap(extractSummary(firstRun.stderr).summary)).toMatchSnapshot();
-      expect(firstRun.stderr).toMatch('9 snapshots written from 3 test suites');
+      expect(wrap(extractSummary(firstRun.stdout).summary)).toMatchSnapshot();
+      expect(firstRun.stdout).toMatch('9 snapshots written from 3 test suites');
 
-      expect(wrap(extractSummary(secondRun.stderr).summary)).toMatchSnapshot();
-      expect(secondRun.stderr).toMatch('1 snapshot updated from 1 test suite');
-      expect(secondRun.stderr).toMatch('1 snapshot removed from 1 test suite');
+      expect(wrap(extractSummary(secondRun.stdout).summary)).toMatchSnapshot();
+      expect(secondRun.stdout).toMatch('1 snapshot updated from 1 test suite');
+      expect(secondRun.stdout).toMatch('1 snapshot removed from 1 test suite');
     });
   });
 });

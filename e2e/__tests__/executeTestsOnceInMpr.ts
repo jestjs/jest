@@ -47,11 +47,11 @@ test('Tests are executed only once even in an MPR', () => {
   });
   /* eslint-enable sort-keys */
 
-  const {stderr, exitCode} = runJest(DIR, ['foo/folder/my-test-bar.js']);
+  const {stdout, exitCode} = runJest(DIR, ['foo/folder/my-test-bar.js']);
 
   expect(exitCode).toBe(0);
 
-  const {rest, summary} = extractSummary(stderr);
+  const {rest, summary} = extractSummary(stdout);
 
   // We have only one test passed, so total should equal to one, despite we have
   // three projects.

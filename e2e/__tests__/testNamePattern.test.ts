@@ -10,11 +10,11 @@ import {extractSummary} from '../Utils';
 import {json as runWithJson} from '../runJest';
 
 test('testNamePattern', () => {
-  const {stderr, exitCode} = runWithJson('test-name-pattern', [
+  const {stdout, exitCode} = runWithJson('test-name-pattern', [
     '--testNamePattern',
     'should match',
   ]);
-  const {summary} = extractSummary(stderr);
+  const {summary} = extractSummary(stdout);
 
   expect(exitCode).toBe(0);
   expect(wrap(summary)).toMatchSnapshot();

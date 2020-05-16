@@ -27,7 +27,7 @@ test('print correct error message with nested test definitions outside describe'
 
   expect(result.exitCode).toBe(1);
 
-  const summary = extractSummary(result.stderr);
+  const summary = extractSummary(result.stdout);
 
   expect(cleanupRunnerStack(summary.rest)).toMatchSnapshot();
 });
@@ -37,7 +37,7 @@ test('print correct error message with nested test definitions inside describe',
 
   expect(result.exitCode).toBe(1);
 
-  const summary = extractSummary(result.stderr);
+  const summary = extractSummary(result.stdout);
 
   expect(cleanupRunnerStack(summary.rest)).toMatchSnapshot();
 });
@@ -49,7 +49,7 @@ test('print correct error message with nested test definitions inside describe',
 
     expect(result.exitCode).toBe(1);
 
-    expect(result.stderr).toContain(
+    expect(result.stdout).toContain(
       'Cannot nest a describe inside a test. Describe block "inner describe" cannot run because it is nested within "test".',
     );
   },
@@ -62,7 +62,7 @@ test('print correct error message with nested test definitions inside describe',
 
     expect(result.exitCode).toBe(1);
 
-    expect(result.stderr).toContain(
+    expect(result.stdout).toContain(
       'Hooks cannot be defined inside tests. Hook of type "beforeEach" is nested within "test".',
     );
   },

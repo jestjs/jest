@@ -21,12 +21,12 @@ test('works with passing tests', () => {
   expect(result.exitCode).toBe(0);
 });
 
-test('shows the correct errors in stderr when failing tests', () => {
+test('shows the correct errors in stdout when failing tests', () => {
   const result = runJest(dir, ['failure.test.js']);
 
   expect(result.exitCode).toBe(1);
 
-  const rest = extractSummary(result.stderr)
+  const rest = extractSummary(result.stdout)
     .rest.split('\n')
     .filter(line => line.indexOf('packages/expect/build/index.js') === -1)
     .join('\n');

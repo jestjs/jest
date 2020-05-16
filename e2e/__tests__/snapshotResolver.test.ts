@@ -31,7 +31,7 @@ describe('Custom snapshot resolver', () => {
   it('Resolves snapshot files using custom resolver', () => {
     const result = runJest('snapshot-resolver', ['-w=1', '--ci=false']);
 
-    expect(result.stderr).toMatch('1 snapshot written from 1 test suite');
+    expect(result.stdout).toMatch('1 snapshot written from 1 test suite');
 
     const content = require(snapshotFile);
     expect(content).toHaveProperty(
