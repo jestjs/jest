@@ -93,6 +93,28 @@ describe('init', () => {
         expect(evaluatedConfig).toEqual({coverageDirectory: 'coverage'});
       });
 
+      it('should create configuration for {coverageProvider: "babel"}', async () => {
+        prompts.mockReturnValueOnce({coverageProvider: 'babel'});
+
+        await init(resolveFromFixture('only_package_json'));
+
+        const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
+        const evaluatedConfig = eval(writtenJestConfig);
+
+        expect(evaluatedConfig).toEqual({});
+      });
+
+      it('should create configuration for {coverageProvider: "v8"}', async () => {
+        prompts.mockReturnValueOnce({coverageProvider: 'v8'});
+
+        await init(resolveFromFixture('only_package_json'));
+
+        const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
+        const evaluatedConfig = eval(writtenJestConfig);
+
+        expect(evaluatedConfig).toEqual({coverageProvider: 'v8'});
+      });
+
       it('should create configuration for {environment: "jsdom"}', async () => {
         prompts.mockReturnValueOnce({environment: 'jsdom'});
 
