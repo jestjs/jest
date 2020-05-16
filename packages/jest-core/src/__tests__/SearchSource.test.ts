@@ -117,8 +117,8 @@ describe('SearchSource', () => {
     it('finds tests matching a pattern via testRegex', () => {
       const {options: config} = normalize(
         {
-          moduleFileExtensions: ['js', 'jsx', 'txt'],
           id,
+          moduleFileExtensions: ['js', 'jsx', 'txt'],
           rootDir,
           testMatch: undefined,
           testRegex: 'not-really-a-test',
@@ -141,8 +141,8 @@ describe('SearchSource', () => {
     it('finds tests matching a pattern via testMatch', () => {
       const {options: config} = normalize(
         {
-          moduleFileExtensions: ['js', 'jsx', 'txt'],
           id,
+          moduleFileExtensions: ['js', 'jsx', 'txt'],
           rootDir,
           testMatch: ['**/not-really-a-test.txt', '!**/do-not-match-me.txt'],
           testRegex: '',
@@ -165,8 +165,8 @@ describe('SearchSource', () => {
     it('finds tests matching a JS regex pattern', () => {
       const {options: config} = normalize(
         {
-          moduleFileExtensions: ['js', 'jsx'],
           id,
+          moduleFileExtensions: ['js', 'jsx'],
           rootDir,
           testMatch: undefined,
           testRegex: 'test.jsx?',
@@ -187,8 +187,8 @@ describe('SearchSource', () => {
     it('finds tests matching a JS glob pattern', () => {
       const {options: config} = normalize(
         {
-          moduleFileExtensions: ['js', 'jsx'],
           id,
+          moduleFileExtensions: ['js', 'jsx'],
           rootDir,
           testMatch: ['**/test.js?(x)'],
           testRegex: '',
@@ -271,8 +271,8 @@ describe('SearchSource', () => {
     it('finds tests with similar but custom file extensions', () => {
       const {options: config} = normalize(
         {
-          moduleFileExtensions: ['js', 'jsx'],
           id,
+          moduleFileExtensions: ['js', 'jsx'],
           rootDir,
           testMatch,
         },
@@ -292,8 +292,8 @@ describe('SearchSource', () => {
     it('finds tests with totally custom foobar file extensions', () => {
       const {options: config} = normalize(
         {
-          moduleFileExtensions: ['js', 'foobar'],
           id,
+          moduleFileExtensions: ['js', 'foobar'],
           rootDir,
           testMatch,
         },
@@ -313,8 +313,8 @@ describe('SearchSource', () => {
     it('finds tests with many kinds of file extensions', () => {
       const {options: config} = normalize(
         {
-          moduleFileExtensions: ['js', 'jsx'],
           id,
+          moduleFileExtensions: ['js', 'jsx'],
           rootDir,
           testMatch,
         },
@@ -454,8 +454,8 @@ describe('SearchSource', () => {
     beforeEach(done => {
       const {options: config} = normalize(
         {
-          moduleFileExtensions: ['js', 'jsx', 'foobar'],
           id,
+          moduleFileExtensions: ['js', 'jsx', 'foobar'],
           rootDir,
           testMatch,
         },
