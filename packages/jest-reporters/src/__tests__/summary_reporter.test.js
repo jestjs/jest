@@ -10,7 +10,7 @@ let SummaryReporter;
 
 const env = {...process.env};
 const now = Date.now;
-const write = process.stderr.write;
+const write = process.stdout.write;
 const globalConfig = {
   rootDir: 'root',
   watch: false,
@@ -27,14 +27,14 @@ function requireReporter() {
 beforeEach(() => {
   process.env.npm_lifecycle_event = 'test';
   process.env.npm_lifecycle_script = 'jest';
-  process.stderr.write = result => results.push(result);
+  process.stdout.write = result => results.push(result);
   Date.now = () => 10;
 });
 
 afterEach(() => {
   results = [];
   process.env = env;
-  process.stderr.write = write;
+  process.stdout.write = write;
   Date.now = now;
 });
 

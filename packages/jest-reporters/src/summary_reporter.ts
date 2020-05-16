@@ -162,7 +162,9 @@ export default class SummaryReporter extends BaseReporter {
         globalConfig,
         updateCommand,
       );
-      snapshotSummary.forEach(this.log);
+      for (const summary of snapshotSummary) {
+        this.log(summary);
+      }
 
       this.log(''); // print empty line
     }
