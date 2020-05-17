@@ -11,14 +11,9 @@ Pattern Mode Usage
  pattern › ba
  pattern › bar
 
-
-
 `;
 
-exports[`can press "p" to filter by file name: test results 1`] = `
-PASS __tests__/bar.spec.js
-PASS __tests__/foo.spec.js
-`;
+exports[`can press "p" to filter by file name: test results 1`] = `PASS __tests__/bar.spec.js`;
 
 exports[`can press "p" to filter by file name: test results 2`] = `
 PASS __tests__/bar.spec.js
@@ -52,14 +47,9 @@ Pattern Mode Usage
  pattern › 
  pattern › 2
 
-
-
 `;
 
-exports[`can press "t" to filter by test name: test results 1`] = `
-PASS __tests__/bar.spec.js
-PASS __tests__/foo.spec.js
-`;
+exports[`can press "t" to filter by test name: test results 1`] = `PASS __tests__/foo.spec.js`;
 
 exports[`can press "t" to filter by test name: test results 2`] = `
 PASS __tests__/bar.spec.js

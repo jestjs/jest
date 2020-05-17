@@ -208,7 +208,7 @@ const sortTests = (stdout: string) =>
     .reduce((tests: Array<Array<string>>, line) => {
       if (['RUNS', 'PASS', 'FAIL'].includes(line.slice(0, 4))) {
         tests.push([line.trimRight()]);
-      } else if (line) {
+      } else if (line && tests.length >= 1) {
         tests[tests.length - 1].push(line.trimRight());
       }
       return tests;

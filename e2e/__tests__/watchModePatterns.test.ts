@@ -49,8 +49,10 @@ test('can press "p" to filter by file name', () => {
   const results = extractSummaries(stdout);
 
   // contains ansi characters, should not use `wrap`
-  expect(stdout).toMatchSnapshot();
+  // We're interested in line 7-13 where there are "pattern" printed
+  expect(stdout.split('\n').slice(7, 13).join('\n')).toMatchSnapshot();
   expect(results).toHaveLength(2);
+
   results.forEach(({rest, summary}) => {
     expect(wrap(rest)).toMatchSnapshot('test results');
     expect(wrap(summary)).toMatchSnapshot('test summary');
@@ -66,7 +68,8 @@ test('can press "t" to filter by test name', () => {
   const results = extractSummaries(stdout);
 
   // contains ansi characters, should not use `wrap`
-  expect(stdout).toMatchSnapshot();
+  // We're interested in line 7-13 where there are "pattern" printed
+  expect(stdout.split('\n').slice(7, 13).join('\n')).toMatchSnapshot();
   expect(results).toHaveLength(2);
   results.forEach(({rest, summary}) => {
     expect(wrap(rest)).toMatchSnapshot('test results');
