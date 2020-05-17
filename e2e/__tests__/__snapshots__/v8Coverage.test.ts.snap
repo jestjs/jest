@@ -1,10 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`on node >=10 prints coverage 1`] = `
-"  console.log
+Test Suites: 1 passed, 1 total
+Tests:       1 todo, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;
+
+exports[`on node >=10 prints coverage 2`] = `
+console.log
     42
 
       at Object.log (__tests__/Thing.test.js:10:9)
+
+PASS __tests__/Thing.test.js
+  ✎ todo whatever
 
 ----------|---------|----------|---------|---------|-------------------
 File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
@@ -12,5 +23,5 @@ File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
 All files |     100 |      100 |     100 |     100 |                   
  Thing.js |     100 |      100 |     100 |     100 |                   
  x.css    |     100 |      100 |     100 |     100 |                   
-----------|---------|----------|---------|---------|-------------------"
+----------|---------|----------|---------|---------|-------------------
 `;

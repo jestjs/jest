@@ -7,7 +7,9 @@
 
 import * as path from 'path';
 import {onNodeVersions} from '@jest/test-utils';
+import wrap from 'jest-snapshot-serializer-raw';
 import runJest from '../runJest';
+import {extractSummary} from '../Utils';
 
 const DIR = path.resolve(__dirname, '../v8-coverage');
 
@@ -23,7 +25,10 @@ onNodeVersions('>=10', () => {
       },
     );
 
+    const {summary, rest} = extractSummary(stdout);
+
     expect(exitCode).toBe(0);
-    expect(stdout).toMatchSnapshot();
+    expect(wrap(summary)).toMatchSnapshot();
+    expect(wrap(rest)).toMatchSnapshot();
   });
 });

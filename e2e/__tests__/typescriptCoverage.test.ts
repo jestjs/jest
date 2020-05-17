@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {run} from '../Utils';
+import {extractSummary, run} from '../Utils';
 import runJest from '../runJest';
 
 it('instruments and collects coverage for typescript files', () => {
@@ -16,5 +16,7 @@ it('instruments and collects coverage for typescript files', () => {
   const {stdout} = runJest(dir, ['--coverage', '--no-cache'], {
     stripAnsi: true,
   });
-  expect(wrap(stdout)).toMatchSnapshot();
+  const {summary, rest} = extractSummary(stdout);
+  expect(wrap(summary)).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
 });

@@ -27,12 +27,12 @@ test('triggers unexpected token error message for non-JS assets', () => {
     '__tests__/asset.test.js': `require('../asset.css'); test('asset', () => {});`,
   });
 
-  const {stdout, stderr} = runJest(DIR, ['']);
+  const {stderr, stdout} = runJest(DIR, ['']);
 
-  expect(stdout).toBe('');
-  expect(stderr).toMatch(/Jest encountered an unexpected token/);
-  expect(stderr).toMatch(/.style {}/);
-  expect(stderr).toMatch(/Unexpected token ./);
+  expect(stderr).toBe('');
+  expect(stdout).toMatch(/Jest encountered an unexpected token/);
+  expect(stdout).toMatch(/.style {}/);
+  expect(stdout).toMatch(/Unexpected token ./);
 });
 
 test('triggers unexpected token error message for untranspiled node_modules', () => {
@@ -46,15 +46,15 @@ test('triggers unexpected token error message for untranspiled node_modules', ()
     '__tests__/untranspiledModule.test.js': `require('untranspiled-module'); test('untranspiled', () => {});`,
   });
 
-  const {stdout, stderr} = runJest(DIR, ['']);
+  const {stderr, stdout} = runJest(DIR, ['']);
 
-  expect(stdout).toBe('');
-  expect(stderr).toMatch(/Jest encountered an unexpected token/);
-  expect(stderr).toMatch(/import {module}/);
+  expect(stderr).toBe('');
+  expect(stdout).toMatch(/Jest encountered an unexpected token/);
+  expect(stdout).toMatch(/import {module}/);
   if (nodeMajorVersion < 12) {
-    expect(stderr).toMatch(/Unexpected token/);
+    expect(stdout).toMatch(/Unexpected token/);
   } else {
-    expect(stderr).toMatch(
+    expect(stdout).toMatch(
       /SyntaxError: Cannot use import statement outside a module/,
     );
   }
@@ -73,8 +73,8 @@ test('does not trigger unexpected token error message for regular syntax errors'
     '__tests__/faulty2.test.js': `require('../faulty2'); test('faulty2', () => {});`,
   });
 
-  const {stdout, stderr} = runJest(DIR, ['']);
+  const {stderr, stdout} = runJest(DIR, ['']);
 
-  expect(stdout).toBe('');
-  expect(stderr).not.toMatch(/Jest encountered an unexpected token/);
+  expect(stderr).toBe('');
+  expect(stdout).not.toMatch(/Jest encountered an unexpected token/);
 });

@@ -36,8 +36,8 @@ test('exceeds the timeout set using jasmine.DEFAULT_TIMEOUT_INTERVAL', () => {
     'package.json': '{}',
   });
 
-  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
-  const {rest, summary} = extractSummary(stderr);
+  const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {rest, summary} = extractSummary(stdout);
   expect(rest).toMatch(
     /(jest\.setTimeout|jasmine\.DEFAULT_TIMEOUT_INTERVAL|Exceeded timeout)/,
   );
@@ -59,8 +59,8 @@ test('does not exceed the timeout using jasmine.DEFAULT_TIMEOUT_INTERVAL', () =>
     'package.json': '{}',
   });
 
-  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
-  const {rest, summary} = extractSummary(stderr);
+  const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {rest, summary} = extractSummary(stdout);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
   expect(exitCode).toBe(0);
@@ -81,8 +81,8 @@ test('can read and write jasmine.DEFAULT_TIMEOUT_INTERVAL', () => {
     'package.json': '{}',
   });
 
-  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
-  const {summary} = extractSummary(stderr);
+  const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {summary} = extractSummary(stdout);
   expect(wrap(summary)).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });
