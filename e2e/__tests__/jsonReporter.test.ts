@@ -66,7 +66,7 @@ describe('JSON Reporter', () => {
     const result = runJest('json-reporter', ['--json']);
     let jsonResult: FormattedTestResults;
 
-    expect(result.stdout).toMatch(/1 failed, 2 passed/);
+    expect(result.stderr).toMatch(/1 failed, 2 passed/);
     expect(result.exitCode).toBe(1);
 
     try {
