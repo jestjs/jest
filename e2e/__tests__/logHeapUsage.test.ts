@@ -21,6 +21,6 @@ test('logs memory usage', () => {
     'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
   });
 
-  const {stderr} = runJest(DIR, ['--logHeapUsage']);
-  expect(stderr).toMatch(/PASS\s__tests__\/a-banana.js.*\d+ MB heap size/);
+  const {stdout} = runJest(DIR, ['--logHeapUsage']);
+  expect(stdout).toMatch(/PASS\s__tests__\/a-banana.js.*\d+ MB heap size/);
 });

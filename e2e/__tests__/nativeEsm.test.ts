@@ -23,14 +23,14 @@ test('test config is without transform', () => {
 // The versions vm.Module was introduced
 onNodeVersions('^12.16.0 || >=13.2.0', () => {
   test('runs test with native ESM', () => {
-    const {exitCode, stdout} = runJest(DIR, [], {
-      nodeOptions: '--experimental-vm-modules',
+    const {exitCode, stdout, stderr} = runJest(DIR, [], {
+      nodeOptions: '--experimental-vm-modules --no-warnings',
     });
 
     const {summary} = extractSummary(stdout);
 
     expect(wrap(summary)).toMatchSnapshot();
-    expect(stdout).toBe('');
+    expect(stderr).toBe('');
     expect(exitCode).toBe(0);
   });
 });

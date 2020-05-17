@@ -10,40 +10,40 @@ import runJest, {json as runWithJson} from '../runJest';
 import {extractSummary} from '../Utils';
 
 test('moduleNameMapper wrong configuration', () => {
-  const {stderr, exitCode} = runJest('module-name-mapper-wrong-config');
-  const {rest} = extractSummary(stderr);
+  const {stdout, exitCode} = runJest('module-name-mapper-wrong-config');
+  const {rest} = extractSummary(stdout);
 
   expect(exitCode).toBe(1);
   expect(wrap(rest)).toMatchSnapshot();
 });
 
 test('moduleNameMapper wrong array configuration', () => {
-  const {stderr, exitCode} = runJest('module-name-mapper-wrong-array-config');
-  const {rest} = extractSummary(stderr);
+  const {stdout, exitCode} = runJest('module-name-mapper-wrong-array-config');
+  const {rest} = extractSummary(stdout);
 
   expect(exitCode).toBe(1);
   expect(wrap(rest)).toMatchSnapshot();
 });
 
 test('moduleNameMapper correct configuration', () => {
-  const {stderr, exitCode} = runJest('module-name-mapper-correct-config', [], {
+  const {stdout, exitCode} = runJest('module-name-mapper-correct-config', [], {
     stripAnsi: true,
   });
-  const {rest} = extractSummary(stderr);
+  const {rest} = extractSummary(stdout);
 
   expect(exitCode).toBe(0);
   expect(wrap(rest)).toMatchSnapshot();
 });
 
 test('moduleNameMapper correct configuration mocking module of absolute path', () => {
-  const {stderr, exitCode} = runJest(
+  const {stdout, exitCode} = runJest(
     'module-name-mapper-correct-mock-absolute-path',
     [],
     {
       stripAnsi: true,
     },
   );
-  const {rest} = extractSummary(stderr);
+  const {rest} = extractSummary(stdout);
 
   expect(exitCode).toBe(0);
   expect(wrap(rest)).toMatchSnapshot();
