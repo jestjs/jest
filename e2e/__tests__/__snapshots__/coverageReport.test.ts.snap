@@ -1,6 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`collects coverage from duplicate files avoiding shared cache 1`] = `
+Test Suites: 2 passed, 2 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /identical.test.js/i.
+`;
+
+exports[`collects coverage from duplicate files avoiding shared cache 2`] = `
+PASS cached-duplicates/b/__tests__/identical.test.js
+PASS cached-duplicates/a/__tests__/identical.test.js
 ---------------|---------|----------|---------|---------|-------------------
 File           | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ---------------|---------|----------|---------|---------|-------------------
@@ -13,6 +23,17 @@ All files      |     100 |      100 |     100 |     100 |
 `;
 
 exports[`collects coverage only from multiple specified files 1`] = `
+Test Suites: 3 passed, 3 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;
+
+exports[`collects coverage only from multiple specified files 2`] = `
+PASS cached-duplicates/a/__tests__/identical.test.js
+PASS cached-duplicates/b/__tests__/identical.test.js
+PASS __tests__/sum.test.js
 --------------|---------|----------|---------|---------|-------------------
 File          | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 --------------|---------|----------|---------|---------|-------------------
@@ -23,6 +44,17 @@ All files     |     100 |      100 |     100 |     100 |
 `;
 
 exports[`collects coverage only from specified file 1`] = `
+Test Suites: 3 passed, 3 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;
+
+exports[`collects coverage only from specified file 2`] = `
+PASS cached-duplicates/b/__tests__/identical.test.js
+PASS cached-duplicates/a/__tests__/identical.test.js
+PASS __tests__/sum.test.js
 ----------|---------|----------|---------|---------|-------------------
 File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ----------|---------|----------|---------|---------|-------------------
@@ -32,6 +64,18 @@ All files |     100 |      100 |     100 |     100 |
 `;
 
 exports[`collects coverage only from specified files avoiding dependencies 1`] = `
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /sum.test.js/i.
+`;
+
+exports[`collects coverage only from specified files avoiding dependencies 2`] = `
+PASS __tests__/sum.test.js
+  sum
+    ✓ adds numbers
+
 ----------|---------|----------|---------|---------|-------------------
 File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ----------|---------|----------|---------|---------|-------------------
@@ -40,9 +84,32 @@ All files |    87.5 |      100 |      50 |     100 |
 ----------|---------|----------|---------|---------|-------------------
 `;
 
-exports[`does not output coverage report when html is requested 1`] = ``;
+exports[`does not output coverage report when html is requested 1`] = `
+Test Suites: 3 passed, 3 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;
+
+exports[`does not output coverage report when html is requested 2`] = `
+PASS cached-duplicates/a/__tests__/identical.test.js
+PASS cached-duplicates/b/__tests__/identical.test.js
+PASS __tests__/sum.test.js
+`;
 
 exports[`generates coverage when using the testRegex config param  1`] = `
+Test Suites: 3 passed, 3 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;
+
+exports[`generates coverage when using the testRegex config param  2`] = `
+PASS cached-duplicates/a/__tests__/identical.test.js
+PASS cached-duplicates/b/__tests__/identical.test.js
+PASS __tests__/sum.test.js
 -------------------------------------|---------|----------|---------|---------|-------------------
 File                                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------------------------------|---------|----------|---------|---------|-------------------
@@ -69,6 +136,9 @@ Ran all test suites.
 `;
 
 exports[`outputs coverage report 1`] = `
+PASS cached-duplicates/b/__tests__/identical.test.js
+PASS cached-duplicates/a/__tests__/identical.test.js
+PASS __tests__/sum.test.js
 -------------------------------------|---------|----------|---------|---------|-------------------
 File                                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------------------------------|---------|----------|---------|---------|-------------------
@@ -86,7 +156,26 @@ All files                            |      60 |        0 |      50 |      60 |
 -------------------------------------|---------|----------|---------|---------|-------------------
 `;
 
+exports[`outputs coverage report 2`] = `
+Test Suites: 3 passed, 3 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;
+
 exports[`outputs coverage report when text and text-summary is requested 1`] = `
+Test Suites: 3 passed, 3 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;
+
+exports[`outputs coverage report when text and text-summary is requested 2`] = `
+PASS cached-duplicates/b/__tests__/identical.test.js
+PASS cached-duplicates/a/__tests__/identical.test.js
+PASS __tests__/sum.test.js
 
 =============================== Coverage summary ===============================
 Statements   : 60% ( 15/25 )
@@ -112,6 +201,17 @@ All files                            |      60 |        0 |      50 |      60 |
 `;
 
 exports[`outputs coverage report when text is requested 1`] = `
+Test Suites: 3 passed, 3 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;
+
+exports[`outputs coverage report when text is requested 2`] = `
+PASS cached-duplicates/b/__tests__/identical.test.js
+PASS cached-duplicates/a/__tests__/identical.test.js
+PASS __tests__/sum.test.js
 -------------------------------------|---------|----------|---------|---------|-------------------
 File                                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------------------------------|---------|----------|---------|---------|-------------------
@@ -130,6 +230,17 @@ All files                            |      60 |        0 |      50 |      60 |
 `;
 
 exports[`outputs coverage report when text-summary is requested 1`] = `
+Test Suites: 3 passed, 3 total
+Tests:       3 passed, 3 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;
+
+exports[`outputs coverage report when text-summary is requested 2`] = `
+PASS cached-duplicates/a/__tests__/identical.test.js
+PASS cached-duplicates/b/__tests__/identical.test.js
+PASS __tests__/sum.test.js
 
 =============================== Coverage summary ===============================
 Statements   : 60% ( 15/25 )
