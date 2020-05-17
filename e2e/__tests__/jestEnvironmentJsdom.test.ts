@@ -22,7 +22,7 @@ test('check is not leaking memory', () => {
     'package.json': JSON.stringify({jest: {testEnvironment: 'jsdom'}}),
   });
 
-  const {stderr} = runJest(DIR, ['--detect-leaks', '--runInBand']);
-  expect(stderr).toMatch(/PASS\s__tests__\/a.test.js/);
-  expect(stderr).toMatch(/PASS\s__tests__\/b.test.js/);
+  const {stdout} = runJest(DIR, ['--detect-leaks', '--runInBand']);
+  expect(stdout).toMatch(/PASS\s__tests__\/a.test.js/);
+  expect(stdout).toMatch(/PASS\s__tests__\/b.test.js/);
 });
