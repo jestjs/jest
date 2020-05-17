@@ -10,9 +10,9 @@ import runJest from '../runJest';
 import {extractSummary} from '../Utils';
 
 test('works with custom matchers', () => {
-  const {stderr} = runJest('custom-matcher-stack-trace', ['sync.test.js']);
+  const {stdout} = runJest('custom-matcher-stack-trace', ['sync.test.js']);
 
-  let {rest} = extractSummary(stderr);
+  let {rest} = extractSummary(stdout);
 
   rest = rest
     .split('\n')
@@ -23,11 +23,11 @@ test('works with custom matchers', () => {
 });
 
 test('custom async matchers', () => {
-  const {stderr} = runJest('custom-matcher-stack-trace', [
+  const {stdout} = runJest('custom-matcher-stack-trace', [
     'asynchronous.test.js',
   ]);
 
-  const {rest} = extractSummary(stderr);
+  const {rest} = extractSummary(stdout);
 
   expect(wrap(rest)).toMatchSnapshot();
 });
