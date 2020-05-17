@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {cleanup, extractSummary, writeFiles} from '../Utils';
+import {cleanup, extractSortedSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../execute-tests-once-in-mpr');
@@ -51,7 +51,7 @@ test('Tests are executed only once even in an MPR', () => {
 
   expect(exitCode).toBe(0);
 
-  const {rest, summary} = extractSummary(stdout);
+  const {rest, summary} = extractSortedSummary(stdout);
 
   // We have only one test passed, so total should equal to one, despite we have
   // three projects.
