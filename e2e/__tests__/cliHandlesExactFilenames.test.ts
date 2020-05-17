@@ -34,7 +34,7 @@ test('CLI accepts exact file names if matchers matched', () => {
 
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
-  expect(result.stdout).toBe('');
+  expect(result.stderr).toMatch(/Force exiting Jest/);
 });
 
 test('CLI skips exact file names if no matchers matched', () => {
