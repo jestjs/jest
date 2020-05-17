@@ -121,7 +121,7 @@ PASS __tests__/eachSkip.test.js
     ○ skipped passes
 `;
 
-exports[`shows the correct errors in stderr when failing tests 1`] = `
+exports[`shows the correct errors in stdout when failing tests 1`] = `
 FAIL __tests__/failure.test.js
   ✓ array table fails on one row: expected true == true
   ✕ array table fails on one row: expected true == false
