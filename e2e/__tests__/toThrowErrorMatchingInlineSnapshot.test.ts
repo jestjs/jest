@@ -36,9 +36,9 @@ test('works fine when function throws error', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
     const fileAfter = readFile(filename);
-    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    expect(stdout).toMatch('1 snapshot written from 1 test suite.');
     expect(wrap(fileAfter)).toMatchSnapshot('initial write');
     expect(exitCode).toBe(0);
   }
@@ -57,14 +57,14 @@ test('updates existing snapshot', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
-    const {stderr, exitCode} = runJest(DIR, [
+    const {stdout, exitCode} = runJest(DIR, [
       '-w=1',
       '--ci=false',
       filename,
       '-u',
     ]);
     const fileAfter = readFile(filename);
-    expect(stderr).toMatch('1 snapshot updated from 1 test suite.');
+    expect(stdout).toMatch('1 snapshot updated from 1 test suite.');
     expect(wrap(fileAfter)).toMatchSnapshot('updated snapshot');
     expect(exitCode).toBe(0);
   }
@@ -82,8 +82,8 @@ test('cannot be used with .not', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Snapshot matchers cannot be used with not');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('Snapshot matchers cannot be used with not');
     expect(exitCode).toBe(1);
   }
 });
@@ -98,9 +98,9 @@ test('should support rejecting promises', () => {
   `);
 
   writeFiles(TESTS_DIR, {[filename]: template()});
-  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+  const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
   const fileAfter = readFile(filename);
-  expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+  expect(stdout).toMatch('1 snapshot written from 1 test suite.');
   expect(wrap(fileAfter)).toMatchSnapshot();
   expect(exitCode).toBe(0);
 });

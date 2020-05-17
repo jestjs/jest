@@ -27,8 +27,8 @@ test('works fine when function throws error', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
   }
 });
@@ -42,8 +42,8 @@ test(`throws the error if tested function didn't throw error`, () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Received function did not throw');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('Received function did not throw');
     expect(exitCode).toBe(1);
   }
 });
@@ -58,8 +58,8 @@ test('accepts custom snapshot name', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
   }
 });
@@ -75,8 +75,8 @@ test('cannot be used with .not', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Snapshot matchers cannot be used with not');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('Snapshot matchers cannot be used with not');
     expect(exitCode).toBe(1);
   }
 });
@@ -90,14 +90,14 @@ test('should support rejecting promises', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
 
     const snapshot = fs.readFileSync(
       `${TESTS_DIR}/__snapshots__/${filename}.snap`,
       'utf8',
     );
 
-    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    expect(stdout).toMatch('1 snapshot written from 1 test suite.');
     expect(wrap(snapshot)).toMatchSnapshot();
     expect(exitCode).toBe(0);
   }
