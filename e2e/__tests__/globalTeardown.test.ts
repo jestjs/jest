@@ -65,7 +65,9 @@ test('globalTeardown function gets jest config object as a parameter', () => {
 
   const testPathPattern = 'pass';
 
+  // "--useStderr" because we want stdout to only contain things logged during teardown
   const result = runJest(e2eDir, [
+    '--useStderr',
     `--globalTeardown=${teardownPath}`,
     `--testPathPattern=${testPathPattern}`,
   ]);
@@ -105,7 +107,9 @@ test('globalTeardown works with default export', () => {
 
   const testPathPattern = 'pass';
 
+  // "--useStderr" because we want stdout to only contain things logged during teardown
   const result = runJest(e2eDir, [
+    '--useStderr',
     `--globalTeardown=${teardownPath}`,
     `--testPathPattern=${testPathPattern}`,
   ]);
