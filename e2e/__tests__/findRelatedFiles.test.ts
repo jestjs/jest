@@ -27,15 +27,18 @@ describe('--findRelatedTests flag', () => {
       'a.js': 'module.exports = {};',
       'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
     });
+    {
+      const {stdout} = runJest(DIR, ['a.js']);
+      expect(stdout).toMatch('');
+    }
+    {
+      const {stdout} = runJest(DIR, ['--findRelatedTests', 'a.js']);
+      expect(stdout).toMatch('PASS __tests__/test.test.js');
 
-    const {stdout} = runJest(DIR, ['a.js']);
-    expect(stdout).toMatch('');
-
-    const {stderr} = runJest(DIR, ['--findRelatedTests', 'a.js']);
-    expect(stderr).toMatch('PASS __tests__/test.test.js');
-
-    const summaryMsg = 'Ran all test suites related to files matching /a.js/i.';
-    expect(stderr).toMatch(summaryMsg);
+      const summaryMsg =
+        'Ran all test suites related to files matching /a.js/i.';
+      expect(stdout).toMatch(summaryMsg);
+    }
   });
 
   test('runs tests related to uppercased filename on case-insensitive os', () => {
@@ -105,16 +108,19 @@ describe('--findRelatedTests flag', () => {
         },
       }),
     });
+    {
+      const {stdout} = runJest(DIR, ['a.js']);
+      expect(stdout).toMatch('');
+    }
+    {
+      const {stdout} = runJest(DIR, ['--findRelatedTests', 'a.js']);
+      expect(stdout).toMatch('PASS __tests__/test.test.js');
+      expect(stdout).not.toMatch('PASS __tests__/test-skip-deps.test.js');
 
-    const {stdout} = runJest(DIR, ['a.js']);
-    expect(stdout).toMatch('');
-
-    const {stderr} = runJest(DIR, ['--findRelatedTests', 'a.js']);
-    expect(stderr).toMatch('PASS __tests__/test.test.js');
-    expect(stderr).not.toMatch('PASS __tests__/test-skip-deps.test.js');
-
-    const summaryMsg = 'Ran all test suites related to files matching /a.js/i.';
-    expect(stderr).toMatch(summaryMsg);
+      const summaryMsg =
+        'Ran all test suites related to files matching /a.js/i.';
+      expect(stdout).toMatch(summaryMsg);
+    }
   });
 
   test('generates coverage report for filename', () => {
@@ -137,12 +143,16 @@ describe('--findRelatedTests flag', () => {
     });
 
     let stdout;
+    let stderr;
 
-    ({stdout} = runJest(DIR, [], {stripAnsi: true}));
+    // --useStderr because we want only the coverage table in stdout
+    ({stdout, stderr} = runJest(DIR, ['--useStderr'], {stripAnsi: true}));
     let summary;
     let rest;
-    ({summary, rest} = extractSummary(stdout));
+    ({summary, rest} = extractSummary(stderr));
     expect(wrap(summary)).toMatchSnapshot();
+
+    // both a.js and b.js should be in the coverage
     expect(
       wrap(
         rest
@@ -153,14 +163,18 @@ describe('--findRelatedTests flag', () => {
       ),
     ).toMatchSnapshot();
 
-    // both a.js and b.js should be in the coverage
     expect(wrap(stdout)).toMatchSnapshot();
 
-    ({stdout} = runJest(DIR, ['--findRelatedTests', 'a.js'], {
-      stripAnsi: true,
-    }));
+    // --useStderr because we want only the coverage table in stdout
+    ({stdout, stderr} = runJest(
+      DIR,
+      ['--useStderr', '--findRelatedTests', 'a.js'],
+      {
+        stripAnsi: true,
+      },
+    ));
 
-    ({summary, rest} = extractSummary(stdout));
+    ({summary, rest} = extractSummary(stderr));
 
     expect(wrap(summary)).toMatchSnapshot();
     // should only run a.js
@@ -188,13 +202,19 @@ describe('--findRelatedTests flag', () => {
     });
 
     {
-      const {stdout} = runJest(DIR, ['--findRelatedTests', 'a.js', 'b.js'], {
-        stripAnsi: true,
-      });
+      // --useStderr because we want only the coverage table in stdout
+      const {stdout, stderr} = runJest(
+        DIR,
+        ['--useStderr', '--findRelatedTests', 'a.js', 'b.js'],
+        {
+          stripAnsi: true,
+        },
+      );
 
-      const {summary, rest} = extractSummary(stdout);
+      const {summary, rest} = extractSummary(stderr);
       expect(wrap(summary)).toMatchSnapshot();
       expect(
+        // Only a.js should be in the report
         wrap(
           rest
             .split('\n')
@@ -204,18 +224,22 @@ describe('--findRelatedTests flag', () => {
         ),
       ).toMatchSnapshot();
 
-      // Only a.js should be in the report
       expect(wrap(stdout)).toMatchSnapshot();
       expect(stdout).toMatch('a.js');
       expect(stdout).not.toMatch('b.js');
     }
 
     {
-      const {stdout, stderr} = runJest(DIR, ['--findRelatedTests', 'b.js']);
+      const {stdout, stderr} = runJest(DIR, [
+        '--useStderr',
+        '--findRelatedTests',
+        'b.js',
+      ]);
 
       // Neither a.js or b.js should be in the report
-      expect(stdout).toMatch('No tests found');
-      expect(stderr).toBe('');
+      expect(stderr).toMatch('No tests found');
+      expect(stdout).not.toMatch('a.js');
+      expect(stdout).not.toMatch('b.js');
     }
   });
 });
