@@ -56,15 +56,17 @@ describe('--findRelatedTests flag', () => {
       'a.js': 'module.exports = {};',
       'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
     });
-
-    const {stdout} = runJest(DIR, ['A.JS']);
-    expect(stdout).toMatch('');
-
-    const {stderr} = runJest(DIR, ['--findRelatedTests', 'A.JS']);
-    expect(stderr).toMatch('PASS __tests__/test.test.js');
-
-    const summaryMsg = 'Ran all test suites related to files matching /A.JS/i.';
-    expect(stderr).toMatch(summaryMsg);
+    {
+      const {stdout} = runJest(DIR, ['A.JS']);
+      expect(stdout).toMatch('');
+    }
+    {
+      const {stdout} = runJest(DIR, ['--findRelatedTests', 'A.JS']);
+      expect(stdout).toMatch('PASS __tests__/test.test.js');
+      const summaryMsg =
+        'Ran all test suites related to files matching /A.JS/i.';
+      expect(stdout).toMatch(summaryMsg);
+    }
   });
 
   test('runs tests related to filename with a custom dependency extractor', () => {

@@ -8,12 +8,15 @@
 import {skipSuiteOnJestCircus} from '@jest/test-utils';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest from '../runJest';
+import {extractSummary} from '../Utils';
 
 skipSuiteOnJestCircus(); // Circus does not support funky async definitions
 
 describe('Correct beforeEach order', () => {
   it('ensures the correct order for beforeEach', () => {
     const result = runJest('before-each-queue');
-    expect(wrap(result.stdout.replace(/\\/g, '/'))).toMatchSnapshot();
+    const {summary, rest} = extractSummary(result.stdout.replace(/\\/g, '/'));
+    expect(wrap(rest)).toMatchSnapshot();
+    expect(wrap(summary)).toMatchSnapshot();
   });
 });
