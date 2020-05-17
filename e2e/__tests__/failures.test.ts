@@ -208,10 +208,10 @@ test('works with snapshot failures with hint', () => {
 });
 
 test('errors after test has completed', () => {
-  const {stdout} = runJest(dir, ['errorAfterTestComplete.test.js']);
+  const {stderr} = runJest(dir, ['errorAfterTestComplete.test.js']);
 
-  expect(stdout).toMatch(
+  expect(stderr).toMatch(
     /Error: Caught error after test environment was torn down/,
   );
-  expect(stdout).toMatch(/Failed: "fail async"/);
+  expect(stderr).toMatch(/Failed: "fail async"/);
 });
