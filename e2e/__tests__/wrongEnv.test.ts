@@ -12,7 +12,7 @@ import {extractSummary} from '../Utils';
 function assertFailuresAndSnapshot(args: Array<string>) {
   const result = runJest('wrong-env', args);
   expect(result.exitCode).toBe(1);
-  expect(wrap(extractSummary(result.stderr).rest)).toMatchSnapshot();
+  expect(wrap(extractSummary(result.stdout).rest)).toMatchSnapshot();
 }
 
 describe('Wrong globals for environment', () => {
