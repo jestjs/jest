@@ -25,15 +25,15 @@ test('basic support', () => {
     writeFiles(TESTS_DIR, {
       [filename]: template(['{apple: "original value"}']),
     });
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
   }
 
   {
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
-    expect(stderr).not.toMatch('1 snapshot written from 1 test suite.');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('Snapshots:   1 passed, 1 total');
+    expect(stdout).not.toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
   }
 
@@ -41,19 +41,19 @@ test('basic support', () => {
     writeFiles(TESTS_DIR, {
       [filename]: template(['{apple: "updated value"}']),
     });
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Snapshot name: `snapshots 1`');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('Snapshot name: `snapshots 1`');
     expect(exitCode).toBe(1);
   }
 
   {
-    const {stderr, exitCode} = runJest(DIR, [
+    const {stdout, exitCode} = runJest(DIR, [
       '-w=1',
       '--ci=false',
       filename,
       '-u',
     ]);
-    expect(stderr).toMatch('1 snapshot updated from 1 test suite.');
+    expect(stdout).toMatch('1 snapshot updated from 1 test suite.');
     expect(exitCode).toBe(0);
   }
 });
@@ -69,14 +69,14 @@ test('error thrown before snapshot', () => {
     writeFiles(TESTS_DIR, {
       [filename]: template(['true', '{a: "original"}']),
     });
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
   }
 
   {
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('Snapshots:   1 passed, 1 total');
     expect(exitCode).toBe(0);
   }
 
@@ -84,8 +84,8 @@ test('error thrown before snapshot', () => {
     writeFiles(TESTS_DIR, {
       [filename]: template(['false', '{a: "original"}']),
     });
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).not.toMatch('1 obsolete snapshot found');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).not.toMatch('1 obsolete snapshot found');
     expect(exitCode).toBe(1);
   }
 });
@@ -99,19 +99,19 @@ test('first snapshot fails, second passes', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template([`'apple'`, `'banana'`])});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('2 snapshots written from 1 test suite.');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('2 snapshots written from 1 test suite.');
     expect(exitCode).toBe(0);
   }
 
   {
     writeFiles(TESTS_DIR, {[filename]: template([`'kiwi'`, `'banana'`])});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Snapshot name: `snapshots 1`');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('Snapshot name: `snapshots 1`');
     // Match lines separately because empty line has been replaced with space:
-    expect(stderr).toMatch('Snapshot: "apple"');
-    expect(stderr).toMatch('Received: "kiwi"');
-    expect(stderr).not.toMatch('1 obsolete snapshot found');
+    expect(stdout).toMatch('Snapshot: "apple"');
+    expect(stdout).toMatch('Received: "kiwi"');
+    expect(stdout).not.toMatch('1 obsolete snapshot found');
     expect(exitCode).toBe(1);
   }
 });
@@ -129,15 +129,15 @@ test('does not mark snapshots as obsolete in skipped tests', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template(['test'])});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
   }
 
   {
     writeFiles(TESTS_DIR, {[filename]: template(['test.skip'])});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).not.toMatch('1 obsolete snapshot found');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).not.toMatch('1 obsolete snapshot found');
     expect(exitCode).toBe(0);
   }
 });
@@ -151,8 +151,8 @@ test('accepts custom snapshot name', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template()});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
   }
 });
@@ -166,22 +166,22 @@ test('handles property matchers', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template(['new Date()'])});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
   }
 
   {
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('Snapshots:   1 passed, 1 total');
     expect(exitCode).toBe(0);
   }
 
   {
     writeFiles(TESTS_DIR, {[filename]: template(['"string"'])});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Snapshot name: `handles property matchers 1`');
-    expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('Snapshot name: `handles property matchers 1`');
+    expect(stdout).toMatch('Snapshots:   1 failed, 1 total');
     expect(exitCode).toBe(1);
   }
 });
@@ -195,8 +195,8 @@ test('handles invalid property matchers', () => {
       });
     `,
     });
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Expected properties must be an object');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('Expected properties must be an object');
     expect(exitCode).toBe(1);
   }
   {
@@ -206,9 +206,9 @@ test('handles invalid property matchers', () => {
       });
     `,
     });
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Expected properties must be an object');
-    expect(stderr).toMatch(
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('Expected properties must be an object');
+    expect(stdout).toMatch(
       `To provide a hint without properties: toMatchSnapshot('hint')`,
     );
     expect(exitCode).toBe(1);
@@ -220,9 +220,9 @@ test('handles invalid property matchers', () => {
       });
     `,
     });
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Expected properties must be an object');
-    expect(stderr).toMatch(
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('Expected properties must be an object');
+    expect(stdout).toMatch(
       `To provide a hint without properties: toMatchSnapshot('hint')`,
     );
     expect(exitCode).toBe(1);
@@ -238,25 +238,25 @@ test('handles property matchers with hint', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template(['new Date()'])});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
   }
 
   {
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('Snapshots:   1 passed, 1 total');
     expect(exitCode).toBe(0);
   }
 
   {
     writeFiles(TESTS_DIR, {[filename]: template(['"string"'])});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch(
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch(
       'Snapshot name: `handles property matchers with hint: descriptive hint 1`',
     );
-    expect(stderr).toMatch('Expected properties');
-    expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
+    expect(stdout).toMatch('Expected properties');
+    expect(stdout).toMatch('Snapshots:   1 failed, 1 total');
     expect(exitCode).toBe(1);
   }
 });
@@ -270,35 +270,35 @@ test('handles property matchers with deep properties', () => {
 
   {
     writeFiles(TESTS_DIR, {[filename]: template(['new Date()', '"Jest"'])});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
   }
 
   {
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch('Snapshots:   1 passed, 1 total');
     expect(exitCode).toBe(0);
   }
 
   {
     writeFiles(TESTS_DIR, {[filename]: template(['"string"', '"Jest"'])});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch(
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch(
       'Snapshot name: `handles property matchers with deep properties 1`',
     );
-    expect(stderr).toMatch('Expected properties');
-    expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
+    expect(stdout).toMatch('Expected properties');
+    expect(stdout).toMatch('Snapshots:   1 failed, 1 total');
     expect(exitCode).toBe(1);
   }
 
   {
     writeFiles(TESTS_DIR, {[filename]: template(['new Date()', '"CHANGED"'])});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    expect(stderr).toMatch(
+    const {stdout, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
+    expect(stdout).toMatch(
       'Snapshot name: `handles property matchers with deep properties 1`',
     );
-    expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
+    expect(stdout).toMatch('Snapshots:   1 failed, 1 total');
     expect(exitCode).toBe(1);
   }
 });
