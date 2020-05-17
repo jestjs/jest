@@ -10,43 +10,20 @@ FAIL __tests__/ignoredFile.test.js
 `;
 
 exports[`babel-jest instruments only specific files and collects coverage 1`] = `
-Test Suites: 2 passed, 2 total
-Tests:       2 passed, 2 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites.
-`;
-
-exports[`babel-jest instruments only specific files and collects coverage 2`] = `
-PASS __tests__/babelJest.test.js
 ------------|---------|----------|---------|---------|-------------------
-File        | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+File        | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ------------|---------|----------|---------|---------|-------------------
-All files   |   83.33 |      100 |      50 |      80 |
- covered.js |   83.33 |      100 |      50 |      80 | 13
+All files   |   83.33 |      100 |      50 |      80 |                   
+ covered.js |   83.33 |      100 |      50 |      80 | 13                
 ------------|---------|----------|---------|---------|-------------------
-
-PASS __tests__/changedCwd.test.js
 `;
 
 exports[`custom transformer instruments files 1`] = `
-Test Suites: 1 passed, 1 total
-Tests:       2 passed, 2 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites.
-`;
-
-exports[`custom transformer instruments files 2`] = `
-PASS __tests__/customPreprocessor.test.js
-  ✓ instruments by setting global.__INSTRUMENTED__
-  ✓ preprocesses by setting global.__PREPROCESSED__
 ----------|---------|----------|---------|---------|-------------------
-File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ----------|---------|----------|---------|---------|-------------------
-All files |       0 |        0 |       0 |       0 |
+All files |       0 |        0 |       0 |       0 |                   
 ----------|---------|----------|---------|---------|-------------------
-
 `;
 
 exports[`no babel-jest instrumentation with no babel-jest 1`] = `
@@ -59,21 +36,10 @@ All files   |   83.33 |      100 |      50 |      80 |
 `;
 
 exports[`transformer-config instruments only specific files and collects coverage 1`] = `
-Test Suites: 1 passed, 1 total
-Tests:       1 passed, 1 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites.
-`;
-
-exports[`transformer-config instruments only specific files and collects coverage 2`] = `
-PASS __tests__/transformer-config.test.js
-  ✓ strips flowtypes using babel-jest and config passed to transformer
+"------------|---------|----------|---------|---------|-------------------
+File        | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ------------|---------|----------|---------|---------|-------------------
-File        | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
-------------|---------|----------|---------|---------|-------------------
-All files   |   83.33 |      100 |      50 |      80 |
- Covered.js |   83.33 |      100 |      50 |      80 | 13
-------------|---------|----------|---------|---------|-------------------
-
+All files   |   83.33 |      100 |      50 |      80 |                   
+ Covered.js |   83.33 |      100 |      50 |      80 | 13                
+------------|---------|----------|---------|---------|-------------------"
 `;

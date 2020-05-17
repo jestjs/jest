@@ -34,16 +34,15 @@ describe('babel-jest', () => {
   });
 
   it('instruments only specific files and collects coverage', () => {
-    const {stdout} = runJest(dir, ['--coverage', '--no-cache'], {
+    // --useStderr because we only want the coverage table in stdout
+    const {stdout} = runJest(dir, ['--useStderr', '--coverage', '--no-cache'], {
       stripAnsi: true,
     });
     expect(stdout).toMatch('covered.js');
     expect(stdout).not.toMatch('notCovered.js');
     expect(stdout).not.toMatch('excludedFromCoverage.js');
     // coverage result should not change
-    const {summary, rest} = extractSortedSummary(stdout);
-    expect(wrap(summary)).toMatchSnapshot();
-    expect(wrap(rest)).toMatchSnapshot();
+    expect(wrap(stdout)).toMatchSnapshot();
   });
 });
 
@@ -52,9 +51,10 @@ describe('babel-jest ignored', () => {
 
   it('tells user to match ignored files', () => {
     // --no-cache because babel can cache stuff and result in false green
-    const {exitCode, stdout} = runJest(dir, ['--no-cache']);
+    // --useStderr because we only want the coverage table in stdout
+    const {exitCode, stderr} = runJest(dir, ['--useStderr', '--no-cache']);
     expect(exitCode).toBe(1);
-    expect(wrap(extractSummary(stdout).rest)).toMatchSnapshot();
+    expect(wrap(extractSummary(stderr).rest)).toMatchSnapshot();
   });
 });
 
@@ -124,15 +124,16 @@ describe('custom transformer', () => {
   });
 
   it('instruments files', () => {
-    const {stdout, exitCode} = runJest(dir, ['--no-cache', '--coverage'], {
-      stripAnsi: true,
-    });
+    // --useStderr because we only want the coverage table in stdout
+    const {stdout, exitCode} = runJest(
+      dir,
+      ['--useStderr', '--no-cache', '--coverage'],
+      {
+        stripAnsi: true,
+      },
+    );
     // coverage should be empty because there's no real instrumentation
-
-    const {summary, rest} = extractSortedSummary(stdout);
-    expect(wrap(summary)).toMatchSnapshot();
-    expect(wrap(rest)).toMatchSnapshot();
-
+    expect(wrap(stdout)).toMatchSnapshot();
     expect(exitCode).toBe(0);
   });
 });
@@ -183,16 +184,15 @@ describe('transformer-config', () => {
   });
 
   it('instruments only specific files and collects coverage', () => {
-    const {stdout} = runJest(dir, ['--coverage', '--no-cache'], {
+    // --useStderr because we only want the coverage table in stdout
+    const {stdout} = runJest(dir, ['--useStderr', '--coverage', '--no-cache'], {
       stripAnsi: true,
     });
     expect(stdout).toMatch('Covered.js');
     expect(stdout).not.toMatch('NotCovered.js');
     expect(stdout).not.toMatch('ExcludedFromCoverage.js');
     // coverage result should not change
-    const {summary, rest} = extractSortedSummary(stdout);
-    expect(wrap(summary)).toMatchSnapshot();
-    expect(wrap(rest)).toMatchSnapshot();
+    expect(stdout).toMatchSnapshot();
   });
 });
 
