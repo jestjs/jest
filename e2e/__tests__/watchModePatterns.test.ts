@@ -45,14 +45,17 @@ test('can press "p" to filter by file name', () => {
   const input = [{keys: ['p', 'b', 'a', 'r', '\r']}, {keys: ['q']}];
   setupFiles(input);
 
-  const {exitCode, stdout} = runJest(DIR, ['--no-watchman', '--watchAll']);
-  const results = extractSummaries(stdout);
+  // --useStderr to reliably split the run report and watch mode output
+  const {exitCode, stdout, stderr} = runJest(DIR, [
+    '--useStderr',
+    '--no-watchman',
+    '--watchAll',
+  ]);
+  const results = extractSummaries(stderr);
 
   // contains ansi characters, should not use `wrap`
-  // We're interested in line 7-13 where there are "pattern" printed
-  expect(stdout.split('\n').slice(7, 13).join('\n')).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
   expect(results).toHaveLength(2);
-
   results.forEach(({rest, summary}) => {
     expect(wrap(rest)).toMatchSnapshot('test results');
     expect(wrap(summary)).toMatchSnapshot('test summary');
@@ -64,12 +67,16 @@ test('can press "t" to filter by test name', () => {
   const input = [{keys: ['t', '2', '\r']}, {keys: ['q']}];
   setupFiles(input);
 
-  const {exitCode, stdout} = runJest(DIR, ['--no-watchman', '--watchAll']);
-  const results = extractSummaries(stdout);
+  // --useStderr to reliably split the run report and watch mode output
+  const {exitCode, stdout, stderr} = runJest(DIR, [
+    '--useStderr',
+    '--no-watchman',
+    '--watchAll',
+  ]);
+  const results = extractSummaries(stderr);
 
   // contains ansi characters, should not use `wrap`
-  // We're interested in line 7-13 where there are "pattern" printed
-  expect(stdout.split('\n').slice(7, 13).join('\n')).toMatchSnapshot();
+  expect(stdout).toMatchSnapshot();
   expect(results).toHaveLength(2);
   results.forEach(({rest, summary}) => {
     expect(wrap(rest)).toMatchSnapshot('test results');

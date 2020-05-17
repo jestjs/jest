@@ -44,8 +44,13 @@ test('can press "u" to update snapshots', () => {
   const input = [{keys: ['u']}, {keys: ['q']}];
   setupFiles(input);
 
-  const {exitCode, stdout} = runJest(DIR, ['--no-watchman', '--watchAll']);
-  const results = extractSummaries(stdout);
+  // --useStderr to reliably split the run report and watch mode output
+  const {exitCode, stderr} = runJest(DIR, [
+    '--useStderr',
+    '--no-watchman',
+    '--watchAll',
+  ]);
+  const results = extractSummaries(stderr);
   expect(results).toHaveLength(2);
   results.forEach(({rest, summary}) => {
     expect(wrap(rest)).toMatchSnapshot('test results');
