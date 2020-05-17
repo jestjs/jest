@@ -40,8 +40,8 @@ describe('Dynamic test filtering', () => {
     ]);
 
     expect(result.exitCode).toBe(1);
-    expect(result.stdout).toContain('did not return a valid test list');
-    expect(result.stdout).toContain('my-clowny-filter');
+    expect(result.stderr).toContain('did not return a valid test list');
+    expect(result.stderr).toContain('my-clowny-filter');
   });
 
   it('will call setup on filter before filtering', () => {
@@ -57,7 +57,7 @@ describe('Dynamic test filtering', () => {
     ]);
 
     expect(result.exitCode).toBe(1);
-    expect(result.stdout).toContain('Error: My broken filter error.');
+    expect(result.stderr).toContain('Error: My broken filter error.');
   });
 
   it('will return no results when setup hook throws', () => {
@@ -66,6 +66,6 @@ describe('Dynamic test filtering', () => {
     ]);
 
     expect(result.exitCode).toBe(1);
-    expect(result.stdout).toContain('Error: My broken setup filter error.');
+    expect(result.stderr).toContain('Error: My broken setup filter error.');
   });
 });
