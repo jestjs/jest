@@ -24,7 +24,7 @@ test('', () => {
    `,
   });
   const {stdout, stderr, exitCode} = runJest(DIR);
-  expect(stdout).toBe('');
-  expect(stderr).toMatch(/(Failed|thrown): null/);
+  expect(stderr).toBe('');
+  expect(stdout).toMatch(/(Failed|thrown): null/);
   expect(exitCode).toBe(1);
 });

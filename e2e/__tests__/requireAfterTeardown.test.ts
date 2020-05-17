@@ -11,10 +11,10 @@ import runJest from '../runJest';
 test('prints useful error for requires after test is done', () => {
   const {stderr} = runJest('require-after-teardown');
 
-  const interestingLines = stderr.split('\n').slice(9, 18).join('\n');
+  const interestingLines = stderr.split('\n').slice(1, 10).join('\n');
 
   expect(wrap(interestingLines)).toMatchSnapshot();
-  expect(stderr.split('\n')[19]).toMatch(
+  expect(stderr.split('\n')[11]).toMatch(
     new RegExp('(__tests__/lateRequire.test.js:11:20)'),
   );
 });

@@ -25,8 +25,8 @@ test('runs tests by exact path', () => {
 
   // Passing an exact path executes only the given test.
   const run1 = runJest(DIR, ['--runTestsByPath', '__tests__/t1.test.js']);
-  expect(run1.stderr).toMatch('PASS __tests__/t1.test.js');
-  expect(run1.stderr).not.toMatch('PASS __tests__/t2.test.js');
+  expect(run1.stdout).toMatch('PASS __tests__/t1.test.js');
+  expect(run1.stdout).not.toMatch('PASS __tests__/t2.test.js');
 
   // When running with thte flag and a pattern, no test is found.
   const run2 = runJest(DIR, ['--runTestsByPath', '__tests__/t']);
@@ -34,6 +34,6 @@ test('runs tests by exact path', () => {
 
   // When ran without the flag and a pattern, both tests are found.
   const run3 = runJest(DIR, ['__tests__/t']);
-  expect(run3.stderr).toMatch('PASS __tests__/t1.test.js');
-  expect(run3.stderr).toMatch('PASS __tests__/t2.test.js');
+  expect(run3.stdout).toMatch('PASS __tests__/t1.test.js');
+  expect(run3.stdout).toMatch('PASS __tests__/t2.test.js');
 });
