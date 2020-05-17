@@ -8,7 +8,7 @@
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {extractSummary, run} from '../Utils';
+import {extractSortedSummary, extractSummary, run} from '../Utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../coverage-report');
@@ -23,7 +23,7 @@ test('outputs coverage report', () => {
   });
   const coverageDir = path.join(DIR, 'coverage');
 
-  const {summary, rest} = extractSummary(stdout);
+  const {summary, rest} = extractSortedSummary(stdout);
 
   // - the `setup.js` file is ignored and should not be in the coverage report.
   // - `SumDependency.js` is mocked and the real module is never required but
@@ -48,7 +48,7 @@ test('collects coverage only from specified file', () => {
     ],
     {stripAnsi: true},
   );
-  const {summary, rest} = extractSummary(stdout);
+  const {summary, rest} = extractSortedSummary(stdout);
 
   // Coverage report should only have `file.js` coverage info
   expect(wrap(summary)).toMatchSnapshot();
@@ -68,7 +68,7 @@ test('collects coverage only from multiple specified files', () => {
     ],
     {stripAnsi: true},
   );
-  const {summary, rest} = extractSummary(stdout);
+  const {summary, rest} = extractSortedSummary(stdout);
 
   expect(wrap(summary)).toMatchSnapshot();
   expect(wrap(rest)).toMatchSnapshot();
@@ -87,7 +87,7 @@ test('collects coverage only from specified files avoiding dependencies', () => 
     ],
     {stripAnsi: true},
   );
-  const {summary, rest} = extractSummary(stdout);
+  const {summary, rest} = extractSortedSummary(stdout);
 
   // Coverage report should only have `sum.js` coverage info
   expect(wrap(summary)).toMatchSnapshot();
@@ -127,7 +127,7 @@ test('outputs coverage report when text is requested', () => {
   expect(exitCode).toBe(0);
   expect(stdout).toMatch(/Stmts | . Branch/);
 
-  const {summary, rest} = extractSummary(stdout);
+  const {summary, rest} = extractSortedSummary(stdout);
   expect(wrap(summary)).toMatchSnapshot();
   expect(wrap(rest)).toMatchSnapshot();
 });
@@ -138,7 +138,7 @@ test('outputs coverage report when text-summary is requested', () => {
     ['--no-cache', '--coverage', '--coverageReporters=text-summary'],
     {stripAnsi: true},
   );
-  const {summary, rest} = extractSummary(stdout);
+  const {summary, rest} = extractSortedSummary(stdout);
 
   expect(exitCode).toBe(0);
   expect(stdout).toMatch(/Coverage summary/);
@@ -157,7 +157,7 @@ test('outputs coverage report when text and text-summary is requested', () => {
     ],
     {stripAnsi: true},
   );
-  const {summary, rest} = extractSummary(stdout);
+  const {summary, rest} = extractSortedSummary(stdout);
 
   expect(exitCode).toBe(0);
   expect(stdout).toMatch(/Stmts | . Branch/);
@@ -172,7 +172,7 @@ test('does not output coverage report when html is requested', () => {
     ['--no-cache', '--coverage', '--coverageReporters=html'],
     {stripAnsi: true},
   );
-  const {summary, rest} = extractSummary(stdout);
+  const {summary, rest} = extractSortedSummary(stdout);
 
   expect(exitCode).toBe(0);
   expect(wrap(summary)).toMatchSnapshot();
@@ -198,7 +198,7 @@ test('collects coverage from duplicate files avoiding shared cache', () => {
   // Run for the second time
   const {stdout, exitCode} = runJest(DIR, args, {stripAnsi: true});
 
-  const {summary, rest} = extractSummary(stdout);
+  const {summary, rest} = extractSortedSummary(stdout);
 
   expect(wrap(summary)).toMatchSnapshot();
   expect(wrap(rest)).toMatchSnapshot();
@@ -211,7 +211,7 @@ test('generates coverage when using the testRegex config param ', () => {
     '--testRegex=__tests__',
     '--coverage',
   ]);
-  const {summary, rest} = extractSummary(stdout);
+  const {summary, rest} = extractSortedSummary(stdout);
 
   expect(wrap(summary)).toMatchSnapshot();
   expect(wrap(rest)).toMatchSnapshot();
