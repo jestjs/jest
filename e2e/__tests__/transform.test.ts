@@ -12,7 +12,6 @@ import {
   cleanup,
   copyDir,
   createEmptyPackage,
-  extractSortedSummary,
   extractSummary,
   linkJestPackage,
   run,
