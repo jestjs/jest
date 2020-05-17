@@ -1,7 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Correct BeforeAll run ensures the BeforeAll of ignored suite is not run 1`] = `
-  console.log
+Test Suites: 1 passed, 1 total
+Tests:       1 skipped, 1 passed, 2 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites with tests matching "test_1".
+`;
+
+exports[`Correct BeforeAll run ensures the BeforeAll of ignored suite is not run 2`] = `
+console.log
     beforeAll 1
 
       at log (__tests__/beforeAllFiltered.test.js:10:13)
@@ -26,4 +34,9 @@ exports[`Correct BeforeAll run ensures the BeforeAll of ignored suite is not run
 
       at log (__tests__/beforeAllFiltered.test.js:19:13)
 
+PASS __tests__/beforeAllFiltered.test.js
+  test_1
+    ✓ foo
+  test_2
+    ○ skipped foo
 `;

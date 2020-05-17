@@ -7,6 +7,7 @@
 
 import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest from '../runJest';
+import {extractSummary} from '../Utils';
 
 describe('Correct BeforeAll run', () => {
   it('ensures the BeforeAll of ignored suite is not run', () => {
@@ -15,6 +16,9 @@ describe('Correct BeforeAll run', () => {
     // for some reason Circus does not have the `Object` part
     stdout = stdout.replace(/at Object.log \(/g, 'at log (');
 
-    expect(wrap(stdout)).toMatchSnapshot();
+    const {summary, rest} = extractSummary(stdout);
+
+    expect(wrap(summary)).toMatchSnapshot();
+    expect(wrap(rest)).toMatchSnapshot();
   });
 });
