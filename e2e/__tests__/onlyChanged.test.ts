@@ -47,7 +47,6 @@ test('run only changed files', () => {
     'file1.js': 'module.exports = {}',
     'package.json': '{}',
   });
-  let stderr;
   let stdout;
 
   ({stdout} = runJest(DIR, ['-o']));
@@ -60,8 +59,8 @@ test('run only changed files', () => {
   ({stdout} = runJest(DIR, ['-o']));
   expect(stdout).toMatch('No tests found related to files');
 
-  ({stderr} = runJest(DIR, ['-o', '--lastCommit']));
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file1.test.js/);
+  ({stdout} = runJest(DIR, ['-o', '--lastCommit']));
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file1.test.js/);
 
   writeFiles(DIR, {
     '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
@@ -70,26 +69,26 @@ test('run only changed files', () => {
     'file3.js': `require('./file2')`,
   });
 
-  ({stderr} = runJest(DIR, ['-o']));
+  ({stdout} = runJest(DIR, ['-o']));
 
-  expect(stderr).not.toMatch(/PASS __tests__(\/|\\)file1.test.js/);
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
+  expect(stdout).not.toMatch(/PASS __tests__(\/|\\)file1.test.js/);
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "second"`, DIR);
 
-  ({stderr} = runJest(DIR, ['-o']));
+  ({stdout} = runJest(DIR, ['-o']));
   expect(stdout).toMatch('No tests found related to files');
 
   writeFiles(DIR, {
     'file2.js': 'module.exports = {modified: true}',
   });
 
-  ({stderr} = runJest(DIR, ['-o']));
-  expect(stderr).not.toMatch(/PASS __tests__(\/|\\)file1.test.j/);
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
+  ({stdout} = runJest(DIR, ['-o']));
+  expect(stdout).not.toMatch(/PASS __tests__(\/|\\)file1.test.j/);
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 });
 
 test('report test coverage for only changed files', () => {
@@ -186,8 +185,8 @@ test('do not pickup non-tested files when reporting coverage on only changed fil
     'package.json': JSON.stringify({name: 'new name'}),
   });
 
-  const {stderr, stdout, exitCode} = runJest(DIR, ['-o', '--coverage']);
-  expect(stderr).toEqual(
+  const {stdout, exitCode} = runJest(DIR, ['-o', '--coverage']);
+  expect(stdout).toEqual(
     expect.not.stringContaining('Failed to collect coverage from'),
   );
   expect(stdout).toEqual(expect.not.stringContaining('package.json'));
@@ -213,8 +212,8 @@ test('collect test coverage when using onlyChanged', () => {
     'b.test.js': 'it("passes", () => {expect(1).toBe(1)})',
   });
 
-  const {stderr, exitCode} = runJest(DIR, ['-o', '--coverage']);
-  expect(stderr).toEqual(
+  const {stdout, exitCode} = runJest(DIR, ['-o', '--coverage']);
+  expect(stdout).toEqual(
     expect.not.stringContaining('Failed to collect coverage from'),
   );
   expect(exitCode).toBe(0);
@@ -227,7 +226,6 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
     'file1.js': 'module.exports = {}',
     'package.json': JSON.stringify({jest: {onlyChanged: true}}),
   });
-  let stderr;
   let stdout;
 
   ({stdout} = runJest(DIR));
@@ -237,14 +235,14 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
-  ({stdout, stderr} = runJest(DIR));
+  ({stdout, stdout} = runJest(DIR));
   expect(stdout).toMatch('No tests found related to files');
-  expect(stderr).not.toMatch(
+  expect(stdout).not.toMatch(
     'Unknown option "onlyChanged" with value true was found',
   );
 
-  ({stderr} = runJest(DIR, ['--lastCommit']));
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file1.test.js/);
+  ({stdout} = runJest(DIR, ['--lastCommit']));
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file1.test.js/);
 
   writeFiles(DIR, {
     '__tests__/file2.test.js': `require('../file2'); test('file2', () => {});`,
@@ -253,36 +251,36 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
     'file3.js': `require('./file2')`,
   });
 
-  ({stderr} = runJest(DIR));
+  ({stdout} = runJest(DIR));
 
-  expect(stderr).not.toMatch(/PASS __tests__(\/|\\)file1.test.js/);
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
+  expect(stdout).not.toMatch(/PASS __tests__(\/|\\)file1.test.js/);
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "second"`, DIR);
 
-  ({stderr} = runJest(DIR));
+  ({stdout} = runJest(DIR));
   expect(stdout).toMatch('No tests found related to files');
 
-  ({stderr, stdout} = runJest(DIR, ['file2.test.js']));
+  ({stdout, stdout} = runJest(DIR, ['file2.test.js']));
   expect(stdout).not.toMatch('No tests found related to files');
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
-  expect(stderr).toMatch('1 total');
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
+  expect(stdout).toMatch('1 total');
 
   writeFiles(DIR, {
     'file2.js': 'module.exports = {modified: true}',
   });
 
-  ({stderr} = runJest(DIR));
-  expect(stderr).not.toMatch(/PASS __tests__(\/|\\)file1.test.js/);
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
+  ({stdout} = runJest(DIR));
+  expect(stdout).not.toMatch(/PASS __tests__(\/|\\)file1.test.js/);
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 
-  ({stderr} = runJest(DIR, ['--all']));
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file1.test.js/);
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
+  ({stdout} = runJest(DIR, ['--all']));
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file1.test.js/);
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 });
 
 testIfHg('gets changed files for hg', async () => {
@@ -305,9 +303,8 @@ testIfHg('gets changed files for hg', async () => {
   run(`${HG} commit -m "test"`, DIR);
 
   let stdout;
-  let stderr;
 
-  ({stdout, stderr} = runJest(DIR, ['-o']));
+  ({stdout, stdout} = runJest(DIR, ['-o']));
   expect(stdout).toMatch('No tests found related to files changed');
 
   writeFiles(DIR, {
@@ -316,8 +313,8 @@ testIfHg('gets changed files for hg', async () => {
     'file3.js': `require('./file2')`,
   });
 
-  ({stdout, stderr} = runJest(DIR, ['-o']));
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
+  ({stdout, stdout} = runJest(DIR, ['-o']));
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
 
   run(`${HG} add .`, DIR);
   run(`${HG} commit -m "test2"`, DIR);
@@ -326,13 +323,13 @@ testIfHg('gets changed files for hg', async () => {
     '__tests__/file3.test.js': `require('../file3'); test('file3', () => {});`,
   });
 
-  ({stdout, stderr} = runJest(DIR, ['-o']));
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
-  expect(stderr).not.toMatch(/PASS __tests__(\/|\\)file2.test.js/);
+  ({stdout, stdout} = runJest(DIR, ['-o']));
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
+  expect(stdout).not.toMatch(/PASS __tests__(\/|\\)file2.test.js/);
 
-  ({stdout, stderr} = runJest(DIR, ['-o', '--changedFilesWithAncestor']));
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
+  ({stdout, stdout} = runJest(DIR, ['-o', '--changedFilesWithAncestor']));
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 });
 
 test('path on Windows is case-insensitive', () => {
@@ -355,7 +352,8 @@ test('path on Windows is case-insensitive', () => {
   run(`${GIT} add .`, modifiedDIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, modifiedDIR);
 
-  const {stdout} = runJest(incorrectModifiedDIR, ['-o']);
+  let stdout;
+  ({stdout} = runJest(incorrectModifiedDIR, ['-o']));
   expect(stdout).toMatch('No tests found related to files');
 
   writeFiles(modifiedDIR, {
@@ -365,9 +363,9 @@ test('path on Windows is case-insensitive', () => {
     'file3.js': `require('./file2')`,
   });
 
-  const {stderr} = runJest(incorrectModifiedDIR, ['-o']);
+  ({stdout} = runJest(incorrectModifiedDIR, ['-o']));
 
-  expect(stderr).not.toMatch(/PASS __tests__(\/|\\)file1.test.js/);
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
-  expect(stderr).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
+  expect(stdout).not.toMatch(/PASS __tests__(\/|\\)file1.test.js/);
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file2.test.js/);
+  expect(stdout).toMatch(/PASS __tests__(\/|\\)file3.test.js/);
 });
