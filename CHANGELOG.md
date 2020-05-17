@@ -10,7 +10,7 @@
 - `[jest-jasmine2]` Stop adding `:` after an error that has no message ([#9990](https://github.com/facebook/jest/pull/9990))
 - `[jest-diff]` Control no diff message color with `commonColor` in diff options ([#9997](https://github.com/facebook/jest/pull/9997))
 - `[jest-snapshot]` Fix TypeScript compilation ([#10008](https://github.com/facebook/jest/pull/10008))
-- `[jest-reporters]` Make reporters respect `useStderr` option and write to `stdout` by default ([#6583](https://github.com/facebook/jest/pull/6583))
+- `[jest-reporters]` Make reporters respect `useStderr` option and write to `stdout` by default ([#10054](https://github.com/facebook/jest/pull/10054))
 
 ### Chore & Maintenance
 
