@@ -27,8 +27,8 @@ const testFiles = {
   }`,
 };
 
-const verifyNumPassed = (stderr: string) => {
-  const numberOfTestsPassed = (stderr.match(/\bPASS\b/g) || []).length;
+const verifyNumPassed = (stdout: string) => {
+  const numberOfTestsPassed = (stdout.match(/\bPASS\b/g) || []).length;
   // assuming -1 because of package.json, but +1 because of the individual test file
   expect(numberOfTestsPassed).toBe(Object.keys(testFiles).length);
 };
@@ -42,10 +42,10 @@ test('prints a warning if a worker is force exited', () => {
       });
     `,
   });
-  const {exitCode, stderr} = runJest(DIR, ['--maxWorkers=2']);
+  const {exitCode, stdout, stderr} = runJest(DIR, ['--maxWorkers=2']);
 
   expect(exitCode).toBe(0);
-  verifyNumPassed(stderr);
+  verifyNumPassed(stdout);
   expect(stderr).toContain('A worker process has failed to exit gracefully');
 });
 
@@ -59,12 +59,12 @@ test('force exits a worker that fails to exit gracefully', async () => {
       });
     `,
   });
-  const {exitCode, stderr} = runJest(DIR, ['--maxWorkers=2']);
+  const {exitCode, stdout} = runJest(DIR, ['--maxWorkers=2']);
 
   expect(exitCode).toBe(0);
-  verifyNumPassed(stderr);
+  verifyNumPassed(stdout);
 
-  const execRes = /pid: \d+/.exec(stderr);
+  const execRes = /pid: \d+/.exec(stdout);
 
   expect(execRes).toHaveLength(1);
 
