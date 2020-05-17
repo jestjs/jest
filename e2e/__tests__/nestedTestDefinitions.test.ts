@@ -10,9 +10,9 @@ import {isJestCircusRun} from '@jest/test-utils';
 import runJest from '../runJest';
 import {extractSummary} from '../Utils';
 
-const cleanupRunnerStack = (stderr: string) =>
+const cleanupRunnerStack = (stdout: string) =>
   wrap(
-    stderr
+    stdout
       .split('\n')
       .filter(
         line =>
