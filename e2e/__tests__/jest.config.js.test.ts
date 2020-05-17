@@ -41,18 +41,17 @@ test('traverses directory tree up until it finds jest.config', () => {
     'some/nested/directory/file.js': '// nothing special',
   });
 
-  const {exitCode, stdout} = runJest(
+  const {exitCode, stdout, stderr} = runJest(
     path.join(DIR, 'some', 'nested', 'directory'),
     ['-w=1', '--ci=false'],
     {skipPkgJsonCheck: true},
   );
-
   // Snapshot the console.loged `process.cwd()` and make sure it stays the same
-  expect(
-    wrap(stdout.replace(/^\W+(.*)e2e/gm, '<<REPLACED>>')),
-  ).toMatchSnapshot();
+  const pathCleanedStdout = stdout.replace(/^\W+(.*)e2e/gm, '<<REPLACED>>');
 
-  const {rest, summary} = extractSummary(stdout);
+  expect(wrap(stderr)).toMatchSnapshot();
+
+  const {rest, summary} = extractSummary(pathCleanedStdout);
   expect(exitCode).toBe(0);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
