@@ -41,15 +41,19 @@ test('exits with 1 if coverage threshold is not met', () => {
     'package.json': JSON.stringify(pkgJson, null, 2),
   });
 
-  const {stdout, exitCode} = runJest(DIR, ['--coverage', '--ci=false'], {
-    stripAnsi: true,
-  });
+  const {stdout, stderr, exitCode} = runJest(
+    DIR,
+    ['--coverage', '--ci=false'],
+    {
+      stripAnsi: true,
+    },
+  );
   const {rest, summary} = extractSummary(stdout);
 
   expect(exitCode).toBe(1);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
-  expect(wrap(stdout)).toMatchSnapshot('stdout');
+  expect(wrap(stderr)).toMatchSnapshot('stderr');
 });
 
 test('exits with 1 if path threshold group is not found in coverage data', () => {
@@ -78,15 +82,19 @@ test('exits with 1 if path threshold group is not found in coverage data', () =>
     'package.json': JSON.stringify(pkgJson, null, 2),
   });
 
-  const {stdout, exitCode} = runJest(DIR, ['--coverage', '--ci=false'], {
-    stripAnsi: true,
-  });
+  const {stdout, stderr, exitCode} = runJest(
+    DIR,
+    ['--coverage', '--ci=false'],
+    {
+      stripAnsi: true,
+    },
+  );
   const {rest, summary} = extractSummary(stdout);
 
   expect(exitCode).toBe(1);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
-  expect(wrap(stdout)).toMatchSnapshot('stdout');
+  expect(wrap(stderr)).toMatchSnapshot('stderr');
 });
 
 test('exits with 0 if global threshold group is not found in coverage data', () => {
@@ -118,12 +126,20 @@ test('exits with 0 if global threshold group is not found in coverage data', () 
     'package.json': JSON.stringify(pkgJson, null, 2),
   });
 
-  const {stdout, exitCode} = runJest(DIR, ['--coverage', '--ci=false'], {
-    stripAnsi: true,
-  });
+  const {stdout, stderr, exitCode} = runJest(
+    DIR,
+    ['--coverage', '--ci=false'],
+    {
+      stripAnsi: true,
+    },
+  );
+
+  const {rest, summary} = extractSummary(stdout);
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot('stdout');
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
+  expect(wrap(stderr)).toMatchSnapshot('stderr');
 });
 
 test('excludes tests matched by path threshold groups from global group', () => {
@@ -160,15 +176,19 @@ test('excludes tests matched by path threshold groups from global group', () => 
     'package.json': JSON.stringify(pkgJson, null, 2),
   });
 
-  const {stdout, exitCode} = runJest(DIR, ['--coverage', '--ci=false'], {
-    stripAnsi: true,
-  });
+  const {stderr, stdout, exitCode} = runJest(
+    DIR,
+    ['--coverage', '--ci=false'],
+    {
+      stripAnsi: true,
+    },
+  );
   const {rest, summary} = extractSummary(stdout);
 
   expect(exitCode).toBe(1);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
-  expect(wrap(stdout)).toMatchSnapshot('stdout');
+  expect(wrap(stderr)).toMatchSnapshot('stderr');
 });
 
 test('file is matched by all path and glob threshold groups', () => {
@@ -203,9 +223,13 @@ test('file is matched by all path and glob threshold groups', () => {
     'package.json': JSON.stringify(pkgJson, null, 2),
   });
 
-  const {stdout, exitCode} = runJest(DIR, ['--coverage', '--ci=false'], {
-    stripAnsi: true,
-  });
+  const {stderr, stdout, exitCode} = runJest(
+    DIR,
+    ['--coverage', '--ci=false'],
+    {
+      stripAnsi: true,
+    },
+  );
   const {rest, summary} = extractSummary(
     /* This test also runs on windows and when the glob fails it outputs
     the system specific absolute path to the test file. */
@@ -218,5 +242,5 @@ test('file is matched by all path and glob threshold groups', () => {
   expect(exitCode).toBe(1);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
-  expect(wrap(stdout)).toMatchSnapshot('stdout');
+  expect(wrap(stderr)).toMatchSnapshot('stderr');
 });
