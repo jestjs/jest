@@ -12,6 +12,7 @@ import {
   cleanup,
   copyDir,
   createEmptyPackage,
+  extractSortedSummary,
   extractSummary,
   linkJestPackage,
   run,
@@ -40,7 +41,7 @@ describe('babel-jest', () => {
     expect(stdout).not.toMatch('notCovered.js');
     expect(stdout).not.toMatch('excludedFromCoverage.js');
     // coverage result should not change
-    const {summary, rest} = extractSummary(stdout);
+    const {summary, rest} = extractSortedSummary(stdout);
     expect(wrap(summary)).toMatchSnapshot();
     expect(wrap(rest)).toMatchSnapshot();
   });
@@ -128,7 +129,7 @@ describe('custom transformer', () => {
     });
     // coverage should be empty because there's no real instrumentation
 
-    const {summary, rest} = extractSummary(stdout);
+    const {summary, rest} = extractSortedSummary(stdout);
     expect(wrap(summary)).toMatchSnapshot();
     expect(wrap(rest)).toMatchSnapshot();
 
@@ -189,7 +190,7 @@ describe('transformer-config', () => {
     expect(stdout).not.toMatch('NotCovered.js');
     expect(stdout).not.toMatch('ExcludedFromCoverage.js');
     // coverage result should not change
-    const {summary, rest} = extractSummary(stdout);
+    const {summary, rest} = extractSortedSummary(stdout);
     expect(wrap(summary)).toMatchSnapshot();
     expect(wrap(rest)).toMatchSnapshot();
   });
