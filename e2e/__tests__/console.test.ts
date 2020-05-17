@@ -20,17 +20,20 @@ test('console printing', () => {
 });
 
 test('console printing with --verbose', () => {
-  const {stdout, exitCode} = runJest('console', ['--verbose', '--no-cache']);
+  const {stderr, stdout, exitCode} = runJest('console', [
+    '--verbose',
+    '--no-cache',
+  ]);
   const {summary, rest} = extractSummary(stdout);
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
+  expect(wrap(stderr)).toMatchSnapshot();
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
 });
 
 test('does not print to console with --silent', () => {
-  const {stdout, exitCode} = runJest('console', [
+  const {stderr, stdout, exitCode} = runJest('console', [
     // Need to pass --config because console test specifies `verbose: false`
     '--config=' +
       JSON.stringify({
@@ -42,18 +45,18 @@ test('does not print to console with --silent', () => {
   const {summary, rest} = extractSummary(stdout);
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
+  expect(wrap(stderr)).toMatchSnapshot();
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
 });
 
 // issue: https://github.com/facebook/jest/issues/5223
 test('the jsdom console is the same as the test console', () => {
-  const {stdout, exitCode} = runJest('console-jsdom');
+  const {stderr, stdout, exitCode} = runJest('console-jsdom');
   const {summary, rest} = extractSummary(stdout);
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
+  expect(wrap(stderr)).toMatchSnapshot();
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
 });
@@ -61,11 +64,11 @@ test('the jsdom console is the same as the test console', () => {
 test('does not error out when using winston', () => {
   const dir = path.resolve(__dirname, '../console-winston');
   run('yarn', dir);
-  const {stdout, exitCode} = runJest(dir);
+  const {stderr, stdout, exitCode} = runJest(dir);
   const {summary, rest} = extractSummary(stdout);
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
+  expect(wrap(stderr)).toMatchSnapshot();
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
 });
