@@ -1,11 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`prints console.logs when run with forceExit 1`] = `
+console.log
+    Hey
+
+      at Object.log (__tests__/a-banana.js:1:30)
+
 PASS __tests__/a-banana.js
   ✓ banana
-
-
-Force exiting Jest: Have you considered using \`--detectOpenHandles\` to detect async operations that kept running after all tests finished?
 `;
 
 exports[`prints console.logs when run with forceExit 2`] = `
@@ -16,10 +18,4 @@ Time:        <<REPLACED>>
 Ran all test suites.
 `;
 
-exports[`prints console.logs when run with forceExit 3`] = `
-  console.log
-    Hey
-
-      at Object.log (__tests__/a-banana.js:1:30)
-
-`;
+exports[`prints console.logs when run with forceExit 3`] = `Force exiting Jest: Have you considered using \`--detectOpenHandles\` to detect async operations that kept running after all tests finished?`;
