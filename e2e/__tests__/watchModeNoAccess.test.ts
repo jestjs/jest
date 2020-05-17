@@ -51,13 +51,13 @@ test('does not re-run tests when only access time is modified', async () => {
   testRun = runContinuous(DIR, ['--watchAll', '--no-watchman']);
 
   const testCompletedRE = /Ran all test suites./g;
-  const numberOfTestRuns = (stderr: string): number => {
-    const matches = stderr.match(testCompletedRE);
+  const numberOfTestRuns = (stdout: string): number => {
+    const matches = stdout.match(testCompletedRE);
     return matches ? matches.length : 0;
   };
 
   // First run
-  await testRun.waitUntil(({stderr}) => numberOfTestRuns(stderr) === 1);
+  await testRun.waitUntil(({stdout}) => numberOfTestRuns(stdout) === 1);
 
   // Should re-run the test
   const modulePath = path.join(DIR, 'foo.js');
@@ -68,7 +68,7 @@ test('does not re-run tests when only access time is modified', async () => {
     getOneSecondAfterMs(stat.mtimeMs),
   );
 
-  await testRun.waitUntil(({stderr}) => numberOfTestRuns(stderr) === 2);
+  await testRun.waitUntil(({stdout}) => numberOfTestRuns(stdout) === 2);
 
   // Should NOT re-run the test
   const fakeATime = 1541723621;
@@ -78,9 +78,9 @@ test('does not re-run tests when only access time is modified', async () => {
     getOneSecondAfterMs(stat.mtimeMs),
   );
   await sleep(3000);
-  expect(numberOfTestRuns(testRun.getCurrentOutput().stderr)).toBe(2);
+  expect(numberOfTestRuns(testRun.getCurrentOutput().stdout)).toBe(2);
 
   // Should re-run the test
   fs.writeFileSync(modulePath, 'module.exports = 1;', {encoding: 'utf-8'});
-  await testRun.waitUntil(({stderr}) => numberOfTestRuns(stderr) === 3);
+  await testRun.waitUntil(({stdout}) => numberOfTestRuns(stdout) === 3);
 });
