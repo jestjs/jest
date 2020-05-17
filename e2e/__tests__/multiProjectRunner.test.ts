@@ -199,9 +199,9 @@ test.each([{projectPath: 'packages/somepackage'}, {projectPath: 'packages/*'}])(
     });
 
     const {stdout, stderr, exitCode} = runJest(DIR, ['--no-watchman']);
-    expect(stderr).toContain('PASS somepackage packages/somepackage/test.js');
-    expect(stderr).toContain('Test Suites: 1 passed, 1 total');
-    expect(stdout).toEqual('');
+    expect(stdout).toContain('PASS somepackage packages/somepackage/test.js');
+    expect(stdout).toContain('Test Suites: 1 passed, 1 total');
+    expect(stderr).toEqual('');
     expect(exitCode).toEqual(0);
   },
 );
@@ -249,9 +249,9 @@ test.each([
     });
 
     const {stdout, stderr, exitCode} = runJest(DIR, ['--no-watchman']);
-    expect(stderr).toContain(`PASS ${displayName} ${projectPath}/test.js`);
-    expect(stderr).toContain('Test Suites: 1 passed, 1 total');
-    expect(stdout).toEqual('');
+    expect(stdout).toContain(`PASS ${displayName} ${projectPath}/test.js`);
+    expect(stdout).toContain('Test Suites: 1 passed, 1 total');
+    expect(stderr).toEqual('');
     expect(exitCode).toEqual(0);
   },
 );
@@ -281,11 +281,11 @@ test('projects can be workspaces with non-JS/JSON files', () => {
 
   const {exitCode, stdout, stderr} = runJest(DIR, ['--no-watchman']);
 
-  expect(stderr).toContain('Test Suites: 2 passed, 2 total');
-  expect(stderr).toContain('PASS packages/project1/__tests__/file1.test.js');
-  expect(stderr).toContain('PASS packages/project2/__tests__/file2.test.js');
-  expect(stderr).toContain('Ran all test suites in 2 projects.');
-  expect(stdout).toEqual('');
+  expect(stdout).toContain('Test Suites: 2 passed, 2 total');
+  expect(stdout).toContain('PASS packages/project1/__tests__/file1.test.js');
+  expect(stdout).toContain('PASS packages/project2/__tests__/file2.test.js');
+  expect(stdout).toContain('Ran all test suites in 2 projects.');
+  expect(stderr).toEqual('');
   expect(exitCode).toEqual(0);
 });
 
@@ -307,11 +307,11 @@ test('objects in project configuration', () => {
   });
 
   const {stdout, stderr, exitCode} = runJest(DIR, ['--no-watchman']);
-  expect(stderr).toContain('Test Suites: 2 passed, 2 total');
-  expect(stderr).toContain('PASS __tests__/file1.test.js');
-  expect(stderr).toContain('PASS __tests__/file2.test.js');
-  expect(stderr).toContain('Ran all test suites in 2 projects.');
-  expect(stdout).toEqual('');
+  expect(stdout).toContain('Test Suites: 2 passed, 2 total');
+  expect(stdout).toContain('PASS __tests__/file1.test.js');
+  expect(stdout).toContain('PASS __tests__/file2.test.js');
+  expect(stdout).toContain('Ran all test suites in 2 projects.');
+  expect(stderr).toEqual('');
   expect(exitCode).toEqual(0);
 });
 
@@ -329,9 +329,9 @@ test('allows a single project', () => {
   });
 
   const {stdout, stderr, exitCode} = runJest(DIR, ['--no-watchman']);
-  expect(stderr).toContain('PASS __tests__/file1.test.js');
-  expect(stderr).toContain('Test Suites: 1 passed, 1 total');
-  expect(stdout).toEqual('');
+  expect(stdout).toContain('PASS __tests__/file1.test.js');
+  expect(stdout).toContain('Test Suites: 1 passed, 1 total');
+  expect(stderr).toEqual('');
   expect(exitCode).toEqual(0);
 });
 
@@ -366,12 +366,13 @@ test('resolves projects and their <rootDir> properly', () => {
     'project2/project2_setup.js': 'global.project2 = true;',
   });
 
+  let stdout;
   let stderr;
-  ({stderr} = runJest(DIR, ['--no-watchman']));
+  ({stdout} = runJest(DIR, ['--no-watchman']));
 
-  expect(stderr).toMatch('Ran all test suites in 2 projects.');
-  expect(stderr).toMatch('PASS project1/__tests__/test.test.js');
-  expect(stderr).toMatch('PASS project2/__tests__/test.test.js');
+  expect(stdout).toMatch('Ran all test suites in 2 projects.');
+  expect(stdout).toMatch('PASS project1/__tests__/test.test.js');
+  expect(stdout).toMatch('PASS project2/__tests__/test.test.js');
 
   // Use globs
   writeFiles(DIR, {
@@ -384,10 +385,10 @@ test('resolves projects and their <rootDir> properly', () => {
     }),
   });
 
-  ({stderr} = runJest(DIR, ['--no-watchman']));
-  expect(stderr).toMatch('Ran all test suites in 2 projects.');
-  expect(stderr).toMatch('PASS project1/__tests__/test.test.js');
-  expect(stderr).toMatch('PASS project2/__tests__/test.test.js');
+  ({stdout} = runJest(DIR, ['--no-watchman']));
+  expect(stdout).toMatch('Ran all test suites in 2 projects.');
+  expect(stdout).toMatch('PASS project1/__tests__/test.test.js');
+  expect(stdout).toMatch('PASS project2/__tests__/test.test.js');
 
   // Include two projects that will resolve to the same config
   writeFiles(DIR, {
@@ -470,7 +471,7 @@ test('Does transform files with the corresponding project transformer', () => {
     `,
   });
 
-  const {stderr} = runJest(DIR, [
+  const {stdout} = runJest(DIR, [
     '--no-watchman',
     '-i',
     '--projects',
@@ -478,9 +479,9 @@ test('Does transform files with the corresponding project transformer', () => {
     'project2',
   ]);
 
-  expect(stderr).toMatch('Ran all test suites in 2 projects.');
-  expect(stderr).toMatch('PASS project1/__tests__/project1.test.js');
-  expect(stderr).toMatch('PASS project2/__tests__/project2.test.js');
+  expect(stdout).toMatch('Ran all test suites in 2 projects.');
+  expect(stdout).toMatch('PASS project1/__tests__/project1.test.js');
+  expect(stdout).toMatch('PASS project2/__tests__/project2.test.js');
 });
 
 describe("doesn't bleed module file extensions resolution with multiple workers", () => {
@@ -521,7 +522,7 @@ describe("doesn't bleed module file extensions resolution with multiple workers"
     expect(name2).toHaveLength(32);
     expect(name1).not.toEqual(name2);
 
-    const {stderr} = runJest(DIR, [
+    const {stdout} = runJest(DIR, [
       '--no-watchman',
       '-w=2',
       '--projects',
@@ -529,9 +530,9 @@ describe("doesn't bleed module file extensions resolution with multiple workers"
       'project2',
     ]);
 
-    expect(stderr).toMatch('Ran all test suites in 2 projects.');
-    expect(stderr).toMatch('PASS project1/__tests__/project1.test.js');
-    expect(stderr).toMatch('PASS project2/__tests__/project2.test.js');
+    expect(stdout).toMatch('Ran all test suites in 2 projects.');
+    expect(stdout).toMatch('PASS project1/__tests__/project1.test.js');
+    expect(stdout).toMatch('PASS project2/__tests__/project2.test.js');
   });
 
   test('inline config files', () => {
@@ -564,10 +565,10 @@ describe("doesn't bleed module file extensions resolution with multiple workers"
     expect(name2).toHaveLength(32);
     expect(name1).not.toEqual(name2);
 
-    const {stderr} = runJest(DIR, ['--no-watchman', '-w=2']);
+    const {stdout} = runJest(DIR, ['--no-watchman', '-w=2']);
 
-    expect(stderr).toMatch('Ran all test suites in 2 projects.');
-    expect(stderr).toMatch('PASS project1/__tests__/project1.test.js');
-    expect(stderr).toMatch('PASS project2/__tests__/project2.test.js');
+    expect(stdout).toMatch('Ran all test suites in 2 projects.');
+    expect(stdout).toMatch('PASS project1/__tests__/project1.test.js');
+    expect(stdout).toMatch('PASS project2/__tests__/project2.test.js');
   });
 });
