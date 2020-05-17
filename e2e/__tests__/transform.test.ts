@@ -40,7 +40,9 @@ describe('babel-jest', () => {
     expect(stdout).not.toMatch('notCovered.js');
     expect(stdout).not.toMatch('excludedFromCoverage.js');
     // coverage result should not change
-    expect(wrap(stdout)).toMatchSnapshot();
+    const {summary, rest} = extractSummary(stdout);
+    expect(wrap(summary)).toMatchSnapshot();
+    expect(wrap(rest)).toMatchSnapshot();
   });
 });
 
@@ -49,9 +51,9 @@ describe('babel-jest ignored', () => {
 
   it('tells user to match ignored files', () => {
     // --no-cache because babel can cache stuff and result in false green
-    const {exitCode, stderr} = runJest(dir, ['--no-cache']);
+    const {exitCode, stdout} = runJest(dir, ['--no-cache']);
     expect(exitCode).toBe(1);
-    expect(wrap(extractSummary(stderr).rest)).toMatchSnapshot();
+    expect(wrap(extractSummary(stdout).rest)).toMatchSnapshot();
   });
 });
 
@@ -85,15 +87,16 @@ describe('no babel-jest', () => {
   });
 
   test('fails with syntax error on flow types', () => {
-    const {stderr} = runJest(tempDir, ['--no-cache', '--no-watchman']);
-    expect(stderr).toMatch(/FAIL.*failsWithSyntaxError/);
-    expect(stderr).toMatch('Unexpected token');
+    const {stdout} = runJest(tempDir, ['--no-cache', '--no-watchman']);
+    expect(stdout).toMatch(/FAIL.*failsWithSyntaxError/);
+    expect(stdout).toMatch('Unexpected token');
   });
 
   test('instrumentation with no babel-jest', () => {
+    // --useStderr because we don't want to save the error into snapshot (as it contains real file path)
     const {stdout} = runJest(
       tempDir,
-      ['--no-cache', '--coverage', '--no-watchman'],
+      ['--no-cache', '--coverage', '--no-watchman', '--useStderr'],
       {stripAnsi: true},
     );
     expect(stdout).toMatch('covered.js');
@@ -124,7 +127,11 @@ describe('custom transformer', () => {
       stripAnsi: true,
     });
     // coverage should be empty because there's no real instrumentation
-    expect(wrap(stdout)).toMatchSnapshot();
+
+    const {summary, rest} = extractSummary(stdout);
+    expect(wrap(summary)).toMatchSnapshot();
+    expect(wrap(rest)).toMatchSnapshot();
+
     expect(exitCode).toBe(0);
   });
 });
@@ -182,7 +189,9 @@ describe('transformer-config', () => {
     expect(stdout).not.toMatch('NotCovered.js');
     expect(stdout).not.toMatch('ExcludedFromCoverage.js');
     // coverage result should not change
-    expect(wrap(stdout)).toMatchSnapshot();
+    const {summary, rest} = extractSummary(stdout);
+    expect(wrap(summary)).toMatchSnapshot();
+    expect(wrap(rest)).toMatchSnapshot();
   });
 });
 
@@ -192,7 +201,8 @@ describe('transformer caching', () => {
 
   it('does not rerun transform within worker', () => {
     // --no-cache because babel can cache stuff and result in false green
-    const {stdout} = runJest(dir, ['--no-cache', '-w=2']);
+    // --useStderr because we are printing logged files in stdout
+    const {stdout} = runJest(dir, ['--no-cache', '-w=2', '--useStderr']);
 
     const loggedFiles = stdout.split('\n');
 
