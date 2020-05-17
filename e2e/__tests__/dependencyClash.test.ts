@@ -75,11 +75,11 @@ test('does not require project modules from inside node_modules', () => {
       };
     `,
   });
-  const {stderr, exitCode} = runJest(tempDir, ['--no-cache', '--no-watchman']);
+  const {stdout, exitCode} = runJest(tempDir, ['--no-cache', '--no-watchman']);
   // make sure there are no errors that lead to invariant.js (if we were to
   // require a wrong `invariant.js` we'd have a syntax error, because jest
   // internals wouldn't be able to parse flow annotations)
-  expect(stderr).not.toMatch('invariant');
-  expect(stderr).toMatch('PASS');
+  expect(stdout).not.toMatch('invariant');
+  expect(stdout).toMatch('PASS');
   expect(exitCode).toBe(0);
 });
