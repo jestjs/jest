@@ -188,7 +188,7 @@ describe('--findRelatedTests flag', () => {
     });
 
     let stdout;
-    let stderr;
+    const stderr;
     ({stdout} = runJest(DIR, ['--findRelatedTests', 'a.js', 'b.js'], {
       stripAnsi: true,
     }));
