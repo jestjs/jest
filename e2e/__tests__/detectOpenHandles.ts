@@ -22,8 +22,8 @@ try {
   }
 }
 
-function getTextAfterTest(stderr: string) {
-  return (stderr.split(/Ran all test suites(.*)\n/)[2] || '').trim();
+function getTextAfterTest(stdout: string) {
+  return (stdout.split(/Ran all test suites(.*)\n/)[2] || '').trim();
 }
 
 it('prints message about flag on slow tests', async () => {
@@ -33,8 +33,8 @@ it('prints message about flag on slow tests', async () => {
       'Jest did not exit one second after the test run has completed.',
     ),
   );
-  const {stderr} = await run.end();
-  const textAfterTest = getTextAfterTest(stderr);
+  const {stdout} = await run.end();
+  const textAfterTest = getTextAfterTest(stdout);
 
   expect(wrap(textAfterTest)).toMatchSnapshot();
 });
@@ -42,8 +42,8 @@ it('prints message about flag on slow tests', async () => {
 it('prints message about flag on forceExit', async () => {
   const run = runContinuous('detect-open-handles', ['outside', '--forceExit']);
   await run.waitUntil(({stderr}) => stderr.includes('Force exiting Jest'));
-  const {stderr} = await run.end();
-  const textAfterTest = getTextAfterTest(stderr);
+  const {stdout} = await run.end();
+  const textAfterTest = getTextAfterTest(stdout);
 
   expect(wrap(textAfterTest)).toMatchSnapshot();
 });
@@ -54,19 +54,19 @@ it('prints out info about open handlers', async () => {
     '--detectOpenHandles',
   ]);
   await run.waitUntil(({stderr}) => stderr.includes('Jest has detected'));
-  const {stderr} = await run.end();
-  const textAfterTest = getTextAfterTest(stderr);
+  const {stdout} = await run.end();
+  const textAfterTest = getTextAfterTest(stdout);
 
   expect(wrap(textAfterTest)).toMatchSnapshot();
 });
 
 it('does not report promises', () => {
   // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
-  const {stderr} = runJest('detect-open-handles', [
+  const {stdout} = runJest('detect-open-handles', [
     'promise',
     '--detectOpenHandles',
   ]);
-  const textAfterTest = getTextAfterTest(stderr);
+  const textAfterTest = getTextAfterTest(stdout);
 
   expect(textAfterTest).toBe('');
 });
@@ -76,8 +76,8 @@ describe('notify', () => {
 
   it('does not report --notify flag', () => {
     // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
-    const {stderr} = runJest('detect-open-handles', ['notify', '--notify']);
-    const textAfterTest = getTextAfterTest(stderr);
+    const {stdout} = runJest('detect-open-handles', ['notify', '--notify']);
+    const textAfterTest = getTextAfterTest(stdout);
 
     expect(textAfterTest).toBe('');
   });
@@ -86,11 +86,11 @@ describe('notify', () => {
 onNodeVersions('>=11', () => {
   it('does not report timeouts using unref', () => {
     // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
-    const {stderr} = runJest('detect-open-handles', [
+    const {stdout} = runJest('detect-open-handles', [
       'unref',
       '--detectOpenHandles',
     ]);
-    const textAfterTest = getTextAfterTest(stderr);
+    const textAfterTest = getTextAfterTest(stdout);
 
     expect(textAfterTest).toBe('');
   });
@@ -102,8 +102,8 @@ it('prints out info about open handlers from inside tests', async () => {
     '--detectOpenHandles',
   ]);
   await run.waitUntil(({stderr}) => stderr.includes('Jest has detected'));
-  const {stderr} = await run.end();
-  const textAfterTest = getTextAfterTest(stderr);
+  const {stdout} = await run.end();
+  const textAfterTest = getTextAfterTest(stdout);
 
   expect(wrap(textAfterTest)).toMatchSnapshot();
 });
