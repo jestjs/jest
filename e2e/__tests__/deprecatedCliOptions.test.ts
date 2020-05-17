@@ -11,9 +11,9 @@ import runJest from '../runJest';
 const dir = path.resolve(__dirname, '../deprecated-cli-options');
 
 it('Prints deprecation warnings for CLI flags', () => {
-  const {stderr, exitCode} = runJest(dir, ['--mapCoverage']);
+  const {stdout, stderr, exitCode} = runJest(dir, ['--mapCoverage']);
   expect(exitCode).toBe(0);
-  expect(stderr).toMatch(/Test Suites: 1 passed, 1 total/);
+  expect(stdout).toMatch(/Test Suites: 1 passed, 1 total/);
   expect(stderr).toMatch(`● Deprecation Warning:
 
   Option "mapCoverage" has been removed, as it's no longer necessary.
