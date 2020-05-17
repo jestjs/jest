@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`shows the correct errors in stderr when failing tests 1`] = `
+exports[`shows the correct errors in stdout when failing tests 1`] = `
 FAIL __tests__/failure.test.js
   ✕ fail with expected non promise values
   ✕ fail with expected non promise values and not
