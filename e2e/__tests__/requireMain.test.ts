@@ -9,6 +9,6 @@ import runJest from '../runJest';
 
 test('provides `require.main` set to test suite module', () => {
   const {stderr, stdout} = runJest('require-main');
-  expect(stdout).not.toMatch('No tests found');
-  expect(stderr).toMatch(/PASS __tests__(\/|\\+)loader\.test\.js/);
+  expect(stderr).not.toMatch('No tests found');
+  expect(stdout).toMatch(/PASS __tests__(\/|\\+)loader\.test\.js/);
 });
