@@ -72,7 +72,9 @@ test('globalSetup function gets jest config object as a parameter', () => {
 
   const testPathPattern = 'pass';
 
+  // "--useStderr" because we want stdout to only contain things logged during setup
   const result = runJest(e2eDir, [
+    '--useStderr',
     `--globalSetup=${setupPath}`,
     `--testPathPattern=${testPathPattern}`,
   ]);
@@ -128,7 +130,9 @@ test('globalSetup works with default export', () => {
 
   const testPathPattern = 'pass';
 
+  // "--useStderr" because we want stdout to only contain things logged during setup
   const result = runJest(e2eDir, [
+    '--useStderr',
     `--globalSetup=${setupPath}`,
     `--testPathPattern=${testPathPattern}`,
   ]);
