@@ -1,10 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`produces code coverage for uncovered files without transformer 1`] = `
+PASS __tests__/test.js
+  ✓ dummy test
+
 ---------------------|---------|----------|---------|---------|-------------------
 File                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ---------------------|---------|----------|---------|---------|-------------------
 All files            |       0 |      100 |       0 |       0 |                   
  some-random-file.js |       0 |      100 |       0 |       0 | 8-11              
 ---------------------|---------|----------|---------|---------|-------------------
+`;
+
+exports[`produces code coverage for uncovered files without transformer 2`] = `
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
 `;

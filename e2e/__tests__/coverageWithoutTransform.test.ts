@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {cleanup} from '../Utils';
+import {cleanup, extractSummary} from '../Utils';
 import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../coverage-without-transform');
@@ -25,5 +25,7 @@ it('produces code coverage for uncovered files without transformer', () => {
   const {exitCode, stdout} = runJest(dir, ['--coverage', '--no-cache']);
 
   expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
+  const {rest, summary} = extractSummary(stdout);
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
 });
