@@ -7,6 +7,7 @@
 
 import wrap from 'jest-snapshot-serializer-raw';
 import runJest from '../runJest';
+import {extractSummary} from '../Utils';
 
 const normalizeCircusJasmine = (str: string) =>
   wrap(
@@ -22,7 +23,9 @@ it('warns if describe returns a Promise', () => {
   ]);
 
   expect(result.exitCode).toBe(0);
-  expect(normalizeCircusJasmine(result.stdout)).toMatchSnapshot();
+  const {summary, rest} = extractSummary(result.stdout);
+  expect(normalizeCircusJasmine(rest)).toMatchSnapshot();
+  expect(normalizeCircusJasmine(summary)).toMatchSnapshot();
 });
 
 it('warns if describe returns something', () => {
@@ -31,13 +34,15 @@ it('warns if describe returns something', () => {
   ]);
 
   expect(result.exitCode).toBe(0);
-  expect(normalizeCircusJasmine(result.stdout)).toMatchSnapshot();
+  const {summary, rest} = extractSummary(result.stdout);
+  expect(normalizeCircusJasmine(rest)).toMatchSnapshot();
+  expect(normalizeCircusJasmine(summary)).toMatchSnapshot();
 });
 
 it('errors if describe throws', () => {
   const result = runJest('declaration-errors', ['describeThrow.test.js']);
 
   expect(result.exitCode).toBe(1);
-  expect(result.stdout).toBe('');
-  expect(result.stderr).toContain('whoops');
+  expect(result.stdout).toContain('whoops');
+  expect(result.stderr).toBe('');
 });
