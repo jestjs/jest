@@ -1,6 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`code coverage for Handlebars 1`] = `
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;
+
+exports[`code coverage for Handlebars 2`] = `
+PASS __tests__/greet.js
+  ✓ am
+
 -----------|---------|----------|---------|---------|-------------------
 File       | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -----------|---------|----------|---------|---------|-------------------
@@ -8,3 +19,5 @@ All files  |      75 |    66.67 |   66.67 |   66.67 |
  greet.hbs |      75 |    66.67 |   66.67 |   66.67 | 10                
 -----------|---------|----------|---------|---------|-------------------
 `;
+
+exports[`code coverage for Handlebars 3`] = ``;
