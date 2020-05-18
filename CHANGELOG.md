@@ -13,7 +13,7 @@
 
 ### Chore & Maintenance
 
-- `[docs]` Fix confuse filename on enableAutomock example ([#10055](https://github.com/facebook/jest/pull/10055))
+- `[docs]` Correct confusing filename in `enableAutomock` example ([#10055](https://github.com/facebook/jest/pull/10055))
 - `[jest-core]` 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉 ([#10000](https://github.com/facebook/jest/pull/10000))
 
 ### Performance
