@@ -11,7 +11,8 @@ import runJest from '../runJest';
 skipSuiteOnJasmine();
 
 it('calls testEnvironment handleTestEvent', () => {
-  const result = runJest('test-environment-circus');
+  // --useStderr because we log the events of jest-circus in stdout
+  const result = runJest('test-environment-circus', ['--useStderr']);
   expect(result.failed).toEqual(false);
   expect(result.stdout.split('\n')).toMatchInlineSnapshot(`
     Array [
