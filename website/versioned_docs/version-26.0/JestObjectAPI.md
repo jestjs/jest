@@ -77,7 +77,7 @@ export default {
 ```
 
 ```js
-// __tests__/disableAutomocking.js
+// __tests__/enableAutomocking.js
 jest.enableAutomock();
 
 import utils from '../utils';
