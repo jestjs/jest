@@ -15,6 +15,7 @@
 
 - `[docs]` Correct confusing filename in `enableAutomock` example ([#10055](https://github.com/facebook/jest/pull/10055))
 - `[jest-core]` 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉 ([#10000](https://github.com/facebook/jest/pull/10000))
+- `[jest-core, jest-reporters, jest-test-result, jest-types]` Cleanup `displayName` type ([#10049](https://github.com/facebook/jest/pull/10049))
 
 ### Performance
 
