@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
 const jestExpect = require('../');
 

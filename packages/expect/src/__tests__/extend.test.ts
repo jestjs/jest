@@ -6,7 +6,7 @@
  *
  */
 
-const matcherUtils = require('jest-matcher-utils');
+import * as matcherUtils from 'jest-matcher-utils';
 const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
 const {iterableEquality, subsetEquality} = require('../utils');
 const {equals} = require('../jasmineUtils');
@@ -15,7 +15,7 @@ const jestExpect = require('../');
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 jestExpect.extend({
-  toBeDivisibleBy(actual, expected) {
+  toBeDivisibleBy(actual: number, expected: number) {
     const pass = actual % expected === 0;
     const message = pass
       ? () => `expected ${actual} not to be divisible by ${expected}`
@@ -23,13 +23,14 @@ jestExpect.extend({
 
     return {message, pass};
   },
-  toBeSymbol(actual, expected) {
+  toBeSymbol(actual: symbol, expected: symbol) {
     const pass = actual === expected;
-    const message = () => `expected ${actual} to be Symbol ${expected}`;
+    const message = () =>
+      `expected ${actual.toString()} to be Symbol ${expected.toString()}`;
 
     return {message, pass};
   },
-  toBeWithinRange(actual, floor, ceiling) {
+  toBeWithinRange(actual: number, floor: number, ceiling: number) {
     const pass = actual >= floor && actual <= ceiling;
     const message = pass
       ? () => `expected ${actual} not to be within range ${floor} - ${ceiling}`
@@ -60,7 +61,7 @@ it('is available globally when matcher is variadic', () => {
 
 it('exposes matcherUtils in context', () => {
   jestExpect.extend({
-    _shouldNotError(actual, expected) {
+    _shouldNotError(_actual: unknown, _expected: unknown) {
       const pass = this.equals(
         this.utils,
         Object.assign(matcherUtils, {
@@ -81,7 +82,7 @@ it('exposes matcherUtils in context', () => {
 
 it('is ok if there is no message specified', () => {
   jestExpect.extend({
-    toFailWithoutMessage(expected) {
+    toFailWithoutMessage(_expected: unknown) {
       return {pass: false};
     },
   });

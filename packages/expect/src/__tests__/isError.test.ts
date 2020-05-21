@@ -13,14 +13,16 @@ import {isError} from '../utils';
 
 // Copied from https://github.com/graingert/angular.js/blob/a43574052e9775cbc1d7dd8a086752c979b0f020/test/AngularSpec.js#L1883
 describe('isError', () => {
-  function testErrorFromDifferentContext(createError) {
+  function testErrorFromDifferentContext(createError: Function) {
     const iframe = document.createElement('iframe');
     document.body.appendChild(iframe);
     try {
       const error = createError(iframe.contentWindow);
       expect(isError(error)).toBe(true);
     } finally {
-      iframe.parentElement.removeChild(iframe);
+      if (iframe && iframe.parentElement) {
+        iframe.parentElement.removeChild(iframe);
+      }
     }
   }
 
@@ -34,11 +36,11 @@ describe('isError', () => {
   });
 
   it('should detect errors from another context', () => {
-    testErrorFromDifferentContext(win => new win.Error());
+    testErrorFromDifferentContext((win: any) => new win.Error());
   });
 
   it('should detect DOMException errors from another context', () => {
-    testErrorFromDifferentContext(win => {
+    testErrorFromDifferentContext((win: Window) => {
       try {
         win.document.querySelectorAll('');
       } catch (e) {
