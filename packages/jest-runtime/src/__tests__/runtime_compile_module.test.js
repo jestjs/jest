@@ -1,0 +1,90 @@
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ */
+
+'use strict';
+
+import {Module, builtinModules} from 'module';
+import path from 'path';
+import {pathToFileURL} from 'url';
+// eslint-disable-next-line import/default
+import slash from 'slash';
+import * as fs from 'graceful-fs';
+
+let createRuntime;
+
+describe('Runtime requireModule', () => {
+  beforeEach(() => {
+    createRuntime = require('createRuntime');
+  });
+
+  it('overrides `Module#compile`', () =>
+    createRuntime(__filename).then(runtime => {
+      const exports = runtime.requireModule(runtime.__mockRootPath, 'module');
+      expect(exports.Module).not.toBe(Module);
+
+      const mockFilename = name =>
+        path.join(path.dirname(runtime.__mockRootPath), name);
+
+      {
+        const pathRegularModule = mockFilename('RegularModule.js');
+        const source = fs.readFileSync(pathRegularModule, 'utf-8');
+
+        const module = new exports.Module();
+        module._compile(source, pathRegularModule);
+        expect(module).toMatchObject({
+          children: expect.anything(),
+          exports: expect.anything(),
+          filename: null,
+          loaded: false,
+          parent: null,
+          paths: expect.anything(),
+        });
+        // This is undefined in Node 10 and '' in Node 14 by default.
+        expect(module.id).toBeFalsy();
+        expect(Object.keys(module.exports)).toEqual([
+          'filename',
+          'getModuleStateValue',
+          'isRealModule',
+          'jest',
+          'lazyRequire',
+          'object',
+          'parent',
+          'paths',
+          'setModuleStateValue',
+          'module',
+          'loaded',
+          'isLoaded',
+        ]);
+
+        expect(module.exports.getModuleStateValue()).toBe('default');
+
+        module.exports.lazyRequire();
+
+        // The dynamically compiled module should not be added to the registry,
+        // so no side effects should occur.
+        expect(module.exports.getModuleStateValue()).toBe('default');
+      }
+
+      {
+        const module = new exports.Module();
+        module._compile('exports.value = 12;', mockFilename('dynamic.js'));
+        expect(module.exports).toEqual({value: 12});
+      }
+
+      {
+        const module = new exports.Module();
+        let err;
+        try {
+          module._compile('{"value":12}', mockFilename('dynamic.json'));
+        } catch (e) {
+          err = e;
+        }
+        expect(err.name).toBe('SyntaxError');
+      }
+    }));
+});

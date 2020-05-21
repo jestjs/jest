@@ -4,6 +4,7 @@
 
 - `[jest-config]` Support config files exporting (`async`) `function`s ([#10001](https://github.com/facebook/jest/pull/10001))
 - `[jest-cli, jest-core]` Add `--selectProjects` CLI argument to filter test suites by project name ([#8612](https://github.com/facebook/jest/pull/8612))
+- `[jest-runtime]` Override `Module#_compile` to hook into jest's module loader ([#10072](https://github.com/facebook/jest/pull/10072))
 
 ### Fixes
 

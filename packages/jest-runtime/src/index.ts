@@ -70,6 +70,7 @@ type InternalModuleOptions = {
   isInternalModule: boolean;
   supportsDynamicImport: boolean;
   supportsStaticESM: boolean;
+  filenameOverride?: string;
 };
 
 const defaultTransformOptions: InternalModuleOptions = {
@@ -355,7 +356,7 @@ class Runtime {
         return core;
       }
 
-      const transformedCode = this.transformFile(modulePath, {
+      const transformedCode = this.transformFile(modulePath, undefined, {
         isInternalModule: false,
         supportsDynamicImport: true,
         supportsStaticESM: true,
@@ -669,7 +670,13 @@ class Runtime {
     } else {
       // Only include the fromPath if a moduleName is given. Else treat as root.
       const fromPath = moduleName ? from : null;
-      this._execModule(localModule, options, moduleRegistry, fromPath);
+      this._execModule(
+        localModule,
+        undefined,
+        options,
+        moduleRegistry,
+        fromPath,
+      );
     }
     localModule.loaded = true;
   }
@@ -950,16 +957,17 @@ class Runtime {
 
   private _execModule(
     localModule: InitialModule,
+    moduleSource: string | undefined,
     options: InternalModuleOptions | undefined,
     moduleRegistry: ModuleRegistry,
     from: Config.Path | null,
-  ) {
+  ): any | undefined {
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
-      return;
+      return undefined;
     }
 
-    const filename = localModule.filename;
+    const filename = options?.filenameOverride ?? localModule.filename;
     const lastExecutingModulePath = this._currentlyExecutingModulePath;
     this._currentlyExecutingModulePath = filename;
     const origCurrExecutingManualMock = this._isCurrentlyExecutingManualMock;
@@ -981,7 +989,7 @@ class Runtime {
       value: this._createRequireImplementation(localModule, options),
     });
 
-    const transformedCode = this.transformFile(filename, options);
+    const transformedCode = this.transformFile(filename, moduleSource, options);
 
     let compiledFunction: ModuleWrapper | null = null;
 
@@ -1022,7 +1030,7 @@ class Runtime {
         'You are trying to `import` a file after the Jest environment has been torn down.',
       );
       process.exitCode = 1;
-      return;
+      return undefined;
     }
 
     const jestObject = this._createJestObjectFor(filename);
@@ -1030,7 +1038,7 @@ class Runtime {
     this.jestObjectCaches.set(filename, jestObject);
 
     try {
-      compiledFunction.call(
+      return compiledFunction.call(
         localModule.exports,
         localModule as NodeModule, // module object
         localModule.exports, // module exports
@@ -1055,13 +1063,16 @@ class Runtime {
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
     this._currentlyExecutingModulePath = lastExecutingModulePath;
+
+    return undefined;
   }
 
   private transformFile(
     filename: string,
+    moduleSource: string | undefined,
     options?: InternalModuleOptions,
   ): string {
-    const source = this.readFile(filename);
+    const source = moduleSource ?? this.readFile(filename);
 
     if (options?.isInternalModule) {
       return source;
@@ -1155,8 +1166,28 @@ class Runtime {
       });
     };
 
+    const runtime = this;
+
     // should we implement the class ourselves?
-    class Module extends nativeModule.Module {}
+    class Module extends nativeModule.Module {
+      _compile(content: string, filename: string) {
+        if (typeof content !== 'string') {
+          throw new TypeError('Module#_compile must receive string content');
+        }
+
+        if (typeof filename !== 'string') {
+          throw new TypeError('Module#_compile must receive string filename');
+        }
+
+        return runtime._execModule(
+          this,
+          content,
+          {...defaultTransformOptions, filenameOverride: filename},
+          runtime._moduleRegistry,
+          null,
+        );
+      }
+    }
 
     Object.entries(nativeModule.Module).forEach(([key, value]) => {
       // @ts-expect-error
@@ -1307,16 +1338,28 @@ class Runtime {
     from: InitialModule,
     options?: InternalModuleOptions,
   ): NodeRequire {
+    const filenameOverride = options?.filenameOverride;
+
     // TODO: somehow avoid having to type the arguments - they should come from `NodeRequire/LocalModuleRequire.resolve`
     const resolve = (moduleName: string, options: ResolveOptions) =>
-      this._requireResolve(from.filename, moduleName, options);
+      this._requireResolve(
+        filenameOverride ?? from.filename,
+        moduleName,
+        options,
+      );
     resolve.paths = (moduleName: string) =>
-      this._requireResolvePaths(from.filename, moduleName);
+      this._requireResolvePaths(filenameOverride ?? from.filename, moduleName);
 
     const moduleRequire = (options?.isInternalModule
       ? (moduleName: string) =>
-          this.requireInternalModule(from.filename, moduleName)
-      : this.requireModuleOrMock.bind(this, from.filename)) as NodeRequire;
+          this.requireInternalModule(
+            filenameOverride ?? from.filename,
+            moduleName,
+          )
+      : this.requireModuleOrMock.bind(
+          this,
+          filenameOverride ?? from.filename,
+        )) as NodeRequire;
     moduleRequire.extensions = Object.create(null);
     moduleRequire.resolve = resolve;
     moduleRequire.cache = (() => {
