@@ -32,12 +32,12 @@ Tool for visualizing changes in data. Exports a function that compares two value
 ### Example
 
 ```javascript
-const diffDefault = require('jest-diff').default;
+const diff = require('jest-diff').default;
 
 const a = {a: {b: {c: 5}}};
 const b = {a: {b: {c: 6}}};
 
-const result = diffDefault(a, b);
+const result = diff(a, b);
 
 // print diff
 console.log(result);
