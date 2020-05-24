@@ -290,7 +290,7 @@ it('no stack', () => {
   expect(message).toMatchSnapshot();
 });
 
-describe('getConsoleOutput', () => {
+describe('formatStackTrace', () => {
   it('prints code frame and stacktrace', () => {
     readFileSync.mockImplementationOnce(() => 'throw new Error("Whoops!");');
     const message = formatStackTrace(
