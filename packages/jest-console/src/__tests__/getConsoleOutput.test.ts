@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import BufferedConsole from '../BufferedConsole';
-import getConsoleOutput from '../getConsoleOutput';
 import {formatStackTrace} from 'jest-message-util';
+import getConsoleOutput from '../getConsoleOutput';
+import BufferedConsole from '../BufferedConsole';
 import {LogType} from '../types';
 
 jest.mock('jest-message-util', () => ({
