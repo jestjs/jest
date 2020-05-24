@@ -121,6 +121,7 @@ async function runTestInternal(
       // 4 = the console call is buried 4 stack frames deep
       BufferedConsole.write([], type, message, 4),
       config,
+      globalConfig.noStackTrace,
     );
 
   let testConsole;

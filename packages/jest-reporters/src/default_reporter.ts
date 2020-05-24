@@ -183,6 +183,7 @@ export default class DefaultReporter extends BaseReporter {
             !!this._globalConfig.verbose,
             result.console,
             config,
+            this._globalConfig.noStackTrace,
           ),
       );
     }

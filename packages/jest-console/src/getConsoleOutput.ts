@@ -14,15 +14,16 @@ import {
 import type {ConsoleBuffer} from './types';
 
 export default (
-  // TODO: remove in 26
+  // TODO: remove in 27
   root: string,
   verbose: boolean,
   buffer: ConsoleBuffer,
-  // TODO: make mandatory and take Config.ProjectConfig in 26
+  // TODO: make mandatory and take Config.ProjectConfig in 27
   config: StackTraceConfig = {
     rootDir: root,
     testMatch: [],
   },
+  globalNoStackTrace: boolean,
 ): string => {
   const TITLE_INDENT = verbose ? '  ' : '    ';
   const CONSOLE_INDENT = TITLE_INDENT + '  ';
@@ -40,12 +41,12 @@ export default (
     if (type === 'warn') {
       message = chalk.yellow(message);
       typeMessage = chalk.yellow(typeMessage);
-      noStackTrace = false;
+      noStackTrace = false || globalNoStackTrace;
       noCodeFrame = false;
     } else if (type === 'error') {
       message = chalk.red(message);
       typeMessage = chalk.red(typeMessage);
-      noStackTrace = false;
+      noStackTrace = false || globalNoStackTrace;
       noCodeFrame = false;
     }
 
