@@ -20,9 +20,7 @@ describe('isError', () => {
       const error = createError(iframe.contentWindow);
       expect(isError(error)).toBe(true);
     } finally {
-      if (iframe && iframe.parentElement) {
-        iframe.parentElement.removeChild(iframe);
-      }
+      iframe.parentElement!.removeChild(iframe);
     }
   }
 
