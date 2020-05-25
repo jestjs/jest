@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-jest.mock('fs', () => ({
-  ...jest.genMockFromModule('fs'),
+jest.mock('graceful-fs', () => ({
+  ...jest.createMockFromModule<typeof import('fs')>('fs'),
   existsSync: jest.fn().mockReturnValue(true),
 }));
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import assert = require('assert');
 import chalk = require('chalk');
 
@@ -179,7 +179,7 @@ test('escaping', () => {
       'exports[`key`] = `"\'\\\\`;\n',
   );
 
-  // @ts-ignore
+  // @ts-expect-error
   const exports = {}; // eslint-disable-line @typescript-eslint/no-unused-vars
   // eslint-disable-next-line no-eval
   const readData = eval('var exports = {}; ' + writtenData + ' exports');

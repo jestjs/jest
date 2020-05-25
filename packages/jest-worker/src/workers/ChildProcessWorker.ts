@@ -167,7 +167,7 @@ export default class ChildProcessWorker implements WorkerInterface {
 
         if (error != null && typeof error === 'object') {
           const extra = error;
-          // @ts-ignore: no index
+          // @ts-expect-error: no index
           const NativeCtor = global[response[1]];
           const Ctor = typeof NativeCtor === 'function' ? NativeCtor : Error;
 
@@ -176,7 +176,7 @@ export default class ChildProcessWorker implements WorkerInterface {
           error.stack = response[3];
 
           for (const key in extra) {
-            // @ts-ignore: adding custom properties to errors.
+            // @ts-expect-error: adding custom properties to errors.
             error[key] = extra[key];
           }
         }
@@ -187,7 +187,7 @@ export default class ChildProcessWorker implements WorkerInterface {
       case PARENT_MESSAGE_SETUP_ERROR:
         error = new Error('Error when calling setup: ' + response[2]);
 
-        // @ts-ignore: adding custom properties to errors.
+        // @ts-expect-error: adding custom properties to errors.
         error.type = response[1];
         error.stack = response[3];
 

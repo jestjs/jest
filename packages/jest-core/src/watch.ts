@@ -504,7 +504,7 @@ const getPluginIdentifier = (plugin: WatchPlugin) =>
   // WatchPlugin is an interface, and it is my understanding interface
   // static fields are not definable anymore, no idea how to circumvent
   // this :-(
-  // @ts-ignore: leave `displayName` be.
+  // @ts-expect-error: leave `displayName` be.
   plugin.constructor.displayName || plugin.constructor.name;
 
 const getPluginKey = (

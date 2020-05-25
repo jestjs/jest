@@ -1,24 +1,17 @@
 {
   "name": "jest",
   "description": "Delightful JavaScript Testing.",
-  "version": "25.4.0",
+  "version": "26.0.1",
   "main": "build/jest.js",
   "types": "build/jest.d.ts",
-  "typesVersions": {
-    "<3.8": {
-      "build/*": [
-        "build/ts3.4/*"
-      ]
-    }
-  },
   "dependencies": {
-    "@jest/core": "^25.4.0",
+    "@jest/core": "^26.0.1",
     "import-local": "^3.0.2",
-    "jest-cli": "^25.4.0"
+    "jest-cli": "^26.0.1"
   },
   "bin": "./bin/jest.js",
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.14.2"
   },
   "repository": {
     "type": "git",

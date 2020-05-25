@@ -15,7 +15,7 @@ import SearchSource, {SearchResult} from '../SearchSource';
 
 jest.setTimeout(15000);
 
-jest.mock('fs', () => {
+jest.mock('graceful-fs', () => {
   const realFs = jest.requireActual('fs');
 
   return {
@@ -401,7 +401,6 @@ describe('SearchSource', () => {
               '__tests__',
               'haste_impl.js',
             ),
-            providesModuleNodeModules: [],
           },
           name: 'SearchSource-findRelatedTests-tests',
           rootDir,
@@ -546,7 +545,6 @@ describe('SearchSource', () => {
               __dirname,
               '../../../jest-haste-map/src/__tests__/haste_impl.js',
             ),
-            providesModuleNodeModules: [],
           },
           name: 'SearchSource-findRelatedSourcesFromTestsInChangedFiles-tests',
           rootDir,

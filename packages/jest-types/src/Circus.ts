@@ -187,6 +187,7 @@ export type State = {
   currentlyRunningTest?: TestEntry | null; // including when hooks are being executed
   expand?: boolean; // expand error messages
   hasFocusedTests: boolean; // that are defined using test.only
+  hasStarted: boolean; // whether the rootDescribeBlock has started running
   // Store process error handlers. During the run we inject our own
   // handlers (so we could fail tests on unhandled errors) and later restore
   // the original ones.
@@ -200,19 +201,22 @@ export type State = {
 };
 
 export type DescribeBlock = {
-  children: Array<DescribeBlock>;
+  type: 'describeBlock';
+  children: Array<DescribeBlock | TestEntry>;
   hooks: Array<Hook>;
   mode: BlockMode;
   name: BlockName;
   parent?: DescribeBlock;
+  /** @deprecated Please get from `children` array instead */
   tests: Array<TestEntry>;
 };
 
-export type TestError = Exception | Array<[Exception | undefined, Exception]>; // the error from the test, as well as a backup error for async
+export type TestError = Exception | [Exception | undefined, Exception]; // the error from the test, as well as a backup error for async
 
 export type TestEntry = {
+  type: 'test';
   asyncError: Exception; // Used if the test failure contains no usable stack trace
-  errors: TestError;
+  errors: Array<TestError>;
   fn?: TestFn;
   invocations: number;
   mode: TestMode;

@@ -9,7 +9,7 @@
 describe('test/it.todo error throwing', () => {
   it('it throws error when given no arguments', () => {
     expect(() => {
-      // @ts-ignore
+      // @ts-expect-error
       it.todo();
     }).toThrowError('Todo must be called with only a description.');
   });
@@ -20,7 +20,7 @@ describe('test/it.todo error throwing', () => {
   });
   it('it throws error when given none string description', () => {
     expect(() => {
-      // @ts-ignore
+      // @ts-expect-error
       it.todo(() => {});
     }).toThrowError('Todo must be called with only a description.');
   });

@@ -22,9 +22,9 @@ describe('JSDomEnvironment', () => {
     });
   });
 
-  it('has Lolex fake timers implementation', () => {
+  it('has modern fake timers implementation', () => {
     const env = new JSDomEnvironment(makeProjectConfig());
 
-    expect(env.fakeTimersLolex).toBeDefined();
+    expect(env.fakeTimersModern).toBeDefined();
   });
 });

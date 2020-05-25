@@ -49,6 +49,13 @@ export function check(argv: Config.Argv): true {
     );
   }
 
+  if (argv.selectProjects && argv.selectProjects.length === 0) {
+    throw new Error(
+      'The --selectProjects option requires the name of at least one project to be specified.\n' +
+        'Example usage: jest --selectProjects my-first-project my-second-project',
+    );
+  }
+
   if (
     argv.config &&
     !isJSONString(argv.config) &&
@@ -527,6 +534,13 @@ export const options = {
     description:
       "Allows to use a custom runner instead of Jest's default test runner.",
     type: 'string',
+  },
+  selectProjects: {
+    description:
+      'Run only the tests of the specified projects.' +
+      'Jest uses the attribute `displayName` in the configuration to identify each project.',
+    string: true,
+    type: 'array',
   },
   setupFiles: {
     description:

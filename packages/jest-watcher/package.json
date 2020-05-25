@@ -1,23 +1,16 @@
 {
   "name": "jest-watcher",
   "description": "Delightful JavaScript Testing.",
-  "version": "25.4.0",
+  "version": "26.0.1",
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "typesVersions": {
-    "<3.8": {
-      "build/*": [
-        "build/ts3.4/*"
-      ]
-    }
-  },
   "dependencies": {
-    "@jest/test-result": "^25.4.0",
-    "@jest/types": "^25.4.0",
+    "@jest/test-result": "^26.0.1",
+    "@jest/types": "^26.0.1",
     "ansi-escapes": "^4.2.1",
-    "chalk": "^3.0.0",
-    "jest-util": "^25.4.0",
-    "string-length": "^3.1.0"
+    "chalk": "^4.0.0",
+    "jest-util": "^26.0.1",
+    "string-length": "^4.0.1"
   },
   "devDependencies": {
     "@types/node": "*"
@@ -31,7 +24,7 @@
     "url": "https://github.com/facebook/jest/issues"
   },
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.14.2"
   },
   "homepage": "https://jestjs.io/",
   "license": "MIT",

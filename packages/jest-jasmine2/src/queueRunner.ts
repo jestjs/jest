@@ -5,7 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// @ts-ignore ignore vendor file
+import {formatTime} from 'jest-util';
+// @ts-expect-error ignore vendor file
 import PCancelable from './PCancelable';
 import pTimeout from './pTimeout';
 
@@ -71,8 +72,8 @@ export default function queueRunner(options: Options) {
       () => {
         initError.message =
           'Timeout - Async callback was not invoked within the ' +
-          timeoutMs +
-          'ms timeout specified by jest.setTimeout.';
+          formatTime(timeoutMs) +
+          ' timeout specified by jest.setTimeout.';
         initError.stack = initError.message + initError.stack;
         options.onException(initError);
       },

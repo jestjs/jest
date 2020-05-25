@@ -384,7 +384,7 @@ export default function (j$: Jasmine) {
           suite.pend();
         }
         if (currentDeclarationSuite.markedTodo) {
-          // @ts-ignore TODO Possible error: Suite does not have todo method
+          // @ts-expect-error TODO Possible error: Suite does not have todo method
           suite.todo();
         }
         addSpecsToSuite(suite, specDefinitions);
@@ -664,7 +664,7 @@ export default function (j$: Jasmine) {
           (error && error.name === AssertionError.name)
         ) {
           checkIsError = false;
-          // @ts-ignore TODO Possible error: j$.Spec does not have expand property
+          // @ts-expect-error TODO Possible error: j$.Spec does not have expand property
           message = assertionErrorMessage(error, {expand: j$.Spec.expand});
         } else {
           const check = isError(error);

@@ -39,17 +39,17 @@ describe('NodeEnvironment', () => {
     const timer2 = env1.global.setInterval(() => {}, 0);
 
     [timer1, timer2].forEach(timer => {
-      // @ts-ignore
+      // @ts-expect-error
       expect(timer.id).not.toBeUndefined();
       expect(typeof timer.ref).toBe('function');
       expect(typeof timer.unref).toBe('function');
     });
   });
 
-  it('has Lolex fake timers implementation', () => {
+  it('has modern fake timers implementation', () => {
     const env = new NodeEnvironment(makeProjectConfig());
 
-    expect(env.fakeTimersLolex).toBeDefined();
+    expect(env.fakeTimersModern).toBeDefined();
   });
 
   if (isTextEncoderDefined) {

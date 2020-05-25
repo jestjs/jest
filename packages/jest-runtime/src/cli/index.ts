@@ -8,12 +8,11 @@
 import {cpus} from 'os';
 import * as path from 'path';
 import chalk = require('chalk');
-import {sync as realpath} from 'realpath-native';
 import yargs = require('yargs');
 import type {Config} from '@jest/types';
 import type {JestEnvironment} from '@jest/environment';
 import {CustomConsole} from '@jest/console';
-import {setGlobal} from 'jest-util';
+import {setGlobal, tryRealpath} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries, readConfig} from 'jest-config';
 import {VERSION} from '../version';
@@ -24,10 +23,6 @@ export async function run(
   cliArgv?: Config.Argv,
   cliInfo?: Array<string>,
 ): Promise<void> {
-  const realFs = require('fs');
-  const fs = require('graceful-fs');
-  fs.gracefulify(realFs);
-
   let argv;
   if (cliArgv) {
     argv = cliArgv;
@@ -57,7 +52,7 @@ export async function run(
     return;
   }
 
-  const root = realpath(process.cwd());
+  const root = tryRealpath(process.cwd());
   const filePath = path.resolve(root, argv._[0]);
 
   if (argv.debug) {
@@ -94,7 +89,8 @@ export async function run(
     const runtime = new Runtime(config, environment, hasteMap.resolver);
 
     for (const path of config.setupFiles) {
-      const esm = runtime.unstable_shouldLoadAsEsm(path);
+      // TODO: remove ? in Jest 26
+      const esm = runtime.unstable_shouldLoadAsEsm?.(path);
 
       if (esm) {
         await runtime.unstable_importModule(path);
@@ -102,7 +98,8 @@ export async function run(
         runtime.requireModule(path);
       }
     }
-    const esm = runtime.unstable_shouldLoadAsEsm(filePath);
+    // TODO: remove ? in Jest 26
+    const esm = runtime.unstable_shouldLoadAsEsm?.(filePath);
 
     if (esm) {
       await runtime.unstable_importModule(filePath);

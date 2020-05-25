@@ -7,7 +7,7 @@
 
 'use strict';
 
-const os = jest.genMockFromModule('os');
+const os = jest.createMockFromModule('os');
 
 let cpus;
 function __setCpus(newCpus) {

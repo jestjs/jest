@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
+import {tryRealpath} from 'jest-util';
 import chalk = require('chalk');
-import {sync as realpath} from 'realpath-native';
 import {isJSONString, replaceRootDirInPath} from './utils';
 import normalize from './normalize';
 import resolveConfigPath from './resolveConfigPath';
@@ -41,7 +41,9 @@ export async function readConfig(
   parentConfigPath?: Config.Path | null,
   projectIndex: number = Infinity,
 ): Promise<ReadConfig> {
-  let rawOptions;
+  let rawOptions:
+    | Config.InitialOptions
+    | (() => Config.InitialOptions | Promise<Config.InitialOptions>);
   let configPath = null;
 
   if (typeof packageRootOrConfig !== 'string') {
@@ -80,6 +82,10 @@ export async function readConfig(
     // Otherwise just try to find config in the current rootDir.
     configPath = resolveConfigPath(packageRootOrConfig, process.cwd());
     rawOptions = await readConfigFileAndSetRootDir(configPath);
+  }
+
+  if (typeof rawOptions === 'function') {
+    rawOptions = await rawOptions();
   }
 
   const {options, hasDeprecationWarnings} = normalize(
@@ -163,7 +169,6 @@ const groupOptions = (
   }),
   projectConfig: Object.freeze({
     automock: options.automock,
-    browser: options.browser,
     cache: options.cache,
     cacheDirectory: options.cacheDirectory,
     clearMocks: options.clearMocks,
@@ -296,7 +301,7 @@ export async function readConfigs(
   if (projects.length > 0) {
     const projectIsCwd =
       process.platform === 'win32'
-        ? projects[0] === realpath(process.cwd())
+        ? projects[0] === tryRealpath(process.cwd())
         : projects[0] === process.cwd();
 
     const parsedConfigs = await Promise.all(

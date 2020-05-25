@@ -1,16 +1,9 @@
 {
   "name": "jest-each",
-  "version": "25.4.0",
+  "version": "26.0.1",
   "description": "Parameterised tests for Jest",
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "typesVersions": {
-    "<3.8": {
-      "build/*": [
-        "build/ts3.4/*"
-      ]
-    }
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -25,14 +18,14 @@
   "author": "Matt Phillips (mattphillips)",
   "license": "MIT",
   "dependencies": {
-    "@jest/types": "^25.4.0",
-    "chalk": "^3.0.0",
-    "jest-get-type": "^25.2.6",
-    "jest-util": "^25.4.0",
-    "pretty-format": "^25.4.0"
+    "@jest/types": "^26.0.1",
+    "chalk": "^4.0.0",
+    "jest-get-type": "^26.0.0",
+    "jest-util": "^26.0.1",
+    "pretty-format": "^26.0.1"
   },
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.14.2"
   },
   "publishConfig": {
     "access": "public"

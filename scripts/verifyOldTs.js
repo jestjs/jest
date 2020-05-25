@@ -30,9 +30,14 @@ const tsConfig = {
 };
 const cwd = tempy.directory();
 
+const tsVersion = '3.8';
+
 try {
   execa.sync('yarn', ['init', '--yes'], {cwd, stdio: 'inherit'});
-  execa.sync('yarn', ['add', 'typescript@~3.4'], {cwd, stdio: 'inherit'});
+  execa.sync('yarn', ['add', `typescript@~${tsVersion}`], {
+    cwd,
+    stdio: 'inherit',
+  });
   fs.writeFileSync(
     path.join(cwd, 'tsconfig.json'),
     JSON.stringify(tsConfig, null, 2),
@@ -44,7 +49,9 @@ try {
   execa.sync('yarn', ['tsc', '--project', '.'], {cwd, stdio: 'inherit'});
 
   console.log(
-    chalk.inverse.green(' Successfully compiled Jest with TypeScript 3.4 '),
+    chalk.inverse.green(
+      ` Successfully compiled Jest with TypeScript ${tsVersion} `,
+    ),
   );
 } finally {
   rimraf.sync(cwd);

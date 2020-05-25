@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import type {Config, TestResult} from '@jest/types';
 import chalk = require('chalk');
 import micromatch = require('micromatch');

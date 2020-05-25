@@ -6,8 +6,8 @@
  */
 
 /* eslint-disable no-eval */
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import prompts from 'prompts';
 import {constants} from 'jest-config';
 import init from '../';
@@ -19,7 +19,7 @@ jest.mock('../../../../jest-config/build/getCacheDirectory', () => () =>
   '/tmp/jest',
 );
 jest.mock('path', () => ({...jest.requireActual('path'), sep: '/'}));
-jest.mock('fs', () => ({
+jest.mock('graceful-fs', () => ({
   ...jest.requireActual('fs'),
   writeFileSync: jest.fn(),
 }));

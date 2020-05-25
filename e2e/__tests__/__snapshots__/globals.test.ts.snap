@@ -18,6 +18,18 @@ Ran all test suites.
 `;
 
 exports[`cannot have describe with no implementation 1`] = `
+FAIL __tests__/onlyConstructs.test.js
+  ● Test suite failed to run
+
+    Missing second argument. It must be a callback function.
+
+    > 1 | describe('describe, no implementation');
+        | ^
+
+      at Object.describe (__tests__/onlyConstructs.test.js:1:1)
+`;
+
+exports[`cannot have describe with no implementation 2`] = `
 Test Suites: 1 failed, 1 total
 Tests:       0 total
 Snapshots:   0 total
@@ -78,6 +90,22 @@ PASS __tests__/functionAsDescriptor.test.js
 exports[`function as descriptor 2`] = `
 Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;
+
+exports[`interleaved describe and test children order 1`] = `
+PASS __tests__/interleaved.test.js
+  ✓ above
+  ✓ below
+  describe
+    ✓ inside
+`;
+
+exports[`interleaved describe and test children order 2`] = `
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites.

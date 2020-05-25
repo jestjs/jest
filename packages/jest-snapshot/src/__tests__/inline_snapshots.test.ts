@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-jest.mock('fs', () => ({
-  ...jest.genMockFromModule('fs'),
+jest.mock('graceful-fs', () => ({
+  ...jest.createMockFromModule<typeof import('fs')>('fs'),
   existsSync: jest.fn().mockReturnValue(true),
   readdirSync: jest.fn().mockReturnValue([]),
   statSync: jest.fn(filePath => ({
@@ -15,8 +15,8 @@ jest.mock('fs', () => ({
 }));
 jest.mock('prettier');
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import prettier from 'prettier';
 import babelTraverse from '@babel/traverse';
 import {Frame} from 'jest-message-util';

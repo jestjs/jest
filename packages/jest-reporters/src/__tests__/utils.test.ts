@@ -118,7 +118,10 @@ describe('printDisplayName', () => {
     expect(
       printDisplayName(
         makeProjectConfig({
-          displayName: 'hello',
+          displayName: {
+            color: 'white',
+            name: 'hello',
+          },
         }),
       ),
     ).toMatchSnapshot();

@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import {tmpdir} from 'os';
-import {compileFunction} from 'vm';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest from '../runJest';
 import {
@@ -46,11 +45,49 @@ test('basic test constructs', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, exitCode} = runJest(DIR);
-  expect(exitCode).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(0);
+});
+
+test('interleaved describe and test children order', () => {
+  const filename = 'interleaved.test.js';
+  const content = `
+    let lastTest;
+    test('above', () => {
+      try {
+        expect(lastTest).toBe(undefined);
+      } finally {
+        lastTest = 'above';
+      }
+    });
+    describe('describe', () => {
+      test('inside', () => {
+        try {
+          expect(lastTest).toBe('above');
+        } finally {
+          lastTest = 'inside';
+        }
+      });
+    });
+    test('below', () => {
+      try {
+        expect(lastTest).toBe('inside');
+      } finally {
+        lastTest = 'below';
+      }
+    });
+  `;
+
+  writeFiles(TEST_DIR, {[filename]: content});
+  const {stderr, exitCode} = runJest(DIR);
+
+  const {summary, rest} = extractSummary(stderr);
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(0);
 });
 
 test('skips', () => {
@@ -107,11 +144,11 @@ test('only', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, exitCode} = runJest(DIR);
-  expect(exitCode).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(0);
 });
 
 test('cannot have describe with no implementation', () => {
@@ -122,47 +159,13 @@ test('cannot have describe with no implementation', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, exitCode} = runJest(DIR);
-  expect(exitCode).toBe(1);
 
   const rest = cleanStderr(stderr);
   const {summary} = extractSummary(stderr);
 
-  const rightTrimmedRest = rest
-    .split('\n')
-    .map(l => l.trimRight())
-    .join('\n')
-    .trim();
-
-  if (typeof compileFunction === 'function') {
-    expect(rightTrimmedRest).toEqual(
-      `
-FAIL __tests__/onlyConstructs.test.js
-  ● Test suite failed to run
-
-    Missing second argument. It must be a callback function.
-
-    > 1 | describe('describe, no implementation');
-        | ^
-
-      at Object.describe (__tests__/onlyConstructs.test.js:1:1)
-    `.trim(),
-    );
-  } else {
-    expect(rightTrimmedRest).toEqual(
-      `
-FAIL __tests__/onlyConstructs.test.js
-  ● Test suite failed to run
-
-    Missing second argument. It must be a callback function.
-
-    > 1 | describe('describe, no implementation');
-        |          ^
-
-      at Object.<anonymous> (__tests__/onlyConstructs.test.js:1:10)
-    `.trim(),
-    );
-  }
+  expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(1);
 });
 
 test('cannot test with no implementation', () => {
@@ -175,11 +178,11 @@ test('cannot test with no implementation', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, exitCode} = runJest(DIR);
-  expect(exitCode).toBe(1);
 
   const {summary} = extractSummary(stderr);
   expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(1);
 });
 
 test('skips with expand arg', () => {
@@ -206,11 +209,11 @@ test('skips with expand arg', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, exitCode} = runJest(DIR, ['--expand']);
-  expect(exitCode).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(0);
 });
 
 test('only with expand arg', () => {
@@ -236,11 +239,11 @@ test('only with expand arg', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, exitCode} = runJest(DIR, ['--expand']);
-  expect(exitCode).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(0);
 });
 
 test('cannot test with no implementation with expand arg', () => {
@@ -253,11 +256,11 @@ test('cannot test with no implementation with expand arg', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, exitCode} = runJest(DIR, ['--expand']);
-  expect(exitCode).toBe(1);
 
   const {summary} = extractSummary(stderr);
   expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(1);
 });
 
 test('function as descriptor', () => {
@@ -271,9 +274,9 @@ test('function as descriptor', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, exitCode} = runJest(DIR);
-  expect(exitCode).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(0);
 });

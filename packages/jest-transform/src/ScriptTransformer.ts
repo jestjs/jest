@@ -8,17 +8,21 @@
 import {createHash} from 'crypto';
 import * as path from 'path';
 import type {Config} from '@jest/types';
-import {createDirectory, interopRequireDefault, isPromise} from 'jest-util';
+import {
+  createDirectory,
+  interopRequireDefault,
+  isPromise,
+  tryRealpath,
+} from 'jest-util';
 import * as fs from 'graceful-fs';
 import {transformSync as babelTransform} from '@babel/core';
-// @ts-ignore: should just be `require.resolve`, but the tests mess that up
+// @ts-expect-error: should just be `require.resolve`, but the tests mess that up
 import babelPluginIstanbul from 'babel-plugin-istanbul';
 import {fromSource as sourcemapFromSource} from 'convert-source-map';
 import HasteMap = require('jest-haste-map');
 import stableStringify = require('fast-json-stable-stringify');
 import slash = require('slash');
 import {sync as writeFileAtomic} from 'write-file-atomic';
-import {sync as realpath} from 'realpath-native';
 import {addHook} from 'pirates';
 import type {
   Options,
@@ -172,34 +176,37 @@ export default class ScriptTransformer {
   }
 
   private _getTransformer(filename: Config.Path) {
-    let transform: Transformer | null = null;
     if (!this._config.transform || !this._config.transform.length) {
       return null;
     }
 
     const transformPath = this._getTransformPath(filename);
-    if (transformPath) {
-      const transformer = this._transformCache.get(transformPath);
-      if (transformer != null) {
-        return transformer;
-      }
 
-      transform = require(transformPath);
-
-      if (!transform) {
-        throw new TypeError('Jest: a transform must export something.');
-      }
-      const transformerConfig = this._transformConfigCache.get(transformPath);
-      if (typeof transform.createTransformer === 'function') {
-        transform = transform.createTransformer(transformerConfig);
-      }
-      if (typeof transform.process !== 'function') {
-        throw new TypeError(
-          'Jest: a transform must export a `process` function.',
-        );
-      }
-      this._transformCache.set(transformPath, transform);
+    if (!transformPath) {
+      return null;
     }
+
+    const transformer = this._transformCache.get(transformPath);
+    if (transformer) {
+      return transformer;
+    }
+
+    let transform: Transformer = require(transformPath);
+
+    if (!transform) {
+      throw new TypeError('Jest: a transform must export something.');
+    }
+    const transformerConfig = this._transformConfigCache.get(transformPath);
+    if (typeof transform.createTransformer === 'function') {
+      transform = transform.createTransformer(transformerConfig);
+    }
+    if (typeof transform.process !== 'function') {
+      throw new TypeError(
+        'Jest: a transform must export a `process` function.',
+      );
+    }
+    this._transformCache.set(transformPath, transform);
+
     return transform;
   }
 
@@ -247,14 +254,6 @@ export default class ScriptTransformer {
     return input;
   }
 
-  private _getRealPath(filepath: Config.Path): Config.Path {
-    try {
-      return realpath(filepath) || filepath;
-    } catch (err) {
-      return filepath;
-    }
-  }
-
   // We don't want to expose transformers to the outside - this function is just
   // to warm up `this._transformCache`
   preloadTransformer(filepath: Config.Path): void {
@@ -269,7 +268,7 @@ export default class ScriptTransformer {
     supportsDynamicImport = false,
     supportsStaticESM = false,
   ): TransformResult {
-    const filename = this._getRealPath(filepath);
+    const filename = tryRealpath(filepath);
     const transform = this._getTransformer(filename);
     const cacheFilePath = this._getFileCachePath(
       filename,
@@ -567,7 +566,7 @@ export default class ScriptTransformer {
   /**
    * @deprecated use `this.shouldTransform` instead
    */
-  // @ts-ignore: Unused and private - remove in Jest 25
+  // @ts-expect-error: Unused and private - remove in Jest 25
   private _shouldTransform(filename: Config.Path): boolean {
     return this.shouldTransform(filename);
   }

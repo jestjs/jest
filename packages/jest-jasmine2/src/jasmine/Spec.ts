@@ -142,7 +142,7 @@ export default class Spec {
 
     this.queueableFn.initError = this.initError;
 
-    // @ts-ignore
+    // @ts-expect-error
     this.result = {
       id: this.id,
       description: this.description,
@@ -192,7 +192,7 @@ export default class Spec {
     this.currentRun = this.queueRunnerFactory({
       queueableFns: allFns,
       onException() {
-        // @ts-ignore
+        // @ts-expect-error
         self.onException.apply(self, arguments);
       },
       userContext: this.userContext(),

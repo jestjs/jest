@@ -72,6 +72,13 @@ describe('check', () => {
     },
   );
 
+  it('raises an exception if selectProjects is not provided any project names', () => {
+    const argv: Config.Argv = {selectProjects: []} as Config.Argv;
+    expect(() => check(argv)).toThrow(
+      'The --selectProjects option requires the name of at least one project to be specified.\n',
+    );
+  });
+
   it('raises an exception if config is not a valid JSON string', () => {
     const argv = {config: 'x:1'} as Config.Argv;
     expect(() => check(argv)).toThrow(
@@ -94,11 +101,11 @@ describe('check', () => {
 
 describe('buildArgv', () => {
   it('should return only camelcased args ', () => {
-    // @ts-ignore
+    // @ts-expect-error
     const mockProcessArgv = jest
       .spyOn(process.argv, 'slice')
       .mockImplementation(() => ['--clear-mocks']);
-    // @ts-ignore
+    // @ts-expect-error
     const actual = buildArgv(null);
     expect(actual).not.toHaveProperty('clear-mocks');
     expect(actual).toHaveProperty('clearMocks', true);

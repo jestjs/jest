@@ -1,6 +1,6 @@
 {
   "name": "eslint-config-fb-strict",
-  "version": "25.2.6",
+  "version": "26.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -20,7 +20,7 @@
     "eslint-plugin-react": "^7.1.0"
   },
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.14.2"
   },
   "publishConfig": {
     "access": "public"

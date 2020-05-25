@@ -20,7 +20,6 @@ export type HasteConfig = {
   defaultPlatform?: string | null;
   hasteImplModulePath?: string;
   platforms?: Array<string>;
-  providesModuleNodeModules: Array<string>;
   throwOnModuleCollision?: boolean;
 };
 
@@ -34,7 +33,6 @@ export interface ConfigGlobals {
 export type DefaultOptions = {
   automock: boolean;
   bail: number;
-  browser: boolean;
   cache: boolean;
   cacheDirectory: Path;
   changedFilesWithAncestor: boolean;
@@ -86,12 +84,10 @@ export type DefaultOptions = {
   watchman: boolean;
 };
 
-export type DisplayName =
-  | string
-  | {
-      name: string;
-      color: typeof chalk.Color;
-    };
+export type DisplayName = {
+  name: string;
+  color: typeof chalk.Color;
+};
 
 export type InitialOptionsWithRootDir = InitialOptions &
   Required<Pick<InitialOptions, 'rootDir'>>;
@@ -99,7 +95,6 @@ export type InitialOptionsWithRootDir = InitialOptions &
 export type InitialOptions = Partial<{
   automock: boolean;
   bail: boolean | number;
-  browser: boolean;
   cache: boolean;
   cacheDirectory: Path;
   clearMocks: boolean;
@@ -122,7 +117,7 @@ export type InitialOptions = Partial<{
   dependencyExtractor: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
-  displayName: DisplayName;
+  displayName: string | DisplayName;
   expand: boolean;
   extraGlobals: Array<string>;
   filter: Path;
@@ -301,7 +296,6 @@ export type GlobalConfig = {
 
 export type ProjectConfig = {
   automock: boolean;
-  browser: boolean;
   cache: boolean;
   cacheDirectory: Path;
   clearMocks: boolean;
@@ -348,7 +342,7 @@ export type ProjectConfig = {
   testRegex: Array<string | RegExp>;
   testRunner: string;
   testURL: string;
-  timers: 'real' | 'fake';
+  timers: 'real' | 'fake' | 'modern' | 'legacy';
   transform: Array<[string, Path, Record<string, unknown>]>;
   transformIgnorePatterns: Array<Glob>;
   watchPathIgnorePatterns: Array<string>;
@@ -360,7 +354,6 @@ export type Argv = Arguments<
     all: boolean;
     automock: boolean;
     bail: boolean | number;
-    browser: boolean;
     cache: boolean;
     cacheDirectory: string;
     changedFilesWithAncestor: boolean;
@@ -413,6 +406,7 @@ export type Argv = Arguments<
     rootDir: string;
     roots: Array<string>;
     runInBand: boolean;
+    selectProjects: Array<string>;
     setupFiles: Array<string>;
     setupFilesAfterEnv: Array<string>;
     showConfig: boolean;

@@ -59,12 +59,12 @@ export default (config: {expand: boolean}): void => {
         return this.isNot
           ? negativeCompare.apply(
               null,
-              // @ts-ignore
+              // @ts-expect-error
               args,
             )
           : result.compare.apply(
               null,
-              // @ts-ignore
+              // @ts-expect-error
               args,
             );
       };

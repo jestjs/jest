@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
+import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 
 import {getStackTraceLines, getTopFrame} from 'jest-message-util';
@@ -54,7 +54,7 @@ type SaveStatus = {
 export default class SnapshotState {
   private _counters: Map<string, number>;
   private _dirty: boolean;
-  // @ts-ignore
+  // @ts-expect-error
   private _index: number;
   private _updateSnapshot: Config.SnapshotUpdateState;
   private _snapshotData: SnapshotData;

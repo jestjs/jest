@@ -6,14 +6,15 @@
  *
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
 import {EventEmitter} from 'events';
+import * as fs from 'graceful-fs';
 import anymatch, {Matcher} from 'anymatch';
 import micromatch = require('micromatch');
-// @ts-ignore no types
+// @ts-expect-error no types
 import walker from 'walker';
 
+// eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
 // @ts-ignore: this is for CI which runs linux and might not have this
 let fsevents: typeof import('fsevents') | null = null;
 try {

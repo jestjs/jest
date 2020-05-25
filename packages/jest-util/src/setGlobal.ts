@@ -10,6 +10,6 @@ export default (
   key: string,
   value: unknown,
 ): void => {
-  // @ts-ignore: no index
+  // @ts-expect-error: no index
   globalToMutate[key] = value;
 };

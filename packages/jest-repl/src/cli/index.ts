@@ -21,7 +21,6 @@ const REPL_SCRIPT = require.resolve('./repl.js');
 export = function (): void {
   const argv = <Config.Argv>yargs.usage(args.usage).options(args.options).argv;
 
-  // @ts-ignore: fix this at some point
   validateCLIOptions(argv, {...args.options, deprecationEntries});
 
   argv._ = [REPL_SCRIPT];

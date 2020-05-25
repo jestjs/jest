@@ -2,12 +2,12 @@
   "compilerOptions": {
     "target": "es2017",
     "module": "commonjs",
-    "lib": ["dom", "es2017"],
+    // Object.fromEntries
+    "lib": ["dom", "es2017", "es2019.object"],
     "declaration": true,
     "composite": true,
     "emitDeclarationOnly": true,
-    // blocked by https://github.com/chalk/chalk/pull/390
-    // "isolatedModules": true,
+    "isolatedModules": true,
     "importsNotUsedAsValues": "error",
 
     "strict": true,
@@ -28,7 +28,6 @@
     ".yarn/releases/*",
     "**/__tests__/**/*",
     "**/__mocks__/**/*",
-    "**/build/**/*",
-    "**/build-es5/**/*"
+    "**/build/**/*"
   ]
 }

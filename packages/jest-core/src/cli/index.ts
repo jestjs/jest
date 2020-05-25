@@ -26,6 +26,9 @@ import TestWatcher from '../TestWatcher';
 import watch from '../watch';
 import pluralize from '../pluralize';
 import logDebugMessages from '../lib/log_debug_messages';
+import getConfigsOfProjectsToRun from '../getConfigsOfProjectsToRun';
+import getProjectNamesMissingWarning from '../getProjectNamesMissingWarning';
+import getSelectProjectsMessage from '../getSelectProjectsMessage';
 
 const {print: preRunMessagePrint} = preRunMessage;
 
@@ -38,10 +41,6 @@ export async function runCLI(
   results: AggregatedResult;
   globalConfig: Config.GlobalConfig;
 }> {
-  const realFs = require('fs');
-  const fs = require('graceful-fs');
-  fs.gracefulify(realFs);
-
   let results: AggregatedResult | undefined;
 
   // If we output a JSON object, we can't write anything to stdout, since
@@ -72,9 +71,22 @@ export async function runCLI(
     exit(0);
   }
 
-  await _run(
+  let configsOfProjectsToRun = configs;
+  if (argv.selectProjects) {
+    const namesMissingWarning = getProjectNamesMissingWarning(configs);
+    if (namesMissingWarning) {
+      outputStream.write(namesMissingWarning);
+    }
+    configsOfProjectsToRun = getConfigsOfProjectsToRun(
+      argv.selectProjects,
+      configs,
+    );
+    outputStream.write(getSelectProjectsMessage(configsOfProjectsToRun));
+  }
+
+  await _run10000(
     globalConfig,
-    configs,
+    configsOfProjectsToRun,
     hasDeprecationWarnings,
     outputStream,
     r => (results = r),
@@ -138,7 +150,7 @@ const buildContextsAndHasteMaps = async (
   return {contexts, hasteMapInstances};
 };
 
-const _run = async (
+const _run10000 = async (
   globalConfig: Config.GlobalConfig,
   configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,

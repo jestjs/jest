@@ -6,8 +6,8 @@
  */
 
 import {createHash} from 'crypto';
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import type {
   TransformOptions as JestTransformOptions,
   Transformer,
@@ -41,8 +41,9 @@ interface BabelJestTransformOptions extends TransformOptions {
 }
 
 const createTransformer = (
-  inputOptions: TransformOptions = {},
+  userOptions?: TransformOptions | null,
 ): BabelJestTransformer => {
+  const inputOptions: TransformOptions = userOptions ?? {};
   const options: BabelJestTransformOptions = {
     ...inputOptions,
     caller: {

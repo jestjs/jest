@@ -41,12 +41,10 @@ jobs:
         run: node scripts/build.js
       - name: run tsc
         run: yarn build:ts
-      - name: verify ts 3.4 compatibility
+      - name: verify TypeScript@3.8 compatibility
         run: yarn verify-old-ts
       - name: run eslint
         run: yarn lint
-      - name: run eslint on browser builds
-        run: yarn lint-es5-build
       - name: run prettier
         run: yarn lint:prettier:ci
       - name: check copyright headers
@@ -56,8 +54,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # https://github.com/actions/setup-node/issues/27
-        node-version: [8.17.0, 10.x, 12.x, 13.x, 14.x]
+        node-version: [10.x, 12.x, 13.x, 14.x]
         os: [ubuntu-latest, macOS-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
@@ -82,9 +79,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: remove prettier dep
-        run: yarn remove-prettier-dep
-        if: matrix.node-version == '8.17.0'
       - name: install
         run: yarn install-no-ts-build
       - name: run tests

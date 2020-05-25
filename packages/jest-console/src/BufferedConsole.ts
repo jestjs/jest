@@ -9,7 +9,7 @@ import assert = require('assert');
 import {Console} from 'console';
 import {format} from 'util';
 import chalk = require('chalk');
-import {ErrorWithStack} from 'jest-util';
+import {ErrorWithStack, formatTime} from 'jest-util';
 import type {
   ConsoleBuffer,
   LogCounters,
@@ -154,7 +154,7 @@ export default class BufferedConsole extends Console {
     if (startTime) {
       const endTime = new Date();
       const time = endTime.getTime() - startTime.getTime();
-      this._log('time', format(`${label}: ${time}ms`));
+      this._log('time', format(`${label}: ${formatTime(time)}`));
       delete this._timers[label];
     }
   }

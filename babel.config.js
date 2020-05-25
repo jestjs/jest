@@ -40,7 +40,7 @@ module.exports = {
           },
         ],
       ],
-      test: 'packages/jest-config/src/importEsm.ts',
+      test: 'packages/jest-config/src/readConfigFileAndSetRootDir.ts',
     },
   ],
   plugins: [

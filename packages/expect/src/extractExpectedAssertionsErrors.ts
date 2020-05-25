@@ -23,10 +23,16 @@ const resetAssertionsLocalState = () => {
   });
 };
 
+type AssertionsErrors = Array<{
+  actual: string;
+  error: string;
+  expected: string | number;
+}>;
+
 // Create and format all errors related to the mismatched number of `expect`
 // calls and reset the matcher's state.
-const extractExpectedAssertionsErrors = () => {
-  const result = [];
+const extractExpectedAssertionsErrors: () => AssertionsErrors = () => {
+  const result: AssertionsErrors = [];
   const {
     assertionCalls,
     expectedAssertionsNumber,

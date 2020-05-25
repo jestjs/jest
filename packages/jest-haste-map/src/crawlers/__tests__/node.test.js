@@ -33,7 +33,7 @@ jest.mock('child_process', () => ({
 
 let mockHasReaddirWithFileTypesSupport = false;
 
-jest.mock('fs', () => {
+jest.mock('graceful-fs', () => {
   let mtime = 32;
   const size = 42;
   const stat = (path, callback) => {
@@ -384,7 +384,7 @@ describe('node crawler', () => {
   describe('readdir withFileTypes support', () => {
     it('calls lstat for directories and symlinks if readdir withFileTypes is not supported', () => {
       nodeCrawl = require('../node');
-      const fs = require('fs');
+      const fs = require('graceful-fs');
 
       const files = new Map();
       return nodeCrawl({
@@ -416,7 +416,7 @@ describe('node crawler', () => {
     it('avoids calling lstat for directories and symlinks if readdir withFileTypes is supported', () => {
       mockHasReaddirWithFileTypesSupport = true;
       nodeCrawl = require('../node');
-      const fs = require('fs');
+      const fs = require('graceful-fs');
 
       const files = new Map();
       return nodeCrawl({

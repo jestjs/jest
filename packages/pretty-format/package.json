@@ -1,6 +1,6 @@
 {
   "name": "pretty-format",
-  "version": "25.4.0",
+  "version": "26.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,17 +10,9 @@
   "description": "Stringify any JavaScript value.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
-  "typesVersions": {
-    "<3.8": {
-      "build/*": [
-        "build/ts3.4/*"
-      ]
-    }
-  },
-  "browser": "build-es5/index.js",
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
-    "@jest/types": "^25.4.0",
+    "@jest/types": "^26.0.1",
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.0.0",
     "react-is": "^16.12.0"
@@ -30,12 +22,13 @@
     "@types/react-is": "^16.7.1",
     "@types/react-test-renderer": "*",
     "immutable": "4.0.0-rc.9",
+    "jest-util": "^25.2.6",
     "react": "*",
     "react-dom": "*",
     "react-test-renderer": "*"
   },
   "engines": {
-    "node": ">= 8.3"
+    "node": ">= 10.14.2"
   },
   "publishConfig": {
     "access": "public"

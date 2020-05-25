@@ -93,10 +93,9 @@ export interface GlobalAdditions extends TestFrameworkGlobals {
   spyOnProperty: () => void;
 }
 
-// TODO: Maybe add `| Window` in the future?
-// extends directly after https://github.com/sandersn/downlevel-dts/issues/33 is fixed
-type NodeGlobalWithoutAdditions = Omit<NodeJS.Global, keyof GlobalAdditions>;
-
-export interface Global extends GlobalAdditions, NodeGlobalWithoutAdditions {
+export interface Global
+  extends GlobalAdditions,
+    // TODO: Maybe add `| Window` in the future?
+    Omit<NodeJS.Global, keyof GlobalAdditions> {
   [extras: string]: any;
 }

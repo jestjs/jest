@@ -18,8 +18,16 @@ Or through JavaScript:
 
 ```js
 // jest.config.js
+//Sync object
 module.exports = {
   verbose: true,
+};
+
+//Or async function
+module.exports = async () => {
+  return {
+    verbose: true,
+  };
 };
 ```
 
@@ -105,12 +113,6 @@ Default: `0`
 
 By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after `n` failures. Setting bail to `true` is the same as setting bail to `1`.
 
-### `browser` [boolean]
-
-Default: `false`
-
-Respect Browserify's [`"browser"` field](https://github.com/substack/browserify-handbook#browser-field) in `package.json` when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.
-
 ### `cacheDirectory` [string]
 
 Default: `"/tmp/<path>"`
@@ -189,11 +191,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
 
-Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel and comes with a few caveats
-
-1. Your node version must include `vm.compileFunction`, which was introduced in [node 10.10](https://nodejs.org/dist/latest-v12.x/docs/api/vm.html#vm_vm_compilefunction_code_params_options)
-1. Tests needs to run in Node test environment (support for `jsdom` requires [`jest-environment-jsdom-sixteen`](https://www.npmjs.com/package/jest-environment-jsdom-sixteen))
-1. V8 has way better data in the later versions, so using the latest versions of node (v13 at the time of this writing) will yield better results
+Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
 
 ### `coverageReporters` [array\<string | [string,any]>]
 
@@ -689,7 +687,6 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 ```json
 {
   "basedir": string,
-  "browser": bool,
   "defaultResolver": "function(request, options)",
   "extensions": [string],
   "moduleDirectory": [string],
@@ -700,7 +697,18 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 
 The function should either return a path to the module that should be resolved or throw an error if the module can't be found.
 
-Note: the defaultResolver passed as options is the jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom one, e.g. (request, options).
+Note: the defaultResolver passed as options is the Jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom one, e.g. `(request, options)`.
+
+For example, if you want to respect Browserify's [`"browser"` field](https://github.com/browserify/browserify-handbook/blob/master/readme.markdown#browser-field), you can use the following configuration:
+
+```json
+{
+  ...
+  "jest": {
+    "resolver": "browser-resolve"
+  }
+}
+```
 
 ### `restoreMocks` [boolean]
 
@@ -1085,6 +1093,7 @@ Example:
 Sort test path alphabetically.
 
 ```js
+// testSequencer.js
 const Sequencer = require('@jest/test-sequencer').default;
 
 class CustomSequencer extends Sequencer {
@@ -1097,6 +1106,14 @@ class CustomSequencer extends Sequencer {
 }
 
 module.exports = CustomSequencer;
+```
+
+Use it in your Jest config file like this:
+
+```json
+{
+  "testSequencer": "path/to/testSequencer.js"
+}
 ```
 
 ### `testTimeout` [number]
@@ -1115,11 +1132,13 @@ This option sets the URL for the jsdom environment. It is reflected in propertie
 
 Default: `real`
 
-Setting this value to `fake` allows the use of fake timers for functions such as `setTimeout`. Fake timers are useful when a piece of code sets a long timeout that we don't want to wait for in a test.
+Setting this value to `legacy` or `fake` allows the use of fake timers for functions such as `setTimeout`. Fake timers are useful when a piece of code sets a long timeout that we don't want to wait for in a test.
+
+If the value is `modern`, [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers) will be used as implementation instead of Jest's own legacy implementation. This will be the default fake implementation in Jest 27.
 
 ### `transform` [object\<string, pathToTransformer | [pathToTransformer, object]>]
 
-Default: `undefined`
+Default: `{"^.+\\.[jt]sx?$": "babel-jest"}`
 
 A map from regular expressions to paths to transformers. A transformer is a module that provides a synchronous function for transforming source files. For example, if you wanted to be able to use a new language feature in your modules or tests that isn't yet supported by node, you might plug in one of many compilers that compile a future version of JavaScript to a current one. Example: see the [examples/typescript](https://github.com/facebook/jest/blob/master/examples/typescript/package.json#L16) example or the [webpack tutorial](Webpack.md).
 
@@ -1134,7 +1153,7 @@ You can pass configuration to a transformer like `{filePattern: ['path-to-transf
 
 _Note: a transformer is only run once per file unless the file has changed. During development of a transformer it can be useful to run Jest with `--no-cache` to frequently [delete Jest's cache](Troubleshooting.md#caching-issues)._
 
-_Note: if you are using the `babel-jest` transformer and want to use an additional code preprocessor, keep in mind that when "transform" is overwritten in any way the `babel-jest` is not loaded automatically anymore. If you want to use it to compile JavaScript code it has to be explicitly defined. See [babel-jest plugin](https://github.com/facebook/jest/tree/master/packages/babel-jest#setup)_
+_Note: when adding additional code transformers, this will overwrite the default config and `babel-jest` is no longer automatically loaded. If you want to use it to compile JavaScript or Typescript, it has to be explicitly defined by adding `{"^.+\\.[jt]sx?$": "babel-jest"}` to the transform property. See [babel-jest plugin](https://github.com/facebook/jest/tree/master/packages/babel-jest#setup)_
 
 ### `transformIgnorePatterns` [array\<string>]
 

@@ -29,9 +29,7 @@ const defaultConfig = {
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   expand: false,
   globals: {},
-  haste: {
-    providesModuleNodeModules: [],
-  },
+  haste: {},
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
   moduleNameMapper: {},
@@ -82,9 +80,7 @@ const validConfig = {
   expand: false,
   forceExit: false,
   globals: {},
-  haste: {
-    providesModuleNodeModules: ['react', 'react-native'],
-  },
+  haste: {},
   logHeapUsage: true,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],

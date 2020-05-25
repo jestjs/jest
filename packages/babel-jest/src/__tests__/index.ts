@@ -97,3 +97,21 @@ describe('caller option correctly merges from defaults and options', () => {
     );
   });
 });
+
+test('can pass null to createTransformer', () => {
+  const transformer = babelJest.createTransformer(null);
+  transformer.process(sourceString, 'dummy_path.js', makeProjectConfig(), {
+    instrument: false,
+  });
+
+  expect(loadPartialConfig).toHaveBeenCalledTimes(1);
+  expect(loadPartialConfig).toHaveBeenCalledWith(
+    expect.objectContaining({
+      caller: {
+        name: 'babel-jest',
+        supportsDynamicImport: false,
+        supportsStaticESM: false,
+      },
+    }),
+  );
+});

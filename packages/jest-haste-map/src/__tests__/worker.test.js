@@ -38,7 +38,7 @@ jest.mock('graceful-fs', () => {
   };
 
   return {
-    ...jest.genMockFromModule('graceful-fs'),
+    ...jest.createMockFromModule('graceful-fs'),
     readFileSync: jest.fn((path, options) => {
       if (mockFs[path]) {
         return options === 'utf8' ? mockFs[path] : Buffer.from(mockFs[path]);
