@@ -82,7 +82,14 @@ const _runTestsForDescribeBlock = async (
 
 const _runTest = async (test: Circus.TestEntry): Promise<void> => {
   await dispatch({name: 'test_start', test});
-  const testContext = Object.create(null);
+
+  const testContext: Circus.TestContext = {};
+  testContext.asyncSkipped = false;
+  testContext.skip = async () => {
+    testContext.asyncSkipped = true;
+    await dispatch({name: 'test_skip', test});
+  };
+
   const {hasFocusedTests, testNamePattern} = getState();
 
   const isSkipped =
@@ -120,7 +127,9 @@ const _runTest = async (test: Circus.TestEntry): Promise<void> => {
   // `afterAll` hooks should not affect test status (pass or fail), because if
   // we had a global `afterAll` hook it would block all existing tests until
   // this hook is executed. So we dispatch `test_done` right away.
-  await dispatch({name: 'test_done', test});
+  if (!testContext.asyncSkipped) {
+    await dispatch({name: 'test_done', test});
+  }
 };
 
 const _callCircusHook = async ({
