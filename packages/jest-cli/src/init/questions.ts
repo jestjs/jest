@@ -30,7 +30,7 @@ const defaultQuestions: Array<PromptObject> = [
       {title: 'v8', value: 'v8'},
     ],
     initial: 0,
-    message: 'Which coverageProvider should be used to instrument code for coverage?',
+    message: 'Which coverageProvider should be used to collect coverage?',
     name: 'coverageProvider',
     type: 'select',
   },

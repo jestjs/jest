@@ -100,7 +100,7 @@ describe('init', () => {
 
         const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
         const evaluatedConfig = eval(writtenJestConfig);
-
+        // should modify when the default coverageProvider will be changed to "v8"
         expect(evaluatedConfig).toEqual({});
       });
 
@@ -111,7 +111,7 @@ describe('init', () => {
 
         const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
         const evaluatedConfig = eval(writtenJestConfig);
-
+        // should modify when the default coverageProvider will be changed to "v8"
         expect(evaluatedConfig).toEqual({coverageProvider: 'v8'});
       });
 
