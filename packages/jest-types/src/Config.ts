@@ -35,6 +35,7 @@ export type DefaultOptions = {
   bail: number;
   cache: boolean;
   cacheDirectory: Path;
+  cacheIdentifier: string;
   changedFilesWithAncestor: boolean;
   clearMocks: boolean;
   collectCoverage: boolean;
@@ -97,6 +98,7 @@ export type InitialOptions = Partial<{
   bail: boolean | number;
   cache: boolean;
   cacheDirectory: Path;
+  cacheIdentifier: string;
   clearMocks: boolean;
   changedFilesWithAncestor: boolean;
   changedSince: string;
@@ -298,6 +300,7 @@ export type ProjectConfig = {
   automock: boolean;
   cache: boolean;
   cacheDirectory: Path;
+  cacheIdentifier: string;
   clearMocks: boolean;
   coveragePathIgnorePatterns: Array<string>;
   cwd: Path;
@@ -356,6 +359,7 @@ export type Argv = Arguments<
     bail: boolean | number;
     cache: boolean;
     cacheDirectory: string;
+    cacheIdentifier: string;
     changedFilesWithAncestor: boolean;
     changedSince: string;
     ci: boolean;

@@ -171,6 +171,7 @@ const groupOptions = (
     automock: options.automock,
     cache: options.cache,
     cacheDirectory: options.cacheDirectory,
+    cacheIdentifier: options.cacheIdentifier,
     clearMocks: options.clearMocks,
     coveragePathIgnorePatterns: options.coveragePathIgnorePatterns,
     cwd: options.cwd,
