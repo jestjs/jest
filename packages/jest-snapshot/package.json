@@ -11,8 +11,6 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@babel/types": "^7.0.0",
-    "@jest/types": "^26.0.1",
-    "@types/prettier": "^2.0.0",
     "chalk": "^4.0.0",
     "expect": "^26.0.1",
     "graceful-fs": "^4.2.4",
@@ -29,8 +27,10 @@
   },
   "devDependencies": {
     "@babel/traverse": "^7.3.4",
+    "@jest/types": "^26.0.1",
     "@types/graceful-fs": "^4.1.3",
     "@types/natural-compare": "^1.4.0",
+    "@types/prettier": "^2.0.0",
     "@types/semver": "^7.1.0",
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.2.0",
