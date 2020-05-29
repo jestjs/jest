@@ -127,7 +127,7 @@ export const options = {
   cacheIdentifier: {
     description:
       'A unique key, when change, forces the cache key to be changed',
-    type: 'string'
+    type: 'string',
   },
   changedFilesWithAncestor: {
     default: undefined,
