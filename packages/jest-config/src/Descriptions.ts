@@ -21,6 +21,8 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
     'The directory where Jest should output its coverage files',
   coveragePathIgnorePatterns:
     'An array of regexp pattern strings used to skip coverage collection',
+  coverageProvider:
+    'Indicates which provider should be used to instrument code for coverage',
   coverageReporters:
     'A list of reporter names that Jest uses when writing coverage reports',
   coverageThreshold:
