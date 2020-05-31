@@ -28,6 +28,7 @@ const {
 type PromptsResults = {
   clearMocks: boolean;
   coverage: boolean;
+  coverageProvider: boolean;
   environment: boolean;
   scripts: boolean;
 };
