@@ -7,10 +7,10 @@
  */
 
 import * as matcherUtils from 'jest-matcher-utils';
-const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
-const {iterableEquality, subsetEquality} = require('../utils');
-const {equals} = require('../jasmineUtils');
-const jestExpect = require('../');
+import {alignedAnsiStyleSerializer} from '@jest/test-utils';
+import {iterableEquality, subsetEquality} from '../utils';
+import {equals} from '../jasmineUtils';
+import jestExpect from '../';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 

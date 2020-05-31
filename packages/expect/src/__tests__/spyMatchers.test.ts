@@ -6,8 +6,8 @@
  */
 
 import * as Immutable from 'immutable';
-const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
-const jestExpect = require('../');
+import {alignedAnsiStyleSerializer} from '@jest/test-utils';
+import jestExpect from '../';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 

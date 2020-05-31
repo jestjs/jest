@@ -6,7 +6,7 @@
  *
  */
 
-const jestExpect = require('../');
+import jestExpect from '../';
 
 jestExpect.extend({
   toCustomMatch(callback: Function, expectation: unknown) {

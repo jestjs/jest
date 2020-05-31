@@ -7,14 +7,14 @@
  */
 
 import {stringify} from 'jest-matcher-utils';
-const {
+import {
   emptyObject,
   getObjectSubset,
   getPath,
   hasOwnProperty,
-  subsetEquality,
   iterableEquality,
-} = require('../utils');
+  subsetEquality,
+} from '../utils';
 
 describe('getPath()', () => {
   test('property exists', () => {
