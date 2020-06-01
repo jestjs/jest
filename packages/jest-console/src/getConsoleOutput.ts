@@ -11,11 +11,13 @@ import {
   StackTraceOptions,
   formatStackTrace,
 } from 'jest-message-util';
+import type {Config} from '@jest/types';
 import type {ConsoleBuffer} from './types';
 
 export default (
   // TODO: remove in 27
   root: string,
+  // TODO: this is covered by GlobalConfig, switch over in 27
   verbose: boolean,
   buffer: ConsoleBuffer,
   // TODO: make mandatory and take Config.ProjectConfig in 27
@@ -23,7 +25,7 @@ export default (
     rootDir: root,
     testMatch: [],
   },
-  globalNoStackTrace: boolean,
+  globalConfig: Config.GlobalConfig,
 ): string => {
   const TITLE_INDENT = verbose ? '  ' : '    ';
   const CONSOLE_INDENT = TITLE_INDENT + '  ';
@@ -41,12 +43,12 @@ export default (
     if (type === 'warn') {
       message = chalk.yellow(message);
       typeMessage = chalk.yellow(typeMessage);
-      noStackTrace = false || globalNoStackTrace;
+      noStackTrace = false || globalConfig.noStackTrace;
       noCodeFrame = false;
     } else if (type === 'error') {
       message = chalk.red(message);
       typeMessage = chalk.red(typeMessage);
-      noStackTrace = false || globalNoStackTrace;
+      noStackTrace = false || globalConfig.noStackTrace;
       noCodeFrame = false;
     }
 
