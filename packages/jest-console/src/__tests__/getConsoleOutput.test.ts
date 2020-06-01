@@ -8,50 +8,50 @@
 import {formatStackTrace} from 'jest-message-util';
 import getConsoleOutput from '../getConsoleOutput';
 import BufferedConsole from '../BufferedConsole';
-import {LogType} from '../types';
+import type {LogType} from '../types';
+import {makeGlobalConfig} from '../../../../TestUtils';
 
 jest.mock('jest-message-util', () => ({
   formatStackTrace: jest.fn(),
 }));
 
 describe('getConsoleOutput', () => {
+  const globalConfig = makeGlobalConfig({noStackTrace: true});
   formatStackTrace.mockImplementation(() => 'throw new Error("Whoops!");');
-  const cases = [
-    'assert',
-    'count',
-    'debug',
-    'dir',
-    'dirxml',
-    'error',
-    'group',
-    'groupCollapsed',
-    'info',
-    'log',
-    'time',
-    'warn',
-  ];
 
-  cases.forEach(logType => {
-    it(`takes noStackTrace and pass it on for ${logType}`, () => {
-      getConsoleOutput(
-        'someRootPath',
-        true,
-        BufferedConsole.write([], logType as LogType, 'message', 4),
-        {
-          rootDir: 'root',
-          testMatch: [],
-        },
-        true,
-      );
-      expect(formatStackTrace).toHaveBeenCalled();
-      expect(formatStackTrace).toHaveBeenCalledWith(
-        expect.anything(),
-        expect.anything(),
-        expect.objectContaining({
-          noCodeFrame: expect.anything(),
-          noStackTrace: true,
-        }),
-      );
-    });
+  it.each`
+    logType
+    ${'assert'}
+    ${'count'}
+    ${'debug'}
+    ${'dir'}
+    ${'dirxml'}
+    ${'error'}
+    ${'group'}
+    ${'groupCollapsed'}
+    ${'info'}
+    ${'log'}
+    ${'time'}
+    ${'warn'}
+  `('takes noStackTrace and pass it on for $logType', logType => {
+    getConsoleOutput(
+      'someRootPath',
+      true,
+      BufferedConsole.write([], logType as LogType, 'message', 4),
+      {
+        rootDir: 'root',
+        testMatch: [],
+      },
+      globalConfig,
+    );
+    expect(formatStackTrace).toHaveBeenCalled();
+    expect(formatStackTrace).toHaveBeenCalledWith(
+      expect.anything(),
+      expect.anything(),
+      expect.objectContaining({
+        noCodeFrame: expect.anything(),
+        noStackTrace: true,
+      }),
+    );
   });
 });

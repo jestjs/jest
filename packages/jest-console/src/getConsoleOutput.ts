@@ -44,12 +44,12 @@ export default (
     if (type === 'warn') {
       message = chalk.yellow(message);
       typeMessage = chalk.yellow(typeMessage);
-      noStackTrace = globalConfig ? globalConfig.noStackTrace : false;
+      noStackTrace = globalConfig?.noStackTrace ?? false;
       noCodeFrame = false;
     } else if (type === 'error') {
       message = chalk.red(message);
       typeMessage = chalk.red(typeMessage);
-      noStackTrace = globalConfig ? globalConfig.noStackTrace : false;
+      noStackTrace = globalConfig?.noStackTrace ?? false;
       noCodeFrame = false;
     }
 
