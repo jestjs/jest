@@ -25,7 +25,8 @@ export default (
     rootDir: root,
     testMatch: [],
   },
-  globalConfig: Config.GlobalConfig,
+  // TODO: make mandatory in 27
+  globalConfig?: Config.GlobalConfig,
 ): string => {
   const TITLE_INDENT = verbose ? '  ' : '    ';
   const CONSOLE_INDENT = TITLE_INDENT + '  ';
@@ -43,12 +44,12 @@ export default (
     if (type === 'warn') {
       message = chalk.yellow(message);
       typeMessage = chalk.yellow(typeMessage);
-      noStackTrace = false || globalConfig.noStackTrace;
+      noStackTrace = globalConfig ? globalConfig.noStackTrace : false;
       noCodeFrame = false;
     } else if (type === 'error') {
       message = chalk.red(message);
       typeMessage = chalk.red(typeMessage);
-      noStackTrace = false || globalConfig.noStackTrace;
+      noStackTrace = globalConfig ? globalConfig.noStackTrace : false;
       noCodeFrame = false;
     }
 
