@@ -37,8 +37,51 @@ export type TestSelectionConfig = {
   watch?: boolean;
 };
 
-const globsToMatcher = (globs: Array<Config.Glob>) => (path: Config.Path) =>
-  micromatch([replacePathSepForGlob(path)], globs, {dot: true}).length > 0;
+const globsMatchers = new Map<
+  string,
+  {
+    isMatch: (str: string) => boolean;
+    negated: boolean;
+  }
+>();
+
+const globsToMatcher = (globs: Array<Config.Glob>) => {
+  const matchers = globs.map(glob => {
+    if (!globsMatchers.has(glob)) {
+      const state = micromatch.scan(glob, {dot: true});
+      const matcher = {
+        isMatch: micromatch.matcher(glob, {dot: true}),
+        negated: state.negated,
+      };
+      globsMatchers.set(glob, matcher);
+    }
+    return globsMatchers.get(glob)!;
+  });
+
+  return (path: Config.Path) => {
+    const replacedPath = replacePathSepForGlob(path);
+    let kept = false;
+    let omitted = false;
+    let negatives = 0;
+
+    for (let i = 0; i < matchers.length; i++) {
+      const {isMatch, negated} = matchers[i];
+
+      if (negated) negatives++;
+
+      const matched = isMatch(replacedPath);
+
+      if (!matched && negated) {
+        kept = false;
+        omitted = true;
+      } else if (matched && !negated) {
+        kept = true;
+      }
+    }
+
+    return negatives === matchers.length ? !omitted : kept && !omitted;
+  };
+};
 
 const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => (
   path: Config.Path,
