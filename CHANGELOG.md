@@ -22,6 +22,8 @@
 
 ### Performance
 
+- `[jest-haste-map]` Reduce micromatch overhead in jest-haste-map HasteFS
+
 ## 26.0.1
 
 ### Fixes
