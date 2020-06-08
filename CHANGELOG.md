@@ -22,7 +22,7 @@
 
 ### Performance
 
-- `[jest-core]` Cache micromatch in SearchSource globsToMatcher ([#10131](https://github.com/facebook/jest/pull/10131))
+- `[jest-core]` Cache micromatch in SearchSource globsToMatcher and avoid recreating RegExp instances in regexToMatcher ([#10131](https://github.com/facebook/jest/pull/10131))
 
 ## 26.0.1
 
