@@ -16,7 +16,7 @@ import DependencyResolver = require('jest-resolve-dependencies');
 import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';
-import {replacePathSepForGlob, testPathPatternToRegExp} from 'jest-util';
+import {globsToMatcher, testPathPatternToRegExp} from 'jest-util';
 import type {Filter, Stats, TestPathCases} from './types';
 
 export type SearchResult = {
@@ -35,52 +35,6 @@ export type TestSelectionConfig = {
   shouldTreatInputAsPattern?: boolean;
   testPathPattern?: string;
   watch?: boolean;
-};
-
-const globsMatchers = new Map<
-  string,
-  {
-    isMatch: (str: string) => boolean;
-    negated: boolean;
-  }
->();
-
-const globsToMatcher = (globs: Array<Config.Glob>) => {
-  const matchers = globs.map(glob => {
-    if (!globsMatchers.has(glob)) {
-      const state = micromatch.scan(glob, {dot: true});
-      const matcher = {
-        isMatch: micromatch.matcher(glob, {dot: true}),
-        negated: state.negated,
-      };
-      globsMatchers.set(glob, matcher);
-    }
-    return globsMatchers.get(glob)!;
-  });
-
-  return (path: Config.Path) => {
-    const replacedPath = replacePathSepForGlob(path);
-    let kept = false;
-    let omitted = false;
-    let negatives = 0;
-
-    for (let i = 0; i < matchers.length; i++) {
-      const {isMatch, negated} = matchers[i];
-
-      if (negated) negatives++;
-
-      const matched = isMatch(replacedPath);
-
-      if (!matched && negated) {
-        kept = false;
-        omitted = true;
-      } else if (matched && !negated) {
-        kept = true;
-      }
-    }
-
-    return negatives === matchers.length ? !omitted : kept && !omitted;
-  };
 };
 
 const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => {
