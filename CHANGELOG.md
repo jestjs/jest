@@ -2262,6 +2262,7 @@ See https://jestjs.io/blog/2016/12/15/2016-in-jest.html
 
 - Performance improvements.
 - jest now uses `chalk` instead of its own colors implementation.
+- jest-worker now uses `node` version `10.13`
 
 ## 0.8.1
 
