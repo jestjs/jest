@@ -20,6 +20,10 @@ const globsMatchers = new Map<
 export default function globsToMatcher(
   globs: Array<Config.Glob>,
 ): (path: Config.Path) => boolean {
+  if (globs.length === 0) {
+    return (_: Config.Path): boolean => false;
+  }
+
   const matchers = globs.map(glob => {
     if (!globsMatchers.has(glob)) {
       const state = micromatch.scan(glob, {dot: true});

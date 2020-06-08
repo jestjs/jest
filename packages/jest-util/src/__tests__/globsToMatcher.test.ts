@@ -57,3 +57,16 @@ it('works like micromatch with only negative globs', () => {
     micromatch(['some-module.test.js'], globs).length > 0,
   );
 });
+
+it('works like micromatch with empty globs', () => {
+  const globs = [];
+  const matcher = globsToMatcher(globs);
+
+  expect(matcher('some-module.js')).toBe(
+    micromatch(['some-module.js'], globs).length > 0,
+  );
+
+  expect(matcher('some-module.test.js')).toBe(
+    micromatch(['some-module.test.js'], globs).length > 0,
+  );
+});
