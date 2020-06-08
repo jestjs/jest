@@ -22,7 +22,7 @@
 
 ### Performance
 
-- `[jest-core]` Cache micromatch in SearchSource globsToMatcher and avoid recreating RegExp instances in regexToMatcher ([#10131](https://github.com/facebook/jest/pull/10131))
+- `[jest-core, jest-transform]` Improve Jest startup time and test runtime, particularly when running with coverage, by caching micromatch and avoiding recreating RegExp instances ([#10131](https://github.com/facebook/jest/pull/10131))
 
 ## 26.0.1
 
