@@ -263,6 +263,9 @@ test('does not find changes in files with no diff, for git', async () => {
 
   run(`${GIT} init`, DIR);
 
+  run(`${GIT} checkout -b jestChangedFilesSpecBase`, DIR);
+  run(`${GIT} checkout -b jestChangedFilesSpecMod`, DIR);
+
   writeFiles(DIR, {
     'file1.txt': 'modified file1',
   });
@@ -283,7 +286,7 @@ test('does not find changes in files with no diff, for git', async () => {
   );
 
   const {changedFiles: filesExplicitMaster} = await getChangedFilesForRoots(roots, {
-     changedSince: 'master'
+     changedSince: '^jestChangedFilesSpecBase'
   });
   expect(Array.from(filesExplicitMaster).map(filePath => path.basename(filePath))).toEqual(
     [],
