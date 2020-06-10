@@ -281,6 +281,13 @@ test('does not find changes in files with no diff, for git', async () => {
   expect(Array.from(files).map(filePath => path.basename(filePath))).toEqual(
     [],
   );
+
+  const {changedFiles: filesExplicitMaster} = await getChangedFilesForRoots(roots, {
+     changedSince: 'master'
+  });
+  expect(Array.from(filesExplicitMaster).map(filePath => path.basename(filePath))).toEqual(
+    [],
+  );
 });
 
 test('handles a bad revision for "changedSince", for git', async () => {
