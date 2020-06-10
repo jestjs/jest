@@ -21,7 +21,7 @@ const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';
 
 beforeEach(() => cleanup(DIR));
-afterEach(() => cleanup(DIR));
+// afterEach(() => cleanup(DIR));
 
 testIfHg('gets hg SCM roots and dedupes them', async () => {
   writeFiles(DIR, {
@@ -254,43 +254,55 @@ test('monitors only root paths for git', async () => {
   ).toEqual(['file2.txt', 'file3.txt']);
 });
 
-test('does not find changes in files with no diff, for git', async () => {
-  const roots = [''];
+fit('does not find changes in files with no diff, for git', async () => {
+  const roots = [path.resolve(DIR)];
+
+  console.log(DIR);
+
+
+
+  // init, commit, commit, revert 
 
   writeFiles(DIR, {
-    'file1.txt': 'file1',
+    'file1.txt': '',
   });
-
   run(`${GIT} init`, DIR);
 
-  run(`${GIT} checkout -b jestChangedFilesSpecBase`, DIR);
-  run(`${GIT} checkout -b jestChangedFilesSpecMod`, DIR);
+  run(`${GIT} add file1.txt`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "initial"`, DIR);
 
+ // checkout 
+
+  run(`${GIT} checkout -b jestChangedFilesSpecBase`, DIR);
+
+  run(`${GIT} checkout -b jestChangedFilesSpecMod`, DIR);
   writeFiles(DIR, {
     'file1.txt': 'modified file1',
   });
-
   run(`${GIT} add file1.txt`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "modified"`, DIR);
 
   writeFiles(DIR, {
-    'file1.txt': 'file1',
+    'file1.txt': '',
   });
 
   run(`${GIT} add file1.txt`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "removemod"`, DIR);
 
+  run(`${GIT} log`, DIR);
+
   const {changedFiles: files} = await getChangedFilesForRoots(roots, {});
-  expect(Array.from(files).map(filePath => path.basename(filePath))).toEqual(
+  expect(Array.from(files)).toEqual(
     [],
   );
 
-  const {changedFiles: filesExplicitMaster} = await getChangedFilesForRoots(roots, {
-     changedSince: '^jestChangedFilesSpecBase'
-  });
-  expect(Array.from(filesExplicitMaster).map(filePath => path.basename(filePath))).toEqual(
-    [],
+  const {changedFiles: filesExplicitBaseBranch} = await getChangedFilesForRoots(
+    roots,
+    {
+      changedSince: 'jestChangedFilesSpecBase',
+    },
   );
+  expect(Array.from(filesExplicitBaseBranch)).toEqual([]);
 });
 
 test('handles a bad revision for "changedSince", for git', async () => {
