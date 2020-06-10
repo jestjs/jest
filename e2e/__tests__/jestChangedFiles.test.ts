@@ -21,7 +21,7 @@ const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';
 
 beforeEach(() => cleanup(DIR));
-// afterEach(() => cleanup(DIR));
+afterEach(() => cleanup(DIR));
 
 testIfHg('gets hg SCM roots and dedupes them', async () => {
   writeFiles(DIR, {
