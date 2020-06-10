@@ -254,27 +254,21 @@ test('monitors only root paths for git', async () => {
   ).toEqual(['file2.txt', 'file3.txt']);
 });
 
-fit('does not find changes in files with no diff, for git', async () => {
+it('does not find changes in files with no diff, for git', async () => {
   const roots = [path.resolve(DIR)];
 
-  console.log(DIR);
-
-
-
-  // init, commit, commit, revert 
-
+  // create an empty file, commit it to "master"
   writeFiles(DIR, {
     'file1.txt': '',
   });
   run(`${GIT} init`, DIR);
-
   run(`${GIT} add file1.txt`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "initial"`, DIR);
 
- // checkout 
-
+  // check out a new branch, jestChangedFilesSpecBase, to use later in diff
   run(`${GIT} checkout -b jestChangedFilesSpecBase`, DIR);
 
+  // check out second branch, jestChangedFilesSpecMod, modify file & commit
   run(`${GIT} checkout -b jestChangedFilesSpecMod`, DIR);
   writeFiles(DIR, {
     'file1.txt': 'modified file1',
@@ -282,20 +276,20 @@ fit('does not find changes in files with no diff, for git', async () => {
   run(`${GIT} add file1.txt`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "modified"`, DIR);
 
+  // still on jestChangedFilesSpecMod branch, "revert" back to empty file and commit
   writeFiles(DIR, {
     'file1.txt': '',
   });
-
   run(`${GIT} add file1.txt`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "removemod"`, DIR);
 
-  run(`${GIT} log`, DIR);
-
+  // check that passing in no changedSince arg doesn't return any unstaged / other changes
   const {changedFiles: files} = await getChangedFilesForRoots(roots, {});
   expect(Array.from(files)).toEqual(
     [],
   );
 
+  // check that in diff from `jestChangedFilesSpecBase` branch, no changed files are reported
   const {changedFiles: filesExplicitBaseBranch} = await getChangedFilesForRoots(
     roots,
     {
