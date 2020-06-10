@@ -254,6 +254,35 @@ test('monitors only root paths for git', async () => {
   ).toEqual(['file2.txt', 'file3.txt']);
 });
 
+test('does not find changes in files with no diff, for git', async () => {
+  const roots = [''];
+
+  writeFiles(DIR, {
+    'file1.txt': 'file1',
+  });
+
+  run(`${GIT} init`, DIR);
+
+  writeFiles(DIR, {
+    'file1.txt': 'modified file1',
+  });
+
+  run(`${GIT} add file1.txt`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "modified"`, DIR);
+
+  writeFiles(DIR, {
+    'file1.txt': 'file1',
+  });
+
+  run(`${GIT} add file1.txt`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "removemod"`, DIR);
+
+  const {changedFiles: files} = await getChangedFilesForRoots(roots, {});
+  expect(Array.from(files).map(filePath => path.basename(filePath))).toEqual(
+    [],
+  );
+});
+
 test('handles a bad revision for "changedSince", for git', async () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
@@ -266,7 +295,7 @@ test('handles a bad revision for "changedSince", for git', async () => {
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
-  const {exitCode, stderr} = runJest(DIR, ['--changedSince=blablabla']);
+  const {exitCode, stderr} = runJest(DIR, ['--changedSince=^blablabla']);
 
   expect(exitCode).toBe(1);
   expect(wrap(stderr)).toMatchSnapshot();
