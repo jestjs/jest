@@ -285,9 +285,7 @@ it('does not find changes in files with no diff, for git', async () => {
 
   // check that passing in no changedSince arg doesn't return any unstaged / other changes
   const {changedFiles: files} = await getChangedFilesForRoots(roots, {});
-  expect(Array.from(files)).toEqual(
-    [],
-  );
+  expect(Array.from(files)).toEqual([]);
 
   // check that in diff from `jestChangedFilesSpecBase` branch, no changed files are reported
   const {changedFiles: filesExplicitBaseBranch} = await getChangedFilesForRoots(
