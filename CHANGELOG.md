@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- `[jest-mock]` Allow to mock methods in getters (TypeScript 3.9 export)
+
 ### Chore & Maintenance
 
 ### Performance
