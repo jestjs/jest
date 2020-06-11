@@ -3,7 +3,7 @@
 
 __metadata:
   version: 4
-  cacheKey: 5
+  cacheKey: 6
 
 "@angular/common@npm:^10.0.2":
   version: 10.0.2
@@ -11213,6 +11213,7 @@ fsevents@^1.2.7:
     fb-watchman: ^2.0.0
     fsevents: ^2.1.2
     graceful-fs: ^4.2.4
+    jest-regex-util: ^26.0.0
     jest-serializer: ^26.1.0
     jest-util: ^26.1.0
     jest-worker: ^26.1.0

@@ -7,6 +7,7 @@
   "references": [
     {"path": "../jest-worker"},
     {"path": "../jest-serializer"},
+    {"path": "../jest-regex-util"},
     {"path": "../jest-util"},
     {"path": "../jest-types"}
   ]
