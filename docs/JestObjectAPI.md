@@ -647,13 +647,13 @@ This means, if any timers have been scheduled (but have not yet executed), they 
 
 Returns the number of fake timers still left to run.
 
-### `.jest.setSystemTime(now?: number | Date)`
+### `jest.setSystemTime(now?: number | Date)`
 
 Set the current system time used by fake timers. Simulates a user changing the system clock while your program is running. It affects the current time but it does not in itself cause e.g. timers to fire; they will fire exactly as they would have done without the call to `jest.setSystemTime()`.
 
 > Note: This function is only available when using modern fake timers implementation
 
-### `.jest.getRealSystemTime()`
+### `jest.getRealSystemTime()`
 
 When mocking time, `Date.now()` will also be mocked. If you for some reason need access to the real current time, you can invoke this function.
 
