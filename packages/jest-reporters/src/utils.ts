@@ -15,15 +15,11 @@ import {SummaryOptions, Test} from './types';
 
 const PROGRESS_BAR_WIDTH = 40;
 
-export const printDisplayName = (config: Config.ProjectConfig) => {
+export const printDisplayName = (config: Config.ProjectConfig): string => {
   const {displayName} = config;
   const white = chalk.reset.inverse.white;
   if (!displayName) {
     return '';
-  }
-
-  if (typeof displayName === 'string') {
-    return chalk.supportsColor ? white(` ${displayName} `) : displayName;
   }
 
   const {name, color} = displayName;
@@ -73,7 +69,7 @@ export const trimAndFormatPath = (
 export const formatTestPath = (
   config: Config.GlobalConfig | Config.ProjectConfig,
   testPath: Config.Path,
-) => {
+): string => {
   const {dirname, basename} = relativePath(config, testPath);
   return slash(chalk.dim(dirname + path.sep) + chalk.bold(basename));
 };
@@ -81,7 +77,7 @@ export const formatTestPath = (
 export const relativePath = (
   config: Config.GlobalConfig | Config.ProjectConfig,
   testPath: Config.Path,
-) => {
+): {basename: string; dirname: string} => {
   // this function can be called with ProjectConfigs or GlobalConfigs. GlobalConfigs
   // do not have config.cwd, only config.rootDir. Try using config.cwd, fallback
   // to config.rootDir. (Also, some unit just use config.rootDir, which is ok)
@@ -122,7 +118,7 @@ const getValuesCurrentTestCases = (
 export const getSummary = (
   aggregatedResults: AggregatedResult,
   options?: SummaryOptions,
-) => {
+): string => {
   let runTime = (Date.now() - aggregatedResults.startTime) / 1000;
   if (options && options.roundTime) {
     runTime = Math.floor(runTime);
@@ -231,11 +227,11 @@ const renderTime = (runTime: number, estimatedTime: number, width: number) => {
   // If we are more than one second over the estimated time, highlight it.
   const renderedTime =
     estimatedTime && runTime >= estimatedTime + 1
-      ? chalk.bold.yellow(runTime + 's')
-      : runTime + 's';
+      ? chalk.bold.yellow(formatTime(runTime, 0))
+      : formatTime(runTime, 0);
   let time = chalk.bold(`Time:`) + `        ${renderedTime}`;
   if (runTime < estimatedTime) {
-    time += `, estimated ${estimatedTime}s`;
+    time += `, estimated ${formatTime(estimatedTime, 0)}`;
   }
 
   // Only show a progress bar if the test run is actually going to take
@@ -258,7 +254,10 @@ const renderTime = (runTime: number, estimatedTime: number, width: number) => {
 
 // word-wrap a string that contains ANSI escape sequences.
 // ANSI escape sequences do not add to the string length.
-export const wrapAnsiString = (string: string, terminalWidth: number) => {
+export const wrapAnsiString = (
+  string: string,
+  terminalWidth: number,
+): string => {
   if (terminalWidth === 0) {
     // if the terminal width is zero, don't bother word-wrapping
     return string;

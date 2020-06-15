@@ -5,5 +5,5 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export {default as JestFakeTimers} from './jestFakeTimers';
-export {default as LolexFakeTimers} from './FakeTimersLolex';
+export {default as LegacyFakeTimers} from './legacyFakeTimers';
+export {default as ModernFakeTimers} from './modernFakeTimers';

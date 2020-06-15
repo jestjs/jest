@@ -29,7 +29,7 @@ export default function convertDescriptorToString<
   const stringified = descriptor.toString();
   const typeDescriptorMatch = stringified.match(/class|function/);
   const indexOfNameSpace =
-    // @ts-ignore: typeDescriptorMatch exists
+    // @ts-expect-error: typeDescriptorMatch exists
     typeDescriptorMatch.index + typeDescriptorMatch[0].length;
   const indexOfNameAfterSpace = stringified.search(/\(|\{/);
   const name = stringified.substring(indexOfNameSpace, indexOfNameAfterSpace);

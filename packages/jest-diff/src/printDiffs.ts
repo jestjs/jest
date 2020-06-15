@@ -20,7 +20,11 @@ import {
   joinAlignedDiffsNoExpand,
 } from './joinAlignedDiffs';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
-import {DiffOptions, DiffOptionsColor, DiffOptionsNormalized} from './types';
+import type {
+  DiffOptions,
+  DiffOptionsColor,
+  DiffOptionsNormalized,
+} from './types';
 
 const formatTrailingSpaces = (
   line: string,
@@ -32,8 +36,8 @@ const printDiffLine = (
   isFirstOrLast: boolean,
   color: DiffOptionsColor,
   indicator: string,
-  firstOrLastEmptyLineReplacement: string,
   trailingSpaceFormatter: DiffOptionsColor,
+  emptyFirstOrLastLinePlaceholder: string,
 ): string =>
   line.length !== 0
     ? color(
@@ -41,8 +45,8 @@ const printDiffLine = (
       )
     : indicator !== ' '
     ? color(indicator)
-    : isFirstOrLast && firstOrLastEmptyLineReplacement.length !== 0
-    ? color(indicator + ' ' + firstOrLastEmptyLineReplacement)
+    : isFirstOrLast && emptyFirstOrLastLinePlaceholder.length !== 0
+    ? color(indicator + ' ' + emptyFirstOrLastLinePlaceholder)
     : '';
 
 export const printDeleteLine = (
@@ -51,8 +55,8 @@ export const printDeleteLine = (
   {
     aColor,
     aIndicator,
-    firstOrLastEmptyLineReplacement,
-    trailingSpaceFormatter,
+    changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
   }: DiffOptionsNormalized,
 ): string =>
   printDiffLine(
@@ -60,8 +64,8 @@ export const printDeleteLine = (
     isFirstOrLast,
     aColor,
     aIndicator,
-    firstOrLastEmptyLineReplacement,
-    trailingSpaceFormatter,
+    changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
   );
 
 export const printInsertLine = (
@@ -70,8 +74,8 @@ export const printInsertLine = (
   {
     bColor,
     bIndicator,
-    firstOrLastEmptyLineReplacement,
-    trailingSpaceFormatter,
+    changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
   }: DiffOptionsNormalized,
 ): string =>
   printDiffLine(
@@ -79,8 +83,8 @@ export const printInsertLine = (
     isFirstOrLast,
     bColor,
     bIndicator,
-    firstOrLastEmptyLineReplacement,
-    trailingSpaceFormatter,
+    changeLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
   );
 
 export const printCommonLine = (
@@ -89,8 +93,8 @@ export const printCommonLine = (
   {
     commonColor,
     commonIndicator,
-    firstOrLastEmptyLineReplacement,
-    trailingSpaceFormatter,
+    commonLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
   }: DiffOptionsNormalized,
 ): string =>
   printDiffLine(
@@ -98,11 +102,14 @@ export const printCommonLine = (
     isFirstOrLast,
     commonColor,
     commonIndicator,
-    firstOrLastEmptyLineReplacement,
-    trailingSpaceFormatter,
+    commonLineTrailingSpaceColor,
+    emptyFirstOrLastLinePlaceholder,
   );
 
-export const hasCommonDiff = (diffs: Array<Diff>, isMultiline: boolean) => {
+export const hasCommonDiff = (
+  diffs: Array<Diff>,
+  isMultiline: boolean,
+): boolean => {
   if (isMultiline) {
     // Important: Ignore common newline that was appended to multiline strings!
     const iLast = diffs.length - 1;
@@ -162,16 +169,20 @@ export const printAnnotation = (
     const aCount = String(changeCounts.a);
     const bCount = String(changeCounts.b);
 
-    const aPadding =
-      Math.max(bAnnotation.length - aAnnotation.length, 0) +
-      Math.max(bCount.length - aCount.length, 0);
-    const bPadding =
-      Math.max(aAnnotation.length - bAnnotation.length, 0) +
-      Math.max(aCount.length - bCount.length, 0);
+    // Padding right aligns the ends of the annotations.
+    const baAnnotationLengthDiff = bAnnotation.length - aAnnotation.length;
+    const aAnnotationPadding = ' '.repeat(Math.max(0, baAnnotationLengthDiff));
+    const bAnnotationPadding = ' '.repeat(Math.max(0, -baAnnotationLengthDiff));
 
-    // Separate annotation from count by padding plus margin of 2 spaces.
-    aRest = ' '.repeat(aPadding + 2) + aCount + ' ' + aIndicator;
-    bRest = ' '.repeat(bPadding + 2) + bCount + ' ' + bIndicator;
+    // Padding left aligns the ends of the counts.
+    const baCountLengthDiff = bCount.length - aCount.length;
+    const aCountPadding = ' '.repeat(Math.max(0, baCountLengthDiff));
+    const bCountPadding = ' '.repeat(Math.max(0, -baCountLengthDiff));
+
+    aRest =
+      aAnnotationPadding + '  ' + aIndicator + ' ' + aCountPadding + aCount;
+    bRest =
+      bAnnotationPadding + '  ' + bIndicator + ' ' + bCountPadding + bCount;
   }
 
   return (
@@ -203,9 +214,6 @@ export const createPatchMark = (
     `@@ -${aStart + 1},${aEnd - aStart} +${bStart + 1},${bEnd - bStart} @@`,
   );
 
-export const splitLines0 = (string: string) =>
-  string.length === 0 ? [] : string.split('\n');
-
 // Compare two strings character-by-character.
 // Format as comparison lines in which changed substrings have inverse colors.
 export const diffStringsUnified = (
@@ -231,7 +239,7 @@ export const diffStringsUnified = (
   }
 
   // Fall back to line-by-line diff.
-  return diffLinesUnified(splitLines0(a), splitLines0(b), options);
+  return diffLinesUnified(a.split('\n'), b.split('\n'), options);
 };
 
 // Compare two strings character-by-character.

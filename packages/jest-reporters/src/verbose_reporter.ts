@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {
+import type {Config} from '@jest/types';
+import type {
   AggregatedResult,
   AssertionResult,
   Suite,
   TestResult,
 } from '@jest/test-result';
-import chalk from 'chalk';
-import {specialChars} from 'jest-util';
-import {Test} from './types';
+import chalk = require('chalk');
+import {formatTime, specialChars} from 'jest-util';
+import type {Test} from './types';
 import DefaultReporter from './default_reporter';
 
 const {ICONS} = specialChars;
@@ -33,7 +33,7 @@ export default class VerboseReporter extends DefaultReporter {
     return testResults.filter(({status}) => status !== 'pending');
   }
 
-  static groupTestsBySuites(testResults: Array<AssertionResult>) {
+  static groupTestsBySuites(testResults: Array<AssertionResult>): Suite {
     const root: Suite = {suites: [], tests: [], title: ''};
     testResults.forEach(testResult => {
       let targetSuite = root;
@@ -58,7 +58,7 @@ export default class VerboseReporter extends DefaultReporter {
     test: Test,
     result: TestResult,
     aggregatedResults: AggregatedResult,
-  ) {
+  ): void {
     super.testFinished(test.context.config, result, aggregatedResults);
     if (!result.skipped) {
       this.printTestFileHeader(
@@ -107,7 +107,9 @@ export default class VerboseReporter extends DefaultReporter {
 
   private _logTest(test: AssertionResult, indentLevel: number) {
     const status = this._getIcon(test.status);
-    const time = test.duration ? ` (${test.duration.toFixed(0)}ms)` : '';
+    const time = test.duration
+      ? ` (${formatTime(Math.round(test.duration))})`
+      : '';
     this._logLine(status + ' ' + chalk.dim(test.title + time), indentLevel);
   }
 
@@ -144,7 +146,7 @@ export default class VerboseReporter extends DefaultReporter {
   }
 
   private _logTodoOrPendingTest(indentLevel: number) {
-    return (test: AssertionResult) => {
+    return (test: AssertionResult): void => {
       const printedTestStatus =
         test.status === 'pending' ? 'skipped' : test.status;
       const icon = this._getIcon(test.status);

@@ -4,8 +4,5 @@
     "rootDir": "src",
     "outDir": "build"
   },
-  "references": [
-    {"path": "../jest-test-result"},
-    {"path": "../jest-types"}
-  ]
+  "references": [{"path": "../jest-types"}]
 }

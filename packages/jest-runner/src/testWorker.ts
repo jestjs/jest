@@ -6,8 +6,8 @@
  *
  */
 
-import {Config} from '@jest/types';
-import {SerializableError, TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {SerializableError, TestResult} from '@jest/test-result';
 import HasteMap = require('jest-haste-map');
 import exit = require('exit');
 import {separateMessageFromStack} from 'jest-message-util';
@@ -64,7 +64,7 @@ const getResolver = (config: Config.ProjectConfig) => {
 
 export function setup(setupData: {
   serializableResolvers: Array<SerializableResolver>;
-}) {
+}): void {
   // Module maps that will be needed for the test runs are passed.
   for (const {
     config,
@@ -95,6 +95,9 @@ export async function worker({
       context && {
         ...context,
         changedFiles: context.changedFiles && new Set(context.changedFiles),
+        sourcesRelatedToTestsInChangedFiles:
+          context.sourcesRelatedToTestsInChangedFiles &&
+          new Set(context.sourcesRelatedToTestsInChangedFiles),
       },
     );
   } catch (error) {

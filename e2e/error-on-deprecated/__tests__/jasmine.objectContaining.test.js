@@ -8,6 +8,6 @@
 
 test('jasmine.objectContaining', () => {
   expect({input: 'trash', output: 'trash'}).toEqual(
-    jasmine.objectContaining({output: 'trash'})
+    jasmine.objectContaining({output: 'trash'}),
   );
 });

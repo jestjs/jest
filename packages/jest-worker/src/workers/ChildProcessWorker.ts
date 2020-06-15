@@ -82,7 +82,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     this.initialize();
   }
 
-  initialize() {
+  initialize(): void {
     const forceColor = stdoutSupportsColor ? {FORCE_COLOR: '1'} : {};
     const child = fork(require.resolve('./processChild'), [], {
       cwd: process.cwd(),
@@ -169,7 +169,7 @@ export default class ChildProcessWorker implements WorkerInterface {
 
         if (error != null && typeof error === 'object') {
           const extra = error;
-          // @ts-ignore: no index
+          // @ts-expect-error: no index
           const NativeCtor = global[response[1]];
           const Ctor = typeof NativeCtor === 'function' ? NativeCtor : Error;
 
@@ -178,7 +178,7 @@ export default class ChildProcessWorker implements WorkerInterface {
           error.stack = response[3];
 
           for (const key in extra) {
-            // @ts-ignore: adding custom properties to errors.
+            // @ts-expect-error: adding custom properties to errors.
             error[key] = extra[key];
           }
         }
@@ -189,7 +189,7 @@ export default class ChildProcessWorker implements WorkerInterface {
       case PARENT_MESSAGE_SETUP_ERROR:
         error = new Error('Error when calling setup: ' + response[2]);
 
-        // @ts-ignore: adding custom properties to errors.
+        // @ts-expect-error: adding custom properties to errors.
         error.type = response[1];
         error.stack = response[3];
 
@@ -240,11 +240,11 @@ export default class ChildProcessWorker implements WorkerInterface {
     this._child.send(request);
   }
 
-  waitForExit() {
+  waitForExit(): Promise<void> {
     return this._exitPromise;
   }
 
-  forceExit() {
+  forceExit(): void {
     this._child.kill('SIGTERM');
     const sigkillTimeout = setTimeout(
       () => this._child.kill('SIGKILL'),
@@ -253,7 +253,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     this._exitPromise.then(() => clearTimeout(sigkillTimeout));
   }
 
-  getWorkerId() {
+  getWorkerId(): number {
     return this._options.workerId;
   }
 

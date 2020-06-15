@@ -5,11 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {
   BaseWatchPlugin,
   JestHookSubscriber,
   UpdateConfigCallback,
+  UsageData,
 } from 'jest-watcher';
 
 class UpdateSnapshotsPlugin extends BaseWatchPlugin {
@@ -30,13 +31,13 @@ class UpdateSnapshotsPlugin extends BaseWatchPlugin {
     return Promise.resolve(false);
   }
 
-  apply(hooks: JestHookSubscriber) {
+  apply(hooks: JestHookSubscriber): void {
     hooks.onTestRunComplete(results => {
       this._hasSnapshotFailure = results.snapshot.failure;
     });
   }
 
-  getUsageInfo() {
+  getUsageInfo(): UsageData | null {
     if (this._hasSnapshotFailure) {
       return {
         key: 'u',

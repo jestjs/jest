@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// ESLint doesn't know about this experimental module
-// eslint-disable-next-line import/no-unresolved
 import {isMainThread, parentPort} from 'worker_threads';
 
 import {

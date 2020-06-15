@@ -3,17 +3,18 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
-import {Config} from '@jest/types';
+import * as fs from 'graceful-fs';
+import type {Config} from '@jest/types';
 
 // eslint-disable-next-line import/named
 import {ExecaReturnValue, sync as spawnSync} from 'execa';
-import {createDirectory} from 'jest-util';
+import makeDir = require('make-dir');
 import rimraf = require('rimraf');
+import dedent = require('dedent');
+import which = require('which');
 
 interface RunResult extends ExecaReturnValue {
   status: number;
@@ -45,9 +46,9 @@ export const linkJestPackage = (packageName: string, cwd: Config.Path) => {
   const packagesDir = path.resolve(__dirname, '../packages');
   const packagePath = path.resolve(packagesDir, packageName);
   const destination = path.resolve(cwd, 'node_modules/', packageName);
-  createDirectory(destination);
+  makeDir.sync(destination);
   rimraf.sync(destination);
-  fs.symlinkSync(packagePath, destination, 'dir');
+  fs.symlinkSync(packagePath, destination, 'junction');
 };
 
 export const makeTemplate = (
@@ -76,16 +77,36 @@ export const writeFiles = (
   directory: string,
   files: {[filename: string]: string},
 ) => {
-  createDirectory(directory);
+  makeDir.sync(directory);
   Object.keys(files).forEach(fileOrPath => {
     const dirname = path.dirname(fileOrPath);
 
     if (dirname !== '/') {
-      createDirectory(path.join(directory, dirname));
+      makeDir.sync(path.join(directory, dirname));
     }
     fs.writeFileSync(
       path.resolve(directory, ...fileOrPath.split('/')),
-      files[fileOrPath],
+      dedent(files[fileOrPath]),
+    );
+  });
+};
+
+export const writeSymlinks = (
+  directory: string,
+  symlinks: {[existingFile: string]: string},
+) => {
+  makeDir.sync(directory);
+  Object.keys(symlinks).forEach(fileOrPath => {
+    const symLinkPath = symlinks[fileOrPath];
+    const dirname = path.dirname(symLinkPath);
+
+    if (dirname !== '/') {
+      makeDir.sync(path.join(directory, dirname));
+    }
+    fs.symlinkSync(
+      path.resolve(directory, ...fileOrPath.split('/')),
+      path.resolve(directory, ...symLinkPath.split('/')),
+      'junction',
     );
   });
 };
@@ -121,7 +142,7 @@ export const copyDir = (src: string, dest: string) => {
 
 export const replaceTime = (str: string) =>
   str
-    .replace(/\d*\.?\d+m?s/g, '<<REPLACED>>')
+    .replace(/\d*\.?\d+ m?s\b/g, '<<REPLACED>>')
     .replace(/, estimated <<REPLACED>>/g, '');
 
 // Since Jest does not guarantee the order of tests we'll sort the output.
@@ -144,7 +165,7 @@ export const createEmptyPackage = (
     },
   };
 
-  createDirectory(directory);
+  makeDir.sync(directory);
   packageJson || (packageJson = DEFAULT_PACKAGE_JSON);
   fs.writeFileSync(
     path.resolve(directory, 'package.json'),
@@ -173,7 +194,7 @@ export const extractSummary = (stdout: string) => {
   const rest = stdout
     .replace(match[0], '')
     // remove all timestamps
-    .replace(/\s*\(\d*\.?\d+m?s\)$/gm, '');
+    .replace(/\s*\(\d*\.?\d+ m?s\b\)$/gm, '');
 
   return {
     rest: rest.trim(),
@@ -240,4 +261,20 @@ export const normalizeIcons = (str: string) => {
   return str
     .replace(new RegExp('\u00D7', 'g'), '\u2715')
     .replace(new RegExp('\u221A', 'g'), '\u2713');
+};
+
+// Certain environments (like CITGM and GH Actions) do not come with mercurial installed
+let hgIsInstalled: boolean | null = null;
+
+export const testIfHg = (...args: Parameters<typeof test>) => {
+  if (hgIsInstalled === null) {
+    hgIsInstalled = which.sync('hg', {nothrow: true}) !== null;
+  }
+
+  if (hgIsInstalled) {
+    test(...args);
+  } else {
+    console.warn('Mercurial (hg) is not installed - skipping some tests');
+    test.skip(...args);
+  }
 };

@@ -33,24 +33,25 @@ describe('getMaxWorkers', () => {
   it('Returns based on the number of cpus', () => {
     expect(getMaxWorkers({})).toBe(3);
     expect(getMaxWorkers({watch: true})).toBe(2);
+    expect(getMaxWorkers({watchAll: true})).toBe(2);
   });
 
   describe('% based', () => {
     it('50% = 2 workers', () => {
       const argv = {maxWorkers: '50%'};
-      // @ts-ignore: need to fix the typing
+      // @ts-expect-error: need to fix the typing
       expect(getMaxWorkers(argv)).toBe(2);
     });
 
     it('< 0 workers should become 1', () => {
       const argv = {maxWorkers: '1%'};
-      // @ts-ignore: need to fix the typing
+      // @ts-expect-error: need to fix the typing
       expect(getMaxWorkers(argv)).toBe(1);
     });
 
     it("0% shouldn't break", () => {
       const argv = {maxWorkers: '0%'};
-      // @ts-ignore: need to fix the typing
+      // @ts-expect-error: need to fix the typing
       expect(getMaxWorkers(argv)).toBe(1);
     });
   });

@@ -3,7 +3,7 @@ id: mock-functions
 title: Mock Functions
 ---
 
-Mock functions make it easy to test the links between code by erasing the actual implementation of a function, capturing calls to the function (and the parameters passed in those calls), capturing instances of constructor functions when instantiated with `new`, and allowing test-time configuration of return values.
+Mock functions allow you to test the links between code by erasing the actual implementation of a function, capturing calls to the function (and the parameters passed in those calls), capturing instances of constructor functions when instantiated with `new`, and allowing test-time configuration of return values.
 
 There are two ways to mock functions: Either by creating a mock function to use in test code, or writing a [`manual mock`](ManualMocks.md) to override a module dependency.
 
@@ -86,10 +86,7 @@ const myMock = jest.fn();
 console.log(myMock());
 // > undefined
 
-myMock
-  .mockReturnValueOnce(10)
-  .mockReturnValueOnce('x')
-  .mockReturnValue(true);
+myMock.mockReturnValueOnce(10).mockReturnValueOnce('x').mockReturnValue(true);
 
 console.log(myMock(), myMock(), myMock(), myMock());
 // > 10, 'x', true, true
@@ -104,7 +101,7 @@ const filterTestFn = jest.fn();
 // and `false` for the second call
 filterTestFn.mockReturnValueOnce(true).mockReturnValueOnce(false);
 
-const result = [11, 12].filter(filterTestFn);
+const result = [11, 12].filter(num => filterTestFn(num));
 
 console.log(result);
 // > [11]
@@ -169,7 +166,7 @@ The `mockImplementation` method is useful when you need to define the default im
 
 ```js
 // foo.js
-module.exports = function() {
+module.exports = function () {
   // some implementation;
 };
 
@@ -220,7 +217,7 @@ const myObj = {
 // is the same as
 
 const otherObj = {
-  myMethod: jest.fn(function() {
+  myMethod: jest.fn(function () {
     return this;
   }),
 };
@@ -240,23 +237,23 @@ const myMockFn = jest
 
 ## Custom Matchers
 
-Finally, in order to make it simpler to assert how mock functions have been called, we've added some custom matcher functions for you:
+Finally, in order to make it less demanding to assert how mock functions have been called, we've added some custom matcher functions for you:
 
 ```javascript
 // The mock function was called at least once
-expect(mockFunc).toBeCalled();
+expect(mockFunc).toHaveBeenCalled();
 
 // The mock function was called at least once with the specified args
-expect(mockFunc).toBeCalledWith(arg1, arg2);
+expect(mockFunc).toHaveBeenCalledWith(arg1, arg2);
 
 // The last call to the mock function was called with the specified args
-expect(mockFunc).lastCalledWith(arg1, arg2);
+expect(mockFunc).toHaveBeenLastCalledWith(arg1, arg2);
 
 // All calls and the name of the mock is written as a snapshot
 expect(mockFunc).toMatchSnapshot();
 ```
 
-These matchers are really just sugar for common forms of inspecting the `.mock` property. You can always do this manually yourself if that's more to your taste or if you need to do something more specific:
+These matchers are sugar for common forms of inspecting the `.mock` property. You can always do this manually yourself if that's more to your taste or if you need to do something more specific:
 
 ```javascript
 // The mock function was called at least once

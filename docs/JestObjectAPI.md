@@ -3,7 +3,7 @@ id: jest-object
 title: The Jest Object
 ---
 
-The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior.
+The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior. It can also be imported explicitly by via `import {jest} from '@jest/globals'`.
 
 ## Mock Modules
 
@@ -76,7 +76,7 @@ export default {
 ```
 
 ```js
-// __tests__/disableAutomocking.js
+// __tests__/enableAutomocking.js
 jest.enableAutomock();
 
 import utils from '../utils';
@@ -90,7 +90,11 @@ test('original implementation', () => {
 
 _Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior._
 
-### `jest.genMockFromModule(moduleName)`
+### `jest.createMockFromModule(moduleName)`
+
+##### renamed in Jest **26.0.0+**
+
+Also under the alias: `.genMockFromModule(moduleName)`
 
 Given the name of a module, use the automatic mocking system to generate a mocked version of the module for you.
 
@@ -109,17 +113,17 @@ export default {
 ```
 
 ```js
-// __tests__/genMockFromModule.test.js
-const utils = jest.genMockFromModule('../utils').default;
+// __tests__/createMockFromModule.test.js
+const utils = jest.createMockFromModule('../utils').default;
 utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
 
-test('implementation created by jest.genMockFromModule', () => {
+test('implementation created by jest.createMockFromModule', () => {
   expect(utils.authorize.mock).toBeTruthy();
   expect(utils.isAuthorized('not wizard')).toEqual(true);
 });
 ```
 
-This is how `genMockFromModule` will mock the following data types:
+This is how `createMockFromModule` will mock the following data types:
 
 #### `Function`
 
@@ -176,7 +180,7 @@ module.exports = {
 
 ```js
 // __tests__/example.test.js
-const example = jest.genMockFromModule('./example');
+const example = jest.createMockFromModule('./example');
 
 test('should run example code', () => {
   // creates a new mocked function with no formal arguments.
@@ -469,7 +473,7 @@ Determines if the given function is a mocked function.
 
 ### `jest.spyOn(object, methodName)`
 
-Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest mock function.
+Creates a mock function similar to `jest.fn` but also tracks calls to `object[methodName]`. Returns a Jest [mock function](MockFunctionAPI.md).
 
 _Note: By default, `jest.spyOn` also calls the **spied** method. This is different behavior from most other test libraries. If you want to overwrite the original function, you can use `jest.spyOn(object, methodName).mockImplementation(() => customImplementation)` or `object[methodName] = jest.fn(() => customImplementation);`_
 
@@ -577,9 +581,11 @@ Restores all mocks back to their original value. Equivalent to calling [`.mockRe
 
 ## Mock timers
 
-### `jest.useFakeTimers()`
+### `jest.useFakeTimers(implementation?: 'modern' | 'legacy')`
 
 Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate`).
+
+If you pass `'modern'` as argument, [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers) will be used as implementation instead of Jest's own fake timers. This also mocks additional timers like `Date`. `'modern'` will be the default behavior in Jest 27.
 
 Returns the `jest` object for chaining.
 
@@ -606,6 +612,8 @@ This is often useful for synchronously executing setTimeouts during a test in or
 ### `jest.runAllImmediates()`
 
 Exhausts all tasks queued by `setImmediate()`.
+
+> Note: This function is not available when using modern fake timers implementation
 
 ### `jest.advanceTimersByTime(msToRun)`
 
@@ -639,11 +647,23 @@ This means, if any timers have been scheduled (but have not yet executed), they 
 
 Returns the number of fake timers still left to run.
 
+### `.jest.setSystemTime()`
+
+Set the current system time used by fake timers. Simulates a user changing the system clock while your program is running. It affects the current time but it does not in itself cause e.g. timers to fire; they will fire exactly as they would have done without the call to `jest.setSystemTime()`.
+
+> Note: This function is only available when using modern fake timers implementation
+
+### `.jest.getRealSystemTime()`
+
+When mocking time, `Date.now()` will also be mocked. If you for some reason need access to the real current time, you can invoke this function.
+
+> Note: This function is only available when using modern fake timers implementation
+
 ## Misc
 
 ### `jest.setTimeout(timeout)`
 
-Set the default timeout interval for tests and before/after hooks in milliseconds.
+Set the default timeout interval for tests and before/after hooks in milliseconds. This only affects the test file from which this function is called.
 
 _Note: The default timeout interval is 5 seconds if this method is not called._
 

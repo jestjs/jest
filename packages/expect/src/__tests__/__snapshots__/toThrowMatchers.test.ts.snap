@@ -164,8 +164,8 @@ Expected message: not <g>"Invalid array length"</>
 exports[`toThrow error-message fail multiline diff highlight incorrect expected space 1`] = `
 <d>expect(</><r>received</><d>).</>toThrow<d>(</><g>expected</><d>)</>
 
-<g>- Expected message</>
-<r>+ Received message</>
+<g>- Expected message  - 1</>
+<r>+ Received message  + 1</>
 
 <g>- There is no route defined for key Settings.<i> </i></>
 <r>+ There is no route defined for key Settings.</>
@@ -472,8 +472,8 @@ Expected message: not <g>"Invalid array length"</>
 exports[`toThrowError error-message fail multiline diff highlight incorrect expected space 1`] = `
 <d>expect(</><r>received</><d>).</>toThrowError<d>(</><g>expected</><d>)</>
 
-<g>- Expected message</>
-<r>+ Received message</>
+<g>- Expected message  - 1</>
+<r>+ Received message  + 1</>
 
 <g>- There is no route defined for key Settings.<i> </i></>
 <r>+ There is no route defined for key Settings.</>

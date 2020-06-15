@@ -78,7 +78,7 @@ describe('Stack Trace', () => {
 
     // Make sure we show Jest's jest-resolve as part of the stack trace
     expect(stderr).toMatch(
-      /Cannot find module 'this-module-does-not-exist' from 'testError.test\.js'/,
+      /Cannot find module 'this-module-does-not-exist' from '__tests__\/testError\.test\.js'/,
     );
 
     expect(stderr).toMatch(

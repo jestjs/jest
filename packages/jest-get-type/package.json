@@ -1,14 +1,14 @@
 {
   "name": "jest-get-type",
   "description": "A utility function to get the type of a value",
-  "version": "24.9.0",
+  "version": "26.0.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-get-type"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">= 10.14.2"
   },
   "license": "MIT",
   "main": "build/index.js",
@@ -16,5 +16,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "9ad0f4bc6b8bdd94989804226c28c9960d9da7d1"
+  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
 }

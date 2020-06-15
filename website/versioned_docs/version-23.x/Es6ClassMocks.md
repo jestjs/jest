@@ -191,7 +191,7 @@ describe('When SoundPlayer throws an error', () => {
 
 ## In depth: Understanding mock constructor functions
 
-Building your constructor function mock using `jest.fn().mockImplementation()` makes mocks appear more complicated than they really are. This section shows how you can create your own simple mocks to illustrate how mocking works.
+Building your constructor function mock using `jest.fn().mockImplementation()` makes mocks appear more complicated than they really are. This section shows how you can create your own mocks to illustrate how mocking works.
 
 ### Manual mock that is another ES6 class
 
@@ -212,7 +212,7 @@ export default class SoundPlayer {
 }
 ```
 
-### Simple mock using module factory parameter
+### Mock using module factory parameter
 
 The module factory function passed to `jest.mock(path, moduleFactory)` can be a HOF that returns a function\*. This will allow calling `new` on the mock. Again, this allows you to inject different behavior for testing, but does not provide a way to spy on calls.
 
@@ -222,7 +222,7 @@ In order to mock a constructor function, the module factory must return a constr
 
 ```javascript
 jest.mock('./sound-player', () => {
-  return function() {
+  return function () {
     return {playSoundFile: () => {}};
   };
 });

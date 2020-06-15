@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {AggregatedResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {AggregatedResult} from '@jest/test-result';
 
 type TestSuiteInfo = {
   config: Config.ProjectConfig;
@@ -36,7 +36,9 @@ export type JestHookSubscriber = {
 export type JestHookEmitter = {
   onFileChange: (fs: JestHookExposedFS) => void;
   onTestRunComplete: (results: AggregatedResult) => void;
-  shouldRunTestSuite: (testSuiteInfo: TestSuiteInfo) => Promise<boolean>;
+  shouldRunTestSuite: (
+    testSuiteInfo: TestSuiteInfo,
+  ) => Promise<boolean> | boolean;
 };
 
 export type UsageData = {

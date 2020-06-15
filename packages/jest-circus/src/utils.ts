@@ -5,10 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Circus} from '@jest/types';
-import {convertDescriptorToString} from 'jest-util';
+import type {Circus} from '@jest/types';
+import {convertDescriptorToString, formatTime} from 'jest-util';
 import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
+import dedent = require('dedent');
 import StackUtils = require('stack-utils');
 import prettyFormat = require('pretty-format');
 import {AssertionResult, Status} from '@jest/test-result';
@@ -28,6 +29,7 @@ export const makeDescribe = (
   }
 
   return {
+    type: 'describeBlock', // eslint-disable-next-line sort-keys
     children: [],
     hooks: [],
     mode: _mode,
@@ -45,6 +47,7 @@ export const makeTest = (
   timeout: number | undefined,
   asyncError: Circus.Exception,
 ): Circus.TestEntry => ({
+  type: 'test', // eslint-disable-next-line sort-keys
   asyncError,
   duration: null,
   errors: [],
@@ -62,23 +65,26 @@ export const makeTest = (
 // block has an enabled test.
 const hasEnabledTest = (describeBlock: Circus.DescribeBlock): boolean => {
   const {hasFocusedTests, testNamePattern} = getState();
-  const hasOwnEnabledTests = describeBlock.tests.some(
-    test =>
-      !(
-        test.mode === 'skip' ||
-        (hasFocusedTests && test.mode !== 'only') ||
-        (testNamePattern && !testNamePattern.test(getTestID(test)))
-      ),
+  return describeBlock.children.some(child =>
+    child.type === 'describeBlock'
+      ? hasEnabledTest(child)
+      : !(
+          child.mode === 'skip' ||
+          (hasFocusedTests && child.mode !== 'only') ||
+          (testNamePattern && !testNamePattern.test(getTestID(child)))
+        ),
   );
-
-  return hasOwnEnabledTests || describeBlock.children.some(hasEnabledTest);
 };
 
-export const getAllHooksForDescribe = (describe: Circus.DescribeBlock) => {
-  const result: {
-    beforeAll: Array<Circus.Hook>;
-    afterAll: Array<Circus.Hook>;
-  } = {
+type DescribeHooks = {
+  beforeAll: Array<Circus.Hook>;
+  afterAll: Array<Circus.Hook>;
+};
+
+export const getAllHooksForDescribe = (
+  describe: Circus.DescribeBlock,
+): DescribeHooks => {
+  const result: DescribeHooks = {
     afterAll: [],
     beforeAll: [],
   };
@@ -99,16 +105,20 @@ export const getAllHooksForDescribe = (describe: Circus.DescribeBlock) => {
   return result;
 };
 
-export const getEachHooksForTest = (test: Circus.TestEntry) => {
-  const result: {
-    beforeEach: Array<Circus.Hook>;
-    afterEach: Array<Circus.Hook>;
-  } = {afterEach: [], beforeEach: []};
+type TestHooks = {
+  beforeEach: Array<Circus.Hook>;
+  afterEach: Array<Circus.Hook>;
+};
+
+export const getEachHooksForTest = (test: Circus.TestEntry): TestHooks => {
+  const result: TestHooks = {afterEach: [], beforeEach: []};
   let block: Circus.DescribeBlock | undefined | null = test.parent;
 
   do {
     const beforeEachForCurrentBlock = [];
-    for (const hook of block.hooks) {
+    // TODO: inline after https://github.com/microsoft/TypeScript/pull/34840 is released
+    let hook: Circus.Hook;
+    for (hook of block.hooks) {
       switch (hook.type) {
         case 'beforeEach':
           beforeEachForCurrentBlock.push(hook);
@@ -128,10 +138,12 @@ export const getEachHooksForTest = (test: Circus.TestEntry) => {
 export const describeBlockHasTests = (
   describe: Circus.DescribeBlock,
 ): boolean =>
-  describe.tests.length > 0 || describe.children.some(describeBlockHasTests);
+  describe.children.some(
+    child => child.type === 'test' || describeBlockHasTests(child),
+  );
 
 const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
-  `Exceeded timeout of ${timeout}ms for a ${
+  `Exceeded timeout of ${formatTime(timeout)} for a ${
     isHook ? 'hook' : 'test'
   }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`;
 
@@ -146,6 +158,7 @@ function checkIsError(error: any): error is Error {
 export const callAsyncCircusFn = (
   fn: Circus.AsyncFn,
   testContext: Circus.TestContext | undefined,
+  asyncError: Circus.Exception,
   {isHook, timeout}: {isHook?: boolean | null; timeout: number},
 ): Promise<any> => {
   let timeoutID: NodeJS.Timeout;
@@ -160,24 +173,47 @@ export const callAsyncCircusFn = (
     // If this fn accepts `done` callback we return a promise that fulfills as
     // soon as `done` called.
     if (fn.length) {
+      let returnedValue: unknown = undefined;
       const done = (reason?: Error | string): void => {
-        const errorAsErrorObject = checkIsError(reason)
-          ? reason
-          : new Error(`Failed: ${prettyFormat(reason, {maxDepth: 3})}`);
+        // We need to keep a stack here before the promise tick
+        const errorAtDone = new Error();
+        // Use `Promise.resolve` to allow the event loop to go a single tick in case `done` is called synchronously
+        Promise.resolve().then(() => {
+          if (returnedValue !== undefined) {
+            asyncError.message = dedent`
+      Test functions cannot both take a 'done' callback and return something. Either use a 'done' callback, or return a promise.
+      Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
+      `;
+            return reject(asyncError);
+          }
 
-        // Consider always throwing, regardless if `reason` is set or not
-        if (completed && reason) {
-          errorAsErrorObject.message =
-            'Caught error after test environment was torn down\n\n' +
-            errorAsErrorObject.message;
+          let errorAsErrorObject: Error;
 
-          throw errorAsErrorObject;
-        }
+          if (checkIsError(reason)) {
+            errorAsErrorObject = reason;
+          } else {
+            errorAsErrorObject = errorAtDone;
+            errorAtDone.message = `Failed: ${prettyFormat(reason, {
+              maxDepth: 3,
+            })}`;
+          }
 
-        return reason ? reject(errorAsErrorObject) : resolve();
+          // Consider always throwing, regardless if `reason` is set or not
+          if (completed && reason) {
+            errorAsErrorObject.message =
+              'Caught error after test environment was torn down\n\n' +
+              errorAsErrorObject.message;
+
+            throw errorAsErrorObject;
+          }
+
+          return reason ? reject(errorAsErrorObject) : resolve();
+        });
       };
 
-      return fn.call(testContext, done);
+      returnedValue = fn.call(testContext, done);
+
+      return;
     }
 
     let returnedValue;
@@ -187,7 +223,8 @@ export const callAsyncCircusFn = (
       try {
         returnedValue = fn.call(testContext);
       } catch (error) {
-        return reject(error);
+        reject(error);
+        return;
       }
     }
 
@@ -198,23 +235,25 @@ export const callAsyncCircusFn = (
       returnedValue !== null &&
       typeof returnedValue.then === 'function'
     ) {
-      return returnedValue.then(resolve, reject);
+      returnedValue.then(resolve, reject);
+      return;
     }
 
-    if (!isHook && returnedValue !== void 0) {
-      return reject(
+    if (!isHook && returnedValue !== undefined) {
+      reject(
         new Error(
-          `
+          dedent`
       test functions can only return Promise or undefined.
-      Returned value: ${String(returnedValue)}
+      Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
       `,
         ),
       );
+      return;
     }
 
     // Otherwise this test is synchronous, and if it didn't throw it means
     // it passed.
-    return resolve();
+    resolve();
   })
     .then(() => {
       completed = true;
@@ -248,7 +287,6 @@ export const makeSingleTestResult = (
   test: Circus.TestEntry,
 ): Circus.TestResult => {
   const {includeTestLocationInResult} = getState();
-
   const testPath = [];
   let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
   do {
@@ -303,7 +341,7 @@ const makeTestResults = (
 
 // Return a string that identifies the test (concat of parent describe block
 // names + test title)
-export const getTestID = (test: Circus.TestEntry) => {
+export const getTestID = (test: Circus.TestEntry): string => {
   const titles = [];
   let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
   do {
@@ -346,17 +384,23 @@ export const addErrorToEachTestUnderDescribe = (
   describeBlock: Circus.DescribeBlock,
   error: Circus.Exception,
   asyncError: Circus.Exception,
-) => {
-  for (const test of describeBlock.tests) {
-    test.errors.push([error, asyncError]);
-  }
-
+): void => {
   for (const child of describeBlock.children) {
-    addErrorToEachTestUnderDescribe(child, error, asyncError);
+    switch (child.type) {
+      case 'describeBlock':
+        addErrorToEachTestUnderDescribe(child, error, asyncError);
+        break;
+      case 'test':
+        child.errors.push([error, asyncError]);
+        break;
+    }
   }
 };
 
-export const invariant = (condition: unknown, message?: string) => {
+export function invariant(
+  condition: unknown,
+  message?: string,
+): asserts condition {
   if (!condition) {
     throw new Error(message);
   }

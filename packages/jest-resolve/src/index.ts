@@ -6,14 +6,17 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
-import {ModuleMap} from 'jest-haste-map'; // eslint-disable-line import/no-extraneous-dependencies
-import {sync as realpath} from 'realpath-native';
-import chalk from 'chalk';
+import type {Config} from '@jest/types';
+import type {ModuleMap} from 'jest-haste-map';
+import {tryRealpath} from 'jest-util';
+import slash = require('slash');
 import nodeModulesPaths from './nodeModulesPaths';
 import isBuiltinModule from './isBuiltinModule';
 import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
-import {ResolverConfig} from './types';
+import type {ResolverConfig} from './types';
+import ModuleNotFoundError from './ModuleNotFoundError';
+import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
+import chalk = require('chalk');
 
 type FindNodeModuleConfig = {
   basedir: Config.Path;
@@ -23,8 +26,10 @@ type FindNodeModuleConfig = {
   paths?: Array<Config.Path>;
   resolver?: Config.Path | null;
   rootDir?: Config.Path;
+  throwIfNotFound?: boolean;
 };
 
+// TODO: replace with a Map in Jest 26
 type BooleanObject = Record<string, boolean>;
 
 namespace Resolver {
@@ -37,8 +42,7 @@ namespace Resolver {
 const NATIVE_PLATFORM = 'native';
 
 // We might be inside a symlink.
-const cwd = process.cwd();
-const resolvedCwd = realpath(cwd) || cwd;
+const resolvedCwd = tryRealpath(process.cwd());
 const {NODE_PATH} = process.env;
 const nodePaths = NODE_PATH
   ? NODE_PATH.split(path.delimiter)
@@ -58,7 +62,6 @@ class Resolver {
 
   constructor(moduleMap: ModuleMap, options: ResolverConfig) {
     this._options = {
-      browser: options.browser,
       defaultPlatform: options.defaultPlatform,
       extensions: options.extensions,
       hasCoreModules:
@@ -79,8 +82,26 @@ class Resolver {
     this._modulePathCache = new Map();
   }
 
-  static clearDefaultResolverCache() {
+  static ModuleNotFoundError = ModuleNotFoundError;
+
+  static tryCastModuleNotFoundError(
+    error: unknown,
+  ): ModuleNotFoundError | null {
+    if (error instanceof ModuleNotFoundError) {
+      return error as ModuleNotFoundError;
+    }
+
+    const casted = error as ModuleNotFoundError;
+    if (casted.code === 'MODULE_NOT_FOUND') {
+      return ModuleNotFoundError.duckType(casted);
+    }
+
+    return null;
+  }
+
+  static clearDefaultResolverCache(): void {
     clearDefaultResolverCache();
+    clearCachedLookups();
   }
 
   static findNodeModule(
@@ -102,9 +123,16 @@ class Resolver {
         paths: paths ? (nodePaths || []).concat(paths) : nodePaths,
         rootDir: options.rootDir,
       });
-    } catch (e) {}
+    } catch (e) {
+      if (options.throwIfNotFound) {
+        throw e;
+      }
+    }
     return null;
   }
+
+  // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
+  static unstable_shouldLoadAsEsm = shouldLoadAsEsm;
 
   resolveModuleFromDirIfExists(
     dirname: Config.Path,
@@ -152,19 +180,20 @@ class Resolver {
     const skipResolution =
       options && options.skipNodeResolution && !moduleName.includes(path.sep);
 
-    const resolveNodeModule = (name: Config.Path) =>
+    const resolveNodeModule = (name: Config.Path, throwIfNotFound = false) =>
       Resolver.findNodeModule(name, {
         basedir: dirname,
-        browser: this._options.browser,
         extensions,
         moduleDirectory,
         paths,
         resolver: this._options.resolver,
         rootDir: this._options.rootDir,
+        throwIfNotFound,
       });
 
     if (!skipResolution) {
-      module = resolveNodeModule(moduleName);
+      // @ts-expect-error: the "pnp" version named isn't in DefinitelyTyped
+      module = resolveNodeModule(moduleName, Boolean(process.versions.pnp));
 
       if (module) {
         this._moduleNameCache.set(key, module);
@@ -188,7 +217,7 @@ class Resolver {
           resolveNodeModule(module) || require.resolve(module);
         this._moduleNameCache.set(key, resolvedModule);
         return resolvedModule;
-      } catch (ignoredError) {}
+      } catch {}
     }
 
     return null;
@@ -208,16 +237,30 @@ class Resolver {
     // 5. Throw an error if the module could not be found. `resolve.sync` only
     // produces an error based on the dirname but we have the actual current
     // module name available.
-    const relativePath = path.relative(dirname, from);
-    const err: Error & {code?: string} = new Error(
-      `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
+    const relativePath =
+      slash(path.relative(this._options.rootDir, from)) || '.';
+
+    throw new ModuleNotFoundError(
+      `Cannot find module '${moduleName}' from '${relativePath}'`,
+      moduleName,
     );
-    err.code = 'MODULE_NOT_FOUND';
-    throw err;
+  }
+
+  private _isAliasModule(moduleName: string): boolean {
+    const moduleNameMapper = this._options.moduleNameMapper;
+    if (!moduleNameMapper) {
+      return false;
+    }
+
+    return moduleNameMapper.some(({regex}) => regex.test(moduleName));
   }
 
   isCoreModule(moduleName: string): boolean {
-    return this._options.hasCoreModules && isBuiltinModule(moduleName);
+    return (
+      this._options.hasCoreModules &&
+      isBuiltinModule(moduleName) &&
+      !this._isAliasModule(moduleName)
+    );
   }
 
   getModule(name: string): Config.Path | null {
@@ -228,7 +271,7 @@ class Resolver {
     );
   }
 
-  getModulePath(from: Config.Path, moduleName: string) {
+  getModulePath(from: Config.Path, moduleName: string): Config.Path {
     if (moduleName[0] !== '.' || path.isAbsolute(moduleName)) {
       return moduleName;
     }
@@ -375,28 +418,41 @@ class Resolver {
           // Note: once a moduleNameMapper matches the name, it must result
           // in a module, or else an error is thrown.
           const matches = moduleName.match(regex);
-          const updatedName = matches
-            ? mappedModuleName.replace(
-                /\$([0-9]+)/g,
-                (_, index) => matches[parseInt(index, 10)],
-              )
-            : mappedModuleName;
+          const mapModuleName = matches
+            ? (moduleName: string) =>
+                moduleName.replace(
+                  /\$([0-9]+)/g,
+                  (_, index) => matches[parseInt(index, 10)],
+                )
+            : (moduleName: string) => moduleName;
 
-          const module =
-            this.getModule(updatedName) ||
-            Resolver.findNodeModule(updatedName, {
-              basedir: dirname,
-              browser: this._options.browser,
-              extensions,
-              moduleDirectory,
-              paths,
-              resolver,
-              rootDir: this._options.rootDir,
-            });
+          const possibleModuleNames = Array.isArray(mappedModuleName)
+            ? mappedModuleName
+            : [mappedModuleName];
+          let module: string | null = null;
+          for (const possibleModuleName of possibleModuleNames) {
+            const updatedName = mapModuleName(possibleModuleName);
+
+            module =
+              this.getModule(updatedName) ||
+              Resolver.findNodeModule(updatedName, {
+                basedir: dirname,
+                extensions,
+                moduleDirectory,
+                paths,
+                resolver,
+                rootDir: this._options.rootDir,
+              });
+
+            if (module) {
+              break;
+            }
+          }
+
           if (!module) {
             throw createNoMappedModuleFoundError(
               moduleName,
-              updatedName,
+              mapModuleName,
               mappedModuleName,
               regex,
               resolver,
@@ -412,21 +468,29 @@ class Resolver {
 
 const createNoMappedModuleFoundError = (
   moduleName: string,
-  updatedName: string,
-  mappedModuleName: string,
+  mapModuleName: (moduleName: string) => string,
+  mappedModuleName: string | Array<string>,
   regex: RegExp,
   resolver?: Function | string | null,
 ) => {
+  const mappedAs = Array.isArray(mappedModuleName)
+    ? JSON.stringify(mappedModuleName.map(mapModuleName), null, 2)
+    : mappedModuleName;
+  const original = Array.isArray(mappedModuleName)
+    ? JSON.stringify(mappedModuleName, null, 6) // using 6 because of misalignment when nested below
+        .slice(0, -1) + '    ]' /// align last bracket correctly as well
+    : mappedModuleName;
+
   const error = new Error(
     chalk.red(`${chalk.bold('Configuration error')}:
 
 Could not locate module ${chalk.bold(moduleName)} mapped as:
-${chalk.bold(updatedName)}.
+${chalk.bold(mappedAs)}.
 
 Please check your configuration for these entries:
 {
   "moduleNameMapper": {
-    "${regex.toString()}": "${chalk.bold(mappedModuleName)}"
+    "${regex.toString()}": "${chalk.bold(original)}"
   },
   "resolver": ${chalk.bold(String(resolver))}
 }`),

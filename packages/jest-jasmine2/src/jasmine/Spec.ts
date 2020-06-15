@@ -31,16 +31,16 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys */
 
 import {AssertionError} from 'assert';
-import {Config} from '@jest/types';
-import {FailedAssertion, Milliseconds, Status} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {FailedAssertion, Milliseconds, Status} from '@jest/test-result';
 
 import ExpectationFailed from '../ExpectationFailed';
 import expectationResultFactory, {
   Options as ExpectationResultFactoryOptions,
 } from '../expectationResultFactory';
 import assertionErrorMessage from '../assertionErrorMessage';
-import queueRunner, {QueueableFn} from '../queueRunner';
-import {AssertionErrorWithStack} from '../types';
+import type {QueueableFn, default as queueRunner} from '../queueRunner';
+import type {AssertionErrorWithStack} from '../types';
 
 export type Attributes = {
   id: string;
@@ -108,27 +108,27 @@ export default class Spec {
   }
 
   constructor(attrs: Attributes) {
-    this.resultCallback = attrs.resultCallback || function() {};
+    this.resultCallback = attrs.resultCallback || function () {};
     this.id = attrs.id;
     this.description = attrs.description || '';
     this.queueableFn = attrs.queueableFn;
     this.beforeAndAfterFns =
       attrs.beforeAndAfterFns ||
-      function() {
+      function () {
         return {befores: [], afters: []};
       };
     this.userContext =
       attrs.userContext ||
-      function() {
+      function () {
         return {};
       };
-    this.onStart = attrs.onStart || function() {};
+    this.onStart = attrs.onStart || function () {};
     this.getSpecName =
       attrs.getSpecName ||
-      function() {
+      function () {
         return '';
       };
-    this.queueRunnerFactory = attrs.queueRunnerFactory || function() {};
+    this.queueRunnerFactory = attrs.queueRunnerFactory || function () {};
     this.throwOnExpectationFailure = !!attrs.throwOnExpectationFailure;
 
     this.initError = new Error();
@@ -142,7 +142,7 @@ export default class Spec {
 
     this.queueableFn.initError = this.initError;
 
-    // @ts-ignore
+    // @ts-expect-error
     this.result = {
       id: this.id,
       description: this.description,
@@ -192,7 +192,7 @@ export default class Spec {
     this.currentRun = this.queueRunnerFactory({
       queueableFns: allFns,
       onException() {
-        // @ts-ignore
+        // @ts-expect-error
         self.onException.apply(self, arguments);
       },
       userContext: this.userContext(),
@@ -302,7 +302,7 @@ export default class Spec {
 
 Spec.pendingSpecExceptionMessage = '=> marked Pending';
 
-const extractCustomPendingMessage = function(e: Error) {
+const extractCustomPendingMessage = function (e: Error) {
   const fullMessage = e.toString();
   const boilerplateStart = fullMessage.indexOf(
     Spec.pendingSpecExceptionMessage,

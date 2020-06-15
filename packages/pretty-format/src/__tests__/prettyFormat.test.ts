@@ -14,7 +14,7 @@ function returnArguments(..._args: Array<unknown>) {
 class MyArray<T> extends Array<T> {}
 
 function MyObject(value: unknown) {
-  // @ts-ignore
+  // @ts-expect-error
   this.name = value;
 }
 
@@ -85,7 +85,7 @@ describe('prettyFormat()', () => {
     /* eslint-disable no-new-func */
     const val = new Function();
     /* eslint-enable no-new-func */
-    // In Node 8.1.4: val.name === 'anonymous'
+    // In Node >=8.1.4: val.name === 'anonymous'
     expect(prettyFormat(val)).toEqual('[Function anonymous]');
   });
 
@@ -95,7 +95,7 @@ describe('prettyFormat()', () => {
       val = cb;
     }
     f(() => {});
-    // In Node 8.1.4: val.name === ''
+    // In Node >=8.1.4: val.name === ''
     expect(prettyFormat(val)).toEqual('[Function anonymous]');
   });
 
@@ -508,7 +508,7 @@ describe('prettyFormat()', () => {
         'map non-empty': new Map([['name', 'value']]),
         'object literal empty': {},
         'object literal non-empty': {name: 'value'},
-        // @ts-ignore
+        // @ts-expect-error
         'object with constructor': new MyObject('value'),
         'object without constructor': Object.create(null),
         'set empty': new Set(),
@@ -540,7 +540,7 @@ describe('prettyFormat()', () => {
 
   it('throws on invalid options', () => {
     expect(() => {
-      // @ts-ignore
+      // @ts-expect-error
       prettyFormat({}, {invalidOption: true});
     }).toThrow();
   });
@@ -661,7 +661,10 @@ describe('prettyFormat()', () => {
   });
 
   it('supports plugins with deeply nested arrays (#24)', () => {
-    const val = [[1, 2], [3, 4]];
+    const val = [
+      [1, 2],
+      [3, 4],
+    ];
     expect(
       prettyFormat(val, {
         plugins: [
@@ -808,7 +811,7 @@ describe('prettyFormat()', () => {
         'map non-empty': new Map([['name', 'value']]),
         'object literal empty': {},
         'object literal non-empty': {name: 'value'},
-        // @ts-ignore
+        // @ts-expect-error
         'object with constructor': new MyObject('value'),
         'object without constructor': Object.create(null),
         'set empty': new Set(),

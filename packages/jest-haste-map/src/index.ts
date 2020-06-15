@@ -8,12 +8,11 @@
 import {execSync} from 'child_process';
 import {createHash} from 'crypto';
 import {EventEmitter} from 'events';
-import * as fs from 'fs';
 import {tmpdir} from 'os';
 import * as path from 'path';
+import type {Stats} from 'graceful-fs';
 import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
-import invariant = require('invariant');
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import serializer from 'jest-serializer';
 import Worker from 'jest-worker';
 import {getSha1, worker} from './worker';
@@ -27,11 +26,11 @@ import HasteModuleMap, {
 import nodeCrawl = require('./crawlers/node');
 import normalizePathSep from './lib/normalizePathSep';
 import watchmanCrawl = require('./crawlers/watchman');
-// @ts-ignore: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
+// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
 import WatchmanWatcher from './lib/WatchmanWatcher';
 import FSEventsWatcher = require('./lib/FSEventsWatcher');
 import * as fastPath from './lib/fast_path';
-import {
+import type {
   ChangeEvent,
   CrawlerOptions,
   EventsQueue,
@@ -40,7 +39,6 @@ import {
   HasteRegExp,
   InternalHasteMap,
   HasteMap as InternalHasteMapObject,
-  Mapper,
   MockData,
   ModuleMapData,
   ModuleMetaData,
@@ -54,17 +52,15 @@ type Options = {
   computeDependencies?: boolean;
   computeSha1?: boolean;
   console?: Console;
-  dependencyExtractor?: string;
+  dependencyExtractor?: string | null;
   extensions: Array<string>;
   forceNodeFilesystemAPI?: boolean;
   hasteImplModulePath?: string;
   ignorePattern?: HasteRegExp;
-  mapper?: Mapper;
   maxWorkers: number;
   mocksPattern?: string;
   name: string;
   platforms: Array<string>;
-  providesModuleNodeModules?: Array<string>;
   resetCache?: boolean;
   retainAllFiles: boolean;
   rootDir: string;
@@ -79,12 +75,11 @@ type InternalOptions = {
   cacheDirectory: string;
   computeDependencies: boolean;
   computeSha1: boolean;
-  dependencyExtractor?: string;
+  dependencyExtractor: string | null;
   extensions: Array<string>;
   forceNodeFilesystemAPI: boolean;
   hasteImplModulePath?: string;
   ignorePattern?: HasteRegExp;
-  mapper?: Mapper;
   maxWorkers: number;
   mocksPattern: RegExp | null;
   name: string;
@@ -131,27 +126,11 @@ const canUseWatchman = ((): boolean => {
   return false;
 })();
 
-const escapePathSeparator = (string: string) =>
-  path.sep === '\\' ? string.replace(/(\/|\\)/g, '\\\\') : string;
-
-const getWhiteList = (list: Array<string> | undefined): RegExp | null => {
-  if (list && list.length) {
-    const newList = list.map(item =>
-      escapePathSeparator(item.replace(/(\/)/g, path.sep)),
-    );
-    return new RegExp(
-      '(' +
-        escapePathSeparator(NODE_MODULES) +
-        '(?:' +
-        newList.join('|') +
-        ')(?=$|' +
-        escapePathSeparator(path.sep) +
-        '))',
-      'g',
-    );
+function invariant(condition: unknown, message?: string): asserts condition {
+  if (!condition) {
+    throw new Error(message);
   }
-  return null;
-};
+}
 
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
@@ -239,7 +218,6 @@ class HasteMap extends EventEmitter {
   private _console: Console;
   private _options: InternalOptions;
   private _watchers: Array<Watcher>;
-  private _whitelist: RegExp | null;
   private _worker: WorkerInterface | null;
 
   constructor(options: Options) {
@@ -251,12 +229,11 @@ class HasteMap extends EventEmitter {
           ? true
           : options.computeDependencies,
       computeSha1: options.computeSha1 || false,
-      dependencyExtractor: options.dependencyExtractor,
+      dependencyExtractor: options.dependencyExtractor || null,
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
       ignorePattern: options.ignorePattern,
-      mapper: options.mapper,
       maxWorkers: options.maxWorkers,
       mocksPattern: options.mocksPattern
         ? new RegExp(options.mocksPattern)
@@ -280,9 +257,7 @@ class HasteMap extends EventEmitter {
       );
     }
 
-    const rootDirHash = createHash('md5')
-      .update(options.rootDir)
-      .digest('hex');
+    const rootDirHash = createHash('md5').update(options.rootDir).digest('hex');
     let hasteImplHash = '';
     let dependencyExtractorHash = '';
 
@@ -316,7 +291,6 @@ class HasteMap extends EventEmitter {
       hasteImplHash,
       dependencyExtractorHash,
     );
-    this._whitelist = getWhiteList(options.providesModuleNodeModules);
     this._buildPromise = null;
     this._watchers = [];
     this._worker = null;
@@ -539,7 +513,6 @@ class HasteMap extends EventEmitter {
         error.stack = ''; // Remove stack for stack-less errors.
       }
 
-      // @ts-ignore: checking error code is OK if error comes from "fs".
       if (!['ENOENT', 'EACCES'].includes(error.code)) {
         throw error;
       }
@@ -551,7 +524,7 @@ class HasteMap extends EventEmitter {
 
     // If we retain all files in the virtual HasteFS representation, we avoid
     // reading them if they aren't important (node_modules).
-    if (this._options.retainAllFiles && this._isNodeModulesDir(filePath)) {
+    if (this._options.retainAllFiles && filePath.includes(NODE_MODULES)) {
       if (computeSha1) {
         return this._getWorker(workerOptions)
           .getSha1({
@@ -703,9 +676,9 @@ class HasteMap extends EventEmitter {
   private _cleanup() {
     const worker = this._worker;
 
-    // @ts-ignore
+    // @ts-expect-error
     if (worker && typeof worker.end === 'function') {
-      // @ts-ignore
+      // @ts-expect-error
       worker.end();
     }
 
@@ -727,7 +700,7 @@ class HasteMap extends EventEmitter {
       if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
         this._worker = {getSha1, worker};
       } else {
-        // @ts-ignore: assignment of a worker with custom properties.
+        // @ts-expect-error: assignment of a worker with custom properties.
         this._worker = new Worker(require.resolve('./worker'), {
           exposedMethods: ['getSha1', 'worker'],
           maxRetries: 3,
@@ -750,7 +723,6 @@ class HasteMap extends EventEmitter {
       extensions: options.extensions,
       forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
       ignore,
-      mapper: options.mapper,
       rootDir: options.rootDir,
       roots: options.roots,
     };
@@ -816,7 +788,7 @@ class HasteMap extends EventEmitter {
     let mustCopy = true;
 
     const createWatcher = (root: Config.Path): Promise<Watcher> => {
-      // @ts-ignore: TODO how? "Cannot use 'new' with an expression whose type lacks a call or construct signature."
+      // @ts-expect-error: TODO how? "Cannot use 'new' with an expression whose type lacks a call or construct signature."
       const watcher = new Watcher(root, {
         dot: false,
         glob: extensions.map(extension => '**/*.' + extension),
@@ -862,13 +834,26 @@ class HasteMap extends EventEmitter {
       type: string,
       filePath: Config.Path,
       root: Config.Path,
-      stat?: fs.Stats,
+      stat?: Stats,
     ) => {
       filePath = path.join(root, normalizePathSep(filePath));
       if (
         (stat && stat.isDirectory()) ||
         this._ignore(filePath) ||
         !extensions.some(extension => filePath.endsWith(extension))
+      ) {
+        return;
+      }
+
+      const relativeFilePath = fastPath.relative(rootDir, filePath);
+      const fileMetadata = hasteMap.files.get(relativeFilePath);
+
+      // The file has been accessed, not modified
+      if (
+        type === 'change' &&
+        fileMetadata &&
+        stat &&
+        fileMetadata[H.MTIME] === stat.mtime.getTime()
       ) {
         return;
       }
@@ -906,7 +891,6 @@ class HasteMap extends EventEmitter {
             return null;
           };
 
-          const relativeFilePath = fastPath.relative(rootDir, filePath);
           const fileMetadata = hasteMap.files.get(relativeFilePath);
 
           // If it's not an addition, delete the file and all its metadata
@@ -950,8 +934,8 @@ class HasteMap extends EventEmitter {
             );
             const fileMetadata: FileMetaData = [
               '',
-              stat ? stat.mtime.getTime() : -1,
-              stat ? stat.size : 0,
+              stat.mtime.getTime(),
+              stat.size,
               0,
               '',
               null,
@@ -1050,7 +1034,7 @@ class HasteMap extends EventEmitter {
   }
 
   end(): Promise<void> {
-    // @ts-ignore: TODO TS cannot decide if `setInterval` and `clearInterval` comes from NodeJS or the DOM
+    // @ts-expect-error: TODO TS cannot decide if `setInterval` and `clearInterval` comes from NodeJS or the DOM
     clearInterval(this._changeInterval);
     if (!this._watchers.length) {
       return Promise.resolve();
@@ -1077,30 +1061,8 @@ class HasteMap extends EventEmitter {
 
     return (
       ignoreMatched ||
-      (!this._options.retainAllFiles && this._isNodeModulesDir(filePath))
+      (!this._options.retainAllFiles && filePath.includes(NODE_MODULES))
     );
-  }
-
-  private _isNodeModulesDir(filePath: Config.Path): boolean {
-    if (!filePath.includes(NODE_MODULES)) {
-      return false;
-    }
-
-    if (this._whitelist) {
-      const whitelist = this._whitelist;
-      const match = whitelist.exec(filePath);
-      const matchEndIndex = whitelist.lastIndex;
-      whitelist.lastIndex = 0;
-
-      if (!match) {
-        return true;
-      }
-
-      const filePathInPackage = filePath.substr(matchEndIndex);
-      return filePathInPackage.startsWith(NODE_MODULES);
-    }
-
-    return true;
   }
 
   private _createEmptyMap(): InternalHasteMap {

@@ -13,7 +13,7 @@ class CustomSequencer extends Sequencer {
       setTimeout(() => {
         const copyTests = Array.from(tests);
         resolve(
-          copyTests.sort((testA, testB) => (testA.path > testB.path ? 1 : -1))
+          copyTests.sort((testA, testB) => (testA.path > testB.path ? 1 : -1)),
         );
       }, 50);
     });

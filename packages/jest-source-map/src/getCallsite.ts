@@ -8,7 +8,7 @@
 import {readFileSync} from 'graceful-fs';
 import callsites = require('callsites');
 import {SourceMapConsumer} from 'source-map';
-import {SourceMapRegistry} from './types';
+import type {SourceMapRegistry} from './types';
 
 // Copied from https://github.com/rexxars/sourcemap-decorate-callsites/blob/5b9735a156964973a75dc62fd2c7f0c1975458e8/lib/index.js#L113-L158
 const addSourceMapConsumer = (
@@ -46,7 +46,10 @@ const addSourceMapConsumer = (
   });
 };
 
-export default (level: number, sourceMaps?: SourceMapRegistry | null) => {
+export default (
+  level: number,
+  sourceMaps?: SourceMapRegistry | null,
+): callsites.CallSite => {
   const levelAfterThisCall = level + 1;
   const stack = callsites()[levelAfterThisCall];
   const sourceMapFileName = sourceMaps && sourceMaps[stack.getFileName() || ''];
@@ -54,7 +57,7 @@ export default (level: number, sourceMaps?: SourceMapRegistry | null) => {
   if (sourceMapFileName) {
     try {
       const sourceMap = readFileSync(sourceMapFileName, 'utf8');
-      // @ts-ignore: Not allowed to pass string
+      // @ts-expect-error: Not allowed to pass string
       addSourceMapConsumer(stack, new SourceMapConsumer(sourceMap));
     } catch (e) {
       // ignore

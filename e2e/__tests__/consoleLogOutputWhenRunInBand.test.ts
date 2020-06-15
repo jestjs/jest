@@ -28,7 +28,9 @@ test('prints console.logs when run with forceExit', () => {
     '--ci=false',
     '--forceExit',
   ]);
+
   const {rest, summary} = extractSummary(stderr);
+
   expect(exitCode).toBe(0);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();

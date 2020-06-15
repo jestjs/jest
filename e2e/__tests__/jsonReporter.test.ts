@@ -5,8 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
+import type {FormattedTestResults} from '@jest/test-result';
 import runJest from '../runJest';
 
 describe('JSON Reporter', () => {
@@ -22,7 +23,7 @@ describe('JSON Reporter', () => {
   });
 
   it('writes test result to sum.result.json', () => {
-    let jsonResult;
+    let jsonResult: FormattedTestResults;
 
     runJest('json-reporter', ['--json', `--outputFile=${outputFileName}`]);
     const testOutput = fs.readFileSync(outputFilePath, 'utf8');
@@ -45,7 +46,7 @@ describe('JSON Reporter', () => {
     const noAncestors = jsonResult.testResults[0].assertionResults.find(
       item => item.title == 'no ancestors',
     );
-    let expected = {ancestorTitles: []};
+    let expected = {ancestorTitles: [] as Array<string>};
     expect(noAncestors).toEqual(expect.objectContaining(expected));
 
     const addsNumbers = jsonResult.testResults[0].assertionResults.find(
@@ -63,7 +64,7 @@ describe('JSON Reporter', () => {
 
   it('outputs coverage report', () => {
     const result = runJest('json-reporter', ['--json']);
-    let jsonResult;
+    let jsonResult: FormattedTestResults;
 
     expect(result.stderr).toMatch(/1 failed, 2 passed/);
     expect(result.exitCode).toBe(1);
@@ -86,7 +87,7 @@ describe('JSON Reporter', () => {
     const noAncestors = jsonResult.testResults[0].assertionResults.find(
       item => item.title == 'no ancestors',
     );
-    let expected = {ancestorTitles: []};
+    let expected = {ancestorTitles: [] as Array<string>};
     expect(noAncestors).toEqual(expect.objectContaining(expected));
 
     const addsNumbers = jsonResult.testResults[0].assertionResults.find(

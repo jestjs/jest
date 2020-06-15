@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {Test} from 'jest-runner';
+import type {Config} from '@jest/types';
+import type {Test} from 'jest-runner';
 
 const SLOW_TEST_TIME = 1000;
 
@@ -14,7 +14,7 @@ export function shouldRunInBand(
   tests: Array<Test>,
   timings: Array<number>,
   {detectOpenHandles, maxWorkers, watch, watchAll}: Config.GlobalConfig,
-) {
+): boolean {
   // detectOpenHandles makes no sense without runInBand, because it cannot detect leaks in workers
   if (detectOpenHandles) {
     return true;

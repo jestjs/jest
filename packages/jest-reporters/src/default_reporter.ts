@@ -12,10 +12,11 @@ import {
   TestCaseResult,
   TestResult,
 } from '@jest/test-result';
+
 import {clearLine, isInteractive} from 'jest-util';
 import {getConsoleOutput} from '@jest/console';
-import chalk from 'chalk';
-import {ReporterOnStartOptions, Test} from './types';
+import chalk = require('chalk');
+import type {ReporterOnStartOptions, Test} from './types';
 import BaseReporter from './base_reporter';
 import Status from './Status';
 import getResultHeader from './get_result_header';
@@ -96,7 +97,7 @@ export default class DefaultReporter extends BaseReporter {
   }
 
   // Don't wait for the debounced call and flush all output immediately.
-  forceFlushBufferedOutput() {
+  forceFlushBufferedOutput(): void {
     for (const flushBufferedOutput of this._bufferedOutput) {
       flushBufferedOutput();
     }
@@ -127,11 +128,11 @@ export default class DefaultReporter extends BaseReporter {
   onRunStart(
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
-  ) {
+  ): void {
     this._status.runStarted(aggregatedResults, options);
   }
 
-  onTestStart(test: Test) {
+  onTestStart(test: Test): void {
     this._status.testStarted(test.path, test.context.config);
   }
 
@@ -155,7 +156,7 @@ export default class DefaultReporter extends BaseReporter {
     test: Test,
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
-  ) {
+  ): void {
     this.testFinished(test.context.config, testResult, aggregatedResults);
     if (!testResult.skipped) {
       this.printTestFileHeader(
@@ -176,7 +177,7 @@ export default class DefaultReporter extends BaseReporter {
     config: Config.ProjectConfig,
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
-  ) {
+  ): void {
     this._status.testFinished(config, testResult, aggregatedResults);
   }
 
@@ -184,7 +185,7 @@ export default class DefaultReporter extends BaseReporter {
     _testPath: Config.Path,
     config: Config.ProjectConfig,
     result: TestResult,
-  ) {
+  ): void {
     this.log(getResultHeader(result, this._globalConfig, config));
     if (result.console) {
       this.log(
@@ -195,6 +196,8 @@ export default class DefaultReporter extends BaseReporter {
             config.cwd,
             !!this._globalConfig.verbose,
             result.console,
+            config,
+            this._globalConfig,
           ),
       );
     }
@@ -204,7 +207,7 @@ export default class DefaultReporter extends BaseReporter {
     _testPath: Config.Path,
     _config: Config.ProjectConfig,
     result: TestResult,
-  ) {
+  ): void {
     if (result.failureMessage) {
       this.log(result.failureMessage);
     }

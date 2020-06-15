@@ -7,11 +7,12 @@
 
 import * as path from 'path';
 import {tmpdir} from 'os';
-import {sync as realpath} from 'realpath-native';
+import type {Config} from '@jest/types';
+import {tryRealpath} from 'jest-util';
 
-const getCacheDirectory = () => {
+const getCacheDirectory: () => Config.Path = () => {
   const {getuid} = process;
-  const tmpdirPath = path.join(realpath(tmpdir()), 'jest');
+  const tmpdirPath = path.join(tryRealpath(tmpdir()), 'jest');
   if (getuid == null) {
     return tmpdirPath;
   } else {

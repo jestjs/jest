@@ -91,8 +91,8 @@ Expected has value: <g>null</>
 exports[`stringify() toJSON errors when comparing two objects 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "b": 1,</>

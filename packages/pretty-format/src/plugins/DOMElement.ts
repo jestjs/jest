@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config, NewPlugin, Printer, Refs} from '../types';
+import type {Config, NewPlugin, Printer, Refs} from '../types';
 
 import {
   printChildren,
@@ -23,13 +23,13 @@ const FRAGMENT_NODE = 11;
 
 const ELEMENT_REGEXP = /^((HTML|SVG)\w*)?Element$/;
 
-const testNode = (nodeType: any, name: any) =>
+const testNode = (nodeType: number, name: string) =>
   (nodeType === ELEMENT_NODE && ELEMENT_REGEXP.test(name)) ||
   (nodeType === TEXT_NODE && name === 'Text') ||
   (nodeType === COMMENT_NODE && name === 'Comment') ||
   (nodeType === FRAGMENT_NODE && name === 'DocumentFragment');
 
-export const test = (val: any) =>
+export const test: NewPlugin['test'] = (val: any) =>
   val &&
   val.constructor &&
   val.constructor.name &&
@@ -49,14 +49,14 @@ function nodeIsFragment(node: HandledType): node is DocumentFragment {
   return node.nodeType === FRAGMENT_NODE;
 }
 
-export const serialize = (
+export const serialize: NewPlugin['serialize'] = (
   node: HandledType,
   config: Config,
   indentation: string,
   depth: number,
   refs: Refs,
   printer: Printer,
-): string => {
+) => {
   if (nodeIsText(node)) {
     return printText(node.data, config);
   }
@@ -82,13 +82,13 @@ export const serialize = (
             .map(attr => attr.name)
             .sort(),
       nodeIsFragment(node)
-        ? []
-        : Array.from(node.attributes).reduce(
+        ? {}
+        : Array.from(node.attributes).reduce<Record<string, string>>(
             (props, attribute) => {
               props[attribute.name] = attribute.value;
               return props;
             },
-            {} as any,
+            {},
           ),
       config,
       indentation + config.indent,

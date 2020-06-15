@@ -197,7 +197,7 @@ When an assertion fails, the error message should give as much signal as necessa
 
 To use snapshot testing inside of your custom matcher you can import `jest-snapshot` and use it from within your matcher.
 
-Here's a simple snapshot matcher that trims a string to store for a given length, `.toMatchTrimmedSnapshot(length)`:
+Here's a snapshot matcher that trims a string to store for a given length, `.toMatchTrimmedSnapshot(length)`:
 
 ```js
 const {toMatchSnapshot} = require('jest-snapshot');
@@ -468,7 +468,7 @@ If you add a snapshot serializer in individual test files instead of to adding i
 - You make the dependency explicit instead of implicit.
 - You avoid limits to configuration that might cause you to eject from [create-react-app](https://github.com/facebookincubator/create-react-app).
 
-See [configuring Jest](Configuration.md#snapshotserializers-array-string) for more information.
+See [configuring Jest](Configuration.md#snapshotserializers-arraystring) for more information.
 
 ### `.not`
 
@@ -788,7 +788,7 @@ const houseForSale = {
 };
 
 test('this house has my desired features', () => {
-  // Simple Referencing
+  // Example Referencing
   expect(houseForSale).toHaveProperty('bath');
   expect(houseForSale).toHaveProperty('bedrooms', 4);
 
@@ -824,7 +824,7 @@ test('this house has my desired features', () => {
 Using exact equality with floating point numbers is a bad idea. Rounding means that intuitive things fail. For example, this test fails:
 
 ```js
-test('adding works sanely with simple decimals', () => {
+test('adding works sanely with decimals', () => {
   expect(0.2 + 0.1).toBe(0.3); // Fails!
 });
 ```
@@ -834,7 +834,7 @@ It fails because in JavaScript, `0.2 + 0.1` is actually `0.30000000000000004`. S
 Instead, use `.toBeCloseTo`. Use `numDigits` to control how many digits after the decimal point to check. For example, if you want to be sure that `0.2 + 0.1` is equal to `0.3` with a precision of 5 decimal digits, you can use this test:
 
 ```js
-test('adding works sanely with simple decimals', () => {
+test('adding works sanely with decimals', () => {
   expect(0.2 + 0.1).toBeCloseTo(0.3, 5);
 });
 ```
@@ -843,7 +843,7 @@ The default for `numDigits` is 2, which has proved to be a good default in most 
 
 ### `.toBeDefined()`
 
-Use `.toBeDefined` to check that a variable is not undefined. For example, if you just want to check that a function `fetchNewFlavorIdea()` returns _something_, you can write:
+Use `.toBeDefined` to check that a variable is not undefined. For example, if you want to check that a function `fetchNewFlavorIdea()` returns _something_, you can write:
 
 ```js
 test('there is a new flavor idea', () => {
@@ -855,7 +855,7 @@ You could write `expect(fetchNewFlavorIdea()).not.toBe(undefined)`, but it's bet
 
 ### `.toBeFalsy()`
 
-Use `.toBeFalsy` when you don't care what a value is, you just want to ensure a value is false in a boolean context. For example, let's say you have some application code that looks like:
+Use `.toBeFalsy` when you don't care what a value is and you want to ensure a value is false in a boolean context. For example, let's say you have some application code that looks like:
 
 ```js
 drinkSomeLaCroix();
@@ -943,7 +943,7 @@ test('bloop returns null', () => {
 
 ### `.toBeTruthy()`
 
-Use `.toBeTruthy` when you don't care what a value is, you just want to ensure a value is true in a boolean context. For example, let's say you have some application code that looks like:
+Use `.toBeTruthy` when you don't care what a value is and you want to ensure a value is true in a boolean context. For example, let's say you have some application code that looks like:
 
 ```js
 drinkSomeLaCroix();
@@ -952,7 +952,7 @@ if (thirstInfo()) {
 }
 ```
 
-You may not care what `thirstInfo` returns, specifically - it might return `true` or a complex object, and your code would still work. So if you just want to test that `thirstInfo` will be truthy after drinking some La Croix, you could write:
+You may not care what `thirstInfo` returns, specifically - it might return `true` or a complex object, and your code would still work. So if you want to test that `thirstInfo` will be truthy after drinking some La Croix, you could write:
 
 ```js
 test('drinking La Croix leads to having thirst info', () => {

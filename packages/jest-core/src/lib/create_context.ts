@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import Runtime = require('jest-runtime');
-import {HasteMapObject} from 'jest-haste-map';
+import type {HasteMapObject} from 'jest-haste-map';
 
 export default (
   config: Config.ProjectConfig,

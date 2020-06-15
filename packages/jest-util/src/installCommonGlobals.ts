@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
-import {Config} from '@jest/types';
+import * as fs from 'graceful-fs';
+import type {Config} from '@jest/types';
 import createProcessObject from './createProcessObject';
 import deepCyclicCopy from './deepCyclicCopy';
 
 const DTRACE = Object.keys(global).filter(key => key.startsWith('DTRACE'));
 
-export default function(
+export default function (
   globalObject: NodeJS.Global,
   globals: Config.ConfigGlobals,
 ): NodeJS.Global & Config.ConfigGlobals {
@@ -55,9 +55,9 @@ export default function(
 
   // Forward some APIs.
   DTRACE.forEach(dtrace => {
-    // @ts-ignore: no index
-    globalObject[dtrace] = function(...args: Array<any>) {
-      // @ts-ignore: no index
+    // @ts-expect-error: no index
+    globalObject[dtrace] = function (...args: Array<any>) {
+      // @ts-expect-error: no index
       return global[dtrace].apply(this, args);
     };
   });

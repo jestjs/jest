@@ -1,12 +1,13 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
+    // we don't want `@types/jest` to be referenced
+    "types": ["node"],
     "rootDir": "src",
     "outDir": "build"
   },
   "references": [
     {"path": "../jest-fake-timers"},
-    {"path": "../jest-transform"},
     {"path": "../jest-types"},
     {"path": "../jest-util"}
   ]

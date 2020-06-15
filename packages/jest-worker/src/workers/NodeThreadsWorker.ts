@@ -7,8 +7,6 @@
 
 import * as path from 'path';
 import {PassThrough} from 'stream';
-// ESLint doesn't know about this experimental module
-// eslint-disable-next-line import/no-unresolved
 import {Worker} from 'worker_threads';
 import mergeStream = require('merge-stream');
 
@@ -61,7 +59,7 @@ export default class ExperimentalWorker implements WorkerInterface {
     this.initialize();
   }
 
-  initialize() {
+  initialize(): void {
     this._worker = new Worker(path.resolve(__dirname, './threadChild.js'), {
       eval: false,
       stderr: true,
@@ -150,7 +148,7 @@ export default class ExperimentalWorker implements WorkerInterface {
 
         if (error != null && typeof error === 'object') {
           const extra = error;
-          // @ts-ignore: no index
+          // @ts-expect-error: no index
           const NativeCtor = global[response[1]];
           const Ctor = typeof NativeCtor === 'function' ? NativeCtor : Error;
 
@@ -159,7 +157,7 @@ export default class ExperimentalWorker implements WorkerInterface {
           error.stack = response[3];
 
           for (const key in extra) {
-            // @ts-ignore: no index
+            // @ts-expect-error: no index
             error[key] = extra[key];
           }
         }
@@ -169,7 +167,7 @@ export default class ExperimentalWorker implements WorkerInterface {
       case PARENT_MESSAGE_SETUP_ERROR:
         error = new Error('Error when calling setup: ' + response[2]);
 
-        // @ts-ignore: adding custom properties to errors.
+        // @ts-expect-error: adding custom properties to errors.
         error.type = response[1];
         error.stack = response[3];
 
@@ -195,11 +193,11 @@ export default class ExperimentalWorker implements WorkerInterface {
     }
   }
 
-  waitForExit() {
+  waitForExit(): Promise<void> {
     return this._exitPromise;
   }
 
-  forceExit() {
+  forceExit(): void {
     this._forceExited = true;
     this._worker.terminate();
   }
@@ -226,7 +224,7 @@ export default class ExperimentalWorker implements WorkerInterface {
     this._worker.postMessage(request);
   }
 
-  getWorkerId() {
+  getWorkerId(): number {
     return this._options.workerId;
   }
 

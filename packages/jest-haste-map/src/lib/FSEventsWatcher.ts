@@ -6,16 +6,16 @@
  *
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
 import {EventEmitter} from 'events';
+import * as fs from 'graceful-fs';
 import anymatch, {Matcher} from 'anymatch';
 import micromatch = require('micromatch');
-// eslint-disable-next-line
-import {Watcher} from 'fsevents';
-// @ts-ignore no types
+// @ts-expect-error no types
 import walker from 'walker';
 
+// eslint-disable-next-line @typescript-eslint/prefer-ts-expect-error
+// @ts-ignore: this is for CI which runs linux and might not have this
 let fsevents: typeof import('fsevents') | null = null;
 try {
   fsevents = require('fsevents');
@@ -45,17 +45,17 @@ class FSEventsWatcher extends EventEmitter {
   public readonly dot: boolean;
   public readonly hasIgnore: boolean;
   public readonly doIgnore: (path: string) => boolean;
-  public readonly watcher: Watcher;
+  public readonly fsEventsWatchStopper: () => Promise<void>;
   private _tracked: Set<string>;
 
-  static isSupported() {
+  static isSupported(): boolean {
     return fsevents !== null;
   }
 
   private static normalizeProxy(
     callback: (normalizedPath: string, stats: fs.Stats) => void,
   ) {
-    return (filepath: string, stats: fs.Stats) =>
+    return (filepath: string, stats: fs.Stats): void =>
       callback(path.normalize(filepath), stats);
   }
 
@@ -105,9 +105,11 @@ class FSEventsWatcher extends EventEmitter {
     this.doIgnore = opts.ignored ? anymatch(opts.ignored) : () => false;
 
     this.root = path.resolve(dir);
-    this.watcher = fsevents(this.root);
+    this.fsEventsWatchStopper = fsevents.watch(
+      this.root,
+      this.handleEvent.bind(this),
+    );
 
-    this.watcher.start().on('change', this.handleEvent.bind(this));
     this._tracked = new Set();
     FSEventsWatcher.recReaddir(
       this.root,
@@ -126,12 +128,13 @@ class FSEventsWatcher extends EventEmitter {
   /**
    * End watching.
    */
-  close(callback?: () => void) {
-    this.watcher.stop();
-    this.removeAllListeners();
-    if (typeof callback === 'function') {
-      process.nextTick(callback.bind(null, null, true));
-    }
+  close(callback?: () => void): void {
+    this.fsEventsWatchStopper().then(() => {
+      this.removeAllListeners();
+      if (typeof callback === 'function') {
+        process.nextTick(callback.bind(null, null, true));
+      }
+    });
   }
 
   private isFileIncluded(relativePath: string) {

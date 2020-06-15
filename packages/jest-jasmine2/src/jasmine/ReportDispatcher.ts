@@ -28,26 +28,26 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-import {Reporter, RunDetails} from '../types';
-import {SpecResult} from './Spec';
-import {SuiteResult} from './Suite';
+import type {Reporter, RunDetails} from '../types';
+import type {SpecResult} from './Spec';
+import type {SuiteResult} from './Suite';
 
 export default class ReportDispatcher implements Reporter {
   addReporter: (reporter: Reporter) => void;
   provideFallbackReporter: (reporter: Reporter) => void;
   clearReporters: () => void;
 
-  // @ts-ignore
+  // @ts-expect-error
   jasmineDone: (runDetails: RunDetails) => void;
-  // @ts-ignore
+  // @ts-expect-error
   jasmineStarted: (runDetails: RunDetails) => void;
-  // @ts-ignore
+  // @ts-expect-error
   specDone: (result: SpecResult) => void;
-  // @ts-ignore
+  // @ts-expect-error
   specStarted: (spec: SpecResult) => void;
-  // @ts-ignore
+  // @ts-expect-error
   suiteDone: (result: SuiteResult) => void;
-  // @ts-ignore
+  // @ts-expect-error
   suiteStarted: (result: SuiteResult) => void;
 
   constructor(methods: Array<keyof Reporter>) {
@@ -55,8 +55,8 @@ export default class ReportDispatcher implements Reporter {
 
     for (let i = 0; i < dispatchedMethods.length; i++) {
       const method = dispatchedMethods[i];
-      this[method] = (function(m) {
-        return function() {
+      this[method] = (function (m) {
+        return function () {
           dispatch(m, arguments);
         };
       })(method);
@@ -65,15 +65,15 @@ export default class ReportDispatcher implements Reporter {
     let reporters: Array<Reporter> = [];
     let fallbackReporter: Reporter | null = null;
 
-    this.addReporter = function(reporter) {
+    this.addReporter = function (reporter) {
       reporters.push(reporter);
     };
 
-    this.provideFallbackReporter = function(reporter) {
+    this.provideFallbackReporter = function (reporter) {
       fallbackReporter = reporter;
     };
 
-    this.clearReporters = function() {
+    this.clearReporters = function () {
       reporters = [];
     };
 
@@ -86,7 +86,7 @@ export default class ReportDispatcher implements Reporter {
       for (let i = 0; i < reporters.length; i++) {
         const reporter = reporters[i];
         if (reporter[method]) {
-          // @ts-ignore
+          // @ts-expect-error
           reporter[method].apply(reporter, args);
         }
       }

@@ -19,7 +19,7 @@ import {
 const DIR = path.resolve(tmpdir(), 'globalVariables.test');
 const TEST_DIR = path.resolve(DIR, '__tests__');
 
-function cleanStderr(stderr) {
+function cleanStderr(stderr: string) {
   const {rest} = extractSummary(stderr);
   return rest.replace(/.*(jest-jasmine2).*\n/g, '');
 }
@@ -45,11 +45,49 @@ test('basic test constructs', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, exitCode} = runJest(DIR);
-  expect(exitCode).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(0);
+});
+
+test('interleaved describe and test children order', () => {
+  const filename = 'interleaved.test.js';
+  const content = `
+    let lastTest;
+    test('above', () => {
+      try {
+        expect(lastTest).toBe(undefined);
+      } finally {
+        lastTest = 'above';
+      }
+    });
+    describe('describe', () => {
+      test('inside', () => {
+        try {
+          expect(lastTest).toBe('above');
+        } finally {
+          lastTest = 'inside';
+        }
+      });
+    });
+    test('below', () => {
+      try {
+        expect(lastTest).toBe('inside');
+      } finally {
+        lastTest = 'below';
+      }
+    });
+  `;
+
+  writeFiles(TEST_DIR, {[filename]: content});
+  const {stderr, exitCode} = runJest(DIR);
+
+  const {summary, rest} = extractSummary(stderr);
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(0);
 });
 
 test('skips', () => {
@@ -106,11 +144,11 @@ test('only', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, exitCode} = runJest(DIR);
-  expect(exitCode).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(0);
 });
 
 test('cannot have describe with no implementation', () => {
@@ -121,12 +159,13 @@ test('cannot have describe with no implementation', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, exitCode} = runJest(DIR);
-  expect(exitCode).toBe(1);
 
   const rest = cleanStderr(stderr);
   const {summary} = extractSummary(stderr);
+
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(1);
 });
 
 test('cannot test with no implementation', () => {
@@ -139,11 +178,11 @@ test('cannot test with no implementation', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, exitCode} = runJest(DIR);
-  expect(exitCode).toBe(1);
 
   const {summary} = extractSummary(stderr);
   expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(1);
 });
 
 test('skips with expand arg', () => {
@@ -170,11 +209,11 @@ test('skips with expand arg', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, exitCode} = runJest(DIR, ['--expand']);
-  expect(exitCode).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(0);
 });
 
 test('only with expand arg', () => {
@@ -200,11 +239,11 @@ test('only with expand arg', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, exitCode} = runJest(DIR, ['--expand']);
-  expect(exitCode).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(0);
 });
 
 test('cannot test with no implementation with expand arg', () => {
@@ -217,11 +256,11 @@ test('cannot test with no implementation with expand arg', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, exitCode} = runJest(DIR, ['--expand']);
-  expect(exitCode).toBe(1);
 
   const {summary} = extractSummary(stderr);
   expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(1);
 });
 
 test('function as descriptor', () => {
@@ -235,9 +274,9 @@ test('function as descriptor', () => {
 
   writeFiles(TEST_DIR, {[filename]: content});
   const {stderr, exitCode} = runJest(DIR);
-  expect(exitCode).toBe(0);
 
   const {summary, rest} = extractSummary(stderr);
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();
+  expect(exitCode).toBe(0);
 });

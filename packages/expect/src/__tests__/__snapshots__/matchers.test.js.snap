@@ -10,7 +10,7 @@ Resolved to value: <r>4</>
 exports[`.rejects fails non-promise value "a" 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  string
 Received has value: <r>"a"</>
@@ -19,7 +19,7 @@ Received has value: <r>"a"</>
 exports[`.rejects fails non-promise value [1] 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  array
 Received has value: <r>[1]</>
@@ -28,7 +28,7 @@ Received has value: <r>[1]</>
 exports[`.rejects fails non-promise value [Function anonymous] 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  function
 Received has value: <r>[Function anonymous]</>
@@ -37,7 +37,7 @@ Received has value: <r>[Function anonymous]</>
 exports[`.rejects fails non-promise value {"a": 1} 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  object
 Received has value: <r>{"a": 1}</>
@@ -46,7 +46,7 @@ Received has value: <r>{"a": 1}</>
 exports[`.rejects fails non-promise value 4 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  number
 Received has value: <r>4</>
@@ -55,7 +55,7 @@ Received has value: <r>4</>
 exports[`.rejects fails non-promise value null 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has value: <r>null</>
 `;
@@ -63,7 +63,7 @@ Received has value: <r>null</>
 exports[`.rejects fails non-promise value true 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has type:  boolean
 Received has value: <r>true</>
@@ -72,7 +72,7 @@ Received has value: <r>true</>
 exports[`.rejects fails non-promise value undefined 1`] = `
 <d>expect(</><r>received</><d>).</>rejects<d>.</>not<d>.</>toBeDefined<d>()</>
 
-<b>Matcher error</>: <r>received</> value must be a promise
+<b>Matcher error</>: <r>received</> value must be a promise or a function returning a promise
 
 Received has value: <r>undefined</>
 `;
@@ -227,8 +227,8 @@ Received has value: <r>undefined</>
 exports[`.toBe() does not crash on circular references 1`] = `
 <d>expect(</><r>received</><d>).</>toBe<d>(</><g>expected</><d>) // Object.is equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 3</>
 
 <g>- Object {}</>
 <r>+ Object {</>
@@ -300,8 +300,8 @@ line
 string" 1`] = `
 <d>expect(</><r>received</><d>).</>toBe<d>(</><g>expected</><d>) // Object.is equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 2</>
 
 <g>- 3</>
 <r>+ four</>
@@ -321,8 +321,8 @@ exports[`.toBe() fails for: "with
 trailing space" and "without trailing space" 1`] = `
 <d>expect(</><r>received</><d>).</>toBe<d>(</><g>expected</><d>) // Object.is equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 2</>
 
 <g>- with<i>out</i> trailing space</>
 <r>+ with<Y> </></>
@@ -364,14 +364,8 @@ exports[`.toBe() fails for: {"a": [Function a], "b": 2} and {"a": Any<Function>,
 
 <d>If it should pass with deep equality, replace "toBe" with "toStrictEqual"</>
 
-<g>- Expected</>
-<r>+ Received</>
-
-<d>  Object {</>
-<g>-   "a": Any<Function>,</>
-<r>+   "a": [Function a],</>
-<d>    "b": 2,</>
-<d>  }</>
+Expected: <g>{"a": Any<Function>, "b": 2}</>
+Received: <r>{"a": [Function a], "b": 2}</>
 `;
 
 exports[`.toBe() fails for: {"a": 1} and {"a": 1} 1`] = `
@@ -386,8 +380,8 @@ Received: serializes to the same string
 exports[`.toBe() fails for: {"a": 1} and {"a": 5} 1`] = `
 <d>expect(</><r>received</><d>).</>toBe<d>(</><g>expected</><d>) // Object.is equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "a": 5,</>
@@ -400,8 +394,8 @@ exports[`.toBe() fails for: {"a": undefined, "b": 2} and {"b": 2} 1`] = `
 
 <d>If it should pass with deep equality, replace "toBe" with "toEqual"</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 0</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <r>+   "a": undefined,</>
@@ -1986,6 +1980,13 @@ Expected: <g>{"asymmetricMatch": [Function asymmetricMatch]}</>
 Received: <r>"Eve"</>
 `;
 
+exports[`.toEqual() {pass: false} expect("abc").toEqual({"0": "a", "1": "b", "2": "c"}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: <g>{"0": "a", "1": "b", "2": "c"}</>
+Received: <r>"abc"</>
+`;
+
 exports[`.toEqual() {pass: false} expect("abd").toEqual(StringContaining "bc") 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
@@ -2012,8 +2013,8 @@ exports[`.toEqual() {pass: false} expect("type TypeName<T> = T extends Function 
 : \\"object\\";") 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 3</>
+<r>+ Received  + 1</>
 
 <g>- type TypeName<T> = T extends Function</>
 <g>- ? "function"</>
@@ -2021,11 +2022,18 @@ exports[`.toEqual() {pass: false} expect("type TypeName<T> = T extends Function 
 <r>+ type TypeName<T> = T extends Function<i> </i>? "function"<i> </i>: "object";</>
 `;
 
+exports[`.toEqual() {pass: false} expect(/abc/gsy).toEqual(/abc/g) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: <g>/abc/g</>
+Received: <r>/abc/gsy</>
+`;
+
 exports[`.toEqual() {pass: false} expect([1, 2]).toEqual([2, 1]) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Array [</>
 <g>-   2,</>
@@ -2044,13 +2052,34 @@ Received: <r>[1, 3]</>
 exports[`.toEqual() {pass: false} expect([1]).toEqual([2]) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Array [</>
 <g>-   2,</>
 <r>+   1,</>
 <d>  ]</>
+`;
+
+exports[`.toEqual() {pass: false} expect([97, 98, 99]).toEqual([97, 98, 100]) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Uint8Array [</>
+<d>    97,</>
+<d>    98,</>
+<g>-   100,</>
+<r>+   99,</>
+<d>  ]</>
+`;
+
+exports[`.toEqual() {pass: false} expect({"0": "a", "1": "b", "2": "c"}).toEqual("abc") 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: <g>"abc"</>
+Received: <r>{"0": "a", "1": "b", "2": "c"}</>
 `;
 
 exports[`.toEqual() {pass: false} expect({"a": 1, "b": 2}).toEqual(ObjectContaining {"a": 2}) 1`] = `
@@ -2063,8 +2092,8 @@ Received: <r>{"a": 1, "b": 2}</>
 exports[`.toEqual() {pass: false} expect({"a": 1}).toEqual({"a": 2}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "a": 2,</>
@@ -2075,8 +2104,8 @@ exports[`.toEqual() {pass: false} expect({"a": 1}).toEqual({"a": 2}) 1`] = `
 exports[`.toEqual() {pass: false} expect({"a": 5}).toEqual({"b": 6}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "b": 6,</>
@@ -2084,11 +2113,95 @@ exports[`.toEqual() {pass: false} expect({"a": 5}).toEqual({"b": 6}) 1`] = `
 <d>  }</>
 `;
 
+exports[`.toEqual() {pass: false} expect({"foo": {"bar": 1}}).toEqual({"foo": {}}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 1</>
+<r>+ Received  + 3</>
+
+<d>  Object {</>
+<g>-   "foo": Object {},</>
+<r>+   "foo": Object {</>
+<r>+     "bar": 1,</>
+<r>+   },</>
+<d>  }</>
+`;
+
+exports[`.toEqual() {pass: false} expect({"frozenGetter": {}}).toEqual({"frozenGetter": {"foo": "bar"}}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 3</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "frozenGetter": Object {</>
+<g>-     "foo": "bar",</>
+<g>-   },</>
+<r>+   "frozenGetter": Object {},</>
+<d>  }</>
+`;
+
+exports[`.toEqual() {pass: false} expect({"frozenGetterAndSetter": {}}).toEqual({"frozenGetterAndSetter": {"foo": "bar"}}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 3</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "frozenGetterAndSetter": Object {</>
+<g>-     "foo": "bar",</>
+<g>-   },</>
+<r>+   "frozenGetterAndSetter": Object {},</>
+<d>  }</>
+`;
+
+exports[`.toEqual() {pass: false} expect({"frozenSetter": undefined}).toEqual({"frozenSetter": {"foo": "bar"}}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 3</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "frozenSetter": Object {</>
+<g>-     "foo": "bar",</>
+<g>-   },</>
+<r>+   "frozenSetter": undefined,</>
+<d>  }</>
+`;
+
+exports[`.toEqual() {pass: false} expect({"getter": {}}).toEqual({"getter": {"foo": "bar"}}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 3</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "getter": Object {</>
+<g>-     "foo": "bar",</>
+<g>-   },</>
+<r>+   "getter": Object {},</>
+<d>  }</>
+`;
+
+exports[`.toEqual() {pass: false} expect({"getterAndSetter": {}}).toEqual({"getterAndSetter": {"foo": "bar"}}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 3</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "getterAndSetter": Object {</>
+<g>-     "foo": "bar",</>
+<g>-   },</>
+<r>+   "getterAndSetter": Object {},</>
+<d>  }</>
+`;
+
 exports[`.toEqual() {pass: false} expect({"nodeName": "div", "nodeType": 1}).toEqual({"nodeName": "p", "nodeType": 1}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "nodeName": "p",</>
@@ -2097,11 +2210,25 @@ exports[`.toEqual() {pass: false} expect({"nodeName": "div", "nodeType": 1}).toE
 <d>  }</>
 `;
 
+exports[`.toEqual() {pass: false} expect({"setter": undefined}).toEqual({"setter": {"foo": "bar"}}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 3</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "setter": Object {</>
+<g>-     "foo": "bar",</>
+<g>-   },</>
+<r>+   "setter": undefined,</>
+<d>  }</>
+`;
+
 exports[`.toEqual() {pass: false} expect({"target": {"nodeType": 1, "value": "a"}}).toEqual({"target": {"nodeType": 1, "value": "b"}}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <d>    "target": Object {</>
@@ -2110,6 +2237,40 @@ exports[`.toEqual() {pass: false} expect({"target": {"nodeType": 1, "value": "a"
 <r>+     "value": "a",</>
 <d>    },</>
 <d>  }</>
+`;
+
+exports[`.toEqual() {pass: false} expect({}).toEqual({}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: <g>{}</>
+Received: serializes to the same string
+`;
+
+exports[`.toEqual() {pass: false} expect({}).toEqual(0) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: <g>0</>
+Received: <r>{}</>
+`;
+
+exports[`.toEqual() {pass: false} expect({Symbol(foo): 1, Symbol(bar): 2}).toEqual({Symbol(foo): Any<Number>, Symbol(bar): 1}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<d>    Symbol(foo): Any<Number>,</>
+<g>-   Symbol(bar): 1,</>
+<r>+   Symbol(bar): 2,</>
+<d>  }</>
+`;
+
+exports[`.toEqual() {pass: false} expect(0).toEqual({}) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: <g>{}</>
+Received: <r>0</>
 `;
 
 exports[`.toEqual() {pass: false} expect(0).toEqual(-0) 1`] = `
@@ -2150,8 +2311,8 @@ Received: <r>5e-324</>
 exports[`.toEqual() {pass: false} expect(Immutable.List [1, 2]).toEqual(Immutable.List [2, 1]) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Immutable.List [</>
 <g>-   2,</>
@@ -2163,8 +2324,8 @@ exports[`.toEqual() {pass: false} expect(Immutable.List [1, 2]).toEqual(Immutabl
 exports[`.toEqual() {pass: false} expect(Immutable.List [1]).toEqual(Immutable.List [2]) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Immutable.List [</>
 <g>-   2,</>
@@ -2175,8 +2336,8 @@ exports[`.toEqual() {pass: false} expect(Immutable.List [1]).toEqual(Immutable.L
 exports[`.toEqual() {pass: false} expect(Immutable.Map {"1": Immutable.Map {"2": {"a": 99}}}).toEqual(Immutable.Map {"1": Immutable.Map {"2": {"a": 11}}}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Immutable.Map {</>
 <d>    "1": Immutable.Map {</>
@@ -2191,8 +2352,8 @@ exports[`.toEqual() {pass: false} expect(Immutable.Map {"1": Immutable.Map {"2":
 exports[`.toEqual() {pass: false} expect(Immutable.Map {"a": 0}).toEqual(Immutable.Map {"b": 0}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Immutable.Map {</>
 <g>-   "b": 0,</>
@@ -2203,8 +2364,8 @@ exports[`.toEqual() {pass: false} expect(Immutable.Map {"a": 0}).toEqual(Immutab
 exports[`.toEqual() {pass: false} expect(Immutable.Map {"v": 1}).toEqual(Immutable.Map {"v": 2}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Immutable.Map {</>
 <g>-   "v": 2,</>
@@ -2215,8 +2376,8 @@ exports[`.toEqual() {pass: false} expect(Immutable.Map {"v": 1}).toEqual(Immutab
 exports[`.toEqual() {pass: false} expect(Immutable.OrderedMap {1: "one", 2: "two"}).toEqual(Immutable.OrderedMap {2: "two", 1: "one"}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Immutable.OrderedMap {</>
 <g>-   2: "two",</>
@@ -2228,8 +2389,8 @@ exports[`.toEqual() {pass: false} expect(Immutable.OrderedMap {1: "one", 2: "two
 exports[`.toEqual() {pass: false} expect(Immutable.OrderedSet [1, 2]).toEqual(Immutable.OrderedSet [2, 1]) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Immutable.OrderedSet [</>
 <g>-   2,</>
@@ -2241,8 +2402,8 @@ exports[`.toEqual() {pass: false} expect(Immutable.OrderedSet [1, 2]).toEqual(Im
 exports[`.toEqual() {pass: false} expect(Immutable.Set [1, 2]).toEqual(Immutable.Set []) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 4</>
 
 <g>- Immutable.Set []</>
 <r>+ Immutable.Set [</>
@@ -2254,8 +2415,8 @@ exports[`.toEqual() {pass: false} expect(Immutable.Set [1, 2]).toEqual(Immutable
 exports[`.toEqual() {pass: false} expect(Immutable.Set [1, 2]).toEqual(Immutable.Set [1, 2, 3]) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 0</>
 
 <d>  Immutable.Set [</>
 <d>    1,</>
@@ -2267,8 +2428,8 @@ exports[`.toEqual() {pass: false} expect(Immutable.Set [1, 2]).toEqual(Immutable
 exports[`.toEqual() {pass: false} expect(Map {"a" => 0}).toEqual(Map {"b" => 0}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Map {</>
 <g>-   "b" => 0,</>
@@ -2279,8 +2440,8 @@ exports[`.toEqual() {pass: false} expect(Map {"a" => 0}).toEqual(Map {"b" => 0})
 exports[`.toEqual() {pass: false} expect(Map {"v" => 1}).toEqual(Map {"v" => 2}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Map {</>
 <g>-   "v" => 2,</>
@@ -2291,8 +2452,8 @@ exports[`.toEqual() {pass: false} expect(Map {"v" => 1}).toEqual(Map {"v" => 2})
 exports[`.toEqual() {pass: false} expect(Map {["v"] => 1}).toEqual(Map {["v"] => 2}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Map {</>
 <d>    Array [</>
@@ -2305,8 +2466,8 @@ exports[`.toEqual() {pass: false} expect(Map {["v"] => 1}).toEqual(Map {["v"] =>
 exports[`.toEqual() {pass: false} expect(Map {[1] => Map {[1] => "one"}}).toEqual(Map {[1] => Map {[1] => "two"}}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <y>@@ -2,8 +2,8 @@</>
 <d>    Array [</>
@@ -2330,8 +2491,8 @@ Received: <r>Map {}</>
 exports[`.toEqual() {pass: false} expect(Map {1 => "one", 2 => "two"}).toEqual(Map {1 => "one"}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 0</>
+<r>+ Received  + 1</>
 
 <d>  Map {</>
 <d>    1 => "one",</>
@@ -2342,8 +2503,8 @@ exports[`.toEqual() {pass: false} expect(Map {1 => "one", 2 => "two"}).toEqual(M
 exports[`.toEqual() {pass: false} expect(Set {[1], [2]}).toEqual(Set {[1], [2], [2]}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 3</>
+<r>+ Received  + 0</>
 
 <y>@@ -3,9 +3,6 @@</>
 <d>      1,</>
@@ -2360,8 +2521,8 @@ exports[`.toEqual() {pass: false} expect(Set {[1], [2]}).toEqual(Set {[1], [2], 
 exports[`.toEqual() {pass: false} expect(Set {[1], [2]}).toEqual(Set {[1], [2], [3]}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 3</>
+<r>+ Received  + 0</>
 
 <y>@@ -3,9 +3,6 @@</>
 <d>      1,</>
@@ -2378,8 +2539,8 @@ exports[`.toEqual() {pass: false} expect(Set {[1], [2]}).toEqual(Set {[1], [2], 
 exports[`.toEqual() {pass: false} expect(Set {1, 2}).toEqual(Set {}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 4</>
 
 <g>- Set {}</>
 <r>+ Set {</>
@@ -2391,8 +2552,8 @@ exports[`.toEqual() {pass: false} expect(Set {1, 2}).toEqual(Set {}) 1`] = `
 exports[`.toEqual() {pass: false} expect(Set {1, 2}).toEqual(Set {1, 2, 3}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 0</>
 
 <d>  Set {</>
 <d>    1,</>
@@ -2404,8 +2565,8 @@ exports[`.toEqual() {pass: false} expect(Set {1, 2}).toEqual(Set {1, 2, 3}) 1`] 
 exports[`.toEqual() {pass: false} expect(Set {Set {1}, Set {2}}).toEqual(Set {Set {1}, Set {3}}) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Set {</>
 <d>    Set {</>
@@ -2467,11 +2628,18 @@ Expected: not <g>"abc"</>
 
 `;
 
-exports[`.toEqual() {pass: true} expect("abc").not.toEqual({"0": "a", "1": "b", "2": "c"}) 1`] = `
+exports[`.toEqual() {pass: true} expect("abc").not.toEqual("abc") 2`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
-Expected: not <g>{"0": "a", "1": "b", "2": "c"}</>
-Received:     <r>"abc"</>
+Expected: not <g>"abc"</>
+
+`;
+
+exports[`.toEqual() {pass: true} expect("abc").not.toEqual("abc") 3`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>"abc"</>
+
 `;
 
 exports[`.toEqual() {pass: true} expect("abcd").not.toEqual(StringContaining "bc") 1`] = `
@@ -2509,18 +2677,18 @@ Expected: not <g>[1]</>
 
 `;
 
+exports[`.toEqual() {pass: true} expect([97, 98, 99]).not.toEqual([97, 98, 99]) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>[97, 98, 99]</>
+
+`;
+
 exports[`.toEqual() {pass: true} expect([Function anonymous]).not.toEqual(Any<Function>) 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 Expected: not <g>Any<Function></>
 Received:     <r>[Function anonymous]</>
-`;
-
-exports[`.toEqual() {pass: true} expect({"0": "a", "1": "b", "2": "c"}).not.toEqual("abc") 1`] = `
-<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
-
-Expected: not <g>"abc"</>
-Received:     <r>{"0": "a", "1": "b", "2": "c"}</>
 `;
 
 exports[`.toEqual() {pass: true} expect({"a": 1, "b": [Function b], "c": true}).not.toEqual({"a": 1, "b": Any<Function>, "c": Anything}) 1`] = `
@@ -2558,18 +2726,32 @@ Expected: not <g>{}</>
 
 `;
 
-exports[`.toEqual() {pass: true} expect({}).not.toEqual(0) 1`] = `
-<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
-
-Expected: not <g>0</>
-Received:     <r>{}</>
-`;
-
-exports[`.toEqual() {pass: true} expect(0).not.toEqual({}) 1`] = `
+exports[`.toEqual() {pass: true} expect({}).not.toEqual({}) 2`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
 Expected: not <g>{}</>
-Received:     <r>0</>
+
+`;
+
+exports[`.toEqual() {pass: true} expect({Symbol(foo): 1, Symbol(bar): 2}).not.toEqual({Symbol(foo): Any<Number>, Symbol(bar): 2}) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>{Symbol(foo): Any<Number>, Symbol(bar): 2}</>
+Received:     <r>{Symbol(foo): 1, Symbol(bar): 2}</>
+`;
+
+exports[`.toEqual() {pass: true} expect(0).not.toEqual(0) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>0</>
+
+`;
+
+exports[`.toEqual() {pass: true} expect(0).not.toEqual(0) 2`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>0</>
+
 `;
 
 exports[`.toEqual() {pass: true} expect(1).not.toEqual(1) 1`] = `
@@ -2864,6 +3046,13 @@ Expected length: not <g>2</>
 Received array:      <r>[1, 2]</>
 `;
 
+exports[`.toHaveLength {pass: true} expect([Function anonymous]).toHaveLength(0) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toHaveLength<d>(</><g>expected</><d>)</>
+
+Expected length:   not <g>0</>
+Received function:     <r>[Function anonymous]</>
+`;
+
 exports[`.toHaveLength error cases 1`] = `
 <d>expect(</><r>received</><d>).</>toHaveLength<d>(</><g>expected</><d>)</>
 
@@ -3065,8 +3254,8 @@ exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": 5}}}).toHavePr
 
 Expected path: <g>"a.b"</>
 
-<g>- Expected value</>
-<r>+ Received value</>
+<g>- Expected value  - 1</>
+<r>+ Received value  + 1</>
 
 <d>  Object {</>
 <g>-   "c": 4,</>
@@ -3139,8 +3328,8 @@ Is good for you.") 1`] = `
 
 Expected path: <g>["children", 0]</>
 
-<g>- Expected value</>
-<r>+ Received value</>
+<g>- Expected value  - 3</>
+<r>+ Received value  + 3</>
 
 <g>- Roses are red<i>, v</i>iolets are blue.</>
 <r>+ Roses are red<i>.</i></>
@@ -3600,8 +3789,8 @@ Received: <r>"<i>Because TypeScript support in Babel is just transpilation,</i> 
 exports[`.toStrictEqual() displays substring diff for multiple lines 1`] = `
 <d>expect(</><r>received</><d>).</>toStrictEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 7</>
+<r>+ Received  + 7</>
 
 <g>-     6<i>9</i> |<Y> </></>
 <r>+     6<i>8</i> |<Y> </></>
@@ -3623,8 +3812,8 @@ exports[`.toStrictEqual() displays substring diff for multiple lines 1`] = `
 exports[`.toStrictEqual() matches the expected snapshot when it fails 1`] = `
 <d>expect(</><r>received</><d>).</>toStrictEqual<d>(</><g>expected</><d>) // deep equality</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 4</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "test": TestClassA {</>
@@ -3645,8 +3834,8 @@ Expected: not <g>{"test": {"a": 1, "b": 2}}</>
 exports[`toMatchObject() {pass: false} expect([0]).toMatchObject([-0]) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Array [</>
 <g>-   -0,</>
@@ -3657,8 +3846,8 @@ exports[`toMatchObject() {pass: false} expect([0]).toMatchObject([-0]) 1`] = `
 exports[`toMatchObject() {pass: false} expect([1, 2, 3]).toMatchObject([1, 2, 2]) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Array [</>
 <d>    1,</>
@@ -3671,8 +3860,8 @@ exports[`toMatchObject() {pass: false} expect([1, 2, 3]).toMatchObject([1, 2, 2]
 exports[`toMatchObject() {pass: false} expect([1, 2, 3]).toMatchObject([2, 3, 1]) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Array [</>
 <r>+   1,</>
@@ -3685,8 +3874,8 @@ exports[`toMatchObject() {pass: false} expect([1, 2, 3]).toMatchObject([2, 3, 1]
 exports[`toMatchObject() {pass: false} expect([1, 2]).toMatchObject([1, 3]) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Array [</>
 <d>    1,</>
@@ -3705,8 +3894,8 @@ Received: <r>[Error: foo]</>
 exports[`toMatchObject() {pass: false} expect({"a": "a", "c": "d"}).toMatchObject({"a": Any<Number>}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "a": Any<Number>,</>
@@ -3714,11 +3903,24 @@ exports[`toMatchObject() {pass: false} expect({"a": "a", "c": "d"}).toMatchObjec
 <d>  }</>
 `;
 
+exports[`toMatchObject() {pass: false} expect({"a": "b", "c": "d", Symbol(jest): "jest"}).toMatchObject({"a": "c", Symbol(jest): Any<String>}) 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
+
+<g>- Expected  - 2</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "a": "c",</>
+<g>-   Symbol(jest): Any<String>,</>
+<r>+   "a": "b",</>
+<d>  }</>
+`;
+
 exports[`toMatchObject() {pass: false} expect({"a": "b", "c": "d"}).toMatchObject({"a": "b!", "c": "d"}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "a": "b!",</>
@@ -3730,8 +3932,8 @@ exports[`toMatchObject() {pass: false} expect({"a": "b", "c": "d"}).toMatchObjec
 exports[`toMatchObject() {pass: false} expect({"a": "b", "c": "d"}).toMatchObject({"e": "b"}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 2</>
 
 <d>  Object {</>
 <g>-   "e": "b",</>
@@ -3743,8 +3945,8 @@ exports[`toMatchObject() {pass: false} expect({"a": "b", "c": "d"}).toMatchObjec
 exports[`toMatchObject() {pass: false} expect({"a": "b", "t": {"x": {"r": "r"}, "z": "z"}}).toMatchObject({"a": "b", "t": {"z": [3]}}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 3</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <d>    "a": "b",</>
@@ -3760,8 +3962,8 @@ exports[`toMatchObject() {pass: false} expect({"a": "b", "t": {"x": {"r": "r"}, 
 exports[`toMatchObject() {pass: false} expect({"a": "b", "t": {"x": {"r": "r"}, "z": "z"}}).toMatchObject({"t": {"l": {"r": "r"}}}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 2</>
 
 <d>  Object {</>
 <d>    "t": Object {</>
@@ -3777,8 +3979,8 @@ exports[`toMatchObject() {pass: false} expect({"a": "b", "t": {"x": {"r": "r"}, 
 exports[`toMatchObject() {pass: false} expect({"a": "b"}).toMatchObject({"c": "d"}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "c": "d",</>
@@ -3789,8 +3991,8 @@ exports[`toMatchObject() {pass: false} expect({"a": "b"}).toMatchObject({"c": "d
 exports[`toMatchObject() {pass: false} expect({"a": [{"a": "a", "b": "b"}]}).toMatchObject({"a": [{"a": "c"}]}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <d>    "a": Array [</>
@@ -3805,8 +4007,8 @@ exports[`toMatchObject() {pass: false} expect({"a": [{"a": "a", "b": "b"}]}).toM
 exports[`toMatchObject() {pass: false} expect({"a": [3, 4, "v"], "b": "b"}).toMatchObject({"a": ["v"]}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 0</>
+<r>+ Received  + 2</>
 
 <d>  Object {</>
 <d>    "a": Array [</>
@@ -3820,8 +4022,8 @@ exports[`toMatchObject() {pass: false} expect({"a": [3, 4, "v"], "b": "b"}).toMa
 exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatchObject({"a": [3, 4, 5, 6]}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 0</>
 
 <d>  Object {</>
 <d>    "a": Array [</>
@@ -3836,8 +4038,8 @@ exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatc
 exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatchObject({"a": [3, 4]}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 0</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <d>    "a": Array [</>
@@ -3851,8 +4053,8 @@ exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatc
 exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatchObject({"a": {"b": 4}}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 3</>
+<r>+ Received  + 5</>
 
 <d>  Object {</>
 <g>-   "a": Object {</>
@@ -3869,8 +4071,8 @@ exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatc
 exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatchObject({"a": {"b": Any<String>}}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 3</>
+<r>+ Received  + 5</>
 
 <d>  Object {</>
 <g>-   "a": Object {</>
@@ -3887,8 +4089,8 @@ exports[`toMatchObject() {pass: false} expect({"a": [3, 4, 5], "b": "b"}).toMatc
 exports[`toMatchObject() {pass: false} expect({"a": 1, "b": 1, "c": 1, "d": {"e": {"f": 555}}}).toMatchObject({"d": {"e": {"f": 222}}}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <d>    "d": Object {</>
@@ -3903,8 +4105,8 @@ exports[`toMatchObject() {pass: false} expect({"a": 1, "b": 1, "c": 1, "d": {"e"
 exports[`toMatchObject() {pass: false} expect({"a": 2015-11-30T00:00:00.000Z, "b": "b"}).toMatchObject({"a": 2015-10-10T00:00:00.000Z}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "a": 2015-10-10T00:00:00.000Z,</>
@@ -3915,8 +4117,8 @@ exports[`toMatchObject() {pass: false} expect({"a": 2015-11-30T00:00:00.000Z, "b
 exports[`toMatchObject() {pass: false} expect({"a": null, "b": "b"}).toMatchObject({"a": "4"}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "a": "4",</>
@@ -3927,8 +4129,8 @@ exports[`toMatchObject() {pass: false} expect({"a": null, "b": "b"}).toMatchObje
 exports[`toMatchObject() {pass: false} expect({"a": null, "b": "b"}).toMatchObject({"a": undefined}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "a": undefined,</>
@@ -3939,8 +4141,8 @@ exports[`toMatchObject() {pass: false} expect({"a": null, "b": "b"}).toMatchObje
 exports[`toMatchObject() {pass: false} expect({"a": undefined}).toMatchObject({"a": null}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "a": null,</>
@@ -3951,8 +4153,8 @@ exports[`toMatchObject() {pass: false} expect({"a": undefined}).toMatchObject({"
 exports[`toMatchObject() {pass: false} expect({}).toMatchObject({"a": undefined}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 3</>
+<r>+ Received  + 1</>
 
 <g>- Object {</>
 <g>-   "a": undefined,</>
@@ -3970,8 +4172,8 @@ Received: <r>2015-11-30T00:00:00.000Z</>
 exports[`toMatchObject() {pass: false} expect(Set {1, 2}).toMatchObject(Set {2}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 0</>
+<r>+ Received  + 1</>
 
 <d>  Set {</>
 <r>+   1,</>
@@ -4002,6 +4204,19 @@ exports[`toMatchObject() {pass: true} expect([Error: foo]).toMatchObject([Error:
 <d>expect(</><r>received</><d>).</>not<d>.</>toMatchObject<d>(</><g>expected</><d>)</>
 
 Expected: not <g>[Error: foo]</>
+`;
+
+exports[`toMatchObject() {pass: true} expect({"a": "b", "c": "d", Symbol(jest): "jest"}).toMatchObject({"a": "b", "c": "d", Symbol(jest): "jest"}) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toMatchObject<d>(</><g>expected</><d>)</>
+
+Expected: not <g>{"a": "b", "c": "d", Symbol(jest): "jest"}</>
+`;
+
+exports[`toMatchObject() {pass: true} expect({"a": "b", "c": "d", Symbol(jest): "jest"}).toMatchObject({"a": "b", Symbol(jest): "jest"}) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toMatchObject<d>(</><g>expected</><d>)</>
+
+Expected: not <g>{"a": "b", Symbol(jest): "jest"}</>
+Received:     <r>{"a": "b", "c": "d", Symbol(jest): "jest"}</>
 `;
 
 exports[`toMatchObject() {pass: true} expect({"a": "b", "c": "d"}).toMatchObject({"a": "b", "c": "d"}) 1`] = `
@@ -4128,8 +4343,8 @@ Received:     <r>Set {1, 2}</>
 exports[`toMatchObject() circular references simple circular references {pass: false} expect({"a": "hello", "ref": [Circular]}).toMatchObject({"a": "world", "ref": [Circular]}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "a": "world",</>
@@ -4141,8 +4356,8 @@ exports[`toMatchObject() circular references simple circular references {pass: f
 exports[`toMatchObject() circular references simple circular references {pass: false} expect({"ref": "not a ref"}).toMatchObject({"a": "hello", "ref": [Circular]}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 2</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "a": "hello",</>
@@ -4154,8 +4369,8 @@ exports[`toMatchObject() circular references simple circular references {pass: f
 exports[`toMatchObject() circular references simple circular references {pass: false} expect({}).toMatchObject({"a": "hello", "ref": [Circular]}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 4</>
+<r>+ Received  + 1</>
 
 <g>- Object {</>
 <g>-   "a": "hello",</>
@@ -4180,8 +4395,8 @@ Received:     <r>{"a": "hello", "ref": [Circular]}</>
 exports[`toMatchObject() circular references transitive circular references {pass: false} expect({"a": "world", "nestedObj": {"parentObj": [Circular]}}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "a": "hello",</>
@@ -4195,8 +4410,8 @@ exports[`toMatchObject() circular references transitive circular references {pas
 exports[`toMatchObject() circular references transitive circular references {pass: false} expect({"nestedObj": {"parentObj": "not the parent ref"}}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 2</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "a": "hello",</>
@@ -4210,8 +4425,8 @@ exports[`toMatchObject() circular references transitive circular references {pas
 exports[`toMatchObject() circular references transitive circular references {pass: false} expect({}).toMatchObject({"a": "hello", "nestedObj": {"parentObj": [Circular]}}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 6</>
+<r>+ Received  + 1</>
 
 <g>- Object {</>
 <g>-   "a": "hello",</>
@@ -4238,8 +4453,8 @@ Received:     <r>{"a": "hello", "nestedObj": {"parentObj": [Circular]}}</>
 exports[`toMatchObject() does not match properties up in the prototype chain 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
-<g>- Expected</>
-<r>+ Received</>
+<g>- Expected  - 1</>
+<r>+ Received  + 0</>
 
 <d>  Object {</>
 <d>    "other": "child",</>

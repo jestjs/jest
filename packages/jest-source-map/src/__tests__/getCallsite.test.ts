@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
+import * as fs from 'graceful-fs';
 import SourceMap from 'source-map';
 import getCallsite from '../getCallsite';
 
 // Node 10.5.x compatibility
-jest.mock('fs', () => ({
-  ...jest.genMockFromModule('fs'),
+jest.mock('graceful-fs', () => ({
+  ...jest.createMockFromModule<typeof import('fs')>('fs'),
   ReadStream: jest.requireActual('fs').ReadStream,
   WriteStream: jest.requireActual('fs').WriteStream,
 }));
@@ -44,7 +44,7 @@ describe('getCallsite', () => {
 
     const sourceMapColumn = 1;
     const sourceMapLine = 2;
-    // @ts-ignore
+    // @ts-expect-error
     SourceMap.SourceMapConsumer = class {
       originalPositionFor(params: Record<string, any>) {
         expect(params).toMatchObject({

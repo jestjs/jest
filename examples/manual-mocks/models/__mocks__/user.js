@@ -1,6 +1,6 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
-const user = jest.genMockFromModule('../user');
+const user = jest.createMockFromModule('../user');
 
 user.getAuthenticated = () => ({
   age: 622,

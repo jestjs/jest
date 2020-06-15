@@ -45,6 +45,7 @@ const Sponsor = ({
     className="sponsor-item"
     title={`$${totalDonations.value} by ${name || slug}`}
     target="_blank"
+    rel="nofollow noopener"
     href={website || `https://opencollective.com/${slug}`}
   >
     {
@@ -376,7 +377,7 @@ class Index extends React.Component {
                   content: (
                     <translate>
                       Generate code coverage by adding the flag
-                      [`--coverage`](https://jestjs.io/docs/en/cli.html#coverage).
+                      [`--coverage`](https://jestjs.io/docs/en/cli.html#--coverageboolean).
                       No additional setup needed. Jest can collect code coverage
                       information from entire projects, including untested
                       files.
@@ -399,7 +400,7 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      Jest uses a custom resolver for imports in your tests
+                      Jest uses a custom resolver for imports in your tests,
                       making it simple to mock any object outside of your test’s
                       scope. You can use mocked imports with the rich [Mock
                       Functions](https://jestjs.io/docs/en/mock-functions.html)
@@ -420,11 +421,11 @@ class Index extends React.Component {
                 {
                   content: (
                     <translate>
-                      Tests fail, when they do Jest provides rich context why,
-                      here’s some examples:
+                      Tests fail—when they do, Jest provides rich context why.
+                      Here are some examples:
                     </translate>
                   ),
-                  image: '/img/content/matchers/different-types.png',
+                  image: '/img/content/matchers/toBe.png',
                   imageAlign: 'right',
                   title: <translate>Great Exceptions</translate>,
                 },

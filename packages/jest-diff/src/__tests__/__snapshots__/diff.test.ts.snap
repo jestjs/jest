@@ -34,8 +34,8 @@ exports[`color of text (expanded) 1`] = `
 `;
 
 exports[`context number of lines: -1 (5 default) 1`] = `
-<g>- Expected  1 -</>
-<r>+ Received  1 +</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>@@ -6,9 +6,9 @@</>
 <d>      4,</>
@@ -51,8 +51,8 @@ exports[`context number of lines: -1 (5 default) 1`] = `
 `;
 
 exports[`context number of lines: 0  1`] = `
-<g>- Expected  1 -</>
-<r>+ Received  1 +</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <y>@@ -11,1 +11,0 @@</>
 <g>-     9,</>
@@ -61,8 +61,8 @@ exports[`context number of lines: 0  1`] = `
 `;
 
 exports[`context number of lines: 1  1`] = `
-<g>- Expected  1 -</>
-<r>+ Received  1 +</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <y>@@ -10,4 +10,4 @@</>
 <d>      8,</>
@@ -73,8 +73,8 @@ exports[`context number of lines: 1  1`] = `
 `;
 
 exports[`context number of lines: 2  1`] = `
-<g>- Expected  1 -</>
-<r>+ Received  1 +</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <y>@@ -9,6 +9,6 @@</>
 <d>      7,</>
@@ -87,8 +87,8 @@ exports[`context number of lines: 2  1`] = `
 `;
 
 exports[`context number of lines: 3.1 (5 default) 1`] = `
-<g>- Expected  1 -</>
-<r>+ Received  1 +</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>@@ -6,9 +6,9 @@</>
 <d>      4,</>
@@ -104,8 +104,8 @@ exports[`context number of lines: 3.1 (5 default) 1`] = `
 `;
 
 exports[`context number of lines: undefined (5 default) 1`] = `
-<g>- Expected  1 -</>
-<r>+ Received  1 +</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>@@ -6,9 +6,9 @@</>
 <d>      4,</>
@@ -121,36 +121,36 @@ exports[`context number of lines: undefined (5 default) 1`] = `
 `;
 
 exports[`diffStringsUnified edge cases empty both a and b 1`] = `
-<g>- Expected  0 -</>
-<r>+ Received  0 +</>
+<g>- Expected  - 0</>
+<r>+ Received  + 0</>
 
 
 `;
 
 exports[`diffStringsUnified edge cases empty only a 1`] = `
-<g>- Expected  0 -</>
-<r>+ Received  1 +</>
+<g>- Expected  - 0</>
+<r>+ Received  + 1</>
 
 <r>+ one-line string</>
 `;
 
 exports[`diffStringsUnified edge cases empty only b 1`] = `
-<g>- Expected  1 -</>
-<r>+ Received  0 +</>
+<g>- Expected  - 1</>
+<r>+ Received  + 0</>
 
 <g>- one-line string</>
 `;
 
 exports[`diffStringsUnified edge cases equal both non-empty 1`] = `
-<g>- Expected  0 -</>
-<r>+ Received  0 +</>
+<g>- Expected  - 0</>
+<r>+ Received  + 0</>
 
 <d>  one-line string</>
 `;
 
 exports[`diffStringsUnified edge cases multiline has no common after clean up chaff 1`] = `
-<g>- Expected  2 -</>
-<r>+ Received  2 +</>
+<g>- Expected  - 2</>
+<r>+ Received  + 2</>
 
 <g>- delete</>
 <g>- two</>
@@ -159,16 +159,16 @@ exports[`diffStringsUnified edge cases multiline has no common after clean up ch
 `;
 
 exports[`diffStringsUnified edge cases one-line has no common after clean up chaff 1`] = `
-<g>- Expected  1 -</>
-<r>+ Received  1 +</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <g>- delete</>
 <r>+ insert</>
 `;
 
 exports[`falls back to not call toJSON if it throws and then objects have differences 1`] = `
-<g>- Expected  1 -</>
-<r>+ Received  1 +</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "line": 1,</>
@@ -181,8 +181,8 @@ exports[`falls back to not call toJSON if serialization has no differences but t
 <d>Compared values serialize to the same structure.</>
 <d>Printing internal object structure without calling \`toJSON\` instead.</>
 
-<g>- Expected  1 -</>
-<r>+ Received  1 +</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <d>  Object {</>
 <g>-   "line": 1,</>
@@ -192,24 +192,24 @@ exports[`falls back to not call toJSON if serialization has no differences but t
 `;
 
 exports[`oneline strings 1`] = `
-<g>- Expected  1 -</>
-<r>+ Received  1 +</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <g>- ab</>
 <r>+ aa</>
 `;
 
 exports[`oneline strings 2`] = `
-<g>- Expected  1 -</>
-<r>+ Received  1 +</>
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
 
 <g>- 123456789</>
 <r>+ 234567890</>
 `;
 
 exports[`oneline strings 3`] = `
-<g>- Expected  1 -</>
-<r>+ Received  2 +</>
+<g>- Expected  - 1</>
+<r>+ Received  + 2</>
 
 <g>- oneline</>
 <r>+ multi</>
@@ -217,8 +217,8 @@ exports[`oneline strings 3`] = `
 `;
 
 exports[`oneline strings 4`] = `
-<g>- Expected  2 -</>
-<r>+ Received  1 +</>
+<g>- Expected  - 2</>
+<r>+ Received  + 1</>
 
 <g>- multi</>
 <g>- line</>
@@ -249,8 +249,10 @@ exports[`options change color diffStringsUnified 1`] = `
 <g>- changed <b>from</></>
 <r>+ changed <b>to</></>
 <r>+ insert</>
-<d>  common</>
+<y>  common</>
 `;
+
+exports[`options change color no diff 1`] = `<y>Compared values have no visual difference.</>`;
 
 exports[`options change indicators diff 1`] = `
 <g>< Expected</>
@@ -301,8 +303,8 @@ exports[`options includeChangeCounts false diffStringsUnified 1`] = `
 `;
 
 exports[`options includeChangeCounts true padding diffLinesUnified a has 2 digits 1`] = `
-<g>- Before  10 -</>
-<r>+ After    1 +</>
+<g>- Before  - 10</>
+<r>+ After   +  1</>
 
 <d>  common</>
 <g>- a</>
@@ -319,8 +321,8 @@ exports[`options includeChangeCounts true padding diffLinesUnified a has 2 digit
 `;
 
 exports[`options includeChangeCounts true padding diffLinesUnified b has 2 digits 1`] = `
-<g>- Before   1 -</>
-<r>+ After   10 +</>
+<g>- Before  -  1</>
+<r>+ After   + 10</>
 
 <d>  common</>
 <g>- a</>
@@ -337,8 +339,8 @@ exports[`options includeChangeCounts true padding diffLinesUnified b has 2 digit
 `;
 
 exports[`options includeChangeCounts true padding diffStringsUnified 1`] = `
-<g>- Before  1 -</>
-<r>+ After   1 +</>
+<g>- Before  - 1</>
+<r>+ After   + 1</>
 
 <g>- change <i>from</i></>
 <r>+ change <i>to</i></>
@@ -363,15 +365,15 @@ exports[`options omitAnnotationLines true diffStringsUnified and includeChangeCo
 
 exports[`options omitAnnotationLines true diffStringsUnified empty strings 1`] = ``;
 
-exports[`options trailingSpaceFormatter diffDefault default yellowish 1`] = `
+exports[`options trailingSpaceFormatter diffDefault default no color 1`] = `
 <g>- Expected</>
 <r>+ Received</>
 
-<g>- delete 1 trailing space:<Y> </></>
+<g>- delete 1 trailing space: </>
 <r>+ delete 1 trailing space:</>
-<d>  common 2 trailing spaces:<Y>  </></>
+<d>  common 2 trailing spaces:  </>
 <g>- insert 1 trailing space:</>
-<r>+ insert 1 trailing space:<Y> </></>
+<r>+ insert 1 trailing space: </>
 `;
 
 exports[`options trailingSpaceFormatter diffDefault middle dot 1`] = `
@@ -383,4 +385,15 @@ exports[`options trailingSpaceFormatter diffDefault middle dot 1`] = `
 <d>  common 2 trailing spaces:··</>
 <g>- insert 1 trailing space:</>
 <r>+ insert 1 trailing space:·</>
+`;
+
+exports[`options trailingSpaceFormatter diffDefault yellowish common 1`] = `
+<g>- Expected</>
+<r>+ Received</>
+
+<g>- delete 1 trailing space: </>
+<r>+ delete 1 trailing space:</>
+<d>  common 2 trailing spaces:<Y>  </></>
+<g>- insert 1 trailing space:</>
+<r>+ insert 1 trailing space: </>
 `;

@@ -10,7 +10,7 @@ import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {findRepos, getChangedFilesForRoots} from 'jest-changed-files';
 import {skipSuiteOnWindows} from '@jest/test-utils';
-import {cleanup, run, writeFiles} from '../Utils';
+import {cleanup, run, testIfHg, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
 skipSuiteOnWindows();
@@ -23,7 +23,7 @@ const HG = 'hg --config ui.username=jest_test';
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
 
-test('gets hg SCM roots and dedups them', async () => {
+testIfHg('gets hg SCM roots and dedupes them', async () => {
   writeFiles(DIR, {
     'first-repo/file1.txt': 'file1',
     'first-repo/nested-dir/file2.txt': 'file2',
@@ -58,7 +58,7 @@ test('gets hg SCM roots and dedups them', async () => {
   expect(hgRepos[1]).toMatch(/\/jest-changed-files-test-dir\/second-repo\/?$/);
 });
 
-test('gets git SCM roots and dedups them', async () => {
+test('gets git SCM roots and dedupes them', async () => {
   writeFiles(DIR, {
     'first-repo/file1.txt': 'file1',
     'first-repo/nested-dir/file2.txt': 'file2',
@@ -92,7 +92,7 @@ test('gets git SCM roots and dedups them', async () => {
   expect(gitRepos[1]).toMatch(/\/jest-changed-files-test-dir\/second-repo\/?$/);
 });
 
-test('gets mixed git and hg SCM roots and dedups them', async () => {
+testIfHg('gets mixed git and hg SCM roots and dedupes them', async () => {
   writeFiles(DIR, {
     'first-repo/file1.txt': 'file1',
     'first-repo/nested-dir/file2.txt': 'file2',
@@ -134,9 +134,11 @@ test('gets changed files for git', async () => {
 
   run(`${GIT} init`, DIR);
 
-  const roots = ['', 'nested-dir', 'nested-dir/second-nested-dir'].map(
-    filename => path.resolve(DIR, filename),
-  );
+  const roots = [
+    '',
+    'nested-dir',
+    'nested-dir/second-nested-dir',
+  ].map(filename => path.resolve(DIR, filename));
 
   let {changedFiles: files} = await getChangedFilesForRoots(roots, {});
   expect(
@@ -168,6 +170,16 @@ test('gets changed files for git', async () => {
     'file1.txt': 'modified file1',
   });
 
+  ({changedFiles: files} = await getChangedFilesForRoots(roots, {}));
+  expect(
+    Array.from(files)
+      .map(filePath => path.basename(filePath))
+      .sort(),
+  ).toEqual(['file1.txt']);
+
+  run(`${GIT} add -A`, DIR);
+
+  // staged files should be included
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {}));
   expect(
     Array.from(files)
@@ -260,7 +272,7 @@ test('handles a bad revision for "changedSince", for git', async () => {
   expect(wrap(stderr)).toMatchSnapshot();
 });
 
-test('gets changed files for hg', async () => {
+testIfHg('gets changed files for hg', async () => {
   if (process.env.CI) {
     // Circle and Travis have very old version of hg (v2, and current
     // version is v4.2) and its API changed since then and not compatible
@@ -281,9 +293,11 @@ test('gets changed files for hg', async () => {
 
   run(`${HG} init`, DIR);
 
-  const roots = ['', 'nested-dir', 'nested-dir/second-nested-dir'].map(
-    filename => path.resolve(DIR, filename),
-  );
+  const roots = [
+    '',
+    'nested-dir',
+    'nested-dir/second-nested-dir',
+  ].map(filename => path.resolve(DIR, filename));
 
   let {changedFiles: files} = await getChangedFilesForRoots(roots, {});
   expect(
@@ -368,7 +382,7 @@ test('gets changed files for hg', async () => {
   ).toEqual(['file5.txt']);
 });
 
-test('monitors only root paths for hg', async () => {
+testIfHg('monitors only root paths for hg', async () => {
   if (process.env.CI) {
     // Circle and Travis have very old version of hg (v2, and current
     // version is v4.2) and its API changed since then and not compatible
@@ -394,7 +408,7 @@ test('monitors only root paths for hg', async () => {
   ).toEqual(['file2.txt', 'file3.txt']);
 });
 
-test('handles a bad revision for "changedSince", for hg', async () => {
+testIfHg('handles a bad revision for "changedSince", for hg', async () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
     '__tests__/file1.test.js': `require('../file1'); test('file1', () => {});`,

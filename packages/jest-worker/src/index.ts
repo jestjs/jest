@@ -8,7 +8,7 @@
 import {cpus} from 'os';
 import WorkerPool from './WorkerPool';
 import Farm from './Farm';
-import {
+import type {
   FarmOptions,
   PoolExitResult,
   PromiseWithCustomMessage,
@@ -28,7 +28,7 @@ function getExposedMethods(
     const module: Function | Record<string, any> = require(workerPath);
 
     exposedMethods = Object.keys(module).filter(
-      // @ts-ignore: no index
+      // @ts-expect-error: no index
       name => typeof module[name] === 'function',
     );
 
@@ -84,7 +84,7 @@ export default class JestWorker {
     };
 
     if (this._options.WorkerPool) {
-      // @ts-ignore: constructor target any?
+      // @ts-expect-error: constructor target any?
       this._workerPool = new this._options.WorkerPool(
         workerPath,
         workerPoolOptions,
@@ -115,7 +115,7 @@ export default class JestWorker {
         throw new TypeError('Cannot define a method called ' + name);
       }
 
-      // @ts-ignore: dynamic extension of the class instance is expected.
+      // @ts-expect-error: dynamic extension of the class instance is expected.
       this[name] = this._callFunctionWithArgs.bind(this, name);
     });
   }

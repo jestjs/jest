@@ -26,7 +26,7 @@ export default class ReporterDispatcher {
     this._reporters.push(reporter);
   }
 
-  unregister(ReporterClass: Function) {
+  unregister(ReporterClass: Function): void {
     this._reporters = this._reporters.filter(
       reporter => !(reporter instanceof ReporterClass),
     );
@@ -36,7 +36,7 @@ export default class ReporterDispatcher {
     test: Test,
     testResult: TestResult,
     results: AggregatedResult,
-  ) {
+  ): Promise<void> {
     for (const reporter of this._reporters) {
       if (reporter.onTestFileResult) {
         await reporter.onTestFileResult(test, testResult, results);
@@ -51,6 +51,7 @@ export default class ReporterDispatcher {
     testResult.console = undefined;
   }
 
+
   async onTestFileStart(test: Test) {
     for (const reporter of this._reporters) {
       if (reporter.onTestFileStart) {
@@ -61,11 +62,15 @@ export default class ReporterDispatcher {
     }
   }
 
-  async onRunStart(results: AggregatedResult, options: ReporterOnStartOptions) {
+  async onRunStart(
+    results: AggregatedResult,
+    options: ReporterOnStartOptions,
+  ): Promise<void> {
     for (const reporter of this._reporters) {
       reporter.onRunStart && (await reporter.onRunStart(results, options));
     }
   }
+
 
   async onTestCaseResult(
     test: Test,

@@ -183,17 +183,17 @@ function matchArity(fn: Function, length: number): Function {
 
   switch (length) {
     case 1:
-      mockConstructor = function(this: unknown, _a: unknown) {
+      mockConstructor = function (this: unknown, _a: unknown) {
         return fn.apply(this, arguments);
       };
       break;
     case 2:
-      mockConstructor = function(this: unknown, _a: unknown, _b: unknown) {
+      mockConstructor = function (this: unknown, _a: unknown, _b: unknown) {
         return fn.apply(this, arguments);
       };
       break;
     case 3:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -203,7 +203,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 4:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -214,7 +214,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 5:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -226,7 +226,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 6:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -239,7 +239,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 7:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -253,7 +253,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 8:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -268,7 +268,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     case 9:
-      mockConstructor = function(
+      mockConstructor = function (
         this: unknown,
         _a: unknown,
         _b: unknown,
@@ -284,7 +284,7 @@ function matchArity(fn: Function, length: number): Function {
       };
       break;
     default:
-      mockConstructor = function(this: unknown) {
+      mockConstructor = function (this: unknown) {
         return fn.apply(this, arguments);
       };
       break;
@@ -417,7 +417,6 @@ class ModuleMockerClass {
 
         if (!isReadonlyProp(object, prop)) {
           const propDesc = Object.getOwnPropertyDescriptor(object, prop);
-          // @ts-ignore Object.__esModule
           if ((propDesc !== undefined && !propDesc.get) || object.__esModule) {
             slots.add(prop);
           }
@@ -528,7 +527,7 @@ class ModuleMockerClass {
         {};
       const prototypeSlots = this._getSlots(prototype);
       const mocker = this;
-      const mockConstructor = matchArity(function(this: T, ...args: Y) {
+      const mockConstructor = matchArity(function (this: T, ...args: Y) {
         const mockState = mocker._ensureMockState(f);
         const mockConfig = mocker._ensureMockConfig(f);
         mockState.instances.push(this);
@@ -566,11 +565,11 @@ class ModuleMockerClass {
                 // it easier to interact with mock instance call and
                 // return values
                 if (prototype[slot].type === 'function') {
-                  // @ts-ignore no index signature
+                  // @ts-expect-error no index signature
                   const protoImpl = this[slot];
-                  // @ts-ignore no index signature
+                  // @ts-expect-error no index signature
                   this[slot] = mocker.generateFromMetadata(prototype[slot]);
-                  // @ts-ignore no index signature
+                  // @ts-expect-error no index signature
                   this[slot]._protoImpl = protoImpl;
                 }
               });
@@ -692,7 +691,7 @@ class ModuleMockerClass {
       };
 
       f.mockReturnThis = () =>
-        f.mockImplementation(function(this: T) {
+        f.mockImplementation(function (this: T) {
           return this;
         });
 
@@ -795,7 +794,7 @@ class ModuleMockerClass {
   ): Mock<T, Y> {
     // metadata not compatible but it's the same type, maybe problem with
     // overloading of _makeComponent and not _generateMock?
-    // @ts-ignore
+    // @ts-expect-error
     const mock = this._makeComponent(metadata);
     if (metadata.refID != null) {
       refs[metadata.refID] = mock;
@@ -805,7 +804,7 @@ class ModuleMockerClass {
       const slotMetadata = (metadata.members && metadata.members[slot]) || {};
       if (slotMetadata.ref != null) {
         callbacks.push(
-          (function(ref) {
+          (function (ref) {
             return () => (mock[slot] = refs[ref]);
           })(slotMetadata.ref),
         );
@@ -823,7 +822,7 @@ class ModuleMockerClass {
       mock.prototype.constructor = mock;
     }
 
-    return mock;
+    return mock as Mock<T, Y>;
   }
 
   /**
@@ -870,11 +869,11 @@ class ModuleMockerClass {
       metadata.value = component;
       return metadata;
     } else if (type === 'function') {
-      // @ts-ignore this is a function so it has a name
+      // @ts-expect-error this is a function so it has a name
       metadata.name = component.name;
-      // @ts-ignore may be a mock
+      // @ts-expect-error may be a mock
       if (component._isMockFunction === true) {
-        // @ts-ignore may be a mock
+        // @ts-expect-error may be a mock
         metadata.mockImpl = component.getMockImplementation();
       }
     }
@@ -890,13 +889,13 @@ class ModuleMockerClass {
       this._getSlots(component).forEach(slot => {
         if (
           type === 'function' &&
-          // @ts-ignore may be a mock
+          // @ts-expect-error may be a mock
           component._isMockFunction === true &&
           slot.match(/^mock/)
         ) {
           return;
         }
-        // @ts-ignore no index signature
+        // @ts-expect-error no index signature
         const slotMetadata = this.getMetadata<T, Y>(component[slot], refs);
         if (slotMetadata) {
           if (!members) {
@@ -978,7 +977,7 @@ class ModuleMockerClass {
 
       const isMethodOwner = object.hasOwnProperty(methodName);
 
-      // @ts-ignore overriding original method with a Mock
+      // @ts-expect-error overriding original method with a Mock
       object[methodName] = this._makeComponent({type: 'function'}, () => {
         if (isMethodOwner) {
           object[methodName] = original;
@@ -987,8 +986,8 @@ class ModuleMockerClass {
         }
       });
 
-      // @ts-ignore original method is now a Mock
-      object[methodName].mockImplementation(function(this: unknown) {
+      // @ts-expect-error original method is now a Mock
+      object[methodName].mockImplementation(function (this: unknown) {
         return original.apply(this, arguments);
       });
     }
@@ -1052,17 +1051,17 @@ class ModuleMockerClass {
         );
       }
 
-      // @ts-ignore: mock is assignable
+      // @ts-expect-error: mock is assignable
       descriptor[accessType] = this._makeComponent({type: 'function'}, () => {
-        // @ts-ignore: mock is assignable
+        // @ts-expect-error: mock is assignable
         descriptor![accessType] = original;
         Object.defineProperty(obj, propertyName, descriptor!);
       });
 
-      (descriptor[accessType] as Mock<T>).mockImplementation(function(
+      (descriptor[accessType] as Mock<T>).mockImplementation(function (
         this: unknown,
       ) {
-        // @ts-ignore
+        // @ts-expect-error
         return original.apply(this, arguments);
       });
     }

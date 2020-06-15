@@ -6,7 +6,7 @@
  */
 
 import ansiRegex = require('ansi-regex');
-import * as style from 'ansi-styles';
+import style = require('ansi-styles');
 
 export const alignedAnsiStyleSerializer = {
   serialize(val: string): string {
@@ -44,7 +44,7 @@ export const alignedAnsiStyleSerializer = {
       }
     });
   },
-  test(val: any): val is string {
+  test(val: unknown): val is string {
     return typeof val === 'string';
   },
 };

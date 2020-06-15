@@ -151,58 +151,6 @@ Here are edge cases for arguments and return values:
 - only `b` is empty string: all comparison lines have `aColor` and `aIndicator` (see Options)
 - `a` and `b` are equal non-empty strings: all comparison lines have `commonColor` and `commonIndicator` (see Options)
 
-To get the comparison lines described above from the `diffLineUnified` function, call `splitLines0(string)` instead of `string.split('\n')`
-
-```js
-export const splitLines0 = string =>
-  string.length === 0 ? [] : string.split('\n');
-```
-
-### Example of splitLines0 function
-
-```js
-import {diffLinesUnified, splitLines0} from 'jest-diff';
-
-const a = 'multi\nline\nstring';
-const b = '';
-const options = {includeChangeCounts: true}; // see Options
-
-const difference = diffLinesUnified(splitLines0(a), splitLines0(b), options);
-```
-
-Given an empty string, `splitLines0(b)` returns `[]` an empty array, formatted as no `Received` lines:
-
-```diff
-- Expected 3
-+ Received 0
-
-- multi
-- line
-- string
-```
-
-### Example of split method
-
-```js
-const a = 'multi\nline\nstring';
-const b = '';
-const options = {includeChangeCounts: true}; // see Options
-
-const difference = diffLinesUnified(a.split('\n'), b.split('\n'), options);
-```
-
-Given an empty string, `b.split('\n')` returns `['']` an array that contains an empty string, formatted as one empty `Received` line, which is **ambiguous** with an empty line:
-
-```diff
-- Expected 3
-+ Received 1
-
-- multi
-- line
-- string
-+
-```
-
 ## Usage of diffLinesUnified2
 
 Given two **pairs** of arrays of strings, `diffLinesUnified2(aLinesDisplay, bLinesDisplay, aLinesCompare, bLinesCompare, options?)` does the following:
@@ -220,16 +168,16 @@ You might call this function for case insensitive or Unicode equivalence compari
 import format from 'pretty-format';
 
 const a = {
-  action: 'MOVE_TO',
-  x: 1,
-  y: 2,
+  text: 'Ignore indentation in serialized object',
+  time: '2019-09-19T12:34:56.000Z',
+  type: 'CREATE_ITEM',
 };
 const b = {
-  action: 'MOVE_TO',
   payload: {
-    x: 1,
-    y: 2,
+    text: 'Ignore indentation in serialized object',
+    time: '2019-09-19T12:34:56.000Z',
   },
+  type: 'CREATE_ITEM',
 };
 
 const difference = diffLinesUnified2(
@@ -242,18 +190,18 @@ const difference = diffLinesUnified2(
 );
 ```
 
-The `x` and `y` properties are common, because their only difference is indentation:
+The `text` and `time` properties are common, because their only difference is indentation:
 
 ```diff
 - Expected
 + Received
 
   Object {
-    action: 'MOVE_TO',
 +   payload: Object {
-      x: 1,
-      y: 2,
+      text: 'Ignore indentation in serialized object',
+      time: '2019-09-19T12:34:56.000Z',
 +   },
+    type: 'CREATE_ITEM',
   }
 ```
 
@@ -348,6 +296,78 @@ const diffs = diffLinesRaw(aLines, bLines);
 | `3` |           `1` | `'changed to'`   |
 | `4` |           `1` | `'insert'`       |
 
+### Edge case of diffLinesRaw
+
+If you call `string.split('\n')` for an empty string:
+
+- the result is `['']` an array which contains an empty string
+- instead of `[]` an empty array
+
+Depending of your application, you might call `diffLinesRaw` with either array.
+
+### Example of split method
+
+```js
+import {diffLinesRaw} from 'jest-diff';
+
+const a = 'non-empty string';
+const b = '';
+
+const diffs = diffLinesRaw(a.split('\n'), b.split('\n'));
+```
+
+| `i` | `diffs[i][0]` | `diffs[i][1]`        |
+| --: | ------------: | :------------------- |
+| `0` |          `-1` | `'non-empty string'` |
+| `1` |           `1` | `''`                 |
+
+Which you might format as follows:
+
+```diff
+- Expected  - 1
++ Received  + 1
+
+- non-empty string
++
+```
+
+### Example of splitLines0 function
+
+For edge case behavior like the `diffLinesUnified` function, you might define a `splitLines0` function, which given an empty string, returns `[]` an empty array:
+
+```js
+export const splitLines0 = string =>
+  string.length === 0 ? [] : string.split('\n');
+```
+
+```js
+import {diffLinesRaw} from 'jest-diff';
+
+const a = '';
+const b = 'line 1\nline 2\nline 3';
+
+const diffs = diffLinesRaw(a.split('\n'), b.split('\n'));
+```
+
+| `i` | `diffs[i][0]` | `diffs[i][1]` |
+| --: | ------------: | :------------ |
+| `0` |           `1` | `'line 1'`    |
+| `1` |           `1` | `'line 2'`    |
+| `2` |           `1` | `'line 3'`    |
+
+Which you might format as follows:
+
+```diff
+- Expected  - 0
++ Received  + 3
+
++ line 1
++ line 2
++ line 3
+```
+
+In contrast to the `diffLinesRaw` function, the `diffLinesUnified` and `diffLinesUnified2` functions **automatically** convert array arguments computed by string `split` method, so callers do **not** need a `splitLine0` function.
+
 ## Options
 
 The default options are for the report when an assertion fails from the `expect` package used by Jest.
@@ -361,24 +381,25 @@ For other applications, you can provide an options object as a third argument:
 
 ### Properties of options object
 
-| name                              | default          |
-| :-------------------------------- | :--------------- |
-| `aAnnotation`                     | `'Expected'`     |
-| `aColor`                          | `chalk.green`    |
-| `aIndicator`                      | `'-'`            |
-| `bAnnotation`                     | `'Received'`     |
-| `bColor`                          | `chalk.red`      |
-| `bIndicator`                      | `'+'`            |
-| `changeColor`                     | `chalk.inverse`  |
-| `commonColor`                     | `chalk.dim`      |
-| `commonIndicator`                 | `' '`            |
-| `contextLines`                    | `5`              |
-| `expand`                          | `true`           |
-| `firstOrLastEmptyLineReplacement` | `'↵'`            |
-| `includeChangeCounts`             | `false`          |
-| `omitAnnotationLines`             | `false`          |
-| `patchColor`                      | `chalk.yellow`   |
-| `trailingSpaceFormatter`          | `chalk.bgYellow` |
+| name                              | default            |
+| :-------------------------------- | :----------------- |
+| `aAnnotation`                     | `'Expected'`       |
+| `aColor`                          | `chalk.green`      |
+| `aIndicator`                      | `'-'`              |
+| `bAnnotation`                     | `'Received'`       |
+| `bColor`                          | `chalk.red`        |
+| `bIndicator`                      | `'+'`              |
+| `changeColor`                     | `chalk.inverse`    |
+| `changeLineTrailingSpaceColor`    | `string => string` |
+| `commonColor`                     | `chalk.dim`        |
+| `commonIndicator`                 | `' '`              |
+| `commonLineTrailingSpaceColor`    | `string => string` |
+| `contextLines`                    | `5`                |
+| `emptyFirstOrLastLinePlaceholder` | `''`               |
+| `expand`                          | `true`             |
+| `includeChangeCounts`             | `false`            |
+| `omitAnnotationLines`             | `false`            |
+| `patchColor`                      | `chalk.yellow`     |
 
 For more information about the options, see the following examples.
 
@@ -408,8 +429,8 @@ The `jest-diff` package does not assume that the 2 labels have equal length.
 
 For consistency with most diff tools, you might exchange the colors:
 
-```js
-import chalk from 'chalk';
+```ts
+import chalk = require('chalk');
 
 const options = {
   aColor: chalk.red,
@@ -421,11 +442,11 @@ const options = {
 
 Although the default inverse of foreground and background colors is hard to beat for changed substrings **within lines**, especially because it highlights spaces, if you want bold font weight on yellow background color:
 
-```js
-import chalk from 'chalk';
+```ts
+import chalk = require('chalk');
 
 const options = {
-  changeColor: chalk.bold.bgAnsi256(226), // #ffff00
+  changeColor: chalk.bold.bgYellowBright,
 };
 ```
 
@@ -433,19 +454,37 @@ const options = {
 
 Because the default export does not display substring differences within lines, formatting can help you see when lines differ by the presence or absence of trailing spaces found by `/\s+$/` regular expression.
 
-The formatter is a function, which given a string, returns a string.
-
-If instead of yellowish background color, you want to replace trailing spaces with middle dot characters:
+- If change lines have a background color, then you can see trailing spaces.
+- If common lines have default dim color, then you cannot see trailing spaces. You might want yellowish background color to see them.
 
 ```js
 const options = {
-  trailingSpaceFormatter: string => '·'.repeat(string.length),
+  aColor: chalk.rgb(128, 0, 128).bgRgb(255, 215, 255), // magenta
+  bColor: chalk.rgb(0, 95, 0).bgRgb(215, 255, 215), // green
+  commonLineTrailingSpaceColor: chalk.bgYellow,
 };
 ```
 
-### Example of options for no colors
+The value of a Color option is a function, which given a string, returns a string.
 
-The value of a color or formatter option is a function, which given a string, returns a string.
+If you want to replace trailing spaces with middle dot characters:
+
+```js
+const replaceSpacesWithMiddleDot = string => '·'.repeat(string.length);
+
+const options = {
+  changeLineTrailingSpaceColor: replaceSpacesWithMiddleDot,
+  commonLineTrailingSpaceColor: replaceSpacesWithMiddleDot,
+};
+```
+
+If you need the TypeScript type of a Color option:
+
+```ts
+import {DiffOptionsColor} from 'jest-diff';
+```
+
+### Example of options for no colors
 
 To store the difference in a file without escape codes for colors, provide an identity function:
 
@@ -458,7 +497,6 @@ const options = {
   changeColor: noColor,
   commonColor: noColor,
   patchColor: noColor,
-  trailingSpaceFormatter: noColor,
 };
 ```
 
@@ -494,8 +532,8 @@ A patch mark like `@@ -12,7 +12,9 @@` accounts for omitted common lines.
 
 If you want patch marks to have the same dim color as common lines:
 
-```js
-import chalk from 'chalk';
+```ts
+import chalk = require('chalk');
 
 const options = {
   expand: false,
@@ -519,8 +557,8 @@ const difference = diffDefault(a, b, options);
 ```
 
 ```diff
-- Expected  1 -
-+ Received  2 +
+- Expected  - 1
++ Received  + 2
 
   Array [
     "common",
@@ -551,19 +589,19 @@ const difference = diffStringsUnified(a, b, options);
 + changed to
 ```
 
-### Example of option not to replace first or last empty lines
+### Example of option for empty first or last lines
 
 If the **first** or **last** comparison line is **empty**, because the content is empty and the indicator is a space, you might not notice it.
 
-Also, because Jest trims the report when a matcher fails, it deletes an empty last line.
+The replacement option is a string whose default value is `''` empty string.
 
-The replacement is a string whose default value is `'↵'` U+21B5 downwards arrow with corner leftwards.
+Because Jest trims the report when a matcher fails, it deletes an empty last line.
 
-To store the difference in a file without a replacement, because it could be ambiguous with the content of the arguments, provide an empty string:
+Therefore, Jest uses as placeholder the downwards arrow with corner leftwards:
 
 ```js
 const options = {
-  firstOrLastEmptyLineReplacement: '',
+  emptyFirstOrLastLinePlaceholder: '↵', // U+21B5
 };
 ```
 

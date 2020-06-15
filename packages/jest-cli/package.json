@@ -1,35 +1,37 @@
 {
   "name": "jest-cli",
   "description": "Delightful JavaScript Testing.",
-  "version": "24.9.0",
+  "version": "26.0.1",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/core": "^24.9.0",
-    "@jest/test-result": "^24.9.0",
-    "@jest/types": "^24.9.0",
-    "chalk": "^2.0.1",
+    "@jest/core": "^26.0.1",
+    "@jest/test-result": "^26.0.1",
+    "@jest/types": "^26.0.1",
+    "chalk": "^4.0.0",
     "exit": "^0.1.2",
+    "graceful-fs": "^4.2.4",
     "import-local": "^3.0.2",
     "is-ci": "^2.0.0",
-    "jest-config": "^24.9.0",
-    "jest-util": "^24.9.0",
-    "jest-validate": "^24.9.0",
+    "jest-config": "^26.0.1",
+    "jest-util": "^26.0.1",
+    "jest-validate": "^26.0.1",
     "prompts": "^2.0.1",
-    "realpath-native": "^1.1.0",
-    "yargs": "^14.0.0"
+    "yargs": "^15.3.1"
   },
   "devDependencies": {
+    "@jest/test-utils": "^26.0.0",
     "@types/exit": "^0.1.30",
+    "@types/graceful-fs": "^4.1.3",
     "@types/is-ci": "^2.0.0",
     "@types/prompts": "^2.0.1",
-    "@types/yargs": "^13.0.0"
+    "@types/yargs": "^15.0.0"
   },
   "bin": {
     "jest": "./bin/jest.js"
   },
   "engines": {
-    "node": ">= 8"
+    "node": ">= 10.14.2"
   },
   "repository": {
     "type": "git",
@@ -70,5 +72,5 @@
   "publishConfig": {
     "access": "public"
   },
-  "gitHead": "9ad0f4bc6b8bdd94989804226c28c9960d9da7d1"
+  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
 }

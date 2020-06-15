@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Global} from '@jest/types';
+import type {Global} from '@jest/types';
 import {ErrorWithStack} from 'jest-util';
-import {Jasmine} from './types';
+import type {Jasmine} from './types';
 
 type DisabledGlobalKeys = 'fail' | 'pending' | 'spyOn' | 'spyOnProperty';
 
@@ -53,7 +53,7 @@ export function installErrorOnPrivate(global: Global.Global): void {
   (Object.keys(disabledJasmineMethods) as Array<
     DisabledJasmineMethodsKeys
   >).forEach(methodName => {
-    // @ts-ignore
+    // @ts-expect-error
     jasmine[methodName] = () => {
       throwAtFunction(disabledJasmineMethods[methodName], jasmine[methodName]);
     };

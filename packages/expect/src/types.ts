@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-import {Config} from '@jest/types';
-import * as jestMatcherUtils from 'jest-matcher-utils';
+import type {Config} from '@jest/types';
+import type * as jestMatcherUtils from 'jest-matcher-utils';
 import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
 
 export type SyncExpectationResult = {

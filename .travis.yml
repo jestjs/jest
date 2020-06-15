@@ -1,7 +1,7 @@
 language: node_js
 
 node_js:
-  - '10'
+  - 'lts/*'
 
 branches:
   only:
@@ -11,7 +11,7 @@ before_install:
   - curl -o- -L https://yarnpkg.com/install.sh | bash
   - export PATH="$HOME/.yarn/bin:$PATH"
 
-install: node scripts/remove-postinstall && yarn --no-progress --frozen-lockfile --ignore-engines && node scripts/build
+install: yarn install-no-ts-build
 
 cache:
   yarn: true

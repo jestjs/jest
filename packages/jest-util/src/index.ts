@@ -5,36 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import clearLine from './clearLine';
-import createDirectory from './createDirectory';
-import ErrorWithStack from './ErrorWithStack';
-import installCommonGlobals from './installCommonGlobals';
-import interopRequireDefault from './interopRequireDefault';
-import isInteractive from './isInteractive';
-import isPromise from './isPromise';
-import setGlobal from './setGlobal';
-import deepCyclicCopy from './deepCyclicCopy';
-import convertDescriptorToString from './convertDescriptorToString';
+export {default as clearLine} from './clearLine';
+export {default as createDirectory} from './createDirectory';
+export {default as ErrorWithStack} from './ErrorWithStack';
+export {default as installCommonGlobals} from './installCommonGlobals';
+export {default as interopRequireDefault} from './interopRequireDefault';
+export {default as isInteractive} from './isInteractive';
+export {default as isPromise} from './isPromise';
+export {default as setGlobal} from './setGlobal';
+export {default as deepCyclicCopy} from './deepCyclicCopy';
+export {default as convertDescriptorToString} from './convertDescriptorToString';
 import * as specialChars from './specialChars';
-import replacePathSepForGlob from './replacePathSepForGlob';
-import testPathPatternToRegExp from './testPathPatternToRegExp';
+export {default as replacePathSepForGlob} from './replacePathSepForGlob';
+export {default as testPathPatternToRegExp} from './testPathPatternToRegExp';
 import * as preRunMessage from './preRunMessage';
-import pluralize from './pluralize';
+export {default as pluralize} from './pluralize';
+export {default as formatTime} from './formatTime';
+export {default as tryRealpath} from './tryRealpath';
 
-export {
-  ErrorWithStack,
-  clearLine,
-  convertDescriptorToString,
-  createDirectory,
-  deepCyclicCopy,
-  installCommonGlobals,
-  interopRequireDefault,
-  isInteractive,
-  isPromise,
-  pluralize,
-  preRunMessage,
-  replacePathSepForGlob,
-  setGlobal,
-  specialChars,
-  testPathPatternToRegExp,
-};
+export {preRunMessage, specialChars};

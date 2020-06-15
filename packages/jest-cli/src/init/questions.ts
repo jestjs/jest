@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {PromptObject} from 'prompts';
+import type {PromptObject} from 'prompts';
 
 const defaultQuestions: Array<PromptObject> = [
   {
@@ -23,6 +23,16 @@ const defaultQuestions: Array<PromptObject> = [
     message: 'Do you want Jest to add coverage reports?',
     name: 'coverage',
     type: 'confirm',
+  },
+  {
+    choices: [
+      {title: 'v8', value: 'v8'},
+      {title: 'babel', value: 'babel'},
+    ],
+    initial: 0,
+    message: 'Which provider should be used to instrument code for coverage?',
+    name: 'coverageProvider',
+    type: 'select',
   },
   {
     initial: false,

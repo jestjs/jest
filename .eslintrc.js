@@ -12,6 +12,7 @@ module.exports = {
     'plugin:import/typescript',
     'prettier',
     'prettier/flowtype',
+    'plugin:eslint-comments/recommended',
   ],
   overrides: [
     {
@@ -25,6 +26,7 @@ module.exports = {
           'error',
           {argsIgnorePattern: '^_'},
         ],
+        '@typescript-eslint/prefer-ts-expect-error': 'error',
         // Since we do `export =`. Remove for Jest 25
         'import/default': 'off',
         'import/order': 'error',
@@ -67,9 +69,38 @@ module.exports = {
       },
     },
     {
-      files: ['packages/jest-types/**/*'],
+      files: 'packages/jest-types/**/*',
       rules: {
         'import/no-extraneous-dependencies': 0,
+      },
+    },
+    {
+      files: 'packages/**/*.ts',
+      rules: {
+        '@typescript-eslint/explicit-module-boundary-types': 2,
+      },
+    },
+    {
+      files: [
+        '**/__tests__/**',
+        '**/__mocks__/**',
+        'packages/jest-jasmine2/src/jasmine/**/*',
+        'packages/expect/src/jasmineUtils.ts',
+        '**/vendor/**/*',
+      ],
+      rules: {
+        '@typescript-eslint/explicit-module-boundary-types': 0,
+      },
+    },
+    {
+      files: [
+        'packages/jest-jasmine2/src/jasmine/**/*',
+        'packages/expect/src/jasmineUtils.ts',
+        '**/vendor/**/*',
+      ],
+      rules: {
+        'eslint-comments/disable-enable-pair': 0,
+        'eslint-comments/no-unlimited-disable': 0,
       },
     },
     {
@@ -85,9 +116,10 @@ module.exports = {
     },
   ],
   parser: 'babel-eslint',
-  plugins: ['markdown', 'import', 'prettier'],
+  plugins: ['markdown', 'import', 'prettier', 'eslint-comments'],
   rules: {
     'arrow-body-style': 2,
+    'eslint-comments/no-unused-disable': 2,
     'flowtype/boolean-style': 2,
     'flowtype/no-primitive-constructor-types': 2,
     'flowtype/require-valid-file-annotation': 2,
@@ -100,17 +132,28 @@ module.exports = {
           '**/__mocks__/**',
           '**/?(*.)(spec|test).js?(x)',
           'scripts/**',
-          'eslintImportResolver.js',
+          'babel.config.js',
           'testSetupFile.js',
         ],
       },
     ],
+    'import/no-unresolved': [2, {ignore: ['fsevents']}],
     // This has to be disabled until all type and module imports are combined
     // https://github.com/benmosher/eslint-plugin-import/issues/645
     'import/order': 0,
     'no-console': 0,
+    'no-restricted-imports': [
+      2,
+      {
+        message: 'Please use graceful-fs instead.',
+        name: 'fs',
+      },
+    ],
     'no-unused-vars': 2,
     'prettier/prettier': 2,
     'sort-imports': [2, {ignoreDeclarationSort: true}],
+  },
+  settings: {
+    'import/ignore': ['react-native'],
   },
 };

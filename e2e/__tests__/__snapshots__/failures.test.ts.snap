@@ -288,8 +288,8 @@ FAIL __tests__/asyncFailures.test.js
 
     expect(received).resolves.toEqual(expected) // deep equality
 
-    - Expected
-    + Received
+    - Expected  - 1
+    + Received  + 1
 
       Object {
     -   "baz": "bar",
@@ -310,8 +310,8 @@ FAIL __tests__/asyncFailures.test.js
 
     expect(received).rejects.toEqual(expected) // deep equality
 
-    - Expected
-    + Received
+    - Expected  - 1
+    + Received  + 1
 
       Object {
     -   "baz": "bar",
@@ -396,6 +396,8 @@ FAIL __tests__/assertionError.test.js
   ✕ assert.doesNotThrow
   ✕ assert.throws
   ✕ async
+  ✕ assert.fail
+  ✕ assert.fail with a message
 
   ● assert
 
@@ -772,8 +774,39 @@ FAIL __tests__/assertionError.test.js
          |          ^
       81 | });
       82 | 
+      83 | test('assert.fail', () => {
 
       at Object.equal (__tests__/assertionError.test.js:80:10)
+
+  ● assert.fail
+
+    assert.fail(received, expected)
+
+      82 | 
+      83 | test('assert.fail', () => {
+    > 84 |   assert.fail();
+         |          ^
+      85 | });
+      86 | 
+      87 | test('assert.fail with a message', () => {
+
+      at Object.fail (__tests__/assertionError.test.js:84:10)
+
+  ● assert.fail with a message
+
+    assert.fail(received, expected)
+
+    Message:
+      error!
+
+      86 | 
+      87 | test('assert.fail with a message', () => {
+    > 88 |   assert.fail('error!');
+         |          ^
+      89 | });
+      90 | 
+
+      at Object.fail (__tests__/assertionError.test.js:88:10)
 `;
 
 exports[`works with snapshot failures 1`] = `

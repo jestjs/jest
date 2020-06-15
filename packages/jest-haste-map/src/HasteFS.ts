@@ -7,8 +7,8 @@
 
 import micromatch = require('micromatch');
 import {replacePathSepForGlob} from 'jest-util';
-import {Config} from '@jest/types';
-import {FileData} from './types';
+import type {Config} from '@jest/types';
+import type {FileData} from './types';
 import * as fastPath from './lib/fast_path';
 import H from './constants';
 
