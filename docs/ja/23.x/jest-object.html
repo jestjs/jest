@@ -113,7 +113,7 @@
 <h3><a class="anchor" aria-hidden="true" id="jestdisableautomock"></a><a href="#jestdisableautomock" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>jest.disableAutomock()</code></h3>
 <p>モジュールローダーの自動モック機能を無効にします。</p>
 <blockquote>
-<p>See <code>automock</code> section of <a href="/docs/ja/23.x/configuration#automock-boolean">configuration</a> for more information</p>
+<p>詳細については、<a href="/docs/ja/23.x/configuration#automock-boolean">configuration</a>の <code>automock</code> セクションも参照してください。</p>
 </blockquote>
 <p>このメソッドが呼び出された後は、すべての <code>require()</code> 関数は各モジュールの (モックではなく) の本物を返すようになります。</p>
 <p>Jest の設定:</p>
@@ -146,7 +146,7 @@ test(<span class="hljs-string">'original implementation'</span>, () =&gt; {
 <p>モジュールローダーで自動モック機能を有効化します。</p>
 <p>メソッドチェーンのために<code>jest</code>オブジェクトを返します。</p>
 <blockquote>
-<p>See <code>automock</code> section of <a href="/docs/ja/23.x/configuration#automock-boolean">configuration</a> for more information</p>
+<p>詳細については、<a href="/docs/ja/23.x/configuration#automock-boolean">configuration</a>の <code>automock</code> セクションも参照してください。</p>
 </blockquote>
 <p>例:</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// utils.js</span>
@@ -311,8 +311,8 @@ jest.mock(<span class="hljs-string">'../moduleName'</span>, () =&gt; {
   };
 });
 
-moduleName(); <span class="hljs-comment">// Will return 42</span>
-foo(); <span class="hljs-comment">// Will return 43</span>
+moduleName(); <span class="hljs-comment">// 42を返します</span>
+foo(); <span class="hljs-comment">// 43を返します</span>
 </code></pre>
 <p>第３引数は仮想モックを作成するのに使用します - これはシステム内のどこにも存在しないモジュールのモックです。</p>
 <pre><code class="hljs css language-js">jest.mock(
@@ -327,7 +327,7 @@ foo(); <span class="hljs-comment">// Will return 43</span>
 );
 </code></pre>
 <blockquote>
-<p><strong>Warning:</strong> Importing a module in a setup file (as specified by <code>setupTestFrameworkScriptFile</code>) will prevent mocking for the module in question, as well as all the modules that it imports.</p>
+<p>警告: (<code>setupTestFrameworkScriptFile</code>で指定される) セットアップファイルの中でモジュールをインポートすることは、全てのセットアップファイル内でインポートされるモジュールと同様に、対象となるモジュールがモックされるのを防ぐことができます。</p>
 </blockquote>
 <p><code>jest.mock</code>によりモックされるモジュールは、<code>jest.mock</code>を呼び出したファイル内でのみモックされます。 Another file that imports the module will get the original implementation even if it runs after the test file that mocks the module.</p>
 <p>メソッドチェーンのために<code>jest</code>オブジェクトを返します。</p>
@@ -360,7 +360,7 @@ test(<span class="hljs-string">'moduleName 2'</span>, () =&gt; {
 </code></pre>
 <p>Using <code>jest.doMock()</code> with ES6 imports requires additional steps. Follow these if you don't want to use <code>require</code> in your tests:</p>
 <ul>
-<li>We have to specify the <code>__esModule: true</code> property (see the <a href="#jestmockmodulename-factory-options"><code>jest.mock()</code></a> API for more information).</li>
+<li><code>__esModule: true</code> プロパティを指定する必要があります (詳細については <a href="#jestmockmodulename-factory-options"><code>jest.mock()</code></a> API を参照してください)。</li>
 <li>Static ES6 module imports are hoisted to the top of the file, so instead we have to import them dynamically using <code>import()</code>.</li>
 <li>Finally, we need an environment which supports dynamic importing. Please see <a href="/docs/ja/23.x/getting-started#using-babel">Using Babel</a> for the initial setup. Then add the plugin <a href="https://www.npmjs.com/package/babel-plugin-dynamic-import-node">babel-plugin-dynamic-import-node</a>, or an equivalent, to your Babel config to enable dynamic importing in Node.</li>
 </ul>
