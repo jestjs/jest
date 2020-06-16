@@ -13,9 +13,9 @@ const isWorkerThread = () => {
 };
 
 const messageParent = (
-  message: any,
+  message: unknown,
   parentProcess: NodeJS.Process = process,
-) => {
+): void => {
   if (isWorkerThread()) {
     const {parentPort} = require('worker_threads');
     parentPort.postMessage([PARENT_MESSAGE_CUSTOM, message]);

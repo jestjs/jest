@@ -75,11 +75,11 @@ export default class Farm {
 
         if (computeWorkerKey) {
           hash = computeWorkerKey.call(this, method, ...args);
-          worker = hash === null ? null : this._cacheKeys[hash];
+          worker = hash == null ? null : this._cacheKeys[hash];
         }
 
         const onStart: OnStart = (worker: WorkerInterface) => {
-          if (hash !== null) {
+          if (hash != null) {
             this._cacheKeys[hash] = worker;
           }
         };
