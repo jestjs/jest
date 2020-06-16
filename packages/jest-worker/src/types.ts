@@ -60,7 +60,7 @@ export type PoolExitResult = {
 };
 
 export interface PromiseWithCustomMessage<T> extends Promise<T> {
-  onCustomMessage?: (listener: OnCustomMessage) => () => void;
+  UNSTABLE_onCustomMessage?: (listener: OnCustomMessage) => () => void;
 }
 
 // Option objects.

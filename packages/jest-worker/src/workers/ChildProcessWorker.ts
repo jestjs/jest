@@ -158,7 +158,7 @@ export default class ChildProcessWorker implements WorkerInterface {
   }
 
   private _onMessage(response: ParentMessage) {
-    let error;
+    let error: any;
 
     switch (response[0]) {
       case PARENT_MESSAGE_OK:

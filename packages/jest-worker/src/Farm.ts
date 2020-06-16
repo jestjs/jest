@@ -56,12 +56,12 @@ export default class Farm {
       customMessageListeners.push(listener);
       return () => {
         customMessageListeners = customMessageListeners.filter(
-          l => l !== listener,
+          oncustomMessage => oncustomMessage !== listener,
         );
       };
     };
 
-    const onCustomMessage: OnCustomMessage = (message: any) => {
+    const onCustomMessage: OnCustomMessage = message => {
       customMessageListeners.forEach(listener => listener(message));
     };
 
@@ -75,23 +75,17 @@ export default class Farm {
 
         if (computeWorkerKey) {
           hash = computeWorkerKey.call(this, method, ...args);
-          worker = hash == null ? null : this._cacheKeys[hash];
+          worker = hash === null ? null : this._cacheKeys[hash];
         }
 
         const onStart: OnStart = (worker: WorkerInterface) => {
-          if (hash != null) {
+          if (hash !== null) {
             this._cacheKeys[hash] = worker;
           }
         };
 
-        const onEnd: OnEnd = (error: Error | null, result: unknown) => {
-          customMessageListeners = [];
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        };
+        const onEnd: OnEnd = (error: Error | null, result: unknown) =>
+          error ? reject(error) : resolve(result);
 
         const task = {onCustomMessage, onEnd, onStart, request};
 
@@ -103,7 +97,7 @@ export default class Farm {
       },
     );
 
-    promise.onCustomMessage = addCustomMessageListener;
+    promise.UNSTABLE_onCustomMessage = addCustomMessageListener;
 
     return promise;
   }
@@ -121,15 +115,11 @@ export default class Farm {
   }
 
   private _process(workerId: number): Farm {
-    if (this._isLocked(workerId)) {
-      return this;
-    }
+    if (this._isLocked(workerId)) return this;
 
     const task = this._getNextTask(workerId);
 
-    if (!task) {
-      return this;
-    }
+    if (!task) return this;
 
     const onEnd = (error: Error | null, result: unknown) => {
       task.onEnd(error, result);
