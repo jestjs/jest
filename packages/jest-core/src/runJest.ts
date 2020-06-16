@@ -184,7 +184,7 @@ export default async function runJest({
     }),
   );
 
-  allTests = await sequencer.sort(allTests);
+  allTests = sequencer.sort(allTests);
 
   if (globalConfig.listTests) {
     const testsPaths = Array.from(new Set(allTests.map(test => test.path)));
@@ -273,6 +273,7 @@ export default async function runJest({
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});
   }
 
+  // TODO: Remove unnecessary await
   await processResults(results, {
     collectHandles,
     json: globalConfig.json,

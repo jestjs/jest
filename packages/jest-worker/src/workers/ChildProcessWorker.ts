@@ -234,7 +234,7 @@ export default class ChildProcessWorker implements WorkerInterface {
       return onProcessEnd(...args);
     };
 
-    this._onCustomMessage = (...arg) => onCustomMessage(...arg);
+    this._onCustomMessage = onCustomMessage;
 
     this._request = request;
     this._retries = 0;
