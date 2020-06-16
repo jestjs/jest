@@ -26,7 +26,7 @@ test('fake timers with Date argument', () => {
 
   expect(Date.now()).toBe(0);
 
-  jest.setSystemTime(1000);
+  jest.setSystemTime(new Date(1000));
 
   expect(Date.now()).toBe(1000);
 });
