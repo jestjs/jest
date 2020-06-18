@@ -360,11 +360,11 @@ describe('Farm', () => {
     const p0 = farm.doWork('work-0');
     const p1 = farm.doWork('work-1');
 
-    const unsubscribe = p0.onCustomMessage(message => {
+    const unsubscribe = p0.UNSTABLE_onCustomMessage(message => {
       expect(message).toEqual({key: 0, message: 'foo'});
     });
 
-    p1.onCustomMessage(message => {
+    p1.UNSTABLE_onCustomMessage(message => {
       expect(message).toEqual({key: 1, message: 'bar'});
     });
 

@@ -56,12 +56,12 @@ export default class Farm {
       customMessageListeners.push(listener);
       return () => {
         customMessageListeners = customMessageListeners.filter(
-          l => l !== listener,
+          customListener => customListener !== listener,
         );
       };
     };
 
-    const onCustomMessage: OnCustomMessage = (message: any) => {
+    const onCustomMessage: OnCustomMessage = message => {
       customMessageListeners.forEach(listener => listener(message));
     };
 
@@ -84,14 +84,8 @@ export default class Farm {
           }
         };
 
-        const onEnd: OnEnd = (error: Error | null, result: unknown) => {
-          customMessageListeners = [];
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        };
+        const onEnd: OnEnd = (error: Error | null, result: unknown) =>
+          error ? reject(error) : resolve(result);
 
         const task = {onCustomMessage, onEnd, onStart, request};
 
@@ -103,7 +97,7 @@ export default class Farm {
       },
     );
 
-    promise.onCustomMessage = addCustomMessageListener;
+    promise.UNSTABLE_onCustomMessage = addCustomMessageListener;
 
     return promise;
   }

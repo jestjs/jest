@@ -19,7 +19,7 @@ export const CHILD_MESSAGE_END: 2 = 2;
 export const PARENT_MESSAGE_OK: 0 = 0;
 export const PARENT_MESSAGE_CLIENT_ERROR: 1 = 1;
 export const PARENT_MESSAGE_SETUP_ERROR: 2 = 2;
-export const PARENT_MESSAGE_CUSTOM: -1 = -1;
+export const PARENT_MESSAGE_CUSTOM: 3 = 3;
 
 export type PARENT_MESSAGE_ERROR =
   | typeof PARENT_MESSAGE_CLIENT_ERROR
@@ -60,7 +60,7 @@ export type PoolExitResult = {
 };
 
 export interface PromiseWithCustomMessage<T> extends Promise<T> {
-  onCustomMessage?: (listener: OnCustomMessage) => () => void;
+  UNSTABLE_onCustomMessage?: (listener: OnCustomMessage) => () => void;
 }
 
 // Option objects.

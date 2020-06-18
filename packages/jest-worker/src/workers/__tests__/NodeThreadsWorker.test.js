@@ -17,7 +17,6 @@ import {
   PARENT_MESSAGE_CUSTOM,
   PARENT_MESSAGE_OK,
 } from '../../types';
-import expectExport from 'expect';
 
 let Worker;
 let workerThreads;

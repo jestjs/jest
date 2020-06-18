@@ -149,5 +149,5 @@ export default class JestWorker {
   }
 }
 
-export {PromiseWithCustomMessage};
+export type {PromiseWithCustomMessage};
 export const messageParent = _messageParent;
