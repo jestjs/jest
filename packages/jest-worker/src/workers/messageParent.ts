@@ -8,8 +8,12 @@
 import {PARENT_MESSAGE_CUSTOM} from '../types';
 
 const isWorkerThread = () => {
-  const {isMainThread, parentPort} = require('worker_threads');
-  return !isMainThread && parentPort;
+  try {
+    const {isMainThread, parentPort} = require('worker_threads');
+    return !isMainThread && parentPort;
+  } catch {
+    return false;
+  }
 };
 
 const messageParent = (

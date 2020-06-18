@@ -56,7 +56,7 @@ export default class Farm {
       customMessageListeners.push(listener);
       return () => {
         customMessageListeners = customMessageListeners.filter(
-          oncustomMessage => oncustomMessage !== listener,
+          customListener => customListener !== listener,
         );
       };
     };
@@ -115,11 +115,15 @@ export default class Farm {
   }
 
   private _process(workerId: number): Farm {
-    if (this._isLocked(workerId)) return this;
+    if (this._isLocked(workerId)) {
+      return this;
+    }
 
     const task = this._getNextTask(workerId);
 
-    if (!task) return this;
+    if (!task) {
+      return this;
+    }
 
     const onEnd = (error: Error | null, result: unknown) => {
       task.onEnd(error, result);
