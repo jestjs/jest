@@ -462,7 +462,7 @@ An array of file extensions your modules use. If you require modules without spe
 
 We recommend placing the extensions most commonly used in your project on the left, so if you are using TypeScript, you may want to consider moving "ts" and/or "tsx" to the beginning of the array.
 
-### `moduleNameMapper` [object\<string, string | array\<string>>]
+### `moduleNameMapper` [object\<string | array\<string>>]
 
 Default: `null`
 
