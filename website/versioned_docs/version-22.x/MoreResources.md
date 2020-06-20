@@ -20,6 +20,6 @@ You will find a number of example test cases in the [`examples`](https://github.
 
 ## Join the community
 
-Ask questions and find answers from other Jest users like you. [Reactiflux](http://www.reactiflux.com/) is a Discord chat where a lot of Jest discussion happens. Check out the [#jest](https://discordapp.com/channels/102860784329052160/103622435865104384) channel.
+Ask questions and find answers from other Jest users like you. [Reactiflux](https://www.reactiflux.com/) is a Discord chat where a lot of Jest discussion happens. Check out the `#testing` channel.
 
 Follow the [Jest Twitter account](https://twitter.com/fbjest) and [blog](/blog/) to find out what's happening in the world of Jest.
