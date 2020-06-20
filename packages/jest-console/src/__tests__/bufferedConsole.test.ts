@@ -146,4 +146,13 @@ describe('CustomConsole', () => {
       expect(stdout()).toMatch('ms');
     });
   });
+
+  describe('dir', () => {
+    test('should print the deepest value', () => {
+      const deepObject = {1: {2: {3: {4: {5: {6: 'value'}}}}}};
+      _console.dir(deepObject, {depth: 6});
+
+      expect(stdout()).toMatch('value');
+    });
+  });
 });
