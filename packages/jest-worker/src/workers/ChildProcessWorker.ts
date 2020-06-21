@@ -158,7 +158,8 @@ export default class ChildProcessWorker implements WorkerInterface {
   }
 
   private _onMessage(response: ParentMessage) {
-    let error;
+    // TODO: Add appropriate type check
+    let error: any;
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
         this._onProcessEnd(null, response[1]);
@@ -178,7 +179,6 @@ export default class ChildProcessWorker implements WorkerInterface {
           error.stack = response[3];
 
           for (const key in extra) {
-            // @ts-expect-error: adding custom properties to errors.
             error[key] = extra[key];
           }
         }
@@ -189,7 +189,6 @@ export default class ChildProcessWorker implements WorkerInterface {
       case PARENT_MESSAGE_SETUP_ERROR:
         error = new Error('Error when calling setup: ' + response[2]);
 
-        // @ts-expect-error: adding custom properties to errors.
         error.type = response[1];
         error.stack = response[3];
 
@@ -224,7 +223,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     onProcessStart: OnStart,
     onProcessEnd: OnEnd,
     onCustomMessage: OnCustomMessage,
-  ) {
+  ): void {
     onProcessStart(this);
     this._onProcessEnd = (...args) => {
       // Clean the request to avoid sending past requests to workers that fail

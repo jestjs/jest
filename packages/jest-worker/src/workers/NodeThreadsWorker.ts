@@ -207,7 +207,7 @@ export default class ExperimentalWorker implements WorkerInterface {
     onProcessStart: OnStart,
     onProcessEnd: OnEnd,
     onCustomMessage: OnCustomMessage,
-  ) {
+  ): void {
     onProcessStart(this);
     this._onProcessEnd = (...args) => {
       // Clean the request to avoid sending past requests to workers that fail

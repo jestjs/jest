@@ -11,15 +11,15 @@ const isWorkerThread = () => {
   try {
     const {isMainThread, parentPort} = require('worker_threads');
     return !isMainThread && parentPort;
-  } catch (_) {
+  } catch {
     return false;
   }
 };
 
 const messageParent = (
-  message: any,
+  message: unknown,
   parentProcess: NodeJS.Process = process,
-) => {
+): void => {
   if (isWorkerThread()) {
     const {parentPort} = require('worker_threads');
     parentPort.postMessage([PARENT_MESSAGE_CUSTOM, message]);
