@@ -13,7 +13,7 @@ else
         git config --global user.name "Website Deployment Script"
         echo "machine github.com login docusaurus-bot password $DOCUSAURUS_PUBLISH_TOKEN" > ~/.netrc
         # install Docusaurus and generate file of English strings
-        yarn && cd website && node fetchSupporters.js && yarn write-translations
+        cd website && yarn && yarn write-translations
         # crowdin install
         sudo apt-get update
         sudo apt-get install default-jre rsync
@@ -30,6 +30,6 @@ else
         GIT_USER=docusaurus-bot USE_SSH=false yarn publish-gh-pages
     else
         echo "Skipping deploy. Test website build"
-        cd website && yarn && node fetchSupporters.js && yarn build
+        cd website && yarn && yarn build
     fi
 fi
