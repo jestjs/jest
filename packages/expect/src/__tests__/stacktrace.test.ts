@@ -9,7 +9,7 @@
 import jestExpect from '../';
 
 jestExpect.extend({
-  toCustomMatch(callback: Function, expectation: unknown) {
+  toCustomMatch(callback: () => unknown, expectation: unknown) {
     const actual = callback();
 
     if (actual !== expectation) {
@@ -21,7 +21,7 @@ jestExpect.extend({
 
     return {pass: true};
   },
-  toMatchPredicate(received: unknown, argument: Function) {
+  toMatchPredicate(received: unknown, argument: (a: unknown) => void) {
     argument(received);
     return {
       message: () => '',

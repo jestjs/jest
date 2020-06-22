@@ -13,7 +13,9 @@ import {isError} from '../utils';
 
 // Copied from https://github.com/graingert/angular.js/blob/a43574052e9775cbc1d7dd8a086752c979b0f020/test/AngularSpec.js#L1883
 describe('isError', () => {
-  function testErrorFromDifferentContext(createError: Function) {
+  function testErrorFromDifferentContext(
+    createError: (win: Window | null) => Error,
+  ) {
     const iframe = document.createElement('iframe');
     document.body.appendChild(iframe);
     try {

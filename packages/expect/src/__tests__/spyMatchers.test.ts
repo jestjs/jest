@@ -177,7 +177,10 @@ const createSpy = (fn: jest.Mock) => {
   'toBeCalledWith',
   'toHaveBeenCalledWith',
 ].forEach(calledWith => {
-  const caller = function (callee: Function, ...args: any) {
+  const caller = function (
+    callee: (...a: Array<unknown>) => void,
+    ...args: any
+  ) {
     if (
       calledWith === 'nthCalledWith' ||
       calledWith === 'toHaveBeenNthCalledWith'
@@ -734,7 +737,10 @@ const createSpy = (fn: jest.Mock) => {
   'toReturnWith',
   'toHaveReturnedWith',
 ].forEach(returnedWith => {
-  const caller = function (callee: Function, ...args: any) {
+  const caller = function (
+    callee: (...a: Array<unknown>) => void,
+    ...args: any
+  ) {
     if (
       returnedWith === 'nthReturnedWith' ||
       returnedWith === 'toHaveNthReturnedWith'
