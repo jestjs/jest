@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {
+import type {Config} from '@jest/types';
+import type {
   AggregatedResult,
   TestCase,
   TestCaseResult,
@@ -140,11 +140,11 @@ export default class DefaultReporter extends BaseReporter {
     test: Test,
     _testCase: TestCase,
     testCaseResult: TestCaseResult,
-  ) {
+  ): void {
     this._status.addTestCaseResult(test, testCaseResult);
   }
 
-  onRunComplete() {
+  onRunComplete(): void {
     this.forceFlushBufferedOutput();
     this._status.runFinished();
     process.stdout.write = this._out;

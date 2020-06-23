@@ -226,4 +226,7 @@ export type TestEntry = {
   duration?: number | null;
   status?: TestStatus | null; // whether the test has been skipped or run already
   timeout?: number;
+  // children: Array<DescribeBlock | TestEntry>; // Added to include property from DescribeBlock
+  // hooks: Array<Hook>; // Added to include property from DescribeBlock
+  // tests: Array<TestEntry>; // Added to include property from DescribeBlock
 };

@@ -9,7 +9,7 @@ export type Milliseconds = number;
 
 type Status = 'passed' | 'failed' | 'skipped' | 'pending' | 'todo' | 'disabled';
 
-type Callsite = {
+export type Callsite = {
   column: number;
   line: number;
 };

@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {SerializableError, TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {SerializableError, TestResult} from '@jest/test-result';
 import exit = require('exit');
 import chalk = require('chalk');
 import throat from 'throat';
@@ -170,8 +170,8 @@ class TestRunner {
           path: test.path,
         }) as PromiseWithCustomMessage<TestResult>;
 
-        if (promise.onCustomMessage) {
-          promise.onCustomMessage(([event, payload]: any) => {
+        if (promise.UNSTABLE_onCustomMessage) {
+          promise.UNSTABLE_onCustomMessage(([event, payload]: any) => {
             this.eventEmitter.emit(event, payload);
           });
         }

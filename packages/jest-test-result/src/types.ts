@@ -83,7 +83,7 @@ export type TestCaseResult = AssertionResult;
 export type TestCase = {
   ancestorTitles: Array<string>;
   fullName: string;
-  location: Callsite | null | undefined;
+  location: TestResult.Callsite | null | undefined;
   title: string;
 };
 

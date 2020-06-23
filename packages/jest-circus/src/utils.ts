@@ -12,7 +12,7 @@ import co from 'co';
 import dedent = require('dedent');
 import StackUtils = require('stack-utils');
 import prettyFormat = require('pretty-format');
-import {AssertionResult, Status} from '@jest/test-result';
+import type {AssertionResult, Status} from '@jest/test-result';
 import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
@@ -404,7 +404,7 @@ export function invariant(
   if (!condition) {
     throw new Error(message);
   }
-};
+}
 
 export const parseSingleTestResult = (
   testResult: Circus.TestResult,

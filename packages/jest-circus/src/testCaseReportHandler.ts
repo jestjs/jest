@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Circus} from '@jest/types';
-import {TestCase, TestCaseResult} from '@jest/test-result';
+import type {Circus} from '@jest/types';
+import type {TestCase, TestCaseResult} from '@jest/test-result';
 import {makeSingleTestResult, parseSingleTestResult} from './utils';
 
 const testCaseReportHandler = (

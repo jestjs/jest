@@ -5,7 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {AggregatedResult, TestResult} from '@jest/test-result';
+import type {
+  AggregatedResult,
+  TestCase,
+  TestCaseResult,
+  TestResult,
+} from '@jest/test-result';
 import {preRunMessage} from 'jest-util';
 import type {Context, Reporter, ReporterOnStartOptions, Test} from './types';
 
@@ -24,6 +29,12 @@ export default class BaseReporter implements Reporter {
   ): void {
     preRunMessageRemove(process.stderr);
   }
+
+  onTestCaseResult(
+    _test: Test,
+    _testCase: TestCase,
+    _testCaseResult: TestCaseResult,
+  ): void {}
 
   onTestResult(
     _test?: Test,
