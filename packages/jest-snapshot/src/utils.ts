@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import makeDir = require('make-dir');
 import naturalCompare = require('natural-compare');
 import chalk = require('chalk');
 import type {Config} from '@jest/types';
@@ -183,7 +182,7 @@ const printBacktickString = (str: string): string =>
 
 export const ensureDirectoryExists = (filePath: Config.Path): void => {
   try {
-    makeDir.sync(path.join(path.dirname(filePath)));
+    fs.mkdirSync(path.join(path.dirname(filePath)), {recursive: true});
   } catch (e) {}
 };
 
