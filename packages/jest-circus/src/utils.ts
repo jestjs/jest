@@ -333,7 +333,13 @@ const makeTestResults = (
   );
 
   for (const child of describeBlock.children) {
-    testResults = testResults.concat(makeTestResults(child));
+    switch (child.type) {
+      case 'describeBlock':
+        testResults = testResults.concat(makeTestResults(child));
+        break;
+      case 'test':
+        break;
+    }
   }
 
   return testResults;
