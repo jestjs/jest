@@ -24,6 +24,8 @@
 
 ### Performance
 
+- `[jest-core, jest-transform, jest-haste-map]` Improve Jest startup time and test runtime, particularly when running with coverage, by caching micromatch and avoiding recreating RegExp instances ([#10131](https://github.com/facebook/jest/pull/10131))
+
 ## 26.0.1
 
 ### Fixes
