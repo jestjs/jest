@@ -40,7 +40,6 @@ packagesWithTs.forEach(pkgDir => {
 });
 
 const args = [
-  '--silent',
   'tsc',
   '-b',
   ...packagesWithTs,

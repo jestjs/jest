@@ -28,8 +28,11 @@ steps:
       path: $(YARN_CACHE_FOLDER)
     displayName: Cache Yarn packages
 
-  - script: yarn install-no-ts-build
+  - script: yarn install
     displayName: 'Install dependencies'
+
+  - script: yarn build:js
+    displayName: 'Transpile TypeScript'
 
   # Run test-ci-partial
   - script: yarn run test-ci-partial
