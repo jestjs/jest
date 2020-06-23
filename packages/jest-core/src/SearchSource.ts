@@ -16,7 +16,7 @@ import DependencyResolver = require('jest-resolve-dependencies');
 import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
 import {buildSnapshotResolver} from 'jest-snapshot';
-import {replacePathSepForGlob, testPathPatternToRegExp} from 'jest-util';
+import {globsToMatcher, testPathPatternToRegExp} from 'jest-util';
 import type {Filter, Stats, TestPathCases} from './types';
 
 export type SearchResult = {
@@ -37,12 +37,19 @@ export type TestSelectionConfig = {
   watch?: boolean;
 };
 
-const globsToMatcher = (globs: Array<Config.Glob>) => (path: Config.Path) =>
-  micromatch([replacePathSepForGlob(path)], globs, {dot: true}).length > 0;
+const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => {
+  const regexes = testRegex.map(testRegex => new RegExp(testRegex));
 
-const regexToMatcher = (testRegex: Config.ProjectConfig['testRegex']) => (
-  path: Config.Path,
-) => testRegex.some(testRegex => new RegExp(testRegex).test(path));
+  return (path: Config.Path) =>
+    regexes.some(regex => {
+      const result = regex.test(path);
+
+      // prevent stateful regexes from breaking, just in case
+      regex.lastIndex = 0;
+
+      return result;
+    });
+};
 
 const toTests = (context: Context, tests: Array<Config.Path>) =>
   tests.map(path => ({
