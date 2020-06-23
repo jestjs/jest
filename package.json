@@ -59,7 +59,6 @@
     "jest-watch-typeahead": "^0.5.0",
     "jquery": "^3.2.1",
     "lerna": "^3.20.2",
-    "make-dir": "^3.0.0",
     "micromatch": "^4.0.2",
     "mock-fs": "^4.4.1",
     "opencollective": "^1.0.3",

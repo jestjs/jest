@@ -22,7 +22,6 @@
     "jest-matcher-utils": "^26.0.1",
     "jest-message-util": "^26.0.1",
     "jest-resolve": "^26.0.1",
-    "make-dir": "^3.0.0",
     "natural-compare": "^1.4.0",
     "pretty-format": "^26.0.1",
     "semver": "^7.3.2"

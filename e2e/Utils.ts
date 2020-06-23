@@ -11,7 +11,6 @@ import type {Config} from '@jest/types';
 
 // eslint-disable-next-line import/named
 import {ExecaReturnValue, sync as spawnSync} from 'execa';
-import makeDir = require('make-dir');
 import rimraf = require('rimraf');
 import dedent = require('dedent');
 import which = require('which');
@@ -46,7 +45,7 @@ export const linkJestPackage = (packageName: string, cwd: Config.Path) => {
   const packagesDir = path.resolve(__dirname, '../packages');
   const packagePath = path.resolve(packagesDir, packageName);
   const destination = path.resolve(cwd, 'node_modules/', packageName);
-  makeDir.sync(destination);
+  fs.mkdirSync(destination, {recursive: true});
   rimraf.sync(destination);
   fs.symlinkSync(packagePath, destination, 'junction');
 };
@@ -77,12 +76,12 @@ export const writeFiles = (
   directory: string,
   files: {[filename: string]: string},
 ) => {
-  makeDir.sync(directory);
+  fs.mkdirSync(directory, {recursive: true});
   Object.keys(files).forEach(fileOrPath => {
     const dirname = path.dirname(fileOrPath);
 
     if (dirname !== '/') {
-      makeDir.sync(path.join(directory, dirname));
+      fs.mkdirSync(path.join(directory, dirname), {recursive: true});
     }
     fs.writeFileSync(
       path.resolve(directory, ...fileOrPath.split('/')),
@@ -95,13 +94,13 @@ export const writeSymlinks = (
   directory: string,
   symlinks: {[existingFile: string]: string},
 ) => {
-  makeDir.sync(directory);
+  fs.mkdirSync(directory, {recursive: true});
   Object.keys(symlinks).forEach(fileOrPath => {
     const symLinkPath = symlinks[fileOrPath];
     const dirname = path.dirname(symLinkPath);
 
     if (dirname !== '/') {
-      makeDir.sync(path.join(directory, dirname));
+      fs.mkdirSync(path.join(directory, dirname), {recursive: true});
     }
     fs.symlinkSync(
       path.resolve(directory, ...fileOrPath.split('/')),
@@ -165,7 +164,7 @@ export const createEmptyPackage = (
     },
   };
 
-  makeDir.sync(directory);
+  fs.mkdirSync(directory, {recursive: true});
   packageJson || (packageJson = DEFAULT_PACKAGE_JSON);
   fs.writeFileSync(
     path.resolve(directory, 'package.json'),
