@@ -78,12 +78,12 @@
     "which": "^2.0.1"
   },
   "scripts": {
-    "build-clean": "rimraf ./packages/*/build ./packages/*/build-es5 ./packages/*/tsconfig.tsbuildinfo",
-    "prebuild": "yarn build:ts",
-    "build": "node ./scripts/build.js",
+    "build-clean": "rimraf './packages/*/build' './packages/*/build-es5' './packages/*/tsconfig.tsbuildinfo'",
+    "build": "yarn build:js && yarn build:ts",
+    "build:js": "node ./scripts/build.js",
     "build:ts": "node ./scripts/buildTs.js",
     "check-copyright-headers": "node ./scripts/checkCopyrightHeaders.js",
-    "clean-all": "yarn clean-e2e && yarn build-clean && rimraf ./packages/*/node_modules && rimraf ./node_modules",
+    "clean-all": "yarn clean-e2e && yarn build-clean && rimraf './packages/*/node_modules' && rimraf './node_modules'",
     "clean-e2e": "node ./scripts/cleanE2e.js",
     "jest": "node ./packages/jest-cli/bin/jest.js",
     "jest-coverage": "yarn jest --coverage",
