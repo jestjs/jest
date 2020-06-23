@@ -13,11 +13,13 @@
     "@jest/types": "^26.0.1",
     "chalk": "^4.0.0",
     "graceful-fs": "^4.2.4",
-    "is-ci": "^2.0.0"
+    "is-ci": "^2.0.0",
+    "micromatch": "^4.0.2"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.2",
     "@types/is-ci": "^2.0.0",
+    "@types/micromatch": "^4.0.0",
     "@types/node": "*"
   },
   "engines": {

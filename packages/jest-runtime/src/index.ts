@@ -1559,7 +1559,7 @@ class Runtime {
         _getFakeTimers().advanceTimersByTime(msToRun),
       setMock: (moduleName: string, mock: unknown) =>
         setMockFactory(moduleName, () => mock),
-      setSystemTime: (now?: number) => {
+      setSystemTime: (now?: number | Date) => {
         const fakeTimers = _getFakeTimers();
 
         if (fakeTimers instanceof ModernFakeTimers) {

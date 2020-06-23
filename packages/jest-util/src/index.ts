@@ -18,6 +18,7 @@ export {default as convertDescriptorToString} from './convertDescriptorToString'
 import * as specialChars from './specialChars';
 export {default as replacePathSepForGlob} from './replacePathSepForGlob';
 export {default as testPathPatternToRegExp} from './testPathPatternToRegExp';
+export {default as globsToMatcher} from './globsToMatcher';
 import * as preRunMessage from './preRunMessage';
 export {default as pluralize} from './pluralize';
 export {default as formatTime} from './formatTime';
