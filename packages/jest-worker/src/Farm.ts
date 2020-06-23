@@ -50,7 +50,6 @@ export default class Farm {
     method: string,
     ...args: Array<any>
   ): PromiseWithCustomMessage<unknown> {
-
     const customMessageListeners: Set<OnCustomMessage> = new Set();
 
     const addCustomMessageListener = (listener: OnCustomMessage) => {

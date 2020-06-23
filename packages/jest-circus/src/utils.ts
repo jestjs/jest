@@ -13,6 +13,7 @@ import dedent = require('dedent');
 import StackUtils = require('stack-utils');
 import prettyFormat = require('pretty-format');
 import type {AssertionResult, Status} from '@jest/test-result';
+import type {ParseTestResults} from '@jest/types/src/Circus';
 import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
@@ -446,7 +447,9 @@ export const parseSingleTestResult = (
   };
 };
 
-export const parseTestResults = (testResults: Array<Circus.TestResult>) => {
+export const parseTestResults = (
+  testResults: Array<Circus.TestResult>,
+): ParseTestResults => {
   let numFailingTests = 0;
   let numPassingTests = 0;
   let numPendingTests = 0;

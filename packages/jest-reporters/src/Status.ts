@@ -117,7 +117,7 @@ export default class Status {
     this._emit();
   }
 
-  addTestCaseResult(test: Test, testCaseResult: TestCaseResult) {
+  addTestCaseResult(test: Test, testCaseResult: TestCaseResult): void {
     this._currentTestCases.push({test, testCaseResult});
     if (!this._showStatus) {
       this._emit();
@@ -126,7 +126,7 @@ export default class Status {
     }
   }
 
-  testStarted(testPath: Config.Path, config: Config.ProjectConfig) {
+  testStarted(testPath: Config.Path, config: Config.ProjectConfig): void {
     this._currentTests.add(testPath, config);
     if (!this._showStatus) {
       this._emit();

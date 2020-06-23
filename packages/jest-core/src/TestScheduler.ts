@@ -74,7 +74,10 @@ export default class TestScheduler {
     this._dispatcher.unregister(ReporterClass);
   }
 
-  async scheduleTests(tests: Array<TestRunner.Test>, watcher: TestWatcher) {
+  async scheduleTests(
+    tests: Array<TestRunner.Test>,
+    watcher: TestWatcher,
+  ): Promise<any> {
     const onTestFileStart = this._dispatcher.onTestFileStart.bind(
       this._dispatcher,
     );
@@ -184,7 +187,6 @@ export default class TestScheduler {
       estimatedTime,
       showStatus: !runInBand,
     });
-
 
     const testRunners = Object.create(null);
     const contextsByTestRunner = new WeakMap<TestRunner, Context>();

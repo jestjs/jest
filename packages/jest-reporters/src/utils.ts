@@ -127,7 +127,6 @@ export const getSummary = (
   const valuesForCurrentTestCases = getValuesCurrentTestCases(
     options ? options.currentTestCases : [],
   );
-  // console.log(aggregatedQuickStats.numPassingTests);
 
   const estimatedTime = (options && options.estimatedTime) || 0;
   const snapshotResults = aggregatedResults.snapshot;
