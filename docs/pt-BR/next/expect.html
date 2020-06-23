@@ -503,7 +503,7 @@ expect.addSnapshotSerializer(serializer);
 
 <span class="hljs-comment">// affects expect(value).toMatchSnapshot() assertions in the test file</span>
 </code></pre>
-<p>Se você adicionar um serializador de snapshot em arquivos de teste individual em vez de adicioná-lo à configuração <code>snapshotSerializers</code>:</p>
+<p>If you add a snapshot serializer in individual test files instead of adding it to <code>snapshotSerializers</code> configuration:</p>
 <ul>
 <li>Você torna a dependência explícita em vez de implícita.</li>
 <li>Você evita limites à configuração que podem fazer com que você tenha que ejetar <a href="https://github.com/facebookincubator/create-react-app">create-react-app</a>.</li>

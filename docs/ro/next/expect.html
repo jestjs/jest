@@ -503,7 +503,7 @@ expect.addSnapshotSerializer(serializer);
 
 <span class="hljs-comment">// affects expect(value).toMatchSnapshot() assertions in the test file</span>
 </code></pre>
-<p>Dacă adăugați un serializator în fişiere individuale de test în loc să-l adăugați în configurarea <code>snapshotSerializers</code>:</p>
+<p>If you add a snapshot serializer in individual test files instead of adding it to <code>snapshotSerializers</code> configuration:</p>
 <ul>
 <li>Definiți explicit dependenţa în loc de implicit.</li>
 <li>Evitați limitele de configurare care v-ar putea forța să faceți &quot;eject&quot; din <a href="https://github.com/facebookincubator/create-react-app">create-react-app</a>.</li>

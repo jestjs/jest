@@ -85,7 +85,7 @@
   <span class="hljs-keyword">return</span> userId;
 };
 </code></pre>
-<p>テストでは、実際にネットワークリクエストを行わなくても呼び出されるように、 <code>fetch</code> 関数をモックする必要があります。 However, you'll also need to mock the return value of <code>fetch</code> with a <code>Response</code> (wrapped in a <code>Promise</code>), as our function uses it to grab the created user's ID. So you might initially try writing a test like this:</p>
+<p>テストでは、実際にネットワークリクエストを行わなくても呼び出されるように、 <code>fetch</code> 関数をモックする必要があります。 ただし、 作成したユーザーのIDを取得するのに使われているので、<code>fetch</code> の戻り値を ( <code>Promise</code>にラップされた)<code>Response</code> でモックする事も必要です。 ですから、最初は次のようなテストを書くことでしょう。</p>
 <pre><code class="hljs css language-javascript">jest.mock(<span class="hljs-string">'node-fetch'</span>);
 
 <span class="hljs-keyword">import</span> fetch, {Response} <span class="hljs-keyword">from</span> <span class="hljs-string">'node-fetch'</span>;
@@ -104,8 +104,8 @@ test(<span class="hljs-string">'createUser calls fetch with the right args and r
   expect(userId).toBe(<span class="hljs-string">'4'</span>);
 });
 </code></pre>
-<p>However, if you ran that test you would find that the <code>createUser</code> function would fail, throwing the error: <code>TypeError: response.text is not a function</code>. This is because the <code>Response</code> class you've imported from <code>node-fetch</code> has been mocked (due to the <code>jest.mock</code> call at the top of the test file) so it no longer behaves the way it should.</p>
-<p>このような問題を回避するために、Jest は <code>jest.requireActual</code> ヘルパーを提供しています。 上記のテストを機能させるには、次のようにテストファイル内のインポートを変更します。</p>
+<p>しかし、上記のテストを実行した場合、<code>createUser</code>関数は次のようなエラーを出力して失敗するでしょう： <code>TypeError: response.text is not a function</code> これは、 <code>jest.mock</code> をテストファイルの最初に呼び出したことで、<code>node-fetch</code>から import した <code>Response</code> クラスがモックされ、本来あるべき振る舞いをしなくなったためです。</p>
+<p>このような問題を回避するために、Jest は <code>jest.requireActual</code> ヘルパーを提供しています。 上記のテストを機能させるには、次のようにテストファイル内のimport文を変更します。</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// BEFORE</span>
 jest.mock(<span class="hljs-string">'node-fetch'</span>);
 <span class="hljs-keyword">import</span> fetch, {Response} <span class="hljs-keyword">from</span> <span class="hljs-string">'node-fetch'</span>;
@@ -115,7 +115,7 @@ jest.mock(<span class="hljs-string">'node-fetch'</span>);
 <span class="hljs-keyword">import</span> fetch <span class="hljs-keyword">from</span> <span class="hljs-string">'node-fetch'</span>;
 <span class="hljs-keyword">const</span> {Response} = jest.requireActual(<span class="hljs-string">'node-fetch'</span>);
 </code></pre>
-<p>This allows your test file to import the actual <code>Response</code> object from <code>node-fetch</code>, rather than a mocked version. This means the test will now pass correctly.</p>
+<p>これによりテストファイルはモック化されたものではなく、実際の <code>Response</code> オブジェクトを <code>node-fetch</code>から import できます。つまり、テストが正しくパスするということです。</p>
 </span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/ja/next/es6-class-mocks"><span class="arrow-prev">← </span><span>ES6 クラスのモック</span></a><a class="docs-next button" href="/docs/ja/next/webpack"><span>Using with webpack</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/ja/getting-started.html">Getting Started</a><a href="/docs/ja/snapshot-testing.html">Guides</a><a href="/docs/ja/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://www.reactiflux.com/">Reactiflux</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {

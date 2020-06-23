@@ -85,7 +85,7 @@
   <span class="hljs-keyword">return</span> userId;
 };
 </code></pre>
-<p>テストでは、実際にネットワークリクエストを行わなくても呼び出されるように、 <code>fetch</code> 関数をモックする必要があります。 However, you'll also need to mock the return value of <code>fetch</code> with a <code>Response</code> (wrapped in a <code>Promise</code>), as our function uses it to grab the created user's ID. So you might initially try writing a test like this:</p>
+<p>テストでは、実際にネットワークリクエストを行わなくても呼び出されるように、 <code>fetch</code> 関数をモックする必要があります。 ただし、 作成したユーザーのIDを取得するのに使われているので、<code>fetch</code> の戻り値を ( <code>Promise</code>にラップされた)<code>Response</code> でモックする事も必要です。 ですから、最初は次のようなテストを書くことでしょう。</p>
 <pre><code class="hljs css language-javascript">jest.mock(<span class="hljs-string">'node-fetch'</span>);
 
 <span class="hljs-keyword">import</span> fetch, {Response} <span class="hljs-keyword">from</span> <span class="hljs-string">'node-fetch'</span>;
@@ -104,7 +104,7 @@ test(<span class="hljs-string">'createUser calls fetch with the right args and r
   expect(userId).toBe(<span class="hljs-string">'4'</span>);
 });
 </code></pre>
-<p>However, if you ran that test you would find that the <code>createUser</code> function would fail, throwing the error: <code>TypeError: response.text is not a function</code>. This is because the <code>Response</code> class you've imported from <code>node-fetch</code> has been mocked (due to the <code>jest.mock</code> call at the top of the test file) so it no longer behaves the way it should.</p>
+<p>しかし、上記のテストを実行した場合、<code>createUser</code>関数は次のようなエラーを出力して失敗するでしょう： <code>TypeError: response.text is not a function</code> これは、 <code>jest.mock</code> をテストファイルの最初に呼び出したことで、<code>node-fetch</code>から import した <code>Response</code> クラスがモックされ、本来あるべき振る舞いをしなくなったためです。</p>
 <p>To get around problems like this, Jest provides the <code>jest.requireActual</code> helper. To make the above test work, make the following change to the imports in the test file:</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// BEFORE</span>
 jest.mock(<span class="hljs-string">'node-fetch'</span>);
