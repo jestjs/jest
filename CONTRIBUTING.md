@@ -34,7 +34,7 @@ _Before_ submitting a pull request, please make sure the following is done…
 
 1.  Jest uses [Yarn](https://code.facebook.com/posts/1840075619545360) for running development scripts. If you haven't already done so, please [install yarn](https://yarnpkg.com/en/docs/install).
 
-1.  Make sure you have `python` installed (v3.x is recommended, v2.7 [is not](https://www.python.org/doc/sunset-python-2/)). Python is required by [node-gyp](https://github.com/nodejs/node-gyp) that is used when running `yarn install`.
+1.  Make sure you have `python` installed. Python is required by [node-gyp](https://github.com/nodejs/node-gyp) that is used when running `yarn install`.
 
     To check your version of Python and ensure it's installed you can type:
 
