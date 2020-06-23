@@ -70,7 +70,9 @@ export default function globsToMatcher(
     for (let i = 0; i < matchers.length; i++) {
       const {isMatch, negated} = matchers[i];
 
-      if (negated) negatives++;
+      if (negated) {
+        negatives++;
+      }
 
       const matched = isMatch(replacedPath);
 
