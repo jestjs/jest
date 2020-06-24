@@ -18,10 +18,13 @@ steps:
       versionSpec: '2.7'
     displayName: 'Use Python 2.7'
 
+  - bash: echo "##vso[task.setvariable variable=folder;isOutput=true]$(yarn config get cacheFolder)"
+    name: yarnCache
+
   - task: Cache@2
     inputs:
       key: yarn | $(Agent.OS) | yarn.lock
-      path: $(YARN_CACHE_FOLDER)
+      path: $(yarnCache.folder)
     displayName: Cache Yarn packages
 
   - script: yarn install
