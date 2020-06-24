@@ -39,12 +39,7 @@ packagesWithTs.forEach(pkgDir => {
   );
 });
 
-const args = [
-  'tsc',
-  '-b',
-  ...packagesWithTs,
-  ...process.argv.slice(2),
-];
+const args = ['tsc', '-b', ...packagesWithTs, ...process.argv.slice(2)];
 
 console.log(chalk.inverse(' Building TypeScript definition files '));
 
