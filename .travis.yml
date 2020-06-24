@@ -7,6 +7,8 @@ branches:
   only:
     - master
 
+install: yarn --immutable --immutable-cache
+
 cache:
   yarn: true
   directories:
