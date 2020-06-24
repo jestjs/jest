@@ -296,9 +296,7 @@ export const makeSingleTestResult = (
 
   const {status} = test;
 
-  if (!status) {
-    throw new Error('Status should be present after tests are run.');
-  }
+  invariant(status, 'Status should be present after tests are run.');
 
   let location = null;
   if (includeTestLocationInResult) {
@@ -453,23 +451,20 @@ export const parseTestResults = (
   let numFailingTests = 0;
   let numPassingTests = 0;
   let numPendingTests = 0;
-  let numTodoTests = 0;
+  const numTodoTests = 0;
 
-  const assertionResults: Array<AssertionResult> = testResults.map(
-    testResult => {
-      if (testResult.status === 'skip') {
-        numPendingTests += 1;
-      } else if (testResult.status === 'todo') {
-        numTodoTests += 1;
-      } else if (testResult.errors.length) {
-        numFailingTests += 1;
-      } else {
-        numPassingTests += 1;
-      }
-
-      return parseSingleTestResult(testResult);
-    },
-  );
+  const assertionResults = testResults.map<AssertionResult>(testResult => {
+    if (testResult.status === 'skip') {
+      numPendingTests++;
+    } else if (testResult.status === 'todo') {
+      numPendingTests++;
+    } else if (testResult.errors.length) {
+      numFailingTests++;
+    } else {
+      numPassingTests++;
+    }
+    return parseSingleTestResult(testResult);
+  });
 
   return {
     assertionResults,

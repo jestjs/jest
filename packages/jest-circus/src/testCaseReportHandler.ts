@@ -6,7 +6,7 @@
  */
 
 import type {Circus} from '@jest/types';
-import type {TestCase, TestCaseResult} from '@jest/test-result';
+import type {TestCase} from '@jest/test-result';
 import {makeSingleTestResult, parseSingleTestResult} from './utils';
 
 const testCaseReportHandler = (
@@ -16,7 +16,7 @@ const testCaseReportHandler = (
   switch (event.name) {
     case 'test_done': {
       const testResult = makeSingleTestResult(event.test);
-      const testCaseResult: TestCaseResult = parseSingleTestResult(testResult);
+      const testCaseResult = parseSingleTestResult(testResult);
       const testCase: TestCase = {
         ancestorTitles: testCaseResult.ancestorTitles,
         fullName: testCaseResult.fullName,

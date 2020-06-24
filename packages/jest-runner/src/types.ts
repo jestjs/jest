@@ -43,7 +43,7 @@ export type TestFramework = (
   environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
-  sendMessageToJest?: Function,
+  sendMessageToJest?: (eventName: string, arg: Array<any>) => void,
 ) => Promise<TestResult>;
 
 export type TestRunnerOptions = {
