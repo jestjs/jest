@@ -19,7 +19,7 @@
 - `[jest-core]` 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉 ([#10000](https://github.com/facebook/jest/pull/10000))
 - `[jest-core, jest-reporters, jest-test-result, jest-types]` Cleanup `displayName` type ([#10049](https://github.com/facebook/jest/pull/10049))
 - `[jest-runtime]` Jest-internal sandbox escape hatch ([#9907](https://github.com/facebook/jest/pull/9907))
-- `[jest-changed-files]` Use git diff instead of git log for --changedSince ([#9602](https://github.com/facebook/jest/issues/9602))
+- `[jest-changed-files]` Use git diff instead of git log for --changedSince ([#10155](https://github.com/facebook/jest/pull/10155))
 
 ### Performance
 
