@@ -18,10 +18,6 @@ steps:
       versionSpec: '2.7'
     displayName: 'Use Python 2.7'
 
-  # Run yarn to install dependencies and build
-  - script: node scripts/remove-postinstall
-    displayName: 'Remove postinstall script'
-
   - task: Cache@2
     inputs:
       key: yarn | $(Agent.OS) | yarn.lock
