@@ -12,6 +12,7 @@ import {tryRealpath} from 'jest-util';
 import type {Config} from '@jest/types';
 
 type ResolverOptions = {
+  allowPnp?: boolean;
   basedir: Config.Path;
   browser?: boolean;
   defaultResolver: typeof defaultResolver;
@@ -26,7 +27,7 @@ export default function defaultResolver(
   options: ResolverOptions,
 ): Config.Path {
   // @ts-expect-error: the "pnp" version named isn't in DefinitelyTyped
-  if (process.versions.pnp) {
+  if (process.versions.pnp && options.allowPnp !== false) {
     return pnpResolver(path, options);
   }
 
