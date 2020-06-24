@@ -16,7 +16,7 @@ const DIR = path.resolve(__dirname, '..', 'pnp');
 skipSuiteOnWindows();
 
 beforeEach(() => {
-  run('yarn', DIR);
+  run('yarn', DIR, {YARN_NODE_LINKER: 'pnp'});
 });
 
 it('successfully runs the tests inside `pnp/`', () => {

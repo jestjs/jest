@@ -19,9 +19,13 @@ interface RunResult extends ExecaReturnValue {
   status: number;
   error: Error;
 }
-export const run = (cmd: string, cwd?: Config.Path): RunResult => {
+export const run = (
+  cmd: string,
+  cwd?: Config.Path,
+  env?: Record<string, string>,
+): RunResult => {
   const args = cmd.split(/\s/).slice(1);
-  const spawnOptions = {cwd, preferLocal: false, reject: false};
+  const spawnOptions = {cwd, env, preferLocal: false, reject: false};
   const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions) as RunResult;
 
   // For compat with cross-spawn
