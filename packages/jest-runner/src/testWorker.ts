@@ -75,7 +75,7 @@ export function setup(setupData: {
   }
 }
 
-const sendMessageToJest = (eventName: string, args: Array<any>) => {
+const sendMessageToJest = (eventName: string, args: Array<unknown>) => {
   messageParent([eventName, args]);
 };
 

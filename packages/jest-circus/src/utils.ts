@@ -290,15 +290,13 @@ export const makeSingleTestResult = (
   const {includeTestLocationInResult} = getState();
   const testPath = [];
   let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
+
+  const {status} = test;
+  invariant(status, 'Status should be present after tests are run.');
+
   do {
     testPath.unshift(parent.name);
   } while ((parent = parent.parent));
-
-  const {status} = test;
-
-  if (!status) {
-    throw new Error('Status should be present after tests are run.');
-  }
 
   let location = null;
   if (includeTestLocationInResult) {
@@ -329,17 +327,19 @@ export const makeSingleTestResult = (
 const makeTestResults = (
   describeBlock: Circus.DescribeBlock,
 ): Circus.TestResults => {
-  let testResults: Circus.TestResults = describeBlock.tests.map(
+  const testResults: Circus.TestResults = describeBlock.tests.map(
     makeSingleTestResult,
   );
 
   for (const child of describeBlock.children) {
     switch (child.type) {
-      case 'describeBlock':
-        testResults = testResults.concat(makeTestResults(child));
+      case 'describeBlock': {
+        testResults.push(...makeTestResults(child));
         break;
-      case 'test':
+      }
+      case 'test': {
         break;
+      }
     }
   }
 
@@ -455,21 +455,18 @@ export const parseTestResults = (
   let numPendingTests = 0;
   let numTodoTests = 0;
 
-  const assertionResults: Array<AssertionResult> = testResults.map(
-    testResult => {
-      if (testResult.status === 'skip') {
-        numPendingTests += 1;
-      } else if (testResult.status === 'todo') {
-        numTodoTests += 1;
-      } else if (testResult.errors.length) {
-        numFailingTests += 1;
-      } else {
-        numPassingTests += 1;
-      }
-
-      return parseSingleTestResult(testResult);
-    },
-  );
+  const assertionResults = testResults.map<AssertionResult>(testResult => {
+    if (testResult.status === 'skip') {
+      numPendingTests++;
+    } else if (testResult.status === 'todo') {
+      numTodoTests++;
+    } else if (testResult.errors.length) {
+      numFailingTests++;
+    } else {
+      numPassingTests++;
+    }
+    return parseSingleTestResult(testResult);
+  });
 
   return {
     assertionResults,

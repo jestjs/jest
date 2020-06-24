@@ -22,7 +22,7 @@ const jestAdapter = async (
   environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
-  sendMessageToJest?: Function,
+  sendMessageToJest?: (eventName: string, args: Array<unknown>) => unknown,
 ): Promise<TestResult> => {
   const {
     initialize,

@@ -80,7 +80,7 @@ async function runTestInternal(
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   resolver: Resolver,
-  sendMessageToJest: Function,
+  sendMessageToJest: (eventName: string, args: Array<unknown>) => unknown,
   context?: TestRunnerContext,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
@@ -314,7 +314,7 @@ export default async function runTest(
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   resolver: Resolver,
-  sendMessageToJest: Function,
+  sendMessageToJest: (eventName: string, args: Array<unknown>) => unknown,
   context?: TestRunnerContext,
 ): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(

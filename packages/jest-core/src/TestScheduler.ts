@@ -77,7 +77,7 @@ export default class TestScheduler {
   async scheduleTests(
     tests: Array<TestRunner.Test>,
     watcher: TestWatcher,
-  ): Promise<any> {
+  ): Promise<AggregatedResult> {
     const onTestFileStart = this._dispatcher.onTestFileStart.bind(
       this._dispatcher,
     );

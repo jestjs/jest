@@ -143,9 +143,12 @@ export default class Status {
     const {testFilePath} = testResult;
     this._aggregatedResults = aggregatedResults;
     this._currentTests.delete(testFilePath);
-    this._currentTestCases = this._currentTestCases.filter(({test}) =>
-      _config === test.context.config ? test.path !== testFilePath : true,
-    );
+    this._currentTestCases = this._currentTestCases.filter(({test}) => {
+      if (_config !== test.context.config) {
+        return true;
+      }
+      return test.path !== testFilePath;
+    });
     this._debouncedEmit();
   }
 

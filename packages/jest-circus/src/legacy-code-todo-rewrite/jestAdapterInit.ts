@@ -56,7 +56,7 @@ export const initialize = async ({
   localRequire: (path: Config.Path) => any;
   testPath: Config.Path;
   parentProcess: Process;
-  sendMessageToJest?: Function;
+  sendMessageToJest?: (eventName: string, args: Array<unknown>) => unknown;
 }) => {
   if (globalConfig.testTimeout) {
     getRunnerState().testTimeout = globalConfig.testTimeout;

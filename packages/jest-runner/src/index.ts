@@ -88,9 +88,9 @@ class TestRunner {
 
               const sendMessageToJest = (
                 eventName: string,
-                arg: Array<any>,
+                args: Array<unknown>,
               ) => {
-                this.eventEmitter.emit(eventName, arg);
+                this.eventEmitter.emit(eventName, args);
               };
 
               await this.eventEmitter.emit('test-file-start', [test]);
@@ -171,6 +171,7 @@ class TestRunner {
         }) as PromiseWithCustomMessage<TestResult>;
 
         if (promise.UNSTABLE_onCustomMessage) {
+          // TODO: Get appropriate type for `onCustomMessage`
           promise.UNSTABLE_onCustomMessage(([event, payload]: any) => {
             this.eventEmitter.emit(event, payload);
           });
