@@ -37,9 +37,6 @@ export default (
       console.error(chalk.red(`\n\n${message}`));
 
       process.exit(1);
-
-      // We do process.exit, so this is dead code
-      return Promise.reject(e);
     });
   }
 
