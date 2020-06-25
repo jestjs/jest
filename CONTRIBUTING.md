@@ -34,7 +34,7 @@ _Before_ submitting a pull request, please make sure the following is done…
 
 1.  Jest uses [Yarn](https://code.facebook.com/posts/1840075619545360) for running development scripts. If you haven't already done so, please [install yarn](https://yarnpkg.com/en/docs/install).
 
-1.  Make sure you have `python` installed (v2.7 is recommended, v3.x.x is not supported). Python is required by [node-gyp](https://github.com/nodejs/node-gyp) that is used when running `yarn install`.
+1.  Make sure you have `python` installed. Python is required by [node-gyp](https://github.com/nodejs/node-gyp) that is used when running `yarn install`.
 
     To check your version of Python and ensure it's installed you can type:
 
@@ -211,7 +211,7 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 
 ## How to Get in Touch
 
-- Discord - [#jest](https://discord.gg/MWRhKCj) on [Reactiflux](http://www.reactiflux.com/)
+`#testing` on [Reactiflux](https://www.reactiflux.com/)
 
 ## Code Conventions
 
