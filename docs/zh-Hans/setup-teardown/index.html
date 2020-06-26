@@ -1,121 +1,121 @@
 <!DOCTYPE html><html lang="zh-Hans"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Setup and Teardown · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="写测试的时候你经常需要在运行测试前做一些准备工作，和在运行测试后进行一些整理工作。 Jest 提供辅助函数来处理这个问题。"/><meta name="docsearch:version" content="26.0"/><meta name="docsearch:language" content="zh-Hans"/><meta property="og:title" content="Setup and Teardown · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="写测试的时候你经常需要在运行测试前做一些准备工作，和在运行测试后进行一些整理工作。 Jest 提供辅助函数来处理这个问题。"/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
-              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-              ga('create', 'UA-44373548-17', 'auto');
-              ga('send', 'pageview');
-            </script><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/zh-Hans"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/zh-Hans/versions"><h3>26.0</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/zh-Hans/getting-started" target="_self">文档</a></li><li class="siteNavGroupActive"><a href="/docs/zh-Hans/api" target="_self">API</a></li><li class=""><a href="/zh-Hans/help" target="_self">帮助</a></li><li class=""><a href="/blog/" target="_self">博客</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>简体中文</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/setup-teardown">English</a></li><li><a href="/docs/ja/setup-teardown">日本語</a></li><li><a href="/docs/es-ES/setup-teardown">Español</a></li><li><a href="/docs/pt-BR/setup-teardown">Português (Brasil)</a></li><li><a href="/docs/ro/setup-teardown">Română</a></li><li><a href="/docs/ru/setup-teardown">Русский</a></li><li><a href="/docs/uk/setup-teardown">Українська</a></li></ul></div></li><script>
-        const languagesMenuItem = document.getElementById("languages-menu");
-        const languagesDropDown = document.getElementById("languages-dropdown");
-        languagesMenuItem.addEventListener("click", function(event) {
-          event.preventDefault();
+  ga('create', 'UA-44373548-17', 'auto');
+  ga('send', 'pageview');
+</script><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/zh-Hans"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/zh-Hans/versions"><h3>26.0</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/zh-Hans/getting-started" target="_self">文档</a></li><li class="siteNavGroupActive"><a href="/docs/zh-Hans/api" target="_self">API</a></li><li class=""><a href="/zh-Hans/help" target="_self">帮助</a></li><li class=""><a href="/blog/" target="_self">博客</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>简体中文</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/setup-teardown">English</a></li><li><a href="/docs/ja/setup-teardown">日本語</a></li><li><a href="/docs/es-ES/setup-teardown">Español</a></li><li><a href="/docs/pt-BR/setup-teardown">Português (Brasil)</a></li><li><a href="/docs/ro/setup-teardown">Română</a></li><li><a href="/docs/ru/setup-teardown">Русский</a></li><li><a href="/docs/uk/setup-teardown">Українська</a></li></ul></div></li><script>
+const languagesMenuItem = document.getElementById("languages-menu");
+const languagesDropDown = document.getElementById("languages-dropdown");
+languagesMenuItem.addEventListener("click", function(event) {
+event.preventDefault();
 
-          if (languagesDropDown.className == "hide") {
-            languagesDropDown.className = "visible";
-          } else {
-            languagesDropDown.className = "hide";
-          }
-        });
-      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Introduction</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/zh-Hans/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/snapshot-testing">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/dynamodb">Using with DynamoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/architecture">Architecture</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">框架指南</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/api">Globals</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
-            var coll = document.getElementsByClassName('collapsible');
-            var checkActiveCategory = true;
-            for (var i = 0; i < coll.length; i++) {
-              var links = coll[i].nextElementSibling.getElementsByTagName('*');
-              if (checkActiveCategory){
-                for (var j = 0; j < links.length; j++) {
-                  if (links[j].classList.contains('navListItemActive')){
-                    coll[i].nextElementSibling.classList.toggle('hide');
-                    coll[i].childNodes[1].classList.toggle('rotate');
-                    checkActiveCategory = false;
-                    break;
-                  }
-                }
-              }
+if (languagesDropDown.className == "hide") {
+languagesDropDown.className = "visible";
+} else {
+languagesDropDown.className = "hide";
+}
+});
+</script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Introduction</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/zh-Hans/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/snapshot-testing">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/dynamodb">Using with DynamoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/architecture">Architecture</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">框架指南</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/api">Globals</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
+var coll = document.getElementsByClassName('collapsible');
+var checkActiveCategory = true;
+for (var i = 0; i < coll.length; i++) {
+  var links = coll[i].nextElementSibling.getElementsByTagName('*');
+  if (checkActiveCategory){
+    for (var j = 0; j < links.length; j++) {
+      if (links[j].classList.contains('navListItemActive')){
+        coll[i].nextElementSibling.classList.toggle('hide');
+        coll[i].childNodes[1].classList.toggle('rotate');
+        checkActiveCategory = false;
+        break;
+      }
+    }
+  }
 
-              coll[i].addEventListener('click', function() {
-                var arrow = this.childNodes[1];
-                arrow.classList.toggle('rotate');
-                var content = this.nextElementSibling;
-                content.classList.toggle('hide');
-              });
-            }
+  coll[i].addEventListener('click', function() {
+    var arrow = this.childNodes[1];
+    arrow.classList.toggle('rotate');
+    var content = this.nextElementSibling;
+    content.classList.toggle('hide');
+  });
+}
 
-            document.addEventListener('DOMContentLoaded', function() {
-              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
-              createToggler('#tocToggler', 'body', 'tocActive');
+document.addEventListener('DOMContentLoaded', function() {
+  createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+  createToggler('#tocToggler', 'body', 'tocActive');
 
-              var headings = document.querySelector('.toc-headings');
-              headings && headings.addEventListener('click', function(event) {
-                var el = event.target;
-                while(el !== headings){
-                  if (el.tagName === 'A') {
-                    document.body.classList.remove('tocActive');
-                    break;
-                  } else{
-                    el = el.parentNode;
-                  }
-                }
-              }, false);
+  var headings = document.querySelector('.toc-headings');
+  headings && headings.addEventListener('click', function(event) {
+    var el = event.target;
+    while(el !== headings){
+      if (el.tagName === 'A') {
+        document.body.classList.remove('tocActive');
+        break;
+      } else{
+        el = el.parentNode;
+      }
+    }
+  }, false);
 
-              function createToggler(togglerSelector, targetSelector, className) {
-                var toggler = document.querySelector(togglerSelector);
-                var target = document.querySelector(targetSelector);
+  function createToggler(togglerSelector, targetSelector, className) {
+    var toggler = document.querySelector(togglerSelector);
+    var target = document.querySelector(targetSelector);
 
-                if (!toggler) {
-                  return;
-                }
+    if (!toggler) {
+      return;
+    }
 
-                toggler.onclick = function(event) {
-                  event.preventDefault();
+    toggler.onclick = function(event) {
+      event.preventDefault();
 
-                  target.classList.toggle(className);
-                };
-              }
-            });
-        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/SetupAndTeardown.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Setup and Teardown</h1></header><article><div><span><p>写测试的时候你经常需要在运行测试前做一些准备工作，和在运行测试后进行一些整理工作。 Jest 提供辅助函数来处理这个问题。</p>
+      target.classList.toggle(className);
+    };
+  }
+});
+</script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/SetupAndTeardown.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Setup and Teardown</h1></header><article><div><span><p>写测试的时候你经常需要在运行测试前做一些准备工作，和在运行测试后进行一些整理工作。 Jest 提供辅助函数来处理这个问题。</p>
 <h2><a class="anchor" aria-hidden="true" id="为多次测试重复设置"></a><a href="#为多次测试重复设置" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>为多次测试重复设置</h2>
 <p>如果你有一些要为多次测试重复设置的工作，你可以使用 <code>beforeEach</code> 和 <code>afterEach</code>。</p>
 <p>例如，我们考虑一些与城市信息数据库进行交互的测试。 你必须在每个测试之前调用方法 <code>initializeCityDatabase()</code> ，同时必须在每个测试后，调用方法 <code>clearCityDatabase()</code>。 你可以这样做：</p>
 <pre><code class="hljs css language-js">beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-  initializeCityDatabase();
+initializeCityDatabase();
 });
 
 afterEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-  clearCityDatabase();
+clearCityDatabase();
 });
 
 test(<span class="hljs-string">'city database has Vienna'</span>, () =&gt; {
-  expect(isCity(<span class="hljs-string">'Vienna'</span>)).toBeTruthy();
+expect(isCity(<span class="hljs-string">'Vienna'</span>)).toBeTruthy();
 });
 
 test(<span class="hljs-string">'city database has San Juan'</span>, () =&gt; {
-  expect(isCity(<span class="hljs-string">'San Juan'</span>)).toBeTruthy();
+expect(isCity(<span class="hljs-string">'San Juan'</span>)).toBeTruthy();
 });
 </code></pre>
 <p><code>beforeEach</code> 和 <code>afterEach</code> 能够通过与<a href="/docs/zh-Hans/asynchronous"> 异步代码测试</a> 相同的方式处理异步代码 — — 他们可以采取 <code>done</code> 参数或返回一个 promise。 例如，如果 <code>initializeCityDatabase()</code> 返回解决数据库初始化时的 promise ，我们会想返回这一 promise︰</p>
 <pre><code class="hljs css language-js">beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-  <span class="hljs-keyword">return</span> initializeCityDatabase();
+<span class="hljs-keyword">return</span> initializeCityDatabase();
 });
 </code></pre>
 <h2><a class="anchor" aria-hidden="true" id="一次性设置"></a><a href="#一次性设置" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>一次性设置</h2>
-<p>在某些情况下，你只需要在文件的开头做一次设置。 This can be especially bothersome when the setup is asynchronous, so you can't do it inline. Jest 提供 <code>beforeAll</code> 和 <code>afterAll</code> 处理这种情况。</p>
+<p>在某些情况下，你只需要在文件的开头做一次设置。 当设置是异步的时候这将会变得特别烦人, 因此你不能内联的设置. Jest 提供 <code>beforeAll</code> 和 <code>afterAll</code> 处理这种情况。</p>
 <p>例如，如果 <code>initializeCityDatabase</code> 和 <code>clearCityDatabase</code> 都返回了 promise ，城市数据库可以在测试中重用，我们就能把我们的测试代码改成这样:</p>
 <pre><code class="hljs css language-js">beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-  <span class="hljs-keyword">return</span> initializeCityDatabase();
+<span class="hljs-keyword">return</span> initializeCityDatabase();
 });
 
 afterAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-  <span class="hljs-keyword">return</span> clearCityDatabase();
+<span class="hljs-keyword">return</span> clearCityDatabase();
 });
 
 test(<span class="hljs-string">'city database has Vienna'</span>, () =&gt; {
-  expect(isCity(<span class="hljs-string">'Vienna'</span>)).toBeTruthy();
+expect(isCity(<span class="hljs-string">'Vienna'</span>)).toBeTruthy();
 });
 
 test(<span class="hljs-string">'city database has San Juan'</span>, () =&gt; {
-  expect(isCity(<span class="hljs-string">'San Juan'</span>)).toBeTruthy();
+expect(isCity(<span class="hljs-string">'San Juan'</span>)).toBeTruthy();
 });
 </code></pre>
 <h2><a class="anchor" aria-hidden="true" id="作用域"></a><a href="#作用域" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>作用域</h2>
@@ -123,30 +123,30 @@ test(<span class="hljs-string">'city database has San Juan'</span>, () =&gt; {
 <p>例如，我们不仅有一个城市数据库，而且还有一个食品数据库。 我们可以为不同的测试进行不同的设置：</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// Applies to all tests in this file</span>
 beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-  <span class="hljs-keyword">return</span> initializeCityDatabase();
+<span class="hljs-keyword">return</span> initializeCityDatabase();
 });
 
 test(<span class="hljs-string">'city database has Vienna'</span>, () =&gt; {
-  expect(isCity(<span class="hljs-string">'Vienna'</span>)).toBeTruthy();
+expect(isCity(<span class="hljs-string">'Vienna'</span>)).toBeTruthy();
 });
 
 test(<span class="hljs-string">'city database has San Juan'</span>, () =&gt; {
-  expect(isCity(<span class="hljs-string">'San Juan'</span>)).toBeTruthy();
+expect(isCity(<span class="hljs-string">'San Juan'</span>)).toBeTruthy();
 });
 
 describe(<span class="hljs-string">'matching cities to foods'</span>, () =&gt; {
-  <span class="hljs-comment">// Applies only to tests in this describe block</span>
-  beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
-    <span class="hljs-keyword">return</span> initializeFoodDatabase();
-  });
+<span class="hljs-comment">// Applies only to tests in this describe block</span>
+beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+<span class="hljs-keyword">return</span> initializeFoodDatabase();
+});
 
-  test(<span class="hljs-string">'Vienna &lt;3 sausage'</span>, () =&gt; {
-    expect(isValidCityFoodPair(<span class="hljs-string">'Vienna'</span>, <span class="hljs-string">'Wiener Schnitzel'</span>)).toBe(<span class="hljs-literal">true</span>);
-  });
+test(<span class="hljs-string">'Vienna &lt;3 sausage'</span>, () =&gt; {
+expect(isValidCityFoodPair(<span class="hljs-string">'Vienna'</span>, <span class="hljs-string">'Wiener Schnitzel'</span>)).toBe(<span class="hljs-literal">true</span>);
+});
 
-  test(<span class="hljs-string">'San Juan &lt;3 plantains'</span>, () =&gt; {
-    expect(isValidCityFoodPair(<span class="hljs-string">'San Juan'</span>, <span class="hljs-string">'Mofongo'</span>)).toBe(<span class="hljs-literal">true</span>);
-  });
+test(<span class="hljs-string">'San Juan &lt;3 plantains'</span>, () =&gt; {
+expect(isValidCityFoodPair(<span class="hljs-string">'San Juan'</span>, <span class="hljs-string">'Mofongo'</span>)).toBe(<span class="hljs-literal">true</span>);
+});
 });
 </code></pre>
 <p>注意，顶级的 <code>beforeEach</code> 在 <code>describe</code> 块级的 <code>beforeEach</code> 之前被执行。 这可能有助于说明所有钩子的执行顺序。</p>
@@ -156,11 +156,11 @@ beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;
 afterEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'1 - afterEach'</span>));
 test(<span class="hljs-string">''</span>, () =&gt; <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'1 - test'</span>));
 describe(<span class="hljs-string">'Scoped / Nested block'</span>, () =&gt; {
-  beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'2 - beforeAll'</span>));
-  afterAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'2 - afterAll'</span>));
-  beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'2 - beforeEach'</span>));
-  afterEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'2 - afterEach'</span>));
-  test(<span class="hljs-string">''</span>, () =&gt; <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'2 - test'</span>));
+beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'2 - beforeAll'</span>));
+afterAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'2 - afterAll'</span>));
+beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'2 - beforeEach'</span>));
+afterEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'2 - afterEach'</span>));
+test(<span class="hljs-string">''</span>, () =&gt; <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'2 - test'</span>));
 });
 
 <span class="hljs-comment">// 1 - beforeAll</span>
@@ -180,32 +180,32 @@ describe(<span class="hljs-string">'Scoped / Nested block'</span>, () =&gt; {
 <p>Jest 会在所有真正的测试开始<em>之前</em>执行测试文件里所有的 describe 处理程序（handlers）。 这是在 <code>before*</code> 和 <code>after*</code> 处理程序里面 （而不是在 describe 块中）进行准备工作和整理工作的另一个原因。 当 describe 块运行完后,，默认情况下，Jest 会按照 test 出现的顺序（译者注：原文是in the order they were encountered in the collection phase）依次运行所有测试,，等待每一个测试完成并整理好，然后才继续往下走。</p>
 <p>考虑以下示例测试文件和输出：</p>
 <pre><code class="hljs css language-js">describe(<span class="hljs-string">'outer'</span>, () =&gt; {
-  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe outer-a'</span>);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe outer-a'</span>);
 
-  describe(<span class="hljs-string">'describe inner 1'</span>, () =&gt; {
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe inner 1'</span>);
-    test(<span class="hljs-string">'test 1'</span>, () =&gt; {
-      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'test for describe inner 1'</span>);
-      expect(<span class="hljs-literal">true</span>).toEqual(<span class="hljs-literal">true</span>);
-    });
-  });
+describe(<span class="hljs-string">'describe inner 1'</span>, () =&gt; {
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe inner 1'</span>);
+test(<span class="hljs-string">'test 1'</span>, () =&gt; {
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'test for describe inner 1'</span>);
+expect(<span class="hljs-literal">true</span>).toEqual(<span class="hljs-literal">true</span>);
+});
+});
 
-  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe outer-b'</span>);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe outer-b'</span>);
 
-  test(<span class="hljs-string">'test 1'</span>, () =&gt; {
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'test for describe outer'</span>);
-    expect(<span class="hljs-literal">true</span>).toEqual(<span class="hljs-literal">true</span>);
-  });
+test(<span class="hljs-string">'test 1'</span>, () =&gt; {
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'test for describe outer'</span>);
+expect(<span class="hljs-literal">true</span>).toEqual(<span class="hljs-literal">true</span>);
+});
 
-  describe(<span class="hljs-string">'describe inner 2'</span>, () =&gt; {
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe inner 2'</span>);
-    test(<span class="hljs-string">'test for describe inner 2'</span>, () =&gt; {
-      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'test for describe inner 2'</span>);
-      expect(<span class="hljs-literal">false</span>).toEqual(<span class="hljs-literal">false</span>);
-    });
-  });
+describe(<span class="hljs-string">'describe inner 2'</span>, () =&gt; {
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe inner 2'</span>);
+test(<span class="hljs-string">'test for describe inner 2'</span>, () =&gt; {
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'test for describe inner 2'</span>);
+expect(<span class="hljs-literal">false</span>).toEqual(<span class="hljs-literal">false</span>);
+});
+});
 
-  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe outer-c'</span>);
+<span class="hljs-built_in">console</span>.log(<span class="hljs-string">'describe outer-c'</span>);
 });
 
 <span class="hljs-comment">// describe outer-a</span>
@@ -218,33 +218,33 @@ describe(<span class="hljs-string">'Scoped / Nested block'</span>, () =&gt; {
 <span class="hljs-comment">// test for describe inner 2</span>
 </code></pre>
 <h2><a class="anchor" aria-hidden="true" id="通用建议"></a><a href="#通用建议" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>通用建议</h2>
-<p>如果测试失败，第一件要检查的事就是，当仅运行这条测试时，它是否仍然失败。 To run only one test with Jest, temporarily change that <code>test</code> command to a <code>test.only</code>:</p>
+<p>如果测试失败，第一件要检查的事就是，当仅运行这条测试时，它是否仍然失败。 使用 Jest 临时运行单个用例，只需要把 <code>test</code> 命令改成 <code>test.only</code>:</p>
 <pre><code class="hljs css language-js">test.only(<span class="hljs-string">'this will be the only test that runs'</span>, () =&gt; {
-  expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">false</span>);
+expect(<span class="hljs-literal">true</span>).toBe(<span class="hljs-literal">false</span>);
 });
 
 test(<span class="hljs-string">'this test will not run'</span>, () =&gt; {
-  expect(<span class="hljs-string">'A'</span>).toBe(<span class="hljs-string">'A'</span>);
+expect(<span class="hljs-string">'A'</span>).toBe(<span class="hljs-string">'A'</span>);
 });
 </code></pre>
-<p>如果你有一个测试，当它作为一个更大的用例中的一部分时，经常运行失败，但是当你单独运行它时，并不会失败，所以最好考虑其他测试对这个测试的影响。 通常可以通过修改 <code>beforeEach</code> 来清除一些共享的状态来修复这种问题。 If you're not sure whether some shared state is being modified, you can also try a <code>beforeEach</code> that logs data.</p>
+<p>如果你有一个测试，当它作为一个更大的用例中的一部分时，经常运行失败，但是当你单独运行它时，并不会失败，所以最好考虑其他测试对这个测试的影响。 通常可以通过修改 <code>beforeEach</code> 来清除一些共享的状态来修复这种问题。 如果你不确定一些共享状态是否被修改, 你可以尝试在 <code>beforeEach</code> 中输出这些数据。</p>
 </span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/zh-Hans/asynchronous"><span class="arrow-prev">← </span><span>Testing Asynchronous Code</span></a><a class="docs-next button" href="/docs/zh-Hans/mock-functions"><span>Mock Functions</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#为多次测试重复设置">为多次测试重复设置</a></li><li><a href="#一次性设置">一次性设置</a></li><li><a href="#作用域">作用域</a></li><li><a href="#desribe和test块的执行顺序">desribe和test块的执行顺序</a></li><li><a href="#通用建议">通用建议</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/zh-Hans/getting-started.html">Getting Started</a><a href="/docs/zh-Hans/snapshot-testing.html">Guides</a><a href="/docs/zh-Hans/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://www.reactiflux.com/">Reactiflux</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
-                document.addEventListener('keyup', function(e) {
-                  if (e.target !== document.body) {
-                    return;
-                  }
-                  // keyCode for '/' (slash)
-                  if (e.keyCode === 191) {
-                    const search = document.getElementById('search_input_react');
-                    search && search.focus();
-                  }
-                });
-              </script><script>
-              var search = docsearch({
-                
-                apiKey: '833906d7486e4059359fa58823c4ef56',
-                indexName: 'jest',
-                inputSelector: '#search_input_react',
-                algoliaOptions: {"facetFilters":["language:zh-Hans","version:26.0"]}
-              });
-            </script></body></html>
+    document.addEventListener('keyup', function(e) {
+      if (e.target !== document.body) {
+        return;
+      }
+      // keyCode for '/' (slash)
+      if (e.keyCode === 191) {
+        const search = document.getElementById('search_input_react');
+        search && search.focus();
+      }
+    });
+  </script><script>
+  var search = docsearch({
+    
+    apiKey: '833906d7486e4059359fa58823c4ef56',
+    indexName: 'jest',
+    inputSelector: '#search_input_react',
+    algoliaOptions: {"facetFilters":["language:zh-Hans","version:26.0"]}
+  });
+</script></body></html>
