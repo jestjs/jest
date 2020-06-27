@@ -62,8 +62,7 @@ export async function runCLI(
               to use the configuration from 'package.json'.
 
               Configuration Documentation:
-              https://jestjs.io/docs/en/configuration.html`
-            )
+              https://jestjs.io/docs/en/configuration.html`),
           ),
         );
       }
