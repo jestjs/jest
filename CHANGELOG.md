@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[expect]` Match symbols and bigints in `any()` ([#10223](https://github.com/facebook/jest/pull/10223))
+- `[jest-console]` Add missing console.timeLog for compatability with Node ([#10209](https://github.com/facebook/jest/pull/10209))
 
 ### Chore & Maintenance
 
