@@ -6,7 +6,6 @@
  */
 
 import {formatTime} from 'jest-util';
-// @ts-expect-error ignore vendor file
 import PCancelable from './PCancelable';
 import pTimeout from './pTimeout';
 
@@ -30,7 +29,7 @@ export type QueueableFn = {
 // har to type :(
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function queueRunner(options: Options) {
-  const token = new PCancelable((onCancel: Function, resolve: Function) => {
+  const token = new PCancelable((onCancel, resolve) => {
     onCancel(resolve);
   });
 
