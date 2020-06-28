@@ -38,12 +38,12 @@ export default function queueRunner(
     onRejected?: PromiseCallback,
   ) => Promise<void>;
 } {
-  const token = new PCancelable((onCancel, resolve) => {
+  const token = new PCancelable<void>((onCancel, resolve) => {
     onCancel(resolve);
   });
 
   const mapper = ({fn, timeout, initError = new Error()}: QueueableFn) => {
-    let promise = new Promise(resolve => {
+    let promise = new Promise<void>(resolve => {
       const next = function (...args: [Error]) {
         const err = args[0];
         if (err) {
@@ -64,7 +64,7 @@ export default function queueRunner(
       }
     });
 
-    promise = Promise.race([promise, token]);
+    promise = Promise.race<void>([promise, token]);
 
     if (!timeout) {
       return promise;
