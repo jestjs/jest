@@ -26,9 +26,18 @@ export type QueueableFn = {
   initError?: Error;
 };
 
-// har to type :(
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function queueRunner(options: Options) {
+type PromiseCallback = (() => void | PromiseLike<void>) | undefined | null;
+
+export default function queueRunner(
+  options: Options,
+): {
+  cancel: () => void;
+  catch: (onRejected?: PromiseCallback) => Promise<void>;
+  then: (
+    onFulfilled?: PromiseCallback,
+    onRejected?: PromiseCallback,
+  ) => Promise<void>;
+} {
   const token = new PCancelable((onCancel, resolve) => {
     onCancel(resolve);
   });
