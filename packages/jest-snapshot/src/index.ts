@@ -462,7 +462,10 @@ const toThrowErrorMatchingInlineSnapshot = function (
   return _toThrowErrorMatchingSnapshot(
     {
       context: this,
-      inlineSnapshot,
+      inlineSnapshot:
+        inlineSnapshot !== undefined
+          ? stripAddedIndentation(inlineSnapshot)
+          : undefined,
       isInline: true,
       matcherName,
       received,
