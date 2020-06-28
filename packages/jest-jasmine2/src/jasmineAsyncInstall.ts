@@ -24,19 +24,24 @@ interface DoneFn {
   fail: (error: Error) => void;
 }
 
-function isPromise(obj: any) {
+function isPromise(obj: any): obj is PromiseLike<unknown> {
   return obj && typeof obj.then === 'function';
 }
 
 function promisifyLifeCycleFunction(
-  originalFn: Function,
+  originalFn: (beforeAllFunction: QueueableFn['fn'], timeout?: number) => void,
   env: Jasmine['currentEnv_'],
 ) {
   return function <T>(
-    fn: Function | (() => Promise<T>) | GeneratorFunction | undefined,
+    fn:
+      | ((done: (error?: any) => void) => void | PromiseLike<T>)
+      | (() => Promise<T>)
+      | GeneratorFunction
+      | undefined,
     timeout?: number,
-  ) {
+  ): void {
     if (!fn) {
+      // @ts-expect-error: missing fn arg is handled by originalFn
       return originalFn.call(env);
     }
 
@@ -59,7 +64,7 @@ function promisifyLifeCycleFunction(
     // didn't return a promise.
     const asyncJestLifecycle = function (done: DoneFn) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
-      const returnValue = wrappedFn.call({});
+      const returnValue = wrappedFn.call({}, () => {});
 
       if (isPromise(returnValue)) {
         returnValue.then(done.bind(null, null), (error: Error) => {
@@ -82,12 +87,21 @@ function promisifyLifeCycleFunction(
 // Similar to promisifyLifeCycleFunction but throws an error
 // when the return value is neither a Promise nor `undefined`
 function promisifyIt(
-  originalFn: Function,
+  originalFn: (
+    description: string,
+    fn: QueueableFn['fn'],
+    timeout?: number,
+  ) => Spec,
   env: Jasmine['currentEnv_'],
   jasmine: Jasmine,
 ) {
-  return function (specName: string, fn: Function, timeout?: number) {
+  return function (
+    specName: string,
+    fn?: (done: (error?: any) => void) => void | PromiseLike<void>,
+    timeout?: number,
+  ): Spec {
     if (!fn) {
+      // @ts-expect-error: missing fn arg is handled by originalFn
       const spec = originalFn.call(env, specName);
       spec.pend('not implemented');
       return spec;
@@ -109,7 +123,7 @@ function promisifyIt(
 
     const asyncJestTest = function (done: DoneFn) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
-      const returnValue = wrappedFn.call({});
+      const returnValue = wrappedFn.call({}, () => {});
 
       if (isPromise(returnValue)) {
         returnValue.then(done.bind(null, null), (error: Error) => {

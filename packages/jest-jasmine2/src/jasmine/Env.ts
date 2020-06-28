@@ -41,7 +41,13 @@ import queueRunner, {
 import treeProcessor, {TreeNode} from '../treeProcessor';
 import isError from '../isError';
 import assertionErrorMessage from '../assertionErrorMessage';
-import type {AssertionErrorWithStack, Jasmine, Reporter, Spy} from '../types';
+import type {
+  AssertionErrorWithStack,
+  Jasmine,
+  Reporter,
+  SpecDefinitionsFn,
+  Spy,
+} from '../types';
 import type {default as Spec, SpecResult} from './Spec';
 import type Suite from './Suite';
 
@@ -64,7 +70,10 @@ export default function (j$: Jasmine) {
       runnablesToRun?: Array<string>,
       suiteTree?: Suite,
     ) => Promise<void>;
-    fdescribe: (description: string, specDefinitions: Function) => Suite;
+    fdescribe: (
+      description: string,
+      specDefinitions: SpecDefinitionsFn,
+    ) => Suite;
     spyOn: (
       obj: Record<string, Spy>,
       methodName: string,
@@ -78,15 +87,21 @@ export default function (j$: Jasmine) {
     clearReporters: () => void;
     addReporter: (reporterToAdd: Reporter) => void;
     it: (description: string, fn: QueueableFn['fn'], timeout?: number) => Spec;
-    xdescribe: (description: string, specDefinitions: Function) => Suite;
+    xdescribe: (
+      description: string,
+      specDefinitions: SpecDefinitionsFn,
+    ) => Suite;
     xit: (description: string, fn: QueueableFn['fn'], timeout?: number) => Spec;
     beforeAll: (beforeAllFunction: QueueableFn['fn'], timeout?: number) => void;
     todo: () => Spec;
     provideFallbackReporter: (reporterToAdd: Reporter) => void;
     allowRespy: (allow: boolean) => void;
-    describe: (description: string, specDefinitions: Function) => Suite;
+    describe: (
+      description: string,
+      specDefinitions: SpecDefinitionsFn,
+    ) => Suite;
 
-    constructor(_options?: object) {
+    constructor(_options?: Record<string, unknown>) {
       let totalSpecsDefined = 0;
 
       let catchExceptions = true;
@@ -411,13 +426,16 @@ export default function (j$: Jasmine) {
         return suite;
       };
 
-      const addSpecsToSuite = (suite: Suite, specDefinitions: Function) => {
+      const addSpecsToSuite = (
+        suite: Suite,
+        specDefinitions: SpecDefinitionsFn,
+      ) => {
         const parentSuite = currentDeclarationSuite;
         parentSuite.addChild(suite);
         currentDeclarationSuite = suite;
 
         let declarationError: undefined | Error = undefined;
-        let describeReturnValue: undefined | Error = undefined;
+        let describeReturnValue: unknown | Error;
         try {
           describeReturnValue = specDefinitions.call(suite);
         } catch (e) {
