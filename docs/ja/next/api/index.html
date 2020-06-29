@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="ja"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Globals · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="In your test files, Jest puts each of these methods and objects into the global environment. You don&#x27;t have to require or import anything to use them. However, if you prefer explicit imports, you can do `import {describe, expect, test} from &#x27;@jest/globals&#x27;`."/><meta name="docsearch:version" content="next"/><meta name="docsearch:language" content="ja"/><meta property="og:title" content="Globals · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="In your test files, Jest puts each of these methods and objects into the global environment. You don&#x27;t have to require or import anything to use them. However, if you prefer explicit imports, you can do `import {describe, expect, test} from &#x27;@jest/globals&#x27;`."/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+<!DOCTYPE html><html lang="ja"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Globals · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="In your test files, Jest puts each of these methods and objects into the global environment. You don&#x27;t have to require or import anything to use them. ただし、明示的にインポートしたい場合は、 `&#x27;@jest/globals&#x27; から {describe, expect, test} をインポートすることができます`。"/><meta name="docsearch:version" content="next"/><meta name="docsearch:language" content="ja"/><meta property="og:title" content="Globals · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="In your test files, Jest puts each of these methods and objects into the global environment. You don&#x27;t have to require or import anything to use them. ただし、明示的にインポートしたい場合は、 `&#x27;@jest/globals&#x27; から {describe, expect, test} をインポートすることができます`。"/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -18,7 +18,7 @@
             languagesDropDown.className = "hide";
           }
         });
-      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>API Reference</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ja/next/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/jest-platform">Jest プラットフォーム</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/jest-community">Jest コミュニティ</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ja/next/snapshot-testing">スナップショットテスト</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/es6-class-mocks">ES6 クラスのモック</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/puppeteer">puppeteer を使用する</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/mongodb">MongoDB を使用する</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/dynamodb">Using with DynamoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/watch-plugins">Watch プラグイン</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/architecture">アーキテクチャ</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Framework Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ja/next/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/testing-frameworks">Web フレームワークのテスト</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/docs/ja/next/api">Globals</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>API Reference</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ja/next/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/jest-platform">Jest プラットフォーム</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/jest-community">Jest コミュニティ</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ja/next/snapshot-testing">スナップショットテスト</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/es6-class-mocks">ES6 クラスのモック</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/bypassing-module-mocks">モジュールモックのバイパス</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/puppeteer">puppeteer を使用する</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/mongodb">MongoDB を使用する</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/dynamodb">DynamoDBを使用する場合</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/watch-plugins">Watch プラグイン</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/architecture">アーキテクチャ</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Framework Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ja/next/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/testing-frameworks">Web フレームワークのテスト</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/docs/ja/next/api">Globals</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/next/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
             var coll = document.getElementsByClassName('collapsible');
             var checkActiveCategory = true;
             for (var i = 0; i < coll.length; i++) {
@@ -74,7 +74,7 @@
                 };
               }
             });
-        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/GlobalAPI.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Globals</h1></header><article><div><span><p>In your test files, Jest puts each of these methods and objects into the global environment. You don't have to require or import anything to use them. However, if you prefer explicit imports, you can do <code>import {describe, expect, test} from '@jest/globals'</code>.</p>
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/GlobalAPI.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Globals</h1></header><article><div><span><p>In your test files, Jest puts each of these methods and objects into the global environment. You don't have to require or import anything to use them. ただし、明示的にインポートしたい場合は、 <code>'@jest/globals' から {describe, expect, test} をインポートすることができます</code>。</p>
 <h2><a class="anchor" aria-hidden="true" id="メソッド"></a><a href="#メソッド" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>メソッド</h2>
 <ul>
 <li><a href="#afterallfn-timeout"><code>afterAll(fn, timeout)</code></a></li>
@@ -98,8 +98,8 @@
 <hr>
 <h2><a class="anchor" aria-hidden="true" id="リファレンス"></a><a href="#リファレンス" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>リファレンス</h2>
 <h3><a class="anchor" aria-hidden="true" id="afterallfn-timeout"></a><a href="#afterallfn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>afterAll(fn, timeout)</code></h3>
-<p>Runs a function after all the tests in this file have completed. If the function returns a promise or is a generator, Jest waits for that promise to resolve before continuing.</p>
-<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<p>このファイル内のすべてのテストが完了した後に、関数を実行します。 関数がpromiseを返す、またはジェネレータ関数である場合、Jestはそのpromiseが解決されるのを待ちます。</p>
+<p>オプションとして、<code>timeout</code> (ミリ秒) を指定して、中断前にどのくらい待機するかを指定することができます。<em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <p>テスト間で共有するグローバルな設定や状態をクリーンアップしたい場合に便利です。</p>
 <p>例：</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
@@ -128,8 +128,8 @@ test(<span class="hljs-string">'can insert a thing'</span>, () =&gt; {
 <p><code>afterAll</code>関数 が <code>describe</code>ブロック内に記述された場合は、 そのブロックの最後に<code>afterAll</code>関数が実行されます。</p>
 <p>全テスト完了後ではなく、個々のテストの完了後にクリーンアップ処理を行いたい場合は、 <code>afterEach</code> 関数を使用して下さい。</p>
 <h3><a class="anchor" aria-hidden="true" id="aftereachfn-timeout"></a><a href="#aftereachfn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>afterEach(fn, timeout)</code></h3>
-<p>Runs a function after each one of the tests in this file completes. If the function returns a promise or is a generator, Jest waits for that promise to resolve before continuing.</p>
-<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<p>このファイル内の各テストが完了するたびに、関数を実行します。 関数がpromiseを返すか、またはジェネレータ関数である場合、Jestはpromiseが解決されるのを待ちます。</p>
+<p>オプションとして、<code>timeout</code> (ミリ秒) を指定して、中断前にどのくらい待機するかを指定することができます。<em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <p>各テストで一時的に設定した状態などをクリーンアップしたい場合に便利です。</p>
 <p>例：</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
@@ -158,8 +158,8 @@ test(<span class="hljs-string">'can insert a thing'</span>, () =&gt; {
 <p><code>afterEach</code> 関数が <code>describe</code> ブロック内に記述された場合は、 <code>afterEach</code> 関数が記述されたブロックのみ、最後に実行されます。</p>
 <p>全テストが完了した後に一度だけ何らかのクリーンアップを実行する場合は、 <code>afterAll</code> 関数を使用して下さい。</p>
 <h3><a class="anchor" aria-hidden="true" id="beforeallfn-timeout"></a><a href="#beforeallfn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>beforeAll(fn, timeout)</code></h3>
-<p>Runs a function before any of the tests in this file run. If the function returns a promise or is a generator, Jest waits for that promise to resolve before running tests.</p>
-<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<p>このファイルのテストを実行する前に、関数を実行します。 関数がpromiseを返すか、ジェネレータ関数である場合、Jestはテストを実行する前にpromiseが解決されるのを待ちます。</p>
+<p>オプションとして、<code>timeout</code> (ミリ秒) を指定して、中断前にどのくらい待機するかを指定することができます。<em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <p>多数のテストで使用するグローバルな状態を設定したい場合に便利です。</p>
 <p>例：</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
@@ -180,12 +180,12 @@ test(<span class="hljs-string">'can find things'</span>, () =&gt; {
   });
 });
 </code></pre>
-<p>この例では<code>beforeAll</code> はテスト開始前に必ずデータベースのセットアップを行います。 If setup was synchronous, you could do this without <code>beforeAll</code>. この関数の要点はJestがPromiseの状態が決まるまで待つことであり、非同期処理によるセットアップが行えるということであるとも言えます。</p>
+<p>この例では<code>beforeAll</code> はテスト開始前に必ずデータベースのセットアップを行います。 セットアップが同期処理の場合は、 <code>beforeAll</code>を使用する必要はありません。 この関数の要点はJestがPromiseの状態が決まるまで待つことであり、非同期処理によるセットアップが行えるということであるとも言えます。</p>
 <p><code>beforeAll</code>関数 が <code>describe</code>ブロック内に記述された場合は、 そのブロックの最初に <code>beforeAll</code>関数が実行されます。</p>
 <p>全テスト開始前ではなく、個々のテストの開始前に何らかの処理を行いたい場合は、 <code>beforeEach</code> 関数を使用して下さい。</p>
 <h3><a class="anchor" aria-hidden="true" id="beforeeachfn-timeout"></a><a href="#beforeeachfn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>beforeEach(fn, timeout)</code></h3>
-<p>Runs a function before each of the tests in this file runs. If the function returns a promise or is a generator, Jest waits for that promise to resolve before running the test.</p>
-<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<p>このファイルの各テストが実行される前に、関数を実行します。 関数がpromiseを返す、またはジェネレータ関数の場合、Jestはテストを実行する前にpromiseが解決されるのを待ちます。</p>
+<p>オプションとして、<code>timeout</code> (ミリ秒) を指定して、中断前にどのくらい待機するかを指定することができます。<em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <p>多数のテストで使用するグローバルな状態を設定したい場合に便利です。</p>
 <p>例：</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
@@ -214,7 +214,7 @@ test(<span class="hljs-string">'can insert a thing'</span>, () =&gt; {
 <p><code>beforeEach</code>関数 が <code>describe</code>ブロック内に記述された場合は、 各ブロックの最初に <code>beforeEach</code>関数が実行されます。</p>
 <p>何らかのセットアップ コードを 一度だけ実行したい場合は、 <code>beforeAll</code>関数を使用してください。</p>
 <h3><a class="anchor" aria-hidden="true" id="describename-fn"></a><a href="#describename-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe(name, fn)</code></h3>
-<p><code>describe(name, fn)</code> creates a block that groups together several related tests. 例えば、美味しくて酸っぱくないとされる<code>myBeverage</code>オブジェクトがある場合、このようなテストコードを作成できます:</p>
+<p><code>describe(name, fn)</code> は、いくつかの関連するテストをまとめたブロックを作成します。 例えば、美味しくて酸っぱくないとされる<code>myBeverage</code>オブジェクトがある場合、このようなテストコードを作成できます:</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> myBeverage = {
   <span class="hljs-attr">delicious</span>: <span class="hljs-literal">true</span>,
   <span class="hljs-attr">sour</span>: <span class="hljs-literal">false</span>,
@@ -230,7 +230,7 @@ describe(<span class="hljs-string">'my beverage'</span>, () =&gt; {
   });
 });
 </code></pre>
-<p>This isn't required - you can write the <code>test</code> blocks directly at the top level. But this can be handy if you prefer your tests to be organized into groups.</p>
+<p>これは必須ではありません - <code>テスト</code> ブロックをトップレベルに直接書き込むことができます。しかしテストをグループにまとめたい場合には便利です。</p>
 <p>テストに階層構造を持たせたい場合でも <code>describe</code>をネストすることができます。</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> binaryStringToNumber = <span class="hljs-function"><span class="hljs-params">binString</span> =&gt;</span>; {
   <span class="hljs-keyword">if</span> (!<span class="hljs-regexp">/^[01]+$/</span>.test(binString)) {
@@ -252,17 +252,17 @@ describe(<span class="hljs-string">'binaryStringToNumber'</span>, () =&gt;; {
   });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="describeeachtablename-fn-timeout"></a><a href="#describeeachtablename-fn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.each(table)(name, fn, timeout)</code></h3>
-<p>Use <code>describe.each</code> if you keep duplicating the same test suites with different data. <code>describe.each</code> allows you to write the test suite once and pass data in.</p>
-<p><code>describe.each</code> is available with two APIs:</p>
+<p>異なるテストデータで同じ内容のテストを行う場合は、<code>describe.each</code>を使用します。<code>describe.each</code>によりテストスイートを1回だけ記述し、データを渡すことができます。</p>
+<p><code>describe.each</code> は 2 つの API で利用できます:</p>
 <h4><a class="anchor" aria-hidden="true" id="1-describeeachtablename-fn-timeout"></a><a href="#1-describeeachtablename-fn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>1. <code>describe.each(table)(name, fn, timeout)</code></h4>
 <ul>
-<li><code>table</code>: <code>配列</code> of Arrays with the arguments that are passed into the <code>fn</code> for each row.
+<li><code>table</code>: <code></code> 各列ごとにfnに引数として渡される配列の配列です。 <code></code>
 <ul>
-<li><em>Note</em> If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. <code>[1, 2, 3] -&gt; [[1], [2], [3]]</code></li>
+<li><em>注意</em>： 1次元の配列を渡した場合には、内部的には<code>[1, 2, 3] -&gt; [[1], [2], [3]]</code> のようにテーブルにマッピングされます</li>
 </ul></li>
-<li><code>name</code>: <code>文字列</code> the title of the test suite.
+<li><code>name</code>: <code></code> テストスイートのタイトルとなる文字列
 <ul>
-<li>Generate unique test titles by positionally injecting parameters with <a href="https://nodejs.org/api/util.html#util_util_format_format_args"><code>printf</code> formatting</a>:
+<li><code>printf</code> の書式に従うパラメータを注入することで、ユニークなテストタイトルを生成します。 <a href="https://nodejs.org/api/util.html#util_util_format_format_args"> </a>:
 <ul>
 <li><code>%p</code> - <a href="https://www.npmjs.com/package/pretty-format">pretty-format</a>.</li>
 <li><code>%s</code>- String.</li>
@@ -271,12 +271,12 @@ describe(<span class="hljs-string">'binaryStringToNumber'</span>, () =&gt;; {
 <li><code>%f</code> - Floating point value.</li>
 <li><code>%j</code> - JSON.</li>
 <li><code>%o</code> - Object.</li>
-<li><code>%#</code> - Index of the test case.</li>
+<li><code>%#</code> - テストケースのインデックス。</li>
 <li><code>%%</code> - single percent sign ('%'). This does not consume an argument.</li>
 </ul></li>
 </ul></li>
-<li><code>fn</code>: <code>Function</code> the suite of tests to be ran, this is the function that will receive the parameters in each row as function arguments.</li>
-<li>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait for each row before aborting. <em>Note: The default timeout is 5 seconds.</em></li>
+<li><code>fn</code>: <code>実行されるテストの一連の関数</code> 。各行のパラメータを引数として受け取る関数です。</li>
+<li>オプションとして、<code>timeout</code> (ミリ秒) を指定して、中断前に各行でどのくらい待機するかを指定することができます。<em>注意: デフォルトのタイムアウトは5秒です。</em></li>
 </ul>
 <p>例:</p>
 <pre><code class="hljs css language-js">describe.each([
@@ -299,17 +299,17 @@ describe(<span class="hljs-string">'binaryStringToNumber'</span>, () =&gt;; {
 </code></pre>
 <h4><a class="anchor" aria-hidden="true" id="2-describeeachtablename-fn-timeout"></a><a href="#2-describeeachtablename-fn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2. <code>describe.each`table`(name, fn, timeout)</code></h4>
 <ul>
-<li><code>table</code>: <code>Tagged Template Literal</code>
+<li><code>table</code>: <code>タグによるテンプレートリテラル</code>
 <ul>
-<li>First row of variable name column headings separated with <code>|</code></li>
-<li>One or more subsequent rows of data supplied as template literal expressions using <code>${value}</code> syntax.</li>
+<li><code>|</code> で区切られた変数名を表す1番目の行</li>
+<li><code>${value}</code> 構文によるテンプレートリテラル式として提供される1行以上の後続のデータ。</li>
 </ul></li>
-<li><code>name</code>: <code>文字列</code> the title of the test suite, use <code>$variable</code> to inject test data into the suite title from the tagged template expressions.
+<li><code>name</code>: <code></code> テストスイートのタイトルで、 タグによるテンプレート式からスイートのタイトルにテストデータを挿入するには<code>$variable</code> を使用してください。 <code></code>
 <ul>
-<li>To inject nested object values use you can supply a keyPath i.e. <code>$variable.path.to.value</code></li>
+<li>ネストされたオブジェクトの値を注入するには、keyPath 、すなわち <code>$variable.path.to.value</code> の形式で指定できます。</li>
 </ul></li>
-<li><code>fn</code>: <code>Function</code> the suite of tests to be ran, this is the function that will receive the test data object.</li>
-<li>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait for each row before aborting. <em>Note: The default timeout is 5 seconds.</em></li>
+<li><code>fn</code>: <code>実行される一連のテスト関数</code> で、テストデータのオブジェクトを受け取ります。</li>
+<li>オプションとして、<code>timeout</code> (ミリ秒) を指定して、中断前に各行でどのくらい待機するかを指定することができます。<em>注意: デフォルトのタイムアウトは5秒です。</em></li>
 </ul>
 <p>例:</p>
 <pre><code class="hljs css language-js">describe.each<span class="hljs-string">`
@@ -349,9 +349,9 @@ describe(<span class="hljs-string">'my other beverage'</span>, () =&gt; {
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="describeonlyeachtablename-fn"></a><a href="#describeonlyeachtablename-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.only.each(table)(name, fn)</code></h3>
-<p>Also under the aliases: <code>fdescribe.each(table)(name, fn)</code> and <code>fdescribe.each`table`(name, fn)</code></p>
-<p>Use <code>describe.only.each</code> if you want to only run specific tests suites of data driven tests.</p>
-<p><code>describe.only.each</code> is available with two APIs:</p>
+<p>次のエイリアスでも使用可能です: <code>fdescribe.each(table)(name, fn)</code> と <code>fdescribe.each`table`(name, fn)</code></p>
+<p>データ駆動型テストで特定のテストスイートのみを実行する場合は、 <code>describe.only.each</code> を使用してください。</p>
+<p><code>describe.only.each</code> は 2 つの API で利用できます:</p>
 <h4><a class="anchor" aria-hidden="true" id="describeonlyeachtablename-fn-1"></a><a href="#describeonlyeachtablename-fn-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.only.each(table)(name, fn)</code></h4>
 <pre><code class="hljs css language-js">describe.only.each([
   [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>],
@@ -400,11 +400,11 @@ describe.skip(<span class="hljs-string">'my other beverage'</span>, () =&gt; {
   <span class="hljs-comment">// ... will be skipped</span>
 });
 </code></pre>
-<p>Using <code>describe.skip</code> is often a cleaner alternative to temporarily commenting out a chunk of tests.</p>
+<p><code>describe.skip</code> はしばしば、テストの一部を一時的にコメントアウトする代わりになります。</p>
 <h3><a class="anchor" aria-hidden="true" id="describeskipeachtablename-fn"></a><a href="#describeskipeachtablename-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.skip.each(table)(name, fn)</code></h3>
-<p>Also under the aliases: <code>xdescribe.each(table)(name, fn)</code> and <code>xdescribe.each`table`(name, fn)</code></p>
-<p>Use <code>describe.skip.each</code> if you want to stop running a suite of data driven tests.</p>
-<p><code>describe.skip.each</code> is available with two APIs:</p>
+<p>次のエイリアスでも使用可能です: <code>xdescribe.each(table)(name, fn)</code> と <code>xdescribe.each`table`(name, fn)</code></p>
+<p>一連のデータ駆動テストを停止するには、 <code>describe.skip.each</code> を使用してください。</p>
+<p><code>describe.skip.each</code> は 2 つの API で利用できます:</p>
 <h4><a class="anchor" aria-hidden="true" id="describeskipeachtablename-fn-1"></a><a href="#describeskipeachtablename-fn-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe.skip.each(table)(name, fn)</code></h4>
 <pre><code class="hljs css language-js">describe.skip.each([
   [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>],
@@ -443,7 +443,7 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
   expect(inchesOfRain()).toBe(<span class="hljs-number">0</span>);
 });
 </code></pre>
-<p>第1引数にテスト名を、第2引数にテストの確認項目を含む関数を設定します。 The third argument (optional) is <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<p>第1引数にテスト名を、第2引数にテストの確認項目を含む関数を設定します。 3番目の引数 (任意) は <code>タイムアウト値</code> (ミリ秒単位) で、中止するまでの待ち時間を指定します。 <em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <blockquote>
 <p>注意： <code>test</code>から<strong>Promiseが返された場合</strong>、Jestはテストが完了する前にPromiseの状態が決まるまで待ちます。 Jest は、通常は <code>done</code> と呼ばれる<strong>テスト関数に引数を与えた場合</strong>にも待ちます。 この動作はコールバックをテストしたい場合に便利です。 非同期なコードをテストする方法を<a href="/docs/ja/next/asynchronous#callbacks">こちら</a>を参照してください。</p>
 </blockquote>
@@ -456,18 +456,18 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 </code></pre>
 <p>たとえ<code>test</code>ブロックが直ちに値を返したとしても、テストはPromiseの状態が決まるまでは終了しません。</p>
 <h3><a class="anchor" aria-hidden="true" id="testeachtablename-fn-timeout"></a><a href="#testeachtablename-fn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.each(table)(name, fn, timeout)</code></h3>
-<p>Also under the alias: <code>it.each(table)(name, fn)</code> and <code>it.each`table`(name, fn)</code></p>
-<p>Use <code>test.each</code> if you keep duplicating the same test with different data. <code>test.each</code> allows you to write the test once and pass data in.</p>
-<p><code>test.each</code> is available with two APIs:</p>
+<p>次のエイリアスでも使用可能です: <code>it.each(table)(name, fn)</code> と <code>it.each`table`(name, fn)</code></p>
+<p>異なるテストデータで同じ内容のテストスイートを行う場合は、<code>test.each</code>を使用します。<code>test.each</code>によりテストスイートを1回だけ記述し、データを渡すことができます。</p>
+<p><code>test.each</code> は 2 つの API で利用できます:</p>
 <h4><a class="anchor" aria-hidden="true" id="1-testeachtablename-fn-timeout"></a><a href="#1-testeachtablename-fn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>1. <code>test.each(table)(name, fn, timeout)</code></h4>
 <ul>
-<li><code>table</code>: <code>配列</code> of Arrays with the arguments that are passed into the test <code>fn</code> for each row.
+<li><code>table</code>: <code></code> テストに渡される配列の配列です。 <code></code>
 <ul>
-<li><em>Note</em> If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. <code>[1, 2, 3] -&gt; [[1], [2], [3]]</code></li>
+<li><em>注意</em>： 1次元の配列を渡した場合には、内部的には<code>[1, 2, 3] -&gt; [[1], [2], [3]]</code> のようにテーブルにマッピングされます</li>
 </ul></li>
-<li><code>name</code>: <code>文字列</code> the title of the test block.
+<li><code>name</code>: <code></code> テストブロックのタイトルとなります。
 <ul>
-<li>Generate unique test titles by positionally injecting parameters with <a href="https://nodejs.org/api/util.html#util_util_format_format_args"><code>printf</code> formatting</a>:
+<li><code>printf</code> の書式に従うパラメータを注入することで、ユニークなテストタイトルを生成します。 <a href="https://nodejs.org/api/util.html#util_util_format_format_args"> </a>:
 <ul>
 <li><code>%p</code> - <a href="https://www.npmjs.com/package/pretty-format">pretty-format</a>.</li>
 <li><code>%s</code>- String.</li>
@@ -476,12 +476,12 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 <li><code>%f</code> - Floating point value.</li>
 <li><code>%j</code> - JSON.</li>
 <li><code>%o</code> - Object.</li>
-<li><code>%#</code> - Index of the test case.</li>
+<li><code>%#</code> - テストケースのインデックス。</li>
 <li><code>%%</code> - single percent sign ('%'). This does not consume an argument.</li>
 </ul></li>
 </ul></li>
-<li><code>fn</code>: <code>Function</code> the test to be ran, this is the function that will receive the parameters in each row as function arguments.</li>
-<li>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait for each row before aborting. <em>Note: The default timeout is 5 seconds.</em></li>
+<li><code>fn</code>: <code>テストを実行する関数</code> で、各行のパラメータを関数の引数として受け取ります。</li>
+<li>オプションとして、<code>timeout</code> (ミリ秒) を指定して、中断前に各行でどのくらい待機するかを指定することができます。<em>注意: デフォルトのタイムアウトは5秒です。</em></li>
 </ul>
 <p>例:</p>
 <pre><code class="hljs css language-js">test.each([
@@ -494,17 +494,17 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 </code></pre>
 <h4><a class="anchor" aria-hidden="true" id="2-testeachtablename-fn-timeout"></a><a href="#2-testeachtablename-fn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2. <code>test.each`table`(name, fn, timeout)</code></h4>
 <ul>
-<li><code>table</code>: <code>Tagged Template Literal</code>
+<li><code>table</code>: <code>タグによるテンプレートリテラル</code>
 <ul>
-<li>First row of variable name column headings separated with <code>|</code></li>
-<li>One or more subsequent rows of data supplied as template literal expressions using <code>${value}</code> syntax.</li>
+<li><code>|</code> で区切られた変数名を表す1番目の行</li>
+<li><code>${value}</code> 構文によるテンプレートリテラル式として提供される1行以上の後続のデータ。</li>
 </ul></li>
-<li><code>name</code>: <code>文字列</code> the title of the test, use <code>$variable</code> to inject test data into the test title from the tagged template expressions.
+<li><code>name</code>: <code></code> テストスイートのタイトルで、 タグによるテンプレート式からスイートのタイトルにテストデータを挿入するには<code>$variable</code> を使用してください。 <code></code>
 <ul>
-<li>To inject nested object values use you can supply a keyPath i.e. <code>$variable.path.to.value</code></li>
+<li>ネストされたオブジェクトの値を注入するには、keyPath 、すなわち <code>$variable.path.to.value</code> の形式で指定できます。</li>
 </ul></li>
-<li><code>fn</code>: <code>Function</code> the test to be ran, this is the function that will receive the test data object.</li>
-<li>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait for each row before aborting. <em>Note: The default timeout is 5 seconds.</em></li>
+<li><code>fn</code>: <code>テストを実行する関数</code> で、 テストデータのオブジェクトを受け取ります。</li>
+<li>オプションとして、<code>timeout</code> (ミリ秒) を指定して、中断前に各行でどのくらい待機するかを指定することができます。<em>注意: デフォルトのタイムアウトは5秒です。</em></li>
 </ul>
 <p>例:</p>
 <pre><code class="hljs css language-js">test.each<span class="hljs-string">`
@@ -517,9 +517,9 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="testonlyname-fn-timeout"></a><a href="#testonlyname-fn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.only(name, fn, timeout)</code></h3>
-<p>Also under the aliases: <code>it.only(name, fn, timeout)</code>, and <code>fit(name, fn, timeout)</code></p>
-<p>When you are debugging a large test file, you will often only want to run a subset of tests. You can use <code>.only</code> to specify which tests are the only ones you want to run in that test file.</p>
-<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<p>次の別名でも同様です: <code>it.only(name, fn, timeout)</code> と <code>fit(name, fn, timeout)</code></p>
+<p>大きなテストファイルをデバッグする時、テストの一部だけを実行したいことがあるでしょう。<code>.only</code> を使用すると、テストファイルの中で実行したいテストだけを行うことができます。</p>
+<p>オプションとして、<code>timeout</code> (ミリ秒) を指定して、中断前にどのくらい待機するかを指定することができます。<em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <p>例えば、次のようなテストがあったとしましょう:</p>
 <pre><code class="hljs css language-js">test.only(<span class="hljs-string">'it is raining'</span>, () =&gt; {
   expect(inchesOfRain()).toBeGreaterThan(<span class="hljs-number">0</span>);
@@ -529,12 +529,12 @@ test(<span class="hljs-string">'it is not snowing'</span>, () =&gt; {
   expect(inchesOfSnow()).toBe(<span class="hljs-number">0</span>);
 });
 </code></pre>
-<p>Only the &quot;it is raining&quot; test will run in that test file, since it is run with <code>test.only</code>.</p>
-<p>Usually you wouldn't check code using <code>test.only</code> into source control - you would use it for debugging, and remove it once you have fixed the broken tests.</p>
+<p><code>test.only</code> で実行されるので、&quot;It is raining&quot; テストのみがそのテストファイルで実行されます。</p>
+<p>通常はテストの動作を管理する手段として<code>test.only</code>を用いることはないでしょう - デバッグ作業のために使用し、壊れているテストを修復すれば削除することでしょう。</p>
 <h3><a class="anchor" aria-hidden="true" id="testonlyeachtablename-fn"></a><a href="#testonlyeachtablename-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.only.each(table)(name, fn)</code></h3>
 <p>Also under the aliases: <code>it.only.each(table)(name, fn)</code>, <code>fit.each(table)(name, fn)</code>, <code>it.only.each`table`(name, fn)</code> and <code>fit.each`table`(name, fn)</code></p>
-<p>Use <code>test.only.each</code> if you want to only run specific tests with different test data.</p>
-<p><code>test.only.each</code> is available with two APIs:</p>
+<p>異なるテストデータを使用して特定のテストのみを実行する場合は、 <code>test.only.each</code> を使用してください。</p>
+<p><code>test.only.each</code> は 2 つの API で利用できます:</p>
 <h4><a class="anchor" aria-hidden="true" id="testonlyeachtablename-fn-1"></a><a href="#testonlyeachtablename-fn-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.only.each(table)(name, fn)</code></h4>
 <pre><code class="hljs css language-js">test.only.each([
   [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>],
@@ -563,8 +563,8 @@ test(<span class="hljs-string">'will not be ran'</span>, () =&gt; {
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="testskipname-fn"></a><a href="#testskipname-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.skip(name, fn)</code></h3>
-<p>Also under the aliases: <code>it.skip(name, fn)</code>, <code>xit(name, fn)</code>, and <code>xtest(name, fn)</code></p>
-<p>大きなコードベースを保守するとき、何らかの理由で一時的に壊れているテストを見つけることがあるでしょう。 If you want to skip running this test, but you don't want to delete this code, you can use <code>test.skip</code> to specify some tests to skip.</p>
+<p>次の別名でも同様です: <code>it.skip(name, fn)</code> または <code>xit(name, fn)</code> または <code>xtest(name, fn)</code></p>
+<p>大きなコードベースを保守するとき、何らかの理由で一時的に壊れているテストを見つけることがあるでしょう。 テストコードを削除せずにスキップしたい場合、<code>test.skip</code> を使って特定のテストをスキップできます。</p>
 <p>例えば、次のようなテストがあったとしましょう:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'it is raining'</span>, () =&gt; {
   expect(inchesOfRain()).toBeGreaterThan(<span class="hljs-number">0</span>);
@@ -575,11 +575,11 @@ test.skip(<span class="hljs-string">'it is not snowing'</span>, () =&gt; {
 });
 </code></pre>
 <p>他のテストには<code>test.skip</code>があるので、&quot;it is raining&quot;のテストだけが実行されます。</p>
-<p>You could comment the test out, but it's often a bit nicer to use <code>test.skip</code> because it will maintain indentation and syntax highlighting.</p>
+<p>単純ににテストをコメントアウトすることもできますが、テストが存在することとシンタックスハイライトを維持できるため、 <code>test.skip</code>を利用したほうが良いことがしばしばあります。</p>
 <h3><a class="anchor" aria-hidden="true" id="testskipeachtablename-fn"></a><a href="#testskipeachtablename-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.skip.each(table)(name, fn)</code></h3>
-<p>Also under the aliases: <code>it.skip.each(table)(name, fn)</code>, <code>xit.each(table)(name, fn)</code>, <code>xtest.each(table)(name, fn)</code>, <code>it.skip.each`table`(name, fn)</code>, <code>xit.each`table`(name, fn)</code> and <code>xtest.each`table`(name, fn)</code></p>
-<p>Use <code>test.skip.each</code> if you want to stop running a collection of data driven tests.</p>
-<p><code>test.skip.each</code> is available with two APIs:</p>
+<p>次のエイリアスでも使用可能です：<code>it.skip.each(table)(name, fn)</code>, <code>xit.each(table)(name, fn)</code>, <code>xtest.each(table)(name, fn)</code>, <code>it.skip.each`table`(name, fn)</code>, <code>xit.each`table`(name, fn)</code> と <code>xtest.each`table`(name, fn)</code></p>
+<p>一連のデータ駆動型テストを停止したい場合は、 <code>test.skip.each</code> を使用してください。</p>
+<p><code>test.skip.each</code> は 2 つの API で利用できます:</p>
 <h4><a class="anchor" aria-hidden="true" id="testskipeachtablename-fn-1"></a><a href="#testskipeachtablename-fn-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.skip.each(table)(name, fn)</code></h4>
 <pre><code class="hljs css language-js">test.skip.each([
   [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>],
@@ -608,12 +608,12 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="testtodoname"></a><a href="#testtodoname" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.todo(name)</code></h3>
-<p>Also under the alias: <code>it.todo(name)</code></p>
-<p>Use <code>test.todo</code> when you are planning on writing tests. These tests will be highlighted in the summary output at the end so you know how many tests you still need todo.</p>
+<p>次の別名でも使用可能です: <code>it.todo(name)</code></p>
+<p>テスト作成を計画している場合は、 <code>test.todo</code> を使用してください。 これらのテストは最後にサマリ出力でハイライトされるため、必要なテストの数がわかります。</p>
 <p><em>Note</em>: If you supply a test callback function then the <code>test.todo</code> will throw an error. If you have already implemented the test and it is broken and you do not want it to run, then use <code>test.skip</code> instead.</p>
 <h4><a class="anchor" aria-hidden="true" id="api"></a><a href="#api" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>API</h4>
 <ul>
-<li><code>name</code>: <code>String</code> the title of the test plan.</li>
+<li><code>name</code>: テスト計画のタイトルの<code>文字列</code> 。</li>
 </ul>
 <p>例:</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> add = <span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> a + b;

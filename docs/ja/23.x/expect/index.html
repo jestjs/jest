@@ -75,7 +75,7 @@
               }
             });
         </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/ExpectAPI.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Expect</h1></header><article><div><span><p>When you're writing tests, you often need to check that values meet certain conditions. <code>expect</code> gives you access to a number of &quot;matchers&quot; that let you validate different things.</p>
-<p>For additional Jest matchers maintained by the Jest Community check out <a href="https://github.com/jest-community/jest-extended"><code>jest-extended</code></a>.</p>
+<p>Jest コミュニティによってメンテナンスされている追加の Jest マッチャーについては、 <a href="https://github.com/jest-community/jest-extended"><code>jest-extended</code></a> をご覧ください。</p>
 <h2><a class="anchor" aria-hidden="true" id="メソッド"></a><a href="#メソッド" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>メソッド</h2>
 <ul>
 <li><a href="#expectvalue"><code>expect(value)</code></a></li>
@@ -145,7 +145,7 @@
 <p>In this case, <code>toBe</code> is the matcher function. There are a lot of different matcher functions, documented below, to help you test different things.</p>
 <p><code>expect</code>への引数はコードが生成する値であるべきであり、いかなるマッチャへの引数は正解の値であるべきです。 それらを混同して使用すれば、テストは動作するものの、失敗したテストから出力されるエラーメッセージはおかしなものになります。</p>
 <h3><a class="anchor" aria-hidden="true" id="expectextendmatchers"></a><a href="#expectextendmatchers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.extend(matchers)</code></h3>
-<p>Jestに独自のマッチャを追加したい場合は <code>expect.extend</code>を使用します。 For example, let's say that you're testing a number utility library and you're frequently asserting that numbers appear within particular ranges of other numbers. You could abstract that into a <code>toBeWithinRange</code> matcher:</p>
+<p>Jestに独自のマッチャを追加したい場合は <code>expect.extend</code>を使用します。 たとえば、数値に関するユーティリティのライブラリをテストしていて、ある数値が他の数値の特定の範囲内に現れることを頻繁にアサートしているとします。 それを <code>toBeWithinRange</code> のマッチャーに抽象化できます:</p>
 <pre><code class="hljs css language-js">expect.extend({
   toBeWithinRange(received, floor, ceiling) {
     <span class="hljs-keyword">const</span> pass = received &gt;= floor &amp;&amp; received &lt;= ceiling;
@@ -174,7 +174,7 @@ test(<span class="hljs-string">'numeric ranges'</span>, () =&gt; {
   });
 });
 </code></pre>
-<p><em>Note</em>: In TypeScript, when using <code>@types/jest</code> for example, you can declare the new <code>toBeWithinRange</code> matcher like this:</p>
+<p><em>注</em>: 例えばTypeScript で <code>@types/jest</code> を使用する場合は、以下のように新しい <code>toBeWithinRange</code> マッチャを宣言できます。</p>
 <pre><code class="hljs css language-ts"><span class="hljs-keyword">declare</span> global {
   <span class="hljs-keyword">namespace</span> jest {
     <span class="hljs-keyword">interface</span> Matchers&lt;R&gt; {
@@ -183,7 +183,7 @@ test(<span class="hljs-string">'numeric ranges'</span>, () =&gt; {
   }
 }
 </code></pre>
-<h4><a class="anchor" aria-hidden="true" id="async-matchers"></a><a href="#async-matchers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Async Matchers</h4>
+<h4><a class="anchor" aria-hidden="true" id="非同期マッチャ"></a><a href="#非同期マッチャ" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>非同期マッチャ</h4>
 <p><code>expect.extend</code> は非同期のマッチャもサポートします。 非同期のマッチャは Promise を返すため、返り値を await する必要があります。 マッチャの一例を使って、使い方を見てみましょう。 We are going to implement a matcher called <code>toBeDivisibleByExternalValue</code>, where the divisible number is going to be pulled from an external source.</p>
 <pre><code class="hljs css language-js">expect.extend({
   <span class="hljs-keyword">async</span> toBeDivisibleByExternalValue(received) {
@@ -210,7 +210,7 @@ test(<span class="hljs-string">'is divisible by external value'</span>, <span cl
   <span class="hljs-keyword">await</span> expect(<span class="hljs-number">101</span>).not.toBeDivisibleByExternalValue();
 });
 </code></pre>
-<h4><a class="anchor" aria-hidden="true" id="custom-matchers-api"></a><a href="#custom-matchers-api" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Custom Matchers API</h4>
+<h4><a class="anchor" aria-hidden="true" id="独自のマッチャ-api"></a><a href="#独自のマッチャ-api" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>独自のマッチャ API</h4>
 <p>マッチャは、2つのキーを持つオブジェクト (またはオブジェクトのプロミス) を返さなければなりません。 <code>pass</code>キーはマッチャの条件に合致するかどうかを示し、 <code>message</code>キーは失敗した場合にエラーメッセージを返す引数なしの関数を提供します。 したがって、<code>pass</code>が偽なら、 <code>message</code>は<code>expect(x).yourMatcher()</code>が失敗した場合のエラーメッセージを返す必要があります。 <code>pass</code>が真だった場合、 <code>message</code>は<code>expect(x).not.yourMatcher()</code>が失敗した場合のエラーメッセージを返す必要があります。</p>
 <p>Matchers are called with the argument passed to <code>expect(x)</code> followed by the arguments passed to <code>.yourMatcher(y, z)</code>:</p>
 <pre><code class="hljs css language-js">expect.extend({
@@ -275,7 +275,7 @@ expect.extend({
 <p>アサーションに失敗した場合、エラーメッセージは利用者がその問題を迅速に解決できるようになるべく多くのシグナルを与えるものであるべきです。 独自アサーションの利用者が良い開発体験を得られるよう正確なエラーメッセージを作成する必要があります。</p>
 <h4><a class="anchor" aria-hidden="true" id="custom-snapshot-matchers"></a><a href="#custom-snapshot-matchers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Custom snapshot matchers</h4>
 <p>To use snapshot testing inside of your custom matcher you can import <code>jest-snapshot</code> and use it from within your matcher.</p>
-<p>Here's a snapshot matcher that trims a string to store for a given length, <code>.toMatchTrimmedSnapshot(length)</code>:</p>
+<p><code>.toMatchTrimedSnapshot(length)</code>は指定された長さに文字列をトリムするスナップショットマッチャです :</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> {toMatchSnapshot} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-snapshot'</span>);
 
 expect.extend({

@@ -75,7 +75,7 @@
               }
             });
         </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/TutorialReactNative.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Testing React Native Apps</h1></header><article><div><span><p>At Facebook, we use Jest to test <a href="http://facebook.github.io/react-native/">React Native</a> applications.</p>
-<p>Get a deeper insight into testing a working React Native app example by reading the following series: <a href="https://callstack.com/blog/testing-react-native-with-the-new-jest-part-1-snapshots-come-into-play/">Part 1: Jest – Snapshot come into play</a> and <a href="https://callstack.com/blog/testing-react-native-with-the-new-jest-part-2-redux-snapshots-for-your-actions-and-reducers/">Part 2: Jest – Redux Snapshots for your Actions and Reducers</a>.</p>
+<p>実際に動作する React Native アプリケーションのテストに関するより深い知見は、以下のシリーズから得られます: <a href="https://callstack.com/blog/testing-react-native-with-the-new-jest-part-1-snapshots-come-into-play/">Part 1: Jest – Snapshot come into play</a>、<a href="https://callstack.com/blog/testing-react-native-with-the-new-jest-part-2-redux-snapshots-for-your-actions-and-reducers/">Part 2: Jest – Redux Snapshots for your Actions and Reducers</a></p>
 <h2><a class="anchor" aria-hidden="true" id="セットアップ"></a><a href="#セットアップ" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>セットアップ</h2>
 <p>react-native 0.38 より <code>react-native init</code> コマンドに Jest セットアップがデフォルトで含まれています。 以下の設定が自動的に package.json ファイルに追加されます。</p>
 <pre><code class="hljs css language-json">// package.json
@@ -87,7 +87,7 @@
   }
 </code></pre>
 <p><em>Note: もしあなたが react-native アプリケーションをアップグレードする際に <code>jest-react-native</code> プリセットを利用していた場合はその依存を <code>package.json</code> から削除し、 プリセットを <code>react-native</code> に変更してください。</em></p>
-<p>Run <code>yarn test</code> to run tests with Jest.</p>
+<p><code>yarn test</code> を実行するだけで、Jest でテストを実行できます。</p>
 <h2><a class="anchor" aria-hidden="true" id="スナップショットテスト"></a><a href="#スナップショットテスト" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>スナップショットテスト</h2>
 <p>さあ <a href="/docs/ja/23.x/snapshot-testing">スナップショットテスト</a> をいくつかのビューとテキストコンポーネントをもつサンプルコンポーネントに対して作りましょう。</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// Intro.js</span>
@@ -174,7 +174,7 @@ exports[<span class="hljs-string">`Intro renders correctly 1`</span>] = <span cl
 `</span>;
 </code></pre>
 <p>次回のテストでは、レンダリングされた出力は前に作成されたスナップショットと比較されます。 スナップショットは、コードの変更に沿ってコミットされるべきです。 スナップショットテストが失敗した場合、それが意図的な変更かどうかを点検する必要があります。 変更が予想されたものであれば<code>jest -u</code>コマンドでJestを実行して既存のスナップショットを上書きします。</p>
-<p>The code for this example is available at <a href="https://github.com/facebook/jest/tree/master/examples/react-native">examples/react-native</a>.</p>
+<p>この例のコードは <a href="https://github.com/facebook/jest/tree/master/examples/react-native">examples/react-native</a> で参照できます。</p>
 <h2><a class="anchor" aria-hidden="true" id="プリセット設定"></a><a href="#プリセット設定" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>プリセット設定</h2>
 <p>プリセットは環境をセットアップしますが、それはとても偏っており Facebook において有用であるとわかったものをベースにしています。 ただ、すべての設定値は上書き可能でプリセットを使ってない場合でもそれに合わせて設定することができます。</p>
 <h3><a class="anchor" aria-hidden="true" id="環境"></a><a href="#環境" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>環境</h3>
@@ -200,7 +200,7 @@ exports[<span class="hljs-string">`Intro renders correctly 1`</span>] = <span cl
 <p>例えば、もしあなたのコードが <code>react-native-video</code> という名前のビデオコンポーネントに依存していた場合、あなたはそれをモック関数で置き換えたくなるかもしれません。</p>
 <pre><code class="hljs css language-js">jest.mock(<span class="hljs-string">'react-native-video'</span>, () =&gt; <span class="hljs-string">'Video'</span>);
 </code></pre>
-<p>これはコンポーネントをそのコンポーネントのすべての props とともに <code>&lt;Video {...props} /&gt;</code> としてスナップショット出力の中で描画します。 See also <a href="tutorial-react.html#snapshot-testing-with-mocks-enzyme-and-react-16">caveats around Enzyme and React 16</a>.</p>
+<p>これはコンポーネントをそのコンポーネントのすべての props とともに <code>&lt;Video {...props} /&gt;</code> としてスナップショット出力の中で描画します。 <a href="tutorial-react.html#snapshot-testing-with-mocks-enzyme-and-react-16">caveats around Enzyme and React 16</a> も参照してください。</p>
 <p>ときにより複雑なマニュアルモックを必要とする場合もあるでしょう。 例えば、もしあなたがネイティブコンポーネントの prop types もしくは静的フィールドをモックに渡したい場合に、jest-react-native のヘルパーを使って別の React モックコンポーネントを返すことができます。</p>
 <pre><code class="hljs css language-js">jest.mock(<span class="hljs-string">'path/to/MyNativeComponent'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> mockComponent = <span class="hljs-built_in">require</span>(<span class="hljs-string">'react-native/jest/mockComponent'</span>);

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="ja"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Mock Functions · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Mock functions are also known as &quot;spies&quot;, because they let you spy on the behavior of a function that is called indirectly by some other code, rather than only testing the output. `jest.fn()`関数でモック関数を作成できます。 実装が与えられなければ、モック関数は実行時に`undefined`を返します。"/><meta name="docsearch:version" content="24.x"/><meta name="docsearch:language" content="ja"/><meta property="og:title" content="Mock Functions · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="Mock functions are also known as &quot;spies&quot;, because they let you spy on the behavior of a function that is called indirectly by some other code, rather than only testing the output. `jest.fn()`関数でモック関数を作成できます。 実装が与えられなければ、モック関数は実行時に`undefined`を返します。"/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+<!DOCTYPE html><html lang="ja"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Mock Functions · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="ただ出力をテストするだけでなく、他のコードから間接的に呼び出された関数の振る舞いを見張ることができるので、モック関数は &quot;スパイ&quot;とも呼ばれます。 `jest.fn()`関数でモック関数を作成できます。 実装が与えられなければ、モック関数は実行時に`undefined`を返します。"/><meta name="docsearch:version" content="24.x"/><meta name="docsearch:language" content="ja"/><meta property="og:title" content="Mock Functions · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="ただ出力をテストするだけでなく、他のコードから間接的に呼び出された関数の振る舞いを見張ることができるので、モック関数は &quot;スパイ&quot;とも呼ばれます。 `jest.fn()`関数でモック関数を作成できます。 実装が与えられなければ、モック関数は実行時に`undefined`を返します。"/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -74,7 +74,7 @@
                 };
               }
             });
-        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/MockFunctionAPI.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Mock Functions</h1></header><article><div><span><p>Mock functions are also known as &quot;spies&quot;, because they let you spy on the behavior of a function that is called indirectly by some other code, rather than only testing the output. <code>jest.fn()</code>関数でモック関数を作成できます。 実装が与えられなければ、モック関数は実行時に<code>undefined</code>を返します。</p>
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/MockFunctionAPI.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Mock Functions</h1></header><article><div><span><p>ただ出力をテストするだけでなく、他のコードから間接的に呼び出された関数の振る舞いを見張ることができるので、モック関数は &quot;スパイ&quot;とも呼ばれます。 <code>jest.fn()</code>関数でモック関数を作成できます。 実装が与えられなければ、モック関数は実行時に<code>undefined</code>を返します。</p>
 <h2><a class="anchor" aria-hidden="true" id="メソッド"></a><a href="#メソッド" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>メソッド</h2>
 <ul>
 <li><a href="#mockfngetmockname"><code>mockFn.getMockName()</code></a></li>
@@ -101,21 +101,21 @@
 <p><code>mockFn.mockName(value)</code>を呼び出すと、モック名の文字列を返します。</p>
 <h3><a class="anchor" aria-hidden="true" id="mockfnmockcalls"></a><a href="#mockfnmockcalls" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mock.calls</code></h3>
 <p>An array containing the call arguments of all calls that have been made to this mock function. Each item in the array is an array of arguments that were passed during the call.</p>
-<p>For example: A mock function <code>f</code> that has been called twice, with the arguments <code>f('arg1', 'arg2')</code>, and then with the arguments <code>f('arg3', 'arg4')</code>, would have a <code>mock.calls</code> array that looks like this:</p>
+<p>例: <code>f('arg1', 'arg2')</code>と<code>f('arg3', 'arg4')</code>の形で2回呼ばれるモック関数<code>f</code>は次のような<code>mock.calls</code>の配列を持ちます:</p>
 <pre><code class="hljs css language-js">[
   [<span class="hljs-string">'arg1'</span>, <span class="hljs-string">'arg2'</span>],
   [<span class="hljs-string">'arg3'</span>, <span class="hljs-string">'arg4'</span>],
 ];
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="mockfnmockresults"></a><a href="#mockfnmockresults" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mock.results</code></h3>
-<p>An array containing the results of all calls that have been made to this mock function. Each entry in this array is an object containing a <code>type</code> property, and a <code>value</code> property. <code>type</code> will be one of the following:</p>
+<p>モック関数に対して行われたすべての呼び出しの結果を含む配列。 この配列の各要素は、 <code>タイプ</code> プロパティと <code>値</code> プロパティを持つオブジェクトです。 <code>type</code> は以下のいずれかになります:</p>
 <ul>
-<li><code>'return'</code> - Indicates that the call completed by returning normally.</li>
-<li><code>'throw'</code> - Indicates that the call completed by throwing a value.</li>
-<li><code>'incomplete'</code> - Indicates that the call has not yet completed. This occurs if you test the result from within the mock function itself, or from within a function that was called by the mock.</li>
+<li><code>'return'</code> - 正常終了したコールを示します。</li>
+<li><code>'throw'</code> - 値を返して呼び出しが完了したことを示します。</li>
+<li><code>'incomplete'</code> - 呼び出しがまだ完了していないことを示します。 これは、モック関数自体の中から結果をテストする場合や、モック関数によって呼び出された関数内からの結果をテストする場合に発生します。</li>
 </ul>
 <p>The <code>value</code> property contains the value that was thrown or returned. <code>value</code> is undefined when <code>type === 'incomplete'</code>.</p>
-<p>For example: A mock function <code>f</code> that has been called three times, returning <code>'result1'</code>, throwing an error, and then returning <code>'result2'</code>, would have a <code>mock.results</code> array that looks like this:</p>
+<p>たとえば、あるモック関数 <code>f</code> が3回呼ばれた時、<code>'result1'</code> が返り、エラーが発生し、<code>'result2'</code> が返った場合、<code>mock.returnValues</code> 配列は次のような値になります。</p>
 <pre><code class="hljs css language-js">[
   {
     <span class="hljs-attr">type</span>: <span class="hljs-string">'return'</span>,
@@ -156,7 +156,7 @@ mockFn.mock.instances[<span class="hljs-number">1</span>] === b; <span class="hl
 <h3><a class="anchor" aria-hidden="true" id="mockfnmockrestore"></a><a href="#mockfnmockrestore" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockRestore()</code></h3>
 <p>Does everything that <a href="#mockfnmockreset"><code>mockFn.mockReset()</code></a> does, and also restores the original (non-mocked) implementation.</p>
 <p>あるテストケースでモック関数を利用して他のテストケースでは本物のモジュールに戻したいときに便利です。</p>
-<p>Beware that <code>mockFn.mockRestore</code> only works when the mock was created with <code>jest.spyOn</code>. このため手動で <code>jest.fn()</code>を割り当てた場合は自分で復元作業を行わなければならないことに気をつけて下さい。</p>
+<p><code>mockFn.mockRestore</code>は<code>jest.spyOn</code>によって作成されたモックに対してのみ動作することに注意して下さい。 このため手動で <code>jest.fn()</code>を割り当てた場合は自分で復元作業を行わなければならないことに気をつけて下さい。</p>
 <p>The <a href="configuration.html#restoremocks-boolean"><code>restoreMocks</code></a> configuration option is available to restore mocks automatically between tests.</p>
 <h3><a class="anchor" aria-hidden="true" id="mockfnmockimplementationfn"></a><a href="#mockfnmockimplementationfn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockImplementation(fn)</code></h3>
 <p>モックの実装として使用される関数を受け取ります。 モック自体はそれ自身から出てきたインスタンスと中に与えられた全てのコールをいまだ記録しています - 違いはモックがコールされたときに実装された関数も実行されることです。</p>
@@ -227,7 +227,7 @@ expect(mockFn).toHaveBeenCalled();
 <span class="hljs-symbol">Expected</span> mock <span class="hljs-meta">function</span> <span class="hljs-string">"mockedFunction"</span> to have <span class="hljs-keyword">been </span>called, <span class="hljs-keyword">but </span><span class="hljs-keyword">it </span>was not called.
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="mockfnmockreturnthis"></a><a href="#mockfnmockreturnthis" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockReturnThis()</code></h3>
-<p>Syntactic sugar function for:</p>
+<p>下記の関数の糖衣関数です。</p>
 <pre><code class="hljs css language-js">jest.fn(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
 });
@@ -252,7 +252,7 @@ mock(); <span class="hljs-comment">// 43</span>
 <span class="hljs-built_in">console</span>.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="mockfnmockresolvedvaluevalue"></a><a href="#mockfnmockresolvedvaluevalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockResolvedValue(value)</code></h3>
-<p>Syntactic sugar function for:</p>
+<p>下記の関数の糖衣関数です。</p>
 <pre><code class="hljs css language-js">jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Promise</span>.resolve(value));
 </code></pre>
 <p>次のように async テスト内で sync 関数をモックするのに便利です。</p>
@@ -263,7 +263,7 @@ mock(); <span class="hljs-comment">// 43</span>
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="mockfnmockresolvedvalueoncevalue"></a><a href="#mockfnmockresolvedvalueoncevalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockResolvedValueOnce(value)</code></h3>
-<p>Syntactic sugar function for:</p>
+<p>下記の関数の糖衣関数です。</p>
 <pre><code class="hljs css language-js">jest.fn().mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Promise</span>.resolve(value));
 </code></pre>
 <p>複数の async 呼び出しを異なる値で解決させるのに便利です。</p>
@@ -281,7 +281,7 @@ mock(); <span class="hljs-comment">// 43</span>
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="mockfnmockrejectedvaluevalue"></a><a href="#mockfnmockrejectedvaluevalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockRejectedValue(value)</code></h3>
-<p>Syntactic sugar function for:</p>
+<p>下記の関数の糖衣関数です。</p>
 <pre><code class="hljs css language-js">jest.fn().mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Promise</span>.reject(value));
 </code></pre>
 <p>常に reject する async モック関数を作るのに便利です。</p>
@@ -292,7 +292,7 @@ mock(); <span class="hljs-comment">// 43</span>
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="mockfnmockrejectedvalueoncevalue"></a><a href="#mockfnmockrejectedvalueoncevalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockRejectedValueOnce(value)</code></h3>
-<p>Syntactic sugar function for:</p>
+<p>下記の関数の糖衣関数です。</p>
 <pre><code class="hljs css language-js">jest.fn().mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-built_in">Promise</span>.reject(value));
 </code></pre>
 <p>使用例</p>

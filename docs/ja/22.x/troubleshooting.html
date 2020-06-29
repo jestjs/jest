@@ -83,8 +83,8 @@ or on Windows
 node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other arguments here]
 </code></pre>
 <p>This will run Jest in a Node process that an external debugger can connect to. Note that the process will pause until the debugger has connected to it.</p>
-<p>To debug in Google Chrome (or any Chromium-based browser), open your browser and go to <code>chrome://inspect</code> and click on &quot;Open Dedicated DevTools for Node&quot;, which will give you a list of available node instances you can connect to. Click on the address displayed in the terminal (usually something like <code>localhost:9229</code>) after running the above command, and you will be able to debug Jest using Chrome's DevTools.</p>
-<p>The Chrome Developer Tools will be displayed, and a breakpoint will be set at the first line of the Jest CLI script (this is done to give you time to open the developer tools and to prevent Jest from executing before you have time to do so). 次の実行に進むには画面の上部右側にある再生ボタンのようなボタンをクリックします。 <code>debugger</code> 宣言を含むテストをJestが実行した場合、実行はポーズされ現在いのスコープとコールスタックを調べることができます。</p>
+<p>Google Chrome （もしくは Chromium ベースのブラウザ）でデバッグするには、ブラウザを開いて、<code>chrome://inspect</code> にアクセスし、 &quot;Open Dedicated DevTools for Node&quot; を開きます。そうすれば接続できるアクティブな node インスタンスの一覧が表示されます。 上記のコマンドを実行した後、端末に表示されるアドレス(通常は <code>localhost:9229</code>のようなもの)をクリックします。 ChromeのDevToolsを使ってJestをデバッグできます。</p>
+<p>ChromeDeveloperToolsが表示され、Jest の CLIスクリプトの１行目にブレークポイントが設定されます（これは開発者ツールを開くための時間を設けて、その前に Jest が実行されてしまうのを防ぐためのものです）。 次の実行に進むには画面の上部右側にある再生ボタンのようなボタンをクリックします。 <code>debugger</code> 宣言を含むテストをJestが実行した場合、実行はポーズされ現在いのスコープとコールスタックを調べることができます。</p>
 <blockquote>
 <p>注意: コマンドラインの<code>--runInBand</code> オプションは個々のテストに対してプロセスを生成するのではなく必ず同じプロセスでJestを実行します。 通常Jestはプロセスをまたいで並列にテストを実行しますが、同時に複数のプロセスをデバッグするのは困難だからです。</p>
 </blockquote>
@@ -171,21 +171,21 @@ node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other argume
 <p>Facebook製の <a href="https://github.com/facebookincubator/create-react-app"><code>create-react-app</code></a> を使用しているなら、 Jest run/debug configuration でJest パッケージフィールドで <code>react-scripts</code> のパスを指定し、Jest オプションフィールドに <code>--env=jsdom</code> を追加してください。</p>
 <h2><a class="anchor" aria-hidden="true" id="キャッシュ関連の問題"></a><a href="#キャッシュ関連の問題" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>キャッシュ関連の問題</h2>
 <p>The transform script was changed or babel was updated and the changes aren't being recognized by Jest?</p>
-<p><a href="/docs/ja/22.x/cli#--cache"><code>--no-cache</code></a>オプションを付けて再実行してみて下さい。 Jestはテスト実行の高速化のために変換されたモジュールファイルをキャッシュします。 If you are using your own custom transformer, consider adding a <code>getCacheKey</code> function to it: <a href="https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61">getCacheKey in Relay</a>.</p>
+<p><a href="/docs/ja/22.x/cli#--cache"><code>--no-cache</code></a>オプションを付けて再実行してみて下さい。 Jestはテスト実行の高速化のために変換されたモジュールファイルをキャッシュします。 独自のトランスパイラを使用している場合は、<code>getCacheKey</code>関数を追加することを検討して下さい:<a href="https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61">getCacheKey in Relay</a>。</p>
 <h2><a class="anchor" aria-hidden="true" id="promiseが解決されない"></a><a href="#promiseが解決されない" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Promiseが解決されない</h2>
 <p>promiseが全く解決されない場合、このエラーが投げられるでしょう:</p>
 <pre><code class="hljs css language-bash">- Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.`
 </code></pre>
-<p>最も多い原因はPromiseの実装が競合していることです。 Consider replacing the global promise implementation with your own, for example <code>global.Promise = jest.requireActual('promise');</code> and/or consolidate the used Promise libraries to a single one.</p>
-<p>If your test is long running, you may want to consider to increase the timeout by calling <code>jest.setTimeout</code></p>
+<p>最も多い原因はPromiseの実装が競合していることです。 グローバルなPromiseの実装を独自のものに置き換えます、例えば<code>global.Promise = jest.requireActual('promise');</code>とします。そして(もしくは)使用しているPromiseのライブラリを１つだけに統合してみることを検討して下さい。</p>
+<p>テストの実行が長時間かかる場合は、<code>jest.setTimeout</code> を呼び出してタイムアウト時間を伸ばすことも検討したくなるでしょう。</p>
 <pre><code class="hljs css language-js">jest.setTimeout(<span class="hljs-number">10000</span>); <span class="hljs-comment">// 10 second timeout</span>
 </code></pre>
 <h2><a class="anchor" aria-hidden="true" id="watchman関連の問題"></a><a href="#watchman関連の問題" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Watchman関連の問題</h2>
-<p>Try running Jest with <a href="/docs/ja/22.x/cli#--watchman"><code>--no-watchman</code></a> or set the <code>watchman</code> configuration option to <code>false</code>.</p>
+<p>Jestを<a href="/docs/ja/22.x/cli#--watchman"><code>--no-watchman</code></a> オプション付きで実行するか 構成オプションで<code>watchman</code>を<code>false</code>に設定してみてください。</p>
 <p><a href="https://facebook.github.io/watchman/docs/troubleshooting">watchman troubleshooting</a>も参照して下さい。</p>
 <h2><a class="anchor" aria-hidden="true" id="dockerおよびまたはciサーバ上でテストが極端に遅くなる"></a><a href="#dockerおよびまたはciサーバ上でテストが極端に遅くなる" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Dockerおよび/またはCIサーバ上でテストが極端に遅くなる</h2>
-<p>While Jest is most of the time extremely fast on modern multi-core computers with fast SSDs, it may be slow on certain setups as our users <a href="https://github.com/facebook/jest/issues/1395">have</a> <a href="https://github.com/facebook/jest/issues/1524#issuecomment-260246008">discovered</a>.</p>
-<p>Based on the <a href="https://github.com/facebook/jest/issues/1524#issuecomment-262366820">findings</a>, one way to mitigate this issue and improve the speed by up to 50% is to run tests sequentially.</p>
+<p>大抵の場合、モダンな高速なSSDとマルチコアのコンピュータではJestはとても早く動作しますが、特定のセットアップ環境では遅いことがユーザにより <a href="https://github.com/facebook/jest/issues/1524#issuecomment-260246008">発見</a> <a href="https://github.com/facebook/jest/issues/1395">されて</a>います。</p>
+<p><a href="https://github.com/facebook/jest/issues/1524#issuecomment-262366820">調べた結果</a>に基づいて、この問題を軽減してして最大５０％高速化する１つの方法は、テストを順番に実行することです。</p>
 <p>これを実施するには<a href="/docs/ja/22.x/cli#--runinband"><code>--runInBand</code></a>オプションを指定してテストを同じスレッドで実行して下さい。</p>
 <pre><code class="hljs css language-bash"><span class="hljs-comment"># Using Jest CLI</span>
 jest --runInBand
@@ -193,7 +193,7 @@ jest --runInBand
 <span class="hljs-comment"># Using yarn test (e.g. with create-react-app)</span>
 yarn <span class="hljs-built_in">test</span> --runInBand
 </code></pre>
-<p>Another alternative to expediting test execution time on Continuous Integration Servers such as Travis-CI is to set the max worker pool to ~<em>4</em>. Travis-CIに特定すると、テストの実行時間を半分にできます。 注意: オープンソースプロジェクトで利用できるTravis-CIの <em>フリー</em>プランは２CPUコアまでしか割り当てられません。</p>
+<p>テスト実行時間を高速化するもう１つの案としてはTravis-CIのようなCIサーバでワーカーのプール数を最大<em>4</em>までに設定することです。 Travis-CIに特定すると、テストの実行時間を半分にできます。 注意: オープンソースプロジェクトで利用できるTravis-CIの <em>フリー</em>プランは２CPUコアまでしか割り当てられません。</p>
 <pre><code class="hljs css language-bash"><span class="hljs-comment"># Using Jest CLI</span>
 jest --maxWorkers=4
 

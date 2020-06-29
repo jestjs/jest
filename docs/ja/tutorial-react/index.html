@@ -77,14 +77,14 @@
         </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/TutorialReact.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Testing React Apps</h1></header><article><div><span><p>Facebook ではJestを使用して、<a href="https://reactjs.org/">React</a>アプリケーションをテストします。</p>
 <h2><a class="anchor" aria-hidden="true" id="セットアップ"></a><a href="#セットアップ" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>セットアップ</h2>
 <h3><a class="anchor" aria-hidden="true" id="create-react-appを使用したセットアップ"></a><a href="#create-react-appを使用したセットアップ" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Create React Appを使用したセットアップ</h3>
-<p>Reactに馴染みがないなら、<a href="https://create-react-app.dev/">Create React App</a>の利用をお勧めします。 It is ready to use and <a href="https://create-react-app.dev/docs/running-tests/#docsNav">ships with Jest</a>! You will only need to add <code>react-test-renderer</code> for rendering snapshots.</p>
+<p>Reactに馴染みがないなら、<a href="https://create-react-app.dev/">Create React App</a>の利用をお勧めします。 すぐに使えて <a href="https://create-react-app.dev/docs/running-tests/#docsNav">Jestも同梱されています！</a> スナップショットをレンダリングするには、 <code>react-test-renderer</code> を追加するだけです。</p>
 <p>実行</p>
 <pre><code class="hljs css language-bash">yarn add --dev react-test-renderer
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="create-react-appを使わないセットアップ"></a><a href="#create-react-appを使わないセットアップ" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Create React Appを使わないセットアップ</h3>
 <p>既存のアプリケーションがある場合は、いくつかのパッケージをインストールしてうまく機能するようにする必要があります。 <code>babel-jest</code>パッケージと <code>react</code>のbabel presetをテスト環境内のコードを変換するのに利用しています。 <a href="/docs/ja/getting-started#using-babel">using babel</a>も参照して下さい。</p>
 <p>実行</p>
-<pre><code class="hljs css language-bash">yarn add --dev jest babel-jest @babel/preset-env @babel/preset-react react-test-renderer
+<pre><code class="hljs css language-bash">yarn add --dev jest babel-jest babel-preset-env babel-preset-react react-test-renderer
 </code></pre>
 <p><code>package.json</code>は以下のようなものになっているはずです( <code>&lt;current-version&gt;</code>はパッケージの実際の最新版のバージョンの数字になります)。 scriptsとJestの設定のエントリを追加して下さい:</p>
 <pre><code class="hljs css language-json">// package.json
@@ -105,7 +105,7 @@
 </code></pre>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// babel.config.js</span>
 <span class="hljs-built_in">module</span>.exports = {
-  <span class="hljs-attr">presets</span>: [<span class="hljs-string">'@babel/preset-env'</span>, <span class="hljs-string">'@babel/preset-react'</span>],
+  <span class="hljs-attr">presets</span>: [<span class="hljs-string">'@babel/preset-env'</span>, <span class="hljs-string">'@babel/preset-react'</span>);
 };
 </code></pre>
 <p><strong>それでは次へ進みましょう！</strong></p>
@@ -212,7 +212,7 @@ exports[<span class="hljs-string">`Link changes the class when hovered 3`</span>
 `</span>;
 </code></pre>
 <p>次回のテストでは、レンダリングされた出力は前に作成されたスナップショットと比較されます。 スナップショットは、コードの変更に沿ってコミットされるべきです。 スナップショットテストが失敗した場合、それが意図的な変更かどうかを点検する必要があります。 変更が予想されたものであれば<code>jest -u</code>コマンドでJestを実行して既存のスナップショットを上書きします。</p>
-<p>The code for this example is available at <a href="https://github.com/facebook/jest/tree/master/examples/snapshot">examples/snapshot</a>.</p>
+<p>この例のコードは<a href="https://github.com/facebook/jest/tree/master/examples/snapshot">examples/snapshot</a>から利用可能です。</p>
 <h4><a class="anchor" aria-hidden="true" id="モック、enzyme-および-react-16-を使用したスナップショットテスト"></a><a href="#モック、enzyme-および-react-16-を使用したスナップショットテスト" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>モック、Enzyme および React 16 を使用したスナップショットテスト</h4>
 <p>There's a caveat around snapshot testing when using Enzyme and React 16+. If you mock out a module using the following style:</p>
 <pre><code class="hljs css language-js">jest.mock(<span class="hljs-string">'../SomeDirectory/SomeComponent'</span>, () =&gt; <span class="hljs-string">'SomeComponent'</span>);
@@ -231,17 +231,17 @@ Warning: The tag &lt;SomeComponent&gt; is unrecognized <span class="hljs-keyword
 <li>Render as a custom element. DOM &quot;custom elements&quot; aren't checked for anything and shouldn't fire warnings. They are lowercase and have a dash in the name.
 <pre><code class="hljs css language-js">jest.mock(<span class="hljs-string">'./Widget'</span>, () =&gt; <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">mock-widget</span> /&gt;</span></span>);
 </code></pre></li>
-<li><code>react-test-renderer</code> を使用する。 The test renderer doesn't care about element types and will happily accept e.g. <code>SomeComponent</code>. You could check snapshots using the test renderer, and check component behavior separately using Enzyme.</li>
-<li>Disable warnings all together (should be done in your jest setup file):
+<li><code>react-test-renderer</code> を使用する。 test renderer は、要素の型を気にしないので、<code>SomeComponent</code> といった要素を許容してくれます。 test renderer を使うと、スナップショットをチェックしたり、Enzyme とは独立してコンポーネントのふるまいを確認することができます。</li>
+<li>警告をすべて無効にします（jestの設定ファイルで行う必要があります）：
 <pre><code class="hljs css language-js">jest.mock(<span class="hljs-string">'fbjs/lib/warning'</span>, () =&gt; <span class="hljs-built_in">require</span>(<span class="hljs-string">'fbjs/lib/emptyFunction'</span>));
 </code></pre>
-This shouldn't normally be your option of choice as useful warnings could be lost. However, in some cases, for example when testing react-native's components we are rendering react-native tags into the DOM and many warnings are irrelevant. Another option is to swizzle the console.warn and suppress specific warnings.</li>
+これは、有用な警告が失われる可能性があるため、通常とるべき選択肢ではありません。 しかし、例えばreact-nativeのコンポーネントをテストする場合には、react-nativeタグをDOMにレンダリングする際に、多くの無関係な警告が発生します。 別の選択肢としては、console.warning を利用して、特定の警告を抑制することです。</li>
 </ol>
 <h3><a class="anchor" aria-hidden="true" id="dom-のテスト"></a><a href="#dom-のテスト" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>DOM のテスト</h3>
-<p>If you'd like to assert, and manipulate your rendered components you can use <a href="https://github.com/kentcdodds/react-testing-library">react-testing-library</a>, <a href="http://airbnb.io/enzyme/">Enzyme</a>, or React's <a href="https://reactjs.org/docs/test-utils.html">TestUtils</a>. The following two examples use react-testing-library and Enzyme.</p>
+<p>レンダリングされたコンポーネントをアサートし操作したいのなら、<a href="https://github.com/kentcdodds/react-testing-library">react-testing-library</a>、 <a href="https://github.com/kentcdodds/react-testing-library">Enzyme</a> もしくは Reactの <a href="http://airbnb.io/enzyme/">TestUtils</a>が利用できます。 以下の2つの例では、react-testing-library と Enzyme を使用します。</p>
 <h4><a class="anchor" aria-hidden="true" id="react-testing-library"></a><a href="#react-testing-library" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>react-testing-library</h4>
-<p>You have to run <code>yarn add --dev @testing-library/react</code> to use react-testing-library.</p>
-<p>Let's implement a checkbox which swaps between two labels:</p>
+<p>react-testing-libraryを利用するには、 <code>yarn add --dev @testing-library/react</code> を実行する必要があります。</p>
+<p>2つのラベルを入れ替えるチェックボックスを実装しましょう。</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// CheckboxWithLabel.js</span>
 
 <span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
@@ -295,7 +295,7 @@ it(<span class="hljs-string">'CheckboxWithLabel changes the text after click'</s
   expect(queryByLabelText(<span class="hljs-regexp">/on/i</span>)).toBeTruthy();
 });
 </code></pre>
-<p>The code for this example is available at <a href="https://github.com/facebook/jest/tree/master/examples/react-testing-library">examples/react-testing-library</a>.</p>
+<p>この例のコードは <a href="https://github.com/facebook/jest/tree/master/examples/react-testing-library">examples/react-testing-library</a> で入手できます。</p>
 <h4><a class="anchor" aria-hidden="true" id="enzyme"></a><a href="#enzyme" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Enzyme</h4>
 <p>You have to run <code>yarn add --dev enzyme</code> to use Enzyme. If you are using a React version below 15.5.0, you will also need to install <code>react-addons-test-utils</code>.</p>
 <p>Let's rewrite the test from above using Enzyme instead of react-testing-library. この例ではEnxymeの <a href="http://airbnb.io/enzyme/docs/api/shallow.html">shallow renderer</a>を使用します。</p>
@@ -336,7 +336,7 @@ test(<span class="hljs-string">'CheckboxWithLabel changes the text after click'<
   },
 };
 </code></pre>
-<p>Don't forget to install the <code>@babel/core</code> and <code>babel-preset-jest</code> packages for this example to work.</p>
+<p>この例を動作させるには <code>@babel/core</code> と<code>babel-preset-jest</code> パッケージをインストールすることを忘れないで下さい。</p>
 <p>これをJestと動作させるにはJestに次の設定を追加する必要があります:<code>&quot;transform&quot;: {&quot;\\.js$&quot;: &quot;path/to/custom-transformer.js&quot;}</code></p>
 <p>babelのサポート機能を使ってコードの変換処理を構築したい場合は、babel-jestを変換処理の作成に利用し、その中に独自の構成オプションを渡すことができます。</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> babelJest = <span class="hljs-built_in">require</span>(<span class="hljs-string">'babel-jest'</span>);

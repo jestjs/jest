@@ -75,7 +75,7 @@
               }
             });
         </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/TutorialAsync.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">An Async Example</h1></header><article><div><span><p>まず、<a href="/docs/ja/25.x/getting-started#using-babel">Getting Started</a> ガイドに纏められているように Jest で Babel のサポートを有効にします。</p>
-<p>Let's implement a module that fetches user data from an API and returns the user name.</p>
+<p>APIからユーザのデータを取得してユーザ名を返すモジュールを実装してみましょう。</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// user.js</span>
 <span class="hljs-keyword">import</span> request <span class="hljs-keyword">from</span> <span class="hljs-string">'./request'</span>;
 
@@ -84,7 +84,7 @@
 }
 </code></pre>
 <p>In the above implementation we expect the <code>request.js</code> module to return a promise. We chain a call to <code>then</code> to receive the user name.</p>
-<p>Now imagine an implementation of <code>request.js</code> that goes to the network and fetches some user data:</p>
+<p>ここでネットワーク経由でユーザのデータを取得する <code>request.js</code> の実装を想像してみましょう。</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// request.js</span>
 <span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>);
 
@@ -101,7 +101,7 @@
   });
 }
 </code></pre>
-<p>Because we don't want to go to the network in our test, we are going to create a manual mock for our <code>request.js</code> module in the <code>__mocks__</code> folder (the folder is case-sensitive, <code>__MOCKS__</code> will not work). こんな感じのものでしょうか:</p>
+<p>テストではネットワークへの接続は行いたくないので、 <code>request.js</code>モジュールのマニュアルモックを<code>__mocks__</code>フォルダに作成することにします（このフォルダ名は小文字の必要があり、<code>__MOCKS__</code> では動作しません）。 こんな感じのものでしょうか:</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// __mocks__/request.js</span>
 <span class="hljs-keyword">const</span> users = {
   <span class="hljs-number">4</span>: {<span class="hljs-attr">name</span>: <span class="hljs-string">'Mark'</span>},
@@ -133,7 +133,7 @@ it(<span class="hljs-string">'works with promises'</span>, () =&gt; {
   <span class="hljs-keyword">return</span> user.getUserName(<span class="hljs-number">4</span>).then(<span class="hljs-function"><span class="hljs-params">data</span> =&gt;</span> expect(data).toEqual(<span class="hljs-string">'Mark'</span>));
 });
 </code></pre>
-<p>マニュアルモックを使用するように<code>jest.mock('../request')</code>を呼び出します。 <code>it</code>は戻り値が解決されようとしているPromiseであることを期待します。 You can chain as many Promises as you like and call <code>expect</code> at any time, as long as you return a Promise at the end.</p>
+<p>マニュアルモックを使用するように<code>jest.mock('../request')</code>を呼び出します。 <code>it</code>は戻り値が解決されようとしているPromiseであることを期待します。 最後にPromiseを返す限り、任意の数だけPromiseをチェーンして任意のタイミングで<code>expect</code> を呼び出すことができます。</p>
 <h2><a class="anchor" aria-hidden="true" id="resolves"></a><a href="#resolves" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.resolves</code></h2>
 <p>There is a less verbose way using <code>resolves</code> to unwrap the value of a fulfilled promise together with any other matcher. If the promise is rejected, the assertion will fail.</p>
 <pre><code class="hljs css language-js">it(<span class="hljs-string">'works with resolves'</span>, () =&gt; {
@@ -156,7 +156,7 @@ it(<span class="hljs-string">'works with async/await and resolves'</span>, <span
   <span class="hljs-keyword">await</span> expect(user.getUserName(<span class="hljs-number">5</span>)).resolves.toEqual(<span class="hljs-string">'Paul'</span>);
 });
 </code></pre>
-<p>To enable async/await in your project, install <a href="https://babeljs.io/docs/en/babel-preset-env"><code>@babel/preset-env</code></a> and enable the feature in your <code>babel.config.js</code> file.</p>
+<p>プロジェクトで<code>async</code>/<code>await</code>を有効にするには、<a href="https://babeljs.io/docs/en/babel-preset-env"><code>@babel-preset-env</code></a>をインストールし、 <code>babel.config.js</code>ファイルで機能を有効化します。</p>
 <h2><a class="anchor" aria-hidden="true" id="エラー処理"></a><a href="#エラー処理" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>エラー処理</h2>
 <p>エラーは <code>.catch</code> メソッドで処理することができます。 想定した数のアサーションが呼ばれたことを確認するため、<code>expect.assertions</code>を必ず追加して下さい。 さもなければpromiseがrejectされなかった場合にテストが失敗したと判定されません:</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// Testing for async errors using Promise.catch.</span>
@@ -182,7 +182,7 @@ it(<span class="hljs-string">'tests error with async/await'</span>, <span class=
 });
 </code></pre>
 <h2><a class="anchor" aria-hidden="true" id="rejects"></a><a href="#rejects" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.rejects</code></h2>
-<p>The<code>.rejects</code> helper works like the <code>.resolves</code> helper. promiseが成功した場合は、テストは自動的に失敗します。 <code>expect.assertions(number)</code> is not required but recommended to verify that a certain number of <a href="https://jestjs.io/docs/en/expect#expectassertionsnumber">assertions</a> are called during a test. It is otherwise easy to forget to <code>return</code>/<code>await</code> the <code>.resolves</code> assertions.</p>
+<p>The<code>.rejects</code> helper works like the <code>.resolves</code> helper. promiseが成功した場合は、テストは自動的に失敗します。 <code>expect.assertions(number)</code> は必須ではありませんが、テスト中に想定した数の <a href="https://jestjs.io/docs/en/expect#expectassertionsnumber">アサーション</a> が呼び出されることを確認することために、追加することをお勧めします。 これを利用する理由としては、 <code>.resolves</code> の結果を<code>return</code>/<code>await</code> することを忘れてしまうことが良くあるからです。</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// Testing for async errors using `.rejects`.</span>
 it(<span class="hljs-string">'tests error with rejects'</span>, () =&gt; {
   expect.assertions(<span class="hljs-number">1</span>);
@@ -199,8 +199,8 @@ it(<span class="hljs-string">'tests error with async/await and rejects'</span>, 
   });
 });
 </code></pre>
-<p>The code for this example is available at <a href="https://github.com/facebook/jest/tree/master/examples/async">examples/async</a>.</p>
-<p>If you'd like to test timers, like <code>setTimeout</code>, take a look at the <a href="/docs/ja/25.x/timer-mocks">Timer mocks</a> documentation.</p>
+<p>このコード例は<a href="https://github.com/facebook/jest/tree/master/examples/async">examples/async</a>から利用可能です。</p>
+<p><code>setTimeout</code> のようなタイマーをテストしたい場合は、<a href="/docs/ja/25.x/timer-mocks">Timer mocks</a> ドキュメントを読んで下さい。</p>
 </span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/ja/25.x/snapshot-testing"><span class="arrow-prev">← </span><span>スナップショットテスト</span></a><a class="docs-next button" href="/docs/ja/25.x/timer-mocks"><span>Timer Mocks</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#resolves"><code>.resolves</code></a></li><li><a href="#asyncawait"><code>async</code>/<code>await</code></a></li><li><a href="#エラー処理">エラー処理</a></li><li><a href="#rejects"><code>.rejects</code></a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/ja/getting-started.html">Getting Started</a><a href="/docs/ja/snapshot-testing.html">Guides</a><a href="/docs/ja/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://www.reactiflux.com/">Reactiflux</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {

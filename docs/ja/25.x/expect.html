@@ -75,7 +75,7 @@
               }
             });
         </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/ExpectAPI.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Expect</h1></header><article><div><span><p>When you're writing tests, you often need to check that values meet certain conditions. <code>expect</code> gives you access to a number of &quot;matchers&quot; that let you validate different things.</p>
-<p>For additional Jest matchers maintained by the Jest Community check out <a href="https://github.com/jest-community/jest-extended"><code>jest-extended</code></a>.</p>
+<p>Jest コミュニティによってメンテナンスされている追加の Jest マッチャーについては、 <a href="https://github.com/jest-community/jest-extended"><code>jest-extended</code></a> をご覧ください。</p>
 <h2><a class="anchor" aria-hidden="true" id="メソッド"></a><a href="#メソッド" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>メソッド</h2>
 <ul>
 <li><a href="#expectvalue"><code>expect(value)</code></a></li>
@@ -145,7 +145,7 @@
 <p>In this case, <code>toBe</code> is the matcher function. There are a lot of different matcher functions, documented below, to help you test different things.</p>
 <p><code>expect</code>への引数はコードが生成する値であるべきであり、いかなるマッチャへの引数は正解の値であるべきです。 それらを混同して使用すれば、テストは動作するものの、失敗したテストから出力されるエラーメッセージはおかしなものになります。</p>
 <h3><a class="anchor" aria-hidden="true" id="expectextendmatchers"></a><a href="#expectextendmatchers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.extend(matchers)</code></h3>
-<p>Jestに独自のマッチャを追加したい場合は <code>expect.extend</code>を使用します。 For example, let's say that you're testing a number utility library and you're frequently asserting that numbers appear within particular ranges of other numbers. You could abstract that into a <code>toBeWithinRange</code> matcher:</p>
+<p>Jestに独自のマッチャを追加したい場合は <code>expect.extend</code>を使用します。 たとえば、数値に関するユーティリティのライブラリをテストしていて、ある数値が他の数値の特定の範囲内に現れることを頻繁にアサートしているとします。 それを <code>toBeWithinRange</code> のマッチャーに抽象化できます:</p>
 <pre><code class="hljs css language-js">expect.extend({
   toBeWithinRange(received, floor, ceiling) {
     <span class="hljs-keyword">const</span> pass = received &gt;= floor &amp;&amp; received &lt;= ceiling;
@@ -183,7 +183,7 @@ test(<span class="hljs-string">'numeric ranges'</span>, () =&gt; {
   }
 }
 </code></pre>
-<h4><a class="anchor" aria-hidden="true" id="async-matchers"></a><a href="#async-matchers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Async Matchers</h4>
+<h4><a class="anchor" aria-hidden="true" id="非同期マッチャ"></a><a href="#非同期マッチャ" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>非同期マッチャ</h4>
 <p><code>expect.extend</code> は非同期のマッチャもサポートします。 非同期のマッチャは Promise を返すため、返り値を await する必要があります。 マッチャの一例を使って、使い方を見てみましょう。 We are going to implement a matcher called <code>toBeDivisibleByExternalValue</code>, where the divisible number is going to be pulled from an external source.</p>
 <pre><code class="hljs css language-js">expect.extend({
   <span class="hljs-keyword">async</span> toBeDivisibleByExternalValue(received) {
@@ -210,7 +210,7 @@ test(<span class="hljs-string">'is divisible by external value'</span>, <span cl
   <span class="hljs-keyword">await</span> expect(<span class="hljs-number">101</span>).not.toBeDivisibleByExternalValue();
 });
 </code></pre>
-<h4><a class="anchor" aria-hidden="true" id="custom-matchers-api"></a><a href="#custom-matchers-api" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Custom Matchers API</h4>
+<h4><a class="anchor" aria-hidden="true" id="独自のマッチャ-api"></a><a href="#独自のマッチャ-api" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>独自のマッチャ API</h4>
 <p>マッチャは、2つのキーを持つオブジェクト (またはオブジェクトのプロミス) を返さなければなりません。 <code>pass</code>キーはマッチャの条件に合致するかどうかを示し、 <code>message</code>キーは失敗した場合にエラーメッセージを返す引数なしの関数を提供します。 したがって、<code>pass</code>が偽なら、 <code>message</code>は<code>expect(x).yourMatcher()</code>が失敗した場合のエラーメッセージを返す必要があります。 <code>pass</code>が真だった場合、 <code>message</code>は<code>expect(x).not.yourMatcher()</code>が失敗した場合のエラーメッセージを返す必要があります。</p>
 <p>Matchers are called with the argument passed to <code>expect(x)</code> followed by the arguments passed to <code>.yourMatcher(y, z)</code>:</p>
 <pre><code class="hljs css language-js">expect.extend({
@@ -224,13 +224,13 @@ test(<span class="hljs-string">'is divisible by external value'</span>, <span cl
 </code></pre>
 <p>These helper functions and properties can be found on <code>this</code> inside a custom matcher:</p>
 <h4><a class="anchor" aria-hidden="true" id="thisisnot"></a><a href="#thisisnot" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.isNot</code></h4>
-<p>A boolean to let you know this matcher was called with the negated <code>.not</code> modifier allowing you to display a clear and correct matcher hint (see example code).</p>
+<p>マッチャがアサーションを反転させる否定の修飾子 <code>.not</code>を付けて呼ばれたかどうかを示す真偽値で、明確で正しいマッチャのヒントを表示することに利用されます(サンプルコードを参照)。</p>
 <h4><a class="anchor" aria-hidden="true" id="thispromise"></a><a href="#thispromise" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.promise</code></h4>
-<p>A string allowing you to display a clear and correct matcher hint:</p>
+<p>明確で正しいマッチャのヒントを表示するための文字列です：</p>
 <ul>
-<li><code>'rejects'</code> if matcher was called with the promise <code>.rejects</code> modifier</li>
-<li><code>'resolves'</code> if matcher was called with the promise <code>.resolves</code> modifier</li>
-<li><code>''</code> if matcher was not called with a promise modifier</li>
+<li><code>'rejects'</code> ：マッチャが  <code>.reject</code> 修飾子付きで呼び出された場合</li>
+<li><code>'resolves'</code> マッチャが  <code>.resolves</code>  修飾子付きで呼び出された場合</li>
+<li><code>''</code> マッチャがpromise修飾子付きで呼び出されなかった場合</li>
 </ul>
 <h4><a class="anchor" aria-hidden="true" id="thisequalsa-b"></a><a href="#thisequalsa-b" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.equals(a, b)</code></h4>
 <p>２つのオブジェクトが同じ値を(再帰的に) 持つ場合に <code>true</code>を返す深い等価関数です。</p>
@@ -285,7 +285,7 @@ expect.extend({
 <p>アサーションに失敗した場合、エラーメッセージは利用者がその問題を迅速に解決できるようになるべく多くのシグナルを与えるものであるべきです。 独自アサーションの利用者が良い開発体験を得られるよう正確なエラーメッセージを作成する必要があります。</p>
 <h4><a class="anchor" aria-hidden="true" id="custom-snapshot-matchers"></a><a href="#custom-snapshot-matchers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Custom snapshot matchers</h4>
 <p>To use snapshot testing inside of your custom matcher you can import <code>jest-snapshot</code> and use it from within your matcher.</p>
-<p>Here's a snapshot matcher that trims a string to store for a given length, <code>.toMatchTrimmedSnapshot(length)</code>:</p>
+<p><code>.toMatchTrimedSnapshot(length)</code>は指定された長さに文字列をトリムするスナップショットマッチャです :</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> {toMatchSnapshot} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-snapshot'</span>);
 
 expect.extend({
@@ -308,7 +308,7 @@ Stored snapshot will look like:
 exports[`stores only 10 characters: toMatchTrimmedSnapshot 1`] = `"extra long"`;
 */</span>
 </code></pre>
-<p>It's also possible to create custom matchers for inline snapshots, the snapshots will be correctly added to the custom matchers. However, inline snapshot will always try to append to the first argument or the second when the first argument is the property matcher, so it's not possible to accept custom arguments in the custom matchers.</p>
+<p>インラインスナップショット用の独自 マッチャを作成することもできます。スナップショットは独自 マッチャに正しく追加されます。 ただし、インラインスナップショットは常に最初の引数に追加しようとします。最初の引数がプロパティのマッチャである場合は、2番目の引数に追加しようとします。このため、独自マッチャでは独自の引数を受け取ることはできません。</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> {toMatchInlineSnapshot} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-snapshot'</span>);
 
 expect.extend({
@@ -761,20 +761,20 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobeclosetonumber-numdigits"></a><a href="#tobeclosetonumber-numdigits" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeCloseTo(number, numDigits?)</code></h3>
-<p>Use <code>toBeCloseTo</code> to compare floating point numbers for approximate equality.</p>
-<p>The optional <code>numDigits</code> argument limits the number of digits to check <strong>after</strong> the decimal point. For the default value <code>2</code>, the test criterion is <code>Math.abs(expected - received) &lt; 0.005</code> (that is, <code>10 ** -2 / 2</code>).</p>
+<p><code>toBeCloseTo</code> では、浮動小数点数を近似的な等価性で評価します。</p>
+<p>The optional <code>numDigits</code> argument limits the number of digits to check <strong>after</strong> the decimal point. デフォルト値 <code>2</code>の場合、テスト条件は <code>Math.abs(expected - received) &lt; 0.005</code>以内 (つまり、 <code>10 ** -2 / 2</code>)となります。</p>
 <p>Intuitive equality comparisons often fail, because arithmetic on decimal (base 10) values often have rounding errors in limited precision binary (base 2) representation. For example, this test fails:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'adding works sanely with decimals'</span>, () =&gt; {
   expect(<span class="hljs-number">0.2</span> + <span class="hljs-number">0.1</span>).toBe(<span class="hljs-number">0.3</span>); <span class="hljs-comment">// Fails!</span>
 });
 </code></pre>
 <p>It fails because in JavaScript, <code>0.2 + 0.1</code> is actually <code>0.30000000000000004</code>.</p>
-<p>For example, this test passes with a precision of 5 digits:</p>
+<p>例えば、このテストは小数点以下5桁の精度で合格します。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'adding works sanely with decimals'</span>, () =&gt; {
   expect(<span class="hljs-number">0.2</span> + <span class="hljs-number">0.1</span>).toBeCloseTo(<span class="hljs-number">0.3</span>, <span class="hljs-number">5</span>);
 });
 </code></pre>
-<p>Because floating point errors are the problem that <code>toBeCloseTo</code> solves, it does not support big integer values.</p>
+<p><code>toBeCloseTo</code> が解決すべきなのは浮動小数点におけるエラーなので、大きな整数値はサポートされていません。</p>
 <h3><a class="anchor" aria-hidden="true" id="tobedefined"></a><a href="#tobedefined" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeDefined()</code></h3>
 <p>変数がundefinedでないことを確認するには <code>.toBeDefined</code>を使用します。 For example, if you want to check that a function <code>fetchNewFlavorIdea()</code> returns <em>something</em>, you can write:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'there is a new flavor idea'</span>, () =&gt; {
@@ -797,25 +797,25 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
 </code></pre>
 <p>In JavaScript, there are six falsy values: <code>false</code>, <code>0</code>, <code>''</code>, <code>null</code>, <code>undefined</code>, and <code>NaN</code>. Everything else is truthy.</p>
 <h3><a class="anchor" aria-hidden="true" id="tobegreaterthannumber--bigint"></a><a href="#tobegreaterthannumber--bigint" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeGreaterThan(number | bigint)</code></h3>
-<p>Use <code>toBeGreaterThan</code> to compare <code>received &gt; expected</code> for number or big integer values. For example, test that <code>ouncesPerCan()</code> returns a value of more than 10 ounces:</p>
+<p><code>toBeGreaterThan</code> により、 <code>実際値 &gt; 期待値</code> の条件でnumber型またはbigint 型の数値を比較します。 例えば、 <code>ouncesPerCan()</code> が 10 オンスより大きい値を返すことをテストします。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'ounces per can is more than 10'</span>, () =&gt; {
   expect(ouncesPerCan()).toBeGreaterThan(<span class="hljs-number">10</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobegreaterthanorequalnumber--bigint"></a><a href="#tobegreaterthanorequalnumber--bigint" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeGreaterThanOrEqual(number | bigint)</code></h3>
-<p>Use <code>toBeGreaterThanOrEqual</code> to compare <code>received &gt;= expected</code> for number or big integer values. For example, test that <code>ouncesPerCan()</code> returns a value of at least 12 ounces:</p>
+<p><code>toBeGreaterThanOrEqual</code> を使用して、 <code>実際値 &gt;= 期待値</code> の条件でnumber型またはbigint 型の数値を比較します。 例えば、 <code>ouncesPerCan()</code> が12 オンス以上の値を返すことをテストします。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'ounces per can is at least 12'</span>, () =&gt; {
   expect(ouncesPerCan()).toBeGreaterThanOrEqual(<span class="hljs-number">12</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobelessthannumber--bigint"></a><a href="#tobelessthannumber--bigint" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeLessThan(number | bigint)</code></h3>
-<p>Use <code>toBeLessThan</code> to compare <code>received &lt; expected</code> for number or big integer values. For example, test that <code>ouncesPerCan()</code> returns a value of less than 20 ounces:</p>
+<p><code>toBeLessThan</code> を使用して、<code>実際値 &lt; 期待値</code> の条件でnumber型またはbigint 型の数値を比較します。 例えば、 <code>ouncesPerCan()</code> が 20 オンス未満の値を返すことをテストします。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'ounces per can is less than 20'</span>, () =&gt; {
   expect(ouncesPerCan()).toBeLessThan(<span class="hljs-number">20</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobelessthanorequalnumber--bigint"></a><a href="#tobelessthanorequalnumber--bigint" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeLessThanOrEqual(number | bigint)</code></h3>
-<p>Use <code>toBeLessThanOrEqual</code> to compare <code>received &lt;= expected</code> for number or big integer values. For example, test that <code>ouncesPerCan()</code> returns a value of at most 12 ounces:</p>
+<p><code>toBeLessThanOrEqual</code> を使用して、 <code>実際値 &lt;= 期待値</code> の条件でnumber型またはbigint 型の数値を比較します。 例えば、 <code>ouncesPerCan()</code> が12 オンス以下の値を返すことをテストします。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'ounces per can is at least 12'</span>, () =&gt; {
   expect(ouncesPerCan()).toBeGreaterThanOrEqual(<span class="hljs-number">12</span>);
 });

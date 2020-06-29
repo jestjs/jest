@@ -691,7 +691,7 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <li><a href="https://babeljs.io/">Babel</a></li>
 <li><a href="http://www.typescriptlang.org/">TypeScript</a></li>
 <li><a href="http://github.com/leebyron/async-to-gen#jest">async-to-gen</a></li>
-<li>To build your own please visit the <a href="/docs/ja/22.x/tutorial-react#custom-transformers">Custom Transformer</a> section</li>
+<li>独自のビルドを行うには、 <a href="/docs/ja/22.x/tutorial-react#custom-transformers">独自トランスパイラ</a> セクションを参照</li>
 </ul>
 <p><em>Note: a transformer is only run once per file unless the file has changed. During development of a transformer it can be useful to run Jest with <code>--no-cache</code> to frequently <a href="/docs/ja/22.x/troubleshooting#caching-issues">delete Jest's cache</a>.</em></p>
 <p><em>Note: when adding additional code transformers, this will overwrite the default config and <code>babel-jest</code> is no longer automatically loaded. If you want to use it to compile JavaScript or Typescript, it has to be explicitly defined by adding <code>{&quot;^.+\\.[jt]sx?$&quot;: &quot;babel-jest&quot;}</code> to the transform property. <a href="https://github.com/facebook/jest/tree/master/packages/babel-jest#setup">babel-jest plugin</a>を参照して下さい。</em></p>

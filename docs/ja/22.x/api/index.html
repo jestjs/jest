@@ -92,7 +92,7 @@
 <h2><a class="anchor" aria-hidden="true" id="リファレンス"></a><a href="#リファレンス" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>リファレンス</h2>
 <h3><a class="anchor" aria-hidden="true" id="afterallfn-timeout"></a><a href="#afterallfn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>afterAll(fn, timeout)</code></h3>
 <p>Runs a function after all the tests in this file have completed. If the function returns a promise or is a generator, Jest waits for that promise to resolve before continuing.</p>
-<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <p>テスト間で共有するグローバルな設定や状態をクリーンアップしたい場合に便利です。</p>
 <p>例：</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
@@ -122,7 +122,7 @@ test(<span class="hljs-string">'can insert a thing'</span>, () =&gt; {
 <p>全テスト完了後ではなく、個々のテストの完了後にクリーンアップ処理を行いたい場合は、 <code>afterEach</code> 関数を使用して下さい。</p>
 <h3><a class="anchor" aria-hidden="true" id="aftereachfn-timeout"></a><a href="#aftereachfn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>afterEach(fn, timeout)</code></h3>
 <p>Runs a function after each one of the tests in this file completes. If the function returns a promise or is a generator, Jest waits for that promise to resolve before continuing.</p>
-<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <p>各テストで一時的に設定した状態などをクリーンアップしたい場合に便利です。</p>
 <p>例：</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
@@ -152,7 +152,7 @@ test(<span class="hljs-string">'can insert a thing'</span>, () =&gt; {
 <p>全テストが完了した後に一度だけ何らかのクリーンアップを実行する場合は、 <code>afterAll</code> 関数を使用して下さい。</p>
 <h3><a class="anchor" aria-hidden="true" id="beforeallfn-timeout"></a><a href="#beforeallfn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>beforeAll(fn, timeout)</code></h3>
 <p>Runs a function before any of the tests in this file run. If the function returns a promise or is a generator, Jest waits for that promise to resolve before running tests.</p>
-<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <p>多数のテストで使用するグローバルな状態を設定したい場合に便利です。</p>
 <p>例：</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
@@ -173,12 +173,12 @@ test(<span class="hljs-string">'can find things'</span>, () =&gt; {
   });
 });
 </code></pre>
-<p>この例では<code>beforeAll</code> はテスト開始前に必ずデータベースのセットアップを行います。 If setup was synchronous, you could do this without <code>beforeAll</code>. この関数の要点はJestがPromiseの状態が決まるまで待つことであり、非同期処理によるセットアップが行えるということであるとも言えます。</p>
+<p>この例では<code>beforeAll</code> はテスト開始前に必ずデータベースのセットアップを行います。 セットアップが同期処理の場合は、 <code>beforeAll</code>を使用する必要はありません。 この関数の要点はJestがPromiseの状態が決まるまで待つことであり、非同期処理によるセットアップが行えるということであるとも言えます。</p>
 <p><code>beforeAll</code>関数 が <code>describe</code>ブロック内に記述された場合は、 そのブロックの最初に <code>beforeAll</code>関数が実行されます。</p>
 <p>全テスト開始前ではなく、個々のテストの開始前に何らかの処理を行いたい場合は、 <code>beforeEach</code> 関数を使用して下さい。</p>
 <h3><a class="anchor" aria-hidden="true" id="beforeeachfn-timeout"></a><a href="#beforeeachfn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>beforeEach(fn, timeout)</code></h3>
 <p>Runs a function before each of the tests in this file runs. If the function returns a promise or is a generator, Jest waits for that promise to resolve before running the test.</p>
-<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <p>多数のテストで使用するグローバルな状態を設定したい場合に便利です。</p>
 <p>例：</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
@@ -207,7 +207,7 @@ test(<span class="hljs-string">'can insert a thing'</span>, () =&gt; {
 <p><code>beforeEach</code>関数 が <code>describe</code>ブロック内に記述された場合は、 各ブロックの最初に <code>beforeEach</code>関数が実行されます。</p>
 <p>何らかのセットアップ コードを 一度だけ実行したい場合は、 <code>beforeAll</code>関数を使用してください。</p>
 <h3><a class="anchor" aria-hidden="true" id="describename-fn"></a><a href="#describename-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>describe(name, fn)</code></h3>
-<p><code>describe(name, fn)</code> creates a block that groups together several related tests. 例えば、美味しくて酸っぱくないとされる<code>myBeverage</code>オブジェクトがある場合、このようなテストコードを作成できます:</p>
+<p><code>describe(name, fn)</code> は、いくつかの関連するテストをまとめたブロックを作成します。 例えば、美味しくて酸っぱくないとされる<code>myBeverage</code>オブジェクトがある場合、このようなテストコードを作成できます:</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> myBeverage = {
   <span class="hljs-attr">delicious</span>: <span class="hljs-literal">true</span>,
   <span class="hljs-attr">sour</span>: <span class="hljs-literal">false</span>,
@@ -285,7 +285,7 @@ describe.skip(<span class="hljs-string">'my other beverage'</span>, () =&gt; {
   expect(inchesOfRain()).toBe(<span class="hljs-number">0</span>);
 });
 </code></pre>
-<p>第1引数にテスト名を、第2引数にテストの確認項目を含む関数を設定します。 The third argument (optional) is <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<p>第1引数にテスト名を、第2引数にテストの確認項目を含む関数を設定します。 3番目の引数 (任意) は <code>タイムアウト値</code> (ミリ秒単位) で、中止するまでの待ち時間を指定します。 <em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <blockquote>
 <p>注意： <code>test</code>から<strong>Promiseが返された場合</strong>、Jestはテストが完了する前にPromiseの状態が決まるまで待ちます。 Jest は、通常は <code>done</code> と呼ばれる<strong>テスト関数に引数を与えた場合</strong>にも待ちます。 この動作はコールバックをテストしたい場合に便利です。 非同期なコードをテストする方法を<a href="/docs/ja/22.x/asynchronous#callbacks">こちら</a>を参照してください。</p>
 </blockquote>
@@ -300,7 +300,7 @@ describe.skip(<span class="hljs-string">'my other beverage'</span>, () =&gt; {
 <h3><a class="anchor" aria-hidden="true" id="testonlyname-fn-timeout"></a><a href="#testonlyname-fn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.only(name, fn, timeout)</code></h3>
 <p>次の別名でも同様です: <code>it.only(name, fn, timeout)</code> または <code>fit(name, fn, timeout)</code></p>
 <p>When you are debugging a large test file, you will often only want to run a subset of tests. You can use <code>.only</code> to specify which tests are the only ones you want to run in that test file.</p>
-<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <p>例えば、次のようなテストがあったとしましょう:</p>
 <pre><code class="hljs css language-js">test.only(<span class="hljs-string">'it is raining'</span>, () =&gt; {
   expect(inchesOfRain()).toBeGreaterThan(<span class="hljs-number">0</span>);
@@ -310,11 +310,11 @@ test(<span class="hljs-string">'it is not snowing'</span>, () =&gt; {
   expect(inchesOfSnow()).toBe(<span class="hljs-number">0</span>);
 });
 </code></pre>
-<p>Only the &quot;it is raining&quot; test will run in that test file, since it is run with <code>test.only</code>.</p>
-<p>Usually you wouldn't check code using <code>test.only</code> into source control - you would use it for debugging, and remove it once you have fixed the broken tests.</p>
+<p><code>test.only</code> で実行されるので、&quot;It is raining&quot; テストのみがそのテストファイルで実行されます。</p>
+<p>通常はテストの動作を管理する手段として<code>test.only</code>を用いることはないでしょう - デバッグ作業のために使用し、壊れているテストを修復すれば削除することでしょう。</p>
 <h3><a class="anchor" aria-hidden="true" id="testskipname-fn"></a><a href="#testskipname-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.skip(name, fn)</code></h3>
 <p>次の別名でも同様です: <code>it.skip(name, fn)</code> または <code>xit(name, fn)</code> または <code>xtest(name, fn)</code></p>
-<p>大きなコードベースを保守するとき、何らかの理由で一時的に壊れているテストを見つけることがあるでしょう。 If you want to skip running this test, but you don't want to delete this code, you can use <code>test.skip</code> to specify some tests to skip.</p>
+<p>大きなコードベースを保守するとき、何らかの理由で一時的に壊れているテストを見つけることがあるでしょう。 テストコードを削除せずにスキップしたい場合、<code>test.skip</code> を使って特定のテストをスキップできます。</p>
 <p>例えば、次のようなテストがあったとしましょう:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'it is raining'</span>, () =&gt; {
   expect(inchesOfRain()).toBeGreaterThan(<span class="hljs-number">0</span>);
@@ -325,7 +325,7 @@ test.skip(<span class="hljs-string">'it is not snowing'</span>, () =&gt; {
 });
 </code></pre>
 <p>他のテストには<code>test.skip</code>があるので、&quot;it is raining&quot;のテストだけが実行されます。</p>
-<p>You could comment the test out, but it's often a bit nicer to use <code>test.skip</code> because it will maintain indentation and syntax highlighting.</p>
+<p>単純ににテストをコメントアウトすることもできますが、テストが存在することとシンタックスハイライトを維持できるため、 <code>test.skip</code>を利用したほうが良いことがしばしばあります。</p>
 </span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/ja/22.x/testing-frameworks"><span class="arrow-prev">← </span><span>Web フレームワークのテスト</span></a><a class="docs-next button" href="/docs/ja/22.x/expect"><span>Expect</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#メソッド">メソッド</a></li><li><a href="#リファレンス">リファレンス</a><ul class="toc-headings"><li><a href="#afterallfn-timeout"><code>afterAll(fn, timeout)</code></a></li><li><a href="#aftereachfn-timeout"><code>afterEach(fn, timeout)</code></a></li><li><a href="#beforeallfn-timeout"><code>beforeAll(fn, timeout)</code></a></li><li><a href="#beforeeachfn-timeout"><code>beforeEach(fn, timeout)</code></a></li><li><a href="#describename-fn"><code>describe(name, fn)</code></a></li><li><a href="#describeonlyname-fn"><code>describe.only(name, fn)</code></a></li><li><a href="#describeskipname-fn"><code>describe.skip(name, fn)</code></a></li><li><a href="#testname-fn-timeout"><code>test(name, fn, timeout)</code></a></li><li><a href="#testonlyname-fn-timeout"><code>test.only(name, fn, timeout)</code></a></li><li><a href="#testskipname-fn"><code>test.skip(name, fn)</code></a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/ja/getting-started.html">Getting Started</a><a href="/docs/ja/snapshot-testing.html">Guides</a><a href="/docs/ja/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://www.reactiflux.com/">Reactiflux</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {

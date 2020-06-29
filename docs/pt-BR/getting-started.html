@@ -108,7 +108,7 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 <p><strong>Você escreveu com sucesso seu primeiro teste usando Jest!</strong></p>
 <p>Este teste usou <code>expect</code> e <code>toBe</code> para testar que dois valores eram exatamente idênticos. Para saber mais sobre as outras coisas que Jest pode testar, consulte <a href="/docs/pt-BR/using-matchers">Usando Matchers</a>.</p>
 <h2><a class="anchor" aria-hidden="true" id="executando-a-partir-da-linha-de-comando"></a><a href="#executando-a-partir-da-linha-de-comando" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Executando a partir da linha de comando</h2>
-<p>You can run Jest directly from the CLI (if it's globally available in your <code>PATH</code>, e.g. by <code>yarn global add jest</code> or <code>npm install jest --global</code>) with a variety of useful options.</p>
+<p>Você pode executar Jest diretamente da CLI (se ele estiver disponível globalmente em seu <code>PATH</code>, por exemplo: <code>yarn global add jest</code> ou <code>npm install -g jest</code>) com uma variedade de comandos úteis.</p>
 <p>Aqui vemos como executar Jest em arquivos que correspondam ao <code>my-test</code>, usando <code>config.json</code> como um arquivo de configuração e exibir uma notificação nativa no Sistema Operacional após a execução:</p>
 <pre><code class="hljs css language-bash">jest my-test --notify --config=config.json
 </code></pre>
@@ -119,10 +119,10 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 <pre><code class="hljs css language-bash">jest --init
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="usando-babel"></a><a href="#usando-babel" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Usando Babel</h3>
-<p>To use <a href="http://babeljs.io/">Babel</a>, install required dependencies via <code>yarn</code>:</p>
+<p>Para usar <a href="http://babeljs.io/">Babel</a>, instale as dependências necessárias via <code>yarn</code>:</p>
 <pre><code class="hljs css language-bash">yarn add --dev babel-jest @babel/core @babel/preset-env
 </code></pre>
-<p>Configure Babel to target your current version of Node by creating a <code>babel.config.js</code> file in the root of your project:</p>
+<p>Configure o Babel para marcar a sua versão atual do Node criando um arquivo <code>babel.config.js</code> na raiz do seu projeto:</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// babel.config.js</span>
 <span class="hljs-built_in">module</span>.exports = {
   <span class="hljs-attr">presets</span>: [
