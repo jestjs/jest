@@ -173,7 +173,7 @@ Jest can be used in projects that use [webpack](https://webpack.js.org/) to mana
 
 ### Using parcel
 
-Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assests, styles, and compilation similar to webpack. Parcel bundler offers blazing fast performance utilizing multicore processing, and requires zero configuration.
+Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration.
 
 ### Using TypeScript
 
