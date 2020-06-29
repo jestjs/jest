@@ -26,6 +26,7 @@
   - [Generate a basic configuration file](#generate-a-basic-configuration-file)
   - [Using Babel](#using-babel)
   - [Using Webpack](#using-webpack)
+  - [Using Parcel](#using-parcel)
   - [Using Typescript](#using-typescript)
 - [Documentation](#documentation)
 - [Badge](#badge)
@@ -169,6 +170,10 @@ module.exports = {
 ### Using webpack
 
 Jest can be used in projects that use [webpack](https://webpack.js.org/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](https://jestjs.io/docs/en/webpack) to get started.
+
+### Using parcel
+
+Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration.
 
 ### Using TypeScript
 
