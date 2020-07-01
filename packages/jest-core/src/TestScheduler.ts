@@ -24,7 +24,6 @@ import {
   AggregatedResult,
   AssertionResult,
   SerializableError,
-  TestCase,
   TestResult,
   addResult,
   buildFailureTestResult,
@@ -242,18 +241,13 @@ export default class TestScheduler {
                 ),
                 testRunner.eventEmitter.on(
                   'test-case-result',
-                  ([testPath, testCase, testCaseResult]: [
+                  ([testPath, testCaseResult]: [
                     Config.Path,
-                    TestCase,
                     AssertionResult,
                   ]) => {
                     if (context) {
                       const test: TestRunner.Test = {context, path: testPath};
-                      this._dispatcher.onTestCaseResult(
-                        test,
-                        testCase,
-                        testCaseResult,
-                      );
+                      this._dispatcher.onTestCaseResult(test, testCaseResult);
                     }
                   },
                 ),

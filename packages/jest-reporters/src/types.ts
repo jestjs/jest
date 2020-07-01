@@ -9,7 +9,6 @@ import type {Config} from '@jest/types';
 import type {
   AggregatedResult,
   SerializableError,
-  TestCase,
   TestCaseResult,
   TestResult,
 } from '@jest/test-result';
@@ -67,7 +66,6 @@ export interface Reporter {
   ) => Promise<void> | void;
   readonly onTestCaseResult?: (
     test: Test,
-    testCase: TestCase,
     testCaseResult: TestCaseResult,
   ) => Promise<void> | void;
   readonly onRunStart: (
@@ -76,10 +74,10 @@ export interface Reporter {
   ) => Promise<void> | void;
   readonly onTestStart?: (test: Test) => Promise<void> | void;
   readonly onTestFileStart?: (test: Test) => Promise<void> | void;
-  readonly onTestCaseStart?: (
-    test: Test,
-    testCase: TestCase,
-  ) => Promise<void> | void;
+  // readonly onTestCaseStart?: (
+  //   test: Test,
+  //   testCase: TestCase,
+  // ) => Promise<void> | void;
   readonly onRunComplete: (
     contexts: Set<Context>,
     results: AggregatedResult,

@@ -7,7 +7,6 @@
 
 import type {
   AggregatedResult,
-  TestCase,
   TestCaseResult,
   TestResult,
 } from '@jest/test-result';
@@ -72,12 +71,11 @@ export default class ReporterDispatcher {
 
   async onTestCaseResult(
     test: Test,
-    testCase: TestCase,
     testCaseResult: TestCaseResult,
   ): Promise<void> {
     for (const reporter of this._reporters) {
       reporter.onTestCaseResult &&
-        (await reporter.onTestCaseResult(test, testCase, testCaseResult));
+        (await reporter.onTestCaseResult(test, testCaseResult));
     }
   }
 

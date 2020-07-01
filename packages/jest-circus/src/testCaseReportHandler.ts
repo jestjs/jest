@@ -6,7 +6,6 @@
  */
 
 import type {Circus} from '@jest/types';
-import type {TestCase} from '@jest/test-result';
 import {makeSingleTestResult, parseSingleTestResult} from './utils';
 
 const testCaseReportHandler = (
@@ -17,17 +16,7 @@ const testCaseReportHandler = (
     case 'test_done': {
       const testResult = makeSingleTestResult(event.test);
       const testCaseResult = parseSingleTestResult(testResult);
-      const testCase: TestCase = {
-        ancestorTitles: testCaseResult.ancestorTitles,
-        fullName: testCaseResult.fullName,
-        location: testCaseResult.location,
-        title: testCaseResult.title,
-      };
-      sendMessageToJest('test-case-result', [
-        testPath,
-        testCase,
-        testCaseResult,
-      ]);
+      sendMessageToJest('test-case-result', [testPath, testCaseResult]);
       break;
     }
   }

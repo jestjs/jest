@@ -80,13 +80,6 @@ export type Suite = {
 
 export type TestCaseResult = AssertionResult;
 
-export type TestCase = {
-  ancestorTitles: Array<string>;
-  fullName: string;
-  location: TestResult.Callsite | null | undefined;
-  title: string;
-};
-
 export type TestResult = {
   console?: ConsoleBuffer;
   coverage?: CoverageMapData;

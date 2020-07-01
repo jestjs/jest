@@ -8,7 +8,6 @@
 import type {Config} from '@jest/types';
 import type {
   AggregatedResult,
-  TestCase,
   TestCaseResult,
   TestResult,
 } from '@jest/test-result';
@@ -136,11 +135,7 @@ export default class DefaultReporter extends BaseReporter {
     this._status.testStarted(test.path, test.context.config);
   }
 
-  onTestCaseResult(
-    test: Test,
-    _testCase: TestCase,
-    testCaseResult: TestCaseResult,
-  ): void {
+  onTestCaseResult(test: Test, testCaseResult: TestCaseResult): void {
     this._status.addTestCaseResult(test, testCaseResult);
   }
 

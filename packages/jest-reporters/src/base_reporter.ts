@@ -7,7 +7,6 @@
 
 import type {
   AggregatedResult,
-  TestCase,
   TestCaseResult,
   TestResult,
 } from '@jest/test-result';
@@ -30,11 +29,7 @@ export default class BaseReporter implements Reporter {
     preRunMessageRemove(process.stderr);
   }
 
-  onTestCaseResult(
-    _test: Test,
-    _testCase: TestCase,
-    _testCaseResult: TestCaseResult,
-  ): void {}
+  onTestCaseResult(_test: Test, _testCaseResult: TestCaseResult): void {}
 
   onTestResult(
     _test?: Test,
