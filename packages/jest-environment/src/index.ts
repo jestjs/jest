@@ -306,5 +306,5 @@ export interface Jest {
    *
    *  > Note: This function is only available when using Lolex as fake timers implementation
    */
-  setSystemTime(now?: number): void;
+  setSystemTime(now?: number | Date): void;
 }
