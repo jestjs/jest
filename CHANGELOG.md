@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[expect]` Match symbols and bigints in `any()`; stop matching `null` ([#10223](https://github.com/facebook/jest/pull/10223))
+
 ### Chore & Maintenance
 
 ### Performance

@@ -46,11 +46,20 @@ class Any extends AsymmetricMatcher<any> {
     }
 
     if (this.sample == Object) {
-      return typeof other == 'object';
+      return typeof other == 'object' && other !== null;
     }
 
     if (this.sample == Boolean) {
       return typeof other == 'boolean';
+    }
+
+    /* global BigInt */
+    if (this.sample == BigInt) {
+      return typeof other == 'bigint';
+    }
+
+    if (this.sample == Symbol) {
+      return typeof other == 'symbol';
     }
 
     return other instanceof this.sample;
