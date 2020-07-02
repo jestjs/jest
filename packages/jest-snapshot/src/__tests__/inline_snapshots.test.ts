@@ -260,20 +260,20 @@ test('saveInlineSnapshots() does not re-indent error snapshots', () => {
   expect(fs.writeFileSync).toHaveBeenCalledWith(
     filename,
     "it('is an error test', () => {\n" +
-    '  expect(() => {\n' +
-    "    throw new Error(['a', 'b'].join('\\n'));\n" +
-    '  }).toThrowErrorMatchingInlineSnapshot(`\n' +
-    '    "a\n' +
-    '    b"\n' +
-    '  `);\n' +
-    '});\n' +
-    "it('is another test', () => {\n" +
-    "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
-    '    Object {\n' +
-    "      a: 'a'\n" +
-    '    }\n' +
-    '  `);\n' +
-    '});\n',
+      '  expect(() => {\n' +
+      "    throw new Error(['a', 'b'].join('\\n'));\n" +
+      '  }).toThrowErrorMatchingInlineSnapshot(`\n' +
+      '    "a\n' +
+      '    b"\n' +
+      '  `);\n' +
+      '});\n' +
+      "it('is another test', () => {\n" +
+      "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
+      '    Object {\n' +
+      "      a: 'a'\n" +
+      '    }\n' +
+      '  `);\n' +
+      '});\n',
   );
 });
 
