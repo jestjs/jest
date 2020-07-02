@@ -46,7 +46,7 @@ class Any extends AsymmetricMatcher<any> {
     }
 
     if (this.sample == Object) {
-      return typeof other == 'object' && other !== null;
+      return typeof other == 'object';
     }
 
     if (this.sample == Boolean) {

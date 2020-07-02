@@ -33,7 +33,7 @@ test('Any.asymmetricMatch()', () => {
     any(BigInt).asymmetricMatch(1n),
     any(Symbol).asymmetricMatch(Symbol()),
     any(Object).asymmetricMatch({}),
-    !any(Object).asymmetricMatch(null),
+    any(Object).asymmetricMatch(null),
     any(Array).asymmetricMatch([]),
     any(Thing).asymmetricMatch(new Thing()),
   ].forEach(test => {
