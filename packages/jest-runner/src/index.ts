@@ -11,6 +11,7 @@ import exit = require('exit');
 import chalk = require('chalk');
 import throat from 'throat';
 import Worker, {PromiseWithCustomMessage} from 'jest-worker';
+import {deepCyclicCopy} from 'jest-util';
 import runTest from './runTest';
 import type {SerializableResolver, worker} from './testWorker';
 import type {
@@ -90,7 +91,7 @@ class TestRunner {
                 eventName: string,
                 args: Array<unknown>,
               ) => {
-                this.eventEmitter.emit(eventName, args);
+                this.eventEmitter.emit(eventName, deepCyclicCopy(args));
               };
 
               await this.eventEmitter.emit('test-file-start', [test]);
