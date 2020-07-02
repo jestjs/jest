@@ -13,7 +13,6 @@ import dedent = require('dedent');
 import StackUtils = require('stack-utils');
 import prettyFormat = require('pretty-format');
 import type {AssertionResult, Status} from '@jest/test-result';
-import type {ParseTestResults} from '@jest/types/src/Circus';
 import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
@@ -320,7 +319,7 @@ export const makeSingleTestResult = (
     invocations: test.invocations,
     location,
     status,
-    testPath,
+    testPath: Array.from(testPath),
   };
 };
 
@@ -435,7 +434,7 @@ export const parseSingleTestResult = (
   return {
     ancestorTitles,
     duration: testResult.duration,
-    failureMessages: testResult.errors,
+    failureMessages: Array.from(testResult.errors),
     fullName: title
       ? ancestorTitles.concat(title).join(' ')
       : ancestorTitles.join(' '),
@@ -447,32 +446,32 @@ export const parseSingleTestResult = (
   };
 };
 
-export const parseTestResults = (
-  testResults: Array<Circus.TestResult>,
-): ParseTestResults => {
-  let numFailingTests = 0;
-  let numPassingTests = 0;
-  let numPendingTests = 0;
-  let numTodoTests = 0;
+// export const parseTestResults = (
+//   testResults: Array<Circus.TestResult>,
+// ): ParseTestResults => {
+//   let numFailingTests = 0;
+//   let numPassingTests = 0;
+//   let numPendingTests = 0;
+//   let numTodoTests = 0;
 
-  const assertionResults = testResults.map<AssertionResult>(testResult => {
-    if (testResult.status === 'skip') {
-      numPendingTests++;
-    } else if (testResult.status === 'todo') {
-      numTodoTests++;
-    } else if (testResult.errors.length) {
-      numFailingTests++;
-    } else {
-      numPassingTests++;
-    }
-    return parseSingleTestResult(testResult);
-  });
+//   const assertionResults = testResults.map<AssertionResult>(testResult => {
+//     if (testResult.status === 'skip') {
+//       numPendingTests++;
+//     } else if (testResult.status === 'todo') {
+//       numTodoTests++;
+//     } else if (testResult.errors.length) {
+//       numFailingTests++;
+//     } else {
+//       numPassingTests++;
+//     }
+//     return parseSingleTestResult(testResult);
+//   });
 
-  return {
-    assertionResults,
-    numFailingTests,
-    numPassingTests,
-    numPendingTests,
-    numTodoTests,
-  };
-};
+//   return {
+//     assertionResults: Array.from(assertionResults),
+//     numFailingTests,
+//     numPassingTests,
+//     numPendingTests,
+//     numTodoTests,
+//   };
+// };
