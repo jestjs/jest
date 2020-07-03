@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[expect]` Match symbols and bigints in `any()` ([#10223](https://github.com/facebook/jest/pull/10223))
+- `[jest-snapshot]` Strip added indentation for inline error snapshots ([#10217](https://github.com/facebook/jest/pull/10217))
 
 ### Chore & Maintenance
 
