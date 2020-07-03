@@ -148,7 +148,7 @@ function check() {
 
   ${invalidFiles.join('\n  ')}
 
-Please include the header or blacklist the files in \`scripts/checkCopyrightHeaders.js\``);
+Please include the header or exclude the files in \`scripts/checkCopyrightHeaders.js\``);
     process.exit(1);
   }
 }
