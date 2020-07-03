@@ -81,13 +81,13 @@
 <pre><code class="hljs css language-bash">npm install --save-dev jest
 </code></pre>
 <p>注意: Jest のドキュメントでは <code>yarn</code> コマンドを使用していますが、 <code>npm</code> を使用することもできます。 <code>yarn</code> コマンドと <code>npm</code> コマンドの違いについて知りたい場合は、 <a href="https://yarnpkg.com/ja/docs/migrating-from-npm#toc-cli-commands-comparison">yarnのドキュメント</a>を参照してください。</p>
-<p>Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a <code>sum.js</code> file:</p>
+<p>2つの数値を加算する関数のテストを書くことから始めてみましょう。 まず、 <code>sum.js</code> ファイルを作成します。</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">a, b</span>) </span>{
   <span class="hljs-keyword">return</span> a + b;
 }
 <span class="hljs-built_in">module</span>.exports = sum;
 </code></pre>
-<p>Then, create a file named <code>sum.test.js</code>. This will contain our actual test:</p>
+<p>次に、 <code>sum.test.js</code> という名前のファイルを作成します。 これには実際のテストが含まれます:</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> sum = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./sum'</span>);
 
 test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {

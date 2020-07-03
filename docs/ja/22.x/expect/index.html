@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="ja"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Expect · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="When you&#x27;re writing tests, you often need to check that values meet certain conditions. `expect` gives you access to a number of &quot;matchers&quot; that let you validate different things."/><meta name="docsearch:version" content="22.x"/><meta name="docsearch:language" content="ja"/><meta property="og:title" content="Expect · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="When you&#x27;re writing tests, you often need to check that values meet certain conditions. `expect` gives you access to a number of &quot;matchers&quot; that let you validate different things."/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+<!DOCTYPE html><html lang="ja"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Expect · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="テスト作成時には、値がある条件を満たすことをアサートすることがしばしばあります。 `expect` を使用すると、さまざまなことを検証できる多くの「マッチャ」にアクセスできます。"/><meta name="docsearch:version" content="22.x"/><meta name="docsearch:language" content="ja"/><meta property="og:title" content="Expect · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="テスト作成時には、値がある条件を満たすことをアサートすることがしばしばあります。 `expect` を使用すると、さまざまなことを検証できる多くの「マッチャ」にアクセスできます。"/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -74,7 +74,7 @@
                 };
               }
             });
-        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/ExpectAPI.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Expect</h1></header><article><div><span><p>When you're writing tests, you often need to check that values meet certain conditions. <code>expect</code> gives you access to a number of &quot;matchers&quot; that let you validate different things.</p>
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/ExpectAPI.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Expect</h1></header><article><div><span><p>テスト作成時には、値がある条件を満たすことをアサートすることがしばしばあります。 <code>expect</code> を使用すると、さまざまなことを検証できる多くの「マッチャ」にアクセスできます。</p>
 <p>Jest コミュニティによってメンテナンスされている追加の Jest マッチャーについては、 <a href="https://github.com/jest-community/jest-extended"><code>jest-extended</code></a> をご覧ください。</p>
 <h2><a class="anchor" aria-hidden="true" id="メソッド"></a><a href="#メソッド" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>メソッド</h2>
 <ul>
@@ -129,7 +129,7 @@
   expect(bestLaCroixFlavor()).toBe(<span class="hljs-string">'grapefruit'</span>);
 });
 </code></pre>
-<p>In this case, <code>toBe</code> is the matcher function. There are a lot of different matcher functions, documented below, to help you test different things.</p>
+<p>この場合、 <code>toBe</code> がマッチャ関数です。 以下に説明するように、テストに役立つ様々なマッチャ関数があります。</p>
 <p><code>expect</code>への引数はコードが生成する値であるべきであり、いかなるマッチャへの引数は正解の値であるべきです。 それらを混同して使用すれば、テストは動作するものの、失敗したテストから出力されるエラーメッセージはおかしなものになります。</p>
 <h3><a class="anchor" aria-hidden="true" id="expectextendmatchers"></a><a href="#expectextendmatchers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.extend(matchers)</code></h3>
 <p>Jestに独自のマッチャを追加したい場合は <code>expect.extend</code>を使用します。 例えば、整数論のライブラリをテストしていて、数字が他の数字によって割り切れることを頻繁にアサートしているとしましょう。 それを<code>toBeDivisibleBy</code>マッチャに抽象化することができます:</p>
@@ -166,13 +166,13 @@ test(<span class="hljs-string">'even and odd numbers'</span>, () =&gt; {
 }
 </code></pre>
 <p>マッチャ は、2つのキーを持つオブジェクトを返す必要があります。 <code>pass</code>キーはマッチャの条件に合致するかどうかを示し、 <code>message</code>キーは失敗した場合にエラーメッセージを返す引数なしの関数を提供します。 したがって、<code>pass</code>が偽なら、 <code>message</code>は<code>expect(x).yourMatcher()</code>が失敗した場合のエラーメッセージを返す必要があります。 <code>pass</code>が真だった場合、 <code>message</code>は<code>expect(x).not.yourMatcher()</code>が失敗した場合のエラーメッセージを返す必要があります。</p>
-<p>These helper functions and properties can be found on <code>this</code> inside a custom matcher:</p>
+<p>これらのヘルパー関数とプロパティは独自マッチャの<code>this</code>内で確認することができます。</p>
 <h4><a class="anchor" aria-hidden="true" id="thisisnot"></a><a href="#thisisnot" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.isNot</code></h4>
 <p>マッチャがアサーションを反転させる否定の修飾子 <code>.not</code>を付けて呼ばれたかどうかを示す真偽値です。</p>
 <h4><a class="anchor" aria-hidden="true" id="thisequalsa-b"></a><a href="#thisequalsa-b" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.equals(a, b)</code></h4>
 <p>２つのオブジェクトが同じ値を(再帰的に) 持つ場合に <code>true</code>を返す深い等価関数です。</p>
 <h4><a class="anchor" aria-hidden="true" id="thisexpand"></a><a href="#thisexpand" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.expand</code></h4>
-<p>A boolean to let you know this matcher was called with an <code>expand</code> option. When Jest is called with the <code>--expand</code> flag, <code>this.expand</code> can be used to determine if Jest is expected to show full diffs and errors.</p>
+<p>このマッチャが <code>expand</code> オプション付きで呼び出されたことを示す真偽値です。 Jestが<code>--expand</code>フラグ付きで呼びされた場合、Jestが全ての差分とエラーを表示することを期待されているかを確認するのに、<code>this.expand</code>が利用できます。</p>
 <h4><a class="anchor" aria-hidden="true" id="thisutils"></a><a href="#thisutils" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.utils</code></h4>
 <p><a href="https://github.com/facebook/jest/tree/master/packages/jest-matcher-utils"><code>jest-matcher-utils</code></a>からexportされたもので主に構成される<code>this.utils</code>から利用できる多数の便利なツールがあります。</p>
 <p>最も有用なものにエラーメッセージを見やすくフォーマットする <code>matcherHint</code>、 <code>printExpected</code> そして<code>printReceived</code>があります。 例えば、 <code>toBe</code> マッチャの実装を見てみましょう:</p>
@@ -394,7 +394,7 @@ expect.addSnapshotSerializer(serializer);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobevalue"></a><a href="#tobevalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBe(value)</code></h3>
-<p>Use <code>.toBe</code> to compare primitive values or to check referential identity of object instances.</p>
+<p>プリミティブ値を比較したり、オブジェクトインスタンスの参照IDを確認したりするには、 <code>.toBe</code> を使用します。</p>
 <p>例えば以下のコードでは <code>can</code> オブジェクトのいくつかのプロパティを検証します。</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> can = {
   <span class="hljs-attr">name</span>: <span class="hljs-string">'pamplemousse'</span>,
@@ -411,8 +411,8 @@ describe(<span class="hljs-string">'the can'</span>, () =&gt; {
   });
 });
 </code></pre>
-<p>Don't use <code>.toBe</code> with floating-point numbers. 例えば、JavaScriptでは数値の丸めによって<code>0.2 + 0.1</code>と <code>0.3</code>は厳密には等価ではありません。 浮動小数点がある場合は、代わりに<code>.toBeCloseTo</code>を使用してください。</p>
-<p>Although the <code>.toBe</code> matcher <strong>checks</strong> referential identity, it <strong>reports</strong> a deep comparison of values if the assertion fails. If differences between properties do not help you to understand why a test fails, especially if the report is large, then you might move the comparison into the <code>expect</code> function. For example, to assert whether or not elements are the same instance:</p>
+<p>浮動小数点数に <code>.toBe</code> を使用しないでください。 例えば、JavaScriptでは数値の丸めによって<code>0.2 + 0.1</code>と <code>0.3</code>は厳密には等価ではありません。 浮動小数点がある場合は、代わりに<code>.toBeCloseTo</code>を使用してください。</p>
+<p><code>.toBe</code> マッチャー は 参照IDをチェック<strong>します</strong>が、アサーションが失敗した場合、 値の再帰的な比較を** 報告します**。 特にレポートが大きい場合には、プロパティ間の差分は、テストが失敗する理原因を解明することに寄与しません。 そうすると、比較処理を <code>expect</code> 関数の中に移すことでしょう 例えば、要素が同じインスタンスであるかどうかをアサートするには、次のようにします。</p>
 <ul>
 <li>rewrite <code>expect(received).toBe(expected)</code> as <code>expect(Object.is(received, expected)).toBe(true)</code></li>
 <li>rewrite <code>expect(received).not.toBe(expected)</code> as <code>expect(Object.is(received, expected)).toBe(false)</code></li>
@@ -522,12 +522,12 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobeclosetonumber-numdigits"></a><a href="#tobeclosetonumber-numdigits" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeCloseTo(number, numDigits)</code></h3>
-<p>Using exact equality with floating point numbers is a bad idea. Rounding means that intuitive things fail. For example, this test fails:</p>
+<p>浮動小数点数に対して等価性を正確に評価しようとすることは悪い考えです。 丸め誤差により、直感的には正しそうなテストが失敗するのです。 例えば、次のテストはうまく動きません。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'adding works sanely with decimals'</span>, () =&gt; {
   expect(<span class="hljs-number">0.2</span> + <span class="hljs-number">0.1</span>).toBe(<span class="hljs-number">0.3</span>); <span class="hljs-comment">// Fails!</span>
 });
 </code></pre>
-<p>It fails because in JavaScript, <code>0.2 + 0.1</code> is actually <code>0.30000000000000004</code>. Sorry.</p>
+<p>JavaScriptでは<code>0.2 + 0.1</code> は実際には <code>0.30000000000000004</code>なのでこのテストは失敗します。 残念！</p>
 <p>代わりに <code>.toBeCloseTo</code>を使用して下さい。 <code>numDigits</code>で小数点以下の何位まで確認するのかを制御できます。 例えば、 <code>0.2 + 0.1</code>が <code>0.3</code>に等しいことを小数点５位の精度で確認したい場合は、このようにテストできます:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'adding works sanely with decimals'</span>, () =&gt; {
   expect(<span class="hljs-number">0.2</span> + <span class="hljs-number">0.1</span>).toBeCloseTo(<span class="hljs-number">0.3</span>, <span class="hljs-number">5</span>);
@@ -535,14 +535,14 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
 </code></pre>
 <p><code>numDigits</code>のデフォルト値は２で、大抵のケースにおいて適切なデフォルト値であると証明されています。</p>
 <h3><a class="anchor" aria-hidden="true" id="tobedefined"></a><a href="#tobedefined" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeDefined()</code></h3>
-<p>変数がundefinedでないことを確認するには <code>.toBeDefined</code>を使用します。 For example, if you want to check that a function <code>fetchNewFlavorIdea()</code> returns <em>something</em>, you can write:</p>
+<p>変数がundefinedでないことを確認するには <code>.toBeDefined</code>を使用します。 例えば、関数 <code>fetchNewFlavorIdea()</code>が<em>何らかの値</em>を返すことを確認するなら、このように書くことができます。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'there is a new flavor idea'</span>, () =&gt; {
   expect(fetchNewFlavorIdea()).toBeDefined();
 });
 </code></pre>
 <p><code>expect(fetchNewFlavorIdea()).not.toBe(undefined)</code>とも書くことができますが、<code>undefined</code>を直接コード内で参照するのは避けたほうが実務上良いでしょう。</p>
 <h3><a class="anchor" aria-hidden="true" id="tobefalsy"></a><a href="#tobefalsy" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeFalsy()</code></h3>
-<p>Use <code>.toBeFalsy</code> when you don't care what a value is and you want to ensure a value is false in a boolean context. For example, let's say you have some application code that looks like:</p>
+<p>値が何であるか気にせず、真偽値として値が偽であることを確認したい場合は、 <code>.toBeFalsy</code> を使用してください。 たとえば、次のようなアプリケーションコードがあるとします。</p>
 <pre><code class="hljs css language-js">drinkSomeLaCroix();
 <span class="hljs-keyword">if</span> (!getErrors()) {
   drinkMoreLaCroix();
@@ -554,33 +554,33 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
   expect(getErrors()).toBeFalsy();
 });
 </code></pre>
-<p>In JavaScript, there are six falsy values: <code>false</code>, <code>0</code>, <code>''</code>, <code>null</code>, <code>undefined</code>, and <code>NaN</code>. Everything else is truthy.</p>
+<p>JavaScriptでは、偽と類推される６つの値があります: <code>false</code>、 <code>0</code>、 <code>''</code>、 <code>null</code>、 <code>undefined</code>、 そして <code>NaN</code>です。 他の全ては真と類推されます。</p>
 <h3><a class="anchor" aria-hidden="true" id="tobegreaterthannumber"></a><a href="#tobegreaterthannumber" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeGreaterThan(number)</code></h3>
-<p>To compare floating point numbers, you can use <code>toBeGreaterThan</code>. For example, if you want to test that <code>ouncesPerCan()</code> returns a value of more than 10 ounces, write:</p>
+<p>浮動小数点数を比較するには、 <code>toBeGreaterThan</code> を使用します。 例えば、 <code>ouncesPerCan()</code> が 10 オンスより大きい値を返すことをテストするには：</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'ounces per can is more than 10'</span>, () =&gt; {
   expect(ouncesPerCan()).toBeGreaterThan(<span class="hljs-number">10</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobegreaterthanorequalnumber"></a><a href="#tobegreaterthanorequalnumber" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeGreaterThanOrEqual(number)</code></h3>
-<p>To compare floating point numbers, you can use <code>toBeGreaterThanOrEqual</code>. For example, if you want to test that <code>ouncesPerCan()</code> returns a value of at least 12 ounces, write:</p>
+<p>浮動小数点数を比較するには、 <code>toBeGreaterThanOrEqual</code> を使用します。 例えば、 <code>ouncesPerCan()</code> が少なくとも 12 オンスの値を返すことをテストしたい場合は、次のように記述します。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'ounces per can is at least 12'</span>, () =&gt; {
   expect(ouncesPerCan()).toBeGreaterThanOrEqual(<span class="hljs-number">12</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobelessthannumber"></a><a href="#tobelessthannumber" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeLessThan(number)</code></h3>
-<p>To compare floating point numbers, you can use <code>toBeLessThan</code>. For example, if you want to test that <code>ouncesPerCan()</code> returns a value of less than 20 ounces, write:</p>
+<p>浮動小数点数を比較するには、 <code>toBeLessThan</code> を使用します。 たとえば、 <code>ouncesPerCan()</code> が 20 オンス未満の値を返すことをテストしたい場合は、次のように記述します。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'ounces per can is less than 20'</span>, () =&gt; {
   expect(ouncesPerCan()).toBeLessThan(<span class="hljs-number">20</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobelessthanorequalnumber"></a><a href="#tobelessthanorequalnumber" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeLessThanOrEqual(number)</code></h3>
-<p>To compare floating point numbers, you can use <code>toBeLessThanOrEqual</code>. For example, if you want to test that <code>ouncesPerCan()</code> returns a value of at most 12 ounces, write:</p>
+<p>浮動小数点数を比較するには、 <code>toBeLessThanOrEqual</code> を使用します。 たとえば、 <code>ouncesPerCan()</code> が最大 12 オンスの値を返すことをテストしたい場合は、次のように記述します。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'ounces per can is at least 12'</span>, () =&gt; {
   expect(ouncesPerCan()).toBeGreaterThanOrEqual(<span class="hljs-number">12</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobeinstanceofclass"></a><a href="#tobeinstanceofclass" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeInstanceOf(Class)</code></h3>
-<p>Use <code>.toBeInstanceOf(Class)</code> to check that an object is an instance of a class. This matcher uses <code>instanceof</code> underneath.</p>
+<p>オブジェクトがあるクラスのインスタンスであることを確認するには、 <code>.toBeInstanceOf(Class)</code> を使用してください。 このマッチャは <code>instanceof</code> を内部で使用します。</p>
 <pre><code class="hljs css language-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">A</span> </span>{}
 
 expect(<span class="hljs-keyword">new</span> A()).toBeInstanceOf(A);
@@ -588,7 +588,7 @@ expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</sp
 expect(<span class="hljs-keyword">new</span> A()).toBeInstanceOf(<span class="hljs-built_in">Function</span>); <span class="hljs-comment">// throws</span>
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobenull"></a><a href="#tobenull" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeNull()</code></h3>
-<p><code>.toBeNull()</code> is the same as <code>.toBe(null)</code> but the error messages are a bit nicer. So use <code>.toBeNull()</code> when you want to check that something is null.</p>
+<p><code>.toBeNull()</code> は <code>.toBe(null)</code> と同じですが、エラーメッセージは少し優れています。 ですから、 <code>.toBeNull()</code> を使って、 null であることを検証してください。</p>
 <pre><code class="hljs css language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">bloop</span>(<span class="hljs-params"></span>) </span>{
   <span class="hljs-keyword">return</span> <span class="hljs-literal">null</span>;
 }
@@ -598,19 +598,19 @@ test(<span class="hljs-string">'bloop returns null'</span>, () =&gt; {
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobetruthy"></a><a href="#tobetruthy" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeTruthy()</code></h3>
-<p>Use <code>.toBeTruthy</code> when you don't care what a value is and you want to ensure a value is true in a boolean context. For example, let's say you have some application code that looks like:</p>
+<p>値が何であるか気にせず、真偽値として値が真であることを確認したい場合は、 <code>.toBeTruthy</code> を使用してください。 たとえば、次のようなアプリケーションコードがあるとします。</p>
 <pre><code class="hljs css language-js">drinkSomeLaCroix();
 <span class="hljs-keyword">if</span> (thirstInfo()) {
   drinkMoreLaCroix();
 }
 </code></pre>
-<p><code>thirstInfo</code>がどんなものを返すかは特に気にしないでしょう - <code>true</code>もしくは複雑な値を返すかもしれませんが、それでもコードは動作します。 So if you want to test that <code>thirstInfo</code> will be truthy after drinking some La Croix, you could write:</p>
+<p><code>thirstInfo</code>がどんなものを返すかは特に気にしないでしょう - <code>true</code>もしくは複雑な値を返すかもしれませんが、それでもコードは動作します。 だからラクロワ飲料を飲んだ後に<code>thirstInfo</code>が真(またはそう類推される値) を返すことをテストするには、次のように書くことができます:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'drinking La Croix leads to having thirst info'</span>, () =&gt; {
   drinkSomeLaCroix();
   expect(thirstInfo()).toBeTruthy();
 });
 </code></pre>
-<p>In JavaScript, there are six falsy values: <code>false</code>, <code>0</code>, <code>''</code>, <code>null</code>, <code>undefined</code>, and <code>NaN</code>. Everything else is truthy.</p>
+<p>JavaScriptでは、偽と類推される６つの値があります: <code>false</code>、 <code>0</code>、 <code>''</code>、 <code>null</code>、 <code>undefined</code>、 そして <code>NaN</code>です。 他の全ては真と類推されます。</p>
 <h3><a class="anchor" aria-hidden="true" id="tobeundefined"></a><a href="#tobeundefined" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeUndefined()</code></h3>
 <p>変数がundefinedであることを確認するには <code>.toBeUndefined</code>を使用します。 例えば、 関数<code>bestDrinkForFlavor(flavor)</code>が<code>'octopus'</code>味が与えられた時に<code>undefined</code>を返すことを確認したいとしましょう。タコ味の美味しい飲み物なんてありませんから:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'the best drink for octopus flavor is undefined'</span>, () =&gt; {
@@ -619,7 +619,7 @@ test(<span class="hljs-string">'bloop returns null'</span>, () =&gt; {
 </code></pre>
 <p><code>expect(bestDrinkForFlavor('octopus')).toBe(undefined)</code>とも書くことができますが、<code>undefined</code>を直接コード内で参照するのは避けたほうが実務上良いでしょう。</p>
 <h3><a class="anchor" aria-hidden="true" id="tobenan"></a><a href="#tobenan" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeNaN()</code></h3>
-<p>Use <code>.toBeNaN</code> when checking a value is <code>NaN</code>.</p>
+<p>値が <code>NaN</code>であるかを検証するには、 <code>.toBeNaN</code> を使用してください。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'passes when value is NaN'</span>, () =&gt; {
   expect(<span class="hljs-literal">NaN</span>).toBeNaN();
   expect(<span class="hljs-number">1</span>).not.toBeNaN();
@@ -642,8 +642,8 @@ test(<span class="hljs-string">'bloop returns null'</span>, () =&gt; {
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="toequalvalue"></a><a href="#toequalvalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toEqual(value)</code></h3>
-<p>Use <code>.toEqual</code> to compare recursively all properties of object instances (also known as &quot;deep&quot; equality).</p>
-<p>For example, <code>.toEqual</code> and <code>.toBe</code> behave differently in this test suite, so all the tests pass:</p>
+<p>オブジェクトインスタンスのすべてのプロパティを再帰的に等しいかの検証 (「深い」等価性としても知られています)には、 <code>.toEqual</code> を使用します。</p>
+<p>例えば、 <code>.toEqual</code> と <code>.toBe</code>は以下のテストスイートで異なる振る舞いをするので、全てのテストがパスします:</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> can1 = {
   <span class="hljs-attr">flavor</span>: <span class="hljs-string">'grapefruit'</span>,
   <span class="hljs-attr">ounces</span>: <span class="hljs-number">12</span>,
@@ -665,7 +665,7 @@ describe(<span class="hljs-string">'the La Croix cans on my desk'</span>, () =&g
 <blockquote>
 <p>注意: <code>.toEqual</code>は２つのエラーに <em>deep equality</em>を実施しません。 エラーオブジェクトの <code>message</code>プロパティのみを等価性の比較対象とします。 エラーに対するテストは <code>.toThrow</code>マッチャの使用をお勧めします。</p>
 </blockquote>
-<p>If differences between properties do not help you to understand why a test fails, especially if the report is large, then you might move the comparison into the <code>expect</code> function. For example, use <code>equals</code> method of <code>Buffer</code> class to assert whether or not buffers contain the same content:</p>
+<p>特にレポートが大きい場合には、プロパティ間の差分は、テストが失敗する理原因を解明することに寄与しません。 そうすると、比較処理を <code>expect</code> 関数の中に移すことでしょう 例えば、バッファに同じ内容が含まれているかどうかをアサートするには、 <code>Buffer</code> クラスの <code>equals</code> メソッドを使用して下さい。</p>
 <ul>
 <li>rewrite <code>expect(received).toEqual(expected)</code> as <code>expect(received.equals(expected)).toBe(true)</code></li>
 <li>rewrite <code>expect(received).not.toEqual(expected)</code> as <code>expect(received.equals(expected)).toBe(false)</code></li>
@@ -733,7 +733,7 @@ test(<span class="hljs-string">'the house has my desired features'</span>, () =&
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tomatchsnapshotoptionalstring"></a><a href="#tomatchsnapshotoptionalstring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toMatchSnapshot(optionalString)</code></h3>
 <p>This ensures that a value matches the most recent snapshot. Check out <a href="/docs/ja/22.x/snapshot-testing">the Snapshot Testing guide</a> for more information.</p>
-<p>You can also specify an optional snapshot name. Otherwise, the name is inferred from the test.</p>
+<p>スナップショット名を任意に指定することもできます。 Otherwise, the name is inferred from the test.</p>
 <h3><a class="anchor" aria-hidden="true" id="tothrowerror"></a><a href="#tothrowerror" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toThrow(error)</code></h3>
 <p>次の別名でも同様となります: <code>.toThrowError(error)</code></p>
 <p>関数が呼ばれた際にエラーを投げることを確認するには<code>.toThrow</code> を使用して下さい。 例えば、タコ味なんて気持ち悪すぎて飲めないので<code>drinkFlavor('octopus')</code> が例外を投げることをテストしたい場合、次のように書くことができます:</p>
@@ -746,7 +746,7 @@ test(<span class="hljs-string">'the house has my desired features'</span>, () =&
 <blockquote>
 <p>注意： 関数の中のコードはラップしてください。そうしなければエラーが補足されず、アサーションは失敗します。</p>
 </blockquote>
-<p>特定のエラーがスローされることをテストしたい場合は、<code>toThrow</code>に引数を与えることができます。 The argument can be a string that should be contained in the error message, a class for the error, or a regex that should match the error message. 例えば、<code>drinkFlavor</code>はこのようにコーディングされたとしましょう:</p>
+<p>特定のエラーがスローされることをテストしたい場合は、<code>toThrow</code>に引数を与えることができます。 エラーメッセージに含まれるべき文字列、 エラーのクラス、またはエラーメッセージと一致する正規表現を引数に取ることができます。 例えば、<code>drinkFlavor</code>はこのようにコーディングされたとしましょう:</p>
 <pre><code class="hljs css language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">drinkFlavor</span>(<span class="hljs-params">flavor</span>) </span>{
   <span class="hljs-keyword">if</span> (flavor == <span class="hljs-string">'octopus'</span>) {
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> DisgustingFlavorError(<span class="hljs-string">'yuck, octopus flavor'</span>);

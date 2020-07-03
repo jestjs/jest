@@ -151,7 +151,7 @@ mockFn.mock.instances[<span class="hljs-number">1</span>] === b; <span class="hl
 <p>Does everything that <a href="#mockfnmockreset"><code>mockFn.mockReset()</code></a> does, and also restores the original (non-mocked) implementation.</p>
 <p>あるテストケースでモック関数を利用して他のテストケースでは本物のモジュールに戻したいときに便利です。</p>
 <p><code>mockFn.mockRestore</code>は<code>jest.spyOn</code>によって作成されたモックに対してのみ動作することに注意して下さい。 このため手動で <code>jest.fn()</code>を割り当てた場合は自分で復元作業を行わなければならないことに気をつけて下さい。</p>
-<p>The <a href="configuration.html#restoremocks-boolean"><code>restoreMocks</code></a> configuration option is available to restore mocks automatically between tests.</p>
+<p>テスト間で自動的にモックを復元するために <a href="configuration.html#restoremocks-boolean"><code>restoreMocks</code></a>の設定オプションが利用できます。</p>
 <h3><a class="anchor" aria-hidden="true" id="mockfnmockimplementationfn"></a><a href="#mockfnmockimplementationfn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>mockFn.mockImplementation(fn)</code></h3>
 <p>モックの実装として使用される関数を受け取ります。 モック自体はそれ自身から出てきたインスタンスと中に与えられた全てのコールをいまだ記録しています - 違いはモックがコールされたときに実装された関数も実行されることです。</p>
 <p><em>注意: <code>jest.fn(implementation)</code> は <code>jest.fn().mockImplementation(implementation)</code> の省略形です。</em></p>

@@ -98,7 +98,7 @@ expect(mockCallback.mock.calls[<span class="hljs-number">0</span>][<span class="
 expect(mockCallback.mock.calls[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>]).toBe(<span class="hljs-number">1</span>);
 </code></pre>
 <h2><a class="anchor" aria-hidden="true" id="mock-プロパティ"></a><a href="#mock-プロパティ" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.mock</code> プロパティ</h2>
-<p>All mock functions have this special <code>.mock</code> property, which is where data about how the function has been called is kept. <code>.mock</code> プロパティには、各呼び出し時の <code>this</code>の値も記録されているため、<code>this</code> の値のチェックも可能です。</p>
+<p>全てのモック関数はその関数がどのように呼びだされたかを記録しておく、この特別な<code>.mock</code>プロパティを持っています。 <code>.mock</code> プロパティには、各呼び出し時の <code>this</code>の値も記録されているため、<code>this</code> の値のチェックも可能です。</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> myMock = jest.fn();
 
 <span class="hljs-keyword">const</span> a = <span class="hljs-keyword">new</span> myMock();
@@ -109,7 +109,7 @@ bound();
 <span class="hljs-built_in">console</span>.log(myMock.mock.instances);
 <span class="hljs-comment">// &gt; [ &lt;a&gt;, &lt;b&gt; ]</span>
 </code></pre>
-<p>These mock members are very useful in tests to assert how these functions get called, or instantiated:</p>
+<p>これらのモック要素は関数が呼ばれたりインスタンス化されたかを確認するのにとても便利です:</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// The function was called exactly once</span>
 expect(someMockFunction.mock.calls.length).toBe(<span class="hljs-number">1</span>);
 

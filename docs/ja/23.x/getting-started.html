@@ -80,13 +80,13 @@
 <p><a href="https://www.npmjs.com/"><code>npm</code></a> の場合は次のように書きます。</p>
 <pre><code class="hljs css language-bash">npm install --save-dev jest
 </code></pre>
-<p>Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a <code>sum.js</code> file:</p>
+<p>2つの数値を加算する関数のテストを書くことから始めてみましょう。 まず、 <code>sum.js</code> ファイルを作成します。</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">a, b</span>) </span>{
   <span class="hljs-keyword">return</span> a + b;
 }
 <span class="hljs-built_in">module</span>.exports = sum;
 </code></pre>
-<p>Then, create a file named <code>sum.test.js</code>. This will contain our actual test:</p>
+<p>次に、 <code>sum.test.js</code> という名前のファイルを作成します。 これには実際のテストが含まれます:</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> sum = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./sum'</span>);
 
 test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
@@ -122,18 +122,18 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 <pre><code class="hljs css language-bash">yarn add --dev babel-jest babel-core regenerator-runtime
 </code></pre>
 <blockquote>
-<p>Note: If you are using Babel version 7 then you need to install <code>babel-jest</code>, <code>babel-core@^7.0.0-bridge.0</code> and <code>@babel/core</code> with the following command:</p>
+<p>注意：Babelのバージョン７を使用しているなら、<code>babel-jest</code>、<code>babel-core@^7.0.0-bridge.0</code>と<code>@babel/core</code>を以下のコマンドでインストールする必要があります：</p>
 <pre><code class="hljs css language-bash"></code></pre>
 </blockquote>
 <p>yarn add --dev babel-jest babel-core@^7.0.0-bridge.0 @babel/core regenerator-runtime</p>
 <pre><code class="hljs">
-You will need to use <span class="hljs-code">`babel.config.js`</span> in order to transpile <span class="hljs-code">`node_modules`</span>. See https://babeljs.io/docs/en/next/config-files for more information.
+<span class="hljs-code">`node_modules`</span> をトランスパイルするには、 <span class="hljs-code">`babel.config.js`</span> を使用する必要があります。 詳細は https://babeljs.io/docs/en/next/config-files を参照してください。
 
-You can also see the example in the Jest repository: https://github.com/facebook/jest/tree/54f4d4ebd3d1a11d65962169f493ce41efdd784f/examples/babel-7
+Jestリポジトリの例も参照することができます: https://github.com/facebook/jest/tree/54f4d4ebd3d1a11d65962169f493ce41efdd784f/examples/babel-7
 
 <span class="hljs-emphasis">*注: `npm` v3,4 か `yarn` を使用している場合は、`regenerator-runtime` を明示的にインストールする必要ありません。*</span>
 
-プロジェクトのルートフォルダーに [<span class="hljs-string"> `.babelrc`</span>](<span class="hljs-link">https://babeljs.io/docs/usage/babelrc/</span>) ファイルを追加することを忘れないでください。 For example, if you are using ES6 and [<span class="hljs-string">React.js</span>](<span class="hljs-link">https://facebook.github.io/react/</span>) with the [<span class="hljs-string">`babel-preset-env`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-env/</span>) and [<span class="hljs-string">`babel-preset-react`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-react/</span>) presets:
+プロジェクトのルートフォルダーに [<span class="hljs-string"> `.babelrc`</span>](<span class="hljs-link">https://babeljs.io/docs/usage/babelrc/</span>) ファイルを追加することを忘れないでください。 たとえば、ES6 と [<span class="hljs-string"> React.js</span>](<span class="hljs-link">https://facebook.github.io/react/</span>) を使用する場合は、 [<span class="hljs-string"> `babel-preset-env`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-env/</span>) と [<span class="hljs-string"> `babel-preset-react`</span>](<span class="hljs-link">https://babeljs.io/docs/plugins/preset-react/</span>) をプリセットします。
 
 <span class="hljs-code">```json
 {

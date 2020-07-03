@@ -102,7 +102,7 @@
 <blockquote>
 <p>注意: モックを正しく行うには、Jest は<code>require/import</code> 宣言と同じスコープとなるよう、 <code>jest.mock('moduleName')</code> が必要です。</p>
 </blockquote>
-<p>Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case we use the core (built in) <code>fs</code> module.</p>
+<p>以下は指定されたディレクトリ内の全てのファイルの要約を提供するモジュールの分かりやすい例です。 In this case we use the core (built in) <code>fs</code> module.</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// FileSummarizer.js</span>
 <span class="hljs-meta">'use strict'</span>;
 
@@ -179,7 +179,7 @@ describe(<span class="hljs-string">'listFilesInDirectorySync'</span>, () =&gt; {
   });
 });
 </code></pre>
-<p>The example mock shown here uses <a href="/docs/ja/24.x/jest-object#jestgenmockfrommodulemodulename"><code>jest.genMockFromModule</code></a> to generate an automatic mock, and overrides its default behavior. これはお勧めの方法ですが、必ずしもこのようにする必要はありません。 自動モックを全く使いたくない場合は、単純にモックファイルから独自に作成した関数をエクスポートすれば良いだけです。 完全に手作業でモックを作成することの欠点の1つは、手作業であること - つまりモックする対象のモジュールが変更するごとに手動で更新しなければならないことです。 このため、目的に沿うのなら自動モックをそのまま使うか拡張することをお勧めします。</p>
+<p>ここに示されているモックの例では、自動モックを生成するために <a href="/docs/ja/24.x/jest-object#jestgenmockfrommodulemodulename"><code>jest.genMockFromModule</code></a> を使用し、デフォルトの動作を上書きします。 これはお勧めの方法ですが、必ずしもこのようにする必要はありません。 自動モックを全く使いたくない場合は、単純にモックファイルから独自に作成した関数をエクスポートすれば良いだけです。 完全に手作業でモックを作成することの欠点の1つは、手作業であること - つまりモックする対象のモジュールが変更するごとに手動で更新しなければならないことです。 このため、目的に沿うのなら自動モックをそのまま使うか拡張することをお勧めします。</p>
 <p>マニュアルモックと実部を確実に同期しておくには、マニュアルモックの中で<a href="/docs/ja/24.x/jest-object#jestrequireactualmodulename"><code>jest.requireActual(moduleName)</code></a> 関数で実物を呼び出しておき、エクスポートする前にそれらをモック関数に置き換えるようにすると便利です。</p>
 <p>このコードの例は<a href="https://github.com/facebook/jest/tree/master/examples/manual-mocks">examples/manual-mocks</a>で確認できます。</p>
 <h2><a class="anchor" aria-hidden="true" id="es-module-importを利用する"></a><a href="#es-module-importを利用する" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>ES module importを利用する</h2>
