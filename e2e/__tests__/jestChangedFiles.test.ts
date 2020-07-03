@@ -254,6 +254,49 @@ test('monitors only root paths for git', async () => {
   ).toEqual(['file2.txt', 'file3.txt']);
 });
 
+it('does not find changes in files with no diff, for git', async () => {
+  const roots = [path.resolve(DIR)];
+
+  // create an empty file, commit it to "master"
+  writeFiles(DIR, {
+    'file1.txt': '',
+  });
+  run(`${GIT} init`, DIR);
+  run(`${GIT} add file1.txt`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "initial"`, DIR);
+
+  // check out a new branch, jestChangedFilesSpecBase, to use later in diff
+  run(`${GIT} checkout -b jestChangedFilesSpecBase`, DIR);
+
+  // check out second branch, jestChangedFilesSpecMod, modify file & commit
+  run(`${GIT} checkout -b jestChangedFilesSpecMod`, DIR);
+  writeFiles(DIR, {
+    'file1.txt': 'modified file1',
+  });
+  run(`${GIT} add file1.txt`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "modified"`, DIR);
+
+  // still on jestChangedFilesSpecMod branch, "revert" back to empty file and commit
+  writeFiles(DIR, {
+    'file1.txt': '',
+  });
+  run(`${GIT} add file1.txt`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "removemod"`, DIR);
+
+  // check that passing in no changedSince arg doesn't return any unstaged / other changes
+  const {changedFiles: files} = await getChangedFilesForRoots(roots, {});
+  expect(Array.from(files)).toEqual([]);
+
+  // check that in diff from `jestChangedFilesSpecBase` branch, no changed files are reported
+  const {changedFiles: filesExplicitBaseBranch} = await getChangedFilesForRoots(
+    roots,
+    {
+      changedSince: 'jestChangedFilesSpecBase',
+    },
+  );
+  expect(Array.from(filesExplicitBaseBranch)).toEqual([]);
+});
+
 test('handles a bad revision for "changedSince", for git', async () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
@@ -266,7 +309,7 @@ test('handles a bad revision for "changedSince", for git', async () => {
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
-  const {exitCode, stderr} = runJest(DIR, ['--changedSince=blablabla']);
+  const {exitCode, stderr} = runJest(DIR, ['--changedSince=^blablabla']);
 
   expect(exitCode).toBe(1);
   expect(wrap(stderr)).toMatchSnapshot();
