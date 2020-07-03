@@ -17,16 +17,15 @@ import throat from 'throat';
 import isError from './isError';
 import type {Jasmine} from './types';
 import type Spec from './jasmine/Spec';
-import type {QueueableFn} from './queueRunner';
-
-interface DoneFn {
-  (): void;
-  fail: (error: Error) => void;
-}
+import type {DoneFn, QueueableFn} from './queueRunner';
 
 function isPromise(obj: any): obj is PromiseLike<unknown> {
   return obj && typeof obj.then === 'function';
 }
+
+const doneFnNoop = () => {};
+
+doneFnNoop.fail = () => {};
 
 function promisifyLifeCycleFunction(
   originalFn: (beforeAllFunction: QueueableFn['fn'], timeout?: number) => void,
@@ -34,7 +33,7 @@ function promisifyLifeCycleFunction(
 ) {
   return function <T>(
     fn:
-      | ((done: (error?: any) => void) => void | PromiseLike<T>)
+      | ((done: DoneFn) => void | PromiseLike<T>)
       | (() => Promise<T>)
       | GeneratorFunction
       | undefined,
@@ -64,7 +63,7 @@ function promisifyLifeCycleFunction(
     // didn't return a promise.
     const asyncJestLifecycle = function (done: DoneFn) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
-      const returnValue = wrappedFn.call({}, () => {});
+      const returnValue = wrappedFn.call({}, doneFnNoop);
 
       if (isPromise(returnValue)) {
         returnValue.then(done.bind(null, null), (error: Error) => {
@@ -97,7 +96,7 @@ function promisifyIt(
 ) {
   return function (
     specName: string,
-    fn?: (done: (error?: any) => void) => void | PromiseLike<void>,
+    fn?: (done: DoneFn) => void | PromiseLike<void>,
     timeout?: number,
   ): Spec {
     if (!fn) {
@@ -123,7 +122,7 @@ function promisifyIt(
 
     const asyncJestTest = function (done: DoneFn) {
       const wrappedFn = isGeneratorFn(fn) ? co.wrap(fn) : fn;
-      const returnValue = wrappedFn.call({}, () => {});
+      const returnValue = wrappedFn.call({}, doneFnNoop);
 
       if (isPromise(returnValue)) {
         returnValue.then(done.bind(null, null), (error: Error) => {
