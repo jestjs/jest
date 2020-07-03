@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 class CancelError extends Error {
   constructor() {
     super('Promise was canceled');
