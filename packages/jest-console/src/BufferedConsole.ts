@@ -159,6 +159,16 @@ export default class BufferedConsole extends Console {
     }
   }
 
+  timeLog(label = 'default', ...data: Array<unknown>): void {
+    const startTime = this._timers[label];
+
+    if (startTime) {
+      const endTime = new Date();
+      const time = endTime.getTime() - startTime.getTime();
+      this._log('time', format(`${label}: ${formatTime(time)}`, ...data));
+    }
+  }
+
   warn(firstArg: unknown, ...rest: Array<unknown>): void {
     this._log('warn', format(firstArg, ...rest));
   }
