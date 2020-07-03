@@ -29,6 +29,6 @@ typescript@^3.7.4:
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 7b29bcb0576cc81266c5b4e6f84bb5a760483fa80bcd7d9588b0d3e16063c733552acf686c8541b93be2cf29ec5d8360ec927509b11e4e723f0dc91366b9cb1a
+  checksum: dcadfa6d7c90af4ac23181cccda22bdc7270f23a2c8773ab0b6047e2b9b86bcd885da5c5acc020addc1a0df042940ab8e9bbfb33aedcf884bea554fe60fccd32
   languageName: node
   linkType: hard
