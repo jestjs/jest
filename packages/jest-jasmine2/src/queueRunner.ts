@@ -30,13 +30,9 @@ type PromiseCallback = (() => void | PromiseLike<void>) | undefined | null;
 
 export default function queueRunner(
   options: Options,
-): {
+): PromiseLike<void> & {
   cancel: () => void;
   catch: (onRejected?: PromiseCallback) => Promise<void>;
-  then: (
-    onFulfilled?: PromiseCallback,
-    onRejected?: PromiseCallback,
-  ) => Promise<void>;
 } {
   const token = new PCancelable<void>((onCancel, resolve) => {
     onCancel(resolve);
