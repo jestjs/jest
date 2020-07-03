@@ -17,7 +17,7 @@ const config: ValidationOptions = {
   error: () => {},
   exampleConfig: {key: 'value', test: 'case'},
   recursive: true,
-  recursiveBlacklist: [],
+  recursiveDenylist: [],
   title: {
     deprecation: 'Deprecation Warning',
     error: 'Validation Error',

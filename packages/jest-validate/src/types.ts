@@ -33,6 +33,7 @@ export type ValidationOptions = {
   exampleConfig: Record<string, any>;
   recursive?: boolean;
   recursiveBlacklist?: Array<string>;
+  recursiveDenylist?: Array<string>;
   title?: Title;
   unknown?: (
     config: Record<string, any>,
