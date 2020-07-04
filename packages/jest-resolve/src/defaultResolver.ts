@@ -21,11 +21,19 @@ type ResolverOptions = {
   rootDir?: Config.Path;
 };
 
+declare global {
+  namespace NodeJS {
+    export interface ProcessVersions {
+      // the "pnp" version named isn't in DefinitelyTyped
+      pnp?: unknown;
+    }
+  }
+}
+
 export default function defaultResolver(
   path: Config.Path,
   options: ResolverOptions,
 ): Config.Path {
-  // @ts-expect-error: the "pnp" version named isn't in DefinitelyTyped
   if (process.versions.pnp) {
     return pnpResolver(path, options);
   }
