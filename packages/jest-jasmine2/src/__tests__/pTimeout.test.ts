@@ -39,7 +39,7 @@ describe('pTimeout', () => {
   it('calls `onTimeout` on timeout.', async () => {
     const onTimeout = jest.fn();
     // A Promise that never resolves or rejects.
-    const promise = new Promise(() => {});
+    const promise = new Promise<void>(() => {});
     const timeoutPromise = pTimeout(
       promise,
       1000,
