@@ -99,7 +99,7 @@ export default function (j$: Jasmine) {
       specDefinitions: SpecDefinitionsFn,
     ) => Suite;
 
-    constructor(_options?: Record<string, unknown>) {
+    constructor() {
       let totalSpecsDefined = 0;
 
       let catchExceptions = true;
