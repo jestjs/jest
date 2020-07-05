@@ -643,9 +643,7 @@ describe('ScriptTransformer', () => {
   it('creates transformer with config', () => {
     const transformerConfig = {};
     config = Object.assign(config, {
-      transform: [
-        ['\\.js$', 'configureable-preprocessor', transformerConfig],
-      ],
+      transform: [['\\.js$', 'configureable-preprocessor', transformerConfig]],
     });
 
     const scriptTransformer = new ScriptTransformer(config);
