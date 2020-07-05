@@ -10,9 +10,7 @@
     "node": ">= 10.14.2"
   },
   "dependencies": {
-    "@jest/types": "^26.1.0"
-  },
-  "devDependencies": {
+    "@jest/types": "^26.1.0",
     "@types/node": "*"
   },
   "license": "MIT",

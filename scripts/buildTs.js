@@ -32,7 +32,7 @@ packagesWithTs.forEach(pkgDir => {
 
   assert.ok(pkg.types, `Package ${pkg.name} is missing \`types\` field`);
 
-  assert.equal(
+  assert.strictEqual(
     pkg.types,
     pkg.main.replace(/\.js$/, '.d.ts'),
     `\`main\` and \`types\` field of ${pkg.name} does not match`,
@@ -72,8 +72,11 @@ Promise.all(
         globbed.map(file => Promise.all([file, readFilePromise(file, 'utf8')])),
       );
 
-      const filesWithReferences = files
+      const filesWithTypeReferences = files
         .filter(([, content]) => content.includes('/// <reference types'))
+        .filter(hit => hit.length > 0);
+
+      const filesWithReferences = filesWithTypeReferences
         .map(([name, content]) => [
           name,
           content
@@ -97,6 +100,24 @@ Promise.all(
         console.error(filesWithReferences);
 
         process.exit(1);
+      }
+
+      const filesWithNodeReference = filesWithTypeReferences.map(
+        ([filename]) => filename,
+      );
+
+      if (filesWithNodeReference.length > 0) {
+        const pkg = require(pkgDir + '/package.json');
+
+        assert.ok(
+          pkg.dependencies,
+          `Package \`${pkg.name}\` is missing \`dependencies\``,
+        );
+        assert.strictEqual(
+          pkg.dependencies['@types/node'],
+          '*',
+          `Package \`${pkg.name}\` is missing a dependency on \`@types/node\``,
+        );
       }
     }),
   ),

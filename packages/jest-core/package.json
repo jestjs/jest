@@ -10,6 +10,7 @@
     "@jest/test-result": "^26.1.0",
     "@jest/transform": "^26.1.0",
     "@jest/types": "^26.1.0",
+    "@types/node": "*",
     "ansi-escapes": "^4.2.1",
     "chalk": "^4.0.0",
     "exit": "^0.1.2",
@@ -38,7 +39,6 @@
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
     "@types/micromatch": "^4.0.0",
-    "@types/node": "*",
     "@types/rimraf": "^3.0.0",
     "jest-snapshot-serializer-raw": "^1.1.0"
   },

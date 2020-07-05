@@ -11,6 +11,7 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@jest/types": "^26.1.0",
+    "@types/node": "*",
     "chalk": "^4.0.0",
     "graceful-fs": "^4.2.4",
     "is-ci": "^2.0.0",
@@ -19,8 +20,7 @@
   "devDependencies": {
     "@types/graceful-fs": "^4.1.2",
     "@types/is-ci": "^2.0.0",
-    "@types/micromatch": "^4.0.0",
-    "@types/node": "*"
+    "@types/micromatch": "^4.0.0"
   },
   "engines": {
     "node": ">= 10.14.2"
