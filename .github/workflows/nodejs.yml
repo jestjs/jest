@@ -26,13 +26,13 @@ jobs:
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: ubuntu-latest-node-12.x-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ubuntu-latest-node-12.x-yarn-
-      - uses: actions/setup-node@v1
+      - uses: actions/setup-node@v2.1.0
         with:
           node-version: 12.x
       - name: install
@@ -67,14 +67,14 @@ jobs:
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2.1.0
         with:
           node-version: ${{ matrix.node-version }}
       - name: install
