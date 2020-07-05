@@ -14,7 +14,7 @@ import Defaults from '../Defaults';
 
 import {DEFAULT_JS_PATTERN} from '../constants';
 
-const DEFAULT_CSS_PATTERN = '^.+\\.(css)$';
+const DEFAULT_CSS_PATTERN = '\\.(css)$';
 
 jest
   .mock('jest-resolve')
@@ -779,7 +779,7 @@ describe('babel-jest', () => {
   });
 
   it('uses babel-jest if babel-jest is explicitly specified in a custom transform options', () => {
-    const customJSPattern = '^.+\\.js$';
+    const customJSPattern = '\\.js$';
     const {options} = normalize(
       {
         rootDir: '/root',

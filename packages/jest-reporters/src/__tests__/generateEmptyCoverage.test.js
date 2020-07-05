@@ -51,7 +51,7 @@ describe('generateEmptyCoverage', () => {
         cacheDirectory: os.tmpdir(),
         cwd: rootDir,
         rootDir,
-        transform: [['^.+\\.js$', require.resolve('babel-jest')]],
+        transform: [['\\.js$', require.resolve('babel-jest')]],
       }),
     );
 
@@ -95,7 +95,7 @@ describe('generateEmptyCoverage', () => {
         cacheDirectory: os.tmpdir(),
         cwd: rootDir,
         rootDir,
-        transform: [['^.+\\.js$', require.resolve('babel-jest')]],
+        transform: [['\\.js$', require.resolve('babel-jest')]],
       }),
     );
 
@@ -124,7 +124,7 @@ describe('generateEmptyCoverage', () => {
         cacheDirectory: os.tmpdir(),
         cwd: rootDir,
         rootDir,
-        transform: [['^.+\\.js$', require.resolve('babel-jest')]],
+        transform: [['\\.js$', require.resolve('babel-jest')]],
       }),
     );
 
