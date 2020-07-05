@@ -13,7 +13,7 @@ aliases:
   - &filter-ignore-gh-pages
     branches:
       ignore: gh-pages
-  - &install yarn install --cache-folder ~/.cache/yarn && yarn build:js
+  - &install yarn install && yarn build:js
 
 version: 2
 jobs:
