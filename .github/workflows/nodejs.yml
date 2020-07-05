@@ -26,7 +26,7 @@ jobs:
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: ubuntu-latest-node-12.x-yarn-${{ hashFiles('**/yarn.lock') }}
@@ -69,7 +69,7 @@ jobs:
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn cache dir)"
-      - uses: actions/cache@v1
+      - uses: actions/cache@v2
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}
