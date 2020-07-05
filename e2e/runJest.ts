@@ -23,6 +23,7 @@ type RunJestOptions = {
   skipPkgJsonCheck?: boolean; // don't complain if can't find package.json
   stripAnsi?: boolean; // remove colors from stdout and stderr,
   timeout?: number; // kill the Jest process after X milliseconds
+  env?: Record<string, string>;
 };
 
 // return the result of the spawned process:
@@ -73,7 +74,7 @@ function spawnJest(
     `,
     );
   }
-  const env = Object.assign({}, process.env, {FORCE_COLOR: '0'});
+  const env = Object.assign({}, process.env, {FORCE_COLOR: '0'}, options.env);
 
   if (options.nodeOptions) env['NODE_OPTIONS'] = options.nodeOptions;
   if (options.nodePath) env['NODE_PATH'] = options.nodePath;

@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Get yarn cache
         id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
       - uses: actions/cache@v2
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
@@ -36,11 +36,9 @@ jobs:
         with:
           node-version: 12.x
       - name: install
-        run: yarn install-no-ts-build
+        run: yarn
       - name: build
-        run: node scripts/build.js
-      - name: run tsc
-        run: yarn build:ts
+        run: yarn build
       - name: verify TypeScript@3.8 compatibility
         run: yarn verify-old-ts
       - name: run eslint
@@ -68,7 +66,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Get yarn cache
         id: yarn-cache
-        run: echo "::set-output name=dir::$(yarn cache dir)"
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
       - uses: actions/cache@v2
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
@@ -80,7 +78,9 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: install
-        run: yarn install-no-ts-build
+        run: yarn
+      - name: build
+        run: yarn build:js
       - name: run tests
         run: yarn test-ci-partial
         env:

@@ -16,11 +16,12 @@ const DIR = path.resolve(__dirname, '..', 'pnp');
 skipSuiteOnWindows();
 
 beforeEach(() => {
-  runYarn(DIR);
+  runYarn(DIR, {YARN_NODE_LINKER: 'pnp'});
 });
 
 it('successfully runs the tests inside `pnp/`', () => {
   const {json} = runWithJson(DIR, ['--no-cache', '--coverage'], {
+    env: {YARN_NODE_LINKER: 'pnp'},
     nodeOptions: `--require ${DIR}/.pnp.js`,
   });
   expect(json.success).toBe(true);
