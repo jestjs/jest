@@ -7,14 +7,13 @@ aliases:
 
   - &save-cache
     paths:
-      - node_modules
-      - website/node_modules
+      - ~/.cache/yarn
     key: v3-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
   - &filter-ignore-gh-pages
     branches:
       ignore: gh-pages
-  - &install yarn install && yarn build:js
+  - &install yarn install --cache-folder ~/.cache/yarn && yarn build:js
 
 version: 2
 jobs:
