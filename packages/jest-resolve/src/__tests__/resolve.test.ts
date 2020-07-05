@@ -10,11 +10,10 @@ import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {ModuleMap} from 'jest-haste-map';
 import Resolver = require('../');
-// @ts-expect-error: js file
 import userResolver from '../__mocks__/userResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
 import defaultResolver from '../defaultResolver';
-import {ResolverConfig} from '../types';
+import type {ResolverConfig} from '../types';
 
 jest.mock('../__mocks__/userResolver');
 
