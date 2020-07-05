@@ -17,7 +17,6 @@
 - `[jest-jasmine2]` Convert `PCancelable` to TypeScript ([#10215](https://github.com/facebook/jest/pull/10215))
 - `[jest-jasmine2]` Refine typings of `queueRunner` ([#10215](https://github.com/facebook/jest/pull/10215))
 - `[jest-jasmine2]` Remove usage of `Function` type ([#10216](https://github.com/facebook/jest/pull/10216))
-- `[jest-mock]` Improve types ([#10239](https://github.com/facebook/jest/pull/10239))
 - `[jest-resolve]` Improve types ([#10239](https://github.com/facebook/jest/pull/10239))
 
 ### Performance
