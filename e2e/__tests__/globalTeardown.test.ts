@@ -10,7 +10,7 @@ import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {createDirectory} from 'jest-util';
 import runJest, {json as runWithJson} from '../runJest';
-import {cleanup, run} from '../Utils';
+import {cleanup, runYarn} from '../Utils';
 
 const DIR = path.join(tmpdir(), 'jest-global-teardown');
 const project1DIR = path.join(tmpdir(), 'jest-global-teardown-project-1');
@@ -18,7 +18,7 @@ const project2DIR = path.join(tmpdir(), 'jest-global-teardown-project-2');
 const e2eDir = path.resolve(__dirname, '../global-teardown');
 
 beforeAll(() => {
-  run('yarn', e2eDir);
+  runYarn(e2eDir);
 });
 
 beforeEach(() => {
