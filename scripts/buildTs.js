@@ -103,15 +103,24 @@ Promise.all(
         process.exit(1);
       }
 
-      const filesWithNodeReference = filesWithTypeReferences.filter(
-        hit => hit.length > 0,
-      ).map(([filename]) => filename);
+      const filesWithNodeReference = filesWithTypeReferences
+        .filter(hit => hit.length > 0)
+        .map(([filename]) => filename);
 
       if (filesWithNodeReference.length > 0) {
-        const {packageJson} = await readPkgUp({cwd: path.dirname(filesWithNodeReference[0])})
+        const {packageJson} = await readPkgUp({
+          cwd: path.dirname(filesWithNodeReference[0]),
+        });
 
-        assert.ok(packageJson.dependencies, `Package \`${packageJson.name}\` is missing \`dependencies\``);
-        assert.strictEqual(packageJson.dependencies['@types/node'], '*', `Package \`${packageJson.name}\` is missing a dependency on \`@types/node\``);
+        assert.ok(
+          packageJson.dependencies,
+          `Package \`${packageJson.name}\` is missing \`dependencies\``,
+        );
+        assert.strictEqual(
+          packageJson.dependencies['@types/node'],
+          '*',
+          `Package \`${packageJson.name}\` is missing a dependency on \`@types/node\``,
+        );
       }
     }),
   ),
