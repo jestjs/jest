@@ -20,8 +20,13 @@ export type Options = {
   userContext: any;
 };
 
+export interface DoneFn {
+  (error?: any): void;
+  fail: (error: Error) => void;
+}
+
 export type QueueableFn = {
-  fn: (done: (error?: any) => void) => void;
+  fn: (done: DoneFn) => void;
   timeout?: () => number;
   initError?: Error;
 };
