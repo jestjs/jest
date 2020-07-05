@@ -16,6 +16,7 @@ const util = require('util');
 const chalk = require('chalk');
 const execa = require('execa');
 const globby = require('globby');
+const readPkgUp = require('read-pkg-up');
 const throat = require('throat');
 const {getPackages} = require('./buildUtils');
 
@@ -32,7 +33,7 @@ packagesWithTs.forEach(pkgDir => {
 
   assert.ok(pkg.types, `Package ${pkg.name} is missing \`types\` field`);
 
-  assert.equal(
+  assert.strictEqual(
     pkg.types,
     pkg.main.replace(/\.js$/, '.d.ts'),
     `\`main\` and \`types\` field of ${pkg.name} does not match`,
@@ -72,8 +73,11 @@ Promise.all(
         globbed.map(file => Promise.all([file, readFilePromise(file, 'utf8')])),
       );
 
-      const filesWithReferences = files
-        .filter(([, content]) => content.includes('/// <reference types'))
+      const filesWithTypeReferences = files.filter(([, content]) =>
+        content.includes('/// <reference types'),
+      );
+
+      const filesWithReferences = filesWithTypeReferences
         .map(([name, content]) => [
           name,
           content
@@ -97,6 +101,17 @@ Promise.all(
         console.error(filesWithReferences);
 
         process.exit(1);
+      }
+
+      const filesWithNodeReference = filesWithTypeReferences.filter(
+        hit => hit.length > 0,
+      ).map(([filename]) => filename);
+
+      if (filesWithNodeReference.length > 0) {
+        const {packageJson} = await readPkgUp({cwd: path.dirname(filesWithNodeReference[0])})
+
+        assert.ok(packageJson.dependencies, `Package \`${packageJson.name}\` is missing \`dependencies\``);
+        assert.strictEqual(packageJson.dependencies['@types/node'], '*', `Package \`${packageJson.name}\` is missing a dependency on \`@types/node\``);
       }
     }),
   ),

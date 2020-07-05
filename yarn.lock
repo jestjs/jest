@@ -11036,6 +11036,7 @@ fsevents@^1.2.7:
     "@types/co": ^4.6.0
     "@types/dedent": ^0.7.0
     "@types/graceful-fs": ^4.1.3
+    "@types/node": "*"
     "@types/stack-utils": ^1.0.1
     chalk: ^4.0.0
     co: ^4.6.0
@@ -11155,6 +11156,7 @@ fsevents@^1.2.7:
     "@jest/fake-timers": ^26.1.0
     "@jest/types": ^26.1.0
     "@types/jsdom": ^16.2.1
+    "@types/node": "*"
     jest-mock: ^26.1.0
     jest-util: ^26.1.0
     jsdom: ^16.2.2
@@ -11168,6 +11170,7 @@ fsevents@^1.2.7:
     "@jest/environment": ^26.1.0
     "@jest/fake-timers": ^26.1.0
     "@jest/types": ^26.1.0
+    "@types/node": "*"
     jest-mock: ^26.1.0
     jest-util: ^26.1.0
   languageName: unknown
@@ -11250,6 +11253,7 @@ fsevents@^1.2.7:
     "@jest/types": ^26.1.0
     "@types/babel__traverse": ^7.0.4
     "@types/co": ^4.6.2
+    "@types/node": "*"
     chalk: ^4.0.0
     co: ^4.6.0
     expect: ^26.1.0
@@ -16578,6 +16582,7 @@ fsevents@^1.2.7:
     prettier: ^2.0.1
     progress: ^2.0.0
     promise: ^8.0.2
+    read-pkg-up: ^7.0.1
     resolve: ^1.15.0
     rimraf: ^3.0.0
     semver: ^7.3.2

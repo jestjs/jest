@@ -11,6 +11,7 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@jest/types": "^26.1.0",
+    "@types/node": "*",
     "chalk": "^4.0.0",
     "jest-message-util": "^26.1.0",
     "jest-util": "^26.1.0",

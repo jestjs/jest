@@ -7,10 +7,10 @@
     "directory": "packages/jest-serializer"
   },
   "devDependencies": {
-    "@types/graceful-fs": "^4.1.3",
-    "@types/node": "*"
+    "@types/graceful-fs": "^4.1.3"
   },
   "dependencies": {
+    "@types/node": "*",
     "graceful-fs": "^4.2.4"
   },
   "engines": {
