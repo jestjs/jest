@@ -17,7 +17,7 @@ describe('Runtime', () => {
     jest.resetModules();
 
     createRuntime = require('createRuntime');
-  })
+  });
 
   describe('internalModule', () => {
     it('loads modules and applies transforms', () =>
