@@ -7,12 +7,12 @@
 
 import * as path from 'path';
 import {json as runWithJson} from '../runJest';
-import {run} from '../Utils';
+import {runYarn} from '../Utils';
 
 const DIR = path.resolve(__dirname, '..', 'babel-plugin-jest-hoist');
 
 beforeEach(() => {
-  run('yarn', DIR);
+  runYarn(DIR);
 });
 
 it('successfully runs the tests inside `babel-plugin-jest-hoist/`', () => {

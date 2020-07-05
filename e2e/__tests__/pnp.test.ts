@@ -8,7 +8,7 @@
 import * as path from 'path';
 import {skipSuiteOnWindows} from '@jest/test-utils';
 import {json as runWithJson} from '../runJest';
-import {run} from '../Utils';
+import {runYarn} from '../Utils';
 
 const DIR = path.resolve(__dirname, '..', 'pnp');
 
@@ -16,7 +16,7 @@ const DIR = path.resolve(__dirname, '..', 'pnp');
 skipSuiteOnWindows();
 
 beforeEach(() => {
-  run('yarn', DIR, {YARN_NODE_LINKER: 'pnp'});
+  runYarn(DIR, {YARN_NODE_LINKER: 'pnp'});
 });
 
 it('successfully runs the tests inside `pnp/`', () => {
