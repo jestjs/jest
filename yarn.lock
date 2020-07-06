@@ -18507,22 +18507,22 @@ fsevents@^1.2.7:
   linkType: hard
 
 "typescript@*, typescript@^3.9.2":
-  version: 3.9.2
-  resolution: "typescript@npm:3.9.2"
+  version: 3.9.6
+  resolution: "typescript@npm:3.9.6"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: bf7cbf2f8c695aa942be60da470aaaf902c2e9b3693ed5141fa6de5632f42f471b7e83bd9d4dcff5e0fa37eff746d61cfe1e6949019ad70f0f98d1f60ccfd3ae
+  checksum: 75d8e3610ca435b0feaa3eb714ef3aa9060ec72621da3c62c45ceee1d8d0ddcbd8ff2a816de2d24ab28dcd2249953edb640d34595d59e491656156da4c2903fc
   languageName: node
   linkType: hard
 
 "typescript@patch:typescript@*#builtin<compat/typescript>, typescript@patch:typescript@^3.9.2#builtin<compat/typescript>":
-  version: 3.9.2
-  resolution: "typescript@patch:typescript@npm%3A3.9.2#builtin<compat/typescript>::version=3.9.2&hash=64df9d"
+  version: 3.9.6
+  resolution: "typescript@patch:typescript@npm%3A3.9.6#builtin<compat/typescript>::version=3.9.6&hash=64df9d"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: d176f576eb66e90df93305925d31d9dfa8fe5789cd9ce59a8006cd1429ca644aa63ff6f87432937e232a8ba1b578d47b677ea10a8af4fc871a761357f7cd872f
+  checksum: de0b64b2df571ddb6a87e058605b011b1d7e2ed5e1bb27ba658251a380041abbbdf5bdf8da25d5605ac84e7fb3882a816b9a283ffaddedebfde1a57db4c18c30
   languageName: node
   linkType: hard
 
