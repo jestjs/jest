@@ -11662,7 +11662,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-util@npm:^25.2.6, jest-util@npm:^25.5.0":
+"jest-util@npm:^25.5.0":
   version: 25.5.0
   resolution: "jest-util@npm:25.5.0"
   dependencies:
@@ -15279,7 +15279,7 @@ fsevents@^1.2.7:
     ansi-regex: ^5.0.0
     ansi-styles: ^4.0.0
     immutable: 4.0.0-rc.9
-    jest-util: ^25.2.6
+    jest-util: ^26.1.0
     react: "*"
     react-dom: "*"
     react-is: ^16.12.0
