@@ -11301,16 +11301,15 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"jest-junit@npm:^10.0.0":
-  version: 10.0.0
-  resolution: "jest-junit@npm:10.0.0"
+"jest-junit@npm:^11.0.1":
+  version: 11.0.1
+  resolution: "jest-junit@npm:11.0.1"
   dependencies:
-    jest-validate: ^24.9.0
-    mkdirp: ^0.5.1
+    mkdirp: ^1.0.4
     strip-ansi: ^5.2.0
     uuid: ^3.3.3
     xml: ^1.0.1
-  checksum: 3e5ea3a74cf24e06d45dc02a8fa929ea51abf0a80be0c65e55764057cc8369a5d7e5bc42fb5e92e1e35b54f8d50d0e4bb56397689c92aafb2e552ef4eb2bac38
+  checksum: 8077cef261fa4bebc654da79e1bf5b8b8488b0f652c6238142d56a6c426bee4fb06edca2dfca3a138355348ecb75314622fc0e726d8bbe2ff87476c0795cfbe2
   languageName: node
   linkType: hard
 
@@ -11689,7 +11688,7 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"jest-validate@npm:^24.7.0, jest-validate@npm:^24.9.0":
+"jest-validate@npm:^24.7.0":
   version: 24.9.0
   resolution: "jest-validate@npm:24.9.0"
   dependencies:
@@ -13397,7 +13396,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"mkdirp@npm:*, mkdirp@npm:^1.0.3":
+"mkdirp@npm:*, mkdirp@npm:^1.0.3, mkdirp@npm:^1.0.4":
   version: 1.0.4
   resolution: "mkdirp@npm:1.0.4"
   bin:
@@ -16556,7 +16555,7 @@ fsevents@^1.2.7:
     istanbul-lib-coverage: ^3.0.0
     istanbul-lib-report: ^3.0.0
     istanbul-reports: ^3.0.0
-    jest-junit: ^10.0.0
+    jest-junit: ^11.0.1
     jest-silent-reporter: ^0.2.1
     jest-snapshot-serializer-raw: ^1.1.0
     jest-watch-typeahead: ^0.5.0
