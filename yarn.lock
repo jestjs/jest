@@ -5,75 +5,80 @@ __metadata:
   version: 4
   cacheKey: 5
 
-"@angular/common@npm:^9.0.0":
-  version: 9.1.4
-  resolution: "@angular/common@npm:9.1.4"
+"@angular/common@npm:^10.0.2":
+  version: 10.0.2
+  resolution: "@angular/common@npm:10.0.2"
+  dependencies:
+    tslib: ^2.0.0
   peerDependencies:
-    "@angular/core": 9.1.4
+    "@angular/core": 10.0.2
     rxjs: ^6.5.3
-    tslib: ^1.10.0
-  checksum: 7eabefecdb99fa293cc361a823a7ff61985cf58a317eac15beff528ed213ab7101cb00f88e54d07015b210dcf2fc313edf0df1c2f43d2e4f999966f248c1d5f3
+  checksum: fe4a9ff8b354e9dc843b7f87574bf36714cde0348ba1459060590d74d5887b41b0e264148586cc36bdeb19190e62ffeaa1721a1c1c95fb966c9a9b5ff2a52c07
   languageName: node
   linkType: hard
 
-"@angular/compiler@npm:^9.0.0":
-  version: 9.1.4
-  resolution: "@angular/compiler@npm:9.1.4"
-  peerDependencies:
-    tslib: ^1.10.0
-  checksum: 79f72cc2f2cc4b4fbfde3ee170517fcd9ee73da98999e5bc3fc7da825c330a40d5977ab1f04134be3bb2ee740ec8d9f2e9b7c3d53bb83407b16c03767d26146f
+"@angular/compiler@npm:^10.0.2":
+  version: 10.0.2
+  resolution: "@angular/compiler@npm:10.0.2"
+  dependencies:
+    tslib: ^2.0.0
+  checksum: a223cd2511ce2379bbadffe36903daf4079d4218ccee8ec8722c3e321355a1078a77443177b5d53cae32485a37c7ba8b51074e905d26bbe67377c419cf124233
   languageName: node
   linkType: hard
 
-"@angular/core@npm:^9.0.0":
-  version: 9.1.4
-  resolution: "@angular/core@npm:9.1.4"
+"@angular/core@npm:^10.0.2":
+  version: 10.0.2
+  resolution: "@angular/core@npm:10.0.2"
+  dependencies:
+    tslib: ^2.0.0
   peerDependencies:
     rxjs: ^6.5.3
-    tslib: ^1.10.0
     zone.js: ~0.10.3
-  checksum: 4cf45e4b2bc89b3fa3d3de06303e786004b9e5747000011a93be494d45569f7558ae78680884dd22cc03db03a038393956fb58b94beacb24ce008713eddad23e
+  checksum: f47b299fc32b8378cbf3bf1ac9afa352bca90d031be1e1456b15144cbdd31ebc9eb03c198a443c88e53658a97ece1781cd53767015821d52fe8e3c27ad37e16e
   languageName: node
   linkType: hard
 
-"@angular/forms@npm:^9.0.0":
-  version: 9.1.4
-  resolution: "@angular/forms@npm:9.1.4"
+"@angular/forms@npm:^10.0.2":
+  version: 10.0.2
+  resolution: "@angular/forms@npm:10.0.2"
+  dependencies:
+    tslib: ^2.0.0
   peerDependencies:
-    "@angular/common": 9.1.4
-    "@angular/core": 9.1.4
-    "@angular/platform-browser": 9.1.4
+    "@angular/common": 10.0.2
+    "@angular/core": 10.0.2
+    "@angular/platform-browser": 10.0.2
     rxjs: ^6.5.3
-    tslib: ^1.10.0
-  checksum: 48df2f4c514d72effdaef06c96983090a2abe438add7a9c6aceb1c354e20a7cdaa3fffc00329add730207a1473b94604e2f66cb14f227ab71b4a5e2ffbd2debc
+  checksum: b4d7e534c2b7239450c597a89613db9528f52af1e88011128009890d8b963834036e6e996d742489e74d1632d5ed7f58039beb27c8ce19144da475f954b9198c
   languageName: node
   linkType: hard
 
-"@angular/platform-browser-dynamic@npm:^9.0.0":
-  version: 9.1.4
-  resolution: "@angular/platform-browser-dynamic@npm:9.1.4"
+"@angular/platform-browser-dynamic@npm:^10.0.2":
+  version: 10.0.2
+  resolution: "@angular/platform-browser-dynamic@npm:10.0.2"
+  dependencies:
+    tslib: ^2.0.0
   peerDependencies:
-    "@angular/common": 9.1.4
-    "@angular/compiler": 9.1.4
-    "@angular/core": 9.1.4
-    "@angular/platform-browser": 9.1.4
-    tslib: ^1.10.0
-  checksum: 4638b2b2d8948dddd9cbc46fd55760ee2a794fb8db3778ea948fd6ce34ae54384d43876ea8465f1f52c593496ec39b5e5d5fc6fb5b02575a311c1164fd23959f
+    "@angular/common": 10.0.2
+    "@angular/compiler": 10.0.2
+    "@angular/core": 10.0.2
+    "@angular/platform-browser": 10.0.2
+  checksum: 6403e5d680d486743c7917676e6dc800db613a451a80529bd98a9ab60764fc82b48995f9030cc5963a5f4a4eaa4ac9fee01c0c70aea1107858afa5599c33d364
   languageName: node
   linkType: hard
 
-"@angular/platform-browser@npm:^9.0.0":
-  version: 9.1.4
-  resolution: "@angular/platform-browser@npm:9.1.4"
+"@angular/platform-browser@npm:^10.0.2":
+  version: 10.0.2
+  resolution: "@angular/platform-browser@npm:10.0.2"
+  dependencies:
+    tslib: ^2.0.0
   peerDependencies:
-    "@angular/animations": 9.1.4
-    "@angular/common": 9.1.4
-    "@angular/core": 9.1.4
-    tslib: ^1.10.0
+    "@angular/animations": 10.0.2
+    "@angular/common": 10.0.2
+    "@angular/core": 10.0.2
   peerDependenciesMeta:
     "@angular/animations":
       optional: true
-  checksum: 659e99040e1fff1f8abfd6f0f0f55abfd5440a9cd09cd59399248273a0ed483f476e00a400196ea4b1ba01461a72f2abcf53d8bccb3917fe2ab041d02f019f8b
+  checksum: 4197650b4e6353ee230cccdf4b415c3bea15fdb6d91cd277899243e6d55c47afd7c1486ed32ea6c3f4c6fcacc9af1f13e8c222b325e94d46927bf7b6ecd6bd6d
   languageName: node
   linkType: hard
 
@@ -3951,12 +3956,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "angular@workspace:examples/angular"
   dependencies:
-    "@angular/common": ^9.0.0
-    "@angular/compiler": ^9.0.0
-    "@angular/core": ^9.0.0
-    "@angular/forms": ^9.0.0
-    "@angular/platform-browser": ^9.0.0
-    "@angular/platform-browser-dynamic": ^9.0.0
+    "@angular/common": ^10.0.2
+    "@angular/compiler": ^10.0.2
+    "@angular/core": ^10.0.2
+    "@angular/forms": ^10.0.2
+    "@angular/platform-browser": ^10.0.2
+    "@angular/platform-browser-dynamic": ^10.0.2
     "@babel/core": "*"
     "@babel/plugin-proposal-class-properties": "*"
     "@babel/plugin-proposal-decorators": "*"
@@ -3969,7 +3974,7 @@ __metadata:
     jest: "*"
     jest-zone-patch: "*"
     rxjs: ^6.5.3
-    tslib: ^1.10.0
+    tslib: ^2.0.0
     typescript: "*"
     zone.js: ~0.10.2
   languageName: unknown
@@ -18408,6 +18413,13 @@ fsevents@^1.2.7:
   version: 1.11.1
   resolution: "tslib@npm:1.11.1"
   checksum: d40eba08de267b2d3c458ddbf51f9010a45b8e752d3bf8c0fed63e266afc9277c6a26e65e51223335b8753f9f106aeb600e704f2a6eae05729160671a97c52e7
+  languageName: node
+  linkType: hard
+
+"tslib@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "tslib@npm:2.0.0"
+  checksum: a7369a224f12e223fb42f2a720389601a24a1e1c96c55bf0d8d4b60c131e574c175ae23578b8d1bd3f4ec790c7e0a82b43733f022f866d48a23aeadd3910755d
   languageName: node
   linkType: hard
 
