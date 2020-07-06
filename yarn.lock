@@ -1691,19 +1691,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/console@npm:^25.5.0":
-  version: 25.5.0
-  resolution: "@jest/console@npm:25.5.0"
-  dependencies:
-    "@jest/types": ^25.5.0
-    chalk: ^3.0.0
-    jest-message-util: ^25.5.0
-    jest-util: ^25.5.0
-    slash: ^3.0.0
-  checksum: 6561fd24227a610d362ab6f8c7c0a2196d4cb92777a48e5e59b08a24b4445127a1cce7d9416548a6f8b5f647333fd9b2d7688372fdd5cb1876fcb81abb0c5402
-  languageName: node
-  linkType: hard
-
 "@jest/core@^26.1.0, @jest/core@workspace:packages/jest-core":
   version: 0.0.0-use.local
   resolution: "@jest/core@workspace:packages/jest-core"
@@ -1878,18 +1865,6 @@ __metadata:
     "@jest/types": ^24.9.0
     "@types/istanbul-lib-coverage": ^2.0.0
   checksum: e8e91f3dbdbd47c25b3ce72c33dc14590b3d650485d0b6955d3c19028a82e16a29641cf3f766a856e992b1af8c9e824b098d7ea36bc98f30532a4cbfba8e080a
-  languageName: node
-  linkType: hard
-
-"@jest/test-result@npm:^25.5.0":
-  version: 25.5.0
-  resolution: "@jest/test-result@npm:25.5.0"
-  dependencies:
-    "@jest/console": ^25.5.0
-    "@jest/types": ^25.5.0
-    "@types/istanbul-lib-coverage": ^2.0.0
-    collect-v8-coverage: ^1.0.0
-  checksum: 6c83c46c7f5ea0d3edde7361b78da033c18a8f4fd9e6c1324fbea52f49b50af3fbbfb3afbcb3e137b022f0c3e4e6aeb746165650260591cf69f5d4ad9cd018bc
   languageName: node
   linkType: hard
 
@@ -4052,7 +4027,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ansi-escapes@npm:^4.2.1":
+"ansi-escapes@npm:^4.2.1, ansi-escapes@npm:^4.3.1":
   version: 4.3.1
   resolution: "ansi-escapes@npm:4.3.1"
   dependencies:
@@ -11371,22 +11346,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-message-util@npm:^25.5.0":
-  version: 25.5.0
-  resolution: "jest-message-util@npm:25.5.0"
-  dependencies:
-    "@babel/code-frame": ^7.0.0
-    "@jest/types": ^25.5.0
-    "@types/stack-utils": ^1.0.1
-    chalk: ^3.0.0
-    graceful-fs: ^4.2.4
-    micromatch: ^4.0.2
-    slash: ^3.0.0
-    stack-utils: ^1.0.1
-  checksum: b60d49c713e22028e7a64359ca976cf5e0e4a05d4b85c0a47cab67bb1ff7aecbd4bf846c67864b93d098f45d9ae28bb9648fef40f97ccb1938df4c88760ba178
-  languageName: node
-  linkType: hard
-
 "jest-mock@^26.1.0, jest-mock@workspace:packages/jest-mock":
   version: 0.0.0-use.local
   resolution: "jest-mock@workspace:packages/jest-mock"
@@ -11432,13 +11391,6 @@ fsevents@^1.2.7:
     "@types/node": "*"
   languageName: unknown
   linkType: soft
-
-"jest-regex-util@npm:^25.2.1":
-  version: 25.2.6
-  resolution: "jest-regex-util@npm:25.2.6"
-  checksum: 142a583c4c206c6c121120974b9b9d11a87d51f4a3787a292b7d922b4926e75e448dfd79bcceaf756c6e78209ee2d33339e6ceda2e7b8cb6e46cb4ba548a891e
-  languageName: node
-  linkType: hard
 
 "jest-repl@workspace:packages/jest-repl":
   version: 0.0.0-use.local
@@ -11661,19 +11613,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-util@npm:^25.5.0":
-  version: 25.5.0
-  resolution: "jest-util@npm:25.5.0"
-  dependencies:
-    "@jest/types": ^25.5.0
-    chalk: ^3.0.0
-    graceful-fs: ^4.2.4
-    is-ci: ^2.0.0
-    make-dir: ^3.0.0
-  checksum: bb85a315091bf21fabb2c41b00edc190d388a0fb8aa8d271fde02df2b627bdfa864246b1390ffd90714bd1429fa1107fef7c85ed8915f46b299a98040c14fce6
-  languageName: node
-  linkType: hard
-
 "jest-validate@^26.1.0, jest-validate@workspace:packages/jest-validate":
   version: 0.0.0-use.local
   resolution: "jest-validate@workspace:packages/jest-validate"
@@ -11702,22 +11641,24 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-watch-typeahead@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "jest-watch-typeahead@npm:0.5.0"
+"jest-watch-typeahead@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "jest-watch-typeahead@npm:0.6.0"
   dependencies:
-    ansi-escapes: ^4.2.1
-    chalk: ^3.0.0
-    jest-regex-util: ^25.2.1
-    jest-watcher: ^25.2.4
+    ansi-escapes: ^4.3.1
+    chalk: ^4.0.0
+    jest-regex-util: ^26.0.0
+    jest-watcher: ^26.0.0
     slash: ^3.0.0
-    string-length: ^3.1.0
+    string-length: ^4.0.1
     strip-ansi: ^6.0.0
-  checksum: 83db7c4e70f3d2b418bb7dde90049dfb919aa218b2f61d0b157dbddd379257b7be3f3310efb42585f7ba8ef58c33ba76ee5b8ea4d1440e85a5574f376a14a8ee
+  peerDependencies:
+    jest: ^26.0.0
+  checksum: 99cb2b4ad383e5e049054befd4d3005d322eb3362e1eaa24d81497f72a77aa8f93f5f2d7f60046032e954b8ddd128a80afd81cbefaacec0131e210a096603489
   languageName: node
   linkType: hard
 
-"jest-watcher@^26.1.0, jest-watcher@workspace:packages/jest-watcher":
+"jest-watcher@^26.0.0, jest-watcher@^26.1.0, jest-watcher@workspace:packages/jest-watcher":
   version: 0.0.0-use.local
   resolution: "jest-watcher@workspace:packages/jest-watcher"
   dependencies:
@@ -11730,20 +11671,6 @@ fsevents@^1.2.7:
     string-length: ^4.0.1
   languageName: unknown
   linkType: soft
-
-"jest-watcher@npm:^25.2.4":
-  version: 25.5.0
-  resolution: "jest-watcher@npm:25.5.0"
-  dependencies:
-    "@jest/test-result": ^25.5.0
-    "@jest/types": ^25.5.0
-    ansi-escapes: ^4.2.1
-    chalk: ^3.0.0
-    jest-util: ^25.5.0
-    string-length: ^3.1.0
-  checksum: c79647b605032e3842adfce77d3235773b8e3e218e79503e3737063f212b4de050686f93b0784a1f6d023acdca443c5141904d040de466c3d5bd7fb5a68457a0
-  languageName: node
-  linkType: hard
 
 "jest-website@workspace:website":
   version: 0.0.0-use.local
@@ -16558,7 +16485,7 @@ fsevents@^1.2.7:
     jest-junit: ^11.0.1
     jest-silent-reporter: ^0.2.1
     jest-snapshot-serializer-raw: ^1.1.0
-    jest-watch-typeahead: ^0.5.0
+    jest-watch-typeahead: ^0.6.0
     jquery: ^3.2.1
     lerna: ^3.20.2
     micromatch: ^4.0.2
@@ -17475,16 +17402,6 @@ fsevents@^1.2.7:
   version: 1.1.0
   resolution: "strict-uri-encode@npm:1.1.0"
   checksum: 6c80f6998a45414d7c124772383cc10ce7bd22586af80762407cded1569666564fb8c0a4c9c997ac39a1116d46dfffc5d57135e759a0acb66a4da1191f5a3a4a
-  languageName: node
-  linkType: hard
-
-"string-length@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "string-length@npm:3.1.0"
-  dependencies:
-    astral-regex: ^1.0.0
-    strip-ansi: ^5.2.0
-  checksum: 10b2df41a57675f3d9dde96788261a4a37612c57929455b3c5fbbc2d7e6823432ba303321636f62a1f183cc8632db49dc81bd60e167ed21cd709570533a591ce
   languageName: node
   linkType: hard
 
