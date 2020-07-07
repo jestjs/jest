@@ -198,8 +198,7 @@ const createInsertionParser = (
     CallExpression({node: {arguments: args, callee}}: {node: CallExpression}) {
       if (
         callee.type !== 'MemberExpression' ||
-        callee.property.type !== 'Identifier' ||
-        callee.property.loc == null
+        callee.property.type !== 'Identifier'
       ) {
         return;
       }
