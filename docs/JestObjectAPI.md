@@ -387,7 +387,7 @@ Example:
 ```js
 jest.mock('../myModule', () => {
   // Require the original module to not be mocked...
-  const originalModule = jest.requireActual(moduleName);
+  const originalModule = jest.requireActual('../myModule');
 
   return {
     __esModule: true, // Use it when dealing with esModules
