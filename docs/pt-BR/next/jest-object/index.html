@@ -369,7 +369,7 @@ test(<span class="hljs-string">'moduleName 2'</span>, () =&gt; {
 <p>Exemplo:</p>
 <pre><code class="hljs css language-js">jest.mock(<span class="hljs-string">'../myModule'</span>, () =&gt; {
   <span class="hljs-comment">// Require the original module to not be mocked...</span>
-  <span class="hljs-keyword">const</span> originalModule = jest.requireActual(moduleName);
+  <span class="hljs-keyword">const</span> originalModule = jest.requireActual(<span class="hljs-string">'../myModule'</span>);
 
   <span class="hljs-keyword">return</span> {
     <span class="hljs-attr">__esModule</span>: <span class="hljs-literal">true</span>, <span class="hljs-comment">// Use it when dealing with esModules</span>
