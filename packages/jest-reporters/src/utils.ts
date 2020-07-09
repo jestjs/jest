@@ -99,11 +99,25 @@ const getValuesCurrentTestCases = (
   let numTodoTests = 0;
   let numTotalTests = 0;
   currentTestCases.forEach(({testCaseResult: {status}}) => {
-    numFailingTests += status === 'failed' ? 1 : 0;
-    numPassingTests += status === 'passed' ? 1 : 0;
-    numPendingTests += status === 'skipped' ? 1 : 0;
-    numTodoTests += status === 'todo' ? 1 : 0;
-    numTotalTests += 1;
+    switch (status) {
+      case 'failed': {
+        numFailingTests++;
+        break;
+      }
+      case 'passed': {
+        numPassingTests++;
+        break;
+      }
+      case 'skipped': {
+        numPendingTests++;
+        break;
+      }
+      case 'todo': {
+        numTodoTests++;
+        break;
+      }
+    }
+    numTotalTests++;
   });
 
   return {
@@ -162,29 +176,37 @@ export const getSummary = (
       : suitesTotal) +
     ` total`;
 
+  const updatedTestsFailed = testsFailed
+    ? chalk.bold.red(
+        `${testsFailed + valuesForCurrentTestCases.numFailingTests} failed`,
+      ) + ', '
+    : '';
+  const updatedTestsPending = testsPending
+    ? chalk.bold.yellow(
+        `${testsPending + valuesForCurrentTestCases.numPendingTests} skipped`,
+      ) + ', '
+    : '';
+  const updatedTestsTodo = testsTodo
+    ? chalk.bold.magenta(
+        `${testsTodo + valuesForCurrentTestCases.numTodoTests} todo`,
+      ) + ', '
+    : '';
+  const updatedTestsPassed = testsPassed
+    ? chalk.bold.green(
+        `${testsPassed + valuesForCurrentTestCases.numPassingTests} passed`,
+      ) + ', '
+    : '';
+  const updatedTestsTotal = `${
+    testsTotal + valuesForCurrentTestCases.numTotalTests
+  } total`;
+
   const tests =
     chalk.bold('Tests:       ') +
-    (testsFailed
-      ? chalk.bold.red(
-          `${testsFailed + valuesForCurrentTestCases.numFailingTests} failed`,
-        ) + ', '
-      : '') +
-    (testsPending
-      ? chalk.bold.yellow(
-          `${testsPending + valuesForCurrentTestCases.numPendingTests} skipped`,
-        ) + ', '
-      : '') +
-    (testsTodo
-      ? chalk.bold.magenta(
-          `${testsTodo + valuesForCurrentTestCases.numTodoTests} todo`,
-        ) + ', '
-      : '') +
-    (testsPassed
-      ? chalk.bold.green(
-          `${testsPassed + valuesForCurrentTestCases.numPassingTests} passed`,
-        ) + ', '
-      : '') +
-    `${testsTotal + valuesForCurrentTestCases.numTotalTests} total`;
+    updatedTestsFailed +
+    updatedTestsPending +
+    updatedTestsTodo +
+    updatedTestsPassed +
+    updatedTestsTotal;
 
   const snapshots =
     chalk.bold('Snapshots:   ') +

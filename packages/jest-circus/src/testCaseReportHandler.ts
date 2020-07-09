@@ -6,11 +6,12 @@
  */
 
 import type {Circus} from '@jest/types';
+import TestRunner = require('jest-runner');
 import {makeSingleTestResult, parseSingleTestResult} from './utils';
 
 const testCaseReportHandler = (
   testPath: string,
-  sendMessageToJest: (eventName: string, args: Array<unknown>) => unknown,
+  sendMessageToJest: TestRunner.TestFileEvent,
 ) => (event: Circus.Event) => {
   switch (event.name) {
     case 'test_done': {

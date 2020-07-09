@@ -31,25 +31,6 @@ export default class ReporterDispatcher {
     );
   }
 
-  /**
-   * @deprecated
-   */
-  async onTestResult(
-    test: Test,
-    testResult: TestResult,
-    results: AggregatedResult,
-  ): Promise<void> {
-    for (const reporter of this._reporters) {
-      reporter.onTestResult &&
-        (await reporter.onTestResult(test, testResult, results));
-    }
-
-    // Release memory if unused later.
-    testResult.sourceMaps = undefined;
-    testResult.coverage = undefined;
-    testResult.console = undefined;
-  }
-
   async onTestFileResult(
     test: Test,
     testResult: TestResult,
@@ -93,8 +74,9 @@ export default class ReporterDispatcher {
     testCaseResult: TestCaseResult,
   ): Promise<void> {
     for (const reporter of this._reporters) {
-      reporter.onTestCaseResult &&
-        (await reporter.onTestCaseResult(test, testCaseResult));
+      if (reporter.onTestCaseResult) {
+        await reporter.onTestCaseResult(test, testCaseResult);
+      }
     }
   }
 
@@ -103,8 +85,9 @@ export default class ReporterDispatcher {
     results: AggregatedResult,
   ): Promise<void> {
     for (const reporter of this._reporters) {
-      reporter.onRunComplete &&
-        (await reporter.onRunComplete(contexts, results));
+      if (reporter.onRunComplete) {
+        await reporter.onRunComplete(contexts, results);
+      }
     }
   }
 

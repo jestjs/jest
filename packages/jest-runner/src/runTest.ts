@@ -27,7 +27,7 @@ import * as docblock from 'jest-docblock';
 import {formatExecError} from 'jest-message-util';
 import sourcemapSupport = require('source-map-support');
 import chalk = require('chalk');
-import type {TestFramework, TestRunnerContext} from './types';
+import type {TestFileEvent, TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {
   leakDetector: LeakDetector | null;
@@ -80,7 +80,7 @@ async function runTestInternal(
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   resolver: Resolver,
-  sendMessageToJest: (eventName: string, args: Array<unknown>) => unknown,
+  sendMessageToJest?: TestFileEvent,
   context?: TestRunnerContext,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
@@ -314,7 +314,7 @@ export default async function runTest(
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   resolver: Resolver,
-  sendMessageToJest: (eventName: string, args: Array<unknown>) => unknown,
+  sendMessageToJest?: TestFileEvent,
   context?: TestRunnerContext,
 ): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(

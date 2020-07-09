@@ -14,7 +14,11 @@ import {separateMessageFromStack} from 'jest-message-util';
 import Runtime = require('jest-runtime');
 import Resolver = require('jest-resolve');
 import {messageParent} from 'jest-worker';
-import type {ErrorWithCode, TestRunnerSerializedContext} from './types';
+import type {
+  ErrorWithCode,
+  TestFileEvent,
+  TestRunnerSerializedContext,
+} from './types';
 import runTest from './runTest';
 
 export type SerializableResolver = {
@@ -75,7 +79,7 @@ export function setup(setupData: {
   }
 }
 
-const sendMessageToJest = (eventName: string, args: Array<unknown>) => {
+const sendMessageToJest: TestFileEvent = (eventName, args) => {
   messageParent([eventName, args]);
 };
 

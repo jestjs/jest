@@ -15,6 +15,7 @@ import {
 } from '@jest/test-result';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
+import TestRunner = require('jest-runner');
 import {
   SnapshotState,
   SnapshotStateType,
@@ -56,7 +57,7 @@ export const initialize = async ({
   localRequire: (path: Config.Path) => any;
   testPath: Config.Path;
   parentProcess: Process;
-  sendMessageToJest?: (eventName: string, args: Array<unknown>) => unknown;
+  sendMessageToJest?: TestRunner.TestFileEvent;
 }) => {
   if (globalConfig.testTimeout) {
     getRunnerState().testTimeout = globalConfig.testTimeout;

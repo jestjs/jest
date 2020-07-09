@@ -89,7 +89,10 @@ export default class Farm {
 
         const onEnd: OnEnd = (error: Error | null, result: unknown) => {
           customMessageListeners.clear();
-          return error ? reject(error) : resolve(result);
+          if (error) {
+            return reject(error);
+          }
+          return resolve(result);
         };
 
         const task = {onCustomMessage, onEnd, onStart, request};

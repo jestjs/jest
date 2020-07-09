@@ -326,9 +326,7 @@ export const makeSingleTestResult = (
 const makeTestResults = (
   describeBlock: Circus.DescribeBlock,
 ): Circus.TestResults => {
-  const testResults: Circus.TestResults = describeBlock.tests.map(
-    makeSingleTestResult,
-  );
+  const testResults: Circus.TestResults = [];
 
   for (const child of describeBlock.children) {
     switch (child.type) {
@@ -337,6 +335,7 @@ const makeTestResults = (
         break;
       }
       case 'test': {
+        testResults.push(makeSingleTestResult(child));
         break;
       }
     }
@@ -445,33 +444,3 @@ export const parseSingleTestResult = (
     title: testResult.testPath[testResult.testPath.length - 1],
   };
 };
-
-// export const parseTestResults = (
-//   testResults: Array<Circus.TestResult>,
-// ): ParseTestResults => {
-//   let numFailingTests = 0;
-//   let numPassingTests = 0;
-//   let numPendingTests = 0;
-//   let numTodoTests = 0;
-
-//   const assertionResults = testResults.map<AssertionResult>(testResult => {
-//     if (testResult.status === 'skip') {
-//       numPendingTests++;
-//     } else if (testResult.status === 'todo') {
-//       numTodoTests++;
-//     } else if (testResult.errors.length) {
-//       numFailingTests++;
-//     } else {
-//       numPassingTests++;
-//     }
-//     return parseSingleTestResult(testResult);
-//   });
-
-//   return {
-//     assertionResults: Array.from(assertionResults),
-//     numFailingTests,
-//     numPassingTests,
-//     numPendingTests,
-//     numTodoTests,
-//   };
-// };
