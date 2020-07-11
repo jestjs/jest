@@ -18389,7 +18389,7 @@ fsevents@^1.2.7:
 
 "typescript@patch:typescript@*#builtin<compat/typescript>, typescript@patch:typescript@^3.9.2#builtin<compat/typescript>":
   version: 3.9.6
-  resolution: "typescript@patch:typescript@npm%3A3.9.6#builtin<compat/typescript>::version=3.9.6&hash=64df9d"
+  resolution: "typescript@patch:typescript@npm%3A3.9.6#builtin<compat/typescript>::version=3.9.6&hash=5b02a2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
