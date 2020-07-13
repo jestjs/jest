@@ -198,6 +198,7 @@ const isJestObject = (expression: NodePath<Expression>): boolean => {
     expression
       .get<'object'>('object')
       .referencesImport(JEST_GLOBALS_MODULE_NAME, '*') &&
+    expression.node.property.type === 'Identifier' &&
     expression.node.property.name === JEST_GLOBALS_MODULE_JEST_EXPORT_NAME
   ) {
     return true;
