@@ -8,11 +8,8 @@
 
 'use strict';
 
-import {Module, builtinModules} from 'module';
+import {Module} from 'module';
 import path from 'path';
-import {pathToFileURL} from 'url';
-// eslint-disable-next-line import/default
-import slash from 'slash';
 import * as fs from 'graceful-fs';
 
 let createRuntime;
