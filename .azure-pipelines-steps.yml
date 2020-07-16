@@ -18,18 +18,20 @@ steps:
       versionSpec: '2.7'
     displayName: 'Use Python 2.7'
 
-  # Run yarn to install dependencies and build
-  - script: node scripts/remove-postinstall
-    displayName: 'Remove postinstall script'
+  - bash: echo "##vso[task.setvariable variable=folder;isOutput=true]$(yarn config get cacheFolder)"
+    name: yarnCache
 
-  - task: CacheBeta@0
+  - task: Cache@2
     inputs:
       key: yarn | $(Agent.OS) | yarn.lock
-      path: $(YARN_CACHE_FOLDER)
+      path: $(yarnCache.folder)
     displayName: Cache Yarn packages
 
-  - script: yarn install-no-ts-build
+  - script: yarn install
     displayName: 'Install dependencies'
+
+  - script: yarn build:js
+    displayName: 'Transpile TypeScript'
 
   # Run test-ci-partial
   - script: yarn run test-ci-partial

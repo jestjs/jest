@@ -138,7 +138,7 @@ test('the shopping list has beer on it', () => {
 
 ## Exceptions
 
-If you want to test that a particular function throws an error when it's called, use `toThrow`.
+If you want to test whether a particular function throws an error when it's called, use `toThrow`.
 
 ```js
 function compileAndroidCode() {

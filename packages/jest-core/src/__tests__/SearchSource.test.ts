@@ -206,6 +206,34 @@ describe('SearchSource', () => {
       });
     });
 
+    it('finds tests matching a JS with overriding glob patterns', () => {
+      const {options: config} = normalize(
+        {
+          moduleFileExtensions: ['js', 'jsx'],
+          name,
+          rootDir,
+          testMatch: [
+            '**/*.js?(x)',
+            '!**/test.js?(x)',
+            '**/test.js',
+            '!**/test.js',
+          ],
+          testRegex: '',
+        },
+        {} as Config.Argv,
+      );
+
+      return findMatchingTests(config).then(data => {
+        const relPaths = toPaths(data.tests).map(absPath =>
+          path.relative(rootDir, absPath),
+        );
+        expect(relPaths.sort()).toEqual([
+          path.normalize('module.jsx'),
+          path.normalize('no_tests.js'),
+        ]);
+      });
+    });
+
     it('finds tests with default file extensions using testRegex', () => {
       const {options: config} = normalize(
         {

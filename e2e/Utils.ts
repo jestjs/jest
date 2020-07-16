@@ -11,7 +11,6 @@ import type {Config} from '@jest/types';
 
 // eslint-disable-next-line import/named
 import {ExecaReturnValue, sync as spawnSync} from 'execa';
-import makeDir = require('make-dir');
 import rimraf = require('rimraf');
 import dedent = require('dedent');
 import which = require('which');
@@ -20,9 +19,13 @@ interface RunResult extends ExecaReturnValue {
   status: number;
   error: Error;
 }
-export const run = (cmd: string, cwd?: Config.Path): RunResult => {
+export const run = (
+  cmd: string,
+  cwd?: Config.Path,
+  env?: Record<string, string>,
+): RunResult => {
   const args = cmd.split(/\s/).slice(1);
-  const spawnOptions = {cwd, preferLocal: false, reject: false};
+  const spawnOptions = {cwd, env, preferLocal: false, reject: false};
   const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions) as RunResult;
 
   // For compat with cross-spawn
@@ -42,11 +45,22 @@ export const run = (cmd: string, cwd?: Config.Path): RunResult => {
   return result;
 };
 
+export const runYarn = (cwd: Config.Path, env?: Record<string, string>) => {
+  const lockfilePath = path.resolve(cwd, 'yarn.lock');
+
+  // If the lockfile doesn't exist, yarn's project detection is confused. Just creating an empty file works
+  if (!fs.existsSync(lockfilePath)) {
+    fs.writeFileSync(lockfilePath, '');
+  }
+
+  return run('yarn', cwd, env);
+};
+
 export const linkJestPackage = (packageName: string, cwd: Config.Path) => {
   const packagesDir = path.resolve(__dirname, '../packages');
   const packagePath = path.resolve(packagesDir, packageName);
   const destination = path.resolve(cwd, 'node_modules/', packageName);
-  makeDir.sync(destination);
+  fs.mkdirSync(destination, {recursive: true});
   rimraf.sync(destination);
   fs.symlinkSync(packagePath, destination, 'junction');
 };
@@ -77,12 +91,12 @@ export const writeFiles = (
   directory: string,
   files: {[filename: string]: string},
 ) => {
-  makeDir.sync(directory);
+  fs.mkdirSync(directory, {recursive: true});
   Object.keys(files).forEach(fileOrPath => {
     const dirname = path.dirname(fileOrPath);
 
     if (dirname !== '/') {
-      makeDir.sync(path.join(directory, dirname));
+      fs.mkdirSync(path.join(directory, dirname), {recursive: true});
     }
     fs.writeFileSync(
       path.resolve(directory, ...fileOrPath.split('/')),
@@ -95,13 +109,13 @@ export const writeSymlinks = (
   directory: string,
   symlinks: {[existingFile: string]: string},
 ) => {
-  makeDir.sync(directory);
+  fs.mkdirSync(directory, {recursive: true});
   Object.keys(symlinks).forEach(fileOrPath => {
     const symLinkPath = symlinks[fileOrPath];
     const dirname = path.dirname(symLinkPath);
 
     if (dirname !== '/') {
-      makeDir.sync(path.join(directory, dirname));
+      fs.mkdirSync(path.join(directory, dirname), {recursive: true});
     }
     fs.symlinkSync(
       path.resolve(directory, ...fileOrPath.split('/')),
@@ -165,7 +179,7 @@ export const createEmptyPackage = (
     },
   };
 
-  makeDir.sync(directory);
+  fs.mkdirSync(directory, {recursive: true});
   packageJson || (packageJson = DEFAULT_PACKAGE_JSON);
   fs.writeFileSync(
     path.resolve(directory, 'package.json'),

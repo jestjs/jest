@@ -225,6 +225,58 @@ test('saveInlineSnapshots() indents multi-line snapshots with spaces', () => {
   );
 });
 
+test('saveInlineSnapshots() does not re-indent error snapshots', () => {
+  const filename = path.join(__dirname, 'my.test.js');
+  (fs.readFileSync as jest.Mock).mockImplementation(
+    () =>
+      "it('is an error test', () => {\n" +
+      '  expect(() => {\n' +
+      "    throw new Error(['a', 'b'].join('\\n'));\n" +
+      '  }).toThrowErrorMatchingInlineSnapshot(`\n' +
+      '    "a\n' +
+      '    b"\n' +
+      '  `);\n' +
+      '});\n' +
+      "it('is another test', () => {\n" +
+      "  expect({a: 'a'}).toMatchInlineSnapshot();\n" +
+      '});\n',
+  );
+  (prettier.resolveConfig.sync as jest.Mock).mockReturnValue({
+    bracketSpacing: false,
+    singleQuote: true,
+  });
+
+  saveInlineSnapshots(
+    [
+      {
+        frame: {column: 20, file: filename, line: 10} as Frame,
+        snapshot: `\nObject {\n  a: 'a'\n}\n`,
+      },
+    ],
+    prettier,
+    babelTraverse,
+  );
+
+  expect(fs.writeFileSync).toHaveBeenCalledWith(
+    filename,
+    "it('is an error test', () => {\n" +
+      '  expect(() => {\n' +
+      "    throw new Error(['a', 'b'].join('\\n'));\n" +
+      '  }).toThrowErrorMatchingInlineSnapshot(`\n' +
+      '    "a\n' +
+      '    b"\n' +
+      '  `);\n' +
+      '});\n' +
+      "it('is another test', () => {\n" +
+      "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
+      '    Object {\n' +
+      "      a: 'a'\n" +
+      '    }\n' +
+      '  `);\n' +
+      '});\n',
+  );
+});
+
 test('saveInlineSnapshots() does not re-indent already indented snapshots', () => {
   const filename = path.join(__dirname, 'my.test.js');
   (fs.readFileSync as jest.Mock).mockImplementation(
@@ -233,7 +285,7 @@ test('saveInlineSnapshots() does not re-indent already indented snapshots', () =
       "  expect({a: 'a'}).toMatchInlineSnapshot();\n" +
       '});\n' +
       "it('is a another test', () => {\n" +
-      "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
+      "  expect({b: 'b'}).toMatchInlineSnapshot(`\n" +
       '    Object {\n' +
       "      b: 'b'\n" +
       '    }\n' +
@@ -266,7 +318,7 @@ test('saveInlineSnapshots() does not re-indent already indented snapshots', () =
       '  `);\n' +
       '});\n' +
       "it('is a another test', () => {\n" +
-      "  expect({a: 'a'}).toMatchInlineSnapshot(`\n" +
+      "  expect({b: 'b'}).toMatchInlineSnapshot(`\n" +
       '    Object {\n' +
       "      b: 'b'\n" +
       '    }\n' +

@@ -9,5 +9,5 @@
 it('should surface pnp errors', () => {
   expect(() => {
     require('undeclared');
-  }).toThrow(expect.objectContaining({code: 'UNDECLARED_DEPENDENCY'}));
+  }).toThrow(expect.objectContaining({pnpCode: 'UNDECLARED_DEPENDENCY'}));
 });

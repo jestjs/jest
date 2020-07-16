@@ -29,7 +29,11 @@ test('Any.asymmetricMatch()', () => {
     any(Number).asymmetricMatch(1),
     any(Function).asymmetricMatch(() => {}),
     any(Boolean).asymmetricMatch(true),
+    /* global BigInt */
+    any(BigInt).asymmetricMatch(1n),
+    any(Symbol).asymmetricMatch(Symbol()),
     any(Object).asymmetricMatch({}),
+    any(Object).asymmetricMatch(null),
     any(Array).asymmetricMatch([]),
     any(Thing).asymmetricMatch(new Thing()),
   ].forEach(test => {

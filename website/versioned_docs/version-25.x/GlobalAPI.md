@@ -529,7 +529,7 @@ test.each`
 
 ### `test.only(name, fn, timeout)`
 
-Also under the aliases: `ftest(name, fn, timeout)`, `it.only(name, fn, timeout)`, and `fit(name, fn, timeout)`
+Also under the aliases: `it.only(name, fn, timeout)`, and `fit(name, fn, timeout)`
 
 When you are debugging a large test file, you will often only want to run a subset of tests. You can use `.only` to specify which tests are the only ones you want to run in that test file.
 
@@ -553,7 +553,7 @@ Usually you wouldn't check code using `test.only` into source control - you woul
 
 ### `test.only.each(table)(name, fn)`
 
-Also under the aliases: `ftest.each(table)(name, fn)`, `it.only.each(table)(name, fn)`, `fit.each(table)(name, fn)`, `` ftest.each`table`(name, fn) ``, `` it.only.each`table`(name, fn) `` and `` fit.each`table`(name, fn) ``
+Also under the aliases: `it.only.each(table)(name, fn)`, `fit.each(table)(name, fn)`, `` it.only.each`table`(name, fn) `` and `` fit.each`table`(name, fn) ``
 
 Use `test.only.each` if you want to only run specific tests with different test data.
 

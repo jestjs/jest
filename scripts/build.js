@@ -23,7 +23,6 @@
 const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
-const makeDir = require('make-dir');
 
 const babel = require('@babel/core');
 const chalk = require('chalk');
@@ -38,7 +37,7 @@ const TS_FILES_PATTERN = '**/*.ts';
 const IGNORE_PATTERN = '**/__{tests,mocks}__/**';
 const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
-const INLINE_REQUIRE_BLACKLIST = /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
+const INLINE_REQUIRE_EXCLUDE_LIST = /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
 
 const transformOptions = require('../babel.config.js');
 
@@ -83,7 +82,7 @@ function buildFile(file, silent) {
     return;
   }
 
-  makeDir.sync(path.dirname(destPath));
+  fs.mkdirSync(path.dirname(destPath), {recursive: true});
   if (
     !micromatch.isMatch(file, JS_FILES_PATTERN) &&
     !micromatch.isMatch(file, TS_FILES_PATTERN)
@@ -102,8 +101,8 @@ function buildFile(file, silent) {
     const options = Object.assign({}, transformOptions);
     options.plugins = options.plugins.slice();
 
-    if (INLINE_REQUIRE_BLACKLIST.test(file)) {
-      // The modules in the blacklist are injected into the user's sandbox
+    if (INLINE_REQUIRE_EXCLUDE_LIST.test(file)) {
+      // The excluded modules are injected into the user's sandbox
       // We need to guard some globals there.
       options.plugins.push(
         require.resolve('./babel-plugin-jest-native-globals'),

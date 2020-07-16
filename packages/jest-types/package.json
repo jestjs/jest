@@ -1,6 +1,6 @@
 {
   "name": "@jest/types",
-  "version": "26.0.1",
+  "version": "26.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -15,11 +15,9 @@
   "dependencies": {
     "@types/istanbul-lib-coverage": "^2.0.0",
     "@types/istanbul-reports": "^1.1.1",
+    "@types/node": "*",
     "@types/yargs": "^15.0.0",
     "chalk": "^4.0.0"
-  },
-  "devDependencies": {
-    "@types/node": "*"
   },
   "publishConfig": {
     "access": "public"

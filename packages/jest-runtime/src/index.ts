@@ -45,7 +45,11 @@ import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
-import {findSiblingsWithFileExtension} from './helpers';
+import {
+  createOutsideJestVmPath,
+  decodePossibleOutsideJestVmPath,
+  findSiblingsWithFileExtension,
+} from './helpers';
 import type {Context as JestContext} from './types';
 import jestMock = require('jest-mock');
 import HasteMap = require('jest-haste-map');
@@ -82,7 +86,13 @@ const defaultTransformOptions: InternalModuleOptions = {
 type InitialModule = Partial<Module> &
   Pick<Module, 'children' | 'exports' | 'filename' | 'id' | 'loaded'>;
 type ModuleRegistry = Map<string, InitialModule | Module>;
-type ResolveOptions = Parameters<typeof require.resolve>[1];
+
+const OUTSIDE_JEST_VM_RESOLVE_OPTION = Symbol.for(
+  'OUTSIDE_JEST_VM_RESOLVE_OPTION',
+);
+type ResolveOptions = Parameters<typeof require.resolve>[1] & {
+  [OUTSIDE_JEST_VM_RESOLVE_OPTION]?: true;
+};
 
 type StringMap = Map<string, string>;
 type BooleanMap = Map<string, boolean>;
@@ -548,6 +558,13 @@ class Runtime {
   }
 
   requireInternalModule<T = unknown>(from: Config.Path, to?: string): T {
+    if (to) {
+      const outsideJestVmPath = decodePossibleOutsideJestVmPath(to);
+      if (outsideJestVmPath) {
+        return require(outsideJestVmPath);
+      }
+    }
+
     return this.requireModule(from, to, {
       isInternalModule: true,
       supportsDynamicImport: false,
@@ -1344,13 +1361,20 @@ class Runtime {
   ): NodeRequire {
     const filenameOverride = options?.filenameOverride;
 
-    // TODO: somehow avoid having to type the arguments - they should come from `NodeRequire/LocalModuleRequire.resolve`
-    const resolve = (moduleName: string, options: ResolveOptions) =>
-      this._requireResolve(
+    const resolve = (moduleName: string, resolveOptions?: ResolveOptions) => {
+      const resolved = this._requireResolve(
         filenameOverride ?? from.filename,
         moduleName,
-        options,
+        resolveOptions,
       );
+      if (
+        resolveOptions?.[OUTSIDE_JEST_VM_RESOLVE_OPTION] &&
+        options?.isInternalModule
+      ) {
+        return createOutsideJestVmPath(resolved);
+      }
+      return resolved;
+    };
     resolve.paths = (moduleName: string) =>
       this._requireResolvePaths(filenameOverride ?? from.filename, moduleName);
 
@@ -1578,7 +1602,7 @@ class Runtime {
         _getFakeTimers().advanceTimersByTime(msToRun),
       setMock: (moduleName: string, mock: unknown) =>
         setMockFactory(moduleName, () => mock),
-      setSystemTime: (now?: number) => {
+      setSystemTime: (now?: number | Date) => {
         const fakeTimers = _getFakeTimers();
 
         if (fakeTimers instanceof ModernFakeTimers) {

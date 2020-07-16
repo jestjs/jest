@@ -6,7 +6,6 @@
  */
 
 import {formatTime} from 'jest-util';
-// @ts-expect-error ignore vendor file
 import PCancelable from './PCancelable';
 import pTimeout from './pTimeout';
 
@@ -21,21 +20,31 @@ export type Options = {
   userContext: any;
 };
 
+export interface DoneFn {
+  (error?: any): void;
+  fail: (error: Error) => void;
+}
+
 export type QueueableFn = {
-  fn: (done: (error?: any) => void) => void;
+  fn: (done: DoneFn) => void;
   timeout?: () => number;
   initError?: Error;
 };
 
-// har to type :(
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export default function queueRunner(options: Options) {
-  const token = new PCancelable((onCancel: Function, resolve: Function) => {
+type PromiseCallback = (() => void | PromiseLike<void>) | undefined | null;
+
+export default function queueRunner(
+  options: Options,
+): PromiseLike<void> & {
+  cancel: () => void;
+  catch: (onRejected?: PromiseCallback) => Promise<void>;
+} {
+  const token = new PCancelable<void>((onCancel, resolve) => {
     onCancel(resolve);
   });
 
   const mapper = ({fn, timeout, initError = new Error()}: QueueableFn) => {
-    let promise = new Promise(resolve => {
+    let promise = new Promise<void>(resolve => {
       const next = function (...args: [Error]) {
         const err = args[0];
         if (err) {
@@ -56,7 +65,7 @@ export default function queueRunner(options: Options) {
       }
     });
 
-    promise = Promise.race([promise, token]);
+    promise = Promise.race<void>([promise, token]);
 
     if (!timeout) {
       return promise;

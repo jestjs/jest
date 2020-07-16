@@ -1,19 +1,17 @@
 {
   "name": "jest-watcher",
   "description": "Delightful JavaScript Testing.",
-  "version": "26.0.1",
+  "version": "26.1.0",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/test-result": "^26.0.1",
-    "@jest/types": "^26.0.1",
+    "@jest/test-result": "^26.1.0",
+    "@jest/types": "^26.1.0",
+    "@types/node": "*",
     "ansi-escapes": "^4.2.1",
     "chalk": "^4.0.0",
-    "jest-util": "^26.0.1",
+    "jest-util": "^26.1.0",
     "string-length": "^4.0.1"
-  },
-  "devDependencies": {
-    "@types/node": "*"
   },
   "repository": {
     "type": "git",
