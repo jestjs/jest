@@ -83,5 +83,37 @@ describe('Runtime requireModule', () => {
         }
         expect(err.name).toBe('SyntaxError');
       }
+
+      {
+        const module = new exports.Module();
+        module._compile(
+          'exports.windowType = typeof window;',
+          mockFilename('example.js'),
+        );
+        expect(module.exports).toEqual({windowType: 'undefined'});
+      }
+    }));
+
+  it('provides the appropriate environment', () =>
+    createRuntime(
+      __filename,
+      {},
+      {
+        EnvironmentImpl: require('../../../jest-environment-jsdom/src'),
+      },
+    ).then(runtime => {
+      const exports = runtime.requireModule(runtime.__mockRootPath, 'module');
+
+      const mockFilename = name =>
+        path.join(path.dirname(runtime.__mockRootPath), name);
+
+      {
+        const module = new exports.Module();
+        module._compile(
+          'exports.hasWindow = !!window;',
+          mockFilename('example.js'),
+        );
+        expect(module.exports).toEqual({hasWindow: true});
+      }
     }));
 });
