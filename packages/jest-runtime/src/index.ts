@@ -957,7 +957,7 @@ class Runtime {
 
   private _execModule(
     localModule: InitialModule,
-    moduleSource: string | undefined,
+    runtimeModuleSource: string | undefined,
     options: InternalModuleOptions | undefined,
     moduleRegistry: ModuleRegistry,
     from: Config.Path | null,
@@ -989,7 +989,11 @@ class Runtime {
       value: this._createRequireImplementation(localModule, options),
     });
 
-    const transformedCode = this.transformFile(filename, moduleSource, options);
+    const transformedCode = this.transformFile(
+      filename,
+      runtimeModuleSource,
+      options,
+    );
 
     let compiledFunction: ModuleWrapper | null = null;
 
@@ -1069,10 +1073,10 @@ class Runtime {
 
   private transformFile(
     filename: string,
-    moduleSource: string | undefined,
+    runtimeModuleSource: string | undefined,
     options?: InternalModuleOptions,
   ): string {
-    const source = moduleSource ?? this.readFile(filename);
+    const source = runtimeModuleSource ?? this.readFile(filename);
 
     if (options?.isInternalModule) {
       return source;
