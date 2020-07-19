@@ -18,16 +18,20 @@ export type EachTests = Array<{
   arguments: Array<unknown>;
 }>;
 
-type TestFn = (done?: Global.DoneFn) => Promise<any> | void | undefined;
-type GlobalCallback = (testName: string, fn: TestFn, timeout?: number) => void;
+// type TestFn = (done?: Global.DoneFn) => Promise<any> | void | undefined;
+type GlobalCallback = (
+  testName: string,
+  fn: Global.ConcurrentTestFn,
+  timeout?: number,
+) => void;
 
-export default (cb: GlobalCallback, supportsDone: boolean = true) => (
-  table: Global.EachTable,
-  ...taggedTemplateData: Global.TemplateData
-) =>
+export default <A extends Global.TestCallback>(
+  cb: GlobalCallback,
+  supportsDone: boolean = true,
+) => (table: Global.EachTable, ...taggedTemplateData: Global.TemplateData) =>
   function eachBind(
     title: string,
-    test: Global.EachTestFn,
+    test: Global.EachTestFn<A>,
     timeout?: number,
   ): void {
     try {
@@ -70,11 +74,11 @@ const buildTemplateTests = (
 const getHeadingKeys = (headings: string): Array<string> =>
   headings.replace(/\s/g, '').split('|');
 
-const applyArguments = (
+const applyArguments = <A extends Global.TestCallback>(
   supportsDone: boolean,
   params: Array<unknown>,
-  test: Global.EachTestFn,
-): Global.EachTestFn =>
+  test: Global.EachTestFn<A>,
+): Global.EachTestFn<any> =>
   supportsDone && params.length < test.length
     ? (done: Global.DoneFn) => test(...params, done)
     : () => test(...params);

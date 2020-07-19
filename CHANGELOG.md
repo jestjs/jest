@@ -35,6 +35,7 @@
 - `[jest-worker]` Added support for workers to send custom messages to parent in jest-worker ([#10293](https://github.com/facebook/jest/pull/10293))
 - `[jest-worker]` Support passing `resourceLimits` ([#10335](https://github.com/facebook/jest/pull/10335))
 - `[pretty-format]` Added support for serializing custom elements (web components) ([#10217](https://github.com/facebook/jest/pull/10237))
+- `[jest-each, jest-jasmine, jest-circus]` Add support for .concurrent.each ([#9326](https://github.com/facebook/jest/pull/9326))
 
 ### Fixes
 
