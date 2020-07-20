@@ -245,7 +245,7 @@ export default class CoverageReporter extends BaseReporter {
             if (threshold < 0) {
               if (threshold * -1 < actualUncovered) {
                 errors.push(
-                  `Jest: Uncovered count for ${key} (${actualUncovered})` +
+                  `Jest: Uncovered count for ${key} (${actualUncovered}) ` +
                     `exceeds ${name} threshold (${-1 * threshold})`,
                 );
               }

@@ -1,20 +1,19 @@
 aliases:
   - &restore-cache
     keys:
-      - v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - v3-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
       # Fallback in case checksum fails
-      - v2-dependencies-{{ .Branch }}-
+      - v3-dependencies-{{ .Branch }}-
 
   - &save-cache
     paths:
-      - node_modules
-      - website/node_modules
-    key: v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - ~/.cache/yarn
+    key: v3-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
 
   - &filter-ignore-gh-pages
     branches:
       ignore: gh-pages
-  - &install yarn install-no-ts-build
+  - &install yarn install && yarn build:js
 
 version: 2
 jobs:

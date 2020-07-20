@@ -12,10 +12,8 @@
   "dependencies": {
     "@jest/fake-timers": "^26.1.0",
     "@jest/types": "^26.1.0",
+    "@types/node": "*",
     "jest-mock": "^26.1.0"
-  },
-  "devDependencies": {
-    "@types/node": "*"
   },
   "engines": {
     "node": ">= 10.14.2"

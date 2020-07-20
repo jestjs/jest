@@ -15,6 +15,7 @@
     "@jest/source-map": "^26.1.0",
     "@jest/test-result": "^26.1.0",
     "@jest/types": "^26.1.0",
+    "@types/node": "*",
     "chalk": "^4.0.0",
     "co": "^4.6.0",
     "expect": "^26.1.0",

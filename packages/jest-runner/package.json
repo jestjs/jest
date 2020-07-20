@@ -14,6 +14,7 @@
     "@jest/environment": "^26.1.0",
     "@jest/test-result": "^26.1.0",
     "@jest/types": "^26.1.0",
+    "@types/node": "*",
     "chalk": "^4.0.0",
     "exit": "^0.1.2",
     "graceful-fs": "^4.2.4",
@@ -33,7 +34,6 @@
   "devDependencies": {
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
-    "@types/node": "*",
     "@types/source-map-support": "^0.5.0",
     "jest-circus": "^26.1.0"
   },

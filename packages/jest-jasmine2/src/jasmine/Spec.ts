@@ -171,7 +171,7 @@ export default class Spec {
     }
   }
 
-  execute(onComplete: Function, enabled: boolean) {
+  execute(onComplete?: () => void, enabled?: boolean) {
     const self = this;
 
     this.onStart(this);
@@ -203,7 +203,7 @@ export default class Spec {
 
     this.currentRun.then(() => complete(true));
 
-    function complete(enabledAgain: boolean) {
+    function complete(enabledAgain?: boolean) {
       self.result.status = self.status(enabledAgain);
       self.resultCallback(self.result);
 

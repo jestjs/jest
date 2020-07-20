@@ -66,11 +66,17 @@ _Before_ submitting a pull request, please make sure the following is done…
      yarn global add windows-build-tools
     ```
 
+1.  Run `yarn build` to transpile TypeScript to JavaScript and type check the code
+
+    ```sh
+    yarn build
+    ```
+
 1.  If you've added code that should be tested, add tests. You can use watch mode that continuously transforms changed files to make your life easier.
 
     ```sh
     # in the background
-    yarn run watch
+    yarn watch
     ```
 
 1.  If you've changed APIs, update the documentation.
