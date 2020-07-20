@@ -235,7 +235,7 @@ class DuplicateHasteCandidatesError extends Error {
         `cannot be resolved, because there exists several different ` +
         `files, or packages, that provide a module for ` +
         `that particular name and platform. ${platformMessage} You must ` +
-        `delete or blacklist files until there remains only one of these:\n\n` +
+        `delete or exclude files until there remains only one of these:\n\n` +
         Array.from(duplicatesSet)
           .map(
             ([dupFilePath, dupFileType]) =>

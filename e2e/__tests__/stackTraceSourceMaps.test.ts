@@ -6,12 +6,12 @@
  */
 
 import * as path from 'path';
-import {run} from '../Utils';
+import {runYarn} from '../Utils';
 import runJest from '../runJest';
 
 it('processes stack traces and code frames with source maps', () => {
   const dir = path.resolve(__dirname, '../stack-trace-source-maps');
-  run('yarn', dir);
+  runYarn(dir);
   const {stderr} = runJest(dir, ['--no-cache']);
   expect(stderr).toMatch('> 14 |   (() => expect(false).toBe(true))();');
   expect(stderr).toMatch(`at __tests__/fails.ts:14:24

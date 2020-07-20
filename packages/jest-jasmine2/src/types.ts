@@ -20,6 +20,8 @@ import type {default as Suite, SuiteResult} from './jasmine/Suite';
 import type SpyStrategy from './jasmine/SpyStrategy';
 import type CallTracker from './jasmine/CallTracker';
 
+export type SpecDefinitionsFn = () => void;
+
 export interface AssertionErrorWithStack extends AssertionError {
   stack: string;
 }
@@ -64,11 +66,21 @@ export interface Spy extends Record<string, any> {
   restoreObjectToOriginalState?: () => void;
 }
 
+type JasmineMatcher = {
+  (matchersUtil: unknown, context: unknown): JasmineMatcher;
+  compare: () => RawMatcherFn;
+  negativeCompare: () => RawMatcherFn;
+};
+
+export type JasmineMatchersObject = {[id: string]: JasmineMatcher};
+
 export type Jasmine = {
   _DEFAULT_TIMEOUT_INTERVAL: number;
   DEFAULT_TIMEOUT_INTERVAL: number;
   currentEnv_: ReturnType<typeof Env>['prototype'];
-  getEnv: (options?: object) => ReturnType<typeof Env>['prototype'];
+  getEnv: (
+    options?: Record<string, unknown>,
+  ) => ReturnType<typeof Env>['prototype'];
   createSpy: typeof createSpy;
   Env: ReturnType<typeof Env>;
   JsApiReporter: typeof JsApiReporter;
@@ -79,7 +91,7 @@ export type Jasmine = {
   Timer: typeof Timer;
   version: string;
   testPath: Config.Path;
-  addMatchers: Function;
+  addMatchers: (matchers: JasmineMatchersObject) => void;
 } & typeof expect &
   NodeJS.Global;
 

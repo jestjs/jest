@@ -54,13 +54,9 @@ const adapter: SCMAdapter = {
     if (changedSince) {
       const [committed, staged, unstaged] = await Promise.all([
         findChangedFilesUsingCommand(
-          [
-            'log',
-            '--name-only',
-            '--pretty=format:',
-            'HEAD',
-            `^${changedSince}`,
-          ].concat(includePaths),
+          ['diff', '--name-only', `${changedSince}...HEAD`].concat(
+            includePaths,
+          ),
           cwd,
         ),
         findChangedFilesUsingCommand(

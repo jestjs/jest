@@ -6,13 +6,13 @@
  */
 
 import * as path from 'path';
-import {run} from '../Utils';
+import {runYarn} from '../Utils';
 import {json as runWithJson} from '../runJest';
 
 const dir = path.resolve(__dirname, '../async-regenerator');
 
 beforeEach(() => {
-  run('yarn', dir);
+  runYarn(dir);
 });
 
 test('successfully transpiles async', () => {

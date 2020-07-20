@@ -19,9 +19,13 @@ interface RunResult extends ExecaReturnValue {
   status: number;
   error: Error;
 }
-export const run = (cmd: string, cwd?: Config.Path): RunResult => {
+export const run = (
+  cmd: string,
+  cwd?: Config.Path,
+  env?: Record<string, string>,
+): RunResult => {
   const args = cmd.split(/\s/).slice(1);
-  const spawnOptions = {cwd, preferLocal: false, reject: false};
+  const spawnOptions = {cwd, env, preferLocal: false, reject: false};
   const result = spawnSync(cmd.split(/\s/)[0], args, spawnOptions) as RunResult;
 
   // For compat with cross-spawn
@@ -39,6 +43,17 @@ export const run = (cmd: string, cwd?: Config.Path): RunResult => {
   }
 
   return result;
+};
+
+export const runYarn = (cwd: Config.Path, env?: Record<string, string>) => {
+  const lockfilePath = path.resolve(cwd, 'yarn.lock');
+
+  // If the lockfile doesn't exist, yarn's project detection is confused. Just creating an empty file works
+  if (!fs.existsSync(lockfilePath)) {
+    fs.writeFileSync(lockfilePath, '');
+  }
+
+  return run('yarn', cwd, env);
 };
 
 export const linkJestPackage = (packageName: string, cwd: Config.Path) => {

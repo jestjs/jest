@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {readFileSync} from 'graceful-fs';
-import {cleanup, run} from '../Utils';
+import {cleanup, runYarn} from '../Utils';
 import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../coverage-transform-instrumented');
@@ -18,7 +18,7 @@ beforeAll(() => {
 });
 
 it('code coverage for transform instrumented code', () => {
-  run('yarn', dir);
+  runYarn(dir);
   const result = runJest(dir, ['--coverage', '--no-cache']);
 
   expect(result.exitCode).toBe(0);
