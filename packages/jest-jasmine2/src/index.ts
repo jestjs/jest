@@ -177,7 +177,8 @@ async function jasmine2(
     };
   }
 
-  const testNamePattern = config.testNamePattern ?? globalConfig.testNamePattern
+  const testNamePattern =
+    config.testNamePattern ?? globalConfig.testNamePattern;
 
   if (testNamePattern) {
     const testNameRegex = new RegExp(testNamePattern, 'i');

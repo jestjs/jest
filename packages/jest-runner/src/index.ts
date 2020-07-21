@@ -59,7 +59,7 @@ class TestRunner {
   }
 
   set testNamePattern(pattern: string | undefined) {
-    this._globalConfig = { ...this._globalConfig, testNamePattern: pattern};
+    this._globalConfig = {...this._globalConfig, testNamePattern: pattern};
   }
 
   async runTests(
