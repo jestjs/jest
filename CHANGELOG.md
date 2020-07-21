@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-runner, jest-circus, jest-jasmine2, jest-types]` Added support for `testNamePattern` in the `Project.Config`. This enables custom Jest runners to specify which test cases are ran in each test file (by setting the `testNamePattern` config on each `JestTest.context.config`). The `GlobalConfig.testNamePattern` was also exposed to custom Jest runners.
 - `[pretty-format]` Added support for serializing custom elements (web components) ([#10217](https://github.com/facebook/jest/pull/10237))
 
 ### Fixes
