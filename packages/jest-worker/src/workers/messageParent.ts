@@ -8,24 +8,20 @@
 import {isMainThread, parentPort} from 'worker_threads';
 import {PARENT_MESSAGE_CUSTOM} from '../types';
 
-const isWorkerThread = () => {
-  try {
-    return !isMainThread && parentPort;
-  } catch {
-    return false;
-  }
-};
+const isWorkerThread = !isMainThread && parentPort;
 
 const messageParent = (
   message: unknown,
   parentProcess: NodeJS.Process = process,
 ): void => {
-  if (isWorkerThread()) {
-    const {parentPort} = require('worker_threads');
-    parentPort.postMessage([PARENT_MESSAGE_CUSTOM, message]);
-  } else if (typeof parentProcess.send === 'function') {
-    parentProcess.send([PARENT_MESSAGE_CUSTOM, message]);
-  } else {
+  try {
+    if (isWorkerThread) {
+      const {parentPort} = require('worker_threads');
+      parentPort.postMessage([PARENT_MESSAGE_CUSTOM, message]);
+    } else if (typeof parentProcess.send === 'function') {
+      parentProcess.send([PARENT_MESSAGE_CUSTOM, message]);
+    }
+  } catch (error) {
     throw new Error('"messageParent" can only be used inside a worker');
   }
 };
