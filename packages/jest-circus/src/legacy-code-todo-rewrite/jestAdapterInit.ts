@@ -77,7 +77,7 @@ export const initialize = async ({
       timeout?: number,
     ) => {
       // For concurrent tests we first run the function that returns promise, and then register a
-      // nomral test that will be waiting on the returned promise (when we start the test, the promise
+      // normal test that will be waiting on the returned promise (when we start the test, the promise
       // will already be in the process of execution).
       // Unfortunately at this stage there's no way to know if there are any `.only` tests in the suite
       // that will result in this test to be skipped, so we'll be executing the promise function anyway,
@@ -110,7 +110,7 @@ export const initialize = async ({
   await dispatch({
     name: 'setup',
     parentProcess,
-    testNamePattern: globalConfig.testNamePattern,
+    testNamePattern: config.testNamePattern ?? globalConfig.testNamePattern,
   });
 
   if (config.testLocationInResults) {

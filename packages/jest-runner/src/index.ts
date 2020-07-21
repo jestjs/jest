@@ -54,6 +54,14 @@ class TestRunner {
     this._context = context || {};
   }
 
+  get testNamePattern() {
+    return this._globalConfig.testNamePattern;
+  }
+
+  set testNamePattern(pattern: string | undefined) {
+    this._globalConfig = { ...this._globalConfig, testNamePattern: pattern};
+  }
+
   async runTests(
     tests: Array<JestTest>,
     watcher: JestTestWatcher,
