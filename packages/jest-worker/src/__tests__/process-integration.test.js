@@ -38,6 +38,10 @@ function assertCallsToChild(childNum, ...calls) {
   });
 }
 
+jest.mock('worker_threads', () => {
+  throw Error('Unsupported');
+});
+
 describe('Jest Worker Integration', () => {
   beforeEach(() => {
     mockForkedProcesses = [];
