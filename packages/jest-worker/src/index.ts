@@ -15,7 +15,7 @@ import type {
   WorkerPoolInterface,
   WorkerPoolOptions,
 } from './types';
-import _messageParent from './workers/messageParent';
+export {default as messageParent} from './workers/messageParent';
 
 function getExposedMethods(
   workerPath: string,
@@ -150,4 +150,3 @@ export default class JestWorker {
 }
 
 export type {PromiseWithCustomMessage};
-export const messageParent = _messageParent;

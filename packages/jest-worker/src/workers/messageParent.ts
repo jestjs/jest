@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {isMainThread, parentPort} from 'worker_threads';
 import {PARENT_MESSAGE_CUSTOM} from '../types';
 
 const isWorkerThread = () => {
   try {
-    const {isMainThread, parentPort} = require('worker_threads');
     return !isMainThread && parentPort;
   } catch {
     return false;
