@@ -50,7 +50,7 @@ class TestRunner {
   private _context: JestTestRunnerContext;
   public eventEmitter: Emittery;
 
-  public __PRIVATE_UNSTABLE_API_supportsEventEmmiters__: boolean = false;
+  public __PRIVATE_UNSTABLE_API_supportsEventEmmiters__: boolean = true;
 
   readonly isSerial?: boolean;
 

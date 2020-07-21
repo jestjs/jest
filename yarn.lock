@@ -3,7 +3,7 @@
 
 __metadata:
   version: 4
-  cacheKey: 5
+  cacheKey: 6
 
 "@angular/common@npm:^10.0.2":
   version: 10.0.2
@@ -7224,6 +7224,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"emittery@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "emittery@npm:0.5.1"
+  checksum: f972aacc49c041002b0d2b2f64f62c3f492a7068c863bc5d86bcf4b749ebef2c6f93dc9765f4d73b627ae9f926474be0ea4485c4ae88219ebb7eca923148a3f7
+  languageName: node
+  linkType: hard
+
 "emoji-regex@npm:>=6.0.0 <=6.1.1":
   version: 6.1.1
   resolution: "emoji-regex@npm:6.1.1"
@@ -11454,6 +11461,7 @@ fsevents@^1.2.7:
     "@types/node": "*"
     "@types/source-map-support": ^0.5.0
     chalk: ^4.0.0
+    emittery: ^0.5.1
     exit: ^0.1.2
     graceful-fs: ^4.2.4
     jest-circus: ^26.1.0
