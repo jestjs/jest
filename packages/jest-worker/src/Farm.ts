@@ -48,23 +48,18 @@ export default class Farm {
 
   doWork(
     method: string,
-    ...args: Array<unknown>
+    ...args: Array<any>
   ): PromiseWithCustomMessage<unknown> {
     const customMessageListeners = new Set<OnCustomMessage>();
 
     const addCustomMessageListener = (listener: OnCustomMessage) => {
       customMessageListeners.add(listener);
       return () => {
-        // Check if the following check is required
-        customMessageListeners.forEach(customListener => {
-          if (customListener === listener) {
-            customMessageListeners.delete(customListener);
-          }
-        });
+        customMessageListeners.delete(listener);
       };
     };
 
-    const onCustomMessage: OnCustomMessage = (message): void => {
+    const onCustomMessage: OnCustomMessage = message => {
       customMessageListeners.forEach(listener => listener(message));
     };
 
@@ -90,9 +85,10 @@ export default class Farm {
         const onEnd: OnEnd = (error: Error | null, result: unknown) => {
           customMessageListeners.clear();
           if (error) {
-            return reject(error);
+            reject(error);
+          } else {
+            resolve(result);
           }
-          return resolve(result);
         };
 
         const task = {onCustomMessage, onEnd, onStart, request};
@@ -106,6 +102,7 @@ export default class Farm {
     );
 
     promise.UNSTABLE_onCustomMessage = addCustomMessageListener;
+
     return promise;
   }
 
