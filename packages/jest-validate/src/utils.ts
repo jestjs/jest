@@ -7,7 +7,7 @@
 
 import chalk = require('chalk');
 import prettyFormat = require('pretty-format');
-import leven from 'leven';
+import levenshtein = require('fastest-levenshtein');
 
 const BULLET: string = chalk.bold('\u25cf');
 export const DEPRECATION = `${BULLET} Deprecation Warning`;
@@ -51,7 +51,7 @@ export const createDidYouMeanMessage = (
   allowedOptions: Array<string>,
 ): string => {
   const suggestion = allowedOptions.find(option => {
-    const steps: number = leven(option, unrecognized);
+    const steps: number = levenshtein.distance(option, unrecognized);
     return steps < 3;
   });
 

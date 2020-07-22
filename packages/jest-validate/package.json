@@ -13,8 +13,8 @@
     "@jest/types": "^26.1.0",
     "camelcase": "^6.0.0",
     "chalk": "^4.0.0",
+    "fastest-levenshtein": "^1.0.9",
     "jest-get-type": "^26.0.0",
-    "leven": "^3.1.0",
     "pretty-format": "^26.1.0"
   },
   "devDependencies": {

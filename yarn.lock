@@ -3,7 +3,7 @@
 
 __metadata:
   version: 4
-  cacheKey: 5
+  cacheKey: 6
 
 "@angular/common@npm:^10.0.2":
   version: 10.0.2
@@ -8439,6 +8439,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fastest-levenshtein@npm:^1.0.9":
+  version: 1.0.9
+  resolution: "fastest-levenshtein@npm:1.0.9"
+  checksum: 498a050331f0471d065529398d42717005b9787f19389e4ceba93fba349620ab8eba6da6c0becedad20678900e0e50b55b03cf9ac538c30113d995f25560b553
+  languageName: node
+  linkType: hard
+
 "fastq@npm:^1.6.0":
   version: 1.7.0
   resolution: "fastq@npm:1.7.0"
@@ -11621,8 +11628,8 @@ fsevents@^1.2.7:
     "@types/yargs": ^15.0.3
     camelcase: ^6.0.0
     chalk: ^4.0.0
+    fastest-levenshtein: ^1.0.9
     jest-get-type: ^26.0.0
-    leven: ^3.1.0
     pretty-format: ^26.1.0
   languageName: unknown
   linkType: soft
