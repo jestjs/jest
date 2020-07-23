@@ -60,7 +60,9 @@ class TestRunner {
   ) {
     this._globalConfig = globalConfig;
     this._context = context || {};
-    this.eventEmitter = new Emittery();
+    this.eventEmitter = new Emittery.Typed<{
+      eventName: Parameters<JestTestFileEvent>[1];
+    }>();
   }
 
   async runTests(
@@ -102,7 +104,7 @@ class TestRunner {
               }
               let sendMessageToJest: JestTestFileEvent;
 
-              // Remove `if(onStart)`
+              // Remove `if(onStart)` on next release
               if (onStart) {
                 await onStart(test);
                 return runTest(
@@ -114,13 +116,13 @@ class TestRunner {
                   this._context,
                 );
               } else {
-                sendMessageToJest = (eventName, args) => {
-                  // `deepCyclicCopy` used here to avoid mem-leak
+                // `deepCyclicCopy` used here to avoid mem-leak
+                sendMessageToJest = (eventName, args) =>
                   this.eventEmitter.emit(
                     eventName,
                     deepCyclicCopy(args, {keepPrototype: false}),
                   );
-                };
+
                 await this.eventEmitter.emit('test-file-start', [test]);
                 return runTest(
                   test.path,
@@ -196,7 +198,7 @@ class TestRunner {
           return Promise.reject();
         }
 
-        // Remove `if(onStart)`
+        // Remove `if(onStart)` on next release
         if (onStart) {
           await onStart(test);
         } else {
@@ -229,7 +231,7 @@ class TestRunner {
       });
 
     const onError = async (err: SerializableError, test: JestTest) => {
-      // Remove `if(onFailure)`
+      // Remove `if(onFailure)` on next release
       if (onFailure) {
         onFailure(test, err);
       } else {
