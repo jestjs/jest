@@ -5,10 +5,10 @@
     "outDir": "build"
   },
   "references": [
-    {"path": "../jest-worker"},
-    {"path": "../jest-serializer"},
     {"path": "../jest-regex-util"},
+    {"path": "../jest-serializer"},
+    {"path": "../jest-types"},
     {"path": "../jest-util"},
-    {"path": "../jest-types"}
+    {"path": "../jest-worker"}
   ]
 }
