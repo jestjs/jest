@@ -84,7 +84,7 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/doc
   <span class="hljs-keyword">return</span> request(<span class="hljs-string">'/users/'</span> + userID).then(<span class="hljs-function"><span class="hljs-params">user</span> =&gt;</span> user.name);
 }
 </code></pre>
-<p>In the above implementation we expect the <code>request.js</code> module to return a promise. We chain a call to <code>then</code> to receive the user name.</p>
+<p>In the above implementation, we expect the <code>request.js</code> module to return a promise. We chain a call to <code>then</code> to receive the user name.</p>
 <p>Now imagine an implementation of <code>request.js</code> that goes to the network and fetches some user data:</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// request.js</span>
 <span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>);

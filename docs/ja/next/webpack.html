@@ -190,7 +190,7 @@
 <blockquote>
 <p>注意: <code>&lt;rootDir&gt;</code> は、Jest によってプロジェクトのルートディレクトリに置換される特別なトークンです。 ほとんどの場合、設定で特別に <code>rootDir</code> オプションを指定しない限り、この値は<code>package.json</code> ファイルが格納されているディレクトリになります。</p>
 </blockquote>
-<p>webpackの <code>resolve.root</code>オプションも<code>modulePaths</code>オプションによって<code>NODE_PATH</code>環境変数を設定することと同様のことができます。</p>
+<p>Similarly, webpack's <code>resolve.root</code> option functions like setting the <code>NODE_PATH</code> env variable, which you can set, or make use of the <code>modulePaths</code> option.</p>
 <pre><code class="hljs css language-json"><span class="hljs-comment">// package.json</span>
 {
   <span class="hljs-attr">"jest"</span>: {
@@ -204,7 +204,7 @@
   }
 }
 </code></pre>
-<p>最後に、webpackの <code>alias</code>を取り扱う必要があります。それには <code>moduleNameMapper</code>オプションを再び利用します。</p>
+<p>And finally, we have to handle the webpack <code>alias</code>. For that, we can make use of the <code>moduleNameMapper</code> option again.</p>
 <pre><code class="hljs css language-json"><span class="hljs-comment">// package.json</span>
 {
   <span class="hljs-attr">"jest"</span>: {

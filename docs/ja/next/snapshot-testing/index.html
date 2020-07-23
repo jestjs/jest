@@ -101,7 +101,7 @@ it(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
 &lt;/a&gt;
 `</span>;
 </code></pre>
-<p>生成されるスナップショットはコードの変更に追随し、かつコードレビューのプロセスの一部としてレビューされるべきです。 Jestはスナップショットをコードレビュー時に人間が読める形式にするために <a href="https://github.com/facebook/jest/tree/master/packages/pretty-format">pretty-format</a>を利用します。 初回以降のテストでは、Jestはレンダリングされた出力と以前のスナップショットとの比較を行います。 それらが一致すれば、テストを通過します。 一致しなければ、テストランナーが修正されるべきバグをコード中(今回のケースでは <code>&lt;Link&gt;</code> コンポーネント中) に発見したか、実装が変更されたためスナップショットを更新する必要があるかのどちらかです。</p>
+<p>生成されるスナップショットはコードの変更に追随し、かつコードレビューのプロセスの一部としてレビューされるべきです。 Jestはスナップショットをコードレビュー時に人間が読める形式にするために <a href="https://github.com/facebook/jest/tree/master/packages/pretty-format">pretty-format</a>を利用します。 On subsequent test runs, Jest will compare the rendered output with the previous snapshot. それらが一致すれば、テストを通過します。 一致しなければ、テストランナーが修正されるべきバグをコード中(今回のケースでは <code>&lt;Link&gt;</code> コンポーネント中) に発見したか、実装が変更されたためスナップショットを更新する必要があるかのどちらかです。</p>
 <blockquote>
 <p>注意: スナップショットはレンダリングするデータに直接スコープされます。この例では、pageプロパティが渡された <code>&lt;Link /&gt;</code> コンポーネントです。 This implies that even if any other file has missing props (Say, <code>App.js</code>) in the <code>&lt;Link /&gt;</code> component, it will still pass the test as the test doesn't know the usage of <code>&lt;Link /&gt;</code> component and it's scoped only to the <code>Link.react.js</code>. また、他のスナップショットテストで異なるプロパティで同じコンポーネントをレンダリングすると、最初のコンポーネントには影響しません。 テストはお互いを知らないからです</p>
 </blockquote>

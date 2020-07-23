@@ -102,7 +102,7 @@
 <blockquote>
 <p>注意: モックを正しく行うには、Jest は<code>require/import</code> 宣言と同じスコープとなるよう、 <code>jest.mock('moduleName')</code> が必要です。</p>
 </blockquote>
-<p>具体例として、指定されたディレクトリのすべてのファイルの要約を提供するモジュールがあるとしましょう。この場合、私たちは(組み込みの) core の <code>fs</code> モジュールが使えます。</p>
+<p>Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case, we use the core (built in) <code>fs</code> module.</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// FileSummarizer.js</span>
 <span class="hljs-meta">'use strict'</span>;
 

@@ -83,7 +83,7 @@
   <span class="hljs-keyword">return</span> request(<span class="hljs-string">'/users/'</span> + userID).then(<span class="hljs-function"><span class="hljs-params">user</span> =&gt;</span> user.name);
 }
 </code></pre>
-<p>上記の実装では、<code>request.js</code>がpromiseを返すことを期待します。 <code>then</code>にコールをチェーンしてユーザ名を受け取ります。</p>
+<p>In the above implementation, we expect the <code>request.js</code> module to return a promise. We chain a call to <code>then</code> to receive the user name.</p>
 <p>ここでネットワーク経由でユーザのデータを取得する <code>request.js</code> の実装を想像してみましょう。</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// request.js</span>
 <span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>);

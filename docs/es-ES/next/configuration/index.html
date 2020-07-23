@@ -223,7 +223,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p>Automatically clear mock calls and instances before every test. Equivalent to calling <code>jest.clearAllMocks()</code> before each test. Esto no remueve ninguna implementación de mock que se haya proporcionado.</p>
 <h3><a class="anchor" aria-hidden="true" id="collectcoverage-boolean"></a><a href="#collectcoverage-boolean" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>collectCoverage</code> [boolean]</h3>
 <p>Por defecto: <code>false</code></p>
-<p>Indica si la información de cobertura debe ser recolectada al momento de ejecutar las pruebas. Activar esta opción puede alentar de manera significativa el tiempo de ejecución de las pruebas; pues se agregan sentencias temporales, para la recolección de cobertura, en todos los archivos ejecutados.</p>
+<p>Indica si la información de cobertura debe ser recolectada al momento de ejecutar las pruebas. Because these retrofits all executed files with coverage collection statements, it may significantly slow down your tests.</p>
 <h3><a class="anchor" aria-hidden="true" id="collectcoveragefrom-array"></a><a href="#collectcoveragefrom-array" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>collectCoverageFrom</code> [array]</h3>
 <p>Por defecto: <code>undefined</code></p>
 <p>An array of <a href="https://github.com/jonschlinkert/micromatch">glob patterns</a> indicating a set of files for which coverage information should be collected. If a file matches the specified glob pattern, coverage information will be collected for it even if no tests exist for this file and it's never required in the test suite.</p>
@@ -284,7 +284,7 @@ Jest: Coverage data for global was not found.
   }
 }
 </code></pre>
-<p>If globs or paths are specified alongside <code>global</code>, coverage data for matching paths will be subtracted from overall coverage and thresholds will be applied independently. Los limites para los globs son aplicados a todos los archivos que coincidan con el glob. Si no se encuentra el fichero especificado en una ruta, se devuelve un error.</p>
+<p>If globs or paths are specified alongside <code>global</code>, coverage data for matching paths will be subtracted from overall coverage and thresholds will be applied independently. Los limites para los globs son aplicados a todos los archivos que coincidan con el glob. If the file specified by path is not found, an error is returned.</p>
 <p>Por ejemplo, con la siguiente configuración:</p>
 <pre><code class="hljs css language-json">{
   ...
@@ -344,7 +344,7 @@ Jest: Coverage data for global was not found.
 <p>That module can also contain a <code>getCacheKey</code> function to generate a cache key to determine if the logic has changed and any cached artifacts relying on it should be discarded.</p>
 <h3><a class="anchor" aria-hidden="true" id="displayname-string-object"></a><a href="#displayname-string-object" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>displayName</code> [string, object]</h3>
 <p>por defecto: <code>undefined</code></p>
-<p>Allows for a label to be printed along side a test while it is running. This becomes more useful in multiproject repositories where there can be many jest configuration files. This visually tells which project a test belongs to. Here are sample valid values.</p>
+<p>Allows for a label to be printed alongside a test while it is running. This becomes more useful in multi-project repositories where there can be many jest configuration files. This visually tells which project a test belongs to. Here are sample valid values.</p>
 <pre><code class="hljs css language-js"><span class="hljs-built_in">module</span>.exports = {
   <span class="hljs-attr">displayName</span>: <span class="hljs-string">'CLIENT'</span>,
 };
@@ -409,7 +409,7 @@ Jest: Coverage data for global was not found.
   }
 }
 </code></pre>
-<p>Es importante notar que si se especifica un valor de referencia global aquí (como un objecto o un arreglo), y el código de alguna prueba modifica este valor, estos cambios <em>NO</em> se verán reflejados en pruebas que residan en otros archivos. In addition the <code>globals</code> object must be json-serializable, so it can't be used to specify global functions. Por esto debería usar <code>globals</code>.</p>
+<p>Es importante notar que si se especifica un valor de referencia global aquí (como un objecto o un arreglo), y el código de alguna prueba modifica este valor, estos cambios <em>NO</em> se verán reflejados en pruebas que residan en otros archivos. In addition, the <code>globals</code> object must be json-serializable, so it can't be used to specify global functions. For that, you should use <code>setupFiles</code>.</p>
 <h3><a class="anchor" aria-hidden="true" id="globalsetup-string"></a><a href="#globalsetup-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>globalSetup</code> [string]</h3>
 <p>Por defecto: <code>undefined</code></p>
 <p>This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's <code>globalConfig</code> object as a parameter.</p>
@@ -497,7 +497,7 @@ Jest: Coverage data for global was not found.
   <span class="hljs-attr">"preset"</span>: <span class="hljs-string">"foo-bar"</span>
 }
 </code></pre>
-<p>Presets may also be relative filesystem paths.</p>
+<p>Presets may also be relative to filesystem paths.</p>
 <pre><code class="hljs css language-json">{
   <span class="hljs-attr">"preset"</span>: <span class="hljs-string">"./node_modules/foo-bar/jest-preset.js"</span>
 }
@@ -513,7 +513,7 @@ Jest: Coverage data for global was not found.
 }
 </code></pre>
 <p>Este ejemplo de configuración ejecuta a Jest en el directorio root así como en cualquier directorio dentro de examples. Se puede tener una cantidad ilimitada de proyectos que se ejecuten por la misma instancia de Jest.</p>
-<p>The projects feature can also be used to run multiple configurations or multiple <a href="#runner-string">runners</a>. For this purpose you can pass an array of configuration objects. For example, to run both tests and ESLint (via <a href="https://github.com/jest-community/jest-runner-eslint">jest-runner-eslint</a>) in the same invocation of Jest:</p>
+<p>The projects feature can also be used to run multiple configurations or multiple <a href="#runner-string">runners</a>. For this purpose, you can pass an array of configuration objects. For example, to run both tests and ESLint (via <a href="https://github.com/jest-community/jest-runner-eslint">jest-runner-eslint</a>) in the same invocation of Jest:</p>
 <pre><code class="hljs css language-json">{
   <span class="hljs-attr">"projects"</span>: [
     {
@@ -527,7 +527,7 @@ Jest: Coverage data for global was not found.
   ]
 }
 </code></pre>
-<p><em>Note: When using multi project runner, it's recommended to add a <code>displayName</code> for each project. This will show the <code>displayName</code> of a project next to its tests.</em></p>
+<p><em>Note: When using multi-project runner, it's recommended to add a <code>displayName</code> for each project. This will show the <code>displayName</code> of a project next to its tests.</em></p>
 <h3><a class="anchor" aria-hidden="true" id="reporters-arraymodulename--modulename-options"></a><a href="#reporters-arraymodulename--modulename-options" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>reporters</code> [array&lt;modulename | [modulename, options]&gt;]</h3>
 <p>Por defecto: <code>undefined</code></p>
 <p>Se utiliza esta opción para agregar reporters personalizados a Jest. Un reporter personalizado es una clase que implementa los metodos <code>onRunStart</code>, <code>onTestStart</code>, <code>onTestResult</code>,<code>onRunComplete</code> los cuales se ejecutan cuando el evento correspondiente ocurre.</p>
@@ -585,7 +585,7 @@ Jest: Coverage data for global was not found.
 <p>Automatically reset mock state before every test. Equivalent to calling <code>jest.resetAllMocks()</code> before each test. Esto causa que todos los mocks tengan sus implementaciones falsas removidas sin restaurar su implementación inicial.</p>
 <h3><a class="anchor" aria-hidden="true" id="resetmodules-boolean"></a><a href="#resetmodules-boolean" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>resetModules</code> [boolean]</h3>
 <p>Por defecto: <code>false</code></p>
-<p>By default, each test file gets its own independent module registry. Enabling <code>resetModules</code> goes a step further and resets the module registry before running each individual test. Esto es útil para aislar módulos entre pruebas y evitar conflictos entre el estado del modulo local de cada prueba. También se puede obtener el mismo resultado en código usando <a href="/docs/es-ES/next/jest-object#jestresetmodules"><code>jest.resetModules()</code></a>.</p>
+<p>By default, each test file gets its own independent module registry. Enabling <code>resetModules</code> goes a step further and resets the module registry before running each individual test. This is useful to isolate modules for every test so that the local module state doesn't conflict between tests. También se puede obtener el mismo resultado en código usando <a href="/docs/es-ES/next/jest-object#jestresetmodules"><code>jest.resetModules()</code></a>.</p>
 <h3><a class="anchor" aria-hidden="true" id="resolver-string"></a><a href="#resolver-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>resolver</code> [string]</h3>
 <p>Por defecto: <code>undefined</code></p>
 <p>Permite ocupar un resolver diferente. El resolver debe ser un modulo de node que exporte una función. Dicha función debe esperar la ruta a resolver en forma de string como primer argumento, y la siguiente estructura como segundo argumento:</p>
@@ -599,7 +599,7 @@ Jest: Coverage data for global was not found.
 }
 </code></pre>
 <p>La función debe devolver una ruta al módulo a resolver o un error si no se encuentra dicho módulo.</p>
-<p>Note: the defaultResolver passed as options is the Jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom one, e.g. <code>(request, options)</code>.</p>
+<p>Note: the defaultResolver passed as an option is the Jest default resolver which might be useful when you write your custom one. It takes the same arguments as your custom one, e.g. <code>(request, options)</code>.</p>
 <p>For example, if you want to respect Browserify's <a href="https://github.com/browserify/browserify-handbook/blob/master/readme.markdown#browser-field"><code>&quot;browser&quot;</code> field</a>, you can use the following configuration:</p>
 <pre><code class="hljs css language-json">{
   ...
@@ -814,7 +814,7 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 ├── bar.spec.jsx <span class="hljs-comment"># prueba</span>
 └── component.js <span class="hljs-comment"># no es prueba</span>
 </code></pre>
-<p><em>Note: <code>testRegex</code> will try to detect test files using the <strong>absolute file path</strong> therefore having a folder with name that match it will run all the files as tests</em></p>
+<p><em>Note: <code>testRegex</code> will try to detect test files using the <strong>absolute file path</strong>, therefore, having a folder with a name that matches it will run all the files as tests</em></p>
 <h3><a class="anchor" aria-hidden="true" id="testresultsprocessor-string"></a><a href="#testresultsprocessor-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testResultsProcessor</code> [string]</h3>
 <p>Por defecto: <code>undefined</code></p>
 <p>Esta opción permite el uso de un procesador de resultados personalizado. This processor must be a node module that exports a function expecting an object with the following structure as the first argument and return it:</p>
@@ -861,7 +861,7 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="testrunner-string"></a><a href="#testrunner-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>testRunner</code> [string]</h3>
 <p>Por defecto: <code>jasmine2</code></p>
-<p>Esta opción permite especificar el modulo que ejecuta las pruebas. El ocupado por defecto es jasmine2. Un modulo personalizado puede especificarse a través de una ruta que apunte a una implementación.</p>
+<p>This option allows the use of a custom test runner. The default is jasmine2. A custom test runner can be provided by specifying a path to a test runner implementation.</p>
 <p>El modulo que ejecuta pruebas debe exportar una función con la siguiente estructura:</p>
 <pre><code class="hljs css language-ts"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">testRunner</span>(<span class="hljs-params">
   globalConfig: GlobalConfig,
@@ -908,7 +908,7 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <p>If the value is <code>modern</code>, <a href="https://github.com/sinonjs/fake-timers"><code>@sinonjs/fake-timers</code></a> will be used as implementation instead of Jest's own legacy implementation. This will be the default fake implementation in Jest 27.</p>
 <h3><a class="anchor" aria-hidden="true" id="transform-objectstring-pathtotransformer--pathtotransformer-object"></a><a href="#transform-objectstring-pathtotransformer--pathtotransformer-object" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>transform</code> [object&lt;string, pathToTransformer | [pathToTransformer, object]&gt;]</h3>
 <p>Default: <code>{&quot;^.+\\.[jt]sx?$&quot;: &quot;babel-jest&quot;}</code></p>
-<p>Mapa de expresiones regulares que apuntan a rutas de transformers. Un transformer es un modulo que provee una función sincrona para la transformación de archivos de código fuente. Por ejemplo, si se desea poder utilizar una nueva característica del lenguaje en algún modulo o en archivos de pruebas que todavía no está soportada por node, se puede ocupar un transpilador de una versión nueva de JavaScript a una anterior como plug-in. Example: see the <a href="https://github.com/facebook/jest/blob/master/examples/typescript/package.json#L16">examples/typescript</a> example or the <a href="/docs/es-ES/next/webpack">webpack tutorial</a>.</p>
+<p>Mapa de expresiones regulares que apuntan a rutas de transformers. Un transformer es un modulo que provee una función sincrona para la transformación de archivos de código fuente. For example, if you wanted to be able to use a new language feature in your modules or tests that aren't yet supported by node, you might plug in one of many compilers that compile a future version of JavaScript to a current one. Example: see the <a href="https://github.com/facebook/jest/blob/master/examples/typescript/package.json#L16">examples/typescript</a> example or the <a href="/docs/es-ES/next/webpack">webpack tutorial</a>.</p>
 <p>Examples of such compilers include:</p>
 <ul>
 <li><a href="https://babeljs.io/">Babel</a></li>
@@ -917,7 +917,7 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <li>To build your own please visit the <a href="/docs/es-ES/next/tutorial-react#custom-transformers">Custom Transformer</a> section</li>
 </ul>
 <p>You can pass configuration to a transformer like <code>{filePattern: ['path-to-transformer', {options}]}</code> For example, to configure babel-jest for non-default behavior, <code>{&quot;\\.js$&quot;: ['babel-jest', {rootMode: &quot;upward&quot;}]}</code></p>
-<p><em>Note: a transformer is only run once per file unless the file has changed. During development of a transformer it can be useful to run Jest with <code>--no-cache</code> to frequently <a href="/docs/es-ES/next/troubleshooting#caching-issues">delete Jest's cache</a>.</em></p>
+<p><em>Note: a transformer is only run once per file unless the file has changed. During the development of a transformer it can be useful to run Jest with <code>--no-cache</code> to frequently <a href="/docs/es-ES/next/troubleshooting#caching-issues">delete Jest's cache</a>.</em></p>
 <p><em>Note: when adding additional code transformers, this will overwrite the default config and <code>babel-jest</code> is no longer automatically loaded. If you want to use it to compile JavaScript or Typescript, it has to be explicitly defined by adding <code>{&quot;^.+\\.[jt]sx?$&quot;: &quot;babel-jest&quot;}</code> to the transform property. Véase <a href="https://github.com/facebook/jest/tree/master/packages/babel-jest#setup">babel-jest-plugin</a></em></p>
 <h3><a class="anchor" aria-hidden="true" id="transformignorepatterns-arraystring"></a><a href="#transformignorepatterns-arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>transformIgnorePatterns</code> [array&lt;string&gt;]</h3>
 <p>Por defecto: <code>[&quot;/node_modules/&quot;]</code></p>
@@ -937,10 +937,10 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <p>Por defecto: <code>[]</code></p>
 <p>Una serie de modelos RegExp que son comparados con todas los ficheros de origen antes de volver a ejecutar las pruebas en el modo de vigilancia. Cuando se actualice si el fichero del archivo coincide con cualquiera de los patrones, no activará una nueva ejecución de las pruebas.</p>
 <p>Estos patrones corresponden a la secuencia entera. Use the <code>&lt;rootDir&gt;</code> string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: <code>[&quot;&lt;rootDir&gt;/node_modules/&quot;]</code>.</p>
-<p>Even if nothing is specified here, the watcher will ignore changes to any hidden files and directories, i.e. files and folders that begins with a dot (<code>.</code>).</p>
+<p>Even if nothing is specified here, the watcher will ignore changes to any hidden files and directories, i.e. files and folders that begin with a dot (<code>.</code>).</p>
 <h3><a class="anchor" aria-hidden="true" id="watchplugins-arraystring--string-object"></a><a href="#watchplugins-arraystring--string-object" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>watchPlugins</code> [array&lt;string | [string, object]&gt;]</h3>
 <p>Por defecto: <code>[]</code></p>
-<p>This option allows you to use a custom watch plugins. Read more about watch plugins <a href="watch-plugins">here</a>.</p>
+<p>This option allows you to use custom watch plugins. Read more about watch plugins <a href="watch-plugins">here</a>.</p>
 <p>Examples of watch plugins include:</p>
 <ul>
 <li><a href="https://github.com/rickhanlonii/jest-watch-master"><code>jest-watch-master</code></a></li>
@@ -952,7 +952,7 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <p><em>Note: The values in the <code>watchPlugins</code> property value can omit the <code>jest-watch-</code> prefix of the package name.</em></p>
 <h3><a class="anchor" aria-hidden="true" id="-string"></a><a href="#-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>//</code> [string]</h3>
 <p>No default</p>
-<p>This option allow comments in <code>package.json</code>. Include the comment text as the value of this key anywhere in <code>package.json</code>.</p>
+<p>This option allows comments in <code>package.json</code>. Include the comment text as the value of this key anywhere in <code>package.json</code>.</p>
 <p>Ejemplo:</p>
 <pre><code class="hljs css language-json">{
   <span class="hljs-attr">"name"</span>: <span class="hljs-string">"my-project"</span>,

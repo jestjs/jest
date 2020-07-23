@@ -115,7 +115,7 @@ test(<span class="hljs-string">'the data is peanut butter'</span>, () =&gt; {
 });
 </code></pre>
 <p>Обязательно убедитесь, что вы возвращаете промис — если забыть про этот <code>return</code>, то тест завершится еще до того как успешно завершится промис, вернувшийся из <code>fetchData</code>, и у then() появится возможность выполнить обратный вызов.</p>
-<p>If you expect a promise to be rejected, use the <code>.catch</code> method. Make sure to add <code>expect.assertions</code> to verify that a certain number of assertions are called. Otherwise a fulfilled promise would not fail the test.</p>
+<p>If you expect a promise to be rejected, use the <code>.catch</code> method. Make sure to add <code>expect.assertions</code> to verify that a certain number of assertions are called. Otherwise, a fulfilled promise would not fail the test.</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'the fetch fails with an error'</span>, () =&gt; {
   expect.assertions(<span class="hljs-number">1</span>);
   <span class="hljs-keyword">return</span> fetchData().catch(<span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> expect(e).toMatch(<span class="hljs-string">'error'</span>));
