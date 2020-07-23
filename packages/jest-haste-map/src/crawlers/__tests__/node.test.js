@@ -14,6 +14,11 @@ jest.mock('child_process', () => ({
   spawn: jest.fn((cmd, args) => {
     let closeCallback;
     return {
+      on: jest.fn().mockImplementation((event, callback) => {
+        if (event === 'exit') {
+          callback(mockSpawnExit, null);
+        }
+      }),
       stdout: {
         on: jest.fn().mockImplementation((event, callback) => {
           if (event === 'data') {
@@ -131,6 +136,7 @@ const createMap = obj => new Map(Object.keys(obj).map(key => [key, obj[key]]));
 
 const rootDir = '/project';
 let mockResponse;
+let mockSpawnExit;
 let nodeCrawl;
 let childProcess;
 
@@ -148,6 +154,8 @@ describe('node crawler', () => {
       '/project/fruits/strawberry.js',
       '/project/fruits/tomato.js',
     ].join('\n');
+
+    mockSpawnExit = 0;
   });
 
   it('crawls for files based on patterns', () => {
@@ -290,6 +298,37 @@ describe('node crawler', () => {
         }),
       );
       expect(removedFiles).toEqual(new Map());
+    });
+  });
+
+  it('uses node fs APIs on Unix based OS with incompatible find binary', () => {
+    process.platform = 'linux';
+    mockResponse = '';
+    mockSpawnExit = 1;
+    childProcess = require('child_process');
+    const which = require('which');
+    which.mockReturnValueOnce(Promise.resolve('/mypath/find'));
+
+    nodeCrawl = require('../node');
+
+    return nodeCrawl({
+      data: {
+        files: new Map(),
+      },
+      extensions: ['js'],
+      ignore: pearMatcher,
+      rootDir,
+      roots: ['/project/fruits'],
+    }).then(({hasteMap, removedFiles}) => {
+      expect(childProcess.spawn).lastCalledWith('find', ['.', '-iname', "''"]);
+      expect(hasteMap.files).toEqual(
+        createMap({
+          'fruits/directory/strawberry.js': ['', 33, 42, 0, '', null],
+          'fruits/tomato.js': ['', 32, 42, 0, '', null],
+        }),
+      );
+      expect(removedFiles).toEqual(new Map());
+      expect(which).toBeCalledWith('find');
     });
   });
 

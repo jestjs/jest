@@ -31,7 +31,14 @@ async function hasNativeFindSupport(
 
   try {
     await which('find');
-    return true;
+    return await new Promise(resolve => {
+      // Check the find binary supports the non-POSIX -iname parameter.
+      const args = ['.', '-iname', "''"];
+      const child = spawn('find', args);
+      child.on('exit', code => {
+        resolve(code == 0);
+      });
+    });
   } catch {
     return false;
   }
