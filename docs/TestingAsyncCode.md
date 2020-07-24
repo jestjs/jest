@@ -63,7 +63,7 @@ test('the data is peanut butter', () => {
 
 Be sure to return the promise - if you omit this `return` statement, your test will complete before the promise returned from `fetchData` resolves and then() has a chance to execute the callback.
 
-If you expect a promise to be rejected, use the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of assertions are called. Otherwise a fulfilled promise would not fail the test.
+If you expect a promise to be rejected, use the `.catch` method. Make sure to add `expect.assertions` to verify that a certain number of assertions are called. Otherwise, a fulfilled promise would not fail the test.
 
 ```js
 test('the fetch fails with an error', () => {
