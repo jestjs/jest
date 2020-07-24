@@ -129,8 +129,6 @@ jest.mock('graceful-fs', () => {
   };
 });
 
-jest.mock('which', () => jest.fn().mockResolvedValue());
-
 const pearMatcher = path => /pear/.test(path);
 const createMap = obj => new Map(Object.keys(obj).map(key => [key, obj[key]]));
 
@@ -306,8 +304,6 @@ describe('node crawler', () => {
     mockResponse = '';
     mockSpawnExit = 1;
     childProcess = require('child_process');
-    const which = require('which');
-    which.mockReturnValueOnce(Promise.resolve('/mypath/find'));
 
     nodeCrawl = require('../node');
 
@@ -328,15 +324,16 @@ describe('node crawler', () => {
         }),
       );
       expect(removedFiles).toEqual(new Map());
-      expect(which).toBeCalledWith('find');
     });
   });
 
   it('uses node fs APIs on Unix based OS without find binary', () => {
     process.platform = 'linux';
-    const which = require('which');
-    which.mockReturnValueOnce(Promise.reject());
 
+    childProcess = require('child_process');
+    childProcess.spawn.mockImplementationOnce(() => {
+      throw new Error();
+    });
     nodeCrawl = require('../node');
 
     return nodeCrawl({
@@ -355,13 +352,13 @@ describe('node crawler', () => {
         }),
       );
       expect(removedFiles).toEqual(new Map());
-      expect(which).toBeCalledWith('find');
     });
   });
 
   it('uses node fs APIs if "forceNodeFilesystemAPI" is set to true, regardless of platform', () => {
     process.platform = 'linux';
 
+    childProcess = require('child_process');
     nodeCrawl = require('../node');
 
     const files = new Map();
@@ -373,6 +370,7 @@ describe('node crawler', () => {
       rootDir,
       roots: ['/project/fruits'],
     }).then(({hasteMap, removedFiles}) => {
+      expect(childProcess.spawn).toHaveBeenCalledTimes(0);
       expect(hasteMap.files).toEqual(
         createMap({
           'fruits/directory/strawberry.js': ['', 33, 42, 0, '', null],

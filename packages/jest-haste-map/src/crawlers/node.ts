@@ -8,7 +8,6 @@
 import * as path from 'path';
 import {spawn} from 'child_process';
 import * as fs from 'graceful-fs';
-import which = require('which');
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
 import type {
@@ -30,13 +29,15 @@ async function hasNativeFindSupport(
   }
 
   try {
-    await which('find');
     return await new Promise(resolve => {
       // Check the find binary supports the non-POSIX -iname parameter.
       const args = ['.', '-iname', "''"];
       const child = spawn('find', args);
+      child.on('error', () => {
+        resolve(false);
+      });
       child.on('exit', code => {
-        resolve(code == 0);
+        resolve(code === 0);
       });
     });
   } catch {
