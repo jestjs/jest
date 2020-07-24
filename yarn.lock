@@ -11217,6 +11217,7 @@ fsevents@^1.2.7:
     jest-worker: ^26.1.0
     micromatch: ^4.0.2
     sane: ^4.0.3
+    slash: ^3.0.0
     walker: ^1.0.7
   dependenciesMeta:
     fsevents:

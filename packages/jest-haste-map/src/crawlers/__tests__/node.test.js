@@ -8,8 +8,6 @@
 
 'use strict';
 
-import {skipSuiteOnWindows} from '@jest/test-utils';
-
 jest.mock('child_process', () => ({
   spawn: jest.fn((cmd, args) => {
     let closeCallback;
@@ -39,6 +37,7 @@ jest.mock('child_process', () => ({
 let mockHasReaddirWithFileTypesSupport = false;
 
 jest.mock('graceful-fs', () => {
+  const slash = require('slash');
   let mtime = 32;
   const size = 42;
   const stat = (path, callback) => {
@@ -46,10 +45,10 @@ jest.mock('graceful-fs', () => {
       () =>
         callback(null, {
           isDirectory() {
-            return path.endsWith('/directory');
+            return slash(path).endsWith('/directory');
           },
           isSymbolicLink() {
-            return path.endsWith('symlink');
+            return slash(path).endsWith('symlink');
           },
           mtime: {
             getTime() {
@@ -75,7 +74,7 @@ jest.mock('graceful-fs', () => {
       }
 
       if (mockHasReaddirWithFileTypesSupport) {
-        if (dir === '/project/fruits') {
+        if (slash(dir) === '/project/fruits') {
           setTimeout(
             () =>
               callback(null, [
@@ -97,7 +96,7 @@ jest.mock('graceful-fs', () => {
               ]),
             0,
           );
-        } else if (dir === '/project/fruits/directory') {
+        } else if (slash(dir) === '/project/fruits/directory') {
           setTimeout(
             () =>
               callback(null, [
@@ -109,18 +108,18 @@ jest.mock('graceful-fs', () => {
               ]),
             0,
           );
-        } else if (dir == '/error') {
+        } else if (slash(dir) == '/error') {
           setTimeout(() => callback({code: 'ENOTDIR'}, undefined), 0);
         }
       } else {
-        if (dir === '/project/fruits') {
+        if (slash(dir) === '/project/fruits') {
           setTimeout(
             () => callback(null, ['directory', 'tomato.js', 'symlink']),
             0,
           );
-        } else if (dir === '/project/fruits/directory') {
+        } else if (slash(dir) === '/project/fruits/directory') {
           setTimeout(() => callback(null, ['strawberry.js']), 0);
-        } else if (dir == '/error') {
+        } else if (slash(dir) == '/error') {
           setTimeout(() => callback({code: 'ENOTDIR'}, undefined), 0);
         }
       }
@@ -130,7 +129,10 @@ jest.mock('graceful-fs', () => {
 });
 
 const pearMatcher = path => /pear/.test(path);
-const createMap = obj => new Map(Object.keys(obj).map(key => [key, obj[key]]));
+const normalize = path =>
+  process.platform === 'win32' ? path.replace(/\//g, '\\') : path;
+const createMap = obj =>
+  new Map(Object.keys(obj).map(key => [normalize(key), obj[key]]));
 
 const rootDir = '/project';
 let mockResponse;
@@ -139,13 +141,8 @@ let nodeCrawl;
 let childProcess;
 
 describe('node crawler', () => {
-  skipSuiteOnWindows();
-
   beforeEach(() => {
     jest.resetModules();
-
-    // Remove the "process.platform" property descriptor so it can be writable.
-    delete process.platform;
 
     mockResponse = [
       '/project/fruits/pear.js',
@@ -157,8 +154,6 @@ describe('node crawler', () => {
   });
 
   it('crawls for files based on patterns', () => {
-    process.platform = 'linux';
-
     childProcess = require('child_process');
     nodeCrawl = require('../node');
 
@@ -209,8 +204,6 @@ describe('node crawler', () => {
   });
 
   it('updates only changed files', () => {
-    process.platform = 'linux';
-
     nodeCrawl = require('../node');
 
     // In this test sample, strawberry is changed and tomato is unchanged
@@ -235,15 +228,13 @@ describe('node crawler', () => {
       );
 
       // Make sure it is the *same* unchanged object.
-      expect(hasteMap.files.get('fruits/tomato.js')).toBe(tomato);
+      expect(hasteMap.files.get(normalize('fruits/tomato.js'))).toBe(tomato);
 
       expect(removedFiles).toEqual(new Map());
     });
   });
 
   it('returns removed files', () => {
-    process.platform = 'linux';
-
     nodeCrawl = require('../node');
 
     // In this test sample, previouslyExisted was present before and will not be
@@ -275,32 +266,7 @@ describe('node crawler', () => {
     });
   });
 
-  it('uses node fs APIs on windows', () => {
-    process.platform = 'win32';
-
-    nodeCrawl = require('../node');
-
-    return nodeCrawl({
-      data: {
-        files: new Map(),
-      },
-      extensions: ['js'],
-      ignore: pearMatcher,
-      rootDir,
-      roots: ['/project/fruits'],
-    }).then(({hasteMap, removedFiles}) => {
-      expect(hasteMap.files).toEqual(
-        createMap({
-          'fruits/directory/strawberry.js': ['', 33, 42, 0, '', null],
-          'fruits/tomato.js': ['', 32, 42, 0, '', null],
-        }),
-      );
-      expect(removedFiles).toEqual(new Map());
-    });
-  });
-
-  it('uses node fs APIs on Unix based OS with incompatible find binary', () => {
-    process.platform = 'linux';
+  it('uses node fs APIs with incompatible find binary', () => {
     mockResponse = '';
     mockSpawnExit = 1;
     childProcess = require('child_process');
@@ -327,9 +293,7 @@ describe('node crawler', () => {
     });
   });
 
-  it('uses node fs APIs on Unix based OS without find binary', () => {
-    process.platform = 'linux';
-
+  it('uses node fs APIs without find binary', () => {
     childProcess = require('child_process');
     childProcess.spawn.mockImplementationOnce(() => {
       throw new Error();
@@ -356,8 +320,6 @@ describe('node crawler', () => {
   });
 
   it('uses node fs APIs if "forceNodeFilesystemAPI" is set to true, regardless of platform', () => {
-    process.platform = 'linux';
-
     childProcess = require('child_process');
     nodeCrawl = require('../node');
 
@@ -382,8 +344,6 @@ describe('node crawler', () => {
   });
 
   it('completes with empty roots', () => {
-    process.platform = 'win32';
-
     nodeCrawl = require('../node');
 
     const files = new Map();
@@ -401,14 +361,13 @@ describe('node crawler', () => {
   });
 
   it('completes with fs.readdir throwing an error', () => {
-    process.platform = 'win32';
-
     nodeCrawl = require('../node');
 
     const files = new Map();
     return nodeCrawl({
       data: {files},
       extensions: ['js'],
+      forceNodeFilesystemAPI: true,
       ignore: pearMatcher,
       rootDir,
       roots: ['/error'],

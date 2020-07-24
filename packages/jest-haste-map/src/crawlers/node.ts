@@ -24,7 +24,7 @@ type Callback = (result: Result) => void;
 async function hasNativeFindSupport(
   forceNodeFilesystemAPI: boolean,
 ): Promise<boolean> {
-  if (forceNodeFilesystemAPI || process.platform === 'win32') {
+  if (forceNodeFilesystemAPI) {
     return false;
   }
 
