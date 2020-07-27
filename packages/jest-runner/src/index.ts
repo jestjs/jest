@@ -49,7 +49,7 @@ namespace TestRunner {
 class TestRunner {
   private _globalConfig: Config.GlobalConfig;
   private _context: JestTestRunnerContext;
-  public eventEmitter: Emittery;
+  private UNSTABLE_eventEmitter = new Emittery.Typed<JestTestEvents>();
 
   public __PRIVATE_UNSTABLE_API_supportsEventEmmiters__: boolean = true;
 
@@ -61,7 +61,6 @@ class TestRunner {
   ) {
     this._globalConfig = globalConfig;
     this._context = context || {};
-    this.eventEmitter = new Emittery.Typed<JestTestEvents>();
   }
 
   async runTests(
@@ -103,7 +102,7 @@ class TestRunner {
               }
               let sendMessageToJest: JestTestFileEvent;
 
-              // Remove `if(onStart)` on next release
+              // Remove `if(onStart)` in Jest 27
               if (onStart) {
                 await onStart(test);
                 return runTest(
@@ -117,12 +116,14 @@ class TestRunner {
               } else {
                 // `deepCyclicCopy` used here to avoid mem-leak
                 sendMessageToJest = (eventName, args) =>
-                  this.eventEmitter.emit(
+                  this.UNSTABLE_eventEmitter.emit(
                     eventName,
                     deepCyclicCopy(args, {keepPrototype: false}),
                   );
 
-                await this.eventEmitter.emit('test-file-start', [test]);
+                await this.UNSTABLE_eventEmitter.emit('test-file-start', [
+                  test,
+                ]);
                 return runTest(
                   test.path,
                   this._globalConfig,
@@ -137,7 +138,7 @@ class TestRunner {
               if (onResult) {
                 return onResult(test, result);
               } else {
-                return this.eventEmitter.emit('test-file-success', [
+                return this.UNSTABLE_eventEmitter.emit('test-file-success', [
                   test,
                   result,
                 ]);
@@ -147,7 +148,10 @@ class TestRunner {
               if (onFailure) {
                 return onFailure(test, err);
               } else {
-                return this.eventEmitter.emit('test-file-failure', [test, err]);
+                return this.UNSTABLE_eventEmitter.emit('test-file-failure', [
+                  test,
+                  err,
+                ]);
               }
             }),
         ),
@@ -197,11 +201,11 @@ class TestRunner {
           return Promise.reject();
         }
 
-        // Remove `if(onStart)` on next release
+        // Remove `if(onStart)` in Jest 27
         if (onStart) {
           await onStart(test);
         } else {
-          await this.eventEmitter.emit('test-file-start', [test]);
+          await this.UNSTABLE_eventEmitter.emit('test-file-start', [test]);
         }
 
         const promise = worker.worker({
@@ -222,7 +226,7 @@ class TestRunner {
         if (promise.UNSTABLE_onCustomMessage) {
           // TODO: Get appropriate type for `onCustomMessage`
           promise.UNSTABLE_onCustomMessage(([event, payload]: any) => {
-            this.eventEmitter.emit(event, payload);
+            this.UNSTABLE_eventEmitter.emit(event, payload);
           });
         }
 
@@ -230,11 +234,11 @@ class TestRunner {
       });
 
     const onError = async (err: SerializableError, test: JestTest) => {
-      // Remove `if(onFailure)` on next release
+      // Remove `if(onFailure)` in Jest 27
       if (onFailure) {
         onFailure(test, err);
       } else {
-        await this.eventEmitter.emit('test-file-failure', [test, err]);
+        await this.UNSTABLE_eventEmitter.emit('test-file-failure', [test, err]);
       }
       if (err.type === 'ProcessTerminatedError') {
         console.error(
@@ -260,7 +264,7 @@ class TestRunner {
             if (onResult) {
               return onResult(test, result);
             } else {
-              return this.eventEmitter.emit('test-file-success', [
+              return this.UNSTABLE_eventEmitter.emit('test-file-success', [
                 test,
                 result,
               ]);
