@@ -25,11 +25,16 @@ function workerReply(i, error, result) {
   workerReplyEnd(i, error, result);
 }
 
+function workerReplyCustomMessage(i, message) {
+  mockWorkerCalls[i].onCustomMessage(message);
+}
+
 describe('Farm', () => {
   beforeEach(() => {
     mockWorkerCalls = [];
     callback = jest.fn((...args) => {
       mockWorkerCalls.push({
+        onCustomMessage: args[4],
         onEnd: args[3],
         onStart: args[2],
         passed: args[1],
@@ -47,6 +52,7 @@ describe('Farm', () => {
     expect(callback).toHaveBeenCalledWith(
       0,
       [1, true, 'foo', [42]],
+      expect.any(Function),
       expect.any(Function),
       expect.any(Function),
     );
@@ -67,12 +73,15 @@ describe('Farm', () => {
       [1, true, 'foo', [42]],
       expect.any(Function),
       expect.any(Function),
+      expect.any(Function),
     );
     expect(callback).toHaveBeenNthCalledWith(
       2,
       1, // second worker
       [1, true, 'foo1', [43]],
       expect.any(Function),
+      expect.any(Function),
+
       expect.any(Function),
     );
     expect(callback).toHaveBeenNthCalledWith(
@@ -81,11 +90,13 @@ describe('Farm', () => {
       [1, true, 'foo2', [44]],
       expect.any(Function),
       expect.any(Function),
+      expect.any(Function),
     );
     expect(callback).toHaveBeenNthCalledWith(
       4,
       3, // fourth worker
       [1, true, 'foo3', [45]],
+      expect.any(Function),
       expect.any(Function),
       expect.any(Function),
     );
@@ -108,6 +119,7 @@ describe('Farm', () => {
       1,
       0, // first worker
       [1, true, 'foo', [42]],
+      expect.any(Function),
       expect.any(Function),
       expect.any(Function),
     );
@@ -146,6 +158,7 @@ describe('Farm', () => {
       [1, true, 'foo', [42]],
       expect.any(Function),
       expect.any(Function),
+      expect.any(Function),
     );
     expect(callback).toHaveBeenNthCalledWith(
       2,
@@ -153,11 +166,13 @@ describe('Farm', () => {
       [1, true, 'foo1', [43]],
       expect.any(Function),
       expect.any(Function),
+      expect.any(Function),
     );
     expect(callback).toHaveBeenNthCalledWith(
       3,
       0, // first worker again
       [1, true, 'foo2', [44]],
+      expect.any(Function),
       expect.any(Function),
       expect.any(Function),
     );
@@ -220,11 +235,13 @@ describe('Farm', () => {
       [1, true, 'car', ['plane']],
       expect.any(Function),
       expect.any(Function),
+      expect.any(Function),
     );
     expect(callback).toHaveBeenNthCalledWith(
       2,
       0, // first worker
       [1, true, 'foo', ['bar']],
+      expect.any(Function),
       expect.any(Function),
       expect.any(Function),
     );
@@ -261,11 +278,13 @@ describe('Farm', () => {
       [1, true, 'car', ['plane']],
       expect.any(Function),
       expect.any(Function),
+      expect.any(Function),
     );
     expect(callback).toHaveBeenNthCalledWith(
       2,
       0, // first worker
       [1, true, 'foo', ['bar']],
+      expect.any(Function),
       expect.any(Function),
       expect.any(Function),
     );
@@ -332,5 +351,36 @@ describe('Farm', () => {
     await expect(p5).resolves.toBe('response-5');
     await expect(p6).resolves.toBe('response-6');
     await expect(p7).resolves.toBe('response-7');
+  });
+
+  it('can receive custom messages from workers', async () => {
+    expect.assertions(2);
+    const farm = new Farm(2, callback);
+
+    const p0 = farm.doWork('work-0');
+    const p1 = farm.doWork('work-1');
+
+    const unsubscribe = p0.UNSTABLE_onCustomMessage(message => {
+      expect(message).toEqual({key: 0, message: 'foo'});
+    });
+
+    p1.UNSTABLE_onCustomMessage(message => {
+      expect(message).toEqual({key: 1, message: 'bar'});
+    });
+
+    workerReplyStart(0);
+    workerReplyStart(1);
+    workerReplyCustomMessage(0, {key: 0, message: 'foo'});
+    workerReplyCustomMessage(1, {key: 1, message: 'bar'});
+
+    unsubscribe();
+    // This message will not received because the listener already
+    // unsubscribed.
+    workerReplyCustomMessage(0, {key: 0, message: 'baz'});
+
+    workerReply(0, null, 17);
+    workerReply(1, null, 17);
+    await p0;
+    await p1;
   });
 });

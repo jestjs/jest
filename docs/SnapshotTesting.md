@@ -39,7 +39,7 @@ exports[`renders correctly 1`] = `
 `;
 ```
 
-The snapshot artifact should be committed alongside code changes, and reviewed as part of your code review process. Jest uses [pretty-format](https://github.com/facebook/jest/tree/master/packages/pretty-format) to make snapshots human-readable during code review. On subsequent test runs Jest will compare the rendered output with the previous snapshot. If they match, the test will pass. If they don't match, either the test runner found a bug in your code (in this case, it's `<Link>` component) that should be fixed, or the implementation has changed and the snapshot needs to be updated.
+The snapshot artifact should be committed alongside code changes, and reviewed as part of your code review process. Jest uses [pretty-format](https://github.com/facebook/jest/tree/master/packages/pretty-format) to make snapshots human-readable during code review. On subsequent test runs, Jest will compare the rendered output with the previous snapshot. If they match, the test will pass. If they don't match, either the test runner found a bug in your code (in this case, it's `<Link>` component) that should be fixed, or the implementation has changed and the snapshot needs to be updated.
 
 > Note: The snapshot is directly scoped to the data you render – in our example it's `<Link />` component with page prop passed to it. This implies that even if any other file has missing props (Say, `App.js`) in the `<Link />` component, it will still pass the test as the test doesn't know the usage of `<Link />` component and it's scoped only to the `Link.react.js`. Also, Rendering the same component with different props in other snapshot tests will not affect the first one, as the tests don't know about each other.
 

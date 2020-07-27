@@ -43,7 +43,7 @@ test('adding positive numbers is not zero', () => {
 
 ## Truthiness
 
-In tests you sometimes need to distinguish between `undefined`, `null`, and `false`, but you sometimes do not want to treat these differently. Jest contains helpers that let you be explicit about what you want.
+In tests, you sometimes need to distinguish between `undefined`, `null`, and `false`, but you sometimes do not want to treat these differently. Jest contains helpers that let you be explicit about what you want.
 
 - `toBeNull` matches only `null`
 - `toBeUndefined` matches only `undefined`
