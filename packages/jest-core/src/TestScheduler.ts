@@ -223,24 +223,24 @@ export default class TestScheduler {
           if (testRunner.__PRIVATE_UNSTABLE_API_supportsEventEmmiters__) {
             const unsubscribes: Array<() => void> = [];
 
-            if (typeof testRunner.eventEmitter !== 'undefined') {
+            if (typeof testRunner.UNSTABLE_eventEmitter !== 'undefined') {
               unsubscribes.push(
                 ...[
-                  testRunner.eventEmitter.on(
+                  testRunner.UNSTABLE_eventEmitter.on(
                     'test-file-start',
                     ([test]: [TestRunner.Test]) => onTestFileStart(test),
                   ),
-                  testRunner.eventEmitter.on(
+                  testRunner.UNSTABLE_eventEmitter.on(
                     'test-file-success',
                     ([test, testResult]: [TestRunner.Test, TestResult]) =>
                       onResult(test, testResult),
                   ),
-                  testRunner.eventEmitter.on(
+                  testRunner.UNSTABLE_eventEmitter.on(
                     'test-file-failure',
                     ([test, error]: [TestRunner.Test, SerializableError]) =>
                       onFailure(test, error),
                   ),
-                  testRunner.eventEmitter.on(
+                  testRunner.UNSTABLE_eventEmitter.on(
                     'test-case-result',
                     ([testPath, testCaseResult]: [
                       Config.Path,
