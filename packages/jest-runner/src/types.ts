@@ -42,35 +42,16 @@ export type OnTestSuccess = (
 ) => Promise<void>;
 
 // Typings for `sendMessageToJest` events
-
-export type TestFileStart = {
-  eventName: 'test-file-start';
-  args: [Test];
-};
-export type TestFileSuccess = {
-  eventName: 'test-file-success';
-  args: [Test, TestResult];
-};
-export type TestFileFailure = {
-  eventName: 'test-file-failure';
-  args: [Test, SerializableError];
-};
-export type TestFileResult = {
-  eventName: 'test-case-result';
-  args: [Config.Path, AssertionResult];
+export type TestEvents = {
+  'test-file-start': [Test];
+  'test-file-success': [Test, TestResult];
+  'test-file-failure': [Test, SerializableError];
+  'test-case-result': [Config.Path, AssertionResult];
 };
 
-export type TestFileEvent = (
-  eventName:
-    | TestFileStart['eventName']
-    | TestFileSuccess['eventName']
-    | TestFileFailure['eventName']
-    | TestFileResult['eventName'],
-  args:
-    | TestFileStart['args']
-    | TestFileSuccess['args']
-    | TestFileFailure['args']
-    | TestFileResult['args'],
+export type TestFileEvent<T extends keyof TestEvents = keyof TestEvents> = (
+  eventName: T,
+  args: TestEvents[T],
 ) => unknown;
 
 export type TestFramework = (

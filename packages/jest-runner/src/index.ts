@@ -20,6 +20,7 @@ import type {
   OnTestStart as JestOnTestStart,
   OnTestSuccess as JestOnTestSuccess,
   Test as JestTest,
+  TestEvents as JestTestEvents,
   TestFileEvent as JestTestFileEvent,
   TestRunnerContext as JestTestRunnerContext,
   TestRunnerOptions as JestTestRunnerOptions,
@@ -60,9 +61,7 @@ class TestRunner {
   ) {
     this._globalConfig = globalConfig;
     this._context = context || {};
-    this.eventEmitter = new Emittery.Typed<{
-      eventName: Parameters<JestTestFileEvent>[1];
-    }>();
+    this.eventEmitter = new Emittery.Typed<JestTestEvents>();
   }
 
   async runTests(
