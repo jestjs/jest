@@ -3,7 +3,7 @@
 
 __metadata:
   version: 4
-  cacheKey: 4
+  cacheKey: 6
 
 "root-workspace-0b6124@workspace:.":
   version: 0.0.0-use.local
@@ -25,7 +25,7 @@ typescript@^3.7.4:
 
 "typescript@patch:typescript@^3.7.4#builtin<compat/typescript>":
   version: 3.8.3
-  resolution: "typescript@patch:typescript@npm%3A3.8.3#builtin<compat/typescript>::version=3.8.3&hash=64df9d"
+  resolution: "typescript@patch:typescript@npm%3A3.8.3#builtin<compat/typescript>::version=3.8.3&hash=5b02a2"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
