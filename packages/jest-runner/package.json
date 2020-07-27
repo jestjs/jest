@@ -22,7 +22,6 @@
     "jest-config": "^26.1.0",
     "jest-docblock": "^26.0.0",
     "jest-haste-map": "^26.1.0",
-    "jest-jasmine2": "^26.1.0",
     "jest-leak-detector": "^26.1.0",
     "jest-message-util": "^26.1.0",
     "jest-resolve": "^26.1.0",

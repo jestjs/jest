@@ -11062,6 +11062,7 @@ fsevents@^1.2.7:
     jest-each: ^26.1.0
     jest-matcher-utils: ^26.1.0
     jest-message-util: ^26.1.0
+    jest-runner: ^26.1.0
     jest-runtime: ^26.1.0
     jest-snapshot: ^26.1.0
     jest-util: ^26.1.0
@@ -11467,7 +11468,6 @@ fsevents@^1.2.7:
     jest-config: ^26.1.0
     jest-docblock: ^26.0.0
     jest-haste-map: ^26.1.0
-    jest-jasmine2: ^26.1.0
     jest-leak-detector: ^26.1.0
     jest-message-util: ^26.1.0
     jest-resolve: ^26.1.0
