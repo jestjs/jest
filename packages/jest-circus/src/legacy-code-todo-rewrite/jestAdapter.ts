@@ -9,7 +9,7 @@ import * as path from 'path';
 import type {Config} from '@jest/types';
 import type {JestEnvironment} from '@jest/environment';
 import type {TestResult} from '@jest/test-result';
-import TestRunner = require('jest-runner');
+import type {TestFileEvent} from 'jest-runner';
 import type {RuntimeType as Runtime} from 'jest-runtime';
 import type {SnapshotStateType} from 'jest-snapshot';
 import {deepCyclicCopy} from 'jest-util';
@@ -23,7 +23,7 @@ const jestAdapter = async (
   environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
-  sendMessageToJest?: TestRunner.TestFileEvent,
+  sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> => {
   const {
     initialize,
