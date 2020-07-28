@@ -49,7 +49,7 @@ namespace TestRunner {
 class TestRunner {
   private _globalConfig: Config.GlobalConfig;
   private _context: JestTestRunnerContext;
-  private UNSTABLE_eventEmitter = new Emittery.Typed<JestTestEvents>();
+  public UNSTABLE_eventEmitter = new Emittery.Typed<JestTestEvents>();
 
   public __PRIVATE_UNSTABLE_API_supportsEventEmmiters__: boolean = true;
 

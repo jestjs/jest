@@ -419,7 +419,7 @@ export const parseSingleTestResult = (
     status = 'pending';
   } else if (testResult.status === 'todo') {
     status = 'todo';
-  } else if (testResult.errors.length) {
+  } else if (testResult.errors.length > 0) {
     status = 'failed';
   } else {
     status = 'passed';

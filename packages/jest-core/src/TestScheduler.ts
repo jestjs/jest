@@ -187,7 +187,7 @@ export default class TestScheduler {
       showStatus: !runInBand,
     });
 
-    const testRunners = Object.create(null);
+    const testRunners: {[key: string]: TestRunner} = Object.create(null);
     const contextsByTestRunner = new WeakMap<TestRunner, Context>();
     contexts.forEach(context => {
       const {config} = context;
@@ -220,41 +220,35 @@ export default class TestScheduler {
            * Test runners with event emitters are still not supported
            * for third party test runners.
            */
-          if (testRunner.__PRIVATE_UNSTABLE_API_supportsEventEmmiters__) {
-            const unsubscribes: Array<() => void> = [];
-
-            if (typeof testRunner.UNSTABLE_eventEmitter !== 'undefined') {
-              unsubscribes.push(
-                ...[
-                  testRunner.UNSTABLE_eventEmitter.on(
-                    'test-file-start',
-                    ([test]: [TestRunner.Test]) => onTestFileStart(test),
-                  ),
-                  testRunner.UNSTABLE_eventEmitter.on(
-                    'test-file-success',
-                    ([test, testResult]: [TestRunner.Test, TestResult]) =>
-                      onResult(test, testResult),
-                  ),
-                  testRunner.UNSTABLE_eventEmitter.on(
-                    'test-file-failure',
-                    ([test, error]: [TestRunner.Test, SerializableError]) =>
-                      onFailure(test, error),
-                  ),
-                  testRunner.UNSTABLE_eventEmitter.on(
-                    'test-case-result',
-                    ([testPath, testCaseResult]: [
-                      Config.Path,
-                      AssertionResult,
-                    ]) => {
-                      if (context) {
-                        const test: TestRunner.Test = {context, path: testPath};
-                        this._dispatcher.onTestCaseResult(test, testCaseResult);
-                      }
-                    },
-                  ),
-                ],
-              );
-            }
+          if (
+            testRunner.__PRIVATE_UNSTABLE_API_supportsEventEmmiters__ &&
+            typeof testRunner.UNSTABLE_eventEmitter !== 'undefined'
+          ) {
+            const unsubscribes = [
+              testRunner.UNSTABLE_eventEmitter.on(
+                'test-file-start',
+                ([test]: [TestRunner.Test]) => onTestFileStart(test),
+              ),
+              testRunner.UNSTABLE_eventEmitter.on(
+                'test-file-success',
+                ([test, testResult]: [TestRunner.Test, TestResult]) =>
+                  onResult(test, testResult),
+              ),
+              testRunner.UNSTABLE_eventEmitter.on(
+                'test-file-failure',
+                ([test, error]: [TestRunner.Test, SerializableError]) =>
+                  onFailure(test, error),
+              ),
+              testRunner.UNSTABLE_eventEmitter.on(
+                'test-case-result',
+                ([testPath, testCaseResult]: [Config.Path, AssertionResult]) => {
+                  if (context) {
+                    const test: TestRunner.Test = { context, path: testPath };
+                    this._dispatcher.onTestCaseResult(test, testCaseResult);
+                  }
+                },
+              ),
+            ];
 
             await testRunner.runTests(tests, watcher, testRunnerOptions);
 
