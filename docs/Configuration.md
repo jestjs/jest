@@ -804,7 +804,7 @@ jest.setTimeout(10000); // in milliseconds
 
 Default: `5`
 
-A number of seconds after which a test is considered as slow and reported as such in the results.
+The number of seconds after which a test is considered as slow and reported as such in the results.
 
 ### `snapshotResolver` [string]
 

@@ -44,7 +44,7 @@ export default (
 
   const testDetail = [];
 
-  if (result.perfStats && result.perfStats.slow) {
+  if (result.perfStats?.slow) {
     const runTime = (result.perfStats.end - result.perfStats.start) / 1000;
 
     testDetail.push(LONG_TEST_COLOR(formatTime(runTime, 0)));
