@@ -22,7 +22,6 @@ import {
 import exit = require('exit');
 import {
   AggregatedResult,
-  AssertionResult,
   SerializableError,
   TestResult,
   addResult,
@@ -220,30 +219,22 @@ export default class TestScheduler {
            * Test runners with event emitters are still not supported
            * for third party test runners.
            */
-          if (
-            testRunner.__PRIVATE_UNSTABLE_API_supportsEventEmmiters__ &&
-            typeof testRunner.UNSTABLE_eventEmitter !== 'undefined'
-          ) {
+          if (testRunner.__PRIVATE_UNSTABLE_API_supportsEventEmmiters__) {
             const unsubscribes = [
-              testRunner.UNSTABLE_eventEmitter.on(
-                'test-file-start',
-                ([test]: [TestRunner.Test]) => onTestFileStart(test),
+              testRunner.on('test-file-start', ([test]) =>
+                onTestFileStart(test),
               ),
-              testRunner.UNSTABLE_eventEmitter.on(
-                'test-file-success',
-                ([test, testResult]: [TestRunner.Test, TestResult]) =>
-                  onResult(test, testResult),
+              testRunner.on('test-file-success', ([test, testResult]) =>
+                onResult(test, testResult),
               ),
-              testRunner.UNSTABLE_eventEmitter.on(
-                'test-file-failure',
-                ([test, error]: [TestRunner.Test, SerializableError]) =>
-                  onFailure(test, error),
+              testRunner.on('test-file-failure', ([test, error]) =>
+                onFailure(test, error),
               ),
-              testRunner.UNSTABLE_eventEmitter.on(
+              testRunner.on(
                 'test-case-result',
-                ([testPath, testCaseResult]: [Config.Path, AssertionResult]) => {
+                ([testPath, testCaseResult]) => {
                   if (context) {
-                    const test: TestRunner.Test = { context, path: testPath };
+                    const test: TestRunner.Test = {context, path: testPath};
                     this._dispatcher.onTestCaseResult(test, testCaseResult);
                   }
                 },

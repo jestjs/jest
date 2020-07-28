@@ -49,7 +49,7 @@ namespace TestRunner {
 class TestRunner {
   private _globalConfig: Config.GlobalConfig;
   private _context: JestTestRunnerContext;
-  public UNSTABLE_eventEmitter = new Emittery.Typed<JestTestEvents>();
+  private UNSTABLE_eventEmitter = new Emittery.Typed<JestTestEvents>();
 
   public __PRIVATE_UNSTABLE_API_supportsEventEmmiters__: boolean = true;
 
@@ -288,6 +288,8 @@ class TestRunner {
     };
     return Promise.race([runAllTests, onInterrupt]).then(cleanup, cleanup);
   }
+
+  on = this.UNSTABLE_eventEmitter.on.bind(this.UNSTABLE_eventEmitter);
 }
 
 class CancelRun extends Error {
