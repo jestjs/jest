@@ -176,29 +176,31 @@ export const getSummary = (
       : suitesTotal) +
     ` total`;
 
-  const updatedTestsFailed = `${
-    testsFailed + valuesForCurrentTestCases.numFailingTests
-  } failed`;
-  const updatedTestsPending = `${
-    testsPending + valuesForCurrentTestCases.numPendingTests
-  } skipped`;
-  const updatedTestsTodo = `${
-    testsTodo + valuesForCurrentTestCases.numTodoTests
-  } todo`;
-  const updatedTestsPassed = `${
-    testsPassed + valuesForCurrentTestCases.numPassingTests
-  } passed`;
-  const updatedTestsTotal = `${
-    testsTotal + valuesForCurrentTestCases.numTotalTests
-  } total`;
+  const updatedTestsFailed =
+    testsFailed + valuesForCurrentTestCases.numFailingTests;
+  const updatedTestsPending =
+    testsPending + valuesForCurrentTestCases.numPendingTests;
+  const updatedTestsTodo = testsTodo + valuesForCurrentTestCases.numTodoTests;
+  const updatedTestsPassed =
+    testsPassed + valuesForCurrentTestCases.numPassingTests;
+  const updatedTestsTotal =
+    testsTotal + valuesForCurrentTestCases.numTotalTests;
 
   const tests =
     chalk.bold('Tests:       ') +
-    (testsFailed ? chalk.bold.red(updatedTestsFailed) + ', ' : '') +
-    (testsPending ? chalk.bold.yellow(updatedTestsPending) + ', ' : '') +
-    (testsTodo ? chalk.bold.magenta(updatedTestsTodo) + ', ' : '') +
-    (testsPassed ? chalk.bold.green(updatedTestsPassed) + ', ' : '') +
-    updatedTestsTotal;
+    (updatedTestsFailed > 0
+      ? chalk.bold.red(`${updatedTestsFailed} failed`) + ', '
+      : '') +
+    (updatedTestsPending > 0
+      ? chalk.bold.yellow(`${updatedTestsPending} skipped`) + ', '
+      : '') +
+    (updatedTestsTodo > 0
+      ? chalk.bold.magenta(`${updatedTestsTodo} todo`) + ', '
+      : '') +
+    (updatedTestsPassed > 0
+      ? chalk.bold.green(`${updatedTestsPassed} passed`) + ', '
+      : '') +
+    `${updatedTestsTotal} total`;
 
   const snapshots =
     chalk.bold('Snapshots:   ') +
