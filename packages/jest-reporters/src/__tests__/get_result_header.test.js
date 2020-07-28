@@ -59,11 +59,11 @@ test('should render the terminal link', () => {
 test('should display test time for slow test', () => {
   const result = getResultHeader(testResultSlow, globalConfig);
 
-  expect(result).toContain(`${testTime / 1000}s`);
+  expect(result).toContain(`${testTime / 1000} s`);
 });
 
 test('should not display test time for fast test ', () => {
   const result = getResultHeader(testResultFast, globalConfig);
 
-  expect(result).not.toContain(`${testTime / 1000}s`);
+  expect(result).not.toContain(`${testTime / 1000} s`);
 });
