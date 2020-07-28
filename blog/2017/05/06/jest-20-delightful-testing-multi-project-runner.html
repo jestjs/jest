@@ -94,7 +94,7 @@
 <p>We made a number of additions and improvements to the testing APIs which will help write more effective tests. We'd like to point out that all of these improvements were made entirely by community members!</p>
 <ul>
 <li><strong>Better async testing:</strong> Added new async/Promise support through resolves/rejects modifiers on expect: <code>expect(Promise(…)).resolves.toEqual(…)</code>. <a href="https://jestjs.io/docs/en/expect.html#resolves">See documentation</a>.</li>
-<li><strong>Expect <n> assertions:</strong> Along with the existing <code>expect.assertions(n)</code>, the new <code>expect.hasAssertions()</code> can be used to ensure a test has at least one assertion.</li>
+<li><strong>Expect <code>n</code> assertions:</strong> Along with the existing <code>expect.assertions(n)</code>, the new <code>expect.hasAssertions()</code> can be used to ensure a test has at least one assertion.</li>
 <li><strong>Lint Plugin:</strong> A <code>valid-expect</code> rule was added to <code>eslint-plugin-jest</code> to ensure that an assertion is called after invoking <code>expect</code>. This will prevent mistakes like a stray <code>expect(banana);</code> with a missing assertion call.</li>
 <li><strong>Pretty-Format Plugins:</strong> A number of new pretty-format plugins were added to Jest. We now pretty-print <a href="https://github.com/facebook/immutable-js/">Immutable.js</a> data structures and HtmlElements in assertion failures and snapshots.</li>
 <li><strong>Custom Environment:</strong> It is now possible to add a <code>@jest-environment node|jsdom</code> annotation to the doc-block comment of a test file to use a test environment different from the default for individual tests.</li>
