@@ -10,8 +10,8 @@ import type {Config} from '@jest/types';
 import type {SerializableError, TestResult} from '@jest/test-result';
 import type {JestEnvironment} from '@jest/environment';
 import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
-import HasteResolver = require('jest-resolve');
-import Runtime = require('jest-runtime');
+import type {ResolverType} from 'jest-resolve';
+import type {RuntimeType} from 'jest-runtime';
 
 export type ErrorWithCode = Error & {code?: string};
 export type Test = {
@@ -24,7 +24,7 @@ export type Context = {
   config: Config.ProjectConfig;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
-  resolver: HasteResolver;
+  resolver: ResolverType;
 };
 
 export type OnTestStart = (test: Test) => Promise<void>;
@@ -41,7 +41,7 @@ export type TestFramework = (
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   environment: JestEnvironment,
-  runtime: Runtime,
+  runtime: RuntimeType,
   testPath: string,
 ) => Promise<TestResult>;
 
