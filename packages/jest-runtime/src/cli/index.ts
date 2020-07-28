@@ -66,7 +66,7 @@ export async function run(
     automock: false,
   };
 
-  const Runtime: typeof import('..') = require('..');
+  const {default: Runtime} = await import('..');
 
   try {
     const hasteMap = await Runtime.createContext(config, {
