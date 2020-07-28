@@ -241,17 +241,24 @@ export default class TestScheduler {
               ),
             ];
 
-            await testRunner.runTests(tests, watcher, testRunnerOptions);
+            await testRunner.runTests(
+              tests,
+              watcher,
+              undefined,
+              undefined,
+              undefined,
+              testRunnerOptions,
+            );
 
             unsubscribes.forEach(sub => sub());
           } else {
             await testRunner.runTests(
               tests,
               watcher,
-              testRunnerOptions,
               onTestFileStart,
               onResult,
               onFailure,
+              testRunnerOptions,
             );
           }
         }

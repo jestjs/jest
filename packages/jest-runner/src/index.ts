@@ -65,11 +65,10 @@ class TestRunner {
   async runTests(
     tests: Array<JestTest>,
     watcher: JestTestWatcher,
+    onStart: JestOnTestStart | undefined,
+    onResult: JestOnTestSuccess | undefined,
+    onFailure: JestOnTestFailure | undefined,
     options: JestTestRunnerOptions,
-
-    onStart?: JestOnTestStart,
-    onResult?: JestOnTestSuccess,
-    onFailure?: JestOnTestFailure,
   ): Promise<void> {
     return await (options.serial
       ? this._createInBandTestRun(tests, watcher, onStart, onResult, onFailure)

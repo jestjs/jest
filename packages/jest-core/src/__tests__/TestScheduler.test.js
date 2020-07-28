@@ -101,7 +101,7 @@ test('schedule tests run in parallel per default', async () => {
   await scheduler.scheduleTests(tests, {isInterrupted: jest.fn()});
 
   expect(mockParallelRunner.runTests).toHaveBeenCalled();
-  expect(mockParallelRunner.runTests.mock.calls[0][2].serial).toBeFalsy();
+  expect(mockParallelRunner.runTests.mock.calls[0][5].serial).toBeFalsy();
 });
 
 test('schedule tests run in serial if the runner flags them', async () => {
@@ -122,7 +122,7 @@ test('schedule tests run in serial if the runner flags them', async () => {
   await scheduler.scheduleTests(tests, {isInterrupted: jest.fn()});
 
   expect(mockSerialRunner.runTests).toHaveBeenCalled();
-  expect(mockSerialRunner.runTests.mock.calls[0][2].serial).toBeTruthy();
+  expect(mockSerialRunner.runTests.mock.calls[0][5].serial).toBeTruthy();
 });
 
 test('should bail after `n` failures', async () => {
@@ -147,7 +147,7 @@ test('should bail after `n` failures', async () => {
     isWatchMode: () => true,
     setState,
   });
-  await mockSerialRunner.runTests.mock.calls[0][4](test, {
+  await mockSerialRunner.runTests.mock.calls[0][3](test, {
     numFailingTests: 2,
     snapshot: {},
     testResults: [{}],
@@ -206,7 +206,7 @@ test('should set runInBand to run in serial', async () => {
 
   expect(spyShouldRunInBand).toHaveBeenCalled();
   expect(mockParallelRunner.runTests).toHaveBeenCalled();
-  expect(mockParallelRunner.runTests.mock.calls[0][2].serial).toBeTruthy();
+  expect(mockParallelRunner.runTests.mock.calls[0][5].serial).toBeTruthy();
 });
 
 test('should set runInBand to not run in serial', async () => {
