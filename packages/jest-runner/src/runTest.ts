@@ -79,11 +79,9 @@ async function runTestInternal(
   path: Config.Path,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-
   resolver: ResolverType,
-  sendMessageToJest?: TestFileEvent,
-
   context?: TestRunnerContext,
+  sendMessageToJest?: TestFileEvent,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
   const docblockPragmas = docblock.parse(docblock.extract(testSource));
@@ -315,10 +313,8 @@ export default async function runTest(
   path: Config.Path,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-
   resolver: ResolverType,
   sendMessageToJest?: TestFileEvent,
-
   context?: TestRunnerContext,
 ): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(
@@ -326,8 +322,8 @@ export default async function runTest(
     globalConfig,
     config,
     resolver,
-    sendMessageToJest,
     context,
+    sendMessageToJest,
   );
 
   if (leakDetector) {

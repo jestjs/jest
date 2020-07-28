@@ -12,7 +12,6 @@ import HasteMap = require('jest-haste-map');
 import exit = require('exit');
 import {separateMessageFromStack} from 'jest-message-util';
 import Runtime = require('jest-runtime');
-
 import type {ResolverType} from 'jest-resolve';
 import {messageParent} from 'jest-worker';
 import type {
