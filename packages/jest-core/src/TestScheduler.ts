@@ -202,7 +202,7 @@ export default class TestScheduler {
       }
     });
 
-    const testsByRunner = TestScheduler._partitionTests(testRunners, tests);
+    const testsByRunner = this._partitionTests(testRunners, tests);
 
     if (testsByRunner) {
       try {
