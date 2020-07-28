@@ -7224,10 +7224,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"emittery@npm:^0.5.1":
-  version: 0.5.1
-  resolution: "emittery@npm:0.5.1"
-  checksum: f972aacc49c041002b0d2b2f64f62c3f492a7068c863bc5d86bcf4b749ebef2c6f93dc9765f4d73b627ae9f926474be0ea4485c4ae88219ebb7eca923148a3f7
+"emittery@npm:^0.7.1":
+  version: 0.7.1
+  resolution: "emittery@npm:0.7.1"
+  checksum: 917b0995126e004ddf175e7d0a74ae8608083846c3f3608e964bf13caba220a003b7455ced5bf813a40e977605be48e53c74f6150fbe587a47ef6b985b8a447e
   languageName: node
   linkType: hard
 
@@ -11461,7 +11461,7 @@ fsevents@^1.2.7:
     "@types/node": "*"
     "@types/source-map-support": ^0.5.0
     chalk: ^4.0.0
-    emittery: ^0.5.1
+    emittery: ^0.7.1
     exit: ^0.1.2
     graceful-fs: ^4.2.4
     jest-circus: ^26.1.0

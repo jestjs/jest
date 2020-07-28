@@ -47,11 +47,10 @@ namespace TestRunner {
 
 /* eslint-disable-next-line no-redeclare */
 class TestRunner {
-  private _globalConfig: Config.GlobalConfig;
-  private _context: JestTestRunnerContext;
-  private UNSTABLE_eventEmitter = new Emittery.Typed<JestTestEvents>();
-
-  public __PRIVATE_UNSTABLE_API_supportsEventEmmiters__: boolean = true;
+  private readonly _globalConfig: Config.GlobalConfig;
+  private readonly _context: JestTestRunnerContext;
+  private readonly UNSTABLE_eventEmitter = new Emittery.Typed<JestTestEvents>();
+  readonly __PRIVATE_UNSTABLE_API_supportsEventEmitters__: boolean = true;
 
   readonly isSerial?: boolean;
 
@@ -236,7 +235,7 @@ class TestRunner {
     const onError = async (err: SerializableError, test: JestTest) => {
       // Remove `if(onFailure)` in Jest 27
       if (onFailure) {
-        onFailure(test, err);
+        await onFailure(test, err);
       } else {
         await this.UNSTABLE_eventEmitter.emit('test-file-failure', [test, err]);
       }

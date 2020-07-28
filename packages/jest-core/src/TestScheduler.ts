@@ -47,10 +47,10 @@ export type TestSchedulerContext = {
   sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
 };
 export default class TestScheduler {
-  private _dispatcher: ReporterDispatcher;
-  private _globalConfig: Config.GlobalConfig;
-  private _options: TestSchedulerOptions;
-  private _context: TestSchedulerContext;
+  private readonly _dispatcher: ReporterDispatcher;
+  private readonly _globalConfig: Config.GlobalConfig;
+  private readonly _options: TestSchedulerOptions;
+  private readonly _context: TestSchedulerContext;
 
   constructor(
     globalConfig: Config.GlobalConfig,
@@ -202,7 +202,7 @@ export default class TestScheduler {
       }
     });
 
-    const testsByRunner = this._partitionTests(testRunners, tests);
+    const testsByRunner = TestScheduler._partitionTests(testRunners, tests);
 
     if (testsByRunner) {
       try {
@@ -219,7 +219,7 @@ export default class TestScheduler {
            * Test runners with event emitters are still not supported
            * for third party test runners.
            */
-          if (testRunner.__PRIVATE_UNSTABLE_API_supportsEventEmmiters__) {
+          if (testRunner.__PRIVATE_UNSTABLE_API_supportsEventEmitters__) {
             const unsubscribes = [
               testRunner.on('test-file-start', ([test]) =>
                 onTestFileStart(test),
@@ -281,7 +281,7 @@ export default class TestScheduler {
     return aggregatedResults;
   }
 
-  private _partitionTests(
+  private static _partitionTests(
     testRunners: Record<string, TestRunner>,
     tests: Array<TestRunner.Test>,
   ): Record<string, Array<TestRunner.Test>> | null {
