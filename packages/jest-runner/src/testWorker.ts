@@ -96,7 +96,6 @@ export async function worker({
       globalConfig,
       config,
       getResolver(config),
-      sendMessageToJest,
       context && {
         ...context,
         changedFiles: context.changedFiles && new Set(context.changedFiles),
@@ -104,6 +103,7 @@ export async function worker({
           context.sourcesRelatedToTestsInChangedFiles &&
           new Set(context.sourcesRelatedToTestsInChangedFiles),
       },
+      sendMessageToJest,
     );
   } catch (error) {
     throw formatError(error);

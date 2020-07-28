@@ -314,8 +314,8 @@ export default async function runTest(
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   resolver: ResolverType,
-  sendMessageToJest?: TestFileEvent,
   context?: TestRunnerContext,
+  sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(
     path,
