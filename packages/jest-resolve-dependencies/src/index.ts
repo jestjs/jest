@@ -7,7 +7,7 @@
 
 import type {Config} from '@jest/types';
 import type {FS as HasteFS} from 'jest-haste-map';
-import type {ResolverType, ResolveModuleConfig} from 'jest-resolve';
+import type {ResolveModuleConfig, ResolverType} from 'jest-resolve';
 import {SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
 
 namespace DependencyResolver {
