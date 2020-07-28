@@ -12,13 +12,15 @@ import HasteMap = require('jest-haste-map');
 import exit = require('exit');
 import {separateMessageFromStack} from 'jest-message-util';
 import Runtime = require('jest-runtime');
-import Resolver = require('jest-resolve');
+
+import type {ResolverType} from 'jest-resolve';
 import {messageParent} from 'jest-worker';
 import type {
   ErrorWithCode,
   TestFileEvent,
   TestRunnerSerializedContext,
 } from './types';
+
 import runTest from './runTest';
 
 export type SerializableResolver = {
@@ -57,7 +59,7 @@ const formatError = (error: string | ErrorWithCode): SerializableError => {
   };
 };
 
-const resolvers = new Map<string, Resolver>();
+const resolvers = new Map<string, ResolverType>();
 const getResolver = (config: Config.ProjectConfig) => {
   const resolver = resolvers.get(config.name);
   if (!resolver) {

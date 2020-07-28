@@ -21,7 +21,7 @@ import RuntimeClass = require('jest-runtime');
 import * as fs from 'graceful-fs';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
 import LeakDetector from 'jest-leak-detector';
-import Resolver = require('jest-resolve');
+import type {ResolverType} from 'jest-resolve';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import {formatExecError} from 'jest-message-util';
@@ -79,8 +79,10 @@ async function runTestInternal(
   path: Config.Path,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  resolver: Resolver,
+
+  resolver: ResolverType,
   sendMessageToJest?: TestFileEvent,
+
   context?: TestRunnerContext,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
@@ -313,8 +315,10 @@ export default async function runTest(
   path: Config.Path,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  resolver: Resolver,
+
+  resolver: ResolverType,
   sendMessageToJest?: TestFileEvent,
+
   context?: TestRunnerContext,
 ): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(

@@ -281,7 +281,7 @@ export default class TestScheduler {
     return aggregatedResults;
   }
 
-  private static _partitionTests(
+  private _partitionTests(
     testRunners: Record<string, TestRunner>,
     tests: Array<TestRunner.Test>,
   ): Record<string, Array<TestRunner.Test>> | null {

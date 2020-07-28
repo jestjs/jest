@@ -37,6 +37,7 @@ namespace Resolver {
     skipNodeResolution?: boolean;
     paths?: Array<Config.Path>;
   };
+  export type ResolverType = Resolver;
 }
 
 const NATIVE_PLATFORM = 'native';
