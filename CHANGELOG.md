@@ -5,6 +5,7 @@
 - `[jest-config]` [**BREAKING**] Default to Node testing environment instead of browser (JSDOM) ([#9874](https://github.com/facebook/jest/pull/9874))
 - `[jest-config]` [**BREAKING**] Use `jest-circus` as default test runner ([#10686](https://github.com/facebook/jest/pull/10686))
 - `[jest-config, jest-runtime]` Support ESM for files other than `.js` and `.mjs` ([#10823](https://github.com/facebook/jest/pull/10823))
+- `[jest-core]` make `TestWatcher` extend `emittery` ([#10324](https://github.com/facebook/jest/pull/10324))
 - `[jest-repl, jest-runner]` [**BREAKING**] Run transforms over environment ([#8751](https://github.com/facebook/jest/pull/8751))
 - `[jest-runner]` [**BREAKING**] set exit code to 1 if test logs after teardown ([#10728](https://github.com/facebook/jest/pull/10728))
 - `[jest-snapshot]` [**BREAKING**] Make prettier optional for inline snapshots - fall back to string replacement ([#7792](https://github.com/facebook/jest/pull/7792))
