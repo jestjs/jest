@@ -972,13 +972,13 @@ class Runtime {
     return this._resolver.getModulePaths(path.resolve(from, '..'));
   }
 
-  private _execModule(
+  private _execModule<T = unknown>(
     localModule: InitialModule,
     runtimeModuleSource: string | undefined,
     options: InternalModuleOptions | undefined,
     moduleRegistry: ModuleRegistry,
     from: Config.Path | null,
-  ): any | undefined {
+  ): T | undefined {
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
       return undefined;
