@@ -12,7 +12,7 @@ import type {
   TestResult,
 } from '@jest/test-result';
 import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
-import HasteResolver = require('jest-resolve');
+import type {ResolverType} from 'jest-resolve';
 import type {worker} from './coverage_worker';
 
 export type ReporterOnStartOptions = {
@@ -24,7 +24,7 @@ export type Context = {
   config: Config.ProjectConfig;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
-  resolver: HasteResolver;
+  resolver: ResolverType;
 };
 
 export type Test = {

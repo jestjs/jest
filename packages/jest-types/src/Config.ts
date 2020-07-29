@@ -7,7 +7,7 @@
 
 import type {Arguments} from 'yargs';
 import type {ReportOptions} from 'istanbul-reports';
-import chalk = require('chalk');
+import type {ForegroundColor} from 'chalk';
 
 type CoverageProvider = 'babel' | 'v8';
 
@@ -86,7 +86,7 @@ export type DefaultOptions = {
 
 export type DisplayName = {
   name: string;
-  color: typeof chalk.Color;
+  color: typeof ForegroundColor;
 };
 
 export type InitialOptionsWithRootDir = InitialOptions &
