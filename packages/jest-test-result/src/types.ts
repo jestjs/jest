@@ -92,6 +92,7 @@ export type TestResult = {
   openHandles: Array<Error>;
   perfStats: {
     end: Milliseconds;
+    runtime: Milliseconds;
     slow: boolean;
     start: Milliseconds;
   };

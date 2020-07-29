@@ -267,9 +267,11 @@ async function runTestInternal(
       result.numTodoTests;
 
     const end = Date.now();
+    const testRuntime = end - start;
     result.perfStats = {
       end,
-      slow: (end - start) / 1000 > config.slowTestThreshold,
+      runtime: testRuntime,
+      slow: testRuntime / 1000 > config.slowTestThreshold,
       start,
     };
     result.testFilePath = path;

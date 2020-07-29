@@ -20,6 +20,7 @@ const testResult = {
 const testResultSlow = {
   perfStats: {
     end: endTime,
+    runtime: testTime,
     slow: true,
     start: endTime - testTime,
   },
@@ -28,6 +29,7 @@ const testResultSlow = {
 const testResultFast = {
   perfStats: {
     end: endTime,
+    runtime: testTime,
     slow: false,
     start: endTime - testTime,
   },

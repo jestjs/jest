@@ -19,7 +19,7 @@ describe('formatTestResults', () => {
     testResults: [
       {
         numFailingTests: 0,
-        perfStats: {end: 2, slow: false, start: 1},
+        perfStats: {end: 2, runtime: 1, slow: false, start: 1},
         // @ts-expect-error
         testResults: [assertion],
       },
