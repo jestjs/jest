@@ -139,7 +139,7 @@ export const getSummary = (
   }
 
   const valuesForCurrentTestCases = getValuesCurrentTestCases(
-    options ? options.currentTestCases : [],
+    options?.currentTestCases,
   );
 
   const estimatedTime = (options && options.estimatedTime) || 0;

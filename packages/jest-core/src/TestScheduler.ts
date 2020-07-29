@@ -209,6 +209,9 @@ export default class TestScheduler {
         for (const runner of Object.keys(testRunners)) {
           const testRunner = testRunners[runner];
           const context = contextsByTestRunner.get(testRunner);
+
+          invariant(context);
+
           const tests = testsByRunner[runner];
 
           const testRunnerOptions = {
@@ -436,6 +439,12 @@ export default class TestScheduler {
       }
     }
     return Promise.resolve();
+  }
+}
+
+function invariant(condition: unknown, message?: string): asserts condition {
+  if (!condition) {
+    throw new Error(message);
   }
 }
 
