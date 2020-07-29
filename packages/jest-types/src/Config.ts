@@ -65,6 +65,7 @@ export type DefaultOptions = {
   setupFiles: Array<Path>;
   setupFilesAfterEnv: Array<Path>;
   skipFilter: boolean;
+  slowTestThreshold: number;
   snapshotSerializers: Array<Path>;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, any>;
@@ -171,6 +172,7 @@ export type InitialOptions = Partial<{
   silent: boolean;
   skipFilter: boolean;
   skipNodeResolution: boolean;
+  slowTestThreshold: number;
   snapshotResolver: Path;
   snapshotSerializers: Array<Path>;
   errorOnDeprecated: boolean;
@@ -332,6 +334,7 @@ export type ProjectConfig = {
   setupFilesAfterEnv: Array<Path>;
   skipFilter: boolean;
   skipNodeResolution?: boolean;
+  slowTestThreshold: number;
   snapshotResolver?: Path;
   snapshotSerializers: Array<Path>;
   testEnvironment: string;

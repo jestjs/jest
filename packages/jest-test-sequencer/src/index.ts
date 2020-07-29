@@ -118,7 +118,7 @@ export default class TestSequencer {
         const perf = testResult.perfStats;
         cache[testResult.testFilePath] = [
           testResult.numFailingTests ? FAIL : SUCCESS,
-          perf.end - perf.start || 0,
+          perf.runtime || 0,
         ];
       }
     });
