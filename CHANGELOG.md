@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-runtime]` Override `Module#_compile` to hook into jest's module loader ([#10072](https://github.com/facebook/jest/pull/10072))
+- `[jest-runtime]` Override `Module#_compile` to hook into Jest's module loader ([#10072](https://github.com/facebook/jest/pull/10072))
 - `[pretty-format]` Added support for serializing custom elements (web components) ([#10217](https://github.com/facebook/jest/pull/10237))
 
 ### Fixes
