@@ -50,6 +50,7 @@ const defaultOptions: Config.DefaultOptions = {
   setupFiles: [],
   setupFilesAfterEnv: [],
   skipFilter: false,
+  slowTestThreshold: 5,
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-jsdom',
   testEnvironmentOptions: {},

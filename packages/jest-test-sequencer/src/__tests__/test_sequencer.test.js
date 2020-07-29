@@ -134,23 +134,23 @@ test('writes the cache based on results without existing cache', () => {
     testResults: [
       {
         numFailingTests: 0,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-a.js',
       },
       {
         numFailingTests: 0,
-        perfStats: {end: 0, start: 0},
+        perfStats: {end: 0, runtime: 0, start: 0},
         skipped: true,
         testFilePath: '/test-b.js',
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 4, start: 1},
+        perfStats: {end: 4, runtime: 3, start: 1},
         testFilePath: '/test-c.js',
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-x.js',
       },
     ],
@@ -177,23 +177,23 @@ test('writes the cache based on the results', () => {
     testResults: [
       {
         numFailingTests: 0,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-a.js',
       },
       {
         numFailingTests: 0,
-        perfStats: {end: 0, start: 0},
+        perfStats: {end: 0, runtime: 0, start: 0},
         skipped: true,
         testFilePath: '/test-b.js',
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 4, start: 1},
+        perfStats: {end: 4, runtime: 3, start: 1},
         testFilePath: '/test-c.js',
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-x.js',
       },
     ],
@@ -228,23 +228,23 @@ test('works with multiple contexts', () => {
     testResults: [
       {
         numFailingTests: 0,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-a.js',
       },
       {
         numFailingTests: 0,
-        perfStats: {end: 0, start: 0},
+        perfStats: {end: 0, runtime: 1, start: 0},
         skipped: true,
         testFilePath: '/test-b.js',
       },
       {
         numFailingTests: 0,
-        perfStats: {end: 4, start: 1},
+        perfStats: {end: 4, runtime: 3, start: 1},
         testFilePath: '/test-c.js',
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-x.js',
       },
     ],

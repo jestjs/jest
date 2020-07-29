@@ -97,6 +97,7 @@ const initialOptions: Config.InitialOptions = {
   silent: true,
   skipFilter: false,
   skipNodeResolution: false,
+  slowTestThreshold: 5,
   snapshotResolver: '<rootDir>/snapshotResolver.js',
   snapshotSerializers: ['my-serializer-module'],
   testEnvironment: 'jest-environment-jsdom',

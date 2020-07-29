@@ -38,6 +38,7 @@ exports[`prints the config object 1`] = `
     "setupFilesAfterEnv": [],
     "skipFilter": false,
     "skipNodeResolution": false,
+    "slowTestThreshold": 5,
     "snapshotSerializers": [],
     "testEnvironment": "node",
     "testEnvironmentOptions": {},
