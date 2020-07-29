@@ -71,16 +71,9 @@ describe('Runtime requireModule', () => {
         expect(module.exports).toEqual({value: 12});
       }
 
-      {
-        const module = new exports.Module();
-        let err;
-        try {
-          module._compile('{"value":12}', mockFilename('dynamic.json'));
-        } catch (e) {
-          err = e;
-        }
-        expect(err.name).toBe('SyntaxError');
-      }
+      expect(() =>
+        module._compile('{"value":12}', mockFilename('dynamic.json')),
+      ).toThrow(expect.objectContaining({name: 'SyntaxError'}));
 
       {
         const module = new exports.Module();
