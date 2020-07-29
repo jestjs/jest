@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 import {Module} from 'module';
 import path from 'path';
 import * as fs from 'graceful-fs';
