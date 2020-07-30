@@ -24,6 +24,7 @@
 - `[jest-jasmine2]` Remove usage of `Function` type ([#10216](https://github.com/facebook/jest/pull/10216))
 - `[jest-resolve]` Improve types ([#10239](https://github.com/facebook/jest/pull/10239))
 - `[docs]` Clarify the [`jest.requireActual(moduleName)`](https://jestjs.io/docs/en/jest-object#jestrequireactualmodulename) example
+- `[jest-types]` Refine typings of `coverageReporters` ([#10275](https://github.com/facebook/jest/pull/10275))
 
 ### Performance
 
