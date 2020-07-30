@@ -7,6 +7,7 @@
 
 import type {EventEmitter} from 'events';
 import type {ForkOptions} from 'child_process';
+import type {ResourceLimits} from 'worker_threads';
 
 // Because of the dynamic nature of a worker communication process, all messages
 // coming from any of the other processes cannot be typed. Thus, many types
@@ -65,12 +66,13 @@ export interface PromiseWithCustomMessage<T> extends Promise<T> {
 
 // Option objects.
 
-export type {ForkOptions};
+export type {ForkOptions, ResourceLimits};
 
 export type FarmOptions = {
   computeWorkerKey?: (method: string, ...args: Array<unknown>) => string | null;
   exposedMethods?: ReadonlyArray<string>;
   forkOptions?: ForkOptions;
+  resourceLimits?: ResourceLimits;
   setupArgs?: Array<unknown>;
   maxRetries?: number;
   numWorkers?: number;
@@ -84,6 +86,7 @@ export type FarmOptions = {
 export type WorkerPoolOptions = {
   setupArgs: Array<unknown>;
   forkOptions: ForkOptions;
+  resourceLimits: ResourceLimits;
   maxRetries: number;
   numWorkers: number;
   enableWorkerThreads: boolean;
@@ -91,6 +94,7 @@ export type WorkerPoolOptions = {
 
 export type WorkerOptions = {
   forkOptions: ForkOptions;
+  resourceLimits: ResourceLimits;
   setupArgs: Array<unknown>;
   maxRetries: number;
   workerId: number;
