@@ -23,6 +23,7 @@
     "jest-each": "^26.1.0",
     "jest-matcher-utils": "^26.1.0",
     "jest-message-util": "^26.1.0",
+    "jest-runner": "^26.1.0",
     "jest-runtime": "^26.1.0",
     "jest-snapshot": "^26.1.0",
     "jest-util": "^26.1.0",

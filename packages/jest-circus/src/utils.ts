@@ -12,7 +12,8 @@ import co from 'co';
 import dedent = require('dedent');
 import StackUtils = require('stack-utils');
 import prettyFormat = require('pretty-format');
-import {getState} from './state';
+import type {AssertionResult, Status} from '@jest/test-result';
+import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
@@ -282,60 +283,61 @@ export const makeRunResult = (
   unhandledErrors: unhandledErrors.map(_formatError),
 });
 
+export const makeSingleTestResult = (
+  test: Circus.TestEntry,
+): Circus.TestResult => {
+  const {includeTestLocationInResult} = getState();
+  const testPath = [];
+  let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
+
+  const {status} = test;
+  invariant(status, 'Status should be present after tests are run.');
+
+  do {
+    testPath.unshift(parent.name);
+  } while ((parent = parent.parent));
+
+  let location = null;
+  if (includeTestLocationInResult) {
+    const stackLine = test.asyncError.stack.split('\n')[1];
+    const parsedLine = stackUtils.parseLine(stackLine);
+    if (
+      parsedLine &&
+      typeof parsedLine.column === 'number' &&
+      typeof parsedLine.line === 'number'
+    ) {
+      location = {
+        column: parsedLine.column,
+        line: parsedLine.line,
+      };
+    }
+  }
+
+  return {
+    duration: test.duration,
+    errors: test.errors.map(_formatError),
+    invocations: test.invocations,
+    location,
+    status,
+    testPath: Array.from(testPath),
+  };
+};
+
 const makeTestResults = (
   describeBlock: Circus.DescribeBlock,
 ): Circus.TestResults => {
-  const {includeTestLocationInResult} = getState();
   const testResults: Circus.TestResults = [];
+
   for (const child of describeBlock.children) {
     switch (child.type) {
       case 'describeBlock': {
         testResults.push(...makeTestResults(child));
         break;
       }
-      case 'test':
-        {
-          const testPath = [];
-          let parent:
-            | Circus.TestEntry
-            | Circus.DescribeBlock
-            | undefined = child;
-          do {
-            testPath.unshift(parent.name);
-          } while ((parent = parent.parent));
-
-          const {status} = child;
-
-          if (!status) {
-            throw new Error('Status should be present after tests are run.');
-          }
-
-          let location = null;
-          if (includeTestLocationInResult) {
-            const stackLine = child.asyncError.stack.split('\n')[1];
-            const parsedLine = stackUtils.parseLine(stackLine);
-            if (
-              parsedLine &&
-              typeof parsedLine.column === 'number' &&
-              typeof parsedLine.line === 'number'
-            ) {
-              location = {
-                column: parsedLine.column,
-                line: parsedLine.line,
-              };
-            }
-          }
-
-          testResults.push({
-            duration: child.duration,
-            errors: child.errors.map(_formatError),
-            invocations: child.invocations,
-            location,
-            status,
-            testPath,
-          });
-        }
+      case 'test': {
+        testResults.push(makeSingleTestResult(child));
         break;
+      }
     }
   }
 
@@ -408,3 +410,37 @@ export function invariant(
     throw new Error(message);
   }
 }
+
+export const parseSingleTestResult = (
+  testResult: Circus.TestResult,
+): AssertionResult => {
+  let status: Status;
+  if (testResult.status === 'skip') {
+    status = 'pending';
+  } else if (testResult.status === 'todo') {
+    status = 'todo';
+  } else if (testResult.errors.length > 0) {
+    status = 'failed';
+  } else {
+    status = 'passed';
+  }
+
+  const ancestorTitles = testResult.testPath.filter(
+    name => name !== ROOT_DESCRIBE_BLOCK_NAME,
+  );
+  const title = ancestorTitles.pop();
+
+  return {
+    ancestorTitles,
+    duration: testResult.duration,
+    failureMessages: Array.from(testResult.errors),
+    fullName: title
+      ? ancestorTitles.concat(title).join(' ')
+      : ancestorTitles.join(' '),
+    invocations: testResult.invocations,
+    location: testResult.location,
+    numPassingAsserts: 0,
+    status,
+    title: testResult.testPath[testResult.testPath.length - 1],
+  };
+};

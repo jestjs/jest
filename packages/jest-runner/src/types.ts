@@ -7,7 +7,11 @@
 
 import type {EventEmitter} from 'events';
 import type {Config} from '@jest/types';
-import type {SerializableError, TestResult} from '@jest/test-result';
+import type {
+  AssertionResult,
+  SerializableError,
+  TestResult,
+} from '@jest/test-result';
 import type {JestEnvironment} from '@jest/environment';
 import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
 import type {ResolverType} from 'jest-resolve';
@@ -37,12 +41,26 @@ export type OnTestSuccess = (
   testResult: TestResult,
 ) => Promise<void>;
 
+// Typings for `sendMessageToJest` events
+export type TestEvents = {
+  'test-file-start': [Test];
+  'test-file-success': [Test, TestResult];
+  'test-file-failure': [Test, SerializableError];
+  'test-case-result': [Config.Path, AssertionResult];
+};
+
+export type TestFileEvent<T extends keyof TestEvents = keyof TestEvents> = (
+  eventName: T,
+  args: TestEvents[T],
+) => unknown;
+
 export type TestFramework = (
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   environment: JestEnvironment,
   runtime: RuntimeType,
   testPath: string,
+  sendMessageToJest?: TestFileEvent,
 ) => Promise<TestResult>;
 
 export type TestRunnerOptions = {

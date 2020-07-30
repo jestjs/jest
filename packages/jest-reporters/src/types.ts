@@ -9,6 +9,7 @@ import type {Config} from '@jest/types';
 import type {
   AggregatedResult,
   SerializableError,
+  TestCaseResult,
   TestResult,
 } from '@jest/test-result';
 import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
@@ -53,16 +54,26 @@ export type OnTestFailure = (
 export type OnTestSuccess = (test: Test, result: TestResult) => Promise<any>;
 
 export interface Reporter {
-  readonly onTestResult: (
+  readonly onTestResult?: (
     test: Test,
     testResult: TestResult,
     aggregatedResult: AggregatedResult,
+  ) => Promise<void> | void;
+  readonly onTestFileResult?: (
+    test: Test,
+    testResult: TestResult,
+    aggregatedResult: AggregatedResult,
+  ) => Promise<void> | void;
+  readonly onTestCaseResult?: (
+    test: Test,
+    testCaseResult: TestCaseResult,
   ) => Promise<void> | void;
   readonly onRunStart: (
     results: AggregatedResult,
     options: ReporterOnStartOptions,
   ) => Promise<void> | void;
-  readonly onTestStart: (test: Test) => Promise<void> | void;
+  readonly onTestStart?: (test: Test) => Promise<void> | void;
+  readonly onTestFileStart?: (test: Test) => Promise<void> | void;
   readonly onRunComplete: (
     contexts: Set<Context>,
     results: AggregatedResult,
@@ -71,6 +82,7 @@ export interface Reporter {
 }
 
 export type SummaryOptions = {
+  currentTestCases?: Array<{test: Test; testCaseResult: TestCaseResult}>;
   estimatedTime?: number;
   roundTime?: boolean;
   width?: number;

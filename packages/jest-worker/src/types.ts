@@ -162,7 +162,7 @@ export type ParentMessage =
 
 export type OnStart = (worker: WorkerInterface) => void;
 export type OnEnd = (err: Error | null, result: unknown) => void;
-export type OnCustomMessage = (message: unknown) => void;
+export type OnCustomMessage = (message: Array<unknown> | unknown) => void;
 
 export type QueueChildMessage = {
   request: ChildMessage;

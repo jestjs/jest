@@ -7224,6 +7224,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"emittery@npm:^0.7.1":
+  version: 0.7.1
+  resolution: "emittery@npm:0.7.1"
+  checksum: 917b0995126e004ddf175e7d0a74ae8608083846c3f3608e964bf13caba220a003b7455ced5bf813a40e977605be48e53c74f6150fbe587a47ef6b985b8a447e
+  languageName: node
+  linkType: hard
+
 "emoji-regex@npm:>=6.0.0 <=6.1.1":
   version: 6.1.1
   resolution: "emoji-regex@npm:6.1.1"
@@ -11055,6 +11062,7 @@ fsevents@^1.2.7:
     jest-each: ^26.1.0
     jest-matcher-utils: ^26.1.0
     jest-message-util: ^26.1.0
+    jest-runner: ^26.1.0
     jest-runtime: ^26.1.0
     jest-snapshot: ^26.1.0
     jest-util: ^26.1.0
@@ -11453,13 +11461,13 @@ fsevents@^1.2.7:
     "@types/node": "*"
     "@types/source-map-support": ^0.5.0
     chalk: ^4.0.0
+    emittery: ^0.7.1
     exit: ^0.1.2
     graceful-fs: ^4.2.4
     jest-circus: ^26.1.0
     jest-config: ^26.1.0
     jest-docblock: ^26.0.0
     jest-haste-map: ^26.1.0
-    jest-jasmine2: ^26.1.0
     jest-leak-detector: ^26.1.0
     jest-message-util: ^26.1.0
     jest-resolve: ^26.1.0
