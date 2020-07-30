@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-worker]` Make sure to work with Node TS typings v12
+
 ### Chore & Maintenance
 
 ### Performance

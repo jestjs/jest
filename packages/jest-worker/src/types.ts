@@ -7,7 +7,14 @@
 
 import type {EventEmitter} from 'events';
 import type {ForkOptions} from 'child_process';
-import type {ResourceLimits} from 'worker_threads';
+
+// import type {ResourceLimits} from 'worker_threads';
+// This is not present in the Node 12 typings
+interface ResourceLimits {
+  maxYoungGenerationSizeMb?: number;
+  maxOldGenerationSizeMb?: number;
+  codeRangeSizeMb?: number;
+}
 
 // Because of the dynamic nature of a worker communication process, all messages
 // coming from any of the other processes cannot be typed. Thus, many types
