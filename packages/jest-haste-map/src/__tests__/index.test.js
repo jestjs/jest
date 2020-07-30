@@ -294,6 +294,45 @@ describe('HasteMap', () => {
     });
   });
 
+  it('ignores vcs directories without ignore pattern', () => {
+    mockFs['/project/fruits/.git/fruit-history.js'] = `
+      // test
+    `;
+    return new HasteMap(defaultConfig).build().then(({hasteFS}) => {
+      expect(hasteFS.matchFiles('.git')).toEqual([]);
+    });
+  });
+
+  it('ignores vcs directories with ignore pattern regex', () => {
+    const config = {...defaultConfig, ignorePattern: /Kiwi/};
+    mockFs['/project/fruits/Kiwi.js'] = `
+      // Kiwi!
+    `;
+
+    mockFs['/project/fruits/.git/fruit-history.js'] = `
+      // test
+    `;
+    return new HasteMap(config).build().then(({hasteFS}) => {
+      expect(hasteFS.matchFiles(/Kiwi/)).toEqual([]);
+      expect(hasteFS.matchFiles('.git')).toEqual([]);
+    });
+  });
+
+  it('ignores vcs directories with ignore pattern function', () => {
+    const config = {...defaultConfig, ignorePattern: f => /Kiwi/.test(f)};
+    mockFs['/project/fruits/Kiwi.js'] = `
+      // Kiwi!
+    `;
+
+    mockFs['/project/fruits/.git/fruit-history.js'] = `
+      // test
+    `;
+    return new HasteMap(config).build().then(({hasteFS}) => {
+      expect(hasteFS.matchFiles(/Kiwi/)).toEqual([]);
+      expect(hasteFS.matchFiles('.git')).toEqual([]);
+    });
+  });
+
   it('builds a haste map on a fresh cache', () => {
     // Include these files in the map
     mockFs['/project/fruits/node_modules/react/React.js'] = `
