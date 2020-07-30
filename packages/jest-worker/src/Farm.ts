@@ -48,7 +48,7 @@ export default class Farm {
 
   doWork(
     method: string,
-    ...args: Array<any>
+    ...args: Array<unknown>
   ): PromiseWithCustomMessage<unknown> {
     const customMessageListeners = new Set<OnCustomMessage>();
 

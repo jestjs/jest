@@ -27,7 +27,7 @@ import * as docblock from 'jest-docblock';
 import {formatExecError} from 'jest-message-util';
 import sourcemapSupport = require('source-map-support');
 import chalk = require('chalk');
-import type {TestFramework, TestRunnerContext} from './types';
+import type {TestFileEvent, TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {
   leakDetector: LeakDetector | null;
@@ -81,6 +81,7 @@ async function runTestInternal(
   config: Config.ProjectConfig,
   resolver: ResolverType,
   context?: TestRunnerContext,
+  sendMessageToJest?: TestFileEvent,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
   const docblockPragmas = docblock.parse(docblock.extract(testSource));
@@ -246,6 +247,7 @@ async function runTestInternal(
         environment,
         runtime,
         path,
+        sendMessageToJest,
       );
     } catch (err) {
       // Access stack before uninstalling sourcemaps
@@ -320,6 +322,7 @@ export default async function runTest(
   config: Config.ProjectConfig,
   resolver: ResolverType,
   context?: TestRunnerContext,
+  sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(
     path,
@@ -327,6 +330,7 @@ export default async function runTest(
     config,
     resolver,
     context,
+    sendMessageToJest,
   );
 
   if (leakDetector) {
