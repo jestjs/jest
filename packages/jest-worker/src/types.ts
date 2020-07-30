@@ -10,7 +10,7 @@ import type {ForkOptions} from 'child_process';
 
 // import type {ResourceLimits} from 'worker_threads';
 // This is not present in the Node 12 typings
-interface ResourceLimits {
+export interface ResourceLimits {
   maxYoungGenerationSizeMb?: number;
   maxOldGenerationSizeMb?: number;
   codeRangeSizeMb?: number;
@@ -73,7 +73,7 @@ export interface PromiseWithCustomMessage<T> extends Promise<T> {
 
 // Option objects.
 
-export type {ForkOptions, ResourceLimits};
+export type {ForkOptions};
 
 export type FarmOptions = {
   computeWorkerKey?: (method: string, ...args: Array<unknown>) => string | null;
