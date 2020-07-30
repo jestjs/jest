@@ -236,10 +236,8 @@ export default class TestScheduler {
               testRunner.on(
                 'test-case-result',
                 ([testPath, testCaseResult]) => {
-                  if (context) {
-                    const test: TestRunner.Test = {context, path: testPath};
-                    this._dispatcher.onTestCaseResult(test, testCaseResult);
-                  }
+                  const test: TestRunner.Test = {context, path: testPath};
+                  this._dispatcher.onTestCaseResult(test, testCaseResult);
                 },
               ),
             ];
