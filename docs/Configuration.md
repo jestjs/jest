@@ -207,7 +207,7 @@ _Note: You can pass additional options to the istanbul reporter using the tuple 
 ["json", ["lcov", {"projectRoot": "../../"}]]
 ```
 
-For the additional information about the options object shape you can refer to CoverageReporterWithOptions type in the [type definitions](https://github.com/facebook/jest/tree/master/packages/jest-types/src/Config.ts)
+For the additional information about the options object shape you can refer to `CoverageReporterWithOptions` type in the [type definitions](https://github.com/facebook/jest/tree/master/packages/jest-types/src/Config.ts).
 
 ### `coverageThreshold` [object]
 
