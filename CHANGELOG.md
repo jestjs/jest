@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-circus, jest-jasmine2]` Include `failureDetails` property in test results ([#9496](https://github.com/facebook/jest/pull/9496))
+
 ### Fixes
 
 ### Chore & Maintenance
