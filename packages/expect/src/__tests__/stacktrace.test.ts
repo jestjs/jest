@@ -6,10 +6,10 @@
  *
  */
 
-const jestExpect = require('../');
+import jestExpect from '../';
 
 jestExpect.extend({
-  toCustomMatch(callback, expectation) {
+  toCustomMatch(callback: () => unknown, expectation: unknown) {
     const actual = callback();
 
     if (actual !== expectation) {
@@ -21,7 +21,7 @@ jestExpect.extend({
 
     return {pass: true};
   },
-  toMatchPredicate(received, argument) {
+  toMatchPredicate(received: unknown, argument: (a: unknown) => void) {
     argument(received);
     return {
       message: () => '',
@@ -34,17 +34,17 @@ it('stack trace points to correct location when using matchers', () => {
   try {
     jestExpect(true).toBe(false);
   } catch (error) {
-    expect(error.stack).toContain('stacktrace.test.js:35');
+    expect(error.stack).toContain('stacktrace.test.ts:35');
   }
 });
 
 it('stack trace points to correct location when using nested matchers', () => {
   try {
-    jestExpect(true).toMatchPredicate(value => {
+    jestExpect(true).toMatchPredicate((value: unknown) => {
       jestExpect(value).toBe(false);
     });
   } catch (error) {
-    expect(error.stack).toContain('stacktrace.test.js:44');
+    expect(error.stack).toContain('stacktrace.test.ts:44');
   }
 });
 
@@ -60,6 +60,6 @@ it('stack trace points to correct location when throwing from a custom matcher',
       foo();
     }).toCustomMatch('bar');
   } catch (error) {
-    expect(error.stack).toContain('stacktrace.test.js:57');
+    expect(error.stack).toContain('stacktrace.test.ts:57');
   }
 });
