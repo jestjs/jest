@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[jest-worker]` Make sure to work with Node TS typings v12
+- `[jest-worker]` Make sure to work with Node TS typings v12 ([#10336](https://github.com/facebook/jest/pull/10336))
 
 ### Chore & Maintenance
 
