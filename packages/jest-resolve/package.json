@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve",
-  "version": "26.2.0",
+  "version": "26.2.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -22,7 +22,7 @@
   "devDependencies": {
     "@types/graceful-fs": "^4.1.3",
     "@types/resolve": "^1.17.0",
-    "jest-haste-map": "^26.2.0"
+    "jest-haste-map": "^26.2.1"
   },
   "engines": {
     "node": ">= 10.14.2"
