@@ -3483,6 +3483,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/node@npm:^14.0.27":
+  version: 14.0.27
+  resolution: "@types/node@npm:14.0.27"
+  checksum: 54ecf408eb94f44685e12ef395d8d9d5789cb9e209f171153b6b951272af6b8da099778d09d66454aa5d35ce246f3922ebd7476ed768bf3bd4267306c12a6703
+  languageName: node
+  linkType: hard
+
 "@types/normalize-package-data@npm:^2.4.0":
   version: 2.4.0
   resolution: "@types/normalize-package-data@npm:2.4.0"
@@ -11496,6 +11503,7 @@ fsevents@^1.2.7:
     "@types/exit": ^0.1.30
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.2
+    "@types/node": ^14.0.27
     "@types/yargs": ^15.0.0
     chalk: ^4.0.0
     collect-v8-coverage: ^1.0.0

@@ -63,6 +63,7 @@ export default function collectHandles(): () => Array<Error> {
         if (type === 'Timeout' || type === 'Immediate') {
           if ('hasRef' in resource) {
             // Timer that supports hasRef (Node v11+)
+            // @ts-expect-error: doesn't exist in v10 typings
             isActive = resource.hasRef.bind(resource);
           } else {
             // Timer that doesn't support hasRef
