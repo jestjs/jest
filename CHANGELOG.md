@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-haste-map]` Properly detect support for native `find`
+
 ### Chore & Maintenance
 
 ### Performance
