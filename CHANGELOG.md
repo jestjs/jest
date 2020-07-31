@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-cli]` Use correct file name to override existing jest config on init ([#10337](https://github.com/facebook/jest/pull/10337))
+
 ### Chore & Maintenance
 
 ### Performance

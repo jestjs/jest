@@ -175,8 +175,10 @@ describe('init', () => {
 
           expect(prompts.mock.calls[0][0]).toMatchSnapshot();
 
+          const jestConfigFileName = fs.writeFileSync.mock.calls[0][0];
           const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
 
+          expect(jestConfigFileName).toBe(`jest.config.${extension}`);
           expect(writtenJestConfig).toBeDefined();
         });
 
