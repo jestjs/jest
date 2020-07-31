@@ -255,23 +255,11 @@ class HasteMap extends EventEmitter {
     };
     this._console = options.console || global.console;
 
-    if (options.ignorePattern) {
-      if (options.ignorePattern instanceof RegExp) {
-        this._options.ignorePattern = new RegExp(
-          options.ignorePattern.source.concat('|' + VCS_DIRECTORIES),
-          options.ignorePattern.flags,
-        );
-      } else {
-        const ignorePattern = options.ignorePattern;
-        const vcsIgnoreRegExp = new RegExp(VCS_DIRECTORIES);
-        this._options.ignorePattern = (filePath: string) =>
-          vcsIgnoreRegExp.test(filePath) || ignorePattern(filePath);
-
-        this._console.warn(
-          'jest-haste-map: the `ignorePattern` options as a function is being ' +
-            'deprecated. Provide a RegExp instead. See https://github.com/facebook/jest/pull/4063.',
-        );
-      }
+    if (options.ignorePattern && options.ignorePattern instanceof RegExp) {
+      this._options.ignorePattern = new RegExp(
+        options.ignorePattern.source.concat('|' + VCS_DIRECTORIES),
+        options.ignorePattern.flags,
+      );
     } else {
       this._options.ignorePattern = new RegExp(VCS_DIRECTORIES);
     }
