@@ -30,9 +30,20 @@ async function hasNativeFindSupport(
 
   try {
     return await new Promise(resolve => {
-      // Check the find binary supports the non-POSIX -iname parameter.
-      const args = ['.', '-iname', "''"];
-      const child = spawn('find', args);
+      // Check the find binary supports the non-POSIX -iname parameter wrapped in parens.
+      const args = [
+        '.',
+        '-type',
+        'f',
+        '(',
+        '-iname',
+        '*.ts',
+        '-o',
+        '-iname',
+        '*.js',
+        ')',
+      ];
+      const child = spawn('find', args, {cwd: __dirname});
       child.on('error', () => {
         resolve(false);
       });

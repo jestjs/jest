@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[jest-cli]` Use correct file name to override existing jest config on init ([#10337](https://github.com/facebook/jest/pull/10337))
+- `[jest-haste-map]` Properly detect support for native `find` ([#10346](https://github.com/facebook/jest/pull/10346))
 
 ### Chore & Maintenance
 
