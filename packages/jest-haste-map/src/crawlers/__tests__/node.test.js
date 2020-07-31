@@ -282,7 +282,11 @@ describe('node crawler', () => {
       rootDir,
       roots: ['/project/fruits'],
     }).then(({hasteMap, removedFiles}) => {
-      expect(childProcess.spawn).lastCalledWith('find', ['.', '-iname', "''"]);
+      expect(childProcess.spawn).lastCalledWith(
+        'find',
+        ['.', '-type', 'f', '(', '-iname', '*.ts', '-o', '-iname', '*.js', ')'],
+        {cwd: expect.any(String)},
+      );
       expect(hasteMap.files).toEqual(
         createMap({
           'fruits/directory/strawberry.js': ['', 33, 42, 0, '', null],
