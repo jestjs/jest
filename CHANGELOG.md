@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[jest-haste-map]` Properly detect support for native `find`
+- `[jest-haste-map]` Properly detect support for native `find` ([#10346](https://github.com/facebook/jest/pull/10346))
 
 ### Chore & Maintenance
 
