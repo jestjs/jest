@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- `[jest-worker]` Downgrade minimum node version to 10.13 ([#10352](https://github.com/facebook/jest/pull/10352))
+
 ### Chore & Maintenance
 
 ### Performance
