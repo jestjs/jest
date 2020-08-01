@@ -14,6 +14,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-haste-map]` Remove support for deprecated option `ignorePattern` as function ([#10348](https://github.com/facebook/jest/pull/10348))
+
 ### Performance
 
 ## 26.4.2
