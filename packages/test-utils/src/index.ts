@@ -11,6 +11,5 @@ export {
   isJestCircusRun,
   skipSuiteOnJasmine,
   skipSuiteOnJestCircus,
-  skipSuiteOnWindows,
   onNodeVersions,
 } from './ConditionalTest';
