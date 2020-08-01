@@ -141,6 +141,7 @@ export default class Jasmine2Reporter implements Reporter {
     const results: AssertionResult = {
       ancestorTitles,
       duration,
+      failureDetails: [],
       failureMessages: [],
       fullName: specResult.fullName,
       location,
@@ -155,6 +156,7 @@ export default class Jasmine2Reporter implements Reporter {
           ? this._addMissingMessageToStack(failed.stack, failed.message)
           : failed.message || '';
       results.failureMessages.push(message);
+      results.failureDetails.push(failed);
     });
 
     return results;

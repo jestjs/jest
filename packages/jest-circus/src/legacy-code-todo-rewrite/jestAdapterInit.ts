@@ -193,6 +193,7 @@ export const runAndTransformResultsToJestFormat = async ({
       return {
         ancestorTitles,
         duration: testResult.duration,
+        failureDetails: testResult.errorsDetailed,
         failureMessages: testResult.errors,
         fullName: title
           ? ancestorTitles.concat(title).join(' ')

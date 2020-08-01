@@ -280,7 +280,7 @@ export const makeRunResult = (
   unhandledErrors: Array<Error>,
 ): Circus.RunResult => ({
   testResults: makeTestResults(describeBlock),
-  unhandledErrors: unhandledErrors.map(_formatError),
+  unhandledErrors: unhandledErrors.map(_getError).map(getErrorStack),
 });
 
 export const makeSingleTestResult = (
@@ -313,9 +313,12 @@ export const makeSingleTestResult = (
     }
   }
 
+  const errorsDetailed = test.errors.map(_getError);
+
   return {
     duration: test.duration,
-    errors: test.errors.map(_formatError),
+    errors: errorsDetailed.map(getErrorStack),
+    errorsDetailed,
     invocations: test.invocations,
     location,
     status,
@@ -357,9 +360,9 @@ export const getTestID = (test: Circus.TestEntry): string => {
   return titles.join(' ');
 };
 
-const _formatError = (
+const _getError = (
   errors?: Circus.Exception | [Circus.Exception | undefined, Circus.Exception],
-): string => {
+): Error => {
   let error;
   let asyncError;
 
@@ -371,19 +374,16 @@ const _formatError = (
     asyncError = new Error();
   }
 
-  if (error) {
-    if (error.stack) {
-      return error.stack;
-    }
-    if (error.message) {
-      return error.message;
-    }
+  if (error && (error.stack || error.message)) {
+    return error;
   }
 
   asyncError.message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
 
-  return asyncError.stack;
+  return asyncError;
 };
+
+const getErrorStack = (error: Error): string => error.stack || error.message;
 
 export const addErrorToEachTestUnderDescribe = (
   describeBlock: Circus.DescribeBlock,
@@ -433,6 +433,7 @@ export const parseSingleTestResult = (
   return {
     ancestorTitles,
     duration: testResult.duration,
+    failureDetails: testResult.errorsDetailed,
     failureMessages: Array.from(testResult.errors),
     fullName: title
       ? ancestorTitles.concat(title).join(' ')
