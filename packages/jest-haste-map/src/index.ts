@@ -255,11 +255,17 @@ class HasteMap extends EventEmitter {
     };
     this._console = options.console || global.console;
 
-    if (options.ignorePattern && options.ignorePattern instanceof RegExp) {
-      this._options.ignorePattern = new RegExp(
-        options.ignorePattern.source.concat('|' + VCS_DIRECTORIES),
-        options.ignorePattern.flags,
-      );
+    if (options.ignorePattern) {
+      if (options.ignorePattern instanceof RegExp) {
+        this._options.ignorePattern = new RegExp(
+          options.ignorePattern.source.concat('|' + VCS_DIRECTORIES),
+          options.ignorePattern.flags,
+        );
+      } else {
+        throw new Error(
+          'jest-haste-map: the `ignorePattern` option must be a RegExp',
+        );
+      }
     } else {
       this._options.ignorePattern = new RegExp(VCS_DIRECTORIES);
     }
