@@ -11,15 +11,12 @@ import {createHash} from 'crypto';
 import * as fs from 'graceful-fs';
 // eslint-disable-next-line import/named
 import {ExecaSyncReturnValue, sync as spawnSync} from 'execa';
-import {skipSuiteOnWindows} from '@jest/test-utils';
 
 const CIRCUS_PATH = require.resolve('../../build');
 const CIRCUS_RUN_PATH = require.resolve('../../build/run');
 const CIRCUS_STATE_PATH = require.resolve('../../build/state');
 const TEST_EVENT_HANDLER_PATH = require.resolve('./testEventHandler');
 const BABEL_REGISTER_PATH = require.resolve('@babel/register');
-
-skipSuiteOnWindows();
 
 interface Result extends ExecaSyncReturnValue {
   status: number;
