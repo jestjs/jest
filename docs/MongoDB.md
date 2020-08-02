@@ -9,7 +9,7 @@ With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async
 
 [Jest MongoDB](https://github.com/shelfio/jest-mongodb) provides all required configuration to run your tests using MongoDB.
 
-1.  First install `@shelf/jest-mongodb`
+1.  Firstة install `@shelf/jest-mongodb`
 
 ```
 yarn add @shelf/jest-mongodb --dev

@@ -635,10 +635,7 @@ test('throws if theme option is null', () => {
   );
   expect(() => {
     // @ts-expect-error
-    formatElement(jsx, {
-      highlight: true,
-      theme: null,
-    });
+    formatElement(jsx, {highlight: true, theme: null});
   }).toThrow('pretty-format: Option "theme" must not be null.');
 });
 
@@ -650,10 +647,7 @@ test('throws if theme option is not of type "object"', () => {
       'Hello, Mouse!',
     );
     // @ts-expect-error
-    formatElement(jsx, {
-      highlight: true,
-      theme: 'beautiful',
-    });
+    formatElement(jsx, {highlight: true, theme: 'beautiful'});
   }).toThrow(
     'pretty-format: Option "theme" must be of type "object" but instead received "string".',
   );

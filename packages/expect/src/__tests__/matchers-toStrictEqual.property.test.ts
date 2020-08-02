@@ -20,7 +20,7 @@ describe('toStrictEqual', () => {
     try {
       expect(a).toStrictEqual(b);
       return true;
-    } catch (err) {
+    } catch {
       return false;
     }
   };
@@ -28,7 +28,7 @@ describe('toStrictEqual', () => {
     try {
       assert.deepStrictEqual(a, b);
       return true;
-    } catch (err) {
+    } catch {
       return false;
     }
   };

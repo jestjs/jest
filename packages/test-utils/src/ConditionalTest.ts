@@ -29,14 +29,6 @@ export function skipSuiteOnJestCircus(): void {
   }
 }
 
-export function skipSuiteOnWindows(): void {
-  if (process.platform === 'win32') {
-    test.only('does not work on Windows', () => {
-      console.warn('[SKIP] Does not work on Windows');
-    });
-  }
-}
-
 export function onNodeVersions(
   versionRange: string,
   testBody: () => void,

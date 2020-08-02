@@ -59,7 +59,7 @@ const initialTestData = fs.readFileSync(snapshotEscapeTestFile, 'utf8');
 const fileExists = (filePath: string) => {
   try {
     return fs.statSync(filePath).isFile();
-  } catch (e) {}
+  } catch {}
   return false;
 };
 const getSnapshotOfCopy = () => {

@@ -6,10 +6,14 @@
  */
 
 import type {Config} from '@jest/types';
-import type {AggregatedResult, TestResult} from '@jest/test-result';
+import type {
+  AggregatedResult,
+  TestCaseResult,
+  TestResult,
+} from '@jest/test-result';
 import chalk = require('chalk');
 import stringLength = require('string-length');
-import type {ReporterOnStartOptions} from './types';
+import type {ReporterOnStartOptions, Test} from './types';
 import {
   getSummary,
   printDisplayName,
@@ -71,6 +75,10 @@ export default class Status {
   private _cache: Cache | null;
   private _callback?: () => void;
   private _currentTests: CurrentTestList;
+  private _currentTestCases: Array<{
+    test: Test;
+    testCaseResult: TestCaseResult;
+  }>;
   private _done: boolean;
   private _emitScheduled: boolean;
   private _estimatedTime: number;
@@ -81,6 +89,7 @@ export default class Status {
   constructor() {
     this._cache = null;
     this._currentTests = new CurrentTestList();
+    this._currentTestCases = [];
     this._done = false;
     this._emitScheduled = false;
     this._estimatedTime = 0;
@@ -108,6 +117,15 @@ export default class Status {
     this._emit();
   }
 
+  addTestCaseResult(test: Test, testCaseResult: TestCaseResult): void {
+    this._currentTestCases.push({test, testCaseResult});
+    if (!this._showStatus) {
+      this._emit();
+    } else {
+      this._debouncedEmit();
+    }
+  }
+
   testStarted(testPath: Config.Path, config: Config.ProjectConfig): void {
     this._currentTests.add(testPath, config);
     if (!this._showStatus) {
@@ -125,6 +143,12 @@ export default class Status {
     const {testFilePath} = testResult;
     this._aggregatedResults = aggregatedResults;
     this._currentTests.delete(testFilePath);
+    this._currentTestCases = this._currentTestCases.filter(({test}) => {
+      if (_config !== test.context.config) {
+        return true;
+      }
+      return test.path !== testFilePath;
+    });
     this._debouncedEmit();
   }
 
@@ -161,6 +185,7 @@ export default class Status {
       content +=
         '\n' +
         getSummary(this._aggregatedResults, {
+          currentTestCases: this._currentTestCases,
           estimatedTime: this._estimatedTime,
           roundTime: true,
           width,

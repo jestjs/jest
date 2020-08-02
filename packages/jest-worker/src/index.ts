@@ -11,9 +11,11 @@ import Farm from './Farm';
 import type {
   FarmOptions,
   PoolExitResult,
+  PromiseWithCustomMessage,
   WorkerPoolInterface,
   WorkerPoolOptions,
 } from './types';
+export {default as messageParent} from './workers/messageParent';
 
 function getExposedMethods(
   workerPath: string,
@@ -74,11 +76,12 @@ export default class JestWorker {
     this._ending = false;
 
     const workerPoolOptions: WorkerPoolOptions = {
-      enableWorkerThreads: this._options.enableWorkerThreads || false,
-      forkOptions: this._options.forkOptions || {},
-      maxRetries: this._options.maxRetries || 3,
-      numWorkers: this._options.numWorkers || Math.max(cpus().length - 1, 1),
-      setupArgs: this._options.setupArgs || [],
+      enableWorkerThreads: this._options.enableWorkerThreads ?? false,
+      forkOptions: this._options.forkOptions ?? {},
+      maxRetries: this._options.maxRetries ?? 3,
+      numWorkers: this._options.numWorkers ?? Math.max(cpus().length - 1, 1),
+      resourceLimits: this._options.resourceLimits ?? {},
+      setupArgs: this._options.setupArgs ?? [],
     };
 
     if (this._options.WorkerPool) {
@@ -146,3 +149,5 @@ export default class JestWorker {
     return this._workerPool.end();
   }
 }
+
+export type {PromiseWithCustomMessage};

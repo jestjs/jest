@@ -9,11 +9,9 @@ import {tmpdir} from 'os';
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {findRepos, getChangedFilesForRoots} from 'jest-changed-files';
-import {skipSuiteOnWindows} from '@jest/test-utils';
+import slash from 'slash';
 import {cleanup, run, testIfHg, writeFiles} from '../Utils';
 import runJest from '../runJest';
-
-skipSuiteOnWindows();
 
 const DIR = path.resolve(tmpdir(), 'jest-changed-files-test-dir');
 
@@ -54,8 +52,12 @@ testIfHg('gets hg SCM roots and dedupes them', async () => {
   // NOTE: This test can break if you have a .hg repo initialized inside your
   // os tmp directory.
   expect(hgRepos).toHaveLength(2);
-  expect(hgRepos[0]).toMatch(/\/jest-changed-files-test-dir\/first-repo\/?$/);
-  expect(hgRepos[1]).toMatch(/\/jest-changed-files-test-dir\/second-repo\/?$/);
+  expect(slash(hgRepos[0])).toMatch(
+    /\/jest-changed-files-test-dir\/first-repo\/?$/,
+  );
+  expect(slash(hgRepos[1])).toMatch(
+    /\/jest-changed-files-test-dir\/second-repo\/?$/,
+  );
 });
 
 test('gets git SCM roots and dedupes them', async () => {
@@ -88,8 +90,12 @@ test('gets git SCM roots and dedupes them', async () => {
   // NOTE: This test can break if you have a .git repo initialized inside your
   // os tmp directory.
   expect(gitRepos).toHaveLength(2);
-  expect(gitRepos[0]).toMatch(/\/jest-changed-files-test-dir\/first-repo\/?$/);
-  expect(gitRepos[1]).toMatch(/\/jest-changed-files-test-dir\/second-repo\/?$/);
+  expect(slash(gitRepos[0])).toMatch(
+    /\/jest-changed-files-test-dir\/first-repo\/?$/,
+  );
+  expect(slash(gitRepos[1])).toMatch(
+    /\/jest-changed-files-test-dir\/second-repo\/?$/,
+  );
 });
 
 testIfHg('gets mixed git and hg SCM roots and dedupes them', async () => {
@@ -121,8 +127,12 @@ testIfHg('gets mixed git and hg SCM roots and dedupes them', async () => {
   // inside your os tmp directory.
   expect(gitRepos).toHaveLength(1);
   expect(hgRepos).toHaveLength(1);
-  expect(gitRepos[0]).toMatch(/\/jest-changed-files-test-dir\/first-repo\/?$/);
-  expect(hgRepos[0]).toMatch(/\/jest-changed-files-test-dir\/second-repo\/?$/);
+  expect(slash(gitRepos[0])).toMatch(
+    /\/jest-changed-files-test-dir\/first-repo\/?$/,
+  );
+  expect(slash(hgRepos[0])).toMatch(
+    /\/jest-changed-files-test-dir\/second-repo\/?$/,
+  );
 });
 
 test('gets changed files for git', async () => {

@@ -15,6 +15,7 @@ import {
 } from '@jest/test-result';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
+import type {TestFileEvent} from 'jest-runner';
 import {
   SnapshotState,
   SnapshotStateType,
@@ -30,6 +31,7 @@ import {
 } from '../state';
 import {getTestID} from '../utils';
 import run from '../run';
+import testCaseReportHandler from '../testCaseReportHandler';
 import globals from '..';
 
 type Process = NodeJS.Process;
@@ -45,6 +47,7 @@ export const initialize = async ({
   localRequire,
   parentProcess,
   testPath,
+  sendMessageToJest,
 }: {
   config: Config.ProjectConfig;
   environment: JestEnvironment;
@@ -54,6 +57,7 @@ export const initialize = async ({
   localRequire: (path: Config.Path) => any;
   testPath: Config.Path;
   parentProcess: Process;
+  sendMessageToJest?: TestFileEvent;
 }) => {
   if (globalConfig.testTimeout) {
     getRunnerState().testTimeout = globalConfig.testTimeout;
@@ -140,6 +144,9 @@ export const initialize = async ({
   setState({snapshotState, testPath});
 
   addEventHandler(handleSnapshotStateAfterRetry(snapshotState));
+  if (sendMessageToJest) {
+    addEventHandler(testCaseReportHandler(testPath, sendMessageToJest));
+  }
 
   // Return it back to the outer scope (test runner outside the VM).
   return {globals, snapshotState};
@@ -186,6 +193,7 @@ export const runAndTransformResultsToJestFormat = async ({
       return {
         ancestorTitles,
         duration: testResult.duration,
+        failureDetails: testResult.errorsDetailed,
         failureMessages: testResult.errors,
         fullName: title
           ? ancestorTitles.concat(title).join(' ')

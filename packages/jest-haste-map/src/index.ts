@@ -15,6 +15,7 @@ import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
 import type {Config} from '@jest/types';
 import serializer from 'jest-serializer';
 import Worker from 'jest-worker';
+import {escapePathForRegex} from 'jest-regex-util';
 import {getSha1, worker} from './worker';
 import getMockName from './getMockName';
 import getPlatformExtension from './lib/getPlatformExtension';
@@ -113,6 +114,9 @@ const CHANGE_INTERVAL = 30;
 const MAX_WAIT_TIME = 240000;
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const PACKAGE_JSON = path.sep + 'package.json';
+const VCS_DIRECTORIES = ['.git', '.hg']
+  .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
+  .join('|');
 
 // TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
 // understand `require`.
@@ -122,7 +126,7 @@ const canUseWatchman = ((): boolean => {
   try {
     execSync('watchman --version', {stdio: ['ignore']});
     return true;
-  } catch (e) {}
+  } catch {}
   return false;
 })();
 
@@ -233,7 +237,6 @@ class HasteMap extends EventEmitter {
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
-      ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
       mocksPattern: options.mocksPattern
         ? new RegExp(options.mocksPattern)
@@ -250,11 +253,26 @@ class HasteMap extends EventEmitter {
       watch: !!options.watch,
     };
     this._console = options.console || global.console;
-    if (options.ignorePattern && !(options.ignorePattern instanceof RegExp)) {
-      this._console.warn(
-        'jest-haste-map: the `ignorePattern` options as a function is being ' +
-          'deprecated. Provide a RegExp instead. See https://github.com/facebook/jest/pull/4063.',
-      );
+
+    if (options.ignorePattern) {
+      if (options.ignorePattern instanceof RegExp) {
+        this._options.ignorePattern = new RegExp(
+          options.ignorePattern.source.concat('|' + VCS_DIRECTORIES),
+          options.ignorePattern.flags,
+        );
+      } else {
+        const ignorePattern = options.ignorePattern;
+        const vcsIgnoreRegExp = new RegExp(VCS_DIRECTORIES);
+        this._options.ignorePattern = (filePath: string) =>
+          vcsIgnoreRegExp.test(filePath) || ignorePattern(filePath);
+
+        this._console.warn(
+          'jest-haste-map: the `ignorePattern` options as a function is being ' +
+            'deprecated. Provide a RegExp instead. See https://github.com/facebook/jest/pull/4063.',
+        );
+      }
+    } else {
+      this._options.ignorePattern = new RegExp(VCS_DIRECTORIES);
     }
 
     const rootDirHash = createHash('md5').update(options.rootDir).digest('hex');
@@ -363,7 +381,7 @@ class HasteMap extends EventEmitter {
 
     try {
       hasteMap = serializer.readFileSync(this._cachePath);
-    } catch (err) {
+    } catch {
       hasteMap = this._createEmptyMap();
     }
 
@@ -790,7 +808,7 @@ class HasteMap extends EventEmitter {
     const createWatcher = (root: Config.Path): Promise<Watcher> => {
       // @ts-expect-error: TODO how? "Cannot use 'new' with an expression whose type lacks a call or construct signature."
       const watcher = new Watcher(root, {
-        dot: false,
+        dot: true,
         glob: extensions.map(extension => '**/*.' + extension),
         ignored: ignorePattern,
       });

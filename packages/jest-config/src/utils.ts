@@ -144,7 +144,7 @@ export const resolveWithPrefix = (
 
   try {
     return require.resolve(`${prefix}${fileName}`);
-  } catch (e) {}
+  } catch {}
 
   module = Resolver.findNodeModule(fileName, {
     basedir: rootDir,
@@ -156,7 +156,7 @@ export const resolveWithPrefix = (
 
   try {
     return require.resolve(fileName);
-  } catch (e) {}
+  } catch {}
 
   throw createValidationError(
     `  ${humanOptionName} ${chalk.bold(
