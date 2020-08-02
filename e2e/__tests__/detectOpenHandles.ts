@@ -6,7 +6,7 @@
  */
 
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {onNodeVersions, skipSuiteOnWindows} from '@jest/test-utils';
+import {onNodeVersions} from '@jest/test-utils';
 import runJest, {runContinuous} from '../runJest';
 
 try {
@@ -72,9 +72,13 @@ it('does not report promises', () => {
 });
 
 describe('notify', () => {
-  skipSuiteOnWindows();
-
   it('does not report --notify flag', () => {
+    if (process.platform === 'win32') {
+      console.warn('[SKIP] Does not work on Windows');
+
+      return;
+    }
+
     // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
     const {stderr} = runJest('detect-open-handles', ['notify', '--notify']);
     const textAfterTest = getTextAfterTest(stderr);

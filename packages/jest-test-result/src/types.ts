@@ -78,6 +78,8 @@ export type Suite = {
   tests: Array<AssertionResult>;
 };
 
+export type TestCaseResult = AssertionResult;
+
 export type TestResult = {
   console?: ConsoleBuffer;
   coverage?: CoverageMapData;
@@ -92,6 +94,8 @@ export type TestResult = {
   openHandles: Array<Error>;
   perfStats: {
     end: Milliseconds;
+    runtime: Milliseconds;
+    slow: boolean;
     start: Milliseconds;
   };
   skipped: boolean;

@@ -13,9 +13,11 @@ import mergeStream = require('merge-stream');
 import {
   CHILD_MESSAGE_INITIALIZE,
   ChildMessage,
+  OnCustomMessage,
   OnEnd,
   OnStart,
   PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_CUSTOM,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
   ParentMessage,
@@ -30,6 +32,7 @@ export default class ExperimentalWorker implements WorkerInterface {
   private _request: ChildMessage | null;
   private _retries!: number;
   private _onProcessEnd!: OnEnd;
+  private _onCustomMessage!: OnCustomMessage;
 
   private _fakeStream: PassThrough | null;
   private _stdout: ReturnType<typeof mergeStream> | null;
@@ -59,6 +62,8 @@ export default class ExperimentalWorker implements WorkerInterface {
   initialize(): void {
     this._worker = new Worker(path.resolve(__dirname, './threadChild.js'), {
       eval: false,
+      // @ts-expect-error: added in newer versions
+      resourceLimits: this._options.resourceLimits,
       stderr: true,
       stdout: true,
       workerData: {
@@ -170,6 +175,9 @@ export default class ExperimentalWorker implements WorkerInterface {
 
         this._onProcessEnd(error, null);
         break;
+      case PARENT_MESSAGE_CUSTOM:
+        this._onCustomMessage(response[1]);
+        break;
       default:
         throw new TypeError('Unexpected response from worker: ' + response[0]);
     }
@@ -200,6 +208,7 @@ export default class ExperimentalWorker implements WorkerInterface {
     request: ChildMessage,
     onProcessStart: OnStart,
     onProcessEnd: OnEnd,
+    onCustomMessage: OnCustomMessage,
   ): void {
     onProcessStart(this);
     this._onProcessEnd = (...args) => {
@@ -208,6 +217,8 @@ export default class ExperimentalWorker implements WorkerInterface {
       this._request = null;
       return onProcessEnd(...args);
     };
+
+    this._onCustomMessage = (...arg) => onCustomMessage(...arg);
 
     this._request = request;
     this._retries = 0;

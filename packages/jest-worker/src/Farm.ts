@@ -9,8 +9,10 @@ import {
   CHILD_MESSAGE_CALL,
   ChildMessage,
   FarmOptions,
+  OnCustomMessage,
   OnEnd,
   OnStart,
+  PromiseWithCustomMessage,
   QueueChildMessage,
   QueueItem,
   WorkerInterface,
@@ -44,41 +46,64 @@ export default class Farm {
     }
   }
 
-  doWork(method: string, ...args: Array<any>): Promise<unknown> {
-    return new Promise((resolve, reject) => {
-      const computeWorkerKey = this._computeWorkerKey;
-      const request: ChildMessage = [CHILD_MESSAGE_CALL, false, method, args];
+  doWork(
+    method: string,
+    ...args: Array<unknown>
+  ): PromiseWithCustomMessage<unknown> {
+    const customMessageListeners = new Set<OnCustomMessage>();
 
-      let worker: WorkerInterface | null = null;
-      let hash: string | null = null;
-
-      if (computeWorkerKey) {
-        hash = computeWorkerKey.call(this, method, ...args);
-        worker = hash == null ? null : this._cacheKeys[hash];
-      }
-
-      const onStart: OnStart = (worker: WorkerInterface) => {
-        if (hash != null) {
-          this._cacheKeys[hash] = worker;
-        }
+    const addCustomMessageListener = (listener: OnCustomMessage) => {
+      customMessageListeners.add(listener);
+      return () => {
+        customMessageListeners.delete(listener);
       };
+    };
 
-      const onEnd: OnEnd = (error: Error | null, result: unknown) => {
-        if (error) {
-          reject(error);
+    const onCustomMessage: OnCustomMessage = message => {
+      customMessageListeners.forEach(listener => listener(message));
+    };
+
+    const promise: PromiseWithCustomMessage<unknown> = new Promise(
+      (resolve, reject) => {
+        const computeWorkerKey = this._computeWorkerKey;
+        const request: ChildMessage = [CHILD_MESSAGE_CALL, false, method, args];
+
+        let worker: WorkerInterface | null = null;
+        let hash: string | null = null;
+
+        if (computeWorkerKey) {
+          hash = computeWorkerKey.call(this, method, ...args);
+          worker = hash == null ? null : this._cacheKeys[hash];
+        }
+
+        const onStart: OnStart = (worker: WorkerInterface) => {
+          if (hash != null) {
+            this._cacheKeys[hash] = worker;
+          }
+        };
+
+        const onEnd: OnEnd = (error: Error | null, result: unknown) => {
+          customMessageListeners.clear();
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        };
+
+        const task = {onCustomMessage, onEnd, onStart, request};
+
+        if (worker) {
+          this._enqueue(task, worker.getWorkerId());
         } else {
-          resolve(result);
+          this._push(task);
         }
-      };
+      },
+    );
 
-      const task = {onEnd, onStart, request};
+    promise.UNSTABLE_onCustomMessage = addCustomMessageListener;
 
-      if (worker) {
-        this._enqueue(task, worker.getWorkerId());
-      } else {
-        this._push(task);
-      }
-    });
+    return promise;
   }
 
   private _getNextTask(workerId: number): QueueChildMessage | null {
@@ -114,7 +139,13 @@ export default class Farm {
     task.request[1] = true;
 
     this._lock(workerId);
-    this._callback(workerId, task.request, task.onStart, onEnd);
+    this._callback(
+      workerId,
+      task.request,
+      task.onStart,
+      onEnd,
+      task.onCustomMessage,
+    );
 
     return this;
   }

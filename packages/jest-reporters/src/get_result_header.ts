@@ -42,12 +42,11 @@ export default (
   const status =
     result.numFailingTests > 0 || result.testExecError ? FAIL : PASS;
 
-  const runTime = result.perfStats
-    ? (result.perfStats.end - result.perfStats.start) / 1000
-    : null;
-
   const testDetail = [];
-  if (runTime !== null && runTime > 5) {
+
+  if (result.perfStats?.slow) {
+    const runTime = result.perfStats.runtime / 1000;
+
     testDetail.push(LONG_TEST_COLOR(formatTime(runTime, 0)));
   }
 

@@ -6,8 +6,6 @@
  *
  */
 
-'use strict';
-
 describe('Symbol in objects', () => {
   test('should compare objects with Symbol keys', () => {
     const sym = Symbol('foo');

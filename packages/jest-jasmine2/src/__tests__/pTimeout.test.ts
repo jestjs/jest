@@ -30,7 +30,7 @@ describe('pTimeout', () => {
     const promise = Promise.reject();
     try {
       await pTimeout(promise, 1000, clearTimeout, setTimeout, onTimeout);
-    } catch (e) {}
+    } catch {}
     expect(setTimeout).toHaveBeenCalled();
     expect(clearTimeout).toHaveBeenCalled();
     expect(onTimeout).not.toHaveBeenCalled();

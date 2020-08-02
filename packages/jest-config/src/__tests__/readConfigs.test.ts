@@ -29,7 +29,6 @@ test('readConfigs() loads async config file', async () => {
     rootDir: './',
   }));
   await expect(
-    // @ts-expect-error
     readConfigs(
       <Config.Argv>{} /* argv */,
       ['./some-jest-config-file.js'] /* projectPaths */,
@@ -43,7 +42,6 @@ test('readConfigs() reject if async was rejected', async () => {
     throw new Error('Some error');
   });
   await expect(
-    // @ts-expect-error
     readConfigs(
       <Config.Argv>{} /* argv */,
       ['./some-jest-config-file.js'] /* projectPaths */,

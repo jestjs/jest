@@ -138,7 +138,7 @@ const setupPreset = (
       if (presetModule) {
         delete require.cache[require.resolve(presetModule)];
       }
-    } catch (e) {}
+    } catch {}
 
     // @ts-expect-error: `presetModule` can be null?
     preset = require(presetModule);
@@ -278,7 +278,7 @@ const normalizeCollectCoverageFrom = (
   if (!Array.isArray(initialCollectCoverageFrom)) {
     try {
       value = JSON.parse(initialCollectCoverageFrom);
-    } catch (e) {}
+    } catch {}
 
     if (options[key] && !Array.isArray(value)) {
       value = [initialCollectCoverageFrom];
@@ -391,7 +391,7 @@ const normalizeRootDir = (
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
     options.rootDir = tryRealpath(options.rootDir);
-  } catch (e) {
+  } catch {
     // ignored
   }
 
@@ -907,6 +907,7 @@ export default function normalize(
       case 'silent':
       case 'skipFilter':
       case 'skipNodeResolution':
+      case 'slowTestThreshold':
       case 'testEnvironment':
       case 'testEnvironmentOptions':
       case 'testFailureExitCode':
@@ -955,7 +956,7 @@ export default function normalize(
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
     newOptions.cwd = tryRealpath(process.cwd());
-  } catch (e) {
+  } catch {
     // ignored
   }
 

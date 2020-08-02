@@ -7,17 +7,14 @@
 
 import * as path from 'path';
 import {tmpdir} from 'os';
-import {skipSuiteOnWindows} from '@jest/test-utils';
 import {cleanup, createEmptyPackage, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
-skipSuiteOnWindows();
-
 // doing test in a temp directory because we don't want jest node_modules affect it
 const tempDir = path.resolve(tmpdir(), 'clashing-dependencies-test');
-const hasteImplModulePath = path.resolve(
-  './packages/jest-haste-map/src/__tests__/haste_impl.js',
-);
+const hasteImplModulePath = path
+  .resolve('./packages/jest-haste-map/src/__tests__/haste_impl.js')
+  .replace(/\\/g, '\\\\');
 
 beforeEach(() => {
   cleanup(tempDir);

@@ -19,7 +19,7 @@ describe('formatTestResults', () => {
     testResults: [
       {
         numFailingTests: 0,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, slow: false, start: 1},
         // @ts-expect-error
         testResults: [assertion],
       },
@@ -27,7 +27,7 @@ describe('formatTestResults', () => {
   };
 
   it('includes test full name', () => {
-    const result = formatTestResults(results, null, null);
+    const result = formatTestResults(results, undefined, null);
     expect(result.testResults[0].assertionResults[0].fullName).toEqual(
       assertion.fullName,
     );

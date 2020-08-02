@@ -105,7 +105,7 @@ export const getSnapshotData = (
       // eslint-disable-next-line no-new-func
       const populate = new Function('exports', snapshotContents);
       populate(data);
-    } catch (e) {}
+    } catch {}
   }
 
   const validationResult = validateSnapshotVersion(snapshotContents);
@@ -183,7 +183,7 @@ const printBacktickString = (str: string): string =>
 export const ensureDirectoryExists = (filePath: Config.Path): void => {
   try {
     fs.mkdirSync(path.join(path.dirname(filePath)), {recursive: true});
-  } catch (e) {}
+  } catch {}
 };
 
 const normalizeNewlines = (string: string) => string.replace(/\r\n|\r/g, '\n');

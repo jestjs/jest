@@ -18,6 +18,7 @@ type Callsite = {
 export type AssertionResult = {
   ancestorTitles: Array<string>;
   duration?: Milliseconds | null;
+  failureDetails: Array<unknown>;
   failureMessages: Array<string>;
   fullName: string;
   invocations?: number;

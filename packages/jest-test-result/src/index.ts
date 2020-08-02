@@ -24,5 +24,6 @@ export type {
   Status,
   Suite,
   TestResult,
+  TestCaseResult,
   V8CoverageResult,
 } from './types';

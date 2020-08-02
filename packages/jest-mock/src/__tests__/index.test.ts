@@ -765,7 +765,7 @@ describe('moduleMocker', () => {
 
       try {
         fn(2, 4);
-      } catch (error) {
+      } catch {
         // ignore error
       }
 

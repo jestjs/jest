@@ -120,7 +120,7 @@ exports[`Intro renders correctly 1`] = `
 `;
 ```
 
-The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
+The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along with code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
 
 The code for this example is available at [examples/react-native](https://github.com/facebook/jest/tree/master/examples/react-native).
 
@@ -162,7 +162,7 @@ The [`moduleNameMapper`](configuration.html#modulenamemapper-objectstring-string
 
 ### Mock native modules using jest.mock
 
-The Jest preset built into `react-native` comes with a few default mocks that are applied on a react-native repository. However some react-native components or third party components rely on native code to be rendered. In such cases, Jest's manual mocking system can help to mock out the underlying implementation.
+The Jest preset built into `react-native` comes with a few default mocks that are applied on a react-native repository. However, some react-native components or third party components rely on native code to be rendered. In such cases, Jest's manual mocking system can help to mock out the underlying implementation.
 
 For example, if your code depends on a third party native video component called `react-native-video` you might want to stub it out with a manual mock like this:
 
