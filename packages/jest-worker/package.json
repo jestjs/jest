@@ -21,7 +21,7 @@
     "worker-farm": "^1.6.0"
   },
   "engines": {
-    "node": ">= 10.14.2"
+    "node": ">= 10.13.0"
   },
   "publishConfig": {
     "access": "public"
