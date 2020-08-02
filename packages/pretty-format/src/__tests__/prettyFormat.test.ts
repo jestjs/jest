@@ -540,7 +540,6 @@ describe('prettyFormat()', () => {
 
   it('throws on invalid options', () => {
     expect(() => {
-      // @ts-expect-error
       prettyFormat({}, {invalidOption: true});
     }).toThrow();
   });
