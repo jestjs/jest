@@ -64,7 +64,7 @@ export async function readConfig(
     let config;
     try {
       config = JSON.parse(argv.config);
-    } catch (e) {
+    } catch {
       throw new Error(
         'There was an error while parsing the `--config` argument as a JSON string.',
       );

@@ -97,7 +97,7 @@ const getProjectListFromCLIArgs = (
   if (!projects.length && process.platform === 'win32') {
     try {
       projects.push(tryRealpath(process.cwd()));
-    } catch (err) {
+    } catch {
       // do nothing, just catch error
       // process.binding('fs').realpath can throw, e.g. on mapped drives
     }

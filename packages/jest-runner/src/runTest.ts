@@ -183,7 +183,7 @@ async function runTestInternal(
             map: JSON.parse(fs.readFileSync(sourceMapSource, 'utf8')),
             url: source,
           };
-        } catch (e) {}
+        } catch {}
       }
       return null;
     },

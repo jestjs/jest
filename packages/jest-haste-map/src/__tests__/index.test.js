@@ -1163,7 +1163,7 @@ describe('HasteMap', () => {
 
   describe('file system changes processing', () => {
     function waitForItToChange(hasteMap) {
-      return new Promise((resolve, reject) => {
+      return new Promise(resolve => {
         hasteMap.once('change', resolve);
       });
     }

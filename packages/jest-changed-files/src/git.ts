@@ -94,7 +94,7 @@ const adapter: SCMAdapter = {
       const result = await execa('git', options, {cwd});
 
       return path.resolve(cwd, result.stdout);
-    } catch (e) {
+    } catch {
       return null;
     }
   },

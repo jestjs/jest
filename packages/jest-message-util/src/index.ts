@@ -26,7 +26,7 @@ let nodeInternals: Array<RegExp> = [];
 
 try {
   nodeInternals = StackUtils.nodeInternals();
-} catch (e) {
+} catch {
   // `StackUtils.nodeInternals()` fails in browsers. We don't need to remove
   // node internals in the browser though, so no issue.
 }
@@ -295,7 +295,7 @@ export const formatStackTrace = (
           // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
           fileContent = fs.readFileSync(filename, 'utf8');
           renderedCallsite = getRenderedCallsite(fileContent, line, column);
-        } catch (e) {
+        } catch {
           // the file does not exist or is inaccessible, we ignore
         }
       }

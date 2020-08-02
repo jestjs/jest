@@ -19,7 +19,7 @@ import walker from 'walker';
 let fsevents: typeof import('fsevents') | null = null;
 try {
   fsevents = require('fsevents');
-} catch (e) {
+} catch {
   // Optional dependency, only supported on Darwin.
 }
 

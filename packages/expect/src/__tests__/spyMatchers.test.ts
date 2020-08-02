@@ -453,7 +453,7 @@ const createSpy = (fn: jest.Mock) => {
 
       try {
         fn(true);
-      } catch (error) {
+      } catch {
         // ignore error
       }
 
@@ -479,13 +479,13 @@ const createSpy = (fn: jest.Mock) => {
 
       try {
         fn();
-      } catch (error) {
+      } catch {
         // ignore error
       }
 
       try {
         fn();
-      } catch (error) {
+      } catch {
         // ignore error
       }
 
@@ -501,7 +501,7 @@ const createSpy = (fn: jest.Mock) => {
 
       try {
         fn();
-      } catch (error) {
+      } catch {
         // ignore error
       }
 
@@ -652,7 +652,7 @@ const createSpy = (fn: jest.Mock) => {
 
       try {
         fn(true);
-      } catch (error) {
+      } catch {
         // ignore error
       }
 
@@ -679,7 +679,7 @@ const createSpy = (fn: jest.Mock) => {
 
       try {
         fn(true);
-      } catch (error) {
+      } catch {
         // ignore error
       }
 
@@ -886,7 +886,7 @@ const createSpy = (fn: jest.Mock) => {
 
       try {
         fn();
-      } catch (error) {
+      } catch {
         // ignore error
       }
 
@@ -908,7 +908,7 @@ const createSpy = (fn: jest.Mock) => {
 
       try {
         fn();
-      } catch (error) {
+      } catch {
         // ignore error
       }
 

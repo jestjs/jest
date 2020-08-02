@@ -113,7 +113,7 @@ export default class SpyRegistry {
       let descriptor;
       try {
         descriptor = Object.getOwnPropertyDescriptor(obj, methodName);
-      } catch (e) {
+      } catch {
         // IE 8 doesn't support `definePropery` on non-DOM nodes
       }
 
@@ -166,7 +166,7 @@ export default class SpyRegistry {
       let descriptor: PropertyDescriptor | undefined;
       try {
         descriptor = Object.getOwnPropertyDescriptor(obj, propertyName);
-      } catch (e) {
+      } catch {
         // IE 8 doesn't support `definePropery` on non-DOM nodes
       }
 

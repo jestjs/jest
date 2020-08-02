@@ -53,7 +53,7 @@ export default async (
     projectPackageJson = JSON.parse(
       fs.readFileSync(projectPackageJsonPath, 'utf-8'),
     );
-  } catch (error) {
+  } catch {
     throw new MalformedPackageJsonError(projectPackageJsonPath);
   }
 

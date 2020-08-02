@@ -212,7 +212,7 @@ export default class CoverageReporter extends BaseReporter {
 
     try {
       await Promise.all(instrumentation);
-    } catch (err) {
+    } catch {
       // Do nothing; errors were reported earlier to the console.
     }
 

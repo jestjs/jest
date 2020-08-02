@@ -49,7 +49,7 @@ export default class TestSequencer {
             context,
             JSON.parse(fs.readFileSync(cachePath, 'utf8')),
           );
-        } catch (e) {}
+        } catch {}
       }
     }
 

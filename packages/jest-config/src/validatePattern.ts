@@ -10,7 +10,7 @@ export default function validatePattern(pattern?: string): boolean {
     try {
       // eslint-disable-next-line no-new
       new RegExp(pattern, 'i');
-    } catch (e) {
+    } catch {
       return false;
     }
   }
