@@ -126,7 +126,7 @@ const canUseWatchman = ((): boolean => {
   try {
     execSync('watchman --version', {stdio: ['ignore']});
     return true;
-  } catch (e) {}
+  } catch {}
   return false;
 })();
 
@@ -381,7 +381,7 @@ class HasteMap extends EventEmitter {
 
     try {
       hasteMap = serializer.readFileSync(this._cachePath);
-    } catch (err) {
+    } catch {
       hasteMap = this._createEmptyMap();
     }
 

@@ -20,7 +20,7 @@ function readPkg(file) {
   try {
     const json = JSON.parse(mockFile);
     return Promise.resolve(json);
-  } catch (err) {
+  } catch {
     return Promise.reject(`${file} is not valid JSON.`);
   }
 }

@@ -29,7 +29,7 @@ const messageParent = (
     } else if (typeof parentProcess.send === 'function') {
       parentProcess.send([PARENT_MESSAGE_CUSTOM, message]);
     }
-  } catch (error) {
+  } catch {
     throw new Error('"messageParent" can only be used inside a worker');
   }
 };

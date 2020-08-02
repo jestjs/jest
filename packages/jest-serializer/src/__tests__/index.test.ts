@@ -35,7 +35,7 @@ const file = path.join(tmpdir(), '__jest-serialize-test__');
 afterEach(() => {
   try {
     fs.unlinkSync(file);
-  } catch (err) {
+  } catch {
     // Do nothing if file does not exist.
   }
 });

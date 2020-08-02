@@ -332,7 +332,7 @@ export default class ScriptTransformer {
         if (inlineSourceMap) {
           transformed.map = inlineSourceMap.toObject();
         }
-      } catch (e) {
+      } catch {
         const transformPath = this._getTransformPath(filename);
         console.warn(
           `jest-transform: The source map produced for the file ${filename} ` +
@@ -607,7 +607,7 @@ export function createTranspilingRequire(
 const removeFile = (path: Config.Path) => {
   try {
     fs.unlinkSync(path);
-  } catch (e) {}
+  } catch {}
 };
 
 const stripShebang = (content: string) => {

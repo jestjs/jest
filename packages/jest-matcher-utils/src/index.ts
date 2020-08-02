@@ -93,7 +93,7 @@ export const stringify = (object: unknown, maxDepth: number = 10): string => {
       min: true,
       plugins: PLUGINS,
     });
-  } catch (e) {
+  } catch {
     result = prettyFormat(object, {
       callToJSON: false,
       maxDepth,

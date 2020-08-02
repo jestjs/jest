@@ -207,7 +207,7 @@ export default class Suite {
         const child = this.children[i];
         try {
           child.addExpectationResult.apply(child, args);
-        } catch (e) {
+        } catch {
           // keep going
         }
       }

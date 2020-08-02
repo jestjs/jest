@@ -338,7 +338,7 @@ const makeThrowingMatcher = (
 
         return asyncResult
           .then(aResult => processResult(aResult, asyncError))
-          .catch(error => handleError(error));
+          .catch(handleError);
       } else {
         const syncResult = potentialResult as SyncExpectationResult;
 
