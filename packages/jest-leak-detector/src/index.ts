@@ -7,8 +7,11 @@
 
 import {setFlagsFromString} from 'v8';
 import {runInNewContext} from 'vm';
+import {promisify} from 'util';
 import prettyFormat = require('pretty-format');
 import {isPrimitive} from 'jest-get-type';
+
+const tick = promisify(setImmediate)
 
 export default class {
   private _isReferenceBeingHeld: boolean;
@@ -46,12 +49,16 @@ export default class {
     value = null;
   }
 
-  isLeaking(): Promise<boolean> {
+  async isLeaking(): Promise<boolean> {
     this._runGarbageCollector();
 
-    return new Promise(resolve =>
-      setImmediate(() => resolve(this._isReferenceBeingHeld)),
-    );
+    // wait some ticks to allow GC to run properly, see https://github.com/nodejs/node/issues/34636#issuecomment-669366235
+    await tick()
+    await tick()
+    await tick()
+    await tick()
+
+    return this._isReferenceBeingHeld
   }
 
   private _runGarbageCollector() {
