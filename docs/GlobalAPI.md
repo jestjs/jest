@@ -465,6 +465,170 @@ test('has lemon in it', () => {
 
 Even though the call to `test` will return right away, the test doesn't complete until the promise resolves as well.
 
+### `test.concurrent(name, fn, timeout)`
+
+Also under the alias: `it.concurrent(name, fn, timeout)`
+
+Use `test.concurrent` if you want the test to run concurrently.
+
+The first argument is the test name; the second argument is an asynchronous function that contains the expectations to test. The third argument (optional) is `timeout` (in milliseconds) for specifying how long to wait before aborting. _Note: The default timeout is 5 seconds._
+
+```
+test.concurrent('addition of 2 numbers', async () => {
+  expect(5 + 3).toBe(8);
+});
+
+test.concurrent('subtraction 2 numbers', async () => {
+  expect(5 - 3).toBe(2);
+});
+```
+
+> Note: Use `maxConcurrency` in configuration to prevents Jest from executing more than the specified amount of tests at the same time
+
+### `test.concurrent.each(table)(name, fn, timeout)`
+
+Also under the alias: `it.concurrent.each(table)(name, fn, timeout)`
+
+Use `test.concurrent.each` if you keep duplicating the same test with different data. `test.each` allows you to write the test once and pass data in, the tests are all run asynchronously.
+
+`test.concurrent.each` is available with two APIs:
+
+#### 1. `test.concurrent.each(table)(name, fn, timeout)`
+
+- `table`: `Array` of Arrays with the arguments that are passed into the test `fn` for each row.
+  - _Note_ If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. `[1, 2, 3] -> [[1], [2], [3]]`
+- `name`: `String` the title of the test block.
+  - Generate unique test titles by positionally injecting parameters with [`printf` formatting](https://nodejs.org/api/util.html#util_util_format_format_args):
+    - `%p` - [pretty-format](https://www.npmjs.com/package/pretty-format).
+    - `%s`- String.
+    - `%d`- Number.
+    - `%i` - Integer.
+    - `%f` - Floating point value.
+    - `%j` - JSON.
+    - `%o` - Object.
+    - `%#` - Index of the test case.
+    - `%%` - single percent sign ('%'). This does not consume an argument.
+- `fn`: `Function` the test to be ran, this is the function that will receive the parameters in each row as function arguments, **this will have to be an asynchronous function**.
+- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
+
+Example:
+
+```js
+test.concurrent.each([
+  [1, 1, 2],
+  [1, 2, 3],
+  [2, 1, 3],
+])('.add(%i, %i)', (a, b, expected) => {
+  expect(a + b).toBe(expected);
+});
+```
+
+#### 2. `` test.each`table`(name, fn, timeout) ``
+
+- `table`: `Tagged Template Literal`
+  - First row of variable name column headings separated with `|`
+  - One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
+- `name`: `String` the title of the test, use `$variable` to inject test data into the test title from the tagged template expressions.
+  - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
+- `fn`: `Function` the test to be ran, this is the function that will receive the test data object, **this will have to be an asynchronous function**.
+- Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
+
+Example:
+
+```js
+test.concurrent.each`
+  a    | b    | expected
+  ${1} | ${1} | ${2}
+  ${1} | ${2} | ${3}
+  ${2} | ${1} | ${3}
+`('returns $expected when $a is added $b', ({a, b, expected}) => {
+  expect(a + b).toBe(expected);
+});
+```
+
+### `test.concurrent.only.each(table)(name, fn)`
+
+Also under the alias: `it.concurrent.only.each(table)(name, fn)`
+
+Use `test.concurrent.only.each` if you want to only run specific tests with different test data concurrently.
+
+`test.concurrent.only.each` is available with two APIs:
+
+#### `test.concurrent.only.each(table)(name, fn)`
+
+```js
+test.concurrent.only.each([
+  [1, 1, 2],
+  [1, 2, 3],
+  [2, 1, 3],
+])('.add(%i, %i)', async (a, b, expected) => {
+  expect(a + b).toBe(expected);
+});
+
+test('will not be ran', () => {
+  expect(1 / 0).toBe(Infinity);
+});
+```
+
+#### `` test.only.each`table`(name, fn) ``
+
+```js
+test.concurrent.only.each`
+  a    | b    | expected
+  ${1} | ${1} | ${2}
+  ${1} | ${2} | ${3}
+  ${2} | ${1} | ${3}
+`('returns $expected when $a is added $b', async ({a, b, expected}) => {
+  expect(a + b).toBe(expected);
+});
+
+test('will not be ran', () => {
+  expect(1 / 0).toBe(Infinity);
+});
+```
+
+
+### `test.concurrent.skip.each(table)(name, fn)`
+
+Also under the alias: `it.concurrent.skip.each(table)(name, fn)`
+
+Use `test.concurrent.skip.each` if you want to stop running a collection of asynchronous data driven tests.
+
+`test.concurrent.skip.each` is available with two APIs:
+
+#### `test.skip.each(table)(name, fn)`
+
+```js
+test.concurrent.skip.each([
+  [1, 1, 2],
+  [1, 2, 3],
+  [2, 1, 3],
+])('.add(%i, %i)', async (a, b, expected) => {
+  expect(a + b).toBe(expected); // will not be ran
+});
+
+test('will be ran', () => {
+  expect(1 / 0).toBe(Infinity);
+});
+```
+
+#### `` test.skip.each`table`(name, fn) ``
+
+```js
+test.concurrent.skip.each`
+  a    | b    | expected
+  ${1} | ${1} | ${2}
+  ${1} | ${2} | ${3}
+  ${2} | ${1} | ${3}
+`('returns $expected when $a is added $b', async ({a, b, expected}) => {
+  expect(a + b).toBe(expected); // will not be ran
+});
+
+test('will be ran', () => {
+  expect(1 / 0).toBe(Infinity);
+});
+```
+
 ### `test.each(table)(name, fn, timeout)`
 
 Also under the alias: `it.each(table)(name, fn)` and `` it.each`table`(name, fn) ``
