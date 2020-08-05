@@ -523,7 +523,7 @@ test.concurrent.each([
 });
 ```
 
-#### 2. `` test.each`table`(name, fn, timeout) ``
+#### 2. `` test.concurrent.each`table`(name, fn, timeout) ``
 
 - `table`: `Tagged Template Literal`
   - First row of variable name column headings separated with `|`
@@ -596,7 +596,7 @@ Use `test.concurrent.skip.each` if you want to stop running a collection of asyn
 
 `test.concurrent.skip.each` is available with two APIs:
 
-#### `test.skip.each(table)(name, fn)`
+#### `test.concurrent.skip.each(table)(name, fn)`
 
 ```js
 test.concurrent.skip.each([
@@ -612,7 +612,7 @@ test('will be ran', () => {
 });
 ```
 
-#### `` test.skip.each`table`(name, fn) ``
+#### `` test.concurrent.skip.each`table`(name, fn) ``
 
 ```js
 test.concurrent.skip.each`
