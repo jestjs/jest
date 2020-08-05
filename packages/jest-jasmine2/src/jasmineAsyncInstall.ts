@@ -191,6 +191,7 @@ function makeConcurrent(
 
     return spec;
   };
+  // each is binded after the function is made concurrent, so for now it is made noop
   concurrentFn.each = () => {};
   return concurrentFn;
 }
