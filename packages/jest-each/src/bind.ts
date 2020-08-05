@@ -25,13 +25,13 @@ type GlobalCallback = (
   timeout?: number,
 ) => void;
 
-export default <A extends Global.TestCallback>(
+export default <EachCallback extends Global.TestCallback>(
   cb: GlobalCallback,
   supportsDone: boolean = true,
 ) => (table: Global.EachTable, ...taggedTemplateData: Global.TemplateData) =>
   function eachBind(
     title: string,
-    test: Global.EachTestFn<A>,
+    test: Global.EachTestFn<EachCallback>,
     timeout?: number,
   ): void {
     try {
@@ -74,10 +74,10 @@ const buildTemplateTests = (
 const getHeadingKeys = (headings: string): Array<string> =>
   headings.replace(/\s/g, '').split('|');
 
-const applyArguments = <A extends Global.TestCallback>(
+const applyArguments = <EachCallback extends Global.TestCallback>(
   supportsDone: boolean,
   params: Array<unknown>,
-  test: Global.EachTestFn<A>,
+  test: Global.EachTestFn<EachCallback>,
 ): Global.EachTestFn<any> =>
   supportsDone && params.length < test.length
     ? (done: Global.DoneFn) => test(...params, done)
