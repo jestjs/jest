@@ -195,9 +195,12 @@ each([
   [1, 1, 2],
   [1, 2, 3],
   [2, 1, 3],
-]).test.concurrent('returns the result of adding %d to %d', (a, b, expected) => {
-  expect(a + b).toBe(expected);
-});
+]).test.concurrent(
+  'returns the result of adding %d to %d',
+  (a, b, expected) => {
+    expect(a + b).toBe(expected);
+  },
+);
 ```
 
 #### `.test.concurrent.only(name, fn)`
@@ -209,9 +212,12 @@ each([
   [1, 1, 2],
   [1, 2, 3],
   [2, 1, 3],
-]).test.concurrent.only('returns the result of adding %d to %d', (a, b, expected) => {
-  expect(a + b).toBe(expected);
-});
+]).test.concurrent.only(
+  'returns the result of adding %d to %d',
+  (a, b, expected) => {
+    expect(a + b).toBe(expected);
+  },
+);
 ```
 
 #### `.test.concurrent.skip(name, fn)`
@@ -223,9 +229,12 @@ each([
   [1, 1, 2],
   [1, 2, 3],
   [2, 1, 3],
-]).test.concurrent.skip('returns the result of adding %d to %d', (a, b, expected) => {
-  expect(a + b).toBe(expected);
-});
+]).test.concurrent.skip(
+  'returns the result of adding %d to %d',
+  (a, b, expected) => {
+    expect(a + b).toBe(expected);
+  },
+);
 ```
 
 #### Asynchronous `.test(name, fn(done))`

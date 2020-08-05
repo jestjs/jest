@@ -587,7 +587,6 @@ test('will not be ran', () => {
 });
 ```
 
-
 ### `test.concurrent.skip.each(table)(name, fn)`
 
 Also under the alias: `it.concurrent.skip.each(table)(name, fn)`
