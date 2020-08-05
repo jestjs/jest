@@ -29,18 +29,22 @@ export type EachTable = ArrayTable | TemplateTable;
 
 export type TestCallback = BlockFn | TestFn | ConcurrentTestFn;
 
-export type EachTestFn<A extends TestCallback> = (
+export type EachTestFn<EachCallback extends TestCallback> = (
   ...args: Array<any>
-) => ReturnType<A>;
+) => ReturnType<EachCallback>;
 
 // TODO: Get rid of this at some point
 type Jasmine = {_DEFAULT_TIMEOUT_INTERVAL?: number; addMatchers: Function};
 
-type Each<A extends TestCallback> =
+type Each<EachCallback extends TestCallback> =
   | ((
       table: EachTable,
       ...taggedTemplateData: Array<unknown>
-    ) => (title: string, test: EachTestFn<A>, timeout?: number) => void)
+    ) => (
+      title: string,
+      test: EachTestFn<EachCallback>,
+      timeout?: number,
+    ) => void)
   | (() => void);
 
 export interface ItBase {
