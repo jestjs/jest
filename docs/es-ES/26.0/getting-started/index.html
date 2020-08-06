@@ -1,0 +1,208 @@
+<!DOCTYPE html><html lang="es-ES"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Getting Started · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Instala Jest usando [`yarn`](https://yarnpkg.com/en/package/jest):"/><meta name="docsearch:version" content="26.0"/><meta name="docsearch:language" content="es-ES"/><meta property="og:title" content="Getting Started · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="Instala Jest usando [`yarn`](https://yarnpkg.com/en/package/jest):"/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/es-ES"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/es-ES/versions"><h3>26.0</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive siteNavItemActive"><a href="/docs/es-ES/26.0/getting-started" target="_self">Documentación</a></li><li class="siteNavGroupActive"><a href="/docs/es-ES/26.0/api" target="_self">API</a></li><li class=""><a href="/es-ES/help" target="_self">Ayuda</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Español</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/26.0/getting-started">English</a></li><li><a href="/docs/ja/26.0/getting-started">日本語</a></li><li><a href="/docs/pt-BR/26.0/getting-started">Português (Brasil)</a></li><li><a href="/docs/ro/26.0/getting-started">Română</a></li><li><a href="/docs/ru/26.0/getting-started">Русский</a></li><li><a href="/docs/uk/26.0/getting-started">Українська</a></li><li><a href="/docs/zh-Hans/26.0/getting-started">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(event) {
+          event.preventDefault();
+
+          if (languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Introduction</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/docs/es-ES/26.0/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/snapshot-testing">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/dynamodb">Using with DynamoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/architecture">Architecture</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Framework Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/api">Globals</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/es-ES/26.0/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/GettingStarted.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Getting Started</h1></header><article><div><span><p>Instala Jest usando <a href="https://yarnpkg.com/en/package/jest"><code>yarn</code></a>:</p>
+<pre><code class="hljs css language-bash">yarn add --dev jest
+</code></pre>
+<p>O <a href="https://www.npmjs.com/"><code>npm</code></a>:</p>
+<pre><code class="hljs css language-bash">npm install --save-dev jest
+</code></pre>
+<p>Nota: la documentación de Jest usa comandos de <code>yarn</code>, pero también puede usarse <code>npm</code>. Puedes comparar los comandos de <code>yarn</code> y <code>npm</code> en la <a href="https://yarnpkg.com/en/docs/migrating-from-npm#toc-cli-commands-comparison">documentación de yarn, aquí</a>.</p>
+<p>Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a <code>sum.js</code> file:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">suma</span>(<span class="hljs-params">a, b</span>) </span>{
+  <span class="hljs-keyword">return</span> a + b;
+}
+<span class="hljs-built_in">module</span>.exports = suma;
+</code></pre>
+<p>Then, create a file named <code>sum.test.js</code>. This will contain our actual test:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> suma = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./suma'</span>);
+
+test(<span class="hljs-string">'sumar 1 + 2 es igual a 3'</span>, () =&gt; {
+  expect(suma(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>)).toBe(<span class="hljs-number">3</span>);
+});
+</code></pre>
+<p>Agrega la siguiente sección a tu <code>package.json</code>:</p>
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"scripts"</span>: {
+    <span class="hljs-attr">"test"</span>: <span class="hljs-string">"jest"</span>
+  }
+}
+</code></pre>
+<p>Para terminar, ejecuta <code>yarn test</code> o <code>npm run test</code> y Jest imprimirá este mensaje:</p>
+<pre><code class="hljs css language-bash">PASS  ./suma.test.js
+✓ sumar 1 + 2 es igual a 3 (5ms)
+</code></pre>
+<p><strong>Acabas de escribir tu primera prueba usando Jest!</strong></p>
+<p>Esta prueba usa <code>expect</code> y <code>toBe</code> para probar que dos valores son exactamente idénticos. Para aprender sobre otras cosas que Jest puede probar, mira <a href="/docs/es-ES/26.0/using-matchers">Usando Matchers</a>.</p>
+<h2><a class="anchor" aria-hidden="true" id="ejecutando-desde-la-línea-de-comandos"></a><a href="#ejecutando-desde-la-línea-de-comandos" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Ejecutando desde la línea de comandos</h2>
+<p>Puedes ejecutar Jest directamente desde la CLI (si está disponible globalmente en tu <code>PATH</code>, p.e. con <code>yarn global add jest</code> o <code>npm install jest --global</code>) con varias opciones útiles.</p>
+<p>Así es como puedes correr Jest en archivos que coinciden <code>my-test</code>, usando <code>config.json</code> como archivo de configuración y mostrar una notificación nativa del SO después de ejecutarlo:</p>
+<pre><code class="hljs css language-bash">jest my-test --notify --config=config.json
+</code></pre>
+<p>If you'd like to learn more about running <code>jest</code> through the command line, take a look at the <a href="/docs/es-ES/26.0/cli">Jest CLI Options</a> page.</p>
+<h2><a class="anchor" aria-hidden="true" id="configuración-adicional"></a><a href="#configuración-adicional" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Configuración Adicional</h2>
+<h3><a class="anchor" aria-hidden="true" id="genera-un-fichero-de-configuración-básico"></a><a href="#genera-un-fichero-de-configuración-básico" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Genera un fichero de configuración básico</h3>
+<p>Based on your project, Jest will ask you a few questions and will create a basic configuration file with a short description for each option:</p>
+<pre><code class="hljs css language-bash">jest --init
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="usando-babel"></a><a href="#usando-babel" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Usando Babel</h3>
+<p>Para usar <a href="http://babeljs.io/">Babel</a>, instala las dependencias requeridas con <code>yarn</code>:</p>
+<pre><code class="hljs css language-bash">yarn add --dev babel-jest @babel/core @babel/preset-env
+</code></pre>
+<p>Configura Babel para tu versión actual de Node creando un fichero <code>babel.config.js</code> en la raíz de tu proyecto:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// babel.config.js</span>
+<span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">presets</span>: [
+    [
+      <span class="hljs-string">'@babel/preset-env'</span>,
+      {
+        <span class="hljs-attr">targets</span>: {
+          <span class="hljs-attr">node</span>: <span class="hljs-string">'current'</span>,
+        },
+      },
+    ],
+  ],
+};
+</code></pre>
+<p><strong>La configuración ideal de Babel dependerá de tu proyecto.</strong> Consulta <a href="https://babeljs.io/docs/en/">la documentación de Babel</a> para tener más detalles.</p>
+<p><details><summary markdown="span"><strong>Haz que tu configuración de Babel sepa que usas Jest</strong></summary></p>
+<p>Jest will set <code>process.env.NODE_ENV</code> to <code>'test'</code> if it's not set to something else. You can use that in your configuration to conditionally setup only the compilation needed for Jest, e.g.</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// babel.config.js</span>
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-params">api</span> =&gt;</span> {
+  <span class="hljs-keyword">const</span> isTest = api.env(<span class="hljs-string">'test'</span>);
+  <span class="hljs-comment">// You can use isTest to determine what presets and plugins to use.</span>
+
+  <span class="hljs-keyword">return</span> {
+    <span class="hljs-comment">// ...</span>
+  };
+};
+</code></pre>
+<blockquote>
+<p>Nota: <code>babel-jest</code> se instala automáticamente al instalar Jest y transforma los archivos si una configuración de babel existe en tu proyecto. Para evitar este comportamiento, puede restablecer explícitamente la opción de configuración de <code>transform</code>:</p>
+</blockquote>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// jest.config.js</span>
+<span class="hljs-built_in">module</span>.exports = {
+  <span class="hljs-attr">transform</span>: {},
+};
+</code></pre>
+<p></details></p>
+<p><details><summary markdown="span"><strong>Babel 6 support</strong></summary></p>
+<p>Jest 24 dropped support for Babel 6. We highly recommend you to upgrade to Babel 7, which is actively maintained. However, if you cannot upgrade to Babel 7, either keep using Jest 23 or upgrade to Jest 24 with <code>babel-jest</code> locked at version 23, like in the example below:</p>
+<pre><code class="hljs"><span class="hljs-string">"dependencies"</span>: {
+  <span class="hljs-string">"babel-core"</span>: <span class="hljs-string">"^6.26.3"</span>,
+  <span class="hljs-string">"babel-jest"</span>: <span class="hljs-string">"^23.6.0"</span>,
+  <span class="hljs-string">"babel-preset-env"</span>: <span class="hljs-string">"^1.7.0"</span>,
+  <span class="hljs-string">"jest"</span>: <span class="hljs-string">"^24.0.0"</span>
+}
+</code></pre>
+<p>While we generally recommend using the same version of every Jest package, this workaround will allow you to continue using the latest version of Jest with Babel 6 for now.</p>
+<p></details></p>
+<h3><a class="anchor" aria-hidden="true" id="usando-webpack"></a><a href="#usando-webpack" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Usando webpack</h3>
+<p>Jest puede ser usado en proyectos que usan <a href="https://webpack.js.org/">webpack</a> para gestionar recursos, estilos y compilación. webpack ofrece desafíos únicos por sobre otras herramientas. Véase la <a href="/docs/es-ES/26.0/webpack">guía de webpack</a> para empezar.</p>
+<h3><a class="anchor" aria-hidden="true" id="usando-typescript"></a><a href="#usando-typescript" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Usando TypeScript</h3>
+<p>Jest supports TypeScript, via Babel. First make sure you followed the instructions on <a href="#using-babel">using Babel</a> above. Next install the <code>@babel/preset-typescript</code> via <code>yarn</code>:</p>
+<pre><code class="hljs css language-bash">yarn add --dev @babel/preset-typescript
+</code></pre>
+<p>Then add <code>@babel/preset-typescript</code> to the list of presets in your <code>babel.config.js</code>.</p>
+<pre><code class="hljs css language-diff">// babel.config.js
+module.exports = {
+  presets: [
+    ['@babel/preset-env', {targets: {node: 'current'}}],
+<span class="hljs-addition">+    '@babel/preset-typescript',</span>
+  ],
+};
+</code></pre>
+<p>Existen algunas <a href="https://babeljs.io/docs/en/next/babel-plugin-transform-typescript.html#caveats">cosas a tener en cuenta</a> cuando uses TypeScript con Babel. Because TypeScript support in Babel is transpilation, Jest will not type-check your tests as they are run. If you want that, you can use <a href="https://github.com/kulshekhar/ts-jest">ts-jest</a>.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-next button" href="/docs/es-ES/26.0/using-matchers"><span>Using Matchers</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#ejecutando-desde-la-línea-de-comandos">Ejecutando desde la línea de comandos</a></li><li><a href="#configuración-adicional">Configuración Adicional</a><ul class="toc-headings"><li><a href="#genera-un-fichero-de-configuración-básico">Genera un fichero de configuración básico</a></li><li><a href="#usando-babel">Usando Babel</a></li><li><a href="#usando-webpack">Usando webpack</a></li><li><a href="#usando-typescript">Usando TypeScript</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/es-ES/getting-started.html">Getting Started</a><a href="/docs/es-ES/snapshot-testing.html">Guides</a><a href="/docs/es-ES/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://www.reactiflux.com/">Reactiflux</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {"facetFilters":["language:es-ES","version:26.0"]}
+              });
+            </script></body></html>

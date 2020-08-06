@@ -1,0 +1,313 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Mock Functions · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Mock 函数允许你测试代码之间的连接——实现方式包括：擦除函数的实际实现、捕获对函数的调用 ( 以及在这些调用中传递的参数) 、在使用 `new` 实例化时捕获构造函数的实例、允许测试时配置返回值。"/><meta name="docsearch:version" content="26.0"/><meta name="docsearch:language" content="zh-Hans"/><meta property="og:title" content="Mock Functions · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="Mock 函数允许你测试代码之间的连接——实现方式包括：擦除函数的实际实现、捕获对函数的调用 ( 以及在这些调用中传递的参数) 、在使用 `new` 实例化时捕获构造函数的实例、允许测试时配置返回值。"/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/zh-Hans"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/zh-Hans/versions"><h3>26.0</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/zh-Hans/26.0/getting-started" target="_self">文档</a></li><li class="siteNavGroupActive"><a href="/docs/zh-Hans/26.0/api" target="_self">API</a></li><li class=""><a href="/zh-Hans/help" target="_self">帮助</a></li><li class=""><a href="/blog/" target="_self">博客</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>简体中文</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/26.0/mock-functions">English</a></li><li><a href="/docs/ja/26.0/mock-functions">日本語</a></li><li><a href="/docs/es-ES/26.0/mock-functions">Español</a></li><li><a href="/docs/pt-BR/26.0/mock-functions">Português (Brasil)</a></li><li><a href="/docs/ro/26.0/mock-functions">Română</a></li><li><a href="/docs/ru/26.0/mock-functions">Русский</a></li><li><a href="/docs/uk/26.0/mock-functions">Українська</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(event) {
+          event.preventDefault();
+
+          if (languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Introduction</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/setup-teardown">Setup and Teardown</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/zh-Hans/26.0/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/snapshot-testing">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/dynamodb">Using with DynamoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/architecture">Architecture</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">框架指南</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/api">Globals</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/zh-Hans/26.0/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/MockFunctions.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Mock Functions</h1></header><article><div><span><p>Mock 函数允许你测试代码之间的连接——实现方式包括：擦除函数的实际实现、捕获对函数的调用 ( 以及在这些调用中传递的参数) 、在使用 <code>new</code> 实例化时捕获构造函数的实例、允许测试时配置返回值。</p>
+<p>有两种方法可以模拟函数：要么在测试代码中创建一个 mock 函数，要么编写一个<a href="/docs/zh-Hans/26.0/manual-mocks"><code>手动 mock</code></a>来覆盖模块依赖。</p>
+<h2><a class="anchor" aria-hidden="true" id="使用-mock-函数"></a><a href="#使用-mock-函数" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>使用 mock 函数</h2>
+<p>假设我们要测试函数 <code>forEach</code> 的内部实现，这个函数为传入的数组中的每个元素调用一次回调函数。</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">forEach</span>(<span class="hljs-params">items, callback</span>) </span>{
+  <span class="hljs-keyword">for</span> (<span class="hljs-keyword">let</span> index = <span class="hljs-number">0</span>; index &lt; items.length; index++) {
+    callback(items[index]);
+  }
+}
+</code></pre>
+<p>为了测试此函数，我们可以使用一个 mock 函数，然后检查 mock 函数的状态来确保回调函数如期调用。</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> mockCallback = jest.fn(<span class="hljs-function"><span class="hljs-params">x</span> =&gt;</span> <span class="hljs-number">42</span> + x);
+forEach([<span class="hljs-number">0</span>, <span class="hljs-number">1</span>], mockCallback);
+
+<span class="hljs-comment">// 此 mock 函数被调用了两次</span>
+expect(mockCallback.mock.calls.length).toBe(<span class="hljs-number">2</span>);
+
+<span class="hljs-comment">// 第一次调用函数时的第一个参数是 0</span>
+expect(mockCallback.mock.calls[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>]).toBe(<span class="hljs-number">0</span>);
+
+<span class="hljs-comment">// 第二次调用函数时的第一个参数是 1</span>
+expect(mockCallback.mock.calls[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>]).toBe(<span class="hljs-number">1</span>);
+
+<span class="hljs-comment">// 第一次函数调用的返回值是 42</span>
+expect(mockCallback.mock.results[<span class="hljs-number">0</span>].value).toBe(<span class="hljs-number">42</span>);
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="mock-属性"></a><a href="#mock-属性" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.mock</code> 属性</h2>
+<p>所有的 mock 函数都有这个特殊的 <code>.mock</code>属性，它保存了关于此函数如何被调用、调用时的返回值的信息。 <code>.mock</code> 属性还追踪每次调用时 <code>this</code>的值，所以我们同样可以也检视（inspect） <code>this</code>：</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> myMock = jest.fn();
+
+<span class="hljs-keyword">const</span> a = <span class="hljs-keyword">new</span> myMock();
+<span class="hljs-keyword">const</span> b = {};
+<span class="hljs-keyword">const</span> bound = myMock.bind(b);
+bound();
+
+<span class="hljs-built_in">console</span>.log(myMock.mock.instances);
+<span class="hljs-comment">// &gt; [ &lt;a&gt;, &lt;b&gt; ]</span>
+</code></pre>
+<p>这些 mock 成员变量在测试中非常有用，用于说明这些 function 是如何被调用、实例化或返回的：</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// The function was called exactly once</span>
+expect(someMockFunction.mock.calls.length).toBe(<span class="hljs-number">1</span>);
+
+<span class="hljs-comment">// The first arg of the first call to the function was 'first arg'</span>
+expect(someMockFunction.mock.calls[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>]).toBe(<span class="hljs-string">'first arg'</span>);
+
+<span class="hljs-comment">// The second arg of the first call to the function was 'second arg'</span>
+expect(someMockFunction.mock.calls[<span class="hljs-number">0</span>][<span class="hljs-number">1</span>]).toBe(<span class="hljs-string">'second arg'</span>);
+
+<span class="hljs-comment">// The return value of the first call to the function was 'return value'</span>
+expect(someMockFunction.mock.results[<span class="hljs-number">0</span>].value).toBe(<span class="hljs-string">'return value'</span>);
+
+<span class="hljs-comment">// This function was instantiated exactly twice</span>
+expect(someMockFunction.mock.instances.length).toBe(<span class="hljs-number">2</span>);
+
+<span class="hljs-comment">// The object returned by the first instantiation of this function</span>
+<span class="hljs-comment">// had a `name` property whose value was set to 'test'</span>
+expect(someMockFunction.mock.instances[<span class="hljs-number">0</span>].name).toEqual(<span class="hljs-string">'test'</span>);
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="mock-的返回值"></a><a href="#mock-的返回值" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Mock 的返回值</h2>
+<p>Mock 函数也可以用于在测试期间将测试值注入代码︰</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> myMock = jest.fn();
+<span class="hljs-built_in">console</span>.log(myMock());
+<span class="hljs-comment">// &gt; undefined</span>
+
+myMock.mockReturnValueOnce(<span class="hljs-number">10</span>).mockReturnValueOnce(<span class="hljs-string">'x'</span>).mockReturnValue(<span class="hljs-literal">true</span>);
+
+<span class="hljs-built_in">console</span>.log(myMock(), myMock(), myMock(), myMock());
+<span class="hljs-comment">// &gt; 10, 'x', true, true</span>
+</code></pre>
+<p>在函数连续传递风格（functional continuation-passing style）的代码中时，Mock 函数也非常有效。 以这种代码风格有助于避免复杂的中间操作，便于直观表现组件的真实意图，这有利于在它们被调用之前，将值直接注入到测试中。</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> filterTestFn = jest.fn();
+
+<span class="hljs-comment">// Make the mock return `true` for the first call,</span>
+<span class="hljs-comment">// and `false` for the second call</span>
+filterTestFn.mockReturnValueOnce(<span class="hljs-literal">true</span>).mockReturnValueOnce(<span class="hljs-literal">false</span>);
+
+<span class="hljs-keyword">const</span> result = [<span class="hljs-number">11</span>, <span class="hljs-number">12</span>].filter(<span class="hljs-function"><span class="hljs-params">num</span> =&gt;</span> filterTestFn(num));
+
+<span class="hljs-built_in">console</span>.log(result);
+<span class="hljs-comment">// &gt; [11]</span>
+<span class="hljs-built_in">console</span>.log(filterTestFn.mock.calls);
+<span class="hljs-comment">// &gt; [ [11], [12] ]</span>
+</code></pre>
+<p>大多数现实世界例子中，实际是在依赖的组件上配一个模拟函数并配置它，但手法是相同的。 在这些情况下，尽量避免在非真正想要进行测试的任何函数内实现逻辑。</p>
+<h2><a class="anchor" aria-hidden="true" id="模拟模块"></a><a href="#模拟模块" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>模拟模块</h2>
+<p>假定有个从 API 获取用户的类。 该类用 <a href="https://github.com/axios/axios">axios</a> 调用 API 然后返回 <code>data</code>，其中包含所有用户的属性：</p>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// users.js</span>
+<span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Users</span> </span>{
+  <span class="hljs-keyword">static</span> all() {
+    <span class="hljs-keyword">return</span> axios.get(<span class="hljs-string">'/users.json'</span>).then(<span class="hljs-function"><span class="hljs-params">resp</span> =&gt;</span> resp.data);
+  }
+}
+
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> Users;
+</code></pre>
+<p>现在，为测试该方法而不实际调用 API (使测试缓慢与脆弱)，我们可以用 <code>jest.mock(...)</code> 函数自动模拟 axios 模块。</p>
+<p>一旦模拟模块，我们可为 <code>.get</code> 提供一个 <code>mockResolvedValue</code> ，它会返回假数据用于测试。 实际上，我们想让 axios.get('/users.json') 有个假的 response。</p>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// users.test.js</span>
+<span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
+<span class="hljs-keyword">import</span> Users <span class="hljs-keyword">from</span> <span class="hljs-string">'./users'</span>;
+
+jest.mock(<span class="hljs-string">'axios'</span>);
+
+test(<span class="hljs-string">'should fetch users'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> users = [{<span class="hljs-attr">name</span>: <span class="hljs-string">'Bob'</span>}];
+  <span class="hljs-keyword">const</span> resp = {<span class="hljs-attr">data</span>: users};
+  axios.get.mockResolvedValue(resp);
+
+  <span class="hljs-comment">// or you could use the following depending on your use case:</span>
+  <span class="hljs-comment">// axios.get.mockImplementation(() =&gt; Promise.resolve(resp))</span>
+
+  <span class="hljs-keyword">return</span> Users.all().then(<span class="hljs-function"><span class="hljs-params">data</span> =&gt;</span> expect(data).toEqual(users));
+});
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="mock-实现"></a><a href="#mock-实现" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Mock 实现</h2>
+<p>Still, there are cases where it's useful to go beyond the ability to specify return values and full-on replace the implementation of a mock function. This can be done with <code>jest.fn</code> or the <code>mockImplementationOnce</code> method on mock functions.</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> myMockFn = jest.fn(<span class="hljs-function"><span class="hljs-params">cb</span> =&gt;</span> cb(<span class="hljs-literal">null</span>, <span class="hljs-literal">true</span>));
+
+myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(val));
+<span class="hljs-comment">// &gt; true</span>
+</code></pre>
+<p>The <code>mockImplementation</code> method is useful when you need to define the default implementation of a mock function that is created from another module:</p>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// foo.js</span>
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+  <span class="hljs-comment">// some implementation;</span>
+};
+
+<span class="hljs-comment">// test.js</span>
+jest.mock(<span class="hljs-string">'../foo'</span>); <span class="hljs-comment">// this happens automatically with automocking</span>
+<span class="hljs-keyword">const</span> foo = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../foo'</span>);
+
+<span class="hljs-comment">// foo is a mock function</span>
+foo.mockImplementation(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-number">42</span>);
+foo();
+<span class="hljs-comment">// &gt; 42</span>
+</code></pre>
+<p>When you need to recreate a complex behavior of a mock function such that multiple function calls produce different results, use the <code>mockImplementationOnce</code> method:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> myMockFn = jest
+  .fn()
+  .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">cb</span> =&gt;</span> cb(<span class="hljs-literal">null</span>, <span class="hljs-literal">true</span>))
+  .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">cb</span> =&gt;</span> cb(<span class="hljs-literal">null</span>, <span class="hljs-literal">false</span>));
+
+myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(val));
+<span class="hljs-comment">// &gt; true</span>
+
+myMockFn(<span class="hljs-function">(<span class="hljs-params">err, val</span>) =&gt;</span> <span class="hljs-built_in">console</span>.log(val));
+<span class="hljs-comment">// &gt; false</span>
+</code></pre>
+<p>When the mocked function runs out of implementations defined with <code>mockImplementationOnce</code>, it will execute the default implementation set with <code>jest.fn</code> (if it is defined):</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> myMockFn = jest
+  .fn(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'default'</span>)
+  .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'first call'</span>)
+  .mockImplementationOnce(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">'second call'</span>);
+
+<span class="hljs-built_in">console</span>.log(myMockFn(), myMockFn(), myMockFn(), myMockFn());
+<span class="hljs-comment">// &gt; 'first call', 'second call', 'default', 'default'</span>
+</code></pre>
+<p>For cases where we have methods that are typically chained (and thus always need to return <code>this</code>), we have a sugary API to simplify this in the form of a <code>.mockReturnThis()</code> function that also sits on all mocks:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> myObj = {
+  <span class="hljs-attr">myMethod</span>: jest.fn().mockReturnThis(),
+};
+
+<span class="hljs-comment">// is the same as</span>
+
+<span class="hljs-keyword">const</span> otherObj = {
+  <span class="hljs-attr">myMethod</span>: jest.fn(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+  }),
+};
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="mock-名称"></a><a href="#mock-名称" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Mock 名称</h2>
+<p>You can optionally provide a name for your mock functions, which will be displayed instead of &quot;jest.fn()&quot; in test error output. Use this if you want to be able to quickly identify the mock function reporting an error in your test output.</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">const</span> myMockFn = jest
+  .fn()
+  .mockReturnValue(<span class="hljs-string">'default'</span>)
+  .mockImplementation(<span class="hljs-function"><span class="hljs-params">scalar</span> =&gt;</span> <span class="hljs-number">42</span> + scalar)
+  .mockName(<span class="hljs-string">'add42'</span>);
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="自定义匹配器"></a><a href="#自定义匹配器" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>自定义匹配器</h2>
+<p>Finally, in order to make it less demanding to assert how mock functions have been called, we've added some custom matcher functions for you:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// The mock function was called at least once</span>
+expect(mockFunc).toHaveBeenCalled();
+
+<span class="hljs-comment">// The mock function was called at least once with the specified args</span>
+expect(mockFunc).toHaveBeenCalledWith(arg1, arg2);
+
+<span class="hljs-comment">// The last call to the mock function was called with the specified args</span>
+expect(mockFunc).toHaveBeenLastCalledWith(arg1, arg2);
+
+<span class="hljs-comment">// All calls and the name of the mock is written as a snapshot</span>
+expect(mockFunc).toMatchSnapshot();
+</code></pre>
+<p>These matchers are sugar for common forms of inspecting the <code>.mock</code> property. You can always do this manually yourself if that's more to your taste or if you need to do something more specific:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// The mock function was called at least once</span>
+expect(mockFunc.mock.calls.length).toBeGreaterThan(<span class="hljs-number">0</span>);
+
+<span class="hljs-comment">// The mock function was called at least once with the specified args</span>
+expect(mockFunc.mock.calls).toContainEqual([arg1, arg2]);
+
+<span class="hljs-comment">// The last call to the mock function was called with the specified args</span>
+expect(mockFunc.mock.calls[mockFunc.mock.calls.length - <span class="hljs-number">1</span>]).toEqual([
+  arg1,
+  arg2,
+]);
+
+<span class="hljs-comment">// The first arg of the last call to the mock function was `42`</span>
+<span class="hljs-comment">// (note that there is no sugar helper for this specific of an assertion)</span>
+expect(mockFunc.mock.calls[mockFunc.mock.calls.length - <span class="hljs-number">1</span>][<span class="hljs-number">0</span>]).toBe(<span class="hljs-number">42</span>);
+
+<span class="hljs-comment">// A snapshot will check that a mock was invoked the same number of times,</span>
+<span class="hljs-comment">// in the same order, with the same arguments. 它还会在名称上断言。</span>
+expect(mockFunc.mock.calls).toEqual([[arg1, arg2]]);
+expect(mockFunc.getMockName()).toBe(<span class="hljs-string">'a mock name'</span>);
+</code></pre>
+<p>这些只是一部分，有关匹配器的完整列表，请查阅 <a href="/docs/zh-Hans/26.0/expect"> 参考文档</a>。</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/zh-Hans/26.0/setup-teardown"><span class="arrow-prev">← </span><span>Setup and Teardown</span></a><a class="docs-next button" href="/docs/zh-Hans/26.0/jest-platform"><span>Jest 平台工具</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#使用-mock-函数">使用 mock 函数</a></li><li><a href="#mock-属性"><code>.mock</code> 属性</a></li><li><a href="#mock-的返回值">Mock 的返回值</a></li><li><a href="#模拟模块">模拟模块</a></li><li><a href="#mock-实现">Mock 实现</a></li><li><a href="#mock-名称">Mock 名称</a></li><li><a href="#自定义匹配器">自定义匹配器</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/zh-Hans/getting-started.html">Getting Started</a><a href="/docs/zh-Hans/snapshot-testing.html">Guides</a><a href="/docs/zh-Hans/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://www.reactiflux.com/">Reactiflux</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {"facetFilters":["language:zh-Hans","version:26.0"]}
+              });
+            </script></body></html>
