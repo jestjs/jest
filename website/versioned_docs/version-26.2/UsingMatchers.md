@@ -147,7 +147,7 @@ function compileAndroidCode() {
 }
 
 test('compiling android goes as expected', () => {
-  expect(() => compileAndroidCode).toThrow();
+  expect(() => compileAndroidCode()).toThrow();
   expect(() => compileAndroidCode).toThrow(Error);
 
   // You can also use the exact error message or a regexp
