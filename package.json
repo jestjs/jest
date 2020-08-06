@@ -73,6 +73,7 @@
     "strip-ansi": "^6.0.0",
     "tempy": "^0.5.0",
     "throat": "^5.0.0",
+    "tsd": "^0.13.1",
     "typescript": "^3.9.2",
     "which": "^2.0.1"
   },
@@ -93,6 +94,7 @@
     "test-ci": "yarn jest-coverage --color -i --config jest.config.ci.js && yarn test-leak && node ./scripts/mapCoverage.js && codecov",
     "test-ci-partial": "yarn jest --color -i --config jest.config.ci.js",
     "test-pretty-format-perf": "node packages/pretty-format/perf/test.js",
+    "test-types": "yarn jest --config jest.config.types.js",
     "test-leak": "yarn jest -i --detectLeaks jest-mock jest-diff jest-repl pretty-format",
     "test": "yarn lint && yarn jest",
     "verify-old-ts": "node ./scripts/verifyOldTs.js",
