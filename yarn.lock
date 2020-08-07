@@ -4762,7 +4762,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-preset-current-node-syntax@npm:^0.1.2":
+"babel-preset-current-node-syntax@npm:^0.1.3":
   version: 0.1.3
   resolution: "babel-preset-current-node-syntax@npm:0.1.3"
   dependencies:
@@ -4825,7 +4825,7 @@ __metadata:
   resolution: "babel-preset-jest@workspace:packages/babel-preset-jest"
   dependencies:
     babel-plugin-jest-hoist: ^26.2.0
-    babel-preset-current-node-syntax: ^0.1.2
+    babel-preset-current-node-syntax: ^0.1.3
   peerDependencies:
     "@babel/core": ^7.0.0
   languageName: unknown
