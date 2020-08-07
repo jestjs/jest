@@ -43,19 +43,19 @@ import {
 import type {V8CoverageResult} from '@jest/test-result';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
-import {run as cliRun} from './cli';
-import {options as cliOptions} from './cli/args';
-import {
-  createOutsideJestVmPath,
-  decodePossibleOutsideJestVmPath,
-  findSiblingsWithFileExtension,
-} from './helpers';
-import type {Context as JestContext} from './types';
 import jestMock = require('jest-mock');
 import HasteMap = require('jest-haste-map');
 import Resolver = require('jest-resolve');
 import Snapshot = require('jest-snapshot');
 import stripBOM = require('strip-bom');
+import type {Context as JestContext} from './types';
+import {
+  createOutsideJestVmPath,
+  decodePossibleOutsideJestVmPath,
+  findSiblingsWithFileExtension,
+} from './helpers';
+import {options as cliOptions} from './cli/args';
+import {run as cliRun} from './cli';
 
 interface JestGlobalsValues extends Global.TestFrameworkGlobals {
   jest: typeof JestGlobals.jest;

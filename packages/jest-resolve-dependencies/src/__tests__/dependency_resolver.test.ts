@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import Resolver = require('jest-resolve');
 import {tmpdir} from 'os';
 import * as path from 'path';
+import Resolver = require('jest-resolve');
 import type {Config} from '@jest/types';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {makeProjectConfig} from '../../../../TestUtils';

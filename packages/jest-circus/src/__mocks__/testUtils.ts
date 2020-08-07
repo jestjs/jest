@@ -9,7 +9,6 @@ import {tmpdir} from 'os';
 import * as path from 'path';
 import {createHash} from 'crypto';
 import * as fs from 'graceful-fs';
-// eslint-disable-next-line import/named
 import {ExecaSyncReturnValue, sync as spawnSync} from 'execa';
 
 const CIRCUS_PATH = require.resolve('../../build').replace(/\\/g, '\\\\');
