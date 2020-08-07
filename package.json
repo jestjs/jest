@@ -44,7 +44,7 @@
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.1.0",
     "execa": "^4.0.0",
-    "fast-check": "^1.13.0",
+    "fast-check": "^2.0.0",
     "find-process": "^1.4.1",
     "glob": "^7.1.1",
     "globby": "^11.0.0",

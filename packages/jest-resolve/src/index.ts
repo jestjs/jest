@@ -10,13 +10,13 @@ import type {Config} from '@jest/types';
 import type {ModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
 import slash = require('slash');
+import chalk = require('chalk');
 import nodeModulesPaths from './nodeModulesPaths';
 import isBuiltinModule from './isBuiltinModule';
 import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
 import type {ResolverConfig} from './types';
 import ModuleNotFoundError from './ModuleNotFoundError';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
-import chalk = require('chalk');
 
 type FindNodeModuleConfig = {
   basedir: Config.Path;

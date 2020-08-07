@@ -5,13 +5,6 @@ __metadata:
   version: 4
   cacheKey: 6
 
-"commander@npm:~2.20.3":
-  version: 2.20.3
-  resolution: "commander@npm:2.20.3"
-  checksum: b73428e97de7624323f81ba13f8ed9271de487017432d18b4da3f07cfc528ad754bbd199004bd5d14e0ccd67d1fdfe0ec8dbbd4c438b401df3c4cc387bfd1daa
-  languageName: node
-  linkType: hard
-
 "handlebars@npm:^4.7.3":
   version: 4.7.6
   resolution: "handlebars@npm:4.7.6"
@@ -38,9 +31,9 @@ __metadata:
   linkType: hard
 
 "neo-async@npm:^2.6.0":
-  version: 2.6.1
-  resolution: "neo-async@npm:2.6.1"
-  checksum: b359ccaa5cc3eea9c49605b830382e2ec7661f1746b7210dc1f997645a40f9daf3084328151ecb21800e0e78d891dbf8d46f70c3cb5e8c5dab8a909b5597f9a1
+  version: 2.6.2
+  resolution: "neo-async@npm:2.6.2"
+  checksum: 34a8f5309135be258a97082af810ea43700a3e0121e7b1ea31b3e22e2663d7c0d502cd949abb6d1ab8c11abfd04500ee61721ec5408b2d4bef8105241fd8a4c2
   languageName: node
   linkType: hard
 
@@ -53,7 +46,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"source-map@npm:^0.6.1, source-map@npm:~0.6.1":
+"source-map@npm:^0.6.1":
   version: 0.6.1
   resolution: "source-map@npm:0.6.1"
   checksum: 8647829a0611724114022be455ca1c8a2c8ae61df81c5b3667d9b398207226a1e21174fb7bbf0b4dbeb27ac358222afb5a14f1c74a62a62b8883b012e5eb1270
@@ -61,14 +54,11 @@ __metadata:
   linkType: hard
 
 "uglify-js@npm:^3.1.4":
-  version: 3.8.1
-  resolution: "uglify-js@npm:3.8.1"
-  dependencies:
-    commander: ~2.20.3
-    source-map: ~0.6.1
+  version: 3.10.1
+  resolution: "uglify-js@npm:3.10.1"
   bin:
     uglifyjs: bin/uglifyjs
-  checksum: 5d01ab62dbd50e755bb88fdc6d9aaa7abffd15c3788c16af0c65cb1b07619fcedbe2d1120f0b32c65b67934b9de7c654e94629c1205049d2820d22e402eecbc8
+  checksum: 35a8096aebc49c0f7740999e9952e16f9b5dcadde36e7449082ae4e12926aeb05df55e860d9d756a8d9a35fdcbf57d113c3056927aecdce80511bd7988e30388
   languageName: node
   linkType: hard
 

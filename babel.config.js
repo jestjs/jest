@@ -52,6 +52,7 @@ module.exports = {
     [
       '@babel/preset-env',
       {
+        bugfixes: true,
         shippedProposals: true,
         targets: {node: supportedNodeVersion},
       },
