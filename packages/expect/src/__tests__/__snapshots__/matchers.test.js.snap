@@ -4314,10 +4314,24 @@ exports[`toMatchObject() {pass: true} expect({"a": undefined}).toMatchObject({"a
 Expected: not <g>{"a": undefined}</>
 `;
 
+exports[`toMatchObject() {pass: true} expect({}).toMatchObject({"a": undefined, "b": "b", "c": "c"}) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toMatchObject<d>(</><g>expected</><d>)</>
+
+Expected: not <g>{"a": undefined, "b": "b", "c": "c"}</>
+Received:     <r>{}</>
+`;
+
 exports[`toMatchObject() {pass: true} expect({}).toMatchObject({"a": undefined, "b": "b"}) 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toMatchObject<d>(</><g>expected</><d>)</>
 
 Expected: not <g>{"a": undefined, "b": "b"}</>
+Received:     <r>{}</>
+`;
+
+exports[`toMatchObject() {pass: true} expect({}).toMatchObject({"d": 4}) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toMatchObject<d>(</><g>expected</><d>)</>
+
+Expected: not <g>{"d": 4}</>
 Received:     <r>{}</>
 `;
 

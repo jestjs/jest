@@ -21,6 +21,9 @@ type GetPath = {
   value?: unknown;
 };
 
+const hasPropertyInObject = (object: object, key: string) =>
+  typeof object === 'object' && key in object;
+
 // Return whether object instance inherits getter from its class.
 const hasGetterFromConstructor = (object: object, key: string) => {
   const constructor = object.constructor;
@@ -299,7 +302,7 @@ export const subsetEquality = (
       }
       const result =
         object != null &&
-        hasOwnProperty(object, key) &&
+        hasPropertyInObject(object, key) &&
         equals(object[key], subset[key], [
           iterableEquality,
           subsetEqualityWithContext(seenReferences),
