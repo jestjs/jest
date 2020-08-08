@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {sep} from 'path';
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {NODE_MODULES} from './constants';
@@ -63,7 +64,7 @@ const defaultOptions: Config.DefaultOptions = {
   testSequencer: '@jest/test-sequencer',
   testURL: 'http://localhost',
   timers: 'real',
-  transformIgnorePatterns: [NODE_MODULES_REGEXP],
+  transformIgnorePatterns: [NODE_MODULES_REGEXP, `\\.pnp\\.[^\\${sep}]+$`],
   useStderr: false,
   watch: false,
   watchPathIgnorePatterns: [],

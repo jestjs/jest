@@ -1165,7 +1165,7 @@ _Note: when adding additional code transformers, this will overwrite the default
 
 ### `transformIgnorePatterns` [array\<string>]
 
-Default: `["/node_modules/"]`
+Default: `["/node_modules/", "\\.pnp\\.[^\\\/]+$"]`
 
 An array of regexp pattern strings that are matched against all source file paths before transformation. If the test path matches any of the patterns, it will not be transformed.
 
