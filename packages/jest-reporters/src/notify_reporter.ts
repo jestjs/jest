@@ -79,7 +79,7 @@ export default class NotifyReporter extends BaseReporter {
         result.numPassedTests,
       )} passed`;
 
-      this._notifier.notify({icon, message, timeout: false, title});
+      this._notifier.notify({icon, message, timeout: 5, title});
     } else if (
       testsHaveRun &&
       !success &&
@@ -107,7 +107,7 @@ export default class NotifyReporter extends BaseReporter {
       const quitAnswer = 'Exit tests';
 
       if (!watchMode) {
-        this._notifier.notify({icon, message, timeout: false, title});
+        this._notifier.notify({icon, message, timeout: 5, title});
       } else {
         this._notifier.notify(
           {
@@ -115,7 +115,7 @@ export default class NotifyReporter extends BaseReporter {
             closeLabel: 'Close',
             icon,
             message,
-            timeout: false,
+            timeout: 5,
             title,
             // https://github.com/DefinitelyTyped/DefinitelyTyped/pull/42303
           } as any,
