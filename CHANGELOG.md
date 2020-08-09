@@ -9,6 +9,7 @@
 
 - `[jest-leak-detector]` Wait properly for GC runs due to changes in Node 14.7 ([#10366](https://github.com/facebook/jest/pull/10366))
 - `[jest-worker]` Downgrade minimum node version to 10.13 ([#10352](https://github.com/facebook/jest/pull/10352))
+- `[jest-reporters]` Use correct 'timeout' value to re-activate Notifications as per issue 9701 - ([#10384](https://github.com/facebook/jest/pull/10384))
 
 ### Chore & Maintenance
 
