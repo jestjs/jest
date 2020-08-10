@@ -249,7 +249,7 @@ export default (): PluginObj<{
   declareJestObjGetterIdentifier: () => Identifier;
   jestObjGetterIdentifier?: Identifier;
 }> => ({
-  pre({path: program}: {path: NodePath<Program>}) {
+  pre({path: program}) {
     this.declareJestObjGetterIdentifier = () => {
       if (this.jestObjGetterIdentifier) {
         return this.jestObjGetterIdentifier;
@@ -283,7 +283,7 @@ export default (): PluginObj<{
     },
   },
   // in `post` to make sure we come after an import transform and can unshift above the `require`s
-  post({path: program}: {path: NodePath<Program>}) {
+  post({path: program}) {
     const self = this;
     visitBlock(program);
     program.traverse({
