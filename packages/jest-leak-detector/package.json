@@ -14,7 +14,7 @@
     "pretty-format": "^26.2.0"
   },
   "devDependencies": {
-    "@types/weak-napi": "^1.0.0",
+    "@types/weak-napi": "^2.0.0",
     "weak-napi": "^2.0.1"
   },
   "engines": {
