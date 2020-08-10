@@ -72,7 +72,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
         ]
       ],
       "transformIgnorePatterns": [
-        "/node_modules/"
+        "/node_modules/",
+        "<<REPLACED_PNP_PATH>>"
       ],
       "watchPathIgnorePatterns": []
     }

@@ -31,6 +31,7 @@ test('--showConfig outputs config info and exits', () => {
 
   stdout = stdout
     .replace(/\\\\node_modules\\\\/g, 'node_modules')
+    .replace(/\\\\\.pnp\\\\\.\[\^[/\\]+\]\+\$/g, '<<REPLACED_PNP_PATH>>')
     .replace(/\\\\(?:([^.]+?)|$)/g, '/$1')
     .replace(/"cacheDirectory": "(.+)"/g, '"cacheDirectory": "/tmp/jest"')
     .replace(/"name": "(.+)"/g, '"name": "[md5 hash]"')
