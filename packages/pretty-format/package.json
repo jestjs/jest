@@ -1,6 +1,6 @@
 {
   "name": "pretty-format",
-  "version": "26.2.0",
+  "version": "26.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -12,7 +12,7 @@
   "types": "build/index.d.ts",
   "author": "James Kyle <me@thejameskyle.com>",
   "dependencies": {
-    "@jest/types": "^26.2.0",
+    "@jest/types": "^26.3.0",
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.0.0",
     "react-is": "^16.12.0"
@@ -22,7 +22,7 @@
     "@types/react-is": "^16.7.1",
     "@types/react-test-renderer": "*",
     "immutable": "4.0.0-rc.9",
-    "jest-util": "^26.2.0",
+    "jest-util": "^26.3.0",
     "react": "*",
     "react-dom": "*",
     "react-test-renderer": "*"
