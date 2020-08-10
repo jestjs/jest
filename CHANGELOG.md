@@ -2,8 +2,18 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 26.3.0
+
+### Features
+
 - `[jest-circus, jest-jasmine2]` Include `failureDetails` property in test results ([#9496](https://github.com/facebook/jest/pull/9496))
-- `[jest-each, jest-jasmine, jest-circus]` Add support for .concurrent.each ([#9326](https://github.com/facebook/jest/pull/9326))
+- `[jest-each, jest-jasmine, jest-circus]` Add support for `.concurrent.each` ([#9326](https://github.com/facebook/jest/pull/9326))
 
 ### Fixes
 
@@ -11,10 +21,6 @@
 - `[jest-leak-detector]` Wait properly for GC runs due to changes in Node 14.7 ([#10366](https://github.com/facebook/jest/pull/10366))
 - `[jest-worker]` Downgrade minimum node version to 10.13 ([#10352](https://github.com/facebook/jest/pull/10352))
 - `[docs]` Update snapshot testing documentation([#10359](https://github.com/facebook/jest/pull/10359))
-
-### Chore & Maintenance
-
-### Performance
 
 ## 26.2.2
 
@@ -525,7 +531,7 @@
 
 - `[jest-each]` Fix bug with placeholder values ([#8289](https://github.com/facebook/jest/pull/8289))
 - `[jest-snapshot]` Inline snapshots: do not indent empty lines ([#8277](https://github.com/facebook/jest/pull/8277))
-- `[@jest/runtime, @jest/transform]` Allow custom transforms for JSON dependencies ([#2578](https://github.com/facebook/jest/pull/2578))
+- `[@jest/runtime, @jest/transform]` Allow custom transforms for JSON dependencies ([#8278](https://github.com/facebook/jest/pull/8278))
 - `[jest-core]` Make `detectOpenHandles` imply `runInBand` ([#8283](https://github.com/facebook/jest/pull/8283))
 - `[jest-haste-map]` Fix the `mapper` option which was incorrectly ignored ([#8299](https://github.com/facebook/jest/pull/8299))
 - `[jest-jasmine2]` Fix describe return value warning being shown if the describe function throws ([#8335](https://github.com/facebook/jest/pull/8335))
