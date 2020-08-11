@@ -10,6 +10,7 @@ import {sync as resolveSync} from 'resolve';
 import pnpResolver from 'jest-pnp-resolver';
 import {tryRealpath} from 'jest-util';
 import type {Config} from '@jest/types';
+import type {Opts as ResolveOpts} from 'resolve';
 
 type ResolverOptions = {
   allowPnp?: boolean;
@@ -20,7 +21,7 @@ type ResolverOptions = {
   moduleDirectory?: Array<string>;
   paths?: Array<Config.Path>;
   rootDir?: Config.Path;
-  packageFilter?: (pkg: any, pkgfile: string) => any;
+  packageFilter?: ResolveOpts['packageFilter'];
 };
 
 declare global {
