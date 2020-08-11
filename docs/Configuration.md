@@ -713,6 +713,38 @@ For example, if you want to respect Browserify's [`"browser"` field](https://git
 }
 ```
 
+By combining `defaultResolver` and `packageFilter` we can implement a `package.json` "pre-processor" that allows us to change how the default resolver will resolve modules. For example, imagine we want to use the field `"module"` if it is present, otherwise fallback to `"main"`:
+
+```json
+{
+  ...
+  "jest": {
+    "resolver": "my-module-resolve"
+  }
+}
+```
+
+```js
+// my-module-resolve package
+
+module.exports = (request, options) => {
+  // Call the defaultResolver, so we leverage its cache, error handling, etc.
+  return options.defaultResolver(request, {
+    ...options,
+    ...{
+      // Use packageFilter to process parsed `package.json` before the resolution (see https://www.npmjs.com/package/resolve#resolveid-opts-cb)
+      packageFilter: pkg => {
+        return {
+          ...pkg,
+          // Alter the value of `main` before resolving the package
+          main: pkg.module || pkg.main,
+        };
+      },
+    },
+  });
+};
+```
+
 ### `restoreMocks` [boolean]
 
 Default: `false`
