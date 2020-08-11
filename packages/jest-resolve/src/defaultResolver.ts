@@ -20,6 +20,7 @@ type ResolverOptions = {
   moduleDirectory?: Array<string>;
   paths?: Array<Config.Path>;
   rootDir?: Config.Path;
+  packageFilter?: (pkg: any, pkgfile: string) => any;
 };
 
 declare global {
@@ -45,6 +46,7 @@ export default function defaultResolver(
     isDirectory,
     isFile,
     moduleDirectory: options.moduleDirectory,
+    packageFilter: options.packageFilter,
     paths: options.paths,
     preserveSymlinks: false,
     realpathSync,

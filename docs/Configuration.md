@@ -693,7 +693,8 @@ This option allows the use of a custom resolver. This resolver must be a node mo
   "extensions": [string],
   "moduleDirectory": [string],
   "paths": [string],
-  "rootDir": [string]
+  "packageFilter": "function(pkg, pkgdir)",
+  "rootDir": [string],
 }
 ```
 
