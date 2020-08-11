@@ -1,3 +1,7 @@
+/**
+ * @type ./empty.d.ts
+ */
+
 import {
     expectType
 } from 'tsd';
