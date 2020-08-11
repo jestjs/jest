@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-resolve]` Add support for `packageFilter` on custom resolver ([#10393](https://github.com/facebook/jest/pull/10393))
+
 ### Fixes
 
 ### Chore & Maintenance
