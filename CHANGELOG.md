@@ -16,6 +16,7 @@
 
 - `[docs]` Add docs for using mocks in TypeScript([#10415](https://github.com/facebook/jest/pull/10415))
 - `[jest-cli]` chore: standardize files and folder names ([#10698](https://github.com/facebook/jest/pull/1098))
+- `[examples]` Update TypeScript example to show use of newer Jest types ([#10399](https://github.com/facebook/jest/pull/10399))
 
 ### Performance
 
