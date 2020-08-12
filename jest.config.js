@@ -27,7 +27,15 @@ module.exports = {
     'website/.*',
     'e2e/runtime-internal-module-registry/__mocks__',
   ],
-  projects: ['<rootDir>', '<rootDir>/examples/*/'],
+  projects: [
+    '<rootDir>',
+    '<rootDir>/examples/*/',
+    {
+      displayName: 'typings test',
+      runner: 'jest-runner-tsd',
+      testMatch: ['<rootDir>/test-types/*.test.ts'],
+    },
+  ],
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   snapshotSerializers: [
     '<rootDir>/packages/pretty-format/build/plugins/ConvertAnsi.js',
