@@ -9,5 +9,5 @@
 
 module.exports = {
   runner: 'jest-runner-tsd',
-  testMatch: ['<rootDir>/test-types/*.test.ts']
+  testMatch: ['<rootDir>/test-types/*.test.ts'],
 };
