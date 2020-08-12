@@ -1,6 +1,6 @@
 {
   "name": "expect",
-  "version": "26.3.0",
+  "version": "26.4.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -13,7 +13,7 @@
     "@jest/types": "^26.3.0",
     "ansi-styles": "^4.0.0",
     "jest-get-type": "^26.3.0",
-    "jest-matcher-utils": "^26.3.0",
+    "jest-matcher-utils": "^26.4.0",
     "jest-message-util": "^26.3.0",
     "jest-regex-util": "^26.0.0"
   },
