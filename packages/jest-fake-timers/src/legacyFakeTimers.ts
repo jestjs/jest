@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import util = require('util');
 import type {ModuleMocker} from 'jest-mock';
 import {StackTraceConfig, formatStackTrace} from 'jest-message-util';
 import {setGlobal} from 'jest-util';
-import util = require('util');
 
 type Callback = (...args: Array<unknown>) => void;
 

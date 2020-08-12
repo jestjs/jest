@@ -7,7 +7,6 @@
 
 import EventEmitter from 'events';
 import supportsColor from 'supports-color';
-// eslint-disable-next-line import/default
 import getStream from 'get-stream';
 import {PassThrough} from 'stream';
 

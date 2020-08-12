@@ -20,9 +20,9 @@ import {
   TransformOptions,
   transformSync as babelTransform,
 } from '@babel/core';
-import {loadPartialConfig} from './loadBabelConfig';
 import chalk = require('chalk');
 import slash = require('slash');
+import {loadPartialConfig} from './loadBabelConfig';
 
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');

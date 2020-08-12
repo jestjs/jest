@@ -7,7 +7,6 @@
 
 'use strict';
 
-// eslint-disable-next-line import/default
 import getStream from 'get-stream';
 
 import {

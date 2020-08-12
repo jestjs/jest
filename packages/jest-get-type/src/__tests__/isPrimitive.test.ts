@@ -6,7 +6,6 @@
  *
  */
 
-// eslint-disable-next-line import/named
 import {isPrimitive} from '..';
 /* global BigInt */
 

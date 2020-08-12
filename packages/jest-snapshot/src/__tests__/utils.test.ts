@@ -11,8 +11,8 @@ jest.mock('graceful-fs', () => ({
 }));
 
 import * as path from 'path';
-import * as fs from 'graceful-fs';
 import assert = require('assert');
+import * as fs from 'graceful-fs';
 import chalk = require('chalk');
 
 import {
