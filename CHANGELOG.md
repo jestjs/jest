@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[pretty-format]` Handle `tagName` not being a string
+
 ### Chore & Maintenance
 
 ### Performance
