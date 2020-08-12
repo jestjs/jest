@@ -564,4 +564,22 @@ Testing.`;
       {maxDepth: 2},
     );
   });
+
+  it('handles `tagName` not being a string', () => {
+    expect({
+      name: 'value',
+      tagName: {text: 'param'},
+      type: 'string',
+    }).toPrettyPrintTo(
+      [
+        'Object {',
+        '  "name": "value",',
+        '  "tagName": Object {',
+        '    "text": "param",',
+        '  },',
+        '  "type": "string",',
+        '}',
+      ].join('\n'),
+    );
+  });
 });

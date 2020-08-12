@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[pretty-format]` Handle `tagName` not being a string ([#10397](https://github.com/facebook/jest/pull/10397))
+
 ### Chore & Maintenance
 
 ### Performance
