@@ -8,6 +8,7 @@ describe('', () => {
   it('', () => {
     /* Corrections of previous typings */
 
+    // FIXME: TSD's limitations. Cannot run a function if it does not exist?
     // expectError<jest.Matchers<void, string>>(expect('').not.not);
     // expectError<jest.AndNot<jest.Matchers<Promise<void>, string>>>(
     //   expect('').resolves.resolves,
@@ -139,151 +140,199 @@ describe('', () => {
     expectType<void>(
       expect({abc: 'def'}).toMatchObject<{abc: string}>({abc: 'def'}),
     );
-    // expect([{abc: 'def'}, {abc: 'def'}]).toMatchObject<
-    //   [{abc: string}, {abc: string}]
-    // >([{abc: 'def'}, {abc: 'def'}]);
+    expectType<void>(
+      expect([{abc: 'def'}, {abc: 'def'}]).toMatchObject<
+        [{abc: string}, {abc: string}]
+      >([{abc: 'def'}, {abc: 'def'}]),
+    );
 
-    // expect({}).toMatchSnapshot();
-    // expect({}).toMatchSnapshot('snapshotName');
-    // expect({abc: 'def'}).toMatchSnapshot(
-    //   {abc: expect.any(String)},
-    //   'snapshotName',
-    // );
-    // expect({
-    //   one: 1,
-    //   two: '2',
-    //   three: 3,
-    //   four: {four: 3},
-    //   date: new Date(),
-    // }).toMatchSnapshot({
-    //   one: expect.any(Number),
-    //   // Leave 'two' to the auto-generated snapshot
-    //   three: 3,
-    //   four: {four: expect.any(Number)},
-    //   date: expect.any(Date),
-    // });
+    expectType<void>(expect({}).toMatchSnapshot());
+    expectType<void>(expect({}).toMatchSnapshot('snapshotName'));
+    expectType<void>(
+      expect({abc: 'def'}).toMatchSnapshot(
+        {abc: expect.any(String)},
+        'snapshotName',
+      ),
+    );
+    expectType<void>(
+      expect({
+        one: 1,
+        two: '2',
+        three: 3,
+        four: {four: 3},
+        date: new Date(),
+      }).toMatchSnapshot({
+        one: expect.any(Number),
+        // Leave 'two' to the auto-generated snapshot
+        three: 3,
+        four: {four: expect.any(Number)},
+        date: expect.any(Date),
+      }),
+    );
 
-    // expect({}).toMatchInlineSnapshot();
-    // expect({}).toMatchInlineSnapshot('snapshot');
-    // expect({abc: 'def'}).toMatchInlineSnapshot(
-    //   {abc: expect.any(String)},
-    //   'snapshot',
-    // );
-    // expect({
-    //   one: 1,
-    //   two: '2',
-    //   three: 3,
-    //   four: {four: 3},
-    //   date: new Date(),
-    // }).toMatchInlineSnapshot({
-    //   one: expect.any(Number),
-    //   // leave out two
-    //   three: 3,
-    //   four: {four: expect.any(Number)},
-    //   date: expect.any(Date),
-    // });
+    expectType<void>(expect({}).toMatchInlineSnapshot());
+    expectType<void>(expect({}).toMatchInlineSnapshot('snapshot'));
+    expectType<void>(
+      expect({abc: 'def'}).toMatchInlineSnapshot(
+        {abc: expect.any(String)},
+        'snapshot',
+      ),
+    );
+    expectType<void>(
+      expect({
+        one: 1,
+        two: '2',
+        three: 3,
+        four: {four: 3},
+        date: new Date(),
+      }).toMatchInlineSnapshot({
+        one: expect.any(Number),
+        // leave out two
+        three: 3,
+        four: {four: expect.any(Number)},
+        date: expect.any(Date),
+      }),
+    );
 
-    // expect(jest.fn()).toReturn();
+    expectType<void>(expect(jest.fn()).toReturn());
 
-    // expect(jest.fn()).toReturnTimes(0);
-    // expect(jest.fn()).toReturnTimes(1);
+    expectType<void>(expect(jest.fn()).toReturnTimes(0));
+    expectType<void>(expect(jest.fn()).toReturnTimes(1));
 
-    // expect(jest.fn()).toReturnWith('jest');
-    // expect(jest.fn()).toReturnWith({});
+    expectType<void>(expect(jest.fn()).toReturnWith('jest'));
+    expectType<void>(expect(jest.fn()).toReturnWith({}));
 
-    // expect(true).toStrictEqual(false);
-    // expect({}).toStrictEqual({});
+    expectType<void>(expect(true).toStrictEqual(false));
+    expectType<void>(expect({}).toStrictEqual({}));
 
-    // const errInstance = new Error();
-    // const willThrow = () => {
-    //   throw new Error();
-    // };
-    // expect(() => {}).toThrow();
-    // expect(willThrow).toThrow('');
-    // expect(willThrow).toThrow(errInstance);
-    // expect(jest.fn()).toThrow(Error);
-    // expect(jest.fn(willThrow)).toThrow(/foo/);
+    const errInstance = new Error();
+    const willThrow = () => {
+      throw new Error();
+    };
+    expectType<void>(expect(() => {}).toThrow());
+    expectType<void>(expect(willThrow).toThrow(''));
+    expectType<void>(expect(willThrow).toThrow(errInstance));
+    expectType<void>(expect(jest.fn()).toThrow(Error));
+    expectType<void>(expect(jest.fn(willThrow)).toThrow(/foo/));
 
-    // expect(() => {}).toThrowErrorMatchingSnapshot();
-    // expect(() => {}).toThrowErrorMatchingSnapshot('snapshotName');
-    // expect(willThrow).toThrowErrorMatchingSnapshot();
-    // expect(willThrow).toThrowErrorMatchingSnapshot('snapshotName');
-    // expect(jest.fn()).toThrowErrorMatchingSnapshot();
-    // expect(jest.fn()).toThrowErrorMatchingSnapshot('snapshotName');
-    // expect(jest.fn(willThrow)).toThrowErrorMatchingSnapshot();
-    // expect(jest.fn(willThrow)).toThrowErrorMatchingSnapshot('snapshotName');
+    expectType<void>(expect(() => {}).toThrowErrorMatchingSnapshot());
+    expectType<void>(
+      expect(() => {}).toThrowErrorMatchingSnapshot('snapshotName'),
+    );
+    expectType<void>(expect(willThrow).toThrowErrorMatchingSnapshot());
+    expectType<void>(
+      expect(willThrow).toThrowErrorMatchingSnapshot('snapshotName'),
+    );
+    expectType<void>(expect(jest.fn()).toThrowErrorMatchingSnapshot());
+    expectType<void>(
+      expect(jest.fn()).toThrowErrorMatchingSnapshot('snapshotName'),
+    );
+    expectType<void>(expect(jest.fn(willThrow)).toThrowErrorMatchingSnapshot());
+    expectType<void>(
+      expect(jest.fn(willThrow)).toThrowErrorMatchingSnapshot('snapshotName'),
+    );
 
-    // expect(() => {}).toThrowErrorMatchingInlineSnapshot();
-    // expect(() => {}).toThrowErrorMatchingInlineSnapshot('Error Message');
-    // expect(willThrow).toThrowErrorMatchingInlineSnapshot();
-    // expect(willThrow).toThrowErrorMatchingInlineSnapshot('Error Message');
-    // expect(jest.fn()).toThrowErrorMatchingInlineSnapshot();
-    // expect(jest.fn()).toThrowErrorMatchingInlineSnapshot('Error Message');
-    // expect(jest.fn(willThrow)).toThrowErrorMatchingInlineSnapshot();
-    // expect(jest.fn(willThrow)).toThrowErrorMatchingInlineSnapshot(
-    //   'Error Message',
-    // );
+    expectType<void>(expect(() => {}).toThrowErrorMatchingInlineSnapshot());
+    expectType<void>(
+      expect(() => {}).toThrowErrorMatchingInlineSnapshot('Error Message'),
+    );
+    expectType<void>(expect(willThrow).toThrowErrorMatchingInlineSnapshot());
+    expectType<void>(
+      expect(willThrow).toThrowErrorMatchingInlineSnapshot('Error Message'),
+    );
+    expectType<void>(expect(jest.fn()).toThrowErrorMatchingInlineSnapshot());
+    expectType<void>(
+      expect(jest.fn()).toThrowErrorMatchingInlineSnapshot('Error Message'),
+    );
+    expectType<void>(
+      expect(jest.fn(willThrow)).toThrowErrorMatchingInlineSnapshot(),
+    );
+    expectType<void>(
+      expect(jest.fn(willThrow)).toThrowErrorMatchingInlineSnapshot(
+        'Error Message',
+      ),
+    );
 
     // /* not */
 
-    // expect({}).not.toEqual({});
-    // expect([]).not.toStrictEqual([]);
+    expectType<void>(expect({}).not.toEqual({}));
+    expectType<void>(expect([]).not.toStrictEqual([]));
 
     // /* Promise matchers */
 
-    // expect(Promise.reject('jest'))
-    //   .rejects.toEqual('jest')
-    //   .then(() => {});
-    // expect(Promise.reject('jest'))
-    //   .rejects.not.toEqual('other')
-    //   .then(() => {});
+    expectType<Promise<void>>(
+      expect(Promise.reject('jest'))
+        .rejects.toEqual('jest')
+        .then(() => {}),
+    );
+    expectType<Promise<void>>(
+      expect(Promise.reject('jest'))
+        .rejects.not.toEqual('other')
+        .then(() => {}),
+    );
 
-    // expect(Promise.resolve('jest'))
-    //   .resolves.toEqual('jest')
-    //   .then(() => {});
-    // expect(Promise.resolve('jest'))
-    //   .resolves.not.toEqual('other')
-    //   .then(() => {});
+    expectType<Promise<void>>(
+      expect(Promise.resolve('jest'))
+        .resolves.toEqual('jest')
+        .then(() => {}),
+    );
+    expectType<Promise<void>>(
+      expect(Promise.resolve('jest'))
+        .resolves.not.toEqual('other')
+        .then(() => {}),
+    );
 
     // /* type matchers */
 
-    // expect({}).toBe(expect.anything());
+    expectType<void>(expect({}).toBe(expect.anything()));
 
-    // expect({}).toBe(expect.any(class Foo {}));
-    // expect(new Error()).toBe(expect.any(Error));
-    // expect(7).toBe(expect.any(Number));
+    expectType<void>(expect({}).toBe(expect.any(class Foo {})));
+    expectType<void>(expect(new Error()).toBe(expect.any(Error)));
+    expectType<void>(expect(7).toBe(expect.any(Number)));
 
-    // expect({}).toBe(expect.arrayContaining(['a', 'b']));
-    // expect(['abc']).toBe(expect.arrayContaining(['a', 'b']));
+    expectType<void>(expect({}).toBe(expect.arrayContaining(['a', 'b'])));
+    expectType<void>(expect(['abc']).toBe(expect.arrayContaining(['a', 'b'])));
 
-    // expect.objectContaining({});
-    // expect.stringMatching('foo');
-    // expect.stringMatching(/foo/);
-    // expect.stringContaining('foo');
+    expectType<any>(expect.objectContaining({}));
+    expectType<any>(expect.stringMatching('foo'));
+    expectType<any>(expect.stringMatching(/foo/));
+    expectType<any>(expect.stringContaining('foo'));
 
-    // expect({abc: 'def'}).toBe(
-    //   expect.objectContaining({
-    //     abc: expect.arrayContaining([expect.any(Date), {}]),
-    //     def: expect.objectContaining({
-    //       foo: 'bar',
-    //     }),
-    //     ghi: expect.stringMatching('foo'),
-    //   }),
-    // );
+    expectType<void>(
+      expect({abc: 'def'}).toBe(
+        expect.objectContaining({
+          abc: expect.arrayContaining([expect.any(Date), {}]),
+          def: expect.objectContaining({
+            foo: 'bar',
+          }),
+          ghi: expect.stringMatching('foo'),
+        }),
+      ),
+    );
 
     // /* Inverse type matchers */
 
-    // expect('How are you?').toEqual(expect.not.stringContaining('Hello world!'));
-    // expect('How are you?').toEqual(expect.not.stringMatching(/Hello world!/));
-    // expect({bar: 'baz'}).toEqual(expect.not.objectContaining({foo: 'bar'}));
-    // expect(['Alice', 'Bob', 'Eve']).toEqual(
-    //   expect.not.arrayContaining(['Samantha']),
-    // );
+    expectType<void>(
+      expect('How are you?').toEqual(
+        expect.not.stringContaining('Hello world!'),
+      ),
+    );
+    expectType<void>(
+      expect('How are you?').toEqual(expect.not.stringMatching(/Hello world!/)),
+    );
+    expectType<void>(
+      expect({bar: 'baz'}).toEqual(expect.not.objectContaining({foo: 'bar'})),
+    );
+    expectType<void>(
+      expect(['Alice', 'Bob', 'Eve']).toEqual(
+        expect.not.arrayContaining(['Samantha']),
+      ),
+    );
 
     // /* Miscellaneous */
 
-    // expect.hasAssertions();
-    // expect.assertions(0);
-    // expect.assertions(9001);
+    expectType<void>(expect.hasAssertions());
+    expectType<void>(expect.assertions(0));
+    expectType<void>(expect.assertions(9001));
   });
 });
