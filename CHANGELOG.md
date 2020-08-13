@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-reporters]` Fixes notify reporter on Linux (using notify-send) ([#10393](https://github.com/facebook/jest/pull/10400))
+
 ### Chore & Maintenance
 
 ### Performance
