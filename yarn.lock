@@ -3473,20 +3473,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:*":
+"@types/jest@npm:*, @types/jest@npm:24.0.2":
   version: 24.0.2
   resolution: "@types/jest@npm:24.0.2"
   checksum: afdf369b39a43d7d98cce4cd31fe429b66407373898695ec3dc53793b311b5a821c7b837728f6bf26d4495fe5cf59b5b6fffd1363a9e57462e2bbe3868306655
-  languageName: node
-  linkType: hard
-
-"@types/jest@npm:^26.0.9":
-  version: 26.0.9
-  resolution: "@types/jest@npm:26.0.9"
-  dependencies:
-    jest-diff: ^25.2.1
-    pretty-format: ^25.2.1
-  checksum: 5d2b5fb5122d384f1857c5f7f52643957ba0494db44f4eee22323f3d548e069cf1389a8985f60710cea4abc6fc31d50e3a7ead5ad02a9d00a092744cb66aecea
   languageName: node
   linkType: hard
 
@@ -7100,13 +7090,6 @@ __metadata:
     fast-check: ^2.0.0
   languageName: unknown
   linkType: soft
-
-"diff-sequences@npm:^25.2.6":
-  version: 25.2.6
-  resolution: "diff-sequences@npm:25.2.6"
-  checksum: 332484fc00f6beca726d8dbc13095f6006527002bef936a07b4e6bbec681fbaac484e1a7ea4e9ab0d53e375d1cde9e642c8cce31dfe6329cfdf8f01f26b17505
-  languageName: node
-  linkType: hard
 
 "diff@npm:^4.0.1":
   version: 4.0.2
@@ -11387,18 +11370,6 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"jest-diff@npm:^25.2.1":
-  version: 25.5.0
-  resolution: "jest-diff@npm:25.5.0"
-  dependencies:
-    chalk: ^3.0.0
-    diff-sequences: ^25.2.6
-    jest-get-type: ^25.2.6
-    pretty-format: ^25.5.0
-  checksum: 14a2634ecb159a9a2f061239db1cea0c889e7a72ab05bd1fa799db30efca2ce79291372823f5e3468d9bc856f404f312e44e89c171eea8132b5835d12f71d0b3
-  languageName: node
-  linkType: hard
-
 "jest-docblock@^26.0.0, jest-docblock@workspace:packages/jest-docblock":
   version: 0.0.0-use.local
   resolution: "jest-docblock@workspace:packages/jest-docblock"
@@ -11458,13 +11429,6 @@ fsevents@^1.2.7:
   version: 24.9.0
   resolution: "jest-get-type@npm:24.9.0"
   checksum: 0e6164dff23f8cd664a46642d2167b743e67349c57ff908259b56e3f5c81f8d2a13de2dd473a1a3d7682adcfe85888d14b0496ba51c5c8095eb52bf7526c3918
-  languageName: node
-  linkType: hard
-
-"jest-get-type@npm:^25.2.6":
-  version: 25.2.6
-  resolution: "jest-get-type@npm:25.2.6"
-  checksum: 6051fcb75cdaa8fad66fd5a1e91d2c1597e9ccc54eecd5cd489fd73a00e322d28cb5859b656a8224a41eddab0ecfb875df9ec62f545a76afa1a55d3ba97fba6d
   languageName: node
   linkType: hard
 
@@ -15713,7 +15677,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"pretty-format@npm:^25.1.0, pretty-format@npm:^25.2.0, pretty-format@npm:^25.2.1, pretty-format@npm:^25.5.0":
+"pretty-format@npm:^25.1.0, pretty-format@npm:^25.2.0, pretty-format@npm:^25.5.0":
   version: 25.5.0
   resolution: "pretty-format@npm:25.5.0"
   dependencies:
@@ -16954,7 +16918,7 @@ fsevents@^1.2.7:
     "@types/babel__generator": ^7.0.0
     "@types/babel__template": ^7.0.0
     "@types/dedent": 0.7.0
-    "@types/jest": ^26.0.9
+    "@types/jest": 24.0.2
     "@types/node": ~10.14.0
     "@types/which": ^1.3.2
     "@typescript-eslint/eslint-plugin": ^2.30.0
