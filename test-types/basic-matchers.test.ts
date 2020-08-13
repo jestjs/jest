@@ -109,32 +109,36 @@ describe('', () => {
     expectType<void>(expect([]).toHaveLength(0));
     expectType<void>(expect('').toHaveLength(1));
 
-    // expect(jest.fn()).toHaveNthReturnedWith(0, 'jest');
-    // expect(jest.fn()).toHaveNthReturnedWith(1, {});
+    expectType<void>(expect(jest.fn()).toHaveNthReturnedWith(0, 'jest'));
+    expectType<void>(expect(jest.fn()).toHaveNthReturnedWith(1, {}));
 
-    // expect({}).toHaveProperty('property');
-    // expect({}).toHaveProperty('property', {});
-    // expect({}).toHaveProperty(['property']);
-    // expect({}).toHaveProperty(['property'], {});
-    // expect({}).toHaveProperty(['property', 'deep']);
-    // expect({}).toHaveProperty(['property', 'deep'], {});
+    expectType<void>(expect({}).toHaveProperty('property'));
+    expectType<void>(expect({}).toHaveProperty('property', {}));
+    expectType<void>(expect({}).toHaveProperty(['property']));
+    expectType<void>(expect({}).toHaveProperty(['property'], {}));
+    expectType<void>(expect({}).toHaveProperty(['property', 'deep']));
+    expectType<void>(expect({}).toHaveProperty(['property', 'deep'], {}));
 
-    // expect(jest.fn()).toHaveReturned();
+    expectType<void>(expect(jest.fn()).toHaveReturned());
 
-    // expect(jest.fn()).toHaveReturnedTimes(0);
-    // expect(jest.fn()).toHaveReturnedTimes(1);
+    expectType<void>(expect(jest.fn()).toHaveReturnedTimes(0));
+    expectType<void>(expect(jest.fn()).toHaveReturnedTimes(1));
 
-    // expect(jest.fn()).toHaveReturnedWith('jest');
-    // expect(jest.fn()).toHaveReturnedWith({});
+    expectType<void>(expect(jest.fn()).toHaveReturnedWith('jest'));
+    expectType<void>(expect(jest.fn()).toHaveReturnedWith({}));
 
-    // expect('').toMatch('');
-    // expect('').toMatch(/foo/);
+    expectType<void>(expect('').toMatch(''));
+    expectType<void>(expect('').toMatch(/foo/));
 
-    // expect({}).toMatchObject({});
-    // expect({abc: 'def'}).toMatchObject({abc: 'def'});
-    // expect({}).toMatchObject([{}, {}]);
-    // expect({abc: 'def'}).toMatchObject([{abc: 'def'}, {invalid: 'property'}]);
-    // expect({abc: 'def'}).toMatchObject<{abc: string}>({abc: 'def'});
+    expectType<void>(expect({}).toMatchObject({}));
+    expectType<void>(expect({abc: 'def'}).toMatchObject({abc: 'def'}));
+    expectType<void>(expect({}).toMatchObject([{}, {}]));
+    expectType<void>(
+      expect({abc: 'def'}).toMatchObject([{abc: 'def'}, {invalid: 'property'}]),
+    );
+    expectType<void>(
+      expect({abc: 'def'}).toMatchObject<{abc: string}>({abc: 'def'}),
+    );
     // expect([{abc: 'def'}, {abc: 'def'}]).toMatchObject<
     //   [{abc: string}, {abc: string}]
     // >([{abc: 'def'}, {abc: 'def'}]);
