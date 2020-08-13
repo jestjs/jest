@@ -419,6 +419,26 @@ describe('DeepMerge with property matchers', () => {
         },
       },
     ],
+
+    [
+      'an array of objects',
+      // Target
+      [{name: 'one'}, {name: 'two'}, {name: 'three'}],
+      // Matchers
+      [{name: 'one'}, {name: matcher}, {name: matcher}],
+      // Expected
+      [{name: 'one'}, {name: matcher}, {name: matcher}],
+    ],
+
+    [
+      'an array of arrays',
+      // Target
+      [['one'], ['two'], ['three']],
+      // Matchers
+      [['one'], [matcher], [matcher]],
+      // Expected
+      [['one'], [matcher], [matcher]],
+    ],
   ];
   /* eslint-enable sort-keys */
 
