@@ -49,33 +49,26 @@ expectType<typeof jest>(jest.unmock('moduleName'));
 expectType<typeof jest>(jest.useFakeTimers());
 expectType<typeof jest>(jest.useRealTimers());
 
-// FIXME: `advanceTimersToNextTimer` does not exist on typeof jest.
-// jest.advanceTimersToNextTimer();
-// jest.advanceTimersToNextTimer(2);
+jest.advanceTimersToNextTimer();
+jest.advanceTimersToNextTimer(2);
 
 // https://jestjs.io/docs/en/jest-object#jestusefaketimersimplementation-modern--legacy
-// FIXME
-// expectType<typeof jest>(jest.useFakeTimers('modern'));
-// expectType<typeof jest>(jest.useFakeTimers('legacy'));
+expectType<typeof jest>(jest.useFakeTimers('modern'));
+expectType<typeof jest>(jest.useFakeTimers('legacy'));
 // $ExpectError
-// FIXME
-// expectError(jest.useFakeTimers('foo'));
+expectError(jest.useFakeTimers('foo'));
 
 // https://jestjs.io/docs/en/jest-object#jestsetsystemtimenow-number--date
-// FIXME
-// expectType<typeof jest>(jest.setSystemTime());
-// expectType<typeof jest>(jest.setSystemTime(0));
-// expectType<typeof jest>(jest.setSystemTime(new Date(0)));
+expectType<void>(jest.setSystemTime());
+expectType<void>(jest.setSystemTime(0));
+expectType<void>(jest.setSystemTime(new Date(0)));
 // $ExpectError
-// FIXME
-// expectError(jest.setSystemTime('foo'));
+expectError(jest.setSystemTime('foo'));
 
 // https://jestjs.io/docs/en/jest-object#jestgetrealsystemtime
-// FIXME
-// expectType<number>(jest.getRealSystemTime());
+expectType<number>(jest.getRealSystemTime());
 // $ExpectError
-// FIXME
-// expectError(jest.getRealSystemTime('foo'));
+expectError(jest.getRealSystemTime('foo'));
 
 // https://jestjs.io/docs/en/jest-object#jestrequireactualmodulename
 // $ExpectType any
@@ -83,8 +76,7 @@ expectType<any>(jest.requireActual('./thisReturnsTheActualModule'));
 
 // https://jestjs.io/docs/en/jest-object#jestrequireactualmodulename
 // $ExpectType string
-// FIXME
-// expectType<string>(jest.requireActual<string>('./thisReturnsTheActualModule'));
+expectType<string>(jest.requireActual<string>('./thisReturnsTheActualModule'));
 
 // https://jestjs.io/docs/en/jest-object#jestrequiremockmodulename
 // $ExpectType any
@@ -92,5 +84,4 @@ expectType<any>(jest.requireMock('./thisAlwaysReturnsTheMock'));
 
 // https://jestjs.io/docs/en/jest-object#jestrequiremockmodulename
 // $ExpectType string
-// FIXME
-// expectType<string>(jest.requireMock<string>('./thisAlwaysReturnsTheMock'));
+expectType<string>(jest.requireMock<string>('./thisAlwaysReturnsTheMock'));
