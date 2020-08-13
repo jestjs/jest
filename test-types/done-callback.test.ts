@@ -8,12 +8,13 @@ expectType<void>(
   describe('', () => {
     expectType<void>(
       it('', callback => {
-        expectType<jest.DoneCallback>(callback());
-        expectType<jest.DoneCallback>(callback(''));
-        expectType<jest.DoneCallback>(callback('', 3));
-        expectType<jest.DoneCallback>(callback.fail());
-        expectType<jest.DoneCallback>(callback.fail('error'));
-        expectType<jest.DoneCallback>(callback.fail({message: 'message'}));
+        expectType<jest.DoneCallback>(callback);
+        expectType<any>(callback());
+        expectType<any>(callback(''));
+        expectType<any>(callback('', 3));
+        expectType<any>(callback.fail());
+        expectType<any>(callback.fail('error'));
+        expectType<any>(callback.fail({message: 'message'}));
       }),
     );
   }),
