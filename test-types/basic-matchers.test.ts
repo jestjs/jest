@@ -86,28 +86,28 @@ describe('', () => {
     expectType<void>(expect([]).toEqual([]));
     expectType<void>(expect({}).toEqual({}));
 
-    // expect(jest.fn()).toHaveBeenCalled();
+    expectType<void>(expect(jest.fn()).toHaveBeenCalled());
 
-    // expect(jest.fn()).toHaveBeenCalledTimes(0);
-    // expect(jest.fn()).toHaveBeenCalledTimes(1);
+    expectType<void>(expect(jest.fn()).toHaveBeenCalledTimes(0));
+    expectType<void>(expect(jest.fn()).toHaveBeenCalledTimes(1));
 
-    // expect(jest.fn()).toHaveBeenCalledWith();
-    // expect(jest.fn()).toHaveBeenCalledWith('jest');
-    // expect(jest.fn()).toHaveBeenCalledWith({}, {});
+    expectType<void>(expect(jest.fn()).toHaveBeenCalledWith());
+    expectType<void>(expect(jest.fn()).toHaveBeenCalledWith('jest'));
+    expectType<void>(expect(jest.fn()).toHaveBeenCalledWith({}, {}));
 
-    // expect(jest.fn()).toHaveBeenCalledWith(0);
-    // expect(jest.fn()).toHaveBeenCalledWith(1, 'jest');
-    // expect(jest.fn()).toHaveBeenCalledWith(2, {}, {});
+    expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(0));
+    expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(1, 'jest'));
+    expectType<void>(expect(jest.fn()).toHaveBeenCalledWith(2, {}, {}));
 
-    // expect(jest.fn()).toHaveBeenLastCalledWith();
-    // expect(jest.fn()).toHaveBeenLastCalledWith('jest');
-    // expect(jest.fn()).toHaveBeenLastCalledWith({}, {});
+    expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith());
+    expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith('jest'));
+    expectType<void>(expect(jest.fn()).toHaveBeenLastCalledWith({}, {}));
 
-    // expect(jest.fn()).toHaveLastReturnedWith('jest');
-    // expect(jest.fn()).toHaveLastReturnedWith({});
+    expectType<void>(expect(jest.fn()).toHaveLastReturnedWith('jest'));
+    expectType<void>(expect(jest.fn()).toHaveLastReturnedWith({}));
 
-    // expect([]).toHaveLength(0);
-    // expect('').toHaveLength(1);
+    expectType<void>(expect([]).toHaveLength(0));
+    expectType<void>(expect('').toHaveLength(1));
 
     // expect(jest.fn()).toHaveNthReturnedWith(0, 'jest');
     // expect(jest.fn()).toHaveNthReturnedWith(1, {});
