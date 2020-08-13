@@ -114,6 +114,15 @@ module.exports = {
         'import/no-extraneous-dependencies': 0,
       },
     },
+    {
+      files: ['test-types/*.test.ts'],
+      rules: {
+        'eslint-comments/disable-enable-pair': 0,
+        'import/no-extraneous-dependencies': 0,
+        'jest/no-focused-tests': 0,
+        'jest/no-identical-title': 0,
+      },
+    },
   ],
   parser: 'babel-eslint',
   plugins: ['markdown', 'import', 'prettier', 'eslint-comments'],
