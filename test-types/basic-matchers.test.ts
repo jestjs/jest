@@ -2,7 +2,7 @@
  * @type ./empty.d.ts
  */
 
-import {expectError, expectType} from 'tsd';
+import {expectType} from 'tsd';
 
 describe('', () => {
   it('', () => {
