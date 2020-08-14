@@ -1,7 +1,7 @@
 {
   "name": "@jest/reporters",
   "description": "Jest's reporters",
-  "version": "26.3.0",
+  "version": "26.4.0",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
@@ -21,7 +21,7 @@
     "istanbul-lib-source-maps": "^4.0.0",
     "istanbul-reports": "^3.0.2",
     "jest-haste-map": "^26.3.0",
-    "jest-resolve": "^26.3.0",
+    "jest-resolve": "^26.4.0",
     "jest-util": "^26.3.0",
     "jest-worker": "^26.3.0",
     "slash": "^3.0.0",
@@ -44,7 +44,7 @@
     "strip-ansi": "^6.0.0"
   },
   "optionalDependencies": {
-    "node-notifier": "^7.0.0"
+    "node-notifier": "^8.0.0"
   },
   "engines": {
     "node": ">= 10.14.2"
