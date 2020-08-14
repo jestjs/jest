@@ -2,51 +2,75 @@
  * @type ./empty.d.ts
  */
 
-import {expectType} from 'tsd';
+import {expectError, expectType} from 'tsd';
+import {expect, jest} from '@jest/globals';
+import type {Mock} from 'jest-mock';
 
 describe('', () => {
   it('', () => {
     /* Corrections of previous typings */
 
     // FIXME: TSD's limitations. Cannot run a function if it does not exist?
-    // expectError<jest.Matchers<void, string>>(expect('').not.not);
-    // expectError<jest.AndNot<jest.Matchers<Promise<void>, string>>>(
+    // expectError<jest.Matchers<string>>(expect('').not.not);
+    // expectError<jest.Matchers<Promise<Promise<string>>>>(
     //   expect('').resolves.resolves,
     // );
 
-    expectType<void>(expect('').toEqual(''));
-    expectType<Promise<void>>(expect(Promise.resolve('')).resolves.toEqual(''));
+    expectType<string>(expect('').toEqual(''));
+    expectType<Promise<Promise<string>>>(
+      expect(Promise.resolve('')).resolves.toEqual(''),
+    );
 
-    expectType<jest.Mock<any, any>>(jest.fn());
+    expectType<Mock<unknown, unknown[]>>(jest.fn());
 
-    expectType<void>(expect(jest.fn()).lastCalledWith());
-    expectType<void>(expect(jest.fn()).lastCalledWith('jest'));
-    expectType<void>(expect(jest.fn()).lastCalledWith({}, {}));
+    expectType<Mock<unknown, unknown[]>>(expect(jest.fn()).lastCalledWith());
+    expectType<Mock<unknown, unknown[]>>(
+      expect(jest.fn()).lastCalledWith('jest'),
+    );
+    expectType<Mock<unknown, unknown[]>>(
+      expect(jest.fn()).lastCalledWith({}, {}),
+    );
 
-    expectType<void>(expect(jest.fn()).lastReturnedWith('jest'));
-    expectType<void>(expect(jest.fn()).lastReturnedWith({}));
+    expectType<Mock<unknown, unknown[]>>(
+      expect(jest.fn()).lastReturnedWith('jest'),
+    );
+    expectType<Mock<unknown, unknown[]>>(
+      expect(jest.fn()).lastReturnedWith({}),
+    );
 
-    expectType<void>(expect(jest.fn()).nthCalledWith(0, 'jest'));
-    expectType<void>(expect(jest.fn()).nthCalledWith(1, {}));
+    expectType<Mock<unknown, unknown[]>>(
+      expect(jest.fn()).nthCalledWith(0, 'jest'),
+    );
+    expectType<Mock<unknown, unknown[]>>(
+      expect(jest.fn()).nthCalledWith(1, {}),
+    );
 
-    expectType<void>(expect(jest.fn()).nthReturnedWith(0, 'jest'));
-    expectType<void>(expect(jest.fn()).nthReturnedWith(1, {}));
+    expectType<Mock<unknown, unknown[]>>(
+      expect(jest.fn()).nthReturnedWith(0, 'jest'),
+    );
+    expectType<Mock<unknown, unknown[]>>(
+      expect(jest.fn()).nthReturnedWith(1, {}),
+    );
 
-    expectType<void>(expect({}).toBe({}));
-    expectType<void>(expect([]).toBe([]));
-    expectType<void>(expect(10).toBe(10));
+    expectType<{}>(expect({}).toBe({}));
+    expectType<never[]>(expect([]).toBe([]));
+    expectType<number>(expect(10).toBe(10));
 
-    expectType<void>(expect(jest.fn()).toBeCalled());
+    expectType<Mock<unknown, unknown[]>>(expect(jest.fn()).toBeCalled());
 
-    expectType<void>(expect(jest.fn()).toBeCalledTimes(1));
+    expectType<Mock<unknown, unknown[]>>(expect(jest.fn()).toBeCalledTimes(1));
 
-    expectType<void>(expect(jest.fn()).toBeCalledWith());
-    expectType<void>(expect(jest.fn()).toBeCalledWith('jest'));
-    expectType<void>(expect(jest.fn()).toBeCalledWith({}, {}));
+    expectType<Mock<unknown, unknown[]>>(expect(jest.fn()).toBeCalledWith());
+    expectType<Mock<unknown, unknown[]>>(
+      expect(jest.fn()).toBeCalledWith('jest'),
+    );
+    expectType<Mock<unknown, unknown[]>>(
+      expect(jest.fn()).toBeCalledWith({}, {}),
+    );
 
     // FIXME: Error expected. But none. Why?
-    // expectError(expect(jest.fn()).toBeCalledWith(1, 'two'));
-    // expectError(expect({}).toEqual({p1: 'hello'}));
+    expectError(expect(jest.fn()).toBeCalledWith(1, 'two'));
+    expectError(expect({}).toEqual({p1: 'hello'}));
 
     expectType<void>(expect(0).toBeCloseTo(1));
     expectType<void>(expect(0).toBeCloseTo(1, 2));
@@ -141,21 +165,28 @@ describe('', () => {
     expectType<void>(
       expect({abc: 'def'}).toMatchObject<{abc: string}>({abc: 'def'}),
     );
-    expectType<void>(
-      expect([{abc: 'def'}, {abc: 'def'}]).toMatchObject<
-        [{abc: string}, {abc: string}]
-      >([{abc: 'def'}, {abc: 'def'}]),
+    expectType<{abc: string}[]>(
+      expect([{abc: 'def'}, {abc: 'def'}]).toMatchObject([
+        {abc: 'def'},
+        {abc: 'def'},
+      ]),
     );
 
-    expectType<void>(expect({}).toMatchSnapshot());
-    expectType<void>(expect({}).toMatchSnapshot('snapshotName'));
-    expectType<void>(
+    expectType<{}>(expect({}).toMatchSnapshot());
+    expectType<{}>(expect({}).toMatchSnapshot('snapshotName'));
+    expectType<{abc: string}>(
       expect({abc: 'def'}).toMatchSnapshot(
         {abc: expect.any(String)},
         'snapshotName',
       ),
     );
-    expectType<void>(
+    expectType<{
+      one: number;
+      two: string;
+      three: number;
+      four: {four: number};
+      date: Date;
+    }>(
       expect({
         one: 1,
         two: '2',
