@@ -12,7 +12,6 @@ const Container = CompLibrary.Container;
 const GridBlock = CompLibrary.GridBlock;
 
 const translate = require('../../server/translate.js').translate;
-const backers = require(process.cwd() + '/backers.json');
 const siteConfig = require(process.cwd() + '/siteConfig.js');
 const getDocsUrl = (url, language) =>
   siteConfig.baseUrl + 'docs/' + language + url;
@@ -181,13 +180,6 @@ const HeroInteractive = ({config: {repoUrl}, language}) => (
 
 class Index extends React.Component {
   render() {
-    const sponsorCount = backers.filter(
-      b => b.tier && b.tier.slug === 'sponsor'
-    ).length;
-
-    const backerCount = backers.filter(b => b.tier && b.tier.slug === 'backer')
-      .length;
-
     const showcase = siteConfig.users.map((user, i) => (
       <a href={user.infoLink} key={i}>
         <img src={user.image} title={user.caption} />
