@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Globals · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="In your test files, Jest puts each of these methods and objects into the global environment. You don&#x27;t have to require or import anything to use them. However, if you prefer explicit imports, you can do `import {describe, expect, test} from &#x27;@jest/globals&#x27;`."/><meta name="docsearch:version" content="26.2"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Globals · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="In your test files, Jest puts each of these methods and objects into the global environment. You don&#x27;t have to require or import anything to use them. However, if you prefer explicit imports, you can do `import {describe, expect, test} from &#x27;@jest/globals&#x27;`."/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Globals · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="In your test files, Jest puts each of these methods and objects into the global environment. You don&#x27;t have to require or import anything to use them. However, if you prefer explicit imports, you can do `import {describe, expect, test} from &#x27;@jest/globals&#x27;`."/><meta name="docsearch:version" content="26.4"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Globals · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="In your test files, Jest puts each of these methods and objects into the global environment. You don&#x27;t have to require or import anything to use them. However, if you prefer explicit imports, you can do `import {describe, expect, test} from &#x27;@jest/globals&#x27;`."/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -6,7 +6,7 @@
 
               ga('create', 'UA-44373548-17', 'auto');
               ga('send', 'pageview');
-            </script><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/en"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/en/versions"><h3>26.2</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/en/getting-started" target="_self">Docs</a></li><li class="siteNavGroupActive siteNavItemActive"><a href="/docs/en/api" target="_self">API</a></li><li class=""><a href="/en/help" target="_self">Help</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>English</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/ja/api">日本語</a></li><li><a href="/docs/es-ES/api">Español</a></li><li><a href="/docs/pt-BR/api">Português (Brasil)</a></li><li><a href="/docs/ro/api">Română</a></li><li><a href="/docs/ru/api">Русский</a></li><li><a href="/docs/uk/api">Українська</a></li><li><a href="/docs/zh-Hans/api">简体中文</a></li></ul></div></li><script>
+            </script><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/en"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/en/versions"><h3>26.4</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/en/getting-started" target="_self">Docs</a></li><li class="siteNavGroupActive siteNavItemActive"><a href="/docs/en/api" target="_self">API</a></li><li class=""><a href="/en/help" target="_self">Help</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>English</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/ja/api">日本語</a></li><li><a href="/docs/es-ES/api">Español</a></li><li><a href="/docs/pt-BR/api">Português (Brasil)</a></li><li><a href="/docs/ro/api">Română</a></li><li><a href="/docs/ru/api">Русский</a></li><li><a href="/docs/uk/api">Українська</a></li><li><a href="/docs/zh-Hans/api">简体中文</a></li></ul></div></li><script>
         const languagesMenuItem = document.getElementById("languages-menu");
         const languagesDropDown = document.getElementById("languages-dropdown");
         languagesMenuItem.addEventListener("click", function(event) {
@@ -88,6 +88,10 @@
 <li><a href="#describeskipname-fn"><code>describe.skip(name, fn)</code></a></li>
 <li><a href="#describeskipeachtablename-fn"><code>describe.skip.each(table)(name, fn)</code></a></li>
 <li><a href="#testname-fn-timeout"><code>test(name, fn, timeout)</code></a></li>
+<li><a href="#testconcurrentname-fn-timeout"><code>test.concurrent(name, fn, timeout)</code></a></li>
+<li><a href="#testconcurrenteachtablename-fn-timeout"><code>test.concurrent.each(table)(name, fn, timeout)</code></a></li>
+<li><a href="#testconcurrentonlyeachtablename-fn"><code>test.concurrent.only.each(table)(name, fn)</code></a></li>
+<li><a href="#testconcurrentskipeachtablename-fn"><code>test.concurrent.skip.each(table)(name, fn)</code></a></li>
 <li><a href="#testeachtablename-fn-timeout"><code>test.each(table)(name, fn, timeout)</code></a></li>
 <li><a href="#testonlyname-fn-timeout"><code>test.only(name, fn, timeout)</code></a></li>
 <li><a href="#testonlyeachtablename-fn"><code>test.only.each(table)(name, fn)</code></a></li>
@@ -462,6 +466,147 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 });
 </code></pre>
 <p>Even though the call to <code>test</code> will return right away, the test doesn't complete until the promise resolves as well.</p>
+<h3><a class="anchor" aria-hidden="true" id="testconcurrentname-fn-timeout"></a><a href="#testconcurrentname-fn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.concurrent(name, fn, timeout)</code></h3>
+<p>Also under the alias: <code>it.concurrent(name, fn, timeout)</code></p>
+<p>Use <code>test.concurrent</code> if you want the test to run concurrently.</p>
+<blockquote>
+<p>Note: <code>test.concurrent</code> is considered experimental - see [here])<a href="https://github.com/facebook/jest/labels/Area%3A%20Concurrent">https://github.com/facebook/jest/labels/Area%3A%20Concurrent</a>) for details on missing features and other issues</p>
+</blockquote>
+<p>The first argument is the test name; the second argument is an asynchronous function that contains the expectations to test. The third argument (optional) is <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
+<pre><code class="hljs">test.concurrent('addition of <span class="hljs-number">2</span> numbers', async () =&gt; {
+  expect(<span class="hljs-number">5</span> + <span class="hljs-number">3</span>).toBe(<span class="hljs-number">8</span>);
+});
+
+test.concurrent('subtraction <span class="hljs-number">2</span> numbers', async () =&gt; {
+  expect(<span class="hljs-number">5</span> - <span class="hljs-number">3</span>).toBe(<span class="hljs-number">2</span>);
+});
+</code></pre>
+<blockquote>
+<p>Note: Use <code>maxConcurrency</code> in configuration to prevents Jest from executing more than the specified amount of tests at the same time</p>
+</blockquote>
+<h3><a class="anchor" aria-hidden="true" id="testconcurrenteachtablename-fn-timeout"></a><a href="#testconcurrenteachtablename-fn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.concurrent.each(table)(name, fn, timeout)</code></h3>
+<p>Also under the alias: <code>it.concurrent.each(table)(name, fn, timeout)</code></p>
+<p>Use <code>test.concurrent.each</code> if you keep duplicating the same test with different data. <code>test.each</code> allows you to write the test once and pass data in, the tests are all run asynchronously.</p>
+<p><code>test.concurrent.each</code> is available with two APIs:</p>
+<h4><a class="anchor" aria-hidden="true" id="1-testconcurrenteachtablename-fn-timeout"></a><a href="#1-testconcurrenteachtablename-fn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>1. <code>test.concurrent.each(table)(name, fn, timeout)</code></h4>
+<ul>
+<li><code>table</code>: <code>Array</code> of Arrays with the arguments that are passed into the test <code>fn</code> for each row.
+<ul>
+<li><em>Note</em> If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. <code>[1, 2, 3] -&gt; [[1], [2], [3]]</code></li>
+</ul></li>
+<li><code>name</code>: <code>String</code> the title of the test block.
+<ul>
+<li>Generate unique test titles by positionally injecting parameters with <a href="https://nodejs.org/api/util.html#util_util_format_format_args"><code>printf</code> formatting</a>:
+<ul>
+<li><code>%p</code> - <a href="https://www.npmjs.com/package/pretty-format">pretty-format</a>.</li>
+<li><code>%s</code>- String.</li>
+<li><code>%d</code>- Number.</li>
+<li><code>%i</code> - Integer.</li>
+<li><code>%f</code> - Floating point value.</li>
+<li><code>%j</code> - JSON.</li>
+<li><code>%o</code> - Object.</li>
+<li><code>%#</code> - Index of the test case.</li>
+<li><code>%%</code> - single percent sign ('%'). This does not consume an argument.</li>
+</ul></li>
+</ul></li>
+<li><code>fn</code>: <code>Function</code> the test to be ran, this is the function that will receive the parameters in each row as function arguments, <strong>this will have to be an asynchronous function</strong>.</li>
+<li>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait for each row before aborting. <em>Note: The default timeout is 5 seconds.</em></li>
+</ul>
+<p>Example:</p>
+<pre><code class="hljs css language-js">test.concurrent.each([
+  [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>],
+  [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>],
+  [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>],
+])(<span class="hljs-string">'.add(%i, %i)'</span>, (a, b, expected) =&gt; {
+  expect(a + b).toBe(expected);
+});
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="2--testconcurrenteachtablename-fn-timeout-"></a><a href="#2--testconcurrenteachtablename-fn-timeout-" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2. <code>test.concurrent.each`table`(name, fn, timeout)</code></h4>
+<ul>
+<li><code>table</code>: <code>Tagged Template Literal</code>
+<ul>
+<li>First row of variable name column headings separated with <code>|</code></li>
+<li>One or more subsequent rows of data supplied as template literal expressions using <code>${value}</code> syntax.</li>
+</ul></li>
+<li><code>name</code>: <code>String</code> the title of the test, use <code>$variable</code> to inject test data into the test title from the tagged template expressions.
+<ul>
+<li>To inject nested object values use you can supply a keyPath i.e. <code>$variable.path.to.value</code></li>
+</ul></li>
+<li><code>fn</code>: <code>Function</code> the test to be ran, this is the function that will receive the test data object, <strong>this will have to be an asynchronous function</strong>.</li>
+<li>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait for each row before aborting. <em>Note: The default timeout is 5 seconds.</em></li>
+</ul>
+<p>Example:</p>
+<pre><code class="hljs css language-js">test.concurrent.each<span class="hljs-string">`
+  a    | b    | expected
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+`</span>(<span class="hljs-string">'returns $expected when $a is added $b'</span>, ({a, b, expected}) =&gt; {
+  expect(a + b).toBe(expected);
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="testconcurrentonlyeachtablename-fn"></a><a href="#testconcurrentonlyeachtablename-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.concurrent.only.each(table)(name, fn)</code></h3>
+<p>Also under the alias: <code>it.concurrent.only.each(table)(name, fn)</code></p>
+<p>Use <code>test.concurrent.only.each</code> if you want to only run specific tests with different test data concurrently.</p>
+<p><code>test.concurrent.only.each</code> is available with two APIs:</p>
+<h4><a class="anchor" aria-hidden="true" id="testconcurrentonlyeachtablename-fn-1"></a><a href="#testconcurrentonlyeachtablename-fn-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.concurrent.only.each(table)(name, fn)</code></h4>
+<pre><code class="hljs css language-js">test.concurrent.only.each([
+  [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>],
+  [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>],
+  [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>],
+])(<span class="hljs-string">'.add(%i, %i)'</span>, <span class="hljs-keyword">async</span> (a, b, expected) =&gt; {
+  expect(a + b).toBe(expected);
+});
+
+test(<span class="hljs-string">'will not be ran'</span>, () =&gt; {
+  expect(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>).toBe(<span class="hljs-literal">Infinity</span>);
+});
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="-testonlyeachtablename-fn-"></a><a href="#-testonlyeachtablename-fn-" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.only.each`table`(name, fn)</code></h4>
+<pre><code class="hljs css language-js">test.concurrent.only.each<span class="hljs-string">`
+  a    | b    | expected
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+`</span>(<span class="hljs-string">'returns $expected when $a is added $b'</span>, <span class="hljs-keyword">async</span> ({a, b, expected}) =&gt; {
+  expect(a + b).toBe(expected);
+});
+
+test(<span class="hljs-string">'will not be ran'</span>, () =&gt; {
+  expect(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>).toBe(<span class="hljs-literal">Infinity</span>);
+});
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="testconcurrentskipeachtablename-fn"></a><a href="#testconcurrentskipeachtablename-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.concurrent.skip.each(table)(name, fn)</code></h3>
+<p>Also under the alias: <code>it.concurrent.skip.each(table)(name, fn)</code></p>
+<p>Use <code>test.concurrent.skip.each</code> if you want to stop running a collection of asynchronous data driven tests.</p>
+<p><code>test.concurrent.skip.each</code> is available with two APIs:</p>
+<h4><a class="anchor" aria-hidden="true" id="testconcurrentskipeachtablename-fn-1"></a><a href="#testconcurrentskipeachtablename-fn-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.concurrent.skip.each(table)(name, fn)</code></h4>
+<pre><code class="hljs css language-js">test.concurrent.skip.each([
+  [<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>],
+  [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>],
+  [<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">3</span>],
+])(<span class="hljs-string">'.add(%i, %i)'</span>, <span class="hljs-keyword">async</span> (a, b, expected) =&gt; {
+  expect(a + b).toBe(expected); <span class="hljs-comment">// will not be ran</span>
+});
+
+test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
+  expect(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>).toBe(<span class="hljs-literal">Infinity</span>);
+});
+</code></pre>
+<h4><a class="anchor" aria-hidden="true" id="-testconcurrentskipeachtablename-fn-"></a><a href="#-testconcurrentskipeachtablename-fn-" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.concurrent.skip.each`table`(name, fn)</code></h4>
+<pre><code class="hljs css language-js">test.concurrent.skip.each<span class="hljs-string">`
+  a    | b    | expected
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+  <span class="hljs-subst">${<span class="hljs-number">2</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">3</span>}</span>
+`</span>(<span class="hljs-string">'returns $expected when $a is added $b'</span>, <span class="hljs-keyword">async</span> ({a, b, expected}) =&gt; {
+  expect(a + b).toBe(expected); <span class="hljs-comment">// will not be ran</span>
+});
+
+test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
+  expect(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>).toBe(<span class="hljs-literal">Infinity</span>);
+});
+</code></pre>
 <h3><a class="anchor" aria-hidden="true" id="testeachtablename-fn-timeout"></a><a href="#testeachtablename-fn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.each(table)(name, fn, timeout)</code></h3>
 <p>Also under the alias: <code>it.each(table)(name, fn)</code> and <code>it.each`table`(name, fn)</code></p>
 <p>Use <code>test.each</code> if you keep duplicating the same test with different data. <code>test.each</code> allows you to write the test once and pass data in.</p>
@@ -555,7 +700,7 @@ test(<span class="hljs-string">'will not be ran'</span>, () =&gt; {
   expect(<span class="hljs-number">1</span> / <span class="hljs-number">0</span>).toBe(<span class="hljs-literal">Infinity</span>);
 });
 </code></pre>
-<h4><a class="anchor" aria-hidden="true" id="-testonlyeachtablename-fn-"></a><a href="#-testonlyeachtablename-fn-" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.only.each`table`(name, fn)</code></h4>
+<h4><a class="anchor" aria-hidden="true" id="-testonlyeachtablename-fn--1"></a><a href="#-testonlyeachtablename-fn--1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.only.each`table`(name, fn)</code></h4>
 <pre><code class="hljs css language-js">test.only.each<span class="hljs-string">`
   a    | b    | expected
   <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">1</span>}</span> | <span class="hljs-subst">${<span class="hljs-number">2</span>}</span>
@@ -627,7 +772,7 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 
 test.todo(<span class="hljs-string">'add should be associative'</span>);
 </code></pre>
-</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/en/testing-frameworks"><span class="arrow-prev">← </span><span>Testing Web Frameworks</span></a><a class="docs-next button" href="/docs/en/expect"><span>Expect</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#methods">Methods</a></li><li><a href="#reference">Reference</a><ul class="toc-headings"><li><a href="#afterallfn-timeout"><code>afterAll(fn, timeout)</code></a></li><li><a href="#aftereachfn-timeout"><code>afterEach(fn, timeout)</code></a></li><li><a href="#beforeallfn-timeout"><code>beforeAll(fn, timeout)</code></a></li><li><a href="#beforeeachfn-timeout"><code>beforeEach(fn, timeout)</code></a></li><li><a href="#describename-fn"><code>describe(name, fn)</code></a></li><li><a href="#describeeachtablename-fn-timeout"><code>describe.each(table)(name, fn, timeout)</code></a></li><li><a href="#describeonlyname-fn"><code>describe.only(name, fn)</code></a></li><li><a href="#describeonlyeachtablename-fn"><code>describe.only.each(table)(name, fn)</code></a></li><li><a href="#describeskipname-fn"><code>describe.skip(name, fn)</code></a></li><li><a href="#describeskipeachtablename-fn"><code>describe.skip.each(table)(name, fn)</code></a></li><li><a href="#testname-fn-timeout"><code>test(name, fn, timeout)</code></a></li><li><a href="#testeachtablename-fn-timeout"><code>test.each(table)(name, fn, timeout)</code></a></li><li><a href="#testonlyname-fn-timeout"><code>test.only(name, fn, timeout)</code></a></li><li><a href="#testonlyeachtablename-fn"><code>test.only.each(table)(name, fn)</code></a></li><li><a href="#testskipname-fn"><code>test.skip(name, fn)</code></a></li><li><a href="#testskipeachtablename-fn"><code>test.skip.each(table)(name, fn)</code></a></li><li><a href="#testtodoname"><code>test.todo(name)</code></a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/en/getting-started.html">Getting Started</a><a href="/docs/en/snapshot-testing.html">Guides</a><a href="/docs/en/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://www.reactiflux.com/">Reactiflux</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/en/testing-frameworks"><span class="arrow-prev">← </span><span>Testing Web Frameworks</span></a><a class="docs-next button" href="/docs/en/expect"><span>Expect</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#methods">Methods</a></li><li><a href="#reference">Reference</a><ul class="toc-headings"><li><a href="#afterallfn-timeout"><code>afterAll(fn, timeout)</code></a></li><li><a href="#aftereachfn-timeout"><code>afterEach(fn, timeout)</code></a></li><li><a href="#beforeallfn-timeout"><code>beforeAll(fn, timeout)</code></a></li><li><a href="#beforeeachfn-timeout"><code>beforeEach(fn, timeout)</code></a></li><li><a href="#describename-fn"><code>describe(name, fn)</code></a></li><li><a href="#describeeachtablename-fn-timeout"><code>describe.each(table)(name, fn, timeout)</code></a></li><li><a href="#describeonlyname-fn"><code>describe.only(name, fn)</code></a></li><li><a href="#describeonlyeachtablename-fn"><code>describe.only.each(table)(name, fn)</code></a></li><li><a href="#describeskipname-fn"><code>describe.skip(name, fn)</code></a></li><li><a href="#describeskipeachtablename-fn"><code>describe.skip.each(table)(name, fn)</code></a></li><li><a href="#testname-fn-timeout"><code>test(name, fn, timeout)</code></a></li><li><a href="#testconcurrentname-fn-timeout"><code>test.concurrent(name, fn, timeout)</code></a></li><li><a href="#testconcurrenteachtablename-fn-timeout"><code>test.concurrent.each(table)(name, fn, timeout)</code></a></li><li><a href="#testconcurrentonlyeachtablename-fn"><code>test.concurrent.only.each(table)(name, fn)</code></a></li><li><a href="#testconcurrentskipeachtablename-fn"><code>test.concurrent.skip.each(table)(name, fn)</code></a></li><li><a href="#testeachtablename-fn-timeout"><code>test.each(table)(name, fn, timeout)</code></a></li><li><a href="#testonlyname-fn-timeout"><code>test.only(name, fn, timeout)</code></a></li><li><a href="#testonlyeachtablename-fn"><code>test.only.each(table)(name, fn)</code></a></li><li><a href="#testskipname-fn"><code>test.skip(name, fn)</code></a></li><li><a href="#testskipeachtablename-fn"><code>test.skip.each(table)(name, fn)</code></a></li><li><a href="#testtodoname"><code>test.todo(name)</code></a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/en/getting-started.html">Getting Started</a><a href="/docs/en/snapshot-testing.html">Guides</a><a href="/docs/en/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://www.reactiflux.com/">Reactiflux</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;
@@ -644,6 +789,6 @@ test.todo(<span class="hljs-string">'add should be associative'</span>);
                 apiKey: '833906d7486e4059359fa58823c4ef56',
                 indexName: 'jest',
                 inputSelector: '#search_input_react',
-                algoliaOptions: {"facetFilters":["language:en","version:26.2"]}
+                algoliaOptions: {"facetFilters":["language:en","version:26.4"]}
               });
             </script></body></html>

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="uk"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Configuring Jest · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Jest&#x27;s configuration can be defined in the `package.json` file of your project, or through a `jest.config.js` file or through the `--config &lt;path/to/file.js|cjs|mjs|json&gt;` option. If you&#x27;d like to use your `package.json` to store Jest&#x27;s config, the `&quot;jest&quot;` key should be used on the top level so Jest will know how to find your settings:"/><meta name="docsearch:version" content="26.2"/><meta name="docsearch:language" content="uk"/><meta property="og:title" content="Configuring Jest · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="Jest&#x27;s configuration can be defined in the `package.json` file of your project, or through a `jest.config.js` file or through the `--config &lt;path/to/file.js|cjs|mjs|json&gt;` option. If you&#x27;d like to use your `package.json` to store Jest&#x27;s config, the `&quot;jest&quot;` key should be used on the top level so Jest will know how to find your settings:"/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+<!DOCTYPE html><html lang="uk"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Configuring Jest · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Jest&#x27;s configuration can be defined in the `package.json` file of your project, or through a `jest.config.js` file or through the `--config &lt;path/to/file.js|cjs|mjs|json&gt;` option. If you&#x27;d like to use your `package.json` to store Jest&#x27;s config, the `&quot;jest&quot;` key should be used on the top level so Jest will know how to find your settings:"/><meta name="docsearch:version" content="26.4"/><meta name="docsearch:language" content="uk"/><meta property="og:title" content="Configuring Jest · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="Jest&#x27;s configuration can be defined in the `package.json` file of your project, or through a `jest.config.js` file or through the `--config &lt;path/to/file.js|cjs|mjs|json&gt;` option. If you&#x27;d like to use your `package.json` to store Jest&#x27;s config, the `&quot;jest&quot;` key should be used on the top level so Jest will know how to find your settings:"/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -6,7 +6,7 @@
 
               ga('create', 'UA-44373548-17', 'auto');
               ga('send', 'pageview');
-            </script><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/uk"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/uk/versions"><h3>26.2</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/uk/getting-started" target="_self">Документація</a></li><li class="siteNavGroupActive"><a href="/docs/uk/api" target="_self">API</a></li><li class=""><a href="/uk/help" target="_self">Довідка</a></li><li class=""><a href="/blog/" target="_self">Блог</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Українська</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/configuration">English</a></li><li><a href="/docs/ja/configuration">日本語</a></li><li><a href="/docs/es-ES/configuration">Español</a></li><li><a href="/docs/pt-BR/configuration">Português (Brasil)</a></li><li><a href="/docs/ro/configuration">Română</a></li><li><a href="/docs/ru/configuration">Русский</a></li><li><a href="/docs/zh-Hans/configuration">简体中文</a></li></ul></div></li><script>
+            </script><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/uk"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/uk/versions"><h3>26.4</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/uk/getting-started" target="_self">Документація</a></li><li class="siteNavGroupActive"><a href="/docs/uk/api" target="_self">API</a></li><li class=""><a href="/uk/help" target="_self">Довідка</a></li><li class=""><a href="/blog/" target="_self">Блог</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Українська</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/configuration">English</a></li><li><a href="/docs/ja/configuration">日本語</a></li><li><a href="/docs/es-ES/configuration">Español</a></li><li><a href="/docs/pt-BR/configuration">Português (Brasil)</a></li><li><a href="/docs/ro/configuration">Română</a></li><li><a href="/docs/ru/configuration">Русский</a></li><li><a href="/docs/zh-Hans/configuration">简体中文</a></li></ul></div></li><script>
         const languagesMenuItem = document.getElementById("languages-menu");
         const languagesDropDown = document.getElementById("languages-dropdown");
         languagesMenuItem.addEventListener("click", function(event) {
@@ -598,6 +598,7 @@ Jest: Coverage data for global was not found.
   <span class="hljs-attr">"extensions"</span>: [string],
   <span class="hljs-attr">"moduleDirectory"</span>: [string],
   <span class="hljs-attr">"paths"</span>: [string],
+  <span class="hljs-attr">"packageFilter"</span>: <span class="hljs-string">"function(pkg, pkgdir)"</span>,
   <span class="hljs-attr">"rootDir"</span>: [string]
 }
 </code></pre>
@@ -610,6 +611,31 @@ Jest: Coverage data for global was not found.
     "resolver": "browser-resolve"
   }
 }
+</code></pre>
+<p>By combining <code>defaultResolver</code> and <code>packageFilter</code> we can implement a <code>package.json</code> &quot;pre-processor&quot; that allows us to change how the default resolver will resolve modules. For example, imagine we want to use the field <code>&quot;module&quot;</code> if it is present, otherwise fallback to <code>&quot;main&quot;</code>:</p>
+<pre><code class="hljs css language-json">{
+  ...
+  "jest": {
+    "resolver": "my-module-resolve"
+  }
+}
+</code></pre>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// my-module-resolve package</span>
+
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function">(<span class="hljs-params">request, options</span>) =&gt;</span> {
+  <span class="hljs-comment">// Call the defaultResolver, so we leverage its cache, error handling, etc.</span>
+  <span class="hljs-keyword">return</span> options.defaultResolver(request, {
+    ...options,
+    <span class="hljs-comment">// Use packageFilter to process parsed `package.json` before the resolution (see https://www.npmjs.com/package/resolve#resolveid-opts-cb)</span>
+    <span class="hljs-attr">packageFilter</span>: <span class="hljs-function"><span class="hljs-params">pkg</span> =&gt;</span> {
+      <span class="hljs-keyword">return</span> {
+        ...pkg,
+        <span class="hljs-comment">// Alter the value of `main` before resolving the package</span>
+        <span class="hljs-attr">main</span>: pkg.module || pkg.main,
+      };
+    },
+  });
+};
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="restoremocks-boolean"></a><a href="#restoremocks-boolean" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>restoreMocks</code> [boolean]</h3>
 <p>За замовчуванням: <code>false</code></p>
@@ -926,7 +952,7 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <p><em>Note: a transformer is only run once per file unless the file has changed. During the development of a transformer it can be useful to run Jest with <code>--no-cache</code> to frequently <a href="/docs/uk/troubleshooting#caching-issues">delete Jest's cache</a>.</em></p>
 <p><em>Note: when adding additional code transformers, this will overwrite the default config and <code>babel-jest</code> is no longer automatically loaded. If you want to use it to compile JavaScript or Typescript, it has to be explicitly defined by adding <code>{&quot;^.+\\.[jt]sx?$&quot;: &quot;babel-jest&quot;}</code> to the transform property. See <a href="https://github.com/facebook/jest/tree/master/packages/babel-jest#setup">babel-jest plugin</a></em></p>
 <h3><a class="anchor" aria-hidden="true" id="transformignorepatterns-arraystring"></a><a href="#transformignorepatterns-arraystring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>transformIgnorePatterns</code> [array&lt;string&gt;]</h3>
-<p>За замовчуванням: <code>[&quot;/node_modules/&quot;]</code></p>
+<p>Default: <code>[&quot;/node_modules/&quot;, &quot;\\.pnp\\.[^\\\/]+$&quot;]</code></p>
 <p>An array of regexp pattern strings that are matched against all source file paths before transformation. If the test path matches any of the patterns, it will not be transformed.</p>
 <p>Ці рядкові вирази зіставляються з повним шляхом. Use the <code>&lt;rootDir&gt;</code> string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories.</p>
 <p>Example: <code>[&quot;&lt;rootDir&gt;/bower_components/&quot;, &quot;&lt;rootDir&gt;/node_modules/&quot;]</code>.</p>
@@ -985,6 +1011,6 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
                 apiKey: '833906d7486e4059359fa58823c4ef56',
                 indexName: 'jest',
                 inputSelector: '#search_input_react',
-                algoliaOptions: {"facetFilters":["language:uk","version:26.2"]}
+                algoliaOptions: {"facetFilters":["language:uk","version:26.4"]}
               });
             </script></body></html>

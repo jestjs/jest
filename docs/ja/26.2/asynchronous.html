@@ -1,0 +1,182 @@
+<!DOCTYPE html><html lang="ja"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Testing Asynchronous Code · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="JavaScriptではコードを非同期に実行することがよくあります。 非同期的に動作するコードがある場合、Jestはテスト対象のコードがいつ完了したかを別のテストに進む前に知る必要があります。 Jestはこのことを処理する方法をいくつか持っています。"/><meta name="docsearch:version" content="26.2"/><meta name="docsearch:language" content="ja"/><meta property="og:title" content="Testing Asynchronous Code · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="JavaScriptではコードを非同期に実行することがよくあります。 非同期的に動作するコードがある場合、Jestはテスト対象のコードがいつ完了したかを別のテストに進む前に知る必要があります。 Jestはこのことを処理する方法をいくつか持っています。"/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/ja"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/ja/versions"><h3>26.2</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/ja/26.2/getting-started" target="_self">ドキュメント</a></li><li class="siteNavGroupActive"><a href="/docs/ja/26.2/api" target="_self">API</a></li><li class=""><a href="/ja/help" target="_self">ヘルプ</a></li><li class=""><a href="/blog/" target="_self">ブログ</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>日本語</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/26.2/asynchronous">English</a></li><li><a href="/docs/es-ES/26.2/asynchronous">Español</a></li><li><a href="/docs/pt-BR/26.2/asynchronous">Português (Brasil)</a></li><li><a href="/docs/ro/26.2/asynchronous">Română</a></li><li><a href="/docs/ru/26.2/asynchronous">Русский</a></li><li><a href="/docs/uk/26.2/asynchronous">Українська</a></li><li><a href="/docs/zh-Hans/26.2/asynchronous">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(event) {
+          event.preventDefault();
+
+          if (languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Introduction</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/using-matchers">Using Matchers</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/ja/26.2/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/snapshot-testing">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/dynamodb">Using with DynamoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/architecture">Architecture</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Framework Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/api">Globals</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ja/26.2/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/TestingAsyncCode.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Testing Asynchronous Code</h1></header><article><div><span><p>JavaScriptではコードを非同期に実行することがよくあります。 非同期的に動作するコードがある場合、Jestはテスト対象のコードがいつ完了したかを別のテストに進む前に知る必要があります。 Jestはこのことを処理する方法をいくつか持っています。</p>
+<h2><a class="anchor" aria-hidden="true" id="コールバック"></a><a href="#コールバック" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>コールバック</h2>
+<p>最も一般的な非同期処理のパターンはコールバックです。</p>
+<p>例えば データを取得して<code>callback(data)</code>を呼び出す<code>fetchData(callback)</code>関数があるとしましょう。 返ってくるデータが<code>'peanut butter'</code>という文字列であることをテストしたいとします。</p>
+<p>デフォルトでは、Jestは実行が終了するとテストを完了します。 そのため、このテストは意図したようには動作しません。</p>
+<pre><code class="hljs css language-js"><span class="hljs-comment">// 実行しないでください!</span>
+test(<span class="hljs-string">'the data is peanut butter'</span>, () =&gt; {
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback</span>(<span class="hljs-params">data</span>) </span>{
+    expect(data).toBe(<span class="hljs-string">'peanut butter'</span>);
+  }
+
+  fetchData(callback);
+});
+</code></pre>
+<p>問題は<code>fetchData</code>が完了した時点でテストも完了してしまい、コールバックが呼ばれないことです。</p>
+<p>これを修正する別の形の<code>test</code> があります。 テストを空の引数の関数の中に記述するのではなく、 <code>done</code>という１つの引数を利用します。 Jestは テストを終了する前に、<code>done</code> コールバックが呼ばれるまで待ちます。</p>
+<pre><code class="hljs css language-js">test(<span class="hljs-string">'the data is peanut butter'</span>, done =&gt; {
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback</span>(<span class="hljs-params">data</span>) </span>{
+    <span class="hljs-keyword">try</span> {
+      expect(data).toBe(<span class="hljs-string">'peanut butter'</span>);
+      done();
+    } <span class="hljs-keyword">catch</span> (error) {
+      done(error);
+    }
+  }
+
+  fetchData(callback);
+});
+</code></pre>
+<p><code>done()</code> が呼ばれない場合、お望み通りにテストが（タイムアウトにより）失敗します。</p>
+<p><code>expect</code> 文が失敗した場合、エラーがスローされて <code>done()</code> は呼び出されません。 テストログで失敗した理由を確認したい場合。 <code>try</code>ブロックで<code>expect</code> をラップし、 <code>catch</code> ブロック内でエラーを <code>done</code> に渡す必要があります。 そうしなければ、 <code>expect(data)</code> によってどの値が受信されたかを示さない不透明なタイムアウトエラーが起こるだけになります。</p>
+<h2><a class="anchor" aria-hidden="true" id="promises"></a><a href="#promises" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Promises</h2>
+<p>promiseを使用するコードであれば、非同期テストをもっと簡単に処理する方法があります。 テストからpromiseを返すと、Jestはそのpromiseがresolveされるまで待機します。 promiseがrejectされた場合は、テストは自動的に失敗します。</p>
+<p>例えば, コールバックを使用せずに、resolveしたときに文字列 <code>'peanut butter'</code>を返すpromiseの<code>fetchData</code>を呼ぶとします。 次のようにテストできます。</p>
+<pre><code class="hljs css language-js">test(<span class="hljs-string">'the data is peanut butter'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> fetchData().then(<span class="hljs-function"><span class="hljs-params">data</span> =&gt;</span> {
+    expect(data).toBe(<span class="hljs-string">'peanut butter'</span>);
+  });
+});
+</code></pre>
+<p>promiseを返していることを確認してください。- もしこの <code>return</code> 文を省略した場合、あなたのテストは、<code>fetchData</code>がresolveされpromiseが返ってくる前に実行され、then() 内のコールバックが実行される前に完了してしまいます。</p>
+<p>promiseがrejectされることを期待するケースでは <code>.catch</code> メソッドを使用してください。 想定した数のアサーションが呼ばれたことを確認するため、<code>expect.assertions</code>を必ず追加して下さい。 Otherwise, a fulfilled promise would not fail the test.</p>
+<pre><code class="hljs css language-js">test(<span class="hljs-string">'the fetch fails with an error'</span>, () =&gt; {
+  expect.assertions(<span class="hljs-number">1</span>);
+  <span class="hljs-keyword">return</span> fetchData().catch(<span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> expect(e).toMatch(<span class="hljs-string">'error'</span>));
+});
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="resolves--rejects"></a><a href="#resolves--rejects" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.resolves</code> / <code>.rejects</code></h2>
+<p>またexpect文で<code>.resolves</code>マッチャを使用する事もでき、Jestはpromiseがresolveされるまで待機します。 promiseがrejectされた場合は、テストは自動的に失敗します。</p>
+<pre><code class="hljs css language-js">test(<span class="hljs-string">'the data is peanut butter'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> expect(fetchData()).resolves.toBe(<span class="hljs-string">'peanut butter'</span>);
+});
+</code></pre>
+<p>アサーションを返していることを確認してください。- もしこの <code>return</code> 文を省略した場合、あなたのテストは、<code>fetchData</code>がresolveされpromiseが返ってくる前に実行され、then() 内のコールバックが実行される前に完了してしまいます。</p>
+<p>promiseがrejectされることを期待するケースでは<code>.rejects</code> マッチャを使用してください。 <code>.resolves</code>マッチャと似た動作をします。 promiseが成功した場合は、テストは自動的に失敗します。</p>
+<pre><code class="hljs css language-js">test(<span class="hljs-string">'the fetch fails with an error'</span>, () =&gt; {
+  <span class="hljs-keyword">return</span> expect(fetchData()).rejects.toMatch(<span class="hljs-string">'error'</span>);
+});
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="asyncawait"></a><a href="#asyncawait" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Async/Await</h2>
+<p>また、<code>async</code> と <code>await</code>をテストで使用できます。 非同期テストを書くには、 <code>test</code>に渡す関数の前に<code>async</code> キーワードを記述するだけです。 例えば、同じ<code>fetchData</code> シナリオは次のようにテストできます:</p>
+<pre><code class="hljs css language-js">test(<span class="hljs-string">'the data is peanut butter'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> data = <span class="hljs-keyword">await</span> fetchData();
+  expect(data).toBe(<span class="hljs-string">'peanut butter'</span>);
+});
+
+test(<span class="hljs-string">'the fetch fails with an error'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  expect.assertions(<span class="hljs-number">1</span>);
+  <span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">await</span> fetchData();
+  } <span class="hljs-keyword">catch</span> (e) {
+    expect(e).toMatch(<span class="hljs-string">'error'</span>);
+  }
+});
+</code></pre>
+<p><code>async</code> と <code>await</code> を <code>.resolves</code> または <code>.reject</code> と組み合わせることができます。</p>
+<pre><code class="hljs css language-js">test(<span class="hljs-string">'the data is peanut butter'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">await</span> expect(fetchData()).resolves.toBe(<span class="hljs-string">'peanut butter'</span>);
+});
+
+test(<span class="hljs-string">'the fetch fails with an error'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">await</span> expect(fetchData()).rejects.toThrow(<span class="hljs-string">'error'</span>);
+});
+</code></pre>
+<p>これらのケースでは <code>async</code> や <code>await</code> は事実上、promiseを使用した例と同じロジックの糖衣構文です。</p>
+<p>これらの形式のどれかが他よりも優れているということはなく、コードベースや場合によっては同じファイル内でも混在・合わせて使うことができます。 どのスタイルでテストを簡単にできるか次第なのです。</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/ja/26.2/using-matchers"><span class="arrow-prev">← </span><span>Using Matchers</span></a><a class="docs-next button" href="/docs/ja/26.2/setup-teardown"><span>Setup and Teardown</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#コールバック">コールバック</a></li><li><a href="#promises">Promises</a></li><li><a href="#resolves--rejects"><code>.resolves</code> / <code>.rejects</code></a></li><li><a href="#asyncawait">Async/Await</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/ja/getting-started.html">Getting Started</a><a href="/docs/ja/snapshot-testing.html">Guides</a><a href="/docs/ja/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://www.reactiflux.com/">Reactiflux</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {"facetFilters":["language:ja","version:26.2"]}
+              });
+            </script></body></html>
