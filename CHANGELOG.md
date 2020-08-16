@@ -7,6 +7,7 @@
 ### Fixes
 
 ### Chore & Maintenance
+- `[docs]` Add docs for using mocks in TypeScript([#10415](https://github.com/facebook/jest/pull/10415))
 
 ### Performance
 
