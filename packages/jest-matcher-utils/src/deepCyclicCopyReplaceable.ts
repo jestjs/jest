@@ -55,25 +55,41 @@ function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, any>): T {
 
   cycles.set(object, newObject);
 
-  Object.keys(descriptors).forEach(key => {
-    if (descriptors[key].enumerable) {
-      descriptors[key] = {
-        configurable: true,
-        enumerable: true,
-        value: deepCyclicCopyReplaceable(
-          // this accesses the value or getter, depending. We just care about the value anyways, and this allows us to not mess with accessors
-          // it has the side effect of invoking the getter here though, rather than copying it over
-          (object as Record<string, unknown>)[key],
-          cycles,
-        ),
-        writable: true,
-      };
-    } else {
-      delete descriptors[key];
-    }
-  });
+  const filterEnumerable = (descriptors: {[x: string]: PropertyDescriptor}) => (
+    key: string,
+  ) => descriptors[key].enumerable;
+  const setDescriptor = (object: {[x: string]: any}) => (
+    newDescriptors: {[x: string]: PropertyDescriptor},
+    key: string,
+  ) => {
+    newDescriptors[key] = {
+      configurable: true,
+      enumerable: true,
+      value: deepCyclicCopyReplaceable(
+        // this accesses the value or getter, depending. We just care about the value anyways, and this allows us to not mess with accessors
+        // it has the side effect of invoking the getter here though, rather than copying it over
+        (object as Record<string | symbol, unknown>)[key],
+        cycles,
+      ),
+      writable: true,
+    };
+    return newDescriptors;
+  };
 
-  return Object.defineProperties(newObject, descriptors);
+  const newStringKeyDescriptors = Object.keys(descriptors)
+    .filter(filterEnumerable(descriptors))
+    .reduce(setDescriptor(object), {});
+  const newSymbolKeyDescriptors = Object.getOwnPropertySymbols(descriptors)
+    //@ts-expect-error because typescript do not support symbol key in object
+    .filter(filterEnumerable(descriptors))
+    //@ts-expect-error because typescript do not support symbol key in object
+    .reduce(setDescriptor(object), {});
+
+  return Object.defineProperties(newObject, {
+    ...newStringKeyDescriptors,
+    //@ts-expect-error because typescript do not support symbol key in object
+    ...newSymbolKeyDescriptors,
+  });
 }
 
 function deepCyclicCopyArray<T>(array: Array<T>, cycles: WeakMap<any, any>): T {
