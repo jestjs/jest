@@ -45,12 +45,12 @@ it('adds correct location info when provided with flag', () => {
   });
 
   expect(assertions[3].location).toEqual({
-    column: 22,
+    column: isJestCircusRun() ? 1 : 22,
     line: 24,
   });
 
   expect(assertions[4].location).toEqual({
-    column: 22,
+    column: isJestCircusRun() ? 1 : 22,
     line: 24,
   });
 
@@ -72,12 +72,12 @@ it('adds correct location info when provided with flag', () => {
   });
 
   expect(assertions[8].location).toEqual({
-    column: isJestCircusRun() ? 25 : 24,
+    column: isJestCircusRun() ? 3 : 24,
     line: 41,
   });
 
   expect(assertions[9].location).toEqual({
-    column: isJestCircusRun() ? 25 : 24,
+    column: isJestCircusRun() ? 3 : 24,
     line: 41,
   });
 });

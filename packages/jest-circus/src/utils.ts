@@ -300,7 +300,11 @@ export const makeSingleTestResult = (
   let location = null;
   if (includeTestLocationInResult) {
     const stackLine = test.asyncError.stack.split('\n')[1];
-    const parsedLine = stackUtils.parseLine(stackLine);
+    let parsedLine = stackUtils.parseLine(stackLine);
+    if (parsedLine?.file?.includes('/jest-each/')) {
+      const stackLine = test.asyncError.stack.split('\n')[4];
+      parsedLine = stackUtils.parseLine(stackLine);
+    }
     if (
       parsedLine &&
       typeof parsedLine.column === 'number' &&
