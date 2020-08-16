@@ -47,38 +47,26 @@ async function jasmine2(
   // TODO: Remove config option if V8 exposes some way of getting location of caller
   // in a future version
   if (config.testLocationInResults === true) {
-    const originalIt = environment.global.it;
-    environment.global.it = ((...args) => {
-      const stack = getCallsite(1, runtime.getSourceMaps());
-      const it = originalIt(...args);
+    function wrapIt<T extends Global.ItBase>(original: T): T {
+      const wrapped = (
+        testName: Global.TestName,
+        fn: Global.TestFn,
+        timeout?: number,
+      ) => {
+        const stack = getCallsite(1, runtime.getSourceMaps());
+        const it = original(testName, fn, timeout);
 
-      // @ts-expect-error
-      it.result.__callsite = stack;
+        // @ts-expect-error
+        it.result.__callsite = stack;
 
-      return it;
-    }) as Global.Global['it'];
+        return it;
+      };
+      return (wrapped as any) as T;
+    }
 
-    const originalXit = environment.global.xit;
-    environment.global.xit = ((...args) => {
-      const stack = getCallsite(1, runtime.getSourceMaps());
-      const xit = originalXit(...args);
-
-      // @ts-expect-error
-      xit.result.__callsite = stack;
-
-      return xit;
-    }) as Global.Global['xit'];
-
-    const originalFit = environment.global.fit;
-    environment.global.fit = ((...args) => {
-      const stack = getCallsite(1, runtime.getSourceMaps());
-      const fit = originalFit(...args);
-
-      // @ts-expect-error
-      fit.result.__callsite = stack;
-
-      return fit;
-    }) as Global.Global['fit'];
+    environment.global.it = wrapIt(environment.global.it);
+    environment.global.xit = wrapIt(environment.global.xit);
+    environment.global.fit = wrapIt(environment.global.fit);
   }
 
   jasmineAsyncInstall(globalConfig, environment.global);
