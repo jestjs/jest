@@ -53,9 +53,12 @@ async function jasmine2(
         fn: Global.TestFn,
         timeout?: number,
       ) => {
-        const stack = getCallsite(1, runtime.getSourceMaps());
+        let stack = getCallsite(1, runtime.getSourceMaps());
         const it = original(testName, fn, timeout);
 
+        if (stack.getFileName()?.includes('/jest-each/')) {
+          stack = getCallsite(4, runtime.getSourceMaps());
+        }
         // @ts-expect-error
         it.result.__callsite = stack;
 
