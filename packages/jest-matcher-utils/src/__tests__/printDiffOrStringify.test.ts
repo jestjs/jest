@@ -50,6 +50,29 @@ describe('printDiffOrStringify', () => {
     expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
   });
 
+  test('object contain readonly symbol key object', () => {
+    const expected = {b: 2};
+    const received = {b: 1};
+    const symbolKey = Symbol.for('key');
+    Object.defineProperty(expected, symbolKey, {
+      configurable: true,
+      enumerable: true,
+      value: {
+        a: 1,
+      },
+      writable: false,
+    });
+    Object.defineProperty(received, symbolKey, {
+      configurable: true,
+      enumerable: true,
+      value: {
+        a: 1,
+      },
+      writable: false,
+    });
+    expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
+  });
+
   describe('MAX_DIFF_STRING_LENGTH', () => {
     const lessChange = INVERTED_COLOR('single ');
     const less = 'single line';
@@ -243,29 +266,6 @@ describe('printDiffOrStringify', () => {
         ['c', 2],
       ]);
       received.set('circular', received);
-      expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
-    });
-
-    test('object contain readonly symbol key object', () => {
-      const expected = {b: 2};
-      const received = {b: 1};
-      const symbolKey = Symbol.for('key');
-      Object.defineProperty(expected, symbolKey, {
-        configurable: true,
-        enumerable: true,
-        value: {
-          a: 1,
-        },
-        writable: false,
-      });
-      Object.defineProperty(received, symbolKey, {
-        configurable: true,
-        enumerable: true,
-        value: {
-          a: 1,
-        },
-        writable: false,
-      });
       expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
     });
   });
