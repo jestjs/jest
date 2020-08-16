@@ -300,10 +300,11 @@ export const makeSingleTestResult = (
 
   let location = null;
   if (includeTestLocationInResult) {
-    const stackLine = test.asyncError.stack.split('\n')[1];
+    const stackLines = test.asyncError.stack.split('\n');
+    const stackLine = stackLines[1];
     let parsedLine = stackUtils.parseLine(stackLine);
     if (parsedLine?.file?.includes(`${path.sep}jest-each${path.sep}`)) {
-      const stackLine = test.asyncError.stack.split('\n')[4];
+      const stackLine = stackLines[4];
       parsedLine = stackUtils.parseLine(stackLine);
     }
     if (
