@@ -316,3 +316,133 @@ test('async test', async () => {
   await asyncMock(); // throws "Async error"
 });
 ```
+
+## TypeScript
+
+Jest itself is written in [TypeScript](https://www.typescriptlang.org).
+
+If you are using [Create React App](https://create-react-app.dev) then the [TypeScript template](https://create-react-app.dev/docs/adding-typescript/) has everything you need to start writing tests in TypeScript.
+
+Otherwise, please see our [Getting Started](https://jestjs.io/docs/en/getting-started#using-typescript) guide for to get setup with TypeScript.
+
+You can see an example of using Jest with TypeScript in our [GitHub repository](https://github.com/facebook/jest/tree/master/examples/typescript).
+
+### `jest.MockedFunction`
+
+> `jest.MockedFunction` is available in the `@types/jest` module from version `24.9.0`.
+
+The following examples will assume you have an understanding of how [Jest mock functions work with JavaScript](https://jestjs.io/docs/en/mock-functions).
+
+You can use `jest.MockedFunction` to represent a function that has been replaced by a Jest mock.
+
+Example using [automatic `jest.mock`](https://jestjs.io/docs/en/jest-object#jestmockmodulename-factory-options):
+
+```ts
+// Assume `add` is imported and used within `calculate`.
+import add from './add';
+import calculate from './calc';
+
+jest.mock('./add');
+
+// Our mock of `add` is now fully typed
+const mockAdd = add as jest.MockedFunction<typeof add>;
+
+test('calculate calls add', () => {
+  calculate('Add', 1, 2);
+
+  expect(mockAdd).toBeCalledTimes(1);
+  expect(mockAdd).toBeCalledWith(1, 2);
+});
+```
+
+Example using [`jest.fn`](https://jestjs.io/docs/en/jest-object#jestfnimplementation):
+
+```ts
+// Here `add` is imported for its type
+import add from './add';
+import calculate from './calc';
+
+test('calculate calls add', () => {
+  // Create a new mock that can be used in place of `add`.
+  const mockAdd = jest.fn() as jest.MockedFunction<typeof add>;
+
+  // Note: You can use the `jest.fn` type directly like this if you want:
+  // const mockAdd = jest.fn<ReturnType<typeof add>, Parameters<typeof add>>();
+  // `jest.MockedFunction` is a more friendly shortcut.
+
+  // Now we can easily set up mock implementations.
+  // All the `.mock*` API can now give you proper types for `add`.
+  // https://jestjs.io/docs/en/mock-function-api
+
+  // `.mockImplementation` can now infer that `a` and `b` are `number`
+  // and that the returned value is a `number`.
+  mockAdd.mockImplementation((a, b) => {
+    // Yes, this mock is still adding two numbers but imagine this
+    // was a complex function we are mocking.
+    return  a + b
+  }));
+
+  // `mockAdd` is properly typed and therefore accepted by
+  // anything requiring `add`.
+  calculate(mockAdd, 1 , 2);
+
+  expect(mockAdd).toBeCalledTimes(1);
+  expect(mockAdd).toBeCalledWith(1, 2);
+})
+```
+
+### `jest.MockedClass`
+
+> `jest.MockedClass` is available in the `@types/jest` module from version `24.9.0`.
+
+The following examples will assume you have an understanding of how [Jest mock classes work with JavaScript](https://jestjs.io/docs/en/es6-class-mocks).
+
+You can use `jest.MockedClass` to represent a class that has been replaced by a Jest mock.
+
+Converting the [ES6 Class automatic mock example](https://jestjs.io/docs/en/es6-class-mocks#automatic-mock) would look like this:
+
+```ts
+import SoundPlayer from '../sound-player';
+import SoundPlayerConsumer from '../sound-player-consumer';
+
+jest.mock('../sound-player'); // SoundPlayer is now a mock constructor
+
+const SoundPlayerMock = SoundPlayer as jest.MockedClass<typeof SoundPlayer>;
+
+beforeEach(() => {
+  // Clear all instances and calls to constructor and all methods:
+  SoundPlayerMock.mockClear();
+});
+
+it('We can check if the consumer called the class constructor', () => {
+  const soundPlayerConsumer = new SoundPlayerConsumer();
+  expect(SoundPlayerMock).toHaveBeenCalledTimes(1);
+});
+
+it('We can check if the consumer called a method on the class instance', () => {
+  // Show that mockClear() is working:
+  expect(SoundPlayerMock).not.toHaveBeenCalled();
+
+  const soundPlayerConsumer = new SoundPlayerConsumer();
+  // Constructor should have been called again:
+  expect(SoundPlayerMock).toHaveBeenCalledTimes(1);
+
+  const coolSoundFileName = 'song.mp3';
+  soundPlayerConsumer.playSomethingCool();
+
+  // mock.instances is available with automatic mocks:
+  const mockSoundPlayerInstance = SoundPlayerMock.mock.instances[0];
+
+  // However, it will not allow access to `.mock` in TypeScript as it
+  // is returning `SoundPlayer`. Instead, you can check the calls to a
+  // method like this fully typed:
+  expect(SoundPlayerMock.prototype.playSoundFile.mock.calls[0][0]).toEqual(
+    coolSoundFileName,
+  );
+  // Equivalent to above check:
+  expect(SoundPlayerMock.prototype.playSoundFile).toHaveBeenCalledWith(
+    coolSoundFileName,
+  );
+  expect(SoundPlayerMock.prototype.playSoundFile).toHaveBeenCalledTimes(1);
+});
+```
