@@ -142,6 +142,19 @@ exports[`printDiffOrStringify asymmetricMatcher object in array 1`] = `
 <d>  ]</>
 `;
 
+exports[`printDiffOrStringify asymmetricMatcher object contain readonly symbol key object 1`] = `
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<g>-   "b": 2,</>
+<r>+   "b": 1,</>
+<d>    Symbol(key): Object {</>
+<d>      "a": 1,</>
+<d>    },</>
+<d>  }</>
+`;
+
 exports[`printDiffOrStringify asymmetricMatcher transitive circular 1`] = `
 <g>- Expected  - 1</>
 <r>+ Received  + 1</>
