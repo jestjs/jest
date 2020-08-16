@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as path from 'path';
 import type {Circus} from '@jest/types';
 import {convertDescriptorToString, formatTime} from 'jest-util';
 import isGeneratorFn from 'is-generator-fn';
@@ -301,7 +302,7 @@ export const makeSingleTestResult = (
   if (includeTestLocationInResult) {
     const stackLine = test.asyncError.stack.split('\n')[1];
     let parsedLine = stackUtils.parseLine(stackLine);
-    if (parsedLine?.file?.includes('/jest-each/')) {
+    if (parsedLine?.file?.includes(`${path.sep}jest-each${path.sep}`)) {
       const stackLine = test.asyncError.stack.split('\n')[4];
       parsedLine = stackUtils.parseLine(stackLine);
     }

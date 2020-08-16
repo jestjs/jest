@@ -56,7 +56,7 @@ async function jasmine2(
         let stack = getCallsite(1, runtime.getSourceMaps());
         const it = original(testName, fn, timeout);
 
-        if (stack.getFileName()?.includes('/jest-each/')) {
+        if (stack.getFileName()?.includes(`${path.sep}jest-each${path.sep}`)) {
           stack = getCallsite(4, runtime.getSourceMaps());
         }
         // @ts-expect-error
