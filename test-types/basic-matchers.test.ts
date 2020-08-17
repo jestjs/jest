@@ -2,7 +2,7 @@
  * @type ./empty.d.ts
  */
 
-import {expectError, expectType} from 'tsd';
+import {expectError, expectType} from 'mlh-tsd';
 import {expect, jest} from '@jest/globals';
 import type {Mock} from 'jest-mock';
 

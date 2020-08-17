@@ -2,7 +2,7 @@
  * @type ./empty.d.ts
  */
 
-import {expectError, expectType} from 'tsd';
+import {expectError, expectType} from 'mlh-tsd';
 import {jest} from '@jest/globals';
 
 const customMatcherFactories: jasmine.CustomMatcherFactories = {};

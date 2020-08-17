@@ -2,7 +2,7 @@
  * @type ./empty.d.ts
  */
 
-import {expectType} from 'tsd';
+import {expectType} from 'mlh-tsd';
 
 expectType<any>(beforeAll(() => {}));
 expectType<any>(

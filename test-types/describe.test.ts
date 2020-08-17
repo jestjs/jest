@@ -2,7 +2,7 @@
  * @type ./empty.d.ts
  */
 
-// import {expectType} from 'tsd';
+// import {expectType} from 'mlh-tsd';
 // import {describe, fdescribe, xdescribe} from '@jest/globals';
 
 // FIXME: Errors in every sinlge line

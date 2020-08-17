@@ -2,7 +2,7 @@
  * @type ./empty.d.ts
  */
 
-import {expectType} from 'tsd';
+import {expectType} from 'mlh-tsd';
 import {fit, it, xit} from '@jest/globals';
 import type {DoneFn} from '@jest/types/src/Global';
 
