@@ -4,7 +4,7 @@
 
 import {expectType} from 'mlh-tsd';
 import {fit, it, xit} from '@jest/globals';
-import type {DoneFn} from '@jest/types/src/Global';
+import type {Global} from '@jest/types';
 
 expectType<void>(it('name', () => {}));
 expectType<void>(it('name', async () => {}));
@@ -12,7 +12,7 @@ expectType<void>(it('name', () => {}, 9001));
 expectType<void>(it('name', async () => {}, 9001));
 expectType<void>(
   it('name', callback => {
-    expectType<DoneFn | undefined>(callback);
+    expectType<Global.DoneFn | undefined>(callback);
   }, 9001),
 );
 
@@ -22,7 +22,7 @@ expectType<void>(it.only('name', () => {}, 9001));
 expectType<void>(it.only('name', async () => {}, 9001));
 expectType<void>(
   it.only('name', callback => {
-    expectType<DoneFn | undefined>(callback);
+    expectType<Global.DoneFn | undefined>(callback);
   }, 9001),
 );
 
@@ -32,7 +32,7 @@ expectType<void>(it.skip('name', () => {}, 9001));
 expectType<void>(it.skip('name', async () => {}, 9001));
 expectType<void>(
   it.skip('name', callback => {
-    expectType<DoneFn | undefined>(callback);
+    expectType<Global.DoneFn | undefined>(callback);
   }, 9001),
 );
 
@@ -45,7 +45,7 @@ expectType<void>(it.todo('name', async () => {}, 9001));
 //   it.todo(
 //     'name',
 //     callback => {
-//       expectType<DoneFn | undefined>(callback);
+//       expectType<Global.DoneFn | undefined>(callback);
 //     },
 //     9001,
 //   ),
@@ -74,7 +74,7 @@ expectType<void>(fit('name', () => {}, 9001));
 expectType<void>(fit('name', async () => {}, 9001));
 expectType<void>(
   fit('name', callback => {
-    expectType<DoneFn | undefined>(callback);
+    expectType<Global.DoneFn | undefined>(callback);
   }, 9001),
 );
 
@@ -125,7 +125,7 @@ expectType<void>(
 //   fit.concurrent(
 //     'name',
 //     callback => {
-//       expectType<DoneFn | undefined>(callback);
+//       expectType<Global.DoneFn | undefined>(callback);
 //     },
 //     9001,
 //   ),
@@ -135,10 +135,10 @@ expectType<void>(xit('name', () => {}));
 expectType<void>(xit('name', async () => {}));
 expectType<void>(xit('name', () => {}, 9001));
 expectType<void>(xit('name', async () => {}, 9001));
-// FIXME: Argument of type '(callback: DoneFn) => void' is not assignable to parameter of type 'TestFn'.
+// FIXME: Argument of type '(callback: Global.DoneFn) => void' is not assignable to parameter of type 'TestFn'.
 // expectType<void>(
-//   xit('name', (callback: DoneFn) => {
-//     expectType<DoneFn | undefined>(callback);
+//   xit('name', (callback: Global.DoneFn) => {
+//     expectType<Global.DoneFn | undefined>(callback);
 //   }, 9001),
 // );
 
@@ -148,8 +148,8 @@ expectType<void>(xit('name', async () => {}, 9001));
 // expectType<void>(xit.only('name', () => {}, 9001));
 // expectType<void>(xit.only('name', async () => {}, 9001));
 // expectType<void>(
-//   xit.only('name', (callback: DoneFn) => {
-//     expectType<DoneFn | undefined>(callback);
+//   xit.only('name', (callback: Global.DoneFn) => {
+//     expectType<Global.DoneFn | undefined>(callback);
 //   }, 9001),
 // );
 
@@ -159,8 +159,8 @@ expectType<void>(xit('name', async () => {}, 9001));
 // expectType<void>(xit.skip('name', () => {}, 9001));
 // expectType<void>(xit.skip('name', async () => {}, 9001));
 // expectType<void>(
-//   xit.skip('name', (callback: DoneFn) => {
-//     expectType<DoneFn | undefined>(callback);
+//   xit.skip('name', (callback: Global.DoneFn) => {
+//     expectType<Global.DoneFn | undefined>(callback);
 //   }, 9001),
 // );
 
@@ -172,8 +172,8 @@ expectType<void>(xit('name', async () => {}, 9001));
 // expectType<void>(
 //   xit.todo(
 //     'name',
-//     (callback: DoneFn) => {
-//       expectType<DoneFn | undefined>(callback);
+//     (callback: Global.DoneFn) => {
+//       expectType<Global.DoneFn | undefined>(callback);
 //     },
 //     9001,
 //   ),
@@ -187,8 +187,8 @@ expectType<void>(xit('name', async () => {}, 9001));
 // expectType<void>(
 //   xit.concurrent(
 //     'name',
-//     (callback: DoneFn) => {
-//       expectType<DoneFn | undefined>(callback);
+//     (callback: Global.DoneFn) => {
+//       expectType<Global.DoneFn | undefined>(callback);
 //     },
 //     9001,
 //   ),
