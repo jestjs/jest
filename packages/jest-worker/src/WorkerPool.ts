@@ -21,7 +21,7 @@ const canUseWorkerThreads = () => {
   try {
     require('worker_threads');
     return true;
-  } catch (Exception e) {
+  } catch (e) {
     return false;
   }
 };
