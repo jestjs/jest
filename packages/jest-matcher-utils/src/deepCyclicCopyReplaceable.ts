@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {plugins} from 'pretty-format';
+
 const builtInObject = [
   Array,
   Buffer,
@@ -42,6 +44,9 @@ export default function deepCyclicCopyReplaceable<T>(
     return deepCyclicCopyMap(value, cycles);
   } else if (isBuiltInObject(value)) {
     return value;
+  } else if (plugins.DOMElement.test(value)) {
+    //@ts-expect-error skip casting to Node
+    return value.cloneNode(true);
   } else {
     return deepCyclicCopyObject(value, cycles);
   }
