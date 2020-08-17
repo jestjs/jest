@@ -5,11 +5,7 @@
 import {expectError, expectType} from 'mlh-tsd';
 import {jest} from '@jest/globals';
 
-const customMatcherFactories: jasmine.CustomMatcherFactories = {};
-
-expectType<void>(jest.addMatchers(customMatcherFactories));
 expectType<void>(jest.addMatchers({}));
-expectType<void>(jest.addMatchers(customMatcherFactories));
 expectType<typeof jest>(jest.autoMockOff());
 expectType<typeof jest>(jest.autoMockOn());
 expectType<typeof jest>(jest.clearAllMocks());
