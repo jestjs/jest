@@ -12,7 +12,7 @@ const isWorkerThread = () => {
     // `Require` here to support Node v10
     const {isMainThread, parentPort} = require('worker_threads');
     return !isMainThread && parentPort;
-  } catch {
+  } catch (Exception e) {
     return false;
   }
 };
@@ -29,7 +29,7 @@ const messageParent = (
     } else if (typeof parentProcess.send === 'function') {
       parentProcess.send([PARENT_MESSAGE_CUSTOM, message]);
     }
-  } catch {
+  } catch (Exception e) {
     throw new Error('"messageParent" can only be used inside a worker');
   }
 };
