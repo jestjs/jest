@@ -43,13 +43,20 @@ test('convert accessor descriptor into value descriptor', () => {
   });
 });
 
-test('skips non-enumerables', () => {
+test('shuold not skips non-enumerables', () => {
   const obj = {};
   Object.defineProperty(obj, 'foo', {enumerable: false, value: 'bar'});
 
   const copy = deepCyclicCopyReplaceable(obj);
 
-  expect(Object.getOwnPropertyDescriptors(copy)).toEqual({});
+  expect(Object.getOwnPropertyDescriptors(copy)).toEqual({
+    foo: {
+      configurable: true,
+      enumerable: false,
+      value: 'bar',
+      writable: true,
+    },
+  });
 });
 
 test('copies symbols', () => {
