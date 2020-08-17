@@ -22,6 +22,8 @@ import type {Jasmine as JestJasmine} from './types';
 
 const JASMINE = require.resolve('./jasmine/jasmineLight');
 
+const jestEachBuildDir = path.dirname(require.resolve('jest-each'));
+
 async function jasmine2(
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
@@ -57,7 +59,7 @@ async function jasmine2(
         let stack = getCallsite(1, sourcemaps);
         const it = original(testName, fn, timeout);
 
-        if (stack.getFileName()?.includes(`${path.sep}jest-each${path.sep}`)) {
+        if (stack.getFileName()?.startsWith(jestEachBuildDir)) {
           stack = getCallsite(4, sourcemaps);
         }
         // @ts-expect-error

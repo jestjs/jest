@@ -18,6 +18,8 @@ import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
+const jestEachBuildDir = path.dirname(require.resolve('jest-each'));
+
 export const makeDescribe = (
   name: Circus.BlockName,
   parent?: Circus.DescribeBlock,
@@ -303,7 +305,7 @@ export const makeSingleTestResult = (
     const stackLines = test.asyncError.stack.split('\n');
     const stackLine = stackLines[1];
     let parsedLine = stackUtils.parseLine(stackLine);
-    if (parsedLine?.file?.includes(`${path.sep}jest-each${path.sep}`)) {
+    if (parsedLine?.file?.startsWith(jestEachBuildDir)) {
       const stackLine = stackLines[4];
       parsedLine = stackUtils.parseLine(stackLine);
     }
