@@ -43,6 +43,7 @@ module.exports = {
   ],
   testEnvironment: './packages/jest-environment-node',
   testPathIgnorePatterns: [
+    '/test-types/',
     '/__arbitraries__/',
     '/node_modules/',
     '/examples/',
