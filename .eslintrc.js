@@ -119,7 +119,6 @@ module.exports = {
       rules: {
         '@typescript-eslint/array-type': 0,
         'eslint-comments/disable-enable-pair': 0,
-        'import/no-extraneous-dependencies': 0,
         'jest/no-focused-tests': 0,
         'jest/no-identical-title': 0,
         'jest/valid-expect': 0,
@@ -140,6 +139,7 @@ module.exports = {
       2,
       {
         devDependencies: [
+          '/test-types/**',
           '**/__tests__/**',
           '**/__mocks__/**',
           '**/?(*.)(spec|test).js?(x)',

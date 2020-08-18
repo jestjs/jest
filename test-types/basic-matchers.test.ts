@@ -8,6 +8,7 @@
  */
 
 import {expectError, expectType} from 'mlh-tsd';
+//eslint-disable-next-line import/no-extraneous-dependencies
 import {expect, jest} from '@jest/globals';
 import type {Mock} from 'jest-mock';
 import type {Matchers} from 'expect';

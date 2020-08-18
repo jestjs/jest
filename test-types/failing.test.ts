@@ -8,6 +8,7 @@
  */
 
 import {expectType} from 'mlh-tsd';
+//eslint-disable-next-line import/no-extraneous-dependencies
 import {jest} from '@jest/globals';
 
 // DEMO: The following three tests should fail
