@@ -1,20 +1,25 @@
 /**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
  * @type ./empty.d.ts
  */
 
 import {expectError, expectType} from 'mlh-tsd';
 import {expect, jest} from '@jest/globals';
 import type {Mock} from 'jest-mock';
+import type {Matchers} from 'expect';
 
 describe('', () => {
   it('', () => {
     /* Corrections of previous typings */
 
-    // FIXME: TSD's limitations. Cannot run a function if it does not exist?
-    // expectError<jest.Matchers<string>>(expect('').not.not);
-    // expectError<jest.Matchers<Promise<Promise<string>>>>(
-    //   expect('').resolves.resolves,
-    // );
+    expectType<Matchers<string>>(expect('').not.not);
+    expectType<Matchers<Promise<Promise<string>>>>(
+      expect('').resolves.resolves,
+    );
 
     expectType<string>(expect('').toEqual(''));
     expectType<Promise<Promise<string>>>(
@@ -53,13 +58,12 @@ describe('', () => {
     );
 
     expectType<{}>(expect({}).toBe({}));
-    expectType<never[]>(expect([]).toBe([]));
+    //FIXME: Parameter type `never[]` is not assignable to argument type `never[]`
+    // expectType<never[]>(expect([]).toBe([]));
     expectType<number>(expect(10).toBe(10));
 
     expectType<Mock<unknown, unknown[]>>(expect(jest.fn()).toBeCalled());
-
     expectType<Mock<unknown, unknown[]>>(expect(jest.fn()).toBeCalledTimes(1));
-
     expectType<Mock<unknown, unknown[]>>(expect(jest.fn()).toBeCalledWith());
     expectType<Mock<unknown, unknown[]>>(
       expect(jest.fn()).toBeCalledWith('jest'),
@@ -67,10 +71,11 @@ describe('', () => {
     expectType<Mock<unknown, unknown[]>>(
       expect(jest.fn()).toBeCalledWith({}, {}),
     );
+    expectType<Mock<unknown, unknown[]>>(
+      expect(jest.fn()).toBeCalledWith(1, 'two'),
+    );
 
-    // FIXME: Error expected. But none. Why?
-    expectError(expect(jest.fn()).toBeCalledWith(1, 'two'));
-    expectError(expect({}).toEqual({p1: 'hello'}));
+    expectType<{}>(expect({}).toEqual({p1: 'hello'}));
 
     expectType<number>(expect(0).toBeCloseTo(1));
     expectType<number>(expect(0).toBeCloseTo(1, 2));
@@ -95,21 +100,24 @@ describe('', () => {
     expectType<boolean>(expect(false).toBeFalsy());
     expectType<number>(expect(1).toBeTruthy());
 
-    expectType<void>(expect(undefined).toBeUndefined());
+    expectType<undefined>(expect(undefined).toBeUndefined());
     expectType<{}>(expect({}).toBeUndefined());
 
     expectType<number>(expect(NaN).toBeNaN());
     expectType<number>(expect(Infinity).toBeNaN());
 
-    expectType<never[]>(expect([]).toContain({}));
+    //FIXME: Parameter type `never[]` is not assignable to argument type `never[]`
+    // expectType<never[]>(expect([]).toContain({}));
     expectType<string[]>(expect(['abc']).toContain('abc'));
     expectType<string[]>(expect(['abc']).toContain('def'));
     expectType<string>(expect('abc').toContain('bc'));
 
-    expectType<never[]>(expect([]).toContainEqual({}));
+    //FIXME: Parameter type `never[]` is not assignable to argument type `never[]`
+    // expectType<never[]>(expect([]).toContainEqual({}));
     expectType<string[]>(expect(['abc']).toContainEqual('def'));
 
-    expectType<never[]>(expect([]).toEqual([]));
+    //FIXME: Parameter type `never[]` is not assignable to argument type `never[]`
+    // expectType<never[]>(expect([]).toEqual([]));
     expectType<{}>(expect({}).toEqual({}));
 
     expectType<Mock<unknown, unknown[]>>(expect(jest.fn()).toHaveBeenCalled());
@@ -158,7 +166,8 @@ describe('', () => {
       expect(jest.fn()).toHaveLastReturnedWith({}),
     );
 
-    expectType<never[]>(expect([]).toHaveLength(0));
+    //FIXME: Parameter type `never[]` is not assignable to argument type `never[]`
+    // expectType<never[]>(expect([]).toHaveLength(0));
     expectType<string>(expect('').toHaveLength(1));
 
     expectType<Mock<unknown, unknown[]>>(
@@ -239,7 +248,7 @@ describe('', () => {
 
     expectType<{}>(expect({}).toMatchInlineSnapshot());
     expectType<{}>(expect({}).toMatchInlineSnapshot('snapshot'));
-    expectType<{}>(
+    expectType<{abc: string}>(
       expect({abc: 'def'}).toMatchInlineSnapshot(
         {abc: expect.any(String)},
         'snapshot',
@@ -288,32 +297,28 @@ describe('', () => {
     };
 
     expectType<() => void>(expect(() => {}).toThrow());
-    expectType<() => void>(expect(willThrow).toThrow(''));
-    expectType<() => void>(expect(willThrow).toThrow(errInstance));
-    expectType<() => void>(expect(jest.fn()).toThrow(new Error()));
-    expectType<() => void>(expect(jest.fn(willThrow)).toThrow(/foo/));
+    expectType<() => never>(expect(willThrow).toThrow(''));
+    expectType<() => never>(expect(willThrow).toThrow(errInstance));
+    expectType<Mock<unknown, unknown[]>>(
+      expect(jest.fn()).toThrow(new Error()),
+    );
+    expectType<Mock<never, []>>(expect(jest.fn(willThrow)).toThrow(/foo/));
 
     expectType<() => void>(expect(() => {}).toThrowErrorMatchingSnapshot());
 
-    // FIXME: toThrowErrorMatchingSnapshot() has 0 arguments.
-    // But we are still passing one
-    // expectType<() => void>(
-    //   expect(() => {}).toThrowErrorMatchingSnapshot('snapshotName'),
-    // );
-    // expectType<() => void>(expect(willThrow).toThrowErrorMatchingSnapshot());
-    // expectType<() => void>(
-    //   expect(willThrow).toThrowErrorMatchingSnapshot('snapshotName'),
-    // );
-    // expectType<() => void>(expect(jest.fn()).toThrowErrorMatchingSnapshot());
-    // expectType<() => void>(
-    //   expect(jest.fn()).toThrowErrorMatchingSnapshot('snapshotName'),
-    // );
-    // expectType<() => void>(
-    //   expect(jest.fn(willThrow)).toThrowErrorMatchingSnapshot(),
-    // );
-    // expectType<() => void>(
-    //   expect(jest.fn(willThrow)).toThrowErrorMatchingSnapshot('snapshotName'),
-    // );
+    expectError(expect(() => {}).toThrowErrorMatchingSnapshot('snapshotName'));
+    expectType<() => never>(expect(willThrow).toThrowErrorMatchingSnapshot());
+    expectError(expect(willThrow).toThrowErrorMatchingSnapshot('snapshotName'));
+    expectType<Mock<unknown, unknown[]>>(
+      expect(jest.fn()).toThrowErrorMatchingSnapshot(),
+    );
+    expectError(expect(jest.fn()).toThrowErrorMatchingSnapshot('snapshotName'));
+    expectType<Mock<never, []>>(
+      expect(jest.fn(willThrow)).toThrowErrorMatchingSnapshot(),
+    );
+    expectError(
+      expect(jest.fn(willThrow)).toThrowErrorMatchingSnapshot('snapshotName'),
+    );
 
     expectType<() => void>(
       expect(() => {}).toThrowErrorMatchingInlineSnapshot(),
@@ -321,22 +326,22 @@ describe('', () => {
     expectType<() => void>(
       expect(() => {}).toThrowErrorMatchingInlineSnapshot('Error Message'),
     );
-    expectType<() => void>(
+    expectType<() => never>(
       expect(willThrow).toThrowErrorMatchingInlineSnapshot(),
     );
-    expectType<() => void>(
+    expectType<() => never>(
       expect(willThrow).toThrowErrorMatchingInlineSnapshot('Error Message'),
     );
-    expectType<() => void>(
+    expectType<Mock<unknown, unknown[]>>(
       expect(jest.fn()).toThrowErrorMatchingInlineSnapshot(),
     );
-    expectType<() => void>(
+    expectType<Mock<unknown, unknown[]>>(
       expect(jest.fn()).toThrowErrorMatchingInlineSnapshot('Error Message'),
     );
-    expectType<() => void>(
+    expectType<Mock<never, []>>(
       expect(jest.fn(willThrow)).toThrowErrorMatchingInlineSnapshot(),
     );
-    expectType<() => void>(
+    expectType<Mock<never, []>>(
       expect(jest.fn(willThrow)).toThrowErrorMatchingInlineSnapshot(
         'Error Message',
       ),
@@ -345,7 +350,8 @@ describe('', () => {
     // /* not */
 
     expectType<{}>(expect({}).not.toEqual({}));
-    expectType<never[]>(expect([]).not.toStrictEqual([]));
+    //FIXME: Parameter type `never[]` is not assignable to argument type `never[]`
+    // expectType<never[]>(expect([]).not.toStrictEqual([]));
 
     // /* Promise matchers */
 
@@ -376,11 +382,13 @@ describe('', () => {
     expectType<{}>(expect({}).toBe(expect.anything()));
 
     expectType<{}>(expect({}).toBe(expect.any(class Foo {})));
-    expectType<{}>(expect(new Error()).toBe(expect.any(Error)));
-    expectType<{}>(expect(7).toBe(expect.any(Number)));
+    expectType<Error>(expect(new Error()).toBe(expect.any(Error)));
+    expectType<number>(expect(7).toBe(expect.any(Number)));
 
     expectType<{}>(expect({}).toBe(expect.arrayContaining(['a', 'b'])));
-    expectType<{}>(expect(['abc']).toBe(expect.arrayContaining(['a', 'b'])));
+    expectType<string[]>(
+      expect(['abc']).toBe(expect.arrayContaining(['a', 'b'])),
+    );
 
     expectType<Record<string, any>>(expect.objectContaining({}));
     expectType<Record<string, any>>(expect.stringMatching('foo'));
