@@ -27,18 +27,7 @@ module.exports = {
     'website/.*',
     'e2e/runtime-internal-module-registry/__mocks__',
   ],
-  projects: [
-    '<rootDir>',
-    '<rootDir>/examples/*/',
-    {
-      displayName: {
-        color: 'blue',
-        name: 'types',
-      },
-      runner: 'jest-runner-tsd',
-      testMatch: ['<rootDir>/test-types/*.test.ts'],
-    },
-  ],
+  projects: ['<rootDir>', '<rootDir>/examples/*/'],
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   snapshotSerializers: [
     '<rootDir>/packages/pretty-format/build/plugins/ConvertAnsi.js',
