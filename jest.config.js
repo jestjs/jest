@@ -31,7 +31,10 @@ module.exports = {
     '<rootDir>',
     '<rootDir>/examples/*/',
     {
-      displayName: 'typings test',
+      displayName: {
+        color: 'blue',
+        name: 'types',
+      },
       runner: 'jest-runner-tsd',
       testMatch: ['<rootDir>/test-types/*.test.ts'],
     },
