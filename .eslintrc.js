@@ -114,6 +114,14 @@ module.exports = {
         'import/no-extraneous-dependencies': 0,
       },
     },
+    {
+      files: ['test-types/*.test.ts'],
+      rules: {
+        'jest/no-focused-tests': 0,
+        'jest/no-identical-title': 0,
+        'jest/valid-expect': 0,
+      },
+    },
   ],
   parser: 'babel-eslint',
   plugins: ['markdown', 'import', 'prettier', 'eslint-comments'],
@@ -128,6 +136,7 @@ module.exports = {
       2,
       {
         devDependencies: [
+          '/test-types/**',
           '**/__tests__/**',
           '**/__mocks__/**',
           '**/?(*.)(spec|test).js?(x)',
