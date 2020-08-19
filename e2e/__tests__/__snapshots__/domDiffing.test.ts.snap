@@ -2,8 +2,8 @@
 
 exports[`should work without error 1`] = `
 "FAIL __tests__/dom.test.js
-  ✕ use toBe compare two div (5 ms)
-  ✕ compare span and div (2 ms)
+  ✕ use toBe compare two div (<<REPLACED>>)
+  ✕ compare span and div (<<REPLACED>>)
 
   ● use toBe compare two div
 
@@ -46,6 +46,6 @@ exports[`should work without error 1`] = `
 Test Suites: 1 failed, 1 total
 Tests:       2 failed, 2 total
 Snapshots:   0 total
-Time:        0.569 s, estimated 1 s
+Time:        <<REPLACED>>
 Ran all test suites."
 `;
