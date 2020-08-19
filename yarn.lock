@@ -11690,14 +11690,14 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"jest-runner-tsd@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "jest-runner-tsd@npm:1.0.1"
+"jest-runner-tsd@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "jest-runner-tsd@npm:1.1.0"
   dependencies:
     create-jest-runner: ^0.6.0
     jest-docblock: ^26.0.0
     mlh-tsd: ^0.14.1
-  checksum: 567c190863f323a70150793153d47a2278189a8f29948d6886b3b8fe3d9dc243f4fa41d0dc5f4ffc590b20d529fb926053922f069d87f1344bbdc045af82eac4
+  checksum: 93a1dada88c6bceeabb8e60495bb295321ee7b57ba9f02137e6ace10d34baa5eb0e096da06acc9a1d1d6f6ab42fe95cb9486c8160dab257c0db5508ce8e03271
   languageName: node
   linkType: hard
 
@@ -17007,7 +17007,7 @@ fsevents@^1.2.7:
     istanbul-reports: ^3.0.0
     jest: "workspace:packages/jest"
     jest-junit: ^11.0.1
-    jest-runner-tsd: ^1.0.1
+    jest-runner-tsd: ^1.1.0
     jest-silent-reporter: ^0.2.1
     jest-snapshot-serializer-raw: ^1.1.0
     jest-watch-typeahead: ^0.6.0
