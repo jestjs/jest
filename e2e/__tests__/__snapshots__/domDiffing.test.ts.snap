@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should work without error 1`] = `
+"FAIL __tests__/dom.test.js
+  ✕ use toBe compare two div (5 ms)
+  ✕ compare span and div (2 ms)
+
+  ● use toBe compare two div
+
+    expect(received).toBe(expected) // Object.is equality
+
+    If it should pass with deep equality, replace \\"toBe\\" with \\"toStrictEqual\\"
+
+    Expected: <div />
+    Received: serializes to the same string
+
+      2 |   const div1 = document.createElement('div');
+      3 |   const div2 = document.createElement('div');
+    > 4 |   expect(div1).toBe(div2);
+        |                ^
+      5 | });
+      6 | 
+      7 | test('compare span and div', () => {
+
+      at Object.toBe (__tests__/dom.test.js:4:16)
+
+  ● compare span and div
+
+    expect(received).toBe(expected) // Object.is equality
+
+    - Expected  - 1
+    + Received  + 1
+
+    - <span />
+    + <div />
+
+       6 | 
+       7 | test('compare span and div', () => {
+    >  8 |   expect(document.createElement('div')).toBe(document.createElement('span'));
+         |                                         ^
+       9 | });
+      10 | 
+
+      at Object.toBe (__tests__/dom.test.js:8:41)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        0.569 s, estimated 1 s
+Ran all test suites."
+`;
