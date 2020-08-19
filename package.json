@@ -55,6 +55,7 @@
     "istanbul-reports": "^3.0.0",
     "jest": "workspace:packages/jest",
     "jest-junit": "^11.0.1",
+    "jest-runner-tsd": "^1.1.0",
     "jest-silent-reporter": "^0.2.1",
     "jest-snapshot-serializer-raw": "^1.1.0",
     "jest-watch-typeahead": "^0.6.0",
@@ -129,8 +130,5 @@
   },
   "engines": {
     "node": ">= 10.14.2"
-  },
-  "dependencies": {
-    "jest-runner-tsd": "^1.1.0"
   }
 }
