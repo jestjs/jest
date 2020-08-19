@@ -71,14 +71,16 @@ it('does not report promises', () => {
   expect(textAfterTest).toBe('');
 });
 
-it('does not report ELD histograms', () => {
-  const {stderr} = runJest('detect-open-handles', [
-    'histogram',
-    '--detectOpenHandles',
-  ]);
-  const textAfterTest = getTextAfterTest(stderr);
+onNodeVersions('>=11.10.0', () => {
+  it('does not report ELD histograms', () => {
+    const {stderr} = runJest('detect-open-handles', [
+      'histogram',
+      '--detectOpenHandles',
+    ]);
+    const textAfterTest = getTextAfterTest(stderr);
 
-  expect(textAfterTest).toBe('');
+    expect(textAfterTest).toBe('');
+  });
 });
 
 describe('notify', () => {
