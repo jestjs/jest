@@ -53,8 +53,8 @@ expectType<typeof jest>(jest.unmock('moduleName'));
 expectType<typeof jest>(jest.useFakeTimers());
 expectType<typeof jest>(jest.useRealTimers());
 
-jest.advanceTimersToNextTimer();
-jest.advanceTimersToNextTimer(2);
+expectType<void>(jest.advanceTimersToNextTimer());
+expectType<void>(jest.advanceTimersToNextTimer(2));
 
 // https://jestjs.io/docs/en/jest-object#jestusefaketimersimplementation-modern--legacy
 expectType<typeof jest>(jest.useFakeTimers('modern'));
