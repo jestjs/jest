@@ -117,12 +117,9 @@ module.exports = {
     {
       files: ['test-types/*.test.ts'],
       rules: {
-        '@typescript-eslint/array-type': 0,
-        'eslint-comments/disable-enable-pair': 0,
         'jest/no-focused-tests': 0,
         'jest/no-identical-title': 0,
         'jest/valid-expect': 0,
-        'sort-keys': 0,
       },
     },
   ],
