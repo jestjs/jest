@@ -2103,6 +2103,7 @@ describe('toMatchObject()', () => {
     // these keys a little smarter before reporting accurately.
     [new Sub(), {a: undefined, b: 'b', c: 'c'}],
     [withDefineProperty(new Sub(), 'd', 4), {d: 4}],
+    [{a: 'b', toString() {}}, {toString: jestExpect.any(Function)}],
   ]);
 
   testToMatchSnapshots([
@@ -2150,6 +2151,7 @@ describe('toMatchObject()', () => {
       {a: 'b', c: 'd', [Symbol.for('jest')]: 'jest'},
       {a: 'c', [Symbol.for('jest')]: expect.any(String)},
     ],
+    [{a: 'b'}, {toString: jestExpect.any(Function)}],
   ]);
 
   [

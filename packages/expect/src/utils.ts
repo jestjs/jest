@@ -21,8 +21,19 @@ type GetPath = {
   value?: unknown;
 };
 
-const hasPropertyInObject = (object: object, key: string) =>
-  typeof object === 'object' && key in object;
+const hasPropertyInObject = (object: object, key: string) => {
+  const shouldTerminate =
+    !object || typeof object !== 'object' || object === Object.prototype;
+
+  if (shouldTerminate) {
+    return false;
+  }
+
+  return (
+    Object.prototype.hasOwnProperty.call(object, key) ||
+    hasPropertyInObject(Object.getPrototypeOf(object), key)
+  );
+};
 
 // Return whether object instance inherits getter from its class.
 const hasGetterFromConstructor = (object: object, key: string) => {
