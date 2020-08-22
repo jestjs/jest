@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[expect]` Fix `toMatchObject` to work with inherited class getters ([#10381](https://github.com/facebook/jest/pull/10381))
+
 ### Chore & Maintenance
 
 ### Performance

@@ -21,32 +21,22 @@ type GetPath = {
   value?: unknown;
 };
 
-// Return whether object instance inherits getter from its class.
-const hasGetterFromConstructor = (object: object, key: string) => {
-  const constructor = object.constructor;
-  if (constructor === Object) {
-    // A literal object has Object as constructor.
-    // Therefore, it cannot inherit application-specific getters.
-    // Furthermore, Object has __proto__ getter which is not relevant.
-    // Array, Boolean, Number, String constructors don’t have any getters.
-    return false;
-  }
-  if (typeof constructor !== 'function') {
-    // Object.create(null) constructs object with no constructor nor prototype.
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create#Custom_and_Null_objects
+/**
+ * Checks if `hasOwnProperty(object, key)` up the prototype chain, stopping at `Object.prototype`.
+ */
+const hasPropertyInObject = (object: object, key: string): boolean => {
+  const shouldTerminate =
+    !object || typeof object !== 'object' || object === Object.prototype;
+
+  if (shouldTerminate) {
     return false;
   }
 
-  const descriptor = Object.getOwnPropertyDescriptor(
-    constructor.prototype,
-    key,
+  return (
+    Object.prototype.hasOwnProperty.call(object, key) ||
+    hasPropertyInObject(Object.getPrototypeOf(object), key)
   );
-  return descriptor !== undefined && typeof descriptor.get === 'function';
 };
-
-export const hasOwnProperty = (object: object, key: string): boolean =>
-  Object.prototype.hasOwnProperty.call(object, key) ||
-  hasGetterFromConstructor(object, key);
 
 export const getPath = (
   object: Record<string, any>,
@@ -129,7 +119,7 @@ export const getObjectSubset = (
     seenReferences.set(object, trimmed);
 
     Object.keys(object)
-      .filter(key => hasOwnProperty(subset, key))
+      .filter(key => hasPropertyInObject(subset, key))
       .forEach(key => {
         trimmed[key] = seenReferences.has(object[key])
           ? seenReferences.get(object[key])
@@ -299,7 +289,7 @@ export const subsetEquality = (
       }
       const result =
         object != null &&
-        hasOwnProperty(object, key) &&
+        hasPropertyInObject(object, key) &&
         equals(object[key], subset[key], [
           iterableEquality,
           subsetEqualityWithContext(seenReferences),
