@@ -28,7 +28,7 @@
     "react-test-renderer": "*"
   },
   "engines": {
-    "node": ">= 10.14.2"
+    "node": ">= 10"
   },
   "publishConfig": {
     "access": "public"

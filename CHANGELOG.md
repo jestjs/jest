@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[expect]` Fix `toMatchObject` to work with inherited class getters ([#10381](https://github.com/facebook/jest/pull/10381))
+- `[pretty-format]` Lower minimum node version to >= 10 ([#10435](https://github.com/facebook/jest/pull/10435))
 
 ### Chore & Maintenance
 
