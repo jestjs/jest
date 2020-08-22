@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import type BabelTraverse from '@babel/traverse';
 import * as fs from 'graceful-fs';
 import semver = require('semver');
 import {
@@ -27,7 +28,7 @@ export type InlineSnapshot = {
 export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
   prettier: typeof import('prettier') | null,
-  babelTraverse: Function,
+  babelTraverse: typeof BabelTraverse,
 ): void {
   if (!prettier) {
     throw new Error(
@@ -60,7 +61,7 @@ const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
   sourceFilePath: Config.Path,
   prettier: any,
-  babelTraverse: Function,
+  babelTraverse: typeof BabelTraverse,
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
@@ -181,7 +182,7 @@ const createInsertionParser = (
   snapshots: Array<InlineSnapshot>,
   snapshotMatcherNames: Array<string>,
   inferredParser: string,
-  babelTraverse: Function,
+  babelTraverse: typeof BabelTraverse,
 ) => (
   text: string,
   parsers: Record<string, (text: string) => any>,
@@ -248,7 +249,7 @@ const createInsertionParser = (
 const createFormattingParser = (
   snapshotMatcherNames: Array<string>,
   inferredParser: string,
-  babelTraverse: Function,
+  babelTraverse: typeof BabelTraverse,
 ) => (
   text: string,
   parsers: Record<string, (text: string) => any>,

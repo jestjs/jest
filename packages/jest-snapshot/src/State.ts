@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type BabelTraverse from '@babel/traverse';
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 
@@ -25,7 +26,7 @@ import type {SnapshotData} from './types';
 export type SnapshotStateOptions = {
   updateSnapshot: Config.SnapshotUpdateState;
   getPrettier: () => null | typeof import('prettier');
-  getBabelTraverse: () => Function;
+  getBabelTraverse: () => typeof BabelTraverse;
   expand?: boolean;
 };
 
@@ -62,7 +63,7 @@ export default class SnapshotState {
   private _snapshotPath: Config.Path;
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _uncheckedKeys: Set<string>;
-  private _getBabelTraverse: () => Function;
+  private _getBabelTraverse: () => typeof BabelTraverse;
   private _getPrettier: () => null | typeof import('prettier');
 
   added: number;
