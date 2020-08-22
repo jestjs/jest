@@ -12,7 +12,7 @@ import type {Options} from 'yargs';
 import {ValidationError, createDidYouMeanMessage, format} from './utils';
 import {deprecationWarning} from './deprecated';
 import defaultConfig from './defaultConfig';
-import type {DeprecatedOptions} from './types';
+import type {DeprecatedOptionFunc, DeprecatedOptions} from './types';
 
 const BULLET: string = chalk.bold('\u25cf');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold('CLI Options Documentation:')}
@@ -88,7 +88,7 @@ export default function validateCLIOptions(
   }
 
   const CLIDeprecations = Object.keys(deprecationEntries).reduce<
-    Record<string, Function>
+    Record<string, DeprecatedOptionFunc>
   >((acc, entry) => {
     if (options[entry]) {
       acc[entry] = deprecationEntries[entry];

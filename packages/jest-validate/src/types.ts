@@ -11,7 +11,9 @@ type Title = {
   warning?: string;
 };
 
-export type DeprecatedOptions = Record<string, Function>;
+export type DeprecatedOptionFunc = (arg: Record<string, any>) => string;
+
+export type DeprecatedOptions = Record<string, DeprecatedOptionFunc>;
 
 export type ValidationOptions = {
   comment?: string;
