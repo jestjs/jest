@@ -20,8 +20,6 @@ jobs:
       - image: circleci/node:10
     steps:
       - checkout
-      - run:
-          command: yarn config get cacheFolder
       - restore-cache: *restore-cache
       - run: *install
       - save-cache: *save-cache
@@ -36,8 +34,6 @@ jobs:
       - image: circleci/node:12
     steps:
       - checkout
-      - run:
-          command: yarn config get cacheFolder
       - restore-cache: *restore-cache
       - run: *install
       - save-cache: *save-cache
@@ -52,8 +48,6 @@ jobs:
       - image: circleci/node:12
     steps:
       - checkout
-      - run:
-          command: yarn config get cacheFolder
       - restore-cache: *restore-cache
       - run: *install
       - save-cache: *save-cache
@@ -68,8 +62,6 @@ jobs:
       - image: circleci/node:13
     steps:
       - checkout
-      - run:
-          command: yarn config get cacheFolder
       - restore-cache: *restore-cache
       - run: *install
       - save-cache: *save-cache
@@ -84,8 +76,6 @@ jobs:
       - image: circleci/node:14
     steps:
       - checkout
-      - run:
-          command: yarn config get cacheFolder
       - restore-cache: *restore-cache
       - run: *install
       - save-cache: *save-cache
@@ -101,8 +91,6 @@ jobs:
     resource_class: large
     steps:
       - checkout
-      - run:
-          command: yarn config get cacheFolder
       - restore-cache: *restore-cache
       - run: *install
       - save-cache: *save-cache
