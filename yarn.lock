@@ -7965,6 +7965,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-plugin-local@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "eslint-plugin-local@npm:1.0.0"
+  checksum: 369263373b645b3024b974c799454cb05c283cd735abab86c25d65fe54027b3d1a8533bd895d3e8ff281ea370669e6e3d6ac700a8fe751933889868cc57de447
+  languageName: node
+  linkType: hard
+
 "eslint-plugin-markdown@npm:^1.0.0":
   version: 1.0.2
   resolution: "eslint-plugin-markdown@npm:1.0.2"
@@ -17053,6 +17060,7 @@ fsevents@^1.2.7:
     eslint-plugin-import: ^2.6.0
     eslint-plugin-jest: ^24.0.0
     eslint-plugin-jsx-a11y: ^6.0.2
+    eslint-plugin-local: ^1.0.0
     eslint-plugin-markdown: ^1.0.0
     eslint-plugin-prettier: ^3.0.1
     eslint-plugin-react: ^7.1.0

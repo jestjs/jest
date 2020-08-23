@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type {FS as HasteFS} from 'jest-haste-map';

@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 export default class ErrorWithStack extends Error {
   constructor(message: string | undefined, callsite: Function) {
     super(message);
