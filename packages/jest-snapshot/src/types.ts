@@ -23,3 +23,9 @@ export type MatchSnapshotConfig = {
 };
 
 export type SnapshotData = Record<string, string>;
+
+// copied from `expect` - should be shared
+export type ExpectationResult = {
+  pass: boolean;
+  message: () => string;
+};
