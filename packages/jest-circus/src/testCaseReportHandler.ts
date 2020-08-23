@@ -12,7 +12,7 @@ import {makeSingleTestResult, parseSingleTestResult} from './utils';
 const testCaseReportHandler = (
   testPath: string,
   sendMessageToJest: TestFileEvent,
-) => (event: Circus.Event) => {
+) => (event: Circus.Event): void => {
   switch (event.name) {
     case 'test_done': {
       const testResult = makeSingleTestResult(event.test);

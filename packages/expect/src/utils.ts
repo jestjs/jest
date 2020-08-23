@@ -94,12 +94,13 @@ export const getPath = (
 
 // Strip properties from object that are not present in the subset. Useful for
 // printing the diff for toMatchObject() without adding unrelated noise.
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const getObjectSubset = (
   object: any,
   subset: any,
   seenReferences: WeakMap<object, boolean> = new WeakMap(),
 ): any => {
+  /* eslint-enable */
   if (Array.isArray(object)) {
     if (Array.isArray(subset) && subset.length === object.length) {
       // The map method returns correct subclass of subset.
@@ -138,10 +139,11 @@ const IteratorSymbol = Symbol.iterator;
 const hasIterator = (object: any) =>
   !!(object != null && object[IteratorSymbol]);
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const iterableEquality = (
   a: any,
   b: any,
+  /* eslint-enable */
   aStack: Array<any> = [],
   bStack: Array<any> = [],
 ): boolean | undefined => {
@@ -265,10 +267,9 @@ const isObjectWithKeys = (a: any) =>
   !(a instanceof Array) &&
   !(a instanceof Date);
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const subsetEquality = (
-  object: any,
-  subset: any,
+  object: unknown,
+  subset: unknown,
 ): boolean | undefined => {
   // subsetEquality needs to keep track of the references
   // it has already visited to avoid infinite loops in case
@@ -357,8 +358,7 @@ export const isError = (value: unknown): value is Error => {
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function emptyObject(obj: any): boolean {
+export function emptyObject(obj: unknown): boolean {
   return obj && typeof obj === 'object' ? !Object.keys(obj).length : false;
 }
 

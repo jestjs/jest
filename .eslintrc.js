@@ -21,7 +21,11 @@ module.exports = {
       plugins: ['@typescript-eslint/eslint-plugin'],
       rules: {
         '@typescript-eslint/array-type': ['error', {default: 'generic'}],
-        '@typescript-eslint/ban-types': 'error',
+        '@typescript-eslint/ban-types': [
+          'error',
+          // TODO: remove these overrides: https://github.com/facebook/jest/issues/10177
+          {types: {Function: false, object: false, '{}': false}},
+        ],
         '@typescript-eslint/no-unused-vars': [
           'error',
           {argsIgnorePattern: '^_'},
