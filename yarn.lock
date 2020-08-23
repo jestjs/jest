@@ -13849,9 +13849,9 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"mongodb-memory-server-core@npm:6.6.4":
-  version: 6.6.4
-  resolution: "mongodb-memory-server-core@npm:6.6.4"
+"mongodb-memory-server-core@npm:6.6.3":
+  version: 6.6.3
+  resolution: "mongodb-memory-server-core@npm:6.6.3"
   dependencies:
     "@types/cross-spawn": ^6.0.2
     "@types/debug": ^4.1.5
@@ -13882,16 +13882,16 @@ fsevents@^1.2.7:
   dependenciesMeta:
     mongodb:
       optional: true
-  checksum: 20619ae361655e24d74631141762382ae9e9ecdf23cae0108940b88187e9b2efb33c1073fd96c1f7a7a256ba860648f4ea0bc5b7fe205dc1344a3662504f2fdb
+  checksum: ab7779cbc5961faa0034caee330ae582c3d1178010bb9fbcd34afe1d774a4e8625c51323f7a01094169defb3c3d2508c4d2cfddf6d7591eaf89744bd98298f7b
   languageName: node
   linkType: hard
 
 "mongodb-memory-server@npm:^6.3.2":
-  version: 6.6.4
-  resolution: "mongodb-memory-server@npm:6.6.4"
+  version: 6.6.3
+  resolution: "mongodb-memory-server@npm:6.6.3"
   dependencies:
-    mongodb-memory-server-core: 6.6.4
-  checksum: a9e4227c88c840737f0ab5ded9d0ac1b357a56098bd94f0ecc0247f28c0709b222d48b630491333dba6ae39a546a599c43606fa78a91fa54be80f91c391edf77
+    mongodb-memory-server-core: 6.6.3
+  checksum: b1886809d0bd1fc8392a14c438f660c79ef90c1a52788c19b7b9ad2a9f42b7539de870dc40fc7d0a042e50ebe297d71be873a7872aa246345b5aaa7bbd1ba6b2
   languageName: node
   linkType: hard
 
