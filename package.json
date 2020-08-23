@@ -32,7 +32,7 @@
     "codecov": "^3.0.0",
     "debug": "^4.0.1",
     "dedent": "^0.7.0",
-    "eslint": "^6.2.2",
+    "eslint": "^7.7.0",
     "eslint-config-prettier": "^6.1.0",
     "eslint-plugin-babel": "^5.1.0",
     "eslint-plugin-eslint-comments": "^3.1.2",

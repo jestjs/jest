@@ -1790,6 +1790,7 @@ describe('.toHaveProperty()', () => {
     get b() {
       return 'b';
     }
+    // eslint-disable-next-line accessor-pairs
     set setter(val) {
       this.val = val;
     }
