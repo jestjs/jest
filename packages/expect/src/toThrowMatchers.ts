@@ -76,7 +76,6 @@ export const createMatcher = (
   matcherName: string,
   fromPromise?: boolean,
 ): RawMatcherFn =>
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   function (
     this: MatcherState,
     received: Function,

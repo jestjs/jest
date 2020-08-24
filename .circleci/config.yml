@@ -1,14 +1,11 @@
 aliases:
   - &restore-cache
-    keys:
-      - v3-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      # Fallback in case checksum fails
-      - v3-dependencies-{{ .Branch }}-
+    key: v4-dependencies-{{ checksum "yarn.lock" }}
 
   - &save-cache
     paths:
-      - ~/.cache/yarn
-    key: v3-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
+      - ~/.yarn/berry/cache
+    key: v4-dependencies-{{ checksum "yarn.lock" }}
 
   - &filter-ignore-gh-pages
     branches:

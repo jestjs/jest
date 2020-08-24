@@ -1,6 +1,6 @@
 {
   "name": "jest-snapshot",
-  "version": "26.4.0",
+  "version": "26.4.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -14,16 +14,16 @@
     "@jest/types": "^26.3.0",
     "@types/prettier": "^2.0.0",
     "chalk": "^4.0.0",
-    "expect": "^26.4.0",
+    "expect": "^26.4.2",
     "graceful-fs": "^4.2.4",
-    "jest-diff": "^26.4.0",
+    "jest-diff": "^26.4.2",
     "jest-get-type": "^26.3.0",
     "jest-haste-map": "^26.3.0",
-    "jest-matcher-utils": "^26.4.0",
+    "jest-matcher-utils": "^26.4.2",
     "jest-message-util": "^26.3.0",
     "jest-resolve": "^26.4.0",
     "natural-compare": "^1.4.0",
-    "pretty-format": "^26.4.0",
+    "pretty-format": "^26.4.2",
     "semver": "^7.3.2"
   },
   "devDependencies": {
