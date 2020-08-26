@@ -85,7 +85,7 @@ jobs:
       - node/install:
           lts: true
           install-npm: false
-      - node/install-packages:  *install
+      - node/install-packages: *install
       - run:
           name: Test or Deploy Jest Website
           command: ./.circleci/website.sh
