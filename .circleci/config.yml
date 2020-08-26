@@ -17,7 +17,7 @@ jobs:
     steps:
       - checkout
       - node/install:
-          node-version: 10
+          node-version: '10'
           install-npm: false
           install-yarn: true
       - node/install-packages: *install
@@ -45,7 +45,7 @@ jobs:
     steps:
       - checkout
       - node/install:
-          node-version: 12
+          node-version: '12'
           install-npm: false
           install-yarn: true
       - node/install-packages: *install
@@ -59,7 +59,7 @@ jobs:
     steps:
       - checkout
       - node/install:
-          node-version: 13
+          node-version: '13'
           install-npm: false
           install-yarn: true
       - node/install-packages: *install
@@ -73,7 +73,7 @@ jobs:
     steps:
       - checkout
       - node/install:
-          node-version: 14
+          node-version: '14'
           install-npm: false
           install-yarn: true
       - node/install-packages: *install
