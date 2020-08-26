@@ -13,7 +13,9 @@ orbs:
 version: 2.1
 jobs:
   test-node-10:
-    executor: node/10
+    executor:
+      name: node/default
+      tag: '10'
     steps:
       - checkout
       - node/install-packages:  *install
@@ -23,7 +25,9 @@ jobs:
           path: reports/junit
 
   test-jest-circus:
-    executor: node/12
+    executor:
+      name: node/default
+      tag: '12'
     steps:
       - checkout
       - node/install-packages:  *install
@@ -33,7 +37,9 @@ jobs:
           path: reports/junit
 
   test-node-12:
-    executor: node/12
+    executor:
+      name: node/default
+      tag: '12'
     steps:
       - checkout
       - node/install-packages:  *install
@@ -43,7 +49,9 @@ jobs:
           path: reports/junit
 
   test-node-13:
-    executor: node/13
+    executor:
+      name: node/default
+      tag: '13'
     steps:
       - checkout
       - node/install-packages:  *install
@@ -53,7 +61,9 @@ jobs:
           path: reports/junit
 
   test-node-14:
-    executor: node/14
+    executor:
+      name: node/default
+      tag: '14'
     steps:
       - checkout
       - node/install-packages:  *install
@@ -63,7 +73,9 @@ jobs:
           path: reports/junit
 
   test-or-deploy-website:
-    executor: node/12
+    executor:
+      name: node/default
+      tag: '12'
     resource_class: large
     steps:
       - checkout
