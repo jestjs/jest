@@ -19,7 +19,6 @@ jobs:
       - node/install:
           node-version: '10'
           install-npm: false
-          install-yarn: true
       - node/install-packages: *install
       - run:
           command: yarn test-ci-partial
@@ -33,7 +32,6 @@ jobs:
       - node/install:
           lts: true
           install-npm: false
-          install-yarn: true
       - node/install-packages: *install
       - run:
           command: JEST_CIRCUS=1 yarn test-ci-partial && JEST_CIRCUS=1 yarn test-leak
@@ -47,7 +45,6 @@ jobs:
       - node/install:
           node-version: '12'
           install-npm: false
-          install-yarn: true
       - node/install-packages: *install
       - run:
           command: yarn test-ci
@@ -61,7 +58,6 @@ jobs:
       - node/install:
           node-version: '13'
           install-npm: false
-          install-yarn: true
       - node/install-packages: *install
       - run:
           command: yarn test-ci-partial
@@ -75,7 +71,6 @@ jobs:
       - node/install:
           node-version: '14'
           install-npm: false
-          install-yarn: true
       - node/install-packages: *install
       - run:
           command: yarn test-ci-partial
@@ -90,7 +85,6 @@ jobs:
       - node/install:
           lts: true
           install-npm: false
-          install-yarn: true
       - node/install-packages:  *install
       - run:
           name: Test or Deploy Jest Website
