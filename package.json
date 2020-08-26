@@ -64,7 +64,7 @@
     "micromatch": "^4.0.2",
     "mlh-tsd": "^0.14.1",
     "mock-fs": "^4.4.1",
-    "prettier": "^2.0.1",
+    "prettier": "^2.1.1",
     "progress": "^2.0.0",
     "promise": "^8.0.2",
     "resolve": "^1.15.0",

@@ -15706,12 +15706,12 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.0.1":
-  version: 2.1.0
-  resolution: "prettier@npm:2.1.0"
+"prettier@npm:^2.1.1":
+  version: 2.1.1
+  resolution: "prettier@npm:2.1.1"
   bin:
     prettier: bin-prettier.js
-  checksum: f955d380d2892284c28bbfe32b1601cfcd7a24d8b310832937773b9e733f624e38ff70cbafee80e9553bdb3c55783d019163667bf9a69df4e6f7c2acdcf54c06
+  checksum: 420a807cda2d482388daa42379a7aaa1be629cb71f5792362a971a5ed1c6ff377d2e311818d24e9390a4a8a6eac3fda9ebe6975f2168efec893790c0497d8a93
   languageName: node
   linkType: hard
 
@@ -17014,7 +17014,7 @@ fsevents@^1.2.7:
     micromatch: ^4.0.2
     mlh-tsd: ^0.14.1
     mock-fs: ^4.4.1
-    prettier: ^2.0.1
+    prettier: ^2.1.1
     progress: ^2.0.0
     promise: ^8.0.2
     resolve: ^1.15.0
