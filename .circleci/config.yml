@@ -13,6 +13,7 @@ orbs:
 version: 2.1
 jobs:
   test-node-10:
+    working_directory: ~/jest
     executor: node/default
     steps:
       - checkout
@@ -26,6 +27,7 @@ jobs:
           path: reports/junit
 
   test-jest-circus:
+    working_directory: ~/jest
     executor: node/default
     steps:
       - checkout
@@ -39,6 +41,7 @@ jobs:
           path: reports/junit
 
   test-node-12:
+    working_directory: ~/jest
     executor: node/default
     steps:
       - checkout
@@ -52,6 +55,7 @@ jobs:
           path: reports/junit
 
   test-node-13:
+    working_directory: ~/jest
     executor: node/default
     steps:
       - checkout
@@ -65,6 +69,7 @@ jobs:
           path: reports/junit
 
   test-node-14:
+    working_directory: ~/jest
     executor: node/default
     steps:
       - checkout
@@ -78,6 +83,7 @@ jobs:
           path: reports/junit
 
   test-or-deploy-website:
+    working_directory: ~/jest
     executor: node/default
     resource_class: large
     steps:
