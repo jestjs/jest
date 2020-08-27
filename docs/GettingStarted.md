@@ -67,6 +67,11 @@ Here's how to run Jest on files matching `my-test`, using `config.json` as a con
 jest my-test --notify --config=config.json
 ```
 
+Also you can use `npx`:
+```bash
+npx jest my-test --notify --config=config.json
+```
+
 If you'd like to learn more about running `jest` through the command line, take a look at the [Jest CLI Options](CLI.md) page.
 
 ## Additional Configuration
