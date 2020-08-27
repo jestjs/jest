@@ -11,8 +11,8 @@ jest.mock('graceful-fs', () => ({
 }));
 
 import * as path from 'path';
-import * as fs from 'graceful-fs';
 import assert = require('assert');
+import * as fs from 'graceful-fs';
 import chalk = require('chalk');
 
 import {
@@ -418,6 +418,26 @@ describe('DeepMerge with property matchers', () => {
           five: 'five',
         },
       },
+    ],
+
+    [
+      'an array of objects',
+      // Target
+      [{name: 'one'}, {name: 'two'}, {name: 'three'}],
+      // Matchers
+      [{name: 'one'}, {name: matcher}, {name: matcher}],
+      // Expected
+      [{name: 'one'}, {name: matcher}, {name: matcher}],
+    ],
+
+    [
+      'an array of arrays',
+      // Target
+      [['one'], ['two'], ['three']],
+      // Matchers
+      [['one'], [matcher], [matcher]],
+      // Expected
+      [['one'], [matcher], [matcher]],
     ],
   ];
   /* eslint-enable sort-keys */

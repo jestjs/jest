@@ -52,7 +52,11 @@ export default function collectHandles(): () => Array<Error> {
       _triggerAsyncId,
       resource: {} | NodeJS.Timeout,
     ) {
-      if (type === 'PROMISE' || type === 'TIMERWRAP') {
+      if (
+        type === 'PROMISE' ||
+        type === 'TIMERWRAP' ||
+        type === 'ELDHISTOGRAM'
+      ) {
         return;
       }
       const error = new ErrorWithStack(type, initHook);

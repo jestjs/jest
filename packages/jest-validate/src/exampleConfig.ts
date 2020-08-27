@@ -12,6 +12,7 @@ const config: ValidationOptions = {
   condition: () => true,
   deprecate: () => false,
   deprecatedConfig: {
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     key: () => {},
   },
   error: () => {},

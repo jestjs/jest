@@ -19,6 +19,12 @@ jest-each allows you to provide multiple arguments to your `test`/`describe` whi
   - Also under the aliases: `.it.only` or `.fit`
 - `.test.skip` to skip the parameterised tests
   - Also under the aliases: `.it.skip` or `.xit` or `.xtest`
+- `.test.concurrent`
+  - Also under the alias: `.it.concurrent`
+- `.test.concurrent.only`
+  - Also under the alias: `.it.concurrent.only`
+- `.test.concurrent.skip`
+  - Also under the alias: `.it.concurrent.skip`
 - `.describe` to runs test suites with parameterised data
 - `.describe.only` to only run the parameterised suite of tests
   - Also under the aliases: `.fdescribe`
@@ -178,6 +184,57 @@ each([
 ]).test.skip('returns the result of adding %d to %d', (a, b, expected) => {
   expect(a + b).toBe(expected);
 });
+```
+
+#### `.test.concurrent(name, fn)`
+
+Aliases: `.it.concurrent(name, fn)`
+
+```js
+each([
+  [1, 1, 2],
+  [1, 2, 3],
+  [2, 1, 3],
+]).test.concurrent(
+  'returns the result of adding %d to %d',
+  (a, b, expected) => {
+    expect(a + b).toBe(expected);
+  },
+);
+```
+
+#### `.test.concurrent.only(name, fn)`
+
+Aliases: `.it.concurrent.only(name, fn)`
+
+```js
+each([
+  [1, 1, 2],
+  [1, 2, 3],
+  [2, 1, 3],
+]).test.concurrent.only(
+  'returns the result of adding %d to %d',
+  (a, b, expected) => {
+    expect(a + b).toBe(expected);
+  },
+);
+```
+
+#### `.test.concurrent.skip(name, fn)`
+
+Aliases: `.it.concurrent.skip(name, fn)`
+
+```js
+each([
+  [1, 1, 2],
+  [1, 2, 3],
+  [2, 1, 3],
+]).test.concurrent.skip(
+  'returns the result of adding %d to %d',
+  (a, b, expected) => {
+    expect(a + b).toBe(expected);
+  },
+);
 ```
 
 #### Asynchronous `.test(name, fn(done))`

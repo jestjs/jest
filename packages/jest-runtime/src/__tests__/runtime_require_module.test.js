@@ -11,7 +11,6 @@
 import {builtinModules, createRequire} from 'module';
 import path from 'path';
 import {pathToFileURL} from 'url';
-// eslint-disable-next-line import/default
 import slash from 'slash';
 import {onNodeVersions} from '@jest/test-utils';
 

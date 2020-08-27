@@ -9,8 +9,8 @@ import type {Config} from '@jest/types';
 import type {TestResult} from '@jest/test-result';
 import chalk = require('chalk');
 import {formatTime} from 'jest-util';
-import {formatTestPath, printDisplayName} from './utils';
 import terminalLink = require('terminal-link');
+import {formatTestPath, printDisplayName} from './utils';
 
 const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
 // Explicitly reset for these messages since they can get written out in the

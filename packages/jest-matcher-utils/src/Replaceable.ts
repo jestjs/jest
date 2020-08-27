@@ -32,12 +32,17 @@ export default class Replaceable {
 
   forEach(cb: ReplaceableForEachCallBack): void {
     if (this.type === 'object') {
-      Object.entries(this.object).forEach(([key, value]) => {
-        cb(value, key, this.object);
-      });
-      Object.getOwnPropertySymbols(this.object).forEach(key => {
-        cb(this.object[key], key, this.object);
-      });
+      const descriptors = Object.getOwnPropertyDescriptors(this.object);
+      [
+        ...Object.keys(descriptors),
+        ...Object.getOwnPropertySymbols(descriptors),
+      ]
+        //@ts-expect-error because typescript do not support symbol key in object
+        //https://github.com/microsoft/TypeScript/issues/1863
+        .filter(key => descriptors[key].enumerable)
+        .forEach(key => {
+          cb(this.object[key], key, this.object);
+        });
     } else {
       this.object.forEach(cb);
     }

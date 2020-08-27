@@ -22,6 +22,7 @@ import {
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
+import {bind} from 'jest-each';
 import throat from 'throat';
 import {
   ROOT_DESCRIBE_BLOCK_NAME,
@@ -77,7 +78,7 @@ export const initialize = async ({
   nodeGlobal.test.concurrent = (test => {
     const concurrent = (
       testName: string,
-      testFn: () => Promise<any>,
+      testFn: () => Promise<unknown>,
       timeout?: number,
     ) => {
       // For concurrent tests we first run the function that returns promise, and then register a
@@ -90,9 +91,9 @@ export const initialize = async ({
       nodeGlobal.test(testName, () => promise, timeout);
     };
 
-    concurrent.only = (
+    const only = (
       testName: string,
-      testFn: () => Promise<any>,
+      testFn: () => Promise<unknown>,
       timeout?: number,
     ) => {
       const promise = mutex(() => testFn());
@@ -100,7 +101,12 @@ export const initialize = async ({
       test.only(testName, () => promise, timeout);
     };
 
+    concurrent.only = only;
     concurrent.skip = test.skip;
+
+    concurrent.each = bind(test, false);
+    concurrent.skip.each = bind(test.skip, false);
+    only.each = bind(test.only, false);
 
     return concurrent;
   })(nodeGlobal.test);

@@ -7,8 +7,8 @@
 
 import prettyFormat = require('pretty-format');
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export default function isError(
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   potentialError: any,
 ): {isError: boolean; message: string | null} {
   // duck-type Error, see #2549

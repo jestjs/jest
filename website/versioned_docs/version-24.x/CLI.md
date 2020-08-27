@@ -330,6 +330,8 @@ Watch files for changes and rerun tests related to changed files. If you want to
 
 Watch files for changes and rerun all tests when something changes. If you want to re-run only the tests that depend on the changed files, use the `--watch` option.
 
+Use `--watchAll=false` to explicitly disable the watch mode. Note that in most CI environments, this is automatically handled for you.
+
 ### `--watchman`
 
 Whether to use watchman for file crawling. Defaults to true. Disable using `--no-watchman`.

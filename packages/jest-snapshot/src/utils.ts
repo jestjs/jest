@@ -231,8 +231,9 @@ const deepMergeArray = (target: Array<any>, source: Array<any>) => {
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const deepMerge = (target: any, source: any): any => {
-  const mergedOutput = {...target};
   if (isObject(target) && isObject(source)) {
+    const mergedOutput = {...target};
+
     Object.keys(source).forEach(key => {
       if (isObject(source[key]) && !source[key].$$typeof) {
         if (!(key in target)) Object.assign(mergedOutput, {[key]: source[key]});
@@ -243,6 +244,11 @@ export const deepMerge = (target: any, source: any): any => {
         Object.assign(mergedOutput, {[key]: source[key]});
       }
     });
+
+    return mergedOutput;
+  } else if (Array.isArray(target) && Array.isArray(source)) {
+    return deepMergeArray(target, source);
   }
-  return mergedOutput;
+
+  return target;
 };
