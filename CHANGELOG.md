@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-haste-map]` Add support for .mock extension for manual mocks ([#10460](https://github.com/facebook/jest/pull/10460))
+
 ### Fixes
 
 ### Chore & Maintenance
