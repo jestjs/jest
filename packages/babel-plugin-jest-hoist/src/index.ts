@@ -241,7 +241,7 @@ const extractJestObjExprIfHoistable = <T extends Node>(
   return functionLooksHoistable ? jestObjExpr : null;
 };
 
-/* eslint-disable sort-keys,@typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable sort-keys */
 export default (): PluginObj<{
   declareJestObjGetterIdentifier: () => Identifier;
   jestObjGetterIdentifier?: Identifier;
@@ -302,4 +302,4 @@ export default (): PluginObj<{
     });
   },
 });
-/* eslint-enable sort-keys,@typescript-eslint/explicit-module-boundary-types */
+/* eslint-enable */

@@ -43,13 +43,20 @@ test('convert accessor descriptor into value descriptor', () => {
   });
 });
 
-test('skips non-enumerables', () => {
+test('shuold not skips non-enumerables', () => {
   const obj = {};
   Object.defineProperty(obj, 'foo', {enumerable: false, value: 'bar'});
 
   const copy = deepCyclicCopyReplaceable(obj);
 
-  expect(Object.getOwnPropertyDescriptors(copy)).toEqual({});
+  expect(Object.getOwnPropertyDescriptors(copy)).toEqual({
+    foo: {
+      configurable: true,
+      enumerable: false,
+      value: 'bar',
+      writable: true,
+    },
+  });
 });
 
 test('copies symbols', () => {
@@ -112,4 +119,23 @@ test('return same value for built-in object type except array, map and object', 
   expect(deepCyclicCopyReplaceable(numberArray)).toBe(numberArray);
   expect(deepCyclicCopyReplaceable(regexp)).toBe(regexp);
   expect(deepCyclicCopyReplaceable(set)).toBe(set);
+});
+
+test('should copy object symbol key property', () => {
+  const symbolKey = Symbol.for('key');
+  expect(deepCyclicCopyReplaceable({[symbolKey]: 1})).toEqual({[symbolKey]: 1});
+});
+
+test('should set writable, configurable to true', () => {
+  const a = {};
+  Object.defineProperty(a, 'key', {
+    configurable: false,
+    enumerable: true,
+    value: 1,
+    writable: false,
+  });
+  const copied = deepCyclicCopyReplaceable(a);
+  expect(Object.getOwnPropertyDescriptors(copied)).toEqual({
+    key: {configurable: true, enumerable: true, value: 1, writable: true},
+  });
 });

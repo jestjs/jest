@@ -25,8 +25,10 @@ const ELEMENT_REGEXP = /^((HTML|SVG)\w*)?Element$/;
 
 const testNode = (val: any) => {
   const constructorName = val.constructor.name;
-  const {nodeType, tagName = ''} = val;
-  const isCustomElement = tagName.includes('-') || val.hasAttribute?.('is');
+  const {nodeType, tagName} = val;
+  const isCustomElement =
+    (typeof tagName === 'string' && tagName.includes('-')) ||
+    val.hasAttribute?.('is');
 
   return (
     (nodeType === ELEMENT_NODE &&

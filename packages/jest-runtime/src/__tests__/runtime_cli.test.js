@@ -6,7 +6,6 @@
  */
 
 import path from 'path';
-// eslint-disable-next-line import/named
 import {sync as spawnSync} from 'execa';
 
 const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-runtime.js');

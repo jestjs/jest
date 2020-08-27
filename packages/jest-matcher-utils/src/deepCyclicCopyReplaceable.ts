@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {plugins} from 'pretty-format';
+
 const builtInObject = [
   Array,
   Buffer,
@@ -42,6 +44,8 @@ export default function deepCyclicCopyReplaceable<T>(
     return deepCyclicCopyMap(value, cycles);
   } else if (isBuiltInObject(value)) {
     return value;
+  } else if (plugins.DOMElement.test(value)) {
+    return (((value as unknown) as Element).cloneNode(true) as unknown) as T;
   } else {
     return deepCyclicCopyObject(value, cycles);
   }
@@ -55,25 +59,33 @@ function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, any>): T {
 
   cycles.set(object, newObject);
 
-  Object.keys(descriptors).forEach(key => {
-    if (descriptors[key].enumerable) {
-      descriptors[key] = {
+  const newDescriptors = [
+    ...Object.keys(descriptors),
+    ...Object.getOwnPropertySymbols(descriptors),
+  ].reduce(
+    //@ts-expect-error because typescript do not support symbol key in object
+    //https://github.com/microsoft/TypeScript/issues/1863
+    (newDescriptors: {[x: string]: PropertyDescriptor}, key: string) => {
+      const enumerable = descriptors[key].enumerable;
+
+      newDescriptors[key] = {
         configurable: true,
-        enumerable: true,
+        enumerable,
         value: deepCyclicCopyReplaceable(
           // this accesses the value or getter, depending. We just care about the value anyways, and this allows us to not mess with accessors
           // it has the side effect of invoking the getter here though, rather than copying it over
-          (object as Record<string, unknown>)[key],
+          (object as Record<string | symbol, unknown>)[key],
           cycles,
         ),
         writable: true,
       };
-    } else {
-      delete descriptors[key];
-    }
-  });
-
-  return Object.defineProperties(newObject, descriptors);
+      return newDescriptors;
+    },
+    {},
+  );
+  //@ts-expect-error because typescript do not support symbol key in object
+  //https://github.com/microsoft/TypeScript/issues/1863
+  return Object.defineProperties(newObject, newDescriptors);
 }
 
 function deepCyclicCopyArray<T>(array: Array<T>, cycles: WeakMap<any, any>): T {

@@ -71,6 +71,18 @@ it('does not report promises', () => {
   expect(textAfterTest).toBe('');
 });
 
+onNodeVersions('>=11.10.0', () => {
+  it('does not report ELD histograms', () => {
+    const {stderr} = runJest('detect-open-handles', [
+      'histogram',
+      '--detectOpenHandles',
+    ]);
+    const textAfterTest = getTextAfterTest(stderr);
+
+    expect(textAfterTest).toBe('');
+  });
+});
+
 describe('notify', () => {
   it('does not report --notify flag', () => {
     if (process.platform === 'win32') {
