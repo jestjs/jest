@@ -11,7 +11,6 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@jest/types": "^26.3.0",
-    "@types/graceful-fs": "^4.1.2",
     "@types/node": "*",
     "anymatch": "^3.0.3",
     "fb-watchman": "^2.0.0",
@@ -28,6 +27,7 @@
     "@jest/test-utils": "^26.3.0",
     "@types/anymatch": "^1.3.1",
     "@types/fb-watchman": "^2.0.0",
+    "@types/graceful-fs": "^4.1.2",
     "@types/micromatch": "^4.0.0",
     "@types/sane": "^2.0.0",
     "slash": "^3.0.0"
