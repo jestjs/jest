@@ -89,7 +89,7 @@
 };
 </code></pre>
 <p>Es importante notar que la configuración debe poder serializarse a un objeto JSON.</p>
-<p>Cuando use la opción <code>--config</code>, el archivo JSON no debe contener una clave &quot;jest&quot;:</p>
+<p>Cuando uses la opción <code>--config</code>, el archivo JSON no debe contener el atributo &quot;jest&quot;:</p>
 <pre><code class="hljs css language-json">{
   <span class="hljs-attr">"bail"</span>: <span class="hljs-literal">true</span>,
   <span class="hljs-attr">"verbose"</span>: <span class="hljs-literal">true</span>
@@ -166,18 +166,18 @@
 <pre><code class="hljs css language-js"><span class="hljs-comment">//__tests__/automocking.test.js</span>
 <span class="hljs-keyword">import</span> utils <span class="hljs-keyword">from</span> <span class="hljs-string">'../utils'</span>;
 
-test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; {
-  <span class="hljs-comment">// Public methods of `utils` are now mock functions</span>
+test(<span class="hljs-string">'si utils es un mock automáticamente'</span>, () =&gt; {
+  <span class="hljs-comment">// Los métodos públicos de `utils` ahora son funciones mock</span>
   expect(utils.authorize.mock).toBeTruthy();
   expect(utils.isAuthorized.mock).toBeTruthy();
 
-  <span class="hljs-comment">// You can provide them with your own implementation</span>
-  <span class="hljs-comment">// or pass the expected return value</span>
-  utils.authorize.mockReturnValue(<span class="hljs-string">'mocked_token'</span>);
+  <span class="hljs-comment">// Puedes proporcionarles una implementación</span>
+  <span class="hljs-comment">// o pasar el valor que deseas que regresen</span>
+  utils.authorize.mockReturnValue(<span class="hljs-string">'token_mock'</span>);
   utils.isAuthorized.mockReturnValue(<span class="hljs-literal">true</span>);
 
-  expect(utils.authorize()).toBe(<span class="hljs-string">'mocked_token'</span>);
-  expect(utils.isAuthorized(<span class="hljs-string">'not_wizard'</span>)).toBeTruthy();
+  expect(utils.authorize()).toBe(<span class="hljs-string">'token_mock'</span>);
+  expect(utils.isAuthorized(<span class="hljs-string">'no_wizard'</span>)).toBeTruthy();
 });
 </code></pre>
 <p><em>Note: Node modules are automatically mocked when you have a manual mock in place (e.g.: <code>__mocks__/lodash.js</code>). More info <a href="manual-mocks.html#mocking-node-modules">here</a>.</em></p>
@@ -187,7 +187,7 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <p>Esta opción respeta la <a href="https://github.com/substack/browserify-handbook#browser-field">opción <code>&quot;browser&quot;</code> </a> de Browserify en <code>package.json</code> al momento de resolver módulos. Algunos módulos exportan diferentes versiones dependiendo de si son ejecutados sobre Node o un navegador.</p>
 <h3><a class="anchor" aria-hidden="true" id="bail-boolean"></a><a href="#bail-boolean" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>bail</code> [boolean]</h3>
 <p>Por defecto: <code>false</code></p>
-<p>By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after the first failure.</p>
+<p>Por defecto, Jest ejecuta todos los test y muestra todos los errores en la consola al finalizar. The bail config option can be used here to have Jest stop running tests after the first failure.</p>
 <h3><a class="anchor" aria-hidden="true" id="cachedirectory-string"></a><a href="#cachedirectory-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>cacheDirectory</code> [string]</h3>
 <p>Por defecto: <code>&quot;/tmp/&lt;path&gt;&quot;</code></p>
 <p>Indica el directorio donde Jest debe guardar el caché de la información de las dependencias del proyecto.</p>
@@ -269,8 +269,8 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 </code></pre>
 <p>Jest fallará si:</p>
 <ul>
-<li>The <code>./src/components</code> directory has less than 40% branch or statement coverage.</li>
-<li>One of the files matching the <code>./src/reducers/**/*.js</code> glob has less than 90% statement coverage.</li>
+<li>El directorio de <code>./src/components</code> tiene menos del 40% de cobertura en branch (ramas) o statement (hechos).</li>
+<li>Uno de los archivos que coincidan con el glob <code>./src/reducers/**/*.js</code> tiene menos del 90% de cobertura de statement.</li>
 <li>El archivo <code>./src/api/very-important-module.js</code> tiene menos del 100% de cobertura.</li>
 <li>Cada archivo restante combinado tiene menos del 50% de cobertura (<code>global</code>).</li>
 </ul>
@@ -358,13 +358,13 @@ test(<span class="hljs-string">'if utils mocked automatically'</span>, () =&gt; 
 <h3><a class="anchor" aria-hidden="true" id="notifymode-string"></a><a href="#notifymode-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>notifyMode</code> [string]</h3>
 <p>Default: <code>always</code></p>
 <p>Specifies notification mode. Requires <code>notify: true</code>.</p>
-<h4><a class="anchor" aria-hidden="true" id="modes"></a><a href="#modes" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Modes</h4>
+<h4><a class="anchor" aria-hidden="true" id="modos"></a><a href="#modos" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Modos</h4>
 <ul>
-<li><code>always</code>: always send a notification.</li>
-<li><code>failure</code>: send a notification when tests fail.</li>
-<li><code>success</code>: send a notification when tests pass.</li>
-<li><code>change</code>: send a notification when the status changed.</li>
-<li><code>success-change</code>: send a notification when tests pass or once when it fails.</li>
+<li><code>always</code>: envía siempre una notificación.</li>
+<li><code>failure</code>: envía una notificación cuando fallen los test.</li>
+<li><code>success</code>: envía una notificación cuando los test pasan.</li>
+<li><code>change</code>: envía una notificación cuando el estado cambia.</li>
+<li><code>success-change</code>: envía una notificación cuando los test pasen o una vez que fallen.</li>
 <li><code>failure-change</code>: send a notification when tests fails or once when it passes.</li>
 </ul>
 <h3><a class="anchor" aria-hidden="true" id="preset-string"></a><a href="#preset-string" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>preset</code> [string]</h3>
@@ -694,7 +694,7 @@ beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;<
 <li><a href="https://babeljs.io/">Babel</a></li>
 <li><a href="http://www.typescriptlang.org/">TypeScript</a></li>
 <li><a href="http://github.com/leebyron/async-to-gen#jest">async-to-gen</a></li>
-<li>To build your own please visit the <a href="/docs/es-ES/22.x/tutorial-react#custom-transformers">Custom Transformer</a> section</li>
+<li>Para construir tu propia visita la sección <a href="/docs/es-ES/22.x/tutorial-react#custom-transformers">Transformador Custom</a></li>
 </ul>
 <p><em>Note: a transformer is only run once per file unless the file has changed. During development of a transformer it can be useful to run Jest with <code>--no-cache</code> to frequently <a href="/docs/es-ES/22.x/troubleshooting#caching-issues">delete Jest's cache</a>.</em></p>
 <p><em>Note: when adding additional code transformers, this will overwrite the default config and <code>babel-jest</code> is no longer automatically loaded. If you want to use it to compile JavaScript or Typescript, it has to be explicitly defined by adding <code>{&quot;^.+\\.[jt]sx?$&quot;: &quot;babel-jest&quot;}</code> to the transform property. Véase <a href="https://github.com/facebook/jest/tree/master/packages/babel-jest#setup">babel-jest-plugin</a></em></p>
