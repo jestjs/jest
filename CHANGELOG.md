@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- Fix lifecycle hook function types ([#10480](https://github.com/facebook/jest/pull/10480))
+
 ### Chore & Maintenance
 
 ### Performance
