@@ -110,11 +110,11 @@ export const initialize = async ({
     concurrent.skip.each = bind(test.skip, false);
     only.each = bind(test.only, false);
 
-    const nodeGlobal = global as Global.Global;
-    Object.assign(nodeGlobal, globals);
-
     return concurrent;
   })(globalsObject.test);
+
+  const nodeGlobal = global as Global.Global;
+  Object.assign(nodeGlobal, globalsObject);
 
   addEventHandler(eventHandler);
 
