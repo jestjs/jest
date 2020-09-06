@@ -67,6 +67,7 @@
     "prettier": "^2.1.1",
     "progress": "^2.0.0",
     "promise": "^8.0.2",
+    "read-pkg": "^5.2.0",
     "resolve": "^1.15.0",
     "rimraf": "^3.0.0",
     "semver": "^7.3.2",

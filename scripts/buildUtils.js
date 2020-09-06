@@ -11,6 +11,7 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
+const {sync: readPkg} = require('read-pkg');
 const stringLength = require('string-length');
 const rootPackage = require('../package.json');
 
@@ -25,20 +26,20 @@ module.exports.getPackages = function getPackages() {
     .map(file => path.resolve(PACKAGES_DIR, file))
     .filter(f => fs.lstatSync(path.resolve(f)).isDirectory());
 
-  const nodeEngineRequiremnt = rootPackage.engines.node;
+  const nodeEngineRequirement = rootPackage.engines.node;
 
   packages.forEach(packageDir => {
-    const pkg = require(`${packageDir}/package.json`);
+    const pkg = readPkg({cwd: packageDir});
 
     assert.ok(pkg.engines, `Engine requirement in ${pkg.name} should exist`);
 
-    assert.equal(
+    assert.strictEqual(
       pkg.engines.node,
       pkg.name === 'jest-worker'
         ? '>= 10.13.0'
         : pkg.name === 'pretty-format'
         ? '>= 10'
-        : nodeEngineRequiremnt,
+        : nodeEngineRequirement,
       `Engine requirement in ${pkg.name} should match root`,
     );
   });
