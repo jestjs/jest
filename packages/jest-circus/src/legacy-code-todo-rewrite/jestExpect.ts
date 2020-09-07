@@ -17,9 +17,7 @@ import {
 
 export default (config: {expand: boolean}): void => {
   global.expect = expect;
-  expect.setState({
-    expand: config.expand,
-  });
+  expect.setState({expand: config.expand});
   expect.extend({
     toMatchInlineSnapshot,
     toMatchSnapshot,

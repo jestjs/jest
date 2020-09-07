@@ -127,9 +127,7 @@ async function jasmine2(
     .requireInternalModule<typeof import('./jestExpect')>(
       path.resolve(__dirname, './jestExpect.js'),
     )
-    .default({
-      expand: globalConfig.expand,
-    });
+    .default({expand: globalConfig.expand});
 
   if (globalConfig.errorOnDeprecated) {
     installErrorOnPrivate(environment.global);

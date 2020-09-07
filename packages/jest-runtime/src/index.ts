@@ -57,9 +57,12 @@ import {
 import {options as cliOptions} from './cli/args';
 import {run as cliRun} from './cli';
 
-interface JestGlobalsValues extends Global.TestFrameworkGlobals {
-  jest: typeof JestGlobals.jest;
+interface JestGlobals extends Global.TestFrameworkGlobals {
   expect: typeof JestGlobals.expect;
+}
+
+interface JestGlobalsWithJest extends JestGlobals {
+  jest: typeof JestGlobals.jest;
 }
 
 type HasteMapOptions = {
@@ -564,7 +567,7 @@ class Runtime {
       }
     }
 
-    return this.requireModule(from, to, {
+    return this.requireModule<T>(from, to, {
       isInternalModule: true,
       supportsDynamicImport: false,
       supportsStaticESM: false,
@@ -572,7 +575,7 @@ class Runtime {
   }
 
   requireActual<T = unknown>(from: Config.Path, moduleName: string): T {
-    return this.requireModule(from, moduleName, undefined, true);
+    return this.requireModule<T>(from, moduleName, undefined, true);
   }
 
   requireMock<T = unknown>(from: Config.Path, moduleName: string): T {
@@ -1637,7 +1640,7 @@ class Runtime {
     throw e;
   }
 
-  private getGlobalsForCjs(from: Config.Path): JestGlobalsValues {
+  private getGlobalsForCjs(from: Config.Path): JestGlobalsWithJest {
     const jest = this.jestObjectCaches.get(from);
 
     invariant(jest, 'There should always be a Jest object already');
@@ -1657,7 +1660,7 @@ class Runtime {
       this.jestObjectCaches.set(from, jest);
     }
 
-    const globals: JestGlobalsValues = {
+    const globals: JestGlobalsWithJest = {
       ...this.getGlobalsFromEnvironment(),
       jest,
     };
@@ -1682,7 +1685,7 @@ class Runtime {
     return module;
   }
 
-  private getGlobalsFromEnvironment(): Omit<JestGlobalsValues, 'jest'> {
+  private getGlobalsFromEnvironment(): JestGlobals {
     return {
       afterAll: this._environment.global.afterAll,
       afterEach: this._environment.global.afterEach,
