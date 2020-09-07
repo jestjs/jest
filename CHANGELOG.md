@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-circus, jest-config, jest-runtime]` Add new `injectGlobals` config and CLI option to disable injecting global variables into the runtime ([#10483](https://github.com/facebook/jest/pull/10483))
+- `[jest-circus, jest-config, jest-runtime]` Add new `injectGlobals` config and CLI option to disable injecting global variables into the runtime ([#10484](https://github.com/facebook/jest/pull/10484))
 
 ### Fixes
 
