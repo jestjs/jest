@@ -444,6 +444,24 @@ _Note: A global teardown module configured in a project (using multi-project run
 
 _Note: The same caveat concerning transformation of `node_modules` as for `globalSetup` applies to `globalTeardown`._
 
+### `injectGlobals` [boolean]
+
+Default: `true`
+
+Insert Jest's globals (`expect`, `test`, `describe`, `beforeEach` etc.) into the global environment. If you set this to `false`, you should import from `@jest/globals`, e.g.
+
+```ts
+import {expect, jest, test} from '@jest/globals';
+
+jest.useFakeTimers();
+
+test('some test', () => {
+  expect(Date.now()).toBe(0);
+});
+```
+
+_Note: This option is only supported using `jest-circus`._
+
 ### `maxConcurrency` [number]
 
 Default: `5`

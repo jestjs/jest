@@ -113,9 +113,6 @@ export const initialize = async ({
     return concurrent;
   })(globalsObject.test);
 
-  const nodeGlobal = global as Global.Global;
-  Object.assign(nodeGlobal, globalsObject);
-
   addEventHandler(eventHandler);
 
   if (environment.handleTestEvent) {

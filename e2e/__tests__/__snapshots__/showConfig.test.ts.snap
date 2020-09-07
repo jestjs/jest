@@ -22,6 +22,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "computeSha1": false,
         "throwOnModuleCollision": false
       },
+      "injectGlobals": true,
       "moduleDirectories": [
         "node_modules"
       ],
