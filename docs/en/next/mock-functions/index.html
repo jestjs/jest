@@ -172,7 +172,7 @@ filterTestFn.mockReturnValueOnce(<span class="hljs-literal">true</span>).mockRet
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> Users;
 </code></pre>
 <p>Now, in order to test this method without actually hitting the API (and thus creating slow and fragile tests), we can use the <code>jest.mock(...)</code> function to automatically mock the axios module.</p>
-<p>Once we mock the module we can provide a <code>mockResolvedValue</code> for <code>.get</code> that returns the data we want our test to assert against. In effect, we are saying that we want axios.get('/users.json') to return a fake response.</p>
+<p>Once we mock the module we can provide a <code>mockResolvedValue</code> for <code>.get</code> that returns the data we want our test to assert against. In effect, we are saying that we want <code>axios.get('/users.json')</code> to return a fake response.</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// users.test.js</span>
 <span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
 <span class="hljs-keyword">import</span> Users <span class="hljs-keyword">from</span> <span class="hljs-string">'./users'</span>;
