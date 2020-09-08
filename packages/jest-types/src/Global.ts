@@ -36,10 +36,16 @@ export type EachTestFn<EachCallback extends TestCallback> = (
 // TODO: Get rid of this at some point
 type Jasmine = {_DEFAULT_TIMEOUT_INTERVAL?: number; addMatchers: Function};
 
-type Each<EachCallback extends TestCallback> = (
-  table: EachTable,
-  ...taggedTemplateData: Array<unknown>
-) => (title: string, test: EachTestFn<EachCallback>, timeout?: number) => void;
+type Each<EachCallback extends TestCallback> =
+  | ((
+      table: EachTable,
+      ...taggedTemplateData: Array<unknown>
+    ) => (
+      title: string,
+      test: EachTestFn<EachCallback>,
+      timeout?: number,
+    ) => void)
+  | (() => () => void);
 
 export interface ItBase {
   (testName: TestName, fn: TestFn, timeout?: number): void;
