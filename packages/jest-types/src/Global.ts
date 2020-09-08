@@ -47,6 +47,10 @@ type Each<EachCallback extends TestCallback> =
     ) => void)
   | (() => void);
 
+export interface HookBase {
+  (fn: HookFn, timeout?: number): void;
+}
+
 export interface ItBase {
   (testName: TestName, fn: TestFn, timeout?: number): void;
   each: Each<TestFn>;
@@ -91,10 +95,10 @@ export interface TestFrameworkGlobals {
   describe: Describe;
   xdescribe: DescribeBase;
   fdescribe: DescribeBase;
-  beforeAll: HookFn;
-  beforeEach: HookFn;
-  afterEach: HookFn;
-  afterAll: HookFn;
+  beforeAll: HookBase;
+  beforeEach: HookBase;
+  afterEach: HookBase;
+  afterAll: HookBase;
 }
 
 export interface GlobalAdditions extends TestFrameworkGlobals {
