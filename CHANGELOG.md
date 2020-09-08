@@ -3,6 +3,7 @@
 ### Features
 
 - `[jest-circus, jest-config, jest-runtime]` Add new `injectGlobals` config and CLI option to disable injecting global variables into the runtime ([#10484](https://github.com/facebook/jest/pull/10484))
+- `[jest-each]` Remove void return type of .each in globals ([#10447](https://github.com/facebook/jest/pull/10447))
 
 ### Fixes
 
