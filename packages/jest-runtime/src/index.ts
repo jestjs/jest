@@ -140,7 +140,6 @@ type RunScriptEvalResult = {[EVAL_RESULT_VARIABLE]: ModuleWrapper};
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
-/* eslint-disable-next-line no-redeclare */
 class Runtime {
   private _cacheFS: StringMap;
   private _config: Config.ProjectConfig;

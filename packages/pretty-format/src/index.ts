@@ -527,7 +527,6 @@ prettyFormat.plugins = {
   ReactTestComponent,
 };
 
-// eslint-disable-next-line no-redeclare
 namespace prettyFormat {
   export type Colors = PrettyFormat.Colors;
   export type Config = PrettyFormat.Config;
