@@ -1093,6 +1093,5 @@ class ModuleMockerClass {
   }
 }
 
-/* eslint-disable-next-line no-redeclare */
 const JestMock = new ModuleMockerClass(global);
 export = JestMock;
