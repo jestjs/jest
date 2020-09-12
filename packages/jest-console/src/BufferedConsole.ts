@@ -39,6 +39,8 @@ export default class BufferedConsole extends Console {
     this._groupDepth = 0;
   }
 
+  Console: NodeJS.ConsoleConstructor = Console;
+
   static write(
     buffer: ConsoleBuffer,
     type: LogType,

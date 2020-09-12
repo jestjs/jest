@@ -37,6 +37,8 @@ export default class CustomConsole extends Console {
     this._groupDepth = 0;
   }
 
+  Console: NodeJS.ConsoleConstructor = Console;
+
   private _log(type: LogType, message: string) {
     clearLine(this._stdout);
     super.log(
