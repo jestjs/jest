@@ -44,5 +44,3 @@ export function onNodeVersions(
     });
   }
 }
-
-/* eslint-enable */

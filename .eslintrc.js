@@ -202,7 +202,7 @@ module.exports = {
   plugins: ['markdown', 'import', 'prettier', 'eslint-comments'],
   rules: {
     'arrow-body-style': 2,
-    'eslint-comments/disable-enable-pair': ['error', {allowWholeFile: true}],
+    'eslint-comments/disable-enable-pair': [2, {allowWholeFile: true}],
     'eslint-comments/no-unused-disable': 2,
     'flowtype/boolean-style': 2,
     'flowtype/no-primitive-constructor-types': 2,
