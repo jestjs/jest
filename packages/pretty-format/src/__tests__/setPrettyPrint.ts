@@ -6,11 +6,13 @@
  */
 
 import prettyFormat from '../';
-import {OptionsReceived, Plugins} from '../types';
+import type {OptionsReceived, Plugins} from '../types';
 
+// https://github.com/typescript-eslint/typescript-eslint/issues/2523
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare global {
-  // eslint-disable-next-line no-redeclare
   namespace jest {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Matchers<R> {
       toPrettyPrintTo(expected: any, options?: OptionsReceived): R;
     }

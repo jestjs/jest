@@ -13,7 +13,7 @@ it('processes stack traces and code frames with source maps', () => {
   const dir = path.resolve(__dirname, '../stack-trace-source-maps');
   runYarn(dir);
   const {stderr} = runJest(dir, ['--no-cache']);
-  expect(stderr).toMatch('> 14 |   (() => expect(false).toBe(true))();');
-  expect(stderr).toMatch(`at __tests__/fails.ts:14:24
-      at Object.<anonymous> (__tests__/fails.ts:14:35)`);
+  expect(stderr).toMatch('> 15 |   (() => expect(false).toBe(true))();');
+  expect(stderr).toMatch(`at __tests__/fails.ts:15:24
+      at Object.<anonymous> (__tests__/fails.ts:15:35)`);
 });

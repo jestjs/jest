@@ -95,8 +95,11 @@ export type Jasmine = {
 } & typeof expect &
   NodeJS.Global;
 
+// https://github.com/typescript-eslint/typescript-eslint/issues/2523
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare global {
   module NodeJS {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Global {
       expect: typeof expect;
     }

@@ -16,6 +16,7 @@ module.exports = {
   ],
   overrides: [
     {
+      extends: ['plugin:@typescript-eslint/eslint-recommended'],
       files: ['*.ts', '*.tsx'],
       parser: '@typescript-eslint/parser',
       plugins: ['@typescript-eslint/eslint-plugin'],
@@ -31,11 +32,14 @@ module.exports = {
           {argsIgnorePattern: '^_'},
         ],
         '@typescript-eslint/prefer-ts-expect-error': 'error',
-        // Since we do `export =`. Remove for Jest 25
+        // Since we do `export =`. Remove for Jest 27
         'import/default': 'off',
         'import/order': 'error',
         'no-dupe-class-members': 'off',
         'no-unused-vars': 'off',
+        // TODO: turn these on at some point
+        'prefer-rest-params': 'off',
+        'prefer-spread': 'off',
       },
     },
     // to make it more suitable for running on code examples in docs/ folder
@@ -105,6 +109,17 @@ module.exports = {
       rules: {
         'eslint-comments/disable-enable-pair': 0,
         'eslint-comments/no-unlimited-disable': 0,
+      },
+    },
+    {
+      files: [
+        'e2e/error-on-deprecated/__tests__/*',
+        'e2e/jasmine-async/__tests__/*',
+      ],
+      globals: {
+        fail: true,
+        jasmine: true,
+        pending: true,
       },
     },
     {
