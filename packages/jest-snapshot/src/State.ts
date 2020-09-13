@@ -62,8 +62,8 @@ export default class SnapshotState {
   private _snapshotPath: Config.Path;
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _uncheckedKeys: Set<string>;
-  private _getBabelTraverse: () => BabelTraverse;
-  private _getPrettier: () => null | Prettier;
+  private _getBabelTraverse: SnapshotStateOptions['getBabelTraverse'];
+  private _getPrettier: SnapshotStateOptions['getPrettier'];
 
   added: number;
   expand: boolean;
