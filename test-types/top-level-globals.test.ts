@@ -21,6 +21,7 @@ import {
 const fn = () => {};
 const asyncFn = async () => {};
 const timeout = 5;
+const testName = 'Test name';
 const testTable = [[1, 2]];
 
 // https://jestjs.io/docs/en/api#methods
@@ -37,27 +38,25 @@ expectType<void>(beforeEach(fn));
 expectType<void>(beforeEach(asyncFn));
 expectType<void>(beforeEach(fn, timeout));
 
-expectType<void>(test.each(testTable)('Test name', fn));
-expectType<void>(test.each(testTable)('Test name', fn, timeout));
-expectType<void>(test.only.each(testTable)('Test name', fn));
-expectType<void>(test.only.each(testTable)('Test name', fn, timeout));
-expectType<void>(test.skip.each(testTable)('Test name', fn));
-expectType<void>(test.skip.each(testTable)('Test name', fn, timeout));
-expectType<void>(test.concurrent.each(testTable)('Test name', asyncFn));
+expectType<void>(test.each(testTable)(testName, fn));
+expectType<void>(test.each(testTable)(testName, fn, timeout));
+expectType<void>(test.only.each(testTable)(testName, fn));
+expectType<void>(test.only.each(testTable)(testName, fn, timeout));
+expectType<void>(test.skip.each(testTable)(testName, fn));
+expectType<void>(test.skip.each(testTable)(testName, fn, timeout));
+expectType<void>(test.concurrent.each(testTable)(testName, asyncFn));
+expectType<void>(test.concurrent.each(testTable)(testName, asyncFn, timeout));
+expectType<void>(test.concurrent.only.each(testTable)(testName, asyncFn));
 expectType<void>(
-  test.concurrent.each(testTable)('Test name', asyncFn, timeout),
+  test.concurrent.only.each(testTable)(testName, asyncFn, timeout),
 );
-expectType<void>(test.concurrent.only.each(testTable)('Test name', asyncFn));
+expectType<void>(test.concurrent.skip.each(testTable)(testName, asyncFn));
 expectType<void>(
-  test.concurrent.only.each(testTable)('Test name', asyncFn, timeout),
+  test.concurrent.skip.each(testTable)(testName, asyncFn, timeout),
 );
-expectType<void>(test.concurrent.skip.each(testTable)('Test name', asyncFn));
-expectType<void>(
-  test.concurrent.skip.each(testTable)('Test name', asyncFn, timeout),
-);
-expectType<void>(describe.each(testTable)('Test name', fn));
-expectType<void>(describe.each(testTable)('Test name', fn, timeout));
-expectType<void>(describe.only.each(testTable)('Test name', fn));
-expectType<void>(describe.only.each(testTable)('Test name', fn, timeout));
-expectType<void>(describe.skip.each(testTable)('Test name', fn));
-expectType<void>(describe.skip.each(testTable)('Test name', fn, timeout));
+expectType<void>(describe.each(testTable)(testName, fn));
+expectType<void>(describe.each(testTable)(testName, fn, timeout));
+expectType<void>(describe.only.each(testTable)(testName, fn));
+expectType<void>(describe.only.each(testTable)(testName, fn, timeout));
+expectType<void>(describe.skip.each(testTable)(testName, fn));
+expectType<void>(describe.skip.each(testTable)(testName, fn, timeout));
