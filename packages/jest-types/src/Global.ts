@@ -45,7 +45,7 @@ type Each<EachCallback extends TestCallback> =
       test: EachTestFn<EachCallback>,
       timeout?: number,
     ) => void)
-  | (() => void);
+  | (() => () => void);
 
 export interface HookBase {
   (fn: HookFn, timeout?: number): void;
