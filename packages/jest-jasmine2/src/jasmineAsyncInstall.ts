@@ -165,7 +165,7 @@ function makeConcurrent(
 ): Global.ItConcurrentBase {
   const concurrentFn = function (
     specName: string,
-    fn: Global.TestFn,
+    fn: Global.ConcurrentTestFn,
     timeout?: number,
   ) {
     let promise: Promise<unknown> = Promise.resolve();

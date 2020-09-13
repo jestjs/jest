@@ -7,17 +7,22 @@
 
 import type {CoverageMapData} from 'istanbul-lib-coverage';
 
-export type GeneratorFn = (...args: Array<any>) => Generator;
+export type ValidTestReturnValues = void | undefined;
+type TestReturnValuePromise = Promise<unknown>;
+type TestReturnValueGenerator = Generator<void, unknown, void>;
+export type TestReturnValue = ValidTestReturnValues | TestReturnValuePromise;
+
 export type DoneFn = (reason?: string | Error) => void;
-export type CallbackFn = (
-  done?: DoneFn,
-) => void | undefined | Promise<void | undefined | unknown>;
+export type DoneTakingTestFn = (done: DoneFn) => ValidTestReturnValues;
+export type PromiseReturningTestFn = () => TestReturnValue;
+export type GeneratorReturningTestFn = () => TestReturnValueGenerator;
 
 export type TestName = string;
-export type TestFn = GeneratorFn | CallbackFn;
-export type ConcurrentTestFn = (
-  done?: DoneFn,
-) => Promise<void | undefined | unknown>;
+export type TestFn =
+  | PromiseReturningTestFn
+  | GeneratorReturningTestFn
+  | DoneTakingTestFn;
+export type ConcurrentTestFn = () => TestReturnValuePromise;
 export type BlockFn = () => void;
 export type BlockName = string;
 export type HookFn = TestFn;
