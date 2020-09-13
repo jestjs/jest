@@ -63,7 +63,7 @@ export default class SnapshotState {
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _uncheckedKeys: Set<string>;
   private _getBabelTraverse: () => BabelTraverse;
-  private _getPrettier: () => null | typeof import('prettier');
+  private _getPrettier: () => null | Prettier;
 
   added: number;
   expand: boolean;
