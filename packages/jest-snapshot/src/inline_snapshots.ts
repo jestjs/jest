@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import type BabelTraverse from '@babel/traverse';
 import * as fs from 'graceful-fs';
 import semver = require('semver');
 import {
@@ -16,8 +15,8 @@ import {
   templateLiteral,
 } from '@babel/types';
 import type {Frame} from 'jest-message-util';
-
 import type {Config} from '@jest/types';
+import type {BabelTraverse, Prettier} from './types';
 import {escapeBacktickString} from './utils';
 
 export type InlineSnapshot = {
@@ -27,8 +26,8 @@ export type InlineSnapshot = {
 
 export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
-  prettier: typeof import('prettier') | null,
-  babelTraverse: typeof BabelTraverse,
+  prettier: Prettier | null,
+  babelTraverse: BabelTraverse,
 ): void {
   if (!prettier) {
     throw new Error(
@@ -61,7 +60,7 @@ const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
   sourceFilePath: Config.Path,
   prettier: any,
-  babelTraverse: typeof BabelTraverse,
+  babelTraverse: BabelTraverse,
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
@@ -182,7 +181,7 @@ const createInsertionParser = (
   snapshots: Array<InlineSnapshot>,
   snapshotMatcherNames: Array<string>,
   inferredParser: string,
-  babelTraverse: typeof BabelTraverse,
+  babelTraverse: BabelTraverse,
 ) => (
   text: string,
   parsers: Record<string, (text: string) => any>,
@@ -249,7 +248,7 @@ const createInsertionParser = (
 const createFormattingParser = (
   snapshotMatcherNames: Array<string>,
   inferredParser: string,
-  babelTraverse: typeof BabelTraverse,
+  babelTraverse: BabelTraverse,
 ) => (
   text: string,
   parsers: Record<string, (text: string) => any>,
