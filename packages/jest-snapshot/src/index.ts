@@ -557,7 +557,7 @@ const JestSnapshot = {
   toThrowErrorMatchingSnapshot,
   utils,
 };
-/* eslint-disable-next-line no-redeclare */
+
 namespace JestSnapshot {
   export type SnapshotResolver = JestSnapshotResolver;
   export type SnapshotStateType = SnapshotState;

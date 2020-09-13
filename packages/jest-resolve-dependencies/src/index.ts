@@ -21,7 +21,6 @@ namespace DependencyResolver {
  * DependencyResolver is used to resolve the direct dependencies of a module or
  * to retrieve a list of all transitive inverse dependencies.
  */
-/* eslint-disable-next-line no-redeclare */
 class DependencyResolver {
   private _hasteFS: HasteFS;
   private _resolver: ResolverType;
