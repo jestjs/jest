@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import * as asyncHooks from 'async_hooks';
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';

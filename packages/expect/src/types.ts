@@ -5,6 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+
+/* eslint-disable local/ban-types-eventually */
+
 import type {Config} from '@jest/types';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';

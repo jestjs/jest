@@ -6,6 +6,8 @@
  *
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import vm, {Context} from 'vm';
 import {ModuleMocker} from '../';
 
