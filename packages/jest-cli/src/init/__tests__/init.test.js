@@ -221,5 +221,3 @@ describe('init', () => {
     });
   });
 });
-
-/* eslint-enable */
