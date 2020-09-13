@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type BabelTraverse from '@babel/traverse';
 import type {Circus, Config, Global} from '@jest/types';
 import type {JestEnvironment} from '@jest/environment';
 import {
@@ -51,7 +52,7 @@ export const initialize = async ({
   config: Config.ProjectConfig;
   environment: JestEnvironment;
   getPrettier: () => null | any;
-  getBabelTraverse: () => Function;
+  getBabelTraverse: () => typeof BabelTraverse;
   globalConfig: Config.GlobalConfig;
   localRequire: (path: Config.Path) => any;
   testPath: Config.Path;

@@ -20,12 +20,12 @@ import {
   testNameToKey,
 } from './utils';
 import {InlineSnapshot, saveInlineSnapshots} from './inline_snapshots';
-import type {SnapshotData} from './types';
+import type {BabelTraverse, Prettier, SnapshotData} from './types';
 
 export type SnapshotStateOptions = {
   updateSnapshot: Config.SnapshotUpdateState;
-  getPrettier: () => null | typeof import('prettier');
-  getBabelTraverse: () => Function;
+  getPrettier: () => null | Prettier;
+  getBabelTraverse: () => BabelTraverse;
   expand?: boolean;
 };
 
@@ -62,7 +62,7 @@ export default class SnapshotState {
   private _snapshotPath: Config.Path;
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _uncheckedKeys: Set<string>;
-  private _getBabelTraverse: () => Function;
+  private _getBabelTraverse: () => BabelTraverse;
   private _getPrettier: () => null | typeof import('prettier');
 
   added: number;
