@@ -62,7 +62,7 @@ export interface ItBase {
 export interface It extends ItBase {
   only: ItBase;
   skip: ItBase;
-  todo: (testName: TestName, ...rest: Array<any>) => void;
+  todo: (testName: TestName) => void;
 }
 
 export interface ItConcurrentBase {
@@ -117,5 +117,5 @@ export interface Global
   extends GlobalAdditions,
     // TODO: Maybe add `| Window` in the future?
     Omit<NodeJS.Global, keyof GlobalAdditions> {
-  [extras: string]: any;
+  [extras: string]: unknown;
 }
