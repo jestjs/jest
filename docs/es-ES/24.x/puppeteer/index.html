@@ -116,11 +116,11 @@
 </ol>
 <p>Aquí hay un ejemplo del script GlobalSetup</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// setup.js</span>
-<span class="hljs-keyword">const</span> puppeteer = <span class="hljs-built_in">require</span>(<span class="hljs-string">'puppeteer'</span>);
-<span class="hljs-keyword">const</span> mkdirp = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mkdirp'</span>);
 <span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
 <span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
 <span class="hljs-keyword">const</span> os = <span class="hljs-built_in">require</span>(<span class="hljs-string">'os'</span>);
+<span class="hljs-keyword">const</span> mkdirp = <span class="hljs-built_in">require</span>(<span class="hljs-string">'mkdirp'</span>);
+<span class="hljs-keyword">const</span> puppeteer = <span class="hljs-built_in">require</span>(<span class="hljs-string">'puppeteer'</span>);
 
 <span class="hljs-keyword">const</span> DIR = path.join(os.tmpdir(), <span class="hljs-string">'jest_puppeteer_global_setup'</span>);
 
@@ -137,11 +137,11 @@
 </code></pre>
 <p>Entonces necesitamos un entorno de prueba personalizado para puppeteer</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// puppeteer_environment.js</span>
-<span class="hljs-keyword">const</span> NodeEnvironment = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-environment-node'</span>);
 <span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>);
 <span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
-<span class="hljs-keyword">const</span> puppeteer = <span class="hljs-built_in">require</span>(<span class="hljs-string">'puppeteer'</span>);
 <span class="hljs-keyword">const</span> os = <span class="hljs-built_in">require</span>(<span class="hljs-string">'os'</span>);
+<span class="hljs-keyword">const</span> puppeteer = <span class="hljs-built_in">require</span>(<span class="hljs-string">'puppeteer'</span>);
+<span class="hljs-keyword">const</span> NodeEnvironment = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-environment-node'</span>);
 
 <span class="hljs-keyword">const</span> DIR = path.join(os.tmpdir(), <span class="hljs-string">'jest_puppeteer_global_setup'</span>);
 
@@ -178,8 +178,8 @@
 <p>Finalmente, podemos cerrar la instancia de puppeteer y limpiar el archivo</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// teardown.js</span>
 <span class="hljs-keyword">const</span> os = <span class="hljs-built_in">require</span>(<span class="hljs-string">'os'</span>);
-<span class="hljs-keyword">const</span> rimraf = <span class="hljs-built_in">require</span>(<span class="hljs-string">'rimraf'</span>);
 <span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">'path'</span>);
+<span class="hljs-keyword">const</span> rimraf = <span class="hljs-built_in">require</span>(<span class="hljs-string">'rimraf'</span>);
 
 <span class="hljs-keyword">const</span> DIR = path.join(os.tmpdir(), <span class="hljs-string">'jest_puppeteer_global_setup'</span>);
 <span class="hljs-built_in">module</span>.exports = <span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
