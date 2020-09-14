@@ -11,15 +11,13 @@ import semver = require('semver');
 import {file, templateElement, templateLiteral} from '@babel/types';
 import type {Frame} from 'jest-message-util';
 import type {
+  BuiltInParsers as PrettierBuiltInParsers,
   CustomParser as PrettierCustomParser,
-  BuiltInParser as PrettierParser,
   BuiltInParserName as PrettierParserName,
 } from 'prettier';
 import type {Config} from '@jest/types';
 import type {BabelTraverse, Prettier} from './types';
 import {escapeBacktickString} from './utils';
-
-type PrettierParserMap = Record<PrettierParserName, PrettierParser>;
 
 export type InlineSnapshot = {
   snapshot: string;
@@ -164,7 +162,7 @@ const indent = (snapshot: string, numIndents: number, indentation: string) => {
 };
 
 const getAst = (
-  parsers: PrettierParserMap,
+  parsers: PrettierBuiltInParsers,
   inferredParser: PrettierParserName,
   text: string,
 ) => {

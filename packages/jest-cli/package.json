@@ -17,7 +17,7 @@
     "jest-util": "^26.3.0",
     "jest-validate": "^26.4.2",
     "prompts": "^2.0.1",
-    "yargs": "^16.0.1"
+    "yargs": "^16.0.3"
   },
   "devDependencies": {
     "@jest/test-utils": "^26.3.0",
