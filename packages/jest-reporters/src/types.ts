@@ -50,8 +50,11 @@ export type OnTestStart = (test: Test) => Promise<void>;
 export type OnTestFailure = (
   test: Test,
   error: SerializableError,
-) => Promise<any>;
-export type OnTestSuccess = (test: Test, result: TestResult) => Promise<any>;
+) => Promise<unknown>;
+export type OnTestSuccess = (
+  test: Test,
+  result: TestResult,
+) => Promise<unknown>;
 
 export interface Reporter {
   readonly onTestResult?: (

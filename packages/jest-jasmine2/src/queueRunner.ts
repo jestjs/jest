@@ -17,7 +17,7 @@ export type Options = {
   onException: (error: Error) => void;
   queueableFns: Array<QueueableFn>;
   setTimeout: Global['setTimeout'];
-  userContext: any;
+  userContext: unknown;
 };
 
 export interface DoneFn {

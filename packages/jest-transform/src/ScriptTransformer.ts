@@ -52,7 +52,7 @@ const projectCaches = new Map<string, ProjectCache>();
 const CACHE_VERSION = '1';
 
 async function waitForPromiseWithCleanup(
-  promise: Promise<any>,
+  promise: Promise<unknown>,
   cleanup: () => void,
 ) {
   try {

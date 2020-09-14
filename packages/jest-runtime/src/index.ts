@@ -158,8 +158,8 @@ class Runtime {
     string,
     jestMock.MockFunctionMetadata<unknown, Array<unknown>>
   >;
-  private _mockRegistry: Map<string, any>;
-  private _isolatedMockRegistry: Map<string, any> | null;
+  private _mockRegistry: Map<string, unknown>;
+  private _isolatedMockRegistry: Map<string, unknown> | null;
   private _moduleMocker: typeof jestMock;
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
@@ -1049,7 +1049,7 @@ class Runtime {
 
     this.jestObjectCaches.set(filename, jestObject);
 
-    const lastArgs: [Jest | undefined, ...Array<any>] = [
+    const lastArgs: [Jest | undefined, ...Array<unknown>] = [
       this._config.injectGlobals ? jestObject : undefined, // jest object
       this._config.extraGlobals.map<unknown>(globalVariable => {
         if (this._environment.global[globalVariable]) {
@@ -1506,7 +1506,7 @@ class Runtime {
     };
 
     const jestObject: Jest = {
-      addMatchers: (matchers: Record<string, any>) =>
+      addMatchers: (matchers: Record<string, unknown>) =>
         this._environment.global.jasmine.addMatchers(matchers),
       advanceTimersByTime: (msToRun: number) =>
         _getFakeTimers().advanceTimersByTime(msToRun),
@@ -1700,7 +1700,7 @@ class Runtime {
       beforeAll: this._environment.global.beforeAll,
       beforeEach: this._environment.global.beforeEach,
       describe: this._environment.global.describe,
-      expect: this._environment.global.expect as any,
+      expect: this._environment.global.expect as unknown,
       fdescribe: this._environment.global.fdescribe,
       fit: this._environment.global.fit,
       it: this._environment.global.it,

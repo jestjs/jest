@@ -37,7 +37,7 @@ const generateConfigFile = (
 ): string => {
   const {coverage, coverageProvider, clearMocks, environment} = results;
 
-  const overrides: Record<string, any> = {};
+  const overrides: Record<string, unknown> = {};
 
   if (coverage) {
     Object.assign(overrides, {

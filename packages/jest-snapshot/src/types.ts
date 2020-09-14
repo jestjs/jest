@@ -21,7 +21,7 @@ export type MatchSnapshotConfig = {
   isInline: boolean;
   matcherName: string;
   properties?: object;
-  received: any;
+  received: unknown;
 };
 
 export type SnapshotData = Record<string, string>;

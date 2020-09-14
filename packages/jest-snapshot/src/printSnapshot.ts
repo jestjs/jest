@@ -168,7 +168,7 @@ const joinDiffs = (
     '',
   );
 
-const isLineDiffable = (received: any): boolean => {
+const isLineDiffable = (received: unknown): boolean => {
   const receivedType = getType(received);
 
   if (getType.isPrimitive(received)) {

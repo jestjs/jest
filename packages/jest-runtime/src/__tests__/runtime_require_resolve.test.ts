@@ -47,7 +47,7 @@ describe('Runtime require.resolve', () => {
   describe('with the OUTSIDE_JEST_VM_RESOLVE_OPTION', () => {
     it('forwards to the real Node require in an internal context', async () => {
       const runtime = await createRuntime(__filename);
-      const module = runtime.requireInternalModule<any>(
+      const module = runtime.requireInternalModule(
         runtime.__mockRootPath,
         './resolve_and_require_outside.js',
       );
@@ -58,7 +58,7 @@ describe('Runtime require.resolve', () => {
 
     it('ignores the option in an external context', async () => {
       const runtime = await createRuntime(__filename);
-      const module = runtime.requireModule<any>(
+      const module = runtime.requireModule(
         runtime.__mockRootPath,
         './resolve_and_require_outside.js',
       );
@@ -72,7 +72,7 @@ describe('Runtime require.resolve', () => {
     it('does not understand a self-constructed outsideJestVmPath in an external context', async () => {
       const runtime = await createRuntime(__filename);
       expect(() =>
-        runtime.requireModule<any>(
+        runtime.requireModule(
           runtime.__mockRootPath,
           createOutsideJestVmPath(
             require.resolve('./test_root/create_require_module.js'),

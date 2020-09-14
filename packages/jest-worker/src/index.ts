@@ -27,7 +27,7 @@ function getExposedMethods(
 
   // If no methods list is given, try getting it by auto-requiring the module.
   if (!exposedMethods) {
-    const module: Function | Record<string, any> = require(workerPath);
+    const module: Function | Record<string, unknown> = require(workerPath);
 
     exposedMethods = Object.keys(module).filter(
       // @ts-expect-error: no index
@@ -126,7 +126,7 @@ export default class JestWorker {
   private _callFunctionWithArgs(
     method: string,
     ...args: Array<any>
-  ): Promise<any> {
+  ): Promise<unknown> {
     if (this._ending) {
       throw new Error('Farm is ended, no more calls can be done to it');
     }

@@ -83,7 +83,7 @@ export type DefaultOptions = {
   slowTestThreshold: number;
   snapshotSerializers: Array<Path>;
   testEnvironment: string;
-  testEnvironmentOptions: Record<string, any>;
+  testEnvironmentOptions: Record<string, unknown>;
   testFailureExitCode: string | number;
   testLocationInResults: boolean;
   testMatch: Array<Glob>;
@@ -193,7 +193,7 @@ export type InitialOptions = Partial<{
   snapshotSerializers: Array<Path>;
   errorOnDeprecated: boolean;
   testEnvironment: string;
-  testEnvironmentOptions: Record<string, any>;
+  testEnvironmentOptions: Record<string, unknown>;
   testFailureExitCode: string | number;
   testLocationInResults: boolean;
   testMatch: Array<Glob>;
@@ -219,7 +219,7 @@ export type InitialOptions = Partial<{
   watch: boolean;
   watchAll: boolean;
   watchman: boolean;
-  watchPlugins: Array<string | [string, Record<string, any>]>;
+  watchPlugins: Array<string | [string, Record<string, unknown>]>;
 }>;
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -308,7 +308,7 @@ export type GlobalConfig = {
   watchman: boolean;
   watchPlugins?: Array<{
     path: string;
-    config: Record<string, any>;
+    config: Record<string, unknown>;
   }> | null;
 };
 
@@ -355,7 +355,7 @@ export type ProjectConfig = {
   snapshotResolver?: Path;
   snapshotSerializers: Array<Path>;
   testEnvironment: string;
-  testEnvironmentOptions: Record<string, any>;
+  testEnvironmentOptions: Record<string, unknown>;
   testMatch: Array<Glob>;
   testLocationInResults: boolean;
   testPathIgnorePatterns: Array<string>;

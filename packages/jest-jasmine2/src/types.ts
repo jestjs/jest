@@ -39,9 +39,9 @@ export type AsyncExpectationResult = Promise<SyncExpectationResult>;
 export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
 export type RawMatcherFn = (
-  expected: any,
-  actual: any,
-  options?: any,
+  expected: unknown,
+  actual: unknown,
+  options?: unknown,
 ) => ExpectationResult;
 // -------END-------
 

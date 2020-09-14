@@ -410,8 +410,8 @@ const shouldPrintDiff = (actual: unknown, expected: unknown) => {
 function replaceMatchedToAsymmetricMatcher(
   replacedExpected: unknown,
   replacedReceived: unknown,
-  expectedCycles: Array<any>,
-  receivedCycles: Array<any>,
+  expectedCycles: Array<unknown>,
+  receivedCycles: Array<unknown>,
 ) {
   if (!Replaceable.isReplaceable(replacedExpected, replacedReceived)) {
     return {replacedExpected, replacedReceived};

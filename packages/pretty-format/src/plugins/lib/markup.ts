@@ -55,7 +55,7 @@ export const printProps = (
 
 // Return empty string if children is empty.
 export const printChildren = (
-  children: Array<any>,
+  children: Array<unknown>,
   config: Config,
   indentation: string,
   depth: number,

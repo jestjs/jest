@@ -53,7 +53,7 @@ export default class PCancelable<T> extends Promise<T> {
       | undefined
       | null,
     onRejected?:
-      | ((reason: any) => TResult2 | PromiseLike<TResult2>)
+      | ((reason: unknown) => TResult2 | PromiseLike<TResult2>)
       | undefined
       | null,
   ): Promise<TResult1 | TResult2> {
@@ -62,7 +62,7 @@ export default class PCancelable<T> extends Promise<T> {
 
   catch<TResult>(
     onRejected?:
-      | ((reason: any) => TResult | PromiseLike<TResult>)
+      | ((reason: unknown) => TResult | PromiseLike<TResult>)
       | undefined
       | null,
   ): Promise<T | TResult> {

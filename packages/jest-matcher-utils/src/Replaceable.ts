@@ -9,7 +9,11 @@ import getType = require('jest-get-type');
 
 const supportTypes = ['map', 'array', 'object'];
 
-type ReplaceableForEachCallBack = (value: any, key: any, object: any) => void;
+type ReplaceableForEachCallBack = (
+  value: unknown,
+  key: unknown,
+  object: unknown,
+) => void;
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export default class Replaceable {
@@ -24,7 +28,7 @@ export default class Replaceable {
     }
   }
 
-  static isReplaceable(obj1: any, obj2: any): boolean {
+  static isReplaceable(obj1: unknown, obj2: unknown): boolean {
     const obj1Type = getType(obj1);
     const obj2Type = getType(obj2);
     return obj1Type === obj2Type && supportTypes.includes(obj1Type);

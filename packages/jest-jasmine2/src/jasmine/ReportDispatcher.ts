@@ -79,7 +79,7 @@ export default class ReportDispatcher implements Reporter {
 
     return this;
 
-    function dispatch(method: keyof Reporter, args: any) {
+    function dispatch(method: keyof Reporter, args: unknown) {
       if (reporters.length === 0 && fallbackReporter !== null) {
         reporters.push(fallbackReporter);
       }

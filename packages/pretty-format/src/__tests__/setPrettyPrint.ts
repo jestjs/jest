@@ -14,14 +14,18 @@ declare global {
   namespace jest {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Matchers<R> {
-      toPrettyPrintTo(expected: any, options?: OptionsReceived): R;
+      toPrettyPrintTo(expected: unknown, options?: OptionsReceived): R;
     }
   }
 }
 
 const setPrettyPrint = (plugins: Plugins) => {
   expect.extend({
-    toPrettyPrintTo(received: any, expected: any, options?: OptionsReceived) {
+    toPrettyPrintTo(
+      received: unknown,
+      expected: unknown,
+      options?: OptionsReceived,
+    ) {
       const prettyFormatted = prettyFormat(received, {plugins, ...options});
       const pass = prettyFormatted === expected;
 
