@@ -65,7 +65,7 @@ export const linkJestPackage = (packageName: string, cwd: Config.Path) => {
 
 export const makeTemplate = (
   str: string,
-): ((values?: Array<any>) => string) => (values?: unknown) =>
+): ((values?: Array<unknown>) => string) => (values = []) =>
   str.replace(/\$(\d+)/g, (_match, number) => {
     if (!Array.isArray(values)) {
       throw new Error('Array of values must be passed to the template.');
