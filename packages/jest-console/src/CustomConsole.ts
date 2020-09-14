@@ -22,6 +22,8 @@ export default class CustomConsole extends Console {
   private _timers: LogTimers = {};
   private _groupDepth = 0;
 
+  Console: NodeJS.ConsoleConstructor = Console;
+
   constructor(
     stdout: NodeJS.WriteStream,
     stderr: NodeJS.WriteStream,
@@ -33,8 +35,6 @@ export default class CustomConsole extends Console {
     this._stderr = stderr;
     this._formatBuffer = formatBuffer;
   }
-
-  Console: NodeJS.ConsoleConstructor = Console;
 
   private _log(type: LogType, message: string) {
     clearLine(this._stdout);

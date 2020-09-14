@@ -24,6 +24,8 @@ export default class BufferedConsole extends Console {
   private _timers: LogTimers = {};
   private _groupDepth = 0;
 
+  Console: NodeJS.ConsoleConstructor = Console;
+
   constructor() {
     super({
       write: (message: string) => {
@@ -33,8 +35,6 @@ export default class BufferedConsole extends Console {
       },
     } as NodeJS.WritableStream);
   }
-
-  Console: NodeJS.ConsoleConstructor = Console;
 
   static write(
     buffer: ConsoleBuffer,
