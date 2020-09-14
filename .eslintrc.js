@@ -30,7 +30,6 @@ module.exports = {
         '@typescript-eslint/prefer-ts-expect-error': 'error',
         // Since we do `export =`. Remove for Jest 27
         'import/default': 'off',
-        'import/order': 'error',
         'no-dupe-class-members': 'off',
         'no-unused-vars': 'off',
         // TODO: turn these on at some point
@@ -216,9 +215,7 @@ module.exports = {
       },
     ],
     'import/no-unresolved': [2, {ignore: ['fsevents']}],
-    // This has to be disabled until all type and module imports are combined
-    // https://github.com/benmosher/eslint-plugin-import/issues/645
-    'import/order': 0,
+    'import/order': 2,
     'no-console': 0,
     'no-restricted-imports': [
       2,
