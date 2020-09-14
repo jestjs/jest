@@ -62,7 +62,7 @@ export interface Jest {
    *
    * @deprecated Use `expect.extend` instead
    */
-  addMatchers(matchers: Record<string, any>): void;
+  addMatchers(matchers: Record<string, unknown>): void;
   /**
    * Advances all timers by the needed milliseconds so that only the next timeouts/intervals will run.
    * Optionally, you can provide steps, so it will run steps amount of next timeouts/intervals.
@@ -142,7 +142,7 @@ export interface Jest {
    * Determines if the given function is a mocked function.
    */
   isMockFunction(
-    fn: (...args: Array<any>) => any,
+    fn: (...args: Array<any>) => unknown,
   ): fn is ReturnType<JestMockFn>;
   /**
    * Mocks a module with an auto-mocked version when it is being required.
