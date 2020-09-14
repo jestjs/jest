@@ -45,7 +45,7 @@ const Sponsor = ({
     className="sponsor-item"
     title={`$${totalDonations.value} by ${name || slug}`}
     target="_blank"
-    rel="nofollow noopener"
+    rel="sponsored nofollow noopener"
     href={website || `https://opencollective.com/${slug}`}
   >
     {
@@ -67,8 +67,8 @@ const Backer = ({
     className="backer-item"
     title={`$${totalDonations.value} by ${name || slug}`}
     target="_blank"
-    rel="nofollow noopener"
-    href={website || `https://opencollective.com/${slug}`}
+    rel="sponsored nofollow noopener"
+    href={`https://opencollective.com/${slug}`}
   >
     {
       <img
