@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 // See: https://github.com/facebook/jest/pull/5154
 export default function convertDescriptorToString<
   T extends number | string | Function | undefined

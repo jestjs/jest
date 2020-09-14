@@ -19,24 +19,21 @@ import type {
 } from './types';
 
 export default class BufferedConsole extends Console {
-  private _buffer: ConsoleBuffer;
-  private _counters: LogCounters;
-  private _timers: LogTimers;
-  private _groupDepth: number;
+  private _buffer: ConsoleBuffer = [];
+  private _counters: LogCounters = {};
+  private _timers: LogTimers = {};
+  private _groupDepth = 0;
+
+  Console: NodeJS.ConsoleConstructor = Console;
 
   constructor() {
-    const buffer: ConsoleBuffer = [];
     super({
       write: (message: string) => {
-        BufferedConsole.write(buffer, 'log', message, null);
+        BufferedConsole.write(this._buffer, 'log', message, null);
 
         return true;
       },
     } as NodeJS.WritableStream);
-    this._buffer = buffer;
-    this._counters = {};
-    this._timers = {};
-    this._groupDepth = 0;
   }
 
   static write(

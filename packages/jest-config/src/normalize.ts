@@ -885,6 +885,7 @@ export default function normalize(
       case 'findRelatedTests':
       case 'forceCoverageMatch':
       case 'forceExit':
+      case 'injectGlobals':
       case 'lastCommit':
       case 'listTests':
       case 'logHeapUsage':

@@ -34,7 +34,10 @@ export type EachTestFn<EachCallback extends TestCallback> = (
 ) => ReturnType<EachCallback>;
 
 // TODO: Get rid of this at some point
-type Jasmine = {_DEFAULT_TIMEOUT_INTERVAL?: number; addMatchers: Function};
+type Jasmine = {
+  _DEFAULT_TIMEOUT_INTERVAL?: number;
+  addMatchers: (matchers: Record<string, unknown>) => void;
+};
 
 type Each<EachCallback extends TestCallback> =
   | ((
@@ -45,7 +48,11 @@ type Each<EachCallback extends TestCallback> =
       test: EachTestFn<EachCallback>,
       timeout?: number,
     ) => void)
-  | (() => void);
+  | (() => () => void);
+
+export interface HookBase {
+  (fn: HookFn, timeout?: number): void;
+}
 
 export interface ItBase {
   (testName: TestName, fn: TestFn, timeout?: number): void;
@@ -55,7 +62,7 @@ export interface ItBase {
 export interface It extends ItBase {
   only: ItBase;
   skip: ItBase;
-  todo: (testName: TestName, ...rest: Array<any>) => void;
+  todo: (testName: TestName) => void;
 }
 
 export interface ItConcurrentBase {
@@ -91,10 +98,10 @@ export interface TestFrameworkGlobals {
   describe: Describe;
   xdescribe: DescribeBase;
   fdescribe: DescribeBase;
-  beforeAll: HookFn;
-  beforeEach: HookFn;
-  afterEach: HookFn;
-  afterAll: HookFn;
+  beforeAll: HookBase;
+  beforeEach: HookBase;
+  afterEach: HookBase;
+  afterAll: HookBase;
 }
 
 export interface GlobalAdditions extends TestFrameworkGlobals {
@@ -110,5 +117,5 @@ export interface Global
   extends GlobalAdditions,
     // TODO: Maybe add `| Window` in the future?
     Omit<NodeJS.Global, keyof GlobalAdditions> {
-  [extras: string]: any;
+  [extras: string]: unknown;
 }

@@ -14,6 +14,7 @@
     "@jest/environment": "^26.3.0",
     "@jest/test-result": "^26.3.0",
     "@jest/types": "^26.3.0",
+    "@types/babel__traverse": "^7.0.4",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "co": "^4.6.0",

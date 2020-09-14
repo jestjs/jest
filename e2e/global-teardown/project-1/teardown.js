@@ -6,9 +6,9 @@
  */
 const crypto = require('crypto');
 const fs = require('fs');
-const {createDirectory} = require('jest-util');
 const os = require('os');
 const path = require('path');
+const {createDirectory} = require('jest-util');
 
 const DIR = path.join(os.tmpdir(), 'jest-global-teardown-project-1');
 

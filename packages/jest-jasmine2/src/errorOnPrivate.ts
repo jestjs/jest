@@ -76,6 +76,9 @@ export function installErrorOnPrivate(global: Global.Global): void {
   });
 }
 
-function throwAtFunction(message: string, fn: Function) {
+function throwAtFunction(
+  message: string,
+  fn: (...args: Array<any>) => unknown,
+) {
   throw new ErrorWithStack(message, fn);
 }

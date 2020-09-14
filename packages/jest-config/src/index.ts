@@ -186,6 +186,7 @@ const groupOptions = (
     globalTeardown: options.globalTeardown,
     globals: options.globals,
     haste: options.haste,
+    injectGlobals: options.injectGlobals,
     moduleDirectories: options.moduleDirectories,
     moduleFileExtensions: options.moduleFileExtensions,
     moduleLoader: options.moduleLoader,

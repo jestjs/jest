@@ -184,4 +184,10 @@ describe('CustomConsole', () => {
       _console.timeEnd('custom');
     });
   });
+
+  describe('console', () => {
+    test('should be able to initialize console instance', () => {
+      expect(_console.Console).toBeDefined();
+    });
+  });
 });

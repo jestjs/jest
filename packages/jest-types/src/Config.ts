@@ -60,6 +60,7 @@ export type DefaultOptions = {
   forceCoverageMatch: Array<Glob>;
   globals: ConfigGlobals;
   haste: HasteConfig;
+  injectGlobals: boolean;
   maxConcurrency: number;
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
@@ -144,6 +145,7 @@ export type InitialOptions = Partial<{
   globalSetup: string | null | undefined;
   globalTeardown: string | null | undefined;
   haste: HasteConfig;
+  injectGlobals: boolean;
   reporters: Array<string | ReporterConfig>;
   logHeapUsage: boolean;
   lastCommit: boolean;
@@ -329,6 +331,7 @@ export type ProjectConfig = {
   globalTeardown?: string;
   globals: ConfigGlobals;
   haste: HasteConfig;
+  injectGlobals: boolean;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
   moduleLoader?: Path;
@@ -399,6 +402,7 @@ export type Argv = Arguments<
     globalTeardown: string | null | undefined;
     haste: string;
     init: boolean;
+    injectGlobals: boolean;
     json: boolean;
     lastCommit: boolean;
     logHeapUsage: boolean;

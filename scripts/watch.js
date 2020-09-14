@@ -10,9 +10,9 @@
  */
 
 const fs = require('fs');
-const chokidar = require('chokidar');
 const {execSync} = require('child_process');
 const path = require('path');
+const chokidar = require('chokidar');
 const chalk = require('chalk');
 const {PACKAGES_DIR, getPackages} = require('./buildUtils');
 
