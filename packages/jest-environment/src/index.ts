@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import type {Context, Script} from 'vm';
 import type {Circus, Config, Global} from '@jest/types';
 import jestMock = require('jest-mock');
@@ -143,7 +141,9 @@ export interface Jest {
   /**
    * Determines if the given function is a mocked function.
    */
-  isMockFunction(fn: Function): fn is ReturnType<JestMockFn>;
+  isMockFunction(
+    fn: (...args: Array<any>) => any,
+  ): fn is ReturnType<JestMockFn>;
   /**
    * Mocks a module with an auto-mocked version when it is being required.
    */

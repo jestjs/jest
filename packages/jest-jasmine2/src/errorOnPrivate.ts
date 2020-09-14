@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import type {Global} from '@jest/types';
 import {ErrorWithStack} from 'jest-util';
 import type {Jasmine} from './types';
@@ -78,6 +76,6 @@ export function installErrorOnPrivate(global: Global.Global): void {
   });
 }
 
-function throwAtFunction(message: string, fn: Function) {
+function throwAtFunction(message: string, fn: (...args: Array<any>) => any) {
   throw new ErrorWithStack(message, fn);
 }

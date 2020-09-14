@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import module = require('module');
 
 // "private" api
-declare const process: NodeJS.Process & {binding(type: string): {}};
+declare const process: NodeJS.Process & {
+  binding(type: string): Record<string, unknown>;
+};
 
 const EXPERIMENTAL_MODULES = ['worker_threads'];
 
