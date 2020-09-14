@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import prettyFormat from '../';
-import {OptionsReceived} from '../types';
+import {plugins, format as prettyFormat} from '../';
+import type {OptionsReceived} from '../types';
 
-const {AsymmetricMatcher} = prettyFormat.plugins;
+const {AsymmetricMatcher} = plugins;
 let options: OptionsReceived;
 
 function fnNameFor(func: (...any: Array<any>) => unknown) {

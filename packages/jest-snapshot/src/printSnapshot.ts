@@ -33,7 +33,7 @@ import {
   getLabelPrinter,
   matcherHint,
 } from 'jest-matcher-utils';
-import prettyFormat = require('pretty-format');
+import prettyFormat from 'pretty-format';
 import {
   aBackground2,
   aBackground3,

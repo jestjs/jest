@@ -160,7 +160,7 @@ Exports a function that converts any JavaScript value into a human-readable stri
 ### Example
 
 ```javascript
-const prettyFormat = require('pretty-format');
+const {format: prettyFormat} = require('pretty-format');
 
 const val = {object: {}};
 val.circularReference = val;

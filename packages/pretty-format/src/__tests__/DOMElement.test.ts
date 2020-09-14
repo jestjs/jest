@@ -8,10 +8,10 @@
  */
 /* eslint-env browser*/
 
-import prettyFormat from '../';
+import {plugins, format as prettyFormat} from '../';
 import setPrettyPrint from './setPrettyPrint';
 
-const {DOMElement} = prettyFormat.plugins;
+const {DOMElement} = plugins;
 
 setPrettyPrint([DOMElement]);
 

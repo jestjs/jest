@@ -3209,9 +3209,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@npm:^7.26.0":
-  version: 7.26.3
-  resolution: "@testing-library/dom@npm:7.26.3"
+"@testing-library/dom@*":
+  version: 7.26.5
+  resolution: "@testing-library/dom@npm:7.26.5"
   dependencies:
     "@babel/code-frame": ^7.10.4
     "@babel/runtime": ^7.10.3
@@ -3221,7 +3221,23 @@ __metadata:
     dom-accessibility-api: ^0.5.1
     lz-string: ^1.4.4
     pretty-format: ^26.4.2
-  checksum: 972931d5680c7e99d7c077793d42822774709f9c8feb2aa620a4513f8c858b0833996348f99123d88bae9a7c7f2d0236e42bc48cca232f0047ed08e32cd8b408
+  checksum: 28805f72d951831cd5904c6332292152679269c9196b9b302319168f6ec2555ae7b7a1f013cc7b79c1ab24235a84624ff868fa6cdf7e2cc77bcd8b78af0d7004
+  languageName: node
+  linkType: hard
+
+"@testing-library/dom@patch:@testing-library/dom@*#./patches/dom-testing.diff::locator=root-workspace-0b6124%40workspace%3A.":
+  version: 7.26.5
+  resolution: "@testing-library/dom@patch:@testing-library/dom@npm%3A7.26.5#./patches/dom-testing.diff::version=7.26.5&hash=332747&locator=root-workspace-0b6124%40workspace%3A."
+  dependencies:
+    "@babel/code-frame": ^7.10.4
+    "@babel/runtime": ^7.10.3
+    "@types/aria-query": ^4.2.0
+    aria-query: ^4.2.2
+    chalk: ^4.1.0
+    dom-accessibility-api: ^0.5.1
+    lz-string: ^1.4.4
+    pretty-format: ^26.4.2
+  checksum: 3009ef8dd59259e762976faa5b5277244d037d68d30365f46987ac5c602eab3d65ab5d2974ae8dd6a068e423e8132dbc624c2bfb31949c7c6ac3cd3853c718e5
   languageName: node
   linkType: hard
 

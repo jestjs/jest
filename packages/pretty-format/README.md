@@ -14,11 +14,11 @@ $ yarn add pretty-format
 ## Usage
 
 ```js
-const prettyFormat = require('pretty-format'); // CommonJS
+const {format} = require('pretty-format'); // CommonJS
 ```
 
 ```js
-import prettyFormat from 'pretty-format'; // ES2015 modules
+import {format} from 'pretty-format'; // ES2015 modules
 ```
 
 ```js
@@ -28,7 +28,7 @@ val[Symbol('foo')] = 'foo';
 val.map = new Map([['prop', 'value']]);
 val.array = [-0, Infinity, NaN];
 
-console.log(prettyFormat(val));
+console.log(format(val));
 /*
 Object {
   "array": Array [
@@ -51,7 +51,7 @@ Object {
 ```js
 function onClick() {}
 
-console.log(prettyFormat(onClick));
+console.log(format(onClick));
 /*
 [Function onClick]
 */
@@ -59,7 +59,7 @@ console.log(prettyFormat(onClick));
 const options = {
   printFunctionName: false,
 };
-console.log(prettyFormat(onClick, options));
+console.log(format(onClick, options));
 /*
 [Function]
 */
@@ -102,28 +102,29 @@ The `pretty-format` package provides some built-in plugins, including:
 // CommonJS
 const React = require('react');
 const renderer = require('react-test-renderer');
-const prettyFormat = require('pretty-format');
-const ReactElement = prettyFormat.plugins.ReactElement;
-const ReactTestComponent = prettyFormat.plugins.ReactTestComponent;
+const {plugins} = require('pretty-format');
+
+const {ReactElement, ReactTestComponent} = plugins;
 ```
 
 ```js
+// ES2015 modules and destructuring assignment
 import React from 'react';
 import renderer from 'react-test-renderer';
-// ES2015 modules and destructuring assignment
-import prettyFormat from 'pretty-format';
-const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
+import {plugins} from 'pretty-format';
+
+const {ReactElement, ReactTestComponent} = plugins;
 ```
 
 ```js
 const onClick = () => {};
 const element = React.createElement('button', {onClick}, 'Hello World');
 
-const formatted1 = prettyFormat(element, {
+const formatted1 = format(element, {
   plugins: [ReactElement],
   printFunctionName: false,
 });
-const formatted2 = prettyFormat(renderer.create(element).toJSON(), {
+const formatted2 = format(renderer.create(element).toJSON(), {
   plugins: [ReactTestComponent],
   printFunctionName: false,
 });
@@ -165,7 +166,7 @@ For **all** test files, you can specify modules in Jest configuration. They prec
 
 A plugin is a JavaScript object.
 
-If `options` has a `plugins` array: for the first plugin whose `test(val)` method returns a truthy value, then `prettyFormat(val, options)` returns the result from either:
+If `options` has a `plugins` array: for the first plugin whose `test(val)` method returns a truthy value, then `format(val, options)` returns the result from either:
 
 - `serialize(val, …)` method of the **improved** interface (available in **version 21** or later)
 - `print(val, …)` method of the **original** interface (if plugin does not have `serialize` method)
@@ -288,7 +289,7 @@ const val = {
 
 ```js
 console.log(
-  prettyFormat(val, {
+  format(val, {
     plugins: [plugin],
   }),
 );
@@ -311,7 +312,7 @@ Object {
 
 ```js
 console.log(
-  prettyFormat(val, {
+  format(val, {
     indent: 4,
     plugins: [plugin],
   }),
@@ -335,7 +336,7 @@ Object {
 
 ```js
 console.log(
-  prettyFormat(val, {
+  format(val, {
     maxDepth: 1,
     plugins: [plugin],
   }),
@@ -350,7 +351,7 @@ Object {
 
 ```js
 console.log(
-  prettyFormat(val, {
+  format(val, {
     min: true,
     plugins: [plugin],
   }),
@@ -409,7 +410,7 @@ const val = {
   render() {},
 };
 
-prettyFormat(val, {
+format(val, {
   plugins: [plugin],
 });
 /*
@@ -419,7 +420,7 @@ Object {
 }
 */
 
-prettyFormat(val);
+format(val);
 /*
 Object {
   "onClick": [Function onClick],
@@ -431,7 +432,7 @@ Object {
 This plugin **ignores** the `printFunctionName` option. That limitation of the original `print` interface is a reason to use the improved `serialize` interface, described above.
 
 ```js
-prettyFormat(val, {
+format(val, {
   plugins: [pluginOld],
   printFunctionName: false,
 });
@@ -442,7 +443,7 @@ Object {
 }
 */
 
-prettyFormat(val, {
+format(val, {
   printFunctionName: false,
 });
 /*

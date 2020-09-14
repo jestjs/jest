@@ -141,6 +141,7 @@
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
   },
   "resolutions": {
+    "@testing-library/dom": "patch:@testing-library/dom@*#./patches/dom-testing.diff",
     "@types/jest/jest-diff": "^25.1.0",
     "@types/jest/pretty-format": "^25.1.0"
   }

@@ -7,7 +7,10 @@
 
 import chalk = require('chalk');
 import getType = require('jest-get-type');
-import prettyFormat = require('pretty-format');
+import {
+  format as prettyFormat,
+  plugins as prettyFormatPlugins,
+} from 'pretty-format';
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
 import {diffLinesRaw, diffLinesUnified, diffLinesUnified2} from './diffLines';
@@ -33,7 +36,7 @@ const {
   Immutable,
   ReactElement,
   ReactTestComponent,
-} = prettyFormat.plugins;
+} = prettyFormatPlugins;
 
 const PLUGINS = [
   ReactTestComponent,

@@ -7,7 +7,7 @@
 
 /* eslint-disable local/prefer-rest-params-eventually */
 
-import prettyFormat from '../';
+import {format as prettyFormat} from '../';
 
 function returnArguments(..._args: Array<unknown>) {
   return arguments;

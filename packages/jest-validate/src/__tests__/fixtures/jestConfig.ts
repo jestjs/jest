@@ -127,7 +127,8 @@ const validConfig = {
   watchman: true,
 };
 
-const format = (value: string) => require('pretty-format')(value, {min: true});
+const format = (value: string) =>
+  require('pretty-format').format(value, {min: true});
 
 const deprecatedConfig = {
   preprocessorIgnorePatterns: (config: Record<string, any>) =>

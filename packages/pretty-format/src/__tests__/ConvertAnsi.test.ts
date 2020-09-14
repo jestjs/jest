@@ -6,9 +6,9 @@
  */
 
 import ansiStyle = require('ansi-styles');
-import prettyFormat = require('../');
+import {plugins, format as prettyFormat} from '../';
 
-const {ConvertAnsi} = prettyFormat.plugins;
+const {ConvertAnsi} = plugins;
 
 const prettyFormatResult = (val: string) =>
   prettyFormat(val, {

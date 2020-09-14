@@ -18,7 +18,10 @@ import diffDefault, {
   diffStringsUnified,
 } from 'jest-diff';
 import getType = require('jest-get-type');
-import prettyFormat = require('pretty-format');
+import {
+  format as prettyFormat,
+  plugins as prettyFormatPlugins,
+} from 'pretty-format';
 import Replaceable from './Replaceable';
 import deepCyclicCopyReplaceable from './deepCyclicCopyReplaceable';
 
@@ -29,7 +32,7 @@ const {
   Immutable,
   ReactElement,
   ReactTestComponent,
-} = prettyFormat.plugins;
+} = prettyFormatPlugins;
 
 const PLUGINS = [
   ReactTestComponent,

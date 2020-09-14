@@ -20,6 +20,7 @@ const createRegExp = pattern => new RegExp(pattern);
 const GENERIC_IGNORED_EXTENSIONS = [
   'lock',
   'patch',
+  'diff',
   'exe',
   'bin',
   'cfg',
