@@ -6,9 +6,9 @@
  */
 
 import EventEmitter from 'events';
+import {PassThrough} from 'stream';
 import supportsColor from 'supports-color';
 import getStream from 'get-stream';
-import {PassThrough} from 'stream';
 
 import {
   CHILD_MESSAGE_CALL,

@@ -7934,13 +7934,13 @@ __metadata:
   linkType: hard
 
 "eslint-plugin-jest@npm:^24.0.0":
-  version: 24.0.0
-  resolution: "eslint-plugin-jest@npm:24.0.0"
+  version: 24.0.1
+  resolution: "eslint-plugin-jest@npm:24.0.1"
   dependencies:
     "@typescript-eslint/experimental-utils": ^4.0.1
   peerDependencies:
     eslint: ">=5"
-  checksum: 5a210350b3e6c9da9ab536c6868e0eb8547e8e879168ac105241dd6df64883da1befd1c97eb75fedb1d54b57ec6bbb5f4f29e3b7a0d5ae35b0757e7346d5e62e
+  checksum: bebdd671949e3fbe537eea8ff5b485827d1c3e024bd22bb44f338502a5c5e0f520adc5d60454d7882ccd24cae9e76f8bb51dfb43596545631e2943c44e02d30f
   languageName: node
   linkType: hard
 
@@ -8031,12 +8031,12 @@ __metadata:
   linkType: hard
 
 "eslint-scope@npm:^5.0.0, eslint-scope@npm:^5.1.0":
-  version: 5.1.0
-  resolution: "eslint-scope@npm:5.1.0"
+  version: 5.1.1
+  resolution: "eslint-scope@npm:5.1.1"
   dependencies:
-    esrecurse: ^4.1.0
+    esrecurse: ^4.3.0
     estraverse: ^4.1.1
-  checksum: 4a0e97979a855d09c4bb3a3f4f945cefaf8f6638a6a8f49472cefb0cf64982ab7ed1683a1e63d20ce1bcb01f94c133dc7a5bdf03b28eb945999f50f08878a2b4
+  checksum: 79465cf5082f4216176f6d49c7d088de89ee890f912eb87b831f23ee9a5e17ed0f3f2ab6108fb8fefa0474ba5ebeaa9bdefbe49ba704bd879b73f2445e23ee10
   languageName: node
   linkType: hard
 
@@ -8064,8 +8064,8 @@ __metadata:
   linkType: hard
 
 "eslint@npm:^7.7.0":
-  version: 7.8.1
-  resolution: "eslint@npm:7.8.1"
+  version: 7.9.0
+  resolution: "eslint@npm:7.9.0"
   dependencies:
     "@babel/code-frame": ^7.0.0
     "@eslint/eslintrc": ^0.1.3
@@ -8106,7 +8106,7 @@ __metadata:
     v8-compile-cache: ^2.0.3
   bin:
     eslint: bin/eslint.js
-  checksum: 0168d826ab2ae1fd04b9da8e457268f37d3ce7d0d83cc8a5cc659c8091673a112c356a6261ab178964291e7babd6ff4cf1011a15c70eb4f03a493ed5681206f9
+  checksum: 295fe8c442b9e9cc677fa03c88a873ad74c1d06620f4600745de83e5d4d10d53898cd1e15276e3420c976f00469d1ea8bbc5a4157c1f198753cece98f8903f5c
   languageName: node
   linkType: hard
 
@@ -8140,7 +8140,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esrecurse@npm:^4.1.0":
+"esrecurse@npm:^4.3.0":
   version: 4.3.0
   resolution: "esrecurse@npm:4.3.0"
   dependencies:

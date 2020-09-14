@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import type {CoverageMapData} from 'istanbul-lib-coverage';
 
 export type DoneFn = (reason?: string | Error) => void;
@@ -36,7 +34,10 @@ export type EachTestFn<EachCallback extends TestCallback> = (
 ) => ReturnType<EachCallback>;
 
 // TODO: Get rid of this at some point
-type Jasmine = {_DEFAULT_TIMEOUT_INTERVAL?: number; addMatchers: Function};
+type Jasmine = {
+  _DEFAULT_TIMEOUT_INTERVAL?: number;
+  addMatchers: (matchers: Record<string, unknown>) => void;
+};
 
 type Each<EachCallback extends TestCallback> =
   | ((
@@ -61,7 +62,7 @@ export interface ItBase {
 export interface It extends ItBase {
   only: ItBase;
   skip: ItBase;
-  todo: (testName: TestName, ...rest: Array<any>) => void;
+  todo: (testName: TestName) => void;
 }
 
 export interface ItConcurrentBase {
@@ -116,5 +117,5 @@ export interface Global
   extends GlobalAdditions,
     // TODO: Maybe add `| Window` in the future?
     Omit<NodeJS.Global, keyof GlobalAdditions> {
-  [extras: string]: any;
+  [extras: string]: unknown;
 }
