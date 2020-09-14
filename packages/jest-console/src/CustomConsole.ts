@@ -27,8 +27,7 @@ export default class CustomConsole extends Console {
   constructor(
     stdout: NodeJS.WriteStream,
     stderr: NodeJS.WriteStream,
-    formatBuffer: Formatter = (_type: LogType, message: string): string =>
-      message,
+    formatBuffer: Formatter = (_type, message) => message,
   ) {
     super(stdout, stderr);
     this._stdout = stdout;
