@@ -21,7 +21,7 @@ import Status from './Status';
 import getResultHeader from './get_result_header';
 import getSnapshotStatus from './get_snapshot_status';
 
-type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
+type write = NodeJS.WriteStream['write'];
 type FlushBufferedOutput = () => void;
 
 const TITLE_BULLET = chalk.bold('\u25cf ');

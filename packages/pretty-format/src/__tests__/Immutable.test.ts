@@ -505,7 +505,7 @@ describe('Immutable.OrderedMap', () => {
   });
 
   it('supports non-string keys', () => {
-    const val = Immutable.OrderedMap<any, any>([
+    const val = Immutable.OrderedMap<unknown, unknown>([
       [false, 'boolean'],
       ['false', 'string'],
       [0, 'number'],

@@ -61,7 +61,7 @@ describe('invalid arg', () => {
 });
 
 // Return length of longest common subsequence according to Object.is method.
-const countCommonObjectIs = (a: Array<any>, b: Array<any>): number => {
+const countCommonObjectIs = (a: Array<unknown>, b: Array<unknown>): number => {
   let n = 0;
   diff(
     a.length,
@@ -75,7 +75,10 @@ const countCommonObjectIs = (a: Array<any>, b: Array<any>): number => {
 };
 
 // Return length of longest common subsequence according to === operator.
-const countCommonStrictEquality = (a: Array<any>, b: Array<any>): number => {
+const countCommonStrictEquality = (
+  a: Array<unknown>,
+  b: Array<unknown>,
+): number => {
   let n = 0;
   diff(
     a.length,
@@ -133,8 +136,8 @@ const assertEnd = (name: string, val: number, end: number) => {
 };
 
 const assertCommonItems = (
-  a: Array<any> | string,
-  b: Array<any> | string,
+  a: Array<unknown> | string,
+  b: Array<unknown> | string,
   nCommon: number,
   aCommon: number,
   bCommon: number,
@@ -192,9 +195,9 @@ const countDifferences = (
 
 // Return array of items in a longest common subsequence of array-like objects.
 const findCommonItems = (
-  a: Array<any> | string,
-  b: Array<any> | string,
-): Array<any> => {
+  a: Array<unknown> | string,
+  b: Array<unknown> | string,
+): Array<unknown> => {
   const aLength = a.length;
   const bLength = b.length;
   const isCommon = (aIndex: number, bIndex: number) => {
@@ -205,7 +208,7 @@ const findCommonItems = (
     return a[aIndex] === b[bIndex];
   };
 
-  const array = [];
+  const array: Array<unknown> = [];
   diff(
     aLength,
     bLength,
@@ -231,9 +234,9 @@ const findCommonItems = (
 
 // Assert that array-like objects have the expected common items.
 const expectCommonItems = (
-  a: Array<any> | string,
-  b: Array<any> | string,
-  expected: Array<any>,
+  a: Array<unknown> | string,
+  b: Array<unknown> | string,
+  expected: Array<unknown>,
 ) => {
   expect(findCommonItems(a, b)).toEqual(expected);
 

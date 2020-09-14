@@ -46,7 +46,7 @@ describe('getCallsite', () => {
     const sourceMapLine = 2;
 
     SourceMap.SourceMapConsumer = class {
-      originalPositionFor(params: Record<string, any>) {
+      originalPositionFor(params: Record<string, number>) {
         expect(params).toMatchObject({
           column: expect.any(Number),
           line: expect.any(Number),

@@ -54,7 +54,7 @@ export const initialize = async ({
   getPrettier: () => null | any;
   getBabelTraverse: () => typeof BabelTraverse;
   globalConfig: Config.GlobalConfig;
-  localRequire: (path: Config.Path) => any;
+  localRequire: <T = unknown>(path: Config.Path) => T;
   testPath: Config.Path;
   parentProcess: Process;
   sendMessageToJest?: TestFileEvent;

@@ -151,7 +151,7 @@ const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
 // the original values in the variables before we require any files.
 const {setTimeout, clearTimeout} = global;
 
-function checkIsError(error: any): error is Error {
+function checkIsError(error: unknown): error is Error {
   return !!(error && (error as Error).message && (error as Error).stack);
 }
 
@@ -160,7 +160,7 @@ export const callAsyncCircusFn = (
   testContext: Circus.TestContext | undefined,
   asyncError: Circus.Exception,
   {isHook, timeout}: {isHook?: boolean | null; timeout: number},
-): Promise<any> => {
+): Promise<unknown> => {
   let timeoutID: NodeJS.Timeout;
   let completed = false;
 

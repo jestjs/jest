@@ -61,7 +61,7 @@ const messageListener = (request: any) => {
 };
 parentPort!.on('message', messageListener);
 
-function reportSuccess(result: any) {
+function reportSuccess(result: unknown) {
   if (isMainThread) {
     throw new Error('Child can only be used on a forked process');
   }
@@ -112,7 +112,7 @@ function exitProcess(): void {
   parentPort!.removeListener('message', messageListener);
 }
 
-function execMethod(method: string, args: Array<any>): void {
+function execMethod(method: string, args: Array<unknown>): void {
   const main = require(file!);
 
   let fn: (...args: Array<unknown>) => unknown;
@@ -138,8 +138,13 @@ function execMethod(method: string, args: Array<any>): void {
   execFunction(main.setup, main, setupArgs, execHelper, reportInitializeError);
 }
 
+const isPromise = (obj: any): obj is PromiseLike<unknown> =>
+  !!obj &&
+  (typeof obj === 'object' || typeof obj === 'function') &&
+  typeof obj.then === 'function';
+
 function execFunction(
-  fn: (...args: Array<unknown>) => any,
+  fn: (...args: Array<unknown>) => unknown,
   ctx: unknown,
   args: Array<unknown>,
   onResult: (result: unknown) => void,
@@ -155,7 +160,7 @@ function execFunction(
     return;
   }
 
-  if (result && typeof result.then === 'function') {
+  if (isPromise(result)) {
     result.then(onResult, onError);
   } else {
     onResult(result);

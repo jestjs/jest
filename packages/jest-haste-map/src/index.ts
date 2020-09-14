@@ -381,7 +381,7 @@ class HasteMap extends EventEmitter {
     let hasteMap: InternalHasteMap;
 
     try {
-      hasteMap = serializer.readFileSync(this._cachePath);
+      hasteMap = serializer.readFileSync(this._cachePath) as any;
     } catch {
       hasteMap = this._createEmptyMap();
     }
@@ -1111,7 +1111,7 @@ class DuplicateError extends Error {
   }
 }
 
-function copy<T extends Record<string, any>>(object: T): T {
+function copy<T extends Record<string, unknown>>(object: T): T {
   return Object.assign(Object.create(null), object);
 }
 

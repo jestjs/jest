@@ -39,7 +39,7 @@ ${formatExamples(option, conditions)}`;
   throw new ValidationError(name, message, comment);
 };
 
-function formatExamples(option: string, examples: Array<any>) {
+function formatExamples(option: string, examples: Array<unknown>) {
   return examples.map(
     e => `  {
     ${chalk.bold(`"${option}"`)}: ${chalk.bold(formatPrettyObject(e))}
