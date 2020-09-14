@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import chalk = require('chalk');
 import diffDefault, {
   DIFF_DELETE,
@@ -93,7 +95,7 @@ export const stringify = (object: unknown, maxDepth: number = 10): string => {
       min: true,
       plugins: PLUGINS,
     });
-  } catch (e) {
+  } catch {
     result = prettyFormat(object, {
       callToJSON: false,
       maxDepth,

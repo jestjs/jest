@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const Immutable = require('immutable');
-const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
-const jestExpect = require('../');
+import * as Immutable from 'immutable';
+import {alignedAnsiStyleSerializer} from '@jest/test-utils';
+import jestExpect from '../';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 // Given a Jest mock function, return a minimal mock of a Jasmine spy.
-const createSpy = fn => {
+const createSpy = (fn: jest.Mock) => {
   const spy = function () {};
 
   spy.calls = {
@@ -177,7 +177,10 @@ const createSpy = fn => {
   'toBeCalledWith',
   'toHaveBeenCalledWith',
 ].forEach(calledWith => {
-  const caller = function (callee, ...args) {
+  const caller = function (
+    callee: (...a: Array<unknown>) => void,
+    ...args: any
+  ) {
     if (
       calledWith === 'nthCalledWith' ||
       calledWith === 'toHaveBeenNthCalledWith'
@@ -295,8 +298,8 @@ const createSpy = fn => {
 
     test(`works with Immutable.js objects`, () => {
       const fn = jest.fn();
-      const directlyCreated = new Immutable.Map([['a', {b: 'c'}]]);
-      const indirectlyCreated = new Immutable.Map().set('a', {b: 'c'});
+      const directlyCreated = Immutable.Map([['a', {b: 'c'}]]);
+      const indirectlyCreated = Immutable.Map().set('a', {b: 'c'});
       fn(directlyCreated, indirectlyCreated);
 
       caller(jestExpect(fn)[calledWith], indirectlyCreated, directlyCreated);
@@ -450,7 +453,7 @@ const createSpy = fn => {
 
       try {
         fn(true);
-      } catch (error) {
+      } catch {
         // ignore error
       }
 
@@ -476,13 +479,13 @@ const createSpy = fn => {
 
       try {
         fn();
-      } catch (error) {
+      } catch {
         // ignore error
       }
 
       try {
         fn();
-      } catch (error) {
+      } catch {
         // ignore error
       }
 
@@ -498,7 +501,7 @@ const createSpy = fn => {
 
       try {
         fn();
-      } catch (error) {
+      } catch {
         // ignore error
       }
 
@@ -534,7 +537,7 @@ const createSpy = fn => {
 
     test(`incomplete recursive calls are handled properly`, () => {
       // sums up all integers from 0 -> value, using recursion
-      const fn = jest.fn(value => {
+      const fn: jest.Mock = jest.fn(value => {
         if (value === 0) {
           // Before returning from the base case of recursion, none of the
           // calls have returned yet.
@@ -649,7 +652,7 @@ const createSpy = fn => {
 
       try {
         fn(true);
-      } catch (error) {
+      } catch {
         // ignore error
       }
 
@@ -676,7 +679,7 @@ const createSpy = fn => {
 
       try {
         fn(true);
-      } catch (error) {
+      } catch {
         // ignore error
       }
 
@@ -703,7 +706,7 @@ const createSpy = fn => {
 
     test(`incomplete recursive calls are handled properly`, () => {
       // sums up all integers from 0 -> value, using recursion
-      const fn = jest.fn(value => {
+      const fn: jest.Mock = jest.fn(value => {
         if (value === 0) {
           return 0;
         } else {
@@ -734,7 +737,10 @@ const createSpy = fn => {
   'toReturnWith',
   'toHaveReturnedWith',
 ].forEach(returnedWith => {
-  const caller = function (callee, ...args) {
+  const caller = function (
+    callee: (...a: Array<unknown>) => void,
+    ...args: any
+  ) {
     if (
       returnedWith === 'nthReturnedWith' ||
       returnedWith === 'toHaveNthReturnedWith'
@@ -850,7 +856,7 @@ const createSpy = fn => {
     });
 
     test(`works with Immutable.js objects directly created`, () => {
-      const directlyCreated = new Immutable.Map([['a', {b: 'c'}]]);
+      const directlyCreated = Immutable.Map([['a', {b: 'c'}]]);
       const fn = jest.fn(() => directlyCreated);
       fn();
 
@@ -862,7 +868,7 @@ const createSpy = fn => {
     });
 
     test(`works with Immutable.js objects indirectly created`, () => {
-      const indirectlyCreated = new Immutable.Map().set('a', {b: 'c'});
+      const indirectlyCreated = Immutable.Map().set('a', {b: 'c'});
       const fn = jest.fn(() => indirectlyCreated);
       fn();
 
@@ -880,7 +886,7 @@ const createSpy = fn => {
 
       try {
         fn();
-      } catch (error) {
+      } catch {
         // ignore error
       }
 
@@ -902,7 +908,7 @@ const createSpy = fn => {
 
       try {
         fn();
-      } catch (error) {
+      } catch {
         // ignore error
       }
 
@@ -944,7 +950,7 @@ const createSpy = fn => {
 
         test(`incomplete recursive calls are handled properly`, () => {
           // sums up all integers from 0 -> value, using recursion
-          const fn = jest.fn(value => {
+          const fn: jest.Mock = jest.fn(value => {
             if (value === 0) {
               // Before returning from the base case of recursion, none of the
               // calls have returned yet.
@@ -1032,7 +1038,7 @@ const createSpy = fn => {
         });
 
         test('positive throw matcher error for n that is not integer', async () => {
-          const fn = jest.fn(() => 'foo');
+          const fn: jest.Mock = jest.fn(() => 'foo');
           fn('foo');
 
           expect(() => {
@@ -1041,7 +1047,7 @@ const createSpy = fn => {
         });
 
         test('negative throw matcher error for n that is not number', async () => {
-          const fn = jest.fn(() => 'foo');
+          const fn: jest.Mock = jest.fn(() => 'foo');
           fn('foo');
 
           expect(() => {
@@ -1051,7 +1057,7 @@ const createSpy = fn => {
 
         test(`incomplete recursive calls are handled properly`, () => {
           // sums up all integers from 0 -> value, using recursion
-          const fn = jest.fn(value => {
+          const fn: jest.Mock = jest.fn(value => {
             if (value === 0) {
               return 0;
             } else {
@@ -1108,7 +1114,7 @@ const createSpy = fn => {
 
         test(`incomplete recursive calls are handled properly`, () => {
           // sums up all integers from 0 -> value, using recursion
-          const fn = jest.fn(value => {
+          const fn: jest.Mock = jest.fn(value => {
             if (value === 0) {
               // Before returning from the base case of recursion, none of the
               // calls have returned yet.

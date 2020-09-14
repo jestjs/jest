@@ -8,7 +8,6 @@
 import * as path from 'path';
 import {spawn} from 'child_process';
 import * as fs from 'graceful-fs';
-import which = require('which');
 import H from '../constants';
 import * as fastPath from '../lib/fast_path';
 import type {
@@ -25,13 +24,33 @@ type Callback = (result: Result) => void;
 async function hasNativeFindSupport(
   forceNodeFilesystemAPI: boolean,
 ): Promise<boolean> {
-  if (forceNodeFilesystemAPI || process.platform === 'win32') {
+  if (forceNodeFilesystemAPI) {
     return false;
   }
 
   try {
-    await which('find');
-    return true;
+    return await new Promise(resolve => {
+      // Check the find binary supports the non-POSIX -iname parameter wrapped in parens.
+      const args = [
+        '.',
+        '-type',
+        'f',
+        '(',
+        '-iname',
+        '*.ts',
+        '-o',
+        '-iname',
+        '*.js',
+        ')',
+      ];
+      const child = spawn('find', args, {cwd: __dirname});
+      child.on('error', () => {
+        resolve(false);
+      });
+      child.on('exit', code => {
+        resolve(code === 0);
+      });
+    });
   } catch {
     return false;
   }

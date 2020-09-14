@@ -10,13 +10,13 @@ import type {Config} from '@jest/types';
 import type {ModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
 import slash = require('slash');
+import chalk = require('chalk');
 import nodeModulesPaths from './nodeModulesPaths';
 import isBuiltinModule from './isBuiltinModule';
 import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
 import type {ResolverConfig} from './types';
 import ModuleNotFoundError from './ModuleNotFoundError';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
-import chalk = require('chalk');
 
 type FindNodeModuleConfig = {
   basedir: Config.Path;
@@ -37,6 +37,7 @@ namespace Resolver {
     skipNodeResolution?: boolean;
     paths?: Array<Config.Path>;
   };
+  export type ResolverType = Resolver;
 }
 
 const NATIVE_PLATFORM = 'native';
@@ -51,7 +52,6 @@ const nodePaths = NODE_PATH
       .map(p => path.resolve(resolvedCwd, p))
   : undefined;
 
-/* eslint-disable-next-line no-redeclare */
 class Resolver {
   private readonly _options: ResolverConfig;
   private readonly _moduleMap: ModuleMap;

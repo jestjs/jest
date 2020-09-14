@@ -101,12 +101,12 @@ describe('check', () => {
 
 describe('buildArgv', () => {
   it('should return only camelcased args ', () => {
-    // @ts-expect-error
     const mockProcessArgv = jest
+      // @ts-expect-error
       .spyOn(process.argv, 'slice')
       .mockImplementation(() => ['--clear-mocks']);
-    // @ts-expect-error
-    const actual = buildArgv(null);
+
+    const actual = buildArgv();
     expect(actual).not.toHaveProperty('clear-mocks');
     expect(actual).toHaveProperty('clearMocks', true);
     mockProcessArgv.mockRestore();

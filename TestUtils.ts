@@ -102,6 +102,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   setupFilesAfterEnv: [],
   skipFilter: false,
   skipNodeResolution: false,
+  slowTestThreshold: 5,
   snapshotResolver: undefined,
   snapshotSerializers: [],
   testEnvironment: 'node',

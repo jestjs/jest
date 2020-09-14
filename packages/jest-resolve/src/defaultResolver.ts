@@ -6,7 +6,7 @@
  */
 
 import * as fs from 'graceful-fs';
-import {sync as resolveSync} from 'resolve';
+import {Opts as ResolveOpts, sync as resolveSync} from 'resolve';
 import pnpResolver from 'jest-pnp-resolver';
 import {tryRealpath} from 'jest-util';
 import type {Config} from '@jest/types';
@@ -20,8 +20,11 @@ type ResolverOptions = {
   moduleDirectory?: Array<string>;
   paths?: Array<Config.Path>;
   rootDir?: Config.Path;
+  packageFilter?: ResolveOpts['packageFilter'];
 };
 
+// https://github.com/typescript-eslint/typescript-eslint/issues/2523
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare global {
   namespace NodeJS {
     export interface ProcessVersions {
@@ -45,6 +48,7 @@ export default function defaultResolver(
     isDirectory,
     isFile,
     moduleDirectory: options.moduleDirectory,
+    packageFilter: options.packageFilter,
     paths: options.paths,
     preserveSymlinks: false,
     realpathSync,

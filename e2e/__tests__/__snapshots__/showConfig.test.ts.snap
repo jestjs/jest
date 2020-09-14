@@ -22,6 +22,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "computeSha1": false,
         "throwOnModuleCollision": false
       },
+      "injectGlobals": true,
       "moduleDirectories": [
         "node_modules"
       ],
@@ -48,6 +49,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "setupFiles": [],
       "setupFilesAfterEnv": [],
       "skipFilter": false,
+      "slowTestThreshold": 5,
       "snapshotSerializers": [],
       "testEnvironment": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-environment-jsdom/build/index.js",
       "testEnvironmentOptions": {},
@@ -71,7 +73,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
         ]
       ],
       "transformIgnorePatterns": [
-        "/node_modules/"
+        "/node_modules/",
+        "<<REPLACED_PNP_PATH>>"
       ],
       "watchPathIgnorePatterns": []
     }

@@ -163,7 +163,11 @@ function makeConcurrent(
   env: Jasmine['currentEnv_'],
   mutex: ReturnType<typeof throat>,
 ): Global.ItConcurrentBase {
-  return function (specName, fn, timeout) {
+  const concurrentFn = function (
+    specName: string,
+    fn: Global.TestFn,
+    timeout?: number,
+  ) {
     let promise: Promise<unknown> = Promise.resolve();
 
     const spec = originalFn.call(env, specName, () => promise, timeout);
@@ -187,6 +191,9 @@ function makeConcurrent(
 
     return spec;
   };
+  // each is binded after the function is made concurrent, so for now it is made noop
+  concurrentFn.each = () => () => {};
+  return concurrentFn;
 }
 
 export default function jasmineAsyncInstall(

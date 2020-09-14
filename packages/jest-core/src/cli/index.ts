@@ -238,7 +238,7 @@ const runWatch = async (
         undefined,
         filter,
       );
-    } catch (e) {
+    } catch {
       exit(0);
     }
   }

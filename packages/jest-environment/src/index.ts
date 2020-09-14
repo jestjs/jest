@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import type {Context, Script} from 'vm';
 import type {Circus, Config, Global} from '@jest/types';
 import jestMock = require('jest-mock');
@@ -30,7 +32,7 @@ export type ModuleWrapper = (
   __dirname: string,
   __filename: Module['filename'],
   global: Global.Global,
-  jest: Jest,
+  jest?: Jest,
   ...extraGlobals: Array<Global.Global[keyof Global.Global]>
 ) => unknown;
 

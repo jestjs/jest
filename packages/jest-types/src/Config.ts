@@ -7,7 +7,7 @@
 
 import type {Arguments} from 'yargs';
 import type {ReportOptions} from 'istanbul-reports';
-import chalk = require('chalk');
+import type {ForegroundColor} from 'chalk';
 
 type CoverageProvider = 'babel' | 'v8';
 
@@ -22,6 +22,20 @@ export type HasteConfig = {
   platforms?: Array<string>;
   throwOnModuleCollision?: boolean;
 };
+
+export type CoverageReporterName = keyof ReportOptions;
+
+export type CoverageReporterWithOptions<
+  K = CoverageReporterName
+> = K extends CoverageReporterName
+  ? ReportOptions[K] extends never
+    ? never
+    : [K, Partial<ReportOptions[K]>]
+  : never;
+
+export type CoverageReporters = Array<
+  CoverageReporterName | CoverageReporterWithOptions
+>;
 
 export type ReporterConfig = [string, Record<string, unknown>];
 export type TransformerConfig = [string, Record<string, unknown>];
@@ -39,13 +53,14 @@ export type DefaultOptions = {
   clearMocks: boolean;
   collectCoverage: boolean;
   coveragePathIgnorePatterns: Array<string>;
-  coverageReporters: Array<string | [string, any]>;
+  coverageReporters: Array<CoverageReporterName>;
   coverageProvider: CoverageProvider;
   errorOnDeprecated: boolean;
   expand: boolean;
   forceCoverageMatch: Array<Glob>;
   globals: ConfigGlobals;
   haste: HasteConfig;
+  injectGlobals: boolean;
   maxConcurrency: number;
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
@@ -65,6 +80,7 @@ export type DefaultOptions = {
   setupFiles: Array<Path>;
   setupFilesAfterEnv: Array<Path>;
   skipFilter: boolean;
+  slowTestThreshold: number;
   snapshotSerializers: Array<Path>;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, any>;
@@ -86,7 +102,7 @@ export type DefaultOptions = {
 
 export type DisplayName = {
   name: string;
-  color: typeof chalk.Color;
+  color: typeof ForegroundColor;
 };
 
 export type InitialOptionsWithRootDir = InitialOptions &
@@ -108,7 +124,7 @@ export type InitialOptions = Partial<{
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
   coverageProvider: CoverageProvider;
-  coverageReporters: Array<string>;
+  coverageReporters: CoverageReporters;
   coverageThreshold: {
     global: {
       [key: string]: number;
@@ -129,6 +145,7 @@ export type InitialOptions = Partial<{
   globalSetup: string | null | undefined;
   globalTeardown: string | null | undefined;
   haste: HasteConfig;
+  injectGlobals: boolean;
   reporters: Array<string | ReporterConfig>;
   logHeapUsage: boolean;
   lastCommit: boolean;
@@ -171,6 +188,7 @@ export type InitialOptions = Partial<{
   silent: boolean;
   skipFilter: boolean;
   skipNodeResolution: boolean;
+  slowTestThreshold: number;
   snapshotResolver: Path;
   snapshotSerializers: Array<Path>;
   errorOnDeprecated: boolean;
@@ -238,7 +256,7 @@ export type GlobalConfig = {
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
   coverageProvider: CoverageProvider;
-  coverageReporters: Array<keyof ReportOptions | [keyof ReportOptions, any]>;
+  coverageReporters: CoverageReporters;
   coverageThreshold?: CoverageThreshold;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
@@ -313,6 +331,7 @@ export type ProjectConfig = {
   globalTeardown?: string;
   globals: ConfigGlobals;
   haste: HasteConfig;
+  injectGlobals: boolean;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
   moduleLoader?: Path;
@@ -332,6 +351,7 @@ export type ProjectConfig = {
   setupFilesAfterEnv: Array<Path>;
   skipFilter: boolean;
   skipNodeResolution?: boolean;
+  slowTestThreshold: number;
   snapshotResolver?: Path;
   snapshotSerializers: Array<Path>;
   testEnvironment: string;
@@ -382,6 +402,7 @@ export type Argv = Arguments<
     globalTeardown: string | null | undefined;
     haste: string;
     init: boolean;
+    injectGlobals: boolean;
     json: boolean;
     lastCommit: boolean;
     logHeapUsage: boolean;

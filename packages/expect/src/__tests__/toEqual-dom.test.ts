@@ -12,18 +12,18 @@ describe('toEqual', () => {
   describe('duck type', () => {
     // https://github.com/facebook/jest/issues/7786
 
-    const createElement = (name, ...childNodes) => ({
+    const createElement = (name: string, ...childNodes: Array<unknown>) => ({
       childNodes,
       nodeType: 1,
       tagName: name.toUpperCase(),
     });
 
-    const createTextNode = data => ({
+    const createTextNode = (data: unknown) => ({
       data,
       nodeType: 3,
     });
 
-    const createDocumentFragment = (...children) => ({
+    const createDocumentFragment = (...children: Array<unknown>) => ({
       children,
       nodeType: 11,
     });

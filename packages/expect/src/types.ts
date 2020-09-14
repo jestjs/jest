@@ -5,6 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
+
+/* eslint-disable local/ban-types-eventually */
+
 import type {Config} from '@jest/types';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
@@ -40,8 +43,10 @@ export type MatcherState = {
     strictCheck?: boolean,
   ) => boolean;
   expand?: boolean;
-  expectedAssertionsNumber?: number;
+  expectedAssertionsNumber?: number | null;
+  expectedAssertionsNumberError?: Error;
   isExpectingAssertions?: boolean;
+  isExpectingAssertionsError?: Error;
   isNot: boolean;
   promise: string;
   suppressedErrors: Array<Error>;
@@ -54,20 +59,21 @@ export type MatcherState = {
 
 export type AsymmetricMatcher = Record<string, any>;
 export type MatchersObject = {[id: string]: RawMatcherFn};
+export type ExpectedAssertionsErrors = Array<{
+  actual: string | number;
+  error: Error;
+  expected: string;
+}>;
 export type Expect = {
   <T = unknown>(actual: T): Matchers<T>;
   // TODO: this is added by test runners, not `expect` itself
   addSnapshotSerializer(arg0: any): void;
   assertions(arg0: number): void;
   extend(arg0: any): void;
-  extractExpectedAssertionsErrors: () => Array<{
-    actual: string | number;
-    error: Error;
-    expected: string;
-  }>;
+  extractExpectedAssertionsErrors: () => ExpectedAssertionsErrors;
   getState(): MatcherState;
   hasAssertions(): void;
-  setState(arg0: any): void;
+  setState(state: Partial<MatcherState>): void;
 
   any(expectedObject: any): AsymmetricMatcher;
   anything(): AsymmetricMatcher;

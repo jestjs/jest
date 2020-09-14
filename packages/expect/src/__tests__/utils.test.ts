@@ -6,17 +6,14 @@
  *
  */
 
-'use strict';
-
-const {stringify} = require('jest-matcher-utils');
-const {
+import {stringify} from 'jest-matcher-utils';
+import {
   emptyObject,
   getObjectSubset,
   getPath,
-  hasOwnProperty,
-  subsetEquality,
   iterableEquality,
-} = require('../utils');
+  subsetEquality,
+} from '../utils';
 
 describe('getPath()', () => {
   test('property exists', () => {
@@ -79,6 +76,7 @@ describe('getPath()', () => {
 
   test('property is inherited', () => {
     class A {}
+    // @ts-expect-error
     A.prototype.a = 'a';
 
     expect(getPath(new A(), 'a')).toEqual({
@@ -105,45 +103,6 @@ describe('getPath()', () => {
       traversedPath: ['a', 'b', 'c'],
       value: undefined,
     });
-  });
-});
-
-describe('hasOwnProperty', () => {
-  it('does inherit getter from class', () => {
-    class MyClass {
-      get key() {
-        return 'value';
-      }
-    }
-    expect(hasOwnProperty(new MyClass(), 'key')).toBe(true);
-  });
-
-  it('does not inherit setter from class', () => {
-    class MyClass {
-      set key(value) {}
-    }
-    expect(hasOwnProperty(new MyClass(), 'key')).toBe(false);
-  });
-
-  it('does not inherit method from class', () => {
-    class MyClass {
-      key() {}
-    }
-    expect(hasOwnProperty(new MyClass(), 'key')).toBe(false);
-  });
-
-  it('does not inherit property from constructor prototype', () => {
-    function MyClass() {}
-    MyClass.prototype.key = 'value';
-    expect(hasOwnProperty(new MyClass(), 'key')).toBe(false);
-  });
-
-  it('does not inherit __proto__ getter from Object', () => {
-    expect(hasOwnProperty({}, '__proto__')).toBe(false);
-  });
-
-  it('does not inherit toString method from Object', () => {
-    expect(hasOwnProperty({}, 'toString')).toBe(false);
   });
 });
 
@@ -208,18 +167,20 @@ describe('getObjectSubset', () => {
 
   describe('calculating subsets of objects with circular references', () => {
     test('simple circular references', () => {
+      type CircularObj = {a?: string; b?: string; ref?: unknown};
+
       const nonCircularObj = {a: 'world', b: 'something'};
 
-      const circularObjA = {a: 'hello'};
+      const circularObjA: CircularObj = {a: 'hello'};
       circularObjA.ref = circularObjA;
 
-      const circularObjB = {a: 'world'};
+      const circularObjB: CircularObj = {a: 'world'};
       circularObjB.ref = circularObjB;
 
-      const primitiveInsteadOfRef = {b: 'something'};
+      const primitiveInsteadOfRef: CircularObj = {b: 'something'};
       primitiveInsteadOfRef.ref = 'not a ref';
 
-      const nonCircularRef = {b: 'something'};
+      const nonCircularRef: CircularObj = {b: 'something'};
       nonCircularRef.ref = {};
 
       expect(getObjectSubset(circularObjA, nonCircularObj)).toEqual({
@@ -240,18 +201,20 @@ describe('getObjectSubset', () => {
     });
 
     test('transitive circular references', () => {
+      type CircularObj = {a?: string; nestedObj?: unknown};
+
       const nonCircularObj = {a: 'world', b: 'something'};
 
-      const transitiveCircularObjA = {a: 'hello'};
+      const transitiveCircularObjA: CircularObj = {a: 'hello'};
       transitiveCircularObjA.nestedObj = {parentObj: transitiveCircularObjA};
 
-      const transitiveCircularObjB = {a: 'world'};
+      const transitiveCircularObjB: CircularObj = {a: 'world'};
       transitiveCircularObjB.nestedObj = {parentObj: transitiveCircularObjB};
 
-      const primitiveInsteadOfRef = {};
+      const primitiveInsteadOfRef: CircularObj = {};
       primitiveInsteadOfRef.nestedObj = {otherProp: 'not the parent ref'};
 
-      const nonCircularRef = {};
+      const nonCircularRef: CircularObj = {};
       nonCircularRef.nestedObj = {otherProp: {}};
 
       expect(getObjectSubset(transitiveCircularObjA, nonCircularObj)).toEqual({
@@ -314,16 +277,18 @@ describe('subsetEquality()', () => {
 
   describe('matching subsets with circular references', () => {
     test('simple circular references', () => {
-      const circularObjA1 = {a: 'hello'};
+      type CircularObj = {a?: string; ref?: unknown};
+
+      const circularObjA1: CircularObj = {a: 'hello'};
       circularObjA1.ref = circularObjA1;
 
-      const circularObjA2 = {a: 'hello'};
+      const circularObjA2: CircularObj = {a: 'hello'};
       circularObjA2.ref = circularObjA2;
 
-      const circularObjB = {a: 'world'};
+      const circularObjB: CircularObj = {a: 'world'};
       circularObjB.ref = circularObjB;
 
-      const primitiveInsteadOfRef = {};
+      const primitiveInsteadOfRef: CircularObj = {};
       primitiveInsteadOfRef.ref = 'not a ref';
 
       expect(subsetEquality(circularObjA1, {})).toBe(true);
@@ -347,21 +312,22 @@ describe('subsetEquality()', () => {
     });
 
     test('transitive circular references', () => {
-      const transitiveCircularObjA1 = {a: 'hello'};
+      type CircularObj = {a: string; nestedObj?: unknown};
+
+      const transitiveCircularObjA1: CircularObj = {a: 'hello'};
       transitiveCircularObjA1.nestedObj = {parentObj: transitiveCircularObjA1};
 
-      const transitiveCircularObjA2 = {a: 'hello'};
+      const transitiveCircularObjA2: CircularObj = {a: 'hello'};
       transitiveCircularObjA2.nestedObj = {
         parentObj: transitiveCircularObjA2,
       };
 
-      const transitiveCircularObjB = {a: 'world'};
+      const transitiveCircularObjB: CircularObj = {a: 'world'};
       transitiveCircularObjB.nestedObj = {
         parentObj: transitiveCircularObjB,
       };
 
-      const primitiveInsteadOfRef = {};
-      primitiveInsteadOfRef.nestedObj = {
+      const primitiveInsteadOfRef = {
         parentObj: 'not the parent ref',
       };
 

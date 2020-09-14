@@ -47,7 +47,7 @@ export default class TestPathPatternPrompt extends PatternPrompt {
 
     try {
       regex = new RegExp(pattern, 'i');
-    } catch (e) {}
+    } catch {}
 
     let tests: Array<Test> = [];
     if (regex && this._searchSources) {

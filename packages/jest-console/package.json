@@ -1,6 +1,6 @@
 {
   "name": "@jest/console",
-  "version": "26.1.0",
+  "version": "26.3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,11 +10,11 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/types": "^26.1.0",
+    "@jest/types": "^26.3.0",
     "@types/node": "*",
     "chalk": "^4.0.0",
-    "jest-message-util": "^26.1.0",
-    "jest-util": "^26.1.0",
+    "jest-message-util": "^26.3.0",
+    "jest-util": "^26.3.0",
     "slash": "^3.0.0"
   },
   "devDependencies": {

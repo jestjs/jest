@@ -64,7 +64,7 @@ export async function readConfig(
     let config;
     try {
       config = JSON.parse(argv.config);
-    } catch (e) {
+    } catch {
       throw new Error(
         'There was an error while parsing the `--config` argument as a JSON string.',
       );
@@ -186,6 +186,7 @@ const groupOptions = (
     globalTeardown: options.globalTeardown,
     globals: options.globals,
     haste: options.haste,
+    injectGlobals: options.injectGlobals,
     moduleDirectories: options.moduleDirectories,
     moduleFileExtensions: options.moduleFileExtensions,
     moduleLoader: options.moduleLoader,
@@ -205,6 +206,7 @@ const groupOptions = (
     setupFilesAfterEnv: options.setupFilesAfterEnv,
     skipFilter: options.skipFilter,
     skipNodeResolution: options.skipNodeResolution,
+    slowTestThreshold: options.slowTestThreshold,
     snapshotResolver: options.snapshotResolver,
     snapshotSerializers: options.snapshotSerializers,
     testEnvironment: options.testEnvironment,

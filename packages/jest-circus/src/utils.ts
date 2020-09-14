@@ -12,7 +12,8 @@ import co from 'co';
 import dedent = require('dedent');
 import StackUtils = require('stack-utils');
 import prettyFormat = require('pretty-format');
-import {getState} from './state';
+import type {AssertionResult, Status} from '@jest/test-result';
+import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
@@ -279,63 +280,67 @@ export const makeRunResult = (
   unhandledErrors: Array<Error>,
 ): Circus.RunResult => ({
   testResults: makeTestResults(describeBlock),
-  unhandledErrors: unhandledErrors.map(_formatError),
+  unhandledErrors: unhandledErrors.map(_getError).map(getErrorStack),
 });
+
+export const makeSingleTestResult = (
+  test: Circus.TestEntry,
+): Circus.TestResult => {
+  const {includeTestLocationInResult} = getState();
+  const testPath = [];
+  let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
+
+  const {status} = test;
+  invariant(status, 'Status should be present after tests are run.');
+
+  do {
+    testPath.unshift(parent.name);
+  } while ((parent = parent.parent));
+
+  let location = null;
+  if (includeTestLocationInResult) {
+    const stackLine = test.asyncError.stack.split('\n')[1];
+    const parsedLine = stackUtils.parseLine(stackLine);
+    if (
+      parsedLine &&
+      typeof parsedLine.column === 'number' &&
+      typeof parsedLine.line === 'number'
+    ) {
+      location = {
+        column: parsedLine.column,
+        line: parsedLine.line,
+      };
+    }
+  }
+
+  const errorsDetailed = test.errors.map(_getError);
+
+  return {
+    duration: test.duration,
+    errors: errorsDetailed.map(getErrorStack),
+    errorsDetailed,
+    invocations: test.invocations,
+    location,
+    status,
+    testPath: Array.from(testPath),
+  };
+};
 
 const makeTestResults = (
   describeBlock: Circus.DescribeBlock,
 ): Circus.TestResults => {
-  const {includeTestLocationInResult} = getState();
   const testResults: Circus.TestResults = [];
+
   for (const child of describeBlock.children) {
     switch (child.type) {
       case 'describeBlock': {
         testResults.push(...makeTestResults(child));
         break;
       }
-      case 'test':
-        {
-          const testPath = [];
-          let parent:
-            | Circus.TestEntry
-            | Circus.DescribeBlock
-            | undefined = child;
-          do {
-            testPath.unshift(parent.name);
-          } while ((parent = parent.parent));
-
-          const {status} = child;
-
-          if (!status) {
-            throw new Error('Status should be present after tests are run.');
-          }
-
-          let location = null;
-          if (includeTestLocationInResult) {
-            const stackLine = child.asyncError.stack.split('\n')[1];
-            const parsedLine = stackUtils.parseLine(stackLine);
-            if (
-              parsedLine &&
-              typeof parsedLine.column === 'number' &&
-              typeof parsedLine.line === 'number'
-            ) {
-              location = {
-                column: parsedLine.column,
-                line: parsedLine.line,
-              };
-            }
-          }
-
-          testResults.push({
-            duration: child.duration,
-            errors: child.errors.map(_formatError),
-            invocations: child.invocations,
-            location,
-            status,
-            testPath,
-          });
-        }
+      case 'test': {
+        testResults.push(makeSingleTestResult(child));
         break;
+      }
     }
   }
 
@@ -355,9 +360,9 @@ export const getTestID = (test: Circus.TestEntry): string => {
   return titles.join(' ');
 };
 
-const _formatError = (
+const _getError = (
   errors?: Circus.Exception | [Circus.Exception | undefined, Circus.Exception],
-): string => {
+): Error => {
   let error;
   let asyncError;
 
@@ -369,19 +374,16 @@ const _formatError = (
     asyncError = new Error();
   }
 
-  if (error) {
-    if (error.stack) {
-      return error.stack;
-    }
-    if (error.message) {
-      return error.message;
-    }
+  if (error && (error.stack || error.message)) {
+    return error;
   }
 
   asyncError.message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
 
-  return asyncError.stack;
+  return asyncError;
 };
+
+const getErrorStack = (error: Error): string => error.stack || error.message;
 
 export const addErrorToEachTestUnderDescribe = (
   describeBlock: Circus.DescribeBlock,
@@ -408,3 +410,38 @@ export function invariant(
     throw new Error(message);
   }
 }
+
+export const parseSingleTestResult = (
+  testResult: Circus.TestResult,
+): AssertionResult => {
+  let status: Status;
+  if (testResult.status === 'skip') {
+    status = 'pending';
+  } else if (testResult.status === 'todo') {
+    status = 'todo';
+  } else if (testResult.errors.length > 0) {
+    status = 'failed';
+  } else {
+    status = 'passed';
+  }
+
+  const ancestorTitles = testResult.testPath.filter(
+    name => name !== ROOT_DESCRIBE_BLOCK_NAME,
+  );
+  const title = ancestorTitles.pop();
+
+  return {
+    ancestorTitles,
+    duration: testResult.duration,
+    failureDetails: testResult.errorsDetailed,
+    failureMessages: Array.from(testResult.errors),
+    fullName: title
+      ? ancestorTitles.concat(title).join(' ')
+      : ancestorTitles.join(' '),
+    invocations: testResult.invocations,
+    location: testResult.location,
+    numPassingAsserts: 0,
+    status,
+    title: testResult.testPath[testResult.testPath.length - 1],
+  };
+};

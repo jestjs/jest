@@ -9,7 +9,7 @@ With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async
 
 [Jest DynamoDB](https://github.com/shelfio/jest-dynamodb) provides all required configuration to run your tests using DynamoDB.
 
-1.  First install `@shelf/jest-dynamodb`
+1.  First, install `@shelf/jest-dynamodb`
 
 ```
 yarn add @shelf/jest-dynamodb --dev

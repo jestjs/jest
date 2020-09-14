@@ -23,7 +23,7 @@ const calls = +process.argv[3];
 const threads = 6;
 
 function testWorkerFarm() {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async resolve => {
     const startTime = Date.now();
     let count = 0;
 
@@ -74,7 +74,7 @@ function testWorkerFarm() {
 }
 
 function testJestWorker() {
-  return new Promise(async (resolve, reject) => {
+  return new Promise(async resolve => {
     const startTime = Date.now();
     let count = 0;
 

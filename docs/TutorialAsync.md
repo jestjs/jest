@@ -16,7 +16,7 @@ export function getUserName(userID) {
 }
 ```
 
-In the above implementation we expect the `request.js` module to return a promise. We chain a call to `then` to receive the user name.
+In the above implementation, we expect the `request.js` module to return a promise. We chain a call to `then` to receive the user name.
 
 Now imagine an implementation of `request.js` that goes to the network and fetches some user data:
 

@@ -21,13 +21,13 @@ import RuntimeClass = require('jest-runtime');
 import * as fs from 'graceful-fs';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
 import LeakDetector from 'jest-leak-detector';
-import Resolver = require('jest-resolve');
+import type {ResolverType} from 'jest-resolve';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import {formatExecError} from 'jest-message-util';
 import sourcemapSupport = require('source-map-support');
 import chalk = require('chalk');
-import type {TestFramework, TestRunnerContext} from './types';
+import type {TestFileEvent, TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {
   leakDetector: LeakDetector | null;
@@ -79,8 +79,9 @@ async function runTestInternal(
   path: Config.Path,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  resolver: Resolver,
+  resolver: ResolverType,
   context?: TestRunnerContext,
+  sendMessageToJest?: TestFileEvent,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
   const docblockPragmas = docblock.parse(docblock.extract(testSource));
@@ -182,7 +183,7 @@ async function runTestInternal(
             map: JSON.parse(fs.readFileSync(sourceMapSource, 'utf8')),
             url: source,
           };
-        } catch (e) {}
+        } catch {}
       }
       return null;
     },
@@ -246,6 +247,7 @@ async function runTestInternal(
         environment,
         runtime,
         path,
+        sendMessageToJest,
       );
     } catch (err) {
       // Access stack before uninstalling sourcemaps
@@ -266,7 +268,14 @@ async function runTestInternal(
       result.numPendingTests +
       result.numTodoTests;
 
-    result.perfStats = {end: Date.now(), start};
+    const end = Date.now();
+    const testRuntime = end - start;
+    result.perfStats = {
+      end,
+      runtime: testRuntime,
+      slow: testRuntime / 1000 > config.slowTestThreshold,
+      start,
+    };
     result.testFilePath = path;
     result.console = testConsole.getBuffer();
     result.skipped = testCount === result.numPendingTests;
@@ -311,8 +320,9 @@ export default async function runTest(
   path: Config.Path,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  resolver: Resolver,
+  resolver: ResolverType,
   context?: TestRunnerContext,
+  sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(
     path,
@@ -320,6 +330,7 @@ export default async function runTest(
     config,
     resolver,
     context,
+    sendMessageToJest,
   );
 
   if (leakDetector) {

@@ -158,10 +158,18 @@ export type AsyncEvent =
       name: 'teardown';
     };
 
+export type MatcherResults = {
+  actual: unknown;
+  expected: unknown;
+  name: string;
+  pass: boolean;
+};
+
 export type TestStatus = 'skip' | 'done' | 'todo';
 export type TestResult = {
   duration?: number | null;
   errors: Array<FormattedError>;
+  errorsDetailed: Array<MatcherResults | unknown>;
   invocations: number;
   status: TestStatus;
   location?: {column: number; line: number} | null;

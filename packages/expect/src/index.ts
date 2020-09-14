@@ -338,7 +338,7 @@ const makeThrowingMatcher = (
 
         return asyncResult
           .then(aResult => processResult(aResult, asyncError))
-          .catch(error => handleError(error));
+          .catch(handleError);
       } else {
         const syncResult = potentialResult as SyncExpectationResult;
 
@@ -419,7 +419,6 @@ expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
 const expectExport = expect as Expect;
 
-// eslint-disable-next-line no-redeclare
 namespace expectExport {
   export type MatcherState = JestMatcherState;
   export interface Matchers<R> extends MatcherInterface<R> {}

@@ -38,7 +38,7 @@ When a manual mock exists for a given module, Jest's module system will use that
 
 > Note: In order to mock properly, Jest needs `jest.mock('moduleName')` to be in the same scope as the `require/import` statement.
 
-Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case we use the core (built in) `fs` module.
+Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case, we use the core (built in) `fs` module.
 
 ```javascript
 // FileSummarizer.js

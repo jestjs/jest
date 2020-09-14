@@ -9,16 +9,22 @@
 
 import {spawnSync} from 'child_process';
 import path from 'path';
-import {skipSuiteOnWindows} from '@jest/test-utils';
 
 const JEST_RUNTIME = path.resolve(__dirname, '../../bin/jest-repl.js');
 
 describe('Repl', () => {
-  skipSuiteOnWindows();
-
   describe('cli', () => {
     it('runs without errors', () => {
-      const output = spawnSync(JEST_RUNTIME, [], {
+      let command = JEST_RUNTIME;
+      const args = [];
+
+      // Windows can't handle hashbangs, so is the best we can do
+      if (process.platform === 'win32') {
+        args.push(command);
+        command = 'node';
+      }
+
+      const output = spawnSync(command, args, {
         cwd: process.cwd(),
         encoding: 'utf8',
         env: process.env,

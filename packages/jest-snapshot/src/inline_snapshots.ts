@@ -8,16 +8,18 @@
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import semver = require('semver');
-import {
-  CallExpression,
-  file,
-  templateElement,
-  templateLiteral,
-} from '@babel/types';
+import {file, templateElement, templateLiteral} from '@babel/types';
 import type {Frame} from 'jest-message-util';
-
+import type {
+  CustomParser as PrettierCustomParser,
+  BuiltInParser as PrettierParser,
+  BuiltInParserName as PrettierParserName,
+} from 'prettier';
 import type {Config} from '@jest/types';
+import type {BabelTraverse, Prettier} from './types';
 import {escapeBacktickString} from './utils';
+
+type PrettierParserMap = Record<PrettierParserName, PrettierParser>;
 
 export type InlineSnapshot = {
   snapshot: string;
@@ -26,8 +28,8 @@ export type InlineSnapshot = {
 
 export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
-  prettier: typeof import('prettier') | null,
-  babelTraverse: Function,
+  prettier: Prettier | null,
+  babelTraverse: BabelTraverse,
 ): void {
   if (!prettier) {
     throw new Error(
@@ -59,22 +61,21 @@ export function saveInlineSnapshots(
 const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
   sourceFilePath: Config.Path,
-  prettier: any,
-  babelTraverse: Function,
+  prettier: Prettier,
+  babelTraverse: BabelTraverse,
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
   // Resolve project configuration.
   // For older versions of Prettier, do not load configuration.
   const config = prettier.resolveConfig
-    ? prettier.resolveConfig.sync(sourceFilePath, {
-        editorconfig: true,
-      })
+    ? prettier.resolveConfig.sync(sourceFilePath, {editorconfig: true})
     : null;
 
   // Detect the parser for the test file.
   // For older versions of Prettier, fallback to a simple parser detection.
-  const inferredParser = prettier.getFileInfo
+  // @ts-expect-error
+  const inferredParser: PrettierParserName = prettier.getFileInfo
     ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
     : (config && config.parser) || simpleDetectParser(sourceFilePath);
 
@@ -163,8 +164,8 @@ const indent = (snapshot: string, numIndents: number, indentation: string) => {
 };
 
 const getAst = (
-  parsers: Record<string, (text: string) => any>,
-  inferredParser: string,
+  parsers: PrettierParserMap,
+  inferredParser: PrettierParserName,
   text: string,
 ) => {
   // Flow uses a 'Program' parent node, babel expects a 'File'.
@@ -180,13 +181,9 @@ const getAst = (
 const createInsertionParser = (
   snapshots: Array<InlineSnapshot>,
   snapshotMatcherNames: Array<string>,
-  inferredParser: string,
-  babelTraverse: Function,
-) => (
-  text: string,
-  parsers: Record<string, (text: string) => any>,
-  options: any,
-) => {
+  inferredParser: PrettierParserName,
+  babelTraverse: BabelTraverse,
+): PrettierCustomParser => (text, parsers, options) => {
   // Workaround for https://github.com/prettier/prettier/issues/3150
   options.parser = inferredParser;
 
@@ -195,7 +192,7 @@ const createInsertionParser = (
 
   const ast = getAst(parsers, inferredParser, text);
   babelTraverse(ast, {
-    CallExpression({node: {arguments: args, callee}}: {node: CallExpression}) {
+    CallExpression({node: {arguments: args, callee}}) {
       if (
         callee.type !== 'MemberExpression' ||
         callee.property.type !== 'Identifier' ||
@@ -247,19 +244,15 @@ const createInsertionParser = (
 // This parser formats snapshots to the correct indentation.
 const createFormattingParser = (
   snapshotMatcherNames: Array<string>,
-  inferredParser: string,
-  babelTraverse: Function,
-) => (
-  text: string,
-  parsers: Record<string, (text: string) => any>,
-  options: any,
-) => {
+  inferredParser: PrettierParserName,
+  babelTraverse: BabelTraverse,
+): PrettierCustomParser => (text, parsers, options) => {
   // Workaround for https://github.com/prettier/prettier/issues/3150
   options.parser = inferredParser;
 
   const ast = getAst(parsers, inferredParser, text);
   babelTraverse(ast, {
-    CallExpression({node: {arguments: args, callee}}: {node: CallExpression}) {
+    CallExpression({node: {arguments: args, callee}}) {
       if (
         callee.type !== 'MemberExpression' ||
         callee.property.type !== 'Identifier' ||
@@ -288,10 +281,10 @@ const createFormattingParser = (
         snapshot,
         Math.ceil(
           useSpaces
-            ? callee.loc.start.column / options.tabWidth
+            ? callee.loc.start.column / (options.tabWidth ?? 1)
             : callee.loc.start.column / 2, // Each tab is 2 characters.
         ),
-        useSpaces ? ' '.repeat(options.tabWidth) : '\t',
+        useSpaces ? ' '.repeat(options.tabWidth ?? 1) : '\t',
       );
 
       const replacementNode = templateLiteral(
@@ -309,10 +302,10 @@ const createFormattingParser = (
   return ast;
 };
 
-const simpleDetectParser = (filePath: Config.Path) => {
+const simpleDetectParser = (filePath: Config.Path): PrettierParserName => {
   const extname = path.extname(filePath);
   if (/tsx?$/.test(extname)) {
     return 'typescript';
   }
-  return 'babylon';
+  return 'babel';
 };

@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 type Global = NodeJS.Global; // | Window – add once TS improves typings;
 
 namespace JestMock {
@@ -1093,6 +1095,5 @@ class ModuleMockerClass {
   }
 }
 
-/* eslint-disable-next-line no-redeclare */
 const JestMock = new ModuleMockerClass(global);
 export = JestMock;

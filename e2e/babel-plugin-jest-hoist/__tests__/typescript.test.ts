@@ -6,6 +6,8 @@
  *
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import type {Color} from '../types';
 import {color} from '../entry';
 
