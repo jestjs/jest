@@ -18,23 +18,21 @@ export default class CustomConsole extends Console {
   private _stdout: NodeJS.WriteStream;
   private _stderr: NodeJS.WriteStream;
   private _formatBuffer: Formatter;
-  private _counters: LogCounters;
-  private _timers: LogTimers;
-  private _groupDepth: number;
+  private _counters: LogCounters = {};
+  private _timers: LogTimers = {};
+  private _groupDepth = 0;
+
+  Console: NodeJS.ConsoleConstructor = Console;
 
   constructor(
     stdout: NodeJS.WriteStream,
     stderr: NodeJS.WriteStream,
-    formatBuffer: Formatter = (_type: LogType, message: string): string =>
-      message,
+    formatBuffer: Formatter = (_type, message) => message,
   ) {
     super(stdout, stderr);
     this._stdout = stdout;
     this._stderr = stderr;
     this._formatBuffer = formatBuffer;
-    this._counters = {};
-    this._timers = {};
-    this._groupDepth = 0;
   }
 
   private _log(type: LogType, message: string) {
