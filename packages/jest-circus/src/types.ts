@@ -20,11 +20,8 @@ export const TEST_TIMEOUT_SYMBOL = (Symbol.for(
   'TEST_TIMEOUT_SYMBOL',
 ) as unknown) as 'TEST_TIMEOUT_SYMBOL';
 
-// https://github.com/typescript-eslint/typescript-eslint/issues/2523
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare global {
   module NodeJS {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     interface Global {
       STATE_SYM_SYMBOL: Circus.State;
       RETRY_TIMES_SYMBOL: string;
