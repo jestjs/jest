@@ -23,8 +23,6 @@ type ResolverOptions = {
   packageFilter?: ResolveOpts['packageFilter'];
 };
 
-// https://github.com/typescript-eslint/typescript-eslint/issues/2523
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 declare global {
   namespace NodeJS {
     export interface ProcessVersions {
