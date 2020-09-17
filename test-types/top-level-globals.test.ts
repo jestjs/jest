@@ -20,6 +20,7 @@ import {
 
 const fn = () => {};
 const asyncFn = async () => {};
+const genFn = function* () {};
 const timeout = 5;
 const testName = 'Test name';
 const testTable = [[1, 2]];
@@ -27,15 +28,19 @@ const testTable = [[1, 2]];
 // https://jestjs.io/docs/en/api#methods
 expectType<void>(afterAll(fn));
 expectType<void>(afterAll(asyncFn));
+expectType<void>(afterAll(genFn));
 expectType<void>(afterAll(fn, timeout));
 expectType<void>(afterEach(fn));
 expectType<void>(afterEach(asyncFn));
+expectType<void>(afterEach(genFn));
 expectType<void>(afterEach(fn, timeout));
 expectType<void>(beforeAll(fn));
 expectType<void>(beforeAll(asyncFn));
+expectType<void>(beforeAll(genFn));
 expectType<void>(beforeAll(fn, timeout));
 expectType<void>(beforeEach(fn));
 expectType<void>(beforeEach(asyncFn));
+expectType<void>(beforeEach(genFn));
 expectType<void>(beforeEach(fn, timeout));
 
 expectType<void>(test.each(testTable)(testName, fn));

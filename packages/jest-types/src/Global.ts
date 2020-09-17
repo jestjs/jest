@@ -7,6 +7,11 @@
 
 import type {CoverageMapData} from 'istanbul-lib-coverage';
 
+// TypeScript's GeneratorFunction is too narrow
+interface GeneratorFn {
+  (...args: Array<any>): Generator;
+}
+
 export type DoneFn = (reason?: string | Error) => void;
 export type TestName = string;
 export type TestFn = (
@@ -17,7 +22,7 @@ export type ConcurrentTestFn = (
 ) => Promise<void | undefined | unknown>;
 export type BlockFn = () => void;
 export type BlockName = string;
-export type HookFn = TestFn;
+export type HookFn = TestFn | GeneratorFn;
 
 export type Col = unknown;
 export type Row = Array<Col>;
