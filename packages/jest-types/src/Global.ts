@@ -7,11 +7,14 @@
 
 import type {CoverageMapData} from 'istanbul-lib-coverage';
 
+export type GeneratorFn = (...args: Array<any>) => Generator;
 export type DoneFn = (reason?: string | Error) => void;
-export type TestName = string;
-export type TestFn = (
+export type CallbackFn = (
   done?: DoneFn,
-) => Promise<void | undefined | unknown> | void | undefined;
+) => void | undefined | Promise<void | undefined | unknown>;
+
+export type TestName = string;
+export type TestFn = GeneratorFn | CallbackFn;
 export type ConcurrentTestFn = (
   done?: DoneFn,
 ) => Promise<void | undefined | unknown>;
