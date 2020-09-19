@@ -372,6 +372,7 @@ export default class ScriptTransformer {
       const sourceMapContent =
         typeof map === 'string' ? map : JSON.stringify(map);
       writeCacheFile(sourceMapPath, sourceMapContent);
+      code += '\n//# sourceMappingURL=' + sourceMapPath;
     } else {
       sourceMapPath = null;
     }
