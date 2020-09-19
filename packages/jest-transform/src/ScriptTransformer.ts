@@ -366,13 +366,15 @@ export default class ScriptTransformer {
       map = typeof instrumented === 'string' ? null : instrumented.map;
     } else {
       code = transformed.code;
+      if (map) {
+        code += '\n//# sourceMappingURL=' + sourceMapPath;
+      }
     }
 
     if (map) {
       const sourceMapContent =
         typeof map === 'string' ? map : JSON.stringify(map);
       writeCacheFile(sourceMapPath, sourceMapContent);
-      code += '\n//# sourceMappingURL=' + sourceMapPath;
     } else {
       sourceMapPath = null;
     }
