@@ -281,6 +281,7 @@ export default (): PluginObj<{
   },
   // in `post` to make sure we come after an import transform and can unshift above the `require`s
   post({path: program}: {path: NodePath<Program>}) {
+    const mockStmts: Array<Node> = [];
     program.traverse({
       CallExpression: callExpr => {
         const {
@@ -297,12 +298,13 @@ export default (): PluginObj<{
             const mockStmtParent = mockStmt.parentPath;
             if (mockStmtParent.isBlock()) {
               mockStmt.remove();
-              mockStmtParent.unshiftContainer('body', [mockStmtNode]);
+              mockStmts.push(mockStmtNode);
             }
           }
         }
       },
     });
+    program.unshiftContainer('body', mockStmts);
   },
 });
 /* eslint-enable */
