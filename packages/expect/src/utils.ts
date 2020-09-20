@@ -6,6 +6,8 @@
  *
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import {isPrimitive} from 'jest-get-type';
 import {
   equals,
@@ -100,7 +102,7 @@ export const getObjectSubset = (
   subset: any,
   seenReferences: WeakMap<object, boolean> = new WeakMap(),
 ): any => {
-  /* eslint-enable */
+  /* eslint-enable @typescript-eslint/explicit-module-boundary-types */
   if (Array.isArray(object)) {
     if (Array.isArray(subset) && subset.length === object.length) {
       // The map method returns correct subclass of subset.
@@ -143,7 +145,7 @@ const hasIterator = (object: any) =>
 export const iterableEquality = (
   a: any,
   b: any,
-  /* eslint-enable */
+  /* eslint-enable @typescript-eslint/explicit-module-boundary-types */
   aStack: Array<any> = [],
   bStack: Array<any> = [],
 ): boolean | undefined => {

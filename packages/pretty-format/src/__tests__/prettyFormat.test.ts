@@ -156,7 +156,7 @@ describe('prettyFormat()', () => {
   });
 
   it('prints a map with non-string keys', () => {
-    const val = new Map<any, any>([
+    const val = new Map<unknown, unknown>([
       [false, 'boolean'],
       ['false', 'string'],
       [0, 'number'],
@@ -280,7 +280,7 @@ describe('prettyFormat()', () => {
   });
 
   it('prints an object without non-enumerable properties which have string key', () => {
-    const val: any = {
+    const val: unknown = {
       enumerable: true,
     };
     const key = 'non-enumerable';
@@ -292,7 +292,7 @@ describe('prettyFormat()', () => {
   });
 
   it('prints an object without non-enumerable properties which have symbol key', () => {
-    const val: any = {
+    const val: unknown = {
       enumerable: true,
     };
     const key = Symbol('non-enumerable');
@@ -585,7 +585,7 @@ describe('prettyFormat()', () => {
     const options = {
       plugins: [
         {
-          print(val: any) {
+          print(val: unknown) {
             return val;
           },
           test() {
@@ -668,10 +668,10 @@ describe('prettyFormat()', () => {
       prettyFormat(val, {
         plugins: [
           {
-            print(val, print) {
-              return val.map((item: any) => print(item)).join(' - ');
+            print(val: Array<unknown>, print: any) {
+              return val.map(item => print(item)).join(' - ');
             },
-            test(val) {
+            test(val: unknown) {
               return Array.isArray(val);
             },
           },

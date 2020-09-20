@@ -885,6 +885,7 @@ export default function normalize(
       case 'findRelatedTests':
       case 'forceCoverageMatch':
       case 'forceExit':
+      case 'injectGlobals':
       case 'lastCommit':
       case 'listTests':
       case 'logHeapUsage':
@@ -1006,9 +1007,9 @@ export default function normalize(
     newOptions.watchAll = false;
   }
 
-  // as any since it can happen. We really need to fix the types here
+  // as unknown since it can happen. We really need to fix the types here
   if (
-    newOptions.moduleNameMapper === (DEFAULT_CONFIG.moduleNameMapper as any)
+    newOptions.moduleNameMapper === (DEFAULT_CONFIG.moduleNameMapper as unknown)
   ) {
     newOptions.moduleNameMapper = [];
   }

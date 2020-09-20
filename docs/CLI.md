@@ -194,6 +194,22 @@ Show the help information, similar to this page.
 
 Generate a basic configuration file. Based on your project, Jest will ask you a few questions that will help to generate a `jest.config.js` file with a short description for each option.
 
+### `--injectGlobals`
+
+Insert Jest's globals (`expect`, `test`, `describe`, `beforeEach` etc.) into the global environment. If you set this to `false`, you should import from `@jest/globals`, e.g.
+
+```ts
+import {expect, jest, test} from '@jest/globals';
+
+jest.useFakeTimers();
+
+test('some test', () => {
+  expect(Date.now()).toBe(0);
+});
+```
+
+_Note: This option is only supported using `jest-circus`._
+
 ### `--json`
 
 Prints the test results in JSON. This mode will send all other test output and user messages to stderr.

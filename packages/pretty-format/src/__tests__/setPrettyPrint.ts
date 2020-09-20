@@ -6,20 +6,23 @@
  */
 
 import prettyFormat from '../';
-import {OptionsReceived, Plugins} from '../types';
+import type {OptionsReceived, Plugins} from '../types';
 
 declare global {
-  // eslint-disable-next-line no-redeclare
   namespace jest {
     interface Matchers<R> {
-      toPrettyPrintTo(expected: any, options?: OptionsReceived): R;
+      toPrettyPrintTo(expected: unknown, options?: OptionsReceived): R;
     }
   }
 }
 
 const setPrettyPrint = (plugins: Plugins) => {
   expect.extend({
-    toPrettyPrintTo(received: any, expected: any, options?: OptionsReceived) {
+    toPrettyPrintTo(
+      received: unknown,
+      expected: unknown,
+      options?: OptionsReceived,
+    ) {
       const prettyFormatted = prettyFormat(received, {plugins, ...options});
       const pass = prettyFormatted === expected;
 

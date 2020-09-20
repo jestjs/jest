@@ -36,7 +36,7 @@ export default class ModuleMap {
   private json: SerializableModuleMap | undefined;
 
   private static mapToArrayRecursive(
-    map: Map<any, any>,
+    map: Map<string, any>,
   ): Array<[string, unknown]> {
     let arr = Array.from(map);
     if (arr[0] && arr[0][1] instanceof Map) {

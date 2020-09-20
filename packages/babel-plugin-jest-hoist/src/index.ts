@@ -291,11 +291,14 @@ export default (): PluginObj<{
           callee.name === this.jestObjGetterIdentifier?.name
         ) {
           const mockStmt = callExpr.getStatementParent();
-          const mockStmtNode = mockStmt.node;
-          const mockStmtParent = mockStmt.parentPath;
-          if (mockStmtParent.isBlock()) {
-            mockStmt.remove();
-            mockStmtParent.unshiftContainer('body', [mockStmtNode]);
+
+          if (mockStmt) {
+            const mockStmtNode = mockStmt.node;
+            const mockStmtParent = mockStmt.parentPath;
+            if (mockStmtParent.isBlock()) {
+              mockStmt.remove();
+              mockStmtParent.unshiftContainer('body', [mockStmtNode]);
+            }
           }
         }
       },

@@ -148,8 +148,8 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
   }
 }
 
-class ObjectContaining extends AsymmetricMatcher<Record<string, any>> {
-  constructor(sample: Record<string, any>, inverse: boolean = false) {
+class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
+  constructor(sample: Record<string, unknown>, inverse: boolean = false) {
     super(sample);
     this.inverse = inverse;
   }
@@ -255,10 +255,10 @@ export const arrayContaining = (sample: Array<unknown>): ArrayContaining =>
 export const arrayNotContaining = (sample: Array<unknown>): ArrayContaining =>
   new ArrayContaining(sample, true);
 export const objectContaining = (
-  sample: Record<string, any>,
+  sample: Record<string, unknown>,
 ): ObjectContaining => new ObjectContaining(sample);
 export const objectNotContaining = (
-  sample: Record<string, any>,
+  sample: Record<string, unknown>,
 ): ObjectContaining => new ObjectContaining(sample, true);
 export const stringContaining = (expected: string): StringContaining =>
   new StringContaining(expected);

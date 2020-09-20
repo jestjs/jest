@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as path from 'path';
 import type {Circus} from '@jest/types';
 import {convertDescriptorToString, formatTime} from 'jest-util';
 import isGeneratorFn from 'is-generator-fn';
@@ -16,6 +17,8 @@ import type {AssertionResult, Status} from '@jest/test-result';
 import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
+
+const jestEachBuildDir = path.dirname(require.resolve('jest-each'));
 
 export const makeDescribe = (
   name: Circus.BlockName,
@@ -151,7 +154,7 @@ const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
 // the original values in the variables before we require any files.
 const {setTimeout, clearTimeout} = global;
 
-function checkIsError(error: any): error is Error {
+function checkIsError(error: unknown): error is Error {
   return !!(error && (error as Error).message && (error as Error).stack);
 }
 
@@ -160,7 +163,7 @@ export const callAsyncCircusFn = (
   testContext: Circus.TestContext | undefined,
   asyncError: Circus.Exception,
   {isHook, timeout}: {isHook?: boolean | null; timeout: number},
-): Promise<any> => {
+): Promise<unknown> => {
   let timeoutID: NodeJS.Timeout;
   let completed = false;
 
@@ -299,8 +302,13 @@ export const makeSingleTestResult = (
 
   let location = null;
   if (includeTestLocationInResult) {
-    const stackLine = test.asyncError.stack.split('\n')[1];
-    const parsedLine = stackUtils.parseLine(stackLine);
+    const stackLines = test.asyncError.stack.split('\n');
+    const stackLine = stackLines[1];
+    let parsedLine = stackUtils.parseLine(stackLine);
+    if (parsedLine?.file?.startsWith(jestEachBuildDir)) {
+      const stackLine = stackLines[4];
+      parsedLine = stackUtils.parseLine(stackLine);
+    }
     if (
       parsedLine &&
       typeof parsedLine.column === 'number' &&

@@ -32,9 +32,9 @@ const jestAdapter = async (
     FRAMEWORK_INITIALIZER,
   );
 
-  runtime
+  const expect = runtime
     .requireInternalModule<typeof import('./jestExpect')>(EXPECT_INITIALIZER)
-    .default({expand: globalConfig.expand});
+    .default(globalConfig);
 
   const getPrettier = () =>
     config.prettierPath ? require(config.prettierPath) : null;
@@ -51,6 +51,14 @@ const jestAdapter = async (
     sendMessageToJest,
     testPath,
   });
+
+  const runtimeGlobals = {expect, ...globals};
+  runtime.setGlobalsForRuntime(runtimeGlobals);
+
+  // TODO: `jest-circus` might be newer than `jest-config` - remove `??` for Jest 27
+  if (config.injectGlobals ?? true) {
+    Object.assign(environment.global, runtimeGlobals);
+  }
 
   if (config.timers === 'fake' || config.timers === 'legacy') {
     // during setup, this cannot be null (and it's fine to explode if it is)

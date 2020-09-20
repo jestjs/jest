@@ -28,7 +28,8 @@ const builtInObject = [
 const isBuiltInObject = (object: any) =>
   builtInObject.includes(object.constructor);
 
-const isMap = (value: any): value is Map<any, any> => value.constructor === Map;
+const isMap = (value: any): value is Map<unknown, unknown> =>
+  value.constructor === Map;
 
 export default function deepCyclicCopyReplaceable<T>(
   value: T,
@@ -51,7 +52,7 @@ export default function deepCyclicCopyReplaceable<T>(
   }
 }
 
-function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, any>): T {
+function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, unknown>): T {
   const newObject = Object.create(Object.getPrototypeOf(object));
   const descriptors: {
     [x: string]: PropertyDescriptor;
@@ -88,7 +89,10 @@ function deepCyclicCopyObject<T>(object: T, cycles: WeakMap<any, any>): T {
   return Object.defineProperties(newObject, newDescriptors);
 }
 
-function deepCyclicCopyArray<T>(array: Array<T>, cycles: WeakMap<any, any>): T {
+function deepCyclicCopyArray<T>(
+  array: Array<T>,
+  cycles: WeakMap<any, unknown>,
+): T {
   const newArray = new (Object.getPrototypeOf(array).constructor)(array.length);
   const length = array.length;
 
@@ -102,8 +106,8 @@ function deepCyclicCopyArray<T>(array: Array<T>, cycles: WeakMap<any, any>): T {
 }
 
 function deepCyclicCopyMap<T>(
-  map: Map<any, any>,
-  cycles: WeakMap<any, any>,
+  map: Map<unknown, unknown>,
+  cycles: WeakMap<any, unknown>,
 ): T {
   const newMap = new Map();
 

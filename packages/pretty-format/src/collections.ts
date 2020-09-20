@@ -8,7 +8,7 @@
 
 import type {Config, Printer, Refs} from './types';
 
-const getKeysOfEnumerableProperties = (object: Record<string, any>) => {
+const getKeysOfEnumerableProperties = (object: Record<string, unknown>) => {
   const keys: Array<string | symbol> = Object.keys(object).sort();
 
   if (Object.getOwnPropertySymbols) {

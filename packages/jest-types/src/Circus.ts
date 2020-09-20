@@ -20,7 +20,7 @@ export type HookFn = Global.HookFn;
 export type AsyncFn = TestFn | HookFn;
 export type SharedHookType = 'afterAll' | 'beforeAll';
 export type HookType = SharedHookType | 'afterEach' | 'beforeEach';
-export type TestContext = Record<string, any>;
+export type TestContext = Record<string, unknown>;
 export type Exception = any; // Since in JS anything can be thrown as an error.
 export type FormattedError = string; // String representation of error.
 export type Hook = {
@@ -186,7 +186,7 @@ export type TestResults = Array<TestResult>;
 export type GlobalErrorHandlers = {
   uncaughtException: Array<(exception: Exception) => void>;
   unhandledRejection: Array<
-    (exception: Exception, promise: Promise<any>) => void
+    (exception: Exception, promise: Promise<unknown>) => void
   >;
 };
 

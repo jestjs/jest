@@ -45,7 +45,6 @@ namespace TestRunner {
   export type TestFileEvent = JestTestFileEvent;
 }
 
-/* eslint-disable-next-line no-redeclare */
 class TestRunner {
   private readonly _globalConfig: Config.GlobalConfig;
   private readonly _context: JestTestRunnerContext;

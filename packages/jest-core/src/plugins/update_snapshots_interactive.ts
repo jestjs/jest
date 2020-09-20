@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import type {Config} from '@jest/types';
 import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import {BaseWatchPlugin, JestHookSubscriber, UsageData} from 'jest-watcher';

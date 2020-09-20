@@ -72,9 +72,8 @@ Now let's use React's test renderer and Jest's snapshot feature to interact with
 ```javascript
 // __tests__/Intro-test.js
 import React from 'react';
-import Intro from '../Intro';
-
 import renderer from 'react-test-renderer';
+import Intro from '../Intro';
 
 test('renders correctly', () => {
   const tree = renderer.create(<Intro />).toJSON();

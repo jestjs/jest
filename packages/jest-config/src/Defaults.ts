@@ -32,6 +32,7 @@ const defaultOptions: Config.DefaultOptions = {
     computeSha1: false,
     throwOnModuleCollision: false,
   },
+  injectGlobals: true,
   maxConcurrency: 5,
   maxWorkers: '50%',
   moduleDirectories: ['node_modules'],

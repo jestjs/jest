@@ -19,7 +19,7 @@ import type {AggregatedResult} from '@jest/test-result';
 describe('Watch mode flows with changed files', () => {
   jest.resetModules();
 
-  let watch: any;
+  let watch: unknown;
   let pipe: NodeJS.ReadStream;
   let stdin: MockStdin;
   const testDirectory = path.resolve(tmpdir(), 'jest-tmp');
@@ -33,7 +33,7 @@ describe('Watch mode flows with changed files', () => {
 
   beforeEach(() => {
     watch = require('../watch').default;
-    pipe = {write: jest.fn()} as any;
+    pipe = {write: jest.fn()} as unknown;
     stdin = new MockStdin();
     rimraf.sync(cacheDirectory);
     rimraf.sync(testDirectory);
@@ -79,7 +79,7 @@ describe('Watch mode flows with changed files', () => {
         watch: false,
         watchman: false,
       },
-      {} as any,
+      {} as unknown,
     ).options;
 
     hasteMapInstance = await Runtime.createHasteMap(config, {
@@ -165,7 +165,7 @@ describe('Watch mode flows with changed files', () => {
 });
 
 class MockStdin {
-  private _callbacks: Array<any>;
+  private _callbacks: Array<unknown>;
 
   constructor() {
     this._callbacks = [];
@@ -175,7 +175,7 @@ class MockStdin {
 
   setEncoding() {}
 
-  on(_: any, callback: any) {
+  on(_: unknown, callback: unknown) {
     this._callbacks.push(callback);
   }
 

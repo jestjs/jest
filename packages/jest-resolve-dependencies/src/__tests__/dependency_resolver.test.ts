@@ -11,13 +11,12 @@ import Resolver = require('jest-resolve');
 import type {Config} from '@jest/types';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {makeProjectConfig} from '../../../../TestUtils';
-
 import DependencyResolver from '../index';
 
 const maxWorkers = 1;
 let dependencyResolver: DependencyResolver;
 let runtimeContextResolver: Resolver;
-let Runtime;
+let Runtime: typeof import('jest-runtime');
 let config: Config.ProjectConfig;
 const cases: Record<string, jest.Mock> = {
   fancyCondition: jest.fn(path => path.length > 10),
@@ -36,7 +35,7 @@ beforeEach(() => {
     roots: ['./packages/jest-resolve-dependencies'],
   });
   return Runtime.createContext(config, {maxWorkers, watchman: false}).then(
-    (runtimeContext: any) => {
+    runtimeContext => {
       runtimeContextResolver = runtimeContext.resolver;
       dependencyResolver = new DependencyResolver(
         runtimeContext.resolver,

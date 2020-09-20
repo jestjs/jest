@@ -99,7 +99,7 @@ test('Copy Map', () => {
 });
 
 test('Copy cyclic Map', () => {
-  const map: Map<any, any> = new Map([
+  const map = new Map<string, unknown>([
     ['a', 1],
     ['b', 2],
   ]);

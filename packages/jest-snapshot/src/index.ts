@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type {FS as HasteFS} from 'jest-haste-map';
@@ -557,7 +559,7 @@ const JestSnapshot = {
   toThrowErrorMatchingSnapshot,
   utils,
 };
-/* eslint-disable-next-line no-redeclare */
+
 namespace JestSnapshot {
   export type SnapshotResolver = JestSnapshotResolver;
   export type SnapshotStateType = SnapshotState;
