@@ -276,7 +276,7 @@ export default (): PluginObj<{
         jestObjExpr.replaceWith(
           callExpression(this.declareJestObjGetterIdentifier(), []),
         );
-        exprStmt.setData('shouldHoist', true);
+        exprStmt.setData('_jestShouldHoist', true);
       }
     },
   },
@@ -284,15 +284,18 @@ export default (): PluginObj<{
   post({path: program}: {path: NodePath<Program>}) {
     program.traverse({
       ExpressionStatement: exprStmt => {
-        if (exprStmt.getData('shouldHoist')) {
+        if (exprStmt.getData('_jestShouldHoist')) {
           const prevSiblings = exprStmt.getAllPrevSiblings();
           const unhoistedSiblings = prevSiblings
             .reverse()
-            .filter(s => !s.getData('shouldHoist') && !s.getData('wasHoisted'));
+            .filter(
+              s =>
+                !s.getData('_jestShouldHoist') && !s.getData('_jestWasHoisted'),
+            );
           const exprNode = exprStmt.node;
           if (unhoistedSiblings.length) {
             const hoisted = unhoistedSiblings[0].insertBefore(clone(exprNode));
-            hoisted[0].setData('wasHoisted', true);
+            hoisted[0].setData('_jestWasHoisted', true);
             exprStmt.remove();
           }
         }
