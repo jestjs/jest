@@ -13,7 +13,7 @@ import {
   Node,
   Program,
   callExpression,
-  isIdentifier,
+  clone,
 } from '@babel/types';
 import {statement} from '@babel/template';
 import type {PluginObj} from '@babel/core';
@@ -21,7 +21,6 @@ import type {PluginObj} from '@babel/core';
 const JEST_GLOBAL_NAME = 'jest';
 const JEST_GLOBALS_MODULE_NAME = '@jest/globals';
 const JEST_GLOBALS_MODULE_JEST_EXPORT_NAME = 'jest';
-const JEST_HOIST_COUNT = '__babelJestHoistNodesCount';
 
 // We allow `jest`, `expect`, `require`, all default Node.js globals and all
 // ES2015 built-ins to be used inside of a `jest.mock` factory.
@@ -277,47 +276,24 @@ export default (): PluginObj<{
         jestObjExpr.replaceWith(
           callExpression(this.declareJestObjGetterIdentifier(), []),
         );
+        exprStmt.setData('shouldHoist', true);
       }
     },
   },
   // in `post` to make sure we come after an import transform and can unshift above the `require`s
   post({path: program}: {path: NodePath<Program>}) {
     program.traverse({
-      CallExpression: callExpr => {
-        const {
-          node: {callee},
-        } = callExpr;
-        if (
-          isIdentifier(callee) &&
-          callee.name === this.jestObjGetterIdentifier?.name
-        ) {
-          const mockStmt = callExpr.getStatementParent();
-
-          if (mockStmt) {
-            const mockStmtNode = mockStmt.node;
-            const mockStmtParent = mockStmt.parentPath;
-            if (mockStmtParent.isBlock()) {
-              mockStmt.remove();
-              const hoistNodesCount =
-                mockStmtParent.getData(JEST_HOIST_COUNT) ?? null;
-              // Ensures we preserve order while hoisting, only unshift the
-              // first node, otherwise insert after the previously hoisted node
-              if (hoistNodesCount !== null) {
-                const lastHoisted = mockStmtParent.get(
-                  `body.${hoistNodesCount - 1}`,
-                );
-                if (Array.isArray(lastHoisted)) {
-                  throw new Error('Invariant');
-                }
-                lastHoisted.insertAfter(mockStmtNode);
-              } else {
-                mockStmtParent.unshiftContainer('body', [mockStmtNode]);
-              }
-              mockStmtParent.setData(
-                JEST_HOIST_COUNT,
-                (hoistNodesCount ?? 0) + 1,
-              );
-            }
+      ExpressionStatement: exprStmt => {
+        if (exprStmt.getData('shouldHoist')) {
+          const prevSiblings = exprStmt.getAllPrevSiblings();
+          const unhoistedSiblings = prevSiblings
+            .reverse()
+            .filter(s => !s.getData('shouldHoist') && !s.getData('wasHoisted'));
+          const exprNode = exprStmt.node;
+          if (unhoistedSiblings.length) {
+            const hoisted = unhoistedSiblings[0].insertBefore(clone(exprNode));
+            hoisted[0].setData('wasHoisted', true);
+            exprStmt.remove();
           }
         }
       },

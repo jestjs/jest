@@ -3251,6 +3251,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/babel-plugin-tester@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "@types/babel-plugin-tester@npm:9.0.0"
+  dependencies:
+    "@types/babel__core": "*"
+    "@types/prettier": "*"
+  checksum: d6b465ef6ce980927dd3b10ae0a39fd8384688ba2d15bf2a30ac4ae567572abb2768992e7c2389f873c87c8d9ba5eafe88feb399e1e9e93f3cbfc5fe27da7077
+  languageName: node
+  linkType: hard
+
 "@types/babel-types@npm:*":
   version: 7.0.9
   resolution: "@types/babel-types@npm:7.0.9"
@@ -3265,7 +3275,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.0.4, @types/babel__core@npm:^7.1.0, @types/babel__core@npm:^7.1.7":
+"@types/babel__core@npm:*, @types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.0.4, @types/babel__core@npm:^7.1.0, @types/babel__core@npm:^7.1.7":
   version: 7.1.7
   resolution: "@types/babel__core@npm:7.1.7"
   dependencies:
@@ -3635,6 +3645,13 @@ __metadata:
   version: 5.0.3
   resolution: "@types/parse5@npm:5.0.3"
   checksum: 62b6ad696aeee22dc26bba2039bfb55773caf7cd705cb1b226a7107c187422782e6759ca6de54f9d1a299f335c2b99973774c9436a378f57927f36619570dc1d
+  languageName: node
+  linkType: hard
+
+"@types/prettier@npm:*":
+  version: 2.1.1
+  resolution: "@types/prettier@npm:2.1.1"
+  checksum: 3671bedc845a0e61bb8eb698746e1f6d1201ac784f95c536cd653c1406a51c0e9c338ecbbc73f1b5fd5fe0b0af98edf7e85428810357d959355ab46b3a63ebe6
   languageName: node
   linkType: hard
 
@@ -4813,6 +4830,7 @@ __metadata:
     "@types/babel__template": ^7.0.2
     "@types/babel__traverse": ^7.0.6
     "@types/node": "*"
+    babel-plugin-tester: 9.2.0
   languageName: unknown
   linkType: soft
 
@@ -4827,6 +4845,20 @@ __metadata:
   version: 7.0.0-beta.0
   resolution: "babel-plugin-syntax-trailing-function-commas@npm:7.0.0-beta.0"
   checksum: c66215ecdc16da891c7e1bf4b2c39541e7e817c27719d8a83e3f64249aa2607cfe8d47580544e3963dbba36cc5f0693ae8cc42e5f2b1e7fc22b6c0cfc85f5e2b
+  languageName: node
+  linkType: hard
+
+"babel-plugin-tester@npm:9.2.0":
+  version: 9.2.0
+  resolution: "babel-plugin-tester@npm:9.2.0"
+  dependencies:
+    "@types/babel-plugin-tester": ^9.0.0
+    lodash.mergewith: ^4.6.2
+    prettier: ^2.0.1
+    strip-indent: ^3.0.0
+  peerDependencies:
+    "@babel/core": ^7.9.0
+  checksum: ce247d30010fc4e7f28733187a6b347f292226078a72c58c399d2f30f5ec2a054cdfe81831d3455292a58ab3db3df35cae1db8a44234a35466090b90075a619c
   languageName: node
   linkType: hard
 
@@ -12841,6 +12873,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"lodash.mergewith@npm:^4.6.2":
+  version: 4.6.2
+  resolution: "lodash.mergewith@npm:4.6.2"
+  checksum: 3561b63cebc629721ab4c016627fc54929ee33cdef1854b4a15ade71dd8eb5f2fc602830efe5395aed41c607d65e2cce356667116aa7156b82468594b42ab95f
+  languageName: node
+  linkType: hard
+
 "lodash.padstart@npm:^4.6.1":
   version: 4.6.1
   resolution: "lodash.padstart@npm:4.6.1"
@@ -15865,7 +15904,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"prettier@npm:^2.1.1":
+"prettier@npm:^2.0.1, prettier@npm:^2.1.1":
   version: 2.1.2
   resolution: "prettier@npm:2.1.2"
   bin:

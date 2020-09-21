@@ -20,7 +20,8 @@
   },
   "devDependencies": {
     "@types/babel__template": "^7.0.2",
-    "@types/node": "*"
+    "@types/node": "*",
+    "babel-plugin-tester": "9.2.0"
   },
   "publishConfig": {
     "access": "public"
