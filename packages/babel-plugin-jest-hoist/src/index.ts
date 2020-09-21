@@ -21,6 +21,7 @@ import type {PluginObj} from '@babel/core';
 const JEST_GLOBAL_NAME = 'jest';
 const JEST_GLOBALS_MODULE_NAME = '@jest/globals';
 const JEST_GLOBALS_MODULE_JEST_EXPORT_NAME = 'jest';
+const JEST_HOIST_COUNT = '__babelJestHoistNodesCount';
 
 // We allow `jest`, `expect`, `require`, all default Node.js globals and all
 // ES2015 built-ins to be used inside of a `jest.mock` factory.
@@ -281,7 +282,6 @@ export default (): PluginObj<{
   },
   // in `post` to make sure we come after an import transform and can unshift above the `require`s
   post({path: program}: {path: NodePath<Program>}) {
-    const mockStmts: Array<Node> = [];
     program.traverse({
       CallExpression: callExpr => {
         const {
@@ -298,13 +298,30 @@ export default (): PluginObj<{
             const mockStmtParent = mockStmt.parentPath;
             if (mockStmtParent.isBlock()) {
               mockStmt.remove();
-              mockStmts.push(mockStmtNode);
+              const hoistNodesCount =
+                mockStmtParent.getData(JEST_HOIST_COUNT) ?? null;
+              // Ensures we preserve order while hoisting, only unshift the
+              // first node, otherwise insert after the previously hoisted node
+              if (hoistNodesCount !== null) {
+                const lastHoisted = mockStmtParent.get(
+                  `body.${hoistNodesCount - 1}`,
+                );
+                if (Array.isArray(lastHoisted)) {
+                  throw new Error('Invariant');
+                }
+                lastHoisted.insertAfter(mockStmtNode);
+              } else {
+                mockStmtParent.unshiftContainer('body', [mockStmtNode]);
+              }
+              mockStmtParent.setData(
+                JEST_HOIST_COUNT,
+                (hoistNodesCount ?? 0) + 1,
+              );
             }
           }
         }
       },
     });
-    program.unshiftContainer('body', mockStmts);
   },
 });
 /* eslint-enable */
