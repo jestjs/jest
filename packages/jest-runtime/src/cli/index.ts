@@ -16,7 +16,6 @@ import {setGlobal, tryRealpath} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries, readConfig} from 'jest-config';
 import {VERSION} from '../version';
-import type {Context} from '../types';
 import * as args from './args';
 
 export async function run(
@@ -67,11 +66,10 @@ export async function run(
     automock: false,
   };
 
-  // Break circular dependency
-  const Runtime: any = require('..');
+  const Runtime: typeof import('..') = require('..');
 
   try {
-    const hasteMap: Context = await Runtime.createContext(config, {
+    const hasteMap = await Runtime.createContext(config, {
       maxWorkers: Math.max(cpus().length - 1, 1),
       watchman: globalConfig.watchman,
     });
