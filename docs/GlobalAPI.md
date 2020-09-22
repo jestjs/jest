@@ -471,7 +471,7 @@ Also under the alias: `it.concurrent(name, fn, timeout)`
 
 Use `test.concurrent` if you want the test to run concurrently.
 
-> Note: `test.concurrent` is considered experimental - see [here])https://github.com/facebook/jest/labels/Area%3A%20Concurrent) for details on missing features and other issues
+> Note: `test.concurrent` is considered experimental - see [here](https://github.com/facebook/jest/labels/Area%3A%20Concurrent) for details on missing features and other issues
 
 The first argument is the test name; the second argument is an asynchronous function that contains the expectations to test. The third argument (optional) is `timeout` (in milliseconds) for specifying how long to wait before aborting. _Note: The default timeout is 5 seconds._
 
