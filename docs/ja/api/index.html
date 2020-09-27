@@ -463,7 +463,7 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 <p>Also under the alias: <code>it.concurrent(name, fn, timeout)</code></p>
 <p>Use <code>test.concurrent</code> if you want the test to run concurrently.</p>
 <blockquote>
-<p>Note: <code>test.concurrent</code> is considered experimental - see [here])<a href="https://github.com/facebook/jest/labels/Area%3A%20Concurrent">https://github.com/facebook/jest/labels/Area%3A%20Concurrent</a>) for details on missing features and other issues</p>
+<p>Note: <code>test.concurrent</code> is considered experimental - see <a href="https://github.com/facebook/jest/labels/Area%3A%20Concurrent">here</a> for details on missing features and other issues</p>
 </blockquote>
 <p>The first argument is the test name; the second argument is an asynchronous function that contains the expectations to test. 3番目の引数 (任意) は <code>タイムアウト値</code> (ミリ秒単位) で、中止するまでの待ち時間を指定します。 <em>Note: The default timeout is 5 seconds.</em></p>
 <pre><code class="hljs">test.concurrent('addition of <span class="hljs-number">2</span> numbers', async () =&gt; {
