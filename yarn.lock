@@ -7743,7 +7743,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"escalade@npm:^3.0.2":
+"escalade@npm:^3.0.2, escalade@npm:^3.1.0":
   version: 3.1.0
   resolution: "escalade@npm:3.1.0"
   checksum: 437c5b2619a412c0b075fb33e590e3516f187f7da8b20035685e08f346e27842722e5740a3398535d7d590ae4fb70068374ed59190d4eb4f9bb06d052e2fc92f
@@ -11758,11 +11758,11 @@ fsevents@^1.2.7:
     "@types/graceful-fs": ^4.1.3
     "@types/resolve": ^1.17.0
     chalk: ^4.0.0
+    escalade: ^3.1.0
     graceful-fs: ^4.2.4
     jest-haste-map: ^26.3.0
     jest-pnp-resolver: ^1.2.2
     jest-util: ^26.3.0
-    read-pkg-up: ^7.0.1
     resolve: ^1.17.0
     slash: ^3.0.0
   languageName: unknown

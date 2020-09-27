@@ -8,8 +8,8 @@
 import {dirname, extname} from 'path';
 // @ts-expect-error: experimental, not added to the types
 import {SyntheticModule} from 'vm';
+import escalade from 'escalade/sync';
 import type {Config} from '@jest/types';
-import readPkgUp = require('read-pkg-up');
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
@@ -68,11 +68,21 @@ function shouldLoadAsEsm(path: Config.Path): boolean {
 
 function cachedPkgCheck(cwd: Config.Path): boolean {
   // TODO: can we cache lookups somehow?
-  const pkg = readPkgUp.sync({cwd, normalize: false});
-
-  if (!pkg) {
+  const pkgContent = escalade(cwd, (_dir, names) => {
+    if (names.includes('package.json')) {
+      // will be resolved into absolute
+      return 'package.json';
+    }
+    return false;
+  });
+  if (!pkgContent) {
     return false;
   }
 
-  return pkg.packageJson.type === 'module';
+  try {
+    const pkg = JSON.parse(pkgContent);
+    return pkg.type === 'module';
+  } catch (e) {
+    return false;
+  }
 }
