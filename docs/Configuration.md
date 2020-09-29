@@ -3,7 +3,7 @@ id: configuration
 title: Configuring Jest
 ---
 
-Jest's configuration can be defined in the `package.json` file of your project, or through a `jest.config.js` or `jest.config.ts` file or through the `--config <path/to/file.js|ts|cjs|mjs|json>` option. If you'd like to use your `package.json` to store Jest's config, the `"jest"` key should be used on the top level so Jest will know how to find your settings:
+Jest's configuration can be defined in the `package.json` file of your project, or through a `jest.config.js`, or `jest.config.ts` file or through the `--config <path/to/file.js|ts|cjs|mjs|json>` option. If you'd like to use your `package.json` to store Jest's config, the `"jest"` key should be used on the top level so Jest will know how to find your settings:
 
 ```json
 {
@@ -33,6 +33,8 @@ module.exports = async () => {
 
 Or through TypeScript:
 
+You can enable support for the TypeScript configuration file by installing the `ts-node` plugin in your project.
+
 ```ts
 // jest.config.ts
 import type { Config } from '@jest/types';
@@ -41,7 +43,7 @@ import type { Config } from '@jest/types';
 const config: Config.InitialOptions = {
   verbose: true
 };
-export = config;
+export default config;
 
 //Or async function
 export default async (): Promise<Config.InitialOptions> => {
