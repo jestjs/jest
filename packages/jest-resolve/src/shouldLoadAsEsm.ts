@@ -6,6 +6,7 @@
  */
 
 import {dirname, extname} from 'path';
+import {readFileSync} from 'fs';
 // @ts-expect-error: experimental, not added to the types
 import {SyntheticModule} from 'vm';
 import escalade from 'escalade/sync';
@@ -68,19 +69,19 @@ function shouldLoadAsEsm(path: Config.Path): boolean {
 
 function cachedPkgCheck(cwd: Config.Path): boolean {
   // TODO: can we cache lookups somehow?
-  const pkgContent = escalade(cwd, (_dir, names) => {
+  const pkgPath = escalade(cwd, (_dir, names) => {
     if (names.includes('package.json')) {
       // will be resolved into absolute
       return 'package.json';
     }
     return false;
   });
-  if (!pkgContent) {
+  if (!pkgPath) {
     return false;
   }
 
   try {
-    const pkg = JSON.parse(pkgContent);
+    const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
     return pkg.type === 'module';
   } catch (e) {
     return false;
