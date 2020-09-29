@@ -1,8 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`traverses directory tree up until it finds jest.config 1`] = `
-Jest: Loading the TS config file: /Users/david/Projects/Gamote/Libraries/jest/e2e/jest.config.ts/jest.config.ts
-Jest: Loading the TS config file: /Users/david/Projects/Gamote/Libraries/jest/e2e/jest.config.ts/jest.config.ts
   console.log
 <<REPLACED>>/jest.config.ts/some/nested/directory
 
