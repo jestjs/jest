@@ -36,10 +36,12 @@ Or through TypeScript:
 
 ```ts
 // jest.config.ts
+import type { Config } from '@jest/types';
+
 //Sync object
 export = {
   verbose: true,
-};
+} as Config.InitialOptions;
 
 //Or async function
 export default async (): Promise<Config.InitialOptions> => {
