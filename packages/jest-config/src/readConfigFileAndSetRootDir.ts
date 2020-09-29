@@ -38,7 +38,8 @@ export default async function readConfigFileAndSetRootDir(
       });
 
       // Convert the TS content to JS
-      const jsConfigFileContent = transpileModule(tsConfigFileContent, {}).outputText;
+      const jsConfigFileContent = transpileModule(tsConfigFileContent, {})
+        .outputText;
 
       // Execute the JS code to obtain the config
       // eslint-disable-next-line no-eval

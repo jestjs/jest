@@ -82,13 +82,13 @@ describe('check', () => {
   it('raises an exception if config is not a valid JSON string', () => {
     const argv = {config: 'x:1'} as Config.Argv;
     expect(() => check(argv)).toThrow(
-      'The --config option requires a JSON string literal, or a file path with one of these extensions: .ts, .js, .mjs, .cjs, .json',
+      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .ts, .mjs, .cjs, .json',
     );
   });
 
   it('raises an exception if config is not a supported file type', () => {
     const message =
-      'The --config option requires a JSON string literal, or a file path with one of these extensions: .ts, .js, .mjs, .cjs, .json';
+      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .ts, .mjs, .cjs, .json';
 
     expect(() => check({config: 'jest.configjs'} as Config.Argv)).toThrow(
       message,
