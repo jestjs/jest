@@ -38,9 +38,10 @@ Or through TypeScript:
 import type { Config } from '@jest/types';
 
 //Sync object
-export = {
-  verbose: true,
-} as Config.InitialOptions;
+const config: Config.InitialOptions = {
+  verbose: true
+};
+export = config;
 
 //Or async function
 export default async (): Promise<Config.InitialOptions> => {
