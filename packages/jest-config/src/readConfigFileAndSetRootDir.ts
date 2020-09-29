@@ -9,22 +9,43 @@ import * as path from 'path';
 import {pathToFileURL} from 'url';
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
+import {transpileModule} from 'typescript';
 // @ts-expect-error: vendored
 import jsonlint from './vendor/jsonlint';
-import {JEST_CONFIG_EXT_JSON, PACKAGE_JSON} from './constants';
+import {
+  JEST_CONFIG_EXT_JSON,
+  JEST_CONFIG_EXT_TS,
+  PACKAGE_JSON,
+} from './constants';
 
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
-// 2. For any other file, we just require it. If we receive an 'ERR_REQUIRE_ESM'
+// 2. If it's a `jest.config.ts` file, we convert it in JS and we parse it
+// 3. For any other file, we just require it. If we receive an 'ERR_REQUIRE_ESM'
 //    from node, perform a dynamic import instead.
 export default async function readConfigFileAndSetRootDir(
   configPath: Config.Path,
 ): Promise<Config.InitialOptions> {
+  const isTS = configPath.endsWith(JEST_CONFIG_EXT_TS);
   const isJSON = configPath.endsWith(JEST_CONFIG_EXT_JSON);
   let configObject;
 
   try {
-    configObject = require(configPath);
+    if (isTS) {
+      // Get the content of the TS config file
+      const tsConfigFileContent = fs.readFileSync(configPath, {
+        encoding: 'utf8',
+      });
+
+      // Convert the TS content to JS
+      const jsConfigFileContent = transpileModule(tsConfigFileContent, {}).outputText;
+
+      // Execute the JS code to obtain the config
+      // eslint-disable-next-line no-eval
+      configObject = eval(jsConfigFileContent);
+    } else {
+      configObject = require(configPath);
+    }
   } catch (error) {
     if (error.code === 'ERR_REQUIRE_ESM') {
       try {
@@ -49,7 +70,7 @@ export default async function readConfigFileAndSetRootDir(
 
         throw innerError;
       }
-    } else if (isJSON) {
+    } else if (isTS || isJSON) {
       throw new Error(
         `Jest: Failed to parse config file ${configPath}\n` +
           `  ${jsonlint.errors(fs.readFileSync(configPath, 'utf8'))}`,
