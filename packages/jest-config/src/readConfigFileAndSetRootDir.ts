@@ -100,8 +100,6 @@ export default async function readConfigFileAndSetRootDir(
 
 // Load the TypeScript configuration
 const loadTSConfigFile = (configPath: Config.Path): Config.InitialOptions => {
-  console.info(`Jest: Loading the TS config file: ${configPath}`);
-
   let registerer;
 
   // Register TypeScript compiler instance
