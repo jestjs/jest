@@ -9,7 +9,7 @@ import * as path from 'path';
 import {pathToFileURL} from 'url';
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
-import {transpileModule} from 'typescript';
+import {interopRequireDefault} from './utils';
 // @ts-expect-error: vendored
 import jsonlint from './vendor/jsonlint';
 import {
@@ -32,18 +32,7 @@ export default async function readConfigFileAndSetRootDir(
 
   try {
     if (isTS) {
-      // Get the content of the TS config file
-      const tsConfigFileContent = fs.readFileSync(configPath, {
-        encoding: 'utf8',
-      });
-
-      // Convert the TS content to JS
-      const jsConfigFileContent = transpileModule(tsConfigFileContent, {})
-        .outputText;
-
-      // Execute the JS code to obtain the config
-      // eslint-disable-next-line no-eval
-      configObject = eval(jsConfigFileContent);
+      configObject = loadTSConfigFile(configPath);
     } else {
       configObject = require(configPath);
     }
@@ -71,10 +60,15 @@ export default async function readConfigFileAndSetRootDir(
 
         throw innerError;
       }
-    } else if (isTS || isJSON) {
+    } else if (isJSON) {
       throw new Error(
         `Jest: Failed to parse config file ${configPath}\n` +
           `  ${jsonlint.errors(fs.readFileSync(configPath, 'utf8'))}`,
+      );
+    } else if (isTS) {
+      throw new Error(
+        `Jest: Failed to parse the TypeScript config file ${configPath}\n` +
+          `  ${error}`,
       );
     } else {
       throw error;
@@ -103,3 +97,33 @@ export default async function readConfigFileAndSetRootDir(
 
   return configObject;
 }
+
+// Load the TypeScript configuration
+const loadTSConfigFile = (configPath: Config.Path): Config.InitialOptions => {
+  console.info(`Jest: Loading the TS config file: ${configPath}`);
+
+  let registerer;
+
+  // Register TypeScript compiler instance
+  try {
+    registerer = require('ts-node').register();
+  } catch (e) {
+    if (e.code === 'MODULE_NOT_FOUND') {
+      throw new Error(
+        `Jest: 'ts-node' is required for the TypeScript configuration files. Make sure it is installed\nError: ${e.message}`,
+      );
+    }
+
+    throw new Error(
+      `Jest: Could not register 'ts-node' to read the TypeScript file: ${configPath}`,
+    );
+  }
+
+  registerer.enabled(true);
+
+  const configObject = interopRequireDefault(require(configPath)).default;
+
+  registerer.enabled(false);
+
+  return configObject;
+};

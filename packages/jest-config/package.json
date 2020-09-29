@@ -9,6 +9,9 @@
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
+  "peerDependencies": {
+    "ts-node": "^9.0.0"
+  },
   "dependencies": {
     "@babel/core": "^7.1.0",
     "@jest/test-sequencer": "^26.4.2",
@@ -27,8 +30,7 @@
     "jest-util": "^26.3.0",
     "jest-validate": "^26.4.2",
     "micromatch": "^4.0.2",
-    "pretty-format": "^26.4.2",
-    "typescript": "^4.0.3"
+    "pretty-format": "^26.4.2"
   },
   "devDependencies": {
     "@types/babel__core": "^7.0.4",

@@ -18,7 +18,7 @@ afterAll(() => cleanup(DIR));
 test('works with jest.config.ts', () => {
   writeFiles(DIR, {
     '__tests__/a-giraffe.js': `test('giraffe', () => expect(1).toBe(1));`,
-    'jest.config.ts': `module.exports = {testRegex: '.*-giraffe.js'};`,
+    'jest.config.ts': `export default {testRegex: '.*-giraffe.js'};`,
     'package.json': '{}',
   });
 
@@ -36,7 +36,7 @@ test('traverses directory tree up until it finds jest.config', () => {
     test('giraffe', () => expect(1).toBe(1));
     test('abc', () => console.log(slash(process.cwd())));
     `,
-    'jest.config.ts': `module.exports = {testRegex: '.*-giraffe.js'};`,
+    'jest.config.ts': `export default {testRegex: '.*-giraffe.js'};`,
     'package.json': '{}',
     'some/nested/directory/file.js': '// nothing special',
   });
@@ -61,11 +61,13 @@ test('traverses directory tree up until it finds jest.config', () => {
 test('invalid JS in jest.config.ts', () => {
   writeFiles(DIR, {
     '__tests__/a-giraffe.js': `test('giraffe', () => expect(1).toBe(1));`,
-    'jest.config.ts': `module.exports = i'll break this file yo`,
+    'jest.config.ts': `export default i'll break this file yo`,
     'package.json': '{}',
   });
 
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
-  expect(stderr).toMatch('Error: Jest: Failed to parse config file ');
+  expect(stderr).toMatch(
+    'Error: Jest: Failed to parse the TypeScript config file ',
+  );
   expect(exitCode).toBe(1);
 });
