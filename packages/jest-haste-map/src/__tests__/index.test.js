@@ -345,6 +345,21 @@ describe('HasteMap', () => {
     });
   });
 
+  it('warn on ignore pattern except for regex', () => {
+    const config = {ignorePattern: 'Kiwi', ...defaultConfig};
+    mockFs['/project/fruits/Kiwi.js'] = `
+      // Kiwi!
+    `;
+
+    try {
+      new HasteMap(config).build();
+    } catch (err) {
+      expect(err.message).toBe(
+        'jest-haste-map: the `ignorePattern` option must be a RegExp',
+      );
+    }
+  });
+
   it('builds a haste map on a fresh cache', () => {
     // Include these files in the map
     mockFs[
