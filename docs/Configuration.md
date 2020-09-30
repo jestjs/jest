@@ -31,9 +31,7 @@ module.exports = async () => {
 };
 ```
 
-Or through TypeScript:
-
-You can enable support for the TypeScript configuration file by installing the `ts-node` plugin in your project.
+Or through TypeScript (if `ts-node` is installed):
 
 ```ts
 // jest.config.ts
