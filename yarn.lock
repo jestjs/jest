@@ -11586,6 +11586,9 @@ fsevents@^1.2.7:
     pretty-format: ^26.4.2
   peerDependencies:
     ts-node: ^9.0.0
+  peerDependenciesMeta:
+    ts-node:
+      optional: true
   languageName: unknown
   linkType: soft
 

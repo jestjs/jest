@@ -12,6 +12,11 @@
   "peerDependencies": {
     "ts-node": "^9.0.0"
   },
+  "peerDependenciesMeta": {
+    "ts-node": {
+      "optional": true
+    }
+  },
   "dependencies": {
     "@babel/core": "^7.1.0",
     "@jest/test-sequencer": "^26.4.2",
