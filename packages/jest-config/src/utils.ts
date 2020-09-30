@@ -248,7 +248,3 @@ export const getSequencer = (
     prefix: 'jest-sequencer-',
     rootDir,
   });
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const interopRequireDefault = (obj: any): {default: any} =>
-  obj && obj.__esModule ? obj : {default: obj};
