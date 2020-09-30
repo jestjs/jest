@@ -18,7 +18,7 @@ afterAll(() => cleanup(DIR));
 test('works with jest.config.ts', () => {
   writeFiles(DIR, {
     '__tests__/a-giraffe.js': `test('giraffe', () => expect(1).toBe(1));`,
-    'jest.config.ts': `export default {testRegex: '.*-giraffe.js'};`,
+    'jest.config.ts': `export default {testEnvironment: 'jest-environment-jsdom-fifteen', testRegex: '.*-giraffe.js'};`,
     'package.json': '{}',
   });
 
@@ -36,7 +36,7 @@ test('traverses directory tree up until it finds jest.config', () => {
     test('giraffe', () => expect(1).toBe(1));
     test('abc', () => console.log(slash(process.cwd())));
     `,
-    'jest.config.ts': `export default {testRegex: '.*-giraffe.js'};`,
+    'jest.config.ts': `export default {testEnvironment: 'jest-environment-jsdom-fifteen', testRegex: '.*-giraffe.js'};`,
     'package.json': '{}',
     'some/nested/directory/file.js': '// nothing special',
   });
