@@ -70,7 +70,6 @@ function shouldLoadAsEsm(path: Config.Path): boolean {
 }
 
 function cachedPkgCheck(cwd: Config.Path): boolean {
-  // TODO: can we cache lookups somehow?
   const pkgPath = escalade(cwd, (_dir, names) => {
     if (names.includes('package.json')) {
       // will be resolved into absolute
