@@ -6,9 +6,9 @@
  */
 
 import {dirname, extname} from 'path';
-import {readFileSync} from 'fs';
 // @ts-expect-error: experimental, not added to the types
 import {SyntheticModule} from 'vm';
+import {readFileSync} from 'graceful-fs';
 import escalade from 'escalade/sync';
 import type {Config} from '@jest/types';
 
@@ -16,6 +16,7 @@ const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
 const cachedFileLookups = new Map<string, boolean>();
 const cachedDirLookups = new Map<string, boolean>();
+const cachedChecks = new Map<string, boolean>();
 
 export function clearCachedLookups(): void {
   cachedFileLookups.clear();
@@ -80,10 +81,18 @@ function cachedPkgCheck(cwd: Config.Path): boolean {
     return false;
   }
 
+  let hasModuleField = cachedChecks.get(pkgPath);
+  if (hasModuleField != null) {
+    return hasModuleField;
+  }
+
   try {
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
-    return pkg.type === 'module';
+    hasModuleField = pkg.type === 'module';
   } catch (e) {
-    return false;
+    hasModuleField = false;
   }
+
+  cachedChecks.set(pkgPath, hasModuleField);
+  return hasModuleField;
 }
