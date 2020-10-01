@@ -21,6 +21,7 @@ const cachedChecks = new Map<string, boolean>();
 export function clearCachedLookups(): void {
   cachedFileLookups.clear();
   cachedDirLookups.clear();
+  cachedChecks.clear();
 }
 
 export default function cachedShouldLoadAsEsm(path: Config.Path): boolean {
@@ -89,7 +90,7 @@ function cachedPkgCheck(cwd: Config.Path): boolean {
   try {
     const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
     hasModuleField = pkg.type === 'module';
-  } catch (e) {
+  } catch {
     hasModuleField = false;
   }
 
