@@ -25,7 +25,7 @@ class Any extends AsymmetricMatcher<any> {
   constructor(sample: unknown) {
     if (typeof sample === 'undefined') {
       throw new TypeError(
-        'any() expects to be passed a constructor function. ' +
+        'any() expects to be passed a constructor function or name. ' +
           'Please pass one or use anything() to match any object.',
       );
     }
@@ -62,6 +62,14 @@ class Any extends AsymmetricMatcher<any> {
       return typeof other == 'symbol';
     }
 
+    if (
+      typeof this.sample === 'string' &&
+      typeof other === 'object' &&
+      other !== null
+    ) {
+      return other.constructor.name === this.sample;
+    }
+
     return other instanceof this.sample;
   }
 
@@ -88,6 +96,10 @@ class Any extends AsymmetricMatcher<any> {
 
     if (this.sample == Boolean) {
       return 'boolean';
+    }
+
+    if (typeof this.sample === 'string') {
+      return this.sample;
     }
 
     return fnNameFor(this.sample);

@@ -36,6 +36,7 @@ test('Any.asymmetricMatch()', () => {
     any(Object).asymmetricMatch(null),
     any(Array).asymmetricMatch([]),
     any(Thing).asymmetricMatch(new Thing()),
+    any('Thing').asymmetricMatch(new Thing()),
   ].forEach(test => {
     jestExpect(test).toBe(true);
   });
