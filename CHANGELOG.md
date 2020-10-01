@@ -14,6 +14,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-resolve]` Replace read-pkg-up with escalade package ([10558](https://github.com/facebook/jest/pull/10558))
+
 ### Performance
 
 ## 26.4.2
