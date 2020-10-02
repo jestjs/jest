@@ -58,6 +58,18 @@ test('traverses directory tree up until it finds jest.config', () => {
   expect(wrap(summary)).toMatchSnapshot();
 });
 
+test('it does type check the config', () => {
+  writeFiles(DIR, {
+    '__tests__/a-giraffe.js': `test('giraffe', () => expect(1).toBe(1));`,
+    'jest.config.ts': `export default { testTimeout: "10000" }`,
+    'package.json': '{}',
+  });
+
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  expect(stderr).toMatch('must be of type');
+  expect(exitCode).toBe(1);
+});
+
 test('invalid JS in jest.config.ts', () => {
   writeFiles(DIR, {
     '__tests__/a-giraffe.js': `test('giraffe', () => expect(1).toBe(1));`,

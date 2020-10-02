@@ -19,7 +19,7 @@ import {
 
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
-// 2. // 2. If it's a `jest.config.ts` file, we use `ts-node` to transpile & require it
+// 2. If it's a `jest.config.ts` file, we use `ts-node` to transpile & require it
 // 3. For any other file, we just require it. If we receive an 'ERR_REQUIRE_ESM'
 //    from node, perform a dynamic import instead.
 export default async function readConfigFileAndSetRootDir(
