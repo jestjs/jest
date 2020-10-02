@@ -12,6 +12,7 @@ const Container = CompLibrary.Container;
 const GridBlock = CompLibrary.GridBlock;
 
 const translate = require('../../server/translate.js').translate;
+const backers = require(process.cwd() + '/backers.json');
 const siteConfig = require(process.cwd() + '/siteConfig.js');
 const getDocsUrl = (url, language) =>
   siteConfig.baseUrl + 'docs/' + language + url;
@@ -34,6 +35,90 @@ class Button extends React.Component {
 Button.defaultProps = {
   target: '_self',
 };
+
+const Sponsor = ({
+  fromAccount: {name, slug, website, imageUrl},
+  totalDonations,
+}) => (
+  <a
+    key={slug}
+    className="sponsor-item"
+    title={`$${totalDonations.value} by ${name || slug}`}
+    target="_blank"
+    rel="nofollow noopener"
+    href={website || `https://opencollective.com/${slug}`}
+  >
+    {
+      <img
+        className="sponsor-avatar"
+        src={imageUrl}
+        alt={name || slug ? `${name || slug}'s avatar` : 'avatar'}
+      />
+    }
+  </a>
+);
+
+const Backer = ({
+  fromAccount: {name, slug, website, imageUrl},
+  totalDonations,
+}) => (
+  <a
+    key={slug}
+    className="backer-item"
+    title={`$${totalDonations.value} by ${name || slug}`}
+    target="_blank"
+    rel="nofollow noopener"
+    href={website || `https://opencollective.com/${slug}`}
+  >
+    {
+      <img
+        className="backer-avatar"
+        src={imageUrl}
+        alt={name || slug ? `${name || slug}'s avatar` : 'avatar'}
+      />
+    }
+  </a>
+);
+
+class Contributors extends React.Component {
+  render() {
+    return (
+      <div className="opencollective">
+        <h3>
+          <translate>Sponsors</translate>
+        </h3>
+        <p>
+          <translate>
+            Sponsors are those who contribute $100 or more per month to Jest
+          </translate>
+        </p>
+        <div>
+          {backers
+            .filter(b => b.tier && b.tier.slug === 'sponsor')
+            .map(Sponsor)}
+        </div>
+        <h3>
+          <translate>Backers</translate>
+        </h3>
+        <p>
+          <translate>
+            Backers are those who contribute $2 or more per month to Jest
+          </translate>
+        </p>
+        <div>
+          {backers
+            .filter(
+              b =>
+                b.tier &&
+                b.tier.slug === 'backer' &&
+                !b.fromAccount.slug.includes('adult')
+            )
+            .map(Backer)}
+        </div>
+      </div>
+    );
+  }
+}
 
 class Card extends React.Component {
   render() {
@@ -446,13 +531,7 @@ class Index extends React.Component {
                       non-Facebook contributors.
                     </translate>
                   </MarkdownBlock>
-                  <MarkdownBlock>
-                    <translate>
-                      We have over 50 Sponsors who contribute $100 or more per
-                      month, and over 450 Backers who have contributed $2 or
-                      more to Jest.
-                    </translate>
-                  </MarkdownBlock>
+                  <Contributors />
                 </div>
                 <div className="blockContent yellow">
                   <h2>
@@ -470,7 +549,7 @@ class Index extends React.Component {
                   </MarkdownBlock>
                   <div className="gridBlock logos">
                     {showcase}
-                    <p className="others">And many others</p>
+                    <p>And many others</p>
                   </div>
                 </div>
               </div>
