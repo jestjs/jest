@@ -15,7 +15,7 @@
 ### Chore & Maintenance
 
 - `[jest-resolve]` Replace read-pkg-up with escalade package ([10558](https://github.com/facebook/jest/pull/10558))
-- `[jest-config]` Change default file extension order by moving json behind ts and tsx ([10572](https://github.com/facebook/jest/pull/10572))
+- `[jest-config]` [**BREAKING**] Change default file extension order by moving json behind ts and tsx ([10572](https://github.com/facebook/jest/pull/10572))
 
 ### Performance
 
