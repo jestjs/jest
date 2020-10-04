@@ -3505,7 +3505,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsdom@npm:^16.2.1":
+"@types/jsdom@npm:^16.2.4":
   version: 16.2.4
   resolution: "@types/jsdom@npm:16.2.4"
   dependencies:
@@ -11489,11 +11489,11 @@ fsevents@^1.2.7:
     "@jest/environment": ^26.3.0
     "@jest/fake-timers": ^26.3.0
     "@jest/types": ^26.3.0
-    "@types/jsdom": ^16.2.1
+    "@types/jsdom": ^16.2.4
     "@types/node": "*"
     jest-mock: ^26.3.0
     jest-util: ^26.3.0
-    jsdom: ^16.2.2
+    jsdom: ^16.4.0
   languageName: unknown
   linkType: soft
 
@@ -12160,7 +12160,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jsdom@npm:^16.2.2":
+"jsdom@npm:^16.4.0":
   version: 16.4.0
   resolution: "jsdom@npm:16.4.0"
   dependencies:

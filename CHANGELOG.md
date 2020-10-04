@@ -15,6 +15,7 @@
 ### Chore & Maintenance
 
 - `[jest-resolve]` Replace read-pkg-up with escalade package ([10558](https://github.com/facebook/jest/pull/10558))
+- `[jest-environment-jsdom]` Update jsdom to 16.4.0 ([10578](https://github.com/facebook/jest/pull/10578))
 
 ### Performance
 
