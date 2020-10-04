@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/prefer-spread-eventually */
+
 import expect = require('expect');
 import type {Global} from '@jest/types';
 import {

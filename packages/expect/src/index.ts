@@ -6,6 +6,8 @@
  *
  */
 
+/* eslint-disable local/prefer-spread-eventually */
+
 import * as matcherUtils from 'jest-matcher-utils';
 import type {
   AsyncExpectationResult,
