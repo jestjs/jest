@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/prefer-rest-params-eventually */
+
 import prettyFormat from '../';
 
 function returnArguments(..._args: Array<unknown>) {
