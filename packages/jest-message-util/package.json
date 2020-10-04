@@ -15,7 +15,7 @@
   "dependencies": {
     "@babel/code-frame": "^7.0.0",
     "@jest/types": "^26.3.0",
-    "@types/stack-utils": "^1.0.1",
+    "@types/stack-utils": "^2.0.0",
     "chalk": "^4.0.0",
     "graceful-fs": "^4.2.4",
     "micromatch": "^4.0.2",

@@ -39,7 +39,7 @@
     "@types/istanbul-lib-report": "^3.0.0",
     "@types/istanbul-lib-source-maps": "^4.0.0",
     "@types/istanbul-reports": "^3.0.0",
-    "@types/node-notifier": "^6.0.0",
+    "@types/node-notifier": "^8.0.0",
     "mock-fs": "^4.4.1",
     "strip-ansi": "^6.0.0"
   },
