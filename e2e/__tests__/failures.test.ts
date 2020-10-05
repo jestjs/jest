@@ -39,22 +39,13 @@ test('not throwing Error objects', () => {
   expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
   stderr = runJest(dir, ['duringTests.test.js']).stderr;
 
-  if (nodeMajorVersion < 10) {
+  if (nodeMajorVersion < 12) {
     const lineEntry = '(__tests__/duringTests.test.js:38:8)';
 
     expect(stderr).toContain(`at Object.<anonymous>.done ${lineEntry}`);
 
     stderr = stderr.replace(
       `at Object.<anonymous>.done ${lineEntry}`,
-      `at Object.<anonymous> ${lineEntry}`,
-    );
-  } else if (nodeMajorVersion < 12) {
-    const lineEntry = '(__tests__/duringTests.test.js:38:8)';
-
-    expect(stderr).toContain(`at Object.done ${lineEntry}`);
-
-    stderr = stderr.replace(
-      `at Object.done ${lineEntry}`,
       `at Object.<anonymous> ${lineEntry}`,
     );
   }
