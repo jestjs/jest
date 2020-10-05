@@ -1,6 +1,6 @@
 {
   "name": "jest-circus",
-  "version": "26.5.0",
+  "version": "26.5.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -24,7 +24,7 @@
     "jest-each": "^26.5.0",
     "jest-matcher-utils": "^26.5.0",
     "jest-message-util": "^26.5.0",
-    "jest-runner": "^26.5.0",
+    "jest-runner": "^26.5.1",
     "jest-runtime": "^26.5.0",
     "jest-snapshot": "^26.5.0",
     "jest-util": "^26.5.0",
