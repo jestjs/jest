@@ -11369,7 +11369,7 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"jest-circus@^26.5.0, jest-circus@workspace:packages/jest-circus":
+"jest-circus@^26.5.1, jest-circus@workspace:packages/jest-circus":
   version: 0.0.0-use.local
   resolution: "jest-circus@workspace:packages/jest-circus"
   dependencies:
@@ -11396,7 +11396,7 @@ fsevents@^1.2.7:
     jest-each: ^26.5.0
     jest-matcher-utils: ^26.5.0
     jest-message-util: ^26.5.0
-    jest-runner: ^26.5.0
+    jest-runner: ^26.5.1
     jest-runtime: ^26.5.0
     jest-snapshot: ^26.5.0
     jest-util: ^26.5.0
@@ -11794,7 +11794,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-runner@^26.5.0, jest-runner@workspace:packages/jest-runner":
+"jest-runner@^26.5.0, jest-runner@^26.5.1, jest-runner@workspace:packages/jest-runner":
   version: 0.0.0-use.local
   resolution: "jest-runner@workspace:packages/jest-runner"
   dependencies:
@@ -11810,7 +11810,7 @@ fsevents@^1.2.7:
     emittery: ^0.7.1
     exit: ^0.1.2
     graceful-fs: ^4.2.4
-    jest-circus: ^26.5.0
+    jest-circus: ^26.5.1
     jest-config: ^26.5.0
     jest-docblock: ^26.0.0
     jest-haste-map: ^26.5.0
