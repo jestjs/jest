@@ -72,7 +72,7 @@ const initialOptions: Config.InitialOptions = {
   },
   modulePathIgnorePatterns: ['<rootDir>/build/'],
   modulePaths: ['/shared/vendor/modules'],
-  name: 'string',
+  id: 'string',
   noStackTrace: false,
   notify: false,
   notifyMode: 'failure-change',
