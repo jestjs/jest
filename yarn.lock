@@ -1808,6 +1808,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@jest/create-cache-key-function@workspace:packages/jest-create-cache-key-function":
+  version: 0.0.0-use.local
+  resolution: "@jest/create-cache-key-function@workspace:packages/jest-create-cache-key-function"
+  dependencies:
+    "@types/node": "*"
+  languageName: unknown
+  linkType: soft
+
 "@jest/environment@^26.3.0, @jest/environment@workspace:packages/jest-environment":
   version: 0.0.0-use.local
   resolution: "@jest/environment@workspace:packages/jest-environment"
