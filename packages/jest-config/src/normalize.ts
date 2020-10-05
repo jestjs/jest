@@ -891,7 +891,7 @@ export default function normalize(
       case 'logHeapUsage':
       case 'maxConcurrency':
       case 'mapCoverage':
-      case 'name':
+      case 'id':
       case 'noStackTrace':
       case 'notify':
       case 'notifyMode':
