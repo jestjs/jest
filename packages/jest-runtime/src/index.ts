@@ -16,7 +16,6 @@ import {
   Context as VMContext,
   // @ts-expect-error: experimental, not added to the types
   Module as VMModule,
-  compileFunction,
 } from 'vm';
 import * as nativeModule from 'module';
 import type {Config, Global} from '@jest/types';
@@ -35,12 +34,11 @@ import {escapePathForRegex} from 'jest-regex-util';
 import {
   ScriptTransformer,
   ShouldInstrumentOptions,
-  TransformResult,
   TransformationOptions,
   handlePotentialSyntaxError,
   shouldInstrument,
 } from '@jest/transform';
-import type {V8CoverageResult} from '@jest/test-result';
+import type {RuntimeTransformResult, V8CoverageResult} from '@jest/test-result';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
 import jestMock = require('jest-mock');
@@ -170,7 +168,7 @@ class Runtime {
   private _shouldUnmockTransitiveDependenciesCache: BooleanMap;
   private _sourceMapRegistry: StringMap;
   private _scriptTransformer: ScriptTransformer;
-  private _fileTransforms: Map<string, TransformResult>;
+  private _fileTransforms: Map<string, RuntimeTransformResult>;
   private _v8CoverageInstrumenter: CoverageInstrumenter | undefined;
   private _v8CoverageResult: V8Coverage | undefined;
   private _transitiveShouldMock: BooleanMap;
@@ -830,7 +828,7 @@ class Runtime {
       });
   }
 
-  // TODO - remove in Jest 26
+  // TODO - remove in Jest 27
   getSourceMapInfo(_coveredFiles: Set<string>): Record<string, string> {
     return {};
   }
@@ -1005,36 +1003,23 @@ class Runtime {
 
     let compiledFunction: ModuleWrapper | null = null;
 
+    const script = this.createScriptFromCode(transformedCode, filename);
+
+    let runScript: RunScriptEvalResult | null = null;
+
     // Use this if available instead of deprecated `JestEnvironment.runScript`
     if (typeof this._environment.getVmContext === 'function') {
       const vmContext = this._environment.getVmContext();
 
       if (vmContext) {
-        try {
-          compiledFunction = compileFunction(
-            transformedCode,
-            this.constructInjectedModuleParameters(),
-            {
-              filename,
-              parsingContext: vmContext,
-            },
-          ) as ModuleWrapper;
-        } catch (e) {
-          throw handlePotentialSyntaxError(e);
-        }
+        runScript = script.runInContext(vmContext, {filename});
       }
     } else {
-      const script = this.createScriptFromCode(transformedCode, filename);
+      runScript = this._environment.runScript<RunScriptEvalResult>(script);
+    }
 
-      const runScript = this._environment.runScript<RunScriptEvalResult>(
-        script,
-      );
-
-      if (runScript === null) {
-        compiledFunction = null;
-      } else {
-        compiledFunction = runScript[EVAL_RESULT_VARIABLE];
-      }
+    if (runScript !== null) {
+      compiledFunction = runScript[EVAL_RESULT_VARIABLE];
     }
 
     if (compiledFunction === null) {
@@ -1097,7 +1082,10 @@ class Runtime {
       source,
     );
 
-    this._fileTransforms.set(filename, transformedFile);
+    this._fileTransforms.set(filename, {
+      ...transformedFile,
+      wrapperLength: this.constructModuleWrapperStart().length,
+    });
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry.set(filename, transformedFile.sourceMapPath);
@@ -1602,15 +1590,13 @@ class Runtime {
   }
 
   private wrapCodeInModuleWrapper(content: string) {
+    return this.constructModuleWrapperStart() + content + '\n}});';
+  }
+
+  private constructModuleWrapperStart() {
     const args = this.constructInjectedModuleParameters();
 
-    return (
-      '({"' +
-      EVAL_RESULT_VARIABLE +
-      `":function(${args.join(',')}){` +
-      content +
-      '\n}});'
-    );
+    return '({"' + EVAL_RESULT_VARIABLE + `":function(${args.join(',')}){`;
   }
 
   private constructInjectedModuleParameters(): Array<string> {
