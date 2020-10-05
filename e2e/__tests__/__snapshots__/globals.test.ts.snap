@@ -24,9 +24,9 @@ FAIL __tests__/onlyConstructs.test.js
     Missing second argument. It must be a callback function.
 
     > 1 | describe('describe, no implementation');
-        | ^
+        |          ^
 
-      at Object.describe (__tests__/onlyConstructs.test.js:1:1)
+      at Object.<anonymous> (__tests__/onlyConstructs.test.js:1:10)
 `;
 
 exports[`cannot have describe with no implementation 2`] = `
