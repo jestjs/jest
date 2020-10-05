@@ -8,6 +8,12 @@
 
 ### Performance
 
+## 26.5.1
+
+### Fixes
+
+- `[jest-circus]` Handle older `jest-runtime` in `jest-circus`
+
 ## 26.5.0
 
 ### Features

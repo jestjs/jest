@@ -53,7 +53,8 @@ const jestAdapter = async (
   });
 
   const runtimeGlobals = {expect, ...globals};
-  runtime.setGlobalsForRuntime(runtimeGlobals);
+  // TODO: `jest-circus` might be newer than `jest-runtime` - remove `?.` for Jest 27
+  runtime.setGlobalsForRuntime?.(runtimeGlobals);
 
   // TODO: `jest-circus` might be newer than `jest-config` - remove `??` for Jest 27
   if (config.injectGlobals ?? true) {
