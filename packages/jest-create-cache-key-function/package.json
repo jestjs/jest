@@ -1,6 +1,6 @@
 {
   "name": "@jest/create-cache-key-function",
-  "version": "26.4.2",
+  "version": "26.5.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
