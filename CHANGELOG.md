@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-circus]` Setup globals before emitting `init`, and include Jets globals in the `init` payload ([#10598](https://github.com/facebook/jest/pull/10598))
+
 ### Chore & Maintenance
 
 ### Performance
