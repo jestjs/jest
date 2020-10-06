@@ -35,7 +35,7 @@ import {getTestID} from '../utils';
 import run from '../run';
 import testCaseReportHandler from '../testCaseReportHandler';
 import globals from '..';
-import type {Expect} from './jestExpect';
+import createExpect, {Expect} from './jestExpect';
 
 type Process = NodeJS.Process;
 
@@ -46,7 +46,6 @@ interface JestGlobals extends Global.TestFrameworkGlobals {
 export const initialize = async ({
   config,
   environment,
-  expect,
   getPrettier,
   getBabelTraverse,
   globalConfig,
@@ -58,7 +57,6 @@ export const initialize = async ({
 }: {
   config: Config.ProjectConfig;
   environment: JestEnvironment;
-  expect: Expect;
   getPrettier: () => null | any;
   getBabelTraverse: () => typeof BabelTraverse;
   globalConfig: Config.GlobalConfig;
@@ -129,7 +127,10 @@ export const initialize = async ({
     addEventHandler(environment.handleTestEvent.bind(environment));
   }
 
-  const runtimeGlobals: JestGlobals = {expect, ...globalsObject};
+  const runtimeGlobals: JestGlobals = {
+    ...globalsObject,
+    expect: createExpect(globalConfig),
+  };
   // TODO: `jest-circus` might be newer than `jest-runtime` - remove `?.` for Jest 27
   setGlobalsForRuntime?.(runtimeGlobals);
 
