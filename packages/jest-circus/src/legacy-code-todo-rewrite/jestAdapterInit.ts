@@ -35,10 +35,9 @@ import {getTestID} from '../utils';
 import run from '../run';
 import testCaseReportHandler from '../testCaseReportHandler';
 import globals from '..';
+import type {Expect} from './jestExpect';
 
 type Process = NodeJS.Process;
-
-type Expect = typeof import('expect');
 
 interface JestGlobals extends Global.TestFrameworkGlobals {
   expect: Expect;
