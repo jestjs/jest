@@ -44,7 +44,7 @@
     "strip-ansi": "^6.0.0"
   },
   "optionalDependencies": {
-    "node-notifier": "7.0.1"
+    "node-notifier": "^8.0.0"
   },
   "engines": {
     "node": ">= 10.14.2"
