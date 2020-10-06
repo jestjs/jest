@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-mock]` Fix typings for `mockResolvedValue`, `mockResolvedValueOnce`, `mockRejectedValue` and `mockRejectedValueOnce`
+
 ### Chore & Maintenance
 
 ### Performance
