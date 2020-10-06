@@ -16,7 +16,7 @@
     "jest-runtime": "^26.5.0",
     "jest-validate": "^26.5.0",
     "repl": "^0.1.3",
-    "yargs": "^16.0.3"
+    "yargs": "^15.4.1"
   },
   "devDependencies": {
     "@jest/test-utils": "^26.5.0",

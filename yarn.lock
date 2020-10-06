@@ -5860,17 +5860,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cliui@npm:^7.0.0":
-  version: 7.0.1
-  resolution: "cliui@npm:7.0.1"
-  dependencies:
-    string-width: ^4.2.0
-    strip-ansi: ^6.0.0
-    wrap-ansi: ^7.0.0
-  checksum: 9c1433067a5860f9b8df76e5e0186a86992a180b8f8dd316357e19aa65b68d46964d448d18991fb598ab638a6c24218ce1331344fa4eec6767fcab40232b19fa
-  languageName: node
-  linkType: hard
-
 "clone-deep@npm:^4.0.1":
   version: 4.0.1
   resolution: "clone-deep@npm:4.0.1"
@@ -7758,7 +7747,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"escalade@npm:^3.0.2, escalade@npm:^3.1.0":
+"escalade@npm:^3.1.0":
   version: 3.1.0
   resolution: "escalade@npm:3.1.0"
   checksum: 437c5b2619a412c0b075fb33e590e3516f187f7da8b20035685e08f346e27842722e5740a3398535d7d590ae4fb70068374ed59190d4eb4f9bb06d052e2fc92f
@@ -9360,7 +9349,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"get-caller-file@npm:^2.0.1, get-caller-file@npm:^2.0.5":
+"get-caller-file@npm:^2.0.1":
   version: 2.0.5
   resolution: "get-caller-file@npm:2.0.5"
   checksum: 9dd9e1e2591039ee4c38c897365b904f66f1e650a8c1cb7b7db8ce667fa63e88cc8b13282b74df9d93de481114b3304a0487880d31cd926dfda6efe71455855d
@@ -11428,7 +11417,7 @@ fsevents@^1.2.7:
     jest-util: ^26.5.0
     jest-validate: ^26.5.0
     prompts: ^2.0.1
-    yargs: ^16.0.3
+    yargs: ^15.4.1
   bin:
     jest: ./bin/jest.js
   languageName: unknown
@@ -11746,7 +11735,7 @@ fsevents@^1.2.7:
     jest-runtime: ^26.5.0
     jest-validate: ^26.5.0
     repl: ^0.1.3
-    yargs: ^16.0.3
+    yargs: ^15.4.1
   bin:
     jest-repl: ./bin/jest-repl.js
   languageName: unknown
@@ -11773,11 +11762,11 @@ fsevents@^1.2.7:
     "@types/graceful-fs": ^4.1.3
     "@types/resolve": ^1.17.0
     chalk: ^4.0.0
-    escalade: ^3.1.0
     graceful-fs: ^4.2.4
     jest-haste-map: ^26.5.0
     jest-pnp-resolver: ^1.2.2
     jest-util: ^26.5.0
+    read-pkg-up: ^7.0.1
     resolve: ^1.17.0
     slash: ^3.0.0
   languageName: unknown
@@ -11862,7 +11851,7 @@ fsevents@^1.2.7:
     jest-validate: ^26.5.0
     slash: ^3.0.0
     strip-bom: ^4.0.0
-    yargs: ^16.0.3
+    yargs: ^15.4.1
   bin:
     jest-runtime: ./bin/jest-runtime.js
   languageName: unknown
@@ -19861,17 +19850,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"wrap-ansi@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "wrap-ansi@npm:7.0.0"
-  dependencies:
-    ansi-styles: ^4.0.0
-    string-width: ^4.1.0
-    strip-ansi: ^6.0.0
-  checksum: 09939dd775ae565bb99a25a6c072fe3775a95fa71751b5533c94265fe986ba3e3ab071a027ab76cf26876bd9afd10ac3c2d06d7c4bcce148bf7d2d9514e3a0df
-  languageName: node
-  linkType: hard
-
 "wrappy@npm:1":
   version: 1.0.2
   resolution: "wrappy@npm:1.0.2"
@@ -20092,13 +20070,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"y18n@npm:^5.0.1":
-  version: 5.0.2
-  resolution: "y18n@npm:5.0.2"
-  checksum: ba6106061c8ef612d888fa3fca61d094027200c4792275886eca2f82e92b1f24120011cc878d808a38be98c2ed1e3f831117691bf4d526a084e339cbd7c9f587
-  languageName: node
-  linkType: hard
-
 "yallist@npm:^2.1.2":
   version: 2.1.2
   resolution: "yallist@npm:2.1.2"
@@ -20153,13 +20124,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"yargs-parser@npm:^20.0.0":
-  version: 20.2.1
-  resolution: "yargs-parser@npm:20.2.1"
-  checksum: c4945ade7d792bde00e3f68930f56f1fdd531e501c4ecf944c524c1541c5fe2468c27b4f76b0b459009ef09e338750d01810732f99f0a1fa061af4126cf5f53e
-  languageName: node
-  linkType: hard
-
 "yargs@npm:^14.2.0, yargs@npm:^14.2.2":
   version: 14.2.3
   resolution: "yargs@npm:14.2.3"
@@ -20179,7 +20143,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"yargs@npm:^15.1.0":
+"yargs@npm:^15.1.0, yargs@npm:^15.4.1":
   version: 15.4.1
   resolution: "yargs@npm:15.4.1"
   dependencies:
@@ -20195,21 +20159,6 @@ fsevents@^1.2.7:
     y18n: ^4.0.0
     yargs-parser: ^18.1.2
   checksum: dbf687d6b938f01bbf11e158dde6df906282b70cd9295af0217ee8cefbd83ad09d49fa9458d0d5325b0e66f03df954a38986db96f91e5b46ccdbbaf9a0157b23
-  languageName: node
-  linkType: hard
-
-"yargs@npm:^16.0.3":
-  version: 16.0.3
-  resolution: "yargs@npm:16.0.3"
-  dependencies:
-    cliui: ^7.0.0
-    escalade: ^3.0.2
-    get-caller-file: ^2.0.5
-    require-directory: ^2.1.1
-    string-width: ^4.2.0
-    y18n: ^5.0.1
-    yargs-parser: ^20.0.0
-  checksum: 39490963e02bceb73ffff285cd9b241e5b019acbedef456586c97027cc18d0cadb743ad1340ccdc9340d0a21e18176c63b9f8bd90eee64c7e1f512c147aab1c2
   languageName: node
   linkType: hard
 
