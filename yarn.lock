@@ -11773,11 +11773,11 @@ fsevents@^1.2.7:
     "@types/graceful-fs": ^4.1.3
     "@types/resolve": ^1.17.0
     chalk: ^4.0.0
-    escalade: ^3.1.0
     graceful-fs: ^4.2.4
     jest-haste-map: ^26.5.0
     jest-pnp-resolver: ^1.2.2
     jest-util: ^26.5.0
+    read-pkg-up: ^7.0.1
     resolve: ^1.17.0
     slash: ^3.0.0
   languageName: unknown

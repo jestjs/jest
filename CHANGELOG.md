@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-resolve]` Revert usage of Escalade as it breaks Node 13
+
 ### Chore & Maintenance
 
 ### Performance
