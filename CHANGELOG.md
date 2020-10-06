@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[jest-circus]` Setup globals before emitting `init`, and include Jest globals in the `init` payload ([#10598](https://github.com/facebook/jest/pull/10598))
+- `[jest-circus]` Setup globals before emitting `setup`, and include Jest globals in the `setup` payload ([#10598](https://github.com/facebook/jest/pull/10598))
 - `[jest-mock]` Fix typings for `mockResolvedValue`, `mockResolvedValueOnce`, `mockRejectedValue` and `mockRejectedValueOnce` ([#10600](https://github.com/facebook/jest/pull/10600))
 
 ### Chore & Maintenance
