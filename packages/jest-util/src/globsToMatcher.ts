@@ -9,12 +9,11 @@ import micromatch = require('micromatch');
 import type {Config} from '@jest/types';
 import replacePathSepForGlob from './replacePathSepForGlob';
 
+type Matcher = (str: Config.Path) => boolean;
+
 const globsToMatchersMap = new Map<
   string,
-  {
-    isMatch: (str: string) => boolean;
-    negated: boolean;
-  }
+  {isMatch: Matcher; negated: boolean}
 >();
 
 const micromatchOptions = {dot: true};
@@ -36,13 +35,11 @@ const micromatchOptions = {dot: true};
  * isMatch('pizza.js'); // true
  * isMatch('pizza.test.js'); // false
  */
-export default function globsToMatcher(
-  globs: Array<Config.Glob>,
-): (path: Config.Path) => boolean {
+export default function globsToMatcher(globs: Array<Config.Glob>): Matcher {
   if (globs.length === 0) {
     // Since there were no globs given, we can simply have a fast path here and
     // return with a very simple function.
-    return (_: Config.Path): boolean => false;
+    return () => false;
   }
 
   const matchers = globs.map(glob => {
@@ -62,7 +59,7 @@ export default function globsToMatcher(
     return globsToMatchersMap.get(glob)!;
   });
 
-  return (path: Config.Path): boolean => {
+  return path => {
     const replacedPath = replacePathSepForGlob(path);
     let kept = undefined;
     let negatives = 0;
