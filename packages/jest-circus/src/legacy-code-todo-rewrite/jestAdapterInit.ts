@@ -130,8 +130,7 @@ export const initialize = async ({
     addEventHandler(environment.handleTestEvent.bind(environment));
   }
 
-  // @ts-expect-error
-  const runtimeGlobals: JestGlobals = {expect, ...globals};
+  const runtimeGlobals: JestGlobals = {expect, ...globalsObject};
   // TODO: `jest-circus` might be newer than `jest-runtime` - remove `?.` for Jest 27
   setGlobalsForRuntime?.(runtimeGlobals);
 
