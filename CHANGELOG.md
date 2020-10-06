@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[jest-resolve]` Revert usage of Escalade as it breaks Node 13
+- `[jest-resolve]` Revert usage of Escalade as it breaks Node 13 ([#10599](https://github.com/facebook/jest/pull/10599))
 
 ### Chore & Maintenance
 
