@@ -1,6 +1,6 @@
 {
   "name": "@jest/test-result",
-  "version": "26.5.0",
+  "version": "26.5.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,8 +10,8 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/console": "^26.5.0",
-    "@jest/types": "^26.5.0",
+    "@jest/console": "^26.5.2",
+    "@jest/types": "^26.5.2",
     "@types/istanbul-lib-coverage": "^2.0.0",
     "collect-v8-coverage": "^1.0.0"
   },

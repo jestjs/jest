@@ -1,6 +1,6 @@
 {
   "name": "jest-runner",
-  "version": "26.5.1",
+  "version": "26.5.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,23 +10,23 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/console": "^26.5.0",
-    "@jest/environment": "^26.5.0",
-    "@jest/test-result": "^26.5.0",
-    "@jest/types": "^26.5.0",
+    "@jest/console": "^26.5.2",
+    "@jest/environment": "^26.5.2",
+    "@jest/test-result": "^26.5.2",
+    "@jest/types": "^26.5.2",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "emittery": "^0.7.1",
     "exit": "^0.1.2",
     "graceful-fs": "^4.2.4",
-    "jest-config": "^26.5.0",
+    "jest-config": "^26.5.2",
     "jest-docblock": "^26.0.0",
-    "jest-haste-map": "^26.5.0",
-    "jest-leak-detector": "^26.5.0",
-    "jest-message-util": "^26.5.0",
-    "jest-resolve": "^26.5.0",
-    "jest-runtime": "^26.5.0",
-    "jest-util": "^26.5.0",
+    "jest-haste-map": "^26.5.2",
+    "jest-leak-detector": "^26.5.2",
+    "jest-message-util": "^26.5.2",
+    "jest-resolve": "^26.5.2",
+    "jest-runtime": "^26.5.2",
+    "jest-util": "^26.5.2",
     "jest-worker": "^26.5.0",
     "source-map-support": "^0.5.6",
     "throat": "^5.0.0"
@@ -35,7 +35,7 @@
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
     "@types/source-map-support": "^0.5.0",
-    "jest-circus": "^26.5.1"
+    "jest-circus": "^26.5.2"
   },
   "engines": {
     "node": ">= 10.14.2"
