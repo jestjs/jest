@@ -16,6 +16,7 @@ exports[`prints the config object 1`] = `
     "forceCoverageMatch": [],
     "globals": {},
     "haste": {},
+    "injectGlobals": true,
     "moduleDirectories": [],
     "moduleFileExtensions": [
       "js"
