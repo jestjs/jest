@@ -43,23 +43,16 @@ const jestAdapter = async (
   const {globals, snapshotState} = await initialize({
     config,
     environment,
+    expect,
     getBabelTraverse,
     getPrettier,
     globalConfig,
     localRequire: runtime.requireModule.bind(runtime),
     parentProcess: process,
     sendMessageToJest,
+    setGlobalsForRuntime: runtime.setGlobalsForRuntime?.bind(runtime),
     testPath,
   });
-
-  const runtimeGlobals = {expect, ...globals};
-  // TODO: `jest-circus` might be newer than `jest-runtime` - remove `?.` for Jest 27
-  runtime.setGlobalsForRuntime?.(runtimeGlobals);
-
-  // TODO: `jest-circus` might be newer than `jest-config` - remove `??` for Jest 27
-  if (config.injectGlobals ?? true) {
-    Object.assign(environment.global, runtimeGlobals);
-  }
 
   if (config.timers === 'fake' || config.timers === 'legacy') {
     // during setup, this cannot be null (and it's fine to explode if it is)
