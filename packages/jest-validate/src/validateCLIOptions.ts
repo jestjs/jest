@@ -31,10 +31,10 @@ const createCLIValidationError = (
 
   if (unrecognizedOptions.length === 1) {
     const unrecognized = unrecognizedOptions[0];
-    const didYouMeanMessage = createDidYouMeanMessage(
-      unrecognized,
-      Array.from(allowedOptions),
-    );
+    const didYouMeanMessage =
+      unrecognized.length > 1
+        ? createDidYouMeanMessage(unrecognized, Array.from(allowedOptions))
+        : '';
     message =
       `  Unrecognized option ${chalk.bold(format(unrecognized))}.` +
       (didYouMeanMessage ? ` ${didYouMeanMessage}` : '');

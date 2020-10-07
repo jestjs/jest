@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-validate]` Show suggestion only when unrecognized cli param is longer than 1 character ([#10604](https://github.com/facebook/jest/pull/10604))
+
 ### Chore & Maintenance
 
 ### Performance
