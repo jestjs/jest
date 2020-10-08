@@ -1366,10 +1366,12 @@ class Runtime {
       });
     })();
 
+    const path = this._path;
+
     Object.defineProperty(moduleRequire, 'main', {
       enumerable: true,
       get() {
-        return this._path;
+        return path;
       },
     });
     return moduleRequire;
