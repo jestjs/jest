@@ -82,7 +82,7 @@
     "which": "^2.0.1"
   },
   "scripts": {
-    "build-clean": "rimraf './packages/*/build' './packages/*/build-es5' './packages/*/tsconfig.tsbuildinfo'",
+    "build-clean": "rimraf './packages/*/build' './packages/*/tsconfig.tsbuildinfo'",
     "build": "yarn build:js && yarn build:ts",
     "build:js": "node ./scripts/build.js",
     "build:ts": "node ./scripts/buildTs.js",
