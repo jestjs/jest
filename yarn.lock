@@ -1901,7 +1901,7 @@ __metadata:
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
     terminal-link: ^2.0.0
-    v8-to-istanbul: ^5.0.1
+    v8-to-istanbul: ^6.0.0
   dependenciesMeta:
     node-notifier:
       optional: true
@@ -19504,14 +19504,14 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"v8-to-istanbul@npm:^5.0.1":
-  version: 5.0.1
-  resolution: "v8-to-istanbul@npm:5.0.1"
+"v8-to-istanbul@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "v8-to-istanbul@npm:6.0.0"
   dependencies:
     "@types/istanbul-lib-coverage": ^2.0.1
     convert-source-map: ^1.6.0
     source-map: ^0.7.3
-  checksum: 8647a626cf515db0df18eff22b073f0d8f51c500cfed011013d3010ce9c79a71f9d88d1ed15c3e312bb10466e161721e4b4f803fdabf263dd37e659d912e9911
+  checksum: fabf13703d6a13a1697fe6075e7c228e3483d10497f58e200db84f9ba7b530ccfa889ca85279c361ac5b287b32c412313f43d664c0857c02fff524f3a60a734b
   languageName: node
   linkType: hard
 
