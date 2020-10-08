@@ -151,15 +151,22 @@ async function runTestInternal(
   const cacheFS = {[path]: testSource};
   setGlobal(environment.global, 'console', testConsole);
 
-  const runtime = new Runtime(config, environment, resolver, cacheFS, path, {
-    changedFiles: context?.changedFiles,
-    collectCoverage: globalConfig.collectCoverage,
-    collectCoverageFrom: globalConfig.collectCoverageFrom,
-    collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
-    coverageProvider: globalConfig.coverageProvider,
-    sourcesRelatedToTestsInChangedFiles:
-      context?.sourcesRelatedToTestsInChangedFiles,
-  });
+  const runtime = new Runtime(
+    config,
+    environment,
+    resolver,
+    cacheFS,
+    {
+      changedFiles: context?.changedFiles,
+      collectCoverage: globalConfig.collectCoverage,
+      collectCoverageFrom: globalConfig.collectCoverageFrom,
+      collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
+      coverageProvider: globalConfig.coverageProvider,
+      sourcesRelatedToTestsInChangedFiles:
+        context?.sourcesRelatedToTestsInChangedFiles,
+    },
+    path,
+  );
 
   const start = Date.now();
 
