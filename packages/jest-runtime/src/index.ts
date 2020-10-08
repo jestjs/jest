@@ -1367,11 +1367,9 @@ class Runtime {
       });
     })();
 
-    const testPath = this._testPath;
-
     Object.defineProperty(moduleRequire, 'main', {
       enumerable: true,
-      value: testPath,
+      value: this._testPath,
     });
     return moduleRequire;
   }
