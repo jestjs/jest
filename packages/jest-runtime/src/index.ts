@@ -185,6 +185,7 @@ class Runtime {
     resolver: Resolver,
     cacheFS: Record<string, string> = {},
     coverageOptions?: ShouldInstrumentOptions,
+    // TODO: Make mandatory in Jest 27
     path?: Config.Path,
   ) {
     this._cacheFS = new Map(Object.entries(cacheFS));
