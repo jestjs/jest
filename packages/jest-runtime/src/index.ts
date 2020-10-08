@@ -162,6 +162,7 @@ class Runtime {
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
   private _esmoduleRegistry: Map<string, Promise<VMModule>>;
+  private _path: Config.Path;
   private _resolver: Resolver;
   private _shouldAutoMock: boolean;
   private _shouldMockModuleCache: BooleanMap;
@@ -183,6 +184,7 @@ class Runtime {
     environment: JestEnvironment,
     resolver: Resolver,
     cacheFS: Record<string, string> = {},
+    path: Config.Path,
     coverageOptions?: ShouldInstrumentOptions,
   ) {
     this._cacheFS = new Map(Object.entries(cacheFS));
@@ -208,6 +210,7 @@ class Runtime {
     this._isolatedMockRegistry = null;
     this._moduleRegistry = new Map();
     this._esmoduleRegistry = new Map();
+    this._path = path;
     this._resolver = resolver;
     this._scriptTransformer = new ScriptTransformer(config);
     this._shouldAutoMock = config.automock;
@@ -1366,15 +1369,7 @@ class Runtime {
     Object.defineProperty(moduleRequire, 'main', {
       enumerable: true,
       get() {
-        let mainModule = from.parent;
-        while (
-          mainModule &&
-          mainModule.parent &&
-          mainModule.id !== mainModule.parent.id
-        ) {
-          mainModule = mainModule.parent;
-        }
-        return mainModule;
+        return this._path;
       },
     });
     return moduleRequire;
