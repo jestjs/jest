@@ -17,6 +17,7 @@
       "manual-mocks",
       "es6-class-mocks",
       "bypassing-module-mocks",
+      "ecmascript-modules",
       "webpack",
       "puppeteer",
       "mongodb",
