@@ -1369,7 +1369,7 @@ class Runtime {
 
     Object.defineProperty(moduleRequire, 'main', {
       enumerable: true,
-      value: this._moduleRegistry.get(this._testPath || ''),
+      value: this._testPath ? this._moduleRegistry.get(this._testPath) : null,
     });
     return moduleRequire;
   }
