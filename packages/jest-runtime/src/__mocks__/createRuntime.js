@@ -47,6 +47,9 @@ module.exports = async function createRuntime(filename, config) {
     config,
     environment,
     Runtime.createResolver(config, hasteMap.moduleMap),
+    undefined,
+    undefined,
+    filename,
   );
 
   for (const path of config.setupFiles) {

@@ -162,6 +162,7 @@ class Runtime {
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
   private _esmoduleRegistry: Map<string, Promise<VMModule>>;
+  private _testPath: Config.Path | undefined;
   private _resolver: Resolver;
   private _shouldAutoMock: boolean;
   private _shouldMockModuleCache: BooleanMap;
@@ -184,6 +185,8 @@ class Runtime {
     resolver: Resolver,
     cacheFS: Record<string, string> = {},
     coverageOptions?: ShouldInstrumentOptions,
+    // TODO: Make mandatory in Jest 27
+    testPath?: Config.Path,
   ) {
     this._cacheFS = new Map(Object.entries(cacheFS));
     this._config = config;
@@ -208,6 +211,7 @@ class Runtime {
     this._isolatedMockRegistry = null;
     this._moduleRegistry = new Map();
     this._esmoduleRegistry = new Map();
+    this._testPath = testPath;
     this._resolver = resolver;
     this._scriptTransformer = new ScriptTransformer(config);
     this._shouldAutoMock = config.automock;
@@ -1365,17 +1369,7 @@ class Runtime {
 
     Object.defineProperty(moduleRequire, 'main', {
       enumerable: true,
-      get() {
-        let mainModule = from.parent;
-        while (
-          mainModule &&
-          mainModule.parent &&
-          mainModule.id !== mainModule.parent.id
-        ) {
-          mainModule = mainModule.parent;
-        }
-        return mainModule;
-      },
+      value: this._testPath ? this._moduleRegistry.get(this._testPath) : null,
     });
     return moduleRequire;
   }
