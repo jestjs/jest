@@ -13,11 +13,9 @@ onNodeVersions('>=12.2.0', () => {
     const {stdout} = runJest('require-main-after-create-require');
 
     expect(stdout).toMatch(
-      path.resolve(
-        path.join(
-          __dirname,
-          '../require-main-after-create-require/__tests__/parent.test.js',
-        ),
+      path.join(
+        __dirname,
+        '../require-main-after-create-require/__tests__/parent.test.js',
       ),
     );
   });
