@@ -12,7 +12,7 @@ onNodeVersions('>=12.2.0', () => {
   test('`require.main` not undefined after createRequire', () => {
     const {stdout} = runJest('require-main-after-create-require');
 
-    expect(stdout).toMatch(
+    expect(stdout).toBe(
       path.join(
         __dirname,
         '../require-main-after-create-require/__tests__/parent.test.js',
