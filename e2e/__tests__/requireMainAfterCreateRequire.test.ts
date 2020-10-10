@@ -8,7 +8,7 @@ import * as path from 'path';
 import {onNodeVersions} from '@jest/test-utils';
 import runJest from '../runJest';
 
-onNodeVersions('^12.16.0 || >=13.7.0', () => {
+onNodeVersions('>=12.2.0', () => {
   test('`require.main` not undefined after createRequire', () => {
     const {stdout} = runJest('require-main-after-create-require');
 
