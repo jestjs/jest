@@ -1,0 +1,230 @@
+<!DOCTYPE html><html lang="ro"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Timer Mocks · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="The native timer functions (i.e., `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`) are less than ideal for a testing environment since they depend on real time to elapse. Jest poate înlocui cronometrele cu funcţii care vă permit să controlaţi trecerea timpului. [Great Scott!](https://www.youtube.com/watch?v=QZoJ2Pt27BY)"/><meta name="docsearch:version" content="26.4"/><meta name="docsearch:language" content="ro"/><meta property="og:title" content="Timer Mocks · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="The native timer functions (i.e., `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`) are less than ideal for a testing environment since they depend on real time to elapse. Jest poate înlocui cronometrele cu funcţii care vă permit să controlaţi trecerea timpului. [Great Scott!](https://www.youtube.com/watch?v=QZoJ2Pt27BY)"/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/ro"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/ro/versions"><h3>26.4</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/ro/26.4/getting-started" target="_self">Documentație</a></li><li class="siteNavGroupActive"><a href="/docs/ro/26.4/api" target="_self">API</a></li><li class=""><a href="/ro/help" target="_self">Ajutor</a></li><li class=""><a href="/blog/" target="_self">Blog</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Română</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/26.4/timer-mocks">English</a></li><li><a href="/docs/ja/26.4/timer-mocks">日本語</a></li><li><a href="/docs/es-ES/26.4/timer-mocks">Español</a></li><li><a href="/docs/pt-BR/26.4/timer-mocks">Português (Brasil)</a></li><li><a href="/docs/ru/26.4/timer-mocks">Русский</a></li><li><a href="/docs/uk/26.4/timer-mocks">Українська</a></li><li><a href="/docs/zh-Hans/26.4/timer-mocks">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(event) {
+          event.preventDefault();
+
+          if (languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Guides</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/snapshot-testing">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/tutorial-async">An Async Example</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/ro/26.4/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/ecmascript-modules">ECMAScript Modules</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/dynamodb">Using with DynamoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/architecture">Architecture</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Framework Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/api">Globals</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ro/26.4/cli">Jest CLI Options</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/TimerMocks.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Timer Mocks</h1></header><article><div><span><p>The native timer functions (i.e., <code>setTimeout</code>, <code>setInterval</code>, <code>clearTimeout</code>, <code>clearInterval</code>) are less than ideal for a testing environment since they depend on real time to elapse. Jest poate înlocui cronometrele cu funcţii care vă permit să controlaţi trecerea timpului. <a href="https://www.youtube.com/watch?v=QZoJ2Pt27BY">Great Scott!</a></p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// timerGame.js</span>
+<span class="hljs-meta">'use strict'</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">timerGame</span>(<span class="hljs-params">callback</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Ready....go!'</span>);
+  setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Time's up -- stop!"</span>);
+    callback &amp;&amp; callback();
+  }, <span class="hljs-number">1000</span>);
+}
+
+<span class="hljs-built_in">module</span>.exports = timerGame;
+</code></pre>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// __tests__/timerGame-test.js</span>
+<span class="hljs-meta">'use strict'</span>;
+
+jest.useFakeTimers();
+
+test(<span class="hljs-string">'waits 1 second before ending the game'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> timerGame = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../timerGame'</span>);
+  timerGame();
+
+  expect(setTimeout).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
+  expect(setTimeout).toHaveBeenLastCalledWith(expect.any(<span class="hljs-built_in">Function</span>), <span class="hljs-number">1000</span>);
+});
+</code></pre>
+<p>Here we enable fake timers by calling <code>jest.useFakeTimers();</code>. This mocks out setTimeout and other timer functions with mock functions. If running multiple tests inside of one file or describe block, <code>jest.useFakeTimers();</code> can be called before each test manually or with a setup function such as <code>beforeEach</code>. Not doing so will result in the internal usage counter not being reset.</p>
+<h2><a class="anchor" aria-hidden="true" id="rularea-tuturor-cronometrelor"></a><a href="#rularea-tuturor-cronometrelor" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Rularea tuturor cronometrelor</h2>
+<p>Another test we might want to write for this module is one that asserts that the callback is called after 1 second. To do this, we're going to use Jest's timer control APIs to fast-forward time right in the middle of the test:</p>
+<pre><code class="hljs css language-javascript">test(<span class="hljs-string">'calls the callback after 1 second'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> timerGame = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../timerGame'</span>);
+  <span class="hljs-keyword">const</span> callback = jest.fn();
+
+  timerGame(callback);
+
+  <span class="hljs-comment">// At this point in time, the callback should not have been called yet</span>
+  expect(callback).not.toBeCalled();
+
+  <span class="hljs-comment">// Fast-forward until all timers have been executed</span>
+  jest.runAllTimers();
+
+  <span class="hljs-comment">// Now our callback should have been called!</span>
+  expect(callback).toBeCalled();
+  expect(callback).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
+});
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="rularea-cronometrelor-în-așteptare"></a><a href="#rularea-cronometrelor-în-așteptare" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Rularea cronometrelor în așteptare</h2>
+<p>There are also scenarios where you might have a recursive timer -- that is a timer that sets a new timer in its own callback. For these, running all the timers would be an endless loop… so something like <code>jest.runAllTimers()</code> is not desirable. Pentru aceste cazuri s-ar putea folosi <code>jest.runOnlyPendingTimers()</code>:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// infiniteTimerGame.js</span>
+<span class="hljs-meta">'use strict'</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">infiniteTimerGame</span>(<span class="hljs-params">callback</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Ready....go!'</span>);
+
+  setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Time's up! 10 seconds before the next game starts..."</span>);
+    callback &amp;&amp; callback();
+
+    <span class="hljs-comment">// Schedule the next game in 10 seconds</span>
+    setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+      infiniteTimerGame(callback);
+    }, <span class="hljs-number">10000</span>);
+  }, <span class="hljs-number">1000</span>);
+}
+
+<span class="hljs-built_in">module</span>.exports = infiniteTimerGame;
+</code></pre>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// __tests__/infiniteTimerGame-test.js</span>
+<span class="hljs-meta">'use strict'</span>;
+
+jest.useFakeTimers();
+
+describe(<span class="hljs-string">'infiniteTimerGame'</span>, () =&gt; {
+  test(<span class="hljs-string">'schedules a 10-second timer after 1 second'</span>, () =&gt; {
+    <span class="hljs-keyword">const</span> infiniteTimerGame = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../infiniteTimerGame'</span>);
+    <span class="hljs-keyword">const</span> callback = jest.fn();
+
+    infiniteTimerGame(callback);
+
+    <span class="hljs-comment">// At this point in time, there should have been a single call to</span>
+    <span class="hljs-comment">// setTimeout to schedule the end of the game in 1 second.</span>
+    expect(setTimeout).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
+    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(<span class="hljs-built_in">Function</span>), <span class="hljs-number">1000</span>);
+
+    <span class="hljs-comment">// Fast forward and exhaust only currently pending timers</span>
+    <span class="hljs-comment">// (but not any new timers that get created during that process)</span>
+    jest.runOnlyPendingTimers();
+
+    <span class="hljs-comment">// At this point, our 1-second timer should have fired it's callback</span>
+    expect(callback).toBeCalled();
+
+    <span class="hljs-comment">// And it should have created a new timer to start the game over in</span>
+    <span class="hljs-comment">// 10 seconds</span>
+    expect(setTimeout).toHaveBeenCalledTimes(<span class="hljs-number">2</span>);
+    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(<span class="hljs-built_in">Function</span>), <span class="hljs-number">10000</span>);
+  });
+});
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="advance-timers-by-time"></a><a href="#advance-timers-by-time" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Advance Timers by Time</h2>
+<h5><a class="anchor" aria-hidden="true" id="renamed-from-runtimerstotime-to-advancetimersbytime-in-jest-2200"></a><a href="#renamed-from-runtimerstotime-to-advancetimersbytime-in-jest-2200" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>renamed from <code>runTimersToTime</code> to <code>advanceTimersByTime</code> in Jest <strong>22.0.0</strong></h5>
+<p>O altă posibilitate este utilizarea <code>jest.advanceTimersByTime(msToRun)</code>. When this API is called, all timers are advanced by <code>msToRun</code> milliseconds. All pending &quot;macro-tasks&quot; that have been queued via setTimeout() or setInterval(), and would be executed during this time frame, will be executed. Additionally, if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue that should be run within msToRun milliseconds.</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// timerGame.js</span>
+<span class="hljs-meta">'use strict'</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">timerGame</span>(<span class="hljs-params">callback</span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Ready....go!'</span>);
+  setTimeout(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Time's up -- stop!"</span>);
+    callback &amp;&amp; callback();
+  }, <span class="hljs-number">1000</span>);
+}
+
+<span class="hljs-built_in">module</span>.exports = timerGame;
+</code></pre>
+<pre><code class="hljs css language-javascript">it(<span class="hljs-string">'calls the callback after 1 second via advanceTimersByTime'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> timerGame = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../timerGame'</span>);
+  <span class="hljs-keyword">const</span> callback = jest.fn();
+
+  timerGame(callback);
+
+  <span class="hljs-comment">// At this point in time, the callback should not have been called yet</span>
+  expect(callback).not.toBeCalled();
+
+  <span class="hljs-comment">// Fast-forward until all timers have been executed</span>
+  jest.advanceTimersByTime(<span class="hljs-number">1000</span>);
+
+  <span class="hljs-comment">// Now our callback should have been called!</span>
+  expect(callback).toBeCalled();
+  expect(callback).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
+});
+</code></pre>
+<p>Lastly, it may occasionally be useful in some tests to be able to clear all of the pending timers. For this, we have <code>jest.clearAllTimers()</code>.</p>
+<p>The code for this example is available at <a href="https://github.com/facebook/jest/tree/master/examples/timer">examples/timer</a>.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/ro/26.4/tutorial-async"><span class="arrow-prev">← </span><span>An Async Example</span></a><a class="docs-next button" href="/docs/ro/26.4/manual-mocks"><span>Manual Mocks</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#rularea-tuturor-cronometrelor">Rularea tuturor cronometrelor</a></li><li><a href="#rularea-cronometrelor-în-așteptare">Rularea cronometrelor în așteptare</a></li><li><a href="#advance-timers-by-time">Advance Timers by Time</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/ro/getting-started.html">Getting Started</a><a href="/docs/ro/snapshot-testing.html">Guides</a><a href="/docs/ro/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://www.reactiflux.com/">Reactiflux</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {"facetFilters":["language:ro","version:26.4"]}
+              });
+            </script></body></html>
