@@ -10,7 +10,5 @@ const path = require('path');
 test('require child from parent', () => {
   // createRequire with a different file
   require = Module.createRequire(path.resolve('./empty.js'));
-  require('./child');
-
-  expect(1).toBe(1);
+  expect(() => require('./child')).not.toThrow();
 });
