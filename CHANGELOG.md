@@ -6,10 +6,10 @@
 
 ### Fixes
 
-- `[jest-runner, jest-runtime]` fix: `require.main` undefined with `createRequire()` ([#10610](https://github.com/facebook/jest/pull/10610))
+- `[jest-runner, jest-runtime]` `require.main` should not be `undefined` with `createRequire()` ([#10610](https://github.com/facebook/jest/pull/10610))
 - `[jest-runtime]` add missing `module.path` property ([#10615](https://github.com/facebook/jest/pull/10615))
-- `[jest-runtime]` fix: add `mainModule` instance variable to runtime ([#10621](https://github.com/facebook/jest/pull/10621))
-- `[jest-runtime]`  evaluate Node core modules on dynamic `import()`
+- `[jest-runtime]` Add `mainModule` instance variable to runtime ([#10621](https://github.com/facebook/jest/pull/10621))
+- `[jest-runtime]` Evaluate Node core modules on dynamic `import()` ([#10622](https://github.com/facebook/jest/pull/10622))
 - `[jest-validate]` Show suggestion only when unrecognized cli param is longer than 1 character ([#10604](https://github.com/facebook/jest/pull/10604))
 - `[jest-validate]` Validate `testURL` as CLI option ([#10595](https://github.com/facebook/jest/pull/10595))
 
