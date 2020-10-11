@@ -49,6 +49,13 @@ test('should support importing node core modules', () => {
   });
 });
 
+test('should support importing node core modules dynamically', async () => {
+  // it's important that this module has _not_ been imported at the top level
+  const assert = await import('assert');
+
+  expect(typeof assert.strictEqual).toBe('function');
+});
+
 test('dynamic import should work', async () => {
   const {double: importedDouble} = await import('../index');
 
