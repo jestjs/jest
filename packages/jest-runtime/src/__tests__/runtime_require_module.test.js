@@ -45,6 +45,7 @@ describe('Runtime requireModule', () => {
         'path',
         'parent',
         'paths',
+        'main',
       ]);
     }));
 
@@ -63,6 +64,7 @@ describe('Runtime requireModule', () => {
         'path',
         'parent',
         'paths',
+        'main',
       ]);
     }));
 

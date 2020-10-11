@@ -150,6 +150,7 @@ class Runtime {
     | null;
   private _internalModuleRegistry: ModuleRegistry;
   private _isCurrentlyExecutingManualMock: string | null;
+  private _mainModule: Module | null;
   private _mockFactories: Map<string, () => unknown>;
   private _mockMetaDataCache: Map<
     string,
@@ -202,6 +203,7 @@ class Runtime {
     this._explicitShouldMock = new Map();
     this._internalModuleRegistry = new Map();
     this._isCurrentlyExecutingManualMock = null;
+    this._mainModule = null;
     this._mockFactories = new Map();
     this._mockRegistry = new Map();
     // during setup, this cannot be null (and it's fine to explode if it is)
@@ -891,6 +893,7 @@ class Runtime {
     this.resetModules();
 
     this._internalModuleRegistry.clear();
+    this._mainModule = null;
     this._mockFactories.clear();
     this._mockMetaDataCache.clear();
     this._shouldMockModuleCache.clear();
@@ -1063,6 +1066,15 @@ class Runtime {
         );
       }),
     ];
+
+    if (!this._mainModule && filename === this._testPath) {
+      this._mainModule = module;
+    }
+
+    Object.defineProperty(module, 'main', {
+      enumerable: true,
+      value: this._mainModule,
+    });
 
     try {
       compiledFunction.call(
