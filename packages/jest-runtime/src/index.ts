@@ -1056,7 +1056,7 @@ class Runtime {
       }),
     ];
 
-    if (!this._mainModule) {
+    if (!this._mainModule && filename === this._testPath) {
       this._mainModule = module;
     }
 
