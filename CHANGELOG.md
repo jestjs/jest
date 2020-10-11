@@ -30,6 +30,7 @@
 - `[jest-transform]` [**BREAKING**] Refactor API to pass an options bag around rather than multiple boolean options ([#10753](https://github.com/facebook/jest/pull/10753))
 - `[jest-transform]` [**BREAKING**] Refactor API of transformers to pass an options bag rather than separate `config` and other options
 - `[pretty-format]` [**BREAKING**] Convert to ES Modules ([#10515](https://github.com/facebook/jest/pull/10515))
+- `[jest-worker, jest-haste-map, jest-runner, jest-reporters]` Fix: jest-worker: should not expose `.default` babel interop ([#10623] (https://github.com/facebook/jest/pull/10623))
 
 ### Chore & Maintenance
 
