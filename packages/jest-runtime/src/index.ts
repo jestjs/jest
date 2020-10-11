@@ -378,7 +378,15 @@ class Runtime {
       const module = new SourceTextModule(transformedCode, {
         context,
         identifier: modulePath,
-        importModuleDynamically: this.linkModules.bind(this),
+        importModuleDynamically: (
+          specifier: string,
+          referencingModule: VMModule,
+        ) =>
+          this.linkModules(
+            specifier,
+            referencingModule.identifier,
+            referencingModule.context,
+          ),
         initializeImportMeta(meta: ImportMeta) {
           meta.url = pathToFileURL(modulePath).href;
         },
@@ -390,7 +398,13 @@ class Runtime {
         // parallel can all await it. We then await it synchronously below, so
         // we shouldn't get any unhandled rejections
         module
-          .link(this.linkModules.bind(this))
+          .link((specifier: string, referencingModule: VMModule) =>
+            this.linkModules(
+              specifier,
+              referencingModule.identifier,
+              referencingModule.context,
+            ),
+          )
           .then(() => module.evaluate())
           .then(() => module),
       );
@@ -403,17 +417,18 @@ class Runtime {
     return module;
   }
 
-  private linkModules(specifier: string, referencingModule: VMModule) {
+  private linkModules(
+    specifier: string,
+    referencingIdentifier: string,
+    context: VMContext,
+  ) {
     if (specifier === '@jest/globals') {
       const fromCache = this._esmoduleRegistry.get('@jest/globals');
 
       if (fromCache) {
         return fromCache;
       }
-      const globals = this.getGlobalsForEsm(
-        referencingModule.identifier,
-        referencingModule.context,
-      );
+      const globals = this.getGlobalsForEsm(referencingIdentifier, context);
       this._esmoduleRegistry.set('@jest/globals', globals);
 
       return globals;
@@ -421,7 +436,7 @@ class Runtime {
 
     const [path, query] = specifier.split('?');
 
-    const resolved = this._resolveModule(referencingModule.identifier, path);
+    const resolved = this._resolveModule(referencingIdentifier, path);
 
     if (
       this._resolver.isCoreModule(resolved) ||
@@ -430,11 +445,7 @@ class Runtime {
       return this.loadEsmModule(resolved, query);
     }
 
-    return this.loadCjsAsEsm(
-      referencingModule.identifier,
-      resolved,
-      referencingModule.context,
-    );
+    return this.loadCjsAsEsm(referencingIdentifier, resolved, context);
   }
 
   async unstable_importModule(
@@ -1101,11 +1112,20 @@ class Runtime {
 
   private createScriptFromCode(scriptSource: string, filename: string) {
     try {
+      const scriptFilename = this._resolver.isCoreModule(filename)
+        ? `jest-nodejs-core-${filename}`
+        : filename;
       return new Script(this.wrapCodeInModuleWrapper(scriptSource), {
         displayErrors: true,
-        filename: this._resolver.isCoreModule(filename)
-          ? `jest-nodejs-core-${filename}`
-          : filename,
+        filename: scriptFilename,
+        // @ts-expect-error: Experimental ESM API
+        importModuleDynamically: (specifier: string) => {
+          const context = this._environment.getVmContext?.();
+
+          invariant(context);
+
+          return this.linkModules(specifier, scriptFilename, context);
+        },
       });
     } catch (e) {
       throw handlePotentialSyntaxError(e);

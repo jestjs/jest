@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-runtime]` add support for dynamic `import()` from CommonJS
+
 ### Fixes
 
 - `[jest-runner, jest-runtime]` fix: `require.main` undefined with `createRequire()` ([#10610](https://github.com/facebook/jest/pull/10610))
