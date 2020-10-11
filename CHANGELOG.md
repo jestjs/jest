@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-runtime]` add support for dynamic `import()` from CommonJS
+- `[jest-runtime]` add support for dynamic `import()` from CommonJS ([#10620](https://github.com/facebook/jest/pull/10620))
 
 ### Fixes
 
