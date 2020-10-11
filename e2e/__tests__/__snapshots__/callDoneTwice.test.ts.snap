@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`\`done()\` should not be called more than once 1`] = `
+FAIL __tests__/index.test.js
+  ✕ \`done()\` should not be called more than once
+
+  ● \`done()\` should not be called more than once
+
+    Expected done to be called once, but it was called multiple times.
+
+       7 | test('\`done()\` should not be called more than once', done => {
+       8 |   done();
+    >  9 |   done();
+         |   ^
+      10 | });
+      11 | 
+
+      at Object.done (__tests__/index.test.js:9:3)
+`;

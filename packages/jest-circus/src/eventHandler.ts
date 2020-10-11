@@ -113,7 +113,14 @@ const eventHandler: Circus.EventHandler = (
       }
       const parent = currentDescribeBlock;
 
-      currentDescribeBlock.hooks.push({asyncError, fn, parent, timeout, type});
+      currentDescribeBlock.hooks.push({
+        asyncError,
+        fn,
+        parent,
+        seenDone: false,
+        timeout,
+        type,
+      });
       break;
     }
     case 'add_test': {

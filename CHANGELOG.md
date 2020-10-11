@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-circus]` [**BREAKING**] Fail tests when multiple `done()` calls are made ([#10624](https://github.com/facebook/jest/pull/10624))
 - `[jest-config]` [**BREAKING**] Default to Node testing environment instead of browser (JSDOM) ([#9874](https://github.com/facebook/jest/pull/9874))
 - `[jest-config]` [**BREAKING**] Use `jest-circus` as default test runner ([#10686](https://github.com/facebook/jest/pull/10686))
 - `[jest-config, jest-runtime]` Support ESM for files other than `.js` and `.mjs` ([#10823](https://github.com/facebook/jest/pull/10823))
@@ -39,6 +40,8 @@
 - `[jest-transform]` [**BREAKING**] Refactor API of transformers to pass an options bag rather than separate `config` and other options ([#10834](https://github.com/facebook/jest/pull/10834))
 - `[jest-worker]` [**BREAKING**] Use named exports ([#10623] (https://github.com/facebook/jest/pull/10623))
 - `[pretty-format]` [**BREAKING**] Convert to ES Modules ([#10515](https://github.com/facebook/jest/pull/10515))
+
+### Fixes
 
 ### Chore & Maintenance
 

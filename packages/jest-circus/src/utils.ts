@@ -70,6 +70,7 @@ export const makeTest = (
   mode,
   name: convertDescriptorToString(name),
   parent,
+  seenDone: false,
   startedAt: null,
   status: null,
   timeout,
@@ -189,9 +190,20 @@ export const callAsyncCircusFn = (
     // soon as `done` called.
     if (takesDoneCallback(fn)) {
       let returnedValue: unknown = undefined;
+
       const done = (reason?: Error | string): void => {
+        if (testOrHook.seenDone) {
+          throw new ErrorWithStack(
+            'Expected done to be called once, but it was called multiple times.',
+            done,
+          );
+        } else {
+          testOrHook.seenDone = true;
+        }
+
         // We need to keep a stack here before the promise tick
         const errorAtDone = new ErrorWithStack(undefined, done);
+
         // Use `Promise.resolve` to allow the event loop to go a single tick in case `done` is called synchronously
         Promise.resolve().then(() => {
           if (returnedValue !== undefined) {
