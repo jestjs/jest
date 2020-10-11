@@ -83,8 +83,7 @@ const defaultTransformOptions: InternalModuleOptions = {
   supportsStaticESM: false,
 };
 
-type InitialModule = Partial<Module> &
-  Pick<Module, 'children' | 'exports' | 'filename' | 'id' | 'loaded'>;
+type InitialModule = Omit<Module, 'require' | 'parent' | 'paths'>;
 type ModuleRegistry = Map<string, InitialModule | Module>;
 
 const OUTSIDE_JEST_VM_RESOLVE_OPTION = Symbol.for(
@@ -546,6 +545,7 @@ class Runtime {
       filename: modulePath,
       id: modulePath,
       loaded: false,
+      path: path.dirname(modulePath),
     };
     moduleRegistry.set(modulePath, localModule);
 
@@ -646,6 +646,7 @@ class Runtime {
         filename: modulePath,
         id: modulePath,
         loaded: false,
+        path: path.dirname(modulePath),
       };
 
       this._loadModule(
@@ -981,16 +982,17 @@ class Runtime {
       return;
     }
 
-    const filename = localModule.filename;
+    const module = localModule as Module;
+
+    const filename = module.filename;
     const lastExecutingModulePath = this._currentlyExecutingModulePath;
     this._currentlyExecutingModulePath = filename;
     const origCurrExecutingManualMock = this._isCurrentlyExecutingManualMock;
     this._isCurrentlyExecutingManualMock = filename;
 
-    const dirname = path.dirname(filename);
-    localModule.children = [];
+    module.children = [];
 
-    Object.defineProperty(localModule, 'parent', {
+    Object.defineProperty(module, 'parent', {
       enumerable: true,
       get() {
         const key = from || '';
@@ -998,9 +1000,9 @@ class Runtime {
       },
     });
 
-    localModule.paths = this._resolver.getModulePaths(dirname);
-    Object.defineProperty(localModule, 'require', {
-      value: this._createRequireImplementation(localModule, options),
+    module.paths = this._resolver.getModulePaths(module.path);
+    Object.defineProperty(module, 'require', {
+      value: this._createRequireImplementation(module, options),
     });
 
     const transformedCode = this.transformFile(filename, options);
@@ -1053,17 +1055,17 @@ class Runtime {
 
     try {
       compiledFunction.call(
-        localModule.exports,
-        localModule as NodeModule, // module object
-        localModule.exports, // module exports
-        localModule.require as typeof require, // require implementation
-        dirname, // __dirname
-        filename, // __filename
+        module.exports,
+        module, // module object
+        module.exports, // module exports
+        module.require, // require implementation
+        module.path, // __dirname
+        module.filename, // __filename
         this._environment.global, // global object
         ...lastArgs.filter(notEmpty),
       );
     } catch (error) {
-      this.handleExecutionError(error, localModule);
+      this.handleExecutionError(error, module);
     }
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
@@ -1168,6 +1170,7 @@ class Runtime {
         filename,
         id: filename,
         loaded: false,
+        path: path.dirname(filename),
       });
     };
 
@@ -1606,7 +1609,7 @@ class Runtime {
     ].filter(notEmpty);
   }
 
-  private handleExecutionError(e: Error, module: InitialModule): never {
+  private handleExecutionError(e: Error, module: Module): never {
     const moduleNotFoundError = Resolver.tryCastModuleNotFoundError(e);
     if (moduleNotFoundError) {
       if (!moduleNotFoundError.requireStack) {
