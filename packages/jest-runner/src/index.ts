@@ -12,7 +12,7 @@ import throat from 'throat';
 import type {SerializableError, TestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {deepCyclicCopy} from 'jest-util';
-import Worker, {PromiseWithCustomMessage} from 'jest-worker';
+import {PromiseWithCustomMessage, Worker} from 'jest-worker';
 import runTest from './runTest';
 import type {SerializableResolver, worker} from './testWorker';
 import type {
