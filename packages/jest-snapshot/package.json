@@ -1,6 +1,6 @@
 {
   "name": "jest-snapshot",
-  "version": "26.5.2",
+  "version": "26.5.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -15,7 +15,7 @@
     "@types/babel__traverse": "^7.0.4",
     "@types/prettier": "^2.0.0",
     "chalk": "^4.0.0",
-    "expect": "^26.5.2",
+    "expect": "^26.5.3",
     "graceful-fs": "^4.2.4",
     "jest-diff": "^26.5.2",
     "jest-get-type": "^26.3.0",

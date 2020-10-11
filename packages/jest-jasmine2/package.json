@@ -1,6 +1,6 @@
 {
   "name": "jest-jasmine2",
-  "version": "26.5.2",
+  "version": "26.5.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -18,13 +18,13 @@
     "@types/node": "*",
     "chalk": "^4.0.0",
     "co": "^4.6.0",
-    "expect": "^26.5.2",
+    "expect": "^26.5.3",
     "is-generator-fn": "^2.0.0",
     "jest-each": "^26.5.2",
     "jest-matcher-utils": "^26.5.2",
     "jest-message-util": "^26.5.2",
-    "jest-runtime": "^26.5.2",
-    "jest-snapshot": "^26.5.2",
+    "jest-runtime": "^26.5.3",
+    "jest-snapshot": "^26.5.3",
     "jest-util": "^26.5.2",
     "pretty-format": "^26.5.2",
     "throat": "^5.0.0"
