@@ -466,7 +466,7 @@ class Runtime {
     return this.loadEsmModule(modulePath, query);
   }
 
-  private async loadCjsAsEsm(
+  private loadCjsAsEsm(
     from: Config.Path,
     modulePath: Config.Path,
     context: VMContext,
@@ -483,13 +483,7 @@ class Runtime {
       {context, identifier: modulePath},
     );
 
-    await module.link(() => {
-      throw new Error('This should never happen');
-    });
-
-    await module.evaluate();
-
-    return module;
+    return evaluateSyntheticModule(module);
   }
 
   requireModule<T = unknown>(
@@ -1159,7 +1153,7 @@ class Runtime {
   private _importCoreModule(moduleName: string, context: VMContext) {
     const required = this._requireCoreModule(moduleName);
 
-    return new SyntheticModule(
+    const module = new SyntheticModule(
       ['default', ...Object.keys(required)],
       function () {
         // @ts-expect-error: TS doesn't know what `this` is
@@ -1172,6 +1166,8 @@ class Runtime {
       // should identifier be `node://${moduleName}`?
       {context, identifier: moduleName},
     );
+
+    return evaluateSyntheticModule(module);
   }
 
   private _getMockedNativeModule(): typeof nativeModule.Module {
@@ -1667,7 +1663,7 @@ class Runtime {
     return {...this.getGlobalsFromEnvironment(), jest};
   }
 
-  private async getGlobalsForEsm(
+  private getGlobalsForEsm(
     from: Config.Path,
     context: VMContext,
   ): Promise<VMModule> {
@@ -1695,13 +1691,7 @@ class Runtime {
       {context, identifier: '@jest/globals'},
     );
 
-    await module.link(() => {
-      throw new Error('This should never happen');
-    });
-
-    await module.evaluate();
-
-    return module;
+    return evaluateSyntheticModule(module);
   }
 
   private getGlobalsFromEnvironment(): JestGlobals {
@@ -1751,6 +1741,16 @@ function invariant(condition: unknown, message?: string): asserts condition {
 
 function notEmpty<T>(value: T | null | undefined): value is T {
   return value !== null && value !== undefined;
+}
+
+async function evaluateSyntheticModule(module: SyntheticModule) {
+  await module.link(() => {
+    throw new Error('This should never happen');
+  });
+
+  await module.evaluate();
+
+  return module;
 }
 
 export = Runtime;
