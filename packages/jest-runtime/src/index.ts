@@ -882,6 +882,7 @@ class Runtime {
     this.resetModules();
 
     this._internalModuleRegistry.clear();
+    this._mainModule = null;
     this._mockFactories.clear();
     this._mockMetaDataCache.clear();
     this._shouldMockModuleCache.clear();
