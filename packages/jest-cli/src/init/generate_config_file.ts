@@ -35,7 +35,13 @@ const generateConfigFile = (
   results: Record<string, unknown>,
   generateEsm = false,
 ): string => {
-  const {coverage, coverageProvider, clearMocks, environment} = results;
+  const {
+    useTypescript,
+    coverage,
+    coverageProvider,
+    clearMocks,
+    environment,
+  } = results;
 
   const overrides: Record<string, unknown> = {};
 
@@ -81,10 +87,15 @@ const generateConfigFile = (
     }
   }
 
-  return (
+  const configDocMessage =
     '// For a detailed explanation regarding each configuration property, visit:\n' +
-    '// https://jestjs.io/docs/en/configuration.html\n\n' +
-    (generateEsm ? 'export default {\n' : 'module.exports = {\n') +
+    '// https://jestjs.io/docs/en/configuration.html\n\n';
+
+  return (
+    configDocMessage +
+    (useTypescript || generateEsm
+      ? 'export default {\n'
+      : 'module.exports = {\n') +
     properties.join('\n') +
     '};\n'
   );

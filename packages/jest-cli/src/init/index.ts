@@ -11,6 +11,7 @@ import chalk = require('chalk');
 import prompts = require('prompts');
 import {constants} from 'jest-config';
 import {tryRealpath} from 'jest-util';
+import {JEST_CONFIG_EXT_TS} from 'jest-config/build/constants';
 import defaultQuestions, {testScriptQuestion} from './questions';
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
 import generateConfigFile from './generate_config_file';
@@ -26,6 +27,7 @@ const {
 } = constants;
 
 type PromptsResults = {
+  useTypescript: boolean;
   clearMocks: boolean;
   coverage: boolean;
   coverageProvider: boolean;
@@ -64,16 +66,6 @@ export default async (
   const existingJestConfigExt = JEST_CONFIG_EXT_ORDER.find(ext =>
     fs.existsSync(path.join(rootDir, getConfigFilename(ext))),
   );
-  const jestConfigPath = existingJestConfigExt
-    ? getConfigFilename(existingJestConfigExt)
-    : path.join(
-        rootDir,
-        getConfigFilename(
-          projectPackageJson.type === 'module'
-            ? JEST_CONFIG_EXT_MJS
-            : JEST_CONFIG_EXT_JS,
-        ),
-      );
 
   if (hasJestProperty || existingJestConfigExt) {
     const result: {continue: boolean} = await prompts({
@@ -121,6 +113,23 @@ export default async (
     console.log('Aborting...');
     return;
   }
+
+  // Determine if Jest should use JS or TS for the config file
+  const jestConfigFileExt = results.useTypescript
+    ? JEST_CONFIG_EXT_TS
+    : JEST_CONFIG_EXT_JS;
+
+  // Determine Jest config path
+  const jestConfigPath = existingJestConfigExt
+    ? getConfigFilename(existingJestConfigExt)
+    : path.join(
+        rootDir,
+        getConfigFilename(
+          projectPackageJson.type === 'module'
+            ? JEST_CONFIG_EXT_MJS
+            : jestConfigFileExt,
+        ),
+      );
 
   const shouldModifyScripts = results.scripts;
 
