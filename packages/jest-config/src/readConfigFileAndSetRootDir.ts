@@ -114,9 +114,7 @@ const loadTSConfigFile = async (
       );
     }
 
-    throw new Error(
-      `Jest: Could not register 'ts-node' to read the TypeScript file: ${configPath}`,
-    );
+    throw e;
   }
 
   registerer.enabled(true);
