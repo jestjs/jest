@@ -78,7 +78,7 @@
     "strip-ansi": "^6.0.0",
     "tempy": "^0.6.0",
     "throat": "^5.0.0",
-    "ts-node": "^9.0.0",
+    "ts-node": ">=9.0.0",
     "type-fest": "^0.16.0",
     "typescript": "^4.0.2",
     "which": "^2.0.1"
