@@ -29,7 +29,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/* eslint-disable local/ban-types-eventually, sort-keys */
+/* eslint-disable local/ban-types-eventually, sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
 import {convertDescriptorToString} from 'jest-util';
 import type {Config} from '@jest/types';

@@ -32,8 +32,41 @@ module.exports = {
         'import/default': 'off',
         'no-dupe-class-members': 'off',
         'no-unused-vars': 'off',
-        // TODO: turn these on at some point
+      },
+    },
+    {
+      files: [
+        'packages/jest-jasmine2/src/jasmine/Env.ts',
+        'packages/jest-jasmine2/src/jasmine/ReportDispatcher.ts',
+        'packages/jest-jasmine2/src/jasmine/Spec.ts',
+        'packages/jest-jasmine2/src/jasmine/SpyStrategy.ts',
+        'packages/jest-jasmine2/src/jasmine/Suite.ts',
+        'packages/jest-jasmine2/src/jasmine/createSpy.ts',
+        'packages/jest-jasmine2/src/jasmine/jasmineLight.ts',
+        'packages/jest-mock/src/__tests__/index.test.ts',
+        'packages/jest-mock/src/index.ts',
+        'packages/pretty-format/src/__tests__/Immutable.test.ts',
+        'packages/pretty-format/src/__tests__/prettyFormat.test.ts',
+      ],
+      rules: {
+        'local/prefer-rest-params-eventually': 'warn',
         'prefer-rest-params': 'off',
+      },
+    },
+    {
+      files: [
+        'packages/expect/src/index.ts',
+        'packages/jest-fake-timers/src/legacyFakeTimers.ts',
+        'packages/jest-jasmine2/src/jasmine/Env.ts',
+        'packages/jest-jasmine2/src/jasmine/ReportDispatcher.ts',
+        'packages/jest-jasmine2/src/jasmine/Spec.ts',
+        'packages/jest-jasmine2/src/jasmine/Suite.ts',
+        'packages/jest-jasmine2/src/jasmine/jasmineLight.ts',
+        'packages/jest-jasmine2/src/jestExpect.ts',
+        'packages/jest-resolve/src/index.ts',
+      ],
+      rules: {
+        'local/prefer-spread-eventually': 'warn',
         'prefer-spread': 'off',
       },
     },

@@ -42,8 +42,10 @@ describe('Runtime requireModule', () => {
         'filename',
         'id',
         'loaded',
+        'path',
         'parent',
         'paths',
+        'main',
       ]);
     }));
 
@@ -59,8 +61,10 @@ describe('Runtime requireModule', () => {
         'filename',
         'id',
         'loaded',
+        'path',
         'parent',
         'paths',
+        'main',
       ]);
     }));
 

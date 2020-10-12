@@ -28,6 +28,9 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
+
+/* eslint-disable local/prefer-spread-eventually, local/prefer-rest-params-eventually */
+
 import type {Reporter, RunDetails} from '../types';
 import type {SpecResult} from './Spec';
 import type {SuiteResult} from './Suite';

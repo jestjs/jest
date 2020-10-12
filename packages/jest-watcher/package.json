@@ -1,16 +1,16 @@
 {
   "name": "jest-watcher",
   "description": "Delightful JavaScript Testing.",
-  "version": "26.3.0",
+  "version": "26.5.2",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/test-result": "^26.3.0",
-    "@jest/types": "^26.3.0",
+    "@jest/test-result": "^26.5.2",
+    "@jest/types": "^26.5.2",
     "@types/node": "*",
     "ansi-escapes": "^4.2.1",
     "chalk": "^4.0.0",
-    "jest-util": "^26.3.0",
+    "jest-util": "^26.5.2",
     "string-length": "^4.0.1"
   },
   "repository": {

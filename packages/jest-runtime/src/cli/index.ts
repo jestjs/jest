@@ -84,7 +84,14 @@ export async function run(
     setGlobal(environment.global, 'jestProjectConfig', config);
     setGlobal(environment.global, 'jestGlobalConfig', globalConfig);
 
-    const runtime = new Runtime(config, environment, hasteMap.resolver);
+    const runtime = new Runtime(
+      config,
+      environment,
+      hasteMap.resolver,
+      undefined,
+      undefined,
+      filePath,
+    );
 
     for (const path of config.setupFiles) {
       // TODO: remove ? in Jest 26

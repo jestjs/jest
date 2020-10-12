@@ -10,9 +10,9 @@
 const fs = require('fs');
 const {promisify} = require('util');
 const path = require('path');
-const {request} = require('graphql-request');
+const {gql, request} = require('graphql-request');
 
-const graphqlQuery = `
+const graphqlQuery = gql`
   {
     account(slug: "jest") {
       orders(status: ACTIVE, limit: 1000) {

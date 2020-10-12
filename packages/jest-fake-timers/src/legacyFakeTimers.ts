@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/ban-types-eventually */
+/* eslint-disable local/ban-types-eventually, local/prefer-spread-eventually */
 
 import util = require('util');
 import type {ModuleMocker} from 'jest-mock';

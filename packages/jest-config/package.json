@@ -1,6 +1,6 @@
 {
   "name": "jest-config",
-  "version": "26.4.2",
+  "version": "26.5.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -19,23 +19,23 @@
   },
   "dependencies": {
     "@babel/core": "^7.1.0",
-    "@jest/test-sequencer": "^26.4.2",
-    "@jest/types": "^26.3.0",
-    "babel-jest": "^26.3.0",
+    "@jest/test-sequencer": "^26.5.3",
+    "@jest/types": "^26.5.2",
+    "babel-jest": "^26.5.2",
     "chalk": "^4.0.0",
     "deepmerge": "^4.2.2",
     "glob": "^7.1.1",
     "graceful-fs": "^4.2.4",
-    "jest-environment-jsdom": "^26.3.0",
-    "jest-environment-node": "^26.3.0",
+    "jest-environment-jsdom": "^26.5.2",
+    "jest-environment-node": "^26.5.2",
     "jest-get-type": "^26.3.0",
-    "jest-jasmine2": "^26.4.2",
+    "jest-jasmine2": "^26.5.3",
     "jest-regex-util": "^26.0.0",
-    "jest-resolve": "^26.4.0",
-    "jest-util": "^26.3.0",
-    "jest-validate": "^26.4.2",
+    "jest-resolve": "^26.5.2",
+    "jest-util": "^26.5.2",
+    "jest-validate": "^26.5.3",
     "micromatch": "^4.0.2",
-    "pretty-format": "^26.4.2"
+    "pretty-format": "^26.5.2"
   },
   "devDependencies": {
     "@types/babel__core": "^7.0.4",

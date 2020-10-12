@@ -9,7 +9,7 @@ Install Jest using [`yarn`](https://yarnpkg.com/en/package/jest):
 yarn add --dev jest
 ```
 
-Or [`npm`](https://www.npmjs.com/):
+Or [`npm`](https://www.npmjs.com/package/jest):
 
 ```bash
 npm install --save-dev jest

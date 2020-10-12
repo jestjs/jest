@@ -35,8 +35,13 @@ import {getTestID} from '../utils';
 import run from '../run';
 import testCaseReportHandler from '../testCaseReportHandler';
 import globals from '..';
+import createExpect, {Expect} from './jestExpect';
 
 type Process = NodeJS.Process;
+
+interface JestGlobals extends Global.TestFrameworkGlobals {
+  expect: Expect;
+}
 
 export const initialize = async ({
   config,
@@ -46,8 +51,9 @@ export const initialize = async ({
   globalConfig,
   localRequire,
   parentProcess,
-  testPath,
   sendMessageToJest,
+  setGlobalsForRuntime,
+  testPath,
 }: {
   config: Config.ProjectConfig;
   environment: JestEnvironment;
@@ -58,6 +64,7 @@ export const initialize = async ({
   testPath: Config.Path;
   parentProcess: Process;
   sendMessageToJest?: TestFileEvent;
+  setGlobalsForRuntime?: (globals: JestGlobals) => void;
 }): Promise<{
   globals: Global.TestFrameworkGlobals;
   snapshotState: SnapshotStateType;
@@ -120,9 +127,22 @@ export const initialize = async ({
     addEventHandler(environment.handleTestEvent.bind(environment));
   }
 
+  const runtimeGlobals: JestGlobals = {
+    ...globalsObject,
+    expect: createExpect(globalConfig),
+  };
+  // TODO: `jest-circus` might be newer than `jest-runtime` - remove `?.` for Jest 27
+  setGlobalsForRuntime?.(runtimeGlobals);
+
+  // TODO: `jest-circus` might be newer than `jest-config` - remove `??` for Jest 27
+  if (config.injectGlobals ?? true) {
+    Object.assign(environment.global, runtimeGlobals);
+  }
+
   await dispatch({
     name: 'setup',
     parentProcess,
+    runtimeGlobals,
     testNamePattern: globalConfig.testNamePattern,
   });
 
