@@ -88,8 +88,12 @@ const generateConfigFile = (
   }
 
   const configDocMessage =
-    '// For a detailed explanation regarding each configuration property, visit:\n' +
-    '// https://jestjs.io/docs/en/configuration.html\n\n';
+    '/*\n' +
+    ' * For a detailed explanation regarding each configuration property' +
+    (useTypescript ? ' and type check' : '') +
+    ', visit:\n' +
+    ' * https://jestjs.io/docs/en/configuration.html\n' +
+    ' */\n\n';
 
   return (
     configDocMessage +
