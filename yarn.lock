@@ -11459,8 +11459,10 @@ fsevents@^1.2.7:
     jest-validate: ^26.5.3
     micromatch: ^4.0.2
     pretty-format: ^26.5.2
-  peerDependencies:
     ts-node: ^9.0.0
+    typescript: ^4.0.3
+  peerDependencies:
+    ts-node: ">=9.0.0"
   peerDependenciesMeta:
     ts-node:
       optional: true
@@ -17116,7 +17118,7 @@ fsevents@^1.2.7:
     strip-ansi: ^6.0.0
     tempy: ^0.6.0
     throat: ^5.0.0
-    ts-node: ">=9.0.0"
+    ts-node: ^9.0.0
     type-fest: ^0.16.0
     typescript: ^4.0.2
     which: ^2.0.1
@@ -18927,7 +18929,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"ts-node@npm:>=9.0.0":
+"ts-node@npm:^9.0.0":
   version: 9.0.0
   resolution: "ts-node@npm:9.0.0"
   dependencies:
@@ -19100,7 +19102,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"typescript@*, typescript@^4.0.2":
+"typescript@*, typescript@^4.0.2, typescript@^4.0.3":
   version: 4.0.3
   resolution: "typescript@npm:4.0.3"
   bin:
@@ -19110,7 +19112,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@*#builtin<compat/typescript>, typescript@patch:typescript@^4.0.2#builtin<compat/typescript>":
+"typescript@patch:typescript@*#builtin<compat/typescript>, typescript@patch:typescript@^4.0.2#builtin<compat/typescript>, typescript@patch:typescript@^4.0.3#builtin<compat/typescript>":
   version: 4.0.3
   resolution: "typescript@patch:typescript@npm%3A4.0.3#builtin<compat/typescript>::version=4.0.3&hash=5bf698"
   bin:
