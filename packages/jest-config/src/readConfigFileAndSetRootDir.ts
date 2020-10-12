@@ -9,6 +9,7 @@ import * as path from 'path';
 import {pathToFileURL} from 'url';
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
+import {interopRequireDefault} from 'jest-util';
 // @ts-expect-error: vendored
 import jsonlint from './vendor/jsonlint';
 import {
@@ -101,10 +102,6 @@ export default async function readConfigFileAndSetRootDir(
 const loadTSConfigFile = (
   configPath: Config.Path,
 ): Config.InitialOptions | Promise<Config.InitialOptions> => {
-  // Helper to normalize module's return value
-  const interopRequireDefault = (obj: any): {default: any} =>
-    obj && obj.__esModule ? obj : {default: obj};
-
   let registerer;
 
   // Register TypeScript compiler instance
