@@ -11,7 +11,6 @@ import chalk = require('chalk');
 import prompts = require('prompts');
 import {constants} from 'jest-config';
 import {tryRealpath} from 'jest-util';
-import {JEST_CONFIG_EXT_TS} from 'jest-config/build/constants';
 import defaultQuestions, {testScriptQuestion} from './questions';
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
 import generateConfigFile from './generate_config_file';
@@ -22,6 +21,7 @@ const {
   JEST_CONFIG_BASE_NAME,
   JEST_CONFIG_EXT_MJS,
   JEST_CONFIG_EXT_JS,
+  JEST_CONFIG_EXT_TS,
   JEST_CONFIG_EXT_ORDER,
   PACKAGE_JSON,
 } = constants;
