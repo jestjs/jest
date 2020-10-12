@@ -98,7 +98,9 @@ export default async function readConfigFileAndSetRootDir(
 }
 
 // Load the TypeScript configuration
-const loadTSConfigFile = (configPath: Config.Path): Config.InitialOptions => {
+const loadTSConfigFile = (
+  configPath: Config.Path,
+): Config.InitialOptions | Promise<Config.InitialOptions> => {
   // Helper to normalize module's return value
   const interopRequireDefault = (obj: any): {default: any} =>
     obj && obj.__esModule ? obj : {default: obj};
