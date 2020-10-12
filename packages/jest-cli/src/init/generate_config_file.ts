@@ -87,7 +87,7 @@ const generateConfigFile = (
     }
   }
 
-  const configDocMessage = `/*
+  const configHeaderMessage = `/*
  * For a detailed explanation regarding each configuration property${
    useTypescript ? ' and type check' : ''
  }, visit:
@@ -97,7 +97,7 @@ const generateConfigFile = (
 `;
 
   return (
-    configDocMessage +
+    configHeaderMessage +
     (useTypescript || generateEsm
       ? 'export default {\n'
       : 'module.exports = {\n') +
