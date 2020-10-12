@@ -210,13 +210,13 @@ describe('init', () => {
       });
 
       it('user answered with "No"', async () => {
-        prompts.mockReturnValueOnce({useTypescript: true});
+        prompts.mockReturnValueOnce({useTypescript: false});
 
         await init(resolveFromFixture('test_generated_jest_config_ts'));
 
         const jestConfigFileName = fs.writeFileSync.mock.calls[0][0];
 
-        expect(jestConfigFileName).not.toBe('jest.config.ts');
+        expect(jestConfigFileName).not.toContain('jest.config.ts');
       });
     });
   });
