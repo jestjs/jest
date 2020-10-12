@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="es-ES"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Configuring Jest · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="La configuración de Jest puede definirse en el archivo `package.json` de tu proyecto, en el archivo `jest.config.js`, o desde la opción `--config &lt;ruta/del/archivo.js|cjs|mjs|json&gt;`. Si quieres usar `package.json` para la configuración de Jest, el atributo `&quot;jest&quot;` debe ser usado a nivel raíz para que Jest pueda encontrar tu configuración:"/><meta name="docsearch:version" content="next"/><meta name="docsearch:language" content="es-ES"/><meta property="og:title" content="Configuring Jest · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="La configuración de Jest puede definirse en el archivo `package.json` de tu proyecto, en el archivo `jest.config.js`, o desde la opción `--config &lt;ruta/del/archivo.js|cjs|mjs|json&gt;`. Si quieres usar `package.json` para la configuración de Jest, el atributo `&quot;jest&quot;` debe ser usado a nivel raíz para que Jest pueda encontrar tu configuración:"/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+<!DOCTYPE html><html lang="es-ES"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Configuring Jest · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Jest&#x27;s configuration can be defined in the `package.json` file of your project, or through a `jest.config.js`, or `jest.config.ts` file or through the `--config &lt;path/to/file.js|ts|cjs|mjs|json&gt;` option. Si quieres usar `package.json` para la configuración de Jest, el atributo `&quot;jest&quot;` debe ser usado a nivel raíz para que Jest pueda encontrar tu configuración:"/><meta name="docsearch:version" content="next"/><meta name="docsearch:language" content="es-ES"/><meta property="og:title" content="Configuring Jest · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="Jest&#x27;s configuration can be defined in the `package.json` file of your project, or through a `jest.config.js`, or `jest.config.ts` file or through the `--config &lt;path/to/file.js|ts|cjs|mjs|json&gt;` option. Si quieres usar `package.json` para la configuración de Jest, el atributo `&quot;jest&quot;` debe ser usado a nivel raíz para que Jest pueda encontrar tu configuración:"/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -75,7 +75,7 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/doc
                 };
               }
             });
-        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/Configuration.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Configuring Jest</h1></header><article><div><span><p>La configuración de Jest puede definirse en el archivo <code>package.json</code> de tu proyecto, en el archivo <code>jest.config.js</code>, o desde la opción <code>--config &lt;ruta/del/archivo.js|cjs|mjs|json&gt;</code>. Si quieres usar <code>package.json</code> para la configuración de Jest, el atributo <code>&quot;jest&quot;</code> debe ser usado a nivel raíz para que Jest pueda encontrar tu configuración:</p>
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/Configuration.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Configuring Jest</h1></header><article><div><span><p>Jest's configuration can be defined in the <code>package.json</code> file of your project, or through a <code>jest.config.js</code>, or <code>jest.config.ts</code> file or through the <code>--config &lt;path/to/file.js|ts|cjs|mjs|json&gt;</code> option. Si quieres usar <code>package.json</code> para la configuración de Jest, el atributo <code>&quot;jest&quot;</code> debe ser usado a nivel raíz para que Jest pueda encontrar tu configuración:</p>
 <pre><code class="hljs css language-json">{
   <span class="hljs-attr">"name"</span>: <span class="hljs-string">"my-project"</span>,
   <span class="hljs-attr">"jest"</span>: {
@@ -85,15 +85,32 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/doc
 </code></pre>
 <p>O a través de JavaScript:</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// jest.config.js</span>
-<span class="hljs-comment">//Objeto síncrono</span>
+<span class="hljs-comment">// Sync object</span>
 <span class="hljs-built_in">module</span>.exports = {
   <span class="hljs-attr">verbose</span>: <span class="hljs-literal">true</span>,
 };
 
-<span class="hljs-comment">//O función asíncrona</span>
+<span class="hljs-comment">// Or async function</span>
 <span class="hljs-built_in">module</span>.exports = <span class="hljs-keyword">async</span> () =&gt; {
   <span class="hljs-keyword">return</span> {
     <span class="hljs-attr">verbose</span>: <span class="hljs-literal">true</span>,
+  };
+};
+</code></pre>
+<p>Or through TypeScript (if <code>ts-node</code> is installed):</p>
+<pre><code class="hljs css language-ts"><span class="hljs-comment">// jest.config.ts</span>
+<span class="hljs-keyword">import</span> <span class="hljs-keyword">type</span> {Config} <span class="hljs-keyword">from</span> <span class="hljs-string">'@jest/types'</span>;
+
+<span class="hljs-comment">// Sync object</span>
+<span class="hljs-keyword">const</span> config: Config.InitialOptions = {
+  verbose: <span class="hljs-literal">true</span>,
+};
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> config;
+
+<span class="hljs-comment">// Or async function</span>
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-keyword">async</span> (): <span class="hljs-built_in">Promise</span>&lt;Config.InitialOptions&gt; =&gt; {
+  <span class="hljs-keyword">return</span> {
+    verbose: <span class="hljs-literal">true</span>,
   };
 };
 </code></pre>
