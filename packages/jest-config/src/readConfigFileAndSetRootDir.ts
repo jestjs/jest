@@ -32,7 +32,7 @@ export default async function readConfigFileAndSetRootDir(
 
   try {
     if (isTS) {
-      configObject = loadTSConfigFile(configPath);
+      configObject = await loadTSConfigFile(configPath);
     } else {
       configObject = require(configPath);
     }

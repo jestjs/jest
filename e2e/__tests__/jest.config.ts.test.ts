@@ -78,8 +78,6 @@ test('invalid JS in jest.config.ts', () => {
   });
 
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
-  expect(stderr).toMatch(
-    'Error: Jest: Failed to parse the TypeScript config file ',
-  );
+  expect(stderr).toMatch('TSError: ⨯ Unable to compile TypeScript:');
   expect(exitCode).toBe(1);
 });
