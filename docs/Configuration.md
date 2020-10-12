@@ -18,12 +18,12 @@ Or through JavaScript:
 
 ```js
 // jest.config.js
-//Sync object
+// Sync object
 module.exports = {
   verbose: true,
 };
 
-//Or async function
+// Or async function
 module.exports = async () => {
   return {
     verbose: true,
@@ -37,13 +37,13 @@ Or through TypeScript (if `ts-node` is installed):
 // jest.config.ts
 import type {Config} from '@jest/types';
 
-//Sync object
+// Sync object
 const config: Config.InitialOptions = {
   verbose: true,
 };
 export default config;
 
-//Or async function
+// Or async function
 export default async (): Promise<Config.InitialOptions> => {
   return {
     verbose: true,
