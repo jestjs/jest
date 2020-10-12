@@ -55,7 +55,7 @@
     "istanbul-lib-report": "^3.0.0",
     "istanbul-reports": "^3.0.0",
     "jest": "workspace:packages/jest",
-    "jest-environment-jsdom-fifteen": "^1.0.2",
+    "jest-environment-node": "^26.5.2",
     "jest-junit": "^12.0.0",
     "jest-runner-tsd": "^1.1.0",
     "jest-silent-reporter": "^0.2.1",
