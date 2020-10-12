@@ -117,19 +117,14 @@ export default async (
   // Determine if Jest should use JS or TS for the config file
   const jestConfigFileExt = results.useTypescript
     ? JEST_CONFIG_EXT_TS
+    : projectPackageJson.type === 'module'
+    ? JEST_CONFIG_EXT_MJS
     : JEST_CONFIG_EXT_JS;
 
   // Determine Jest config path
   const jestConfigPath = existingJestConfigExt
     ? getConfigFilename(existingJestConfigExt)
-    : path.join(
-        rootDir,
-        getConfigFilename(
-          projectPackageJson.type === 'module'
-            ? JEST_CONFIG_EXT_MJS
-            : jestConfigFileExt,
-        ),
-      );
+    : path.join(rootDir, getConfigFilename(jestConfigFileExt));
 
   const shouldModifyScripts = results.scripts;
 
