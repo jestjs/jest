@@ -99,9 +99,9 @@ export default async function readConfigFileAndSetRootDir(
 }
 
 // Load the TypeScript configuration
-const loadTSConfigFile = (
+const loadTSConfigFile = async (
   configPath: Config.Path,
-): Config.InitialOptions | Promise<Config.InitialOptions> => {
+): Promise<Config.InitialOptions> => {
   let registerer;
 
   // Register TypeScript compiler instance
@@ -121,7 +121,12 @@ const loadTSConfigFile = (
 
   registerer.enabled(true);
 
-  const configObject = interopRequireDefault(require(configPath)).default;
+  let configObject = interopRequireDefault(require(configPath)).default;
+
+  // In case the config is a function which imports more Typescript code
+  if (typeof configObject === 'function') {
+    configObject = await configObject();
+  }
 
   registerer.enabled(false);
 
