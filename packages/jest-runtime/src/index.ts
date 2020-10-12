@@ -1061,10 +1061,6 @@ class Runtime {
       }),
     ];
 
-    if (!this._mainModule && filename === this._testPath) {
-      this._mainModule = module;
-    }
-
     Object.defineProperty(module, 'main', {
       enumerable: true,
       value: this._mainModule,
@@ -1398,9 +1394,13 @@ class Runtime {
       });
     })();
 
+    if (!this._mainModule && from.filename === this._testPath) {
+      this._mainModule = module;
+    }
+
     Object.defineProperty(moduleRequire, 'main', {
       enumerable: true,
-      value: this._testPath ? this._moduleRegistry.get(this._testPath) : null,
+      value: this._mainModule,
     });
     return moduleRequire;
   }
