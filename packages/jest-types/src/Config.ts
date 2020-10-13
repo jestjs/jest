@@ -11,7 +11,7 @@ import type {ForegroundColor} from 'chalk';
 
 type CoverageProvider = 'babel' | 'v8';
 
-type Timers = 'real' | 'fake' | 'modern';
+type Timers = 'real' | 'fake' | 'modern' | 'legacy';
 
 export type Path = string;
 
@@ -364,7 +364,7 @@ export type ProjectConfig = {
   testRegex: Array<string | RegExp>;
   testRunner: string;
   testURL: string;
-  timers: Timers | 'legacy';
+  timers: Timers;
   transform: Array<[string, Path, Record<string, unknown>]>;
   transformIgnorePatterns: Array<Glob>;
   watchPathIgnorePatterns: Array<string>;
