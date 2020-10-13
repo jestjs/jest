@@ -10,6 +10,8 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Add page detailing environment variables set by Jest ([#10630](https://github.com/facebook/jest/pull/10630))
+
 ### Performance
 
 ## 26.5.3
