@@ -7,9 +7,17 @@
 
 import runJest from '../runJest';
 
-test('`require.main` on using `jest.resetModules` should not be undefined', () => {
+test("`require.main` on using `--resetModules='true'` should not be undefined", () => {
   const {exitCode} = runJest('require-main-reset-modules', [
     `--resetModules='true'`,
+    'index.test.js',
+  ]);
+  expect(exitCode).toBe(0);
+});
+
+test('`require.main` on using `jest.resetModules()` should not be undefined', () => {
+  const {exitCode} = runJest('require-main-reset-modules', [
+    'callJestResetModules.test.js',
   ]);
   expect(exitCode).toBe(0);
 });
