@@ -3,7 +3,6 @@
 ### Features
 
 - `[jest-cli, jest-config]` Add support for the `jest.config.ts` configuration file ([#10564](https://github.com/facebook/jest/pull/10564))
-- `[jest-runtime]` Add tests for all variations of `jest.resetModules` ([#10628](https://github.com/facebook/jest/pull/10628))
 
 ### Fixes
 
