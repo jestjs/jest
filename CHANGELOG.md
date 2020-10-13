@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- `[jest-runtime]` `require.main` is no longer `undefined` when using `jest.resetModules` ([#10626](https://github.com/facebook/jest/pull/10626))
+
 ### Chore & Maintenance
 
 ### Performance
