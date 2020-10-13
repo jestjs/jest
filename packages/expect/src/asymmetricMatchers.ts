@@ -33,32 +33,32 @@ class Any extends AsymmetricMatcher<any> {
   }
 
   asymmetricMatch(other: unknown) {
-    if (this.sample == String) {
+    if (this.sample == String || this.sample === 'string') {
       return typeof other == 'string' || other instanceof String;
     }
 
-    if (this.sample == Number) {
+    if (this.sample == Number || this.sample === 'number') {
       return typeof other == 'number' || other instanceof Number;
     }
 
-    if (this.sample == Function) {
+    if (this.sample == Function || this.sample === 'function') {
       return typeof other == 'function' || other instanceof Function;
     }
 
-    if (this.sample == Object) {
+    if (this.sample == Object || this.sample === 'object') {
       return typeof other == 'object';
     }
 
-    if (this.sample == Boolean) {
+    if (this.sample == Boolean || this.sample === 'boolean') {
       return typeof other == 'boolean';
     }
 
     /* global BigInt */
-    if (this.sample == BigInt) {
+    if (this.sample == BigInt || this.sample === 'bigint') {
       return typeof other == 'bigint';
     }
 
-    if (this.sample == Symbol) {
+    if (this.sample == Symbol || this.sample === 'symbol') {
       return typeof other == 'symbol';
     }
 
