@@ -33,41 +33,41 @@ class Any extends AsymmetricMatcher<any> {
   }
 
   asymmetricMatch(other: unknown) {
-    if (this.sample == String || this.sample === 'string') {
+    if (this.sample == String || this.sample == 'string') {
       return typeof other == 'string' || other instanceof String;
     }
 
-    if (this.sample == Number || this.sample === 'number') {
+    if (this.sample == Number || this.sample == 'number') {
       return typeof other == 'number' || other instanceof Number;
     }
 
-    if (this.sample == Function || this.sample === 'function') {
+    if (this.sample == Function || this.sample == 'function') {
       return typeof other == 'function' || other instanceof Function;
     }
 
-    if (this.sample == Object || this.sample === 'object') {
+    if (this.sample == Object || this.sample == 'object') {
       return typeof other == 'object';
     }
 
-    if (this.sample == Boolean || this.sample === 'boolean') {
+    if (this.sample == Boolean || this.sample == 'boolean') {
       return typeof other == 'boolean';
     }
 
     /* global BigInt */
-    if (this.sample == BigInt || this.sample === 'bigint') {
+    if (this.sample == BigInt || this.sample == 'bigint') {
       return typeof other == 'bigint';
     }
 
-    if (this.sample == Symbol || this.sample === 'symbol') {
+    if (this.sample == Symbol || this.sample == 'symbol') {
       return typeof other == 'symbol';
     }
 
     if (
-      typeof this.sample === 'string' &&
-      typeof other === 'object' &&
+      typeof this.sample == 'string' &&
+      typeof other == 'object' &&
       other !== null
     ) {
-      return other.constructor.name === this.sample;
+      return other.constructor.name == this.sample;
     }
 
     return other instanceof this.sample;
@@ -98,7 +98,7 @@ class Any extends AsymmetricMatcher<any> {
       return 'boolean';
     }
 
-    if (typeof this.sample === 'string') {
+    if (typeof this.sample == 'string') {
       return this.sample;
     }
 
