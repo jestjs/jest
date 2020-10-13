@@ -143,6 +143,7 @@ If you are making changes to the website or documentation, test the website fold
     ```sh-session
     $ cd website       # Only needed if you are not already in the website directory
     $ yarn
+    $ node fetchSupporters.js
     $ yarn start
     ```
 1.  You can run a development server to check if the changes you made are being displayed accurately by running `yarn start` in the website directory.

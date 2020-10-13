@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 test('require.main is set', () => {
-  const {getMain} = require('../index.js');
+  const {getMain} = require('../direct.js');
   expect(getMain()).toBeTruthy();
 });
 
 test('require from main works', () => {
-  const {requireFromMain} = require('../index.js');
+  const {requireFromMain} = require('../direct.js');
   expect(requireFromMain('../package.json')).toBeTruthy();
 });
