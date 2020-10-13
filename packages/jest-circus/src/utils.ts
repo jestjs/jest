@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import type {Circus} from '@jest/types';
-import {convertDescriptorToString, formatTime} from 'jest-util';
+import {ErrorWithStack, convertDescriptorToString, formatTime} from 'jest-util';
 import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
 import dedent = require('dedent');
@@ -43,7 +43,7 @@ export const makeDescribe = (
 };
 
 export const makeTest = (
-  fn: Circus.TestFn | undefined,
+  fn: Circus.TestFn,
   mode: Circus.TestMode,
   name: Circus.TestName,
   parent: Circus.DescribeBlock,
@@ -159,13 +159,14 @@ function checkIsError(error: unknown): error is Error {
 }
 
 export const callAsyncCircusFn = (
-  fn: Circus.AsyncFn,
   testContext: Circus.TestContext | undefined,
-  asyncError: Circus.Exception,
+  testOrHook: Circus.TestEntry | Circus.Hook,
   {isHook, timeout}: {isHook?: boolean | null; timeout: number},
 ): Promise<unknown> => {
   let timeoutID: NodeJS.Timeout;
   let completed = false;
+
+  const {fn, asyncError} = testOrHook;
 
   return new Promise((resolve, reject) => {
     timeoutID = setTimeout(
@@ -179,7 +180,7 @@ export const callAsyncCircusFn = (
       let returnedValue: unknown = undefined;
       const done = (reason?: Error | string): void => {
         // We need to keep a stack here before the promise tick
-        const errorAtDone = new Error();
+        const errorAtDone = new ErrorWithStack(undefined, done);
         // Use `Promise.resolve` to allow the event loop to go a single tick in case `done` is called synchronously
         Promise.resolve().then(() => {
           if (returnedValue !== undefined) {

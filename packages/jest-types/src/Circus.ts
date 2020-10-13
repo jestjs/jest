@@ -66,7 +66,7 @@ export type SyncEvent =
       asyncError: Error;
       name: 'add_test';
       testName: TestName;
-      fn?: TestFn;
+      fn: TestFn;
       mode?: TestMode;
       timeout: number | undefined;
     }
@@ -231,7 +231,7 @@ export type TestEntry = {
   type: 'test';
   asyncError: Exception; // Used if the test failure contains no usable stack trace
   errors: Array<TestError>;
-  fn?: TestFn;
+  fn: TestFn;
   invocations: number;
   mode: TestMode;
   name: TestName;
