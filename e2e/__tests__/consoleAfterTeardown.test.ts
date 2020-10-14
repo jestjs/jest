@@ -14,5 +14,8 @@ test('console printing', () => {
   const {rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(0);
-  expect(wrap(rest)).toMatchSnapshot();
+
+  const withoutTrace = rest.split('\n').slice(0, -3).join('\n');
+
+  expect(wrap(withoutTrace)).toMatchSnapshot();
 });
