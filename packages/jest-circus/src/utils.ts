@@ -170,7 +170,7 @@ export const callAsyncCircusFn = (
 
   return new Promise((resolve, reject) => {
     timeoutID = setTimeout(
-      () => reject(_makeTimeoutMessage(timeout, !!isHook)),
+      () => reject(_makeTimeoutMessage(timeout, isHook)),
       timeout,
     );
 
