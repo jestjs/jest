@@ -39,7 +39,8 @@
       "mock-function-api",
       "jest-object",
       "configuration",
-      "cli"
+      "cli",
+      "environment-variables"
     ]
   }
 }

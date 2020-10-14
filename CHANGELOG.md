@@ -12,6 +12,9 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Add step for fetching `backers.json` file in website setup docs ([#10631](https://github.com/facebook/jest/pull/10631))
+- `[docs]` Add page detailing environment variables set by Jest ([#10630](https://github.com/facebook/jest/pull/10630))
+
 ### Performance
 
 ## 26.5.3
