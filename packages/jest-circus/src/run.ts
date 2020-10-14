@@ -143,7 +143,7 @@ const _callCircusHook = async ({
   const timeout = hook.timeout || getState().testTimeout;
 
   try {
-    await callAsyncCircusFn(testContext, hook, {
+    await callAsyncCircusFn(hook, testContext, {
       isHook: true,
       timeout,
     });
@@ -166,7 +166,7 @@ const _callCircusTest = async (
   }
 
   try {
-    await callAsyncCircusFn(testContext, test, {
+    await callAsyncCircusFn(test, testContext, {
       isHook: false,
       timeout,
     });
