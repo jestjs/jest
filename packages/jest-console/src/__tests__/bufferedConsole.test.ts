@@ -153,6 +153,7 @@ describe('CustomConsole', () => {
       _console.dir(deepObject, {depth: 6});
 
       expect(stdout()).toMatch('value');
+      expect(stdout()).not.toMatch('depth');
     });
   });
 
