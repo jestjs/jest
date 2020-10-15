@@ -147,6 +147,15 @@ describe('CustomConsole', () => {
     });
   });
 
+  describe('dir', () => {
+    test('should print the deepest value', () => {
+      const deepObject = {1: {2: {3: {4: {5: {6: 'value'}}}}}};
+      _console.dir(deepObject, {depth: 6});
+
+      expect(stdout()).toMatch('value');
+    });
+  });
+
   describe('timeLog', () => {
     test('should return the time between time() and timeEnd() on default timer', () => {
       _console.time();
