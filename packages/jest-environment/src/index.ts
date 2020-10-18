@@ -29,7 +29,6 @@ export type ModuleWrapper = (
   require: Module['require'],
   __dirname: string,
   __filename: Module['filename'],
-  global: Global.Global,
   jest?: Jest,
   ...extraGlobals: Array<Global.Global[keyof Global.Global]>
 ) => unknown;

@@ -45,6 +45,9 @@ class JSDOMEnvironment implements JestEnvironment {
       throw new Error('JSDOM did not return a Window object');
     }
 
+    // for "universal" code (code should use `globalThis`)
+    global.global = global;
+
     // In the `jsdom@16`, ArrayBuffer was not added to Window, ref: https://github.com/jsdom/jsdom/commit/3a4fd6258e6b13e9cf8341ddba60a06b9b5c7b5b
     // Install ArrayBuffer to Window to fix it. Make sure the test is passed, ref: https://github.com/facebook/jest/pull/7626
     global.ArrayBuffer = ArrayBuffer;
