@@ -55,7 +55,7 @@
     "istanbul-lib-report": "^3.0.0",
     "istanbul-reports": "^3.0.0",
     "jest": "workspace:packages/jest",
-    "jest-junit": "^11.0.1",
+    "jest-junit": "^12.0.0",
     "jest-runner-tsd": "^1.1.0",
     "jest-silent-reporter": "^0.2.1",
     "jest-snapshot-serializer-raw": "^1.1.0",
@@ -77,12 +77,13 @@
     "strip-ansi": "^6.0.0",
     "tempy": "^0.6.0",
     "throat": "^5.0.0",
+    "ts-node": "^9.0.0",
     "type-fest": "^0.16.0",
     "typescript": "^4.0.2",
     "which": "^2.0.1"
   },
   "scripts": {
-    "build-clean": "rimraf './packages/*/build' './packages/*/build-es5' './packages/*/tsconfig.tsbuildinfo'",
+    "build-clean": "rimraf './packages/*/build' './packages/*/tsconfig.tsbuildinfo'",
     "build": "yarn build:js && yarn build:ts",
     "build:js": "node ./scripts/build.js",
     "build:ts": "node ./scripts/buildTs.js",

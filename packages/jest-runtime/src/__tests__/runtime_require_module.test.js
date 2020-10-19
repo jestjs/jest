@@ -42,8 +42,10 @@ describe('Runtime requireModule', () => {
         'filename',
         'id',
         'loaded',
+        'path',
         'parent',
         'paths',
+        'main',
       ]);
     }));
 
@@ -59,8 +61,10 @@ describe('Runtime requireModule', () => {
         'filename',
         'id',
         'loaded',
+        'path',
         'parent',
         'paths',
+        'main',
       ]);
     }));
 
@@ -135,7 +139,7 @@ describe('Runtime requireModule', () => {
   });
   it('provides `require.main` to modules', () =>
     createRuntime(__filename).then(runtime => {
-      runtime._moduleRegistry.set(__filename, module);
+      runtime._mainModule = module;
       [
         './test_root/modules_with_main/export_main.js',
         './test_root/modules_with_main/re_export_main.js',

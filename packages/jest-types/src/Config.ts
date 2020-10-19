@@ -11,6 +11,8 @@ import type {ForegroundColor} from 'chalk';
 
 type CoverageProvider = 'babel' | 'v8';
 
+type Timers = 'real' | 'fake' | 'modern' | 'legacy';
+
 export type Path = string;
 
 export type Glob = string;
@@ -92,7 +94,7 @@ export type DefaultOptions = {
   testRunner: string;
   testSequencer: string;
   testURL: string;
-  timers: 'real' | 'fake';
+  timers: Timers;
   transformIgnorePatterns: Array<Glob>;
   useStderr: boolean;
   watch: boolean;
@@ -206,7 +208,7 @@ export type InitialOptions = Partial<{
   testSequencer: string;
   testURL: string;
   testTimeout: number;
-  timers: 'real' | 'fake';
+  timers: Timers;
   transform: {
     [regex: string]: Path | TransformerConfig;
   };
@@ -362,7 +364,7 @@ export type ProjectConfig = {
   testRegex: Array<string | RegExp>;
   testRunner: string;
   testURL: string;
-  timers: 'real' | 'fake' | 'modern' | 'legacy';
+  timers: Timers;
   transform: Array<[string, Path, Record<string, unknown>]>;
   transformIgnorePatterns: Array<Glob>;
   watchPathIgnorePatterns: Array<string>;

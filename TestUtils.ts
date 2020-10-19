@@ -83,6 +83,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   globalTeardown: undefined,
   globals: {},
   haste: {},
+  injectGlobals: true,
   moduleDirectories: [],
   moduleFileExtensions: ['js'],
   moduleLoader: '/test_module_loader_path',

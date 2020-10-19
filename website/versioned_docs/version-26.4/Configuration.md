@@ -1015,6 +1015,14 @@ Default: `{}`
 
 Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{userAgent: "Agent/007"}`.
 
+### `testFailureExitCode` [number]
+
+Default: `1`
+
+The exit code Jest returns on test failure.
+
+_Note: This does not change the exit code in the case of Jest errors (e.g. invalid configuration)._
+
 ### `testMatch` [array\<string>]
 
 (default: `[ "**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)" ]`)

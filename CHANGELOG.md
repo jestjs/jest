@@ -2,9 +2,58 @@
 
 ### Features
 
+- `[jest-cli, jest-config]` Add support for the `jest.config.ts` configuration file ([#10564](https://github.com/facebook/jest/pull/10564))
+
+### Fixes
+
+- `[jest-runtime]` `require.main` is no longer `undefined` when using `jest.resetModules` ([#10626](https://github.com/facebook/jest/pull/10626))
+- `[@jest/types]` Add missing values for `timers` ([#10632](https://github.com/facebook/jest/pull/10632))
+
+### Chore & Maintenance
+
+- `[docs]` Add step for fetching `backers.json` file in website setup docs ([#10631](https://github.com/facebook/jest/pull/10631))
+- `[docs]` Add page detailing environment variables set by Jest ([#10630](https://github.com/facebook/jest/pull/10630))
+- `[jest-circus]` Refactor `callAsyncCircusFn` parameters ([#10629](https://github.com/facebook/jest/pull/10629))
+
+### Performance
+
+## 26.5.3
+
+### Features
+
+- `[jest-runtime]` add support for dynamic `import()` from CommonJS ([#10620](https://github.com/facebook/jest/pull/10620))
+
+### Fixes
+
+- `[jest-runner, jest-runtime]` `require.main` should not be `undefined` with `createRequire()` ([#10610](https://github.com/facebook/jest/pull/10610))
+- `[jest-runtime]` add missing `module.path` property ([#10615](https://github.com/facebook/jest/pull/10615))
+- `[jest-runtime]` Add `mainModule` instance variable to runtime ([#10621](https://github.com/facebook/jest/pull/10621))
+- `[jest-runtime]` Evaluate Node core modules on dynamic `import()` ([#10622](https://github.com/facebook/jest/pull/10622))
+- `[jest-validate]` Show suggestion only when unrecognized cli param is longer than 1 character ([#10604](https://github.com/facebook/jest/pull/10604))
+- `[jest-validate]` Validate `testURL` as CLI option ([#10595](https://github.com/facebook/jest/pull/10595))
+
+## 26.5.2
+
+### Fixes
+
+- `[*]` Revert usage of Escalade and rollback Yargs to v15 as it breaks Node 13 ([#10599](https://github.com/facebook/jest/pull/10599))
+- `[jest-circus]` Setup globals before emitting `setup`, and include Jest globals in the `setup` payload ([#10598](https://github.com/facebook/jest/pull/10598))
+- `[jest-mock]` Fix typings for `mockResolvedValue`, `mockResolvedValueOnce`, `mockRejectedValue` and `mockRejectedValueOnce` ([#10600](https://github.com/facebook/jest/pull/10600))
+
+## 26.5.1
+
+### Fixes
+
+- `[jest-circus]` Handle older `jest-runtime` in `jest-circus`
+
+## 26.5.0
+
+### Features
+
 - `[jest-circus, jest-config, jest-runtime]` Add new `injectGlobals` config and CLI option to disable injecting global variables into the runtime ([#10484](https://github.com/facebook/jest/pull/10484))
 - `[jest-each]` Fixes `.each` type to always be callable ([#10447](https://github.com/facebook/jest/pull/10447))
 - `[jest-runner]` Add support for `moduleLoader`s with `default` exports ([#10541](https://github.com/facebook/jest/pull/10541))
+- `[@jest/create-cache-key-function]` Added a new package for creating cache keys ([#10587](https://github.com/facebook/jest/pull/10587))
 
 ### Fixes
 
@@ -12,10 +61,12 @@
 - `[jest-console]` Add `Console` constructor to `console` object ([#10502](https://github.com/facebook/jest/pull/10502))
 - `[jest-fake-timers]` Lazily instantiate mock timers ([#10551](https://github.com/facebook/jest/pull/10551))
 - `[jest-globals]` Fix lifecycle hook function types ([#10480](https://github.com/facebook/jest/pull/10480))
+- `[jest-runtime]` Remove usage of `vm.compileFunction` due to a performance issue ([#10586](https://github.com/facebook/jest/pull/10586))
 
 ### Chore & Maintenance
 
-### Performance
+- `[jest-resolve]` Replace read-pkg-up with escalade package ([10558](https://github.com/facebook/jest/pull/10558))
+- `[jest-environment-jsdom]` Update jsdom to 16.4.0 ([10578](https://github.com/facebook/jest/pull/10578))
 
 ## 26.4.2
 
