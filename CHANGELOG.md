@@ -8,6 +8,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-validate]` [**BREAKING**] Remove `recursiveBlacklist ` option in favor of previously introduced `recursiveDenylist` ([#10650](https://github.com/facebook/jest/pull/10650))
+
 ### Performance
 
 ## 26.6.0
