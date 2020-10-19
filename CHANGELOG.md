@@ -2,6 +2,16 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 26.6.0
+
+### Features
+
 - `[jest-cli, jest-config]` Add support for the `jest.config.ts` configuration file ([#10564](https://github.com/facebook/jest/pull/10564))
 
 ### Fixes
@@ -16,8 +26,6 @@
 - `[docs]` Add step for fetching `backers.json` file in website setup docs ([#10631](https://github.com/facebook/jest/pull/10631))
 - `[docs]` Add page detailing environment variables set by Jest ([#10630](https://github.com/facebook/jest/pull/10630))
 - `[jest-circus]` Refactor `callAsyncCircusFn` parameters ([#10629](https://github.com/facebook/jest/pull/10629))
-
-### Performance
 
 ## 26.5.3
 
