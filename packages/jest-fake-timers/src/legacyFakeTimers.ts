@@ -94,7 +94,6 @@ export default class FakeTimers<TimerRef> {
     };
 
     this.reset();
-    this._createMocks();
   }
 
   clearAllTimers(): void {
@@ -349,7 +348,7 @@ export default class FakeTimers<TimerRef> {
   }
 
   private _checkFakeTimers() {
-    if (this._global.setTimeout !== this._fakeTimerAPIs.setTimeout) {
+    if (this._global.setTimeout !== this._fakeTimerAPIs?.setTimeout) {
       this._global.console.warn(
         `A function to advance timers was called but the timers API is not ` +
           `mocked with fake timers. Call \`jest.useFakeTimers()\` in this ` +

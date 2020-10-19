@@ -6,6 +6,7 @@
 
 ### Fixes
 
+- `[jest-fake-timers]` Lazily instantiate mock timers ([#10551](https://github.com/facebook/jest/pull/10551))
 - `[jest-runtime]` `require.main` is no longer `undefined` when using `jest.resetModules` ([#10626](https://github.com/facebook/jest/pull/10626))
 - `[@jest/types]` Add missing values for `timers` ([#10632](https://github.com/facebook/jest/pull/10632))
 
