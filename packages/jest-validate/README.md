@@ -131,7 +131,7 @@ This will output:
   Example:
   {
     "transform": {
-      "^.+\\.js$": "<rootDir>/preprocessor.js"
+      "\\.js$": "<rootDir>/preprocessor.js"
     }
   }
 
