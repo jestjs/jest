@@ -1,0 +1,136 @@
+<!DOCTYPE html><html lang="ru"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Testing Web Frameworks · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Jest is a universal testing platform, with the ability to adapt to any JavaScript library or framework. In this section, we&#x27;d like to link to community posts and articles about integrating Jest into popular JS libraries."/><meta name="docsearch:version" content="26.5"/><meta name="docsearch:language" content="ru"/><meta property="og:title" content="Testing Web Frameworks · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="Jest is a universal testing platform, with the ability to adapt to any JavaScript library or framework. In this section, we&#x27;d like to link to community posts and articles about integrating Jest into popular JS libraries."/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/ru"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/ru/versions"><h3>26.5</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/ru/26.5/getting-started" target="_self">Документация</a></li><li class="siteNavGroupActive"><a href="/docs/ru/26.5/api" target="_self">API</a></li><li class=""><a href="/ru/help" target="_self">Справка</a></li><li class=""><a href="/blog/" target="_self">Блог</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Русский</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/26.5/testing-frameworks">English</a></li><li><a href="/docs/ja/26.5/testing-frameworks">日本語</a></li><li><a href="/docs/es-ES/26.5/testing-frameworks">Español</a></li><li><a href="/docs/pt-BR/26.5/testing-frameworks">Português (Brasil)</a></li><li><a href="/docs/ro/26.5/testing-frameworks">Română</a></li><li><a href="/docs/uk/26.5/testing-frameworks">Українська</a></li><li><a href="/docs/zh-Hans/26.5/testing-frameworks">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(event) {
+          event.preventDefault();
+
+          if (languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Возможности фреймворка</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/snapshot-testing">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/ecmascript-modules">ECMAScript Modules</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/dynamodb">Using with DynamoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/architecture">Architecture</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Возможности фреймворка</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/docs/ru/26.5/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/api">Globals</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/cli">Jest CLI Options</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/environment-variables">Environment Variables</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/TestingFrameworks.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Testing Web Frameworks</h1></header><article><div><span><p>Jest is a universal testing platform, with the ability to adapt to any JavaScript library or framework. In this section, we'd like to link to community posts and articles about integrating Jest into popular JS libraries.</p>
+<h2><a class="anchor" aria-hidden="true" id="react"></a><a href="#react" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>React</h2>
+<ul>
+<li><a href="https://testing-library.com/docs/react-testing-library/example-intro">Testing ReactJS components with Jest</a> by Kent C. Dodds (<a href="https://twitter.com/kentcdodds">@kentcdodds</a>)</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="vuejs"></a><a href="#vuejs" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Vue.js</h2>
+<ul>
+<li><a href="https://alexjoverm.github.io/series/Unit-Testing-Vue-js-Components-with-the-Official-Vue-Testing-Tools-and-Jest/">Testing Vue.js components with Jest</a> by Alex Jover Morales (<a href="https://twitter.com/alexjoverm">@alexjoverm</a>)</li>
+<li><a href="https://medium.com/@kentaromiura_the_js_guy/jest-for-all-episode-1-vue-js-d616bccbe186#.d573vrce2">Jest for all: Episode 1 — Vue.js</a> by Cristian Carlesso (<a href="https://twitter.com/kentaromiura">@kentaromiura</a>)</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="angularjs"></a><a href="#angularjs" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>AngularJS</h2>
+<ul>
+<li><a href="https://medium.com/aya-experience/testing-an-angularjs-app-with-jest-3029a613251">Testing an AngularJS app with Jest</a> за авторством Matthieu Lux (<a href="https://twitter.com/Swiip">@Swiip</a>)</li>
+<li><a href="https://engineering.talentpair.com/running-angularjs-tests-with-jest-49d0cc9c6d26">Running AngularJS Tests with Jest</a> by Ben Brandt (<a href="https://twitter.com/benjaminbrandt">@benjaminbrandt</a>)</li>
+<li><a href="https://dwatow.github.io/2019/08-14-angularjs/angular-jest/?fbclid=IwAR2SrqYg_o6uvCQ79FdNPeOxs86dUqB6pPKgd9BgnHt1kuIDRyRM-ch11xg">AngularJS Unit Tests with Jest Actions (Traditional Chinese)</a> by Chris Wang (<a href="https://github.com/dwatow">@dwatow</a>)</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="angular"></a><a href="#angular" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Angular</h2>
+<ul>
+<li><a href="https://www.xfive.co/blog/testing-angular-faster-jest/">Testing Angular faster with Jest</a> за авторством Michał Pierzchała (<a href="https://twitter.com/thymikee">@thymikee</a>)</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="mobx"></a><a href="#mobx" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>MobX</h2>
+<ul>
+<li><a href="https://semaphoreci.com/community/tutorials/how-to-test-react-and-mobx-with-jest">How to Test React and MobX with Jest</a> за авторством Will Stern (<a href="https://twitter.com/willsterndev">@willsterndev</a>)</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="redux"></a><a href="#redux" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Redux</h2>
+<ul>
+<li><a href="https://redux.js.org/recipes/writing-tests">Writing Tests</a> в документации к Redux</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="expressjs"></a><a href="#expressjs" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Express.js</h2>
+<ul>
+<li><a href="http://www.albertgao.xyz/2017/05/24/how-to-test-expressjs-with-jest-and-supertest/">How to test Express.js with Jest and Supertest</a> by Albert Gao (<a href="https://twitter.com/albertgao">@albertgao</a>)</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="gatsbyjs"></a><a href="#gatsbyjs" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>GatsbyJS</h2>
+<ul>
+<li><a href="https://www.gatsbyjs.org/docs/unit-testing/">Unit Testing</a> by GatsbyJS docs</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" id="hapijs"></a><a href="#hapijs" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Hapi.js</h2>
+<ul>
+<li><a href="http://niralar.com/testing-hapi-js-with-jest/">Testing Hapi.js With Jest</a> by Niralar (<a href="http://sivasankar.in/">Sivasankar</a>)</li>
+</ul>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/ru/26.5/tutorial-react-native"><span class="arrow-prev">← </span><span>Testing React Native Apps</span></a><a class="docs-next button" href="/docs/ru/26.5/api"><span>Globals</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#react">React</a></li><li><a href="#vuejs">Vue.js</a></li><li><a href="#angularjs">AngularJS</a></li><li><a href="#angular">Angular</a></li><li><a href="#mobx">MobX</a></li><li><a href="#redux">Redux</a></li><li><a href="#expressjs">Express.js</a></li><li><a href="#gatsbyjs">GatsbyJS</a></li><li><a href="#hapijs">Hapi.js</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/ru/getting-started.html">Getting Started</a><a href="/docs/ru/snapshot-testing.html">Guides</a><a href="/docs/ru/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://www.reactiflux.com/">Reactiflux</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {"facetFilters":["language:ru","version:26.5"]}
+              });
+            </script></body></html>

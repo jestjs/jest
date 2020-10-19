@@ -1,0 +1,315 @@
+<!DOCTYPE html><html lang="ru"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Snapshot Testing · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Тестирование с использованием снимков это очень полезный инструмент в ситуациях где вы хотите быть уверены, что ваш пользовательский интерфейс не изменяется неожиданным образом."/><meta name="docsearch:version" content="26.5"/><meta name="docsearch:language" content="ru"/><meta property="og:title" content="Snapshot Testing · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="Тестирование с использованием снимков это очень полезный инструмент в ситуациях где вы хотите быть уверены, что ваш пользовательский интерфейс не изменяется неожиданным образом."/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-44373548-17', 'auto');
+              ga('send', 'pageview');
+            </script><link rel="stylesheet" href="/css/code-block-buttons.css"/><script type="text/javascript" src="https://buttons.github.io/buttons.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js"></script><script type="text/javascript" src="/js/code-block-buttons.js"></script><script src="/js/scrollSpy.js"></script><link rel="stylesheet" href="/css/main.css"/><script src="/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/ru"><img class="logo" src="/img/jest.svg" alt="Jest"/><h2 class="headerTitleWithLogo">Jest</h2></a><a href="/ru/versions"><h3>26.5</h3></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class="siteNavGroupActive"><a href="/docs/ru/26.5/getting-started" target="_self">Документация</a></li><li class="siteNavGroupActive"><a href="/docs/ru/26.5/api" target="_self">API</a></li><li class=""><a href="/ru/help" target="_self">Справка</a></li><li class=""><a href="/blog/" target="_self">Блог</a></li><span><li><a id="languages-menu" href="#"><img class="languages-icon" src="/img/language.svg" alt="Languages icon"/>Русский</a><div id="languages-dropdown" class="hide"><ul id="languages-dropdown-items"><li><a href="/docs/en/26.5/snapshot-testing">English</a></li><li><a href="/docs/ja/26.5/snapshot-testing">日本語</a></li><li><a href="/docs/es-ES/26.5/snapshot-testing">Español</a></li><li><a href="/docs/pt-BR/26.5/snapshot-testing">Português (Brasil)</a></li><li><a href="/docs/ro/26.5/snapshot-testing">Română</a></li><li><a href="/docs/uk/26.5/snapshot-testing">Українська</a></li><li><a href="/docs/zh-Hans/26.5/snapshot-testing">简体中文</a></li></ul></div></li><script>
+        const languagesMenuItem = document.getElementById("languages-menu");
+        const languagesDropDown = document.getElementById("languages-dropdown");
+        languagesMenuItem.addEventListener("click", function(event) {
+          event.preventDefault();
+
+          if (languagesDropDown.className == "hide") {
+            languagesDropDown.className = "visible";
+          } else {
+            languagesDropDown.className = "hide";
+          }
+        });
+      </script></span><li class="navSearchWrapper reactNavSearchWrapper"><input type="text" id="search_input_react" placeholder="Search" title="Search"/></li><li class=""><a href="https://github.com/facebook/jest" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>Guides</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Introduction</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/getting-started">Getting Started</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/using-matchers">Using Matchers</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/asynchronous">Testing Asynchronous Code</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/setup-teardown">Setup and Teardown</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/mock-functions">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/jest-platform">Jest Platform</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/jest-community">Jest Community</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/more-resources">More Resources</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Guides</h3><ul class=""><li class="navListItem navListItemActive"><a class="navItem" href="/docs/ru/26.5/snapshot-testing">Snapshot Testing</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/tutorial-async">An Async Example</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/timer-mocks">Timer Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/manual-mocks">Manual Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/es6-class-mocks">ES6 Class Mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/bypassing-module-mocks">Bypassing module mocks</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/ecmascript-modules">ECMAScript Modules</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/webpack">Using with webpack</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/puppeteer">Using with puppeteer</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/mongodb">Using with MongoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/dynamodb">Using with DynamoDB</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/tutorial-jquery">DOM Manipulation</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/watch-plugins">Watch Plugins</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/migration-guide">Migrating to Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/troubleshooting">Troubleshooting</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/architecture">Architecture</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Возможности фреймворка</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/tutorial-react">Testing React Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/tutorial-react-native">Testing React Native Apps</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/testing-frameworks">Testing Web Frameworks</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/api">Globals</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/expect">Expect</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/mock-function-api">Mock Functions</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/jest-object">The Jest Object</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/configuration">Configuring Jest</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/cli">Jest CLI Options</a></li><li class="navListItem"><a class="navItem" href="/docs/ru/26.5/environment-variables">Environment Variables</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/SnapshotTesting.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Snapshot Testing</h1></header><article><div><span><p>Тестирование с использованием снимков это очень полезный инструмент в ситуациях где вы хотите быть уверены, что ваш пользовательский интерфейс не изменяется неожиданным образом.</p>
+<p>A typical snapshot test case renders a UI component, takes a snapshot, then compares it to a reference snapshot file stored alongside the test. The test will fail if the two snapshots do not match: either the change is unexpected, or the reference snapshot needs to be updated to the new version of the UI component.</p>
+<h2><a class="anchor" aria-hidden="true" id="тестирование-с-использованием-снимков-в-jest"></a><a href="#тестирование-с-использованием-снимков-в-jest" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Тестирование с использованием снимков в Jest</h2>
+<p>Похожий подход может быть использован, когда дело доходит до тестирования React компонентов. Вместо отображения графического пользовательского интерфейса, что потребует сборки всего приложения, разработчик может использовать специализированный модуль для генерации сериализуемого значения для конкретного React дерева. Consider this <a href="https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/link.react.test.js">example test</a> for a <a href="https://github.com/facebook/jest/blob/master/examples/snapshot/Link.react.js">Link component</a>:</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> renderer <span class="hljs-keyword">from</span> <span class="hljs-string">'react-test-renderer'</span>;
+<span class="hljs-keyword">import</span> Link <span class="hljs-keyword">from</span> <span class="hljs-string">'../Link.react'</span>;
+
+it(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> tree = renderer
+    .create(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">page</span>=<span class="hljs-string">"http://www.facebook.com"</span>&gt;</span>Facebook<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span></span>)
+    .toJSON();
+  expect(tree).toMatchSnapshot();
+});
+</code></pre>
+<p>The first time this test is run, Jest creates a <a href="https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/__snapshots__/link.react.test.js.snap">snapshot file</a> that looks like this:</p>
+<pre><code class="hljs css language-javascript">exports[<span class="hljs-string">`отображается корректно 1`</span>] = <span class="hljs-string">`
+&lt;a
+  className="normal"
+  href="http://www.facebook.com"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+&gt;
+  Facebook
+&lt;/a&gt;
+`</span>;
+</code></pre>
+<p>Данный артефакт снимка следует занести в систему контроля версий наряду с изменениями в коде как часть вашего процесса по ревью кода. Jest использует <a href="https://github.com/facebook/jest/tree/master/packages/pretty-format">pretty-format</a> для того, чтобы сделать снимки подходящими для восприятия людьми во время процесса по ревью кода. On subsequent test runs, Jest will compare the rendered output with the previous snapshot. Если они совпадают, то тест успешно завершится. If they don't match, either the test runner found a bug in your code (in this case, it's <code>&lt;Link&gt;</code> component) that should be fixed, or the implementation has changed and the snapshot needs to be updated.</p>
+<blockquote>
+<p>Note: The snapshot is directly scoped to the data you render – in our example it's <code>&lt;Link /&gt;</code> component with page prop passed to it. This implies that even if any other file has missing props (Say, <code>App.js</code>) in the <code>&lt;Link /&gt;</code> component, it will still pass the test as the test doesn't know the usage of <code>&lt;Link /&gt;</code> component and it's scoped only to the <code>Link.react.js</code>. Also, Rendering the same component with different props in other snapshot tests will not affect the first one, as the tests don't know about each other.</p>
+</blockquote>
+<p>Более подробную информацию о том как тестирование с использованием снимков работает и почему мы ее реализовали можно найти в <a href="https://jestjs.io/blog/2016/07/27/jest-14.html">данной записи</a> нашего блога. Ме рекомендуем ознакомиться со <a href="http://benmccormick.org/2016/09/19/testing-with-jest-snapshots-first-impressions/">следующей записью</a>, чтобы получить хорошее представление о том, когда использовать тестирование с использованием снимков. We also recommend watching this <a href="https://egghead.io/lessons/javascript-use-jest-s-snapshot-testing-feature?pl=testing-javascript-with-jest-a36c4074">egghead video</a> on Snapshot Testing with Jest.</p>
+<h3><a class="anchor" aria-hidden="true" id="обновление-снимков"></a><a href="#обновление-снимков" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Обновление снимков</h3>
+<p>Если был введен баг, то довольно просто обнаружить тест со снимком, который проваливается. Когда такое происходит, устраните проблему и убедитесь, что ваши тесты завершаются успешно. А теперь давайте поговорим о случае, когда тест проваливается по причине осознанных изменений в реализации.</p>
+<p>Подобная ситуация може возникнуть если мы намеренно внесем изменения в адрес ссылки внутри компонента Link в нашем примере.</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// Updated test case with a Link to a different address</span>
+it(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> tree = renderer
+    .create(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">page</span>=<span class="hljs-string">"http://www.instagram.com"</span>&gt;</span>Instagram<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span></span>)
+    .toJSON();
+  expect(tree).toMatchSnapshot();
+});
+</code></pre>
+<p>В этом случае Jest выведет следующее сообщение:</p>
+<p><img src="/img/content/failedSnapshotTest.png" alt=""></p>
+<p>Так как мы только что изменили наш компонент так, чтобы он указывал на другой адрес, то разумно ожидать изменений в снимке этого компонента. Наш тест с использованием снимка проваливается потому, что текущий снимок более не совпадает с сохраненным.</p>
+<p>To resolve this, we will need to update our snapshot artifacts. You can run Jest with a flag that will tell it to re-generate snapshots:</p>
+<pre><code class="hljs css language-bash">jest --updateSnapshot
+</code></pre>
+<p>Не ждите и примените внесенные изменения, выполнив команду указанную выше. Вы также можете использовать эквивалентный односимвольный флаг <code>-u</code> для повторного создания снимков, если предпочитаете. Это создаст и сохранит новый снимок для всех проваливающихся тестов использующих снимки. Если бы существовали дополнительные проваливающиеся тесты ввиду непреднамеренных неполадок, нам бы понадобилось исправить неполадки перед обновлением снимков, чтобы избежать сохранения снимков с неполадками в поведении.</p>
+<p>Если вы хотите ограничить то, какие снимки будут сохранены заново, вы можете указать дополнительный флаг <code>--testNamePatter</code> для сохранения снимков лишь для тех тестов, которые совпадают с указанным шаблоном.</p>
+<p>Вы можете опробовать данный функционал клонировав <a href="https://github.com/facebook/jest/tree/master/examples/snapshot">пример снимка</a>, изменив компонент <code>Link</code> и запустив Jest.</p>
+<h3><a class="anchor" aria-hidden="true" id="interactive-snapshot-mode"></a><a href="#interactive-snapshot-mode" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Interactive Snapshot Mode</h3>
+<p>Failed snapshots can also be updated interactively in watch mode:</p>
+<p><img src="/img/content/interactiveSnapshot.png" alt=""></p>
+<p>Once you enter Interactive Snapshot Mode, Jest will step you through the failed snapshots one test at a time and give you the opportunity to review the failed output.</p>
+<p>From here you can choose to update that snapshot or skip to the next:</p>
+<p><img src="/img/content/interactiveSnapshotUpdate.gif" alt=""></p>
+<p>Once you're finished, Jest will give you a summary before returning back to watch mode:</p>
+<p><img src="/img/content/interactiveSnapshotDone.png" alt=""></p>
+<h3><a class="anchor" aria-hidden="true" id="inline-snapshots"></a><a href="#inline-snapshots" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Inline Snapshots</h3>
+<p>Inline snapshots behave identically to external snapshots (<code>.snap</code> files), except the snapshot values are written automatically back into the source code. This means you can get the benefits of automatically generated snapshots without having to switch to an external file to make sure the correct value was written.</p>
+<blockquote>
+<p>Inline snapshots are powered by <a href="https://prettier.io">Prettier</a>. To use inline snapshots you must have <code>prettier</code> installed in your project. Your Prettier configuration will be respected when writing to test files.</p>
+<p>If you have <code>prettier</code> installed in a location where Jest can't find it, you can tell Jest how to find it using the <a href="/docs/ru/26.5/configuration#prettierpath-string"><code>&quot;prettierPath&quot;</code></a> configuration property.</p>
+</blockquote>
+<p><strong>Пример:</strong></p>
+<p>First, you write a test, calling <code>.toMatchInlineSnapshot()</code> with no arguments:</p>
+<pre><code class="hljs css language-javascript">it(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> tree = renderer
+    .create(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">page</span>=<span class="hljs-string">"https://prettier.io"</span>&gt;</span>Prettier<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span></span>)
+    .toJSON();
+  expect(tree).toMatchInlineSnapshot();
+});
+</code></pre>
+<p>The next time you run Jest, <code>tree</code> will be evaluated, and a snapshot will be written as an argument to <code>toMatchInlineSnapshot</code>:</p>
+<pre><code class="hljs css language-javascript">it(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> tree = renderer
+    .create(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">page</span>=<span class="hljs-string">"https://prettier.io"</span>&gt;</span>Prettier<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span></span>)
+    .toJSON();
+  expect(tree).toMatchInlineSnapshot(<span class="hljs-string">`
+&lt;a
+  className="normal"
+  href="https://prettier.io"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+&gt;
+  Prettier
+&lt;/a&gt;
+`</span>);
+});
+</code></pre>
+<p>That's all there is to it! You can even update the snapshots with <code>--updateSnapshot</code> or using the <code>u</code> key in <code>--watch</code> mode.</p>
+<h3><a class="anchor" aria-hidden="true" id="property-matchers"></a><a href="#property-matchers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Property Matchers</h3>
+<p>Often there are fields in the object you want to snapshot which are generated (like IDs and Dates). If you try to snapshot these objects, they will force the snapshot to fail on every run:</p>
+<pre><code class="hljs css language-javascript">it(<span class="hljs-string">'will fail every time'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> user = {
+    <span class="hljs-attr">createdAt</span>: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(),
+    <span class="hljs-attr">id</span>: <span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">20</span>),
+    <span class="hljs-attr">name</span>: <span class="hljs-string">'LeBron James'</span>,
+  };
+
+  expect(user).toMatchSnapshot();
+});
+
+<span class="hljs-comment">// Snapshot</span>
+exports[<span class="hljs-string">`will fail every time 1`</span>] = <span class="hljs-string">`
+Object {
+  "createdAt": 2018-05-19T23:36:09.816Z,
+  "id": 3,
+  "name": "LeBron James",
+}
+`</span>;
+</code></pre>
+<p>For these cases, Jest allows providing an asymmetric matcher for any property. These matchers are checked before the snapshot is written or tested, and then saved to the snapshot file instead of the received value:</p>
+<pre><code class="hljs css language-javascript">it(<span class="hljs-string">'will check the matchers and pass'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> user = {
+    <span class="hljs-attr">createdAt</span>: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(),
+    <span class="hljs-attr">id</span>: <span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.random() * <span class="hljs-number">20</span>),
+    <span class="hljs-attr">name</span>: <span class="hljs-string">'LeBron James'</span>,
+  };
+
+  expect(user).toMatchSnapshot({
+    <span class="hljs-attr">createdAt</span>: expect.any(<span class="hljs-built_in">Date</span>),
+    <span class="hljs-attr">id</span>: expect.any(<span class="hljs-built_in">Number</span>),
+  });
+});
+
+<span class="hljs-comment">// Snapshot</span>
+exports[<span class="hljs-string">`will check the matchers and pass 1`</span>] = <span class="hljs-string">`
+Object {
+  "createdAt": Any&lt;Date&gt;,
+  "id": Any&lt;Number&gt;,
+  "name": "LeBron James",
+}
+`</span>;
+</code></pre>
+<p>Any given value that is not a matcher will be checked exactly and saved to the snapshot:</p>
+<pre><code class="hljs css language-javascript">it(<span class="hljs-string">'will check the values and pass'</span>, () =&gt; {
+  <span class="hljs-keyword">const</span> user = {
+    <span class="hljs-attr">createdAt</span>: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(),
+    <span class="hljs-attr">name</span>: <span class="hljs-string">'Bond... James Bond'</span>,
+  };
+
+  expect(user).toMatchSnapshot({
+    <span class="hljs-attr">createdAt</span>: expect.any(<span class="hljs-built_in">Date</span>),
+    <span class="hljs-attr">name</span>: <span class="hljs-string">'Bond... James Bond'</span>,
+  });
+});
+
+<span class="hljs-comment">// Snapshot</span>
+exports[<span class="hljs-string">`will check the values and pass 1`</span>] = <span class="hljs-string">`
+Object {
+  "createdAt": Any&lt;Date&gt;,
+  "name": 'Bond... James Bond',
+}
+`</span>;
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="best-practices"></a><a href="#best-practices" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Best Practices</h2>
+<p>Snapshots are a fantastic tool for identifying unexpected interface changes within your application – whether that interface is an API response, UI, logs, or error messages. As with any testing strategy, there are some best-practices you should be aware of, and guidelines you should follow, in order to use them effectively.</p>
+<h3><a class="anchor" aria-hidden="true" id="1-treat-snapshots-as-code"></a><a href="#1-treat-snapshots-as-code" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>1. Treat snapshots as code</h3>
+<p>Commit snapshots and review them as part of your regular code review process. This means treating snapshots as you would any other type of test or code in your project.</p>
+<p>Ensure that your snapshots are readable by keeping them focused, short, and by using tools that enforce these stylistic conventions.</p>
+<p>As mentioned previously, Jest uses <a href="https://yarnpkg.com/en/package/pretty-format"><code>pretty-format</code></a> to make snapshots human-readable, but you may find it useful to introduce additional tools, like <a href="https://yarnpkg.com/en/package/eslint-plugin-jest"><code>eslint-plugin-jest</code></a> with its <a href="https://github.com/jest-community/eslint-plugin-jest/blob/master/docs/rules/no-large-snapshots.md"><code>no-large-snapshots</code></a> option, or <a href="https://yarnpkg.com/en/package/snapshot-diff"><code>snapshot-diff</code></a> with its component snapshot comparison feature, to promote committing short, focused assertions.</p>
+<p>The goal is to make it easy to review snapshots in pull requests, and fight against the habit of regenerating snapshots when test suites fail instead of examining the root causes of their failure.</p>
+<h3><a class="anchor" aria-hidden="true" id="2-tests-should-be-deterministic"></a><a href="#2-tests-should-be-deterministic" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>2. Tests should be deterministic</h3>
+<p>Ваши тесты должны быть детерминированными. Running the same tests multiple times on a component that has not changed should produce the same results every time. Вы ответственны за убеждение в том, что сохраненные снимки не включают специфичные для платформы или любые другие недетерминированные данные.</p>
+<p>Например если у вас есть компонент <a href="https://github.com/facebook/jest/blob/master/examples/snapshot/Clock.react.js">Clock</a>, который использует <code>Date.now()</code>, то снимок сгенерированный для этого компонента будет разным каждый раз, когда вы запускаете тест. В этом случае мы можем <a href="/docs/ru/26.5/mock-functions"> создать мок для метода Date.now()</a>, чтобы возвращать фиксированное значение при каждом запуске теста:</p>
+<pre><code class="hljs css language-js"><span class="hljs-built_in">Date</span>.now = jest.fn(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-number">1482363367071</span>);
+</code></pre>
+<p>Теперь при каждом запуске теста, <code>Date.now()</code> будет постоянно возвращать значение <code>1482363367071</code>. Это приведет к тому, что для данного компонента будет создаваться один и тот же снимок независимо от того, когда тест запускается.</p>
+<h3><a class="anchor" aria-hidden="true" id="3-use-descriptive-snapshot-names"></a><a href="#3-use-descriptive-snapshot-names" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>3. Use descriptive snapshot names</h3>
+<p>Always strive to use descriptive test and/or snapshot names for snapshots. The best names describe the expected snapshot content. This makes it easier for reviewers to verify the snapshots during review, and for anyone to know whether or not an outdated snapshot is the correct behavior before updating.</p>
+<p>For example, compare:</p>
+<pre><code class="hljs css language-js">exports[<span class="hljs-string">`&lt;UserName /&gt; should handle some test case`</span>] = <span class="hljs-string">`null`</span>;
+
+exports[<span class="hljs-string">`&lt;UserName /&gt; should handle some other test case`</span>] = <span class="hljs-string">`
+&lt;div&gt;
+  Alan Turing
+&lt;/div&gt;
+`</span>;
+</code></pre>
+<p>To:</p>
+<pre><code class="hljs css language-js">exports[<span class="hljs-string">`&lt;UserName /&gt; should render null`</span>] = <span class="hljs-string">`null`</span>;
+
+exports[<span class="hljs-string">`&lt;UserName /&gt; should render Alan Turing`</span>] = <span class="hljs-string">`
+&lt;div&gt;
+  Alan Turing
+&lt;/div&gt;
+`</span>;
+</code></pre>
+<p>Since the later describes exactly what's expected in the output, it's more clear to see when it's wrong:</p>
+<pre><code class="hljs css language-js">exports[<span class="hljs-string">`&lt;UserName /&gt; should render null`</span>] = <span class="hljs-string">`
+&lt;div&gt;
+  Alan Turing
+&lt;/div&gt;
+`</span>;
+
+exports[<span class="hljs-string">`&lt;UserName /&gt; should render Alan Turing`</span>] = <span class="hljs-string">`null`</span>;
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="часто-задаваемые-вопросы"></a><a href="#часто-задаваемые-вопросы" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Часто задаваемые вопросы</h2>
+<h3><a class="anchor" aria-hidden="true" id="are-snapshots-written-automatically-on-continuous-integration-ci-systems"></a><a href="#are-snapshots-written-automatically-on-continuous-integration-ci-systems" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Are snapshots written automatically on Continuous Integration (CI) systems?</h3>
+<p>No, as of Jest 20, snapshots in Jest are not automatically written when Jest is run in a CI system without explicitly passing <code>--updateSnapshot</code>. Ожидается, что снимки являются обязательной частью теста, выполняемого на CI, следовательно, если они отсутствуют, тест не должен проходить. Рекомендуется всегда включать снимки в коммит вместе с тестами и хранить в системе контроля версий.</p>
+<h3><a class="anchor" aria-hidden="true" id="нужно-ли-коммитить-файлы-со-снимками"></a><a href="#нужно-ли-коммитить-файлы-со-снимками" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Нужно ли коммитить файлы со снимками?</h3>
+<p>Yes, all snapshot files should be committed alongside the modules they are covering and their tests. They should be considered part of a test, similar to the value of any other assertion in Jest. In fact, snapshots represent the state of the source modules at any given point in time. In this way, when the source modules are modified, Jest can tell what changed from the previous version. It can also provide a lot of additional context during code review in which reviewers can study your changes better.</p>
+<h3><a class="anchor" aria-hidden="true" id="снимки-работают-только-в-тестах-с-react-компонентами"></a><a href="#снимки-работают-только-в-тестах-с-react-компонентами" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Снимки работают только в тестах с React-компонентами?</h3>
+<p><a href="/docs/ru/26.5/tutorial-react">React</a> and <a href="/docs/ru/26.5/tutorial-react-native">React Native</a> components are a good use case for snapshot testing. Однако, снимки могут содержать любые сериализуемые данные, и их всегда следует использовать, если цель теста – проверка корректности вывода. В репозитории Jest есть множество примеров тестирования вывода Jest, встроенной в него библиотеки assert'ов, а также логирования событий в различных частях кодовой базы Jest. See an example of <a href="https://github.com/facebook/jest/blob/master/e2e/__tests__/console.test.ts">snapshotting CLI output</a> in the Jest repo.</p>
+<h3><a class="anchor" aria-hidden="true" id="whats-the-difference-between-snapshot-testing-and-visual-regression-testing"></a><a href="#whats-the-difference-between-snapshot-testing-and-visual-regression-testing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What's the difference between snapshot testing and visual regression testing?</h3>
+<p>Snapshot testing and visual regression testing are two distinct ways of testing UIs, and they serve different purposes. Visual regression testing tools take screenshots of web pages and compare the resulting images pixel by pixel. With Snapshot testing values are serialized, stored within text files, and compared using a diff algorithm. There are different trade-offs to consider and we listed the reasons why snapshot testing was built in the <a href="https://jestjs.io/blog/2016/07/27/jest-14.html#why-snapshot-testing">Jest blog</a>.</p>
+<h3><a class="anchor" aria-hidden="true" id="does-snapshot-testing-replace-unit-testing"></a><a href="#does-snapshot-testing-replace-unit-testing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Does snapshot testing replace unit testing?</h3>
+<p>Snapshot testing is only one of more than 20 assertions that ship with Jest. The aim of snapshot testing is not to replace existing unit tests, but to provide additional value and make testing painless. In some scenarios, snapshot testing can potentially remove the need for unit testing for a particular set of functionalities (e.g. React components), but they can work together as well.</p>
+<h3><a class="anchor" aria-hidden="true" id="what-is-the-performance-of-snapshot-testing-regarding-speed-and-size-of-the-generated-files"></a><a href="#what-is-the-performance-of-snapshot-testing-regarding-speed-and-size-of-the-generated-files" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>What is the performance of snapshot testing regarding speed and size of the generated files?</h3>
+<p>Jest has been rewritten with performance in mind, and snapshot testing is not an exception. Since snapshots are stored within text files, this way of testing is fast and reliable. Jest generates a new file for each test file that invokes the <code>toMatchSnapshot</code> matcher. The size of the snapshots is pretty small: For reference, the size of all snapshot files in the Jest codebase itself is less than 300 KB.</p>
+<h3><a class="anchor" aria-hidden="true" id="how-do-i-resolve-conflicts-within-snapshot-files"></a><a href="#how-do-i-resolve-conflicts-within-snapshot-files" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>How do I resolve conflicts within snapshot files?</h3>
+<p>Snapshot files must always represent the current state of the modules they are covering. Таким образом, если вы объединяете две ветки и сталкиваетесь с конфликтом в снимках файлов, вы можете разрешить конфликт вручную или обновить файл снимка, запустив Jest и просмотрев результат.</p>
+<h3><a class="anchor" aria-hidden="true" id="is-it-possible-to-apply-test-driven-development-principles-with-snapshot-testing"></a><a href="#is-it-possible-to-apply-test-driven-development-principles-with-snapshot-testing" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Is it possible to apply test-driven development principles with snapshot testing?</h3>
+<p>Although it is possible to write snapshot files manually, that is usually not approachable. Снимки скорее помогают определить, изменен ли код модулей, покрытых тестами, чем подсказывают как его проектировать.</p>
+<h3><a class="anchor" aria-hidden="true" id="работает-ли-покрытие-тестами-с-тестированием-снимков"></a><a href="#работает-ли-покрытие-тестами-с-тестированием-снимков" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Работает ли покрытие тестами с тестированием снимков?</h3>
+<p>Да, а как и с любым другим тестом.</p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/ru/26.5/more-resources"><span class="arrow-prev">← </span><span>More Resources</span></a><a class="docs-next button" href="/docs/ru/26.5/tutorial-async"><span>An Async Example</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#тестирование-с-использованием-снимков-в-jest">Тестирование с использованием снимков в Jest</a><ul class="toc-headings"><li><a href="#обновление-снимков">Обновление снимков</a></li><li><a href="#interactive-snapshot-mode">Interactive Snapshot Mode</a></li><li><a href="#inline-snapshots">Inline Snapshots</a></li><li><a href="#property-matchers">Property Matchers</a></li></ul></li><li><a href="#best-practices">Best Practices</a><ul class="toc-headings"><li><a href="#1-treat-snapshots-as-code">1. Treat snapshots as code</a></li><li><a href="#2-tests-should-be-deterministic">2. Tests should be deterministic</a></li><li><a href="#3-use-descriptive-snapshot-names">3. Use descriptive snapshot names</a></li></ul></li><li><a href="#часто-задаваемые-вопросы">Часто задаваемые вопросы</a><ul class="toc-headings"><li><a href="#are-snapshots-written-automatically-on-continuous-integration-ci-systems">Are snapshots written automatically on Continuous Integration (CI) systems?</a></li><li><a href="#нужно-ли-коммитить-файлы-со-снимками">Нужно ли коммитить файлы со снимками?</a></li><li><a href="#снимки-работают-только-в-тестах-с-react-компонентами">Снимки работают только в тестах с React-компонентами?</a></li><li><a href="#whats-the-difference-between-snapshot-testing-and-visual-regression-testing">What's the difference between snapshot testing and visual regression testing?</a></li><li><a href="#does-snapshot-testing-replace-unit-testing">Does snapshot testing replace unit testing?</a></li><li><a href="#what-is-the-performance-of-snapshot-testing-regarding-speed-and-size-of-the-generated-files">What is the performance of snapshot testing regarding speed and size of the generated files?</a></li><li><a href="#how-do-i-resolve-conflicts-within-snapshot-files">How do I resolve conflicts within snapshot files?</a></li><li><a href="#is-it-possible-to-apply-test-driven-development-principles-with-snapshot-testing">Is it possible to apply test-driven development principles with snapshot testing?</a></li><li><a href="#работает-ли-покрытие-тестами-с-тестированием-снимков">Работает ли покрытие тестами с тестированием снимков?</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/ru/getting-started.html">Getting Started</a><a href="/docs/ru/snapshot-testing.html">Guides</a><a href="/docs/ru/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://www.reactiflux.com/">Reactiflux</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+                document.addEventListener('keyup', function(e) {
+                  if (e.target !== document.body) {
+                    return;
+                  }
+                  // keyCode for '/' (slash)
+                  if (e.keyCode === 191) {
+                    const search = document.getElementById('search_input_react');
+                    search && search.focus();
+                  }
+                });
+              </script><script>
+              var search = docsearch({
+                
+                apiKey: '833906d7486e4059359fa58823c4ef56',
+                indexName: 'jest',
+                inputSelector: '#search_input_react',
+                algoliaOptions: {"facetFilters":["language:ru","version:26.5"]}
+              });
+            </script></body></html>
