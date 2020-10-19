@@ -154,7 +154,7 @@ function compareObjects(
         options,
       );
     }
-  } catch (e) {
+  } catch {
     hasThrown = true;
   }
 

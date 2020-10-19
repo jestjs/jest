@@ -20,8 +20,8 @@ test('test config is without transform', () => {
   expect(configs[0].transform).toEqual([]);
 });
 
-// The versions vm.Module was introduced
-onNodeVersions('^12.16.0 || >=13.2.0', () => {
+// The versions where vm.Module exists and commonjs with "exports" is not broken
+onNodeVersions('^12.16.0 || >=13.7.0', () => {
   test('runs test with native ESM', () => {
     const {exitCode, stderr, stdout} = runJest(DIR, [], {
       nodeOptions: '--experimental-vm-modules',

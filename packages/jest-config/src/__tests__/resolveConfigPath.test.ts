@@ -81,7 +81,7 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
 
       writeFiles(DIR, {[relativeJestConfigPath]: ''});
 
-      // jest.config.js takes presedence
+      // jest.config.js takes precedence
 
       // absolute
       expect(

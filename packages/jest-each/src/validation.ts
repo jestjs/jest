@@ -46,7 +46,7 @@ export const validateArrayTable = (table: unknown): void => {
 };
 
 const isTaggedTemplateLiteral = (array: any) => array.raw !== undefined;
-const isEmptyTable = (table: Array<any>) => table.length === 0;
+const isEmptyTable = (table: Array<unknown>) => table.length === 0;
 const isEmptyString = (str: string | unknown) =>
   typeof str === 'string' && str.trim() === '';
 

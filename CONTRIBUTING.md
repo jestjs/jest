@@ -66,11 +66,17 @@ _Before_ submitting a pull request, please make sure the following is done…
      yarn global add windows-build-tools
     ```
 
+1.  Run `yarn build` to transpile TypeScript to JavaScript and type check the code
+
+    ```sh
+    yarn build
+    ```
+
 1.  If you've added code that should be tested, add tests. You can use watch mode that continuously transforms changed files to make your life easier.
 
     ```sh
     # in the background
-    yarn run watch
+    yarn watch
     ```
 
 1.  If you've changed APIs, update the documentation.
@@ -137,6 +143,7 @@ If you are making changes to the website or documentation, test the website fold
     ```sh-session
     $ cd website       # Only needed if you are not already in the website directory
     $ yarn
+    $ node fetchSupporters.js
     $ yarn start
     ```
 1.  You can run a development server to check if the changes you made are being displayed accurately by running `yarn start` in the website directory.
@@ -226,7 +233,9 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 
 ## Credits
 
-This project exists thanks to all the people who [contribute](CONTRIBUTING.md). <a href="graphs/contributors"><img src="https://opencollective.com/jest/contributors.svg?width=890&button=false" /></a>
+This project exists thanks to all the people who [contribute](CONTRIBUTING.md).
+
+<a href="graphs/contributors"><img src="https://opencollective.com/jest/contributors.svg?width=890&button=false" /></a>
 
 ### [Backers](https://opencollective.com/jest#backer)
 

@@ -9,4 +9,4 @@ LICENSE file in the root directory of this source tree.
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-node "$DIR"/packages/jest-cli/bin/jest "$@"
+yarn node "$DIR"/packages/jest-cli/bin/jest "$@"

@@ -54,13 +54,9 @@ const adapter: SCMAdapter = {
     if (changedSince) {
       const [committed, staged, unstaged] = await Promise.all([
         findChangedFilesUsingCommand(
-          [
-            'log',
-            '--name-only',
-            '--pretty=format:',
-            'HEAD',
-            `^${changedSince}`,
-          ].concat(includePaths),
+          ['diff', '--name-only', `${changedSince}...HEAD`].concat(
+            includePaths,
+          ),
           cwd,
         ),
         findChangedFilesUsingCommand(
@@ -98,7 +94,7 @@ const adapter: SCMAdapter = {
       const result = await execa('git', options, {cwd});
 
       return path.resolve(cwd, result.stdout);
-    } catch (e) {
+    } catch {
       return null;
     }
   },

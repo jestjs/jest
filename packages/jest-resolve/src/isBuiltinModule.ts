@@ -8,8 +8,8 @@
 import module = require('module');
 
 // "private" api
-declare const process: {
-  binding(type: string): {};
+declare const process: NodeJS.Process & {
+  binding(type: string): Record<string, unknown>;
 };
 
 const EXPERIMENTAL_MODULES = ['worker_threads'];

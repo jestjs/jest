@@ -51,7 +51,7 @@ const adapter: SCMAdapter = {
       const result = await execa('hg', ['root'], {cwd, env});
 
       return result.stdout;
-    } catch (e) {
+    } catch {
       return null;
     }
   },

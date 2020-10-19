@@ -49,6 +49,13 @@ test('should support importing node core modules', () => {
   });
 });
 
+test('should support importing node core modules dynamically', async () => {
+  // it's important that this module has _not_ been imported at the top level
+  const assert = await import('assert');
+
+  expect(typeof assert.strictEqual).toBe('function');
+});
+
 test('dynamic import should work', async () => {
   const {double: importedDouble} = await import('../index');
 
@@ -60,6 +67,11 @@ test('import cjs', async () => {
   const {default: half} = await import('../commonjs.cjs');
 
   expect(half(4)).toBe(2);
+});
+
+test('import esm from cjs', async () => {
+  const {default: halfPromise} = await import('../fromEsm.cjs');
+  expect(await halfPromise(1)).toBe(2);
 });
 
 test('require(cjs) and import(cjs) should share caches', async () => {

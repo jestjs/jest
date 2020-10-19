@@ -12,8 +12,8 @@ import {
   matcherHint,
   pluralize,
 } from 'jest-matcher-utils';
-
 import {getState, setState} from './jestMatchersObject';
+import type {Expect, ExpectedAssertionsErrors} from './types';
 
 const resetAssertionsLocalState = () => {
   setState({
@@ -23,16 +23,10 @@ const resetAssertionsLocalState = () => {
   });
 };
 
-type AssertionsErrors = Array<{
-  actual: string;
-  error: string;
-  expected: string | number;
-}>;
-
 // Create and format all errors related to the mismatched number of `expect`
 // calls and reset the matcher's state.
-const extractExpectedAssertionsErrors: () => AssertionsErrors = () => {
-  const result: AssertionsErrors = [];
+const extractExpectedAssertionsErrors: Expect['extractExpectedAssertionsErrors'] = () => {
+  const result: ExpectedAssertionsErrors = [];
   const {
     assertionCalls,
     expectedAssertionsNumber,
@@ -51,7 +45,7 @@ const extractExpectedAssertionsErrors: () => AssertionsErrors = () => {
       pluralize('assertion', expectedAssertionsNumber),
     );
 
-    expectedAssertionsNumberError.message =
+    expectedAssertionsNumberError!.message =
       matcherHint('.assertions', '', String(expectedAssertionsNumber), {
         isDirectExpectCall: true,
       }) +
@@ -61,16 +55,16 @@ const extractExpectedAssertionsErrors: () => AssertionsErrors = () => {
       '.';
 
     result.push({
-      actual: assertionCalls,
-      error: expectedAssertionsNumberError,
-      expected: expectedAssertionsNumber,
+      actual: assertionCalls.toString(),
+      error: expectedAssertionsNumberError!,
+      expected: expectedAssertionsNumber.toString(),
     });
   }
   if (isExpectingAssertions && assertionCalls === 0) {
     const expected = EXPECTED_COLOR('at least one assertion');
     const received = RECEIVED_COLOR('received none');
 
-    isExpectingAssertionsError.message =
+    isExpectingAssertionsError!.message =
       matcherHint('.hasAssertions', '', '', {
         isDirectExpectCall: true,
       }) +
@@ -79,7 +73,7 @@ const extractExpectedAssertionsErrors: () => AssertionsErrors = () => {
 
     result.push({
       actual: 'none',
-      error: isExpectingAssertionsError,
+      error: isExpectingAssertionsError!,
       expected: 'at least one',
     });
   }

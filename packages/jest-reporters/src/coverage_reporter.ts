@@ -10,6 +10,7 @@ import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type {
   AggregatedResult,
+  RuntimeTransformResult,
   TestResult,
   V8CoverageResult,
 } from '@jest/test-result';
@@ -24,7 +25,6 @@ import Worker from 'jest-worker';
 import glob = require('glob');
 import v8toIstanbul = require('v8-to-istanbul');
 import type {RawSourceMap} from 'source-map';
-import type {TransformResult} from '@jest/transform';
 import BaseReporter from './base_reporter';
 import type {
   Context,
@@ -212,7 +212,7 @@ export default class CoverageReporter extends BaseReporter {
 
     try {
       await Promise.all(instrumentation);
-    } catch (err) {
+    } catch {
       // Do nothing; errors were reported earlier to the console.
     }
 
@@ -245,7 +245,7 @@ export default class CoverageReporter extends BaseReporter {
             if (threshold < 0) {
               if (threshold * -1 < actualUncovered) {
                 errors.push(
-                  `Jest: Uncovered count for ${key} (${actualUncovered})` +
+                  `Jest: Uncovered count for ${key} (${actualUncovered}) ` +
                     `exceeds ${name} threshold (${-1 * threshold})`,
                 );
               }
@@ -425,7 +425,7 @@ export default class CoverageReporter extends BaseReporter {
         this._v8CoverageResults.map(cov => ({result: cov.map(r => r.result)})),
       );
 
-      const fileTransforms = new Map<string, TransformResult>();
+      const fileTransforms = new Map<string, RuntimeTransformResult>();
 
       this._v8CoverageResults.forEach(res =>
         res.forEach(r => {
@@ -453,7 +453,7 @@ export default class CoverageReporter extends BaseReporter {
 
           const converter = v8toIstanbul(
             res.url,
-            0,
+            fileTransform?.wrapperLength ?? 0,
             fileTransform && sourcemapContent
               ? {
                   originalSource: fileTransform.originalCode,

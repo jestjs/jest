@@ -49,7 +49,7 @@ test('original implementation', () => {
 
 This is usually useful when you have a scenario where the number of dependencies you want to mock is far less than the number of dependencies that you don't. For example, if you're writing a test for a module that uses a large number of dependencies that can be reasonably classified as "implementation details" of the module, then you likely do not want to mock them.
 
-Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. Array.prototype methods) to highly common utility methods (e.g. underscore/lo-dash, array utilities etc) and entire libraries like React.js.
+Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. Array.prototype methods) to highly common utility methods (e.g. underscore/lo-dash, array utilities, etc) and entire libraries like React.js.
 
 Returns the `jest` object for chaining.
 
@@ -131,7 +131,7 @@ Creates a new [mock function](https://jestjs.io/docs/en/mock-functions.html). Th
 
 #### `Class`
 
-Creates new class. The interface of the original class is maintained, all of the class member functions and properties will be mocked.
+Creates a new class. The interface of the original class is maintained, all of the class member functions and properties will be mocked.
 
 #### `Object`
 
@@ -370,7 +370,7 @@ Returns the `jest` object for chaining.
 
 Explicitly supplies the mock object that the module system should return for the specified module.
 
-On occasion there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [manual mock](ManualMocks.md) that is more adequate for the module in question. However, on extremely rare occasions, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
+On occasion, there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [manual mock](ManualMocks.md) that is more adequate for the module in question. However, on extremely rare occasions, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
 
 In these rare scenarios you can use this API to manually fill the slot in the module system's mock-module registry.
 
@@ -387,7 +387,7 @@ Example:
 ```js
 jest.mock('../myModule', () => {
   // Require the original module to not be mocked...
-  const originalModule = jest.requireActual(moduleName);
+  const originalModule = jest.requireActual('../myModule');
 
   return {
     __esModule: true, // Use it when dealing with esModules
@@ -585,7 +585,7 @@ Restores all mocks back to their original value. Equivalent to calling [`.mockRe
 
 Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate`).
 
-If you pass `'modern'` as argument, [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers) will be used as implementation instead of Jest's own fake timers. This also mocks additional timers like `Date`. `'modern'` will be the default behavior in Jest 27.
+If you pass `'modern'` as an argument, [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers) will be used as implementation instead of Jest's own fake timers. This also mocks additional timers like `Date`. `'modern'` will be the default behavior in Jest 27.
 
 Returns the `jest` object for chaining.
 
@@ -623,7 +623,7 @@ Also under the alias: `.runTimersToTime()`
 
 Executes only the macro task queue (i.e. all tasks queued by `setTimeout()` or `setInterval()` and `setImmediate()`).
 
-When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()`, and would be executed within this time frame will be executed. Additionally if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue, that should be run within `msToRun` milliseconds.
+When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()`, and would be executed within this time frame will be executed. Additionally, if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue, that should be run within `msToRun` milliseconds.
 
 ### `jest.runOnlyPendingTimers()`
 

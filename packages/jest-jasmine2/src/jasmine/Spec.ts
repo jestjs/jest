@@ -28,7 +28,7 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* eslint-disable sort-keys */
+/* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
 import {AssertionError} from 'assert';
 import type {Config} from '@jest/types';
@@ -171,7 +171,7 @@ export default class Spec {
     }
   }
 
-  execute(onComplete: Function, enabled: boolean) {
+  execute(onComplete?: () => void, enabled?: boolean) {
     const self = this;
 
     this.onStart(this);
@@ -203,7 +203,7 @@ export default class Spec {
 
     this.currentRun.then(() => complete(true));
 
-    function complete(enabledAgain: boolean) {
+    function complete(enabledAgain?: boolean) {
       self.result.status = self.status(enabledAgain);
       self.resultCallback(self.result);
 

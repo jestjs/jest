@@ -9,17 +9,32 @@
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {ModuleMap} from 'jest-haste-map';
+import {sync as resolveSync} from 'resolve';
 import Resolver = require('../');
-// @ts-expect-error: js file
 import userResolver from '../__mocks__/userResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
 import defaultResolver from '../defaultResolver';
-import {ResolverConfig} from '../types';
+import type {ResolverConfig} from '../types';
 
 jest.mock('../__mocks__/userResolver');
 
+// Do not fully mock `resolve` because it is used by Jest. Doing it will crash
+// in very strange ways. Instead just spy on the method `sync`.
+jest.mock('resolve', () => {
+  const originalModule = jest.requireActual('resolve');
+  return {
+    ...originalModule,
+    sync: jest.spyOn(originalModule, 'sync'),
+  };
+});
+
+const mockResolveSync = <
+  jest.Mock<ReturnType<typeof resolveSync>, Parameters<typeof resolveSync>>
+>resolveSync;
+
 beforeEach(() => {
   userResolver.mockClear();
+  mockResolveSync.mockClear();
 });
 
 describe('isCoreModule', () => {
@@ -93,6 +108,27 @@ describe('findNodeModule', () => {
       paths: (nodePaths || []).concat(['/something']),
       rootDir: undefined,
     });
+  });
+
+  it('passes packageFilter to the resolve module when using the default resolver', () => {
+    const packageFilter = jest.fn();
+
+    // A resolver that delegates to defaultResolver with a packageFilter implementation
+    userResolver.mockImplementation((request, opts) =>
+      opts.defaultResolver(request, {...opts, packageFilter}),
+    );
+
+    Resolver.findNodeModule('test', {
+      basedir: '/',
+      resolver: require.resolve('../__mocks__/userResolver'),
+    });
+
+    expect(mockResolveSync).toHaveBeenCalledWith(
+      'test',
+      expect.objectContaining({
+        packageFilter,
+      }),
+    );
   });
 });
 

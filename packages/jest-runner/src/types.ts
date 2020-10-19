@@ -7,11 +7,15 @@
 
 import type {EventEmitter} from 'events';
 import type {Config} from '@jest/types';
-import type {SerializableError, TestResult} from '@jest/test-result';
+import type {
+  AssertionResult,
+  SerializableError,
+  TestResult,
+} from '@jest/test-result';
 import type {JestEnvironment} from '@jest/environment';
 import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
-import HasteResolver = require('jest-resolve');
-import Runtime = require('jest-runtime');
+import type {ResolverType} from 'jest-resolve';
+import type {RuntimeType} from 'jest-runtime';
 
 export type ErrorWithCode = Error & {code?: string};
 export type Test = {
@@ -24,7 +28,7 @@ export type Context = {
   config: Config.ProjectConfig;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
-  resolver: HasteResolver;
+  resolver: ResolverType;
 };
 
 export type OnTestStart = (test: Test) => Promise<void>;
@@ -37,12 +41,26 @@ export type OnTestSuccess = (
   testResult: TestResult,
 ) => Promise<void>;
 
+// Typings for `sendMessageToJest` events
+export type TestEvents = {
+  'test-file-start': [Test];
+  'test-file-success': [Test, TestResult];
+  'test-file-failure': [Test, SerializableError];
+  'test-case-result': [Config.Path, AssertionResult];
+};
+
+export type TestFileEvent<T extends keyof TestEvents = keyof TestEvents> = (
+  eventName: T,
+  args: TestEvents[T],
+) => unknown;
+
 export type TestFramework = (
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   environment: JestEnvironment,
-  runtime: Runtime,
+  runtime: RuntimeType,
   testPath: string,
+  sendMessageToJest?: TestFileEvent,
 ) => Promise<TestResult>;
 
 export type TestRunnerOptions = {

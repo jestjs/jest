@@ -66,7 +66,7 @@ describe('init', () => {
         expect(writtenJestConfigFilename.endsWith('.mjs')).toBe(true);
 
         expect(typeof writtenJestConfig).toBe('string');
-        expect(writtenJestConfig.split('\n')[3]).toBe('export default {');
+        expect(writtenJestConfig.split('\n')[5]).toBe('export default {');
       });
     });
 
@@ -175,8 +175,10 @@ describe('init', () => {
 
           expect(prompts.mock.calls[0][0]).toMatchSnapshot();
 
+          const jestConfigFileName = fs.writeFileSync.mock.calls[0][0];
           const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
 
+          expect(jestConfigFileName).toBe(`jest.config.${extension}`);
           expect(writtenJestConfig).toBeDefined();
         });
 
@@ -190,6 +192,34 @@ describe('init', () => {
       });
     },
   );
+
+  describe('project using jest.config.ts', () => {
+    describe('ask the user whether he wants to use Typescript or not', () => {
+      it('user answered with "Yes"', async () => {
+        prompts.mockReturnValueOnce({useTypescript: true});
+
+        await init(resolveFromFixture('test_generated_jest_config_ts'));
+
+        expect(prompts.mock.calls[0][0]).toMatchSnapshot();
+
+        const jestConfigFileName = fs.writeFileSync.mock.calls[0][0];
+        const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
+
+        expect(jestConfigFileName).toContain('/jest.config.ts');
+        expect(writtenJestConfig.split('\n')[5]).toBe('export default {');
+      });
+
+      it('user answered with "No"', async () => {
+        prompts.mockReturnValueOnce({useTypescript: false});
+
+        await init(resolveFromFixture('test_generated_jest_config_ts'));
+
+        const jestConfigFileName = fs.writeFileSync.mock.calls[0][0];
+
+        expect(jestConfigFileName).not.toContain('jest.config.ts');
+      });
+    });
+  });
 
   describe('has jest config in package.json', () => {
     it('should ask the user whether to override config or not', async () => {
@@ -219,5 +249,3 @@ describe('init', () => {
     });
   });
 });
-
-/* eslint-enable */

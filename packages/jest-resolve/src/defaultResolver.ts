@@ -6,12 +6,13 @@
  */
 
 import * as fs from 'graceful-fs';
-import {sync as resolveSync} from 'resolve';
+import {Opts as ResolveOpts, sync as resolveSync} from 'resolve';
 import pnpResolver from 'jest-pnp-resolver';
 import {tryRealpath} from 'jest-util';
 import type {Config} from '@jest/types';
 
 type ResolverOptions = {
+  allowPnp?: boolean;
   basedir: Config.Path;
   browser?: boolean;
   defaultResolver: typeof defaultResolver;
@@ -19,14 +20,23 @@ type ResolverOptions = {
   moduleDirectory?: Array<string>;
   paths?: Array<Config.Path>;
   rootDir?: Config.Path;
+  packageFilter?: ResolveOpts['packageFilter'];
 };
+
+declare global {
+  namespace NodeJS {
+    export interface ProcessVersions {
+      // the "pnp" version named isn't in DefinitelyTyped
+      pnp?: unknown;
+    }
+  }
+}
 
 export default function defaultResolver(
   path: Config.Path,
   options: ResolverOptions,
 ): Config.Path {
-  // @ts-expect-error: the "pnp" version named isn't in DefinitelyTyped
-  if (process.versions.pnp) {
+  if (process.versions.pnp && options.allowPnp !== false) {
     return pnpResolver(path, options);
   }
 
@@ -36,6 +46,7 @@ export default function defaultResolver(
     isDirectory,
     isFile,
     moduleDirectory: options.moduleDirectory,
+    packageFilter: options.packageFilter,
     paths: options.paths,
     preserveSymlinks: false,
     realpathSync,

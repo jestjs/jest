@@ -9,11 +9,9 @@ import {tmpdir} from 'os';
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {findRepos, getChangedFilesForRoots} from 'jest-changed-files';
-import {skipSuiteOnWindows} from '@jest/test-utils';
+import slash from 'slash';
 import {cleanup, run, testIfHg, writeFiles} from '../Utils';
 import runJest from '../runJest';
-
-skipSuiteOnWindows();
 
 const DIR = path.resolve(tmpdir(), 'jest-changed-files-test-dir');
 
@@ -54,8 +52,12 @@ testIfHg('gets hg SCM roots and dedupes them', async () => {
   // NOTE: This test can break if you have a .hg repo initialized inside your
   // os tmp directory.
   expect(hgRepos).toHaveLength(2);
-  expect(hgRepos[0]).toMatch(/\/jest-changed-files-test-dir\/first-repo\/?$/);
-  expect(hgRepos[1]).toMatch(/\/jest-changed-files-test-dir\/second-repo\/?$/);
+  expect(slash(hgRepos[0])).toMatch(
+    /\/jest-changed-files-test-dir\/first-repo\/?$/,
+  );
+  expect(slash(hgRepos[1])).toMatch(
+    /\/jest-changed-files-test-dir\/second-repo\/?$/,
+  );
 });
 
 test('gets git SCM roots and dedupes them', async () => {
@@ -88,8 +90,12 @@ test('gets git SCM roots and dedupes them', async () => {
   // NOTE: This test can break if you have a .git repo initialized inside your
   // os tmp directory.
   expect(gitRepos).toHaveLength(2);
-  expect(gitRepos[0]).toMatch(/\/jest-changed-files-test-dir\/first-repo\/?$/);
-  expect(gitRepos[1]).toMatch(/\/jest-changed-files-test-dir\/second-repo\/?$/);
+  expect(slash(gitRepos[0])).toMatch(
+    /\/jest-changed-files-test-dir\/first-repo\/?$/,
+  );
+  expect(slash(gitRepos[1])).toMatch(
+    /\/jest-changed-files-test-dir\/second-repo\/?$/,
+  );
 });
 
 testIfHg('gets mixed git and hg SCM roots and dedupes them', async () => {
@@ -121,8 +127,12 @@ testIfHg('gets mixed git and hg SCM roots and dedupes them', async () => {
   // inside your os tmp directory.
   expect(gitRepos).toHaveLength(1);
   expect(hgRepos).toHaveLength(1);
-  expect(gitRepos[0]).toMatch(/\/jest-changed-files-test-dir\/first-repo\/?$/);
-  expect(hgRepos[0]).toMatch(/\/jest-changed-files-test-dir\/second-repo\/?$/);
+  expect(slash(gitRepos[0])).toMatch(
+    /\/jest-changed-files-test-dir\/first-repo\/?$/,
+  );
+  expect(slash(hgRepos[0])).toMatch(
+    /\/jest-changed-files-test-dir\/second-repo\/?$/,
+  );
 });
 
 test('gets changed files for git', async () => {
@@ -254,6 +264,49 @@ test('monitors only root paths for git', async () => {
   ).toEqual(['file2.txt', 'file3.txt']);
 });
 
+it('does not find changes in files with no diff, for git', async () => {
+  const roots = [path.resolve(DIR)];
+
+  // create an empty file, commit it to "master"
+  writeFiles(DIR, {
+    'file1.txt': '',
+  });
+  run(`${GIT} init`, DIR);
+  run(`${GIT} add file1.txt`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "initial"`, DIR);
+
+  // check out a new branch, jestChangedFilesSpecBase, to use later in diff
+  run(`${GIT} checkout -b jestChangedFilesSpecBase`, DIR);
+
+  // check out second branch, jestChangedFilesSpecMod, modify file & commit
+  run(`${GIT} checkout -b jestChangedFilesSpecMod`, DIR);
+  writeFiles(DIR, {
+    'file1.txt': 'modified file1',
+  });
+  run(`${GIT} add file1.txt`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "modified"`, DIR);
+
+  // still on jestChangedFilesSpecMod branch, "revert" back to empty file and commit
+  writeFiles(DIR, {
+    'file1.txt': '',
+  });
+  run(`${GIT} add file1.txt`, DIR);
+  run(`${GIT} commit --no-gpg-sign -m "removemod"`, DIR);
+
+  // check that passing in no changedSince arg doesn't return any unstaged / other changes
+  const {changedFiles: files} = await getChangedFilesForRoots(roots, {});
+  expect(Array.from(files)).toEqual([]);
+
+  // check that in diff from `jestChangedFilesSpecBase` branch, no changed files are reported
+  const {changedFiles: filesExplicitBaseBranch} = await getChangedFilesForRoots(
+    roots,
+    {
+      changedSince: 'jestChangedFilesSpecBase',
+    },
+  );
+  expect(Array.from(filesExplicitBaseBranch)).toEqual([]);
+});
+
 test('handles a bad revision for "changedSince", for git', async () => {
   writeFiles(DIR, {
     '.watchmanconfig': '',
@@ -266,7 +319,7 @@ test('handles a bad revision for "changedSince", for git', async () => {
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
-  const {exitCode, stderr} = runJest(DIR, ['--changedSince=blablabla']);
+  const {exitCode, stderr} = runJest(DIR, ['--changedSince=^blablabla']);
 
   expect(exitCode).toBe(1);
   expect(wrap(stderr)).toMatchSnapshot();

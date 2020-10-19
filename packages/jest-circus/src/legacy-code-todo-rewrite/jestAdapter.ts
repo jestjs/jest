@@ -5,16 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
 import type {Config} from '@jest/types';
 import type {JestEnvironment} from '@jest/environment';
 import type {TestResult} from '@jest/test-result';
+import type {TestFileEvent} from 'jest-runner';
 import type {RuntimeType as Runtime} from 'jest-runtime';
 import type {SnapshotStateType} from 'jest-snapshot';
 import {deepCyclicCopy} from 'jest-util';
 
-const FRAMEWORK_INITIALIZER = path.resolve(__dirname, './jestAdapterInit.js');
-const EXPECT_INITIALIZER = path.resolve(__dirname, './jestExpect.js');
+const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 
 const jestAdapter = async (
   globalConfig: Config.GlobalConfig,
@@ -22,6 +21,7 @@ const jestAdapter = async (
   environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
+  sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> => {
   const {
     initialize,
@@ -29,10 +29,6 @@ const jestAdapter = async (
   } = runtime.requireInternalModule<typeof import('./jestAdapterInit')>(
     FRAMEWORK_INITIALIZER,
   );
-
-  runtime
-    .requireInternalModule<typeof import('./jestExpect')>(EXPECT_INITIALIZER)
-    .default({expand: globalConfig.expand});
 
   const getPrettier = () =>
     config.prettierPath ? require(config.prettierPath) : null;
@@ -46,6 +42,8 @@ const jestAdapter = async (
     globalConfig,
     localRequire: runtime.requireModule.bind(runtime),
     parentProcess: process,
+    sendMessageToJest,
+    setGlobalsForRuntime: runtime.setGlobalsForRuntime?.bind(runtime),
     testPath,
   });
 

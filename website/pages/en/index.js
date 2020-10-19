@@ -549,7 +549,7 @@ class Index extends React.Component {
                   </MarkdownBlock>
                   <div className="gridBlock logos">
                     {showcase}
-                    <p>And many others</p>
+                    <p className="others">And many others</p>
                   </div>
                 </div>
               </div>

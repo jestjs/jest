@@ -126,7 +126,7 @@ export = async function watchmanCrawl(
             ? // Use the `since` generator if we have a clock available
               {expression, fields, since: clocks.get(relativeRoot)}
             : // Otherwise use the `glob` filter
-              {expression, fields, glob};
+              {expression, fields, glob, glob_includedotfiles: true};
 
           const response = await cmd('query', root, query);
 

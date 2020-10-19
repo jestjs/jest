@@ -92,11 +92,11 @@ const _validate = (
 };
 
 const allowsMultipleTypes = (key: string): boolean => key === 'maxWorkers';
-const isOfTypeStringOrNumber = (value: any): boolean =>
+const isOfTypeStringOrNumber = (value: unknown): boolean =>
   typeof value === 'number' || typeof value === 'string';
 
 const validate = (
-  config: Record<string, any>,
+  config: Record<string, unknown>,
   options: ValidationOptions,
 ): {hasDeprecationWarnings: boolean; isValid: boolean} => {
   hasDeprecationWarnings = false;

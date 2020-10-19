@@ -968,6 +968,14 @@ Default: `{}`
 
 Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{userAgent: "Agent/007"}`.
 
+### `testFailureExitCode` [number]
+
+Default: `1`
+
+The exit code Jest returns on test failure.
+
+_Note: This does not change the exit code in the case of Jest errors (e.g. invalid configuration)._
+
 ### `testMatch` [array\<string>]
 
 (default: `[ "**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)" ]`)
@@ -1156,7 +1164,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 Example: `["<rootDir>/bower_components/", "<rootDir>/node_modules/"]`.
 
-Sometimes it happens (especially in React Native or TypeScript projects) that 3rd party modules are published as untranspiled. Since all files inside `node_modules` are not transformed by default, Jest will not understand the code in these modules, resulting in syntax errors. To overcome this, you may use `transformIgnorePatterns` to whitelist such modules. You'll find a good example of this use case in [React Native Guide](https://jestjs.io/docs/en/tutorial-react-native#transformignorepatterns-customization).
+Sometimes it happens (especially in React Native or TypeScript projects) that 3rd party modules are published as untranspiled. Since all files inside `node_modules` are not transformed by default, Jest will not understand the code in these modules, resulting in syntax errors. To overcome this, you may use `transformIgnorePatterns` to allow transpiling such modules. You'll find a good example of this use case in [React Native Guide](https://jestjs.io/docs/en/tutorial-react-native#transformignorepatterns-customization).
 
 ### `unmockedModulePathPatterns` [array\<string>]
 

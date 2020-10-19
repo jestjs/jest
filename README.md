@@ -1,6 +1,9 @@
-<p>
+<p align="center">
   <a href="http://badge.fury.io/js/jest"><img src="https://badge.fury.io/js/jest.svg" alt="npm version"></a>
-  <a href="https://twitter.com/intent/follow?screen_name=fbjest"><img align="right" src="https://img.shields.io/twitter/follow/fbjest.svg?style=social&label=Follow%20@fbjest" alt="Follow on Twitter"></a>
+  <a href="https://github.com/facebook/jest/blob/master/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Jest is released under the MIT license." />
+  </a>
+  <a href="https://twitter.com/intent/follow?screen_name=fbjest"><img align="center" src="https://img.shields.io/twitter/follow/fbjest.svg?style=social&label=Follow%20@fbjest" alt="Follow on Twitter"></a>
 </p>
 
 <!-- A spacer -->
@@ -26,6 +29,7 @@
   - [Generate a basic configuration file](#generate-a-basic-configuration-file)
   - [Using Babel](#using-babel)
   - [Using Webpack](#using-webpack)
+  - [Using Parcel](#using-parcel)
   - [Using Typescript](#using-typescript)
 - [Documentation](#documentation)
 - [Badge](#badge)
@@ -170,6 +174,10 @@ module.exports = {
 
 Jest can be used in projects that use [webpack](https://webpack.js.org/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](https://jestjs.io/docs/en/webpack) to get started.
 
+### Using parcel
+
+Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration.
+
 ### Using TypeScript
 
 Jest supports TypeScript, via Babel. First, make sure you followed the instructions on [using Babel](#using-babel) above. Next, install the `@babel/preset-typescript` via `yarn`:
@@ -231,7 +239,9 @@ To help you get your feet wet and get you familiar with our contribution process
 
 ## Credits
 
-This project exists thanks to all the people who [contribute](CONTRIBUTING.md). <a href="https://github.com/facebook/jest/graphs/contributors"><img src="https://opencollective.com/jest/contributors.svg?width=890&button=false" /></a>
+This project exists thanks to all the people who [contribute](CONTRIBUTING.md).
+
+<a href="https://github.com/facebook/jest/graphs/contributors"><img src="https://opencollective.com/jest/contributors.svg?width=890&button=false" /></a>
 
 ### [Backers](https://opencollective.com/jest#backer)
 

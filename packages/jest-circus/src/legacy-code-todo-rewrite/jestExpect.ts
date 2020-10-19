@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {Config} from '@jest/types';
 import expect = require('expect');
 
 import {
@@ -15,11 +16,10 @@ import {
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
 
-export default (config: {expand: boolean}): void => {
-  global.expect = expect;
-  expect.setState({
-    expand: config.expand,
-  });
+export type Expect = typeof expect;
+
+export default (config: Pick<Config.GlobalConfig, 'expand'>): Expect => {
+  expect.setState({expand: config.expand});
   expect.extend({
     toMatchInlineSnapshot,
     toMatchSnapshot,
@@ -28,4 +28,6 @@ export default (config: {expand: boolean}): void => {
   });
 
   expect.addSnapshotSerializer = addSerializer;
+
+  return expect;
 };

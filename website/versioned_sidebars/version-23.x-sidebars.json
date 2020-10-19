@@ -36,7 +36,8 @@
       "version-23.x-mock-function-api",
       "version-23.x-jest-object",
       "version-23.x-configuration",
-      "version-23.x-cli"
+      "version-23.x-cli",
+      "version-23.x-environment-variables"
     ]
   }
 }

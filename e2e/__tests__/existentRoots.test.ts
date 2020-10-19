@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {tmpdir} from 'os';
-import {skipSuiteOnWindows} from '@jest/test-utils';
+import {tryRealpath} from 'jest-util';
 import {cleanup, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -15,8 +15,6 @@ const DIR = path.resolve(tmpdir(), 'existent-roots');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
-
-skipSuiteOnWindows();
 
 function writeConfig(rootDir: string, roots?: Array<string>) {
   writeFiles(DIR, {
@@ -40,7 +38,11 @@ test('error when rootDir does not exist', () => {
 });
 
 test('error when rootDir is a file', () => {
-  const fakeRootDir = path.join(DIR, 'jest.config.js');
+  // Replace tmpdir with its realpath as Windows uses the 8.3 path
+  const fakeRootDir = path
+    .join(DIR, 'jest.config.js')
+    .replace(tmpdir(), tryRealpath(tmpdir()));
+
   writeConfig(fakeRootDir);
 
   const {exitCode, stderr} = runJest(DIR);

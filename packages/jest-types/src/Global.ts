@@ -12,6 +12,9 @@ export type TestName = string;
 export type TestFn = (
   done?: DoneFn,
 ) => Promise<void | undefined | unknown> | void | undefined;
+export type ConcurrentTestFn = (
+  done?: DoneFn,
+) => Promise<void | undefined | unknown>;
 export type BlockFn = () => void;
 export type BlockName = string;
 export type HookFn = TestFn;
@@ -23,31 +26,48 @@ export type ArrayTable = Table | Row;
 export type TemplateTable = TemplateStringsArray;
 export type TemplateData = Array<unknown>;
 export type EachTable = ArrayTable | TemplateTable;
-export type EachTestFn = (
+
+export type TestCallback = BlockFn | TestFn | ConcurrentTestFn;
+
+export type EachTestFn<EachCallback extends TestCallback> = (
   ...args: Array<any>
-) => Promise<any> | void | undefined;
+) => ReturnType<EachCallback>;
 
 // TODO: Get rid of this at some point
-type Jasmine = {_DEFAULT_TIMEOUT_INTERVAL?: number; addMatchers: Function};
+type Jasmine = {
+  _DEFAULT_TIMEOUT_INTERVAL?: number;
+  addMatchers: (matchers: Record<string, unknown>) => void;
+};
 
-type Each = (
-  table: EachTable,
-  ...taggedTemplateData: Array<unknown>
-) => (title: string, test: EachTestFn, timeout?: number) => void;
+type Each<EachCallback extends TestCallback> =
+  | ((
+      table: EachTable,
+      ...taggedTemplateData: Array<unknown>
+    ) => (
+      title: string,
+      test: EachTestFn<EachCallback>,
+      timeout?: number,
+    ) => void)
+  | (() => () => void);
+
+export interface HookBase {
+  (fn: HookFn, timeout?: number): void;
+}
 
 export interface ItBase {
   (testName: TestName, fn: TestFn, timeout?: number): void;
-  each: Each;
+  each: Each<TestFn>;
 }
 
 export interface It extends ItBase {
   only: ItBase;
   skip: ItBase;
-  todo: (testName: TestName, ...rest: Array<any>) => void;
+  todo: (testName: TestName) => void;
 }
 
 export interface ItConcurrentBase {
-  (testName: string, testFn: () => Promise<any>, timeout?: number): void;
+  (testName: string, testFn: ConcurrentTestFn, timeout?: number): void;
+  each: Each<ConcurrentTestFn>;
 }
 
 export interface ItConcurrentExtended extends ItConcurrentBase {
@@ -61,7 +81,7 @@ export interface ItConcurrent extends It {
 
 export interface DescribeBase {
   (blockName: BlockName, blockFn: BlockFn): void;
-  each: Each;
+  each: Each<BlockFn>;
 }
 
 export interface Describe extends DescribeBase {
@@ -78,10 +98,10 @@ export interface TestFrameworkGlobals {
   describe: Describe;
   xdescribe: DescribeBase;
   fdescribe: DescribeBase;
-  beforeAll: HookFn;
-  beforeEach: HookFn;
-  afterEach: HookFn;
-  afterAll: HookFn;
+  beforeAll: HookBase;
+  beforeEach: HookBase;
+  afterEach: HookBase;
+  afterAll: HookBase;
 }
 
 export interface GlobalAdditions extends TestFrameworkGlobals {
@@ -97,5 +117,5 @@ export interface Global
   extends GlobalAdditions,
     // TODO: Maybe add `| Window` in the future?
     Omit<NodeJS.Global, keyof GlobalAdditions> {
-  [extras: string]: any;
+  [extras: string]: unknown;
 }

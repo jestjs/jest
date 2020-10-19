@@ -6,7 +6,12 @@
  */
 
 import type {Config} from '@jest/types';
-import type {AggregatedResult, TestResult} from '@jest/test-result';
+import type {
+  AggregatedResult,
+  TestCaseResult,
+  TestResult,
+} from '@jest/test-result';
+
 import {clearLine, isInteractive} from 'jest-util';
 import {getConsoleOutput} from '@jest/console';
 import chalk = require('chalk');
@@ -16,7 +21,7 @@ import Status from './Status';
 import getResultHeader from './get_result_header';
 import getSnapshotStatus from './get_snapshot_status';
 
-type write = (chunk: string, enc?: any, cb?: () => void) => boolean;
+type write = NodeJS.WriteStream['write'];
 type FlushBufferedOutput = () => void;
 
 const TITLE_BULLET = chalk.bold('\u25cf ');
@@ -128,6 +133,10 @@ export default class DefaultReporter extends BaseReporter {
 
   onTestStart(test: Test): void {
     this._status.testStarted(test.path, test.context.config);
+  }
+
+  onTestCaseResult(test: Test, testCaseResult: TestCaseResult): void {
+    this._status.addTestCaseResult(test, testCaseResult);
   }
 
   onRunComplete(): void {

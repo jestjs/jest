@@ -35,9 +35,15 @@ const generateConfigFile = (
   results: Record<string, unknown>,
   generateEsm = false,
 ): string => {
-  const {coverage, coverageProvider, clearMocks, environment} = results;
+  const {
+    useTypescript,
+    coverage,
+    coverageProvider,
+    clearMocks,
+    environment,
+  } = results;
 
-  const overrides: Record<string, any> = {};
+  const overrides: Record<string, unknown> = {};
 
   if (coverage) {
     Object.assign(overrides, {
@@ -81,10 +87,20 @@ const generateConfigFile = (
     }
   }
 
+  const configHeaderMessage = `/*
+ * For a detailed explanation regarding each configuration property${
+   useTypescript ? ' and type check' : ''
+ }, visit:
+ * https://jestjs.io/docs/en/configuration.html
+ */
+
+`;
+
   return (
-    '// For a detailed explanation regarding each configuration property, visit:\n' +
-    '// https://jestjs.io/docs/en/configuration.html\n\n' +
-    (generateEsm ? 'export default {\n' : 'module.exports = {\n') +
+    configHeaderMessage +
+    (useTypescript || generateEsm
+      ? 'export default {\n'
+      : 'module.exports = {\n') +
     properties.join('\n') +
     '};\n'
   );

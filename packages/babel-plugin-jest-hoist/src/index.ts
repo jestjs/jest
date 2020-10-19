@@ -25,7 +25,7 @@ const JEST_GLOBALS_MODULE_JEST_EXPORT_NAME = 'jest';
 // We allow `jest`, `expect`, `require`, all default Node.js globals and all
 // ES2015 built-ins to be used inside of a `jest.mock` factory.
 // We also allow variables prefixed with `mock` as an escape-hatch.
-const WHITELISTED_IDENTIFIERS = new Set<string>(
+const ALLOWED_IDENTIFIERS = new Set<string>(
   [
     'Array',
     'ArrayBuffer',
@@ -131,7 +131,7 @@ FUNCTIONS.mock = args => {
 
       if (!found) {
         const isAllowedIdentifier =
-          (scope.hasGlobal(name) && WHITELISTED_IDENTIFIERS.has(name)) ||
+          (scope.hasGlobal(name) && ALLOWED_IDENTIFIERS.has(name)) ||
           /^mock/i.test(name) ||
           // Allow istanbul's coverage variable to pass.
           /^(?:__)?cov/.test(name);
@@ -143,8 +143,8 @@ FUNCTIONS.mock = args => {
               'Invalid variable access: ' +
               name +
               '\n' +
-              'Whitelisted objects: ' +
-              Array.from(WHITELISTED_IDENTIFIERS).join(', ') +
+              'Allowed objects: ' +
+              Array.from(ALLOWED_IDENTIFIERS).join(', ') +
               '.\n' +
               'Note: This is a precaution to guard against uninitialized mock ' +
               'variables. If it is ensured that the mock is required lazily, ' +
@@ -198,6 +198,7 @@ const isJestObject = (expression: NodePath<Expression>): boolean => {
     expression
       .get<'object'>('object')
       .referencesImport(JEST_GLOBALS_MODULE_NAME, '*') &&
+    expression.node.property.type === 'Identifier' &&
     expression.node.property.name === JEST_GLOBALS_MODULE_JEST_EXPORT_NAME
   ) {
     return true;
@@ -240,7 +241,7 @@ const extractJestObjExprIfHoistable = <T extends Node>(
   return functionLooksHoistable ? jestObjExpr : null;
 };
 
-/* eslint-disable sort-keys,@typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable sort-keys */
 export default (): PluginObj<{
   declareJestObjGetterIdentifier: () => Identifier;
   jestObjGetterIdentifier?: Identifier;
@@ -290,15 +291,18 @@ export default (): PluginObj<{
           callee.name === this.jestObjGetterIdentifier?.name
         ) {
           const mockStmt = callExpr.getStatementParent();
-          const mockStmtNode = mockStmt.node;
-          const mockStmtParent = mockStmt.parentPath;
-          if (mockStmtParent.isBlock()) {
-            mockStmt.remove();
-            mockStmtParent.unshiftContainer('body', [mockStmtNode]);
+
+          if (mockStmt) {
+            const mockStmtNode = mockStmt.node;
+            const mockStmtParent = mockStmt.parentPath;
+            if (mockStmtParent.isBlock()) {
+              mockStmt.remove();
+              mockStmtParent.unshiftContainer('body', [mockStmtNode]);
+            }
           }
         }
       },
     });
   },
 });
-/* eslint-enable sort-keys,@typescript-eslint/explicit-module-boundary-types */
+/* eslint-enable */

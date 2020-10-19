@@ -1,6 +1,6 @@
 {
   "name": "jest-environment-node",
-  "version": "26.1.0",
+  "version": "26.5.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,11 +10,12 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/environment": "^26.1.0",
-    "@jest/fake-timers": "^26.1.0",
-    "@jest/types": "^26.1.0",
-    "jest-mock": "^26.1.0",
-    "jest-util": "^26.1.0"
+    "@jest/environment": "^26.5.2",
+    "@jest/fake-timers": "^26.5.2",
+    "@jest/types": "^26.5.2",
+    "@types/node": "*",
+    "jest-mock": "^26.5.2",
+    "jest-util": "^26.5.2"
   },
   "engines": {
     "node": ">= 10.14.2"

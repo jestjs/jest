@@ -59,7 +59,7 @@ export default (
       const sourceMap = readFileSync(sourceMapFileName, 'utf8');
       // @ts-expect-error: Not allowed to pass string
       addSourceMapConsumer(stack, new SourceMapConsumer(sourceMap));
-    } catch (e) {
+    } catch {
       // ignore
     }
   }

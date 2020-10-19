@@ -6,21 +6,25 @@
  */
 
 import * as path from 'path';
-import {skipSuiteOnWindows} from '@jest/test-utils';
 import {json as runWithJson} from '../runJest';
-import {run} from '../Utils';
+import {runYarn} from '../Utils';
 
 const DIR = path.resolve(__dirname, '..', 'pnp');
 
-// https://github.com/facebook/jest/pull/8094#issuecomment-471220694
-skipSuiteOnWindows();
-
 beforeEach(() => {
-  run('yarn', DIR);
+  runYarn(DIR, {YARN_NODE_LINKER: 'pnp'});
 });
 
 it('successfully runs the tests inside `pnp/`', () => {
+  // https://github.com/facebook/jest/pull/8094#issuecomment-471220694
+  if (process.platform === 'win32') {
+    console.warn('[SKIP] Does not work on Windows');
+
+    return;
+  }
+
   const {json} = runWithJson(DIR, ['--no-cache', '--coverage'], {
+    env: {YARN_NODE_LINKER: 'pnp'},
     nodeOptions: `--require ${DIR}/.pnp.js`,
   });
   expect(json.success).toBe(true);

@@ -9,7 +9,11 @@ import getType = require('jest-get-type');
 
 const supportTypes = ['map', 'array', 'object'];
 
-type ReplaceableForEachCallBack = (value: any, key: any, object: any) => void;
+type ReplaceableForEachCallBack = (
+  value: unknown,
+  key: unknown,
+  object: unknown,
+) => void;
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export default class Replaceable {
@@ -24,7 +28,7 @@ export default class Replaceable {
     }
   }
 
-  static isReplaceable(obj1: any, obj2: any): boolean {
+  static isReplaceable(obj1: unknown, obj2: unknown): boolean {
     const obj1Type = getType(obj1);
     const obj2Type = getType(obj2);
     return obj1Type === obj2Type && supportTypes.includes(obj1Type);
@@ -32,12 +36,17 @@ export default class Replaceable {
 
   forEach(cb: ReplaceableForEachCallBack): void {
     if (this.type === 'object') {
-      Object.entries(this.object).forEach(([key, value]) => {
-        cb(value, key, this.object);
-      });
-      Object.getOwnPropertySymbols(this.object).forEach(key => {
-        cb(this.object[key], key, this.object);
-      });
+      const descriptors = Object.getOwnPropertyDescriptors(this.object);
+      [
+        ...Object.keys(descriptors),
+        ...Object.getOwnPropertySymbols(descriptors),
+      ]
+        //@ts-expect-error because typescript do not support symbol key in object
+        //https://github.com/microsoft/TypeScript/issues/1863
+        .filter(key => descriptors[key].enumerable)
+        .forEach(key => {
+          cb(this.object[key], key, this.object);
+        });
     } else {
       this.object.forEach(cb);
     }

@@ -152,7 +152,7 @@ Now that Jest knows how to process our files, we need to tell it how to _find_ t
 
 > Note: `<rootDir>` is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your `package.json` is located unless you specify a custom `rootDir` option in your configuration.
 
-Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH` env variable, which you can set, or make use of the `modulePaths` option.
+Similarly, webpack's `resolve.root` option functions like setting the `NODE_PATH` env variable, which you can set, or make use of the `modulePaths` option.
 
 ```json
 // package.json
@@ -169,7 +169,7 @@ Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH`
 }
 ```
 
-And finally, we have to handle the webpack `alias`. For that we can make use of the `moduleNameMapper` option again.
+And finally, we have to handle the webpack `alias`. For that, we can make use of the `moduleNameMapper` option again.
 
 ```json
 // package.json

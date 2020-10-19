@@ -28,6 +28,7 @@ const babel = require('@babel/core');
 const chalk = require('chalk');
 const micromatch = require('micromatch');
 const prettier = require('prettier');
+const transformOptions = require('../babel.config.js');
 const {getPackages, adjustToTerminalWidth, OK} = require('./buildUtils');
 
 const SRC_DIR = 'src';
@@ -37,9 +38,7 @@ const TS_FILES_PATTERN = '**/*.ts';
 const IGNORE_PATTERN = '**/__{tests,mocks}__/**';
 const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
-const INLINE_REQUIRE_BLACKLIST = /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
-
-const transformOptions = require('../babel.config.js');
+const INLINE_REQUIRE_EXCLUDE_LIST = /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
 
 const prettierConfig = prettier.resolveConfig.sync(__filename);
 prettierConfig.trailingComma = 'none';
@@ -101,8 +100,8 @@ function buildFile(file, silent) {
     const options = Object.assign({}, transformOptions);
     options.plugins = options.plugins.slice();
 
-    if (INLINE_REQUIRE_BLACKLIST.test(file)) {
-      // The modules in the blacklist are injected into the user's sandbox
+    if (INLINE_REQUIRE_EXCLUDE_LIST.test(file)) {
+      // The excluded modules are injected into the user's sandbox
       // We need to guard some globals there.
       options.plugins.push(
         require.resolve('./babel-plugin-jest-native-globals'),

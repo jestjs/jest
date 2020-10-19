@@ -21,11 +21,13 @@ const {
   JEST_CONFIG_BASE_NAME,
   JEST_CONFIG_EXT_MJS,
   JEST_CONFIG_EXT_JS,
+  JEST_CONFIG_EXT_TS,
   JEST_CONFIG_EXT_ORDER,
   PACKAGE_JSON,
 } = constants;
 
 type PromptsResults = {
+  useTypescript: boolean;
   clearMocks: boolean;
   coverage: boolean;
   coverageProvider: boolean;
@@ -53,7 +55,7 @@ export default async (
     projectPackageJson = JSON.parse(
       fs.readFileSync(projectPackageJsonPath, 'utf-8'),
     );
-  } catch (error) {
+  } catch {
     throw new MalformedPackageJsonError(projectPackageJsonPath);
   }
 
@@ -61,21 +63,11 @@ export default async (
     hasJestProperty = true;
   }
 
-  const existingJestConfigPath = JEST_CONFIG_EXT_ORDER.find(ext =>
+  const existingJestConfigExt = JEST_CONFIG_EXT_ORDER.find(ext =>
     fs.existsSync(path.join(rootDir, getConfigFilename(ext))),
   );
-  const jestConfigPath =
-    existingJestConfigPath ||
-    path.join(
-      rootDir,
-      getConfigFilename(
-        projectPackageJson.type === 'module'
-          ? JEST_CONFIG_EXT_MJS
-          : JEST_CONFIG_EXT_JS,
-      ),
-    );
 
-  if (hasJestProperty || existingJestConfigPath) {
+  if (hasJestProperty || existingJestConfigExt) {
     const result: {continue: boolean} = await prompts({
       initial: true,
       message:
@@ -121,6 +113,18 @@ export default async (
     console.log('Aborting...');
     return;
   }
+
+  // Determine if Jest should use JS or TS for the config file
+  const jestConfigFileExt = results.useTypescript
+    ? JEST_CONFIG_EXT_TS
+    : projectPackageJson.type === 'module'
+    ? JEST_CONFIG_EXT_MJS
+    : JEST_CONFIG_EXT_JS;
+
+  // Determine Jest config path
+  const jestConfigPath = existingJestConfigExt
+    ? getConfigFilename(existingJestConfigExt)
+    : path.join(rootDir, getConfigFilename(jestConfigFileExt));
 
   const shouldModifyScripts = results.scripts;
 

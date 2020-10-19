@@ -39,7 +39,10 @@ junit.xml
 
 *.tsbuildinfo
 
-.pnp.js
-.yarn/unplugged/
-.yarn/build-state.yml
-e2e/async-regenerator/.yarn/
+# https://yarnpkg.com/advanced/qa#which-files-should-be-gitignored but nested for e2e directories
+**/.yarn/*
+!**/.yarn/releases
+!**/.yarn/plugins
+!**/.yarn/sdks
+!**/.yarn/versions
+**/.pnp.*

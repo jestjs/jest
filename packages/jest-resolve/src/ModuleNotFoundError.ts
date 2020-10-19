@@ -10,7 +10,7 @@ import type {Config} from '@jest/types';
 import slash = require('slash');
 
 export default class ModuleNotFoundError extends Error {
-  code = 'MODULE_NOT_FOUND';
+  public code = 'MODULE_NOT_FOUND';
   public hint?: string;
   public requireStack?: Array<Config.Path>;
   public siblingWithSimilarExtensionFound?: boolean;
@@ -31,11 +31,11 @@ export default class ModuleNotFoundError extends Error {
 
     let message = this._originalMessage;
 
-    if (this?.requireStack?.length && this!.requireStack!.length > 1) {
+    if (this.requireStack?.length && this.requireStack.length > 1) {
       message += `
 
 Require stack:
-  ${(this.requireStack as Array<string>)
+  ${this.requireStack
     .map(p => p.replace(`${rootDir}${path.sep}`, ''))
     .map(slash)
     .join('\n  ')}

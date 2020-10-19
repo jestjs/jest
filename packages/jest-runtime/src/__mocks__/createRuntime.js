@@ -8,10 +8,10 @@
 import path from 'path';
 
 module.exports = async function createRuntime(filename, config) {
-  const NodeEnvironment = require('jest-environment-node');
-  const Runtime = require('../');
+  const {default: NodeEnvironment} = await import('jest-environment-node');
+  const {default: Runtime} = await import('../');
 
-  const {normalize} = require('jest-config');
+  const {normalize} = await import('jest-config');
 
   config = normalize(
     {
@@ -47,6 +47,9 @@ module.exports = async function createRuntime(filename, config) {
     config,
     environment,
     Runtime.createResolver(config, hasteMap.moduleMap),
+    undefined,
+    undefined,
+    filename,
   );
 
   for (const path of config.setupFiles) {

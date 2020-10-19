@@ -6,6 +6,8 @@
  *
  */
 
+/* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
+
 import vm, {Context} from 'vm';
 import {ModuleMocker} from '../';
 
@@ -765,7 +767,7 @@ describe('moduleMocker', () => {
 
       try {
         fn(2, 4);
-      } catch (error) {
+      } catch {
         // ignore error
       }
 

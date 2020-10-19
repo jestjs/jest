@@ -7,9 +7,9 @@
 
 const {stringify} = require('jest-matcher-utils');
 const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
-const jestExpect = require('../');
 const Immutable = require('immutable');
 const chalk = require('chalk');
+const jestExpect = require('../');
 const chalkEnabled = chalk.enabled;
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
@@ -1790,6 +1790,7 @@ describe('.toHaveProperty()', () => {
     get b() {
       return 'b';
     }
+    // eslint-disable-next-line accessor-pairs
     set setter(val) {
       this.val = val;
     }
@@ -1958,6 +1959,22 @@ describe('toMatchObject()', () => {
     }
   }
 
+  class Sub extends Foo {
+    get c() {
+      return 'c';
+    }
+  }
+
+  const withDefineProperty = (obj, key, val) => {
+    Object.defineProperty(obj, key, {
+      get() {
+        return val;
+      },
+    });
+
+    return obj;
+  };
+
   const testNotToMatchSnapshots = tuples => {
     tuples.forEach(([n1, n2]) => {
       it(`{pass: true} expect(${stringify(n1)}).toMatchObject(${stringify(
@@ -2082,6 +2099,12 @@ describe('toMatchObject()', () => {
       {a: 'b', c: 'd', [Symbol.for('jest')]: 'jest'},
       {a: 'b', c: 'd', [Symbol.for('jest')]: 'jest'},
     ],
+    // These snapshots will show {} as the object because the properties
+    // are not enumerable. We will need to somehow make the serialization of
+    // these keys a little smarter before reporting accurately.
+    [new Sub(), {a: undefined, b: 'b', c: 'c'}],
+    [withDefineProperty(new Sub(), 'd', 4), {d: 4}],
+    [{a: 'b', toString() {}}, {toString: jestExpect.any(Function)}],
   ]);
 
   testToMatchSnapshots([
@@ -2129,6 +2152,7 @@ describe('toMatchObject()', () => {
       {a: 'b', c: 'd', [Symbol.for('jest')]: 'jest'},
       {a: 'c', [Symbol.for('jest')]: expect.any(String)},
     ],
+    [{a: 'b'}, {toString: jestExpect.any(Function)}],
   ]);
 
   [

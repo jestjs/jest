@@ -20,13 +20,13 @@ const icon = path.resolve(__dirname, '../assets/jest_logo.png');
 
 export default class NotifyReporter extends BaseReporter {
   private _notifier = loadNotifier();
-  private _startRun: (globalConfig: Config.GlobalConfig) => any;
+  private _startRun: (globalConfig: Config.GlobalConfig) => unknown;
   private _globalConfig: Config.GlobalConfig;
   private _context: TestSchedulerContext;
 
   constructor(
     globalConfig: Config.GlobalConfig,
-    startRun: (globalConfig: Config.GlobalConfig) => any,
+    startRun: (globalConfig: Config.GlobalConfig) => unknown,
     context: TestSchedulerContext,
   ) {
     super();
@@ -117,8 +117,7 @@ export default class NotifyReporter extends BaseReporter {
             message,
             timeout: false,
             title,
-            // https://github.com/DefinitelyTyped/DefinitelyTyped/pull/42303
-          } as any,
+          },
           (err, _, metadata) => {
             if (err || !metadata) {
               return;

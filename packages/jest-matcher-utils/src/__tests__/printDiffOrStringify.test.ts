@@ -50,6 +50,29 @@ describe('printDiffOrStringify', () => {
     expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
   });
 
+  test('object contain readonly symbol key object', () => {
+    const expected = {b: 2};
+    const received = {b: 1};
+    const symbolKey = Symbol.for('key');
+    Object.defineProperty(expected, symbolKey, {
+      configurable: true,
+      enumerable: true,
+      value: {
+        a: 1,
+      },
+      writable: false,
+    });
+    Object.defineProperty(received, symbolKey, {
+      configurable: true,
+      enumerable: true,
+      value: {
+        a: 1,
+      },
+      writable: false,
+    });
+    expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
+  });
+
   describe('MAX_DIFF_STRING_LENGTH', () => {
     const lessChange = INVERTED_COLOR('single ');
     const less = 'single line';
@@ -126,7 +149,7 @@ describe('printDiffOrStringify', () => {
 
     test('custom asymmetricMatcher', () => {
       expect.extend({
-        equal5(received: any) {
+        equal5(received: unknown) {
           if (received === 5)
             return {
               message: () => `expected ${received} not to be 5`,
@@ -171,24 +194,24 @@ describe('printDiffOrStringify', () => {
     });
 
     test('array', () => {
-      const expected: Array<any> = [1, expect.any(Number), 3];
-      const received: Array<any> = [1, 2, 2];
+      const expected: Array<unknown> = [1, expect.any(Number), 3];
+      const received: Array<unknown> = [1, 2, 2];
       expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
     });
 
     test('object in array', () => {
-      const expected: Array<any> = [1, {a: 1, b: expect.any(Number)}, 3];
-      const received: Array<any> = [1, {a: 1, b: 2}, 2];
+      const expected: Array<unknown> = [1, {a: 1, b: expect.any(Number)}, 3];
+      const received: Array<unknown> = [1, {a: 1, b: 2}, 2];
       expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
     });
 
     test('map', () => {
-      const expected: Map<any, any> = new Map([
+      const expected: Map<unknown, unknown> = new Map([
         ['a', 1],
         ['b', expect.any(Number)],
         ['c', 3],
       ]);
-      const received: Map<any, any> = new Map([
+      const received: Map<unknown, unknown> = new Map([
         ['a', 1],
         ['b', 2],
         ['c', 2],
@@ -211,7 +234,7 @@ describe('printDiffOrStringify', () => {
     });
 
     test('transitive circular', () => {
-      const expected: any = {
+      const expected: unknown = {
         a: 3,
       };
       expected.nested = {b: expect.any(Number), parent: expected};
@@ -223,21 +246,21 @@ describe('printDiffOrStringify', () => {
     });
 
     test('circular array', () => {
-      const expected: Array<any> = [1, expect.any(Number), 3];
+      const expected: Array<unknown> = [1, expect.any(Number), 3];
       expected.push(expected);
-      const received: Array<any> = [1, 2, 2];
+      const received: Array<unknown> = [1, 2, 2];
       received.push(received);
       expect(testDiffOrStringify(expected, received)).toMatchSnapshot();
     });
 
     test('circular map', () => {
-      const expected: Map<any, any> = new Map([
+      const expected: Map<unknown, unknown> = new Map([
         ['a', 1],
         ['b', expect.any(Number)],
         ['c', 3],
       ]);
       expected.set('circular', expected);
-      const received: Map<any, any> = new Map([
+      const received: Map<unknown, unknown> = new Map([
         ['a', 1],
         ['b', 2],
         ['c', 2],

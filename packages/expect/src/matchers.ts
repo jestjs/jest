@@ -6,6 +6,8 @@
  *
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import getType = require('jest-get-type');
 import {
   DIM_COLOR,

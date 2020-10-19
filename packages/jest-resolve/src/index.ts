@@ -5,18 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/prefer-spread-eventually */
+
 import * as path from 'path';
 import type {Config} from '@jest/types';
 import type {ModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
 import slash = require('slash');
+import chalk = require('chalk');
 import nodeModulesPaths from './nodeModulesPaths';
 import isBuiltinModule from './isBuiltinModule';
 import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
 import type {ResolverConfig} from './types';
 import ModuleNotFoundError from './ModuleNotFoundError';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
-import chalk = require('chalk');
 
 type FindNodeModuleConfig = {
   basedir: Config.Path;
@@ -37,6 +39,7 @@ namespace Resolver {
     skipNodeResolution?: boolean;
     paths?: Array<Config.Path>;
   };
+  export type ResolverType = Resolver;
 }
 
 const NATIVE_PLATFORM = 'native';
@@ -51,7 +54,6 @@ const nodePaths = NODE_PATH
       .map(p => path.resolve(resolvedCwd, p))
   : undefined;
 
-/* eslint-disable-next-line no-redeclare */
 class Resolver {
   private readonly _options: ResolverConfig;
   private readonly _moduleMap: ModuleMap;
@@ -192,7 +194,6 @@ class Resolver {
       });
 
     if (!skipResolution) {
-      // @ts-expect-error: the "pnp" version named isn't in DefinitelyTyped
       module = resolveNodeModule(moduleName, Boolean(process.versions.pnp));
 
       if (module) {
@@ -471,7 +472,7 @@ const createNoMappedModuleFoundError = (
   mapModuleName: (moduleName: string) => string,
   mappedModuleName: string | Array<string>,
   regex: RegExp,
-  resolver?: Function | string | null,
+  resolver?: ((...args: Array<unknown>) => unknown) | string | null,
 ) => {
   const mappedAs = Array.isArray(mappedModuleName)
     ? JSON.stringify(mappedModuleName.map(mapModuleName), null, 2)

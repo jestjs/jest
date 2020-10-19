@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`on node ^12.16.0 || >=13.2.0 runs test with native ESM 1`] = `
+exports[`on node ^12.16.0 || >=13.7.0 runs test with native ESM 1`] = `
 Test Suites: 1 passed, 1 total
-Tests:       12 passed, 12 total
+Tests:       14 passed, 14 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites.

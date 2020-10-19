@@ -10,9 +10,9 @@
  */
 
 const fs = require('fs');
-const chokidar = require('chokidar');
 const {execSync} = require('child_process');
 const path = require('path');
+const chokidar = require('chokidar');
 const chalk = require('chalk');
 const {PACKAGES_DIR, getPackages} = require('./buildUtils');
 
@@ -23,7 +23,7 @@ let filesToBuild = new Map();
 const exists = filename => {
   try {
     return fs.statSync(filename).isFile();
-  } catch (e) {}
+  } catch {}
   return false;
 };
 const rebuild = filename => filesToBuild.set(filename, true);
@@ -62,7 +62,7 @@ chokidar
             buildFile,
           )} (deleted)\n`,
         );
-      } catch (e) {}
+      } catch {}
     }
   });
 
@@ -72,7 +72,7 @@ setInterval(() => {
     filesToBuild = new Map();
     try {
       execSync(`${BUILD_CMD} ${files.join(' ')}`, {stdio: [0, 1, 2]});
-    } catch (e) {}
+    } catch {}
   }
 }, 100);
 

@@ -109,8 +109,8 @@ Now let's use React's test renderer and Jest's snapshot feature to interact with
 ```javascript
 // Link.react.test.js
 import React from 'react';
-import Link from '../Link.react';
 import renderer from 'react-test-renderer';
+import Link from '../Link.react';
 
 test('Link changes the class when hovered', () => {
   const component = renderer.create(
@@ -168,7 +168,7 @@ exports[`Link changes the class when hovered 3`] = `
 `;
 ```
 
-The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
+The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along with code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
 
 The code for this example is available at [examples/snapshot](https://github.com/facebook/jest/tree/master/examples/snapshot).
 

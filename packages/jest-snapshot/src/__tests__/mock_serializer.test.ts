@@ -27,7 +27,7 @@ test('mock with 2 calls, 1 return, 1 throw', () => {
 
   try {
     fn(3);
-  } catch (error) {
+  } catch {
     // ignore error
   }
 

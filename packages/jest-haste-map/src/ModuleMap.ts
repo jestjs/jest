@@ -36,7 +36,7 @@ export default class ModuleMap {
   private json: SerializableModuleMap | undefined;
 
   private static mapToArrayRecursive(
-    map: Map<any, any>,
+    map: Map<string, any>,
   ): Array<[string, unknown]> {
     let arr = Array.from(map);
     if (arr[0] && arr[0][1] instanceof Map) {
@@ -235,7 +235,7 @@ class DuplicateHasteCandidatesError extends Error {
         `cannot be resolved, because there exists several different ` +
         `files, or packages, that provide a module for ` +
         `that particular name and platform. ${platformMessage} You must ` +
-        `delete or blacklist files until there remains only one of these:\n\n` +
+        `delete or exclude files until there remains only one of these:\n\n` +
         Array.from(duplicatesSet)
           .map(
             ([dupFilePath, dupFileType]) =>

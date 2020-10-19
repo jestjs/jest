@@ -128,7 +128,7 @@ expect.addSnapshotSerializer({
   serialize(val: string): string {
     return convertAnsi(val);
   },
-  test(val: any): val is string {
+  test(val: unknown): val is string {
     return typeof val === 'string';
   },
 });

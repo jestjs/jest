@@ -320,6 +320,10 @@ export const options = {
     description: 'Generate a basic configuration file',
     type: 'boolean',
   },
+  injectGlobals: {
+    description: 'Should Jest inject global variables or not',
+    type: 'boolean',
+  },
   json: {
     default: undefined,
     description:

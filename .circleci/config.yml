@@ -1,32 +1,27 @@
 aliases:
-  - &restore-cache
-    keys:
-      - v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      # Fallback in case checksum fails
-      - v2-dependencies-{{ .Branch }}-
-
-  - &save-cache
-    paths:
-      - node_modules
-      - website/node_modules
-    key: v2-dependencies-{{ .Branch }}-{{ checksum "yarn.lock" }}
-
   - &filter-ignore-gh-pages
     branches:
       ignore: gh-pages
-  - &install yarn install-no-ts-build
+  - &install
+    pkg-manager: yarn
+    override-ci-command: yarn install && yarn build:js
+    cache-path: ~/.yarn/berry/cache
+    include-branch-in-cache-key: false
+    app-dir: ~/jest
 
-version: 2
+orbs:
+  node: circleci/node@4.0.0
+version: 2.1
 jobs:
   test-node-10:
     working_directory: ~/jest
-    docker:
-      - image: circleci/node:10
+    executor: node/default
     steps:
       - checkout
-      - restore-cache: *restore-cache
-      - run: *install
-      - save-cache: *save-cache
+      - node/install:
+          node-version: '10'
+          install-npm: false
+      - node/install-packages: *install
       - run:
           command: yarn test-ci-partial
       - store_test_results:
@@ -34,13 +29,13 @@ jobs:
 
   test-jest-circus:
     working_directory: ~/jest
-    docker:
-      - image: circleci/node:12
+    executor: node/default
     steps:
       - checkout
-      - restore-cache: *restore-cache
-      - run: *install
-      - save-cache: *save-cache
+      - node/install:
+          lts: true
+          install-npm: false
+      - node/install-packages: *install
       - run:
           command: JEST_CIRCUS=1 yarn test-ci-partial && JEST_CIRCUS=1 yarn test-leak
       - store_test_results:
@@ -48,13 +43,13 @@ jobs:
 
   test-node-12:
     working_directory: ~/jest
-    docker:
-      - image: circleci/node:12
+    executor: node/default
     steps:
       - checkout
-      - restore-cache: *restore-cache
-      - run: *install
-      - save-cache: *save-cache
+      - node/install:
+          node-version: '12'
+          install-npm: false
+      - node/install-packages: *install
       - run:
           command: yarn test-ci
       - store_test_results:
@@ -62,13 +57,13 @@ jobs:
 
   test-node-13:
     working_directory: ~/jest
-    docker:
-      - image: circleci/node:13
+    executor: node/default
     steps:
       - checkout
-      - restore-cache: *restore-cache
-      - run: *install
-      - save-cache: *save-cache
+      - node/install:
+          node-version: '13'
+          install-npm: false
+      - node/install-packages: *install
       - run:
           command: yarn test-ci-partial
       - store_test_results:
@@ -76,13 +71,13 @@ jobs:
 
   test-node-14:
     working_directory: ~/jest
-    docker:
-      - image: circleci/node:14
+    executor: node/default
     steps:
       - checkout
-      - restore-cache: *restore-cache
-      - run: *install
-      - save-cache: *save-cache
+      - node/install:
+          node-version: '14'
+          install-npm: false
+      - node/install-packages: *install
       - run:
           command: yarn test-ci-partial
       - store_test_results:
@@ -90,14 +85,14 @@ jobs:
 
   test-or-deploy-website:
     working_directory: ~/jest
-    docker:
-      - image: circleci/node:12
+    executor: node/default
     resource_class: large
     steps:
       - checkout
-      - restore-cache: *restore-cache
-      - run: *install
-      - save-cache: *save-cache
+      - node/install:
+          lts: true
+          install-npm: false
+      - node/install-packages: *install
       - run:
           name: Test or Deploy Jest Website
           command: ./.circleci/website.sh
