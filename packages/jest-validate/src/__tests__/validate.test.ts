@@ -101,7 +101,7 @@ test.each([
   },
 );
 
-test('respects blacklist', () => {
+test('respects recursiveBlacklist', () => {
   const warn = console.warn;
   console.warn = jest.fn();
   const config = {
@@ -129,6 +129,40 @@ test('respects blacklist', () => {
   validate(config, {
     exampleConfig,
     recursiveBlacklist: ['something.nested'],
+  });
+
+  expect(console.warn).not.toBeCalled();
+  console.warn = warn;
+});
+
+test('respects recursiveDenylist', () => {
+  const warn = console.warn;
+  console.warn = jest.fn();
+  const config = {
+    something: {
+      nested: {
+        some_random_key: 'value',
+        some_random_key2: 'value2',
+      },
+    },
+  };
+  const exampleConfig = {
+    something: {
+      nested: {
+        test: true,
+      },
+    },
+  };
+
+  validate(config, {exampleConfig});
+
+  expect(console.warn).toBeCalled();
+
+  console.warn.mockReset();
+
+  validate(config, {
+    exampleConfig,
+    recursiveDenylist: ['something.nested'],
   });
 
   expect(console.warn).not.toBeCalled();
@@ -292,7 +326,7 @@ test('Comments in config JSON using "//" key are not warned', () => {
 
   validate(config, {
     exampleConfig: validConfig,
-    recursiveBlacklist: ['myCustomKey' as "don't validate this"],
+    recursiveDenylist: ['myCustomKey' as "don't validate this"],
   });
   expect(console.warn).not.toBeCalled();
 
