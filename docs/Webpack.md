@@ -125,8 +125,8 @@ _Note: if you are using babel-jest with additional code preprocessors, you have 
 
 ```json
 "transform": {
-  "^.+\\.js$": "babel-jest",
-  "^.+\\.css$": "custom-transformer",
+  "\\.js$": "babel-jest",
+  "\\.css$": "custom-transformer",
   ...
 }
 ```

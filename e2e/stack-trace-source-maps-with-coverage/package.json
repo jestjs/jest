@@ -2,7 +2,7 @@
   "jest": {
     "rootDir": "./",
     "transform": {
-      "^.+\\.(ts)$": "<rootDir>/preprocessor.js"
+      "\\.(ts)$": "<rootDir>/preprocessor.js"
     },
     "testEnvironment": "node",
     "testRegex": "fails"

@@ -67,7 +67,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "timers": "real",
       "transform": [
         [
-          "^.+\\\\.[jt]sx?$",
+          "\\\\.[jt]sx?$",
           "<<REPLACED_JEST_PACKAGES_DIR>>/babel-jest/build/index.js",
           {}
         ]

@@ -115,7 +115,7 @@ const validConfig = {
   testURL: 'http://localhost',
   timers: 'real',
   transform: {
-    '^.+\\.js$': '<rootDir>/preprocessor.js',
+    '\\.js$': '<rootDir>/preprocessor.js',
   },
   transformIgnorePatterns: [NODE_MODULES_REGEXP],
   unmockedModulePathPatterns: ['mock'],
