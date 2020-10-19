@@ -167,8 +167,8 @@
 <p>Jestがスタイルシートや画像の拡張子のあるファイルを無視して、代わりにモックファイルを読み込むように設定しました。 webpackの設定で扱うファイルタイプを照合する正規表現は調整することができます。</p>
 <p><em>注意: babel-jestを追加のコードプリプロセッサと使用する場合、 <code>.js</code>拡張子ファイルを babel-jestモジュールに対応付けるため、明示的にbabel-jestをJavaScriptコードのトランスパイラとして定義する必要があります。</em></p>
 <pre><code class="hljs css language-json">"transform": {
-  "^.+\\.js$": "babel-jest",
-  "^.+\\.css$": "custom-transformer",
+  "\\.js$": "babel-jest",
+  "\\.css$": "custom-transformer",
   ...
 }
 </code></pre>

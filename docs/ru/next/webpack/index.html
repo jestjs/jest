@@ -167,8 +167,8 @@
 <p>Мы указали Jest на необходимость игнорировать файлы расширения которых совпадают с расширениями таблиц стилей и изображений, и на необходимость использовать имитационные файлы вместо них. Вы можете корректировать регулярное выражение так, чтобы оно совпадало с типами файлов, которые обрабатывает ваша webpack конфигурация.</p>
 <p><em>Note: if you are using babel-jest with additional code preprocessors, you have to explicitly define babel-jest as a transformer for your JavaScript code to map <code>.js</code> files to the babel-jest module.</em></p>
 <pre><code class="hljs css language-json">"transform": {
-  "^.+\\.js$": "babel-jest",
-  "^.+\\.css$": "custom-transformer",
+  "\\.js$": "babel-jest",
+  "\\.css$": "custom-transformer",
   ...
 }
 </code></pre>

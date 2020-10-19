@@ -167,8 +167,8 @@
 <p>我们已经告知Jest忽略相关匹配的样式表或者图像文件，相反，导入我们的模拟文件。 你可以通过调整正规表达式来匹配webpack可以处理的文件类型。</p>
 <p><em>注：如果你bael-jest和额外的代码预处理器，你必须明确的定义babel-jest为你的Js代码的转换器，并且你需要映射所有<code>.js</code>文件到babel-jest模块。</em></p>
 <pre><code class="hljs css language-json">"transform": {
-  "^.+\\.js$": "babel-jest",
-  "^.+\\.css$": "custom-transformer",
+  "\\.js$": "babel-jest",
+  "\\.css$": "custom-transformer",
   ...
 }
 </code></pre>
