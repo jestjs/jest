@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-console]` `console.dir` now respects the second argument correctly ([#10638](https://github.com/facebook/jest/pull/10638))
+
 ### Chore & Maintenance
 
 ### Performance
@@ -16,7 +18,6 @@
 
 ### Fixes
 
-- `[jest-console]` `console.dir` now respects the second argument correctly ([#10638](https://github.com/facebook/jest/pull/10638))
 - `[jest-config]` Simplify transform RegExp ([#10207](https://github.com/facebook/jest/pull/10207))
 - `[jest-fake-timers]` Lazily instantiate mock timers ([#10551](https://github.com/facebook/jest/pull/10551))
 - `[jest-runtime]` `require.main` is no longer `undefined` when using `jest.resetModules` ([#10626](https://github.com/facebook/jest/pull/10626))
