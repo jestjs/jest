@@ -85,7 +85,7 @@ jobs:
         run: yarn build:js
       - name: Get number of CPU cores
         id: cpu-cores
-        run: echo "::set-output name=count::$(node -p 'require(\"os\").cpus().length')"
+        run: echo "::set-output name=count::$(node -p 'require("os").cpus().length')"
       - name: run tests
         run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }}
         env:
