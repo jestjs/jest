@@ -25,7 +25,8 @@ const stackUtils = new StackUtils({cwd: 'something which does not exist'});
 let nodeInternals: Array<RegExp> = [];
 
 try {
-  nodeInternals = StackUtils.nodeInternals();
+  // https://github.com/tapjs/stack-utils/issues/54
+  nodeInternals = StackUtils.nodeInternals().concat(/\s*\(node:/);
 } catch {
   // `StackUtils.nodeInternals()` fails in browsers. We don't need to remove
   // node internals in the browser though, so no issue.
