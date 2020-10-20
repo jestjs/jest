@@ -68,8 +68,12 @@ export default (
     newConfig.coverageDirectory = options.coverageDirectory;
   }
 
-  if (options.coverageReporters !== undefined) {
-    newConfig.coverageReporters = options.coverageReporters;
+  if (options.findRelatedTests !== undefined) {
+    newConfig.findRelatedTests = options.findRelatedTests;
+  }
+
+  if (options.nonFlagArgs !== undefined) {
+    newConfig.nonFlagArgs = options.nonFlagArgs;
   }
 
   if (options.noSCM) {

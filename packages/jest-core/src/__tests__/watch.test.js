@@ -617,7 +617,7 @@ describe('Watch mode flows', () => {
     ${'✖︎'} | ${'errorOnDeprecated'}
     ${'✖︎'} | ${'expand'}
     ${'✖︎'} | ${'filter'}
-    ${'✖︎'} | ${'findRelatedTests'}
+    ${'✔︎'} | ${'findRelatedTests'}
     ${'✖︎'} | ${'forceExit'}
     ${'✖︎'} | ${'globalSetup'}
     ${'✖︎'} | ${'globalTeardown'}
@@ -626,7 +626,7 @@ describe('Watch mode flows', () => {
     ${'✖︎'} | ${'listTests'}
     ${'✖︎'} | ${'logHeapUsage'}
     ${'✖︎'} | ${'maxWorkers'}
-    ${'✖︎'} | ${'nonFlagArgs'}
+    ${'✔︎'} | ${'nonFlagArgs'}
     ${'✖︎'} | ${'noSCM'}
     ${'✖︎'} | ${'noStackTrace'}
     ${'✔︎'} | ${'notify'}
