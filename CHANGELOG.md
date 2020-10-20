@@ -6,7 +6,8 @@
 
 ### Fixes
 
-- `[jest-mock]` Allow to mock methods in getters (TypeScript 3.9 export)
+- `[expect]` Fix `objectContaining` to work recursively into sub-objects ([#10508](https://github.com/facebook/jest/pull/10508))
+- `[jest-mock]` Allow to mock methods in getters (TypeScript 3.9 export) ([#10156](https://github.com/facebook/jest/pull/10156))
 
 ### Chore & Maintenance
 
