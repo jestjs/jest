@@ -9,6 +9,9 @@ import * as path from 'path';
 import {onNodeVersions} from '@jest/test-utils';
 import runJest from '../runJest';
 
+// import {wrap} from 'jest-snapshot-serializer-raw';
+// import {runYarn} from '../Utils';
+
 const DIR = path.resolve(__dirname, '../v8-coverage');
 
 onNodeVersions('>=10', () => {
@@ -22,6 +25,14 @@ onNodeVersions('>=10', () => {
         stripAnsi: true,
       },
     );
+
+    expect(exitCode).toBe(0);
+    expect(stdout).toMatchSnapshot();
+  });
+
+  test('vm script coverage generater', () => {
+    const dir = path.resolve(__dirname, '../vmscript-coverage');
+    const {stdout, exitCode} = runJest(dir, ['--coverage', '--coverage-provider', 'v8'], { stripAnsi: true });
 
     expect(exitCode).toBe(0);
     expect(stdout).toMatchSnapshot();

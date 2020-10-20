@@ -4,8 +4,7 @@
   "jest": {
     "testEnvironment": "node",
     "transform": {
-      "\\.[jt]sx?$": "babel-jest",
-      "\\.css$": "<rootDir>/cssTransform.js"
+      "\\.[jt]sx?$": "babel-jest"
     }
   }
 }
