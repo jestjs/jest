@@ -9,6 +9,7 @@
 - `[expect]` Fix `objectContaining` to work recursively into sub-objects ([#10508](https://github.com/facebook/jest/pull/10508))
 - `[jest-message-util]` Update to work properly with Node 15 ([#10660](https://github.com/facebook/jest/pull/10660))
 - `[jest-mock]` Allow to mock methods in getters (TypeScript 3.9 export) ([#10156](https://github.com/facebook/jest/pull/10156))
+- `[jest-config]` Fix for the `jest.config.ts` compiler to not interfere with `tsconfig.json` files
 
 ### Chore & Maintenance
 
