@@ -22,7 +22,7 @@ const validationOptions: ValidationOptions = {
   exampleConfig: {},
   recursive: true,
   // Allow NPM-sanctioned comments in package.json. Use a "//" key.
-  recursiveBlacklist: ['//'],
+  recursiveDenylist: ['//'],
   title: {
     deprecation: DEPRECATION,
     error: ERROR,

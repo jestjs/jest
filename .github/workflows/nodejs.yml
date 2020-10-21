@@ -83,7 +83,10 @@ jobs:
         run: yarn
       - name: build
         run: yarn build:js
+      - name: Get number of CPU cores
+        id: cpu-cores
+        uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests
-        run: yarn test-ci-partial
+        run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }}
         env:
           CI: true
