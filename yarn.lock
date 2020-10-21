@@ -5770,6 +5770,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cjs-module-lexer@npm:^0.4.2":
+  version: 0.4.2
+  resolution: "cjs-module-lexer@npm:0.4.2"
+  checksum: 2b06d73648a4c1e468f235457205984d0a7f62daaf750fa163c4d6d0965e50998d609bf2b9693aad8b55498aad460a9c2ec758f73eb60b7f988faf0eb54f53b8
+  languageName: node
+  linkType: hard
+
 "class-utils@npm:^0.3.5":
   version: 0.3.6
   resolution: "class-utils@npm:0.3.6"
@@ -11850,6 +11857,7 @@ fsevents@^1.2.7:
     "@types/node": ^14.0.27
     "@types/yargs": ^15.0.0
     chalk: ^4.0.0
+    cjs-module-lexer: ^0.4.2
     collect-v8-coverage: ^1.0.0
     execa: ^4.0.0
     exit: ^0.1.2

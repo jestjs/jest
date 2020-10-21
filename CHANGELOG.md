@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-runtime]` Support named exports from CJS as named ESM imports
 - `[jest-validate]` Add support for `recursiveDenylist` option as an alternative to `recursiveBlacklist` ([#10236](https://github.com/facebook/jest/pull/10236))
 
 ### Fixes

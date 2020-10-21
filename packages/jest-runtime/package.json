@@ -20,6 +20,7 @@
     "@jest/types": "^26.6.0",
     "@types/yargs": "^15.0.0",
     "chalk": "^4.0.0",
+    "cjs-module-lexer": "^0.4.2",
     "collect-v8-coverage": "^1.0.0",
     "exit": "^0.1.2",
     "glob": "^7.1.3",

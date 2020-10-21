@@ -18,6 +18,8 @@ import {
   Module as VMModule,
 } from 'vm';
 import * as nativeModule from 'module';
+// @ts-expect-error
+import parseCjs = require('cjs-module-lexer');
 import type {Config, Global} from '@jest/types';
 import type {
   Jest,
@@ -474,9 +476,30 @@ class Runtime {
     // CJS loaded via `import` should share cache with other CJS: https://github.com/nodejs/modules/issues/503
     const cjs = this.requireModuleOrMock(from, modulePath);
 
+    const transformedCode = this._fileTransforms.get(modulePath);
+
+    let cjsExports: ReadonlyArray<string> = [];
+
+    if (transformedCode) {
+      const {exports} = parseCjs(transformedCode.code);
+
+      // @ts-expect-error
+      cjsExports = exports.filter(exportName => {
+        // we don't wanna respect any exports _names_ default as a named export
+        if (exportName === 'default') {
+          return false;
+        }
+        return Object.hasOwnProperty.call(cjs, exportName);
+      });
+    }
+
     const module = new SyntheticModule(
-      ['default'],
+      [...cjsExports, 'default'],
       function () {
+        cjsExports.forEach(exportName => {
+          // @ts-expect-error
+          this.setExport(exportName, cjs[exportName]);
+        });
         // @ts-expect-error: TS doesn't know what `this` is
         this.setExport('default', cjs);
       },
