@@ -97,7 +97,6 @@ jobs:
       - store_test_results:
           path: reports/junit
 
-
   test-or-deploy-website:
     working_directory: ~/jest
     executor: node/default
