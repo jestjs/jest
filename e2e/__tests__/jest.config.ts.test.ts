@@ -10,7 +10,7 @@ import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest from '../runJest';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 
-const DIR = path.resolve(__dirname, '../jest.config.ts');
+const DIR = path.resolve(__dirname, '../tmp/jest-config-ts');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
