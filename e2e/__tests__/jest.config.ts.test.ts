@@ -29,6 +29,21 @@ test('works with jest.config.ts', () => {
   expect(wrap(summary)).toMatchSnapshot();
 });
 
+test('works with tsconfig.json', () => {
+  writeFiles(DIR, {
+    '__tests__/a-giraffe.js': `test('giraffe', () => expect(1).toBe(1));`,
+    'jest.config.ts': `export default {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js'};`,
+    'package.json': '{}',
+    'tsconfig.json': '{ "compilerOptions": { "module": "esnext" } }',
+  });
+
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {rest, summary} = extractSummary(stderr);
+  expect(exitCode).toBe(0);
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
+});
+
 test('traverses directory tree up until it finds jest.config', () => {
   writeFiles(DIR, {
     '__tests__/a-giraffe.js': `
