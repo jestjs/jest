@@ -107,7 +107,11 @@ const loadTSConfigFile = async (
 
   // Register TypeScript compiler instance
   try {
-    registerer = require('ts-node').register();
+    registerer = require('ts-node').register({
+      compilerOptions: {
+        module: 'CommonJS',
+      },
+    });
   } catch (e) {
     if (e.code === 'MODULE_NOT_FOUND') {
       throw new Error(
