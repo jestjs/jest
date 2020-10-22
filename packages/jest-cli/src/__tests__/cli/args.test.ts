@@ -31,6 +31,13 @@ describe('check', () => {
     );
   });
 
+  it('raises an exception if onlyFailures and watchAll are both specified', () => {
+    const argv = {onlyFailures: true, watchAll: true} as Config.Argv;
+    expect(() => check(argv)).toThrow(
+      'Both --onlyFailures and --watchAll were specified',
+    );
+  });
+
   it('raises an exception when lastCommit and watchAll are both specified', () => {
     const argv = {lastCommit: true, watchAll: true} as Config.Argv;
     expect(() => check(argv)).toThrow(

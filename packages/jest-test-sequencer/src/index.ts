@@ -109,6 +109,14 @@ export default class TestSequencer {
     });
   }
 
+  allFailedTests(tests: Array<Test>): Array<Test> {
+    const hasFailed = (cache: Cache, test: Test) =>
+      cache[test.path]?.[0] === FAIL;
+    return this.sort(
+      tests.filter(test => hasFailed(this._getCache(test), test)),
+    );
+  }
+
   cacheResults(tests: Array<Test>, results: AggregatedResult): void {
     const map = Object.create(null);
     tests.forEach(test => (map[test.path] = test));
