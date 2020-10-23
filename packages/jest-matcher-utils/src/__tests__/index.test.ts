@@ -20,7 +20,6 @@ import {
   stringify,
 } from '../';
 
-/* global BigInt */
 const isBigIntDefined = typeof BigInt === 'function';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);

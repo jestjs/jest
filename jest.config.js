@@ -35,6 +35,7 @@ module.exports = {
   ],
   testEnvironment: './packages/jest-environment-node',
   testPathIgnorePatterns: [
+    '/test-types/',
     '/__arbitraries__/',
     '/node_modules/',
     '/examples/',
@@ -62,7 +63,7 @@ module.exports = {
     '/e2e/__tests__/iterator-to-null-test.ts',
   ],
   transform: {
-    '^.+\\.[jt]sx?$': '<rootDir>/packages/babel-jest',
+    '\\.[jt]sx?$': '<rootDir>/packages/babel-jest',
   },
   watchPathIgnorePatterns: ['coverage'],
   watchPlugins: [

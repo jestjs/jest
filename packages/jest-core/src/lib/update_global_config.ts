@@ -72,6 +72,14 @@ export default (
     newConfig.coverageReporters = options.coverageReporters;
   }
 
+  if (options.findRelatedTests !== undefined) {
+    newConfig.findRelatedTests = options.findRelatedTests;
+  }
+
+  if (options.nonFlagArgs !== undefined) {
+    newConfig.nonFlagArgs = options.nonFlagArgs;
+  }
+
   if (options.noSCM) {
     newConfig.noSCM = true;
   }

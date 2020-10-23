@@ -1,6 +1,6 @@
 {
   "name": "@jest/test-sequencer",
-  "version": "26.2.2",
+  "version": "26.6.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,11 +10,11 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/test-result": "^26.2.0",
+    "@jest/test-result": "^26.6.1",
     "graceful-fs": "^4.2.4",
-    "jest-haste-map": "^26.2.2",
-    "jest-runner": "^26.2.2",
-    "jest-runtime": "^26.2.2"
+    "jest-haste-map": "^26.6.1",
+    "jest-runner": "^26.6.1",
+    "jest-runtime": "^26.6.1"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.3"

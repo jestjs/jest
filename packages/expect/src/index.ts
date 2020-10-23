@@ -6,6 +6,8 @@
  *
  */
 
+/* eslint-disable local/prefer-spread-eventually */
+
 import * as matcherUtils from 'jest-matcher-utils';
 import type {
   AsyncExpectationResult,
@@ -419,7 +421,6 @@ expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
 const expectExport = expect as Expect;
 
-// eslint-disable-next-line no-redeclare
 namespace expectExport {
   export type MatcherState = JestMatcherState;
   export interface Matchers<R> extends MatcherInterface<R> {}

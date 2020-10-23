@@ -19,7 +19,7 @@ type Path = string;
 
 // In memory functions.
 
-export function deserialize(buffer: Buffer): any {
+export function deserialize(buffer: Buffer): unknown {
   return v8Deserialize(buffer);
 }
 
@@ -29,7 +29,7 @@ export function serialize(content: unknown): Buffer {
 
 // Synchronous filesystem functions.
 
-export function readFileSync(filePath: Path): any {
+export function readFileSync(filePath: Path): unknown {
   return v8Deserialize(fs.readFileSync(filePath));
 }
 

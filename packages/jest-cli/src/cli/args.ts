@@ -32,6 +32,13 @@ export function check(argv: Config.Argv): true {
     }
   }
 
+  if (argv.onlyFailures && argv.watchAll) {
+    throw new Error(
+      `Both --onlyFailures and --watchAll were specified, but these two ` +
+        'options do not make sense together.',
+    );
+  }
+
   if (argv.findRelatedTests && argv._.length === 0) {
     throw new Error(
       'The --findRelatedTests option requires file paths to be specified.\n' +
@@ -318,6 +325,10 @@ export const options = {
   },
   init: {
     description: 'Generate a basic configuration file',
+    type: 'boolean',
+  },
+  injectGlobals: {
+    description: 'Should Jest inject global variables or not',
     type: 'boolean',
   },
   json: {

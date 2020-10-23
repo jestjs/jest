@@ -11,6 +11,8 @@ import type {ForegroundColor} from 'chalk';
 
 type CoverageProvider = 'babel' | 'v8';
 
+type Timers = 'real' | 'fake' | 'modern' | 'legacy';
+
 export type Path = string;
 
 export type Glob = string;
@@ -60,6 +62,7 @@ export type DefaultOptions = {
   forceCoverageMatch: Array<Glob>;
   globals: ConfigGlobals;
   haste: HasteConfig;
+  injectGlobals: boolean;
   maxConcurrency: number;
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
@@ -82,7 +85,7 @@ export type DefaultOptions = {
   slowTestThreshold: number;
   snapshotSerializers: Array<Path>;
   testEnvironment: string;
-  testEnvironmentOptions: Record<string, any>;
+  testEnvironmentOptions: Record<string, unknown>;
   testFailureExitCode: string | number;
   testLocationInResults: boolean;
   testMatch: Array<Glob>;
@@ -91,7 +94,7 @@ export type DefaultOptions = {
   testRunner: string;
   testSequencer: string;
   testURL: string;
-  timers: 'real' | 'fake';
+  timers: Timers;
   transformIgnorePatterns: Array<Glob>;
   useStderr: boolean;
   watch: boolean;
@@ -144,6 +147,7 @@ export type InitialOptions = Partial<{
   globalSetup: string | null | undefined;
   globalTeardown: string | null | undefined;
   haste: HasteConfig;
+  injectGlobals: boolean;
   reporters: Array<string | ReporterConfig>;
   logHeapUsage: boolean;
   lastCommit: boolean;
@@ -164,6 +168,7 @@ export type InitialOptions = Partial<{
   notify: boolean;
   notifyMode: string;
   onlyChanged: boolean;
+  onlyFailures: boolean;
   outputFile: Path;
   passWithNoTests: boolean;
   preprocessorIgnorePatterns: Array<Glob>;
@@ -191,7 +196,7 @@ export type InitialOptions = Partial<{
   snapshotSerializers: Array<Path>;
   errorOnDeprecated: boolean;
   testEnvironment: string;
-  testEnvironmentOptions: Record<string, any>;
+  testEnvironmentOptions: Record<string, unknown>;
   testFailureExitCode: string | number;
   testLocationInResults: boolean;
   testMatch: Array<Glob>;
@@ -204,7 +209,7 @@ export type InitialOptions = Partial<{
   testSequencer: string;
   testURL: string;
   testTimeout: number;
-  timers: 'real' | 'fake';
+  timers: Timers;
   transform: {
     [regex: string]: Path | TransformerConfig;
   };
@@ -217,7 +222,7 @@ export type InitialOptions = Partial<{
   watch: boolean;
   watchAll: boolean;
   watchman: boolean;
-  watchPlugins: Array<string | [string, Record<string, any>]>;
+  watchPlugins: Array<string | [string, Record<string, unknown>]>;
 }>;
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -306,7 +311,7 @@ export type GlobalConfig = {
   watchman: boolean;
   watchPlugins?: Array<{
     path: string;
-    config: Record<string, any>;
+    config: Record<string, unknown>;
   }> | null;
 };
 
@@ -329,6 +334,7 @@ export type ProjectConfig = {
   globalTeardown?: string;
   globals: ConfigGlobals;
   haste: HasteConfig;
+  injectGlobals: boolean;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
   moduleLoader?: Path;
@@ -352,14 +358,14 @@ export type ProjectConfig = {
   snapshotResolver?: Path;
   snapshotSerializers: Array<Path>;
   testEnvironment: string;
-  testEnvironmentOptions: Record<string, any>;
+  testEnvironmentOptions: Record<string, unknown>;
   testMatch: Array<Glob>;
   testLocationInResults: boolean;
   testPathIgnorePatterns: Array<string>;
   testRegex: Array<string | RegExp>;
   testRunner: string;
   testURL: string;
-  timers: 'real' | 'fake' | 'modern' | 'legacy';
+  timers: Timers;
   transform: Array<[string, Path, Record<string, unknown>]>;
   transformIgnorePatterns: Array<Glob>;
   watchPathIgnorePatterns: Array<string>;
@@ -399,6 +405,7 @@ export type Argv = Arguments<
     globalTeardown: string | null | undefined;
     haste: string;
     init: boolean;
+    injectGlobals: boolean;
     json: boolean;
     lastCommit: boolean;
     logHeapUsage: boolean;
@@ -412,6 +419,7 @@ export type Argv = Arguments<
     notify: boolean;
     notifyMode: string;
     onlyChanged: boolean;
+    onlyFailures: boolean;
     outputFile: string;
     preset: string | null | undefined;
     projects: Array<string>;

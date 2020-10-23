@@ -32,13 +32,15 @@ jobs:
           key: ubuntu-latest-node-12.x-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ubuntu-latest-node-12.x-yarn-
-      - uses: actions/setup-node@v2.1.1
+      - uses: actions/setup-node@v2.1.2
         with:
           node-version: 12.x
       - name: install
         run: yarn
       - name: build
         run: yarn build
+      - name: test typings
+        run: yarn test-types
       - name: verify TypeScript@3.8 compatibility
         run: yarn verify-old-ts
       - name: run eslint
@@ -52,7 +54,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [10.x, 12.x, 13.x, 14.x]
+        node-version: [10.x, 12.x, 13.x, 14.x, 15.x]
         os: [ubuntu-latest, macOS-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
@@ -74,14 +76,17 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2.1.1
+        uses: actions/setup-node@v2.1.2
         with:
           node-version: ${{ matrix.node-version }}
       - name: install
         run: yarn
       - name: build
         run: yarn build:js
+      - name: Get number of CPU cores
+        id: cpu-cores
+        uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests
-        run: yarn test-ci-partial
+        run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }}
         env:
           CI: true

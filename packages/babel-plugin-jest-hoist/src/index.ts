@@ -241,7 +241,7 @@ const extractJestObjExprIfHoistable = <T extends Node>(
   return functionLooksHoistable ? jestObjExpr : null;
 };
 
-/* eslint-disable sort-keys,@typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable sort-keys */
 export default (): PluginObj<{
   declareJestObjGetterIdentifier: () => Identifier;
   jestObjGetterIdentifier?: Identifier;
@@ -291,15 +291,18 @@ export default (): PluginObj<{
           callee.name === this.jestObjGetterIdentifier?.name
         ) {
           const mockStmt = callExpr.getStatementParent();
-          const mockStmtNode = mockStmt.node;
-          const mockStmtParent = mockStmt.parentPath;
-          if (mockStmtParent.isBlock()) {
-            mockStmt.remove();
-            mockStmtParent.unshiftContainer('body', [mockStmtNode]);
+
+          if (mockStmt) {
+            const mockStmtNode = mockStmt.node;
+            const mockStmtParent = mockStmt.parentPath;
+            if (mockStmtParent.isBlock()) {
+              mockStmt.remove();
+              mockStmtParent.unshiftContainer('body', [mockStmtNode]);
+            }
           }
         }
       },
     });
   },
 });
-/* eslint-enable sort-keys,@typescript-eslint/explicit-module-boundary-types */
+/* eslint-enable */

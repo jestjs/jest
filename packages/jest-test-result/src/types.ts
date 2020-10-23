@@ -10,8 +10,13 @@ import type {ConsoleBuffer} from '@jest/console';
 import type {Config, TestResult, TransformTypes} from '@jest/types';
 import type {V8Coverage} from 'collect-v8-coverage';
 
+export interface RuntimeTransformResult extends TransformTypes.TransformResult {
+  // TODO: Make mandatory in Jest 27
+  wrapperLength?: number;
+}
+
 export type V8CoverageResult = Array<{
-  codeTransformResult: TransformTypes.TransformResult | undefined;
+  codeTransformResult: RuntimeTransformResult | undefined;
   result: V8Coverage[number];
 }>;
 
@@ -20,13 +25,13 @@ export type SerializableError = TestResult.SerializableError;
 export type FailedAssertion = {
   matcherName?: string;
   message?: string;
-  actual?: any;
+  actual?: unknown;
   pass?: boolean;
   passed?: boolean;
-  expected?: any;
+  expected?: unknown;
   isNot?: boolean;
   stack?: string;
-  error?: any;
+  error?: unknown;
 };
 
 export type AssertionLocation = {
@@ -125,7 +130,7 @@ export type FormattedTestResult = {
   status: 'failed' | 'passed';
   startTime: number;
   endTime: number;
-  coverage: any;
+  coverage: unknown;
   assertionResults: Array<FormattedAssertionResult>;
 };
 
@@ -147,12 +152,12 @@ export type FormattedTestResults = {
   wasInterrupted: boolean;
 };
 
-export type CodeCoverageReporter = any;
+export type CodeCoverageReporter = unknown;
 
 export type CodeCoverageFormatter = (
   coverage: CoverageMapData | null | undefined,
   reporter: CodeCoverageReporter,
-) => Record<string, any> | null | undefined;
+) => Record<string, unknown> | null | undefined;
 
 export type UncheckedSnapshot = {
   filePath: string;

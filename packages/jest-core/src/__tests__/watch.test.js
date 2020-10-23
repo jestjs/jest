@@ -7,8 +7,8 @@
  */
 
 import chalk from 'chalk';
-import TestWatcher from '../TestWatcher';
 import {JestHook, KEYS} from 'jest-watcher';
+import TestWatcher from '../TestWatcher';
 
 const runJestMock = jest.fn();
 const watchPluginPath = `${__dirname}/__fixtures__/watch_plugin`;
@@ -617,7 +617,7 @@ describe('Watch mode flows', () => {
     ${'✖︎'} | ${'errorOnDeprecated'}
     ${'✖︎'} | ${'expand'}
     ${'✖︎'} | ${'filter'}
-    ${'✖︎'} | ${'findRelatedTests'}
+    ${'✔︎'} | ${'findRelatedTests'}
     ${'✖︎'} | ${'forceExit'}
     ${'✖︎'} | ${'globalSetup'}
     ${'✖︎'} | ${'globalTeardown'}
@@ -626,7 +626,7 @@ describe('Watch mode flows', () => {
     ${'✖︎'} | ${'listTests'}
     ${'✖︎'} | ${'logHeapUsage'}
     ${'✖︎'} | ${'maxWorkers'}
-    ${'✖︎'} | ${'nonFlagArgs'}
+    ${'✔︎'} | ${'nonFlagArgs'}
     ${'✖︎'} | ${'noSCM'}
     ${'✖︎'} | ${'noStackTrace'}
     ${'✔︎'} | ${'notify'}

@@ -7,9 +7,9 @@
 
 'use strict';
 
+const assert = require('assert');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const workerFarm = require('worker-farm');
-const assert = require('assert');
 const JestWorker = require('../../build').default;
 
 // Typical tests: node --expose-gc test.js empty 100000

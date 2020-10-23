@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
+
 type Global = NodeJS.Global; // | Window – add once TS improves typings;
 
 namespace JestMock {
@@ -61,12 +63,14 @@ namespace JestMock {
     mockReturnThis(): this;
     mockReturnValue(value: T): this;
     mockReturnValueOnce(value: T): this;
-    mockResolvedValue(value: T): this;
-    mockResolvedValueOnce(value: T): this;
-    mockRejectedValue(value: T): this;
-    mockRejectedValueOnce(value: T): this;
+    mockResolvedValue(value: Unpromisify<T>): this;
+    mockResolvedValueOnce(value: Unpromisify<T>): this;
+    mockRejectedValue(value: unknown): this;
+    mockRejectedValueOnce(value: unknown): this;
   }
 }
+
+type Unpromisify<T> = T extends Promise<infer R> ? R : never;
 
 /**
  * Possible types of a MockFunctionResult.
@@ -659,20 +663,20 @@ class ModuleMockerClass {
         // next function call will return this value or default return value
         f.mockImplementationOnce(() => value);
 
-      f.mockResolvedValueOnce = (value: T) =>
-        f.mockImplementationOnce(() => Promise.resolve(value));
+      f.mockResolvedValueOnce = (value: Unpromisify<T>) =>
+        f.mockImplementationOnce(() => Promise.resolve(value as T));
 
-      f.mockRejectedValueOnce = (value: T) =>
+      f.mockRejectedValueOnce = (value: unknown) =>
         f.mockImplementationOnce(() => Promise.reject(value));
 
       f.mockReturnValue = (value: T) =>
         // next function call will return specified return value or this one
         f.mockImplementation(() => value);
 
-      f.mockResolvedValue = (value: T) =>
-        f.mockImplementation(() => Promise.resolve(value));
+      f.mockResolvedValue = (value: Unpromisify<T>) =>
+        f.mockImplementation(() => Promise.resolve(value as T));
 
-      f.mockRejectedValue = (value: T) =>
+      f.mockRejectedValue = (value: unknown) =>
         f.mockImplementation(() => Promise.reject(value));
 
       f.mockImplementationOnce = (
@@ -981,17 +985,37 @@ class ModuleMockerClass {
 
       const isMethodOwner = object.hasOwnProperty(methodName);
 
-      // @ts-expect-error overriding original method with a Mock
-      object[methodName] = this._makeComponent({type: 'function'}, () => {
-        if (isMethodOwner) {
-          object[methodName] = original;
-        } else {
-          delete object[methodName];
-        }
-      });
+      let descriptor = Object.getOwnPropertyDescriptor(object, methodName);
+      let proto = Object.getPrototypeOf(object);
 
-      // @ts-expect-error original method is now a Mock
-      object[methodName].mockImplementation(function (this: unknown) {
+      while (!descriptor && proto !== null) {
+        descriptor = Object.getOwnPropertyDescriptor(proto, methodName);
+        proto = Object.getPrototypeOf(proto);
+      }
+
+      let mock: JestMock.Mock<unknown, Array<unknown>>;
+
+      if (descriptor && descriptor.get) {
+        const originalGet = descriptor.get;
+        mock = this._makeComponent({type: 'function'}, () => {
+          descriptor!.get = originalGet;
+          Object.defineProperty(object, methodName, descriptor!);
+        });
+        descriptor.get = () => mock;
+        Object.defineProperty(object, methodName, descriptor);
+      } else {
+        mock = this._makeComponent({type: 'function'}, () => {
+          if (isMethodOwner) {
+            object[methodName] = original;
+          } else {
+            delete object[methodName];
+          }
+        });
+        // @ts-expect-error overriding original method with a Mock
+        object[methodName] = mock;
+      }
+
+      mock.mockImplementation(function (this: unknown) {
         return original.apply(this, arguments);
       });
     }
@@ -1093,6 +1117,5 @@ class ModuleMockerClass {
   }
 }
 
-/* eslint-disable-next-line no-redeclare */
 const JestMock = new ModuleMockerClass(global);
 export = JestMock;

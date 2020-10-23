@@ -224,7 +224,7 @@ describe('node-notifier is an optional dependency', () => {
 
   test('without node-notifier uses mock function that throws an error', () => {
     jest.doMock('node-notifier', () => {
-      const error: any = new Resolver.ModuleNotFoundError(
+      const error: unknown = new Resolver.ModuleNotFoundError(
         "Cannot find module 'node-notifier'",
       );
       throw error;

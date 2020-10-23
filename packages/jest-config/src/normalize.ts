@@ -885,6 +885,7 @@ export default function normalize(
       case 'findRelatedTests':
       case 'forceCoverageMatch':
       case 'forceExit':
+      case 'injectGlobals':
       case 'lastCommit':
       case 'listTests':
       case 'logHeapUsage':
@@ -895,6 +896,7 @@ export default function normalize(
       case 'notify':
       case 'notifyMode':
       case 'onlyChanged':
+      case 'onlyFailures':
       case 'outputFile':
       case 'passWithNoTests':
       case 'replname':
@@ -984,10 +986,12 @@ export default function normalize(
 
   if (argv.all) {
     newOptions.onlyChanged = false;
+    newOptions.onlyFailures = false;
   } else if (newOptions.testPathPattern) {
     // When passing a test path pattern we don't want to only monitor changed
-    // files unless `--watch` is also passed.
+    // or failed files unless `--watch` is also passed.
     newOptions.onlyChanged = newOptions.watch;
+    newOptions.onlyFailures = newOptions.watch;
   }
 
   if (!newOptions.onlyChanged) {
@@ -1006,9 +1010,9 @@ export default function normalize(
     newOptions.watchAll = false;
   }
 
-  // as any since it can happen. We really need to fix the types here
+  // as unknown since it can happen. We really need to fix the types here
   if (
-    newOptions.moduleNameMapper === (DEFAULT_CONFIG.moduleNameMapper as any)
+    newOptions.moduleNameMapper === (DEFAULT_CONFIG.moduleNameMapper as unknown)
   ) {
     newOptions.moduleNameMapper = [];
   }

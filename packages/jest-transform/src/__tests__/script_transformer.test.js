@@ -281,7 +281,7 @@ describe('ScriptTransformer', () => {
     () => {
       config = {
         ...config,
-        transform: [['^.+\\.js$', 'passthrough-preprocessor']],
+        transform: [['\\.js$', 'passthrough-preprocessor']],
       };
       const scriptTransformer = new ScriptTransformer(config);
 
@@ -317,7 +317,7 @@ describe('ScriptTransformer', () => {
   it("throws an error if `process` doesn't defined", () => {
     config = {
       ...config,
-      transform: [['^.+\\.js$', 'skipped-required-props-preprocessor']],
+      transform: [['\\.js$', 'skipped-required-props-preprocessor']],
     };
     const scriptTransformer = new ScriptTransformer(config);
     expect(() =>
@@ -329,7 +329,7 @@ describe('ScriptTransformer', () => {
     config = {
       ...config,
       transform: [
-        ['^.+\\.js$', 'skipped-required-create-transformer-props-preprocessor'],
+        ['\\.js$', 'skipped-required-create-transformer-props-preprocessor'],
       ],
     };
     const scriptTransformer = new ScriptTransformer(config);
@@ -341,7 +341,7 @@ describe('ScriptTransformer', () => {
   it("shouldn't throw error without process method. But with corrent createTransformer method", () => {
     config = {
       ...config,
-      transform: [['^.+\\.js$', 'skipped-process-method-preprocessor']],
+      transform: [['\\.js$', 'skipped-process-method-preprocessor']],
     };
     const scriptTransformer = new ScriptTransformer(config);
     expect(() =>
@@ -350,7 +350,7 @@ describe('ScriptTransformer', () => {
   });
 
   it('uses the supplied preprocessor', () => {
-    config = {...config, transform: [['^.+\\.js$', 'test_preprocessor']]};
+    config = {...config, transform: [['\\.js$', 'test_preprocessor']]};
     const scriptTransformer = new ScriptTransformer(config);
     const res1 = scriptTransformer.transform('/fruits/banana.js', {});
 
@@ -367,8 +367,8 @@ describe('ScriptTransformer', () => {
     config = {
       ...config,
       transform: [
-        ['^.+\\.js$', 'test_preprocessor'],
-        ['^.+\\.css$', 'css-preprocessor'],
+        ['\\.js$', 'test_preprocessor'],
+        ['\\.css$', 'css-preprocessor'],
       ],
     };
     const scriptTransformer = new ScriptTransformer(config);
@@ -389,7 +389,7 @@ describe('ScriptTransformer', () => {
   it('writes source map if preprocessor supplies it', () => {
     config = {
       ...config,
-      transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+      transform: [['\\.js$', 'preprocessor-with-sourcemaps']],
     };
     const scriptTransformer = new ScriptTransformer(config);
 
@@ -419,7 +419,7 @@ describe('ScriptTransformer', () => {
   it('writes source map if preprocessor inlines it', () => {
     config = {
       ...config,
-      transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+      transform: [['\\.js$', 'preprocessor-with-sourcemaps']],
     };
     const scriptTransformer = new ScriptTransformer(config);
 
@@ -454,7 +454,7 @@ describe('ScriptTransformer', () => {
 
     config = {
       ...config,
-      transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+      transform: [['\\.js$', 'preprocessor-with-sourcemaps']],
     };
     const scriptTransformer = new ScriptTransformer(config);
 
@@ -488,7 +488,7 @@ describe('ScriptTransformer', () => {
   it('writes source maps if given by the transformer', () => {
     config = {
       ...config,
-      transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+      transform: [['\\.js$', 'preprocessor-with-sourcemaps']],
     };
     const scriptTransformer = new ScriptTransformer(config);
 
@@ -521,7 +521,7 @@ describe('ScriptTransformer', () => {
   it('does not write source map if not given by the transformer', () => {
     config = {
       ...config,
-      transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+      transform: [['\\.js$', 'preprocessor-with-sourcemaps']],
     };
     const scriptTransformer = new ScriptTransformer(config);
 
@@ -543,7 +543,7 @@ describe('ScriptTransformer', () => {
   it('should write a source map for the instrumented file when transformed', () => {
     const transformerConfig = {
       ...config,
-      transform: [['^.+\\.js$', 'preprocessor-with-sourcemaps']],
+      transform: [['\\.js$', 'preprocessor-with-sourcemaps']],
     };
     const scriptTransformer = new ScriptTransformer(transformerConfig);
 
@@ -626,7 +626,7 @@ describe('ScriptTransformer', () => {
   });
 
   it('passes expected transform options to getCacheKey', () => {
-    config = {...config, transform: [['^.+\\.js$', 'test_preprocessor']]};
+    config = {...config, transform: [['\\.js$', 'test_preprocessor']]};
     const scriptTransformer = new ScriptTransformer(config);
 
     scriptTransformer.transform(
@@ -643,9 +643,7 @@ describe('ScriptTransformer', () => {
   it('creates transformer with config', () => {
     const transformerConfig = {};
     config = Object.assign(config, {
-      transform: [
-        ['^.+\\.js$', 'configureable-preprocessor', transformerConfig],
-      ],
+      transform: [['\\.js$', 'configureable-preprocessor', transformerConfig]],
     });
 
     const scriptTransformer = new ScriptTransformer(config);
@@ -658,7 +656,7 @@ describe('ScriptTransformer', () => {
   it('reads values from the cache', () => {
     const transformConfig = {
       ...config,
-      transform: [['^.+\\.js$', 'test_preprocessor']],
+      transform: [['\\.js$', 'test_preprocessor']],
     };
     let scriptTransformer = new ScriptTransformer(transformConfig);
     scriptTransformer.transform('/fruits/banana.js', {});
@@ -699,7 +697,7 @@ describe('ScriptTransformer', () => {
   it('reads values from the cache when the file contains colons', () => {
     const transformConfig = {
       ...config,
-      transform: [['^.+\\.js$', 'test_preprocessor']],
+      transform: [['\\.js$', 'test_preprocessor']],
     };
     let scriptTransformer = new ScriptTransformer(transformConfig);
     scriptTransformer.transform('/fruits/banana:colon.js', {});
@@ -727,14 +725,14 @@ describe('ScriptTransformer', () => {
   it('does not reuse the in-memory cache between different projects', () => {
     const scriptTransformer = new ScriptTransformer({
       ...config,
-      transform: [['^.+\\.js$', 'test_preprocessor']],
+      transform: [['\\.js$', 'test_preprocessor']],
     });
 
     scriptTransformer.transform('/fruits/banana.js', {});
 
     const anotherScriptTransformer = new ScriptTransformer({
       ...config,
-      transform: [['^.+\\.js$', 'css-preprocessor']],
+      transform: [['\\.js$', 'css-preprocessor']],
     });
 
     anotherScriptTransformer.transform('/fruits/banana.js', {});
@@ -746,7 +744,7 @@ describe('ScriptTransformer', () => {
   it('preload transformer when using `preloadTransformer`', () => {
     const scriptTransformer = new ScriptTransformer({
       ...config,
-      transform: [['^.+\\.js$', 'test_preprocessor']],
+      transform: [['\\.js$', 'test_preprocessor']],
     });
 
     expect(Array.from(scriptTransformer._transformCache.entries())).toEqual([]);

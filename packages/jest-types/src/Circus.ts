@@ -20,7 +20,7 @@ export type HookFn = Global.HookFn;
 export type AsyncFn = TestFn | HookFn;
 export type SharedHookType = 'afterAll' | 'beforeAll';
 export type HookType = SharedHookType | 'afterEach' | 'beforeEach';
-export type TestContext = Record<string, any>;
+export type TestContext = Record<string, unknown>;
 export type Exception = any; // Since in JS anything can be thrown as an error.
 export type FormattedError = string; // String representation of error.
 export type Hook = {
@@ -37,6 +37,11 @@ export interface EventHandler {
 }
 
 export type Event = SyncEvent | AsyncEvent;
+
+interface JestGlobals extends Global.TestFrameworkGlobals {
+  // we cannot type `expect` properly as it'd create circular dependencies
+  expect: unknown;
+}
 
 export type SyncEvent =
   | {
@@ -61,7 +66,7 @@ export type SyncEvent =
       asyncError: Error;
       name: 'add_test';
       testName: TestName;
-      fn?: TestFn;
+      fn: TestFn;
       mode?: TestMode;
       timeout: number | undefined;
     }
@@ -77,6 +82,7 @@ export type AsyncEvent =
       // first action to dispatch. Good time to initialize all settings
       name: 'setup';
       testNamePattern?: string;
+      runtimeGlobals: JestGlobals;
       parentProcess: Process;
     }
   | {
@@ -186,7 +192,7 @@ export type TestResults = Array<TestResult>;
 export type GlobalErrorHandlers = {
   uncaughtException: Array<(exception: Exception) => void>;
   unhandledRejection: Array<
-    (exception: Exception, promise: Promise<any>) => void
+    (exception: Exception, promise: Promise<unknown>) => void
   >;
 };
 
@@ -225,7 +231,7 @@ export type TestEntry = {
   type: 'test';
   asyncError: Exception; // Used if the test failure contains no usable stack trace
   errors: Array<TestError>;
-  fn?: TestFn;
+  fn: TestFn;
   invocations: number;
   mode: TestMode;
   name: TestName;

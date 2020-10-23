@@ -106,13 +106,17 @@ async function runTestInternal(
   const TestEnvironment: typeof JestEnvironment = interopRequireDefault(
     require(testEnvironment),
   ).default;
-  const testFramework: TestFramework =
+  const testFramework: TestFramework = interopRequireDefault(
     process.env.JEST_CIRCUS === '1'
-      ? require('jest-circus/runner') // eslint-disable-line import/no-extraneous-dependencies
-      : require(config.testRunner);
-  const Runtime: typeof RuntimeClass = config.moduleLoader
-    ? require(config.moduleLoader)
-    : require('jest-runtime');
+      ? // eslint-disable-next-line import/no-extraneous-dependencies
+        require('jest-circus/runner')
+      : require(config.testRunner),
+  ).default;
+  const Runtime: typeof RuntimeClass = interopRequireDefault(
+    config.moduleLoader
+      ? require(config.moduleLoader)
+      : require('jest-runtime'),
+  ).default;
 
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
   const consoleFormatter = (type: LogType, message: LogMessage) =>
@@ -147,15 +151,22 @@ async function runTestInternal(
   const cacheFS = {[path]: testSource};
   setGlobal(environment.global, 'console', testConsole);
 
-  const runtime = new Runtime(config, environment, resolver, cacheFS, {
-    changedFiles: context?.changedFiles,
-    collectCoverage: globalConfig.collectCoverage,
-    collectCoverageFrom: globalConfig.collectCoverageFrom,
-    collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
-    coverageProvider: globalConfig.coverageProvider,
-    sourcesRelatedToTestsInChangedFiles:
-      context?.sourcesRelatedToTestsInChangedFiles,
-  });
+  const runtime = new Runtime(
+    config,
+    environment,
+    resolver,
+    cacheFS,
+    {
+      changedFiles: context?.changedFiles,
+      collectCoverage: globalConfig.collectCoverage,
+      collectCoverageFrom: globalConfig.collectCoverageFrom,
+      collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
+      coverageProvider: globalConfig.coverageProvider,
+      sourcesRelatedToTestsInChangedFiles:
+        context?.sourcesRelatedToTestsInChangedFiles,
+    },
+    path,
+  );
 
   const start = Date.now();
 

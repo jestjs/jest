@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import * as asyncHooks from 'async_hooks';
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
@@ -52,7 +54,11 @@ export default function collectHandles(): () => Array<Error> {
       _triggerAsyncId,
       resource: {} | NodeJS.Timeout,
     ) {
-      if (type === 'PROMISE' || type === 'TIMERWRAP') {
+      if (
+        type === 'PROMISE' ||
+        type === 'TIMERWRAP' ||
+        type === 'ELDHISTOGRAM'
+      ) {
         return;
       }
       const error = new ErrorWithStack(type, initHook);

@@ -56,11 +56,11 @@ Here's an example of the GlobalSetup script
 
 ```js
 // setup.js
-const puppeteer = require('puppeteer');
-const mkdirp = require('mkdirp');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
+const mkdirp = require('mkdirp');
+const puppeteer = require('puppeteer');
 
 const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
 
@@ -80,11 +80,11 @@ Then we need a custom Test Environment for puppeteer
 
 ```js
 // puppeteer_environment.js
-const NodeEnvironment = require('jest-environment-node');
 const fs = require('fs');
 const path = require('path');
-const puppeteer = require('puppeteer');
 const os = require('os');
+const puppeteer = require('puppeteer');
+const NodeEnvironment = require('jest-environment-node');
 
 const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
 
@@ -124,8 +124,8 @@ Finally we can close the puppeteer instance and clean-up the file
 ```js
 // teardown.js
 const os = require('os');
-const rimraf = require('rimraf');
 const path = require('path');
+const rimraf = require('rimraf');
 
 const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
 module.exports = async function () {

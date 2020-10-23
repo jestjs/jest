@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import {execSync} from 'child_process';
 import {createHash} from 'crypto';
 import {EventEmitter} from 'events';
@@ -214,7 +216,6 @@ function invariant(condition: unknown, message?: string): asserts condition {
  *     Worker processes can directly access the cache through `HasteMap.read()`.
  *
  */
-/* eslint-disable-next-line no-redeclare */
 class HasteMap extends EventEmitter {
   private _buildPromise: Promise<InternalHasteMapObject> | null;
   private _cachePath: Config.Path;
@@ -380,7 +381,7 @@ class HasteMap extends EventEmitter {
     let hasteMap: InternalHasteMap;
 
     try {
-      hasteMap = serializer.readFileSync(this._cachePath);
+      hasteMap = serializer.readFileSync(this._cachePath) as any;
     } catch {
       hasteMap = this._createEmptyMap();
     }
@@ -1110,7 +1111,7 @@ class DuplicateError extends Error {
   }
 }
 
-function copy<T extends Record<string, any>>(object: T): T {
+function copy<T extends Record<string, unknown>>(object: T): T {
   return Object.assign(Object.create(null), object);
 }
 

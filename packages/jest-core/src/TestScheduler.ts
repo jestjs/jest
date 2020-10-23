@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import chalk = require('chalk');
 import {formatExecError} from 'jest-message-util';
 import type {Config} from '@jest/types';

@@ -5,8 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as path from 'path';
 import type {Circus} from '@jest/types';
-import {convertDescriptorToString, formatTime} from 'jest-util';
+import {ErrorWithStack, convertDescriptorToString, formatTime} from 'jest-util';
 import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
 import dedent = require('dedent');
@@ -16,6 +17,8 @@ import type {AssertionResult, Status} from '@jest/test-result';
 import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
+
+const jestEachBuildDir = path.dirname(require.resolve('jest-each'));
 
 export const makeDescribe = (
   name: Circus.BlockName,
@@ -40,7 +43,7 @@ export const makeDescribe = (
 };
 
 export const makeTest = (
-  fn: Circus.TestFn | undefined,
+  fn: Circus.TestFn,
   mode: Circus.TestMode,
   name: Circus.TestName,
   parent: Circus.DescribeBlock,
@@ -151,22 +154,23 @@ const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
 // the original values in the variables before we require any files.
 const {setTimeout, clearTimeout} = global;
 
-function checkIsError(error: any): error is Error {
+function checkIsError(error: unknown): error is Error {
   return !!(error && (error as Error).message && (error as Error).stack);
 }
 
 export const callAsyncCircusFn = (
-  fn: Circus.AsyncFn,
+  testOrHook: Circus.TestEntry | Circus.Hook,
   testContext: Circus.TestContext | undefined,
-  asyncError: Circus.Exception,
-  {isHook, timeout}: {isHook?: boolean | null; timeout: number},
-): Promise<any> => {
+  {isHook, timeout}: {isHook: boolean; timeout: number},
+): Promise<unknown> => {
   let timeoutID: NodeJS.Timeout;
   let completed = false;
 
+  const {fn, asyncError} = testOrHook;
+
   return new Promise((resolve, reject) => {
     timeoutID = setTimeout(
-      () => reject(_makeTimeoutMessage(timeout, !!isHook)),
+      () => reject(_makeTimeoutMessage(timeout, isHook)),
       timeout,
     );
 
@@ -176,7 +180,7 @@ export const callAsyncCircusFn = (
       let returnedValue: unknown = undefined;
       const done = (reason?: Error | string): void => {
         // We need to keep a stack here before the promise tick
-        const errorAtDone = new Error();
+        const errorAtDone = new ErrorWithStack(undefined, done);
         // Use `Promise.resolve` to allow the event loop to go a single tick in case `done` is called synchronously
         Promise.resolve().then(() => {
           if (returnedValue !== undefined) {
@@ -299,8 +303,13 @@ export const makeSingleTestResult = (
 
   let location = null;
   if (includeTestLocationInResult) {
-    const stackLine = test.asyncError.stack.split('\n')[1];
-    const parsedLine = stackUtils.parseLine(stackLine);
+    const stackLines = test.asyncError.stack.split('\n');
+    const stackLine = stackLines[1];
+    let parsedLine = stackUtils.parseLine(stackLine);
+    if (parsedLine?.file?.startsWith(jestEachBuildDir)) {
+      const stackLine = stackLines[4];
+      parsedLine = stackUtils.parseLine(stackLine);
+    }
     if (
       parsedLine &&
       typeof parsedLine.column === 'number' &&

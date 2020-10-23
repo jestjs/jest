@@ -22,6 +22,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "computeSha1": false,
         "throwOnModuleCollision": false
       },
+      "injectGlobals": true,
       "moduleDirectories": [
         "node_modules"
       ],
@@ -66,13 +67,14 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "timers": "real",
       "transform": [
         [
-          "^.+\\\\.[jt]sx?$",
+          "\\\\.[jt]sx?$",
           "<<REPLACED_JEST_PACKAGES_DIR>>/babel-jest/build/index.js",
           {}
         ]
       ],
       "transformIgnorePatterns": [
-        "/node_modules/"
+        "/node_modules/",
+        "<<REPLACED_PNP_PATH>>"
       ],
       "watchPathIgnorePatterns": []
     }

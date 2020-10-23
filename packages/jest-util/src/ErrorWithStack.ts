@@ -6,7 +6,10 @@
  */
 
 export default class ErrorWithStack extends Error {
-  constructor(message: string | undefined, callsite: Function) {
+  constructor(
+    message: string | undefined,
+    callsite: (...args: Array<any>) => unknown,
+  ) {
     super(message);
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, callsite);

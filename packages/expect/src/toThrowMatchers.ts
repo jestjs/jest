@@ -6,6 +6,8 @@
  *
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {
   EXPECTED_COLOR,
@@ -76,7 +78,6 @@ export const createMatcher = (
   matcherName: string,
   fromPromise?: boolean,
 ): RawMatcherFn =>
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   function (
     this: MatcherState,
     received: Function,
