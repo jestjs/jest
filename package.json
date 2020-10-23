@@ -138,7 +138,7 @@
     "logo": "https://opencollective.com/jest/logo.txt"
   },
   "engines": {
-    "node": ">= 10.14.2"
+    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
   },
   "resolutions": {
     "@types/jest/jest-diff": "^25.1.0",
