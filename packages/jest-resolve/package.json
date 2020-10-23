@@ -16,7 +16,7 @@
     "jest-pnp-resolver": "^1.2.2",
     "jest-util": "^26.6.0",
     "read-pkg-up": "^7.0.1",
-    "resolve": "^1.17.0",
+    "resolve": "^1.18.1",
     "slash": "^3.0.0"
   },
   "devDependencies": {
