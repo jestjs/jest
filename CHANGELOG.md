@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-core]` Add `findRelatedTests` and `nonFlagArgs` in allowed config options for `updateConfigAndRun` in watch plugins ([#10659](https://github.com/facebook/jest/pull/10659))
+
 ### Fixes
 
 ### Chore & Maintenance
