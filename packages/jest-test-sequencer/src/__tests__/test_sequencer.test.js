@@ -162,6 +162,21 @@ test('writes the cache based on results without existing cache', () => {
   });
 });
 
+test('returns failed tests in sorted order', () => {
+  fs.readFileSync.mockImplementationOnce(() =>
+    JSON.stringify({
+      '/test-a.js': [SUCCESS, 5],
+      '/test-ab.js': [FAIL, 1],
+      '/test-c.js': [FAIL],
+    }),
+  );
+  const testPaths = ['/test-a.js', '/test-ab.js', '/test-c.js'];
+  expect(sequencer.allFailedTests(toTests(testPaths))).toEqual([
+    {context, duration: undefined, path: '/test-c.js'},
+    {context, duration: 1, path: '/test-ab.js'},
+  ]);
+});
+
 test('writes the cache based on the results', () => {
   fs.readFileSync.mockImplementationOnce(() =>
     JSON.stringify({
