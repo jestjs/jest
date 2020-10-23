@@ -91,8 +91,8 @@ jobs:
         env:
           CI: true
 
-  test-circus:
-    name: Node LTS on ${{ matrix.os }} using jest-circus
+  test-jasmine:
+    name: Node LTS on ${{ matrix.os }} using jest-jasmine2
     strategy:
       fail-fast: false
       matrix:
@@ -127,7 +127,7 @@ jobs:
       - name: Get number of CPU cores
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v1
-      - name: run tests using jest-circus
-        run: yarn jest-circus-ci --max-workers ${{ steps.cpu-cores.outputs.count }}
+      - name: run tests using jest-jasmine
+        run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }}
         env:
           CI: true

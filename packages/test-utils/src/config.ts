@@ -111,7 +111,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   testMatch: [],
   testPathIgnorePatterns: [],
   testRegex: ['\\.test\\.js$'],
-  testRunner: 'jest-jasmine2',
+  testRunner: 'jest-circus/runner',
   testURL: 'http://localhost',
   timers: 'real',
   transform: [],

@@ -33,7 +33,7 @@ let expectedPathAbs;
 let expectedPathAbsAnother;
 
 let virtualModuleRegexes;
-beforeEach(() => (virtualModuleRegexes = [/jest-jasmine2/, /babel-jest/]));
+beforeEach(() => (virtualModuleRegexes = [/jest-circus/, /babel-jest/]));
 const findNodeModule = jest.fn(name => {
   if (virtualModuleRegexes.some(regex => regex.test(name))) {
     return name;
@@ -659,7 +659,7 @@ describe('modulePathIgnorePatterns', () => {
 });
 
 describe('testRunner', () => {
-  it('defaults to Jasmine 2', () => {
+  it('defaults to Circus', () => {
     const {options} = normalize(
       {
         rootDir: '/root/path/foo',
@@ -667,7 +667,22 @@ describe('testRunner', () => {
       {},
     );
 
-    expect(options.testRunner).toMatch('jasmine2');
+    expect(options.testRunner).toMatch('jest-circus');
+  });
+
+  it('resolves jasmine', () => {
+    const Resolver = require('jest-resolve').default;
+    Resolver.findNodeModule = jest.fn(name => name);
+    const {options} = normalize(
+      {
+        rootDir: '/root/path/foo',
+      },
+      {
+        testRunner: 'jasmine2',
+      },
+    );
+
+    expect(options.testRunner).toMatch('jest-jasmine2');
   });
 
   it('is overwritten by argv', () => {
@@ -678,11 +693,11 @@ describe('testRunner', () => {
         rootDir: '/root/path/foo',
       },
       {
-        testRunner: 'jasmine1',
+        testRunner: 'mocha',
       },
     );
 
-    expect(options.testRunner).toBe('jasmine1');
+    expect(options.testRunner).toBe('mocha');
   });
 });
 

@@ -555,7 +555,13 @@ export default function normalize(
     options.roots = [options.rootDir];
   }
 
-  if (!options.testRunner || options.testRunner === 'jasmine2') {
+  if (
+    !options.testRunner ||
+    options.testRunner === 'circus' ||
+    options.testRunner === 'jest-circus'
+  ) {
+    options.testRunner = require.resolve('jest-circus/runner');
+  } else if (options.testRunner === 'jasmine2') {
     options.testRunner = require.resolve('jest-jasmine2');
   }
 

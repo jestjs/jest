@@ -109,9 +109,7 @@ async function runTestInternal(
   ).default;
   const testFramework: TestFramework = interopRequireDefault(
     transformer.requireAndTranspileModule(
-      process.env.JEST_CIRCUS === '1'
-        ? 'jest-circus/runner'
-        : config.testRunner,
+      process.env.JEST_JASMINE === '1' ? 'jest-jasmine2' : config.testRunner,
     ),
   ).default;
   const Runtime: typeof RuntimeClass = interopRequireDefault(

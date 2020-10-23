@@ -11757,6 +11757,7 @@ fsevents@~2.1.2:
     deepmerge: ^4.2.2
     glob: ^7.1.1
     graceful-fs: ^4.2.4
+    jest-circus: ^26.6.3
     jest-environment-jsdom: ^26.6.2
     jest-environment-node: ^26.6.2
     jest-get-type: ^26.3.0
@@ -12154,10 +12155,10 @@ fsevents@~2.1.2:
     emittery: ^0.7.1
     exit: ^0.1.2
     graceful-fs: ^4.2.4
-    jest-circus: ^26.6.3
     jest-config: ^26.6.3
     jest-docblock: ^26.0.0
     jest-haste-map: ^26.6.2
+    jest-jasmine2: ^26.6.3
     jest-leak-detector: ^26.6.2
     jest-message-util: ^26.6.2
     jest-resolve: ^26.6.2

@@ -501,7 +501,7 @@ test('some test', () => {
 });
 ```
 
-_Note: This option is only supported using `jest-circus`._
+_Note: This option is only supported using the default `jest-circus`. test runner_
 
 ### `maxConcurrency` [number]
 
@@ -1181,9 +1181,9 @@ This option allows the use of a custom results processor. This processor must be
 
 ### `testRunner` [string]
 
-Default: `jasmine2`
+Default: `jest-circus/runner`
 
-This option allows the use of a custom test runner. The default is jasmine2. A custom test runner can be provided by specifying a path to a test runner implementation.
+This option allows the use of a custom test runner. The default is `jest-circus`. A custom test runner can be provided by specifying a path to a test runner implementation.
 
 The test runner module must export a function with the following signature:
 
