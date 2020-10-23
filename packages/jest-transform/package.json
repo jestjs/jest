@@ -1,6 +1,6 @@
 {
   "name": "@jest/transform",
-  "version": "26.6.0",
+  "version": "26.6.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -11,15 +11,15 @@
   "types": "build/index.d.ts",
   "dependencies": {
     "@babel/core": "^7.1.0",
-    "@jest/types": "^26.6.0",
+    "@jest/types": "^26.6.1",
     "babel-plugin-istanbul": "^6.0.0",
     "chalk": "^4.0.0",
     "convert-source-map": "^1.4.0",
     "fast-json-stable-stringify": "^2.0.0",
     "graceful-fs": "^4.2.4",
-    "jest-haste-map": "^26.6.0",
+    "jest-haste-map": "^26.6.1",
     "jest-regex-util": "^26.0.0",
-    "jest-util": "^26.6.0",
+    "jest-util": "^26.6.1",
     "micromatch": "^4.0.2",
     "pirates": "^4.0.1",
     "slash": "^3.0.0",
