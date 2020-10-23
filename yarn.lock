@@ -4088,6 +4088,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"aggregate-error@npm:^3.0.0":
+  version: 3.1.0
+  resolution: "aggregate-error@npm:3.1.0"
+  dependencies:
+    clean-stack: ^2.0.0
+    indent-string: ^4.0.0
+  checksum: 704d2001a303c185e9b836d211f7eef2f4557195a11c3271143b4dcda5f6f263abe746d9b8a06b5871d07870686c7db9c0b2c38e2d3cbc593784eaaee8a29043
+  languageName: node
+  linkType: hard
+
 "airbnb-prop-types@npm:^2.16.0":
   version: 2.16.0
   resolution: "airbnb-prop-types@npm:2.16.0"
@@ -5796,6 +5806,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"clean-stack@npm:^2.0.0":
+  version: 2.2.0
+  resolution: "clean-stack@npm:2.2.0"
+  checksum: e291ce2b8c8c59e6449ac9a7a726090264bea6696e5343b21385e16d279c808ca09d73a1abea8fd23a9b7699e6ef5ce582df203511f71c8c27666bf3b2e300c5
+  languageName: node
+  linkType: hard
+
 "cli-boxes@npm:^2.2.0":
   version: 2.2.1
   resolution: "cli-boxes@npm:2.2.1"
@@ -7043,6 +7060,22 @@ __metadata:
     is-descriptor: ^1.0.2
     isobject: ^3.0.1
   checksum: 00c7ec53b5040507016736922a9678b3247bc85e0ea0429e47d6ca6a993890f9dc338fb19d5bf6f8c0ca29016a68aa7e7da5c35d4ed8b3646347d86a3b2b4b01
+  languageName: node
+  linkType: hard
+
+"del@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "del@npm:6.0.0"
+  dependencies:
+    globby: ^11.0.1
+    graceful-fs: ^4.2.4
+    is-glob: ^4.0.1
+    is-path-cwd: ^2.2.0
+    is-path-inside: ^3.0.2
+    p-map: ^4.0.0
+    rimraf: ^3.0.2
+    slash: ^3.0.0
+  checksum: da72707c9221154db6d6b05890ac1ae771d1b4ffc2759a6b8fca58e8a8289e07d22b68f68666a6c540dd99f1021b29ef77918dcaf4dbfeb9f99f49bd7fcc6fb5
   languageName: node
   linkType: hard
 
@@ -11027,7 +11060,14 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"is-path-inside@npm:^3.0.1":
+"is-path-cwd@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "is-path-cwd@npm:2.2.0"
+  checksum: 900f6e81445b9979705952189d7dbada79dbe6d77be3b5fc95aed3dc1cc9d77de5b286db2d525942a72a717c81aa549509b76705883415fb655183dfefce9541
+  languageName: node
+  linkType: hard
+
+"is-path-inside@npm:^3.0.1, is-path-inside@npm:^3.0.2":
   version: 3.0.2
   resolution: "is-path-inside@npm:3.0.2"
   checksum: 709ba85a713d25fb058a4c2f62e9e7160bcc1a3e48af2f201045cde027fc1efe61a6e1b5c1cf21b8329f764e3649e160976fde14317c1b848caa9c1f31d5beec
@@ -14941,6 +14981,15 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"p-map@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "p-map@npm:4.0.0"
+  dependencies:
+    aggregate-error: ^3.0.0
+  checksum: d51e630d72b7c38bc9e396710e7a068f0b813fe4db6f4a2d1ce2972e7fa11142c763c3aa39bcfd77c0133688c1ebfdd9b38fa3ac4c6ada20b62df26239c5c0e4
+  languageName: node
+  linkType: hard
+
 "p-pipe@npm:^1.1.0, p-pipe@npm:^1.2.0":
   version: 1.2.0
   resolution: "p-pipe@npm:1.2.0"
@@ -15828,7 +15877,7 @@ fsevents@^1.2.7:
     jest-util: ^26.6.0
     react: "*"
     react-dom: "*"
-    react-is: ^16.12.0
+    react-is: ^17.0.1
     react-test-renderer: "*"
   languageName: unknown
   linkType: soft
@@ -16275,6 +16324,13 @@ fsevents@^1.2.7:
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: 11bcf1267a314a522615f626f3ce3727a3a24cdbf61c4d452add3550a7875326669631326cfb1ba3e92b6f72244c32ffecf93ad21c0cad8455d3e169d0e3f060
+  languageName: node
+  linkType: hard
+
+"react-is@npm:^17.0.1":
+  version: 17.0.1
+  resolution: "react-is@npm:17.0.1"
+  checksum: 5a83dfc78e7adcb93d632bf367b0733db650e3abd2e9c57c33b87e50d201212c1884b0d7bcf13e692f1556189fa1b87f9f3e0ba10fe858fd6aebe83ed4fcd1ea
   languageName: node
   linkType: hard
 
@@ -17026,7 +17082,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"rimraf@npm:^3.0.0":
+"rimraf@npm:^3.0.0, rimraf@npm:^3.0.2":
   version: 3.0.2
   resolution: "rimraf@npm:3.0.2"
   dependencies:
@@ -17124,7 +17180,7 @@ fsevents@^1.2.7:
     slash: ^3.0.0
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
-    tempy: ^0.6.0
+    tempy: ^1.0.0
     throat: ^5.0.0
     ts-node: ^9.0.0
     type-fest: ^0.16.0
@@ -18563,15 +18619,16 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"tempy@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "tempy@npm:0.6.0"
+"tempy@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "tempy@npm:1.0.0"
   dependencies:
+    del: ^6.0.0
     is-stream: ^2.0.0
     temp-dir: ^2.0.0
     type-fest: ^0.16.0
     unique-string: ^2.0.0
-  checksum: 33e24c4f5723c60d8d1089d802f6060707c3a05fecce279af01376ad93194e51b58a8ed447a8dab0592fa8d840b445fffcc594e23d764b51a3db6c7b11d389cf
+  checksum: 3f5dc793d1bcf933eb7cfba8f2490749ad4974eda064fdb7c95bb42196e8d935b12f91ab764fc86b7d398af867966785349e1ee97674a8c770e23ed5f9bb7f6f
   languageName: node
   linkType: hard
 

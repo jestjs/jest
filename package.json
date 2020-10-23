@@ -75,7 +75,7 @@
     "slash": "^3.0.0",
     "string-length": "^4.0.1",
     "strip-ansi": "^6.0.0",
-    "tempy": "^0.6.0",
+    "tempy": "^1.0.0",
     "throat": "^5.0.0",
     "ts-node": "^9.0.0",
     "type-fest": "^0.16.0",
