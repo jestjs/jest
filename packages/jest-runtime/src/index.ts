@@ -45,7 +45,7 @@ import HasteMap = require('jest-haste-map');
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import jestMock = require('jest-mock');
 import {escapePathForRegex} from 'jest-regex-util';
-import Resolver = require('jest-resolve');
+import Resolver from 'jest-resolve';
 import Snapshot = require('jest-snapshot');
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {run as cliRun} from './cli';

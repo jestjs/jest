@@ -13,7 +13,7 @@ import slash = require('slash');
 import type {Config} from '@jest/types';
 import HasteMap = require('jest-haste-map');
 import {formatExecError} from 'jest-message-util';
-import Resolver = require('jest-resolve');
+import Resolver from 'jest-resolve';
 import type {Context} from 'jest-runtime';
 import {isInteractive, preRunMessage, specialChars} from 'jest-util';
 import {ValidationError} from 'jest-validate';

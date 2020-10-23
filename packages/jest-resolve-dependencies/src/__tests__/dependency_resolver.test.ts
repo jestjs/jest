@@ -9,7 +9,7 @@ import {tmpdir} from 'os';
 import * as path from 'path';
 import {makeProjectConfig} from '@jest/test-utils';
 import type {Config} from '@jest/types';
-import Resolver = require('jest-resolve');
+import Resolver from 'jest-resolve';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import DependencyResolver from '../index';
 
