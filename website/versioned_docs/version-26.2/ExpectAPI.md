@@ -1081,7 +1081,7 @@ If differences between properties do not help you to understand why a test fails
 - rewrite `expect(received).toEqual(expected)` as `expect(received.equals(expected)).toBe(true)`
 - rewrite `expect(received).not.toEqual(expected)` as `expect(received.equals(expected)).toBe(false)`
 
-### `.toMatch(regexpOrString)`
+### `.toMatch(regexp | string)`
 
 Use `.toMatch` to check that a string matches a regular expression.
 
