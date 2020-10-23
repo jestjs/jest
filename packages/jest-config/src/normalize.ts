@@ -896,6 +896,7 @@ export default function normalize(
       case 'notify':
       case 'notifyMode':
       case 'onlyChanged':
+      case 'onlyFailures':
       case 'outputFile':
       case 'passWithNoTests':
       case 'replname':
@@ -985,10 +986,12 @@ export default function normalize(
 
   if (argv.all) {
     newOptions.onlyChanged = false;
+    newOptions.onlyFailures = false;
   } else if (newOptions.testPathPattern) {
     // When passing a test path pattern we don't want to only monitor changed
-    // files unless `--watch` is also passed.
+    // or failed files unless `--watch` is also passed.
     newOptions.onlyChanged = newOptions.watch;
+    newOptions.onlyFailures = newOptions.watch;
   }
 
   if (!newOptions.onlyChanged) {

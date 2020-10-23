@@ -77,6 +77,7 @@ const initialOptions: Config.InitialOptions = {
   notify: false,
   notifyMode: 'failure-change',
   onlyChanged: false,
+  onlyFailures: false,
   preset: 'react-native',
   prettierPath: '<rootDir>/node_modules/prettier',
   projects: ['project-a', 'project-b/'],
