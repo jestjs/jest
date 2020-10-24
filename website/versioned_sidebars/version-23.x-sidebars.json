@@ -23,7 +23,8 @@
       "version-23.x-tutorial-jquery",
       "version-23.x-watch-plugins",
       "version-23.x-migration-guide",
-      "version-23.x-troubleshooting"
+      "version-23.x-troubleshooting",
+      "version-23.x-architecture"
     ],
     "Framework Guides": [
       "version-23.x-tutorial-react",
