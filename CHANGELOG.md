@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- `[jest-config]` Fix bug introduced in watch mode by PR[#10678](https://github.com/facebook/jest/pull/10678/files#r511037803) ([#10692](https://github.com/facebook/jest/pull/10692))
+
 ### Chore & Maintenance
 
 ### Performance
