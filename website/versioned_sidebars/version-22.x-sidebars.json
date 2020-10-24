@@ -15,6 +15,7 @@
       "version-22.x-timer-mocks",
       "version-22.x-manual-mocks",
       "version-22.x-es6-class-mocks",
+      "version-22.x-bypassing-module-mocks",
       "version-22.x-webpack",
       "version-22.x-puppeteer",
       "version-22.x-mongodb",
