@@ -20,6 +20,7 @@
       "version-23.x-webpack",
       "version-23.x-puppeteer",
       "version-23.x-mongodb",
+      "version-23.x-dynamodb",
       "version-23.x-tutorial-jquery",
       "version-23.x-watch-plugins",
       "version-23.x-migration-guide",

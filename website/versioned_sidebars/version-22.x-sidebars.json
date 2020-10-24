@@ -19,6 +19,7 @@
       "version-22.x-webpack",
       "version-22.x-puppeteer",
       "version-22.x-mongodb",
+      "version-22.x-dynamodb",
       "version-22.x-tutorial-jquery",
       "version-22.x-migration-guide",
       "version-22.x-troubleshooting",
