@@ -388,7 +388,7 @@ Example:
 ```js
 jest.mock('../myModule', () => {
   // Require the original module to not be mocked...
-  const originalModule = jest.requireActual(moduleName);
+  const originalModule = jest.requireActual('../myModule');
 
   return {
     __esModule: true, // Use it when dealing with esModules
@@ -586,7 +586,7 @@ Restores all mocks back to their original value. Equivalent to calling [`.mockRe
 
 Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate`).
 
-If you pass `'modern'` as argument, [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers) will be used as implementation instead of Jest's own fake timers. This also mocks additional timers like `Date`. `'modern'` will be the default behavior in Jest 27.
+If you pass `'modern'` as an argument, [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers) will be used as implementation instead of Jest's own fake timers. This also mocks additional timers like `Date`. `'modern'` will be the default behavior in Jest 27.
 
 Returns the `jest` object for chaining.
 

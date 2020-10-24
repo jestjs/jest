@@ -6,44 +6,7 @@ original_id: jest-object
 
 The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior.
 
-## Methods
-
-- [`jest.clearAllTimers()`](#jestclearalltimers)
-- [`jest.disableAutomock()`](#jestdisableautomock)
-- [`jest.enableAutomock()`](#jestenableautomock)
-- [`jest.fn(implementation)`](#jestfnimplementation)
-- [`jest.isMockFunction(fn)`](#jestismockfunctionfn)
-- [`jest.genMockFromModule(moduleName)`](#jestgenmockfrommodulemodulename)
-- [`jest.mock(moduleName, factory, options)`](#jestmockmodulename-factory-options)
-- [`jest.unmock(moduleName)`](#jestunmockmodulename)
-- [`jest.doMock(moduleName, factory, options)`](#jestdomockmodulename-factory-options)
-- [`jest.dontMock(moduleName)`](#jestdontmockmodulename)
-- [`jest.clearAllMocks()`](#jestclearallmocks)
-- [`jest.resetAllMocks()`](#jestresetallmocks)
-- [`jest.restoreAllMocks()`](#jestrestoreallmocks)
-- [`jest.resetModules()`](#jestresetmodules)
-- [`jest.runAllTicks()`](#jestrunallticks)
-- [`jest.runAllTimers()`](#jestrunalltimers)
-- [`jest.advanceTimersByTime(msToRun)`](#jestadvancetimersbytimemstorun)
-- [`jest.runOnlyPendingTimers()`](#jestrunonlypendingtimers)
-- [`jest.requireActual()`](#jestrequireactual)
-- [`jest.requireMock()`](#jestrequiremock)
-- [`jest.setMock(moduleName, moduleExports)`](#jestsetmockmodulename-moduleexports)
-- [`jest.setTimeout(timeout)`](#jestsettimeouttimeout)
-- [`jest.useFakeTimers()`](#jestusefaketimers)
-- [`jest.useRealTimers()`](#jestuserealtimers)
-- [`jest.spyOn(object, methodName)`](#jestspyonobject-methodname)
-- [`jest.spyOn(object, methodName, accessType?)`](#jestspyonobject-methodname-accesstype)
-
----
-
-## Reference
-
-### `jest.clearAllTimers()`
-
-Removes any pending timers from the timer system.
-
-This means, if any timers have been scheduled (but have not yet executed), they will be cleared and will never have the opportunity to execute in the future.
+## Mock Modules
 
 ### `jest.disableAutomock()`
 
@@ -56,7 +19,9 @@ After this method is called, all `require()`s will return the real versions of e
 Jest configuration:
 
 ```json
-"automock": true
+{
+  "automock": true
+}
 ```
 
 Example:
@@ -85,7 +50,7 @@ test('original implementation', () => {
 
 This is usually useful when you have a scenario where the number of dependencies you want to mock is far less than the number of dependencies that you don't. For example, if you're writing a test for a module that uses a large number of dependencies that can be reasonably classified as "implementation details" of the module, then you likely do not want to mock them.
 
-Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. Array.prototype methods) to highly common utility methods (e.g. underscore/lo-dash, array utilities etc) and entire libraries like React.js.
+Examples of dependencies that might be considered "implementation details" are things ranging from language built-ins (e.g. Array.prototype methods) to highly common utility methods (e.g. underscore/lo-dash, array utilities, etc) and entire libraries like React.js.
 
 Returns the `jest` object for chaining.
 
@@ -112,7 +77,7 @@ export default {
 ```
 
 ```js
-// __tests__/disableAutomocking.js
+// __tests__/enableAutomocking.js
 jest.enableAutomock();
 
 import utils from '../utils';
@@ -125,24 +90,6 @@ test('original implementation', () => {
 ```
 
 _Note: this method was previously called `autoMockOn`. When using `babel-jest`, calls to `enableAutomock` will automatically be hoisted to the top of the code block. Use `autoMockOn` if you want to explicitly avoid this behavior._
-
-### `jest.fn(implementation)`
-
-Returns a new, unused [mock function](MockFunctionAPI.md). Optionally takes a mock implementation.
-
-```js
-const mockFn = jest.fn();
-mockFn();
-expect(mockFn).toHaveBeenCalled();
-
-// With a mock implementation:
-const returnsTrue = jest.fn(() => true);
-console.log(returnsTrue()); // true;
-```
-
-### `jest.isMockFunction(fn)`
-
-Determines if the given function is a mocked function.
 
 ### `jest.genMockFromModule(moduleName)`
 
@@ -181,7 +128,7 @@ Creates a new [mock function](https://jestjs.io/docs/en/mock-functions.html). Th
 
 #### `Class`
 
-Creates new class. The interface of the original class is maintained, all of the class member functions and properties will be mocked.
+Creates a new class. The interface of the original class is maintained, all of the class member functions and properties will be mocked.
 
 #### `Object`
 
@@ -416,21 +363,44 @@ When using `babel-jest`, calls to `unmock` will automatically be hoisted to the 
 
 Returns the `jest` object for chaining.
 
-### `jest.clearAllMocks()`
+### `jest.setMock(moduleName, moduleExports)`
 
-Clears the `mock.calls` and `mock.instances` properties of all mocks. Equivalent to calling `.mockClear()` on every mocked function.
+Explicitly supplies the mock object that the module system should return for the specified module.
 
-Returns the `jest` object for chaining.
+On occasion, there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [manual mock](ManualMocks.md) that is more adequate for the module in question. However, on extremely rare occasions, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
 
-### `jest.resetAllMocks()`
-
-Resets the state of all mocks. Equivalent to calling `.mockReset()` on every mocked function.
+In these rare scenarios you can use this API to manually fill the slot in the module system's mock-module registry.
 
 Returns the `jest` object for chaining.
 
-### `jest.restoreAllMocks()`
+_Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object._
 
-Restores all mocks back to their original value. Equivalent to calling `.mockRestore` on every mocked function. Beware that `jest.restoreAllMocks()` only works when the mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
+### `jest.requireActual(moduleName)`
+
+Returns the actual module instead of a mock, bypassing all checks on whether the module should receive a mock implementation or not.
+
+Example:
+
+```js
+jest.mock('../myModule', () => {
+  // Require the original module to not be mocked...
+  const originalModule = jest.requireActual('../myModule');
+
+  return {
+    __esModule: true, // Use it when dealing with esModules
+    ...originalModule,
+    getRandom: jest.fn().mockReturnValue(10),
+  };
+});
+
+const getRandom = require('../myModule').getRandom;
+
+getRandom(); // Always returns 10
+```
+
+### `jest.requireMock(moduleName)`
+
+Returns a mock module instead of the actual module, bypassing all checks on whether the module should be required normally or not.
 
 ### `jest.resetModules()`
 
@@ -465,102 +435,38 @@ test('works too', () => {
 
 Returns the `jest` object for chaining.
 
-### `jest.runAllTicks()`
+### `jest.isolateModules(fn)`
 
-Exhausts the **micro**-task queue (usually interfaced in node via `process.nextTick`).
-
-When this API is called, all pending micro-tasks that have been queued via `process.nextTick` will be executed. Additionally, if those micro-tasks themselves schedule new micro-tasks, those will be continually exhausted until there are no more micro-tasks remaining in the queue.
-
-### `jest.runAllTimers()`
-
-Exhausts both the **macro**-task queue (i.e., all tasks queued by `setTimeout()`, `setInterval()`, and `setImmediate()`) and the **micro**-task queue (usually interfaced in node via `process.nextTick`).
-
-When this API is called, all pending macro-tasks and micro-tasks will be executed. If those tasks themselves schedule new tasks, those will be continually exhausted until there are no more tasks remaining in the queue.
-
-This is often useful for synchronously executing setTimeouts during a test in order to synchronously assert about some behavior that would only happen after the `setTimeout()` or `setInterval()` callbacks executed. See the [Timer mocks](TimerMocks.md) doc for more information.
-
-### `jest.runAllImmediates()`
-
-Exhausts all tasks queued by `setImmediate()`.
-
-### `jest.advanceTimersByTime(msToRun)`
-
-Also under the alias: `.runTimersToTime()`
-
-Executes only the macro task queue (i.e. all tasks queued by `setTimeout()` or `setInterval()` and `setImmediate()`).
-
-When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()`, and would be executed within this time frame will be executed. Additionally if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue, that should be run within `msToRun` milliseconds.
-
-### `jest.runOnlyPendingTimers()`
-
-Executes only the macro-tasks that are currently pending (i.e., only the tasks that have been queued by `setTimeout()` or `setInterval()` up to this point). If any of the currently pending macro-tasks schedule new macro-tasks, those new tasks will not be executed by this call.
-
-This is useful for scenarios such as one where the module being tested schedules a `setTimeout()` whose callback schedules another `setTimeout()` recursively (meaning the scheduling never stops). In these scenarios, it's useful to be able to run forward in time by a single step at a time.
-
-### `jest.requireActual(moduleName)`
-
-Returns the actual module instead of a mock, bypassing all checks on whether the module should receive a mock implementation or not.
-
-Example:
+`jest.isolateModules(fn)` goes a step further than `jest.resetModules()` and creates a sandbox registry for the modules that are loaded inside the callback function. This is useful to isolate specific modules for every test so that local module state doesn't conflict between tests.
 
 ```js
-jest.mock('../myModule', () => {
-  // Require the original module to not be mocked...
-  const originalModule = jest.requireActual(moduleName);
-
-  return {
-    __esModule: true, // Use it when dealing with esModules
-    ...originalModule,
-    getRandom: jest.fn().mockReturnValue(10),
-  };
+let myModule;
+jest.isolateModules(() => {
+  myModule = require('myModule');
 });
 
-const getRandom = require('../myModule').getRandom;
-
-getRandom(); // Always returns 10
+const otherCopyOfMyModule = require('myModule');
 ```
 
-### `jest.requireMock(moduleName)`
+## Mock functions
 
-Returns a mock module instead of the actual module, bypassing all checks on whether the module should be required normally or not.
+### `jest.fn(implementation)`
 
-### `jest.setMock(moduleName, moduleExports)`
-
-Explicitly supplies the mock object that the module system should return for the specified module.
-
-On occasion there are times where the automatically generated mock the module system would normally provide you isn't adequate enough for your testing needs. Normally under those circumstances you should write a [manual mock](ManualMocks.md) that is more adequate for the module in question. However, on extremely rare occasions, even a manual mock isn't suitable for your purposes and you need to build the mock yourself inside your test.
-
-In these rare scenarios you can use this API to manually fill the slot in the module system's mock-module registry.
-
-Returns the `jest` object for chaining.
-
-_Note It is recommended to use [`jest.mock()`](#jestmockmodulename-factory-options) instead. The `jest.mock` API's second argument is a module factory instead of the expected exported module object._
-
-### `jest.setTimeout(timeout)`
-
-Set the default timeout interval for tests and before/after hooks in milliseconds.
-
-_Note: The default timeout interval is 5 seconds if this method is not called._
-
-_Note: If you want to set the timeout for all test files, a good place to do this is in `setupFilesAfterEnv`._
-
-Example:
+Returns a new, unused [mock function](MockFunctionAPI.md). Optionally takes a mock implementation.
 
 ```js
-jest.setTimeout(1000); // 1 second
+const mockFn = jest.fn();
+mockFn();
+expect(mockFn).toHaveBeenCalled();
+
+// With a mock implementation:
+const returnsTrue = jest.fn(() => true);
+console.log(returnsTrue()); // true;
 ```
 
-### `jest.useFakeTimers()`
+### `jest.isMockFunction(fn)`
 
-Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate`).
-
-Returns the `jest` object for chaining.
-
-### `jest.useRealTimers()`
-
-Instructs Jest to use the real versions of the standard timer functions.
-
-Returns the `jest` object for chaining.
+Determines if the given function is a mocked function.
 
 ### `jest.spyOn(object, methodName)`
 
@@ -592,7 +498,6 @@ test('plays video', () => {
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
 
-  spy.mockReset();
   spy.mockRestore();
 });
 ```
@@ -624,7 +529,7 @@ const audio = {
   },
 };
 
-module.exports = video;
+module.exports = audio;
 ```
 
 Example test:
@@ -639,18 +544,114 @@ test('plays video', () => {
   expect(spy).toHaveBeenCalled();
   expect(isPlaying).toBe(true);
 
-  spy.mockReset();
   spy.mockRestore();
 });
+
+const audio = require('./audio');
 
 test('plays audio', () => {
-  const spy = jest.spyOn(video, 'play', 'set'); // we pass 'set'
-  video.volume = 100;
+  const spy = jest.spyOn(audio, 'volume', 'set'); // we pass 'set'
+  audio.volume = 100;
 
   expect(spy).toHaveBeenCalled();
-  expect(video.volume).toBe(100);
+  expect(audio.volume).toBe(100);
 
-  spy.mockReset();
   spy.mockRestore();
 });
+```
+
+### `jest.clearAllMocks()`
+
+Clears the `mock.calls` and `mock.instances` properties of all mocks. Equivalent to calling [`.mockClear()`](MockFunctionAPI.md#mockfnmockclear) on every mocked function.
+
+Returns the `jest` object for chaining.
+
+### `jest.resetAllMocks()`
+
+Resets the state of all mocks. Equivalent to calling [`.mockReset()`](MockFunctionAPI.md#mockfnmockreset) on every mocked function.
+
+Returns the `jest` object for chaining.
+
+### `jest.restoreAllMocks()`
+
+Restores all mocks back to their original value. Equivalent to calling [`.mockRestore()`](MockFunctionAPI.md#mockfnmockrestore) on every mocked function. Beware that `jest.restoreAllMocks()` only works when the mock was created with `jest.spyOn`; other mocks will require you to manually restore them.
+
+## Mock timers
+
+### `jest.useFakeTimers()`
+
+Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate`).
+
+Returns the `jest` object for chaining.
+
+### `jest.useRealTimers()`
+
+Instructs Jest to use the real versions of the standard timer functions.
+
+Returns the `jest` object for chaining.
+
+### `jest.runAllTicks()`
+
+Exhausts the **micro**-task queue (usually interfaced in node via `process.nextTick`).
+
+When this API is called, all pending micro-tasks that have been queued via `process.nextTick` will be executed. Additionally, if those micro-tasks themselves schedule new micro-tasks, those will be continually exhausted until there are no more micro-tasks remaining in the queue.
+
+### `jest.runAllTimers()`
+
+Exhausts both the **macro**-task queue (i.e., all tasks queued by `setTimeout()`, `setInterval()`, and `setImmediate()`) and the **micro**-task queue (usually interfaced in node via `process.nextTick`).
+
+When this API is called, all pending macro-tasks and micro-tasks will be executed. If those tasks themselves schedule new tasks, those will be continually exhausted until there are no more tasks remaining in the queue.
+
+This is often useful for synchronously executing setTimeouts during a test in order to synchronously assert about some behavior that would only happen after the `setTimeout()` or `setInterval()` callbacks executed. See the [Timer mocks](TimerMocks.md) doc for more information.
+
+### `jest.runAllImmediates()`
+
+Exhausts all tasks queued by `setImmediate()`.
+
+### `jest.advanceTimersByTime(msToRun)`
+
+##### renamed in Jest **22.0.0+**
+
+Also under the alias: `.runTimersToTime()`
+
+Executes only the macro task queue (i.e. all tasks queued by `setTimeout()` or `setInterval()` and `setImmediate()`).
+
+When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()`, and would be executed within this time frame will be executed. Additionally, if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue, that should be run within `msToRun` milliseconds.
+
+### `jest.runOnlyPendingTimers()`
+
+Executes only the macro-tasks that are currently pending (i.e., only the tasks that have been queued by `setTimeout()` or `setInterval()` up to this point). If any of the currently pending macro-tasks schedule new macro-tasks, those new tasks will not be executed by this call.
+
+This is useful for scenarios such as one where the module being tested schedules a `setTimeout()` whose callback schedules another `setTimeout()` recursively (meaning the scheduling never stops). In these scenarios, it's useful to be able to run forward in time by a single step at a time.
+
+### `jest.advanceTimersToNextTimer(steps)`
+
+Advances all timers by the needed milliseconds so that only the next timeouts/intervals will run.
+
+Optionally, you can provide `steps`, so it will run `steps` amount of next timeouts/intervals.
+
+### `jest.clearAllTimers()`
+
+Removes any pending timers from the timer system.
+
+This means, if any timers have been scheduled (but have not yet executed), they will be cleared and will never have the opportunity to execute in the future.
+
+### `jest.getTimerCount()`
+
+Returns the number of fake timers still left to run.
+
+## Misc
+
+### `jest.setTimeout(timeout)`
+
+Set the default timeout interval for tests and before/after hooks in milliseconds. This only affects the test file from which this function is called.
+
+_Note: The default timeout interval is 5 seconds if this method is not called._
+
+_Note: If you want to set the timeout for all test files, a good place to do this is in `setupFilesAfterEnv`._
+
+Example:
+
+```js
+jest.setTimeout(1000); // 1 second
 ```
