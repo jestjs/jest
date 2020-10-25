@@ -8,6 +8,8 @@
 
 ### Chore & Maintenance
 
+- `[jest-cli]` chore: standardize files and folder names ([#10698](https://github.com/facebook/jest/pull/1098))
+
 ### Performance
 
 ## 26.6.1
