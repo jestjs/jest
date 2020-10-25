@@ -84,8 +84,7 @@ jest.doMock(
   {virtual: true},
 );
 
-const regularUpdateGlobalConfig = require('../lib/updateGlobalConfig')
-  .default;
+const regularUpdateGlobalConfig = require('../lib/updateGlobalConfig').default;
 const updateGlobalConfig = jest.fn(regularUpdateGlobalConfig);
 jest.doMock('../lib/updateGlobalConfig', () => updateGlobalConfig);
 
