@@ -1,5 +1,5 @@
 ---
-id: version-26.5-mongodb
+id: version-22.x-mongodb
 title: Using with MongoDB
 original_id: mongodb
 ---
