@@ -7,6 +7,7 @@
 ### Fixes
 
 - `[expect]` Stop modifying the sample in `expect.objectContaining()` ([#10711](https://github.com/facebook/jest/pull/10711))
+- `[jest-jasmine2]` fix: don't assume stack to be a string always ([#10697](https://github.com/facebook/jest/pull/10697))
 
 ### Chore & Maintenance
 

@@ -78,4 +78,16 @@ describe('expectationResultFactory', () => {
     const result = expectationResultFactory(options);
     expect(result.message).toEqual('Expected `Pass`, received `Fail`.');
   });
+
+  it('returns the result if failed (with `error.stack` not as a string).', () => {
+    const options = {
+      actual: 'Fail',
+      error: {stack: []},
+      expected: 'Pass',
+      matcherName: 'testMatcher',
+      passed: false,
+    };
+    const result = expectationResultFactory(options);
+    expect(result.message).toMatchSnapshot();
+  });
 });
