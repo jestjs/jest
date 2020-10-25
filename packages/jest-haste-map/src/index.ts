@@ -50,6 +50,8 @@ import {getSha1, worker} from './worker';
 // understand `require`.
 const {version: VERSION} = require('../package.json');
 
+import inspector = require('inspector');
+
 type Options = {
   cacheDirectory?: string;
   computeDependencies?: boolean;
@@ -543,14 +545,16 @@ export default class HasteMap extends EventEmitter {
     if (this._options.retainAllFiles && filePath.includes(NODE_MODULES)) {
       if (computeSha1) {
         return this._getWorker(workerOptions)
-          .getSha1({
-            computeDependencies: this._options.computeDependencies,
-            computeSha1,
-            dependencyExtractor: this._options.dependencyExtractor,
-            filePath,
-            hasteImplModulePath: this._options.hasteImplModulePath,
-            rootDir,
-          })
+          .then(worker =>
+            worker.getSha1({
+              computeDependencies: this._options.computeDependencies,
+              computeSha1,
+              dependencyExtractor: this._options.dependencyExtractor,
+              filePath,
+              hasteImplModulePath: this._options.hasteImplModulePath,
+              rootDir,
+            }),
+          )
           .then(workerReply, workerError);
       }
 
@@ -619,14 +623,16 @@ export default class HasteMap extends EventEmitter {
     }
 
     return this._getWorker(workerOptions)
-      .worker({
-        computeDependencies: this._options.computeDependencies,
-        computeSha1,
-        dependencyExtractor: this._options.dependencyExtractor,
-        filePath,
-        hasteImplModulePath: this._options.hasteImplModulePath,
-        rootDir,
-      })
+      .then(worker =>
+        worker.worker({
+          computeDependencies: this._options.computeDependencies,
+          computeSha1,
+          dependencyExtractor: this._options.dependencyExtractor,
+          filePath,
+          hasteImplModulePath: this._options.hasteImplModulePath,
+          rootDir,
+        }),
+      )
       .then(workerReply, workerError);
   }
 
@@ -708,17 +714,33 @@ export default class HasteMap extends EventEmitter {
     serializer.writeFileSync(this._cachePath, hasteMap);
   }
 
+  private async setUpInspector() {
+    // Open V8 Inspector
+    await inspector.open();
+
+    const inspectorUrl = inspector.url();
+    let session;
+    if (inspectorUrl !== undefined) {
+      session = new inspector.Session();
+      await session.connect();
+      await session.post('Debugger.enable');
+    }
+    return {session};
+  }
+
   /**
    * Creates workers or parses files and extracts metadata in-process.
    */
-  private _getWorker(options?: {forceInBand: boolean}): WorkerInterface {
+  private async _getWorker(options?: {forceInBand: boolean}): Promise<any> {
     if (!this._worker) {
       if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
         this._worker = {getSha1, worker};
       } else {
-        // @ts-expect-error: assignment of a worker with custom properties.
+        const {session} = await this.setUpInspector();
+        // @ts-ignore: assignment of a worker with custom properties.
         this._worker = new Worker(require.resolve('./worker'), {
           exposedMethods: ['getSha1', 'worker'],
+          inspector: session,
           maxRetries: 3,
           numWorkers: this._options.maxWorkers,
         }) as WorkerInterface;

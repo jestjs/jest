@@ -13,6 +13,7 @@ import {
   ChildMessageInitialize,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_ERROR,
+  PARENT_MESSAGE_HEARTBEAT,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
 } from '../types';
@@ -58,6 +59,12 @@ const messageListener: NodeJS.MessageListener = request => {
   }
 };
 process.on('message', messageListener);
+
+function sendParentMessageHeartbeat() {
+  if (process && process.send) {
+    process.send([PARENT_MESSAGE_HEARTBEAT]);
+  }
+}
 
 function reportSuccess(result: unknown) {
   if (!process || !process.send) {
@@ -149,6 +156,7 @@ function execFunction(
   onError: (error: Error) => void,
 ): void {
   let result;
+  sendParentMessageHeartbeat();
 
   try {
     result = fn.apply(ctx, args);

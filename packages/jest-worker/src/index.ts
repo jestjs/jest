@@ -81,12 +81,13 @@ export class Worker {
     this._ending = false;
 
     const workerPoolOptions: WorkerPoolOptions = {
-      enableWorkerThreads: this._options.enableWorkerThreads ?? false,
-      forkOptions: this._options.forkOptions ?? {},
-      maxRetries: this._options.maxRetries ?? 3,
-      numWorkers: this._options.numWorkers ?? Math.max(cpus().length - 1, 1),
+      enableWorkerThreads: this._options.enableWorkerThreads || false,
+      forkOptions: this._options.forkOptions || {},
+      inspector: this._options.inspector,
+      maxRetries: this._options.maxRetries || 3,
+      numWorkers: this._options.numWorkers || Math.max(cpus().length - 1, 1),
       resourceLimits: this._options.resourceLimits ?? {},
-      setupArgs: this._options.setupArgs ?? [],
+      setupArgs: this._options.setupArgs || [],
     };
 
     if (this._options.WorkerPool) {

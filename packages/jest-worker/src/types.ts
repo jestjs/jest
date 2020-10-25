@@ -28,10 +28,12 @@ export const PARENT_MESSAGE_OK: 0 = 0;
 export const PARENT_MESSAGE_CLIENT_ERROR: 1 = 1;
 export const PARENT_MESSAGE_SETUP_ERROR: 2 = 2;
 export const PARENT_MESSAGE_CUSTOM: 3 = 3;
+export const PARENT_MESSAGE_HEARTBEAT: 4 = 4;
 
 export type PARENT_MESSAGE_ERROR =
   | typeof PARENT_MESSAGE_CLIENT_ERROR
-  | typeof PARENT_MESSAGE_SETUP_ERROR;
+  | typeof PARENT_MESSAGE_SETUP_ERROR
+  | typeof PARENT_MESSAGE_HEARTBEAT;
 
 export interface WorkerPoolInterface {
   getStderr(): NodeJS.ReadableStream;
@@ -100,6 +102,7 @@ export type FarmOptions = {
   resourceLimits?: ResourceLimits;
   setupArgs?: Array<unknown>;
   maxRetries?: number;
+  inspector?: any;
   numWorkers?: number;
   taskQueue?: TaskQueue;
   WorkerPool?: (
@@ -115,6 +118,7 @@ export type WorkerPoolOptions = {
   resourceLimits: ResourceLimits;
   maxRetries: number;
   numWorkers: number;
+  inspector?: any;
   enableWorkerThreads: boolean;
 };
 
@@ -122,6 +126,7 @@ export type WorkerOptions = {
   forkOptions: ForkOptions;
   resourceLimits: ResourceLimits;
   setupArgs: Array<unknown>;
+  inspector?: any;
   maxRetries: number;
   workerId: number;
   workerPath: string;

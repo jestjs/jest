@@ -8,6 +8,7 @@
 import {ChildProcess, fork} from 'child_process';
 import {PassThrough} from 'stream';
 import mergeStream = require('merge-stream');
+import {clearInterval} from 'timers';
 import {stdout as stdoutSupportsColor} from 'supports-color';
 import {
   CHILD_MESSAGE_INITIALIZE,
@@ -17,6 +18,7 @@ import {
   OnStart,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_CUSTOM,
+  PARENT_MESSAGE_HEARTBEAT,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
   ParentMessage,
@@ -64,6 +66,8 @@ export default class ChildProcessWorker implements WorkerInterface {
 
   private _exitPromise: Promise<void>;
   private _resolveExitPromise!: () => void;
+
+  private heartbeatTimeout: any;
 
   constructor(options: WorkerOptions) {
     this._options = options;
@@ -126,6 +130,8 @@ export default class ChildProcessWorker implements WorkerInterface {
       this._options.setupArgs,
     ]);
 
+    this.monitorHeartbeat(() => this.monitorHeartbeatError());
+
     this._child = child;
 
     this._retries++;
@@ -146,6 +152,12 @@ export default class ChildProcessWorker implements WorkerInterface {
     }
   }
 
+  monitorHeartbeat(onExceeded: () => any) {
+    this.heartbeatTimeout = setTimeout(() => {
+      onExceeded();
+    }, 7000);
+  }
+
   private _shutdown() {
     // End the temporary streams so the merged streams end too
     if (this._fakeStream) {
@@ -156,6 +168,61 @@ export default class ChildProcessWorker implements WorkerInterface {
     this._resolveExitPromise();
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  async monitorHeartbeatError() {
+    let error;
+
+    if (this._options.inspector !== undefined) {
+      error = new Error(
+        `Test worker was unresponsive for 10 seconds. There was an inspector connected so we were unable to capture stack frames before it was terminated.`,
+      );
+      this._options.inspector.on('Debugger.paused', (message: any) => {
+        const callFrames = message.params.callFrames.slice(0, 20);
+        for (const callFrame of callFrames) {
+          const loc = callFrame['location'];
+
+          const url = callFrame['url'];
+          const lineNumber = loc['lineNumber'];
+          const columnNumber = loc['columnNumber'];
+
+          const name = callFrame['scopeChain'][0].name;
+
+          // TODO: process error with stack trace
+          console.log({url, lineNumber, columnNumber, name});
+        }
+      });
+
+      await new Promise((resolve, reject) => {
+        this._options.inspector.post(
+          'Debugger.pause',
+          (err: any, params: any) => {
+            if (err === null) {
+              resolve(params);
+            } else {
+              reject(err);
+            }
+          },
+        );
+      });
+
+      this._options.inspector.disconnect();
+      this._options.inspector.close();
+    } else {
+      error = new Error(
+        `Test worker was unresponsive for 10 seconds. There was no inspector connected so we were unable to capture stack frames before it was terminated.`,
+      );
+    }
+    // @ts-ignore: adding custom properties to errors.
+    error.type = 1;
+    error.stack = 'test stack';
+
+    if (this.heartbeatTimeout !== undefined) {
+      clearTimeout(this.heartbeatTimeout);
+    }
+
+    this._onProcessEnd(error, null);
+  }
+
   private _onMessage(response: ParentMessage) {
     // TODO: Add appropriate type check
     let error: any;
@@ -163,6 +230,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
         this._onProcessEnd(null, response[1]);
+        clearInterval(this.heartbeatTimeout);
         break;
 
       case PARENT_MESSAGE_CLIENT_ERROR:
@@ -182,7 +250,7 @@ export default class ChildProcessWorker implements WorkerInterface {
             error[key] = extra[key];
           }
         }
-
+        clearInterval(this.heartbeatTimeout);
         this._onProcessEnd(error, null);
         break;
 
@@ -193,11 +261,17 @@ export default class ChildProcessWorker implements WorkerInterface {
         error.stack = response[3];
 
         this._onProcessEnd(error, null);
+        clearInterval(this.heartbeatTimeout);
+        break;
+
+      case PARENT_MESSAGE_HEARTBEAT:
+        this.monitorHeartbeat(() => this.monitorHeartbeatError());
         break;
       case PARENT_MESSAGE_CUSTOM:
         this._onCustomMessage(response[1]);
         break;
       default:
+        clearInterval(this.heartbeatTimeout);
         throw new TypeError('Unexpected response from worker: ' + response[0]);
     }
   }
