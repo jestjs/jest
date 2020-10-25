@@ -25,23 +25,23 @@ import {
   WatchPluginClass,
 } from 'jest-watcher';
 import getChangedFilesPromise from './getChangedFilesPromise';
-import isValidPath from './lib/is_valid_path';
-import createContext from './lib/create_context';
+import isValidPath from './lib/isValidPath';
+import createContext from './lib/createContext';
 import runJest from './runJest';
-import updateGlobalConfig from './lib/update_global_config';
+import updateGlobalConfig from './lib/updateGlobalConfig';
 import SearchSource from './SearchSource';
 import TestWatcher from './TestWatcher';
 import FailedTestsCache from './FailedTestsCache';
-import TestPathPatternPlugin from './plugins/test_path_pattern';
-import TestNamePatternPlugin from './plugins/test_name_pattern';
-import UpdateSnapshotsPlugin from './plugins/update_snapshots';
-import UpdateSnapshotsInteractivePlugin from './plugins/update_snapshots_interactive';
-import QuitPlugin from './plugins/quit';
+import TestPathPatternPlugin from './plugins/TestPathPattern';
+import TestNamePatternPlugin from './plugins/TestNamePattern';
+import UpdateSnapshotsPlugin from './plugins/UpdateSnapshots';
+import UpdateSnapshotsInteractivePlugin from './plugins/UpdateSnapshotsInteractive';
+import QuitPlugin from './plugins/Quit';
 import {
   filterInteractivePlugins,
   getSortedUsageRows,
-} from './lib/watch_plugins_helpers';
-import activeFilters from './lib/active_filters_message';
+} from './lib/watchPluginsHelpers';
+import activeFilters from './lib/activeFiltersMessage';
 import type {Filter} from './types';
 
 type ReservedInfo = {
