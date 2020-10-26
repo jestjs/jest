@@ -76,7 +76,7 @@ class DependencyResolver {
       // If we resolve a dependency, then look for a mock dependency
       // of the same name in that dependency's directory.
       resolvedMockDependency = this._resolver.getMockModule(
-        path.dirname(resolvedDependency),
+        resolvedDependency,
         path.basename(dependency),
       );
 
