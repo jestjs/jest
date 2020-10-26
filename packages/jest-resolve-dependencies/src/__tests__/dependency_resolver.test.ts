@@ -112,7 +112,7 @@ test('resolves inverse dependencies of mock', () => {
 
   expect(resolved).toEqual([
     expect.stringContaining(
-      path.join('__tests__', '__fixtures__', 'hasMocked', 'file.test.js'),
+      path.join('__tests__/__fixtures__/hasMocked/file.test.js'),
     ),
   ]);
 });
