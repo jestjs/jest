@@ -23,9 +23,26 @@ test('test config is without transform', () => {
 // The versions where vm.Module exists and commonjs with "exports" is not broken
 onNodeVersions('^12.16.0 || >=13.7.0', () => {
   test('runs test with native ESM', () => {
-    const {exitCode, stderr, stdout} = runJest(DIR, [], {
+    const {exitCode, stderr, stdout} = runJest(DIR, ['native-esm.test.js'], {
       nodeOptions: '--experimental-vm-modules',
     });
+
+    const {summary} = extractSummary(stderr);
+
+    expect(wrap(summary)).toMatchSnapshot();
+    expect(stdout).toBe('');
+    expect(exitCode).toBe(0);
+  });
+});
+
+// The versions where TLA is supported
+onNodeVersions('>=14.3.0', () => {
+  test('supports top-level await', () => {
+    const {exitCode, stderr, stdout} = runJest(
+      DIR,
+      ['native-esm.tla.test.js'],
+      {nodeOptions: '--experimental-vm-modules'},
+    );
 
     const {summary} = extractSummary(stderr);
 
