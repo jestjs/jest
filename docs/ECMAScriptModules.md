@@ -27,4 +27,4 @@ jest.useFakeTimers();
 // etc.
 ```
 
-Please note that we currently don't support `jest.mock` in a clean way in ESM, but that is something we intend to add proper support for in the future. Follow [this issues](https://github.com/facebook/jest/issues/10025) for updates.
+Please note that we currently don't support `jest.mock` in a clean way in ESM, but that is something we intend to add proper support for in the future. Follow [this issue](https://github.com/facebook/jest/issues/10025) for updates.
