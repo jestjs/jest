@@ -61,7 +61,7 @@ module.exports = {
 
 Let's create a [snapshot test](SnapshotTesting.md) for a Link component that renders hyperlinks:
 
-```javascript
+```tsx
 // Link.react.js
 import React from 'react';
 
@@ -107,7 +107,7 @@ export default class Link extends React.Component {
 
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
 
-```javascript
+```tsx
 // Link.react.test.js
 import React from 'react';
 import renderer from 'react-test-renderer';
@@ -197,7 +197,7 @@ React 16 triggers these warnings due to how it checks element types, and the moc
     jest.mock('./SomeComponent', () => () => 'SomeComponent');
     ```
 2.  Render as a custom element. DOM "custom elements" aren't checked for anything and shouldn't fire warnings. They are lowercase and have a dash in the name.
-    ```js
+    ```tsx
     jest.mock('./Widget', () => () => <mock-widget />);
     ```
 3.  Use `react-test-renderer`. The test renderer doesn't care about element types and will happily accept e.g. `SomeComponent`. You could check snapshots using the test renderer, and check component behavior separately using Enzyme.
@@ -217,7 +217,7 @@ You have to run `yarn add --dev @testing-library/react` to use react-testing-lib
 
 Let's implement a checkbox which swaps between two labels:
 
-```javascript
+```tsx
 // CheckboxWithLabel.js
 
 import React from 'react';
@@ -251,7 +251,7 @@ export default class CheckboxWithLabel extends React.Component {
 }
 ```
 
-```javascript
+```tsx
 // __tests__/CheckboxWithLabel-test.js
 import React from 'react';
 import {cleanup, fireEvent, render} from '@testing-library/react';
@@ -282,7 +282,7 @@ You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React 
 
 Let's rewrite the test from above using Enzyme instead of react-testing-library. We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
 
-```javascript
+```tsx
 // __tests__/CheckboxWithLabel-test.js
 
 import React from 'react';
