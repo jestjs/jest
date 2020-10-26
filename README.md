@@ -52,7 +52,7 @@ Install Jest using [`yarn`](https://yarnpkg.com/en/package/jest):
 yarn add --dev jest
 ```
 
-Or [`npm`](https://www.npmjs.com/):
+Or [`npm`](https://www.npmjs.com/package/jest):
 
 ```bash
 npm install --save-dev jest
@@ -124,13 +124,13 @@ jest --init
 
 ### Using Babel
 
-To use [Babel](http://babeljs.io/), install required dependencies via `yarn`:
+To use [Babel](https://babeljs.io/), install required dependencies via `yarn`:
 
 ```bash
 yarn add --dev babel-jest @babel/core @babel/preset-env
 ```
 
-If you do not already have babel configured for your project, you can use Babel to target your current version of Node by creating a `babel.config.js` file in the root of your project:
+Configure Babel to target your current version of Node by creating a `babel.config.js` file in the root of your project:
 
 ```javascript
 // babel.config.js
@@ -176,7 +176,7 @@ Jest can be used in projects that use [webpack](https://webpack.js.org/) to mana
 
 ### Using parcel
 
-Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration.
+Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration. Refer to the official [docs](https://parceljs.org/getting_started.html) to get started.
 
 ### Using TypeScript
 
@@ -198,7 +198,7 @@ module.exports = {
 };
 ```
 
-Note, there are some [caveats](https://babeljs.io/docs/en/next/babel-plugin-transform-typescript.html#caveats) to using TypeScript with Babel. Because TypeScript support in Babel is transpilation, Jest will not type-check your tests as they are run. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
+However, there are some [caveats](https://babeljs.io/docs/en/babel-plugin-transform-typescript#caveats) to using TypeScript with Babel. Because TypeScript support in Babel is transpilation, Jest will not type-check your tests as they are run. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
 
 <!-- end copied -->
 

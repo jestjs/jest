@@ -4,13 +4,19 @@ title: Testing React Apps
 original_id: tutorial-react
 ---
 
-At Facebook, we use Jest to test [React](http://facebook.github.io/react/) applications.
+At Facebook, we use Jest to test [React](https://reactjs.org/) applications.
 
 ## Setup
 
 ### Setup with Create React App
 
-If you are new to React, we recommend using [Create React App](https://github.com/facebookincubator/create-react-app). It is ready to use and [ships with Jest](https://github.com/facebookincubator/create-react-app)! You don't need to do any extra steps for setup, and can head straight to the next section.
+If you are new to React, we recommend using [Create React App](https://create-react-app.dev/). It is ready to use and [ships with Jest](https://create-react-app.dev/docs/running-tests/#docsNav)! You will only need to add `react-test-renderer` for rendering snapshots.
+
+Run
+
+```bash
+yarn add --dev react-test-renderer
+```
 
 ### Setup without Create React App
 
@@ -163,7 +169,7 @@ exports[`Link changes the class when hovered 3`] = `
 `;
 ```
 
-The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
+The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along with code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
 
 The code for this example is available at [examples/snapshot](https://github.com/facebook/jest/tree/master/examples/snapshot).
 
@@ -192,15 +198,22 @@ React 16 triggers these warnings due to how it checks element types, and the moc
     ```
 2.  Render as a custom element. DOM "custom elements" aren't checked for anything and shouldn't fire warnings. They are lowercase and have a dash in the name.
     ```js
-    jest.mock('./Widget', () => 'mock-widget');
+    jest.mock('./Widget', () => () => <mock-widget />);
     ```
 3.  Use `react-test-renderer`. The test renderer doesn't care about element types and will happily accept e.g. `SomeComponent`. You could check snapshots using the test renderer, and check component behavior separately using Enzyme.
+4.  Disable warnings all together (should be done in your jest setup file):
+    ```js
+    jest.mock('fbjs/lib/warning', () => require('fbjs/lib/emptyFunction'));
+    ```
+    This shouldn't normally be your option of choice as useful warnings could be lost. However, in some cases, for example when testing react-native's components we are rendering react-native tags into the DOM and many warnings are irrelevant. Another option is to swizzle the console.warn and suppress specific warnings.
 
 ### DOM Testing
 
-If you'd like to assert, and manipulate your rendered components you can use [Enzyme](http://airbnb.io/enzyme/) or React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html). We use Enzyme for this example.
+If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](http://airbnb.io/enzyme/), or React's [TestUtils](https://reactjs.org/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
 
-You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
+#### react-testing-library
+
+You have to run `yarn add --dev @testing-library/react` to use react-testing-library.
 
 Let's implement a checkbox which swaps between two labels:
 
@@ -215,12 +228,12 @@ export default class CheckboxWithLabel extends React.Component {
     this.state = {isChecked: false};
 
     // bind manually because React class components don't auto-bind
-    // http://facebook.github.io/react/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding
+    // https://reactjs.org/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding
     this.onChange = this.onChange.bind(this);
   }
 
   onChange() {
-    this.setState(prevState => ({isChecked: !prevState.isChecked}));
+    this.setState({isChecked: !this.state.isChecked});
   }
 
   render() {
@@ -238,7 +251,36 @@ export default class CheckboxWithLabel extends React.Component {
 }
 ```
 
-We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
+```javascript
+// __tests__/CheckboxWithLabel-test.js
+import React from 'react';
+import {cleanup, fireEvent, render} from '@testing-library/react';
+import CheckboxWithLabel from '../CheckboxWithLabel';
+
+// Note: running cleanup afterEach is done automatically for you in @testing-library/react@9.0.0 or higher
+// unmount and cleanup DOM after the test is finished.
+afterEach(cleanup);
+
+it('CheckboxWithLabel changes the text after click', () => {
+  const {queryByLabelText, getByLabelText} = render(
+    <CheckboxWithLabel labelOn="On" labelOff="Off" />,
+  );
+
+  expect(queryByLabelText(/off/i)).toBeTruthy();
+
+  fireEvent.click(getByLabelText(/off/i));
+
+  expect(queryByLabelText(/on/i)).toBeTruthy();
+});
+```
+
+The code for this example is available at [examples/react-testing-library](https://github.com/facebook/jest/tree/master/examples/react-testing-library).
+
+#### Enzyme
+
+You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React version below 15.5.0, you will also need to install `react-addons-test-utils`.
+
+Let's rewrite the test from above using Enzyme instead of react-testing-library. We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
 
 ```javascript
 // __tests__/CheckboxWithLabel-test.js

@@ -1,5 +1,5 @@
 ---
-id: version-26.2-dynamodb
+id: version-22.x-dynamodb
 title: Using with DynamoDB
 original_id: dynamodb
 ---

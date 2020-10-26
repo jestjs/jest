@@ -4,13 +4,13 @@ title: Testing React Apps
 original_id: tutorial-react
 ---
 
-At Facebook, we use Jest to test [React](http://facebook.github.io/react/) applications.
+At Facebook, we use Jest to test [React](https://reactjs.org/) applications.
 
 ## Setup
 
 ### Setup with Create React App
 
-If you are new to React, we recommend using [Create React App](https://github.com/facebookincubator/create-react-app). It is ready to use and [ships with Jest](https://facebook.github.io/create-react-app/docs/running-tests#docsNav)! You will only need to add `react-test-renderer` for rendering snapshots.
+If you are new to React, we recommend using [Create React App](https://create-react-app.dev/). It is ready to use and [ships with Jest](https://create-react-app.dev/docs/running-tests/#docsNav)! You will only need to add `react-test-renderer` for rendering snapshots.
 
 Run
 
@@ -169,7 +169,7 @@ exports[`Link changes the class when hovered 3`] = `
 `;
 ```
 
-The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
+The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along with code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
 
 The code for this example is available at [examples/snapshot](https://github.com/facebook/jest/tree/master/examples/snapshot).
 
@@ -209,7 +209,7 @@ React 16 triggers these warnings due to how it checks element types, and the moc
 
 ### DOM Testing
 
-If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](http://airbnb.io/enzyme/), or React's [TestUtils](http://facebook.github.io/react/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
+If you'd like to assert, and manipulate your rendered components you can use [react-testing-library](https://github.com/kentcdodds/react-testing-library), [Enzyme](http://airbnb.io/enzyme/), or React's [TestUtils](https://reactjs.org/docs/test-utils.html). The following two examples use react-testing-library and Enzyme.
 
 #### react-testing-library
 
@@ -228,7 +228,7 @@ export default class CheckboxWithLabel extends React.Component {
     this.state = {isChecked: false};
 
     // bind manually because React class components don't auto-bind
-    // http://facebook.github.io/react/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding
+    // https://reactjs.org/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding
     this.onChange = this.onChange.bind(this);
   }
 
@@ -257,7 +257,8 @@ import React from 'react';
 import {cleanup, fireEvent, render} from '@testing-library/react';
 import CheckboxWithLabel from '../CheckboxWithLabel';
 
-// automatically unmount and cleanup DOM after the test is finished.
+// Note: running cleanup afterEach is done automatically for you in @testing-library/react@9.0.0 or higher
+// unmount and cleanup DOM after the test is finished.
 afterEach(cleanup);
 
 it('CheckboxWithLabel changes the text after click', () => {

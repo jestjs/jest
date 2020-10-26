@@ -1,5 +1,5 @@
 ---
-id: version-24.x-architecture
+id: version-22.x-architecture
 title: Architecture
 original_id: architecture
 ---
