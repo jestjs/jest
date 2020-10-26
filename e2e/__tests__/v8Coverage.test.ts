@@ -6,24 +6,21 @@
  */
 
 import * as path from 'path';
-import {onNodeVersions} from '@jest/test-utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../v8-coverage');
 
-onNodeVersions('>=10', () => {
-  test('prints coverage', () => {
-    const sourcemapDir = path.join(DIR, 'no-sourcemap');
+test('prints coverage', () => {
+  const sourcemapDir = path.join(DIR, 'no-sourcemap');
 
-    const {stdout, exitCode} = runJest(
-      sourcemapDir,
-      ['--coverage', '--coverage-provider', 'v8'],
-      {
-        stripAnsi: true,
-      },
-    );
+  const {stdout, exitCode} = runJest(
+    sourcemapDir,
+    ['--coverage', '--coverage-provider', 'v8'],
+    {
+      stripAnsi: true,
+    },
+  );
 
-    expect(exitCode).toBe(0);
-    expect(stdout).toMatchSnapshot();
-  });
+  expect(exitCode).toBe(0);
+  expect(stdout).toMatchSnapshot();
 });
