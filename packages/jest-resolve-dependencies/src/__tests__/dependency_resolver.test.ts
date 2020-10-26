@@ -69,6 +69,7 @@ test('includes the mocks of dependencies as dependencies', () => {
   expect(resolved).toEqual([
     expect.stringContaining(path.join('hasMocked', 'file.js')),
     expect.stringContaining(path.join('hasMocked', '__mocks__', 'file.js')),
+    expect.stringContaining(path.join('__mocks__', 'fake-node-module.js')),
   ]);
 });
 

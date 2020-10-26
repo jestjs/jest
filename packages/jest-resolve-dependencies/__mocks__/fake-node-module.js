@@ -6,5 +6,4 @@
  *
  */
 
-require('./file');
-require('fake-node-module');
+module.exports = str => str;
