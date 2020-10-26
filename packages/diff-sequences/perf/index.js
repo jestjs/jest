@@ -39,7 +39,7 @@ const testBaseline = (a, b) => {
   return benchmark.stats;
 };
 
-const testImproved = function(a, b) {
+const testImproved = function (a, b) {
   const benchmark = new Benchmark({
     fn() {
       // Split string arguments to make fair comparison with baseline.
@@ -140,12 +140,28 @@ const testLength = n => {
   writeHeading3(n);
 
   [2, 4, 8].forEach(tenth => {
-    testDeleteInsert(tenth, all, getItems(n, i => i % 10 >= tenth && `${i}`));
+    testDeleteInsert(
+      tenth,
+      all,
+      getItems(n, i => i % 10 >= tenth && `${i}`),
+    );
   });
-  testChange(1, all, getItems(n, i => (i % 10 === 0 ? `x${i}` : `${i}`)));
+  testChange(
+    1,
+    all,
+    getItems(n, i => (i % 10 === 0 ? `x${i}` : `${i}`)),
+  );
   testChange(2, all, getItems(n, change2));
-  testChange(5, all, getItems(n, i => (i % 2 === 0 ? `x${i}` : `${i}`)));
-  testChange(10, all, getItems(n, i => `x${i}`)); // simulate TDD
+  testChange(
+    5,
+    all,
+    getItems(n, i => (i % 2 === 0 ? `x${i}` : `${i}`)),
+  );
+  testChange(
+    10,
+    all,
+    getItems(n, i => `x${i}`),
+  ); // simulate TDD
 };
 
 writeHeading2();

@@ -7,15 +7,16 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {Config} from '@jest/types';
+import Resolver = require('jest-resolve');
+import type {Config} from '@jest/types';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {makeProjectConfig} from '../../../../TestUtils';
-
 import DependencyResolver from '../index';
 
 const maxWorkers = 1;
 let dependencyResolver: DependencyResolver;
-let Runtime;
+let runtimeContextResolver: Resolver;
+let Runtime: typeof import('jest-runtime');
 let config: Config.ProjectConfig;
 const cases: Record<string, jest.Mock> = {
   fancyCondition: jest.fn(path => path.length > 10),
@@ -29,11 +30,13 @@ beforeEach(() => {
   config = makeProjectConfig({
     cacheDirectory: path.resolve(tmpdir(), 'jest-resolve-dependencies-test'),
     moduleDirectories: ['node_modules'],
+    moduleNameMapper: [['^\\$asdf/(.*)$', '<rootDir>/$1']],
     rootDir: '.',
     roots: ['./packages/jest-resolve-dependencies'],
   });
   return Runtime.createContext(config, {maxWorkers, watchman: false}).then(
-    (runtimeContext: any) => {
+    runtimeContext => {
+      runtimeContextResolver = runtimeContext.resolver;
       dependencyResolver = new DependencyResolver(
         runtimeContext.resolver,
         runtimeContext.hasteFS,
@@ -129,4 +132,19 @@ test('resolves inverse dependencies from available snapshot', () => {
       ),
     ]),
   );
+});
+
+test('resolves dependencies correctly when dependency resolution fails', () => {
+  jest.spyOn(runtimeContextResolver, 'resolveModule').mockImplementation(() => {
+    throw new Error('resolveModule has failed');
+  });
+  jest.spyOn(runtimeContextResolver, 'getMockModule').mockImplementation(() => {
+    throw new Error('getMockModule has failed');
+  });
+
+  const resolved = dependencyResolver.resolve(
+    path.resolve(__dirname, '__fixtures__', 'file.test.js'),
+  );
+
+  expect(resolved).toEqual([]);
 });

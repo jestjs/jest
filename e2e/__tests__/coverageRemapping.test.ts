@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {readFileSync} from 'fs';
 import * as path from 'path';
-import {cleanup, run} from '../Utils';
+import {readFileSync} from 'graceful-fs';
+import {cleanup, runYarn} from '../Utils';
 import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../coverage-remapping');
@@ -18,7 +18,7 @@ beforeAll(() => {
 });
 
 it('maps code coverage against original source', () => {
-  run('yarn', dir);
+  runYarn(dir);
   const result = runJest(dir, ['--coverage', '--no-cache']);
 
   expect(result.exitCode).toBe(0);

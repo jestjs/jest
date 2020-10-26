@@ -21,16 +21,16 @@ export default class TestWatcher extends EventEmitter {
     this._isWatchMode = isWatchMode;
   }
 
-  setState(state: State) {
+  setState(state: State): void {
     Object.assign(this.state, state);
     this.emit('change', this.state);
   }
 
-  isInterrupted() {
+  isInterrupted(): boolean {
     return this.state.interrupted;
   }
 
-  isWatchMode() {
+  isWatchMode(): boolean {
     return this._isWatchMode;
   }
 }

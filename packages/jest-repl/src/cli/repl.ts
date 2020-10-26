@@ -11,16 +11,16 @@ declare const jestProjectConfig: Config.ProjectConfig;
 import * as path from 'path';
 import * as repl from 'repl';
 import {runInThisContext} from 'vm';
-import {Transformer} from '@jest/transform';
-import {Config} from '@jest/types';
+import type {Transformer} from '@jest/transform';
+import type {Config} from '@jest/types';
 
 let transformer: Transformer;
 
 const evalCommand: repl.REPLEval = (
   cmd: string,
-  _context: any,
+  _context: unknown,
   _filename: string,
-  callback: (e: Error | null, result?: any) => void,
+  callback: (e: Error | null, result?: unknown) => void,
 ) => {
   let result;
   try {

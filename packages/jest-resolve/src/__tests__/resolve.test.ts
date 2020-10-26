@@ -6,20 +6,35 @@
  *
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {ModuleMap} from 'jest-haste-map';
-import Resolver from '../';
-// @ts-ignore: js file
+import {sync as resolveSync} from 'resolve';
+import Resolver = require('../');
 import userResolver from '../__mocks__/userResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
 import defaultResolver from '../defaultResolver';
-import {ResolverConfig} from '../types';
+import type {ResolverConfig} from '../types';
 
 jest.mock('../__mocks__/userResolver');
 
+// Do not fully mock `resolve` because it is used by Jest. Doing it will crash
+// in very strange ways. Instead just spy on the method `sync`.
+jest.mock('resolve', () => {
+  const originalModule = jest.requireActual('resolve');
+  return {
+    ...originalModule,
+    sync: jest.spyOn(originalModule, 'sync'),
+  };
+});
+
+const mockResolveSync = <
+  jest.Mock<ReturnType<typeof resolveSync>, Parameters<typeof resolveSync>>
+>resolveSync;
+
 beforeEach(() => {
   userResolver.mockClear();
+  mockResolveSync.mockClear();
 });
 
 describe('isCoreModule', () => {
@@ -43,6 +58,20 @@ describe('isCoreModule', () => {
     const moduleMap = ModuleMap.create('/');
     const resolver = new Resolver(moduleMap, {} as ResolverConfig);
     const isCore = resolver.isCoreModule('not-a-core-module');
+    expect(isCore).toEqual(false);
+  });
+
+  it('returns false if `hasCoreModules` is true and `moduleNameMapper` alias a module same name with core module', () => {
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {
+      moduleNameMapper: [
+        {
+          moduleName: '$1',
+          regex: /^constants$/,
+        },
+      ],
+    } as ResolverConfig);
+    const isCore = resolver.isCoreModule('constants');
     expect(isCore).toEqual(false);
   });
 });
@@ -80,10 +109,31 @@ describe('findNodeModule', () => {
       rootDir: undefined,
     });
   });
+
+  it('passes packageFilter to the resolve module when using the default resolver', () => {
+    const packageFilter = jest.fn();
+
+    // A resolver that delegates to defaultResolver with a packageFilter implementation
+    userResolver.mockImplementation((request, opts) =>
+      opts.defaultResolver(request, {...opts, packageFilter}),
+    );
+
+    Resolver.findNodeModule('test', {
+      basedir: '/',
+      resolver: require.resolve('../__mocks__/userResolver'),
+    });
+
+    expect(mockResolveSync).toHaveBeenCalledWith(
+      'test',
+      expect.objectContaining({
+        packageFilter,
+      }),
+    );
+  });
 });
 
 describe('resolveModule', () => {
-  let moduleMap: typeof ModuleMap;
+  let moduleMap: ModuleMap;
   beforeEach(() => {
     moduleMap = ModuleMap.create('/');
   });
@@ -156,6 +206,20 @@ describe('resolveModule', () => {
     });
     expect(resolved).toBe(require.resolve('../__mocks__/mockJsDependency.js'));
   });
+
+  it('does not confuse directories with files', () => {
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    } as ResolverConfig);
+    const mocksDirectory = path.resolve(__dirname, '../__mocks__');
+    const fooSlashFoo = path.join(mocksDirectory, 'foo/foo.js');
+    const fooSlashIndex = path.join(mocksDirectory, 'foo/index.js');
+
+    const resolvedWithSlash = resolver.resolveModule(fooSlashFoo, './');
+    const resolvedWithDot = resolver.resolveModule(fooSlashFoo, '.');
+    expect(resolvedWithSlash).toBe(fooSlashIndex);
+    expect(resolvedWithSlash).toBe(resolvedWithDot);
+  });
 });
 
 describe('getMockModule', () => {
@@ -195,7 +259,7 @@ describe('nodeModulesPaths', () => {
 
 describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   const _path = path;
-  let moduleMap: typeof ModuleMap;
+  let moduleMap: ModuleMap;
 
   beforeEach(() => {
     jest.resetModules();
@@ -206,8 +270,11 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     // pathstrings instead of actually trying to access the physical directory.
     // This test suite won't work otherwise, since we cannot make assumptions
     // about the test environment when it comes to absolute paths.
-    jest.doMock('realpath-native', () => ({
-      sync: (dirInput: string) => dirInput,
+    jest.doMock('graceful-fs', () => ({
+      ...jest.requireActual('graceful-fs'),
+      realPathSync: {
+        native: (dirInput: string) => dirInput,
+      },
     }));
   });
 

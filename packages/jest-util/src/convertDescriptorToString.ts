@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 // See: https://github.com/facebook/jest/pull/5154
 export default function convertDescriptorToString<
   T extends number | string | Function | undefined
@@ -29,7 +31,7 @@ export default function convertDescriptorToString<
   const stringified = descriptor.toString();
   const typeDescriptorMatch = stringified.match(/class|function/);
   const indexOfNameSpace =
-    // @ts-ignore: typeDescriptorMatch exists
+    // @ts-expect-error: typeDescriptorMatch exists
     typeDescriptorMatch.index + typeDescriptorMatch[0].length;
   const indexOfNameAfterSpace = stringified.search(/\(|\{/);
   const name = stringified.substring(indexOfNameSpace, indexOfNameAfterSpace);

@@ -8,7 +8,7 @@ Uh oh, something went wrong? Use this guide to resolve issues with Jest.
 
 ## Tests are Failing and You Don't Know Why
 
-Try using the debugging support built into Node.
+Try using the debugging support built into Node. Note: This will only work in Node.js 8+.
 
 Place a `debugger;` statement in any of your tests, and then, in your project's directory, run:
 
@@ -24,11 +24,11 @@ To debug in Google Chrome (or any Chromium-based browser), open your browser and
 
 The Chrome Developer Tools will be displayed, and a breakpoint will be set at the first line of the Jest CLI script (this is done to give you time to open the developer tools and to prevent Jest from executing before you have time to do so). Click the button that looks like a "play" button in the upper right hand side of the screen to continue execution. When Jest executes the test that contains the `debugger` statement, execution will pause and you can examine the current scope and call stack.
 
-> Note: the `--runInBand` cli option makes sure Jest runs test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time.
+> Note: the `--runInBand` cli option makes sure Jest runs the test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time.
 
 ## Debugging in VS Code
 
-There are multiple ways to debug Jest tests with [Visual Studio Code's](https://code.visualstudio.com) built in [debugger](https://code.visualstudio.com/docs/nodejs/nodejs-debugging).
+There are multiple ways to debug Jest tests with [Visual Studio Code's](https://code.visualstudio.com) built-in [debugger](https://code.visualstudio.com/docs/nodejs/nodejs-debugging).
 
 To attach the built-in debugger, run your tests as aforementioned:
 
@@ -70,7 +70,8 @@ To automatically launch and attach to a process running your tests, use the foll
         "--runInBand"
       ],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229
     }
   ]
 }
@@ -92,7 +93,8 @@ or the following for Windows:
         "--runInBand"
       ],
       "console": "integratedTerminal",
-      "internalConsoleOptions": "neverOpen"
+      "internalConsoleOptions": "neverOpen",
+      "port": 9229
     }
   ]
 }
@@ -131,9 +133,9 @@ If you are using Facebook's [`create-react-app`](https://github.com/facebookincu
 
 ## Caching Issues
 
-The transform script was changed or babel was updated and the changes aren't being recognized by Jest?
+The transform script was changed or Babel was updated and the changes aren't being recognized by Jest?
 
-Retry with [`--no-cache`](CLI.md#cache). Jest caches transformed module files to speed up test execution. If you are using your own custom transformer, consider adding a `getCacheKey` function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61).
+Retry with [`--no-cache`](CLI.md#--cache). Jest caches transformed module files to speed up test execution. If you are using your own custom transformer, consider adding a `getCacheKey` function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61).
 
 ## Unresolved Promises
 
@@ -153,9 +155,9 @@ jest.setTimeout(10000); // 10 second timeout
 
 ## Watchman Issues
 
-Try running Jest with [`--no-watchman`](CLI.md#watchman) or set the `watchman` configuration option to `false`.
+Try running Jest with [`--no-watchman`](CLI.md#--watchman) or set the `watchman` configuration option to `false`.
 
-Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/troubleshooting.html).
+Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/troubleshooting).
 
 ## Tests are Extremely Slow on Docker and/or Continuous Integration (CI) server.
 
@@ -163,7 +165,7 @@ While Jest is most of the time extremely fast on modern multi-core computers wit
 
 Based on the [findings](https://github.com/facebook/jest/issues/1524#issuecomment-262366820), one way to mitigate this issue and improve the speed by up to 50% is to run tests sequentially.
 
-In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#runinband):
+In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#--runinband):
 
 ```bash
 # Using Jest CLI
@@ -237,6 +239,23 @@ Jest takes advantage of new features added to Node 6. We recommend that you upgr
 ## `coveragePathIgnorePatterns` seems to not have any effect.
 
 Make sure you are not using the `babel-plugin-istanbul` plugin. Jest wraps Istanbul, and therefore also tells Istanbul what files to instrument with coverage collection. When using `babel-plugin-istanbul`, every file that is processed by Babel will have coverage collection code, hence it is not being ignored by `coveragePathIgnorePatterns`.
+
+## Defining Tests
+
+Tests must be defined synchronously for Jest to be able to collect your tests.
+
+As an example to show why this is the case, imagine we wrote a test like so:
+
+```js
+// Don't do this it will not work
+setTimeout(() => {
+  it('passes', () => expect(1).toBe(1));
+}, 0);
+```
+
+When Jest runs your test to collect the `test`s it will not find any because we have set the definition to happen asynchronously on the next tick of the event loop.
+
+_Note:_ This means when you are using `test.each` you cannot set the table asynchronously within a `beforeEach` / `beforeAll`.
 
 ## Still unresolved?
 

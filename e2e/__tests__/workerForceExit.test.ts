@@ -7,7 +7,7 @@
 
 import {tmpdir} from 'os';
 import {resolve} from 'path';
-import findProcess from 'find-process';
+import findProcess = require('find-process');
 
 import {
   cleanup,
@@ -27,7 +27,7 @@ const testFiles = {
   }`,
 };
 
-const verifyNumPassed = stderr => {
+const verifyNumPassed = (stderr: string) => {
   const numberOfTestsPassed = (stderr.match(/\bPASS\b/g) || []).length;
   // assuming -1 because of package.json, but +1 because of the individual test file
   expect(numberOfTestsPassed).toBe(Object.keys(testFiles).length);
@@ -42,11 +42,11 @@ test('prints a warning if a worker is force exited', () => {
       });
     `,
   });
-  const {exitCode, stderr, stdout} = runJest(DIR, ['--maxWorkers=2']);
+  const {exitCode, stderr} = runJest(DIR, ['--maxWorkers=2']);
 
   expect(exitCode).toBe(0);
   verifyNumPassed(stderr);
-  expect(stdout).toContain('A worker process has failed to exit gracefully');
+  expect(stderr).toContain('A worker process has failed to exit gracefully');
 });
 
 test('force exits a worker that fails to exit gracefully', async () => {
@@ -64,6 +64,11 @@ test('force exits a worker that fails to exit gracefully', async () => {
   expect(exitCode).toBe(0);
   verifyNumPassed(stderr);
 
-  const [pid] = /pid: \d+/.exec(stderr);
+  const execRes = /pid: \d+/.exec(stderr);
+
+  expect(execRes).toHaveLength(1);
+
+  const [pid] = execRes!;
+
   expect(await findProcess('pid', pid)).toHaveLength(0);
 });

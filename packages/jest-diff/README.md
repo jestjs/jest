@@ -151,58 +151,6 @@ Here are edge cases for arguments and return values:
 - only `b` is empty string: all comparison lines have `aColor` and `aIndicator` (see Options)
 - `a` and `b` are equal non-empty strings: all comparison lines have `commonColor` and `commonIndicator` (see Options)
 
-To get the comparison lines described above from the `diffLineUnified` function, call `splitLines0(string)` instead of `string.split('\n')`
-
-```js
-export const splitLines0 = string =>
-  string.length === 0 ? [] : string.split('\n');
-```
-
-### Example of splitLines0 function
-
-```js
-import {diffLinesUnified, splitLines0} from 'jest-diff';
-
-const a = 'multi\nline\nstring';
-const b = '';
-const options = {includeChangeCounts: true}; // see Options
-
-const difference = diffLinesUnified(splitLines0(a), splitLines0(b), options);
-```
-
-Given an empty string, `splitLines0(b)` returns `[]` an empty array, formatted as no `Received` lines:
-
-```diff
-- Expected  - 3
-+ Received  + 0
-
-- multi
-- line
-- string
-```
-
-### Example of split method
-
-```js
-const a = 'multi\nline\nstring';
-const b = '';
-const options = {includeChangeCounts: true}; // see Options
-
-const difference = diffLinesUnified(a.split('\n'), b.split('\n'), options);
-```
-
-Given an empty string, `b.split('\n')` returns `['']` an array that contains an empty string, formatted as one empty `Received` line, which is **ambiguous** with an empty line:
-
-```diff
-- Expected  - 3
-+ Received  + 1
-
-- multi
-- line
-- string
-+
-```
-
 ## Usage of diffLinesUnified2
 
 Given two **pairs** of arrays of strings, `diffLinesUnified2(aLinesDisplay, bLinesDisplay, aLinesCompare, bLinesCompare, options?)` does the following:
@@ -348,6 +296,78 @@ const diffs = diffLinesRaw(aLines, bLines);
 | `3` |           `1` | `'changed to'`   |
 | `4` |           `1` | `'insert'`       |
 
+### Edge case of diffLinesRaw
+
+If you call `string.split('\n')` for an empty string:
+
+- the result is `['']` an array which contains an empty string
+- instead of `[]` an empty array
+
+Depending of your application, you might call `diffLinesRaw` with either array.
+
+### Example of split method
+
+```js
+import {diffLinesRaw} from 'jest-diff';
+
+const a = 'non-empty string';
+const b = '';
+
+const diffs = diffLinesRaw(a.split('\n'), b.split('\n'));
+```
+
+| `i` | `diffs[i][0]` | `diffs[i][1]`        |
+| --: | ------------: | :------------------- |
+| `0` |          `-1` | `'non-empty string'` |
+| `1` |           `1` | `''`                 |
+
+Which you might format as follows:
+
+```diff
+- Expected  - 1
++ Received  + 1
+
+- non-empty string
++
+```
+
+### Example of splitLines0 function
+
+For edge case behavior like the `diffLinesUnified` function, you might define a `splitLines0` function, which given an empty string, returns `[]` an empty array:
+
+```js
+export const splitLines0 = string =>
+  string.length === 0 ? [] : string.split('\n');
+```
+
+```js
+import {diffLinesRaw} from 'jest-diff';
+
+const a = '';
+const b = 'line 1\nline 2\nline 3';
+
+const diffs = diffLinesRaw(a.split('\n'), b.split('\n'));
+```
+
+| `i` | `diffs[i][0]` | `diffs[i][1]` |
+| --: | ------------: | :------------ |
+| `0` |           `1` | `'line 1'`    |
+| `1` |           `1` | `'line 2'`    |
+| `2` |           `1` | `'line 3'`    |
+
+Which you might format as follows:
+
+```diff
+- Expected  - 0
++ Received  + 3
+
++ line 1
++ line 2
++ line 3
+```
+
+In contrast to the `diffLinesRaw` function, the `diffLinesUnified` and `diffLinesUnified2` functions **automatically** convert array arguments computed by string `split` method, so callers do **not** need a `splitLine0` function.
+
 ## Options
 
 The default options are for the report when an assertion fails from the `expect` package used by Jest.
@@ -409,8 +429,8 @@ The `jest-diff` package does not assume that the 2 labels have equal length.
 
 For consistency with most diff tools, you might exchange the colors:
 
-```js
-import chalk from 'chalk';
+```ts
+import chalk = require('chalk');
 
 const options = {
   aColor: chalk.red,
@@ -422,8 +442,8 @@ const options = {
 
 Although the default inverse of foreground and background colors is hard to beat for changed substrings **within lines**, especially because it highlights spaces, if you want bold font weight on yellow background color:
 
-```js
-import chalk from 'chalk';
+```ts
+import chalk = require('chalk');
 
 const options = {
   changeColor: chalk.bold.bgYellowBright,
@@ -512,8 +532,8 @@ A patch mark like `@@ -12,7 +12,9 @@` accounts for omitted common lines.
 
 If you want patch marks to have the same dim color as common lines:
 
-```js
-import chalk from 'chalk';
+```ts
+import chalk = require('chalk');
 
 const options = {
   expand: false,

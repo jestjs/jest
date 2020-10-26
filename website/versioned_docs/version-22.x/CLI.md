@@ -124,7 +124,7 @@ Deletes the Jest cache directory and then exits without running tests. Will dele
 
 ### `--collectCoverageFrom=<glob>`
 
-An array of glob patterns relative to <rootDir> matching the files that coverage info needs to be collected from.
+An array of glob patterns relative to `rootDir` matching the files that coverage info needs to be collected from.
 
 ### `--colors`
 
@@ -132,11 +132,11 @@ Forces test results output highlighting even if stdout is not a TTY.
 
 ### `--config=<path>`
 
-Alias: `-c`. The path to a Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the directory containing the config file is assumed to be the rootDir for the project. This can also be a JSON-encoded value which Jest will use as configuration.
+Alias: `-c`. The path to a Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the directory containing the config file is assumed to be the `rootDir` for the project. This can also be a JSON-encoded value which Jest will use as configuration.
 
-### `--coverage`
+### `--coverage[=<boolean>]`
 
-Indicates that test coverage information should be collected and reported in the output.
+Alias: `--collectCoverage`. Indicates that test coverage information should be collected and reported in the output. Optionally pass `<boolean>` to override option set in configuration.
 
 ### `--debug`
 
@@ -168,7 +168,7 @@ Prints the test results in JSON. This mode will send all other test output and u
 
 ### `--outputFile=<filename>`
 
-Write test results to a file when the `--json` option is also specified. The returned JSON structure is documented in [testResultsProcessor](Configuration.md#testResultsProcessor-string).
+Write test results to a file when the `--json` option is also specified. The returned JSON structure is documented in [testResultsProcessor](Configuration.md#testresultsprocessor-string).
 
 ### `--lastCommit`
 
@@ -202,9 +202,15 @@ Alias: `-o`. Attempts to identify which tests to run based on which files have c
 
 Allows the test suite to pass when no files are found.
 
-### `--projects <project1> ... <projectN>`
+### `--projects <path1> ... <pathN>`
 
-Run tests from one or more projects.
+Run tests from one or more projects, found in the specified paths; also takes path globs. This option is the CLI equivalent of the [`projects`](configuration#projects-arraystring--projectconfig) configuration option. Note that if configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
+
+### `--reporters`
+
+Run tests with specified reporters. Run tests with specified reporters. Example with multiple reporters:
+
+`jest --reporters="default" --reporters="jest-junit"`
 
 ### `--runInBand`
 
@@ -230,7 +236,9 @@ Prevent tests from printing messages through the console.
 
 ### `--testNamePattern=<regex>`
 
-Alias: `-t`. Run only tests and test suites with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like `"GET /api/posts with auth"`, then you can use `jest -t=auth`.
+Alias: `-t`. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like `"GET /api/posts with auth"`, then you can use `jest -t=auth`.
+
+_Note: The regex is matched against the full name, which is a combination of the test name and all its surrounding describe blocks._
 
 ### `--testLocationInResults`
 
@@ -248,6 +256,10 @@ Note that `column` is 0-indexed while `line` is not.
 ### `--testPathPattern=<regex>`
 
 A regexp pattern string that is matched against all tests paths before executing the test. On Windows, you will need to use `/` as a path separator or escape `\` as `\\`.
+
+### `--testPathIgnorePatterns=[array]`
+
+An array of regexp pattern strings that are tested against all tests paths before executing the test. Contrary to `--testPathPattern`, it will only run those tests with a path that does not match with the provided regexp expressions.
 
 ### `--testRunner=<path>`
 
@@ -276,6 +288,8 @@ Watch files for changes and rerun tests related to changed files. If you want to
 ### `--watchAll`
 
 Watch files for changes and rerun all tests when something changes. If you want to re-run only the tests that depend on the changed files, use the `--watch` option.
+
+Use `--watchAll=false` to explicitly disable the watch mode. Note that in most CI environments, this is automatically handled for you.
 
 ### `--watchman`
 

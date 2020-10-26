@@ -102,6 +102,8 @@ const CUSTOM_IGNORED_PATTERNS = [
   '^packages/expect/src/jasmineUtils\\.ts$',
   '^packages/jest-config/src/vendor/jsonlint\\.js$',
   '^packages/jest-diff/src/cleanupSemantic\\.ts$',
+  '^website/static/css/code-block-buttons\\.css$',
+  '^website/static/js/code-block-buttons\\.js',
 ].map(createRegExp);
 
 const IGNORED_PATTERNS = [
@@ -138,7 +140,7 @@ function check() {
       !IGNORED_PATTERNS.some(pattern => pattern.test(file)) &&
       !isDirectory(file) &&
       !isBinaryFileSync(file) &&
-      needsCopyrightHeader(file)
+      needsCopyrightHeader(file),
   );
 
   if (invalidFiles.length > 0) {
@@ -146,7 +148,7 @@ function check() {
 
   ${invalidFiles.join('\n  ')}
 
-Please include the header or blacklist the files in \`scripts/checkCopyrightHeaders.js\``);
+Please include the header or exclude the files in \`scripts/checkCopyrightHeaders.js\``);
     process.exit(1);
   }
 }

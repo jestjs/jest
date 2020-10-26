@@ -5,12 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
+/* eslint-disable local/ban-types-eventually */
+
+import chalk = require('chalk');
 import {formatExecError} from 'jest-message-util';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import snapshot = require('jest-snapshot');
 import TestRunner = require('jest-runner');
-import {Context} from 'jest-runtime';
+import type {Context} from 'jest-runtime';
 import {
   CoverageReporter,
   DefaultReporter,
@@ -28,8 +30,9 @@ import {
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
+import {interopRequireDefault} from 'jest-util';
 import ReporterDispatcher from './ReporterDispatcher';
-import TestWatcher from './TestWatcher';
+import type TestWatcher from './TestWatcher';
 import {shouldRunInBand} from './testSchedulerHelper';
 
 // The default jest-runner is required because it is the default test runner
@@ -43,12 +46,13 @@ export type TestSchedulerContext = {
   firstRun: boolean;
   previousSuccess: boolean;
   changedFiles?: Set<Config.Path>;
+  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
 };
 export default class TestScheduler {
-  private _dispatcher: ReporterDispatcher;
-  private _globalConfig: Config.GlobalConfig;
-  private _options: TestSchedulerOptions;
-  private _context: TestSchedulerContext;
+  private readonly _dispatcher: ReporterDispatcher;
+  private readonly _globalConfig: Config.GlobalConfig;
+  private readonly _options: TestSchedulerOptions;
+  private readonly _context: TestSchedulerContext;
 
   constructor(
     globalConfig: Config.GlobalConfig,
@@ -62,16 +66,21 @@ export default class TestScheduler {
     this._setupReporters();
   }
 
-  addReporter(reporter: Reporter) {
+  addReporter(reporter: Reporter): void {
     this._dispatcher.register(reporter);
   }
 
-  removeReporter(ReporterClass: Function) {
+  removeReporter(ReporterClass: Function): void {
     this._dispatcher.unregister(ReporterClass);
   }
 
-  async scheduleTests(tests: Array<TestRunner.Test>, watcher: TestWatcher) {
-    const onStart = this._dispatcher.onTestStart.bind(this._dispatcher);
+  async scheduleTests(
+    tests: Array<TestRunner.Test>,
+    watcher: TestWatcher,
+  ): Promise<AggregatedResult> {
+    const onTestFileStart = this._dispatcher.onTestFileStart.bind(
+      this._dispatcher,
+    );
     const timings: Array<number> = [];
     const contexts = new Set<Context>();
     tests.forEach(test => {
@@ -120,7 +129,11 @@ export default class TestScheduler {
       }
 
       addResult(aggregatedResults, testResult);
-      await this._dispatcher.onTestResult(test, testResult, aggregatedResults);
+      await this._dispatcher.onTestFileResult(
+        test,
+        testResult,
+        aggregatedResults,
+      );
       return this._bailIfNeeded(contexts, aggregatedResults, watcher);
     };
 
@@ -139,7 +152,11 @@ export default class TestScheduler {
         test.path,
       );
       addResult(aggregatedResults, testResult);
-      await this._dispatcher.onTestResult(test, testResult, aggregatedResults);
+      await this._dispatcher.onTestFileResult(
+        test,
+        testResult,
+        aggregatedResults,
+      );
     };
 
     const updateSnapshotState = () => {
@@ -171,13 +188,19 @@ export default class TestScheduler {
       showStatus: !runInBand,
     });
 
-    const testRunners = Object.create(null);
-    contexts.forEach(({config}) => {
+    const testRunners: {[key: string]: TestRunner} = Object.create(null);
+    const contextsByTestRunner = new WeakMap<TestRunner, Context>();
+    contexts.forEach(context => {
+      const {config} = context;
       if (!testRunners[config.runner]) {
         const Runner: typeof TestRunner = require(config.runner);
-        testRunners[config.runner] = new Runner(this._globalConfig, {
-          changedFiles: this._context && this._context.changedFiles,
+        const runner = new Runner(this._globalConfig, {
+          changedFiles: this._context?.changedFiles,
+          sourcesRelatedToTestsInChangedFiles: this._context
+            ?.sourcesRelatedToTestsInChangedFiles,
         });
+        testRunners[config.runner] = runner;
+        contextsByTestRunner.set(runner, context);
       }
     });
 
@@ -186,16 +209,61 @@ export default class TestScheduler {
     if (testsByRunner) {
       try {
         for (const runner of Object.keys(testRunners)) {
-          await testRunners[runner].runTests(
-            testsByRunner[runner],
-            watcher,
-            onStart,
-            onResult,
-            onFailure,
-            {
-              serial: runInBand || Boolean(testRunners[runner].isSerial),
-            },
-          );
+          const testRunner = testRunners[runner];
+          const context = contextsByTestRunner.get(testRunner);
+
+          invariant(context);
+
+          const tests = testsByRunner[runner];
+
+          const testRunnerOptions = {
+            serial: runInBand || Boolean(testRunner.isSerial),
+          };
+
+          /**
+           * Test runners with event emitters are still not supported
+           * for third party test runners.
+           */
+          if (testRunner.__PRIVATE_UNSTABLE_API_supportsEventEmitters__) {
+            const unsubscribes = [
+              testRunner.on('test-file-start', ([test]) =>
+                onTestFileStart(test),
+              ),
+              testRunner.on('test-file-success', ([test, testResult]) =>
+                onResult(test, testResult),
+              ),
+              testRunner.on('test-file-failure', ([test, error]) =>
+                onFailure(test, error),
+              ),
+              testRunner.on(
+                'test-case-result',
+                ([testPath, testCaseResult]) => {
+                  const test: TestRunner.Test = {context, path: testPath};
+                  this._dispatcher.onTestCaseResult(test, testCaseResult);
+                },
+              ),
+            ];
+
+            await testRunner.runTests(
+              tests,
+              watcher,
+              undefined,
+              undefined,
+              undefined,
+              testRunnerOptions,
+            );
+
+            unsubscribes.forEach(sub => sub());
+          } else {
+            await testRunner.runTests(
+              tests,
+              watcher,
+              onTestFileStart,
+              onResult,
+              onFailure,
+              testRunnerOptions,
+            );
+          }
         }
       } catch (error) {
         if (!watcher.isInterrupted()) {
@@ -226,7 +294,7 @@ export default class TestScheduler {
   private _partitionTests(
     testRunners: Record<string, TestRunner>,
     tests: Array<TestRunner.Test>,
-  ) {
+  ): Record<string, Array<TestRunner.Test>> | null {
     if (Object.keys(testRunners).length > 1) {
       return tests.reduce((testRuns, test) => {
         const runner = test.context.config.runner;
@@ -268,7 +336,9 @@ export default class TestScheduler {
     if (!isDefault && collectCoverage) {
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
-          changedFiles: this._context && this._context.changedFiles,
+          changedFiles: this._context?.changedFiles,
+          sourcesRelatedToTestsInChangedFiles: this._context
+            ?.sourcesRelatedToTestsInChangedFiles,
         }),
       );
     }
@@ -298,7 +368,9 @@ export default class TestScheduler {
     if (collectCoverage) {
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
-          changedFiles: this._context && this._context.changedFiles,
+          changedFiles: this._context?.changedFiles,
+          sourcesRelatedToTestsInChangedFiles: this._context
+            ?.sourcesRelatedToTestsInChangedFiles,
         }),
       );
     }
@@ -315,15 +387,16 @@ export default class TestScheduler {
       if (path === 'default') return;
 
       try {
-        const Reporter = require(path);
+        // TODO: Use `requireAndTranspileModule` for Jest 26
+        const Reporter = interopRequireDefault(require(path)).default;
         this.addReporter(new Reporter(this._globalConfig, options));
       } catch (error) {
-        throw new Error(
+        error.message =
           'An error occurred while adding the reporter at path "' +
-            path +
-            '".' +
-            error.message,
-        );
+          chalk.bold(path) +
+          '".' +
+          error.message;
+        throw error;
       }
     });
   }
@@ -366,6 +439,12 @@ export default class TestScheduler {
       }
     }
     return Promise.resolve();
+  }
+}
+
+function invariant(condition: unknown, message?: string): asserts condition {
+  if (!condition) {
+    throw new Error(message);
   }
 }
 

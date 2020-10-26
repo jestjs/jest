@@ -5,15 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
-import {sync as mkdirp} from 'mkdirp';
+import * as fs from 'graceful-fs';
 import naturalCompare = require('natural-compare');
-import chalk from 'chalk';
-import {Config} from '@jest/types';
+import chalk = require('chalk');
+import type {Config} from '@jest/types';
 import prettyFormat = require('pretty-format');
 import {getSerializers} from './plugins';
-import {SnapshotData} from './types';
+import type {SnapshotData} from './types';
 
 export const SNAPSHOT_VERSION = '1';
 const SNAPSHOT_VERSION_REGEXP = /^\/\/ Jest Snapshot v(.+),/;
@@ -106,7 +105,7 @@ export const getSnapshotData = (
       // eslint-disable-next-line no-new-func
       const populate = new Function('exports', snapshotContents);
       populate(data);
-    } catch (e) {}
+    } catch {}
   }
 
   const validationResult = validateSnapshotVersion(snapshotContents);
@@ -136,20 +135,43 @@ export const removeExtraLineBreaks = (string: string): string =>
     ? string.slice(1, -1)
     : string;
 
-export const serialize = (val: unknown): string =>
-  addExtraLineBreaks(stringify(val));
+export const removeLinesBeforeExternalMatcherTrap = (stack: string): string => {
+  const lines = stack.split('\n');
 
-export const stringify = (val: unknown): string =>
+  for (let i = 0; i < lines.length; i += 1) {
+    // It's a function name specified in `packages/expect/src/index.ts`
+    // for external custom matchers.
+    if (lines[i].includes('__EXTERNAL_MATCHER_TRAP__')) {
+      return lines.slice(i + 1).join('\n');
+    }
+  }
+
+  return stack;
+};
+
+const escapeRegex = true;
+const printFunctionName = false;
+
+export const serialize = (val: unknown, indent = 2): string =>
   normalizeNewlines(
     prettyFormat(val, {
-      escapeRegex: true,
+      escapeRegex,
+      indent,
       plugins: getSerializers(),
-      printFunctionName: false,
+      printFunctionName,
     }),
   );
 
+export const minify = (val: unknown): string =>
+  prettyFormat(val, {
+    escapeRegex,
+    min: true,
+    plugins: getSerializers(),
+    printFunctionName,
+  });
+
 // Remove double quote marks and unescape double quotes and backslashes.
-export const unstringifyString = (stringified: string): string =>
+export const deserializeString = (stringified: string): string =>
   stringified.slice(1, -1).replace(/\\("|\\)/g, '$1');
 
 export const escapeBacktickString = (str: string): string =>
@@ -158,10 +180,10 @@ export const escapeBacktickString = (str: string): string =>
 const printBacktickString = (str: string): string =>
   '`' + escapeBacktickString(str) + '`';
 
-export const ensureDirectoryExists = (filePath: Config.Path) => {
+export const ensureDirectoryExists = (filePath: Config.Path): void => {
   try {
-    mkdirp(path.join(path.dirname(filePath)), '777');
-  } catch (e) {}
+    fs.mkdirSync(path.join(path.dirname(filePath)), {recursive: true});
+  } catch {}
 };
 
 const normalizeNewlines = (string: string) => string.replace(/\r\n|\r/g, '\n');
@@ -169,7 +191,7 @@ const normalizeNewlines = (string: string) => string.replace(/\r\n|\r/g, '\n');
 export const saveSnapshotFile = (
   snapshotData: SnapshotData,
   snapshotPath: Config.Path,
-) => {
+): void => {
   const snapshots = Object.keys(snapshotData)
     .sort(naturalCompare)
     .map(
@@ -207,9 +229,11 @@ const deepMergeArray = (target: Array<any>, source: Array<any>) => {
   return mergedOutput;
 };
 
-export const deepMerge = (target: any, source: any) => {
-  const mergedOutput = {...target};
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const deepMerge = (target: any, source: any): any => {
   if (isObject(target) && isObject(source)) {
+    const mergedOutput = {...target};
+
     Object.keys(source).forEach(key => {
       if (isObject(source[key]) && !source[key].$$typeof) {
         if (!(key in target)) Object.assign(mergedOutput, {[key]: source[key]});
@@ -220,6 +244,11 @@ export const deepMerge = (target: any, source: any) => {
         Object.assign(mergedOutput, {[key]: source[key]});
       }
     });
+
+    return mergedOutput;
+  } else if (Array.isArray(target) && Array.isArray(source)) {
+    return deepMergeArray(target, source);
   }
-  return mergedOutput;
+
+  return target;
 };

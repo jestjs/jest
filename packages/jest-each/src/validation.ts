@@ -6,16 +6,16 @@
  *
  */
 
-import chalk from 'chalk';
+import chalk = require('chalk');
 import pretty = require('pretty-format');
-import {Global} from '@jest/types';
+import type {Global} from '@jest/types';
 
 type TemplateData = Global.TemplateData;
 
 const EXPECTED_COLOR = chalk.green;
 const RECEIVED_COLOR = chalk.red;
 
-export const validateArrayTable = (table: any) => {
+export const validateArrayTable = (table: unknown): void => {
   if (!Array.isArray(table)) {
     throw new Error(
       '`.each` must be called with an Array or Tagged Template Literal.\n\n' +
@@ -46,14 +46,14 @@ export const validateArrayTable = (table: any) => {
 };
 
 const isTaggedTemplateLiteral = (array: any) => array.raw !== undefined;
-const isEmptyTable = (table: Array<any>) => table.length === 0;
+const isEmptyTable = (table: Array<unknown>) => table.length === 0;
 const isEmptyString = (str: string | unknown) =>
   typeof str === 'string' && str.trim() === '';
 
 export const validateTemplateTableHeadings = (
   headings: Array<string>,
   data: TemplateData,
-) => {
+): void => {
   const missingData = data.length % headings.length;
 
   if (missingData > 0) {

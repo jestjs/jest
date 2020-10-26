@@ -152,8 +152,12 @@
   padding-top: 10px;
 }
 
-.logos {
-  align-items: center;
+.logos > a {
+  margin-left: 0;
+}
+
+.logos > p.others {
+  padding-top: 1.5rem !important;
 }
 
 @media only screen and (min-width: 736px) {
@@ -241,6 +245,7 @@
 .button.landing {
   margin: 4px 10px;
   cursor: pointer;
+  text-transform: none;
 }
 
 .container .gridBlock .blockContent p.buttons-wrapper {

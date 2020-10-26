@@ -6,10 +6,9 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {FS as HasteFS} from 'jest-haste-map';
-import Resolver = require('jest-resolve');
+import type {Config} from '@jest/types';
+import type {FS as HasteFS} from 'jest-haste-map';
+import type {ResolveModuleConfig, ResolverType} from 'jest-resolve';
 import {SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
 
 namespace DependencyResolver {
@@ -23,14 +22,13 @@ namespace DependencyResolver {
  * DependencyResolver is used to resolve the direct dependencies of a module or
  * to retrieve a list of all transitive inverse dependencies.
  */
-/* eslint-disable-next-line no-redeclare */
 class DependencyResolver {
   private _hasteFS: HasteFS;
-  private _resolver: Resolver;
+  private _resolver: ResolverType;
   private _snapshotResolver: SnapshotResolver;
 
   constructor(
-    resolver: Resolver,
+    resolver: ResolverType,
     hasteFS: HasteFS,
     snapshotResolver: SnapshotResolver,
   ) {
@@ -41,7 +39,7 @@ class DependencyResolver {
 
   resolve(
     file: Config.Path,
-    options?: Resolver.ResolveModuleConfig,
+    options?: ResolveModuleConfig,
   ): Array<Config.Path> {
     const dependencies = this._hasteFS.getDependencies(file);
     if (!dependencies) {
@@ -61,11 +59,12 @@ class DependencyResolver {
           dependency,
           options,
         );
-      } catch (e) {
-        // TODO: This snippet might not be necessary, should be investigated later.
-        const mockDependency = this._resolver.getMockModule(file, dependency);
-        mockDependency && acc.push(mockDependency);
-        return acc;
+      } catch {
+        try {
+          resolvedDependency = this._resolver.getMockModule(file, dependency);
+        } catch {
+          // leave resolvedDependency as undefined if nothing can be found
+        }
       }
 
       if (!resolvedDependency) {
@@ -102,7 +101,7 @@ class DependencyResolver {
   resolveInverseModuleMap(
     paths: Set<Config.Path>,
     filter: (file: Config.Path) => boolean,
-    options?: Resolver.ResolveModuleConfig,
+    options?: ResolveModuleConfig,
   ): Array<DependencyResolver.ResolvedModule> {
     if (!paths.size) {
       return [];
@@ -168,7 +167,7 @@ class DependencyResolver {
   resolveInverse(
     paths: Set<Config.Path>,
     filter: (file: Config.Path) => boolean,
-    options?: Resolver.ResolveModuleConfig,
+    options?: ResolveModuleConfig,
   ): Array<Config.Path> {
     return this.resolveInverseModuleMap(paths, filter, options).map(
       module => module.file,

@@ -7,7 +7,7 @@
 
 import {json as runWithJson} from '../runJest';
 
-import testFixturePackage from '../test-environment/package.json';
+import * as testFixturePackage from '../test-environment/package.json';
 
 it('respects testEnvironment docblock', () => {
   expect(testFixturePackage.jest.testEnvironment).toEqual('node');

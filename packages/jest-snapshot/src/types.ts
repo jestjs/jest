@@ -5,8 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {MatcherState} from 'expect';
-import SnapshotState from './State';
+/* eslint-disable local/ban-types-eventually */
+
+import type {MatcherState} from 'expect';
+import type SnapshotState from './State';
 
 export type Context = MatcherState & {
   snapshotState: SnapshotState;
@@ -23,3 +25,12 @@ export type MatchSnapshotConfig = {
 };
 
 export type SnapshotData = Record<string, string>;
+
+// copied from `expect` - should be shared
+export type ExpectationResult = {
+  pass: boolean;
+  message: () => string;
+};
+
+export type BabelTraverse = typeof import('@babel/traverse').default;
+export type Prettier = typeof import('prettier');

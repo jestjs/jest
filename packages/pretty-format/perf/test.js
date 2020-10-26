@@ -8,6 +8,7 @@
 const util = require('util');
 const chalk = require('chalk');
 const React = require('react');
+const {formatTime} = require('jest-util');
 const ReactTestRenderer = require('react-test-renderer');
 const prettyFormat = require('../build');
 const ReactTestComponent = require('../build/plugins/ReactTestComponent');
@@ -78,13 +79,13 @@ function test(name, value, ignoreResult, prettyFormatOpts) {
     let message = current.name;
 
     if (current.time) {
-      message += ' - ' + String(current.time).padStart(6) + 'ns';
+      message += ' - ' + formatTime(current.time, -9, 6);
     }
     if (current.total) {
       message +=
         ' - ' +
-        current.total / NANOSECONDS +
-        's total (' +
+        formatTime(current.total / NANOSECONDS, 0) +
+        ' total (' +
         TIMES_TO_RUN +
         ' runs)';
     }

@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {ChangedFilesPromise, getChangedFilesForRoots} from 'jest-changed-files';
 import {formatExecError} from 'jest-message-util';
-import chalk from 'chalk';
+import chalk = require('chalk');
 
 export default (
   globalConfig: Config.GlobalConfig,
@@ -16,7 +16,12 @@ export default (
 ): ChangedFilesPromise | undefined => {
   if (globalConfig.onlyChanged) {
     const allRootsForAllProjects = configs.reduce<Array<Config.Path>>(
-      (roots, config) => [...roots, ...(config.roots || [])],
+      (roots, config) => {
+        if (config.roots) {
+          roots.push(...config.roots);
+        }
+        return roots;
+      },
       [],
     );
     return getChangedFilesForRoots(allRootsForAllProjects, {
@@ -32,9 +37,6 @@ export default (
       console.error(chalk.red(`\n\n${message}`));
 
       process.exit(1);
-
-      // We do process.exit, so this is dead code
-      return Promise.reject(e);
     });
   }
 

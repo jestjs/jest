@@ -396,6 +396,8 @@ FAIL __tests__/assertionError.test.js
   ✕ assert.doesNotThrow
   ✕ assert.throws
   ✕ async
+  ✕ assert.fail
+  ✕ assert.fail with a message
 
   ● assert
 
@@ -704,6 +706,30 @@ FAIL __tests__/assertionError.test.js
 
   ● assert.ifError
 
+    assert.ifError(received, expected)
+
+    Expected value ifError to:
+      null
+    Received:
+      1
+
+    Message:
+      ifError got unwanted exception: 1
+
+    Difference:
+
+      Comparing two different types of values. Expected null but received number.
+
+      64 | 
+      65 | test('assert.ifError', () => {
+    > 66 |   assert.ifError(1);
+         |          ^
+      67 | });
+      68 | 
+      69 | test('assert.doesNotThrow', () => {
+
+      at Object.ifError (__tests__/assertionError.test.js:66:10)
+
   ● assert.doesNotThrow
 
     assert.doesNotThrow(function)
@@ -714,6 +740,7 @@ FAIL __tests__/assertionError.test.js
 
     Message:
       Got unwanted exception.
+    Actual message: "err!"
 
       68 | 
       69 | test('assert.doesNotThrow', () => {
@@ -772,8 +799,39 @@ FAIL __tests__/assertionError.test.js
          |          ^
       81 | });
       82 | 
+      83 | test('assert.fail', () => {
 
       at Object.equal (__tests__/assertionError.test.js:80:10)
+
+  ● assert.fail
+
+    assert.fail(received, expected)
+
+      82 | 
+      83 | test('assert.fail', () => {
+    > 84 |   assert.fail();
+         |          ^
+      85 | });
+      86 | 
+      87 | test('assert.fail with a message', () => {
+
+      at Object.fail (__tests__/assertionError.test.js:84:10)
+
+  ● assert.fail with a message
+
+    assert.fail(received, expected)
+
+    Message:
+      error!
+
+      86 | 
+      87 | test('assert.fail with a message', () => {
+    > 88 |   assert.fail('error!');
+         |          ^
+      89 | });
+      90 | 
+
+      at Object.fail (__tests__/assertionError.test.js:88:10)
 `;
 
 exports[`works with snapshot failures 1`] = `

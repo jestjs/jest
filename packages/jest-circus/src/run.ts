@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Circus} from '@jest/types';
+import type {Circus} from '@jest/types';
 import {RETRY_TIMES} from './types';
 
 import {dispatch, getState} from './state';
@@ -20,9 +20,9 @@ import {
 
 const run = async (): Promise<Circus.RunResult> => {
   const {rootDescribeBlock} = getState();
-  dispatch({name: 'run_start'});
+  await dispatch({name: 'run_start'});
   await _runTestsForDescribeBlock(rootDescribeBlock);
-  dispatch({name: 'run_finish'});
+  await dispatch({name: 'run_finish'});
   return makeRunResult(
     getState().rootDescribeBlock,
     getState().unhandledErrors,
@@ -32,7 +32,7 @@ const run = async (): Promise<Circus.RunResult> => {
 const _runTestsForDescribeBlock = async (
   describeBlock: Circus.DescribeBlock,
 ) => {
-  dispatch({describeBlock, name: 'run_describe_start'});
+  await dispatch({describeBlock, name: 'run_describe_start'});
   const {beforeAll, afterAll} = getAllHooksForDescribe(describeBlock);
 
   for (const hook of beforeAll) {
@@ -43,16 +43,25 @@ const _runTestsForDescribeBlock = async (
   const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
   const deferredRetryTests = [];
 
-  for (const test of describeBlock.tests) {
-    const hasErrorsBeforeTestRun = test.errors.length > 0;
-    await _runTest(test);
+  for (const child of describeBlock.children) {
+    switch (child.type) {
+      case 'describeBlock': {
+        await _runTestsForDescribeBlock(child);
+        break;
+      }
+      case 'test': {
+        const hasErrorsBeforeTestRun = child.errors.length > 0;
+        await _runTest(child);
 
-    if (
-      hasErrorsBeforeTestRun === false &&
-      retryTimes > 0 &&
-      test.errors.length > 0
-    ) {
-      deferredRetryTests.push(test);
+        if (
+          hasErrorsBeforeTestRun === false &&
+          retryTimes > 0 &&
+          child.errors.length > 0
+        ) {
+          deferredRetryTests.push(child);
+        }
+        break;
+      }
     }
   }
 
@@ -62,25 +71,22 @@ const _runTestsForDescribeBlock = async (
 
     while (numRetriesAvailable > 0 && test.errors.length > 0) {
       // Clear errors so retries occur
-      dispatch({name: 'test_retry', test});
+      await dispatch({name: 'test_retry', test});
 
       await _runTest(test);
       numRetriesAvailable--;
     }
   }
 
-  for (const child of describeBlock.children) {
-    await _runTestsForDescribeBlock(child);
-  }
-
   for (const hook of afterAll) {
     await _callCircusHook({describeBlock, hook});
   }
-  dispatch({describeBlock, name: 'run_describe_finish'});
+
+  await dispatch({describeBlock, name: 'run_describe_finish'});
 };
 
 const _runTest = async (test: Circus.TestEntry): Promise<void> => {
-  dispatch({name: 'test_start', test});
+  await dispatch({name: 'test_start', test});
   const testContext = Object.create(null);
   const {hasFocusedTests, testNamePattern} = getState();
 
@@ -90,12 +96,12 @@ const _runTest = async (test: Circus.TestEntry): Promise<void> => {
     (testNamePattern && !testNamePattern.test(getTestID(test)));
 
   if (isSkipped) {
-    dispatch({name: 'test_skip', test});
+    await dispatch({name: 'test_skip', test});
     return;
   }
 
   if (test.mode === 'todo') {
-    dispatch({name: 'test_todo', test});
+    await dispatch({name: 'test_todo', test});
     return;
   }
 
@@ -119,10 +125,10 @@ const _runTest = async (test: Circus.TestEntry): Promise<void> => {
   // `afterAll` hooks should not affect test status (pass or fail), because if
   // we had a global `afterAll` hook it would block all existing tests until
   // this hook is executed. So we dispatch `test_done` right away.
-  dispatch({name: 'test_done', test});
+  await dispatch({name: 'test_done', test});
 };
 
-const _callCircusHook = ({
+const _callCircusHook = async ({
   hook,
   test,
   describeBlock,
@@ -132,32 +138,42 @@ const _callCircusHook = ({
   describeBlock?: Circus.DescribeBlock;
   test?: Circus.TestEntry;
   testContext?: Circus.TestContext;
-}): Promise<unknown> => {
-  dispatch({hook, name: 'hook_start'});
+}): Promise<void> => {
+  await dispatch({hook, name: 'hook_start'});
   const timeout = hook.timeout || getState().testTimeout;
-  return callAsyncCircusFn(hook.fn, testContext, {isHook: true, timeout})
-    .then(() => dispatch({describeBlock, hook, name: 'hook_success', test}))
-    .catch(error =>
-      dispatch({describeBlock, error, hook, name: 'hook_failure', test}),
-    );
+
+  try {
+    await callAsyncCircusFn(hook, testContext, {
+      isHook: true,
+      timeout,
+    });
+    await dispatch({describeBlock, hook, name: 'hook_success', test});
+  } catch (error) {
+    await dispatch({describeBlock, error, hook, name: 'hook_failure', test});
+  }
 };
 
-const _callCircusTest = (
+const _callCircusTest = async (
   test: Circus.TestEntry,
   testContext: Circus.TestContext,
 ): Promise<void> => {
-  dispatch({name: 'test_fn_start', test});
+  await dispatch({name: 'test_fn_start', test});
   const timeout = test.timeout || getState().testTimeout;
   invariant(test.fn, `Tests with no 'fn' should have 'mode' set to 'skipped'`);
 
   if (test.errors.length) {
-    // We don't run the test if there's already an error in before hooks.
-    return Promise.resolve();
+    return; // We don't run the test if there's already an error in before hooks.
   }
 
-  return callAsyncCircusFn(test.fn!, testContext, {isHook: false, timeout})
-    .then(() => dispatch({name: 'test_fn_success', test}))
-    .catch(error => dispatch({error, name: 'test_fn_failure', test}));
+  try {
+    await callAsyncCircusFn(test, testContext, {
+      isHook: false,
+      timeout,
+    });
+    await dispatch({name: 'test_fn_success', test});
+  } catch (error) {
+    await dispatch({error, name: 'test_fn_failure', test});
+  }
 };
 
 export default run;

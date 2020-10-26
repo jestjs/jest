@@ -24,11 +24,11 @@ To debug in Google Chrome (or any Chromium-based browser), open your browser and
 
 The Chrome Developer Tools will be displayed, and a breakpoint will be set at the first line of the Jest CLI script (this is done to give you time to open the developer tools and to prevent Jest from executing before you have time to do so). Click the button that looks like a "play" button in the upper right hand side of the screen to continue execution. When Jest executes the test that contains the `debugger` statement, execution will pause and you can examine the current scope and call stack.
 
-> Note: the `--runInBand` cli option makes sure Jest runs test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time.
+> Note: the `--runInBand` cli option makes sure Jest runs the test in the same process rather than spawning processes for individual tests. Normally Jest parallelizes test runs across processes but it is hard to debug many processes at the same time.
 
 ## Debugging in VS Code
 
-There are multiple ways to debug Jest tests with [Visual Studio Code's](https://code.visualstudio.com) built in [debugger](https://code.visualstudio.com/docs/nodejs/nodejs-debugging).
+There are multiple ways to debug Jest tests with [Visual Studio Code's](https://code.visualstudio.com) built-in [debugger](https://code.visualstudio.com/docs/nodejs/nodejs-debugging).
 
 To attach the built-in debugger, run your tests as aforementioned:
 
@@ -133,9 +133,9 @@ If you are using Facebook's [`create-react-app`](https://github.com/facebookincu
 
 ## Caching Issues
 
-The transform script was changed or babel was updated and the changes aren't being recognized by Jest?
+The transform script was changed or Babel was updated and the changes aren't being recognized by Jest?
 
-Retry with [`--no-cache`](CLI.md#cache). Jest caches transformed module files to speed up test execution. If you are using your own custom transformer, consider adding a `getCacheKey` function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61).
+Retry with [`--no-cache`](CLI.md#--cache). Jest caches transformed module files to speed up test execution. If you are using your own custom transformer, consider adding a `getCacheKey` function to it: [getCacheKey in Relay](https://github.com/facebook/relay/blob/58cf36c73769690f0bbf90562707eadb062b029d/scripts/jest/preprocessor.js#L56-L61).
 
 ## Unresolved Promises
 
@@ -155,9 +155,9 @@ jest.setTimeout(10000); // 10 second timeout
 
 ## Watchman Issues
 
-Try running Jest with [`--no-watchman`](CLI.md#watchman) or set the `watchman` configuration option to `false`.
+Try running Jest with [`--no-watchman`](CLI.md#--watchman) or set the `watchman` configuration option to `false`.
 
-Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/troubleshooting.html).
+Also see [watchman troubleshooting](https://facebook.github.io/watchman/docs/troubleshooting).
 
 ## Tests are Extremely Slow on Docker and/or Continuous Integration (CI) server.
 
@@ -165,7 +165,7 @@ While Jest is most of the time extremely fast on modern multi-core computers wit
 
 Based on the [findings](https://github.com/facebook/jest/issues/1524#issuecomment-262366820), one way to mitigate this issue and improve the speed by up to 50% is to run tests sequentially.
 
-In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#runinband):
+In order to do this you can run tests in the same thread using [`--runInBand`](CLI.md#--runinband):
 
 ```bash
 # Using Jest CLI
@@ -209,8 +209,6 @@ setTimeout(() => {
 When Jest runs your test to collect the `test`s it will not find any because we have set the definition to happen asynchronously on the next tick of the event loop.
 
 _Note:_ This means when you are using `test.each` you cannot set the table asynchronously within a `beforeEach` / `beforeAll`.
-
-When Jest runs your test to collect the `test`s it will not find any because we have set the definition to happen asynchronously on the next tick of the event loop.
 
 ## Still unresolved?
 

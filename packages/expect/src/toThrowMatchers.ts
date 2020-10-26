@@ -6,6 +6,8 @@
  *
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {
   EXPECTED_COLOR,
@@ -26,7 +28,8 @@ import {
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
 } from './print';
-import {
+import type {
+  ExpectationResult,
   MatcherState,
   MatchersObject,
   RawMatcherFn,
@@ -75,7 +78,11 @@ export const createMatcher = (
   matcherName: string,
   fromPromise?: boolean,
 ): RawMatcherFn =>
-  function(this: MatcherState, received: Function, expected: any) {
+  function (
+    this: MatcherState,
+    received: Function,
+    expected: any,
+  ): ExpectationResult {
     const options = {
       isNot: this.isNot,
       promise: this.promise,
@@ -217,7 +224,7 @@ const toThrowExpectedObject = (
   matcherName: string,
   options: MatcherHintOptions,
   thrown: Thrown | null,
-  expected: any,
+  expected: Error,
 ): SyncExpectationResult => {
   const pass = thrown !== null && thrown.message === expected.message;
 

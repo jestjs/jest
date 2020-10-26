@@ -6,7 +6,7 @@
  *
  */
 
-import chalk from 'chalk';
+import chalk = require('chalk');
 import prettyFormat = require('pretty-format');
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import {
@@ -20,7 +20,6 @@ import {
   stringify,
 } from '../';
 
-/* global BigInt */
 const isBigIntDefined = typeof BigInt === 'function';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
@@ -103,36 +102,32 @@ describe('stringify()', () => {
 });
 
 describe('ensureNumbers()', () => {
+  const matcherName = 'toBeCloseTo';
+
   test('dont throw error when variables are numbers', () => {
     expect(() => {
-      // @ts-ignore
-      ensureNumbers(1, 2);
+      ensureNumbers(1, 2, matcherName);
     }).not.toThrow();
     if (isBigIntDefined) {
       expect(() => {
-        // @ts-ignore
-        ensureNumbers(BigInt(1), BigInt(2));
+        ensureNumbers(BigInt(1), BigInt(2), matcherName);
       }).not.toThrow();
     }
   });
 
   test('throws error when expected is not a number (backward compatibility)', () => {
     expect(() => {
-      // @ts-ignore
-      ensureNumbers(1, 'not_a_number', '.toBeCloseTo');
+      ensureNumbers(1, 'not_a_number', `.${matcherName}`);
     }).toThrowErrorMatchingSnapshot();
   });
 
   test('throws error when received is not a number (backward compatibility)', () => {
     expect(() => {
-      // @ts-ignore
-      ensureNumbers('not_a_number', 3, '.toBeCloseTo');
+      ensureNumbers('not_a_number', 3, `.${matcherName}`);
     }).toThrowErrorMatchingSnapshot();
   });
 
   describe('with options', () => {
-    const matcherName = 'toBeCloseTo';
-
     test('promise empty isNot false received', () => {
       const options: MatcherHintOptions = {
         isNot: false,
@@ -140,7 +135,6 @@ describe('ensureNumbers()', () => {
         secondArgument: 'precision',
       };
       expect(() => {
-        // @ts-ignore
         ensureNumbers('', 0, matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -151,7 +145,6 @@ describe('ensureNumbers()', () => {
         // promise undefined is equivalent to empty string
       };
       expect(() => {
-        // @ts-ignore
         ensureNumbers(0.1, undefined, matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -162,7 +155,6 @@ describe('ensureNumbers()', () => {
         promise: 'rejects',
       };
       expect(() => {
-        // @ts-ignore
         ensureNumbers(0.01, '0', matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -173,7 +165,6 @@ describe('ensureNumbers()', () => {
         promise: 'rejects',
       };
       expect(() => {
-        // @ts-ignore
         ensureNumbers(Symbol('0.1'), 0, matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -184,7 +175,6 @@ describe('ensureNumbers()', () => {
         promise: 'resolves',
       };
       expect(() => {
-        // @ts-ignore
         ensureNumbers(false, 0, matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -195,7 +185,6 @@ describe('ensureNumbers()', () => {
         promise: 'resolves',
       };
       expect(() => {
-        // @ts-ignore
         ensureNumbers(0.1, null, matcherName, options);
       }).toThrowErrorMatchingSnapshot();
     });
@@ -203,22 +192,23 @@ describe('ensureNumbers()', () => {
 });
 
 describe('ensureNoExpected()', () => {
+  const matcherName = 'toBeDefined';
+
   test('dont throw error when undefined', () => {
     expect(() => {
-      // @ts-ignore
-      ensureNoExpected(undefined);
+      ensureNoExpected(undefined, matcherName);
     }).not.toThrow();
   });
 
   test('throws error when expected is not undefined with matcherName', () => {
     expect(() => {
-      ensureNoExpected({a: 1}, '.toBeDefined');
+      ensureNoExpected({a: 1}, `.${matcherName}`);
     }).toThrowErrorMatchingSnapshot();
   });
 
   test('throws error when expected is not undefined with matcherName and options', () => {
     expect(() => {
-      ensureNoExpected({a: 1}, 'toBeDefined', {isNot: true});
+      ensureNoExpected({a: 1}, matcherName, {isNot: true});
     }).toThrowErrorMatchingSnapshot();
   });
 });

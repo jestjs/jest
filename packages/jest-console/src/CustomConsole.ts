@@ -8,9 +8,9 @@
 import assert = require('assert');
 import {format} from 'util';
 import {Console} from 'console';
-import chalk from 'chalk';
-import {clearLine} from 'jest-util';
-import {LogCounters, LogMessage, LogTimers, LogType} from './types';
+import chalk = require('chalk');
+import {clearLine, formatTime} from 'jest-util';
+import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
 
 type Formatter = (type: LogType, message: LogMessage) => string;
 
@@ -18,9 +18,11 @@ export default class CustomConsole extends Console {
   private _stdout: NodeJS.WriteStream;
   private _stderr: NodeJS.WriteStream;
   private _formatBuffer: Formatter;
-  private _counters: LogCounters;
-  private _timers: LogTimers;
-  private _groupDepth: number;
+  private _counters: LogCounters = {};
+  private _timers: LogTimers = {};
+  private _groupDepth = 0;
+
+  Console: NodeJS.ConsoleConstructor = Console;
 
   constructor(
     stdout: NodeJS.WriteStream,
@@ -31,9 +33,6 @@ export default class CustomConsole extends Console {
     this._stdout = stdout;
     this._stderr = stderr;
     this._formatBuffer = formatBuffer;
-    this._counters = {};
-    this._timers = {};
-    this._groupDepth = 0;
   }
 
   private _log(type: LogType, message: string) {
@@ -50,7 +49,7 @@ export default class CustomConsole extends Console {
     );
   }
 
-  assert(value: any, message?: string | Error) {
+  assert(value: unknown, message?: string | Error): asserts value {
     try {
       assert(value, message);
     } catch (error) {
@@ -58,7 +57,7 @@ export default class CustomConsole extends Console {
     }
   }
 
-  count(label: string = 'default') {
+  count(label: string = 'default'): void {
     if (!this._counters[label]) {
       this._counters[label] = 0;
     }
@@ -66,27 +65,27 @@ export default class CustomConsole extends Console {
     this._log('count', format(`${label}: ${++this._counters[label]}`));
   }
 
-  countReset(label: string = 'default') {
+  countReset(label: string = 'default'): void {
     this._counters[label] = 0;
   }
 
-  debug(firstArg: any, ...args: Array<any>) {
+  debug(firstArg: unknown, ...args: Array<unknown>): void {
     this._log('debug', format(firstArg, ...args));
   }
 
-  dir(firstArg: any, ...args: Array<any>) {
+  dir(firstArg: unknown, ...args: Array<unknown>): void {
     this._log('dir', format(firstArg, ...args));
   }
 
-  dirxml(firstArg: any, ...args: Array<any>) {
+  dirxml(firstArg: unknown, ...args: Array<unknown>): void {
     this._log('dirxml', format(firstArg, ...args));
   }
 
-  error(firstArg: any, ...args: Array<any>) {
+  error(firstArg: unknown, ...args: Array<unknown>): void {
     this._logError('error', format(firstArg, ...args));
   }
 
-  group(title?: string, ...args: Array<any>) {
+  group(title?: string, ...args: Array<unknown>): void {
     this._groupDepth++;
 
     if (title || args.length > 0) {
@@ -94,7 +93,7 @@ export default class CustomConsole extends Console {
     }
   }
 
-  groupCollapsed(title?: string, ...args: Array<any>) {
+  groupCollapsed(title?: string, ...args: Array<unknown>): void {
     this._groupDepth++;
 
     if (title || args.length > 0) {
@@ -102,21 +101,21 @@ export default class CustomConsole extends Console {
     }
   }
 
-  groupEnd() {
+  groupEnd(): void {
     if (this._groupDepth > 0) {
       this._groupDepth--;
     }
   }
 
-  info(firstArg: any, ...args: Array<any>) {
+  info(firstArg: unknown, ...args: Array<unknown>): void {
     this._log('info', format(firstArg, ...args));
   }
 
-  log(firstArg: any, ...args: Array<any>) {
+  log(firstArg: unknown, ...args: Array<unknown>): void {
     this._log('log', format(firstArg, ...args));
   }
 
-  time(label: string = 'default') {
+  time(label: string = 'default'): void {
     if (this._timers[label]) {
       return;
     }
@@ -124,22 +123,32 @@ export default class CustomConsole extends Console {
     this._timers[label] = new Date();
   }
 
-  timeEnd(label: string = 'default') {
+  timeEnd(label: string = 'default'): void {
     const startTime = this._timers[label];
 
     if (startTime) {
       const endTime = new Date().getTime();
       const time = endTime - startTime.getTime();
-      this._log('time', format(`${label}: ${time}ms`));
+      this._log('time', format(`${label}: ${formatTime(time)}`));
       delete this._timers[label];
     }
   }
 
-  warn(firstArg: any, ...args: Array<any>) {
+  timeLog(label = 'default', ...data: Array<unknown>): void {
+    const startTime = this._timers[label];
+
+    if (startTime) {
+      const endTime = new Date();
+      const time = endTime.getTime() - startTime.getTime();
+      this._log('time', format(`${label}: ${formatTime(time)}`, ...data));
+    }
+  }
+
+  warn(firstArg: unknown, ...args: Array<unknown>): void {
     this._logError('warn', format(firstArg, ...args));
   }
 
-  getBuffer() {
+  getBuffer(): undefined {
     return undefined;
   }
 }

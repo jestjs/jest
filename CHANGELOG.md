@@ -2,27 +2,502 @@
 
 ### Features
 
+- `[jest-core]` Add `findRelatedTests` and `nonFlagArgs` in allowed config options for `updateConfigAndRun` in watch plugins ([#10659](https://github.com/facebook/jest/pull/10659))
+
+### Fixes
+
+- `[expect]` Stop modifying the sample in `expect.objectContaining()` ([#10711](https://github.com/facebook/jest/pull/10711))
+
+### Chore & Maintenance
+
+- `[jest-cli]` chore: standardize files and folder names ([#10698](https://github.com/facebook/jest/pull/1098))
+
+### Performance
+
+## 26.6.1
+
+### Features
+
+- `[jest-runtime]` Support named exports from CommonJS as named ES Module imports ([#10673](https://github.com/facebook/jest/pull/10673))
+- `[jest-validate]` Add support for `recursiveDenylist` option as an alternative to `recursiveBlacklist` ([#10236](https://github.com/facebook/jest/pull/10236))
+
+### Fixes
+
+- `[expect]` Fix `objectContaining` to work recursively into sub-objects ([#10508](https://github.com/facebook/jest/pull/10508))
+- `[jest-cli, jest-core, jest-config, jest-types]` Fix `--onlyFailures` flag to work in non-watch mode ([#10678](https://github.com/facebook/jest/pull/10678/files))
+- `[jest-config]` Fix for the `jest.config.ts` compiler to not interfere with `tsconfig.json` files ([#10675](https://github.com/facebook/jest/pull/10675))
+- `[jest-message-util]` Update to work properly with Node 15 ([#10660](https://github.com/facebook/jest/pull/10660))
+- `[jest-mock]` Allow to mock methods in getters (TypeScript 3.9 export) ([#10156](https://github.com/facebook/jest/pull/10156))
+
+## 26.6.0
+
+### Features
+
+- `[jest-cli, jest-config]` Add support for the `jest.config.ts` configuration file ([#10564](https://github.com/facebook/jest/pull/10564))
+
+### Fixes
+
+- `[jest-config]` Simplify transform RegExp ([#10207](https://github.com/facebook/jest/pull/10207))
+- `[jest-fake-timers]` Lazily instantiate mock timers ([#10551](https://github.com/facebook/jest/pull/10551))
+- `[jest-runtime]` `require.main` is no longer `undefined` when using `jest.resetModules` ([#10626](https://github.com/facebook/jest/pull/10626))
+- `[@jest/types]` Add missing values for `timers` ([#10632](https://github.com/facebook/jest/pull/10632))
+
+### Chore & Maintenance
+
+- `[docs]` Add step for fetching `backers.json` file in website setup docs ([#10631](https://github.com/facebook/jest/pull/10631))
+- `[docs]` Add page detailing environment variables set by Jest ([#10630](https://github.com/facebook/jest/pull/10630))
+- `[jest-circus]` Refactor `callAsyncCircusFn` parameters ([#10629](https://github.com/facebook/jest/pull/10629))
+
+## 26.5.3
+
+### Features
+
+- `[jest-runtime]` add support for dynamic `import()` from CommonJS ([#10620](https://github.com/facebook/jest/pull/10620))
+
+### Fixes
+
+- `[jest-runner, jest-runtime]` `require.main` should not be `undefined` with `createRequire()` ([#10610](https://github.com/facebook/jest/pull/10610))
+- `[jest-runtime]` add missing `module.path` property ([#10615](https://github.com/facebook/jest/pull/10615))
+- `[jest-runtime]` Add `mainModule` instance variable to runtime ([#10621](https://github.com/facebook/jest/pull/10621))
+- `[jest-runtime]` Evaluate Node core modules on dynamic `import()` ([#10622](https://github.com/facebook/jest/pull/10622))
+- `[jest-validate]` Show suggestion only when unrecognized cli param is longer than 1 character ([#10604](https://github.com/facebook/jest/pull/10604))
+- `[jest-validate]` Validate `testURL` as CLI option ([#10595](https://github.com/facebook/jest/pull/10595))
+
+## 26.5.2
+
+### Fixes
+
+- `[*]` Revert usage of Escalade and rollback Yargs to v15 as it breaks Node 13 ([#10599](https://github.com/facebook/jest/pull/10599))
+- `[jest-circus]` Setup globals before emitting `setup`, and include Jest globals in the `setup` payload ([#10598](https://github.com/facebook/jest/pull/10598))
+- `[jest-mock]` Fix typings for `mockResolvedValue`, `mockResolvedValueOnce`, `mockRejectedValue` and `mockRejectedValueOnce` ([#10600](https://github.com/facebook/jest/pull/10600))
+
+## 26.5.1
+
+### Fixes
+
+- `[jest-circus]` Handle older `jest-runtime` in `jest-circus`
+
+## 26.5.0
+
+### Features
+
+- `[jest-circus, jest-config, jest-runtime]` Add new `injectGlobals` config and CLI option to disable injecting global variables into the runtime ([#10484](https://github.com/facebook/jest/pull/10484))
+- `[jest-each]` Fixes `.each` type to always be callable ([#10447](https://github.com/facebook/jest/pull/10447))
+- `[jest-runner]` Add support for `moduleLoader`s with `default` exports ([#10541](https://github.com/facebook/jest/pull/10541))
+- `[@jest/create-cache-key-function]` Added a new package for creating cache keys ([#10587](https://github.com/facebook/jest/pull/10587))
+
+### Fixes
+
+- `[jest-circus, jest-jasmine2]` Find correct location for `test.each` tests ([#10413](https://github.com/facebook/jest/pull/10413))
+- `[jest-console]` Add `Console` constructor to `console` object ([#10502](https://github.com/facebook/jest/pull/10502))
+- `[jest-globals]` Fix lifecycle hook function types ([#10480](https://github.com/facebook/jest/pull/10480))
+- `[jest-runtime]` Remove usage of `vm.compileFunction` due to a performance issue ([#10586](https://github.com/facebook/jest/pull/10586))
+
+### Chore & Maintenance
+
+- `[jest-resolve]` Replace read-pkg-up with escalade package ([10558](https://github.com/facebook/jest/pull/10558))
+- `[jest-environment-jsdom]` Update jsdom to 16.4.0 ([10578](https://github.com/facebook/jest/pull/10578))
+
+## 26.4.2
+
+### Fixes
+
+- `[expect]` Fix `toMatchObject` to work with inherited class getters ([#10381](https://github.com/facebook/jest/pull/10381))
+- `[pretty-format]` Lower minimum node version to >= 10 ([#10435](https://github.com/facebook/jest/pull/10435))
+
+## 26.4.1
+
+### Fixes
+
+- `[jest-core]` Don't report ELDHistogram as open handle ([#10417](https://github.com/facebook/jest/pull/10417))
+- `[jest-matcher-utils]` Fix diffing object contain readonly symbol key object ([#10414](https://github.com/facebook/jest/pull/10414))
+- `[jest-reporters]` Fixes notify reporter on Linux (using notify-send) ([#10393](https://github.com/facebook/jest/pull/10400))
+- `[jest-snapshot]` Correctly handles arrays and property matchers in snapshots ([#10404](https://github.com/facebook/jest/pull/10404))
+
+## 26.4.0
+
+### Features
+
+- `[jest-resolve]` Add support for `packageFilter` on custom resolver ([#10393](https://github.com/facebook/jest/pull/10393))
+
+### Fixes
+
+- `[pretty-format]` Handle `tagName` not being a string ([#10397](https://github.com/facebook/jest/pull/10397))
+
+## 26.3.0
+
+### Features
+
+- `[jest-circus, jest-jasmine2]` Include `failureDetails` property in test results ([#9496](https://github.com/facebook/jest/pull/9496))
+- `[jest-each, jest-jasmine, jest-circus]` Add support for `.concurrent.each` ([#9326](https://github.com/facebook/jest/pull/9326))
+
+### Fixes
+
+- `[jest-config]` Add `.pnp.js` to `transformIgnorePatterns` defaults ([#10383](https://github.com/facebook/jest/pull/10383))
+- `[jest-leak-detector]` Wait properly for GC runs due to changes in Node 14.7 ([#10366](https://github.com/facebook/jest/pull/10366))
+- `[jest-worker]` Downgrade minimum node version to 10.13 ([#10352](https://github.com/facebook/jest/pull/10352))
+- `[docs]` Update snapshot testing documentation([#10359](https://github.com/facebook/jest/pull/10359))
+
+## 26.2.2
+
+### Fixes
+
+- `[jest-cli]` Use correct file name to override existing jest config on init ([#10337](https://github.com/facebook/jest/pull/10337))
+- `[jest-haste-map]` Properly detect support for native `find` ([#10346](https://github.com/facebook/jest/pull/10346))
+
+## 26.2.1
+
+### Fixes
+
+- `[jest-worker]` Make sure to work with Node TS typings v12 ([#10336](https://github.com/facebook/jest/pull/10336))
+
+## 26.2.0
+
+### Features
+
+- `[jest-core, jest-circus, jest-reporter, jest-runner]` Added support for reporting individual test cases using jest-circus ([#10227](https://github.com/facebook/jest/pull/10227))
+- `[jest-config, jest-reporter, jest-runner, jest-test-sequencer]` Add `slowTestThreshold` configuration option ([#9366](https://github.com/facebook/jest/pull/9366))
+- `[jest-haste-map]` Watchman crawler now includes dotfiles ([#10075](https://github.com/facebook/jest/pull/10075))
+- `[jest-worker]` Added support for workers to send custom messages to parent in jest-worker ([#10293](https://github.com/facebook/jest/pull/10293))
+- `[jest-worker]` Support passing `resourceLimits` ([#10335](https://github.com/facebook/jest/pull/10335))
+- `[pretty-format]` Added support for serializing custom elements (web components) ([#10217](https://github.com/facebook/jest/pull/10237))
+
+### Fixes
+
+- `[expect]` Match symbols and bigints in `any()` ([#10223](https://github.com/facebook/jest/pull/10223))
+- `[jest-changed-files]` Use `git diff` instead of `git log` for `--changedSince` ([#10155](https://github.com/facebook/jest/pull/10155))
+- `[jest-console]` Add missing `console.timeLog` for compatibility with Node ([#10209](https://github.com/facebook/jest/pull/10209))
+- `[jest-haste-map]` Check `find` binary supports the `-iname` parameter ([#10308](https://github.com/facebook/jest/pull/10308))
+- `[jest-snapshot]` Strip added indentation for inline error snapshots ([#10217](https://github.com/facebook/jest/pull/10217))
+
+### Chore & Maintenance
+
+- `[*]` Add missing dependency on `@types/node` ([#10248](https://github.com/facebook/jest/pull/10248))
+- `[jest-jasmine2]` Convert `PCancelable` to TypeScript ([#10215](https://github.com/facebook/jest/pull/10215))
+- `[jest-jasmine2]` Refine typings of `queueRunner` ([#10215](https://github.com/facebook/jest/pull/10215))
+- `[jest-jasmine2]` Remove usage of `Function` type ([#10216](https://github.com/facebook/jest/pull/10216))
+- `[jest-resolve]` Improve types ([#10239](https://github.com/facebook/jest/pull/10239))
+- `[docs]` Clarify the [`jest.requireActual(moduleName)`](https://jestjs.io/docs/en/jest-object#jestrequireactualmodulename) example
+- `[jest-types]` Refine typings of `coverageReporters` ([#10275](https://github.com/facebook/jest/pull/10275))
+
+## 26.1.0
+
+### Features
+
+- `[jest-mock]` Export `Mock`, `MockInstance`, `SpyInstance` types ([#10138](https://github.com/facebook/jest/pull/10138))
+- `[jest-config]` Support config files exporting (`async`) `function`s ([#10001](https://github.com/facebook/jest/pull/10001))
+- `[jest-cli, jest-core]` Add `--selectProjects` CLI argument to filter test suites by project name ([#8612](https://github.com/facebook/jest/pull/8612))
+- `[jest-cli, jest-init]` Add `coverageProvider` to `jest --init` prompts ([#10044](https://github.com/facebook/jest/pull/10044))
+
+### Fixes
+
+- `[jest-console]` `getConsoleOutput` to receive global stack trace config and use it to format stack trace ([#10081](https://github.com/facebook/jest/pull/10081))
+- `[jest-jasmine2]` Stop adding `:` after an error that has no message ([#9990](https://github.com/facebook/jest/pull/9990))
+- `[jest-diff]` Control no diff message color with `commonColor` in diff options ([#9997](https://github.com/facebook/jest/pull/9997))
+- `[jest-snapshot]` Fix TypeScript compilation ([#10008](https://github.com/facebook/jest/pull/10008))
+
+### Chore & Maintenance
+
+- `[docs]` Correct confusing filename in `enableAutomock` example ([#10055](https://github.com/facebook/jest/pull/10055))
+- `[jest-core]` 🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉🎉 ([#10000](https://github.com/facebook/jest/pull/10000))
+- `[jest-core, jest-reporters, jest-test-result, jest-types]` Cleanup `displayName` type ([#10049](https://github.com/facebook/jest/pull/10049))
+- `[jest-runtime]` Jest-internal sandbox escape hatch ([#9907](https://github.com/facebook/jest/pull/9907))
+- `[jest-fake-timers]` Update `now` param type to support `Date` in addition to `number`. ([#10169](https://github.com/facebook/jest/pull/10169))
+- `[docs]` Add param to `setSystemTime` docs and remove preceding period from it and `getRealSystemTime` ([#10169](https://github.com/facebook/jest/pull/10169))
+- `[jest-snapshot, jest-util]` Replace `make-dir` with `fs.mkdir` ([#10136](https://github.com/facebook/jest/pull/10136))
+- `[docs]` Added parcel-bundler documentation inside readme.md file
+
+### Performance
+
+- `[jest-core, jest-transform, jest-haste-map]` Improve Jest startup time and test runtime, particularly when running with coverage, by caching micromatch and avoiding recreating RegExp instances ([#10131](https://github.com/facebook/jest/pull/10131))
+
+## 26.0.1
+
+### Fixes
+
+- `[jest-circus]` Backward compatibility for deprecated `DescribeBlock.tests` to not break e.g. Detox reporter
+
+## 26.0.0
+
+### Features
+
+- `[jest-environment-jsdom]` [**BREAKING**] Upgrade `jsdom` to v16 ([#9606](https://github.com/facebook/jest/pull/9606))
+- `[@jest/fake-timers]` Add possibility to use a modern implementation of fake timers, backed by `@sinonjs/fake-timers` ([#7776](https://github.com/facebook/jest/pull/7776))
+- `[jest-runtime]` Add `createMockFromModule` as an alias for `genMockFromModule` ([#9962](https://github.com/facebook/jest/pull/9962))
+
+### Fixes
+
+- `[babel-jest]` Handle `null` being passed to `createTransformer` ([#9955](https://github.com/facebook/jest/pull/9955))
+- `[jest-circus, jest-console, jest-jasmine2, jest-reporters, jest-util, pretty-format]` Fix time durating formatting and consolidate time formatting code ([#9765](https://github.com/facebook/jest/pull/9765))
+- `[jest-circus]` [**BREAKING**] Fail tests if a test takes a done callback and have return values ([#9129](https://github.com/facebook/jest/pull/9129))
+- `[jest-circus]` [**BREAKING**] Throw a proper error if a test / hook is defined asynchronously ([#8096](https://github.com/facebook/jest/pull/8096))
+- `[jest-circus]` Throw more descriptive error if hook is defined inside test ([#9957](https://github.com/facebook/jest/pull/9957))
+- `[jest-circus]` [**BREAKING**] Align execution order of tests to match `jasmine`'s top to bottom order ([#9965](https://github.com/facebook/jest/pull/9965))
+- `[jest-config, jest-resolve]` [**BREAKING**] Remove support for `browser` field ([#9943](https://github.com/facebook/jest/pull/9943))
+- `[jest-haste-map]` Stop reporting files as changed when they are only accessed ([#7347](https://github.com/facebook/jest/pull/7347))
+- `[jest-resolve]` Show relative path from root dir for `module not found` errors ([#9963](https://github.com/facebook/jest/pull/9963))
+- `[jest-runtime]` Fix absolute path moduleNameMapper + jest.mock bug ([#8727](https://github.com/facebook/jest/pull/8727))
+
+### Chore & Maintenance
+
+- `[*]` [**BREAKING**] TypeScript definitions requires a minimum of TypeScript v3.8 ([#9823](https://github.com/facebook/jest/pull/9823))
+- `[*]` [**BREAKING**] Drop support for Node 8 ([#9423](https://github.com/facebook/jest/pull/9423))
+- `[*]` Upgrade to chalk@4 ([#9752](https://github.com/facebook/jest/pull/9752))
+- `[*]` Remove usage of `realpath-native` ([#9952](https://github.com/facebook/jest/pull/9952))
+- `[docs]` Fix example reference implementation to use Jest with Phabricator ([#8662](https://github.com/facebook/jest/pull/8662))
+- `[docs]` Added default compiler to tranform ([#8583](https://github.com/facebook/jest/pull/8583))
+- `[docs]` Updated Testing Frameworks guide with React; make it generic ([#9106](https://github.com/facebook/jest/pull/9106))
+- `[expect, jest-mock, pretty-format]` [**BREAKING**] Remove `build-es5` from package ([#9945](https://github.com/facebook/jest/pull/9945))
+- `[@jest/fake-timers, @jest/environment]` [**BREAKING**] Rename `LolexFakeTimers` to `ModernFakeTimers` ([#9960](https://github.com/facebook/jest/pull/9960))
+- `[jest-haste-map]` [**BREAKING**] removed `providesModuleNodeModules` ([#8535](https://github.com/facebook/jest/pull/8535))
+- `[jest-runtime]` [**BREAKING**] Remove long-deprecated `require.requireActual` and `require.requireMock` methods ([#9854](https://github.com/facebook/jest/pull/9854))
+
+## 25.5.4
+
+### Fixes
+
+- `[jest-jasmine2]` Don't run `beforeAll` / `afterAll` in skipped describe blocks ([#9931](https://github.com/facebook/jest/pull/9931))
+
+### Chore & Maintenance
+
+- `[jest-runtime]` Do not warn when mutating `require.cache` ([#9946](https://github.com/facebook/jest/pull/9946))
+
+## 25.5.3
+
+### Chore & Maintenance
+
+- `[jest-circus]` Fix memory leak when running in band ([#9934](https://github.com/facebook/jest/pull/9934))
+
+## 25.5.2
+
+### Fixes
+
+- `[jest-globals]` Export globals as values, not types ([#9925](https://github.com/facebook/jest/pull/9925))
+
+## 25.5.1
+
+### Fixes
+
+- `[jest-haste-map]` Add missing `@types/graceful-fs` dependency ([#9913](https://github.com/facebook/jest/pull/9913))
+- `[jest-runner]` Correctly serialize `Set` passed to worker ([#9915](https://github.com/facebook/jest/pull/9915))
+- `[jest-runtime]` Vary ESM cache by query ([#9914](https://github.com/facebook/jest/pull/9914))
+
+## 25.5.0
+
+### Features
+
+- `[@jest/globals]` New package so Jest's globals can be explicitly imported ([#9801](https://github.com/facebook/jest/pull/9801))
+- `[jest-core]` Show coverage of sources related to tests in changed files ([#9769](https://github.com/facebook/jest/pull/9769))
+- `[jest-runtime]` Populate `require.cache` ([#9841](https://github.com/facebook/jest/pull/9841))
+
+### Fixes
+
+- `[*]` Use `graceful-fs` directly in every package instead of relying on `fs` being monkey patched ([#9443](https://github.com/facebook/jest/pull/9443))
+- `[expect]` Prints the Symbol name into the error message with a custom asymmetric matcher ([#9888](https://github.com/facebook/jest/pull/9888))
+- `[jest-circus, jest-jasmine2]` Support older version of `jest-runtime` ([#9903](https://github.com/facebook/jest/pull/9903) & [#9842](https://github.com/facebook/jest/pull/9842))
+- `[@jest/environment]` Make sure not to reference Jest types ([#9875](https://github.com/facebook/jest/pull/9875))
+- `[jest-message-util]` Code frame printing should respect `--noStackTrace` flag ([#9866](https://github.com/facebook/jest/pull/9866))
+- `[jest-runtime]` Support importing CJS from ESM using `import` statements ([#9850](https://github.com/facebook/jest/pull/9850))
+- `[jest-runtime]` Support importing parallel dynamic `import`s ([#9858](https://github.com/facebook/jest/pull/9858))
+- `[jest-transform]` Improve source map handling when instrumenting transformed code ([#9811](https://github.com/facebook/jest/pull/9811))
+
+### Chore & Maintenance
+
+- `[docs]` Add an example for mocking non-default export class
+
+### Performance
+
+- `[jest-resolve]` Update `resolve` to a version using native `realpath`, which is faster than the default JS implementation ([#9872](https://github.com/facebook/jest/pull/9872))
+- `[jest-resolve]` Pass custom cached `realpath` function to `resolve` ([#9873](https://github.com/facebook/jest/pull/9873))
+- `[jest-runtime]` Add `teardown` method to clear any caches when tests complete ([#9906](https://github.com/facebook/jest/pull/9906))
+- `[jest-runtime]` Do not pass files required internally through transformation when loading them ([#9900](https://github.com/facebook/jest/pull/9900))
+- `[jest-runtime]` Use `Map`s instead of object literals as cache holders ([#9901](https://github.com/facebook/jest/pull/9901))
+
+## 25.4.0
+
+- `[expect]` Support `async function`s in `toThrow` ([#9817](https://github.com/facebook/jest/pull/9817))
+- `[jest-console]` Add code frame to `console.error` and `console.warn` ([#9741](https://github.com/facebook/jest/pull/9741))
+- `[jest-runtime, jest-jasmine2, jest-circus]` Experimental, limited ECMAScript Modules support ([#9772](https://github.com/facebook/jest/pull/9772) & [#9842](https://github.com/facebook/jest/pull/9842))
+
+### Fixes
+
+- `[expect]` Restore support for passing functions to `toHaveLength` matcher ([#9796](https://github.com/facebook/jest/pull/9796))
+- `[jest-changed-files]` `--only-changed` should include staged files ([#9799](https://github.com/facebook/jest/pull/9799))
+- `[jest-circus]` Throw on nested test definitions ([#9828](https://github.com/facebook/jest/pull/9828))
+- `[jest-each]` `each` will throw an error when called with too many arguments ([#9818](https://github.com/facebook/jest/pull/9818))
+- `[jest-runner]` Don't print warning to stdout when using `--json` ([#9843](https://github.com/facebook/jest/pull/9843))
+
+### Chore & Maintenance
+
+- `[*]` Do not generate TypeScript declaration source maps ([#9822](https://github.com/facebook/jest/pull/9822))
+- `[*]` Transpile code for Node 8.3, not 8.0 ([#9827](https://github.com/facebook/jest/pull/9827))
+
+## 25.3.0
+
+### Features
+
+- `[babel-jest]` Support passing `supportsDynamicImport` and `supportsStaticESM` ([#9766](https://github.com/facebook/jest/pull/9766))
+- `[babel-preset-jest]` Enable all syntax plugins not enabled by default that works on current version of Node ([#9774](https://github.com/facebook/jest/pull/9774))
+- `[jest-circus]` Enable writing async test event handlers ([#9397](https://github.com/facebook/jest/pull/9397))
+- `[jest-runtime, @jest/transformer]` Support passing `supportsDynamicImport` and `supportsStaticESM` ([#9597](https://github.com/facebook/jest/pull/9597))
+
+### Chore & Maintenance
+
+- `[*]` Replace `any`s with `unknown`s ([#9626](https://github.com/facebook/jest/pull/9626))
+- `[@jest/transform]` Expose type `CacheKeyOptions` for `getCacheKey` ([#9762](https://github.com/facebook/jest/pull/9762))
+- `[@jest/types]` Correct type `testRegex` for `ProjectConfig` ([#9780](https://github.com/facebook/jest/pull/9780))
+
+## 25.2.7
+
+### Fixes
+
+- `[jest-matcher-utils]` Replace accessors with values to avoid calling setters in object descriptors when computing diffs for error reporting ([#9757](https://github.com/facebook/jest/pull/9757))
+- `[@jest/watcher]` Correct return type of `shouldRunTestSuite` for `JestHookEmitter` ([#9753](https://github.com/facebook/jest/pull/9753))
+
+## 25.2.6
+
+### Chore & Maintenance
+
+- `[*]` 25.2.5 was published without changes from 25.2.4 - 25.2.6 includes all changes from that version.
+
+## 25.2.5
+
+### Fixes
+
+- `[@jest/console]` Fix `typescript<@3.8` compatibility in published types
+
+### Chore & Maintenance
+
+- `[docs]` Update link to watchman troubleshooting docs ([#9727](https://github.com/facebook/jest/pull/9727))
+- `[@jest/message-util]` Remove dependency on `@jest/test-result`, which lead to a sprawling dependency tree ([#9749](https://github.com/facebook/jest/pull/9749))
+- `[@jest/test-result]` Remove dependency on `@jest/transform`, which lead to a sprawling dependency tree ([#9747](https://github.com/facebook/jest/pull/9747))
+- `[@jest/transform]` Expose type `TransformedSource` ([#9736](https://github.com/facebook/jest/pull/9736))
+
+## 25.2.4
+
+### Features
+
+- `[jest-message-util]` Check for common errors when using the wrong test environment ([#8245](https://github.com/facebook/jest/pull/8245))
+
+### Fixes
+
+- `[jest-circus]` Fix type elision of jest-runtime imports ([#9717](https://github.com/facebook/jest/pull/9717))
+- `[@jest/transform]` Fix coverage reporter for uncovered files without transformers, reverting [#9460](https://github.com/facebook/jest/pull/9460) ([#9724](https://github.com/facebook/jest/pull/9724))
+
+## 25.2.3
+
+### Fixes
+
+- `[*]` Verify all packages are properly downleveled for older versions of TypeScript ([#9715](https://github.com/facebook/jest/pull/9715))
+
+## 25.2.2
+
+### Fixes
+
+- `[jest-environment-node]` Remove `getVmContext` from Node env on older versions of Node ([#9708](https://github.com/facebook/jest/pull/9708))
+- `[jest-runtime]` Return constructable class from `require('module')` ([#9711](https://github.com/facebook/jest/pull/9711))
+
+## 25.2.1
+
+### Fixes
+
+- `[*]` Downlevel TypeScript definitions files for compatibility with TS<3.8 ([#9705](https://github.com/facebook/jest/pull/9705))
+
+## 25.2.0
+
+### Features
+
+- `[jest-config]` Support ESM config files with `.js` extension ([#9573](https://github.com/facebook/jest/pull/9573)).
+- `[jest-runtime]` Override `module.createRequire` to return a Jest-compatible `require` function ([#9469](https://github.com/facebook/jest/pull/9469))
+- `[jest-haste-map]` [**BREAKING**] Remove `mapper` option ([#9581](https://github.com/facebook/jest/pull/9581))
+- `[*]` Support array of paths for `moduleNameMapper` aliases ([#9465](https://github.com/facebook/jest/pull/9465))
+- `[jest-reporters]` Adds ability to pass options to the istanbul-reporter through `coverageReporters` ([#9572](https://github.com/facebook/jest/pull/9572))
+- `[jest-runtime]` Require stack when a module cannot be resolved ([#9681](https://github.com/facebook/jest/pull/9681))
+- `[jest-transform]` `writeCacheFile` no longer calls `fsync` ([#9695](https://github.com/facebook/jest/pull/9695))
+
+### Fixes
+
+- `[expect]` Handle readonly properties correctly ([#9575](https://github.com/facebook/jest/pull/9575))
+- `[jest-cli]` Set `coverageProvider` correctly when provided in config ([#9562](https://github.com/facebook/jest/pull/9562))
+- `[jest-cli]` Allow specifying `.cjs` and `.mjs` config files by `--config` CLI option ([#9578](https://github.com/facebook/jest/pull/9578))
+- `[jest-cli]` Update yargs to fix CLI flag overriding ([#9519](https://github.com/facebook/jest/pull/9519))
+- `[jest-config]` Treat `setupFilesAfterEnv` like `setupFiles` when normalizing configs against presets ([#9495](https://github.com/facebook/jest/pull/9495))
+- `[jest-config]` Support `.mjs` config files on Windows as well ([#9558](https://github.com/facebook/jest/pull/9558))
+- `[jest-config]` Verify `rootDir` and all `roots` are directories ([#9569](https://github.com/facebook/jest/pull/9569))
+- `[jest-config]` Ensure pattern of `replacePosixSep` is a string ([#9546](https://github.com/facebook/jest/pull/9546))
+- `[jest-haste-map]` Fix crash on unix based systems without find ([#9579](https://github.com/facebook/jest/pull/9579))
+- `[jest-jasmine2]` Fix `--testNamePattern` matching with `concurrent` tests ([#9090](https://github.com/facebook/jest/pull/9090))
+- `[jest-matcher-utils]` Fix diff highlight of symbol-keyed object. ([#9499](https://github.com/facebook/jest/pull/9499))
+- `[@jest/reporters]` Notifications should be fire&forget rather than having a timeout ([#9567](https://github.com/facebook/jest/pull/9567))
+- `[jest-resolve]` Fix module identity preservation with symlinks and browser field resolution ([#9511](https://github.com/facebook/jest/pull/9511))
+- `[jest-resolve]` Do not confuse directories with files ([#8912](https://github.com/facebook/jest/pull/8912))
+- `[jest-resolve]` `moduleNameMapper` should take precedence over Node core modules ([#9563](https://github.com/facebook/jest/pull/9563))
+- `[jest-runtime]` Reset `isolateModules` if it fails ([#9541](https://github.com/facebook/jest/pull/9541))
+- `[jest-runtime]` Yarn PnP errors displayed to the user ([#9681](https://github.com/facebook/jest/pull/9681))
+- `[jest-snapshot]` Downgrade semver to v6 to support node 8 ([#9451](https://github.com/facebook/jest/pull/9451))
+- `[jest-snapshot]` Properly indent new snapshots in the presences of existing ones ([#9523](https://github.com/facebook/jest/pull/9523))
+- `[jest-transform]` Correct sourcemap behavior for transformed and instrumented code ([#9460](https://github.com/facebook/jest/pull/9460))
+- `[jest-transform]` Allow instrumentation of transformed files with weird file extensions ([#9589](https://github.com/facebook/jest/pull/9589))
+- `[@jest/types]` Make `ConfigGlobals` an interface to allow for declaration merging. ([#9570](https://github.com/facebook/jest/pull/9570))
+- `[pretty-format]` Export `OldPlugin` type ([#9491](https://github.com/facebook/jest/pull/9491))
+
+### Chore & Maintenance
+
+- `[docs]` Warn about unexpected behavior / bug of node-notifier when using the `notify` options.
+- `[docs]` Grammatical corrections to Async docs page. ([#9679](https://github.com/facebook/jest/pull/9679))
+- `[jest-resolver]` Use `resolve` package to implement custom module resolution ([#9520](https://github.com/facebook/jest/pull/9520))
+- `[jest-runtime]` Move execution of `setupFiles` to `jest-runner` ([#9596](https://github.com/facebook/jest/pull/9596))
+- `[jest-runtime]` Update anchor link in `helpers` ([#9616](https://github.com/facebook/jest/pull/9616))
+- `[@jest/reporters]` Remove unused dependencies and type exports ([#9462](https://github.com/facebook/jest/pull/9462))
+- `[website]` Update pictures of reports when matchers fail ([#9214](https://github.com/facebook/jest/pull/9214))
+
+### Performance
+
+- `[jest-haste-map]` Reduce number of `lstat` calls in node crawler ([#9514](https://github.com/facebook/jest/pull/9514))
+
+## 25.1.0
+
+### Features
+
 - `[babel-plugin-jest-hoist]` Show codeframe on static hoisting issues ([#8865](https://github.com/facebook/jest/pull/8865))
-- `[babel-plugin-jest-hoist]` Add `BigInt` to `WHITELISTED_IDENTIFIERS` ([#8382](https://github.com/facebook/jest/pull/8382))
+- `[babel-plugin-jest-hoist]` Add `BigInt` to `ALLOWED_IDENTIFIERS` ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[babel-preset-jest]` Add `@babel/plugin-syntax-bigint` ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[expect]` Add `BigInt` support to `toBeGreaterThan`, `toBeGreaterThanOrEqual`, `toBeLessThan` and `toBeLessThanOrEqual` ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[expect, jest-matcher-utils]` Display change counts in annotation lines ([#9035](https://github.com/facebook/jest/pull/9035))
+- `[expect, jest-snapshot]` Support custom inline snapshot matchers ([#9278](https://github.com/facebook/jest/pull/9278))
 - `[jest-config]` Throw the full error message and stack when a Jest preset is missing a dependency ([#8924](https://github.com/facebook/jest/pull/8924))
 - `[jest-config]` [**BREAKING**] Set default display name color based on runner ([#8689](https://github.com/facebook/jest/pull/8689))
 - `[jest-config]` Merge preset globals with project globals ([#9027](https://github.com/facebook/jest/pull/9027))
+- `[jest-config]` Support `.cjs` config files ([#9291](https://github.com/facebook/jest/pull/9291))
+- `[jest-config]` [**BREAKING**] Support `.mjs` config files ([#9431](https://github.com/facebook/jest/pull/9431))
+- `[jest-core]` Support reporters as default exports ([#9161](https://github.com/facebook/jest/pull/9161))
+- `[jest-core]` Support `--findRelatedTests` paths case insensitivity on Windows ([#8900](https://github.com/facebook/jest/issues/8900))
 - `[jest-diff]` Add options for colors and symbols ([#8841](https://github.com/facebook/jest/pull/8841))
 - `[jest-diff]` [**BREAKING**] Export as ECMAScript module ([#8873](https://github.com/facebook/jest/pull/8873))
 - `[jest-diff]` Add `includeChangeCounts` and rename `Indicator` options ([#8881](https://github.com/facebook/jest/pull/8881))
 - `[jest-diff]` Add `changeColor` and `patchColor` options ([#8911](https://github.com/facebook/jest/pull/8911))
 - `[jest-diff]` Add `trailingSpaceFormatter` option and replace cyan with `commonColor` ([#8927](https://github.com/facebook/jest/pull/8927))
 - `[jest-diff]` Add `firstOrLastEmptyLineReplacement` option and export 3 `diffLines` functions ([#8955](https://github.com/facebook/jest/pull/8955))
+- `[jest-environment]` Add optional `getVmContext` next to `runScript` ([#9252](https://github.com/facebook/jest/pull/9252) & [#9428](https://github.com/facebook/jest/pull/9428))
 - `[jest-environment-jsdom]` Add `fakeTimersLolex` ([#8925](https://github.com/facebook/jest/pull/8925))
 - `[jest-environment-node]` Add `fakeTimersLolex` ([#8925](https://github.com/facebook/jest/pull/8925))
+- `[jest-environment-node]` Add `queueMicrotask` ([#9140](https://github.com/facebook/jest/pull/9140))
+- `[jest-environment-node]` Implement `getVmContext` ([#9252](https://github.com/facebook/jest/pull/9252) & [#9428](https://github.com/facebook/jest/pull/9428))
 - `[@jest/fake-timers]` Add Lolex as implementation of fake timers ([#8897](https://github.com/facebook/jest/pull/8897))
 - `[jest-get-type]` Add `BigInt` support. ([#8382](https://github.com/facebook/jest/pull/8382))
 - `[jest-matcher-utils]` Add `BigInt` support to `ensureNumbers` `ensureActualIsNumber`, `ensureExpectedIsNumber` ([#8382](https://github.com/facebook/jest/pull/8382))
+- `[jest-matcher-utils]` Ignore highlighting matched asymmetricMatcher in diffs ([#9257](https://github.com/facebook/jest/pull/9257))
+- `[jest-reporters]` Export utils for path formatting ([#9162](https://github.com/facebook/jest/pull/9162))
+- `[jest-reporters]` Provides global coverage thresholds as watermarks for istanbul ([#9416](https://github.com/facebook/jest/pull/9416))
 - `[jest-runner]` Warn if a worker had to be force exited ([#8206](https://github.com/facebook/jest/pull/8206))
+- `[jest-runtime]` [**BREAKING**] Do not export `ScriptTransformer` - it can be imported from `@jest/transform` instead ([#9256](https://github.com/facebook/jest/pull/9256))
+- `[jest-runtime]` Use `JestEnvironment.getVmContext` and `vm.compileFunction` if available to avoid the module wrapper ([#9252](https://github.com/facebook/jest/pull/9252) & [#9428](https://github.com/facebook/jest/pull/9428))
 - `[jest-snapshot]` Display change counts in annotation lines ([#8982](https://github.com/facebook/jest/pull/8982))
+- `[jest-snapshot]` [**BREAKING**] Improve report when the matcher has properties ([#9104](https://github.com/facebook/jest/pull/9104))
+- `[jest-snapshot]` Improve colors when snapshots are updatable ([#9132](https://github.com/facebook/jest/pull/9132))
+- `[jest-snapshot]` Ignore indentation for most serialized objects ([#9203](https://github.com/facebook/jest/pull/9203))
+- `[jest-transform]` Create `createTranspilingRequire` function for easy transpiling modules ([#9194](https://github.com/facebook/jest/pull/9194))
+- `[jest-transform]` [**BREAKING**] Return transformed code as a string, do not wrap in `vm.Script` ([#9253](https://github.com/facebook/jest/pull/9253))
 - `[@jest/test-result]` Create method to create empty `TestResult` ([#8867](https://github.com/facebook/jest/pull/8867))
 - `[jest-worker]` [**BREAKING**] Return a promise from `end()`, resolving with the information whether workers exited gracefully ([#8206](https://github.com/facebook/jest/pull/8206))
 - `[jest-reporters]` Transform file paths into hyperlinks ([#8980](https://github.com/facebook/jest/pull/8980))
@@ -31,20 +506,38 @@
 
 - `[expect]` Display `expectedDiff` more carefully in `toBeCloseTo` ([#8389](https://github.com/facebook/jest/pull/8389))
 - `[expect]` Avoid incorrect difference for subset when `toMatchObject` fails ([#9005](https://github.com/facebook/jest/pull/9005))
+- `[expect]` Consider all RegExp flags for equality ([#9167](https://github.com/facebook/jest/pull/9167))
+- `[expect]` [**BREAKING**] Consider primitives different from wrappers instantiated with `new` ([#9167](https://github.com/facebook/jest/pull/9167))
+- `[expect]` Prevent maintaining RegExp state between multiple tests ([#9289](https://github.com/facebook/jest/pull/9289))
+- `[expect]` Fix subsetEquality false circular reference detection ([#9322](https://github.com/facebook/jest/pull/9322))
+- `[jest-config]` Use half of the available cores when `watchAll` mode is enabled ([#9117](https://github.com/facebook/jest/pull/9117))
+- `[jest-config]` Fix Jest multi project runner still cannot handle exactly one project ([#8894](https://github.com/facebook/jest/pull/8894))
 - `[jest-console]` Add missing `console.group` calls to `NullConsole` ([#9024](https://github.com/facebook/jest/pull/9024))
 - `[jest-core]` Don't include unref'd timers in --detectOpenHandles results ([#8941](https://github.com/facebook/jest/pull/8941))
+- `[jest-core]` Limit number of workers when creating haste maps in projects ([#9259](https://github.com/facebook/jest/pull/9259))
 - `[jest-diff]` Do not inverse format if line consists of one change ([#8903](https://github.com/facebook/jest/pull/8903))
 - `[jest-diff]` Rename some new options and change their default values ([#9077](https://github.com/facebook/jest/pull/9077))
+- `[jest-environment-node]` Fix `TextEncoder.encode` not referencing same global `Uint8Array` constructor ([#9261](https://github.com/facebook/jest/pull/9261))
 - `[jest-fake-timers]` `getTimerCount` will not include cancelled immediates ([#8764](https://github.com/facebook/jest/pull/8764))
+- `[jest-fake-timers]` Support `util.promisify` on `setTimeout` ([#9180](https://github.com/facebook/jest/pull/9180))
+- `[jest-jasmine2, jest-circus]` Improve error message format for Node's assert.fail ([#9262](https://github.com/facebook/jest/pull/9262))
 - `[jest-leak-detector]` [**BREAKING**] Use `weak-napi` instead of `weak` package ([#8686](https://github.com/facebook/jest/pull/8686))
 - `[jest-mock]` Fix for mockReturnValue overriding mockImplementationOnce ([#8398](https://github.com/facebook/jest/pull/8398))
-- `[jest-reporters]` Make node-notifer an optional dependency ([#8918](https://github.com/facebook/jest/pull/8918))
-- `[jest-resolve-dependencies]` Resolve mocks as dependencies ([#8952](https://github.com/facebook/jest/pull/8952))
+- `[jest-reporters]` Make node-notifier an optional dependency ([#8918](https://github.com/facebook/jest/pull/8918))
+- `[jest-reporters]` Make all arguments to methods on `BaseReporter` optional ([#9159](https://github.com/facebook/jest/pull/9159))
+- `[jest-resolve]`: Set MODULE_NOT_FOUND as error code when module is not resolved from paths ([#8487](https://github.com/facebook/jest/pull/8487))
+- `[jest-resolve-dependencies]` Handle dynamic dependencies correctly even when using module maps ([#9303](https://github.com/facebook/jest/pull/9303))
 - `[jest-snapshot]` Remove only the added newlines in multiline snapshots ([#8859](https://github.com/facebook/jest/pull/8859))
 - `[jest-snapshot]` Distinguish empty string from external snapshot not written ([#8880](https://github.com/facebook/jest/pull/8880))
 - `[jest-snapshot]` [**BREAKING**] Distinguish empty string from internal snapshot not written ([#8898](https://github.com/facebook/jest/pull/8898))
 - `[jest-snapshot]` [**BREAKING**] Remove `report` method and throw matcher errors ([#9049](https://github.com/facebook/jest/pull/9049))
+- `[jest-snapshot]` Omit irrelevant `received` properties when property matchers fail ([#9198](https://github.com/facebook/jest/pull/9198))
 - `[jest-transform]` Properly cache transformed files across tests ([#8890](https://github.com/facebook/jest/pull/8890))
+- `[jest-transform]` Don't fail the test suite when a generated source map is invalid ([#9058](https://github.com/facebook/jest/pull/9058))
+- `[jest-types]` [**BREAKING**] Use less `null | undefined` in config types ([#9200](https://github.com/facebook/jest/pull/9200))
+- `[jest-util]` Allow querying process.domain ([#9136](https://github.com/facebook/jest/pull/9136))
+- `[pretty-format]` Correctly detect memoized elements ([#9196](https://github.com/facebook/jest/pull/9196))
+- `[pretty-format]` Fix pretty-format to respect displayName on forwardRef ([#9422](https://github.com/facebook/jest/pull/9422))
 
 ### Chore & Maintenance
 
@@ -55,16 +548,18 @@
 - `[docs]` Add alias and optional boolean value to `coverage` CLI Reference ([#8996](https://github.com/facebook/jest/pull/8996))
 - `[docs]` Fix broken link pointing to legacy JS file in "Snapshot Testing".
 - `[docs]` Add `setupFilesAfterEnv` and `jest.setTimeout` example ([#8971](https://github.com/facebook/jest/pull/8971))
+- `[expect]` Test that `toStrictEqual` is equivalent to Node's `assert.deepStrictEqual` ([#9167](https://github.com/facebook/jest/pull/9167))
 - `[jest]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
 - `[jest-cli]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
 - `[jest-cli]` [**BREAKING**] Remove re-exports from `@jest/core` ([#8874](https://github.com/facebook/jest/pull/8874))
+- `[jest-diff]` Remove the need to export `splitLines0` function ([#9151](https://github.com/facebook/jest/pull/9151))
 - `[jest-environment-jsdom]` [**BREAKING**] Upgrade JSDOM from v11 to v15 ([#8851](https://github.com/facebook/jest/pull/8851))
+- `[jest-haste-map]` Upgrade to `fsevents@2` ([#9215](https://github.com/facebook/jest/pull/9215))
+- `[jest-reporters]` [**BREAKING**] Upgrade Istanbul dependencies, which are used for code coverage ([#9192](https://github.com/facebook/jest/pull/9192))
 - `[jest-util]` [**BREAKING**] Remove deprecated exports ([#8863](https://github.com/facebook/jest/pull/8863))
 - `[jest-validate]` [**BREAKING**] Use ESM exports ([#8874](https://github.com/facebook/jest/pull/8874))
 - `[jest-types]` Mark `InitialOptions` as `Partial` ([#8848](https://github.com/facebook/jest/pull/8848))
 - `[jest-config]` Refactor `normalize` to be more type safe ([#8848](https://github.com/facebook/jest/pull/8848))
-
-### Performance
 
 ## 24.9.0
 
@@ -111,6 +606,7 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Replace FlowType with TypeScript in CONTRIBUTING.MD code conventions
 - `[jest-leak-detector]` remove code repeat ([#8438](https://github.com/facebook/jest/pull/8438))
 - `[docs]` Add example to `jest.requireActual` ([#8482](https://github.com/facebook/jest/pull/8482))
 - `[docs]` Add example to `jest.mock` for mocking ES6 modules with the `factory` parameter ([#8550](https://github.com/facebook/jest/pull/8550))
@@ -126,6 +622,7 @@
 - `[docs]` Fix WatchPlugins `jestHooks.shouldRunTestSuite` example that receives an object ([#8784](https://github.com/facebook/jest/pull/8784))
 - `[*]` Enforce LF line endings ([#8809](https://github.com/facebook/jest/pull/8809))
 - `[pretty-format]` Delete obsolete link and simplify structure in README ([#8824](https://github.com/facebook/jest/pull/8824))
+- `[docs]` Fix broken transform link on webpack page ([#9155](https://github.com/facebook/jest/pull/9155))
 
 ### Performance
 
@@ -150,7 +647,7 @@
 
 - `[jest-each]` Fix bug with placeholder values ([#8289](https://github.com/facebook/jest/pull/8289))
 - `[jest-snapshot]` Inline snapshots: do not indent empty lines ([#8277](https://github.com/facebook/jest/pull/8277))
-- `[@jest/runtime, @jest/transform]` Allow custom transforms for JSON dependencies ([#2578](https://github.com/facebook/jest/pull/2578))
+- `[@jest/runtime, @jest/transform]` Allow custom transforms for JSON dependencies ([#8278](https://github.com/facebook/jest/pull/8278))
 - `[jest-core]` Make `detectOpenHandles` imply `runInBand` ([#8283](https://github.com/facebook/jest/pull/8283))
 - `[jest-haste-map]` Fix the `mapper` option which was incorrectly ignored ([#8299](https://github.com/facebook/jest/pull/8299))
 - `[jest-jasmine2]` Fix describe return value warning being shown if the describe function throws ([#8335](https://github.com/facebook/jest/pull/8335))

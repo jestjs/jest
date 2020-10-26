@@ -23,12 +23,10 @@ FAIL __tests__/onlyConstructs.test.js
 
     Missing second argument. It must be a callback function.
 
-      1 | 
-    > 2 |     describe('describe, no implementation');
-        |              ^
-      3 |   
+    > 1 | describe('describe, no implementation');
+        |          ^
 
-      at Object.<anonymous> (__tests__/onlyConstructs.test.js:2:14)
+      at Object.<anonymous> (__tests__/onlyConstructs.test.js:1:10)
 `;
 
 exports[`cannot have describe with no implementation 2`] = `
@@ -45,14 +43,12 @@ FAIL __tests__/onlyConstructs.test.js
 
     Missing second argument. It must be a callback function. Perhaps you want to use \`test.todo\` for a test placeholder.
 
-      1 | 
-      2 |     it('it', () => {});
-    > 3 |     it('it, no implementation');
-        |     ^
-      4 |     test('test, no implementation');
-      5 |   
+      1 | it('it', () => {});
+    > 2 | it('it, no implementation');
+        | ^
+      3 | test('test, no implementation');
 
-      at Object.it (__tests__/onlyConstructs.test.js:3:5)
+      at Object.it (__tests__/onlyConstructs.test.js:2:1)
 `;
 
 exports[`cannot test with no implementation 2`] = `
@@ -69,14 +65,12 @@ FAIL __tests__/onlyConstructs.test.js
 
     Missing second argument. It must be a callback function. Perhaps you want to use \`test.todo\` for a test placeholder.
 
-      1 | 
-      2 |     it('it', () => {});
-    > 3 |     it('it, no implementation');
-        |     ^
-      4 |     test('test, no implementation');
-      5 |   
+      1 | it('it', () => {});
+    > 2 | it('it, no implementation');
+        | ^
+      3 | test('test, no implementation');
 
-      at Object.it (__tests__/onlyConstructs.test.js:3:5)
+      at Object.it (__tests__/onlyConstructs.test.js:2:1)
 `;
 
 exports[`cannot test with no implementation with expand arg 2`] = `
@@ -96,6 +90,22 @@ PASS __tests__/functionAsDescriptor.test.js
 exports[`function as descriptor 2`] = `
 Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;
+
+exports[`interleaved describe and test children order 1`] = `
+PASS __tests__/interleaved.test.js
+  ✓ above
+  ✓ below
+  describe
+    ✓ inside
+`;
+
+exports[`interleaved describe and test children order 2`] = `
+Test Suites: 1 passed, 1 total
+Tests:       3 passed, 3 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
 Ran all test suites.

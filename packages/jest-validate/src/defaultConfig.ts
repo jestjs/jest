@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {ValidationOptions} from './types';
+import type {ValidationOptions} from './types';
 
 import {deprecationWarning} from './deprecated';
 import {unknownOptionWarning} from './warnings';
@@ -22,7 +22,7 @@ const validationOptions: ValidationOptions = {
   exampleConfig: {},
   recursive: true,
   // Allow NPM-sanctioned comments in package.json. Use a "//" key.
-  recursiveBlacklist: ['//'],
+  recursiveDenylist: ['//'],
   title: {
     deprecation: DEPRECATION,
     error: ERROR,

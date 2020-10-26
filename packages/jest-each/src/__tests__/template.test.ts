@@ -27,6 +27,9 @@ const getGlobalTestMocks = () => {
   };
   globals.test.only = jest.fn();
   globals.test.skip = jest.fn();
+  globals.test.concurrent = jest.fn();
+  globals.test.concurrent.only = jest.fn();
+  globals.test.concurrent.skip = jest.fn();
   globals.it.only = jest.fn();
   globals.it.skip = jest.fn();
   globals.describe.only = jest.fn();
@@ -37,6 +40,9 @@ const getGlobalTestMocks = () => {
 describe('jest-each', () => {
   [
     ['test'],
+    ['test', 'concurrent'],
+    ['test', 'concurrent', 'only'],
+    ['test', 'concurrent', 'skip'],
     ['test', 'only'],
     ['it'],
     ['fit'],
@@ -315,6 +321,7 @@ describe('jest-each', () => {
     test.each([
       [['test']],
       [['test', 'only']],
+      [['test', 'concurrent', 'only']],
       [['it']],
       [['fit']],
       [['it', 'only']],
@@ -346,7 +353,7 @@ describe('jest-each', () => {
         ${0} | ${1} | ${1}
       `;
         const testFunction = get(eachObject, keyPath);
-        testFunction('expected string', function({a, b, expected}, done) {
+        testFunction('expected string', function ({a, b, expected}, done) {
           expect(a).toBe(0);
           expect(b).toBe(1);
           expect(expected).toBe(1);
@@ -361,6 +368,8 @@ describe('jest-each', () => {
   [
     ['xtest'],
     ['test', 'skip'],
+    ['test', 'concurrent'],
+    ['test', 'concurrent', 'skip'],
     ['xit'],
     ['it', 'skip'],
     ['xdescribe'],

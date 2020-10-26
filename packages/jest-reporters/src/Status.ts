@@ -5,11 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {AggregatedResult, TestResult} from '@jest/test-result';
-import chalk from 'chalk';
+import type {Config} from '@jest/types';
+import type {
+  AggregatedResult,
+  TestCaseResult,
+  TestResult,
+} from '@jest/test-result';
+import chalk = require('chalk');
 import stringLength = require('string-length');
-import {ReporterOnStartOptions} from './types';
+import type {ReporterOnStartOptions, Test} from './types';
 import {
   getSummary,
   printDisplayName,
@@ -57,15 +61,24 @@ class CurrentTestList {
   }
 }
 
+type Cache = {
+  content: string;
+  clear: string;
+};
+
 /**
  * A class that generates the CLI status of currently running tests
  * and also provides an ANSI escape sequence to remove status lines
  * from the terminal.
  */
 export default class Status {
-  private _cache: {content: string; clear: string} | null;
+  private _cache: Cache | null;
   private _callback?: () => void;
   private _currentTests: CurrentTestList;
+  private _currentTestCases: Array<{
+    test: Test;
+    testCaseResult: TestCaseResult;
+  }>;
   private _done: boolean;
   private _emitScheduled: boolean;
   private _estimatedTime: number;
@@ -76,20 +89,21 @@ export default class Status {
   constructor() {
     this._cache = null;
     this._currentTests = new CurrentTestList();
+    this._currentTestCases = [];
     this._done = false;
     this._emitScheduled = false;
     this._estimatedTime = 0;
     this._showStatus = false;
   }
 
-  onChange(callback: () => void) {
+  onChange(callback: () => void): void {
     this._callback = callback;
   }
 
   runStarted(
     aggregatedResults: AggregatedResult,
     options: ReporterOnStartOptions,
-  ) {
+  ): void {
     this._estimatedTime = (options && options.estimatedTime) || 0;
     this._showStatus = options && options.showStatus;
     this._interval = setInterval(() => this._tick(), 1000);
@@ -97,13 +111,22 @@ export default class Status {
     this._debouncedEmit();
   }
 
-  runFinished() {
+  runFinished(): void {
     this._done = true;
     if (this._interval) clearInterval(this._interval);
     this._emit();
   }
 
-  testStarted(testPath: Config.Path, config: Config.ProjectConfig) {
+  addTestCaseResult(test: Test, testCaseResult: TestCaseResult): void {
+    this._currentTestCases.push({test, testCaseResult});
+    if (!this._showStatus) {
+      this._emit();
+    } else {
+      this._debouncedEmit();
+    }
+  }
+
+  testStarted(testPath: Config.Path, config: Config.ProjectConfig): void {
     this._currentTests.add(testPath, config);
     if (!this._showStatus) {
       this._emit();
@@ -116,14 +139,20 @@ export default class Status {
     _config: Config.ProjectConfig,
     testResult: TestResult,
     aggregatedResults: AggregatedResult,
-  ) {
+  ): void {
     const {testFilePath} = testResult;
     this._aggregatedResults = aggregatedResults;
     this._currentTests.delete(testFilePath);
+    this._currentTestCases = this._currentTestCases.filter(({test}) => {
+      if (_config !== test.context.config) {
+        return true;
+      }
+      return test.path !== testFilePath;
+    });
     this._debouncedEmit();
   }
 
-  get() {
+  get(): Cache {
     if (this._cache) {
       return this._cache;
     }
@@ -156,6 +185,7 @@ export default class Status {
       content +=
         '\n' +
         getSummary(this._aggregatedResults, {
+          currentTestCases: this._currentTestCases,
           estimatedTime: this._estimatedTime,
           roundTime: true,
           width,

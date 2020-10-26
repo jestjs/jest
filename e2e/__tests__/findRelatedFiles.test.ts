@@ -38,6 +38,32 @@ describe('--findRelatedTests flag', () => {
     expect(stderr).toMatch(summaryMsg);
   });
 
+  test('runs tests related to uppercased filename on case-insensitive os', () => {
+    if (process.platform !== 'win32') {
+      // This test is Windows specific, skip it on other platforms.
+      return;
+    }
+
+    writeFiles(DIR, {
+      '.watchmanconfig': '',
+      '__tests__/test.test.js': `
+      const a = require('../a');
+      test('a', () => {});
+    `,
+      'a.js': 'module.exports = {};',
+      'package.json': JSON.stringify({jest: {testEnvironment: 'node'}}),
+    });
+
+    const {stdout} = runJest(DIR, ['A.JS']);
+    expect(stdout).toMatch('');
+
+    const {stderr} = runJest(DIR, ['--findRelatedTests', 'A.JS']);
+    expect(stderr).toMatch('PASS __tests__/test.test.js');
+
+    const summaryMsg = 'Ran all test suites related to files matching /A.JS/i.';
+    expect(stderr).toMatch(summaryMsg);
+  });
+
   test('runs tests related to filename with a custom dependency extractor', () => {
     writeFiles(DIR, {
       '.watchmanconfig': '',

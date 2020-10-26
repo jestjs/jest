@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
-import {ValidationOptions} from './types';
+import chalk = require('chalk');
+import type {ValidationOptions} from './types';
 import {
   WARNING,
   createDidYouMeanMessage,
@@ -15,8 +15,8 @@ import {
 } from './utils';
 
 export const unknownOptionWarning = (
-  config: Record<string, any>,
-  exampleConfig: Record<string, any>,
+  config: Record<string, unknown>,
+  exampleConfig: Record<string, unknown>,
   option: string,
   options: ValidationOptions,
   path?: Array<string>,

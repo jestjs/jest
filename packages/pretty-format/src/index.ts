@@ -5,8 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as style from 'ansi-styles';
-import * as PrettyFormat from './types';
+/* eslint-disable local/ban-types-eventually */
+
+import style = require('ansi-styles');
+import type * as PrettyFormat from './types';
 
 import {
   printIteratorEntries,
@@ -32,12 +34,13 @@ const regExpToString = RegExp.prototype.toString;
  * Explicitly comparing typeof constructor to function avoids undefined as name
  * when mock identity-obj-proxy returns the key as the value for any key.
  */
-const getConstructorName = (val: new (...args: Array<any>) => any) =>
+const getConstructorName = (val: new (...args: Array<any>) => unknown) =>
   (typeof val.constructor === 'function' && val.constructor.name) || 'Object';
 
 /* global window */
 /** Is val is equal to global window object? Works even if it does not exist :) */
-const isWindow = (val: any) => typeof window !== 'undefined' && val === window;
+const isWindow = (val: unknown) =>
+  typeof window !== 'undefined' && val === window;
 
 const SYMBOL_REGEXP = /^Symbol\((.*)\)(.*)$/;
 const NEWLINE_REGEXP = /\n/gi;
@@ -304,7 +307,7 @@ function printPlugin(
   return printed;
 }
 
-function findPlugin(plugins: PrettyFormat.Plugins, val: any) {
+function findPlugin(plugins: PrettyFormat.Plugins, val: unknown) {
   for (let p = 0; p < plugins.length; p++) {
     try {
       if (plugins[p].test(val)) {
@@ -319,7 +322,7 @@ function findPlugin(plugins: PrettyFormat.Plugins, val: any) {
 }
 
 function printer(
-  val: any,
+  val: unknown,
   config: PrettyFormat.Config,
   indentation: string,
   depth: number,
@@ -491,7 +494,7 @@ function createIndent(indent: number): string {
  * @param options Custom settings
  */
 function prettyFormat(
-  val: any,
+  val: unknown,
   options?: PrettyFormat.OptionsReceived,
 ): string {
   if (options) {
@@ -527,12 +530,12 @@ prettyFormat.plugins = {
   ReactTestComponent,
 };
 
-/* eslint-disable-next-line no-redeclare */
 namespace prettyFormat {
   export type Colors = PrettyFormat.Colors;
   export type Config = PrettyFormat.Config;
   export type Options = PrettyFormat.Options;
   export type OptionsReceived = PrettyFormat.OptionsReceived;
+  export type OldPlugin = PrettyFormat.OldPlugin;
   export type NewPlugin = PrettyFormat.NewPlugin;
   export type Plugin = PrettyFormat.Plugin;
   export type Plugins = PrettyFormat.Plugins;

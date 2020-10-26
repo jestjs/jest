@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/prefer-rest-params-eventually */
+
 import prettyFormat from '../';
 
 function returnArguments(..._args: Array<unknown>) {
@@ -14,7 +16,7 @@ function returnArguments(..._args: Array<unknown>) {
 class MyArray<T> extends Array<T> {}
 
 function MyObject(value: unknown) {
-  // @ts-ignore
+  // @ts-expect-error
   this.name = value;
 }
 
@@ -85,7 +87,7 @@ describe('prettyFormat()', () => {
     /* eslint-disable no-new-func */
     const val = new Function();
     /* eslint-enable no-new-func */
-    // In Node 8.1.4: val.name === 'anonymous'
+    // In Node >=8.1.4: val.name === 'anonymous'
     expect(prettyFormat(val)).toEqual('[Function anonymous]');
   });
 
@@ -95,7 +97,7 @@ describe('prettyFormat()', () => {
       val = cb;
     }
     f(() => {});
-    // In Node 8.1.4: val.name === ''
+    // In Node >=8.1.4: val.name === ''
     expect(prettyFormat(val)).toEqual('[Function anonymous]');
   });
 
@@ -156,7 +158,7 @@ describe('prettyFormat()', () => {
   });
 
   it('prints a map with non-string keys', () => {
-    const val = new Map<any, any>([
+    const val = new Map<unknown, unknown>([
       [false, 'boolean'],
       ['false', 'string'],
       [0, 'number'],
@@ -280,7 +282,7 @@ describe('prettyFormat()', () => {
   });
 
   it('prints an object without non-enumerable properties which have string key', () => {
-    const val: any = {
+    const val: unknown = {
       enumerable: true,
     };
     const key = 'non-enumerable';
@@ -292,7 +294,7 @@ describe('prettyFormat()', () => {
   });
 
   it('prints an object without non-enumerable properties which have symbol key', () => {
-    const val: any = {
+    const val: unknown = {
       enumerable: true,
     };
     const key = Symbol('non-enumerable');
@@ -508,7 +510,7 @@ describe('prettyFormat()', () => {
         'map non-empty': new Map([['name', 'value']]),
         'object literal empty': {},
         'object literal non-empty': {name: 'value'},
-        // @ts-ignore
+        // @ts-expect-error
         'object with constructor': new MyObject('value'),
         'object without constructor': Object.create(null),
         'set empty': new Set(),
@@ -540,7 +542,6 @@ describe('prettyFormat()', () => {
 
   it('throws on invalid options', () => {
     expect(() => {
-      // @ts-ignore
       prettyFormat({}, {invalidOption: true});
     }).toThrow();
   });
@@ -586,7 +587,7 @@ describe('prettyFormat()', () => {
     const options = {
       plugins: [
         {
-          print(val: any) {
+          print(val: unknown) {
             return val;
           },
           test() {
@@ -661,15 +662,18 @@ describe('prettyFormat()', () => {
   });
 
   it('supports plugins with deeply nested arrays (#24)', () => {
-    const val = [[1, 2], [3, 4]];
+    const val = [
+      [1, 2],
+      [3, 4],
+    ];
     expect(
       prettyFormat(val, {
         plugins: [
           {
-            print(val, print) {
-              return val.map((item: any) => print(item)).join(' - ');
+            print(val: Array<unknown>, print: any) {
+              return val.map(item => print(item)).join(' - ');
             },
-            test(val) {
+            test(val: unknown) {
               return Array.isArray(val);
             },
           },
@@ -808,7 +812,7 @@ describe('prettyFormat()', () => {
         'map non-empty': new Map([['name', 'value']]),
         'object literal empty': {},
         'object literal non-empty': {name: 'value'},
-        // @ts-ignore
+        // @ts-expect-error
         'object with constructor': new MyObject('value'),
         'object without constructor': Object.create(null),
         'set empty': new Set(),

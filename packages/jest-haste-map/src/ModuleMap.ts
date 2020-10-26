@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {
+import type {Config} from '@jest/types';
+import type {
   DuplicatesSet,
   HTypeValue,
   MockData,
@@ -18,7 +18,7 @@ import {
 import * as fastPath from './lib/fast_path';
 import H from './constants';
 
-const EMPTY_OBJ = {} as Record<string, any>;
+const EMPTY_OBJ: Record<string, ModuleMetaData> = {};
 const EMPTY_MAP = new Map();
 
 type ValueType<T> = T extends Map<string, infer V> ? V : never;
@@ -36,7 +36,7 @@ export default class ModuleMap {
   private json: SerializableModuleMap | undefined;
 
   private static mapToArrayRecursive(
-    map: Map<any, any>,
+    map: Map<string, any>,
   ): Array<[string, unknown]> {
     let arr = Array.from(map);
     if (arr[0] && arr[0][1] instanceof Map) {
@@ -121,7 +121,7 @@ export default class ModuleMap {
     return this.json;
   }
 
-  static fromJSON(serializableModuleMap: SerializableModuleMap) {
+  static fromJSON(serializableModuleMap: SerializableModuleMap): ModuleMap {
     return new ModuleMap({
       duplicates: ModuleMap.mapFromArrayRecursive(
         serializableModuleMap.duplicates,
@@ -207,7 +207,7 @@ export default class ModuleMap {
     );
   }
 
-  static create(rootDir: Config.Path) {
+  static create(rootDir: Config.Path): ModuleMap {
     return new ModuleMap({
       duplicates: new Map(),
       map: new Map(),
@@ -235,7 +235,7 @@ class DuplicateHasteCandidatesError extends Error {
         `cannot be resolved, because there exists several different ` +
         `files, or packages, that provide a module for ` +
         `that particular name and platform. ${platformMessage} You must ` +
-        `delete or blacklist files until there remains only one of these:\n\n` +
+        `delete or exclude files until there remains only one of these:\n\n` +
         Array.from(duplicatesSet)
           .map(
             ([dupFilePath, dupFileType]) =>

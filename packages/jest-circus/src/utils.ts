@@ -5,15 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Circus} from '@jest/types';
-import {convertDescriptorToString} from 'jest-util';
+import * as path from 'path';
+import type {Circus} from '@jest/types';
+import {ErrorWithStack, convertDescriptorToString, formatTime} from 'jest-util';
 import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
+import dedent = require('dedent');
 import StackUtils = require('stack-utils');
 import prettyFormat = require('pretty-format');
-import {getState} from './state';
+import type {AssertionResult, Status} from '@jest/test-result';
+import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
+
+const jestEachBuildDir = path.dirname(require.resolve('jest-each'));
 
 export const makeDescribe = (
   name: Circus.BlockName,
@@ -27,6 +32,7 @@ export const makeDescribe = (
   }
 
   return {
+    type: 'describeBlock', // eslint-disable-next-line sort-keys
     children: [],
     hooks: [],
     mode: _mode,
@@ -37,13 +43,14 @@ export const makeDescribe = (
 };
 
 export const makeTest = (
-  fn: Circus.TestFn | undefined,
+  fn: Circus.TestFn,
   mode: Circus.TestMode,
   name: Circus.TestName,
   parent: Circus.DescribeBlock,
   timeout: number | undefined,
   asyncError: Circus.Exception,
 ): Circus.TestEntry => ({
+  type: 'test', // eslint-disable-next-line sort-keys
   asyncError,
   duration: null,
   errors: [],
@@ -61,23 +68,26 @@ export const makeTest = (
 // block has an enabled test.
 const hasEnabledTest = (describeBlock: Circus.DescribeBlock): boolean => {
   const {hasFocusedTests, testNamePattern} = getState();
-  const hasOwnEnabledTests = describeBlock.tests.some(
-    test =>
-      !(
-        test.mode === 'skip' ||
-        (hasFocusedTests && test.mode !== 'only') ||
-        (testNamePattern && !testNamePattern.test(getTestID(test)))
-      ),
+  return describeBlock.children.some(child =>
+    child.type === 'describeBlock'
+      ? hasEnabledTest(child)
+      : !(
+          child.mode === 'skip' ||
+          (hasFocusedTests && child.mode !== 'only') ||
+          (testNamePattern && !testNamePattern.test(getTestID(child)))
+        ),
   );
-
-  return hasOwnEnabledTests || describeBlock.children.some(hasEnabledTest);
 };
 
-export const getAllHooksForDescribe = (describe: Circus.DescribeBlock) => {
-  const result: {
-    beforeAll: Array<Circus.Hook>;
-    afterAll: Array<Circus.Hook>;
-  } = {
+type DescribeHooks = {
+  beforeAll: Array<Circus.Hook>;
+  afterAll: Array<Circus.Hook>;
+};
+
+export const getAllHooksForDescribe = (
+  describe: Circus.DescribeBlock,
+): DescribeHooks => {
+  const result: DescribeHooks = {
     afterAll: [],
     beforeAll: [],
   };
@@ -98,16 +108,20 @@ export const getAllHooksForDescribe = (describe: Circus.DescribeBlock) => {
   return result;
 };
 
-export const getEachHooksForTest = (test: Circus.TestEntry) => {
-  const result: {
-    beforeEach: Array<Circus.Hook>;
-    afterEach: Array<Circus.Hook>;
-  } = {afterEach: [], beforeEach: []};
+type TestHooks = {
+  beforeEach: Array<Circus.Hook>;
+  afterEach: Array<Circus.Hook>;
+};
+
+export const getEachHooksForTest = (test: Circus.TestEntry): TestHooks => {
+  const result: TestHooks = {afterEach: [], beforeEach: []};
   let block: Circus.DescribeBlock | undefined | null = test.parent;
 
   do {
     const beforeEachForCurrentBlock = [];
-    for (const hook of block.hooks) {
+    // TODO: inline after https://github.com/microsoft/TypeScript/pull/34840 is released
+    let hook: Circus.Hook;
+    for (hook of block.hooks) {
       switch (hook.type) {
         case 'beforeEach':
           beforeEachForCurrentBlock.push(hook);
@@ -127,10 +141,12 @@ export const getEachHooksForTest = (test: Circus.TestEntry) => {
 export const describeBlockHasTests = (
   describe: Circus.DescribeBlock,
 ): boolean =>
-  describe.tests.length > 0 || describe.children.some(describeBlockHasTests);
+  describe.children.some(
+    child => child.type === 'test' || describeBlockHasTests(child),
+  );
 
 const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
-  `Exceeded timeout of ${timeout}ms for a ${
+  `Exceeded timeout of ${formatTime(timeout)} for a ${
     isHook ? 'hook' : 'test'
   }.\nUse jest.setTimeout(newTimeout) to increase the timeout value, if this is a long-running test.`;
 
@@ -138,45 +154,70 @@ const _makeTimeoutMessage = (timeout: number, isHook: boolean) =>
 // the original values in the variables before we require any files.
 const {setTimeout, clearTimeout} = global;
 
-function checkIsError(error: any): error is Error {
+function checkIsError(error: unknown): error is Error {
   return !!(error && (error as Error).message && (error as Error).stack);
 }
 
 export const callAsyncCircusFn = (
-  fn: Circus.AsyncFn,
+  testOrHook: Circus.TestEntry | Circus.Hook,
   testContext: Circus.TestContext | undefined,
-  {isHook, timeout}: {isHook?: boolean | null; timeout: number},
-): Promise<any> => {
+  {isHook, timeout}: {isHook: boolean; timeout: number},
+): Promise<unknown> => {
   let timeoutID: NodeJS.Timeout;
   let completed = false;
 
+  const {fn, asyncError} = testOrHook;
+
   return new Promise((resolve, reject) => {
     timeoutID = setTimeout(
-      () => reject(_makeTimeoutMessage(timeout, !!isHook)),
+      () => reject(_makeTimeoutMessage(timeout, isHook)),
       timeout,
     );
 
     // If this fn accepts `done` callback we return a promise that fulfills as
     // soon as `done` called.
     if (fn.length) {
+      let returnedValue: unknown = undefined;
       const done = (reason?: Error | string): void => {
-        const errorAsErrorObject = checkIsError(reason)
-          ? reason
-          : new Error(`Failed: ${prettyFormat(reason, {maxDepth: 3})}`);
+        // We need to keep a stack here before the promise tick
+        const errorAtDone = new ErrorWithStack(undefined, done);
+        // Use `Promise.resolve` to allow the event loop to go a single tick in case `done` is called synchronously
+        Promise.resolve().then(() => {
+          if (returnedValue !== undefined) {
+            asyncError.message = dedent`
+      Test functions cannot both take a 'done' callback and return something. Either use a 'done' callback, or return a promise.
+      Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
+      `;
+            return reject(asyncError);
+          }
 
-        // Consider always throwing, regardless if `reason` is set or not
-        if (completed && reason) {
-          errorAsErrorObject.message =
-            'Caught error after test environment was torn down\n\n' +
-            errorAsErrorObject.message;
+          let errorAsErrorObject: Error;
 
-          throw errorAsErrorObject;
-        }
+          if (checkIsError(reason)) {
+            errorAsErrorObject = reason;
+          } else {
+            errorAsErrorObject = errorAtDone;
+            errorAtDone.message = `Failed: ${prettyFormat(reason, {
+              maxDepth: 3,
+            })}`;
+          }
 
-        return reason ? reject(errorAsErrorObject) : resolve();
+          // Consider always throwing, regardless if `reason` is set or not
+          if (completed && reason) {
+            errorAsErrorObject.message =
+              'Caught error after test environment was torn down\n\n' +
+              errorAsErrorObject.message;
+
+            throw errorAsErrorObject;
+          }
+
+          return reason ? reject(errorAsErrorObject) : resolve();
+        });
       };
 
-      return fn.call(testContext, done);
+      returnedValue = fn.call(testContext, done);
+
+      return;
     }
 
     let returnedValue;
@@ -186,7 +227,8 @@ export const callAsyncCircusFn = (
       try {
         returnedValue = fn.call(testContext);
       } catch (error) {
-        return reject(error);
+        reject(error);
+        return;
       }
     }
 
@@ -197,23 +239,25 @@ export const callAsyncCircusFn = (
       returnedValue !== null &&
       typeof returnedValue.then === 'function'
     ) {
-      return returnedValue.then(resolve, reject);
+      returnedValue.then(resolve, reject);
+      return;
     }
 
-    if (!isHook && returnedValue !== void 0) {
-      return reject(
+    if (!isHook && returnedValue !== undefined) {
+      reject(
         new Error(
-          `
+          dedent`
       test functions can only return Promise or undefined.
-      Returned value: ${String(returnedValue)}
+      Returned value: ${prettyFormat(returnedValue, {maxDepth: 3})}
       `,
         ),
       );
+      return;
     }
 
     // Otherwise this test is synchronous, and if it didn't throw it means
     // it passed.
-    return resolve();
+    resolve();
   })
     .then(() => {
       completed = true;
@@ -240,55 +284,73 @@ export const makeRunResult = (
   unhandledErrors: Array<Error>,
 ): Circus.RunResult => ({
   testResults: makeTestResults(describeBlock),
-  unhandledErrors: unhandledErrors.map(_formatError),
+  unhandledErrors: unhandledErrors.map(_getError).map(getErrorStack),
 });
+
+export const makeSingleTestResult = (
+  test: Circus.TestEntry,
+): Circus.TestResult => {
+  const {includeTestLocationInResult} = getState();
+  const testPath = [];
+  let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
+
+  const {status} = test;
+  invariant(status, 'Status should be present after tests are run.');
+
+  do {
+    testPath.unshift(parent.name);
+  } while ((parent = parent.parent));
+
+  let location = null;
+  if (includeTestLocationInResult) {
+    const stackLines = test.asyncError.stack.split('\n');
+    const stackLine = stackLines[1];
+    let parsedLine = stackUtils.parseLine(stackLine);
+    if (parsedLine?.file?.startsWith(jestEachBuildDir)) {
+      const stackLine = stackLines[4];
+      parsedLine = stackUtils.parseLine(stackLine);
+    }
+    if (
+      parsedLine &&
+      typeof parsedLine.column === 'number' &&
+      typeof parsedLine.line === 'number'
+    ) {
+      location = {
+        column: parsedLine.column,
+        line: parsedLine.line,
+      };
+    }
+  }
+
+  const errorsDetailed = test.errors.map(_getError);
+
+  return {
+    duration: test.duration,
+    errors: errorsDetailed.map(getErrorStack),
+    errorsDetailed,
+    invocations: test.invocations,
+    location,
+    status,
+    testPath: Array.from(testPath),
+  };
+};
 
 const makeTestResults = (
   describeBlock: Circus.DescribeBlock,
 ): Circus.TestResults => {
-  const {includeTestLocationInResult} = getState();
-  let testResults: Circus.TestResults = [];
-  for (const test of describeBlock.tests) {
-    const testPath = [];
-    let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
-    do {
-      testPath.unshift(parent.name);
-    } while ((parent = parent.parent));
-
-    const {status} = test;
-
-    if (!status) {
-      throw new Error('Status should be present after tests are run.');
-    }
-
-    let location = null;
-    if (includeTestLocationInResult) {
-      const stackLine = test.asyncError.stack.split('\n')[1];
-      const parsedLine = stackUtils.parseLine(stackLine);
-      if (
-        parsedLine &&
-        typeof parsedLine.column === 'number' &&
-        typeof parsedLine.line === 'number'
-      ) {
-        location = {
-          column: parsedLine.column,
-          line: parsedLine.line,
-        };
-      }
-    }
-
-    testResults.push({
-      duration: test.duration,
-      errors: test.errors.map(_formatError),
-      invocations: test.invocations,
-      location,
-      status,
-      testPath,
-    });
-  }
+  const testResults: Circus.TestResults = [];
 
   for (const child of describeBlock.children) {
-    testResults = testResults.concat(makeTestResults(child));
+    switch (child.type) {
+      case 'describeBlock': {
+        testResults.push(...makeTestResults(child));
+        break;
+      }
+      case 'test': {
+        testResults.push(makeSingleTestResult(child));
+        break;
+      }
+    }
   }
 
   return testResults;
@@ -296,7 +358,7 @@ const makeTestResults = (
 
 // Return a string that identifies the test (concat of parent describe block
 // names + test title)
-export const getTestID = (test: Circus.TestEntry) => {
+export const getTestID = (test: Circus.TestEntry): string => {
   const titles = [];
   let parent: Circus.TestEntry | Circus.DescribeBlock | undefined = test;
   do {
@@ -307,9 +369,9 @@ export const getTestID = (test: Circus.TestEntry) => {
   return titles.join(' ');
 };
 
-const _formatError = (
+const _getError = (
   errors?: Circus.Exception | [Circus.Exception | undefined, Circus.Exception],
-): string => {
+): Error => {
   let error;
   let asyncError;
 
@@ -321,36 +383,74 @@ const _formatError = (
     asyncError = new Error();
   }
 
-  if (error) {
-    if (error.stack) {
-      return error.stack;
-    }
-    if (error.message) {
-      return error.message;
-    }
+  if (error && (error.stack || error.message)) {
+    return error;
   }
 
   asyncError.message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
 
-  return asyncError.stack;
+  return asyncError;
 };
+
+const getErrorStack = (error: Error): string => error.stack || error.message;
 
 export const addErrorToEachTestUnderDescribe = (
   describeBlock: Circus.DescribeBlock,
   error: Circus.Exception,
   asyncError: Circus.Exception,
-) => {
-  for (const test of describeBlock.tests) {
-    test.errors.push([error, asyncError]);
-  }
-
+): void => {
   for (const child of describeBlock.children) {
-    addErrorToEachTestUnderDescribe(child, error, asyncError);
+    switch (child.type) {
+      case 'describeBlock':
+        addErrorToEachTestUnderDescribe(child, error, asyncError);
+        break;
+      case 'test':
+        child.errors.push([error, asyncError]);
+        break;
+    }
   }
 };
 
-export const invariant = (condition: unknown, message?: string) => {
+export function invariant(
+  condition: unknown,
+  message?: string,
+): asserts condition {
   if (!condition) {
     throw new Error(message);
   }
+}
+
+export const parseSingleTestResult = (
+  testResult: Circus.TestResult,
+): AssertionResult => {
+  let status: Status;
+  if (testResult.status === 'skip') {
+    status = 'pending';
+  } else if (testResult.status === 'todo') {
+    status = 'todo';
+  } else if (testResult.errors.length > 0) {
+    status = 'failed';
+  } else {
+    status = 'passed';
+  }
+
+  const ancestorTitles = testResult.testPath.filter(
+    name => name !== ROOT_DESCRIBE_BLOCK_NAME,
+  );
+  const title = ancestorTitles.pop();
+
+  return {
+    ancestorTitles,
+    duration: testResult.duration,
+    failureDetails: testResult.errorsDetailed,
+    failureMessages: Array.from(testResult.errors),
+    fullName: title
+      ? ancestorTitles.concat(title).join(' ')
+      : ancestorTitles.join(' '),
+    invocations: testResult.invocations,
+    location: testResult.location,
+    numPassingAsserts: 0,
+    status,
+    title: testResult.testPath[testResult.testPath.length - 1],
+  };
 };

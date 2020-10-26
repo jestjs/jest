@@ -7,7 +7,12 @@
  */
 
 import {AsymmetricMatcher} from './asymmetricMatchers';
-import {Expect, MatchersObject, SyncExpectationResult} from './types';
+import type {
+  Expect,
+  MatcherState,
+  MatchersObject,
+  SyncExpectationResult,
+} from './types';
 
 // Global matchers object holds the list of available matchers and
 // the state, that can hold matcher specific values that change over time.
@@ -18,32 +23,35 @@ const JEST_MATCHERS_OBJECT = Symbol.for('$$jest-matchers-object');
 export const INTERNAL_MATCHER_FLAG = Symbol.for('$$jest-internal-matcher');
 
 if (!global.hasOwnProperty(JEST_MATCHERS_OBJECT)) {
+  const defaultState: Partial<MatcherState> = {
+    assertionCalls: 0,
+    expectedAssertionsNumber: null,
+    isExpectingAssertions: false,
+    suppressedErrors: [], // errors that are not thrown immediately.
+  };
   Object.defineProperty(global, JEST_MATCHERS_OBJECT, {
     value: {
       matchers: Object.create(null),
-      state: {
-        assertionCalls: 0,
-        expectedAssertionsNumber: null,
-        isExpectingAssertions: false,
-        suppressedErrors: [], // errors that are not thrown immediately.
-      },
+      state: defaultState,
     },
   });
 }
 
-export const getState = () => (global as any)[JEST_MATCHERS_OBJECT].state;
+export const getState = (): MatcherState =>
+  (global as any)[JEST_MATCHERS_OBJECT].state;
 
-export const setState = (state: object) => {
+export const setState = (state: Partial<MatcherState>): void => {
   Object.assign((global as any)[JEST_MATCHERS_OBJECT].state, state);
 };
 
-export const getMatchers = () => (global as any)[JEST_MATCHERS_OBJECT].matchers;
+export const getMatchers = (): MatchersObject =>
+  (global as any)[JEST_MATCHERS_OBJECT].matchers;
 
 export const setMatchers = (
   matchers: MatchersObject,
   isInternal: boolean,
   expect: Expect,
-) => {
+): void => {
   Object.keys(matchers).forEach(key => {
     const matcher = matchers[key];
     Object.defineProperty(matcher, INTERNAL_MATCHER_FLAG, {
@@ -77,7 +85,7 @@ export const setMatchers = (
         }
 
         toAsymmetricMatcher() {
-          return `${this.toString()}<${this.sample.join(', ')}>`;
+          return `${this.toString()}<${this.sample.map(String).join(', ')}>`;
         }
       }
 

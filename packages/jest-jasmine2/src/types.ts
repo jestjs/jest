@@ -5,20 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {AssertionError} from 'assert';
-import {Config} from '@jest/types';
+import type {AssertionError} from 'assert';
+import type {Config} from '@jest/types';
 
 import expect = require('expect');
-import Spec, {SpecResult} from './jasmine/Spec';
-import JsApiReporter from './jasmine/JsApiReporter';
-import Timer from './jasmine/Timer';
-import Env from './jasmine/Env';
-import createSpy from './jasmine/createSpy';
-import ReportDispatcher from './jasmine/ReportDispatcher';
-import SpyRegistry from './jasmine/spyRegistry';
-import Suite, {SuiteResult} from './jasmine/Suite';
-import SpyStrategy from './jasmine/SpyStrategy';
-import CallTracker from './jasmine/CallTracker';
+import type {default as Spec, SpecResult} from './jasmine/Spec';
+import type JsApiReporter from './jasmine/JsApiReporter';
+import type Timer from './jasmine/Timer';
+import type Env from './jasmine/Env';
+import type createSpy from './jasmine/createSpy';
+import type ReportDispatcher from './jasmine/ReportDispatcher';
+import type SpyRegistry from './jasmine/spyRegistry';
+import type {default as Suite, SuiteResult} from './jasmine/Suite';
+import type SpyStrategy from './jasmine/SpyStrategy';
+import type CallTracker from './jasmine/CallTracker';
+
+export type SpecDefinitionsFn = () => void;
 
 export interface AssertionErrorWithStack extends AssertionError {
   stack: string;
@@ -37,9 +39,9 @@ export type AsyncExpectationResult = Promise<SyncExpectationResult>;
 export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
 export type RawMatcherFn = (
-  expected: any,
-  actual: any,
-  options?: any,
+  expected: unknown,
+  actual: unknown,
+  options?: unknown,
 ) => ExpectationResult;
 // -------END-------
 
@@ -64,11 +66,21 @@ export interface Spy extends Record<string, any> {
   restoreObjectToOriginalState?: () => void;
 }
 
+type JasmineMatcher = {
+  (matchersUtil: unknown, context: unknown): JasmineMatcher;
+  compare: () => RawMatcherFn;
+  negativeCompare: () => RawMatcherFn;
+};
+
+export type JasmineMatchersObject = {[id: string]: JasmineMatcher};
+
 export type Jasmine = {
   _DEFAULT_TIMEOUT_INTERVAL: number;
   DEFAULT_TIMEOUT_INTERVAL: number;
   currentEnv_: ReturnType<typeof Env>['prototype'];
-  getEnv: (options?: object) => ReturnType<typeof Env>['prototype'];
+  getEnv: (
+    options?: Record<string, unknown>,
+  ) => ReturnType<typeof Env>['prototype'];
   createSpy: typeof createSpy;
   Env: ReturnType<typeof Env>;
   JsApiReporter: typeof JsApiReporter;
@@ -79,7 +91,7 @@ export type Jasmine = {
   Timer: typeof Timer;
   version: string;
   testPath: Config.Path;
-  addMatchers: Function;
+  addMatchers: (matchers: JasmineMatchersObject) => void;
 } & typeof expect &
   NodeJS.Global;
 

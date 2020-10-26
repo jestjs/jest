@@ -6,21 +6,23 @@
  */
 
 import * as path from 'path';
-import {Config, Global} from '@jest/types';
-import {AssertionResult, TestResult} from '@jest/test-result';
-import {JestEnvironment} from '@jest/environment';
-import {SnapshotStateType} from 'jest-snapshot';
-import Runtime = require('jest-runtime');
+import type {Config, Global} from '@jest/types';
+import type {AssertionResult, TestResult} from '@jest/test-result';
+import type {JestEnvironment} from '@jest/environment';
+import type {SnapshotStateType} from 'jest-snapshot';
+import type {RuntimeType as Runtime} from 'jest-runtime';
 
 import {getCallsite} from '@jest/source-map';
 import installEach from './each';
 import {installErrorOnPrivate} from './errorOnPrivate';
 import JasmineReporter from './reporter';
 import jasmineAsyncInstall from './jasmineAsyncInstall';
-import Spec from './jasmine/Spec';
-import {Jasmine as JestJasmine} from './types';
+import type Spec from './jasmine/Spec';
+import type {Jasmine as JestJasmine} from './types';
 
 const JASMINE = require.resolve('./jasmine/jasmineLight');
+
+const jestEachBuildDir = path.dirname(require.resolve('jest-each'));
 
 async function jasmine2(
   globalConfig: Config.GlobalConfig,
@@ -30,7 +32,9 @@ async function jasmine2(
   testPath: string,
 ): Promise<TestResult> {
   const reporter = new JasmineReporter(globalConfig, config, testPath);
-  const jasmineFactory = runtime.requireInternalModule(JASMINE);
+  const jasmineFactory = runtime.requireInternalModule<
+    typeof import('./jasmine/jasmineLight')
+  >(JASMINE);
   const jasmine = jasmineFactory.create({
     process,
     testPath,
@@ -45,38 +49,30 @@ async function jasmine2(
   // TODO: Remove config option if V8 exposes some way of getting location of caller
   // in a future version
   if (config.testLocationInResults === true) {
-    const originalIt = environment.global.it;
-    environment.global.it = ((...args) => {
-      const stack = getCallsite(1, runtime.getSourceMaps());
-      const it = originalIt(...args);
+    function wrapIt<T extends Global.ItBase>(original: T): T {
+      const wrapped = (
+        testName: Global.TestName,
+        fn: Global.TestFn,
+        timeout?: number,
+      ) => {
+        const sourcemaps = runtime.getSourceMaps();
+        let stack = getCallsite(1, sourcemaps);
+        const it = original(testName, fn, timeout);
 
-      // @ts-ignore
-      it.result.__callsite = stack;
+        if (stack.getFileName()?.startsWith(jestEachBuildDir)) {
+          stack = getCallsite(4, sourcemaps);
+        }
+        // @ts-expect-error
+        it.result.__callsite = stack;
 
-      return it;
-    }) as Global.Global['it'];
+        return it;
+      };
+      return (wrapped as any) as T;
+    }
 
-    const originalXit = environment.global.xit;
-    environment.global.xit = ((...args) => {
-      const stack = getCallsite(1, runtime.getSourceMaps());
-      const xit = originalXit(...args);
-
-      // @ts-ignore
-      xit.result.__callsite = stack;
-
-      return xit;
-    }) as Global.Global['xit'];
-
-    const originalFit = environment.global.fit;
-    environment.global.fit = ((...args) => {
-      const stack = getCallsite(1, runtime.getSourceMaps());
-      const fit = originalFit(...args);
-
-      // @ts-ignore
-      fit.result.__callsite = stack;
-
-      return fit;
-    }) as Global.Global['fit'];
+    environment.global.it = wrapIt(environment.global.it);
+    environment.global.xit = wrapIt(environment.global.xit);
+    environment.global.fit = wrapIt(environment.global.fit);
   }
 
   jasmineAsyncInstall(globalConfig, environment.global);
@@ -91,8 +87,10 @@ async function jasmine2(
   environment.global.describe.skip = environment.global.xdescribe;
   environment.global.describe.only = environment.global.fdescribe;
 
-  if (config.timers === 'fake') {
+  if (config.timers === 'fake' || config.timers === 'legacy') {
     environment.fakeTimers!.useFakeTimers();
+  } else if (config.timers === 'modern') {
+    environment.fakeTimersModern!.useFakeTimers();
   }
 
   env.beforeEach(() => {
@@ -107,7 +105,7 @@ async function jasmine2(
     if (config.resetMocks) {
       runtime.resetAllMocks();
 
-      if (config.timers === 'fake') {
+      if (config.timers === 'fake' || config.timers === 'legacy') {
         environment.fakeTimers!.useFakeTimers();
       }
     }
@@ -120,10 +118,10 @@ async function jasmine2(
   env.addReporter(reporter);
 
   runtime
-    .requireInternalModule(path.resolve(__dirname, './jestExpect.js'))
-    .default({
-      expand: globalConfig.expand,
-    });
+    .requireInternalModule<typeof import('./jestExpect')>(
+      path.resolve(__dirname, './jestExpect.js'),
+    )
+    .default({expand: globalConfig.expand});
 
   if (globalConfig.errorOnDeprecated) {
     installErrorOnPrivate(environment.global);
@@ -141,7 +139,9 @@ async function jasmine2(
   }
 
   const snapshotState: SnapshotStateType = runtime
-    .requireInternalModule(path.resolve(__dirname, './setup_jest_globals.js'))
+    .requireInternalModule<typeof import('./setup_jest_globals')>(
+      path.resolve(__dirname, './setup_jest_globals.js'),
+    )
     .default({
       config,
       globalConfig,
@@ -149,23 +149,38 @@ async function jasmine2(
       testPath,
     });
 
-  config.setupFilesAfterEnv.forEach((path: Config.Path) =>
-    runtime.requireModule(path),
-  );
+  for (const path of config.setupFilesAfterEnv) {
+    // TODO: remove ? in Jest 26
+    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+
+    if (esm) {
+      await runtime.unstable_importModule(path);
+    } else {
+      runtime.requireModule(path);
+    }
+  }
 
   if (globalConfig.enabledTestsMap) {
     env.specFilter = (spec: Spec) => {
       const suiteMap =
         globalConfig.enabledTestsMap &&
         globalConfig.enabledTestsMap[spec.result.testPath];
-      return suiteMap && suiteMap[spec.result.fullName];
+      return (suiteMap && suiteMap[spec.result.fullName]) || false;
     };
   } else if (globalConfig.testNamePattern) {
     const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');
     env.specFilter = (spec: Spec) => testNameRegex.test(spec.getFullName());
   }
 
-  runtime.requireModule(testPath);
+  // TODO: remove ? in Jest 26
+  const esm = runtime.unstable_shouldLoadAsEsm?.(testPath);
+
+  if (esm) {
+    await runtime.unstable_importModule(testPath);
+  } else {
+    runtime.requireModule(testPath);
+  }
+
   await env.execute();
 
   const results = await reporter.getResults();
@@ -205,7 +220,6 @@ const addSnapshotData = (
   return results;
 };
 
-// eslint-disable-next-line no-redeclare
 namespace jasmine2 {
   export type Jasmine = JestJasmine;
 }

@@ -62,7 +62,7 @@ Almost anything can be overwritten to suite your needs.
 
 ### Options
 
-- `recursiveBlacklist` – optional array of string keyPaths that should be excluded from deep (recursive) validation.
+- `recursiveDenylist` – optional array of string keyPaths that should be excluded from deep (recursive) validation.
 - `comment` – optional string to be rendered below error/warning message.
 - `condition` – an optional function with validation condition.
 - `deprecate`, `error`, `unknown` – optional functions responsible for displaying warning and error messages.
@@ -131,7 +131,7 @@ This will output:
   Example:
   {
     "transform": {
-      "^.+\\.js$": "<rootDir>/preprocessor.js"
+      "\\.js$": "<rootDir>/preprocessor.js"
     }
   }
 

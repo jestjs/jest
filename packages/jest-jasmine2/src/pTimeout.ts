@@ -8,12 +8,12 @@
 // A specialized version of `p-timeout` that does not touch globals.
 // It does not throw on timeout.
 export default function pTimeout(
-  promise: Promise<any>,
+  promise: Promise<void>,
   ms: number,
   clearTimeout: NodeJS.Global['clearTimeout'],
   setTimeout: NodeJS.Global['setTimeout'],
-  onTimeout: () => any,
-): Promise<any> {
+  onTimeout: () => void,
+): Promise<void> {
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => resolve(onTimeout()), ms);
     promise.then(

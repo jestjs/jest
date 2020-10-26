@@ -5,12 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+/* eslint-disable local/ban-types-eventually */
+
+import * as asyncHooks from 'async_hooks';
+import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';
-import stripAnsi from 'strip-ansi';
-
-type AsyncHook = import('async_hooks').AsyncHook;
+import stripAnsi = require('strip-ansi');
 
 function stackIsFromUser(stack: string) {
   // Either the test file, or something required by it
@@ -43,60 +44,50 @@ export default function collectHandles(): () => Array<Error> {
     number,
     {error: Error; isActive: () => boolean}
   > = new Map();
-
-  let hook: AsyncHook;
-
-  try {
-    const asyncHooks: typeof import('async_hooks') = require('async_hooks');
-    hook = asyncHooks.createHook({
-      destroy(asyncId) {
-        activeHandles.delete(asyncId);
-      },
-      init: function initHook(
-        asyncId,
-        type,
-        _triggerAsyncId,
-        resource: {} | NodeJS.Timeout,
+  const hook = asyncHooks.createHook({
+    destroy(asyncId) {
+      activeHandles.delete(asyncId);
+    },
+    init: function initHook(
+      asyncId,
+      type,
+      _triggerAsyncId,
+      resource: {} | NodeJS.Timeout,
+    ) {
+      if (
+        type === 'PROMISE' ||
+        type === 'TIMERWRAP' ||
+        type === 'ELDHISTOGRAM'
       ) {
-        if (type === 'PROMISE' || type === 'TIMERWRAP') {
-          return;
-        }
-        const error = new ErrorWithStack(type, initHook);
+        return;
+      }
+      const error = new ErrorWithStack(type, initHook);
 
-        if (stackIsFromUser(error.stack || '')) {
-          let isActive: () => boolean;
+      if (stackIsFromUser(error.stack || '')) {
+        let isActive: () => boolean;
 
-          if (type === 'Timeout' || type === 'Immediate') {
-            if ('hasRef' in resource) {
-              // Timer that supports hasRef (Node v11+)
-              isActive = resource.hasRef.bind(resource);
-            } else {
-              // Timer that doesn't support hasRef
-              isActive = alwaysActive;
-            }
+        if (type === 'Timeout' || type === 'Immediate') {
+          if ('hasRef' in resource) {
+            // Timer that supports hasRef (Node v11+)
+            // @ts-expect-error: doesn't exist in v10 typings
+            isActive = resource.hasRef.bind(resource);
           } else {
-            // Any other async resource
+            // Timer that doesn't support hasRef
             isActive = alwaysActive;
           }
-
-          activeHandles.set(asyncId, {error, isActive});
+        } else {
+          // Any other async resource
+          isActive = alwaysActive;
         }
-      },
-    });
 
-    hook.enable();
-  } catch (e) {
-    const nodeMajor = Number(process.versions.node.split('.')[0]);
-    if (e.code === 'MODULE_NOT_FOUND' && nodeMajor < 8) {
-      throw new Error(
-        'You can only use --detectOpenHandles on Node 8 and newer.',
-      );
-    } else {
-      throw e;
-    }
-  }
+        activeHandles.set(asyncId, {error, isActive});
+      }
+    },
+  });
 
-  return () => {
+  hook.enable();
+
+  return (): Array<Error> => {
     hook.disable();
 
     // Get errors for every async resource still referenced at this moment

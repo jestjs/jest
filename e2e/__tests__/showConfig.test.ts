@@ -8,11 +8,8 @@
 import * as path from 'path';
 import {tmpdir} from 'os';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {skipSuiteOnWindows} from '@jest/test-utils';
 import runJest from '../runJest';
 import {cleanup, writeFiles} from '../Utils';
-
-skipSuiteOnWindows();
 
 const DIR = path.resolve(tmpdir(), 'show-config-test');
 
@@ -33,12 +30,15 @@ test('--showConfig outputs config info and exits', () => {
   ]);
 
   stdout = stdout
+    .replace(/\\\\node_modules\\\\/g, 'node_modules')
+    .replace(/\\\\\.pnp\\\\\.\[\^[/\\]+\]\+\$/g, '<<REPLACED_PNP_PATH>>')
+    .replace(/\\\\(?:([^.]+?)|$)/g, '/$1')
     .replace(/"cacheDirectory": "(.+)"/g, '"cacheDirectory": "/tmp/jest"')
     .replace(/"name": "(.+)"/g, '"name": "[md5 hash]"')
     .replace(/"version": "(.+)"/g, '"version": "[version]"')
     .replace(/"maxWorkers": (\d+)/g, '"maxWorkers": "[maxWorkers]"')
-    .replace(/\"\S*show-config-test/gm, '"<<REPLACED_ROOT_DIR>>')
-    .replace(/\"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>');
+    .replace(/"\S*show-config-test/gm, '"<<REPLACED_ROOT_DIR>>')
+    .replace(/"\S*\/jest\/packages/gm, '"<<REPLACED_JEST_PACKAGES_DIR>>');
 
   expect(wrap(stdout)).toMatchSnapshot();
 });

@@ -5,12 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import {Config} from '@jest/types';
-import {JestEnvironment} from '@jest/environment';
-import {TestResult} from '@jest/test-result';
-import Runtime = require('jest-runtime');
-import {SnapshotStateType} from 'jest-snapshot';
+import type {Config} from '@jest/types';
+import type {JestEnvironment} from '@jest/environment';
+import type {TestResult} from '@jest/test-result';
+import type {TestFileEvent} from 'jest-runner';
+import type {RuntimeType as Runtime} from 'jest-runtime';
+import type {SnapshotStateType} from 'jest-snapshot';
+import {deepCyclicCopy} from 'jest-util';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 
@@ -20,23 +21,20 @@ const jestAdapter = async (
   environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
+  sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> => {
   const {
     initialize,
     runAndTransformResultsToJestFormat,
-  } = runtime.requireInternalModule(FRAMEWORK_INITIALIZER);
-
-  runtime
-    .requireInternalModule(path.resolve(__dirname, './jestExpect.js'))
-    .default({
-      expand: globalConfig.expand,
-    });
+  } = runtime.requireInternalModule<typeof import('./jestAdapterInit')>(
+    FRAMEWORK_INITIALIZER,
+  );
 
   const getPrettier = () =>
     config.prettierPath ? require(config.prettierPath) : null;
   const getBabelTraverse = () => require('@babel/traverse').default;
 
-  const {globals, snapshotState} = initialize({
+  const {globals, snapshotState} = await initialize({
     config,
     environment,
     getBabelTraverse,
@@ -44,12 +42,16 @@ const jestAdapter = async (
     globalConfig,
     localRequire: runtime.requireModule.bind(runtime),
     parentProcess: process,
+    sendMessageToJest,
+    setGlobalsForRuntime: runtime.setGlobalsForRuntime?.bind(runtime),
     testPath,
   });
 
-  if (config.timers === 'fake') {
+  if (config.timers === 'fake' || config.timers === 'legacy') {
     // during setup, this cannot be null (and it's fine to explode if it is)
     environment.fakeTimers!.useFakeTimers();
+  } else if (config.timers === 'modern') {
+    environment.fakeTimersModern!.useFakeTimers();
   }
 
   globals.beforeEach(() => {
@@ -75,15 +77,38 @@ const jestAdapter = async (
     }
   });
 
-  config.setupFilesAfterEnv.forEach(path => runtime.requireModule(path));
+  for (const path of config.setupFilesAfterEnv) {
+    // TODO: remove ? in Jest 26
+    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
 
-  runtime.requireModule(testPath);
+    if (esm) {
+      await runtime.unstable_importModule(path);
+    } else {
+      runtime.requireModule(path);
+    }
+  }
+
+  // TODO: remove ? in Jest 26
+  const esm = runtime.unstable_shouldLoadAsEsm?.(testPath);
+
+  if (esm) {
+    await runtime.unstable_importModule(testPath);
+  } else {
+    runtime.requireModule(testPath);
+  }
+
   const results = await runAndTransformResultsToJestFormat({
     config,
     globalConfig,
     testPath,
   });
-  return _addSnapshotData(results, snapshotState);
+
+  _addSnapshotData(results, snapshotState);
+
+  // We need to copy the results object to ensure we don't leaks the prototypes
+  // from the VM. Jasmine creates the result objects in the parent process, we
+  // should consider doing that for circus as well.
+  return deepCyclicCopy(results, {keepPrototype: false});
 };
 
 const _addSnapshotData = (
@@ -113,7 +138,6 @@ const _addSnapshotData = (
   results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
   // Copy the array to prevent memory leaks
   results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
-  return results;
 };
 
 export = jestAdapter;

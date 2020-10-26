@@ -53,6 +53,15 @@ class Any extends AsymmetricMatcher<any> {
       return typeof other == 'boolean';
     }
 
+    /* global BigInt */
+    if (this.sample == BigInt) {
+      return typeof other == 'bigint';
+    }
+
+    if (this.sample == Symbol) {
+      return typeof other == 'symbol';
+    }
+
     return other instanceof this.sample;
   }
 
@@ -139,8 +148,8 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
   }
 }
 
-class ObjectContaining extends AsymmetricMatcher<Record<string, any>> {
-  constructor(sample: Record<string, any>, inverse: boolean = false) {
+class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
+  constructor(sample: Record<string, unknown>, inverse: boolean = false) {
     super(sample);
     this.inverse = inverse;
   }
@@ -169,9 +178,15 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, any>> {
       return true;
     } else {
       for (const property in this.sample) {
+        const expected =
+          typeof this.sample[property] === 'object' &&
+          !(this.sample[property] instanceof AsymmetricMatcher)
+            ? objectContaining(this.sample[property] as Record<string, unknown>)
+            : this.sample[property];
+
         if (
           !hasProperty(other, property) ||
-          !equals(this.sample[property], other[property])
+          !equals(expected, other[property])
         ) {
           return false;
         }
@@ -239,21 +254,23 @@ class StringMatching extends AsymmetricMatcher<RegExp> {
   }
 }
 
-export const any = (expectedObject: any) => new Any(expectedObject);
-export const anything = () => new Anything();
-export const arrayContaining = (sample: Array<unknown>) =>
+export const any = (expectedObject: unknown): Any => new Any(expectedObject);
+export const anything = (): Anything => new Anything();
+export const arrayContaining = (sample: Array<unknown>): ArrayContaining =>
   new ArrayContaining(sample);
-export const arrayNotContaining = (sample: Array<unknown>) =>
+export const arrayNotContaining = (sample: Array<unknown>): ArrayContaining =>
   new ArrayContaining(sample, true);
-export const objectContaining = (sample: Record<string, any>) =>
-  new ObjectContaining(sample);
-export const objectNotContaining = (sample: Record<string, any>) =>
-  new ObjectContaining(sample, true);
-export const stringContaining = (expected: string) =>
+export const objectContaining = (
+  sample: Record<string, unknown>,
+): ObjectContaining => new ObjectContaining(sample);
+export const objectNotContaining = (
+  sample: Record<string, unknown>,
+): ObjectContaining => new ObjectContaining(sample, true);
+export const stringContaining = (expected: string): StringContaining =>
   new StringContaining(expected);
-export const stringNotContaining = (expected: string) =>
+export const stringNotContaining = (expected: string): StringContaining =>
   new StringContaining(expected, true);
-export const stringMatching = (expected: string | RegExp) =>
+export const stringMatching = (expected: string | RegExp): StringMatching =>
   new StringMatching(expected);
-export const stringNotMatching = (expected: string | RegExp) =>
+export const stringNotMatching = (expected: string | RegExp): StringMatching =>
   new StringMatching(expected, true);

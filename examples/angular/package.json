@@ -6,25 +6,27 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/common": "^8.2.5",
-    "@angular/compiler": "^8.2.5",
-    "@angular/core": "^8.2.5",
-    "@angular/forms": "^8.2.5",
-    "@angular/platform-browser": "^8.2.5",
-    "@angular/platform-browser-dynamic": "^8.2.5",
+    "@angular/common": "^10.0.2",
+    "@angular/compiler": "^10.0.2",
+    "@angular/core": "^10.0.2",
+    "@angular/forms": "^10.0.2",
+    "@angular/platform-browser": "^10.0.2",
+    "@angular/platform-browser-dynamic": "^10.0.2",
     "core-js": "^3.2.1",
     "rxjs": "^6.5.3",
+    "tslib": "^2.0.0",
     "typescript": "*",
-    "zone.js": "~0.9.1"
+    "zone.js": "~0.10.2"
   },
   "devDependencies": {
+    "@babel/core": "*",
     "@babel/plugin-proposal-class-properties": "*",
     "@babel/plugin-proposal-decorators": "*",
     "@babel/preset-env": "*",
     "@babel/preset-typescript": "*",
+    "@types/jest": "*",
     "babel-jest": "*",
     "babel-plugin-transform-typescript-metadata": "*",
-    "@types/jest": "*",
     "jest": "*",
     "jest-zone-patch": "*"
   }

@@ -31,7 +31,7 @@ it('complains if the value is a primitive', () => {
 it('does not show the GC if hidden', async () => {
   const detector = new LeakDetector({});
 
-  // @ts-ignore: purposefully removed
+  // @ts-expect-error: purposefully removed
   global.gc = undefined;
   await detector.isLeaking();
   expect(global.gc).not.toBeDefined();
@@ -65,7 +65,7 @@ it('correctly checks simple leaks', async () => {
 
 it('tests different objects', async () => {
   const refs = [
-    function() {},
+    function () {},
     () => {},
     Object.create(null),
     [],

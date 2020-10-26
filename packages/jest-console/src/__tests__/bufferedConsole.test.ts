@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
+import chalk = require('chalk');
 import BufferedConsole from '../BufferedConsole';
 
 describe('CustomConsole', () => {
@@ -144,6 +144,50 @@ describe('CustomConsole', () => {
 
       expect(stdout()).toMatch('custom: ');
       expect(stdout()).toMatch('ms');
+    });
+  });
+
+  describe('timeLog', () => {
+    test('should return the time between time() and timeEnd() on default timer', () => {
+      _console.time();
+      _console.timeLog();
+
+      expect(stdout()).toMatch('default: ');
+      expect(stdout()).toMatch('ms');
+      _console.timeEnd();
+    });
+
+    test('should return the time between time() and timeEnd() on custom timer', () => {
+      _console.time('custom');
+      _console.timeLog('custom');
+
+      expect(stdout()).toMatch('custom: ');
+      expect(stdout()).toMatch('ms');
+      _console.timeEnd('custom');
+    });
+
+    test('default timer with data', () => {
+      _console.time();
+      _console.timeLog(undefined, 'foo', 5);
+
+      expect(stdout()).toMatch('default: ');
+      expect(stdout()).toMatch('ms foo 5');
+      _console.timeEnd();
+    });
+
+    test('custom timer with data', () => {
+      _console.time('custom');
+      _console.timeLog('custom', 'foo', 5);
+
+      expect(stdout()).toMatch('custom: ');
+      expect(stdout()).toMatch('ms foo 5');
+      _console.timeEnd('custom');
+    });
+  });
+
+  describe('console', () => {
+    test('should be able to initialize console instance', () => {
+      expect(_console.Console).toBeDefined();
     });
   });
 });

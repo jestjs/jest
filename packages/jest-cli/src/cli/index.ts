@@ -6,20 +6,22 @@
  */
 
 import * as path from 'path';
-import {Config} from '@jest/types';
-import {AggregatedResult} from '@jest/test-result';
-import {clearLine} from 'jest-util';
+import type {Config} from '@jest/types';
+import type {AggregatedResult} from '@jest/test-result';
+import {clearLine, tryRealpath} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import {deprecationEntries} from 'jest-config';
 import {getVersion, runCLI} from '@jest/core';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import exit = require('exit');
 import yargs = require('yargs');
-import {sync as realpath} from 'realpath-native';
 import init from '../init';
 import * as args from './args';
 
-export async function run(maybeArgv?: Array<string>, project?: Config.Path) {
+export async function run(
+  maybeArgv?: Array<string>,
+  project?: Config.Path,
+): Promise<void> {
   try {
     const argv: Config.Argv = buildArgv(maybeArgv);
 
@@ -71,14 +73,14 @@ export const buildArgv = (maybeArgv?: Array<string>): Config.Argv => {
   );
 
   // strip dashed args
-  return Object.keys(argv).reduce(
+  return Object.keys(argv).reduce<Config.Argv>(
     (result, key) => {
       if (!key.includes('-')) {
         result[key] = argv[key];
       }
       return result;
     },
-    {} as Config.Argv,
+    {$0: argv.$0, _: argv._},
   );
 };
 
@@ -94,8 +96,8 @@ const getProjectListFromCLIArgs = (
 
   if (!projects.length && process.platform === 'win32') {
     try {
-      projects.push(realpath(process.cwd()));
-    } catch (err) {
+      projects.push(tryRealpath(process.cwd()));
+    } catch {
       // do nothing, just catch error
       // process.binding('fs').realpath can throw, e.g. on mapped drives
     }

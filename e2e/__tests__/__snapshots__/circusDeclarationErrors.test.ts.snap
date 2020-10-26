@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`defining tests and hooks asynchronously throws 1`] = `
+FAIL __tests__/asyncDefinition.test.js
+
+
+  ● Test suite failed to run
+
+    Cannot add a test after tests have started running. Tests must be defined synchronously.
+
+      10 | 
+      11 |   Promise.resolve().then(() => {
+    > 12 |     test('async definition inside describe', () => {});
+         |     ^
+      13 |     afterAll(() => {});
+      14 |   });
+      15 | });
+
+      at eventHandler (../../packages/jest-circus/build/eventHandler.js:143:11)
+      at test (__tests__/asyncDefinition.test.js:12:5)
+
+  ● Test suite failed to run
+
+    Cannot add a hook after tests have started running. Hooks must be defined synchronously.
+
+      11 |   Promise.resolve().then(() => {
+      12 |     test('async definition inside describe', () => {});
+    > 13 |     afterAll(() => {});
+         |     ^
+      14 |   });
+      15 | });
+      16 | 
+
+      at eventHandler (../../packages/jest-circus/build/eventHandler.js:112:11)
+      at afterAll (__tests__/asyncDefinition.test.js:13:5)
+
+  ● Test suite failed to run
+
+    Cannot add a test after tests have started running. Tests must be defined synchronously.
+
+      16 | 
+      17 | Promise.resolve().then(() => {
+    > 18 |   test('async definition outside describe', () => {});
+         |   ^
+      19 |   afterAll(() => {});
+      20 | });
+      21 | 
+
+      at eventHandler (../../packages/jest-circus/build/eventHandler.js:143:11)
+      at test (__tests__/asyncDefinition.test.js:18:3)
+
+  ● Test suite failed to run
+
+    Cannot add a hook after tests have started running. Hooks must be defined synchronously.
+
+      17 | Promise.resolve().then(() => {
+      18 |   test('async definition outside describe', () => {});
+    > 19 |   afterAll(() => {});
+         |   ^
+      20 | });
+      21 | 
+
+      at eventHandler (../../packages/jest-circus/build/eventHandler.js:112:11)
+      at afterAll (__tests__/asyncDefinition.test.js:19:3)
+`;

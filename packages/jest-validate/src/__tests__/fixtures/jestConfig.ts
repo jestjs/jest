@@ -7,7 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import chalk from 'chalk';
+import chalk = require('chalk');
 
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const replacePathSepForRegex = (string: string) => {
@@ -29,9 +29,7 @@ const defaultConfig = {
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   expand: false,
   globals: {},
-  haste: {
-    providesModuleNodeModules: [],
-  },
+  haste: {},
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
   moduleNameMapper: {},
@@ -82,15 +80,14 @@ const validConfig = {
   expand: false,
   forceExit: false,
   globals: {},
-  haste: {
-    providesModuleNodeModules: ['react', 'react-native'],
-  },
+  haste: {},
   logHeapUsage: true,
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'node'],
   moduleLoader: '<rootDir>',
   moduleNameMapper: {
     '^React$': '<rootDir>/node_modules/react',
+    '^Vue$': ['<rootDir>/node_modules/vue', '<rootDir>/node_modules/vue3'],
   },
   modulePathIgnorePatterns: ['<rootDir>/build/'],
   modulePaths: ['/shared/vendor/modules'],
@@ -118,7 +115,7 @@ const validConfig = {
   testURL: 'http://localhost',
   timers: 'real',
   transform: {
-    '^.+\\.js$': '<rootDir>/preprocessor.js',
+    '\\.js$': '<rootDir>/preprocessor.js',
   },
   transformIgnorePatterns: [NODE_MODULES_REGEXP],
   unmockedModulePathPatterns: ['mock'],

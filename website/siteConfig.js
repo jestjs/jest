@@ -121,7 +121,12 @@ const siteConfig = {
     secondaryColor: '#095708',
     prismColor: 'rgba(153, 66, 79, 0.03)',
   },
-  scripts: ['https://buttons.github.io/buttons.js'],
+  scripts: [
+    'https://buttons.github.io/buttons.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.0/clipboard.min.js',
+    '/js/code-block-buttons.js',
+  ],
+  stylesheets: ['/css/code-block-buttons.css'],
   repoUrl,
   siteConfigUrl:
     'https://github.com/facebook/jest/edit/master/website/siteConfig.js',

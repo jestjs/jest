@@ -14,7 +14,7 @@ import {
   createEmptyPackage,
   extractSummary,
   linkJestPackage,
-  run,
+  runYarn,
 } from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
 
@@ -22,7 +22,7 @@ describe('babel-jest', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
 
   beforeEach(() => {
-    run('yarn', dir);
+    runYarn(dir);
   });
 
   it('runs transpiled code', () => {
@@ -59,7 +59,7 @@ describe('babel-jest with manual transformer', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest-manual');
 
   beforeEach(() => {
-    run('yarn', dir);
+    runYarn(dir);
   });
 
   it('runs transpiled code', () => {
@@ -133,7 +133,7 @@ describe('multiple-transformers', () => {
   const dir = path.resolve(__dirname, '..', 'transform/multiple-transformers');
 
   beforeEach(() => {
-    run('yarn', dir);
+    runYarn(dir);
   });
 
   it('transforms dependencies using specific transformers', () => {
@@ -164,7 +164,7 @@ describe('transformer-config', () => {
   const dir = path.resolve(__dirname, '..', 'transform/transformer-config');
 
   beforeEach(() => {
-    run('yarn', dir);
+    runYarn(dir);
   });
 
   it('runs transpiled code', () => {
@@ -182,7 +182,7 @@ describe('transformer-config', () => {
     expect(stdout).not.toMatch('NotCovered.js');
     expect(stdout).not.toMatch('ExcludedFromCoverage.js');
     // coverage result should not change
-    expect(stdout).toMatchSnapshot();
+    expect(wrap(stdout)).toMatchSnapshot();
   });
 });
 

@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export default function validatePattern(pattern?: string) {
+export default function validatePattern(pattern?: string): boolean {
   if (pattern) {
     try {
       // eslint-disable-next-line no-new
       new RegExp(pattern, 'i');
-    } catch (e) {
+    } catch {
       return false;
     }
   }

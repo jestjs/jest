@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as Global from './Global';
+import type * as Global from './Global';
 
 type Process = NodeJS.Process;
 
@@ -16,11 +16,11 @@ export type BlockMode = void | 'skip' | 'only' | 'todo';
 export type TestMode = BlockMode;
 export type TestName = Global.TestName;
 export type TestFn = Global.TestFn;
-export type HookFn = (done?: DoneFn) => Promise<any> | null | undefined;
+export type HookFn = Global.HookFn;
 export type AsyncFn = TestFn | HookFn;
 export type SharedHookType = 'afterAll' | 'beforeAll';
 export type HookType = SharedHookType | 'afterEach' | 'beforeEach';
-export type TestContext = Record<string, any>;
+export type TestContext = Record<string, unknown>;
 export type Exception = any; // Since in JS anything can be thrown as an error.
 export type FormattedError = string; // String representation of error.
 export type Hook = {
@@ -31,12 +31,19 @@ export type Hook = {
   timeout: number | undefined | null;
 };
 
-export type EventHandler = (event: Event, state: State) => void;
+export interface EventHandler {
+  (event: AsyncEvent, state: State): void | Promise<void>;
+  (event: SyncEvent, state: State): void;
+}
 
-export type Event =
-  | {
-      name: 'include_test_location_in_result';
-    }
+export type Event = SyncEvent | AsyncEvent;
+
+interface JestGlobals extends Global.TestFrameworkGlobals {
+  // we cannot type `expect` properly as it'd create circular dependencies
+  expect: unknown;
+}
+
+export type SyncEvent =
   | {
       asyncError: Error;
       mode: BlockMode;
@@ -59,9 +66,27 @@ export type Event =
       asyncError: Error;
       name: 'add_test';
       testName: TestName;
-      fn?: TestFn;
+      fn: TestFn;
       mode?: TestMode;
       timeout: number | undefined;
+    }
+  | {
+      // Any unhandled error that happened outside of test/hooks (unless it is
+      // an `afterAll` hook)
+      name: 'error';
+      error: Exception;
+    };
+
+export type AsyncEvent =
+  | {
+      // first action to dispatch. Good time to initialize all settings
+      name: 'setup';
+      testNamePattern?: string;
+      runtimeGlobals: JestGlobals;
+      parentProcess: Process;
+    }
+  | {
+      name: 'include_test_location_in_result';
     }
   | {
       name: 'hook_start';
@@ -134,27 +159,23 @@ export type Event =
       name: 'run_finish';
     }
   | {
-      // Any unhandled error that happened outside of test/hooks (unless it is
-      // an `afterAll` hook)
-      name: 'error';
-      error: Exception;
-    }
-  | {
-      // first action to dispatch. Good time to initialize all settings
-      name: 'setup';
-      testNamePattern?: string;
-      parentProcess: Process;
-    }
-  | {
       // Action dispatched after everything is finished and we're about to wrap
       // things up and return test results to the parent process (caller).
       name: 'teardown';
     };
 
+export type MatcherResults = {
+  actual: unknown;
+  expected: unknown;
+  name: string;
+  pass: boolean;
+};
+
 export type TestStatus = 'skip' | 'done' | 'todo';
 export type TestResult = {
   duration?: number | null;
   errors: Array<FormattedError>;
+  errorsDetailed: Array<MatcherResults | unknown>;
   invocations: number;
   status: TestStatus;
   location?: {column: number; line: number} | null;
@@ -171,7 +192,7 @@ export type TestResults = Array<TestResult>;
 export type GlobalErrorHandlers = {
   uncaughtException: Array<(exception: Exception) => void>;
   unhandledRejection: Array<
-    (exception: Exception, promise: Promise<any>) => void
+    (exception: Exception, promise: Promise<unknown>) => void
   >;
 };
 
@@ -180,6 +201,7 @@ export type State = {
   currentlyRunningTest?: TestEntry | null; // including when hooks are being executed
   expand?: boolean; // expand error messages
   hasFocusedTests: boolean; // that are defined using test.only
+  hasStarted: boolean; // whether the rootDescribeBlock has started running
   // Store process error handlers. During the run we inject our own
   // handlers (so we could fail tests on unhandled errors) and later restore
   // the original ones.
@@ -193,20 +215,23 @@ export type State = {
 };
 
 export type DescribeBlock = {
-  children: Array<DescribeBlock>;
+  type: 'describeBlock';
+  children: Array<DescribeBlock | TestEntry>;
   hooks: Array<Hook>;
   mode: BlockMode;
   name: BlockName;
   parent?: DescribeBlock;
+  /** @deprecated Please get from `children` array instead */
   tests: Array<TestEntry>;
 };
 
-export type TestError = Exception | Array<[Exception | undefined, Exception]>; // the error from the test, as well as a backup error for async
+export type TestError = Exception | [Exception | undefined, Exception]; // the error from the test, as well as a backup error for async
 
 export type TestEntry = {
+  type: 'test';
   asyncError: Exception; // Used if the test failure contains no usable stack trace
-  errors: TestError;
-  fn?: TestFn;
+  errors: Array<TestError>;
+  fn: TestFn;
   invocations: number;
   mode: TestMode;
   name: TestName;

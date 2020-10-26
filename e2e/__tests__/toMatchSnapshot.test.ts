@@ -255,7 +255,7 @@ test('handles property matchers with hint', () => {
     expect(stderr).toMatch(
       'Snapshot name: `handles property matchers with hint: descriptive hint 1`',
     );
-    expect(stderr).toMatch('Expected properties:');
+    expect(stderr).toMatch('Expected properties');
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
     expect(exitCode).toBe(1);
   }
@@ -287,7 +287,7 @@ test('handles property matchers with deep properties', () => {
     expect(stderr).toMatch(
       'Snapshot name: `handles property matchers with deep properties 1`',
     );
-    expect(stderr).toMatch('Expected properties:');
+    expect(stderr).toMatch('Expected properties');
     expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
     expect(exitCode).toBe(1);
   }

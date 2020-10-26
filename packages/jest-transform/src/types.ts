@@ -5,58 +5,58 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Script} from 'vm';
-import {RawSourceMap} from 'source-map';
-import {Config} from '@jest/types';
+import type {RawSourceMap} from 'source-map';
+import type {Config, TransformTypes} from '@jest/types';
 
 export type ShouldInstrumentOptions = Pick<
   Config.GlobalConfig,
-  'collectCoverage' | 'collectCoverageFrom' | 'collectCoverageOnlyFrom'
+  | 'collectCoverage'
+  | 'collectCoverageFrom'
+  | 'collectCoverageOnlyFrom'
+  | 'coverageProvider'
 > & {
-  changedFiles: Set<Config.Path> | undefined;
+  changedFiles?: Set<Config.Path>;
+  sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
 };
 
 export type Options = ShouldInstrumentOptions &
-  Pick<Config.GlobalConfig, 'extraGlobals'> & {
-    isCoreModule?: boolean;
-    isInternalModule?: boolean;
-  };
+  Partial<{
+    isCoreModule: boolean;
+    isInternalModule: boolean;
+    supportsDynamicImport: boolean;
+    supportsStaticESM: boolean;
+  }>;
 
-// https://stackoverflow.com/a/48216010/1850276
-type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
-
-// This is fixed in a newer version, but that depends on Node 8 which is a
-// breaking change (engine warning when installing)
+// This is fixed in source-map@0.7.x, but we can't upgrade yet since it's async
 interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
   version: number;
 }
 
-export type TransformedSource = {
-  code: string;
-  map?: FixedRawSourceMap | string | null;
-};
+// TODO: For Jest 26 normalize this (always structured data, never a string)
+export type TransformedSource =
+  | {code: string; map?: FixedRawSourceMap | string | null}
+  | string;
 
-export type TransformResult = {
-  script: Script;
-  mapCoverage: boolean;
-  sourceMapPath: string | null;
-};
+export type TransformResult = TransformTypes.TransformResult;
 
-export type TransformOptions = {
+export interface TransformOptions {
   instrument: boolean;
-};
+  // names are copied from babel
+  supportsDynamicImport?: boolean;
+  supportsStaticESM?: boolean;
+}
 
-export type CacheKeyOptions = {
+// TODO: For Jest 26 we should combine these into one options shape
+export interface CacheKeyOptions extends TransformOptions {
   config: Config.ProjectConfig;
-  instrument: boolean;
   rootDir: string;
-};
+}
 
 export interface Transformer {
   canInstrument?: boolean;
   createTransformer?: (options?: any) => Transformer;
 
-  getCacheKey: (
+  getCacheKey?: (
     fileData: string,
     filePath: Config.Path,
     configStr: string,
@@ -68,5 +68,5 @@ export interface Transformer {
     sourcePath: Config.Path,
     config: Config.ProjectConfig,
     options?: TransformOptions,
-  ) => string | TransformedSource;
+  ) => TransformedSource;
 }

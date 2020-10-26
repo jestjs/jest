@@ -7,7 +7,7 @@
 
 'use strict';
 
-const fs = jest.genMockFromModule('fs');
+const fs = jest.createMockFromModule('fs');
 
 let mkdirWasCalled = false;
 
@@ -17,7 +17,7 @@ function mkdirSync() {
 }
 
 fs.mkdirSync = mkdirSync;
-fs.__wasMkdirCalled = function() {
+fs.__wasMkdirCalled = function () {
   return mkdirWasCalled;
 };
 

@@ -1,6 +1,6 @@
 module.exports = {
   preset: 'react-native',
   transform: {
-    '^.+\\.js$': require.resolve('react-native/jest/preprocessor.js'),
+    '\\.(js|ts|tsx)$': require.resolve('react-native/jest/preprocessor.js'),
   },
 };

@@ -36,7 +36,7 @@ module.exports = {
 };
 ```
 
-If you have JavaScript files that are transformed by Babel, you can [enable support for Babel](GettingStarted.md#using-babel) by installing the `babel-jest` plugin. Non-Babel JavaScript transformations can be handled with Jest's [`transform`](Configuration.md#transform-object-string-string) config option.
+If you have JavaScript files that are transformed by Babel, you can [enable support for Babel](GettingStarted.md#using-babel) by installing the `babel-jest` plugin. Non-Babel JavaScript transformations can be handled with Jest's [`transform`](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) config option.
 
 ### Handling Static Assets
 
@@ -92,7 +92,7 @@ Then all your className lookups on the styles object will be returned as-is (e.g
 
 > Notice that Proxy is enabled in Node 6 by default. If you are not on Node 6 yet, make sure you invoke Jest using `node --harmony_proxies node_modules/.bin/jest`.
 
-If `moduleNameMapper` cannot fulfill your requirements, you can use Jest's [`transform`](Configuration.md#transform-object-string-string) config option to specify how assets are transformed. For example, a transformer that returns the basename of a file (such that `require('logo.jpg');` returns `'logo'`) can be written as:
+If `moduleNameMapper` cannot fulfill your requirements, you can use Jest's [`transform`](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) config option to specify how assets are transformed. For example, a transformer that returns the basename of a file (such that `require('logo.jpg');` returns `'logo'`) can be written as:
 
 ```js
 // fileTransformer.js
@@ -125,8 +125,8 @@ _Note: if you are using babel-jest with additional code preprocessors, you have 
 
 ```json
 "transform": {
-  "^.+\\.js$": "babel-jest",
-  "^.+\\.css$": "custom-transformer",
+  "\\.js$": "babel-jest",
+  "\\.css$": "custom-transformer",
   ...
 }
 ```
@@ -152,7 +152,7 @@ Now that Jest knows how to process our files, we need to tell it how to _find_ t
 
 > Note: `<rootDir>` is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your `package.json` is located unless you specify a custom `rootDir` option in your configuration.
 
-Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH` env variable, which you can set, or make use of the `modulePaths` option.
+Similarly, webpack's `resolve.root` option functions like setting the `NODE_PATH` env variable, which you can set, or make use of the `modulePaths` option.
 
 ```json
 // package.json
@@ -169,7 +169,7 @@ Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH`
 }
 ```
 
-And finally, we have to handle the webpack `alias`. For that we can make use of the `moduleNameMapper` option again.
+And finally, we have to handle the webpack `alias`. For that, we can make use of the `moduleNameMapper` option again.
 
 ```json
 // package.json

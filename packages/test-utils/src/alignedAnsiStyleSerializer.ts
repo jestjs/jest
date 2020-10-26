@@ -6,9 +6,10 @@
  */
 
 import ansiRegex = require('ansi-regex');
-import * as style from 'ansi-styles';
+import style = require('ansi-styles');
+import prettyFormat = require('pretty-format');
 
-export const alignedAnsiStyleSerializer = {
+export const alignedAnsiStyleSerializer: prettyFormat.NewPlugin = {
   serialize(val: string): string {
     // Return the string itself, not escaped nor enclosed in double quote marks.
     return val.replace(ansiRegex(), match => {
@@ -44,7 +45,7 @@ export const alignedAnsiStyleSerializer = {
       }
     });
   },
-  test(val: any): val is string {
+  test(val: unknown): val is string {
     return typeof val === 'string';
   },
 };

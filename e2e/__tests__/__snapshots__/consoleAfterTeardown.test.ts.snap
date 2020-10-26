@@ -14,7 +14,4 @@ PASS __tests__/console.test.js
       13 |   });
       14 | });
       15 | 
-
-      at BufferedConsole.log (../../packages/jest-console/build/BufferedConsole.js:199:10)
-      at log (__tests__/console.test.js:12:13)
 `;

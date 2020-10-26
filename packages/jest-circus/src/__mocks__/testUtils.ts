@@ -5,21 +5,25 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {createHash} from 'crypto';
-// eslint-disable-next-line import/named
+import * as fs from 'graceful-fs';
 import {ExecaSyncReturnValue, sync as spawnSync} from 'execa';
-import {skipSuiteOnWindows} from '@jest/test-utils';
 
-const CIRCUS_PATH = require.resolve('../../build');
-const CIRCUS_RUN_PATH = require.resolve('../../build/run');
-const CIRCUS_STATE_PATH = require.resolve('../../build/state');
-const TEST_EVENT_HANDLER_PATH = require.resolve('./testEventHandler');
-const BABEL_REGISTER_PATH = require.resolve('@babel/register');
-
-skipSuiteOnWindows();
+const CIRCUS_PATH = require.resolve('../../build').replace(/\\/g, '\\\\');
+const CIRCUS_RUN_PATH = require
+  .resolve('../../build/run')
+  .replace(/\\/g, '\\\\');
+const CIRCUS_STATE_PATH = require
+  .resolve('../../build/state')
+  .replace(/\\/g, '\\\\');
+const TEST_EVENT_HANDLER_PATH = require
+  .resolve('./testEventHandler')
+  .replace(/\\/g, '\\\\');
+const BABEL_REGISTER_PATH = require
+  .resolve('@babel/register')
+  .replace(/\\/g, '\\\\');
 
 interface Result extends ExecaSyncReturnValue {
   status: number;
@@ -27,9 +31,7 @@ interface Result extends ExecaSyncReturnValue {
 }
 
 export const runTest = (source: string) => {
-  const filename = createHash('md5')
-    .update(source)
-    .digest('hex');
+  const filename = createHash('md5').update(source).digest('hex');
   const tmpFilename = path.join(tmpdir(), filename);
 
   const content = `

@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
@@ -59,7 +59,7 @@ const initialTestData = fs.readFileSync(snapshotEscapeTestFile, 'utf8');
 const fileExists = (filePath: string) => {
   try {
     return fs.statSync(filePath).isFile();
-  } catch (e) {}
+  } catch {}
   return false;
 };
 const getSnapshotOfCopy = () => {

@@ -27,15 +27,15 @@ FAIL __tests__/fail.test.js
 
     Illegal usage of global \`fail\`, prefer throwing an error, or the \`done.fail\` callback.
 
-      11 | test('fail', () => {
-      12 |   if (true) {
-    > 13 |     fail('The truth hurts!');
+       9 | test('fail', () => {
+      10 |   if (true) {
+    > 11 |     fail('The truth hurts!');
          |     ^
-      14 |   }
-      15 | });
-      16 | 
+      12 |   }
+      13 | });
+      14 | 
 
-      at Object.fail (__tests__/fail.test.js:13:5)
+      at Object.fail (__tests__/fail.test.js:11:5)
 `;
 
 exports[`jasmine.addMatchers.test.js errors in errorOnDeprecated mode 1`] = `
@@ -138,7 +138,7 @@ FAIL __tests__/jasmine.objectContaining.test.js
 
        9 | test('jasmine.objectContaining', () => {
       10 |   expect({input: 'trash', output: 'trash'}).toEqual(
-    > 11 |     jasmine.objectContaining({output: 'trash'})
+    > 11 |     jasmine.objectContaining({output: 'trash'}),
          |             ^
       12 |   );
       13 | });

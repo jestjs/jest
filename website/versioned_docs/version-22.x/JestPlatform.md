@@ -46,7 +46,7 @@ console.log(result);
 
 ## jest-docblock
 
-Tool for extracting and parsing the comments at the top of a JavaScript file. Exports various function to manipulate the data inside the comment block.
+Tool for extracting and parsing the comments at the top of a JavaScript file. Exports various functions to manipulate the data inside the comment block.
 
 ### Example
 
@@ -120,7 +120,7 @@ You can read more about `jest-validate` in the [readme file](https://github.com/
 
 ## jest-worker
 
-Module used for parallelization of tasks. Exports a class `Worker` that takes the path of Node.js module and lets you call the module's exported methods as if they where class methods, returning a promise that resolves when the specified method finishes its execution in a forked process.
+Module used for parallelization of tasks. Exports a class `Worker` that takes the path of Node.js module and lets you call the module's exported methods as if they were class methods, returning a promise that resolves when the specified method finishes its execution in a forked process.
 
 ### Example
 
@@ -140,7 +140,7 @@ module.exports = {
 async function main() {
   const worker = new Worker(require.resolve('./heavy-task.js'));
 
-  // run 2 tasks in parellel with different arguments
+  // run 2 tasks in parallel with different arguments
   const results = await Promise.all([
     worker.myHeavyTask({foo: 'bar'}),
     worker.myHeavyTask({bar: 'foo'}),

@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import HasteResolver = require('jest-resolve');
-import {FS as HasteFS, ModuleMap} from 'jest-haste-map';
+import type {Config} from '@jest/types';
+import type {ResolverType} from 'jest-resolve';
+import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
 
 export type Context = {
   config: Config.ProjectConfig;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
-  resolver: HasteResolver;
+  resolver: ResolverType;
 };

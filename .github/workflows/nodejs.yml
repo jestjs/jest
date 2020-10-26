@@ -1,0 +1,92 @@
+name: Node CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - '**'
+
+jobs:
+  cleanup-runs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: rokroskar/workflow-run-cleanup-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    if: "!startsWith(github.ref, 'refs/tags/') && github.ref != 'refs/heads/master'"
+
+  lint-and-typecheck:
+    name: Running TypeScript compiler & ESLint
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Get yarn cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ubuntu-latest-node-12.x-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ubuntu-latest-node-12.x-yarn-
+      - uses: actions/setup-node@v2.1.2
+        with:
+          node-version: 12.x
+      - name: install
+        run: yarn
+      - name: build
+        run: yarn build
+      - name: test typings
+        run: yarn test-types
+      - name: verify TypeScript@3.8 compatibility
+        run: yarn verify-old-ts
+      - name: run eslint
+        run: yarn lint
+      - name: run prettier
+        run: yarn lint:prettier:ci
+      - name: check copyright headers
+        run: yarn check-copyright-headers
+  test:
+    name: Node v${{ matrix.node-version }} on ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [10.x, 12.x, 13.x, 14.x, 15.x]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Set git config
+        shell: bash
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.symlinks true
+        if: runner.os == 'Windows'
+      - uses: actions/checkout@v2
+      - name: Get yarn cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: install
+        run: yarn
+      - name: build
+        run: yarn build:js
+      - name: Get number of CPU cores
+        id: cpu-cores
+        uses: SimenB/github-actions-cpu-cores@v1
+      - name: run tests
+        run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }}
+        env:
+          CI: true

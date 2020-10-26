@@ -83,7 +83,7 @@ npm test -- -u -t="ColorPicker"
 
 ## Camelcase & dashed args support
 
-Jest supports both camelcase and dashed arg formats. The following examples will have equal result:
+Jest supports both camelcase and dashed arg formats. The following examples will have an equal result:
 
 ```bash
 jest --collect-coverage
@@ -126,7 +126,7 @@ Runs tests related to the current changes and the changes made in the last commi
 
 ### `--changedSince`
 
-Runs tests related to the changes since the provided branch. If the current branch has diverged from the given branch, then only changes made locally will be tested. Behaves similarly to `--onlyChanged`.
+Runs tests related to the changes since the provided branch or commit hash. If the current branch has diverged from the given branch, then only changes made locally will be tested. Behaves similarly to `--onlyChanged`.
 
 ### `--ci`
 
@@ -138,7 +138,7 @@ Deletes the Jest cache directory and then exits without running tests. Will dele
 
 ### `--collectCoverageFrom=<glob>`
 
-A glob pattern relative to <rootDir> matching the files that coverage info needs to be collected from.
+A glob pattern relative to `rootDir` matching the files that coverage info needs to be collected from.
 
 ### `--colors`
 
@@ -146,11 +146,17 @@ Forces test results output highlighting even if stdout is not a TTY.
 
 ### `--config=<path>`
 
-Alias: `-c`. The path to a Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the directory containing the config file is assumed to be the rootDir for the project. This can also be a JSON-encoded value which Jest will use as configuration.
+Alias: `-c`. The path to a Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the directory containing the config file is assumed to be the `rootDir` for the project. This can also be a JSON-encoded value which Jest will use as configuration.
 
 ### `--coverage[=<boolean>]`
 
 Alias: `--collectCoverage`. Indicates that test coverage information should be collected and reported in the output. Optionally pass `<boolean>` to override option set in configuration.
+
+### `--coverageProvider=<provider>`
+
+Indicates which provider should be used to instrument code for coverage. Allowed values are `babel` (default) or `v8`.
+
+Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
 
 ### `--debug`
 
@@ -158,7 +164,7 @@ Print debugging info about your Jest config.
 
 ### `--detectOpenHandles`
 
-Attempt to collect and print open handles preventing Jest from exiting cleanly. Use this in cases where you need to use `--forceExit` in order for Jest to exit to potentially track down the reason. This implies `--runInBand`, making tests run serially. Implemented using [`async_hooks`](https://nodejs.org/api/async_hooks.html), so it only works in Node 8 and newer. This option has a significant performance penalty and should only be used for debugging.
+Attempt to collect and print open handles preventing Jest from exiting cleanly. Use this in cases where you need to use `--forceExit` in order for Jest to exit to potentially track down the reason. This implies `--runInBand`, making tests run serially. Implemented using [`async_hooks`](https://nodejs.org/api/async_hooks.html). This option has a significant performance penalty and should only be used for debugging.
 
 ### `--env=<environment>`
 
@@ -188,13 +194,29 @@ Show the help information, similar to this page.
 
 Generate a basic configuration file. Based on your project, Jest will ask you a few questions that will help to generate a `jest.config.js` file with a short description for each option.
 
+### `--injectGlobals`
+
+Insert Jest's globals (`expect`, `test`, `describe`, `beforeEach` etc.) into the global environment. If you set this to `false`, you should import from `@jest/globals`, e.g.
+
+```ts
+import {expect, jest, test} from '@jest/globals';
+
+jest.useFakeTimers();
+
+test('some test', () => {
+  expect(Date.now()).toBe(0);
+});
+```
+
+_Note: This option is only supported using `jest-circus`._
+
 ### `--json`
 
 Prints the test results in JSON. This mode will send all other test output and user messages to stderr.
 
 ### `--outputFile=<filename>`
 
-Write test results to a file when the `--json` option is also specified. The returned JSON structure is documented in [testResultsProcessor](Configuration.md#testResultsProcessor-string).
+Write test results to a file when the `--json` option is also specified. The returned JSON structure is documented in [testResultsProcessor](Configuration.md#testresultsprocessor-string).
 
 ### `--lastCommit`
 
@@ -240,13 +262,17 @@ Run tests from one or more projects, found in the specified paths; also takes pa
 
 ### `--reporters`
 
-Run tests with specified reporters. [Reporter options](configuration#reporters-array-modulename-modulename-options) are not available via CLI. Example with multiple reporters:
+Run tests with specified reporters. [Reporter options](configuration#reporters-arraymodulename--modulename-options) are not available via CLI. Example with multiple reporters:
 
 `jest --reporters="default" --reporters="jest-junit"`
 
 ### `--runInBand`
 
 Alias: `-i`. Run all tests serially in the current process, rather than creating a worker pool of child processes that run tests. This can be useful for debugging.
+
+### `--selectProjects <project1> ... <projectN>`
+
+Run only the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
 
 ### `--runTestsByPath`
 
@@ -291,7 +317,7 @@ A regexp pattern string that is matched against all tests paths before executing
 
 ### `--testPathIgnorePatterns=[array]`
 
-An array of regexp pattern strings that is tested against all tests paths before executing the test. Contrary to `--testPathPattern`, it will only run those test with a path that does not match with the provided regexp expressions.
+An array of regexp pattern strings that are tested against all tests paths before executing the test. Contrary to `--testPathPattern`, it will only run those tests with a path that does not match with the provided regexp expressions.
 
 ### `--testRunner=<path>`
 
@@ -328,6 +354,8 @@ Watch files for changes and rerun tests related to changed files. If you want to
 ### `--watchAll`
 
 Watch files for changes and rerun all tests when something changes. If you want to re-run only the tests that depend on the changed files, use the `--watch` option.
+
+Use `--watchAll=false` to explicitly disable the watch mode. Note that in most CI environments, this is automatically handled for you.
 
 ### `--watchman`
 

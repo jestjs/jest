@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {multipleValidOptions} from 'jest-validate';
 import {NODE_MODULES} from './constants';
@@ -15,7 +15,6 @@ const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 const initialOptions: Config.InitialOptions = {
   automock: false,
   bail: multipleValidOptions(false, 0),
-  browser: false,
   cache: true,
   cacheDirectory: '/tmp/user/jest',
   changedFilesWithAncestor: false,
@@ -28,6 +27,7 @@ const initialOptions: Config.InitialOptions = {
   },
   coverageDirectory: 'coverage',
   coveragePathIgnorePatterns: [NODE_MODULES_REGEXP],
+  coverageProvider: 'v8',
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   coverageThreshold: {
     global: {
@@ -56,9 +56,9 @@ const initialOptions: Config.InitialOptions = {
     defaultPlatform: 'ios',
     hasteImplModulePath: '<rootDir>/haste_impl.js',
     platforms: ['ios', 'android'],
-    providesModuleNodeModules: ['react', 'react-native'],
     throwOnModuleCollision: false,
   },
+  injectGlobals: true,
   json: false,
   lastCommit: false,
   logHeapUsage: true,
@@ -77,6 +77,7 @@ const initialOptions: Config.InitialOptions = {
   notify: false,
   notifyMode: 'failure-change',
   onlyChanged: false,
+  onlyFailures: false,
   preset: 'react-native',
   prettierPath: '<rootDir>/node_modules/prettier',
   projects: ['project-a', 'project-b/'],
@@ -98,6 +99,7 @@ const initialOptions: Config.InitialOptions = {
   silent: true,
   skipFilter: false,
   skipNodeResolution: false,
+  slowTestThreshold: 5,
   snapshotResolver: '<rootDir>/snapshotResolver.js',
   snapshotSerializers: ['my-serializer-module'],
   testEnvironment: 'jest-environment-jsdom',
@@ -118,7 +120,7 @@ const initialOptions: Config.InitialOptions = {
   testURL: 'http://localhost',
   timers: 'real',
   transform: {
-    '^.+\\.js$': '<rootDir>/preprocessor.js',
+    '\\.js$': '<rootDir>/preprocessor.js',
   },
   transformIgnorePatterns: [NODE_MODULES_REGEXP],
   unmockedModulePathPatterns: ['mock'],

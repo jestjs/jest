@@ -6,6 +6,8 @@
  *
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import {
   EXPECTED_COLOR,
   INVERTED_COLOR,
@@ -92,24 +94,24 @@ export const printCloseTo = (
 export const printExpectedConstructorName = (
   label: string,
   expected: Function,
-) => printConstructorName(label, expected, false, true) + '\n';
+): string => printConstructorName(label, expected, false, true) + '\n';
 
 export const printExpectedConstructorNameNot = (
   label: string,
   expected: Function,
-) => printConstructorName(label, expected, true, true) + '\n';
+): string => printConstructorName(label, expected, true, true) + '\n';
 
 export const printReceivedConstructorName = (
   label: string,
   received: Function,
-) => printConstructorName(label, received, false, false) + '\n';
+): string => printConstructorName(label, received, false, false) + '\n';
 
 // Do not call function if received is equal to expected.
 export const printReceivedConstructorNameNot = (
   label: string,
   received: Function,
   expected: Function,
-) =>
+): string =>
   typeof expected.name === 'string' &&
   expected.name.length !== 0 &&
   typeof received.name === 'string' &&

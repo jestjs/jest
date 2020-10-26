@@ -5,18 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import semver = require('semver');
-import {
-  CallExpression,
-  file,
-  templateElement,
-  templateLiteral,
-} from '@babel/types';
-import {Frame} from 'jest-message-util';
-
-import {Config} from '@jest/types';
+import {file, templateElement, templateLiteral} from '@babel/types';
+import type {Frame} from 'jest-message-util';
+import type {
+  BuiltInParsers as PrettierBuiltInParsers,
+  CustomParser as PrettierCustomParser,
+  BuiltInParserName as PrettierParserName,
+} from 'prettier';
+import type {Config} from '@jest/types';
+import type {BabelTraverse, Prettier} from './types';
 import {escapeBacktickString} from './utils';
 
 export type InlineSnapshot = {
@@ -24,11 +24,11 @@ export type InlineSnapshot = {
   frame: Frame;
 };
 
-export const saveInlineSnapshots = (
+export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
-  prettier: any,
-  babelTraverse: Function,
-) => {
+  prettier: Prettier | null,
+  babelTraverse: BabelTraverse,
+): void {
   if (!prettier) {
     throw new Error(
       `Jest: Inline Snapshots requires Prettier.\n` +
@@ -54,29 +54,32 @@ export const saveInlineSnapshots = (
       babelTraverse,
     );
   }
-};
+}
 
 const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
   sourceFilePath: Config.Path,
-  prettier: any,
-  babelTraverse: Function,
+  prettier: Prettier,
+  babelTraverse: BabelTraverse,
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
   // Resolve project configuration.
   // For older versions of Prettier, do not load configuration.
   const config = prettier.resolveConfig
-    ? prettier.resolveConfig.sync(sourceFilePath, {
-        editorconfig: true,
-      })
+    ? prettier.resolveConfig.sync(sourceFilePath, {editorconfig: true})
     : null;
 
   // Detect the parser for the test file.
   // For older versions of Prettier, fallback to a simple parser detection.
-  const inferredParser = prettier.getFileInfo
+  // @ts-expect-error
+  const inferredParser: PrettierParserName = prettier.getFileInfo
     ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
     : (config && config.parser) || simpleDetectParser(sourceFilePath);
+
+  // Record the matcher names seen in insertion parser and pass them down one
+  // by one to formatting parser.
+  const snapshotMatcherNames: Array<string> = [];
 
   // Insert snapshots using the custom parser API. After insertion, the code is
   // formatted, except snapshot indentation. Snapshots cannot be formatted until
@@ -85,14 +88,23 @@ const saveSnapshotsForFile = (
   const newSourceFile = prettier.format(sourceFile, {
     ...config,
     filepath: sourceFilePath,
-    parser: createInsertionParser(snapshots, inferredParser, babelTraverse),
+    parser: createInsertionParser(
+      snapshots,
+      snapshotMatcherNames,
+      inferredParser,
+      babelTraverse,
+    ),
   });
 
   // Format the snapshots using the custom parser API.
   const formattedNewSourceFile = prettier.format(newSourceFile, {
     ...config,
     filepath: sourceFilePath,
-    parser: createFormattingParser(inferredParser, babelTraverse),
+    parser: createFormattingParser(
+      snapshotMatcherNames,
+      inferredParser,
+      babelTraverse,
+    ),
   });
 
   if (formattedNewSourceFile !== sourceFile) {
@@ -120,7 +132,7 @@ const groupSnapshotsByFile = groupSnapshotsBy(({frame: {file}}) => file);
 
 const indent = (snapshot: string, numIndents: number, indentation: string) => {
   const lines = snapshot.split('\n');
-  // Prevent re-identation of inline snapshots.
+  // Prevent re-indentation of inline snapshots.
   if (
     lines.length >= 2 &&
     lines[1].startsWith(indentation.repeat(numIndents + 1))
@@ -150,8 +162,8 @@ const indent = (snapshot: string, numIndents: number, indentation: string) => {
 };
 
 const getAst = (
-  parsers: Record<string, (text: string) => any>,
-  inferredParser: string,
+  parsers: PrettierBuiltInParsers,
+  inferredParser: PrettierParserName,
   text: string,
 ) => {
   // Flow uses a 'Program' parent node, babel expects a 'File'.
@@ -166,13 +178,10 @@ const getAst = (
 // This parser inserts snapshots into the AST.
 const createInsertionParser = (
   snapshots: Array<InlineSnapshot>,
-  inferredParser: string,
-  babelTraverse: Function,
-) => (
-  text: string,
-  parsers: Record<string, (text: string) => any>,
-  options: any,
-) => {
+  snapshotMatcherNames: Array<string>,
+  inferredParser: PrettierParserName,
+  babelTraverse: BabelTraverse,
+): PrettierCustomParser => (text, parsers, options) => {
   // Workaround for https://github.com/prettier/prettier/issues/3150
   options.parser = inferredParser;
 
@@ -181,10 +190,11 @@ const createInsertionParser = (
 
   const ast = getAst(parsers, inferredParser, text);
   babelTraverse(ast, {
-    CallExpression({node: {arguments: args, callee}}: {node: CallExpression}) {
+    CallExpression({node: {arguments: args, callee}}) {
       if (
         callee.type !== 'MemberExpression' ||
-        callee.property.type !== 'Identifier'
+        callee.property.type !== 'Identifier' ||
+        callee.property.loc == null
       ) {
         return;
       }
@@ -198,6 +208,9 @@ const createInsertionParser = (
           'Jest: Multiple inline snapshots for the same call are not supported.',
         );
       }
+
+      snapshotMatcherNames.push(callee.property.name);
+
       const snapshotIndex = args.findIndex(
         ({type}) => type === 'TemplateLiteral',
       );
@@ -228,23 +241,20 @@ const createInsertionParser = (
 
 // This parser formats snapshots to the correct indentation.
 const createFormattingParser = (
-  inferredParser: string,
-  babelTraverse: Function,
-) => (
-  text: string,
-  parsers: Record<string, (text: string) => any>,
-  options: any,
-) => {
+  snapshotMatcherNames: Array<string>,
+  inferredParser: PrettierParserName,
+  babelTraverse: BabelTraverse,
+): PrettierCustomParser => (text, parsers, options) => {
   // Workaround for https://github.com/prettier/prettier/issues/3150
   options.parser = inferredParser;
 
   const ast = getAst(parsers, inferredParser, text);
   babelTraverse(ast, {
-    CallExpression({node: {arguments: args, callee}}: {node: CallExpression}) {
+    CallExpression({node: {arguments: args, callee}}) {
       if (
         callee.type !== 'MemberExpression' ||
         callee.property.type !== 'Identifier' ||
-        callee.property.name !== 'toMatchInlineSnapshot' ||
+        !snapshotMatcherNames.includes(callee.property.name) ||
         !callee.loc ||
         callee.computed
       ) {
@@ -269,10 +279,10 @@ const createFormattingParser = (
         snapshot,
         Math.ceil(
           useSpaces
-            ? callee.loc.start.column / options.tabWidth
+            ? callee.loc.start.column / (options.tabWidth ?? 1)
             : callee.loc.start.column / 2, // Each tab is 2 characters.
         ),
-        useSpaces ? ' '.repeat(options.tabWidth) : '\t',
+        useSpaces ? ' '.repeat(options.tabWidth ?? 1) : '\t',
       );
 
       const replacementNode = templateLiteral(
@@ -290,10 +300,10 @@ const createFormattingParser = (
   return ast;
 };
 
-const simpleDetectParser = (filePath: Config.Path) => {
+const simpleDetectParser = (filePath: Config.Path): PrettierParserName => {
   const extname = path.extname(filePath);
   if (/tsx?$/.test(extname)) {
     return 'typescript';
   }
-  return 'babylon';
+  return 'babel';
 };

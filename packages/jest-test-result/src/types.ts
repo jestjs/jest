@@ -5,28 +5,33 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// eslint-disable-next-line import/no-extraneous-dependencies
-import {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
-import {ConsoleBuffer} from '@jest/console';
-import {Config} from '@jest/types';
+import type {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
+import type {ConsoleBuffer} from '@jest/console';
+import type {Config, TestResult, TransformTypes} from '@jest/types';
+import type {V8Coverage} from 'collect-v8-coverage';
 
-export type SerializableError = {
-  code?: unknown;
-  message: string;
-  stack: string | null | undefined;
-  type?: string;
-};
+export interface RuntimeTransformResult extends TransformTypes.TransformResult {
+  // TODO: Make mandatory in Jest 27
+  wrapperLength?: number;
+}
+
+export type V8CoverageResult = Array<{
+  codeTransformResult: RuntimeTransformResult | undefined;
+  result: V8Coverage[number];
+}>;
+
+export type SerializableError = TestResult.SerializableError;
 
 export type FailedAssertion = {
   matcherName?: string;
   message?: string;
-  actual?: any;
+  actual?: unknown;
   pass?: boolean;
   passed?: boolean;
-  expected?: any;
+  expected?: unknown;
   isNot?: boolean;
   stack?: string;
-  error?: any;
+  error?: unknown;
 };
 
 export type AssertionLocation = {
@@ -34,41 +39,19 @@ export type AssertionLocation = {
   path: string;
 };
 
-export type Status =
-  | 'passed'
-  | 'failed'
-  | 'skipped'
-  | 'pending'
-  | 'todo'
-  | 'disabled';
+export type Status = AssertionResult['status'];
 
 export type Bytes = number;
 
-export type Milliseconds = number;
-type Callsite = {
-  column: number;
-  line: number;
-};
+export type Milliseconds = TestResult.Milliseconds;
 
-export type AssertionResult = {
-  ancestorTitles: Array<string>;
-  duration?: Milliseconds | null | undefined;
-  failureMessages: Array<string>;
-  fullName: string;
-  invocations?: number;
-  location: Callsite | null | undefined;
-  numPassingAsserts: number;
-  status: Status;
-  title: string;
-};
+export type AssertionResult = TestResult.AssertionResult;
 
-export type FormattedAssertionResult = {
-  ancestorTitles: Array<string>;
-  failureMessages: Array<string> | null;
-  fullName: string;
-  location: Callsite | null | undefined;
-  status: Status;
-  title: string;
+export type FormattedAssertionResult = Pick<
+  AssertionResult,
+  'ancestorTitles' | 'fullName' | 'location' | 'status' | 'title'
+> & {
+  failureMessages: AssertionResult['failureMessages'] | null;
 };
 
 export type AggregatedResultWithoutCoverage = {
@@ -100,6 +83,8 @@ export type Suite = {
   tests: Array<AssertionResult>;
 };
 
+export type TestCaseResult = AssertionResult;
+
 export type TestResult = {
   console?: ConsoleBuffer;
   coverage?: CoverageMapData;
@@ -114,6 +99,8 @@ export type TestResult = {
   openHandles: Array<Error>;
   perfStats: {
     end: Milliseconds;
+    runtime: Milliseconds;
+    slow: boolean;
     start: Milliseconds;
   };
   skipped: boolean;
@@ -126,12 +113,14 @@ export type TestResult = {
     unmatched: number;
     updated: number;
   };
+  // TODO - Remove in Jest 26
   sourceMaps?: {
     [sourcePath: string]: string;
   };
   testExecError?: SerializableError;
-  testFilePath: string;
+  testFilePath: Config.Path;
   testResults: Array<AssertionResult>;
+  v8Coverage?: V8CoverageResult;
 };
 
 export type FormattedTestResult = {
@@ -141,7 +130,7 @@ export type FormattedTestResult = {
   status: 'failed' | 'passed';
   startTime: number;
   endTime: number;
-  coverage: any;
+  coverage: unknown;
   assertionResults: Array<FormattedAssertionResult>;
 };
 
@@ -163,12 +152,12 @@ export type FormattedTestResults = {
   wasInterrupted: boolean;
 };
 
-export type CodeCoverageReporter = any;
+export type CodeCoverageReporter = unknown;
 
 export type CodeCoverageFormatter = (
   coverage: CoverageMapData | null | undefined,
   reporter: CodeCoverageReporter,
-) => Record<string, any> | null | undefined;
+) => Record<string, unknown> | null | undefined;
 
 export type UncheckedSnapshot = {
   filePath: string;

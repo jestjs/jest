@@ -6,23 +6,25 @@
  */
 
 import prettyFormat = require('pretty-format');
-import chalk from 'chalk';
+import chalk = require('chalk');
 import getType = require('jest-get-type');
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
+import {normalizeDiffOptions} from './normalizeDiffOptions';
 import {diffLinesRaw, diffLinesUnified, diffLinesUnified2} from './diffLines';
-import {diffStringsRaw, diffStringsUnified, splitLines0} from './printDiffs';
+import {diffStringsRaw, diffStringsUnified} from './printDiffs';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
-import {
-  DiffOptions as ImportDiffOptions,
-  DiffOptionsColor as ImportDiffOptionsColor,
-} from './types';
+import type {DiffOptions} from './types';
 
-export type DiffOptions = ImportDiffOptions;
-export type DiffOptionsColor = ImportDiffOptionsColor;
+export type {DiffOptions, DiffOptionsColor} from './types';
 
 export {diffLinesRaw, diffLinesUnified, diffLinesUnified2};
-export {diffStringsRaw, diffStringsUnified, splitLines0};
+export {diffStringsRaw, diffStringsUnified};
 export {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff};
+
+const getCommonMessage = (message: string, options?: DiffOptions) => {
+  const {commonColor} = normalizeDiffOptions(options);
+  return commonColor(message);
+};
 
 const {
   AsymmetricMatcher,
@@ -54,9 +56,10 @@ const FALLBACK_FORMAT_OPTIONS_0 = {...FALLBACK_FORMAT_OPTIONS, indent: 0};
 
 // Generate a string that will highlight the difference between two values
 // with green and red. (similar to how github does code diffing)
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 function diff(a: any, b: any, options?: DiffOptions): string | null {
   if (Object.is(a, b)) {
-    return NO_DIFF_MESSAGE;
+    return getCommonMessage(NO_DIFF_MESSAGE, options);
   }
 
   const aType = getType(a);
@@ -91,7 +94,7 @@ function diff(a: any, b: any, options?: DiffOptions): string | null {
 
   switch (aType) {
     case 'string':
-      return diffLinesUnified(splitLines0(a), splitLines0(b), options);
+      return diffLinesUnified(a.split('\n'), b.split('\n'), options);
     case 'boolean':
     case 'number':
       return comparePrimitive(a, b, options);
@@ -112,8 +115,8 @@ function comparePrimitive(
   const aFormat = prettyFormat(a, FORMAT_OPTIONS);
   const bFormat = prettyFormat(b, FORMAT_OPTIONS);
   return aFormat === bFormat
-    ? NO_DIFF_MESSAGE
-    : diffLinesUnified(splitLines0(aFormat), splitLines0(bFormat), options);
+    ? getCommonMessage(NO_DIFF_MESSAGE, options)
+    : diffLinesUnified(aFormat.split('\n'), bFormat.split('\n'), options);
 }
 
 function sortMap(map: Map<unknown, unknown>) {
@@ -131,13 +134,14 @@ function compareObjects(
 ) {
   let difference;
   let hasThrown = false;
+  const noDiffMessage = getCommonMessage(NO_DIFF_MESSAGE, options);
 
   try {
     const aCompare = prettyFormat(a, FORMAT_OPTIONS_0);
     const bCompare = prettyFormat(b, FORMAT_OPTIONS_0);
 
     if (aCompare === bCompare) {
-      difference = NO_DIFF_MESSAGE;
+      difference = noDiffMessage;
     } else {
       const aDisplay = prettyFormat(a, FORMAT_OPTIONS);
       const bDisplay = prettyFormat(b, FORMAT_OPTIONS);
@@ -150,18 +154,18 @@ function compareObjects(
         options,
       );
     }
-  } catch (e) {
+  } catch {
     hasThrown = true;
   }
 
   // If the comparison yields no results, compare again but this time
   // without calling `toJSON`. It's also possible that toJSON might throw.
-  if (difference === undefined || difference === NO_DIFF_MESSAGE) {
+  if (difference === undefined || difference === noDiffMessage) {
     const aCompare = prettyFormat(a, FALLBACK_FORMAT_OPTIONS_0);
     const bCompare = prettyFormat(b, FALLBACK_FORMAT_OPTIONS_0);
 
     if (aCompare === bCompare) {
-      difference = NO_DIFF_MESSAGE;
+      difference = noDiffMessage;
     } else {
       const aDisplay = prettyFormat(a, FALLBACK_FORMAT_OPTIONS);
       const bDisplay = prettyFormat(b, FALLBACK_FORMAT_OPTIONS);
@@ -175,8 +179,9 @@ function compareObjects(
       );
     }
 
-    if (difference !== NO_DIFF_MESSAGE && !hasThrown) {
-      difference = SIMILAR_MESSAGE + '\n\n' + difference;
+    if (difference !== noDiffMessage && !hasThrown) {
+      difference =
+        getCommonMessage(SIMILAR_MESSAGE, options) + '\n\n' + difference;
     }
   }
 

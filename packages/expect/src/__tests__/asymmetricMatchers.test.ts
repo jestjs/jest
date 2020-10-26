@@ -29,7 +29,11 @@ test('Any.asymmetricMatch()', () => {
     any(Number).asymmetricMatch(1),
     any(Function).asymmetricMatch(() => {}),
     any(Boolean).asymmetricMatch(true),
+    /* global BigInt */
+    any(BigInt).asymmetricMatch(1n),
+    any(Symbol).asymmetricMatch(Symbol()),
     any(Object).asymmetricMatch({}),
+    any(Object).asymmetricMatch(null),
     any(Array).asymmetricMatch([]),
     any(Thing).asymmetricMatch(new Thing()),
   ].forEach(test => {
@@ -47,7 +51,7 @@ test('Any.toAsymmetricMatcher() with function name', () => {
     ['$someFunc', function $someFunc() {}],
     [
       '$someFunc2',
-      (function() {
+      (function () {
         function $someFunc2() {}
         Object.defineProperty($someFunc2, 'name', {value: ''});
         return $someFunc2;
@@ -55,7 +59,7 @@ test('Any.toAsymmetricMatcher() with function name', () => {
     ],
     [
       '$someAsyncFunc',
-      (function() {
+      (function () {
         async function $someAsyncFunc() {}
         Object.defineProperty($someAsyncFunc, 'name', {value: ''});
         return $someAsyncFunc;
@@ -63,7 +67,7 @@ test('Any.toAsymmetricMatcher() with function name', () => {
     ],
     [
       '$someGeneratorFunc',
-      (function() {
+      (function () {
         function* $someGeneratorFunc() {}
         Object.defineProperty($someGeneratorFunc, 'name', {value: ''});
         return $someGeneratorFunc;
@@ -71,7 +75,7 @@ test('Any.toAsymmetricMatcher() with function name', () => {
     ],
     [
       '$someFuncWithFakeToString',
-      (function() {
+      (function () {
         function $someFuncWithFakeToString() {}
         $someFuncWithFakeToString.toString = () => 'Fake to string';
         return $someFuncWithFakeToString;
@@ -159,6 +163,9 @@ test('ObjectContaining matches', () => {
     objectContaining({}).asymmetricMatch('jest'),
     objectContaining({foo: 'foo'}).asymmetricMatch({foo: 'foo', jest: 'jest'}),
     objectContaining({foo: undefined}).asymmetricMatch({foo: undefined}),
+    objectContaining({foo: {bar: [1]}}).asymmetricMatch({
+      foo: {bar: [1], qux: []},
+    }),
     objectContaining({first: objectContaining({second: {}})}).asymmetricMatch({
       first: {second: {}},
     }),
@@ -202,6 +209,14 @@ test('ObjectContaining matches prototype properties', () => {
 
 test('ObjectContaining throws for non-objects', () => {
   jestExpect(() => objectContaining(1337).asymmetricMatch()).toThrow();
+});
+
+test('ObjectContaining does not mutate the sample', () => {
+  const sample = {foo: {bar: {}}};
+  const sample_json = JSON.stringify(sample);
+  expect({foo: {bar: {}}}).toEqual(expect.objectContaining(sample));
+
+  expect(JSON.stringify(sample)).toEqual(sample_json);
 });
 
 test('ObjectNotContaining matches', () => {

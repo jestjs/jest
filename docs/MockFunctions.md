@@ -86,10 +86,7 @@ const myMock = jest.fn();
 console.log(myMock());
 // > undefined
 
-myMock
-  .mockReturnValueOnce(10)
-  .mockReturnValueOnce('x')
-  .mockReturnValue(true);
+myMock.mockReturnValueOnce(10).mockReturnValueOnce('x').mockReturnValue(true);
 
 console.log(myMock(), myMock(), myMock(), myMock());
 // > 10, 'x', true, true
@@ -104,7 +101,7 @@ const filterTestFn = jest.fn();
 // and `false` for the second call
 filterTestFn.mockReturnValueOnce(true).mockReturnValueOnce(false);
 
-const result = [11, 12].filter(filterTestFn);
+const result = [11, 12].filter(num => filterTestFn(num));
 
 console.log(result);
 // > [11]
@@ -133,7 +130,7 @@ export default Users;
 
 Now, in order to test this method without actually hitting the API (and thus creating slow and fragile tests), we can use the `jest.mock(...)` function to automatically mock the axios module.
 
-Once we mock the module we can provide a `mockResolvedValue` for `.get` that returns the data we want our test to assert against. In effect, we are saying that we want axios.get('/users.json') to return a fake response.
+Once we mock the module we can provide a `mockResolvedValue` for `.get` that returns the data we want our test to assert against. In effect, we are saying that we want `axios.get('/users.json')` to return a fake response.
 
 ```js
 // users.test.js
@@ -169,7 +166,7 @@ The `mockImplementation` method is useful when you need to define the default im
 
 ```js
 // foo.js
-module.exports = function() {
+module.exports = function () {
   // some implementation;
 };
 
@@ -220,7 +217,7 @@ const myObj = {
 // is the same as
 
 const otherObj = {
-  myMethod: jest.fn(function() {
+  myMethod: jest.fn(function () {
     return this;
   }),
 };
@@ -228,7 +225,7 @@ const otherObj = {
 
 ## Mock Names
 
-You can optionally provide a name for your mock functions, which will be displayed instead of "jest.fn()" in test error output. Use this if you want to be able to quickly identify the mock function reporting an error in your test output.
+You can optionally provide a name for your mock functions, which will be displayed instead of "jest.fn()" in the test error output. Use this if you want to be able to quickly identify the mock function reporting an error in your test output.
 
 ```javascript
 const myMockFn = jest

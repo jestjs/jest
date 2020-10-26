@@ -5,11 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Config} from '@jest/types';
-import {TestResult} from '@jest/test-result';
-import chalk from 'chalk';
-import {formatTestPath, printDisplayName} from './utils';
+import type {Config} from '@jest/types';
+import type {TestResult} from '@jest/test-result';
+import chalk = require('chalk');
+import {formatTime} from 'jest-util';
 import terminalLink = require('terminal-link');
+import {formatTestPath, printDisplayName} from './utils';
 
 const LONG_TEST_COLOR = chalk.reset.bold.bgRed;
 // Explicitly reset for these messages since they can get written out in the
@@ -29,7 +30,7 @@ export default (
   result: TestResult,
   globalConfig: Config.GlobalConfig,
   projectConfig?: Config.ProjectConfig,
-) => {
+): string => {
   const testPath = result.testFilePath;
   const formattedTestPath = formatTestPath(
     projectConfig ? projectConfig : globalConfig,
@@ -41,13 +42,12 @@ export default (
   const status =
     result.numFailingTests > 0 || result.testExecError ? FAIL : PASS;
 
-  const runTime = result.perfStats
-    ? (result.perfStats.end - result.perfStats.start) / 1000
-    : null;
-
   const testDetail = [];
-  if (runTime !== null && runTime > 5) {
-    testDetail.push(LONG_TEST_COLOR(runTime + 's'));
+
+  if (result.perfStats?.slow) {
+    const runTime = result.perfStats.runtime / 1000;
+
+    testDetail.push(LONG_TEST_COLOR(formatTime(runTime, 0)));
   }
 
   if (result.memoryUsage) {

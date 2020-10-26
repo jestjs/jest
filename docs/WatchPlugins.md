@@ -154,20 +154,20 @@ class MyWatchPlugin {
 
 For stability and safety reasons, only part of the global configuration keys can be updated with `updateConfigAndRun`. The current white list is as follows:
 
-- [`bail`](configuration.html#bail-number-boolean)
-- [`changedSince`](cli.html#changedsince)
+- [`bail`](configuration.html#bail-number--boolean)
+- [`changedSince`](cli.html#--changedsince)
 - [`collectCoverage`](configuration.html#collectcoverage-boolean)
 - [`collectCoverageFrom`](configuration.html#collectcoveragefrom-array)
 - [`collectCoverageOnlyFrom`](configuration.html#collectcoverageonlyfrom-array)
 - [`coverageDirectory`](configuration.html#coveragedirectory-string)
-- [`coverageReporters`](configuration.html#coveragereporters-array)
+- [`coverageReporters`](configuration.html#coveragereporters-arraystring)
 - [`notify`](configuration.html#notify-boolean)
 - [`notifyMode`](configuration.html#notifymode-string)
 - [`onlyFailures`](configuration.html#onlyfailures-boolean)
-- [`reporters`](configuration.html#reporters-array-modulename-modulename-options)
-- [`testNamePattern`](cli.html#testnamepattern-regex)
-- [`testPathPattern`](cli.html#testpathpattern-regex)
-- [`updateSnapshot`](cli.html#updatesnapshot)
+- [`reporters`](configuration.html#reporters-arraymodulename--modulename-options)
+- [`testNamePattern`](cli.html#--testnamepatternregex)
+- [`testPathPattern`](cli.html#--testpathpatternregex)
+- [`updateSnapshot`](cli.html#--updatesnapshot)
 - [`verbose`](configuration.html#verbose-boolean)
 
 ## Customization
@@ -224,8 +224,8 @@ Any key not used by built-in functionality can be claimed, as you would expect. 
 
 Should your plugin attempt to overwrite a reserved key, Jest will error out with a descriptive message, something like:
 
-> Watch plugin YourFaultyPlugin attempted to register key <q>, that is reserved internally for quitting watch mode. Please change the configuration key for this plugin.
+> Watch plugin YourFaultyPlugin attempted to register key `q`, that is reserved internally for quitting watch mode. Please change the configuration key for this plugin.
 
 Third-party plugins are also forbidden to overwrite a key reserved already by another third-party plugin present earlier in the configured plugins list (`watchPlugins` array setting). When this happens, you’ll also get an error message that tries to help you fix that:
 
-> Watch plugins YourFaultyPlugin and TheirFaultyPlugin both attempted to register key <x>. Please change the key configuration for one of the conflicting plugins to avoid overlap.
+> Watch plugins YourFaultyPlugin and TheirFaultyPlugin both attempted to register key `x`. Please change the key configuration for one of the conflicting plugins to avoid overlap.

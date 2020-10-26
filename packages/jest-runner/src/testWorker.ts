@@ -6,14 +6,20 @@
  *
  */
 
-import {Config} from '@jest/types';
-import {SerializableError, TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {SerializableError, TestResult} from '@jest/test-result';
 import HasteMap = require('jest-haste-map');
 import exit = require('exit');
 import {separateMessageFromStack} from 'jest-message-util';
 import Runtime = require('jest-runtime');
-import Resolver = require('jest-resolve');
-import {ErrorWithCode, TestRunnerSerializedContext} from './types';
+import type {ResolverType} from 'jest-resolve';
+import {messageParent} from 'jest-worker';
+import type {
+  ErrorWithCode,
+  TestFileEvent,
+  TestRunnerSerializedContext,
+} from './types';
+
 import runTest from './runTest';
 
 export type SerializableResolver = {
@@ -52,7 +58,7 @@ const formatError = (error: string | ErrorWithCode): SerializableError => {
   };
 };
 
-const resolvers = new Map<string, Resolver>();
+const resolvers = new Map<string, ResolverType>();
 const getResolver = (config: Config.ProjectConfig) => {
   const resolver = resolvers.get(config.name);
   if (!resolver) {
@@ -63,7 +69,7 @@ const getResolver = (config: Config.ProjectConfig) => {
 
 export function setup(setupData: {
   serializableResolvers: Array<SerializableResolver>;
-}) {
+}): void {
   // Module maps that will be needed for the test runs are passed.
   for (const {
     config,
@@ -73,6 +79,10 @@ export function setup(setupData: {
     resolvers.set(config.name, Runtime.createResolver(config, moduleMap));
   }
 }
+
+const sendMessageToJest: TestFileEvent = (eventName, args) => {
+  messageParent([eventName, args]);
+};
 
 export async function worker({
   config,
@@ -89,7 +99,11 @@ export async function worker({
       context && {
         ...context,
         changedFiles: context.changedFiles && new Set(context.changedFiles),
+        sourcesRelatedToTestsInChangedFiles:
+          context.sourcesRelatedToTestsInChangedFiles &&
+          new Set(context.sourcesRelatedToTestsInChangedFiles),
       },
+      sendMessageToJest,
     );
   } catch (error) {
     throw formatError(error);

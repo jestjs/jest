@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {JestEnvironment} from '@jest/environment';
+import type {JestEnvironment} from '@jest/environment';
 import {bind as bindEach} from 'jest-each';
 
 export default (environment: JestEnvironment): void => {
@@ -22,6 +22,18 @@ export default (environment: JestEnvironment): void => {
   );
   environment.global.fdescribe.each = bindEach(
     environment.global.fdescribe,
+    false,
+  );
+  environment.global.it.concurrent.each = bindEach(
+    environment.global.it.concurrent,
+    false,
+  );
+  environment.global.it.concurrent.only.each = bindEach(
+    environment.global.it.concurrent.only,
+    false,
+  );
+  environment.global.it.concurrent.skip.each = bindEach(
+    environment.global.it.concurrent.skip,
     false,
   );
 };

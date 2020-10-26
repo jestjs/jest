@@ -5,21 +5,21 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
+import chalk = require('chalk');
 
 import colorize from './colorize';
 
 const DOTS = '...';
 const ENTER = '⏎';
 
-export default (testName: string, pattern: string, width: number) => {
+export default (testName: string, pattern: string, width: number): string => {
   const inlineTestName = testName.replace(/(\r\n|\n|\r)/gm, ENTER);
 
   let regexp;
 
   try {
     regexp = new RegExp(pattern, 'i');
-  } catch (e) {
+  } catch {
     return chalk.dim(inlineTestName);
   }
 

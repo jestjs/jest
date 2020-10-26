@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk from 'chalk';
+import chalk = require('chalk');
 import getType = require('jest-get-type');
 import {ERROR, ValidationError, formatPrettyObject} from './utils';
 import {getValues} from './condition';
-import {ValidationOptions} from './types';
+import type {ValidationOptions} from './types';
 
 export const errorMessage = (
   option: string,
-  received: any,
-  defaultValue: any,
+  received: unknown,
+  defaultValue: unknown,
   options: ValidationOptions,
   path?: Array<string>,
 ): void => {
@@ -39,7 +39,7 @@ ${formatExamples(option, conditions)}`;
   throw new ValidationError(name, message, comment);
 };
 
-function formatExamples(option: string, examples: Array<any>) {
+function formatExamples(option: string, examples: Array<unknown>) {
   return examples.map(
     e => `  {
     ${chalk.bold(`"${option}"`)}: ${chalk.bold(formatPrettyObject(e))}

@@ -6,7 +6,7 @@
  */
 
 import {Writable} from 'stream';
-import chalk from 'chalk';
+import chalk = require('chalk');
 import CustomConsole from '../CustomConsole';
 
 describe('CustomConsole', () => {
@@ -184,6 +184,50 @@ describe('CustomConsole', () => {
 
       expect(_stdout).toMatch('custom: ');
       expect(_stdout).toMatch('ms');
+    });
+  });
+
+  describe('timeLog', () => {
+    test('should return the time between time() and timeEnd() on default timer', () => {
+      _console.time();
+      _console.timeLog();
+
+      expect(_stdout).toMatch('default: ');
+      expect(_stdout).toMatch('ms');
+      _console.timeEnd();
+    });
+
+    test('should return the time between time() and timeEnd() on custom timer', () => {
+      _console.time('custom');
+      _console.timeLog('custom');
+
+      expect(_stdout).toMatch('custom: ');
+      expect(_stdout).toMatch('ms');
+      _console.timeEnd('custom');
+    });
+
+    test('default timer with data', () => {
+      _console.time();
+      _console.timeLog(undefined, 'foo', 5);
+
+      expect(_stdout).toMatch('default: ');
+      expect(_stdout).toMatch('ms foo 5');
+      _console.timeEnd();
+    });
+
+    test('custom timer with data', () => {
+      _console.time('custom');
+      _console.timeLog('custom', 'foo', 5);
+
+      expect(_stdout).toMatch('custom: ');
+      expect(_stdout).toMatch('ms foo 5');
+      _console.timeEnd('custom');
+    });
+  });
+
+  describe('console', () => {
+    test('should be able to initialize console instance', () => {
+      expect(_console.Console).toBeDefined();
     });
   });
 });

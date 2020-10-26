@@ -6,6 +6,8 @@
  *
  */
 
+/* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
+
 import vm, {Context} from 'vm';
 import {ModuleMocker} from '../';
 
@@ -140,7 +142,7 @@ describe('moduleMocker', () => {
     });
 
     it('wont interfere with previous mocks on a shared prototype', () => {
-      const ClassFoo = function() {};
+      const ClassFoo = function () {};
       ClassFoo.prototype.x = () => {};
       const ClassFooMock = moduleMocker.generateFromMetadata(
         moduleMocker.getMetadata(ClassFoo),
@@ -405,7 +407,10 @@ describe('moduleMocker', () => {
         expect(fn.mock.calls).toEqual([[1, 2, 3]]);
 
         fn('a', 'b', 'c');
-        expect(fn.mock.calls).toEqual([[1, 2, 3], ['a', 'b', 'c']]);
+        expect(fn.mock.calls).toEqual([
+          [1, 2, 3],
+          ['a', 'b', 'c'],
+        ]);
       });
 
       it('tracks instances made by mocks', () => {
@@ -732,7 +737,11 @@ describe('moduleMocker', () => {
       expect(fn(6, 3)).toBe(18);
 
       // All call args tracked
-      expect(fn.mock.calls).toEqual([[2, 4], [3, 5], [6, 3]]);
+      expect(fn.mock.calls).toEqual([
+        [2, 4],
+        [3, 5],
+        [6, 3],
+      ]);
       // Results are tracked
       expect(fn.mock.results).toEqual([
         {
@@ -758,7 +767,7 @@ describe('moduleMocker', () => {
 
       try {
         fn(2, 4);
-      } catch (error) {
+      } catch {
         // ignore error
       }
 
@@ -979,7 +988,7 @@ describe('moduleMocker', () => {
       const mock1 = jest.fn();
       const mock2 = jest.fn();
       const Module = jest.fn(() => ({someFn: mock1}));
-      const testFn = function() {
+      const testFn = function () {
         const m = new Module();
         m.someFn();
       };
@@ -1167,6 +1176,46 @@ describe('moduleMocker', () => {
       expect(spy1.mock.calls.length).toBe(1);
       expect(spy2.mock.calls.length).toBe(1);
     });
+
+    it('should work with getters', () => {
+      let isOriginalCalled = false;
+      let originalCallThis;
+      let originalCallArguments;
+      const obj = {
+        get method() {
+          return function () {
+            isOriginalCalled = true;
+            originalCallThis = this;
+            originalCallArguments = arguments;
+          };
+        },
+      };
+
+      const spy = moduleMocker.spyOn(obj, 'method');
+
+      const thisArg = {this: true};
+      const firstArg = {first: true};
+      const secondArg = {second: true};
+      obj.method.call(thisArg, firstArg, secondArg);
+      expect(isOriginalCalled).toBe(true);
+      expect(originalCallThis).toBe(thisArg);
+      expect(originalCallArguments.length).toBe(2);
+      expect(originalCallArguments[0]).toBe(firstArg);
+      expect(originalCallArguments[1]).toBe(secondArg);
+      expect(spy).toHaveBeenCalled();
+
+      isOriginalCalled = false;
+      originalCallThis = null;
+      originalCallArguments = null;
+      spy.mockRestore();
+      obj.method.call(thisArg, firstArg, secondArg);
+      expect(isOriginalCalled).toBe(true);
+      expect(originalCallThis).toBe(thisArg);
+      expect(originalCallArguments.length).toBe(2);
+      expect(originalCallArguments[0]).toBe(firstArg);
+      expect(originalCallArguments[1]).toBe(secondArg);
+      expect(spy).not.toHaveBeenCalled();
+    });
   });
 
   describe('spyOnProperty', () => {
@@ -1176,7 +1225,7 @@ describe('moduleMocker', () => {
       let originalCallArguments;
       const obj = {
         get method() {
-          return function() {
+          return function () {
             isOriginalCalled = true;
             originalCallThis = this;
             originalCallArguments = arguments;
@@ -1249,12 +1298,12 @@ describe('moduleMocker', () => {
       let methodTwoCalls = 0;
       const obj = {
         get methodOne() {
-          return function() {
+          return function () {
             methodOneCalls++;
           };
         },
         get methodTwo() {
-          return function() {
+          return function () {
             methodTwoCalls++;
           };
         },
@@ -1290,7 +1339,7 @@ describe('moduleMocker', () => {
       let originalCallArguments;
       const prototype = {
         get method() {
-          return function() {
+          return function () {
             isOriginalCalled = true;
             originalCallThis = this;
             originalCallArguments = arguments;
@@ -1353,12 +1402,12 @@ describe('moduleMocker', () => {
       let methodTwoCalls = 0;
       const prototype = {
         get methodOne() {
-          return function() {
+          return function () {
             methodOneCalls++;
           };
         },
         get methodTwo() {
-          return function() {
+          return function () {
             methodTwoCalls++;
           };
         },

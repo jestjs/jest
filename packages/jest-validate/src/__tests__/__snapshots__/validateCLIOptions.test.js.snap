@@ -1,7 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`does not show suggestion when unrecognized cli param length <= 1 1`] = `
+"<red><bold><bold>●</><bold> Unrecognized CLI Parameter</>:</>
+<red></>
+<red>  Unrecognized option <bold>\\"l\\"</>.</>
+<red></>
+<red>  <bold>CLI Options Documentation</>:</>
+<red>  https://jestjs.io/docs/en/cli.html</>
+<red></>"
+`;
+
 exports[`fails for multiple unknown options 1`] = `
-"<red><bold><bold>●<bold> Unrecognized CLI Parameters</>:</>
+"<red><bold><bold>●</><bold> Unrecognized CLI Parameters</>:</>
 <red></>
 <red>  Following options were not recognized:</>
 <red>  <bold>[\\"jest\\", \\"test\\"]</></>
@@ -12,9 +22,19 @@ exports[`fails for multiple unknown options 1`] = `
 `;
 
 exports[`fails for unknown option 1`] = `
-"<red><bold><bold>●<bold> Unrecognized CLI Parameter</>:</>
+"<red><bold><bold>●</><bold> Unrecognized CLI Parameter</>:</>
 <red></>
 <red>  Unrecognized option <bold>\\"unknown\\"</>.</>
+<red></>
+<red>  <bold>CLI Options Documentation</>:</>
+<red>  https://jestjs.io/docs/en/cli.html</>
+<red></>"
+`;
+
+exports[`shows suggestion when unrecognized cli param length > 1 1`] = `
+"<red><bold><bold>●</><bold> Unrecognized CLI Parameter</>:</>
+<red></>
+<red>  Unrecognized option <bold>\\"hell\\"</>. Did you mean <bold>\\"help\\"</>?</>
 <red></>
 <red>  <bold>CLI Options Documentation</>:</>
 <red>  https://jestjs.io/docs/en/cli.html</>

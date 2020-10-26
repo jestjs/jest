@@ -5,7 +5,8 @@
     "outDir": "build"
   },
   "references": [
-    {"path": "../jest-source-map"},
+    {"path": "../jest-message-util"},
+    {"path": "../jest-types"},
     {"path": "../jest-util"}
   ]
 }

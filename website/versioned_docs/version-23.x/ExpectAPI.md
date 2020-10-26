@@ -120,7 +120,7 @@ expect.extend({
   yourMatcher(x, y, z) {
     return {
       pass: true,
-      message: '',
+      message: () => '',
     };
   },
 });
@@ -130,7 +130,15 @@ These helper functions and properties can be found on `this` inside a custom mat
 
 #### `this.isNot`
 
-A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to flip your assertion.
+A boolean to let you know this matcher was called with the negated `.not` modifier allowing you to display a clear and correct matcher hint (see example code).
+
+#### `this.promise`
+
+A string allowing you to display a clear and correct matcher hint:
+
+- `'rejects'` if matcher was called with the promise `.rejects` modifier
+- `'resolves'` if matcher was called with the promise `.resolves` modifier
+- `''` if matcher was not called with a promise modifier
 
 #### `this.equals(a, b)`
 
@@ -150,28 +158,31 @@ The most useful ones are `matcherHint`, `printExpected` and `printReceived` to f
 const diff = require('jest-diff');
 expect.extend({
   toBe(received, expected) {
+    const options = {
+      comment: 'Object.is equality',
+      isNot: this.isNot,
+      promise: this.promise,
+    };
+
     const pass = Object.is(received, expected);
 
     const message = pass
       ? () =>
-          this.utils.matcherHint('.not.toBe') +
+          this.utils.matcherHint('toBe', undefined, undefined, options) +
           '\n\n' +
-          `Expected value to not be (using Object.is):\n` +
-          `  ${this.utils.printExpected(expected)}\n` +
-          `Received:\n` +
-          `  ${this.utils.printReceived(received)}`
+          `Expected: not ${this.utils.printExpected(expected)}\n` +
+          `Received: ${this.utils.printReceived(received)}`
       : () => {
           const diffString = diff(expected, received, {
             expand: this.expand,
           });
           return (
-            this.utils.matcherHint('.toBe') +
+            this.utils.matcherHint('toBe', undefined, undefined, options) +
             '\n\n' +
-            `Expected value to be (using Object.is):\n` +
-            `  ${this.utils.printExpected(expected)}\n` +
-            `Received:\n` +
-            `  ${this.utils.printReceived(received)}` +
-            (diffString ? `\n\nDifference:\n\n${diffString}` : '')
+            (diffString && diffString.includes('- Expect')
+              ? `Difference:\n\n${diffString}`
+              : `Expected: ${this.utils.printExpected(expected)}\n` +
+                `Received: ${this.utils.printReceived(received)}`)
           );
         };
 
@@ -364,7 +375,7 @@ describe('not.objectContaining', () => {
 
 ### `expect.not.stringContaining(string)`
 
-`expect.not.stringContaining(string)` matches the received string that does not contain the exact expected string.
+`expect.not.stringContaining(string)` matches the received value if it is not a string or if it is a string that does not contain the exact expected string.
 
 It is the inverse of `expect.stringContaining`.
 
@@ -372,7 +383,7 @@ It is the inverse of `expect.stringContaining`.
 describe('not.stringContaining', () => {
   const expected = 'Hello world!';
 
-  it('matches if the actual string does not contain the expected substring', () => {
+  it('matches if the received value does not contain the expected substring', () => {
     expect('How are you?').toEqual(expect.not.stringContaining(expected));
   });
 });
@@ -380,7 +391,7 @@ describe('not.stringContaining', () => {
 
 ### `expect.not.stringMatching(string | regexp)`
 
-`expect.not.stringMatching(string | regexp)` matches the received string that does not match the expected regexp.
+`expect.not.stringMatching(string | regexp)` matches the received value if it is not a string or if it is a string that does not match the expected string or regular expression.
 
 It is the inverse of `expect.stringMatching`.
 
@@ -388,7 +399,7 @@ It is the inverse of `expect.stringMatching`.
 describe('not.stringMatching', () => {
   const expected = /Hello world!/;
 
-  it('matches if the actual string does not match the expected regex', () => {
+  it('matches if the received value does not match the expected regex', () => {
     expect('How are you?').toEqual(expect.not.stringMatching(expected));
   });
 });
@@ -417,11 +428,11 @@ test('onPress gets called with the right thing', () => {
 
 ### `expect.stringContaining(string)`
 
-`expect.stringContaining(string)` matches the received string that contains the exact expected string.
+`expect.stringContaining(string)` matches the received value if it is a string that contains the exact expected string.
 
 ### `expect.stringMatching(string | regexp)`
 
-`expect.stringMatching(string | regexp)` matches the received string that matches the expected regexp.
+`expect.stringMatching(string | regexp)` matches the received value if it is a string that matches the expected string or regular expression.
 
 You can use it instead of a literal value:
 
@@ -463,12 +474,12 @@ expect.addSnapshotSerializer(serializer);
 // affects expect(value).toMatchSnapshot() assertions in the test file
 ```
 
-If you add a snapshot serializer in individual test files instead of to adding it to `snapshotSerializers` configuration:
+If you add a snapshot serializer in individual test files instead of adding it to `snapshotSerializers` configuration:
 
 - You make the dependency explicit instead of implicit.
 - You avoid limits to configuration that might cause you to eject from [create-react-app](https://github.com/facebookincubator/create-react-app).
 
-See [configuring Jest](Configuration.md#snapshotserializers-array-string) for more information.
+See [configuring Jest](Configuration.md#snapshotserializers-arraystring) for more information.
 
 ### `.not`
 
@@ -765,11 +776,11 @@ expect('abc').toHaveLength(3);
 expect('').not.toHaveLength(5);
 ```
 
-### `.toHaveProperty(keyPath, value)`
+### `.toHaveProperty(keyPath, value?)`
 
 Use `.toHaveProperty` to check if property at provided reference `keyPath` exists for an object. For checking deeply nested properties in an object you may use [dot notation](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Operators/Property_accessors) or an array containing the keyPath for deep references.
 
-Optionally, you can provide a `value` to check if it's equal to the value present at `keyPath` on the target object. This matcher uses 'deep equality' (like `toEqual()`) and recursively checks the equality of all fields.
+You can provide an optional `value` argument to compare the received property value (recursively for all properties of object instances, also known as deep equality, like the `toEqual` matcher).
 
 The following example contains a `houseForSale` object with nested properties. We are using `toHaveProperty` to check for the existence and values of various properties in the object.
 
@@ -819,9 +830,13 @@ test('this house has my desired features', () => {
 });
 ```
 
-### `.toBeCloseTo(number, numDigits)`
+### `.toBeCloseTo(number, numDigits?)`
 
-Using exact equality with floating point numbers is a bad idea. Rounding means that intuitive things fail. For example, this test fails:
+Use `toBeCloseTo` to compare floating point numbers for approximate equality.
+
+The optional `numDigits` argument limits the number of digits to check **after** the decimal point. For the default value `2`, the test criterion is `Math.abs(expected - received) < 0.005` (that is, `10 ** -2 / 2`).
+
+Intuitive equality comparisons often fail, because arithmetic on decimal (base 10) values often have rounding errors in limited precision binary (base 2) representation. For example, this test fails:
 
 ```js
 test('adding works sanely with decimals', () => {
@@ -829,17 +844,15 @@ test('adding works sanely with decimals', () => {
 });
 ```
 
-It fails because in JavaScript, `0.2 + 0.1` is actually `0.30000000000000004`. Sorry.
+It fails because in JavaScript, `0.2 + 0.1` is actually `0.30000000000000004`.
 
-Instead, use `.toBeCloseTo`. Use `numDigits` to control how many digits after the decimal point to check. For example, if you want to be sure that `0.2 + 0.1` is equal to `0.3` with a precision of 5 decimal digits, you can use this test:
+For example, this test passes with a precision of 5 digits:
 
 ```js
 test('adding works sanely with decimals', () => {
   expect(0.2 + 0.1).toBeCloseTo(0.3, 5);
 });
 ```
-
-The default for `numDigits` is 2, which has proved to be a good default in most cases.
 
 ### `.toBeDefined()`
 
@@ -877,7 +890,7 @@ In JavaScript, there are six falsy values: `false`, `0`, `''`, `null`, `undefine
 
 ### `.toBeGreaterThan(number)`
 
-To compare floating point numbers, you can use `toBeGreaterThan`. For example, if you want to test that `ouncesPerCan()` returns a value of more than 10 ounces, write:
+Use `toBeGreaterThan` to compare `received > expected` for numbers. For example, test that `ouncesPerCan()` returns a value of more than 10 ounces:
 
 ```js
 test('ounces per can is more than 10', () => {
@@ -887,7 +900,7 @@ test('ounces per can is more than 10', () => {
 
 ### `.toBeGreaterThanOrEqual(number)`
 
-To compare floating point numbers, you can use `toBeGreaterThanOrEqual`. For example, if you want to test that `ouncesPerCan()` returns a value of at least 12 ounces, write:
+Use `toBeGreaterThanOrEqual` to compare `received >= expected` for numbers. For example, test that `ouncesPerCan()` returns a value of at least 12 ounces:
 
 ```js
 test('ounces per can is at least 12', () => {
@@ -897,7 +910,7 @@ test('ounces per can is at least 12', () => {
 
 ### `.toBeLessThan(number)`
 
-To compare floating point numbers, you can use `toBeLessThan`. For example, if you want to test that `ouncesPerCan()` returns a value of less than 20 ounces, write:
+Use `toBeLessThan` to compare `received < expected` for numbers. For example, test that `ouncesPerCan()` returns a value of less than 20 ounces:
 
 ```js
 test('ounces per can is less than 20', () => {
@@ -907,7 +920,7 @@ test('ounces per can is less than 20', () => {
 
 ### `.toBeLessThanOrEqual(number)`
 
-To compare floating point numbers, you can use `toBeLessThanOrEqual`. For example, if you want to test that `ouncesPerCan()` returns a value of at most 12 ounces, write:
+Use `toBeLessThanOrEqual` to compare `received <= expected` for numbers. For example, test that `ouncesPerCan()` returns a value of at most 12 ounces:
 
 ```js
 test('ounces per can is at most 12', () => {
@@ -1044,7 +1057,7 @@ If differences between properties do not help you to understand why a test fails
 - rewrite `expect(received).toEqual(expected)` as `expect(received.equals(expected)).toBe(true)`
 - rewrite `expect(received).not.toEqual(expected)` as `expect(received.equals(expected)).toBe(false)`
 
-### `.toMatch(regexpOrString)`
+### `.toMatch(regexp | string)`
 
 Use `.toMatch` to check that a string matches a regular expression.
 
@@ -1106,12 +1119,6 @@ describe('toMatchObject applied to arrays', () => {
     expect([{foo: 'bar'}, {baz: 1}]).toMatchObject([{foo: 'bar'}, {baz: 1}]);
   });
 
-  // .arrayContaining "matches a received array which contains elements that
-  // are *not* in the expected array"
-  test('.toMatchObject does not allow extra elements', () => {
-    expect([{foo: 'bar'}, {baz: 1}]).toMatchObject([{foo: 'bar'}]);
-  });
-
   test('.toMatchObject is called for each elements, so extra object properties are okay', () => {
     expect([{foo: 'bar'}, {baz: 1, extra: 'quux'}]).toMatchObject([
       {foo: 'bar'},
@@ -1121,17 +1128,21 @@ describe('toMatchObject applied to arrays', () => {
 });
 ```
 
-### `.toMatchSnapshot(propertyMatchers, snapshotName)`
+### `.toMatchSnapshot(propertyMatchers?, hint?)`
 
 This ensures that a value matches the most recent snapshot. Check out [the Snapshot Testing guide](SnapshotTesting.md) for more information.
 
-The optional `propertyMatchers` argument allows you to specify asymmetric matchers which are verified instead of the exact values. Any value will be matched exactly if not provided as a matcher.
+You can provide an optional `propertyMatchers` object argument, which has asymmetric matchers as values of a subset of expected properties, **if** the received value will be an **object** instance. It is like `toMatchObject` with flexible criteria for a subset of properties, followed by a snapshot test as exact criteria for the rest of the properties.
 
-The last argument allows you option to specify a snapshot name. Otherwise, the name is inferred from the test.
+You can provide an optional `hint` string argument that is appended to the test name. Although Jest always appends a number at the end of a snapshot name, short descriptive hints might be more useful than numbers to differentiate **multiple** snapshots in a **single** `it` or `test` block. Jest sorts snapshots by name in the corresponding `.snap` file.
 
-### `.toMatchInlineSnapshot(propertyMatchers, inlineSnapshot)`
+### `.toMatchInlineSnapshot(propertyMatchers?, inlineSnapshot)`
 
-Ensures that a value matches the most recent snapshot. Unlike [`.toMatchSnapshot()`](#tomatchsnapshotpropertymatchers-snapshotname), the snapshots will be written to the current source file, inline.
+Ensures that a value matches the most recent snapshot.
+
+You can provide an optional `propertyMatchers` object argument, which has asymmetric matchers as values of a subset of expected properties, **if** the received value will be an **object** instance. It is like `toMatchObject` with flexible criteria for a subset of properties, followed by a snapshot test as exact criteria for the rest of the properties.
+
+Jest adds the `inlineSnapshot` string argument to the matcher in the test file (instead of an external `.snap` file) the first time that the test runs.
 
 Check out the section on [Inline Snapshots](SnapshotTesting.md#inline-snapshots) for more info.
 
@@ -1142,6 +1153,7 @@ Use `.toStrictEqual` to test that objects have the same types as well as structu
 Differences from `.toEqual`:
 
 - Keys with `undefined` properties are checked. e.g. `{a: undefined, b: 2}` does not match `{b: 2}` when using `.toStrictEqual`.
+- Array sparseness is checked. e.g. `[, 1]` does not match `[undefined, 1]` when using `.toStrictEqual`.
 - Object types are checked to be equal. e.g. A class instance with fields `a` and `b` will not equal a literal object with fields `a` and `b`.
 
 ```js
@@ -1159,9 +1171,9 @@ describe('the La Croix cans on my desk', () => {
 });
 ```
 
-### `.toThrow(error)`
+### `.toThrow(error?)`
 
-Also under the alias: `.toThrowError(error)`
+Also under the alias: `.toThrowError(error?)`
 
 Use `.toThrow` to test that a function throws when it is called. For example, if we want to test that `drinkFlavor('octopus')` throws, because octopus flavor is too disgusting to drink, we could write:
 
@@ -1175,7 +1187,14 @@ test('throws on octopus', () => {
 
 > Note: You must wrap the code in a function, otherwise the error will not be caught and the assertion will fail.
 
-If you want to test that a specific error gets thrown, you can provide an argument to `toThrow`. The argument can be a string that should be contained in the error message, a class for the error, or a regex that should match the error message. For example, let's say that `drinkFlavor` is coded like this:
+You can provide an optional argument to test that a specific error is thrown:
+
+- regular expression: error message **matches** the pattern
+- string: error message **includes** the substring
+- error object: error message is **equal to** the message property of the object
+- error class: error object is **instance of** class
+
+For example, let's say that `drinkFlavor` is coded like this:
 
 ```js
 function drinkFlavor(flavor) {
@@ -1200,15 +1219,20 @@ test('throws on octopus', () => {
 
   // Test the exact error message
   expect(drinkOctopus).toThrowError(/^yuck, octopus flavor$/);
+  expect(drinkOctopus).toThrowError(new Error('yuck, octopus flavor'));
 
   // Test that we get a DisgustingFlavorError
   expect(drinkOctopus).toThrowError(DisgustingFlavorError);
 });
 ```
 
-### `.toThrowErrorMatchingSnapshot()`
+### `.toThrowErrorMatchingSnapshot(hint?)`
 
-Use `.toThrowErrorMatchingSnapshot` to test that a function throws an error matching the most recent snapshot when it is called. For example, let's say you have a `drinkFlavor` function that throws whenever the flavor is `'octopus'`, and is coded like this:
+Use `.toThrowErrorMatchingSnapshot` to test that a function throws an error matching the most recent snapshot when it is called.
+
+You can provide an optional `hint` string argument that is appended to the test name. Although Jest always appends a number at the end of a snapshot name, short descriptive hints might be more useful than numbers to differentiate **multiple** snapshots in a **single** `it` or `test` block. Jest sorts snapshots by name in the corresponding `.snap` file.
+
+For example, let's say you have a `drinkFlavor` function that throws whenever the flavor is `'octopus'`, and is coded like this:
 
 ```js
 function drinkFlavor(flavor) {
@@ -1239,8 +1263,10 @@ exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
 
 Check out [React Tree Snapshot Testing](https://jestjs.io/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
 
-### `.toThrowErrorMatchingInlineSnapshot()`
+### `.toThrowErrorMatchingInlineSnapshot(inlineSnapshot)`
 
-This matcher is much like [`.toThrowErrorMatchingSnapshot`](#tothrowerrormatchingsnapshot), except instead of writing the snapshot value to a `.snap` file, it will be written into the source code automatically.
+Use `.toThrowErrorMatchingInlineSnapshot` to test that a function throws an error matching the most recent snapshot when it is called.
+
+Jest adds the `inlineSnapshot` string argument to the matcher in the test file (instead of an external `.snap` file) the first time that the test runs.
 
 Check out the section on [Inline Snapshots](SnapshotTesting.md#inline-snapshots) for more info.

@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {extractSummary, run} from '../Utils';
+import {extractSummary, runYarn} from '../Utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../coverage-report');
 
 beforeAll(() => {
-  run('yarn', DIR);
+  runYarn(DIR);
 });
 
 test('outputs coverage report', () => {
@@ -30,7 +30,7 @@ test('outputs coverage report', () => {
   //  with 0 % coverage.
   expect(wrap(stdout)).toMatchSnapshot();
 
-  expect(() => fs.accessSync(coverageDir, fs.F_OK)).not.toThrow();
+  expect(() => fs.accessSync(coverageDir, fs.constants.F_OK)).not.toThrow();
   expect(exitCode).toBe(0);
 });
 

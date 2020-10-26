@@ -7,13 +7,10 @@
 
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {skipSuiteOnWindows} from '@jest/test-utils';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../cli_accepts_exact_filenames');
-
-skipSuiteOnWindows();
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
@@ -30,7 +27,9 @@ test('CLI accepts exact file names if matchers matched', () => {
 
   expect(result.exitCode).toBe(0);
 
-  const {rest, summary} = extractSummary(result.stderr);
+  const {rest, summary} = extractSummary(
+    result.stderr.replace('\\\\foo\\\\bar', '\\/foo\\/bar'),
+  );
 
   expect(wrap(rest)).toMatchSnapshot();
   expect(wrap(summary)).toMatchSnapshot();

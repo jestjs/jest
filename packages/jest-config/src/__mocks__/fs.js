@@ -7,7 +7,7 @@
 
 'use strict';
 
-const fs = jest.genMockFromModule('fs');
+const fs = jest.createMockFromModule('fs');
 
 const mockFiles = new Map();
 function __setMockFiles(newMockFiles) {

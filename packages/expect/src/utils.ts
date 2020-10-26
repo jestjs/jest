@@ -6,6 +6,8 @@
  *
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import {isPrimitive} from 'jest-get-type';
 import {
   equals,
@@ -21,32 +23,22 @@ type GetPath = {
   value?: unknown;
 };
 
-// Return whether object instance inherits getter from its class.
-const hasGetterFromConstructor = (object: object, key: string) => {
-  const constructor = object.constructor;
-  if (constructor === Object) {
-    // A literal object has Object as constructor.
-    // Therefore, it cannot inherit application-specific getters.
-    // Furthermore, Object has __proto__ getter which is not relevant.
-    // Array, Boolean, Number, String constructors don’t have any getters.
-    return false;
-  }
-  if (typeof constructor !== 'function') {
-    // Object.create(null) constructs object with no constructor nor prototype.
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create#Custom_and_Null_objects
+/**
+ * Checks if `hasOwnProperty(object, key)` up the prototype chain, stopping at `Object.prototype`.
+ */
+const hasPropertyInObject = (object: object, key: string): boolean => {
+  const shouldTerminate =
+    !object || typeof object !== 'object' || object === Object.prototype;
+
+  if (shouldTerminate) {
     return false;
   }
 
-  const descriptor = Object.getOwnPropertyDescriptor(
-    constructor.prototype,
-    key,
+  return (
+    Object.prototype.hasOwnProperty.call(object, key) ||
+    hasPropertyInObject(Object.getPrototypeOf(object), key)
   );
-  return descriptor !== undefined && typeof descriptor.get === 'function';
 };
-
-export const hasOwnProperty = (object: object, key: string) =>
-  Object.prototype.hasOwnProperty.call(object, key) ||
-  hasGetterFromConstructor(object, key);
 
 export const getPath = (
   object: Record<string, any>,
@@ -104,11 +96,13 @@ export const getPath = (
 
 // Strip properties from object that are not present in the subset. Useful for
 // printing the diff for toMatchObject() without adding unrelated noise.
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const getObjectSubset = (
   object: any,
   subset: any,
   seenReferences: WeakMap<object, boolean> = new WeakMap(),
 ): any => {
+  /* eslint-enable @typescript-eslint/explicit-module-boundary-types */
   if (Array.isArray(object)) {
     if (Array.isArray(subset) && subset.length === object.length) {
       // The map method returns correct subclass of subset.
@@ -128,7 +122,7 @@ export const getObjectSubset = (
     seenReferences.set(object, trimmed);
 
     Object.keys(object)
-      .filter(key => hasOwnProperty(subset, key))
+      .filter(key => hasPropertyInObject(subset, key))
       .forEach(key => {
         trimmed[key] = seenReferences.has(object[key])
           ? seenReferences.get(object[key])
@@ -147,12 +141,14 @@ const IteratorSymbol = Symbol.iterator;
 const hasIterator = (object: any) =>
   !!(object != null && object[IteratorSymbol]);
 
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const iterableEquality = (
   a: any,
   b: any,
+  /* eslint-enable @typescript-eslint/explicit-module-boundary-types */
   aStack: Array<any> = [],
   bStack: Array<any> = [],
-) => {
+): boolean | undefined => {
   if (
     typeof a !== 'object' ||
     typeof b !== 'object' ||
@@ -166,7 +162,6 @@ export const iterableEquality = (
   if (a.constructor !== b.constructor) {
     return false;
   }
-
   let length = aStack.length;
   while (length--) {
     // Linear search. Performance is inversely proportional to the number of
@@ -275,42 +270,48 @@ const isObjectWithKeys = (a: any) =>
   !(a instanceof Date);
 
 export const subsetEquality = (
-  object: any,
-  subset: any,
-): undefined | boolean => {
+  object: unknown,
+  subset: unknown,
+): boolean | undefined => {
   // subsetEquality needs to keep track of the references
   // it has already visited to avoid infinite loops in case
   // there are circular references in the subset passed to it.
   const subsetEqualityWithContext = (
     seenReferences: WeakMap<object, boolean> = new WeakMap(),
-  ) => (object: any, subset: any): undefined | boolean => {
+  ) => (object: any, subset: any): boolean | undefined => {
     if (!isObjectWithKeys(subset)) {
       return undefined;
     }
 
     return Object.keys(subset).every(key => {
       if (isObjectWithKeys(subset[key])) {
-        if (seenReferences.get(subset[key])) {
+        if (seenReferences.has(subset[key])) {
           return equals(object[key], subset[key], [iterableEquality]);
         }
         seenReferences.set(subset[key], true);
       }
-
-      return (
+      const result =
         object != null &&
-        hasOwnProperty(object, key) &&
+        hasPropertyInObject(object, key) &&
         equals(object[key], subset[key], [
           iterableEquality,
           subsetEqualityWithContext(seenReferences),
-        ])
-      );
+        ]);
+      // The main goal of using seenReference is to avoid circular node on tree.
+      // It will only happen within a parent and its child, not a node and nodes next to it (same level)
+      // We should keep the reference for a parent and its child only
+      // Thus we should delete the reference immediately so that it doesn't interfere
+      // other nodes within the same level on tree.
+      seenReferences.delete(subset[key]);
+      return result;
     });
   };
 
   return subsetEqualityWithContext()(object, subset);
 };
 
-export const typeEquality = (a: any, b: any) => {
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const typeEquality = (a: any, b: any): boolean | undefined => {
   if (a == null || b == null || a.constructor === b.constructor) {
     return undefined;
   }
@@ -318,7 +319,10 @@ export const typeEquality = (a: any, b: any) => {
   return false;
 };
 
-export const sparseArrayEquality = (a: unknown, b: unknown) => {
+export const sparseArrayEquality = (
+  a: unknown,
+  b: unknown,
+): boolean | undefined => {
   if (!Array.isArray(a) || !Array.isArray(b)) {
     return undefined;
   }
@@ -343,7 +347,7 @@ export const partition = <T>(
 };
 
 // Copied from https://github.com/graingert/angular.js/blob/a43574052e9775cbc1d7dd8a086752c979b0f020/src/Angular.js#L685-L693
-export const isError = (value: unknown) => {
+export const isError = (value: unknown): value is Error => {
   switch (Object.prototype.toString.call(value)) {
     case '[object Error]':
       return true;
@@ -356,13 +360,13 @@ export const isError = (value: unknown) => {
   }
 };
 
-export function emptyObject(obj: any) {
+export function emptyObject(obj: unknown): boolean {
   return obj && typeof obj === 'object' ? !Object.keys(obj).length : false;
 }
 
 const MULTILINE_REGEXP = /[\r\n]/;
 
-export const isOneline = (expected: any, received: any): boolean =>
+export const isOneline = (expected: unknown, received: unknown): boolean =>
   typeof expected === 'string' &&
   typeof received === 'string' &&
   (!MULTILINE_REGEXP.test(expected) || !MULTILINE_REGEXP.test(received));

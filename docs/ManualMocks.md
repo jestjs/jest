@@ -13,7 +13,7 @@ Manual mocks are defined by writing a module in a `__mocks__/` subdirectory imme
 
 ## Mocking Node modules
 
-If the module you are mocking is a Node module (e.g.: `lodash`), the mock should be placed in the `__mocks__` directory adjacent to `node_modules` (unless you configured [`roots`](Configuration.md#roots-array-string) to point to a folder other than the project root) and will be **automatically** mocked. There's no need to explicitly call `jest.mock('module_name')`.
+If the module you are mocking is a Node module (e.g.: `lodash`), the mock should be placed in the `__mocks__` directory adjacent to `node_modules` (unless you configured [`roots`](Configuration.md#roots-arraystring) to point to a folder other than the project root) and will be **automatically** mocked. There's no need to explicitly call `jest.mock('module_name')`.
 
 Scoped modules can be mocked by creating a file in a directory structure that matches the name of the scoped module. For example, to mock a scoped module called `@scope/project-name`, create a file at `__mocks__/@scope/project-name.js`, creating the `@scope/` directory accordingly.
 
@@ -38,7 +38,7 @@ When a manual mock exists for a given module, Jest's module system will use that
 
 > Note: In order to mock properly, Jest needs `jest.mock('moduleName')` to be in the same scope as the `require/import` statement.
 
-Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case we use the core (built in) `fs` module.
+Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case, we use the core (built in) `fs` module.
 
 ```javascript
 // FileSummarizer.js
@@ -64,7 +64,7 @@ Since we'd like our tests to avoid actually hitting the disk (that's pretty slow
 
 const path = require('path');
 
-const fs = jest.genMockFromModule('fs');
+const fs = jest.createMockFromModule('fs');
 
 // This is a custom function that our tests can use during setup to specify
 // what the files on the "mock" filesystem should look like when any of the
@@ -124,7 +124,7 @@ describe('listFilesInDirectorySync', () => {
 });
 ```
 
-The example mock shown here uses [`jest.genMockFromModule`](JestObjectAPI.md#jestgenmockfrommodulemodulename) to generate an automatic mock, and overrides its default behavior. This is the recommended approach, but is completely optional. If you do not want to use the automatic mock at all, you can export your own functions from the mock file. One downside to fully manual mocks is that they're manual – meaning you have to manually update them any time the module they are mocking changes. Because of this, it's best to use or extend the automatic mock when it works for your needs.
+The example mock shown here uses [`jest.createMockFromModule`](JestObjectAPI.md#jestcreatemockfrommodulemodulename) to generate an automatic mock, and overrides its default behavior. This is the recommended approach, but is completely optional. If you do not want to use the automatic mock at all, you can export your own functions from the mock file. One downside to fully manual mocks is that they're manual – meaning you have to manually update them any time the module they are mocking changes. Because of this, it's best to use or extend the automatic mock when it works for your needs.
 
 To ensure that a manual mock and its real implementation stay in sync, it might be useful to require the real module using [`jest.requireActual(moduleName)`](JestObjectAPI.md#jestrequireactualmodulename) in your manual mock and amending it with mock functions before exporting it.
 
@@ -141,8 +141,9 @@ If some code uses a method which JSDOM (the DOM implementation used by Jest) has
 In this case, mocking `matchMedia` in the test file should solve the issue:
 
 ```js
-window.matchMedia = jest.fn().mockImplementation(query => {
-  return {
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
     matches: false,
     media: query,
     onchange: null,
@@ -151,7 +152,7 @@ window.matchMedia = jest.fn().mockImplementation(query => {
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
     dispatchEvent: jest.fn(),
-  };
+  })),
 });
 ```
 

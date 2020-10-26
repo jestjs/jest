@@ -32,7 +32,7 @@ Tool for visualizing changes in data. Exports a function that compares two value
 ### Example
 
 ```javascript
-const diff = require('jest-diff');
+const diff = require('jest-diff').default;
 
 const a = {a: {b: {c: 5}}};
 const b = {a: {b: {c: 6}}};
@@ -58,7 +58,7 @@ const code = `
  *
  * @flow
  */
- 
+
  console.log('Hello World!');
 `;
 
@@ -119,7 +119,7 @@ You can read more about `jest-validate` in the [readme file](https://github.com/
 
 ## jest-worker
 
-Module used for parallelization of tasks. Exports a class `Worker` that takes the path of Node.js module and lets you call the module's exported methods as if they where class methods, returning a promise that resolves when the specified method finishes its execution in a forked process.
+Module used for parallelization of tasks. Exports a class `JestWorker` that takes the path of Node.js module and lets you call the module's exported methods as if they were class methods, returning a promise that resolves when the specified method finishes its execution in a forked process.
 
 ### Example
 

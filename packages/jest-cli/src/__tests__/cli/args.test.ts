@@ -6,7 +6,8 @@
  *
  */
 
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
+import {constants} from 'jest-config';
 import {check} from '../../cli/args';
 import {buildArgv} from '../../cli';
 
@@ -27,6 +28,13 @@ describe('check', () => {
     const argv = {onlyChanged: true, watchAll: true} as Config.Argv;
     expect(() => check(argv)).toThrow(
       'Both --onlyChanged and --watchAll were specified',
+    );
+  });
+
+  it('raises an exception if onlyFailures and watchAll are both specified', () => {
+    const argv = {onlyFailures: true, watchAll: true} as Config.Argv;
+    expect(() => check(argv)).toThrow(
+      'Both --onlyFailures and --watchAll were specified',
     );
   });
 
@@ -59,22 +67,53 @@ describe('check', () => {
     expect(() => check(argv)).not.toThrow();
   });
 
+  test.each(constants.JEST_CONFIG_EXT_ORDER.map(e => e.substring(1)))(
+    'allows using "%s" file for --config option',
+    ext => {
+      expect(() =>
+        check({config: `jest.config.${ext}`} as Config.Argv),
+      ).not.toThrow();
+      expect(() =>
+        check({config: `../test/test/my_conf.${ext}`} as Config.Argv),
+      ).not.toThrow();
+    },
+  );
+
+  it('raises an exception if selectProjects is not provided any project names', () => {
+    const argv: Config.Argv = {selectProjects: []} as Config.Argv;
+    expect(() => check(argv)).toThrow(
+      'The --selectProjects option requires the name of at least one project to be specified.\n',
+    );
+  });
+
   it('raises an exception if config is not a valid JSON string', () => {
     const argv = {config: 'x:1'} as Config.Argv;
     expect(() => check(argv)).toThrow(
-      'The --config option requires a JSON string literal, or a file path with a .js or .json extension',
+      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .ts, .mjs, .cjs, .json',
+    );
+  });
+
+  it('raises an exception if config is not a supported file type', () => {
+    const message =
+      'The --config option requires a JSON string literal, or a file path with one of these extensions: .js, .ts, .mjs, .cjs, .json';
+
+    expect(() => check({config: 'jest.configjs'} as Config.Argv)).toThrow(
+      message,
+    );
+    expect(() => check({config: 'jest.config.exe'} as Config.Argv)).toThrow(
+      message,
     );
   });
 });
 
 describe('buildArgv', () => {
   it('should return only camelcased args ', () => {
-    // @ts-ignore
     const mockProcessArgv = jest
+      // @ts-expect-error
       .spyOn(process.argv, 'slice')
       .mockImplementation(() => ['--clear-mocks']);
-    // @ts-ignore
-    const actual = buildArgv(null);
+
+    const actual = buildArgv();
     expect(actual).not.toHaveProperty('clear-mocks');
     expect(actual).toHaveProperty('clearMocks', true);
     mockProcessArgv.mockRestore();
