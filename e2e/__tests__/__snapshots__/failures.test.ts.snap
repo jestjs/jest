@@ -188,9 +188,19 @@ FAIL __tests__/duringTests.test.js
 
   ● Object with stack prop thrown during test
 
-    42
+    thrown: Object {
+      "stack": 42,
+    }
 
+      30 | });
+      31 | 
+    > 32 | test('Object with stack prop thrown during test', () => {
+         | ^
+      33 |   // eslint-disable-next-line no-throw-literal
+      34 |   throw {stack: 42};
+      35 | });
 
+      at Object.test (__tests__/duringTests.test.js:32:1)
 
   ● Error during test
 
