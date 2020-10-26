@@ -212,9 +212,9 @@ test('ObjectContaining throws for non-objects', () => {
 });
 
 test('ObjectContaining does not mutate the sample', () => {
-  const sample = { foo: { bar: {} } };
+  const sample = {foo: {bar: {}}};
   const sample_json = JSON.stringify(sample);
-  expect({ foo: { bar: {} } }).toEqual(expect.objectContaining(sample));
+  expect({foo: {bar: {}}}).toEqual(expect.objectContaining(sample));
 
   expect(JSON.stringify(sample)).toEqual(sample_json);
 });
