@@ -1,5 +1,5 @@
 ---
-id: version-24.x-puppeteer
+id: version-23.x-puppeteer
 title: Using with puppeteer
 original_id: puppeteer
 ---
