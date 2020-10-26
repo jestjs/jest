@@ -8,6 +8,8 @@
 /* eslint-disable local/ban-types-eventually */
 
 import {cpus} from 'os';
+import * as inspector from 'inspector';
+import type {Session} from 'inspector';
 import Farm from './Farm';
 import WorkerPool from './WorkerPool';
 import type {
@@ -75,19 +77,23 @@ export class Worker {
   private _farm: Farm;
   private _options: FarmOptions;
   private _workerPool: WorkerPoolInterface;
+  private _inspector: Session | undefined;
 
   constructor(workerPath: string, options?: FarmOptions) {
     this._options = {...options};
     this._ending = false;
 
+    this._inspector = this.setUpInspector();
+
     const workerPoolOptions: WorkerPoolOptions = {
       enableWorkerThreads: this._options.enableWorkerThreads || false,
       forkOptions: this._options.forkOptions || {},
-      inspector: this._options.inspector,
+      inspector: this._inspector,
       maxRetries: this._options.maxRetries || 3,
       numWorkers: this._options.numWorkers || Math.max(cpus().length - 1, 1),
       resourceLimits: this._options.resourceLimits ?? {},
       setupArgs: this._options.setupArgs || [],
+      workerHeartbeatTimeout: this._options.workerHeartbeatTimeout || 5000,
     };
 
     if (this._options.WorkerPool) {
@@ -111,6 +117,20 @@ export class Worker {
     );
 
     this._bindExposedWorkerMethods(workerPath, this._options);
+  }
+
+  private setUpInspector() {
+    // Open V8 Inspector
+    inspector.open();
+
+    const inspectorUrl = inspector.url();
+    let session;
+    if (inspectorUrl !== undefined) {
+      session = new inspector.Session();
+      session.connect();
+      session.post('Debugger.enable');
+    }
+    return session;
   }
 
   private _bindExposedWorkerMethods(
@@ -155,6 +175,8 @@ export class Worker {
       throw new Error('Farm is ended, no more calls can be done to it');
     }
     this._ending = true;
+    this._inspector?.disconnect();
+    inspector.close();
 
     return this._workerPool.end();
   }

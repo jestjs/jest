@@ -8,7 +8,6 @@
 import {ChildProcess, fork} from 'child_process';
 import {PassThrough} from 'stream';
 import mergeStream = require('merge-stream');
-import {clearInterval} from 'timers';
 import {stdout as stdoutSupportsColor} from 'supports-color';
 import {
   CHILD_MESSAGE_INITIALIZE,
@@ -67,7 +66,7 @@ export default class ChildProcessWorker implements WorkerInterface {
   private _exitPromise: Promise<void>;
   private _resolveExitPromise!: () => void;
 
-  private heartbeatTimeout: any;
+  private _heartbeatTimeout: any;
 
   constructor(options: WorkerOptions) {
     this._options = options;
@@ -130,8 +129,6 @@ export default class ChildProcessWorker implements WorkerInterface {
       this._options.setupArgs,
     ]);
 
-    this.monitorHeartbeat(() => this.monitorHeartbeatError());
-
     this._child = child;
 
     this._retries++;
@@ -149,13 +146,16 @@ export default class ChildProcessWorker implements WorkerInterface {
         error.stack!,
         {type: 'WorkerError'},
       ]);
+
+      this.monitorHeartbeat(() => this.monitorHeartbeatError());
     }
   }
 
-  monitorHeartbeat(onExceeded: () => any) {
-    this.heartbeatTimeout = setTimeout(() => {
+  monitorHeartbeat(onExceeded: () => any): void {
+    clearTimeout(this._heartbeatTimeout);
+    this._heartbeatTimeout = setTimeout(() => {
       onExceeded();
-    }, 7000);
+    }, this._options.workerHeartbeatTimeout);
   }
 
   private _shutdown() {
@@ -168,58 +168,55 @@ export default class ChildProcessWorker implements WorkerInterface {
     this._resolveExitPromise();
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  async monitorHeartbeatError() {
+  private async monitorHeartbeatError() {
     let error;
 
     if (this._options.inspector !== undefined) {
       error = new Error(
-        `Test worker was unresponsive for 10 seconds. There was an inspector connected so we were unable to capture stack frames before it was terminated.`,
+        `Test worker was unresponsive for 10 seconds. There was an inspector connected so we were able to capture stack frames before it was terminated.`,
       );
       this._options.inspector.on('Debugger.paused', (message: any) => {
         const callFrames = message.params.callFrames.slice(0, 20);
         for (const callFrame of callFrames) {
           const loc = callFrame['location'];
 
-          const url = callFrame['url'];
-          const lineNumber = loc['lineNumber'];
           const columnNumber = loc['columnNumber'];
+          const lineNumber = loc['lineNumber'];
+          const url = callFrame['url'];
 
           const name = callFrame['scopeChain'][0].name;
 
           // TODO: process error with stack trace
-          console.log({url, lineNumber, columnNumber, name});
+          console.log({
+            columnNumber,
+            lineNumber,
+            name,
+            url,
+          });
         }
       });
 
       await new Promise((resolve, reject) => {
-        this._options.inspector.post(
-          'Debugger.pause',
-          (err: any, params: any) => {
-            if (err === null) {
-              resolve(params);
-            } else {
-              reject(err);
-            }
-          },
-        );
+        this._options.inspector?.post('Debugger.pause', (err: Error) => {
+          if (err === null) {
+            resolve();
+          } else {
+            reject(err);
+          }
+        });
       });
-
-      this._options.inspector.disconnect();
-      this._options.inspector.close();
     } else {
       error = new Error(
         `Test worker was unresponsive for 10 seconds. There was no inspector connected so we were unable to capture stack frames before it was terminated.`,
       );
     }
-    // @ts-ignore: adding custom properties to errors.
+    // @ts-expect-error: adding custom properties to errors.
     error.type = 1;
     error.stack = 'test stack';
 
-    if (this.heartbeatTimeout !== undefined) {
-      clearTimeout(this.heartbeatTimeout);
+    if (this._heartbeatTimeout !== undefined) {
+      clearTimeout(this._heartbeatTimeout);
     }
-
     this._onProcessEnd(error, null);
   }
 
@@ -229,11 +226,12 @@ export default class ChildProcessWorker implements WorkerInterface {
 
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
+        clearTimeout(this._heartbeatTimeout);
         this._onProcessEnd(null, response[1]);
-        clearInterval(this.heartbeatTimeout);
         break;
 
       case PARENT_MESSAGE_CLIENT_ERROR:
+        clearTimeout(this._heartbeatTimeout);
         error = response[4];
 
         if (error != null && typeof error === 'object') {
@@ -250,28 +248,28 @@ export default class ChildProcessWorker implements WorkerInterface {
             error[key] = extra[key];
           }
         }
-        clearInterval(this.heartbeatTimeout);
         this._onProcessEnd(error, null);
         break;
 
       case PARENT_MESSAGE_SETUP_ERROR:
+        clearTimeout(this._heartbeatTimeout);
         error = new Error('Error when calling setup: ' + response[2]);
 
         error.type = response[1];
         error.stack = response[3];
 
         this._onProcessEnd(error, null);
-        clearInterval(this.heartbeatTimeout);
         break;
 
       case PARENT_MESSAGE_HEARTBEAT:
         this.monitorHeartbeat(() => this.monitorHeartbeatError());
         break;
       case PARENT_MESSAGE_CUSTOM:
+        clearTimeout(this._heartbeatTimeout);
         this._onCustomMessage(response[1]);
         break;
       default:
-        clearInterval(this.heartbeatTimeout);
+        clearTimeout(this._heartbeatTimeout);
         throw new TypeError('Unexpected response from worker: ' + response[0]);
     }
   }

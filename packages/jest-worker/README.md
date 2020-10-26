@@ -63,6 +63,10 @@ List of method names that can be called on the child processes from the parent p
 
 Amount of workers to spawn. Defaults to the number of CPUs minus 1.
 
+#### `workerHeartbeatTimeout: number` (optional)
+
+Heartbeat timeout used to ping the parent process when child workers are alive. Defaults to 5000 ms.
+
 #### `maxRetries: number` (optional)
 
 Maximum amount of times that a dead child can be re-spawned, per call. Defaults to `3`, pass `Infinity` to allow endless retries.

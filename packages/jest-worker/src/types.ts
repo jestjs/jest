@@ -7,6 +7,7 @@
 
 import type {ForkOptions} from 'child_process';
 import type {EventEmitter} from 'events';
+import type {Session} from 'inspector';
 
 // import type {ResourceLimits} from 'worker_threads';
 // This is not present in the Node 12 typings
@@ -102,9 +103,9 @@ export type FarmOptions = {
   resourceLimits?: ResourceLimits;
   setupArgs?: Array<unknown>;
   maxRetries?: number;
-  inspector?: any;
   numWorkers?: number;
   taskQueue?: TaskQueue;
+  workerHeartbeatTimeout?: number;
   WorkerPool?: (
     workerPath: string,
     options?: WorkerPoolOptions,
@@ -118,7 +119,8 @@ export type WorkerPoolOptions = {
   resourceLimits: ResourceLimits;
   maxRetries: number;
   numWorkers: number;
-  inspector?: any;
+  inspector: Session | undefined;
+  workerHeartbeatTimeout: number;
   enableWorkerThreads: boolean;
 };
 
@@ -126,7 +128,8 @@ export type WorkerOptions = {
   forkOptions: ForkOptions;
   resourceLimits: ResourceLimits;
   setupArgs: Array<unknown>;
-  inspector?: any;
+  inspector: Session | undefined;
+  workerHeartbeatTimeout: number;
   maxRetries: number;
   workerId: number;
   workerPath: string;

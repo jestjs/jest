@@ -39,7 +39,14 @@ export default class BaseWorkerPool {
     const stdout = mergeStream();
     const stderr = mergeStream();
 
-    const {forkOptions, maxRetries, setupArgs, resourceLimits,  inspector} = options;
+    const {
+      forkOptions,
+      inspector,
+      maxRetries,
+      setupArgs,
+      resourceLimits,
+      workerHeartbeatTimeout,
+    } = options;
 
     for (let i = 0; i < options.numWorkers; i++) {
       const workerOptions: WorkerOptions = {
@@ -48,6 +55,7 @@ export default class BaseWorkerPool {
         maxRetries,
         resourceLimits,
         setupArgs,
+        workerHeartbeatTimeout,
         workerId: i,
         workerPath,
       };
