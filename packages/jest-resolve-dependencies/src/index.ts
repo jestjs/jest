@@ -81,7 +81,7 @@ class DependencyResolver {
       );
 
       if (resolvedMockDependency) {
-        const dependencyMockDir = path.join(
+        const dependencyMockDir = path.resolve(
           path.dirname(resolvedDependency),
           '__mocks__',
         );
