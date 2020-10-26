@@ -23,6 +23,8 @@ Steps to reproduce the behavior:
 <!--
 Please provide either a [repl.it demo](https://repl.it/languages/jest) or a minimal repository on GitHub.
 Issues without a reproduction link are likely to stall.
+
+See https://stackoverflow.com/help/minimal-reproducible-example for information on how to create good reproductions
 -->
 
 ## envinfo
