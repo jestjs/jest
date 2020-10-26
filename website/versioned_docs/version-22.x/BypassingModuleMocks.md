@@ -1,5 +1,5 @@
 ---
-id: version-23.x-bypassing-module-mocks
+id: version-22.x-bypassing-module-mocks
 title: Bypassing module mocks
 original_id: bypassing-module-mocks
 ---

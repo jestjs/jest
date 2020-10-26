@@ -12,11 +12,11 @@ import {
   UpdateConfigCallback,
   UsageData,
 } from 'jest-watcher';
-import TestPathPatternPrompt from '../TestPathPatternPrompt';
-import activeFilters from '../lib/active_filters_message';
+import TestNamePatternPrompt from '../TestNamePatternPrompt';
+import activeFilters from '../lib/activeFiltersMessage';
 
-class TestPathPatternPlugin extends BaseWatchPlugin {
-  private _prompt: Prompt;
+class TestNamePatternPlugin extends BaseWatchPlugin {
+  _prompt: Prompt;
   isInternal: true;
 
   constructor(options: {stdin: NodeJS.ReadStream; stdout: NodeJS.WriteStream}) {
@@ -27,8 +27,8 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
 
   getUsageInfo(): UsageData {
     return {
-      key: 'p',
-      prompt: 'filter by a filename regex pattern',
+      key: 't',
+      prompt: 'filter by a test name regex pattern',
     };
   }
 
@@ -41,14 +41,14 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
     updateConfigAndRun: UpdateConfigCallback,
   ): Promise<void> {
     return new Promise((res, rej) => {
-      const testPathPatternPrompt = new TestPathPatternPrompt(
+      const testNamePatternPrompt = new TestNamePatternPrompt(
         this._stdout,
         this._prompt,
       );
 
-      testPathPatternPrompt.run(
+      testNamePatternPrompt.run(
         (value: string) => {
-          updateConfigAndRun({mode: 'watch', testPathPattern: value});
+          updateConfigAndRun({mode: 'watch', testNamePattern: value});
           res();
         },
         rej,
@@ -60,4 +60,4 @@ class TestPathPatternPlugin extends BaseWatchPlugin {
   }
 }
 
-export default TestPathPatternPlugin;
+export default TestNamePatternPlugin;

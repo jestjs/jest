@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import modifyPackageJson from '../modify_package_json';
+import modifyPackageJson from '../modifyPackageJson';
 
 test('should remove jest config if exists', () => {
   expect(

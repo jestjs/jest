@@ -46,7 +46,7 @@ console.log(result);
 
 ## jest-docblock
 
-Tool for extracting and parsing the comments at the top of a JavaScript file. Exports various function to manipulate the data inside the comment block.
+Tool for extracting and parsing the comments at the top of a JavaScript file. Exports various functions to manipulate the data inside the comment block.
 
 ### Example
 
@@ -140,7 +140,7 @@ module.exports = {
 async function main() {
   const worker = new Worker(require.resolve('./heavy-task.js'));
 
-  // run 2 tasks in parellel with different arguments
+  // run 2 tasks in parallel with different arguments
   const results = await Promise.all([
     worker.myHeavyTask({foo: 'bar'}),
     worker.myHeavyTask({bar: 'foo'}),

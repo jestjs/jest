@@ -12,7 +12,7 @@ With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async
 
 [Jest Puppeteer](https://github.com/smooth-code/jest-puppeteer) provides all required configuration to run your tests using Puppeteer.
 
-1.  First install `jest-puppeteer`
+1.  First, install `jest-puppeteer`
 
 ```
 yarn add --dev jest-puppeteer
@@ -115,9 +115,11 @@ class PuppeteerEnvironment extends NodeEnvironment {
     return super.runScript(script);
   }
 }
+
+module.exports = PuppeteerEnvironment;
 ```
 
-Finally we can close the puppeteer instance and clean-up the file
+Finally, we can close the puppeteer instance and clean-up the file
 
 ```js
 // teardown.js

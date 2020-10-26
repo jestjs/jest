@@ -126,8 +126,8 @@ _Note: if you are using babel-jest with additional code preprocessors, you have 
 
 ```json
 "transform": {
-  "^.+\\.js$": "babel-jest",
-  "^.+\\.css$": "custom-transformer",
+  "\\.js$": "babel-jest",
+  "\\.css$": "custom-transformer",
   ...
 }
 ```
@@ -153,7 +153,7 @@ Now that Jest knows how to process our files, we need to tell it how to _find_ t
 
 > Note: `<rootDir>` is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your `package.json` is located unless you specify a custom `rootDir` option in your configuration.
 
-Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH` env variable, which you can set, or make use of the `modulePaths` option.
+Similarly, webpack's `resolve.root` option functions like setting the `NODE_PATH` env variable, which you can set, or make use of the `modulePaths` option.
 
 ```json
 // package.json
@@ -170,7 +170,7 @@ Similarly webpack's `resolve.root` option functions like setting the `NODE_PATH`
 }
 ```
 
-And finally, we have to handle the webpack `alias`. For that we can make use of the `moduleNameMapper` option again.
+And finally, we have to handle the webpack `alias`. For that, we can make use of the `moduleNameMapper` option again.
 
 ```json
 // package.json
@@ -181,11 +181,11 @@ And finally, we have to handle the webpack `alias`. For that we can make use of 
     "moduleDirectories": ["node_modules", "bower_components", "shared"],
 
     "moduleNameMapper": {
-      "^react(.*)$": "<rootDir>/vendor/react-master$1",
-      "^config$": "<rootDir>/configs/app-config.js",
-
       "\\.(css|less)$": "<rootDir>/__mocks__/styleMock.js",
-      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js"
+      "\\.(gif|ttf|eot|svg)$": "<rootDir>/__mocks__/fileMock.js",
+
+      "^react(.*)$": "<rootDir>/vendor/react-master$1",
+      "^config$": "<rootDir>/configs/app-config.js"
     }
   }
 }
@@ -202,7 +202,7 @@ webpack 2 offers native support for ES modules. However, Jest runs in Node, and 
 ```json
 // .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "env": {
     "test": {
@@ -219,7 +219,7 @@ If you use dynamic imports (`import('some-file.js').then(module => ...)`), you n
 ```json
 // .babelrc
 {
-  "presets": [["es2015", {"modules": false}]],
+  "presets": [["env", {"modules": false}]],
 
   "plugins": ["syntax-dynamic-import"],
 
@@ -231,4 +231,4 @@ If you use dynamic imports (`import('some-file.js').then(module => ...)`), you n
 }
 ```
 
-For an example of how to use Jest with Webpack with React, Redux, and Node, you can view one [here](https://github.com/jenniferkaplannyc/jest_react_redux_node_webpack_complex_example).
+For an example of how to use Jest with Webpack with React, Redux, and Node, you can view one [here](https://github.com/jenniferabowd/jest_react_redux_node_webpack_complex_example).

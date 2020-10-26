@@ -6,7 +6,7 @@ original_id: snapshot-testing
 
 Snapshot tests are a very useful tool whenever you want to make sure your UI does not change unexpectedly.
 
-A typical snapshot test case for a mobile app renders a UI component, takes a screenshot, then compares it to a reference image stored alongside the test. The test will fail if the two images do not match: either the change is unexpected, or the screenshot needs to be updated to the new version of the UI component.
+A typical snapshot test case renders a UI component, takes a snapshot, then compares it to a reference snapshot file stored alongside the test. The test will fail if the two snapshots do not match: either the change is unexpected, or the reference snapshot needs to be updated to the new version of the UI component.
 
 ## Snapshot Testing with Jest
 
@@ -40,9 +40,9 @@ exports[`renders correctly 1`] = `
 `;
 ```
 
-The snapshot artifact should be committed alongside code changes, and reviewed as part of your code review process. Jest uses [pretty-format](https://github.com/facebook/jest/tree/master/packages/pretty-format) to make snapshots human-readable during code review. On subsequent test runs Jest will compare the rendered output with the previous snapshot. If they match, the test will pass. If they don't match, either the test runner found a bug in your code (in this case, it's `<Link>` component) that should be fixed, or the implementation has changed and the snapshot needs to be updated.
+The snapshot artifact should be committed alongside code changes, and reviewed as part of your code review process. Jest uses [pretty-format](https://github.com/facebook/jest/tree/master/packages/pretty-format) to make snapshots human-readable during code review. On subsequent test runs, Jest will compare the rendered output with the previous snapshot. If they match, the test will pass. If they don't match, either the test runner found a bug in your code (in the `<Link>` component in this case) that should be fixed, or the implementation has changed and the snapshot needs to be updated.
 
-> Note: The snapshot is directly scoped to the data you render – in our example it's `<Link />` component with page prop passed to it. This implies that even if any other file has missing props (Say, `App.js`) in the `<Link />` component, it will still pass the test as the test doesn't know the usage of `<Link />` component and it's scoped only to the `Link.react.js`. Also, Rendering the same component with different props in other snapshot test will not affect the first one, as the tests don't know about each other.
+> Note: The snapshot is directly scoped to the data you render – in our example the `<Link />` component with `page` prop passed to it. This implies that even if any other file has missing props (Say, `App.js`) in the `<Link />` component, it will still pass the test as the test doesn't know the usage of `<Link />` component and it's scoped only to the `Link.react.js`. Also, Rendering the same component with different props in other snapshot tests will not affect the first one, as the tests don't know about each other.
 
 More information on how snapshot testing works and why we built it can be found on the [release blog post](https://jestjs.io/blog/2016/07/27/jest-14.html). We recommend reading [this blog post](http://benmccormick.org/2016/09/19/testing-with-jest-snapshots-first-impressions/) to get a good sense of when you should use snapshot testing. We also recommend watching this [egghead video](https://egghead.io/lessons/javascript-use-jest-s-snapshot-testing-feature?pl=testing-javascript-with-jest-a36c4074) on Snapshot Testing with Jest.
 
@@ -308,11 +308,11 @@ Jest has been rewritten with performance in mind, and snapshot testing is not an
 
 ### How do I resolve conflicts within snapshot files?
 
-Snapshot files must always represent the current state of the modules they are covering. Therefore, if you are merging two branches and encounter a conflict in the snapshot files, you can either resolve the conflict manually or to update the snapshot file by running Jest and inspecting the result.
+Snapshot files must always represent the current state of the modules they are covering. Therefore, if you are merging two branches and encounter a conflict in the snapshot files, you can either resolve the conflict manually or update the snapshot file by running Jest and inspecting the result.
 
 ### Is it possible to apply test-driven development principles with snapshot testing?
 
-Although it is possible to write snapshot files manually, that is usually not approachable. Snapshots help figuring out whether the output of the modules covered by tests is changed, rather than giving guidance to design the code in the first place.
+Although it is possible to write snapshot files manually, that is usually not approachable. Snapshots help to figure out whether the output of the modules covered by tests is changed, rather than giving guidance to design the code in the first place.
 
 ### Does code coverage work with snapshot testing?
 
