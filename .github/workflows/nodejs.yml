@@ -81,15 +81,12 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: install
         run: yarn
-        shell: bash
       - name: build
         run: yarn build:js
-        shell: bash
       - name: Get number of CPU cores
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests
         run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }}
-        shell: bash
         env:
           CI: true
