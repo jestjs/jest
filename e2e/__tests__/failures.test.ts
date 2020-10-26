@@ -51,6 +51,8 @@ test('not throwing Error objects', () => {
   }
 
   expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
+  stderr = runJest(dir, ['throwObjectWithStackProp.test.js']).stderr;
+  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
 });
 
 test('works with node assert', () => {

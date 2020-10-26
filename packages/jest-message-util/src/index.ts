@@ -380,7 +380,7 @@ const removeBlankErrorLine = (str: string) =>
 // Error object, so we have to regexp out the message from the stack string
 // to format it.
 export const separateMessageFromStack = (
-  content: string,
+  content: unknown,
 ): {message: string; stack: string} => {
   if (!content) {
     return {message: '', stack: ''};
@@ -390,9 +390,8 @@ export const separateMessageFromStack = (
   // (maybe it's a code frame instead), just the first non-empty line.
   // If the error is a plain "Error:" instead of a SyntaxError or TypeError we
   // remove the prefix from the message because it is generally not useful.
-  const messageMatch = content.match(
-    /^(?:Error: )?([\s\S]*?(?=\n\s*at\s.*:\d*:\d*)|\s*.*)([\s\S]*)$/,
-  );
+  const ERROR_REGEXP = /^(?:Error: )?([\s\S]*?(?=\n\s*at\s.*:\d*:\d*)|\s*.*)([\s\S]*)$/;
+  const messageMatch = typeof content !== 'string' ? `${content}`.match(ERROR_REGEXP) : content.match(ERROR_REGEXP);
   if (!messageMatch) {
     // For typescript
     throw new Error('If you hit this error, the regex above is buggy.');

@@ -82,7 +82,7 @@ describe('expectationResultFactory', () => {
   it('returns the result if failed (with `error.stack` not as a string).', () => {
     const options = {
       actual: 'Fail',
-      error: {stack: []},
+      error: {stack: 42},
       expected: 'Pass',
       matcherName: 'testMatcher',
       passed: false,

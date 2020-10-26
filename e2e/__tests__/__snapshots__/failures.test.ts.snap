@@ -254,6 +254,13 @@ FAIL __tests__/duringTests.test.js
       at Object.test (__tests__/duringTests.test.js:45:1)
 `;
 
+exports[`not throwing Error objects 6`] = `
+FAIL __tests__/throwObjectWithStackProp.test.js
+  ● Test suite failed to run
+
+    42
+`;
+
 exports[`works with assertions in separate files 1`] = `
 FAIL __tests__/testMacro.test.js
   ✕ use some imported macro to make assertion
