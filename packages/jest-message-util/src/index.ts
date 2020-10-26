@@ -391,7 +391,10 @@ export const separateMessageFromStack = (
   // If the error is a plain "Error:" instead of a SyntaxError or TypeError we
   // remove the prefix from the message because it is generally not useful.
   const ERROR_REGEXP = /^(?:Error: )?([\s\S]*?(?=\n\s*at\s.*:\d*:\d*)|\s*.*)([\s\S]*)$/;
-  const messageMatch = typeof content !== 'string' ? `${content}`.match(ERROR_REGEXP) : content.match(ERROR_REGEXP);
+  const messageMatch =
+    typeof content !== 'string'
+      ? `${content}`.match(ERROR_REGEXP)
+      : content.match(ERROR_REGEXP);
   if (!messageMatch) {
     // For typescript
     throw new Error('If you hit this error, the regex above is buggy.');
