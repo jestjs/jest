@@ -63,7 +63,9 @@ describe('init', () => {
         const writtenJestConfigFilename = fs.writeFileSync.mock.calls[0][0];
         const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
 
-        expect(writtenJestConfigFilename.endsWith('.mjs')).toBe(true);
+        expect(path.basename(writtenJestConfigFilename)).toBe(
+          'jest.config.mjs',
+        );
 
         expect(typeof writtenJestConfig).toBe('string');
         expect(writtenJestConfig.split('\n')[5]).toBe('export default {');
@@ -205,7 +207,7 @@ describe('init', () => {
         const jestConfigFileName = fs.writeFileSync.mock.calls[0][0];
         const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
 
-        expect(jestConfigFileName).toContain('/jest.config.ts');
+        expect(path.basename(jestConfigFileName)).toBe('jest.config.ts');
         expect(writtenJestConfig.split('\n')[5]).toBe('export default {');
       });
 
@@ -216,7 +218,7 @@ describe('init', () => {
 
         const jestConfigFileName = fs.writeFileSync.mock.calls[0][0];
 
-        expect(jestConfigFileName).not.toContain('jest.config.ts');
+        expect(path.basename(jestConfigFileName)).not.toBe('jest.config.ts');
       });
     });
   });
