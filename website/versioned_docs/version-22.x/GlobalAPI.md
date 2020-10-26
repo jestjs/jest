@@ -267,6 +267,8 @@ describe.skip('my other beverage', () => {
 });
 ```
 
+Using `describe.skip` is often a cleaner alternative to temporarily commenting out a chunk of tests.
+
 ### `test(name, fn, timeout)`
 
 Also under the alias: `it(name, fn, timeout)`
@@ -297,7 +299,7 @@ Even though the call to `test` will return right away, the test doesn't complete
 
 ### `test.only(name, fn, timeout)`
 
-Also under the aliases: `it.only(name, fn, timeout)` or `fit(name, fn, timeout)`
+Also under the aliases: `it.only(name, fn, timeout)`, and `fit(name, fn, timeout)`
 
 When you are debugging a large test file, you will often only want to run a subset of tests. You can use `.only` to specify which tests are the only ones you want to run in that test file.
 
@@ -321,7 +323,7 @@ Usually you wouldn't check code using `test.only` into source control - you woul
 
 ### `test.skip(name, fn)`
 
-Also under the aliases: `it.skip(name, fn)` or `xit(name, fn)` or `xtest(name, fn)`
+Also under the aliases: `it.skip(name, fn)`, `xit(name, fn)`, and `xtest(name, fn)`
 
 When you are maintaining a large codebase, you may sometimes find a test that is temporarily broken for some reason. If you want to skip running this test, but you don't want to delete this code, you can use `test.skip` to specify some tests to skip.
 

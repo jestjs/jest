@@ -6,7 +6,11 @@
 
 ### Fixes
 
+- `[expect]` Stop modifying the sample in `expect.objectContaining()` ([#10711](https://github.com/facebook/jest/pull/10711))
+
 ### Chore & Maintenance
+
+- `[jest-cli]` chore: standardize files and folder names ([#10698](https://github.com/facebook/jest/pull/1098))
 
 ### Performance
 

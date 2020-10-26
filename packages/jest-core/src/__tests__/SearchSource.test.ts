@@ -229,7 +229,7 @@ describe('SearchSource', () => {
         );
         expect(relPaths.sort()).toEqual([
           path.normalize('module.jsx'),
-          path.normalize('no_tests.js'),
+          path.normalize('noTests.js'),
         ]);
       });
     });

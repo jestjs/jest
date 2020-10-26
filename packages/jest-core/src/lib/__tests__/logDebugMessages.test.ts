@@ -7,7 +7,7 @@
  */
 
 import {wrap} from 'jest-snapshot-serializer-raw';
-import logDebugMessages from '../log_debug_messages';
+import logDebugMessages from '../logDebugMessages';
 import {makeGlobalConfig, makeProjectConfig} from '../../../../../TestUtils';
 
 jest.mock('../../../package.json', () => ({version: 123}));

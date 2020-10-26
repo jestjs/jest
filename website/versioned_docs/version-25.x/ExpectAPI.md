@@ -496,7 +496,7 @@ expect.addSnapshotSerializer(serializer);
 // affects expect(value).toMatchSnapshot() assertions in the test file
 ```
 
-If you add a snapshot serializer in individual test files instead of to adding it to `snapshotSerializers` configuration:
+If you add a snapshot serializer in individual test files instead of adding it to `snapshotSerializers` configuration:
 
 - You make the dependency explicit instead of implicit.
 - You avoid limits to configuration that might cause you to eject from [create-react-app](https://github.com/facebookincubator/create-react-app).
