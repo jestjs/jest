@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as path from 'path';
 import {Config} from '@jest/types';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import {FS as HasteFS} from 'jest-haste-map';
@@ -51,7 +52,9 @@ class DependencyResolver {
       if (this._resolver.isCoreModule(dependency)) {
         return acc;
       }
+
       let resolvedDependency;
+      let resolvedMockDependency;
       try {
         resolvedDependency = this._resolver.resolveModule(
           file,
@@ -59,11 +62,37 @@ class DependencyResolver {
           options,
         );
       } catch (e) {
-        resolvedDependency = this._resolver.getMockModule(file, dependency);
+        // TODO: This snippet might not be necessary, should be investigated later.
+        const mockDependency = this._resolver.getMockModule(file, dependency);
+        mockDependency && acc.push(mockDependency);
+        return acc;
       }
 
-      if (resolvedDependency) {
-        acc.push(resolvedDependency);
+      if (!resolvedDependency) {
+        return acc;
+      }
+
+      acc.push(resolvedDependency);
+
+      // If we resolve a dependency, then look for a mock dependency
+      // of the same name in that dependency's directory.
+      resolvedMockDependency = this._resolver.getMockModule(
+        path.dirname(resolvedDependency),
+        path.basename(dependency),
+      );
+
+      if (resolvedMockDependency) {
+        const dependencyMockDir = path.join(
+          path.dirname(resolvedDependency),
+          '__mocks__',
+        );
+
+        resolvedMockDependency = path.resolve(resolvedMockDependency);
+
+        // make sure mock is in the correct directory
+        if (dependencyMockDir === path.dirname(resolvedMockDependency)) {
+          acc.push(resolvedMockDependency);
+        }
       }
 
       return acc;
@@ -127,8 +156,9 @@ class DependencyResolver {
     }
     const modules: Array<DependencyResolver.ResolvedModule> = [];
     for (const file of this._hasteFS.getAbsoluteFileIterator()) {
+      const res = this.resolve(file, options);
       modules.push({
-        dependencies: this.resolve(file, options),
+        dependencies: res,
         file,
       });
     }
