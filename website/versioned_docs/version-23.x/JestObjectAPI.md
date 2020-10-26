@@ -433,6 +433,8 @@ test('works too', () => {
 });
 ```
 
+Returns the `jest` object for chaining.
+
 ## Mock functions
 
 ### `jest.fn(implementation)`
