@@ -78,19 +78,20 @@
 <p>Get a deeper insight into testing a working React Native app example by reading the following series: <a href="https://callstack.com/blog/testing-react-native-with-the-new-jest-part-1-snapshots-come-into-play/">Part 1: Jest – Snapshot come into play</a> and <a href="https://callstack.com/blog/testing-react-native-with-the-new-jest-part-2-redux-snapshots-for-your-actions-and-reducers/">Part 2: Jest – Redux Snapshots for your Actions and Reducers</a>.</p>
 <h2><a class="anchor" aria-hidden="true" id="setup"></a><a href="#setup" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Setup</h2>
 <p>Starting from react-native version 0.38, a Jest setup is included by default when running <code>react-native init</code>. The following configuration should be automatically added to your package.json file:</p>
-<pre><code class="hljs css language-json">// package.json
-  "scripts": {
-    "test": "jest"
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"scripts"</span>: {
+    <span class="hljs-attr">"test"</span>: <span class="hljs-string">"jest"</span>
   },
-  "jest": {
-    "preset": "react-native"
+  <span class="hljs-attr">"jest"</span>: {
+    <span class="hljs-attr">"preset"</span>: <span class="hljs-string">"react-native"</span>
   }
+}
 </code></pre>
 <p><em>Note: If you are upgrading your react-native application and previously used the <code>jest-react-native</code> preset, remove the dependency from your <code>package.json</code> file and change the preset to <code>react-native</code> instead.</em></p>
 <p>Run <code>yarn test</code> to run tests with Jest.</p>
 <h2><a class="anchor" aria-hidden="true" id="snapshot-test"></a><a href="#snapshot-test" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Snapshot Test</h2>
 <p>Let's create a <a href="/docs/en/25.x/snapshot-testing">snapshot test</a> for a small intro component with a few views and text components and some styles:</p>
-<pre><code class="hljs css language-javascript"><span class="hljs-comment">// Intro.js</span>
+<pre><code class="hljs css language-tsx"><span class="hljs-comment">// Intro.js</span>
 <span class="hljs-keyword">import</span> React, {Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> {StyleSheet, Text, View} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-native'</span>;
 
@@ -127,13 +128,13 @@
 }
 </code></pre>
 <p>Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:</p>
-<pre><code class="hljs css language-javascript"><span class="hljs-comment">// __tests__/Intro-test.js</span>
+<pre><code class="hljs css language-tsx"><span class="hljs-comment">// __tests__/Intro-test.js</span>
 <span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> renderer <span class="hljs-keyword">from</span> <span class="hljs-string">'react-test-renderer'</span>;
 <span class="hljs-keyword">import</span> Intro <span class="hljs-keyword">from</span> <span class="hljs-string">'../Intro'</span>;
 
-test(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
-  <span class="hljs-keyword">const</span> tree = renderer.create(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Intro</span> /&gt;</span></span>).toJSON();
+test(<span class="hljs-string">'renders correctly'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-keyword">const</span> tree = renderer.create(&lt;Intro /&gt;).toJSON();
   expect(tree).toMatchSnapshot();
 });
 </code></pre>
@@ -181,16 +182,20 @@ exports[<span class="hljs-string">`Intro renders correctly 1`</span>] = <span cl
 <h3><a class="anchor" aria-hidden="true" id="transformignorepatterns-customization"></a><a href="#transformignorepatterns-customization" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>transformIgnorePatterns customization</h3>
 <p>The <a href="configuration.html#transformignorepatterns-arraystring"><code>transformIgnorePatterns</code></a> option can be used to specify which files shall be transformed by Babel. Many react-native npm modules unfortunately don't pre-compile their source code before publishing.</p>
 <p>By default the jest-react-native preset only processes the project's own source files and react-native. If you have npm dependencies that have to be transformed you can customize this configuration option by including modules other than react-native:</p>
-<pre><code class="hljs css language-json">"transformIgnorePatterns": [
-  "node_modules/(?!(react-native|my-project|react-native-button)/)"
-]
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"transformIgnorePatterns"</span>: [
+    <span class="hljs-string">"node_modules/(?!(react-native|my-project|react-native-button)/)"</span>
+  ]
+}
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="setupfiles"></a><a href="#setupfiles" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setupFiles</h3>
 <p>If you'd like to provide additional configuration for every test file, the <a href="configuration.html#setupfiles-array"><code>setupFiles</code> configuration option</a> can be used to specify setup scripts.</p>
 <h3><a class="anchor" aria-hidden="true" id="modulenamemapper"></a><a href="#modulenamemapper" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>moduleNameMapper</h3>
 <p>The <a href="configuration.html#modulenamemapper-objectstring-string--arraystring"><code>moduleNameMapper</code></a> can be used to map a module path to a different module. By default the preset maps all images to an image stub module but if a module cannot be found this configuration option can help:</p>
-<pre><code class="hljs css language-json">"moduleNameMapper": {
-  "my-module.js": "&lt;rootDir&gt;/path/to/my-module.js"
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"moduleNameMapper"</span>: {
+    <span class="hljs-attr">"my-module.js"</span>: <span class="hljs-string">"&lt;rootDir&gt;/path/to/my-module.js"</span>
+  }
 }
 </code></pre>
 <h2><a class="anchor" aria-hidden="true" id="tips"></a><a href="#tips" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Tips</h2>

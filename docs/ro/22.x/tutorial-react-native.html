@@ -78,19 +78,20 @@
 <p>Get a deeper insight into testing a working React Native app example by reading the following series: <a href="https://callstack.com/blog/testing-react-native-with-the-new-jest-part-1-snapshots-come-into-play/">Part 1: Jest – Snapshot come into play</a> and <a href="https://callstack.com/blog/testing-react-native-with-the-new-jest-part-2-redux-snapshots-for-your-actions-and-reducers/">Part 2: Jest – Redux Snapshots for your Actions and Reducers</a>.</p>
 <h2><a class="anchor" aria-hidden="true" id="instalare"></a><a href="#instalare" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Instalare</h2>
 <p>Incepand cu versiunea react-native 0.38, instalarea Jest este inclusă implicit atunci când se rulează <code>react-native init</code>. Urmatoarea configuratie ar trebui să fie adăugată automat în fişierul package.json:</p>
-<pre><code class="hljs css language-json">// package.json
-  "scripts": {
-    "test": "jest"
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"scripts"</span>: {
+    <span class="hljs-attr">"test"</span>: <span class="hljs-string">"jest"</span>
   },
-  "jest": {
-    "preset": "react-native"
+  <span class="hljs-attr">"jest"</span>: {
+    <span class="hljs-attr">"preset"</span>: <span class="hljs-string">"react-native"</span>
   }
+}
 </code></pre>
 <p><em>Notă: Dacă actualizați aplicaţia react-native şi ați utilizat anterior presetarea <code>jest-react-native</code>, elimina dependenţa din fişierul <code>package.json</code> şi schimbați presetarea cu <code>react-native</code>.</em></p>
 <p>Run <code>yarn test</code> to run tests with Jest.</p>
 <h2><a class="anchor" aria-hidden="true" id="testarea-de-imagine"></a><a href="#testarea-de-imagine" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Testarea de imagine</h2>
 <p>Să creăm un <a href="/docs/ro/22.x/snapshot-testing">test de imagine</a> pentru o componentă micuță cu câteva view-uri şi componente de text şi unele stiluri:</p>
-<pre><code class="hljs css language-javascript"><span class="hljs-comment">// Intro.js</span>
+<pre><code class="hljs css language-tsx"><span class="hljs-comment">// Intro.js</span>
 <span class="hljs-keyword">import</span> React, {Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> {StyleSheet, Text, View} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-native'</span>;
 
@@ -127,13 +128,13 @@
 }
 </code></pre>
 <p>Acum haideţi să utilizăm procesorul de randare React şi funcționalitatea din Jest pentru testarea de imagine pentru a interacţiona cu componenta şi a captura rezultatul şi a crea un fişier de imagine:</p>
-<pre><code class="hljs css language-javascript"><span class="hljs-comment">// __tests__/Intro-test.js</span>
+<pre><code class="hljs css language-tsx"><span class="hljs-comment">// __tests__/Intro-test.js</span>
 <span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> renderer <span class="hljs-keyword">from</span> <span class="hljs-string">'react-test-renderer'</span>;
 <span class="hljs-keyword">import</span> Intro <span class="hljs-keyword">from</span> <span class="hljs-string">'../Intro'</span>;
 
-test(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
-  <span class="hljs-keyword">const</span> tree = renderer.create(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Intro</span> /&gt;</span></span>).toJSON();
+test(<span class="hljs-string">'renders correctly'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-keyword">const</span> tree = renderer.create(&lt;Intro /&gt;).toJSON();
   expect(tree).toMatchSnapshot();
 });
 </code></pre>
@@ -181,16 +182,20 @@ exports[<span class="hljs-string">`Intro renders correctly 1`</span>] = <span cl
 <h3><a class="anchor" aria-hidden="true" id="personalizări-de-transformignorepatterns"></a><a href="#personalizări-de-transformignorepatterns" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Personalizări de transformIgnorePatterns</h3>
 <p>The <a href="configuration.html#transformignorepatterns-arraystring"><code>transformIgnorePatterns</code></a> option can be used to specify which files shall be transformed by Babel. Din păcate multe module npm pentru react-native nu au codul sursă pre-compilat înainte de publicare.</p>
 <p>Implicit presetul jest-react-native doar procesează fişierele sursă din proiect şi react-native. If you have npm dependencies that have to be transformed you can customize this configuration option by including modules other than react-native:</p>
-<pre><code class="hljs css language-json">"transformIgnorePatterns": [
-  "node_modules/(?!(react-native|my-project|react-native-button)/)"
-]
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"transformIgnorePatterns"</span>: [
+    <span class="hljs-string">"node_modules/(?!(react-native|my-project|react-native-button)/)"</span>
+  ]
+}
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="setupfiles"></a><a href="#setupfiles" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setupFiles</h3>
 <p>Dacă doriţi să specificați configurări suplimentare pentru fiecare fişier de test, <a href="configuration.html#setupfiles-array">opţiunea de configurare <code>setupFiles</code></a> poate fi folosită pentru a specifica script-uri de inițializare.</p>
 <h3><a class="anchor" aria-hidden="true" id="modulenamemapper"></a><a href="#modulenamemapper" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>moduleNameMapper</h3>
 <p>Opțiunea <a href="configuration.html#modulenamemapper-objectstring-string"> <code>moduleNameMapper</code></a> poate fi utilizată pentru maparea o cale de modul către un modul diferit. În mod implicit presetarea mapează toate imaginile către un modul dublură de imagine dar dacă un modul nu poate fi găsit această opţiune de configurare poate ajuta:</p>
-<pre><code class="hljs css language-json">"moduleNameMapper": {
-  "my-module.js": "&lt;rootDir&gt;/path/to/my-module.js"
+<pre><code class="hljs css language-json">{
+  <span class="hljs-attr">"moduleNameMapper"</span>: {
+    <span class="hljs-attr">"my-module.js"</span>: <span class="hljs-string">"&lt;rootDir&gt;/path/to/my-module.js"</span>
+  }
 }
 </code></pre>
 <h2><a class="anchor" aria-hidden="true" id="recomandări"></a><a href="#recomandări" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Recomandări</h2>

@@ -78,13 +78,13 @@
 <p>A typical snapshot test case renders a UI component, takes a snapshot, then compares it to a reference snapshot file stored alongside the test. 2つのスナップショットが一致しない場合テストは失敗します: 予期されない変更があったか、参照するスナップショットが新しいバージョンのUIコンポーネントに更新される必要があるかのどちらかです。</p>
 <h2><a class="anchor" aria-hidden="true" id="jestにおけるスナップショットテスト"></a><a href="#jestにおけるスナップショットテスト" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Jestにおけるスナップショットテスト</h2>
 <p>Reactコンポーネントをテストする場合には同様のアプローチをとる事ができます。 アプリケーション全体の構築が必要となるグラフィカルなUIをレンダリングする代わりに、シリアライズ可能なReactツリーの値を素早く生成するテスト用レンダラーを利用できます。 以下の<a href="https://github.com/facebook/jest/blob/master/examples/snapshot/Link.react.js">Link component</a>の<a href="https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/link.react.test.js">テスト例</a>について考えてみましょう:</p>
-<pre><code class="hljs css language-javascript"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<pre><code class="hljs css language-tsx"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> renderer <span class="hljs-keyword">from</span> <span class="hljs-string">'react-test-renderer'</span>;
 <span class="hljs-keyword">import</span> Link <span class="hljs-keyword">from</span> <span class="hljs-string">'../Link.react'</span>;
 
-it(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
-  <span class="hljs-keyword">const</span> tree = renderer
-    .create(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">page</span>=<span class="hljs-string">"http://www.facebook.com"</span>&gt;</span>Facebook<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span></span>)
+it(<span class="hljs-string">'renders correctly'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  const tree = renderer
+    .create(&lt;Link page=<span class="hljs-string">"http://www.facebook.com"</span>&gt;Facebook&lt;/Link&gt;)
     .toJSON();
   expect(tree).toMatchSnapshot();
 });
@@ -109,13 +109,13 @@ it(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
 <h3><a class="anchor" aria-hidden="true" id="スナップショットの更新"></a><a href="#スナップショットの更新" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>スナップショットの更新</h3>
 <p>バグが混入した後でスナップショットテストが失敗したときは簡単に目星がつきます。 テストが失敗したら、その原因箇所に向かって問題を修正し、スナップショットテストが再びパスすることを確認すればよいのです。 ここで、意図的な仕様変更によりスナップショットテストが失敗するケースについて議論しましょう。</p>
 <p>このような状況はたとえば以下の例のLinkコンポーネントが指すアドレスを意図的に変更した場合に起こります。</p>
-<pre><code class="hljs css language-javascript"><span class="hljs-comment">// Updated test case with a Link to a different address</span>
-it(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
-  <span class="hljs-keyword">const</span> tree = renderer
-    .create(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">page</span>=<span class="hljs-string">"http://www.instagram.com"</span>&gt;</span>Instagram<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span></span>)
-    .toJSON();
-  expect(tree).toMatchSnapshot();
-});
+<pre><code class="hljs css language-tsx">// Updated test case with a Link to a different address
+it('renders correctly', () =&gt; {
+  const tree = renderer
+    .create(<span class="hljs-name">&lt;Link</span> page=<span class="hljs-string">"http://www.instagram.com"</span>&gt;Instagram&lt;/Link&gt;)
+    .toJSON()<span class="hljs-comment">;</span>
+  expect(<span class="hljs-name">tree</span>).toMatchSnapshot()<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
 </code></pre>
 <p>このケースではJestは以下のような結果を出力します。</p>
 <p><img src="/img/content/failedSnapshotTest.png" alt=""></p>
@@ -142,29 +142,29 @@ it(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
 </blockquote>
 <p><strong>例:</strong></p>
 <p>まず、テストを記述し、引数なしで <code>.toMatchInlineSnapshot()</code> を呼び出します。</p>
-<pre><code class="hljs css language-javascript">it(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
-  <span class="hljs-keyword">const</span> tree = renderer
-    .create(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">page</span>=<span class="hljs-string">"https://prettier.io"</span>&gt;</span>Prettier<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span></span>)
-    .toJSON();
-  expect(tree).toMatchInlineSnapshot();
-});
+<pre><code class="hljs css language-tsx">it('renders correctly', () =&gt; {
+  const tree = renderer
+    .create(<span class="hljs-name">&lt;Link</span> page=<span class="hljs-string">"https://prettier.io"</span>&gt;Prettier&lt;/Link&gt;)
+    .toJSON()<span class="hljs-comment">;</span>
+  expect(<span class="hljs-name">tree</span>).toMatchInlineSnapshot()<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
 </code></pre>
 <p>次回Jestを実行した際には、<code>tree</code> が評価され、スナップショットが記述されて<code>toMatchInlineSnapshot</code>の引数となります。</p>
-<pre><code class="hljs css language-javascript">it(<span class="hljs-string">'renders correctly'</span>, () =&gt; {
-  <span class="hljs-keyword">const</span> tree = renderer
-    .create(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">page</span>=<span class="hljs-string">"https://prettier.io"</span>&gt;</span>Prettier<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span></span>)
-    .toJSON();
-  expect(tree).toMatchInlineSnapshot(<span class="hljs-string">`
+<pre><code class="hljs css language-tsx">it('renders correctly', () =&gt; {
+  const tree = renderer
+    .create(<span class="hljs-name">&lt;Link</span> page=<span class="hljs-string">"https://prettier.io"</span>&gt;Prettier&lt;/Link&gt;)
+    .toJSON()<span class="hljs-comment">;</span>
+  expect(<span class="hljs-name">tree</span>).toMatchInlineSnapshot(`
 &lt;a
-  className="normal"
-  href="https://prettier.io"
+  className=<span class="hljs-string">"normal"</span>
+  href=<span class="hljs-string">"https://prettier.io"</span>
   onMouseEnter={[Function]}
   onMouseLeave={[Function]}
 &gt;
   Prettier
 &lt;/a&gt;
-`</span>);
-});
+`)<span class="hljs-comment">;</span>
+})<span class="hljs-comment">;</span>
 </code></pre>
 <p>That's all there is to it! You can even update the snapshots with <code>--updateSnapshot</code> or using the <code>u</code> key in <code>--watch</code> mode.</p>
 <h3><a class="anchor" aria-hidden="true" id="property-matchers"></a><a href="#property-matchers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Property Matchers</h3>

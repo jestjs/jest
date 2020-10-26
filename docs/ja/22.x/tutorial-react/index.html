@@ -111,15 +111,15 @@
 <p><strong>それでは次へ進みましょう！</strong></p>
 <h3><a class="anchor" aria-hidden="true" id="スナップショットテスト"></a><a href="#スナップショットテスト" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>スナップショットテスト</h3>
 <p>ハイパーリンクをレンダリングするLinkコンポーネントの <a href="/docs/ja/22.x/snapshot-testing">snapshot test</a> を作成しましょう:</p>
-<pre><code class="hljs css language-javascript"><span class="hljs-comment">// Link.react.js</span>
-<span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<pre><code class="hljs css language-tsx"><span class="hljs-comment">// Link.react.js</span>
+<span class="hljs-keyword">import</span> React from <span class="hljs-string">'react'</span>;
 
 <span class="hljs-keyword">const</span> STATUS = {
-  <span class="hljs-attr">HOVERED</span>: <span class="hljs-string">'hovered'</span>,
-  <span class="hljs-attr">NORMAL</span>: <span class="hljs-string">'normal'</span>,
+  HOVERED: <span class="hljs-string">'hovered'</span>,
+  NORMAL: <span class="hljs-string">'normal'</span>,
 };
 
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Link</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+export <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Link</span> <span class="hljs-title">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
   <span class="hljs-keyword">constructor</span>(props) {
     <span class="hljs-keyword">super</span>(props);
 
@@ -127,56 +127,56 @@
     <span class="hljs-keyword">this</span>._onMouseLeave = <span class="hljs-keyword">this</span>._onMouseLeave.bind(<span class="hljs-keyword">this</span>);
 
     <span class="hljs-keyword">this</span>.state = {
-      <span class="hljs-attr">class</span>: STATUS.NORMAL,
-    };
+      <span class="hljs-class"><span class="hljs-keyword">class</span>: <span class="hljs-type">STATUS.NORMAL</span>,
+    <span class="hljs-type">};</span></span>
   }
 
   _onMouseEnter() {
-    <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">class</span>: STATUS.HOVERED});
+    <span class="hljs-keyword">this</span>.setState({<span class="hljs-class"><span class="hljs-keyword">class</span>: <span class="hljs-type">STATUS.HOVERED});</span></span>
   }
 
   _onMouseLeave() {
-    <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">class</span>: STATUS.NORMAL});
+    <span class="hljs-keyword">this</span>.setState({<span class="hljs-class"><span class="hljs-keyword">class</span>: <span class="hljs-type">STATUS.NORMAL});</span></span>
   }
 
   render() {
     <span class="hljs-keyword">return</span> (
-      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">a</span>
-        <span class="hljs-attr">className</span>=<span class="hljs-string">{this.state.class}</span>
-        <span class="hljs-attr">href</span>=<span class="hljs-string">{this.props.page</span> || '#'}
-        <span class="hljs-attr">onMouseEnter</span>=<span class="hljs-string">{this._onMouseEnter}</span>
-        <span class="hljs-attr">onMouseLeave</span>=<span class="hljs-string">{this._onMouseLeave}</span>
-      &gt;</span>
-        {this.props.children}
-      <span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span></span>
+      &lt;a
+        className={<span class="hljs-keyword">this</span>.state<span class="hljs-class">.<span class="hljs-keyword">class</span>}</span>
+        href={<span class="hljs-keyword">this</span>.props.page || <span class="hljs-string">'#'</span>}
+        onMouseEnter={<span class="hljs-keyword">this</span>._onMouseEnter}
+        onMouseLeave={<span class="hljs-keyword">this</span>._onMouseLeave}
+      &gt;
+        {<span class="hljs-keyword">this</span>.props.children}
+      &lt;/a&gt;
     );
   }
 }
 </code></pre>
 <p>コンポーネントとのやり取りとレンダリングされた出力をキャプチャしてスナップショットファイルを作成するために、ReactのテストレンダラーとJestのスナップショット機能を利用しましょう:</p>
-<pre><code class="hljs css language-javascript"><span class="hljs-comment">// Link.react.test.js</span>
-<span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
-<span class="hljs-keyword">import</span> renderer <span class="hljs-keyword">from</span> <span class="hljs-string">'react-test-renderer'</span>;
-<span class="hljs-keyword">import</span> Link <span class="hljs-keyword">from</span> <span class="hljs-string">'../Link.react'</span>;
+<pre><code class="hljs css language-tsx"><span class="hljs-comment">// Link.react.test.js</span>
+import React from 'react';
+import renderer from 'react-test-renderer';
+import Link from '../<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">Link</span>.</span></span>react';
 
-test(<span class="hljs-string">'Link changes the class when hovered'</span>, () =&gt; {
-  <span class="hljs-keyword">const</span> component = renderer.create(
-    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">Link</span> <span class="hljs-attr">page</span>=<span class="hljs-string">"http://www.facebook.com"</span>&gt;</span>Facebook<span class="hljs-tag">&lt;/<span class="hljs-name">Link</span>&gt;</span></span>,
+test('Link changes the <span class="hljs-keyword">class</span> <span class="hljs-keyword">when</span> hovered',<span class="hljs-function"> <span class="hljs-params">()</span> =&gt;</span> {
+  const component = renderer.create(
+    &lt;Link page=<span class="hljs-string">"http://www.facebook.com"</span>&gt;Facebook&lt;/Link&gt;,
   );
-  <span class="hljs-keyword">let</span> tree = component.toJSON();
-  expect(tree).toMatchSnapshot();
+  <span class="hljs-keyword">let</span> tree = component.<span class="hljs-keyword">to</span><span class="hljs-constructor">JSON()</span>;
+  expect(tree).<span class="hljs-keyword">to</span><span class="hljs-constructor">MatchSnapshot()</span>;
 
   <span class="hljs-comment">// manually trigger the callback</span>
-  tree.props.onMouseEnter();
+  tree.props.on<span class="hljs-constructor">MouseEnter()</span>;
   <span class="hljs-comment">// re-rendering</span>
-  tree = component.toJSON();
-  expect(tree).toMatchSnapshot();
+  tree = component.<span class="hljs-keyword">to</span><span class="hljs-constructor">JSON()</span>;
+  expect(tree).<span class="hljs-keyword">to</span><span class="hljs-constructor">MatchSnapshot()</span>;
 
   <span class="hljs-comment">// manually trigger the callback</span>
-  tree.props.onMouseLeave();
+  tree.props.on<span class="hljs-constructor">MouseLeave()</span>;
   <span class="hljs-comment">// re-rendering</span>
-  tree = component.toJSON();
-  expect(tree).toMatchSnapshot();
+  tree = component.<span class="hljs-keyword">to</span><span class="hljs-constructor">JSON()</span>;
+  expect(tree).<span class="hljs-keyword">to</span><span class="hljs-constructor">MatchSnapshot()</span>;
 });
 </code></pre>
 <p><code>yarn test</code> または <code>jest</code>を実行すると、このようなファイルが出力されます:</p>
@@ -229,7 +229,7 @@ Warning: The tag &lt;SomeComponent&gt; is unrecognized <span class="hljs-keyword
 js
 jest.mock('./SomeComponent', () =&gt; () =&gt; 'SomeComponent');</p></li>
 <li><p>Render as a custom element. DOM &quot;custom elements&quot; aren't checked for anything and shouldn't fire warnings. They are lowercase and have a dash in the name.
-js
+tsx
 jest.mock('./Widget', () =&gt; () =&gt; &lt;mock-widget /&gt;);</p></li>
 <li><p><code>react-test-renderer</code> を使用する。 test renderer は、要素の型を気にしないので、<code>SomeComponent</code> といった要素を許容してくれます。 test renderer を使うと、スナップショットをチェックしたり、Enzyme とは独立してコンポーネントのふるまいを確認することができます。</p></li>
 <li><p>警告をすべて無効にします（jestの設定ファイルで行う必要があります）：
@@ -241,14 +241,14 @@ jest.mock('fbjs/lib/warning', () =&gt; require('fbjs/lib/emptyFunction')); こ�
 <h4><a class="anchor" aria-hidden="true" id="react-testing-library"></a><a href="#react-testing-library" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>react-testing-library</h4>
 <p>react-testing-libraryを利用するには、 <code>yarn add --dev @testing-library/react</code> を実行する必要があります。</p>
 <p>2つのラベルを入れ替えるチェックボックスを実装しましょう。</p>
-<pre><code class="hljs css language-javascript"><span class="hljs-comment">// CheckboxWithLabel.js</span>
+<pre><code class="hljs css language-tsx"><span class="hljs-comment">// CheckboxWithLabel.js</span>
 
-<span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> React from <span class="hljs-string">'react'</span>;
 
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CheckboxWithLabel</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
+export <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CheckboxWithLabel</span> <span class="hljs-title">extends</span> <span class="hljs-title">React</span>.<span class="hljs-title">Component</span> </span>{
   <span class="hljs-keyword">constructor</span>(props) {
     <span class="hljs-keyword">super</span>(props);
-    <span class="hljs-keyword">this</span>.state = {<span class="hljs-attr">isChecked</span>: <span class="hljs-literal">false</span>};
+    <span class="hljs-keyword">this</span>.state = {isChecked: <span class="hljs-literal">false</span>};
 
     <span class="hljs-comment">// bind manually because React class components don't auto-bind</span>
     <span class="hljs-comment">// https://reactjs.org/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding</span>
@@ -256,57 +256,57 @@ jest.mock('fbjs/lib/warning', () =&gt; require('fbjs/lib/emptyFunction')); こ�
   }
 
   onChange() {
-    <span class="hljs-keyword">this</span>.setState({<span class="hljs-attr">isChecked</span>: !<span class="hljs-keyword">this</span>.state.isChecked});
+    <span class="hljs-keyword">this</span>.setState({isChecked: !<span class="hljs-keyword">this</span>.state.isChecked});
   }
 
   render() {
     <span class="hljs-keyword">return</span> (
-      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">label</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">input</span>
-          <span class="hljs-attr">type</span>=<span class="hljs-string">"checkbox"</span>
-          <span class="hljs-attr">checked</span>=<span class="hljs-string">{this.state.isChecked}</span>
-          <span class="hljs-attr">onChange</span>=<span class="hljs-string">{this.onChange}</span>
-        /&gt;</span>
-        {this.state.isChecked ? this.props.labelOn : this.props.labelOff}
-      <span class="hljs-tag">&lt;/<span class="hljs-name">label</span>&gt;</span></span>
+      &lt;label&gt;
+        &lt;input
+          type=<span class="hljs-string">"checkbox"</span>
+          checked={<span class="hljs-keyword">this</span>.state.isChecked}
+          onChange={<span class="hljs-keyword">this</span>.onChange}
+        /&gt;
+        {<span class="hljs-keyword">this</span>.state.isChecked ? <span class="hljs-keyword">this</span>.props.labelOn : <span class="hljs-keyword">this</span>.props.labelOff}
+      &lt;/label&gt;
     );
   }
 }
 </code></pre>
-<pre><code class="hljs css language-javascript"><span class="hljs-comment">// __tests__/CheckboxWithLabel-test.js</span>
-<span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
-<span class="hljs-keyword">import</span> {cleanup, fireEvent, render} <span class="hljs-keyword">from</span> <span class="hljs-string">'@testing-library/react'</span>;
-<span class="hljs-keyword">import</span> CheckboxWithLabel <span class="hljs-keyword">from</span> <span class="hljs-string">'../CheckboxWithLabel'</span>;
+<pre><code class="hljs css language-tsx"><span class="hljs-comment">// __tests__/CheckboxWithLabel-test.js</span>
+import React from 'react';
+import {cleanup, fireEvent, render} from '@testing-library/react';
+import CheckboxWithLabel from '../CheckboxWithLabel';
 
 <span class="hljs-comment">// Note: running cleanup afterEach is done automatically for you in @testing-library/react@9.0.0 or higher</span>
 <span class="hljs-comment">// unmount and cleanup DOM after the test is finished.</span>
-afterEach(cleanup);
+after<span class="hljs-constructor">Each(<span class="hljs-params">cleanup</span>)</span>;
 
-it(<span class="hljs-string">'CheckboxWithLabel changes the text after click'</span>, () =&gt; {
-  <span class="hljs-keyword">const</span> {queryByLabelText, getByLabelText} = render(
-    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">CheckboxWithLabel</span> <span class="hljs-attr">labelOn</span>=<span class="hljs-string">"On"</span> <span class="hljs-attr">labelOff</span>=<span class="hljs-string">"Off"</span> /&gt;</span></span>,
+it('CheckboxWithLabel changes the text after click',<span class="hljs-function"> <span class="hljs-params">()</span> =&gt;</span> {
+  const {queryByLabelText, getByLabelText} = render(
+    &lt;CheckboxWithLabel labelOn=<span class="hljs-string">"On"</span> labelOff=<span class="hljs-string">"Off"</span> /&gt;,
   );
 
-  expect(queryByLabelText(<span class="hljs-regexp">/off/i</span>)).toBeTruthy();
+  expect(query<span class="hljs-constructor">ByLabelText(<span class="hljs-operator">/</span><span class="hljs-params">off</span><span class="hljs-operator">/</span><span class="hljs-params">i</span>)</span>).<span class="hljs-keyword">to</span><span class="hljs-constructor">BeTruthy()</span>;
 
-  fireEvent.click(getByLabelText(<span class="hljs-regexp">/off/i</span>));
+  fireEvent.click(get<span class="hljs-constructor">ByLabelText(<span class="hljs-operator">/</span><span class="hljs-params">off</span><span class="hljs-operator">/</span><span class="hljs-params">i</span>)</span>);
 
-  expect(queryByLabelText(<span class="hljs-regexp">/on/i</span>)).toBeTruthy();
+  expect(query<span class="hljs-constructor">ByLabelText(<span class="hljs-operator">/</span><span class="hljs-params">on</span><span class="hljs-operator">/</span><span class="hljs-params">i</span>)</span>).<span class="hljs-keyword">to</span><span class="hljs-constructor">BeTruthy()</span>;
 });
 </code></pre>
 <p>この例のコードは <a href="https://github.com/facebook/jest/tree/master/examples/react-testing-library">examples/react-testing-library</a> で入手できます。</p>
 <h4><a class="anchor" aria-hidden="true" id="enzyme"></a><a href="#enzyme" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Enzyme</h4>
 <p>You have to run <code>yarn add --dev enzyme</code> to use Enzyme. If you are using a React version below 15.5.0, you will also need to install <code>react-addons-test-utils</code>.</p>
 <p>Let's rewrite the test from above using Enzyme instead of react-testing-library. この例ではEnxymeの <a href="http://airbnb.io/enzyme/docs/api/shallow.html">shallow renderer</a>を使用します。</p>
-<pre><code class="hljs css language-javascript"><span class="hljs-comment">// __tests__/CheckboxWithLabel-test.js</span>
+<pre><code class="hljs css language-tsx"><span class="hljs-comment">// __tests__/CheckboxWithLabel-test.js</span>
 
 <span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> {shallow} <span class="hljs-keyword">from</span> <span class="hljs-string">'enzyme'</span>;
 <span class="hljs-keyword">import</span> CheckboxWithLabel <span class="hljs-keyword">from</span> <span class="hljs-string">'../CheckboxWithLabel'</span>;
 
-test(<span class="hljs-string">'CheckboxWithLabel changes the text after click'</span>, () =&gt; {
+test(<span class="hljs-string">'CheckboxWithLabel changes the text after click'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
   <span class="hljs-comment">// Render a checkbox with label in the document</span>
-  <span class="hljs-keyword">const</span> checkbox = shallow(<span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">CheckboxWithLabel</span> <span class="hljs-attr">labelOn</span>=<span class="hljs-string">"On"</span> <span class="hljs-attr">labelOff</span>=<span class="hljs-string">"Off"</span> /&gt;</span></span>);
+  <span class="hljs-keyword">const</span> checkbox = shallow(&lt;CheckboxWithLabel labelOn=<span class="hljs-string">"On"</span> labelOff=<span class="hljs-string">"Off"</span> /&gt;);
 
   expect(checkbox.text()).toEqual(<span class="hljs-string">'Off'</span>);
 
