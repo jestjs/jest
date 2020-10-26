@@ -43,7 +43,7 @@ function stackFormatter(
   }
 
   if (options.error) {
-    if ( typeof options.error.stack === 'string') {
+    if (typeof options.error.stack === 'string') {
       return options.error.stack;
     }
 
