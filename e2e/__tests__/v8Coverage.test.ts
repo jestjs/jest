@@ -16,9 +16,7 @@ test('prints coverage', () => {
   const {stdout, exitCode} = runJest(
     sourcemapDir,
     ['--coverage', '--coverage-provider', 'v8'],
-    {
-      stripAnsi: true,
-    },
+    {stripAnsi: true},
   );
 
   expect(exitCode).toBe(0);
