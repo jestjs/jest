@@ -167,8 +167,8 @@
 <p>我们已经告知Jest忽略相关匹配的样式表或者图像文件，相反，导入我们的模拟文件。 你可以通过调整正规表达式来匹配webpack可以处理的文件类型。</p>
 <p><em>注：如果你bael-jest和额外的代码预处理器，你必须明确的定义babel-jest为你的Js代码的转换器，并且你需要映射所有<code>.js</code>文件到babel-jest模块。</em></p>
 <pre><code class="hljs css language-json">"transform": {
-  "^.+\\.js$": "babel-jest",
-  "^.+\\.css$": "custom-transformer",
+  "\\.js$": "babel-jest",
+  "\\.css$": "custom-transformer",
   ...
 }
 </code></pre>
@@ -190,7 +190,7 @@
 <blockquote>
 <p>Note: <code>&lt;rootDir&gt;</code> is a special token that gets replaced by Jest with the root of your project. Most of the time this will be the folder where your <code>package.json</code> is located unless you specify a custom <code>rootDir</code> option in your configuration.</p>
 </blockquote>
-<p>同样 webpack的 <code>resolve.root</code> 选项，如设置的 <code>NODE_PATH</code> env变量，都可以设置或使用 <code>modulePaths</code> 选项。</p>
+<p>Similarly, webpack's <code>resolve.root</code> option functions like setting the <code>NODE_PATH</code> env variable, which you can set, or make use of the <code>modulePaths</code> option.</p>
 <pre><code class="hljs css language-json"><span class="hljs-comment">// package.json</span>
 {
   <span class="hljs-attr">"jest"</span>: {
@@ -204,7 +204,7 @@
   }
 }
 </code></pre>
-<p>And finally, we have to handle the webpack <code>alias</code>. For that we can make use of the <code>moduleNameMapper</code> option again.</p>
+<p>And finally, we have to handle the webpack <code>alias</code>. For that, we can make use of the <code>moduleNameMapper</code> option again.</p>
 <pre><code class="hljs css language-json"><span class="hljs-comment">// package.json</span>
 {
   <span class="hljs-attr">"jest"</span>: {

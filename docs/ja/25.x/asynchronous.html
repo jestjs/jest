@@ -104,17 +104,18 @@ test(<span class="hljs-string">'the data is peanut butter'</span>, () =&gt; {
 });
 </code></pre>
 <p><code>done()</code> が呼ばれない場合、お望み通りにテストが（タイムアウトにより）失敗します。</p>
-<p><code>expect</code> 文が失敗した場合、エラーがスローされて <code>done()</code> は呼び出されません。 テストログで失敗した理由を確認したい場合。 <code>try</code>ブロックで<code>expect</code> をラップし、 <code>catch</code> ブロック内でエラーを <code>done</code> に渡す必要があります。 そうしなければ、 <code>expect(data)</code> によってどの値が受信されたかを示さない不透明なタイムアウトエラーが起こるだけになります。</p>
+<p><code>expect</code> 文が失敗した場合、エラーがスローされて <code>done()</code> は呼び出されません。 ログで失敗した理由を確認したい場合、 <code>try</code>ブロックで<code>expect</code> をラップし、 <code>catch</code> ブロック内でエラーを <code>done</code> に渡す必要があります。 さもなければ、 <code>expect(data)</code> によってどの値が受信されたかを示さない不透明なタイムアウトエラーが起こるだけになります。</p>
 <h2><a class="anchor" aria-hidden="true" id="promises"></a><a href="#promises" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Promises</h2>
 <p>promiseを使用するコードであれば、非同期テストをもっと簡単に処理する方法があります。 テストからpromiseを返すと、Jestはそのpromiseがresolveされるまで待機します。 promiseがrejectされた場合は、テストは自動的に失敗します。</p>
 <p>例えば, コールバックを使用せずに、resolveしたときに文字列 <code>'peanut butter'</code>を返すpromiseの<code>fetchData</code>を呼ぶとします。 次のようにテストできます。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'the data is peanut butter'</span>, () =&gt; {
+  expect.assertions(<span class="hljs-number">1</span>);
   <span class="hljs-keyword">return</span> fetchData().then(<span class="hljs-function"><span class="hljs-params">data</span> =&gt;</span> {
     expect(data).toBe(<span class="hljs-string">'peanut butter'</span>);
   });
 });
 </code></pre>
-<p>promiseを返していることを確認してください。- もしこの <code>return</code> 文を省略した場合、あなたのテストは、<code>fetchData</code>がresolveされpromiseが返ってくる前に実行され、then() 内のコールバックが実行される前に完了してしまいます。</p>
+<p>必ずpromiseを返して下さい - <code>return</code> 宣言を書かなかった場合、<code>fetchData</code>が完了する前にテストが終了します。</p>
 <p>promiseがrejectされることを期待するケースでは <code>.catch</code> メソッドを使用してください。 想定した数のアサーションが呼ばれたことを確認するため、<code>expect.assertions</code>を必ず追加して下さい。 さもなければpromiseがrejectされなかった場合にテストが失敗したと判定されません。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'the fetch fails with an error'</span>, () =&gt; {
   expect.assertions(<span class="hljs-number">1</span>);
@@ -122,14 +123,17 @@ test(<span class="hljs-string">'the data is peanut butter'</span>, () =&gt; {
 });
 </code></pre>
 <h2><a class="anchor" aria-hidden="true" id="resolves--rejects"></a><a href="#resolves--rejects" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.resolves</code> / <code>.rejects</code></h2>
+<h5><a class="anchor" aria-hidden="true" id="jest-バージョン2000で利用可能"></a><a href="#jest-バージョン2000で利用可能" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>jest バージョン<strong>20.0.0+</strong>で利用可能</h5>
 <p>またexpect文で<code>.resolves</code>マッチャを使用する事もでき、Jestはpromiseがresolveされるまで待機します。 promiseがrejectされた場合は、テストは自動的に失敗します。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'the data is peanut butter'</span>, () =&gt; {
+  expect.assertions(<span class="hljs-number">1</span>);
   <span class="hljs-keyword">return</span> expect(fetchData()).resolves.toBe(<span class="hljs-string">'peanut butter'</span>);
 });
 </code></pre>
-<p>アサーションを返していることを確認してください。- もしこの <code>return</code> 文を省略した場合、あなたのテストは、<code>fetchData</code>がresolveされpromiseが返ってくる前に実行され、then() 内のコールバックが実行される前に完了してしまいます。</p>
+<p>必ずアサーションを返して下さい - この<code>return</code> 宣言を書かなかった場合、<code>fetchData</code>が完了する前にテストが終了します。</p>
 <p>promiseがrejectされることを期待するケースでは<code>.rejects</code> マッチャを使用してください。 <code>.resolves</code>マッチャと似た動作をします。 promiseが成功した場合は、テストは自動的に失敗します。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'the fetch fails with an error'</span>, () =&gt; {
+  expect.assertions(<span class="hljs-number">1</span>);
   <span class="hljs-keyword">return</span> expect(fetchData()).rejects.toMatch(<span class="hljs-string">'error'</span>);
 });
 </code></pre>
@@ -149,13 +153,15 @@ test(<span class="hljs-string">'the fetch fails with an error'</span>, <span cla
   }
 });
 </code></pre>
-<p><code>async</code> と <code>await</code> を <code>.resolves</code> または <code>.reject</code> と組み合わせることができます。</p>
+<p><code>async</code> や <code>await</code> を <code>.resolves</code> または <code>.rejects</code>と連結することもできます(Jestバージョン <strong>20.0.0+</strong>で利用可能)。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'the data is peanut butter'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  expect.assertions(<span class="hljs-number">1</span>);
   <span class="hljs-keyword">await</span> expect(fetchData()).resolves.toBe(<span class="hljs-string">'peanut butter'</span>);
 });
 
 test(<span class="hljs-string">'the fetch fails with an error'</span>, <span class="hljs-keyword">async</span> () =&gt; {
-  <span class="hljs-keyword">await</span> expect(fetchData()).rejects.toThrow(<span class="hljs-string">'error'</span>);
+  expect.assertions(<span class="hljs-number">1</span>);
+  <span class="hljs-keyword">await</span> expect(fetchData()).rejects.toMatch(<span class="hljs-string">'error'</span>);
 });
 </code></pre>
 <p>これらのケースでは <code>async</code> や <code>await</code> は事実上、promiseを使用した例と同じロジックの糖衣構文です。</p>

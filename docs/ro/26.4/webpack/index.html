@@ -167,8 +167,8 @@
 <p>I-am specificat lui Jest să ignore fişiere de stil sau imagini, şi în schimb, să includă fișierele noastre mock. Puteţi ajusta expresia regulată pentru a se potrivi tipurilor de fișiere pe care configuratia voastră webpack o gestionează.</p>
 <p><em>Notă: dacă utilizaţi babel-jest cu preprocesoare de cod adiționale, trebuie să definească explicit babel-jest ca un transformator pentru codul JavaScript pentru a mapa fişierele <code>.js</code> către modulul babel-jest.</em></p>
 <pre><code class="hljs css language-json">"transform": {
-  "^.+\\.js$": "babel-jest",
-  "^.+\\.css$": "custom-transformer",
+  "\\.js$": "babel-jest",
+  "\\.css$": "custom-transformer",
   ...
 }
 </code></pre>

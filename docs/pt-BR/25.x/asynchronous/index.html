@@ -115,7 +115,7 @@ test(<span class="hljs-string">'the data is peanut butter'</span>, () =&gt; {
 });
 </code></pre>
 <p>Be sure to return the promise - if you omit this <code>return</code> statement, your test will complete before the promise returned from <code>fetchData</code> resolves and then() has a chance to execute the callback.</p>
-<p>If you expect a promise to be rejected, use the <code>.catch</code> method. Se certifique de adicionar <code>expect.assertions</code> para verificar que um certo número de afirmações são chamadas. Caso contrário, uma promessa cumprida não iria falhar no teste.</p>
+<p>If you expect a promise to be rejected, use the <code>.catch</code> method. Se certifique de adicionar <code>expect.assertions</code> para verificar que um certo número de afirmações são chamadas. Otherwise, a fulfilled promise would not fail the test.</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'the fetch fails with an error'</span>, () =&gt; {
   expect.assertions(<span class="hljs-number">1</span>);
   <span class="hljs-keyword">return</span> fetchData().catch(<span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> expect(e).toMatch(<span class="hljs-string">'error'</span>));

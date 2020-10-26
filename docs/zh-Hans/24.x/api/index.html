@@ -524,7 +524,7 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="testonlyname-fn-timeout"></a><a href="#testonlyname-fn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.only(name, fn, timeout)</code></h3>
-<p>还有别名： <code>it.only(name, fn)</code> 或 <code>fit(name, fn)</code></p>
+<p>Also under the aliases: <code>it.only(name, fn, timeout)</code>, and <code>fit(name, fn, timeout)</code></p>
 <p>When you are debugging a large test file, you will often only want to run a subset of tests. You can use <code>.only</code> to specify which tests are the only ones you want to run in that test file.</p>
 <p>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait before aborting. <em>Note: The default timeout is 5 seconds.</em></p>
 <p>比如说，你有这些测试︰</p>
@@ -570,7 +570,7 @@ test(<span class="hljs-string">'will not be ran'</span>, () =&gt; {
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="testskipname-fn"></a><a href="#testskipname-fn" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.skip(name, fn)</code></h3>
-<p>还有别名：<code>it.skip(name, fn)</code> 或 <code>xit(name, fn)</code> 或 <code>xtest(name, fn)</code></p>
+<p>Also under the aliases: <code>it.skip(name, fn)</code>, <code>xit(name, fn)</code>, and <code>xtest(name, fn)</code></p>
 <p>当你维护一个很大的代码库时，有时可能会发现一个由于某种原因被暂时破坏的测试。 If you want to skip running this test, but you don't want to delete this code, you can use <code>test.skip</code> to specify some tests to skip.</p>
 <p>比如说，你有这些测试︰</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'it is raining'</span>, () =&gt; {
@@ -615,6 +615,7 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="testtodoname"></a><a href="#testtodoname" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.todo(name)</code></h3>
+<p>Also under the alias: <code>it.todo(name)</code></p>
 <p>Use <code>test.todo</code> when you are planning on writing tests. These tests will be highlighted in the summary output at the end so you know how many tests you still need todo.</p>
 <p><em>Note</em>: If you supply a test callback function then the <code>test.todo</code> will throw an error. If you have already implemented the test and it is broken and you do not want it to run, then use <code>test.skip</code> instead.</p>
 <h4><a class="anchor" aria-hidden="true" id="api"></a><a href="#api" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>API</h4>

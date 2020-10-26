@@ -86,10 +86,10 @@ node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other argume
 <p>Google Chrome （もしくは Chromium ベースのブラウザ）でデバッグするには、ブラウザを開いて、<code>chrome://inspect</code> にアクセスし、 &quot;Open Dedicated DevTools for Node&quot; を開きます。そうすれば接続できるアクティブな node インスタンスの一覧が表示されます。 上記のコマンドを実行した後、端末に表示されるアドレス(通常は <code>localhost:9229</code>のようなもの)をクリックします。 ChromeのDevToolsを使ってJestをデバッグできます。</p>
 <p>ChromeDeveloperToolsが表示され、Jest の CLIスクリプトの１行目にブレークポイントが設定されます（これは開発者ツールを開くための時間を設けて、その前に Jest が実行されてしまうのを防ぐためのものです）。 次の実行に進むには画面の上部右側にある再生ボタンのようなボタンをクリックします。 <code>debugger</code> 宣言を含むテストをJestが実行した場合、実行はポーズされ現在いのスコープとコールスタックを調べることができます。</p>
 <blockquote>
-<p>Note: the <code>--runInBand</code> cli option makes sure Jest runs the test in the same process rather than spawning processes for individual tests. 通常Jestはプロセスをまたいで並列にテストを実行しますが、同時に複数のプロセスをデバッグするのは困難だからです。</p>
+<p>注意: コマンドラインの<code>--runInBand</code> オプションは個々のテストに対してプロセスを生成するのではなく必ず同じプロセスでJestを実行します。 通常Jestはプロセスをまたいで並列にテストを実行しますが、同時に複数のプロセスをデバッグするのは困難だからです。</p>
 </blockquote>
 <h2><a class="anchor" aria-hidden="true" id="vs-codeでデバッグする"></a><a href="#vs-codeでデバッグする" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>VS Codeでデバッグする</h2>
-<p>There are multiple ways to debug Jest tests with <a href="https://code.visualstudio.com">Visual Studio Code's</a> built-in <a href="https://code.visualstudio.com/docs/nodejs/nodejs-debugging">debugger</a>.</p>
+<p><a href="https://code.visualstudio.com">Visual Studio Code</a>に組み込みの<a href="https://code.visualstudio.com/docs/nodejs/nodejs-debugging">デバッガ</a>でJestのテストをデバッグする方法はいくつかあります。</p>
 <p>組み込みのデバッガを追加するには、前述した形でテストを実行して下さい。</p>
 <pre><code class="hljs css language-bash">node --inspect-brk node_modules/.bin/jest --runInBand [any other arguments here]
 or on Windows
@@ -178,7 +178,7 @@ node --inspect-brk ./node_modules/jest/bin/jest.js --runInBand [any other argume
 <p>promiseが全く解決されない場合、このエラーが投げられるでしょう:</p>
 <pre><code class="hljs css language-bash">- Error: Timeout - Async callback was not invoked within timeout specified by jasmine.DEFAULT_TIMEOUT_INTERVAL.`
 </code></pre>
-<p>最も多い原因はPromiseの実装が競合していることです。 グローバルなPromiseの実装を独自のものに置き換えます、例えば<code>global.Promise = jest.requireActual('promise');</code>とします。そして(もしくは)使用しているPromiseのライブラリを１つだけに統合してみることを検討して下さい。</p>
+<p>最も多い原因はPromiseの実装が競合していることです。 Consider replacing the global promise implementation with your own, for example <code>global.Promise = jest.requireActual('promise');</code> and/or consolidate the used Promise libraries to a single one.</p>
 <p>テストの実行が長時間かかる場合は、<code>jest.setTimeout</code> を呼び出してタイムアウト時間を伸ばすことも検討したくなるでしょう。</p>
 <pre><code class="hljs css language-js">jest.setTimeout(<span class="hljs-number">10000</span>); <span class="hljs-comment">// 10 second timeout</span>
 </code></pre>

@@ -167,8 +167,8 @@
 <p>Si hemos dicho a Jest que omita archivos que coinciden con una extensión de hoja de estilo o imagen, y por el contrario, necesita nuestros archivos de mock. Puedes ajustar a una expresión regular para que coincida con el tipo de archivos de configuración webpack.</p>
 <p><em>Nota: Si utiliza babel-jest con preprocesadores de código adicional, debe definir explícitamente babel-jest como un transformador para el código JavaScript y asignar archivos <code>.js</code> en el módulo de babel-jest.</em></p>
 <pre><code class="hljs css language-json">"transform": {
-  "^.+\\.js$": "babel-jest",
-  "^.+\\.css$": "custom-transformer",
+  "\\.js$": "babel-jest",
+  "\\.css$": "custom-transformer",
   ...
 }
 </code></pre>

@@ -119,25 +119,16 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 <pre><code class="hljs css language-bash">jest --init
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="using-babel"></a><a href="#using-babel" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Using Babel</h3>
-<p>To use <a href="http://babeljs.io/">Babel</a>, install required dependencies via <code>yarn</code>:</p>
+<p>To use <a href="https://babeljs.io/">Babel</a>, install required dependencies via <code>yarn</code>:</p>
 <pre><code class="hljs css language-bash">yarn add --dev babel-jest @babel/core @babel/preset-env
 </code></pre>
 <p>Configure Babel to target your current version of Node by creating a <code>babel.config.js</code> file in the root of your project:</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// babel.config.js</span>
 <span class="hljs-built_in">module</span>.exports = {
-  <span class="hljs-attr">presets</span>: [
-    [
-      <span class="hljs-string">'@babel/preset-env'</span>,
-      {
-        <span class="hljs-attr">targets</span>: {
-          <span class="hljs-attr">node</span>: <span class="hljs-string">'current'</span>,
-        },
-      },
-    ],
-  ],
+  <span class="hljs-attr">presets</span>: [[<span class="hljs-string">'@babel/preset-env'</span>, {<span class="hljs-attr">targets</span>: {<span class="hljs-attr">node</span>: <span class="hljs-string">'current'</span>}}]],
 };
 </code></pre>
-<p><strong>The ideal configuration for Babel will depend on your project.</strong> See <a href="https://babeljs.io/docs/en/">Babel's docs</a> for more details.</p>
+<p><em>The ideal configuration for Babel will depend on your project.</em> See <a href="https://babeljs.io/docs/en/">Babel's docs</a> for more details.</p>
 <p><details><summary markdown="span"><strong>Making your Babel config jest-aware</strong></summary></p>
 <p>Jest will set <code>process.env.NODE_ENV</code> to <code>'test'</code> if it's not set to something else. You can use that in your configuration to conditionally setup only the compilation needed for Jest, e.g.</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// babel.config.js</span>
@@ -187,7 +178,7 @@ module.exports = {
   ],
 };
 </code></pre>
-<p>However, there are some <a href="https://babeljs.io/docs/en/next/babel-plugin-transform-typescript.html#caveats">caveats</a> to using TypeScript with Babel. Because TypeScript support in Babel is transpilation, Jest will not type-check your tests as they are run. If you want that, you can use <a href="https://github.com/kulshekhar/ts-jest">ts-jest</a>.</p>
+<p>However, there are some <a href="https://babeljs.io/docs/en/babel-plugin-transform-typescript#caveats">caveats</a> to using TypeScript with Babel. Because TypeScript support in Babel is transpilation, Jest will not type-check your tests as they are run. If you want that, you can use <a href="https://github.com/kulshekhar/ts-jest">ts-jest</a>.</p>
 </span></div></article></div><div class="docs-prevnext"><a class="docs-next button" href="/docs/en/next/using-matchers"><span>Using Matchers</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#running-from-command-line">Running from command line</a></li><li><a href="#additional-configuration">Additional Configuration</a><ul class="toc-headings"><li><a href="#generate-a-basic-configuration-file">Generate a basic configuration file</a></li><li><a href="#using-babel">Using Babel</a></li><li><a href="#using-webpack">Using webpack</a></li><li><a href="#using-parcel">Using parcel</a></li><li><a href="#using-typescript">Using TypeScript</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/en/getting-started.html">Getting Started</a><a href="/docs/en/snapshot-testing.html">Guides</a><a href="/docs/en/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://www.reactiflux.com/">Reactiflux</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {

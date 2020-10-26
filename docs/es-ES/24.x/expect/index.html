@@ -484,7 +484,7 @@ expect.addSnapshotSerializer(serializer);
 
 <span class="hljs-comment">// afecta a las afirmaciones expect(value).toMatchSnapshot() en el archivo de test</span>
 </code></pre>
-<p>Si añades un serializador de instantánea en los archivos de test individuales en vez de a agregarlo a la configuración de <code>snapshotSerializers</code>:</p>
+<p>If you add a snapshot serializer in individual test files instead of adding it to <code>snapshotSerializers</code> configuration:</p>
 <ul>
 <li>Haces la dependencia explícita en lugar de implícita.</li>
 <li>Evitas límites de la configuración que podría causarte expulsar desde <a href="https://github.com/facebookincubator/create-react-app">create-react-app</a>.</li>
@@ -742,18 +742,19 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobeclosetonúmero-númerodigitos"></a><a href="#tobeclosetonúmero-númerodigitos" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeCloseTo(número, númeroDigitos?)</code></h3>
-<p>Using exact equality with floating point numbers is a bad idea. Rounding means that intuitive things fail. For example, this test fails:</p>
+<p>Use <code>toBeCloseTo</code> to compare floating point numbers for approximate equality.</p>
+<p>The optional <code>numDigits</code> argument limits the number of digits to check <strong>after</strong> the decimal point. For the default value <code>2</code>, the test criterion is <code>Math.abs(expected - received) &lt; 0.005</code> (that is, <code>10 ** -2 / 2</code>).</p>
+<p>Intuitive equality comparisons often fail, because arithmetic on decimal (base 10) values often have rounding errors in limited precision binary (base 2) representation. For example, this test fails:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'adding works sanely with decimals'</span>, () =&gt; {
   expect(<span class="hljs-number">0.2</span> + <span class="hljs-number">0.1</span>).toBe(<span class="hljs-number">0.3</span>); <span class="hljs-comment">// Fails!</span>
 });
 </code></pre>
-<p>It fails because in JavaScript, <code>0.2 + 0.1</code> is actually <code>0.30000000000000004</code>. Sorry.</p>
-<p>En su lugar, usa <code>.toBeCloseTo</code>. Utiliza <code>numDigits</code> para controlar cuántos dígitos después del punto decimal se deben verificar. Por ejemplo, si quieres estar seguro que <code>0.2 + 0.1</code> es igual a <code>0.3</code> con una precisión de 5 dígitos decimales, puedes ocupar esta prueba:</p>
+<p>It fails because in JavaScript, <code>0.2 + 0.1</code> is actually <code>0.30000000000000004</code>.</p>
+<p>For example, this test passes with a precision of 5 digits:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'adding works sanely with decimals'</span>, () =&gt; {
   expect(<span class="hljs-number">0.2</span> + <span class="hljs-number">0.1</span>).toBeCloseTo(<span class="hljs-number">0.3</span>, <span class="hljs-number">5</span>);
 });
 </code></pre>
-<p>The optional <code>numDigits</code> argument has default value <code>2</code> which means the criterion is <code>Math.abs(expected - received) &lt; 0.005</code> (that is, <code>10 ** -2 / 2</code>).</p>
 <h3><a class="anchor" aria-hidden="true" id="tobedefined"></a><a href="#tobedefined" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeDefined()</code></h3>
 <p>Usa <code>.toBeDefined</code> para verificar que una variable no sea undefined. For example, if you want to check that a function <code>fetchNewFlavorIdea()</code> returns <em>something</em>, you can write:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'hay una nueva idea de sabor'</span>, () =&gt; {
@@ -776,25 +777,25 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
 </code></pre>
 <p>In JavaScript, there are six falsy values: <code>false</code>, <code>0</code>, <code>''</code>, <code>null</code>, <code>undefined</code>, and <code>NaN</code>. Everything else is truthy.</p>
 <h3><a class="anchor" aria-hidden="true" id="tobegreaterthannúmero"></a><a href="#tobegreaterthannúmero" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeGreaterThan(número)</code></h3>
-<p>To compare floating point numbers, you can use <code>toBeGreaterThan</code>. For example, if you want to test that <code>ouncesPerCan()</code> returns a value of more than 10 ounces, write:</p>
+<p>Use <code>toBeGreaterThan</code> to compare <code>received &gt; expected</code> for numbers. For example, test that <code>ouncesPerCan()</code> returns a value of more than 10 ounces:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'onzas por lata es mayor a 10'</span>, () =&gt; {
   expect(onzasPorLata()).toBeGreaterThan(<span class="hljs-number">10</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobegreaterthanorequalnúmero"></a><a href="#tobegreaterthanorequalnúmero" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeGreaterThanOrEqual(número)</code></h3>
-<p>To compare floating point numbers, you can use <code>toBeGreaterThanOrEqual</code>. For example, if you want to test that <code>ouncesPerCan()</code> returns a value of at least 12 ounces, write:</p>
+<p>Use <code>toBeGreaterThanOrEqual</code> to compare <code>received &gt;= expected</code> for numbers. For example, test that <code>ouncesPerCan()</code> returns a value of at least 12 ounces:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'onzas por lata es por lo menos 12'</span>, () =&gt; {
   expect(onzasPorLata()).toBeGreaterThanOrEqual(<span class="hljs-number">12</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobelessthannúmero"></a><a href="#tobelessthannúmero" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeLessThan(número)</code></h3>
-<p>To compare floating point numbers, you can use <code>toBeLessThan</code>. For example, if you want to test that <code>ouncesPerCan()</code> returns a value of less than 20 ounces, write:</p>
+<p>Use <code>toBeLessThan</code> to compare <code>received &lt; expected</code> for numbers. For example, test that <code>ouncesPerCan()</code> returns a value of less than 20 ounces:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'onzas por lata es menor a 20'</span>, () =&gt; {
   expect(onzasPorLata()).toBeLessThan(<span class="hljs-number">20</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobelessthanorequalnúmero"></a><a href="#tobelessthanorequalnúmero" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeLessThanOrEqual(número)</code></h3>
-<p>To compare floating point numbers, you can use <code>toBeLessThanOrEqual</code>. For example, if you want to test that <code>ouncesPerCan()</code> returns a value of at most 12 ounces, write:</p>
+<p>Use <code>toBeLessThanOrEqual</code> to compare <code>received &lt;= expected</code> for numbers. For example, test that <code>ouncesPerCan()</code> returns a value of at most 12 ounces:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'onzas por lata es a lo mucho 12'</span>, () =&gt; {
   expect(onzasPorLata()).toBeLessThanOrEqual(<span class="hljs-number">12</span>);
 });

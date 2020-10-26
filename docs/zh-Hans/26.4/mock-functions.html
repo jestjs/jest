@@ -172,7 +172,7 @@ filterTestFn.mockReturnValueOnce(<span class="hljs-literal">true</span>).mockRet
 <span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> Users;
 </code></pre>
 <p>现在，为测试该方法而不实际调用 API (使测试缓慢与脆弱)，我们可以用 <code>jest.mock(...)</code> 函数自动模拟 axios 模块。</p>
-<p>一旦模拟模块，我们可为 <code>.get</code> 提供一个 <code>mockResolvedValue</code> ，它会返回假数据用于测试。 实际上，我们想让 axios.get('/users.json') 有个假的 response。</p>
+<p>一旦模拟模块，我们可为 <code>.get</code> 提供一个 <code>mockResolvedValue</code> ，它会返回假数据用于测试。 In effect, we are saying that we want <code>axios.get('/users.json')</code> to return a fake response.</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// users.test.js</span>
 <span class="hljs-keyword">import</span> axios <span class="hljs-keyword">from</span> <span class="hljs-string">'axios'</span>;
 <span class="hljs-keyword">import</span> Users <span class="hljs-keyword">from</span> <span class="hljs-string">'./users'</span>;

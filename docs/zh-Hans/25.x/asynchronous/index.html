@@ -104,7 +104,7 @@ test(<span class="hljs-string">'the data is peanut butter'</span>, () =&gt; {
 });
 </code></pre>
 <p>若 <code>done()</code> 函数从未被调用，测试用例会正如你预期的那样执行失败（显示超时错误）。</p>
-<p>若  <code>expect</code> 执行失败，它会抛出一个错误，后面的  <code>done()</code>  不再执行。 若我们想知道测试用例为何失败，我们必须将 <code>expect</code>  放入 <code>try</code> 中，将 error 传递给  <code>catch</code>  中的 <code>done</code>函数。 否则，最后控制台将显示一个超时错误失败，不能显示我们在  <code>expect(data)</code> 中接收的值。</p>
+<p>若 <code>expect</code> 执行失败，它会抛出一个错误，后面的 <code>done()</code> 不再执行。 若我们想知道测试用例为何失败，我们必须将 <code>expect</code> 放入 <code>try</code> 中，将 error 传递给 <code>catch</code> 中的 <code>done</code>函数。 否则，最后控制台将显示一个超时错误失败，不能显示我们在 <code>expect(data)</code> 中接收的值。</p>
 <h2><a class="anchor" aria-hidden="true" id="promises"></a><a href="#promises" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Promises</h2>
 <p>If your code uses promises, there is a more straightforward way to handle asynchronous tests. Return a promise from your test, and Jest will wait for that promise to resolve. 如果承诺被拒绝，则测试将自动失败。</p>
 <p>举个例子，如果 <code>fetchData</code> 不使用回调函数，而是返回一个 Promise，其解析值为字符串 <code>'peanut butter'</code> 我们可以这样测试：</p>
@@ -115,7 +115,7 @@ test(<span class="hljs-string">'the data is peanut butter'</span>, () =&gt; {
 });
 </code></pre>
 <p>一定不要忘记把 promise 作为返回值⸺如果你忘了 <code>return</code> 语句的话，在 <code>fetchData</code> 返回的这个 promise 被 resolve、then() 有机会执行之前，测试就已经被视为已经完成了。</p>
-<p>If you expect a promise to be rejected, use the <code>.catch</code> method. 请确保添加 <code>expect.assertions</code> 来验证一定数量的断言被调用。 否则一个fulfilled态的 Promise 不会让测试失败︰</p>
+<p>If you expect a promise to be rejected, use the <code>.catch</code> method. 请确保添加 <code>expect.assertions</code> 来验证一定数量的断言被调用。 Otherwise, a fulfilled promise would not fail the test.</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'the fetch fails with an error'</span>, () =&gt; {
   expect.assertions(<span class="hljs-number">1</span>);
   <span class="hljs-keyword">return</span> fetchData().catch(<span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> expect(e).toMatch(<span class="hljs-string">'error'</span>));

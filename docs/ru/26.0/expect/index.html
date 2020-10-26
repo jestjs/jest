@@ -503,7 +503,7 @@ expect.addSnapshotSerializer(serializer);
 
 <span class="hljs-comment">// влияет на поведение проверки expect(value).toMatchSnapshot() в файле с тестами</span>
 </code></pre>
-<p>Если вы добавляете сериализатор снимков в файл с тестами вместо того, чтобы объявить его в параметре конфигурации <code>snapshotSerializers</code>, то:</p>
+<p>If you add a snapshot serializer in individual test files instead of adding it to <code>snapshotSerializers</code> configuration:</p>
 <ul>
 <li>Вы делаете зависимость явной.</li>
 <li>Вы избегаете ограничений конфигурации, которые могут помешать вам использовать <a href="https://github.com/facebookincubator/create-react-app">create-react-app</a>.</li>
