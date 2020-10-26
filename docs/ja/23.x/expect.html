@@ -108,8 +108,8 @@
 <li><a href="#tohavelastreturnedwithvalue"><code>.toHaveLastReturnedWith(value)</code></a></li>
 <li><a href="#tohaventhreturnedwithnthcall-value"><code>.toHaveNthReturnedWith(nthCall, value)</code></a></li>
 <li><a href="#tohavelengthnumber"><code>.toHaveLength(number)</code></a></li>
-<li><a href="#tohavepropertykeypath-value"><code>.toHaveProperty(keyPath, value)</code></a></li>
-<li><a href="#tobeclosetonumber-numdigits"><code>.toBeCloseTo(number, numDigits)</code></a></li>
+<li><a href="#tohavepropertykeypath-value"><code>.toHaveProperty(keyPath, value?)</code></a></li>
+<li><a href="#tobeclosetonumber-numdigits"><code>.toBeCloseTo(number, numDigits?)</code></a></li>
 <li><a href="#tobedefined"><code>.toBeDefined()</code></a></li>
 <li><a href="#tobefalsy"><code>.toBeFalsy()</code></a></li>
 <li><a href="#tobegreaterthannumber"><code>.toBeGreaterThan(number)</code></a></li>
@@ -126,12 +126,12 @@
 <li><a href="#toequalvalue"><code>.toEqual(value)</code></a></li>
 <li><a href="#tomatchregexp--string"><code>.toMatch(regexp | string)</code></a></li>
 <li><a href="#tomatchobjectobject"><code>.toMatchObject(object)</code></a></li>
-<li><a href="#tomatchsnapshotpropertymatchers-snapshotname"><code>.toMatchSnapshot(propertyMatchers, snapshotName)</code></a></li>
-<li><a href="#tomatchinlinesnapshotpropertymatchers-inlinesnapshot"><code>.toMatchInlineSnapshot(propertyMatchers, inlineSnapshot)</code></a></li>
+<li><a href="#tomatchsnapshotpropertymatchers-hint"><code>.toMatchSnapshot(propertyMatchers?, hint?)</code></a></li>
+<li><a href="#tomatchinlinesnapshotpropertymatchers-inlinesnapshot"><code>.toMatchInlineSnapshot(propertyMatchers?, inlineSnapshot)</code></a></li>
 <li><a href="#tostrictequalvalue"><code>.toStrictEqual(value)</code></a></li>
-<li><a href="#tothrowerror"><code>.toThrow(error)</code></a></li>
-<li><a href="#tothrowerrormatchingsnapshot"><code>.toThrowErrorMatchingSnapshot()</code></a></li>
-<li><a href="#tothrowerrormatchinginlinesnapshot"><code>.toThrowErrorMatchingInlineSnapshot()</code></a></li>
+<li><a href="#tothrowerror"><code>.toThrow(error?)</code></a></li>
+<li><a href="#tothrowerrormatchingsnapshothint"><code>.toThrowErrorMatchingSnapshot(hint?)</code></a></li>
+<li><a href="#tothrowerrormatchinginlinesnapshotinlinesnapshot"><code>.toThrowErrorMatchingInlineSnapshot(inlineSnapshot)</code></a></li>
 </ul>
 <hr>
 <h2><a class="anchor" aria-hidden="true" id="リファレンス"></a><a href="#リファレンス" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>リファレンス</h2>
@@ -217,14 +217,21 @@ test(<span class="hljs-string">'is divisible by external value'</span>, <span cl
   yourMatcher(x, y, z) {
     <span class="hljs-keyword">return</span> {
       <span class="hljs-attr">pass</span>: <span class="hljs-literal">true</span>,
-      <span class="hljs-attr">message</span>: <span class="hljs-string">''</span>,
+      <span class="hljs-attr">message</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> <span class="hljs-string">''</span>,
     };
   },
 });
 </code></pre>
 <p>これらのヘルパー関数とプロパティは独自マッチャの<code>this</code>内で確認することができます。</p>
 <h4><a class="anchor" aria-hidden="true" id="thisisnot"></a><a href="#thisisnot" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.isNot</code></h4>
-<p>マッチャがアサーションを反転させる否定の修飾子 <code>.not</code>を付けて呼ばれたかどうかを示す真偽値です。</p>
+<p>マッチャがアサーションを反転させる否定の修飾子 <code>.not</code>を付けて呼ばれたかどうかを示す真偽値で、明確で正しいマッチャのヒントを表示することに利用されます(サンプルコードを参照)。</p>
+<h4><a class="anchor" aria-hidden="true" id="thispromise"></a><a href="#thispromise" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.promise</code></h4>
+<p>明確で正しいマッチャのヒントを表示するための文字列です：</p>
+<ul>
+<li><code>'rejects'</code> ：マッチャが <code>.reject</code> 修飾子付きで呼び出された場合</li>
+<li><code>'resolves'</code> マッチャが <code>.resolves</code> 修飾子付きで呼び出された場合</li>
+<li><code>''</code> マッチャがpromise修飾子付きで呼び出されなかった場合</li>
+</ul>
 <h4><a class="anchor" aria-hidden="true" id="thisequalsa-b"></a><a href="#thisequalsa-b" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.equals(a, b)</code></h4>
 <p>２つのオブジェクトが同じ値を(再帰的に) 持つ場合に <code>true</code>を返す深い等価関数です。</p>
 <h4><a class="anchor" aria-hidden="true" id="thisexpand"></a><a href="#thisexpand" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>this.expand</code></h4>
@@ -235,28 +242,31 @@ test(<span class="hljs-string">'is divisible by external value'</span>, <span cl
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> diff = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-diff'</span>);
 expect.extend({
   toBe(received, expected) {
+    <span class="hljs-keyword">const</span> options = {
+      <span class="hljs-attr">comment</span>: <span class="hljs-string">'Object.is equality'</span>,
+      <span class="hljs-attr">isNot</span>: <span class="hljs-keyword">this</span>.isNot,
+      <span class="hljs-attr">promise</span>: <span class="hljs-keyword">this</span>.promise,
+    };
+
     <span class="hljs-keyword">const</span> pass = <span class="hljs-built_in">Object</span>.is(received, expected);
 
     <span class="hljs-keyword">const</span> message = pass
       ? <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span>
-          <span class="hljs-keyword">this</span>.utils.matcherHint(<span class="hljs-string">'.not.toBe'</span>) +
+          <span class="hljs-keyword">this</span>.utils.matcherHint(<span class="hljs-string">'toBe'</span>, <span class="hljs-literal">undefined</span>, <span class="hljs-literal">undefined</span>, options) +
           <span class="hljs-string">'\n\n'</span> +
-          <span class="hljs-string">`Expected value to not be (using Object.is):\n`</span> +
-          <span class="hljs-string">`  <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
-          <span class="hljs-string">`Received:\n`</span> +
-          <span class="hljs-string">`  <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span>
+          <span class="hljs-string">`Expected: not <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
+          <span class="hljs-string">`Received: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span>
       : <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
           <span class="hljs-keyword">const</span> diffString = diff(expected, received, {
             <span class="hljs-attr">expand</span>: <span class="hljs-keyword">this</span>.expand,
           });
           <span class="hljs-keyword">return</span> (
-            <span class="hljs-keyword">this</span>.utils.matcherHint(<span class="hljs-string">'.toBe'</span>) +
+            <span class="hljs-keyword">this</span>.utils.matcherHint(<span class="hljs-string">'toBe'</span>, <span class="hljs-literal">undefined</span>, <span class="hljs-literal">undefined</span>, options) +
             <span class="hljs-string">'\n\n'</span> +
-            <span class="hljs-string">`Expected value to be (using Object.is):\n`</span> +
-            <span class="hljs-string">`  <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
-            <span class="hljs-string">`Received:\n`</span> +
-            <span class="hljs-string">`  <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span> +
-            (diffString ? <span class="hljs-string">`\n\nDifference:\n\n<span class="hljs-subst">${diffString}</span>`</span> : <span class="hljs-string">''</span>)
+            (diffString &amp;&amp; diffString.includes(<span class="hljs-string">'- Expect'</span>)
+              ? <span class="hljs-string">`Difference:\n\n<span class="hljs-subst">${diffString}</span>`</span>
+              : <span class="hljs-string">`Expected: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printExpected(expected)}</span>\n`</span> +
+                <span class="hljs-string">`Received: <span class="hljs-subst">${<span class="hljs-keyword">this</span>.utils.printReceived(received)}</span>`</span>)
           );
         };
 
@@ -402,23 +412,23 @@ test(<span class="hljs-string">'randocall calls its callback with a number'</spa
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="expectnotstringcontainingstring"></a><a href="#expectnotstringcontainingstring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.not.stringContaining(string)</code></h3>
-<p><code>expect.not.stringContaining(string)</code>がマッチするのは、受け取った文字列が、期待された文字列と完全に一致する文字列を含まない場合です。</p>
+<p><code>expect.not.stringContaining(string)</code> matches the received value if it is not a string or if it is a string that does not contain the exact expected string.</p>
 <p>これは <code>expect.stringContaining</code> の逆です。</p>
 <pre><code class="hljs css language-js">describe(<span class="hljs-string">'not.stringContaining'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> expected = <span class="hljs-string">'Hello world!'</span>;
 
-  it(<span class="hljs-string">'matches if the actual string does not contain the expected substring'</span>, () =&gt; {
+  it(<span class="hljs-string">'matches if the received value does not contain the expected substring'</span>, () =&gt; {
     expect(<span class="hljs-string">'How are you?'</span>).toEqual(expect.not.stringContaining(expected));
   });
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="expectnotstringmatchingstring--regexp"></a><a href="#expectnotstringmatchingstring--regexp" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.not.stringMatching(string | regexp)</code></h3>
-<p><code>expect.not.stringMatching(string | regexp)</code> は、期待された正規表現にマッチしない文字列にマッチします。</p>
+<p><code>expect.not.stringMatching(string | regexp)</code> matches the received value if it is not a string or if it is a string that does not match the expected string or regular expression.</p>
 <p>これは <code>expect.stringMatching</code> の逆です。</p>
 <pre><code class="hljs css language-js">describe(<span class="hljs-string">'not.stringMatching'</span>, () =&gt; {
   <span class="hljs-keyword">const</span> expected = <span class="hljs-regexp">/Hello world!/</span>;
 
-  it(<span class="hljs-string">'matches if the actual string does not match the expected regex'</span>, () =&gt; {
+  it(<span class="hljs-string">'matches if the received value does not match the expected regex'</span>, () =&gt; {
     expect(<span class="hljs-string">'How are you?'</span>).toEqual(expect.not.stringMatching(expected));
   });
 });
@@ -439,9 +449,9 @@ test(<span class="hljs-string">'randocall calls its callback with a number'</spa
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="expectstringcontainingstring"></a><a href="#expectstringcontainingstring" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.stringContaining(string)</code></h3>
-<p><code>expect.stringContaining(string)</code>は、受け取った文字列が、期待された文字列と完全に一致する場合にマッチします。</p>
+<p><code>expect.stringContaining(string)</code> matches the received value if it is a string that contains the exact expected string.</p>
 <h3><a class="anchor" aria-hidden="true" id="expectstringmatchingstring--regexp"></a><a href="#expectstringmatchingstring--regexp" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.stringMatching(string | regexp)</code></h3>
-<p><code>expect.stringMatching(string | regexp)</code> は、期待された正規表現にマッチする文字列にマッチします。</p>
+<p><code>expect.stringMatching(string | regexp)</code> matches the received value if it is a string that matches the expected string or regular expression.</p>
 <p>以下のケースでリテラル値の代わりに使用できます:</p>
 <ul>
 <li><code>toEqual</code> または <code>toBeCalledWith</code>の中</li>
@@ -474,7 +484,7 @@ expect.addSnapshotSerializer(serializer);
 
 <span class="hljs-comment">// affects expect(value).toMatchSnapshot() assertions in the test file</span>
 </code></pre>
-<p><code>snapshotSerializers</code> 設定で追加するのではなく、個々のテストファイルでスナップショットのシリアライザをつい以下する場合は:</p>
+<p><code>snapshotSerializer</code> 設定に追加する代わりに、個々のテストファイルにスナップショットシリアライザを追加する場合:</p>
 <ul>
 <li>依存関係を暗黙的でなく明示的なものにしてください。</li>
 <li><a href="https://github.com/facebookincubator/create-react-app">create-react-app</a>が利用できなくなるような設定は避けてください。</li>
@@ -683,9 +693,9 @@ describe(<span class="hljs-string">'drinkAll'</span>, () =&gt; {
 expect(<span class="hljs-string">'abc'</span>).toHaveLength(<span class="hljs-number">3</span>);
 expect(<span class="hljs-string">''</span>).not.toHaveLength(<span class="hljs-number">5</span>);
 </code></pre>
-<h3><a class="anchor" aria-hidden="true" id="tohavepropertykeypath-value"></a><a href="#tohavepropertykeypath-value" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toHaveProperty(keyPath, value)</code></h3>
+<h3><a class="anchor" aria-hidden="true" id="tohavepropertykeypath-value"></a><a href="#tohavepropertykeypath-value" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toHaveProperty(keyPath, value?)</code></h3>
 <p>オブジェクトの指定された参照<code>keyPath</code>のプロパティが存在するかを確認するには、<code>.toHaveProperty</code> を使用して下さい。 オブジェクト内で深くネストされたプロパティをチェックするには、 深い階層を参照するために、 <a href="https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Operators/Property_Accessors">ドット表記</a>や keyPath を含む配列を使用することができます。</p>
-<p>必要に応じて、 <code>value</code>を指定して、対象とするオブジェクトの<code>keyPath</code>の現在の値と等しいかを確認することができます。 このマッチャは(<code>toEqual()</code>のように) 'deep equality' を利用して再帰的に全てのフィールドの等価性を確認します。</p>
+<p>You can provide an optional <code>value</code> argument to compare the received property value (recursively for all properties of object instances, also known as deep equality, like the <code>toEqual</code> matcher).</p>
 <p>次に示す例ではネストされたプロパティを含む <code>houseForSale</code> オブジェクトを含んでいます。 ここでは、オブジェクト内の様々なプロパティの存在と値をチェックするために、<code>toHaveProperty</code> を利用しています。</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// Object containing house features to be tested</span>
 <span class="hljs-keyword">const</span> houseForSale = {
@@ -731,19 +741,20 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
   expect(houseForSale).toHaveProperty([<span class="hljs-string">'ceiling.height'</span>], <span class="hljs-string">'tall'</span>);
 });
 </code></pre>
-<h3><a class="anchor" aria-hidden="true" id="tobeclosetonumber-numdigits"></a><a href="#tobeclosetonumber-numdigits" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeCloseTo(number, numDigits)</code></h3>
-<p>浮動小数点数に対して等価性を正確に評価しようとすることは悪い考えです。 丸め誤差により、直感的には正しそうなテストが失敗するのです。 例えば、次のテストはうまく動きません。</p>
+<h3><a class="anchor" aria-hidden="true" id="tobeclosetonumber-numdigits"></a><a href="#tobeclosetonumber-numdigits" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeCloseTo(number, numDigits?)</code></h3>
+<p><code>toBeCloseTo</code> では、浮動小数点数を近似的な等価性で評価します。</p>
+<p>オプションの<code>numDigits</code> 引数は小数点<strong>以下</strong>の桁数の上限を設定します。 デフォルト値 <code>2</code>の場合、テスト条件は <code>Math.abs(expected - received) &lt; 0.005</code>以内 (つまり、 <code>10 ** -2 / 2</code>)となります。</p>
+<p>Intuitive equality comparisons often fail, because arithmetic on decimal (base 10) values often have rounding errors in limited precision binary (base 2) representation. 例えば、次のテストはうまく動きません。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'adding works sanely with decimals'</span>, () =&gt; {
   expect(<span class="hljs-number">0.2</span> + <span class="hljs-number">0.1</span>).toBe(<span class="hljs-number">0.3</span>); <span class="hljs-comment">// Fails!</span>
 });
 </code></pre>
-<p>JavaScriptでは<code>0.2 + 0.1</code> は実際には <code>0.30000000000000004</code>なのでこのテストは失敗します。 残念！</p>
-<p>代わりに <code>.toBeCloseTo</code>を使用して下さい。 <code>numDigits</code>で小数点以下の何位まで確認するのかを制御できます。 例えば、 <code>0.2 + 0.1</code>が <code>0.3</code>に等しいことを小数点５位の精度で確認したい場合は、このようにテストできます:</p>
+<p>JavaScriptでは<code>0.2 + 0.1</code> は実際には <code>0.30000000000000004</code>なのでこのテストは失敗します。</p>
+<p>例えば、このテストは小数点以下5桁の精度で合格します。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'adding works sanely with decimals'</span>, () =&gt; {
   expect(<span class="hljs-number">0.2</span> + <span class="hljs-number">0.1</span>).toBeCloseTo(<span class="hljs-number">0.3</span>, <span class="hljs-number">5</span>);
 });
 </code></pre>
-<p><code>numDigits</code>のデフォルト値は２で、大抵のケースにおいて適切なデフォルト値であると証明されています。</p>
 <h3><a class="anchor" aria-hidden="true" id="tobedefined"></a><a href="#tobedefined" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeDefined()</code></h3>
 <p>変数がundefinedでないことを確認するには <code>.toBeDefined</code>を使用します。 例えば、関数 <code>fetchNewFlavorIdea()</code>が<em>何らかの値</em>を返すことを確認するなら、このように書くことができます。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'there is a new flavor idea'</span>, () =&gt; {
@@ -766,25 +777,25 @@ test(<span class="hljs-string">'this house has my desired features'</span>, () =
 </code></pre>
 <p>JavaScriptでは、偽と類推される６つの値があります: <code>false</code>、 <code>0</code>、 <code>''</code>、 <code>null</code>、 <code>undefined</code>、 そして <code>NaN</code>です。 他の全ては真と類推されます。</p>
 <h3><a class="anchor" aria-hidden="true" id="tobegreaterthannumber"></a><a href="#tobegreaterthannumber" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeGreaterThan(number)</code></h3>
-<p>浮動小数点数を比較するには、 <code>toBeGreaterThan</code> を使用します。 例えば、 <code>ouncesPerCan()</code> が 10 オンスより大きい値を返すことをテストするには：</p>
+<p>Use <code>toBeGreaterThan</code> to compare <code>received &gt; expected</code> for numbers. 例えば、 <code>ouncesPerCan()</code> が 10 オンスより大きい値を返すことをテストします。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'ounces per can is more than 10'</span>, () =&gt; {
   expect(ouncesPerCan()).toBeGreaterThan(<span class="hljs-number">10</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobegreaterthanorequalnumber"></a><a href="#tobegreaterthanorequalnumber" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeGreaterThanOrEqual(number)</code></h3>
-<p>浮動小数点数を比較するには、 <code>toBeGreaterThanOrEqual</code> を使用します。 例えば、 <code>ouncesPerCan()</code> が少なくとも 12 オンスの値を返すことをテストしたい場合は、次のように記述します。</p>
+<p>Use <code>toBeGreaterThanOrEqual</code> to compare <code>received &gt;= expected</code> for numbers. 例えば、 <code>ouncesPerCan()</code> が12 オンス以上の値を返すことをテストします。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'ounces per can is at least 12'</span>, () =&gt; {
   expect(ouncesPerCan()).toBeGreaterThanOrEqual(<span class="hljs-number">12</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobelessthannumber"></a><a href="#tobelessthannumber" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeLessThan(number)</code></h3>
-<p>浮動小数点数を比較するには、 <code>toBeLessThan</code> を使用します。 たとえば、 <code>ouncesPerCan()</code> が 20 オンス未満の値を返すことをテストしたい場合は、次のように記述します。</p>
+<p>Use <code>toBeLessThan</code> to compare <code>received &lt; expected</code> for numbers. 例えば、 <code>ouncesPerCan()</code> が 20 オンス未満の値を返すことをテストします。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'ounces per can is less than 20'</span>, () =&gt; {
   expect(ouncesPerCan()).toBeLessThan(<span class="hljs-number">20</span>);
 });
 </code></pre>
 <h3><a class="anchor" aria-hidden="true" id="tobelessthanorequalnumber"></a><a href="#tobelessthanorequalnumber" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toBeLessThanOrEqual(number)</code></h3>
-<p>浮動小数点数を比較するには、 <code>toBeLessThanOrEqual</code> を使用します。 たとえば、 <code>ouncesPerCan()</code> が最大 12 オンスの値を返すことをテストしたい場合は、次のように記述します。</p>
+<p>Use <code>toBeLessThanOrEqual</code> to compare <code>received &lt;= expected</code> for numbers. 例えば、 <code>ouncesPerCan()</code> が12 オンス以下の値を返すことをテストします。</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'ounces per can is at least 12'</span>, () =&gt; {
   expect(ouncesPerCan()).toBeGreaterThanOrEqual(<span class="hljs-number">12</span>);
 });
@@ -927,12 +938,6 @@ test(<span class="hljs-string">'the house has my desired features'</span>, () =&
     expect([{<span class="hljs-attr">foo</span>: <span class="hljs-string">'bar'</span>}, {<span class="hljs-attr">baz</span>: <span class="hljs-number">1</span>}]).toMatchObject([{<span class="hljs-attr">foo</span>: <span class="hljs-string">'bar'</span>}, {<span class="hljs-attr">baz</span>: <span class="hljs-number">1</span>}]);
   });
 
-  <span class="hljs-comment">// .arrayContaining "matches a received array which contains elements that</span>
-  <span class="hljs-comment">// are *not* in the expected array"</span>
-  test(<span class="hljs-string">'.toMatchObject does not allow extra elements'</span>, () =&gt; {
-    expect([{<span class="hljs-attr">foo</span>: <span class="hljs-string">'bar'</span>}, {<span class="hljs-attr">baz</span>: <span class="hljs-number">1</span>}]).toMatchObject([{<span class="hljs-attr">foo</span>: <span class="hljs-string">'bar'</span>}]);
-  });
-
   test(<span class="hljs-string">'.toMatchObject is called for each elements, so extra object properties are okay'</span>, () =&gt; {
     expect([{<span class="hljs-attr">foo</span>: <span class="hljs-string">'bar'</span>}, {<span class="hljs-attr">baz</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">extra</span>: <span class="hljs-string">'quux'</span>}]).toMatchObject([
       {<span class="hljs-attr">foo</span>: <span class="hljs-string">'bar'</span>},
@@ -941,18 +946,21 @@ test(<span class="hljs-string">'the house has my desired features'</span>, () =&
   });
 });
 </code></pre>
-<h3><a class="anchor" aria-hidden="true" id="tomatchsnapshotpropertymatchers-snapshotname"></a><a href="#tomatchsnapshotpropertymatchers-snapshotname" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toMatchSnapshot(propertyMatchers, snapshotName)</code></h3>
+<h3><a class="anchor" aria-hidden="true" id="tomatchsnapshotpropertymatchers-hint"></a><a href="#tomatchsnapshotpropertymatchers-hint" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toMatchSnapshot(propertyMatchers?, hint?)</code></h3>
 <p>This ensures that a value matches the most recent snapshot. Check out <a href="/docs/ja/23.x/snapshot-testing">the Snapshot Testing guide</a> for more information.</p>
-<p>The optional <code>propertyMatchers</code> argument allows you to specify asymmetric matchers which are verified instead of the exact values. Any value will be matched exactly if not provided as a matcher.</p>
-<p>The last argument allows you option to specify a snapshot name. Otherwise, the name is inferred from the test.</p>
-<h3><a class="anchor" aria-hidden="true" id="tomatchinlinesnapshotpropertymatchers-inlinesnapshot"></a><a href="#tomatchinlinesnapshotpropertymatchers-inlinesnapshot" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toMatchInlineSnapshot(propertyMatchers, inlineSnapshot)</code></h3>
-<p>値が最も新しいスナップショットにマッチすることを保証します。 <a href="#tomatchsnapshotpropertymatchers-snapshotname"><code>.toMatchSnapshot()</code></a> とは異なり、スナップショットは現在のソースファイルに、インラインで記述します。</p>
+<p>You can provide an optional <code>propertyMatchers</code> object argument, which has asymmetric matchers as values of a subset of expected properties, <strong>if</strong> the received value will be an <strong>object</strong> instance. It is like <code>toMatchObject</code> with flexible criteria for a subset of properties, followed by a snapshot test as exact criteria for the rest of the properties.</p>
+<p>You can provide an optional <code>hint</code> string argument that is appended to the test name. Although Jest always appends a number at the end of a snapshot name, short descriptive hints might be more useful than numbers to differentiate <strong>multiple</strong> snapshots in a <strong>single</strong> <code>it</code> or <code>test</code> block. Jest sorts snapshots by name in the corresponding <code>.snap</code> file.</p>
+<h3><a class="anchor" aria-hidden="true" id="tomatchinlinesnapshotpropertymatchers-inlinesnapshot"></a><a href="#tomatchinlinesnapshotpropertymatchers-inlinesnapshot" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toMatchInlineSnapshot(propertyMatchers?, inlineSnapshot)</code></h3>
+<p>値が最も新しいスナップショットにマッチすることを保証します。</p>
+<p>You can provide an optional <code>propertyMatchers</code> object argument, which has asymmetric matchers as values of a subset of expected properties, <strong>if</strong> the received value will be an <strong>object</strong> instance. It is like <code>toMatchObject</code> with flexible criteria for a subset of properties, followed by a snapshot test as exact criteria for the rest of the properties.</p>
+<p>Jest adds the <code>inlineSnapshot</code> string argument to the matcher in the test file (instead of an external <code>.snap</code> file) the first time that the test runs.</p>
 <p>詳しい情報については、<a href="/docs/ja/23.x/snapshot-testing#inline-snapshots">インラインスナップショット</a>のセクションを参照してください。</p>
 <h3><a class="anchor" aria-hidden="true" id="tostrictequalvalue"></a><a href="#tostrictequalvalue" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toStrictEqual(value)</code></h3>
 <p>Use <code>.toStrictEqual</code> to test that objects have the same types as well as structure.</p>
 <p>Differences from <code>.toEqual</code>:</p>
 <ul>
 <li>Keys with <code>undefined</code> properties are checked. e.g. <code>{a: undefined, b: 2}</code> does not match <code>{b: 2}</code> when using <code>.toStrictEqual</code>.</li>
+<li>Array sparseness is checked. e.g. <code>[, 1]</code> does not match <code>[undefined, 1]</code> when using <code>.toStrictEqual</code>.</li>
 <li>Object types are checked to be equal. e.g. A class instance with fields <code>a</code> and <code>b</code> will not equal a literal object with fields <code>a</code> and <code>b</code>.</li>
 </ul>
 <pre><code class="hljs css language-js"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LaCroix</span> </span>{
@@ -968,8 +976,8 @@ describe(<span class="hljs-string">'the La Croix cans on my desk'</span>, () =&g
   });
 });
 </code></pre>
-<h3><a class="anchor" aria-hidden="true" id="tothrowerror"></a><a href="#tothrowerror" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toThrow(error)</code></h3>
-<p>次の別名でも同様となります: <code>.toThrowError(error)</code></p>
+<h3><a class="anchor" aria-hidden="true" id="tothrowerror"></a><a href="#tothrowerror" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toThrow(error?)</code></h3>
+<p>Also under the alias: <code>.toThrowError(error?)</code></p>
 <p>関数が呼ばれた際にエラーを投げることを確認するには<code>.toThrow</code> を使用して下さい。 例えば、タコ味なんて気持ち悪すぎて飲めないので<code>drinkFlavor('octopus')</code> が例外を投げることをテストしたい場合、次のように書くことができます:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'throws on octopus'</span>, () =&gt; {
   expect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
@@ -980,7 +988,14 @@ describe(<span class="hljs-string">'the La Croix cans on my desk'</span>, () =&g
 <blockquote>
 <p>注意： 関数の中のコードはラップしてください。そうしなければエラーが補足されず、アサーションは失敗します。</p>
 </blockquote>
-<p>特定のエラーがスローされることをテストしたい場合は、<code>toThrow</code>に引数を与えることができます。 エラーメッセージに含まれるべき文字列、 エラーのクラス、またはエラーメッセージと一致する正規表現を引数に取ることができます。 例えば、<code>drinkFlavor</code>はこのようにコーディングされたとしましょう:</p>
+<p>You can provide an optional argument to test that a specific error is thrown:</p>
+<ul>
+<li>正規表現: エラーメッセージがパターンに <strong>マッチする</strong> か検証します</li>
+<li>文字列:エラーメッセージが文字列を<strong>含む</strong> か検証します</li>
+<li>error オブジェクト: エラーメッセージがオブジェクトのmessageプロパティと<strong>等しいか</strong>を検証します</li>
+<li>errorクラス： errorオブジェクトがそのクラスの<strong>インスタンスであるか</strong>を検証します</li>
+</ul>
+<p>例えば、<code>drinkFlavor</code>はこのようにコーディングされたとしましょう:</p>
 <pre><code class="hljs css language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">drinkFlavor</span>(<span class="hljs-params">flavor</span>) </span>{
   <span class="hljs-keyword">if</span> (flavor == <span class="hljs-string">'octopus'</span>) {
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> DisgustingFlavorError(<span class="hljs-string">'yuck, octopus flavor'</span>);
@@ -1000,13 +1015,16 @@ describe(<span class="hljs-string">'the La Croix cans on my desk'</span>, () =&g
 
   <span class="hljs-comment">// Test the exact error message</span>
   expect(drinkOctopus).toThrowError(<span class="hljs-regexp">/^yuck, octopus flavor$/</span>);
+  expect(drinkOctopus).toThrowError(<span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'yuck, octopus flavor'</span>));
 
   <span class="hljs-comment">// Test that we get a DisgustingFlavorError</span>
   expect(drinkOctopus).toThrowError(DisgustingFlavorError);
 });
 </code></pre>
-<h3><a class="anchor" aria-hidden="true" id="tothrowerrormatchingsnapshot"></a><a href="#tothrowerrormatchingsnapshot" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toThrowErrorMatchingSnapshot()</code></h3>
-<p>関数が呼ばれた際に直近のスナップショットと一致するエラーを投げることを確認するには、 <code>.toThrowErrorMatchingSnapshot</code>を使用して下さい。 例えば、 風味が<code>'octopus'</code>ならば必ずエラーを投げる<code>drinkFlavor</code>関数があり、次のようなコードだったとします:</p>
+<h3><a class="anchor" aria-hidden="true" id="tothrowerrormatchingsnapshothint"></a><a href="#tothrowerrormatchingsnapshothint" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toThrowErrorMatchingSnapshot(hint?)</code></h3>
+<p>関数が呼ばれた際に直近のスナップショットと一致するエラーを投げることを確認するには、 <code>.toThrowErrorMatchingSnapshot</code>を使用して下さい。</p>
+<p>You can provide an optional <code>hint</code> string argument that is appended to the test name. Although Jest always appends a number at the end of a snapshot name, short descriptive hints might be more useful than numbers to differentiate <strong>multiple</strong> snapshots in a <strong>single</strong> <code>it</code> or <code>test</code> block. Jest sorts snapshots by name in the corresponding <code>.snap</code> file.</p>
+<p>例えば、 風味が<code>'octopus'</code>ならば必ずエラーを投げる<code>drinkFlavor</code>関数があり、次のようなコードだったとします:</p>
 <pre><code class="hljs css language-js"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">drinkFlavor</span>(<span class="hljs-params">flavor</span>) </span>{
   <span class="hljs-keyword">if</span> (flavor == <span class="hljs-string">'octopus'</span>) {
     <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> DisgustingFlavorError(<span class="hljs-string">'yuck, octopus flavor'</span>);
@@ -1027,10 +1045,11 @@ describe(<span class="hljs-string">'the La Croix cans on my desk'</span>, () =&g
 <pre><code class="hljs css language-js">exports[<span class="hljs-string">`drinking flavors throws on octopus 1`</span>] = <span class="hljs-string">`"yuck, octopus flavor"`</span>;
 </code></pre>
 <p>スナップショットテストについての詳細は<a href="https://jestjs.io/blog/2016/07/27/jest-14.html">React Tree Snapshot Testing</a>を確認して下さい。</p>
-<h3><a class="anchor" aria-hidden="true" id="tothrowerrormatchinginlinesnapshot"></a><a href="#tothrowerrormatchinginlinesnapshot" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toThrowErrorMatchingInlineSnapshot()</code></h3>
-<p>このマッチャは <a href="#tothrowerrormatchingsnapshot"><code>.toThrowErrorMatchingSnapshot</code></a> と非常に近いものです。スナップショットの値を<code>.snap</code> ファイルに書く代わりにソースコードに自動的に書かれるという点が異なります。</p>
+<h3><a class="anchor" aria-hidden="true" id="tothrowerrormatchinginlinesnapshotinlinesnapshot"></a><a href="#tothrowerrormatchinginlinesnapshotinlinesnapshot" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.toThrowErrorMatchingInlineSnapshot(inlineSnapshot)</code></h3>
+<p>Use <code>.toThrowErrorMatchingInlineSnapshot</code> to test that a function throws an error matching the most recent snapshot when it is called.</p>
+<p>Jest adds the <code>inlineSnapshot</code> string argument to the matcher in the test file (instead of an external <code>.snap</code> file) the first time that the test runs.</p>
 <p>詳しい情報については、<a href="/docs/ja/23.x/snapshot-testing#inline-snapshots">インラインスナップショット</a>のセクションを参照してください。</p>
-</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/ja/23.x/api"><span class="arrow-prev">← </span><span>Globals</span></a><a class="docs-next button" href="/docs/ja/23.x/mock-function-api"><span>Mock Functions</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#メソッド">メソッド</a></li><li><a href="#リファレンス">リファレンス</a><ul class="toc-headings"><li><a href="#expectvalue"><code>expect(value)</code></a></li><li><a href="#expectextendmatchers"><code>expect.extend(matchers)</code></a></li><li><a href="#expectanything"><code>expect.anything()</code></a></li><li><a href="#expectanyconstructor"><code>expect.any(constructor)</code></a></li><li><a href="#expectarraycontainingarray"><code>expect.arrayContaining(array)</code></a></li><li><a href="#expectassertionsnumber"><code>expect.assertions(number)</code></a></li><li><a href="#expecthasassertions"><code>expect.hasAssertions()</code></a></li><li><a href="#expectnotarraycontainingarray"><code>expect.not.arrayContaining(array)</code></a></li><li><a href="#expectnotobjectcontainingobject"><code>expect.not.objectContaining(object)</code></a></li><li><a href="#expectnotstringcontainingstring"><code>expect.not.stringContaining(string)</code></a></li><li><a href="#expectnotstringmatchingstring--regexp"><code>expect.not.stringMatching(string | regexp)</code></a></li><li><a href="#expectobjectcontainingobject"><code>expect.objectContaining(object)</code></a></li><li><a href="#expectstringcontainingstring"><code>expect.stringContaining(string)</code></a></li><li><a href="#expectstringmatchingstring--regexp"><code>expect.stringMatching(string | regexp)</code></a></li><li><a href="#expectaddsnapshotserializerserializer"><code>expect.addSnapshotSerializer(serializer)</code></a></li><li><a href="#not"><code>.not</code></a></li><li><a href="#resolves"><code>.resolves</code></a></li><li><a href="#rejects"><code>.rejects</code></a></li><li><a href="#tobevalue"><code>.toBe(value)</code></a></li><li><a href="#tohavebeencalled"><code>.toHaveBeenCalled()</code></a></li><li><a href="#tohavebeencalledtimesnumber"><code>.toHaveBeenCalledTimes(number)</code></a></li><li><a href="#tohavebeencalledwitharg1-arg2-"><code>.toHaveBeenCalledWith(arg1, arg2, ...)</code></a></li><li><a href="#tohavebeenlastcalledwitharg1-arg2-"><code>.toHaveBeenLastCalledWith(arg1, arg2, ...)</code></a></li><li><a href="#tohavebeennthcalledwithnthcall-arg1-arg2-"><code>.toHaveBeenNthCalledWith(nthCall, arg1, arg2, ....)</code></a></li><li><a href="#tohavereturned"><code>.toHaveReturned()</code></a></li><li><a href="#tohavereturnedtimesnumber"><code>.toHaveReturnedTimes(number)</code></a></li><li><a href="#tohavereturnedwithvalue"><code>.toHaveReturnedWith(value)</code></a></li><li><a href="#tohavelastreturnedwithvalue"><code>.toHaveLastReturnedWith(value)</code></a></li><li><a href="#tohaventhreturnedwithnthcall-value"><code>.toHaveNthReturnedWith(nthCall, value)</code></a></li><li><a href="#tohavelengthnumber"><code>.toHaveLength(number)</code></a></li><li><a href="#tohavepropertykeypath-value"><code>.toHaveProperty(keyPath, value)</code></a></li><li><a href="#tobeclosetonumber-numdigits"><code>.toBeCloseTo(number, numDigits)</code></a></li><li><a href="#tobedefined"><code>.toBeDefined()</code></a></li><li><a href="#tobefalsy"><code>.toBeFalsy()</code></a></li><li><a href="#tobegreaterthannumber"><code>.toBeGreaterThan(number)</code></a></li><li><a href="#tobegreaterthanorequalnumber"><code>.toBeGreaterThanOrEqual(number)</code></a></li><li><a href="#tobelessthannumber"><code>.toBeLessThan(number)</code></a></li><li><a href="#tobelessthanorequalnumber"><code>.toBeLessThanOrEqual(number)</code></a></li><li><a href="#tobeinstanceofclass"><code>.toBeInstanceOf(Class)</code></a></li><li><a href="#tobenull"><code>.toBeNull()</code></a></li><li><a href="#tobetruthy"><code>.toBeTruthy()</code></a></li><li><a href="#tobeundefined"><code>.toBeUndefined()</code></a></li><li><a href="#tobenan"><code>.toBeNaN()</code></a></li><li><a href="#tocontainitem"><code>.toContain(item)</code></a></li><li><a href="#tocontainequalitem"><code>.toContainEqual(item)</code></a></li><li><a href="#toequalvalue"><code>.toEqual(value)</code></a></li><li><a href="#tomatchregexp--string"><code>.toMatch(regexp | string)</code></a></li><li><a href="#tomatchobjectobject"><code>.toMatchObject(object)</code></a></li><li><a href="#tomatchsnapshotpropertymatchers-snapshotname"><code>.toMatchSnapshot(propertyMatchers, snapshotName)</code></a></li><li><a href="#tomatchinlinesnapshotpropertymatchers-inlinesnapshot"><code>.toMatchInlineSnapshot(propertyMatchers, inlineSnapshot)</code></a></li><li><a href="#tostrictequalvalue"><code>.toStrictEqual(value)</code></a></li><li><a href="#tothrowerror"><code>.toThrow(error)</code></a></li><li><a href="#tothrowerrormatchingsnapshot"><code>.toThrowErrorMatchingSnapshot()</code></a></li><li><a href="#tothrowerrormatchinginlinesnapshot"><code>.toThrowErrorMatchingInlineSnapshot()</code></a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/ja/getting-started.html">Getting Started</a><a href="/docs/ja/snapshot-testing.html">Guides</a><a href="/docs/ja/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://www.reactiflux.com/">Reactiflux</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/ja/23.x/api"><span class="arrow-prev">← </span><span>Globals</span></a><a class="docs-next button" href="/docs/ja/23.x/mock-function-api"><span>Mock Functions</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#メソッド">メソッド</a></li><li><a href="#リファレンス">リファレンス</a><ul class="toc-headings"><li><a href="#expectvalue"><code>expect(value)</code></a></li><li><a href="#expectextendmatchers"><code>expect.extend(matchers)</code></a></li><li><a href="#expectanything"><code>expect.anything()</code></a></li><li><a href="#expectanyconstructor"><code>expect.any(constructor)</code></a></li><li><a href="#expectarraycontainingarray"><code>expect.arrayContaining(array)</code></a></li><li><a href="#expectassertionsnumber"><code>expect.assertions(number)</code></a></li><li><a href="#expecthasassertions"><code>expect.hasAssertions()</code></a></li><li><a href="#expectnotarraycontainingarray"><code>expect.not.arrayContaining(array)</code></a></li><li><a href="#expectnotobjectcontainingobject"><code>expect.not.objectContaining(object)</code></a></li><li><a href="#expectnotstringcontainingstring"><code>expect.not.stringContaining(string)</code></a></li><li><a href="#expectnotstringmatchingstring--regexp"><code>expect.not.stringMatching(string | regexp)</code></a></li><li><a href="#expectobjectcontainingobject"><code>expect.objectContaining(object)</code></a></li><li><a href="#expectstringcontainingstring"><code>expect.stringContaining(string)</code></a></li><li><a href="#expectstringmatchingstring--regexp"><code>expect.stringMatching(string | regexp)</code></a></li><li><a href="#expectaddsnapshotserializerserializer"><code>expect.addSnapshotSerializer(serializer)</code></a></li><li><a href="#not"><code>.not</code></a></li><li><a href="#resolves"><code>.resolves</code></a></li><li><a href="#rejects"><code>.rejects</code></a></li><li><a href="#tobevalue"><code>.toBe(value)</code></a></li><li><a href="#tohavebeencalled"><code>.toHaveBeenCalled()</code></a></li><li><a href="#tohavebeencalledtimesnumber"><code>.toHaveBeenCalledTimes(number)</code></a></li><li><a href="#tohavebeencalledwitharg1-arg2-"><code>.toHaveBeenCalledWith(arg1, arg2, ...)</code></a></li><li><a href="#tohavebeenlastcalledwitharg1-arg2-"><code>.toHaveBeenLastCalledWith(arg1, arg2, ...)</code></a></li><li><a href="#tohavebeennthcalledwithnthcall-arg1-arg2-"><code>.toHaveBeenNthCalledWith(nthCall, arg1, arg2, ....)</code></a></li><li><a href="#tohavereturned"><code>.toHaveReturned()</code></a></li><li><a href="#tohavereturnedtimesnumber"><code>.toHaveReturnedTimes(number)</code></a></li><li><a href="#tohavereturnedwithvalue"><code>.toHaveReturnedWith(value)</code></a></li><li><a href="#tohavelastreturnedwithvalue"><code>.toHaveLastReturnedWith(value)</code></a></li><li><a href="#tohaventhreturnedwithnthcall-value"><code>.toHaveNthReturnedWith(nthCall, value)</code></a></li><li><a href="#tohavelengthnumber"><code>.toHaveLength(number)</code></a></li><li><a href="#tohavepropertykeypath-value"><code>.toHaveProperty(keyPath, value?)</code></a></li><li><a href="#tobeclosetonumber-numdigits"><code>.toBeCloseTo(number, numDigits?)</code></a></li><li><a href="#tobedefined"><code>.toBeDefined()</code></a></li><li><a href="#tobefalsy"><code>.toBeFalsy()</code></a></li><li><a href="#tobegreaterthannumber"><code>.toBeGreaterThan(number)</code></a></li><li><a href="#tobegreaterthanorequalnumber"><code>.toBeGreaterThanOrEqual(number)</code></a></li><li><a href="#tobelessthannumber"><code>.toBeLessThan(number)</code></a></li><li><a href="#tobelessthanorequalnumber"><code>.toBeLessThanOrEqual(number)</code></a></li><li><a href="#tobeinstanceofclass"><code>.toBeInstanceOf(Class)</code></a></li><li><a href="#tobenull"><code>.toBeNull()</code></a></li><li><a href="#tobetruthy"><code>.toBeTruthy()</code></a></li><li><a href="#tobeundefined"><code>.toBeUndefined()</code></a></li><li><a href="#tobenan"><code>.toBeNaN()</code></a></li><li><a href="#tocontainitem"><code>.toContain(item)</code></a></li><li><a href="#tocontainequalitem"><code>.toContainEqual(item)</code></a></li><li><a href="#toequalvalue"><code>.toEqual(value)</code></a></li><li><a href="#tomatchregexp--string"><code>.toMatch(regexp | string)</code></a></li><li><a href="#tomatchobjectobject"><code>.toMatchObject(object)</code></a></li><li><a href="#tomatchsnapshotpropertymatchers-hint"><code>.toMatchSnapshot(propertyMatchers?, hint?)</code></a></li><li><a href="#tomatchinlinesnapshotpropertymatchers-inlinesnapshot"><code>.toMatchInlineSnapshot(propertyMatchers?, inlineSnapshot)</code></a></li><li><a href="#tostrictequalvalue"><code>.toStrictEqual(value)</code></a></li><li><a href="#tothrowerror"><code>.toThrow(error?)</code></a></li><li><a href="#tothrowerrormatchingsnapshothint"><code>.toThrowErrorMatchingSnapshot(hint?)</code></a></li><li><a href="#tothrowerrormatchinginlinesnapshotinlinesnapshot"><code>.toThrowErrorMatchingInlineSnapshot(inlineSnapshot)</code></a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/ja/getting-started.html">Getting Started</a><a href="/docs/ja/snapshot-testing.html">Guides</a><a href="/docs/ja/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://www.reactiflux.com/">Reactiflux</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;

@@ -83,7 +83,7 @@
   <span class="hljs-keyword">return</span> request(<span class="hljs-string">'/users/'</span> + userID).then(<span class="hljs-function"><span class="hljs-params">user</span> =&gt;</span> user.name);
 }
 </code></pre>
-<p>In the above implementation we expect the <code>request.js</code> module to return a promise. We chain a call to <code>then</code> to receive the user name.</p>
+<p>In the above implementation, we expect the <code>request.js</code> module to return a promise. We chain a call to <code>then</code> to receive the user name.</p>
 <p>ここでネットワーク経由でユーザのデータを取得する <code>request.js</code> の実装を想像してみましょう。</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// request.js</span>
 <span class="hljs-keyword">const</span> http = <span class="hljs-built_in">require</span>(<span class="hljs-string">'http'</span>);
@@ -160,7 +160,7 @@ it(<span class="hljs-string">'works with async/await and resolves'</span>, <span
 <h2><a class="anchor" aria-hidden="true" id="エラー処理"></a><a href="#エラー処理" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>エラー処理</h2>
 <p>エラーは <code>.catch</code> メソッドで処理することができます。 想定した数のアサーションが呼ばれたことを確認するため、<code>expect.assertions</code>を必ず追加して下さい。 さもなければpromiseがrejectされなかった場合にテストが失敗したと判定されません:</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// Testing for async errors using Promise.catch.</span>
-test(<span class="hljs-string">'tests error with promises'</span>, () =&gt; {
+it(<span class="hljs-string">'tests error with promises'</span>, () =&gt; {
   expect.assertions(<span class="hljs-number">1</span>);
   <span class="hljs-keyword">return</span> user.getUserName(<span class="hljs-number">2</span>).catch(<span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span>
     expect(e).toEqual({
@@ -182,7 +182,7 @@ it(<span class="hljs-string">'tests error with async/await'</span>, <span class=
 });
 </code></pre>
 <h2><a class="anchor" aria-hidden="true" id="rejects"></a><a href="#rejects" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>.rejects</code></h2>
-<p>The<code>.rejects</code> helper works like the <code>.resolves</code> helper. promiseが成功した場合は、テストは自動的に失敗します。</p>
+<p>The<code>.rejects</code> helper works like the <code>.resolves</code> helper. promiseが成功した場合は、テストは自動的に失敗します。 <code>expect.assertions(number)</code> は必須ではありませんが、テスト中に想定した数の <a href="https://jestjs.io/docs/en/expect#expectassertionsnumber">アサーション</a> が呼び出されることを確認することために、追加することをお勧めします。 これを利用する理由としては、 <code>.resolves</code> の結果を<code>return</code>/<code>await</code> することを忘れてしまうことが良くあるからです。</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// Testing for async errors using `.rejects`.</span>
 it(<span class="hljs-string">'tests error with rejects'</span>, () =&gt; {
   expect.assertions(<span class="hljs-number">1</span>);

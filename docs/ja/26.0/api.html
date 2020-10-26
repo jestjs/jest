@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="ja"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Globals · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="テストファイルでは、Jest はそれぞれのメソッドとオブジェクトをグローバル環境に配置します。 それらを使用するために require または import する必要はありません。 However, if you prefer explicit imports, you can do `import {describe, expect, it} from &#x27;@jest/globals&#x27;`."/><meta name="docsearch:version" content="26.0"/><meta name="docsearch:language" content="ja"/><meta property="og:title" content="Globals · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="テストファイルでは、Jest はそれぞれのメソッドとオブジェクトをグローバル環境に配置します。 それらを使用するために require または import する必要はありません。 However, if you prefer explicit imports, you can do `import {describe, expect, it} from &#x27;@jest/globals&#x27;`."/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
+<!DOCTYPE html><html lang="ja"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Globals · Jest</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="テストファイルでは、Jest はそれぞれのメソッドとオブジェクトをグローバル環境に配置します。 それらを使用するために require または import する必要はありません。 ただし、明示的にインポートしたい場合は、 `&#x27;@jest/globals&#x27; から {describe, expect, test} をインポートすることができます`。"/><meta name="docsearch:version" content="26.0"/><meta name="docsearch:language" content="ja"/><meta property="og:title" content="Globals · Jest"/><meta property="og:type" content="website"/><meta property="og:url" content="https://jestjs.io/"/><meta property="og:description" content="テストファイルでは、Jest はそれぞれのメソッドとオブジェクトをグローバル環境に配置します。 それらを使用するために require または import する必要はありません。 ただし、明示的にインポートしたい場合は、 `&#x27;@jest/globals&#x27; から {describe, expect, test} をインポートすることができます`。"/><meta property="og:image" content="https://jestjs.io/img/opengraph.png"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://jestjs.io/img/jest.png"/><link rel="shortcut icon" href="/img/favicon/favicon.ico"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.css"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css"/><link rel="alternate" type="application/atom+xml" href="https://jestjs.io/blog/atom.xml" title="Jest Blog ATOM Feed"/><link rel="alternate" type="application/rss+xml" href="https://jestjs.io/blog/feed.xml" title="Jest Blog RSS Feed"/><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -74,7 +74,7 @@
                 };
               }
             });
-        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/GlobalAPI.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Globals</h1></header><article><div><span><p>テストファイルでは、Jest はそれぞれのメソッドとオブジェクトをグローバル環境に配置します。 それらを使用するために require または import する必要はありません。 However, if you prefer explicit imports, you can do <code>import {describe, expect, it} from '@jest/globals'</code>.</p>
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/GlobalAPI.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Globals</h1></header><article><div><span><p>テストファイルでは、Jest はそれぞれのメソッドとオブジェクトをグローバル環境に配置します。 それらを使用するために require または import する必要はありません。 ただし、明示的にインポートしたい場合は、 <code>'@jest/globals' から {describe, expect, test} をインポートすることができます</code>。</p>
 <h2><a class="anchor" aria-hidden="true" id="メソッド"></a><a href="#メソッド" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>メソッド</h2>
 <ul>
 <li><a href="#afterallfn-timeout"><code>afterAll(fn, timeout)</code></a></li>
@@ -99,7 +99,7 @@
 <h2><a class="anchor" aria-hidden="true" id="リファレンス"></a><a href="#リファレンス" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>リファレンス</h2>
 <h3><a class="anchor" aria-hidden="true" id="afterallfn-timeout"></a><a href="#afterallfn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>afterAll(fn, timeout)</code></h3>
 <p>このファイル内のすべてのテストが完了した後に、関数を実行します。 関数がpromiseまたはジェネレータを返した場合、Jestはそのpromiseが解決されるのを待ちます。</p>
-<p>異常終了するまでの待ち時間を指定する <code>timeout</code> オプション(ミリ秒単位) を指定できます。 <em>Note: The default timeout is 5 seconds.</em></p>
+<p>異常終了するまでの待ち時間を指定する <code>timeout</code> オプション(ミリ秒単位) を指定できます。 <em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <p>テスト間で共有するグローバルな設定や状態をクリーンアップしたい場合に便利です。</p>
 <p>例：</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
@@ -129,7 +129,7 @@ test(<span class="hljs-string">'can insert a thing'</span>, () =&gt; {
 <p>全テスト完了後ではなく、個々のテストの完了後にクリーンアップ処理を行いたい場合は、 <code>afterEach</code> 関数を使用して下さい。</p>
 <h3><a class="anchor" aria-hidden="true" id="aftereachfn-timeout"></a><a href="#aftereachfn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>afterEach(fn, timeout)</code></h3>
 <p>このファイル内の各テストが完了するたびに、関数を実行します。 関数がpromiseまたはジェネレータを返した場合、Jestはそのpromiseが解決されるのを待ちます。</p>
-<p>異常終了するまでの待ち時間を指定する <code>timeout</code> オプション(ミリ秒単位) を指定できます。 <em>Note: The default timeout is 5 seconds.</em></p>
+<p>異常終了するまでの待ち時間を指定する <code>timeout</code> オプション(ミリ秒単位) を指定できます。 <em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <p>各テストで一時的に設定した状態などをクリーンアップしたい場合に便利です。</p>
 <p>例：</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
@@ -159,7 +159,7 @@ test(<span class="hljs-string">'can insert a thing'</span>, () =&gt; {
 <p>全テストが完了した後に一度だけ何らかのクリーンアップを実行する場合は、 <code>afterAll</code> 関数を使用して下さい。</p>
 <h3><a class="anchor" aria-hidden="true" id="beforeallfn-timeout"></a><a href="#beforeallfn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>beforeAll(fn, timeout)</code></h3>
 <p>このファイルのいずれかのテストを実行する前に、関数を実行します。 関数がpromiseまたはジェネレータを返した場合、Jestはテストを実行する前にpromiseが解決されるのを待ちます。</p>
-<p>異常終了するまでの待ち時間を指定する <code>timeout</code> オプション(ミリ秒単位) を指定できます。 <em>Note: The default timeout is 5 seconds.</em></p>
+<p>異常終了するまでの待ち時間を指定する <code>timeout</code> オプション(ミリ秒単位) を指定できます。 <em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <p>多数のテストで使用するグローバルな状態を設定したい場合に便利です。</p>
 <p>例：</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
@@ -185,7 +185,7 @@ test(<span class="hljs-string">'can find things'</span>, () =&gt; {
 <p>全テスト開始前ではなく、個々のテストの開始前に何らかの処理を行いたい場合は、 <code>beforeEach</code> 関数を使用して下さい。</p>
 <h3><a class="anchor" aria-hidden="true" id="beforeeachfn-timeout"></a><a href="#beforeeachfn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>beforeEach(fn, timeout)</code></h3>
 <p>ファイルの各テストが実行される前に、関数を実行します。 関数がpromiseまたはジェネレータを返した場合、Jestはテストを実行する前にpromiseが解決されるのを待ちます。</p>
-<p>異常終了するまでの待ち時間を指定する <code>timeout</code> オプション(ミリ秒単位) を指定できます。 <em>Note: The default timeout is 5 seconds.</em></p>
+<p>異常終了するまでの待ち時間を指定する <code>timeout</code> オプション(ミリ秒単位) を指定できます。 <em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <p>多数のテストで使用するグローバルな状態を設定したい場合に便利です。</p>
 <p>例：</p>
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> globalDatabase = makeGlobalDatabase();
@@ -258,7 +258,7 @@ describe(<span class="hljs-string">'binaryStringToNumber'</span>, () =&gt;; {
 <ul>
 <li><code>table</code>: <code>Array</code> of Arrays with the arguments that are passed into the <code>fn</code> for each row.
 <ul>
-<li><em>Note</em> If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. <code>[1, 2, 3] -&gt; [[1], [2], [3]]</code></li>
+<li><em>注意</em>： 1次元の配列を渡した場合には、内部的には<code>[1, 2, 3] -&gt; [[1], [2], [3]]</code> のようにテーブルにマッピングされます</li>
 </ul></li>
 <li><code>name</code>: <code>String</code> the title of the test suite.
 <ul>
@@ -276,7 +276,7 @@ describe(<span class="hljs-string">'binaryStringToNumber'</span>, () =&gt;; {
 </ul></li>
 </ul></li>
 <li><code>fn</code>: <code>実行されるテストの一連の関数</code> 。各行のパラメータを引数として受け取る関数です。</li>
-<li>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait for each row before aborting. <em>Note: The default timeout is 5 seconds.</em></li>
+<li>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait for each row before aborting. <em>注意: デフォルトのタイムアウトは5秒です。</em></li>
 </ul>
 <p>例:</p>
 <pre><code class="hljs css language-js">describe.each([
@@ -309,7 +309,7 @@ describe(<span class="hljs-string">'binaryStringToNumber'</span>, () =&gt;; {
 <li>ネストされたオブジェクトの値を注入するには、keyPath 、すなわち <code>$variable.path.to.value</code> の形式で指定できます。</li>
 </ul></li>
 <li><code>fn</code>: <code>実行される一連のテスト関数</code> で、テストデータのオブジェクトを受け取ります。</li>
-<li>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait for each row before aborting. <em>Note: The default timeout is 5 seconds.</em></li>
+<li>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait for each row before aborting. <em>注意: デフォルトのタイムアウトは5秒です。</em></li>
 </ul>
 <p>例:</p>
 <pre><code class="hljs css language-js">describe.each<span class="hljs-string">`
@@ -443,7 +443,7 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
   expect(inchesOfRain()).toBe(<span class="hljs-number">0</span>);
 });
 </code></pre>
-<p>第1引数にテスト名を、第2引数にテストの確認項目を含む関数を設定します。 3番目の引数 (任意) は <code>タイムアウト値</code> (ミリ秒単位) で、中止するまでの待ち時間を指定します。 <em>Note: The default timeout is 5 seconds.</em></p>
+<p>第1引数にテスト名を、第2引数にテストの確認項目を含む関数を設定します。 3番目の引数 (任意) は <code>タイムアウト値</code> (ミリ秒単位) で、中止するまでの待ち時間を指定します。 <em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <blockquote>
 <p>注意： <code>test</code>から<strong>Promiseが返された場合</strong>、Jestはテストが完了する前にPromiseの状態が決まるまで待ちます。 Jest は、通常は <code>done</code> と呼ばれる<strong>テスト関数に引数を与えた場合</strong>にも待ちます。 この動作はコールバックをテストしたい場合に便利です。 非同期なコードをテストする方法を<a href="/docs/ja/26.0/asynchronous#callbacks">こちら</a>を参照してください。</p>
 </blockquote>
@@ -463,7 +463,7 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 <ul>
 <li><code>table</code>: <code>Array</code> of Arrays with the arguments that are passed into the test <code>fn</code> for each row.
 <ul>
-<li><em>Note</em> If you pass in a 1D array of primitives, internally it will be mapped to a table i.e. <code>[1, 2, 3] -&gt; [[1], [2], [3]]</code></li>
+<li><em>注意</em>： 1次元の配列を渡した場合には、内部的には<code>[1, 2, 3] -&gt; [[1], [2], [3]]</code> のようにテーブルにマッピングされます</li>
 </ul></li>
 <li><code>name</code>: <code>String</code> the title of the test block.
 <ul>
@@ -481,7 +481,7 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 </ul></li>
 </ul></li>
 <li><code>fn</code>: <code>テストを実行する関数</code> で、各行のパラメータを関数の引数として受け取ります。</li>
-<li>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait for each row before aborting. <em>Note: The default timeout is 5 seconds.</em></li>
+<li>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait for each row before aborting. <em>注意: デフォルトのタイムアウトは5秒です。</em></li>
 </ul>
 <p>例:</p>
 <pre><code class="hljs css language-js">test.each([
@@ -504,7 +504,7 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 <li>ネストされたオブジェクトの値を注入するには、keyPath 、すなわち <code>$variable.path.to.value</code> の形式で指定できます。</li>
 </ul></li>
 <li><code>fn</code>: <code>テストを実行する関数</code> で、 テストデータのオブジェクトを受け取ります。</li>
-<li>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait for each row before aborting. <em>Note: The default timeout is 5 seconds.</em></li>
+<li>Optionally, you can provide a <code>timeout</code> (in milliseconds) for specifying how long to wait for each row before aborting. <em>注意: デフォルトのタイムアウトは5秒です。</em></li>
 </ul>
 <p>例:</p>
 <pre><code class="hljs css language-js">test.each<span class="hljs-string">`
@@ -519,7 +519,7 @@ test(<span class="hljs-string">'will be ran'</span>, () =&gt; {
 <h3><a class="anchor" aria-hidden="true" id="testonlyname-fn-timeout"></a><a href="#testonlyname-fn-timeout" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>test.only(name, fn, timeout)</code></h3>
 <p>次の別名でも同様です: <code>it.only(name, fn, timeout)</code> と <code>fit(name, fn, timeout)</code></p>
 <p>大規模なテストファイルをデバッグする場合、テストのサブセットのみを実行したい場合がよくあります。 <code>.only</code> を使用して、そのテストファイルで実行したい唯一のテストを指定できます。</p>
-<p>異常終了するまでの待ち時間を指定する <code>timeout</code> オプション(ミリ秒単位) を指定できます。 <em>Note: The default timeout is 5 seconds.</em></p>
+<p>異常終了するまでの待ち時間を指定する <code>timeout</code> オプション(ミリ秒単位) を指定できます。 <em>注意: デフォルトのタイムアウトは5秒です。</em></p>
 <p>例えば、次のようなテストがあったとしましょう:</p>
 <pre><code class="hljs css language-js">test.only(<span class="hljs-string">'it is raining'</span>, () =&gt; {
   expect(inchesOfRain()).toBeGreaterThan(<span class="hljs-number">0</span>);
