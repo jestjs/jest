@@ -14,6 +14,7 @@ import {
   ChildMessageInitialize,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_ERROR,
+  PARENT_MESSAGE_HEARTBEAT,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
 } from '../types';
@@ -66,6 +67,12 @@ function reportSuccess(result: unknown) {
   }
 
   parentPort!.postMessage([PARENT_MESSAGE_OK, result]);
+}
+
+function sendParentMessageHeartbeat() {
+  if (process && process.send) {
+    process.send([PARENT_MESSAGE_HEARTBEAT]);
+  }
 }
 
 function reportClientError(error: Error) {
@@ -150,6 +157,7 @@ function execFunction(
   onError: (error: Error) => void,
 ): void {
   let result;
+  sendParentMessageHeartbeat();
 
   try {
     result = fn.apply(ctx, args);

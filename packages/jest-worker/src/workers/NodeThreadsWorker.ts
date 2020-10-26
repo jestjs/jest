@@ -17,6 +17,7 @@ import {
   OnStart,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_CUSTOM,
+  PARENT_MESSAGE_HEARTBEAT,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
   ParentMessage,
@@ -40,6 +41,8 @@ export default class ExperimentalWorker implements WorkerInterface {
   private _exitPromise: Promise<void>;
   private _resolveExitPromise!: () => void;
   private _forceExited: boolean;
+
+  private _heartbeatTimeout: any;
 
   constructor(options: WorkerOptions) {
     this._options = options;
@@ -126,6 +129,13 @@ export default class ExperimentalWorker implements WorkerInterface {
     }
   }
 
+  monitorHeartbeat(onExceeded: () => any): void {
+    clearTimeout(this._heartbeatTimeout);
+    this._heartbeatTimeout = setTimeout(() => {
+      onExceeded();
+    }, this._options.workerHeartbeatTimeout);
+  }
+
   private _shutdown() {
     // End the permanent stream so the merged stream end too
     if (this._fakeStream) {
@@ -136,15 +146,68 @@ export default class ExperimentalWorker implements WorkerInterface {
     this._resolveExitPromise();
   }
 
+  private async monitorHeartbeatError() {
+    let error;
+    if (this._options.inspector !== undefined) {
+      error = new Error(
+        `Test worker was unresponsive for 10 seconds. There was an inspector connected so we were able to capture stack frames before it was terminated.`,
+      );
+      this._options.inspector.on('Debugger.paused', (message: any) => {
+        const callFrames = message.params.callFrames.slice(0, 20);
+        for (const callFrame of callFrames) {
+          const loc = callFrame['location'];
+
+          const columnNumber = loc['columnNumber'];
+          const lineNumber = loc['lineNumber'];
+          const url = callFrame['url'];
+
+          const name = callFrame['scopeChain'][0].name;
+
+          // TODO: process error with stack trace
+          console.log({
+            columnNumber,
+            lineNumber,
+            name,
+            url,
+          });
+        }
+      });
+
+      await new Promise((resolve, reject) => {
+        this._options.inspector?.post('Debugger.pause', (err: Error) => {
+          if (err === null) {
+            resolve();
+          } else {
+            reject(err);
+          }
+        });
+      });
+    } else {
+      error = new Error(
+        `Test worker was unresponsive for 10 seconds. There was no inspector connected so we were unable to capture stack frames before it was terminated.`,
+      );
+    }
+    // @ts-expect-error: adding custom properties to errors.
+    error.type = 1;
+    error.stack = 'test stack';
+
+    if (this._heartbeatTimeout !== undefined) {
+      clearTimeout(this._heartbeatTimeout);
+    }
+    this._onProcessEnd(error, null);
+  }
+
   private _onMessage(response: ParentMessage) {
     let error;
 
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
+        clearTimeout(this._heartbeatTimeout);
         this._onProcessEnd(null, response[1]);
         break;
 
       case PARENT_MESSAGE_CLIENT_ERROR:
+        clearTimeout(this._heartbeatTimeout);
         error = response[4];
 
         if (error != null && typeof error === 'object') {
@@ -166,6 +229,7 @@ export default class ExperimentalWorker implements WorkerInterface {
         this._onProcessEnd(error, null);
         break;
       case PARENT_MESSAGE_SETUP_ERROR:
+        clearTimeout(this._heartbeatTimeout);
         error = new Error('Error when calling setup: ' + response[2]);
 
         // @ts-expect-error: adding custom properties to errors.
@@ -174,10 +238,15 @@ export default class ExperimentalWorker implements WorkerInterface {
 
         this._onProcessEnd(error, null);
         break;
+      case PARENT_MESSAGE_HEARTBEAT:
+        this.monitorHeartbeat(() => this.monitorHeartbeatError());
+        break;
       case PARENT_MESSAGE_CUSTOM:
+        clearTimeout(this._heartbeatTimeout);
         this._onCustomMessage(response[1]);
         break;
       default:
+        clearTimeout(this._heartbeatTimeout);
         throw new TypeError('Unexpected response from worker: ' + response[0]);
     }
   }
