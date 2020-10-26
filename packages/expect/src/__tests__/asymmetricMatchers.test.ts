@@ -169,6 +169,17 @@ test('ObjectContaining matches', () => {
     objectContaining({first: objectContaining({second: {}})}).asymmetricMatch({
       first: {second: {}},
     }),
+    objectContaining({foo: Buffer.from('foo')}).asymmetricMatch({
+      foo: Buffer.from('foo'),
+      jest: 'jest',
+    }),
+    objectContaining({foo: {bar: [Buffer.from('foo')]}}).asymmetricMatch({
+      foo: {
+        bar: [Buffer.from('foo'), 1],
+        qux: 'qux',
+      },
+      jest: 'jest',
+    }),
   ].forEach(test => {
     jestExpect(test).toEqual(true);
   });
