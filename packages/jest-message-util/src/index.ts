@@ -103,7 +103,6 @@ function checkForCommonEnvironmentErrors(error: string) {
   } else if (error.includes('.unref is not a function')) {
     return warnAboutWrongTestEnvironment(error, 'node');
   }
-
   return error;
 }
 
