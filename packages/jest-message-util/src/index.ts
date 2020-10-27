@@ -165,8 +165,8 @@ export const formatExecError = (
       : '';
 
   if (
-    (blankStringRegexp.test(message) && blankStringRegexp.test(stack)) ||
-    typeof stack !== 'string'
+    typeof stack !== 'string' ||
+    (blankStringRegexp.test(message) && blankStringRegexp.test(stack))
   ) {
     // this can happen if an empty object is thrown.
     message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
@@ -397,8 +397,9 @@ export const separateMessageFromStack = (
   // (maybe it's a code frame instead), just the first non-empty line.
   // If the error is a plain "Error:" instead of a SyntaxError or TypeError we
   // remove the prefix from the message because it is generally not useful.
-  const ERROR_REGEXP = /^(?:Error: )?([\s\S]*?(?=\n\s*at\s.*:\d*:\d*)|\s*.*)([\s\S]*)$/;
-  const messageMatch = content.match(ERROR_REGEXP);
+  const messageMatch = content.match(
+    /^(?:Error: )?([\s\S]*?(?=\n\s*at\s.*:\d*:\d*)|\s*.*)([\s\S]*)$/,
+  );
   if (!messageMatch) {
     // For typescript
     throw new Error('If you hit this error, the regex above is buggy.');
