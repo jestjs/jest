@@ -25,6 +25,8 @@ import {
   WorkerOptions,
 } from '../types';
 
+const CHILD_HEARTBEAT_INTERVAL = 1_000;
+
 export default class ExperimentalWorker implements WorkerInterface {
   private _worker!: Worker;
   private _options: WorkerOptions;
@@ -109,6 +111,7 @@ export default class ExperimentalWorker implements WorkerInterface {
       false,
       this._options.workerPath,
       this._options.setupArgs,
+      CHILD_HEARTBEAT_INTERVAL,
     ]);
 
     this._retries++;
@@ -202,12 +205,10 @@ export default class ExperimentalWorker implements WorkerInterface {
 
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
-        clearTimeout(this._heartbeatTimeout);
         this._onProcessEnd(null, response[1]);
         break;
 
       case PARENT_MESSAGE_CLIENT_ERROR:
-        clearTimeout(this._heartbeatTimeout);
         error = response[4];
 
         if (error != null && typeof error === 'object') {
@@ -229,7 +230,6 @@ export default class ExperimentalWorker implements WorkerInterface {
         this._onProcessEnd(error, null);
         break;
       case PARENT_MESSAGE_SETUP_ERROR:
-        clearTimeout(this._heartbeatTimeout);
         error = new Error('Error when calling setup: ' + response[2]);
 
         // @ts-expect-error: adding custom properties to errors.
@@ -242,11 +242,9 @@ export default class ExperimentalWorker implements WorkerInterface {
         this.monitorHeartbeat(() => this.monitorHeartbeatError());
         break;
       case PARENT_MESSAGE_CUSTOM:
-        clearTimeout(this._heartbeatTimeout);
         this._onCustomMessage(response[1]);
         break;
       default:
-        clearTimeout(this._heartbeatTimeout);
         throw new TypeError('Unexpected response from worker: ' + response[0]);
     }
   }
@@ -260,6 +258,7 @@ export default class ExperimentalWorker implements WorkerInterface {
       }
     } else {
       this._shutdown();
+      clearTimeout(this._heartbeatTimeout);
     }
   }
 
@@ -270,6 +269,7 @@ export default class ExperimentalWorker implements WorkerInterface {
   forceExit(): void {
     this._forceExited = true;
     this._worker.terminate();
+    clearTimeout(this._heartbeatTimeout);
   }
 
   send(

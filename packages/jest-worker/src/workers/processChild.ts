@@ -21,6 +21,8 @@ import {
 let file: string | null = null;
 let setupArgs: Array<unknown> = [];
 let initialized = false;
+let monitorHeartbeat: NodeJS.Timeout;
+let heartbeatIntervalValue: number;
 
 /**
  * This file is a small bootstrapper for workers. It sets up the communication
@@ -41,6 +43,10 @@ const messageListener: NodeJS.MessageListener = request => {
       const init: ChildMessageInitialize = request;
       file = init[2];
       setupArgs = request[3];
+      heartbeatIntervalValue = request[4];
+      monitorHeartbeat = setInterval(() => {
+        sendParentMessageHeartbeat();
+      }, heartbeatIntervalValue);
       break;
 
     case CHILD_MESSAGE_CALL:
@@ -115,6 +121,7 @@ function end(): void {
 function exitProcess(): void {
   // Clean up open handles so the process ideally exits gracefully
   process.removeListener('message', messageListener);
+  clearInterval(monitorHeartbeat);
 }
 
 function execMethod(method: string, args: Array<unknown>): void {
@@ -156,7 +163,6 @@ function execFunction(
   onError: (error: Error) => void,
 ): void {
   let result;
-  sendParentMessageHeartbeat();
 
   try {
     result = fn.apply(ctx, args);
