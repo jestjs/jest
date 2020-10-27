@@ -117,6 +117,8 @@ jobs:
         id: cpu-cores
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests
-        run: JEST_CIRCUS=1 yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }} && JEST_CIRCUS=1 yarn test-leak --max-workers ${{ steps.cpu-cores.outputs.count }}
+        run: |
+          JEST_CIRCUS=1 yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }}
+          JEST_CIRCUS=1 yarn test-leak
         env:
           CI: true
