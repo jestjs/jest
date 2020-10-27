@@ -152,7 +152,7 @@ export default class Jasmine2Reporter implements Reporter {
 
     specResult.failedExpectations.forEach(failed => {
       const message =
-        !failed.matcherName && failed.stack
+        !failed.matcherName && typeof failed.stack === 'string'
           ? this._addMissingMessageToStack(failed.stack, failed.message)
           : failed.message || '';
       results.failureMessages.push(message);

@@ -10,6 +10,7 @@ import * as fs from 'graceful-fs';
 import type {Config, TestResult} from '@jest/types';
 import chalk = require('chalk');
 import micromatch = require('micromatch');
+import prettyFormat = require('pretty-format');
 import slash = require('slash');
 import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils = require('stack-utils');
@@ -25,7 +26,8 @@ const stackUtils = new StackUtils({cwd: 'something which does not exist'});
 let nodeInternals: Array<RegExp> = [];
 
 try {
-  nodeInternals = StackUtils.nodeInternals();
+  // https://github.com/tapjs/stack-utils/issues/54
+  nodeInternals = StackUtils.nodeInternals().concat(/\s*\(node:/);
 } catch {
   // `StackUtils.nodeInternals()` fails in browsers. We don't need to remove
   // node internals in the browser though, so no issue.
@@ -139,7 +141,10 @@ export const formatExecError = (
     stack = error;
   } else {
     message = error.message;
-    stack = error.stack;
+    stack =
+      typeof error.stack === 'string'
+        ? error.stack
+        : `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
   }
 
   const separated = separateMessageFromStack(stack || '');
@@ -159,9 +164,12 @@ export const formatExecError = (
       ? '\n' + formatStackTrace(stack, config, options, testPath)
       : '';
 
-  if (blankStringRegexp.test(message) && blankStringRegexp.test(stack)) {
+  if (
+    typeof stack !== 'string' ||
+    (blankStringRegexp.test(message) && blankStringRegexp.test(stack))
+  ) {
     // this can happen if an empty object is thrown.
-    message = MESSAGE_INDENT + 'Error: No message was provided';
+    message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
   }
 
   let messageToUse;

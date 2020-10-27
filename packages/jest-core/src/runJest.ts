@@ -198,9 +198,13 @@ export default async function runJest({
     return;
   }
 
-  if (globalConfig.onlyFailures && failedTestsCache) {
-    allTests = failedTestsCache.filterTests(allTests);
-    globalConfig = failedTestsCache.updateConfig(globalConfig);
+  if (globalConfig.onlyFailures) {
+    if (failedTestsCache) {
+      allTests = failedTestsCache.filterTests(allTests);
+      globalConfig = failedTestsCache.updateConfig(globalConfig);
+    } else {
+      allTests = sequencer.allFailedTests(allTests);
+    }
   }
 
   const hasTests = allTests.length > 0;

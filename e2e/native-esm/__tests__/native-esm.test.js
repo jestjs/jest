@@ -20,6 +20,7 @@ import staticImportedStatefulWithQuery from '../stateful.mjs?query=1';
 import staticImportedStatefulWithAnotherQuery from '../stateful.mjs?query=2';
 /* eslint-enable */
 import {double} from '../index';
+import defaultFromCjs, {namedFunction} from '../namedExport.cjs';
 
 test('should have correct import.meta', () => {
   expect(typeof require).toBe('undefined');
@@ -136,4 +137,11 @@ test('varies module cache by query', () => {
   expect(staticImportedStatefulWithQuery()).toBe(3);
   expect(staticImportedStatefulWithAnotherQuery()).toBe(2);
   expect(staticImportedStatefulWithAnotherQuery()).toBe(3);
+});
+
+test('supports named imports from CJS', () => {
+  expect(namedFunction()).toBe('hello from a named CJS function!');
+  expect(defaultFromCjs.default()).toBe('"default" export');
+
+  expect(Object.keys(defaultFromCjs)).toEqual(['namedFunction', 'default']);
 });

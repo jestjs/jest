@@ -54,7 +54,7 @@ jest.mock('../__test_modules__/f', () => {
 jest.mock(`../__test_modules__/jestBackticks`);
 jest.mock('virtual-module', () => 'kiwi', {virtual: true});
 // This has types that should be ignored by the out-of-scope variables check.
-jest.mock('has-flow-types', () => (props: {children: mixed}) => 3, {
+jest.mock('has-flow-types', () => (props: {children: unknown}) => 3, {
   virtual: true,
 });
 

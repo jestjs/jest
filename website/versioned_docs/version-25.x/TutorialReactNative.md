@@ -13,13 +13,14 @@ Get a deeper insight into testing a working React Native app example by reading 
 Starting from react-native version 0.38, a Jest setup is included by default when running `react-native init`. The following configuration should be automatically added to your package.json file:
 
 ```json
-// package.json
+{
   "scripts": {
     "test": "jest"
   },
   "jest": {
     "preset": "react-native"
   }
+}
 ```
 
 _Note: If you are upgrading your react-native application and previously used the `jest-react-native` preset, remove the dependency from your `package.json` file and change the preset to `react-native` instead._
@@ -30,7 +31,7 @@ Run `yarn test` to run tests with Jest.
 
 Let's create a [snapshot test](SnapshotTesting.md) for a small intro component with a few views and text components and some styles:
 
-```javascript
+```tsx
 // Intro.js
 import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
@@ -70,7 +71,7 @@ export default class Intro extends Component {
 
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
 
-```javascript
+```tsx
 // __tests__/Intro-test.js
 import React from 'react';
 import renderer from 'react-test-renderer';
@@ -120,7 +121,7 @@ exports[`Intro renders correctly 1`] = `
 `;
 ```
 
-The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
+The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along with code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
 
 The code for this example is available at [examples/react-native](https://github.com/facebook/jest/tree/master/examples/react-native).
 
@@ -139,9 +140,11 @@ The [`transformIgnorePatterns`](configuration.html#transformignorepatterns-array
 By default the jest-react-native preset only processes the project's own source files and react-native. If you have npm dependencies that have to be transformed you can customize this configuration option by including modules other than react-native:
 
 ```json
-"transformIgnorePatterns": [
-  "node_modules/(?!(react-native|my-project|react-native-button)/)"
-]
+{
+  "transformIgnorePatterns": [
+    "node_modules/(?!(react-native|my-project|react-native-button)/)"
+  ]
+}
 ```
 
 ### setupFiles
@@ -153,8 +156,10 @@ If you'd like to provide additional configuration for every test file, the [`set
 The [`moduleNameMapper`](configuration.html#modulenamemapper-objectstring-string--arraystring) can be used to map a module path to a different module. By default the preset maps all images to an image stub module but if a module cannot be found this configuration option can help:
 
 ```json
-"moduleNameMapper": {
-  "my-module.js": "<rootDir>/path/to/my-module.js"
+{
+  "moduleNameMapper": {
+    "my-module.js": "<rootDir>/path/to/my-module.js"
+  }
 }
 ```
 
@@ -162,7 +167,7 @@ The [`moduleNameMapper`](configuration.html#modulenamemapper-objectstring-string
 
 ### Mock native modules using jest.mock
 
-The Jest preset built into `react-native` comes with a few default mocks that are applied on a react-native repository. However some react-native components or third party components rely on native code to be rendered. In such cases, Jest's manual mocking system can help to mock out the underlying implementation.
+The Jest preset built into `react-native` comes with a few default mocks that are applied on a react-native repository. However, some react-native components or third party components rely on native code to be rendered. In such cases, Jest's manual mocking system can help to mock out the underlying implementation.
 
 For example, if your code depends on a third party native video component called `react-native-video` you might want to stub it out with a manual mock like this:
 

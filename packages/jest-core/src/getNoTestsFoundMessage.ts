@@ -18,7 +18,7 @@ export default function getNoTestsFoundMessage(
   globalConfig: Config.GlobalConfig,
 ): string {
   if (globalConfig.onlyFailures) {
-    return getNoTestFoundFailed();
+    return getNoTestFoundFailed(globalConfig);
   }
   if (globalConfig.onlyChanged) {
     return getNoTestFoundRelatedToChangedFiles(globalConfig);

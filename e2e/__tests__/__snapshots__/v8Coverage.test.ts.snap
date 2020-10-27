@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`on node >=10 prints coverage 1`] = `
+exports[`prints coverage 1`] = `
 "  console.log
     42
 

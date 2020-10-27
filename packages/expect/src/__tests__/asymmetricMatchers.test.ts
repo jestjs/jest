@@ -163,6 +163,9 @@ test('ObjectContaining matches', () => {
     objectContaining({}).asymmetricMatch('jest'),
     objectContaining({foo: 'foo'}).asymmetricMatch({foo: 'foo', jest: 'jest'}),
     objectContaining({foo: undefined}).asymmetricMatch({foo: undefined}),
+    objectContaining({foo: {bar: [1]}}).asymmetricMatch({
+      foo: {bar: [1], qux: []},
+    }),
     objectContaining({first: objectContaining({second: {}})}).asymmetricMatch({
       first: {second: {}},
     }),
@@ -206,6 +209,14 @@ test('ObjectContaining matches prototype properties', () => {
 
 test('ObjectContaining throws for non-objects', () => {
   jestExpect(() => objectContaining(1337).asymmetricMatch()).toThrow();
+});
+
+test('ObjectContaining does not mutate the sample', () => {
+  const sample = {foo: {bar: {}}};
+  const sample_json = JSON.stringify(sample);
+  expect({foo: {bar: {}}}).toEqual(expect.objectContaining(sample));
+
+  expect(JSON.stringify(sample)).toEqual(sample_json);
 });
 
 test('ObjectNotContaining matches', () => {

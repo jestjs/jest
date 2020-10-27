@@ -1,6 +1,6 @@
 {
   "name": "jest-haste-map",
-  "version": "26.6.0",
+  "version": "26.6.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,7 +10,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/types": "^26.6.0",
+    "@jest/types": "^26.6.1",
     "@types/graceful-fs": "^4.1.2",
     "@types/node": "*",
     "anymatch": "^3.0.3",
@@ -18,8 +18,8 @@
     "graceful-fs": "^4.2.4",
     "jest-regex-util": "^26.0.0",
     "jest-serializer": "^26.5.0",
-    "jest-util": "^26.6.0",
-    "jest-worker": "^26.5.0",
+    "jest-util": "^26.6.1",
+    "jest-worker": "^26.6.1",
     "micromatch": "^4.0.2",
     "sane": "^4.0.3",
     "walker": "^1.0.7"

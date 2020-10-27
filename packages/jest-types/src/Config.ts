@@ -168,6 +168,7 @@ export type InitialOptions = Partial<{
   notify: boolean;
   notifyMode: string;
   onlyChanged: boolean;
+  onlyFailures: boolean;
   outputFile: Path;
   passWithNoTests: boolean;
   preprocessorIgnorePatterns: Array<Glob>;
@@ -418,6 +419,7 @@ export type Argv = Arguments<
     notify: boolean;
     notifyMode: string;
     onlyChanged: boolean;
+    onlyFailures: boolean;
     outputFile: string;
     preset: string | null | undefined;
     projects: Array<string>;

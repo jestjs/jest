@@ -124,7 +124,7 @@ Automatically clear mock calls and instances before every test. Equivalent to ca
 
 Default: `false`
 
-Indicates whether the coverage information should be collected while executing the test. Because these retrofits all executed files with coverage collection statements, it may significantly slow down your tests.
+Indicates whether the coverage information should be collected while executing the test. Because this retrofits all executed files with coverage collection statements, it may significantly slow down your tests.
 
 ### `collectCoverageFrom` [array]
 
@@ -186,7 +186,7 @@ Indicates which provider should be used to instrument code for coverage. Allowed
 
 Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
 
-### `coverageReporters` [array\<string | [string,any]>]
+### `coverageReporters` [array\<string | [string, options]>]
 
 Default: `["json", "lcov", "text", "clover"]`
 
@@ -199,6 +199,8 @@ _Note: You can pass additional options to the istanbul reporter using the tuple 
 ```json
 ["json", ["lcov", {"projectRoot": "../../"}]]
 ```
+
+For the additional information about the options object shape you can refer to `CoverageReporterWithOptions` type in the [type definitions](https://github.com/facebook/jest/tree/master/packages/jest-types/src/Config.ts).
 
 ### `coverageThreshold` [object]
 
@@ -224,7 +226,7 @@ For example, with the following configuration jest will fail if there is less th
 }
 ```
 
-If globs or paths are specified alongside `global`, coverage data for matching paths will be subtracted from overall coverage and thresholds will be applied independently. Thresholds for globs are applied to all files matching the glob. If the file specified by path is not found, error is returned.
+If globs or paths are specified alongside `global`, coverage data for matching paths will be subtracted from overall coverage and thresholds will be applied independently. Thresholds for globs are applied to all files matching the glob. If the file specified by path is not found, an error is returned.
 
 For example, with the following configuration:
 
@@ -328,7 +330,7 @@ Make calling deprecated APIs throw helpful error messages. Useful for easing the
 
 Default: `undefined`
 
-Test files run inside a [vm](https://nodejs.org/api/vm.html), which slows calls to global context properties (e.g. `Math`). With this option, you can specify extra properties to be defined inside the vm for faster lookups.
+Test files run inside a [vm](https://nodejs.org/api/vm.html), which slows calls to global context properties (e.g. `Math`). With this option you can specify extra properties to be defined inside the vm for faster lookups.
 
 For example, if your tests call `Math` often, you can pass it by setting `extraGlobals`.
 
@@ -669,7 +671,7 @@ Automatically reset mock state before every test. Equivalent to calling `jest.re
 
 Default: `false`
 
-By default, each test file gets its own independent module registry. Enabling `resetModules` goes a step further and resets the module registry before running each individual test. This is useful to isolate modules for every test so that local module state doesn't conflict between tests. This can be done programmatically using [`jest.resetModules()`](JestObjectAPI.md#jestresetmodules).
+By default, each test file gets its own independent module registry. Enabling `resetModules` goes a step further and resets the module registry before running each individual test. This is useful to isolate modules for every test so that the local module state doesn't conflict between tests. This can be done programmatically using [`jest.resetModules()`](JestObjectAPI.md#jestresetmodules).
 
 ### `resolver` [string]
 
@@ -966,7 +968,7 @@ beforeAll(() => {
 
 Default: `{}`
 
-Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example, you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{userAgent: "Agent/007"}`.
+Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{userAgent: "Agent/007"}`.
 
 ### `testFailureExitCode` [number]
 
@@ -1067,7 +1069,7 @@ This option allows the use of a custom results processor. This processor must be
 
 Default: `jasmine2`
 
-This option allows use of a custom test runner. The default is jasmine2. A custom test runner can be provided by specifying a path to a test runner implementation.
+This option allows the use of a custom test runner. The default is jasmine2. A custom test runner can be provided by specifying a path to a test runner implementation.
 
 The test runner module must export a function with the following signature:
 
@@ -1154,7 +1156,7 @@ You can pass configuration to a transformer like `{filePattern: ['path-to-transf
 
 _Note: a transformer is only run once per file unless the file has changed. During the development of a transformer it can be useful to run Jest with `--no-cache` to frequently [delete Jest's cache](Troubleshooting.md#caching-issues)._
 
-_Note: when adding additional code transformers, this will overwrite the default config and `babel-jest` is no longer automatically loaded. If you want to use it to compile JavaScript or Typescript, it has to be explicitly defined by adding `{"^.+\\.[jt]sx?$": "babel-jest"}` to the transform property. See [babel-jest plugin](https://github.com/facebook/jest/tree/master/packages/babel-jest#setup)_
+_Note: when adding additional code transformers, this will overwrite the default config and `babel-jest` is no longer automatically loaded. If you want to use it to compile JavaScript or Typescript, it has to be explicitly defined by adding `{"\\.[jt]sx?$": "babel-jest"}` to the transform property. See [babel-jest plugin](https://github.com/facebook/jest/tree/master/packages/babel-jest#setup)_
 
 ### `transformIgnorePatterns` [array\<string>]
 
@@ -1198,7 +1200,7 @@ Even if nothing is specified here, the watcher will ignore changes to any hidden
 
 Default: `[]`
 
-This option allows you to use a custom watch plugins. Read more about watch plugins [here](watch-plugins).
+This option allows you to use custom watch plugins. Read more about watch plugins [here](watch-plugins).
 
 Examples of watch plugins include:
 
