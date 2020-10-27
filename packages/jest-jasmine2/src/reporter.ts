@@ -113,19 +113,15 @@ export default class Jasmine2Reporter implements Reporter {
     return this._resultsPromise;
   }
 
-  private _addMissingMessageToStack(stack: unknown, message?: string) {
+  private _addMissingMessageToStack(stack: string, message?: string) {
     // Some errors (e.g. Angular injection error) don't prepend error.message
     // to stack, instead the first line of the stack is just plain 'Error'
     const ERROR_REGEX = /^Error:?\s*\n/;
 
-    if (typeof stack === 'string') {
-      if (stack && message && !stack.includes(message)) {
-        return message + stack.replace(ERROR_REGEX, '\n');
-      }
-      return stack;
-    } else {
-      return `${stack}`;
+    if (stack && message && !stack.includes(message)) {
+      return message + stack.replace(ERROR_REGEX, '\n');
     }
+    return stack;
   }
 
   private _extractSpecResults(
@@ -156,7 +152,7 @@ export default class Jasmine2Reporter implements Reporter {
 
     specResult.failedExpectations.forEach(failed => {
       const message =
-        !failed.matcherName && failed.stack
+        !failed.matcherName && typeof failed.stack === 'string'
           ? this._addMissingMessageToStack(failed.stack, failed.message)
           : failed.message || '';
       results.failureMessages.push(message);
