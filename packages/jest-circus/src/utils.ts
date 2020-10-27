@@ -383,7 +383,7 @@ const _getError = (
     asyncError = new Error();
   }
 
-  if (error && (error.stack || error.message)) {
+  if (error && (typeof error.stack === 'string' || error.message)) {
     return error;
   }
 
@@ -392,7 +392,8 @@ const _getError = (
   return asyncError;
 };
 
-const getErrorStack = (error: Error): string => error.stack || error.message;
+const getErrorStack = (error: Error): string =>
+  typeof error.stack === 'string' ? error.stack : error.message;
 
 export const addErrorToEachTestUnderDescribe = (
   describeBlock: Circus.DescribeBlock,
