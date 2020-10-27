@@ -388,6 +388,7 @@ const _getError = (
   }
 
   asyncError.message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
+
   return asyncError;
 };
 
