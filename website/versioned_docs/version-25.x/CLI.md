@@ -84,7 +84,7 @@ npm test -- -u -t="ColorPicker"
 
 ## Camelcase & dashed args support
 
-Jest supports both camelcase and dashed arg formats. The following examples will have equal result:
+Jest supports both camelcase and dashed arg formats. The following examples will have an equal result:
 
 ```bash
 jest --collect-coverage
@@ -127,7 +127,7 @@ Runs tests related to the current changes and the changes made in the last commi
 
 ### `--changedSince`
 
-Runs tests related to the changes since the provided branch. If the current branch has diverged from the given branch, then only changes made locally will be tested. Behaves similarly to `--onlyChanged`.
+Runs tests related to the changes since the provided branch or commit hash. If the current branch has diverged from the given branch, then only changes made locally will be tested. Behaves similarly to `--onlyChanged`.
 
 ### `--ci`
 
@@ -302,7 +302,7 @@ A regexp pattern string that is matched against all tests paths before executing
 
 ### `--testPathIgnorePatterns=[array]`
 
-An array of regexp pattern strings that is tested against all tests paths before executing the test. Contrary to `--testPathPattern`, it will only run those test with a path that does not match with the provided regexp expressions.
+An array of regexp pattern strings that are tested against all tests paths before executing the test. Contrary to `--testPathPattern`, it will only run those tests with a path that does not match with the provided regexp expressions.
 
 ### `--testRunner=<path>`
 

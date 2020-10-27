@@ -56,6 +56,8 @@ export type AllowedConfigOptions = Partial<
     | 'collectCoverageOnlyFrom'
     | 'coverageDirectory'
     | 'coverageReporters'
+    | 'findRelatedTests'
+    | 'nonFlagArgs'
     | 'notify'
     | 'notifyMode'
     | 'onlyFailures'

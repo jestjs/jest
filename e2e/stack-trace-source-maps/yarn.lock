@@ -25,10 +25,10 @@ typescript@^3.7.4:
 
 "typescript@patch:typescript@^3.7.4#builtin<compat/typescript>":
   version: 3.9.7
-  resolution: "typescript@patch:typescript@npm%3A3.9.7#builtin<compat/typescript>::version=3.9.7&hash=5bf698"
+  resolution: "typescript@patch:typescript@npm%3A3.9.7#builtin<compat/typescript>::version=3.9.7&hash=a72311"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: f0d3d9c987860c7c458229ab6dd7e3d322405db36b70abccba610b5efd9f9451e4e67a3fc7983c0d3741033c1f1a8d7aa859a1510caa8f20fad762fc39648bfa
+  checksum: c966d7ee887d9acdfb1126948e27325b6bdcfabe0c73eb232f5ec2e7429a3d03142aff68e319de4ed9a6bb0cc8590fc1f48311daae8927cf742ffc7f869f0338
   languageName: node
   linkType: hard

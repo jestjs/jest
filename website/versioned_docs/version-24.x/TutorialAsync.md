@@ -17,7 +17,7 @@ export function getUserName(userID) {
 }
 ```
 
-In the above implementation we expect the `request.js` module to return a promise. We chain a call to `then` to receive the user name.
+In the above implementation, we expect the `request.js` module to return a promise. We chain a call to `then` to receive the user name.
 
 Now imagine an implementation of `request.js` that goes to the network and fetches some user data:
 
@@ -117,7 +117,7 @@ Errors can be handled using the `.catch` method. Make sure to add `expect.assert
 
 ```js
 // Testing for async errors using Promise.catch.
-test('tests error with promises', () => {
+it('tests error with promises', () => {
   expect.assertions(1);
   return user.getUserName(2).catch(e =>
     expect(e).toEqual({
@@ -141,7 +141,7 @@ it('tests error with async/await', async () => {
 
 ## `.rejects`
 
-The`.rejects` helper works like the `.resolves` helper. If the promise is fulfilled, the test will automatically fail.
+The`.rejects` helper works like the `.resolves` helper. If the promise is fulfilled, the test will automatically fail. `expect.assertions(number)` is not required but recommended to verify that a certain number of [assertions](https://jestjs.io/docs/en/expect#expectassertionsnumber) are called during a test. It is otherwise easy to forget to `return`/`await` the `.resolves` assertions.
 
 ```js
 // Testing for async errors using `.rejects`.

@@ -18,7 +18,6 @@ module.exports = {
     {
       extends: ['plugin:@typescript-eslint/eslint-recommended'],
       files: ['*.ts', '*.tsx'],
-      parser: '@typescript-eslint/parser',
       plugins: ['@typescript-eslint/eslint-plugin', 'local'],
       rules: {
         '@typescript-eslint/array-type': ['error', {default: 'generic'}],
@@ -82,7 +81,7 @@ module.exports = {
         'packages/jest-core/src/ReporterDispatcher.ts',
         'packages/jest-core/src/TestScheduler.ts',
         'packages/jest-core/src/collectHandles.ts',
-        'packages/jest-core/src/plugins/update_snapshots_interactive.ts',
+        'packages/jest-core/src/plugins/UpdateSnapshotsInteractive.ts',
         'packages/jest-fake-timers/src/legacyFakeTimers.ts',
         'packages/jest-haste-map/src/index.ts',
         'packages/jest-haste-map/src/lib/FSEventsWatcher.ts',
@@ -223,7 +222,7 @@ module.exports = {
       },
     },
   ],
-  parser: 'babel-eslint',
+  parser: '@typescript-eslint/parser',
   plugins: ['markdown', 'import', 'prettier', 'eslint-comments'],
   rules: {
     'arrow-body-style': 'error',

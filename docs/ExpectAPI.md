@@ -17,7 +17,7 @@ For additional Jest matchers maintained by the Jest Community check out [`jest-e
 
 ### `expect(value)`
 
-The `expect` function is used every time you want to test a value. You will rarely call `expect` by itself. Instead, you will use `expect` along with a "matcher" function to assert something about value.
+The `expect` function is used every time you want to test a value. You will rarely call `expect` by itself. Instead, you will use `expect` along with a "matcher" function to assert something about a value.
 
 It's easier to understand this with an example. Let's say you have a method `bestLaCroixFlavor()` which is supposed to return the string `'grapefruit'`. Here's how you would test that:
 
@@ -1080,7 +1080,7 @@ If differences between properties do not help you to understand why a test fails
 - rewrite `expect(received).toEqual(expected)` as `expect(received.equals(expected)).toBe(true)`
 - rewrite `expect(received).not.toEqual(expected)` as `expect(received.equals(expected)).toBe(false)`
 
-### `.toMatch(regexpOrString)`
+### `.toMatch(regexp | string)`
 
 Use `.toMatch` to check that a string matches a regular expression.
 
