@@ -10,6 +10,7 @@ import * as fs from 'graceful-fs';
 import type {Config, TestResult} from '@jest/types';
 import chalk = require('chalk');
 import micromatch = require('micromatch');
+import prettyFormat = require('pretty-format');
 import slash = require('slash');
 import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils = require('stack-utils');
@@ -103,6 +104,7 @@ function checkForCommonEnvironmentErrors(error: string) {
   } else if (error.includes('.unref is not a function')) {
     return warnAboutWrongTestEnvironment(error, 'node');
   }
+
   return error;
 }
 
@@ -139,7 +141,10 @@ export const formatExecError = (
     stack = error;
   } else {
     message = error.message;
-    stack = error.stack;
+    stack =
+      typeof error.stack === 'string'
+        ? error.stack
+        : `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
   }
 
   const separated = separateMessageFromStack(stack || '');
@@ -159,9 +164,12 @@ export const formatExecError = (
       ? '\n' + formatStackTrace(stack, config, options, testPath)
       : '';
 
-  if (blankStringRegexp.test(message) && blankStringRegexp.test(stack)) {
+  if (
+    (blankStringRegexp.test(message) && blankStringRegexp.test(stack)) ||
+    typeof stack !== 'string'
+  ) {
     // this can happen if an empty object is thrown.
-    message = MESSAGE_INDENT + 'Error: No message was provided';
+    message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
   }
 
   let messageToUse;
@@ -379,7 +387,7 @@ const removeBlankErrorLine = (str: string) =>
 // Error object, so we have to regexp out the message from the stack string
 // to format it.
 export const separateMessageFromStack = (
-  content: unknown,
+  content: string,
 ): {message: string; stack: string} => {
   if (!content) {
     return {message: '', stack: ''};
@@ -390,10 +398,7 @@ export const separateMessageFromStack = (
   // If the error is a plain "Error:" instead of a SyntaxError or TypeError we
   // remove the prefix from the message because it is generally not useful.
   const ERROR_REGEXP = /^(?:Error: )?([\s\S]*?(?=\n\s*at\s.*:\d*:\d*)|\s*.*)([\s\S]*)$/;
-  const messageMatch =
-    typeof content !== 'string'
-      ? `${content}`.match(ERROR_REGEXP)
-      : content.match(ERROR_REGEXP);
+  const messageMatch = content.match(ERROR_REGEXP);
   if (!messageMatch) {
     // For typescript
     throw new Error('If you hit this error, the regex above is buggy.');

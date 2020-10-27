@@ -18,7 +18,7 @@ exports[`not throwing Error objects 3`] = `
 FAIL __tests__/throwObject.test.js
   ● Test suite failed to run
 
-    Error: No message was provided
+    thrown: Object {}
 `;
 
 exports[`not throwing Error objects 4`] = `
@@ -275,7 +275,10 @@ exports[`not throwing Error objects 6`] = `
 FAIL __tests__/throwObjectWithStackProp.test.js
   ● Test suite failed to run
 
-    42
+    thrown: Object {
+
+        "stack": 42,
+      }
 `;
 
 exports[`works with assertions in separate files 1`] = `
