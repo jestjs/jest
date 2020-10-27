@@ -11728,6 +11728,7 @@ fsevents@^1.2.7:
     chalk: ^4.0.0
     graceful-fs: ^4.2.4
     micromatch: ^4.0.2
+    pretty-format: ^26.6.1
     slash: ^3.0.0
     stack-utils: ^2.0.2
   languageName: unknown
