@@ -34,10 +34,6 @@ let e;
   jest.unmock('../__test_modules__/e');
 })();
 
-// Variable names prefixed with `mock` (ignore case) should not throw as out-of-scope
-const MockMethods = () => {};
-jest.mock('../__test_modules__/f', () => MockMethods);
-
 jest.mock('../__test_modules__/f', () => {
   if (!global.CALLS) {
     global.CALLS = 0;
@@ -76,6 +72,10 @@ jest.dontMock('../__test_modules__/Mocked');
 // This must not throw an error
 const myObject = {mock: () => {}};
 myObject.mock('apple', 27);
+
+// Variable names prefixed with `mock` (ignore case) should not throw as out-of-scope
+const MockMethods = () => {};
+jest.mock('../__test_modules__/g', () => MockMethods);
 
 describe('babel-plugin-jest-hoist', () => {
   it('does not throw during transform', () => {
