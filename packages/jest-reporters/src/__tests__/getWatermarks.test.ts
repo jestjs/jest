@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import getWatermarks from '../get_watermarks';
+import getWatermarks from '../getWatermarks';
 import {makeGlobalConfig} from '../../../../TestUtils';
 
 describe('getWatermarks', () => {

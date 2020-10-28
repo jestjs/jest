@@ -15,7 +15,7 @@ import type {
 import chalk = require('chalk');
 import {formatTime, specialChars} from 'jest-util';
 import type {Test} from './types';
-import DefaultReporter from './default_reporter';
+import DefaultReporter from './DefaultReporter';
 
 const {ICONS} = specialChars;
 

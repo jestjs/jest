@@ -10,10 +10,10 @@ import type {AggregatedResult, SnapshotSummary} from '@jest/test-result';
 import chalk = require('chalk');
 import {testPathPatternToRegExp} from 'jest-util';
 import type {Context, ReporterOnStartOptions} from './types';
-import BaseReporter from './base_reporter';
+import BaseReporter from './BaseReporter';
 import {getSummary} from './utils';
-import getResultHeader from './get_result_header';
-import getSnapshotSummary from './get_snapshot_summary';
+import getResultHeader from './getResultHeader';
+import getSnapshotSummary from './getSnapshotSummary';
 
 const TEST_SUMMARY_THRESHOLD = 20;
 

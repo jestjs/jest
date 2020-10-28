@@ -6,7 +6,7 @@
  */
 
 import {makeGlobalConfig} from '../../../../TestUtils';
-import getResultHeader from '../get_result_header';
+import getResultHeader from '../getResultHeader';
 const terminalLink = require('terminal-link');
 
 jest.mock('terminal-link', () => jest.fn(() => 'wannabehyperlink'));

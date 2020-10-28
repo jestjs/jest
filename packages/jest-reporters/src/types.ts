@@ -14,7 +14,7 @@ import type {
 } from '@jest/test-result';
 import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
 import type {ResolverType} from 'jest-resolve';
-import type {worker} from './coverage_worker';
+import type {worker} from './CoverageWorker';
 
 export type ReporterOnStartOptions = {
   estimatedTime: number;
