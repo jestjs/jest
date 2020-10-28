@@ -24,7 +24,7 @@ This example covers the minimal usage:
 import JestWorker from 'jest-worker';
 
 async function main() {
-  const worker = new JestWorker(require.resolve('./Worker'));
+  const worker = await JestWorker.create(require.resolve('./Worker'));
   const result = await worker.hello('Alice'); // "Hello, Alice"
 }
 
@@ -160,7 +160,7 @@ This example covers the standard usage:
 import JestWorker from 'jest-worker';
 
 async function main() {
-  const myWorker = new JestWorker(require.resolve('./Worker'), {
+  const myWorker = await JestWorker.create(require.resolve('./Worker'), {
     exposedMethods: ['foo', 'bar', 'getWorkerId'],
     numWorkers: 4,
   });
@@ -204,7 +204,7 @@ This example covers the usage with a `computeWorkerKey` method:
 import {Worker as JestWorker} from 'jest-worker';
 
 async function main() {
-  const myWorker = new JestWorker(require.resolve('./Worker'), {
+  const myWorker = await JestWorker.create(require.resolve('./Worker'), {
     computeWorkerKey: (method, filename) => filename,
   });
 

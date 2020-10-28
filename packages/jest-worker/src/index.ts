@@ -82,8 +82,6 @@ export class Worker {
     this._options = {...options};
     this._ending = false;
 
-    this._inspectorSession = this.setUpInspector();
-
     const workerPoolOptions: WorkerPoolOptions = {
       enableWorkerThreads: this._options.enableWorkerThreads ?? false,
       forkOptions: this._options.forkOptions ?? {},
@@ -118,19 +116,39 @@ export class Worker {
     this._bindExposedWorkerMethods(workerPath, this._options);
   }
 
-  private setUpInspector() {
-    // Open V8 Inspector
-    inspector.open();
+  public static create = async (
+    workerPath: string,
+    options?: FarmOptions,
+  ): Promise<JestWorker> => {
+    const setUpInspector = async () => {
+      // Open V8 Inspector
+      inspector.open();
 
-    const inspectorUrl = inspector.url();
-    let session;
-    if (inspectorUrl !== undefined) {
-      session = new inspector.Session();
-      session.connect();
-      session.post('Debugger.enable');
-    }
-    return session;
-  }
+      const inspectorUrl = inspector.url();
+      if (inspectorUrl) {
+        const session = new inspector.Session();
+        session.connect();
+        await new Promise((resolve, reject) => {
+          session.post('Debugger.enable', (err: Error) => {
+            if (err === null) {
+              resolve();
+            } else {
+              reject(err);
+            }
+          });
+        });
+        return session;
+      }
+      return undefined;
+    };
+
+    const jestWorker = new JestWorker(workerPath, options);
+    const inspectorSession = await setUpInspector();
+
+    jestWorker._inspectorSession = inspectorSession;
+
+    return jestWorker;
+  };
 
   private _bindExposedWorkerMethods(
     workerPath: string,
