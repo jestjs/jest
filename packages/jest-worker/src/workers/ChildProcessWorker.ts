@@ -18,6 +18,7 @@ import {
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_CUSTOM,
   PARENT_MESSAGE_HEARTBEAT,
+  PARENT_MESSAGE_HEARTBEAT_ERROR,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
   ParentMessage,
@@ -209,8 +210,8 @@ export default class ChildProcessWorker implements WorkerInterface {
         });
       });
     }
-    // @ts-expect-error: adding custom properties to errors.
-    error.type = 1;
+    // @ts-expect-error: no index
+    error.type = PARENT_MESSAGE_HEARTBEAT_ERROR;
     error.stack = 'test stack';
 
     if (this._heartbeatTimeout) {

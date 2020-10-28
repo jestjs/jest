@@ -30,11 +30,12 @@ export const PARENT_MESSAGE_CLIENT_ERROR: 1 = 1;
 export const PARENT_MESSAGE_SETUP_ERROR: 2 = 2;
 export const PARENT_MESSAGE_CUSTOM: 3 = 3;
 export const PARENT_MESSAGE_HEARTBEAT: 4 = 4;
+export const PARENT_MESSAGE_HEARTBEAT_ERROR: 5 = 5;
 
 export type PARENT_MESSAGE_ERROR =
   | typeof PARENT_MESSAGE_CLIENT_ERROR
   | typeof PARENT_MESSAGE_SETUP_ERROR
-  | typeof PARENT_MESSAGE_HEARTBEAT;
+  | typeof PARENT_MESSAGE_HEARTBEAT_ERROR;
 
 export interface WorkerPoolInterface {
   getStderr(): NodeJS.ReadableStream;
@@ -183,6 +184,10 @@ export type ParentMessageOk = [
   unknown, // result
 ];
 
+export type ParentMessageHeartbeat = [
+  typeof PARENT_MESSAGE_HEARTBEAT, // type
+];
+
 export type ParentMessageError = [
   PARENT_MESSAGE_ERROR, // type
   string, // constructor
@@ -194,7 +199,8 @@ export type ParentMessageError = [
 export type ParentMessage =
   | ParentMessageOk
   | ParentMessageError
-  | ParentMessageCustom;
+  | ParentMessageCustom
+  | ParentMessageHeartbeat;
 
 // Queue types.
 
