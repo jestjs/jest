@@ -323,7 +323,7 @@ Jest itself is written in [TypeScript](https://www.typescriptlang.org).
 
 If you are using [Create React App](https://create-react-app.dev) then the [TypeScript template](https://create-react-app.dev/docs/adding-typescript/) has everything you need to start writing tests in TypeScript.
 
-Otherwise, please see our [Getting Started](https://jestjs.io/docs/en/getting-started#using-typescript) guide for to get setup with TypeScript.
+Otherwise, please see our [Getting Started](GettingStarted.md#using-typescript) guide for to get setup with TypeScript.
 
 You can see an example of using Jest with TypeScript in our [GitHub repository](https://github.com/facebook/jest/tree/master/examples/typescript).
 
@@ -331,11 +331,11 @@ You can see an example of using Jest with TypeScript in our [GitHub repository](
 
 > `jest.MockedFunction` is available in the `@types/jest` module from version `24.9.0`.
 
-The following examples will assume you have an understanding of how [Jest mock functions work with JavaScript](https://jestjs.io/docs/en/mock-functions).
+The following examples will assume you have an understanding of how [Jest mock functions work with JavaScript](MockFunctions.md).
 
 You can use `jest.MockedFunction` to represent a function that has been replaced by a Jest mock.
 
-Example using [automatic `jest.mock`](https://jestjs.io/docs/en/jest-object#jestmockmodulename-factory-options):
+Example using [automatic `jest.mock`](JestObjectAPI.md#jestmockmodulename-factory-options):
 
 ```ts
 // Assume `add` is imported and used within `calculate`.
@@ -355,7 +355,7 @@ test('calculate calls add', () => {
 });
 ```
 
-Example using [`jest.fn`](https://jestjs.io/docs/en/jest-object#jestfnimplementation):
+Example using [`jest.fn`](JestObjectAPI.md#jestfnimplementation):
 
 ```ts
 // Here `add` is imported for its type
@@ -395,11 +395,11 @@ test('calculate calls add', () => {
 
 > `jest.MockedClass` is available in the `@types/jest` module from version `24.9.0`.
 
-The following examples will assume you have an understanding of how [Jest mock classes work with JavaScript](https://jestjs.io/docs/en/es6-class-mocks).
+The following examples will assume you have an understanding of how [Jest mock classes work with JavaScript](Es6ClassMocks.md).
 
 You can use `jest.MockedClass` to represent a class that has been replaced by a Jest mock.
 
-Converting the [ES6 Class automatic mock example](https://jestjs.io/docs/en/es6-class-mocks#automatic-mock) would look like this:
+Converting the [ES6 Class automatic mock example](Es6ClassMocks.md#automatic-mock) would look like this:
 
 ```ts
 import SoundPlayer from '../sound-player';
