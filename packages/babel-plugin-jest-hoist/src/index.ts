@@ -8,12 +8,15 @@
 
 import type {NodePath} from '@babel/traverse';
 import {
+  BlockStatement,
+  CallExpression,
   Expression,
   Identifier,
   Node,
   Program,
   callExpression,
-  clone,
+  emptyStatement,
+  isIdentifier,
 } from '@babel/types';
 import {statement} from '@babel/template';
 import type {PluginObj} from '@babel/core';
@@ -113,7 +116,7 @@ FUNCTIONS.mock = args => {
 
     const ids: Set<NodePath<Identifier>> = new Set();
     const parentScope = moduleFactory.parentPath.scope;
-    // @ts-expect-error: ReferencedIdentifier is not known on visitors
+    // @ts-expect-error: ReferencedIdentifier and blacklist are not known on visitors
     moduleFactory.traverse(IDVisitor, {ids});
     for (const id of ids) {
       const {name} = id.node;
@@ -276,31 +279,52 @@ export default (): PluginObj<{
         jestObjExpr.replaceWith(
           callExpression(this.declareJestObjGetterIdentifier(), []),
         );
-        exprStmt.setData('_jestShouldHoist', true);
       }
     },
   },
   // in `post` to make sure we come after an import transform and can unshift above the `require`s
   post({path: program}: {path: NodePath<Program>}) {
+    const self = this;
+    visitBlock(program);
     program.traverse({
-      ExpressionStatement: exprStmt => {
-        if (exprStmt.getData('_jestShouldHoist')) {
-          const prevSiblings = exprStmt.getAllPrevSiblings();
-          const unhoistedSiblings = prevSiblings
-            .reverse()
-            .filter(
-              s =>
-                !s.getData('_jestShouldHoist') && !s.getData('_jestWasHoisted'),
-            );
-          const exprNode = exprStmt.node;
-          if (unhoistedSiblings.length) {
-            const hoisted = unhoistedSiblings[0].insertBefore(clone(exprNode));
-            hoisted[0].setData('_jestWasHoisted', true);
-            exprStmt.remove();
+      BlockStatement: visitBlock,
+    });
+
+    function visitBlock(block: NodePath<BlockStatement> | NodePath<Program>) {
+      // use a temporary empty statement instead of the real first statement, which may itself be hoisted
+      const [firstNonHoistedStatementOfBlock] = block.unshiftContainer(
+        'body',
+        emptyStatement(),
+      );
+      block.traverse({
+        CallExpression: visitCallExpr,
+        // do not traverse into nested blocks, or we'll hoist calls in there out to this block
+        // @ts-expect-error blacklist is not known
+        blacklist: ['BlockStatement'],
+      });
+      firstNonHoistedStatementOfBlock.remove();
+
+      function visitCallExpr(callExpr: NodePath<CallExpression>) {
+        const {
+          node: {callee},
+        } = callExpr;
+        if (
+          isIdentifier(callee) &&
+          callee.name === self.jestObjGetterIdentifier?.name
+        ) {
+          const mockStmt = callExpr.getStatementParent();
+
+          if (mockStmt) {
+            const mockStmtNode = mockStmt.node;
+            const mockStmtParent = mockStmt.parentPath;
+            if (mockStmtParent.isBlock()) {
+              mockStmt.remove();
+              firstNonHoistedStatementOfBlock.insertBefore(mockStmtNode);
+            }
           }
         }
-      },
-    });
+      }
+    }
   },
 });
 /* eslint-enable */
