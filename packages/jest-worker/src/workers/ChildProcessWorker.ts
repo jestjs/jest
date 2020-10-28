@@ -68,7 +68,7 @@ export default class ChildProcessWorker implements WorkerInterface {
   private _exitPromise: Promise<void>;
   private _resolveExitPromise!: () => void;
 
-  private _heartbeatTimeout: any;
+  private _heartbeatTimeout!: NodeJS.Timeout;
 
   constructor(options: WorkerOptions) {
     this._options = options;
@@ -156,7 +156,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     clearTimeout(this._heartbeatTimeout);
     this._heartbeatTimeout = setTimeout(() => {
       onExceeded();
-    }, this._options.workerHeartbeatTimeout);
+    }, this._options.workerHeartbeatTimeout).unref();
   }
 
   private _shutdown() {
@@ -170,22 +170,24 @@ export default class ChildProcessWorker implements WorkerInterface {
   }
 
   private async monitorHeartbeatError() {
-    let error;
+    let error = new Error(
+      `Test worker was unresponsive for ${this._options.workerHeartbeatTimeout} milliseconds. There was no inspector connected so we were unable to capture stack frames before it was terminated.`,
+    );
 
-    if (this._options.inspector !== undefined) {
+    if (this._options.inspector) {
       error = new Error(
         `Test worker was unresponsive for ${this._options.workerHeartbeatTimeout} milliseconds. There was an inspector connected so we were able to capture stack frames before it was terminated.`,
       );
       this._options.inspector.on('Debugger.paused', (message: any) => {
         const callFrames = message.params.callFrames.slice(0, 20);
         for (const callFrame of callFrames) {
-          const loc = callFrame['location'];
+          const loc = callFrame.location;
 
-          const columnNumber = loc['columnNumber'];
-          const lineNumber = loc['lineNumber'];
-          const url = callFrame['url'];
+          const columnNumber = loc.columnNumber;
+          const lineNumber = loc.lineNumber;
+          const url = callFrame.url;
 
-          const name = callFrame['scopeChain'][0].name;
+          const name = callFrame.scopeChain[0].name;
 
           // TODO: process error with stack trace
           console.log({
@@ -206,16 +208,12 @@ export default class ChildProcessWorker implements WorkerInterface {
           }
         });
       });
-    } else {
-      error = new Error(
-        `Test worker was unresponsive for ${this._options.workerHeartbeatTimeout} milliseconds. There was no inspector connected so we were unable to capture stack frames before it was terminated.`,
-      );
     }
     // @ts-expect-error: adding custom properties to errors.
     error.type = 1;
     error.stack = 'test stack';
 
-    if (this._heartbeatTimeout !== undefined) {
+    if (this._heartbeatTimeout) {
       clearTimeout(this._heartbeatTimeout);
     }
     this._onProcessEnd(error, null);

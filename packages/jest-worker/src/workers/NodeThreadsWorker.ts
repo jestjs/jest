@@ -44,7 +44,7 @@ export default class ExperimentalWorker implements WorkerInterface {
   private _resolveExitPromise!: () => void;
   private _forceExited: boolean;
 
-  private _heartbeatTimeout: any;
+  private _heartbeatTimeout!: NodeJS.Timeout;
 
   constructor(options: WorkerOptions) {
     this._options = options;
@@ -136,7 +136,7 @@ export default class ExperimentalWorker implements WorkerInterface {
     clearTimeout(this._heartbeatTimeout);
     this._heartbeatTimeout = setTimeout(() => {
       onExceeded();
-    }, this._options.workerHeartbeatTimeout);
+    }, this._options.workerHeartbeatTimeout).unref();
   }
 
   private _shutdown() {
@@ -150,21 +150,23 @@ export default class ExperimentalWorker implements WorkerInterface {
   }
 
   private async monitorHeartbeatError() {
-    let error;
-    if (this._options.inspector !== undefined) {
+    let error = new Error(
+      `Test worker was unresponsive for 10 seconds. There was no inspector connected so we were unable to capture stack frames before it was terminated.`,
+    );
+    if (this._options.inspector) {
       error = new Error(
         `Test worker was unresponsive for 10 seconds. There was an inspector connected so we were able to capture stack frames before it was terminated.`,
       );
       this._options.inspector.on('Debugger.paused', (message: any) => {
         const callFrames = message.params.callFrames.slice(0, 20);
         for (const callFrame of callFrames) {
-          const loc = callFrame['location'];
+          const loc = callFrame.location;
 
-          const columnNumber = loc['columnNumber'];
-          const lineNumber = loc['lineNumber'];
-          const url = callFrame['url'];
+          const columnNumber = loc.columnNumber;
+          const lineNumber = loc.lineNumber;
+          const url = callFrame.url;
 
-          const name = callFrame['scopeChain'][0].name;
+          const name = callFrame.scopeChain[0].name;
 
           // TODO: process error with stack trace
           console.log({
@@ -185,10 +187,6 @@ export default class ExperimentalWorker implements WorkerInterface {
           }
         });
       });
-    } else {
-      error = new Error(
-        `Test worker was unresponsive for 10 seconds. There was no inspector connected so we were unable to capture stack frames before it was terminated.`,
-      );
     }
     // @ts-expect-error: adding custom properties to errors.
     error.type = 1;

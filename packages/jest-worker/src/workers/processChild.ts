@@ -46,7 +46,7 @@ const messageListener: NodeJS.MessageListener = request => {
       heartbeatIntervalValue = request[4];
       monitorHeartbeat = setInterval(() => {
         sendParentMessageHeartbeat();
-      }, heartbeatIntervalValue);
+      }, heartbeatIntervalValue).unref();
       break;
 
     case CHILD_MESSAGE_CALL:
@@ -67,7 +67,7 @@ const messageListener: NodeJS.MessageListener = request => {
 process.on('message', messageListener);
 
 function sendParentMessageHeartbeat() {
-  if (process && process.send) {
+  if (process?.send) {
     process.send([PARENT_MESSAGE_HEARTBEAT]);
   }
 }
