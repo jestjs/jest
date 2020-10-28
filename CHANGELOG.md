@@ -6,6 +6,7 @@
 
 ### Fixes
 
+- `[babel-plugin-jest-hoist]` Preserve order of hoisted mock nodes within containing block ([#10536](https://github.com/facebook/jest/pull/10536))
 - `[jest-config]` Fix bug introduced in watch mode by PR[#10678](https://github.com/facebook/jest/pull/10678/files#r511037803) ([#10692](https://github.com/facebook/jest/pull/10692))
 - `[expect]` Stop modifying the sample in `expect.objectContaining()` ([#10711](https://github.com/facebook/jest/pull/10711))
 - `[jest-circus, jest-jasmine2]` fix: don't assume `stack` is always a string ([#10697](https://github.com/facebook/jest/pull/10697))
@@ -91,7 +92,6 @@
 
 ### Fixes
 
-- `[babel-plugin-jest-hoist]` Preserve order of hoisted mock nodes within containing block ([#10536](https://github.com/facebook/jest/pull/10536))
 - `[jest-circus, jest-jasmine2]` Find correct location for `test.each` tests ([#10413](https://github.com/facebook/jest/pull/10413))
 - `[jest-console]` Add `Console` constructor to `console` object ([#10502](https://github.com/facebook/jest/pull/10502))
 - `[jest-globals]` Fix lifecycle hook function types ([#10480](https://github.com/facebook/jest/pull/10480))
