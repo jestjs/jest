@@ -26,7 +26,7 @@ import path from 'path';
 import mock from 'mock-fs';
 
 beforeEach(() => {
-  CoverageReporter = require('../coverage_reporter').default;
+  CoverageReporter = require('../CoverageReporter').default;
   libCoverage = require('istanbul-lib-coverage');
   libSourceMaps = require('istanbul-lib-source-maps');
   istanbulReports = require('istanbul-reports');

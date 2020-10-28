@@ -25,14 +25,14 @@ import Worker from 'jest-worker';
 import glob = require('glob');
 import v8toIstanbul = require('v8-to-istanbul');
 import type {RawSourceMap} from 'source-map';
-import BaseReporter from './base_reporter';
+import BaseReporter from './BaseReporter';
 import type {
   Context,
   CoverageReporterOptions,
   CoverageWorker,
   Test,
 } from './types';
-import getWatermarks from './get_watermarks';
+import getWatermarks from './getWatermarks';
 
 // This is fixed in a newer versions of source-map, but our dependencies are still stuck on old versions
 interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
@@ -149,9 +149,9 @@ export default class CoverageReporter extends BaseReporter {
     let worker: CoverageWorker | Worker;
 
     if (this._globalConfig.maxWorkers <= 1) {
-      worker = require('./coverage_worker');
+      worker = require('./CoverageWorker');
     } else {
-      worker = new Worker(require.resolve('./coverage_worker'), {
+      worker = new Worker(require.resolve('./CoverageWorker'), {
         exposedMethods: ['worker'],
         maxRetries: 2,
         numWorkers: this._globalConfig.maxWorkers,

@@ -20,7 +20,7 @@ let results = [];
 
 function requireReporter() {
   jest.isolateModules(() => {
-    SummaryReporter = require('../summary_reporter').default;
+    SummaryReporter = require('../SummaryReporter').default;
   });
 }
 

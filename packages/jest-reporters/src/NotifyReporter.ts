@@ -12,7 +12,7 @@ import type {Config} from '@jest/types';
 import type {AggregatedResult} from '@jest/test-result';
 import {pluralize} from 'jest-util';
 import type {Context, TestSchedulerContext} from './types';
-import BaseReporter from './base_reporter';
+import BaseReporter from './BaseReporter';
 
 const isDarwin = process.platform === 'darwin';
 
