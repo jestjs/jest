@@ -34,7 +34,7 @@ interface WorkerInterface extends Worker {
   worker: typeof worker;
 }
 
-namespace TestRunner {
+declare namespace TestRunner {
   export type Test = JestTest;
   export type OnTestFailure = JestOnTestFailure;
   export type OnTestStart = JestOnTestStart;

@@ -22,7 +22,7 @@ beforeEach(() => {
 
   fs = require('graceful-fs');
   generateEmptyCoverage = require('../generateEmptyCoverage').default;
-  worker = require('../coverage_worker').worker;
+  worker = require('../CoverageWorker').worker;
 });
 
 test('resolves to the result of generateEmptyCoverage upon success', async () => {

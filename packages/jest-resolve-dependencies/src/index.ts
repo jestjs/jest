@@ -11,7 +11,7 @@ import type {FS as HasteFS} from 'jest-haste-map';
 import type {ResolveModuleConfig, ResolverType} from 'jest-resolve';
 import {SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
 
-namespace DependencyResolver {
+declare namespace DependencyResolver {
   export type ResolvedModule = {
     file: Config.Path;
     dependencies: Array<Config.Path>;

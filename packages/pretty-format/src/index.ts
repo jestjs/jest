@@ -530,7 +530,7 @@ prettyFormat.plugins = {
   ReactTestComponent,
 };
 
-namespace prettyFormat {
+declare namespace prettyFormat {
   export type Colors = PrettyFormat.Colors;
   export type Config = PrettyFormat.Config;
   export type Options = PrettyFormat.Options;

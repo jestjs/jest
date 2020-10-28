@@ -9,7 +9,7 @@
 
 type Global = NodeJS.Global; // | Window – add once TS improves typings;
 
-namespace JestMock {
+declare namespace JestMock {
   export type ModuleMocker = ModuleMockerClass;
   export type MockFunctionMetadataType =
     | 'object'

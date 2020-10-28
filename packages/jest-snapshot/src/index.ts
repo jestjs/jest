@@ -560,7 +560,7 @@ const JestSnapshot = {
   utils,
 };
 
-namespace JestSnapshot {
+declare namespace JestSnapshot {
   export type SnapshotResolver = JestSnapshotResolver;
   export type SnapshotStateType = SnapshotState;
 }

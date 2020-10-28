@@ -7,7 +7,7 @@
 
 'use strict';
 
-import getSnapshotSummary from '../get_snapshot_summary';
+import getSnapshotSummary from '../getSnapshotSummary';
 
 const UPDATE_COMMAND = 'press --u';
 

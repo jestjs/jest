@@ -34,7 +34,7 @@ type FindNodeModuleConfig = {
 // TODO: replace with a Map in Jest 26
 type BooleanObject = Record<string, boolean>;
 
-namespace Resolver {
+declare namespace Resolver {
   export type ResolveModuleConfig = {
     skipNodeResolution?: boolean;
     paths?: Array<Config.Path>;

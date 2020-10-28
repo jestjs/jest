@@ -7,7 +7,7 @@
 
 'use strict';
 
-import getSnapshotStatus from '../get_snapshot_status';
+import getSnapshotStatus from '../getSnapshotStatus';
 
 test('Retrieves the snapshot status', () => {
   const snapshotResult = {

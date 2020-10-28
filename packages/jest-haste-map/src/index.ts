@@ -104,7 +104,7 @@ type Watcher = {
 type WorkerInterface = {worker: typeof worker; getSha1: typeof getSha1};
 
 // TODO: Ditch namespace when this module exports ESM
-namespace HasteMap {
+declare namespace HasteMap {
   export type ModuleMap = HasteModuleMap;
   export type SerializableModuleMap = HasteSerializableModuleMap;
   export type FS = HasteFS;
