@@ -133,11 +133,24 @@ FUNCTIONS.mock = args => {
       }
 
       if (!found) {
-        const isAllowedIdentifier =
+        let isAllowedIdentifier =
           (scope.hasGlobal(name) && ALLOWED_IDENTIFIERS.has(name)) ||
           /^mock/i.test(name) ||
           // Allow istanbul's coverage variable to pass.
           /^(?:__)?cov/.test(name);
+
+        if (!isAllowedIdentifier) {
+          const binding = scope.bindings[name];
+
+          if (binding?.path.isVariableDeclarator()) {
+            const initNode = binding.path.node.init;
+
+            if (initNode && binding.constant && scope.isPure(initNode, true)) {
+              // how to hoist???
+              isAllowedIdentifier = true;
+            }
+          }
+        }
 
         if (!isAllowedIdentifier) {
           throw id.buildCodeFrameError(
