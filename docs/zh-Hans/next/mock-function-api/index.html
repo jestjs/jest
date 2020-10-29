@@ -94,6 +94,8 @@
 <li><a href="#mockfnmockresolvedvalueoncevalue"><code>mockFn.mockResolvedValueOnce(value)</code></a></li>
 <li><a href="#mockfnmockrejectedvaluevalue"><code>mockFn.mockRejectedValue(value)</code></a></li>
 <li><a href="#mockfnmockrejectedvalueoncevalue"><code>mockFn.mockRejectedValueOnce(value)</code></a></li>
+<li><a href="#jestmockedfunction"><code>jest.MockedFunction</code></a></li>
+<li><a href="#jestmockedclass"><code>jest.MockedClass</code></a></li>
 </ul>
 <hr>
 <h2><a class="anchor" aria-hidden="true" id="参考"></a><a href="#参考" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>参考</h2>
@@ -306,7 +308,119 @@ mock(); <span class="hljs-comment">// 43</span>
   <span class="hljs-keyword">await</span> asyncMock(); <span class="hljs-comment">// throws "Async error"</span>
 });
 </code></pre>
-</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/zh-Hans/next/expect"><span class="arrow-prev">← </span><span>Expect</span></a><a class="docs-next button" href="/docs/zh-Hans/next/jest-object"><span>The Jest Object</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#方法">方法</a></li><li><a href="#参考">参考</a><ul class="toc-headings"><li><a href="#mockfngetmockname"><code>mockFn.getMockName()</code></a></li><li><a href="#mockfnmockcalls"><code>mockFn.mock.calls</code></a></li><li><a href="#mockfnmockresults"><code>mockFn.mock.results</code></a></li><li><a href="#mockfnmockinstances"><code>mockFn.mock.instances</code></a></li><li><a href="#mockfnmockclear"><code>mockFn.mockClear()</code></a></li><li><a href="#mockfnmockreset"><code>mockFn.mockReset()</code></a></li><li><a href="#mockfnmockrestore"><code>mockFn.mockRestore()</code></a></li><li><a href="#mockfnmockimplementationfn"><code>mockFn.mockImplementation(fn)</code></a></li><li><a href="#mockfnmockimplementationoncefn"><code>mockFn.mockImplementationOnce(fn)</code></a></li><li><a href="#mockfnmocknamevalue"><code>mockFn.mockName(value)</code></a></li><li><a href="#mockfnmockreturnthis"><code>mockFn.mockReturnThis()</code></a></li><li><a href="#mockfnmockreturnvaluevalue"><code>mockFn.mockReturnValue(value)</code></a></li><li><a href="#mockfnmockreturnvalueoncevalue"><code>mockFn.mockReturnValueOnce(value)</code></a></li><li><a href="#mockfnmockresolvedvaluevalue"><code>mockFn.mockResolvedValue(value)</code></a></li><li><a href="#mockfnmockresolvedvalueoncevalue"><code>mockFn.mockResolvedValueOnce(value)</code></a></li><li><a href="#mockfnmockrejectedvaluevalue"><code>mockFn.mockRejectedValue(value)</code></a></li><li><a href="#mockfnmockrejectedvalueoncevalue"><code>mockFn.mockRejectedValueOnce(value)</code></a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/zh-Hans/getting-started.html">Getting Started</a><a href="/docs/zh-Hans/snapshot-testing.html">Guides</a><a href="/docs/zh-Hans/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://www.reactiflux.com/">Reactiflux</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
+<h2><a class="anchor" aria-hidden="true" id="typescript"></a><a href="#typescript" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>TypeScript</h2>
+<p>Jest itself is written in <a href="https://www.typescriptlang.org">TypeScript</a>.</p>
+<p>If you are using <a href="https://create-react-app.dev">Create React App</a> then the <a href="https://create-react-app.dev/docs/adding-typescript/">TypeScript template</a> has everything you need to start writing tests in TypeScript.</p>
+<p>Otherwise, please see our <a href="/docs/zh-Hans/next/getting-started#using-typescript">Getting Started</a> guide for to get setup with TypeScript.</p>
+<p>You can see an example of using Jest with TypeScript in our <a href="https://github.com/facebook/jest/tree/master/examples/typescript">GitHub repository</a>.</p>
+<h3><a class="anchor" aria-hidden="true" id="jestmockedfunction"></a><a href="#jestmockedfunction" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>jest.MockedFunction</code></h3>
+<blockquote>
+<p><code>jest.MockedFunction</code> is available in the <code>@types/jest</code> module from version <code>24.9.0</code>.</p>
+</blockquote>
+<p>The following examples will assume you have an understanding of how <a href="/docs/zh-Hans/next/mock-functions">Jest mock functions work with JavaScript</a>.</p>
+<p>You can use <code>jest.MockedFunction</code> to represent a function that has been replaced by a Jest mock.</p>
+<p>Example using <a href="/docs/zh-Hans/next/jest-object#jestmockmodulename-factory-options">automatic <code>jest.mock</code></a>:</p>
+<pre><code class="hljs css language-ts"><span class="hljs-comment">// Assume `add` is imported and used within `calculate`.</span>
+<span class="hljs-keyword">import</span> add <span class="hljs-keyword">from</span> <span class="hljs-string">'./add'</span>;
+<span class="hljs-keyword">import</span> calculate <span class="hljs-keyword">from</span> <span class="hljs-string">'./calc'</span>;
+
+jest.mock(<span class="hljs-string">'./add'</span>);
+
+<span class="hljs-comment">// Our mock of `add` is now fully typed</span>
+<span class="hljs-keyword">const</span> mockAdd = add <span class="hljs-keyword">as</span> jest.MockedFunction&lt;<span class="hljs-keyword">typeof</span> add&gt;;
+
+test(<span class="hljs-string">'calculate calls add'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  calculate(<span class="hljs-string">'Add'</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>);
+
+  expect(mockAdd).toBeCalledTimes(<span class="hljs-number">1</span>);
+  expect(mockAdd).toBeCalledWith(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>);
+});
+</code></pre>
+<p>Example using <a href="/docs/zh-Hans/next/jest-object#jestfnimplementation"><code>jest.fn</code></a>:</p>
+<pre><code class="hljs css language-ts"><span class="hljs-comment">// Here `add` is imported for its type</span>
+<span class="hljs-keyword">import</span> add <span class="hljs-keyword">from</span> <span class="hljs-string">'./add'</span>;
+<span class="hljs-keyword">import</span> calculate <span class="hljs-keyword">from</span> <span class="hljs-string">'./calc'</span>;
+
+test(<span class="hljs-string">'calculate calls add'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-comment">// Create a new mock that can be used in place of `add`.</span>
+  <span class="hljs-keyword">const</span> mockAdd = jest.fn() <span class="hljs-keyword">as</span> jest.MockedFunction&lt;<span class="hljs-keyword">typeof</span> add&gt;;
+
+  <span class="hljs-comment">// Note: You can use the `jest.fn` type directly like this if you want:</span>
+  <span class="hljs-comment">// const mockAdd = jest.fn&lt;ReturnType&lt;typeof add&gt;, Parameters&lt;typeof add&gt;&gt;();</span>
+  <span class="hljs-comment">// `jest.MockedFunction` is a more friendly shortcut.</span>
+
+  <span class="hljs-comment">// Now we can easily set up mock implementations.</span>
+  <span class="hljs-comment">// All the `.mock*` API can now give you proper types for `add`.</span>
+  <span class="hljs-comment">// https://jestjs.io/docs/en/mock-function-api</span>
+
+  <span class="hljs-comment">// `.mockImplementation` can now infer that `a` and `b` are `number`</span>
+  <span class="hljs-comment">// and that the returned value is a `number`.</span>
+  mockAdd.mockImplementation(<span class="hljs-function">(<span class="hljs-params">a, b</span>) =&gt;</span> {
+    <span class="hljs-comment">// Yes, this mock is still adding two numbers but imagine this</span>
+    <span class="hljs-comment">// was a complex function we are mocking.</span>
+    <span class="hljs-keyword">return</span>  a + b
+  }));
+
+  <span class="hljs-comment">// `mockAdd` is properly typed and therefore accepted by</span>
+  <span class="hljs-comment">// anything requiring `add`.</span>
+  calculate(mockAdd, <span class="hljs-number">1</span> , <span class="hljs-number">2</span>);
+
+  expect(mockAdd).toBeCalledTimes(<span class="hljs-number">1</span>);
+  expect(mockAdd).toBeCalledWith(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>);
+})
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="jestmockedclass"></a><a href="#jestmockedclass" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>jest.MockedClass</code></h3>
+<blockquote>
+<p><code>jest.MockedClass</code> is available in the <code>@types/jest</code> module from version <code>24.9.0</code>.</p>
+</blockquote>
+<p>The following examples will assume you have an understanding of how <a href="/docs/zh-Hans/next/es6-class-mocks">Jest mock classes work with JavaScript</a>.</p>
+<p>You can use <code>jest.MockedClass</code> to represent a class that has been replaced by a Jest mock.</p>
+<p>Converting the <a href="/docs/zh-Hans/next/es6-class-mocks#automatic-mock">ES6 Class automatic mock example</a> would look like this:</p>
+<pre><code class="hljs css language-ts"><span class="hljs-keyword">import</span> SoundPlayer <span class="hljs-keyword">from</span> <span class="hljs-string">'../sound-player'</span>;
+<span class="hljs-keyword">import</span> SoundPlayerConsumer <span class="hljs-keyword">from</span> <span class="hljs-string">'../sound-player-consumer'</span>;
+
+jest.mock(<span class="hljs-string">'../sound-player'</span>); <span class="hljs-comment">// SoundPlayer is now a mock constructor</span>
+
+<span class="hljs-keyword">const</span> SoundPlayerMock = SoundPlayer <span class="hljs-keyword">as</span> jest.MockedClass&lt;<span class="hljs-keyword">typeof</span> SoundPlayer&gt;;
+
+beforeEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-comment">// Clear all instances and calls to constructor and all methods:</span>
+  SoundPlayerMock.mockClear();
+});
+
+it(<span class="hljs-string">'We can check if the consumer called the class constructor'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+  expect(SoundPlayerMock).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
+});
+
+it(<span class="hljs-string">'We can check if the consumer called a method on the class instance'</span>, <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-comment">// Show that mockClear() is working:</span>
+  expect(SoundPlayerMock).not.toHaveBeenCalled();
+
+  <span class="hljs-keyword">const</span> soundPlayerConsumer = <span class="hljs-keyword">new</span> SoundPlayerConsumer();
+  <span class="hljs-comment">// Constructor should have been called again:</span>
+  expect(SoundPlayerMock).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
+
+  <span class="hljs-keyword">const</span> coolSoundFileName = <span class="hljs-string">'song.mp3'</span>;
+  soundPlayerConsumer.playSomethingCool();
+
+  <span class="hljs-comment">// mock.instances is available with automatic mocks:</span>
+  <span class="hljs-keyword">const</span> mockSoundPlayerInstance = SoundPlayerMock.mock.instances[<span class="hljs-number">0</span>];
+
+  <span class="hljs-comment">// However, it will not allow access to `.mock` in TypeScript as it</span>
+  <span class="hljs-comment">// is returning `SoundPlayer`. Instead, you can check the calls to a</span>
+  <span class="hljs-comment">// method like this fully typed:</span>
+  expect(SoundPlayerMock.prototype.playSoundFile.mock.calls[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>]).toEqual(
+    coolSoundFileName,
+  );
+  <span class="hljs-comment">// Equivalent to above check:</span>
+  expect(SoundPlayerMock.prototype.playSoundFile).toHaveBeenCalledWith(
+    coolSoundFileName,
+  );
+  expect(SoundPlayerMock.prototype.playSoundFile).toHaveBeenCalledTimes(<span class="hljs-number">1</span>);
+});
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/docs/zh-Hans/next/expect"><span class="arrow-prev">← </span><span>Expect</span></a><a class="docs-next button" href="/docs/zh-Hans/next/jest-object"><span>The Jest Object</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#方法">方法</a></li><li><a href="#参考">参考</a><ul class="toc-headings"><li><a href="#mockfngetmockname"><code>mockFn.getMockName()</code></a></li><li><a href="#mockfnmockcalls"><code>mockFn.mock.calls</code></a></li><li><a href="#mockfnmockresults"><code>mockFn.mock.results</code></a></li><li><a href="#mockfnmockinstances"><code>mockFn.mock.instances</code></a></li><li><a href="#mockfnmockclear"><code>mockFn.mockClear()</code></a></li><li><a href="#mockfnmockreset"><code>mockFn.mockReset()</code></a></li><li><a href="#mockfnmockrestore"><code>mockFn.mockRestore()</code></a></li><li><a href="#mockfnmockimplementationfn"><code>mockFn.mockImplementation(fn)</code></a></li><li><a href="#mockfnmockimplementationoncefn"><code>mockFn.mockImplementationOnce(fn)</code></a></li><li><a href="#mockfnmocknamevalue"><code>mockFn.mockName(value)</code></a></li><li><a href="#mockfnmockreturnthis"><code>mockFn.mockReturnThis()</code></a></li><li><a href="#mockfnmockreturnvaluevalue"><code>mockFn.mockReturnValue(value)</code></a></li><li><a href="#mockfnmockreturnvalueoncevalue"><code>mockFn.mockReturnValueOnce(value)</code></a></li><li><a href="#mockfnmockresolvedvaluevalue"><code>mockFn.mockResolvedValue(value)</code></a></li><li><a href="#mockfnmockresolvedvalueoncevalue"><code>mockFn.mockResolvedValueOnce(value)</code></a></li><li><a href="#mockfnmockrejectedvaluevalue"><code>mockFn.mockRejectedValue(value)</code></a></li><li><a href="#mockfnmockrejectedvalueoncevalue"><code>mockFn.mockRejectedValueOnce(value)</code></a></li></ul></li><li><a href="#typescript">TypeScript</a><ul class="toc-headings"><li><a href="#jestmockedfunction"><code>jest.MockedFunction</code></a></li><li><a href="#jestmockedclass"><code>jest.MockedClass</code></a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/" class="nav-home"><img src="/img/jest-outline.svg" alt="Jest" width="66" height="58"/></a><div><h5>Docs</h5><a href="/docs/zh-Hans/getting-started.html">Getting Started</a><a href="/docs/zh-Hans/snapshot-testing.html">Guides</a><a href="/docs/zh-Hans/api.html">API Reference</a></div><div><h5>Community</h5><a href="https://stackoverflow.com/questions/tagged/jestjs" target="_blank">Stack Overflow</a><a href="https://www.reactiflux.com/">Reactiflux</a><a href="https://twitter.com/fbjest" target="_blank">Twitter</a></div><div><h5>More</h5><a href="/blog">Blog</a><a href="https://github.com/facebook/jest">GitHub</a><a class="github-button" href="https://github.com/facebook/jest" data-icon="octicon-star" data-count-href="/facebook/jest/stargazers" data-show-count="true" data-count-aria-label="# stargazers on GitHub" aria-label="Star facebook/jest on GitHub">Star</a></div></section><a href="https://code.facebook.com/projects/" target="_blank" class="fbOpenSource"><img src="/img/oss_logo.png" alt="Facebook Open Source" width="170" height="45"/></a><section class="copyright">Copyright © 2020 Facebook Inc.</section></footer></div><script type="text/javascript" src="https://cdn.jsdelivr.net/docsearch.js/1/docsearch.min.js"></script><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script><script>
                 document.addEventListener('keyup', function(e) {
                   if (e.target !== document.body) {
                     return;
