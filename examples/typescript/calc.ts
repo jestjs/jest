@@ -20,12 +20,14 @@ export default (memory: Memory) => {
         return memory.subtract(last);
       }
       case 'Sub': {
-        const result = sub.apply(null, input);
+        const [a, b] = input;
+        const result = sub(a, b);
         last = result;
         return result;
       }
       case 'Sum': {
-        const result = sum.apply(null, input);
+        const [a, b] = input;
+        const result = sum(a, b);
         last = result;
         return result;
       }
