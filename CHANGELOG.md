@@ -14,6 +14,7 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Add docs for using mocks in TypeScript([#10415](https://github.com/facebook/jest/pull/10415))
 - `[jest-cli]` chore: standardize files and folder names ([#10698](https://github.com/facebook/jest/pull/1098))
 
 ### Performance

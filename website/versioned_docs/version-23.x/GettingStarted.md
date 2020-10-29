@@ -147,3 +147,11 @@ Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to
 ### Using TypeScript
 
 To use TypeScript in your tests you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
+
+You may also want to install the [`@types/jest`](https://www.npmjs.com/package/@types/jest) module for the version of Jest you're using. This will help provide full typing when writing your tests with TypeScript.
+
+> For `@types/*` modules it's recommended to try to match the version of the associated module. For example, if you are using `26.4.0` of `jest` then using `26.4.x` of `@types/jest` is ideal. In general, try to match the major (`26`) and minor (`4`) version as closely as possible.
+
+```bash
+yarn add --dev @types/jest
+```
