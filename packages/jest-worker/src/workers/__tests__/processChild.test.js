@@ -17,9 +17,9 @@ const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,
-  PARENT_MESSAGE_HEARTBEAT,
   CHILD_MESSAGE_INITIALIZE,
   PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_HEARTBEAT,
   PARENT_MESSAGE_OK,
 } from '../../types';
 

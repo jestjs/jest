@@ -104,8 +104,8 @@ it('initializes the thread with the given workerPath', () => {
     forkOptions: {},
     maxRetries: 3,
     setupArgs: ['foo', 'bar'],
-    workerPath: '/tmp/foo/bar/baz.js',
     workerHeartbeatTimeout: WORKER_HEARTBEAT_TIMEOUT,
+    workerPath: '/tmp/foo/bar/baz.js',
   });
 
   expect(worker._worker.postMessage.mock.calls[0][0]).toEqual([

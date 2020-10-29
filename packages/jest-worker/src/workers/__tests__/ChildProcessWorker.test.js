@@ -11,10 +11,10 @@ import getStream from 'get-stream';
 import supportsColor from 'supports-color';
 import {
   CHILD_MESSAGE_CALL,
-  PARENT_MESSAGE_HEARTBEAT,
   CHILD_MESSAGE_INITIALIZE,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_CUSTOM,
+  PARENT_MESSAGE_HEARTBEAT,
   PARENT_MESSAGE_OK,
 } from '../../types';
 
@@ -96,8 +96,8 @@ it('initializes the child process with the given workerPath', () => {
     forkOptions: {},
     maxRetries: 3,
     setupArgs: ['foo', 'bar'],
-    workerPath: '/tmp/foo/bar/baz.js',
     workerHeartbeatTimeout: WORKER_HEARTBEAT_TIMEOUT,
+    workerPath: '/tmp/foo/bar/baz.js',
   });
 
   expect(forkInterface.send.mock.calls[0][0]).toEqual([
@@ -424,8 +424,8 @@ it('calls the onProcessEnd method when we have no heartbeat message from child d
   const worker = new Worker({
     forkOptions: {},
     maxRetries: 3,
-    workerPath: '/tmp/foo',
     workerHeartbeatTimeout: WORKER_HEARTBEAT_TIMEOUT,
+    workerPath: '/tmp/foo',
   });
 
   const onProcessStart = jest.fn();
