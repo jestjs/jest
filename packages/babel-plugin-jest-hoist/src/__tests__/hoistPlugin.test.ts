@@ -6,13 +6,43 @@
  *
  */
 
+import * as path from 'path';
 import pluginTester from 'babel-plugin-tester';
+import {format as formatCode} from 'prettier';
 import babelPluginJestHoist from '..';
+
+const fakeAbsolutPath = path.resolve(__dirname, '../file.js');
 
 pluginTester({
   plugin: babelPluginJestHoist,
   pluginName: 'babel-plugin-jest-hoist',
   tests: {
+    'automatic react runtime': {
+      babelOptions: {
+        babelrc: false,
+        configFile: false,
+        filename: fakeAbsolutPath,
+        presets: [
+          [
+            require.resolve('@babel/preset-react'),
+            {development: true, runtime: 'automatic'},
+          ],
+        ],
+      },
+      code: `
+        jest.mock('./App', () => () => <div>Hello world</div>);
+      `,
+      formatResult(code) {
+        // replace the filename with something that will be the same across OSes and machine
+        const codeWithoutSystemPath = code.replace(
+          new RegExp(fakeAbsolutPath, 'g'),
+          '/root/project/src/file.js',
+        );
+
+        return formatCode(codeWithoutSystemPath, {parser: 'babel'});
+      },
+      snapshot: true,
+    },
     'top level mocking': {
       code: `
         require('x');
