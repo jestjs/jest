@@ -18,6 +18,8 @@ import {
   PARENT_MESSAGE_SETUP_ERROR,
 } from '../types';
 
+const DEFAULT_HEARTBEAT_INTERVAL_VALUE = 1_000;
+
 let file: string | null = null;
 let setupArgs: Array<unknown> = [];
 let initialized = false;
@@ -43,7 +45,7 @@ const messageListener: NodeJS.MessageListener = request => {
       const init: ChildMessageInitialize = request;
       file = init[2];
       setupArgs = request[3];
-      heartbeatIntervalValue = request[4];
+      heartbeatIntervalValue = request[4] || DEFAULT_HEARTBEAT_INTERVAL_VALUE;
       monitorHeartbeat = setInterval(() => {
         sendParentMessageHeartbeat();
       }, heartbeatIntervalValue).unref();
