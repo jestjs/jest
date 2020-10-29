@@ -11,6 +11,7 @@ import getStream from 'get-stream';
 import supportsColor from 'supports-color';
 import {
   CHILD_MESSAGE_CALL,
+  PARENT_MESSAGE_HEARTBEAT,
   CHILD_MESSAGE_INITIALIZE,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_CUSTOM,
@@ -18,6 +19,9 @@ import {
 } from '../../types';
 
 jest.useFakeTimers();
+
+const CHILD_HEARTBEAT_INTERVAL = 1_000;
+const WORKER_HEARTBEAT_TIMEOUT = 5_000;
 
 let Worker;
 let forkInterface;
@@ -93,6 +97,7 @@ it('initializes the child process with the given workerPath', () => {
     maxRetries: 3,
     setupArgs: ['foo', 'bar'],
     workerPath: '/tmp/foo/bar/baz.js',
+    workerHeartbeatTimeout: WORKER_HEARTBEAT_TIMEOUT,
   });
 
   expect(forkInterface.send.mock.calls[0][0]).toEqual([
@@ -100,6 +105,7 @@ it('initializes the child process with the given workerPath', () => {
     false,
     '/tmp/foo/bar/baz.js',
     ['foo', 'bar'],
+    CHILD_HEARTBEAT_INTERVAL,
   ]);
 });
 
@@ -410,4 +416,34 @@ it('does not send SIGKILL if SIGTERM exited the process', async () => {
 
   jest.runAllTimers();
   expect(forkInterface.kill.mock.calls).toEqual([['SIGTERM']]);
+});
+
+it('calls the onProcessEnd method when we have no heartbeat message from child during n-time', () => {
+  jest.useFakeTimers();
+
+  const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+    workerHeartbeatTimeout: WORKER_HEARTBEAT_TIMEOUT,
+  });
+
+  const onProcessStart = jest.fn();
+  const onProcessEnd = jest.fn();
+
+  worker.send(
+    [CHILD_MESSAGE_INITIALIZE, false, 'foo', [], CHILD_HEARTBEAT_INTERVAL],
+    onProcessStart,
+    onProcessEnd,
+  );
+
+  expect(onProcessEnd).not.toHaveBeenCalled();
+
+  forkInterface.emit('message', [PARENT_MESSAGE_HEARTBEAT]);
+
+  jest.advanceTimersByTime(WORKER_HEARTBEAT_TIMEOUT - 1);
+  expect(onProcessEnd).not.toHaveBeenCalled();
+
+  jest.advanceTimersByTime(1);
+  expect(onProcessEnd).toHaveBeenCalledTimes(1);
 });
