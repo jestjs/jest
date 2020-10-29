@@ -28,7 +28,7 @@
     "source-map": "^0.6.0",
     "string-length": "^4.0.1",
     "terminal-link": "^2.0.0",
-    "v8-to-istanbul": "^6.0.1"
+    "v8-to-istanbul": "^7.0.0"
   },
   "devDependencies": {
     "@types/exit": "^0.1.30",
