@@ -13,6 +13,7 @@ import {EventEmitter} from 'events';
 import {tmpdir} from 'os';
 import * as path from 'path';
 import type {Stats} from 'graceful-fs';
+import {existsSync, readFileSync} from 'graceful-fs';
 import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
@@ -59,6 +60,7 @@ type Options = {
   computeSha1?: boolean;
   console?: Console;
   dependencyExtractor?: string | null;
+  enableSymlinks?: boolean;
   extensions: Array<string>;
   forceNodeFilesystemAPI?: boolean;
   hasteImplModulePath?: string;
@@ -82,6 +84,7 @@ type InternalOptions = {
   computeDependencies: boolean;
   computeSha1: boolean;
   dependencyExtractor: string | null;
+  enableSymlinks: boolean;
   extensions: Array<string>;
   forceNodeFilesystemAPI: boolean;
   hasteImplModulePath?: string;
@@ -234,6 +237,7 @@ class HasteMap extends EventEmitter {
           : options.computeDependencies,
       computeSha1: options.computeSha1 || false,
       dependencyExtractor: options.dependencyExtractor || null,
+      enableSymlinks: options.enableSymlinks || false,
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
@@ -738,12 +742,46 @@ class HasteMap extends EventEmitter {
     const crawlerOptions: CrawlerOptions = {
       computeSha1: options.computeSha1,
       data: hasteMap,
+      enableSymlinks: options.enableSymlinks,
       extensions: options.extensions,
       forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
       ignore,
       rootDir: options.rootDir,
       roots: options.roots,
     };
+
+    const watchmanConfigPath = path.join(options.rootDir, '.watchmanconfig');
+    if (existsSync(watchmanConfigPath)) {
+      try {
+        const configStr = readFileSync(watchmanConfigPath, 'utf8')
+          .toString()
+          .trim();
+        const watchmanConfig = configStr === '' ? {} : JSON.parse(configStr);
+        const watchSymlinks = Boolean(watchmanConfig['watch_symlinks']);
+
+        // Automatically enable symlink crawling in node crawler if watchman is
+        // set up to crawl symlinks.
+        if (watchSymlinks && !crawlerOptions.enableSymlinks) {
+          this._console.warn(
+            `jest-haste-map: watch_symlinks is enabled in .watchmanconfig ` +
+              `but --enableSymlinks was not passed to Jest as a flag. ` +
+              `  This will result in different behavior when watchman ` +
+              `is enabled or disabled`,
+          );
+        } else if (crawlerOptions.enableSymlinks) {
+          this._console.warn(
+            `jest-haste-map: --enableSymlinks was passed but symlink ` +
+              `crawling is not enabled in .watchmanconfig.\n` +
+              `  To enable symlink crawling in .watchmanconfig set ` +
+              `"watch_symlinks": true.`,
+          );
+        }
+      } catch (error) {
+        this._console.warn(
+          `jest-haste-map: Failed to parse .watchmanconfig.\n  Original Error: ${error}`,
+        );
+      }
+    }
 
     const retry = (error: Error) => {
       if (crawl === watchmanCrawl) {

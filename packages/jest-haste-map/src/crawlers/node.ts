@@ -61,6 +61,7 @@ function find(
   extensions: Array<string>,
   ignore: IgnoreMatcher,
   callback: Callback,
+  enableSymlinks?: boolean,
 ): void {
   const result: Result = [];
   let activeCalls = 0;
@@ -98,7 +99,9 @@ function find(
 
         activeCalls++;
 
-        fs.lstat(file, (err, stat) => {
+        const stat = enableSymlinks ? fs.stat : fs.lstat;
+
+        stat(file, (err, stat) => {
           activeCalls--;
 
           // This logic is unnecessary for node > v10.10, but leaving it in
@@ -138,9 +141,15 @@ function findNative(
   extensions: Array<string>,
   ignore: IgnoreMatcher,
   callback: Callback,
+  enableSymlinks: boolean,
 ): void {
   const args = Array.from(roots);
-  args.push('-type', 'f');
+  if (enableSymlinks) {
+    args.push('(', '-type', 'f', '-o', '-type', 'l', ')');
+  } else {
+    args.push('-type', 'f');
+  }
+
   if (extensions.length) {
     args.push('(');
   }
@@ -177,7 +186,8 @@ function findNative(
     } else {
       lines.forEach(path => {
         fs.stat(path, (err, stat) => {
-          if (!err && stat) {
+          // Filter out symlinks that describe directories
+          if (!err && stat && !stat.isDirectory()) {
             result.push([path, stat.mtime.getTime(), stat.size]);
           }
           if (--count === 0) {
@@ -201,6 +211,7 @@ export = async function nodeCrawl(
     forceNodeFilesystemAPI,
     ignore,
     rootDir,
+    enableSymlinks,
     roots,
   } = options;
 
@@ -231,9 +242,9 @@ export = async function nodeCrawl(
     };
 
     if (useNativeFind) {
-      findNative(roots, extensions, ignore, callback);
+      findNative(roots, extensions, ignore, callback, enableSymlinks);
     } else {
-      find(roots, extensions, ignore, callback);
+      find(roots, extensions, ignore, callback, enableSymlinks);
     }
   });
 };

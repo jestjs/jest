@@ -3,6 +3,7 @@
 ### Features
 
 - `[jest-core]` Add `findRelatedTests` and `nonFlagArgs` in allowed config options for `updateConfigAndRun` in watch plugins ([#10659](https://github.com/facebook/jest/pull/10659))
+- `[jest-haste-map]` Add `enableSymlinks` configuration option to follow symlinks for test files ([#9350](https://github.com/facebook/jest/issues/9350))
 
 ### Fixes
 

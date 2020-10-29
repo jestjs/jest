@@ -88,6 +88,19 @@ let mockChangedFiles;
 let mockFs;
 
 jest.mock('graceful-fs', () => ({
+  existsSync: jest.fn(path => {
+    // A file change can be triggered by writing into the
+    // mockChangedFiles object.
+    if (mockChangedFiles && path in mockChangedFiles) {
+      return true;
+    }
+
+    if (mockFs[path]) {
+      return true;
+    }
+
+    return false;
+  }),
   readFileSync: jest.fn((path, options) => {
     // A file change can be triggered by writing into the
     // mockChangedFiles object.

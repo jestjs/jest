@@ -30,6 +30,7 @@ export type WorkerMetadata = {
 
 export type CrawlerOptions = {
   computeSha1: boolean;
+  enableSymlinks: boolean;
   data: InternalHasteMap;
   extensions: Array<string>;
   forceNodeFilesystemAPI: boolean;

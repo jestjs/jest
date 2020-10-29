@@ -476,6 +476,8 @@ type HasteConfig = {
   computeSha1?: boolean;
   // The platform to use as the default, e.g. 'ios'.
   defaultPlatform?: string | null;
+  // Whether to follow symlinks when crawling for files.
+  enableSymlinks?: boolean;
   // Path to a custom implementation of Haste.
   hasteImplModulePath?: string;
   // All platforms to target, e.g ['ios', 'android'].
