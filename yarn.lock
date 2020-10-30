@@ -3278,7 +3278,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__core@npm:*, @types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.0.4, @types/babel__core@npm:^7.1.0, @types/babel__core@npm:^7.1.11, @types/babel__core@npm:^7.1.7":
+"@types/babel__core@npm:*, @types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.0.4, @types/babel__core@npm:^7.1.0, @types/babel__core@npm:^7.1.7":
   version: 7.1.11
   resolution: "@types/babel__core@npm:7.1.11"
   dependencies:
@@ -4826,7 +4826,7 @@ __metadata:
     "@babel/core": ^7.11.6
     "@babel/template": ^7.3.3
     "@babel/types": ^7.3.3
-    "@types/babel__core": ^7.1.11
+    "@types/babel__core": ^7.0.0
     "@types/babel__template": ^7.0.2
     "@types/babel__traverse": ^7.0.6
     "@types/node": "*"
