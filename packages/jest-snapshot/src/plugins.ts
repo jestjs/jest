@@ -7,7 +7,7 @@
 
 import prettyFormat = require('pretty-format');
 
-import jestMockSerializer from './mock_serializer';
+import jestMockSerializer from './mockSerializer';
 
 const {
   DOMCollection,

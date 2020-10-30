@@ -26,7 +26,7 @@ import {
   SnapshotResolver as JestSnapshotResolver,
   buildSnapshotResolver,
   isSnapshotPath,
-} from './snapshot_resolver';
+} from './SnapshotResolver';
 import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
 import {
