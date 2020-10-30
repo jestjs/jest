@@ -290,3 +290,19 @@ export const testIfHg = (...args: Parameters<typeof test>) => {
     test.skip(...args);
   }
 };
+
+// Certain environments (like CITGM and GH Actions) do not come with watchman installed
+let watchmanIsInstalled: boolean | null = null;
+
+export const testIfWatchman = (...args: Parameters<typeof test>) => {
+  if (watchmanIsInstalled === null) {
+    watchmanIsInstalled = which.sync('watchman', {nothrow: true}) !== null;
+  }
+
+  if (watchmanIsInstalled) {
+    test(...args);
+  } else {
+    console.warn('watchman is not installed - skipping some tests');
+    test.skip(...args);
+  }
+};
