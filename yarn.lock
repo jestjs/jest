@@ -7861,9 +7861,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-fb-strict@workspace:packages/eslint-config-fb-strict":
-  version: 0.0.0-use.local
-  resolution: "eslint-config-fb-strict@workspace:packages/eslint-config-fb-strict"
+"eslint-config-fb-strict@npm:^26.0.0":
+  version: 26.0.0
+  resolution: "eslint-config-fb-strict@npm:26.0.0"
   dependencies:
     eslint-config-fbjs: ^3.1.1
   peerDependencies:
@@ -7874,8 +7874,9 @@ __metadata:
     eslint-plugin-jest: ^21.0.0 || ^22.0.0 || ^23.0.0
     eslint-plugin-jsx-a11y: ^6.0.2
     eslint-plugin-react: ^7.1.0
-  languageName: unknown
-  linkType: soft
+  checksum: 8ea89ca2f08627d6ef727047d870c86cf4f3027a4321f74b15bc5206d9fef8790b3d63f413cba274ca5ddbe0cb9c40febfced7db4c9e796a10e31345ccdeda78
+  languageName: node
+  linkType: hard
 
 "eslint-config-fbjs@npm:^3.1.1":
   version: 3.1.1
@@ -17208,6 +17209,7 @@ fsevents@^1.2.7:
     debug: ^4.0.1
     dedent: ^0.7.0
     eslint: ^7.7.0
+    eslint-config-fb-strict: ^26.0.0
     eslint-config-prettier: ^6.1.0
     eslint-plugin-babel: ^5.1.0
     eslint-plugin-eslint-comments: ^3.1.2

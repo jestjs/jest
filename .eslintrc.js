@@ -7,7 +7,7 @@
 
 module.exports = {
   extends: [
-    './packages/eslint-config-fb-strict/index.js',
+    'fb-strict',
     'plugin:import/errors',
     'plugin:import/typescript',
     'prettier',
