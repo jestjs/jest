@@ -11,7 +11,7 @@ A typical snapshot test case renders a UI component, takes a snapshot, then comp
 
 A similar approach can be taken when it comes to testing your React components. Instead of rendering the graphical UI, which would require building the entire app, you can use a test renderer to quickly generate a serializable value for your React tree. Consider this [example test](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/link.react.test.js) for a [Link component](https://github.com/facebook/jest/blob/master/examples/snapshot/Link.react.js):
 
-```javascript
+```tsx
 import React from 'react';
 import renderer from 'react-test-renderer';
 import Link from '../Link.react';
@@ -51,7 +51,7 @@ It's straightforward to spot when a snapshot test fails after a bug has been int
 
 One such situation can arise if we intentionally change the address the Link component in our example is pointing to.
 
-```javascript
+```tsx
 // Updated test case with a Link to a different address
 it('renders correctly', () => {
   const tree = renderer
@@ -107,7 +107,7 @@ Inline snapshots behave identically to external snapshots (`.snap` files), excep
 
 First, you write a test, calling `.toMatchInlineSnapshot()` with no arguments:
 
-```javascript
+```tsx
 it('renders correctly', () => {
   const tree = renderer
     .create(<Link page="https://prettier.io">Prettier</Link>)
@@ -118,7 +118,7 @@ it('renders correctly', () => {
 
 The next time you run Jest, `tree` will be evaluated, and a snapshot will be written as an argument to `toMatchInlineSnapshot`:
 
-```javascript
+```tsx
 it('renders correctly', () => {
   const tree = renderer
     .create(<Link page="https://prettier.io">Prettier</Link>)

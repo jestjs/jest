@@ -18,7 +18,6 @@ module.exports = {
     {
       extends: ['plugin:@typescript-eslint/eslint-recommended'],
       files: ['*.ts', '*.tsx'],
-      parser: '@typescript-eslint/parser',
       plugins: ['@typescript-eslint/eslint-plugin', 'local'],
       rules: {
         '@typescript-eslint/array-type': ['error', {default: 'generic'}],
@@ -223,7 +222,7 @@ module.exports = {
       },
     },
   ],
-  parser: 'babel-eslint',
+  parser: '@typescript-eslint/parser',
   plugins: ['markdown', 'import', 'prettier', 'eslint-comments'],
   rules: {
     'arrow-body-style': 'error',

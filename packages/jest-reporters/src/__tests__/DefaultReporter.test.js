@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import DefaultReporter from '../default_reporter';
+import DefaultReporter from '../DefaultReporter';
 
 jest.mock('jest-util', () => ({
   ...jest.requireActual('jest-util'),

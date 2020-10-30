@@ -107,7 +107,7 @@ const fromEntries: typeof Object.fromEntries =
     }, {});
   };
 
-namespace Runtime {
+declare namespace Runtime {
   export type Context = JestContext;
   // ditch this export when moving to esm - for now we need it for to avoid faulty type elision
   export type RuntimeType = Runtime;

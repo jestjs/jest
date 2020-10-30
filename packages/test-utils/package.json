@@ -11,6 +11,7 @@
     "@types/semver": "^7.1.0",
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.1.0",
+    "pretty-format": "^26.6.1",
     "semver": "^7.3.2"
   },
   "engines": {

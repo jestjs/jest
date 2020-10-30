@@ -54,7 +54,7 @@ jest.mock('../__test_modules__/f', () => {
 jest.mock(`../__test_modules__/jestBackticks`);
 jest.mock('virtual-module', () => 'kiwi', {virtual: true});
 // This has types that should be ignored by the out-of-scope variables check.
-jest.mock('has-flow-types', () => (props: {children: mixed}) => 3, {
+jest.mock('has-flow-types', () => (props: {children: unknown}) => 3, {
   virtual: true,
 });
 
@@ -75,7 +75,7 @@ myObject.mock('apple', 27);
 
 // Variable names prefixed with `mock` (ignore case) should not throw as out-of-scope
 const MockMethods = () => {};
-jest.mock('../__test_modules__/f', () => MockMethods);
+jest.mock('../__test_modules__/g', () => MockMethods);
 
 describe('babel-plugin-jest-hoist', () => {
   it('does not throw during transform', () => {

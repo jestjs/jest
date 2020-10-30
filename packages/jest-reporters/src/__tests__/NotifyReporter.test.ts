@@ -8,10 +8,10 @@
 import type {AggregatedResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import Resolver from 'jest-resolve';
-import NotifyReporter from '../notify_reporter';
+import NotifyReporter from '../NotifyReporter';
 import {makeGlobalConfig} from '../../../../TestUtils';
 
-jest.mock('../default_reporter');
+jest.mock('../DefaultReporter');
 jest.mock('node-notifier', () => ({
   notify: jest.fn(),
 }));

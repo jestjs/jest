@@ -421,7 +421,7 @@ expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
 const expectExport = expect as Expect;
 
-namespace expectExport {
+declare namespace expectExport {
   export type MatcherState = JestMatcherState;
   export interface Matchers<R> extends MatcherInterface<R> {}
 }

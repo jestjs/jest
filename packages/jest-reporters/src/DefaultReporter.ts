@@ -16,10 +16,10 @@ import {clearLine, isInteractive} from 'jest-util';
 import {getConsoleOutput} from '@jest/console';
 import chalk = require('chalk');
 import type {ReporterOnStartOptions, Test} from './types';
-import BaseReporter from './base_reporter';
+import BaseReporter from './BaseReporter';
 import Status from './Status';
-import getResultHeader from './get_result_header';
-import getSnapshotStatus from './get_snapshot_status';
+import getResultHeader from './getResultHeader';
+import getSnapshotStatus from './getSnapshotStatus';
 
 type write = NodeJS.WriteStream['write'];
 type FlushBufferedOutput = () => void;

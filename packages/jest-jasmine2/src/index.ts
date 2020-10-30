@@ -220,7 +220,7 @@ const addSnapshotData = (
   return results;
 };
 
-namespace jasmine2 {
+declare namespace jasmine2 {
   export type Jasmine = JestJasmine;
 }
 

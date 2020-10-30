@@ -990,9 +990,8 @@ export default function normalize(
     newOptions.onlyFailures = false;
   } else if (newOptions.testPathPattern) {
     // When passing a test path pattern we don't want to only monitor changed
-    // or failed files unless `--watch` is also passed.
+    // files unless `--watch` is also passed.
     newOptions.onlyChanged = newOptions.watch;
-    newOptions.onlyFailures = newOptions.watch;
   }
 
   if (!newOptions.onlyChanged) {

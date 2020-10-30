@@ -19,7 +19,7 @@ import {
   serialize,
   testNameToKey,
 } from './utils';
-import {InlineSnapshot, saveInlineSnapshots} from './inline_snapshots';
+import {InlineSnapshot, saveInlineSnapshots} from './InlineSnapshots';
 import type {BabelTraverse, Prettier, SnapshotData} from './types';
 
 export type SnapshotStateOptions = {

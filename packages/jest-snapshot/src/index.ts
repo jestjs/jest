@@ -26,7 +26,7 @@ import {
   SnapshotResolver as JestSnapshotResolver,
   buildSnapshotResolver,
   isSnapshotPath,
-} from './snapshot_resolver';
+} from './SnapshotResolver';
 import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
 import {
@@ -560,7 +560,7 @@ const JestSnapshot = {
   utils,
 };
 
-namespace JestSnapshot {
+declare namespace JestSnapshot {
   export type SnapshotResolver = JestSnapshotResolver;
   export type SnapshotStateType = SnapshotState;
 }

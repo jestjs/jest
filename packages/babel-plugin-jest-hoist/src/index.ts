@@ -8,11 +8,14 @@
 
 import type {NodePath} from '@babel/traverse';
 import {
+  BlockStatement,
+  CallExpression,
   Expression,
   Identifier,
   Node,
   Program,
   callExpression,
+  emptyStatement,
   isIdentifier,
 } from '@babel/types';
 import {statement} from '@babel/template';
@@ -113,7 +116,7 @@ FUNCTIONS.mock = args => {
 
     const ids: Set<NodePath<Identifier>> = new Set();
     const parentScope = moduleFactory.parentPath.scope;
-    // @ts-expect-error: ReferencedIdentifier is not known on visitors
+    // @ts-expect-error: ReferencedIdentifier and blacklist are not known on visitors
     moduleFactory.traverse(IDVisitor, {ids});
     for (const id of ids) {
       const {name} = id.node;
@@ -281,14 +284,33 @@ export default (): PluginObj<{
   },
   // in `post` to make sure we come after an import transform and can unshift above the `require`s
   post({path: program}: {path: NodePath<Program>}) {
+    const self = this;
+    visitBlock(program);
     program.traverse({
-      CallExpression: callExpr => {
+      BlockStatement: visitBlock,
+    });
+
+    function visitBlock(block: NodePath<BlockStatement> | NodePath<Program>) {
+      // use a temporary empty statement instead of the real first statement, which may itself be hoisted
+      const [firstNonHoistedStatementOfBlock] = block.unshiftContainer(
+        'body',
+        emptyStatement(),
+      );
+      block.traverse({
+        CallExpression: visitCallExpr,
+        // do not traverse into nested blocks, or we'll hoist calls in there out to this block
+        // @ts-expect-error blacklist is not known
+        blacklist: ['BlockStatement'],
+      });
+      firstNonHoistedStatementOfBlock.remove();
+
+      function visitCallExpr(callExpr: NodePath<CallExpression>) {
         const {
           node: {callee},
         } = callExpr;
         if (
           isIdentifier(callee) &&
-          callee.name === this.jestObjGetterIdentifier?.name
+          callee.name === self.jestObjGetterIdentifier?.name
         ) {
           const mockStmt = callExpr.getStatementParent();
 
@@ -297,12 +319,12 @@ export default (): PluginObj<{
             const mockStmtParent = mockStmt.parentPath;
             if (mockStmtParent.isBlock()) {
               mockStmt.remove();
-              mockStmtParent.unshiftContainer('body', [mockStmtNode]);
+              firstNonHoistedStatementOfBlock.insertBefore(mockStmtNode);
             }
           }
         }
-      },
-    });
+      }
+    }
   },
 });
 /* eslint-enable */
