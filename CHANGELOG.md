@@ -7,6 +7,7 @@
 ### Fixes
 
 - `[expect]` Stop modifying the sample in `expect.objectContaining()` ([#10711](https://github.com/facebook/jest/pull/10711))
+- `[jest-config]` Throw correct error for missing preset modules ([#10737](https://github.com/facebook/jest/pull/10737))
 
 ### Chore & Maintenance
 
