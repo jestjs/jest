@@ -19,7 +19,6 @@
 /packages/*/build/
 /packages/*/coverage/
 /packages/*/node_modules/
-/packages/*/package-lock.json
 
 /website/build
 /website/backers.json
