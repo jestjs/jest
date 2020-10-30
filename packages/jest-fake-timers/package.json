@@ -18,7 +18,8 @@
     "jest-util": "^26.6.1"
   },
   "devDependencies": {
-    "@types/sinonjs__fake-timers": "^6.0.1"
+    "@types/sinonjs__fake-timers": "^6.0.1",
+    "jest-snapshot-serializer-raw": "^1.1.0"
   },
   "engines": {
     "node": ">= 10.14.2"
