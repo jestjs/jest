@@ -57,6 +57,8 @@ import {
 import {options as cliOptions} from './cli/args';
 import {run as cliRun} from './cli';
 
+const esmIsAvailable = typeof SourceTextModule === 'function';
+
 interface JestGlobals extends Global.TestFrameworkGlobals {
   expect: typeof JestGlobals.expect;
 }
@@ -81,7 +83,7 @@ type InternalModuleOptions = {
 
 const defaultTransformOptions: InternalModuleOptions = {
   isInternalModule: false,
-  supportsDynamicImport: false,
+  supportsDynamicImport: esmIsAvailable,
   supportsStaticESM: false,
 };
 
@@ -605,7 +607,7 @@ class Runtime {
 
     return this.requireModule<T>(from, to, {
       isInternalModule: true,
-      supportsDynamicImport: false,
+      supportsDynamicImport: esmIsAvailable,
       supportsStaticESM: false,
     });
   }
