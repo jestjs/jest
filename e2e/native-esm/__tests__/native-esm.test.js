@@ -145,3 +145,9 @@ test('supports named imports from CJS', () => {
 
   expect(Object.keys(defaultFromCjs)).toEqual(['namedFunction', 'default']);
 });
+
+test('supports file urls as imports', async () => {
+  const dynamic = await import(new URL('../stateful.mjs', import.meta.url));
+
+  expect(dynamic.default).toBe(staticImportedStateful);
+});

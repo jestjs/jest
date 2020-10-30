@@ -438,6 +438,10 @@ class Runtime {
       return globals;
     }
 
+    if (specifier.startsWith('file://')) {
+      specifier = fileURLToPath(specifier);
+    }
+
     const [path, query] = specifier.split('?');
 
     const resolved = this._resolveModule(referencingIdentifier, path);
