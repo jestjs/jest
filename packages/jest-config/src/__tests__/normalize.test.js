@@ -954,7 +954,7 @@ describe('preset', () => {
         return '/node_modules/react-native-js-preset/jest-preset.js';
       }
 
-      if (/doesnt-exist/.test(name)) {
+      if (name.includes('doesnt-exist')) {
         return null;
       }
 
