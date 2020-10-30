@@ -474,6 +474,7 @@ const buildTestPathPattern = (argv: Config.Argv): string => {
 const showTestPathPatternError = (testPathPattern: string) => {
   clearLine(process.stdout);
 
+  // eslint-disable-next-line no-console
   console.log(
     chalk.red(
       `  Invalid testPattern ${testPathPattern} supplied. ` +
