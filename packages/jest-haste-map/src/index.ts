@@ -765,7 +765,7 @@ class HasteMap extends EventEmitter {
           this._console.warn(
             `jest-haste-map: watch_symlinks is enabled in .watchmanconfig ` +
               `but --enableSymlinks was not passed to Jest as a flag. ` +
-              `  This will result in different behavior when watchman ` +
+              `This will result in different behavior when watchman ` +
               `is enabled or disabled`,
           );
         } else if (crawlerOptions.enableSymlinks) {
