@@ -1808,6 +1808,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/create-cache-key-function@workspace:packages/jest-create-cache-key-function"
   dependencies:
+    "@jest/types": ^26.6.1
     "@types/node": "*"
   languageName: unknown
   linkType: soft
@@ -1833,6 +1834,7 @@ __metadata:
     "@types/sinonjs__fake-timers": ^6.0.1
     jest-message-util: ^26.6.1
     jest-mock: ^26.6.1
+    jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^26.6.1
   languageName: unknown
   linkType: soft
@@ -1961,7 +1963,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/test-utils@^26.0.0, @jest/test-utils@^26.5.0, @jest/test-utils@workspace:packages/test-utils":
+"@jest/test-utils@^26.5.0, @jest/test-utils@workspace:packages/test-utils":
   version: 0.0.0-use.local
   resolution: "@jest/test-utils@workspace:packages/test-utils"
   dependencies:
@@ -1970,6 +1972,7 @@ __metadata:
     "@types/semver": ^7.1.0
     ansi-regex: ^5.0.0
     ansi-styles: ^4.1.0
+    pretty-format: ^26.6.1
     semver: ^7.3.2
   languageName: unknown
   linkType: soft
@@ -11480,6 +11483,7 @@ fsevents@^1.2.7:
     jest-runner: ^26.6.1
     jest-runtime: ^26.6.1
     jest-snapshot: ^26.6.1
+    jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^26.6.1
     pretty-format: ^26.6.1
     stack-utils: ^2.0.2
@@ -11663,6 +11667,7 @@ fsevents@^1.2.7:
     graceful-fs: ^4.2.4
     jest-regex-util: ^26.0.0
     jest-serializer: ^26.5.0
+    jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^26.6.1
     jest-worker: ^26.6.1
     micromatch: ^4.0.2
@@ -17181,7 +17186,8 @@ fsevents@^1.2.7:
     "@babel/preset-react": ^7.0.0
     "@babel/preset-typescript": ^7.0.0
     "@babel/register": ^7.0.0
-    "@jest/test-utils": ^26.0.0
+    "@jest/globals": "workspace:packages/jest-globals"
+    "@jest/test-utils": "workspace:packages/test-utils"
     "@types/babel__core": ^7.0.0
     "@types/babel__generator": ^7.0.0
     "@types/babel__template": ^7.0.0
@@ -17224,9 +17230,12 @@ fsevents@^1.2.7:
     istanbul-lib-report: ^3.0.0
     istanbul-reports: ^3.0.0
     jest: "workspace:packages/jest"
+    jest-changed-files: "workspace:packages/jest-changed-files"
     jest-junit: ^12.0.0
+    jest-mock: "workspace:packages/jest-mock"
     jest-runner-tsd: ^1.1.0
     jest-silent-reporter: ^0.2.1
+    jest-snapshot: "workspace:packages/jest-snapshot"
     jest-snapshot-serializer-raw: ^1.1.0
     jest-watch-typeahead: ^0.6.0
     jquery: ^3.2.1
@@ -17242,6 +17251,7 @@ fsevents@^1.2.7:
     rimraf: ^3.0.0
     semver: ^7.3.2
     slash: ^3.0.0
+    stealthy-require: ^1.1.1
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
     tempy: ^1.0.0

@@ -6,6 +6,9 @@
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-create-cache-key-function"
   },
+  "dependencies": {
+    "@jest/types": "^26.6.1"
+  },
   "devDependencies": {
     "@types/node": "*"
   },
