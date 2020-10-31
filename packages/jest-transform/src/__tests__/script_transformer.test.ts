@@ -338,7 +338,7 @@ describe('ScriptTransformer', () => {
     };
     const scriptTransformer = new ScriptTransformer(config);
     expect(() =>
-      scriptTransformer.transformSource('sample.js', '', false),
+      scriptTransformer.transformSource('sample.js', '', {instrument: false}),
     ).toThrow('Jest: a transform must export a `process` function.');
   });
 
@@ -355,7 +355,7 @@ describe('ScriptTransformer', () => {
     };
     const scriptTransformer = new ScriptTransformer(config);
     expect(() =>
-      scriptTransformer.transformSource('sample.js', '', false),
+      scriptTransformer.transformSource('sample.js', '', {instrument: false}),
     ).toThrow('Jest: a transform must export a `process` function.');
   });
 
@@ -366,7 +366,7 @@ describe('ScriptTransformer', () => {
     };
     const scriptTransformer = new ScriptTransformer(config);
     expect(() =>
-      scriptTransformer.transformSource('sample.js', '', false),
+      scriptTransformer.transformSource('sample.js', '', {instrument: false}),
     ).not.toThrow();
   });
 
