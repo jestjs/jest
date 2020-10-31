@@ -13,7 +13,7 @@ import {EventEmitter} from 'events';
 import {tmpdir} from 'os';
 import * as path from 'path';
 import type {Stats} from 'graceful-fs';
-import {existsSync, readFileSync} from 'graceful-fs';
+import {existsSync} from 'graceful-fs';
 import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
@@ -750,36 +750,18 @@ class HasteMap extends EventEmitter {
       roots: options.roots,
     };
 
-    const watchmanConfigPath = path.join(options.rootDir, '.watchmanconfig');
-    if (existsSync(watchmanConfigPath)) {
-      try {
-        const configStr = readFileSync(watchmanConfigPath, 'utf8')
-          .toString()
-          .trim();
-        const watchmanConfig = configStr === '' ? {} : JSON.parse(configStr);
-        const watchSymlinks = Boolean(watchmanConfig['watch_symlinks']);
+    if (options.enableSymlinks) {
+      const watchmanConfigPath = path.join(options.rootDir, '.watchmanconfig');
 
-        // Automatically enable symlink crawling in node crawler if watchman is
-        // set up to crawl symlinks.
-        if (watchSymlinks && !crawlerOptions.enableSymlinks) {
-          this._console.warn(
-            `jest-haste-map: watch_symlinks is enabled in .watchmanconfig ` +
-              `but --enableSymlinks was not passed to Jest as a flag. ` +
-              `  This will result in different behavior when watchman ` +
-              `is enabled or disabled`,
-          );
-        } else if (crawlerOptions.enableSymlinks) {
-          this._console.warn(
-            `jest-haste-map: --enableSymlinks was passed but symlink ` +
-              `crawling is not enabled in .watchmanconfig.\n` +
-              `  To enable symlink crawling in .watchmanconfig set ` +
-              `"watch_symlinks": true.`,
-          );
-        }
-      } catch (error) {
-        this._console.warn(
-          `jest-haste-map: Failed to parse .watchmanconfig.\n  Original Error: ${error}`,
+      if (existsSync(watchmanConfigPath)) {
+        this._console.error(
+          'jest-haste-map: haste.enableSymlinks config option was set, but ' +
+            'is incompatible with watchman.\n' +
+            '  Either set haste.enableSymlinks to false or remove ' +
+            '.watchmanconfig to disable watchman. \n' +
+            '  Exiting with code 1.',
         );
+        process.exit(1);
       }
     }
 

@@ -8,7 +8,7 @@ import {tmpdir} from 'os';
 import * as path from 'path';
 
 import runJest from '../runJest';
-import {cleanup, testIfWatchman, writeFiles, writeSymlinks} from '../Utils';
+import {cleanup, writeFiles, writeSymlinks} from '../Utils';
 
 const DIR = path.resolve(tmpdir(), 'crawl-symlinks-test');
 
@@ -44,89 +44,47 @@ function init(
   });
 }
 
-[
-  {runner: test, watchmanFlag: '--no-watchman'},
-  {runner: testIfWatchman, watchmanFlag: '--watchman'},
-].forEach(({watchmanFlag, runner}) => {
-  describe(`crawling symlinks with ${watchmanFlag}`, () => {
-    runner(
-      'Node crawler picks up symlinked files when option is set as flag',
-      () => {
-        // Symlinks are only enabled on windows with developer mode.
-        // https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/
-        if (process.platform === 'win32') {
-          return;
-        }
+const noWatchman = '--no-watchman';
+test('Node crawler picks up symlinked files when option is set as flag', () => {
+  // Symlinks are only enabled on windows with developer mode.
+  // https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/
+  if (process.platform === 'win32') {
+    return;
+  }
 
-        init();
-        const {stdout, stderr, exitCode} = runJest(DIR, [
-          '--haste={"enableSymlinks": true}',
-          watchmanFlag,
-        ]);
+  init();
+  const {stdout, stderr, exitCode} = runJest(DIR, [
+    '--haste={"enableSymlinks": true}',
+    noWatchman,
+  ]);
 
-        expect(stdout).toEqual('');
-        expect(stderr).toContain('Test Suites: 1 passed, 1 total');
-        expect(exitCode).toEqual(0);
-      },
-    );
+  expect(stdout).toEqual('');
+  expect(stderr).toContain('Test Suites: 1 passed, 1 total');
+  expect(exitCode).toEqual(0);
+});
 
-    runner('Node crawler does not pick up symlinked files by default', () => {
-      init();
-      const {stdout, stderr, exitCode} = runJest(DIR, [watchmanFlag]);
-      expect(stdout).toContain('No tests found, exiting with code 1');
-      expect(stderr).toEqual('');
-      expect(exitCode).toEqual(1);
-    });
+test('Node crawler does not pick up symlinked files by default', () => {
+  init();
+  const {stdout, stderr, exitCode} = runJest(DIR, [noWatchman]);
+  expect(stdout).toContain('No tests found, exiting with code 1');
+  expect(stderr).toEqual('');
+  expect(exitCode).toEqual(1);
+});
 
-    runner(
-      'Warns if --enableSymlinks passed but not set in .watchmanconfig',
-      () => {
-        // Symlinks are only enabled on windows with developer mode.
-        // https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/
-        if (process.platform === 'win32') {
-          return;
-        }
+test('Should throw if .watchmanconfig used with haste.enableSymlinks', () => {
+  init({'.watchmanconfig': JSON.stringify({})});
 
-        init({'.watchmanconfig': ''});
+  const {stdout, stderr, exitCode} = runJest(DIR, [
+    '--haste={"enableSymlinks": true}',
+  ]);
 
-        const {stdout, stderr, exitCode} = runJest(DIR, [
-          '--haste={"enableSymlinks": true}',
-          watchmanFlag,
-        ]);
-
-        expect(stdout).toEqual(
-          `jest-haste-map: --enableSymlinks was passed but symlink ` +
-            `crawling is not enabled in .watchmanconfig.
-  To enable symlink crawling in .watchmanconfig set \"watch_symlinks\": true.`,
-        );
-
-        expect(stderr).toContain('Test Suites: 1 passed, 1 total');
-        expect(exitCode).toEqual(0);
-      },
-    );
-
-    runner(
-      'Warns if watch_symlinks true in .watchmanconfig but not passed',
-      () => {
-        // Symlinks are only enabled on windows with developer mode.
-        // https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/
-        if (process.platform === 'win32') {
-          return;
-        }
-
-        init({'.watchmanconfig': JSON.stringify({watch_symlinks: true})});
-
-        const {stdout, stderr, exitCode} = runJest(DIR, [watchmanFlag]);
-
-        expect(stdout).toContain(
-          'jest-haste-map: watch_symlinks is enabled in .watchmanconfig but ' +
-            '--enableSymlinks was not passed to Jest as a flag.',
-        );
-        expect(stdout).toContain('No tests found, exiting with code 1');
-        expect(stderr).toEqual('');
-
-        expect(exitCode).toEqual(1);
-      },
-    );
-  });
+  expect(stderr).toEqual('');
+  expect(stdout).toContain(
+    'jest-haste-map: haste.enableSymlinks config option was set, but ' +
+      'is incompatible with watchman.\n' +
+      '  Either set haste.enableSymlinks to false or remove ' +
+      '.watchmanconfig to disable watchman. \n' +
+      '  Exiting with code 1.',
+  );
+  expect(exitCode).toEqual(1);
 });

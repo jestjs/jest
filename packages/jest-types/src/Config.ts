@@ -22,7 +22,11 @@ export type HasteConfig = {
   computeSha1?: boolean;
   /** The platform to use as the default, e.g. 'ios'. */
   defaultPlatform?: string | null;
-  /** Whether to follow symlinks when crawling for files. */
+  /**
+   * Whether to follow symlinks when crawling for files.
+   *   This options cannot be used in projects which use watchman.
+   *   Projects with a .watchmanconfig will error if this option is set to true.
+   */
   enableSymlinks?: boolean;
   /** Path to a custom implementation of Haste. */
   hasteImplModulePath?: string;
