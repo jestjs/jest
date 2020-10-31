@@ -23,9 +23,8 @@ export type Options = ShouldInstrumentOptions &
   Partial<{
     isCoreModule: boolean;
     isInternalModule: boolean;
-    supportsDynamicImport: boolean;
-    supportsStaticESM: boolean;
-  }>;
+  }> &
+  CallerTransformOptions;
 
 // This is fixed in source-map@0.7.x, but we can't upgrade yet since it's async
 interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
@@ -39,11 +38,16 @@ export type TransformedSource =
 
 export type TransformResult = TransformTypes.TransformResult;
 
-export interface TransformOptions {
-  instrument: boolean;
-  // names are copied from babel
+export interface CallerTransformOptions {
+  // names are copied from babel: https://babeljs.io/docs/en/options#caller
   supportsDynamicImport?: boolean;
+  supportsExportNamespaceFrom?: boolean;
   supportsStaticESM?: boolean;
+  supportsTopLevelAwait?: boolean;
+}
+
+export interface TransformOptions extends CallerTransformOptions {
+  instrument: boolean;
 }
 
 // TODO: For Jest 26 we should combine these into one options shape
