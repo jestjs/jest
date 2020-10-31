@@ -6,8 +6,8 @@
  *
  */
 
-import type {Config} from '@jest/types';
 import throat from 'throat';
+import type {Config} from '@jest/types';
 
 import git from './git';
 import hg from './hg';

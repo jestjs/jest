@@ -12,12 +12,12 @@ import {createHash} from 'crypto';
 import {EventEmitter} from 'events';
 import {tmpdir} from 'os';
 import * as path from 'path';
-import type {Config} from '@jest/types';
 import type {Stats} from 'graceful-fs';
+import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
+import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import serializer from 'jest-serializer';
 import Worker from 'jest-worker';
-import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
 import HasteFS from './HasteFS';
 import HasteModuleMap, {
   SerializableModuleMap as HasteSerializableModuleMap,

@@ -6,6 +6,9 @@
  *
  */
 
+import chalk = require('chalk');
+import * as fs from 'graceful-fs';
+import sourcemapSupport = require('source-map-support');
 import {
   BufferedConsole,
   CustomConsole,
@@ -17,8 +20,6 @@ import {
 import type {JestEnvironment} from '@jest/environment';
 import type {TestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import chalk = require('chalk');
-import * as fs from 'graceful-fs';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import LeakDetector from 'jest-leak-detector';
@@ -26,7 +27,6 @@ import {formatExecError} from 'jest-message-util';
 import type {ResolverType} from 'jest-resolve';
 import RuntimeClass = require('jest-runtime');
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
-import sourcemapSupport = require('source-map-support');
 import type {TestFileEvent, TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {

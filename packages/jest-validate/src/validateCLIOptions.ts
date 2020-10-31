@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import camelcase = require('camelcase');
 import chalk = require('chalk');
 import type {Options} from 'yargs';
+import type {Config} from '@jest/types';
 import defaultConfig from './defaultConfig';
 import {deprecationWarning} from './deprecated';
 import type {DeprecatedOptionFunc, DeprecatedOptions} from './types';

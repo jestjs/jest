@@ -6,9 +6,9 @@
  *
  */
 
+import exit = require('exit');
 import type {SerializableError, TestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import exit = require('exit');
 import HasteMap = require('jest-haste-map');
 import {separateMessageFromStack} from 'jest-message-util';
 import type {ResolverType} from 'jest-resolve';

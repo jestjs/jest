@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import {realpathSync} from 'graceful-fs';
+import type {Config} from '@jest/types';
 
 export default function tryRealpath(path: Config.Path): Config.Path {
   try {

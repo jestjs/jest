@@ -7,16 +7,16 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import type {Config} from '@jest/types';
 import chalk = require('chalk');
 import merge = require('deepmerge');
 import {sync as glob} from 'glob';
 import {statSync} from 'graceful-fs';
+import micromatch = require('micromatch');
+import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import Resolver = require('jest-resolve');
 import {clearLine, replacePathSepForGlob, tryRealpath} from 'jest-util';
 import {ValidationError, validate} from 'jest-validate';
-import micromatch = require('micromatch');
 import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
 import {validateReporters} from './ReporterValidationErrors';

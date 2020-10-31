@@ -7,9 +7,9 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {findRepos, getChangedFilesForRoots} from 'jest-changed-files';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import slash from 'slash';
+import {findRepos, getChangedFilesForRoots} from 'jest-changed-files';
 import {cleanup, run, testIfHg, writeFiles} from '../Utils';
 import runJest from '../runJest';
 

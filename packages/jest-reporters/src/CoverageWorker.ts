@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import exit = require('exit');
 import * as fs from 'graceful-fs';
+import type {Config} from '@jest/types';
 import generateEmptyCoverage, {
   CoverageWorkerResult,
 } from './generateEmptyCoverage';

@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {isJestCircusRun} from '@jest/test-utils';
 import {wrap} from 'jest-snapshot-serializer-raw';
+import {isJestCircusRun} from '@jest/test-utils';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 

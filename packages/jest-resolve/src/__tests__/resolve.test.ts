@@ -8,8 +8,8 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {ModuleMap} from 'jest-haste-map';
 import {sync as resolveSync} from 'resolve';
+import {ModuleMap} from 'jest-haste-map';
 import Resolver = require('../');
 import userResolver from '../__mocks__/userResolver';
 import defaultResolver from '../defaultResolver';

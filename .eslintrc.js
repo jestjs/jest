@@ -5,6 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const {sync: readPkg} = require('read-pkg');
+const {getPackages} = require('./scripts/buildUtils');
+
+const internalPackages = getPackages()
+  .map(packageDir => {
+    const pkg = readPkg({cwd: packageDir});
+
+    return pkg.name;
+  })
+  .sort();
+
 module.exports = {
   extends: [
     'fb-strict',
@@ -243,11 +254,27 @@ module.exports = {
           'scripts/**',
           'babel.config.js',
           'testSetupFile.js',
+          '.eslintrc.js',
         ],
       },
     ],
     'import/no-unresolved': ['error', {ignore: ['fsevents']}],
-    'import/order': ['error', {alphabetize: {order: 'asc'}}],
+    'import/order': [
+      'error',
+      {
+        alphabetize: {
+          order: 'asc',
+        },
+        groups: [
+          'builtin',
+          'external',
+          'internal',
+          'parent',
+          'sibling',
+          'index',
+        ],
+      },
+    ],
     'no-console': 'off',
     'no-restricted-imports': [
       'error',
@@ -262,5 +289,9 @@ module.exports = {
   },
   settings: {
     'import/ignore': ['react-native'],
+    // using `new RegExp` makes sure to escape `/`
+    'import/internal-regex': new RegExp(
+      internalPackages.map(pkg => `^${pkg}$`).join('|'),
+    ).source,
   },
 };

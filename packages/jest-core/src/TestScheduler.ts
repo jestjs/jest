@@ -7,6 +7,8 @@
 
 /* eslint-disable local/ban-types-eventually */
 
+import chalk = require('chalk');
+import exit = require('exit');
 import {
   CoverageReporter,
   DefaultReporter,
@@ -24,8 +26,6 @@ import {
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import chalk = require('chalk');
-import exit = require('exit');
 import {formatExecError} from 'jest-message-util';
 import TestRunner = require('jest-runner');
 import type {Context} from 'jest-runtime';

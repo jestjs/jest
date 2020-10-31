@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import type {Stats} from 'graceful-fs';
+import type {Config} from '@jest/types';
 import type HasteFS from './HasteFS';
 import type ModuleMap from './ModuleMap';
 

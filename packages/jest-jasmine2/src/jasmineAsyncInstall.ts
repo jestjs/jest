@@ -10,10 +10,10 @@
  * returning a promise from `it/test` and `before/afterEach/All` blocks.
  */
 
-import type {Config, Global} from '@jest/types';
 import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
 import throat from 'throat';
+import type {Config, Global} from '@jest/types';
 import isError from './isError';
 import type Spec from './jasmine/Spec';
 import type {DoneFn, QueueableFn} from './queueRunner';

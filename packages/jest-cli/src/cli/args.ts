@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import isCI = require('is-ci');
+import type {Config} from '@jest/types';
 import {constants, isJSONString} from 'jest-config';
 
 export function check(argv: Config.Argv): true {

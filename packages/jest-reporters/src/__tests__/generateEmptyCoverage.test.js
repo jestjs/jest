@@ -7,9 +7,9 @@
 
 import os from 'os';
 import path from 'path';
-import {shouldInstrument} from '@jest/transform';
 import istanbulCoverage from 'istanbul-lib-coverage';
 import libSourceMaps from 'istanbul-lib-source-maps';
+import {shouldInstrument} from '@jest/transform';
 import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
 import generateEmptyCoverage from '../generateEmptyCoverage';
 

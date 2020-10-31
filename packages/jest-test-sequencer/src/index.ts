@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {AggregatedResult} from '@jest/test-result';
 import * as fs from 'graceful-fs';
+import type {AggregatedResult} from '@jest/test-result';
 import {getCacheFilePath} from 'jest-haste-map';
 import type {Test} from 'jest-runner';
 import type {Context} from 'jest-runtime';

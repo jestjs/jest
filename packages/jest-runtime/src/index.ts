@@ -18,6 +18,11 @@ import {
   // @ts-expect-error: experimental, not added to the types
   Module as VMModule,
 } from 'vm';
+// @ts-expect-error
+import parseCjs = require('cjs-module-lexer');
+import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
+import * as fs from 'graceful-fs';
+import stripBOM = require('strip-bom');
 import type {
   Jest,
   JestEnvironment,
@@ -37,10 +42,6 @@ import {
   shouldInstrument,
 } from '@jest/transform';
 import type {Config, Global} from '@jest/types';
-// @ts-expect-error
-import parseCjs = require('cjs-module-lexer');
-import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
-import * as fs from 'graceful-fs';
 import HasteMap = require('jest-haste-map');
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import jestMock = require('jest-mock');
@@ -48,7 +49,6 @@ import {escapePathForRegex} from 'jest-regex-util';
 import Resolver = require('jest-resolve');
 import Snapshot = require('jest-snapshot');
 import {createDirectory, deepCyclicCopy} from 'jest-util';
-import stripBOM = require('strip-bom');
 import {run as cliRun} from './cli';
 import {options as cliOptions} from './cli/args';
 import {

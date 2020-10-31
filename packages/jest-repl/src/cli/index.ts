@@ -7,11 +7,11 @@
  *
  */
 
+import yargs = require('yargs');
 import type {Config} from '@jest/types';
 import {deprecationEntries} from 'jest-config';
 import Runtime = require('jest-runtime');
 import {validateCLIOptions} from 'jest-validate';
-import yargs = require('yargs');
 import * as args from './args';
 
 const {version: VERSION} = require('../../package.json');

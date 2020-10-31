@@ -8,12 +8,15 @@
 import {createHash} from 'crypto';
 import * as path from 'path';
 import {transformSync as babelTransform} from '@babel/core';
-import type {Config} from '@jest/types';
 // @ts-expect-error: should just be `require.resolve`, but the tests mess that up
 import babelPluginIstanbul from 'babel-plugin-istanbul';
 import {fromSource as sourcemapFromSource} from 'convert-source-map';
 import stableStringify = require('fast-json-stable-stringify');
 import * as fs from 'graceful-fs';
+import {addHook} from 'pirates';
+import slash = require('slash');
+import {sync as writeFileAtomic} from 'write-file-atomic';
+import type {Config} from '@jest/types';
 import HasteMap = require('jest-haste-map');
 import {
   createDirectory,
@@ -21,9 +24,6 @@ import {
   isPromise,
   tryRealpath,
 } from 'jest-util';
-import {addHook} from 'pirates';
-import slash = require('slash');
-import {sync as writeFileAtomic} from 'write-file-atomic';
 import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';
 import shouldInstrument from './shouldInstrument';
 import type {

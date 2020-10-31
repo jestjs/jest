@@ -14,14 +14,14 @@ import {
   TransformOptions,
   transformSync as babelTransform,
 } from '@babel/core';
+import chalk = require('chalk');
+import * as fs from 'graceful-fs';
+import slash = require('slash');
 import type {
   TransformOptions as JestTransformOptions,
   Transformer,
 } from '@jest/transform';
 import type {Config} from '@jest/types';
-import chalk = require('chalk');
-import * as fs from 'graceful-fs';
-import slash = require('slash');
 import {loadPartialConfig} from './loadBabelConfig';
 
 const THIS_FILE = fs.readFileSync(__filename);

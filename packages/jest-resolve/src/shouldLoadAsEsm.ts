@@ -8,8 +8,8 @@
 import {dirname, extname} from 'path';
 // @ts-expect-error: experimental, not added to the types
 import {SyntheticModule} from 'vm';
-import type {Config} from '@jest/types';
 import readPkgUp = require('read-pkg-up');
+import type {Config} from '@jest/types';
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 

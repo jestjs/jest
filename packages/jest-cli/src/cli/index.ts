@@ -6,15 +6,15 @@
  */
 
 import * as path from 'path';
+import chalk = require('chalk');
+import exit = require('exit');
+import yargs = require('yargs');
 import {getVersion, runCLI} from '@jest/core';
 import type {AggregatedResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import chalk = require('chalk');
-import exit = require('exit');
 import {deprecationEntries} from 'jest-config';
 import {clearLine, tryRealpath} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
-import yargs = require('yargs');
 import init from '../init';
 import * as args from './args';
 

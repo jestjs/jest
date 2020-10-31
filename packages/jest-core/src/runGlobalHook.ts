@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import pEachSeries = require('p-each-series');
 import {ScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import type {Test} from 'jest-runner';
 import {interopRequireDefault} from 'jest-util';
-import pEachSeries = require('p-each-series');
 
 export default async ({
   allTests,

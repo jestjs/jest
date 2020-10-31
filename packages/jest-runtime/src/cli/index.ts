@@ -7,14 +7,14 @@
 
 import {cpus} from 'os';
 import * as path from 'path';
+import chalk = require('chalk');
+import yargs = require('yargs');
 import {CustomConsole} from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
 import type {Config} from '@jest/types';
-import chalk = require('chalk');
 import {deprecationEntries, readConfig} from 'jest-config';
 import {setGlobal, tryRealpath} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
-import yargs = require('yargs');
 import {VERSION} from '../version';
 import * as args from './args';
 

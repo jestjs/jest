@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import micromatch = require('micromatch');
+import type {Config} from '@jest/types';
 import replacePathSepForGlob from './replacePathSepForGlob';
 
 type Matcher = (str: Config.Path) => boolean;

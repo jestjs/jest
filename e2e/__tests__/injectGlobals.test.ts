@@ -7,8 +7,8 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {skipSuiteOnJasmine} from '@jest/test-utils';
 import {wrap} from 'jest-snapshot-serializer-raw';
+import {skipSuiteOnJasmine} from '@jest/test-utils';
 import {
   cleanup,
   createEmptyPackage,

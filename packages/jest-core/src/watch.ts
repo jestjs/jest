@@ -6,10 +6,11 @@
  */
 
 import * as path from 'path';
-import type {Config} from '@jest/types';
 import ansiEscapes = require('ansi-escapes');
 import chalk = require('chalk');
 import exit = require('exit');
+import slash = require('slash');
+import type {Config} from '@jest/types';
 import HasteMap = require('jest-haste-map');
 import {formatExecError} from 'jest-message-util';
 import Resolver = require('jest-resolve');
@@ -23,7 +24,6 @@ import {
   WatchPlugin,
   WatchPluginClass,
 } from 'jest-watcher';
-import slash = require('slash');
 import FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
 import TestWatcher from './TestWatcher';

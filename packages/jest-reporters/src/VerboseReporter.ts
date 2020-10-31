@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import chalk = require('chalk');
 import type {
   AggregatedResult,
   AssertionResult,
@@ -12,7 +13,6 @@ import type {
   TestResult,
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
-import chalk = require('chalk');
 import {formatTime, specialChars} from 'jest-util';
 import DefaultReporter from './DefaultReporter';
 import type {Test} from './types';

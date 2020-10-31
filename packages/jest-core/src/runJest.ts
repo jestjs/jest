@@ -6,6 +6,9 @@
  */
 
 import * as path from 'path';
+import chalk = require('chalk');
+import exit = require('exit');
+import * as fs from 'graceful-fs';
 import {CustomConsole} from '@jest/console';
 import {
   AggregatedResult,
@@ -14,9 +17,6 @@ import {
 } from '@jest/test-result';
 import type TestSequencer from '@jest/test-sequencer';
 import type {Config} from '@jest/types';
-import chalk = require('chalk');
-import exit = require('exit');
-import * as fs from 'graceful-fs';
 import type {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
 import type {Test} from 'jest-runner';
 import type {Context} from 'jest-runtime';

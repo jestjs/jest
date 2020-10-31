@@ -7,9 +7,9 @@
  * @type ./empty.d.ts
  */
 
+import {expectError, expectType} from 'mlh-tsd';
 import {jest} from '@jest/globals';
 import type {Mock} from 'jest-mock';
-import {expectError, expectType} from 'mlh-tsd';
 
 expectType<void>(jest.addMatchers({}));
 expectType<typeof jest>(jest.autoMockOff());

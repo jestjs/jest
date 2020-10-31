@@ -7,9 +7,9 @@
 
 const util = require('util');
 const chalk = require('chalk');
-const {formatTime} = require('jest-util');
 const React = require('react');
 const ReactTestRenderer = require('react-test-renderer');
+const {formatTime} = require('jest-util');
 const prettyFormat = require('../build');
 const ReactTestComponent = require('../build/plugins/ReactTestComponent');
 const worldGeoJson = require('./world.geo.json');

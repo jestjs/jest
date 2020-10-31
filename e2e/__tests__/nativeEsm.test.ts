@@ -6,8 +6,8 @@
  */
 
 import {resolve} from 'path';
-import {onNodeVersions} from '@jest/test-utils';
 import wrap from 'jest-snapshot-serializer-raw';
+import {onNodeVersions} from '@jest/test-utils';
 import {extractSummary} from '../Utils';
 import runJest, {getConfig} from '../runJest';
 

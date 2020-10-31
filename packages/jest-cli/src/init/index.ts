@@ -8,9 +8,9 @@
 import * as path from 'path';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
+import prompts = require('prompts');
 import {constants} from 'jest-config';
 import {tryRealpath} from 'jest-util';
-import prompts = require('prompts');
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
 import generateConfigFile from './generateConfigFile';
 import modifyPackageJson from './modifyPackageJson';

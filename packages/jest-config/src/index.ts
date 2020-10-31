@@ -6,9 +6,9 @@
  */
 
 import * as path from 'path';
-import type {Config} from '@jest/types';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
+import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';
 import * as constants from './constants';
 import normalize from './normalize';

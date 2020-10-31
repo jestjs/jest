@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import * as fs from 'graceful-fs';
 import pnpResolver from 'jest-pnp-resolver';
-import {tryRealpath} from 'jest-util';
 import {Opts as ResolveOpts, sync as resolveSync} from 'resolve';
+import type {Config} from '@jest/types';
+import {tryRealpath} from 'jest-util';
 
 type ResolverOptions = {
   allowPnp?: boolean;

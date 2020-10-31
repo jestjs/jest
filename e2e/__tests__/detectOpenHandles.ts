@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {onNodeVersions} from '@jest/test-utils';
 import {wrap} from 'jest-snapshot-serializer-raw';
+import {onNodeVersions} from '@jest/test-utils';
 import runJest, {runContinuous} from '../runJest';
 
 try {

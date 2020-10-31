@@ -7,10 +7,10 @@
 
 import * as path from 'path';
 import {pathToFileURL} from 'url';
-import type {Config} from '@jest/types';
 import * as fs from 'graceful-fs';
-import {interopRequireDefault} from 'jest-util';
 import type {Register} from 'ts-node';
+import type {Config} from '@jest/types';
+import {interopRequireDefault} from 'jest-util';
 import {
   JEST_CONFIG_EXT_JSON,
   JEST_CONFIG_EXT_TS,

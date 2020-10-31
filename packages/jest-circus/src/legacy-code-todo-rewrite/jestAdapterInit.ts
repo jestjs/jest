@@ -6,6 +6,7 @@
  */
 
 import type BabelTraverse from '@babel/traverse';
+import throat from 'throat';
 import type {JestEnvironment} from '@jest/environment';
 import {
   AssertionResult,
@@ -24,7 +25,6 @@ import {
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
-import throat from 'throat';
 import globals from '..';
 import run from '../run';
 import {

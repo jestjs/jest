@@ -5,17 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import chalk = require('chalk');
+import exit = require('exit');
+import rimraf = require('rimraf');
 import {CustomConsole} from '@jest/console';
 import type {AggregatedResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import chalk = require('chalk');
-import exit = require('exit');
 import type {ChangedFilesPromise} from 'jest-changed-files';
 import {readConfigs} from 'jest-config';
 import HasteMap = require('jest-haste-map');
 import Runtime = require('jest-runtime');
 import {createDirectory, preRunMessage} from 'jest-util';
-import rimraf = require('rimraf');
 import TestWatcher from '../TestWatcher';
 import {formatHandleErrors} from '../collectHandles';
 import getChangedFilesPromise from '../getChangedFilesPromise';

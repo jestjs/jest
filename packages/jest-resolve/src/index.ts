@@ -8,11 +8,11 @@
 /* eslint-disable local/prefer-spread-eventually */
 
 import * as path from 'path';
-import type {Config} from '@jest/types';
 import chalk = require('chalk');
+import slash = require('slash');
+import type {Config} from '@jest/types';
 import type {ModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
-import slash = require('slash');
 import ModuleNotFoundError from './ModuleNotFoundError';
 import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
 import isBuiltinModule from './isBuiltinModule';
