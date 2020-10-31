@@ -1095,9 +1095,9 @@ class Runtime {
 
     this.jestObjectCaches.set(filename, jestObject);
 
-    const lastArgs: [Jest | undefined, ...Array<any>] = [
+    const lastArgs: [Jest | undefined, ...Array<Global.Global>] = [
       this._config.injectGlobals ? jestObject : undefined, // jest object
-      this._config.extraGlobals.map<unknown>(globalVariable => {
+      ...this._config.extraGlobals.map<Global.Global>(globalVariable => {
         if (this._environment.global[globalVariable]) {
           return this._environment.global[globalVariable];
         }
@@ -1126,6 +1126,7 @@ class Runtime {
         module.path, // __dirname
         module.filename, // __filename
         this._environment.global, // global object
+        // @ts-expect-error
         ...lastArgs.filter(notEmpty),
       );
     } catch (error) {
