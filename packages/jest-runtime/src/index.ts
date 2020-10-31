@@ -34,6 +34,7 @@ import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {escapePathForRegex} from 'jest-regex-util';
 import {
+  CallerTransformOptions,
   ScriptTransformer,
   ShouldInstrumentOptions,
   TransformationOptions,
@@ -75,16 +76,16 @@ type HasteMapOptions = {
   watchman: boolean;
 };
 
-type InternalModuleOptions = {
+interface InternalModuleOptions extends Required<CallerTransformOptions> {
   isInternalModule: boolean;
-  supportsDynamicImport: boolean;
-  supportsStaticESM: boolean;
-};
+}
 
 const defaultTransformOptions: InternalModuleOptions = {
   isInternalModule: false,
   supportsDynamicImport: esmIsAvailable,
+  supportsExportNamespaceFrom: false,
   supportsStaticESM: false,
+  supportsTopLevelAwait: false,
 };
 
 type InitialModule = Omit<Module, 'require' | 'parent' | 'paths'>;
@@ -140,6 +141,19 @@ const EVAL_RESULT_VARIABLE = 'Object.<anonymous>';
 type RunScriptEvalResult = {[EVAL_RESULT_VARIABLE]: ModuleWrapper};
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
+
+const supportsTopLevelAwait =
+  runtimeSupportsVmModules &&
+  (() => {
+    try {
+      // eslint-disable-next-line no-new
+      new SourceTextModule('await Promise.resolve()');
+
+      return true;
+    } catch {
+      return false;
+    }
+  })();
 
 class Runtime {
   private _cacheFS: StringMap;
@@ -378,7 +392,9 @@ class Runtime {
       const transformedCode = this.transformFile(modulePath, {
         isInternalModule: false,
         supportsDynamicImport: true,
+        supportsExportNamespaceFrom: true,
         supportsStaticESM: true,
+        supportsTopLevelAwait,
       });
 
       const module = new SourceTextModule(transformedCode, {
@@ -608,7 +624,9 @@ class Runtime {
     return this.requireModule<T>(from, to, {
       isInternalModule: true,
       supportsDynamicImport: esmIsAvailable,
+      supportsExportNamespaceFrom: false,
       supportsStaticESM: false,
+      supportsTopLevelAwait: false,
     });
   }
 
