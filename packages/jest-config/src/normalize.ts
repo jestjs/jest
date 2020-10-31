@@ -133,14 +133,15 @@ const setupPreset = (
   );
 
   try {
+    if (!presetModule) {
+      throw new Error(`Cannot find module '${presetPath}'`);
+    }
+
     // Force re-evaluation to support multiple projects
     try {
-      if (presetModule) {
-        delete require.cache[require.resolve(presetModule)];
-      }
+      delete require.cache[require.resolve(presetModule)];
     } catch {}
 
-    // @ts-expect-error: `presetModule` can be null?
     preset = require(presetModule);
   } catch (error) {
     if (error instanceof SyntaxError || error instanceof TypeError) {
