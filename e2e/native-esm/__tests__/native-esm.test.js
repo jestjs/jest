@@ -21,6 +21,7 @@ import staticImportedStatefulWithAnotherQuery from '../stateful.mjs?query=2';
 /* eslint-enable */
 import {double} from '../index';
 import defaultFromCjs, {namedFunction} from '../namedExport.cjs';
+import {bag} from '../namespaceExport.js';
 
 test('should have correct import.meta', () => {
   expect(typeof require).toBe('undefined');
@@ -150,4 +151,8 @@ test('supports file urls as imports', async () => {
   const dynamic = await import(new URL('../stateful.mjs', import.meta.url));
 
   expect(dynamic.default).toBe(staticImportedStateful);
+});
+
+test('namespace export', () => {
+  expect(bag.double).toBe(double);
 });
