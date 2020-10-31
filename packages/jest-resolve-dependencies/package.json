@@ -15,6 +15,7 @@
     "jest-snapshot": "^26.6.1"
   },
   "devDependencies": {
+    "@jest/test-utils": "^26.5.0",
     "jest-haste-map": "^26.6.1",
     "jest-resolve": "^26.6.1",
     "jest-runtime": "^26.6.1"

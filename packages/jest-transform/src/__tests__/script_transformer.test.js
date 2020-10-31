@@ -7,7 +7,7 @@
  */
 
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
+import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 
 jest
   .mock('graceful-fs', () =>

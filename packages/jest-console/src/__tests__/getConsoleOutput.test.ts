@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {makeGlobalConfig} from '@jest/test-utils';
 import {formatStackTrace} from 'jest-message-util';
-import {makeGlobalConfig} from '../../../../TestUtils';
 import BufferedConsole from '../BufferedConsole';
 import getConsoleOutput from '../getConsoleOutput';
 import type {LogType} from '../types';

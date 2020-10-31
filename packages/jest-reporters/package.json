@@ -31,6 +31,7 @@
     "v8-to-istanbul": "^7.0.0"
   },
   "devDependencies": {
+    "@jest/test-utils": "^26.5.0",
     "@types/exit": "^0.1.30",
     "@types/glob": "^7.1.1",
     "@types/graceful-fs": "^4.1.3",

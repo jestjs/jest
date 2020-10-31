@@ -27,6 +27,7 @@
     "write-file-atomic": "^3.0.0"
   },
   "devDependencies": {
+    "@jest/test-utils": "^26.5.0",
     "@types/babel__core": "^7.1.0",
     "@types/convert-source-map": "^1.5.1",
     "@types/fast-json-stable-stringify": "^2.0.0",

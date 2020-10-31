@@ -7,7 +7,7 @@
  */
 
 import {SummaryReporter} from '@jest/reporters';
-import {makeProjectConfig} from '../../../../TestUtils';
+import {makeProjectConfig} from '@jest/test-utils';
 import TestScheduler from '../TestScheduler';
 import * as testSchedulerHelper from '../testSchedulerHelper';
 

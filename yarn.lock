@@ -1743,6 +1743,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/console@workspace:packages/jest-console"
   dependencies:
+    "@jest/test-utils": ^26.5.0
     "@jest/types": ^26.6.1
     "@types/node": "*"
     chalk: ^4.0.0
@@ -1771,6 +1772,7 @@ __metadata:
     "@jest/reporters": ^26.6.1
     "@jest/test-result": ^26.6.1
     "@jest/test-sequencer": ^26.6.1
+    "@jest/test-utils": ^26.5.0
     "@jest/transform": ^26.6.1
     "@jest/types": ^26.6.1
     "@types/exit": ^0.1.30
@@ -1867,6 +1869,7 @@ __metadata:
     "@bcoe/v8-coverage": ^0.2.3
     "@jest/console": ^26.6.1
     "@jest/test-result": ^26.6.1
+    "@jest/test-utils": ^26.5.0
     "@jest/transform": ^26.6.1
     "@jest/types": ^26.6.1
     "@types/exit": ^0.1.30
@@ -1967,6 +1970,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/test-utils@workspace:packages/test-utils"
   dependencies:
+    "@jest/types": ^26.6.1
     "@types/jest": "*"
     "@types/node": "*"
     "@types/semver": ^7.1.0
@@ -1982,6 +1986,7 @@ __metadata:
   resolution: "@jest/transform@workspace:packages/jest-transform"
   dependencies:
     "@babel/core": ^7.1.0
+    "@jest/test-utils": ^26.5.0
     "@jest/types": ^26.6.1
     "@types/babel__core": ^7.1.0
     "@types/convert-source-map": ^1.5.1
@@ -4783,6 +4788,7 @@ __metadata:
   resolution: "babel-jest@workspace:packages/babel-jest"
   dependencies:
     "@babel/core": ^7.1.0
+    "@jest/test-utils": ^26.5.0
     "@jest/transform": ^26.6.1
     "@jest/types": ^26.6.1
     "@types/babel__core": ^7.1.7
@@ -11609,6 +11615,7 @@ fsevents@^1.2.7:
   dependencies:
     "@jest/environment": ^26.6.1
     "@jest/fake-timers": ^26.6.1
+    "@jest/test-utils": ^26.5.0
     "@jest/types": ^26.6.1
     "@types/jsdom": ^16.2.4
     "@types/node": "*"
@@ -11624,6 +11631,7 @@ fsevents@^1.2.7:
   dependencies:
     "@jest/environment": ^26.6.1
     "@jest/fake-timers": ^26.6.1
+    "@jest/test-utils": ^26.5.0
     "@jest/types": ^26.6.1
     "@types/node": "*"
     jest-mock: ^26.6.1
@@ -11871,6 +11879,7 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "jest-resolve-dependencies@workspace:packages/jest-resolve-dependencies"
   dependencies:
+    "@jest/test-utils": ^26.5.0
     "@jest/types": ^26.6.1
     jest-haste-map: ^26.6.1
     jest-regex-util: ^26.0.0
@@ -12024,6 +12033,7 @@ fsevents@^1.2.7:
   dependencies:
     "@babel/traverse": ^7.3.4
     "@babel/types": ^7.0.0
+    "@jest/test-utils": ^26.5.0
     "@jest/types": ^26.6.1
     "@types/babel__traverse": ^7.0.4
     "@types/graceful-fs": ^4.1.3

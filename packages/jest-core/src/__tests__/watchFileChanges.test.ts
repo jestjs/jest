@@ -31,8 +31,8 @@ describe('Watch mode flows with changed files', () => {
   const cacheDirectory = path.resolve(tmpdir(), `tmp${Math.random()}`);
   let hasteMapInstance: HasteMap;
 
-  beforeEach(() => {
-    watch = require('../watch').default;
+  beforeEach(async () => {
+    watch = (await import('../watch')).default;
     pipe = {write: jest.fn()} as unknown;
     stdin = new MockStdin();
     rimraf.sync(cacheDirectory);

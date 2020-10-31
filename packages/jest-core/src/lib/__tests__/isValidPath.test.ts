@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import {makeGlobalConfig} from '../../../../../TestUtils';
+import {makeGlobalConfig} from '@jest/test-utils';
 import isValidPath from '../isValidPath';
 
 const rootDir = path.resolve(path.sep, 'root');

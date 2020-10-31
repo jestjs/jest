@@ -7,10 +7,10 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
+import {makeProjectConfig} from '@jest/test-utils';
 import type {Config} from '@jest/types';
 import Resolver = require('jest-resolve');
 import {buildSnapshotResolver} from 'jest-snapshot';
-import {makeProjectConfig} from '../../../../TestUtils';
 import DependencyResolver from '../index';
 
 const maxWorkers = 1;

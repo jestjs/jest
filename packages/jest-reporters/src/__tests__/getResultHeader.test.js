@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {makeGlobalConfig} from '../../../../TestUtils';
+import {makeGlobalConfig} from '@jest/test-utils';
 import getResultHeader from '../getResultHeader';
 const terminalLink = require('terminal-link');
 
