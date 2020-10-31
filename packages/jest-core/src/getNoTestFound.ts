@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
 import type {Config} from '@jest/types';
-import type {TestRunData} from './types';
+import chalk = require('chalk');
 import pluralize from './pluralize';
+import type {TestRunData} from './types';
 
 export default function getNoTestFound(
   testRunData: TestRunData,

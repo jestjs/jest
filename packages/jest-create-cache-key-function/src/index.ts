@@ -7,9 +7,9 @@
  */
 
 import {createHash} from 'crypto';
-import {relative} from 'path';
-/* eslint-disable-next-line no-restricted-imports */
+// eslint-disable-next-line no-restricted-imports
 import {readFileSync} from 'fs';
+import {relative} from 'path';
 import type {Config} from '@jest/types';
 
 type CacheKeyOptions = {

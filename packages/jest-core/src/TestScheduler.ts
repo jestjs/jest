@@ -7,12 +7,6 @@
 
 /* eslint-disable local/ban-types-eventually */
 
-import chalk = require('chalk');
-import {formatExecError} from 'jest-message-util';
-import type {Config} from '@jest/types';
-import snapshot = require('jest-snapshot');
-import TestRunner = require('jest-runner');
-import type {Context} from 'jest-runtime';
 import {
   CoverageReporter,
   DefaultReporter,
@@ -21,7 +15,6 @@ import {
   SummaryReporter,
   VerboseReporter,
 } from '@jest/reporters';
-import exit = require('exit');
 import {
   AggregatedResult,
   SerializableError,
@@ -30,6 +23,13 @@ import {
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
+import type {Config} from '@jest/types';
+import chalk = require('chalk');
+import exit = require('exit');
+import {formatExecError} from 'jest-message-util';
+import TestRunner = require('jest-runner');
+import type {Context} from 'jest-runtime';
+import snapshot = require('jest-snapshot');
 import {interopRequireDefault} from 'jest-util';
 import ReporterDispatcher from './ReporterDispatcher';
 import type TestWatcher from './TestWatcher';

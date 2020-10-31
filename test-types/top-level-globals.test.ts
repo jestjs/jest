@@ -7,7 +7,6 @@
  * @type ./empty.d.ts
  */
 
-import {expectType} from 'mlh-tsd';
 import {
   afterAll,
   afterEach,
@@ -16,6 +15,7 @@ import {
   describe,
   test,
 } from '@jest/globals';
+import {expectType} from 'mlh-tsd';
 
 const fn = () => {};
 const asyncFn = async () => {};

@@ -283,8 +283,8 @@ Default: `undefined`
 This option allows the use of a custom dependency extractor. It must be a node module that exports an object with an `extract` function. E.g.:
 
 ```javascript
-const fs = require('fs');
 const crypto = require('crypto');
+const fs = require('fs');
 
 module.exports = {
   extract(code, filePath, defaultExtract) {

@@ -6,12 +6,12 @@
  */
 
 import * as path from 'path';
-import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
-import {ExecaReturnValue, sync as spawnSync} from 'execa';
-import type {PackageJson} from 'type-fest';
-import rimraf = require('rimraf');
 import dedent = require('dedent');
+import {ExecaReturnValue, sync as spawnSync} from 'execa';
+import * as fs from 'graceful-fs';
+import rimraf = require('rimraf');
+import type {PackageJson} from 'type-fest';
 import which = require('which');
 
 interface RunResult extends ExecaReturnValue {

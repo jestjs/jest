@@ -6,33 +6,33 @@
  */
 
 import * as path from 'path';
-import * as fs from 'graceful-fs';
-import type {Config} from '@jest/types';
+import {mergeProcessCovs} from '@bcoe/v8-coverage';
 import type {
   AggregatedResult,
   RuntimeTransformResult,
   TestResult,
   V8CoverageResult,
 } from '@jest/test-result';
-import {clearLine, isInteractive} from 'jest-util';
-import istanbulReport = require('istanbul-lib-report');
-import istanbulReports = require('istanbul-reports');
+import type {Config} from '@jest/types';
 import chalk = require('chalk');
-import istanbulCoverage = require('istanbul-lib-coverage');
-import libSourceMaps = require('istanbul-lib-source-maps');
-import {mergeProcessCovs} from '@bcoe/v8-coverage';
-import Worker from 'jest-worker';
 import glob = require('glob');
-import v8toIstanbul = require('v8-to-istanbul');
+import * as fs from 'graceful-fs';
+import istanbulCoverage = require('istanbul-lib-coverage');
+import istanbulReport = require('istanbul-lib-report');
+import libSourceMaps = require('istanbul-lib-source-maps');
+import istanbulReports = require('istanbul-reports');
+import {clearLine, isInteractive} from 'jest-util';
+import Worker from 'jest-worker';
 import type {RawSourceMap} from 'source-map';
+import v8toIstanbul = require('v8-to-istanbul');
 import BaseReporter from './BaseReporter';
+import getWatermarks from './getWatermarks';
 import type {
   Context,
   CoverageReporterOptions,
   CoverageWorker,
   Test,
 } from './types';
-import getWatermarks from './getWatermarks';
 
 // This is fixed in a newer versions of source-map, but our dependencies are still stuck on old versions
 interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {

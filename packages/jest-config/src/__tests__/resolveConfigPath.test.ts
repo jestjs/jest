@@ -7,8 +7,8 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import resolveConfigPath from '../resolveConfigPath';
 import {JEST_CONFIG_EXT_ORDER} from '../constants';
+import resolveConfigPath from '../resolveConfigPath';
 
 const {cleanup, writeFiles} = require('../../../../e2e/Utils');
 

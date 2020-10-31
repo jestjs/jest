@@ -10,15 +10,6 @@ import styles = require('ansi-styles');
 import chalk = require('chalk');
 import format = require('pretty-format');
 
-import jestSnapshot = require('../index');
-import {
-  getReceivedColorForChalkInstance,
-  getSnapshotColorForChalkInstance,
-  noColor,
-  printPropertiesAndReceived,
-  printSnapshotAndReceived,
-} from '../printSnapshot';
-import {serialize} from '../utils';
 import {
   aBackground2,
   aBackground3,
@@ -29,6 +20,15 @@ import {
   bForeground2,
   bForeground3,
 } from '../colors';
+import jestSnapshot = require('../index');
+import {
+  getReceivedColorForChalkInstance,
+  getSnapshotColorForChalkInstance,
+  noColor,
+  printPropertiesAndReceived,
+  printSnapshotAndReceived,
+} from '../printSnapshot';
+import {serialize} from '../utils';
 
 const aOpenForeground1 = styles.magenta.open;
 const aOpenBackground1 = styles.bgYellowBright.open;

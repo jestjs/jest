@@ -6,13 +6,13 @@
  */
 
 import * as path from 'path';
-import * as fs from 'graceful-fs';
+import {codeFrameColumns} from '@babel/code-frame';
 import type {Config, TestResult} from '@jest/types';
 import chalk = require('chalk');
+import * as fs from 'graceful-fs';
 import micromatch = require('micromatch');
 import prettyFormat = require('pretty-format');
 import slash = require('slash');
-import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils = require('stack-utils');
 import type {Frame} from './types';
 

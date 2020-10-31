@@ -6,16 +6,16 @@
  */
 
 import * as path from 'path';
-import * as fs from 'graceful-fs';
-import semver = require('semver');
 import {file, templateElement, templateLiteral} from '@babel/types';
+import type {Config} from '@jest/types';
+import * as fs from 'graceful-fs';
 import type {Frame} from 'jest-message-util';
 import type {
   BuiltInParsers as PrettierBuiltInParsers,
   CustomParser as PrettierCustomParser,
   BuiltInParserName as PrettierParserName,
 } from 'prettier';
-import type {Config} from '@jest/types';
+import semver = require('semver');
 import type {BabelTraverse, Prettier} from './types';
 import {escapeBacktickString} from './utils';
 

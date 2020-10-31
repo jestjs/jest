@@ -6,9 +6,9 @@
  */
 
 import type {Config} from '@jest/types';
-import {ValidationError} from 'jest-validate';
 import chalk = require('chalk');
 import getType = require('jest-get-type');
+import {ValidationError} from 'jest-validate';
 import {BULLET, DOCUMENTATION_NOTE} from './utils';
 
 const validReporterTypes = ['array', 'string'];

@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Arguments} from 'yargs';
-import type {ReportOptions} from 'istanbul-reports';
 import type {ForegroundColor} from 'chalk';
+import type {ReportOptions} from 'istanbul-reports';
+import type {Arguments} from 'yargs';
 
 type CoverageProvider = 'babel' | 'v8';
 

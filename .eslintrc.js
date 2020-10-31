@@ -247,7 +247,7 @@ module.exports = {
       },
     ],
     'import/no-unresolved': ['error', {ignore: ['fsevents']}],
-    'import/order': 'error',
+    'import/order': ['error', {alphabetize: {order: 'asc'}}],
     'no-console': 'off',
     'no-restricted-imports': [
       'error',

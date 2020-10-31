@@ -6,13 +6,13 @@
  */
 
 import type {Config} from '@jest/types';
-import chalk = require('chalk');
 import camelcase = require('camelcase');
+import chalk = require('chalk');
 import type {Options} from 'yargs';
-import {ValidationError, createDidYouMeanMessage, format} from './utils';
-import {deprecationWarning} from './deprecated';
 import defaultConfig from './defaultConfig';
+import {deprecationWarning} from './deprecated';
 import type {DeprecatedOptionFunc, DeprecatedOptions} from './types';
+import {ValidationError, createDidYouMeanMessage, format} from './utils';
 
 const BULLET: string = chalk.bold('\u25cf');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold('CLI Options Documentation:')}

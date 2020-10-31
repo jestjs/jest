@@ -6,6 +6,10 @@
  */
 
 import type {Circus} from '@jest/types';
+import {
+  injectGlobalErrorHandlers,
+  restoreGlobalErrorHandlers,
+} from './globalErrorHandlers';
 import {TEST_TIMEOUT_SYMBOL} from './types';
 
 import {
@@ -16,10 +20,6 @@ import {
   makeDescribe,
   makeTest,
 } from './utils';
-import {
-  injectGlobalErrorHandlers,
-  restoreGlobalErrorHandlers,
-} from './globalErrorHandlers';
 
 // TODO: investigate why a shorter (event, state) signature results into TS7006 compiler error
 const eventHandler: Circus.EventHandler = (

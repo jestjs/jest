@@ -5,21 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
+import {getConsoleOutput} from '@jest/console';
 import type {
   AggregatedResult,
   TestCaseResult,
   TestResult,
 } from '@jest/test-result';
-
-import {clearLine, isInteractive} from 'jest-util';
-import {getConsoleOutput} from '@jest/console';
+import type {Config} from '@jest/types';
 import chalk = require('chalk');
-import type {ReporterOnStartOptions, Test} from './types';
+import {clearLine, isInteractive} from 'jest-util';
 import BaseReporter from './BaseReporter';
 import Status from './Status';
 import getResultHeader from './getResultHeader';
 import getSnapshotStatus from './getSnapshotStatus';
+import type {ReporterOnStartOptions, Test} from './types';
 
 type write = NodeJS.WriteStream['write'];
 type FlushBufferedOutput = () => void;

@@ -7,8 +7,8 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import Resolver = require('jest-resolve');
 import type {Config} from '@jest/types';
+import Resolver = require('jest-resolve');
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {makeProjectConfig} from '../../../../TestUtils';
 import DependencyResolver from '../index';

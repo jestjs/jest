@@ -8,10 +8,10 @@
 
 import * as path from 'path';
 import {Writable} from 'stream';
-import * as fs from 'graceful-fs';
-import execa = require('execa');
-import type {Config} from '@jest/types';
 import type {FormattedTestResults} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import execa = require('execa');
+import * as fs from 'graceful-fs';
 import stripAnsi = require('strip-ansi');
 import {normalizeIcons} from './Utils';
 

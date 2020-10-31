@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as Immutable from 'immutable';
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
+import * as Immutable from 'immutable';
 import jestExpect from '../';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);

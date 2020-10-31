@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {makeProjectConfig} from '../../../../TestUtils';
 import babelJest = require('../index');
 import {loadPartialConfig} from '../loadBabelConfig';
-import {makeProjectConfig} from '../../../../TestUtils';
 
 jest.mock('../loadBabelConfig', () => {
   const actual = jest.requireActual('@babel/core');

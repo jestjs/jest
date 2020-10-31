@@ -8,7 +8,6 @@
 /* eslint-disable local/ban-types-eventually */
 
 import style = require('ansi-styles');
-import type * as PrettyFormat from './types';
 
 import {
   printIteratorEntries,
@@ -24,6 +23,7 @@ import DOMElement from './plugins/DOMElement';
 import Immutable from './plugins/Immutable';
 import ReactElement from './plugins/ReactElement';
 import ReactTestComponent from './plugins/ReactTestComponent';
+import type * as PrettyFormat from './types';
 
 const toString = Object.prototype.toString;
 const toISOString = Date.prototype.toISOString;

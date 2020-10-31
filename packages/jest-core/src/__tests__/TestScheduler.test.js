@@ -7,9 +7,9 @@
  */
 
 import {SummaryReporter} from '@jest/reporters';
+import {makeProjectConfig} from '../../../../TestUtils';
 import TestScheduler from '../TestScheduler';
 import * as testSchedulerHelper from '../testSchedulerHelper';
-import {makeProjectConfig} from '../../../../TestUtils';
 
 jest.mock('@jest/reporters');
 const mockSerialRunner = {

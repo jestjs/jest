@@ -6,13 +6,13 @@
  */
 
 import type {EventEmitter} from 'events';
-import type {Config} from '@jest/types';
+import type {JestEnvironment} from '@jest/environment';
 import type {
   AssertionResult,
   SerializableError,
   TestResult,
 } from '@jest/test-result';
-import type {JestEnvironment} from '@jest/environment';
+import type {Config} from '@jest/types';
 import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
 import type {ResolverType} from 'jest-resolve';
 import type {RuntimeType} from 'jest-runtime';

@@ -7,8 +7,8 @@
 
 'use strict';
 
-const fs = require('fs');
 const {execSync} = require('child_process');
+const fs = require('fs');
 const {isBinaryFileSync} = require('isbinaryfile');
 
 const getFileContents = path => fs.readFileSync(path, {encoding: 'utf-8'});

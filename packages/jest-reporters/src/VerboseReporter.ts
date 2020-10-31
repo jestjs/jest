@@ -5,17 +5,17 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import type {
   AggregatedResult,
   AssertionResult,
   Suite,
   TestResult,
 } from '@jest/test-result';
+import type {Config} from '@jest/types';
 import chalk = require('chalk');
 import {formatTime, specialChars} from 'jest-util';
-import type {Test} from './types';
 import DefaultReporter from './DefaultReporter';
+import type {Test} from './types';
 
 const {ICONS} = specialChars;
 

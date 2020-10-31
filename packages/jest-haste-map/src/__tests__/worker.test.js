@@ -11,8 +11,8 @@
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 
-import {getSha1, worker} from '../worker';
 import H from '../constants';
+import {getSha1, worker} from '../worker';
 
 jest.mock('graceful-fs', () => {
   const path = require('path');

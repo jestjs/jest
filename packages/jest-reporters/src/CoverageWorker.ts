@@ -5,14 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import exit = require('exit');
-import type {CoverageReporterSerializedOptions} from './types';
-
+import * as fs from 'graceful-fs';
 import generateEmptyCoverage, {
   CoverageWorkerResult,
 } from './generateEmptyCoverage';
+import type {CoverageReporterSerializedOptions} from './types';
 
 export type CoverageWorkerData = {
   globalConfig: Config.GlobalConfig;

@@ -6,8 +6,8 @@
  */
 
 import * as path from 'path';
-import {json as runWithJson} from '../runJest';
 import {runYarn} from '../Utils';
+import {json as runWithJson} from '../runJest';
 
 const DIR = path.resolve(__dirname, '..', 'pnp');
 

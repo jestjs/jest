@@ -6,9 +6,9 @@
  */
 
 import * as path from 'path';
-import slash = require('slash');
-import glob = require('glob');
 import type {Config} from '@jest/types';
+import glob = require('glob');
+import slash = require('slash');
 
 const OUTSIDE_JEST_VM_PROTOCOL = 'jest-main:';
 // String manipulation is easier here, fileURLToPath is only in newer Nodes,

@@ -9,6 +9,32 @@
 /* eslint-disable local/prefer-spread-eventually */
 
 import * as matcherUtils from 'jest-matcher-utils';
+import {
+  any,
+  anything,
+  arrayContaining,
+  arrayNotContaining,
+  objectContaining,
+  objectNotContaining,
+  stringContaining,
+  stringMatching,
+  stringNotContaining,
+  stringNotMatching,
+} from './asymmetricMatchers';
+import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
+import {equals} from './jasmineUtils';
+import {
+  INTERNAL_MATCHER_FLAG,
+  getMatchers,
+  getState,
+  setMatchers,
+  setState,
+} from './jestMatchersObject';
+import matchers from './matchers';
+import spyMatchers from './spyMatchers';
+import toThrowMatchers, {
+  createMatcher as createThrowMatcher,
+} from './toThrowMatchers';
 import type {
   AsyncExpectationResult,
   Expect,
@@ -23,32 +49,6 @@ import type {
 } from './types';
 
 import {iterableEquality, subsetEquality} from './utils';
-import matchers from './matchers';
-import spyMatchers from './spyMatchers';
-import toThrowMatchers, {
-  createMatcher as createThrowMatcher,
-} from './toThrowMatchers';
-import {equals} from './jasmineUtils';
-import {
-  any,
-  anything,
-  arrayContaining,
-  arrayNotContaining,
-  objectContaining,
-  objectNotContaining,
-  stringContaining,
-  stringMatching,
-  stringNotContaining,
-  stringNotMatching,
-} from './asymmetricMatchers';
-import {
-  INTERNAL_MATCHER_FLAG,
-  getMatchers,
-  getState,
-  setMatchers,
-  setState,
-} from './jestMatchersObject';
-import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
 
 class JestAssertionError extends Error {
   matcherResult?: SyncExpectationResult;

@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {RawSourceMap} from 'source-map';
 import type {Config, TransformTypes} from '@jest/types';
+import type {RawSourceMap} from 'source-map';
 
 export type ShouldInstrumentOptions = Pick<
   Config.GlobalConfig,

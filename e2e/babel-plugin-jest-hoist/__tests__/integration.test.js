@@ -9,8 +9,8 @@
 'use strict';
 
 import React from 'react';
-import Unmocked from '../__test_modules__/Unmocked';
 import Mocked from '../__test_modules__/Mocked';
+import Unmocked from '../__test_modules__/Unmocked';
 import a from '../__test_modules__/a';
 import b from '../__test_modules__/b';
 import c from '../__test_modules__/c';

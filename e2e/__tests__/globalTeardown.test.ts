@@ -9,8 +9,8 @@ import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {createDirectory} from 'jest-util';
-import runJest, {json as runWithJson} from '../runJest';
 import {cleanup, runYarn} from '../Utils';
+import runJest, {json as runWithJson} from '../runJest';
 
 const DIR = path.join(tmpdir(), 'jest-global-teardown');
 const project1DIR = path.join(tmpdir(), 'jest-global-teardown-project-1');

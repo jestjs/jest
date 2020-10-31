@@ -7,8 +7,8 @@
 
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import runJest from '../runJest';
 import {extractSummary, runYarn} from '../Utils';
+import runJest from '../runJest';
 
 test('chai assertion errors should display properly', () => {
   const dir = path.resolve(__dirname, '../chai-assertion-library-errors');

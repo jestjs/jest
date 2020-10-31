@@ -8,8 +8,8 @@
 import * as path from 'path';
 import chalk = require('chalk');
 import stripAnsi = require('strip-ansi');
-import {printDisplayName, trimAndFormatPath, wrapAnsiString} from '../utils';
 import {makeProjectConfig} from '../../../../TestUtils';
+import {printDisplayName, trimAndFormatPath, wrapAnsiString} from '../utils';
 
 describe('wrapAnsiString()', () => {
   it('wraps a long string containing ansi chars', () => {

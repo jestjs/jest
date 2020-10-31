@@ -5,10 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
+import * as fs from 'graceful-fs';
 
 import {getStackTraceLines, getTopFrame} from 'jest-message-util';
+import {InlineSnapshot, saveInlineSnapshots} from './InlineSnapshots';
+import type {BabelTraverse, Prettier, SnapshotData} from './types';
 import {
   addExtraLineBreaks,
   getSnapshotData,
@@ -19,8 +21,6 @@ import {
   serialize,
   testNameToKey,
 } from './utils';
-import {InlineSnapshot, saveInlineSnapshots} from './InlineSnapshots';
-import type {BabelTraverse, Prettier, SnapshotData} from './types';
 
 export type SnapshotStateOptions = {
   updateSnapshot: Config.SnapshotUpdateState;

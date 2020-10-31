@@ -6,11 +6,11 @@
  */
 
 import * as path from 'path';
-import watchman = require('fb-watchman');
 import type {Config} from '@jest/types';
+import watchman = require('fb-watchman');
+import H from '../constants';
 import * as fastPath from '../lib/fast_path';
 import normalizePathSep from '../lib/normalizePathSep';
-import H from '../constants';
 import type {
   CrawlerOptions,
   FileData,

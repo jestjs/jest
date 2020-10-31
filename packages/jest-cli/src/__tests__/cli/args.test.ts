@@ -8,8 +8,8 @@
 
 import type {Config} from '@jest/types';
 import {constants} from 'jest-config';
-import {check} from '../../cli/args';
 import {buildArgv} from '../../cli';
+import {check} from '../../cli/args';
 
 describe('check', () => {
   it('returns true if the arguments are valid', () => {

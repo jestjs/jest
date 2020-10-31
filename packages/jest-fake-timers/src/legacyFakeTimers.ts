@@ -8,8 +8,8 @@
 /* eslint-disable local/ban-types-eventually, local/prefer-spread-eventually */
 
 import util = require('util');
-import type {ModuleMocker} from 'jest-mock';
 import {StackTraceConfig, formatStackTrace} from 'jest-message-util';
+import type {ModuleMocker} from 'jest-mock';
 import {setGlobal} from 'jest-util';
 
 type Callback = (...args: Array<unknown>) => void;

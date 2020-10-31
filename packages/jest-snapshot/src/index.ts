@@ -7,8 +7,8 @@
 
 /* eslint-disable local/ban-types-eventually */
 
-import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
+import * as fs from 'graceful-fs';
 import type {FS as HasteFS} from 'jest-haste-map';
 
 import {

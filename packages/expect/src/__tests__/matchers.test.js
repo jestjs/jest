@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {stringify} = require('jest-matcher-utils');
 const {alignedAnsiStyleSerializer} = require('@jest/test-utils');
-const Immutable = require('immutable');
 const chalk = require('chalk');
+const Immutable = require('immutable');
+const {stringify} = require('jest-matcher-utils');
 const jestExpect = require('../');
 const chalkEnabled = chalk.enabled;
 

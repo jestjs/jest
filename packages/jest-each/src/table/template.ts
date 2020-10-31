@@ -6,9 +6,9 @@
  *
  */
 
-import pretty = require('pretty-format');
-import {isPrimitive} from 'jest-get-type';
 import type {Global} from '@jest/types';
+import {isPrimitive} from 'jest-get-type';
+import pretty = require('pretty-format');
 import type {EachTests} from '../bind';
 
 type Template = Record<string, unknown>;

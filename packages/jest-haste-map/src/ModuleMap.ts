@@ -6,6 +6,8 @@
  */
 
 import type {Config} from '@jest/types';
+import H from './constants';
+import * as fastPath from './lib/fast_path';
 import type {
   DuplicatesSet,
   HTypeValue,
@@ -14,9 +16,6 @@ import type {
   ModuleMetaData,
   RawModuleMap,
 } from './types';
-
-import * as fastPath from './lib/fast_path';
-import H from './constants';
 
 const EMPTY_OBJ: Record<string, ModuleMetaData> = {};
 const EMPTY_MAP = new Map();

@@ -6,7 +6,6 @@
  */
 
 import type BabelTraverse from '@babel/traverse';
-import type {Circus, Config, Global} from '@jest/types';
 import type {JestEnvironment} from '@jest/environment';
 import {
   AssertionResult,
@@ -14,7 +13,9 @@ import {
   TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
+import type {Circus, Config, Global} from '@jest/types';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
+import {bind} from 'jest-each';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import type {TestFileEvent} from 'jest-runner';
 import {
@@ -23,18 +24,17 @@ import {
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
-import {bind} from 'jest-each';
 import throat from 'throat';
+import globals from '..';
+import run from '../run';
 import {
   ROOT_DESCRIBE_BLOCK_NAME,
   addEventHandler,
   dispatch,
   getState as getRunnerState,
 } from '../state';
-import {getTestID} from '../utils';
-import run from '../run';
 import testCaseReportHandler from '../testCaseReportHandler';
-import globals from '..';
+import {getTestID} from '../utils';
 import createExpect, {Expect} from './jestExpect';
 
 type Process = NodeJS.Process;

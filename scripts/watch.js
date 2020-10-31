@@ -9,11 +9,11 @@
  * Watch files for changes and rebuild (copy from 'src/' to `build/`) if changed
  */
 
-const fs = require('fs');
 const {execSync} = require('child_process');
+const fs = require('fs');
 const path = require('path');
-const chokidar = require('chokidar');
 const chalk = require('chalk');
+const chokidar = require('chokidar');
 const {PACKAGES_DIR, getPackages} = require('./buildUtils');
 
 const BUILD_CMD = `node ${path.resolve(__dirname, './build.js')}`;

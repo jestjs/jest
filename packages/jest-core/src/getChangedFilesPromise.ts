@@ -6,9 +6,9 @@
  */
 
 import type {Config} from '@jest/types';
+import chalk = require('chalk');
 import {ChangedFilesPromise, getChangedFilesForRoots} from 'jest-changed-files';
 import {formatExecError} from 'jest-message-util';
-import chalk = require('chalk');
 
 export default (
   globalConfig: Config.GlobalConfig,

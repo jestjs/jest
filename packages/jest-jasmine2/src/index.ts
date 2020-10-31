@@ -6,18 +6,18 @@
  */
 
 import * as path from 'path';
-import type {Config, Global} from '@jest/types';
-import type {AssertionResult, TestResult} from '@jest/test-result';
 import type {JestEnvironment} from '@jest/environment';
-import type {SnapshotStateType} from 'jest-snapshot';
-import type {RuntimeType as Runtime} from 'jest-runtime';
-
 import {getCallsite} from '@jest/source-map';
+import type {AssertionResult, TestResult} from '@jest/test-result';
+import type {Config, Global} from '@jest/types';
+import type {RuntimeType as Runtime} from 'jest-runtime';
+import type {SnapshotStateType} from 'jest-snapshot';
+
 import installEach from './each';
 import {installErrorOnPrivate} from './errorOnPrivate';
-import JasmineReporter from './reporter';
-import jasmineAsyncInstall from './jasmineAsyncInstall';
 import type Spec from './jasmine/Spec';
+import jasmineAsyncInstall from './jasmineAsyncInstall';
+import JasmineReporter from './reporter';
 import type {Jasmine as JestJasmine} from './types';
 
 const JASMINE = require.resolve('./jasmine/jasmineLight');

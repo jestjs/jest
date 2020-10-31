@@ -6,29 +6,29 @@
  */
 
 import * as path from 'path';
-import chalk = require('chalk');
 import {CustomConsole} from '@jest/console';
-import {interopRequireDefault, tryRealpath} from 'jest-util';
-import exit = require('exit');
-import * as fs from 'graceful-fs';
-import {JestHook, JestHookEmitter} from 'jest-watcher';
-import type {Context} from 'jest-runtime';
-import type {Test} from 'jest-runner';
-import type {Config} from '@jest/types';
 import {
   AggregatedResult,
   formatTestResults,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
 import type TestSequencer from '@jest/test-sequencer';
+import type {Config} from '@jest/types';
+import chalk = require('chalk');
+import exit = require('exit');
+import * as fs from 'graceful-fs';
 import type {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
-import getNoTestsFoundMessage from './getNoTestsFoundMessage';
-import runGlobalHook from './runGlobalHook';
+import type {Test} from 'jest-runner';
+import type {Context} from 'jest-runtime';
+import {interopRequireDefault, tryRealpath} from 'jest-util';
+import {JestHook, JestHookEmitter} from 'jest-watcher';
+import type FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
 import TestScheduler, {TestSchedulerContext} from './TestScheduler';
-import type FailedTestsCache from './FailedTestsCache';
-import collectNodeHandles from './collectHandles';
 import type TestWatcher from './TestWatcher';
+import collectNodeHandles from './collectHandles';
+import getNoTestsFoundMessage from './getNoTestsFoundMessage';
+import runGlobalHook from './runGlobalHook';
 import type {Filter, TestRunData} from './types';
 
 const getTestPaths = async (

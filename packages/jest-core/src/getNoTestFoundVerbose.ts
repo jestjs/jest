@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
 import type {Config} from '@jest/types';
+import chalk = require('chalk');
 import pluralize from './pluralize';
 import type {Stats, TestRunData} from './types';
 

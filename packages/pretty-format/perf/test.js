@@ -7,8 +7,8 @@
 
 const util = require('util');
 const chalk = require('chalk');
-const React = require('react');
 const {formatTime} = require('jest-util');
+const React = require('react');
 const ReactTestRenderer = require('react-test-renderer');
 const prettyFormat = require('../build');
 const ReactTestComponent = require('../build/plugins/ReactTestComponent');

@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {Circus, Global} from '@jest/types';
 import chalk = require('chalk');
 import {bind as bindEach} from 'jest-each';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack, isPromise} from 'jest-util';
-import type {Circus, Global} from '@jest/types';
 import {dispatchSync} from './state';
 
 type THook = (fn: Circus.HookFn, timeout?: number) => void;

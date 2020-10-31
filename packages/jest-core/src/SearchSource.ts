@@ -7,16 +7,16 @@
 
 import * as os from 'os';
 import * as path from 'path';
-import micromatch = require('micromatch');
-import type {Context} from 'jest-runtime';
 import type {Config} from '@jest/types';
-import type {Test} from 'jest-runner';
 import type {ChangedFiles} from 'jest-changed-files';
-import DependencyResolver = require('jest-resolve-dependencies');
-import {escapePathForRegex} from 'jest-regex-util';
 import {replaceRootDirInPath} from 'jest-config';
+import {escapePathForRegex} from 'jest-regex-util';
+import DependencyResolver = require('jest-resolve-dependencies');
+import type {Test} from 'jest-runner';
+import type {Context} from 'jest-runtime';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {globsToMatcher, testPathPatternToRegExp} from 'jest-util';
+import micromatch = require('micromatch');
 import type {Filter, Stats, TestPathCases} from './types';
 
 export type SearchResult = {

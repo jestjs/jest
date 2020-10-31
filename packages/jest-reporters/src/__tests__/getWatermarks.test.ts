@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import getWatermarks from '../getWatermarks';
 import {makeGlobalConfig} from '../../../../TestUtils';
+import getWatermarks from '../getWatermarks';
 
 describe('getWatermarks', () => {
   test(`that watermarks use thresholds as upper target`, () => {

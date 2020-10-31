@@ -6,11 +6,11 @@
  */
 
 import * as path from 'path';
-import type {Config} from '@jest/types';
 import type {AggregatedResult, TestCaseResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import chalk = require('chalk');
-import slash = require('slash');
 import {formatTime, pluralize} from 'jest-util';
+import slash = require('slash');
 import type {SummaryOptions, Test} from './types';
 
 const PROGRESS_BAR_WIDTH = 40;

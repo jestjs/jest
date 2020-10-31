@@ -6,8 +6,8 @@
  */
 
 import type {Config} from '@jest/types';
-import Runtime = require('jest-runtime');
 import type {HasteMapObject} from 'jest-haste-map';
+import Runtime = require('jest-runtime');
 
 export default (
   config: Config.ProjectConfig,

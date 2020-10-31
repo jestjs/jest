@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
 import assert from 'assert';
 import {EventEmitter} from 'events';
-import * as fs from 'graceful-fs';
+import path from 'path';
 import watchman from 'fb-watchman';
+import * as fs from 'graceful-fs';
 import common from 'sane/src/common';
 import RecrawlWarning from 'sane/src/utils/recrawl-warning-dedupe';
 

@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import type {
   AggregatedResult,
   TestCaseResult,
   TestResult,
 } from '@jest/test-result';
+import type {Config} from '@jest/types';
 import chalk = require('chalk');
 import stringLength = require('string-length');
 import type {ReporterOnStartOptions, Test} from './types';

@@ -6,9 +6,9 @@
  *
  */
 
+import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import chalk = require('chalk');
 import prettyFormat = require('pretty-format');
-import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import {
   MatcherHintOptions,
   diff,

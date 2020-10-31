@@ -6,7 +6,6 @@
  */
 
 import type {Config, Global} from '@jest/types';
-import type {Plugin} from 'pretty-format';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {
   SnapshotState,
@@ -14,6 +13,7 @@ import {
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
+import type {Plugin} from 'pretty-format';
 import type {
   Attributes,
   default as JasmineSpec,

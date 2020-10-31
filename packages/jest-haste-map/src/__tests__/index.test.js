@@ -6,8 +6,8 @@
  *
  */
 
-import * as path from 'path';
 import crypto from 'crypto';
+import * as path from 'path';
 import wrap from 'jest-snapshot-serializer-raw';
 
 function mockHashContents(contents) {

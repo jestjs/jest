@@ -8,10 +8,10 @@
 
 /* eslint-disable local/ban-types-eventually */
 
-import * as path from 'path';
 import {EventEmitter} from 'events';
-import * as fs from 'graceful-fs';
+import * as path from 'path';
 import anymatch, {Matcher} from 'anymatch';
+import * as fs from 'graceful-fs';
 import micromatch = require('micromatch');
 // @ts-expect-error no types
 import walker from 'walker';

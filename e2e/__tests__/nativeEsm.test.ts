@@ -6,10 +6,10 @@
  */
 
 import {resolve} from 'path';
-import wrap from 'jest-snapshot-serializer-raw';
 import {onNodeVersions} from '@jest/test-utils';
-import runJest, {getConfig} from '../runJest';
+import wrap from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
+import runJest, {getConfig} from '../runJest';
 
 const DIR = resolve(__dirname, '../native-esm');
 

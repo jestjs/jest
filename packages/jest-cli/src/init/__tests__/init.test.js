@@ -8,8 +8,8 @@
 /* eslint-disable no-eval */
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import prompts from 'prompts';
 import {constants} from 'jest-config';
+import prompts from 'prompts';
 import init from '../';
 
 const {JEST_CONFIG_EXT_ORDER} = constants;
