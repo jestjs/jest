@@ -120,41 +120,37 @@ FUNCTIONS.mock = args => {
     moduleFactory.traverse(IDVisitor, {ids});
     for (const id of ids) {
       const {name} = id.node;
-      let found = false;
       let scope = id.scope;
 
       while (scope !== parentScope) {
         if (scope.bindings[name]) {
-          found = true;
-          break;
+          return true;
         }
 
         scope = scope.parent;
       }
 
-      if (!found) {
-        const isAllowedIdentifier =
-          (scope.hasGlobal(name) && ALLOWED_IDENTIFIERS.has(name)) ||
-          /^mock/i.test(name) ||
-          // Allow istanbul's coverage variable to pass.
-          /^(?:__)?cov/.test(name);
+      const isAllowedIdentifier =
+        (scope.hasGlobal(name) && ALLOWED_IDENTIFIERS.has(name)) ||
+        /^mock/i.test(name) ||
+        // Allow istanbul's coverage variable to pass.
+        /^(?:__)?cov/.test(name);
 
-        if (!isAllowedIdentifier) {
-          throw id.buildCodeFrameError(
-            'The module factory of `jest.mock()` is not allowed to ' +
-              'reference any out-of-scope variables.\n' +
-              'Invalid variable access: ' +
-              name +
-              '\n' +
-              'Allowed objects: ' +
-              Array.from(ALLOWED_IDENTIFIERS).join(', ') +
-              '.\n' +
-              'Note: This is a precaution to guard against uninitialized mock ' +
-              'variables. If it is ensured that the mock is required lazily, ' +
-              'variable names prefixed with `mock` (case insensitive) are permitted.\n',
-            ReferenceError,
-          );
-        }
+      if (!isAllowedIdentifier) {
+        throw id.buildCodeFrameError(
+          'The module factory of `jest.mock()` is not allowed to ' +
+            'reference any out-of-scope variables.\n' +
+            'Invalid variable access: ' +
+            name +
+            '\n' +
+            'Allowed objects: ' +
+            Array.from(ALLOWED_IDENTIFIERS).join(', ') +
+            '.\n' +
+            'Note: This is a precaution to guard against uninitialized mock ' +
+            'variables. If it is ensured that the mock is required lazily, ' +
+            'variable names prefixed with `mock` (case insensitive) are permitted.\n',
+          ReferenceError,
+        );
       }
     }
 
