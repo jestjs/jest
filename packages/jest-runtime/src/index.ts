@@ -1097,7 +1097,7 @@ class Runtime {
 
     const lastArgs: [Jest | undefined, ...Array<any>] = [
       this._config.injectGlobals ? jestObject : undefined, // jest object
-      this._config.extraGlobals.map<unknown>(globalVariable => {
+      ...this._config.extraGlobals.map<unknown>(globalVariable => {
         if (this._environment.global[globalVariable]) {
           return this._environment.global[globalVariable];
         }

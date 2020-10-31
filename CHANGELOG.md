@@ -15,6 +15,7 @@
 - `[jest-resolve-dependencies]` Resolve mocks as dependencies ([#10713](https://github.com/facebook/jest/pull/10713))
 - `[jest-runtime]` Handle file URLs in dynamic imports ([#10744](https://github.com/facebook/jest/pull/10744))
 - `[jest-runtime, babel-jest]` Pass more ESM options to `@jest/transform` ([#10752](https://github.com/facebook/jest/pull/10752))
+- `[jest-runtime]` Properly inject `extraGlobals` into the runtime ([#10758](https://github.com/facebook/jest/pull/10758))
 - `[jest-transform]` Link to ESM docs on syntax errors ([#10748](https://github.com/facebook/jest/pull/10748))
 
 ### Chore & Maintenance
