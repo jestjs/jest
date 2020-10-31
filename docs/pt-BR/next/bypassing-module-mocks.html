@@ -95,7 +95,6 @@ Seu teste provavelm, ente irá "mockar" (mock) a função `fetch` para que possa
 jest.mock('node-fetch');
 
 import fetch, {Response} from 'node-fetch';
-
 import {createUser} from './createUser';
 
 test('createUser chama a busta com os argumentos corretos e retorna o id do usuário', async () =&gt; {
