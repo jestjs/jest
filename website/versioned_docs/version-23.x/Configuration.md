@@ -1001,3 +1001,9 @@ Examples of watch plugins include:
 - [`jest-watch-suspend`](https://github.com/unional/jest-watch-suspend)
 - [`jest-watch-typeahead`](https://github.com/jest-community/jest-watch-typeahead)
 - [`jest-watch-yarn-workspaces`](https://github.com/cameronhunter/jest-watch-directories/tree/master/packages/jest-watch-yarn-workspaces)
+
+### `watchman` [boolean]
+
+Default: `true`
+
+Whether to use `watchman` for file crawling.

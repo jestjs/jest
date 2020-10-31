@@ -1294,6 +1294,12 @@ Examples of watch plugins include:
 
 _Note: The values in the `watchPlugins` property value can omit the `jest-watch-` prefix of the package name._
 
+### `watchman` [boolean]
+
+Default: `true`
+
+Whether to use `watchman` for file crawling.
+
 ### `//` [string]
 
 No default
