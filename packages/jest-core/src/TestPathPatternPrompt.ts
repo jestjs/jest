@@ -7,7 +7,6 @@
 
 import type {Test} from 'jest-runner';
 import type {Context} from 'jest-runtime';
-
 import {
   PatternPrompt,
   Prompt,

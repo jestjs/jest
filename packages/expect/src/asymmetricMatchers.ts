@@ -7,7 +7,6 @@
  */
 
 import {equals, fnNameFor, hasProperty, isA, isUndefined} from './jasmineUtils';
-
 import {emptyObject} from './utils';
 
 export class AsymmetricMatcher<T> {

@@ -7,7 +7,6 @@
 
 import * as ReactIs from 'react-is';
 import type {Config, NewPlugin, Printer, Refs} from '../types';
-
 import {
   printChildren,
   printElement,

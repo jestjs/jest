@@ -9,7 +9,6 @@
 
 import Immutable from 'immutable';
 import React from 'react';
-
 import prettyFormat from '..';
 import setPrettyPrint from './setPrettyPrint';
 

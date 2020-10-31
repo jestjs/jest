@@ -17,7 +17,6 @@ import c from '../__test_modules__/c';
 import d from '../__test_modules__/d';
 import f from '../__test_modules__/f';
 import jestBackticks from '../__test_modules__/jestBackticks';
-
 // The virtual mock call below will be hoisted above this `require` call.
 const virtualModule = require('virtual-module');
 

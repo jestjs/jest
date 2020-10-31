@@ -14,7 +14,6 @@ import assert = require('assert');
 import * as path from 'path';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
-
 import {
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,

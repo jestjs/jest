@@ -11,7 +11,6 @@ import {
   restoreGlobalErrorHandlers,
 } from './globalErrorHandlers';
 import {TEST_TIMEOUT_SYMBOL} from './types';
-
 import {
   addErrorToEachTestUnderDescribe,
   describeBlockHasTests,

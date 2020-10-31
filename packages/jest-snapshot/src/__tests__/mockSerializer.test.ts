@@ -6,7 +6,6 @@
  */
 
 import prettyFormat = require('pretty-format');
-
 import plugin from '../mockSerializer';
 
 test('mock with 0 calls and default name', () => {

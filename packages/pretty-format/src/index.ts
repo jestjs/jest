@@ -8,14 +8,12 @@
 /* eslint-disable local/ban-types-eventually */
 
 import style = require('ansi-styles');
-
 import {
   printIteratorEntries,
   printIteratorValues,
   printListItems,
   printObjectProperties,
 } from './collections';
-
 import AsymmetricMatcher from './plugins/AsymmetricMatcher';
 import ConvertAnsi from './plugins/ConvertAnsi';
 import DOMCollection from './plugins/DOMCollection';

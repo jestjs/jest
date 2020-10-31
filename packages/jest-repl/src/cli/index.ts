@@ -13,7 +13,6 @@ import {deprecationEntries} from 'jest-config';
 import Runtime = require('jest-runtime');
 import {validateCLIOptions} from 'jest-validate';
 import * as args from './args';
-
 const {version: VERSION} = require('../../package.json');
 
 const REPL_SCRIPT = require.resolve('./repl.js');

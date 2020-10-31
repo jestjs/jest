@@ -6,7 +6,6 @@
  */
 
 import type {Config} from '@jest/types';
-
 const VERSION = require('../../package.json').version;
 
 // if the output here changes, update `getConfig` in e2e/runJest.ts

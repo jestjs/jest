@@ -22,7 +22,6 @@
 
 const fs = require('fs');
 const path = require('path');
-
 const babel = require('@babel/core');
 const chalk = require('chalk');
 const glob = require('glob');

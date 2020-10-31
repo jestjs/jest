@@ -9,7 +9,6 @@ import {ChildProcess, fork} from 'child_process';
 import {PassThrough} from 'stream';
 import mergeStream = require('merge-stream');
 import {stdout as stdoutSupportsColor} from 'supports-color';
-
 import {
   CHILD_MESSAGE_INITIALIZE,
   ChildMessage,

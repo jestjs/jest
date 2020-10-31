@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import mergeStream = require('merge-stream');
-
 import {
   CHILD_MESSAGE_END,
   PoolExitResult,

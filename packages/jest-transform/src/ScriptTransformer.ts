@@ -32,6 +32,8 @@ import type {
   TransformedSource,
   Transformer,
 } from './types';
+// Use `require` to avoid TS rootDir
+const {version: VERSION} = require('../package.json');
 
 type ProjectCache = {
   configString: string;
@@ -39,9 +41,6 @@ type ProjectCache = {
   transformRegExp?: Array<[RegExp, string, Record<string, unknown>]>;
   transformedFiles: Map<string, TransformResult>;
 };
-
-// Use `require` to avoid TS rootDir
-const {version: VERSION} = require('../package.json');
 
 // This data structure is used to avoid recalculating some data every time that
 // we need to transform a file. Since ScriptTransformer is instantiated for each

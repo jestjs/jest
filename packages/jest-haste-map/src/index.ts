@@ -47,6 +47,9 @@ import type {
   WorkerMetadata,
 } from './types';
 import {getSha1, worker} from './worker';
+// TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
+// understand `require`.
+const {version: VERSION} = require('../package.json');
 
 type HType = typeof H;
 
@@ -119,10 +122,6 @@ const PACKAGE_JSON = path.sep + 'package.json';
 const VCS_DIRECTORIES = ['.git', '.hg']
   .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
   .join('|');
-
-// TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
-// understand `require`.
-const {version: VERSION} = require('../package.json');
 
 const canUseWatchman = ((): boolean => {
   try {

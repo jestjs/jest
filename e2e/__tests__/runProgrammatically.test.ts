@@ -6,7 +6,6 @@
  */
 
 import {resolve} from 'path';
-
 import {run} from '../Utils';
 
 const dir = resolve(__dirname, '..', 'run-programmatically');

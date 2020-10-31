@@ -7,7 +7,6 @@
 
 import React from 'react';
 import renderer from 'react-test-renderer';
-
 import prettyFormat from '..';
 import {OptionsReceived} from '../types';
 

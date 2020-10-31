@@ -47,7 +47,6 @@ import type {
   SyncExpectationResult,
   ThrowingMatcherFn,
 } from './types';
-
 import {iterableEquality, subsetEquality} from './utils';
 
 class JestAssertionError extends Error {

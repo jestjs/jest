@@ -33,7 +33,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 import {AssertionError} from 'assert';
 import type {FailedAssertion, Milliseconds, Status} from '@jest/test-result';
 import type {Config} from '@jest/types';
-
 import ExpectationFailed from '../ExpectationFailed';
 import assertionErrorMessage from '../assertionErrorMessage';
 import expectationResultFactory, {

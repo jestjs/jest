@@ -9,7 +9,6 @@ import {validationCondition} from './condition';
 import {deprecationWarning} from './deprecated';
 import {errorMessage} from './errors';
 import type {ValidationOptions} from './types';
-
 import {DEPRECATION, ERROR, WARNING} from './utils';
 import {unknownOptionWarning} from './warnings';
 

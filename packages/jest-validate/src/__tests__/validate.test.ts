@@ -10,7 +10,6 @@ import {multipleValidOptions} from '../condition';
 import jestValidateDefaultConfig from '../defaultConfig';
 import jestValidateExampleConfig from '../exampleConfig';
 import validate from '../validate';
-
 const {
   defaultConfig,
   validConfig,

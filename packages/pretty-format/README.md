@@ -102,7 +102,6 @@ The `pretty-format` package provides some built-in plugins, including:
 // CommonJS
 const React = require('react');
 const renderer = require('react-test-renderer');
-
 const prettyFormat = require('pretty-format');
 const ReactElement = prettyFormat.plugins.ReactElement;
 const ReactTestComponent = prettyFormat.plugins.ReactTestComponent;
@@ -111,7 +110,6 @@ const ReactTestComponent = prettyFormat.plugins.ReactTestComponent;
 ```js
 import React from 'react';
 import renderer from 'react-test-renderer';
-
 // ES2015 modules and destructuring assignment
 import prettyFormat from 'pretty-format';
 const {ReactElement, ReactTestComponent} = prettyFormat.plugins;

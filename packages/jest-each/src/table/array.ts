@@ -9,7 +9,6 @@
 import * as util from 'util';
 import type {Global} from '@jest/types';
 import pretty = require('pretty-format');
-
 import type {EachTests} from '../bind';
 
 const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;

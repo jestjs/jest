@@ -274,6 +274,7 @@ module.exports = {
           'sibling',
           'index',
         ],
+        'newlines-between': 'never',
       },
     ],
     'no-console': 'off',
