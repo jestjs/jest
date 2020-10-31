@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import type {Config} from '@jest/types';
-import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
 import shouldInstrument from '../shouldInstrument';
-import {Options} from '../types';
+import type {Options} from '../types';
 
 describe('shouldInstrument', () => {
   const defaultFilename = 'source_file.test.js';

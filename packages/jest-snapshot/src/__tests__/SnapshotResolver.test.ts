@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import {makeProjectConfig} from '../../../../TestUtils';
+import {makeProjectConfig} from '@jest/test-utils';
 import {SnapshotResolver, buildSnapshotResolver} from '../SnapshotResolver';
 
 describe('defaults', () => {

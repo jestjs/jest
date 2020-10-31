@@ -9,8 +9,8 @@ import os from 'os';
 import path from 'path';
 import istanbulCoverage from 'istanbul-lib-coverage';
 import libSourceMaps from 'istanbul-lib-source-maps';
+import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import {shouldInstrument} from '@jest/transform';
-import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
 import generateEmptyCoverage from '../generateEmptyCoverage';
 
 jest.mock('@jest/transform', () => ({

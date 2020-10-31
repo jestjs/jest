@@ -18,6 +18,7 @@
     "slash": "^3.0.0"
   },
   "devDependencies": {
+    "@jest/test-utils": "^26.5.0",
     "@types/node": "*"
   },
   "engines": {

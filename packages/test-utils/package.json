@@ -6,6 +6,7 @@
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
+    "@jest/types": "^26.6.1",
     "@types/jest": "*",
     "@types/node": "*",
     "@types/semver": "^7.1.0",

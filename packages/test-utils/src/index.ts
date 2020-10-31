@@ -13,3 +13,5 @@ export {
   skipSuiteOnJestCircus,
   onNodeVersions,
 } from './ConditionalTest';
+
+export {makeGlobalConfig, makeProjectConfig} from './config';

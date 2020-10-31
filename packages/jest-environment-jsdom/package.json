@@ -19,6 +19,7 @@
     "jsdom": "^16.4.0"
   },
   "devDependencies": {
+    "@jest/test-utils": "^26.5.0",
     "@types/jsdom": "^16.2.4"
   },
   "engines": {

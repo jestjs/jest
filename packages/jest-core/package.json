@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "@jest/test-sequencer": "^26.6.1",
+    "@jest/test-utils": "^26.5.0",
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
     "@types/micromatch": "^4.0.0",

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {makeProjectConfig} from '../../../../TestUtils';
+import {makeProjectConfig} from '@jest/test-utils';
 import babelJest = require('../index');
 import {loadPartialConfig} from '../loadBabelConfig';
 

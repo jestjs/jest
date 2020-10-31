@@ -17,6 +17,9 @@
     "jest-mock": "^26.6.1",
     "jest-util": "^26.6.1"
   },
+  "devDependencies": {
+    "@jest/test-utils": "^26.5.0"
+  },
   "engines": {
     "node": ">= 10.14.2"
   },

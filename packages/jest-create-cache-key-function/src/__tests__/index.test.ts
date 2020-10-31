@@ -20,8 +20,8 @@ afterEach(() => {
   process.env.BABEL_ENV = BABEL_ENV;
 });
 
-test('creation of a cache key', () => {
-  const createCacheKeyFunction = require('../index').default;
+test('creation of a cache key', async () => {
+  const createCacheKeyFunction = (await import('../index')).default;
   const createCacheKey = createCacheKeyFunction([], ['value']);
   const hashA = createCacheKey('test', 'test.js', null, {
     config: {},
