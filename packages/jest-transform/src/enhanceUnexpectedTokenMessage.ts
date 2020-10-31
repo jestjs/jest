@@ -42,6 +42,9 @@ This usually means that you are trying to import a file which Jest cannot parse,
 By default, if Jest sees a Babel config, it will use that to transform your files, ignoring "node_modules".
 
 Here's what you can do:
+${DOT}If you are trying to use ECMAScript Modules, see ${chalk.underline(
+      'https://jestjs.io/docs/en/ecmascript-modules',
+    )} for how to enable it.
 ${DOT}To have some of your "node_modules" files transformed, you can specify a custom ${chalk.bold(
       '"transformIgnorePatterns"',
     )} in your config.
