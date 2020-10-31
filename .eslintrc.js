@@ -265,6 +265,7 @@ module.exports = {
         alphabetize: {
           order: 'asc',
         },
+        // this is the default order except for added `internal` in the middle
         groups: [
           'builtin',
           'external',
