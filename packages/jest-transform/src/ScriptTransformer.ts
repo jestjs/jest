@@ -62,6 +62,14 @@ async function waitForPromiseWithCleanup(
   }
 }
 
+// https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49267
+declare module '@babel/core' {
+  interface TransformCaller {
+    supportsExportNamespaceFrom?: boolean;
+    supportsTopLevelAwait?: boolean;
+  }
+}
+
 export default class ScriptTransformer {
   private _cache: ProjectCache;
   private _config: Config.ProjectConfig;
@@ -96,6 +104,8 @@ export default class ScriptTransformer {
     instrument: boolean,
     supportsDynamicImport: boolean,
     supportsStaticESM: boolean,
+    supportsTopLevelAwait: boolean,
+    supportsExportNamespaceFrom: boolean,
   ): string {
     const configString = this._cache.configString;
     const transformer = this._getTransformer(filename);
@@ -108,7 +118,9 @@ export default class ScriptTransformer {
             instrument,
             rootDir: this._config.rootDir,
             supportsDynamicImport,
+            supportsExportNamespaceFrom,
             supportsStaticESM,
+            supportsTopLevelAwait,
           }),
         )
         .update(CACHE_VERSION)
@@ -130,6 +142,8 @@ export default class ScriptTransformer {
     instrument: boolean,
     supportsDynamicImport: boolean,
     supportsStaticESM: boolean,
+    supportsTopLevelAwait: boolean,
+    supportsExportNamespaceFrom: boolean,
   ): Config.Path {
     const baseCacheDir = HasteMap.getCacheFilePath(
       this._config.cacheDirectory,
@@ -142,6 +156,8 @@ export default class ScriptTransformer {
       instrument,
       supportsDynamicImport,
       supportsStaticESM,
+      supportsTopLevelAwait,
+      supportsExportNamespaceFrom,
     );
     // Create sub folders based on the cacheKey to avoid creating one
     // directory with many files.
@@ -216,6 +232,8 @@ export default class ScriptTransformer {
     supportsDynamicImport: boolean,
     supportsStaticESM: boolean,
     canMapToInput: boolean,
+    supportsTopLevelAwait: boolean,
+    supportsExportNamespaceFrom: boolean,
   ): TransformedSource {
     const inputCode = typeof input === 'string' ? input : input.code;
     const inputMap = typeof input === 'string' ? null : input.map;
@@ -226,7 +244,9 @@ export default class ScriptTransformer {
       caller: {
         name: '@jest/transform',
         supportsDynamicImport,
+        supportsExportNamespaceFrom,
         supportsStaticESM,
+        supportsTopLevelAwait,
       },
       configFile: false,
       filename,
@@ -267,6 +287,8 @@ export default class ScriptTransformer {
     instrument: boolean,
     supportsDynamicImport = false,
     supportsStaticESM = false,
+    supportsTopLevelAwait = false,
+    supportsExportNamespaceFrom = false,
   ): TransformResult {
     const filename = tryRealpath(filepath);
     const transform = this._getTransformer(filename);
@@ -276,6 +298,8 @@ export default class ScriptTransformer {
       instrument,
       supportsDynamicImport,
       supportsStaticESM,
+      supportsTopLevelAwait,
+      supportsExportNamespaceFrom,
     );
     let sourceMapPath: Config.Path | null = cacheFilePath + '.map';
     // Ignore cache if `config.cache` is set (--no-cache)
@@ -309,7 +333,9 @@ export default class ScriptTransformer {
       const processed = transform.process(content, filename, this._config, {
         instrument,
         supportsDynamicImport,
+        supportsExportNamespaceFrom: false,
         supportsStaticESM,
+        supportsTopLevelAwait,
       });
 
       if (typeof processed === 'string') {
@@ -363,6 +389,8 @@ export default class ScriptTransformer {
         supportsDynamicImport,
         supportsStaticESM,
         shouldEmitSourceMaps,
+        supportsTopLevelAwait,
+        supportsExportNamespaceFrom,
       );
 
       code =
@@ -399,7 +427,9 @@ export default class ScriptTransformer {
       isCoreModule,
       isInternalModule,
       supportsDynamicImport,
+      supportsExportNamespaceFrom,
       supportsStaticESM,
+      supportsTopLevelAwait,
     } = options;
     const content = stripShebang(
       fileSource || fs.readFileSync(filename, 'utf8'),
@@ -421,6 +451,8 @@ export default class ScriptTransformer {
           instrument,
           supportsDynamicImport,
           supportsStaticESM,
+          supportsTopLevelAwait,
+          supportsExportNamespaceFrom,
         );
 
         code = transformedSource.code;
@@ -479,7 +511,9 @@ export default class ScriptTransformer {
       isCoreModule,
       isInternalModule,
       supportsDynamicImport,
+      supportsExportNamespaceFrom,
       supportsStaticESM,
+      supportsTopLevelAwait,
     } = options;
     const willTransform =
       !isInternalModule && !isCoreModule && this.shouldTransform(filename);
@@ -491,6 +525,8 @@ export default class ScriptTransformer {
         false,
         supportsDynamicImport,
         supportsStaticESM,
+        supportsTopLevelAwait,
+        supportsExportNamespaceFrom,
       );
       return transformedJsonSource;
     }
@@ -521,8 +557,15 @@ export default class ScriptTransformer {
           transforming = true;
           return (
             // we might wanna do `supportsDynamicImport` at some point
-            this.transformSource(filename, code, false, false, false).code ||
-            code
+            this.transformSource(
+              filename,
+              code,
+              false,
+              false,
+              false,
+              false,
+              false,
+            ).code || code
           );
         } finally {
           transforming = false;

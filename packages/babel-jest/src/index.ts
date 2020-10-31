@@ -40,6 +40,14 @@ interface BabelJestTransformOptions extends TransformOptions {
   sourceMaps: 'both';
 }
 
+// https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49267
+declare module '@babel/core' {
+  interface TransformCaller {
+    supportsExportNamespaceFrom?: boolean;
+    supportsTopLevelAwait?: boolean;
+  }
+}
+
 const createTransformer = (
   userOptions?: TransformOptions | null,
 ): BabelJestTransformer => {
@@ -49,7 +57,9 @@ const createTransformer = (
     caller: {
       name: 'babel-jest',
       supportsDynamicImport: false,
+      supportsExportNamespaceFrom: false,
       supportsStaticESM: false,
+      supportsTopLevelAwait: false,
       ...inputOptions.caller,
     },
     compact: false,
@@ -72,9 +82,15 @@ const createTransformer = (
         supportsDynamicImport:
           transformOptions?.supportsDynamicImport ??
           options.caller.supportsDynamicImport,
+        supportsExportNamespaceFrom:
+          transformOptions?.supportsExportNamespaceFrom ??
+          options.caller.supportsExportNamespaceFrom,
         supportsStaticESM:
           transformOptions?.supportsStaticESM ??
           options.caller.supportsStaticESM,
+        supportsTopLevelAwait:
+          transformOptions?.supportsTopLevelAwait ??
+          options.caller.supportsTopLevelAwait,
       },
       filename,
     });

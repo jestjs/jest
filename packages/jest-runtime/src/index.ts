@@ -18,6 +18,7 @@ import {
   Module as VMModule,
 } from 'vm';
 import * as nativeModule from 'module';
+import * as semver from 'semver';
 // @ts-expect-error
 import parseCjs = require('cjs-module-lexer');
 import type {Config, Global} from '@jest/types';
@@ -78,14 +79,20 @@ type HasteMapOptions = {
 type InternalModuleOptions = {
   isInternalModule: boolean;
   supportsDynamicImport: boolean;
+  supportsExportNamespaceFrom: boolean;
   supportsStaticESM: boolean;
+  supportsTopLevelAwait: boolean;
 };
 
 const defaultTransformOptions: InternalModuleOptions = {
   isInternalModule: false,
   supportsDynamicImport: esmIsAvailable,
+  supportsExportNamespaceFrom: false,
   supportsStaticESM: false,
+  supportsTopLevelAwait: false,
 };
+
+const nodeVersionSupportsTla = semver.satisfies(process.version, '>=14.3.0');
 
 type InitialModule = Omit<Module, 'require' | 'parent' | 'paths'>;
 type ModuleRegistry = Map<string, InitialModule | Module>;
@@ -378,7 +385,9 @@ class Runtime {
       const transformedCode = this.transformFile(modulePath, {
         isInternalModule: false,
         supportsDynamicImport: true,
+        supportsExportNamespaceFrom: true,
         supportsStaticESM: true,
+        supportsTopLevelAwait: nodeVersionSupportsTla,
       });
 
       const module = new SourceTextModule(transformedCode, {
@@ -608,7 +617,9 @@ class Runtime {
     return this.requireModule<T>(from, to, {
       isInternalModule: true,
       supportsDynamicImport: esmIsAvailable,
+      supportsExportNamespaceFrom: false,
       supportsStaticESM: false,
+      supportsTopLevelAwait: false,
     });
   }
 

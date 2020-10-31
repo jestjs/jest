@@ -34,6 +34,7 @@
     "jest-snapshot": "^26.6.1",
     "jest-util": "^26.6.1",
     "jest-validate": "^26.6.1",
+    "semver": "^7.3.2",
     "slash": "^3.0.0",
     "strip-bom": "^4.0.0",
     "yargs": "^15.4.1"
@@ -44,6 +45,7 @@
     "@types/glob": "^7.1.1",
     "@types/graceful-fs": "^4.1.2",
     "@types/node": "^14.0.27",
+    "@types/semver": "^7.3.4",
     "execa": "^4.0.0",
     "jest-environment-node": "^26.6.1",
     "jest-snapshot-serializer-raw": "^1.1.0"

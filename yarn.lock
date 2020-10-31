@@ -3747,7 +3747,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/semver@npm:^7.1.0":
+"@types/semver@npm:^7.1.0, @types/semver@npm:^7.3.4":
   version: 7.3.4
   resolution: "@types/semver@npm:7.3.4"
   checksum: 7e8588aa55ecb344eda6954674b83a3c568d97d478e70e4617bd3ab22902590ac416ccf2cea48b58fb2f0fbd80f9ad1896332c9b3c3189ffd24e4350ff22094a
@@ -11957,6 +11957,7 @@ fsevents@^1.2.7:
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.2
     "@types/node": ^14.0.27
+    "@types/semver": ^7.3.4
     "@types/yargs": ^15.0.0
     chalk: ^4.0.0
     cjs-module-lexer: ^0.4.2
@@ -11976,6 +11977,7 @@ fsevents@^1.2.7:
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^26.6.1
     jest-validate: ^26.6.1
+    semver: ^7.3.2
     slash: ^3.0.0
     strip-bom: ^4.0.0
     yargs: ^15.4.1
