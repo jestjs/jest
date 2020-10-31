@@ -965,4 +965,4 @@ Even if nothing is specified here, the watcher will ignore changes to any hidden
 
 Default: `true`
 
-Whether to use `watchman` for file crawling.
+Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling.

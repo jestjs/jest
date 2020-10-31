@@ -344,4 +344,4 @@ Use `--watchAll=false` to explicitly disable the watch mode. Note that in most C
 
 ### `--watchman`
 
-Whether to use `watchman` for file crawling. Defaults to `true`. Disable using `--no-watchman`.
+Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling. Defaults to `true`. Disable using `--no-watchman`.

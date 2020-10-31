@@ -1214,7 +1214,7 @@ _Note: The values in the `watchPlugins` property value can omit the `jest-watch-
 
 Default: `true`
 
-Whether to use `watchman` for file crawling.
+Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling.
 
 ### `//` [string]
 

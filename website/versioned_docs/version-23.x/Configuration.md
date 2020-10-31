@@ -1006,4 +1006,4 @@ Examples of watch plugins include:
 
 Default: `true`
 
-Whether to use `watchman` for file crawling.
+Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling.
