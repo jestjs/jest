@@ -6,8 +6,8 @@
  */
 
 import * as path from 'path';
-import type {Config} from '@jest/types';
 import slash = require('slash');
+import type {Config} from '@jest/types';
 
 export default class ModuleNotFoundError extends Error {
   public code = 'MODULE_NOT_FOUND';

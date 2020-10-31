@@ -6,7 +6,6 @@
  */
 
 import prettyFormat = require('pretty-format');
-
 import jestMockSerializer from './mockSerializer';
 
 const {

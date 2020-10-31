@@ -15,24 +15,23 @@ import * as path from 'path';
 import type {Stats} from 'graceful-fs';
 import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
 import type {Config} from '@jest/types';
+import {escapePathForRegex} from 'jest-regex-util';
 import serializer from 'jest-serializer';
 import Worker from 'jest-worker';
-import {escapePathForRegex} from 'jest-regex-util';
-import {getSha1, worker} from './worker';
-import getMockName from './getMockName';
-import getPlatformExtension from './lib/getPlatformExtension';
-import H from './constants';
 import HasteFS from './HasteFS';
 import HasteModuleMap, {
   SerializableModuleMap as HasteSerializableModuleMap,
 } from './ModuleMap';
+import H from './constants';
 import nodeCrawl = require('./crawlers/node');
-import normalizePathSep from './lib/normalizePathSep';
 import watchmanCrawl = require('./crawlers/watchman');
+import getMockName from './getMockName';
+import FSEventsWatcher = require('./lib/FSEventsWatcher');
 // @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
 import WatchmanWatcher from './lib/WatchmanWatcher';
-import FSEventsWatcher = require('./lib/FSEventsWatcher');
 import * as fastPath from './lib/fast_path';
+import getPlatformExtension from './lib/getPlatformExtension';
+import normalizePathSep from './lib/normalizePathSep';
 import type {
   ChangeEvent,
   CrawlerOptions,
@@ -47,6 +46,10 @@ import type {
   ModuleMetaData,
   WorkerMetadata,
 } from './types';
+import {getSha1, worker} from './worker';
+// TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
+// understand `require`.
+const {version: VERSION} = require('../package.json');
 
 type HType = typeof H;
 
@@ -119,10 +122,6 @@ const PACKAGE_JSON = path.sep + 'package.json';
 const VCS_DIRECTORIES = ['.git', '.hg']
   .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
   .join('|');
-
-// TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
-// understand `require`.
-const {version: VERSION} = require('../package.json');
 
 const canUseWatchman = ((): boolean => {
   try {

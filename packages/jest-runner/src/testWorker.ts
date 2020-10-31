@@ -6,21 +6,20 @@
  *
  */
 
-import type {Config} from '@jest/types';
-import type {SerializableError, TestResult} from '@jest/test-result';
-import HasteMap = require('jest-haste-map');
 import exit = require('exit');
+import type {SerializableError, TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import HasteMap = require('jest-haste-map');
 import {separateMessageFromStack} from 'jest-message-util';
-import Runtime = require('jest-runtime');
 import type {ResolverType} from 'jest-resolve';
+import Runtime = require('jest-runtime');
 import {messageParent} from 'jest-worker';
+import runTest from './runTest';
 import type {
   ErrorWithCode,
   TestFileEvent,
   TestRunnerSerializedContext,
 } from './types';
-
-import runTest from './runTest';
 
 export type SerializableResolver = {
   config: Config.ProjectConfig;

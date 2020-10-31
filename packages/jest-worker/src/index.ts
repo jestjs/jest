@@ -8,8 +8,8 @@
 /* eslint-disable local/ban-types-eventually */
 
 import {cpus} from 'os';
-import WorkerPool from './WorkerPool';
 import Farm from './Farm';
+import WorkerPool from './WorkerPool';
 import type {
   FarmOptions,
   PoolExitResult,

@@ -9,10 +9,9 @@
 import crypto from 'crypto';
 import path from 'path';
 import {escapeStrForRegex} from 'jest-regex-util';
-import normalize from '../normalize';
 import Defaults from '../Defaults';
-
 import {DEFAULT_JS_PATTERN} from '../constants';
+import normalize from '../normalize';
 
 const DEFAULT_CSS_PATTERN = '\\.(css)$';
 

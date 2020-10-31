@@ -12,16 +12,16 @@ import {createRequire} from 'module';
 import {dirname, resolve} from 'path';
 import {fileURLToPath} from 'url';
 import {jest as jestObject} from '@jest/globals';
-import staticImportedStateful from '../stateful.mjs';
 import staticImportedStatefulFromCjs from '../fromCjs.mjs';
+import {double} from '../index';
+import defaultFromCjs, {namedFunction} from '../namedExport.cjs';
+import {bag} from '../namespaceExport.js';
+import staticImportedStateful from '../stateful.mjs';
 // https://github.com/benmosher/eslint-plugin-import/issues/1739
 /* eslint-disable import/no-unresolved */
 import staticImportedStatefulWithQuery from '../stateful.mjs?query=1';
 import staticImportedStatefulWithAnotherQuery from '../stateful.mjs?query=2';
 /* eslint-enable */
-import {double} from '../index';
-import defaultFromCjs, {namedFunction} from '../namedExport.cjs';
-import {bag} from '../namespaceExport.js';
 
 test('should have correct import.meta', () => {
   expect(typeof require).toBe('undefined');

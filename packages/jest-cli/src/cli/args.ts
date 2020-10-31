@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import isCI = require('is-ci');
 import type {Config} from '@jest/types';
 import {constants, isJSONString} from 'jest-config';
-import isCI = require('is-ci');
 
 export function check(argv: Config.Argv): true {
   if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {

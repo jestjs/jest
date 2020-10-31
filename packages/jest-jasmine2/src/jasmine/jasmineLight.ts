@@ -31,14 +31,14 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
 import type {Jasmine, SpecDefinitionsFn} from '../types';
-import createSpy from './createSpy';
 import Env from './Env';
 import JsApiReporter from './JsApiReporter';
 import ReportDispatcher from './ReportDispatcher';
 import Spec from './Spec';
-import SpyRegistry from './spyRegistry';
 import Suite from './Suite';
 import Timer from './Timer';
+import createSpy from './createSpy';
+import SpyRegistry from './spyRegistry';
 
 export const create = function (createOptions: Record<string, any>): Jasmine {
   const j$ = {...createOptions} as Jasmine;

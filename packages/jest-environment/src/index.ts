@@ -6,9 +6,9 @@
  */
 
 import type {Context, Script} from 'vm';
+import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Circus, Config, Global} from '@jest/types';
 import jestMock = require('jest-mock');
-import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 
 type JestMockFn = typeof jestMock.fn;
 type JestMockSpyOn = typeof jestMock.spyOn;

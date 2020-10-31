@@ -7,9 +7,8 @@
 
 /* eslint-disable local/prefer-rest-params-eventually */
 
-import React from 'react';
 import Immutable from 'immutable';
-
+import React from 'react';
 import prettyFormat from '..';
 import setPrettyPrint from './setPrettyPrint';
 

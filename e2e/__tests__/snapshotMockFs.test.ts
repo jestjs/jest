@@ -6,8 +6,8 @@
  */
 
 import * as path from 'path';
-import rimraf = require('rimraf');
 import {wrap} from 'jest-snapshot-serializer-raw';
+import rimraf = require('rimraf');
 import {extractSummary} from '../Utils';
 import {json as runJestJson} from '../runJest';
 

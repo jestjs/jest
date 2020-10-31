@@ -7,7 +7,6 @@
 
 import type {Config} from '@jest/types';
 import expect = require('expect');
-
 import {
   addSerializer,
   toMatchInlineSnapshot,

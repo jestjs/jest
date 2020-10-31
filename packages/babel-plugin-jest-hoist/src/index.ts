@@ -6,6 +6,8 @@
  *
  */
 
+import type {PluginObj} from '@babel/core';
+import {statement} from '@babel/template';
 import type {NodePath} from '@babel/traverse';
 import {
   BlockStatement,
@@ -18,8 +20,6 @@ import {
   emptyStatement,
   isIdentifier,
 } from '@babel/types';
-import {statement} from '@babel/template';
-import type {PluginObj} from '@babel/core';
 
 const JEST_GLOBAL_NAME = 'jest';
 const JEST_GLOBALS_MODULE_NAME = '@jest/globals';

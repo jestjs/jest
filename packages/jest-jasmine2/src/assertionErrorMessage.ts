@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import chalk = require('chalk');
 import {
   DiffOptions,
   diff,
   printExpected,
   printReceived,
 } from 'jest-matcher-utils';
-import chalk = require('chalk');
 import type {AssertionErrorWithStack} from './types';
 
 const assertOperatorsMap: Record<string, string> = {

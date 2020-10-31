@@ -6,8 +6,8 @@
  */
 
 import * as path from 'path';
-import type {Config} from '@jest/types';
 import chalk = require('chalk');
+import type {Config} from '@jest/types';
 
 export type SnapshotResolver = {
   testPathForConsistencyCheck: string;

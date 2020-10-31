@@ -8,10 +8,10 @@
 /* eslint-disable local/ban-types-eventually */
 
 import * as asyncHooks from 'async_hooks';
+import stripAnsi = require('strip-ansi');
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';
-import stripAnsi = require('strip-ansi');
 
 function stackIsFromUser(stack: string) {
   // Either the test file, or something required by it

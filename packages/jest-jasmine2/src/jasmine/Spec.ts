@@ -31,14 +31,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
 import {AssertionError} from 'assert';
-import type {Config} from '@jest/types';
 import type {FailedAssertion, Milliseconds, Status} from '@jest/test-result';
-
+import type {Config} from '@jest/types';
 import ExpectationFailed from '../ExpectationFailed';
+import assertionErrorMessage from '../assertionErrorMessage';
 import expectationResultFactory, {
   Options as ExpectationResultFactoryOptions,
 } from '../expectationResultFactory';
-import assertionErrorMessage from '../assertionErrorMessage';
 import type {QueueableFn, default as queueRunner} from '../queueRunner';
 import type {AssertionErrorWithStack} from '../types';
 

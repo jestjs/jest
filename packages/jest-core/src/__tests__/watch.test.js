@@ -8,6 +8,7 @@
 
 import chalk from 'chalk';
 import {JestHook, KEYS} from 'jest-watcher';
+// eslint-disable-next-line import/order
 import TestWatcher from '../TestWatcher';
 
 const runJestMock = jest.fn();

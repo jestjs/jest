@@ -12,7 +12,6 @@ const fs = require('fs');
 const os = require('os');
 const path = require('path');
 const util = require('util');
-
 const chalk = require('chalk');
 const execa = require('execa');
 const globby = require('globby');

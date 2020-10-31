@@ -5,8 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {URL, fileURLToPath, pathToFileURL} from 'url';
+import * as nativeModule from 'module';
 import * as path from 'path';
+import {URL, fileURLToPath, pathToFileURL} from 'url';
 import {
   Script,
   // @ts-expect-error: experimental, not added to the types
@@ -17,22 +18,21 @@ import {
   // @ts-expect-error: experimental, not added to the types
   Module as VMModule,
 } from 'vm';
-import * as nativeModule from 'module';
 // @ts-expect-error
 import parseCjs = require('cjs-module-lexer');
-import type {Config, Global} from '@jest/types';
+import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
+import * as fs from 'graceful-fs';
+import stripBOM = require('strip-bom');
 import type {
   Jest,
   JestEnvironment,
   Module,
   ModuleWrapper,
 } from '@jest/environment';
+import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type * as JestGlobals from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
-import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
-import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
-import {createDirectory, deepCyclicCopy} from 'jest-util';
-import {escapePathForRegex} from 'jest-regex-util';
+import type {RuntimeTransformResult, V8CoverageResult} from '@jest/test-result';
 import {
   CallerTransformOptions,
   ScriptTransformer,
@@ -41,22 +41,22 @@ import {
   handlePotentialSyntaxError,
   shouldInstrument,
 } from '@jest/transform';
-import type {RuntimeTransformResult, V8CoverageResult} from '@jest/test-result';
-import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
-import * as fs from 'graceful-fs';
-import jestMock = require('jest-mock');
+import type {Config, Global} from '@jest/types';
 import HasteMap = require('jest-haste-map');
+import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
+import jestMock = require('jest-mock');
+import {escapePathForRegex} from 'jest-regex-util';
 import Resolver = require('jest-resolve');
 import Snapshot = require('jest-snapshot');
-import stripBOM = require('strip-bom');
-import type {Context as JestContext} from './types';
+import {createDirectory, deepCyclicCopy} from 'jest-util';
+import {run as cliRun} from './cli';
+import {options as cliOptions} from './cli/args';
 import {
   createOutsideJestVmPath,
   decodePossibleOutsideJestVmPath,
   findSiblingsWithFileExtension,
 } from './helpers';
-import {options as cliOptions} from './cli/args';
-import {run as cliRun} from './cli';
+import type {Context as JestContext} from './types';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 

@@ -6,8 +6,8 @@
  */
 
 import type {Config} from '@jest/types';
-import shouldInstrument from '../shouldInstrument';
 import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
+import shouldInstrument from '../shouldInstrument';
 import {Options} from '../types';
 
 describe('shouldInstrument', () => {

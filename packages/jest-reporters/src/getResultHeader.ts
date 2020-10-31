@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
-import type {TestResult} from '@jest/test-result';
 import chalk = require('chalk');
-import {formatTime} from 'jest-util';
 import terminalLink = require('terminal-link');
+import type {TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import {formatTime} from 'jest-util';
 import {formatTestPath, printDisplayName} from './utils';
 
 const LONG_TEST_COLOR = chalk.reset.bold.bgRed;

@@ -7,8 +7,8 @@
 
 /* eslint-disable local/ban-types-eventually */
 
-import type {Config} from '@jest/types';
 import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import {BaseWatchPlugin, JestHookSubscriber, UsageData} from 'jest-watcher';
 import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
 

@@ -21,12 +21,12 @@ import {
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
+import {equals} from './jasmineUtils';
 import type {
   MatcherState,
   MatchersObject,
   SyncExpectationResult,
 } from './types';
-import {equals} from './jasmineUtils';
 import {iterableEquality} from './utils';
 
 // The optional property of matcher context is true if undefined.

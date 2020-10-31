@@ -8,13 +8,12 @@
 import chalk = require('chalk');
 import stripAnsi = require('strip-ansi');
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
-
 import diff from '../';
+import {NO_DIFF_MESSAGE} from '../constants';
 import {diffLinesUnified, diffLinesUnified2} from '../diffLines';
 import {noColor} from '../normalizeDiffOptions';
 import {diffStringsUnified} from '../printDiffs';
 import {DiffOptions} from '../types';
-import {NO_DIFF_MESSAGE} from '../constants';
 
 const optionsCounts: DiffOptions = {
   includeChangeCounts: true,

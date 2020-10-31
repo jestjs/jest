@@ -6,7 +6,6 @@
  */
 
 import chalk = require('chalk');
-
 import type {DiffOptions, DiffOptionsNormalized} from './types';
 
 export const noColor = (string: string): string => string;

@@ -56,9 +56,9 @@ Here's an example of the GlobalSetup script
 
 ```js
 // setup.js
-const path = require('path');
 const fs = require('fs');
 const os = require('os');
+const path = require('path');
 const mkdirp = require('mkdirp');
 const puppeteer = require('puppeteer');
 
@@ -81,8 +81,8 @@ Then we need a custom Test Environment for puppeteer
 ```js
 // puppeteer_environment.js
 const fs = require('fs');
-const path = require('path');
 const os = require('os');
+const path = require('path');
 const puppeteer = require('puppeteer');
 const NodeEnvironment = require('jest-environment-node');
 

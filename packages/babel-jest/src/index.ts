@@ -7,12 +7,6 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import * as fs from 'graceful-fs';
-import type {
-  TransformOptions as JestTransformOptions,
-  Transformer,
-} from '@jest/transform';
-import type {Config} from '@jest/types';
 import {
   PartialConfig,
   PluginItem,
@@ -21,7 +15,13 @@ import {
   transformSync as babelTransform,
 } from '@babel/core';
 import chalk = require('chalk');
+import * as fs from 'graceful-fs';
 import slash = require('slash');
+import type {
+  TransformOptions as JestTransformOptions,
+  Transformer,
+} from '@jest/transform';
+import type {Config} from '@jest/types';
 import {loadPartialConfig} from './loadBabelConfig';
 
 const THIS_FILE = fs.readFileSync(__filename);

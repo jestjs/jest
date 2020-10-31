@@ -6,14 +6,14 @@
  */
 
 import * as path from 'path';
-import type {Circus} from '@jest/types';
-import {ErrorWithStack, convertDescriptorToString, formatTime} from 'jest-util';
-import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
 import dedent = require('dedent');
+import isGeneratorFn from 'is-generator-fn';
 import StackUtils = require('stack-utils');
-import prettyFormat = require('pretty-format');
 import type {AssertionResult, Status} from '@jest/test-result';
+import type {Circus} from '@jest/types';
+import {ErrorWithStack, convertDescriptorToString, formatTime} from 'jest-util';
+import prettyFormat = require('pretty-format');
 import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});

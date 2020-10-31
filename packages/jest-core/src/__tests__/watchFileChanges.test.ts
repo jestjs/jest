@@ -6,15 +6,15 @@
  *
  */
 
-import * as path from 'path';
 import {tmpdir} from 'os';
+import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {JestHook} from 'jest-watcher';
-import Runtime = require('jest-runtime');
-import {normalize} from 'jest-config';
-import HasteMap = require('jest-haste-map');
 import rimraf = require('rimraf');
 import type {AggregatedResult} from '@jest/test-result';
+import {normalize} from 'jest-config';
+import HasteMap = require('jest-haste-map');
+import Runtime = require('jest-runtime');
+import {JestHook} from 'jest-watcher';
 
 describe('Watch mode flows with changed files', () => {
   jest.resetModules();

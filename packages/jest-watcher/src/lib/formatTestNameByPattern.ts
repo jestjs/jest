@@ -6,7 +6,6 @@
  */
 
 import chalk = require('chalk');
-
 import colorize from './colorize';
 
 const DOTS = '...';

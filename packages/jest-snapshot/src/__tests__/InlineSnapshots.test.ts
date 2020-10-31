@@ -16,11 +16,10 @@ jest.mock('graceful-fs', () => ({
 jest.mock('prettier');
 
 import * as path from 'path';
+import babelTraverse from '@babel/traverse';
 import * as fs from 'graceful-fs';
 import prettier from 'prettier';
-import babelTraverse from '@babel/traverse';
 import {Frame} from 'jest-message-util';
-
 import {saveInlineSnapshots} from '../InlineSnapshots';
 beforeEach(() => {
   (prettier.resolveConfig.sync as jest.Mock).mockReset();

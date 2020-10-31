@@ -522,6 +522,7 @@ module.exports = audio;
 Example test:
 
 ```js
+const audio = require('./audio');
 const video = require('./video');
 
 test('plays video', () => {
@@ -533,8 +534,6 @@ test('plays video', () => {
 
   spy.mockRestore();
 });
-
-const audio = require('./audio');
 
 test('plays audio', () => {
   const spy = jest.spyOn(audio, 'volume', 'set'); // we pass 'set'

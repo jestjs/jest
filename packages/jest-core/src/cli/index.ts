@@ -5,30 +5,30 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
-import type {AggregatedResult} from '@jest/test-result';
-import {CustomConsole} from '@jest/console';
-import {createDirectory, preRunMessage} from 'jest-util';
-import {readConfigs} from 'jest-config';
-import Runtime = require('jest-runtime');
-import type {ChangedFilesPromise} from 'jest-changed-files';
-import HasteMap = require('jest-haste-map');
 import chalk = require('chalk');
-import rimraf = require('rimraf');
 import exit = require('exit');
-import type {Filter} from '../types';
-import createContext from '../lib/createContext';
-import getChangedFilesPromise from '../getChangedFilesPromise';
-import {formatHandleErrors} from '../collectHandles';
-import handleDeprecationWarnings from '../lib/handleDeprecationWarnings';
-import runJest from '../runJest';
+import rimraf = require('rimraf');
+import {CustomConsole} from '@jest/console';
+import type {AggregatedResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import type {ChangedFilesPromise} from 'jest-changed-files';
+import {readConfigs} from 'jest-config';
+import HasteMap = require('jest-haste-map');
+import Runtime = require('jest-runtime');
+import {createDirectory, preRunMessage} from 'jest-util';
 import TestWatcher from '../TestWatcher';
-import watch from '../watch';
-import pluralize from '../pluralize';
-import logDebugMessages from '../lib/logDebugMessages';
+import {formatHandleErrors} from '../collectHandles';
+import getChangedFilesPromise from '../getChangedFilesPromise';
 import getConfigsOfProjectsToRun from '../getConfigsOfProjectsToRun';
 import getProjectNamesMissingWarning from '../getProjectNamesMissingWarning';
 import getSelectProjectsMessage from '../getSelectProjectsMessage';
+import createContext from '../lib/createContext';
+import handleDeprecationWarnings from '../lib/handleDeprecationWarnings';
+import logDebugMessages from '../lib/logDebugMessages';
+import pluralize from '../pluralize';
+import runJest from '../runJest';
+import type {Filter} from '../types';
+import watch from '../watch';
 
 const {print: preRunMessagePrint} = preRunMessage;
 

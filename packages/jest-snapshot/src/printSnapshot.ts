@@ -34,7 +34,6 @@ import {
   matcherHint,
 } from 'jest-matcher-utils';
 import prettyFormat = require('pretty-format');
-
 import {
   aBackground2,
   aBackground3,

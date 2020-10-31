@@ -7,7 +7,6 @@
  */
 
 import jestExpect from '../';
-
 import {
   any,
   anything,

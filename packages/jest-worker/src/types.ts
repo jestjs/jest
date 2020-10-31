@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {EventEmitter} from 'events';
 import type {ForkOptions} from 'child_process';
+import type {EventEmitter} from 'events';
 
 // import type {ResourceLimits} from 'worker_threads';
 // This is not present in the Node 12 typings

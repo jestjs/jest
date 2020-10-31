@@ -8,8 +8,8 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import runJest, {json as runWithJson} from '../runJest';
 import {cleanup, runYarn} from '../Utils';
+import runJest, {json as runWithJson} from '../runJest';
 
 const DIR = path.join(tmpdir(), 'jest-global-setup');
 const project1DIR = path.join(tmpdir(), 'jest-global-setup-project-1');

@@ -8,8 +8,8 @@
 import * as fs from 'graceful-fs';
 import type {AggregatedResult} from '@jest/test-result';
 import {getCacheFilePath} from 'jest-haste-map';
-import type {Context} from 'jest-runtime';
 import type {Test} from 'jest-runner';
+import type {Context} from 'jest-runtime';
 
 const FAIL = 0;
 const SUCCESS = 1;

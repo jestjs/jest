@@ -8,10 +8,9 @@
 'use strict';
 
 const {writeFileSync} = require('fs');
+const pkg = require('../package.json');
 
 const pkgPath = require.resolve('../package.json');
-
-const pkg = require('../package.json');
 
 delete pkg.devDependencies.prettier;
 

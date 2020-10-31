@@ -6,8 +6,8 @@
  */
 
 import * as path from 'path';
-import isValidPath from '../isValidPath';
 import {makeGlobalConfig} from '../../../../../TestUtils';
+import isValidPath from '../isValidPath';
 
 const rootDir = path.resolve(path.sep, 'root');
 

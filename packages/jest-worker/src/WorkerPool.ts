@@ -6,7 +6,6 @@
  */
 
 import BaseWorkerPool from './base/BaseWorkerPool';
-
 import type {
   ChildMessage,
   OnCustomMessage,

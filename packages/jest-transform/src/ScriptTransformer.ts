@@ -7,31 +7,33 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
+import {transformSync as babelTransform} from '@babel/core';
+// @ts-expect-error: should just be `require.resolve`, but the tests mess that up
+import babelPluginIstanbul from 'babel-plugin-istanbul';
+import {fromSource as sourcemapFromSource} from 'convert-source-map';
+import stableStringify = require('fast-json-stable-stringify');
+import * as fs from 'graceful-fs';
+import {addHook} from 'pirates';
+import slash = require('slash');
+import {sync as writeFileAtomic} from 'write-file-atomic';
 import type {Config} from '@jest/types';
+import HasteMap = require('jest-haste-map');
 import {
   createDirectory,
   interopRequireDefault,
   isPromise,
   tryRealpath,
 } from 'jest-util';
-import * as fs from 'graceful-fs';
-import {transformSync as babelTransform} from '@babel/core';
-// @ts-expect-error: should just be `require.resolve`, but the tests mess that up
-import babelPluginIstanbul from 'babel-plugin-istanbul';
-import {fromSource as sourcemapFromSource} from 'convert-source-map';
-import HasteMap = require('jest-haste-map');
-import stableStringify = require('fast-json-stable-stringify');
-import slash = require('slash');
-import {sync as writeFileAtomic} from 'write-file-atomic';
-import {addHook} from 'pirates';
+import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';
+import shouldInstrument from './shouldInstrument';
 import type {
   Options,
   TransformResult,
   TransformedSource,
   Transformer,
 } from './types';
-import shouldInstrument from './shouldInstrument';
-import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';
+// Use `require` to avoid TS rootDir
+const {version: VERSION} = require('../package.json');
 
 type ProjectCache = {
   configString: string;
@@ -39,9 +41,6 @@ type ProjectCache = {
   transformRegExp?: Array<[RegExp, string, Record<string, unknown>]>;
   transformedFiles: Map<string, TransformResult>;
 };
-
-// Use `require` to avoid TS rootDir
-const {version: VERSION} = require('../package.json');
 
 // This data structure is used to avoid recalculating some data every time that
 // we need to transform a file. Since ScriptTransformer is instantiated for each

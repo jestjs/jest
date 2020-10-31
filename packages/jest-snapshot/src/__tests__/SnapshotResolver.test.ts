@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import {makeProjectConfig} from '../../../../TestUtils';
-
 import {SnapshotResolver, buildSnapshotResolver} from '../SnapshotResolver';
 
 describe('defaults', () => {

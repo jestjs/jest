@@ -7,18 +7,24 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import {statSync} from 'graceful-fs';
-import {sync as glob} from 'glob';
-import type {Config} from '@jest/types';
-import {ValidationError, validate} from 'jest-validate';
-import {clearLine, replacePathSepForGlob, tryRealpath} from 'jest-util';
 import chalk = require('chalk');
-import micromatch = require('micromatch');
-import Resolver = require('jest-resolve');
-import {replacePathSepForRegex} from 'jest-regex-util';
 import merge = require('deepmerge');
-import validatePattern from './validatePattern';
+import {sync as glob} from 'glob';
+import {statSync} from 'graceful-fs';
+import micromatch = require('micromatch');
+import type {Config} from '@jest/types';
+import {replacePathSepForRegex} from 'jest-regex-util';
+import Resolver = require('jest-resolve');
+import {clearLine, replacePathSepForGlob, tryRealpath} from 'jest-util';
+import {ValidationError, validate} from 'jest-validate';
+import DEFAULT_CONFIG from './Defaults';
+import DEPRECATED_CONFIG from './Deprecated';
+import {validateReporters} from './ReporterValidationErrors';
+import VALID_CONFIG from './ValidConfig';
+import {getDisplayNameColor} from './color';
+import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
 import getMaxWorkers from './getMaxWorkers';
+import setFromArgv from './setFromArgv';
 import {
   BULLET,
   DOCUMENTATION_NOTE,
@@ -31,13 +37,7 @@ import {
   replaceRootDirInPath,
   resolve,
 } from './utils';
-import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
-import {validateReporters} from './ReporterValidationErrors';
-import DEFAULT_CONFIG from './Defaults';
-import DEPRECATED_CONFIG from './Deprecated';
-import setFromArgv from './setFromArgv';
-import VALID_CONFIG from './ValidConfig';
-import {getDisplayNameColor} from './color';
+import validatePattern from './validatePattern';
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js'];
 const PRESET_NAME = 'jest-preset';
