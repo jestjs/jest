@@ -11,8 +11,6 @@ import pluginTester from 'babel-plugin-tester';
 import {format as formatCode} from 'prettier';
 import babelPluginJestHoist from '..';
 
-const fakeAbsolutPath = path.resolve(__dirname, '../file.js');
-
 pluginTester({
   plugin: babelPluginJestHoist,
   pluginName: 'babel-plugin-jest-hoist',
@@ -21,7 +19,7 @@ pluginTester({
       babelOptions: {
         babelrc: false,
         configFile: false,
-        filename: fakeAbsolutPath,
+        filename: path.resolve(__dirname, '../file.js'),
         presets: [
           [
             require.resolve('@babel/preset-react'),
@@ -35,8 +33,8 @@ pluginTester({
       formatResult(code) {
         // replace the filename with something that will be the same across OSes and machine
         const codeWithoutSystemPath = code.replace(
-          new RegExp(fakeAbsolutPath, 'g'),
-          '/root/project/src/file.js',
+          /var _jsxFileName = ".*";/,
+          'var _jsxFileName = "/root/project/src/file.js";',
         );
 
         return formatCode(codeWithoutSystemPath, {parser: 'babel'});
