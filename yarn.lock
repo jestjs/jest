@@ -5812,10 +5812,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cjs-module-lexer@npm:^0.4.2":
-  version: 0.4.3
-  resolution: "cjs-module-lexer@npm:0.4.3"
-  checksum: ee3e1707c877c6c38577210037c6735499739cd4055c51dc224a4d71ecb901cd6460281d1497fbcc20ac1291f4cab7f5cdcd3713ea244aa55625f3607237d301
+"cjs-module-lexer@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "cjs-module-lexer@npm:0.6.0"
+  checksum: 333671db7fb916d9c569a52fba714a86051881c69a4df784a07cb1dfec2a1796c7bcd7ba46ff9035cccb6e7aaff612a83f6505437c01a5ae14c4ebc6c36f762c
   languageName: node
   linkType: hard
 
@@ -11971,7 +11971,7 @@ fsevents@^1.2.7:
     "@types/node": ^14.0.27
     "@types/yargs": ^15.0.0
     chalk: ^4.0.0
-    cjs-module-lexer: ^0.4.2
+    cjs-module-lexer: ^0.6.0
     collect-v8-coverage: ^1.0.0
     execa: ^4.0.0
     exit: ^0.1.2

@@ -18,8 +18,7 @@ import {
   // @ts-expect-error: experimental, not added to the types
   Module as VMModule,
 } from 'vm';
-// @ts-expect-error
-import parseCjs = require('cjs-module-lexer');
+import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
 import stripBOM = require('strip-bom');
@@ -505,7 +504,6 @@ class Runtime {
     if (transformedCode) {
       const {exports} = parseCjs(transformedCode.code);
 
-      // @ts-expect-error
       cjsExports = exports.filter(exportName => {
         // we don't wanna respect any exports _names_ default as a named export
         if (exportName === 'default') {
