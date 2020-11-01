@@ -273,7 +273,7 @@ describe.each([
 - `table`: `Tagged Template Literal`
   - First row of variable name column headings separated with `|`
   - One or more subsequent rows of data supplied as template literal expressions using `${value}` syntax.
-- `name`: `String` the title of the test suite, use `$variable` to inject test data into the suite title from the tagged template expressions.
+- `name`: `String` the title of the test suite, use `$variable` to inject test data into the suite title from the tagged template expressions, and `$#` for the index of the row.
   - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
 - `fn`: `Function` the suite of tests to be ran, this is the function that will receive the test data object.
 - Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
