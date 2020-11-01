@@ -146,7 +146,9 @@ FUNCTIONS.mock = args => {
             const initNode = binding.path.node.init;
 
             if (initNode && binding.constant && scope.isPure(initNode, true)) {
-              // how to hoist???
+              // replace the reference with its constant value
+              id.replaceWith(initNode);
+
               isAllowedIdentifier = true;
             }
           }
@@ -286,7 +288,7 @@ export default (): PluginObj<{
   visitor: {
     ExpressionStatement(exprStmt) {
       const jestObjExpr = extractJestObjExprIfHoistable(
-        exprStmt.get<'expression'>('expression'),
+        exprStmt.get('expression'),
       );
       if (jestObjExpr) {
         jestObjExpr.replaceWith(
