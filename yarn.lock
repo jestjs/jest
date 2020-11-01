@@ -1852,7 +1852,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/globals@^26.6.1, @jest/globals@workspace:packages/jest-globals":
+"@jest/globals@^26.6.1, @jest/globals@workspace:*, @jest/globals@workspace:packages/jest-globals":
   version: 0.0.0-use.local
   resolution: "@jest/globals@workspace:packages/jest-globals"
   dependencies:
@@ -1966,7 +1966,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/test-utils@^26.5.0, @jest/test-utils@workspace:packages/test-utils":
+"@jest/test-utils@^26.5.0, @jest/test-utils@workspace:*, @jest/test-utils@workspace:packages/test-utils":
   version: 0.0.0-use.local
   resolution: "@jest/test-utils@workspace:packages/test-utils"
   dependencies:
@@ -11451,7 +11451,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-changed-files@^26.6.1, jest-changed-files@workspace:packages/jest-changed-files":
+"jest-changed-files@^26.6.1, jest-changed-files@workspace:*, jest-changed-files@workspace:packages/jest-changed-files":
   version: 0.0.0-use.local
   resolution: "jest-changed-files@workspace:packages/jest-changed-files"
   dependencies:
@@ -11811,7 +11811,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-mock@^26.6.1, jest-mock@workspace:packages/jest-mock":
+"jest-mock@^26.6.1, jest-mock@workspace:*, jest-mock@workspace:packages/jest-mock":
   version: 0.0.0-use.local
   resolution: "jest-mock@workspace:packages/jest-mock"
   dependencies:
@@ -12027,7 +12027,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-snapshot@^26.6.1, jest-snapshot@workspace:packages/jest-snapshot":
+"jest-snapshot@^26.6.1, jest-snapshot@workspace:*, jest-snapshot@workspace:packages/jest-snapshot":
   version: 0.0.0-use.local
   resolution: "jest-snapshot@workspace:packages/jest-snapshot"
   dependencies:
@@ -12207,7 +12207,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest@*, jest@workspace:packages/jest":
+"jest@*, jest@workspace:*, jest@workspace:packages/jest":
   version: 0.0.0-use.local
   resolution: "jest@workspace:packages/jest"
   dependencies:
@@ -17198,8 +17198,8 @@ fsevents@^1.2.7:
     "@babel/preset-react": ^7.0.0
     "@babel/preset-typescript": ^7.0.0
     "@babel/register": ^7.0.0
-    "@jest/globals": "workspace:packages/jest-globals"
-    "@jest/test-utils": "workspace:packages/test-utils"
+    "@jest/globals": "workspace:*"
+    "@jest/test-utils": "workspace:*"
     "@types/babel__core": ^7.0.0
     "@types/babel__generator": ^7.0.0
     "@types/babel__template": ^7.0.0
@@ -17242,13 +17242,13 @@ fsevents@^1.2.7:
     istanbul-lib-coverage: ^3.0.0
     istanbul-lib-report: ^3.0.0
     istanbul-reports: ^3.0.0
-    jest: "workspace:packages/jest"
-    jest-changed-files: "workspace:packages/jest-changed-files"
+    jest: "workspace:*"
+    jest-changed-files: "workspace:*"
     jest-junit: ^12.0.0
-    jest-mock: "workspace:packages/jest-mock"
+    jest-mock: "workspace:*"
     jest-runner-tsd: ^1.1.0
     jest-silent-reporter: ^0.2.1
-    jest-snapshot: "workspace:packages/jest-snapshot"
+    jest-snapshot: "workspace:*"
     jest-snapshot-serializer-raw: ^1.1.0
     jest-watch-typeahead: ^0.6.0
     jquery: ^3.2.1
