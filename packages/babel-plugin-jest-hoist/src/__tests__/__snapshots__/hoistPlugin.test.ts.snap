@@ -6,6 +6,8 @@ jest.mock('./App', () => () => <div>Hello world</div>);
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
+var _jsxFileName = "/root/project/src/file.js";
+
 _getJestObj().mock("./App", () => () =>
   /*#__PURE__*/ _jsxDEV(
     "div",
@@ -15,7 +17,7 @@ _getJestObj().mock("./App", () => () =>
     void 0,
     false,
     {
-      fileName: _hoistedMockFactoryVariable(),
+      fileName: _jsxFileName,
       lineNumber: 1,
       columnNumber: 32
     },
@@ -24,7 +26,6 @@ _getJestObj().mock("./App", () => () =>
 );
 
 import { jsxDEV as _jsxDEV } from "react/jsx-dev-runtime";
-var _jsxFileName = "/root/project/src/file.js";
 
 function _getJestObj() {
   const { jest } = require("@jest/globals");
@@ -32,10 +33,6 @@ function _getJestObj() {
   _getJestObj = () => jest;
 
   return jest;
-}
-
-function _hoistedMockFactoryVariable() {
-  return "/root/project/src/file.js";
 }
 
 

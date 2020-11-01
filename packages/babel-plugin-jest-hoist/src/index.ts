@@ -16,14 +16,19 @@ import {
   Identifier,
   Node,
   Program,
+  VariableDeclaration,
+  VariableDeclarator,
   callExpression,
   emptyStatement,
   isIdentifier,
+  variableDeclaration,
 } from '@babel/types';
 
 const JEST_GLOBAL_NAME = 'jest';
 const JEST_GLOBALS_MODULE_NAME = '@jest/globals';
 const JEST_GLOBALS_MODULE_JEST_EXPORT_NAME = 'jest';
+
+const hoistedVariables = new WeakSet<VariableDeclarator>();
 
 // We allow `jest`, `expect`, `require`, all default Node.js globals and all
 // ES2015 built-ins to be used inside of a `jest.mock` factory.
@@ -146,20 +151,7 @@ FUNCTIONS.mock = args => {
             const initNode = binding.path.node.init;
 
             if (initNode && binding.constant && scope.isPure(initNode, true)) {
-              const identifier = scope.generateUidIdentifier(
-                'hoistedMockFactoryVariable',
-              );
-
-              binding.path.parentPath.insertAfter(
-                createHoistedVariable({
-                  HOISTED_NAME: identifier,
-                  HOISTED_VALUE: binding.path.node.init,
-                }),
-              );
-
-              // replace reference with a call to the new function
-              id.replaceWith(callExpression(identifier, []));
-
+              hoistedVariables.add(binding.path.node);
               isAllowedIdentifier = true;
             }
           }
@@ -199,12 +191,6 @@ function GETTER_NAME() {
   const { JEST_GLOBALS_MODULE_JEST_EXPORT_NAME } = require("JEST_GLOBALS_MODULE_NAME");
   GETTER_NAME = () => JEST_GLOBALS_MODULE_JEST_EXPORT_NAME;
   return JEST_GLOBALS_MODULE_JEST_EXPORT_NAME;
-}
-`;
-
-const createHoistedVariable = statement`
-function HOISTED_NAME() {
-  return HOISTED_VALUE;
 }
 `;
 
@@ -317,6 +303,7 @@ export default (): PluginObj<{
   // in `post` to make sure we come after an import transform and can unshift above the `require`s
   post({path: program}) {
     const self = this;
+
     visitBlock(program);
     program.traverse({
       BlockStatement: visitBlock,
@@ -324,17 +311,19 @@ export default (): PluginObj<{
 
     function visitBlock(block: NodePath<BlockStatement> | NodePath<Program>) {
       // use a temporary empty statement instead of the real first statement, which may itself be hoisted
-      const [firstNonHoistedStatementOfBlock] = block.unshiftContainer(
-        'body',
+      const [varsHoistPoint, callsHoistPoint] = block.unshiftContainer('body', [
         emptyStatement(),
-      );
+        emptyStatement(),
+      ]);
       block.traverse({
         CallExpression: visitCallExpr,
+        VariableDeclarator: visitVariableDeclarator,
         // do not traverse into nested blocks, or we'll hoist calls in there out to this block
         // @ts-expect-error blacklist is not known
         blacklist: ['BlockStatement'],
       });
-      firstNonHoistedStatementOfBlock.remove();
+      callsHoistPoint.remove();
+      varsHoistPoint.remove();
 
       function visitCallExpr(callExpr: NodePath<CallExpression>) {
         const {
@@ -351,9 +340,23 @@ export default (): PluginObj<{
             const mockStmtParent = mockStmt.parentPath;
             if (mockStmtParent.isBlock()) {
               mockStmt.remove();
-              firstNonHoistedStatementOfBlock.insertBefore(mockStmtNode);
+              callsHoistPoint.insertBefore(mockStmtNode);
             }
           }
+        }
+      }
+
+      function visitVariableDeclarator(varDecl: NodePath<VariableDeclarator>) {
+        if (hoistedVariables.has(varDecl.node)) {
+          const {kind, declarations} = varDecl.parent as VariableDeclaration;
+          if (declarations.length === 1) {
+            varDecl.parentPath.remove();
+          } else {
+            varDecl.remove();
+          }
+          varsHoistPoint.insertBefore(
+            variableDeclaration(kind, [varDecl.node]),
+          );
         }
       }
     }
