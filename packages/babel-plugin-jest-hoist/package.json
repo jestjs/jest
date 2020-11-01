@@ -20,9 +20,12 @@
   },
   "devDependencies": {
     "@babel/core": "^7.11.6",
+    "@babel/preset-react": "^7.12.1",
     "@types/babel__template": "^7.0.2",
     "@types/node": "*",
-    "babel-plugin-tester": "^10.0.0"
+    "@types/prettier": "^2.0.0",
+    "babel-plugin-tester": "^10.0.0",
+    "prettier": "^2.1.1"
   },
   "publishConfig": {
     "access": "public"
