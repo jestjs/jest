@@ -146,8 +146,19 @@ FUNCTIONS.mock = args => {
             const initNode = binding.path.node.init;
 
             if (initNode && binding.constant && scope.isPure(initNode, true)) {
-              // replace the reference with its constant value
-              id.replaceWith(initNode);
+              const identifier = scope.generateUidIdentifier(
+                'hoistedMockFactoryVariable',
+              );
+
+              binding.path.parentPath.insertAfter(
+                createHoistedVariable({
+                  HOISTED_NAME: identifier,
+                  HOISTED_VALUE: binding.path.node.init,
+                }),
+              );
+
+              // replace reference with a call to the new function
+              id.replaceWith(callExpression(identifier, []));
 
               isAllowedIdentifier = true;
             }
@@ -188,6 +199,12 @@ function GETTER_NAME() {
   const { JEST_GLOBALS_MODULE_JEST_EXPORT_NAME } = require("JEST_GLOBALS_MODULE_NAME");
   GETTER_NAME = () => JEST_GLOBALS_MODULE_JEST_EXPORT_NAME;
   return JEST_GLOBALS_MODULE_JEST_EXPORT_NAME;
+}
+`;
+
+const createHoistedVariable = statement`
+function HOISTED_NAME() {
+  return HOISTED_VALUE;
 }
 `;
 

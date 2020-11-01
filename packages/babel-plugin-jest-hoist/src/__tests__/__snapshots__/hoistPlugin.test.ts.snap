@@ -15,7 +15,7 @@ _getJestObj().mock("./App", () => () =>
     void 0,
     false,
     {
-      fileName: "/root/project/src/file.js",
+      fileName: _hoistedMockFactoryVariable(),
       lineNumber: 1,
       columnNumber: 32
     },
@@ -32,6 +32,10 @@ function _getJestObj() {
   _getJestObj = () => jest;
 
   return jest;
+}
+
+function _hoistedMockFactoryVariable() {
+  return "/root/project/src/file.js";
 }
 
 
