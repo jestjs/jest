@@ -148,10 +148,11 @@ FUNCTIONS.mock = args => {
           const binding = scope.bindings[name];
 
           if (binding?.path.isVariableDeclarator()) {
-            const initNode = binding.path.node.init;
+            const {node} = binding.path;
+            const initNode = node.init;
 
             if (initNode && binding.constant && scope.isPure(initNode, true)) {
-              hoistedVariables.add(binding.path.node);
+              hoistedVariables.add(node);
               isAllowedIdentifier = true;
             }
           }
@@ -305,9 +306,7 @@ export default (): PluginObj<{
     const self = this;
 
     visitBlock(program);
-    program.traverse({
-      BlockStatement: visitBlock,
-    });
+    program.traverse({BlockStatement: visitBlock});
 
     function visitBlock(block: NodePath<BlockStatement> | NodePath<Program>) {
       // use a temporary empty statement instead of the real first statement, which may itself be hoisted
@@ -336,9 +335,9 @@ export default (): PluginObj<{
           const mockStmt = callExpr.getStatementParent();
 
           if (mockStmt) {
-            const mockStmtNode = mockStmt.node;
             const mockStmtParent = mockStmt.parentPath;
             if (mockStmtParent.isBlock()) {
+              const mockStmtNode = mockStmt.node;
               mockStmt.remove();
               callsHoistPoint.insertBefore(mockStmtNode);
             }
@@ -348,6 +347,9 @@ export default (): PluginObj<{
 
       function visitVariableDeclarator(varDecl: NodePath<VariableDeclarator>) {
         if (hoistedVariables.has(varDecl.node)) {
+          // should be assert function, but it's not. So let's cast below
+          varDecl.parentPath.assertVariableDeclaration();
+
           const {kind, declarations} = varDecl.parent as VariableDeclaration;
           if (declarations.length === 1) {
             varDecl.parentPath.remove();
