@@ -162,11 +162,12 @@ test('ObjectContaining matches', () => {
     objectContaining({}).asymmetricMatch('jest'),
     objectContaining({foo: 'foo'}).asymmetricMatch({foo: 'foo', jest: 'jest'}),
     objectContaining({foo: undefined}).asymmetricMatch({foo: undefined}),
-    objectContaining({foo: {bar: [1]}}).asymmetricMatch({
-      foo: {bar: [1], qux: []},
-    }),
     objectContaining({first: objectContaining({second: {}})}).asymmetricMatch({
       first: {second: {}},
+    }),
+    objectContaining({foo: Buffer.from('foo')}).asymmetricMatch({
+      foo: Buffer.from('foo'),
+      jest: 'jest',
     }),
   ].forEach(test => {
     jestExpect(test).toEqual(true);
@@ -178,6 +179,10 @@ test('ObjectContaining does not match', () => {
     objectContaining({foo: 'foo'}).asymmetricMatch({bar: 'bar'}),
     objectContaining({foo: 'foo'}).asymmetricMatch({foo: 'foox'}),
     objectContaining({foo: undefined}).asymmetricMatch({}),
+    objectContaining({
+      answer: 42,
+      foo: {bar: 'baz', foobar: 'qux'},
+    }).asymmetricMatch({foo: {bar: 'baz'}}),
   ].forEach(test => {
     jestExpect(test).toEqual(false);
   });
