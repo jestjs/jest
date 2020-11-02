@@ -179,6 +179,10 @@ test('ObjectContaining does not match', () => {
     objectContaining({foo: 'foo'}).asymmetricMatch({bar: 'bar'}),
     objectContaining({foo: 'foo'}).asymmetricMatch({foo: 'foox'}),
     objectContaining({foo: undefined}).asymmetricMatch({}),
+    objectContaining({
+      answer: 42,
+      foo: {bar: 'baz', foobar: 'qux'},
+    }).asymmetricMatch({foo: {bar: 'baz'}}),
   ].forEach(test => {
     jestExpect(test).toEqual(false);
   });
