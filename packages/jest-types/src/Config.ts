@@ -25,7 +25,7 @@ export type HasteConfig = {
   /**
    * Whether to follow symlinks when crawling for files.
    *   This options cannot be used in projects which use watchman.
-   *   Projects with a .watchmanconfig will error if this option is set to true.
+   *   Projects with `watchman` set to true will error if this option is set to true.
    */
   enableSymlinks?: boolean;
   /** Path to a custom implementation of Haste. */
