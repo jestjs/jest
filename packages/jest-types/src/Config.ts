@@ -18,10 +18,15 @@ export type Path = string;
 export type Glob = string;
 
 export type HasteConfig = {
+  /** Whether to hash files using SHA-1. */
   computeSha1?: boolean;
+  /** The platform to use as the default, e.g. 'ios'. */
   defaultPlatform?: string | null;
+  /** Path to a custom implementation of Haste. */
   hasteImplModulePath?: string;
+  /** All platforms to target, e.g ['ios', 'android']. */
   platforms?: Array<string>;
+  /** Whether to throw on error on module collision. */
   throwOnModuleCollision?: boolean;
 };
 
