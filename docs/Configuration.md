@@ -464,6 +464,27 @@ _Note: A global teardown module configured in a project (using multi-project run
 
 _Note: The same caveat concerning transformation of `node_modules` as for `globalSetup` applies to `globalTeardown`._
 
+### `haste` [object]
+
+Default: `undefined`
+
+This will be used to configure the behavior of `jest-haste-map`, Jest's internal file crawler/cache system. The following options are supported:
+
+```ts
+type HasteConfig = {
+  // Whether to hash files using SHA-1.
+  computeSha1?: boolean;
+  // The platform to use as the default, e.g. 'ios'.
+  defaultPlatform?: string | null;
+  // Path to a custom implementation of Haste.
+  hasteImplModulePath?: string;
+  // All platforms to target, e.g ['ios', 'android'].
+  platforms?: Array<string>;
+  // Whether to throw on error on module collision.
+  throwOnModuleCollision?: boolean;
+};
+```
+
 ### `injectGlobals` [boolean]
 
 Default: `true`
@@ -1106,7 +1127,7 @@ This option allows the use of a custom results processor. This processor must be
 
 ```json
 {
-  "success": bool,
+  "success": boolean,
   "startTime": epoch,
   "numTotalTestSuites": number,
   "numPassedTestSuites": number,

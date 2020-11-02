@@ -336,6 +336,27 @@ Default: `undefined`
 
 This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's `globalConfig` object as a parameter.
 
+### `haste` [object]
+
+Default: `undefined`
+
+This will be used to configure the behavior of `jest-haste-map`, Jest's internal file crawler/cache system. The following options are supported:
+
+```ts
+type HasteConfig = {
+  // Whether to hash files using SHA-1.
+  computeSha1?: boolean;
+  // The platform to use as the default, e.g. 'ios'.
+  defaultPlatform?: string | null;
+  // Path to a custom implementation of Haste.
+  hasteImplModulePath?: string;
+  // All platforms to target, e.g ['ios', 'android'].
+  platforms?: Array<string>;
+  // Whether to throw on error on module collision.
+  throwOnModuleCollision?: boolean;
+};
+```
+
 ### `moduleDirectories` [array\<string>]
 
 Default: `["node_modules"]`
@@ -569,7 +590,7 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 ```json
 {
   "basedir": string,
-  "browser": bool,
+  "browser": boolean,
   "extensions": [string],
   "moduleDirectory": [string],
   "paths": [string],
@@ -861,7 +882,7 @@ This option allows the use of a custom results processor. This processor must be
 
 ```json
 {
-  "success": bool,
+  "success": boolean,
   "startTime": epoch,
   "numTotalTestSuites": number,
   "numPassedTestSuites": number,
