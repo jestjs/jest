@@ -177,15 +177,18 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
       return true;
     } else {
       for (const property in this.sample) {
-        const expected =
+        if (
           typeof this.sample[property] === 'object' &&
           !(this.sample[property] instanceof AsymmetricMatcher)
-            ? objectContaining(this.sample[property] as Record<string, unknown>)
-            : this.sample[property];
+        ) {
+          this.sample[property] = objectContaining(
+            this.sample[property] as Record<string, unknown>,
+          );
+        }
 
         if (
           !hasProperty(other, property) ||
-          !equals(expected, other[property])
+          !equals(this.sample[property], other[property])
         ) {
           return false;
         }

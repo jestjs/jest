@@ -210,14 +210,6 @@ test('ObjectContaining throws for non-objects', () => {
   jestExpect(() => objectContaining(1337).asymmetricMatch()).toThrow();
 });
 
-test('ObjectContaining does not mutate the sample', () => {
-  const sample = {foo: {bar: {}}};
-  const sample_json = JSON.stringify(sample);
-  expect({foo: {bar: {}}}).toEqual(expect.objectContaining(sample));
-
-  expect(JSON.stringify(sample)).toEqual(sample_json);
-});
-
 test('ObjectNotContaining matches', () => {
   [
     objectNotContaining({}).asymmetricMatch('jest'),
