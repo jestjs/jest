@@ -1,18 +1,18 @@
 {
   "name": "@jest/test-utils",
-  "version": "26.5.0",
+  "version": "26.6.2",
   "private": true,
   "license": "MIT",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/types": "^26.6.1",
+    "@jest/types": "^26.6.2",
     "@types/jest": "*",
     "@types/node": "*",
     "@types/semver": "^7.1.0",
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.1.0",
-    "pretty-format": "^26.6.1",
+    "pretty-format": "^26.6.2",
     "semver": "^7.3.2"
   },
   "engines": {
