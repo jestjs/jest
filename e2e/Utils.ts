@@ -44,7 +44,10 @@ export const run = (
   return result;
 };
 
-export const runYarn = (cwd: Config.Path, env?: Record<string, string>) => {
+export const runYarnInstall = (
+  cwd: Config.Path,
+  env?: Record<string, string>,
+) => {
   const lockfilePath = path.resolve(cwd, 'yarn.lock');
   let exists = true;
 
@@ -54,7 +57,7 @@ export const runYarn = (cwd: Config.Path, env?: Record<string, string>) => {
     fs.writeFileSync(lockfilePath, '');
   }
 
-  return run(exists ? 'yarn' : 'yarn --immutable', cwd, env);
+  return run(exists ? 'yarn install' : 'yarn install --immutable', cwd, env);
 };
 
 export const linkJestPackage = (packageName: string, cwd: Config.Path) => {
