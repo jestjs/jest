@@ -46,13 +46,15 @@ export const run = (
 
 export const runYarn = (cwd: Config.Path, env?: Record<string, string>) => {
   const lockfilePath = path.resolve(cwd, 'yarn.lock');
+  let exists = true;
 
   // If the lockfile doesn't exist, yarn's project detection is confused. Just creating an empty file works
   if (!fs.existsSync(lockfilePath)) {
+    exists = false;
     fs.writeFileSync(lockfilePath, '');
   }
 
-  return run('yarn', cwd, env);
+  return run(exists ? 'yarn' : 'yarn --immutable', cwd, env);
 };
 
 export const linkJestPackage = (packageName: string, cwd: Config.Path) => {

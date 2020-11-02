@@ -36,7 +36,7 @@ jobs:
         with:
           node-version: 12.x
       - name: install
-        run: yarn
+        run: yarn --immutable
       - name: build
         run: yarn build
       - name: test typings
@@ -80,7 +80,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: install
-        run: yarn
+        run: yarn --immutable
       - name: build
         run: yarn build:js
       - name: Get number of CPU cores
