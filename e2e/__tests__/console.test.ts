@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {extractSummary, runYarn} from '../Utils';
+import {extractSummary, runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
 test('console printing', () => {
@@ -99,7 +99,7 @@ test('the jsdom console is the same as the test console', () => {
 
 test('does not error out when using winston', () => {
   const dir = path.resolve(__dirname, '../console-winston');
-  runYarn(dir);
+  runYarnInstall(dir);
   const {stderr, stdout, exitCode} = runJest(dir);
   const {summary, rest} = extractSummary(stderr);
 

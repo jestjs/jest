@@ -4,7 +4,7 @@ aliases:
       ignore: gh-pages
   - &install
     pkg-manager: yarn
-    override-ci-command: yarn install && yarn build:js
+    override-ci-command: yarn install --immutable && yarn build:js
     cache-path: ~/.yarn/berry/cache
     include-branch-in-cache-key: false
     app-dir: ~/jest
@@ -51,7 +51,7 @@ jobs:
           install-npm: false
       - node/install-packages: *install
       - run:
-          command: yarn test-ci
+          command: yarn test-ci-partial
       - store_test_results:
           path: reports/junit
 
@@ -79,7 +79,7 @@ jobs:
           install-npm: false
       - node/install-packages: *install
       - run:
-          command: yarn test-ci-partial
+          command: yarn test-ci
       - store_test_results:
           path: reports/junit
 

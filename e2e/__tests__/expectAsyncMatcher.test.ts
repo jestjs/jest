@@ -7,13 +7,13 @@
 
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {extractSummary, runYarn} from '../Utils';
+import {extractSummary, runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../expect-async-matcher');
 
 beforeAll(() => {
-  runYarn(dir);
+  runYarnInstall(dir);
 });
 
 test('works with passing tests', () => {
