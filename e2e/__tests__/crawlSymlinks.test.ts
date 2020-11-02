@@ -6,6 +6,7 @@
  */
 import {tmpdir} from 'os';
 import * as path from 'path';
+import {wrap} from 'jest-snapshot-serializer-raw';
 import {cleanup, writeFiles, writeSymlinks} from '../Utils';
 import runJest from '../runJest';
 
@@ -67,5 +68,29 @@ test('Node crawler does not pick up symlinked files by default', () => {
   const {stdout, stderr, exitCode} = runJest(DIR, [noWatchman]);
   expect(stdout).toContain('No tests found, exiting with code 1');
   expect(stderr).toEqual('');
+  expect(exitCode).toEqual(1);
+});
+
+test('Should throw if watchman used with haste.enableSymlinks', () => {
+  init({'.watchmanconfig': JSON.stringify({})});
+
+  // it should throw both if watchman is explicitly provided and not
+  const run1 = runJest(DIR, ['--haste={"enableSymlinks": true}']);
+  const run2 = runJest(DIR, ['--haste={"enableSymlinks": true}', '--watchman']);
+
+  expect(run1.exitCode).toEqual(run2.exitCode);
+  expect(run1.stderr).toEqual(run2.stderr);
+  expect(run1.stdout).toEqual(run2.stdout);
+
+  const {exitCode, stderr, stdout} = run1;
+
+  expect(stdout).toEqual('');
+  expect(wrap(stderr)).toMatchInlineSnapshot(`
+    Validation Error:
+
+    haste.enableSymlinks is incompatible with watchman
+
+    Either set haste.enableSymlinks to false or do not use watchman
+  `);
   expect(exitCode).toEqual(1);
 });

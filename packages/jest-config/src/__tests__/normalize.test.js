@@ -1714,3 +1714,26 @@ describe('testTimeout', () => {
     ).toThrowErrorMatchingSnapshot();
   });
 });
+
+describe('haste.enableSymlinks', () => {
+  it('should throw if watchman is not disabled', () => {
+    expect(() =>
+      normalize({haste: {enableSymlinks: true}, rootDir: '/root/'}, {}),
+    ).toThrow('haste.enableSymlinks is incompatible with watchman');
+
+    expect(() =>
+      normalize(
+        {haste: {enableSymlinks: true}, rootDir: '/root/', watchman: true},
+        {},
+      ),
+    ).toThrow('haste.enableSymlinks is incompatible with watchman');
+
+    const {options} = normalize(
+      {haste: {enableSymlinks: true}, rootDir: '/root/', watchman: false},
+      {},
+    );
+
+    expect(options.haste.enableSymlinks).toBe(true);
+    expect(options.watchman).toBe(false);
+  });
+});

@@ -577,6 +577,10 @@ export default function normalize(
     });
   }
 
+  if (options.watchman == null) {
+    options.watchman = DEFAULT_CONFIG.watchman;
+  }
+
   const optionKeys = Object.keys(options) as Array<keyof Config.InitialOptions>;
 
   optionKeys.reduce((newOptions, key: keyof Config.InitialOptions) => {

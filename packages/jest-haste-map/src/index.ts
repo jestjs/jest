@@ -278,6 +278,14 @@ class HasteMap extends EventEmitter {
       this._options.ignorePattern = new RegExp(VCS_DIRECTORIES);
     }
 
+    if (this._options.enableSymlinks && this._options.useWatchman) {
+      throw new Error(
+        'jest-haste-map: enableSymlinks config option was set, but ' +
+          'is incompatible with watchman.\n' +
+          'Set either `enableSymlinks` to false or `useWatchman` to false.',
+      );
+    }
+
     const rootDirHash = createHash('md5').update(options.rootDir).digest('hex');
     let hasteImplHash = '';
     let dependencyExtractorHash = '';
