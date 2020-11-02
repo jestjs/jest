@@ -14,17 +14,7 @@ const DIR = path.resolve(tmpdir(), 'crawl-symlinks-test');
 
 beforeEach(() => {
   cleanup(DIR);
-});
 
-afterEach(() => {
-  cleanup(DIR);
-});
-
-function init(
-  extraFiles: {
-    [filename: string]: string;
-  } = {},
-) {
   writeFiles(DIR, {
     'package.json': JSON.stringify({
       jest: {
@@ -32,19 +22,21 @@ function init(
       },
     }),
     'symlinked-files/test.js': `
-            test('1+1', () => {
-              expect(1).toBe(1);
-            });
-          `,
-    ...extraFiles,
+      test('1+1', () => {
+        expect(1).toBe(1);
+      });
+    `,
   });
 
   writeSymlinks(DIR, {
     'symlinked-files/test.js': 'test-files/test.js',
   });
-}
+});
 
-const noWatchman = '--no-watchman';
+afterEach(() => {
+  cleanup(DIR);
+});
+
 test('Node crawler picks up symlinked files when option is set as flag', () => {
   // Symlinks are only enabled on windows with developer mode.
   // https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/
@@ -52,10 +44,9 @@ test('Node crawler picks up symlinked files when option is set as flag', () => {
     return;
   }
 
-  init();
   const {stdout, stderr, exitCode} = runJest(DIR, [
     '--haste={"enableSymlinks": true}',
-    noWatchman,
+    '--no-watchman',
   ]);
 
   expect(stdout).toEqual('');
@@ -64,16 +55,13 @@ test('Node crawler picks up symlinked files when option is set as flag', () => {
 });
 
 test('Node crawler does not pick up symlinked files by default', () => {
-  init();
-  const {stdout, stderr, exitCode} = runJest(DIR, [noWatchman]);
+  const {stdout, stderr, exitCode} = runJest(DIR, ['--no-watchman']);
   expect(stdout).toContain('No tests found, exiting with code 1');
   expect(stderr).toEqual('');
   expect(exitCode).toEqual(1);
 });
 
 test('Should throw if watchman used with haste.enableSymlinks', () => {
-  init({'.watchmanconfig': JSON.stringify({})});
-
   // it should throw both if watchman is explicitly provided and not
   const run1 = runJest(DIR, ['--haste={"enableSymlinks": true}']);
   const run2 = runJest(DIR, ['--haste={"enableSymlinks": true}', '--watchman']);
