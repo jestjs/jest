@@ -162,9 +162,6 @@ test('ObjectContaining matches', () => {
     objectContaining({}).asymmetricMatch('jest'),
     objectContaining({foo: 'foo'}).asymmetricMatch({foo: 'foo', jest: 'jest'}),
     objectContaining({foo: undefined}).asymmetricMatch({foo: undefined}),
-    objectContaining({foo: {bar: [1]}}).asymmetricMatch({
-      foo: {bar: [1], qux: []},
-    }),
     objectContaining({first: objectContaining({second: {}})}).asymmetricMatch({
       first: {second: {}},
     }),
