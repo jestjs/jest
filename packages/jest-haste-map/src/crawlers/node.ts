@@ -61,7 +61,7 @@ function find(
   extensions: Array<string>,
   ignore: IgnoreMatcher,
   callback: Callback,
-  enableSymlinks?: boolean,
+  enableSymlinks: boolean,
 ): void {
   const result: Result = [];
   let activeCalls = 0;
