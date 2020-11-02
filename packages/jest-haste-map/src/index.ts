@@ -13,7 +13,6 @@ import {EventEmitter} from 'events';
 import {tmpdir} from 'os';
 import * as path from 'path';
 import type {Stats} from 'graceful-fs';
-import {existsSync} from 'graceful-fs';
 import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
@@ -749,21 +748,6 @@ class HasteMap extends EventEmitter {
       rootDir: options.rootDir,
       roots: options.roots,
     };
-
-    if (options.enableSymlinks) {
-      const watchmanConfigPath = path.join(options.rootDir, '.watchmanconfig');
-
-      if (existsSync(watchmanConfigPath)) {
-        this._console.error(
-          'jest-haste-map: haste.enableSymlinks config option was set, but ' +
-            'is incompatible with watchman.\n' +
-            '  Either set haste.enableSymlinks to false or remove ' +
-            '.watchmanconfig to disable watchman. \n' +
-            '  Exiting with code 1.',
-        );
-        process.exit(1);
-      }
-    }
 
     const retry = (error: Error) => {
       if (crawl === watchmanCrawl) {

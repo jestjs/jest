@@ -6,9 +6,8 @@
  */
 import {tmpdir} from 'os';
 import * as path from 'path';
-
-import runJest from '../runJest';
 import {cleanup, writeFiles, writeSymlinks} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve(tmpdir(), 'crawl-symlinks-test');
 
@@ -68,23 +67,5 @@ test('Node crawler does not pick up symlinked files by default', () => {
   const {stdout, stderr, exitCode} = runJest(DIR, [noWatchman]);
   expect(stdout).toContain('No tests found, exiting with code 1');
   expect(stderr).toEqual('');
-  expect(exitCode).toEqual(1);
-});
-
-test('Should throw if .watchmanconfig used with haste.enableSymlinks', () => {
-  init({'.watchmanconfig': JSON.stringify({})});
-
-  const {stdout, stderr, exitCode} = runJest(DIR, [
-    '--haste={"enableSymlinks": true}',
-  ]);
-
-  expect(stderr).toEqual('');
-  expect(stdout).toContain(
-    'jest-haste-map: haste.enableSymlinks config option was set, but ' +
-      'is incompatible with watchman.\n' +
-      '  Either set haste.enableSymlinks to false or remove ' +
-      '.watchmanconfig to disable watchman. \n' +
-      '  Exiting with code 1.',
-  );
   expect(exitCode).toEqual(1);
 });
