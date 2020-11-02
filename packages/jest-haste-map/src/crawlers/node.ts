@@ -60,8 +60,8 @@ function find(
   roots: Array<string>,
   extensions: Array<string>,
   ignore: IgnoreMatcher,
-  callback: Callback,
   enableSymlinks: boolean,
+  callback: Callback,
 ): void {
   const result: Result = [];
   let activeCalls = 0;
@@ -140,8 +140,8 @@ function findNative(
   roots: Array<string>,
   extensions: Array<string>,
   ignore: IgnoreMatcher,
-  callback: Callback,
   enableSymlinks: boolean,
+  callback: Callback,
 ): void {
   const args = Array.from(roots);
   if (enableSymlinks) {
@@ -242,9 +242,9 @@ export = async function nodeCrawl(
     };
 
     if (useNativeFind) {
-      findNative(roots, extensions, ignore, callback, enableSymlinks);
+      findNative(roots, extensions, ignore, enableSymlinks, callback);
     } else {
-      find(roots, extensions, ignore, callback, enableSymlinks);
+      find(roots, extensions, ignore, enableSymlinks, callback);
     }
   });
 };
