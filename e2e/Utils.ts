@@ -57,7 +57,7 @@ export const runYarnInstall = (
     fs.writeFileSync(lockfilePath, '');
   }
 
-  return run(exists ? 'yarn install' : 'yarn install --immutable', cwd, env);
+  return run(exists ? 'yarn install --immutable' : 'yarn install', cwd, env);
 };
 
 export const linkJestPackage = (packageName: string, cwd: Config.Path) => {
