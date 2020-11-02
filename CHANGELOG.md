@@ -2,6 +2,16 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 26.6.2
+
+### Features
+
 - `[jest-core]` Add `findRelatedTests` and `nonFlagArgs` in allowed config options for `updateConfigAndRun` in watch plugins ([#10659](https://github.com/facebook/jest/pull/10659))
 
 ### Fixes
@@ -25,8 +35,6 @@
 - `[eslint-config-fb-strict]` Move package from this repo to `fbjs` repo ([#10739](https://github.com/facebook/jest/pull/10739))
 - `[examples]` Update TypeScript example to show use of newer Jest types ([#10399](https://github.com/facebook/jest/pull/10399))
 - `[jest-cli]` chore: standardize files and folder names ([#10698](https://github.com/facebook/jest/pull/10698))
-
-### Performance
 
 ## 26.6.1
 
