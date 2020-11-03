@@ -149,3 +149,17 @@ test('resolves dependencies correctly when dependency resolution fails', () => {
 
   expect(resolved).toEqual([]);
 });
+
+test('resolves dependencies correctly when mock dependency resolution fails', () => {
+  jest.spyOn(runtimeContextResolver, 'getMockModule').mockImplementation(() => {
+    throw new Error('getMockModule has failed');
+  });
+
+  const resolved = dependencyResolver.resolve(
+    path.resolve(__dirname, '__fixtures__', 'file.test.js'),
+  );
+
+  expect(resolved).toEqual([
+    expect.stringContaining(path.join('__tests__', '__fixtures__', 'file.js')),
+  ]);
+});
