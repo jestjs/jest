@@ -3284,15 +3284,15 @@ __metadata:
   linkType: hard
 
 "@types/babel__core@npm:*, @types/babel__core@npm:^7.0.0, @types/babel__core@npm:^7.0.4, @types/babel__core@npm:^7.1.0, @types/babel__core@npm:^7.1.7":
-  version: 7.1.11
-  resolution: "@types/babel__core@npm:7.1.11"
+  version: 7.1.12
+  resolution: "@types/babel__core@npm:7.1.12"
   dependencies:
     "@babel/parser": ^7.1.0
     "@babel/types": ^7.0.0
     "@types/babel__generator": "*"
     "@types/babel__template": "*"
     "@types/babel__traverse": "*"
-  checksum: 081ea9a093ce22ebbc7fd07c07298d84d551f1517159631a69953634509e88324d26199b012a20cca5da116222f9f3468b1ee98eb78f6bb4efb909c0e856f272
+  checksum: e2642b77b89af41254a19d85b6cc5b1096f9825aa2b6534d5426cee7fbf6d90cfeceb5c1621f233d32dc1925a9fe88c317e412f81a061cf7239dbd4e2dd413e4
   languageName: node
   linkType: hard
 
