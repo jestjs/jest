@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-resolve-dependencies]` Continue dependency resolution if mock dependency can't be found ([#10779](https://github.com/facebook/jest/pull/10779))
+
 ### Chore & Maintenance
 
 ### Performance
