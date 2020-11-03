@@ -204,10 +204,7 @@ export default class ScriptTransformer {
     canMapToInput: boolean,
     options: ReducedTransformOptions,
   ): TransformedSource {
-    const inputCode = typeof input === 'string' ? input : input.code;
-    const inputMap = typeof input === 'string' ? null : input.map;
-
-    const result = babelTransform(inputCode, {
+    const result = babelTransform(input.code, {
       auxiliaryCommentBefore: ' istanbul ignore next ',
       babelrc: false,
       caller: {
@@ -228,7 +225,7 @@ export default class ScriptTransformer {
             cwd: this._config.rootDir,
             exclude: [],
             extension: false,
-            inputSourceMap: inputMap,
+            inputSourceMap: input.map,
             useInlineSourceMaps: false,
           },
         ],
@@ -236,7 +233,7 @@ export default class ScriptTransformer {
       sourceMaps: canMapToInput ? 'both' : false,
     });
 
-    if (result && result.code) {
+    if (result?.code) {
       return result as TransformResult;
     }
 
@@ -292,14 +289,13 @@ export default class ScriptTransformer {
         configString: this._cache.configString,
       });
 
-      if (typeof processed === 'string') {
-        transformed.code = processed;
-      } else if (processed != null && typeof processed.code === 'string') {
+      if (processed != null && typeof processed.code === 'string') {
         transformed = processed;
       } else {
         throw new TypeError(
-          "Jest: a transform's `process` function must return a string, " +
-            'or an object with `code` key containing this string.',
+          "Jest: a transform's `process` function must return an object with " +
+            '`code` key containing a string and an optional `map` key with ' +
+            'the source map.',
         );
       }
     }
@@ -344,9 +340,8 @@ export default class ScriptTransformer {
         options,
       );
 
-      code =
-        typeof instrumented === 'string' ? instrumented : instrumented.code;
-      map = typeof instrumented === 'string' ? null : instrumented.map;
+      code = instrumented.code;
+      map = instrumented.map;
     } else {
       code = transformed.code;
     }

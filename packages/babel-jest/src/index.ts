@@ -155,7 +155,7 @@ const createTransformer: CreateTransformer = userOptions => {
         }
       }
 
-      return sourceText;
+      return {code: sourceText};
     },
   };
 };

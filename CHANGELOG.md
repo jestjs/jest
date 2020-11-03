@@ -26,6 +26,7 @@
 - `[jest-transform]` Show enhanced `SyntaxError` message for all `SyntaxError`s ([#10749](https://github.com/facebook/jest/pull/10749))
 - `[jest-transform]` [**BREAKING**] Refactor API to pass an options bag around rather than multiple boolean options ([#10753](https://github.com/facebook/jest/pull/10753))
 - `[jest-transform]` [**BREAKING**] Refactor API of transformers to pass an options bag rather than separate `config` and other options
+- `[jest-transform]` [**BREAKING**] All transformers must now return `{code: string, map?: SourceMap | string | null}`. Returning a string is no longer supported ([#10773](https://github.com/facebook/jest/pull/10773))
 - `[pretty-format]` [**BREAKING**] Convert to ES Modules ([#10515](https://github.com/facebook/jest/pull/10515))
 
 ### Chore & Maintenance

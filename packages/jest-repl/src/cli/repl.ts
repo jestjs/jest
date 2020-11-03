@@ -38,10 +38,7 @@ const evalCommand: repl.REPLEval = (
           supportsTopLevelAwait: false,
         },
       );
-      cmd =
-        typeof transformResult === 'string'
-          ? transformResult
-          : transformResult.code;
+      cmd = transformResult.code;
     }
     result = runInThisContext(cmd);
   } catch (e) {
