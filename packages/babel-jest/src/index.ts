@@ -40,7 +40,6 @@ interface BabelJestTransformOptions extends TransformOptions {
   sourceMaps: 'both';
 }
 
-
 const createTransformer = (
   userOptions?: TransformOptions | null,
 ): BabelJestTransformer => {
