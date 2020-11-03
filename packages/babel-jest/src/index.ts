@@ -40,13 +40,6 @@ interface BabelJestTransformOptions extends TransformOptions {
   sourceMaps: 'both';
 }
 
-// https://github.com/DefinitelyTyped/DefinitelyTyped/pull/49267
-declare module '@babel/core' {
-  interface TransformCaller {
-    supportsExportNamespaceFrom?: boolean;
-    supportsTopLevelAwait?: boolean;
-  }
-}
 
 const createTransformer = (
   userOptions?: TransformOptions | null,
