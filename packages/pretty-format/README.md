@@ -14,11 +14,11 @@ $ yarn add pretty-format
 ## Usage
 
 ```js
-const {format} = require('pretty-format'); // CommonJS
+const {format: prettyFormat} = require('pretty-format'); // CommonJS
 ```
 
 ```js
-import {format} from 'pretty-format'; // ES2015 modules
+import {format as prettyFormat} from 'pretty-format'; // ES2015 modules
 ```
 
 ```js
