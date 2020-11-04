@@ -30,12 +30,12 @@ export const PARENT_MESSAGE_CLIENT_ERROR: 1 = 1;
 export const PARENT_MESSAGE_SETUP_ERROR: 2 = 2;
 export const PARENT_MESSAGE_CUSTOM: 3 = 3;
 export const PARENT_MESSAGE_HEARTBEAT: 4 = 4;
-export const PARENT_MESSAGE_HEARTBEAT_ERROR: 5 = 5;
+
+export const HEARTBEAT_ERROR: 0 = 0;
 
 export type PARENT_MESSAGE_ERROR =
   | typeof PARENT_MESSAGE_CLIENT_ERROR
-  | typeof PARENT_MESSAGE_SETUP_ERROR
-  | typeof PARENT_MESSAGE_HEARTBEAT_ERROR;
+  | typeof PARENT_MESSAGE_SETUP_ERROR;
 
 export interface WorkerPoolInterface {
   getStderr(): NodeJS.ReadableStream;

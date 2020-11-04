@@ -12,13 +12,13 @@ import mergeStream = require('merge-stream');
 import {
   CHILD_MESSAGE_INITIALIZE,
   ChildMessage,
+  HEARTBEAT_ERROR,
   OnCustomMessage,
   OnEnd,
   OnStart,
   PARENT_MESSAGE_CLIENT_ERROR,
   PARENT_MESSAGE_CUSTOM,
   PARENT_MESSAGE_HEARTBEAT,
-  PARENT_MESSAGE_HEARTBEAT_ERROR,
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
   ParentMessage,
@@ -190,7 +190,7 @@ export default class ExperimentalWorker implements WorkerInterface {
       });
     }
     // @ts-expect-error: no index
-    error.type = PARENT_MESSAGE_HEARTBEAT_ERROR;
+    error.type = HEARTBEAT_ERROR;
     error.stack = 'test stack';
 
     if (this._heartbeatTimeout !== undefined) {
