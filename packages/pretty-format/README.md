@@ -28,7 +28,7 @@ val[Symbol('foo')] = 'foo';
 val.map = new Map([['prop', 'value']]);
 val.array = [-0, Infinity, NaN];
 
-console.log(format(val));
+console.log(prettyFormat(val));
 /*
 Object {
   "array": Array [
@@ -51,7 +51,7 @@ Object {
 ```js
 function onClick() {}
 
-console.log(format(onClick));
+console.log(prettyFormat(onClick));
 /*
 [Function onClick]
 */
@@ -59,7 +59,7 @@ console.log(format(onClick));
 const options = {
   printFunctionName: false,
 };
-console.log(format(onClick, options));
+console.log(prettyFormat(onClick, options));
 /*
 [Function]
 */
@@ -166,7 +166,7 @@ For **all** test files, you can specify modules in Jest configuration. They prec
 
 A plugin is a JavaScript object.
 
-If `options` has a `plugins` array: for the first plugin whose `test(val)` method returns a truthy value, then `format(val, options)` returns the result from either:
+If `options` has a `plugins` array: for the first plugin whose `test(val)` method returns a truthy value, then `prettyFormat(val, options)` returns the result from either:
 
 - `serialize(val, …)` method of the **improved** interface (available in **version 21** or later)
 - `print(val, …)` method of the **original** interface (if plugin does not have `serialize` method)
@@ -410,7 +410,7 @@ const val = {
   render() {},
 };
 
-format(val, {
+prettyFormat(val, {
   plugins: [plugin],
 });
 /*
@@ -420,7 +420,7 @@ Object {
 }
 */
 
-format(val);
+prettyFormat(val);
 /*
 Object {
   "onClick": [Function onClick],
@@ -432,7 +432,7 @@ Object {
 This plugin **ignores** the `printFunctionName` option. That limitation of the original `print` interface is a reason to use the improved `serialize` interface, described above.
 
 ```js
-format(val, {
+prettyFormat(val, {
   plugins: [pluginOld],
   printFunctionName: false,
 });
@@ -443,7 +443,7 @@ Object {
 }
 */
 
-format(val, {
+prettyFormat(val, {
   printFunctionName: false,
 });
 /*
