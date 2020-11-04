@@ -23,11 +23,11 @@ type ResolverOptions = {
   packageFilter?: ResolveOpts['packageFilter'];
 };
 
+// https://github.com/facebook/jest/pull/10617
 declare global {
   namespace NodeJS {
     export interface ProcessVersions {
-      // the "pnp" version named isn't in DefinitelyTyped
-      pnp?: unknown;
+      pnp?: any;
     }
   }
 }
