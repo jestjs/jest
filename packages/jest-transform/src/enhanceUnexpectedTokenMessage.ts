@@ -23,8 +23,6 @@ export default function handlePotentialSyntaxError(
   if (
     // `instanceof` might come from the wrong context
     e.name === 'SyntaxError' &&
-    (e.message.includes('Unexpected token') ||
-      e.message.includes('Cannot use import')) &&
     !e.message.includes(' expected')
   ) {
     throw enhanceUnexpectedTokenMessage(e);
@@ -37,9 +35,11 @@ export function enhanceUnexpectedTokenMessage(e: Error): Error {
   e.stack =
     `${chalk.bold.red('Jest encountered an unexpected token')}
 
-This usually means that you are trying to import a file which Jest cannot parse, e.g. it's not plain JavaScript.
+Jest failed to parse a file. This happens e.g. when your code or its dependencies use non-standard JavaScript syntax, or when Jest is not configured to support such syntax.
 
-By default, if Jest sees a Babel config, it will use that to transform your files, ignoring "node_modules".
+Out of the box Jest supports Babel, which will be used to transform your files into valid JS based on your Babel configuration.
+
+By default "node_modules" folder is ignored by transformers.
 
 Here's what you can do:
 ${DOT}If you are trying to use ECMAScript Modules, see ${chalk.underline(
