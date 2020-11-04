@@ -12,7 +12,7 @@ import type {Config} from '@jest/types';
 import HasteMap = require('jest-haste-map');
 import {separateMessageFromStack} from 'jest-message-util';
 import type Resolver from 'jest-resolve';
-import Runtime = require('jest-runtime');
+import Runtime from 'jest-runtime';
 import {messageParent} from 'jest-worker';
 import runTest from './runTest';
 import type {

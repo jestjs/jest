@@ -15,7 +15,7 @@ import type {
 import type {Config} from '@jest/types';
 import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
 import type Resolver from 'jest-resolve';
-import type {RuntimeType} from 'jest-runtime';
+import type RuntimeType from 'jest-runtime';
 
 export type ErrorWithCode = Error & {code?: string};
 export type Test = {

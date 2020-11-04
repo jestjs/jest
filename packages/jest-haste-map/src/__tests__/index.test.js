@@ -224,7 +224,7 @@ describe('HasteMap', () => {
   });
 
   it('creates valid cache file paths', () => {
-    jest.resetModuleRegistry();
+    jest.resetModules();
     HasteMap = require('../');
 
     expect(
@@ -237,7 +237,7 @@ describe('HasteMap', () => {
   });
 
   it('creates different cache file paths for different roots', () => {
-    jest.resetModuleRegistry();
+    jest.resetModules();
     const HasteMap = require('../');
     const hasteMap1 = new HasteMap({...defaultConfig, rootDir: '/root1'});
     const hasteMap2 = new HasteMap({...defaultConfig, rootDir: '/root2'});
@@ -245,7 +245,7 @@ describe('HasteMap', () => {
   });
 
   it('creates different cache file paths for different dependency extractor cache keys', () => {
-    jest.resetModuleRegistry();
+    jest.resetModules();
     const HasteMap = require('../');
     const dependencyExtractor = require('./dependencyExtractor');
     const config = {
@@ -260,7 +260,7 @@ describe('HasteMap', () => {
   });
 
   it('creates different cache file paths for different hasteImplModulePath cache keys', () => {
-    jest.resetModuleRegistry();
+    jest.resetModules();
     const HasteMap = require('../');
     const hasteImpl = require('./haste_impl');
     hasteImpl.setCacheKey('foo');
@@ -271,7 +271,7 @@ describe('HasteMap', () => {
   });
 
   it('creates different cache file paths for different projects', () => {
-    jest.resetModuleRegistry();
+    jest.resetModules();
     const HasteMap = require('../');
     const hasteMap1 = new HasteMap({...defaultConfig, name: '@scoped/package'});
     const hasteMap2 = new HasteMap({...defaultConfig, name: '-scoped-package'});

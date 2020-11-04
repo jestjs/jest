@@ -55,7 +55,9 @@ import {
   decodePossibleOutsideJestVmPath,
   findSiblingsWithFileExtension,
 } from './helpers';
-import type {Context as JestContext} from './types';
+import type {Context} from './types';
+
+export type {Context} from './types';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 
@@ -109,12 +111,6 @@ const fromEntries: typeof Object.fromEntries =
     }, {});
   };
 
-declare namespace Runtime {
-  export type Context = JestContext;
-  // ditch this export when moving to esm - for now we need it for to avoid faulty type elision
-  export type RuntimeType = Runtime;
-}
-
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
 
@@ -154,7 +150,7 @@ const supportsTopLevelAwait =
     }
   })();
 
-class Runtime {
+export default class Runtime {
   private _cacheFS: StringMap;
   private _config: Config.ProjectConfig;
   private _coverageOptions: ShouldInstrumentOptions;
@@ -279,7 +275,7 @@ class Runtime {
       watch?: boolean;
       watchman: boolean;
     },
-  ): Promise<JestContext> {
+  ): Promise<Context> {
     createDirectory(config.cacheDirectory);
     const instance = Runtime.createHasteMap(config, {
       console: options.console,
@@ -1565,8 +1561,6 @@ class Runtime {
     };
 
     const jestObject: Jest = {
-      addMatchers: (matchers: Record<string, unknown>) =>
-        this._environment.global.jasmine.addMatchers(matchers),
       advanceTimersByTime: (msToRun: number) =>
         _getFakeTimers().advanceTimersByTime(msToRun),
       advanceTimersToNextTimer: (steps?: number) =>
@@ -1603,7 +1597,6 @@ class Runtime {
       requireActual: this.requireActual.bind(this, from),
       requireMock: this.requireMock.bind(this, from),
       resetAllMocks,
-      resetModuleRegistry: resetModules,
       resetModules,
       restoreAllMocks,
       retryTimes,
@@ -1621,8 +1614,6 @@ class Runtime {
       runAllTicks: () => _getFakeTimers().runAllTicks(),
       runAllTimers: () => _getFakeTimers().runAllTimers(),
       runOnlyPendingTimers: () => _getFakeTimers().runOnlyPendingTimers(),
-      runTimersToTime: (msToRun: number) =>
-        _getFakeTimers().advanceTimersByTime(msToRun),
       setMock: (moduleName: string, mock: unknown) =>
         setMockFactory(moduleName, () => mock),
       setSystemTime: (now?: number | Date) => {
@@ -1797,5 +1788,3 @@ async function evaluateSyntheticModule(module: SyntheticModule) {
 
   return module;
 }
-
-export = Runtime;
