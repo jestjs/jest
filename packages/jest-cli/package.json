@@ -1,11 +1,11 @@
 {
   "name": "jest-cli",
   "description": "Delightful JavaScript Testing.",
-  "version": "26.6.2",
+  "version": "26.6.3",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "dependencies": {
-    "@jest/core": "^26.6.2",
+    "@jest/core": "^26.6.3",
     "@jest/test-result": "^26.6.2",
     "@jest/types": "^26.6.2",
     "chalk": "^4.0.0",
@@ -13,7 +13,7 @@
     "graceful-fs": "^4.2.4",
     "import-local": "^3.0.2",
     "is-ci": "^2.0.0",
-    "jest-config": "^26.6.2",
+    "jest-config": "^26.6.3",
     "jest-util": "^26.6.2",
     "jest-validate": "^26.6.2",
     "prompts": "^2.0.1",

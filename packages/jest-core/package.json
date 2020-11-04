@@ -1,7 +1,7 @@
 {
   "name": "@jest/core",
   "description": "Delightful JavaScript Testing.",
-  "version": "26.6.2",
+  "version": "26.6.3",
   "main": "build/jest.js",
   "types": "build/jest.d.ts",
   "dependencies": {
@@ -16,14 +16,14 @@
     "exit": "^0.1.2",
     "graceful-fs": "^4.2.4",
     "jest-changed-files": "^26.6.2",
-    "jest-config": "^26.6.2",
+    "jest-config": "^26.6.3",
     "jest-haste-map": "^26.6.2",
     "jest-message-util": "^26.6.2",
     "jest-regex-util": "^26.0.0",
     "jest-resolve": "^26.6.2",
-    "jest-resolve-dependencies": "^26.6.2",
-    "jest-runner": "^26.6.2",
-    "jest-runtime": "^26.6.2",
+    "jest-resolve-dependencies": "^26.6.3",
+    "jest-runner": "^26.6.3",
+    "jest-runtime": "^26.6.3",
     "jest-snapshot": "^26.6.2",
     "jest-util": "^26.6.2",
     "jest-validate": "^26.6.2",
@@ -35,7 +35,7 @@
     "strip-ansi": "^6.0.0"
   },
   "devDependencies": {
-    "@jest/test-sequencer": "^26.6.2",
+    "@jest/test-sequencer": "^26.6.3",
     "@jest/test-utils": "^26.6.2",
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
