@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {format as prettyFormat} from '../';
+import prettyFormat from '../';
 import type {OptionsReceived, Plugins} from '../types';
 
 declare global {
