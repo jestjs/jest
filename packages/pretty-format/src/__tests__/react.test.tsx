@@ -7,7 +7,7 @@
 
 import React from 'react';
 import renderer from 'react-test-renderer';
-import {plugins, format as prettyFormat} from '..';
+import prettyFormat, {plugins} from '..';
 import type {OptionsReceived} from '../types';
 
 const elementSymbol = Symbol.for('react.element');

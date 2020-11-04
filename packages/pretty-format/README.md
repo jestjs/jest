@@ -102,7 +102,7 @@ The `pretty-format` package provides some built-in plugins, including:
 // CommonJS
 const React = require('react');
 const renderer = require('react-test-renderer');
-const {plugins} = require('pretty-format');
+const {format: prettyFormat, plugins} = require('pretty-format');
 
 const {ReactElement, ReactTestComponent} = plugins;
 ```
@@ -111,7 +111,7 @@ const {ReactElement, ReactTestComponent} = plugins;
 // ES2015 modules and destructuring assignment
 import React from 'react';
 import renderer from 'react-test-renderer';
-import {plugins} from 'pretty-format';
+import prettyFormat, {plugins} from 'pretty-format';
 
 const {ReactElement, ReactTestComponent} = plugins;
 ```
@@ -120,11 +120,11 @@ const {ReactElement, ReactTestComponent} = plugins;
 const onClick = () => {};
 const element = React.createElement('button', {onClick}, 'Hello World');
 
-const formatted1 = format(element, {
+const formatted1 = prettyFormat(element, {
   plugins: [ReactElement],
   printFunctionName: false,
 });
-const formatted2 = format(renderer.create(element).toJSON(), {
+const formatted2 = prettyFormat(renderer.create(element).toJSON(), {
   plugins: [ReactTestComponent],
   printFunctionName: false,
 });
@@ -289,7 +289,7 @@ const val = {
 
 ```js
 console.log(
-  format(val, {
+  prettyFormat(val, {
     plugins: [plugin],
   }),
 );
@@ -312,7 +312,7 @@ Object {
 
 ```js
 console.log(
-  format(val, {
+  prettyFormat(val, {
     indent: 4,
     plugins: [plugin],
   }),
@@ -336,7 +336,7 @@ Object {
 
 ```js
 console.log(
-  format(val, {
+  prettyFormat(val, {
     maxDepth: 1,
     plugins: [plugin],
   }),
@@ -351,7 +351,7 @@ Object {
 
 ```js
 console.log(
-  format(val, {
+  prettyFormat(val, {
     min: true,
     plugins: [plugin],
   }),
