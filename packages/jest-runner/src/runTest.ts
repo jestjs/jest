@@ -25,7 +25,7 @@ import * as docblock from 'jest-docblock';
 import LeakDetector from 'jest-leak-detector';
 import {formatExecError} from 'jest-message-util';
 import type Resolver from 'jest-resolve';
-import RuntimeClass = require('jest-runtime');
+import type RuntimeClass from 'jest-runtime';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
 import type {TestFileEvent, TestFramework, TestRunnerContext} from './types';
 

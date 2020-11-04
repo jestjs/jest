@@ -55,7 +55,9 @@ import {
   decodePossibleOutsideJestVmPath,
   findSiblingsWithFileExtension,
 } from './helpers';
-import type {Context as JestContext} from './types';
+import type {Context} from './types';
+
+export type {Context} from './types';
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 
@@ -109,12 +111,6 @@ const fromEntries: typeof Object.fromEntries =
     }, {});
   };
 
-declare namespace Runtime {
-  export type Context = JestContext;
-  // ditch this export when moving to esm - for now we need it for to avoid faulty type elision
-  export type RuntimeType = Runtime;
-}
-
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
 
@@ -154,7 +150,7 @@ const supportsTopLevelAwait =
     }
   })();
 
-class Runtime {
+export default class Runtime {
   private _cacheFS: StringMap;
   private _config: Config.ProjectConfig;
   private _coverageOptions: ShouldInstrumentOptions;
@@ -279,7 +275,7 @@ class Runtime {
       watch?: boolean;
       watchman: boolean;
     },
-  ): Promise<JestContext> {
+  ): Promise<Context> {
     createDirectory(config.cacheDirectory);
     const instance = Runtime.createHasteMap(config, {
       console: options.console,
@@ -1797,5 +1793,3 @@ async function evaluateSyntheticModule(module: SyntheticModule) {
 
   return module;
 }
-
-export = Runtime;
