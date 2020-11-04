@@ -35,6 +35,10 @@ const _runTestsForDescribeBlock = async (
   const {beforeAll, afterAll} = getAllHooksForDescribe(describeBlock);
 
   for (const hook of beforeAll) {
+    if (describeBlock.errors.length) {
+      // discontinue running beforeAll hooks on failure
+      break;
+    }
     await _callCircusHook({describeBlock, hook});
   }
 
@@ -64,16 +68,19 @@ const _runTestsForDescribeBlock = async (
     }
   }
 
-  // Re-run failed tests n-times if configured
-  for (const test of deferredRetryTests) {
-    let numRetriesAvailable = retryTimes;
+  if (!describeBlock.errors.length) {
+    // skip test retry if any beforeAll setup fails
+    // Re-run failed tests n-times if configured
+    for (const test of deferredRetryTests) {
+      let numRetriesAvailable = retryTimes;
 
-    while (numRetriesAvailable > 0 && test.errors.length > 0) {
-      // Clear errors so retries occur
-      await dispatch({name: 'test_retry', test});
+      while (numRetriesAvailable > 0 && test.errors.length > 0) {
+        // Clear errors so retries occur
+        await dispatch({name: 'test_retry', test});
 
-      await _runTest(test);
-      numRetriesAvailable--;
+        await _runTest(test);
+        numRetriesAvailable--;
+      }
     }
   }
 
@@ -117,8 +124,12 @@ const _runTest = async (test: Circus.TestEntry): Promise<void> => {
 
   await _callCircusTest(test, testContext);
 
-  for (const hook of afterEach) {
-    await _callCircusHook({hook, test, testContext});
+  if (!test.parent.errors.length) {
+    // skip running afterEach hooks if there is a describe block setup failure.
+    // If there is a failure then no beforeEach hooks will run either
+    for (const hook of afterEach) {
+      await _callCircusHook({hook, test, testContext});
+    }
   }
 
   // `afterAll` hooks should not affect test status (pass or fail), because if

@@ -34,6 +34,7 @@ export const makeDescribe = (
   return {
     type: 'describeBlock', // eslint-disable-next-line sort-keys
     children: [],
+    errors: [],
     hooks: [],
     mode: _mode,
     name: convertDescriptorToString(name),
@@ -405,10 +406,8 @@ export const addErrorToEachTestUnderDescribe = (
       case 'describeBlock':
         addErrorToEachTestUnderDescribe(child, error, asyncError);
         break;
-      case 'test':
-        child.errors.push([error, asyncError]);
-        break;
     }
+    child.errors.push([error, asyncError]);
   }
 };
 

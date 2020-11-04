@@ -1,6 +1,81 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`beforeAll is exectued correctly 1`] = `
+exports[`a failing beforeAll should skip all beforeEach and afterEach hooks 1`] = `
+start_describe_definition: test suite beforeAll
+add_hook: beforeAll
+add_hook: beforeEach
+add_hook: afterEach
+add_test: test 1
+finish_describe_definition: test suite beforeAll
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: test suite beforeAll
+hook_start: beforeAll
+> beforeAll 1 runs
+hook_failure: beforeAll
+test_start: test 1
+test_fn_start: test 1
+test_done: test 1
+run_describe_finish: test suite beforeAll
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0
+`;
+
+exports[`a failing beforeAll should skip any nested describe blocks 1`] = `
+start_describe_definition: test suite beforeAll
+add_hook: beforeAll
+start_describe_definition: test suite nested
+add_hook: beforeAll
+add_test: test 1
+finish_describe_definition: test suite nested
+add_test: test 2
+finish_describe_definition: test suite beforeAll
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: test suite beforeAll
+hook_start: beforeAll
+> beforeAll 1 runs
+hook_failure: beforeAll
+run_describe_start: test suite nested
+test_start: test 1
+test_fn_start: test 1
+test_done: test 1
+run_describe_finish: test suite nested
+test_start: test 2
+test_fn_start: test 2
+test_done: test 2
+run_describe_finish: test suite beforeAll
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0
+`;
+
+exports[`a failing beforeAll should skip other beforeAll hooks 1`] = `
+start_describe_definition: test suite beforeAll
+add_hook: beforeAll
+add_hook: beforeAll
+add_test: test 1
+finish_describe_definition: test suite beforeAll
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: test suite beforeAll
+hook_start: beforeAll
+> beforeAll 1 runs
+hook_failure: beforeAll
+test_start: test 1
+test_fn_start: test 1
+test_done: test 1
+run_describe_finish: test suite beforeAll
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0
+`;
+
+exports[`beforeAll is executed correctly 1`] = `
 start_describe_definition: describe 1
 add_hook: beforeAll
 add_test: test 1
