@@ -14,7 +14,7 @@ import type {Config} from '@jest/types';
 import type {ChangedFilesPromise} from 'jest-changed-files';
 import {readConfigs} from 'jest-config';
 import HasteMap = require('jest-haste-map');
-import Runtime = require('jest-runtime');
+import Runtime, {Context} from 'jest-runtime';
 import {createDirectory, preRunMessage} from 'jest-util';
 import TestWatcher from '../TestWatcher';
 import {formatHandleErrors} from '../collectHandles';
@@ -218,7 +218,7 @@ const _run10000 = async (
 };
 
 const runWatch = async (
-  contexts: Array<Runtime.Context>,
+  contexts: Array<Context>,
   _configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,
   globalConfig: Config.GlobalConfig,
@@ -256,7 +256,7 @@ const runWatch = async (
 
 const runWithoutWatch = async (
   globalConfig: Config.GlobalConfig,
-  contexts: Array<Runtime.Context>,
+  contexts: Array<Context>,
   outputStream: NodeJS.WriteStream,
   onComplete: OnCompleteCallback,
   changedFilesPromise?: ChangedFilesPromise,

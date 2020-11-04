@@ -10,7 +10,7 @@ import type {JestEnvironment} from '@jest/environment';
 import {getCallsite} from '@jest/source-map';
 import type {AssertionResult, TestResult} from '@jest/test-result';
 import type {Config, Global} from '@jest/types';
-import type {RuntimeType as Runtime} from 'jest-runtime';
+import type Runtime from 'jest-runtime';
 import type {SnapshotStateType} from 'jest-snapshot';
 import installEach from './each';
 import {installErrorOnPrivate} from './errorOnPrivate';
