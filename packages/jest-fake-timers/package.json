@@ -7,8 +7,12 @@
     "directory": "packages/jest-fake-timers"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
     "@jest/types": "^26.6.2",
     "@sinonjs/fake-timers": "^6.0.1",

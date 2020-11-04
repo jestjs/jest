@@ -7,8 +7,13 @@
     "directory": "packages/jest-runtime"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json",
+    "./bin/jest-runtime": "./bin/jest-runtime.js"
+  },
   "dependencies": {
     "@jest/console": "^26.6.2",
     "@jest/environment": "^26.6.2",

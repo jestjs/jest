@@ -71,8 +71,10 @@ Object {
   },
   "instrument": true,
   "rootDir": "/",
-  "supportsDynamicImport": false,
-  "supportsStaticESM": false,
+  "supportsDynamicImport": undefined,
+  "supportsExportNamespaceFrom": undefined,
+  "supportsStaticESM": undefined,
+  "supportsTopLevelAwait": undefined,
 }
 `;
 

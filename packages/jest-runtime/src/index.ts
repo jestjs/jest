@@ -45,7 +45,7 @@ import HasteMap = require('jest-haste-map');
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import jestMock = require('jest-mock');
 import {escapePathForRegex} from 'jest-regex-util';
-import Resolver = require('jest-resolve');
+import Resolver from 'jest-resolve';
 import Snapshot = require('jest-snapshot');
 import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {run as cliRun} from './cli';
@@ -383,7 +383,7 @@ class Runtime {
       invariant(context);
 
       if (this._resolver.isCoreModule(modulePath)) {
-        const core = await this._importCoreModule(modulePath, context);
+        const core = this._importCoreModule(modulePath, context);
         this._esmoduleRegistry.set(cacheKey, core);
         return core;
       }
@@ -1123,7 +1123,6 @@ class Runtime {
         module.require, // require implementation
         module.path, // __dirname
         module.filename, // __filename
-        this._environment.global, // global object
         // @ts-expect-error
         ...lastArgs.filter(notEmpty),
       );
@@ -1678,7 +1677,6 @@ class Runtime {
       'require',
       '__dirname',
       '__filename',
-      'global',
       this._config.injectGlobals ? 'jest' : undefined,
       ...this._config.extraGlobals,
     ].filter(notEmpty);

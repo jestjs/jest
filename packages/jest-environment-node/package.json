@@ -7,8 +7,12 @@
     "directory": "packages/jest-environment-node"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
     "@jest/environment": "^26.6.2",
     "@jest/fake-timers": "^26.6.2",

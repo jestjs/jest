@@ -7,8 +7,12 @@
     "directory": "packages/jest-runner"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
     "@jest/console": "^26.6.2",
     "@jest/environment": "^26.6.2",

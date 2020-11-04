@@ -2,8 +2,12 @@
   "name": "@jest/reporters",
   "description": "Jest's reporters",
   "version": "26.6.2",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
     "@bcoe/v8-coverage": "^0.2.3",
     "@jest/console": "^26.6.2",

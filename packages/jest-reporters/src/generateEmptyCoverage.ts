@@ -70,7 +70,7 @@ export default function (
     const {code} = new ScriptTransformer(config).transformSource(
       filename,
       source,
-      true,
+      {instrument: true},
     );
     // TODO: consider passing AST
     const extracted = readInitialCoverage(code);

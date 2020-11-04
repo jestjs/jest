@@ -2,8 +2,13 @@
   "name": "jest-cli",
   "description": "Delightful JavaScript Testing.",
   "version": "26.6.3",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json",
+    "./bin/jest": "./bin/jest.js"
+  },
   "dependencies": {
     "@jest/core": "^26.6.3",
     "@jest/test-result": "^26.6.2",

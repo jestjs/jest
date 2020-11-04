@@ -7,8 +7,12 @@
     "directory": "packages/jest-snapshot"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
     "@babel/types": "^7.0.0",
     "@jest/types": "^26.6.2",

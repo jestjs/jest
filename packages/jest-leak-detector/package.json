@@ -7,8 +7,12 @@
     "directory": "packages/jest-leak-detector"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
     "jest-get-type": "^26.3.0",
     "pretty-format": "^26.6.2"

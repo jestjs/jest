@@ -2,8 +2,12 @@
   "name": "jest-watcher",
   "description": "Delightful JavaScript Testing.",
   "version": "26.6.2",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
     "@jest/test-result": "^26.6.2",
     "@jest/types": "^26.6.2",

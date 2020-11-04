@@ -38,6 +38,23 @@ module.exports.getPackages = function getPackages() {
       nodeEngineRequirement,
       `Engine requirement in ${pkg.name} should match root`,
     );
+
+    assert.ok(pkg.exports, `Package ${pkg.name} is missing \`exports\` field`);
+    assert.deepStrictEqual(
+      pkg.exports,
+      {
+        '.': pkg.main,
+        './package.json': './package.json',
+        ...Object.values(pkg.bin || {}).reduce(
+          (mem, curr) =>
+            Object.assign(mem, {[curr.replace(/\.js$/, '')]: curr}),
+          {},
+        ),
+        ...(pkg.name === 'jest-circus' ? {'./runner': './runner.js'} : {}),
+        ...(pkg.name === 'expect' ? {'./build/utils': './build/utils.js'} : {}),
+      },
+      `Package ${pkg.name} does not export correct files`,
+    );
   });
 
   return packages;
