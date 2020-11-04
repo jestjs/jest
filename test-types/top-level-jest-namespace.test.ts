@@ -11,7 +11,6 @@ import {expectError, expectType} from 'mlh-tsd';
 import {jest} from '@jest/globals';
 import type {Mock} from 'jest-mock';
 
-expectType<void>(jest.addMatchers({}));
 expectType<typeof jest>(jest.autoMockOff());
 expectType<typeof jest>(jest.autoMockOn());
 expectType<typeof jest>(jest.clearAllMocks());
@@ -33,7 +32,6 @@ expectType<typeof jest>(jest.mock('moduleName'));
 expectType<typeof jest>(jest.mock('moduleName', jest.fn()));
 expectType<typeof jest>(jest.mock('moduleName', jest.fn(), {}));
 expectType<typeof jest>(jest.mock('moduleName', jest.fn(), {virtual: true}));
-expectType<typeof jest>(jest.resetModuleRegistry());
 expectType<typeof jest>(jest.resetModules());
 expectType<typeof jest>(jest.isolateModules(() => {}));
 expectType<typeof jest>(jest.retryTimes(3));
@@ -62,7 +60,6 @@ expectType<void>(jest.runAllImmediates());
 expectType<void>(jest.runAllTicks());
 expectType<void>(jest.runAllTimers());
 expectType<void>(jest.runOnlyPendingTimers());
-expectType<void>(jest.runTimersToTime(9001));
 expectType<void>(jest.advanceTimersByTime(9001));
 
 expectType<typeof jest>(jest.setMock('moduleName', {}));
