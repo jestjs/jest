@@ -7,8 +7,12 @@
     "directory": "packages/jest-diff"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
     "chalk": "^4.0.0",
     "diff-sequences": "^26.6.2",

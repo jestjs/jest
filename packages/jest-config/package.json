@@ -7,8 +7,12 @@
     "directory": "packages/jest-config"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "peerDependencies": {
     "ts-node": ">=9.0.0"
   },

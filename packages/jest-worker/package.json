@@ -7,8 +7,12 @@
     "directory": "packages/jest-worker"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
     "@types/node": "*",
     "merge-stream": "^2.0.0",

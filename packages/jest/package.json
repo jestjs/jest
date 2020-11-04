@@ -2,8 +2,13 @@
   "name": "jest",
   "description": "Delightful JavaScript Testing.",
   "version": "26.6.3",
-  "main": "build/jest.js",
-  "types": "build/jest.d.ts",
+  "main": "./build/jest.js",
+  "types": "./build/jest.d.ts",
+  "exports": {
+    ".": "./build/jest.js",
+    "./package.json": "./package.json",
+    "./bin/jest": "./bin/jest.js"
+  },
   "dependencies": {
     "@jest/core": "^26.6.3",
     "import-local": "^3.0.2",
