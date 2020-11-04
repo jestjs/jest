@@ -22,7 +22,7 @@
     "jest-util": "^26.6.2",
     "jest-validate": "^26.6.2",
     "prompts": "^2.0.1",
-    "yargs": "^15.4.1"
+    "yargs": "^16.0.3"
   },
   "devDependencies": {
     "@jest/test-utils": "^26.6.2",
