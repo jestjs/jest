@@ -6,7 +6,7 @@
  *
  */
 
-import {format as pretty} from 'pretty-format';
+import pretty from 'pretty-format';
 import each from '../';
 
 const noop = () => {};
