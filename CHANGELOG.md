@@ -8,6 +8,8 @@
 
 ### Chore & Maintenance
 
+- `[*]` [**BREAKING**] Only support Node LTS releases and Node 15 ([#10685](https://github.com/facebook/jest/pull/10685))
+
 ### Performance
 
 ## 26.6.3

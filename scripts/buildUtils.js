@@ -35,11 +35,7 @@ module.exports.getPackages = function getPackages() {
 
     assert.strictEqual(
       pkg.engines.node,
-      pkg.name === 'jest-worker'
-        ? '>= 10.13.0'
-        : pkg.name === 'pretty-format'
-        ? '>= 10'
-        : nodeEngineRequirement,
+      nodeEngineRequirement,
       `Engine requirement in ${pkg.name} should match root`,
     );
   });
