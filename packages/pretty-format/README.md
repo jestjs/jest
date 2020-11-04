@@ -111,7 +111,7 @@ const {ReactElement, ReactTestComponent} = plugins;
 // ES2015 modules and destructuring assignment
 import React from 'react';
 import renderer from 'react-test-renderer';
-import prettyFormat, {plugins} from 'pretty-format';
+import {plugins, format as prettyFormat} from 'pretty-format';
 
 const {ReactElement, ReactTestComponent} = plugins;
 ```
