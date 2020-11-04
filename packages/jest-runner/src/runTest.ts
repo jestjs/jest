@@ -24,7 +24,7 @@ import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import LeakDetector from 'jest-leak-detector';
 import {formatExecError} from 'jest-message-util';
-import type {ResolverType} from 'jest-resolve';
+import type Resolver from 'jest-resolve';
 import RuntimeClass = require('jest-runtime');
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
 import type {TestFileEvent, TestFramework, TestRunnerContext} from './types';
@@ -79,7 +79,7 @@ async function runTestInternal(
   path: Config.Path,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  resolver: ResolverType,
+  resolver: Resolver,
   context?: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
 ): Promise<RunTestInternalResult> {
@@ -331,7 +331,7 @@ export default async function runTest(
   path: Config.Path,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  resolver: ResolverType,
+  resolver: Resolver,
   context?: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> {

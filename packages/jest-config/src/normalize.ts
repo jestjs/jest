@@ -14,7 +14,7 @@ import {statSync} from 'graceful-fs';
 import micromatch = require('micromatch');
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
-import Resolver = require('jest-resolve');
+import Resolver from 'jest-resolve';
 import {clearLine, replacePathSepForGlob, tryRealpath} from 'jest-util';
 import {ValidationError, validate} from 'jest-validate';
 import DEFAULT_CONFIG from './Defaults';

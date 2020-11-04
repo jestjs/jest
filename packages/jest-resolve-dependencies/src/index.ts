@@ -8,7 +8,7 @@
 import * as path from 'path';
 import type {Config} from '@jest/types';
 import type {FS as HasteFS} from 'jest-haste-map';
-import type {ResolveModuleConfig, ResolverType} from 'jest-resolve';
+import type {ResolveModuleConfig, default as Resolver} from 'jest-resolve';
 import {SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
 
 declare namespace DependencyResolver {
@@ -24,11 +24,11 @@ declare namespace DependencyResolver {
  */
 class DependencyResolver {
   private _hasteFS: HasteFS;
-  private _resolver: ResolverType;
+  private _resolver: Resolver;
   private _snapshotResolver: SnapshotResolver;
 
   constructor(
-    resolver: ResolverType,
+    resolver: Resolver,
     hasteFS: HasteFS,
     snapshotResolver: SnapshotResolver,
   ) {
