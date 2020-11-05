@@ -7,7 +7,6 @@
  */
 
 import {equals, fnNameFor, hasProperty, isA, isUndefined} from './jasmineUtils';
-import {emptyObject} from './utils';
 
 export class AsymmetricMatcher<T> {
   protected sample: T;
@@ -162,31 +161,19 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
       );
     }
 
-    if (this.inverse) {
-      for (const property in this.sample) {
-        if (
-          hasProperty(other, property) &&
-          equals(this.sample[property], other[property]) &&
-          !emptyObject(this.sample[property]) &&
-          !emptyObject(other[property])
-        ) {
-          return false;
-        }
-      }
+    let result = true;
 
-      return true;
-    } else {
-      for (const property in this.sample) {
-        if (
-          !hasProperty(other, property) ||
-          !equals(this.sample[property], other[property])
-        ) {
-          return false;
-        }
+    for (const property in this.sample) {
+      if (
+        !hasProperty(other, property) ||
+        !equals(this.sample[property], other[property])
+      ) {
+        result = false;
+        break;
       }
-
-      return true;
     }
+
+    return this.inverse ? !result : result;
   }
 
   toString() {
