@@ -38,13 +38,4 @@ export default class FailedTestsCache {
 
     this._enabledTestsMap = Object.freeze(this._enabledTestsMap);
   }
-
-  updateConfig(globalConfig: Config.GlobalConfig): Config.GlobalConfig {
-    if (!this._enabledTestsMap) {
-      return globalConfig;
-    }
-    const newConfig: Config.GlobalConfig = {...globalConfig};
-    newConfig.enabledTestsMap = this._enabledTestsMap;
-    return Object.freeze(newConfig);
-  }
 }
