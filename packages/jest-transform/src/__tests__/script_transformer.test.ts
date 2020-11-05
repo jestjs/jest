@@ -273,7 +273,7 @@ describe('ScriptTransformer', () => {
     const scriptTransformer = new ScriptTransformer(config);
     const transformedBananaWithCoverage = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
-      getCoverageOptions(),
+      getCoverageOptions({collectCoverage: true}),
     );
 
     expect(wrap(transformedBananaWithCoverage.code)).toMatchSnapshot();
@@ -285,7 +285,7 @@ describe('ScriptTransformer', () => {
     // in-memory cache
     const transformedBananaWithCoverageAgain = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
-      getCoverageOptions(),
+      getCoverageOptions({collectCoverage: true}),
     );
     expect(transformedBananaWithCoverageAgain).toBe(
       transformedBananaWithCoverage,
@@ -293,7 +293,7 @@ describe('ScriptTransformer', () => {
 
     const transformedKiwiWithCoverage = await scriptTransformer.transformAsync(
       '/fruits/kiwi.js',
-      getCoverageOptions(),
+      getCoverageOptions({collectCoverage: true}),
     );
     expect(wrap(transformedKiwiWithCoverage.code)).toMatchSnapshot();
 
@@ -305,7 +305,7 @@ describe('ScriptTransformer', () => {
     // If we disable coverage, we get a different result.
     const transformedKiwiWithoutCoverage = await scriptTransformer.transformAsync(
       '/fruits/kiwi.js',
-      getCoverageOptions(),
+      getCoverageOptions({collectCoverage: false}),
     );
 
     expect(transformedKiwiWithoutCoverage.code).not.toEqual(
