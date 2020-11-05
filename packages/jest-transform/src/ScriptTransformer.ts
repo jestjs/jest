@@ -35,7 +35,6 @@ import type {
   TransformedSource,
   Transformer,
 } from './types';
-import { assert } from 'console';
 // Use `require` to avoid TS rootDir
 const {version: VERSION} = require('../package.json');
 
@@ -149,7 +148,7 @@ export default class ScriptTransformer {
       transformerCacheKey,
     );
   }
-  
+
   private async _getCacheKeyAsync(
     content: string,
     filename: Config.Path,
@@ -212,11 +211,7 @@ export default class ScriptTransformer {
     content: string,
     options: TransformOptions,
   ): Config.Path {
-    const cacheKey = this._getCacheKey(
-      content,
-      filename,
-      options
-    );
+    const cacheKey = this._getCacheKey(content, filename, options);
 
     return this._createFolderFromCacheKey(filename, cacheKey);
   }
@@ -224,13 +219,9 @@ export default class ScriptTransformer {
   private async _getFileCachePathAsync(
     filename: Config.Path,
     content: string,
-    options: TransformOptions
+    options: TransformOptions,
   ): Promise<Config.Path> {
-    const cacheKey = await this._getCacheKeyAsync(
-      content,
-      filename,
-      options
-    );
+    const cacheKey = await this._getCacheKeyAsync(content, filename, options);
 
     return this._createFolderFromCacheKey(filename, cacheKey);
   }
@@ -397,8 +388,8 @@ export default class ScriptTransformer {
       } else {
         throw new TypeError(
           "Jest: a transform's `process` function must return a string, " +
-              'or an object with `code` key containing this string. ' +
-              "It's `processAsync` function must return that in a promise.",
+            'or an object with `code` key containing this string. ' +
+            "It's `processAsync` function must return that in a promise.",
         );
       }
     }
@@ -524,7 +515,6 @@ export default class ScriptTransformer {
       }
     }
 
-
     return this._buildTransformResult(
       filename,
       cacheFilePath,
@@ -541,14 +531,14 @@ export default class ScriptTransformer {
   async transformSourceAsync(
     filepath: Config.Path,
     content: string,
-    options: TransformOptions
+    options: TransformOptions,
   ): Promise<TransformResult> {
     const filename = tryRealpath(filepath);
     const transform = await this._getTransformerAsync(filename);
     const cacheFilePath = await this._getFileCachePathAsync(
       filename,
       content,
-      options
+      options,
     );
     const sourceMapPath: Config.Path | null = cacheFilePath + '.map';
     // Ignore cache if `config.cache` is set (--no-cache)
@@ -576,7 +566,7 @@ export default class ScriptTransformer {
           content,
           filename,
           this._config,
-          options
+          options,
         );
       } else if (transform.process) {
         processed = transform.process(content, filename, this._config, options);
@@ -593,9 +583,6 @@ export default class ScriptTransformer {
         );
       }
     }
-
-    assert(processed != null, 'should have thrown when processed is null');
-    processed = (processed as TransformedSource);
 
     return this._buildTransformResult(
       filename,
