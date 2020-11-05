@@ -273,7 +273,7 @@ describe('ScriptTransformer', () => {
     const scriptTransformer = new ScriptTransformer(config);
     const transformedBananaWithCoverage = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
-      makeGlobalConfig({collectCoverage: true}),
+      getCoverageOptions(),
     );
 
     expect(wrap(transformedBananaWithCoverage.code)).toMatchSnapshot();
@@ -285,7 +285,7 @@ describe('ScriptTransformer', () => {
     // in-memory cache
     const transformedBananaWithCoverageAgain = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
-      makeGlobalConfig({collectCoverage: true}),
+      getCoverageOptions(),
     );
     expect(transformedBananaWithCoverageAgain).toBe(
       transformedBananaWithCoverage,
@@ -293,7 +293,7 @@ describe('ScriptTransformer', () => {
 
     const transformedKiwiWithCoverage = await scriptTransformer.transformAsync(
       '/fruits/kiwi.js',
-      makeGlobalConfig({collectCoverage: true}),
+      getCoverageOptions(),
     );
     expect(wrap(transformedKiwiWithCoverage.code)).toMatchSnapshot();
 
@@ -305,7 +305,7 @@ describe('ScriptTransformer', () => {
     // If we disable coverage, we get a different result.
     const transformedKiwiWithoutCoverage = await scriptTransformer.transformAsync(
       '/fruits/kiwi.js',
-      makeGlobalConfig({collectCoverage: false}),
+      getCoverageOptions(),
     );
 
     expect(transformedKiwiWithoutCoverage.code).not.toEqual(
@@ -337,11 +337,11 @@ describe('ScriptTransformer', () => {
 
     const shouldInstrument = require('../shouldInstrument').default;
     const scriptTransformer = new ScriptTransformer(config);
-    const fsSourceCode = process.binding('natives').fs;
+    const fsSourceCode = 'muaha, fake source!';
 
     const response = await scriptTransformer.transformAsync(
       'fs',
-      {isCoreModule: true},
+      {...getCoverageOptions(), isCoreModule: true},
       fsSourceCode,
     );
 
