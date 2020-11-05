@@ -633,6 +633,11 @@ test(<span class="hljs-string">'use jsdom in this test file'</span>, () =&gt; {
 });
 </code></pre>
 <p>テスト環境のセットアップに使用する独自のモジュールを作成できます。 モジュールは、<code>setup</code>、 <code>teardown</code> および <code>runScript</code> メソッドを持つクラスをエクスポートする必要があります。 変数を <code>this.global</code> オブジェクトに束縛することで、このモジュールからテストスイートに変数を渡すこともできます。つまり、テストスイーツ内でグローバル変数をして使用することができるようになります。</p>
+<p>To use this class as your custom environment, refer to it by its full path within the project. For example, if your class is stored in <code>my-custom-environment.js</code> in some subfolder of your project, then the annotation might looke like this:</p>
+<pre><code class="hljs css language-js"><span class="hljs-comment">/**
+ * <span class="hljs-doctag">@jest</span>-environment ./src/test/my-custom-environment
+ */</span>
+</code></pre>
 <p><em>Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment.</em></p>
 <p>例:</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// my-custom-environment</span>
@@ -670,6 +675,9 @@ test(<span class="hljs-string">'use jsdom in this test file'</span>, () =&gt; {
 <span class="hljs-built_in">module</span>.exports = CustomEnvironment;
 </code></pre>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// my-test-suite</span>
+<span class="hljs-comment">/**
+ * <span class="hljs-doctag">@jest</span>-environment ./my-custom-environment
+ */</span>
 <span class="hljs-keyword">let</span> someGlobalObject;
 
 beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {

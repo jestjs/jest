@@ -756,6 +756,11 @@ test(<span class="hljs-string">'use jsdom in this test file'</span>, () =&gt; {
 <p>Puteţi crea propriile module care vor fi folosite pentru configurarea mediul de testare. The module must export a class with <code>setup</code>, <code>teardown</code> and <code>runScript</code> methods. You can also pass variables from this module to your test suites by assigning them to <code>this.global</code> object – this will make them available in your test suites as global variables.</p>
 <p>The class may optionally expose an asynchronous <code>handleTestEvent</code> method to bind to events fired by <a href="https://github.com/facebook/jest/tree/master/packages/jest-circus"><code>jest-circus</code></a>. Normally, <code>jest-circus</code> test runner would pause until a promise returned from <code>handleTestEvent</code> gets fulfilled, <strong>except for the next events</strong>: <code>start_describe_definition</code>, <code>finish_describe_definition</code>, <code>add_hook</code>, <code>add_test</code> or <code>error</code> (for the up-to-date list you can look at <a href="https://github.com/facebook/jest/tree/master/packages/jest-types/src/Circus.ts">SyncEvent type in the types definitions</a>). That is caused by backward compatibility reasons and <code>process.on('unhandledRejection', callback)</code> signature, but that usually should not be a problem for most of the use cases.</p>
 <p>Any docblock pragmas in test files will be passed to the environment constructor and can be used for per-test configuration. If the pragma does not have a value, it will be present in the object with its value set to an empty string. If the pragma is not present, it will not be present in the object.</p>
+<p>To use this class as your custom environment, refer to it by its full path within the project. For example, if your class is stored in <code>my-custom-environment.js</code> in some subfolder of your project, then the annotation might looke like this:</p>
+<pre><code class="hljs css language-js"><span class="hljs-comment">/**
+ * <span class="hljs-doctag">@jest</span>-environment ./src/test/my-custom-environment
+ */</span>
+</code></pre>
 <p><em>Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment.</em></p>
 <p>Exemplu:</p>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// my-custom-environment</span>
@@ -799,6 +804,9 @@ test(<span class="hljs-string">'use jsdom in this test file'</span>, () =&gt; {
 <span class="hljs-built_in">module</span>.exports = CustomEnvironment;
 </code></pre>
 <pre><code class="hljs css language-js"><span class="hljs-comment">// my-test-suite</span>
+<span class="hljs-comment">/**
+ * <span class="hljs-doctag">@jest</span>-environment ./my-custom-environment
+ */</span>
 <span class="hljs-keyword">let</span> someGlobalObject;
 
 beforeAll(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
