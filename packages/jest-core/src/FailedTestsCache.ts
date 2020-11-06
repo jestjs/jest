@@ -6,7 +6,6 @@
  */
 
 import type {TestResult} from '@jest/test-result';
-import type {Config} from '@jest/types';
 import type {Test} from 'jest-runner';
 
 type TestMap = Record<string, Record<string, boolean>>;
