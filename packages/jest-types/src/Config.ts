@@ -268,11 +268,6 @@ export type GlobalConfig = {
   coverageThreshold?: CoverageThreshold;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
-  enabledTestsMap?: {
-    [key: string]: {
-      [key: string]: boolean;
-    };
-  };
   expand: boolean;
   filter?: Path;
   findRelatedTests: boolean;

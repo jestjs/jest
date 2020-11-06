@@ -20,7 +20,6 @@ const DEFAULT_GLOBAL_CONFIG: Config.GlobalConfig = {
   coverageThreshold: {global: {}},
   detectLeaks: false,
   detectOpenHandles: false,
-  enabledTestsMap: undefined,
   errorOnDeprecated: false,
   expand: false,
   filter: undefined,

@@ -201,7 +201,6 @@ export default async function runJest({
   if (globalConfig.onlyFailures) {
     if (failedTestsCache) {
       allTests = failedTestsCache.filterTests(allTests);
-      globalConfig = failedTestsCache.updateConfig(globalConfig);
     } else {
       allTests = sequencer.allFailedTests(allTests);
     }
