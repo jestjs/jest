@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {ScrollOptions} from '../types';
 import {KEYS} from '../constants';
+import type {ScrollOptions} from '../types';
 
 export default class Prompt {
   private _entering: boolean;

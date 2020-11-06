@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {makeProjectConfig} from '@jest/test-utils';
 import babelJest = require('../index');
 import {loadPartialConfig} from '../loadBabelConfig';
-import {makeProjectConfig} from '../../../../TestUtils';
 
 jest.mock('../loadBabelConfig', () => {
   const actual = jest.requireActual('@babel/core');
@@ -93,7 +93,14 @@ describe('caller option correctly merges from defaults and options', () => {
 
     expect(loadPartialConfig).toHaveBeenCalledTimes(1);
     expect(loadPartialConfig).toHaveBeenCalledWith(
-      expect.objectContaining({caller: {name: 'babel-jest', ...output}}),
+      expect.objectContaining({
+        caller: {
+          name: 'babel-jest',
+          ...output,
+          supportsExportNamespaceFrom: false,
+          supportsTopLevelAwait: false,
+        },
+      }),
     );
   });
 });
@@ -110,7 +117,9 @@ test('can pass null to createTransformer', () => {
       caller: {
         name: 'babel-jest',
         supportsDynamicImport: false,
+        supportsExportNamespaceFrom: false,
         supportsStaticESM: false,
+        supportsTopLevelAwait: false,
       },
     }),
   );

@@ -171,3 +171,11 @@ module.exports = {
 ```
 
 However, there are some [caveats](https://babeljs.io/docs/en/babel-plugin-transform-typescript#caveats) to using TypeScript with Babel. Because TypeScript support in Babel is purely transpilation, Jest will not type-check your tests as they are run. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest) instead, or just run the TypeScript compiler [tsc](https://www.typescriptlang.org/docs/handbook/compiler-options.html) separately (or as part of your build process).
+
+You may also want to install the [`@types/jest`](https://www.npmjs.com/package/@types/jest) module for the version of Jest you're using. This will help provide full typing when writing your tests with TypeScript.
+
+> For `@types/*` modules it's recommended to try to match the version of the associated module. For example, if you are using `26.4.0` of `jest` then using `26.4.x` of `@types/jest` is ideal. In general, try to match the major (`26`) and minor (`4`) version as closely as possible.
+
+```bash
+yarn add --dev @types/jest
+```

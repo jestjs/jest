@@ -1,33 +1,37 @@
 {
   "name": "expect",
-  "version": "26.6.1",
+  "version": "26.6.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/expect"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json",
+    "./build/utils": "./build/utils.js"
+  },
   "dependencies": {
-    "@jest/types": "^26.6.1",
+    "@jest/types": "^26.6.2",
     "ansi-styles": "^4.0.0",
     "jest-get-type": "^26.3.0",
-    "jest-matcher-utils": "^26.6.1",
-    "jest-message-util": "^26.6.1",
+    "jest-matcher-utils": "^26.6.2",
+    "jest-message-util": "^26.6.2",
     "jest-regex-util": "^26.0.0"
   },
   "devDependencies": {
-    "@jest/test-utils": "^26.5.0",
+    "@jest/test-utils": "^26.6.2",
     "chalk": "^4.0.0",
     "fast-check": "^2.0.0",
     "immutable": "^4.0.0-rc.12"
   },
   "engines": {
-    "node": ">= 10.14.2"
+    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
+  }
 }

@@ -6,9 +6,9 @@
  */
 
 import pEachSeries = require('p-each-series');
+import {ScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import type {Test} from 'jest-runner';
-import {ScriptTransformer} from '@jest/transform';
 import {interopRequireDefault} from 'jest-util';
 
 export default async ({

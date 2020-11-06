@@ -13,6 +13,7 @@
     {"path": "../jest-message-util"},
     {"path": "../jest-resolve"},
     {"path": "../jest-types"},
-    {"path": "../pretty-format"}
+    {"path": "../pretty-format"},
+    {"path": "../test-utils"}
   ]
 }

@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
-import type {SerializableError, TestResult} from '@jest/test-result';
-import exit = require('exit');
 import chalk = require('chalk');
 import Emittery = require('emittery');
+import exit = require('exit');
 import throat from 'throat';
-import Worker, {PromiseWithCustomMessage} from 'jest-worker';
+import type {SerializableError, TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import {deepCyclicCopy} from 'jest-util';
+import Worker, {PromiseWithCustomMessage} from 'jest-worker';
 import runTest from './runTest';
 import type {SerializableResolver, worker} from './testWorker';
 import type {
@@ -34,7 +34,7 @@ interface WorkerInterface extends Worker {
   worker: typeof worker;
 }
 
-namespace TestRunner {
+declare namespace TestRunner {
   export type Test = JestTest;
   export type OnTestFailure = JestOnTestFailure;
   export type OnTestStart = JestOnTestStart;

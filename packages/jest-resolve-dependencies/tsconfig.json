@@ -7,6 +7,7 @@
   "references": [
     {"path": "../jest-regex-util"},
     {"path": "../jest-snapshot"},
-    {"path": "../jest-types"}
+    {"path": "../jest-types"},
+    {"path": "../test-utils"}
   ]
 }

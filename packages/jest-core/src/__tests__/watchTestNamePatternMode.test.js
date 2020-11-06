@@ -8,6 +8,7 @@
 
 import chalk from 'chalk';
 import wrap from 'jest-snapshot-serializer-raw';
+// eslint-disable-next-line import/order
 import {KEYS} from 'jest-watcher';
 
 const runJestMock = jest.fn();

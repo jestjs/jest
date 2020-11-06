@@ -6,10 +6,10 @@
  */
 
 import * as path from 'path';
-import type {Config} from '@jest/types';
-import type {AggregatedResult, TestCaseResult} from '@jest/test-result';
 import chalk = require('chalk');
 import slash = require('slash');
+import type {AggregatedResult, TestCaseResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import {formatTime, pluralize} from 'jest-util';
 import type {SummaryOptions, Test} from './types';
 

@@ -6,8 +6,9 @@
  *
  */
 
-import type {Config} from '@jest/types';
-import type {TestResult} from '@jest/test-result';
+import chalk = require('chalk');
+import * as fs from 'graceful-fs';
+import sourcemapSupport = require('source-map-support');
 import {
   BufferedConsole,
   CustomConsole,
@@ -17,16 +18,15 @@ import {
   getConsoleOutput,
 } from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
-import RuntimeClass = require('jest-runtime');
-import * as fs from 'graceful-fs';
-import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
-import LeakDetector from 'jest-leak-detector';
-import type {ResolverType} from 'jest-resolve';
+import type {TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
+import LeakDetector from 'jest-leak-detector';
 import {formatExecError} from 'jest-message-util';
-import sourcemapSupport = require('source-map-support');
-import chalk = require('chalk');
+import type Resolver from 'jest-resolve';
+import type RuntimeClass from 'jest-runtime';
+import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
 import type {TestFileEvent, TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {
@@ -61,8 +61,7 @@ function freezeConsole(
     );
 
     process.stderr.write('\n' + formattedError + '\n');
-    // TODO: set exit code in Jest 25
-    // process.exitCode = 1;
+    process.exitCode = 1;
   };
 }
 
@@ -79,7 +78,7 @@ async function runTestInternal(
   path: Config.Path,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  resolver: ResolverType,
+  resolver: Resolver,
   context?: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
 ): Promise<RunTestInternalResult> {
@@ -331,7 +330,7 @@ export default async function runTest(
   path: Config.Path,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  resolver: ResolverType,
+  resolver: Resolver,
   context?: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> {

@@ -7,10 +7,10 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import Resolver = require('jest-resolve');
+import {makeProjectConfig} from '@jest/test-utils';
 import type {Config} from '@jest/types';
+import Resolver from 'jest-resolve';
 import {buildSnapshotResolver} from 'jest-snapshot';
-import {makeProjectConfig} from '../../../../TestUtils';
 import DependencyResolver from '../index';
 
 const maxWorkers = 1;
@@ -26,7 +26,7 @@ const filter = (path: Config.Path) =>
   Object.keys(cases).every(key => cases[key](path));
 
 beforeEach(() => {
-  Runtime = require('jest-runtime');
+  Runtime = require('jest-runtime').default;
   config = makeProjectConfig({
     cacheDirectory: path.resolve(tmpdir(), 'jest-resolve-dependencies-test'),
     moduleDirectories: ['node_modules'],
@@ -148,4 +148,18 @@ test('resolves dependencies correctly when dependency resolution fails', () => {
   );
 
   expect(resolved).toEqual([]);
+});
+
+test('resolves dependencies correctly when mock dependency resolution fails', () => {
+  jest.spyOn(runtimeContextResolver, 'getMockModule').mockImplementation(() => {
+    throw new Error('getMockModule has failed');
+  });
+
+  const resolved = dependencyResolver.resolve(
+    path.resolve(__dirname, '__fixtures__', 'file.test.js'),
+  );
+
+  expect(resolved).toEqual([
+    expect.stringContaining(path.join('__tests__', '__fixtures__', 'file.js')),
+  ]);
 });

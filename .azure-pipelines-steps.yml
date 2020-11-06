@@ -6,11 +6,11 @@ steps:
   - checkout: self
     path: jest
 
-  # Ensure Node.js 12 is active
+  # Ensure Node.js 14 is active
   - task: NodeTool@0
     inputs:
-      versionSpec: '12.x'
-    displayName: 'Use Node.js 12'
+      versionSpec: '14.x'
+    displayName: 'Use Node.js 14'
 
   # Ensure Python 2.7 is active
   - task: UsePythonVersion@0
@@ -27,7 +27,7 @@ steps:
       path: $(yarnCache.folder)
     displayName: Cache Yarn packages
 
-  - script: yarn install
+  - script: yarn install --immutable
     displayName: 'Install dependencies'
 
   - script: yarn build:js

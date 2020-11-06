@@ -6,13 +6,13 @@
  */
 
 import * as path from 'path';
+import {runYarnInstall} from '../Utils';
 import {json as runWithJson} from '../runJest';
-import {runYarn} from '../Utils';
 
 const DIR = path.resolve(__dirname, '..', 'pnp');
 
 beforeEach(() => {
-  runYarn(DIR, {YARN_NODE_LINKER: 'pnp'});
+  runYarnInstall(DIR, {YARN_NODE_LINKER: 'pnp'});
 });
 
 it('successfully runs the tests inside `pnp/`', () => {

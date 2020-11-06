@@ -328,8 +328,8 @@ Here's a complete test file which uses the module factory parameter to `jest.moc
 
 ```javascript
 // sound-player-consumer.test.js
-import SoundPlayerConsumer from './sound-player-consumer';
 import SoundPlayer from './sound-player';
+import SoundPlayerConsumer from './sound-player-consumer';
 
 const mockPlaySoundFile = jest.fn();
 jest.mock('./sound-player', () => {

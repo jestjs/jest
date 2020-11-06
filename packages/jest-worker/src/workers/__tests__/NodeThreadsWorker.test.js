@@ -8,7 +8,6 @@
 'use strict';
 
 import getStream from 'get-stream';
-
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,

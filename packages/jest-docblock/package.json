@@ -7,8 +7,12 @@
     "directory": "packages/jest-docblock"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
     "detect-newline": "^3.0.0"
   },
@@ -16,10 +20,9 @@
     "@types/node": "*"
   },
   "engines": {
-    "node": ">= 10.14.2"
+    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
+  }
 }

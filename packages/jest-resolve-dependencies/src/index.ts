@@ -8,10 +8,10 @@
 import * as path from 'path';
 import type {Config} from '@jest/types';
 import type {FS as HasteFS} from 'jest-haste-map';
-import type {ResolveModuleConfig, ResolverType} from 'jest-resolve';
+import type {ResolveModuleConfig, default as Resolver} from 'jest-resolve';
 import {SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
 
-namespace DependencyResolver {
+declare namespace DependencyResolver {
   export type ResolvedModule = {
     file: Config.Path;
     dependencies: Array<Config.Path>;
@@ -24,11 +24,11 @@ namespace DependencyResolver {
  */
 class DependencyResolver {
   private _hasteFS: HasteFS;
-  private _resolver: ResolverType;
+  private _resolver: Resolver;
   private _snapshotResolver: SnapshotResolver;
 
   constructor(
-    resolver: ResolverType,
+    resolver: Resolver,
     hasteFS: HasteFS,
     snapshotResolver: SnapshotResolver,
   ) {
@@ -75,10 +75,14 @@ class DependencyResolver {
 
       // If we resolve a dependency, then look for a mock dependency
       // of the same name in that dependency's directory.
-      resolvedMockDependency = this._resolver.getMockModule(
-        resolvedDependency,
-        path.basename(dependency),
-      );
+      try {
+        resolvedMockDependency = this._resolver.getMockModule(
+          resolvedDependency,
+          path.basename(dependency),
+        );
+      } catch {
+        // leave resolvedMockDependency as undefined if nothing can be found
+      }
 
       if (resolvedMockDependency) {
         const dependencyMockDir = path.resolve(

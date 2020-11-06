@@ -9,7 +9,6 @@ import * as path from 'path';
 import {PassThrough} from 'stream';
 import {Worker} from 'worker_threads';
 import mergeStream = require('merge-stream');
-
 import {
   CHILD_MESSAGE_INITIALIZE,
   ChildMessage,

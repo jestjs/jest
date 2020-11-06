@@ -8,6 +8,7 @@
 
 import chalk from 'chalk';
 import {JestHook, KEYS} from 'jest-watcher';
+// eslint-disable-next-line import/order
 import TestWatcher from '../TestWatcher';
 
 const runJestMock = jest.fn();
@@ -612,7 +613,6 @@ describe('Watch mode flows', () => {
     ${'✖︎'} | ${'coverageThreshold'}
     ${'✖︎'} | ${'detectLeaks'}
     ${'✖︎'} | ${'detectOpenHandles'}
-    ${'✖︎'} | ${'enabledTestsMap'}
     ${'✖︎'} | ${'errorOnDeprecated'}
     ${'✖︎'} | ${'expand'}
     ${'✖︎'} | ${'filter'}

@@ -8,7 +8,6 @@
 'use strict';
 
 import EventEmitter from 'events';
-
 import {CHILD_MESSAGE_CALL, PARENT_MESSAGE_OK} from '../types';
 
 let Farm;

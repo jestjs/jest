@@ -4,7 +4,7 @@ aliases:
       ignore: gh-pages
   - &install
     pkg-manager: yarn
-    override-ci-command: yarn install && yarn build:js
+    override-ci-command: yarn install --immutable && yarn build:js
     cache-path: ~/.yarn/berry/cache
     include-branch-in-cache-key: false
     app-dir: ~/jest
@@ -51,20 +51,6 @@ jobs:
           install-npm: false
       - node/install-packages: *install
       - run:
-          command: yarn test-ci
-      - store_test_results:
-          path: reports/junit
-
-  test-node-13:
-    working_directory: ~/jest
-    executor: node/default
-    steps:
-      - checkout
-      - node/install:
-          node-version: '13'
-          install-npm: false
-      - node/install-packages: *install
-      - run:
           command: yarn test-ci-partial
       - store_test_results:
           path: reports/junit
@@ -79,7 +65,7 @@ jobs:
           install-npm: false
       - node/install-packages: *install
       - run:
-          command: yarn test-ci-partial
+          command: yarn test-ci
       - store_test_results:
           path: reports/junit
 
@@ -118,7 +104,6 @@ workflows:
     jobs:
       - test-node-10
       - test-node-12
-      - test-node-13
       - test-node-14
       - test-node-15 # current
       - test-jest-circus

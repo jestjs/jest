@@ -25,7 +25,6 @@ Your test will want to mock the `fetch` function so that we can be sure that it 
 jest.mock('node-fetch');
 
 import fetch, {Response} from 'node-fetch';
-
 import {createUser} from './createUser';
 
 test('createUser calls fetch with the right args and returns the user id', async () => {

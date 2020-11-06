@@ -7,8 +7,8 @@
  */
 
 import assert from 'assert';
-import {onNodeVersions} from '@jest/test-utils';
 import fc from 'fast-check';
+import {onNodeVersions} from '@jest/test-utils';
 import expect from '..';
 import {
   anythingSettings,

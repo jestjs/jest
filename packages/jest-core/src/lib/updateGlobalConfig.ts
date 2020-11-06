@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {replacePathSepForRegex} from 'jest-regex-util';
 import type {Config} from '@jest/types';
+import {replacePathSepForRegex} from 'jest-regex-util';
 import type {AllowedConfigOptions} from 'jest-watcher';
 
 type ExtraConfigOptions = Partial<

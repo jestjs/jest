@@ -300,8 +300,8 @@ Default: `undefined`
 This option allows the use of a custom dependency extractor. It must be a node module that exports an object with an `extract` function. E.g.:
 
 ```javascript
-const fs = require('fs');
 const crypto = require('crypto');
+const fs = require('fs');
 
 module.exports = {
   extract(code, filePath, defaultExtract) {
@@ -463,6 +463,27 @@ This option allows the use of a custom global teardown module which exports an a
 _Note: A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
 _Note: The same caveat concerning transformation of `node_modules` as for `globalSetup` applies to `globalTeardown`._
+
+### `haste` [object]
+
+Default: `undefined`
+
+This will be used to configure the behavior of `jest-haste-map`, Jest's internal file crawler/cache system. The following options are supported:
+
+```ts
+type HasteConfig = {
+  // Whether to hash files using SHA-1.
+  computeSha1?: boolean;
+  // The platform to use as the default, e.g. 'ios'.
+  defaultPlatform?: string | null;
+  // Path to a custom implementation of Haste.
+  hasteImplModulePath?: string;
+  // All platforms to target, e.g ['ios', 'android'].
+  platforms?: Array<string>;
+  // Whether to throw on error on module collision.
+  throwOnModuleCollision?: boolean;
+};
+```
 
 ### `injectGlobals` [boolean]
 
@@ -968,9 +989,9 @@ More about serializers API can be found [here](https://github.com/facebook/jest/
 
 ### `testEnvironment` [string]
 
-Default: `"jsdom"`
+Default: `"node"`
 
-The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/jsdom/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead.
+The test environment that will be used for testing. The default environment in Jest is a Node.js environment. If you are building a web app, you can use a browser-like environment through [`jsdom`](https://github.com/jsdom/jsdom) instead.
 
 By adding a `@jest-environment` docblock at the top of the file, you can specify another environment to be used for all tests in that file:
 
@@ -990,6 +1011,14 @@ You can create your own module that will be used for setting up the test environ
 The class may optionally expose an asynchronous `handleTestEvent` method to bind to events fired by [`jest-circus`](https://github.com/facebook/jest/tree/master/packages/jest-circus). Normally, `jest-circus` test runner would pause until a promise returned from `handleTestEvent` gets fulfilled, **except for the next events**: `start_describe_definition`, `finish_describe_definition`, `add_hook`, `add_test` or `error` (for the up-to-date list you can look at [SyncEvent type in the types definitions](https://github.com/facebook/jest/tree/master/packages/jest-types/src/Circus.ts)). That is caused by backward compatibility reasons and `process.on('unhandledRejection', callback)` signature, but that usually should not be a problem for most of the use cases.
 
 Any docblock pragmas in test files will be passed to the environment constructor and can be used for per-test configuration. If the pragma does not have a value, it will be present in the object with its value set to an empty string. If the pragma is not present, it will not be present in the object.
+
+To use this class as your custom environment, refer to it by its full path within the project. For example, if your class is stored in `my-custom-environment.js` in some subfolder of your project, then the annotation might looke like this:
+
+```js
+/**
+ * @jest-environment ./src/test/my-custom-environment
+ */
+```
 
 _Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment._
 
@@ -1039,6 +1068,9 @@ module.exports = CustomEnvironment;
 
 ```js
 // my-test-suite
+/**
+ * @jest-environment ./my-custom-environment
+ */
 let someGlobalObject;
 
 beforeAll(() => {
@@ -1050,7 +1082,7 @@ beforeAll(() => {
 
 Default: `{}`
 
-Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{userAgent: "Agent/007"}`.
+Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example, you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{userAgent: "Agent/007"}`.
 
 ### `testFailureExitCode` [number]
 
@@ -1106,7 +1138,7 @@ This option allows the use of a custom results processor. This processor must be
 
 ```json
 {
-  "success": bool,
+  "success": boolean,
   "startTime": epoch,
   "numTotalTestSuites": number,
   "numPassedTestSuites": number,
@@ -1293,6 +1325,12 @@ Examples of watch plugins include:
 - [`jest-watch-yarn-workspaces`](https://github.com/cameronhunter/jest-watch-directories/tree/master/packages/jest-watch-yarn-workspaces)
 
 _Note: The values in the `watchPlugins` property value can omit the `jest-watch-` prefix of the package name._
+
+### `watchman` [boolean]
+
+Default: `true`
+
+Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling.
 
 ### `//` [string]
 

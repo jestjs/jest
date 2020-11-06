@@ -156,6 +156,8 @@ test('compiling android goes as expected', () => {
 });
 ```
 
+> Note: the function that throws an exception needs to be invoked within a wrapping function otherwise the `toThrow` assertion will fail.
+
 ## And More
 
 This is just a taste. For a complete list of matchers, check out the [reference docs](ExpectAPI.md).

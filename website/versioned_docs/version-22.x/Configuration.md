@@ -316,6 +316,27 @@ Default: `undefined`
 
 This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites.
 
+### `haste` [object]
+
+Default: `undefined`
+
+This will be used to configure the behavior of `jest-haste-map`, Jest's internal file crawler/cache system. The following options are supported:
+
+```ts
+type HasteConfig = {
+  // Whether to hash files using SHA-1.
+  computeSha1?: boolean;
+  // The platform to use as the default, e.g. 'ios'.
+  defaultPlatform?: string | null;
+  // Path to a custom implementation of Haste.
+  hasteImplModulePath?: string;
+  // All platforms to target, e.g ['ios', 'android'].
+  platforms?: Array<string>;
+  // Whether to throw on error on module collision.
+  throwOnModuleCollision?: boolean;
+};
+```
+
 ### `moduleDirectories` [array\<string>]
 
 Default: `["node_modules"]`
@@ -543,7 +564,7 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 ```json
 {
   "basedir": string,
-  "browser": bool,
+  "browser": boolean,
   "extensions": [string],
   "moduleDirectory": [string],
   "paths": [string],
@@ -724,6 +745,14 @@ test('use jsdom in this test file', () => {
 
 You can create your own module that will be used for setting up the test environment. The module must export a class with `setup`, `teardown` and `runScript` methods. You can also pass variables from this module to your test suites by assigning them to `this.global` object &ndash; this will make them available in your test suites as global variables.
 
+To use this class as your custom environment, refer to it by its full path within the project. For example, if your class is stored in `my-custom-environment.js` in some subfolder of your project, then the annotation might looke like this:
+
+```js
+/**
+ * @jest-environment ./src/test/my-custom-environment
+ */
+```
+
 _Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment._
 
 Example:
@@ -766,6 +795,9 @@ module.exports = CustomEnvironment;
 
 ```js
 // my-test-suite
+/**
+ * @jest-environment ./my-custom-environment
+ */
 let someGlobalObject;
 
 beforeAll(() => {
@@ -779,7 +811,7 @@ _Note: Jest comes with JSDOM@11 by default. Due to JSDOM 12 and newer dropping s
 
 Default: `{}`
 
-Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{userAgent: "Agent/007"}`.
+Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example, you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{userAgent: "Agent/007"}`.
 
 ### `testFailureExitCode` [number]
 
@@ -835,7 +867,7 @@ This option allows the use of a custom results processor. This processor must be
 
 ```json
 {
-  "success": bool,
+  "success": boolean,
   "startTime": epoch,
   "numTotalTestSuites": number,
   "numPassedTestSuites": number,
@@ -960,3 +992,9 @@ An array of RegExp patterns that are matched against all source file paths befor
 These patterns match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/node_modules/"]`.
 
 Even if nothing is specified here, the watcher will ignore changes to any hidden files and directories, i.e. files and folders that begin with a dot (`.`).
+
+### `watchman` [boolean]
+
+Default: `true`
+
+Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling.

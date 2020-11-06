@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {extractSummary, runYarn} from '../Utils';
+import {extractSummary, runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../failures');
@@ -24,7 +24,7 @@ function cleanStderr(stderr: string) {
 const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
 
 beforeAll(() => {
-  runYarn(dir);
+  runYarnInstall(dir);
 });
 
 test('not throwing Error objects', () => {
@@ -40,7 +40,7 @@ test('not throwing Error objects', () => {
   stderr = runJest(dir, ['duringTests.test.js']).stderr;
 
   if (nodeMajorVersion < 12) {
-    const lineEntry = '(__tests__/duringTests.test.js:38:8)';
+    const lineEntry = '(__tests__/duringTests.test.js:43:8)';
 
     expect(stderr).toContain(`at Object.<anonymous>.done ${lineEntry}`);
 
@@ -50,6 +50,8 @@ test('not throwing Error objects', () => {
     );
   }
 
+  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
+  stderr = runJest(dir, ['throwObjectWithStackProp.test.js']).stderr;
   expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
 });
 

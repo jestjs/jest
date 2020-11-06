@@ -5,9 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const {sync: readPkg} = require('read-pkg');
+const {getPackages} = require('./scripts/buildUtils');
+
+const internalPackages = getPackages()
+  .map(packageDir => {
+    const pkg = readPkg({cwd: packageDir});
+
+    return pkg.name;
+  })
+  .sort();
+
 module.exports = {
   extends: [
-    './packages/eslint-config-fb-strict/index.js',
+    'fb-strict',
     'plugin:import/errors',
     'plugin:import/typescript',
     'prettier',
@@ -243,11 +254,29 @@ module.exports = {
           'scripts/**',
           'babel.config.js',
           'testSetupFile.js',
+          '.eslintrc.js',
         ],
       },
     ],
     'import/no-unresolved': ['error', {ignore: ['fsevents']}],
-    'import/order': 'error',
+    'import/order': [
+      'error',
+      {
+        alphabetize: {
+          order: 'asc',
+        },
+        // this is the default order except for added `internal` in the middle
+        groups: [
+          'builtin',
+          'external',
+          'internal',
+          'parent',
+          'sibling',
+          'index',
+        ],
+        'newlines-between': 'never',
+      },
+    ],
     'no-console': 'off',
     'no-restricted-imports': [
       'error',
@@ -262,5 +291,9 @@ module.exports = {
   },
   settings: {
     'import/ignore': ['react-native'],
+    // using `new RegExp` makes sure to escape `/`
+    'import/internal-regex': new RegExp(
+      internalPackages.map(pkg => `^${pkg}$`).join('|'),
+    ).source,
   },
 };

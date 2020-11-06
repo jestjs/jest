@@ -8,8 +8,8 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
+import {cleanup, runYarnInstall} from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
-import {cleanup, runYarn} from '../Utils';
 
 const DIR = path.join(tmpdir(), 'jest-global-setup');
 const project1DIR = path.join(tmpdir(), 'jest-global-setup-project-1');
@@ -22,7 +22,7 @@ const nodeModulesDIR = path.join(tmpdir(), 'jest-global-setup-node-modules');
 const e2eDir = path.resolve(__dirname, '../global-setup');
 
 beforeAll(() => {
-  runYarn(e2eDir);
+  runYarnInstall(e2eDir);
 });
 
 beforeEach(() => {

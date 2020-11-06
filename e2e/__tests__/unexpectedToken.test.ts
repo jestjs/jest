@@ -7,8 +7,8 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import runJest from '../runJest';
 import {cleanup, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve(tmpdir(), 'unexpected-token');
 const nodeMajorVersion = Number(process.versions.node.split('.')[0]);

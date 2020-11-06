@@ -265,8 +265,8 @@ Default: `undefined`
 This option allows the use of a custom dependency extractor. It must be a node module that exports an object with an `extract` function. E.g.:
 
 ```javascript
-const fs = require('fs');
 const crypto = require('crypto');
+const fs = require('fs');
 
 module.exports = {
   extract(code, filePath, defaultExtract) {
@@ -428,6 +428,27 @@ This option allows the use of a custom global teardown module which exports an a
 _Note: A global teardown module configured in a project (using multi-project runner) will be triggered only when you run at least one test from this project._
 
 _Note: The same caveat concerning transformation of `node_modules` as for `globalSetup` applies to `globalTeardown`._
+
+### `haste` [object]
+
+Default: `undefined`
+
+This will be used to configure the behavior of `jest-haste-map`, Jest's internal file crawler/cache system. The following options are supported:
+
+```ts
+type HasteConfig = {
+  // Whether to hash files using SHA-1.
+  computeSha1?: boolean;
+  // The platform to use as the default, e.g. 'ios'.
+  defaultPlatform?: string | null;
+  // Path to a custom implementation of Haste.
+  hasteImplModulePath?: string;
+  // All platforms to target, e.g ['ios', 'android'].
+  platforms?: Array<string>;
+  // Whether to throw on error on module collision.
+  throwOnModuleCollision?: boolean;
+};
+```
 
 ### `maxConcurrency` [number]
 
@@ -668,7 +689,7 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 ```json
 {
   "basedir": string,
-  "browser": bool,
+  "browser": boolean,
   "defaultResolver": "function(request, options)",
   "extensions": [string],
   "moduleDirectory": [string],
@@ -885,6 +906,14 @@ The class may optionally expose a `handleTestEvent` method to bind to events fir
 
 Any docblock pragmas in test files will be passed to the environment constructor and can be used for per-test configuration. If the pragma does not have a value, it will be present in the object with its value set to an empty string. If the pragma is not present, it will not be present in the object.
 
+To use this class as your custom environment, refer to it by its full path within the project. For example, if your class is stored in `my-custom-environment.js` in some subfolder of your project, then the annotation might looke like this:
+
+```js
+/**
+ * @jest-environment ./src/test/my-custom-environment
+ */
+```
+
 _Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment._
 
 Example:
@@ -933,6 +962,9 @@ module.exports = CustomEnvironment;
 
 ```js
 // my-test-suite
+/**
+ * @jest-environment ./my-custom-environment
+ */
 let someGlobalObject;
 
 beforeAll(() => {
@@ -946,7 +978,7 @@ _Note: Jest comes with JSDOM@11 by default. Due to JSDOM 12 and newer dropping s
 
 Default: `{}`
 
-Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{userAgent: "Agent/007"}`.
+Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example, you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{userAgent: "Agent/007"}`.
 
 ### `testFailureExitCode` [number]
 
@@ -1002,7 +1034,7 @@ This option allows the use of a custom results processor. This processor must be
 
 ```json
 {
-  "success": bool,
+  "success": boolean,
   "startTime": epoch,
   "numTotalTestSuites": number,
   "numPassedTestSuites": number,
@@ -1181,6 +1213,12 @@ Examples of watch plugins include:
 - [`jest-watch-yarn-workspaces`](https://github.com/cameronhunter/jest-watch-directories/tree/master/packages/jest-watch-yarn-workspaces)
 
 _Note: The values in the `watchPlugins` property value can omit the `jest-watch-` prefix of the package name._
+
+### `watchman` [boolean]
+
+Default: `true`
+
+Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling.
 
 ### `//` [string]
 

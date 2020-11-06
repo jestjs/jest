@@ -6,13 +6,13 @@
  */
 
 import * as path from 'path';
-import * as fs from 'graceful-fs';
-import type {Config} from '@jest/types';
-import {ExecaReturnValue, sync as spawnSync} from 'execa';
-import type {PackageJson} from 'type-fest';
-import rimraf = require('rimraf');
 import dedent = require('dedent');
+import {ExecaReturnValue, sync as spawnSync} from 'execa';
+import * as fs from 'graceful-fs';
+import rimraf = require('rimraf');
+import type {PackageJson} from 'type-fest';
 import which = require('which');
+import type {Config} from '@jest/types';
 
 interface RunResult extends ExecaReturnValue {
   status: number;
@@ -44,15 +44,20 @@ export const run = (
   return result;
 };
 
-export const runYarn = (cwd: Config.Path, env?: Record<string, string>) => {
+export const runYarnInstall = (
+  cwd: Config.Path,
+  env?: Record<string, string>,
+) => {
   const lockfilePath = path.resolve(cwd, 'yarn.lock');
+  let exists = true;
 
   // If the lockfile doesn't exist, yarn's project detection is confused. Just creating an empty file works
   if (!fs.existsSync(lockfilePath)) {
+    exists = false;
     fs.writeFileSync(lockfilePath, '');
   }
 
-  return run('yarn', cwd, env);
+  return run(exists ? 'yarn install --immutable' : 'yarn install', cwd, env);
 };
 
 export const linkJestPackage = (packageName: string, cwd: Config.Path) => {

@@ -6,15 +6,15 @@
  */
 
 import * as path from 'path';
-import * as fs from 'graceful-fs';
 import chalk = require('chalk');
+import * as fs from 'graceful-fs';
 import prompts = require('prompts');
 import {constants} from 'jest-config';
 import {tryRealpath} from 'jest-util';
-import defaultQuestions, {testScriptQuestion} from './questions';
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
 import generateConfigFile from './generateConfigFile';
 import modifyPackageJson from './modifyPackageJson';
+import defaultQuestions, {testScriptQuestion} from './questions';
 import type {ProjectPackageJson} from './types';
 
 const {

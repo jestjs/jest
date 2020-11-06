@@ -7,8 +7,8 @@
 
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {skipSuiteOnJestCircus} from '@jest/test-utils';
-import runJest from '../runJest';
 import {extractSummary} from '../Utils';
+import runJest from '../runJest';
 
 skipSuiteOnJestCircus();
 

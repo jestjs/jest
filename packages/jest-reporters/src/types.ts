@@ -5,16 +5,16 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import type {
   AggregatedResult,
   SerializableError,
   TestCaseResult,
   TestResult,
 } from '@jest/test-result';
+import type {Config} from '@jest/types';
 import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
-import type {ResolverType} from 'jest-resolve';
-import type {worker} from './coverage_worker';
+import type Resolver from 'jest-resolve';
+import type {worker} from './CoverageWorker';
 
 export type ReporterOnStartOptions = {
   estimatedTime: number;
@@ -25,7 +25,7 @@ export type Context = {
   config: Config.ProjectConfig;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
-  resolver: ResolverType;
+  resolver: Resolver;
 };
 
 export type Test = {

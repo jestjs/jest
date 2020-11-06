@@ -15,7 +15,6 @@ import {
   beforeEach,
   describe,
   test,
-  //eslint-disable-next-line import/no-extraneous-dependencies
 } from '@jest/globals';
 
 const fn = () => {};

@@ -17,13 +17,22 @@ module.exports = {
   overrides: [
     {
       plugins: [
-        'babel-plugin-typescript-strip-namespaces',
         'babel-plugin-replace-ts-export-assignment',
         require.resolve(
           './scripts/babel-plugin-jest-replace-ts-require-assignment.js',
         ),
       ],
-      presets: ['@babel/preset-typescript'],
+      presets: [
+        [
+          '@babel/preset-typescript',
+          {
+            // will be the default in Babel 8, so let's just turn it on now
+            allowDeclareFields: true,
+            // will be default in the future, but we don't want to use it
+            allowNamespaces: false,
+          },
+        ],
+      ],
       test: /\.tsx?$/,
     },
     // we want this file to keep `import()`, so exclude the transform for it

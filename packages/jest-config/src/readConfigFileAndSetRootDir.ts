@@ -8,16 +8,16 @@
 import * as path from 'path';
 import {pathToFileURL} from 'url';
 import * as fs from 'graceful-fs';
+import type {Register} from 'ts-node';
 import type {Config} from '@jest/types';
 import {interopRequireDefault} from 'jest-util';
-import type {Register} from 'ts-node';
-// @ts-expect-error: vendored
-import jsonlint from './vendor/jsonlint';
 import {
   JEST_CONFIG_EXT_JSON,
   JEST_CONFIG_EXT_TS,
   PACKAGE_JSON,
 } from './constants';
+// @ts-expect-error: vendored
+import jsonlint from './vendor/jsonlint';
 
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property

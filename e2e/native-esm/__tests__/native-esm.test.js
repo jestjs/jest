@@ -12,15 +12,16 @@ import {createRequire} from 'module';
 import {dirname, resolve} from 'path';
 import {fileURLToPath} from 'url';
 import {jest as jestObject} from '@jest/globals';
-import staticImportedStateful from '../stateful.mjs';
 import staticImportedStatefulFromCjs from '../fromCjs.mjs';
+import {double} from '../index';
+import defaultFromCjs, {namedFunction} from '../namedExport.cjs';
+import {bag} from '../namespaceExport.js';
+import staticImportedStateful from '../stateful.mjs';
 // https://github.com/benmosher/eslint-plugin-import/issues/1739
 /* eslint-disable import/no-unresolved */
 import staticImportedStatefulWithQuery from '../stateful.mjs?query=1';
 import staticImportedStatefulWithAnotherQuery from '../stateful.mjs?query=2';
 /* eslint-enable */
-import {double} from '../index';
-import defaultFromCjs, {namedFunction} from '../namedExport.cjs';
 
 test('should have correct import.meta', () => {
   expect(typeof require).toBe('undefined');
@@ -144,4 +145,14 @@ test('supports named imports from CJS', () => {
   expect(defaultFromCjs.default()).toBe('"default" export');
 
   expect(Object.keys(defaultFromCjs)).toEqual(['namedFunction', 'default']);
+});
+
+test('supports file urls as imports', async () => {
+  const dynamic = await import(new URL('../stateful.mjs', import.meta.url));
+
+  expect(dynamic.default).toBe(staticImportedStateful);
+});
+
+test('namespace export', () => {
+  expect(bag.double).toBe(double);
 });

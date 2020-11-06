@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {skipSuiteOnJasmine} from '@jest/test-utils';
 import wrap from 'jest-snapshot-serializer-raw';
-import runJest from '../runJest';
+import {skipSuiteOnJasmine} from '@jest/test-utils';
 import {extractSummary} from '../Utils';
+import runJest from '../runJest';
 
 skipSuiteOnJasmine();
 
