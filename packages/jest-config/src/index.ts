@@ -5,22 +5,22 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
-import type {Config} from '@jest/types';
 import chalk = require('chalk');
-import {sync as realpath} from 'realpath-native';
-import {isJSONString, replaceRootDirInPath} from './utils';
+import * as fs from 'graceful-fs';
+import type {Config} from '@jest/types';
+import {tryRealpath} from 'jest-util';
+import * as constants from './constants';
 import normalize from './normalize';
-import resolveConfigPath from './resolveConfigPath';
 import readConfigFileAndSetRootDir from './readConfigFileAndSetRootDir';
+import resolveConfigPath from './resolveConfigPath';
+import {isJSONString, replaceRootDirInPath} from './utils';
 export {getTestEnvironment, isJSONString} from './utils';
 export {default as normalize} from './normalize';
 export {default as deprecationEntries} from './Deprecated';
 export {replaceRootDirInPath} from './utils';
 export {default as defaults} from './Defaults';
 export {default as descriptions} from './Descriptions';
-import * as constants from './constants';
 export {constants};
 
 type ReadConfig = {
@@ -41,7 +41,9 @@ export async function readConfig(
   parentConfigPath?: Config.Path | null,
   projectIndex: number = Infinity,
 ): Promise<ReadConfig> {
-  let rawOptions;
+  let rawOptions:
+    | Config.InitialOptions
+    | (() => Config.InitialOptions | Promise<Config.InitialOptions>);
   let configPath = null;
 
   if (typeof packageRootOrConfig !== 'string') {
@@ -62,7 +64,7 @@ export async function readConfig(
     let config;
     try {
       config = JSON.parse(argv.config);
-    } catch (e) {
+    } catch {
       throw new Error(
         'There was an error while parsing the `--config` argument as a JSON string.',
       );
@@ -72,7 +74,7 @@ export async function readConfig(
     config.rootDir = config.rootDir || packageRootOrConfig;
     rawOptions = config;
     // A string passed to `--config`, which is either a direct path to the config
-    // or a path to directory containing `package.json` or `jest.config.js`
+    // or a path to directory containing `package.json`, `jest.config.js` or `jest.config.ts`
   } else if (!skipArgvConfigOption && typeof argv.config == 'string') {
     configPath = resolveConfigPath(argv.config, process.cwd());
     rawOptions = await readConfigFileAndSetRootDir(configPath);
@@ -80,6 +82,10 @@ export async function readConfig(
     // Otherwise just try to find config in the current rootDir.
     configPath = resolveConfigPath(packageRootOrConfig, process.cwd());
     rawOptions = await readConfigFileAndSetRootDir(configPath);
+  }
+
+  if (typeof rawOptions === 'function') {
+    rawOptions = await rawOptions();
   }
 
   const {options, hasDeprecationWarnings} = normalize(
@@ -117,7 +123,6 @@ const groupOptions = (
     coverageThreshold: options.coverageThreshold,
     detectLeaks: options.detectLeaks,
     detectOpenHandles: options.detectOpenHandles,
-    enabledTestsMap: options.enabledTestsMap,
     errorOnDeprecated: options.errorOnDeprecated,
     expand: options.expand,
     filter: options.filter,
@@ -163,7 +168,6 @@ const groupOptions = (
   }),
   projectConfig: Object.freeze({
     automock: options.automock,
-    browser: options.browser,
     cache: options.cache,
     cacheDirectory: options.cacheDirectory,
     clearMocks: options.clearMocks,
@@ -181,6 +185,7 @@ const groupOptions = (
     globalTeardown: options.globalTeardown,
     globals: options.globals,
     haste: options.haste,
+    injectGlobals: options.injectGlobals,
     moduleDirectories: options.moduleDirectories,
     moduleFileExtensions: options.moduleFileExtensions,
     moduleLoader: options.moduleLoader,
@@ -200,6 +205,7 @@ const groupOptions = (
     setupFilesAfterEnv: options.setupFilesAfterEnv,
     skipFilter: options.skipFilter,
     skipNodeResolution: options.skipNodeResolution,
+    slowTestThreshold: options.slowTestThreshold,
     snapshotResolver: options.snapshotResolver,
     snapshotSerializers: options.snapshotSerializers,
     testEnvironment: options.testEnvironment,
@@ -296,7 +302,7 @@ export async function readConfigs(
   if (projects.length > 0) {
     const projectIsCwd =
       process.platform === 'win32'
-        ? projects[0] === realpath(process.cwd())
+        ? projects[0] === tryRealpath(process.cwd())
         : projects[0] === process.cwd();
 
     const parsedConfigs = await Promise.all(

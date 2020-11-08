@@ -6,8 +6,8 @@
  */
 
 import {wrap} from 'jest-snapshot-serializer-raw';
-import runJest from '../runJest';
 import {extractSummary} from '../Utils';
+import runJest from '../runJest';
 
 test('works with custom matchers', () => {
   const {stderr} = runJest('custom-matcher-stack-trace', ['sync.test.js']);

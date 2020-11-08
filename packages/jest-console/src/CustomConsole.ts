@@ -6,10 +6,10 @@
  */
 
 import assert = require('assert');
-import {format} from 'util';
 import {Console} from 'console';
+import {format} from 'util';
 import chalk = require('chalk');
-import {clearLine} from 'jest-util';
+import {clearLine, formatTime} from 'jest-util';
 import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
 
 type Formatter = (type: LogType, message: LogMessage) => string;
@@ -18,23 +18,21 @@ export default class CustomConsole extends Console {
   private _stdout: NodeJS.WriteStream;
   private _stderr: NodeJS.WriteStream;
   private _formatBuffer: Formatter;
-  private _counters: LogCounters;
-  private _timers: LogTimers;
-  private _groupDepth: number;
+  private _counters: LogCounters = {};
+  private _timers: LogTimers = {};
+  private _groupDepth = 0;
+
+  Console: NodeJS.ConsoleConstructor = Console;
 
   constructor(
     stdout: NodeJS.WriteStream,
     stderr: NodeJS.WriteStream,
-    formatBuffer: Formatter = (_type: LogType, message: string): string =>
-      message,
+    formatBuffer: Formatter = (_type, message) => message,
   ) {
     super(stdout, stderr);
     this._stdout = stdout;
     this._stderr = stderr;
     this._formatBuffer = formatBuffer;
-    this._counters = {};
-    this._timers = {};
-    this._groupDepth = 0;
   }
 
   private _log(type: LogType, message: string) {
@@ -51,8 +49,7 @@ export default class CustomConsole extends Console {
     );
   }
 
-  // use `asserts` when https://github.com/sandersn/downlevel-dts/issues/32 is fixed
-  assert(value: unknown, message?: string | Error): void {
+  assert(value: unknown, message?: string | Error): asserts value {
     try {
       assert(value, message);
     } catch (error) {
@@ -132,8 +129,18 @@ export default class CustomConsole extends Console {
     if (startTime) {
       const endTime = new Date().getTime();
       const time = endTime - startTime.getTime();
-      this._log('time', format(`${label}: ${time}ms`));
+      this._log('time', format(`${label}: ${formatTime(time)}`));
       delete this._timers[label];
+    }
+  }
+
+  timeLog(label = 'default', ...data: Array<unknown>): void {
+    const startTime = this._timers[label];
+
+    if (startTime) {
+      const endTime = new Date();
+      const time = endTime.getTime() - startTime.getTime();
+      this._log('time', format(`${label}: ${formatTime(time)}`, ...data));
     }
   }
 

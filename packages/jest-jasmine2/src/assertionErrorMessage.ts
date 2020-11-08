@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import chalk = require('chalk');
 import {
   DiffOptions,
   diff,
   printExpected,
   printReceived,
 } from 'jest-matcher-utils';
-import chalk = require('chalk');
 import type {AssertionErrorWithStack} from './types';
 
 const assertOperatorsMap: Record<string, string> = {
@@ -95,7 +95,7 @@ const assertMatcherHint = (
 function assertionErrorMessage(
   error: AssertionErrorWithStack,
   options: DiffOptions,
-) {
+): string {
   const {expected, actual, generatedMessage, message, operator, stack} = error;
   const diffString = diff(expected, actual, options);
   const hasCustomMessage = !generatedMessage;

@@ -34,7 +34,7 @@ _Before_ submitting a pull request, please make sure the following is done…
 
 1.  Jest uses [Yarn](https://code.facebook.com/posts/1840075619545360) for running development scripts. If you haven't already done so, please [install yarn](https://yarnpkg.com/en/docs/install).
 
-1.  Make sure you have `python` installed (v2.7 is recommended, v3.x.x is not supported). Python is required by [node-gyp](https://github.com/nodejs/node-gyp) that is used when running `yarn install`.
+1.  Make sure you have `python` installed. Python is required by [node-gyp](https://github.com/nodejs/node-gyp) that is used when running `yarn install`.
 
     To check your version of Python and ensure it's installed you can type:
 
@@ -66,11 +66,17 @@ _Before_ submitting a pull request, please make sure the following is done…
      yarn global add windows-build-tools
     ```
 
+1.  Run `yarn build` to transpile TypeScript to JavaScript and type check the code
+
+    ```sh
+    yarn build
+    ```
+
 1.  If you've added code that should be tested, add tests. You can use watch mode that continuously transforms changed files to make your life easier.
 
     ```sh
     # in the background
-    yarn run watch
+    yarn watch
     ```
 
 1.  If you've changed APIs, update the documentation.
@@ -117,7 +123,7 @@ PASS  __tests__/clear_cache.test.js
 Test Suites: 1 passed, 1 total
 Tests:       1 passed, 1 total
 Snapshots:   0 total
-Time:        0.232s, estimated 1s
+Time:        0.232 s, estimated 1 s
 Ran all test suites.
 ```
 
@@ -137,6 +143,7 @@ If you are making changes to the website or documentation, test the website fold
     ```sh-session
     $ cd website       # Only needed if you are not already in the website directory
     $ yarn
+    $ node fetchSupporters.js
     $ yarn start
     ```
 1.  You can run a development server to check if the changes you made are being displayed accurately by running `yarn start` in the website directory.
@@ -211,7 +218,7 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 
 ## How to Get in Touch
 
-- Discord - [#jest](https://discord.gg/MWRhKCj) on [Reactiflux](http://www.reactiflux.com/)
+`#testing` on [Reactiflux](https://www.reactiflux.com/)
 
 ## Code Conventions
 
@@ -226,7 +233,9 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 
 ## Credits
 
-This project exists thanks to all the people who [contribute](CONTRIBUTING.md). <a href="graphs/contributors"><img src="https://opencollective.com/jest/contributors.svg?width=890&button=false" /></a>
+This project exists thanks to all the people who [contribute](CONTRIBUTING.md).
+
+<a href="graphs/contributors"><img src="https://opencollective.com/jest/contributors.svg?width=890&button=false" /></a>
 
 ### [Backers](https://opencollective.com/jest#backer)
 

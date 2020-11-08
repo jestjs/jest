@@ -6,20 +6,25 @@
  */
 
 import {createHash} from 'crypto';
-import {statSync} from 'fs';
 import * as path from 'path';
-import {sync as glob} from 'glob';
-import type {Config} from '@jest/types';
-import {ValidationError, validate} from 'jest-validate';
-import {clearLine, replacePathSepForGlob} from 'jest-util';
 import chalk = require('chalk');
-import micromatch = require('micromatch');
-import {sync as realpath} from 'realpath-native';
-import Resolver = require('jest-resolve');
-import {replacePathSepForRegex} from 'jest-regex-util';
 import merge = require('deepmerge');
-import validatePattern from './validatePattern';
+import {sync as glob} from 'glob';
+import {statSync} from 'graceful-fs';
+import micromatch = require('micromatch');
+import type {Config} from '@jest/types';
+import {replacePathSepForRegex} from 'jest-regex-util';
+import Resolver from 'jest-resolve';
+import {clearLine, replacePathSepForGlob, tryRealpath} from 'jest-util';
+import {ValidationError, validate} from 'jest-validate';
+import DEFAULT_CONFIG from './Defaults';
+import DEPRECATED_CONFIG from './Deprecated';
+import {validateReporters} from './ReporterValidationErrors';
+import VALID_CONFIG from './ValidConfig';
+import {getDisplayNameColor} from './color';
+import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
 import getMaxWorkers from './getMaxWorkers';
+import setFromArgv from './setFromArgv';
 import {
   BULLET,
   DOCUMENTATION_NOTE,
@@ -32,13 +37,7 @@ import {
   replaceRootDirInPath,
   resolve,
 } from './utils';
-import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
-import {validateReporters} from './ReporterValidationErrors';
-import DEFAULT_CONFIG from './Defaults';
-import DEPRECATED_CONFIG from './Deprecated';
-import setFromArgv from './setFromArgv';
-import VALID_CONFIG from './ValidConfig';
-import {getDisplayNameColor} from './color';
+import validatePattern from './validatePattern';
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js'];
 const PRESET_NAME = 'jest-preset';
@@ -134,14 +133,15 @@ const setupPreset = (
   );
 
   try {
+    if (!presetModule) {
+      throw new Error(`Cannot find module '${presetPath}'`);
+    }
+
     // Force re-evaluation to support multiple projects
     try {
-      if (presetModule) {
-        delete require.cache[require.resolve(presetModule)];
-      }
-    } catch (e) {}
+      delete require.cache[require.resolve(presetModule)];
+    } catch {}
 
-    // @ts-ignore: `presetModule` can be null?
     preset = require(presetModule);
   } catch (error) {
     if (error instanceof SyntaxError || error instanceof TypeError) {
@@ -279,7 +279,7 @@ const normalizeCollectCoverageFrom = (
   if (!Array.isArray(initialCollectCoverageFrom)) {
     try {
       value = JSON.parse(initialCollectCoverageFrom);
-    } catch (e) {}
+    } catch {}
 
     if (options[key] && !Array.isArray(value)) {
       value = [initialCollectCoverageFrom];
@@ -391,8 +391,8 @@ const normalizeRootDir = (
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
-    options.rootDir = realpath(options.rootDir);
-  } catch (e) {
+    options.rootDir = tryRealpath(options.rootDir);
+  } catch {
     // ignored
   }
 
@@ -869,7 +869,6 @@ export default function normalize(
         break;
       }
       case 'automock':
-      case 'browser':
       case 'cache':
       case 'changedSince':
       case 'changedFilesWithAncestor':
@@ -887,6 +886,7 @@ export default function normalize(
       case 'findRelatedTests':
       case 'forceCoverageMatch':
       case 'forceExit':
+      case 'injectGlobals':
       case 'lastCommit':
       case 'listTests':
       case 'logHeapUsage':
@@ -897,6 +897,7 @@ export default function normalize(
       case 'notify':
       case 'notifyMode':
       case 'onlyChanged':
+      case 'onlyFailures':
       case 'outputFile':
       case 'passWithNoTests':
       case 'replname':
@@ -909,6 +910,7 @@ export default function normalize(
       case 'silent':
       case 'skipFilter':
       case 'skipNodeResolution':
+      case 'slowTestThreshold':
       case 'testEnvironment':
       case 'testEnvironmentOptions':
       case 'testFailureExitCode':
@@ -945,7 +947,7 @@ export default function normalize(
         });
         break;
     }
-    // @ts-ignore: automock is missing in GlobalConfig, so what
+    // @ts-expect-error: automock is missing in GlobalConfig, so what
     newOptions[key] = value;
     return newOptions;
   }, newOptions);
@@ -956,8 +958,8 @@ export default function normalize(
 
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
-    newOptions.cwd = realpath(process.cwd());
-  } catch (e) {
+    newOptions.cwd = tryRealpath(process.cwd());
+  } catch {
     // ignored
   }
 
@@ -985,6 +987,7 @@ export default function normalize(
 
   if (argv.all) {
     newOptions.onlyChanged = false;
+    newOptions.onlyFailures = false;
   } else if (newOptions.testPathPattern) {
     // When passing a test path pattern we don't want to only monitor changed
     // files unless `--watch` is also passed.
@@ -1007,9 +1010,9 @@ export default function normalize(
     newOptions.watchAll = false;
   }
 
-  // as any since it can happen. We really need to fix the types here
+  // as unknown since it can happen. We really need to fix the types here
   if (
-    newOptions.moduleNameMapper === (DEFAULT_CONFIG.moduleNameMapper as any)
+    newOptions.moduleNameMapper === (DEFAULT_CONFIG.moduleNameMapper as unknown)
   ) {
     newOptions.moduleNameMapper = [];
   }

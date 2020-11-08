@@ -18,9 +18,9 @@ let transformer: Transformer;
 
 const evalCommand: repl.REPLEval = (
   cmd: string,
-  _context: any,
+  _context: unknown,
   _filename: string,
-  callback: (e: Error | null, result?: any) => void,
+  callback: (e: Error | null, result?: unknown) => void,
 ) => {
   let result;
   try {

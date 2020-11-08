@@ -1,6 +1,6 @@
 {
   "name": "diff-sequences",
-  "version": "25.2.6",
+  "version": "26.6.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -16,16 +16,13 @@
     "diff"
   ],
   "engines": {
-    "node": ">= 8.3"
+    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
   },
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
-  "typesVersions": {
-    "<3.8": {
-      "build/*": [
-        "build/ts3.4/*"
-      ]
-    }
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
   },
   "scripts": {
     "perf": "node --expose-gc perf/index.js"
@@ -33,10 +30,9 @@
   "devDependencies": {
     "benchmark": "^2.1.4",
     "diff": "^4.0.1",
-    "fast-check": "^1.13.0"
+    "fast-check": "^2.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
+  }
 }

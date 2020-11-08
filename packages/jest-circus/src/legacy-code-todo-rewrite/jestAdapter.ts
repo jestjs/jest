@@ -5,15 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import type {Config} from '@jest/types';
 import type {JestEnvironment} from '@jest/environment';
 import type {TestResult} from '@jest/test-result';
-import type {RuntimeType as Runtime} from 'jest-runtime';
+import type {Config} from '@jest/types';
+import type {TestFileEvent} from 'jest-runner';
+import type Runtime from 'jest-runtime';
 import type {SnapshotStateType} from 'jest-snapshot';
+import {deepCyclicCopy} from 'jest-util';
 
-const FRAMEWORK_INITIALIZER = path.resolve(__dirname, './jestAdapterInit.js');
-const EXPECT_INITIALIZER = path.resolve(__dirname, './jestExpect.js');
+const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 
 const jestAdapter = async (
   globalConfig: Config.GlobalConfig,
@@ -21,6 +21,7 @@ const jestAdapter = async (
   environment: JestEnvironment,
   runtime: Runtime,
   testPath: string,
+  sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> => {
   const {
     initialize,
@@ -28,10 +29,6 @@ const jestAdapter = async (
   } = runtime.requireInternalModule<typeof import('./jestAdapterInit')>(
     FRAMEWORK_INITIALIZER,
   );
-
-  runtime
-    .requireInternalModule<typeof import('./jestExpect')>(EXPECT_INITIALIZER)
-    .default({expand: globalConfig.expand});
 
   const {prettierPath} = config;
 
@@ -42,12 +39,16 @@ const jestAdapter = async (
     localRequire: runtime.requireModule.bind(runtime),
     parentProcess: process,
     prettierPath,
+    sendMessageToJest,
+    setGlobalsForRuntime: runtime.setGlobalsForRuntime?.bind(runtime),
     testPath,
   });
 
-  if (config.timers === 'fake') {
+  if (config.timers === 'fake' || config.timers === 'legacy') {
     // during setup, this cannot be null (and it's fine to explode if it is)
     environment.fakeTimers!.useFakeTimers();
+  } else if (config.timers === 'modern') {
+    environment.fakeTimersModern!.useFakeTimers();
   }
 
   globals.beforeEach(() => {
@@ -74,7 +75,8 @@ const jestAdapter = async (
   });
 
   for (const path of config.setupFilesAfterEnv) {
-    const esm = runtime.unstable_shouldLoadAsEsm(path);
+    // TODO: remove ? in Jest 26
+    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);
@@ -83,7 +85,8 @@ const jestAdapter = async (
     }
   }
 
-  const esm = runtime.unstable_shouldLoadAsEsm(testPath);
+  // TODO: remove ? in Jest 26
+  const esm = runtime.unstable_shouldLoadAsEsm?.(testPath);
 
   if (esm) {
     await runtime.unstable_importModule(testPath);
@@ -96,7 +99,13 @@ const jestAdapter = async (
     globalConfig,
     testPath,
   });
-  return _addSnapshotData(results, snapshotState);
+
+  _addSnapshotData(results, snapshotState);
+
+  // We need to copy the results object to ensure we don't leaks the prototypes
+  // from the VM. Jasmine creates the result objects in the parent process, we
+  // should consider doing that for circus as well.
+  return deepCyclicCopy(results, {keepPrototype: false});
 };
 
 const _addSnapshotData = (
@@ -126,7 +135,6 @@ const _addSnapshotData = (
   results.snapshot.unchecked = !status.deleted ? uncheckedCount : 0;
   // Copy the array to prevent memory leaks
   results.snapshot.uncheckedKeys = Array.from(uncheckedKeys);
-  return results;
 };
 
 export = jestAdapter;

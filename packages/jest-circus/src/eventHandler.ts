@@ -6,8 +6,11 @@
  */
 
 import type {Circus} from '@jest/types';
+import {
+  injectGlobalErrorHandlers,
+  restoreGlobalErrorHandlers,
+} from './globalErrorHandlers';
 import {TEST_TIMEOUT_SYMBOL} from './types';
-
 import {
   addErrorToEachTestUnderDescribe,
   describeBlockHasTests,
@@ -16,10 +19,6 @@ import {
   makeDescribe,
   makeTest,
 } from './utils';
-import {
-  injectGlobalErrorHandlers,
-  restoreGlobalErrorHandlers,
-} from './globalErrorHandlers';
 
 // TODO: investigate why a shorter (event, state) signature results into TS7006 compiler error
 const eventHandler: Circus.EventHandler = (
@@ -39,9 +38,12 @@ const eventHandler: Circus.EventHandler = (
       const {currentDescribeBlock, currentlyRunningTest} = state;
 
       if (currentlyRunningTest) {
-        throw new Error(
-          `Cannot nest a describe inside a test. Describe block "${blockName}" cannot run because it is nested within "${currentlyRunningTest.name}".`,
+        currentlyRunningTest.errors.push(
+          new Error(
+            `Cannot nest a describe inside a test. Describe block "${blockName}" cannot run because it is nested within "${currentlyRunningTest.name}".`,
+          ),
         );
+        break;
       }
 
       const describeBlock = makeDescribe(blockName, currentDescribeBlock, mode);
@@ -60,24 +62,26 @@ const eventHandler: Circus.EventHandler = (
         });
       }
 
-      // inherit mode from its parent describe but
-      // do not inherit "only" mode when there is already tests with "only" mode
-      const shouldInheritMode = !(
+      // pass mode of currentDescribeBlock to tests
+      // but do not when there is already a single test with "only" mode
+      const shouldPassMode = !(
         currentDescribeBlock.mode === 'only' &&
-        currentDescribeBlock.tests.find(test => test.mode === 'only')
+        currentDescribeBlock.children.some(
+          child => child.type === 'test' && child.mode === 'only',
+        )
       );
-
-      if (shouldInheritMode) {
-        currentDescribeBlock.tests.forEach(test => {
-          if (!test.mode) {
-            test.mode = currentDescribeBlock.mode;
+      if (shouldPassMode) {
+        currentDescribeBlock.children.forEach(child => {
+          if (child.type === 'test' && !child.mode) {
+            child.mode = currentDescribeBlock.mode;
           }
         });
       }
-
       if (
         !state.hasFocusedTests &&
-        currentDescribeBlock.tests.some(test => test.mode === 'only')
+        currentDescribeBlock.children.some(
+          child => child.type === 'test' && child.mode === 'only',
+        )
       ) {
         state.hasFocusedTests = true;
       }
@@ -88,20 +92,47 @@ const eventHandler: Circus.EventHandler = (
       break;
     }
     case 'add_hook': {
-      const {currentDescribeBlock} = state;
+      const {currentDescribeBlock, currentlyRunningTest, hasStarted} = state;
       const {asyncError, fn, hookType: type, timeout} = event;
+
+      if (currentlyRunningTest) {
+        currentlyRunningTest.errors.push(
+          new Error(
+            `Hooks cannot be defined inside tests. Hook of type "${type}" is nested within "${currentlyRunningTest.name}".`,
+          ),
+        );
+        break;
+      } else if (hasStarted) {
+        state.unhandledErrors.push(
+          new Error(
+            'Cannot add a hook after tests have started running. Hooks must be defined synchronously.',
+          ),
+        );
+        break;
+      }
       const parent = currentDescribeBlock;
+
       currentDescribeBlock.hooks.push({asyncError, fn, parent, timeout, type});
       break;
     }
     case 'add_test': {
-      const {currentDescribeBlock, currentlyRunningTest} = state;
+      const {currentDescribeBlock, currentlyRunningTest, hasStarted} = state;
       const {asyncError, fn, mode, testName: name, timeout} = event;
 
       if (currentlyRunningTest) {
-        throw new Error(
-          `Tests cannot be nested. Test "${name}" cannot run because it is nested within "${currentlyRunningTest.name}".`,
+        currentlyRunningTest.errors.push(
+          new Error(
+            `Tests cannot be nested. Test "${name}" cannot run because it is nested within "${currentlyRunningTest.name}".`,
+          ),
         );
+        break;
+      } else if (hasStarted) {
+        state.unhandledErrors.push(
+          new Error(
+            'Cannot add a test after tests have started running. Tests must be defined synchronously.',
+          ),
+        );
+        break;
       }
 
       const test = makeTest(
@@ -115,6 +146,7 @@ const eventHandler: Circus.EventHandler = (
       if (test.mode === 'only') {
         state.hasFocusedTests = true;
       }
+      currentDescribeBlock.children.push(test);
       currentDescribeBlock.tests.push(test);
       break;
     }
@@ -168,6 +200,7 @@ const eventHandler: Circus.EventHandler = (
       break;
     }
     case 'run_start': {
+      state.hasStarted = true;
       global[TEST_TIMEOUT_SYMBOL] &&
         (state.testTimeout = global[TEST_TIMEOUT_SYMBOL]);
       break;

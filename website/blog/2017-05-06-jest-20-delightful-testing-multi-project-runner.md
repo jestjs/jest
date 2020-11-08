@@ -1,6 +1,6 @@
 ---
 title: Jest 20: 💖 Delightful Testing & 🏃🏽 Multi-Project-Runner
-author: Christoph Pojer
+author: Christoph Nakazawa
 authorURL: http://twitter.com/cpojer
 authorFBID: 100000023028168
 ---
@@ -37,7 +37,7 @@ Finally, we are now properly mapping code coverage when using TypeScript and we 
 We made a number of additions and improvements to the testing APIs which will help write more effective tests. We'd like to point out that all of these improvements were made entirely by community members!
 
 - **Better async testing:** Added new async/Promise support through resolves/rejects modifiers on expect: `expect(Promise(…)).resolves.toEqual(…)`. [See documentation](https://jestjs.io/docs/en/expect.html#resolves).
-- **Expect <n> assertions:** Along with the existing `expect.assertions(n)`, the new `expect.hasAssertions()` can be used to ensure a test has at least one assertion.
+- **Expect `n` assertions:** Along with the existing `expect.assertions(n)`, the new `expect.hasAssertions()` can be used to ensure a test has at least one assertion.
 - **Lint Plugin:** A `valid-expect` rule was added to `eslint-plugin-jest` to ensure that an assertion is called after invoking `expect`. This will prevent mistakes like a stray `expect(banana);` with a missing assertion call.
 - **Pretty-Format Plugins:** A number of new pretty-format plugins were added to Jest. We now pretty-print [Immutable.js](https://github.com/facebook/immutable-js/) data structures and HtmlElements in assertion failures and snapshots.
 - **Custom Environment:** It is now possible to add a `@jest-environment node|jsdom` annotation to the doc-block comment of a test file to use a test environment different from the default for individual tests.
@@ -87,4 +87,4 @@ Recently the Jest core team and other contributors started to talk more about Je
 - Rogelio Guzman did a talk about [Jest Snapshots and Beyond](https://www.youtube.com/watch?time_continue=416&v=HAuXJVI_bUs) at React Conf.
 - I spoke about [Building High-Quality JavaScript Tools](https://developers.facebook.com/videos/f8-2017/building-high-quality-javascript-tools/) at Facebook's F8 conference.
 
-_As always, this release couldn't have been possible without you, the JavaScript community. We are incredibly grateful that we get the opportunity to work on improving JavaScript testing together. If you'd like to contribute to Jest, please don't hesitate to reach out to us on [GitHub](https://github.com/facebook/jest) or on [Discord](https://discord.gg/MWRhKCj)._
+_As always, this release couldn't have been possible without you, the JavaScript community. We are incredibly grateful that we get the opportunity to work on improving JavaScript testing together. If you'd like to contribute to Jest, please don't hesitate to reach out to us on [GitHub](https://github.com/facebook/jest) or on [Discord](https://www.reactiflux.com/)._

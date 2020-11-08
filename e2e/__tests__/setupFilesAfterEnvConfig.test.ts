@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
-import {json as runWithJson} from '../runJest';
+import * as fs from 'graceful-fs';
 import {writeFiles} from '../Utils';
+import {json as runWithJson} from '../runJest';
 
 const DIR = path.resolve(__dirname, '../setup-files-after-env-config');
 

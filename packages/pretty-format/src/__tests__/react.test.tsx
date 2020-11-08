@@ -7,9 +7,8 @@
 
 import React from 'react';
 import renderer from 'react-test-renderer';
-
-import {OptionsReceived} from '../types';
 import prettyFormat from '..';
+import {OptionsReceived} from '../types';
 
 const elementSymbol = Symbol.for('react.element');
 const fragmentSymbol = Symbol.for('react.fragment');
@@ -17,17 +16,17 @@ const suspenseSymbol = Symbol.for('react.suspense');
 const testSymbol = Symbol.for('react.test.json');
 const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
 
-const formatElement = (element: any, options?: OptionsReceived) =>
+const formatElement = (element: unknown, options?: OptionsReceived) =>
   prettyFormat(element, {plugins: [ReactElement], ...options});
 
-const formatTestObject = (object: any, options?: OptionsReceived) =>
+const formatTestObject = (object: unknown, options?: OptionsReceived) =>
   prettyFormat(object, {
     plugins: [ReactTestComponent, ReactElement],
     ...options,
   });
 
 function assertPrintedJSX(
-  val: any,
+  val: unknown,
   expected: string,
   options?: OptionsReceived,
 ) {
@@ -114,7 +113,7 @@ test('supports props with numbers', () => {
 
 test('supports a single element with a function prop', () => {
   assertPrintedJSX(
-    React.createElement<{onclick: any}>('Mouse', {
+    React.createElement<{onclick: unknown}>('Mouse', {
       onclick: function onclick() {},
     }),
     '<Mouse\n  onclick={[Function onclick]}\n/>',
@@ -141,7 +140,7 @@ test('supports an element with and object prop and children', () => {
 
 test('supports an element with complex props and mixed children', () => {
   assertPrintedJSX(
-    React.createElement<{customProp: any; onclick: any}>(
+    React.createElement<{customProp: unknown; onclick: unknown}>(
       'Mouse',
       {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
       'HELLO',
@@ -167,11 +166,11 @@ test('escapes children properly', () => {
 
 test('supports everything all together', () => {
   assertPrintedJSX(
-    React.createElement<{customProp: any; onclick: any}>(
+    React.createElement<{customProp: unknown; onclick: unknown}>(
       'Mouse',
       {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
       'HELLO',
-      React.createElement<{customProp: any; onclick: any}>(
+      React.createElement<{customProp: unknown; onclick: unknown}>(
         'Mouse',
         {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
         'HELLO',
@@ -266,7 +265,7 @@ test('supports a single element with custom React elements with props (using ano
 });
 
 test('supports a single element with custom React elements with a child', () => {
-  function Cat(props: any) {
+  function Cat(props: unknown) {
     return React.createElement('div', props);
   }
   assertPrintedJSX(
@@ -577,7 +576,7 @@ describe('maxDepth option', () => {
 
 test('min option', () => {
   assertPrintedJSX(
-    React.createElement<{customProp: any; onclick: any}>(
+    React.createElement<{customProp: unknown; onclick: unknown}>(
       'Mouse',
       {customProp: {one: '1', two: 2}, onclick: function onclick() {}},
       'HELLO',
@@ -634,11 +633,8 @@ test('throws if theme option is null', () => {
     'Hello, Mouse!',
   );
   expect(() => {
-    // @ts-ignore
-    formatElement(jsx, {
-      highlight: true,
-      theme: null,
-    });
+    // @ts-expect-error
+    formatElement(jsx, {highlight: true, theme: null});
   }).toThrow('pretty-format: Option "theme" must not be null.');
 });
 
@@ -649,11 +645,8 @@ test('throws if theme option is not of type "object"', () => {
       {style: 'color:red'},
       'Hello, Mouse!',
     );
-    // @ts-ignore
-    formatElement(jsx, {
-      highlight: true,
-      theme: 'beautiful',
-    });
+    // @ts-expect-error
+    formatElement(jsx, {highlight: true, theme: 'beautiful'});
   }).toThrow(
     'pretty-format: Option "theme" must be of type "object" but instead received "string".',
   );

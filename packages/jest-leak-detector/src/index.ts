@@ -5,10 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
+import {promisify} from 'util';
 import {setFlagsFromString} from 'v8';
 import {runInNewContext} from 'vm';
-import prettyFormat = require('pretty-format');
 import {isPrimitive} from 'jest-get-type';
+import prettyFormat = require('pretty-format');
+
+const tick = promisify(setImmediate);
 
 export default class {
   private _isReferenceBeingHeld: boolean;
@@ -46,12 +51,15 @@ export default class {
     value = null;
   }
 
-  isLeaking(): Promise<boolean> {
+  async isLeaking(): Promise<boolean> {
     this._runGarbageCollector();
 
-    return new Promise(resolve =>
-      setImmediate(() => resolve(this._isReferenceBeingHeld)),
-    );
+    // wait some ticks to allow GC to run properly, see https://github.com/nodejs/node/issues/34636#issuecomment-669366235
+    for (let i = 0; i < 10; i++) {
+      await tick();
+    }
+
+    return this._isReferenceBeingHeld;
   }
 
   private _runGarbageCollector() {

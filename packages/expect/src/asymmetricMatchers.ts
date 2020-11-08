@@ -8,8 +8,6 @@
 
 import {equals, fnNameFor, hasProperty, isA, isUndefined} from './jasmineUtils';
 
-import {emptyObject} from './utils';
-
 export class AsymmetricMatcher<T> {
   protected sample: T;
   $$typeof: symbol;
@@ -51,6 +49,15 @@ class Any extends AsymmetricMatcher<any> {
 
     if (this.sample == Boolean) {
       return typeof other == 'boolean';
+    }
+
+    /* global BigInt */
+    if (this.sample == BigInt) {
+      return typeof other == 'bigint';
+    }
+
+    if (this.sample == Symbol) {
+      return typeof other == 'symbol';
     }
 
     return other instanceof this.sample;
@@ -139,8 +146,8 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
   }
 }
 
-class ObjectContaining extends AsymmetricMatcher<Record<string, any>> {
-  constructor(sample: Record<string, any>, inverse: boolean = false) {
+class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
+  constructor(sample: Record<string, unknown>, inverse: boolean = false) {
     super(sample);
     this.inverse = inverse;
   }
@@ -154,31 +161,19 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, any>> {
       );
     }
 
-    if (this.inverse) {
-      for (const property in this.sample) {
-        if (
-          hasProperty(other, property) &&
-          equals(this.sample[property], other[property]) &&
-          !emptyObject(this.sample[property]) &&
-          !emptyObject(other[property])
-        ) {
-          return false;
-        }
-      }
+    let result = true;
 
-      return true;
-    } else {
-      for (const property in this.sample) {
-        if (
-          !hasProperty(other, property) ||
-          !equals(this.sample[property], other[property])
-        ) {
-          return false;
-        }
+    for (const property in this.sample) {
+      if (
+        !hasProperty(other, property) ||
+        !equals(this.sample[property], other[property])
+      ) {
+        result = false;
+        break;
       }
-
-      return true;
     }
+
+    return this.inverse ? !result : result;
   }
 
   toString() {
@@ -246,10 +241,10 @@ export const arrayContaining = (sample: Array<unknown>): ArrayContaining =>
 export const arrayNotContaining = (sample: Array<unknown>): ArrayContaining =>
   new ArrayContaining(sample, true);
 export const objectContaining = (
-  sample: Record<string, any>,
+  sample: Record<string, unknown>,
 ): ObjectContaining => new ObjectContaining(sample);
 export const objectNotContaining = (
-  sample: Record<string, any>,
+  sample: Record<string, unknown>,
 ): ObjectContaining => new ObjectContaining(sample, true);
 export const stringContaining = (expected: string): StringContaining =>
   new StringContaining(expected);

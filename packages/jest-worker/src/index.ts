@@ -5,15 +5,19 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import {cpus} from 'os';
-import WorkerPool from './WorkerPool';
 import Farm from './Farm';
+import WorkerPool from './WorkerPool';
 import type {
   FarmOptions,
   PoolExitResult,
+  PromiseWithCustomMessage,
   WorkerPoolInterface,
   WorkerPoolOptions,
 } from './types';
+export {default as messageParent} from './workers/messageParent';
 
 function getExposedMethods(
   workerPath: string,
@@ -23,10 +27,10 @@ function getExposedMethods(
 
   // If no methods list is given, try getting it by auto-requiring the module.
   if (!exposedMethods) {
-    const module: Function | Record<string, any> = require(workerPath);
+    const module: Function | Record<string, unknown> = require(workerPath);
 
     exposedMethods = Object.keys(module).filter(
-      // @ts-ignore: no index
+      // @ts-expect-error: no index
       name => typeof module[name] === 'function',
     );
 
@@ -74,15 +78,16 @@ export default class JestWorker {
     this._ending = false;
 
     const workerPoolOptions: WorkerPoolOptions = {
-      enableWorkerThreads: this._options.enableWorkerThreads || false,
-      forkOptions: this._options.forkOptions || {},
-      maxRetries: this._options.maxRetries || 3,
-      numWorkers: this._options.numWorkers || Math.max(cpus().length - 1, 1),
-      setupArgs: this._options.setupArgs || [],
+      enableWorkerThreads: this._options.enableWorkerThreads ?? false,
+      forkOptions: this._options.forkOptions ?? {},
+      maxRetries: this._options.maxRetries ?? 3,
+      numWorkers: this._options.numWorkers ?? Math.max(cpus().length - 1, 1),
+      resourceLimits: this._options.resourceLimits ?? {},
+      setupArgs: this._options.setupArgs ?? [],
     };
 
     if (this._options.WorkerPool) {
-      // @ts-ignore: constructor target any?
+      // @ts-expect-error: constructor target any?
       this._workerPool = new this._options.WorkerPool(
         workerPath,
         workerPoolOptions,
@@ -113,7 +118,7 @@ export default class JestWorker {
         throw new TypeError('Cannot define a method called ' + name);
       }
 
-      // @ts-ignore: dynamic extension of the class instance is expected.
+      // @ts-expect-error: dynamic extension of the class instance is expected.
       this[name] = this._callFunctionWithArgs.bind(this, name);
     });
   }
@@ -121,7 +126,7 @@ export default class JestWorker {
   private _callFunctionWithArgs(
     method: string,
     ...args: Array<any>
-  ): Promise<any> {
+  ): Promise<unknown> {
     if (this._ending) {
       throw new Error('Farm is ended, no more calls can be done to it');
     }
@@ -146,3 +151,5 @@ export default class JestWorker {
     return this._workerPool.end();
   }
 }
+
+export type {PromiseWithCustomMessage};

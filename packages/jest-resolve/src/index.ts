@@ -5,17 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/prefer-spread-eventually */
+
 import * as path from 'path';
+import chalk = require('chalk');
+import slash = require('slash');
 import type {Config} from '@jest/types';
 import type {ModuleMap} from 'jest-haste-map';
-import {sync as realpath} from 'realpath-native';
-import chalk = require('chalk');
-import nodeModulesPaths from './nodeModulesPaths';
-import isBuiltinModule from './isBuiltinModule';
-import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
-import type {ResolverConfig} from './types';
+import {tryRealpath} from 'jest-util';
 import ModuleNotFoundError from './ModuleNotFoundError';
+import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
+import isBuiltinModule from './isBuiltinModule';
+import nodeModulesPaths from './nodeModulesPaths';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
+import type {ResolverConfig} from './types';
 
 type FindNodeModuleConfig = {
   basedir: Config.Path;
@@ -28,20 +31,18 @@ type FindNodeModuleConfig = {
   throwIfNotFound?: boolean;
 };
 
+// TODO: replace with a Map in Jest 27
 type BooleanObject = Record<string, boolean>;
 
-namespace Resolver {
-  export type ResolveModuleConfig = {
-    skipNodeResolution?: boolean;
-    paths?: Array<Config.Path>;
-  };
-}
+export type ResolveModuleConfig = {
+  skipNodeResolution?: boolean;
+  paths?: Array<Config.Path>;
+};
 
 const NATIVE_PLATFORM = 'native';
 
 // We might be inside a symlink.
-const cwd = process.cwd();
-const resolvedCwd = realpath(cwd) || cwd;
+const resolvedCwd = tryRealpath(process.cwd());
 const {NODE_PATH} = process.env;
 const nodePaths = NODE_PATH
   ? NODE_PATH.split(path.delimiter)
@@ -50,7 +51,6 @@ const nodePaths = NODE_PATH
       .map(p => path.resolve(resolvedCwd, p))
   : undefined;
 
-/* eslint-disable-next-line no-redeclare */
 class Resolver {
   private readonly _options: ResolverConfig;
   private readonly _moduleMap: ModuleMap;
@@ -61,7 +61,6 @@ class Resolver {
 
   constructor(moduleMap: ModuleMap, options: ResolverConfig) {
     this._options = {
-      browser: options.browser,
       defaultPlatform: options.defaultPlatform,
       extensions: options.extensions,
       hasCoreModules:
@@ -137,7 +136,7 @@ class Resolver {
   resolveModuleFromDirIfExists(
     dirname: Config.Path,
     moduleName: string,
-    options?: Resolver.ResolveModuleConfig,
+    options?: ResolveModuleConfig,
   ): Config.Path | null {
     const paths = (options && options.paths) || this._options.modulePaths;
     const moduleDirectory = this._options.moduleDirectories;
@@ -183,7 +182,6 @@ class Resolver {
     const resolveNodeModule = (name: Config.Path, throwIfNotFound = false) =>
       Resolver.findNodeModule(name, {
         basedir: dirname,
-        browser: this._options.browser,
         extensions,
         moduleDirectory,
         paths,
@@ -193,7 +191,6 @@ class Resolver {
       });
 
     if (!skipResolution) {
-      // @ts-ignore: the "pnp" version named isn't in DefinitelyTyped
       module = resolveNodeModule(moduleName, Boolean(process.versions.pnp));
 
       if (module) {
@@ -227,7 +224,7 @@ class Resolver {
   resolveModule(
     from: Config.Path,
     moduleName: string,
-    options?: Resolver.ResolveModuleConfig,
+    options?: ResolveModuleConfig,
   ): Config.Path {
     const dirname = path.dirname(from);
     const module =
@@ -238,10 +235,11 @@ class Resolver {
     // 5. Throw an error if the module could not be found. `resolve.sync` only
     // produces an error based on the dirname but we have the actual current
     // module name available.
-    const relativePath = path.relative(dirname, from);
+    const relativePath =
+      slash(path.relative(this._options.rootDir, from)) || '.';
 
     throw new ModuleNotFoundError(
-      `Cannot find module '${moduleName}' from '${relativePath || '.'}'`,
+      `Cannot find module '${moduleName}' from '${relativePath}'`,
       moduleName,
     );
   }
@@ -437,7 +435,6 @@ class Resolver {
               this.getModule(updatedName) ||
               Resolver.findNodeModule(updatedName, {
                 basedir: dirname,
-                browser: this._options.browser,
                 extensions,
                 moduleDirectory,
                 paths,
@@ -472,7 +469,7 @@ const createNoMappedModuleFoundError = (
   mapModuleName: (moduleName: string) => string,
   mappedModuleName: string | Array<string>,
   regex: RegExp,
-  resolver?: Function | string | null,
+  resolver?: ((...args: Array<unknown>) => unknown) | string | null,
 ) => {
   const mappedAs = Array.isArray(mappedModuleName)
     ? JSON.stringify(mappedModuleName.map(mapModuleName), null, 2)
@@ -502,4 +499,4 @@ Please check your configuration for these entries:
   return error;
 };
 
-export = Resolver;
+export default Resolver;

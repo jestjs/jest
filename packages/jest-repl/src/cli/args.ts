@@ -7,7 +7,7 @@
  */
 
 import type {Options} from 'yargs';
-import Runtime = require('jest-runtime');
+import Runtime from 'jest-runtime';
 
 export const usage = 'Usage: $0 [--config=<pathToConfigFile>]';
 

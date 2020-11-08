@@ -9,11 +9,11 @@
  * Watch files for changes and rebuild (copy from 'src/' to `build/`) if changed
  */
 
-const fs = require('fs');
-const chokidar = require('chokidar');
 const {execSync} = require('child_process');
+const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
+const chokidar = require('chokidar');
 const {PACKAGES_DIR, getPackages} = require('./buildUtils');
 
 const BUILD_CMD = `node ${path.resolve(__dirname, './build.js')}`;
@@ -23,7 +23,7 @@ let filesToBuild = new Map();
 const exists = filename => {
   try {
     return fs.statSync(filename).isFile();
-  } catch (e) {}
+  } catch {}
   return false;
 };
 const rebuild = filename => filesToBuild.set(filename, true);
@@ -62,7 +62,7 @@ chokidar
             buildFile,
           )} (deleted)\n`,
         );
-      } catch (e) {}
+      } catch {}
     }
   });
 
@@ -72,7 +72,7 @@ setInterval(() => {
     filesToBuild = new Map();
     try {
       execSync(`${BUILD_CMD} ${files.join(' ')}`, {stdio: [0, 1, 2]});
-    } catch (e) {}
+    } catch {}
   }
 }, 100);
 

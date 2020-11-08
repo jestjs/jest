@@ -6,8 +6,8 @@
  */
 
 import {wrap} from 'jest-snapshot-serializer-raw';
-import runJest, {json as runWithJson} from '../runJest';
 import {extractSummary} from '../Utils';
+import runJest, {json as runWithJson} from '../runJest';
 
 test('moduleNameMapper wrong configuration', () => {
   const {stderr, exitCode} = runJest('module-name-mapper-wrong-config');
@@ -29,6 +29,20 @@ test('moduleNameMapper correct configuration', () => {
   const {stderr, exitCode} = runJest('module-name-mapper-correct-config', [], {
     stripAnsi: true,
   });
+  const {rest} = extractSummary(stderr);
+
+  expect(exitCode).toBe(0);
+  expect(wrap(rest)).toMatchSnapshot();
+});
+
+test('moduleNameMapper correct configuration mocking module of absolute path', () => {
+  const {stderr, exitCode} = runJest(
+    'module-name-mapper-correct-mock-absolute-path',
+    [],
+    {
+      stripAnsi: true,
+    },
+  );
   const {rest} = extractSummary(stderr);
 
   expect(exitCode).toBe(0);

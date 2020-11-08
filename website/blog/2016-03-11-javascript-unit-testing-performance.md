@@ -1,6 +1,6 @@
 ---
 title: JavaScript Unit Testing Performance
-author: Christoph Pojer
+author: Christoph Nakazawa
 authorURL: http://twitter.com/cpojer
 authorFBID: 100000023028168
 ---

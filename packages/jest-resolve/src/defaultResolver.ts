@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
-import {sync as resolveSync} from 'resolve';
-import {sync as browserResolve} from 'browser-resolve';
-import {sync as realpath} from 'realpath-native';
+import * as fs from 'graceful-fs';
 import pnpResolver from 'jest-pnp-resolver';
+import {Opts as ResolveOpts, sync as resolveSync} from 'resolve';
 import type {Config} from '@jest/types';
+import {tryRealpath} from 'jest-util';
 
 type ResolverOptions = {
+  allowPnp?: boolean;
   basedir: Config.Path;
   browser?: boolean;
   defaultResolver: typeof defaultResolver;
@@ -20,28 +20,35 @@ type ResolverOptions = {
   moduleDirectory?: Array<string>;
   paths?: Array<Config.Path>;
   rootDir?: Config.Path;
+  packageFilter?: ResolveOpts['packageFilter'];
 };
+
+// https://github.com/facebook/jest/pull/10617
+declare global {
+  namespace NodeJS {
+    export interface ProcessVersions {
+      pnp?: any;
+    }
+  }
+}
 
 export default function defaultResolver(
   path: Config.Path,
   options: ResolverOptions,
 ): Config.Path {
-  // @ts-ignore: the "pnp" version named isn't in DefinitelyTyped
-  if (process.versions.pnp) {
+  if (process.versions.pnp && options.allowPnp !== false) {
     return pnpResolver(path, options);
   }
 
-  const resolve = options.browser ? browserResolve : resolveSync;
-
-  const result = resolve(path, {
+  const result = resolveSync(path, {
     basedir: options.basedir,
     extensions: options.extensions,
     isDirectory,
     isFile,
     moduleDirectory: options.moduleDirectory,
+    packageFilter: options.packageFilter,
     paths: options.paths,
     preserveSymlinks: false,
-    // @ts-ignore: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/44137
     realpathSync,
   });
 
@@ -98,17 +105,7 @@ function realpathCached(path: Config.Path): Config.Path {
     return result;
   }
 
-  try {
-    result = realpath(path);
-  } catch (error) {
-    if (error.code !== 'ENOENT') {
-      throw error;
-    }
-  }
-
-  if (!result) {
-    result = path;
-  }
+  result = tryRealpath(path);
 
   checkedRealpathPaths.set(path, result);
 

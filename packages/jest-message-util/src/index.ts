@@ -5,14 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
-import type {Config, TestResult} from '@jest/types';
+import {codeFrameColumns} from '@babel/code-frame';
 import chalk = require('chalk');
+import * as fs from 'graceful-fs';
 import micromatch = require('micromatch');
 import slash = require('slash');
-import {codeFrameColumns} from '@babel/code-frame';
 import StackUtils = require('stack-utils');
+import type {Config, TestResult} from '@jest/types';
+import prettyFormat = require('pretty-format');
 import type {Frame} from './types';
 
 export type {Frame} from './types';
@@ -25,8 +26,9 @@ const stackUtils = new StackUtils({cwd: 'something which does not exist'});
 let nodeInternals: Array<RegExp> = [];
 
 try {
-  nodeInternals = StackUtils.nodeInternals();
-} catch (e) {
+  // https://github.com/tapjs/stack-utils/issues/54
+  nodeInternals = StackUtils.nodeInternals().concat(/\s*\(node:/);
+} catch {
   // `StackUtils.nodeInternals()` fails in browsers. We don't need to remove
   // node internals in the browser though, so no issue.
 }
@@ -139,7 +141,10 @@ export const formatExecError = (
     stack = error;
   } else {
     message = error.message;
-    stack = error.stack;
+    stack =
+      typeof error.stack === 'string'
+        ? error.stack
+        : `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
   }
 
   const separated = separateMessageFromStack(stack || '');
@@ -159,9 +164,12 @@ export const formatExecError = (
       ? '\n' + formatStackTrace(stack, config, options, testPath)
       : '';
 
-  if (blankStringRegexp.test(message) && blankStringRegexp.test(stack)) {
+  if (
+    typeof stack !== 'string' ||
+    (blankStringRegexp.test(message) && blankStringRegexp.test(stack))
+  ) {
     // this can happen if an empty object is thrown.
-    message = MESSAGE_INDENT + 'Error: No message was provided';
+    message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
   }
 
   let messageToUse;
@@ -295,7 +303,7 @@ export const formatStackTrace = (
           // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
           fileContent = fs.readFileSync(filename, 'utf8');
           renderedCallsite = getRenderedCallsite(fileContent, line, column);
-        } catch (e) {
+        } catch {
           // the file does not exist or is inaccessible, we ignore
         }
       }

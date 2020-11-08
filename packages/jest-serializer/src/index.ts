@@ -7,8 +7,8 @@
 // TODO: Remove this
 /// <reference path="../v8.d.ts" />
 
-import * as fs from 'fs';
 import {deserialize as v8Deserialize, serialize as v8Serialize} from 'v8';
+import * as fs from 'graceful-fs';
 
 type Path = string;
 
@@ -19,7 +19,7 @@ type Path = string;
 
 // In memory functions.
 
-export function deserialize(buffer: Buffer): any {
+export function deserialize(buffer: Buffer): unknown {
   return v8Deserialize(buffer);
 }
 
@@ -29,7 +29,7 @@ export function serialize(content: unknown): Buffer {
 
 // Synchronous filesystem functions.
 
-export function readFileSync(filePath: Path): any {
+export function readFileSync(filePath: Path): unknown {
   return v8Deserialize(fs.readFileSync(filePath));
 }
 

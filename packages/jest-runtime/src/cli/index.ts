@@ -8,26 +8,20 @@
 import {cpus} from 'os';
 import * as path from 'path';
 import chalk = require('chalk');
-import {sync as realpath} from 'realpath-native';
 import yargs = require('yargs');
-import type {Config} from '@jest/types';
-import type {JestEnvironment} from '@jest/environment';
 import {CustomConsole} from '@jest/console';
-import {setGlobal} from 'jest-util';
-import {validateCLIOptions} from 'jest-validate';
+import type {JestEnvironment} from '@jest/environment';
+import type {Config} from '@jest/types';
 import {deprecationEntries, readConfig} from 'jest-config';
+import {setGlobal, tryRealpath} from 'jest-util';
+import {validateCLIOptions} from 'jest-validate';
 import {VERSION} from '../version';
-import type {Context} from '../types';
 import * as args from './args';
 
 export async function run(
   cliArgv?: Config.Argv,
   cliInfo?: Array<string>,
 ): Promise<void> {
-  const realFs = require('fs');
-  const fs = require('graceful-fs');
-  fs.gracefulify(realFs);
-
   let argv;
   if (cliArgv) {
     argv = cliArgv;
@@ -57,7 +51,7 @@ export async function run(
     return;
   }
 
-  const root = realpath(process.cwd());
+  const root = tryRealpath(process.cwd());
   const filePath = path.resolve(root, argv._[0]);
 
   if (argv.debug) {
@@ -72,11 +66,10 @@ export async function run(
     automock: false,
   };
 
-  // Break circular dependency
-  const Runtime: any = require('..');
+  const {default: Runtime} = await import('..');
 
   try {
-    const hasteMap: Context = await Runtime.createContext(config, {
+    const hasteMap = await Runtime.createContext(config, {
       maxWorkers: Math.max(cpus().length - 1, 1),
       watchman: globalConfig.watchman,
     });
@@ -91,10 +84,18 @@ export async function run(
     setGlobal(environment.global, 'jestProjectConfig', config);
     setGlobal(environment.global, 'jestGlobalConfig', globalConfig);
 
-    const runtime = new Runtime(config, environment, hasteMap.resolver);
+    const runtime = new Runtime(
+      config,
+      environment,
+      hasteMap.resolver,
+      undefined,
+      undefined,
+      filePath,
+    );
 
     for (const path of config.setupFiles) {
-      const esm = runtime.unstable_shouldLoadAsEsm(path);
+      // TODO: remove ? in Jest 26
+      const esm = runtime.unstable_shouldLoadAsEsm?.(path);
 
       if (esm) {
         await runtime.unstable_importModule(path);
@@ -102,7 +103,8 @@ export async function run(
         runtime.requireModule(path);
       }
     }
-    const esm = runtime.unstable_shouldLoadAsEsm(filePath);
+    // TODO: remove ? in Jest 26
+    const esm = runtime.unstable_shouldLoadAsEsm?.(filePath);
 
     if (esm) {
       await runtime.unstable_importModule(filePath);

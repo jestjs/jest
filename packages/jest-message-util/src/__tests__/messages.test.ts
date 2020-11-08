@@ -6,14 +6,14 @@
  *
  */
 
-import {readFileSync} from 'fs';
+import {readFileSync} from 'graceful-fs';
 import slash = require('slash');
 import tempy = require('tempy');
 import {formatExecError, formatResultsErrors, formatStackTrace} from '..';
 
 const rootDir = tempy.directory();
 
-jest.mock('fs', () => ({
+jest.mock('graceful-fs', () => ({
   ...jest.requireActual('fs'),
   readFileSync: jest.fn(),
 }));
@@ -290,7 +290,7 @@ it('no stack', () => {
   expect(message).toMatchSnapshot();
 });
 
-describe('getConsoleOutput', () => {
+describe('formatStackTrace', () => {
   it('prints code frame and stacktrace', () => {
     readFileSync.mockImplementationOnce(() => 'throw new Error("Whoops!");');
     const message = formatStackTrace(

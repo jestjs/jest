@@ -7,8 +7,8 @@
 
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {isJestCircusRun} from '@jest/test-utils';
-import runJest from '../runJest';
 import {extractSummary} from '../Utils';
+import runJest from '../runJest';
 
 const cleanupRunnerStack = (stderr: string) =>
   wrap(
@@ -42,16 +42,28 @@ test('print correct error message with nested test definitions inside describe',
   expect(cleanupRunnerStack(summary.rest)).toMatchSnapshot();
 });
 
-test('print correct message when nesting describe inside it', () => {
-  if (!isJestCircusRun()) {
-    return;
-  }
+(isJestCircusRun() ? test : test.skip)(
+  'print correct message when nesting describe inside it',
+  () => {
+    const result = runJest('nested-test-definitions', ['nestedDescribeInTest']);
 
-  const result = runJest('nested-test-definitions', ['nestedDescribeInTest']);
+    expect(result.exitCode).toBe(1);
 
-  expect(result.exitCode).toBe(1);
+    expect(result.stderr).toContain(
+      'Cannot nest a describe inside a test. Describe block "inner describe" cannot run because it is nested within "test".',
+    );
+  },
+);
 
-  expect(result.stderr).toContain(
-    'Cannot nest a describe inside a test. Describe block "inner describe" cannot run because it is nested within "test".',
-  );
-});
+(isJestCircusRun() ? test : test.skip)(
+  'print correct message when nesting a hook inside it',
+  () => {
+    const result = runJest('nested-test-definitions', ['nestedHookInTest']);
+
+    expect(result.exitCode).toBe(1);
+
+    expect(result.stderr).toContain(
+      'Hooks cannot be defined inside tests. Hook of type "beforeEach" is nested within "test".',
+    );
+  },
+);

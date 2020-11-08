@@ -7,8 +7,8 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import runJest from '../runJest';
 import {cleanup, run, testIfHg, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve(tmpdir(), 'jest_only_changed');
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';

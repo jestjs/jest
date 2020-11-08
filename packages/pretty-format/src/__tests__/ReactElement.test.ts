@@ -15,7 +15,7 @@ setPrettyPrint([ReactElement]);
 
 describe('ReactElement Plugin', () => {
   let forwardRefComponent: {
-    (_props: any, _ref: any): any;
+    (_props: unknown, _ref: unknown): unknown;
     displayName?: string;
   };
 

@@ -1,6 +1,9 @@
-<p>
+<p align="center">
   <a href="http://badge.fury.io/js/jest"><img src="https://badge.fury.io/js/jest.svg" alt="npm version"></a>
-  <a href="https://twitter.com/intent/follow?screen_name=fbjest"><img align="right" src="https://img.shields.io/twitter/follow/fbjest.svg?style=social&label=Follow%20@fbjest" alt="Follow on Twitter"></a>
+  <a href="https://github.com/facebook/jest/blob/master/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Jest is released under the MIT license." />
+  </a>
+  <a href="https://twitter.com/intent/follow?screen_name=fbjest"><img align="center" src="https://img.shields.io/twitter/follow/fbjest.svg?style=social&label=Follow%20@fbjest" alt="Follow on Twitter"></a>
 </p>
 
 <!-- A spacer -->
@@ -26,6 +29,7 @@
   - [Generate a basic configuration file](#generate-a-basic-configuration-file)
   - [Using Babel](#using-babel)
   - [Using Webpack](#using-webpack)
+  - [Using Parcel](#using-parcel)
   - [Using Typescript](#using-typescript)
 - [Documentation](#documentation)
 - [Badge](#badge)
@@ -48,7 +52,7 @@ Install Jest using [`yarn`](https://yarnpkg.com/en/package/jest):
 yarn add --dev jest
 ```
 
-Or [`npm`](https://www.npmjs.com/):
+Or [`npm`](https://www.npmjs.com/package/jest):
 
 ```bash
 npm install --save-dev jest
@@ -120,13 +124,13 @@ jest --init
 
 ### Using Babel
 
-To use [Babel](http://babeljs.io/), install required dependencies via `yarn`:
+To use [Babel](https://babeljs.io/), install required dependencies via `yarn`:
 
 ```bash
 yarn add --dev babel-jest @babel/core @babel/preset-env
 ```
 
-If you do not already have babel configured for your project, you can use Babel to target your current version of Node by creating a `babel.config.js` file in the root of your project:
+Configure Babel to target your current version of Node by creating a `babel.config.js` file in the root of your project:
 
 ```javascript
 // babel.config.js
@@ -170,6 +174,10 @@ module.exports = {
 
 Jest can be used in projects that use [webpack](https://webpack.js.org/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](https://jestjs.io/docs/en/webpack) to get started.
 
+### Using parcel
+
+Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration. Refer to the official [docs](https://parceljs.org/getting_started.html) to get started.
+
 ### Using TypeScript
 
 Jest supports TypeScript, via Babel. First, make sure you followed the instructions on [using Babel](#using-babel) above. Next, install the `@babel/preset-typescript` via `yarn`:
@@ -190,7 +198,7 @@ module.exports = {
 };
 ```
 
-Note, there are some [caveats](https://babeljs.io/docs/en/next/babel-plugin-transform-typescript.html#caveats) to using TypeScript with Babel. Because TypeScript support in Babel is transpilation, Jest will not type-check your tests as they are run. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
+However, there are some [caveats](https://babeljs.io/docs/en/babel-plugin-transform-typescript#caveats) to using TypeScript with Babel. Because TypeScript support in Babel is purely transpilation, Jest will not type-check your tests as they are run. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest) instead, or just run the TypeScript compiler [tsc](https://www.typescriptlang.org/docs/handbook/compiler-options.html) separately (or as part of your build process).
 
 <!-- end copied -->
 
@@ -207,8 +215,10 @@ Learn more about using [Jest on the official site!](https://jestjs.io)
 
 Show the world you're using _Jest_ `→` [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest) [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
 
+<!-- prettier-ignore -->
 ```md
-[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest) [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
+[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
+[![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
 ```
 
 ## Contributing
@@ -229,7 +239,9 @@ To help you get your feet wet and get you familiar with our contribution process
 
 ## Credits
 
-This project exists thanks to all the people who [contribute](CONTRIBUTING.md). <a href="https://github.com/facebook/jest/graphs/contributors"><img src="https://opencollective.com/jest/contributors.svg?width=890&button=false" /></a>
+This project exists thanks to all the people who [contribute](CONTRIBUTING.md).
+
+<a href="https://github.com/facebook/jest/graphs/contributors"><img src="https://opencollective.com/jest/contributors.svg?width=890&button=false" /></a>
 
 ### [Backers](https://opencollective.com/jest#backer)
 

@@ -112,7 +112,7 @@ Runs tests related to the current changes and the changes made in the last commi
 
 ### `--changedSince`
 
-Runs tests related to the changes since the provided branch. If the current branch has diverged from the given branch, then only changes made locally will be tested. Behaves similarly to `--onlyChanged`.
+Runs tests related to the changes since the provided branch or commit hash. If the current branch has diverged from the given branch, then only changes made locally will be tested. Behaves similarly to `--onlyChanged`.
 
 ### `--ci`
 
@@ -124,7 +124,7 @@ Deletes the Jest cache directory and then exits without running tests. Will dele
 
 ### `--collectCoverageFrom=<glob>`
 
-A glob pattern relative to <rootDir> matching the files that coverage info needs to be collected from.
+A glob pattern relative to `rootDir` matching the files that coverage info needs to be collected from.
 
 ### `--colors`
 
@@ -132,11 +132,11 @@ Forces test results output highlighting even if stdout is not a TTY.
 
 ### `--config=<path>`
 
-Alias: `-c`. The path to a Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the directory containing the config file is assumed to be the rootDir for the project. This can also be a JSON-encoded value which Jest will use as configuration.
+Alias: `-c`. The path to a Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the directory containing the config file is assumed to be the `rootDir` for the project. This can also be a JSON-encoded value which Jest will use as configuration.
 
-### `--coverage`
+### `--coverage[=<boolean>]`
 
-Indicates that test coverage information should be collected and reported in the output. This option is also aliased by `--collectCoverage`.
+Alias: `--collectCoverage`. Indicates that test coverage information should be collected and reported in the output. Optionally pass `<boolean>` to override option set in configuration.
 
 ### `--debug`
 
@@ -144,7 +144,7 @@ Print debugging info about your Jest config.
 
 ### `--detectOpenHandles`
 
-Attempt to collect and print open handles preventing Jest from exiting cleanly. Use this in cases where you need to use `--forceExit` in order for Jest to exit to potentially track down the reason. Implemented using [`async_hooks`](https://nodejs.org/api/async_hooks.html), so it only works in Node 8 and newer.
+Attempt to collect and print open handles preventing Jest from exiting cleanly. Use this in cases where you need to use `--forceExit` in order for Jest to exit to potentially track down the reason. Implemented using [`async_hooks`](https://nodejs.org/api/async_hooks.html), so it only works in Node 8 and newer. This option has a significant performance penalty and should only be used for debugging.
 
 ### `--env=<environment>`
 
@@ -220,7 +220,7 @@ Run tests from one or more projects, found in the specified paths; also takes pa
 
 ### `--reporters`
 
-Run tests with specified reporters. [Reporter options](configuration#reporters-arraymodulename--modulename-options) are not available via CLI. Example with multiple reporters:
+Run tests with specified reporters. Example with multiple reporters:
 
 `jest --reporters="default" --reporters="jest-junit"`
 
@@ -269,6 +269,10 @@ Note that `column` is 0-indexed while `line` is not.
 
 A regexp pattern string that is matched against all tests paths before executing the test. On Windows, you will need to use `/` as a path separator or escape `\` as `\\`.
 
+### `--testPathIgnorePatterns=[array]`
+
+An array of regexp pattern strings that are tested against all tests paths before executing the test. Contrary to `--testPathPattern`, it will only run those tests with a path that does not match with the provided regexp expressions.
+
 ### `--testRunner=<path>`
 
 Lets you specify a custom test runner.
@@ -297,6 +301,8 @@ Watch files for changes and rerun tests related to changed files. If you want to
 
 Watch files for changes and rerun all tests when something changes. If you want to re-run only the tests that depend on the changed files, use the `--watch` option.
 
+Use `--watchAll=false` to explicitly disable the watch mode. Note that in most CI environments, this is automatically handled for you.
+
 ### `--watchman`
 
-Whether to use watchman for file crawling. Defaults to true. Disable using `--no-watchman`.
+Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling. Defaults to `true`. Disable using `--no-watchman`.

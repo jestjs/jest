@@ -9,7 +9,7 @@ import assert = require('assert');
 import {Console} from 'console';
 import {format} from 'util';
 import chalk = require('chalk');
-import {ErrorWithStack} from 'jest-util';
+import {ErrorWithStack, formatTime} from 'jest-util';
 import type {
   ConsoleBuffer,
   LogCounters,
@@ -19,24 +19,21 @@ import type {
 } from './types';
 
 export default class BufferedConsole extends Console {
-  private _buffer: ConsoleBuffer;
-  private _counters: LogCounters;
-  private _timers: LogTimers;
-  private _groupDepth: number;
+  private _buffer: ConsoleBuffer = [];
+  private _counters: LogCounters = {};
+  private _timers: LogTimers = {};
+  private _groupDepth = 0;
+
+  Console: NodeJS.ConsoleConstructor = Console;
 
   constructor() {
-    const buffer: ConsoleBuffer = [];
     super({
       write: (message: string) => {
-        BufferedConsole.write(buffer, 'log', message, null);
+        BufferedConsole.write(this._buffer, 'log', message, null);
 
         return true;
       },
     } as NodeJS.WritableStream);
-    this._buffer = buffer;
-    this._counters = {};
-    this._timers = {};
-    this._groupDepth = 0;
   }
 
   static write(
@@ -154,8 +151,18 @@ export default class BufferedConsole extends Console {
     if (startTime) {
       const endTime = new Date();
       const time = endTime.getTime() - startTime.getTime();
-      this._log('time', format(`${label}: ${time}ms`));
+      this._log('time', format(`${label}: ${formatTime(time)}`));
       delete this._timers[label];
+    }
+  }
+
+  timeLog(label = 'default', ...data: Array<unknown>): void {
+    const startTime = this._timers[label];
+
+    if (startTime) {
+      const endTime = new Date();
+      const time = endTime.getTime() - startTime.getTime();
+      this._log('time', format(`${label}: ${formatTime(time)}`, ...data));
     }
   }
 

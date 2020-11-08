@@ -6,6 +6,7 @@
  */
 
 import {AssertionError} from 'assert';
+import chalk = require('chalk');
 import type {Circus} from '@jest/types';
 import {
   DiffOptions,
@@ -13,7 +14,6 @@ import {
   printExpected,
   printReceived,
 } from 'jest-matcher-utils';
-import chalk = require('chalk');
 import prettyFormat = require('pretty-format');
 
 interface AssertionErrorWithStack extends AssertionError {
@@ -38,9 +38,12 @@ const humanReadableOperators: Record<string, string> = {
   strictEqual: 'to strictly be equal',
 };
 
-const formatNodeAssertErrors = (event: Circus.Event, state: Circus.State) => {
+const formatNodeAssertErrors = (
+  event: Circus.Event,
+  state: Circus.State,
+): void => {
   if (event.name === 'test_done') {
-    event.test.errors = event.test.errors.map((errors: Circus.TestError) => {
+    event.test.errors = event.test.errors.map(errors => {
       let error;
       if (Array.isArray(errors)) {
         const [originalError, asyncError] = errors;

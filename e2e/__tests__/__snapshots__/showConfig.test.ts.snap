@@ -5,7 +5,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
   "configs": [
     {
       "automock": false,
-      "browser": false,
       "cache": false,
       "cacheDirectory": "/tmp/jest",
       "clearMocks": false,
@@ -21,9 +20,9 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "globals": {},
       "haste": {
         "computeSha1": false,
-        "providesModuleNodeModules": [],
         "throwOnModuleCollision": false
       },
+      "injectGlobals": true,
       "moduleDirectories": [
         "node_modules"
       ],
@@ -50,8 +49,9 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "setupFiles": [],
       "setupFilesAfterEnv": [],
       "skipFilter": false,
+      "slowTestThreshold": 5,
       "snapshotSerializers": [],
-      "testEnvironment": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-environment-jsdom/build/index.js",
+      "testEnvironment": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-environment-node/build/index.js",
       "testEnvironmentOptions": {},
       "testLocationInResults": false,
       "testMatch": [
@@ -67,13 +67,14 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "timers": "real",
       "transform": [
         [
-          "^.+\\\\.[jt]sx?$",
+          "\\\\.[jt]sx?$",
           "<<REPLACED_JEST_PACKAGES_DIR>>/babel-jest/build/index.js",
           {}
         ]
       ],
       "transformIgnorePatterns": [
-        "/node_modules/"
+        "/node_modules/",
+        "<<REPLACED_PNP_PATH>>"
       ],
       "watchPathIgnorePatterns": []
     }

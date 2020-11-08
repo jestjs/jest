@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
 import {tmpdir} from 'os';
+import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {
   cleanup,
@@ -14,7 +14,7 @@ import {
   createEmptyPackage,
   extractSummary,
   linkJestPackage,
-  run,
+  runYarnInstall,
 } from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
 
@@ -22,7 +22,7 @@ describe('babel-jest', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
 
   beforeEach(() => {
-    run('yarn', dir);
+    runYarnInstall(dir);
   });
 
   it('runs transpiled code', () => {
@@ -59,7 +59,7 @@ describe('babel-jest with manual transformer', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest-manual');
 
   beforeEach(() => {
-    run('yarn', dir);
+    runYarnInstall(dir);
   });
 
   it('runs transpiled code', () => {
@@ -133,7 +133,7 @@ describe('multiple-transformers', () => {
   const dir = path.resolve(__dirname, '..', 'transform/multiple-transformers');
 
   beforeEach(() => {
-    run('yarn', dir);
+    runYarnInstall(dir);
   });
 
   it('transforms dependencies using specific transformers', () => {
@@ -164,7 +164,7 @@ describe('transformer-config', () => {
   const dir = path.resolve(__dirname, '..', 'transform/transformer-config');
 
   beforeEach(() => {
-    run('yarn', dir);
+    runYarnInstall(dir);
   });
 
   it('runs transpiled code', () => {

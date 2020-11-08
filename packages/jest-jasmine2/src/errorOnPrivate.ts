@@ -53,7 +53,7 @@ export function installErrorOnPrivate(global: Global.Global): void {
   (Object.keys(disabledJasmineMethods) as Array<
     DisabledJasmineMethodsKeys
   >).forEach(methodName => {
-    // @ts-ignore
+    // @ts-expect-error
     jasmine[methodName] = () => {
       throwAtFunction(disabledJasmineMethods[methodName], jasmine[methodName]);
     };
@@ -76,6 +76,9 @@ export function installErrorOnPrivate(global: Global.Global): void {
   });
 }
 
-function throwAtFunction(message: string, fn: Function) {
+function throwAtFunction(
+  message: string,
+  fn: (...args: Array<any>) => unknown,
+) {
   throw new ErrorWithStack(message, fn);
 }

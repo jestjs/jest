@@ -10,7 +10,6 @@ import type {Config} from '@jest/types';
 const descriptions: {[key in keyof Config.InitialOptions]: string} = {
   automock: 'All imported modules in your tests should be mocked automatically',
   bail: 'Stop running tests after `n` failures',
-  browser: 'Respect "browser" field in package.json when resolving modules',
   cacheDirectory:
     'The directory where Jest should store its cached dependency information',
   clearMocks: 'Automatically clear mock calls and instances between every test',
@@ -22,6 +21,8 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
     'The directory where Jest should output its coverage files',
   coveragePathIgnorePatterns:
     'An array of regexp pattern strings used to skip coverage collection',
+  coverageProvider:
+    'Indicates which provider should be used to instrument code for coverage',
   coverageReporters:
     'A list of reporter names that Jest uses when writing coverage reports',
   coverageThreshold:
@@ -66,6 +67,8 @@ const descriptions: {[key in keyof Config.InitialOptions]: string} = {
     'The paths to modules that run some code to configure or set up the testing environment before each test',
   setupFilesAfterEnv:
     'A list of paths to modules that run some code to configure or set up the testing framework before each test',
+  slowTestThreshold:
+    'The number of seconds after which a test is considered as slow and reported as such in the results.',
   snapshotSerializers:
     'A list of paths to snapshot serializer modules Jest should use for snapshot testing',
   testEnvironment: 'The test environment that will be used for testing',

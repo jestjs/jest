@@ -5,16 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Script} from 'vm';
-import type {Config, Global} from '@jest/types';
-import {installCommonGlobals} from 'jest-util';
-import {ModuleMocker} from 'jest-mock';
-import {
-  JestFakeTimers as LegacyFakeTimers,
-  LolexFakeTimers,
-} from '@jest/fake-timers';
-import type {EnvironmentContext, JestEnvironment} from '@jest/environment';
+import type {Context, Script} from 'vm';
 import {JSDOM, VirtualConsole} from 'jsdom';
+import type {EnvironmentContext, JestEnvironment} from '@jest/environment';
+import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
+import type {Config, Global} from '@jest/types';
+import {ModuleMocker} from 'jest-mock';
+import {installCommonGlobals} from 'jest-util';
 
 // The `Window` interface does not have an `Error.stackTraceLimit` property, but
 // `JSDOMEnvironment` assumes it is there.
@@ -28,7 +25,7 @@ type Win = Window &
 class JSDOMEnvironment implements JestEnvironment {
   dom: JSDOM | null;
   fakeTimers: LegacyFakeTimers<number> | null;
-  fakeTimersLolex: LolexFakeTimers | null;
+  fakeTimersModern: ModernFakeTimers | null;
   global: Win;
   errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
@@ -41,11 +38,19 @@ class JSDOMEnvironment implements JestEnvironment {
       virtualConsole: new VirtualConsole().sendTo(options.console || console),
       ...config.testEnvironmentOptions,
     });
-    const global = (this.global = this.dom.window.document.defaultView as Win);
+    const global = (this.global = (this.dom.window.document
+      .defaultView as unknown) as Win);
 
     if (!global) {
       throw new Error('JSDOM did not return a Window object');
     }
+
+    // for "universal" code (code should use `globalThis`)
+    global.global = global;
+
+    // In the `jsdom@16`, ArrayBuffer was not added to Window, ref: https://github.com/jsdom/jsdom/commit/3a4fd6258e6b13e9cf8341ddba60a06b9b5c7b5b
+    // Install ArrayBuffer to Window to fix it. Make sure the test is passed, ref: https://github.com/facebook/jest/pull/7626
+    global.ArrayBuffer = ArrayBuffer;
 
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
@@ -96,7 +101,7 @@ class JSDOMEnvironment implements JestEnvironment {
       timerConfig,
     });
 
-    this.fakeTimersLolex = new LolexFakeTimers({config, global});
+    this.fakeTimersModern = new ModernFakeTimers({config, global});
   }
 
   async setup(): Promise<void> {}
@@ -105,8 +110,8 @@ class JSDOMEnvironment implements JestEnvironment {
     if (this.fakeTimers) {
       this.fakeTimers.dispose();
     }
-    if (this.fakeTimersLolex) {
-      this.fakeTimersLolex.dispose();
+    if (this.fakeTimersModern) {
+      this.fakeTimersModern.dispose();
     }
     if (this.global) {
       if (this.errorEventListener) {
@@ -117,16 +122,23 @@ class JSDOMEnvironment implements JestEnvironment {
       this.global.close();
     }
     this.errorEventListener = null;
-    // @ts-ignore
+    // @ts-expect-error
     this.global = null;
     this.dom = null;
     this.fakeTimers = null;
-    this.fakeTimersLolex = null;
+    this.fakeTimersModern = null;
   }
 
   runScript<T = unknown>(script: Script): T | null {
     if (this.dom) {
-      return this.dom.runVMScript(script) as any;
+      return script.runInContext(this.dom.getInternalVMContext());
+    }
+    return null;
+  }
+
+  getVmContext(): Context | null {
+    if (this.dom) {
+      return this.dom.getInternalVMContext();
     }
     return null;
   }

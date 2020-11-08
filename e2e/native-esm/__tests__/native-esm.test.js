@@ -5,14 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+// the point here is that it's the node core module
+// eslint-disable-next-line no-restricted-imports
 import {readFileSync} from 'fs';
 import {createRequire} from 'module';
 import {dirname, resolve} from 'path';
 import {fileURLToPath} from 'url';
 import {jest as jestObject} from '@jest/globals';
-import staticImportedStateful from '../stateful.mjs';
 import staticImportedStatefulFromCjs from '../fromCjs.mjs';
 import {double} from '../index';
+import defaultFromCjs, {namedFunction} from '../namedExport.cjs';
+import {bag} from '../namespaceExport.js';
+import staticImportedStateful from '../stateful.mjs';
+// https://github.com/benmosher/eslint-plugin-import/issues/1739
+/* eslint-disable import/no-unresolved */
+import staticImportedStatefulWithQuery from '../stateful.mjs?query=1';
+import staticImportedStatefulWithAnotherQuery from '../stateful.mjs?query=2';
+/* eslint-enable */
 
 test('should have correct import.meta', () => {
   expect(typeof require).toBe('undefined');
@@ -42,6 +51,13 @@ test('should support importing node core modules', () => {
   });
 });
 
+test('should support importing node core modules dynamically', async () => {
+  // it's important that this module has _not_ been imported at the top level
+  const assert = await import('assert');
+
+  expect(typeof assert.strictEqual).toBe('function');
+});
+
 test('dynamic import should work', async () => {
   const {double: importedDouble} = await import('../index');
 
@@ -53,6 +69,11 @@ test('import cjs', async () => {
   const {default: half} = await import('../commonjs.cjs');
 
   expect(half(4)).toBe(2);
+});
+
+test('import esm from cjs', async () => {
+  const {default: halfPromise} = await import('../fromEsm.cjs');
+  expect(await halfPromise(1)).toBe(2);
 });
 
 test('require(cjs) and import(cjs) should share caches', async () => {
@@ -104,4 +125,34 @@ test('handle dynamic imports of the same module in parallel', async () => {
 
   expect(first).toBe(second);
   expect(first(2)).toBe(4);
+});
+
+test('varies module cache by query', () => {
+  expect(staticImportedStatefulWithQuery).not.toBe(
+    staticImportedStatefulWithAnotherQuery,
+  );
+
+  expect(staticImportedStatefulWithQuery()).toBe(1);
+  expect(staticImportedStatefulWithQuery()).toBe(2);
+  expect(staticImportedStatefulWithAnotherQuery()).toBe(1);
+  expect(staticImportedStatefulWithQuery()).toBe(3);
+  expect(staticImportedStatefulWithAnotherQuery()).toBe(2);
+  expect(staticImportedStatefulWithAnotherQuery()).toBe(3);
+});
+
+test('supports named imports from CJS', () => {
+  expect(namedFunction()).toBe('hello from a named CJS function!');
+  expect(defaultFromCjs.default()).toBe('"default" export');
+
+  expect(Object.keys(defaultFromCjs)).toEqual(['namedFunction', 'default']);
+});
+
+test('supports file urls as imports', async () => {
+  const dynamic = await import(new URL('../stateful.mjs', import.meta.url));
+
+  expect(dynamic.default).toBe(staticImportedStateful);
+});
+
+test('namespace export', () => {
+  expect(bag.double).toBe(double);
 });

@@ -19,6 +19,27 @@ exports[`codeframe 1`] = `
 "
 `;
 
+exports[`formatStackTrace does not print code frame when noCodeFrame = true 1`] = `
+"
+      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
+        "
+`;
+
+exports[`formatStackTrace does not print codeframe when noStackTrace = true 1`] = `
+"
+      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
+        "
+`;
+
+exports[`formatStackTrace prints code frame and stacktrace 1`] = `
+"
+    </><red><bold>></></><gray> 1 | </><cyan>throw</> <cyan>new</> <yellow>Error</>(<green>\\"Whoops!\\"</>)<yellow>;</></>
+    </> <gray>   | </>      <red><bold>^</></></>
+
+      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
+        "
+`;
+
 exports[`formatStackTrace should strip node internals 1`] = `
 "<bold><red>  <bold>● </><bold>Unix test</></>
 
@@ -31,29 +52,7 @@ exports[`formatStackTrace should strip node internals 1`] = `
           \\"string\\"
 <dim></>
 <dim>      <dim>at Object.it (</><dim>__tests__/test.js<dim>:8:14)</><dim></>
-<dim>      <dim>at </><dim>internal/process/next_tick.js<dim>:188:7</><dim></>
 "
-`;
-
-exports[`getConsoleOutput does not print code frame when noCodeFrame = true 1`] = `
-"
-      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
-        "
-`;
-
-exports[`getConsoleOutput does not print codeframe when noStackTrace = true 1`] = `
-"
-      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
-        "
-`;
-
-exports[`getConsoleOutput prints code frame and stacktrace 1`] = `
-"
-    </><red><bold>></></><gray> 1 | </><cyan>throw</> <cyan>new</> <yellow>Error</>(<green>\\"Whoops!\\"</>)<yellow>;</></>
-    </> <gray>   | </>      <red><bold>^</></></>
-
-      <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
-        "
 `;
 
 exports[`no codeframe 1`] = `

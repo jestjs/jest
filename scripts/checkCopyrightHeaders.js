@@ -7,8 +7,8 @@
 
 'use strict';
 
-const fs = require('fs');
 const {execSync} = require('child_process');
+const fs = require('fs');
 const {isBinaryFileSync} = require('isbinaryfile');
 
 const getFileContents = path => fs.readFileSync(path, {encoding: 'utf-8'});
@@ -148,7 +148,7 @@ function check() {
 
   ${invalidFiles.join('\n  ')}
 
-Please include the header or blacklist the files in \`scripts/checkCopyrightHeaders.js\``);
+Please include the header or exclude the files in \`scripts/checkCopyrightHeaders.js\``);
     process.exit(1);
   }
 }

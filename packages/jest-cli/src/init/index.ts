@@ -5,29 +5,32 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
 import * as path from 'path';
 import chalk = require('chalk');
+import * as fs from 'graceful-fs';
 import prompts = require('prompts');
-import {sync as realpath} from 'realpath-native';
 import {constants} from 'jest-config';
-import defaultQuestions, {testScriptQuestion} from './questions';
+import {tryRealpath} from 'jest-util';
 import {MalformedPackageJsonError, NotFoundPackageJsonError} from './errors';
-import generateConfigFile from './generate_config_file';
-import modifyPackageJson from './modify_package_json';
+import generateConfigFile from './generateConfigFile';
+import modifyPackageJson from './modifyPackageJson';
+import defaultQuestions, {testScriptQuestion} from './questions';
 import type {ProjectPackageJson} from './types';
 
 const {
   JEST_CONFIG_BASE_NAME,
   JEST_CONFIG_EXT_MJS,
   JEST_CONFIG_EXT_JS,
+  JEST_CONFIG_EXT_TS,
   JEST_CONFIG_EXT_ORDER,
   PACKAGE_JSON,
 } = constants;
 
 type PromptsResults = {
+  useTypescript: boolean;
   clearMocks: boolean;
   coverage: boolean;
+  coverageProvider: boolean;
   environment: boolean;
   scripts: boolean;
 };
@@ -35,7 +38,7 @@ type PromptsResults = {
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
 export default async (
-  rootDir: string = realpath(process.cwd()),
+  rootDir: string = tryRealpath(process.cwd()),
 ): Promise<void> => {
   // prerequisite checks
   const projectPackageJsonPath: string = path.join(rootDir, PACKAGE_JSON);
@@ -52,7 +55,7 @@ export default async (
     projectPackageJson = JSON.parse(
       fs.readFileSync(projectPackageJsonPath, 'utf-8'),
     );
-  } catch (error) {
+  } catch {
     throw new MalformedPackageJsonError(projectPackageJsonPath);
   }
 
@@ -60,21 +63,11 @@ export default async (
     hasJestProperty = true;
   }
 
-  const existingJestConfigPath = JEST_CONFIG_EXT_ORDER.find(ext =>
+  const existingJestConfigExt = JEST_CONFIG_EXT_ORDER.find(ext =>
     fs.existsSync(path.join(rootDir, getConfigFilename(ext))),
   );
-  const jestConfigPath =
-    existingJestConfigPath ||
-    path.join(
-      rootDir,
-      getConfigFilename(
-        projectPackageJson.type === 'module'
-          ? JEST_CONFIG_EXT_MJS
-          : JEST_CONFIG_EXT_JS,
-      ),
-    );
 
-  if (hasJestProperty || existingJestConfigPath) {
+  if (hasJestProperty || existingJestConfigExt) {
     const result: {continue: boolean} = await prompts({
       initial: true,
       message:
@@ -108,7 +101,7 @@ export default async (
 
   let promptAborted: boolean = false;
 
-  // @ts-ignore: Return type cannot be object - faulty typings
+  // @ts-expect-error: Return type cannot be object - faulty typings
   const results: PromptsResults = await prompts(questions, {
     onCancel: () => {
       promptAborted = true;
@@ -120,6 +113,18 @@ export default async (
     console.log('Aborting...');
     return;
   }
+
+  // Determine if Jest should use JS or TS for the config file
+  const jestConfigFileExt = results.useTypescript
+    ? JEST_CONFIG_EXT_TS
+    : projectPackageJson.type === 'module'
+    ? JEST_CONFIG_EXT_MJS
+    : JEST_CONFIG_EXT_JS;
+
+  // Determine Jest config path
+  const jestConfigPath = existingJestConfigExt
+    ? getConfigFilename(existingJestConfigExt)
+    : path.join(rootDir, getConfigFilename(jestConfigFileExt));
 
   const shouldModifyScripts = results.scripts;
 

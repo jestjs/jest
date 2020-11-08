@@ -5,16 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-jest.mock('fs', () => ({
-  ...jest.genMockFromModule('fs'),
+jest.mock('graceful-fs', () => ({
+  ...jest.createMockFromModule<typeof import('fs')>('fs'),
   existsSync: jest.fn().mockReturnValue(true),
 }));
 
-import * as fs from 'fs';
-import * as path from 'path';
 import assert = require('assert');
+import * as path from 'path';
 import chalk = require('chalk');
-
+import * as fs from 'graceful-fs';
 import {
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,
@@ -179,7 +178,7 @@ test('escaping', () => {
       'exports[`key`] = `"\'\\\\`;\n',
   );
 
-  // @ts-ignore
+  // @ts-expect-error
   const exports = {}; // eslint-disable-line @typescript-eslint/no-unused-vars
   // eslint-disable-next-line no-eval
   const readData = eval('var exports = {}; ' + writtenData + ' exports');
@@ -418,6 +417,26 @@ describe('DeepMerge with property matchers', () => {
           five: 'five',
         },
       },
+    ],
+
+    [
+      'an array of objects',
+      // Target
+      [{name: 'one'}, {name: 'two'}, {name: 'three'}],
+      // Matchers
+      [{name: 'one'}, {name: matcher}, {name: matcher}],
+      // Expected
+      [{name: 'one'}, {name: matcher}, {name: matcher}],
+    ],
+
+    [
+      'an array of arrays',
+      // Target
+      [['one'], ['two'], ['three']],
+      // Matchers
+      [['one'], [matcher], [matcher]],
+      // Expected
+      [['one'], [matcher], [matcher]],
     ],
   ];
   /* eslint-enable sort-keys */

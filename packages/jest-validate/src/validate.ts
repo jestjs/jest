@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {ValidationOptions} from './types';
 import defaultConfig from './defaultConfig';
+import type {ValidationOptions} from './types';
 import {ValidationError} from './utils';
 
 let hasDeprecationWarnings = false;
@@ -14,8 +14,8 @@ let hasDeprecationWarnings = false;
 const shouldSkipValidationForPath = (
   path: Array<string>,
   key: string,
-  blacklist?: Array<string>,
-) => (blacklist ? blacklist.includes([...path, key].join('.')) : false);
+  denylist?: Array<string>,
+) => (denylist ? denylist.includes([...path, key].join('.')) : false);
 
 const _validate = (
   config: Record<string, any>,
@@ -70,7 +70,11 @@ const _validate = (
         options.error(key, config[key], exampleConfig[key], options, path);
       }
     } else if (
-      shouldSkipValidationForPath(path, key, options.recursiveBlacklist)
+      shouldSkipValidationForPath(
+        path,
+        key,
+        options.recursiveDenylist || options.recursiveBlacklist,
+      )
     ) {
       // skip validating unknown options inside blacklisted paths
     } else {
@@ -81,8 +85,12 @@ const _validate = (
     if (
       options.recursive &&
       !Array.isArray(exampleConfig[key]) &&
-      options.recursiveBlacklist &&
-      !shouldSkipValidationForPath(path, key, options.recursiveBlacklist)
+      (options.recursiveDenylist || options.recursiveBlacklist) &&
+      !shouldSkipValidationForPath(
+        path,
+        key,
+        options.recursiveDenylist || options.recursiveBlacklist,
+      )
     ) {
       _validate(config[key], exampleConfig[key], options, [...path, key]);
     }
@@ -92,22 +100,25 @@ const _validate = (
 };
 
 const allowsMultipleTypes = (key: string): boolean => key === 'maxWorkers';
-const isOfTypeStringOrNumber = (value: any): boolean =>
+const isOfTypeStringOrNumber = (value: unknown): boolean =>
   typeof value === 'number' || typeof value === 'string';
 
-const validate = (config: Record<string, any>, options: ValidationOptions) => {
+const validate = (
+  config: Record<string, unknown>,
+  options: ValidationOptions,
+): {hasDeprecationWarnings: boolean; isValid: boolean} => {
   hasDeprecationWarnings = false;
 
-  // Preserve default blacklist entries even with user-supplied blacklist
-  const combinedBlacklist: Array<string> = [
-    ...(defaultConfig.recursiveBlacklist || []),
-    ...(options.recursiveBlacklist || []),
+  // Preserve default denylist entries even with user-supplied denylist
+  const combinedDenylist: Array<string> = [
+    ...(defaultConfig.recursiveDenylist || []),
+    ...(options.recursiveDenylist || options.recursiveBlacklist || []),
   ];
 
   const defaultedOptions: ValidationOptions = Object.assign({
     ...defaultConfig,
     ...options,
-    recursiveBlacklist: combinedBlacklist,
+    recursiveDenylist: combinedDenylist,
     title: options.title || defaultConfig.title,
   });
 

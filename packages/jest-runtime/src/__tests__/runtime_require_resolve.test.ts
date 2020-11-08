@@ -8,6 +8,7 @@
 
 import type {Config} from '@jest/types';
 import type Runtime from '..';
+import {createOutsideJestVmPath} from '../helpers';
 
 let createRuntime: (
   path: string,
@@ -50,17 +51,34 @@ describe('Runtime require.resolve', () => {
         runtime.__mockRootPath,
         './resolve_and_require_outside.js',
       );
-      expect(module).toBe(require('./test_root/create_require_module'));
+      expect(module.required).toBe(
+        require('./test_root/create_require_module'),
+      );
     });
 
     it('ignores the option in an external context', async () => {
       const runtime = await createRuntime(__filename);
-      const module = runtime.requireModule<any>(
+      const module = runtime.requireModule(
         runtime.__mockRootPath,
         './resolve_and_require_outside.js',
       );
-      expect(module.foo).toBe('foo');
-      expect(module).not.toBe(require('./test_root/create_require_module'));
+      expect(module.required.foo).toBe('foo');
+      expect(module.required).not.toBe(
+        require('./test_root/create_require_module'),
+      );
+    });
+
+    // make sure we also check isInternal during require, not just during resolve
+    it('does not understand a self-constructed outsideJestVmPath in an external context', async () => {
+      const runtime = await createRuntime(__filename);
+      expect(() =>
+        runtime.requireModule(
+          runtime.__mockRootPath,
+          createOutsideJestVmPath(
+            require.resolve('./test_root/create_require_module.js'),
+          ),
+        ),
+      ).toThrow(/cannot find.+create_require_module/i);
     });
   });
 });

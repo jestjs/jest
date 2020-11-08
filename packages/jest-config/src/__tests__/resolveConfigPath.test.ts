@@ -7,10 +7,9 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import resolveConfigPath from '../resolveConfigPath';
+import {cleanup, writeFiles} from '../../../../e2e/Utils';
 import {JEST_CONFIG_EXT_ORDER} from '../constants';
-
-const {cleanup, writeFiles} = require('../../../../e2e/Utils');
+import resolveConfigPath from '../resolveConfigPath';
 
 const DIR = path.resolve(tmpdir(), 'resolve_config_path_test');
 const ERROR_PATTERN = /Could not find a config file based on provided values/;
@@ -81,7 +80,7 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
 
       writeFiles(DIR, {[relativeJestConfigPath]: ''});
 
-      // jest.config.js takes presedence
+      // jest.config.js takes precedence
 
       // absolute
       expect(

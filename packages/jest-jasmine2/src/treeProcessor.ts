@@ -15,15 +15,15 @@ type Options = {
 };
 
 export type TreeNode = {
-  afterAllFns: Array<any>;
-  beforeAllFns: Array<any>;
+  afterAllFns: Array<unknown>;
+  beforeAllFns: Array<unknown>;
   disabled?: boolean;
   execute: (onComplete: () => void, enabled: boolean) => void;
   id: string;
   onException: (error: Error) => void;
-  sharedUserContext: () => any;
+  sharedUserContext: () => unknown;
   children?: Array<TreeNode>;
-} & Pick<Suite, 'getResult' | 'parentSuite' | 'result'>;
+} & Pick<Suite, 'getResult' | 'parentSuite' | 'result' | 'markedPending'>;
 
 export default function treeProcessor(options: Options): void {
   const {
@@ -46,13 +46,13 @@ export default function treeProcessor(options: Options): void {
   }
 
   function getNodeWithoutChildrenHandler(node: TreeNode, enabled: boolean) {
-    return function fn(done: (error?: any) => void = () => {}) {
+    return function fn(done: (error?: unknown) => void = () => {}) {
       node.execute(done, enabled);
     };
   }
 
   function getNodeWithChildrenHandler(node: TreeNode, enabled: boolean) {
-    return async function fn(done: (error?: any) => void = () => {}) {
+    return async function fn(done: (error?: unknown) => void = () => {}) {
       nodeStart(node);
       await queueRunnerFactory({
         onException: (error: Error) => node.onException(error),
@@ -64,11 +64,11 @@ export default function treeProcessor(options: Options): void {
     };
   }
 
-  function hasEnabledTest(node: TreeNode): boolean {
+  function hasNoEnabledTest(node: TreeNode): boolean {
     if (node.children) {
-      return node.children.some(hasEnabledTest);
+      return node.children.every(hasNoEnabledTest);
     }
-    return !node.disabled;
+    return node.disabled || node.markedPending;
   }
 
   function wrapChildren(node: TreeNode, enabled: boolean) {
@@ -78,7 +78,7 @@ export default function treeProcessor(options: Options): void {
     const children = node.children.map(child => ({
       fn: getNodeHandler(child, enabled),
     }));
-    if (!hasEnabledTest(node)) {
+    if (hasNoEnabledTest(node)) {
       return children;
     }
     return node.beforeAllFns.concat(children).concat(node.afterAllFns);

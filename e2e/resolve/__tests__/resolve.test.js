@@ -121,7 +121,7 @@ test('should throw module not found error if the module cannot be found', () => 
   expect(() => require('Test8')).toThrow(
     expect.objectContaining({
       code: 'MODULE_NOT_FOUND',
-      message: "Cannot find module 'Test8' from 'resolve.test.js'",
+      message: "Cannot find module 'Test8' from '__tests__/resolve.test.js'",
     }),
   );
 });

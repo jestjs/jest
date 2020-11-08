@@ -6,19 +6,22 @@
  */
 
 import {dirname, extname} from 'path';
-// @ts-ignore: experimental, not added to the types
+// @ts-expect-error: experimental, not added to the types
 import {SyntheticModule} from 'vm';
+import escalade from 'escalade/sync';
+import {readFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
-import readPkgUp = require('read-pkg-up');
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
 const cachedFileLookups = new Map<string, boolean>();
 const cachedDirLookups = new Map<string, boolean>();
+const cachedChecks = new Map<string, boolean>();
 
 export function clearCachedLookups(): void {
   cachedFileLookups.clear();
   cachedDirLookups.clear();
+  cachedChecks.clear();
 }
 
 export default function cachedShouldLoadAsEsm(path: Config.Path): boolean {
@@ -67,12 +70,29 @@ function shouldLoadAsEsm(path: Config.Path): boolean {
 }
 
 function cachedPkgCheck(cwd: Config.Path): boolean {
-  // TODO: can we cache lookups somehow?
-  const pkg = readPkgUp.sync({cwd, normalize: false});
-
-  if (!pkg) {
+  const pkgPath = escalade(cwd, (_dir, names) => {
+    if (names.includes('package.json')) {
+      // will be resolved into absolute
+      return 'package.json';
+    }
+    return false;
+  });
+  if (!pkgPath) {
     return false;
   }
 
-  return pkg.packageJson.type === 'module';
+  let hasModuleField = cachedChecks.get(pkgPath);
+  if (hasModuleField != null) {
+    return hasModuleField;
+  }
+
+  try {
+    const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+    hasModuleField = pkg.type === 'module';
+  } catch {
+    hasModuleField = false;
+  }
+
+  cachedChecks.set(pkgPath, hasModuleField);
+  return hasModuleField;
 }

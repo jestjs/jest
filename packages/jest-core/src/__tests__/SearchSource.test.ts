@@ -7,15 +7,15 @@
  */
 
 import * as path from 'path';
-import Runtime = require('jest-runtime');
+import type {Config} from '@jest/types';
 import {normalize} from 'jest-config';
 import {Test} from 'jest-runner';
-import type {Config} from '@jest/types';
+import Runtime from 'jest-runtime';
 import SearchSource, {SearchResult} from '../SearchSource';
 
 jest.setTimeout(15000);
 
-jest.mock('fs', () => {
+jest.mock('graceful-fs', () => {
   const realFs = jest.requireActual('fs');
 
   return {
@@ -202,6 +202,34 @@ describe('SearchSource', () => {
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
+        ]);
+      });
+    });
+
+    it('finds tests matching a JS with overriding glob patterns', () => {
+      const {options: config} = normalize(
+        {
+          moduleFileExtensions: ['js', 'jsx'],
+          name,
+          rootDir,
+          testMatch: [
+            '**/*.js?(x)',
+            '!**/test.js?(x)',
+            '**/test.js',
+            '!**/test.js',
+          ],
+          testRegex: '',
+        },
+        {} as Config.Argv,
+      );
+
+      return findMatchingTests(config).then(data => {
+        const relPaths = toPaths(data.tests).map(absPath =>
+          path.relative(rootDir, absPath),
+        );
+        expect(relPaths.sort()).toEqual([
+          path.normalize('module.jsx'),
+          path.normalize('noTests.js'),
         ]);
       });
     });
@@ -401,7 +429,6 @@ describe('SearchSource', () => {
               '__tests__',
               'haste_impl.js',
             ),
-            providesModuleNodeModules: [],
           },
           name: 'SearchSource-findRelatedTests-tests',
           rootDir,
@@ -546,7 +573,6 @@ describe('SearchSource', () => {
               __dirname,
               '../../../jest-haste-map/src/__tests__/haste_impl.js',
             ),
-            providesModuleNodeModules: [],
           },
           name: 'SearchSource-findRelatedSourcesFromTestsInChangedFiles-tests',
           rootDir,

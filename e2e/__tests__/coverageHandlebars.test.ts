@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {readFileSync} from 'fs';
 import * as path from 'path';
+import {readFileSync} from 'graceful-fs';
 import wrap from 'jest-snapshot-serializer-raw';
-import {cleanup, run} from '../Utils';
+import {cleanup, runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../coverage-handlebars');
@@ -19,7 +19,7 @@ beforeAll(() => {
 });
 
 it('code coverage for Handlebars', () => {
-  run('yarn', dir);
+  runYarnInstall(dir);
   const result = runJest(dir, ['--coverage', '--no-cache']);
 
   expect(result.exitCode).toBe(0);

@@ -87,8 +87,6 @@ The arguments that will be passed to the `setup` method during initialization.
 
 Provide a custom worker pool to be used for spawning child processes. By default, Jest will use a node thread pool if available and fall back to child process threads.
 
-The arguments that will be passed to the `setup` method during initialization.
-
 #### `enableWorkerThreads: boolean` (optional)
 
 `jest-worker` will automatically detect if `worker_threads` are available, but will not use them unless passed `enableWorkerThreads: true`.

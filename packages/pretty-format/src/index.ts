@@ -5,16 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import style = require('ansi-styles');
-import type * as PrettyFormat from './types';
+/* eslint-disable local/ban-types-eventually */
 
+import style = require('ansi-styles');
 import {
   printIteratorEntries,
   printIteratorValues,
   printListItems,
   printObjectProperties,
 } from './collections';
-
 import AsymmetricMatcher from './plugins/AsymmetricMatcher';
 import ConvertAnsi from './plugins/ConvertAnsi';
 import DOMCollection from './plugins/DOMCollection';
@@ -22,6 +21,7 @@ import DOMElement from './plugins/DOMElement';
 import Immutable from './plugins/Immutable';
 import ReactElement from './plugins/ReactElement';
 import ReactTestComponent from './plugins/ReactTestComponent';
+import type * as PrettyFormat from './types';
 
 const toString = Object.prototype.toString;
 const toISOString = Date.prototype.toISOString;
@@ -32,12 +32,13 @@ const regExpToString = RegExp.prototype.toString;
  * Explicitly comparing typeof constructor to function avoids undefined as name
  * when mock identity-obj-proxy returns the key as the value for any key.
  */
-const getConstructorName = (val: new (...args: Array<any>) => any) =>
+const getConstructorName = (val: new (...args: Array<any>) => unknown) =>
   (typeof val.constructor === 'function' && val.constructor.name) || 'Object';
 
 /* global window */
 /** Is val is equal to global window object? Works even if it does not exist :) */
-const isWindow = (val: any) => typeof window !== 'undefined' && val === window;
+const isWindow = (val: unknown) =>
+  typeof window !== 'undefined' && val === window;
 
 const SYMBOL_REGEXP = /^Symbol\((.*)\)(.*)$/;
 const NEWLINE_REGEXP = /\n/gi;
@@ -304,7 +305,7 @@ function printPlugin(
   return printed;
 }
 
-function findPlugin(plugins: PrettyFormat.Plugins, val: any) {
+function findPlugin(plugins: PrettyFormat.Plugins, val: unknown) {
   for (let p = 0; p < plugins.length; p++) {
     try {
       if (plugins[p].test(val)) {
@@ -319,7 +320,7 @@ function findPlugin(plugins: PrettyFormat.Plugins, val: any) {
 }
 
 function printer(
-  val: any,
+  val: unknown,
   config: PrettyFormat.Config,
   indentation: string,
   depth: number,
@@ -527,8 +528,7 @@ prettyFormat.plugins = {
   ReactTestComponent,
 };
 
-// eslint-disable-next-line no-redeclare
-namespace prettyFormat {
+declare namespace prettyFormat {
   export type Colors = PrettyFormat.Colors;
   export type Config = PrettyFormat.Config;
   export type Options = PrettyFormat.Options;

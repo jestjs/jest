@@ -5,24 +5,44 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Arguments} from 'yargs';
+import type {ForegroundColor} from 'chalk';
 import type {ReportOptions} from 'istanbul-reports';
-import chalk = require('chalk');
+import type {Arguments} from 'yargs';
 
 type CoverageProvider = 'babel' | 'v8';
+
+type Timers = 'real' | 'fake' | 'modern' | 'legacy';
 
 export type Path = string;
 
 export type Glob = string;
 
 export type HasteConfig = {
+  /** Whether to hash files using SHA-1. */
   computeSha1?: boolean;
+  /** The platform to use as the default, e.g. 'ios'. */
   defaultPlatform?: string | null;
+  /** Path to a custom implementation of Haste. */
   hasteImplModulePath?: string;
+  /** All platforms to target, e.g ['ios', 'android']. */
   platforms?: Array<string>;
-  providesModuleNodeModules: Array<string>;
+  /** Whether to throw on error on module collision. */
   throwOnModuleCollision?: boolean;
 };
+
+export type CoverageReporterName = keyof ReportOptions;
+
+export type CoverageReporterWithOptions<
+  K = CoverageReporterName
+> = K extends CoverageReporterName
+  ? ReportOptions[K] extends never
+    ? never
+    : [K, Partial<ReportOptions[K]>]
+  : never;
+
+export type CoverageReporters = Array<
+  CoverageReporterName | CoverageReporterWithOptions
+>;
 
 export type ReporterConfig = [string, Record<string, unknown>];
 export type TransformerConfig = [string, Record<string, unknown>];
@@ -34,20 +54,20 @@ export interface ConfigGlobals {
 export type DefaultOptions = {
   automock: boolean;
   bail: number;
-  browser: boolean;
   cache: boolean;
   cacheDirectory: Path;
   changedFilesWithAncestor: boolean;
   clearMocks: boolean;
   collectCoverage: boolean;
   coveragePathIgnorePatterns: Array<string>;
-  coverageReporters: Array<string | [string, any]>;
+  coverageReporters: Array<CoverageReporterName>;
   coverageProvider: CoverageProvider;
   errorOnDeprecated: boolean;
   expand: boolean;
   forceCoverageMatch: Array<Glob>;
   globals: ConfigGlobals;
   haste: HasteConfig;
+  injectGlobals: boolean;
   maxConcurrency: number;
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
@@ -67,9 +87,10 @@ export type DefaultOptions = {
   setupFiles: Array<Path>;
   setupFilesAfterEnv: Array<Path>;
   skipFilter: boolean;
+  slowTestThreshold: number;
   snapshotSerializers: Array<Path>;
   testEnvironment: string;
-  testEnvironmentOptions: Record<string, any>;
+  testEnvironmentOptions: Record<string, unknown>;
   testFailureExitCode: string | number;
   testLocationInResults: boolean;
   testMatch: Array<Glob>;
@@ -78,7 +99,7 @@ export type DefaultOptions = {
   testRunner: string;
   testSequencer: string;
   testURL: string;
-  timers: 'real' | 'fake';
+  timers: Timers;
   transformIgnorePatterns: Array<Glob>;
   useStderr: boolean;
   watch: boolean;
@@ -86,12 +107,10 @@ export type DefaultOptions = {
   watchman: boolean;
 };
 
-export type DisplayName =
-  | string
-  | {
-      name: string;
-      color: typeof chalk.Color;
-    };
+export type DisplayName = {
+  name: string;
+  color: typeof ForegroundColor;
+};
 
 export type InitialOptionsWithRootDir = InitialOptions &
   Required<Pick<InitialOptions, 'rootDir'>>;
@@ -99,7 +118,6 @@ export type InitialOptionsWithRootDir = InitialOptions &
 export type InitialOptions = Partial<{
   automock: boolean;
   bail: boolean | number;
-  browser: boolean;
   cache: boolean;
   cacheDirectory: Path;
   clearMocks: boolean;
@@ -113,7 +131,7 @@ export type InitialOptions = Partial<{
   coverageDirectory: string;
   coveragePathIgnorePatterns: Array<string>;
   coverageProvider: CoverageProvider;
-  coverageReporters: Array<string>;
+  coverageReporters: CoverageReporters;
   coverageThreshold: {
     global: {
       [key: string]: number;
@@ -122,7 +140,7 @@ export type InitialOptions = Partial<{
   dependencyExtractor: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
-  displayName: DisplayName;
+  displayName: string | DisplayName;
   expand: boolean;
   extraGlobals: Array<string>;
   filter: Path;
@@ -134,6 +152,7 @@ export type InitialOptions = Partial<{
   globalSetup: string | null | undefined;
   globalTeardown: string | null | undefined;
   haste: HasteConfig;
+  injectGlobals: boolean;
   reporters: Array<string | ReporterConfig>;
   logHeapUsage: boolean;
   lastCommit: boolean;
@@ -154,6 +173,7 @@ export type InitialOptions = Partial<{
   notify: boolean;
   notifyMode: string;
   onlyChanged: boolean;
+  onlyFailures: boolean;
   outputFile: Path;
   passWithNoTests: boolean;
   preprocessorIgnorePatterns: Array<Glob>;
@@ -176,11 +196,12 @@ export type InitialOptions = Partial<{
   silent: boolean;
   skipFilter: boolean;
   skipNodeResolution: boolean;
+  slowTestThreshold: number;
   snapshotResolver: Path;
   snapshotSerializers: Array<Path>;
   errorOnDeprecated: boolean;
   testEnvironment: string;
-  testEnvironmentOptions: Record<string, any>;
+  testEnvironmentOptions: Record<string, unknown>;
   testFailureExitCode: string | number;
   testLocationInResults: boolean;
   testMatch: Array<Glob>;
@@ -193,7 +214,7 @@ export type InitialOptions = Partial<{
   testSequencer: string;
   testURL: string;
   testTimeout: number;
-  timers: 'real' | 'fake';
+  timers: Timers;
   transform: {
     [regex: string]: Path | TransformerConfig;
   };
@@ -206,7 +227,7 @@ export type InitialOptions = Partial<{
   watch: boolean;
   watchAll: boolean;
   watchman: boolean;
-  watchPlugins: Array<string | [string, Record<string, any>]>;
+  watchPlugins: Array<string | [string, Record<string, unknown>]>;
 }>;
 
 export type SnapshotUpdateState = 'all' | 'new' | 'none';
@@ -243,15 +264,10 @@ export type GlobalConfig = {
   coverageDirectory: string;
   coveragePathIgnorePatterns?: Array<string>;
   coverageProvider: CoverageProvider;
-  coverageReporters: Array<keyof ReportOptions | [keyof ReportOptions, any]>;
+  coverageReporters: CoverageReporters;
   coverageThreshold?: CoverageThreshold;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
-  enabledTestsMap?: {
-    [key: string]: {
-      [key: string]: boolean;
-    };
-  };
   expand: boolean;
   filter?: Path;
   findRelatedTests: boolean;
@@ -295,13 +311,12 @@ export type GlobalConfig = {
   watchman: boolean;
   watchPlugins?: Array<{
     path: string;
-    config: Record<string, any>;
+    config: Record<string, unknown>;
   }> | null;
 };
 
 export type ProjectConfig = {
   automock: boolean;
-  browser: boolean;
   cache: boolean;
   cacheDirectory: Path;
   clearMocks: boolean;
@@ -319,6 +334,7 @@ export type ProjectConfig = {
   globalTeardown?: string;
   globals: ConfigGlobals;
   haste: HasteConfig;
+  injectGlobals: boolean;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
   moduleLoader?: Path;
@@ -338,17 +354,18 @@ export type ProjectConfig = {
   setupFilesAfterEnv: Array<Path>;
   skipFilter: boolean;
   skipNodeResolution?: boolean;
+  slowTestThreshold: number;
   snapshotResolver?: Path;
   snapshotSerializers: Array<Path>;
   testEnvironment: string;
-  testEnvironmentOptions: Record<string, any>;
+  testEnvironmentOptions: Record<string, unknown>;
   testMatch: Array<Glob>;
   testLocationInResults: boolean;
   testPathIgnorePatterns: Array<string>;
   testRegex: Array<string | RegExp>;
   testRunner: string;
   testURL: string;
-  timers: 'real' | 'fake';
+  timers: Timers;
   transform: Array<[string, Path, Record<string, unknown>]>;
   transformIgnorePatterns: Array<Glob>;
   watchPathIgnorePatterns: Array<string>;
@@ -360,7 +377,6 @@ export type Argv = Arguments<
     all: boolean;
     automock: boolean;
     bail: boolean | number;
-    browser: boolean;
     cache: boolean;
     cacheDirectory: string;
     changedFilesWithAncestor: boolean;
@@ -389,6 +405,7 @@ export type Argv = Arguments<
     globalTeardown: string | null | undefined;
     haste: string;
     init: boolean;
+    injectGlobals: boolean;
     json: boolean;
     lastCommit: boolean;
     logHeapUsage: boolean;
@@ -402,6 +419,7 @@ export type Argv = Arguments<
     notify: boolean;
     notifyMode: string;
     onlyChanged: boolean;
+    onlyFailures: boolean;
     outputFile: string;
     preset: string | null | undefined;
     projects: Array<string>;
@@ -413,6 +431,7 @@ export type Argv = Arguments<
     rootDir: string;
     roots: Array<string>;
     runInBand: boolean;
+    selectProjects: Array<string>;
     setupFiles: Array<string>;
     setupFilesAfterEnv: Array<string>;
     showConfig: boolean;

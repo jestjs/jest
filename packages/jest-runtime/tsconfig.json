@@ -9,6 +9,7 @@
     {"path": "../jest-console"},
     {"path": "../jest-environment"},
     {"path": "../jest-environment-node"},
+    {"path": "../jest-fake-timers"},
     {"path": "../jest-globals"},
     {"path": "../jest-haste-map"},
     {"path": "../jest-message-util"},
@@ -22,6 +23,7 @@
     {"path": "../jest-types"},
     {"path": "../jest-util"},
     {"path": "../jest-validate"},
-    {"path": "../pretty-format"}
+    {"path": "../pretty-format"},
+    {"path": "../test-utils"}
   ]
 }

@@ -6,13 +6,7 @@
  */
 
 import {createHash} from 'crypto';
-import * as fs from 'fs';
 import * as path from 'path';
-import type {
-  TransformOptions as JestTransformOptions,
-  Transformer,
-} from '@jest/transform';
-import type {Config} from '@jest/types';
 import {
   PartialConfig,
   PluginItem,
@@ -20,9 +14,15 @@ import {
   TransformOptions,
   transformSync as babelTransform,
 } from '@babel/core';
-import {loadPartialConfig} from './loadBabelConfig';
 import chalk = require('chalk');
+import * as fs from 'graceful-fs';
 import slash = require('slash');
+import type {
+  TransformOptions as JestTransformOptions,
+  Transformer,
+} from '@jest/transform';
+import type {Config} from '@jest/types';
+import {loadPartialConfig} from './loadBabelConfig';
 
 const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
@@ -41,14 +41,17 @@ interface BabelJestTransformOptions extends TransformOptions {
 }
 
 const createTransformer = (
-  inputOptions: TransformOptions = {},
+  userOptions?: TransformOptions | null,
 ): BabelJestTransformer => {
+  const inputOptions: TransformOptions = userOptions ?? {};
   const options: BabelJestTransformOptions = {
     ...inputOptions,
     caller: {
       name: 'babel-jest',
       supportsDynamicImport: false,
+      supportsExportNamespaceFrom: false,
       supportsStaticESM: false,
+      supportsTopLevelAwait: false,
       ...inputOptions.caller,
     },
     compact: false,
@@ -71,9 +74,15 @@ const createTransformer = (
         supportsDynamicImport:
           transformOptions?.supportsDynamicImport ??
           options.caller.supportsDynamicImport,
+        supportsExportNamespaceFrom:
+          transformOptions?.supportsExportNamespaceFrom ??
+          options.caller.supportsExportNamespaceFrom,
         supportsStaticESM:
           transformOptions?.supportsStaticESM ??
           options.caller.supportsStaticESM,
+        supportsTopLevelAwait:
+          transformOptions?.supportsTopLevelAwait ??
+          options.caller.supportsTopLevelAwait,
       },
       filename,
     });

@@ -13,13 +13,11 @@ it('defaults to null for location', () => {
 
   const assertions = result.testResults[0].assertionResults;
   expect(result.success).toBe(true);
-  expect(result.numTotalTests).toBe(6);
-  expect(assertions[0].location).toBeNull();
-  expect(assertions[1].location).toBeNull();
-  expect(assertions[2].location).toBeNull();
-  expect(assertions[3].location).toBeNull();
-  expect(assertions[4].location).toBeNull();
-  expect(assertions[5].location).toBeNull();
+  expect(result.numTotalTests).toBe(10);
+  expect(assertions).toHaveLength(10);
+  for (const assertion of assertions) {
+    expect(assertion.location).toBeNull();
+  }
 });
 
 it('adds correct location info when provided with flag', () => {
@@ -29,7 +27,8 @@ it('adds correct location info when provided with flag', () => {
 
   const assertions = result.testResults[0].assertionResults;
   expect(result.success).toBe(true);
-  expect(result.numTotalTests).toBe(6);
+  expect(result.numTotalTests).toBe(10);
+
   expect(assertions[0].location).toEqual({
     column: 1,
     line: 12,
@@ -45,20 +44,40 @@ it('adds correct location info when provided with flag', () => {
     line: 20,
   });
 
-  // Technically the column should be 3, but callsites is not correct.
-  // jest-circus uses stack-utils + asyncErrors which resolves this.
   expect(assertions[3].location).toEqual({
-    column: isJestCircusRun() ? 3 : 2,
-    line: 25,
+    column: isJestCircusRun() ? 1 : 22,
+    line: 24,
   });
 
   expect(assertions[4].location).toEqual({
+    column: isJestCircusRun() ? 1 : 22,
+    line: 24,
+  });
+
+  // Technically the column should be 3, but callsites is not correct.
+  // jest-circus uses stack-utils + asyncErrors which resolves this.
+  expect(assertions[5].location).toEqual({
     column: isJestCircusRun() ? 3 : 2,
     line: 29,
   });
 
-  expect(assertions[5].location).toEqual({
+  expect(assertions[6].location).toEqual({
     column: isJestCircusRun() ? 3 : 2,
     line: 33,
+  });
+
+  expect(assertions[7].location).toEqual({
+    column: isJestCircusRun() ? 3 : 2,
+    line: 37,
+  });
+
+  expect(assertions[8].location).toEqual({
+    column: isJestCircusRun() ? 3 : 24,
+    line: 41,
+  });
+
+  expect(assertions[9].location).toEqual({
+    column: isJestCircusRun() ? 3 : 24,
+    line: 41,
   });
 });

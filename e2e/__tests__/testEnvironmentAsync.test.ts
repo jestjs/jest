@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'fs';
-import * as path from 'path';
 import {tmpdir} from 'os';
-import runJest from '../runJest';
+import * as path from 'path';
+import * as fs from 'graceful-fs';
 import {cleanup} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = tmpdir() + '/jest-test-environment';
 

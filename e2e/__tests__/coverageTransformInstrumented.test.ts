@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {readFileSync} from 'fs';
 import * as path from 'path';
-import {cleanup, run} from '../Utils';
+import {readFileSync} from 'graceful-fs';
+import {cleanup, runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../coverage-transform-instrumented');
@@ -18,7 +18,7 @@ beforeAll(() => {
 });
 
 it('code coverage for transform instrumented code', () => {
-  run('yarn', dir);
+  runYarnInstall(dir);
   const result = runJest(dir, ['--coverage', '--no-cache']);
 
   expect(result.exitCode).toBe(0);

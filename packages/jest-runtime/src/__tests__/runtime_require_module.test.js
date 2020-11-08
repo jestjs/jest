@@ -11,7 +11,6 @@
 import {builtinModules, createRequire} from 'module';
 import path from 'path';
 import {pathToFileURL} from 'url';
-// eslint-disable-next-line import/default
 import slash from 'slash';
 import {onNodeVersions} from '@jest/test-utils';
 
@@ -43,8 +42,10 @@ describe('Runtime requireModule', () => {
         'filename',
         'id',
         'loaded',
+        'path',
         'parent',
         'paths',
+        'main',
       ]);
     }));
 
@@ -60,8 +61,10 @@ describe('Runtime requireModule', () => {
         'filename',
         'id',
         'loaded',
+        'path',
         'parent',
         'paths',
+        'main',
       ]);
     }));
 
@@ -136,7 +139,7 @@ describe('Runtime requireModule', () => {
   });
   it('provides `require.main` to modules', () =>
     createRuntime(__filename).then(runtime => {
-      runtime._moduleRegistry.set(__filename, module);
+      runtime._mainModule = module;
       [
         './test_root/modules_with_main/export_main.js',
         './test_root/modules_with_main/re_export_main.js',
@@ -234,7 +237,7 @@ describe('Runtime requireModule', () => {
       automock: true,
     }).then(runtime => {
       const root = runtime.requireModule(runtime.__mockRootPath, './root.js');
-      root.jest.resetModuleRegistry();
+      root.jest.resetModules();
       root.jest.unmock('ManuallyMocked');
       const exports = runtime.requireModule(
         runtime.__mockRootPath,
@@ -250,22 +253,6 @@ describe('Runtime requireModule', () => {
         'haste-package/core/module',
       );
       expect(hastePackage.isHastePackage).toBe(true);
-    }));
-
-  it('resolves node modules properly when crawling node_modules', () =>
-    // While we are crawling a node module, we shouldn't put package.json
-    // files of node modules to resolve to `package.json` but rather resolve
-    // to whatever the package.json's `main` field says.
-    createRuntime(__filename, {
-      haste: {
-        providesModuleNodeModules: ['not-a-haste-package'],
-      },
-    }).then(runtime => {
-      const hastePackage = runtime.requireModule(
-        runtime.__mockRootPath,
-        'not-a-haste-package',
-      );
-      expect(hastePackage.isNodeModule).toBe(true);
     }));
 
   it('resolves platform extensions based on the default platform', () =>

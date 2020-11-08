@@ -55,6 +55,18 @@ describe('expectationResultFactory', () => {
     expect(result.message).toEqual('Error: Expected `Pass`, received `Fail`.');
   });
 
+  it('returns the error name if the error message is empty', () => {
+    const options = {
+      actual: 'Fail',
+      error: new Error(),
+      expected: 'Pass',
+      matcherName: 'testMatcher',
+      passed: false,
+    };
+    const result = expectationResultFactory(options);
+    expect(result.message).toEqual('Error');
+  });
+
   it('returns the result if failed (with `error` as a string).', () => {
     const options = {
       actual: 'Fail',
@@ -65,5 +77,17 @@ describe('expectationResultFactory', () => {
     };
     const result = expectationResultFactory(options);
     expect(result.message).toEqual('Expected `Pass`, received `Fail`.');
+  });
+
+  it('returns the result if failed (with `error.stack` not as a string).', () => {
+    const options = {
+      actual: 'Fail',
+      error: {stack: 42},
+      expected: 'Pass',
+      matcherName: 'testMatcher',
+      passed: false,
+    };
+    const result = expectationResultFactory(options);
+    expect(result.message).toMatchSnapshot();
   });
 });

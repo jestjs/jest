@@ -9,7 +9,7 @@
 
 import * as path from 'path';
 import type {Config} from '@jest/types';
-import {sync as realpath} from 'realpath-native';
+import {tryRealpath} from 'jest-util';
 
 type NodeModulesPathsOptions = {
   moduleDirectory?: Array<string>;
@@ -40,8 +40,8 @@ export default function nodeModulesPaths(
   // traverses parents of the physical path, not the symlinked path
   let physicalBasedir;
   try {
-    physicalBasedir = realpath(basedirAbs);
-  } catch (err) {
+    physicalBasedir = tryRealpath(basedirAbs);
+  } catch {
     // realpath can throw, e.g. on mapped drives
     physicalBasedir = basedirAbs;
   }

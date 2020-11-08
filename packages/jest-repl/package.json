@@ -1,40 +1,37 @@
 {
   "name": "jest-repl",
-  "version": "25.4.0",
+  "version": "26.6.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-repl"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
-  "typesVersions": {
-    "<3.8": {
-      "build/*": [
-        "build/ts3.4/*"
-      ]
-    }
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json",
+    "./bin/jest-repl": "./bin/jest-repl.js"
   },
   "dependencies": {
-    "@jest/transform": "^25.4.0",
-    "@jest/types": "^25.4.0",
-    "jest-config": "^25.4.0",
-    "jest-runtime": "^25.4.0",
-    "jest-validate": "^25.4.0",
+    "@jest/transform": "^26.6.2",
+    "@jest/types": "^26.6.2",
+    "jest-config": "^26.6.3",
+    "jest-runtime": "^26.6.3",
+    "jest-validate": "^26.6.2",
     "repl": "^0.1.3",
-    "yargs": "^15.3.1"
+    "yargs": "^16.0.3"
   },
   "devDependencies": {
-    "@jest/test-utils": "^25.3.0",
+    "@jest/test-utils": "^26.6.2",
     "@types/yargs": "^15.0.0"
   },
   "bin": "./bin/jest-repl.js",
   "engines": {
-    "node": ">= 8.3"
+    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
+  }
 }

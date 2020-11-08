@@ -7,8 +7,8 @@
  */
 
 import chalk = require('chalk');
-import pretty = require('pretty-format');
 import type {Global} from '@jest/types';
+import pretty = require('pretty-format');
 
 type TemplateData = Global.TemplateData;
 
@@ -46,7 +46,7 @@ export const validateArrayTable = (table: unknown): void => {
 };
 
 const isTaggedTemplateLiteral = (array: any) => array.raw !== undefined;
-const isEmptyTable = (table: Array<any>) => table.length === 0;
+const isEmptyTable = (table: Array<unknown>) => table.length === 0;
 const isEmptyString = (str: string | unknown) =>
   typeof str === 'string' && str.trim() === '';
 

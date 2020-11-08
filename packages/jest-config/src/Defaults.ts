@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {sep} from 'path';
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {NODE_MODULES} from './constants';
@@ -15,7 +16,6 @@ const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
 const defaultOptions: Config.DefaultOptions = {
   automock: false,
   bail: 0,
-  browser: false,
   cache: true,
   cacheDirectory: getCacheDirectory(),
   changedFilesWithAncestor: false,
@@ -30,9 +30,9 @@ const defaultOptions: Config.DefaultOptions = {
   globals: {},
   haste: {
     computeSha1: false,
-    providesModuleNodeModules: [],
     throwOnModuleCollision: false,
   },
+  injectGlobals: true,
   maxConcurrency: 5,
   maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
@@ -52,8 +52,9 @@ const defaultOptions: Config.DefaultOptions = {
   setupFiles: [],
   setupFilesAfterEnv: [],
   skipFilter: false,
+  slowTestThreshold: 5,
   snapshotSerializers: [],
-  testEnvironment: 'jest-environment-jsdom',
+  testEnvironment: 'jest-environment-node',
   testEnvironmentOptions: {},
   testFailureExitCode: 1,
   testLocationInResults: false,
@@ -64,7 +65,7 @@ const defaultOptions: Config.DefaultOptions = {
   testSequencer: '@jest/test-sequencer',
   testURL: 'http://localhost',
   timers: 'real',
-  transformIgnorePatterns: [NODE_MODULES_REGEXP],
+  transformIgnorePatterns: [NODE_MODULES_REGEXP, `\\.pnp\\.[^\\${sep}]+$`],
   useStderr: false,
   watch: false,
   watchPathIgnorePatterns: [],

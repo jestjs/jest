@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {makeProjectConfig} from '@jest/test-utils';
 import JSDomEnvironment = require('../');
-import {makeProjectConfig} from '../../../../TestUtils';
 
 describe('JSDomEnvironment', () => {
   it('should configure setTimeout/setInterval to use the browser api', () => {
@@ -22,9 +22,9 @@ describe('JSDomEnvironment', () => {
     });
   });
 
-  it('has Lolex fake timers implementation', () => {
+  it('has modern fake timers implementation', () => {
     const env = new JSDomEnvironment(makeProjectConfig());
 
-    expect(env.fakeTimersLolex).toBeDefined();
+    expect(env.fakeTimersModern).toBeDefined();
   });
 });

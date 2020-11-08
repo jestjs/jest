@@ -6,11 +6,10 @@
  */
 
 import type {Circus} from '@jest/types';
-import {STATE_SYM} from './types';
-
-import {makeDescribe} from './utils';
 import eventHandler from './eventHandler';
 import formatNodeAssertErrors from './formatNodeAssertErrors';
+import {STATE_SYM} from './types';
+import {makeDescribe} from './utils';
 
 const eventHandlers: Array<Circus.EventHandler> = [
   eventHandler,
@@ -24,7 +23,8 @@ const INITIAL_STATE: Circus.State = {
   currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
   currentlyRunningTest: null,
   expand: undefined,
-  hasFocusedTests: false, // whether .only has been used on any test/describe
+  hasFocusedTests: false,
+  hasStarted: false,
   includeTestLocationInResult: false,
   parentProcess: null,
   rootDescribeBlock: ROOT_DESCRIBE_BLOCK,

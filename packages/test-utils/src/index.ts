@@ -11,6 +11,7 @@ export {
   isJestCircusRun,
   skipSuiteOnJasmine,
   skipSuiteOnJestCircus,
-  skipSuiteOnWindows,
   onNodeVersions,
 } from './ConditionalTest';
+
+export {makeGlobalConfig, makeProjectConfig} from './config';

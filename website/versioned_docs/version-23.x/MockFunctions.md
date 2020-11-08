@@ -93,7 +93,7 @@ console.log(myMock(), myMock(), myMock(), myMock());
 // > 10, 'x', true, true
 ```
 
-Mock functions are also very effective in code that uses a functional continuation-passing style. Code written in this style helps avoid the need for complicated stubs that recreate behavior of the real component they're standing in for, in favor of injecting values directly into the test right before they're used.
+Mock functions are also very effective in code that uses a functional continuation-passing style. Code written in this style helps avoid the need for complicated stubs that recreate the behavior of the real component they're standing in for, in favor of injecting values directly into the test right before they're used.
 
 ```javascript
 const filterTestFn = jest.fn();
@@ -131,7 +131,7 @@ export default Users;
 
 Now, in order to test this method without actually hitting the API (and thus creating slow and fragile tests), we can use the `jest.mock(...)` function to automatically mock the axios module.
 
-Once we mock the module we can provide a `mockResolvedValue` for `.get` that returns the data we want our test to assert against. In effect, we are saying that we want axios.get('/users.json') to return a fake response.
+Once we mock the module we can provide a `mockResolvedValue` for `.get` that returns the data we want our test to assert against. In effect, we are saying that we want `axios.get('/users.json')` to return a fake response.
 
 ```js
 // users.test.js
@@ -158,9 +158,6 @@ Still, there are cases where it's useful to go beyond the ability to specify ret
 
 ```javascript
 const myMockFn = jest.fn(cb => cb(null, true));
-
-myMockFn((err, val) => console.log(val));
-// > true
 
 myMockFn((err, val) => console.log(val));
 // > true
@@ -229,7 +226,7 @@ const otherObj = {
 
 ## Mock Names
 
-You can optionally provide a name for your mock functions, which will be displayed instead of "jest.fn()" in test error output. Use this if you want to be able to quickly identify the mock function reporting an error in your test output.
+You can optionally provide a name for your mock functions, which will be displayed instead of "jest.fn()" in the test error output. Use this if you want to be able to quickly identify the mock function reporting an error in your test output.
 
 ```javascript
 const myMockFn = jest
@@ -245,13 +242,13 @@ Finally, in order to make it less demanding to assert how mock functions have be
 
 ```javascript
 // The mock function was called at least once
-expect(mockFunc).toBeCalled();
+expect(mockFunc).toHaveBeenCalled();
 
 // The mock function was called at least once with the specified args
-expect(mockFunc).toBeCalledWith(arg1, arg2);
+expect(mockFunc).toHaveBeenCalledWith(arg1, arg2);
 
 // The last call to the mock function was called with the specified args
-expect(mockFunc).lastCalledWith(arg1, arg2);
+expect(mockFunc).toHaveBeenLastCalledWith(arg1, arg2);
 
 // All calls and the name of the mock is written as a snapshot
 expect(mockFunc).toMatchSnapshot();
@@ -279,7 +276,7 @@ expect(mockFunc.mock.calls[mockFunc.mock.calls.length - 1][0]).toBe(42);
 // A snapshot will check that a mock was invoked the same number of times,
 // in the same order, with the same arguments. It will also assert on the name.
 expect(mockFunc.mock.calls).toEqual([[arg1, arg2]]);
-expect(mockFunc.mock.getMockName()).toBe('a mock name');
+expect(mockFunc.getMockName()).toBe('a mock name');
 ```
 
 For a complete list of matchers, check out the [reference docs](ExpectAPI.md).

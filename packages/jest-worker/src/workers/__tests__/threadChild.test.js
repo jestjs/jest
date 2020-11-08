@@ -53,7 +53,7 @@ beforeEach(() => {
         },
 
         fooPromiseWorks() {
-          return new Promise((resolve, reject) => {
+          return new Promise(resolve => {
             setTimeout(() => resolve(1989), 5);
           });
         },

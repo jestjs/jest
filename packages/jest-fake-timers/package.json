@@ -1,37 +1,34 @@
 {
   "name": "@jest/fake-timers",
-  "version": "25.4.0",
+  "version": "26.6.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-fake-timers"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
-  "typesVersions": {
-    "<3.8": {
-      "build/*": [
-        "build/ts3.4/*"
-      ]
-    }
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^25.4.0",
-    "jest-message-util": "^25.4.0",
-    "jest-mock": "^25.4.0",
-    "jest-util": "^25.4.0",
-    "lolex": "^5.0.0"
+    "@jest/types": "^26.6.2",
+    "@sinonjs/fake-timers": "^6.0.1",
+    "@types/node": "*",
+    "jest-message-util": "^26.6.2",
+    "jest-mock": "^26.6.2",
+    "jest-util": "^26.6.2"
   },
   "devDependencies": {
-    "@types/lolex": "^5.1.0",
-    "@types/node": "*"
+    "@types/sinonjs__fake-timers": "^6.0.1",
+    "jest-snapshot-serializer-raw": "^1.1.0"
   },
   "engines": {
-    "node": ">= 8.3"
+    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
+  }
 }

@@ -6,12 +6,12 @@
  */
 
 import * as path from 'path';
-import type {Config} from '@jest/types';
-import type {AggregatedResult} from '@jest/test-result';
 import chalk = require('chalk');
 import slash = require('slash');
-import {pluralize} from 'jest-util';
-import type {SummaryOptions} from './types';
+import type {AggregatedResult, TestCaseResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import {formatTime, pluralize} from 'jest-util';
+import type {SummaryOptions, Test} from './types';
 
 const PROGRESS_BAR_WIDTH = 40;
 
@@ -20,10 +20,6 @@ export const printDisplayName = (config: Config.ProjectConfig): string => {
   const white = chalk.reset.inverse.white;
   if (!displayName) {
     return '';
-  }
-
-  if (typeof displayName === 'string') {
-    return chalk.supportsColor ? white(` ${displayName} `) : displayName;
   }
 
   const {name, color} = displayName;
@@ -94,6 +90,45 @@ export const relativePath = (
   return {basename, dirname};
 };
 
+const getValuesCurrentTestCases = (
+  currentTestCases: Array<{test: Test; testCaseResult: TestCaseResult}> = [],
+) => {
+  let numFailingTests = 0;
+  let numPassingTests = 0;
+  let numPendingTests = 0;
+  let numTodoTests = 0;
+  let numTotalTests = 0;
+  currentTestCases.forEach(testCase => {
+    switch (testCase.testCaseResult.status) {
+      case 'failed': {
+        numFailingTests++;
+        break;
+      }
+      case 'passed': {
+        numPassingTests++;
+        break;
+      }
+      case 'skipped': {
+        numPendingTests++;
+        break;
+      }
+      case 'todo': {
+        numTodoTests++;
+        break;
+      }
+    }
+    numTotalTests++;
+  });
+
+  return {
+    numFailingTests,
+    numPassingTests,
+    numPendingTests,
+    numTodoTests,
+    numTotalTests,
+  };
+};
+
 export const getSummary = (
   aggregatedResults: AggregatedResult,
   options?: SummaryOptions,
@@ -102,6 +137,10 @@ export const getSummary = (
   if (options && options.roundTime) {
     runTime = Math.floor(runTime);
   }
+
+  const valuesForCurrentTestCases = getValuesCurrentTestCases(
+    options?.currentTestCases,
+  );
 
   const estimatedTime = (options && options.estimatedTime) || 0;
   const snapshotResults = aggregatedResults.snapshot;
@@ -137,13 +176,31 @@ export const getSummary = (
       : suitesTotal) +
     ` total`;
 
+  const updatedTestsFailed =
+    testsFailed + valuesForCurrentTestCases.numFailingTests;
+  const updatedTestsPending =
+    testsPending + valuesForCurrentTestCases.numPendingTests;
+  const updatedTestsTodo = testsTodo + valuesForCurrentTestCases.numTodoTests;
+  const updatedTestsPassed =
+    testsPassed + valuesForCurrentTestCases.numPassingTests;
+  const updatedTestsTotal =
+    testsTotal + valuesForCurrentTestCases.numTotalTests;
+
   const tests =
     chalk.bold('Tests:       ') +
-    (testsFailed ? chalk.bold.red(`${testsFailed} failed`) + ', ' : '') +
-    (testsPending ? chalk.bold.yellow(`${testsPending} skipped`) + ', ' : '') +
-    (testsTodo ? chalk.bold.magenta(`${testsTodo} todo`) + ', ' : '') +
-    (testsPassed ? chalk.bold.green(`${testsPassed} passed`) + ', ' : '') +
-    `${testsTotal} total`;
+    (updatedTestsFailed > 0
+      ? chalk.bold.red(`${updatedTestsFailed} failed`) + ', '
+      : '') +
+    (updatedTestsPending > 0
+      ? chalk.bold.yellow(`${updatedTestsPending} skipped`) + ', '
+      : '') +
+    (updatedTestsTodo > 0
+      ? chalk.bold.magenta(`${updatedTestsTodo} todo`) + ', '
+      : '') +
+    (updatedTestsPassed > 0
+      ? chalk.bold.green(`${updatedTestsPassed} passed`) + ', '
+      : '') +
+    `${updatedTestsTotal} total`;
 
   const snapshots =
     chalk.bold('Snapshots:   ') +
@@ -185,11 +242,11 @@ const renderTime = (runTime: number, estimatedTime: number, width: number) => {
   // If we are more than one second over the estimated time, highlight it.
   const renderedTime =
     estimatedTime && runTime >= estimatedTime + 1
-      ? chalk.bold.yellow(runTime + 's')
-      : runTime + 's';
+      ? chalk.bold.yellow(formatTime(runTime, 0))
+      : formatTime(runTime, 0);
   let time = chalk.bold(`Time:`) + `        ${renderedTime}`;
   if (runTime < estimatedTime) {
-    time += `, estimated ${estimatedTime}s`;
+    time += `, estimated ${formatTime(estimatedTime, 0)}`;
   }
 
   // Only show a progress bar if the test run is actually going to take
