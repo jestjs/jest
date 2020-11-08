@@ -220,6 +220,26 @@ describe('resolveModule', () => {
     expect(resolvedWithSlash).toBe(fooSlashIndex);
     expect(resolvedWithSlash).toBe(resolvedWithDot);
   });
+
+  it('warns if a module has different casing in the file system', () => {
+    let warning: string = '';
+    const spy = jest
+      .spyOn(global.console, 'warn')
+      .mockImplementation(message => (warning = message));
+    const resolver = new Resolver(moduleMap, {
+      extensions: ['.js'],
+    } as ResolverConfig);
+    const src = require.resolve('../');
+    resolver.resolveModule(src, './__mocks__/Mockjsdependency');
+
+    expect(
+      warning.includes(
+        '/__mocks__/Mockjsdependency.js resolved, but has different casing: ' +
+          require.resolve('../__mocks__/mockJsDependency.js'),
+      ),
+    ).toBe(true);
+    spy.mockRestore();
+  });
 });
 
 describe('getMockModule', () => {
