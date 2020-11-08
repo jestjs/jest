@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type BabelTraverse from '@babel/traverse';
 import throat from 'throat';
 import type {JestEnvironment} from '@jest/environment';
 import {
