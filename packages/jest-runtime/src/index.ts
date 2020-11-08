@@ -615,11 +615,7 @@ export default class Runtime {
       }
     }
 
-<<<<<<< HEAD
-    return this.requireModule(from, to, {
-=======
     return this.requireModule<T>(from, to, {
->>>>>>> master
       isInternalModule: true,
       supportsDynamicImport: esmIsAvailable,
       supportsExportNamespaceFrom: false,
@@ -1398,11 +1394,7 @@ export default class Runtime {
   private _createRequireImplementation(
     from: InitialModule,
     options?: InternalModuleOptions,
-<<<<<<< HEAD
-  ): LocalModuleRequire {
-=======
   ): NodeRequire {
->>>>>>> master
     const resolve = (moduleName: string, resolveOptions?: ResolveOptions) => {
       const resolved = this._requireResolve(
         from.filename,
