@@ -9,16 +9,6 @@
 // (but a general require(require.resolve()) problem)
 jest.mock(require.resolve("prettier"), () => require("../__mocks__/prettier"));
 
-jest.mock("graceful-fs", () => ({
-  ...jest.createMockFromModule<typeof import("fs")>("fs"),
-  existsSync: jest.fn().mockReturnValue(true),
-  readdirSync: jest.fn().mockReturnValue([]),
-  statSync: jest.fn((filePath) => ({
-    isDirectory: () => !filePath.endsWith(".js"),
-  })),
-}));
-jest.mock("prettier");
-
 import * as path from "path";
 import { tmpdir } from "os";
 import babelTraverse from "@babel/traverse";
