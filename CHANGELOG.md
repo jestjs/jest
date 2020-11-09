@@ -1,6 +1,7 @@
 ## master
 
 ### Features
+- `[jest-config]` [**BREAKING**] Remove `testURL` config, use `can be set in "testEnvironmentOptions`
 
 ### Fixes
 

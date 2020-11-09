@@ -52,7 +52,9 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "slowTestThreshold": 5,
       "snapshotSerializers": [],
       "testEnvironment": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-environment-jsdom/build/index.js",
-      "testEnvironmentOptions": {},
+      "testEnvironmentOptions": {
+        "url": "http://localhost"
+      },
       "testLocationInResults": false,
       "testMatch": [
         "**/__tests__/**/*.[jt]s?(x)",
@@ -63,7 +65,6 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       "testRegex": [],
       "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-jasmine2/build/index.js",
-      "testURL": "http://localhost",
       "timers": "real",
       "transform": [
         [

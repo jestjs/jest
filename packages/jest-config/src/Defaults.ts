@@ -55,7 +55,9 @@ const defaultOptions: Config.DefaultOptions = {
   slowTestThreshold: 5,
   snapshotSerializers: [],
   testEnvironment: 'jest-environment-jsdom',
-  testEnvironmentOptions: {},
+  testEnvironmentOptions: {
+    url: 'http://localhost',
+  },
   testFailureExitCode: 1,
   testLocationInResults: false,
   testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[tj]s?(x)'],
@@ -63,7 +65,6 @@ const defaultOptions: Config.DefaultOptions = {
   testRegex: [],
   testRunner: 'jasmine2',
   testSequencer: '@jest/test-sequencer',
-  testURL: 'http://localhost',
   timers: 'real',
   transformIgnorePatterns: [NODE_MODULES_REGEXP, `\\.pnp\\.[^\\${sep}]+$`],
   useStderr: false,

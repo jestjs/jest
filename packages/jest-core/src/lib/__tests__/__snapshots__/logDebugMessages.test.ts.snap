@@ -42,7 +42,9 @@ exports[`prints the config object 1`] = `
     "slowTestThreshold": 5,
     "snapshotSerializers": [],
     "testEnvironment": "node",
-    "testEnvironmentOptions": {},
+    "testEnvironmentOptions": {
+      "url": "http://localhost"
+    },
     "testLocationInResults": false,
     "testMatch": [],
     "testPathIgnorePatterns": [],
@@ -50,7 +52,6 @@ exports[`prints the config object 1`] = `
       "\\\\.test\\\\.js$"
     ],
     "testRunner": "myRunner",
-    "testURL": "http://localhost",
     "timers": "real",
     "transform": [],
     "transformIgnorePatterns": [],

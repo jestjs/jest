@@ -34,7 +34,8 @@ class JSDOMEnvironment implements JestEnvironment {
     this.dom = new JSDOM('<!DOCTYPE html>', {
       pretendToBeVisual: true,
       runScripts: 'dangerously',
-      url: config.testURL,
+      // @ts-expect-error
+      url: config.testEnvironmentOptions.url,
       virtualConsole: new VirtualConsole().sendTo(options.console || console),
       ...config.testEnvironmentOptions,
     });

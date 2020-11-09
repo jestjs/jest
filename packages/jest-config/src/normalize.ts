@@ -916,7 +916,6 @@ export default function normalize(
       case 'testFailureExitCode':
       case 'testLocationInResults':
       case 'testNamePattern':
-      case 'testURL':
       case 'timers':
       case 'useStderr':
       case 'verbose':
