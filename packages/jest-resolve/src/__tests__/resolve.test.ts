@@ -292,7 +292,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
     // about the test environment when it comes to absolute paths.
     jest.doMock('graceful-fs', () => ({
       ...jest.requireActual('graceful-fs'),
-      realPathSync: {
+      realpathSync: {
         native: (dirInput: string) => dirInput,
       },
     }));
