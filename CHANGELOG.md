@@ -1,7 +1,7 @@
 ## master
 
 ### Features
-- `[jest-config]` [**BREAKING**] Remove `testURL` config, use `can be set in "testEnvironmentOptions`
+- `[jest-config, jest-cli, jest-core,jest-tranform, jest-environment-jsdom, jest-types, jest-validate, test-utils]` [**BREAKING**] Remove `testURL` config, use `can be set in "testEnvironmentOptions`
 
 ### Fixes
 
