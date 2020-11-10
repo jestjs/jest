@@ -65,10 +65,11 @@ export default function treeProcessor(options: Options): void {
   }
 
   function hasNoEnabledTest(node: TreeNode): boolean {
-    if (node.children) {
-      return node.children.every(hasNoEnabledTest);
-    }
-    return node.disabled || node.markedPending;
+    return (
+      node.disabled ||
+      node.markedPending ||
+      (!!node.children && node.children.every(hasNoEnabledTest))
+    );
   }
 
   function wrapChildren(node: TreeNode, enabled: boolean) {
