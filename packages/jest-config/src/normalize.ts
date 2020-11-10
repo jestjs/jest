@@ -916,7 +916,6 @@ export default function normalize(
       case 'testFailureExitCode':
       case 'testLocationInResults':
       case 'testNamePattern':
-      case 'testURL':
       case 'timers':
       case 'useStderr':
       case 'verbose':
@@ -1102,6 +1101,12 @@ export default function normalize(
 
   if (!newOptions.logHeapUsage) {
     newOptions.logHeapUsage = false;
+  }
+
+  if (newOptions.testEnvironment.includes('jest-environment-jsdom')) {
+    newOptions.testEnvironmentOptions = {
+      url: newOptions.testEnvironmentOptions.url || 'http://localhost',
+    };
   }
 
   return {

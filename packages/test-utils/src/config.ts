@@ -112,7 +112,6 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   testPathIgnorePatterns: [],
   testRegex: ['\\.test\\.js$'],
   testRunner: 'jest-jasmine2',
-  testURL: 'http://localhost',
   timers: 'real',
   transform: [],
   transformIgnorePatterns: [],
