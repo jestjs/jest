@@ -19,6 +19,7 @@ import isBuiltinModule from './isBuiltinModule';
 import nodeModulesPaths from './nodeModulesPaths';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
 import type {ResolverConfig} from './types';
+import {readdirSync} from 'graceful-fs';
 
 type FindNodeModuleConfig = {
   basedir: Config.Path;
@@ -238,10 +239,29 @@ class Resolver {
     const relativePath =
       slash(path.relative(this._options.rootDir, from)) || '.';
 
-    throw new ModuleNotFoundError(
-      `Cannot find module '${moduleName}' from '${relativePath}'`,
+    let message = `Cannot find module '${moduleName}' from '${relativePath}'`;
+
+    const similarlyNamedFiles = this._getSimilarlyNamedFiles(
+      dirname,
       moduleName,
     );
+    if (similarlyNamedFiles) {
+      message += `. Did you mean to import one of: ${similarlyNamedFiles}?`;
+    }
+
+    throw new ModuleNotFoundError(message, moduleName);
+  }
+
+  private _getSimilarlyNamedFiles(dirname: string, moduleName: string): string {
+    const fullModulePath = path.resolve(dirname, moduleName);
+    const moduleDir = path.dirname(fullModulePath);
+    const files = readdirSync(moduleDir);
+    const uppercaseModuleName = path.basename(moduleName).toUpperCase();
+    return files
+      .filter(
+        file => path.parse(file).name.toUpperCase() === uppercaseModuleName,
+      )
+      .join(', ');
   }
 
   private _isAliasModule(moduleName: string): boolean {
