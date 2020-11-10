@@ -96,6 +96,19 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/doc
 <span class="hljs-keyword">import</span> React, {Component} <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> {StyleSheet, Text, View} <span class="hljs-keyword">from</span> <span class="hljs-string">'react-native'</span>;
 
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Intro</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
+  render() {
+    <span class="hljs-keyword">return</span> (
+      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">View</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.container}</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Text</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.welcome}</span>&gt;</span>Welcome to React Native!<span class="hljs-tag">&lt;/<span class="hljs-name">Text</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">Text</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.instructions}</span>&gt;</span>
+          This is a React Native snapshot test.
+        <span class="hljs-tag">&lt;/<span class="hljs-name">Text</span>&gt;</span>
+      <span class="hljs-tag">&lt;/<span class="hljs-name">View</span>&gt;</span></span>
+    );
+  }
+}
+
 <span class="hljs-keyword">const</span> styles = StyleSheet.create({
   <span class="hljs-attr">container</span>: {
     <span class="hljs-attr">alignItems</span>: <span class="hljs-string">'center'</span>,
@@ -115,18 +128,7 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/doc
   },
 });
 
-<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Intro</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Component</span> </span>{
-  render() {
-    <span class="hljs-keyword">return</span> (
-      <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">View</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.container}</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">Text</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.welcome}</span>&gt;</span>Welcome to React Native!<span class="hljs-tag">&lt;/<span class="hljs-name">Text</span>&gt;</span>
-        <span class="hljs-tag">&lt;<span class="hljs-name">Text</span> <span class="hljs-attr">style</span>=<span class="hljs-string">{styles.instructions}</span>&gt;</span>
-          This is a React Native snapshot test.
-        <span class="hljs-tag">&lt;/<span class="hljs-name">Text</span>&gt;</span>
-      <span class="hljs-tag">&lt;/<span class="hljs-name">View</span>&gt;</span></span>
-    );
-  }
-}
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">default</span> Intro;
 </code></pre>
 <p>Ahora vamos usar las características render y snapshot de React y Jest para interactuar con los componentes y capturar lo que renderea, creando un archivo snapshot:</p>
 <pre><code class="hljs css language-tsx"><span class="hljs-comment">// __tests__/Intro-test.js</span>
@@ -192,7 +194,7 @@ exports[<span class="hljs-string">`Intro renders correctly 1`</span>] = <span cl
 <h3><a class="anchor" aria-hidden="true" id="setupfiles"></a><a href="#setupfiles" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>setupFiles</h3>
 <p>Si quieres proporcionar configuración adicional para cada archivo de test, la <a href="configuration.html#setupfiles-array">opción <code>setupFiles</code> de la configuración</a> se puede usar para especificar scripts de instalación.</p>
 <h3><a class="anchor" aria-hidden="true" id="modulenamemapper"></a><a href="#modulenamemapper" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>moduleNameMapper</h3>
-<p>The <a href="configuration.html#modulenamemapper-objectstring-string--arraystring"><code>moduleNameMapper</code></a> can be used to map a module path to a different module. Por defecto, este &quot;preset&quot; mapea todas las imágenes a un &quot;stub&quot; módulo de la imagen, pero si un módulo no puede ser encontrado, está opción de la configuración puede ayudar:</p>
+<p>La opción <a href="configuration.html#modulenamemapper-objectstring-string--arraystring"><code>moduleNameMapper</code></a> se puede usar para mapear una ruta de acceso de un módulo a otro diferente. Por defecto, este &quot;preset&quot; mapea todas las imágenes a un &quot;stub&quot; módulo de la imagen, pero si un módulo no puede ser encontrado, está opción de la configuración puede ayudar:</p>
 <pre><code class="hljs css language-json">{
   <span class="hljs-attr">"moduleNameMapper"</span>: {
     <span class="hljs-attr">"my-module.js"</span>: <span class="hljs-string">"&lt;rootDir&gt;/path/to/my-module.js"</span>
