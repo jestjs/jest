@@ -1104,9 +1104,8 @@ export default function normalize(
   }
 
   if (newOptions.testEnvironment.includes('jest-environment-jsdom')) {
-    newOptions.testEnvironmentOptions = {
-      url: newOptions.testEnvironmentOptions.url || 'http://localhost',
-    };
+    newOptions.testEnvironmentOptions.url =
+      newOptions.testEnvironmentOptions.url || 'http://localhost';
   }
 
   return {

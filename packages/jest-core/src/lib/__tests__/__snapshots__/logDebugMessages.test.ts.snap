@@ -42,9 +42,7 @@ exports[`prints the config object 1`] = `
     "slowTestThreshold": 5,
     "snapshotSerializers": [],
     "testEnvironment": "node",
-    "testEnvironmentOptions": {
-      "url": "http://localhost"
-    },
+    "testEnvironmentOptions": {},
     "testLocationInResults": false,
     "testMatch": [],
     "testPathIgnorePatterns": [],
