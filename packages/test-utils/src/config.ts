@@ -106,7 +106,9 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   snapshotResolver: undefined,
   snapshotSerializers: [],
   testEnvironment: 'node',
-  testEnvironmentOptions: {},
+  testEnvironmentOptions: {
+    url: 'http://localhost',
+  },
   testLocationInResults: false,
   testMatch: [],
   testPathIgnorePatterns: [],

@@ -103,7 +103,10 @@ const initialOptions: Config.InitialOptions = {
   snapshotResolver: '<rootDir>/snapshotResolver.js',
   snapshotSerializers: ['my-serializer-module'],
   testEnvironment: 'jest-environment-jsdom',
-  testEnvironmentOptions: {userAgent: 'Agent/007'},
+  testEnvironmentOptions: {
+    url: 'http://localhost',
+    userAgent: 'Agent/007',
+  },
   testFailureExitCode: 1,
   testLocationInResults: false,
   testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[jt]s?(x)'],

@@ -258,7 +258,9 @@ module.exports = {
   // testEnvironment: \\"jest-environment-node\\",
 
   // Options that will be passed to the testEnvironment
-  // testEnvironmentOptions: {},
+  // testEnvironmentOptions: {
+  //   \\"url\\": \\"http://localhost\\"
+  // },
 
   // Adds a location field to test results
   // testLocationInResults: false,

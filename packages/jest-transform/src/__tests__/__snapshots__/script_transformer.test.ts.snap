@@ -46,7 +46,9 @@ Object {
     "snapshotResolver": undefined,
     "snapshotSerializers": Array [],
     "testEnvironment": "node",
-    "testEnvironmentOptions": Object {},
+    "testEnvironmentOptions": Object {
+      "url": "http://localhost",
+    },
     "testLocationInResults": false,
     "testMatch": Array [],
     "testPathIgnorePatterns": Array [],
