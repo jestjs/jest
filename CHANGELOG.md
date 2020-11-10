@@ -2,9 +2,9 @@
 
 ### Chore & Maintenance
 
-- `[jest-circus]` Fixed issues of beforeAll & afterAll hooks getting executed even if it is inside a skipped `describe` block [#10451](https://github.com/facebook/jest/issues/10451)
-- `[jest-jasmine2]` Fixed issues of beforeAll & afterAll hooks getting executed even if it is inside a skipped `describe` block when it has child `tests` marked as either `only` or `todo` [#10451](https://github.com/facebook/jest/issues/10451)
-- `[jest-jasmine2]` Fixed issues of child `tests` marked with `only` or `todo` getting executed even when it is inside a parent `describe` block with skipped status [#10451](https://github.com/facebook/jest/issues/10451)
+- `[jest-circus]` Fixed the issue of beforeAll & afterAll hooks getting executed even if it is inside a skipped `describe` block [#10451](https://github.com/facebook/jest/issues/10451)
+- `[jest-jasmine2]` Fixed the issue of beforeAll & afterAll hooks getting executed even if it is inside a skipped `describe` block when it has child `tests` marked as either `only` or `todo` [#10451](https://github.com/facebook/jest/issues/10451)
+- `[jest-jasmine2]` Fixed the issues of child `tests` marked with `only` or `todo` getting executed even when it is inside a parent `describe` block with skipped status [#10451](https://github.com/facebook/jest/issues/10451)
 
 ### Features
 
