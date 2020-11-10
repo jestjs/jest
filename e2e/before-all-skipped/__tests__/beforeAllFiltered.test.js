@@ -21,6 +21,13 @@ describe.skip('in describe.skip', () => {
     test('it should be skipped', () => {
       throw new Error('This should never happen');
     });
+
+    // eslint-disable-next-line jest/no-focused-tests
+    test.only('it should be skipped as well', () => {
+      throw new Error('This should never happen');
+    });
+
+    test.todo('it should also be skipped');
   });
 });
 
