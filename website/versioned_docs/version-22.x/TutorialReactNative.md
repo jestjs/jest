@@ -36,6 +36,19 @@ Let's create a [snapshot test](SnapshotTesting.md) for a small intro component w
 import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
+class Intro extends Component {
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.welcome}>Welcome to React Native!</Text>
+        <Text style={styles.instructions}>
+          This is a React Native snapshot test.
+        </Text>
+      </View>
+    );
+  }
+}
+
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
@@ -55,18 +68,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class Intro extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>
-          This is a React Native snapshot test.
-        </Text>
-      </View>
-    );
-  }
-}
+export default Intro;
 ```
 
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
