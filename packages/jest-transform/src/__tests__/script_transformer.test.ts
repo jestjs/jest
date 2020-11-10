@@ -446,18 +446,18 @@ describe('ScriptTransformer', () => {
         incorrectReturnValues.length + correctReturnValues.length,
       );
 
-      await Promise.all([
-        incorrectReturnValues.map(buildPromise).forEach(async promise => {
+      const promisesToReject = incorrectReturnValues
+        .map(buildPromise)
+        .map(promise =>
           // Jest must throw error
-          await expect(promise).rejects.toThrow();
-        }),
-      ]);
+          expect(promise).rejects.toThrow(),
+        );
 
-      await Promise.all([
-        correctReturnValues.map(buildPromise).forEach(async promise => {
-          await expect(promise).resolves.toHaveProperty('code');
-        }),
-      ]);
+      const promisesToResolve = correctReturnValues
+        .map(buildPromise)
+        .map(promise => expect(promise).resolves.toHaveProperty('code'));
+
+      await Promise.all([...promisesToReject, ...promisesToResolve]);
     },
   );
 
