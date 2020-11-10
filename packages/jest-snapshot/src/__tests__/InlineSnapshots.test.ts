@@ -393,10 +393,10 @@ test('saveInlineSnapshots() indents multi-line snapshots with spaces', () => {
 });
 
 test('saveInlineSnapshots() does not re-indent error snapshots', () => {
-  const filename = path.join(__dirname, 'my.test.js');
-  (fs.readFileSync as jest.Mock).mockImplementation(
-    () =>
-      "it('is an error test', () => {\n" +
+  const filename = path.join(dir, 'my.test.js');
+  fs.writeFileSync(
+    filename,
+    "it('is an error test', () => {\n" +
       '  expect(() => {\n' +
       "    throw new Error(['a', 'b'].join('\\n'));\n" +
       '  }).toThrowErrorMatchingInlineSnapshot(`\n' +
@@ -420,12 +420,10 @@ test('saveInlineSnapshots() does not re-indent error snapshots', () => {
         snapshot: `\nObject {\n  a: 'a'\n}\n`,
       },
     ],
-    prettier,
-    babelTraverse,
+    'prettier',
   );
 
-  expect(fs.writeFileSync).toHaveBeenCalledWith(
-    filename,
+  expect(fs.readFileSync(filename, 'utf-8')).toBe(
     "it('is an error test', () => {\n" +
       '  expect(() => {\n' +
       "    throw new Error(['a', 'b'].join('\\n'));\n" +
