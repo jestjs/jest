@@ -9,6 +9,7 @@
 
 import * as path from 'path';
 import chalk = require('chalk');
+import {readdirSync} from 'graceful-fs';
 import slash = require('slash');
 import type {Config} from '@jest/types';
 import type {ModuleMap} from 'jest-haste-map';
@@ -19,7 +20,6 @@ import isBuiltinModule from './isBuiltinModule';
 import nodeModulesPaths from './nodeModulesPaths';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
 import type {ResolverConfig} from './types';
-import {readdirSync} from 'graceful-fs';
 
 type FindNodeModuleConfig = {
   basedir: Config.Path;
