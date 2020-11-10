@@ -221,7 +221,7 @@ describe('resolveModule', () => {
     expect(resolvedWithSlash).toBe(resolvedWithDot);
   });
 
-  it('warns if a module has different casing in the file system', () => {
+  it('warns if a module has different casing on case-insensitive file system', () => {
     let warning: string = '';
     const spy = jest
       .spyOn(global.console, 'warn')
@@ -230,15 +230,33 @@ describe('resolveModule', () => {
       extensions: ['.js'],
     } as ResolverConfig);
     const src = require.resolve('../');
+    const modulePath = require.resolve('../__mocks__/mockJsDependency.js');
+    jest.doMock('resolve', () => ({
+      ...require('resolve'),
+      sync: () => modulePath,
+    }));
     resolver.resolveModule(src, './__mocks__/Mockjsdependency');
-
     expect(
       warning.includes(
-        '/__mocks__/Mockjsdependency.js resolved, but has different casing: ' +
-          require.resolve('../__mocks__/mockJsDependency.js'),
+        `Mockjsdependency.js resolved, but has different casing: ${modulePath}`,
       ),
     ).toBe(true);
     spy.mockRestore();
+    jest.dontMock('resolve');
+  });
+
+  it('suggests similarly named modules if cannot find module on case-sensitive file system', () => {
+    expect(() => {
+      const src = require.resolve('../');
+      const resolver = new Resolver(moduleMap, {
+        extensions: ['.js'],
+        rootDir: src,
+      } as ResolverConfig);
+      jest
+        .spyOn(resolver, 'resolveModuleFromDirIfExists')
+        .mockImplementation(() => null);
+      resolver.resolveModule(src, './__mocks__/Mockjsdependency');
+    }).toThrowError('Did you mean to import one of: mockJsDependency.js');
   });
 });
 
