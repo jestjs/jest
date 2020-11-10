@@ -267,6 +267,10 @@ Run tests with specified reporters. [Reporter options](configuration#reporters-a
 
 `jest --reporters="default" --reporters="jest-junit"`
 
+### `--roots`
+
+A list of paths to directories that Jest should use to search for files in.
+
 ### `--runInBand`
 
 Alias: `-i`. Run all tests serially in the current process, rather than creating a worker pool of child processes that run tests. This can be useful for debugging.
