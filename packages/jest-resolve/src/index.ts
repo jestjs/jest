@@ -254,13 +254,17 @@ class Resolver {
 
   private _getSimilarlyNamedFiles(dirname: string, moduleName: string): string {
     const fullModulePath = path.resolve(dirname, moduleName);
-    const moduleDir = path.dirname(fullModulePath);
-    const files = readdirSync(moduleDir);
-    const uppercaseModuleName = path.basename(moduleName).toUpperCase();
+    const files = readdirSync(path.dirname(fullModulePath));
+    const moduleBaseName = path.basename(moduleName);
+    const uppercaseModuleName = moduleBaseName.toUpperCase();
     return files
-      .filter(
-        file => path.parse(file).name.toUpperCase() === uppercaseModuleName,
-      )
+      .filter(file => {
+        const fileName = path.parse(file).name;
+        return (
+          fileName !== moduleBaseName &&
+          fileName.toUpperCase() === uppercaseModuleName
+        );
+      })
       .join(', ');
   }
 
