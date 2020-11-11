@@ -11,7 +11,6 @@ jest.mock(require.resolve('prettier'), () => require('../__mocks__/prettier'));
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import babelTraverse from '@babel/traverse';
 const prettier = require(require.resolve('prettier'));
 import * as fs from 'graceful-fs';
 import {Frame} from 'jest-message-util';
