@@ -68,7 +68,7 @@ export default function treeProcessor(options: Options): void {
     return (
       node.disabled ||
       node.markedPending ||
-      (!!node.children && node.children.every(hasNoEnabledTest))
+      !!node.children?.every(hasNoEnabledTest)
     );
   }
 
