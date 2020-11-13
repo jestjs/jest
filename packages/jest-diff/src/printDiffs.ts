@@ -10,7 +10,7 @@ import {diffLinesUnified, printDiffLines} from './diffLines';
 import diffStrings from './diffStrings';
 import getAlignedDiffs from './getAlignedDiffs';
 import {normalizeDiffOptions} from './normalizeDiffOptions';
-import type {DiffOptions, DiffOptionsNormalized} from './types';
+import type {DiffOptions} from './types';
 
 const hasCommonDiff = (diffs: Array<Diff>, isMultiline: boolean): boolean => {
   if (isMultiline) {
@@ -23,18 +23,6 @@ const hasCommonDiff = (diffs: Array<Diff>, isMultiline: boolean): boolean => {
 
   return diffs.some(diff => diff[0] === DIFF_EQUAL);
 };
-
-// In GNU diff format, indexes are one-based instead of zero-based.
-export const createPatchMark = (
-  aStart: number,
-  aEnd: number,
-  bStart: number,
-  bEnd: number,
-  {patchColor}: DiffOptionsNormalized,
-): string =>
-  patchColor(
-    `@@ -${aStart + 1},${aEnd - aStart} +${bStart + 1},${bEnd - bStart} @@`,
-  );
 
 // Compare two strings character-by-character.
 // Format as comparison lines in which changed substrings have inverse colors.

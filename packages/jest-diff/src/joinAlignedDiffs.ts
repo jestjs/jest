@@ -88,6 +88,18 @@ const printCommonLine = (
     emptyFirstOrLastLinePlaceholder,
   );
 
+// In GNU diff format, indexes are one-based instead of zero-based.
+const createPatchMark = (
+  aStart: number,
+  aEnd: number,
+  bStart: number,
+  bEnd: number,
+  {patchColor}: DiffOptionsNormalized,
+): string =>
+  patchColor(
+    `@@ -${aStart + 1},${aEnd - aStart} +${bStart + 1},${bEnd - bStart} @@`,
+  );
+
 // jest --no-expand
 //
 // Given array of aligned strings with inverse highlight formatting,
