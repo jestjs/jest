@@ -222,7 +222,7 @@ describe('resolveModule', () => {
   });
 
   it('warns if a module has different casing on case-insensitive file system', () => {
-    let warning: string = '';
+    let warning = '';
     const spy = jest
       .spyOn(global.console, 'warn')
       .mockImplementation(message => (warning = message));
@@ -235,14 +235,17 @@ describe('resolveModule', () => {
       ...require('resolve'),
       sync: () => modulePath,
     }));
-    resolver.resolveModule(src, './__mocks__/Mockjsdependency');
+    try {
+      resolver.resolveModule(src, './__mocks__/Mockjsdependency');
+    } finally {
+      spy.mockRestore();
+      jest.dontMock('resolve');
+    }
     expect(
       warning.includes(
         `Mockjsdependency.js resolved, but has different casing: ${modulePath}`,
       ),
     ).toBe(true);
-    spy.mockRestore();
-    jest.dontMock('resolve');
   });
 
   it('suggests similarly named modules if cannot find module on case-sensitive file system', () => {
