@@ -9,7 +9,7 @@
 
 import * as path from 'path';
 import chalk = require('chalk');
-import {readdirSync} from 'graceful-fs';
+import {existsSync, readdirSync} from 'graceful-fs';
 import slash = require('slash');
 import type {Config} from '@jest/types';
 import type {ModuleMap} from 'jest-haste-map';
@@ -254,7 +254,11 @@ class Resolver {
 
   private _getSimilarlyNamedFiles(dirname: string, moduleName: string): string {
     const fullModulePath = path.resolve(dirname, moduleName);
-    const files = readdirSync(path.dirname(fullModulePath));
+    const moduleParentDir = path.dirname(fullModulePath);
+    if (!existsSync(moduleParentDir)) {
+      return '';
+    }
+    const files = readdirSync(moduleParentDir);
     const moduleBaseName = path.basename(moduleName);
     const uppercaseModuleName = moduleBaseName.toUpperCase();
     return files
