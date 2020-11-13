@@ -66,7 +66,6 @@ const initialOptions: Config.InitialOptions = {
   maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
   moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
-  moduleLoader: '<rootDir>',
   moduleNameMapper: {
     '^React$': '<rootDir>/node_modules/react',
   },
@@ -94,6 +93,7 @@ const initialOptions: Config.InitialOptions = {
   roots: ['<rootDir>'],
   runTestsByPath: false,
   runner: 'jest-runner',
+  runtime: '<rootDir>',
   setupFiles: ['<rootDir>/setup.js'],
   setupFilesAfterEnv: ['<rootDir>/testSetupFile.js'],
   silent: true,

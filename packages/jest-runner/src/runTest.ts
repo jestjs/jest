@@ -112,9 +112,7 @@ async function runTestInternal(
       : require(config.testRunner),
   ).default;
   const Runtime: typeof RuntimeClass = interopRequireDefault(
-    config.moduleLoader
-      ? require(config.moduleLoader)
-      : require('jest-runtime'),
+    config.runtime ? require(config.runtime) : require('jest-runtime'),
   ).default;
 
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;

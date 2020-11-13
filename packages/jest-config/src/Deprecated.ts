@@ -26,6 +26,12 @@ const deprecatedOptions: DeprecatedOptions = {
 
   Please update your configuration.`,
 
+  moduleLoader: () => `  Option ${chalk.bold(
+    '"moduleLoader"',
+  )} has been renamed, to runtime.
+
+  Please update your configuration.`,
+
   preprocessorIgnorePatterns: (options: {
     preprocessorIgnorePatterns?: Array<string>;
   }) => `  Option ${chalk.bold(

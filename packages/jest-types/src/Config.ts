@@ -162,7 +162,6 @@ export type InitialOptions = Partial<{
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
-  moduleLoader: Path;
   moduleNameMapper: {
     [key: string]: string | Array<string>;
   };
@@ -188,6 +187,7 @@ export type InitialOptions = Partial<{
   rootDir: Path;
   roots: Array<Path>;
   runner: string;
+  runtime: Path;
   runTestsByPath: boolean;
   scriptPreprocessor: string;
   setupFiles: Array<Path>;
@@ -337,7 +337,6 @@ export type ProjectConfig = {
   injectGlobals: boolean;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
-  moduleLoader?: Path;
   moduleNameMapper: Array<[string, string]>;
   modulePathIgnorePatterns: Array<string>;
   modulePaths?: Array<string>;
@@ -350,6 +349,7 @@ export type ProjectConfig = {
   rootDir: Path;
   roots: Array<Path>;
   runner: string;
+  runtime?: Path;
   setupFiles: Array<Path>;
   setupFilesAfterEnv: Array<Path>;
   skipFilter: boolean;

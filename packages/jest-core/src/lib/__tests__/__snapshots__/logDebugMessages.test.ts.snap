@@ -21,7 +21,6 @@ exports[`prints the config object 1`] = `
     "moduleFileExtensions": [
       "js"
     ],
-    "moduleLoader": "/test_module_loader_path",
     "moduleNameMapper": [],
     "modulePathIgnorePatterns": [],
     "modulePaths": [],
@@ -35,6 +34,7 @@ exports[`prints the config object 1`] = `
       "path/to/dir/test"
     ],
     "runner": "jest-runner",
+    "runtime": "/test_module_loader_path",
     "setupFiles": [],
     "setupFilesAfterEnv": [],
     "skipFilter": false,
