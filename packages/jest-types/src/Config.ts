@@ -142,7 +142,6 @@ export type InitialOptions = Partial<{
   detectOpenHandles: boolean;
   displayName: string | DisplayName;
   expand: boolean;
-  extraGlobals: Array<string>;
   filter: Path;
   findRelatedTests: boolean;
   forceCoverageMatch: Array<Glob>;
@@ -189,6 +188,7 @@ export type InitialOptions = Partial<{
   runner: string;
   runtime: Path;
   runTestsByPath: boolean;
+  sandboxInjectedGlobals: Array<string>;
   scriptPreprocessor: string;
   setupFiles: Array<Path>;
   setupTestFrameworkScriptFile: Path;
@@ -327,7 +327,6 @@ export type ProjectConfig = {
   detectOpenHandles: boolean;
   displayName?: DisplayName;
   errorOnDeprecated: boolean;
-  extraGlobals: Array<keyof NodeJS.Global>;
   filter?: Path;
   forceCoverageMatch: Array<Glob>;
   globalSetup?: string;
@@ -350,6 +349,7 @@ export type ProjectConfig = {
   roots: Array<Path>;
   runner: string;
   runtime?: Path;
+  sandboxInjectedGlobals: Array<keyof NodeJS.Global>;
   setupFiles: Array<Path>;
   setupFilesAfterEnv: Array<Path>;
   skipFilter: boolean;
