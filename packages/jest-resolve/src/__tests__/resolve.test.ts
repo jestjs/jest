@@ -231,21 +231,17 @@ describe('resolveModule', () => {
     } as ResolverConfig);
     const src = require.resolve('../');
     const modulePath = require.resolve('../__mocks__/mockJsDependency.js');
-    jest.doMock('resolve', () => ({
-      ...require('resolve'),
-      sync: () => modulePath,
-    }));
+    jest
+      .spyOn(resolver, 'resolveModuleFromDirIfExists')
+      .mockImplementation(() => modulePath);
     try {
       resolver.resolveModule(src, './__mocks__/Mockjsdependency');
     } finally {
       spy.mockRestore();
-      jest.dontMock('resolve');
     }
-    expect(
-      warning.includes(
-        `Mockjsdependency.js resolved, but has different casing: ${modulePath}`,
-      ),
-    ).toBe(true);
+    expect(warning).toBe(
+      'Module Mockjsdependency resolved, but has different casing: mockJsDependency',
+    );
   });
 
   it('suggests similarly named modules if cannot find module on case-sensitive file system', () => {

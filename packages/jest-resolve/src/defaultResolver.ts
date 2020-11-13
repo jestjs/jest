@@ -112,12 +112,6 @@ function realpathCached(path: Config.Path): Config.Path {
   if (path !== result) {
     // also cache the result in case it's ever referenced directly - no reason to `realpath` that as well
     checkedRealpathPaths.set(result, result);
-
-    if (path.toUpperCase() === result.toUpperCase()) {
-      console.warn(
-        `Module ${path} resolved, but has different casing: ${result}`,
-      );
-    }
   }
 
   return result;

@@ -231,7 +231,21 @@ class Resolver {
     const module =
       this.resolveStubModuleName(from, moduleName) ||
       this.resolveModuleFromDirIfExists(dirname, moduleName, options);
-    if (module) return module;
+    if (module) {
+      const resolvedModuleName = path.parse(module).name;
+      const requestedModuleName = path.parse(moduleName).name;
+
+      if (
+        resolvedModuleName !== requestedModuleName &&
+        resolvedModuleName.toUpperCase() === requestedModuleName.toUpperCase()
+      ) {
+        console.warn(
+          `Module ${requestedModuleName} resolved, but has different casing: ${resolvedModuleName}`,
+        );
+      }
+
+      return module;
+    }
 
     // 5. Throw an error if the module could not be found. `resolve.sync` only
     // produces an error based on the dirname but we have the actual current
