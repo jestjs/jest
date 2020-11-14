@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// TODO this is annoying
-// (but a general require(require.resolve()) problem)
 jest.mock(require.resolve('prettier'), () => require('../__mocks__/prettier'));
 
 import {tmpdir} from 'os';

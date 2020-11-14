@@ -7,7 +7,6 @@
 
 import * as path from 'path';
 import type {PluginItem} from '@babel/core';
-import type traverse from '@babel/traverse';
 import type {Expression, File, Program} from '@babel/types';
 import * as fs from 'graceful-fs';
 import type {BuiltInParserName as PrettierParserName} from 'prettier';
@@ -16,27 +15,18 @@ import type {Config} from '@jest/types';
 import type {Frame} from 'jest-message-util';
 import {escapeBacktickString} from './utils';
 
-// TODO ignore this mess - with a Babel plugin, these will be MUCH, MUCH nicer for TS
-type BabelTraverse = typeof traverse;
-const babelTraverse: BabelTraverse = require(require.resolve(
+const babelTraverse = (requireOutside(
   '@babel/traverse',
-  {
-    [Symbol.for('OUTSIDE_JEST_VM_RESOLVE_OPTION')]: true,
-  } as any,
-)).default;
-const generate: typeof import('@babel/generator')['default'] = require(require.resolve(
+) as typeof import('@babel/traverse')).default;
+const generate = (requireOutside(
   '@babel/generator',
-  {[Symbol.for('OUTSIDE_JEST_VM_RESOLVE_OPTION')]: true} as any,
-)).default;
-const {file, templateElement, templateLiteral} = require(require.resolve(
+) as typeof import('@babel/generator')).default;
+const {file, templateElement, templateLiteral} = requireOutside(
   '@babel/types',
-  {
-    [Symbol.for('OUTSIDE_JEST_VM_RESOLVE_OPTION')]: true,
-  } as any,
-));
-const {parseSync} = require(require.resolve('@babel/core', {
-  [Symbol.for('OUTSIDE_JEST_VM_RESOLVE_OPTION')]: true,
-} as any)) as typeof import('@babel/core');
+) as typeof import('@babel/types');
+const {parseSync} = requireOutside(
+  '@babel/core',
+) as typeof import('@babel/core');
 
 export type InlineSnapshot = {
   snapshot: string;
@@ -48,11 +38,8 @@ export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
   prettierPath: Config.Path,
 ): void {
-  // TODO same as above
   const prettier = prettierPath
-    ? (require(require.resolve(prettierPath, {
-        [Symbol.for('OUTSIDE_JEST_VM_RESOLVE_OPTION')]: true,
-      } as any)) as typeof import('prettier'))
+    ? (requireOutside(prettierPath) as typeof import('prettier'))
     : null;
 
   const snapshotsByFile = groupSnapshotsByFile(snapshots);
