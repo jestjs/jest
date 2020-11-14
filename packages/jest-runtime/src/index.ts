@@ -92,11 +92,11 @@ const defaultTransformOptions: InternalModuleOptions = {
 type InitialModule = Omit<Module, 'require' | 'parent' | 'paths'>;
 type ModuleRegistry = Map<string, InitialModule | Module>;
 
-const OUTSIDE_JEST_VM_RESOLVE_OPTION = Symbol.for(
-  'OUTSIDE_JEST_VM_RESOLVE_OPTION',
+const JEST_RESOLVE_OUTSIDE_VM_OPTION = Symbol.for(
+  'jest-resolve-outside-vm-option',
 );
 type ResolveOptions = Parameters<typeof require.resolve>[1] & {
-  [OUTSIDE_JEST_VM_RESOLVE_OPTION]?: true;
+  [JEST_RESOLVE_OUTSIDE_VM_OPTION]?: true;
 };
 
 type StringMap = Map<string, string>;
@@ -1402,7 +1402,7 @@ export default class Runtime {
         resolveOptions,
       );
       if (
-        resolveOptions?.[OUTSIDE_JEST_VM_RESOLVE_OPTION] &&
+        resolveOptions?.[JEST_RESOLVE_OUTSIDE_VM_OPTION] &&
         options?.isInternalModule
       ) {
         return createOutsideJestVmPath(resolved);
