@@ -68,7 +68,7 @@ const _runTestsForDescribeBlock = async (
     }
   }
 
-  if (!describeBlock.errors.length) {
+  if (describeBlock.errors.length === 0) {
     // skip test retry if any beforeAll setup fails
     // Re-run failed tests n-times if configured
     for (const test of deferredRetryTests) {
