@@ -35,7 +35,7 @@ const _runTestsForDescribeBlock = async (
   const {beforeAll, afterAll} = getAllHooksForDescribe(describeBlock);
 
   for (const hook of beforeAll) {
-    if (describeBlock.errors.length) {
+    if (describeBlock.errors.length > 0) {
       // discontinue running beforeAll hooks on failure
       break;
     }
