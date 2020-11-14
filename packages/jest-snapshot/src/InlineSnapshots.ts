@@ -15,15 +15,19 @@ import type {Config} from '@jest/types';
 import type {Frame} from 'jest-message-util';
 import {escapeBacktickString} from './utils';
 
+// @ts-expect-error requireOutside Babel transform
 const babelTraverse = (requireOutside(
   '@babel/traverse',
 ) as typeof import('@babel/traverse')).default;
+// @ts-expect-error requireOutside Babel transform
 const generate = (requireOutside(
   '@babel/generator',
 ) as typeof import('@babel/generator')).default;
+// @ts-expect-error requireOutside Babel transform
 const {file, templateElement, templateLiteral} = requireOutside(
   '@babel/types',
 ) as typeof import('@babel/types');
+// @ts-expect-error requireOutside Babel transform
 const {parseSync} = requireOutside(
   '@babel/core',
 ) as typeof import('@babel/core');
@@ -39,7 +43,8 @@ export function saveInlineSnapshots(
   prettierPath: Config.Path,
 ): void {
   const prettier = prettierPath
-    ? (requireOutside(prettierPath) as typeof import('prettier'))
+    ? // @ts-expect-error requireOutside Babel transform
+      (requireOutside(prettierPath) as typeof import('prettier'))
     : null;
 
   const snapshotsByFile = groupSnapshotsByFile(snapshots);
