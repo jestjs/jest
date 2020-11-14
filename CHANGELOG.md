@@ -21,6 +21,7 @@
 
 - `[*]` [**BREAKING**] Only support Node LTS releases and Node 15 ([#10685](https://github.com/facebook/jest/pull/10685))
 - `[*]` [**BREAKING**] Add `exports` field to all `package.json`s ([#9921](https://github.com/facebook/jest/pull/9921))
+- `[*]` Make it easier for Jest's packages to use the VM escape hatch ([#10824](https://github.com/facebook/jest/pull/10824))
 - `[jest-config]` [**BREAKING**] Remove `enabledTestsMap` config, use `filter` instead ([#10787](https://github.com/facebook/jest/pull/10787))
 - `[jest-resolve]` [**BREAKING**] Migrate to ESM ([#10688](https://github.com/facebook/jest/pull/10688))
 
