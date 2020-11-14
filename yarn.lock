@@ -3763,7 +3763,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prettier@npm:*, @types/prettier@npm:^2.0.0":
+"@types/prettier@npm:*, @types/prettier@npm:^2.0.0, @types/prettier@npm:^2.1.5":
   version: 2.1.5
   resolution: "@types/prettier@npm:2.1.5"
   checksum: bc6271235d881fa49b2f03e8e9242a7be8ecbcdcffeb7e31347afd0343f5f5e372ce65fe257e44254156737935c9249c9722cbe991dfad9aab72056c6acdbdaa
@@ -12263,7 +12263,7 @@ fsevents@~2.1.2:
     "@types/babel__traverse": ^7.0.4
     "@types/graceful-fs": ^4.1.3
     "@types/natural-compare": ^1.4.0
-    "@types/prettier": ^2.0.0
+    "@types/prettier": ^2.1.5
     "@types/semver": ^7.1.0
     ansi-regex: ^5.0.0
     ansi-styles: ^4.2.0
@@ -12278,7 +12278,7 @@ fsevents@~2.1.2:
     jest-message-util: ^26.6.2
     jest-resolve: ^26.6.2
     natural-compare: ^1.4.0
-    prettier: ^1.19.1
+    prettier: ^2.0.0
     pretty-format: ^26.6.2
     semver: ^7.3.2
   peerDependencies:
@@ -16210,16 +16210,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"prettier@npm:^1.19.1":
-  version: 1.19.1
-  resolution: "prettier@npm:1.19.1"
-  bin:
-    prettier: ./bin-prettier.js
-  checksum: e5fcdfe5e159ef5c5480245353cf8fb5bbd1b8afff266f31f281641825238f8a645e58472f77cd75a09ccc45d44c335466e8d901ec138c2bda05e1bd6ea1077c
-  languageName: node
-  linkType: hard
-
-"prettier@npm:^2.0.1, prettier@npm:^2.1.1":
+"prettier@npm:^2.0.0, prettier@npm:^2.0.1, prettier@npm:^2.1.1":
   version: 2.1.2
   resolution: "prettier@npm:2.1.2"
   bin:
