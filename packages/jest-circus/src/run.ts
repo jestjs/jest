@@ -114,7 +114,7 @@ const _runTest = async (test: Circus.TestEntry): Promise<void> => {
   const {afterEach, beforeEach} = getEachHooksForTest(test);
 
   for (const hook of beforeEach) {
-    if (test.errors.length) {
+    if (test.errors.length > 0) {
       // If any of the before hooks failed already, we don't run any
       // hooks after that.
       break;
@@ -122,7 +122,9 @@ const _runTest = async (test: Circus.TestEntry): Promise<void> => {
     await _callCircusHook({hook, test, testContext});
   }
 
-  await _callCircusTest(test, testContext);
+  if (test.errors.length === 0) {
+    await _callCircusTest(test, testContext);
+  }
 
   if (test.parent.errors.length === 0) {
     // skip running afterEach hooks if there is a describe block setup failure.
@@ -170,10 +172,6 @@ const _callCircusTest = async (
   await dispatch({name: 'test_fn_start', test});
   const timeout = test.timeout || getState().testTimeout;
   invariant(test.fn, `Tests with no 'fn' should have 'mode' set to 'skipped'`);
-
-  if (test.errors.length) {
-    return; // We don't run the test if there's already an error in before hooks.
-  }
 
   try {
     await callAsyncCircusFn(test, testContext, {

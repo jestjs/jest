@@ -14,7 +14,6 @@ hook_start: beforeAll
 > beforeAll 1 runs
 hook_failure: beforeAll
 test_start: test 1
-test_fn_start: test 1
 test_done: test 1
 run_describe_finish: test suite beforeAll
 run_describe_finish: ROOT_DESCRIBE_BLOCK
@@ -40,11 +39,9 @@ hook_start: beforeAll
 hook_failure: beforeAll
 run_describe_start: test suite nested
 test_start: test 1
-test_fn_start: test 1
 test_done: test 1
 run_describe_finish: test suite nested
 test_start: test 2
-test_fn_start: test 2
 test_done: test 2
 run_describe_finish: test suite beforeAll
 run_describe_finish: ROOT_DESCRIBE_BLOCK
@@ -66,7 +63,6 @@ hook_start: beforeAll
 > beforeAll 1 runs
 hook_failure: beforeAll
 test_start: test 1
-test_fn_start: test 1
 test_done: test 1
 run_describe_finish: test suite beforeAll
 run_describe_finish: ROOT_DESCRIBE_BLOCK
@@ -193,7 +189,6 @@ test_start: 2nd describe test
 hook_start: beforeEach
 > 2nd describe beforeEach that throws
 hook_failure: beforeEach
-test_fn_start: 2nd describe test
 test_done: 2nd describe test
 run_describe_finish: 2nd describe
 run_describe_finish: ROOT_DESCRIBE_BLOCK
