@@ -8,8 +8,8 @@
 
 import type {Config} from '@jest/types';
 import {constants} from 'jest-config';
-import {check} from '../../cli/args';
 import {buildArgv} from '../../cli';
+import {check} from '../../cli/args';
 
 describe('check', () => {
   it('returns true if the arguments are valid', () => {
@@ -28,6 +28,13 @@ describe('check', () => {
     const argv = {onlyChanged: true, watchAll: true} as Config.Argv;
     expect(() => check(argv)).toThrow(
       'Both --onlyChanged and --watchAll were specified',
+    );
+  });
+
+  it('raises an exception if onlyFailures and watchAll are both specified', () => {
+    const argv = {onlyFailures: true, watchAll: true} as Config.Argv;
+    expect(() => check(argv)).toThrow(
+      'Both --onlyFailures and --watchAll were specified',
     );
   });
 

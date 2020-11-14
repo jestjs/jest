@@ -10,13 +10,13 @@ import ansiEscapes = require('ansi-escapes');
 import chalk = require('chalk');
 import exit = require('exit');
 import slash = require('slash');
+import type {Config} from '@jest/types';
 import HasteMap = require('jest-haste-map');
 import {formatExecError} from 'jest-message-util';
+import Resolver from 'jest-resolve';
+import type {Context} from 'jest-runtime';
 import {isInteractive, preRunMessage, specialChars} from 'jest-util';
 import {ValidationError} from 'jest-validate';
-import type {Context} from 'jest-runtime';
-import Resolver = require('jest-resolve');
-import type {Config} from '@jest/types';
 import {
   AllowedConfigOptions,
   JestHook,
@@ -24,24 +24,24 @@ import {
   WatchPlugin,
   WatchPluginClass,
 } from 'jest-watcher';
-import getChangedFilesPromise from './getChangedFilesPromise';
-import isValidPath from './lib/is_valid_path';
-import createContext from './lib/create_context';
-import runJest from './runJest';
-import updateGlobalConfig from './lib/update_global_config';
+import FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
 import TestWatcher from './TestWatcher';
-import FailedTestsCache from './FailedTestsCache';
-import TestPathPatternPlugin from './plugins/test_path_pattern';
-import TestNamePatternPlugin from './plugins/test_name_pattern';
-import UpdateSnapshotsPlugin from './plugins/update_snapshots';
-import UpdateSnapshotsInteractivePlugin from './plugins/update_snapshots_interactive';
-import QuitPlugin from './plugins/quit';
+import getChangedFilesPromise from './getChangedFilesPromise';
+import activeFilters from './lib/activeFiltersMessage';
+import createContext from './lib/createContext';
+import isValidPath from './lib/isValidPath';
+import updateGlobalConfig from './lib/updateGlobalConfig';
 import {
   filterInteractivePlugins,
   getSortedUsageRows,
-} from './lib/watch_plugins_helpers';
-import activeFilters from './lib/active_filters_message';
+} from './lib/watchPluginsHelpers';
+import QuitPlugin from './plugins/Quit';
+import TestNamePatternPlugin from './plugins/TestNamePattern';
+import TestPathPatternPlugin from './plugins/TestPathPattern';
+import UpdateSnapshotsPlugin from './plugins/UpdateSnapshots';
+import UpdateSnapshotsInteractivePlugin from './plugins/UpdateSnapshotsInteractive';
+import runJest from './runJest';
 import type {Filter} from './types';
 
 type ReservedInfo = {
@@ -107,7 +107,9 @@ export default function watch(
     collectCoverageOnlyFrom,
     coverageDirectory,
     coverageReporters,
+    findRelatedTests,
     mode,
+    nonFlagArgs,
     notify,
     notifyMode,
     onlyFailures,
@@ -126,7 +128,9 @@ export default function watch(
       collectCoverageOnlyFrom,
       coverageDirectory,
       coverageReporters,
+      findRelatedTests,
       mode,
+      nonFlagArgs,
       notify,
       notifyMode,
       onlyFailures,

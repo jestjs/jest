@@ -6,7 +6,6 @@
  */
 
 import {isMainThread, parentPort} from 'worker_threads';
-
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_END,

@@ -6,10 +6,10 @@
  */
 
 import * as path from 'path';
+import micromatch = require('micromatch');
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import {globsToMatcher, replacePathSepForGlob} from 'jest-util';
-import micromatch = require('micromatch');
 import type {ShouldInstrumentOptions} from './types';
 
 const MOCKS_PATTERN = new RegExp(

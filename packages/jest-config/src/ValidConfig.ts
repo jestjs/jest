@@ -77,6 +77,7 @@ const initialOptions: Config.InitialOptions = {
   notify: false,
   notifyMode: 'failure-change',
   onlyChanged: false,
+  onlyFailures: false,
   preset: 'react-native',
   prettierPath: '<rootDir>/node_modules/prettier',
   projects: ['project-a', 'project-b/'],
@@ -127,6 +128,7 @@ const initialOptions: Config.InitialOptions = {
   useStderr: false,
   verbose: false,
   watch: false,
+  watchAll: false,
   watchPathIgnorePatterns: ['<rootDir>/e2e/'],
   watchPlugins: [
     'path/to/yourWatchPlugin',

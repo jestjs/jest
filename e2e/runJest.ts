@@ -8,11 +8,11 @@
 
 import * as path from 'path';
 import {Writable} from 'stream';
-import * as fs from 'graceful-fs';
 import execa = require('execa');
-import type {Config} from '@jest/types';
-import type {FormattedTestResults} from '@jest/test-result';
+import * as fs from 'graceful-fs';
 import stripAnsi = require('strip-ansi');
+import type {FormattedTestResults} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import {normalizeIcons} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');

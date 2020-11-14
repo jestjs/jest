@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {ValidationOptions} from './types';
 import defaultConfig from './defaultConfig';
+import type {ValidationOptions} from './types';
 import {ValidationError} from './utils';
 
 let hasDeprecationWarnings = false;

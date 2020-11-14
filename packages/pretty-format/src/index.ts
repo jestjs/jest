@@ -8,15 +8,12 @@
 /* eslint-disable local/ban-types-eventually */
 
 import style = require('ansi-styles');
-import type * as PrettyFormat from './types';
-
 import {
   printIteratorEntries,
   printIteratorValues,
   printListItems,
   printObjectProperties,
 } from './collections';
-
 import AsymmetricMatcher from './plugins/AsymmetricMatcher';
 import ConvertAnsi from './plugins/ConvertAnsi';
 import DOMCollection from './plugins/DOMCollection';
@@ -24,6 +21,7 @@ import DOMElement from './plugins/DOMElement';
 import Immutable from './plugins/Immutable';
 import ReactElement from './plugins/ReactElement';
 import ReactTestComponent from './plugins/ReactTestComponent';
+import type * as PrettyFormat from './types';
 
 const toString = Object.prototype.toString;
 const toISOString = Date.prototype.toISOString;
@@ -530,7 +528,7 @@ prettyFormat.plugins = {
   ReactTestComponent,
 };
 
-namespace prettyFormat {
+declare namespace prettyFormat {
   export type Colors = PrettyFormat.Colors;
   export type Config = PrettyFormat.Config;
   export type Options = PrettyFormat.Options;

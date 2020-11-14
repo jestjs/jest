@@ -34,13 +34,13 @@ import {AssertionError} from 'assert';
 import chalk = require('chalk');
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack, isPromise} from 'jest-util';
+import assertionErrorMessage from '../assertionErrorMessage';
+import isError from '../isError';
 import queueRunner, {
   Options as QueueRunnerOptions,
   QueueableFn,
 } from '../queueRunner';
 import treeProcessor, {TreeNode} from '../treeProcessor';
-import isError from '../isError';
-import assertionErrorMessage from '../assertionErrorMessage';
 import type {
   AssertionErrorWithStack,
   Jasmine,

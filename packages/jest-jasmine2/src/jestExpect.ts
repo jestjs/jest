@@ -7,8 +7,8 @@
 
 /* eslint-disable local/prefer-spread-eventually */
 
-import expect = require('expect');
 import type {Global} from '@jest/types';
+import expect = require('expect');
 import {
   addSerializer,
   toMatchInlineSnapshot,

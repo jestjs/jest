@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {OptionsReceived} from '../types';
-
 import prettyFormat from '../';
+import {OptionsReceived} from '../types';
 
 const {AsymmetricMatcher} = prettyFormat.plugins;
 let options: OptionsReceived;

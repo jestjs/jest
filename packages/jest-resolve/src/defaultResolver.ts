@@ -6,10 +6,10 @@
  */
 
 import * as fs from 'graceful-fs';
-import {Opts as ResolveOpts, sync as resolveSync} from 'resolve';
 import pnpResolver from 'jest-pnp-resolver';
-import {tryRealpath} from 'jest-util';
+import {Opts as ResolveOpts, sync as resolveSync} from 'resolve';
 import type {Config} from '@jest/types';
+import {tryRealpath} from 'jest-util';
 
 type ResolverOptions = {
   allowPnp?: boolean;
@@ -23,11 +23,11 @@ type ResolverOptions = {
   packageFilter?: ResolveOpts['packageFilter'];
 };
 
+// https://github.com/facebook/jest/pull/10617
 declare global {
   namespace NodeJS {
     export interface ProcessVersions {
-      // the "pnp" version named isn't in DefinitelyTyped
-      pnp?: unknown;
+      pnp?: any;
     }
   }
 }

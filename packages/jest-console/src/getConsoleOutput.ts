@@ -6,12 +6,12 @@
  */
 
 import chalk = require('chalk');
+import type {Config} from '@jest/types';
 import {
   StackTraceConfig,
   StackTraceOptions,
   formatStackTrace,
 } from 'jest-message-util';
-import type {Config} from '@jest/types';
 import type {ConsoleBuffer} from './types';
 
 export default (

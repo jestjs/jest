@@ -6,7 +6,6 @@
  */
 
 import type {Config, Printer, Refs} from '../../types';
-
 import escapeHTML from './escapeHTML';
 
 // Return empty string if keys is empty.

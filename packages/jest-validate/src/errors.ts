@@ -7,9 +7,9 @@
 
 import chalk = require('chalk');
 import getType = require('jest-get-type');
-import {ERROR, ValidationError, formatPrettyObject} from './utils';
 import {getValues} from './condition';
 import type {ValidationOptions} from './types';
+import {ERROR, ValidationError, formatPrettyObject} from './utils';
 
 export const errorMessage = (
   option: string,

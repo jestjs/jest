@@ -5,14 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import path from 'path';
 import os from 'os';
-import {shouldInstrument} from '@jest/transform';
+import path from 'path';
 import istanbulCoverage from 'istanbul-lib-coverage';
 import libSourceMaps from 'istanbul-lib-source-maps';
+import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
+import {shouldInstrument} from '@jest/transform';
 import generateEmptyCoverage from '../generateEmptyCoverage';
-
-import {makeGlobalConfig, makeProjectConfig} from '../../../../TestUtils';
 
 jest.mock('@jest/transform', () => ({
   ...jest.requireActual('@jest/transform'),

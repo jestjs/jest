@@ -9,15 +9,13 @@
 import crypto from 'crypto';
 import path from 'path';
 import {escapeStrForRegex} from 'jest-regex-util';
-import normalize from '../normalize';
 import Defaults from '../Defaults';
-
 import {DEFAULT_JS_PATTERN} from '../constants';
+import normalize from '../normalize';
 
 const DEFAULT_CSS_PATTERN = '\\.(css)$';
 
 jest
-  .mock('jest-resolve')
   .mock('path', () => jest.requireActual('path').posix)
   .mock('graceful-fs', () => {
     const realFs = jest.requireActual('fs');
@@ -57,7 +55,7 @@ beforeEach(() => {
   expectedPathAbs = path.join(root, 'an', 'abs', 'path');
   expectedPathAbsAnother = path.join(root, 'another', 'abs', 'path');
 
-  require('jest-resolve').findNodeModule = findNodeModule;
+  require('jest-resolve').default.findNodeModule = findNodeModule;
 
   jest.spyOn(console, 'warn');
 });
@@ -306,7 +304,7 @@ describe('roots', () => {
 describe('transform', () => {
   let Resolver;
   beforeEach(() => {
-    Resolver = require('jest-resolve');
+    Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name => name);
   });
 
@@ -352,7 +350,7 @@ describe('transform', () => {
 describe('haste', () => {
   let Resolver;
   beforeEach(() => {
-    Resolver = require('jest-resolve');
+    Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name => name);
   });
 
@@ -376,7 +374,7 @@ describe('haste', () => {
 describe('setupFilesAfterEnv', () => {
   let Resolver;
   beforeEach(() => {
-    Resolver = require('jest-resolve');
+    Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name =>
       name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
     );
@@ -424,7 +422,7 @@ describe('setupTestFrameworkScriptFile', () => {
 
   beforeEach(() => {
     console.warn.mockImplementation(() => {});
-    Resolver = require('jest-resolve');
+    Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name =>
       name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
     );
@@ -673,7 +671,7 @@ describe('testRunner', () => {
   });
 
   it('is overwritten by argv', () => {
-    const Resolver = require('jest-resolve');
+    const Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name => name);
     const {options} = normalize(
       {
@@ -704,7 +702,7 @@ describe('coverageDirectory', () => {
 describe('testEnvironment', () => {
   let Resolver;
   beforeEach(() => {
-    Resolver = require('jest-resolve');
+    Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name => {
       if (['jsdom', 'jest-environment-jsdom'].includes(name)) {
         return `node_modules/${name}`;
@@ -758,7 +756,7 @@ describe('testEnvironment', () => {
 describe('babel-jest', () => {
   let Resolver;
   beforeEach(() => {
-    Resolver = require('jest-resolve');
+    Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name =>
       name.indexOf('babel-jest') === -1
         ? path.sep + 'node_modules' + path.sep + name
@@ -799,7 +797,7 @@ describe('Upgrade help', () => {
   beforeEach(() => {
     console.warn.mockImplementation(() => {});
 
-    const Resolver = require('jest-resolve');
+    const Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name => {
       if (name == 'bar/baz') {
         return '/node_modules/bar/baz';
@@ -944,7 +942,7 @@ describe('moduleDirectories', () => {
 
 describe('preset', () => {
   beforeEach(() => {
-    const Resolver = require('jest-resolve');
+    const Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name => {
       if (name === 'react-native/jest-preset') {
         return '/node_modules/react-native/jest-preset.json';
@@ -954,7 +952,7 @@ describe('preset', () => {
         return '/node_modules/react-native-js-preset/jest-preset.js';
       }
 
-      if (name === 'doesnt-exist') {
+      if (name.includes('doesnt-exist')) {
         return null;
       }
 
@@ -1111,7 +1109,7 @@ describe('preset', () => {
   });
 
   test('searches for .json and .js preset files', () => {
-    const Resolver = require('jest-resolve');
+    const Resolver = require('jest-resolve').default;
 
     normalize(
       {
@@ -1225,7 +1223,7 @@ describe('preset', () => {
 
 describe('preset with globals', () => {
   beforeEach(() => {
-    const Resolver = require('jest-resolve');
+    const Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name => {
       if (name === 'global-foo/jest-preset') {
         return '/node_modules/global-foo/jest-preset.json';
@@ -1286,7 +1284,7 @@ describe.each(['setupFiles', 'setupFilesAfterEnv'])(
   configKey => {
     let Resolver;
     beforeEach(() => {
-      Resolver = require('jest-resolve');
+      Resolver = require('jest-resolve').default;
       Resolver.findNodeModule = jest.fn(
         name => path.sep + 'node_modules' + path.sep + name,
       );
@@ -1327,7 +1325,7 @@ describe.each(['setupFiles', 'setupFilesAfterEnv'])(
 describe('runner', () => {
   let Resolver;
   beforeEach(() => {
-    Resolver = require('jest-resolve');
+    Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name => {
       if (['eslint', 'jest-runner-eslint', 'my-runner-foo'].includes(name)) {
         return `node_modules/${name}`;
@@ -1385,7 +1383,7 @@ describe('runner', () => {
 describe('watchPlugins', () => {
   let Resolver;
   beforeEach(() => {
-    Resolver = require('jest-resolve');
+    Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name => {
       if (
         ['typeahead', 'jest-watch-typeahead', 'my-watch-plugin'].includes(name)
@@ -1519,7 +1517,7 @@ describe('testPathPattern', () => {
       describe('win32', () => {
         beforeEach(() => {
           jest.mock('path', () => jest.requireActual('path').win32);
-          require('jest-resolve').findNodeModule = findNodeModule;
+          require('jest-resolve').default.findNodeModule = findNodeModule;
         });
 
         afterEach(() => {

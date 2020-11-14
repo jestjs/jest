@@ -5,9 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+const {sync: readPkg} = require('read-pkg');
+const {getPackages} = require('./scripts/buildUtils');
+
+const internalPackages = getPackages()
+  .map(packageDir => {
+    const pkg = readPkg({cwd: packageDir});
+
+    return pkg.name;
+  })
+  .sort();
+
 module.exports = {
   extends: [
-    './packages/eslint-config-fb-strict/index.js',
+    'fb-strict',
     'plugin:import/errors',
     'plugin:import/typescript',
     'prettier',
@@ -18,7 +29,6 @@ module.exports = {
     {
       extends: ['plugin:@typescript-eslint/eslint-recommended'],
       files: ['*.ts', '*.tsx'],
-      parser: '@typescript-eslint/parser',
       plugins: ['@typescript-eslint/eslint-plugin', 'local'],
       rules: {
         '@typescript-eslint/array-type': ['error', {default: 'generic'}],
@@ -82,7 +92,7 @@ module.exports = {
         'packages/jest-core/src/ReporterDispatcher.ts',
         'packages/jest-core/src/TestScheduler.ts',
         'packages/jest-core/src/collectHandles.ts',
-        'packages/jest-core/src/plugins/update_snapshots_interactive.ts',
+        'packages/jest-core/src/plugins/UpdateSnapshotsInteractive.ts',
         'packages/jest-fake-timers/src/legacyFakeTimers.ts',
         'packages/jest-haste-map/src/index.ts',
         'packages/jest-haste-map/src/lib/FSEventsWatcher.ts',
@@ -223,7 +233,7 @@ module.exports = {
       },
     },
   ],
-  parser: 'babel-eslint',
+  parser: '@typescript-eslint/parser',
   plugins: ['markdown', 'import', 'prettier', 'eslint-comments'],
   rules: {
     'arrow-body-style': 'error',
@@ -244,11 +254,29 @@ module.exports = {
           'scripts/**',
           'babel.config.js',
           'testSetupFile.js',
+          '.eslintrc.js',
         ],
       },
     ],
     'import/no-unresolved': ['error', {ignore: ['fsevents']}],
-    'import/order': 'error',
+    'import/order': [
+      'error',
+      {
+        alphabetize: {
+          order: 'asc',
+        },
+        // this is the default order except for added `internal` in the middle
+        groups: [
+          'builtin',
+          'external',
+          'internal',
+          'parent',
+          'sibling',
+          'index',
+        ],
+        'newlines-between': 'never',
+      },
+    ],
     'no-console': 'off',
     'no-restricted-imports': [
       'error',
@@ -263,5 +291,9 @@ module.exports = {
   },
   settings: {
     'import/ignore': ['react-native'],
+    // using `new RegExp` makes sure to escape `/`
+    'import/internal-regex': new RegExp(
+      internalPackages.map(pkg => `^${pkg}$`).join('|'),
+    ).source,
   },
 };

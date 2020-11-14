@@ -6,18 +6,17 @@
  */
 
 import * as path from 'path';
-import type {Config, Global} from '@jest/types';
-import type {AssertionResult, TestResult} from '@jest/test-result';
 import type {JestEnvironment} from '@jest/environment';
-import type {SnapshotStateType} from 'jest-snapshot';
-import type {RuntimeType as Runtime} from 'jest-runtime';
-
 import {getCallsite} from '@jest/source-map';
+import type {AssertionResult, TestResult} from '@jest/test-result';
+import type {Config, Global} from '@jest/types';
+import type Runtime from 'jest-runtime';
+import type {SnapshotStateType} from 'jest-snapshot';
 import installEach from './each';
 import {installErrorOnPrivate} from './errorOnPrivate';
-import JasmineReporter from './reporter';
-import jasmineAsyncInstall from './jasmineAsyncInstall';
 import type Spec from './jasmine/Spec';
+import jasmineAsyncInstall from './jasmineAsyncInstall';
+import JasmineReporter from './reporter';
 import type {Jasmine as JestJasmine} from './types';
 
 const JASMINE = require.resolve('./jasmine/jasmineLight');
@@ -160,14 +159,7 @@ async function jasmine2(
     }
   }
 
-  if (globalConfig.enabledTestsMap) {
-    env.specFilter = (spec: Spec) => {
-      const suiteMap =
-        globalConfig.enabledTestsMap &&
-        globalConfig.enabledTestsMap[spec.result.testPath];
-      return (suiteMap && suiteMap[spec.result.fullName]) || false;
-    };
-  } else if (globalConfig.testNamePattern) {
+  if (globalConfig.testNamePattern) {
     const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');
     env.specFilter = (spec: Spec) => testNameRegex.test(spec.getFullName());
   }
@@ -220,7 +212,7 @@ const addSnapshotData = (
   return results;
 };
 
-namespace jasmine2 {
+declare namespace jasmine2 {
   export type Jasmine = JestJasmine;
 }
 

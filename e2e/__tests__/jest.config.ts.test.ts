@@ -7,10 +7,10 @@
 
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import runJest from '../runJest';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
-const DIR = path.resolve(__dirname, '../jest.config.ts');
+const DIR = path.resolve(__dirname, '../jest-config-ts');
 
 beforeEach(() => cleanup(DIR));
 afterAll(() => cleanup(DIR));
@@ -20,6 +20,21 @@ test('works with jest.config.ts', () => {
     '__tests__/a-giraffe.js': `test('giraffe', () => expect(1).toBe(1));`,
     'jest.config.ts': `export default {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js'};`,
     'package.json': '{}',
+  });
+
+  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);
+  const {rest, summary} = extractSummary(stderr);
+  expect(exitCode).toBe(0);
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
+});
+
+test('works with tsconfig.json', () => {
+  writeFiles(DIR, {
+    '__tests__/a-giraffe.js': `test('giraffe', () => expect(1).toBe(1));`,
+    'jest.config.ts': `export default {testEnvironment: 'jest-environment-node', testRegex: '.*-giraffe.js'};`,
+    'package.json': '{}',
+    'tsconfig.json': '{ "compilerOptions": { "module": "esnext" } }',
   });
 
   const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false']);

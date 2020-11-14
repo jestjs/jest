@@ -6,9 +6,8 @@
  */
 
 import type {Circus} from '@jest/types';
-import {RETRY_TIMES} from './types';
-
 import {dispatch, getState} from './state';
+import {RETRY_TIMES} from './types';
 import {
   callAsyncCircusFn,
   getAllHooksForDescribe,

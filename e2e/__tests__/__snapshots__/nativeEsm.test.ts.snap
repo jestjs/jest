@@ -1,9 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`on node ^12.16.0 || >=13.7.0 runs test with native ESM 1`] = `
+exports[`on node >=14.3.0 supports top-level await 1`] = `
 Test Suites: 1 passed, 1 total
-Tests:       14 passed, 14 total
+Tests:       1 passed, 1 total
 Snapshots:   0 total
 Time:        <<REPLACED>>
-Ran all test suites.
+Ran all test suites matching /native-esm.tla.test.js/i.
+`;
+
+exports[`on node ^12.16.0 || >=13.7.0 runs test with native ESM 1`] = `
+Test Suites: 1 passed, 1 total
+Tests:       17 passed, 17 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /native-esm.test.js/i.
 `;

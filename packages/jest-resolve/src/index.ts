@@ -8,17 +8,17 @@
 /* eslint-disable local/prefer-spread-eventually */
 
 import * as path from 'path';
+import chalk = require('chalk');
+import slash = require('slash');
 import type {Config} from '@jest/types';
 import type {ModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
-import slash = require('slash');
-import chalk = require('chalk');
-import nodeModulesPaths from './nodeModulesPaths';
-import isBuiltinModule from './isBuiltinModule';
-import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
-import type {ResolverConfig} from './types';
 import ModuleNotFoundError from './ModuleNotFoundError';
+import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
+import isBuiltinModule from './isBuiltinModule';
+import nodeModulesPaths from './nodeModulesPaths';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
+import type {ResolverConfig} from './types';
 
 type FindNodeModuleConfig = {
   basedir: Config.Path;
@@ -31,16 +31,13 @@ type FindNodeModuleConfig = {
   throwIfNotFound?: boolean;
 };
 
-// TODO: replace with a Map in Jest 26
+// TODO: replace with a Map in Jest 27
 type BooleanObject = Record<string, boolean>;
 
-namespace Resolver {
-  export type ResolveModuleConfig = {
-    skipNodeResolution?: boolean;
-    paths?: Array<Config.Path>;
-  };
-  export type ResolverType = Resolver;
-}
+export type ResolveModuleConfig = {
+  skipNodeResolution?: boolean;
+  paths?: Array<Config.Path>;
+};
 
 const NATIVE_PLATFORM = 'native';
 
@@ -139,7 +136,7 @@ class Resolver {
   resolveModuleFromDirIfExists(
     dirname: Config.Path,
     moduleName: string,
-    options?: Resolver.ResolveModuleConfig,
+    options?: ResolveModuleConfig,
   ): Config.Path | null {
     const paths = (options && options.paths) || this._options.modulePaths;
     const moduleDirectory = this._options.moduleDirectories;
@@ -227,7 +224,7 @@ class Resolver {
   resolveModule(
     from: Config.Path,
     moduleName: string,
-    options?: Resolver.ResolveModuleConfig,
+    options?: ResolveModuleConfig,
   ): Config.Path {
     const dirname = path.dirname(from);
     const module =
@@ -502,4 +499,4 @@ Please check your configuration for these entries:
   return error;
 };
 
-export = Resolver;
+export default Resolver;

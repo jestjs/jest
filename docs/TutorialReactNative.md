@@ -12,13 +12,14 @@ Get a deeper insight into testing a working React Native app example by reading 
 Starting from react-native version 0.38, a Jest setup is included by default when running `react-native init`. The following configuration should be automatically added to your package.json file:
 
 ```json
-// package.json
+{
   "scripts": {
     "test": "jest"
   },
   "jest": {
     "preset": "react-native"
   }
+}
 ```
 
 _Note: If you are upgrading your react-native application and previously used the `jest-react-native` preset, remove the dependency from your `package.json` file and change the preset to `react-native` instead._
@@ -29,10 +30,23 @@ Run `yarn test` to run tests with Jest.
 
 Let's create a [snapshot test](SnapshotTesting.md) for a small intro component with a few views and text components and some styles:
 
-```javascript
+```tsx
 // Intro.js
 import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
+
+class Intro extends Component {
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.welcome}>Welcome to React Native!</Text>
+        <Text style={styles.instructions}>
+          This is a React Native snapshot test.
+        </Text>
+      </View>
+    );
+  }
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -53,23 +67,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default class Intro extends Component {
-  render() {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>Welcome to React Native!</Text>
-        <Text style={styles.instructions}>
-          This is a React Native snapshot test.
-        </Text>
-      </View>
-    );
-  }
-}
+export default Intro;
 ```
 
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
 
-```javascript
+```tsx
 // __tests__/Intro-test.js
 import React from 'react';
 import renderer from 'react-test-renderer';
@@ -138,9 +141,11 @@ The [`transformIgnorePatterns`](configuration.html#transformignorepatterns-array
 By default the jest-react-native preset only processes the project's own source files and react-native. If you have npm dependencies that have to be transformed you can customize this configuration option by including modules other than react-native:
 
 ```json
-"transformIgnorePatterns": [
-  "node_modules/(?!(react-native|my-project|react-native-button)/)"
-]
+{
+  "transformIgnorePatterns": [
+    "node_modules/(?!(react-native|my-project|react-native-button)/)"
+  ]
+}
 ```
 
 ### setupFiles
@@ -152,8 +157,10 @@ If you'd like to provide additional configuration for every test file, the [`set
 The [`moduleNameMapper`](configuration.html#modulenamemapper-objectstring-string--arraystring) can be used to map a module path to a different module. By default the preset maps all images to an image stub module but if a module cannot be found this configuration option can help:
 
 ```json
-"moduleNameMapper": {
-  "my-module.js": "<rootDir>/path/to/my-module.js"
+{
+  "moduleNameMapper": {
+    "my-module.js": "<rootDir>/path/to/my-module.js"
+  }
 }
 ```
 

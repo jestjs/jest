@@ -9,7 +9,7 @@
 
 type Global = NodeJS.Global; // | Window – add once TS improves typings;
 
-namespace JestMock {
+declare namespace JestMock {
   export type ModuleMocker = ModuleMockerClass;
   export type MockFunctionMetadataType =
     | 'object'
@@ -985,17 +985,37 @@ class ModuleMockerClass {
 
       const isMethodOwner = object.hasOwnProperty(methodName);
 
-      // @ts-expect-error overriding original method with a Mock
-      object[methodName] = this._makeComponent({type: 'function'}, () => {
-        if (isMethodOwner) {
-          object[methodName] = original;
-        } else {
-          delete object[methodName];
-        }
-      });
+      let descriptor = Object.getOwnPropertyDescriptor(object, methodName);
+      let proto = Object.getPrototypeOf(object);
 
-      // @ts-expect-error original method is now a Mock
-      object[methodName].mockImplementation(function (this: unknown) {
+      while (!descriptor && proto !== null) {
+        descriptor = Object.getOwnPropertyDescriptor(proto, methodName);
+        proto = Object.getPrototypeOf(proto);
+      }
+
+      let mock: JestMock.Mock<unknown, Array<unknown>>;
+
+      if (descriptor && descriptor.get) {
+        const originalGet = descriptor.get;
+        mock = this._makeComponent({type: 'function'}, () => {
+          descriptor!.get = originalGet;
+          Object.defineProperty(object, methodName, descriptor!);
+        });
+        descriptor.get = () => mock;
+        Object.defineProperty(object, methodName, descriptor);
+      } else {
+        mock = this._makeComponent({type: 'function'}, () => {
+          if (isMethodOwner) {
+            object[methodName] = original;
+          } else {
+            delete object[methodName];
+          }
+        });
+        // @ts-expect-error overriding original method with a Mock
+        object[methodName] = mock;
+      }
+
+      mock.mockImplementation(function (this: unknown) {
         return original.apply(this, arguments);
       });
     }

@@ -6,11 +6,11 @@
  *
  */
 
-import * as matcherUtils from 'jest-matcher-utils';
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
-import {iterableEquality, subsetEquality} from '../utils';
-import {equals} from '../jasmineUtils';
+import * as matcherUtils from 'jest-matcher-utils';
 import jestExpect from '../';
+import {equals} from '../jasmineUtils';
+import {iterableEquality, subsetEquality} from '../utils';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 

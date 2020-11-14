@@ -6,9 +6,9 @@
  */
 
 import type {Context, Script} from 'vm';
+import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Circus, Config, Global} from '@jest/types';
 import jestMock = require('jest-mock');
-import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 
 type JestMockFn = typeof jestMock.fn;
 type JestMockSpyOn = typeof jestMock.spyOn;
@@ -29,7 +29,6 @@ export type ModuleWrapper = (
   require: Module['require'],
   __dirname: string,
   __filename: Module['filename'],
-  global: Global.Global,
   jest?: Jest,
   ...extraGlobals: Array<Global.Global[keyof Global.Global]>
 ) => unknown;
@@ -57,12 +56,6 @@ export type Module = NodeModule;
 
 // TODO: Move to some separate package
 export interface Jest {
-  /**
-   * Provides a way to add Jasmine-compatible matchers into your Jest context.
-   *
-   * @deprecated Use `expect.extend` instead
-   */
-  addMatchers(matchers: Record<string, unknown>): void;
   /**
    * Advances all timers by the needed milliseconds so that only the next timeouts/intervals will run.
    * Optionally, you can provide steps, so it will run steps amount of next timeouts/intervals.
@@ -187,13 +180,6 @@ export interface Jest {
   /**
    * Resets the module registry - the cache of all required modules. This is
    * useful to isolate modules where local state might conflict between tests.
-   *
-   * @deprecated Use `jest.resetModules()`
-   */
-  resetModuleRegistry(): Jest;
-  /**
-   * Resets the module registry - the cache of all required modules. This is
-   * useful to isolate modules where local state might conflict between tests.
    */
   resetModules(): Jest;
   /**
@@ -238,13 +224,6 @@ export interface Jest {
    * executed within this timeframe will be executed.
    */
   advanceTimersByTime(msToRun: number): void;
-  /**
-   * Executes only the macro task queue (i.e. all tasks queued by setTimeout()
-   * or setInterval() and setImmediate()).
-   *
-   * @deprecated Use `jest.advanceTimersByTime()`
-   */
-  runTimersToTime(msToRun: number): void;
   /**
    * Returns the number of fake timers still left to run.
    */

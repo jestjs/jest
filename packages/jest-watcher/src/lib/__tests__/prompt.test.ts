@@ -6,8 +6,8 @@
  *
  */
 
-import Prompt from '../Prompt';
 import {KEYS} from '../../constants';
+import Prompt from '../Prompt';
 
 it('calls handler on change value', () => {
   const options = {max: 10, offset: -1};

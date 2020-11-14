@@ -6,12 +6,12 @@
  */
 
 import type {Context, Script} from 'vm';
-import type {Config, Global} from '@jest/types';
-import {installCommonGlobals} from 'jest-util';
-import {ModuleMocker} from 'jest-mock';
-import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
-import type {EnvironmentContext, JestEnvironment} from '@jest/environment';
 import {JSDOM, VirtualConsole} from 'jsdom';
+import type {EnvironmentContext, JestEnvironment} from '@jest/environment';
+import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
+import type {Config, Global} from '@jest/types';
+import {ModuleMocker} from 'jest-mock';
+import {installCommonGlobals} from 'jest-util';
 
 // The `Window` interface does not have an `Error.stackTraceLimit` property, but
 // `JSDOMEnvironment` assumes it is there.
@@ -44,6 +44,9 @@ class JSDOMEnvironment implements JestEnvironment {
     if (!global) {
       throw new Error('JSDOM did not return a Window object');
     }
+
+    // for "universal" code (code should use `globalThis`)
+    global.global = global;
 
     // In the `jsdom@16`, ArrayBuffer was not added to Window, ref: https://github.com/jsdom/jsdom/commit/3a4fd6258e6b13e9cf8341ddba60a06b9b5c7b5b
     // Install ArrayBuffer to Window to fix it. Make sure the test is passed, ref: https://github.com/facebook/jest/pull/7626

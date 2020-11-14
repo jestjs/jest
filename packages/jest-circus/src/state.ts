@@ -6,11 +6,10 @@
  */
 
 import type {Circus} from '@jest/types';
-import {STATE_SYM} from './types';
-
-import {makeDescribe} from './utils';
 import eventHandler from './eventHandler';
 import formatNodeAssertErrors from './formatNodeAssertErrors';
+import {STATE_SYM} from './types';
+import {makeDescribe} from './utils';
 
 const eventHandlers: Array<Circus.EventHandler> = [
   eventHandler,

@@ -7,10 +7,10 @@
  */
 
 import * as path from 'path';
-import Runtime = require('jest-runtime');
+import type {Config} from '@jest/types';
 import {normalize} from 'jest-config';
 import {Test} from 'jest-runner';
-import type {Config} from '@jest/types';
+import Runtime from 'jest-runtime';
 import SearchSource, {SearchResult} from '../SearchSource';
 
 jest.setTimeout(15000);
@@ -229,7 +229,7 @@ describe('SearchSource', () => {
         );
         expect(relPaths.sort()).toEqual([
           path.normalize('module.jsx'),
-          path.normalize('no_tests.js'),
+          path.normalize('noTests.js'),
         ]);
       });
     });

@@ -22,6 +22,7 @@
     {"path": "../jest-transform"},
     {"path": "../jest-util"},
     {"path": "../jest-validate"},
-    {"path": "../jest-watcher"}
+    {"path": "../jest-watcher"},
+    {"path": "../test-utils"}
   ]
 }

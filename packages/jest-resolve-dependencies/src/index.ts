@@ -5,12 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as path from 'path';
 import type {Config} from '@jest/types';
 import type {FS as HasteFS} from 'jest-haste-map';
-import type {ResolveModuleConfig, ResolverType} from 'jest-resolve';
+import type {ResolveModuleConfig, default as Resolver} from 'jest-resolve';
 import {SnapshotResolver, isSnapshotPath} from 'jest-snapshot';
 
-namespace DependencyResolver {
+declare namespace DependencyResolver {
   export type ResolvedModule = {
     file: Config.Path;
     dependencies: Array<Config.Path>;
@@ -23,11 +24,11 @@ namespace DependencyResolver {
  */
 class DependencyResolver {
   private _hasteFS: HasteFS;
-  private _resolver: ResolverType;
+  private _resolver: Resolver;
   private _snapshotResolver: SnapshotResolver;
 
   constructor(
-    resolver: ResolverType,
+    resolver: Resolver,
     hasteFS: HasteFS,
     snapshotResolver: SnapshotResolver,
   ) {
@@ -49,7 +50,9 @@ class DependencyResolver {
       if (this._resolver.isCoreModule(dependency)) {
         return acc;
       }
+
       let resolvedDependency;
+      let resolvedMockDependency;
       try {
         resolvedDependency = this._resolver.resolveModule(
           file,
@@ -64,8 +67,35 @@ class DependencyResolver {
         }
       }
 
-      if (resolvedDependency) {
-        acc.push(resolvedDependency);
+      if (!resolvedDependency) {
+        return acc;
+      }
+
+      acc.push(resolvedDependency);
+
+      // If we resolve a dependency, then look for a mock dependency
+      // of the same name in that dependency's directory.
+      try {
+        resolvedMockDependency = this._resolver.getMockModule(
+          resolvedDependency,
+          path.basename(dependency),
+        );
+      } catch {
+        // leave resolvedMockDependency as undefined if nothing can be found
+      }
+
+      if (resolvedMockDependency) {
+        const dependencyMockDir = path.resolve(
+          path.dirname(resolvedDependency),
+          '__mocks__',
+        );
+
+        resolvedMockDependency = path.resolve(resolvedMockDependency);
+
+        // make sure mock is in the correct directory
+        if (dependencyMockDir === path.dirname(resolvedMockDependency)) {
+          acc.push(resolvedMockDependency);
+        }
       }
 
       return acc;
