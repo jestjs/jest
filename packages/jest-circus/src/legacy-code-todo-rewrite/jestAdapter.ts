@@ -72,8 +72,10 @@ const jestAdapter = async (
   });
 
   for (const path of config.setupFilesAfterEnv) {
-    // TODO: remove ? in Jest 26
-    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+    const esm = runtime.unstable_shouldLoadAsEsm(
+      path,
+      config.extensionsToTreatAsEsm,
+    );
 
     if (esm) {
       await runtime.unstable_importModule(path);
@@ -81,9 +83,10 @@ const jestAdapter = async (
       runtime.requireModule(path);
     }
   }
-
-  // TODO: remove ? in Jest 26
-  const esm = runtime.unstable_shouldLoadAsEsm?.(testPath);
+  const esm = runtime.unstable_shouldLoadAsEsm(
+    testPath,
+    config.extensionsToTreatAsEsm,
+  );
 
   if (esm) {
     await runtime.unstable_importModule(testPath);

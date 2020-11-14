@@ -482,6 +482,63 @@ const showTestPathPatternError = (testPathPattern: string) => {
   );
 };
 
+function validateExtensionsToTreatAsEsm(
+  extensionsToTreatAsEsm: Config.InitialOptions['extensionsToTreatAsEsm'],
+) {
+  if (!extensionsToTreatAsEsm || extensionsToTreatAsEsm.length === 0) {
+    return;
+  }
+
+  function printConfig(opts: Array<string>) {
+    const string = opts.map(ext => `'${ext}'`).join(', ');
+
+    return chalk.bold(`extensionsToTreatAsEsm: [${string}]`);
+  }
+
+  const extensionWithoutDot = extensionsToTreatAsEsm.some(
+    ext => !ext.startsWith('.'),
+  );
+
+  if (extensionWithoutDot) {
+    throw createConfigError(
+      `  Option: ${printConfig(
+        extensionsToTreatAsEsm,
+      )} includes a string that does not start with a period (${chalk.bold(
+        '.',
+      )}).
+  Please change your configuration to ${printConfig(
+    extensionsToTreatAsEsm.map(ext => (ext.startsWith('.') ? ext : `.${ext}`)),
+  )}.`,
+    );
+  }
+
+  if (extensionsToTreatAsEsm.includes('.js')) {
+    throw createConfigError(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+        "'.js'",
+      )} which is always inferred based on ${chalk.bold(
+        'type',
+      )} in its nearest ${chalk.bold('package.json')}.`,
+    );
+  }
+
+  if (extensionsToTreatAsEsm.includes('.cjs')) {
+    throw createConfigError(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+        "'.cjs'",
+      )} which is always treated as CommonJS.`,
+    );
+  }
+
+  if (extensionsToTreatAsEsm.includes('.mjs')) {
+    throw createConfigError(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+        "'.mjs'",
+      )} which is always treated as an ECMAScript Module.`,
+    );
+  }
+}
+
 export default function normalize(
   initialOptions: Config.InitialOptions,
   argv: Config.Argv,
@@ -582,6 +639,8 @@ export default function normalize(
       rootDir: options.rootDir,
     });
   }
+
+  validateExtensionsToTreatAsEsm(options.extensionsToTreatAsEsm);
 
   const optionKeys = Object.keys(options) as Array<keyof Config.InitialOptions>;
 
@@ -887,6 +946,7 @@ export default function normalize(
       case 'detectOpenHandles':
       case 'errorOnDeprecated':
       case 'expand':
+      case 'extensionsToTreatAsEsm':
       case 'extraGlobals':
       case 'globals':
       case 'findRelatedTests':

@@ -459,7 +459,10 @@ export default class Runtime {
 
     if (
       this._resolver.isCoreModule(resolved) ||
-      this.unstable_shouldLoadAsEsm(resolved)
+      this.unstable_shouldLoadAsEsm(
+        resolved,
+        this._config.extensionsToTreatAsEsm,
+      )
     ) {
       return this.loadEsmModule(resolved, query);
     }

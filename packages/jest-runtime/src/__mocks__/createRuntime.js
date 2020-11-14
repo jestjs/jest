@@ -116,7 +116,10 @@ module.exports = async function createRuntime(filename, config) {
   );
 
   for (const path of config.setupFiles) {
-    const esm = runtime.unstable_shouldLoadAsEsm(path);
+    const esm = runtime.unstable_shouldLoadAsEsm(
+      path,
+      config.extensionsToTreatAsEsm,
+    );
 
     if (esm) {
       await runtime.unstable_importModule(path);

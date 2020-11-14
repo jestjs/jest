@@ -169,8 +169,10 @@ async function runTestInternal(
   const start = Date.now();
 
   for (const path of config.setupFiles) {
-    // TODO: remove ? in Jest 26
-    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+    const esm = runtime.unstable_shouldLoadAsEsm(
+      path,
+      config.extensionsToTreatAsEsm,
+    );
 
     if (esm) {
       await runtime.unstable_importModule(path);
