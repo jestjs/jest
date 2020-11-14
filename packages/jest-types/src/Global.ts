@@ -119,3 +119,7 @@ export interface Global
     Omit<NodeJS.Global, keyof GlobalAdditions> {
   [extras: string]: unknown;
 }
+
+declare global {
+  const requireOutside: typeof require;
+}
