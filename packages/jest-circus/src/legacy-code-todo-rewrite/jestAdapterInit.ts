@@ -48,7 +48,6 @@ export const initialize = async ({
   globalConfig,
   localRequire,
   parentProcess,
-  prettierPath,
   sendMessageToJest,
   setGlobalsForRuntime,
   testPath,
@@ -59,7 +58,6 @@ export const initialize = async ({
   localRequire: <T = unknown>(path: Config.Path) => T;
   testPath: Config.Path;
   parentProcess: Process;
-  prettierPath: Config.Path;
   sendMessageToJest?: TestFileEvent;
   setGlobalsForRuntime?: (globals: JestGlobals) => void;
 }): Promise<{
@@ -159,7 +157,7 @@ export const initialize = async ({
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
-    prettierPath,
+    prettierPath: config.prettierPath,
     updateSnapshot,
   });
   // @ts-expect-error: snapshotState is a jest extension of `expect`

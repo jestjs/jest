@@ -30,15 +30,12 @@ const jestAdapter = async (
     FRAMEWORK_INITIALIZER,
   );
 
-  const {prettierPath} = config;
-
   const {globals, snapshotState} = await initialize({
     config,
     environment,
     globalConfig,
     localRequire: runtime.requireModule.bind(runtime),
     parentProcess: process,
-    prettierPath,
     sendMessageToJest,
     setGlobalsForRuntime: runtime.setGlobalsForRuntime?.bind(runtime),
     testPath,
