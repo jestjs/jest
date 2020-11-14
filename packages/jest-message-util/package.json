@@ -25,7 +25,7 @@
     "micromatch": "^4.0.2",
     "pretty-format": "^26.6.2",
     "slash": "^3.0.0",
-    "stack-utils": "^2.0.2"
+    "stack-utils": "^2.0.3"
   },
   "devDependencies": {
     "@types/babel__code-frame": "^7.0.0",
