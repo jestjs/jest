@@ -396,14 +396,19 @@ const _getError = (
 const getErrorStack = (error: Error): string =>
   typeof error.stack === 'string' ? error.stack : error.message;
 
-export const addErrorToEachTestUnderDescribe = (
+export const addErrorToEachChildUnderDescribe = (
   describeBlock: Circus.DescribeBlock,
   error: Circus.Exception,
   asyncError: Circus.Exception,
 ): void => {
   for (const child of describeBlock.children) {
     if (child.type === 'describeBlock') {
-      addErrorToEachTestUnderDescribe(child, error, asyncError);
+      addErrorToEachChildUnderDescribe(child, error, asyncError);
+    } else {
+      if (!child.status) {
+        // mark test as done for reporting
+        child.status = 'done';
+      }
     }
     child.errors.push([error, asyncError]);
   }

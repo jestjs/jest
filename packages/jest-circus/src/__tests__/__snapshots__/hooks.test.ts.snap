@@ -13,8 +13,6 @@ run_describe_start: test suite beforeAll
 hook_start: beforeAll
 > beforeAll 1 runs
 hook_failure: beforeAll
-test_start: test 1
-test_done: test 1
 run_describe_finish: test suite beforeAll
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
@@ -37,12 +35,6 @@ run_describe_start: test suite beforeAll
 hook_start: beforeAll
 > beforeAll 1 runs
 hook_failure: beforeAll
-run_describe_start: test suite nested
-test_start: test 1
-test_done: test 1
-run_describe_finish: test suite nested
-test_start: test 2
-test_done: test 2
 run_describe_finish: test suite beforeAll
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish
@@ -62,8 +54,6 @@ run_describe_start: test suite beforeAll
 hook_start: beforeAll
 > beforeAll 1 runs
 hook_failure: beforeAll
-test_start: test 1
-test_done: test 1
 run_describe_finish: test suite beforeAll
 run_describe_finish: ROOT_DESCRIBE_BLOCK
 run_finish

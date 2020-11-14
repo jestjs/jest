@@ -42,34 +42,25 @@ const _runTestsForDescribeBlock = async (
     await _callCircusHook({describeBlock, hook});
   }
 
-  // Tests that fail and are retried we run after other tests
-  const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
-  const deferredRetryTests = [];
-
-  for (const child of describeBlock.children) {
-    switch (child.type) {
-      case 'describeBlock': {
-        await _runTestsForDescribeBlock(child);
-        break;
-      }
-      case 'test': {
-        const hasErrorsBeforeTestRun = child.errors.length > 0;
-        await _runTest(child);
-
-        if (
-          hasErrorsBeforeTestRun === false &&
-          retryTimes > 0 &&
-          child.errors.length > 0
-        ) {
-          deferredRetryTests.push(child);
+  if (describeBlock.errors.length === 0) {
+    // Tests that fail and are retried we run after other tests
+    const retryTimes = parseInt(global[RETRY_TIMES], 10) || 0;
+    const deferredRetryTests = [];
+    for (const child of describeBlock.children) {
+      switch (child.type) {
+        case 'describeBlock': {
+          await _runTestsForDescribeBlock(child);
+          break;
         }
-        break;
+        case 'test': {
+          await _runTest(child);
+          if (retryTimes > 0 && child.errors.length > 0) {
+            deferredRetryTests.push(child);
+          }
+          break;
+        }
       }
     }
-  }
-
-  if (describeBlock.errors.length === 0) {
-    // skip test retry if any beforeAll setup fails
     // Re-run failed tests n-times if configured
     for (const test of deferredRetryTests) {
       let numRetriesAvailable = retryTimes;
@@ -126,12 +117,8 @@ const _runTest = async (test: Circus.TestEntry): Promise<void> => {
     await _callCircusTest(test, testContext);
   }
 
-  if (test.parent.errors.length === 0) {
-    // skip running afterEach hooks if there is a describe block setup failure.
-    // If there is a failure then no beforeEach hooks will run either
-    for (const hook of afterEach) {
-      await _callCircusHook({hook, test, testContext});
-    }
+  for (const hook of afterEach) {
+    await _callCircusHook({hook, test, testContext});
   }
 
   // `afterAll` hooks should not affect test status (pass or fail), because if
