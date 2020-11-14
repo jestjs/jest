@@ -193,7 +193,8 @@ export default class TestScheduler {
     contexts.forEach(context => {
       const {config} = context;
       if (!testRunners[config.runner]) {
-        const Runner: typeof TestRunner = require(config.runner).default || require(config.runner);
+        const Runner: typeof TestRunner =
+          require(config.runner).default || require(config.runner);
         const runner = new Runner(this._globalConfig, {
           changedFiles: this._context?.changedFiles,
           sourcesRelatedToTestsInChangedFiles: this._context
