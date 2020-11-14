@@ -26,7 +26,7 @@ const REQUIRE_OUTSIDE_FUNCTION_NAME = 'requireOutside';
 module.exports = ({template, types: t}) => {
   const replacement = template(`
     require(require.resolve(IMPORT_PATH, {
-      [Symbol.for('jest-resolve-outside-vm-option')]: true,
+      [(global['jest-symbol-do-not-touch'] || global.Symbol).for('jest-resolve-outside-vm-option')]: true,
     }));
   `);
   return {
