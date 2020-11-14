@@ -9,7 +9,10 @@ import * as path from 'path';
 import type {PluginItem} from '@babel/core';
 import type {Expression, File, Program} from '@babel/types';
 import * as fs from 'graceful-fs';
-import type {BuiltInParserName as PrettierParserName} from 'prettier';
+import type {
+  BuiltInParserName as PrettierParserName,
+  ParserOptions as PrettierParserOptions,
+} from 'prettier';
 import semver = require('semver');
 import type {Config} from '@jest/types';
 import type {Frame} from 'jest-message-util';
@@ -32,6 +35,13 @@ const {parseSync} = requireOutside(
   '@babel/core',
 ) as typeof import('@babel/core');
 
+type Prettier = typeof import('prettier');
+type PrettierFunctionParser = (
+  text: string,
+  parsers: Record<string, PrettierFunctionParser>,
+  options: PrettierParserOptions,
+) => File;
+
 export type InlineSnapshot = {
   snapshot: string;
   frame: Frame;
@@ -44,8 +54,8 @@ export function saveInlineSnapshots(
 ): void {
   const prettier = prettierPath
     ? // @ts-expect-error requireOutside Babel transform
-      (requireOutside(prettierPath) as typeof import('prettier'))
-    : null;
+      (requireOutside(prettierPath) as Prettier)
+    : undefined;
 
   const snapshotsByFile = groupSnapshotsByFile(snapshots);
 
@@ -53,7 +63,7 @@ export function saveInlineSnapshots(
     saveSnapshotsForFile(
       snapshotsByFile[sourceFilePath],
       sourceFilePath,
-      prettier && semver.gte(prettier.version, '1.5.0') ? prettier : null,
+      prettier && semver.gte(prettier.version, '1.5.0') ? prettier : undefined,
     );
   }
 }
@@ -61,7 +71,7 @@ export function saveInlineSnapshots(
 const saveSnapshotsForFile = (
   snapshots: Array<InlineSnapshot>,
   sourceFilePath: Config.Path,
-  prettier: any,
+  prettier?: Prettier,
 ) => {
   const sourceFile = fs.readFileSync(sourceFilePath, 'utf8');
 
@@ -245,7 +255,7 @@ const traverseAst = (
 };
 
 const runPrettier = (
-  prettier: any,
+  prettier: Prettier,
   sourceFilePath: string,
   sourceFileWithSnapshots: string,
   snapshotMatcherNames: Array<string>,
@@ -262,7 +272,14 @@ const runPrettier = (
   // For older versions of Prettier, fallback to a simple parser detection.
   const inferredParser = prettier.getFileInfo
     ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
-    : (config && config.parser) || simpleDetectParser(sourceFilePath);
+    : (config && typeof config.parser === 'string' && config.parser) ||
+      simpleDetectParser(sourceFilePath);
+
+  if (!inferredParser) {
+    throw new Error(
+      `Could not infer Prettier parser for file ${sourceFilePath}`,
+    );
+  }
 
   // Snapshots have now been inserted. Run prettier to make sure that the code is
   // formatted, except snapshot indentation. Snapshots cannot be formatted until
@@ -289,15 +306,11 @@ const runPrettier = (
 const createFormattingParser = (
   snapshotMatcherNames: Array<string>,
   inferredParser: string,
-) => (
-  text: string,
-  parsers: Record<string, (text: string) => any>,
-  options: any,
-) => {
+): PrettierFunctionParser => (text, parsers, options) => {
   // Workaround for https://github.com/prettier/prettier/issues/3150
   options.parser = inferredParser;
 
-  const ast = resolveAst(parsers[inferredParser](text));
+  const ast = resolveAst(parsers[inferredParser](text, parsers, options));
   babelTraverse(ast, {
     CallExpression({node: {arguments: args, callee}}) {
       if (
