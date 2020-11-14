@@ -124,7 +124,7 @@ const _runTest = async (test: Circus.TestEntry): Promise<void> => {
 
   await _callCircusTest(test, testContext);
 
-  if (!test.parent.errors.length) {
+  if (test.parent.errors.length === 0) {
     // skip running afterEach hooks if there is a describe block setup failure.
     // If there is a failure then no beforeEach hooks will run either
     for (const hook of afterEach) {
