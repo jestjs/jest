@@ -402,10 +402,8 @@ export const addErrorToEachTestUnderDescribe = (
   asyncError: Circus.Exception,
 ): void => {
   for (const child of describeBlock.children) {
-    switch (child.type) {
-      case 'describeBlock':
-        addErrorToEachTestUnderDescribe(child, error, asyncError);
-        break;
+    if (child.type === 'describeBlock') {
+      addErrorToEachTestUnderDescribe(child, error, asyncError);
     }
     child.errors.push([error, asyncError]);
   }
