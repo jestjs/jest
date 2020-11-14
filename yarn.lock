@@ -4991,27 +4991,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-preset-current-node-syntax@npm:^0.1.2":
-  version: 0.1.4
-  resolution: "babel-preset-current-node-syntax@npm:0.1.4"
-  dependencies:
-    "@babel/plugin-syntax-async-generators": ^7.8.4
-    "@babel/plugin-syntax-bigint": ^7.8.3
-    "@babel/plugin-syntax-class-properties": ^7.8.3
-    "@babel/plugin-syntax-import-meta": ^7.8.3
-    "@babel/plugin-syntax-json-strings": ^7.8.3
-    "@babel/plugin-syntax-logical-assignment-operators": ^7.8.3
-    "@babel/plugin-syntax-nullish-coalescing-operator": ^7.8.3
-    "@babel/plugin-syntax-numeric-separator": ^7.8.3
-    "@babel/plugin-syntax-object-rest-spread": ^7.8.3
-    "@babel/plugin-syntax-optional-catch-binding": ^7.8.3
-    "@babel/plugin-syntax-optional-chaining": ^7.8.3
-  peerDependencies:
-    "@babel/core": ^7.0.0
-  checksum: f54dfafd352b5671dfe549d6e2d692ec4328988bc2040f3c67b2dd4185c85ced29b39440f6f6bfd8145ad00e2cc8b39c5a218ef4bd7c08c48e3afec0583f4125
-  languageName: node
-  linkType: hard
-
 "babel-preset-current-node-syntax@npm:^1.0.0":
   version: 1.0.0
   resolution: "babel-preset-current-node-syntax@npm:1.0.0"
@@ -12267,7 +12246,7 @@ fsevents@~2.1.2:
     "@types/semver": ^7.1.0
     ansi-regex: ^5.0.0
     ansi-styles: ^4.2.0
-    babel-preset-current-node-syntax: ^0.1.2
+    babel-preset-current-node-syntax: ^1.0.0
     chalk: ^4.0.0
     expect: ^26.6.2
     graceful-fs: ^4.2.4

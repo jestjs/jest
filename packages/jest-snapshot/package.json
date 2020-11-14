@@ -22,7 +22,7 @@
     "@jest/types": "^26.6.2",
     "@types/babel__traverse": "^7.0.4",
     "@types/prettier": "^2.1.5",
-    "babel-preset-current-node-syntax": "^0.1.2",
+    "babel-preset-current-node-syntax": "^1.0.0",
     "chalk": "^4.0.0",
     "expect": "^26.6.2",
     "graceful-fs": "^4.2.4",
