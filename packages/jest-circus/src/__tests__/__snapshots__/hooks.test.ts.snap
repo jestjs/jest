@@ -61,6 +61,34 @@ run_finish
 unhandledErrors: 0
 `;
 
+exports[`all afterEach hooks should still be called even if an a beforeEach hook fails and an afterEach hook fails 1`] = `
+start_describe_definition: test suite beforeAll
+add_hook: beforeEach
+add_hook: afterEach
+add_hook: afterEach
+add_test: test 1
+finish_describe_definition: test suite beforeAll
+run_start
+run_describe_start: ROOT_DESCRIBE_BLOCK
+run_describe_start: test suite beforeAll
+test_start: test 1
+hook_start: beforeEach
+> beforeEach 1 runs
+hook_failure: beforeEach
+hook_start: afterEach
+> afterEach 1 runs
+hook_failure: afterEach
+hook_start: afterEach
+> afterEach 2 runs
+hook_success: afterEach
+test_done: test 1
+run_describe_finish: test suite beforeAll
+run_describe_finish: ROOT_DESCRIBE_BLOCK
+run_finish
+
+unhandledErrors: 0
+`;
+
 exports[`beforeAll is executed correctly 1`] = `
 start_describe_definition: describe 1
 add_hook: beforeAll

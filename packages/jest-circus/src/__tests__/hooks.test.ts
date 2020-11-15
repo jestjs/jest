@@ -123,6 +123,34 @@ test('a failing beforeAll should skip all beforeEach and afterEach hooks', () =>
   expect(wrap(stdout)).toMatchSnapshot();
 });
 
+test('all afterEach hooks should still be called even if an a beforeEach hook fails and an afterEach hook fails', () => {
+  const {stdout} = runTest(`
+    describe('test suite beforeAll', () => {
+
+    beforeEach(() => {
+        console.log('> beforeEach 1 runs')
+        throw new Error('> beforeEach 1 error');
+    });
+
+    afterEach(() => {
+        console.log('> afterEach 1 runs')
+        throw new Error('> afterEach 1 error');
+    });
+
+    afterEach(() => {
+        console.log('> afterEach 2 runs')
+    });
+
+    test('test 1', () => {
+        console.log('> the test ran')
+    });
+
+});
+  `);
+
+  expect(wrap(stdout)).toMatchSnapshot();
+});
+
 test('a failing beforeAll should skip any nested describe blocks', () => {
   const {stdout} = runTest(`
     describe('test suite beforeAll', () => {
