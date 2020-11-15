@@ -10,8 +10,8 @@ import type {PluginItem} from '@babel/core';
 import type {Expression, File, Program} from '@babel/types';
 import * as fs from 'graceful-fs';
 import type {
+  CustomParser as PrettierCustomParser,
   BuiltInParserName as PrettierParserName,
-  ParserOptions as PrettierParserOptions,
 } from 'prettier';
 import semver = require('semver');
 import type {Config} from '@jest/types';
@@ -36,11 +36,6 @@ const {parseSync} = requireOutside(
 ) as typeof import('@babel/core');
 
 type Prettier = typeof import('prettier');
-type PrettierFunctionParser = (
-  text: string,
-  parsers: Record<string, PrettierFunctionParser>,
-  options: PrettierParserOptions,
-) => File;
 
 export type InlineSnapshot = {
   snapshot: string;
@@ -263,14 +258,13 @@ const runPrettier = (
   // Resolve project configuration.
   // For older versions of Prettier, do not load configuration.
   const config = prettier.resolveConfig
-    ? prettier.resolveConfig.sync(sourceFilePath, {
-        editorconfig: true,
-      })
+    ? prettier.resolveConfig.sync(sourceFilePath, {editorconfig: true})
     : null;
 
   // Detect the parser for the test file.
   // For older versions of Prettier, fallback to a simple parser detection.
-  const inferredParser = prettier.getFileInfo
+  // @ts-expect-error
+  const inferredParser: PrettierParserName | undefined = prettier.getFileInfo
     ? prettier.getFileInfo.sync(sourceFilePath).inferredParser
     : (config && typeof config.parser === 'string' && config.parser) ||
       simpleDetectParser(sourceFilePath);
@@ -305,12 +299,12 @@ const runPrettier = (
 // This parser formats snapshots to the correct indentation.
 const createFormattingParser = (
   snapshotMatcherNames: Array<string>,
-  inferredParser: string,
-): PrettierFunctionParser => (text, parsers, options) => {
+  inferredParser: PrettierParserName,
+): PrettierCustomParser => (text, parsers, options) => {
   // Workaround for https://github.com/prettier/prettier/issues/3150
   options.parser = inferredParser;
 
-  const ast = resolveAst(parsers[inferredParser](text, parsers, options));
+  const ast = resolveAst(parsers[inferredParser](text, options));
   babelTraverse(ast, {
     CallExpression({node: {arguments: args, callee}}) {
       if (
