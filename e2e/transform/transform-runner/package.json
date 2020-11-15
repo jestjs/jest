@@ -1,10 +1,7 @@
 {
   "jest": {
-    "testEnvironment": "<rootDir>/environment.ts",
-    "transformIgnorePatterns": [
-      "jest-environment-node"
-    ],
-    "rootDir": "./"
+    "rootDir": "./",
+    "runner": "<rootDir>/runner.ts"
   },
   "dependencies": {
     "@babel/preset-env": "^7.0.0",
