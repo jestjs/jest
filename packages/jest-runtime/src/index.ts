@@ -48,8 +48,6 @@ import {escapePathForRegex} from 'jest-regex-util';
 import Resolver from 'jest-resolve';
 import Snapshot = require('jest-snapshot');
 import {createDirectory, deepCyclicCopy} from 'jest-util';
-import {run as cliRun} from './cli';
-import {options as cliOptions} from './cli/args';
 import {
   createOutsideJestVmPath,
   decodePossibleOutsideJestVmPath,
@@ -351,12 +349,12 @@ export default class Runtime {
     });
   }
 
-  static runCLI(args?: Config.Argv, info?: Array<string>): Promise<void> {
-    return cliRun(args, info);
+  static async runCLI(): Promise<never> {
+    throw new Error('The jest-runtime CLI has been moved into jest-repl');
   }
 
-  static getCLIOptions(): typeof cliOptions {
-    return cliOptions;
+  static getCLIOptions(): never {
+    throw new Error('The jest-runtime CLI has been moved into jest-repl');
   }
 
   // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it

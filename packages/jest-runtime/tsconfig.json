@@ -5,7 +5,6 @@
     "outDir": "build"
   },
   "references": [
-    {"path": "../jest-config"},
     {"path": "../jest-console"},
     {"path": "../jest-environment"},
     {"path": "../jest-environment-node"},

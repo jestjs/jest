@@ -5,10 +5,5 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
-if (require('./RegularModule').getModuleStateValue()) {
-  console.log('Hello, world!');
-} else {
-  console.log('Automocking is not properly disabled in jest-runtime.');
-}
+// For some reason, doing `require`ing here works, while inside `cli` fails
+export const VERSION: string = require('../../package.json').version;

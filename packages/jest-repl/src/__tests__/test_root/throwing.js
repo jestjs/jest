@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
@@ -6,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-if (process.env.NODE_ENV == null) {
-  process.env.NODE_ENV = 'test';
-}
+'use strict';
 
-require('../build/cli').run();
+throw new Error('throwing');

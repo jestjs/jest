@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
@@ -5,5 +6,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// For some reason, doing `require`ing here works, while inside `cli` fails
-export const VERSION: string = require('../package.json').version;
+if (process.env.NODE_ENV == null) {
+  process.env.NODE_ENV = 'test';
+}
+
+require('../build/cli/runtime-cli').run();
