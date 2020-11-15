@@ -611,8 +611,12 @@ export default function (j$: Jasmine) {
           () => {},
           currentDeclarationSuite,
         );
-        if (currentDeclarationSuite.markedPending) spec.pend();
-        else spec.todo();
+        if (currentDeclarationSuite.markedPending) {
+          spec.pend();
+        }
+        else {
+          spec.todo();
+        }
         currentDeclarationSuite.addChild(spec);
         return spec;
       };
