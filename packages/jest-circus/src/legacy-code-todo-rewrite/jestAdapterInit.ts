@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type BabelTraverse from '@babel/traverse';
 import throat from 'throat';
 import type {JestEnvironment} from '@jest/environment';
 import {
@@ -46,8 +45,6 @@ interface JestGlobals extends Global.TestFrameworkGlobals {
 export const initialize = async ({
   config,
   environment,
-  getPrettier,
-  getBabelTraverse,
   globalConfig,
   localRequire,
   parentProcess,
@@ -57,8 +54,6 @@ export const initialize = async ({
 }: {
   config: Config.ProjectConfig;
   environment: JestEnvironment;
-  getPrettier: () => null | any;
-  getBabelTraverse: () => typeof BabelTraverse;
   globalConfig: Config.GlobalConfig;
   localRequire: <T = unknown>(path: Config.Path) => T;
   testPath: Config.Path;
@@ -162,8 +157,7 @@ export const initialize = async ({
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
-    getBabelTraverse,
-    getPrettier,
+    prettierPath: config.prettierPath,
     updateSnapshot,
   });
   // @ts-expect-error: snapshotState is a jest extension of `expect`

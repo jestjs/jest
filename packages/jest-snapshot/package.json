@@ -14,10 +14,15 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
+    "@babel/generator": "^7.7.2",
+    "@babel/parser": "^7.7.2",
+    "@babel/plugin-syntax-typescript": "^7.7.2",
+    "@babel/traverse": "^7.7.2",
     "@babel/types": "^7.0.0",
     "@jest/types": "^26.6.2",
     "@types/babel__traverse": "^7.0.4",
-    "@types/prettier": "^2.0.0",
+    "@types/prettier": "^2.1.5",
+    "babel-preset-current-node-syntax": "^1.0.0",
     "chalk": "^4.0.0",
     "expect": "^26.6.2",
     "graceful-fs": "^4.2.4",
@@ -32,6 +37,9 @@
     "semver": "^7.3.2"
   },
   "devDependencies": {
+    "@babel/core": "^7.7.2",
+    "@babel/preset-flow": "^7.7.2",
+    "@babel/preset-react": "^7.7.2",
     "@babel/traverse": "^7.3.4",
     "@jest/test-utils": "^26.6.2",
     "@types/graceful-fs": "^4.1.3",
@@ -39,7 +47,15 @@
     "@types/semver": "^7.1.0",
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^4.2.0",
-    "prettier": "^1.19.1"
+    "prettier": "^2.0.0"
+  },
+  "peerDependencies": {
+    "@babel/core": "^7.7.2"
+  },
+  "peerDependenciesMeta": {
+    "@babel/core": {
+      "optional": true
+    }
   },
   "engines": {
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"

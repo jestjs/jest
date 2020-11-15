@@ -30,15 +30,9 @@ const jestAdapter = async (
     FRAMEWORK_INITIALIZER,
   );
 
-  const getPrettier = () =>
-    config.prettierPath ? require(config.prettierPath) : null;
-  const getBabelTraverse = () => require('@babel/traverse').default;
-
   const {globals, snapshotState} = await initialize({
     config,
     environment,
-    getBabelTraverse,
-    getPrettier,
     globalConfig,
     localRequire: runtime.requireModule.bind(runtime),
     parentProcess: process,

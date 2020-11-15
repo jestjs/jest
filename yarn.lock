@@ -107,7 +107,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:*, @babel/core@npm:^7.0.0, @babel/core@npm:^7.1.0, @babel/core@npm:^7.11.6, @babel/core@npm:^7.3.4, @babel/core@npm:^7.7.5, @babel/core@npm:^7.9.0":
+"@babel/core@npm:*, @babel/core@npm:^7.0.0, @babel/core@npm:^7.1.0, @babel/core@npm:^7.11.6, @babel/core@npm:^7.3.4, @babel/core@npm:^7.7.2, @babel/core@npm:^7.7.5, @babel/core@npm:^7.9.0":
   version: 7.12.3
   resolution: "@babel/core@npm:7.12.3"
   dependencies:
@@ -131,7 +131,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/generator@npm:^7.12.1, @babel/generator@npm:^7.12.5, @babel/generator@npm:^7.5.0":
+"@babel/generator@npm:^7.12.1, @babel/generator@npm:^7.12.5, @babel/generator@npm:^7.5.0, @babel/generator@npm:^7.7.2":
   version: 7.12.5
   resolution: "@babel/generator@npm:7.12.5"
   dependencies:
@@ -431,7 +431,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.0.0, @babel/parser@npm:^7.1.0, @babel/parser@npm:^7.10.4, @babel/parser@npm:^7.12.3, @babel/parser@npm:^7.12.5, @babel/parser@npm:^7.7.0":
+"@babel/parser@npm:^7.0.0, @babel/parser@npm:^7.1.0, @babel/parser@npm:^7.10.4, @babel/parser@npm:^7.12.3, @babel/parser@npm:^7.12.5, @babel/parser@npm:^7.7.0, @babel/parser@npm:^7.7.2":
   version: 7.12.5
   resolution: "@babel/parser@npm:7.12.5"
   bin:
@@ -833,7 +833,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-syntax-typescript@npm:^7.12.1":
+"@babel/plugin-syntax-typescript@npm:^7.12.1, @babel/plugin-syntax-typescript@npm:^7.7.2":
   version: 7.12.1
   resolution: "@babel/plugin-syntax-typescript@npm:7.12.1"
   dependencies:
@@ -965,7 +965,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-flow-strip-types@npm:^7.0.0":
+"@babel/plugin-transform-flow-strip-types@npm:^7.0.0, @babel/plugin-transform-flow-strip-types@npm:^7.12.1":
   version: 7.12.1
   resolution: "@babel/plugin-transform-flow-strip-types@npm:7.12.1"
   dependencies:
@@ -1441,6 +1441,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/preset-flow@npm:^7.7.2":
+  version: 7.12.1
+  resolution: "@babel/preset-flow@npm:7.12.1"
+  dependencies:
+    "@babel/helper-plugin-utils": ^7.10.4
+    "@babel/plugin-transform-flow-strip-types": ^7.12.1
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 66f6b0f2af4b1d2e3d8253085bac81829917d2d8032267523d61bbad00759a08bf47792f686d1ec1aa4184f1b8179bddfe7e6bd49bdea443548dae5874f8ee6d
+  languageName: node
+  linkType: hard
+
 "@babel/preset-modules@npm:^0.1.3":
   version: 0.1.4
   resolution: "@babel/preset-modules@npm:0.1.4"
@@ -1456,7 +1468,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-react@npm:*, @babel/preset-react@npm:^7.0.0, @babel/preset-react@npm:^7.12.1, @babel/preset-react@npm:^7.9.4":
+"@babel/preset-react@npm:*, @babel/preset-react@npm:^7.0.0, @babel/preset-react@npm:^7.12.1, @babel/preset-react@npm:^7.7.2, @babel/preset-react@npm:^7.9.4":
   version: 7.12.5
   resolution: "@babel/preset-react@npm:7.12.5"
   dependencies:
@@ -3751,7 +3763,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/prettier@npm:*, @types/prettier@npm:^2.0.0":
+"@types/prettier@npm:*, @types/prettier@npm:^2.0.0, @types/prettier@npm:^2.1.5":
   version: 2.1.5
   resolution: "@types/prettier@npm:2.1.5"
   checksum: bc6271235d881fa49b2f03e8e9242a7be8ecbcdcffeb7e31347afd0343f5f5e372ce65fe257e44254156737935c9249c9722cbe991dfad9aab72056c6acdbdaa
@@ -11653,12 +11665,10 @@ fsevents@~2.1.2:
   dependencies:
     "@babel/core": ^7.1.0
     "@babel/register": ^7.0.0
-    "@babel/traverse": ^7.1.0
     "@jest/environment": ^26.6.2
     "@jest/test-result": ^26.6.2
     "@jest/test-utils": ^26.6.2
     "@jest/types": ^26.6.2
-    "@types/babel__traverse": ^7.0.4
     "@types/co": ^4.6.0
     "@types/dedent": ^0.7.0
     "@types/graceful-fs": ^4.1.3
@@ -12221,6 +12231,12 @@ fsevents@~2.1.2:
   version: 0.0.0-use.local
   resolution: "jest-snapshot@workspace:packages/jest-snapshot"
   dependencies:
+    "@babel/core": ^7.7.2
+    "@babel/generator": ^7.7.2
+    "@babel/parser": ^7.7.2
+    "@babel/plugin-syntax-typescript": ^7.7.2
+    "@babel/preset-flow": ^7.7.2
+    "@babel/preset-react": ^7.7.2
     "@babel/traverse": ^7.3.4
     "@babel/types": ^7.0.0
     "@jest/test-utils": ^26.6.2
@@ -12228,10 +12244,11 @@ fsevents@~2.1.2:
     "@types/babel__traverse": ^7.0.4
     "@types/graceful-fs": ^4.1.3
     "@types/natural-compare": ^1.4.0
-    "@types/prettier": ^2.0.0
+    "@types/prettier": ^2.1.5
     "@types/semver": ^7.1.0
     ansi-regex: ^5.0.0
     ansi-styles: ^4.2.0
+    babel-preset-current-node-syntax: ^1.0.0
     chalk: ^4.0.0
     expect: ^26.6.2
     graceful-fs: ^4.2.4
@@ -12242,9 +12259,14 @@ fsevents@~2.1.2:
     jest-message-util: ^26.6.2
     jest-resolve: ^26.6.2
     natural-compare: ^1.4.0
-    prettier: ^1.19.1
+    prettier: ^2.0.0
     pretty-format: ^26.6.2
     semver: ^7.3.2
+  peerDependencies:
+    "@babel/core": ^7.7.2
+  peerDependenciesMeta:
+    "@babel/core":
+      optional: true
   languageName: unknown
   linkType: soft
 
@@ -16169,16 +16191,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"prettier@npm:^1.19.1":
-  version: 1.19.1
-  resolution: "prettier@npm:1.19.1"
-  bin:
-    prettier: ./bin-prettier.js
-  checksum: e5fcdfe5e159ef5c5480245353cf8fb5bbd1b8afff266f31f281641825238f8a645e58472f77cd75a09ccc45d44c335466e8d901ec138c2bda05e1bd6ea1077c
-  languageName: node
-  linkType: hard
-
-"prettier@npm:^2.0.1, prettier@npm:^2.1.1":
+"prettier@npm:^2.0.0, prettier@npm:^2.0.1, prettier@npm:^2.1.1":
   version: 2.1.2
   resolution: "prettier@npm:2.1.2"
   bin:
