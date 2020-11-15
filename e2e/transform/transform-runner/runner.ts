@@ -7,7 +7,7 @@
 
 import throat from 'throat';
 import {TestResult, createEmptyTestResult} from '@jest/test-result';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {
   OnTestFailure,
   OnTestStart,
