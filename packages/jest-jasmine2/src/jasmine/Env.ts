@@ -613,8 +613,7 @@ export default function (j$: Jasmine) {
         );
         if (currentDeclarationSuite.markedPending) {
           spec.pend();
-        }
-        else {
+        } else {
           spec.todo();
         }
         currentDeclarationSuite.addChild(spec);
@@ -629,8 +628,11 @@ export default function (j$: Jasmine) {
           timeout,
         );
         currentDeclarationSuite.addChild(spec);
-        if (currentDeclarationSuite.markedPending) spec.pend();
-        else focusedRunnables.push(spec.id);
+        if (currentDeclarationSuite.markedPending) {
+          spec.pend();
+        } else {
+          focusedRunnables.push(spec.id);
+        }
         unfocusAncestor();
         return spec;
       };
