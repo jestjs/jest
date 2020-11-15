@@ -120,8 +120,6 @@ async function runTestInternal(
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
   const consoleFormatter = (type: LogType, message: LogMessage) =>
     getConsoleOutput(
-      config.cwd,
-      !!globalConfig.verbose,
       // 4 = the console call is buried 4 stack frames deep
       BufferedConsole.write([], type, message, 4),
       config,
