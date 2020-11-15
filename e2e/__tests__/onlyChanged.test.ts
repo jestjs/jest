@@ -22,7 +22,7 @@ const gitVersionSupportsInitialBranch = (() => {
   const match = gitVersion.match(/(?<version>\d+\.\d+\.\d+)/);
 
   if (match?.groups?.version == null) {
-    throw new Error('Unable to detect `git` version');
+    throw new Error(`Unable to parse git version from string "${gitVersion}"`);
   }
 
   const {version} = match.groups;
