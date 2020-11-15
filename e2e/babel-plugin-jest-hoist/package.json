@@ -9,9 +9,9 @@
     "automock": true,
     "testEnvironment": "node",
     "transformIgnorePatterns": [
-      "/jest-environment-node/",
-      "jest-jasmine2",
-      "jest-circus"
+      "jest-circus",
+      "jest-environment-node",
+      "jest-jasmine2"
     ]
   }
 }
