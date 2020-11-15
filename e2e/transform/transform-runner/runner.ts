@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import throat from 'throat';
+import {TestResult, createEmptyTestResult} from '@jest/test-result';
 import {Config} from '@jest/types';
 import {
   OnTestFailure,
@@ -14,8 +16,6 @@ import {
   TestRunnerContext,
   TestWatcher,
 } from 'jest-runner';
-import throat from 'throat';
-import {TestResult, createEmptyTestResult} from '@jest/test-result';
 
 export default class BaseTestRunner {
   private _globalConfig: Config.GlobalConfig;
@@ -31,7 +31,7 @@ export default class BaseTestRunner {
     watcher: TestWatcher,
     onStart: OnTestStart,
     onResult: OnTestSuccess,
-    onFailure: OnTestFailure
+    onFailure: OnTestFailure,
   ): Promise<void> {
     const mutex = throat(1);
     return tests.reduce(
@@ -58,12 +58,12 @@ export default class BaseTestRunner {
                     },
                   ],
                 };
-              }
+              },
             )
             .then(result => onResult(test, result))
-            .catch(err => onFailure(test, err))
+            .catch(err => onFailure(test, err)),
         ),
-      Promise.resolve()
+      Promise.resolve(),
     );
   }
 }

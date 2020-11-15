@@ -196,7 +196,7 @@ export default class TestScheduler {
       if (!testRunners[config.runner]) {
         const transformer = new ScriptTransformer(config);
         const Runner: typeof TestRunner = interopRequireDefault(
-          transformer.requireAndTranspileModule(config.runner)
+          transformer.requireAndTranspileModule(config.runner),
         ).default;
         const runner = new Runner(this._globalConfig, {
           changedFiles: this._context?.changedFiles,

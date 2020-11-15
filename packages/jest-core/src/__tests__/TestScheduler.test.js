@@ -91,7 +91,7 @@ test('schedule tests run in parallel per default', async () => {
         moduleFileExtensions: ['.js'],
         runner: 'jest-runner-parallel',
         transform: [],
-      },
+      }),
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },
@@ -114,7 +114,7 @@ test('schedule tests run in serial if the runner flags them', async () => {
         moduleFileExtensions: ['.js'],
         runner: 'jest-runner-serial',
         transform: [],
-      },
+      }),
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },
@@ -138,7 +138,7 @@ test('should bail after `n` failures', async () => {
         rootDir: './',
         runner: 'jest-runner-serial',
         transform: [],
-      },
+      }),
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },
@@ -170,7 +170,7 @@ test('should not bail if less than `n` failures', async () => {
         rootDir: './',
         runner: 'jest-runner-serial',
         transform: [],
-      },
+      }),
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },
@@ -201,7 +201,7 @@ test('should set runInBand to run in serial', async () => {
         moduleFileExtensions: ['.js'],
         runner: 'jest-runner-parallel',
         transform: [],
-      },
+      }),
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },
@@ -227,7 +227,7 @@ test('should set runInBand to not run in serial', async () => {
         moduleFileExtensions: ['.js'],
         runner: 'jest-runner-parallel',
         transform: [],
-      },
+      }),
       hasteFS: {
         matchFiles: jest.fn(() => []),
       },
