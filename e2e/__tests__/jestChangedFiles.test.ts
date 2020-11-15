@@ -23,7 +23,15 @@ const gitVersionSupportsInitialBranch = (() => {
   const {stdout} = run(`${GIT} --version`);
   const gitVersion = stdout.split(' ').slice(-1)[0];
 
-  return semver.gte(gitVersion, '2.28.0');
+  const match = gitVersion.match(/(?<version>\d+\.\d+\.\d+)/);
+
+  if (match?.groups?.version == null) {
+    throw new Error(`Unable to parse git version from string "${gitVersion}"`);
+  }
+
+  const {version} = match.groups;
+
+  return semver.gte(version, '2.28.0');
 })();
 
 const mainBranchName = gitVersionSupportsInitialBranch ? 'main' : 'master';
