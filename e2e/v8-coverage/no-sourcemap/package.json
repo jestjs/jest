@@ -6,9 +6,6 @@
     "transform": {
       "\\.[jt]sx?$": "babel-jest",
       "\\.css$": "<rootDir>/cssTransform.js"
-    },
-    "transformIgnorePatterns": [
-      "jest-environment-node"
-    ]
+    }
   }
 }
