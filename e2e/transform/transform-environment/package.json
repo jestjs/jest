@@ -9,6 +9,6 @@
   "dependencies": {
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-typescript": "^7.0.0",
-    "jest-environment-node": "^24.9.0"
+    "jest-environment-node": "^26.6.2"
   }
 }
