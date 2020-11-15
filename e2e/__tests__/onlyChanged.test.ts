@@ -14,6 +14,10 @@ const DIR = path.resolve(tmpdir(), 'jest_only_changed');
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';
 
+function gitInit(dir: string) {
+  run(`${GIT} init --initial-branch=main`, dir);
+}
+
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
 
@@ -25,7 +29,7 @@ test('run for "onlyChanged" and "changedSince"', () => {
     'package.json': '{}',
   });
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
@@ -34,9 +38,9 @@ test('run for "onlyChanged" and "changedSince"', () => {
     /No tests found related to files changed since last commit./,
   );
 
-  stdout = runJest(DIR, ['--changedSince=master']).stdout;
+  stdout = runJest(DIR, ['--changedSince=main']).stdout;
   expect(stdout).toMatch(
-    /No tests found related to files changed since "master"./,
+    /No tests found related to files changed since "main"./,
   );
 });
 
@@ -53,7 +57,7 @@ test('run only changed files', () => {
   ({stdout} = runJest(DIR, ['-o']));
   expect(stdout).toMatch(/Jest can only find uncommitted changed files/);
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
@@ -114,7 +118,7 @@ test('report test coverage for only changed files', () => {
     }),
   });
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
@@ -153,7 +157,7 @@ test('report test coverage of source on test file change under only changed file
     }),
   });
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
@@ -177,7 +181,7 @@ test('do not pickup non-tested files when reporting coverage on only changed fil
     'package.json': JSON.stringify({name: 'original name'}),
   });
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
@@ -204,7 +208,7 @@ test('collect test coverage when using onlyChanged', () => {
     }),
   });
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
   run(`${GIT} checkout -b new-branch`, DIR);
@@ -233,7 +237,7 @@ test('onlyChanged in config is overwritten by --all or testPathPattern', () => {
   ({stdout} = runJest(DIR));
   expect(stdout).toMatch(/Jest can only find uncommitted changed files/);
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
@@ -351,7 +355,7 @@ test('path on Windows is case-insensitive', () => {
     'package.json': '{}',
   });
 
-  run(`${GIT} init`, modifiedDIR);
+  gitInit(modifiedDIR);
   run(`${GIT} add .`, modifiedDIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, modifiedDIR);
 

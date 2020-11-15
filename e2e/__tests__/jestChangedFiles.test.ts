@@ -8,7 +8,7 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import slash from 'slash';
+import slash = require('slash');
 import {findRepos, getChangedFilesForRoots} from 'jest-changed-files';
 import {cleanup, run, testIfHg, writeFiles} from '../Utils';
 import runJest from '../runJest';
@@ -17,6 +17,10 @@ const DIR = path.resolve(tmpdir(), 'jest-changed-files-test-dir');
 
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';
+
+function gitInit(dir: string) {
+  run(`${GIT} init --initial-branch=main`, dir);
+}
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
@@ -70,8 +74,8 @@ test('gets git SCM roots and dedupes them', async () => {
     'second-repo/nested-dir/second-nested-dir/file3.txt': 'file3',
   });
 
-  run(`${GIT} init`, path.resolve(DIR, 'first-repo'));
-  run(`${GIT} init`, path.resolve(DIR, 'second-repo'));
+  gitInit(path.resolve(DIR, 'first-repo'));
+  gitInit(path.resolve(DIR, 'second-repo'));
 
   const roots = [
     '',
@@ -108,7 +112,7 @@ testIfHg('gets mixed git and hg SCM roots and dedupes them', async () => {
     'second-repo/nested-dir/second-nested-dir/file3.txt': 'file3',
   });
 
-  run(`${GIT} init`, path.resolve(DIR, 'first-repo'));
+  gitInit(path.resolve(DIR, 'first-repo'));
   run(`${HG} init`, path.resolve(DIR, 'second-repo'));
 
   const roots = [
@@ -142,7 +146,7 @@ test('gets changed files for git', async () => {
     'nested-dir/second-nested-dir/file3.txt': 'file3',
   });
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
 
   const roots = [
     '',
@@ -235,9 +239,9 @@ test('gets changed files for git', async () => {
   run(`${GIT} commit --no-gpg-sign -m "test5"`, DIR);
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {
-    changedSince: 'master',
+    changedSince: 'main',
   }));
-  // Returns files from this branch but not ones that only exist on master
+  // Returns files from this branch but not ones that only exist on main
   expect(
     Array.from(files)
       .map(filePath => path.basename(filePath))
@@ -252,7 +256,7 @@ test('monitors only root paths for git', async () => {
     'nested-dir/second-nested-dir/file3.txt': 'file3',
   });
 
-  run(`${GIT} init`, DIR);
+  run(`${GIT} init --initial-branch=main`, DIR);
 
   const roots = [path.resolve(DIR, 'nested-dir')];
 
@@ -267,11 +271,11 @@ test('monitors only root paths for git', async () => {
 it('does not find changes in files with no diff, for git', async () => {
   const roots = [path.resolve(DIR)];
 
-  // create an empty file, commit it to "master"
+  // create an empty file, commit it to "main"
   writeFiles(DIR, {
     'file1.txt': '',
   });
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
   run(`${GIT} add file1.txt`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "initial"`, DIR);
 
@@ -315,7 +319,7 @@ test('handles a bad revision for "changedSince", for git', async () => {
     'package.json': '{}',
   });
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
