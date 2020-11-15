@@ -7,7 +7,9 @@
     },
     "testEnvironment": "node",
     "transformIgnorePatterns": [
-      "/jest-environment-node/"
+      "jest-circus",
+      "jest-environment-node",
+      "jest-jasmine2"
     ]
   },
   "dependencies": {

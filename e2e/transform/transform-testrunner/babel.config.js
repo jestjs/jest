@@ -6,12 +6,8 @@
  */
 
 module.exports = {
-  only: [
-    'blablabla',
-    /jest-circus/,
-    /jest-each/,
-    /jest-environment-node/,
-    /jest-jasmine2/,
-    /jest-source-map/,
+  presets: [
+    ['@babel/preset-env', {targets: {node: 'current'}}],
+    '@babel/preset-typescript',
   ],
 };

@@ -17,6 +17,7 @@
     "@jest/console": "^26.6.2",
     "@jest/environment": "^26.6.2",
     "@jest/test-result": "^26.6.2",
+    "@jest/transform": "^26.6.2",
     "@jest/types": "^26.6.2",
     "@types/node": "*",
     "chalk": "^4.0.0",

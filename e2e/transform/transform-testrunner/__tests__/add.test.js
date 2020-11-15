@@ -5,13 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-module.exports = {
-  only: [
-    'blablabla',
-    /jest-circus/,
-    /jest-each/,
-    /jest-environment-node/,
-    /jest-jasmine2/,
-    /jest-source-map/,
-  ],
-};
+it('should add two numbers', () => {
+  expect(1 + 1).toBe(2);
+});

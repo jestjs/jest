@@ -5,7 +5,10 @@
       "/node_modules/",
       "<rootDir>/__tests__",
       "<rootDir>/ignored/",
-      "/jest-environment-node/"
+      "jest-circus",
+      "jest-each",
+      "jest-environment-node",
+      "jest-jasmine2"
     ],
     "transform": {
       "\\.js$": "<rootDir>/preprocessor.js"
