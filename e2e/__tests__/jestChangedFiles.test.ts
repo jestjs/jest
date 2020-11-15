@@ -8,6 +8,7 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
+import semver = require('semver');
 import slash = require('slash');
 import {findRepos, getChangedFilesForRoots} from 'jest-changed-files';
 import {cleanup, run, testIfHg, writeFiles} from '../Utils';
@@ -18,8 +19,21 @@ const DIR = path.resolve(tmpdir(), 'jest-changed-files-test-dir');
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';
 
+const gitVersionSupportsInitialBranch = (() => {
+  const {stdout} = run(`${GIT} --version`);
+  const gitVersion = stdout.split(' ').slice(-1)[0];
+
+  return semver.gte(gitVersion, '2.28.0');
+})();
+
+const mainBranchName = gitVersionSupportsInitialBranch ? 'main' : 'master';
+
 function gitInit(dir: string) {
-  run(`${GIT} init --initial-branch=main`, dir);
+  const initCommand = gitVersionSupportsInitialBranch
+    ? `${GIT} init --initial-branch=${mainBranchName}`
+    : `${GIT} init`;
+
+  run(initCommand, dir);
 }
 
 beforeEach(() => cleanup(DIR));
@@ -239,9 +253,9 @@ test('gets changed files for git', async () => {
   run(`${GIT} commit --no-gpg-sign -m "test5"`, DIR);
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {
-    changedSince: 'main',
+    changedSince: mainBranchName,
   }));
-  // Returns files from this branch but not ones that only exist on main
+  // Returns files from this branch but not ones that only exist on mainBranchName
   expect(
     Array.from(files)
       .map(filePath => path.basename(filePath))
@@ -256,7 +270,7 @@ test('monitors only root paths for git', async () => {
     'nested-dir/second-nested-dir/file3.txt': 'file3',
   });
 
-  run(`${GIT} init --initial-branch=main`, DIR);
+  gitInit(DIR);
 
   const roots = [path.resolve(DIR, 'nested-dir')];
 
@@ -271,10 +285,8 @@ test('monitors only root paths for git', async () => {
 it('does not find changes in files with no diff, for git', async () => {
   const roots = [path.resolve(DIR)];
 
-  // create an empty file, commit it to "main"
-  writeFiles(DIR, {
-    'file1.txt': '',
-  });
+  // create an empty file, commit it to "mainBranchName"
+  writeFiles(DIR, {'file1.txt': ''});
   gitInit(DIR);
   run(`${GIT} add file1.txt`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "initial"`, DIR);

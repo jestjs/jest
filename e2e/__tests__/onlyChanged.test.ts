@@ -7,6 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
+import semver = require('semver');
 import {cleanup, run, testIfHg, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
@@ -14,8 +15,21 @@ const DIR = path.resolve(tmpdir(), 'jest_only_changed');
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';
 
+const gitVersionSupportsInitialBranch = (() => {
+  const {stdout} = run(`${GIT} --version`);
+  const gitVersion = stdout.split(' ').slice(-1)[0];
+
+  return semver.gte(gitVersion, '2.28.0');
+})();
+
+const mainBranchName = gitVersionSupportsInitialBranch ? 'main' : 'master';
+
 function gitInit(dir: string) {
-  run(`${GIT} init --initial-branch=main`, dir);
+  const initCommand = gitVersionSupportsInitialBranch
+    ? `${GIT} init --initial-branch=${mainBranchName}`
+    : `${GIT} init`;
+
+  run(initCommand, dir);
 }
 
 beforeEach(() => cleanup(DIR));
