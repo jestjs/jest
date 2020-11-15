@@ -5,4 +5,4 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-module.exports = {only: ['blablabla']};
+module.exports = {only: ['blablabla', /jest-environment-node/]};

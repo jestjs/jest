@@ -6,6 +6,9 @@
     },
     "testRegex": "/__tests__/.*\\.(js)$",
     "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "/jest-environment-node/"
+    ],
     "moduleFileExtensions": [
       "js"
     ]

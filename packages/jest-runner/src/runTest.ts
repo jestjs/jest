@@ -19,6 +19,7 @@ import {
 } from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
 import type {TestResult} from '@jest/test-result';
+import {ScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
@@ -102,8 +103,9 @@ async function runTestInternal(
     });
   }
 
+  const transformer = new ScriptTransformer(config);
   const TestEnvironment: typeof JestEnvironment = interopRequireDefault(
-    require(testEnvironment),
+    transformer.requireAndTranspileModule(testEnvironment),
   ).default;
   const testFramework: TestFramework = interopRequireDefault(
     process.env.JEST_CIRCUS === '1'
