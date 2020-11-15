@@ -52,9 +52,9 @@ test('run for "onlyChanged" and "changedSince"', () => {
     /No tests found related to files changed since last commit./,
   );
 
-  stdout = runJest(DIR, ['--changedSince=main']).stdout;
+  stdout = runJest(DIR, [`--changedSince=${mainBranchName}`]).stdout;
   expect(stdout).toMatch(
-    /No tests found related to files changed since "main"./,
+    `No tests found related to files changed since "${mainBranchName}".`,
   );
 });
 
