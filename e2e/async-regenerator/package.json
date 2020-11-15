@@ -6,6 +6,9 @@
     "@babel/polyfill": "^7.2.5"
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "jest-jasmine2"
+    ]
   }
 }
