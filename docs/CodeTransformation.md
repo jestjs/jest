@@ -23,6 +23,12 @@ You can write you own transformer. The API of a transformer is as follows:
 
 ```ts
 interface Transformer {
+  /**
+   * Indicates if the transformer is capabale of instrumenting the code for code coverage.
+   *
+   * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
+   * If this is `false` Jets will instrument the code returned by this transformer using Babel.
+   */
   canInstrument?: boolean;
   createTransformer?: (options?: unknown) => Transformer;
 
