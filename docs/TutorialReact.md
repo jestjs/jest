@@ -304,7 +304,7 @@ The code for this example is available at [examples/enzyme](https://github.com/f
 
 ### Custom transformers
 
-If you need more advanced functionality, you can also build your own transformer. Instead of using babel-jest, here is an example of using babel:
+If you need more advanced functionality, you can also build your own transformer. Instead of using `babel-jest`, here is an example of using `@babel/core`:
 
 ```javascript
 // custom-transformer.js
@@ -320,7 +320,7 @@ module.exports = {
       presets: [jestPreset],
     });
 
-    return result ? result.code : src;
+    return result || src;
   },
 };
 ```
@@ -329,7 +329,7 @@ Don't forget to install the `@babel/core` and `babel-preset-jest` packages for t
 
 To make this work with Jest you need to update your Jest configuration with this: `"transform": {"\\.js$": "path/to/custom-transformer.js"}`.
 
-If you'd like to build a transformer with babel support, you can also use babel-jest to compose one and pass in your custom configuration options:
+If you'd like to build a transformer with babel support, you can also use `babel-jest` to compose one and pass in your custom configuration options:
 
 ```javascript
 const babelJest = require('babel-jest');
