@@ -160,9 +160,7 @@ const createTransformer: CreateTransformer = userOptions => {
   };
 };
 
-const transformer: Transformer<TransformOptions> & {
-  createTransformer: CreateTransformer;
-} = {
+const transformer: Transformer<TransformOptions> = {
   ...createTransformer(),
   // Assigned here so only the exported transformer has `createTransformer`,
   // instead of all created transformers by the function
