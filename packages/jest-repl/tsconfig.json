@@ -6,9 +6,13 @@
   },
   "references": [
     {"path": "../jest-config"},
+    {"path": "../jest-console"},
+    {"path": "../jest-environment"},
     {"path": "../jest-runtime"},
     {"path": "../jest-transform"},
     {"path": "../jest-types"},
-    {"path": "../jest-validate"}
+    {"path": "../jest-util"},
+    {"path": "../jest-validate"},
+    {"path": "../test-utils"}
   ]
 }

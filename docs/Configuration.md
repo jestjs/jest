@@ -1263,8 +1263,7 @@ Examples of such compilers include:
 
 - [Babel](https://babeljs.io/)
 - [TypeScript](http://www.typescriptlang.org/)
-- [async-to-gen](http://github.com/leebyron/async-to-gen#jest)
-- To build your own please visit the [Custom Transformer](TutorialReact.md#custom-transformers) section
+- To build your own please visit the [Custom Transformer](CodeTransformation.md#writing-custom-transformers) section
 
 You can pass configuration to a transformer like `{filePattern: ['path-to-transformer', {options}]}` For example, to configure babel-jest for non-default behavior, `{"\\.js$": ['babel-jest', {rootMode: "upward"}]}`
 

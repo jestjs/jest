@@ -9,7 +9,7 @@
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import type {Config} from '@jest/types';
-import type {ShouldInstrumentOptions, Transformer} from '../types';
+import type {Options, ShouldInstrumentOptions, Transformer} from '../types';
 
 jest
   .mock('graceful-fs', () =>
@@ -38,7 +38,7 @@ jest
     },
   }))
   .mock('jest-haste-map', () => ({
-    getCacheFilePath: (cacheDir, baseDir) => cacheDir + baseDir,
+    getCacheFilePath: (cacheDir: string, baseDir: string) => cacheDir + baseDir,
   }))
   .mock('jest-util', () => ({
     ...jest.requireActual('jest-util'),
@@ -663,7 +663,7 @@ describe('ScriptTransformer', () => {
     );
 
     const {getCacheKey} = require('test_preprocessor');
-    expect(getCacheKey.mock.calls[0][3]).toMatchSnapshot();
+    expect(getCacheKey).toMatchSnapshot();
   });
 
   it('creates transformer with config', () => {
@@ -793,7 +793,7 @@ describe('ScriptTransformer', () => {
 
 function getCoverageOptions(
   overrides: Partial<ShouldInstrumentOptions> = {},
-): ShouldInstrumentOptions {
+): Options {
   const globalConfig = makeGlobalConfig(overrides);
 
   return {
@@ -801,6 +801,10 @@ function getCoverageOptions(
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
     coverageProvider: globalConfig.coverageProvider,
+    supportsDynamicImport: false,
+    supportsExportNamespaceFrom: false,
+    supportsStaticESM: false,
+    supportsTopLevelAwait: false,
   };
 }
 

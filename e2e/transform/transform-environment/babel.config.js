@@ -5,5 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-// For some reason, doing `require`ing here works, while inside `cli` fails
-export const VERSION: string = require('../package.json').version;
+module.exports = {
+  presets: [
+    ['@babel/preset-env', {targets: {node: 'current'}}],
+    '@babel/preset-typescript',
+  ],
+};
