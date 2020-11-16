@@ -40,8 +40,13 @@ function getGlobalCacheKey(files: Array<string>, values: Array<string>) {
 }
 
 function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
-  return (sourceText, sourcePath, options) => {
-    const {config, instrument} = options;
+  // @ts-expect-error
+  return (sourceText, sourcePath, configString, options) => {
+    // Jest 27 passes a single options bag which contains `configString` rather than as a separate argument.
+    // We can hide that API difference, though, so this module is usable for both jest@<27 and jest@>=27
+    const inferredOptions: CacheKeyOptions = options || configString;
+    const {config, instrument} = inferredOptions;
+
     return createHash('md5')
       .update(globalCacheKey)
       .update('\0', 'utf8')
