@@ -8998,7 +8998,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fbjs-scripts@npm:^1.1.0":
+fbjs-scripts@^1.1.0:
   version: 1.2.0
   resolution: "fbjs-scripts@npm:1.2.0"
   dependencies:
@@ -9013,6 +9013,24 @@ __metadata:
     semver: ^5.1.0
     through2: ^2.0.0
   checksum: db7ff0d96dc135e453e98c236116bbb4e07f58a1d31f986d54e22fa57339ffeda1f9dcef4cf61111da1f78ff257ddba227b37af1dd8bff0999b2d74530ba588d
+  languageName: node
+  linkType: hard
+
+"fbjs-scripts@patch:fbjs-scripts@^1.1.0#./patches/fbjs-scripts.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
+  version: 1.2.0
+  resolution: "fbjs-scripts@patch:fbjs-scripts@npm%3A1.2.0#./patches/fbjs-scripts.patch::version=1.2.0&hash=f23fdb&locator=%40jest%2Fmonorepo%40workspace%3A."
+  dependencies:
+    "@babel/core": ^7.0.0
+    ansi-colors: ^1.0.1
+    babel-preset-fbjs: ^3.2.0
+    core-js: ^2.4.1
+    cross-spawn: ^5.1.0
+    fancy-log: ^1.3.2
+    object-assign: ^4.0.1
+    plugin-error: ^0.1.2
+    semver: ^5.1.0
+    through2: ^2.0.0
+  checksum: 908b412866a6d1dd625b466153834f2f1e417f903e2c4a110840a14c2d7973e9ae9f03101be947ca01faf99dd198370cc405181a9223066ee803c84e41110190
   languageName: node
   linkType: hard
 
