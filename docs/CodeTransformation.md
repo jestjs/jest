@@ -61,6 +61,8 @@ type TransformedSource =
 
 As can be seen, only `process` is mandatory to implement, although we highly recommend implementing `getCacheKey` as well, so we don't waste resources transpiling the same source file when we can read its previous result from disk.
 
+Note that [ECMAScript module](ECMAScriptModules.md) support is indicated by the passed in `supports*` options. Specifically `supportsDynamicImport: true` means the transformer can return `import()` expressions, which is supported by both ESM and CJS. If `supportsStaticESM: true` it means top level `import` statements are supported and the code will be interpreted as ESM and not CJS. See [Node's docs](https://nodejs.org/api/esm.html#esm_differences_between_es_modules_and_commonjs) for details on the differences.
+
 ### Examples
 
 ### TypeScript with type checking
