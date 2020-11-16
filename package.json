@@ -144,6 +144,7 @@
   },
   "resolutions": {
     "@types/jest/jest-diff": "^25.1.0",
-    "@types/jest/pretty-format": "^25.1.0"
+    "@types/jest/pretty-format": "^25.1.0",
+    "fbjs-scripts": "patch:fbjs-scripts@^1.1.0#./patches/fbjs-scripts.patch"
   }
 }

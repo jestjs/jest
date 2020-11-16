@@ -6,7 +6,7 @@
  */
 
 module.exports = {
-  process(src, filename, config, options) {
+  process() {
     return `
       module.exports = {
         root: 'App-root',
