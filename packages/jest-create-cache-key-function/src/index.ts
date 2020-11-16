@@ -12,18 +12,33 @@ import {readFileSync} from 'fs';
 import {relative} from 'path';
 import type {Config} from '@jest/types';
 
+type OldCacheKeyOptions = {
+  config: Config.ProjectConfig;
+  instrument: boolean;
+};
+
 // Should mirror `import('@jest/transform').TransformOptions`
-type CacheKeyOptions = {
+type NewCacheKeyOptions = {
   config: Config.ProjectConfig;
   configString: string;
   instrument: boolean;
 };
 
-type GetCacheKeyFunction = (
+type OldGetCacheKeyFunction = (
+  fileData: string,
+  filePath: Config.Path,
+  configStr: string,
+  options: OldCacheKeyOptions,
+) => string;
+
+// Should mirror `import('@jest/transform').Transformer['getCacheKey']`
+type NewGetCacheKeyFunction = (
   sourceText: string,
   sourcePath: Config.Path,
-  options: CacheKeyOptions,
+  options: NewCacheKeyOptions,
 ) => string;
+
+type GetCacheKeyFunction = OldGetCacheKeyFunction | NewGetCacheKeyFunction;
 
 function getGlobalCacheKey(files: Array<string>, values: Array<string>) {
   return [
@@ -40,11 +55,10 @@ function getGlobalCacheKey(files: Array<string>, values: Array<string>) {
 }
 
 function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
-  // @ts-expect-error
   return (sourceText, sourcePath, configString, options) => {
     // Jest 27 passes a single options bag which contains `configString` rather than as a separate argument.
     // We can hide that API difference, though, so this module is usable for both jest@<27 and jest@>=27
-    const inferredOptions: CacheKeyOptions = options || configString;
+    const inferredOptions = options || configString;
     const {config, instrument} = inferredOptions;
 
     return createHash('md5')
