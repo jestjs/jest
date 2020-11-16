@@ -12,15 +12,16 @@ import {readFileSync} from 'fs';
 import {relative} from 'path';
 import type {Config} from '@jest/types';
 
+// Should mirror `import('@jest/transform').TransformOptions`
 type CacheKeyOptions = {
   config: Config.ProjectConfig;
+  configString: string;
   instrument: boolean;
 };
 
 type GetCacheKeyFunction = (
-  fileData: string,
-  filePath: Config.Path,
-  configStr: string,
+  sourceText: string,
+  sourcePath: Config.Path,
   options: CacheKeyOptions,
 ) => string;
 
@@ -39,14 +40,14 @@ function getGlobalCacheKey(files: Array<string>, values: Array<string>) {
 }
 
 function getCacheKeyFunction(globalCacheKey: string): GetCacheKeyFunction {
-  return (src, file, _configString, options) => {
+  return (sourceText, sourcePath, options) => {
     const {config, instrument} = options;
     return createHash('md5')
       .update(globalCacheKey)
       .update('\0', 'utf8')
-      .update(src)
+      .update(sourceText)
       .update('\0', 'utf8')
-      .update(config.rootDir ? relative(config.rootDir, file) : '')
+      .update(config.rootDir ? relative(config.rootDir, sourcePath) : '')
       .update('\0', 'utf8')
       .update(instrument ? 'instrument' : '')
       .digest('hex');
