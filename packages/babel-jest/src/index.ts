@@ -40,10 +40,9 @@ interface BabelJestTransformOptions extends TransformOptions {
   sourceMaps: 'both';
 }
 
-const createTransformer = (
-  userOptions?: TransformOptions | null,
-): BabelJestTransformer => {
-  const inputOptions: TransformOptions = userOptions ?? {};
+const createTransformer = (userOptions?: unknown): BabelJestTransformer => {
+  const inputOptions: TransformOptions =
+    (userOptions as TransformOptions) ?? {};
   const options: BabelJestTransformOptions = {
     ...inputOptions,
     caller: {
@@ -102,13 +101,13 @@ const createTransformer = (
 
   return {
     canInstrument: true,
-    getCacheKey(fileData, filename, configString, cacheKeyOptions) {
-      const {config, instrument, rootDir} = cacheKeyOptions;
+    getCacheKey(sourceText, sourcePath, transformOptions) {
+      const {config, configString, instrument} = transformOptions;
 
       const babelOptions = loadBabelConfig(
         config.cwd,
-        filename,
-        cacheKeyOptions,
+        sourcePath,
+        transformOptions,
       );
       const configPath = [
         babelOptions.config || '',
@@ -120,9 +119,9 @@ const createTransformer = (
         .update('\0', 'utf8')
         .update(JSON.stringify(babelOptions.options))
         .update('\0', 'utf8')
-        .update(fileData)
+        .update(sourceText)
         .update('\0', 'utf8')
-        .update(path.relative(rootDir, filename))
+        .update(path.relative(config.rootDir, sourcePath))
         .update('\0', 'utf8')
         .update(configString)
         .update('\0', 'utf8')
@@ -135,9 +134,13 @@ const createTransformer = (
         .update(process.env.BABEL_ENV || '')
         .digest('hex');
     },
-    process(src, filename, config, transformOptions) {
+    process(sourceText, sourcePath, transformOptions) {
       const babelOptions = {
-        ...loadBabelConfig(config.cwd, filename, transformOptions).options,
+        ...loadBabelConfig(
+          transformOptions.config.cwd,
+          sourcePath,
+          transformOptions,
+        ).options,
       };
 
       if (transformOptions?.instrument) {
@@ -148,14 +151,14 @@ const createTransformer = (
             babelIstanbulPlugin,
             {
               // files outside `cwd` will not be instrumented
-              cwd: config.rootDir,
+              cwd: transformOptions.config.rootDir,
               exclude: [],
             },
           ],
         ]);
       }
 
-      const transformResult = babelTransform(src, babelOptions);
+      const transformResult = babelTransform(sourceText, babelOptions);
 
       if (transformResult) {
         const {code, map} = transformResult;
@@ -164,7 +167,7 @@ const createTransformer = (
         }
       }
 
-      return src;
+      return sourceText;
     },
   };
 };

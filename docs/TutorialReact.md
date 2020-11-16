@@ -338,3 +338,5 @@ module.exports = babelJest.createTransformer({
   presets: ['my-custom-preset'],
 });
 ```
+
+See [dedicated docs](CodeTransformation.md#writing-custom-transformers) for more details.
