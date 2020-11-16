@@ -22,7 +22,7 @@ If you override the `transform` configuration option `babel-jest` will no longer
 You can write you own transformer. The API of a transformer is as follows:
 
 ```ts
-interface Transformer {
+interface Transformer<OptionType = unknown> {
   /**
    * Indicates if the transformer is capabale of instrumenting the code for code coverage.
    *
@@ -30,7 +30,7 @@ interface Transformer {
    * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
    */
   canInstrument?: boolean;
-  createTransformer?: (options?: unknown) => Transformer;
+  createTransformer?: (options?: OptionType) => Transformer;
 
   getCacheKey?: (
     sourceText: string,

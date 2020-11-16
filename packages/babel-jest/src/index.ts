@@ -9,8 +9,6 @@ import {createHash} from 'crypto';
 import * as path from 'path';
 import {
   PartialConfig,
-  PluginItem,
-  TransformCaller,
   TransformOptions,
   transformSync as babelTransform,
 } from '@babel/core';
@@ -28,22 +26,12 @@ const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
 const babelIstanbulPlugin = require.resolve('babel-plugin-istanbul');
 
-// Narrow down the types
-interface BabelJestTransformer extends Transformer {
-  canInstrument: true;
-}
-interface BabelJestTransformOptions extends TransformOptions {
-  caller: TransformCaller;
-  compact: false;
-  plugins: Array<PluginItem>;
-  presets: Array<PluginItem>;
-  sourceMaps: 'both';
-}
+type CreateTransformer = Transformer<TransformOptions>['createTransformer'];
 
-const createTransformer = (userOptions?: unknown): BabelJestTransformer => {
-  const inputOptions: TransformOptions =
-    (userOptions as TransformOptions) ?? {};
-  const options: BabelJestTransformOptions = {
+const createTransformer: CreateTransformer = userOptions => {
+  const inputOptions = userOptions ?? {};
+
+  const options = {
     ...inputOptions,
     caller: {
       name: 'babel-jest',
@@ -57,7 +45,7 @@ const createTransformer = (userOptions?: unknown): BabelJestTransformer => {
     plugins: inputOptions.plugins ?? [],
     presets: (inputOptions.presets ?? []).concat(jestPresetPath),
     sourceMaps: 'both',
-  };
+  } as const;
 
   function loadBabelConfig(
     cwd: Config.Path,
@@ -172,8 +160,8 @@ const createTransformer = (userOptions?: unknown): BabelJestTransformer => {
   };
 };
 
-const transformer: BabelJestTransformer & {
-  createTransformer: (options?: TransformOptions) => BabelJestTransformer;
+const transformer: Transformer<TransformOptions> & {
+  createTransformer: CreateTransformer;
 } = {
   ...createTransformer(),
   // Assigned here so only the exported transformer has `createTransformer`,

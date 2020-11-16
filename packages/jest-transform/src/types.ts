@@ -56,9 +56,9 @@ export interface TransformOptions extends ReducedTransformOptions {
   configString: string;
 }
 
-export interface Transformer {
+export interface Transformer<OptionType = unknown> {
   canInstrument?: boolean;
-  createTransformer?: (options?: unknown) => Transformer;
+  createTransformer?: (options?: OptionType) => Transformer;
 
   getCacheKey?: (
     sourceText: string,
