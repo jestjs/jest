@@ -142,6 +142,9 @@ async function runTestInternal(
   const environment = new TestEnvironment(config, {
     console: testConsole,
     docblockPragmas,
+    globalConfig: {
+      updateSnapshot: globalConfig.updateSnapshot,
+    },
     testPath: path,
   });
   const leakDetector = config.detectLeaks

@@ -18,6 +18,7 @@ type JestMockSpyOn = typeof jestMock.spyOn;
 export type EnvironmentContext = Partial<{
   console: Console;
   docblockPragmas: Record<string, string | Array<string>>;
+  globalConfig: Pick<Config.GlobalConfig, 'updateSnapshot'>;
   testPath: Config.Path;
 }>;
 
