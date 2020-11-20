@@ -4,9 +4,9 @@
 __metadata:
   version: 4
 
-"foo@link:./lib::locator=root-workspace-0b6124%40workspace%3A.":
+"foo@portal:./lib::locator=root-workspace-0b6124%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "foo@link:./lib::locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "foo@portal:./lib::locator=root-workspace-0b6124%40workspace%3A."
   languageName: node
   linkType: soft
 
@@ -14,13 +14,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
-    foo: "link:./lib"
-    undeclared: "link:./undeclared-dependency"
+    foo: "portal:./lib"
+    undeclared: "portal:./undeclared-dependency"
   languageName: unknown
   linkType: soft
 
-"undeclared@link:./undeclared-dependency::locator=root-workspace-0b6124%40workspace%3A.":
+"undeclared@portal:./undeclared-dependency::locator=root-workspace-0b6124%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "undeclared@link:./undeclared-dependency::locator=root-workspace-0b6124%40workspace%3A."
+  resolution: "undeclared@portal:./undeclared-dependency::locator=root-workspace-0b6124%40workspace%3A."
   languageName: node
   linkType: soft
