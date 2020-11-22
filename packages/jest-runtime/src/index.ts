@@ -95,6 +95,16 @@ const defaultTransformOptions: InternalModuleOptions = {
 type InitialModule = Omit<Module, 'require' | 'parent' | 'paths'>;
 type ModuleRegistry = Map<string, InitialModule | Module>;
 
+// These are modules that we know
+// * are safe to require from the outside (not stateful, not prone to errors passing in instances from different realms), and
+// * take sufficiently long to require to warrant an optimization.
+// When required from the outside, they use the worker's require cache and are thus
+// only loaded once per worker, not once per test file.
+// Note that this only applies when they are required in an internal context;
+// users who require one of these modules in their tests will still get the module from inside the VM.
+// Prefer listing a module here only if it is impractical to use the jest-resolve-outside-vm-option where it is required,
+// e.g. because there are many require sites spread across the dependency graph.
+const INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES = new Set(['chalk']);
 const JEST_RESOLVE_OUTSIDE_VM_OPTION = Symbol.for(
   'jest-resolve-outside-vm-option',
 );
@@ -660,6 +670,12 @@ export default class Runtime {
 
   requireInternalModule<T = unknown>(from: Config.Path, to?: string): T {
     if (to) {
+      const require = (
+        nativeModule.createRequire ?? nativeModule.createRequireFromPath
+      )(from);
+      if (INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES.has(to)) {
+        return require(to);
+      }
       const outsideJestVmPath = decodePossibleOutsideJestVmPath(to);
       if (outsideJestVmPath) {
         return require(outsideJestVmPath);
