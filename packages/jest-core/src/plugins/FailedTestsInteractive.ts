@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {
@@ -14,9 +21,7 @@ export default class FailedTestsInteractivePlugin extends BaseWatchPlugin {
 
   apply(hooks: JestHookSubscriber): void {
     hooks.onTestRunComplete(results => {
-      this._failedTestAssertions = this.getFailedSnapshotTestAssertions(
-        results,
-      );
+      this._failedTestAssertions = this.getFailedTestAssertions(results);
 
       if (this._manager.isActive()) this._manager.updateWithResults(results);
     });
@@ -41,7 +46,13 @@ export default class FailedTestsInteractivePlugin extends BaseWatchPlugin {
     updateConfigAndRun: UpdateConfigCallback,
   ): Promise<void> {
     return new Promise(resolve => {
-      if (!this._failedTestAssertions?.length) return resolve();
+      if (
+        !this._failedTestAssertions ||
+        this._failedTestAssertions.length === 0
+      ) {
+        resolve();
+        return;
+      }
 
       this._manager.run(this._failedTestAssertions, failure => {
         updateConfigAndRun({
@@ -50,12 +61,14 @@ export default class FailedTestsInteractivePlugin extends BaseWatchPlugin {
           testPathPattern: failure?.path || '',
         });
 
-        if (!this._manager.isActive()) resolve();
+        if (!this._manager.isActive()) {
+          resolve();
+        }
       });
     });
   }
 
-  private getFailedSnapshotTestAssertions(
+  private getFailedTestAssertions(
     results: AggregatedResult,
   ): Array<AssertionLocation> {
     const failedTestPaths: Array<AssertionLocation> = [];

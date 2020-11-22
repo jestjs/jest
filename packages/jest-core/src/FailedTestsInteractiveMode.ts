@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 import ansiEscapes = require('ansi-escapes');
 import chalk = require('chalk');
 import type {AggregatedResult, AssertionLocation} from '@jest/test-result';
@@ -30,7 +37,9 @@ export default class FailedTestsInteractiveMode {
   put(key: string): void {
     switch (key) {
       case 's':
-        if (this._skippedNum === this._testAssertions.length) break;
+        if (this._skippedNum === this._testAssertions.length) {
+          break;
+        }
 
         this._skippedNum += 1;
         // move skipped test to the end
@@ -61,12 +70,12 @@ export default class FailedTestsInteractiveMode {
   }
 
   run(
-    failedSnapshotTestAssertions: Array<AssertionLocation>,
+    failedTestAssertions: Array<AssertionLocation>,
     updateConfig: RunnerUpdateFunction,
   ): void {
-    if (!failedSnapshotTestAssertions.length) return;
+    if (failedTestAssertions.length === 0) return;
 
-    this._testAssertions = [...failedSnapshotTestAssertions];
+    this._testAssertions = [...failedTestAssertions];
     this._countPaths = this._testAssertions.length;
     this._updateTestRunnerConfig = updateConfig;
     this._isActive = true;
@@ -74,7 +83,7 @@ export default class FailedTestsInteractiveMode {
   }
 
   updateWithResults(results: AggregatedResult): void {
-    if (!results.snapshot.failure && results.numFailedTests) {
+    if (!results.snapshot.failure && results.numFailedTests > 0) {
       return this._drawUIOverlay();
     }
 
@@ -108,9 +117,9 @@ export default class FailedTestsInteractiveMode {
 
     let stats = `${pluralize('test', this._countPaths)} reviewed`;
 
-    if (this._skippedNum) {
+    if (this._skippedNum > 0) {
       const skippedText = chalk.bold.yellow(
-        pluralize('snapshot', this._skippedNum) + ' skipped',
+        pluralize('test', this._skippedNum) + ' skipped',
       );
 
       stats = `${stats}, ${skippedText}`;
@@ -136,9 +145,9 @@ export default class FailedTestsInteractiveMode {
     const numRemaining = this._countPaths - numPass - this._skippedNum;
     let stats = `${pluralize('test', numRemaining)} remaining`;
 
-    if (this._skippedNum) {
+    if (this._skippedNum > 0) {
       const skippedText = chalk.bold.yellow(
-        pluralize('snapshot', this._skippedNum) + ' skipped',
+        pluralize('test', this._skippedNum) + ' skipped',
       );
 
       stats = `${stats}, ${skippedText}`;
