@@ -102,6 +102,10 @@ type MockFunctionState<T, Y extends Array<unknown>> = {
   instances: Array<T>;
   invocationCallOrder: Array<number>;
   /**
+   * Getter for retrieving the last call arguments
+   */
+  lastCall?: Y;
+  /**
    * List of results of calls to the mock function.
    */
   results: Array<MockFunctionResult>;
@@ -456,6 +460,9 @@ class ModuleMockerClass {
       state = this._defaultMockState();
       this._mockState.set(f, state);
     }
+
+    state.lastCall = state.calls[state.calls.length - 1];
+
     return state;
   }
 
@@ -476,6 +483,7 @@ class ModuleMockerClass {
       calls: [],
       instances: [],
       invocationCallOrder: [],
+      lastCall: undefined,
       results: [],
     };
   }
