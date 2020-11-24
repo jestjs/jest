@@ -31,6 +31,7 @@
 - `[jest-config]` [**BREAKING**] Remove `enabledTestsMap` config, use `filter` instead ([#10787](https://github.com/facebook/jest/pull/10787))
 - `[jest-resolve]` [**BREAKING**] Migrate to ESM ([#10688](https://github.com/facebook/jest/pull/10688))
 - `[jest-repl, jest-runtime]` [**BREAKING**] Move the `jest-runtime` CLI into `jest-repl` ([#10016](https://github.com/facebook/jest/pull/10016))
+- `[jest-util]` No longer detecting enumerable when adding domain ([#10862](https://github.com/facebook/jest/pull/10862))
 
 ### Performance
 
