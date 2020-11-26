@@ -2106,7 +2106,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/types@^26.6.2, @jest/types@workspace:packages/jest-types":
+"@jest/types@^26.6.1, @jest/types@^26.6.2, @jest/types@workspace:packages/jest-types":
   version: 0.0.0-use.local
   resolution: "@jest/types@workspace:packages/jest-types"
   dependencies:
@@ -3304,9 +3304,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@testing-library/dom@*":
-  version: 7.26.5
-  resolution: "@testing-library/dom@npm:7.26.5"
+"@testing-library/dom@npm:^7.28.1":
+  version: 7.28.1
+  resolution: "@testing-library/dom@npm:7.28.1"
   dependencies:
     "@babel/code-frame": ^7.10.4
     "@babel/runtime": ^7.12.5
@@ -3315,24 +3315,8 @@ __metadata:
     chalk: ^4.1.0
     dom-accessibility-api: ^0.5.4
     lz-string: ^1.4.4
-    pretty-format: ^26.4.2
-  checksum: 28805f72d951831cd5904c6332292152679269c9196b9b302319168f6ec2555ae7b7a1f013cc7b79c1ab24235a84624ff868fa6cdf7e2cc77bcd8b78af0d7004
-  languageName: node
-  linkType: hard
-
-"@testing-library/dom@patch:@testing-library/dom@*#./patches/dom-testing.diff::locator=%40jest%2Fmonorepo%40workspace%3A.":
-  version: 7.26.5
-  resolution: "@testing-library/dom@patch:@testing-library/dom@npm%3A7.26.5#./patches/dom-testing.diff::version=7.26.5&hash=332747&locator=%40jest%2Fmonorepo%40workspace%3A."
-  dependencies:
-    "@babel/code-frame": ^7.10.4
-    "@babel/runtime": ^7.12.5
-    "@types/aria-query": ^4.2.0
-    aria-query: ^4.2.2
-    chalk: ^4.1.0
-    dom-accessibility-api: ^0.5.4
-    lz-string: ^1.4.4
-    pretty-format: ^26.4.2
-  checksum: 3009ef8dd59259e762976faa5b5277244d037d68d30365f46987ac5c602eab3d65ab5d2974ae8dd6a068e423e8132dbc624c2bfb31949c7c6ac3cd3853c718e5
+    pretty-format: ^26.6.2
+  checksum: 1ff88e7637de3d80862091b5d55a0ca383a6b0430b4ffbd486a0b7e3fb190e1535244a7bf02c61dac9b556003431663e49ee4224b820630a14b5edf62cb93c6b
   languageName: node
   linkType: hard
 
@@ -16275,7 +16259,7 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
-"pretty-format@^26.4.2, pretty-format@^26.6.2, pretty-format@workspace:packages/pretty-format":
+"pretty-format@^26.6.2, pretty-format@workspace:packages/pretty-format":
   version: 0.0.0-use.local
   resolution: "pretty-format@workspace:packages/pretty-format"
   dependencies:
@@ -16293,6 +16277,18 @@ fsevents@~2.1.2:
     react-test-renderer: "*"
   languageName: unknown
   linkType: soft
+
+"pretty-format@npm:26.6.1":
+  version: 26.6.1
+  resolution: "pretty-format@npm:26.6.1"
+  dependencies:
+    "@jest/types": ^26.6.1
+    ansi-regex: ^5.0.0
+    ansi-styles: ^4.0.0
+    react-is: ^17.0.1
+  checksum: a9e31328106e91efde5b49aef7f7b2e668bdaec4a890598bf7ee32560c628738341f5ac5a2985cfbf627e168325492a8c72892b64a0ecea0c9224f93c27f55f2
+  languageName: node
+  linkType: hard
 
 "pretty-format@npm:^24.7.0, pretty-format@npm:^24.9.0":
   version: 24.9.0
