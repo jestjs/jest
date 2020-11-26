@@ -23,7 +23,7 @@
   },
   "devDependencies": {
     "@types/react": "*",
-    "@types/react-is": "^16.7.1",
+    "@types/react-is": "^17.0.0",
     "@types/react-test-renderer": "*",
     "immutable": "4.0.0-rc.9",
     "jest-util": "^26.6.2",
