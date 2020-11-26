@@ -6,10 +6,10 @@
  */
 
 import React from 'react';
-import prettyFormat from '..';
+import {plugins} from '../';
 import setPrettyPrint from './setPrettyPrint';
 
-const {ReactElement} = prettyFormat.plugins;
+const {ReactElement} = plugins;
 
 setPrettyPrint([ReactElement]);
 

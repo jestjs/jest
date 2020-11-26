@@ -2106,7 +2106,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/types@^26.6.2, @jest/types@workspace:packages/jest-types":
+"@jest/types@^26.6.1, @jest/types@^26.6.2, @jest/types@workspace:packages/jest-types":
   version: 0.0.0-use.local
   resolution: "@jest/types@workspace:packages/jest-types"
   dependencies:
@@ -16277,6 +16277,18 @@ fsevents@~2.1.2:
     react-test-renderer: "*"
   languageName: unknown
   linkType: soft
+
+"pretty-format@npm:26.6.1":
+  version: 26.6.1
+  resolution: "pretty-format@npm:26.6.1"
+  dependencies:
+    "@jest/types": ^26.6.1
+    ansi-regex: ^5.0.0
+    ansi-styles: ^4.0.0
+    react-is: ^17.0.1
+  checksum: a9e31328106e91efde5b49aef7f7b2e668bdaec4a890598bf7ee32560c628738341f5ac5a2985cfbf627e168325492a8c72892b64a0ecea0c9224f93c27f55f2
+  languageName: node
+  linkType: hard
 
 "pretty-format@npm:^24.7.0, pretty-format@npm:^24.9.0":
   version: 24.9.0

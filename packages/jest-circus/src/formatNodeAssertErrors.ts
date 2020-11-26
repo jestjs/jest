@@ -14,7 +14,7 @@ import {
   printExpected,
   printReceived,
 } from 'jest-matcher-utils';
-import prettyFormat = require('pretty-format');
+import prettyFormat from 'pretty-format';
 
 interface AssertionErrorWithStack extends AssertionError {
   stack: string;

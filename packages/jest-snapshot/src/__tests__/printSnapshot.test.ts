@@ -8,7 +8,7 @@
 import ansiRegex = require('ansi-regex');
 import styles = require('ansi-styles');
 import chalk = require('chalk');
-import format = require('pretty-format');
+import format from 'pretty-format';
 import {
   aBackground2,
   aBackground3,

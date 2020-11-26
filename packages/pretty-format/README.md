@@ -14,11 +14,11 @@ $ yarn add pretty-format
 ## Usage
 
 ```js
-const prettyFormat = require('pretty-format'); // CommonJS
+const {format: prettyFormat} = require('pretty-format'); // CommonJS
 ```
 
 ```js
-import prettyFormat from 'pretty-format'; // ES2015 modules
+import {format as prettyFormat} from 'pretty-format'; // ES2015 modules
 ```
 
 ```js
@@ -102,17 +102,18 @@ The `pretty-format` package provides some built-in plugins, including:
 // CommonJS
 const React = require('react');
 const renderer = require('react-test-renderer');
-const prettyFormat = require('pretty-format');
-const ReactElement = prettyFormat.plugins.ReactElement;
-const ReactTestComponent = prettyFormat.plugins.ReactTestComponent;
+const {format: prettyFormat, plugins} = require('pretty-format');
+
+const {ReactElement, ReactTestComponent} = plugins;
 ```
 
 ```js
+// ES2015 modules and destructuring assignment
 import React from 'react';
 import renderer from 'react-test-renderer';
-// ES2015 modules and destructuring assignment
-import prettyFormat from 'pretty-format';
-const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
+import {plugins, format as prettyFormat} from 'pretty-format';
+
+const {ReactElement, ReactTestComponent} = plugins;
 ```
 
 ```js
