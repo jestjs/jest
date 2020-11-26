@@ -23,7 +23,7 @@ export default function getMaxWorkers(
   } else {
     // In watch mode, Jest should be unobtrusive and not use all available CPUs.
     const cpusInfo = cpus();
-    const numCpus = cpusInfo ? cpusInfo.length : 1;
+    const numCpus = cpusInfo?.length ?? 1;
     const isWatchModeEnabled = argv.watch || argv.watchAll;
     return Math.max(
       isWatchModeEnabled ? Math.floor(numCpus / 2) : numCpus - 1,
