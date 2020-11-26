@@ -101,7 +101,21 @@ test(<span class="hljs-string">'waits 1 second before ending the game'</span>, (
   expect(setTimeout).toHaveBeenLastCalledWith(expect.any(<span class="hljs-built_in">Function</span>), <span class="hljs-number">1000</span>);
 });
 </code></pre>
-<p>在这里我们通过<code>jest.useFakeTimers();</code>来模拟定时器函数。 通过mock函数可以模拟setTimeout和其他的定时器函数。 如果你需要在一个文件或一个describe块中运行多次测试，可以在每次测试前手动添加<code>jest.useFakeTimers();</code>，或者在<code>beforeEach</code>中添加。 如果不这样做的话将导致内部的定时器不被重置。</p>
+<p>Here we enable fake timers by calling <code>jest.useFakeTimers()</code>. This mocks out <code>setTimeout</code> and other timer functions with mock functions. Timers can be restored to their normal behavior with <code>jest.useRealTimers()</code>.</p>
+<p>While you can call <code>jest.useFakeTimers()</code> or <code>jest.useRealTimers()</code> from anywhere (top level, inside an <code>it</code> block, etc.), it is a <strong>global operation</strong> and will affect other tests within the same file. Additionally, you need to call <code>jest.useFakeTimers()</code> to reset internal counters before each test. If you plan to not use fake timers in all your tests, you will want to clean up manually, as otherwise the faked timers will leak across tests:</p>
+<pre><code class="hljs css language-javascript">afterEach(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  jest.useRealTimers();
+});
+
+test(<span class="hljs-string">'do something with fake timers'</span>, () =&gt; {
+  jest.useFakeTimers();
+  <span class="hljs-comment">// ...</span>
+});
+
+test(<span class="hljs-string">'do something with real timers'</span>, () =&gt; {
+  <span class="hljs-comment">// ...</span>
+});
+</code></pre>
 <h2><a class="anchor" aria-hidden="true" id="run-all-timers"></a><a href="#run-all-timers" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Run All Timers</h2>
 <p>对于这个模块我们还需要写一个测试，用于判断回调函数是否在1秒后被调用的。 为此，我们将使用Jest的定时器控制API，用于在测试中将时间“快进”到正确的时间点。</p>
 <pre><code class="hljs css language-javascript">test(<span class="hljs-string">'calls the callback after 1 second'</span>, () =&gt; {
