@@ -41,11 +41,11 @@ const jestAdapter = async (
     testPath,
   });
 
-  if (config.timers === 'fake' || config.timers === 'legacy') {
+  if (config.timers === 'fake' || config.timers === 'modern') {
     // during setup, this cannot be null (and it's fine to explode if it is)
-    environment.fakeTimers!.useFakeTimers();
-  } else if (config.timers === 'modern') {
     environment.fakeTimersModern!.useFakeTimers();
+  } else if (config.timers === 'legacy') {
+    environment.fakeTimers!.useFakeTimers();
   }
 
   globals.beforeEach(() => {
@@ -60,7 +60,7 @@ const jestAdapter = async (
     if (config.resetMocks) {
       runtime.resetAllMocks();
 
-      if (config.timers === 'fake') {
+      if (config.timers === 'legacy') {
         // during setup, this cannot be null (and it's fine to explode if it is)
         environment.fakeTimers!.useFakeTimers();
       }
