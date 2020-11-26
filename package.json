@@ -62,7 +62,7 @@
     "jest-junit": "^12.0.0",
     "jest-mock": "workspace:*",
     "jest-runner-tsd": "^1.1.0",
-    "jest-silent-reporter": "^0.2.1",
+    "jest-silent-reporter": "^0.3.0",
     "jest-snapshot": "workspace:*",
     "jest-snapshot-serializer-raw": "^1.1.0",
     "jest-watch-typeahead": "^0.6.0",
@@ -85,7 +85,7 @@
     "tempy": "^1.0.0",
     "throat": "^5.0.0",
     "ts-node": "^9.0.0",
-    "type-fest": "^0.18.1",
+    "type-fest": "^0.20.1",
     "typescript": "^4.0.2",
     "which": "^2.0.1"
   },
