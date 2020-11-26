@@ -9,6 +9,7 @@ import * as path from 'path';
 import co from 'co';
 import dedent = require('dedent');
 import isGeneratorFn from 'is-generator-fn';
+import slash = require('slash');
 import StackUtils = require('stack-utils');
 import type {AssertionResult, Status} from '@jest/test-result';
 import type {Circus} from '@jest/types';
@@ -18,7 +19,7 @@ import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
-const jestEachBuildDir = path.dirname(require.resolve('jest-each'));
+const jestEachBuildDir = slash(path.dirname(require.resolve('jest-each')));
 
 export const makeDescribe = (
   name: Circus.BlockName,
