@@ -501,7 +501,7 @@ test('some test', () => {
 });
 ```
 
-_Note: This option is only supported using `jest-circus`._
+_Note: This option is only supported using the default `jest-circus`. test runner_
 
 ### `maxConcurrency` [number]
 
@@ -1012,6 +1012,14 @@ The class may optionally expose an asynchronous `handleTestEvent` method to bind
 
 Any docblock pragmas in test files will be passed to the environment constructor and can be used for per-test configuration. If the pragma does not have a value, it will be present in the object with its value set to an empty string. If the pragma is not present, it will not be present in the object.
 
+To use this class as your custom environment, refer to it by its full path within the project. For example, if your class is stored in `my-custom-environment.js` in some subfolder of your project, then the annotation might looke like this:
+
+```js
+/**
+ * @jest-environment ./src/test/my-custom-environment
+ */
+```
+
 _Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment._
 
 Example:
@@ -1060,6 +1068,9 @@ module.exports = CustomEnvironment;
 
 ```js
 // my-test-suite
+/**
+ * @jest-environment ./my-custom-environment
+ */
 let someGlobalObject;
 
 beforeAll(() => {
@@ -1170,9 +1181,9 @@ This option allows the use of a custom results processor. This processor must be
 
 ### `testRunner` [string]
 
-Default: `jasmine2`
+Default: `jest-circus/runner`
 
-This option allows the use of a custom test runner. The default is jasmine2. A custom test runner can be provided by specifying a path to a test runner implementation.
+This option allows the use of a custom test runner. The default is `jest-circus`. A custom test runner can be provided by specifying a path to a test runner implementation.
 
 The test runner module must export a function with the following signature:
 
@@ -1252,8 +1263,7 @@ Examples of such compilers include:
 
 - [Babel](https://babeljs.io/)
 - [TypeScript](http://www.typescriptlang.org/)
-- [async-to-gen](http://github.com/leebyron/async-to-gen#jest)
-- To build your own please visit the [Custom Transformer](TutorialReact.md#custom-transformers) section
+- To build your own please visit the [Custom Transformer](CodeTransformation.md#writing-custom-transformers) section
 
 You can pass configuration to a transformer like `{filePattern: ['path-to-transformer', {options}]}` For example, to configure babel-jest for non-default behavior, `{"\\.js$": ['babel-jest', {rootMode: "upward"}]}`
 

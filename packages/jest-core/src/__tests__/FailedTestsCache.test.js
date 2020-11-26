@@ -59,11 +59,5 @@ describe('FailedTestsCache', () => {
         path: '/path/to/failed_2.js',
       },
     ]);
-    expect(failedTestsCache.updateConfig({})).toMatchObject({
-      enabledTestsMap: {
-        '/path/to/failed_1.js': {'test 3': true, 'test 4': true},
-        '/path/to/failed_2.js': {'test 5': true},
-      },
-    });
   });
 });

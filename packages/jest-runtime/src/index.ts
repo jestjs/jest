@@ -48,8 +48,6 @@ import {escapePathForRegex} from 'jest-regex-util';
 import Resolver from 'jest-resolve';
 import Snapshot = require('jest-snapshot');
 import {createDirectory, deepCyclicCopy} from 'jest-util';
-import {run as cliRun} from './cli';
-import {options as cliOptions} from './cli/args';
 import {
   createOutsideJestVmPath,
   decodePossibleOutsideJestVmPath,
@@ -92,11 +90,11 @@ const defaultTransformOptions: InternalModuleOptions = {
 type InitialModule = Omit<Module, 'require' | 'parent' | 'paths'>;
 type ModuleRegistry = Map<string, InitialModule | Module>;
 
-const OUTSIDE_JEST_VM_RESOLVE_OPTION = Symbol.for(
-  'OUTSIDE_JEST_VM_RESOLVE_OPTION',
+const JEST_RESOLVE_OUTSIDE_VM_OPTION = Symbol.for(
+  'jest-resolve-outside-vm-option',
 );
 type ResolveOptions = Parameters<typeof require.resolve>[1] & {
-  [OUTSIDE_JEST_VM_RESOLVE_OPTION]?: true;
+  [JEST_RESOLVE_OUTSIDE_VM_OPTION]?: true;
 };
 
 type StringMap = Map<string, string>;
@@ -351,12 +349,12 @@ export default class Runtime {
     });
   }
 
-  static runCLI(args?: Config.Argv, info?: Array<string>): Promise<void> {
-    return cliRun(args, info);
+  static async runCLI(): Promise<never> {
+    throw new Error('The jest-runtime CLI has been moved into jest-repl');
   }
 
-  static getCLIOptions(): typeof cliOptions {
-    return cliOptions;
+  static getCLIOptions(): never {
+    throw new Error('The jest-runtime CLI has been moved into jest-repl');
   }
 
   // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
@@ -1402,7 +1400,7 @@ export default class Runtime {
         resolveOptions,
       );
       if (
-        resolveOptions?.[OUTSIDE_JEST_VM_RESOLVE_OPTION] &&
+        resolveOptions?.[JEST_RESOLVE_OUTSIDE_VM_OPTION] &&
         options?.isInternalModule
       ) {
         return createOutsideJestVmPath(resolved);

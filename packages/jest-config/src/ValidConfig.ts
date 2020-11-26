@@ -114,7 +114,7 @@ const initialOptions: Config.InitialOptions = {
     ['/__tests__/\\.test\\.[jt]sx?$', '/__tests__/\\.spec\\.[jt]sx?$'],
   ),
   testResultsProcessor: 'processor-node-module',
-  testRunner: 'jasmine2',
+  testRunner: 'circus',
   testSequencer: '@jest/test-sequencer',
   testTimeout: 5000,
   testURL: 'http://localhost',
@@ -128,6 +128,7 @@ const initialOptions: Config.InitialOptions = {
   useStderr: false,
   verbose: false,
   watch: false,
+  watchAll: false,
   watchPathIgnorePatterns: ['<rootDir>/e2e/'],
   watchPlugins: [
     'path/to/yourWatchPlugin',

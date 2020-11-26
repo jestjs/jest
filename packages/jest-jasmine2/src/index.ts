@@ -159,14 +159,7 @@ async function jasmine2(
     }
   }
 
-  if (globalConfig.enabledTestsMap) {
-    env.specFilter = (spec: Spec) => {
-      const suiteMap =
-        globalConfig.enabledTestsMap &&
-        globalConfig.enabledTestsMap[spec.result.testPath];
-      return (suiteMap && suiteMap[spec.result.fullName]) || false;
-    };
-  } else if (globalConfig.testNamePattern) {
+  if (globalConfig.testNamePattern) {
     const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');
     env.specFilter = (spec: Spec) => testNameRegex.test(spec.getFullName());
   }

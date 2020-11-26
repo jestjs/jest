@@ -17,6 +17,7 @@
     "@jest/console": "^26.6.2",
     "@jest/environment": "^26.6.2",
     "@jest/test-result": "^26.6.2",
+    "@jest/transform": "^26.6.2",
     "@jest/types": "^26.6.2",
     "@types/node": "*",
     "chalk": "^4.0.0",
@@ -39,7 +40,7 @@
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
     "@types/source-map-support": "^0.5.0",
-    "jest-circus": "^26.6.3"
+    "jest-jasmine2": "^26.6.3"
   },
   "engines": {
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"

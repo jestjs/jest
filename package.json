@@ -1,5 +1,7 @@
 {
+  "name": "@jest/monorepo",
   "private": true,
+  "version": "0.0.0",
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@babel/plugin-proposal-class-properties": "^7.3.4",
@@ -60,7 +62,7 @@
     "jest-junit": "^12.0.0",
     "jest-mock": "workspace:*",
     "jest-runner-tsd": "^1.1.0",
-    "jest-silent-reporter": "^0.2.1",
+    "jest-silent-reporter": "^0.3.0",
     "jest-snapshot": "workspace:*",
     "jest-snapshot-serializer-raw": "^1.1.0",
     "jest-watch-typeahead": "^0.6.0",
@@ -83,7 +85,7 @@
     "tempy": "^1.0.0",
     "throat": "^5.0.0",
     "ts-node": "^9.0.0",
-    "type-fest": "^0.16.0",
+    "type-fest": "^0.20.1",
     "typescript": "^4.0.2",
     "which": "^2.0.1"
   },
@@ -96,6 +98,8 @@
     "clean-all": "yarn clean-e2e && yarn build-clean && rimraf './packages/*/node_modules' && rimraf './node_modules'",
     "clean-e2e": "node ./scripts/cleanE2e.js",
     "jest": "node ./packages/jest-cli/bin/jest.js",
+    "jest-jasmine": "JEST_JASMINE=1 yarn jest",
+    "jest-jasmine-ci": "yarn jest-jasmine --color --config jest.config.ci.js",
     "jest-coverage": "yarn jest --coverage",
     "lint": "eslint . --cache --ext js,jsx,ts,tsx,md",
     "lint:prettier": "prettier '**/*.{md,yml,yaml}' 'website/static/**/*.{css,js}' --write --ignore-path .gitignore",
@@ -143,6 +147,7 @@
   "resolutions": {
     "@testing-library/dom": "patch:@testing-library/dom@*#./patches/dom-testing.diff",
     "@types/jest/jest-diff": "^25.1.0",
-    "@types/jest/pretty-format": "^25.1.0"
+    "@types/jest/pretty-format": "^25.1.0",
+    "fbjs-scripts": "patch:fbjs-scripts@^1.1.0#./patches/fbjs-scripts.patch"
   }
 }

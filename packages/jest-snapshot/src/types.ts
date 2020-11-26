@@ -31,6 +31,3 @@ export type ExpectationResult = {
   pass: boolean;
   message: () => string;
 };
-
-export type BabelTraverse = typeof import('@babel/traverse').default;
-export type Prettier = typeof import('prettier');

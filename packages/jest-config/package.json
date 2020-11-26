@@ -30,6 +30,7 @@
     "deepmerge": "^4.2.2",
     "glob": "^7.1.1",
     "graceful-fs": "^4.2.4",
+    "jest-circus": "^26.6.3",
     "jest-environment-jsdom": "^26.6.2",
     "jest-environment-node": "^26.6.2",
     "jest-get-type": "^26.3.0",

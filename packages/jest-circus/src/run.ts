@@ -34,8 +34,12 @@ const _runTestsForDescribeBlock = async (
   await dispatch({describeBlock, name: 'run_describe_start'});
   const {beforeAll, afterAll} = getAllHooksForDescribe(describeBlock);
 
-  for (const hook of beforeAll) {
-    await _callCircusHook({describeBlock, hook});
+  const isSkipped = describeBlock.mode === 'skip';
+
+  if (!isSkipped) {
+    for (const hook of beforeAll) {
+      await _callCircusHook({describeBlock, hook});
+    }
   }
 
   // Tests that fail and are retried we run after other tests
@@ -50,7 +54,7 @@ const _runTestsForDescribeBlock = async (
       }
       case 'test': {
         const hasErrorsBeforeTestRun = child.errors.length > 0;
-        await _runTest(child);
+        await _runTest(child, isSkipped);
 
         if (
           hasErrorsBeforeTestRun === false &&
@@ -72,24 +76,30 @@ const _runTestsForDescribeBlock = async (
       // Clear errors so retries occur
       await dispatch({name: 'test_retry', test});
 
-      await _runTest(test);
+      await _runTest(test, isSkipped);
       numRetriesAvailable--;
     }
   }
 
-  for (const hook of afterAll) {
-    await _callCircusHook({describeBlock, hook});
+  if (!isSkipped) {
+    for (const hook of afterAll) {
+      await _callCircusHook({describeBlock, hook});
+    }
   }
 
   await dispatch({describeBlock, name: 'run_describe_finish'});
 };
 
-const _runTest = async (test: Circus.TestEntry): Promise<void> => {
+const _runTest = async (
+  test: Circus.TestEntry,
+  parentSkipped: boolean,
+): Promise<void> => {
   await dispatch({name: 'test_start', test});
   const testContext = Object.create(null);
   const {hasFocusedTests, testNamePattern} = getState();
 
   const isSkipped =
+    parentSkipped ||
     test.mode === 'skip' ||
     (hasFocusedTests && test.mode !== 'only') ||
     (testNamePattern && !testNamePattern.test(getTestID(test)));

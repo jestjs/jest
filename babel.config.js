@@ -56,6 +56,7 @@ module.exports = {
     ['@babel/plugin-transform-modules-commonjs', {allowTopLevelThis: true}],
     '@babel/plugin-transform-strict-mode',
     '@babel/plugin-proposal-class-properties',
+    require.resolve('./scripts/babel-plugin-jest-require-outside-vm'),
   ],
   presets: [
     [
