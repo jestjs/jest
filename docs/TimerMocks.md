@@ -44,12 +44,12 @@ afterEach(() => {
   jest.useRealTimers();
 });
 
-it('should do something with fake timers', () => {
+test('do something with fake timers', () => {
   jest.useFakeTimers();
   // ...
 });
 
-it('should do something with real timers', () => {
+test('do something with real timers', () => {
   // ...
 });
 ```
