@@ -8,7 +8,7 @@
 export {alignedAnsiStyleSerializer} from './alignedAnsiStyleSerializer';
 
 export {
-  isJestCircusRun,
+  isJestJasmineRun,
   skipSuiteOnJasmine,
   skipSuiteOnJestCircus,
   onNodeVersions,

@@ -27,7 +27,7 @@ jobs:
       - store_test_results:
           path: reports/junit
 
-  test-jest-circus:
+  test-jest-jasmine:
     working_directory: ~/jest
     executor: node/default
     steps:
@@ -37,7 +37,7 @@ jobs:
           install-npm: false
       - node/install-packages: *install
       - run:
-          command: JEST_CIRCUS=1 yarn test-ci-partial && JEST_CIRCUS=1 yarn test-leak
+          command: JEST_JASMINE=1 yarn test-ci-partial && JEST_JASMINE=1 yarn test-leak
       - store_test_results:
           path: reports/junit
 
@@ -106,6 +106,6 @@ workflows:
       - test-node-12
       - test-node-14
       - test-node-15 # current
-      - test-jest-circus
+      - test-jest-jasmine
       - test-or-deploy-website:
           filters: *filter-ignore-gh-pages

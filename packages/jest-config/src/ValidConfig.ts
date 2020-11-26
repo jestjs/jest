@@ -114,7 +114,7 @@ const initialOptions: Config.InitialOptions = {
     ['/__tests__/\\.test\\.[jt]sx?$', '/__tests__/\\.spec\\.[jt]sx?$'],
   ),
   testResultsProcessor: 'processor-node-module',
-  testRunner: 'jasmine2',
+  testRunner: 'circus',
   testSequencer: '@jest/test-sequencer',
   testTimeout: 5000,
   testURL: 'http://localhost',
