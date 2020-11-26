@@ -41,7 +41,7 @@ import {
   shouldInstrument,
 } from '@jest/transform';
 import type {Config, Global} from '@jest/types';
-import HasteMap = require('jest-haste-map');
+import HasteMap, {ModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import jestMock = require('jest-mock');
 import {escapePathForRegex} from 'jest-regex-util';
@@ -334,7 +334,7 @@ export default class Runtime {
 
   static createResolver(
     config: Config.ProjectConfig,
-    moduleMap: HasteMap.ModuleMap,
+    moduleMap: ModuleMap,
   ): Resolver {
     return new Resolver(moduleMap, {
       defaultPlatform: config.haste.defaultPlatform,

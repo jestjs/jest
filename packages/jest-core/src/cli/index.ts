@@ -13,7 +13,7 @@ import type {AggregatedResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {ChangedFilesPromise} from 'jest-changed-files';
 import {readConfigs} from 'jest-config';
-import HasteMap = require('jest-haste-map');
+import type HasteMap from 'jest-haste-map';
 import Runtime, {Context} from 'jest-runtime';
 import {createDirectory, preRunMessage} from 'jest-util';
 import TestWatcher from '../TestWatcher';
