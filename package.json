@@ -98,6 +98,8 @@
     "clean-all": "yarn clean-e2e && yarn build-clean && rimraf './packages/*/node_modules' && rimraf './node_modules'",
     "clean-e2e": "node ./scripts/cleanE2e.js",
     "jest": "node ./packages/jest-cli/bin/jest.js",
+    "jest-circus": "JEST_CIRCUS=1 yarn jest",
+    "jest-circus-ci": "yarn jest-circus --color --config jest.config.ci.js",
     "jest-coverage": "yarn jest --coverage",
     "lint": "eslint . --cache --ext js,jsx,ts,tsx,md",
     "lint:prettier": "prettier '**/*.{md,yml,yaml}' 'website/static/**/*.{css,js}' --write --ignore-path .gitignore",
