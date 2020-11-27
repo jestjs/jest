@@ -45,9 +45,7 @@ We made a number of additions and improvements to the testing APIs which will he
 Here is an example of all how all the new APIs together will make testing more delightful:
 
 ```
-/**
- * @jest-environment node
- */
+/* @jest-environment node */
 
 test('compares apples and bananas', async () => {
   expect.hasAssertions(); // Ensure this test has at least one assertion.

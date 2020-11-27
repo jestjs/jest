@@ -914,9 +914,7 @@ The test environment that will be used for testing. The default environment in J
 By adding a `@jest-environment` docblock at the top of the file, you can specify another environment to be used for all tests in that file:
 
 ```js
-/**
- * @jest-environment jsdom
- */
+/* @jest-environment jsdom */
 
 test('use jsdom in this test file', () => {
   const element = document.createElement('div');
@@ -933,9 +931,7 @@ Any docblock pragmas in test files will be passed to the environment constructor
 To use this class as your custom environment, refer to it by its full path within the project. For example, if your class is stored in `my-custom-environment.js` in some subfolder of your project, then the annotation might looke like this:
 
 ```js
-/**
- * @jest-environment ./src/test/my-custom-environment
- */
+/* @jest-environment ./src/test/my-custom-environment */
 ```
 
 _Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment._
@@ -986,9 +982,7 @@ module.exports = CustomEnvironment;
 
 ```js
 // my-test-suite
-/**
- * @jest-environment ./my-custom-environment
- */
+/* @jest-environment ./my-custom-environment */
 let someGlobalObject;
 
 beforeAll(() => {
