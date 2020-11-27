@@ -64,6 +64,7 @@ export const initialize = async ({
   globals: Global.TestFrameworkGlobals;
   snapshotState: SnapshotStateType;
 }> => {
+  getRunnerState().testPath = testPath;
   if (globalConfig.testTimeout) {
     getRunnerState().testTimeout = globalConfig.testTimeout;
   }

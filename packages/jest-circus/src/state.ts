@@ -29,6 +29,7 @@ const INITIAL_STATE: Circus.State = {
   parentProcess: null,
   rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
   testNamePattern: null,
+  testPath: null,
   testTimeout: 5000,
   unhandledErrors: [],
 };
