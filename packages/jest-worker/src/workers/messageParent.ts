@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import fclone from 'fclone';
 import {PARENT_MESSAGE_CUSTOM} from '../types';
 
 const isWorkerThread = () => {
@@ -22,12 +23,14 @@ const messageParent = (
   parentProcess: NodeJS.Process = process,
 ): void => {
   try {
+    const nonCircularMessage = fclone(message);
+
     if (isWorkerThread()) {
       // `Require` here to support Node v10
       const {parentPort} = require('worker_threads');
-      parentPort.postMessage([PARENT_MESSAGE_CUSTOM, message]);
+      parentPort.postMessage([PARENT_MESSAGE_CUSTOM, nonCircularMessage]);
     } else if (typeof parentProcess.send === 'function') {
-      parentProcess.send([PARENT_MESSAGE_CUSTOM, message]);
+      parentProcess.send([PARENT_MESSAGE_CUSTOM, nonCircularMessage]);
     }
   } catch {
     throw new Error('"messageParent" can only be used inside a worker');

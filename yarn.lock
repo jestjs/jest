@@ -9069,6 +9069,13 @@ fbjs-scripts@^1.1.0:
   languageName: node
   linkType: hard
 
+"fclone@npm:^1.0.11":
+  version: 1.0.11
+  resolution: "fclone@npm:1.0.11"
+  checksum: f4a2c63c141dd2796745acbea3858704a86aec1985a226259c2a574e4b44596197b4fe4bea8b45950d0fb577a63ceef21b5e075016ee52f6401c06f6a0396a2d
+  languageName: node
+  linkType: hard
+
 "fd-slicer@npm:~1.1.0":
   version: 1.1.0
   resolution: "fd-slicer@npm:1.1.0"
@@ -12422,6 +12429,7 @@ fsevents@~2.1.2:
     "@types/merge-stream": ^1.1.2
     "@types/node": "*"
     "@types/supports-color": ^7.2.0
+    fclone: ^1.0.11
     get-stream: ^6.0.0
     merge-stream: ^2.0.0
     supports-color: ^8.0.0

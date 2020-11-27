@@ -48,6 +48,12 @@ beforeEach(() => {
           });
         },
 
+        fooReturnsCircular() {
+          const circular = {ref: null, some: 'thing'};
+          circular.ref = circular;
+          return circular;
+        },
+
         fooThrows() {
           throw mockError;
         },
@@ -375,4 +381,28 @@ it('throws if child is not forked', () => {
       [],
     ]);
   }).toThrow();
+});
+
+it('removes circular references from the message being sent', () => {
+  process.emit('message', [
+    CHILD_MESSAGE_INITIALIZE,
+    true, // Not really used here, but for flow type purity.
+    './my-fancy-worker',
+  ]);
+
+  process.emit('message', [
+    CHILD_MESSAGE_CALL,
+    true, // Not really used here, but for flow type purity.
+    'fooReturnsCircular',
+    [],
+  ]);
+
+  expect(process.send).toHaveBeenCalled();
+  expect(process.send.mock.calls[0][0]).toEqual([
+    PARENT_MESSAGE_OK,
+    {
+      ref: '[Circular]',
+      some: 'thing',
+    },
+  ]);
 });
