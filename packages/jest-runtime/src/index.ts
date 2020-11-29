@@ -43,7 +43,7 @@ import {
 import type {Config, Global} from '@jest/types';
 import HasteMap, {ModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
-import jestMock = require('jest-mock');
+import type {MockFunctionMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver from 'jest-resolve';
 import Snapshot = require('jest-snapshot');
@@ -165,11 +165,11 @@ export default class Runtime {
   private _mockFactories: Map<string, () => unknown>;
   private _mockMetaDataCache: Map<
     string,
-    jestMock.MockFunctionMetadata<unknown, Array<unknown>>
+    MockFunctionMetadata<unknown, Array<unknown>>
   >;
   private _mockRegistry: Map<string, any>;
   private _isolatedMockRegistry: Map<string, any> | null;
-  private _moduleMocker: typeof jestMock;
+  private _moduleMocker: ModuleMocker;
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
   private _esmoduleRegistry: Map<string, Promise<VMModule>>;
