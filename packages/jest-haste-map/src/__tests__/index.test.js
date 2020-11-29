@@ -192,7 +192,7 @@ describe('HasteMap', () => {
     console.warn = jest.fn();
     console.error = jest.fn();
 
-    HasteMap = require('../');
+    HasteMap = require('../').default;
     H = HasteMap.H;
 
     getCacheFilePath = HasteMap.getCacheFilePath;
@@ -225,7 +225,7 @@ describe('HasteMap', () => {
 
   it('creates valid cache file paths', () => {
     jest.resetModules();
-    HasteMap = require('../');
+    HasteMap = require('../').default;
 
     expect(
       HasteMap.getCacheFilePath('/', '@scoped/package', 'random-value'),
@@ -238,7 +238,7 @@ describe('HasteMap', () => {
 
   it('creates different cache file paths for different roots', () => {
     jest.resetModules();
-    const HasteMap = require('../');
+    const HasteMap = require('../').default;
     const hasteMap1 = new HasteMap({...defaultConfig, rootDir: '/root1'});
     const hasteMap2 = new HasteMap({...defaultConfig, rootDir: '/root2'});
     expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
@@ -246,7 +246,7 @@ describe('HasteMap', () => {
 
   it('creates different cache file paths for different dependency extractor cache keys', () => {
     jest.resetModules();
-    const HasteMap = require('../');
+    const HasteMap = require('../').default;
     const dependencyExtractor = require('./dependencyExtractor');
     const config = {
       ...defaultConfig,
@@ -261,7 +261,7 @@ describe('HasteMap', () => {
 
   it('creates different cache file paths for different hasteImplModulePath cache keys', () => {
     jest.resetModules();
-    const HasteMap = require('../');
+    const HasteMap = require('../').default;
     const hasteImpl = require('./haste_impl');
     hasteImpl.setCacheKey('foo');
     const hasteMap1 = new HasteMap(defaultConfig);
@@ -272,7 +272,7 @@ describe('HasteMap', () => {
 
   it('creates different cache file paths for different projects', () => {
     jest.resetModules();
-    const HasteMap = require('../');
+    const HasteMap = require('../').default;
     const hasteMap1 = new HasteMap({...defaultConfig, name: '@scoped/package'});
     const hasteMap2 = new HasteMap({...defaultConfig, name: '-scoped-package'});
     expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());

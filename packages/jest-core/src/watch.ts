@@ -11,7 +11,10 @@ import chalk = require('chalk');
 import exit = require('exit');
 import slash = require('slash');
 import type {Config} from '@jest/types';
-import HasteMap = require('jest-haste-map');
+import type {
+  ChangeEvent as HasteChangeEvent,
+  default as HasteMap,
+} from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
 import Resolver from 'jest-resolve';
 import type {Context} from 'jest-runtime';
@@ -234,7 +237,7 @@ export default function watch(
   hasteMapInstances.forEach((hasteMapInstance, index) => {
     hasteMapInstance.on(
       'change',
-      ({eventsQueue, hasteFS, moduleMap}: HasteMap.HasteChangeEvent) => {
+      ({eventsQueue, hasteFS, moduleMap}: HasteChangeEvent) => {
         const validPaths = eventsQueue.filter(({filePath}) =>
           isValidPath(globalConfig, filePath),
         );

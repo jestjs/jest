@@ -17,7 +17,7 @@ import {addHook} from 'pirates';
 import slash = require('slash');
 import {sync as writeFileAtomic} from 'write-file-atomic';
 import type {Config} from '@jest/types';
-import HasteMap = require('jest-haste-map');
+import HasteMap from 'jest-haste-map';
 import {
   createDirectory,
   interopRequireDefault,
