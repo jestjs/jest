@@ -913,8 +913,8 @@ export class ModuleMocker {
     return metadata;
   }
 
-  isMockFunction<T>(fn: any): fn is Mock<T> {
-    return !!fn && fn._isMockFunction === true;
+  isMockFunction<T>(fn: unknown): fn is Mock<T> {
+    return !!fn && (fn as any)._isMockFunction === true;
   }
 
   fn<T, Y extends Array<unknown>>(
@@ -947,6 +947,7 @@ export class ModuleMocker {
     ? SpyInstance<ReturnType<T[M]>, Parameters<T[M]>>
     : never;
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   spyOn<T extends {}, M extends NonFunctionPropertyNames<T>>(
     object: T,
     methodName: M,
@@ -1090,16 +1091,16 @@ export class ModuleMocker {
     return descriptor[accessType] as Mock<T>;
   }
 
-  clearAllMocks() {
+  clearAllMocks(): void {
     this._mockState = new WeakMap();
   }
 
-  resetAllMocks() {
+  resetAllMocks(): void {
     this._mockConfigRegistry = new WeakMap();
     this._mockState = new WeakMap();
   }
 
-  restoreAllMocks() {
+  restoreAllMocks(): void {
     this._spyState.forEach(restore => restore());
     this._spyState = new Set();
   }
