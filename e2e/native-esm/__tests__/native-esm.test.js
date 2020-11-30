@@ -156,3 +156,10 @@ test('supports file urls as imports', async () => {
 test('namespace export', () => {
   expect(bag.double).toBe(double);
 });
+
+test('handle circular dependency', async () => {
+  const moduleA = (await import('../circularDependentA.mjs')).default;
+  expect(moduleA.id).toBe('circularDependentA');
+  expect(moduleA.moduleB.id).toBe('circularDependentB');
+  expect(moduleA.moduleB.moduleA).toBe(moduleA);
+});
