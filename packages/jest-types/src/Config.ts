@@ -136,7 +136,7 @@ export type InitialOptions = Partial<{
     global: {
       [key: string]: number;
     };
-    [key: string] : {
+    [key: string]: {
       [key: string]: number;
     };
   };
