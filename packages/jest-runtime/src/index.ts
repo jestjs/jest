@@ -368,7 +368,7 @@ export default class Runtime {
   private async loadEsmModule(
     modulePath: Config.Path,
     query = '',
-    isStaticImport = false
+    isStaticImport = false,
   ): Promise<VMModule> {
     const cacheKey = modulePath + query;
 
@@ -386,7 +386,7 @@ export default class Runtime {
         const core = this._importCoreModule(modulePath, context);
         this._esmoduleRegistry.set(cacheKey, {
           beforeEvaluation: core,
-          fullyEvaluated: core
+          fullyEvaluated: core,
         });
         return core;
       }
@@ -410,7 +410,7 @@ export default class Runtime {
             specifier,
             referencingModule.identifier,
             referencingModule.context,
-            false
+            false,
           ),
         initializeImportMeta(meta: ImportMeta) {
           meta.url = pathToFileURL(modulePath).href;
@@ -419,7 +419,10 @@ export default class Runtime {
 
       let resolve: (value: VMModule) => void;
       let reject: (value: any) => void;
-      let promise = new Promise<VMModule>((_resolve, _reject) => { resolve = _resolve; reject = _reject });
+      const promise = new Promise<VMModule>((_resolve, _reject) => {
+        resolve = _resolve;
+        reject = _reject;
+      });
 
       // add to registry before link so that circular import won't end up stack overflow
       this._esmoduleRegistry.set(
@@ -429,8 +432,8 @@ export default class Runtime {
         // we shouldn't get any unhandled rejections
         {
           beforeEvaluation: Promise.resolve(module),
-          fullyEvaluated: promise
-        }
+          fullyEvaluated: promise,
+        },
       );
 
       module
@@ -439,11 +442,14 @@ export default class Runtime {
             specifier,
             referencingModule.identifier,
             referencingModule.context,
-            true
+            true,
           ),
         )
         .then(() => module.evaluate())
-        .then(() => resolve(module), (e: any) => reject(e));
+        .then(
+          () => resolve(module),
+          (e: any) => reject(e),
+        );
     }
 
     const entry = this._esmoduleRegistry.get(cacheKey);
@@ -451,7 +457,9 @@ export default class Runtime {
     // return the already resolved, pre-evaluation promise
     // is loaded through static import to prevent promise deadlock
     // because module is evaluated after all static import is resolved
-    const module = isStaticImport ? entry?.beforeEvaluation : entry?.fullyEvaluated;
+    const module = isStaticImport
+      ? entry?.beforeEvaluation
+      : entry?.fullyEvaluated;
 
     invariant(module);
 
@@ -462,18 +470,20 @@ export default class Runtime {
     specifier: string,
     referencingIdentifier: string,
     context: VMContext,
-    isStaticImport: boolean
+    isStaticImport: boolean,
   ) {
     if (specifier === '@jest/globals') {
       const fromCache = this._esmoduleRegistry.get('@jest/globals');
 
       if (fromCache) {
-        return isStaticImport ? fromCache.beforeEvaluation : fromCache.fullyEvaluated;
+        return isStaticImport
+          ? fromCache.beforeEvaluation
+          : fromCache.fullyEvaluated;
       }
       const globals = this.getGlobalsForEsm(referencingIdentifier, context);
       this._esmoduleRegistry.set('@jest/globals', {
         beforeEvaluation: globals,
-        fullyEvaluated: globals
+        fullyEvaluated: globals,
       });
 
       return globals;
