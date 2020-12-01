@@ -1,5 +1,5 @@
 ---
-title: Jest 23: 🔥 Blazing Fast Delightful Testing
+title: 'Jest 23: 🔥 Blazing Fast Delightful Testing'
 author: Rick Hanlon II
 authorURL: https://twitter.com/rickhanlonii
 authorFBID: 160800566

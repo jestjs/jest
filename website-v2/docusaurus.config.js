@@ -1,3 +1,5 @@
+const path = require('path');
+
 module.exports = {
   title: 'Jest',
   tagline: '🃏 Delightful JavaScript Testing',
@@ -100,7 +102,8 @@ module.exports = {
           sidebarPath: '../website/sidebars.json',
         },
         blog: {
-          path: 'blog',
+          path: path.join(__dirname, '..', 'website', 'blog'),
+          blogSidebarCount: 'ALL',
         },
         theme: {
           customCss: '../src/css/customTheme.css',
@@ -126,6 +129,7 @@ module.exports = {
           label: 'API',
           position: 'left',
         },
+        {to: 'blog', label: 'Blog', position: 'left'},
         {
           to: '/help',
           label: 'Help',

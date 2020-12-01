@@ -1,5 +1,5 @@
 ---
-title: Jest 20: 💖 Delightful Testing & 🏃🏽 Multi-Project-Runner
+title: 'Jest 20: 💖 Delightful Testing & 🏃🏽 Multi-Project-Runner'
 author: Christoph Nakazawa
 authorURL: http://twitter.com/cpojer
 authorFBID: 100000023028168

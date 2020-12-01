@@ -1,5 +1,5 @@
 ---
-title: 🃏 Jest 19: Immersive Watch Mode & Test Platform Improvements
+title: '🃏 Jest 19: Immersive Watch Mode & Test Platform Improvements'
 author: Rogelio Guzman
 authorURL: http://twitter.com/rogeliog
 authorFBID: 511230566

@@ -1,5 +1,5 @@
 ---
-title: Jest 24: 💅 Refreshing, Polished, TypeScript-friendly
+title: 'Jest 24: 💅 Refreshing, Polished, TypeScript-friendly'
 author: Simen Bekkhus
 authorURL: https://github.com/SimenB
 authorFBID: 100003004880942
