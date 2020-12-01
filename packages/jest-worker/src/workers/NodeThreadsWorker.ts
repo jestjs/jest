@@ -26,6 +26,13 @@ import {
   WorkerOptions,
 } from '../types';
 
+interface ErrorFrame {
+  columnNumber: number;
+  lineNumber: number;
+  name: string;
+  url: string;
+}
+
 const CHILD_HEARTBEAT_INTERVAL = 1_000;
 
 export default class ExperimentalWorker implements WorkerInterface {
@@ -151,14 +158,16 @@ export default class ExperimentalWorker implements WorkerInterface {
   }
 
   private async monitorHeartbeatError() {
-    let error = new Error(
-      `Test worker was unresponsive for 10 seconds. There was no inspector connected so we were unable to capture stack frames before it was terminated.`,
-    );
+    if (this._heartbeatTimeout) {
+      clearTimeout(this._heartbeatTimeout);
+    }
+
     if (this._options.inspector) {
-      error = new Error(
-        `Test worker was unresponsive for 10 seconds. There was an inspector connected so we were able to capture stack frames before it was terminated.`,
+      const error = new Error(
+        `Test worker was unresponsive for ${this._options.workerHeartbeatTimeout} milliseconds. There was an inspector connected so we were able to capture stack frames before it was terminated.`,
       );
       this._options.inspector.on('Debugger.paused', (message: any) => {
+        const frames: ErrorFrame[] = [];
         const callFrames = message.params.callFrames.slice(0, 20);
         for (const callFrame of callFrames) {
           const loc = callFrame.location;
@@ -169,14 +178,19 @@ export default class ExperimentalWorker implements WorkerInterface {
 
           const name = callFrame.scopeChain[0].name;
 
-          // TODO: process error with stack trace
-          console.log({
+          frames.push({
             columnNumber,
             lineNumber,
             name,
             url,
           });
         }
+
+        // @ts-expect-error: no index
+        error.type = HEARTBEAT_ERROR;
+        error.stack = JSON.stringify(frames);
+
+        this._onProcessEnd(error, null);
       });
 
       await new Promise((resolve, reject) => {
@@ -188,15 +202,15 @@ export default class ExperimentalWorker implements WorkerInterface {
           }
         });
       });
-    }
-    // @ts-expect-error: no index
-    error.type = HEARTBEAT_ERROR;
-    error.stack = 'test stack';
+    } else {
+      const error = new Error(
+        `Test worker was unresponsive for ${this._options.workerHeartbeatTimeout} milliseconds. There was no inspector connected so we were unable to capture stack frames before it was terminated.`,
+      );
+      // @ts-expect-error: no index
+      error.type = HEARTBEAT_ERROR;
 
-    if (this._heartbeatTimeout !== undefined) {
-      clearTimeout(this._heartbeatTimeout);
+      this._onProcessEnd(error, null);
     }
-    this._onProcessEnd(error, null);
   }
 
   private _onMessage(response: ParentMessage) {
@@ -208,6 +222,10 @@ export default class ExperimentalWorker implements WorkerInterface {
         break;
 
       case PARENT_MESSAGE_CLIENT_ERROR:
+        if (this._heartbeatTimeout) {
+          clearTimeout(this._heartbeatTimeout);
+          this.forceExit();
+        }
         error = response[4];
 
         if (error != null && typeof error === 'object') {
@@ -244,6 +262,7 @@ export default class ExperimentalWorker implements WorkerInterface {
         this._onCustomMessage(response[1]);
         break;
       default:
+        clearTimeout(this._heartbeatTimeout);
         throw new TypeError('Unexpected response from worker: ' + response[0]);
     }
   }
