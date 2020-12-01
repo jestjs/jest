@@ -106,7 +106,12 @@ module.exports = {
           blogSidebarCount: 'ALL',
         },
         theme: {
-          customCss: '../src/css/customTheme.css',
+          customCss: [
+            path.resolve('src/css/customTheme.css'),
+            path.resolve('static/css/custom.css'),
+            path.resolve('static/css/jest.css'),
+            path.resolve('static/css/hljs-jest.css'),
+          ],
         },
       },
     ],
