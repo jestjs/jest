@@ -8,13 +8,11 @@
 import React from 'react';
 import Layout from '@theme/Layout';
 
-const {Container, MarkdownBlock} = {
-  Container: props => <div {...props}></div>,
-  GridBlock: props => <div {...props}></div>,
-  MarkdownBlock: props => <div {...props}></div>,
-};
+import Translate from '@docusaurus/Translate';
 
-const Translate = props => <div {...props}></div>;
+// TODO legacy Docusaurus v1 components
+import Container from '@site/src/components/v1/Container';
+import MarkdownBlock from '@site/src/components/v1/MarkdownBlock';
 
 class Video extends React.PureComponent {
   render() {

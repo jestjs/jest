@@ -9,12 +9,8 @@ import React from 'react';
 import versions from '@site/versions.json';
 import Layout from '@theme/Layout';
 
-const CompLibrary = {
-  Container: props => <div {...props}></div>,
-  GridBlock: props => <div {...props}></div>,
-  MarkdownBlock: props => <div {...props}></div>,
-};
-const Container = CompLibrary.Container;
+// TODO legacy Docusaurus v1 components
+import Container from '@site/src/components/v1/Container';
 
 class Versions extends React.Component {
   render() {

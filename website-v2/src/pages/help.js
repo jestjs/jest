@@ -8,15 +8,11 @@
 import React from 'react';
 import Layout from '@theme/Layout';
 
-const CompLibrary = {
-  Container: props => <div {...props}></div>,
-  GridBlock: props => <div {...props}></div>,
-  MarkdownBlock: props => <div {...props}></div>,
-};
+import Translate from '@docusaurus/Translate';
 
-const Translate = props => <div {...props}></div>;
-const Container = CompLibrary.Container;
-const GridBlock = CompLibrary.GridBlock;
+// TODO legacy Docusaurus v1 components
+import Container from '@site/src/components/v1/Container';
+import GridBlock from '@site/src/components/v1/GridBlock';
 
 class Help extends React.Component {
   render() {
