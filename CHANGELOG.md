@@ -24,6 +24,7 @@
 - `[jest-resolve]` Disable `jest-pnp-resolver` for Yarn 2 ([#10847](https://github.com/facebook/jest/pull/10847))
 - `[jest-runtime]` [**BREAKING**] Do not inject `global` variable into module wrapper ([#10644](https://github.com/facebook/jest/pull/10644))
 - `[jest-runtime]` [**BREAKING**] remove long-deprecated `jest.addMatchers`, `jest.resetModuleRegistry`, and `jest.runTimersToTime` ([#9853](https://github.com/facebook/jest/pull/9853))
+- `[jest-runtime]` Fix stack overflow and promise deadlock when importing mutual dependant ES module ([#10892](https://github.com/facebook/jest/pull/10892))
 - `[jest-transform]` Show enhanced `SyntaxError` message for all `SyntaxError`s ([#10749](https://github.com/facebook/jest/pull/10749))
 - `[jest-transform]` [**BREAKING**] Refactor API to pass an options bag around rather than multiple boolean options ([#10753](https://github.com/facebook/jest/pull/10753))
 - `[jest-transform]` [**BREAKING**] Refactor API of transformers to pass an options bag rather than separate `config` and other options
