@@ -27,6 +27,7 @@
 /website/translated_docs
 /website/i18n/*
 
+/website-v2/.docusaurus
 /website-v2/build
 /website-v2/backers.json
 /website-v2/node_modules

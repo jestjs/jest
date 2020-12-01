@@ -10,4 +10,10 @@ website/node_modules
 website/i18n/*.js
 website/translated_docs
 website/static
+website-v2/.docusaurus
+website-v2/blog
+website-v2/build
+website-v2/node_modules
+website-v2/i18n/*.js
+website-v2/static
 !.eslintrc.js
