@@ -9,17 +9,12 @@ import React from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import backers from '@site/backers.json';
+import Translate from '@docusaurus/Translate';
 
-const CompLibrary = {
-  Container: props => <div {...props}></div>,
-  GridBlock: props => <div {...props}></div>,
-  MarkdownBlock: props => <div {...props}></div>,
-};
-const Translate = props => <div {...props}></div>;
-
-const MarkdownBlock = CompLibrary.MarkdownBlock; /* Used to read markdown */
-const Container = CompLibrary.Container;
-const GridBlock = CompLibrary.GridBlock;
+// TODO legacy Docusaurus v1 components
+import Container from '@site/src/components/v1/Container';
+import GridBlock from '@site/src/components/v1/GridBlock';
+import MarkdownBlock from '@site/src/components/v1/MarkdownBlock';
 
 class Button extends React.Component {
   render() {
