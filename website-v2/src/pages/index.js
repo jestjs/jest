@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-
 import React from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
@@ -228,7 +227,11 @@ class Hand extends React.Component {
   }
 }
 
-const HeroInteractive = ({config: {repoUrl}, language}) => (
+const HeroInteractive = ({
+  config: {
+    customFields: {repoUrl},
+  },
+}) => (
   <div className="wrapper">
     <div className="jest-hero-interactive">
       <div className="hero-github-button-container">
@@ -274,7 +277,7 @@ class Index extends React.Component {
 
     return (
       <div>
-        <HeroInteractive language={this.props.language} config={siteConfig} />
+        <HeroInteractive config={siteConfig} />
         <div className="mainContainer" style={{paddingTop: 0}}>
           <Container
             padding={['bottom', 'top']}
