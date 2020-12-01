@@ -1,0 +1,32 @@
+{
+  "name": "jest-website-v2",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "docusaurus start",
+    "build": "docusaurus build",
+    "gh-pages": "docusaurus-publish",
+    "examples": "docusaurus-examples",
+    "crowdin-upload": "crowdin --config ../crowdin.yaml upload sources --auto-update -b master",
+    "crowdin-download": "crowdin --config ../crowdin.yaml download -b master",
+    "publish-gh-pages": "docusaurus-publish",
+    "write-translations": "docusaurus-write-translations",
+    "version": "docusaurus-version",
+    "rename-version": "docusaurus-rename-version",
+    "swizzle": "docusaurus swizzle",
+    "deploy": "docusaurus deploy",
+    "docusaurus": "docusaurus"
+  },
+  "dependencies": {
+    "@docusaurus/core": "2.0.0-alpha.bd62be93d",
+    "@docusaurus/preset-classic": "2.0.0-alpha.bd62be93d",
+    "clsx": "^1.1.1",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2"
+  },
+  "devDependencies": {
+    "crowdin-cli": "^0.3.0",
+    "graphql": "^15.3.0",
+    "graphql-request": "^3.1.0"
+  }
+}

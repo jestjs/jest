@@ -1,0 +1,164 @@
+{
+  "version-26.6/docs": [
+    {
+      "type": "category",
+      "label": "Introduction",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-26.6/getting-started"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/using-matchers"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/asynchronous"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/setup-teardown"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/mock-functions"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/jest-platform"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/jest-community"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/more-resources"
+        }
+      ]
+    },
+    {
+      "type": "category",
+      "label": "Guides",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-26.6/snapshot-testing"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/tutorial-async"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/timer-mocks"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/manual-mocks"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/es6-class-mocks"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/bypassing-module-mocks"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/ecmascript-modules"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/webpack"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/puppeteer"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/mongodb"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/dynamodb"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/tutorial-jquery"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/watch-plugins"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/migration-guide"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/troubleshooting"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/architecture"
+        }
+      ]
+    },
+    {
+      "type": "category",
+      "label": "Framework Guides",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-26.6/tutorial-react"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/tutorial-react-native"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/testing-frameworks"
+        }
+      ]
+    },
+    {
+      "type": "category",
+      "label": "API Reference",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-26.6/api"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/expect"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/mock-function-api"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/jest-object"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/configuration"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/cli"
+        },
+        {
+          "type": "doc",
+          "id": "version-26.6/environment-variables"
+        }
+      ]
+    }
+  ]
+}

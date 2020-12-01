@@ -119,6 +119,7 @@
   "workspaces": [
     "packages/*",
     "website",
+    "website-v2",
     "examples/*"
   ],
   "prettier": {
