@@ -7,14 +7,14 @@
 
 /* global document, window, localStorage */
 
-// Allow taking a bit longer on the first run
-const firstRun = localStorage.getItem('firstRun');
-localStorage.setItem('firstRun', 'true');
-const baseMinimalTime = firstRun ? 3000 : 1500;
-
 // Docusaurus v1 animation, reworked a bit for the Docusaurus v2 migration
 // TODO maybe we can use React code instead of Vanilla JS now?
 export function setupLandingAnimation() {
+  // Allow taking a bit longer on the first run
+  const firstRun = localStorage.getItem('firstRun');
+  localStorage.setItem('firstRun', 'true');
+  const baseMinimalTime = firstRun ? 3000 : 1500;
+
   const hand = document.querySelector('.jest-hand');
   const cards = hand.querySelectorAll('.jest-card');
 
