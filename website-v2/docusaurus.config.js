@@ -128,7 +128,7 @@ module.exports = {
       },
       items: [
         {
-          to: 'docs/',
+          to: 'docs/getting-started',
           label: 'Docs',
           position: 'left',
         },
@@ -144,59 +144,20 @@ module.exports = {
           position: 'left',
         },
         {
-          href: 'https://github.com/facebook/jest',
-          label: 'GitHub',
-          position: 'left',
-        },
-        {
-          label: 'Version',
-          to: 'docs',
+          type: 'docsVersionDropdown',
           position: 'right',
-          items: [
+          dropdownItemsAfter: [
             {
-              label: '26.6',
-              to: 'docs/',
-              activeBaseRegex:
-                'docs/(?!22.x|23.x|24.x|25.x|26.0|26.2|26.4|26.5|26.6|next)',
-            },
-            {
-              label: '26.5',
-              to: 'docs/26.5/',
-            },
-            {
-              label: '26.4',
-              to: 'docs/26.4/',
-            },
-            {
-              label: '26.2',
-              to: 'docs/26.2/',
-            },
-            {
-              label: '26.0',
-              to: 'docs/26.0/',
-            },
-            {
-              label: '25.x',
-              to: 'docs/25.x/',
-            },
-            {
-              label: '24.x',
-              to: 'docs/24.x/',
-            },
-            {
-              label: '23.x',
-              to: 'docs/23.x/',
-            },
-            {
-              label: '22.x',
-              to: 'docs/22.x/',
-            },
-            {
-              label: 'Master/Unreleased',
-              to: 'docs/next/',
-              activeBaseRegex: 'docs/next/(?!support|team|resources)',
+              to: '/versions',
+              label: 'All versions',
             },
           ],
+        },
+        {
+          href: 'https://github.com/facebook/jest',
+          position: 'right',
+          className: 'header-github-link',
+          'aria-label': 'GitHub repository',
         },
       ],
     },
