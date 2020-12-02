@@ -170,8 +170,12 @@ export function setupLandingAnimation() {
       clickButton.onclick = () => {
         document
           .querySelectorAll('.matchers .button.landing')
-          .forEach(b => (b.className = 'button button--primary button--outline landing'));
-        clickButton.className = 'button button--primary button--outline landing button--active';
+          .forEach(
+            b =>
+              (b.className = 'button button--primary button--outline landing'),
+          );
+        clickButton.className =
+          'button button--primary button--outline landing button--active';
         screenshotImg.style.opacity = 0.5;
         screenshotImg.src = button.url;
       };

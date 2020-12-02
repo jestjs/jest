@@ -90,25 +90,9 @@ div.jest-hero-interactive {
   position: relative;
 }
 
-div.hero-github-button-container {
-  min-height: 20px;
-  position: absolute;
-  left: initial;
-  right: 10px;
-  top: 20px;
-  visibility: hidden;
-  z-index: 1000;
-}
-
 /* Means the links doesn't push the vertical */
 .hash-link {
   position: absolute;
-}
-
-@media only screen and (min-width: 580px) {
-  div.hero-github-button-container {
-    visibility: visible;
-  }
 }
 
 div.jest-hand {

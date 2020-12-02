@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable import/order */
+/* eslint-disable import/no-unresolved */
 import React, {useEffect} from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
@@ -17,6 +19,37 @@ import {setupLandingAnimation} from '@site/src/pages/animations/_landingAnimatio
 import Container from '@site/src/components/v1/Container';
 import GridBlock from '@site/src/components/v1/GridBlock';
 import MarkdownBlock from '@site/src/components/v1/MarkdownBlock';
+
+import styles from './index.module.scss';
+
+import GitHubButton from 'react-github-btn';
+
+function TwitterButton() {
+  return (
+    <a
+      href="https://twitter.com/intent/follow?screen_name=fbjest&region=follow_link"
+      className={styles['twitter-follow-button']}
+    >
+      <div className={styles['twitter-follow-button--icon']} />
+      Follow @fbjest
+    </a>
+  );
+}
+
+function GitHubStarButton() {
+  return (
+    <div className="github-button">
+      <GitHubButton
+        href="https://github.com/facebook/jest"
+        data-icon="octicon-star"
+        data-size="large"
+        aria-label="Star facebook/jest on GitHub"
+      >
+        Star
+      </GitHubButton>
+    </div>
+  );
+}
 
 class Button extends React.Component {
   render() {
@@ -231,18 +264,9 @@ const HeroInteractive = ({
 }) => (
   <div className="wrapperV1">
     <div className="jest-hero-interactive">
-      <div className="hero-github-button-container">
-        <a
-          className="github-button"
-          href={repoUrl}
-          data-icon="octicon-star"
-          data-count-href="/facebook/jest/stargazers"
-          data-show-count={true}
-          data-count-aria-label="# stargazers on GitHub"
-          aria-label="Star facebook/jest on GitHub"
-        >
-          Star
-        </a>
+      <div className={styles.socialLinks}>
+        <TwitterButton />
+        <GitHubStarButton />
       </div>
       <Hand />
       <div className="jest-button-container">
@@ -275,7 +299,7 @@ class Index extends React.Component {
     return (
       <div>
         <HeroInteractive config={siteConfig} />
-        <div className="mainContainer" style={{paddingTop: 0}}>
+        <div className="mainContainerV1" style={{paddingTop: 0}}>
           <Container
             padding={['bottom', 'top']}
             background="light"
@@ -565,7 +589,7 @@ class Index extends React.Component {
 export default function IndexPage(props) {
   useEffect(setupLandingAnimation, []);
   return (
-    <Layout wrapperClassName="mainContainerV1">
+    <Layout>
       <Index {...props} />
     </Layout>
   );

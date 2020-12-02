@@ -21,8 +21,10 @@
     "@docusaurus/core": "2.0.0-alpha.bd62be93d",
     "@docusaurus/preset-classic": "2.0.0-alpha.bd62be93d",
     "clsx": "^1.1.1",
+    "docusaurus-plugin-sass": "^0.1.11",
     "react": "^16.10.2",
-    "react-dom": "^16.10.2"
+    "react-dom": "^16.10.2",
+    "react-github-btn": "^1.2.0"
   },
   "devDependencies": {
     "crowdin-cli": "^0.3.0",
