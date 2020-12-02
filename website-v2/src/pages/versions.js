@@ -18,8 +18,8 @@ class Versions extends React.Component {
     const latestVersion = versions[0];
     const {language} = this.props;
     return (
-      <div className="docMainWrapper wrapper">
-        <Container className="mainContainer versionsContainer">
+      <div className="docMainWrapper wrapperV1">
+        <Container className="mainContainerV1 versionsContainer">
           <div className="post">
             <header className="postHeader">
               <h2>{siteConfig.title + ' Versions'}</h2>
@@ -98,7 +98,7 @@ class Versions extends React.Component {
 
 export default function VersionsPage(props) {
   return (
-    <Layout wrapperClassName="mainContainerV1">
+    <Layout>
       <Versions {...props} />
     </Layout>
   );

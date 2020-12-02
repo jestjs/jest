@@ -59,8 +59,8 @@ class Help extends React.Component {
     ];
 
     return (
-      <div className="docMainWrapper wrapper">
-        <Container className="mainContainer documentContainer postContainer">
+      <div className="docMainWrapper wrapperV1">
+        <Container className="mainContainerV1 documentContainer postContainer">
           <div className="post">
             <header className="postHeader">
               <h2>
@@ -83,7 +83,7 @@ class Help extends React.Component {
 
 export default function HelpPage(props) {
   return (
-    <Layout wrapperClassName="mainContainerV1">
+    <Layout>
       <Help {...props} />
     </Layout>
   );

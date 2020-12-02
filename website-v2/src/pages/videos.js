@@ -85,7 +85,7 @@ class Videos extends React.Component {
     );
 
     return (
-      <div className="mainContainer">
+      <div className="mainContainerV1">
         <Container padding={['bottom', 'top']}>
           <div className="showcaseSection">
             <div className="prose">
@@ -115,7 +115,7 @@ class Videos extends React.Component {
 
 export default function VideosPage(props) {
   return (
-    <Layout wrapperClassName="mainContainerV1">
+    <Layout>
       <Videos {...props} />
     </Layout>
   );
