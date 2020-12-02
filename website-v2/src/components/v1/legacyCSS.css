@@ -6,13 +6,13 @@
  */
 
 /* Utils */
-.wrapper {
+.wrapperV1 {
   margin: 0px auto;
   max-width: 1100px;
   padding: 0 20px;
 }
 
-.wrapper blockquote > p:first-child {
+.wrapperV1 blockquote > p:first-child {
   padding-top: 0;
 }
 
@@ -23,68 +23,68 @@
 /* End of Utils */
 
 /* GridBlock */
-.gridBlock {
+.gridBlockV1 {
   padding: 0;
 }
 
-.gridBlock > * {
+.gridBlockV1 > * {
   box-sizing: border-box;
 }
 
-.gridBlock .twoByGridBlock img,
-.gridBlock .threeByGridBlock img,
-.gridBlock .fourByGridBlock img {
+.gridBlockV1 .twoByGridBlock img,
+.gridBlockV1 .threeByGridBlock img,
+.gridBlockV1 .fourByGridBlock img {
   max-width: 100%;
 }
 
-.gridBlock .gridClear {
+.gridBlockV1 .gridClear {
   clear: both;
 }
 
 @media only screen and (max-width: 735px) {
-  .gridBlock .fourByGridBlock {
+  .gridBlockV1 .fourByGridBlock {
     flex: 1 0 26%;
   }
 }
 
 @media only screen and (min-width: 736px) {
-  .gridBlock {
+  .gridBlockV1 {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
   }
 
-  .gridBlock > * {
+  .gridBlockV1 > * {
     margin: 0 12px;
   }
 
-  .gridBlock > *:first-child {
+  .gridBlockV1 > *:first-child {
     margin-left: 0;
   }
 
-  .gridBlock > *:last-child {
+  .gridBlockV1 > *:last-child {
     margin-right: 0;
   }
 
-  .gridBlock .twoByGridBlock {
+  .gridBlockV1 .twoByGridBlock {
     flex: 1 0 40%;
   }
 
-  .gridBlock .threeByGridBlock {
+  .gridBlockV1 .threeByGridBlock {
     flex: 1 0 26%;
   }
 
-  .gridBlock .fourByGridBlock {
+  .gridBlockV1 .fourByGridBlock {
     flex: 1 0 20%;
   }
 
-  h2 + .gridBlock {
+  h2 + .gridBlockV1 {
     padding-top: 20px;
   }
 }
 
 @media only screen and (min-width: 1400px) {
-  .gridBlock {
+  .gridBlockV1 {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -153,19 +153,19 @@
 /* End of GridBlock */
 
 /* Start of Container */
-.container .gridBlock .blockContent p {
+.containerV1 .gridBlockV1 .blockContent p {
   padding: 0;
 }
 
-.container .wrapper .alignCenter h2 {
+.containerV1 .wrapperV1 .alignCenter h2 {
   text-align: center;
 }
 
-.container .wrapper .imageAlignSide h2 {
+.containerV1 .wrapperV1 .imageAlignSide h2 {
   text-align: left;
 }
 
-.container .wrapper .imageAlignSide p {
+.containerV1 .wrapperV1 .imageAlignSide p {
   margin: 0;
   margin-bottom: 40px;
   max-width: 560px;
@@ -182,17 +182,18 @@
   font-weight: 800;
 }
 
-.container.highlightBackground .wrapper h1,
-.container.highlightBackground .wrapper h2,
-.container.highlightBackground .wrapper h3,
-.container.highlightBackground .wrapper h4,
-.container.highlightBackground .wrapper h5 {
+.containerV1.highlightBackground .wrapperV1 h1,
+.containerV1.highlightBackground .wrapperV1 h2,
+.containerV1.highlightBackground .wrapperV1 h3,
+.containerV1.highlightBackground .wrapperV1 h4,
+.containerV1.highlightBackground .wrapperV1 h5 {
   border-color: white;
   color: white;
 }
 
 .lightBackground {
-  background: #f7f7f7;
+  /* background: #f7f7f7; */
+  background: var(--ifm-menu-color-background-active)
 }
 
 .darkBackground {
@@ -208,41 +209,41 @@
   color: #d6b3b8;
 }
 
-.container.darkBackground .wrapper h1,
-.container.darkBackground .wrapper h2,
-.container.darkBackground .wrapper h3,
-.container.darkBackground .wrapper h4,
-.container.darkBackground .wrapper h5 {
+.containerV1.darkBackground .wrapperV1 h1,
+.containerV1.darkBackground .wrapperV1 h2,
+.containerV1.darkBackground .wrapperV1 h3,
+.containerV1.darkBackground .wrapperV1 h4,
+.containerV1.darkBackground .wrapperV1 h5 {
   border-color: #fff;
   color: #fff;
 }
 
-.container.paddingAll {
+.containerV1.paddingAll {
   padding: 40px;
 }
 
-.container.paddingBottom {
+.containerV1.paddingBottom {
   padding-bottom: 80px;
 }
 
-.container.paddingLeft {
+.containerV1.paddingLeft {
   padding-left: 40px;
 }
 
-.container.paddingRight {
+.containerV1.paddingRight {
   padding-right: 40px;
 }
 
-.container.paddingTop {
+.containerV1.paddingTop {
   padding-top: 80px;
 }
 
 @media only screen and (max-width: 735px) {
-  .container.paddingBottom {
+  .containerV1.paddingBottom {
     padding-bottom: 40px;
   }
 
-  .container.paddingTop {
+  .containerV1.paddingTop {
     padding-top: 20px;
   }
 }

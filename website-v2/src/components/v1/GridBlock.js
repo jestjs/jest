@@ -21,7 +21,7 @@ export default class GridBlock extends React.Component {
       ...origBlock,
     };
 
-    const blockClasses = classNames('blockElement', this.props.className, {
+    const blockClasses = classNames('blockElementV1', this.props.className, {
       alignCenter: this.props.align === 'center',
       alignRight: this.props.align === 'right',
       fourByGridBlock: this.props.layout === 'fourColumn',
@@ -89,7 +89,7 @@ export default class GridBlock extends React.Component {
   render() {
     return (
       <div
-        className="gridBlock"
+        className="gridBlockV1"
         style={{
           display: 'flex',
           flexDirection: 'row',

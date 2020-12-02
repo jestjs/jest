@@ -11,7 +11,7 @@ import './legacyCSS.css';
 
 export default class Container extends React.Component {
   render() {
-    const containerClasses = classNames('container', this.props.className, {
+    const containerClasses = classNames('containerV1', this.props.className, {
       darkBackground: this.props.background === 'dark',
       highlightBackground: this.props.background === 'highlight',
       lightBackground: this.props.background === 'light',
@@ -24,7 +24,7 @@ export default class Container extends React.Component {
     let wrappedChildren;
 
     if (this.props.wrapper) {
-      wrappedChildren = <div className="wrapper">{this.props.children}</div>;
+      wrappedChildren = <div className="wrapperV1">{this.props.children}</div>;
     } else {
       wrappedChildren = this.props.children;
     }
