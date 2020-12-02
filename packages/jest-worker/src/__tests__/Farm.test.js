@@ -135,11 +135,11 @@ describe('Farm', () => {
     const farm = new Farm(4, callback, computeWorkerKey);
 
     const p0 = farm.doWork('foo', 42);
-    workerReply(0);
-    await p0;
-
     const p1 = farm.doWork('foo1', 43);
+
+    workerReply(0);
     workerReply(1);
+    await p0;
     await p1;
 
     const p2 = farm.doWork('foo2', 44);

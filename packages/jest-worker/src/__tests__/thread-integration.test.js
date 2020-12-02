@@ -77,7 +77,7 @@ describe('Jest Worker Process Integration', () => {
     expect(await promise).toBe(42);
   });
 
-  it('distributes sequential calls across child processes', async () => {
+  it('schedules the task on the first available child processes', async () => {
     const farm = new Farm('/tmp/baz.js', {
       enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
@@ -86,17 +86,25 @@ describe('Jest Worker Process Integration', () => {
 
     // The first call will go to the first child process.
     const promise0 = farm.foo('param-0');
-
     assertCallsToChild(0, ['foo', 'param-0']);
-    replySuccess(0, 'worker-0');
-    expect(await promise0).toBe('worker-0');
 
     // The second call will go to the second child process.
     const promise1 = farm.foo(1);
-
     assertCallsToChild(1, ['foo', 1]);
+
+    // task 1 on worker 0 completes
+    replySuccess(0, 'worker-0');
+    expect(await promise0).toBe('worker-0');
+
+    // task 2 on worker 0 completes
     replySuccess(1, 'worker-1');
     expect(await promise1).toBe('worker-1');
+
+    // The third call will go to the first process because it became available
+    const promise2 = farm.foo('param-2');
+    assertCallsToChild(0, ['foo', 'param-0'], ['foo', 'param-2']);
+    replySuccess(0, 'worker-0');
+    expect(await promise2).toBe('worker-0');
   });
 
   it('distributes concurrent calls across child processes', async () => {

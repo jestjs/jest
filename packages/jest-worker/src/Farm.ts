@@ -27,7 +27,6 @@ export default class Farm {
   private _last: Array<QueueItem>;
   private _locks: Array<boolean>;
   private _numOfWorkers: number;
-  private _offset: number;
   private _queue: Array<QueueItem | null>;
 
   constructor(
@@ -40,7 +39,6 @@ export default class Farm {
     this._last = [];
     this._locks = [];
     this._numOfWorkers = numOfWorkers;
-    this._offset = 0;
     this._queue = [];
 
     if (computeWorkerKey) {
@@ -173,10 +171,8 @@ export default class Farm {
 
   private _push(task: QueueChildMessage): Farm {
     for (let i = 0; i < this._numOfWorkers; i++) {
-      this._enqueue(task, (this._offset + i) % this._numOfWorkers);
+      this._enqueue(task, i);
     }
-
-    this._offset++;
 
     return this;
   }
