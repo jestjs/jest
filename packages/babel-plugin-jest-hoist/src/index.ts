@@ -35,6 +35,8 @@ const hoistedVariables = new WeakSet<VariableDeclarator>();
 // We also allow variables prefixed with `mock` as an escape-hatch.
 const ALLOWED_IDENTIFIERS = new Set<string>(
   [
+    '__dirname',
+    '__filename',
     'Array',
     'ArrayBuffer',
     'Boolean',
