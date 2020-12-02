@@ -202,20 +202,80 @@ module.exports = {
     },
     image: 'img/opengraph.png',
     footer: {
+      style: 'dark',
       links: [
+        {
+          title: 'Docs',
+          items: [
+            {
+              label: 'Getting Started',
+              to: '/getting-started',
+            },
+            {
+              label: 'Guides',
+              to: '/snapshot-testing',
+            },
+            {
+              label: 'API Reference',
+              to: '/api',
+            },
+          ],
+        },
         {
           title: 'Community',
           items: [
+            {
+              label: 'Stack Overflow',
+              to: 'https://stackoverflow.com/questions/tagged/jestjs',
+            },
+            {
+              label: 'Reactiflux',
+              to: 'https://www.reactiflux.com',
+            },
             {
               label: 'Twitter',
               to: 'https://twitter.com/fbjest',
             },
           ],
         },
+        {
+          title: 'More',
+          items: [
+            {
+              label: 'Blog',
+              to: '/blog',
+            },
+            {
+              label: 'Github',
+              to: 'https://github.com/facebook/jest',
+            },
+            {
+              label: 'Twitter',
+              to: 'https://twitter.com/fbjest',
+            },
+          ],
+        },
+        {
+          title: 'Legal',
+          items: [
+            {
+              label: 'Privacy',
+              href: 'https://opensource.facebook.com/legal/privacy/',
+            },
+            {
+              label: 'Terms',
+              href: 'https://opensource.facebook.com/legal/terms/',
+            },
+          ],
+        },
       ],
       logo: {
-        src: 'img/jest-outline.svg',
+        //         src: 'img/jest-outline.svg',
+        alt: 'Facebook Open Source Logo',
+        src: 'img/oss_logo.png',
+        href: 'https://opensource.facebook.com',
       },
+      copyright: `Copyright © ${new Date().getFullYear()} Facebook, Inc. Built with Docusaurus.`,
     },
     algolia: {
       indexName: 'jest-v2',
