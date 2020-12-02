@@ -312,8 +312,8 @@ exports[`stores only 10 characters: toMatchTrimmedSnapshot 1`] = `"extra long"`;
 <pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> {toMatchInlineSnapshot} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-snapshot'</span>);
 
 expect.extend({
-  toMatchTrimmedInlineSnapshot(received) {
-    <span class="hljs-keyword">return</span> toMatchInlineSnapshot.call(<span class="hljs-keyword">this</span>, received.substring(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>));
+  toMatchTrimmedInlineSnapshot(received, ...rest) {
+    <span class="hljs-keyword">return</span> toMatchInlineSnapshot.call(<span class="hljs-keyword">this</span>, received.substring(<span class="hljs-number">0</span>, <span class="hljs-number">10</span>), ...rest);
   },
 });
 
