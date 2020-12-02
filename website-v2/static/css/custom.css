@@ -14,27 +14,14 @@
   text-decoration: none;
 }
 
-.fixedHeaderContainer header img.logo {
-  height: 60px;
-  margin-top: -20px;
-  margin-bottom: -20px;
-  margin-right: -20px;
-}
-
-#languages-dropdown-items a {
-  color: white;
-}
-
-#languages-dropdown-items a:hover {
-  color: var(--green);
-}
-
+/*
+REPL: used on blog posts!
+ */
 div.jest-repl {
   margin: 0 5%;
   position: relative;
   width: 600px;
 }
-
 div.jest-repl iframe {
   display: block;
   margin: 0 auto 10px;
