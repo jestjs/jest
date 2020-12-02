@@ -20,6 +20,8 @@ import Container from '@site/src/components/v1/Container';
 import GridBlock from '@site/src/components/v1/GridBlock';
 import MarkdownBlock from '@site/src/components/v1/MarkdownBlock';
 
+import UsersJSON from '@site/users.json';
+
 import styles from './index.module.scss';
 
 import GitHubButton from 'react-github-btn';
@@ -258,11 +260,7 @@ class Hand extends React.Component {
   }
 }
 
-const HeroInteractive = ({
-  config: {
-    customFields: {repoUrl},
-  },
-}) => (
+const HeroInteractive = () => (
   <div className="wrapperV1">
     <div className="jest-hero-interactive">
       <div className={styles.socialLinks}>
@@ -291,7 +289,7 @@ const HeroInteractive = ({
 class Index extends React.Component {
   render() {
     const {config: siteConfig} = this.props;
-    const showcase = siteConfig.customFields.users.map((user, i) => (
+    const showcase = UsersJSON.users.map((user, i) => (
       <a href={user.infoLink} key={i}>
         <img src={user.image} title={user.caption} />
       </a>

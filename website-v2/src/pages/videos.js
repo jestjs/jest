@@ -14,12 +14,18 @@ import Translate from '@docusaurus/Translate';
 import Container from '@site/src/components/v1/Container';
 import MarkdownBlock from '@site/src/components/v1/MarkdownBlock';
 
+import VideosJSON from '@site/videos.json';
+
+const VideoTypes = {
+  YOUTUBE: 'youtube',
+  IFRAME: 'iframe',
+};
+
 class Video extends React.PureComponent {
   render() {
-    const {videoTypes, url, type} = this.props;
-
+    const {url, type} = this.props;
     switch (type) {
-      case videoTypes.YOUTUBE: {
+      case VideoTypes.YOUTUBE: {
         return (
           <iframe
             width="560"
@@ -30,7 +36,7 @@ class Video extends React.PureComponent {
           />
         );
       }
-      case videoTypes.IFRAME: {
+      case VideoTypes.IFRAME: {
         return <iframe src={url} />;
       }
       default: {
@@ -43,7 +49,7 @@ class Video extends React.PureComponent {
 class Videos extends React.Component {
   render() {
     const {config: siteConfig} = this.props;
-    const showcase = siteConfig.customFields.videos.map(
+    const showcase = VideosJSON.videos.map(
       ({title, description, type, url}, index) => {
         const textMarkup = (
           <div className="blockContent">
@@ -57,11 +63,7 @@ class Videos extends React.Component {
         );
         const videoMarkup = (
           <div className="video">
-            <Video
-              videoTypes={siteConfig.customFields.videoTypes}
-              url={url}
-              type={type}
-            />
+            <Video url={url} type={type} />
           </div>
         );
 
@@ -103,7 +105,7 @@ class Videos extends React.Component {
           </div>
           {showcase}
           <div style={{textAlign: 'center'}}>
-            <a href={siteConfig.customFields.siteConfigUrl} className="button">
+            <a href={VideosJSON.editUrl} className="button">
               <Translate>Add your favorite talk</Translate>
             </a>
           </div>
