@@ -28,6 +28,7 @@ function TwitterButton() {
   return (
     <a
       href="https://twitter.com/intent/follow?screen_name=fbjest&region=follow_link"
+      target="_blank"
       className={styles['twitter-follow-button']}
     >
       <div className={styles['twitter-follow-button--icon']} />
