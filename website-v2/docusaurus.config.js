@@ -1,3 +1,5 @@
+/* eslint-disable sort-keys */
+
 const path = require('path');
 
 module.exports = {
@@ -215,14 +217,9 @@ module.exports = {
       },
     },
     algolia: {
-      indexName: 'jest',
-      // apiKey: process.env.ALGOLIA_JEST_API_KEY,
-      apiKey: '47ecd3b21be71c5822571b9f59e52544',
-      /*
-      algoliaOptions: {
-        facetFilters: ['language:LANGUAGE', 'version:VERSION'],
-      },
-       */
+      indexName: 'jest-v2',
+      apiKey: '833906d7486e4059359fa58823c4ef56',
+      contextualSearch: true,
     },
     gtag: {
       trackingID: 'UA-44373548-17',
