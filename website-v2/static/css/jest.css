@@ -246,16 +246,13 @@
   margin: 4px 10px;
   cursor: pointer;
   text-transform: none;
+  text-decoration: none;
 }
 
 .container .gridBlock .blockContent p.buttons-wrapper {
   margin: 8px;
 }
 
-.button.landing.active {
-  background: var(--green);
-  color: #fff;
-}
 
 .navigationSlider .slidingNav ul li a,
 .fixedHeaderContainer header h3 {

@@ -166,12 +166,12 @@ export function setupLandingAnimation() {
     for (const button of buttons) {
       const clickButton = document.createElement('a');
       clickButton.text = button.title;
-      clickButton.className = 'button landing';
+      clickButton.className = 'button button--primary button--outline landing';
       clickButton.onclick = () => {
         document
           .querySelectorAll('.matchers .button.landing')
-          .forEach(b => (b.className = 'button landing'));
-        clickButton.className = 'button landing active';
+          .forEach(b => (b.className = 'button button--primary button--outline landing'));
+        clickButton.className = 'button button--primary button--outline landing button--active';
         screenshotImg.style.opacity = 0.5;
         screenshotImg.src = button.url;
       };
