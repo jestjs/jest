@@ -49,6 +49,7 @@ export default class BaseTestRunner {
                     {
                       ancestorTitles: [],
                       duration: 2,
+                      failureDetails: [],
                       failureMessages: [],
                       fullName: 'sample test',
                       location: null,

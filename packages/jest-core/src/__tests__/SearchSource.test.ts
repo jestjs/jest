@@ -9,7 +9,7 @@
 import * as path from 'path';
 import type {Config} from '@jest/types';
 import {normalize} from 'jest-config';
-import {Test} from 'jest-runner';
+import type {Test} from 'jest-runner';
 import Runtime from 'jest-runtime';
 import SearchSource, {SearchResult} from '../SearchSource';
 
