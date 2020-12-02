@@ -5,6 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable import/order */
+/* eslint-disable import/no-unresolved */
+/* eslint-disable sort-keys */
 import React from 'react';
 import Layout from '@theme/Layout';
 
@@ -48,7 +51,6 @@ class Video extends React.PureComponent {
 
 class Videos extends React.Component {
   render() {
-    const {config: siteConfig} = this.props;
     const showcase = VideosJSON.videos.map(
       ({title, description, type, url}, index) => {
         const textMarkup = (

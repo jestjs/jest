@@ -5,11 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* global document, window, localStorage */
-
 // Docusaurus v1 animation, reworked a bit for the Docusaurus v2 migration
 // TODO maybe we can use React code instead of Vanilla JS now?
 export function setupLandingAnimation() {
+  /* global document, window, localStorage */
   // Allow taking a bit longer on the first run
   const firstRun = localStorage.getItem('firstRun');
   localStorage.setItem('firstRun', 'true');
