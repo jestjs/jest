@@ -229,7 +229,7 @@ const HeroInteractive = ({
     customFields: {repoUrl},
   },
 }) => (
-  <div className="wrapper">
+  <div className="wrapperV1">
     <div className="jest-hero-interactive">
       <div className="hero-github-button-container">
         <a
@@ -518,9 +518,9 @@ class Index extends React.Component {
             </div>
           </Container>
 
-          <div className="container section-container imageAlignSide twoByGridBlock lightBackground">
-            <div className="wrapper">
-              <div className="gridBlock yellow">
+          <div className="containerV1 section-container imageAlignSide twoByGridBlock lightBackground">
+            <div className="wrapperV1">
+              <div className="gridBlockV1 yellow">
                 <div className="blockContent">
                   <h2>
                     <Translate>Open Collective</Translate>
@@ -548,7 +548,7 @@ class Index extends React.Component {
                       companies:
                     </Translate>
                   </MarkdownBlock>
-                  <div className="gridBlock logos">
+                  <div className="gridBlockV1 logos">
                     {showcase}
                     <p className="others">And many others</p>
                   </div>

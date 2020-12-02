@@ -7,7 +7,6 @@
 
 import React from 'react';
 import classNames from 'classnames';
-import './legacyCSS.css';
 
 export default class Container extends React.Component {
   render() {

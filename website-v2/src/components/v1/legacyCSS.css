@@ -23,6 +23,11 @@
   max-width: 1100px;
   padding: 0 20px;
 }
+@media only screen and (min-width: 1500px) {
+  .wrapperV1 {
+    max-width: 1400px;
+  }
+}
 
 .wrapperV1 blockquote > p:first-child {
   padding-top: 0;

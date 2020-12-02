@@ -8,7 +8,6 @@
 import React from 'react';
 import classNames from 'classnames';
 import MarkdownBlock from './MarkdownBlock';
-import "./legacyCSS.css"
 
 export default class GridBlock extends React.Component {
   renderBlock(origBlock, i) {

@@ -6,9 +6,14 @@
  */
 
 import React from 'react';
-import './legacyCSS.css';
 
 // TODO
 export default function MarkdownBlock({children}) {
-  return <div>{children}</div>;
+  return (
+    <div>
+      <span>
+        <p>{children}</p>
+      </span>
+    </div>
+  );
 }

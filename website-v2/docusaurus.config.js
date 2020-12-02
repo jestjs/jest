@@ -109,6 +109,7 @@ module.exports = {
         },
         theme: {
           customCss: [
+            path.resolve('src/components/v1/legacyCSS.css'),
             path.resolve('src/css/customTheme.css'),
             path.resolve('static/css/custom.css'),
             path.resolve('static/css/jest.css'),
