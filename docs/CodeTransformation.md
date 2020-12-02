@@ -30,7 +30,7 @@ interface Transformer<OptionType = unknown> {
    * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
    */
   canInstrument?: boolean;
-  createTransformer?: (options?: OptionType) => Transformer;
+  createTransformer?: (options: OptionType) => Transformer;
 
   getCacheKey?: (
     sourceText: string,
@@ -46,6 +46,12 @@ interface Transformer<OptionType = unknown> {
 }
 
 interface TransformOptions {
+  /**
+   * If a transformer does module resolution and reads files, it should populate `cacheFS` so that
+   * Jest avoids reading the same files again, improving performance. `cacheFS` stores entries of
+   * <file path, file contents>
+   */
+  cacheFS: Map<string, string>;
   config: Config.ProjectConfig;
   /** A stringified version of the configuration - useful in cache busting */
   configString: string;

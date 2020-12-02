@@ -78,6 +78,15 @@ jest.mock(
 );
 
 jest.mock(
+  'cache_fs_preprocessor',
+  () => ({
+    getCacheKey: jest.fn(() => 'ab'),
+    process: jest.fn(() => 'processedCode'),
+  }),
+  {virtual: true},
+);
+
+jest.mock(
   'preprocessor-with-sourcemaps',
   () => ({
     getCacheKey: jest.fn(() => 'ab'),
@@ -671,8 +680,8 @@ describe('ScriptTransformer', () => {
     config = Object.assign(config, {
       transform: [['\\.js$', 'configureable-preprocessor', transformerConfig]],
     });
-
     const scriptTransformer = new ScriptTransformer(config);
+
     scriptTransformer.transform('/fruits/banana.js', {});
     expect(
       require('configureable-preprocessor').createTransformer,
@@ -749,6 +758,31 @@ describe('ScriptTransformer', () => {
     expect(fs.readFileSync).toBeCalledWith('/fruits/banana:colon.js', 'utf8');
     expect(fs.readFileSync).toBeCalledWith(cachePath, 'utf8');
     expect(writeFileAtomic.sync).not.toBeCalled();
+  });
+
+  it('should reuse the value from in-memory cache which is set by custom transformer', () => {
+    const cacheFS = new Map<string, string>();
+    const testPreprocessor = require('cache_fs_preprocessor');
+    const scriptTransformer = new ScriptTransformer(
+      {
+        ...config,
+        transform: [['\\.js$', 'cache_fs_preprocessor', {}]],
+      },
+      cacheFS,
+    );
+    const fileName1 = '/fruits/banana.js';
+    const fileName2 = '/fruits/kiwi.js';
+
+    scriptTransformer.transform(fileName1, getCoverageOptions());
+
+    cacheFS.set(fileName2, 'foo');
+
+    scriptTransformer.transform(fileName2, getCoverageOptions());
+
+    expect(testPreprocessor.getCacheKey.mock.calls[0][2].cacheFS).toBeDefined()
+    expect(testPreprocessor.process.mock.calls[0][2].cacheFS).toBeDefined()
+    expect(fs.readFileSync).toHaveBeenCalledTimes(1);
+    expect(fs.readFileSync).toBeCalledWith(fileName1, 'utf8');
   });
 
   it('does not reuse the in-memory cache between different projects', () => {

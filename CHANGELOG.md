@@ -10,6 +10,7 @@
 - `[jest-snapshot]` [**BREAKING**] Make prettier optional for inline snapshots - fall back to string replacement ([#7792](https://github.com/facebook/jest/pull/7792))
 - `[jest-runner]` [**BREAKING**] Run transforms over `runnner` ([#8823](https://github.com/facebook/jest/pull/8823))
 - `[jest-runner]` [**BREAKING**] Run transforms over `testRunnner` ([#8823](https://github.com/facebook/jest/pull/8823))
+- `[jest-runtime, jest-transform]` share `cacheFS` between runtime and transformer ([#10901](https://github.com/facebook/jest/pull/10901))
 
 ### Fixes
 

@@ -50,7 +50,11 @@ export interface ReducedTransformOptions extends CallerTransformOptions {
   instrument: boolean;
 }
 
+export type StringMap = Map<string, string>;
+
 export interface TransformOptions extends ReducedTransformOptions {
+  /** a cached file system which is used in jest-runtime - useful to improve performance */
+  cacheFS: StringMap;
   config: Config.ProjectConfig;
   /** A stringified version of the configuration - useful in cache busting */
   configString: string;
