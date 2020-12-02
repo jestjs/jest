@@ -239,11 +239,11 @@ It's also possible to create custom matchers for inline snapshots, the snapshots
 const {toMatchInlineSnapshot} = require('jest-snapshot');
 
 expect.extend({
-  toMatchTrimmedInlineSnapshot(received, inlineSnapshot) {
+  toMatchTrimmedInlineSnapshot(received, ...rest) {
     return toMatchInlineSnapshot.call(
       this,
       received.substring(0, 10),
-      inlineSnapshot,
+      ...rest,
     );
   },
 });
