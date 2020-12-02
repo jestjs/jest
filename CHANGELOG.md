@@ -45,6 +45,7 @@
 - `[jest-mock]` [**BREAKING**] Migrate to ESM ([#10887](https://github.com/facebook/jest/pull/10887))
 - `[jest-runner]` [**BREAKING**] Migrate to ESM ([#10900](https://github.com/facebook/jest/pull/10900))
 - `[jest-util]` No longer checking `enumerable` when adding `process.domain` ([#10862](https://github.com/facebook/jest/pull/10862))
+- `[jest-worker]` Change from round-robin to first available worker scheduling ([10902](https://github.com/facebook/jest/pull/10902))
 
 ### Performance
 
