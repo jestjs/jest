@@ -89,14 +89,14 @@ module.exports = {
     siteConfigUrl:
       'https://github.com/facebook/jest/edit/master/website/siteConfig.js',
   },
-  onBrokenLinks: 'log',
-  onBrokenMarkdownLinks: 'log',
+  onBrokenLinks: 'warn',
+  onBrokenMarkdownLinks: 'warn',
   presets: [
     [
       '@docusaurus/preset-classic',
       {
         docs: {
-          homePageId: 'getting-started',
+          // homePageId: 'getting-started',
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
           editUrl: 'https://github.com/facebook/jest/edit/master/docs/',
@@ -209,15 +209,15 @@ module.exports = {
           items: [
             {
               label: 'Getting Started',
-              to: '/getting-started',
+              to: '/docs/',
             },
             {
               label: 'Guides',
-              to: '/snapshot-testing',
+              to: '/docs/snapshot-testing',
             },
             {
               label: 'API Reference',
-              to: '/api',
+              to: '/docs/api',
             },
           ],
         },

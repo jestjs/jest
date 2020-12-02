@@ -246,16 +246,16 @@ const HeroInteractive = ({
       </div>
       <Hand />
       <div className="jest-button-container">
-        <Button href={'/getting-started'}>
+        <Button href={'/docs/getting-started'}>
           <Translate>Get Started</Translate>
         </Button>
-        <Button href={'/getting-started'}>
+        <Button href={'/docs/getting-started'}>
           <Translate>Docs</Translate>
         </Button>
-        <Button href={'/configuration'}>
+        <Button href={'/docs/configuration'}>
           <Translate>Config</Translate>
         </Button>
-        <Button href={'/help'}>
+        <Button href={'/docs/help'}>
           <Translate>Get help</Translate>
         </Button>
       </div>
