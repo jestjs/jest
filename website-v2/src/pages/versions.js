@@ -96,8 +96,10 @@ class Versions extends React.Component {
   }
 }
 
-export default props => (
-  <Layout>
-    <Versions {...props} />
-  </Layout>
-);
+export default function VersionsPage(props) {
+  return (
+    <Layout>
+      <Versions {...props} />
+    </Layout>
+  );
+}

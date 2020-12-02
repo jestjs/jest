@@ -12,7 +12,9 @@ const firstRun = localStorage.getItem('firstRun');
 localStorage.setItem('firstRun', 'true');
 const baseMinimalTime = firstRun ? 3000 : 1500;
 
-document.addEventListener('DOMContentLoaded', () => {
+// Docusaurus v1 animation, reworked a bit for the Docusaurus v2 migration
+// TODO maybe we can use React code instead of Vanilla JS now?
+export function setupLandingAnimation() {
   const hand = document.querySelector('.jest-hand');
   const cards = hand.querySelectorAll('.jest-card');
 
@@ -74,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
       },
       index === 2
         ? baseMinimalTime + minTime
-        : Math.random() * baseMinimalTime + minTime
+        : Math.random() * baseMinimalTime + minTime,
     );
   }
 
@@ -105,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return undefined;
   }
 
-  hand.addEventListener('click', ev => {
+  function handleHandClick(ev) {
     let card;
     if (ev.target.classList.contains('jest-card-hitslop')) {
       card = ev.target.firstChild;
@@ -118,18 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const index = parseInt(card.dataset.index, 10);
       runTest(card, index);
     }
-  });
-
-  let resizeTimeout;
-
-  window.addEventListener('resize', () => {
-    if (!resizeTimeout) {
-      resizeTimeout = setTimeout(() => {
-        resizeTimeout = null;
-        positionCards();
-      }, 500);
-    }
-  });
+  }
 
   function setUpMatcherButtons() {
     const matcherSection = document.querySelector('.matchers .blockContent');
@@ -190,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
     matcherSection.appendChild(buttonWrapper);
 
     const firstButton = document.querySelector(
-      '.matchers .blockContent .button'
+      '.matchers .blockContent .button',
     );
     firstButton.onclick();
   }
@@ -207,8 +198,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  let resizeTimeout;
+  function handleResize() {
+    if (!resizeTimeout) {
+      resizeTimeout = setTimeout(() => {
+        resizeTimeout = null;
+        positionCards();
+      }, 500);
+    }
+  }
+
   forceRun(2000);
   positionCards();
   setUpMatcherButtons();
   makeScreenshotsClickable();
-});
+
+  window.addEventListener('resize', handleResize);
+  hand.addEventListener('click', handleHandClick);
+
+  return () => {
+    window.removeEventListener('resize', handleResize);
+    hand.removeEventListener('click', handleHandClick);
+  };
+}

@@ -5,11 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import backers from '@site/backers.json';
 import Translate from '@docusaurus/Translate';
+
+import {setupLandingAnimation} from '@site/src/pages/animations/_landingAnimation';
 
 // TODO legacy Docusaurus v1 components
 import Container from '@site/src/components/v1/Container';
@@ -560,8 +562,11 @@ class Index extends React.Component {
   }
 }
 
-export default props => (
-  <Layout>
-    <Index {...props} />
-  </Layout>
-);
+export default function IndexPage(props) {
+  useEffect(setupLandingAnimation, []);
+  return (
+    <Layout>
+      <Index {...props} />
+    </Layout>
+  );
+}

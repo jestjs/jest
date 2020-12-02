@@ -113,8 +113,10 @@ class Videos extends React.Component {
   }
 }
 
-export default props => (
-  <Layout>
-    <Videos {...props} />
-  </Layout>
-);
+export default function VideosPage(props) {
+  return (
+    <Layout>
+      <Videos {...props} />
+    </Layout>
+  );
+}
