@@ -115,7 +115,7 @@ class Videos extends React.Component {
 
 export default function VideosPage(props) {
   return (
-    <Layout>
+    <Layout wrapperClassName="mainContainerV1">
       <Videos {...props} />
     </Layout>
   );

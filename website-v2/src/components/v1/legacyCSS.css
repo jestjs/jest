@@ -5,6 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* Main Container */
+.mainContainerV1 {
+  flex: 1 1 0%;
+  max-width: 100%;
+  padding: 40px 0;
+}
+
+.mainContainerV1 .wrapperV1 {
+  text-align: left;
+}
+/* End of Main Container */
+
 /* Utils */
 .wrapperV1 {
   margin: 0px auto;
@@ -193,7 +205,7 @@
 
 .lightBackground {
   /* background: #f7f7f7; */
-  background: var(--ifm-menu-color-background-active)
+  background: var(--ifm-menu-color-background-active);
 }
 
 .darkBackground {

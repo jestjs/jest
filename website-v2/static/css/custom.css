@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-.mainContainer a {
+.mainContainerV1 a {
   text-decoration: underline;
 }
 
-.mainContainer a:hover,
-.mainContainer a:active {
+.mainContainerV1 a:hover,
+.mainContainerV1 a:active {
   text-decoration: none;
 }
 
@@ -46,7 +46,7 @@ div.bottom-margin {
   margin-bottom: 40px;
 }
 
-.docs .wrapper {
+.docs .wrapperV1 {
   display: flex;
 }
 

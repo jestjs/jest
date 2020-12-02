@@ -98,7 +98,7 @@ class Versions extends React.Component {
 
 export default function VersionsPage(props) {
   return (
-    <Layout>
+    <Layout wrapperClassName="mainContainerV1">
       <Versions {...props} />
     </Layout>
   );

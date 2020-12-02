@@ -565,7 +565,7 @@ class Index extends React.Component {
 export default function IndexPage(props) {
   useEffect(setupLandingAnimation, []);
   return (
-    <Layout>
+    <Layout wrapperClassName="mainContainerV1">
       <Index {...props} />
     </Layout>
   );

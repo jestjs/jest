@@ -83,7 +83,7 @@ class Help extends React.Component {
 
 export default function HelpPage(props) {
   return (
-    <Layout>
+    <Layout wrapperClassName="mainContainerV1">
       <Help {...props} />
     </Layout>
   );
