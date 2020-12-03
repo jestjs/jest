@@ -49,7 +49,6 @@
 - `[jest-util]` No longer checking `enumerable` when adding `process.domain` ([#10862](https://github.com/facebook/jest/pull/10862))
 - `[docs]` Add docs for using Jest with Testcontainers ([#10911](https://github.com/facebook/jest/pull/10911))
 
-
 ### Performance
 
 ## 26.6.3

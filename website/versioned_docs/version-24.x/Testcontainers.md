@@ -28,7 +28,6 @@ yarn add --dev @trendyol/jest-testcontainers
 
 Create a configuration file called `jest-testcontainers-config.js` at the root of your project folder. In this configuration file, you can declare any Docker container you want to have run before your tests.
 
-
 ```js
 module.exports = {
   redis: {
@@ -40,13 +39,13 @@ module.exports = {
     },
     wait: {
       type: 'text',
-      text: 'Ready to accept connections'
-    }
+      text: 'Ready to accept connections',
+    },
   },
-//   more: {
-//     image: 'any-docker-image', // postgresql, mongodb, neo4j etc.
-//     ports: [1234, 4567], // ports to make accessible in tests
-//   },
+  // more: {
+  //   image: 'any-docker-image', // postgresql, mongodb, neo4j etc.
+  //   ports: [1234, 4567], // ports to make accessible in tests
+  // },
 };
 ```
 
@@ -55,8 +54,8 @@ Jest Testcontainers will start the declared Docker containers before your tests,
 4.  Write your test
 
 ```js
+const {promisify} = require('util');
 const redis = require('redis');
-const { promisify } = require('util');
 
 describe('testcontainers example suite', () => {
   let redisClient;
@@ -64,7 +63,7 @@ describe('testcontainers example suite', () => {
   beforeAll(() => {
     const redisConnectionURI = `redis://${global.__TESTCONTAINERS_REDIS_IP__}:${global.__TESTCONTAINERS_REDIS_PORT_6379__}`;
     redisClient = redis.createClient(redisConnectionURI);
-    
+
     // if you have declared multiple containers, they will be available to access as well. e.g.
     // `global.__TESTCONTAINERS_${CONFIG_KEY}_IP__`
     // `global.__TESTCONTAINERS_${CONFIG_KEY}_PORT_${CONFIG_PORT}__`
@@ -73,7 +72,7 @@ describe('testcontainers example suite', () => {
   afterAll(() => {
     redisClient.quit();
   });
-  
+
   it('write should be ok', async () => {
     // Arrange
     const setAsync = promisify(redisClient.set).bind(redisClient);
@@ -90,4 +89,3 @@ describe('testcontainers example suite', () => {
 There's no need to load any dependencies.
 
 See the [documentation](https://github.com/Trendyol/jest-testcontainers) for details (further configuration, watch mode support, working examples etc).
-
