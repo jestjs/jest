@@ -87,14 +87,7 @@ export default class GridBlock extends React.Component {
 
   render() {
     return (
-      <div
-        className="gridBlockV1"
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}
-      >
+      <div className="gridBlockV1">
         {this.props.contents.map(this.renderBlock, this)}
       </div>
     );

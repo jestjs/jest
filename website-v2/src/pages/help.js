@@ -22,11 +22,11 @@ class Help extends React.Component {
       {
         content: (
           <Translate>
-            Find what you're looking for in our detailed documentation and
-            guides.\n\n- Learn how to [get started](/docs/getting-started) with
-            Jest.\n- [Troubleshoot](/docs/troubleshooting) problems with
-            Jest.\n- Learn how to [configure Jest](/docs/configuration).\n- Look
-            at the full [API Reference](/docs/api).
+            {`Find what you're looking for in our detailed documentation and guides.
+- Learn how to [get started](/docs/getting-started) with Jest.
+- [Troubleshoot](/docs/troubleshooting) problems with Jest.
+- Learn how to [configure Jest](/docs/configuration).
+- Look at the full [API Reference](/docs/api).`}
           </Translate>
         ),
         title: <Translate>Browse the docs</Translate>,
@@ -34,14 +34,9 @@ class Help extends React.Component {
       {
         content: (
           <Translate>
-            Ask questions and find answers from other Jest users like you.\n\n-
-            Join the `#testing` channel on
-            [Reactiflux](https://www.reactiflux.com/), a Discord community.\n-
-            Many members of the community use Stack Overflow. Read through the
-            [existing
-            questions](https://stackoverflow.com/questions/tagged/jestjs) tagged
-            with **jestjs** or [ask your
-            own](https://stackoverflow.com/questions/ask)!
+            {`Ask questions and find answers from other Jest users like you.
+- Join the \`#testing\` channel on [Reactiflux](https://www.reactiflux.com/), a Discord community.
+- Many members of the community use Stack Overflow. Read through the [existingquestions](https://stackoverflow.com/questions/tagged/jestjs) tagged with **jestjs** or [ask your own](https://stackoverflow.com/questions/ask)!`}
           </Translate>
         ),
         title: <Translate>Join the community</Translate>,
@@ -49,10 +44,10 @@ class Help extends React.Component {
       {
         content: (
           <Translate>
-            Find out what's new with Jest.\n\n- Follow
-            [Jest](https://twitter.com/fbjest) on Twitter.\n- Subscribe to the
-            [Jest blog](/blog/).\n- Look at the
-            [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md).
+            {`Find out what's new with Jest.
+- Follow[Jest](https://twitter.com/fbjest) on Twitter.
+- Subscribe to the[Jest blog](/blog/).
+- Look at the[changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md).`}
           </Translate>
         ),
         title: <Translate>Stay up to date</Translate>,
@@ -60,21 +55,26 @@ class Help extends React.Component {
     ];
 
     return (
-      <div className="docMainWrapper wrapperV1">
-        <Container className="mainContainerV1 documentContainer postContainer">
-          <div className="post">
-            <header className="postHeader">
-              <h2>
-                <Translate>Need help?</Translate>
-              </h2>
-            </header>
-            <p>
-              <Translate>
-                Jest is worked on full-time by Facebook's JavaScript Foundation
-                team. Team members are often around and available for questions.
-              </Translate>
-            </p>
-            <GridBlock contents={supportLinks} layout="threeColumn" />
+      <div className="wrapperV1">
+        <Container className="mainContainerV1">
+          <div className="padding-vert--lg">
+            <div>
+              <header>
+                <h2>
+                  <Translate>Need help?</Translate>
+                </h2>
+              </header>
+              <p>
+                <Translate>
+                  Jest is worked on full-time by Facebook's JavaScript
+                  Foundation team. Team members are often around and available
+                  for questions.
+                </Translate>
+              </p>
+            </div>
+            <div className="padding-top--md">
+              <GridBlock contents={supportLinks} layout="threeColumn" />
+            </div>
           </div>
         </Container>
       </div>
