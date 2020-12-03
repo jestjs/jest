@@ -22,6 +22,12 @@ it('throws on deadline exceeded', () => {
   expect(summaryWithoutTime(result)).toMatchSnapshot();
 });
 
+it('throws on deadline exceeded in a hook', () => {
+  const result = runJest('deadlines', ['manual-exceeded-hook.js']);
+  expect(result.exitCode).toBe(1);
+  expect(summaryWithoutTime(result)).toMatchSnapshot();
+});
+
 function summaryWithoutTime(result: {stderr: string}) {
   const summary = extractSummary(result.stderr);
   summary.rest = summary.rest.replace(

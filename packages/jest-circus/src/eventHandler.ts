@@ -31,6 +31,9 @@ const eventHandler: Circus.EventHandler = (
       break;
     }
     case 'hook_start': {
+      if (state.currentlyRunningTest) {
+        state.currentlyRunningTest.deadline = deadlineFor(event.timeout);
+      }
       break;
     }
     case 'start_describe_definition': {
@@ -189,7 +192,7 @@ const eventHandler: Circus.EventHandler = (
       break;
     }
     case 'test_fn_start': {
-      event.test.deadline = Date.now() + event.timeout - 20;
+      event.test.deadline = deadlineFor(event.timeout);
       break;
     }
     case 'test_fn_failure': {
@@ -254,5 +257,9 @@ const eventHandler: Circus.EventHandler = (
     }
   }
 };
+
+function deadlineFor(timeout: number) {
+  return Date.now() + timeout - 20;
+}
 
 export default eventHandler;
