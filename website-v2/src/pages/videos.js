@@ -54,7 +54,7 @@ class Videos extends React.Component {
     const showcase = VideosJSON.videos.map(
       ({title, description, type, url}, index) => {
         const textMarkup = (
-          <div className="blockContent">
+          <div className="blockContent padding-horiz--lg">
             <h2>
               <a href={url}>{title}</a>
             </h2>
