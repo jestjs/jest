@@ -1,0 +1,51 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`passes generally 1`] = `
+Object {
+  "rest": "FAIL __tests__/plain.test.js
+  ✕ exceeded
+
+  ● exceeded
+
+    deadline exceeded (waited here for <<REPLACED>>)
+
+      11 | test('exceeded', async () => {
+      12 |   await sleep(10);
+    > 13 |   await sleep(200);
+         |   ^
+      14 | }, 50);
+      15 | 
+
+      at Object.<anonymous> (__tests__/plain.test.js:13:3)",
+  "summary": "Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /plain.test.js/i.",
+}
+`;
+
+exports[`throws on deadline exceeded 1`] = `
+Object {
+  "rest": "FAIL __tests__/typescript.test.ts
+  ✕ exceeded
+
+  ● exceeded
+
+    deadline exceeded (waited here for <<REPLACED>>)
+
+      12 | test('exceeded', async () => {
+      13 |   await sleep(10);
+    > 14 |   await sleep(200);
+         |   ^
+      15 | }, 50);
+      16 | 
+
+      at Object.<anonymous> (__tests__/typescript.test.ts:14:3)",
+  "summary": "Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /typescript.test.ts/i.",
+}
+`;
