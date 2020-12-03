@@ -7,15 +7,12 @@
  */
 
 import type {PluginObj, types as babelTypes} from '@babel/core';
-import type {Identifier} from '@babel/types';
 
 export default ({
   types: t,
 }: {
   types: typeof babelTypes;
 }): PluginObj<{
-  declareJestObjGetterIdentifier: () => Identifier;
-  jestObjGetterIdentifier?: Identifier;
 }> => ({
   visitor: {
     AwaitExpression(path) {

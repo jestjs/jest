@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 import {getState} from './state';
 
 export async function withinDeadline<T>(promise: Promise<T>): Promise<T> {
@@ -13,7 +20,7 @@ function isUs(line: string): boolean {
 }
 
 async function timeout<T>(promise: Promise<T>, ms: number): Promise<T> {
-  let timeoutId;
+  let timeoutId: ReturnType<typeof setTimeout> | undefined;
   try {
     return await Promise.race([
       promise,
@@ -21,6 +28,7 @@ async function timeout<T>(promise: Promise<T>, ms: number): Promise<T> {
         await new Promise(resolve => {
           timeoutId = setTimeout(resolve, ms);
         });
+        timeoutId = undefined;
         const here = new Error(`deadline exceeded (waited here for ${ms}ms)`);
         here.stack = here.stack
           ?.split('\n')
@@ -30,6 +38,8 @@ async function timeout<T>(promise: Promise<T>, ms: number): Promise<T> {
       })(),
     ]);
   } finally {
-    clearTimeout(timeoutId);
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
   }
 }

@@ -12,7 +12,7 @@ import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '..', 'babel-plugin-jest-deadlines');
 
-beforeEach(() => {
+beforeAll(() => {
   runYarnInstall(DIR);
 });
 

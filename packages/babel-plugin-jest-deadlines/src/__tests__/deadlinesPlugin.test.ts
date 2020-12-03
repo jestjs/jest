@@ -17,9 +17,10 @@ pluginTester({
   tests: {
     'bare function call in statement context': {
       // language=JavaScript
-      code: `async function foo() {
-        await bar();
-      }`,
+      code: `
+        async function foo() {
+          await bar();
+        }`,
       snapshot: true,
     },
     'transforms an expression': {

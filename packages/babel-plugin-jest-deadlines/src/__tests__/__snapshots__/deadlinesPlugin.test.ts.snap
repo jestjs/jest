@@ -3,8 +3,8 @@
 exports[`babel-plugin-jest-deadlines bare function call in statement context: bare function call in statement context 1`] = `
 
 async function foo() {
-        await bar();
-      }
+  await bar();
+}
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
