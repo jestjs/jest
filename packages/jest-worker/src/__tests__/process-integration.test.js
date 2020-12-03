@@ -75,10 +75,30 @@ describe('Jest Worker Integration', () => {
     expect(await promise).toBe(42);
   });
 
-  it('schedules the task on the first available child processes', async () => {
+  it('distributes sequential calls across child processes', async () => {
     const farm = new Farm('/tmp/baz.js', {
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
+    });
+
+    // The first call will go to the first child process.
+    const promise0 = farm.foo('param-0');
+    assertCallsToChild(0, ['foo', 'param-0']);
+    replySuccess(0, 'worker-0');
+    expect(await promise0).toBe('worker-0');
+
+    // The second call will go to the second child process.
+    const promise1 = farm.foo(1);
+    assertCallsToChild(1, ['foo', 1]);
+    replySuccess(1, 'worker-1');
+    expect(await promise1).toBe('worker-1');
+  });
+
+  it('schedules the task on the first available child processes if the scheduling policy is first come', async () => {
+    const farm = new Farm('/tmp/baz.js', {
+      exposedMethods: ['foo', 'bar'],
+      numWorkers: 4,
+      workerSchedulingPolicy: 'first-come',
     });
 
     // The first call will go to the first child process.

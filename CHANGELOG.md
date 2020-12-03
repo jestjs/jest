@@ -9,6 +9,7 @@
 - `[jest-snapshot]` [**BREAKING**] Make prettier optional for inline snapshots - fall back to string replacement ([#7792](https://github.com/facebook/jest/pull/7792))
 - `[jest-runner]` [**BREAKING**] Run transforms over `runnner` ([#8823](https://github.com/facebook/jest/pull/8823))
 - `[jest-runner]` [**BREAKING**] Run transforms over `testRunnner` ([#8823](https://github.com/facebook/jest/pull/8823))
+- `[jest-worker]` Add first-come scheduling policy to jest worker ([10902](https://github.com/facebook/jest/pull/10902))
 
 ### Fixes
 
@@ -45,7 +46,6 @@
 - `[jest-mock]` [**BREAKING**] Migrate to ESM ([#10887](https://github.com/facebook/jest/pull/10887))
 - `[jest-runner]` [**BREAKING**] Migrate to ESM ([#10900](https://github.com/facebook/jest/pull/10900))
 - `[jest-util]` No longer checking `enumerable` when adding `process.domain` ([#10862](https://github.com/facebook/jest/pull/10862))
-- `[jest-worker]` Change from round-robin to first available worker scheduling ([10902](https://github.com/facebook/jest/pull/10902))
 
 ### Performance
 

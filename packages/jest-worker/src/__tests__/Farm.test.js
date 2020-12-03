@@ -105,7 +105,7 @@ describe('Farm', () => {
   it('handles null computeWorkerKey, sending to first worker', async () => {
     const computeWorkerKey = jest.fn(() => null);
 
-    const farm = new Farm(4, callback, computeWorkerKey);
+    const farm = new Farm(4, callback, {computeWorkerKey});
 
     const p0 = farm.doWork('foo', 42);
     workerReply(0);
@@ -132,14 +132,14 @@ describe('Farm', () => {
       .mockReturnValueOnce('two')
       .mockReturnValueOnce('one');
 
-    const farm = new Farm(4, callback, computeWorkerKey);
+    const farm = new Farm(4, callback, {computeWorkerKey});
 
     const p0 = farm.doWork('foo', 42);
-    const p1 = farm.doWork('foo1', 43);
-
     workerReply(0);
-    workerReply(1);
     await p0;
+
+    const p1 = farm.doWork('foo1', 43);
+    workerReply(1);
     await p1;
 
     const p2 = farm.doWork('foo2', 44);
@@ -208,7 +208,9 @@ describe('Farm', () => {
   });
 
   it('checks that once a sticked task finishes, next time is sent to that worker', async () => {
-    const farm = new Farm(4, callback, () => '1234567890abcdef');
+    const farm = new Farm(4, callback, {
+      computeWorkerKey: () => '1234567890abcdef',
+    });
 
     // Worker 1 successfully replies with "17" as a result.
     const p0 = farm.doWork('car', 'plane');
@@ -248,7 +250,9 @@ describe('Farm', () => {
   });
 
   it('checks that even before a sticked task finishes, next time is sent to that worker', async () => {
-    const farm = new Farm(4, callback, () => '1234567890abcdef');
+    const farm = new Farm(4, callback, {
+      computeWorkerKey: () => '1234567890abcdef',
+    });
 
     // Note that the worker is sending a start response synchronously.
     const p0 = farm.doWork('car', 'plane');
@@ -310,7 +314,7 @@ describe('Farm', () => {
       // Push onto the second queue; potentially wiping the earlier job.
       .mockReturnValueOnce(1);
 
-    const farm = new Farm(2, callback, hash);
+    const farm = new Farm(2, callback, {computeWorkerKey: hash});
 
     // First and second jobs get resolved, so that their hash is sticked to
     // the right worker: worker assignment is performed when workers reply, not

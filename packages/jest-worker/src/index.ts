@@ -99,7 +99,10 @@ export default class JestWorker {
     this._farm = new Farm(
       workerPoolOptions.numWorkers,
       this._workerPool.send.bind(this._workerPool),
-      this._options.computeWorkerKey,
+      {
+        computeWorkerKey: this._options.computeWorkerKey,
+        workerSchedulingPolicy: this._options.workerSchedulingPolicy,
+      },
     );
 
     this._bindExposedWorkerMethods(workerPath, this._options);

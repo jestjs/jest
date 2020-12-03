@@ -22,17 +22,22 @@ import {
 
 export default class Farm {
   private _computeWorkerKey: FarmOptions['computeWorkerKey'];
+  private _workerSchedulingPolicy: 'round-robin' | 'first-come';
   private _cacheKeys: Record<string, WorkerInterface>;
   private _callback: Function;
   private _last: Array<QueueItem>;
   private _locks: Array<boolean>;
   private _numOfWorkers: number;
+  private _offset: number = 0;
   private _queue: Array<QueueItem | null>;
 
   constructor(
     numOfWorkers: number,
     callback: Function,
-    computeWorkerKey?: FarmOptions['computeWorkerKey'],
+    options: {
+      computeWorkerKey?: FarmOptions['computeWorkerKey'];
+      workerSchedulingPolicy?: FarmOptions['workerSchedulingPolicy'];
+    } = {},
   ) {
     this._cacheKeys = Object.create(null);
     this._callback = callback;
@@ -41,9 +46,9 @@ export default class Farm {
     this._numOfWorkers = numOfWorkers;
     this._queue = [];
 
-    if (computeWorkerKey) {
-      this._computeWorkerKey = computeWorkerKey;
-    }
+    this._computeWorkerKey = options.computeWorkerKey;
+    this._workerSchedulingPolicy =
+      options.workerSchedulingPolicy ?? 'round-robin';
   }
 
   doWork(
@@ -170,8 +175,11 @@ export default class Farm {
   }
 
   private _push(task: QueueChildMessage): Farm {
+    const offset =
+      this._workerSchedulingPolicy === 'round-robin' ? this._offset++ : 0;
+
     for (let i = 0; i < this._numOfWorkers; i++) {
-      this._enqueue(task, i);
+      this._enqueue(task, (i + offset) % this._numOfWorkers);
     }
 
     return this;
