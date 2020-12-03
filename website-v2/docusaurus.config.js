@@ -84,7 +84,7 @@ module.exports = {
     image: 'img/opengraph.png',
     prism: {
       theme: require('prism-react-renderer/themes/github'),
-      darkTheme: require('prism-react-renderer/themes/dracula'),
+      darkTheme: require('prism-react-renderer/themes/vsDark'),
     },
     footer: {
       style: 'dark',
