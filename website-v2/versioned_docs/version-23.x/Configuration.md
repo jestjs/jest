@@ -59,7 +59,7 @@ module.exports = {
 
 ## Reference
 
-### `automock` [boolean]
+### `automock` \[boolean]
 
 Default: `false`
 
@@ -100,19 +100,19 @@ _Note: Node modules are automatically mocked when you have a manual mock in plac
 
 _Note: Core modules, like `fs`, are not mocked by default. They can be mocked explicitly, like `jest.mock('fs')`._
 
-### `bail` [boolean]
+### `bail` \[boolean]
 
 Default: `false`
 
 By default, Jest runs all tests and produces all errors into the console upon completion. The bail config option can be used here to have Jest stop running tests after the first failure.
 
-### `browser` [boolean]
+### `browser` \[boolean]
 
 Default: `false`
 
 Respect Browserify's [`"browser"` field](https://github.com/browserify/browserify-handbook/blob/master/readme.markdown#browser-field) in `package.json` when resolving modules. Some modules export different versions based on whether they are operating in Node or a browser.
 
-### `cacheDirectory` [string]
+### `cacheDirectory` \[string]
 
 Default: `"/tmp/<path>"`
 
@@ -120,19 +120,19 @@ The directory where Jest should store its cached dependency information.
 
 Jest attempts to scan your dependency tree once (up-front) and cache it in order to ease some of the filesystem raking that needs to happen while running tests. This config option lets you customize where Jest stores that cache data on disk.
 
-### `clearMocks` [boolean]
+### `clearMocks` \[boolean]
 
 Default: `false`
 
 Automatically clear mock calls and instances before every test. Equivalent to calling `jest.clearAllMocks()` before each test. This does not remove any mock implementation that may have been provided.
 
-### `collectCoverage` [boolean]
+### `collectCoverage` \[boolean]
 
 Default: `false`
 
 Indicates whether the coverage information should be collected while executing the test. Because this retrofits all executed files with coverage collection statements, it may significantly slow down your tests.
 
-### `collectCoverageFrom` [array]
+### `collectCoverageFrom` \[array]
 
 Default: `undefined`
 
@@ -172,13 +172,13 @@ Most likely your glob patterns are not matching any files. Refer to the [microma
 
 </details>
 
-### `coverageDirectory` [string]
+### `coverageDirectory` \[string]
 
 Default: `undefined`
 
 The directory where Jest should output its coverage files.
 
-### `coveragePathIgnorePatterns` [array&lt;string&gt;]
+### `coveragePathIgnorePatterns` \[array&lt;string&gt;]
 
 Default: `["/node_modules/"]`
 
@@ -186,7 +186,7 @@ An array of regexp pattern strings that are matched against all file paths befor
 
 These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/", "<rootDir>/node_modules/"]`.
 
-### `coverageReporters` [array&lt;string&gt;]
+### `coverageReporters` \[array&lt;string&gt;]
 
 Default: `["json", "lcov", "text", "clover"]`
 
@@ -194,7 +194,7 @@ A list of reporter names that Jest uses when writing coverage reports. Any [ista
 
 _Note: Setting this option overwrites the default values. Add `"text"` or `"text-summary"` to see a coverage summary in the console output._
 
-### `coverageThreshold` [object]
+### `coverageThreshold` \[object]
 
 Default: `undefined`
 
@@ -258,19 +258,19 @@ Jest will fail if:
 - The `./src/api/very-important-module.js` file has less than 100% coverage.
 - Every remaining file combined has less than 50% coverage (`global`).
 
-### `displayName` [string]
+### `displayName` \[string]
 
 default: `undefined`
 
 Allows for a label to be printed alongside a test while it is running. This becomes more useful in multi-project repositories where there can be many jest configuration files. This visually tells which project a test belongs to.
 
-### `errorOnDeprecated` [boolean]
+### `errorOnDeprecated` \[boolean]
 
 Default: `false`
 
 Make calling deprecated APIs throw helpful error messages. Useful for easing the upgrade process.
 
-### `forceCoverageMatch` [array&lt;string&gt;]
+### `forceCoverageMatch` \[array&lt;string&gt;]
 
 Default: `['']`
 
@@ -303,7 +303,7 @@ You can collect coverage from those files with setting `forceCoverageMatch`.
 }
 ```
 
-### `globals` [object]
+### `globals` \[object]
 
 Default: `{}`
 
@@ -324,19 +324,19 @@ For example, the following would create a global `__DEV__` variable set to `true
 
 Note that, if you specify a global reference value (like an object or array) here, and some code mutates that value in the midst of running a test, that mutation will _not_ be persisted across test runs for other test files. In addition, the `globals` object must be json-serializable, so it can't be used to specify global functions. For that, you should use `setupFiles`.
 
-### `globalSetup` [string]
+### `globalSetup` \[string]
 
 Default: `undefined`
 
 This option allows the use of a custom global setup module which exports an async function that is triggered once before all test suites. This function gets Jest's `globalConfig` object as a parameter.
 
-### `globalTeardown` [string]
+### `globalTeardown` \[string]
 
 Default: `undefined`
 
 This option allows the use of a custom global teardown module which exports an async function that is triggered once after all test suites. This function gets Jest's `globalConfig` object as a parameter.
 
-### `haste` [object]
+### `haste` \[object]
 
 Default: `undefined`
 
@@ -357,13 +357,13 @@ type HasteConfig = {
 };
 ```
 
-### `moduleDirectories` [array&lt;string&gt;]
+### `moduleDirectories` \[array&lt;string&gt;]
 
 Default: `["node_modules"]`
 
 An array of directory names to be searched recursively up from the requiring module's location. Setting this option will _override_ the default, if you wish to still search `node_modules` for packages include it along with any other options: `["node_modules", "bower_components"]`
 
-### `moduleFileExtensions` [array&lt;string&gt;]
+### `moduleFileExtensions` \[array&lt;string&gt;]
 
 Default: `["js", "json", "jsx", "node"]`
 
@@ -371,7 +371,7 @@ An array of file extensions your modules use. If you require modules without spe
 
 If you are using TypeScript, you will want to add `"ts"` and/or `"tsx"` to the above default. Where you place these is up to you - we recommend placing the extensions most commonly used in your project on the left.
 
-### `moduleNameMapper` [object\&lt;string, string&gt;]
+### `moduleNameMapper` \[object\&lt;string, string&gt;]
 
 Default: `null`
 
@@ -399,7 +399,7 @@ The order in which the mappings are defined matters. Patterns are checked one by
 
 _Note: If you provide module name without boundaries `^$` it may cause hard to spot errors. E.g. `relay` will replace all modules which contain `relay` as a substring in its name: `relay`, `react-relay` and `graphql-relay` will all be pointed to your stub._
 
-### `modulePathIgnorePatterns` [array&lt;string&gt;]
+### `modulePathIgnorePatterns` \[array&lt;string&gt;]
 
 Default: `[]`
 
@@ -407,13 +407,13 @@ An array of regexp pattern strings that are matched against all module paths bef
 
 These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/"]`.
 
-### `modulePaths` [array&lt;string&gt;]
+### `modulePaths` \[array&lt;string&gt;]
 
 Default: `[]`
 
 An alternative API to setting the `NODE_PATH` env variable, `modulePaths` is an array of absolute paths to additional locations to search when resolving modules. Use the `<rootDir>` string token to include the path to your project's root directory. Example: `["<rootDir>/app/"]`.
 
-### `notify` [boolean]
+### `notify` \[boolean]
 
 Default: `false`
 
@@ -421,7 +421,7 @@ Activates notifications for test results.
 
 **Beware:** Jest uses [node-notifier](https://github.com/mikaelbr/node-notifier) to display desktop notifications. On Windows, it creates a new start menu entry on the first use and not display the notification. Notifications will be properly displayed on subsequent runs
 
-### `notifyMode` [string]
+### `notifyMode` \[string]
 
 Default: `always`
 
@@ -436,7 +436,7 @@ Specifies notification mode. Requires `notify: true`.
 - `success-change`: send a notification when tests pass or once when it fails.
 - `failure-change`: send a notification when tests fail or once when it passes.
 
-### `preset` [string]
+### `preset` \[string]
 
 Default: `undefined`
 
@@ -458,13 +458,13 @@ Presets may also be relative to filesystem paths.
 }
 ```
 
-### `prettierPath` [string]
+### `prettierPath` \[string]
 
 Default: `'prettier'`
 
 Sets the path to the [`prettier`](https://prettier.io/) node module used to update inline snapshots.
 
-### `projects` [array&lt;string | ProjectConfig&gt;]
+### `projects` \[array&lt;string | ProjectConfig&gt;]
 
 Default: `undefined`
 
@@ -497,7 +497,7 @@ The projects feature can also be used to run multiple configurations or multiple
 
 _Note: When using multi-project runner, it's recommended to add a `displayName` for each project. This will show the `displayName` of a project next to its tests._
 
-### `reporters` [array&lt;moduleName | [moduleName, options]&gt;]
+### `reporters` \[array&lt;moduleName | \[moduleName, options]&gt;]
 
 Default: `undefined`
 
@@ -569,19 +569,19 @@ class MyCustomReporter {
 
 For the full list of methods and argument types see `Reporter` interface in [packages/jest-reporters/src/types.ts](https://github.com/facebook/jest/blob/master/packages/jest-reporters/src/types.ts)
 
-### `resetMocks` [boolean]
+### `resetMocks` \[boolean]
 
 Default: `false`
 
 Automatically reset mock state before every test. Equivalent to calling `jest.resetAllMocks()` before each test. This will lead to any mocks having their fake implementations removed but does not restore their initial implementation.
 
-### `resetModules` [boolean]
+### `resetModules` \[boolean]
 
 Default: `false`
 
 By default, each test file gets its own independent module registry. Enabling `resetModules` goes a step further and resets the module registry before running each individual test. This is useful to isolate modules for every test so that the local module state doesn't conflict between tests. This can be done programmatically using [`jest.resetModules()`](JestObjectAPI.md#jestresetmodules).
 
-### `resolver` [string]
+### `resolver` \[string]
 
 Default: `undefined`
 
@@ -600,13 +600,13 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 
 The function should either return a path to the module that should be resolved or throw an error if the module can't be found.
 
-### `restoreMocks` [boolean]
+### `restoreMocks` \[boolean]
 
 Default: `false`
 
 Automatically restore mock state before every test. Equivalent to calling `jest.restoreAllMocks()` before each test. This will lead to any mocks having their fake implementations removed and restores their initial implementation.
 
-### `rootDir` [string]
+### `rootDir` \[string]
 
 Default: The root of the directory containing your Jest [config file](#) _or_ the `package.json` _or_ the [`pwd`](http://en.wikipedia.org/wiki/Pwd) if no `package.json` is found
 
@@ -616,7 +616,7 @@ Oftentimes, you'll want to set this to `'src'` or `'lib'`, corresponding to wher
 
 _Note that using `'<rootDir>'` as a string token in any other path-based config settings will refer back to this value. So, for example, if you want your [`setupFiles`](#setupfiles-array) config entry to point at the `env-setup.js` file at the root of your project, you could set its value to `["<rootDir>/env-setup.js"]`._
 
-### `roots` [array&lt;string&gt;]
+### `roots` \[array&lt;string&gt;]
 
 Default: `["<rootDir>"]`
 
@@ -628,7 +628,7 @@ _Note: While `rootDir` is mostly used as a token to be re-used in other configur
 
 _Note: By default, `roots` has a single entry `<rootDir>` but there are cases where you may want to have multiple roots within one project, for example `roots: ["<rootDir>/src/", "<rootDir>/tests/"]`._
 
-### `runner` [string]
+### `runner` \[string]
 
 Default: `"jest-runner"`
 
@@ -654,7 +654,7 @@ async runTests(
 
 If you need to restrict your test-runner to only run in serial rather than being executed in parallel your class should have the property `isSerial` to be set as `true`.
 
-### `setupFiles` [array]
+### `setupFiles` \[array]
 
 Default: `[]`
 
@@ -662,7 +662,7 @@ A list of paths to modules that run some code to configure or set up the testing
 
 It's also worth noting that `setupFiles` will execute _before_ [`setupTestFrameworkScriptFile`](#setuptestframeworkscriptfile-string).
 
-### `setupTestFrameworkScriptFile` [string]
+### `setupTestFrameworkScriptFile` \[string]
 
 Default: `undefined`
 
@@ -686,7 +686,7 @@ Example `jest.setup.js` file
 jest.setTimeout(10000); // in milliseconds
 ```
 
-### `snapshotSerializers` [array&lt;string&gt;]
+### `snapshotSerializers` \[array&lt;string&gt;]
 
 Default: `[]`
 
@@ -750,7 +750,7 @@ To make a dependency explicit instead of implicit, you can call [`expect.addSnap
 
 More about serializers API can be found [here](https://github.com/facebook/jest/tree/master/packages/pretty-format/README.md#serialize).
 
-### `testEnvironment` [string]
+### `testEnvironment` \[string]
 
 Default: `"jsdom"`
 
@@ -833,13 +833,13 @@ beforeAll(() => {
 
 _Note: Jest comes with JSDOM@11 by default. Due to JSDOM 12 and newer dropping support for Node 6, Jest is unable to upgrade for the time being. However, you can install a custom `testEnvironment` with whichever version of JSDOM you want. E.g. [jest-environment-jsdom-thirteen](https://www.npmjs.com/package/jest-environment-jsdom-thirteen), which has JSDOM@13._
 
-### `testEnvironmentOptions` [Object]
+### `testEnvironmentOptions` \[Object]
 
 Default: `{}`
 
 Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example, you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{userAgent: "Agent/007"}`.
 
-### `testFailureExitCode` [number]
+### `testFailureExitCode` \[number]
 
 Default: `1`
 
@@ -857,7 +857,7 @@ See the [micromatch](https://github.com/jonschlinkert/micromatch) package for de
 
 See also [`testRegex` [string]](#testregex-string), but note that you cannot specify both options.
 
-### `testPathIgnorePatterns` [array&lt;string&gt;]
+### `testPathIgnorePatterns` \[array&lt;string&gt;]
 
 Default: `["/node_modules/"]`
 
@@ -885,7 +885,7 @@ The following is a visualization of the default regex:
 
 _Note: `testRegex` will try to detect test files using the **absolute file path**, therefore, having a folder with a name that matches it will run all the files as tests_
 
-### `testResultsProcessor` [string]
+### `testResultsProcessor` \[string]
 
 Default: `undefined`
 
@@ -933,7 +933,7 @@ This option allows the use of a custom results processor. This processor must be
 }
 ```
 
-### `testRunner` [string]
+### `testRunner` \[string]
 
 Default: `jasmine2`
 
@@ -953,19 +953,19 @@ function testRunner(
 
 An example of such function can be found in our default [jasmine2 test runner package](https://github.com/facebook/jest/blob/master/packages/jest-jasmine2/src/index.ts).
 
-### `testURL` [string]
+### `testURL` \[string]
 
 Default: `http://localhost`
 
 This option sets the URL for the jsdom environment. It is reflected in properties such as `location.href`.
 
-### `timers` [string]
+### `timers` \[string]
 
 Default: `real`
 
 Setting this value to `fake` allows the use of fake timers for functions such as `setTimeout`. Fake timers are useful when a piece of code sets a long timeout that we don't want to wait for in a test.
 
-### `transform` [object\&lt;string, pathToTransformer | [pathToTransformer, object]&gt;]
+### `transform` \[object\&lt;string, pathToTransformer | \[pathToTransformer, object]&gt;]
 
 Default: `{"^.+\\.[jt]sx?$": "babel-jest"}`
 
@@ -982,7 +982,7 @@ _Note: a transformer is only run once per file unless the file has changed. Duri
 
 _Note: when adding additional code transformers, this will overwrite the default config and `babel-jest` is no longer automatically loaded. If you want to use it to compile JavaScript or Typescript, it has to be explicitly defined by adding `{"\\.[jt]sx?$": "babel-jest"}` to the transform property. See [babel-jest plugin](https://github.com/facebook/jest/tree/master/packages/babel-jest#setup)_
 
-### `transformIgnorePatterns` [array&lt;string&gt;]
+### `transformIgnorePatterns` \[array&lt;string&gt;]
 
 Default: `["/node_modules/"]`
 
@@ -994,7 +994,7 @@ Example: `["<rootDir>/bower_components/", "<rootDir>/node_modules/"]`.
 
 Sometimes it happens (especially in React Native or TypeScript projects) that 3rd party modules are published as untranspiled. Since all files inside `node_modules` are not transformed by default, Jest will not understand the code in these modules, resulting in syntax errors. To overcome this, you may use `transformIgnorePatterns` to allow transpiling such modules. You'll find a good example of this use case in [React Native Guide](https://jestjs.io/docs/en/tutorial-react-native#transformignorepatterns-customization).
 
-### `unmockedModulePathPatterns` [array&lt;string&gt;]
+### `unmockedModulePathPatterns` \[array&lt;string&gt;]
 
 Default: `[]`
 
@@ -1004,13 +1004,13 @@ This is useful for some commonly used 'utility' modules that are almost always u
 
 It is possible to override this setting in individual tests by explicitly calling `jest.mock()` at the top of the test file.
 
-### `verbose` [boolean]
+### `verbose` \[boolean]
 
 Default: `false`
 
 Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution. Note that if there is only one test file being run it will default to `true`.
 
-### `watchPathIgnorePatterns` [array&lt;string&gt;]
+### `watchPathIgnorePatterns` \[array&lt;string&gt;]
 
 Default: `[]`
 
@@ -1020,7 +1020,7 @@ These patterns match against the full path. Use the `<rootDir>` string token to 
 
 Even if nothing is specified here, the watcher will ignore changes to any hidden files and directories, i.e. files and folders that begin with a dot (`.`).
 
-### `watchPlugins` [array&lt;string | [string, Object]&gt;]
+### `watchPlugins` \[array&lt;string | \[string, Object]&gt;]
 
 Default: `[]`
 
@@ -1034,7 +1034,7 @@ Examples of watch plugins include:
 - [`jest-watch-typeahead`](https://github.com/jest-community/jest-watch-typeahead)
 - [`jest-watch-yarn-workspaces`](https://github.com/cameronhunter/jest-watch-directories/tree/master/packages/jest-watch-yarn-workspaces)
 
-### `watchman` [boolean]
+### `watchman` \[boolean]
 
 Default: `true`
 
