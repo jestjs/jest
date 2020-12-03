@@ -548,7 +548,7 @@ class Index extends React.Component {
           <Container
             padding={['bottom', 'top']}
             background="light"
-            className="section-container imageAlignSide twoByGridBlock paddingBottom"
+            className="section-container community imageAlignSide twoByGridBlock"
           >
             <div className="gridBlockV1 yellow">
               <div className="blockContent">

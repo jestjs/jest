@@ -143,6 +143,14 @@
   padding-top: 10px;
 }
 
+.section-container.community {
+  padding-bottom: 30px;
+}
+
+.opencollective-avatars {
+  padding: 12px 0;
+}
+
 .logos > a {
   margin-left: 0;
 }

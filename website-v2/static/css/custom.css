@@ -332,7 +332,3 @@ circle.run-circle:nth-child(3) {
 circle.run-circle:nth-child(4) {
   animation-delay: -3.3s;
 }
-
-.opencollective-avatars {
-  padding: 12px 0;
-}
