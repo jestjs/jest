@@ -9,6 +9,7 @@
 /* eslint-disable import/no-unresolved */
 import React, {useEffect} from 'react';
 import Layout from '@theme/Layout';
+import Head from '@docusaurus/Head';
 import Link from '@docusaurus/Link';
 import backers from '@site/backers.json';
 import Translate from '@docusaurus/Translate';
@@ -124,7 +125,7 @@ class Contributors extends React.Component {
             Sponsors are those who contribute $100 or more per month to Jest
           </Translate>
         </p>
-        <div>
+        <div className="opencollective-avatars">
           {backers
             .filter(b => b.tier && b.tier.slug === 'sponsor')
             .map(Sponsor)}
@@ -137,7 +138,7 @@ class Contributors extends React.Component {
             Backers are those who contribute $2 or more per month to Jest
           </Translate>
         </p>
-        <div>
+        <div className="opencollective-avatars">
           {backers
             .filter(
               b =>
@@ -291,14 +292,19 @@ class Index extends React.Component {
     const {config: siteConfig} = this.props;
     const showcase = UsersJSON.users.map((user, i) => (
       <a href={user.infoLink} key={i}>
-        <img src={user.image} title={user.caption} />
+        <img src={user.image} title={user.caption} alt={user.caption} />
       </a>
     ));
 
     return (
       <div>
+        <Head>
+          <title>
+            {siteConfig.title} {siteConfig.titleDelimiter} {siteConfig.tagline}
+          </title>
+        </Head>
         <HeroInteractive config={siteConfig} />
-        <div className="mainContainerV1" style={{paddingTop: 0}}>
+        <div className="mainContainerV1" style={{padding: 0}}>
           <Container
             padding={['bottom', 'top']}
             background="light"
@@ -539,45 +545,46 @@ class Index extends React.Component {
               </div>
             </div>
           </Container>
-
-          <div className="containerV1 section-container imageAlignSide twoByGridBlock lightBackground">
-            <div className="wrapperV1">
-              <div className="gridBlockV1 yellow">
-                <div className="blockContent">
-                  <h2>
-                    <Translate>Open Collective</Translate>
-                  </h2>
-                  <MarkdownBlock>
-                    <Translate>
-                      With so many users, the core team of Jest uses an [Open
-                      Collective](https://opencollective.com/jest) for
-                      non-Facebook contributors.
-                    </Translate>
-                  </MarkdownBlock>
-                  <Contributors />
-                </div>
-                <div className="blockContent yellow">
-                  <h2>
-                    <Translate>Who uses Jest?</Translate>
-                  </h2>
-                  <MarkdownBlock>
-                    <Translate>
-                      A lot of people! With
-                      [20m](https://www.npmjs.com/package/jest) downloads in the
-                      last month, and used on over
-                      [1,293,000](https://github.com/facebook/jest/network/dependents)
-                      public repos on GitHub. Jest is used extensively at these
-                      companies:
-                    </Translate>
-                  </MarkdownBlock>
-                  <div className="gridBlockV1 logos">
-                    {showcase}
-                    <p className="others">And many others</p>
-                  </div>
+          <Container
+            padding={['bottom', 'top']}
+            background="light"
+            className="section-container imageAlignSide twoByGridBlock paddingBottom"
+          >
+            <div className="gridBlockV1 yellow">
+              <div className="blockContent">
+                <h2>
+                  <Translate>Open Collective</Translate>
+                </h2>
+                <MarkdownBlock>
+                  <Translate>
+                    With so many users, the core team of Jest uses an [Open
+                    Collective](https://opencollective.com/jest) for
+                    non-Facebook contributors.
+                  </Translate>
+                </MarkdownBlock>
+                <Contributors />
+              </div>
+              <div className="blockContent yellow">
+                <h2>
+                  <Translate>Who uses Jest?</Translate>
+                </h2>
+                <MarkdownBlock>
+                  <Translate>
+                    A lot of people! With
+                    [20m](https://www.npmjs.com/package/jest) downloads in the
+                    last month, and used on over
+                    [1,293,000](https://github.com/facebook/jest/network/dependents)
+                    public repos on GitHub. Jest is used extensively at these
+                    companies:
+                  </Translate>
+                </MarkdownBlock>
+                <div className="gridBlockV1 logos">
+                  {showcase}
+                  <p className="others">And many others</p>
                 </div>
               </div>
             </div>
-          </div>
+          </Container>
         </div>
       </div>
     );
