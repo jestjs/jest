@@ -22,7 +22,7 @@ import {
 
 export default class Farm {
   private _computeWorkerKey: FarmOptions['computeWorkerKey'];
-  private _workerSchedulingPolicy: 'round-robin' | 'first-come';
+  private _workerSchedulingPolicy: FarmOptions['workerSchedulingPolicy'];
   private _cacheKeys: Record<string, WorkerInterface>;
   private _callback: Function;
   private _last: Array<QueueItem>;

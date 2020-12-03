@@ -97,12 +97,12 @@ describe('Jest Worker Process Integration', () => {
     expect(await promise1).toBe('worker-1');
   });
 
-  it('schedules the task on the first available child processes if the scheduling policy is first come', async () => {
+  it('schedules the task on the first available child processes if the scheduling policy is in-order', async () => {
     const farm = new Farm('/tmp/baz.js', {
       enableWorkerThreads: true,
       exposedMethods: ['foo', 'bar'],
       numWorkers: 4,
-      workerSchedulingPolicy: 'first-come',
+      workerSchedulingPolicy: 'in-order',
     });
 
     // The first call will go to the first child process.
