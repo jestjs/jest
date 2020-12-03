@@ -20,15 +20,15 @@ class Versions extends React.Component {
     const latestVersion = versions[0];
     const {language} = this.props;
     return (
-      <div className="docMainWrapper wrapperV1">
-        <Container className="mainContainerV1 versionsContainer">
-          <div className="post">
-            <header className="postHeader">
+      <div className="wrapperV1">
+        <Container className="mainContainerV1">
+          <div>
+            <header>
               <h2>{siteConfig.title + ' Versions'}</h2>
             </header>
             <h3 id="latest">Current version (Stable)</h3>
             <p>Latest stable version of Jest</p>
-            <table className="versions">
+            <table>
               <tbody>
                 <tr>
                   <th>{latestVersion}</th>
@@ -51,7 +51,7 @@ class Versions extends React.Component {
             <p>
               Here you can find the latest unreleased documentation and code.
             </p>
-            <table className="versions">
+            <table>
               <tbody>
                 <tr>
                   <th>master</th>
@@ -72,7 +72,7 @@ class Versions extends React.Component {
             <p>
               Here you can find documentation for previous versions of Jest.
             </p>
-            <table className="versions">
+            <table>
               <tbody>
                 {versions.map(
                   version =>
