@@ -154,21 +154,21 @@ class MyWatchPlugin {
 
 For stability and safety reasons, only part of the global configuration keys can be updated with `updateConfigAndRun`. The current white list is as follows:
 
-- [`bail`](configuration.html#bail-number--boolean)
-- [`changedSince`](cli.html#--changedsince)
-- [`collectCoverage`](configuration.html#collectcoverage-boolean)
-- [`collectCoverageFrom`](configuration.html#collectcoveragefrom-array)
-- [`collectCoverageOnlyFrom`](configuration.html#collectcoverageonlyfrom-array)
-- [`coverageDirectory`](configuration.html#coveragedirectory-string)
-- [`coverageReporters`](configuration.html#coveragereporters-arraystring)
-- [`notify`](configuration.html#notify-boolean)
-- [`notifyMode`](configuration.html#notifymode-string)
-- [`onlyFailures`](configuration.html#onlyfailures-boolean)
-- [`reporters`](configuration.html#reporters-arraymodulename--modulename-options)
-- [`testNamePattern`](cli.html#--testnamepatternregex)
-- [`testPathPattern`](cli.html#--testpathpatternregex)
-- [`updateSnapshot`](cli.html#--updatesnapshot)
-- [`verbose`](configuration.html#verbose-boolean)
+- [`bail`](configuration#bail-number--boolean)
+- [`changedSince`](cli#--changedsince)
+- [`collectCoverage`](configuration#collectcoverage-boolean)
+- [`collectCoverageFrom`](configuration#collectcoveragefrom-array)
+- [`collectCoverageOnlyFrom`](configuration#collectcoverageonlyfrom-array)
+- [`coverageDirectory`](configuration#coveragedirectory-string)
+- [`coverageReporters`](configuration#coveragereporters-arraystring)
+- [`notify`](configuration#notify-boolean)
+- [`notifyMode`](configuration#notifymode-string)
+- [`onlyFailures`](configuration#onlyfailures-boolean)
+- [`reporters`](configuration#reporters-arraymodulename--modulename-options)
+- [`testNamePattern`](cli#--testnamepatternregex)
+- [`testPathPattern`](cli#--testpathpatternregex)
+- [`updateSnapshot`](cli#--updatesnapshot)
+- [`verbose`](configuration#verbose-boolean)
 
 ## Customization
 

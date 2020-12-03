@@ -80,7 +80,7 @@ Often this is useful when you want to clean up a mock's usage data between two a
 
 Beware that `mockClear` will replace `mockFn.mock`, not just [`mockFn.mock.calls`](#mockfnmockcalls) and [`mockFn.mock.instances`](#mockfnmockinstances). You should, therefore, avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data.
 
-The [`clearMocks`](configuration.html#clearmocks-boolean) configuration option is available to clear mocks automatically between tests.
+The [`clearMocks`](configuration#clearmocks-boolean) configuration option is available to clear mocks automatically between tests.
 
 ### `mockFn.mockReset()`
 
@@ -98,7 +98,7 @@ This is useful when you want to mock functions in certain test cases and restore
 
 Beware that `mockFn.mockRestore` only works when the mock was created with `jest.spyOn`. Thus you have to take care of restoration yourself when manually assigning `jest.fn()`.
 
-The [`restoreMocks`](configuration.html#restoremocks-boolean) configuration option is available to restore mocks automatically between tests.
+The [`restoreMocks`](configuration#restoremocks-boolean) configuration option is available to restore mocks automatically between tests.
 
 ### `mockFn.mockImplementation(fn)`
 

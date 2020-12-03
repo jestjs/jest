@@ -187,7 +187,7 @@ yarn test --maxWorkers=4
 
 ## Compatibility issues
 
-Jest takes advantage of new features added to Node 6. We recommend that you upgrade to the latest stable release of Node. The minimum supported version is `v6.0.0`. Versions `0.x.x` and `4.x.x` are not supported because the `jsdom` version used in Jest doesn't support Node 4. However, if you need to run Jest on Node 4, you can use the `testEnvironment` config to use a [custom environment](https://jestjs.io/docs/en/configuration.html#testenvironment-string) that supports Node 4, such as [`jest-environment-node`](https://yarnpkg.com/en/package/jest-environment-node).
+Jest takes advantage of new features added to Node 6. We recommend that you upgrade to the latest stable release of Node. The minimum supported version is `v6.0.0`. Versions `0.x.x` and `4.x.x` are not supported because the `jsdom` version used in Jest doesn't support Node 4. However, if you need to run Jest on Node 4, you can use the `testEnvironment` config to use a [custom environment](https://jestjs.io/docs/en/configuration#testenvironment-string) that supports Node 4, such as [`jest-environment-node`](https://yarnpkg.com/en/package/jest-environment-node).
 
 ## `coveragePathIgnorePatterns` seems to not have any effect.
 
@@ -212,4 +212,4 @@ _Note:_ This means when you are using `test.each` you cannot set the table async
 
 ## Still unresolved?
 
-See [Help](/help.html).
+See [Help](/help).

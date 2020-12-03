@@ -137,7 +137,7 @@ The preset sets up the environment and is very opinionated and based on what we 
 
 ### transformIgnorePatterns customization
 
-The [`transformIgnorePatterns`](configuration.html#transformignorepatterns-arraystring) option can be used to specify which files shall be transformed by Babel. Many react-native npm modules unfortunately don't pre-compile their source code before publishing.
+The [`transformIgnorePatterns`](configuration#transformignorepatterns-arraystring) option can be used to specify which files shall be transformed by Babel. Many react-native npm modules unfortunately don't pre-compile their source code before publishing.
 
 By default the jest-react-native preset only processes the project's own source files and react-native. If you have npm dependencies that have to be transformed you can customize this configuration option by including modules other than react-native:
 
@@ -151,11 +151,11 @@ By default the jest-react-native preset only processes the project's own source 
 
 ### setupFiles
 
-If you'd like to provide additional configuration for every test file, the [`setupFiles` configuration option](configuration.html#setupfiles-array) can be used to specify setup scripts.
+If you'd like to provide additional configuration for every test file, the [`setupFiles` configuration option](configuration#setupfiles-array) can be used to specify setup scripts.
 
 ### moduleNameMapper
 
-The [`moduleNameMapper`](configuration.html#modulenamemapper-objectstring-string--arraystring) can be used to map a module path to a different module. By default the preset maps all images to an image stub module but if a module cannot be found this configuration option can help:
+The [`moduleNameMapper`](configuration#modulenamemapper-objectstring-string--arraystring) can be used to map a module path to a different module. By default the preset maps all images to an image stub module but if a module cannot be found this configuration option can help:
 
 ```json
 {
@@ -177,7 +177,7 @@ For example, if your code depends on a third party native video component called
 jest.mock('react-native-video', () => 'Video');
 ```
 
-This will render the component as `<Video {...props} />` with all of its props in the snapshot output. See also [caveats around Enzyme and React 16](tutorial-react.html#snapshot-testing-with-mocks-enzyme-and-react-16).
+This will render the component as `<Video {...props} />` with all of its props in the snapshot output. See also [caveats around Enzyme and React 16](tutorial-react#snapshot-testing-with-mocks-enzyme-and-react-16).
 
 Sometimes you need to provide a more complex manual mock. For example if you'd like to forward the prop types or static fields of a native component to a mock, you can return a different React component from a mock through this helper from jest-react-native:
 
