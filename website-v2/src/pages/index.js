@@ -401,10 +401,9 @@ class Index extends React.Component {
                   content: (
                     <Translate>
                       Generate code coverage by adding the flag
-                      [`--coverage`](https://jestjs.io/docs/en/cli.html#--coverageboolean).
-                      No additional setup needed. Jest can collect code coverage
-                      information from entire projects, including untested
-                      files.
+                      [`--coverage`](/docs/cli#--coverageboolean). No additional
+                      setup needed. Jest can collect code coverage information
+                      from entire projects, including untested files.
                     </Translate>
                   ),
                   image: '/img/content/feature-coverage.png',
@@ -427,8 +426,8 @@ class Index extends React.Component {
                       Jest uses a custom resolver for imports in your tests,
                       making it simple to mock any object outside of your test’s
                       scope. You can use mocked imports with the rich [Mock
-                      Functions](https://jestjs.io/docs/en/mock-functions.html)
-                      API to spy on function calls with readable test syntax.
+                      Functions](/docs/mock-functions) API to spy on function
+                      calls with readable test syntax.
                     </Translate>
                   ),
                   image: '/img/content/feature-mocking.png',

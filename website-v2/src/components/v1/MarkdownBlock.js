@@ -6,13 +6,29 @@
  */
 
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
+import Link from '@docusaurus/Link';
+import Translate from '@docusaurus/Translate';
 
-// TODO
+const renderers = {
+  link: props => <Link {...props} />,
+};
+
+// TODO hacky temp solution
+function getMarkdown(children) {
+  if (children?.type === Translate) {
+    return children?.props?.children;
+  } else {
+    return children;
+  }
+}
+
 export default function MarkdownBlock({children}) {
+  const markdown = getMarkdown(children);
   return (
     <div>
       <span>
-        <p>{children}</p>
+        <ReactMarkdown renderers={renderers}>{markdown}</ReactMarkdown>
       </span>
     </div>
   );

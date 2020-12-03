@@ -24,7 +24,8 @@
     "docusaurus-plugin-sass": "^0.1.11",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
-    "react-github-btn": "^1.2.0"
+    "react-github-btn": "^1.2.0",
+    "react-markdown": "^5.0.3"
   },
   "devDependencies": {
     "crowdin-cli": "^0.3.0",
