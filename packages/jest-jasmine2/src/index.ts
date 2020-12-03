@@ -17,13 +17,13 @@ import {installErrorOnPrivate} from './errorOnPrivate';
 import type Spec from './jasmine/Spec';
 import jasmineAsyncInstall from './jasmineAsyncInstall';
 import JasmineReporter from './reporter';
-import type {Jasmine as JestJasmine} from './types';
+export type {Jasmine} from './types';
 
 const JASMINE = require.resolve('./jasmine/jasmineLight');
 
 const jestEachBuildDir = path.dirname(require.resolve('jest-each'));
 
-async function jasmine2(
+export default async function jasmine2(
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   environment: JestEnvironment,
@@ -211,9 +211,3 @@ const addSnapshotData = (
 
   return results;
 };
-
-declare namespace jasmine2 {
-  export type Jasmine = JestJasmine;
-}
-
-export = jasmine2;
