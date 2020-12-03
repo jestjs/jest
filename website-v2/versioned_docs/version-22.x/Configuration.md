@@ -164,7 +164,7 @@ Default: `undefined`
 
 The directory where Jest should output its coverage files.
 
-### `coveragePathIgnorePatterns` [array\<string>]
+### `coveragePathIgnorePatterns` [array&lt;string&gt;]
 
 Default: `["/node_modules/"]`
 
@@ -172,7 +172,7 @@ An array of regexp pattern strings that are matched against all file paths befor
 
 These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/", "<rootDir>/node_modules/"]`.
 
-### `coverageReporters` [array\<string>]
+### `coverageReporters` [array&lt;string&gt;]
 
 Default: `["json", "lcov", "text", "clover"]`
 
@@ -250,7 +250,7 @@ default: `undefined`
 
 Allows for a label to be printed alongside a test while it is running. This becomes more useful in multi-project repositories where there can be many jest configuration files. This visually tells which project a test belongs to.
 
-### `forceCoverageMatch` [array\<string>]
+### `forceCoverageMatch` [array&lt;string&gt;]
 
 Default: `['']`
 
@@ -337,13 +337,13 @@ type HasteConfig = {
 };
 ```
 
-### `moduleDirectories` [array\<string>]
+### `moduleDirectories` [array&lt;string&gt;]
 
 Default: `["node_modules"]`
 
 An array of directory names to be searched recursively up from the requiring module's location. Setting this option will _override_ the default, if you wish to still search `node_modules` for packages include it along with any other options: `["node_modules", "bower_components"]`
 
-### `moduleFileExtensions` [array\<string>]
+### `moduleFileExtensions` [array&lt;string&gt;]
 
 Default: `["js", "json", "jsx", "node"]`
 
@@ -351,7 +351,7 @@ An array of file extensions your modules use. If you require modules without spe
 
 If you are using TypeScript, you will want to add `"ts"` and/or `"tsx"` to the above default. Where you place these is up to you - we recommend placing the extensions most commonly used in your project on the left.
 
-### `moduleNameMapper` [object\<string, string>]
+### `moduleNameMapper` [object\&lt;string, string&gt;]
 
 Default: `null`
 
@@ -379,7 +379,7 @@ The order in which the mappings are defined matters. Patterns are checked one by
 
 _Note: If you provide module name without boundaries `^$` it may cause hard to spot errors. E.g. `relay` will replace all modules which contain `relay` as a substring in its name: `relay`, `react-relay` and `graphql-relay` will all be pointed to your stub._
 
-### `modulePathIgnorePatterns` [array\<string>]
+### `modulePathIgnorePatterns` [array&lt;string&gt;]
 
 Default: `[]`
 
@@ -387,7 +387,7 @@ An array of regexp pattern strings that are matched against all module paths bef
 
 These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/"]`.
 
-### `modulePaths` [array\<string>]
+### `modulePaths` [array&lt;string&gt;]
 
 Default: `[]`
 
@@ -438,7 +438,7 @@ Presets may also be relative to filesystem paths.
 }
 ```
 
-### `projects` [array\<string | ProjectConfig>]
+### `projects` [array&lt;string | ProjectConfig&gt;]
 
 Default: `undefined`
 
@@ -471,7 +471,7 @@ The projects feature can also be used to run multiple configurations or multiple
 
 _Note: When using multi-project runner, it's recommended to add a `displayName` for each project. This will show the `displayName` of a project next to its tests._
 
-### `reporters` [array\<moduleName | [moduleName, options]>]
+### `reporters` [array&lt;moduleName | [moduleName, options]&gt;]
 
 Default: `undefined`
 
@@ -590,7 +590,7 @@ Oftentimes, you'll want to set this to `'src'` or `'lib'`, corresponding to wher
 
 _Note that using `'<rootDir>'` as a string token in any other path-based config settings will refer back to this value. So, for example, if you want your [`setupFiles`](#setupfiles-array) config entry to point at the `env-setup.js` file at the root of your project, you could set its value to `["<rootDir>/env-setup.js"]`._
 
-### `roots` [array\<string>]
+### `roots` [array&lt;string&gt;]
 
 Default: `["<rootDir>"]`
 
@@ -660,7 +660,7 @@ Example `jest.setup.js` file
 jest.setTimeout(10000); // in milliseconds
 ```
 
-### `snapshotSerializers` [array\<string>]
+### `snapshotSerializers` [array&lt;string&gt;]
 
 Default: `[]`
 
@@ -821,7 +821,7 @@ The exit code Jest returns on test failure.
 
 _Note: This does not change the exit code in the case of Jest errors (e.g. invalid configuration)._
 
-### `testMatch` [array\<string>]
+### `testMatch` [array&lt;string&gt;]
 
 (default: `[ "**/__tests__/**/*.js?(x)", "**/?(*.)+(spec|test).js?(x)" ]`)
 
@@ -831,7 +831,7 @@ See the [micromatch](https://github.com/jonschlinkert/micromatch) package for de
 
 See also [`testRegex` [string]](#testregex-string), but note that you cannot specify both options.
 
-### `testPathIgnorePatterns` [array\<string>]
+### `testPathIgnorePatterns` [array&lt;string&gt;]
 
 Default: `["/node_modules/"]`
 
@@ -843,7 +843,7 @@ These pattern strings match against the full path. Use the `<rootDir>` string to
 
 Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$`
 
-The pattern Jest uses to detect test files. By default it looks for `.js` and `.jsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`. See also [`testMatch` [array\<string>]](#testmatch-arraystring), but note that you cannot specify both options.
+The pattern Jest uses to detect test files. By default it looks for `.js` and `.jsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`. See also [`testMatch` [array&lt;string&gt;]](#testmatch-arraystring), but note that you cannot specify both options.
 
 The following is a visualization of the default regex:
 
@@ -938,7 +938,7 @@ Default: `real`
 
 Setting this value to `fake` allows the use of fake timers for functions such as `setTimeout`. Fake timers are useful when a piece of code sets a long timeout that we don't want to wait for in a test.
 
-### `transform` [object\<string, string>]
+### `transform` [object\&lt;string, string&gt;]
 
 Default: `{"^.+\\.[jt]sx?$": "babel-jest"}`
 
@@ -955,7 +955,7 @@ _Note: a transformer is only run once per file unless the file has changed. Duri
 
 _Note: when adding additional code transformers, this will overwrite the default config and `babel-jest` is no longer automatically loaded. If you want to use it to compile JavaScript or Typescript, it has to be explicitly defined by adding `{"\\.[jt]sx?$": "babel-jest"}` to the transform property. See [babel-jest plugin](https://github.com/facebook/jest/tree/master/packages/babel-jest#setup)_
 
-### `transformIgnorePatterns` [array\<string>]
+### `transformIgnorePatterns` [array&lt;string&gt;]
 
 Default: `["/node_modules/"]`
 
@@ -967,7 +967,7 @@ Example: `["<rootDir>/bower_components/", "<rootDir>/node_modules/"]`.
 
 Sometimes it happens (especially in React Native or TypeScript projects) that 3rd party modules are published as untranspiled. Since all files inside `node_modules` are not transformed by default, Jest will not understand the code in these modules, resulting in syntax errors. To overcome this, you may use `transformIgnorePatterns` to allow transpiling such modules. You'll find a good example of this use case in [React Native Guide](https://jestjs.io/docs/en/tutorial-react-native#transformignorepatterns-customization).
 
-### `unmockedModulePathPatterns` [array\<string>]
+### `unmockedModulePathPatterns` [array&lt;string&gt;]
 
 Default: `[]`
 
@@ -983,7 +983,7 @@ Default: `false`
 
 Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution. Note that if there is only one test file being run it will default to `true`.
 
-### `watchPathIgnorePatterns` [array\<string>]
+### `watchPathIgnorePatterns` [array&lt;string&gt;]
 
 Default: `[]`
 

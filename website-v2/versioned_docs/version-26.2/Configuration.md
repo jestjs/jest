@@ -180,7 +180,7 @@ Default: `undefined`
 
 The directory where Jest should output its coverage files.
 
-### `coveragePathIgnorePatterns` [array\<string>]
+### `coveragePathIgnorePatterns` [array&lt;string&gt;]
 
 Default: `["/node_modules/"]`
 
@@ -194,7 +194,7 @@ Indicates which provider should be used to instrument code for coverage. Allowed
 
 Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
 
-### `coverageReporters` [array\<string | [string, options]>]
+### `coverageReporters` [array&lt;string | [string, options]&gt;]
 
 Default: `["json", "lcov", "text", "clover"]`
 
@@ -334,7 +334,7 @@ Default: `false`
 
 Make calling deprecated APIs throw helpful error messages. Useful for easing the upgrade process.
 
-### `extraGlobals` [array\<string>]
+### `extraGlobals` [array&lt;string&gt;]
 
 Default: `undefined`
 
@@ -351,7 +351,7 @@ For example, if your tests call `Math` often, you can pass it by setting `extraG
 }
 ```
 
-### `forceCoverageMatch` [array\<string>]
+### `forceCoverageMatch` [array&lt;string&gt;]
 
 Default: `['']`
 
@@ -472,13 +472,13 @@ Default: `5`
 
 A number limiting the number of tests that are allowed to run at the same time when using `test.concurrent`. Any test above this limit will be queued and executed once a slot is released.
 
-### `moduleDirectories` [array\<string>]
+### `moduleDirectories` [array&lt;string&gt;]
 
 Default: `["node_modules"]`
 
 An array of directory names to be searched recursively up from the requiring module's location. Setting this option will _override_ the default, if you wish to still search `node_modules` for packages include it along with any other options: `["node_modules", "bower_components"]`
 
-### `moduleFileExtensions` [array\<string>]
+### `moduleFileExtensions` [array&lt;string&gt;]
 
 Default: `["js", "json", "jsx", "ts", "tsx", "node"]`
 
@@ -486,7 +486,7 @@ An array of file extensions your modules use. If you require modules without spe
 
 We recommend placing the extensions most commonly used in your project on the left, so if you are using TypeScript, you may want to consider moving "ts" and/or "tsx" to the beginning of the array.
 
-### `moduleNameMapper` [object\<string, string | array\<string>>]
+### `moduleNameMapper` [object\&lt;string, string | array&lt;string>&gt;]
 
 Default: `null`
 
@@ -519,7 +519,7 @@ The order in which the mappings are defined matters. Patterns are checked one by
 
 _Note: If you provide module name without boundaries `^$` it may cause hard to spot errors. E.g. `relay` will replace all modules which contain `relay` as a substring in its name: `relay`, `react-relay` and `graphql-relay` will all be pointed to your stub._
 
-### `modulePathIgnorePatterns` [array\<string>]
+### `modulePathIgnorePatterns` [array&lt;string&gt;]
 
 Default: `[]`
 
@@ -527,7 +527,7 @@ An array of regexp pattern strings that are matched against all module paths bef
 
 These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/"]`.
 
-### `modulePaths` [array\<string>]
+### `modulePaths` [array&lt;string&gt;]
 
 Default: `[]`
 
@@ -584,7 +584,7 @@ Default: `'prettier'`
 
 Sets the path to the [`prettier`](https://prettier.io/) node module used to update inline snapshots.
 
-### `projects` [array\<string | ProjectConfig>]
+### `projects` [array&lt;string | ProjectConfig&gt;]
 
 Default: `undefined`
 
@@ -617,7 +617,7 @@ The projects feature can also be used to run multiple configurations or multiple
 
 _Note: When using multi-project runner, it's recommended to add a `displayName` for each project. This will show the `displayName` of a project next to its tests._
 
-### `reporters` [array\<moduleName | [moduleName, options]>]
+### `reporters` [array&lt;moduleName | [moduleName, options]&gt;]
 
 Default: `undefined`
 
@@ -750,7 +750,7 @@ Oftentimes, you'll want to set this to `'src'` or `'lib'`, corresponding to wher
 
 _Note that using `'<rootDir>'` as a string token in any other path-based config settings will refer back to this value. So, for example, if you want your [`setupFiles`](#setupfiles-array) config entry to point at the `env-setup.js` file at the root of your project, you could set its value to `["<rootDir>/env-setup.js"]`._
 
-### `roots` [array\<string>]
+### `roots` [array&lt;string&gt;]
 
 Default: `["<rootDir>"]`
 
@@ -855,7 +855,7 @@ module.exports = {
 };
 ```
 
-### `snapshotSerializers` [array\<string>]
+### `snapshotSerializers` [array&lt;string&gt;]
 
 Default: `[]`
 
@@ -1024,7 +1024,7 @@ The exit code Jest returns on test failure.
 
 _Note: This does not change the exit code in the case of Jest errors (e.g. invalid configuration)._
 
-### `testMatch` [array\<string>]
+### `testMatch` [array&lt;string&gt;]
 
 (default: `[ "**/__tests__/**/*.[jt]s?(x)", "**/?(*.)+(spec|test).[jt]s?(x)" ]`)
 
@@ -1032,9 +1032,9 @@ The glob patterns Jest uses to detect test files. By default it looks for `.js`,
 
 See the [micromatch](https://github.com/jonschlinkert/micromatch) package for details of the patterns you can specify.
 
-See also [`testRegex` [string | array\<string>]](#testregex-string--arraystring), but note that you cannot specify both options.
+See also [`testRegex` [string | array&lt;string&gt;]](#testregex-string--arraystring), but note that you cannot specify both options.
 
-### `testPathIgnorePatterns` [array\<string>]
+### `testPathIgnorePatterns` [array&lt;string&gt;]
 
 Default: `["/node_modules/"]`
 
@@ -1042,11 +1042,11 @@ An array of regexp pattern strings that are matched against all test paths befor
 
 These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/build/", "<rootDir>/node_modules/"]`.
 
-### `testRegex` [string | array\<string>]
+### `testRegex` [string | array&lt;string&gt;]
 
 Default: `(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$`
 
-The pattern or patterns Jest uses to detect test files. By default it looks for `.js`, `.jsx`, `.ts` and `.tsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`. See also [`testMatch` [array\<string>]](#testmatch-arraystring), but note that you cannot specify both options.
+The pattern or patterns Jest uses to detect test files. By default it looks for `.js`, `.jsx`, `.ts` and `.tsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`. See also [`testMatch` [array&lt;string&gt;]](#testmatch-arraystring), but note that you cannot specify both options.
 
 The following is a visualization of the default regex:
 
@@ -1185,7 +1185,7 @@ Setting this value to `legacy` or `fake` allows the use of fake timers for funct
 
 If the value is `modern`, [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers) will be used as implementation instead of Jest's own legacy implementation. This will be the default fake implementation in Jest 27.
 
-### `transform` [object\<string, pathToTransformer | [pathToTransformer, object]>]
+### `transform` [object\&lt;string, pathToTransformer | [pathToTransformer, object]&gt;]
 
 Default: `{"^.+\\.[jt]sx?$": "babel-jest"}`
 
@@ -1204,7 +1204,7 @@ _Note: a transformer is only run once per file unless the file has changed. Duri
 
 _Note: when adding additional code transformers, this will overwrite the default config and `babel-jest` is no longer automatically loaded. If you want to use it to compile JavaScript or Typescript, it has to be explicitly defined by adding `{"\\.[jt]sx?$": "babel-jest"}` to the transform property. See [babel-jest plugin](https://github.com/facebook/jest/tree/master/packages/babel-jest#setup)_
 
-### `transformIgnorePatterns` [array\<string>]
+### `transformIgnorePatterns` [array&lt;string&gt;]
 
 Default: `["/node_modules/"]`
 
@@ -1216,7 +1216,7 @@ Example: `["<rootDir>/bower_components/", "<rootDir>/node_modules/"]`.
 
 Sometimes it happens (especially in React Native or TypeScript projects) that 3rd party modules are published as untranspiled. Since all files inside `node_modules` are not transformed by default, Jest will not understand the code in these modules, resulting in syntax errors. To overcome this, you may use `transformIgnorePatterns` to allow transpiling such modules. You'll find a good example of this use case in [React Native Guide](https://jestjs.io/docs/en/tutorial-react-native#transformignorepatterns-customization).
 
-### `unmockedModulePathPatterns` [array\<string>]
+### `unmockedModulePathPatterns` [array&lt;string&gt;]
 
 Default: `[]`
 
@@ -1232,7 +1232,7 @@ Default: `false`
 
 Indicates whether each individual test should be reported during the run. All errors will also still be shown on the bottom after execution. Note that if there is only one test file being run it will default to `true`.
 
-### `watchPathIgnorePatterns` [array\<string>]
+### `watchPathIgnorePatterns` [array&lt;string&gt;]
 
 Default: `[]`
 
@@ -1242,7 +1242,7 @@ These patterns match against the full path. Use the `<rootDir>` string token to 
 
 Even if nothing is specified here, the watcher will ignore changes to any hidden files and directories, i.e. files and folders that begin with a dot (`.`).
 
-### `watchPlugins` [array\<string | [string, Object]>]
+### `watchPlugins` [array&lt;string | [string, Object]&gt;]
 
 Default: `[]`
 
