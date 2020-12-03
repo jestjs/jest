@@ -444,6 +444,7 @@ export default function (j$: Jasmine) {
 
         // TODO throw in Jest 25: declarationError = new Error
         if (isPromise(describeReturnValue)) {
+          // eslint-disable-next-line no-console
           console.log(
             formatExecError(
               new Error(
@@ -457,6 +458,7 @@ export default function (j$: Jasmine) {
             ),
           );
         } else if (describeReturnValue !== undefined) {
+          // eslint-disable-next-line no-console
           console.log(
             formatExecError(
               new Error(

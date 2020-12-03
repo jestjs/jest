@@ -188,11 +188,13 @@ export default async function runJest({
 
   if (globalConfig.listTests) {
     const testsPaths = Array.from(new Set(allTests.map(test => test.path)));
+    /* eslint-disable no-console */
     if (globalConfig.json) {
       console.log(JSON.stringify(testsPaths));
     } else {
       console.log(testsPaths.join('\n'));
     }
+    /* eslint-enable */
 
     onComplete && onComplete(makeEmptyAggregatedTestResult());
     return;
