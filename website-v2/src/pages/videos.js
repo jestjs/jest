@@ -18,6 +18,7 @@ import Container from '@site/src/components/v1/Container';
 import MarkdownBlock from '@site/src/components/v1/MarkdownBlock';
 
 import VideosJSON from '@site/videos.json';
+import styles from './videos.module.scss';
 
 const VideoTypes = {
   YOUTUBE: 'youtube',
@@ -91,8 +92,8 @@ class Videos extends React.Component {
     return (
       <div className="mainContainerV1">
         <Container padding={['bottom', 'top']}>
-          <div className="showcaseSection">
-            <div className="prose">
+          <div className={styles.showcaseSection}>
+            <div className={styles.prose}>
               <h1>
                 <Translate>Talks & Videos</Translate>
               </h1>
@@ -107,7 +108,10 @@ class Videos extends React.Component {
           </div>
           {showcase}
           <div style={{textAlign: 'center'}}>
-            <a href={VideosJSON.editUrl} className="button">
+            <a
+              href={VideosJSON.editUrl}
+              className="button button--primary button--outline"
+            >
               <Translate>Add your favorite talk</Translate>
             </a>
           </div>
