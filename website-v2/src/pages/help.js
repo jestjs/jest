@@ -23,11 +23,10 @@ class Help extends React.Component {
         content: (
           <Translate>
             Find what you're looking for in our detailed documentation and
-            guides.\n\n- Learn how to [get
-            started](/docs/en/getting-started.html) with Jest.\n-
-            [Troubleshoot](/docs/en/troubleshooting.html) problems with Jest.\n-
-            Learn how to [configure Jest](/docs/en/configuration.html).\n- Look
-            at the full [API Reference](/docs/en/api.html).
+            guides.\n\n- Learn how to [get started](/docs/getting-started) with
+            Jest.\n- [Troubleshoot](/docs/troubleshooting) problems with
+            Jest.\n- Learn how to [configure Jest](/docs/configuration).\n- Look
+            at the full [API Reference](/docs/api).
           </Translate>
         ),
         title: <Translate>Browse the docs</Translate>,

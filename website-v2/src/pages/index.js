@@ -278,7 +278,7 @@ const HeroInteractive = () => (
         <Button href={'/docs/configuration'}>
           <Translate>Config</Translate>
         </Button>
-        <Button href={'/docs/help'}>
+        <Button href={'/help'}>
           <Translate>Get help</Translate>
         </Button>
       </div>

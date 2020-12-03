@@ -207,4 +207,4 @@ _Note:_ This means when you are using `test.each` you cannot set the table async
 
 ## Still unresolved?
 
-See [Help](/help.html).
+See [Help](/help).

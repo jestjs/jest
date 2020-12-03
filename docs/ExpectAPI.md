@@ -1284,7 +1284,7 @@ And it will generate the following snapshot:
 exports[`drinking flavors throws on octopus 1`] = `"yuck, octopus flavor"`;
 ```
 
-Check out [React Tree Snapshot Testing](https://jestjs.io/blog/2016/07/27/jest-14.html) for more information on snapshot testing.
+Check out [React Tree Snapshot Testing](/blog/2016/07/27/jest-14) for more information on snapshot testing.
 
 ### `.toThrowErrorMatchingInlineSnapshot(inlineSnapshot)`
 
