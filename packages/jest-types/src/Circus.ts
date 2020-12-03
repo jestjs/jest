@@ -91,6 +91,7 @@ export type AsyncEvent =
   | {
       name: 'hook_start';
       hook: Hook;
+      timeout: number;
     }
   | {
       name: 'hook_success';
@@ -108,6 +109,7 @@ export type AsyncEvent =
   | {
       name: 'test_fn_start';
       test: TestEntry;
+      timeout: number;
     }
   | {
       name: 'test_fn_success';
@@ -240,4 +242,5 @@ export type TestEntry = {
   duration?: number | null;
   status?: TestStatus | null; // whether the test has been skipped or run already
   timeout?: number;
+  deadline?: number;
 };

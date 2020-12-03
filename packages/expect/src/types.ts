@@ -81,6 +81,7 @@ export type Expect = {
   objectContaining(sample: Record<string, unknown>): AsymmetricMatcher;
   stringContaining(expected: string): AsymmetricMatcher;
   stringMatching(expected: string | RegExp): AsymmetricMatcher;
+  withinDeadline<T>(promise: Promise<T>): Promise<T>;
   [id: string]: AsymmetricMatcher;
   not: {[id: string]: AsymmetricMatcher};
 };

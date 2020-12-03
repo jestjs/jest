@@ -75,6 +75,7 @@ export interface HookBase {
 export interface ItBase {
   (testName: TestName, fn: TestFn, timeout?: number): void;
   each: Each<TestFn>;
+  deadline: () => number | undefined;
 }
 
 export interface It extends ItBase {

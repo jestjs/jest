@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`passes generally 1`] = `
+Object {
+  "rest": "PASS __tests__/manual-within.js
+  describe
+    ✓ it",
+  "summary": "Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /manual-within.js/i.",
+}
+`;
+
+exports[`throws on deadline exceeded 1`] = `
+Object {
+  "rest": "FAIL __tests__/manual-exceeded.js
+  describe
+    ✕ it
+
+  ● describe › it
+
+    deadline exceeded (waited here for <<REPLACED>>)
+
+      12 | describe('describe', () => {
+      13 |   it('it', async () => {
+    > 14 |     await expect.withinDeadline(sleep(200));
+         |     ^
+      15 |   }, 50);
+      16 | });
+      17 | 
+
+      at Object.<anonymous> (__tests__/manual-exceeded.js:14:5)",
+  "summary": "Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /manual-exceeded.js/i.",
+}
+`;

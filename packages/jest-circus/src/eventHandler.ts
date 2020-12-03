@@ -188,6 +188,10 @@ const eventHandler: Circus.EventHandler = (
       event.test.invocations += 1;
       break;
     }
+    case 'test_fn_start': {
+      event.test.deadline = Date.now() + event.timeout - 20;
+      break;
+    }
     case 'test_fn_failure': {
       const {
         error,
