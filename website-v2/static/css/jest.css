@@ -248,6 +248,11 @@
   text-transform: none;
   text-decoration: none;
 }
+@media only screen and (max-width: 780px) {
+  .button.landing {
+    padding: 5px 10px;
+  }
+}
 
 .containerV1 .gridBlockV1 .blockContent p.buttons-wrapper {
   margin: 8px;
