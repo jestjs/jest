@@ -7,10 +7,10 @@
  * @type ./empty.d.ts
  */
 
-import {expectType} from 'mlh-tsd';
+import {expectAssignable} from 'mlh-tsd';
 import type {Config} from '@jest/types';
 
-expectType<Config.InitialOptions>({
+expectAssignable<Config.InitialOptions>({
   coverageThreshold: {
     './src/api/very-important-module.js': {
       branches: 100,
