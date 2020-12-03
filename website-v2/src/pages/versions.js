@@ -8,18 +8,19 @@
 /* eslint-disable import/order */
 /* eslint-disable import/no-unresolved */
 import React from 'react';
-import versions from '@site/versions.json';
 import Layout from '@theme/Layout';
+import Link from '@docusaurus/Link';
+import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
+import versions from '@site/versions.json';
 
 // TODO legacy Docusaurus v1 components
 import Container from '@site/src/components/v1/Container';
 
-class Versions extends React.Component {
-  render() {
-    const {config: siteConfig} = this.props;
-    const latestVersion = versions[0];
-    const {language} = this.props;
-    return (
+export default function VersionsPage() {
+  const {siteConfig} = useDocusaurusContext();
+  const latestVersion = versions[0];
+  return (
+    <Layout>
       <div className="wrapperV1">
         <Container className="mainContainerV1">
           <div>
@@ -33,11 +34,7 @@ class Versions extends React.Component {
                 <tr>
                   <th>{latestVersion}</th>
                   <td>
-                    <a
-                      href={`${siteConfig.baseUrl}docs/${language}/getting-started.html`}
-                    >
-                      Documentation
-                    </a>
+                    <Link to={`/docs/getting-started`}>Documentation</Link>
                   </td>
                   <td>
                     <a href="https://github.com/facebook/jest/blob/master/CHANGELOG.md">
@@ -56,11 +53,7 @@ class Versions extends React.Component {
                 <tr>
                   <th>master</th>
                   <td>
-                    <a
-                      href={`${siteConfig.baseUrl}docs/${language}/next/getting-started.html`}
-                    >
-                      Documentation
-                    </a>
+                    <Link to={`/docs/next/getting-started`}>Documentation</Link>
                   </td>
                   <td>
                     <a href="https://github.com/facebook/jest">Source Code</a>
@@ -80,11 +73,9 @@ class Versions extends React.Component {
                       <tr key={version}>
                         <th>{version}</th>
                         <td>
-                          <a
-                            href={`${siteConfig.baseUrl}docs/${language}/${version}/getting-started.html`}
-                          >
+                          <Link to={`/docs/${version}/getting-started`}>
                             Documentation
-                          </a>
+                          </Link>
                         </td>
                       </tr>
                     ),
@@ -94,14 +85,6 @@ class Versions extends React.Component {
           </div>
         </Container>
       </div>
-    );
-  }
-}
-
-export default function VersionsPage(props) {
-  return (
-    <Layout>
-      <Versions {...props} />
     </Layout>
   );
 }
