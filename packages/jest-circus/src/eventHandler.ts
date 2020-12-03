@@ -32,7 +32,10 @@ const eventHandler: Circus.EventHandler = (
     }
     case 'hook_start': {
       if (state.currentlyRunningTest) {
-        state.currentlyRunningTest.deadline = deadlineFor(event.timeout);
+        if (undefined === event.hook.timeout || null == event.hook.timeout) {
+          throw new Error('expected timeout to be set before event fired');
+        }
+        state.currentlyRunningTest.deadline = deadlineFor(event.hook.timeout);
       }
       break;
     }
@@ -192,7 +195,10 @@ const eventHandler: Circus.EventHandler = (
       break;
     }
     case 'test_fn_start': {
-      event.test.deadline = deadlineFor(event.timeout);
+      if (undefined === event.test.timeout) {
+        throw new Error('expected timeout to be set before event fired');
+      }
+      event.test.deadline = deadlineFor(event.test.timeout);
       break;
     }
     case 'test_fn_failure': {

@@ -91,7 +91,6 @@ export type AsyncEvent =
   | {
       name: 'hook_start';
       hook: Hook;
-      timeout: number;
     }
   | {
       name: 'hook_success';
@@ -109,7 +108,6 @@ export type AsyncEvent =
   | {
       name: 'test_fn_start';
       test: TestEntry;
-      timeout: number;
     }
   | {
       name: 'test_fn_success';
