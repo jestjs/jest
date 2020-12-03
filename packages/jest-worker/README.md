@@ -91,12 +91,12 @@ Provide a custom worker pool to be used for spawning child processes. By default
 
 `jest-worker` will automatically detect if `worker_threads` are available, but will not use them unless passed `enableWorkerThreads: true`.
 
-### `workerSchedulingPolicy: 'round-robin' | 'first-come'` (optional)
+### `workerSchedulingPolicy: 'round-robin' | 'in-order'` (optional)
 
-Specifies the policy how tasks are assigned to workers if multiple workers are *idle*:
+Specifies the policy how tasks are assigned to workers if multiple workers are _idle_:
 
-* `round-robin` (default): The task will be sequentially distributed onto the workers. The first task is assigned to the worker 1, the second to the worker 2, to ensure that the work is distributed across workers.
-* `in-order`: The task will be assigned to the first free worker starting with worker 1 and only assign the work to worker 2 if the worker 1 is busy.
+- `round-robin` (default): The task will be sequentially distributed onto the workers. The first task is assigned to the worker 1, the second to the worker 2, to ensure that the work is distributed across workers.
+- `in-order`: The task will be assigned to the first free worker starting with worker 1 and only assign the work to worker 2 if the worker 1 is busy.
 
 Tasks are always assigned to the first free worker as soon as tasks start to queue up. The scheduling policy does not define the task scheduling which is always first-in, first-out.
 
