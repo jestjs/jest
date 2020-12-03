@@ -102,6 +102,7 @@ const initialOptions: Config.InitialOptions = {
   restoreMocks: false,
   rootDir: '/',
   roots: ['<rootDir>'],
+  runInBand: false,
   runTestsByPath: false,
   runner: 'jest-runner',
   setupFiles: ['<rootDir>/setup.js'],
