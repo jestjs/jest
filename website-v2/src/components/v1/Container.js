@@ -6,11 +6,11 @@
  */
 
 import React from 'react';
-import classNames from 'classnames';
+import clsx from 'clsx';
 
 export default class Container extends React.Component {
   render() {
-    const containerClasses = classNames('containerV1', this.props.className, {
+    const containerClasses = clsx('containerV1', this.props.className, {
       darkBackground: this.props.background === 'dark',
       highlightBackground: this.props.background === 'highlight',
       lightBackground: this.props.background === 'light',

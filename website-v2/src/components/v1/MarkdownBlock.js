@@ -11,7 +11,7 @@ import Link from '@docusaurus/Link';
 import Translate from '@docusaurus/Translate';
 
 const renderers = {
-  link: props => <Link {...props} />,
+  link: ({node: _node, ...props}) => <Link {...props} />,
 };
 
 // TODO hacky temp solution

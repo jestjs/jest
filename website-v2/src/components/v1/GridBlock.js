@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import classNames from 'classnames';
+import clsx from 'clsx';
 import MarkdownBlock from './MarkdownBlock';
 
 export default class GridBlock extends React.Component {
@@ -20,7 +20,7 @@ export default class GridBlock extends React.Component {
       ...origBlock,
     };
 
-    const blockClasses = classNames('blockElement', this.props.className, {
+    const blockClasses = clsx('blockElement', this.props.className, {
       alignCenter: this.props.align === 'center',
       alignRight: this.props.align === 'right',
       fourByGridBlock: this.props.layout === 'fourColumn',
