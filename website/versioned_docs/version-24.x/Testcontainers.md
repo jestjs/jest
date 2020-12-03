@@ -4,7 +4,7 @@ title: Using with Testcontainers
 original_id: testcontainers
 ---
 
-With the [Global Setup/Teardown](versioned_docs/version-22.x/Configuration.md#globalsetup-string) and [Async Test Environment](versioned_docs/version-22.x/Configuration.md#testenvironment-string) APIs, Jest can work smoothly with [Testcontainers](https://www.testcontainers.org/).
+With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can work smoothly with [Testcontainers](https://www.testcontainers.org/).
 
 ## Use jest-testcontainers Preset
 
