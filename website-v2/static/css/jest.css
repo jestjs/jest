@@ -5,15 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-:root {
-  --yellow: #c2a813;
-  --green: #15c213;
-  --red: #c21325;
-  --grey: #aaaaaa;
-  --grey2: #ededed;
-  --grey3: #545454;
-}
-
 .debug * {
   outline: 1px solid rebeccapurple;
 }
