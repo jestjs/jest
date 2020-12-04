@@ -1,0 +1,13 @@
+diff --git a/fsevents.d.ts b/fsevents.d.ts
+index 3979ab9e5b060e3a6c10449762ba872c5244f29a..2723c048a80df296ecc13eff5d96549f572a7383 100644
+--- a/fsevents.d.ts
++++ b/fsevents.d.ts
+@@ -15,7 +15,7 @@ declare type Info = {
+ };
+ declare type WatchHandler = (path: string, flags: number, id: string) => void;
+ export declare function watch(path: string, handler: WatchHandler): () => Promise<void>;
+-export declare function watch(path: string, since: number, handler: WatchHandler);
++export declare function watch(path: string, since: number, handler: WatchHandler): () => Promise<void>;
+ export declare function getInfo(path: string, flags: number): Info;
+ export declare const constants: {
+   None: 0x00000000;
