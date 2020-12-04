@@ -133,11 +133,7 @@ export type InitialOptions = Partial<{
   coveragePathIgnorePatterns: Array<string>;
   coverageProvider: CoverageProvider;
   coverageReporters: CoverageReporters;
-  coverageThreshold: {
-    global: {
-      [key: string]: number;
-    };
-  };
+  coverageThreshold: CoverageThreshold;
   dependencyExtractor: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;

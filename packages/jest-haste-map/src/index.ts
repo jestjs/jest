@@ -19,9 +19,7 @@ import {escapePathForRegex} from 'jest-regex-util';
 import serializer from 'jest-serializer';
 import Worker from 'jest-worker';
 import HasteFS from './HasteFS';
-import HasteModuleMap, {
-  SerializableModuleMap as HasteSerializableModuleMap,
-} from './ModuleMap';
+import HasteModuleMap from './ModuleMap';
 import H from './constants';
 import nodeCrawl = require('./crawlers/node');
 import watchmanCrawl = require('./crawlers/watchman');
@@ -50,8 +48,6 @@ import {getSha1, worker} from './worker';
 // TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
 // understand `require`.
 const {version: VERSION} = require('../package.json');
-
-type HType = typeof H;
 
 type Options = {
   cacheDirectory?: string;
@@ -106,14 +102,10 @@ type Watcher = {
 
 type WorkerInterface = {worker: typeof worker; getSha1: typeof getSha1};
 
-// TODO: Ditch namespace when this module exports ESM
-declare namespace HasteMap {
-  export type ModuleMap = HasteModuleMap;
-  export type SerializableModuleMap = HasteSerializableModuleMap;
-  export type FS = HasteFS;
-  export type HasteMapObject = InternalHasteMapObject;
-  export type HasteChangeEvent = ChangeEvent;
-}
+export {default as ModuleMap} from './ModuleMap';
+export type {SerializableModuleMap} from './ModuleMap';
+export type {default as FS} from './HasteFS';
+export type {ChangeEvent, HasteMap as HasteMapObject} from './types';
 
 const CHANGE_INTERVAL = 30;
 const MAX_WAIT_TIME = 240000;
@@ -215,7 +207,7 @@ function invariant(condition: unknown, message?: string): asserts condition {
  *     Worker processes can directly access the cache through `HasteMap.read()`.
  *
  */
-class HasteMap extends EventEmitter {
+export default class HasteMap extends EventEmitter {
   private _buildPromise: Promise<InternalHasteMapObject> | null;
   private _cachePath: Config.Path;
   private _changeInterval?: NodeJS.Timeout;
@@ -1093,12 +1085,10 @@ class HasteMap extends EventEmitter {
     };
   }
 
-  static H: HType;
-  static DuplicateError: typeof DuplicateError;
-  static ModuleMap: typeof HasteModuleMap;
+  static H = H;
 }
 
-class DuplicateError extends Error {
+export class DuplicateError extends Error {
   mockPath1: string;
   mockPath2: string;
 
@@ -1117,9 +1107,3 @@ function copy<T extends Record<string, unknown>>(object: T): T {
 function copyMap<K, V>(input: Map<K, V>): Map<K, V> {
   return new Map(input);
 }
-
-HasteMap.H = H;
-HasteMap.DuplicateError = DuplicateError;
-HasteMap.ModuleMap = HasteModuleMap;
-
-export = HasteMap;

@@ -14,7 +14,7 @@ import StackUtils = require('stack-utils');
 import type {AssertionResult, Status} from '@jest/test-result';
 import type {Circus} from '@jest/types';
 import {ErrorWithStack, convertDescriptorToString, formatTime} from 'jest-util';
-import prettyFormat = require('pretty-format');
+import prettyFormat from 'pretty-format';
 import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
@@ -216,17 +216,25 @@ export const callAsyncCircusFn = (
         });
       };
 
-      returnedValue = fn.call(testContext, done);
+      returnedValue = fn.call<
+        Circus.TestContext | undefined,
+        Array<typeof done>,
+        void | Promise<unknown> | Generator | undefined
+      >(testContext, done);
 
       return;
     }
 
-    let returnedValue;
+    let returnedValue: any;
     if (isGeneratorFn(fn)) {
       returnedValue = co.wrap(fn).call({});
     } else {
       try {
-        returnedValue = fn.call(testContext);
+        returnedValue = fn.call<
+          Circus.TestContext | undefined,
+          [],
+          void | Promise<unknown> | Generator | undefined
+        >(testContext);
       } catch (error) {
         reject(error);
         return;

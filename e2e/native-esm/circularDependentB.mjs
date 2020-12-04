@@ -5,7 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-module.exports = function doES6Stuff(testObj, multiplier) {
-  const {someNumber, ...others} = testObj;
-  return someNumber * multiplier;
+import circularDependentA from './circularDependentA.mjs';
+
+export default {
+  id: 'circularDependentB',
+  get moduleA() {
+    return circularDependentA;
+  },
 };
