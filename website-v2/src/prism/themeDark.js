@@ -37,6 +37,13 @@ const themeDark = [
       color: '#65737e',
     },
   },
+  {
+    types: ['inserted'],
+    style: {
+      color: '#b5cea8',
+      background: '#355235',
+    },
+  },
 ];
 
 module.exports = {

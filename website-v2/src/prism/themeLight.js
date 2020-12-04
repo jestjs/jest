@@ -41,7 +41,7 @@ const themeLight = [
     types: ['inserted'],
     style: {
       color: '#397300',
-      backgroundColor: '#baeeba',
+      background: '#baeeba',
     },
   },
 ];
