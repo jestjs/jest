@@ -54,7 +54,7 @@ export async function run(
   }
 
   const root = tryRealpath(process.cwd());
-  const filePath = path.resolve(root, argv._[0]);
+  const filePath = path.resolve(root, argv._[0].toString());
 
   if (argv.debug) {
     const info = cliInfo ? ', ' + cliInfo.join(', ') : '';

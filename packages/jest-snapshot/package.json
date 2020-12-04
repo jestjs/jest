@@ -46,7 +46,7 @@
     "@types/natural-compare": "^1.4.0",
     "@types/semver": "^7.1.0",
     "ansi-regex": "^5.0.0",
-    "ansi-styles": "^4.2.0",
+    "ansi-styles": "^5.0.0",
     "prettier": "^2.0.0"
   },
   "peerDependencies": {
