@@ -211,10 +211,13 @@
 }
 
 /* Logo */
-.headerTitleWithLogo {
+.navbar__title {
   background-color: var(--green);
   text-transform: uppercase;
-  color: var(--grey2);
+  color: var(--ifm-color-content-inverse);
+  font-size: 20px;
+  line-height: 20px;
+  font-weight: 500;
   padding: 6px 15px;
 }
 

@@ -43,29 +43,26 @@ module.exports = {
   themeConfig: {
     navbar: {
       title: 'Jest',
-      logo: {
-        src: 'img/jest.svg',
-      },
       items: [
         {
           to: 'docs/getting-started',
           label: 'Docs',
-          position: 'left',
+          position: 'right',
         },
         {
           to: 'docs/api',
           label: 'API',
-          position: 'left',
+          position: 'right',
         },
-        {to: 'blog', label: 'Blog', position: 'left'},
         {
           to: '/help',
           label: 'Help',
-          position: 'left',
+          position: 'right',
         },
+        {to: 'blog', label: 'Blog', position: 'right'},
         {
           type: 'docsVersionDropdown',
-          position: 'right',
+          position: 'left',
           dropdownItemsAfter: [
             {
               to: '/versions',
