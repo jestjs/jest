@@ -9361,12 +9361,21 @@ fsevents@^2.1.2:
   languageName: node
   linkType: hard
 
-"fsevents@patch:fsevents@^2.1.2#builtin<compat/fsevents>":
+"fsevents@patch:fsevents@^2.1.2#./patches/fsevents.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
   version: 2.2.1
-  resolution: "fsevents@patch:fsevents@npm%3A2.2.1#builtin<compat/fsevents>::version=2.2.1&hash=11e9ea"
+  resolution: "fsevents@patch:fsevents@npm%3A2.2.1#./patches/fsevents.patch::version=2.2.1&hash=ee4332&locator=%40jest%2Fmonorepo%40workspace%3A."
   dependencies:
     node-gyp: latest
-  checksum: 6ccb7efcb79e504f4361f344413927e5aaf0789e1498c58f0c27cd7031bf84e50830395241eac79c20e99498a0352f08223f1e9e7aa5f19bbae00bdac17ab2a5
+  checksum: af204dab4aa0332571dd19aafcccf3e597dbf21fa975f92cb64af2151e3f65ad26a7d6fc0b6d8d9c800285996afb738f8f9db7005c6b497d9256c04910ad1416
+  languageName: node
+  linkType: hard
+
+"fsevents@patch:fsevents@patch%3Afsevents@^2.1.2%23./patches/fsevents.patch%3A%3Alocator=%2540jest%252Fmonorepo%2540workspace%253A.#builtin<compat/fsevents>":
+  version: 2.2.1
+  resolution: "fsevents@patch:fsevents@patch%3Afsevents@npm%253A2.2.1%23./patches/fsevents.patch%3A%3Aversion=2.2.1&hash=ee4332&locator=%2540jest%252Fmonorepo%2540workspace%253A.#builtin<compat/fsevents>::version=2.2.1&hash=11e9ea"
+  dependencies:
+    node-gyp: latest
+  checksum: 8e9dbb7a60968fd6758148e4d246e1c55f6aae4d258132ae3440712453c28a1c555d9c8393087ec4f1d3e90576715ba395e0cda20905ec8eae6be61d20bf4d19
   languageName: node
   linkType: hard
 
