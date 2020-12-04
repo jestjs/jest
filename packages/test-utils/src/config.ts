@@ -75,6 +75,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   detectOpenHandles: false,
   displayName: undefined,
   errorOnDeprecated: false,
+  extensionsToTreatAsEsm: [],
   extraGlobals: [],
   filter: undefined,
   forceCoverageMatch: [],

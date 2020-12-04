@@ -11600,10 +11600,12 @@ fsevents@~2.1.2:
     jest-jasmine2: ^26.6.3
     jest-regex-util: ^26.0.0
     jest-resolve: ^26.6.2
+    jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^26.6.2
     jest-validate: ^26.6.2
     micromatch: ^4.0.2
     pretty-format: ^26.6.2
+    strip-ansi: ^6.0.0
     ts-node: ^9.0.0
     typescript: ^4.0.3
   peerDependencies:

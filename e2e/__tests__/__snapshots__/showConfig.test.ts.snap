@@ -15,6 +15,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "detectLeaks": false,
       "detectOpenHandles": false,
       "errorOnDeprecated": false,
+      "extensionsToTreatAsEsm": [],
       "extraGlobals": [],
       "forceCoverageMatch": [],
       "globals": {},
