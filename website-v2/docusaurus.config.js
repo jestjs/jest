@@ -4,6 +4,7 @@ const path = require('path');
 
 module.exports = {
   title: 'Jest',
+  titleDelimiter: '·',
   tagline: '🃏 Delightful JavaScript Testing',
   url: 'https://jestjs.io',
   baseUrl: '/',
@@ -81,6 +82,10 @@ module.exports = {
       ],
     },
     image: 'img/opengraph.png',
+    prism: {
+      theme: require('prism-react-renderer/themes/github'),
+      darkTheme: require('prism-react-renderer/themes/vsDark'),
+    },
     footer: {
       style: 'dark',
       links: [
