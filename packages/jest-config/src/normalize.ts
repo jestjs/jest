@@ -975,7 +975,7 @@ export default function normalize(
     rootDir: options.rootDir,
   });
 
-  newOptions.nonFlagArgs = argv._;
+  newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
   newOptions.testPathPattern = buildTestPathPattern(argv);
   newOptions.json = !!argv.json;
 
@@ -1064,7 +1064,7 @@ export default function normalize(
   // where arguments to `--collectCoverageFrom` should be globs (or relative
   // paths to the rootDir)
   if (newOptions.collectCoverage && argv.findRelatedTests) {
-    let collectCoverageFrom = argv._.map(filename => {
+    let collectCoverageFrom = newOptions.nonFlagArgs.map(filename => {
       filename = replaceRootDirInPath(options.rootDir, filename);
       return path.isAbsolute(filename)
         ? path.relative(options.rootDir, filename)
