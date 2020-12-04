@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@jest/types": "^26.6.2",
-    "ansi-styles": "^4.0.0",
+    "ansi-styles": "^5.0.0",
     "jest-get-type": "^26.3.0",
     "jest-matcher-utils": "^26.6.2",
     "jest-message-util": "^26.6.2",

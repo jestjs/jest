@@ -30,7 +30,7 @@
   "devDependencies": {
     "@jest/test-utils": "^26.6.2",
     "@types/yargs": "^15.0.0",
-    "execa": "^4.0.0"
+    "execa": "^5.0.0"
   },
   "bin": "./bin/jest-repl.js",
   "engines": {
