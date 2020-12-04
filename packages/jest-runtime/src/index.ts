@@ -363,7 +363,12 @@ export default class Runtime {
   }
 
   // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
-  unstable_shouldLoadAsEsm = Resolver.unstable_shouldLoadAsEsm;
+  unstable_shouldLoadAsEsm(path: Config.Path): boolean {
+    return Resolver.unstable_shouldLoadAsEsm(
+      path,
+      this._config.extensionsToTreatAsEsm,
+    );
+  }
 
   private async loadEsmModule(
     modulePath: Config.Path,
@@ -499,10 +504,7 @@ export default class Runtime {
 
     if (
       this._resolver.isCoreModule(resolved) ||
-      this.unstable_shouldLoadAsEsm(
-        resolved,
-        this._config.extensionsToTreatAsEsm,
-      )
+      this.unstable_shouldLoadAsEsm(resolved)
     ) {
       return this.loadEsmModule(resolved, query, isStaticImport);
     }

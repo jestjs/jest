@@ -149,10 +149,7 @@ export default async function jasmine2(
     });
 
   for (const path of config.setupFilesAfterEnv) {
-    const esm = runtime.unstable_shouldLoadAsEsm(
-      path,
-      config.extensionsToTreatAsEsm,
-    );
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);
@@ -165,10 +162,7 @@ export default async function jasmine2(
     const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');
     env.specFilter = (spec: Spec) => testNameRegex.test(spec.getFullName());
   }
-  const esm = runtime.unstable_shouldLoadAsEsm(
-    testPath,
-    config.extensionsToTreatAsEsm,
-  );
+  const esm = runtime.unstable_shouldLoadAsEsm(testPath);
 
   if (esm) {
     await runtime.unstable_importModule(testPath);
