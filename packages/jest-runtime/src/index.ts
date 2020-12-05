@@ -155,44 +155,44 @@ const supportsTopLevelAwait =
 
 export default class Runtime {
   private readonly _cacheFS: StringMap;
-  private _config: Config.ProjectConfig;
-  private _coverageOptions: ShouldInstrumentOptions;
+  private readonly _config: Config.ProjectConfig;
+  private readonly _coverageOptions: ShouldInstrumentOptions;
   private _currentlyExecutingModulePath: string;
-  private _environment: JestEnvironment;
-  private _explicitShouldMock: BooleanMap;
+  private readonly _environment: JestEnvironment;
+  private readonly _explicitShouldMock: BooleanMap;
   private _fakeTimersImplementation:
     | LegacyFakeTimers<unknown>
     | ModernFakeTimers
     | null;
-  private _internalModuleRegistry: ModuleRegistry;
+  private readonly _internalModuleRegistry: ModuleRegistry;
   private _isCurrentlyExecutingManualMock: string | null;
   private _mainModule: Module | null;
-  private _mockFactories: Map<string, () => unknown>;
-  private _mockMetaDataCache: Map<
+  private readonly _mockFactories: Map<string, () => unknown>;
+  private readonly _mockMetaDataCache: Map<
     string,
     MockFunctionMetadata<unknown, Array<unknown>>
   >;
   private _mockRegistry: Map<string, any>;
   private _isolatedMockRegistry: Map<string, any> | null;
-  private _moduleMocker: ModuleMocker;
+  private readonly _moduleMocker: ModuleMocker;
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
-  private _esmoduleRegistry: Map<string, EsmModuleCache>;
-  private _testPath: Config.Path | undefined;
-  private _resolver: Resolver;
+  private readonly _esmoduleRegistry: Map<string, EsmModuleCache>;
+  private readonly _testPath: Config.Path | undefined;
+  private readonly _resolver: Resolver;
   private _shouldAutoMock: boolean;
-  private _shouldMockModuleCache: BooleanMap;
-  private _shouldUnmockTransitiveDependenciesCache: BooleanMap;
-  private _sourceMapRegistry: StringMap;
-  private _scriptTransformer: ScriptTransformer;
-  private _fileTransforms: Map<string, RuntimeTransformResult>;
+  private readonly _shouldMockModuleCache: BooleanMap;
+  private readonly _shouldUnmockTransitiveDependenciesCache: BooleanMap;
+  private readonly _sourceMapRegistry: StringMap;
+  private readonly _scriptTransformer: ScriptTransformer;
+  private readonly _fileTransforms: Map<string, RuntimeTransformResult>;
   private _v8CoverageInstrumenter: CoverageInstrumenter | undefined;
   private _v8CoverageResult: V8Coverage | undefined;
-  private _transitiveShouldMock: BooleanMap;
+  private readonly _transitiveShouldMock: BooleanMap;
   private _unmockList: RegExp | undefined;
-  private _virtualMocks: BooleanMap;
+  private readonly _virtualMocks: BooleanMap;
   private _moduleImplementation?: typeof nativeModule.Module;
-  private jestObjectCaches: Map<string, Jest>;
+  private readonly jestObjectCaches: Map<string, Jest>;
   private jestGlobals?: JestGlobals;
 
   constructor(
