@@ -107,6 +107,12 @@
 }
 
 <span class="hljs-keyword">interface</span> TransformOptions {
+  <span class="hljs-comment">/**
+   * If a transformer does module resolution and reads files, it should populate `cacheFS` so that
+   * Jest avoids reading the same files again, improving performance. `cacheFS` stores entries of
+   * &lt;file path, file contents&gt;
+   */</span>
+  cacheFS: Map&lt;<span class="hljs-built_in">string</span>, <span class="hljs-built_in">string</span>&gt;;
   config: Config.ProjectConfig;
   <span class="hljs-comment">/** A stringified version of the configuration - useful in cache busting */</span>
   configString: <span class="hljs-built_in">string</span>;
