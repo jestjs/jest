@@ -25,14 +25,18 @@ function isUs(line: string): boolean {
 
 async function timeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   let timeoutId: ReturnType<typeof setTimeout> | undefined;
+  let resolvePromise: { (value: boolean): void } | undefined;
   try {
     return await Promise.race([
       promise,
-      (async () => {
-        await new Promise(resolve => {
-          timeoutId = setTimeout(resolve, ms);
+      (async (): Promise<never> => {
+        const firedForReal = await new Promise<boolean>(resolve => {
+          resolvePromise = resolve;
+          timeoutId = setTimeout(() => resolve(true), ms);
         });
-        timeoutId = undefined;
+        if (!firedForReal) {
+          return undefined as never;
+        }
         const here = new Error(`deadline exceeded (waited here for ${ms}ms)`);
         here.stack = here.stack
           ?.split('\n')
@@ -45,5 +49,6 @@ async function timeout<T>(promise: Promise<T>, ms: number): Promise<T> {
     if (timeoutId) {
       clearTimeout(timeoutId);
     }
+    resolvePromise?.(false);
   }
 }
