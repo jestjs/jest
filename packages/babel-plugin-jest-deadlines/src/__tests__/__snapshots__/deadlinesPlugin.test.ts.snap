@@ -8,8 +8,10 @@ async function foo() {
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
+const _expect = require("@jest/globals").expect;
+
 async function foo() {
-  await expect.withinDeadline(bar());
+  await _expect.withinDeadline(bar());
 }
 
 
@@ -23,8 +25,10 @@ async function foo() {
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
+const _expect = require("@jest/globals").expect;
+
 async function foo() {
-  await expect.withinDeadline(bar());
+  await _expect.withinDeadline(expect.withinDeadline(bar()));
 }
 
 
@@ -38,8 +42,10 @@ async function foo() {
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
+const _expect = require("@jest/globals").expect;
+
 async function foo() {
-  await expect.withinDeadline(expect(bar()).resolves.toBe("hot potatoes"));
+  await _expect.withinDeadline(expect(bar()).resolves.toBe("hot potatoes"));
 }
 
 
@@ -53,8 +59,10 @@ async function foo() {
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
+const _expect = require("@jest/globals").expect;
+
 async function foo() {
-  return await expect.withinDeadline(bar());
+  return await _expect.withinDeadline(bar());
 }
 
 
@@ -68,8 +76,10 @@ async function foo() {
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
+const _expect = require("@jest/globals").expect;
+
 async function foo() {
-  await expect.withinDeadline(bar(1, await expect.withinDeadline(quux()), 3));
+  await _expect.withinDeadline(bar(1, await _expect.withinDeadline(quux()), 3));
 }
 
 
@@ -84,9 +94,11 @@ async function foo() {
 
       ↓ ↓ ↓ ↓ ↓ ↓
 
+const _expect = require("@jest/globals").expect;
+
 async function foo() {
-  await expect.withinDeadline(bar(1, 2, 3));
-  await expect.withinDeadline(quux(1, 2, 3));
+  await _expect.withinDeadline(bar(1, 2, 3));
+  await _expect.withinDeadline(quux(1, 2, 3));
 }
 
 

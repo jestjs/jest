@@ -7,13 +7,33 @@
  */
 
 import type {PluginObj, types as babelTypes} from '@babel/core';
+import type {Identifier} from '@babel/types';
 
 export default ({
   types: t,
 }: {
   types: typeof babelTypes;
 }): PluginObj<{
+  ourExpect: Identifier;
 }> => ({
+  pre({path: program}) {
+    this.ourExpect = program.scope.generateUidIdentifier('expect');
+
+    // const _expect = require("@jest/globals").expect;
+    const decl = t.variableDeclaration('const', [
+      t.variableDeclarator(
+        this.ourExpect,
+        t.memberExpression(
+          t.callExpression(t.identifier('require'), [
+            t.stringLiteral('@jest/globals'),
+          ]),
+          t.identifier('expect'),
+        ),
+      ),
+    ]);
+
+    program.unshiftContainer('body', decl);
+  },
   visitor: {
     AwaitExpression(path) {
       const original = path.node.argument;
@@ -25,7 +45,7 @@ export default ({
       if (t.isMemberExpression(original.callee)) {
         const member = original.callee;
         if (
-          t.isIdentifier(member.object, {name: 'expect'}) &&
+          t.isIdentifier(member.object, this.ourExpect) &&
           t.isIdentifier(member.property, {name: 'withinDeadline'})
         ) {
           return;
@@ -35,10 +55,7 @@ export default ({
       path.replaceWith(
         t.awaitExpression(
           t.callExpression(
-            t.memberExpression(
-              t.identifier('expect'),
-              t.identifier('withinDeadline'),
-            ),
+            t.memberExpression(this.ourExpect, t.identifier('withinDeadline')),
             [path.node.argument],
           ),
         ),
