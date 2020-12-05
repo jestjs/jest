@@ -6,12 +6,12 @@
  */
 
 import type {Config} from '@jest/types';
-import type {ResolverType} from 'jest-resolve';
 import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
+import type Resolver from 'jest-resolve';
 
 export type Context = {
   config: Config.ProjectConfig;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
-  resolver: ResolverType;
+  resolver: Resolver;
 };

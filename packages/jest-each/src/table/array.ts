@@ -7,9 +7,8 @@
  */
 
 import * as util from 'util';
-import pretty = require('pretty-format');
-
 import type {Global} from '@jest/types';
+import pretty from 'pretty-format';
 import type {EachTests} from '../bind';
 
 const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;

@@ -8,7 +8,6 @@
 'use strict';
 
 import getStream from 'get-stream';
-
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
@@ -150,11 +149,11 @@ it('provides stdout and stderr from the threads', async () => {
   const stdout = worker.getStdout();
   const stderr = worker.getStderr();
 
-  worker._worker.stdout.end('Hello ', {encoding: 'utf8'});
-  worker._worker.stderr.end('Jest ', {encoding: 'utf8'});
+  worker._worker.stdout.end('Hello ', 'utf8');
+  worker._worker.stderr.end('Jest ', 'utf8');
   worker._worker.emit('exit');
-  worker._worker.stdout.end('World!', {encoding: 'utf8'});
-  worker._worker.stderr.end('Workers!', {encoding: 'utf8'});
+  worker._worker.stdout.end('World!', 'utf8');
+  worker._worker.stderr.end('Workers!', 'utf8');
   worker._worker.emit('exit', 0);
 
   await expect(getStream(stdout)).resolves.toEqual('Hello World!');

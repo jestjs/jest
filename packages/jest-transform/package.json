@@ -1,25 +1,29 @@
 {
   "name": "@jest/transform",
-  "version": "26.3.0",
+  "version": "26.6.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-transform"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
     "@babel/core": "^7.1.0",
-    "@jest/types": "^26.3.0",
+    "@jest/types": "^26.6.2",
     "babel-plugin-istanbul": "^6.0.0",
     "chalk": "^4.0.0",
     "convert-source-map": "^1.4.0",
     "fast-json-stable-stringify": "^2.0.0",
     "graceful-fs": "^4.2.4",
-    "jest-haste-map": "^26.3.0",
+    "jest-haste-map": "^26.6.2",
     "jest-regex-util": "^26.0.0",
-    "jest-util": "^26.3.0",
+    "jest-util": "^26.6.2",
     "micromatch": "^4.0.2",
     "pirates": "^4.0.1",
     "slash": "^3.0.0",
@@ -27,6 +31,7 @@
     "write-file-atomic": "^3.0.0"
   },
   "devDependencies": {
+    "@jest/test-utils": "^26.6.2",
     "@types/babel__core": "^7.1.0",
     "@types/convert-source-map": "^1.5.1",
     "@types/fast-json-stable-stringify": "^2.0.0",
@@ -37,10 +42,9 @@
     "jest-snapshot-serializer-raw": "^1.1.0"
   },
   "engines": {
-    "node": ">= 10.14.2"
+    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
+  }
 }

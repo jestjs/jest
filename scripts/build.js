@@ -22,10 +22,9 @@
 
 const fs = require('fs');
 const path = require('path');
-const glob = require('glob');
-
 const babel = require('@babel/core');
 const chalk = require('chalk');
+const glob = require('glob');
 const micromatch = require('micromatch');
 const prettier = require('prettier');
 const transformOptions = require('../babel.config.js');

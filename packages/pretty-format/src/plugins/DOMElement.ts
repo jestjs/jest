@@ -6,7 +6,6 @@
  */
 
 import type {Config, NewPlugin, Printer, Refs} from '../types';
-
 import {
   printChildren,
   printComment,

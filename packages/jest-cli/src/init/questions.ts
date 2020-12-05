@@ -9,6 +9,12 @@ import type {PromptObject} from 'prompts';
 
 const defaultQuestions: Array<PromptObject> = [
   {
+    initial: false,
+    message: 'Would you like to use Typescript for the configuration file?',
+    name: 'useTypescript',
+    type: 'confirm',
+  },
+  {
     choices: [
       {title: 'node', value: 'node'},
       {title: 'jsdom (browser-like)', value: 'jsdom'},

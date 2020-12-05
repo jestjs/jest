@@ -5,8 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {URL, fileURLToPath, pathToFileURL} from 'url';
+import * as nativeModule from 'module';
 import * as path from 'path';
+import {URL, fileURLToPath, pathToFileURL} from 'url';
 import {
   Script,
   // @ts-expect-error: experimental, not added to the types
@@ -16,46 +17,52 @@ import {
   Context as VMContext,
   // @ts-expect-error: experimental, not added to the types
   Module as VMModule,
-  compileFunction,
 } from 'vm';
-import * as nativeModule from 'module';
-import type {Config, Global} from '@jest/types';
+import {parse as parseCjs} from 'cjs-module-lexer';
+import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
+import * as fs from 'graceful-fs';
+import stripBOM = require('strip-bom');
 import type {
   Jest,
   JestEnvironment,
   Module,
   ModuleWrapper,
 } from '@jest/environment';
+import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type * as JestGlobals from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
-import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
-import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
-import {createDirectory, deepCyclicCopy} from 'jest-util';
-import {escapePathForRegex} from 'jest-regex-util';
+import type {RuntimeTransformResult, V8CoverageResult} from '@jest/test-result';
 import {
+  CallerTransformOptions,
   ScriptTransformer,
   ShouldInstrumentOptions,
-  TransformResult,
   TransformationOptions,
   handlePotentialSyntaxError,
   shouldInstrument,
 } from '@jest/transform';
-import type {V8CoverageResult} from '@jest/test-result';
-import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
-import * as fs from 'graceful-fs';
-import jestMock = require('jest-mock');
-import HasteMap = require('jest-haste-map');
-import Resolver = require('jest-resolve');
+import type {Config, Global} from '@jest/types';
+import HasteMap, {ModuleMap} from 'jest-haste-map';
+import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
+import type {MockFunctionMetadata, ModuleMocker} from 'jest-mock';
+import {escapePathForRegex} from 'jest-regex-util';
+import Resolver from 'jest-resolve';
 import Snapshot = require('jest-snapshot');
-import stripBOM = require('strip-bom');
-import type {Context as JestContext} from './types';
+import {createDirectory, deepCyclicCopy} from 'jest-util';
 import {
   createOutsideJestVmPath,
   decodePossibleOutsideJestVmPath,
   findSiblingsWithFileExtension,
 } from './helpers';
-import {options as cliOptions} from './cli/args';
-import {run as cliRun} from './cli';
+import type {Context} from './types';
+
+export type {Context} from './types';
+
+interface EsmModuleCache {
+  beforeEvaluation: Promise<VMModule>;
+  fullyEvaluated: Promise<VMModule>;
+}
+
+const esmIsAvailable = typeof SourceTextModule === 'function';
 
 interface JestGlobals extends Global.TestFrameworkGlobals {
   expect: typeof JestGlobals.expect;
@@ -73,27 +80,26 @@ type HasteMapOptions = {
   watchman: boolean;
 };
 
-type InternalModuleOptions = {
+interface InternalModuleOptions extends Required<CallerTransformOptions> {
   isInternalModule: boolean;
-  supportsDynamicImport: boolean;
-  supportsStaticESM: boolean;
-};
+}
 
 const defaultTransformOptions: InternalModuleOptions = {
   isInternalModule: false,
-  supportsDynamicImport: false,
+  supportsDynamicImport: esmIsAvailable,
+  supportsExportNamespaceFrom: false,
   supportsStaticESM: false,
+  supportsTopLevelAwait: false,
 };
 
-type InitialModule = Partial<Module> &
-  Pick<Module, 'children' | 'exports' | 'filename' | 'id' | 'loaded'>;
+type InitialModule = Omit<Module, 'require' | 'parent' | 'paths'>;
 type ModuleRegistry = Map<string, InitialModule | Module>;
 
-const OUTSIDE_JEST_VM_RESOLVE_OPTION = Symbol.for(
-  'OUTSIDE_JEST_VM_RESOLVE_OPTION',
+const JEST_RESOLVE_OUTSIDE_VM_OPTION = Symbol.for(
+  'jest-resolve-outside-vm-option',
 );
 type ResolveOptions = Parameters<typeof require.resolve>[1] & {
-  [OUTSIDE_JEST_VM_RESOLVE_OPTION]?: true;
+  [JEST_RESOLVE_OUTSIDE_VM_OPTION]?: true;
 };
 
 type StringMap = Map<string, string>;
@@ -107,12 +113,6 @@ const fromEntries: typeof Object.fromEntries =
       return obj;
     }, {});
   };
-
-namespace Runtime {
-  export type Context = JestContext;
-  // ditch this export when moving to esm - for now we need it for to avoid faulty type elision
-  export type RuntimeType = Runtime;
-}
 
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
@@ -140,8 +140,21 @@ type RunScriptEvalResult = {[EVAL_RESULT_VARIABLE]: ModuleWrapper};
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
-class Runtime {
-  private _cacheFS: StringMap;
+const supportsTopLevelAwait =
+  runtimeSupportsVmModules &&
+  (() => {
+    try {
+      // eslint-disable-next-line no-new
+      new SourceTextModule('await Promise.resolve()');
+
+      return true;
+    } catch {
+      return false;
+    }
+  })();
+
+export default class Runtime {
+  private readonly _cacheFS: StringMap;
   private _config: Config.ProjectConfig;
   private _coverageOptions: ShouldInstrumentOptions;
   private _currentlyExecutingModulePath: string;
@@ -153,24 +166,26 @@ class Runtime {
     | null;
   private _internalModuleRegistry: ModuleRegistry;
   private _isCurrentlyExecutingManualMock: string | null;
+  private _mainModule: Module | null;
   private _mockFactories: Map<string, () => unknown>;
   private _mockMetaDataCache: Map<
     string,
-    jestMock.MockFunctionMetadata<unknown, Array<unknown>>
+    MockFunctionMetadata<unknown, Array<unknown>>
   >;
   private _mockRegistry: Map<string, any>;
   private _isolatedMockRegistry: Map<string, any> | null;
-  private _moduleMocker: typeof jestMock;
+  private _moduleMocker: ModuleMocker;
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
-  private _esmoduleRegistry: Map<string, Promise<VMModule>>;
+  private _esmoduleRegistry: Map<string, EsmModuleCache>;
+  private _testPath: Config.Path | undefined;
   private _resolver: Resolver;
   private _shouldAutoMock: boolean;
   private _shouldMockModuleCache: BooleanMap;
   private _shouldUnmockTransitiveDependenciesCache: BooleanMap;
   private _sourceMapRegistry: StringMap;
   private _scriptTransformer: ScriptTransformer;
-  private _fileTransforms: Map<string, TransformResult>;
+  private _fileTransforms: Map<string, RuntimeTransformResult>;
   private _v8CoverageInstrumenter: CoverageInstrumenter | undefined;
   private _v8CoverageResult: V8Coverage | undefined;
   private _transitiveShouldMock: BooleanMap;
@@ -186,6 +201,8 @@ class Runtime {
     resolver: Resolver,
     cacheFS: Record<string, string> = {},
     coverageOptions?: ShouldInstrumentOptions,
+    // TODO: Make mandatory in Jest 27
+    testPath?: Config.Path,
   ) {
     this._cacheFS = new Map(Object.entries(cacheFS));
     this._config = config;
@@ -202,6 +219,7 @@ class Runtime {
     this._explicitShouldMock = new Map();
     this._internalModuleRegistry = new Map();
     this._isCurrentlyExecutingManualMock = null;
+    this._mainModule = null;
     this._mockFactories = new Map();
     this._mockRegistry = new Map();
     // during setup, this cannot be null (and it's fine to explode if it is)
@@ -210,8 +228,9 @@ class Runtime {
     this._isolatedMockRegistry = null;
     this._moduleRegistry = new Map();
     this._esmoduleRegistry = new Map();
+    this._testPath = testPath;
     this._resolver = resolver;
-    this._scriptTransformer = new ScriptTransformer(config);
+    this._scriptTransformer = new ScriptTransformer(config, this._cacheFS);
     this._shouldAutoMock = config.automock;
     this._sourceMapRegistry = new Map();
     this._fileTransforms = new Map();
@@ -259,7 +278,7 @@ class Runtime {
       watch?: boolean;
       watchman: boolean;
     },
-  ): Promise<JestContext> {
+  ): Promise<Context> {
     createDirectory(config.cacheDirectory);
     const instance = Runtime.createHasteMap(config, {
       console: options.console,
@@ -320,7 +339,7 @@ class Runtime {
 
   static createResolver(
     config: Config.ProjectConfig,
-    moduleMap: HasteMap.ModuleMap,
+    moduleMap: ModuleMap,
   ): Resolver {
     return new Resolver(moduleMap, {
       defaultPlatform: config.haste.defaultPlatform,
@@ -335,20 +354,26 @@ class Runtime {
     });
   }
 
-  static runCLI(args?: Config.Argv, info?: Array<string>): Promise<void> {
-    return cliRun(args, info);
+  static async runCLI(): Promise<never> {
+    throw new Error('The jest-runtime CLI has been moved into jest-repl');
   }
 
-  static getCLIOptions(): typeof cliOptions {
-    return cliOptions;
+  static getCLIOptions(): never {
+    throw new Error('The jest-runtime CLI has been moved into jest-repl');
   }
 
   // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
-  unstable_shouldLoadAsEsm = Resolver.unstable_shouldLoadAsEsm;
+  unstable_shouldLoadAsEsm(path: Config.Path): boolean {
+    return Resolver.unstable_shouldLoadAsEsm(
+      path,
+      this._config.extensionsToTreatAsEsm,
+    );
+  }
 
   private async loadEsmModule(
     modulePath: Config.Path,
     query = '',
+    isStaticImport = false,
   ): Promise<VMModule> {
     const cacheKey = modulePath + query;
 
@@ -363,77 +388,128 @@ class Runtime {
       invariant(context);
 
       if (this._resolver.isCoreModule(modulePath)) {
-        const core = await this._importCoreModule(modulePath, context);
-        this._esmoduleRegistry.set(cacheKey, core);
+        const core = this._importCoreModule(modulePath, context);
+        this._esmoduleRegistry.set(cacheKey, {
+          beforeEvaluation: core,
+          fullyEvaluated: core,
+        });
         return core;
       }
 
       const transformedCode = this.transformFile(modulePath, {
         isInternalModule: false,
         supportsDynamicImport: true,
+        supportsExportNamespaceFrom: true,
         supportsStaticESM: true,
+        supportsTopLevelAwait,
       });
 
       const module = new SourceTextModule(transformedCode, {
         context,
         identifier: modulePath,
-        importModuleDynamically: this.linkModules.bind(this),
+        importModuleDynamically: (
+          specifier: string,
+          referencingModule: VMModule,
+        ) =>
+          this.linkModules(
+            specifier,
+            referencingModule.identifier,
+            referencingModule.context,
+            false,
+          ),
         initializeImportMeta(meta: ImportMeta) {
           meta.url = pathToFileURL(modulePath).href;
         },
       });
 
+      let resolve: (value: VMModule) => void;
+      let reject: (value: any) => void;
+      const promise = new Promise<VMModule>((_resolve, _reject) => {
+        resolve = _resolve;
+        reject = _reject;
+      });
+
+      // add to registry before link so that circular import won't end up stack overflow
       this._esmoduleRegistry.set(
         cacheKey,
         // we wanna put the linking promise in the cache so modules loaded in
         // parallel can all await it. We then await it synchronously below, so
         // we shouldn't get any unhandled rejections
-        module
-          .link(this.linkModules.bind(this))
-          .then(() => module.evaluate())
-          .then(() => module),
+        {
+          beforeEvaluation: Promise.resolve(module),
+          fullyEvaluated: promise,
+        },
       );
+
+      module
+        .link((specifier: string, referencingModule: VMModule) =>
+          this.linkModules(
+            specifier,
+            referencingModule.identifier,
+            referencingModule.context,
+            true,
+          ),
+        )
+        .then(() => module.evaluate())
+        .then(
+          () => resolve(module),
+          (e: any) => reject(e),
+        );
     }
 
-    const module = this._esmoduleRegistry.get(cacheKey);
+    const entry = this._esmoduleRegistry.get(cacheKey);
+
+    // return the already resolved, pre-evaluation promise
+    // is loaded through static import to prevent promise deadlock
+    // because module is evaluated after all static import is resolved
+    const module = isStaticImport
+      ? entry?.beforeEvaluation
+      : entry?.fullyEvaluated;
 
     invariant(module);
 
     return module;
   }
 
-  private linkModules(specifier: string, referencingModule: VMModule) {
+  private linkModules(
+    specifier: string,
+    referencingIdentifier: string,
+    context: VMContext,
+    isStaticImport: boolean,
+  ) {
     if (specifier === '@jest/globals') {
       const fromCache = this._esmoduleRegistry.get('@jest/globals');
 
       if (fromCache) {
-        return fromCache;
+        return isStaticImport
+          ? fromCache.beforeEvaluation
+          : fromCache.fullyEvaluated;
       }
-      const globals = this.getGlobalsForEsm(
-        referencingModule.identifier,
-        referencingModule.context,
-      );
-      this._esmoduleRegistry.set('@jest/globals', globals);
+      const globals = this.getGlobalsForEsm(referencingIdentifier, context);
+      this._esmoduleRegistry.set('@jest/globals', {
+        beforeEvaluation: globals,
+        fullyEvaluated: globals,
+      });
 
       return globals;
     }
 
+    if (specifier.startsWith('file://')) {
+      specifier = fileURLToPath(specifier);
+    }
+
     const [path, query] = specifier.split('?');
 
-    const resolved = this._resolveModule(referencingModule.identifier, path);
+    const resolved = this._resolveModule(referencingIdentifier, path);
 
     if (
       this._resolver.isCoreModule(resolved) ||
       this.unstable_shouldLoadAsEsm(resolved)
     ) {
-      return this.loadEsmModule(resolved, query);
+      return this.loadEsmModule(resolved, query, isStaticImport);
     }
 
-    return this.loadCjsAsEsm(
-      referencingModule.identifier,
-      resolved,
-      referencingModule.context,
-    );
+    return this.loadCjsAsEsm(referencingIdentifier, resolved, context);
   }
 
   async unstable_importModule(
@@ -452,7 +528,7 @@ class Runtime {
     return this.loadEsmModule(modulePath, query);
   }
 
-  private async loadCjsAsEsm(
+  private loadCjsAsEsm(
     from: Config.Path,
     modulePath: Config.Path,
     context: VMContext,
@@ -460,22 +536,36 @@ class Runtime {
     // CJS loaded via `import` should share cache with other CJS: https://github.com/nodejs/modules/issues/503
     const cjs = this.requireModuleOrMock(from, modulePath);
 
+    const transformedCode = this._fileTransforms.get(modulePath);
+
+    let cjsExports: ReadonlyArray<string> = [];
+
+    if (transformedCode) {
+      const {exports} = parseCjs(transformedCode.code);
+
+      cjsExports = exports.filter(exportName => {
+        // we don't wanna respect any exports _names_ default as a named export
+        if (exportName === 'default') {
+          return false;
+        }
+        return Object.hasOwnProperty.call(cjs, exportName);
+      });
+    }
+
     const module = new SyntheticModule(
-      ['default'],
+      [...cjsExports, 'default'],
       function () {
+        cjsExports.forEach(exportName => {
+          // @ts-expect-error
+          this.setExport(exportName, cjs[exportName]);
+        });
         // @ts-expect-error: TS doesn't know what `this` is
         this.setExport('default', cjs);
       },
       {context, identifier: modulePath},
     );
 
-    await module.link(() => {
-      throw new Error('This should never happen');
-    });
-
-    await module.evaluate();
-
-    return module;
+    return evaluateSyntheticModule(module);
   }
 
   requireModule<T = unknown>(
@@ -544,6 +634,7 @@ class Runtime {
       filename: modulePath,
       id: modulePath,
       loaded: false,
+      path: path.dirname(modulePath),
     };
     moduleRegistry.set(modulePath, localModule);
 
@@ -569,8 +660,10 @@ class Runtime {
 
     return this.requireModule<T>(from, to, {
       isInternalModule: true,
-      supportsDynamicImport: false,
+      supportsDynamicImport: esmIsAvailable,
+      supportsExportNamespaceFrom: false,
       supportsStaticESM: false,
+      supportsTopLevelAwait: false,
     });
   }
 
@@ -644,6 +737,7 @@ class Runtime {
         filename: modulePath,
         id: modulePath,
         loaded: false,
+        path: path.dirname(modulePath),
       };
 
       this._loadModule(
@@ -830,11 +924,6 @@ class Runtime {
       });
   }
 
-  // TODO - remove in Jest 26
-  getSourceMapInfo(_coveredFiles: Set<string>): Record<string, string> {
-    return {};
-  }
-
   getSourceMaps(): SourceMapRegistry {
     return fromEntries(this._sourceMapRegistry);
   }
@@ -877,6 +966,7 @@ class Runtime {
     this.resetModules();
 
     this._internalModuleRegistry.clear();
+    this._mainModule = null;
     this._mockFactories.clear();
     this._mockMetaDataCache.clear();
     this._shouldMockModuleCache.clear();
@@ -979,16 +1069,17 @@ class Runtime {
       return;
     }
 
-    const filename = localModule.filename;
+    const module = localModule as Module;
+
+    const filename = module.filename;
     const lastExecutingModulePath = this._currentlyExecutingModulePath;
     this._currentlyExecutingModulePath = filename;
     const origCurrExecutingManualMock = this._isCurrentlyExecutingManualMock;
     this._isCurrentlyExecutingManualMock = filename;
 
-    const dirname = path.dirname(filename);
-    localModule.children = [];
+    module.children = [];
 
-    Object.defineProperty(localModule, 'parent', {
+    Object.defineProperty(module, 'parent', {
       enumerable: true,
       get() {
         const key = from || '';
@@ -996,45 +1087,32 @@ class Runtime {
       },
     });
 
-    localModule.paths = this._resolver.getModulePaths(dirname);
-    Object.defineProperty(localModule, 'require', {
-      value: this._createRequireImplementation(localModule, options),
+    module.paths = this._resolver.getModulePaths(module.path);
+    Object.defineProperty(module, 'require', {
+      value: this._createRequireImplementation(module, options),
     });
 
     const transformedCode = this.transformFile(filename, options);
 
     let compiledFunction: ModuleWrapper | null = null;
 
+    const script = this.createScriptFromCode(transformedCode, filename);
+
+    let runScript: RunScriptEvalResult | null = null;
+
     // Use this if available instead of deprecated `JestEnvironment.runScript`
     if (typeof this._environment.getVmContext === 'function') {
       const vmContext = this._environment.getVmContext();
 
       if (vmContext) {
-        try {
-          compiledFunction = compileFunction(
-            transformedCode,
-            this.constructInjectedModuleParameters(),
-            {
-              filename,
-              parsingContext: vmContext,
-            },
-          ) as ModuleWrapper;
-        } catch (e) {
-          throw handlePotentialSyntaxError(e);
-        }
+        runScript = script.runInContext(vmContext, {filename});
       }
     } else {
-      const script = this.createScriptFromCode(transformedCode, filename);
+      runScript = this._environment.runScript<RunScriptEvalResult>(script);
+    }
 
-      const runScript = this._environment.runScript<RunScriptEvalResult>(
-        script,
-      );
-
-      if (runScript === null) {
-        compiledFunction = null;
-      } else {
-        compiledFunction = runScript[EVAL_RESULT_VARIABLE];
-      }
+    if (runScript !== null) {
+      compiledFunction = runScript[EVAL_RESULT_VARIABLE];
     }
 
     if (compiledFunction === null) {
@@ -1049,9 +1127,9 @@ class Runtime {
 
     this.jestObjectCaches.set(filename, jestObject);
 
-    const lastArgs: [Jest | undefined, ...Array<any>] = [
+    const lastArgs: [Jest | undefined, ...Array<Global.Global>] = [
       this._config.injectGlobals ? jestObject : undefined, // jest object
-      this._config.extraGlobals.map<unknown>(globalVariable => {
+      ...this._config.extraGlobals.map<Global.Global>(globalVariable => {
         if (this._environment.global[globalVariable]) {
           return this._environment.global[globalVariable];
         }
@@ -1062,19 +1140,28 @@ class Runtime {
       }),
     ];
 
+    if (!this._mainModule && filename === this._testPath) {
+      this._mainModule = module;
+    }
+
+    Object.defineProperty(module, 'main', {
+      enumerable: true,
+      value: this._mainModule,
+    });
+
     try {
       compiledFunction.call(
-        localModule.exports,
-        localModule as NodeModule, // module object
-        localModule.exports, // module exports
-        localModule.require as typeof require, // require implementation
-        dirname, // __dirname
-        filename, // __filename
-        this._environment.global, // global object
+        module.exports,
+        module, // module object
+        module.exports, // module exports
+        module.require, // require implementation
+        module.path, // __dirname
+        module.filename, // __filename
+        // @ts-expect-error
         ...lastArgs.filter(notEmpty),
       );
     } catch (error) {
-      this.handleExecutionError(error, localModule);
+      this.handleExecutionError(error, module);
     }
 
     this._isCurrentlyExecutingManualMock = origCurrExecutingManualMock;
@@ -1097,7 +1184,10 @@ class Runtime {
       source,
     );
 
-    this._fileTransforms.set(filename, transformedFile);
+    this._fileTransforms.set(filename, {
+      ...transformedFile,
+      wrapperLength: this.constructModuleWrapperStart().length,
+    });
 
     if (transformedFile.sourceMapPath) {
       this._sourceMapRegistry.set(filename, transformedFile.sourceMapPath);
@@ -1107,11 +1197,20 @@ class Runtime {
 
   private createScriptFromCode(scriptSource: string, filename: string) {
     try {
+      const scriptFilename = this._resolver.isCoreModule(filename)
+        ? `jest-nodejs-core-${filename}`
+        : filename;
       return new Script(this.wrapCodeInModuleWrapper(scriptSource), {
         displayErrors: true,
-        filename: this._resolver.isCoreModule(filename)
-          ? `jest-nodejs-core-${filename}`
-          : filename,
+        filename: scriptFilename,
+        // @ts-expect-error: Experimental ESM API
+        importModuleDynamically: (specifier: string) => {
+          const context = this._environment.getVmContext?.();
+
+          invariant(context);
+
+          return this.linkModules(specifier, scriptFilename, context, false);
+        },
       });
     } catch (e) {
       throw handlePotentialSyntaxError(e);
@@ -1133,7 +1232,7 @@ class Runtime {
   private _importCoreModule(moduleName: string, context: VMContext) {
     const required = this._requireCoreModule(moduleName);
 
-    return new SyntheticModule(
+    const module = new SyntheticModule(
       ['default', ...Object.keys(required)],
       function () {
         // @ts-expect-error: TS doesn't know what `this` is
@@ -1146,6 +1245,8 @@ class Runtime {
       // should identifier be `node://${moduleName}`?
       {context, identifier: moduleName},
     );
+
+    return evaluateSyntheticModule(module);
   }
 
   private _getMockedNativeModule(): typeof nativeModule.Module {
@@ -1176,6 +1277,7 @@ class Runtime {
         filename,
         id: filename,
         loaded: false,
+        path: path.dirname(filename),
       });
     };
 
@@ -1338,7 +1440,7 @@ class Runtime {
         resolveOptions,
       );
       if (
-        resolveOptions?.[OUTSIDE_JEST_VM_RESOLVE_OPTION] &&
+        resolveOptions?.[JEST_RESOLVE_OUTSIDE_VM_OPTION] &&
         options?.isInternalModule
       ) {
         return createOutsideJestVmPath(resolved);
@@ -1377,18 +1479,9 @@ class Runtime {
 
     Object.defineProperty(moduleRequire, 'main', {
       enumerable: true,
-      get() {
-        let mainModule = from.parent;
-        while (
-          mainModule &&
-          mainModule.parent &&
-          mainModule.id !== mainModule.parent.id
-        ) {
-          mainModule = mainModule.parent;
-        }
-        return mainModule;
-      },
+      value: this._mainModule,
     });
+
     return moduleRequire;
   }
 
@@ -1506,8 +1599,6 @@ class Runtime {
     };
 
     const jestObject: Jest = {
-      addMatchers: (matchers: Record<string, unknown>) =>
-        this._environment.global.jasmine.addMatchers(matchers),
       advanceTimersByTime: (msToRun: number) =>
         _getFakeTimers().advanceTimersByTime(msToRun),
       advanceTimersToNextTimer: (steps?: number) =>
@@ -1544,7 +1635,6 @@ class Runtime {
       requireActual: this.requireActual.bind(this, from),
       requireMock: this.requireMock.bind(this, from),
       resetAllMocks,
-      resetModuleRegistry: resetModules,
       resetModules,
       restoreAllMocks,
       retryTimes,
@@ -1562,8 +1652,6 @@ class Runtime {
       runAllTicks: () => _getFakeTimers().runAllTicks(),
       runAllTimers: () => _getFakeTimers().runAllTimers(),
       runOnlyPendingTimers: () => _getFakeTimers().runOnlyPendingTimers(),
-      runTimersToTime: (msToRun: number) =>
-        _getFakeTimers().advanceTimersByTime(msToRun),
       setMock: (moduleName: string, mock: unknown) =>
         setMockFactory(moduleName, () => mock),
       setSystemTime: (now?: number | Date) => {
@@ -1602,15 +1690,13 @@ class Runtime {
   }
 
   private wrapCodeInModuleWrapper(content: string) {
+    return this.constructModuleWrapperStart() + content + '\n}});';
+  }
+
+  private constructModuleWrapperStart() {
     const args = this.constructInjectedModuleParameters();
 
-    return (
-      '({"' +
-      EVAL_RESULT_VARIABLE +
-      `":function(${args.join(',')}){` +
-      content +
-      '\n}});'
-    );
+    return '({"' + EVAL_RESULT_VARIABLE + `":function(${args.join(',')}){`;
   }
 
   private constructInjectedModuleParameters(): Array<string> {
@@ -1620,13 +1706,12 @@ class Runtime {
       'require',
       '__dirname',
       '__filename',
-      'global',
       this._config.injectGlobals ? 'jest' : undefined,
       ...this._config.extraGlobals,
     ].filter(notEmpty);
   }
 
-  private handleExecutionError(e: Error, module: InitialModule): never {
+  private handleExecutionError(e: Error, module: Module): never {
     const moduleNotFoundError = Resolver.tryCastModuleNotFoundError(e);
     if (moduleNotFoundError) {
       if (!moduleNotFoundError.requireStack) {
@@ -1652,7 +1737,7 @@ class Runtime {
     return {...this.getGlobalsFromEnvironment(), jest};
   }
 
-  private async getGlobalsForEsm(
+  private getGlobalsForEsm(
     from: Config.Path,
     context: VMContext,
   ): Promise<VMModule> {
@@ -1680,13 +1765,7 @@ class Runtime {
       {context, identifier: '@jest/globals'},
     );
 
-    await module.link(() => {
-      throw new Error('This should never happen');
-    });
-
-    await module.evaluate();
-
-    return module;
+    return evaluateSyntheticModule(module);
   }
 
   private getGlobalsFromEnvironment(): JestGlobals {
@@ -1738,4 +1817,12 @@ function notEmpty<T>(value: T | null | undefined): value is T {
   return value !== null && value !== undefined;
 }
 
-export = Runtime;
+async function evaluateSyntheticModule(module: SyntheticModule) {
+  await module.link(() => {
+    throw new Error('This should never happen');
+  });
+
+  await module.evaluate();
+
+  return module;
+}

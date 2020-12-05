@@ -7,8 +7,8 @@
 
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import runJest from '../runJest';
 import {cleanup, extractSummary, writeFiles} from '../Utils';
+import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../resolve-no-extensions-no-js');
 

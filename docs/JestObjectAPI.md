@@ -538,6 +538,7 @@ module.exports = audio;
 Example test:
 
 ```js
+const audio = require('./audio');
 const video = require('./video');
 
 test('plays video', () => {
@@ -549,8 +550,6 @@ test('plays video', () => {
 
   spy.mockRestore();
 });
-
-const audio = require('./audio');
 
 test('plays audio', () => {
   const spy = jest.spyOn(audio, 'volume', 'set'); // we pass 'set'
@@ -617,10 +616,6 @@ Exhausts all tasks queued by `setImmediate()`.
 
 ### `jest.advanceTimersByTime(msToRun)`
 
-##### renamed in Jest **22.0.0+**
-
-Also under the alias: `.runTimersToTime()`
-
 Executes only the macro task queue (i.e. all tasks queued by `setTimeout()` or `setInterval()` and `setImmediate()`).
 
 When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via `setTimeout()` or `setInterval()`, and would be executed within this time frame will be executed. Additionally, if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue, that should be run within `msToRun` milliseconds.
@@ -677,7 +672,7 @@ jest.setTimeout(1000); // 1 second
 
 ### `jest.retryTimes()`
 
-Runs failed tests n-times until they pass or until the max number of retries is exhausted. This only works with [jest-circus](https://github.com/facebook/jest/tree/master/packages/jest-circus)!
+Runs failed tests n-times until they pass or until the max number of retries is exhausted. This only works with the default [jest-circus](https://github.com/facebook/jest/tree/master/packages/jest-circus) runner!
 
 Example in a test:
 

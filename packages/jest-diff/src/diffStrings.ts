@@ -6,7 +6,6 @@
  */
 
 import diffSequences from 'diff-sequences';
-
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 
 const diffStrings = (a: string, b: string): Array<Diff> => {

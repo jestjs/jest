@@ -7,7 +7,6 @@
  */
 
 import jestExpect from '../';
-
 import {
   any,
   anything,
@@ -166,6 +165,10 @@ test('ObjectContaining matches', () => {
     objectContaining({first: objectContaining({second: {}})}).asymmetricMatch({
       first: {second: {}},
     }),
+    objectContaining({foo: Buffer.from('foo')}).asymmetricMatch({
+      foo: Buffer.from('foo'),
+      jest: 'jest',
+    }),
   ].forEach(test => {
     jestExpect(test).toEqual(true);
   });
@@ -176,6 +179,10 @@ test('ObjectContaining does not match', () => {
     objectContaining({foo: 'foo'}).asymmetricMatch({bar: 'bar'}),
     objectContaining({foo: 'foo'}).asymmetricMatch({foo: 'foox'}),
     objectContaining({foo: undefined}).asymmetricMatch({}),
+    objectContaining({
+      answer: 42,
+      foo: {bar: 'baz', foobar: 'qux'},
+    }).asymmetricMatch({foo: {bar: 'baz'}}),
   ].forEach(test => {
     jestExpect(test).toEqual(false);
   });
@@ -208,12 +215,31 @@ test('ObjectContaining throws for non-objects', () => {
   jestExpect(() => objectContaining(1337).asymmetricMatch()).toThrow();
 });
 
+test('ObjectContaining does not mutate the sample', () => {
+  const sample = {foo: {bar: {}}};
+  const sample_json = JSON.stringify(sample);
+  expect({foo: {bar: {}}}).toEqual(expect.objectContaining(sample));
+
+  expect(JSON.stringify(sample)).toEqual(sample_json);
+});
+
 test('ObjectNotContaining matches', () => {
   [
-    objectNotContaining({}).asymmetricMatch('jest'),
     objectNotContaining({foo: 'foo'}).asymmetricMatch({bar: 'bar'}),
     objectNotContaining({foo: 'foo'}).asymmetricMatch({foo: 'foox'}),
     objectNotContaining({foo: undefined}).asymmetricMatch({}),
+    objectNotContaining({
+      first: objectNotContaining({second: {}}),
+    }).asymmetricMatch({first: {second: {}}}),
+    objectNotContaining({first: {second: {}, third: {}}}).asymmetricMatch({
+      first: {second: {}},
+    }),
+    objectNotContaining({first: {second: {}}}).asymmetricMatch({
+      first: {second: {}, third: {}},
+    }),
+    objectNotContaining({foo: 'foo', jest: 'jest'}).asymmetricMatch({
+      foo: 'foo',
+    }),
   ].forEach(test => {
     jestExpect(test).toEqual(true);
   });
@@ -221,16 +247,40 @@ test('ObjectNotContaining matches', () => {
 
 test('ObjectNotContaining does not match', () => {
   [
+    objectNotContaining({}).asymmetricMatch('jest'),
     objectNotContaining({foo: 'foo'}).asymmetricMatch({
       foo: 'foo',
       jest: 'jest',
     }),
     objectNotContaining({foo: undefined}).asymmetricMatch({foo: undefined}),
+    objectNotContaining({first: {second: {}}}).asymmetricMatch({
+      first: {second: {}},
+    }),
     objectNotContaining({
-      first: objectNotContaining({second: {}}),
+      first: objectContaining({second: {}}),
     }).asymmetricMatch({first: {second: {}}}),
+    objectNotContaining({}).asymmetricMatch(null),
+    objectNotContaining({}).asymmetricMatch({}),
   ].forEach(test => {
     jestExpect(test).toEqual(false);
+  });
+});
+
+test('ObjectNotContaining inverts ObjectContaining', () => {
+  [
+    [{}, null],
+    [{foo: 'foo'}, {foo: 'foo', jest: 'jest'}],
+    [{foo: 'foo', jest: 'jest'}, {foo: 'foo'}],
+    [{foo: undefined}, {foo: undefined}],
+    [{foo: undefined}, {}],
+    [{first: {second: {}}}, {first: {second: {}}}],
+    [{first: objectContaining({second: {}})}, {first: {second: {}}}],
+    [{first: objectNotContaining({second: {}})}, {first: {second: {}}}],
+    [{}, {foo: undefined}],
+  ].forEach(([sample, received]) => {
+    jestExpect(objectNotContaining(sample).asymmetricMatch(received)).toEqual(
+      !objectContaining(sample).asymmetricMatch(received),
+    );
   });
 });
 

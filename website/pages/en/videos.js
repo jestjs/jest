@@ -6,7 +6,6 @@
  */
 
 const React = require('react');
-
 const {Container, MarkdownBlock} = require('../../core/CompLibrary.js');
 const {translate} = require('../../server/translate.js');
 const siteConfig = require(process.cwd() + '/siteConfig.js');

@@ -18,7 +18,7 @@ exports[`not throwing Error objects 3`] = `
 FAIL __tests__/throwObject.test.js
   ● Test suite failed to run
 
-    Error: No message was provided
+    thrown: Object {}
 `;
 
 exports[`not throwing Error objects 4`] = `
@@ -117,6 +117,7 @@ FAIL __tests__/duringTests.test.js
   ✕ Boolean thrown during test
   ✕ undefined thrown during test
   ✕ Object thrown during test
+  ✕ Object with stack prop thrown during test
   ✕ Error during test
   ✕ done(Error)
   ✕ done(non-error)
@@ -185,33 +186,49 @@ FAIL __tests__/duringTests.test.js
 
       at Object.test (__tests__/duringTests.test.js:28:1)
 
+  ● Object with stack prop thrown during test
+
+    thrown: Object {
+      "stack": 42,
+    }
+
+      30 | });
+      31 | 
+    > 32 | test('Object with stack prop thrown during test', () => {
+         | ^
+      33 |   // eslint-disable-next-line no-throw-literal
+      34 |   throw {stack: 42};
+      35 | });
+
+      at Object.test (__tests__/duringTests.test.js:32:1)
+
   ● Error during test
 
     ReferenceError: doesNotExist is not defined
 
-      32 | test('Error during test', () => {
-      33 |   // eslint-disable-next-line no-undef
-    > 34 |   doesNotExist.alsoThisNot;
+      37 | test('Error during test', () => {
+      38 |   // eslint-disable-next-line no-undef
+    > 39 |   doesNotExist.alsoThisNot;
          |   ^
-      35 | });
-      36 | 
-      37 | test('done(Error)', done => {
+      40 | });
+      41 | 
+      42 | test('done(Error)', done => {
 
-      at Object.doesNotExist (__tests__/duringTests.test.js:34:3)
+      at Object.doesNotExist (__tests__/duringTests.test.js:39:3)
 
   ● done(Error)
 
     this is an error
 
-      36 | 
-      37 | test('done(Error)', done => {
-    > 38 |   done(new Error('this is an error'));
+      41 | 
+      42 | test('done(Error)', done => {
+    > 43 |   done(new Error('this is an error'));
          |        ^
-      39 | });
-      40 | 
-      41 | test('done(non-error)', done => {
+      44 | });
+      45 | 
+      46 | test('done(non-error)', done => {
 
-      at Object.<anonymous> (__tests__/duringTests.test.js:38:8)
+      at Object.<anonymous> (__tests__/duringTests.test.js:43:8)
 
   ● done(non-error)
 
@@ -224,15 +241,15 @@ FAIL __tests__/duringTests.test.js
       ],
     }
 
-      40 | 
-      41 | test('done(non-error)', done => {
-    > 42 |   done(deepObject);
+      45 | 
+      46 | test('done(non-error)', done => {
+    > 47 |   done(deepObject);
          |   ^
-      43 | });
-      44 | 
-      45 | test('returned promise rejection', () => Promise.reject(deepObject));
+      48 | });
+      49 | 
+      50 | test('returned promise rejection', () => Promise.reject(deepObject));
 
-      at Object.done (__tests__/duringTests.test.js:42:3)
+      at Object.done (__tests__/duringTests.test.js:47:3)
 
   ● returned promise rejection
 
@@ -245,13 +262,23 @@ FAIL __tests__/duringTests.test.js
       ],
     }
 
-      43 | });
-      44 | 
-    > 45 | test('returned promise rejection', () => Promise.reject(deepObject));
+      48 | });
+      49 | 
+    > 50 | test('returned promise rejection', () => Promise.reject(deepObject));
          | ^
-      46 | 
+      51 | 
 
-      at Object.test (__tests__/duringTests.test.js:45:1)
+      at Object.test (__tests__/duringTests.test.js:50:1)
+`;
+
+exports[`not throwing Error objects 6`] = `
+FAIL __tests__/throwObjectWithStackProp.test.js
+  ● Test suite failed to run
+
+    thrown: Object {
+
+        "stack": 42,
+      }
 `;
 
 exports[`works with assertions in separate files 1`] = `
@@ -706,6 +733,30 @@ FAIL __tests__/assertionError.test.js
 
   ● assert.ifError
 
+    assert.ifError(received, expected)
+
+    Expected value ifError to:
+      null
+    Received:
+      1
+
+    Message:
+      ifError got unwanted exception: 1
+
+    Difference:
+
+      Comparing two different types of values. Expected null but received number.
+
+      64 | 
+      65 | test('assert.ifError', () => {
+    > 66 |   assert.ifError(1);
+         |          ^
+      67 | });
+      68 | 
+      69 | test('assert.doesNotThrow', () => {
+
+      at Object.ifError (__tests__/assertionError.test.js:66:10)
+
   ● assert.doesNotThrow
 
     assert.doesNotThrow(function)
@@ -716,6 +767,7 @@ FAIL __tests__/assertionError.test.js
 
     Message:
       Got unwanted exception.
+    Actual message: "err!"
 
       68 | 
       69 | test('assert.doesNotThrow', () => {

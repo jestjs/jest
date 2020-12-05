@@ -6,11 +6,11 @@
  */
 
 import * as path from 'path';
+import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import naturalCompare = require('natural-compare');
-import chalk = require('chalk');
 import type {Config} from '@jest/types';
-import prettyFormat = require('pretty-format');
+import prettyFormat from 'pretty-format';
 import {getSerializers} from './plugins';
 import type {SnapshotData} from './types';
 

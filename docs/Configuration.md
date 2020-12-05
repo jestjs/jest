@@ -3,7 +3,7 @@ id: configuration
 title: Configuring Jest
 ---
 
-Jest's configuration can be defined in the `package.json` file of your project, or through a `jest.config.js` file or through the `--config <path/to/file.js|cjs|mjs|json>` option. If you'd like to use your `package.json` to store Jest's config, the `"jest"` key should be used on the top level so Jest will know how to find your settings:
+Jest's configuration can be defined in the `package.json` file of your project, or through a `jest.config.js`, or `jest.config.ts` file or through the `--config <path/to/file.js|ts|cjs|mjs|json>` option. If you'd like to use your `package.json` to store Jest's config, the `"jest"` key should be used on the top level so Jest will know how to find your settings:
 
 ```json
 {
@@ -18,13 +18,33 @@ Or through JavaScript:
 
 ```js
 // jest.config.js
-//Sync object
+// Sync object
 module.exports = {
   verbose: true,
 };
 
-//Or async function
+// Or async function
 module.exports = async () => {
+  return {
+    verbose: true,
+  };
+};
+```
+
+Or through TypeScript (if `ts-node` is installed):
+
+```ts
+// jest.config.ts
+import type {Config} from '@jest/types';
+
+// Sync object
+const config: Config.InitialOptions = {
+  verbose: true,
+};
+export default config;
+
+// Or async function
+export default async (): Promise<Config.InitialOptions> => {
   return {
     verbose: true,
   };
@@ -131,7 +151,7 @@ Automatically clear mock calls and instances before every test. Equivalent to ca
 
 Default: `false`
 
-Indicates whether the coverage information should be collected while executing the test. Because these retrofits all executed files with coverage collection statements, it may significantly slow down your tests.
+Indicates whether the coverage information should be collected while executing the test. Because this retrofits all executed files with coverage collection statements, it may significantly slow down your tests.
 
 ### `collectCoverageFrom` [array]
 
@@ -280,8 +300,8 @@ Default: `undefined`
 This option allows the use of a custom dependency extractor. It must be a node module that exports an object with an `extract` function. E.g.:
 
 ```javascript
-const fs = require('fs');
 const crypto = require('crypto');
+const fs = require('fs');
 
 module.exports = {
   extract(code, filePath, defaultExtract) {
@@ -332,6 +352,23 @@ As a secondary option, an object with the properties `name` and `color` can be p
 Default: `false`
 
 Make calling deprecated APIs throw helpful error messages. Useful for easing the upgrade process.
+
+### `extensionsToTreatAsEsm` [array\<string>]
+
+Default: `[]`
+
+Jest will run `.mjs` and `.js` files with nearest `package.json`'s `type` field set to `module` as ECMAScript Modules. If you have any other files that should run with native ESM, you need to specify their file extension here.
+
+> Note: Jest's ESM support is still experimental, see [its docs for more details](ECMAScriptModules.md).
+
+```json
+{
+  ...
+  "jest": {
+    "extensionsToTreatAsEsm": [".ts"]
+  }
+}
+```
 
 ### `extraGlobals` [array\<string>]
 
@@ -444,6 +481,27 @@ _Note: A global teardown module configured in a project (using multi-project run
 
 _Note: The same caveat concerning transformation of `node_modules` as for `globalSetup` applies to `globalTeardown`._
 
+### `haste` [object]
+
+Default: `undefined`
+
+This will be used to configure the behavior of `jest-haste-map`, Jest's internal file crawler/cache system. The following options are supported:
+
+```ts
+type HasteConfig = {
+  // Whether to hash files using SHA-1.
+  computeSha1?: boolean;
+  // The platform to use as the default, e.g. 'ios'.
+  defaultPlatform?: string | null;
+  // Path to a custom implementation of Haste.
+  hasteImplModulePath?: string;
+  // All platforms to target, e.g ['ios', 'android'].
+  platforms?: Array<string>;
+  // Whether to throw on error on module collision.
+  throwOnModuleCollision?: boolean;
+};
+```
+
 ### `injectGlobals` [boolean]
 
 Default: `true`
@@ -460,7 +518,7 @@ test('some test', () => {
 });
 ```
 
-_Note: This option is only supported using `jest-circus`._
+_Note: This option is only supported using the default `jest-circus`. test runner_
 
 ### `maxConcurrency` [number]
 
@@ -948,9 +1006,9 @@ More about serializers API can be found [here](https://github.com/facebook/jest/
 
 ### `testEnvironment` [string]
 
-Default: `"jsdom"`
+Default: `"node"`
 
-The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/jsdom/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead.
+The test environment that will be used for testing. The default environment in Jest is a Node.js environment. If you are building a web app, you can use a browser-like environment through [`jsdom`](https://github.com/jsdom/jsdom) instead.
 
 By adding a `@jest-environment` docblock at the top of the file, you can specify another environment to be used for all tests in that file:
 
@@ -969,7 +1027,15 @@ You can create your own module that will be used for setting up the test environ
 
 The class may optionally expose an asynchronous `handleTestEvent` method to bind to events fired by [`jest-circus`](https://github.com/facebook/jest/tree/master/packages/jest-circus). Normally, `jest-circus` test runner would pause until a promise returned from `handleTestEvent` gets fulfilled, **except for the next events**: `start_describe_definition`, `finish_describe_definition`, `add_hook`, `add_test` or `error` (for the up-to-date list you can look at [SyncEvent type in the types definitions](https://github.com/facebook/jest/tree/master/packages/jest-types/src/Circus.ts)). That is caused by backward compatibility reasons and `process.on('unhandledRejection', callback)` signature, but that usually should not be a problem for most of the use cases.
 
-Any docblock pragmas in test files will be passed to the environment constructor and can be used for per-test configuration. If the pragma does not have a value, it will be present in the object with it's value set to an empty string. If the pragma is not present, it will not be present in the object.
+Any docblock pragmas in test files will be passed to the environment constructor and can be used for per-test configuration. If the pragma does not have a value, it will be present in the object with its value set to an empty string. If the pragma is not present, it will not be present in the object.
+
+To use this class as your custom environment, refer to it by its full path within the project. For example, if your class is stored in `my-custom-environment.js` in some subfolder of your project, then the annotation might looke like this:
+
+```js
+/**
+ * @jest-environment ./src/test/my-custom-environment
+ */
+```
 
 _Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment._
 
@@ -1019,6 +1085,9 @@ module.exports = CustomEnvironment;
 
 ```js
 // my-test-suite
+/**
+ * @jest-environment ./my-custom-environment
+ */
 let someGlobalObject;
 
 beforeAll(() => {
@@ -1030,7 +1099,7 @@ beforeAll(() => {
 
 Default: `{}`
 
-Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{userAgent: "Agent/007"}`.
+Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example, you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{userAgent: "Agent/007"}`.
 
 ### `testFailureExitCode` [number]
 
@@ -1086,7 +1155,7 @@ This option allows the use of a custom results processor. This processor must be
 
 ```json
 {
-  "success": bool,
+  "success": boolean,
   "startTime": epoch,
   "numTotalTestSuites": number,
   "numPassedTestSuites": number,
@@ -1129,9 +1198,9 @@ This option allows the use of a custom results processor. This processor must be
 
 ### `testRunner` [string]
 
-Default: `jasmine2`
+Default: `jest-circus/runner`
 
-This option allows the use of a custom test runner. The default is jasmine2. A custom test runner can be provided by specifying a path to a test runner implementation.
+This option allows the use of a custom test runner. The default is `jest-circus`. A custom test runner can be provided by specifying a path to a test runner implementation.
 
 The test runner module must export a function with the following signature:
 
@@ -1203,7 +1272,7 @@ If the value is `modern`, [`@sinonjs/fake-timers`](https://github.com/sinonjs/fa
 
 ### `transform` [object\<string, pathToTransformer | [pathToTransformer, object]>]
 
-Default: `{"^.+\\.[jt]sx?$": "babel-jest"}`
+Default: `{"\\.[jt]sx?$": "babel-jest"}`
 
 A map from regular expressions to paths to transformers. A transformer is a module that provides a synchronous function for transforming source files. For example, if you wanted to be able to use a new language feature in your modules or tests that aren't yet supported by node, you might plug in one of many compilers that compile a future version of JavaScript to a current one. Example: see the [examples/typescript](https://github.com/facebook/jest/blob/master/examples/typescript/package.json#L16) example or the [webpack tutorial](Webpack.md).
 
@@ -1211,14 +1280,13 @@ Examples of such compilers include:
 
 - [Babel](https://babeljs.io/)
 - [TypeScript](http://www.typescriptlang.org/)
-- [async-to-gen](http://github.com/leebyron/async-to-gen#jest)
-- To build your own please visit the [Custom Transformer](TutorialReact.md#custom-transformers) section
+- To build your own please visit the [Custom Transformer](CodeTransformation.md#writing-custom-transformers) section
 
 You can pass configuration to a transformer like `{filePattern: ['path-to-transformer', {options}]}` For example, to configure babel-jest for non-default behavior, `{"\\.js$": ['babel-jest', {rootMode: "upward"}]}`
 
 _Note: a transformer is only run once per file unless the file has changed. During the development of a transformer it can be useful to run Jest with `--no-cache` to frequently [delete Jest's cache](Troubleshooting.md#caching-issues)._
 
-_Note: when adding additional code transformers, this will overwrite the default config and `babel-jest` is no longer automatically loaded. If you want to use it to compile JavaScript or Typescript, it has to be explicitly defined by adding `{"^.+\\.[jt]sx?$": "babel-jest"}` to the transform property. See [babel-jest plugin](https://github.com/facebook/jest/tree/master/packages/babel-jest#setup)_
+_Note: when adding additional code transformers, this will overwrite the default config and `babel-jest` is no longer automatically loaded. If you want to use it to compile JavaScript or Typescript, it has to be explicitly defined by adding `{"\\.[jt]sx?$": "babel-jest"}` to the transform property. See [babel-jest plugin](https://github.com/facebook/jest/tree/master/packages/babel-jest#setup)_
 
 ### `transformIgnorePatterns` [array\<string>]
 
@@ -1273,6 +1341,12 @@ Examples of watch plugins include:
 - [`jest-watch-yarn-workspaces`](https://github.com/cameronhunter/jest-watch-directories/tree/master/packages/jest-watch-yarn-workspaces)
 
 _Note: The values in the `watchPlugins` property value can omit the `jest-watch-` prefix of the package name._
+
+### `watchman` [boolean]
+
+Default: `true`
+
+Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling.
 
 ### `//` [string]
 

@@ -31,8 +31,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import type {Spy} from '../types';
 import CallTracker from './CallTracker';
-import createSpy from './createSpy';
 import SpyStrategy from './SpyStrategy';
+import createSpy from './createSpy';
 
 const formatErrorMsg = (domain: string, usage?: string) => {
   const usageDefinition = usage ? '\nUsage: ' + usage : '';

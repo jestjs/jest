@@ -5,17 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import type {Config} from '@jest/types';
 import type {JestEnvironment} from '@jest/environment';
 import type {TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import type {TestFileEvent} from 'jest-runner';
-import type {RuntimeType as Runtime} from 'jest-runtime';
+import type Runtime from 'jest-runtime';
 import type {SnapshotStateType} from 'jest-snapshot';
 import {deepCyclicCopy} from 'jest-util';
 
-const FRAMEWORK_INITIALIZER = path.resolve(__dirname, './jestAdapterInit.js');
-const EXPECT_INITIALIZER = path.resolve(__dirname, './jestExpect.js');
+const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 
 const jestAdapter = async (
   globalConfig: Config.GlobalConfig,
@@ -32,33 +30,16 @@ const jestAdapter = async (
     FRAMEWORK_INITIALIZER,
   );
 
-  const expect = runtime
-    .requireInternalModule<typeof import('./jestExpect')>(EXPECT_INITIALIZER)
-    .default(globalConfig);
-
-  const getPrettier = () =>
-    config.prettierPath ? require(config.prettierPath) : null;
-  const getBabelTraverse = () => require('@babel/traverse').default;
-
   const {globals, snapshotState} = await initialize({
     config,
     environment,
-    getBabelTraverse,
-    getPrettier,
     globalConfig,
     localRequire: runtime.requireModule.bind(runtime),
     parentProcess: process,
     sendMessageToJest,
+    setGlobalsForRuntime: runtime.setGlobalsForRuntime?.bind(runtime),
     testPath,
   });
-
-  const runtimeGlobals = {expect, ...globals};
-  runtime.setGlobalsForRuntime(runtimeGlobals);
-
-  // TODO: `jest-circus` might be newer than `jest-config` - remove `??` for Jest 27
-  if (config.injectGlobals ?? true) {
-    Object.assign(environment.global, runtimeGlobals);
-  }
 
   if (config.timers === 'fake' || config.timers === 'legacy') {
     // during setup, this cannot be null (and it's fine to explode if it is)
@@ -91,8 +72,7 @@ const jestAdapter = async (
   });
 
   for (const path of config.setupFilesAfterEnv) {
-    // TODO: remove ? in Jest 26
-    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);
@@ -100,9 +80,7 @@ const jestAdapter = async (
       runtime.requireModule(path);
     }
   }
-
-  // TODO: remove ? in Jest 26
-  const esm = runtime.unstable_shouldLoadAsEsm?.(testPath);
+  const esm = runtime.unstable_shouldLoadAsEsm(testPath);
 
   if (esm) {
     await runtime.unstable_importModule(testPath);

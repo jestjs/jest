@@ -6,25 +6,24 @@
  *
  */
 
-import type {Config} from '@jest/types';
-import type {SerializableError, TestResult} from '@jest/test-result';
-import HasteMap = require('jest-haste-map');
 import exit = require('exit');
+import type {SerializableError, TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import {ModuleMap, SerializableModuleMap} from 'jest-haste-map';
 import {separateMessageFromStack} from 'jest-message-util';
-import Runtime = require('jest-runtime');
-import type {ResolverType} from 'jest-resolve';
+import type Resolver from 'jest-resolve';
+import Runtime from 'jest-runtime';
 import {messageParent} from 'jest-worker';
+import runTest from './runTest';
 import type {
   ErrorWithCode,
   TestFileEvent,
   TestRunnerSerializedContext,
 } from './types';
 
-import runTest from './runTest';
-
 export type SerializableResolver = {
   config: Config.ProjectConfig;
-  serializableModuleMap: HasteMap.SerializableModuleMap;
+  serializableModuleMap: SerializableModuleMap;
 };
 
 type WorkerData = {
@@ -58,7 +57,7 @@ const formatError = (error: string | ErrorWithCode): SerializableError => {
   };
 };
 
-const resolvers = new Map<string, ResolverType>();
+const resolvers = new Map<string, Resolver>();
 const getResolver = (config: Config.ProjectConfig) => {
   const resolver = resolvers.get(config.name);
   if (!resolver) {
@@ -75,7 +74,7 @@ export function setup(setupData: {
     config,
     serializableModuleMap,
   } of setupData.serializableResolvers) {
-    const moduleMap = HasteMap.ModuleMap.fromJSON(serializableModuleMap);
+    const moduleMap = ModuleMap.fromJSON(serializableModuleMap);
     resolvers.set(config.name, Runtime.createResolver(config, moduleMap));
   }
 }

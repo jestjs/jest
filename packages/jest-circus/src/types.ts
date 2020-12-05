@@ -6,8 +6,8 @@
  */
 
 // Used as type
-import expect = require('expect');
 import type {Circus} from '@jest/types';
+import expect = require('expect');
 
 export const STATE_SYM = (Symbol(
   'JEST_STATE_SYMBOL',

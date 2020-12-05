@@ -7,15 +7,14 @@
 
 import React from 'react';
 import renderer from 'react-test-renderer';
-
-import {OptionsReceived} from '../types';
-import prettyFormat from '..';
+import prettyFormat, {plugins} from '..';
+import type {OptionsReceived} from '../types';
 
 const elementSymbol = Symbol.for('react.element');
 const fragmentSymbol = Symbol.for('react.fragment');
 const suspenseSymbol = Symbol.for('react.suspense');
 const testSymbol = Symbol.for('react.test.json');
-const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
+const {ReactElement, ReactTestComponent} = plugins;
 
 const formatElement = (element: unknown, options?: OptionsReceived) =>
   prettyFormat(element, {plugins: [ReactElement], ...options});

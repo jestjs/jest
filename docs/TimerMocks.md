@@ -35,7 +35,24 @@ test('waits 1 second before ending the game', () => {
 });
 ```
 
-Here we enable fake timers by calling `jest.useFakeTimers();`. This mocks out setTimeout and other timer functions with mock functions. If running multiple tests inside of one file or describe block, `jest.useFakeTimers();` can be called before each test manually or with a setup function such as `beforeEach`. Not doing so will result in the internal usage counter not being reset.
+Here we enable fake timers by calling `jest.useFakeTimers()`. This mocks out `setTimeout` and other timer functions with mock functions. Timers can be restored to their normal behavior with `jest.useRealTimers()`.
+
+While you can call `jest.useFakeTimers()` or `jest.useRealTimers()` from anywhere (top level, inside an `it` block, etc.), it is a **global operation** and will affect other tests within the same file. Additionally, you need to call `jest.useFakeTimers()` to reset internal counters before each test. If you plan to not use fake timers in all your tests, you will want to clean up manually, as otherwise the faked timers will leak across tests:
+
+```javascript
+afterEach(() => {
+  jest.useRealTimers();
+});
+
+test('do something with fake timers', () => {
+  jest.useFakeTimers();
+  // ...
+});
+
+test('do something with real timers', () => {
+  // ...
+});
+```
 
 ## Run All Timers
 
@@ -119,8 +136,6 @@ describe('infiniteTimerGame', () => {
 ```
 
 ## Advance Timers by Time
-
-##### renamed from `runTimersToTime` to `advanceTimersByTime` in Jest **22.0.0**
 
 Another possibility is use `jest.advanceTimersByTime(msToRun)`. When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via setTimeout() or setInterval(), and would be executed during this time frame, will be executed. Additionally, if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue that should be run within msToRun milliseconds.
 

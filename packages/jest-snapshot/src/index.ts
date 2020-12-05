@@ -10,7 +10,6 @@
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type {FS as HasteFS} from 'jest-haste-map';
-
 import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,
@@ -26,7 +25,7 @@ import {
   SnapshotResolver as JestSnapshotResolver,
   buildSnapshotResolver,
   isSnapshotPath,
-} from './snapshot_resolver';
+} from './SnapshotResolver';
 import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
 import {
@@ -560,7 +559,7 @@ const JestSnapshot = {
   utils,
 };
 
-namespace JestSnapshot {
+declare namespace JestSnapshot {
   export type SnapshotResolver = JestSnapshotResolver;
   export type SnapshotStateType = SnapshotState;
 }

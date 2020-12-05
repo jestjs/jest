@@ -143,6 +143,7 @@ If you are making changes to the website or documentation, test the website fold
     ```sh-session
     $ cd website       # Only needed if you are not already in the website directory
     $ yarn
+    $ node fetchSupporters.js
     $ yarn start
     ```
 1.  You can run a development server to check if the changes you made are being displayed accurately by running `yarn start` in the website directory.
@@ -156,13 +157,6 @@ In order to accept your pull request, we need you to submit a CLA. You only need
 [Complete your CLA here.](https://code.facebook.com/cla)
 
 ## How to try a development build of Jest in another project
-
-To link `jest` on the command line to `jest-cli/bin/jest.js` in a development build:
-
-```sh-session
-$ cd /path/to/your/Jest_clone/packages/jest-cli
-$ yarn link
-```
 
 To build Jest:
 
@@ -183,19 +177,10 @@ To run tests in another project with the development build of Jest:
 ```sh-session
 $ cd /path/to/another/project
 
-# link development build to the other project
-$ yarn link jest-cli
-
-$ jest [options] # run jest-cli/bin/jest.js in the development build
+$ node /path/to/your/JestClone/packages/jest/bin/jest [options] # run jest-cli/bin/jest.js in the development build
 ```
 
 - To decide whether to specify any options, see `test` under `scripts` in the `package.json` file of the other project.
-
-To unlink `jest` on the command line from `jest-cli/bin/jest.js` in a development build:
-
-```sh
-yarn unlink jest-cli
-```
 
 ## Bugs
 

@@ -8,17 +8,7 @@
 import ansiRegex = require('ansi-regex');
 import styles = require('ansi-styles');
 import chalk = require('chalk');
-import format = require('pretty-format');
-
-import jestSnapshot = require('../index');
-import {
-  getReceivedColorForChalkInstance,
-  getSnapshotColorForChalkInstance,
-  noColor,
-  printPropertiesAndReceived,
-  printSnapshotAndReceived,
-} from '../printSnapshot';
-import {serialize} from '../utils';
+import format from 'pretty-format';
 import {
   aBackground2,
   aBackground3,
@@ -29,33 +19,42 @@ import {
   bForeground2,
   bForeground3,
 } from '../colors';
+import jestSnapshot = require('../index');
+import {
+  getReceivedColorForChalkInstance,
+  getSnapshotColorForChalkInstance,
+  noColor,
+  printPropertiesAndReceived,
+  printSnapshotAndReceived,
+} from '../printSnapshot';
+import {serialize} from '../utils';
 
 const aOpenForeground1 = styles.magenta.open;
 const aOpenBackground1 = styles.bgYellowBright.open;
 const bOpenForeground1 = styles.cyan.open;
 const bOpenBackground1 = styles.bgWhiteBright.open;
 
-const aOpenForeground2 = styles.color.ansi256.ansi256(aForeground2);
-const bOpenForeground2 = styles.color.ansi256.ansi256(bForeground2);
-const aOpenBackground2 = styles.bgColor.ansi256.ansi256(aBackground2);
-const bOpenBackground2 = styles.bgColor.ansi256.ansi256(bBackground2);
+const aOpenForeground2 = styles.color.ansi256(aForeground2);
+const bOpenForeground2 = styles.color.ansi256(bForeground2);
+const aOpenBackground2 = styles.bgColor.ansi256(aBackground2);
+const bOpenBackground2 = styles.bgColor.ansi256(bBackground2);
 
-const aOpenForeground3 = styles.color.ansi16m.rgb(
+const aOpenForeground3 = styles.color.ansi16m(
   aForeground3[0],
   aForeground3[1],
   aForeground3[2],
 );
-const bOpenForeground3 = styles.color.ansi16m.rgb(
+const bOpenForeground3 = styles.color.ansi16m(
   bForeground3[0],
   bForeground3[1],
   bForeground3[2],
 );
-const aOpenBackground3 = styles.bgColor.ansi16m.rgb(
+const aOpenBackground3 = styles.bgColor.ansi16m(
   aBackground3[0],
   aBackground3[1],
   aBackground3[2],
 );
-const bOpenBackground3 = styles.bgColor.ansi16m.rgb(
+const bOpenBackground3 = styles.bgColor.ansi16m(
   bBackground3[0],
   bBackground3[1],
   bBackground3[2],

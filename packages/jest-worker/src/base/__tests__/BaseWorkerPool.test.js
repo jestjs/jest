@@ -8,7 +8,6 @@
 'use strict';
 
 import {CHILD_MESSAGE_END} from '../../types';
-
 import BaseWorkerPool from '../BaseWorkerPool';
 
 const Worker = jest.fn();

@@ -7,7 +7,6 @@
 
 import type {Config} from '@jest/types';
 import expect = require('expect');
-
 import {
   addSerializer,
   toMatchInlineSnapshot,
@@ -16,7 +15,9 @@ import {
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
 
-export default (config: Pick<Config.GlobalConfig, 'expand'>): typeof expect => {
+export type Expect = typeof expect;
+
+export default (config: Pick<Config.GlobalConfig, 'expand'>): Expect => {
   expect.setState({expand: config.expand});
   expect.extend({
     toMatchInlineSnapshot,

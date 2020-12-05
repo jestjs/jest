@@ -7,18 +7,17 @@
 
 import type {AssertionError} from 'assert';
 import type {Config} from '@jest/types';
-
 import expect = require('expect');
-import type {default as Spec, SpecResult} from './jasmine/Spec';
-import type JsApiReporter from './jasmine/JsApiReporter';
-import type Timer from './jasmine/Timer';
-import type Env from './jasmine/Env';
-import type createSpy from './jasmine/createSpy';
-import type ReportDispatcher from './jasmine/ReportDispatcher';
-import type SpyRegistry from './jasmine/spyRegistry';
-import type {default as Suite, SuiteResult} from './jasmine/Suite';
-import type SpyStrategy from './jasmine/SpyStrategy';
 import type CallTracker from './jasmine/CallTracker';
+import type Env from './jasmine/Env';
+import type JsApiReporter from './jasmine/JsApiReporter';
+import type ReportDispatcher from './jasmine/ReportDispatcher';
+import type {default as Spec, SpecResult} from './jasmine/Spec';
+import type SpyStrategy from './jasmine/SpyStrategy';
+import type {default as Suite, SuiteResult} from './jasmine/Suite';
+import type Timer from './jasmine/Timer';
+import type createSpy from './jasmine/createSpy';
+import type SpyRegistry from './jasmine/spyRegistry';
 
 export type SpecDefinitionsFn = () => void;
 

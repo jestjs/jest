@@ -29,6 +29,11 @@ test('Object thrown during test', () => {
   throw deepObject;
 });
 
+test('Object with stack prop thrown during test', () => {
+  // eslint-disable-next-line no-throw-literal
+  throw {stack: 42};
+});
+
 test('Error during test', () => {
   // eslint-disable-next-line no-undef
   doesNotExist.alsoThisNot;

@@ -6,29 +6,20 @@
  */
 
 import chalk = require('chalk');
+import type {Config} from '@jest/types';
 import {
   StackTraceConfig,
   StackTraceOptions,
   formatStackTrace,
 } from 'jest-message-util';
-import type {Config} from '@jest/types';
 import type {ConsoleBuffer} from './types';
 
 export default (
-  // TODO: remove in 27
-  root: string,
-  // TODO: this is covered by GlobalConfig, switch over in 27
-  verbose: boolean,
   buffer: ConsoleBuffer,
-  // TODO: make mandatory and take Config.ProjectConfig in 27
-  config: StackTraceConfig = {
-    rootDir: root,
-    testMatch: [],
-  },
-  // TODO: make mandatory in 27
-  globalConfig?: Config.GlobalConfig,
+  config: StackTraceConfig,
+  globalConfig: Config.GlobalConfig,
 ): string => {
-  const TITLE_INDENT = verbose ? '  ' : '    ';
+  const TITLE_INDENT = globalConfig.verbose ? '  ' : '    ';
   const CONSOLE_INDENT = TITLE_INDENT + '  ';
 
   const logEntries = buffer.reduce((output, {type, message, origin}) => {

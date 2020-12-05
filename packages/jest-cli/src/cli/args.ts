@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import isCI = require('is-ci');
 import type {Config} from '@jest/types';
 import {constants, isJSONString} from 'jest-config';
-import isCI = require('is-ci');
 
 export function check(argv: Config.Argv): true {
   if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
@@ -30,6 +30,13 @@ export function check(argv: Config.Argv): true {
           'reruns only tests related to changed files.',
       );
     }
+  }
+
+  if (argv.onlyFailures && argv.watchAll) {
+    throw new Error(
+      `Both --onlyFailures and --watchAll were specified, but these two ` +
+        'options do not make sense together.',
+    );
   }
 
   if (argv.findRelatedTests && argv._.length === 0) {
@@ -643,9 +650,9 @@ export const options = {
   },
   testRunner: {
     description:
-      'Allows to specify a custom test runner. The default is ' +
-      ' `jasmine2`. A path to a custom test runner can be provided: ' +
-      '`<rootDir>/path/to/testRunner.js`.',
+      'Allows to specify a custom test runner. The default is' +
+      ' `jest-circus/runner`. A path to a custom test runner can be provided:' +
+      ' `<rootDir>/path/to/testRunner.js`.',
     type: 'string',
   },
   testSequencer: {

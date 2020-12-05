@@ -6,8 +6,9 @@
  *
  */
 
-import type {Config} from '@jest/types';
-import type {TestResult} from '@jest/test-result';
+import chalk = require('chalk');
+import * as fs from 'graceful-fs';
+import sourcemapSupport = require('source-map-support');
 import {
   BufferedConsole,
   CustomConsole,
@@ -17,16 +18,16 @@ import {
   getConsoleOutput,
 } from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
-import RuntimeClass = require('jest-runtime');
-import * as fs from 'graceful-fs';
-import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
-import LeakDetector from 'jest-leak-detector';
-import type {ResolverType} from 'jest-resolve';
+import type {TestResult} from '@jest/test-result';
+import {ScriptTransformer} from '@jest/transform';
+import type {Config} from '@jest/types';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
+import LeakDetector from 'jest-leak-detector';
 import {formatExecError} from 'jest-message-util';
-import sourcemapSupport = require('source-map-support');
-import chalk = require('chalk');
+import type Resolver from 'jest-resolve';
+import type RuntimeClass from 'jest-runtime';
+import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
 import type {TestFileEvent, TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {
@@ -61,8 +62,7 @@ function freezeConsole(
     );
 
     process.stderr.write('\n' + formattedError + '\n');
-    // TODO: set exit code in Jest 25
-    // process.exitCode = 1;
+    process.exitCode = 1;
   };
 }
 
@@ -79,7 +79,7 @@ async function runTestInternal(
   path: Config.Path,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  resolver: ResolverType,
+  resolver: Resolver,
   context?: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
 ): Promise<RunTestInternalResult> {
@@ -103,14 +103,14 @@ async function runTestInternal(
     });
   }
 
+  const transformer = new ScriptTransformer(config);
   const TestEnvironment: typeof JestEnvironment = interopRequireDefault(
-    require(testEnvironment),
+    transformer.requireAndTranspileModule(testEnvironment),
   ).default;
   const testFramework: TestFramework = interopRequireDefault(
-    process.env.JEST_CIRCUS === '1'
-      ? // eslint-disable-next-line import/no-extraneous-dependencies
-        require('jest-circus/runner')
-      : require(config.testRunner),
+    transformer.requireAndTranspileModule(
+      process.env.JEST_JASMINE === '1' ? 'jest-jasmine2' : config.testRunner,
+    ),
   ).default;
   const Runtime: typeof RuntimeClass = interopRequireDefault(
     config.moduleLoader
@@ -121,8 +121,6 @@ async function runTestInternal(
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
   const consoleFormatter = (type: LogType, message: LogMessage) =>
     getConsoleOutput(
-      config.cwd,
-      !!globalConfig.verbose,
       // 4 = the console call is buried 4 stack frames deep
       BufferedConsole.write([], type, message, 4),
       config,
@@ -151,21 +149,27 @@ async function runTestInternal(
   const cacheFS = {[path]: testSource};
   setGlobal(environment.global, 'console', testConsole);
 
-  const runtime = new Runtime(config, environment, resolver, cacheFS, {
-    changedFiles: context?.changedFiles,
-    collectCoverage: globalConfig.collectCoverage,
-    collectCoverageFrom: globalConfig.collectCoverageFrom,
-    collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
-    coverageProvider: globalConfig.coverageProvider,
-    sourcesRelatedToTestsInChangedFiles:
-      context?.sourcesRelatedToTestsInChangedFiles,
-  });
+  const runtime = new Runtime(
+    config,
+    environment,
+    resolver,
+    cacheFS,
+    {
+      changedFiles: context?.changedFiles,
+      collectCoverage: globalConfig.collectCoverage,
+      collectCoverageFrom: globalConfig.collectCoverageFrom,
+      collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
+      coverageProvider: globalConfig.coverageProvider,
+      sourcesRelatedToTestsInChangedFiles:
+        context?.sourcesRelatedToTestsInChangedFiles,
+    },
+    path,
+  );
 
   const start = Date.now();
 
   for (const path of config.setupFiles) {
-    // TODO: remove ? in Jest 26
-    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);
@@ -324,7 +328,7 @@ export default async function runTest(
   path: Config.Path,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
-  resolver: ResolverType,
+  resolver: Resolver,
   context?: TestRunnerContext,
   sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> {

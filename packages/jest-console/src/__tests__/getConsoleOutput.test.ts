@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {makeGlobalConfig} from '@jest/test-utils';
 import {formatStackTrace} from 'jest-message-util';
-import getConsoleOutput from '../getConsoleOutput';
 import BufferedConsole from '../BufferedConsole';
+import getConsoleOutput from '../getConsoleOutput';
 import type {LogType} from '../types';
-import {makeGlobalConfig} from '../../../../TestUtils';
 
 jest.mock('jest-message-util', () => ({
   formatStackTrace: jest.fn(),
@@ -35,8 +35,6 @@ describe('getConsoleOutput', () => {
     ${'warn'}
   `('takes noStackTrace and pass it on for $logType', logType => {
     getConsoleOutput(
-      'someRootPath',
-      true,
       BufferedConsole.write([], logType as LogType, 'message', 4),
       {
         rootDir: 'root',

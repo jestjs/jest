@@ -13,26 +13,19 @@ import {EventEmitter} from 'events';
 import {tmpdir} from 'os';
 import * as path from 'path';
 import type {Stats} from 'graceful-fs';
-import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
 import type {Config} from '@jest/types';
+import {escapePathForRegex} from 'jest-regex-util';
 import serializer from 'jest-serializer';
 import Worker from 'jest-worker';
-import {escapePathForRegex} from 'jest-regex-util';
-import {getSha1, worker} from './worker';
-import getMockName from './getMockName';
-import getPlatformExtension from './lib/getPlatformExtension';
-import H from './constants';
 import HasteFS from './HasteFS';
-import HasteModuleMap, {
-  SerializableModuleMap as HasteSerializableModuleMap,
-} from './ModuleMap';
+import HasteModuleMap from './ModuleMap';
+import H from './constants';
 import nodeCrawl = require('./crawlers/node');
-import normalizePathSep from './lib/normalizePathSep';
 import watchmanCrawl = require('./crawlers/watchman');
-// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
-import WatchmanWatcher from './lib/WatchmanWatcher';
-import FSEventsWatcher = require('./lib/FSEventsWatcher');
+import getMockName from './getMockName';
 import * as fastPath from './lib/fast_path';
+import getPlatformExtension from './lib/getPlatformExtension';
+import normalizePathSep from './lib/normalizePathSep';
 import type {
   ChangeEvent,
   CrawlerOptions,
@@ -47,8 +40,15 @@ import type {
   ModuleMetaData,
   WorkerMetadata,
 } from './types';
-
-type HType = typeof H;
+import FSEventsWatcher = require('./watchers/FSEventsWatcher');
+// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/10919
+import NodeWatcher from './watchers/NodeWatcher';
+// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
+import WatchmanWatcher from './watchers/WatchmanWatcher';
+import {getSha1, worker} from './worker';
+// TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
+// understand `require`.
+const {version: VERSION} = require('../package.json');
 
 type Options = {
   cacheDirectory?: string;
@@ -98,19 +98,15 @@ type InternalOptions = {
 };
 
 type Watcher = {
-  close(callback: () => void): void;
+  close(): Promise<void>;
 };
 
 type WorkerInterface = {worker: typeof worker; getSha1: typeof getSha1};
 
-// TODO: Ditch namespace when this module exports ESM
-namespace HasteMap {
-  export type ModuleMap = HasteModuleMap;
-  export type SerializableModuleMap = HasteSerializableModuleMap;
-  export type FS = HasteFS;
-  export type HasteMapObject = InternalHasteMapObject;
-  export type HasteChangeEvent = ChangeEvent;
-}
+export {default as ModuleMap} from './ModuleMap';
+export type {SerializableModuleMap} from './ModuleMap';
+export type {default as FS} from './HasteFS';
+export type {ChangeEvent, HasteMap as HasteMapObject} from './types';
 
 const CHANGE_INTERVAL = 30;
 const MAX_WAIT_TIME = 240000;
@@ -119,10 +115,6 @@ const PACKAGE_JSON = path.sep + 'package.json';
 const VCS_DIRECTORIES = ['.git', '.hg']
   .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
   .join('|');
-
-// TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
-// understand `require`.
-const {version: VERSION} = require('../package.json');
 
 const canUseWatchman = ((): boolean => {
   try {
@@ -216,10 +208,10 @@ function invariant(condition: unknown, message?: string): asserts condition {
  *     Worker processes can directly access the cache through `HasteMap.read()`.
  *
  */
-class HasteMap extends EventEmitter {
+export default class HasteMap extends EventEmitter {
   private _buildPromise: Promise<InternalHasteMapObject> | null;
   private _cachePath: Config.Path;
-  private _changeInterval?: NodeJS.Timeout;
+  private _changeInterval?: ReturnType<typeof setInterval>;
   private _console: Console;
   private _options: InternalOptions;
   private _watchers: Array<Watcher>;
@@ -784,7 +776,7 @@ class HasteMap extends EventEmitter {
     this._options.retainAllFiles = true;
 
     // WatchmanWatcher > FSEventsWatcher > sane.NodeWatcher
-    const Watcher: SaneWatcher =
+    const Watcher =
       canUseWatchman && this._options.useWatchman
         ? WatchmanWatcher
         : FSEventsWatcher.isSupported()
@@ -801,7 +793,6 @@ class HasteMap extends EventEmitter {
     let mustCopy = true;
 
     const createWatcher = (root: Config.Path): Promise<Watcher> => {
-      // @ts-expect-error: TODO how? "Cannot use 'new' with an expression whose type lacks a call or construct signature."
       const watcher = new Watcher(root, {
         dot: true,
         glob: extensions.map(extension => '**/*.' + extension),
@@ -827,10 +818,7 @@ class HasteMap extends EventEmitter {
         mustCopy = true;
         const changeEvent: ChangeEvent = {
           eventsQueue,
-          hasteFS: new HasteFS({
-            files: hasteMap.files,
-            rootDir,
-          }),
+          hasteFS: new HasteFS({files: hasteMap.files, rootDir}),
           moduleMap: new HasteModuleMap({
             duplicates: hasteMap.duplicates,
             map: hasteMap.map,
@@ -1046,20 +1034,18 @@ class HasteMap extends EventEmitter {
     }
   }
 
-  end(): Promise<void> {
-    // @ts-expect-error: TODO TS cannot decide if `setInterval` and `clearInterval` comes from NodeJS or the DOM
-    clearInterval(this._changeInterval);
-    if (!this._watchers.length) {
-      return Promise.resolve();
+  async end(): Promise<void> {
+    if (this._changeInterval) {
+      clearInterval(this._changeInterval);
     }
 
-    return Promise.all(
-      this._watchers.map(
-        watcher => new Promise(resolve => watcher.close(resolve)),
-      ),
-    ).then(() => {
-      this._watchers = [];
-    });
+    if (!this._watchers.length) {
+      return;
+    }
+
+    await Promise.all(this._watchers.map(watcher => watcher.close()));
+
+    this._watchers = [];
   }
 
   /**
@@ -1088,12 +1074,10 @@ class HasteMap extends EventEmitter {
     };
   }
 
-  static H: HType;
-  static DuplicateError: typeof DuplicateError;
-  static ModuleMap: typeof HasteModuleMap;
+  static H = H;
 }
 
-class DuplicateError extends Error {
+export class DuplicateError extends Error {
   mockPath1: string;
   mockPath2: string;
 
@@ -1112,9 +1096,3 @@ function copy<T extends Record<string, unknown>>(object: T): T {
 function copyMap<K, V>(input: Map<K, V>): Map<K, V> {
   return new Map(input);
 }
-
-HasteMap.H = H;
-HasteMap.DuplicateError = DuplicateError;
-HasteMap.ModuleMap = HasteModuleMap;
-
-export = HasteMap;
