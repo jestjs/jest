@@ -154,7 +154,7 @@ const supportsTopLevelAwait =
   })();
 
 export default class Runtime {
-  private _cacheFS: StringMap;
+  private readonly _cacheFS: StringMap;
   private _config: Config.ProjectConfig;
   private _coverageOptions: ShouldInstrumentOptions;
   private _currentlyExecutingModulePath: string;
@@ -230,7 +230,7 @@ export default class Runtime {
     this._esmoduleRegistry = new Map();
     this._testPath = testPath;
     this._resolver = resolver;
-    this._scriptTransformer = new ScriptTransformer(config);
+    this._scriptTransformer = new ScriptTransformer(config, this._cacheFS);
     this._shouldAutoMock = config.automock;
     this._sourceMapRegistry = new Map();
     this._fileTransforms = new Map();

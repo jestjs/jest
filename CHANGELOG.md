@@ -10,6 +10,7 @@
 - `[jest-snapshot]` [**BREAKING**] Make prettier optional for inline snapshots - fall back to string replacement ([#7792](https://github.com/facebook/jest/pull/7792))
 - `[jest-runner]` [**BREAKING**] Run transforms over `runnner` ([#8823](https://github.com/facebook/jest/pull/8823))
 - `[jest-runner]` [**BREAKING**] Run transforms over `testRunnner` ([#8823](https://github.com/facebook/jest/pull/8823))
+- `[jest-runtime, jest-transform]` share `cacheFS` between runtime and transformer ([#10901](https://github.com/facebook/jest/pull/10901))
 
 ### Fixes
 
@@ -21,6 +22,7 @@
 - `[jest-environment-jsdom]` Use inner realm’s `ArrayBuffer` constructor ([#10885](https://github.com/facebook/jest/pull/10885))
 - `[jest-globals]` [**BREAKING**] Disallow return values other than a `Promise` from hooks and tests ([#10512](https://github.com/facebook/jest/pull/10512))
 - `[jest-globals]` [**BREAKING**] Disallow mixing a done callback and returning a `Promise` from hooks and tests ([#10512](https://github.com/facebook/jest/pull/10512))
+- `[jest-haste-map]` Vendor `NodeWatcher` from `sane` ([#10919](https://github.com/facebook/jest/pull/10919))
 - `[jest-jasmine2]` Fixed the issue of beforeAll & afterAll hooks getting executed even if it is inside a skipped `describe` block when it has child `tests` marked as either `only` or `todo` [#10451](https://github.com/facebook/jest/issues/10451)
 - `[jest-jasmine2]` Fixed the issues of child `tests` marked with `only` or `todo` getting executed even if it is inside a skipped parent `describe` block [#10451](https://github.com/facebook/jest/issues/10451)
 - `[jest-reporter]` Handle empty files when reporting code coverage with V8 ([#10819](https://github.com/facebook/jest/pull/10819))
@@ -31,7 +33,7 @@
 - `[jest-runtime]` Fix stack overflow and promise deadlock when importing mutual dependant ES module ([#10892](https://github.com/facebook/jest/pull/10892))
 - `[jest-transform]` Show enhanced `SyntaxError` message for all `SyntaxError`s ([#10749](https://github.com/facebook/jest/pull/10749))
 - `[jest-transform]` [**BREAKING**] Refactor API to pass an options bag around rather than multiple boolean options ([#10753](https://github.com/facebook/jest/pull/10753))
-- `[jest-transform]` [**BREAKING**] Refactor API of transformers to pass an options bag rather than separate `config` and other options
+- `[jest-transform]` [**BREAKING**] Refactor API of transformers to pass an options bag rather than separate `config` and other options ([#10834](https://github.com/facebook/jest/pull/10834))
 - `[pretty-format]` [**BREAKING**] Convert to ES Modules ([#10515](https://github.com/facebook/jest/pull/10515))
 
 ### Chore & Maintenance

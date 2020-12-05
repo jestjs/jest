@@ -100,7 +100,7 @@ module.exports = {
         'packages/jest-core/src/plugins/UpdateSnapshotsInteractive.ts',
         'packages/jest-fake-timers/src/legacyFakeTimers.ts',
         'packages/jest-haste-map/src/index.ts',
-        'packages/jest-haste-map/src/lib/FSEventsWatcher.ts',
+        'packages/jest-haste-map/src/watchers/FSEventsWatcher.ts',
         'packages/jest-jasmine2/src/jasmine/SpyStrategy.ts',
         'packages/jest-jasmine2/src/jasmine/Suite.ts',
         'packages/jest-leak-detector/src/index.ts',
