@@ -40,6 +40,33 @@ Ran all test suites matching /manual-exceeded.js/i.",
 }
 `;
 
+exports[`throws on deadline exceeded in a describe hook 1`] = `
+Object {
+  "rest": "FAIL __tests__/manual-exceeded-hook-describe.js
+  describe
+    ✕ does nothing
+
+  ● describe › does nothing
+
+    deadline exceeded (waited here for <<REPLACED>>)
+
+      12 | describe('describe', () => {
+      13 |   beforeAll(async () => {
+    > 14 |     await expect.withinDeadline(sleep(200));
+         |     ^
+      15 |   }, 50);
+      16 | 
+      17 |   it('does nothing', () => {});
+
+      at __tests__/manual-exceeded-hook-describe.js:14:5",
+  "summary": "Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites matching /manual-exceeded-hook-describe.js/i.",
+}
+`;
+
 exports[`throws on deadline exceeded in a hook 1`] = `
 Object {
   "rest": "FAIL __tests__/manual-exceeded-hook.js

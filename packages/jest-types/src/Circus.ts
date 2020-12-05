@@ -199,6 +199,7 @@ export type GlobalErrorHandlers = {
 export type State = {
   currentDescribeBlock: DescribeBlock;
   currentlyRunningTest?: TestEntry | null; // including when hooks are being executed
+  currentlyRunningChildDeadline: number | null;
   expand?: boolean; // expand error messages
   hasFocusedTests: boolean; // that are defined using test.only
   hasStarted: boolean; // whether the rootDescribeBlock has started running
@@ -240,5 +241,4 @@ export type TestEntry = {
   duration?: number | null;
   status?: TestStatus | null; // whether the test has been skipped or run already
   timeout?: number;
-  deadline?: number;
 };

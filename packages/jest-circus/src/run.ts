@@ -148,13 +148,14 @@ const _callCircusHook = async ({
   test?: Circus.TestEntry;
   testContext?: Circus.TestContext;
 }): Promise<void> => {
-  hook.timeout = hook.timeout || getState().testTimeout;
   await dispatch({hook, name: 'hook_start'});
+  const timeout = hook.timeout || getState().testTimeout;
+  _updateDeadline(timeout);
 
   try {
     await callAsyncCircusFn(hook, testContext, {
       isHook: true,
-      timeout: hook.timeout,
+      timeout,
     });
     await dispatch({describeBlock, hook, name: 'hook_success', test});
   } catch (error) {
@@ -166,8 +167,9 @@ const _callCircusTest = async (
   test: Circus.TestEntry,
   testContext: Circus.TestContext,
 ): Promise<void> => {
-  test.timeout = test.timeout || getState().testTimeout;
   await dispatch({name: 'test_fn_start', test});
+  const timeout = test.timeout || getState().testTimeout;
+  _updateDeadline(timeout);
   invariant(test.fn, `Tests with no 'fn' should have 'mode' set to 'skipped'`);
 
   if (test.errors.length) {
@@ -177,12 +179,16 @@ const _callCircusTest = async (
   try {
     await callAsyncCircusFn(test, testContext, {
       isHook: false,
-      timeout: test.timeout,
+      timeout,
     });
     await dispatch({name: 'test_fn_success', test});
   } catch (error) {
     await dispatch({error, name: 'test_fn_failure', test});
   }
+};
+
+const _updateDeadline = (timeout: number): void => {
+  getState().currentlyRunningChildDeadline = Date.now() + timeout - 20;
 };
 
 export default run;

@@ -8,8 +8,8 @@
 import {getState} from './state';
 
 export function deadline(): number {
-  const deadline = getState()?.currentlyRunningTest?.deadline;
-  if (undefined === deadline) {
+  const deadline = getState()?.currentlyRunningChildDeadline;
+  if (null === deadline) {
     throw new Error('bug! no deadline available');
   }
   return deadline;
