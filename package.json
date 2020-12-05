@@ -148,7 +148,6 @@
     "@testing-library/dom/pretty-format": "26.6.1",
     "@types/jest/jest-diff": "^25.1.0",
     "@types/jest/pretty-format": "^25.1.0",
-    "fbjs-scripts": "patch:fbjs-scripts@^1.1.0#./patches/fbjs-scripts.patch",
-    "jest-haste-map/fsevents": "patch:fsevents@^2.1.2#./patches/fsevents.patch"
+    "fbjs-scripts": "patch:fbjs-scripts@^1.1.0#./patches/fbjs-scripts.patch"
   }
 }
