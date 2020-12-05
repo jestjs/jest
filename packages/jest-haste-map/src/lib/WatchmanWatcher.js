@@ -8,15 +8,16 @@
 import assert from 'assert';
 import {EventEmitter} from 'events';
 import path from 'path';
+import anymatch from 'anymatch';
 import watchman from 'fb-watchman';
 import * as fs from 'graceful-fs';
-import common from 'sane/src/common';
-import RecrawlWarning from 'sane/src/utils/recrawl-warning-dedupe';
+import micromatch from 'micromatch';
+import RecrawlWarning from './RecrawlWarning';
 
-const CHANGE_EVENT = common.CHANGE_EVENT;
-const DELETE_EVENT = common.DELETE_EVENT;
-const ADD_EVENT = common.ADD_EVENT;
-const ALL_EVENT = common.ALL_EVENT;
+const CHANGE_EVENT = 'change';
+const DELETE_EVENT = 'delete';
+const ADD_EVENT = 'add';
+const ALL_EVENT = 'all';
 const SUB_NAME = 'sane-sub';
 
 /**
@@ -29,7 +30,7 @@ const SUB_NAME = 'sane-sub';
  */
 
 export default function WatchmanWatcher(dir, opts) {
-  common.assignOptions(this, opts);
+  assignOptions(this, opts);
   this.root = path.resolve(dir);
   this.init();
 }
@@ -226,7 +227,7 @@ WatchmanWatcher.prototype.handleFileChange = function (changeDescriptor) {
 
   if (
     !(self.capabilities.wildmatch && !this.hasIgnore) &&
-    !common.isFileIncluded(this.globs, this.dot, this.doIgnore, relativePath)
+    !isFileIncluded(this.globs, this.dot, this.doIgnore, relativePath)
   ) {
     return;
   }
@@ -321,3 +322,33 @@ function handleWarning(resp) {
     return false;
   }
 }
+
+function assignOptions(watcher, opts) {
+  opts = opts || {};
+  watcher.globs = opts.glob || [];
+  watcher.dot = opts.dot || false;
+  watcher.ignored = opts.ignored || false;
+
+  if (!Array.isArray(watcher.globs)) {
+    watcher.globs = [watcher.globs];
+  }
+  watcher.hasIgnore =
+    Boolean(opts.ignored) && !(Array.isArray(opts) && opts.length > 0);
+  watcher.doIgnore = opts.ignored ? anymatch(opts.ignored) : () => false;
+
+  if (opts.watchman && opts.watchmanPath) {
+    watcher.watchmanPath = opts.watchmanPath;
+  }
+
+  return opts;
+}
+
+function isFileIncluded(globs, dot, doIgnore, relativePath) {
+  if (doIgnore(relativePath)) {
+    return false;
+  }
+  return globs.length
+    ? micromatch.some(relativePath, globs, {dot})
+    : dot || micromatch.some(relativePath, '**/*');
+}
+
