@@ -326,19 +326,19 @@ describe('HasteMap', () => {
     });
   });
 
-  it('ignores vcs directories with ignore pattern function', () => {
-    const config = {...defaultConfig, ignorePattern: f => /Kiwi/.test(f)};
-    mockFs[path.join('/', 'project', 'fruits', 'Kiwi.js')] = `
+  it('warn on ignore pattern except for regex', () => {
+    const config = {ignorePattern: 'Kiwi', ...defaultConfig};
+    mockFs['/project/fruits/Kiwi.js'] = `
       // Kiwi!
     `;
 
-    mockFs[path.join('/', 'project', 'fruits', '.git', 'fruit-history.js')] = `
-      // test
-    `;
-    return new HasteMap(config).build().then(({hasteFS}) => {
-      expect(hasteFS.matchFiles(/Kiwi/)).toEqual([]);
-      expect(hasteFS.matchFiles('.git')).toEqual([]);
-    });
+    try {
+      new HasteMap(config).build();
+    } catch (err) {
+      expect(err.message).toBe(
+        'jest-haste-map: the `ignorePattern` option must be a RegExp',
+      );
+    }
   });
 
   it('builds a haste map on a fresh cache', () => {
