@@ -12,10 +12,20 @@ type TestReturnValuePromise = Promise<unknown>;
 type TestReturnValueGenerator = Generator<void, unknown, void>;
 export type TestReturnValue = ValidTestReturnValues | TestReturnValuePromise;
 
+export type TestContext = Record<string, unknown>;
+
 export type DoneFn = (reason?: string | Error) => void;
-export type DoneTakingTestFn = (done: DoneFn) => ValidTestReturnValues;
-export type PromiseReturningTestFn = () => TestReturnValue;
-export type GeneratorReturningTestFn = () => TestReturnValueGenerator;
+// these should not be undefined
+export type DoneTakingTestFn = (
+  this: TestContext | undefined,
+  done: DoneFn,
+) => ValidTestReturnValues;
+export type PromiseReturningTestFn = (
+  this: TestContext | undefined,
+) => TestReturnValue;
+export type GeneratorReturningTestFn = (
+  this: TestContext | undefined,
+) => TestReturnValueGenerator;
 
 export type TestName = string;
 export type TestFn =
