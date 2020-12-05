@@ -30,7 +30,7 @@ interface Transformer<OptionType = unknown> {
    * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
    */
   canInstrument?: boolean;
-  createTransformer?: (options: OptionType) => Transformer;
+  createTransformer?: (options?: OptionType) => Transformer;
 
   getCacheKey?: (
     sourceText: string,
