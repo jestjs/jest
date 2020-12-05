@@ -86,10 +86,10 @@ export default async function jasmine2(
   environment.global.describe.skip = environment.global.xdescribe;
   environment.global.describe.only = environment.global.fdescribe;
 
-  if (config.timers === 'fake' || config.timers === 'legacy') {
-    environment.fakeTimers!.useFakeTimers();
-  } else if (config.timers === 'modern') {
+  if (config.timers === 'fake' || config.timers === 'modern') {
     environment.fakeTimersModern!.useFakeTimers();
+  } else if (config.timers === 'legacy') {
+    environment.fakeTimers!.useFakeTimers();
   }
 
   env.beforeEach(() => {
@@ -104,7 +104,7 @@ export default async function jasmine2(
     if (config.resetMocks) {
       runtime.resetAllMocks();
 
-      if (config.timers === 'fake' || config.timers === 'legacy') {
+      if (config.timers === 'legacy') {
         environment.fakeTimers!.useFakeTimers();
       }
     }
@@ -149,8 +149,7 @@ export default async function jasmine2(
     });
 
   for (const path of config.setupFilesAfterEnv) {
-    // TODO: remove ? in Jest 26
-    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);
@@ -163,9 +162,7 @@ export default async function jasmine2(
     const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');
     env.specFilter = (spec: Spec) => testNameRegex.test(spec.getFullName());
   }
-
-  // TODO: remove ? in Jest 26
-  const esm = runtime.unstable_shouldLoadAsEsm?.(testPath);
+  const esm = runtime.unstable_shouldLoadAsEsm(testPath);
 
   if (esm) {
     await runtime.unstable_importModule(testPath);

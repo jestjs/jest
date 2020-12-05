@@ -29,6 +29,7 @@ const evalCommand: repl.REPLEval = (
         cmd,
         jestGlobalConfig.replname || 'jest.js',
         {
+          cacheFS: new Map<string, string>(),
           config: jestProjectConfig,
           configString: JSON.stringify(jestProjectConfig),
           instrument: false,

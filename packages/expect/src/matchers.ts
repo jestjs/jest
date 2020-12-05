@@ -474,6 +474,35 @@ const matchers: MatchersObject = {
     }
 
     if (typeof received === 'string') {
+      const wrongTypeErrorMessage = `${EXPECTED_COLOR(
+        'expected',
+      )} value must be a string if ${RECEIVED_COLOR(
+        'received',
+      )} value is a string`;
+
+      if (expected == null) {
+        throw new Error(
+          matcherErrorMessage(
+            matcherHint(matcherName, received, String(expected), options),
+            wrongTypeErrorMessage,
+            printWithType('Expected', expected, printExpected) +
+              '\n' +
+              printWithType('Received', received, printReceived),
+          ),
+        );
+      }
+      if (typeof expected === 'number') {
+        throw new Error(
+          matcherErrorMessage(
+            matcherHint(matcherName, received, String(expected), options),
+            wrongTypeErrorMessage,
+            printWithType('Expected', expected, printExpected) +
+              '\n' +
+              printWithType('Received', received, printReceived),
+          ),
+        );
+      }
+
       const index = received.indexOf(String(expected));
       const pass = index !== -1;
 

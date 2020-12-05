@@ -154,7 +154,7 @@ const supportsTopLevelAwait =
   })();
 
 export default class Runtime {
-  private _cacheFS: StringMap;
+  private readonly _cacheFS: StringMap;
   private _config: Config.ProjectConfig;
   private _coverageOptions: ShouldInstrumentOptions;
   private _currentlyExecutingModulePath: string;
@@ -230,7 +230,7 @@ export default class Runtime {
     this._esmoduleRegistry = new Map();
     this._testPath = testPath;
     this._resolver = resolver;
-    this._scriptTransformer = new ScriptTransformer(config);
+    this._scriptTransformer = new ScriptTransformer(config, this._cacheFS);
     this._shouldAutoMock = config.automock;
     this._sourceMapRegistry = new Map();
     this._fileTransforms = new Map();
@@ -243,9 +243,9 @@ export default class Runtime {
     this._transitiveShouldMock = new Map();
 
     this._fakeTimersImplementation =
-      config.timers === 'modern'
-        ? this._environment.fakeTimersModern
-        : this._environment.fakeTimers;
+      config.timers === 'legacy'
+        ? this._environment.fakeTimers
+        : this._environment.fakeTimersModern;
 
     this._unmockList = unmockRegExpCache.get(config);
     if (!this._unmockList && config.unmockedModulePathPatterns) {
@@ -363,7 +363,12 @@ export default class Runtime {
   }
 
   // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
-  unstable_shouldLoadAsEsm = Resolver.unstable_shouldLoadAsEsm;
+  unstable_shouldLoadAsEsm(path: Config.Path): boolean {
+    return Resolver.unstable_shouldLoadAsEsm(
+      path,
+      this._config.extensionsToTreatAsEsm,
+    );
+  }
 
   private async loadEsmModule(
     modulePath: Config.Path,
@@ -917,11 +922,6 @@ export default class Runtime {
           result,
         };
       });
-  }
-
-  // TODO - remove in Jest 27
-  getSourceMapInfo(_coveredFiles: Set<string>): Record<string, string> {
-    return {};
   }
 
   getSourceMaps(): SourceMapRegistry {
@@ -1558,11 +1558,11 @@ export default class Runtime {
 
       return this._fakeTimersImplementation!;
     };
-    const useFakeTimers = (type: string = 'legacy') => {
-      if (type === 'modern') {
-        this._fakeTimersImplementation = this._environment.fakeTimersModern;
-      } else {
+    const useFakeTimers: Jest['useFakeTimers'] = (type = 'modern') => {
+      if (type === 'legacy') {
         this._fakeTimersImplementation = this._environment.fakeTimers;
+      } else {
+        this._fakeTimersImplementation = this._environment.fakeTimersModern;
       }
       this._fakeTimersImplementation!.useFakeTimers();
       return jestObject;
