@@ -1784,6 +1784,7 @@ __metadata:
     "@types/rimraf": ^3.0.0
     ansi-escapes: ^4.2.1
     chalk: ^4.0.0
+    emittery: ^0.7.2
     exit: ^0.1.2
     graceful-fs: ^4.2.4
     jest-changed-files: ^26.6.2
@@ -7623,7 +7624,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"emittery@npm:^0.7.1":
+"emittery@npm:^0.7.1, emittery@npm:^0.7.2":
   version: 0.7.2
   resolution: "emittery@npm:0.7.2"
   checksum: 34acfef51922a1b73d75cb658bf43ecb279633b263ffa831fb87697abbbd3aa4241ef15d204eeaa6a3c62656bd7563de7145c416a2bb18c4805e54ce6d7cdac6

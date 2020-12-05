@@ -25,7 +25,6 @@ import type {
   TestRunnerContext,
   TestRunnerOptions,
   TestWatcher,
-  WatcherState,
 } from './types';
 
 const TEST_WORKER_PATH = require.resolve('./testWorker');
@@ -239,7 +238,7 @@ export default class TestRunner {
     };
 
     const onInterrupt = new Promise((_, reject) => {
-      watcher.on('change', (state: WatcherState) => {
+      watcher.on('change', state => {
         if (state.interrupted) {
           reject(new CancelRun());
         }
