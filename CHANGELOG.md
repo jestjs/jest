@@ -2,22 +2,179 @@
 
 ### Features
 
+- `[jest-config]` [**BREAKING**] Default to Node testing environment instead of browser (JSDOM) ([#9874](https://github.com/facebook/jest/pull/9874))
+- `[jest-config]` [**BREAKING**] Use `jest-circus` as default test runner ([#10686](https://github.com/facebook/jest/pull/10686))
+- `[jest-config, jest-runtime]` Support ESM for files other than `.js` and `.mjs` ([#10823](https://github.com/facebook/jest/pull/10823))
+- `[jest-repl, jest-runner]` [**BREAKING**] Run transforms over environment ([#8751](https://github.com/facebook/jest/pull/8751))
+- `[jest-runner]` [**BREAKING**] set exit code to 1 if test logs after teardown ([#10728](https://github.com/facebook/jest/pull/10728))
+- `[jest-snapshot]` [**BREAKING**] Make prettier optional for inline snapshots - fall back to string replacement ([#7792](https://github.com/facebook/jest/pull/7792))
+- `[jest-runner]` [**BREAKING**] Run transforms over `runnner` ([#8823](https://github.com/facebook/jest/pull/8823))
+- `[jest-runner]` [**BREAKING**] Run transforms over `testRunnner` ([#8823](https://github.com/facebook/jest/pull/8823))
+- `[jest-runtime, jest-transform]` share `cacheFS` between runtime and transformer ([#10901](https://github.com/facebook/jest/pull/10901))
+
+### Fixes
+
+- `[babel-plugin-jest-hoist]` Add `__dirname` and `__filename` to whitelisted globals ([#10903](https://github.com/facebook/jest/pull/10903))
+- `[expect]` [**BREAKING**] Revise `expect.not.objectContaining()` to be the inverse of `expect.objectContaining()`, as documented. ([#10708](https://github.com/facebook/jest/pull/10708))
+- `[jest-circus]` Fixed the issue of beforeAll & afterAll hooks getting executed even if it is inside a skipped `describe` block [#10451](https://github.com/facebook/jest/issues/10451)
+- `[jest-circus]` Fix `testLocation` on Windows when using `test.each` ([#10871](https://github.com/facebook/jest/pull/10871))
+- `[jest-config]` [**BREAKING**] Change default file extension order by moving json behind ts and tsx ([10572](https://github.com/facebook/jest/pull/10572))
+- `[jest-console]` `console.dir` now respects the second argument correctly ([#10638](https://github.com/facebook/jest/pull/10638))
+- `[jest-environment-jsdom]` Use inner realm’s `ArrayBuffer` constructor ([#10885](https://github.com/facebook/jest/pull/10885))
+- `[jest-globals]` [**BREAKING**] Disallow return values other than a `Promise` from hooks and tests ([#10512](https://github.com/facebook/jest/pull/10512))
+- `[jest-globals]` [**BREAKING**] Disallow mixing a done callback and returning a `Promise` from hooks and tests ([#10512](https://github.com/facebook/jest/pull/10512))
+- `[jest-haste-map]` Vendor `NodeWatcher` from `sane` ([#10919](https://github.com/facebook/jest/pull/10919))
+- `[jest-jasmine2]` Fixed the issue of beforeAll & afterAll hooks getting executed even if it is inside a skipped `describe` block when it has child `tests` marked as either `only` or `todo` [#10451](https://github.com/facebook/jest/issues/10451)
+- `[jest-jasmine2]` Fixed the issues of child `tests` marked with `only` or `todo` getting executed even if it is inside a skipped parent `describe` block [#10451](https://github.com/facebook/jest/issues/10451)
+- `[jest-reporter]` Handle empty files when reporting code coverage with V8 ([#10819](https://github.com/facebook/jest/pull/10819))
+- `[jest-resolve]` Replace read-pkg-up with escalade package ([#10781](https://github.com/facebook/jest/pull/10781))
+- `[jest-resolve]` Disable `jest-pnp-resolver` for Yarn 2 ([#10847](https://github.com/facebook/jest/pull/10847))
+- `[jest-runtime]` [**BREAKING**] Do not inject `global` variable into module wrapper ([#10644](https://github.com/facebook/jest/pull/10644))
+- `[jest-runtime]` [**BREAKING**] remove long-deprecated `jest.addMatchers`, `jest.resetModuleRegistry`, and `jest.runTimersToTime` ([#9853](https://github.com/facebook/jest/pull/9853))
+- `[jest-runtime]` Fix stack overflow and promise deadlock when importing mutual dependant ES module ([#10892](https://github.com/facebook/jest/pull/10892))
+- `[jest-transform]` Show enhanced `SyntaxError` message for all `SyntaxError`s ([#10749](https://github.com/facebook/jest/pull/10749))
+- `[jest-transform]` [**BREAKING**] Refactor API to pass an options bag around rather than multiple boolean options ([#10753](https://github.com/facebook/jest/pull/10753))
+- `[jest-transform]` [**BREAKING**] Refactor API of transformers to pass an options bag rather than separate `config` and other options ([#10834](https://github.com/facebook/jest/pull/10834))
+- `[pretty-format]` [**BREAKING**] Convert to ES Modules ([#10515](https://github.com/facebook/jest/pull/10515))
+
+### Chore & Maintenance
+
+- `[*]` [**BREAKING**] Only support Node LTS releases and Node 15 ([#10685](https://github.com/facebook/jest/pull/10685))
+- `[*]` [**BREAKING**] Add `exports` field to all `package.json`s ([#9921](https://github.com/facebook/jest/pull/9921))
+- `[*]` Make it easier for Jest's packages to use the VM escape hatch ([#10824](https://github.com/facebook/jest/pull/10824))
+- `[jest-config]` [**BREAKING**] Remove `enabledTestsMap` config, use `filter` instead ([#10787](https://github.com/facebook/jest/pull/10787))
+- `[jest-console]` [**BREAKING**] Move `root` into `config` and take `GlobalConfig` as mandatory parameter for `getConsoleOutput` ([#10126](https://github.com/facebook/jest/pull/10126))
+- `[jest-fake-timers]` Clarify global behavior of `jest.useFakeTimers` and `jest.useRealTimers` ([#10867](https://github.com/facebook/jest/pull/10867))
+- `[jest-haste-map]` [**BREAKING**] Migrate to ESM ([#10875](https://github.com/facebook/jest/pull/10875))
+- `[jest-jasmine2]` [**BREAKING**] Migrate to ESM ([#10906](https://github.com/facebook/jest/pull/10906))
+- `[jest-repl, jest-runtime]` [**BREAKING**] Move the `jest-runtime` CLI into `jest-repl` ([#10016](https://github.com/facebook/jest/pull/10016))
+- `[jest-resolve]` [**BREAKING**] Migrate to ESM ([#10688](https://github.com/facebook/jest/pull/10688))
+- `[jest-resolve-dependencies]` [**BREAKING**] Migrate to ESM ([#10876](https://github.com/facebook/jest/pull/10876))
+- `[jest-mock]` [**BREAKING**] Migrate to ESM ([#10887](https://github.com/facebook/jest/pull/10887))
+- `[jest-runner]` [**BREAKING**] Migrate to ESM ([#10900](https://github.com/facebook/jest/pull/10900))
+- `[jest-util]` No longer checking `enumerable` when adding `process.domain` ([#10862](https://github.com/facebook/jest/pull/10862))
+
+### Performance
+
+## 26.6.3
+
+### Fixes
+
+- `[jest-resolve-dependencies]` Continue dependency resolution if mock dependency can't be found ([#10779](https://github.com/facebook/jest/pull/10779))
+
+## 26.6.2
+
+### Features
+
+- `[jest-core]` Add `findRelatedTests` and `nonFlagArgs` in allowed config options for `updateConfigAndRun` in watch plugins ([#10659](https://github.com/facebook/jest/pull/10659))
+
+### Fixes
+
+- `[babel-plugin-jest-hoist]` Preserve order of hoisted mock nodes within containing block ([#10536](https://github.com/facebook/jest/pull/10536))
+- `[babel-plugin-jest-hoist]` Hoist pure constants to support experimental JSX transform in hoisted mocks ([#10723](https://github.com/facebook/jest/pull/10723))
+- `[babel-preset-jest]` Update `babel-preset-current-node-syntax` to support top level await ([#10747](https://github.com/facebook/jest/pull/10747))
+- `[expect]` Revert "Fix `objectContaining` to work recursively into sub-objects ([#10508](https://github.com/facebook/jest/pull/10508))" ([#10766](https://github.com/facebook/jest/pull/10766))
+- `[jest-circus, jest-jasmine2]` fix: don't assume `stack` is always a string ([#10697](https://github.com/facebook/jest/pull/10697))
+- `[jest-config]` Fix bug introduced in watch mode by PR [#10678](https://github.com/facebook/jest/pull/10678/files#r511037803) ([#10692](https://github.com/facebook/jest/pull/10692))
+- `[jest-config]` Throw correct error for missing preset modules ([#10737](https://github.com/facebook/jest/pull/10737))
+- `[jest-resolve-dependencies]` Resolve mocks as dependencies ([#10713](https://github.com/facebook/jest/pull/10713))
+- `[jest-runtime]` Handle file URLs in dynamic imports ([#10744](https://github.com/facebook/jest/pull/10744))
+- `[jest-runtime, babel-jest]` Pass more ESM options to `@jest/transform` ([#10752](https://github.com/facebook/jest/pull/10752))
+- `[jest-runtime]` Properly inject `extraGlobals` into the runtime ([#10758](https://github.com/facebook/jest/pull/10758))
+- `[jest-transform]` Link to ESM docs on syntax errors ([#10748](https://github.com/facebook/jest/pull/10748))
+
+### Chore & Maintenance
+
+- `[docs]` Add docs for using mocks in TypeScript ([#10415](https://github.com/facebook/jest/pull/10415))
+- `[eslint-config-fb-strict]` Move package from this repo to `fbjs` repo ([#10739](https://github.com/facebook/jest/pull/10739))
+- `[examples]` Update TypeScript example to show use of newer Jest types ([#10399](https://github.com/facebook/jest/pull/10399))
+- `[jest-cli]` chore: standardize files and folder names ([#10698](https://github.com/facebook/jest/pull/10698))
+
+## 26.6.1
+
+### Features
+
+- `[jest-runtime]` Support named exports from CommonJS as named ES Module imports ([#10673](https://github.com/facebook/jest/pull/10673))
+- `[jest-validate]` Add support for `recursiveDenylist` option as an alternative to `recursiveBlacklist` ([#10236](https://github.com/facebook/jest/pull/10236))
+
+### Fixes
+
+- `[expect]` Fix `objectContaining` to work recursively into sub-objects ([#10508](https://github.com/facebook/jest/pull/10508))
+- `[jest-cli, jest-core, jest-config, jest-types]` Fix `--onlyFailures` flag to work in non-watch mode ([#10678](https://github.com/facebook/jest/pull/10678/files))
+- `[jest-config]` Fix for the `jest.config.ts` compiler to not interfere with `tsconfig.json` files ([#10675](https://github.com/facebook/jest/pull/10675))
+- `[jest-message-util]` Update to work properly with Node 15 ([#10660](https://github.com/facebook/jest/pull/10660))
+- `[jest-mock]` Allow to mock methods in getters (TypeScript 3.9 export) ([#10156](https://github.com/facebook/jest/pull/10156))
+
+## 26.6.0
+
+### Features
+
+- `[jest-cli, jest-config]` Add support for the `jest.config.ts` configuration file ([#10564](https://github.com/facebook/jest/pull/10564))
+
+### Fixes
+
+- `[jest-config]` Simplify transform RegExp ([#10207](https://github.com/facebook/jest/pull/10207))
+- `[jest-fake-timers]` Lazily instantiate mock timers ([#10551](https://github.com/facebook/jest/pull/10551))
+- `[jest-runtime]` `require.main` is no longer `undefined` when using `jest.resetModules` ([#10626](https://github.com/facebook/jest/pull/10626))
+- `[@jest/types]` Add missing values for `timers` ([#10632](https://github.com/facebook/jest/pull/10632))
+
+### Chore & Maintenance
+
+- `[docs]` Add step for fetching `backers.json` file in website setup docs ([#10631](https://github.com/facebook/jest/pull/10631))
+- `[docs]` Add page detailing environment variables set by Jest ([#10630](https://github.com/facebook/jest/pull/10630))
+- `[jest-circus]` Refactor `callAsyncCircusFn` parameters ([#10629](https://github.com/facebook/jest/pull/10629))
+
+## 26.5.3
+
+### Features
+
+- `[jest-runtime]` add support for dynamic `import()` from CommonJS ([#10620](https://github.com/facebook/jest/pull/10620))
+
+### Fixes
+
+- `[jest-runner, jest-runtime]` `require.main` should not be `undefined` with `createRequire()` ([#10610](https://github.com/facebook/jest/pull/10610))
+- `[jest-runtime]` add missing `module.path` property ([#10615](https://github.com/facebook/jest/pull/10615))
+- `[jest-runtime]` Add `mainModule` instance variable to runtime ([#10621](https://github.com/facebook/jest/pull/10621))
+- `[jest-runtime]` Evaluate Node core modules on dynamic `import()` ([#10622](https://github.com/facebook/jest/pull/10622))
+- `[jest-validate]` Show suggestion only when unrecognized cli param is longer than 1 character ([#10604](https://github.com/facebook/jest/pull/10604))
+- `[jest-validate]` Validate `testURL` as CLI option ([#10595](https://github.com/facebook/jest/pull/10595))
+
+## 26.5.2
+
+### Fixes
+
+- `[*]` Revert usage of Escalade and rollback Yargs to v15 as it breaks Node 13 ([#10599](https://github.com/facebook/jest/pull/10599))
+- `[jest-circus]` Setup globals before emitting `setup`, and include Jest globals in the `setup` payload ([#10598](https://github.com/facebook/jest/pull/10598))
+- `[jest-mock]` Fix typings for `mockResolvedValue`, `mockResolvedValueOnce`, `mockRejectedValue` and `mockRejectedValueOnce` ([#10600](https://github.com/facebook/jest/pull/10600))
+
+## 26.5.1
+
+### Fixes
+
+- `[jest-circus]` Handle older `jest-runtime` in `jest-circus`
+
+## 26.5.0
+
+### Features
+
 - `[jest-circus, jest-config, jest-runtime]` Add new `injectGlobals` config and CLI option to disable injecting global variables into the runtime ([#10484](https://github.com/facebook/jest/pull/10484))
 - `[jest-each]` Fixes `.each` type to always be callable ([#10447](https://github.com/facebook/jest/pull/10447))
 - `[jest-runner]` Add support for `moduleLoader`s with `default` exports ([#10541](https://github.com/facebook/jest/pull/10541))
+- `[@jest/create-cache-key-function]` Added a new package for creating cache keys ([#10587](https://github.com/facebook/jest/pull/10587))
 
 ### Fixes
 
 - `[jest-circus, jest-jasmine2]` Find correct location for `test.each` tests ([#10413](https://github.com/facebook/jest/pull/10413))
 - `[jest-console]` Add `Console` constructor to `console` object ([#10502](https://github.com/facebook/jest/pull/10502))
 - `[jest-globals]` Fix lifecycle hook function types ([#10480](https://github.com/facebook/jest/pull/10480))
+- `[jest-runtime]` Remove usage of `vm.compileFunction` due to a performance issue ([#10586](https://github.com/facebook/jest/pull/10586))
 
 ### Chore & Maintenance
 
 - `[jest-resolve]` Replace read-pkg-up with escalade package ([10558](https://github.com/facebook/jest/pull/10558))
-- `[jest-config]` [**BREAKING**] Change default file extension order by moving json behind ts and tsx ([10572](https://github.com/facebook/jest/pull/10572))
 
 ### Performance
+- `[jest-environment-jsdom]` Update jsdom to 16.4.0 ([10578](https://github.com/facebook/jest/pull/10578))
 
 ## 26.4.2
 

@@ -10,11 +10,10 @@ jest.mock('graceful-fs', () => ({
   existsSync: jest.fn().mockReturnValue(true),
 }));
 
-import * as path from 'path';
 import assert = require('assert');
-import * as fs from 'graceful-fs';
+import * as path from 'path';
 import chalk = require('chalk');
-
+import * as fs from 'graceful-fs';
 import {
   SNAPSHOT_GUIDE_LINK,
   SNAPSHOT_VERSION,

@@ -28,19 +28,19 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* eslint-disable sort-keys */
+/* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
 import {AssertionError} from 'assert';
 import chalk = require('chalk');
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack, isPromise} from 'jest-util';
+import assertionErrorMessage from '../assertionErrorMessage';
+import isError from '../isError';
 import queueRunner, {
   Options as QueueRunnerOptions,
   QueueableFn,
 } from '../queueRunner';
 import treeProcessor, {TreeNode} from '../treeProcessor';
-import isError from '../isError';
-import assertionErrorMessage from '../assertionErrorMessage';
 import type {
   AssertionErrorWithStack,
   Jasmine,
@@ -52,6 +52,8 @@ import type {default as Spec, SpecResult} from './Spec';
 import type Suite from './Suite';
 
 export default function (j$: Jasmine) {
+  // https://github.com/typescript-eslint/typescript-eslint/pull/2833
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return class Env {
     specFilter: (spec: Spec) => boolean;
     catchExceptions: (value: unknown) => boolean;
@@ -444,6 +446,7 @@ export default function (j$: Jasmine) {
 
         // TODO throw in Jest 25: declarationError = new Error
         if (isPromise(describeReturnValue)) {
+          // eslint-disable-next-line no-console
           console.log(
             formatExecError(
               new Error(
@@ -457,6 +460,7 @@ export default function (j$: Jasmine) {
             ),
           );
         } else if (describeReturnValue !== undefined) {
+          // eslint-disable-next-line no-console
           console.log(
             formatExecError(
               new Error(
@@ -611,7 +615,11 @@ export default function (j$: Jasmine) {
           () => {},
           currentDeclarationSuite,
         );
-        spec.todo();
+        if (currentDeclarationSuite.markedPending) {
+          spec.pend();
+        } else {
+          spec.todo();
+        }
         currentDeclarationSuite.addChild(spec);
         return spec;
       };
@@ -624,7 +632,11 @@ export default function (j$: Jasmine) {
           timeout,
         );
         currentDeclarationSuite.addChild(spec);
-        focusedRunnables.push(spec.id);
+        if (currentDeclarationSuite.markedPending) {
+          spec.pend();
+        } else {
+          focusedRunnables.push(spec.id);
+        }
         unfocusAncestor();
         return spec;
       };

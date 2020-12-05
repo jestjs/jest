@@ -29,7 +29,7 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
 
-/* eslint-disable local/ban-types-eventually */
+/* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
 export default class SpyStrategy {
   identity: () => string;

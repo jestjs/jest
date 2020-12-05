@@ -47,6 +47,8 @@ export default class SoundPlayerConsumer {
 
 Calling `jest.mock('./sound-player')` returns a useful "automatic mock" you can use to spy on calls to the class constructor and all of its methods. It replaces the ES6 class with a mock constructor, and replaces all of its methods with [mock functions](MockFunctions.md) that always return `undefined`. Method calls are saved in `theAutomaticMock.mock.instances[index].methodName.mock.calls`.
 
+Please note that if you use arrow functions in your classes, they will _not_ be part of the mock. The reason for that is that arrow functions are not present on the object's prototype, they are merely properties holding a reference to a function.
+
 If you don't need to replace the implementation of the class, this is the easiest option to set up. For example:
 
 ```javascript
@@ -144,7 +146,18 @@ jest.mock('./sound-player', () => {
 });
 ```
 
-A limitation with the factory parameter is that, since calls to `jest.mock()` are hoisted to the top of the file, it's not possible to first define a variable and then use it in the factory. An exception is made for variables that start with the word 'mock'. It's up to you to guarantee that they will be initialized on time!
+A limitation with the factory parameter is that, since calls to `jest.mock()` are hoisted to the top of the file, it's not possible to first define a variable and then use it in the factory. An exception is made for variables that start with the word 'mock'. It's up to you to guarantee that they will be initialized on time! For example, the following will throw an out-of-scope error due to the use of 'fake' instead of 'mock' in the variable declaration:
+
+```javascript
+// Note: this will fail
+import SoundPlayer from './sound-player';
+const fakePlaySoundFile = jest.fn();
+jest.mock('./sound-player', () => {
+  return jest.fn().mockImplementation(() => {
+    return {playSoundFile: fakePlaySoundFile};
+  });
+});
+```
 
 ### Replacing the mock using [`mockImplementation()`](MockFunctionAPI.md#mockfnmockimplementationfn) or [`mockImplementationOnce()`](MockFunctionAPI.md#mockfnmockimplementationoncefn)
 
@@ -154,6 +167,8 @@ Calls to jest.mock are hoisted to the top of the code. You can specify a mock la
 
 ```javascript
 import SoundPlayer from './sound-player';
+import SoundPlayerConsumer from './sound-player-consumer';
+
 jest.mock('./sound-player');
 
 describe('When SoundPlayer throws an error', () => {
@@ -176,7 +191,7 @@ describe('When SoundPlayer throws an error', () => {
 
 ## In depth: Understanding mock constructor functions
 
-Building your constructor function mock using `jest.fn().mockImplementation()` makes mocks appear more complicated than they really are. This section shows how you can create your own simple mocks to illustrate how mocking works.
+Building your constructor function mock using `jest.fn().mockImplementation()` makes mocks appear more complicated than they really are. This section shows how you can create your own mocks to illustrate how mocking works.
 
 ### Manual mock that is another ES6 class
 
@@ -185,7 +200,7 @@ If you define an ES6 class using the same filename as the mocked class in the `_
 For the contrived example, the mock might look like this:
 
 ```javascript
-// __mocks/sound-player.js
+// __mocks__/sound-player.js
 export default class SoundPlayer {
   constructor() {
     console.log('Mock SoundPlayer: constructor was called');
@@ -197,7 +212,7 @@ export default class SoundPlayer {
 }
 ```
 
-### Simple mock using module factory parameter
+### Mock using module factory parameter
 
 The module factory function passed to `jest.mock(path, moduleFactory)` can be a HOF that returns a function\*. This will allow calling `new` on the mock. Again, this allows you to inject different behavior for testing, but does not provide a way to spy on calls.
 
@@ -215,7 +230,7 @@ jest.mock('./sound-player', () => {
 
 **_Note: Arrow functions won't work_**
 
-Note that the mock can't be an arrow function because calling `new` on an arrow function is not allowed in Javascript. So this won't work:
+Note that the mock can't be an arrow function because calling `new` on an arrow function is not allowed in JavaScript. So this won't work:
 
 ```javascript
 jest.mock('./sound-player', () => {
@@ -247,6 +262,22 @@ jest.mock('./sound-player', () => {
 ```
 
 This will let us inspect usage of our mocked class, using `SoundPlayer.mock.calls`: `expect(SoundPlayer).toHaveBeenCalled();` or near-equivalent: `expect(SoundPlayer.mock.calls.length).toEqual(1);`
+
+### Mocking non-default class exports
+
+If the class is **not** the default export from the module then you need to return an object with the key that is the same as the class export name.
+
+```javascript
+import {SoundPlayer} from './sound-player';
+jest.mock('./sound-player', () => {
+  // Works and lets you check for constructor calls:
+  return {
+    SoundPlayer: jest.fn().mockImplementation(() => {
+      return {playSoundFile: () => {}};
+    }),
+  };
+});
+```
 
 ### Spying on methods of our class
 
@@ -298,8 +329,8 @@ Here's a complete test file which uses the module factory parameter to `jest.moc
 
 ```javascript
 // sound-player-consumer.test.js
-import SoundPlayerConsumer from './sound-player-consumer';
 import SoundPlayer from './sound-player';
+import SoundPlayerConsumer from './sound-player-consumer';
 
 const mockPlaySoundFile = jest.fn();
 jest.mock('./sound-player', () => {

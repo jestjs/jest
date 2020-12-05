@@ -7,7 +7,7 @@
 
 module.exports = {
   canInstrument: true,
-  process(src, filename, config, options) {
+  process(src, filename, options) {
     src = `${src};\nglobal.__PREPROCESSED__ = true;`;
 
     if (options.instrument) {

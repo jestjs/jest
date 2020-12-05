@@ -127,7 +127,7 @@ Runs tests related to the current changes and the changes made in the last commi
 
 ### `--changedSince`
 
-Runs tests related to the changes since the provided branch. If the current branch has diverged from the given branch, then only changes made locally will be tested. Behaves similarly to `--onlyChanged`.
+Runs tests related to the changes since the provided branch or commit hash. If the current branch has diverged from the given branch, then only changes made locally will be tested. Behaves similarly to `--onlyChanged`.
 
 ### `--ci`
 
@@ -251,6 +251,10 @@ Run tests with specified reporters. [Reporter options](configuration#reporters-a
 
 `jest --reporters="default" --reporters="jest-junit"`
 
+### `--roots`
+
+A list of paths to directories that Jest should use to search for files in.
+
 ### `--runInBand`
 
 Alias: `-i`. Run all tests serially in the current process, rather than creating a worker pool of child processes that run tests. This can be useful for debugging.
@@ -340,4 +344,4 @@ Use `--watchAll=false` to explicitly disable the watch mode. Note that in most C
 
 ### `--watchman`
 
-Whether to use watchman for file crawling. Defaults to true. Disable using `--no-watchman`.
+Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling. Defaults to `true`. Disable using `--no-watchman`.

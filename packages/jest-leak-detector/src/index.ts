@@ -7,11 +7,11 @@
 
 /* eslint-disable local/ban-types-eventually */
 
+import {promisify} from 'util';
 import {setFlagsFromString} from 'v8';
 import {runInNewContext} from 'vm';
-import {promisify} from 'util';
-import prettyFormat = require('pretty-format');
 import {isPrimitive} from 'jest-get-type';
+import prettyFormat from 'pretty-format';
 
 const tick = promisify(setImmediate);
 

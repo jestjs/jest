@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type BabelTraverse from '@babel/traverse';
-import type {Circus, Config, Global} from '@jest/types';
+import throat from 'throat';
 import type {JestEnvironment} from '@jest/environment';
 import {
   AssertionResult,
@@ -14,7 +13,9 @@ import {
   TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
+import type {Circus, Config, Global} from '@jest/types';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
+import {bind} from 'jest-each';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
 import type {TestFileEvent} from 'jest-runner';
 import {
@@ -23,41 +24,42 @@ import {
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
-import {bind} from 'jest-each';
-import throat from 'throat';
+import globals from '..';
+import run from '../run';
 import {
   ROOT_DESCRIBE_BLOCK_NAME,
   addEventHandler,
   dispatch,
   getState as getRunnerState,
 } from '../state';
-import {getTestID} from '../utils';
-import run from '../run';
 import testCaseReportHandler from '../testCaseReportHandler';
-import globals from '..';
+import {getTestID} from '../utils';
+import createExpect, {Expect} from './jestExpect';
 
 type Process = NodeJS.Process;
+
+interface JestGlobals extends Global.TestFrameworkGlobals {
+  expect: Expect;
+}
 
 export const initialize = async ({
   config,
   environment,
-  getPrettier,
-  getBabelTraverse,
   globalConfig,
   localRequire,
   parentProcess,
-  testPath,
   sendMessageToJest,
+  setGlobalsForRuntime,
+  testPath,
 }: {
   config: Config.ProjectConfig;
   environment: JestEnvironment;
-  getPrettier: () => null | any;
-  getBabelTraverse: () => typeof BabelTraverse;
   globalConfig: Config.GlobalConfig;
   localRequire: <T = unknown>(path: Config.Path) => T;
   testPath: Config.Path;
   parentProcess: Process;
   sendMessageToJest?: TestFileEvent;
+  setGlobalsForRuntime?: (globals: JestGlobals) => void;
 }): Promise<{
   globals: Global.TestFrameworkGlobals;
   snapshotState: SnapshotStateType;
@@ -81,7 +83,7 @@ export const initialize = async ({
   globalsObject.test.concurrent = (test => {
     const concurrent = (
       testName: string,
-      testFn: () => Promise<unknown>,
+      testFn: Global.ConcurrentTestFn,
       timeout?: number,
     ) => {
       // For concurrent tests we first run the function that returns promise, and then register a
@@ -96,7 +98,7 @@ export const initialize = async ({
 
     const only = (
       testName: string,
-      testFn: () => Promise<unknown>,
+      testFn: Global.ConcurrentTestFn,
       timeout?: number,
     ) => {
       const promise = mutex(() => testFn());
@@ -120,9 +122,22 @@ export const initialize = async ({
     addEventHandler(environment.handleTestEvent.bind(environment));
   }
 
+  const runtimeGlobals: JestGlobals = {
+    ...globalsObject,
+    expect: createExpect(globalConfig),
+  };
+  // TODO: `jest-circus` might be newer than `jest-runtime` - remove `?.` for Jest 27
+  setGlobalsForRuntime?.(runtimeGlobals);
+
+  // TODO: `jest-circus` might be newer than `jest-config` - remove `??` for Jest 27
+  if (config.injectGlobals ?? true) {
+    Object.assign(environment.global, runtimeGlobals);
+  }
+
   await dispatch({
     name: 'setup',
     parentProcess,
+    runtimeGlobals,
     testNamePattern: globalConfig.testNamePattern,
   });
 
@@ -142,8 +157,7 @@ export const initialize = async ({
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
-    getBabelTraverse,
-    getPrettier,
+    prettierPath: config.prettierPath,
     updateSnapshot,
   });
   // @ts-expect-error: snapshotState is a jest extension of `expect`

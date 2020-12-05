@@ -7,9 +7,8 @@
 
 /* eslint-disable local/ban-types-eventually */
 
-import type {Config, NewPlugin, Printer, Refs} from '../types';
-
 import {printListItems, printObjectProperties} from '../collections';
+import type {Config, NewPlugin, Printer, Refs} from '../types';
 
 const SPACE = ' ';
 

@@ -126,7 +126,7 @@ Runs tests related to the current changes and the changes made in the last commi
 
 ### `--changedSince`
 
-Runs tests related to the changes since the provided branch. If the current branch has diverged from the given branch, then only changes made locally will be tested. Behaves similarly to `--onlyChanged`.
+Runs tests related to the changes since the provided branch or commit hash. If the current branch has diverged from the given branch, then only changes made locally will be tested. Behaves similarly to `--onlyChanged`.
 
 ### `--ci`
 
@@ -208,7 +208,7 @@ test('some test', () => {
 });
 ```
 
-_Note: This option is only supported using `jest-circus`._
+_Note: This option is only supported using the default `jest-circus`. test runner_
 
 ### `--json`
 
@@ -265,6 +265,10 @@ Run tests from one or more projects, found in the specified paths; also takes pa
 Run tests with specified reporters. [Reporter options](configuration#reporters-arraymodulename--modulename-options) are not available via CLI. Example with multiple reporters:
 
 `jest --reporters="default" --reporters="jest-junit"`
+
+### `--roots`
+
+A list of paths to directories that Jest should use to search for files in.
 
 ### `--runInBand`
 
@@ -359,4 +363,4 @@ Use `--watchAll=false` to explicitly disable the watch mode. Note that in most C
 
 ### `--watchman`
 
-Whether to use watchman for file crawling. Defaults to true. Disable using `--no-watchman`.
+Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling. Defaults to `true`. Disable using `--no-watchman`.

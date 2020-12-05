@@ -9,7 +9,6 @@
 
 const fs = require('fs');
 const path = require('path');
-
 const chalk = require('chalk');
 const execa = require('execa');
 const rimraf = require('rimraf');

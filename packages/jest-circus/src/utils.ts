@@ -6,19 +6,30 @@
  */
 
 import * as path from 'path';
-import type {Circus} from '@jest/types';
-import {convertDescriptorToString, formatTime} from 'jest-util';
-import isGeneratorFn from 'is-generator-fn';
 import co from 'co';
 import dedent = require('dedent');
+import isGeneratorFn from 'is-generator-fn';
+import slash = require('slash');
 import StackUtils = require('stack-utils');
-import prettyFormat = require('pretty-format');
 import type {AssertionResult, Status} from '@jest/test-result';
+import type {Circus, Global} from '@jest/types';
+import {ErrorWithStack, convertDescriptorToString, formatTime} from 'jest-util';
+import prettyFormat from 'pretty-format';
 import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
-const jestEachBuildDir = path.dirname(require.resolve('jest-each'));
+const jestEachBuildDir = slash(path.dirname(require.resolve('jest-each')));
+
+function takesDoneCallback(fn: Circus.AsyncFn): fn is Global.DoneTakingTestFn {
+  return fn.length > 0;
+}
+
+function isGeneratorFunction(
+  fn: Global.PromiseReturningTestFn | Global.GeneratorReturningTestFn,
+): fn is Global.GeneratorReturningTestFn {
+  return isGeneratorFn(fn);
+}
 
 export const makeDescribe = (
   name: Circus.BlockName,
@@ -43,7 +54,7 @@ export const makeDescribe = (
 };
 
 export const makeTest = (
-  fn: Circus.TestFn | undefined,
+  fn: Circus.TestFn,
   mode: Circus.TestMode,
   name: Circus.TestName,
   parent: Circus.DescribeBlock,
@@ -159,27 +170,28 @@ function checkIsError(error: unknown): error is Error {
 }
 
 export const callAsyncCircusFn = (
-  fn: Circus.AsyncFn,
+  testOrHook: Circus.TestEntry | Circus.Hook,
   testContext: Circus.TestContext | undefined,
-  asyncError: Circus.Exception,
-  {isHook, timeout}: {isHook?: boolean | null; timeout: number},
+  {isHook, timeout}: {isHook: boolean; timeout: number},
 ): Promise<unknown> => {
   let timeoutID: NodeJS.Timeout;
   let completed = false;
 
+  const {fn, asyncError} = testOrHook;
+
   return new Promise((resolve, reject) => {
     timeoutID = setTimeout(
-      () => reject(_makeTimeoutMessage(timeout, !!isHook)),
+      () => reject(_makeTimeoutMessage(timeout, isHook)),
       timeout,
     );
 
     // If this fn accepts `done` callback we return a promise that fulfills as
     // soon as `done` called.
-    if (fn.length) {
+    if (takesDoneCallback(fn)) {
       let returnedValue: unknown = undefined;
       const done = (reason?: Error | string): void => {
         // We need to keep a stack here before the promise tick
-        const errorAtDone = new Error();
+        const errorAtDone = new ErrorWithStack(undefined, done);
         // Use `Promise.resolve` to allow the event loop to go a single tick in case `done` is called synchronously
         Promise.resolve().then(() => {
           if (returnedValue !== undefined) {
@@ -219,8 +231,8 @@ export const callAsyncCircusFn = (
       return;
     }
 
-    let returnedValue;
-    if (isGeneratorFn(fn)) {
+    let returnedValue: Global.TestReturnValue;
+    if (isGeneratorFunction(fn)) {
       returnedValue = co.wrap(fn).call({});
     } else {
       try {
@@ -382,7 +394,7 @@ const _getError = (
     asyncError = new Error();
   }
 
-  if (error && (error.stack || error.message)) {
+  if (error && (typeof error.stack === 'string' || error.message)) {
     return error;
   }
 
@@ -391,7 +403,8 @@ const _getError = (
   return asyncError;
 };
 
-const getErrorStack = (error: Error): string => error.stack || error.message;
+const getErrorStack = (error: Error): string =>
+  typeof error.stack === 'string' ? error.stack : error.message;
 
 export const addErrorToEachTestUnderDescribe = (
   describeBlock: Circus.DescribeBlock,

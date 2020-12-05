@@ -7,6 +7,7 @@
 
 /* eslint-disable local/ban-types-eventually */
 
+import type {Reporter, ReporterOnStartOptions} from '@jest/reporters';
 import type {
   AggregatedResult,
   TestCaseResult,
@@ -14,7 +15,6 @@ import type {
 } from '@jest/test-result';
 import type {Test} from 'jest-runner';
 import type {Context} from 'jest-runtime';
-import type {Reporter, ReporterOnStartOptions} from '@jest/reporters';
 
 export default class ReporterDispatcher {
   private _reporters: Array<Reporter>;

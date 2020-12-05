@@ -6,16 +6,16 @@
  */
 
 import type {EventEmitter} from 'events';
-import type {Config} from '@jest/types';
+import type {JestEnvironment} from '@jest/environment';
 import type {
   AssertionResult,
   SerializableError,
   TestResult,
 } from '@jest/test-result';
-import type {JestEnvironment} from '@jest/environment';
+import type {Config} from '@jest/types';
 import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
-import type {ResolverType} from 'jest-resolve';
-import type {RuntimeType} from 'jest-runtime';
+import type Resolver from 'jest-resolve';
+import type RuntimeType from 'jest-runtime';
 
 export type ErrorWithCode = Error & {code?: string};
 export type Test = {
@@ -28,7 +28,7 @@ export type Context = {
   config: Config.ProjectConfig;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
-  resolver: ResolverType;
+  resolver: Resolver;
 };
 
 export type OnTestStart = (test: Test) => Promise<void>;

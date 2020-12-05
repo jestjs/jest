@@ -35,6 +35,7 @@ export type ValidationOptions = {
   exampleConfig: Record<string, unknown>;
   recursive?: boolean;
   recursiveBlacklist?: Array<string>;
+  recursiveDenylist?: Array<string>;
   title?: Title;
   unknown?: (
     config: Record<string, unknown>,

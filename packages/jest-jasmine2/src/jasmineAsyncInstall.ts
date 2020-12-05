@@ -10,14 +10,14 @@
  * returning a promise from `it/test` and `before/afterEach/All` blocks.
  */
 
-import type {Config, Global} from '@jest/types';
 import co from 'co';
 import isGeneratorFn from 'is-generator-fn';
 import throat from 'throat';
+import type {Config, Global} from '@jest/types';
 import isError from './isError';
-import type {Jasmine} from './types';
 import type Spec from './jasmine/Spec';
 import type {DoneFn, QueueableFn} from './queueRunner';
+import type {Jasmine} from './types';
 
 function isPromise(obj: any): obj is PromiseLike<unknown> {
   return obj && typeof obj.then === 'function';
@@ -165,7 +165,7 @@ function makeConcurrent(
 ): Global.ItConcurrentBase {
   const concurrentFn = function (
     specName: string,
-    fn: Global.TestFn,
+    fn: Global.ConcurrentTestFn,
     timeout?: number,
   ) {
     let promise: Promise<unknown> = Promise.resolve();

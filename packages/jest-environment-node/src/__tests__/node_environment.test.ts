@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {makeProjectConfig} from '@jest/test-utils';
 import NodeEnvironment = require('../');
-import {makeProjectConfig} from '../../../../TestUtils';
 
 const isTextEncoderDefined = typeof TextEncoder === 'function';
 

@@ -3,7 +3,7 @@
 
 __metadata:
   version: 4
-  cacheKey: 6
+  cacheKey: 7
 
 "@dabh/diagnostics@npm:^2.0.2":
   version: 2.0.2
@@ -47,12 +47,12 @@ __metadata:
   linkType: hard
 
 "color-string@npm:^1.5.2":
-  version: 1.5.3
-  resolution: "color-string@npm:1.5.3"
+  version: 1.5.4
+  resolution: "color-string@npm:1.5.4"
   dependencies:
     color-name: ^1.0.0
     simple-swizzle: ^0.2.2
-  checksum: b860fba4277839e14e684a384c0e7c3d4eb7554486e586e1604d5f1f56cbf10389f8912fdf4637547857dc8fbc7cea0f50b4aad6f3f979fc537dc8eb1c9200b7
+  checksum: 181ab2a0a13dc87b13db1bceab8585c159f1cbf169c4210df61d24349f90e5f6087a18c8c12842dbdd5d4cff9a1008ef86c153201429bc456fb7bf9c9495d366
   languageName: node
   linkType: hard
 

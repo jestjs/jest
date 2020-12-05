@@ -12,8 +12,8 @@ Circus is a flux-based test runner for Jest that is fast, maintainable, and simp
 Circus allows you to bind to events via an optional event handler on any [custom environment](https://jestjs.io/docs/en/configuration#testenvironment-string). See the [type definitions](https://github.com/facebook/jest/blob/master/packages/jest-circus/src/types.ts) for more information on the events and state data currently available.
 
 ```js
-import NodeEnvironment from 'jest-environment-node';
 import {Event, State} from 'jest-circus';
+import NodeEnvironment from 'jest-environment-node';
 
 class MyCustomEnvironment extends NodeEnvironment {
   //...
@@ -31,6 +31,8 @@ Mutating event or state data is currently unsupported and may cause unexpected b
 Note, that `jest-circus` test runner would pause until a promise returned from `handleTestEvent` gets fulfilled. **However, there are a few events that do not conform to this rule, namely**: `start_describe_definition`, `finish_describe_definition`, `add_hook`, `add_test` or `error` (for the up-to-date list you can look at [SyncEvent type in the types definitions](https://github.com/facebook/jest/tree/master/packages/jest-types/src/Circus.ts)). That is caused by backward compatibility reasons and `process.on('unhandledRejection', callback)` signature, but that usually should not be a problem for most of the use cases.
 
 ## Installation
+
+> Note: As of Jest 27, `jest-circus` is the default test runner, so you do not have to install it to use it.
 
 Install `jest-circus` using yarn:
 

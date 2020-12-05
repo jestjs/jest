@@ -42,8 +42,10 @@ describe('Runtime requireModule', () => {
         'filename',
         'id',
         'loaded',
+        'path',
         'parent',
         'paths',
+        'main',
       ]);
     }));
 
@@ -59,8 +61,10 @@ describe('Runtime requireModule', () => {
         'filename',
         'id',
         'loaded',
+        'path',
         'parent',
         'paths',
+        'main',
       ]);
     }));
 
@@ -135,7 +139,7 @@ describe('Runtime requireModule', () => {
   });
   it('provides `require.main` to modules', () =>
     createRuntime(__filename).then(runtime => {
-      runtime._moduleRegistry.set(__filename, module);
+      runtime._mainModule = module;
       [
         './test_root/modules_with_main/export_main.js',
         './test_root/modules_with_main/re_export_main.js',
@@ -233,7 +237,7 @@ describe('Runtime requireModule', () => {
       automock: true,
     }).then(runtime => {
       const root = runtime.requireModule(runtime.__mockRootPath, './root.js');
-      root.jest.resetModuleRegistry();
+      root.jest.resetModules();
       root.jest.unmock('ManuallyMocked');
       const exports = runtime.requireModule(
         runtime.__mockRootPath,

@@ -35,9 +35,11 @@ Scoped modules can be mocked by creating a file in a directory structure that ma
 └── views
 ```
 
-When a manual mock exists for a given module, Jest's module system will use that module when explicitly calling `jest.mock('moduleName')`. However, manual mocks will take precedence over node modules even if `jest.mock('moduleName')` is not called. To opt out of this behavior you will need to explicitly call `jest.unmock('moduleName')` in tests that should use the actual module implementation.
+When a manual mock exists for a given module, Jest's module system will use that module when explicitly calling `jest.mock('moduleName')`. However, when `automock` is set to `true`, the manual mock implementation will be used instead of the automatically created mock, even if `jest.mock('moduleName')` is not called. To opt out of this behavior you will need to explicitly call `jest.unmock('moduleName')` in tests that should use the actual module implementation.
 
-Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case we use the core (built in) `fs` module.
+> Note: In order to mock properly, Jest needs `jest.mock('moduleName')` to be in the same scope as the `require/import` statement.
+
+Here's a contrived example where we have a module that provides a summary of all the files in a given directory. In this case, we use the core (built in) `fs` module.
 
 ```javascript
 // FileSummarizer.js
@@ -132,3 +134,36 @@ The code for this example is available at [examples/manual-mocks](https://github
 ## Using with ES module imports
 
 If you're using [ES module imports](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import) then you'll normally be inclined to put your `import` statements at the top of the test file. But often you need to instruct Jest to use a mock before modules use it. For this reason, Jest will automatically hoist `jest.mock` calls to the top of the module (before any imports). To learn more about this and see it in action, see [this repo](https://github.com/kentcdodds/how-jest-mocking-works).
+
+## Mocking methods which are not implemented in JSDOM
+
+If some code uses a method which JSDOM (the DOM implementation used by Jest) hasn't implemented yet, testing it is not easily possible. This is e.g. the case with `window.matchMedia()`. Jest returns `TypeError: window.matchMedia is not a function` and doesn't properly execute the test.
+
+In this case, mocking `matchMedia` in the test file should solve the issue:
+
+```js
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(), // deprecated
+    removeListener: jest.fn(), // deprecated
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
+```
+
+This works if `window.matchMedia()` is used in a function (or method) which is invoked in the test. If `window.matchMedia()` is executed directly in the tested file, Jest reports the same error. In this case, the solution is to move the manual mock into a separate file and include this one in the test **before** the tested file:
+
+```js
+import './matchMedia.mock'; // Must be imported before the tested file
+import {myMethod} from './file-to-test';
+
+describe('myMethod()', () => {
+  // Test the method here...
+});
+```

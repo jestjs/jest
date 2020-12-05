@@ -3,7 +3,7 @@
 
 __metadata:
   version: 4
-  cacheKey: 6
+  cacheKey: 7
 
 "handlebars@npm:^4.7.3":
   version: 4.7.6
@@ -54,11 +54,11 @@ __metadata:
   linkType: hard
 
 "uglify-js@npm:^3.1.4":
-  version: 3.10.1
-  resolution: "uglify-js@npm:3.10.1"
+  version: 3.12.1
+  resolution: "uglify-js@npm:3.12.1"
   bin:
     uglifyjs: bin/uglifyjs
-  checksum: 35a8096aebc49c0f7740999e9952e16f9b5dcadde36e7449082ae4e12926aeb05df55e860d9d756a8d9a35fdcbf57d113c3056927aecdce80511bd7988e30388
+  checksum: 1d71fbf9eff8e8bf51ada68936b471cdec830a7e8c881d4deaad02882d01cd42f55193f5b164302a393b2e7d82004ef68f008c2bd77dc9a0ac246e90b982b2e3
   languageName: node
   linkType: hard
 

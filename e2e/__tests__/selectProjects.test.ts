@@ -6,7 +6,6 @@
  */
 
 import {resolve} from 'path';
-
 import run, {
   RunJestJsonResult,
   RunJestResult,

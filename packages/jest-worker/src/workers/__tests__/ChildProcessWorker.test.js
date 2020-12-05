@@ -7,9 +7,8 @@
 
 import EventEmitter from 'events';
 import {PassThrough} from 'stream';
-import supportsColor from 'supports-color';
 import getStream from 'get-stream';
-
+import supportsColor from 'supports-color';
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
@@ -141,11 +140,11 @@ it('provides stdout and stderr from the child processes', async () => {
   const stdout = worker.getStdout();
   const stderr = worker.getStderr();
 
-  forkInterface.stdout.end('Hello ', {encoding: 'utf8'});
-  forkInterface.stderr.end('Jest ', {encoding: 'utf8'});
+  forkInterface.stdout.end('Hello ', 'utf8');
+  forkInterface.stderr.end('Jest ', 'utf8');
   forkInterface.emit('exit', 1);
-  forkInterface.stdout.end('World!', {encoding: 'utf8'});
-  forkInterface.stderr.end('Workers!', {encoding: 'utf8'});
+  forkInterface.stdout.end('World!', 'utf8');
+  forkInterface.stderr.end('Workers!', 'utf8');
   forkInterface.emit('exit', 0);
 
   await expect(getStream(stdout)).resolves.toEqual('Hello World!');

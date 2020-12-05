@@ -6,7 +6,7 @@
  */
 
 import * as path from 'path';
-import {extractSummary, runYarn} from '../Utils';
+import {extractSummary, runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '..', 'native-async-mock');
@@ -16,7 +16,7 @@ test('mocks async functions', () => {
     return;
   }
 
-  runYarn(dir);
+  runYarnInstall(dir);
 
   // --no-cache because babel can cache stuff and result in false green
   const {stderr} = runJest(dir, ['--no-cache']);

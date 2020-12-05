@@ -6,8 +6,8 @@
  */
 
 import chalk = require('chalk');
-import prettyFormat = require('pretty-format');
 import type {DeprecatedOptions} from 'jest-validate';
+import prettyFormat from 'pretty-format';
 
 const format = (value: unknown) => prettyFormat(value, {min: true});
 

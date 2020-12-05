@@ -6,8 +6,11 @@
  */
 
 import type {Circus} from '@jest/types';
+import {
+  injectGlobalErrorHandlers,
+  restoreGlobalErrorHandlers,
+} from './globalErrorHandlers';
 import {TEST_TIMEOUT_SYMBOL} from './types';
-
 import {
   addErrorToEachTestUnderDescribe,
   describeBlockHasTests,
@@ -16,10 +19,6 @@ import {
   makeDescribe,
   makeTest,
 } from './utils';
-import {
-  injectGlobalErrorHandlers,
-  restoreGlobalErrorHandlers,
-} from './globalErrorHandlers';
 
 // TODO: investigate why a shorter (event, state) signature results into TS7006 compiler error
 const eventHandler: Circus.EventHandler = (
@@ -80,6 +79,7 @@ const eventHandler: Circus.EventHandler = (
       }
       if (
         !state.hasFocusedTests &&
+        currentDescribeBlock.mode !== 'skip' &&
         currentDescribeBlock.children.some(
           child => child.type === 'test' && child.mode === 'only',
         )
@@ -144,7 +144,7 @@ const eventHandler: Circus.EventHandler = (
         timeout,
         asyncError,
       );
-      if (test.mode === 'only') {
+      if (currentDescribeBlock.mode !== 'skip' && test.mode === 'only') {
         state.hasFocusedTests = true;
       }
       currentDescribeBlock.children.push(test);

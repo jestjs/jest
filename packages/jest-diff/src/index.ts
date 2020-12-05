@@ -5,14 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import prettyFormat = require('pretty-format');
 import chalk = require('chalk');
 import getType = require('jest-get-type');
+import prettyFormat, {plugins as prettyFormatPlugins} from 'pretty-format';
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
-import {normalizeDiffOptions} from './normalizeDiffOptions';
-import {diffLinesRaw, diffLinesUnified, diffLinesUnified2} from './diffLines';
-import {diffStringsRaw, diffStringsUnified} from './printDiffs';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
+import {diffLinesRaw, diffLinesUnified, diffLinesUnified2} from './diffLines';
+import {normalizeDiffOptions} from './normalizeDiffOptions';
+import {diffStringsRaw, diffStringsUnified} from './printDiffs';
 import type {DiffOptions} from './types';
 
 export type {DiffOptions, DiffOptionsColor} from './types';
@@ -33,7 +33,7 @@ const {
   Immutable,
   ReactElement,
   ReactTestComponent,
-} = prettyFormat.plugins;
+} = prettyFormatPlugins;
 
 const PLUGINS = [
   ReactTestComponent,

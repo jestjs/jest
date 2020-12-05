@@ -8,12 +8,12 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {ModuleMap} from 'jest-haste-map';
 import {sync as resolveSync} from 'resolve';
-import Resolver = require('../');
+import {ModuleMap} from 'jest-haste-map';
+import Resolver from '../';
 import userResolver from '../__mocks__/userResolver';
-import nodeModulesPaths from '../nodeModulesPaths';
 import defaultResolver from '../defaultResolver';
+import nodeModulesPaths from '../nodeModulesPaths';
 import type {ResolverConfig} from '../types';
 
 jest.mock('../__mocks__/userResolver');
@@ -286,7 +286,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   it('can resolve node modules relative to absolute paths in "moduleDirectories" on Windows platforms', () => {
     jest.doMock('path', () => _path.win32);
     const path = require('path');
-    const Resolver = require('../');
+    const Resolver = require('../').default;
 
     const cwd = 'D:\\temp\\project';
     const src = 'C:\\path\\to\\node_modules';
@@ -306,7 +306,7 @@ describe('Resolver.getModulePaths() -> nodeModulesPaths()', () => {
   it('can resolve node modules relative to absolute paths in "moduleDirectories" on Posix platforms', () => {
     jest.doMock('path', () => _path.posix);
     const path = require('path');
-    const Resolver = require('../');
+    const Resolver = require('../').default;
 
     const cwd = '/temp/project';
     const src = '/path/to/node_modules';

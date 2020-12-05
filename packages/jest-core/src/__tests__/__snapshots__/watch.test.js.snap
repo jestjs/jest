@@ -51,13 +51,13 @@ Watch Usage
 `;
 
 exports[`Watch mode flows makes watch plugin initialization errors look nice 1`] = `
-[Error: Failed to initialize watch plugin "packages/jest-core/src/__tests__/__fixtures__/watch_plugin_throws":
+[Error: Failed to initialize watch plugin "packages/jest-core/src/__tests__/__fixtures__/watchPluginThrows":
 
   ● Test suite failed to run
 
     initialization error
 
-      at Object.<anonymous> (__fixtures__/watch_plugin_throws.js:8:7)
+      at Object.<anonymous> (__fixtures__/watchPluginThrows.js:8:7)
 ]
 `;
 

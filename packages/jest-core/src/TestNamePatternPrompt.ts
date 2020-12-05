@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {TestResult} from '@jest/test-result';
 import {
   PatternPrompt,
   Prompt,
@@ -12,7 +13,6 @@ import {
   printPatternCaret,
   printRestoredPatternCaret,
 } from 'jest-watcher';
-import type {TestResult} from '@jest/test-result';
 
 // TODO: Make underscored props `private`
 export default class TestNamePatternPrompt extends PatternPrompt {

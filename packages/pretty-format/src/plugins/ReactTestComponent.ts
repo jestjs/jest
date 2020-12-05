@@ -6,6 +6,12 @@
  */
 
 import type {Config, NewPlugin, Printer, Refs} from '../types';
+import {
+  printChildren,
+  printElement,
+  printElementAsLeaf,
+  printProps,
+} from './lib/markup';
 
 export type ReactTestObject = {
   $$typeof: symbol;
@@ -16,13 +22,6 @@ export type ReactTestObject = {
 
 // Child can be `number` in Stack renderer but not in Fiber renderer.
 type ReactTestChild = ReactTestObject | string | number;
-
-import {
-  printChildren,
-  printElement,
-  printElementAsLeaf,
-  printProps,
-} from './lib/markup';
 
 const testSymbol =
   typeof Symbol === 'function' && Symbol.for

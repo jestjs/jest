@@ -5,26 +5,26 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
-import type {SerializableError, TestResult} from '@jest/test-result';
-import exit = require('exit');
 import chalk = require('chalk');
 import Emittery = require('emittery');
+import exit = require('exit');
 import throat from 'throat';
-import Worker, {PromiseWithCustomMessage} from 'jest-worker';
+import type {SerializableError, TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import {deepCyclicCopy} from 'jest-util';
+import Worker, {PromiseWithCustomMessage} from 'jest-worker';
 import runTest from './runTest';
 import type {SerializableResolver, worker} from './testWorker';
 import type {
-  OnTestFailure as JestOnTestFailure,
-  OnTestStart as JestOnTestStart,
-  OnTestSuccess as JestOnTestSuccess,
-  Test as JestTest,
-  TestEvents as JestTestEvents,
-  TestFileEvent as JestTestFileEvent,
-  TestRunnerContext as JestTestRunnerContext,
-  TestRunnerOptions as JestTestRunnerOptions,
-  TestWatcher as JestTestWatcher,
+  OnTestFailure,
+  OnTestStart,
+  OnTestSuccess,
+  Test,
+  TestEvents,
+  TestFileEvent,
+  TestRunnerContext,
+  TestRunnerOptions,
+  TestWatcher,
   WatcherState,
 } from './types';
 
@@ -34,40 +34,37 @@ interface WorkerInterface extends Worker {
   worker: typeof worker;
 }
 
-namespace TestRunner {
-  export type Test = JestTest;
-  export type OnTestFailure = JestOnTestFailure;
-  export type OnTestStart = JestOnTestStart;
-  export type OnTestSuccess = JestOnTestSuccess;
-  export type TestWatcher = JestTestWatcher;
-  export type TestRunnerContext = JestTestRunnerContext;
-  export type TestRunnerOptions = JestTestRunnerOptions;
-  export type TestFileEvent = JestTestFileEvent;
-}
+export type {
+  Test,
+  OnTestFailure,
+  OnTestStart,
+  OnTestSuccess,
+  TestWatcher,
+  TestRunnerContext,
+  TestRunnerOptions,
+  TestFileEvent,
+} from './types';
 
-class TestRunner {
+export default class TestRunner {
   private readonly _globalConfig: Config.GlobalConfig;
-  private readonly _context: JestTestRunnerContext;
-  private readonly eventEmitter = new Emittery.Typed<JestTestEvents>();
+  private readonly _context: TestRunnerContext;
+  private readonly eventEmitter = new Emittery.Typed<TestEvents>();
   readonly __PRIVATE_UNSTABLE_API_supportsEventEmitters__: boolean = true;
 
   readonly isSerial?: boolean;
 
-  constructor(
-    globalConfig: Config.GlobalConfig,
-    context?: JestTestRunnerContext,
-  ) {
+  constructor(globalConfig: Config.GlobalConfig, context?: TestRunnerContext) {
     this._globalConfig = globalConfig;
     this._context = context || {};
   }
 
   async runTests(
-    tests: Array<JestTest>,
-    watcher: JestTestWatcher,
-    onStart: JestOnTestStart | undefined,
-    onResult: JestOnTestSuccess | undefined,
-    onFailure: JestOnTestFailure | undefined,
-    options: JestTestRunnerOptions,
+    tests: Array<Test>,
+    watcher: TestWatcher,
+    onStart: OnTestStart | undefined,
+    onResult: OnTestSuccess | undefined,
+    onFailure: OnTestFailure | undefined,
+    options: TestRunnerOptions,
   ): Promise<void> {
     return await (options.serial
       ? this._createInBandTestRun(tests, watcher, onStart, onResult, onFailure)
@@ -81,11 +78,11 @@ class TestRunner {
   }
 
   private async _createInBandTestRun(
-    tests: Array<JestTest>,
-    watcher: JestTestWatcher,
-    onStart?: JestOnTestStart,
-    onResult?: JestOnTestSuccess,
-    onFailure?: JestOnTestFailure,
+    tests: Array<Test>,
+    watcher: TestWatcher,
+    onStart?: OnTestStart,
+    onResult?: OnTestSuccess,
+    onFailure?: OnTestFailure,
   ) {
     process.env.JEST_WORKER_ID = '1';
     const mutex = throat(1);
@@ -97,7 +94,7 @@ class TestRunner {
               if (watcher.isInterrupted()) {
                 throw new CancelRun();
               }
-              let sendMessageToJest: JestTestFileEvent;
+              let sendMessageToJest: TestFileEvent;
 
               // Remove `if(onStart)` in Jest 27
               if (onStart) {
@@ -152,11 +149,11 @@ class TestRunner {
   }
 
   private async _createParallelTestRun(
-    tests: Array<JestTest>,
-    watcher: JestTestWatcher,
-    onStart?: JestOnTestStart,
-    onResult?: JestOnTestSuccess,
-    onFailure?: JestOnTestFailure,
+    tests: Array<Test>,
+    watcher: TestWatcher,
+    onStart?: OnTestStart,
+    onResult?: OnTestSuccess,
+    onFailure?: OnTestFailure,
   ) {
     const resolvers: Map<string, SerializableResolver> = new Map();
     for (const test of tests) {
@@ -187,7 +184,7 @@ class TestRunner {
 
     // Send test suites to workers continuously instead of all at once to track
     // the start time of individual tests.
-    const runTestInWorker = (test: JestTest) =>
+    const runTestInWorker = (test: Test) =>
       mutex(async () => {
         if (watcher.isInterrupted()) {
           return Promise.reject();
@@ -225,7 +222,7 @@ class TestRunner {
         return promise;
       });
 
-    const onError = async (err: SerializableError, test: JestTest) => {
+    const onError = async (err: SerializableError, test: Test) => {
       // Remove `if(onFailure)` in Jest 27
       if (onFailure) {
         await onFailure(test, err);
@@ -273,7 +270,7 @@ class TestRunner {
           chalk.yellow(
             'A worker process has failed to exit gracefully and has been force exited. ' +
               'This is likely caused by tests leaking due to improper teardown. ' +
-              'Try running with --runInBand --detectOpenHandles to find leaks.',
+              'Try running with --detectOpenHandles to find leaks.',
           ),
         );
       }
@@ -290,5 +287,3 @@ class CancelRun extends Error {
     this.name = 'CancelRun';
   }
 }
-
-export = TestRunner;

@@ -8,7 +8,6 @@
 
 /* eslint-disable local/ban-types-eventually */
 
-import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {
   EXPECTED_COLOR,
   MatcherHintOptions,
@@ -20,6 +19,7 @@ import {
   printReceived,
   printWithType,
 } from 'jest-matcher-utils';
+import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import {
   printExpectedConstructorName,
   printExpectedConstructorNameNot,

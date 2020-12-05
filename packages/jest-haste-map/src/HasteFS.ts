@@ -5,11 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {globsToMatcher, replacePathSepForGlob} from 'jest-util';
 import type {Config} from '@jest/types';
-import type {FileData} from './types';
-import * as fastPath from './lib/fast_path';
+import {globsToMatcher, replacePathSepForGlob} from 'jest-util';
 import H from './constants';
+import * as fastPath from './lib/fast_path';
+import type {FileData} from './types';
 
 export default class HasteFS {
   private readonly _rootDir: Config.Path;

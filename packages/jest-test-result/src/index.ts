@@ -19,6 +19,7 @@ export type {
   FailedAssertion,
   FormattedTestResults,
   Milliseconds,
+  RuntimeTransformResult,
   SerializableError,
   SnapshotSummary,
   Status,

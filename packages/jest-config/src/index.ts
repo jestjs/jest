@@ -6,21 +6,21 @@
  */
 
 import * as path from 'path';
+import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';
-import chalk = require('chalk');
-import {isJSONString, replaceRootDirInPath} from './utils';
+import * as constants from './constants';
 import normalize from './normalize';
-import resolveConfigPath from './resolveConfigPath';
 import readConfigFileAndSetRootDir from './readConfigFileAndSetRootDir';
+import resolveConfigPath from './resolveConfigPath';
+import {isJSONString, replaceRootDirInPath} from './utils';
 export {getTestEnvironment, isJSONString} from './utils';
 export {default as normalize} from './normalize';
 export {default as deprecationEntries} from './Deprecated';
 export {replaceRootDirInPath} from './utils';
 export {default as defaults} from './Defaults';
 export {default as descriptions} from './Descriptions';
-import * as constants from './constants';
 export {constants};
 
 type ReadConfig = {
@@ -74,7 +74,7 @@ export async function readConfig(
     config.rootDir = config.rootDir || packageRootOrConfig;
     rawOptions = config;
     // A string passed to `--config`, which is either a direct path to the config
-    // or a path to directory containing `package.json` or `jest.config.js`
+    // or a path to directory containing `package.json`, `jest.config.js` or `jest.config.ts`
   } else if (!skipArgvConfigOption && typeof argv.config == 'string') {
     configPath = resolveConfigPath(argv.config, process.cwd());
     rawOptions = await readConfigFileAndSetRootDir(configPath);
@@ -123,7 +123,6 @@ const groupOptions = (
     coverageThreshold: options.coverageThreshold,
     detectLeaks: options.detectLeaks,
     detectOpenHandles: options.detectOpenHandles,
-    enabledTestsMap: options.enabledTestsMap,
     errorOnDeprecated: options.errorOnDeprecated,
     expand: options.expand,
     filter: options.filter,
@@ -179,6 +178,7 @@ const groupOptions = (
     detectOpenHandles: options.detectOpenHandles,
     displayName: options.displayName,
     errorOnDeprecated: options.errorOnDeprecated,
+    extensionsToTreatAsEsm: options.extensionsToTreatAsEsm,
     extraGlobals: options.extraGlobals,
     filter: options.filter,
     forceCoverageMatch: options.forceCoverageMatch,

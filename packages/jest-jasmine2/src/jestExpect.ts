@@ -5,8 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import expect = require('expect');
+/* eslint-disable local/prefer-spread-eventually */
+
 import type {Global} from '@jest/types';
+import expect = require('expect');
 import {
   addSerializer,
   toMatchInlineSnapshot,

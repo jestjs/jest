@@ -6,25 +6,24 @@
  */
 
 import * as path from 'path';
-import type {Config, Global} from '@jest/types';
-import type {AssertionResult, TestResult} from '@jest/test-result';
 import type {JestEnvironment} from '@jest/environment';
-import type {SnapshotStateType} from 'jest-snapshot';
-import type {RuntimeType as Runtime} from 'jest-runtime';
-
 import {getCallsite} from '@jest/source-map';
+import type {AssertionResult, TestResult} from '@jest/test-result';
+import type {Config, Global} from '@jest/types';
+import type Runtime from 'jest-runtime';
+import type {SnapshotStateType} from 'jest-snapshot';
 import installEach from './each';
 import {installErrorOnPrivate} from './errorOnPrivate';
-import JasmineReporter from './reporter';
-import jasmineAsyncInstall from './jasmineAsyncInstall';
 import type Spec from './jasmine/Spec';
-import type {Jasmine as JestJasmine} from './types';
+import jasmineAsyncInstall from './jasmineAsyncInstall';
+import JasmineReporter from './reporter';
+export type {Jasmine} from './types';
 
 const JASMINE = require.resolve('./jasmine/jasmineLight');
 
 const jestEachBuildDir = path.dirname(require.resolve('jest-each'));
 
-async function jasmine2(
+export default async function jasmine2(
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   environment: JestEnvironment,
@@ -150,8 +149,7 @@ async function jasmine2(
     });
 
   for (const path of config.setupFilesAfterEnv) {
-    // TODO: remove ? in Jest 26
-    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);
@@ -160,20 +158,11 @@ async function jasmine2(
     }
   }
 
-  if (globalConfig.enabledTestsMap) {
-    env.specFilter = (spec: Spec) => {
-      const suiteMap =
-        globalConfig.enabledTestsMap &&
-        globalConfig.enabledTestsMap[spec.result.testPath];
-      return (suiteMap && suiteMap[spec.result.fullName]) || false;
-    };
-  } else if (globalConfig.testNamePattern) {
+  if (globalConfig.testNamePattern) {
     const testNameRegex = new RegExp(globalConfig.testNamePattern, 'i');
     env.specFilter = (spec: Spec) => testNameRegex.test(spec.getFullName());
   }
-
-  // TODO: remove ? in Jest 26
-  const esm = runtime.unstable_shouldLoadAsEsm?.(testPath);
+  const esm = runtime.unstable_shouldLoadAsEsm(testPath);
 
   if (esm) {
     await runtime.unstable_importModule(testPath);
@@ -219,9 +208,3 @@ const addSnapshotData = (
 
   return results;
 };
-
-namespace jasmine2 {
-  export type Jasmine = JestJasmine;
-}
-
-export = jasmine2;

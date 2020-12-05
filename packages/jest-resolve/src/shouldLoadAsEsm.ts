@@ -8,8 +8,8 @@
 import {dirname, extname} from 'path';
 // @ts-expect-error: experimental, not added to the types
 import {SyntheticModule} from 'vm';
-import {readFileSync} from 'graceful-fs';
 import escalade from 'escalade/sync';
+import {readFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
@@ -24,11 +24,18 @@ export function clearCachedLookups(): void {
   cachedChecks.clear();
 }
 
-export default function cachedShouldLoadAsEsm(path: Config.Path): boolean {
+export default function cachedShouldLoadAsEsm(
+  path: Config.Path,
+  extensionsToTreatAsEsm: Array<Config.Path>,
+): boolean {
+  if (!runtimeSupportsVmModules) {
+    return false;
+  }
+
   let cachedLookup = cachedFileLookups.get(path);
 
   if (cachedLookup === undefined) {
-    cachedLookup = shouldLoadAsEsm(path);
+    cachedLookup = shouldLoadAsEsm(path, extensionsToTreatAsEsm);
     cachedFileLookups.set(path, cachedLookup);
   }
 
@@ -36,11 +43,10 @@ export default function cachedShouldLoadAsEsm(path: Config.Path): boolean {
 }
 
 // this is a bad version of what https://github.com/nodejs/modules/issues/393 would provide
-function shouldLoadAsEsm(path: Config.Path): boolean {
-  if (!runtimeSupportsVmModules) {
-    return false;
-  }
-
+function shouldLoadAsEsm(
+  path: Config.Path,
+  extensionsToTreatAsEsm: Array<Config.Path>,
+): boolean {
   const extension = extname(path);
 
   if (extension === '.mjs') {
@@ -51,10 +57,8 @@ function shouldLoadAsEsm(path: Config.Path): boolean {
     return false;
   }
 
-  // this isn't correct - we might wanna load any file as a module (using synthetic module)
-  // do we need an option to Jest so people can opt in to ESM for non-js?
   if (extension !== '.js') {
-    return false;
+    return extensionsToTreatAsEsm.includes(extension);
   }
 
   const cwd = dirname(path);

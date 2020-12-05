@@ -10,7 +10,7 @@ Install Jest using [`yarn`](https://yarnpkg.com/en/package/jest):
 yarn add --dev jest
 ```
 
-Or [`npm`](https://www.npmjs.com/):
+Or [`npm`](https://www.npmjs.com/package/jest):
 
 ```bash
 npm install --save-dev jest
@@ -82,7 +82,7 @@ jest --init
 
 ### Using Babel
 
-To use [Babel](http://babeljs.io/), install required dependencies via `yarn`:
+To use [Babel](https://babeljs.io/), install required dependencies via `yarn`:
 
 ```bash
 yarn add --dev babel-jest @babel/core @babel/preset-env
@@ -93,20 +93,11 @@ Configure Babel to target your current version of Node by creating a `babel.conf
 ```javascript
 // babel.config.js
 module.exports = {
-  presets: [
-    [
-      '@babel/preset-env',
-      {
-        targets: {
-          node: 'current',
-        },
-      },
-    ],
-  ],
+  presets: [['@babel/preset-env', {targets: {node: 'current'}}]],
 };
 ```
 
-**The ideal configuration for Babel will depend on your project.** See [Babel's docs](https://babeljs.io/docs/en/) for more details.
+_The ideal configuration for Babel will depend on your project._ See [Babel's docs](https://babeljs.io/docs/en/) for more details.
 
 <details><summary markdown="span"><strong>Making your Babel config jest-aware</strong></summary>
 
@@ -156,9 +147,13 @@ While we generally recommend using the same version of every Jest package, this 
 
 Jest can be used in projects that use [webpack](https://webpack.js.org/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](Webpack.md) to get started.
 
+### Using parcel
+
+Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration. Refer to the official [docs](https://parceljs.org/getting_started.html) to get started.
+
 ### Using TypeScript
 
-Jest supports TypeScript, via Babel. First make sure you followed the instructions on [using Babel](#using-babel) above. Next install the `@babel/preset-typescript` via `yarn`:
+Jest supports TypeScript, via Babel. First, make sure you followed the instructions on [using Babel](#using-babel) above. Next, install the `@babel/preset-typescript` via `yarn`:
 
 ```bash
 yarn add --dev @babel/preset-typescript
@@ -176,4 +171,12 @@ module.exports = {
 };
 ```
 
-However, there are some [caveats](https://babeljs.io/docs/en/next/babel-plugin-transform-typescript.html#caveats) to using TypeScript with Babel. Because TypeScript support in Babel is transpilation, Jest will not type-check your tests as they are run. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
+However, there are some [caveats](https://babeljs.io/docs/en/babel-plugin-transform-typescript#caveats) to using TypeScript with Babel. Because TypeScript support in Babel is purely transpilation, Jest will not type-check your tests as they are run. If you want that, you can use [ts-jest](https://github.com/kulshekhar/ts-jest) instead, or just run the TypeScript compiler [tsc](https://www.typescriptlang.org/docs/handbook/compiler-options.html) separately (or as part of your build process).
+
+You may also want to install the [`@types/jest`](https://www.npmjs.com/package/@types/jest) module for the version of Jest you're using. This will help provide full typing when writing your tests with TypeScript.
+
+> For `@types/*` modules it's recommended to try to match the version of the associated module. For example, if you are using `26.4.0` of `jest` then using `26.4.x` of `@types/jest` is ideal. In general, try to match the major (`26`) and minor (`4`) version as closely as possible.
+
+```bash
+yarn add --dev @types/jest
+```
