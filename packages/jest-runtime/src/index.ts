@@ -924,11 +924,6 @@ export default class Runtime {
       });
   }
 
-  // TODO - remove in Jest 27
-  getSourceMapInfo(_coveredFiles: Set<string>): Record<string, string> {
-    return {};
-  }
-
   getSourceMaps(): SourceMapRegistry {
     return fromEntries(this._sourceMapRegistry);
   }
