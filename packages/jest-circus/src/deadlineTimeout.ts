@@ -24,17 +24,12 @@ function isUs(line: string): boolean {
 }
 
 async function timeout<T>(promise: Promise<T>, ms: number): Promise<T> {
-  let timeoutId: ReturnType<typeof setTimeout> | undefined;
-  let resolvePromise: { (value: boolean): void } | undefined;
+  const {promise: sleepCancelled, clear} = cancellableSleep(ms);
   try {
     return await Promise.race([
       promise,
-      (async (): Promise<never> => {
-        const firedForReal = await new Promise<boolean>(resolve => {
-          resolvePromise = resolve;
-          timeoutId = setTimeout(() => resolve(true), ms);
-        });
-        if (!firedForReal) {
+      (async () => {
+        if (await sleepCancelled) {
           return undefined as never;
         }
         const here = new Error(`deadline exceeded (waited here for ${ms}ms)`);
@@ -46,9 +41,31 @@ async function timeout<T>(promise: Promise<T>, ms: number): Promise<T> {
       })(),
     ]);
   } finally {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-    }
-    resolvePromise?.(false);
+    clear();
   }
 }
+
+const cancellableSleep = (ms: number) => {
+  const state: {
+    resolvePromise: null | {(firedForReal: boolean): void};
+    timeoutId: null | ReturnType<typeof setTimeout>;
+  } = {
+    resolvePromise: null,
+    timeoutId: null,
+  };
+
+  const promise = new Promise<boolean>(resolve => {
+    state.resolvePromise = resolve;
+    state.timeoutId = setTimeout(() => resolve(false), ms);
+  });
+
+  return {
+    clear: () => {
+      state.resolvePromise?.(true);
+      if (state.timeoutId) {
+        clearTimeout(state.timeoutId);
+      }
+    },
+    promise,
+  };
+};
