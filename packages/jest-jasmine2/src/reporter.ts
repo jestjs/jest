@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config} from '@jest/types';
 import {
   AssertionResult,
   TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
+import type {Config} from '@jest/types';
 import {formatResultsErrors} from 'jest-message-util';
 import type {SpecResult} from './jasmine/Spec';
 import type {SuiteResult} from './jasmine/Suite';
@@ -141,6 +141,7 @@ export default class Jasmine2Reporter implements Reporter {
     const results: AssertionResult = {
       ancestorTitles,
       duration,
+      failureDetails: [],
       failureMessages: [],
       fullName: specResult.fullName,
       location,
@@ -151,10 +152,11 @@ export default class Jasmine2Reporter implements Reporter {
 
     specResult.failedExpectations.forEach(failed => {
       const message =
-        !failed.matcherName && failed.stack
+        !failed.matcherName && typeof failed.stack === 'string'
           ? this._addMissingMessageToStack(failed.stack, failed.message)
           : failed.message || '';
       results.failureMessages.push(message);
+      results.failureDetails.push(failed);
     });
 
     return results;

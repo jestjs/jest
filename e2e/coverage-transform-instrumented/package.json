@@ -2,10 +2,16 @@
   "jest": {
     "rootDir": "./",
     "transform": {
-      "^.+\\.(js)$": "<rootDir>/preprocessor.js"
+      "\\.(js)$": "<rootDir>/preprocessor.js"
     },
     "testRegex": "/__tests__/.*\\.(js)$",
     "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "jest-circus",
+      "jest-each",
+      "jest-environment-node/",
+      "jest-jasmine2"
+    ],
     "moduleFileExtensions": [
       "js"
     ]

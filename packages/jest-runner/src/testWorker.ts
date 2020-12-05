@@ -6,19 +6,24 @@
  *
  */
 
-import type {Config} from '@jest/types';
-import type {SerializableError, TestResult} from '@jest/test-result';
-import HasteMap = require('jest-haste-map');
 import exit = require('exit');
+import type {SerializableError, TestResult} from '@jest/test-result';
+import type {Config} from '@jest/types';
+import {ModuleMap, SerializableModuleMap} from 'jest-haste-map';
 import {separateMessageFromStack} from 'jest-message-util';
-import Runtime = require('jest-runtime');
-import Resolver = require('jest-resolve');
-import type {ErrorWithCode, TestRunnerSerializedContext} from './types';
+import type Resolver from 'jest-resolve';
+import Runtime from 'jest-runtime';
+import {messageParent} from 'jest-worker';
 import runTest from './runTest';
+import type {
+  ErrorWithCode,
+  TestFileEvent,
+  TestRunnerSerializedContext,
+} from './types';
 
 export type SerializableResolver = {
   config: Config.ProjectConfig;
-  serializableModuleMap: HasteMap.SerializableModuleMap;
+  serializableModuleMap: SerializableModuleMap;
 };
 
 type WorkerData = {
@@ -69,10 +74,14 @@ export function setup(setupData: {
     config,
     serializableModuleMap,
   } of setupData.serializableResolvers) {
-    const moduleMap = HasteMap.ModuleMap.fromJSON(serializableModuleMap);
+    const moduleMap = ModuleMap.fromJSON(serializableModuleMap);
     resolvers.set(config.name, Runtime.createResolver(config, moduleMap));
   }
 }
+
+const sendMessageToJest: TestFileEvent = (eventName, args) => {
+  messageParent([eventName, args]);
+};
 
 export async function worker({
   config,
@@ -93,6 +102,7 @@ export async function worker({
           context.sourcesRelatedToTestsInChangedFiles &&
           new Set(context.sourcesRelatedToTestsInChangedFiles),
       },
+      sendMessageToJest,
     );
   } catch (error) {
     throw formatError(error);

@@ -6,10 +6,10 @@
  */
 
 import chalk = require('chalk');
+import type {Circus, Global} from '@jest/types';
 import {bind as bindEach} from 'jest-each';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack, isPromise} from 'jest-util';
-import type {Circus, Global} from '@jest/types';
 import {dispatchSync} from './state';
 
 type THook = (fn: Circus.HookFn, timeout?: number) => void;
@@ -62,6 +62,7 @@ const _dispatchDescribe = (
 
   // TODO throw in Jest 25
   if (isPromise(describeReturn)) {
+    // eslint-disable-next-line no-console
     console.log(
       formatExecError(
         new ErrorWithStack(
@@ -76,6 +77,7 @@ const _dispatchDescribe = (
       ),
     );
   } else if (describeReturn !== undefined) {
+    // eslint-disable-next-line no-console
     console.log(
       formatExecError(
         new ErrorWithStack(

@@ -11,7 +11,7 @@ export {
 } from './ScriptTransformer';
 export {default as shouldInstrument} from './shouldInstrument';
 export type {
-  CacheKeyOptions,
+  CallerTransformOptions,
   Transformer,
   ShouldInstrumentOptions,
   Options as TransformationOptions,

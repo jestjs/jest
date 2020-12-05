@@ -48,7 +48,7 @@ export const buildFailureTestResult = (
   err: SerializableError,
 ): TestResult => ({
   console: undefined,
-  displayName: '',
+  displayName: undefined,
   failureMessage: null,
   leaks: false,
   numFailingTests: 0,
@@ -58,6 +58,8 @@ export const buildFailureTestResult = (
   openHandles: [],
   perfStats: {
     end: 0,
+    runtime: 0,
+    slow: false,
     start: 0,
   },
   skipped: false,
@@ -155,6 +157,8 @@ export const createEmptyTestResult = (): TestResult => ({
   openHandles: [],
   perfStats: {
     end: 0,
+    runtime: 0,
+    slow: false,
     start: 0,
   },
   skipped: false,

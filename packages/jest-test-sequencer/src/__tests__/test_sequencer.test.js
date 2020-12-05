@@ -134,23 +134,23 @@ test('writes the cache based on results without existing cache', () => {
     testResults: [
       {
         numFailingTests: 0,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-a.js',
       },
       {
         numFailingTests: 0,
-        perfStats: {end: 0, start: 0},
+        perfStats: {end: 0, runtime: 0, start: 0},
         skipped: true,
         testFilePath: '/test-b.js',
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 4, start: 1},
+        perfStats: {end: 4, runtime: 3, start: 1},
         testFilePath: '/test-c.js',
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-x.js',
       },
     ],
@@ -160,6 +160,21 @@ test('writes the cache based on results without existing cache', () => {
     '/test-a.js': [SUCCESS, 1],
     '/test-c.js': [FAIL, 3],
   });
+});
+
+test('returns failed tests in sorted order', () => {
+  fs.readFileSync.mockImplementationOnce(() =>
+    JSON.stringify({
+      '/test-a.js': [SUCCESS, 5],
+      '/test-ab.js': [FAIL, 1],
+      '/test-c.js': [FAIL],
+    }),
+  );
+  const testPaths = ['/test-a.js', '/test-ab.js', '/test-c.js'];
+  expect(sequencer.allFailedTests(toTests(testPaths))).toEqual([
+    {context, duration: undefined, path: '/test-c.js'},
+    {context, duration: 1, path: '/test-ab.js'},
+  ]);
 });
 
 test('writes the cache based on the results', () => {
@@ -177,23 +192,23 @@ test('writes the cache based on the results', () => {
     testResults: [
       {
         numFailingTests: 0,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-a.js',
       },
       {
         numFailingTests: 0,
-        perfStats: {end: 0, start: 0},
+        perfStats: {end: 0, runtime: 0, start: 0},
         skipped: true,
         testFilePath: '/test-b.js',
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 4, start: 1},
+        perfStats: {end: 4, runtime: 3, start: 1},
         testFilePath: '/test-c.js',
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-x.js',
       },
     ],
@@ -228,23 +243,23 @@ test('works with multiple contexts', () => {
     testResults: [
       {
         numFailingTests: 0,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-a.js',
       },
       {
         numFailingTests: 0,
-        perfStats: {end: 0, start: 0},
+        perfStats: {end: 0, runtime: 1, start: 0},
         skipped: true,
         testFilePath: '/test-b.js',
       },
       {
         numFailingTests: 0,
-        perfStats: {end: 4, start: 1},
+        perfStats: {end: 4, runtime: 3, start: 1},
         testFilePath: '/test-c.js',
       },
       {
         numFailingTests: 1,
-        perfStats: {end: 2, start: 1},
+        perfStats: {end: 2, runtime: 1, start: 1},
         testFilePath: '/test-x.js',
       },
     ],

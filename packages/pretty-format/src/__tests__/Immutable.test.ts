@@ -5,13 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import React from 'react';
-import Immutable from 'immutable';
+/* eslint-disable local/prefer-rest-params-eventually */
 
-import prettyFormat from '..';
+import Immutable from 'immutable';
+import React from 'react';
+import {plugins} from '..';
 import setPrettyPrint from './setPrettyPrint';
 
-const {Immutable: ImmutablePlugin, ReactElement} = prettyFormat.plugins;
+const {Immutable: ImmutablePlugin, ReactElement} = plugins;
 
 setPrettyPrint([ReactElement, ImmutablePlugin]);
 
@@ -505,7 +506,7 @@ describe('Immutable.OrderedMap', () => {
   });
 
   it('supports non-string keys', () => {
-    const val = Immutable.OrderedMap<any, any>([
+    const val = Immutable.OrderedMap<unknown, unknown>([
       [false, 'boolean'],
       ['false', 'string'],
       [0, 'number'],

@@ -7,9 +7,9 @@
 
 import chalk = require('chalk');
 import getType = require('jest-get-type');
-import {ERROR, ValidationError, formatPrettyObject} from './utils';
 import {getValues} from './condition';
 import type {ValidationOptions} from './types';
+import {ERROR, ValidationError, formatPrettyObject} from './utils';
 
 export const errorMessage = (
   option: string,
@@ -39,7 +39,7 @@ ${formatExamples(option, conditions)}`;
   throw new ValidationError(name, message, comment);
 };
 
-function formatExamples(option: string, examples: Array<any>) {
+function formatExamples(option: string, examples: Array<unknown>) {
   return examples.map(
     e => `  {
     ${chalk.bold(`"${option}"`)}: ${chalk.bold(formatPrettyObject(e))}

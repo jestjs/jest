@@ -6,9 +6,9 @@
  */
 
 import type {Config} from '@jest/types';
+import {isJSONString} from './utils';
 
 const specialArgs = ['_', '$0', 'h', 'help', 'config'];
-import {isJSONString} from './utils';
 
 export default function setFromArgv(
   options: Config.InitialOptions,

@@ -11,13 +11,15 @@ type Title = {
   warning?: string;
 };
 
-export type DeprecatedOptions = Record<string, Function>;
+export type DeprecatedOptionFunc = (arg: Record<string, unknown>) => string;
+
+export type DeprecatedOptions = Record<string, DeprecatedOptionFunc>;
 
 export type ValidationOptions = {
   comment?: string;
-  condition?: (option: any, validOption: any) => boolean;
+  condition?: (option: unknown, validOption: unknown) => boolean;
   deprecate?: (
-    config: Record<string, any>,
+    config: Record<string, unknown>,
     option: string,
     deprecatedOptions: DeprecatedOptions,
     options: ValidationOptions,
@@ -25,18 +27,19 @@ export type ValidationOptions = {
   deprecatedConfig?: DeprecatedOptions;
   error?: (
     option: string,
-    received: any,
-    defaultValue: any,
+    received: unknown,
+    defaultValue: unknown,
     options: ValidationOptions,
     path?: Array<string>,
   ) => void;
-  exampleConfig: Record<string, any>;
+  exampleConfig: Record<string, unknown>;
   recursive?: boolean;
   recursiveBlacklist?: Array<string>;
+  recursiveDenylist?: Array<string>;
   title?: Title;
   unknown?: (
-    config: Record<string, any>,
-    exampleConfig: Record<string, any>,
+    config: Record<string, unknown>,
+    exampleConfig: Record<string, unknown>,
     option: string,
     options: ValidationOptions,
     path?: Array<string>,

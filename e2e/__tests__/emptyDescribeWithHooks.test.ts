@@ -7,8 +7,8 @@
 
 import * as path from 'path';
 import {skipSuiteOnJasmine} from '@jest/test-utils';
-import runJest from '../runJest';
 import {extractSummary} from '../Utils';
+import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../empty-describe-with-hooks');
 

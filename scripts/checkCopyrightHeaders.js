@@ -7,8 +7,8 @@
 
 'use strict';
 
-const fs = require('fs');
 const {execSync} = require('child_process');
+const fs = require('fs');
 const {isBinaryFileSync} = require('isbinaryfile');
 
 const getFileContents = path => fs.readFileSync(path, {encoding: 'utf-8'});
@@ -20,6 +20,7 @@ const createRegExp = pattern => new RegExp(pattern);
 const GENERIC_IGNORED_EXTENSIONS = [
   'lock',
   'patch',
+  'diff',
   'exe',
   'bin',
   'cfg',
@@ -102,6 +103,9 @@ const CUSTOM_IGNORED_PATTERNS = [
   '^packages/expect/src/jasmineUtils\\.ts$',
   '^packages/jest-config/src/vendor/jsonlint\\.js$',
   '^packages/jest-diff/src/cleanupSemantic\\.ts$',
+  '^packages/jest-haste-map/src/watchers/common\\.js$',
+  '^packages/jest-haste-map/src/watchers/NodeWatcher\\.js$',
+  '^packages/jest-haste-map/src/watchers/RecrawlWarning\\.js$',
   '^website/static/css/code-block-buttons\\.css$',
   '^website/static/js/code-block-buttons\\.js',
 ].map(createRegExp);
@@ -148,7 +152,7 @@ function check() {
 
   ${invalidFiles.join('\n  ')}
 
-Please include the header or blacklist the files in \`scripts/checkCopyrightHeaders.js\``);
+Please include the header or exclude the files in \`scripts/checkCopyrightHeaders.js\``);
     process.exit(1);
   }
 }

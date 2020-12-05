@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
 import WorkerPool from '../WorkerPool';
+import ChildProcessWorker from '../workers/ChildProcessWorker';
+import NodeThreadWorker from '../workers/NodeThreadsWorker';
 
 jest.mock('../workers/ChildProcessWorker', () => {
   const fakeClass = jest.fn(() => ({
@@ -34,9 +34,6 @@ jest.mock('../workers/NodeThreadsWorker', () => {
     default: fakeClass,
   };
 });
-
-const ChildProcessWorker = require('../workers/ChildProcessWorker').default;
-const NodeThreadWorker = require('../workers/NodeThreadsWorker').default;
 
 describe('WorkerPool', () => {
   beforeEach(() => {
@@ -71,6 +68,7 @@ describe('WorkerPool', () => {
       {foo: 'bar'},
       onStart,
       onEnd,
+      undefined,
     );
   });
 
@@ -100,6 +98,7 @@ describe('WorkerPool', () => {
       {foo: 'bar'},
       onStart,
       onEnd,
+      undefined,
     );
   });
 
@@ -128,6 +127,7 @@ describe('WorkerPool', () => {
       {foo: 'bar'},
       onStart,
       onEnd,
+      undefined,
     );
   });
 });

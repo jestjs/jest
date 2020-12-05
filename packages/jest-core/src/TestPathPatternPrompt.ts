@@ -5,9 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Context} from 'jest-runtime';
 import type {Test} from 'jest-runner';
-
+import type {Context} from 'jest-runtime';
 import {
   PatternPrompt,
   Prompt,
@@ -47,7 +46,7 @@ export default class TestPathPatternPrompt extends PatternPrompt {
 
     try {
       regex = new RegExp(pattern, 'i');
-    } catch (e) {}
+    } catch {}
 
     let tests: Array<Test> = [];
     if (regex && this._searchSources) {

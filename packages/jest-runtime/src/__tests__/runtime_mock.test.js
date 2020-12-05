@@ -25,7 +25,7 @@ describe('Runtime', () => {
         const mockReference = {isMock: true};
         const root = runtime.requireModule(runtime.__mockRootPath, rootJsPath);
         // Erase module registry because root.js requires most other modules.
-        root.jest.resetModuleRegistry();
+        root.jest.resetModules();
 
         root.jest.mock('RegularModule', () => mockReference);
         root.jest.mock('ManuallyMocked', () => mockReference);
@@ -53,7 +53,7 @@ describe('Runtime', () => {
         const virtual = true;
         const root = runtime.requireModule(runtime.__mockRootPath, rootJsPath);
         // Erase module registry because root.js requires most other modules.
-        root.jest.resetModuleRegistry();
+        root.jest.resetModules();
 
         root.jest.mock('NotInstalledModule', () => mockReference, {virtual});
         root.jest.mock('../ManuallyMocked', () => mockReference, {virtual});
@@ -87,7 +87,7 @@ describe('Runtime', () => {
         const virtual = true;
         const root = runtime.requireModule(runtime.__mockRootPath, rootJsPath);
         // Erase module registry because root.js requires most other modules.
-        root.jest.resetModuleRegistry();
+        root.jest.resetModules();
 
         root.jest.mock('NotInstalledModule', () => mockReference, {virtual});
         root.jest.mock('../ManuallyMocked', () => mockReference, {virtual});
@@ -122,7 +122,7 @@ describe('Runtime', () => {
         const mockReference = {isMock: true};
         const root = runtime.requireModule(runtime.__mockRootPath, rootJsPath);
         // Erase module registry because root.js requires most other modules.
-        root.jest.resetModuleRegistry();
+        root.jest.resetModules();
 
         root.jest.setMock('RegularModule', mockReference);
         root.jest.setMock('ManuallyMocked', mockReference);

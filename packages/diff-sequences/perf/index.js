@@ -16,7 +16,6 @@
 /* eslint import/no-extraneous-dependencies: "off" */
 
 const Benchmark = require('benchmark');
-
 const diffBaseline = require('diff').diffLines;
 const diffImproved = require('../build/index.js').default;
 

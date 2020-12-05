@@ -6,6 +6,7 @@
  */
 
 import {AssertionError} from 'assert';
+import chalk = require('chalk');
 import type {Circus} from '@jest/types';
 import {
   DiffOptions,
@@ -13,8 +14,7 @@ import {
   printExpected,
   printReceived,
 } from 'jest-matcher-utils';
-import chalk = require('chalk');
-import prettyFormat = require('pretty-format');
+import prettyFormat from 'pretty-format';
 
 interface AssertionErrorWithStack extends AssertionError {
   stack: string;

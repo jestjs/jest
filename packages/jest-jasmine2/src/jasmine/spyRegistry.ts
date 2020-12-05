@@ -31,8 +31,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import type {Spy} from '../types';
 import CallTracker from './CallTracker';
-import createSpy from './createSpy';
 import SpyStrategy from './SpyStrategy';
+import createSpy from './createSpy';
 
 const formatErrorMsg = (domain: string, usage?: string) => {
   const usageDefinition = usage ? '\nUsage: ' + usage : '';
@@ -113,7 +113,7 @@ export default class SpyRegistry {
       let descriptor;
       try {
         descriptor = Object.getOwnPropertyDescriptor(obj, methodName);
-      } catch (e) {
+      } catch {
         // IE 8 doesn't support `definePropery` on non-DOM nodes
       }
 
@@ -166,7 +166,7 @@ export default class SpyRegistry {
       let descriptor: PropertyDescriptor | undefined;
       try {
         descriptor = Object.getOwnPropertyDescriptor(obj, propertyName);
-      } catch (e) {
+      } catch {
         // IE 8 doesn't support `definePropery` on non-DOM nodes
       }
 

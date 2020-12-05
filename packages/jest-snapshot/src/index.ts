@@ -5,10 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type {FS as HasteFS} from 'jest-haste-map';
-
 import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,
@@ -24,7 +25,7 @@ import {
   SnapshotResolver as JestSnapshotResolver,
   buildSnapshotResolver,
   isSnapshotPath,
-} from './snapshot_resolver';
+} from './SnapshotResolver';
 import SnapshotState from './State';
 import {addSerializer, getSerializers} from './plugins';
 import {
@@ -38,7 +39,7 @@ import {
   printReceived,
   printSnapshotAndReceived,
 } from './printSnapshot';
-import type {Context, MatchSnapshotConfig} from './types';
+import type {Context, ExpectationResult, MatchSnapshotConfig} from './types';
 import * as utils from './utils';
 
 const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
@@ -156,10 +157,10 @@ const cleanup = (
 
 const toMatchSnapshot = function (
   this: Context,
-  received: any,
+  received: unknown,
   propertiesOrHint?: object | Config.Path,
   hint?: Config.Path,
-) {
+): ExpectationResult {
   const matcherName = 'toMatchSnapshot';
   let properties;
 
@@ -214,10 +215,10 @@ const toMatchSnapshot = function (
 
 const toMatchInlineSnapshot = function (
   this: Context,
-  received: any,
+  received: unknown,
   propertiesOrSnapshot?: object | string,
   inlineSnapshot?: string,
-) {
+): ExpectationResult {
   const matcherName = 'toMatchInlineSnapshot';
   let properties;
 
@@ -414,10 +415,10 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
 
 const toThrowErrorMatchingSnapshot = function (
   this: Context,
-  received: any,
+  received: unknown,
   hint: string | undefined, // because error TS1016 for hint?: string
   fromPromise: boolean,
-) {
+): ExpectationResult {
   const matcherName = 'toThrowErrorMatchingSnapshot';
 
   // Future breaking change: Snapshot hint must be a string
@@ -437,10 +438,10 @@ const toThrowErrorMatchingSnapshot = function (
 
 const toThrowErrorMatchingInlineSnapshot = function (
   this: Context,
-  received: any,
+  received: unknown,
   inlineSnapshot?: string,
   fromPromise?: boolean,
-) {
+): ExpectationResult {
   const matcherName = 'toThrowErrorMatchingInlineSnapshot';
 
   if (inlineSnapshot !== undefined && typeof inlineSnapshot !== 'string') {
@@ -462,7 +463,10 @@ const toThrowErrorMatchingInlineSnapshot = function (
   return _toThrowErrorMatchingSnapshot(
     {
       context: this,
-      inlineSnapshot,
+      inlineSnapshot:
+        inlineSnapshot !== undefined
+          ? stripAddedIndentation(inlineSnapshot)
+          : undefined,
       isInline: true,
       matcherName,
       received,
@@ -554,8 +558,8 @@ const JestSnapshot = {
   toThrowErrorMatchingSnapshot,
   utils,
 };
-/* eslint-disable-next-line no-redeclare */
-namespace JestSnapshot {
+
+declare namespace JestSnapshot {
   export type SnapshotResolver = JestSnapshotResolver;
   export type SnapshotStateType = SnapshotState;
 }

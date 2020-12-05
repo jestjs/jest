@@ -1,7 +1,7 @@
 {
   "jest": {
     "transform": {
-      "^.+\\.js$": "<rootDir>/../packages/babel-jest"
+      "\\.js$": "<rootDir>/../packages/babel-jest"
     },
     "testEnvironment": "node",
     "testPathIgnorePatterns": [

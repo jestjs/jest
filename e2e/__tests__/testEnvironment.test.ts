@@ -6,7 +6,6 @@
  */
 
 import {json as runWithJson} from '../runJest';
-
 import * as testFixturePackage from '../test-environment/package.json';
 
 it('respects testEnvironment docblock', () => {

@@ -5,10 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import chalk = require('chalk');
 import type {Config} from '@jest/types';
 import {ChangedFilesPromise, getChangedFilesForRoots} from 'jest-changed-files';
 import {formatExecError} from 'jest-message-util';
-import chalk = require('chalk');
 
 export default (
   globalConfig: Config.GlobalConfig,
@@ -37,9 +37,6 @@ export default (
       console.error(chalk.red(`\n\n${message}`));
 
       process.exit(1);
-
-      // We do process.exit, so this is dead code
-      return Promise.reject(e);
     });
   }
 

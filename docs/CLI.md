@@ -83,7 +83,7 @@ npm test -- -u -t="ColorPicker"
 
 ## Camelcase & dashed args support
 
-Jest supports both camelcase and dashed arg formats. The following examples will have equal result:
+Jest supports both camelcase and dashed arg formats. The following examples will have an equal result:
 
 ```bash
 jest --collect-coverage
@@ -126,7 +126,7 @@ Runs tests related to the current changes and the changes made in the last commi
 
 ### `--changedSince`
 
-Runs tests related to the changes since the provided branch. If the current branch has diverged from the given branch, then only changes made locally will be tested. Behaves similarly to `--onlyChanged`.
+Runs tests related to the changes since the provided branch or commit hash. If the current branch has diverged from the given branch, then only changes made locally will be tested. Behaves similarly to `--onlyChanged`.
 
 ### `--ci`
 
@@ -138,7 +138,7 @@ Deletes the Jest cache directory and then exits without running tests. Will dele
 
 ### `--collectCoverageFrom=<glob>`
 
-A glob pattern relative to <rootDir> matching the files that coverage info needs to be collected from.
+A glob pattern relative to `rootDir` matching the files that coverage info needs to be collected from.
 
 ### `--colors`
 
@@ -146,7 +146,7 @@ Forces test results output highlighting even if stdout is not a TTY.
 
 ### `--config=<path>`
 
-Alias: `-c`. The path to a Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the directory containing the config file is assumed to be the rootDir for the project. This can also be a JSON-encoded value which Jest will use as configuration.
+Alias: `-c`. The path to a Jest config file specifying how to find and execute tests. If no `rootDir` is set in the config, the directory containing the config file is assumed to be the `rootDir` for the project. This can also be a JSON-encoded value which Jest will use as configuration.
 
 ### `--coverage[=<boolean>]`
 
@@ -193,6 +193,22 @@ Show the help information, similar to this page.
 ### `--init`
 
 Generate a basic configuration file. Based on your project, Jest will ask you a few questions that will help to generate a `jest.config.js` file with a short description for each option.
+
+### `--injectGlobals`
+
+Insert Jest's globals (`expect`, `test`, `describe`, `beforeEach` etc.) into the global environment. If you set this to `false`, you should import from `@jest/globals`, e.g.
+
+```ts
+import {expect, jest, test} from '@jest/globals';
+
+jest.useFakeTimers();
+
+test('some test', () => {
+  expect(Date.now()).toBe(0);
+});
+```
+
+_Note: This option is only supported using the default `jest-circus`. test runner_
 
 ### `--json`
 
@@ -250,9 +266,17 @@ Run tests with specified reporters. [Reporter options](configuration#reporters-a
 
 `jest --reporters="default" --reporters="jest-junit"`
 
+### `--roots`
+
+A list of paths to directories that Jest should use to search for files in.
+
 ### `--runInBand`
 
 Alias: `-i`. Run all tests serially in the current process, rather than creating a worker pool of child processes that run tests. This can be useful for debugging.
+
+### `--selectProjects <project1> ... <projectN>`
+
+Run only the tests of the specified projects. Jest uses the attribute `displayName` in the configuration to identify each project. If you use this option, you should provide a `displayName` to all your projects.
 
 ### `--runTestsByPath`
 
@@ -297,7 +321,7 @@ A regexp pattern string that is matched against all tests paths before executing
 
 ### `--testPathIgnorePatterns=[array]`
 
-An array of regexp pattern strings that is tested against all tests paths before executing the test. Contrary to `--testPathPattern`, it will only run those test with a path that does not match with the provided regexp expressions.
+An array of regexp pattern strings that are tested against all tests paths before executing the test. Contrary to `--testPathPattern`, it will only run those tests with a path that does not match with the provided regexp expressions.
 
 ### `--testRunner=<path>`
 
@@ -335,6 +359,8 @@ Watch files for changes and rerun tests related to changed files. If you want to
 
 Watch files for changes and rerun all tests when something changes. If you want to re-run only the tests that depend on the changed files, use the `--watch` option.
 
+Use `--watchAll=false` to explicitly disable the watch mode. Note that in most CI environments, this is automatically handled for you.
+
 ### `--watchman`
 
-Whether to use watchman for file crawling. Defaults to true. Disable using `--no-watchman`.
+Whether to use [`watchman`](https://facebook.github.io/watchman/) for file crawling. Defaults to `true`. Disable using `--no-watchman`.

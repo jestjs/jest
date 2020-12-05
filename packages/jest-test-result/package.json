@@ -1,25 +1,28 @@
 {
   "name": "@jest/test-result",
-  "version": "26.0.0-alpha.1",
+  "version": "26.6.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-test-result"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
-    "@jest/console": "^26.0.0-alpha.1",
-    "@jest/types": "^26.0.0-alpha.1",
+    "@jest/console": "^26.6.2",
+    "@jest/types": "^26.6.2",
     "@types/istanbul-lib-coverage": "^2.0.0",
     "collect-v8-coverage": "^1.0.0"
   },
   "engines": {
-    "node": ">= 10.14.2"
+    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
+  }
 }

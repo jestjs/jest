@@ -9,15 +9,14 @@
 'use strict';
 
 import React from 'react';
-import Unmocked from '../__test_modules__/Unmocked';
 import Mocked from '../__test_modules__/Mocked';
+import Unmocked from '../__test_modules__/Unmocked';
 import a from '../__test_modules__/a';
 import b from '../__test_modules__/b';
 import c from '../__test_modules__/c';
 import d from '../__test_modules__/d';
 import f from '../__test_modules__/f';
 import jestBackticks from '../__test_modules__/jestBackticks';
-
 // The virtual mock call below will be hoisted above this `require` call.
 const virtualModule = require('virtual-module');
 
@@ -54,7 +53,7 @@ jest.mock('../__test_modules__/f', () => {
 jest.mock(`../__test_modules__/jestBackticks`);
 jest.mock('virtual-module', () => 'kiwi', {virtual: true});
 // This has types that should be ignored by the out-of-scope variables check.
-jest.mock('has-flow-types', () => (props: {children: mixed}) => 3, {
+jest.mock('has-flow-types', () => (props: {children: unknown}) => 3, {
   virtual: true,
 });
 
@@ -75,7 +74,7 @@ myObject.mock('apple', 27);
 
 // Variable names prefixed with `mock` (ignore case) should not throw as out-of-scope
 const MockMethods = () => {};
-jest.mock('../__test_modules__/f', () => MockMethods);
+jest.mock('../__test_modules__/g', () => MockMethods);
 
 describe('babel-plugin-jest-hoist', () => {
   it('does not throw during transform', () => {

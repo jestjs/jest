@@ -23,9 +23,8 @@ export type Options = ShouldInstrumentOptions &
   Partial<{
     isCoreModule: boolean;
     isInternalModule: boolean;
-    supportsDynamicImport: boolean;
-    supportsStaticESM: boolean;
-  }>;
+  }> &
+  CallerTransformOptions;
 
 // This is fixed in source-map@0.7.x, but we can't upgrade yet since it's async
 interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
@@ -39,34 +38,41 @@ export type TransformedSource =
 
 export type TransformResult = TransformTypes.TransformResult;
 
-export interface TransformOptions {
+export interface CallerTransformOptions {
+  // names are copied from babel: https://babeljs.io/docs/en/options#caller
+  supportsDynamicImport: boolean;
+  supportsExportNamespaceFrom: boolean;
+  supportsStaticESM: boolean;
+  supportsTopLevelAwait: boolean;
+}
+
+export interface ReducedTransformOptions extends CallerTransformOptions {
   instrument: boolean;
-  // names are copied from babel
-  supportsDynamicImport?: boolean;
-  supportsStaticESM?: boolean;
 }
 
-// TODO: For Jest 26 we should combine these into one options shape
-export interface CacheKeyOptions extends TransformOptions {
+export type StringMap = Map<string, string>;
+
+export interface TransformOptions extends ReducedTransformOptions {
+  /** a cached file system which is used in jest-runtime - useful to improve performance */
+  cacheFS: StringMap;
   config: Config.ProjectConfig;
-  rootDir: string;
+  /** A stringified version of the configuration - useful in cache busting */
+  configString: string;
 }
 
-export interface Transformer {
+export interface Transformer<OptionType = unknown> {
   canInstrument?: boolean;
-  createTransformer?: (options?: any) => Transformer;
+  createTransformer?: (options?: OptionType) => Transformer;
 
   getCacheKey?: (
-    fileData: string,
-    filePath: Config.Path,
-    configStr: string,
-    options: CacheKeyOptions,
+    sourceText: string,
+    sourcePath: Config.Path,
+    options: TransformOptions,
   ) => string;
 
   process: (
     sourceText: string,
     sourcePath: Config.Path,
-    config: Config.ProjectConfig,
-    options?: TransformOptions,
+    options: TransformOptions,
   ) => TransformedSource;
 }

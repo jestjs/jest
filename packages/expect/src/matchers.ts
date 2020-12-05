@@ -6,6 +6,8 @@
  *
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import getType = require('jest-get-type');
 import {
   DIM_COLOR,
@@ -25,7 +27,7 @@ import {
   printWithType,
   stringify,
 } from 'jest-matcher-utils';
-import type {MatcherState, MatchersObject} from './types';
+import {equals} from './jasmineUtils';
 import {
   printCloseTo,
   printExpectedConstructorName,
@@ -36,6 +38,7 @@ import {
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
 } from './print';
+import type {MatcherState, MatchersObject} from './types';
 import {
   getObjectSubset,
   getPath,
@@ -44,7 +47,6 @@ import {
   subsetEquality,
   typeEquality,
 } from './utils';
-import {equals} from './jasmineUtils';
 
 // Omit colon and one or more spaces, so can call getLabelPrinter.
 const EXPECTED_LABEL = 'Expected';

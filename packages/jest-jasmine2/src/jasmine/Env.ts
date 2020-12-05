@@ -28,24 +28,32 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* eslint-disable sort-keys */
+/* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
 import {AssertionError} from 'assert';
 import chalk = require('chalk');
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack, isPromise} from 'jest-util';
+import assertionErrorMessage from '../assertionErrorMessage';
+import isError from '../isError';
 import queueRunner, {
   Options as QueueRunnerOptions,
   QueueableFn,
 } from '../queueRunner';
 import treeProcessor, {TreeNode} from '../treeProcessor';
-import isError from '../isError';
-import assertionErrorMessage from '../assertionErrorMessage';
-import type {AssertionErrorWithStack, Jasmine, Reporter, Spy} from '../types';
+import type {
+  AssertionErrorWithStack,
+  Jasmine,
+  Reporter,
+  SpecDefinitionsFn,
+  Spy,
+} from '../types';
 import type {default as Spec, SpecResult} from './Spec';
 import type Suite from './Suite';
 
 export default function (j$: Jasmine) {
+  // https://github.com/typescript-eslint/typescript-eslint/pull/2833
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return class Env {
     specFilter: (spec: Spec) => boolean;
     catchExceptions: (value: unknown) => boolean;
@@ -64,7 +72,10 @@ export default function (j$: Jasmine) {
       runnablesToRun?: Array<string>,
       suiteTree?: Suite,
     ) => Promise<void>;
-    fdescribe: (description: string, specDefinitions: Function) => Suite;
+    fdescribe: (
+      description: string,
+      specDefinitions: SpecDefinitionsFn,
+    ) => Suite;
     spyOn: (
       obj: Record<string, Spy>,
       methodName: string,
@@ -78,15 +89,21 @@ export default function (j$: Jasmine) {
     clearReporters: () => void;
     addReporter: (reporterToAdd: Reporter) => void;
     it: (description: string, fn: QueueableFn['fn'], timeout?: number) => Spec;
-    xdescribe: (description: string, specDefinitions: Function) => Suite;
+    xdescribe: (
+      description: string,
+      specDefinitions: SpecDefinitionsFn,
+    ) => Suite;
     xit: (description: string, fn: QueueableFn['fn'], timeout?: number) => Spec;
     beforeAll: (beforeAllFunction: QueueableFn['fn'], timeout?: number) => void;
     todo: () => Spec;
     provideFallbackReporter: (reporterToAdd: Reporter) => void;
     allowRespy: (allow: boolean) => void;
-    describe: (description: string, specDefinitions: Function) => Suite;
+    describe: (
+      description: string,
+      specDefinitions: SpecDefinitionsFn,
+    ) => Suite;
 
-    constructor(_options?: object) {
+    constructor(_options?: Record<string, unknown>) {
       let totalSpecsDefined = 0;
 
       let catchExceptions = true;
@@ -384,7 +401,7 @@ export default function (j$: Jasmine) {
           suite.pend();
         }
         if (currentDeclarationSuite.markedTodo) {
-          // @ts-ignore TODO Possible error: Suite does not have todo method
+          // @ts-expect-error TODO Possible error: Suite does not have todo method
           suite.todo();
         }
         addSpecsToSuite(suite, specDefinitions);
@@ -411,13 +428,16 @@ export default function (j$: Jasmine) {
         return suite;
       };
 
-      const addSpecsToSuite = (suite: Suite, specDefinitions: Function) => {
+      const addSpecsToSuite = (
+        suite: Suite,
+        specDefinitions: SpecDefinitionsFn,
+      ) => {
         const parentSuite = currentDeclarationSuite;
         parentSuite.addChild(suite);
         currentDeclarationSuite = suite;
 
         let declarationError: undefined | Error = undefined;
-        let describeReturnValue: undefined | Error = undefined;
+        let describeReturnValue: unknown | Error;
         try {
           describeReturnValue = specDefinitions.call(suite);
         } catch (e) {
@@ -426,6 +446,7 @@ export default function (j$: Jasmine) {
 
         // TODO throw in Jest 25: declarationError = new Error
         if (isPromise(describeReturnValue)) {
+          // eslint-disable-next-line no-console
           console.log(
             formatExecError(
               new Error(
@@ -439,6 +460,7 @@ export default function (j$: Jasmine) {
             ),
           );
         } else if (describeReturnValue !== undefined) {
+          // eslint-disable-next-line no-console
           console.log(
             formatExecError(
               new Error(
@@ -593,7 +615,11 @@ export default function (j$: Jasmine) {
           () => {},
           currentDeclarationSuite,
         );
-        spec.todo();
+        if (currentDeclarationSuite.markedPending) {
+          spec.pend();
+        } else {
+          spec.todo();
+        }
         currentDeclarationSuite.addChild(spec);
         return spec;
       };
@@ -606,7 +632,11 @@ export default function (j$: Jasmine) {
           timeout,
         );
         currentDeclarationSuite.addChild(spec);
-        focusedRunnables.push(spec.id);
+        if (currentDeclarationSuite.markedPending) {
+          spec.pend();
+        } else {
+          focusedRunnables.push(spec.id);
+        }
         unfocusAncestor();
         return spec;
       };
@@ -664,7 +694,7 @@ export default function (j$: Jasmine) {
           (error && error.name === AssertionError.name)
         ) {
           checkIsError = false;
-          // @ts-ignore TODO Possible error: j$.Spec does not have expand property
+          // @ts-expect-error TODO Possible error: j$.Spec does not have expand property
           message = assertionErrorMessage(error, {expand: j$.Spec.expand});
         } else {
           const check = isError(error);
