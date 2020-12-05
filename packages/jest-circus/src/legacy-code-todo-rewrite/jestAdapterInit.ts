@@ -80,9 +80,6 @@ export const initialize = async ({
     xtest: globals.it.skip,
   };
 
-  globalsObject.test.deadline = () =>
-    getRunnerState()?.currentlyRunningTest?.deadline;
-
   globalsObject.test.concurrent = (test => {
     const concurrent = (
       testName: string,

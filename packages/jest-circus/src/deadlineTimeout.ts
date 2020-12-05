@@ -7,12 +7,16 @@
 
 import {getState} from './state';
 
-export async function withinDeadline<T>(promise: Promise<T>): Promise<T> {
+export function deadline(): number {
   const deadline = getState()?.currentlyRunningTest?.deadline;
   if (undefined === deadline) {
     throw new Error('bug! no deadline available');
   }
-  return timeout(promise, deadline - Date.now());
+  return deadline;
+}
+
+export async function withinDeadline<T>(promise: Promise<T>): Promise<T> {
+  return timeout(promise, deadline() - Date.now());
 }
 
 function isUs(line: string): boolean {
