@@ -8,7 +8,6 @@
 import {tmpdir} from 'os';
 import {resolve} from 'path';
 import findProcess = require('find-process');
-
 import {
   cleanup,
   generateTestFilesToForceUsingWorkers,

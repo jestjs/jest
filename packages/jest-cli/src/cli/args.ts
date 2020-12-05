@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import isCI = require('is-ci');
 import type {Config} from '@jest/types';
 import {constants, isJSONString} from 'jest-config';
-import isCI = require('is-ci');
 
 export function check(argv: Config.Argv): true {
   if (argv.runInBand && argv.hasOwnProperty('maxWorkers')) {
@@ -32,6 +32,13 @@ export function check(argv: Config.Argv): true {
     }
   }
 
+  if (argv.onlyFailures && argv.watchAll) {
+    throw new Error(
+      `Both --onlyFailures and --watchAll were specified, but these two ` +
+        'options do not make sense together.',
+    );
+  }
+
   if (argv.findRelatedTests && argv._.length === 0) {
     throw new Error(
       'The --findRelatedTests option requires file paths to be specified.\n' +
@@ -46,6 +53,13 @@ export function check(argv: Config.Argv): true {
         'Example usage: jest --maxWorkers 2\n' +
         'Example usage: jest --maxWorkers 50%\n' +
         'Or did you mean --watch?',
+    );
+  }
+
+  if (argv.selectProjects && argv.selectProjects.length === 0) {
+    throw new Error(
+      'The --selectProjects option requires the name of at least one project to be specified.\n' +
+        'Example usage: jest --selectProjects my-first-project my-second-project',
     );
   }
 
@@ -313,6 +327,10 @@ export const options = {
     description: 'Generate a basic configuration file',
     type: 'boolean',
   },
+  injectGlobals: {
+    description: 'Should Jest inject global variables or not',
+    type: 'boolean',
+  },
   json: {
     default: undefined,
     description:
@@ -528,6 +546,13 @@ export const options = {
       "Allows to use a custom runner instead of Jest's default test runner.",
     type: 'string',
   },
+  selectProjects: {
+    description:
+      'Run only the tests of the specified projects.' +
+      'Jest uses the attribute `displayName` in the configuration to identify each project.',
+    string: true,
+    type: 'array',
+  },
   setupFiles: {
     description:
       'A list of paths to modules that run some code to configure or ' +
@@ -625,9 +650,9 @@ export const options = {
   },
   testRunner: {
     description:
-      'Allows to specify a custom test runner. The default is ' +
-      ' `jasmine2`. A path to a custom test runner can be provided: ' +
-      '`<rootDir>/path/to/testRunner.js`.',
+      'Allows to specify a custom test runner. The default is' +
+      ' `jest-circus/runner`. A path to a custom test runner can be provided:' +
+      ' `<rootDir>/path/to/testRunner.js`.',
     type: 'string',
   },
   testSequencer: {

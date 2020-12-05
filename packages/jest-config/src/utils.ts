@@ -6,10 +6,10 @@
  */
 
 import * as path from 'path';
-import type {Config} from '@jest/types';
-import {ValidationError} from 'jest-validate';
-import Resolver = require('jest-resolve');
 import chalk = require('chalk');
+import type {Config} from '@jest/types';
+import Resolver from 'jest-resolve';
+import {ValidationError} from 'jest-validate';
 
 type ResolveOptions = {
   rootDir: Config.Path;
@@ -144,7 +144,7 @@ export const resolveWithPrefix = (
 
   try {
     return require.resolve(`${prefix}${fileName}`);
-  } catch (e) {}
+  } catch {}
 
   module = Resolver.findNodeModule(fileName, {
     basedir: rootDir,
@@ -156,7 +156,7 @@ export const resolveWithPrefix = (
 
   try {
     return require.resolve(fileName);
-  } catch (e) {}
+  } catch {}
 
   throw createValidationError(
     `  ${humanOptionName} ${chalk.bold(

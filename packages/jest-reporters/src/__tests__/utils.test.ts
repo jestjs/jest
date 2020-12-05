@@ -8,8 +8,8 @@
 import * as path from 'path';
 import chalk = require('chalk');
 import stripAnsi = require('strip-ansi');
+import {makeProjectConfig} from '@jest/test-utils';
 import {printDisplayName, trimAndFormatPath, wrapAnsiString} from '../utils';
-import {makeProjectConfig} from '../../../../TestUtils';
 
 describe('wrapAnsiString()', () => {
   it('wraps a long string containing ansi chars', () => {
@@ -118,7 +118,10 @@ describe('printDisplayName', () => {
     expect(
       printDisplayName(
         makeProjectConfig({
-          displayName: 'hello',
+          displayName: {
+            color: 'white',
+            name: 'hello',
+          },
         }),
       ),
     ).toMatchSnapshot();

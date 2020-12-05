@@ -8,7 +8,6 @@
 
 import type {Global} from '@jest/types';
 import {ErrorWithStack} from 'jest-util';
-
 import convertArrayTable from './table/array';
 import convertTemplateTable from './table/template';
 import {
@@ -22,16 +21,20 @@ export type EachTests = Array<{
   arguments: Array<unknown>;
 }>;
 
-type TestFn = (done?: Global.DoneFn) => Promise<any> | void | undefined;
-type GlobalCallback = (testName: string, fn: TestFn, timeout?: number) => void;
+// type TestFn = (done?: Global.DoneFn) => Promise<any> | void | undefined;
+type GlobalCallback = (
+  testName: string,
+  fn: Global.ConcurrentTestFn,
+  timeout?: number,
+) => void;
 
-export default (cb: GlobalCallback, supportsDone: boolean = true) => (
-  table: Global.EachTable,
-  ...taggedTemplateData: Global.TemplateData
-) =>
+export default <EachCallback extends Global.TestCallback>(
+  cb: GlobalCallback,
+  supportsDone: boolean = true,
+) => (table: Global.EachTable, ...taggedTemplateData: Global.TemplateData) =>
   function eachBind(
     title: string,
-    test: Global.EachTestFn,
+    test: Global.EachTestFn<EachCallback>,
     timeout?: number,
   ): void {
     try {
@@ -74,11 +77,11 @@ const buildTemplateTests = (
 const getHeadingKeys = (headings: string): Array<string> =>
   extractValidTemplateHeadings(headings).replace(/\s/g, '').split('|');
 
-const applyArguments = (
+const applyArguments = <EachCallback extends Global.TestCallback>(
   supportsDone: boolean,
   params: Array<unknown>,
-  test: Global.EachTestFn,
-): Global.EachTestFn =>
+  test: Global.EachTestFn<EachCallback>,
+): Global.EachTestFn<any> =>
   supportsDone && params.length < test.length
     ? (done: Global.DoneFn) => test(...params, done)
     : () => test(...params);

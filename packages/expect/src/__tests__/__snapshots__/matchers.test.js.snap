@@ -3988,6 +3988,18 @@ exports[`toMatchObject() {pass: false} expect({"a": "b"}).toMatchObject({"c": "d
 <d>  }</>
 `;
 
+exports[`toMatchObject() {pass: false} expect({"a": "b"}).toMatchObject({"toString": Any<Function>}) 1`] = `
+<d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
+
+<g>- Expected  - 0</>
+<r>+ Received  + 1</>
+
+<d>  Object {</>
+<r>+   "a": "b",</>
+<d>    "toString": Any<Function>,</>
+<d>  }</>
+`;
+
 exports[`toMatchObject() {pass: false} expect({"a": [{"a": "a", "b": "b"}]}).toMatchObject({"a": [{"a": "c"}]}) 1`] = `
 <d>expect(</><r>received</><d>).</>toMatchObject<d>(</><g>expected</><d>)</>
 
@@ -4246,6 +4258,13 @@ Expected: not <g>{"t": {"x": {"r": "r"}}}</>
 Received:     <r>{"a": "b", "t": {"x": {"r": "r"}, "z": "z"}}</>
 `;
 
+exports[`toMatchObject() {pass: true} expect({"a": "b", "toString": [Function toString]}).toMatchObject({"toString": Any<Function>}) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toMatchObject<d>(</><g>expected</><d>)</>
+
+Expected: not <g>{"toString": Any<Function>}</>
+Received:     <r>{"a": "b", "toString": [Function toString]}</>
+`;
+
 exports[`toMatchObject() {pass: true} expect({"a": "b"}).toMatchObject({"a": "b"}) 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toMatchObject<d>(</><g>expected</><d>)</>
 
@@ -4314,10 +4333,24 @@ exports[`toMatchObject() {pass: true} expect({"a": undefined}).toMatchObject({"a
 Expected: not <g>{"a": undefined}</>
 `;
 
+exports[`toMatchObject() {pass: true} expect({}).toMatchObject({"a": undefined, "b": "b", "c": "c"}) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toMatchObject<d>(</><g>expected</><d>)</>
+
+Expected: not <g>{"a": undefined, "b": "b", "c": "c"}</>
+Received:     <r>{}</>
+`;
+
 exports[`toMatchObject() {pass: true} expect({}).toMatchObject({"a": undefined, "b": "b"}) 1`] = `
 <d>expect(</><r>received</><d>).</>not<d>.</>toMatchObject<d>(</><g>expected</><d>)</>
 
 Expected: not <g>{"a": undefined, "b": "b"}</>
+Received:     <r>{}</>
+`;
+
+exports[`toMatchObject() {pass: true} expect({}).toMatchObject({"d": 4}) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toMatchObject<d>(</><g>expected</><d>)</>
+
+Expected: not <g>{"d": 4}</>
 Received:     <r>{}</>
 `;
 

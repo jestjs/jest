@@ -5,9 +5,9 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import importedExpect = require('expect');
 import type {Jest} from '@jest/environment';
 import type {Global} from '@jest/types';
+import importedExpect = require('expect');
 
 export declare const jest: Jest;
 

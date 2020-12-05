@@ -5,9 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Config, NewPlugin, Printer, Refs} from '../types';
+/* eslint-disable local/ban-types-eventually */
 
 import {printListItems, printObjectProperties} from '../collections';
+import type {Config, NewPlugin, Printer, Refs} from '../types';
 
 const SPACE = ' ';
 

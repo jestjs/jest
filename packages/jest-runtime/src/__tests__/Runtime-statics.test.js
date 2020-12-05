@@ -7,7 +7,7 @@
  */
 
 import HasteMap from 'jest-haste-map';
-const Runtime = require('../');
+import Runtime from '../';
 
 jest.mock('jest-haste-map');
 

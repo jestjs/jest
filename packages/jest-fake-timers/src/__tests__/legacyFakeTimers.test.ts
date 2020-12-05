@@ -8,7 +8,7 @@
 import * as util from 'util';
 import {runInNewContext} from 'vm';
 import wrap from 'jest-snapshot-serializer-raw';
-import mock = require('jest-mock');
+import {ModuleMocker} from 'jest-mock';
 import FakeTimers from '../legacyFakeTimers';
 
 const timerConfig = {
@@ -22,11 +22,11 @@ const config = {
 };
 
 describe('FakeTimers', () => {
-  let moduleMocker: mock.ModuleMocker;
+  let moduleMocker: ModuleMocker;
 
   beforeEach(() => {
     const global = runInNewContext('this');
-    moduleMocker = new mock.ModuleMocker(global);
+    moduleMocker = new ModuleMocker(global);
   });
 
   describe('construction', () => {

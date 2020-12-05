@@ -8,23 +8,35 @@
 import * as path from 'path';
 import {pathToFileURL} from 'url';
 import * as fs from 'graceful-fs';
+import type {Register} from 'ts-node';
 import type {Config} from '@jest/types';
-// @ts-ignore: vendored
+import {interopRequireDefault} from 'jest-util';
+import {
+  JEST_CONFIG_EXT_JSON,
+  JEST_CONFIG_EXT_TS,
+  PACKAGE_JSON,
+} from './constants';
+// @ts-expect-error: vendored
 import jsonlint from './vendor/jsonlint';
-import {JEST_CONFIG_EXT_JSON, PACKAGE_JSON} from './constants';
 
 // Read the configuration and set its `rootDir`
 // 1. If it's a `package.json` file, we look into its "jest" property
-// 2. For any other file, we just require it. If we receive an 'ERR_REQUIRE_ESM'
+// 2. If it's a `jest.config.ts` file, we use `ts-node` to transpile & require it
+// 3. For any other file, we just require it. If we receive an 'ERR_REQUIRE_ESM'
 //    from node, perform a dynamic import instead.
 export default async function readConfigFileAndSetRootDir(
   configPath: Config.Path,
 ): Promise<Config.InitialOptions> {
+  const isTS = configPath.endsWith(JEST_CONFIG_EXT_TS);
   const isJSON = configPath.endsWith(JEST_CONFIG_EXT_JSON);
   let configObject;
 
   try {
-    configObject = require(configPath);
+    if (isTS) {
+      configObject = await loadTSConfigFile(configPath);
+    } else {
+      configObject = require(configPath);
+    }
   } catch (error) {
     if (error.code === 'ERR_REQUIRE_ESM') {
       try {
@@ -54,6 +66,11 @@ export default async function readConfigFileAndSetRootDir(
         `Jest: Failed to parse config file ${configPath}\n` +
           `  ${jsonlint.errors(fs.readFileSync(configPath, 'utf8'))}`,
       );
+    } else if (isTS) {
+      throw new Error(
+        `Jest: Failed to parse the TypeScript config file ${configPath}\n` +
+          `  ${error}`,
+      );
     } else {
       throw error;
     }
@@ -81,3 +98,40 @@ export default async function readConfigFileAndSetRootDir(
 
   return configObject;
 }
+
+// Load the TypeScript configuration
+const loadTSConfigFile = async (
+  configPath: Config.Path,
+): Promise<Config.InitialOptions> => {
+  let registerer: Register;
+
+  // Register TypeScript compiler instance
+  try {
+    registerer = require('ts-node').register({
+      compilerOptions: {
+        module: 'CommonJS',
+      },
+    });
+  } catch (e) {
+    if (e.code === 'MODULE_NOT_FOUND') {
+      throw new Error(
+        `Jest: 'ts-node' is required for the TypeScript configuration files. Make sure it is installed\nError: ${e.message}`,
+      );
+    }
+
+    throw e;
+  }
+
+  registerer.enabled(true);
+
+  let configObject = interopRequireDefault(require(configPath)).default;
+
+  // In case the config is a function which imports more Typescript code
+  if (typeof configObject === 'function') {
+    configObject = await configObject();
+  }
+
+  registerer.enabled(false);
+
+  return configObject;
+};

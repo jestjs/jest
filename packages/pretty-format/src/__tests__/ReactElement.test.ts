@@ -6,16 +6,16 @@
  */
 
 import React from 'react';
-import prettyFormat from '..';
+import {plugins} from '../';
 import setPrettyPrint from './setPrettyPrint';
 
-const {ReactElement} = prettyFormat.plugins;
+const {ReactElement} = plugins;
 
 setPrettyPrint([ReactElement]);
 
 describe('ReactElement Plugin', () => {
   let forwardRefComponent: {
-    (_props: any, _ref: any): any;
+    (_props: unknown, _ref: unknown): unknown;
     displayName?: string;
   };
 

@@ -1,21 +1,25 @@
 {
   "name": "@jest/globals",
-  "version": "26.0.0",
+  "version": "26.6.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-globals"
   },
   "engines": {
-    "node": ">= 10.14.2"
+    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
   },
   "license": "MIT",
-  "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": "./build/index.js",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
-    "@jest/environment": "^26.0.0",
-    "@jest/types": "^26.0.0",
-    "expect": "^26.0.0"
+    "@jest/environment": "^26.6.2",
+    "@jest/types": "^26.6.2",
+    "expect": "^26.6.2"
   },
   "publishConfig": {
     "access": "public"

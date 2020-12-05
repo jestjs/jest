@@ -20,10 +20,12 @@
       "version-23.x-webpack",
       "version-23.x-puppeteer",
       "version-23.x-mongodb",
+      "version-23.x-dynamodb",
       "version-23.x-tutorial-jquery",
       "version-23.x-watch-plugins",
       "version-23.x-migration-guide",
-      "version-23.x-troubleshooting"
+      "version-23.x-troubleshooting",
+      "version-23.x-architecture"
     ],
     "Framework Guides": [
       "version-23.x-tutorial-react",
@@ -36,7 +38,8 @@
       "version-23.x-mock-function-api",
       "version-23.x-jest-object",
       "version-23.x-configuration",
-      "version-23.x-cli"
+      "version-23.x-cli",
+      "version-23.x-environment-variables"
     ]
   }
 }

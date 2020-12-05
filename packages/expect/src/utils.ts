@@ -6,6 +6,8 @@
  *
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import {isPrimitive} from 'jest-get-type';
 import {
   equals,
@@ -21,32 +23,22 @@ type GetPath = {
   value?: unknown;
 };
 
-// Return whether object instance inherits getter from its class.
-const hasGetterFromConstructor = (object: object, key: string) => {
-  const constructor = object.constructor;
-  if (constructor === Object) {
-    // A literal object has Object as constructor.
-    // Therefore, it cannot inherit application-specific getters.
-    // Furthermore, Object has __proto__ getter which is not relevant.
-    // Array, Boolean, Number, String constructors don’t have any getters.
-    return false;
-  }
-  if (typeof constructor !== 'function') {
-    // Object.create(null) constructs object with no constructor nor prototype.
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/create#Custom_and_Null_objects
+/**
+ * Checks if `hasOwnProperty(object, key)` up the prototype chain, stopping at `Object.prototype`.
+ */
+const hasPropertyInObject = (object: object, key: string): boolean => {
+  const shouldTerminate =
+    !object || typeof object !== 'object' || object === Object.prototype;
+
+  if (shouldTerminate) {
     return false;
   }
 
-  const descriptor = Object.getOwnPropertyDescriptor(
-    constructor.prototype,
-    key,
+  return (
+    Object.prototype.hasOwnProperty.call(object, key) ||
+    hasPropertyInObject(Object.getPrototypeOf(object), key)
   );
-  return descriptor !== undefined && typeof descriptor.get === 'function';
 };
-
-export const hasOwnProperty = (object: object, key: string): boolean =>
-  Object.prototype.hasOwnProperty.call(object, key) ||
-  hasGetterFromConstructor(object, key);
 
 export const getPath = (
   object: Record<string, any>,
@@ -104,12 +96,13 @@ export const getPath = (
 
 // Strip properties from object that are not present in the subset. Useful for
 // printing the diff for toMatchObject() without adding unrelated noise.
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const getObjectSubset = (
   object: any,
   subset: any,
   seenReferences: WeakMap<object, boolean> = new WeakMap(),
 ): any => {
+  /* eslint-enable @typescript-eslint/explicit-module-boundary-types */
   if (Array.isArray(object)) {
     if (Array.isArray(subset) && subset.length === object.length) {
       // The map method returns correct subclass of subset.
@@ -129,7 +122,7 @@ export const getObjectSubset = (
     seenReferences.set(object, trimmed);
 
     Object.keys(object)
-      .filter(key => hasOwnProperty(subset, key))
+      .filter(key => hasPropertyInObject(subset, key))
       .forEach(key => {
         trimmed[key] = seenReferences.has(object[key])
           ? seenReferences.get(object[key])
@@ -148,10 +141,11 @@ const IteratorSymbol = Symbol.iterator;
 const hasIterator = (object: any) =>
   !!(object != null && object[IteratorSymbol]);
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const iterableEquality = (
   a: any,
   b: any,
+  /* eslint-enable @typescript-eslint/explicit-module-boundary-types */
   aStack: Array<any> = [],
   bStack: Array<any> = [],
 ): boolean | undefined => {
@@ -275,10 +269,9 @@ const isObjectWithKeys = (a: any) =>
   !(a instanceof Array) &&
   !(a instanceof Date);
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const subsetEquality = (
-  object: any,
-  subset: any,
+  object: unknown,
+  subset: unknown,
 ): boolean | undefined => {
   // subsetEquality needs to keep track of the references
   // it has already visited to avoid infinite loops in case
@@ -299,7 +292,7 @@ export const subsetEquality = (
       }
       const result =
         object != null &&
-        hasOwnProperty(object, key) &&
+        hasPropertyInObject(object, key) &&
         equals(object[key], subset[key], [
           iterableEquality,
           subsetEqualityWithContext(seenReferences),
@@ -367,8 +360,7 @@ export const isError = (value: unknown): value is Error => {
   }
 };
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function emptyObject(obj: any): boolean {
+export function emptyObject(obj: unknown): boolean {
   return obj && typeof obj === 'object' ? !Object.keys(obj).length : false;
 }
 

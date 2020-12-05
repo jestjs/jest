@@ -41,7 +41,7 @@ export default function nodeModulesPaths(
   let physicalBasedir;
   try {
     physicalBasedir = tryRealpath(basedirAbs);
-  } catch (err) {
+  } catch {
     // realpath can throw, e.g. on mapped drives
     physicalBasedir = basedirAbs;
   }

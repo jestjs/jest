@@ -7,7 +7,8 @@
 
 const fixtures = __dirname;
 
-function parserTests(parse: (file: string) => BabylonParserResult) {
+// eslint-disable-next-line no-undef
+function parserTests(parse: (_file: string) => BabylonParserResult) {
   describe('File parsing without throwing', () => {
     it('Should not throw', () => {
       expect(() => {

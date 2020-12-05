@@ -7,13 +7,12 @@
 
 'use strict';
 
-// eslint-disable-next-line import/default
 import getStream from 'get-stream';
-
 import {
   CHILD_MESSAGE_CALL,
   CHILD_MESSAGE_INITIALIZE,
   PARENT_MESSAGE_CLIENT_ERROR,
+  PARENT_MESSAGE_CUSTOM,
   PARENT_MESSAGE_OK,
 } from '../../types';
 
@@ -150,11 +149,11 @@ it('provides stdout and stderr from the threads', async () => {
   const stdout = worker.getStdout();
   const stderr = worker.getStderr();
 
-  worker._worker.stdout.end('Hello ', {encoding: 'utf8'});
-  worker._worker.stderr.end('Jest ', {encoding: 'utf8'});
+  worker._worker.stdout.end('Hello ', 'utf8');
+  worker._worker.stderr.end('Jest ', 'utf8');
   worker._worker.emit('exit');
-  worker._worker.stdout.end('World!', {encoding: 'utf8'});
-  worker._worker.stderr.end('Workers!', {encoding: 'utf8'});
+  worker._worker.stdout.end('World!', 'utf8');
+  worker._worker.stderr.end('Workers!', 'utf8');
   worker._worker.emit('exit', 0);
 
   await expect(getStream(stdout)).resolves.toEqual('Hello World!');
@@ -231,6 +230,43 @@ it('calls the onProcessStart method synchronously if the queue is empty', () => 
   worker._worker.emit('message', [PARENT_MESSAGE_OK]);
 
   expect(onProcessEnd).toHaveBeenCalledTimes(1);
+});
+
+it('can send multiple messages to parent', () => {
+  const worker = new Worker({
+    forkOptions: {},
+    maxRetries: 3,
+    workerPath: '/tmp/foo',
+  });
+
+  const onProcessStart = jest.fn();
+  const onProcessEnd = jest.fn();
+  const onCustomMessage = jest.fn();
+
+  worker.send(
+    [CHILD_MESSAGE_CALL, false, 'foo', []],
+    onProcessStart,
+    onProcessEnd,
+    onCustomMessage,
+  );
+
+  // Only onProcessStart has been called
+  expect(onProcessStart).toHaveBeenCalledTimes(1);
+  expect(onProcessEnd).not.toHaveBeenCalled();
+  expect(onCustomMessage).not.toHaveBeenCalled();
+
+  // then first call replies...
+  worker._worker.emit('message', [
+    PARENT_MESSAGE_CUSTOM,
+    {message: 'foo bar', otherKey: 1},
+  ]);
+
+  expect(onProcessEnd).not.toHaveBeenCalled();
+  expect(onCustomMessage).toHaveBeenCalledTimes(1);
+  expect(onCustomMessage).toHaveBeenCalledWith({
+    message: 'foo bar',
+    otherKey: 1,
+  });
 });
 
 it('creates error instances for known errors', () => {

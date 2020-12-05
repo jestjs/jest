@@ -7,9 +7,9 @@
 
 import module = require('module');
 
-// @ts-ignore: "private" api
-declare const process: {
-  binding(type: string): {};
+// "private" api
+declare const process: NodeJS.Process & {
+  binding(type: string): Record<string, unknown>;
 };
 
 const EXPERIMENTAL_MODULES = ['worker_threads'];

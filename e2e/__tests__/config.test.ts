@@ -59,6 +59,7 @@ test('works with jsdom testEnvironmentOptions config JSON', () => {
   const result = runJest('environmentOptions', [
     '--config=' +
       JSON.stringify({
+        testEnvironment: 'jsdom',
         testEnvironmentOptions: {
           url: 'https://jestjs.io',
         },

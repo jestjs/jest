@@ -263,6 +263,22 @@ jest.mock('./sound-player', () => {
 
 This will let us inspect usage of our mocked class, using `SoundPlayer.mock.calls`: `expect(SoundPlayer).toHaveBeenCalled();` or near-equivalent: `expect(SoundPlayer.mock.calls.length).toEqual(1);`
 
+### Mocking non-default class exports
+
+If the class is **not** the default export from the module then you need to return an object with the key that is the same as the class export name.
+
+```javascript
+import {SoundPlayer} from './sound-player';
+jest.mock('./sound-player', () => {
+  // Works and lets you check for constructor calls:
+  return {
+    SoundPlayer: jest.fn().mockImplementation(() => {
+      return {playSoundFile: () => {}};
+    }),
+  };
+});
+```
+
 ### Spying on methods of our class
 
 Our mocked class will need to provide any member functions (`playSoundFile` in the example) that will be called during our tests, or else we'll get an error for calling a function that doesn't exist. But we'll probably want to also spy on calls to those methods, to ensure that they were called with the expected parameters.
@@ -313,8 +329,8 @@ Here's a complete test file which uses the module factory parameter to `jest.moc
 
 ```javascript
 // sound-player-consumer.test.js
-import SoundPlayerConsumer from './sound-player-consumer';
 import SoundPlayer from './sound-player';
+import SoundPlayerConsumer from './sound-player-consumer';
 
 const mockPlaySoundFile = jest.fn();
 jest.mock('./sound-player', () => {

@@ -10,6 +10,12 @@ yarn
 
 in the root directory.
 
+Fetch `backers.json` file by running
+
+```bash
+node fetchSupporters.js
+```
+
 Then, run the server via
 
 ```bash

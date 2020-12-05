@@ -7,6 +7,7 @@
       "version-22.x-setup-teardown",
       "version-22.x-mock-functions",
       "version-22.x-jest-platform",
+      "version-22.x-jest-community",
       "version-22.x-more-resources"
     ],
     "Guides": [
@@ -15,12 +16,15 @@
       "version-22.x-timer-mocks",
       "version-22.x-manual-mocks",
       "version-22.x-es6-class-mocks",
+      "version-22.x-bypassing-module-mocks",
       "version-22.x-webpack",
       "version-22.x-puppeteer",
       "version-22.x-mongodb",
+      "version-22.x-dynamodb",
       "version-22.x-tutorial-jquery",
       "version-22.x-migration-guide",
-      "version-22.x-troubleshooting"
+      "version-22.x-troubleshooting",
+      "version-22.x-architecture"
     ],
     "Framework Guides": [
       "version-22.x-tutorial-react",
@@ -33,7 +37,8 @@
       "version-22.x-mock-function-api",
       "version-22.x-jest-object",
       "version-22.x-configuration",
-      "version-22.x-cli"
+      "version-22.x-cli",
+      "version-22.x-environment-variables"
     ]
   }
 }

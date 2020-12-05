@@ -7,8 +7,8 @@
 
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {skipSuiteOnJestCircus} from '@jest/test-utils';
-import runJest from '../runJest';
 import {extractSummary} from '../Utils';
+import runJest from '../runJest';
 
 skipSuiteOnJestCircus();
 
@@ -43,24 +43,18 @@ testFiles.forEach(testFile => {
     expect(result.exitCode).toBe(1);
     let {rest} = extractSummary(result.stderr);
 
-    if (testFile === 'defaultTimeoutInterval.test.js') {
+    if (
+      nodeMajorVersion < 12 &&
+      testFile === 'defaultTimeoutInterval.test.js'
+    ) {
       const lineEntry = '(__tests__/defaultTimeoutInterval.test.js:10:3)';
 
-      if (nodeMajorVersion < 10) {
-        expect(rest).toContain(`at Object.<anonymous>.test ${lineEntry}`);
+      expect(rest).toContain(`at Object.<anonymous>.test ${lineEntry}`);
 
-        rest = rest.replace(
-          `at Object.<anonymous>.test ${lineEntry}`,
-          `at Object.<anonymous> ${lineEntry}`,
-        );
-      } else if (nodeMajorVersion < 12) {
-        expect(rest).toContain(`at Object.test ${lineEntry}`);
-
-        rest = rest.replace(
-          `at Object.test ${lineEntry}`,
-          `at Object.<anonymous> ${lineEntry}`,
-        );
-      }
+      rest = rest.replace(
+        `at Object.<anonymous>.test ${lineEntry}`,
+        `at Object.<anonymous> ${lineEntry}`,
+      );
     }
 
     expect(wrap(rest)).toMatchSnapshot();

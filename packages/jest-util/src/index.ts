@@ -15,12 +15,11 @@ export {default as isPromise} from './isPromise';
 export {default as setGlobal} from './setGlobal';
 export {default as deepCyclicCopy} from './deepCyclicCopy';
 export {default as convertDescriptorToString} from './convertDescriptorToString';
-import * as specialChars from './specialChars';
+export * as specialChars from './specialChars';
 export {default as replacePathSepForGlob} from './replacePathSepForGlob';
 export {default as testPathPatternToRegExp} from './testPathPatternToRegExp';
-import * as preRunMessage from './preRunMessage';
+export {default as globsToMatcher} from './globsToMatcher';
+export * as preRunMessage from './preRunMessage';
 export {default as pluralize} from './pluralize';
 export {default as formatTime} from './formatTime';
 export {default as tryRealpath} from './tryRealpath';
-
-export {preRunMessage, specialChars};

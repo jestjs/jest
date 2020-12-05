@@ -6,9 +6,9 @@
  */
 
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {isJestCircusRun} from '@jest/test-utils';
-import runJest from '../runJest';
+import {isJestJasmineRun} from '@jest/test-utils';
 import {extractSummary} from '../Utils';
+import runJest from '../runJest';
 
 const cleanupRunnerStack = (stderr: string) =>
   wrap(
@@ -42,7 +42,7 @@ test('print correct error message with nested test definitions inside describe',
   expect(cleanupRunnerStack(summary.rest)).toMatchSnapshot();
 });
 
-(isJestCircusRun() ? test : test.skip)(
+(isJestJasmineRun() ? test.skip : test)(
   'print correct message when nesting describe inside it',
   () => {
     const result = runJest('nested-test-definitions', ['nestedDescribeInTest']);
@@ -55,7 +55,7 @@ test('print correct error message with nested test definitions inside describe',
   },
 );
 
-(isJestCircusRun() ? test : test.skip)(
+(isJestJasmineRun() ? test.skip : test)(
   'print correct message when nesting a hook inside it',
   () => {
     const result = runJest('nested-test-definitions', ['nestedHookInTest']);

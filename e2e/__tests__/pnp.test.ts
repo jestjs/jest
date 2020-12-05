@@ -6,23 +6,27 @@
  */
 
 import * as path from 'path';
-import {skipSuiteOnWindows} from '@jest/test-utils';
+import {runYarnInstall} from '../Utils';
 import {json as runWithJson} from '../runJest';
-import {run} from '../Utils';
 
 const DIR = path.resolve(__dirname, '..', 'pnp');
 
-// https://github.com/facebook/jest/pull/8094#issuecomment-471220694
-skipSuiteOnWindows();
-
 beforeEach(() => {
-  run('yarn', DIR);
+  runYarnInstall(DIR, {
+    YARN_ENABLE_GLOBAL_CACHE: 'false',
+    YARN_NODE_LINKER: 'pnp',
+  });
 });
 
 it('successfully runs the tests inside `pnp/`', () => {
   const {json} = runWithJson(DIR, ['--no-cache', '--coverage'], {
+    env: {
+      YARN_ENABLE_GLOBAL_CACHE: 'false',
+      YARN_NODE_LINKER: 'pnp',
+    },
     nodeOptions: `--require ${DIR}/.pnp.js`,
   });
+
   expect(json.success).toBe(true);
   expect(json.numTotalTestSuites).toBe(2);
 });

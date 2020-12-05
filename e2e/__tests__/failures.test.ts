@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {extractSummary, run} from '../Utils';
+import {extractSummary, runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../failures');
@@ -24,7 +24,7 @@ function cleanStderr(stderr: string) {
 const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
 
 beforeAll(() => {
-  run('yarn', dir);
+  runYarnInstall(dir);
 });
 
 test('not throwing Error objects', () => {
@@ -39,8 +39,8 @@ test('not throwing Error objects', () => {
   expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
   stderr = runJest(dir, ['duringTests.test.js']).stderr;
 
-  if (nodeMajorVersion < 10) {
-    const lineEntry = '(__tests__/duringTests.test.js:38:8)';
+  if (nodeMajorVersion < 12) {
+    const lineEntry = '(__tests__/duringTests.test.js:43:8)';
 
     expect(stderr).toContain(`at Object.<anonymous>.done ${lineEntry}`);
 
@@ -48,118 +48,16 @@ test('not throwing Error objects', () => {
       `at Object.<anonymous>.done ${lineEntry}`,
       `at Object.<anonymous> ${lineEntry}`,
     );
-  } else if (nodeMajorVersion < 12) {
-    const lineEntry = '(__tests__/duringTests.test.js:38:8)';
-
-    expect(stderr).toContain(`at Object.done ${lineEntry}`);
-
-    stderr = stderr.replace(
-      `at Object.done ${lineEntry}`,
-      `at Object.<anonymous> ${lineEntry}`,
-    );
   }
 
+  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
+  stderr = runJest(dir, ['throwObjectWithStackProp.test.js']).stderr;
   expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
 });
 
 test('works with node assert', () => {
   const {stderr} = runJest(dir, ['assertionError.test.js']);
-  let summary = normalizeDots(cleanStderr(stderr));
-
-  // Node 9 started to include the error for `doesNotThrow`
-  // https://github.com/nodejs/node/pull/12167
-  if (nodeMajorVersion >= 10) {
-    expect(summary).toContain(`
-    assert.doesNotThrow(function)
-
-    Expected the function not to throw an error.
-    Instead, it threw:
-      [Error: err!]
-
-    Message:
-      Got unwanted exception.
-`);
-
-    expect(summary).toContain(`
-      68 | 
-      69 | test('assert.doesNotThrow', () => {
-    > 70 |   assert.doesNotThrow(() => {
-         |          ^
-      71 |     throw Error('err!');
-      72 |   });
-      73 | });
-
-      at Object.doesNotThrow (__tests__/assertionError.test.js:70:10)
-`);
-
-    const commonErrorMessage = `Message:
-      Got unwanted exception.
-`;
-
-    if (nodeMajorVersion === 9) {
-      const specificErrorMessage = `Message:
-      Got unwanted exception.
-    err!
-`;
-
-      expect(summary).toContain(specificErrorMessage);
-      summary = summary.replace(specificErrorMessage, commonErrorMessage);
-    } else {
-      const specificErrorMessage = `Message:
-      Got unwanted exception.
-    Actual message: "err!"
-`;
-
-      expect(summary).toContain(specificErrorMessage);
-      summary = summary.replace(specificErrorMessage, commonErrorMessage);
-    }
-
-    const ifErrorMessage = `
-    assert.ifError(received, expected)
-
-    Expected value ifError to:
-      null
-    Received:
-      1
-
-    Message:
-      ifError got unwanted exception: 1
-
-    Difference:
-
-      Comparing two different types of values. Expected null but received number.
-
-      64 | 
-      65 | test('assert.ifError', () => {
-    > 66 |   assert.ifError(1);
-         |          ^
-      67 | });
-      68 | 
-      69 | test('assert.doesNotThrow', () => {
-
-      at Object.ifError (__tests__/assertionError.test.js:66:10)
-`;
-
-    expect(summary).toContain(ifErrorMessage);
-    summary = summary.replace(ifErrorMessage, '');
-  } else {
-    const ifErrorMessage = `
-    thrown: 1
-
-      63 | });
-      64 | 
-    > 65 | test('assert.ifError', () => {
-         | ^
-      66 |   assert.ifError(1);
-      67 | });
-      68 | 
-
-      at Object.test (__tests__/assertionError.test.js:65:1)
-`;
-
-    expect(summary).toContain(ifErrorMessage);
-    summary = summary.replace(ifErrorMessage, '');
-  }
+  const summary = normalizeDots(cleanStderr(stderr));
 
   expect(wrap(summary)).toMatchSnapshot();
 });

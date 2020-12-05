@@ -10,11 +10,13 @@ Install Jest using [`yarn`](https://yarnpkg.com/en/package/jest):
 yarn add --dev jest
 ```
 
-Or [`npm`](https://www.npmjs.com/):
+Or [`npm`](https://www.npmjs.com/package/jest):
 
 ```bash
 npm install --save-dev jest
 ```
+
+Note: Jest documentation uses `yarn` commands, but `npm` will also work. You can compare `yarn` and `npm` commands in the [yarn docs, here](https://yarnpkg.com/en/docs/migrating-from-npm#toc-cli-commands-comparison).
 
 Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a `sum.js` file:
 
@@ -45,7 +47,7 @@ Add the following section to your `package.json`:
 }
 ```
 
-Finally, run `yarn test` and Jest will print this message:
+Finally, run `yarn test` or `npm run test` and Jest will print this message:
 
 ```bash
 PASS  ./sum.test.js
@@ -58,7 +60,7 @@ This test used `expect` and `toBe` to test that two values were exactly identica
 
 ## Running from command line
 
-You can run Jest directly from the CLI (if it's globally available in your `PATH`, e.g. by `yarn global add jest`) with a variety of useful options.
+You can run Jest directly from the CLI (if it's globally available in your `PATH`, e.g. by `yarn global add jest` or `npm install jest --global`) with a variety of useful options.
 
 Here's how to run Jest on files matching `my-test`, using `config.json` as a configuration file and display a native OS notification after the run:
 
@@ -138,6 +140,18 @@ You are now set up to use all ES6 features and React specific syntax.
 
 Jest can be used in projects that use [webpack](https://webpack.js.org/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](Webpack.md) to get started.
 
+### Using parcel
+
+Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration. Refer to the official [docs](https://parceljs.org/getting_started.html) to get started.
+
 ### Using TypeScript
 
 To use TypeScript in your tests you can use [ts-jest](https://github.com/kulshekhar/ts-jest).
+
+You may also want to install the [`@types/jest`](https://www.npmjs.com/package/@types/jest) module for the version of Jest you're using. This will help provide full typing when writing your tests with TypeScript.
+
+> For `@types/*` modules it's recommended to try to match the version of the associated module. For example, if you are using `26.4.0` of `jest` then using `26.4.x` of `@types/jest` is ideal. In general, try to match the major (`26`) and minor (`4`) version as closely as possible.
+
+```bash
+yarn add --dev @types/jest
+```

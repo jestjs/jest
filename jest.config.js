@@ -23,6 +23,7 @@ module.exports = {
   modulePathIgnorePatterns: [
     'examples/.*',
     'packages/.*/build',
+    'packages/.*/tsconfig.*',
     'packages/jest-runtime/src/__tests__/test_root.*',
     'website/.*',
     'e2e/runtime-internal-module-registry/__mocks__',
@@ -33,8 +34,8 @@ module.exports = {
     '<rootDir>/packages/pretty-format/build/plugins/ConvertAnsi.js',
     require.resolve('jest-snapshot-serializer-raw'),
   ],
-  testEnvironment: './packages/jest-environment-node',
   testPathIgnorePatterns: [
+    '/test-types/',
     '/__arbitraries__/',
     '/node_modules/',
     '/examples/',
@@ -49,6 +50,8 @@ module.exports = {
     '/packages/jest-cli/src/init/__tests__/fixtures/',
     '/packages/jest-haste-map/src/__tests__/haste_impl.js',
     '/packages/jest-haste-map/src/__tests__/dependencyExtractor.js',
+    '/packages/jest-haste-map/src/__tests__/test_dotfiles_root/',
+    '/packages/jest-repl/src/__tests__/test_root',
     '/packages/jest-resolve-dependencies/src/__tests__/__fixtures__/',
     '/packages/jest-runtime/src/__tests__/defaultResolver.js',
     '/packages/jest-runtime/src/__tests__/module_dir/',
@@ -61,7 +64,7 @@ module.exports = {
     '/e2e/__tests__/iterator-to-null-test.ts',
   ],
   transform: {
-    '^.+\\.[jt]sx?$': '<rootDir>/packages/babel-jest',
+    '\\.[jt]sx?$': '<rootDir>/packages/babel-jest',
   },
   watchPathIgnorePatterns: ['coverage'],
   watchPlugins: [

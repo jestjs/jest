@@ -7,18 +7,24 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import {statSync} from 'graceful-fs';
-import {sync as glob} from 'glob';
-import type {Config} from '@jest/types';
-import {ValidationError, validate} from 'jest-validate';
-import {clearLine, replacePathSepForGlob, tryRealpath} from 'jest-util';
 import chalk = require('chalk');
-import micromatch = require('micromatch');
-import Resolver = require('jest-resolve');
-import {replacePathSepForRegex} from 'jest-regex-util';
 import merge = require('deepmerge');
-import validatePattern from './validatePattern';
+import {sync as glob} from 'glob';
+import {statSync} from 'graceful-fs';
+import micromatch = require('micromatch');
+import type {Config} from '@jest/types';
+import {replacePathSepForRegex} from 'jest-regex-util';
+import Resolver from 'jest-resolve';
+import {clearLine, replacePathSepForGlob, tryRealpath} from 'jest-util';
+import {ValidationError, validate} from 'jest-validate';
+import DEFAULT_CONFIG from './Defaults';
+import DEPRECATED_CONFIG from './Deprecated';
+import {validateReporters} from './ReporterValidationErrors';
+import VALID_CONFIG from './ValidConfig';
+import {getDisplayNameColor} from './color';
+import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
 import getMaxWorkers from './getMaxWorkers';
+import setFromArgv from './setFromArgv';
 import {
   BULLET,
   DOCUMENTATION_NOTE,
@@ -31,13 +37,7 @@ import {
   replaceRootDirInPath,
   resolve,
 } from './utils';
-import {DEFAULT_JS_PATTERN, DEFAULT_REPORTER_LABEL} from './constants';
-import {validateReporters} from './ReporterValidationErrors';
-import DEFAULT_CONFIG from './Defaults';
-import DEPRECATED_CONFIG from './Deprecated';
-import setFromArgv from './setFromArgv';
-import VALID_CONFIG from './ValidConfig';
-import {getDisplayNameColor} from './color';
+import validatePattern from './validatePattern';
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js'];
 const PRESET_NAME = 'jest-preset';
@@ -133,14 +133,15 @@ const setupPreset = (
   );
 
   try {
+    if (!presetModule) {
+      throw new Error(`Cannot find module '${presetPath}'`);
+    }
+
     // Force re-evaluation to support multiple projects
     try {
-      if (presetModule) {
-        delete require.cache[require.resolve(presetModule)];
-      }
-    } catch (e) {}
+      delete require.cache[require.resolve(presetModule)];
+    } catch {}
 
-    // @ts-ignore: `presetModule` can be null?
     preset = require(presetModule);
   } catch (error) {
     if (error instanceof SyntaxError || error instanceof TypeError) {
@@ -278,7 +279,7 @@ const normalizeCollectCoverageFrom = (
   if (!Array.isArray(initialCollectCoverageFrom)) {
     try {
       value = JSON.parse(initialCollectCoverageFrom);
-    } catch (e) {}
+    } catch {}
 
     if (options[key] && !Array.isArray(value)) {
       value = [initialCollectCoverageFrom];
@@ -391,7 +392,7 @@ const normalizeRootDir = (
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
     options.rootDir = tryRealpath(options.rootDir);
-  } catch (e) {
+  } catch {
     // ignored
   }
 
@@ -473,6 +474,7 @@ const buildTestPathPattern = (argv: Config.Argv): string => {
 const showTestPathPatternError = (testPathPattern: string) => {
   clearLine(process.stdout);
 
+  // eslint-disable-next-line no-console
   console.log(
     chalk.red(
       `  Invalid testPattern ${testPathPattern} supplied. ` +
@@ -480,6 +482,63 @@ const showTestPathPatternError = (testPathPattern: string) => {
     ),
   );
 };
+
+function validateExtensionsToTreatAsEsm(
+  extensionsToTreatAsEsm: Config.InitialOptions['extensionsToTreatAsEsm'],
+) {
+  if (!extensionsToTreatAsEsm || extensionsToTreatAsEsm.length === 0) {
+    return;
+  }
+
+  function printConfig(opts: Array<string>) {
+    const string = opts.map(ext => `'${ext}'`).join(', ');
+
+    return chalk.bold(`extensionsToTreatAsEsm: [${string}]`);
+  }
+
+  const extensionWithoutDot = extensionsToTreatAsEsm.some(
+    ext => !ext.startsWith('.'),
+  );
+
+  if (extensionWithoutDot) {
+    throw createConfigError(
+      `  Option: ${printConfig(
+        extensionsToTreatAsEsm,
+      )} includes a string that does not start with a period (${chalk.bold(
+        '.',
+      )}).
+  Please change your configuration to ${printConfig(
+    extensionsToTreatAsEsm.map(ext => (ext.startsWith('.') ? ext : `.${ext}`)),
+  )}.`,
+    );
+  }
+
+  if (extensionsToTreatAsEsm.includes('.js')) {
+    throw createConfigError(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+        "'.js'",
+      )} which is always inferred based on ${chalk.bold(
+        'type',
+      )} in its nearest ${chalk.bold('package.json')}.`,
+    );
+  }
+
+  if (extensionsToTreatAsEsm.includes('.cjs')) {
+    throw createConfigError(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+        "'.cjs'",
+      )} which is always treated as CommonJS.`,
+    );
+  }
+
+  if (extensionsToTreatAsEsm.includes('.mjs')) {
+    throw createConfigError(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+        "'.mjs'",
+      )} which is always treated as an ECMAScript Module.`,
+    );
+  }
+}
 
 export default function normalize(
   initialOptions: Config.InitialOptions,
@@ -554,7 +613,13 @@ export default function normalize(
     options.roots = [options.rootDir];
   }
 
-  if (!options.testRunner || options.testRunner === 'jasmine2') {
+  if (
+    !options.testRunner ||
+    options.testRunner === 'circus' ||
+    options.testRunner === 'jest-circus'
+  ) {
+    options.testRunner = require.resolve('jest-circus/runner');
+  } else if (options.testRunner === 'jasmine2') {
     options.testRunner = require.resolve('jest-jasmine2');
   }
 
@@ -575,6 +640,8 @@ export default function normalize(
       rootDir: options.rootDir,
     });
   }
+
+  validateExtensionsToTreatAsEsm(options.extensionsToTreatAsEsm);
 
   const optionKeys = Object.keys(options) as Array<keyof Config.InitialOptions>;
 
@@ -880,11 +947,13 @@ export default function normalize(
       case 'detectOpenHandles':
       case 'errorOnDeprecated':
       case 'expand':
+      case 'extensionsToTreatAsEsm':
       case 'extraGlobals':
       case 'globals':
       case 'findRelatedTests':
       case 'forceCoverageMatch':
       case 'forceExit':
+      case 'injectGlobals':
       case 'lastCommit':
       case 'listTests':
       case 'logHeapUsage':
@@ -895,6 +964,7 @@ export default function normalize(
       case 'notify':
       case 'notifyMode':
       case 'onlyChanged':
+      case 'onlyFailures':
       case 'outputFile':
       case 'passWithNoTests':
       case 'replname':
@@ -907,6 +977,7 @@ export default function normalize(
       case 'silent':
       case 'skipFilter':
       case 'skipNodeResolution':
+      case 'slowTestThreshold':
       case 'testEnvironment':
       case 'testEnvironmentOptions':
       case 'testFailureExitCode':
@@ -943,7 +1014,7 @@ export default function normalize(
         });
         break;
     }
-    // @ts-ignore: automock is missing in GlobalConfig, so what
+    // @ts-expect-error: automock is missing in GlobalConfig, so what
     newOptions[key] = value;
     return newOptions;
   }, newOptions);
@@ -955,7 +1026,7 @@ export default function normalize(
   try {
     // try to resolve windows short paths, ignoring errors (permission errors, mostly)
     newOptions.cwd = tryRealpath(process.cwd());
-  } catch (e) {
+  } catch {
     // ignored
   }
 
@@ -964,7 +1035,7 @@ export default function normalize(
     rootDir: options.rootDir,
   });
 
-  newOptions.nonFlagArgs = argv._;
+  newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
   newOptions.testPathPattern = buildTestPathPattern(argv);
   newOptions.json = !!argv.json;
 
@@ -983,6 +1054,7 @@ export default function normalize(
 
   if (argv.all) {
     newOptions.onlyChanged = false;
+    newOptions.onlyFailures = false;
   } else if (newOptions.testPathPattern) {
     // When passing a test path pattern we don't want to only monitor changed
     // files unless `--watch` is also passed.
@@ -1005,9 +1077,9 @@ export default function normalize(
     newOptions.watchAll = false;
   }
 
-  // as any since it can happen. We really need to fix the types here
+  // as unknown since it can happen. We really need to fix the types here
   if (
-    newOptions.moduleNameMapper === (DEFAULT_CONFIG.moduleNameMapper as any)
+    newOptions.moduleNameMapper === (DEFAULT_CONFIG.moduleNameMapper as unknown)
   ) {
     newOptions.moduleNameMapper = [];
   }
@@ -1052,7 +1124,7 @@ export default function normalize(
   // where arguments to `--collectCoverageFrom` should be globs (or relative
   // paths to the rootDir)
   if (newOptions.collectCoverage && argv.findRelatedTests) {
-    let collectCoverageFrom = argv._.map(filename => {
+    let collectCoverageFrom = newOptions.nonFlagArgs.map(filename => {
       filename = replaceRootDirInPath(options.rootDir, filename);
       return path.isAbsolute(filename)
         ? path.relative(options.rootDir, filename)
