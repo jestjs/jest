@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {formatTime} from 'jest-util';
 import {getState} from './state';
 
 export function deadline(): number {
@@ -32,7 +33,7 @@ async function timeout<T>(promise: Promise<T>, ms: number): Promise<T> {
         if (await sleepCancelled) {
           return undefined as never;
         }
-        const here = new Error(`deadline exceeded (waited here for ${ms}ms)`);
+        const here = new Error(`deadline exceeded (waited here for ${formatTime(ms)})`);
         here.stack = here.stack
           ?.split('\n')
           .filter(line => !isUs(line))

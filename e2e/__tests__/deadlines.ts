@@ -37,7 +37,7 @@ it('throws on deadline exceeded in a describe hook', () => {
 function summaryWithoutTime(result: {stderr: string}) {
   const summary = extractSummary(result.stderr);
   summary.rest = summary.rest.replace(
-    /(waited here for) \d+ms/,
+    /(waited here for) \d*\.?\d+ m?s\b/,
     '$1 <<REPLACED>>',
   );
   return summary;
