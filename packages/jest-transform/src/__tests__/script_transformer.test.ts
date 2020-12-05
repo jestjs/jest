@@ -9,7 +9,7 @@
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {makeGlobalConfig, makeProjectConfig} from '@jest/test-utils';
 import type {Config} from '@jest/types';
-import type {ShouldInstrumentOptions, Transformer} from '../types';
+import type {Options, ShouldInstrumentOptions, Transformer} from '../types';
 
 jest
   .mock('graceful-fs', () =>
@@ -38,7 +38,7 @@ jest
     },
   }))
   .mock('jest-haste-map', () => ({
-    getCacheFilePath: (cacheDir, baseDir) => cacheDir + baseDir,
+    getCacheFilePath: (cacheDir: string, baseDir: string) => cacheDir + baseDir,
   }))
   .mock('jest-util', () => ({
     ...jest.requireActual('jest-util'),
@@ -73,6 +73,15 @@ jest.mock(
     createTransformer: jest.fn(() => ({
       process: jest.fn(() => 'processedCode'),
     })),
+  }),
+  {virtual: true},
+);
+
+jest.mock(
+  'cache_fs_preprocessor',
+  () => ({
+    getCacheKey: jest.fn(() => 'ab'),
+    process: jest.fn(() => 'processedCode'),
   }),
   {virtual: true},
 );
@@ -663,7 +672,7 @@ describe('ScriptTransformer', () => {
     );
 
     const {getCacheKey} = require('test_preprocessor');
-    expect(getCacheKey.mock.calls[0][3]).toMatchSnapshot();
+    expect(getCacheKey).toMatchSnapshot();
   });
 
   it('creates transformer with config', () => {
@@ -671,8 +680,8 @@ describe('ScriptTransformer', () => {
     config = Object.assign(config, {
       transform: [['\\.js$', 'configureable-preprocessor', transformerConfig]],
     });
-
     const scriptTransformer = new ScriptTransformer(config);
+
     scriptTransformer.transform('/fruits/banana.js', {});
     expect(
       require('configureable-preprocessor').createTransformer,
@@ -751,6 +760,31 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).not.toBeCalled();
   });
 
+  it('should reuse the value from in-memory cache which is set by custom transformer', () => {
+    const cacheFS = new Map<string, string>();
+    const testPreprocessor = require('cache_fs_preprocessor');
+    const scriptTransformer = new ScriptTransformer(
+      {
+        ...config,
+        transform: [['\\.js$', 'cache_fs_preprocessor', {}]],
+      },
+      cacheFS,
+    );
+    const fileName1 = '/fruits/banana.js';
+    const fileName2 = '/fruits/kiwi.js';
+
+    scriptTransformer.transform(fileName1, getCoverageOptions());
+
+    cacheFS.set(fileName2, 'foo');
+
+    scriptTransformer.transform(fileName2, getCoverageOptions());
+
+    expect(testPreprocessor.getCacheKey.mock.calls[0][2].cacheFS).toBeDefined()
+    expect(testPreprocessor.process.mock.calls[0][2].cacheFS).toBeDefined()
+    expect(fs.readFileSync).toHaveBeenCalledTimes(1);
+    expect(fs.readFileSync).toBeCalledWith(fileName1, 'utf8');
+  });
+
   it('does not reuse the in-memory cache between different projects', () => {
     const scriptTransformer = new ScriptTransformer({
       ...config,
@@ -793,7 +827,7 @@ describe('ScriptTransformer', () => {
 
 function getCoverageOptions(
   overrides: Partial<ShouldInstrumentOptions> = {},
-): ShouldInstrumentOptions {
+): Options {
   const globalConfig = makeGlobalConfig(overrides);
 
   return {
@@ -801,6 +835,10 @@ function getCoverageOptions(
     collectCoverageFrom: globalConfig.collectCoverageFrom,
     collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
     coverageProvider: globalConfig.coverageProvider,
+    supportsDynamicImport: false,
+    supportsExportNamespaceFrom: false,
+    supportsStaticESM: false,
+    supportsTopLevelAwait: false,
   };
 }
 

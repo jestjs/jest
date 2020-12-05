@@ -17,7 +17,7 @@ import {addHook} from 'pirates';
 import slash = require('slash');
 import {sync as writeFileAtomic} from 'write-file-atomic';
 import type {Config} from '@jest/types';
-import HasteMap = require('jest-haste-map');
+import HasteMap from 'jest-haste-map';
 import {
   createDirectory,
   interopRequireDefault,
@@ -28,7 +28,8 @@ import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';
 import shouldInstrument from './shouldInstrument';
 import type {
   Options,
-  TransformOptions,
+  ReducedTransformOptions,
+  StringMap,
   TransformResult,
   TransformedSource,
   Transformer,
@@ -64,12 +65,17 @@ async function waitForPromiseWithCleanup(
 
 export default class ScriptTransformer {
   private _cache: ProjectCache;
-  private _config: Config.ProjectConfig;
+  private readonly _cacheFS: StringMap;
+  private readonly _config: Config.ProjectConfig;
   private _transformCache: Map<Config.Path, Transformer>;
   private _transformConfigCache: Map<Config.Path, unknown>;
 
-  constructor(config: Config.ProjectConfig) {
+  constructor(
+    config: Config.ProjectConfig,
+    cacheFS: StringMap = new Map<string, string>(),
+  ) {
     this._config = config;
+    this._cacheFS = cacheFS;
     this._transformCache = new Map();
     this._transformConfigCache = new Map();
 
@@ -93,7 +99,7 @@ export default class ScriptTransformer {
   private _getCacheKey(
     fileData: string,
     filename: Config.Path,
-    options: TransformOptions,
+    options: ReducedTransformOptions,
   ): string {
     const configString = this._cache.configString;
     const transformer = this._getTransformer(filename);
@@ -101,14 +107,11 @@ export default class ScriptTransformer {
     if (transformer && typeof transformer.getCacheKey === 'function') {
       return createHash('md5')
         .update(
-          transformer.getCacheKey(fileData, filename, configString, {
+          transformer.getCacheKey(fileData, filename, {
+            ...options,
+            cacheFS: this._cacheFS,
             config: this._config,
-            instrument: options.instrument,
-            rootDir: this._config.rootDir,
-            supportsDynamicImport: options.supportsDynamicImport,
-            supportsExportNamespaceFrom: options.supportsExportNamespaceFrom,
-            supportsStaticESM: options.supportsStaticESM,
-            supportsTopLevelAwait: options.supportsTopLevelAwait,
+            configString,
           }),
         )
         .update(CACHE_VERSION)
@@ -127,7 +130,7 @@ export default class ScriptTransformer {
   private _getFileCachePath(
     filename: Config.Path,
     content: string,
-    options: TransformOptions,
+    options: ReducedTransformOptions,
   ): Config.Path {
     const baseCacheDir = HasteMap.getCacheFilePath(
       this._config.cacheDirectory,
@@ -206,7 +209,7 @@ export default class ScriptTransformer {
     filename: Config.Path,
     input: TransformedSource,
     canMapToInput: boolean,
-    options: TransformOptions,
+    options: ReducedTransformOptions,
   ): TransformedSource {
     const inputCode = typeof input === 'string' ? input : input.code;
     const inputMap = typeof input === 'string' ? null : input.map;
@@ -256,7 +259,7 @@ export default class ScriptTransformer {
   transformSource(
     filepath: Config.Path,
     content: string,
-    options: TransformOptions,
+    options: ReducedTransformOptions,
   ): TransformResult {
     const filename = tryRealpath(filepath);
     const transform = this._getTransformer(filename);
@@ -290,12 +293,12 @@ export default class ScriptTransformer {
     };
 
     if (transform && shouldCallTransform) {
-      const processed = transform.process(
-        content,
-        filename,
-        this._config,
-        options,
-      );
+      const processed = transform.process(content, filename, {
+        ...options,
+        cacheFS: this._cacheFS,
+        config: this._config,
+        configString: this._cache.configString,
+      });
 
       if (typeof processed === 'string') {
         transformed.code = processed;
@@ -376,13 +379,16 @@ export default class ScriptTransformer {
   private _transformAndBuildScript(
     filename: Config.Path,
     options: Options,
-    transformOptions: TransformOptions,
+    transformOptions: ReducedTransformOptions,
     fileSource?: string,
   ): TransformResult {
     const {isCoreModule, isInternalModule} = options;
-    const content = stripShebang(
-      fileSource || fs.readFileSync(filename, 'utf8'),
-    );
+    let fileContent = fileSource ?? this._cacheFS.get(filename);
+    if (!fileContent) {
+      fileContent = fs.readFileSync(filename, 'utf8');
+      this._cacheFS.set(filename, fileContent);
+    }
+    const content = stripShebang(fileContent);
 
     let code = content;
     let sourceMapPath: string | null = null;
@@ -471,17 +477,23 @@ export default class ScriptTransformer {
   requireAndTranspileModule<ModuleType = unknown>(
     moduleName: string,
     callback?: (module: ModuleType) => void,
-    transformOptions?: TransformOptions,
+    transformOptions?: ReducedTransformOptions,
   ): ModuleType;
   requireAndTranspileModule<ModuleType = unknown>(
     moduleName: string,
     callback?: (module: ModuleType) => Promise<void>,
-    transformOptions?: TransformOptions,
+    transformOptions?: ReducedTransformOptions,
   ): Promise<ModuleType>;
   requireAndTranspileModule<ModuleType = unknown>(
     moduleName: string,
     callback?: (module: ModuleType) => void | Promise<void>,
-    transformOptions: TransformOptions = {instrument: false},
+    transformOptions: ReducedTransformOptions = {
+      instrument: false,
+      supportsDynamicImport: false,
+      supportsExportNamespaceFrom: false,
+      supportsStaticESM: false,
+      supportsTopLevelAwait: false,
+    },
   ): ModuleType | Promise<ModuleType> {
     // Load the transformer to avoid a cycle where we need to load a
     // transformer in order to transform it in the require hooks

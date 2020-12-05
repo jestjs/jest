@@ -41,15 +41,13 @@ import {
   shouldInstrument,
 } from '@jest/transform';
 import type {Config, Global} from '@jest/types';
-import HasteMap = require('jest-haste-map');
+import HasteMap, {ModuleMap} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
-import jestMock = require('jest-mock');
+import type {MockFunctionMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver from 'jest-resolve';
 import Snapshot = require('jest-snapshot');
 import {createDirectory, deepCyclicCopy} from 'jest-util';
-import {run as cliRun} from './cli';
-import {options as cliOptions} from './cli/args';
 import {
   createOutsideJestVmPath,
   decodePossibleOutsideJestVmPath,
@@ -58,6 +56,11 @@ import {
 import type {Context} from './types';
 
 export type {Context} from './types';
+
+interface EsmModuleCache {
+  beforeEvaluation: Promise<VMModule>;
+  fullyEvaluated: Promise<VMModule>;
+}
 
 const esmIsAvailable = typeof SourceTextModule === 'function';
 
@@ -92,11 +95,11 @@ const defaultTransformOptions: InternalModuleOptions = {
 type InitialModule = Omit<Module, 'require' | 'parent' | 'paths'>;
 type ModuleRegistry = Map<string, InitialModule | Module>;
 
-const OUTSIDE_JEST_VM_RESOLVE_OPTION = Symbol.for(
-  'OUTSIDE_JEST_VM_RESOLVE_OPTION',
+const JEST_RESOLVE_OUTSIDE_VM_OPTION = Symbol.for(
+  'jest-resolve-outside-vm-option',
 );
 type ResolveOptions = Parameters<typeof require.resolve>[1] & {
-  [OUTSIDE_JEST_VM_RESOLVE_OPTION]?: true;
+  [JEST_RESOLVE_OUTSIDE_VM_OPTION]?: true;
 };
 
 type StringMap = Map<string, string>;
@@ -151,7 +154,7 @@ const supportsTopLevelAwait =
   })();
 
 export default class Runtime {
-  private _cacheFS: StringMap;
+  private readonly _cacheFS: StringMap;
   private _config: Config.ProjectConfig;
   private _coverageOptions: ShouldInstrumentOptions;
   private _currentlyExecutingModulePath: string;
@@ -167,14 +170,14 @@ export default class Runtime {
   private _mockFactories: Map<string, () => unknown>;
   private _mockMetaDataCache: Map<
     string,
-    jestMock.MockFunctionMetadata<unknown, Array<unknown>>
+    MockFunctionMetadata<unknown, Array<unknown>>
   >;
   private _mockRegistry: Map<string, any>;
   private _isolatedMockRegistry: Map<string, any> | null;
-  private _moduleMocker: typeof jestMock;
+  private _moduleMocker: ModuleMocker;
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
-  private _esmoduleRegistry: Map<string, Promise<VMModule>>;
+  private _esmoduleRegistry: Map<string, EsmModuleCache>;
   private _testPath: Config.Path | undefined;
   private _resolver: Resolver;
   private _shouldAutoMock: boolean;
@@ -227,7 +230,7 @@ export default class Runtime {
     this._esmoduleRegistry = new Map();
     this._testPath = testPath;
     this._resolver = resolver;
-    this._scriptTransformer = new ScriptTransformer(config);
+    this._scriptTransformer = new ScriptTransformer(config, this._cacheFS);
     this._shouldAutoMock = config.automock;
     this._sourceMapRegistry = new Map();
     this._fileTransforms = new Map();
@@ -336,7 +339,7 @@ export default class Runtime {
 
   static createResolver(
     config: Config.ProjectConfig,
-    moduleMap: HasteMap.ModuleMap,
+    moduleMap: ModuleMap,
   ): Resolver {
     return new Resolver(moduleMap, {
       defaultPlatform: config.haste.defaultPlatform,
@@ -351,20 +354,26 @@ export default class Runtime {
     });
   }
 
-  static runCLI(args?: Config.Argv, info?: Array<string>): Promise<void> {
-    return cliRun(args, info);
+  static async runCLI(): Promise<never> {
+    throw new Error('The jest-runtime CLI has been moved into jest-repl');
   }
 
-  static getCLIOptions(): typeof cliOptions {
-    return cliOptions;
+  static getCLIOptions(): never {
+    throw new Error('The jest-runtime CLI has been moved into jest-repl');
   }
 
   // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
-  unstable_shouldLoadAsEsm = Resolver.unstable_shouldLoadAsEsm;
+  unstable_shouldLoadAsEsm(path: Config.Path): boolean {
+    return Resolver.unstable_shouldLoadAsEsm(
+      path,
+      this._config.extensionsToTreatAsEsm,
+    );
+  }
 
   private async loadEsmModule(
     modulePath: Config.Path,
     query = '',
+    isStaticImport = false,
   ): Promise<VMModule> {
     const cacheKey = modulePath + query;
 
@@ -380,7 +389,10 @@ export default class Runtime {
 
       if (this._resolver.isCoreModule(modulePath)) {
         const core = this._importCoreModule(modulePath, context);
-        this._esmoduleRegistry.set(cacheKey, core);
+        this._esmoduleRegistry.set(cacheKey, {
+          beforeEvaluation: core,
+          fullyEvaluated: core,
+        });
         return core;
       }
 
@@ -403,31 +415,56 @@ export default class Runtime {
             specifier,
             referencingModule.identifier,
             referencingModule.context,
+            false,
           ),
         initializeImportMeta(meta: ImportMeta) {
           meta.url = pathToFileURL(modulePath).href;
         },
       });
 
+      let resolve: (value: VMModule) => void;
+      let reject: (value: any) => void;
+      const promise = new Promise<VMModule>((_resolve, _reject) => {
+        resolve = _resolve;
+        reject = _reject;
+      });
+
+      // add to registry before link so that circular import won't end up stack overflow
       this._esmoduleRegistry.set(
         cacheKey,
         // we wanna put the linking promise in the cache so modules loaded in
         // parallel can all await it. We then await it synchronously below, so
         // we shouldn't get any unhandled rejections
-        module
-          .link((specifier: string, referencingModule: VMModule) =>
-            this.linkModules(
-              specifier,
-              referencingModule.identifier,
-              referencingModule.context,
-            ),
-          )
-          .then(() => module.evaluate())
-          .then(() => module),
+        {
+          beforeEvaluation: Promise.resolve(module),
+          fullyEvaluated: promise,
+        },
       );
+
+      module
+        .link((specifier: string, referencingModule: VMModule) =>
+          this.linkModules(
+            specifier,
+            referencingModule.identifier,
+            referencingModule.context,
+            true,
+          ),
+        )
+        .then(() => module.evaluate())
+        .then(
+          () => resolve(module),
+          (e: any) => reject(e),
+        );
     }
 
-    const module = this._esmoduleRegistry.get(cacheKey);
+    const entry = this._esmoduleRegistry.get(cacheKey);
+
+    // return the already resolved, pre-evaluation promise
+    // is loaded through static import to prevent promise deadlock
+    // because module is evaluated after all static import is resolved
+    const module = isStaticImport
+      ? entry?.beforeEvaluation
+      : entry?.fullyEvaluated;
 
     invariant(module);
 
@@ -438,15 +475,21 @@ export default class Runtime {
     specifier: string,
     referencingIdentifier: string,
     context: VMContext,
+    isStaticImport: boolean,
   ) {
     if (specifier === '@jest/globals') {
       const fromCache = this._esmoduleRegistry.get('@jest/globals');
 
       if (fromCache) {
-        return fromCache;
+        return isStaticImport
+          ? fromCache.beforeEvaluation
+          : fromCache.fullyEvaluated;
       }
       const globals = this.getGlobalsForEsm(referencingIdentifier, context);
-      this._esmoduleRegistry.set('@jest/globals', globals);
+      this._esmoduleRegistry.set('@jest/globals', {
+        beforeEvaluation: globals,
+        fullyEvaluated: globals,
+      });
 
       return globals;
     }
@@ -463,7 +506,7 @@ export default class Runtime {
       this._resolver.isCoreModule(resolved) ||
       this.unstable_shouldLoadAsEsm(resolved)
     ) {
-      return this.loadEsmModule(resolved, query);
+      return this.loadEsmModule(resolved, query, isStaticImport);
     }
 
     return this.loadCjsAsEsm(referencingIdentifier, resolved, context);
@@ -1171,7 +1214,7 @@ export default class Runtime {
 
           invariant(context);
 
-          return this.linkModules(specifier, scriptFilename, context);
+          return this.linkModules(specifier, scriptFilename, context, false);
         },
       });
     } catch (e) {
@@ -1402,7 +1445,7 @@ export default class Runtime {
         resolveOptions,
       );
       if (
-        resolveOptions?.[OUTSIDE_JEST_VM_RESOLVE_OPTION] &&
+        resolveOptions?.[JEST_RESOLVE_OUTSIDE_VM_OPTION] &&
         options?.isInternalModule
       ) {
         return createOutsideJestVmPath(resolved);

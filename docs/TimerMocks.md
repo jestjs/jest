@@ -35,7 +35,24 @@ test('waits 1 second before ending the game', () => {
 });
 ```
 
-Here we enable fake timers by calling `jest.useFakeTimers();`. This mocks out setTimeout and other timer functions with mock functions. If running multiple tests inside of one file or describe block, `jest.useFakeTimers();` can be called before each test manually or with a setup function such as `beforeEach`. Not doing so will result in the internal usage counter not being reset.
+Here we enable fake timers by calling `jest.useFakeTimers()`. This mocks out `setTimeout` and other timer functions with mock functions. Timers can be restored to their normal behavior with `jest.useRealTimers()`.
+
+While you can call `jest.useFakeTimers()` or `jest.useRealTimers()` from anywhere (top level, inside an `it` block, etc.), it is a **global operation** and will affect other tests within the same file. Additionally, you need to call `jest.useFakeTimers()` to reset internal counters before each test. If you plan to not use fake timers in all your tests, you will want to clean up manually, as otherwise the faked timers will leak across tests:
+
+```javascript
+afterEach(() => {
+  jest.useRealTimers();
+});
+
+test('do something with fake timers', () => {
+  jest.useFakeTimers();
+  // ...
+});
+
+test('do something with real timers', () => {
+  // ...
+});
+```
 
 ## Run All Timers
 

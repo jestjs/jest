@@ -8,6 +8,8 @@
 
 import crypto from 'crypto';
 import path from 'path';
+import {wrap} from 'jest-snapshot-serializer-raw';
+import stripAnsi from 'strip-ansi';
 import {escapeStrForRegex} from 'jest-regex-util';
 import Defaults from '../Defaults';
 import {DEFAULT_JS_PATTERN} from '../constants';
@@ -33,7 +35,7 @@ let expectedPathAbs;
 let expectedPathAbsAnother;
 
 let virtualModuleRegexes;
-beforeEach(() => (virtualModuleRegexes = [/jest-jasmine2/, /babel-jest/]));
+beforeEach(() => (virtualModuleRegexes = [/jest-circus/, /babel-jest/]));
 const findNodeModule = jest.fn(name => {
   if (virtualModuleRegexes.some(regex => regex.test(name))) {
     return name;
@@ -659,7 +661,7 @@ describe('modulePathIgnorePatterns', () => {
 });
 
 describe('testRunner', () => {
-  it('defaults to Jasmine 2', () => {
+  it('defaults to Circus', () => {
     const {options} = normalize(
       {
         rootDir: '/root/path/foo',
@@ -667,7 +669,22 @@ describe('testRunner', () => {
       {},
     );
 
-    expect(options.testRunner).toMatch('jasmine2');
+    expect(options.testRunner).toMatch('jest-circus');
+  });
+
+  it('resolves jasmine', () => {
+    const Resolver = require('jest-resolve').default;
+    Resolver.findNodeModule = jest.fn(name => name);
+    const {options} = normalize(
+      {
+        rootDir: '/root/path/foo',
+      },
+      {
+        testRunner: 'jasmine2',
+      },
+    );
+
+    expect(options.testRunner).toMatch('jest-jasmine2');
   });
 
   it('is overwritten by argv', () => {
@@ -678,11 +695,11 @@ describe('testRunner', () => {
         rootDir: '/root/path/foo',
       },
       {
-        testRunner: 'jasmine1',
+        testRunner: 'mocha',
       },
     );
 
-    expect(options.testRunner).toBe('jasmine1');
+    expect(options.testRunner).toBe('mocha');
   });
 });
 
@@ -1711,5 +1728,38 @@ describe('testTimeout', () => {
     expect(() =>
       normalize({rootDir: '/root/', testTimeout: -1}, {}),
     ).toThrowErrorMatchingSnapshot();
+  });
+});
+
+describe('extensionsToTreatAsEsm', () => {
+  function matchErrorSnapshot(callback) {
+    expect.assertions(1);
+
+    try {
+      callback();
+    } catch (error) {
+      expect(wrap(stripAnsi(error.message).trim())).toMatchSnapshot();
+    }
+  }
+
+  it('should pass valid config through', () => {
+    const {options} = normalize(
+      {extensionsToTreatAsEsm: ['.ts'], rootDir: '/root/'},
+      {},
+    );
+
+    expect(options.extensionsToTreatAsEsm).toEqual(['.ts']);
+  });
+
+  it('should enforce leading dots', () => {
+    matchErrorSnapshot(() =>
+      normalize({extensionsToTreatAsEsm: ['ts'], rootDir: '/root/'}, {}),
+    );
+  });
+
+  it.each(['.js', '.mjs', '.cjs'])('throws on %s', ext => {
+    matchErrorSnapshot(() =>
+      normalize({extensionsToTreatAsEsm: [ext], rootDir: '/root/'}, {}),
+    );
   });
 });

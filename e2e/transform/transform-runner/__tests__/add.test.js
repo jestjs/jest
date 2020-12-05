@@ -5,10 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
-if (require('./RegularModule').getModuleStateValue()) {
-  console.log('Hello, world!');
-} else {
-  console.log('Automocking is not properly disabled in jest-runtime.');
-}
+it('should add two numbers', () => {
+  expect(1 + 1).toBe(2);
+});

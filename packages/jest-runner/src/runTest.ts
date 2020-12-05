@@ -19,6 +19,7 @@ import {
 } from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
 import type {TestResult} from '@jest/test-result';
+import {ScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
@@ -102,14 +103,14 @@ async function runTestInternal(
     });
   }
 
+  const transformer = new ScriptTransformer(config);
   const TestEnvironment: typeof JestEnvironment = interopRequireDefault(
-    require(testEnvironment),
+    transformer.requireAndTranspileModule(testEnvironment),
   ).default;
   const testFramework: TestFramework = interopRequireDefault(
-    process.env.JEST_CIRCUS === '1'
-      ? // eslint-disable-next-line import/no-extraneous-dependencies
-        require('jest-circus/runner')
-      : require(config.testRunner),
+    transformer.requireAndTranspileModule(
+      process.env.JEST_JASMINE === '1' ? 'jest-jasmine2' : config.testRunner,
+    ),
   ).default;
   const Runtime: typeof RuntimeClass = interopRequireDefault(
     config.moduleLoader
@@ -120,8 +121,6 @@ async function runTestInternal(
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
   const consoleFormatter = (type: LogType, message: LogMessage) =>
     getConsoleOutput(
-      config.cwd,
-      !!globalConfig.verbose,
       // 4 = the console call is buried 4 stack frames deep
       BufferedConsole.write([], type, message, 4),
       config,
@@ -170,8 +169,7 @@ async function runTestInternal(
   const start = Date.now();
 
   for (const path of config.setupFiles) {
-    // TODO: remove ? in Jest 26
-    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);

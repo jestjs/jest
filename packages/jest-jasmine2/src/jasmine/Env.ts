@@ -52,6 +52,8 @@ import type {default as Spec, SpecResult} from './Spec';
 import type Suite from './Suite';
 
 export default function (j$: Jasmine) {
+  // https://github.com/typescript-eslint/typescript-eslint/pull/2833
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return class Env {
     specFilter: (spec: Spec) => boolean;
     catchExceptions: (value: unknown) => boolean;
@@ -444,6 +446,7 @@ export default function (j$: Jasmine) {
 
         // TODO throw in Jest 25: declarationError = new Error
         if (isPromise(describeReturnValue)) {
+          // eslint-disable-next-line no-console
           console.log(
             formatExecError(
               new Error(
@@ -457,6 +460,7 @@ export default function (j$: Jasmine) {
             ),
           );
         } else if (describeReturnValue !== undefined) {
+          // eslint-disable-next-line no-console
           console.log(
             formatExecError(
               new Error(
@@ -611,7 +615,11 @@ export default function (j$: Jasmine) {
           () => {},
           currentDeclarationSuite,
         );
-        spec.todo();
+        if (currentDeclarationSuite.markedPending) {
+          spec.pend();
+        } else {
+          spec.todo();
+        }
         currentDeclarationSuite.addChild(spec);
         return spec;
       };
@@ -624,7 +632,11 @@ export default function (j$: Jasmine) {
           timeout,
         );
         currentDeclarationSuite.addChild(spec);
-        focusedRunnables.push(spec.id);
+        if (currentDeclarationSuite.markedPending) {
+          spec.pend();
+        } else {
+          focusedRunnables.push(spec.id);
+        }
         unfocusAncestor();
         return spec;
       };

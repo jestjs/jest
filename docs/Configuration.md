@@ -353,6 +353,23 @@ Default: `false`
 
 Make calling deprecated APIs throw helpful error messages. Useful for easing the upgrade process.
 
+### `extensionsToTreatAsEsm` [array\<string>]
+
+Default: `[]`
+
+Jest will run `.mjs` and `.js` files with nearest `package.json`'s `type` field set to `module` as ECMAScript Modules. If you have any other files that should run with native ESM, you need to specify their file extension here.
+
+> Note: Jest's ESM support is still experimental, see [its docs for more details](ECMAScriptModules.md).
+
+```json
+{
+  ...
+  "jest": {
+    "extensionsToTreatAsEsm": [".ts"]
+  }
+}
+```
+
 ### `extraGlobals` [array\<string>]
 
 Default: `undefined`
@@ -501,7 +518,7 @@ test('some test', () => {
 });
 ```
 
-_Note: This option is only supported using `jest-circus`._
+_Note: This option is only supported using the default `jest-circus`. test runner_
 
 ### `maxConcurrency` [number]
 
@@ -1181,9 +1198,9 @@ This option allows the use of a custom results processor. This processor must be
 
 ### `testRunner` [string]
 
-Default: `jasmine2`
+Default: `jest-circus/runner`
 
-This option allows the use of a custom test runner. The default is jasmine2. A custom test runner can be provided by specifying a path to a test runner implementation.
+This option allows the use of a custom test runner. The default is `jest-circus`. A custom test runner can be provided by specifying a path to a test runner implementation.
 
 The test runner module must export a function with the following signature:
 
@@ -1263,8 +1280,7 @@ Examples of such compilers include:
 
 - [Babel](https://babeljs.io/)
 - [TypeScript](http://www.typescriptlang.org/)
-- [async-to-gen](http://github.com/leebyron/async-to-gen#jest)
-- To build your own please visit the [Custom Transformer](TutorialReact.md#custom-transformers) section
+- To build your own please visit the [Custom Transformer](CodeTransformation.md#writing-custom-transformers) section
 
 You can pass configuration to a transformer like `{filePattern: ['path-to-transformer', {options}]}` For example, to configure babel-jest for non-default behavior, `{"\\.js$": ['babel-jest', {rootMode: "upward"}]}`
 

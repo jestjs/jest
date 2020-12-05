@@ -12,7 +12,6 @@ import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';
 
 type ResolverOptions = {
-  allowPnp?: boolean;
   basedir: Config.Path;
   browser?: boolean;
   defaultResolver: typeof defaultResolver;
@@ -36,7 +35,9 @@ export default function defaultResolver(
   path: Config.Path,
   options: ResolverOptions,
 ): Config.Path {
-  if (process.versions.pnp && options.allowPnp !== false) {
+  // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
+  // needed for Yarn 1 which implements version 1 of the pnp spec
+  if (process.versions.pnp === '1') {
     return pnpResolver(path, options);
   }
 

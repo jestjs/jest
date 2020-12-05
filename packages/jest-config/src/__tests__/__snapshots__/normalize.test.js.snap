@@ -91,6 +91,43 @@ exports[`displayName should throw an error when displayName is using invalid val
 <red></>"
 `;
 
+exports[`extensionsToTreatAsEsm should enforce leading dots 1`] = `
+● Validation Error:
+
+  Option: extensionsToTreatAsEsm: ['ts'] includes a string that does not start with a period (.).
+  Please change your configuration to extensionsToTreatAsEsm: ['.ts'].
+
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration.html
+`;
+
+exports[`extensionsToTreatAsEsm throws on .cjs 1`] = `
+● Validation Error:
+
+  Option: extensionsToTreatAsEsm: ['.cjs'] includes '.cjs' which is always treated as CommonJS.
+
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration.html
+`;
+
+exports[`extensionsToTreatAsEsm throws on .js 1`] = `
+● Validation Error:
+
+  Option: extensionsToTreatAsEsm: ['.js'] includes '.js' which is always inferred based on type in its nearest package.json.
+
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration.html
+`;
+
+exports[`extensionsToTreatAsEsm throws on .mjs 1`] = `
+● Validation Error:
+
+  Option: extensionsToTreatAsEsm: ['.mjs'] includes '.mjs' which is always treated as an ECMAScript Module.
+
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration.html
+`;
+
 exports[`preset throws when module was found but no "jest-preset.js" or "jest-preset.json" files 1`] = `
 "<red><bold><bold>● </><bold>Validation Error</>:</>
 <red></>

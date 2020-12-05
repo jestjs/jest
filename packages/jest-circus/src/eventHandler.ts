@@ -79,6 +79,7 @@ const eventHandler: Circus.EventHandler = (
       }
       if (
         !state.hasFocusedTests &&
+        currentDescribeBlock.mode !== 'skip' &&
         currentDescribeBlock.children.some(
           child => child.type === 'test' && child.mode === 'only',
         )
@@ -143,7 +144,7 @@ const eventHandler: Circus.EventHandler = (
         timeout,
         asyncError,
       );
-      if (test.mode === 'only') {
+      if (currentDescribeBlock.mode !== 'skip' && test.mode === 'only') {
         state.hasFocusedTests = true;
       }
       currentDescribeBlock.children.push(test);

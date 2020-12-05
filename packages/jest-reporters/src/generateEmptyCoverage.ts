@@ -70,7 +70,13 @@ export default function (
     const {code} = new ScriptTransformer(config).transformSource(
       filename,
       source,
-      {instrument: true},
+      {
+        instrument: true,
+        supportsDynamicImport: true,
+        supportsExportNamespaceFrom: true,
+        supportsStaticESM: true,
+        supportsTopLevelAwait: true,
+      },
     );
     // TODO: consider passing AST
     const extracted = readInitialCoverage(code);

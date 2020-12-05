@@ -64,6 +64,7 @@ export type DefaultOptions = {
   coverageProvider: CoverageProvider;
   errorOnDeprecated: boolean;
   expand: boolean;
+  extensionsToTreatAsEsm: Array<Path>;
   forceCoverageMatch: Array<Glob>;
   globals: ConfigGlobals;
   haste: HasteConfig;
@@ -132,16 +133,13 @@ export type InitialOptions = Partial<{
   coveragePathIgnorePatterns: Array<string>;
   coverageProvider: CoverageProvider;
   coverageReporters: CoverageReporters;
-  coverageThreshold: {
-    global: {
-      [key: string]: number;
-    };
-  };
+  coverageThreshold: CoverageThreshold;
   dependencyExtractor: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
   displayName: string | DisplayName;
   expand: boolean;
+  extensionsToTreatAsEsm: Array<Path>;
   extraGlobals: Array<string>;
   filter: Path;
   findRelatedTests: boolean;
@@ -327,6 +325,7 @@ export type ProjectConfig = {
   detectOpenHandles: boolean;
   displayName?: DisplayName;
   errorOnDeprecated: boolean;
+  extensionsToTreatAsEsm: Array<Path>;
   extraGlobals: Array<keyof NodeJS.Global>;
   filter?: Path;
   forceCoverageMatch: Array<Glob>;

@@ -650,9 +650,9 @@ export const options = {
   },
   testRunner: {
     description:
-      'Allows to specify a custom test runner. The default is ' +
-      ' `jasmine2`. A path to a custom test runner can be provided: ' +
-      '`<rootDir>/path/to/testRunner.js`.',
+      'Allows to specify a custom test runner. The default is' +
+      ' `jest-circus/runner`. A path to a custom test runner can be provided:' +
+      ' `<rootDir>/path/to/testRunner.js`.',
     type: 'string',
   },
   testSequencer: {

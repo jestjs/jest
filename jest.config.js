@@ -23,6 +23,7 @@ module.exports = {
   modulePathIgnorePatterns: [
     'examples/.*',
     'packages/.*/build',
+    'packages/.*/tsconfig.*',
     'packages/jest-runtime/src/__tests__/test_root.*',
     'website/.*',
     'e2e/runtime-internal-module-registry/__mocks__',
@@ -50,6 +51,7 @@ module.exports = {
     '/packages/jest-haste-map/src/__tests__/haste_impl.js',
     '/packages/jest-haste-map/src/__tests__/dependencyExtractor.js',
     '/packages/jest-haste-map/src/__tests__/test_dotfiles_root/',
+    '/packages/jest-repl/src/__tests__/test_root',
     '/packages/jest-resolve-dependencies/src/__tests__/__fixtures__/',
     '/packages/jest-runtime/src/__tests__/defaultResolver.js',
     '/packages/jest-runtime/src/__tests__/module_dir/',

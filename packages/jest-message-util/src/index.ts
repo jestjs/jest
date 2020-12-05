@@ -13,7 +13,7 @@ import micromatch = require('micromatch');
 import slash = require('slash');
 import StackUtils = require('stack-utils');
 import type {Config, TestResult} from '@jest/types';
-import prettyFormat = require('pretty-format');
+import prettyFormat from 'pretty-format';
 import type {Frame} from './types';
 
 export type {Frame} from './types';

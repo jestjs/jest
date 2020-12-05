@@ -40,7 +40,8 @@
       "jest-object",
       "configuration",
       "cli",
-      "environment-variables"
+      "environment-variables",
+      "code-transformation"
     ]
   }
 }

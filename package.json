@@ -25,8 +25,7 @@
     "@typescript-eslint/eslint-plugin": "^4.1.0",
     "@typescript-eslint/parser": "^4.1.0",
     "ansi-regex": "^5.0.0",
-    "ansi-styles": "^4.2.0",
-    "babel-eslint": "^10.0.3",
+    "ansi-styles": "^5.0.0",
     "babel-plugin-replace-ts-export-assignment": "^0.0.2",
     "camelcase": "^6.0.0",
     "chalk": "^4.0.0",
@@ -35,19 +34,14 @@
     "debug": "^4.0.1",
     "dedent": "^0.7.0",
     "eslint": "^7.7.0",
-    "eslint-config-fb-strict": "^26.0.0",
     "eslint-config-prettier": "^6.1.0",
-    "eslint-plugin-babel": "^5.1.0",
     "eslint-plugin-eslint-comments": "^3.1.2",
-    "eslint-plugin-flowtype": "^5.2.0",
     "eslint-plugin-import": "^2.6.0",
     "eslint-plugin-jest": "^24.0.0",
-    "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-local": "^1.0.0",
     "eslint-plugin-markdown": "^1.0.0",
     "eslint-plugin-prettier": "^3.0.1",
-    "eslint-plugin-react": "^7.1.0",
-    "execa": "^4.0.0",
+    "execa": "^5.0.0",
     "fast-check": "^2.0.0",
     "find-process": "^1.4.1",
     "glob": "^7.1.1",
@@ -62,7 +56,7 @@
     "jest-junit": "^12.0.0",
     "jest-mock": "workspace:*",
     "jest-runner-tsd": "^1.1.0",
-    "jest-silent-reporter": "^0.2.1",
+    "jest-silent-reporter": "^0.4.0",
     "jest-snapshot": "workspace:*",
     "jest-snapshot-serializer-raw": "^1.1.0",
     "jest-watch-typeahead": "^0.6.0",
@@ -85,7 +79,7 @@
     "tempy": "^1.0.0",
     "throat": "^5.0.0",
     "ts-node": "^9.0.0",
-    "type-fest": "^0.18.1",
+    "type-fest": "^0.20.1",
     "typescript": "^4.0.2",
     "which": "^2.0.1"
   },
@@ -98,6 +92,8 @@
     "clean-all": "yarn clean-e2e && yarn build-clean && rimraf './packages/*/node_modules' && rimraf './node_modules'",
     "clean-e2e": "node ./scripts/cleanE2e.js",
     "jest": "node ./packages/jest-cli/bin/jest.js",
+    "jest-jasmine": "JEST_JASMINE=1 yarn jest",
+    "jest-jasmine-ci": "yarn jest-jasmine --color --config jest.config.ci.js",
     "jest-coverage": "yarn jest --coverage",
     "lint": "eslint . --cache --ext js,jsx,ts,tsx,md",
     "lint:prettier": "prettier '**/*.{md,yml,yaml}' 'website/static/**/*.{css,js}' --write --ignore-path .gitignore",
@@ -131,6 +127,12 @@
         "options": {
           "trailingComma": "es5"
         }
+      },
+      {
+        "files": ".yarnrc.yml",
+        "options": {
+          "singleQuote": false
+        }
       }
     ]
   },
@@ -143,7 +145,9 @@
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
   },
   "resolutions": {
+    "@testing-library/dom/pretty-format": "26.6.1",
     "@types/jest/jest-diff": "^25.1.0",
-    "@types/jest/pretty-format": "^25.1.0"
+    "@types/jest/pretty-format": "^25.1.0",
+    "fbjs-scripts": "patch:fbjs-scripts@^1.1.0#./patches/fbjs-scripts.patch"
   }
 }

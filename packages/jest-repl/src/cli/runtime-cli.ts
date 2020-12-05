@@ -11,12 +11,14 @@ import chalk = require('chalk');
 import yargs = require('yargs');
 import {CustomConsole} from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
+import {ScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {deprecationEntries, readConfig} from 'jest-config';
-import {setGlobal, tryRealpath} from 'jest-util';
+import Runtime from 'jest-runtime';
+import {interopRequireDefault, setGlobal, tryRealpath} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
-import {VERSION} from '../version';
 import * as args from './args';
+import {VERSION} from './version';
 
 export async function run(
   cliArgv?: Config.Argv,
@@ -52,7 +54,7 @@ export async function run(
   }
 
   const root = tryRealpath(process.cwd());
-  const filePath = path.resolve(root, argv._[0]);
+  const filePath = path.resolve(root, argv._[0].toString());
 
   if (argv.debug) {
     const info = cliInfo ? ', ' + cliInfo.join(', ') : '';
@@ -66,15 +68,16 @@ export async function run(
     automock: false,
   };
 
-  const {default: Runtime} = await import('..');
-
   try {
     const hasteMap = await Runtime.createContext(config, {
       maxWorkers: Math.max(cpus().length - 1, 1),
       watchman: globalConfig.watchman,
     });
 
-    const Environment: typeof JestEnvironment = require(config.testEnvironment);
+    const transformer = new ScriptTransformer(config);
+    const Environment: typeof JestEnvironment = interopRequireDefault(
+      transformer.requireAndTranspileModule(config.testEnvironment),
+    ).default;
     const environment = new Environment(config);
     setGlobal(
       environment.global,
@@ -94,8 +97,7 @@ export async function run(
     );
 
     for (const path of config.setupFiles) {
-      // TODO: remove ? in Jest 26
-      const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+      const esm = runtime.unstable_shouldLoadAsEsm(path);
 
       if (esm) {
         await runtime.unstable_importModule(path);
@@ -103,8 +105,7 @@ export async function run(
         runtime.requireModule(path);
       }
     }
-    // TODO: remove ? in Jest 26
-    const esm = runtime.unstable_shouldLoadAsEsm?.(filePath);
+    const esm = runtime.unstable_shouldLoadAsEsm(filePath);
 
     if (esm) {
       await runtime.unstable_importModule(filePath);

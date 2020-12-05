@@ -9,9 +9,9 @@ import {tmpdir} from 'os';
 import * as path from 'path';
 import {makeProjectConfig} from '@jest/test-utils';
 import type {Config} from '@jest/types';
-import Resolver from 'jest-resolve';
+import type Resolver from 'jest-resolve';
 import {buildSnapshotResolver} from 'jest-snapshot';
-import DependencyResolver from '../index';
+import {DependencyResolver} from '../index';
 
 const maxWorkers = 1;
 let dependencyResolver: DependencyResolver;

@@ -15,6 +15,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "detectLeaks": false,
       "detectOpenHandles": false,
       "errorOnDeprecated": false,
+      "extensionsToTreatAsEsm": [],
       "extraGlobals": [],
       "forceCoverageMatch": [],
       "globals": {},
@@ -62,7 +63,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "/node_modules/"
       ],
       "testRegex": [],
-      "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-jasmine2/build/index.js",
+      "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-circus/runner.js",
       "testURL": "http://localhost",
       "timers": "real",
       "transform": [

@@ -26,6 +26,7 @@ const defaultOptions: Config.DefaultOptions = {
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   errorOnDeprecated: false,
   expand: false,
+  extensionsToTreatAsEsm: [],
   forceCoverageMatch: [],
   globals: {},
   haste: {
@@ -61,7 +62,7 @@ const defaultOptions: Config.DefaultOptions = {
   testMatch: ['**/__tests__/**/*.[jt]s?(x)', '**/?(*.)+(spec|test).[tj]s?(x)'],
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: [],
-  testRunner: 'jasmine2',
+  testRunner: 'jest-circus/runner',
   testSequencer: '@jest/test-sequencer',
   testURL: 'http://localhost',
   timers: 'real',

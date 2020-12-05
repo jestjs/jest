@@ -9,8 +9,6 @@ import {createHash} from 'crypto';
 import * as path from 'path';
 import {
   PartialConfig,
-  PluginItem,
-  TransformCaller,
   TransformOptions,
   transformSync as babelTransform,
 } from '@babel/core';
@@ -28,23 +26,12 @@ const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
 const babelIstanbulPlugin = require.resolve('babel-plugin-istanbul');
 
-// Narrow down the types
-interface BabelJestTransformer extends Transformer {
-  canInstrument: true;
-}
-interface BabelJestTransformOptions extends TransformOptions {
-  caller: TransformCaller;
-  compact: false;
-  plugins: Array<PluginItem>;
-  presets: Array<PluginItem>;
-  sourceMaps: 'both';
-}
+type CreateTransformer = Transformer<TransformOptions>['createTransformer'];
 
-const createTransformer = (
-  userOptions?: TransformOptions | null,
-): BabelJestTransformer => {
-  const inputOptions: TransformOptions = userOptions ?? {};
-  const options: BabelJestTransformOptions = {
+const createTransformer: CreateTransformer = userOptions => {
+  const inputOptions = userOptions ?? {};
+
+  const options = {
     ...inputOptions,
     caller: {
       name: 'babel-jest',
@@ -58,7 +45,7 @@ const createTransformer = (
     plugins: inputOptions.plugins ?? [],
     presets: (inputOptions.presets ?? []).concat(jestPresetPath),
     sourceMaps: 'both',
-  };
+  } as const;
 
   function loadBabelConfig(
     cwd: Config.Path,
@@ -102,13 +89,13 @@ const createTransformer = (
 
   return {
     canInstrument: true,
-    getCacheKey(fileData, filename, configString, cacheKeyOptions) {
-      const {config, instrument, rootDir} = cacheKeyOptions;
+    getCacheKey(sourceText, sourcePath, transformOptions) {
+      const {config, configString, instrument} = transformOptions;
 
       const babelOptions = loadBabelConfig(
         config.cwd,
-        filename,
-        cacheKeyOptions,
+        sourcePath,
+        transformOptions,
       );
       const configPath = [
         babelOptions.config || '',
@@ -120,9 +107,9 @@ const createTransformer = (
         .update('\0', 'utf8')
         .update(JSON.stringify(babelOptions.options))
         .update('\0', 'utf8')
-        .update(fileData)
+        .update(sourceText)
         .update('\0', 'utf8')
-        .update(path.relative(rootDir, filename))
+        .update(path.relative(config.rootDir, sourcePath))
         .update('\0', 'utf8')
         .update(configString)
         .update('\0', 'utf8')
@@ -135,9 +122,13 @@ const createTransformer = (
         .update(process.env.BABEL_ENV || '')
         .digest('hex');
     },
-    process(src, filename, config, transformOptions) {
+    process(sourceText, sourcePath, transformOptions) {
       const babelOptions = {
-        ...loadBabelConfig(config.cwd, filename, transformOptions).options,
+        ...loadBabelConfig(
+          transformOptions.config.cwd,
+          sourcePath,
+          transformOptions,
+        ).options,
       };
 
       if (transformOptions?.instrument) {
@@ -148,14 +139,14 @@ const createTransformer = (
             babelIstanbulPlugin,
             {
               // files outside `cwd` will not be instrumented
-              cwd: config.rootDir,
+              cwd: transformOptions.config.rootDir,
               exclude: [],
             },
           ],
         ]);
       }
 
-      const transformResult = babelTransform(src, babelOptions);
+      const transformResult = babelTransform(sourceText, babelOptions);
 
       if (transformResult) {
         const {code, map} = transformResult;
@@ -164,14 +155,12 @@ const createTransformer = (
         }
       }
 
-      return src;
+      return sourceText;
     },
   };
 };
 
-const transformer: BabelJestTransformer & {
-  createTransformer: (options?: TransformOptions) => BabelJestTransformer;
-} = {
+const transformer: Transformer<TransformOptions> = {
   ...createTransformer(),
   // Assigned here so only the exported transformer has `createTransformer`,
   // instead of all created transformers by the function
