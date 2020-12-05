@@ -4,20 +4,28 @@
 
 - `[jest-config]` [**BREAKING**] Default to Node testing environment instead of browser (JSDOM) ([#9874](https://github.com/facebook/jest/pull/9874))
 - `[jest-config]` [**BREAKING**] Use `jest-circus` as default test runner ([#10686](https://github.com/facebook/jest/pull/10686))
+- `[jest-config, jest-runtime]` Support ESM for files other than `.js` and `.mjs` ([#10823](https://github.com/facebook/jest/pull/10823))
+- `[jest-config, jest-runtime]` [**BREAKING**] Use "modern" implementation as default for fake timers ([#10874](https://github.com/facebook/jest/pull/10874))
+- `[jest-core]` make `TestWatcher` extend `emittery` ([#10324](https://github.com/facebook/jest/pull/10324))
 - `[jest-repl, jest-runner]` [**BREAKING**] Run transforms over environment ([#8751](https://github.com/facebook/jest/pull/8751))
 - `[jest-runner]` [**BREAKING**] set exit code to 1 if test logs after teardown ([#10728](https://github.com/facebook/jest/pull/10728))
 - `[jest-snapshot]` [**BREAKING**] Make prettier optional for inline snapshots - fall back to string replacement ([#7792](https://github.com/facebook/jest/pull/7792))
 - `[jest-runner]` [**BREAKING**] Run transforms over `runnner` ([#8823](https://github.com/facebook/jest/pull/8823))
 - `[jest-runner]` [**BREAKING**] Run transforms over `testRunnner` ([#8823](https://github.com/facebook/jest/pull/8823))
+- `[jest-runtime, jest-transform]` share `cacheFS` between runtime and transformer ([#10901](https://github.com/facebook/jest/pull/10901))
 
 ### Fixes
 
 - `[babel-plugin-jest-hoist]` Add `__dirname` and `__filename` to whitelisted globals ([#10903](https://github.com/facebook/jest/pull/10903))
 - `[expect]` [**BREAKING**] Revise `expect.not.objectContaining()` to be the inverse of `expect.objectContaining()`, as documented. ([#10708](https://github.com/facebook/jest/pull/10708))
+- `[expect]` [**BREAKING**] Make `toContain` more strict with the received type ([#10119](https://github.com/facebook/jest/pull/10119))
 - `[jest-circus]` Fixed the issue of beforeAll & afterAll hooks getting executed even if it is inside a skipped `describe` block [#10451](https://github.com/facebook/jest/issues/10451)
 - `[jest-circus]` Fix `testLocation` on Windows when using `test.each` ([#10871](https://github.com/facebook/jest/pull/10871))
 - `[jest-console]` `console.dir` now respects the second argument correctly ([#10638](https://github.com/facebook/jest/pull/10638))
 - `[jest-environment-jsdom]` Use inner realm’s `ArrayBuffer` constructor ([#10885](https://github.com/facebook/jest/pull/10885))
+- `[jest-globals]` [**BREAKING**] Disallow return values other than a `Promise` from hooks and tests ([#10512](https://github.com/facebook/jest/pull/10512))
+- `[jest-globals]` [**BREAKING**] Disallow mixing a done callback and returning a `Promise` from hooks and tests ([#10512](https://github.com/facebook/jest/pull/10512))
+- `[jest-haste-map]` Vendor `NodeWatcher` from `sane` ([#10919](https://github.com/facebook/jest/pull/10919))
 - `[jest-jasmine2]` Fixed the issue of beforeAll & afterAll hooks getting executed even if it is inside a skipped `describe` block when it has child `tests` marked as either `only` or `todo` [#10451](https://github.com/facebook/jest/issues/10451)
 - `[jest-jasmine2]` Fixed the issues of child `tests` marked with `only` or `todo` getting executed even if it is inside a skipped parent `describe` block [#10451](https://github.com/facebook/jest/issues/10451)
 - `[jest-reporter]` Handle empty files when reporting code coverage with V8 ([#10819](https://github.com/facebook/jest/pull/10819))
@@ -29,6 +37,7 @@
 - `[jest-transform]` Show enhanced `SyntaxError` message for all `SyntaxError`s ([#10749](https://github.com/facebook/jest/pull/10749))
 - `[jest-transform]` [**BREAKING**] Refactor API to pass an options bag around rather than multiple boolean options ([#10753](https://github.com/facebook/jest/pull/10753))
 - `[jest-transform]` [**BREAKING**] Refactor API of transformers to pass an options bag rather than separate `config` and other options
+- `[jest-transform]` [**BREAKING**] Refactor API of transformers to pass an options bag rather than separate `config` and other options ([#10834](https://github.com/facebook/jest/pull/10834))
 - `[jest-worker]` [**BREAKING**] Use named exports ([#10623] (https://github.com/facebook/jest/pull/10623))
 - `[pretty-format]` [**BREAKING**] Convert to ES Modules ([#10515](https://github.com/facebook/jest/pull/10515))
 
@@ -41,13 +50,16 @@
 - `[jest-console]` [**BREAKING**] Move `root` into `config` and take `GlobalConfig` as mandatory parameter for `getConsoleOutput` ([#10126](https://github.com/facebook/jest/pull/10126))
 - `[jest-fake-timers]` Clarify global behavior of `jest.useFakeTimers` and `jest.useRealTimers` ([#10867](https://github.com/facebook/jest/pull/10867))
 - `[jest-haste-map]` [**BREAKING**] Migrate to ESM ([#10875](https://github.com/facebook/jest/pull/10875))
+- `[jest-haste-map]` [**BREAKING**] Remove support for deprecated option `ignorePattern` as function ([#10348](https://github.com/facebook/jest/pull/10348))
 - `[jest-jasmine2]` [**BREAKING**] Migrate to ESM ([#10906](https://github.com/facebook/jest/pull/10906))
 - `[jest-repl, jest-runtime]` [**BREAKING**] Move the `jest-runtime` CLI into `jest-repl` ([#10016](https://github.com/facebook/jest/pull/10016))
 - `[jest-resolve]` [**BREAKING**] Migrate to ESM ([#10688](https://github.com/facebook/jest/pull/10688))
 - `[jest-resolve-dependencies]` [**BREAKING**] Migrate to ESM ([#10876](https://github.com/facebook/jest/pull/10876))
 - `[jest-mock]` [**BREAKING**] Migrate to ESM ([#10887](https://github.com/facebook/jest/pull/10887))
 - `[jest-runner]` [**BREAKING**] Migrate to ESM ([#10900](https://github.com/facebook/jest/pull/10900))
+- `[jest-runtime]` [**BREAKING**] Remove deprecated and unnused `getSourceMapInfo` from Runtime ([#9969](https://github.com/facebook/jest/pull/9969))
 - `[jest-util]` No longer checking `enumerable` when adding `process.domain` ([#10862](https://github.com/facebook/jest/pull/10862))
+- `[jest-validate]` [**BREAKING**] Remove `recursiveBlacklist ` option in favor of previously introduced `recursiveDenylist` ([#10650](https://github.com/facebook/jest/pull/10650))
 
 ### Performance
 

@@ -1463,6 +1463,13 @@ describe('.toContain(), .toContainEqual()', () => {
 
   test('error cases', () => {
     expect(() => jestExpect(null).toContain(1)).toThrowErrorMatchingSnapshot();
+    expect(() => jestExpect('-0').toContain(-0)).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      jestExpect('null').toContain(null),
+    ).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      jestExpect('undefined').toContain(undefined),
+    ).toThrowErrorMatchingSnapshot();
   });
 
   [

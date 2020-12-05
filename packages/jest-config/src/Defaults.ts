@@ -26,6 +26,7 @@ const defaultOptions: Config.DefaultOptions = {
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   errorOnDeprecated: false,
   expand: false,
+  extensionsToTreatAsEsm: [],
   forceCoverageMatch: [],
   globals: {},
   haste: {

@@ -5,15 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
+import {double} from '../double';
 
-test('fake promises', () => {
-  let someValue;
-  Promise.resolve().then(() => {
-    someValue = 'foobar';
-  });
+test('test double', () => {
+  expect(double(2)).toBe(4);
+});
 
-  jest.runAllTimers();
-
-  expect(someValue).toBe('foobar');
+test('test import.meta', () => {
+  expect(typeof import.meta.url).toBe('string');
 });

@@ -5,15 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
-test('fake promises', () => {
-  let someValue;
-  Promise.resolve().then(() => {
-    someValue = 'foobar';
-  });
-
-  jest.runAllTimers();
-
-  expect(someValue).toBe('foobar');
-});
+export function double(num: number): number {
+  return num * 2;
+}

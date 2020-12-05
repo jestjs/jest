@@ -5,15 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-'use strict';
-
-test('fake promises', () => {
-  let someValue;
-  Promise.resolve().then(() => {
-    someValue = 'foobar';
-  });
-
-  jest.runAllTimers();
-
-  expect(someValue).toBe('foobar');
-});
+module.exports = {
+  // importantly this does _not_ include `preset-env`
+  presets: ['@babel/preset-typescript'],
+};

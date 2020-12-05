@@ -12,6 +12,7 @@ exports[`prints the config object 1`] = `
     "detectLeaks": false,
     "detectOpenHandles": false,
     "errorOnDeprecated": false,
+    "extensionsToTreatAsEsm": [],
     "extraGlobals": [],
     "forceCoverageMatch": [],
     "globals": {},

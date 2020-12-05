@@ -29,6 +29,7 @@ import shouldInstrument from './shouldInstrument';
 import type {
   Options,
   ReducedTransformOptions,
+  StringMap,
   TransformResult,
   TransformedSource,
   Transformer,
@@ -64,12 +65,17 @@ async function waitForPromiseWithCleanup(
 
 export default class ScriptTransformer {
   private _cache: ProjectCache;
-  private _config: Config.ProjectConfig;
+  private readonly _cacheFS: StringMap;
+  private readonly _config: Config.ProjectConfig;
   private _transformCache: Map<Config.Path, Transformer>;
   private _transformConfigCache: Map<Config.Path, unknown>;
 
-  constructor(config: Config.ProjectConfig) {
+  constructor(
+    config: Config.ProjectConfig,
+    cacheFS: StringMap = new Map<string, string>(),
+  ) {
     this._config = config;
+    this._cacheFS = cacheFS;
     this._transformCache = new Map();
     this._transformConfigCache = new Map();
 
@@ -103,6 +109,7 @@ export default class ScriptTransformer {
         .update(
           transformer.getCacheKey(fileData, filename, {
             ...options,
+            cacheFS: this._cacheFS,
             config: this._config,
             configString,
           }),
@@ -288,6 +295,7 @@ export default class ScriptTransformer {
     if (transform && shouldCallTransform) {
       const processed = transform.process(content, filename, {
         ...options,
+        cacheFS: this._cacheFS,
         config: this._config,
         configString: this._cache.configString,
       });
@@ -375,9 +383,12 @@ export default class ScriptTransformer {
     fileSource?: string,
   ): TransformResult {
     const {isCoreModule, isInternalModule} = options;
-    const content = stripShebang(
-      fileSource || fs.readFileSync(filename, 'utf8'),
-    );
+    let fileContent = fileSource ?? this._cacheFS.get(filename);
+    if (!fileContent) {
+      fileContent = fs.readFileSync(filename, 'utf8');
+      this._cacheFS.set(filename, fileContent);
+    }
+    const content = stripShebang(fileContent);
 
     let code = content;
     let sourceMapPath: string | null = null;

@@ -17,6 +17,7 @@
     "@types/node": "*",
     "ansi-escapes": "^4.2.1",
     "chalk": "^4.0.0",
+    "emittery": "^0.7.2",
     "exit": "^0.1.2",
     "graceful-fs": "^4.2.4",
     "jest-changed-files": "^26.6.2",

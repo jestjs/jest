@@ -12,7 +12,7 @@ import isGeneratorFn from 'is-generator-fn';
 import slash = require('slash');
 import StackUtils = require('stack-utils');
 import type {AssertionResult, Status} from '@jest/test-result';
-import type {Circus} from '@jest/types';
+import type {Circus, Global} from '@jest/types';
 import {ErrorWithStack, convertDescriptorToString, formatTime} from 'jest-util';
 import prettyFormat from 'pretty-format';
 import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
@@ -20,6 +20,16 @@ import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
 const jestEachBuildDir = slash(path.dirname(require.resolve('jest-each')));
+
+function takesDoneCallback(fn: Circus.AsyncFn): fn is Global.DoneTakingTestFn {
+  return fn.length > 0;
+}
+
+function isGeneratorFunction(
+  fn: Global.PromiseReturningTestFn | Global.GeneratorReturningTestFn,
+): fn is Global.GeneratorReturningTestFn {
+  return isGeneratorFn(fn);
+}
 
 export const makeDescribe = (
   name: Circus.BlockName,
@@ -177,7 +187,7 @@ export const callAsyncCircusFn = (
 
     // If this fn accepts `done` callback we return a promise that fulfills as
     // soon as `done` called.
-    if (fn.length) {
+    if (takesDoneCallback(fn)) {
       let returnedValue: unknown = undefined;
       const done = (reason?: Error | string): void => {
         // We need to keep a stack here before the promise tick
@@ -221,8 +231,8 @@ export const callAsyncCircusFn = (
       return;
     }
 
-    let returnedValue;
-    if (isGeneratorFn(fn)) {
+    let returnedValue: Global.TestReturnValue;
+    if (isGeneratorFunction(fn)) {
       returnedValue = co.wrap(fn).call({});
     } else {
       try {
