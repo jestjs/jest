@@ -5,16 +5,16 @@ title: Snapshot Testing
 
 Snapshot tests are a very useful tool whenever you want to make sure your UI does not change unexpectedly.
 
-A typical snapshot test case for a mobile app renders a UI component, takes a snapshot, then compares it to a reference snapshot file stored alongside the test. The test will fail if the two snapshots do not match: either the change is unexpected, or the reference snapshot needs to be updated to the new version of the UI component.
+A typical snapshot test case renders a UI component, takes a snapshot, then compares it to a reference snapshot file stored alongside the test. The test will fail if the two snapshots do not match: either the change is unexpected, or the reference snapshot needs to be updated to the new version of the UI component.
 
 ## Snapshot Testing with Jest
 
 A similar approach can be taken when it comes to testing your React components. Instead of rendering the graphical UI, which would require building the entire app, you can use a test renderer to quickly generate a serializable value for your React tree. Consider this [example test](https://github.com/facebook/jest/blob/master/examples/snapshot/__tests__/link.react.test.js) for a [Link component](https://github.com/facebook/jest/blob/master/examples/snapshot/Link.react.js):
 
-```javascript
+```tsx
 import React from 'react';
-import Link from '../Link.react';
 import renderer from 'react-test-renderer';
+import Link from '../Link.react';
 
 it('renders correctly', () => {
   const tree = renderer
@@ -39,9 +39,9 @@ exports[`renders correctly 1`] = `
 `;
 ```
 
-The snapshot artifact should be committed alongside code changes, and reviewed as part of your code review process. Jest uses [pretty-format](https://github.com/facebook/jest/tree/master/packages/pretty-format) to make snapshots human-readable during code review. On subsequent test runs Jest will compare the rendered output with the previous snapshot. If they match, the test will pass. If they don't match, either the test runner found a bug in your code (in this case, it's `<Link>` component) that should be fixed, or the implementation has changed and the snapshot needs to be updated.
+The snapshot artifact should be committed alongside code changes, and reviewed as part of your code review process. Jest uses [pretty-format](https://github.com/facebook/jest/tree/master/packages/pretty-format) to make snapshots human-readable during code review. On subsequent test runs, Jest will compare the rendered output with the previous snapshot. If they match, the test will pass. If they don't match, either the test runner found a bug in your code (in the `<Link>` component in this case) that should be fixed, or the implementation has changed and the snapshot needs to be updated.
 
-> Note: The snapshot is directly scoped to the data you render – in our example it's `<Link />` component with page prop passed to it. This implies that even if any other file has missing props (Say, `App.js`) in the `<Link />` component, it will still pass the test as the test doesn't know the usage of `<Link />` component and it's scoped only to the `Link.react.js`. Also, Rendering the same component with different props in other snapshot tests will not affect the first one, as the tests don't know about each other.
+> Note: The snapshot is directly scoped to the data you render – in our example the `<Link />` component with `page` prop passed to it. This implies that even if any other file has missing props (Say, `App.js`) in the `<Link />` component, it will still pass the test as the test doesn't know the usage of `<Link />` component and it's scoped only to the `Link.react.js`. Also, Rendering the same component with different props in other snapshot tests will not affect the first one, as the tests don't know about each other.
 
 More information on how snapshot testing works and why we built it can be found on the [release blog post](https://jestjs.io/blog/2016/07/27/jest-14.html). We recommend reading [this blog post](http://benmccormick.org/2016/09/19/testing-with-jest-snapshots-first-impressions/) to get a good sense of when you should use snapshot testing. We also recommend watching this [egghead video](https://egghead.io/lessons/javascript-use-jest-s-snapshot-testing-feature?pl=testing-javascript-with-jest-a36c4074) on Snapshot Testing with Jest.
 
@@ -51,7 +51,7 @@ It's straightforward to spot when a snapshot test fails after a bug has been int
 
 One such situation can arise if we intentionally change the address the Link component in our example is pointing to.
 
-```javascript
+```tsx
 // Updated test case with a Link to a different address
 it('renders correctly', () => {
   const tree = renderer
@@ -107,7 +107,7 @@ Inline snapshots behave identically to external snapshots (`.snap` files), excep
 
 First, you write a test, calling `.toMatchInlineSnapshot()` with no arguments:
 
-```javascript
+```tsx
 it('renders correctly', () => {
   const tree = renderer
     .create(<Link page="https://prettier.io">Prettier</Link>)
@@ -118,7 +118,7 @@ it('renders correctly', () => {
 
 The next time you run Jest, `tree` will be evaluated, and a snapshot will be written as an argument to `toMatchInlineSnapshot`:
 
-```javascript
+```tsx
 it('renders correctly', () => {
   const tree = renderer
     .create(<Link page="https://prettier.io">Prettier</Link>)

@@ -25,9 +25,9 @@
  * produce a full coverage report.
  */
 
+const istanbulCoverage = require('istanbul-lib-coverage');
 const istanbulReport = require('istanbul-lib-report');
 const istanbulReports = require('istanbul-reports');
-const istanbulCoverage = require('istanbul-lib-coverage');
 const coverage = require('../coverage/coverage-final.json');
 
 const map = istanbulCoverage.createCoverageMap();

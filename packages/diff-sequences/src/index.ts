@@ -756,10 +756,9 @@ const findSubsequences = (
   }
 };
 
-const validateLength = (name: string, arg: any) => {
-  const type = typeof arg;
-  if (type !== 'number') {
-    throw new TypeError(`${pkg}: ${name} typeof ${type} is not a number`);
+const validateLength = (name: string, arg: unknown) => {
+  if (typeof arg !== 'number') {
+    throw new TypeError(`${pkg}: ${name} typeof ${typeof arg} is not a number`);
   }
   if (!Number.isSafeInteger(arg)) {
     throw new RangeError(`${pkg}: ${name} value ${arg} is not a safe integer`);
@@ -769,7 +768,7 @@ const validateLength = (name: string, arg: any) => {
   }
 };
 
-const validateCallback = (name: string, arg: any) => {
+const validateCallback = (name: string, arg: unknown) => {
   const type = typeof arg;
   if (type !== 'function') {
     throw new TypeError(`${pkg}: ${name} typeof ${type} is not a function`);

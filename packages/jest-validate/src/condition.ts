@@ -39,7 +39,7 @@ export function validationCondition(
   return getValues(validOption).some(e => validationConditionSingle(option, e));
 }
 
-export function multipleValidOptions<T extends Array<any>>(
+export function multipleValidOptions<T extends Array<unknown>>(
   ...args: T
 ): T[number] {
   const options = <T>[...args];

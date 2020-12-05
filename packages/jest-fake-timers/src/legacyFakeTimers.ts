@@ -5,10 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {ModuleMocker} from 'jest-mock';
-import {StackTraceConfig, formatStackTrace} from 'jest-message-util';
-import {setGlobal} from 'jest-util';
+/* eslint-disable local/ban-types-eventually, local/prefer-spread-eventually */
+
 import util = require('util');
+import {StackTraceConfig, formatStackTrace} from 'jest-message-util';
+import type {ModuleMocker} from 'jest-mock';
+import {setGlobal} from 'jest-util';
 
 type Callback = (...args: Array<unknown>) => void;
 
@@ -92,7 +94,6 @@ export default class FakeTimers<TimerRef> {
     };
 
     this.reset();
-    this._createMocks();
   }
 
   clearAllTimers(): void {
@@ -347,7 +348,7 @@ export default class FakeTimers<TimerRef> {
   }
 
   private _checkFakeTimers() {
-    if (this._global.setTimeout !== this._fakeTimerAPIs.setTimeout) {
+    if (this._global.setTimeout !== this._fakeTimerAPIs?.setTimeout) {
       this._global.console.warn(
         `A function to advance timers was called but the timers API is not ` +
           `mocked with fake timers. Call \`jest.useFakeTimers()\` in this ` +

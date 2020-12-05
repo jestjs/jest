@@ -15,8 +15,8 @@ import {
 } from './utils';
 
 export const unknownOptionWarning = (
-  config: Record<string, any>,
-  exampleConfig: Record<string, any>,
+  config: Record<string, unknown>,
+  exampleConfig: Record<string, unknown>,
   option: string,
   options: ValidationOptions,
   path?: Array<string>,

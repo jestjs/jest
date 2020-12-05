@@ -39,19 +39,16 @@ describe('getMaxWorkers', () => {
   describe('% based', () => {
     it('50% = 2 workers', () => {
       const argv = {maxWorkers: '50%'};
-      // @ts-expect-error: need to fix the typing
       expect(getMaxWorkers(argv)).toBe(2);
     });
 
     it('< 0 workers should become 1', () => {
       const argv = {maxWorkers: '1%'};
-      // @ts-expect-error: need to fix the typing
       expect(getMaxWorkers(argv)).toBe(1);
     });
 
     it("0% shouldn't break", () => {
       const argv = {maxWorkers: '0%'};
-      // @ts-expect-error: need to fix the typing
       expect(getMaxWorkers(argv)).toBe(1);
     });
   });

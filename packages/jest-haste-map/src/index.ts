@@ -5,31 +5,27 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import {execSync} from 'child_process';
 import {createHash} from 'crypto';
 import {EventEmitter} from 'events';
 import {tmpdir} from 'os';
 import * as path from 'path';
 import type {Stats} from 'graceful-fs';
-import {NodeWatcher, Watcher as SaneWatcher} from 'sane';
 import type {Config} from '@jest/types';
+import {escapePathForRegex} from 'jest-regex-util';
 import serializer from 'jest-serializer';
 import Worker from 'jest-worker';
-import {getSha1, worker} from './worker';
-import getMockName from './getMockName';
-import getPlatformExtension from './lib/getPlatformExtension';
-import H from './constants';
 import HasteFS from './HasteFS';
-import HasteModuleMap, {
-  SerializableModuleMap as HasteSerializableModuleMap,
-} from './ModuleMap';
+import HasteModuleMap from './ModuleMap';
+import H from './constants';
 import nodeCrawl = require('./crawlers/node');
-import normalizePathSep from './lib/normalizePathSep';
 import watchmanCrawl = require('./crawlers/watchman');
-// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
-import WatchmanWatcher from './lib/WatchmanWatcher';
-import FSEventsWatcher = require('./lib/FSEventsWatcher');
+import getMockName from './getMockName';
 import * as fastPath from './lib/fast_path';
+import getPlatformExtension from './lib/getPlatformExtension';
+import normalizePathSep from './lib/normalizePathSep';
 import type {
   ChangeEvent,
   CrawlerOptions,
@@ -44,8 +40,15 @@ import type {
   ModuleMetaData,
   WorkerMetadata,
 } from './types';
-
-type HType = typeof H;
+import FSEventsWatcher = require('./watchers/FSEventsWatcher');
+// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/10919
+import NodeWatcher from './watchers/NodeWatcher';
+// @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
+import WatchmanWatcher from './watchers/WatchmanWatcher';
+import {getSha1, worker} from './worker';
+// TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
+// understand `require`.
+const {version: VERSION} = require('../package.json');
 
 type Options = {
   cacheDirectory?: string;
@@ -95,34 +98,29 @@ type InternalOptions = {
 };
 
 type Watcher = {
-  close(callback: () => void): void;
+  close(): Promise<void>;
 };
 
 type WorkerInterface = {worker: typeof worker; getSha1: typeof getSha1};
 
-// TODO: Ditch namespace when this module exports ESM
-namespace HasteMap {
-  export type ModuleMap = HasteModuleMap;
-  export type SerializableModuleMap = HasteSerializableModuleMap;
-  export type FS = HasteFS;
-  export type HasteMapObject = InternalHasteMapObject;
-  export type HasteChangeEvent = ChangeEvent;
-}
+export {default as ModuleMap} from './ModuleMap';
+export type {SerializableModuleMap} from './ModuleMap';
+export type {default as FS} from './HasteFS';
+export type {ChangeEvent, HasteMap as HasteMapObject} from './types';
 
 const CHANGE_INTERVAL = 30;
 const MAX_WAIT_TIME = 240000;
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const PACKAGE_JSON = path.sep + 'package.json';
-
-// TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
-// understand `require`.
-const {version: VERSION} = require('../package.json');
+const VCS_DIRECTORIES = ['.git', '.hg']
+  .map(vcs => escapePathForRegex(path.sep + vcs + path.sep))
+  .join('|');
 
 const canUseWatchman = ((): boolean => {
   try {
     execSync('watchman --version', {stdio: ['ignore']});
     return true;
-  } catch (e) {}
+  } catch {}
   return false;
 })();
 
@@ -210,11 +208,10 @@ function invariant(condition: unknown, message?: string): asserts condition {
  *     Worker processes can directly access the cache through `HasteMap.read()`.
  *
  */
-/* eslint-disable-next-line no-redeclare */
-class HasteMap extends EventEmitter {
+export default class HasteMap extends EventEmitter {
   private _buildPromise: Promise<InternalHasteMapObject> | null;
   private _cachePath: Config.Path;
-  private _changeInterval?: NodeJS.Timeout;
+  private _changeInterval?: ReturnType<typeof setInterval>;
   private _console: Console;
   private _options: InternalOptions;
   private _watchers: Array<Watcher>;
@@ -233,7 +230,6 @@ class HasteMap extends EventEmitter {
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
-      ignorePattern: options.ignorePattern,
       maxWorkers: options.maxWorkers,
       mocksPattern: options.mocksPattern
         ? new RegExp(options.mocksPattern)
@@ -250,11 +246,26 @@ class HasteMap extends EventEmitter {
       watch: !!options.watch,
     };
     this._console = options.console || global.console;
-    if (options.ignorePattern && !(options.ignorePattern instanceof RegExp)) {
-      this._console.warn(
-        'jest-haste-map: the `ignorePattern` options as a function is being ' +
-          'deprecated. Provide a RegExp instead. See https://github.com/facebook/jest/pull/4063.',
-      );
+
+    if (options.ignorePattern) {
+      if (options.ignorePattern instanceof RegExp) {
+        this._options.ignorePattern = new RegExp(
+          options.ignorePattern.source.concat('|' + VCS_DIRECTORIES),
+          options.ignorePattern.flags,
+        );
+      } else {
+        const ignorePattern = options.ignorePattern;
+        const vcsIgnoreRegExp = new RegExp(VCS_DIRECTORIES);
+        this._options.ignorePattern = (filePath: string) =>
+          vcsIgnoreRegExp.test(filePath) || ignorePattern(filePath);
+
+        this._console.warn(
+          'jest-haste-map: the `ignorePattern` options as a function is being ' +
+            'deprecated. Provide a RegExp instead. See https://github.com/facebook/jest/pull/4063.',
+        );
+      }
+    } else {
+      this._options.ignorePattern = new RegExp(VCS_DIRECTORIES);
     }
 
     const rootDirHash = createHash('md5').update(options.rootDir).digest('hex');
@@ -362,8 +373,8 @@ class HasteMap extends EventEmitter {
     let hasteMap: InternalHasteMap;
 
     try {
-      hasteMap = serializer.readFileSync(this._cachePath);
-    } catch (err) {
+      hasteMap = serializer.readFileSync(this._cachePath) as any;
+    } catch {
       hasteMap = this._createEmptyMap();
     }
 
@@ -771,7 +782,7 @@ class HasteMap extends EventEmitter {
     this._options.retainAllFiles = true;
 
     // WatchmanWatcher > FSEventsWatcher > sane.NodeWatcher
-    const Watcher: SaneWatcher =
+    const Watcher =
       canUseWatchman && this._options.useWatchman
         ? WatchmanWatcher
         : FSEventsWatcher.isSupported()
@@ -788,9 +799,8 @@ class HasteMap extends EventEmitter {
     let mustCopy = true;
 
     const createWatcher = (root: Config.Path): Promise<Watcher> => {
-      // @ts-expect-error: TODO how? "Cannot use 'new' with an expression whose type lacks a call or construct signature."
       const watcher = new Watcher(root, {
-        dot: false,
+        dot: true,
         glob: extensions.map(extension => '**/*.' + extension),
         ignored: ignorePattern,
       });
@@ -814,10 +824,7 @@ class HasteMap extends EventEmitter {
         mustCopy = true;
         const changeEvent: ChangeEvent = {
           eventsQueue,
-          hasteFS: new HasteFS({
-            files: hasteMap.files,
-            rootDir,
-          }),
+          hasteFS: new HasteFS({files: hasteMap.files, rootDir}),
           moduleMap: new HasteModuleMap({
             duplicates: hasteMap.duplicates,
             map: hasteMap.map,
@@ -1033,20 +1040,18 @@ class HasteMap extends EventEmitter {
     }
   }
 
-  end(): Promise<void> {
-    // @ts-expect-error: TODO TS cannot decide if `setInterval` and `clearInterval` comes from NodeJS or the DOM
-    clearInterval(this._changeInterval);
-    if (!this._watchers.length) {
-      return Promise.resolve();
+  async end(): Promise<void> {
+    if (this._changeInterval) {
+      clearInterval(this._changeInterval);
     }
 
-    return Promise.all(
-      this._watchers.map(
-        watcher => new Promise(resolve => watcher.close(resolve)),
-      ),
-    ).then(() => {
-      this._watchers = [];
-    });
+    if (!this._watchers.length) {
+      return;
+    }
+
+    await Promise.all(this._watchers.map(watcher => watcher.close()));
+
+    this._watchers = [];
   }
 
   /**
@@ -1075,12 +1080,10 @@ class HasteMap extends EventEmitter {
     };
   }
 
-  static H: HType;
-  static DuplicateError: typeof DuplicateError;
-  static ModuleMap: typeof HasteModuleMap;
+  static H = H;
 }
 
-class DuplicateError extends Error {
+export class DuplicateError extends Error {
   mockPath1: string;
   mockPath2: string;
 
@@ -1092,16 +1095,10 @@ class DuplicateError extends Error {
   }
 }
 
-function copy<T extends Record<string, any>>(object: T): T {
+function copy<T extends Record<string, unknown>>(object: T): T {
   return Object.assign(Object.create(null), object);
 }
 
 function copyMap<K, V>(input: Map<K, V>): Map<K, V> {
   return new Map(input);
 }
-
-HasteMap.H = H;
-HasteMap.DuplicateError = DuplicateError;
-HasteMap.ModuleMap = HasteModuleMap;
-
-export = HasteMap;

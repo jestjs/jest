@@ -6,8 +6,8 @@
  */
 
 import * as path from 'path';
-import runJest from '../runJest';
 import {extractSummary} from '../Utils';
+import runJest from '../runJest';
 const dir = path.resolve(__dirname, '../custom-test-sequencer');
 
 test('run prioritySequence first sync', () => {

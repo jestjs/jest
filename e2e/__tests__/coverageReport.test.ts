@@ -8,13 +8,13 @@
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {extractSummary, run} from '../Utils';
+import {extractSummary, runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../coverage-report');
 
 beforeAll(() => {
-  run('yarn', DIR);
+  runYarnInstall(DIR);
 });
 
 test('outputs coverage report', () => {

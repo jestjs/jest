@@ -6,6 +6,7 @@
  */
 
 import chalk = require('chalk');
+import type {Config} from '@jest/types';
 import {
   StackTraceConfig,
   StackTraceOptions,
@@ -14,17 +15,11 @@ import {
 import type {ConsoleBuffer} from './types';
 
 export default (
-  // TODO: remove in 26
-  root: string,
-  verbose: boolean,
   buffer: ConsoleBuffer,
-  // TODO: make mandatory and take Config.ProjectConfig in 26
-  config: StackTraceConfig = {
-    rootDir: root,
-    testMatch: [],
-  },
+  config: StackTraceConfig,
+  globalConfig: Config.GlobalConfig,
 ): string => {
-  const TITLE_INDENT = verbose ? '  ' : '    ';
+  const TITLE_INDENT = globalConfig.verbose ? '  ' : '    ';
   const CONSOLE_INDENT = TITLE_INDENT + '  ';
 
   const logEntries = buffer.reduce((output, {type, message, origin}) => {
@@ -40,12 +35,12 @@ export default (
     if (type === 'warn') {
       message = chalk.yellow(message);
       typeMessage = chalk.yellow(typeMessage);
-      noStackTrace = false;
+      noStackTrace = globalConfig?.noStackTrace ?? false;
       noCodeFrame = false;
     } else if (type === 'error') {
       message = chalk.red(message);
       typeMessage = chalk.red(typeMessage);
-      noStackTrace = false;
+      noStackTrace = globalConfig?.noStackTrace ?? false;
       noCodeFrame = false;
     }
 

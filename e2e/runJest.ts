@@ -8,11 +8,11 @@
 
 import * as path from 'path';
 import {Writable} from 'stream';
-import * as fs from 'graceful-fs';
 import execa = require('execa');
-import type {Config} from '@jest/types';
-import type {FormattedTestResults} from '@jest/test-result';
+import * as fs from 'graceful-fs';
 import stripAnsi = require('strip-ansi');
+import type {FormattedTestResults} from '@jest/test-result';
+import type {Config} from '@jest/types';
 import {normalizeIcons} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
@@ -23,6 +23,7 @@ type RunJestOptions = {
   skipPkgJsonCheck?: boolean; // don't complain if can't find package.json
   stripAnsi?: boolean; // remove colors from stdout and stderr,
   timeout?: number; // kill the Jest process after X milliseconds
+  env?: NodeJS.ProcessEnv;
 };
 
 // return the result of the spawned process:
@@ -73,13 +74,17 @@ function spawnJest(
     `,
     );
   }
-  const env = Object.assign({}, process.env, {FORCE_COLOR: '0'});
+  const env: NodeJS.ProcessEnv = {
+    ...process.env,
+    FORCE_COLOR: '0',
+    ...options.env,
+  };
 
   if (options.nodeOptions) env['NODE_OPTIONS'] = options.nodeOptions;
   if (options.nodePath) env['NODE_PATH'] = options.nodePath;
 
   const spawnArgs = [JEST_PATH, ...args];
-  const spawnOptions = {
+  const spawnOptions: execa.CommonOptions<string> = {
     cwd: dir,
     env,
     reject: false,

@@ -5,15 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 const React = require('react');
-
 const CompLibrary = require('../../core/CompLibrary.js');
+const translate = require('../../server/translate.js').translate;
+const backers = require(process.cwd() + '/backers.json');
+const siteConfig = require(process.cwd() + '/siteConfig.js');
+
 const MarkdownBlock = CompLibrary.MarkdownBlock; /* Used to read markdown */
 const Container = CompLibrary.Container;
 const GridBlock = CompLibrary.GridBlock;
 
-const translate = require('../../server/translate.js').translate;
-const backers = require(process.cwd() + '/backers.json');
-const siteConfig = require(process.cwd() + '/siteConfig.js');
 const getDocsUrl = (url, language) =>
   siteConfig.baseUrl + 'docs/' + language + url;
 const getUrl = (url, language) => siteConfig.baseUrl + language + url;
@@ -549,7 +549,7 @@ class Index extends React.Component {
                   </MarkdownBlock>
                   <div className="gridBlock logos">
                     {showcase}
-                    <p>And many others</p>
+                    <p className="others">And many others</p>
                   </div>
                 </div>
               </div>

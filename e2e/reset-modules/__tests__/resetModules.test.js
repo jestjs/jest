@@ -6,6 +6,7 @@
  */
 'use strict';
 
+// eslint-disable-next-line no-undef
 global.testObject = new Proxy(
   {},
   {

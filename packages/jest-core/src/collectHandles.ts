@@ -5,11 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import * as asyncHooks from 'async_hooks';
+import stripAnsi = require('strip-ansi');
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';
-import stripAnsi = require('strip-ansi');
 
 function stackIsFromUser(stack: string) {
   // Either the test file, or something required by it
@@ -52,7 +54,11 @@ export default function collectHandles(): () => Array<Error> {
       _triggerAsyncId,
       resource: {} | NodeJS.Timeout,
     ) {
-      if (type === 'PROMISE' || type === 'TIMERWRAP') {
+      if (
+        type === 'PROMISE' ||
+        type === 'TIMERWRAP' ||
+        type === 'ELDHISTOGRAM'
+      ) {
         return;
       }
       const error = new ErrorWithStack(type, initHook);
@@ -63,6 +69,7 @@ export default function collectHandles(): () => Array<Error> {
         if (type === 'Timeout' || type === 'Immediate') {
           if ('hasRef' in resource) {
             // Timer that supports hasRef (Node v11+)
+            // @ts-expect-error: doesn't exist in v10 typings
             isActive = resource.hasRef.bind(resource);
           } else {
             // Timer that doesn't support hasRef

@@ -6,27 +6,9 @@
  *
  */
 
-import * as matcherUtils from 'jest-matcher-utils';
-import type {
-  AsyncExpectationResult,
-  Expect,
-  ExpectationResult,
-  MatcherState as JestMatcherState,
-  Matchers as MatcherInterface,
-  MatchersObject,
-  PromiseMatcherFn,
-  RawMatcherFn,
-  SyncExpectationResult,
-  ThrowingMatcherFn,
-} from './types';
+/* eslint-disable local/prefer-spread-eventually */
 
-import {iterableEquality, subsetEquality} from './utils';
-import matchers from './matchers';
-import spyMatchers from './spyMatchers';
-import toThrowMatchers, {
-  createMatcher as createThrowMatcher,
-} from './toThrowMatchers';
-import {equals} from './jasmineUtils';
+import * as matcherUtils from 'jest-matcher-utils';
 import {
   any,
   anything,
@@ -39,6 +21,8 @@ import {
   stringNotContaining,
   stringNotMatching,
 } from './asymmetricMatchers';
+import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
+import {equals} from './jasmineUtils';
 import {
   INTERNAL_MATCHER_FLAG,
   getMatchers,
@@ -46,7 +30,24 @@ import {
   setMatchers,
   setState,
 } from './jestMatchersObject';
-import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
+import matchers from './matchers';
+import spyMatchers from './spyMatchers';
+import toThrowMatchers, {
+  createMatcher as createThrowMatcher,
+} from './toThrowMatchers';
+import type {
+  AsyncExpectationResult,
+  Expect,
+  ExpectationResult,
+  MatcherState as JestMatcherState,
+  Matchers as MatcherInterface,
+  MatchersObject,
+  PromiseMatcherFn,
+  RawMatcherFn,
+  SyncExpectationResult,
+  ThrowingMatcherFn,
+} from './types';
+import {iterableEquality, subsetEquality} from './utils';
 
 class JestAssertionError extends Error {
   matcherResult?: SyncExpectationResult;
@@ -338,7 +339,7 @@ const makeThrowingMatcher = (
 
         return asyncResult
           .then(aResult => processResult(aResult, asyncError))
-          .catch(error => handleError(error));
+          .catch(handleError);
       } else {
         const syncResult = potentialResult as SyncExpectationResult;
 
@@ -419,8 +420,7 @@ expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
 const expectExport = expect as Expect;
 
-// eslint-disable-next-line no-redeclare
-namespace expectExport {
+declare namespace expectExport {
   export type MatcherState = JestMatcherState;
   export interface Matchers<R> extends MatcherInterface<R> {}
 }

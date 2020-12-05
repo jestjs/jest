@@ -63,7 +63,7 @@ describe('transitive dependencies', () => {
       );
 
       // Test twice to make sure Runtime caching works properly
-      root.jest.resetModuleRegistry();
+      root.jest.resetModules();
       expectUnmocked(
         runtime.requireModuleOrMock(runtime.__mockRootPath, 'npm3-main-dep'),
       );
@@ -88,7 +88,7 @@ describe('transitive dependencies', () => {
       );
 
       // Test twice to make sure Runtime caching works properly
-      root.jest.resetModuleRegistry();
+      root.jest.resetModules();
       expectUnmocked(
         runtime.requireModuleOrMock(runtime.__mockRootPath, 'npm3-main-dep'),
       );
@@ -114,7 +114,7 @@ describe('transitive dependencies', () => {
       );
 
       // Test twice to make sure Runtime caching works properly
-      root.jest.resetModuleRegistry();
+      root.jest.resetModules();
       expectUnmocked(
         runtime.requireModuleOrMock(runtime.__mockRootPath, 'npm3-main-dep'),
       );

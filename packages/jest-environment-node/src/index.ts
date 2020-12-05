@@ -6,11 +6,11 @@
  */
 
 import {Context, Script, createContext, runInContext} from 'vm';
+import type {JestEnvironment} from '@jest/environment';
+import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Config, Global} from '@jest/types';
 import {ModuleMocker} from 'jest-mock';
 import {installCommonGlobals} from 'jest-util';
-import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
-import type {JestEnvironment} from '@jest/environment';
 
 type Timer = {
   id: number;

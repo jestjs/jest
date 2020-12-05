@@ -165,7 +165,7 @@ You might call this function for case insensitive or Unicode equivalence compari
 ### Example of diffLinesUnified2
 
 ```js
-import format from 'pretty-format';
+import {format} from 'pretty-format';
 
 const a = {
   text: 'Ignore indentation in serialized object',

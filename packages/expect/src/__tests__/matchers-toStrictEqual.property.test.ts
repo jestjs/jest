@@ -7,8 +7,8 @@
  */
 
 import assert from 'assert';
-import {onNodeVersions} from '@jest/test-utils';
 import fc from 'fast-check';
+import {onNodeVersions} from '@jest/test-utils';
 import expect from '..';
 import {
   anythingSettings,
@@ -20,7 +20,7 @@ describe('toStrictEqual', () => {
     try {
       expect(a).toStrictEqual(b);
       return true;
-    } catch (err) {
+    } catch {
       return false;
     }
   };
@@ -28,7 +28,7 @@ describe('toStrictEqual', () => {
     try {
       assert.deepStrictEqual(a, b);
       return true;
-    } catch (err) {
+    } catch {
       return false;
     }
   };

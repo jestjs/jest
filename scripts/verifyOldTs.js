@@ -9,7 +9,6 @@
 
 const fs = require('fs');
 const path = require('path');
-
 const chalk = require('chalk');
 const execa = require('execa');
 const rimraf = require('rimraf');
@@ -33,6 +32,7 @@ const cwd = tempy.directory();
 const tsVersion = '3.8';
 
 try {
+  fs.writeFileSync(path.join(cwd, '.yarnrc.yml'), 'nodeLinker: node-modules\n');
   execa.sync('yarn', ['init', '--yes'], {cwd, stdio: 'inherit'});
   execa.sync('yarn', ['add', `typescript@~${tsVersion}`], {
     cwd,

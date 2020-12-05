@@ -6,10 +6,10 @@
  */
 
 import * as fs from 'graceful-fs';
-import {sync as resolveSync} from 'resolve';
 import pnpResolver from 'jest-pnp-resolver';
-import {tryRealpath} from 'jest-util';
+import {Opts as ResolveOpts, sync as resolveSync} from 'resolve';
 import type {Config} from '@jest/types';
+import {tryRealpath} from 'jest-util';
 
 type ResolverOptions = {
   basedir: Config.Path;
@@ -19,14 +19,25 @@ type ResolverOptions = {
   moduleDirectory?: Array<string>;
   paths?: Array<Config.Path>;
   rootDir?: Config.Path;
+  packageFilter?: ResolveOpts['packageFilter'];
 };
+
+// https://github.com/facebook/jest/pull/10617
+declare global {
+  namespace NodeJS {
+    export interface ProcessVersions {
+      pnp?: any;
+    }
+  }
+}
 
 export default function defaultResolver(
   path: Config.Path,
   options: ResolverOptions,
 ): Config.Path {
-  // @ts-expect-error: the "pnp" version named isn't in DefinitelyTyped
-  if (process.versions.pnp) {
+  // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
+  // needed for Yarn 1 which implements version 1 of the pnp spec
+  if (process.versions.pnp === '1') {
     return pnpResolver(path, options);
   }
 
@@ -36,6 +47,7 @@ export default function defaultResolver(
     isDirectory,
     isFile,
     moduleDirectory: options.moduleDirectory,
+    packageFilter: options.packageFilter,
     paths: options.paths,
     preserveSymlinks: false,
     realpathSync,

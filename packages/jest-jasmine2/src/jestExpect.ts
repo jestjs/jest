@@ -5,8 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import expect = require('expect');
+/* eslint-disable local/prefer-spread-eventually */
+
 import type {Global} from '@jest/types';
+import expect = require('expect');
 import {
   addSerializer,
   toMatchInlineSnapshot,
@@ -14,17 +16,9 @@ import {
   toThrowErrorMatchingInlineSnapshot,
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
-import type {Jasmine, RawMatcherFn} from './types';
+import type {Jasmine, JasmineMatchersObject, RawMatcherFn} from './types';
 
 declare const global: Global.Global;
-
-type JasmineMatcher = {
-  (matchersUtil: any, context: any): JasmineMatcher;
-  compare: () => RawMatcherFn;
-  negativeCompare: () => RawMatcherFn;
-};
-
-type JasmineMatchersObject = {[id: string]: JasmineMatcher};
 
 export default (config: {expand: boolean}): void => {
   global.expect = expect;

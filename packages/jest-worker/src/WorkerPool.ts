@@ -6,9 +6,9 @@
  */
 
 import BaseWorkerPool from './base/BaseWorkerPool';
-
 import type {
   ChildMessage,
+  OnCustomMessage,
   OnEnd,
   OnStart,
   WorkerInterface,
@@ -31,8 +31,9 @@ class WorkerPool extends BaseWorkerPool implements WorkerPoolInterface {
     request: ChildMessage,
     onStart: OnStart,
     onEnd: OnEnd,
+    onCustomMessage: OnCustomMessage,
   ): void {
-    this.getWorkerById(workerId).send(request, onStart, onEnd);
+    this.getWorkerById(workerId).send(request, onStart, onEnd, onCustomMessage);
   }
 
   createWorker(workerOptions: WorkerOptions): WorkerInterface {

@@ -11,6 +11,7 @@ const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
+const {sync: readPkg} = require('read-pkg');
 const stringLength = require('string-length');
 const rootPackage = require('../package.json');
 
@@ -25,17 +26,34 @@ module.exports.getPackages = function getPackages() {
     .map(file => path.resolve(PACKAGES_DIR, file))
     .filter(f => fs.lstatSync(path.resolve(f)).isDirectory());
 
-  const nodeEngineRequiremnt = rootPackage.engines.node;
+  const nodeEngineRequirement = rootPackage.engines.node;
 
   packages.forEach(packageDir => {
-    const pkg = require(`${packageDir}/package.json`);
+    const pkg = readPkg({cwd: packageDir});
 
     assert.ok(pkg.engines, `Engine requirement in ${pkg.name} should exist`);
 
-    assert.equal(
+    assert.strictEqual(
       pkg.engines.node,
-      nodeEngineRequiremnt,
+      nodeEngineRequirement,
       `Engine requirement in ${pkg.name} should match root`,
+    );
+
+    assert.ok(pkg.exports, `Package ${pkg.name} is missing \`exports\` field`);
+    assert.deepStrictEqual(
+      pkg.exports,
+      {
+        '.': pkg.main,
+        './package.json': './package.json',
+        ...Object.values(pkg.bin || {}).reduce(
+          (mem, curr) =>
+            Object.assign(mem, {[curr.replace(/\.js$/, '')]: curr}),
+          {},
+        ),
+        ...(pkg.name === 'jest-circus' ? {'./runner': './runner.js'} : {}),
+        ...(pkg.name === 'expect' ? {'./build/utils': './build/utils.js'} : {}),
+      },
+      `Package ${pkg.name} does not export correct files`,
     );
   });
 

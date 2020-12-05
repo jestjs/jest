@@ -239,8 +239,8 @@ It's also possible to create custom matchers for inline snapshots, the snapshots
 const {toMatchInlineSnapshot} = require('jest-snapshot');
 
 expect.extend({
-  toMatchTrimmedInlineSnapshot(received) {
-    return toMatchInlineSnapshot.call(this, received.substring(0, 10));
+  toMatchTrimmedInlineSnapshot(received, ...rest) {
+    return toMatchInlineSnapshot.call(this, received.substring(0, 10), ...rest);
   },
 });
 
@@ -495,7 +495,7 @@ expect.addSnapshotSerializer(serializer);
 // affects expect(value).toMatchSnapshot() assertions in the test file
 ```
 
-If you add a snapshot serializer in individual test files instead of to adding it to `snapshotSerializers` configuration:
+If you add a snapshot serializer in individual test files instead of adding it to `snapshotSerializers` configuration:
 
 - You make the dependency explicit instead of implicit.
 - You avoid limits to configuration that might cause you to eject from [create-react-app](https://github.com/facebookincubator/create-react-app).
@@ -1080,7 +1080,7 @@ If differences between properties do not help you to understand why a test fails
 - rewrite `expect(received).toEqual(expected)` as `expect(received.equals(expected)).toBe(true)`
 - rewrite `expect(received).not.toEqual(expected)` as `expect(received.equals(expected)).toBe(false)`
 
-### `.toMatch(regexpOrString)`
+### `.toMatch(regexp | string)`
 
 Use `.toMatch` to check that a string matches a regular expression.
 

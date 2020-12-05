@@ -28,10 +28,11 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* eslint-disable sort-keys */
 
-import {convertDescriptorToString} from 'jest-util';
+/* eslint-disable local/ban-types-eventually, sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
+
 import type {Config} from '@jest/types';
+import {convertDescriptorToString} from 'jest-util';
 import ExpectationFailed from '../ExpectationFailed';
 import expectationResultFactory from '../expectationResultFactory';
 import type {QueueableFn} from '../queueRunner';
@@ -207,7 +208,7 @@ export default class Suite {
         const child = this.children[i];
         try {
           child.addExpectationResult.apply(child, args);
-        } catch (e) {
+        } catch {
           // keep going
         }
       }

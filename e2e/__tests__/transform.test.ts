@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
 import {tmpdir} from 'os';
+import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import {
   cleanup,
@@ -14,7 +14,7 @@ import {
   createEmptyPackage,
   extractSummary,
   linkJestPackage,
-  run,
+  runYarnInstall,
 } from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
 
@@ -22,7 +22,7 @@ describe('babel-jest', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
 
   beforeEach(() => {
-    run('yarn', dir);
+    runYarnInstall(dir);
   });
 
   it('runs transpiled code', () => {
@@ -59,7 +59,7 @@ describe('babel-jest with manual transformer', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest-manual');
 
   beforeEach(() => {
-    run('yarn', dir);
+    runYarnInstall(dir);
   });
 
   it('runs transpiled code', () => {
@@ -133,7 +133,7 @@ describe('multiple-transformers', () => {
   const dir = path.resolve(__dirname, '..', 'transform/multiple-transformers');
 
   beforeEach(() => {
-    run('yarn', dir);
+    runYarnInstall(dir);
   });
 
   it('transforms dependencies using specific transformers', () => {
@@ -164,7 +164,7 @@ describe('transformer-config', () => {
   const dir = path.resolve(__dirname, '..', 'transform/transformer-config');
 
   beforeEach(() => {
-    run('yarn', dir);
+    runYarnInstall(dir);
   });
 
   it('runs transpiled code', () => {
@@ -203,5 +203,38 @@ describe('transformer caching', () => {
 
     // We run with 2 workers, so the file should be transformed twice
     expect(loggedFiles).toHaveLength(2);
+  });
+});
+
+describe('transform-environment', () => {
+  const dir = path.resolve(__dirname, '../transform/transform-environment');
+
+  it('should transform the environment', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
+  });
+});
+
+describe('transform-runner', () => {
+  const dir = path.resolve(__dirname, '../transform/transform-runner');
+
+  it('should transform runner', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
+  });
+});
+
+describe('transform-testrunner', () => {
+  const dir = path.resolve(__dirname, '../transform/transform-testrunner');
+
+  it('should transform testRunner', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
   });
 });

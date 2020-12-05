@@ -9,6 +9,12 @@ import type {PromptObject} from 'prompts';
 
 const defaultQuestions: Array<PromptObject> = [
   {
+    initial: false,
+    message: 'Would you like to use Typescript for the configuration file?',
+    name: 'useTypescript',
+    type: 'confirm',
+  },
+  {
     choices: [
       {title: 'node', value: 'node'},
       {title: 'jsdom (browser-like)', value: 'jsdom'},
@@ -23,6 +29,16 @@ const defaultQuestions: Array<PromptObject> = [
     message: 'Do you want Jest to add coverage reports?',
     name: 'coverage',
     type: 'confirm',
+  },
+  {
+    choices: [
+      {title: 'v8', value: 'v8'},
+      {title: 'babel', value: 'babel'},
+    ],
+    initial: 0,
+    message: 'Which provider should be used to instrument code for coverage?',
+    name: 'coverageProvider',
+    type: 'select',
   },
   {
     initial: false,

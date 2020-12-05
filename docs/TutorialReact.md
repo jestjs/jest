@@ -60,7 +60,7 @@ module.exports = {
 
 Let's create a [snapshot test](SnapshotTesting.md) for a Link component that renders hyperlinks:
 
-```javascript
+```tsx
 // Link.react.js
 import React from 'react';
 
@@ -106,11 +106,11 @@ export default class Link extends React.Component {
 
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
 
-```javascript
+```tsx
 // Link.react.test.js
 import React from 'react';
-import Link from '../Link.react';
 import renderer from 'react-test-renderer';
+import Link from '../Link.react';
 
 test('Link changes the class when hovered', () => {
   const component = renderer.create(
@@ -168,7 +168,7 @@ exports[`Link changes the class when hovered 3`] = `
 `;
 ```
 
-The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
+The next time you run the tests, the rendered output will be compared to the previously created snapshot. The snapshot should be committed along with code changes. When a snapshot test fails, you need to inspect whether it is an intended or unintended change. If the change is expected you can invoke Jest with `jest -u` to overwrite the existing snapshot.
 
 The code for this example is available at [examples/snapshot](https://github.com/facebook/jest/tree/master/examples/snapshot).
 
@@ -196,7 +196,7 @@ React 16 triggers these warnings due to how it checks element types, and the moc
     jest.mock('./SomeComponent', () => () => 'SomeComponent');
     ```
 2.  Render as a custom element. DOM "custom elements" aren't checked for anything and shouldn't fire warnings. They are lowercase and have a dash in the name.
-    ```js
+    ```tsx
     jest.mock('./Widget', () => () => <mock-widget />);
     ```
 3.  Use `react-test-renderer`. The test renderer doesn't care about element types and will happily accept e.g. `SomeComponent`. You could check snapshots using the test renderer, and check component behavior separately using Enzyme.
@@ -216,7 +216,7 @@ You have to run `yarn add --dev @testing-library/react` to use react-testing-lib
 
 Let's implement a checkbox which swaps between two labels:
 
-```javascript
+```tsx
 // CheckboxWithLabel.js
 
 import React from 'react';
@@ -250,7 +250,7 @@ export default class CheckboxWithLabel extends React.Component {
 }
 ```
 
-```javascript
+```tsx
 // __tests__/CheckboxWithLabel-test.js
 import React from 'react';
 import {cleanup, fireEvent, render} from '@testing-library/react';
@@ -281,7 +281,7 @@ You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React 
 
 Let's rewrite the test from above using Enzyme instead of react-testing-library. We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
 
-```javascript
+```tsx
 // __tests__/CheckboxWithLabel-test.js
 
 import React from 'react';
@@ -304,7 +304,7 @@ The code for this example is available at [examples/enzyme](https://github.com/f
 
 ### Custom transformers
 
-If you need more advanced functionality, you can also build your own transformer. Instead of using babel-jest, here is an example of using babel:
+If you need more advanced functionality, you can also build your own transformer. Instead of using `babel-jest`, here is an example of using `@babel/core`:
 
 ```javascript
 // custom-transformer.js
@@ -320,7 +320,7 @@ module.exports = {
       presets: [jestPreset],
     });
 
-    return result ? result.code : src;
+    return result || src;
   },
 };
 ```
@@ -329,7 +329,7 @@ Don't forget to install the `@babel/core` and `babel-preset-jest` packages for t
 
 To make this work with Jest you need to update your Jest configuration with this: `"transform": {"\\.js$": "path/to/custom-transformer.js"}`.
 
-If you'd like to build a transformer with babel support, you can also use babel-jest to compose one and pass in your custom configuration options:
+If you'd like to build a transformer with babel support, you can also use `babel-jest` to compose one and pass in your custom configuration options:
 
 ```javascript
 const babelJest = require('babel-jest');
@@ -338,3 +338,5 @@ module.exports = babelJest.createTransformer({
   presets: ['my-custom-preset'],
 });
 ```
+
+See [dedicated docs](CodeTransformation.md#writing-custom-transformers) for more details.

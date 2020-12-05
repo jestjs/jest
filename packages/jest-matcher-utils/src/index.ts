@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-disable local/ban-types-eventually */
+
 import chalk = require('chalk');
 import diffDefault, {
   DIFF_DELETE,
@@ -16,7 +18,7 @@ import diffDefault, {
   diffStringsUnified,
 } from 'jest-diff';
 import getType = require('jest-get-type');
-import prettyFormat = require('pretty-format');
+import prettyFormat, {plugins as prettyFormatPlugins} from 'pretty-format';
 import Replaceable from './Replaceable';
 import deepCyclicCopyReplaceable from './deepCyclicCopyReplaceable';
 
@@ -27,7 +29,7 @@ const {
   Immutable,
   ReactElement,
   ReactTestComponent,
-} = prettyFormat.plugins;
+} = prettyFormatPlugins;
 
 const PLUGINS = [
   ReactTestComponent,
@@ -93,7 +95,7 @@ export const stringify = (object: unknown, maxDepth: number = 10): string => {
       min: true,
       plugins: PLUGINS,
     });
-  } catch (e) {
+  } catch {
     result = prettyFormat(object, {
       callToJSON: false,
       maxDepth,
@@ -408,8 +410,8 @@ const shouldPrintDiff = (actual: unknown, expected: unknown) => {
 function replaceMatchedToAsymmetricMatcher(
   replacedExpected: unknown,
   replacedReceived: unknown,
-  expectedCycles: Array<any>,
-  receivedCycles: Array<any>,
+  expectedCycles: Array<unknown>,
+  receivedCycles: Array<unknown>,
 ) {
   if (!Replaceable.isReplaceable(replacedExpected, replacedReceived)) {
     return {replacedExpected, replacedReceived};

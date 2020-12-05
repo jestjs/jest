@@ -6,7 +6,6 @@
  */
 
 import chalk = require('chalk');
-
 import colorize from './colorize';
 
 const DOTS = '...';
@@ -19,7 +18,7 @@ export default (testName: string, pattern: string, width: number): string => {
 
   try {
     regexp = new RegExp(pattern, 'i');
-  } catch (e) {
+  } catch {
     return chalk.dim(inlineTestName);
   }
 

@@ -6,8 +6,9 @@
  *
  */
 
-import type {Config} from '@jest/types';
-import type {TestResult} from '@jest/test-result';
+import chalk = require('chalk');
+import * as fs from 'graceful-fs';
+import sourcemapSupport = require('source-map-support');
 import {
   BufferedConsole,
   CustomConsole,
@@ -17,17 +18,17 @@ import {
   getConsoleOutput,
 } from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
-import RuntimeClass = require('jest-runtime');
-import * as fs from 'graceful-fs';
-import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
-import LeakDetector from 'jest-leak-detector';
-import Resolver = require('jest-resolve');
+import type {TestResult} from '@jest/test-result';
+import {ScriptTransformer} from '@jest/transform';
+import type {Config} from '@jest/types';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
+import LeakDetector from 'jest-leak-detector';
 import {formatExecError} from 'jest-message-util';
-import sourcemapSupport = require('source-map-support');
-import chalk = require('chalk');
-import type {TestFramework, TestRunnerContext} from './types';
+import type Resolver from 'jest-resolve';
+import type RuntimeClass from 'jest-runtime';
+import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
+import type {TestFileEvent, TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {
   leakDetector: LeakDetector | null;
@@ -61,8 +62,7 @@ function freezeConsole(
     );
 
     process.stderr.write('\n' + formattedError + '\n');
-    // TODO: set exit code in Jest 25
-    // process.exitCode = 1;
+    process.exitCode = 1;
   };
 }
 
@@ -81,6 +81,7 @@ async function runTestInternal(
   config: Config.ProjectConfig,
   resolver: Resolver,
   context?: TestRunnerContext,
+  sendMessageToJest?: TestFileEvent,
 ): Promise<RunTestInternalResult> {
   const testSource = fs.readFileSync(path, 'utf8');
   const docblockPragmas = docblock.parse(docblock.extract(testSource));
@@ -102,25 +103,28 @@ async function runTestInternal(
     });
   }
 
+  const transformer = new ScriptTransformer(config);
   const TestEnvironment: typeof JestEnvironment = interopRequireDefault(
-    require(testEnvironment),
+    transformer.requireAndTranspileModule(testEnvironment),
   ).default;
-  const testFramework: TestFramework =
-    process.env.JEST_CIRCUS === '1'
-      ? require('jest-circus/runner') // eslint-disable-line import/no-extraneous-dependencies
-      : require(config.testRunner);
-  const Runtime: typeof RuntimeClass = config.moduleLoader
-    ? require(config.moduleLoader)
-    : require('jest-runtime');
+  const testFramework: TestFramework = interopRequireDefault(
+    transformer.requireAndTranspileModule(
+      process.env.JEST_JASMINE === '1' ? 'jest-jasmine2' : config.testRunner,
+    ),
+  ).default;
+  const Runtime: typeof RuntimeClass = interopRequireDefault(
+    config.moduleLoader
+      ? require(config.moduleLoader)
+      : require('jest-runtime'),
+  ).default;
 
   const consoleOut = globalConfig.useStderr ? process.stderr : process.stdout;
   const consoleFormatter = (type: LogType, message: LogMessage) =>
     getConsoleOutput(
-      config.cwd,
-      !!globalConfig.verbose,
       // 4 = the console call is buried 4 stack frames deep
       BufferedConsole.write([], type, message, 4),
       config,
+      globalConfig,
     );
 
   let testConsole;
@@ -145,21 +149,27 @@ async function runTestInternal(
   const cacheFS = {[path]: testSource};
   setGlobal(environment.global, 'console', testConsole);
 
-  const runtime = new Runtime(config, environment, resolver, cacheFS, {
-    changedFiles: context?.changedFiles,
-    collectCoverage: globalConfig.collectCoverage,
-    collectCoverageFrom: globalConfig.collectCoverageFrom,
-    collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
-    coverageProvider: globalConfig.coverageProvider,
-    sourcesRelatedToTestsInChangedFiles:
-      context?.sourcesRelatedToTestsInChangedFiles,
-  });
+  const runtime = new Runtime(
+    config,
+    environment,
+    resolver,
+    cacheFS,
+    {
+      changedFiles: context?.changedFiles,
+      collectCoverage: globalConfig.collectCoverage,
+      collectCoverageFrom: globalConfig.collectCoverageFrom,
+      collectCoverageOnlyFrom: globalConfig.collectCoverageOnlyFrom,
+      coverageProvider: globalConfig.coverageProvider,
+      sourcesRelatedToTestsInChangedFiles:
+        context?.sourcesRelatedToTestsInChangedFiles,
+    },
+    path,
+  );
 
   const start = Date.now();
 
   for (const path of config.setupFiles) {
-    // TODO: remove ? in Jest 26
-    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);
@@ -181,7 +191,7 @@ async function runTestInternal(
             map: JSON.parse(fs.readFileSync(sourceMapSource, 'utf8')),
             url: source,
           };
-        } catch (e) {}
+        } catch {}
       }
       return null;
     },
@@ -245,6 +255,7 @@ async function runTestInternal(
         environment,
         runtime,
         path,
+        sendMessageToJest,
       );
     } catch (err) {
       // Access stack before uninstalling sourcemaps
@@ -265,7 +276,14 @@ async function runTestInternal(
       result.numPendingTests +
       result.numTodoTests;
 
-    result.perfStats = {end: Date.now(), start};
+    const end = Date.now();
+    const testRuntime = end - start;
+    result.perfStats = {
+      end,
+      runtime: testRuntime,
+      slow: testRuntime / 1000 > config.slowTestThreshold,
+      start,
+    };
     result.testFilePath = path;
     result.console = testConsole.getBuffer();
     result.skipped = testCount === result.numPendingTests;
@@ -312,6 +330,7 @@ export default async function runTest(
   config: Config.ProjectConfig,
   resolver: Resolver,
   context?: TestRunnerContext,
+  sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> {
   const {leakDetector, result} = await runTestInternal(
     path,
@@ -319,6 +338,7 @@ export default async function runTest(
     config,
     resolver,
     context,
+    sendMessageToJest,
   );
 
   if (leakDetector) {

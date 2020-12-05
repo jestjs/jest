@@ -18,9 +18,9 @@ let transformer: Transformer;
 
 const evalCommand: repl.REPLEval = (
   cmd: string,
-  _context: any,
+  _context: unknown,
   _filename: string,
-  callback: (e: Error | null, result?: any) => void,
+  callback: (e: Error | null, result?: unknown) => void,
 ) => {
   let result;
   try {
@@ -28,7 +28,16 @@ const evalCommand: repl.REPLEval = (
       const transformResult = transformer.process(
         cmd,
         jestGlobalConfig.replname || 'jest.js',
-        jestProjectConfig,
+        {
+          cacheFS: new Map<string, string>(),
+          config: jestProjectConfig,
+          configString: JSON.stringify(jestProjectConfig),
+          instrument: false,
+          supportsDynamicImport: false,
+          supportsExportNamespaceFrom: false,
+          supportsStaticESM: false,
+          supportsTopLevelAwait: false,
+        },
       );
       cmd =
         typeof transformResult === 'string'

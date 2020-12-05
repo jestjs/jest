@@ -1,25 +1,28 @@
 {
   "name": "babel-preset-jest",
-  "version": "26.0.0",
+  "version": "26.6.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/babel-preset-jest"
   },
   "license": "MIT",
-  "main": "index.js",
+  "main": "./index.js",
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json"
+  },
   "dependencies": {
-    "babel-plugin-jest-hoist": "^26.0.0",
-    "babel-preset-current-node-syntax": "^0.1.2"
+    "babel-plugin-jest-hoist": "^26.6.2",
+    "babel-preset-current-node-syntax": "^1.0.0"
   },
   "peerDependencies": {
     "@babel/core": "^7.0.0"
   },
   "engines": {
-    "node": ">= 10.14.2"
+    "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
   },
   "publishConfig": {
     "access": "public"
-  },
-  "gitHead": "170eee11d03b0ed5c60077982fdbc3bafd403638"
+  }
 }

@@ -111,11 +111,11 @@ const validConfig = {
   testPathIgnorePatterns: [NODE_MODULES_REGEXP],
   testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$',
   testResultsProcessor: 'processor-node-module',
-  testRunner: 'jasmine2',
+  testRunner: 'circus',
   testURL: 'http://localhost',
   timers: 'real',
   transform: {
-    '^.+\\.js$': '<rootDir>/preprocessor.js',
+    '\\.js$': '<rootDir>/preprocessor.js',
   },
   transformIgnorePatterns: [NODE_MODULES_REGEXP],
   unmockedModulePathPatterns: ['mock'],
@@ -127,7 +127,8 @@ const validConfig = {
   watchman: true,
 };
 
-const format = (value: string) => require('pretty-format')(value, {min: true});
+const format = (value: string) =>
+  require('pretty-format').format(value, {min: true});
 
 const deprecatedConfig = {
   preprocessorIgnorePatterns: (config: Record<string, any>) =>

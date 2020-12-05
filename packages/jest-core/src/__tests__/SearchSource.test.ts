@@ -7,10 +7,10 @@
  */
 
 import * as path from 'path';
-import Runtime = require('jest-runtime');
-import {normalize} from 'jest-config';
-import {Test} from 'jest-runner';
 import type {Config} from '@jest/types';
+import {normalize} from 'jest-config';
+import type {Test} from 'jest-runner';
+import Runtime from 'jest-runtime';
 import SearchSource, {SearchResult} from '../SearchSource';
 
 jest.setTimeout(15000);
@@ -202,6 +202,34 @@ describe('SearchSource', () => {
         expect(relPaths.sort()).toEqual([
           path.normalize('__testtests__/test.js'),
           path.normalize('__testtests__/test.jsx'),
+        ]);
+      });
+    });
+
+    it('finds tests matching a JS with overriding glob patterns', () => {
+      const {options: config} = normalize(
+        {
+          moduleFileExtensions: ['js', 'jsx'],
+          name,
+          rootDir,
+          testMatch: [
+            '**/*.js?(x)',
+            '!**/test.js?(x)',
+            '**/test.js',
+            '!**/test.js',
+          ],
+          testRegex: '',
+        },
+        {} as Config.Argv,
+      );
+
+      return findMatchingTests(config).then(data => {
+        const relPaths = toPaths(data.tests).map(absPath =>
+          path.relative(rootDir, absPath),
+        );
+        expect(relPaths.sort()).toEqual([
+          path.normalize('module.jsx'),
+          path.normalize('noTests.js'),
         ]);
       });
     });
@@ -423,14 +451,12 @@ describe('SearchSource', () => {
     it('finds tests that depend directly on the path', () => {
       const filePath = path.join(rootDir, 'RegularModule.js');
       const file2Path = path.join(rootDir, 'RequireRegularModule.js');
-      const loggingDep = path.join(rootDir, 'logging.js');
       const parentDep = path.join(rootDir, 'ModuleWithSideEffects.js');
       const data = searchSource.findRelatedTests(new Set([filePath]), false);
       expect(toPaths(data.tests).sort()).toEqual([
         parentDep,
         filePath,
         file2Path,
-        loggingDep,
         rootPath,
       ]);
     });

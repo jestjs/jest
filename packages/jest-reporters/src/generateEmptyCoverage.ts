@@ -5,12 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'graceful-fs';
-import type {Config} from '@jest/types';
-import {readInitialCoverage} from 'istanbul-lib-instrument';
-import {FileCoverage, createFileCoverage} from 'istanbul-lib-coverage';
-import {ScriptTransformer, shouldInstrument} from '@jest/transform';
 import type {V8Coverage} from 'collect-v8-coverage';
+import * as fs from 'graceful-fs';
+import {FileCoverage, createFileCoverage} from 'istanbul-lib-coverage';
+import {readInitialCoverage} from 'istanbul-lib-instrument';
+import {ScriptTransformer, shouldInstrument} from '@jest/transform';
+import type {Config} from '@jest/types';
 
 type SingleV8Coverage = V8Coverage[number];
 
@@ -70,7 +70,13 @@ export default function (
     const {code} = new ScriptTransformer(config).transformSource(
       filename,
       source,
-      true,
+      {
+        instrument: true,
+        supportsDynamicImport: true,
+        supportsExportNamespaceFrom: true,
+        supportsStaticESM: true,
+        supportsTopLevelAwait: true,
+      },
     );
     // TODO: consider passing AST
     const extracted = readInitialCoverage(code);

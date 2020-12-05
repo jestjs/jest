@@ -28,24 +28,24 @@ LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-/* eslint-disable sort-keys */
+/* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
-import type {Jasmine} from '../types';
-import createSpy from './createSpy';
+import type {Jasmine, SpecDefinitionsFn} from '../types';
 import Env from './Env';
 import JsApiReporter from './JsApiReporter';
 import ReportDispatcher from './ReportDispatcher';
 import Spec from './Spec';
-import SpyRegistry from './spyRegistry';
 import Suite from './Suite';
 import Timer from './Timer';
+import createSpy from './createSpy';
+import SpyRegistry from './spyRegistry';
 
 export const create = function (createOptions: Record<string, any>): Jasmine {
   const j$ = {...createOptions} as Jasmine;
 
   j$._DEFAULT_TIMEOUT_INTERVAL = createOptions.testTimeout || 5000;
 
-  j$.getEnv = function (options?: object) {
+  j$.getEnv = function (options?: Record<string, unknown>) {
     const env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options));
     //jasmine. singletons in here (setTimeout blah blah).
     return env;
@@ -66,15 +66,15 @@ export const create = function (createOptions: Record<string, any>): Jasmine {
 // Interface is a reserved word in strict mode, so can't export it as ESM
 export const _interface = function (jasmine: Jasmine, env: any) {
   const jasmineInterface = {
-    describe(description: string, specDefinitions: Function) {
+    describe(description: string, specDefinitions: SpecDefinitionsFn) {
       return env.describe(description, specDefinitions);
     },
 
-    xdescribe(description: string, specDefinitions: Function) {
+    xdescribe(description: string, specDefinitions: SpecDefinitionsFn) {
       return env.xdescribe(description, specDefinitions);
     },
 
-    fdescribe(description: string, specDefinitions: Function) {
+    fdescribe(description: string, specDefinitions: SpecDefinitionsFn) {
       return env.fdescribe(description, specDefinitions);
     },
 

@@ -6,7 +6,6 @@
  */
 
 import type {Config, Global} from '@jest/types';
-import type {Plugin} from 'pretty-format';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {
   SnapshotState,
@@ -14,6 +13,7 @@ import {
   addSerializer,
   buildSnapshotResolver,
 } from 'jest-snapshot';
+import type {Plugin} from 'pretty-format';
 import type {
   Attributes,
   default as JasmineSpec,
@@ -106,15 +106,15 @@ export default ({
 
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;
+  const {prettierPath} = config;
   const snapshotResolver = buildSnapshotResolver(config);
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
-    getBabelTraverse: () => require('@babel/traverse').default,
-    getPrettier: () =>
-      config.prettierPath ? require(config.prettierPath) : null,
+    prettierPath,
     updateSnapshot,
   });
+  // @ts-expect-error: snapshotState is a jest extension of `expect`
   setState({snapshotState, testPath});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;

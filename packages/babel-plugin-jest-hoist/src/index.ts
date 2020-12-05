@@ -6,26 +6,34 @@
  *
  */
 
+import type {PluginObj} from '@babel/core';
+import {statement} from '@babel/template';
 import type {NodePath} from '@babel/traverse';
 import {
+  BlockStatement,
+  CallExpression,
   Expression,
   Identifier,
   Node,
   Program,
+  VariableDeclaration,
+  VariableDeclarator,
   callExpression,
+  emptyStatement,
   isIdentifier,
+  variableDeclaration,
 } from '@babel/types';
-import {statement} from '@babel/template';
-import type {PluginObj} from '@babel/core';
 
 const JEST_GLOBAL_NAME = 'jest';
 const JEST_GLOBALS_MODULE_NAME = '@jest/globals';
 const JEST_GLOBALS_MODULE_JEST_EXPORT_NAME = 'jest';
 
+const hoistedVariables = new WeakSet<VariableDeclarator>();
+
 // We allow `jest`, `expect`, `require`, all default Node.js globals and all
 // ES2015 built-ins to be used inside of a `jest.mock` factory.
 // We also allow variables prefixed with `mock` as an escape-hatch.
-const WHITELISTED_IDENTIFIERS = new Set<string>(
+const ALLOWED_IDENTIFIERS = new Set<string>(
   [
     'Array',
     'ArrayBuffer',
@@ -77,7 +85,11 @@ const WHITELISTED_IDENTIFIERS = new Set<string>(
     'jest',
     'parseFloat',
     'parseInt',
+    'exports',
     'require',
+    'module',
+    '__filename',
+    '__dirname',
     'undefined',
     ...Object.getOwnPropertyNames(global),
   ].sort(),
@@ -113,7 +125,7 @@ FUNCTIONS.mock = args => {
 
     const ids: Set<NodePath<Identifier>> = new Set();
     const parentScope = moduleFactory.parentPath.scope;
-    // @ts-expect-error: ReferencedIdentifier is not known on visitors
+    // @ts-expect-error: ReferencedIdentifier and blacklist are not known on visitors
     moduleFactory.traverse(IDVisitor, {ids});
     for (const id of ids) {
       const {name} = id.node;
@@ -130,11 +142,25 @@ FUNCTIONS.mock = args => {
       }
 
       if (!found) {
-        const isAllowedIdentifier =
-          (scope.hasGlobal(name) && WHITELISTED_IDENTIFIERS.has(name)) ||
+        let isAllowedIdentifier =
+          (scope.hasGlobal(name) && ALLOWED_IDENTIFIERS.has(name)) ||
           /^mock/i.test(name) ||
           // Allow istanbul's coverage variable to pass.
           /^(?:__)?cov/.test(name);
+
+        if (!isAllowedIdentifier) {
+          const binding = scope.bindings[name];
+
+          if (binding?.path.isVariableDeclarator()) {
+            const {node} = binding.path;
+            const initNode = node.init;
+
+            if (initNode && binding.constant && scope.isPure(initNode, true)) {
+              hoistedVariables.add(node);
+              isAllowedIdentifier = true;
+            }
+          }
+        }
 
         if (!isAllowedIdentifier) {
           throw id.buildCodeFrameError(
@@ -143,8 +169,8 @@ FUNCTIONS.mock = args => {
               'Invalid variable access: ' +
               name +
               '\n' +
-              'Whitelisted objects: ' +
-              Array.from(WHITELISTED_IDENTIFIERS).join(', ') +
+              'Allowed objects: ' +
+              Array.from(ALLOWED_IDENTIFIERS).join(', ') +
               '.\n' +
               'Note: This is a precaution to guard against uninitialized mock ' +
               'variables. If it is ensured that the mock is required lazily, ' +
@@ -198,6 +224,7 @@ const isJestObject = (expression: NodePath<Expression>): boolean => {
     expression
       .get<'object'>('object')
       .referencesImport(JEST_GLOBALS_MODULE_NAME, '*') &&
+    expression.node.property.type === 'Identifier' &&
     expression.node.property.name === JEST_GLOBALS_MODULE_JEST_EXPORT_NAME
   ) {
     return true;
@@ -240,12 +267,12 @@ const extractJestObjExprIfHoistable = <T extends Node>(
   return functionLooksHoistable ? jestObjExpr : null;
 };
 
-/* eslint-disable sort-keys,@typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable sort-keys */
 export default (): PluginObj<{
   declareJestObjGetterIdentifier: () => Identifier;
   jestObjGetterIdentifier?: Identifier;
 }> => ({
-  pre({path: program}: {path: NodePath<Program>}) {
+  pre({path: program}) {
     this.declareJestObjGetterIdentifier = () => {
       if (this.jestObjGetterIdentifier) {
         return this.jestObjGetterIdentifier;
@@ -269,7 +296,7 @@ export default (): PluginObj<{
   visitor: {
     ExpressionStatement(exprStmt) {
       const jestObjExpr = extractJestObjExprIfHoistable(
-        exprStmt.get<'expression'>('expression'),
+        exprStmt.get('expression'),
       );
       if (jestObjExpr) {
         jestObjExpr.replaceWith(
@@ -279,26 +306,66 @@ export default (): PluginObj<{
     },
   },
   // in `post` to make sure we come after an import transform and can unshift above the `require`s
-  post({path: program}: {path: NodePath<Program>}) {
-    program.traverse({
-      CallExpression: callExpr => {
+  post({path: program}) {
+    const self = this;
+
+    visitBlock(program);
+    program.traverse({BlockStatement: visitBlock});
+
+    function visitBlock(block: NodePath<BlockStatement> | NodePath<Program>) {
+      // use a temporary empty statement instead of the real first statement, which may itself be hoisted
+      const [varsHoistPoint, callsHoistPoint] = block.unshiftContainer('body', [
+        emptyStatement(),
+        emptyStatement(),
+      ]);
+      block.traverse({
+        CallExpression: visitCallExpr,
+        VariableDeclarator: visitVariableDeclarator,
+        // do not traverse into nested blocks, or we'll hoist calls in there out to this block
+        // @ts-expect-error blacklist is not known
+        blacklist: ['BlockStatement'],
+      });
+      callsHoistPoint.remove();
+      varsHoistPoint.remove();
+
+      function visitCallExpr(callExpr: NodePath<CallExpression>) {
         const {
           node: {callee},
         } = callExpr;
         if (
           isIdentifier(callee) &&
-          callee.name === this.jestObjGetterIdentifier?.name
+          callee.name === self.jestObjGetterIdentifier?.name
         ) {
           const mockStmt = callExpr.getStatementParent();
-          const mockStmtNode = mockStmt.node;
-          const mockStmtParent = mockStmt.parentPath;
-          if (mockStmtParent.isBlock()) {
-            mockStmt.remove();
-            mockStmtParent.unshiftContainer('body', [mockStmtNode]);
+
+          if (mockStmt) {
+            const mockStmtParent = mockStmt.parentPath;
+            if (mockStmtParent.isBlock()) {
+              const mockStmtNode = mockStmt.node;
+              mockStmt.remove();
+              callsHoistPoint.insertBefore(mockStmtNode);
+            }
           }
         }
-      },
-    });
+      }
+
+      function visitVariableDeclarator(varDecl: NodePath<VariableDeclarator>) {
+        if (hoistedVariables.has(varDecl.node)) {
+          // should be assert function, but it's not. So let's cast below
+          varDecl.parentPath.assertVariableDeclaration();
+
+          const {kind, declarations} = varDecl.parent as VariableDeclaration;
+          if (declarations.length === 1) {
+            varDecl.parentPath.remove();
+          } else {
+            varDecl.remove();
+          }
+          varsHoistPoint.insertBefore(
+            variableDeclaration(kind, [varDecl.node]),
+          );
+        }
+      }
+    }
   },
 });
-/* eslint-enable sort-keys,@typescript-eslint/explicit-module-boundary-types */
+/* eslint-enable */
