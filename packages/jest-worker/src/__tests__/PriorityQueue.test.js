@@ -11,20 +11,24 @@ import PriorityQueue from '../PriorityQueue';
 import {CHILD_MESSAGE_CALL} from '../types';
 
 it('returns the tasks in order', () => {
-    const computePriority = (_method, task) => task.priority;
-    const queue = new PriorityQueue(computePriority);
-    const priorities = [10, 3, 4, 8, 2, 9, 7, 1, 2, 6, 5];
+  const computePriority = (_method, task) => task.priority;
+  const queue = new PriorityQueue(computePriority);
+  const priorities = [10, 3, 4, 8, 2, 9, 7, 1, 2, 6, 5];
 
-    for (const priority of priorities) {
-        queue.enqueue(createQueueChildMessage({priority}));
-    }
+  for (const priority of priorities) {
+    queue.enqueue(createQueueChildMessage({priority}));
+  }
 
-    priorities.sort((a, b) => a - b);
-    for (const priority of priorities) {
-        expect(queue.dequeue(0)).toEqual(expect.objectContaining({request: [CHILD_MESSAGE_CALL, false, 'test', [{priority}]]}));
-    }
+  priorities.sort((a, b) => a - b);
+  for (const priority of priorities) {
+    expect(queue.dequeue(0)).toEqual(
+      expect.objectContaining({
+        request: [CHILD_MESSAGE_CALL, false, 'test', [{priority}]],
+      }),
+    );
+  }
 
-    expect(queue.dequeue(0)).toBeNull();
+  expect(queue.dequeue(0)).toBeNull();
 });
 
 it('returns the task with the lowest priority value if inserted in reversed order', () => {

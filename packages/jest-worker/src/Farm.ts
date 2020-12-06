@@ -119,6 +119,10 @@ export default class Farm {
       return this;
     }
 
+    if (task.request[1]) {
+      throw new Error('Queue implementation returned processed task');
+    }
+
     const onEnd = (error: Error | null, result: unknown) => {
       task.onEnd(error, result);
 

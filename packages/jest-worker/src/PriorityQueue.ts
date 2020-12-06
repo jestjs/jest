@@ -36,17 +36,17 @@ export default class PriorityQueue implements TaskQueue {
 
   _enqueue(task: QueueChildMessage, queue: MinHeap<QueueItem>): void {
     const item = {
-        priority: this._computePriority(task.request[2], ...task.request[3]),
-        task
+      priority: this._computePriority(task.request[2], ...task.request[3]),
+      task,
     };
 
     queue.add(item);
   }
 
   dequeue(workerId: number): QueueChildMessage | null {
-    const workerHead = this._getWorkerQueue(workerId);
+    const workerQueue = this._getWorkerQueue(workerId);
 
-    const workerTop = workerHead.peek();
+    const workerTop = workerQueue.peek();
     const sharedTop = this._sharedQueue.peek();
 
     // use the task from the worker queue if there's no task in the shared queue
@@ -58,7 +58,7 @@ export default class PriorityQueue implements TaskQueue {
       sharedTop == null ||
       (workerTop != null && workerTop.priority <= sharedTop.priority)
     ) {
-      return workerHead.poll()?.task ?? null;
+      return workerQueue.poll()?.task ?? null;
     }
 
     return this._sharedQueue.poll()!.task;
@@ -75,7 +75,7 @@ export default class PriorityQueue implements TaskQueue {
 }
 
 type HeapItem = {
-    priority: number,
+  priority: number;
 };
 
 class MinHeap<TItem extends HeapItem> {
@@ -142,7 +142,8 @@ class MinHeap<TItem extends HeapItem> {
       // then swap with the right child
       if (
         rightChild != null &&
-        rightChild.priority < (swapIndex == null ? element : leftChild!).priority
+        rightChild.priority <
+          (swapIndex == null ? element : leftChild!).priority
       ) {
         swapIndex = rightChildIndex;
       }
