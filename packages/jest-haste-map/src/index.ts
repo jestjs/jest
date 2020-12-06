@@ -16,7 +16,7 @@ import type {Stats} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import serializer from 'jest-serializer';
-import Worker from 'jest-worker';
+import {Worker} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
 import H from './constants';
