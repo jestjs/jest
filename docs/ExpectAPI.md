@@ -267,7 +267,7 @@ expect.extend({
     // The error (and its stacktrace) must be created before any `await`
     this.error = new Error();
 
-    // The implementation of `observe`d oesn't matter.
+    // The implementation of `observe` doesn't matter.
     // It only matters that the custom snapshot matcher is async.
     const observation = await observe(async () => {
       await fn();
