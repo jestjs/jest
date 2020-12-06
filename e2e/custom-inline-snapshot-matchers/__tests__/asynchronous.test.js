@@ -9,6 +9,9 @@ const {toMatchInlineSnapshot} = require('jest-snapshot');
 expect.extend({
   async toMatchObservationInlineSnapshot(fn, ...args) {
     this.error = new Error();
+    // This specific behavior can be implemented without a custom matcher.
+    // In a real example one might want to observe some global value that `fn()` is affecting.
+    // The difference between before and after `fn()` might then be persisted as a snapshot.
     const result = await fn();
 
     return toMatchInlineSnapshot.call(this, result, ...args);
