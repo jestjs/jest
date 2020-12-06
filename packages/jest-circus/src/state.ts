@@ -31,6 +31,7 @@ const createState = (): Circus.State => {
     rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
     testNamePattern: null,
     testTimeout: 5000,
+    timings: {},
     unhandledErrors: [],
   };
 };

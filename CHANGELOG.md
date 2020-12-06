@@ -5,6 +5,7 @@
 - `[babel-jest]` Export `createTransformer` function ([#12399](https://github.com/facebook/jest/pull/12399))
 - `[expect]` Expose `AsymmetricMatchers`, `MatcherFunction` and `MatcherFunctionWithState` interfaces ([#12363](https://github.com/facebook/jest/pull/12363), [#12376](https://github.com/facebook/jest/pull/12376))
 - `[jest-circus, jest-jasmine2]` Allowed classes and functions as `describe` and `it`/`test` names ([#12484](https://github.com/facebook/jest/pull/12484))
+- `[jest-circus]` Optionally `reportPhasingResults` to see hook timings ([#10923](https://github.com/facebook/jest/pull/10923))
 - `[jest-cli, jest-config]` [**BREAKING**] Remove `testURL` config, use `testEnvironmentOptions.url` instead ([#10797](https://github.com/facebook/jest/pull/10797))
 - `[jest-config]` [**BREAKING**] Stop shipping `jest-environment-jsdom` by default ([#12354](https://github.com/facebook/jest/pull/12354))
 - `[jest-config]` [**BREAKING**] Stop shipping `jest-jasmine2` by default ([#12355](https://github.com/facebook/jest/pull/12355))
