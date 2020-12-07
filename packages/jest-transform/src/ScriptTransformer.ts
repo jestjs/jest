@@ -64,11 +64,11 @@ async function waitForPromiseWithCleanup(
 }
 
 export default class ScriptTransformer {
-  private _cache: ProjectCache;
+  private readonly _cache: ProjectCache;
   private readonly _cacheFS: StringMap;
   private readonly _config: Config.ProjectConfig;
-  private _transformCache: Map<Config.Path, Transformer>;
-  private _transformConfigCache: Map<Config.Path, unknown>;
+  private readonly _transformCache: Map<Config.Path, Transformer>;
+  private readonly _transformConfigCache: Map<Config.Path, unknown>;
 
   constructor(
     config: Config.ProjectConfig,
