@@ -150,6 +150,7 @@
     "@types/jest/pretty-format": "^25.1.0",
     "babel-jest": "workspace:*",
     "fbjs-scripts": "patch:fbjs-scripts@^1.1.0#./patches/fbjs-scripts.patch",
-    "jest": "workspace:*"
+    "jest": "workspace:*",
+    "jest-environment-node": "workspace:*"
   }
 }
