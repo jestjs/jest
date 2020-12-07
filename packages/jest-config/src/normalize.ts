@@ -958,7 +958,6 @@ export default function normalize(
       case 'listTests':
       case 'logHeapUsage':
       case 'maxConcurrency':
-      case 'mapCoverage':
       case 'name':
       case 'noStackTrace':
       case 'notify':

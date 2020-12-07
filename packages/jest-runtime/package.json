@@ -1,6 +1,6 @@
 {
   "name": "jest-runtime",
-  "version": "27.0.0-next.0",
+  "version": "27.0.0-next.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -11,18 +11,17 @@
   "types": "./build/index.d.ts",
   "exports": {
     ".": "./build/index.js",
-    "./package.json": "./package.json",
-    "./bin/jest-runtime": "./bin/jest-runtime.js"
+    "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/console": "^27.0.0-next.0",
-    "@jest/environment": "^27.0.0-next.0",
-    "@jest/fake-timers": "^27.0.0-next.0",
-    "@jest/globals": "^27.0.0-next.0",
+    "@jest/console": "^27.0.0-next.1",
+    "@jest/environment": "^27.0.0-next.1",
+    "@jest/fake-timers": "^27.0.0-next.1",
+    "@jest/globals": "^27.0.0-next.1",
     "@jest/source-map": "^27.0.0-next.0",
-    "@jest/test-result": "^27.0.0-next.0",
-    "@jest/transform": "^27.0.0-next.0",
-    "@jest/types": "^27.0.0-next.0",
+    "@jest/test-result": "^27.0.0-next.1",
+    "@jest/transform": "^27.0.0-next.2",
+    "@jest/types": "^27.0.0-next.1",
     "@types/yargs": "^15.0.0",
     "chalk": "^4.0.0",
     "cjs-module-lexer": "^1.0.0",
@@ -30,29 +29,28 @@
     "exit": "^0.1.2",
     "glob": "^7.1.3",
     "graceful-fs": "^4.2.4",
-    "jest-haste-map": "^27.0.0-next.0",
-    "jest-message-util": "^27.0.0-next.0",
-    "jest-mock": "^27.0.0-next.0",
+    "jest-haste-map": "^27.0.0-next.2",
+    "jest-message-util": "^27.0.0-next.1",
+    "jest-mock": "^27.0.0-next.1",
     "jest-regex-util": "^27.0.0-next.0",
-    "jest-resolve": "^27.0.0-next.0",
-    "jest-snapshot": "^27.0.0-next.0",
-    "jest-util": "^27.0.0-next.0",
-    "jest-validate": "^27.0.0-next.0",
+    "jest-resolve": "^27.0.0-next.2",
+    "jest-snapshot": "^27.0.0-next.2",
+    "jest-util": "^27.0.0-next.1",
+    "jest-validate": "^27.0.0-next.1",
     "slash": "^3.0.0",
     "strip-bom": "^4.0.0",
     "yargs": "^16.0.3"
   },
   "devDependencies": {
-    "@jest/test-utils": "^27.0.0-next.0",
+    "@jest/test-utils": "^27.0.0-next.1",
     "@types/exit": "^0.1.30",
     "@types/glob": "^7.1.1",
     "@types/graceful-fs": "^4.1.2",
     "@types/node": "^14.0.27",
     "execa": "^5.0.0",
-    "jest-environment-node": "^27.0.0-next.0",
+    "jest-environment-node": "^27.0.0-next.1",
     "jest-snapshot-serializer-raw": "^1.1.0"
   },
-  "bin": "./bin/jest-runtime.js",
   "engines": {
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
   },
