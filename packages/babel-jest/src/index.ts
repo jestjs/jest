@@ -50,7 +50,7 @@ const createTransformer: CreateTransformer = userOptions => {
   function loadBabelConfig(
     cwd: Config.Path,
     filename: Config.Path,
-    transformOptions?: JestTransformOptions,
+    transformOptions: JestTransformOptions,
   ): PartialConfig {
     // `cwd` first to allow incoming options to override it
     const babelConfig = loadPartialConfig({
@@ -59,16 +59,16 @@ const createTransformer: CreateTransformer = userOptions => {
       caller: {
         ...options.caller,
         supportsDynamicImport:
-          transformOptions?.supportsDynamicImport ??
+          transformOptions.supportsDynamicImport ??
           options.caller.supportsDynamicImport,
         supportsExportNamespaceFrom:
-          transformOptions?.supportsExportNamespaceFrom ??
+          transformOptions.supportsExportNamespaceFrom ??
           options.caller.supportsExportNamespaceFrom,
         supportsStaticESM:
-          transformOptions?.supportsStaticESM ??
+          transformOptions.supportsStaticESM ??
           options.caller.supportsStaticESM,
         supportsTopLevelAwait:
-          transformOptions?.supportsTopLevelAwait ??
+          transformOptions.supportsTopLevelAwait ??
           options.caller.supportsTopLevelAwait,
       },
       filename,

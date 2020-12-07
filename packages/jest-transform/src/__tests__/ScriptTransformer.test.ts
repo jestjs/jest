@@ -663,7 +663,10 @@ describe('ScriptTransformer', () => {
   });
 
   it('passes expected transform options to getCacheKey', () => {
-    config = {...config, transform: [['\\.js$', 'test_preprocessor', {}]]};
+    config = {
+      ...config,
+      transform: [['\\.js$', 'test_preprocessor', {configKey: 'configValue'}]],
+    };
     const scriptTransformer = new ScriptTransformer(config);
 
     scriptTransformer.transform(

@@ -67,7 +67,10 @@ export default class ScriptTransformer {
   private readonly _cache: ProjectCache;
   private readonly _cacheFS: StringMap;
   private readonly _config: Config.ProjectConfig;
-  private readonly _transformCache: Map<Config.Path, Transformer>;
+  private readonly _transformCache: Map<
+    Config.Path,
+    {transformer: Transformer; transformerConfig: unknown}
+  >;
   private readonly _transformConfigCache: Map<Config.Path, unknown>;
 
   constructor(
@@ -102,7 +105,8 @@ export default class ScriptTransformer {
     options: ReducedTransformOptions,
   ): string {
     const configString = this._cache.configString;
-    const transformer = this._getTransformer(filename);
+    const {transformer, transformerConfig = {}} =
+      this._getTransformer(filename) || {};
 
     if (transformer && typeof transformer.getCacheKey === 'function') {
       return createHash('md5')
@@ -112,6 +116,7 @@ export default class ScriptTransformer {
             cacheFS: this._cacheFS,
             config: this._config,
             configString,
+            transformerConfig,
           }),
         )
         .update(CACHE_VERSION)
@@ -181,28 +186,30 @@ export default class ScriptTransformer {
       return null;
     }
 
-    const transformer = this._transformCache.get(transformPath);
-    if (transformer) {
-      return transformer;
+    const cached = this._transformCache.get(transformPath);
+    if (cached) {
+      return cached;
     }
 
-    let transform: Transformer = require(transformPath);
+    let transformer: Transformer = require(transformPath);
 
-    if (!transform) {
+    if (!transformer) {
       throw new TypeError('Jest: a transform must export something.');
     }
-    const transformerConfig = this._transformConfigCache.get(transformPath);
-    if (typeof transform.createTransformer === 'function') {
-      transform = transform.createTransformer(transformerConfig);
+    const transformerConfig =
+      this._transformConfigCache.get(transformPath) || {};
+    if (typeof transformer.createTransformer === 'function') {
+      transformer = transformer.createTransformer(transformerConfig);
     }
-    if (typeof transform.process !== 'function') {
+    if (typeof transformer.process !== 'function') {
       throw new TypeError(
         'Jest: a transform must export a `process` function.',
       );
     }
-    this._transformCache.set(transformPath, transform);
+    const res = {transformer, transformerConfig};
+    this._transformCache.set(transformPath, res);
 
-    return transform;
+    return res;
   }
 
   private _instrumentFile(
@@ -262,18 +269,19 @@ export default class ScriptTransformer {
     options: ReducedTransformOptions,
   ): TransformResult {
     const filename = tryRealpath(filepath);
-    const transform = this._getTransformer(filename);
+    const {transformer, transformerConfig = {}} =
+      this._getTransformer(filename) || {};
     const cacheFilePath = this._getFileCachePath(filename, content, options);
     let sourceMapPath: Config.Path | null = cacheFilePath + '.map';
     // Ignore cache if `config.cache` is set (--no-cache)
     let code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
-    const shouldCallTransform = transform && this.shouldTransform(filename);
+    const shouldCallTransform = transformer && this.shouldTransform(filename);
 
     // That means that the transform has a custom instrumentation
     // logic and will handle it based on `config.collectCoverage` option
     const transformWillInstrument =
-      shouldCallTransform && transform && transform.canInstrument;
+      shouldCallTransform && transformer && transformer.canInstrument;
 
     if (code) {
       // This is broken: we return the code, and a path for the source map
@@ -292,12 +300,13 @@ export default class ScriptTransformer {
       map: null,
     };
 
-    if (transform && shouldCallTransform) {
-      const processed = transform.process(content, filename, {
+    if (transformer && shouldCallTransform) {
+      const processed = transformer.process(content, filename, {
         ...options,
         cacheFS: this._cacheFS,
         config: this._config,
         configString: this._cache.configString,
+        transformerConfig,
       });
 
       if (typeof processed === 'string') {
@@ -343,7 +352,7 @@ export default class ScriptTransformer {
        *
        */
       const shouldEmitSourceMaps =
-        (transform != null && map != null) || transform == null;
+        (transformer != null && map != null) || transformer == null;
 
       const instrumented = this._instrumentFile(
         filename,
