@@ -1780,16 +1780,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/core@^27.0.0-next.1, @jest/core@workspace:packages/jest-core":
+"@jest/core@^27.0.0-next.2, @jest/core@workspace:packages/jest-core":
   version: 0.0.0-use.local
   resolution: "@jest/core@workspace:packages/jest-core"
   dependencies:
     "@jest/console": ^27.0.0-next.1
-    "@jest/reporters": ^27.0.0-next.1
+    "@jest/reporters": ^27.0.0-next.2
     "@jest/test-result": ^27.0.0-next.1
-    "@jest/test-sequencer": ^27.0.0-next.1
+    "@jest/test-sequencer": ^27.0.0-next.2
     "@jest/test-utils": ^27.0.0-next.1
-    "@jest/transform": ^27.0.0-next.1
+    "@jest/transform": ^27.0.0-next.2
     "@jest/types": ^27.0.0-next.1
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.2
@@ -1802,15 +1802,15 @@ __metadata:
     exit: ^0.1.2
     graceful-fs: ^4.2.4
     jest-changed-files: ^27.0.0-next.1
-    jest-config: ^27.0.0-next.1
-    jest-haste-map: ^27.0.0-next.1
+    jest-config: ^27.0.0-next.2
+    jest-haste-map: ^27.0.0-next.2
     jest-message-util: ^27.0.0-next.1
     jest-regex-util: ^27.0.0-next.0
-    jest-resolve: ^27.0.0-next.1
-    jest-resolve-dependencies: ^27.0.0-next.1
-    jest-runner: ^27.0.0-next.1
-    jest-runtime: ^27.0.0-next.1
-    jest-snapshot: ^27.0.0-next.1
+    jest-resolve: ^27.0.0-next.2
+    jest-resolve-dependencies: ^27.0.0-next.2
+    jest-runner: ^27.0.0-next.2
+    jest-runtime: ^27.0.0-next.2
+    jest-snapshot: ^27.0.0-next.2
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.0.0-next.1
     jest-validate: ^27.0.0-next.1
@@ -1965,7 +1965,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/reporters@^27.0.0-next.1, @jest/reporters@workspace:packages/jest-reporters":
+"@jest/reporters@^27.0.0-next.2, @jest/reporters@workspace:packages/jest-reporters":
   version: 0.0.0-use.local
   resolution: "@jest/reporters@workspace:packages/jest-reporters"
   dependencies:
@@ -1973,7 +1973,7 @@ __metadata:
     "@jest/console": ^27.0.0-next.1
     "@jest/test-result": ^27.0.0-next.1
     "@jest/test-utils": ^27.0.0-next.1
-    "@jest/transform": ^27.0.0-next.1
+    "@jest/transform": ^27.0.0-next.2
     "@jest/types": ^27.0.0-next.1
     "@types/exit": ^0.1.30
     "@types/glob": ^7.1.1
@@ -1994,10 +1994,10 @@ __metadata:
     istanbul-lib-report: ^3.0.0
     istanbul-lib-source-maps: ^4.0.0
     istanbul-reports: ^3.0.2
-    jest-haste-map: ^27.0.0-next.1
-    jest-resolve: ^27.0.0-next.1
+    jest-haste-map: ^27.0.0-next.2
+    jest-resolve: ^27.0.0-next.2
     jest-util: ^27.0.0-next.1
-    jest-worker: ^27.0.0-next.0
+    jest-worker: ^27.0.0-next.2
     mock-fs: ^4.4.1
     node-notifier: ^8.0.0
     slash: ^3.0.0
@@ -2068,16 +2068,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jest/test-sequencer@^27.0.0-next.1, @jest/test-sequencer@workspace:packages/jest-test-sequencer":
+"@jest/test-sequencer@^27.0.0-next.2, @jest/test-sequencer@workspace:packages/jest-test-sequencer":
   version: 0.0.0-use.local
   resolution: "@jest/test-sequencer@workspace:packages/jest-test-sequencer"
   dependencies:
     "@jest/test-result": ^27.0.0-next.1
     "@types/graceful-fs": ^4.1.3
     graceful-fs: ^4.2.4
-    jest-haste-map: ^27.0.0-next.1
-    jest-runner: ^27.0.0-next.1
-    jest-runtime: ^27.0.0-next.1
+    jest-haste-map: ^27.0.0-next.2
+    jest-runner: ^27.0.0-next.2
+    jest-runtime: ^27.0.0-next.2
   languageName: unknown
   linkType: soft
 
@@ -2096,7 +2096,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/transform@^27.0.0-next.1, @jest/transform@workspace:packages/jest-transform":
+"@jest/transform@^27.0.0-next.2, @jest/transform@workspace:packages/jest-transform":
   version: 0.0.0-use.local
   resolution: "@jest/transform@workspace:packages/jest-transform"
   dependencies:
@@ -2115,7 +2115,7 @@ __metadata:
     dedent: ^0.7.0
     fast-json-stable-stringify: ^2.0.0
     graceful-fs: ^4.2.4
-    jest-haste-map: ^27.0.0-next.1
+    jest-haste-map: ^27.0.0-next.2
     jest-regex-util: ^27.0.0-next.0
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.0.0-next.1
@@ -4886,7 +4886,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.1.0
     "@jest/test-utils": ^27.0.0-next.1
-    "@jest/transform": ^27.0.0-next.1
+    "@jest/transform": ^27.0.0-next.2
     "@jest/types": ^27.0.0-next.1
     "@types/babel__core": ^7.1.7
     "@types/graceful-fs": ^4.1.3
@@ -11531,7 +11531,7 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"jest-circus@^27.0.0-next.1, jest-circus@workspace:packages/jest-circus":
+"jest-circus@^27.0.0-next.2, jest-circus@workspace:packages/jest-circus":
   version: 0.0.0-use.local
   resolution: "jest-circus@workspace:packages/jest-circus"
   dependencies:
@@ -11556,9 +11556,9 @@ fsevents@^1.2.7:
     jest-each: ^27.0.0-next.1
     jest-matcher-utils: ^27.0.0-next.1
     jest-message-util: ^27.0.0-next.1
-    jest-runner: ^27.0.0-next.1
-    jest-runtime: ^27.0.0-next.1
-    jest-snapshot: ^27.0.0-next.1
+    jest-runner: ^27.0.0-next.2
+    jest-runtime: ^27.0.0-next.2
+    jest-snapshot: ^27.0.0-next.2
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.0.0-next.1
     pretty-format: ^27.0.0-next.1
@@ -11567,11 +11567,11 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"jest-cli@^27.0.0-next.1, jest-cli@workspace:packages/jest-cli":
+"jest-cli@^27.0.0-next.2, jest-cli@workspace:packages/jest-cli":
   version: 0.0.0-use.local
   resolution: "jest-cli@workspace:packages/jest-cli"
   dependencies:
-    "@jest/core": ^27.0.0-next.1
+    "@jest/core": ^27.0.0-next.2
     "@jest/test-result": ^27.0.0-next.1
     "@jest/test-utils": ^27.0.0-next.1
     "@jest/types": ^27.0.0-next.1
@@ -11585,7 +11585,7 @@ fsevents@^1.2.7:
     graceful-fs: ^4.2.4
     import-local: ^3.0.2
     is-ci: ^2.0.0
-    jest-config: ^27.0.0-next.1
+    jest-config: ^27.0.0-next.2
     jest-util: ^27.0.0-next.1
     jest-validate: ^27.0.0-next.1
     prompts: ^2.0.1
@@ -11595,29 +11595,29 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"jest-config@^27.0.0-next.1, jest-config@workspace:packages/jest-config":
+"jest-config@^27.0.0-next.2, jest-config@workspace:packages/jest-config":
   version: 0.0.0-use.local
   resolution: "jest-config@workspace:packages/jest-config"
   dependencies:
     "@babel/core": ^7.1.0
-    "@jest/test-sequencer": ^27.0.0-next.1
+    "@jest/test-sequencer": ^27.0.0-next.2
     "@jest/types": ^27.0.0-next.1
     "@types/babel__core": ^7.0.4
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.0
-    babel-jest: ^27.0.0-next.1
+    babel-jest: ^27.0.0-next.2
     chalk: ^4.0.0
     deepmerge: ^4.2.2
     glob: ^7.1.1
     graceful-fs: ^4.2.4
-    jest-circus: ^27.0.0-next.1
+    jest-circus: ^27.0.0-next.2
     jest-environment-jsdom: ^27.0.0-next.1
     jest-environment-node: ^27.0.0-next.1
     jest-get-type: ^27.0.0-next.0
-    jest-jasmine2: ^27.0.0-next.1
+    jest-jasmine2: ^27.0.0-next.2
     jest-regex-util: ^27.0.0-next.0
-    jest-resolve: ^27.0.0-next.1
+    jest-resolve: ^27.0.0-next.2
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.0.0-next.1
     jest-validate: ^27.0.0-next.1
@@ -11739,7 +11739,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-haste-map@^27.0.0-next.1, jest-haste-map@workspace:packages/jest-haste-map":
+"jest-haste-map@^27.0.0-next.2, jest-haste-map@workspace:packages/jest-haste-map":
   version: 0.0.0-use.local
   resolution: "jest-haste-map@workspace:packages/jest-haste-map"
   dependencies:
@@ -11758,7 +11758,7 @@ fsevents@^1.2.7:
     jest-serializer: ^27.0.0-next.0
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.0.0-next.1
-    jest-worker: ^27.0.0-next.0
+    jest-worker: ^27.0.0-next.2
     micromatch: ^4.0.2
     slash: ^3.0.0
     walker: ^1.0.7
@@ -11791,7 +11791,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-jasmine2@^27.0.0-next.1, jest-jasmine2@workspace:packages/jest-jasmine2":
+"jest-jasmine2@^27.0.0-next.2, jest-jasmine2@workspace:packages/jest-jasmine2":
   version: 0.0.0-use.local
   resolution: "jest-jasmine2@workspace:packages/jest-jasmine2"
   dependencies:
@@ -11810,8 +11810,8 @@ fsevents@^1.2.7:
     jest-each: ^27.0.0-next.1
     jest-matcher-utils: ^27.0.0-next.1
     jest-message-util: ^27.0.0-next.1
-    jest-runtime: ^27.0.0-next.1
-    jest-snapshot: ^27.0.0-next.1
+    jest-runtime: ^27.0.0-next.2
+    jest-snapshot: ^27.0.0-next.2
     jest-util: ^27.0.0-next.1
     pretty-format: ^27.0.0-next.1
     throat: ^5.0.0
@@ -11966,13 +11966,13 @@ fsevents@^1.2.7:
     "@jest/console": ^27.0.0-next.1
     "@jest/environment": ^27.0.0-next.1
     "@jest/test-utils": ^27.0.0-next.1
-    "@jest/transform": ^27.0.0-next.1
+    "@jest/transform": ^27.0.0-next.2
     "@jest/types": ^27.0.0-next.1
     "@types/yargs": ^15.0.0
     chalk: ^4.0.0
     execa: ^5.0.0
-    jest-config: ^27.0.0-next.1
-    jest-runtime: ^27.0.0-next.1
+    jest-config: ^27.0.0-next.2
+    jest-runtime: ^27.0.0-next.2
     jest-util: ^27.0.0-next.1
     jest-validate: ^27.0.0-next.1
     repl: ^0.1.3
@@ -11983,21 +11983,21 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"jest-resolve-dependencies@^27.0.0-next.1, jest-resolve-dependencies@workspace:packages/jest-resolve-dependencies":
+"jest-resolve-dependencies@^27.0.0-next.2, jest-resolve-dependencies@workspace:packages/jest-resolve-dependencies":
   version: 0.0.0-use.local
   resolution: "jest-resolve-dependencies@workspace:packages/jest-resolve-dependencies"
   dependencies:
     "@jest/test-utils": ^27.0.0-next.1
     "@jest/types": ^27.0.0-next.1
-    jest-haste-map: ^27.0.0-next.1
+    jest-haste-map: ^27.0.0-next.2
     jest-regex-util: ^27.0.0-next.0
-    jest-resolve: ^27.0.0-next.1
-    jest-runtime: ^27.0.0-next.1
-    jest-snapshot: ^27.0.0-next.1
+    jest-resolve: ^27.0.0-next.2
+    jest-runtime: ^27.0.0-next.2
+    jest-snapshot: ^27.0.0-next.2
   languageName: unknown
   linkType: soft
 
-"jest-resolve@^27.0.0-next.1, jest-resolve@workspace:packages/jest-resolve":
+"jest-resolve@^27.0.0-next.2, jest-resolve@workspace:packages/jest-resolve":
   version: 0.0.0-use.local
   resolution: "jest-resolve@workspace:packages/jest-resolve"
   dependencies:
@@ -12007,7 +12007,7 @@ fsevents@^1.2.7:
     chalk: ^4.0.0
     escalade: ^3.1.1
     graceful-fs: ^4.2.4
-    jest-haste-map: ^27.0.0-next.1
+    jest-haste-map: ^27.0.0-next.2
     jest-pnp-resolver: ^1.2.2
     jest-util: ^27.0.0-next.1
     resolve: ^1.18.1
@@ -12026,14 +12026,14 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-runner@^27.0.0-next.1, jest-runner@workspace:packages/jest-runner":
+"jest-runner@^27.0.0-next.2, jest-runner@workspace:packages/jest-runner":
   version: 0.0.0-use.local
   resolution: "jest-runner@workspace:packages/jest-runner"
   dependencies:
     "@jest/console": ^27.0.0-next.1
     "@jest/environment": ^27.0.0-next.1
     "@jest/test-result": ^27.0.0-next.1
-    "@jest/transform": ^27.0.0-next.1
+    "@jest/transform": ^27.0.0-next.2
     "@jest/types": ^27.0.0-next.1
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.2
@@ -12043,22 +12043,22 @@ fsevents@^1.2.7:
     emittery: ^0.7.1
     exit: ^0.1.2
     graceful-fs: ^4.2.4
-    jest-config: ^27.0.0-next.1
+    jest-config: ^27.0.0-next.2
     jest-docblock: ^27.0.0-next.0
-    jest-haste-map: ^27.0.0-next.1
-    jest-jasmine2: ^27.0.0-next.1
+    jest-haste-map: ^27.0.0-next.2
+    jest-jasmine2: ^27.0.0-next.2
     jest-leak-detector: ^27.0.0-next.1
     jest-message-util: ^27.0.0-next.1
-    jest-resolve: ^27.0.0-next.1
-    jest-runtime: ^27.0.0-next.1
+    jest-resolve: ^27.0.0-next.2
+    jest-runtime: ^27.0.0-next.2
     jest-util: ^27.0.0-next.1
-    jest-worker: ^27.0.0-next.0
+    jest-worker: ^27.0.0-next.2
     source-map-support: ^0.5.6
     throat: ^5.0.0
   languageName: unknown
   linkType: soft
 
-"jest-runtime@^27.0.0-next.1, jest-runtime@workspace:packages/jest-runtime":
+"jest-runtime@^27.0.0-next.2, jest-runtime@workspace:packages/jest-runtime":
   version: 0.0.0-use.local
   resolution: "jest-runtime@workspace:packages/jest-runtime"
   dependencies:
@@ -12069,7 +12069,7 @@ fsevents@^1.2.7:
     "@jest/source-map": ^27.0.0-next.0
     "@jest/test-result": ^27.0.0-next.1
     "@jest/test-utils": ^27.0.0-next.1
-    "@jest/transform": ^27.0.0-next.1
+    "@jest/transform": ^27.0.0-next.2
     "@jest/types": ^27.0.0-next.1
     "@types/exit": ^0.1.30
     "@types/glob": ^7.1.1
@@ -12084,12 +12084,12 @@ fsevents@^1.2.7:
     glob: ^7.1.3
     graceful-fs: ^4.2.4
     jest-environment-node: ^27.0.0-next.1
-    jest-haste-map: ^27.0.0-next.1
+    jest-haste-map: ^27.0.0-next.2
     jest-message-util: ^27.0.0-next.1
     jest-mock: ^27.0.0-next.1
     jest-regex-util: ^27.0.0-next.0
-    jest-resolve: ^27.0.0-next.1
-    jest-snapshot: ^27.0.0-next.1
+    jest-resolve: ^27.0.0-next.2
+    jest-snapshot: ^27.0.0-next.2
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.0.0-next.1
     jest-validate: ^27.0.0-next.1
@@ -12133,7 +12133,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-snapshot@^27.0.0-next.1, jest-snapshot@workspace:*, jest-snapshot@workspace:packages/jest-snapshot":
+"jest-snapshot@^27.0.0-next.2, jest-snapshot@workspace:*, jest-snapshot@workspace:packages/jest-snapshot":
   version: 0.0.0-use.local
   resolution: "jest-snapshot@workspace:packages/jest-snapshot"
   dependencies:
@@ -12160,10 +12160,10 @@ fsevents@^1.2.7:
     graceful-fs: ^4.2.4
     jest-diff: ^27.0.0-next.1
     jest-get-type: ^27.0.0-next.0
-    jest-haste-map: ^27.0.0-next.1
+    jest-haste-map: ^27.0.0-next.2
     jest-matcher-utils: ^27.0.0-next.1
     jest-message-util: ^27.0.0-next.1
-    jest-resolve: ^27.0.0-next.1
+    jest-resolve: ^27.0.0-next.2
     natural-compare: ^1.4.0
     prettier: ^2.0.0
     pretty-format: ^27.0.0-next.1
@@ -12311,7 +12311,7 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"jest-worker@^27.0.0-next.0, jest-worker@workspace:packages/jest-worker":
+"jest-worker@^27.0.0-next.2, jest-worker@workspace:packages/jest-worker":
   version: 0.0.0-use.local
   resolution: "jest-worker@workspace:packages/jest-worker"
   dependencies:
@@ -12358,9 +12358,9 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "jest@workspace:packages/jest"
   dependencies:
-    "@jest/core": ^27.0.0-next.1
+    "@jest/core": ^27.0.0-next.2
     import-local: ^3.0.2
-    jest-cli: ^27.0.0-next.1
+    jest-cli: ^27.0.0-next.2
   bin:
     jest: ./bin/jest.js
   languageName: unknown
