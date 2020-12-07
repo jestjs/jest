@@ -22,7 +22,7 @@ module.exports = {
           showLastUpdateTime: true,
           editUrl: 'https://github.com/facebook/jest/edit/master/docs/',
           path: '../docs',
-          sidebarPath: '../website/sidebars.json',
+          sidebarPath: './sidebars.json',
         },
         blog: {
           path: path.join(__dirname, '..', 'website', 'blog'),
@@ -45,13 +45,15 @@ module.exports = {
       title: 'Jest',
       items: [
         {
-          to: 'docs/getting-started',
           label: 'Docs',
+          type: 'doc',
+          docId: 'getting-started',
           position: 'right',
         },
         {
-          to: 'docs/api',
           label: 'API',
+          type: 'doc',
+          docId: 'api',
           position: 'right',
         },
         {
@@ -63,6 +65,7 @@ module.exports = {
         {
           type: 'docsVersionDropdown',
           position: 'left',
+          dropdownActiveClassDisabled: true,
           dropdownItemsAfter: [
             {
               to: '/versions',
