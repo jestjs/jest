@@ -12,7 +12,8 @@
   "exports": {
     ".": "./build/index.js",
     "./package.json": "./package.json",
-    "./bin/jest-repl": "./bin/jest-repl.js"
+    "./bin/jest-repl": "./bin/jest-repl.js",
+    "./bin/jest-runtime-cli": "./bin/jest-runtime-cli.js"
   },
   "dependencies": {
     "@jest/console": "^27.0.0-next.0",
@@ -32,7 +33,10 @@
     "@types/yargs": "^15.0.0",
     "execa": "^5.0.0"
   },
-  "bin": "./bin/jest-repl.js",
+  "bin": {
+    "jest-repl": "./bin/jest-repl.js",
+    "jest-runtime": "./bin/jest-runtime-cli.js"
+  },
   "engines": {
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
   },

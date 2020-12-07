@@ -11,8 +11,7 @@
   "types": "./build/index.d.ts",
   "exports": {
     ".": "./build/index.js",
-    "./package.json": "./package.json",
-    "./bin/jest-runtime": "./bin/jest-runtime.js"
+    "./package.json": "./package.json"
   },
   "dependencies": {
     "@jest/console": "^27.0.0-next.0",
@@ -52,7 +51,6 @@
     "jest-environment-node": "^27.0.0-next.0",
     "jest-snapshot-serializer-raw": "^1.1.0"
   },
-  "bin": "./bin/jest-runtime.js",
   "engines": {
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
   },

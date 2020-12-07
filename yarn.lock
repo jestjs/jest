@@ -11988,6 +11988,7 @@ fsevents@^1.2.7:
     yargs: ^16.0.3
   bin:
     jest-repl: ./bin/jest-repl.js
+    jest-runtime: ./bin/jest-runtime-cli.js
   languageName: unknown
   linkType: soft
 
@@ -12104,8 +12105,6 @@ fsevents@^1.2.7:
     slash: ^3.0.0
     strip-bom: ^4.0.0
     yargs: ^16.0.3
-  bin:
-    jest-runtime: ./bin/jest-runtime.js
   languageName: unknown
   linkType: soft
 
