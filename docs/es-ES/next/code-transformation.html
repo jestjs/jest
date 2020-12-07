@@ -97,17 +97,17 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/doc
   getCacheKey?: (
     sourceText: <span class="hljs-built_in">string</span>,
     sourcePath: <span class="hljs-built_in">string</span>,
-    options: TransformOptions,
+    options: TransformOptions&lt;OptionType&gt;,
   ) =&gt; <span class="hljs-built_in">string</span>;
 
   process: (
     sourceText: <span class="hljs-built_in">string</span>,
     sourcePath: <span class="hljs-built_in">string</span>,
-    options: TransformOptions,
+    options: TransformOptions&lt;OptionType&gt;,
   ) =&gt; TransformedSource;
 }
 
-<span class="hljs-keyword">interface</span> TransformOptions {
+<span class="hljs-keyword">interface</span> TransformOptions&lt;OptionType&gt; {
   <span class="hljs-comment">/**
    * If a transformer does module resolution and reads files, it should populate `cacheFS` so that
    * Jest avoids reading the same files again, improving performance. `cacheFS` stores entries of
@@ -123,6 +123,8 @@ Usar con puppeteer</a></li><li class="navListItem"><a class="navItem" href="/doc
   supportsExportNamespaceFrom: <span class="hljs-built_in">boolean</span>;
   supportsStaticESM: <span class="hljs-built_in">boolean</span>;
   supportsTopLevelAwait: <span class="hljs-built_in">boolean</span>;
+  <span class="hljs-comment">/** the options passed through Jest's config by the user */</span>
+  transformerConfig: OptionType;
 }
 
 <span class="hljs-keyword">type</span> TransformedSource =

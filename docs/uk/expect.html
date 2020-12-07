@@ -327,6 +327,37 @@ it(<span class="hljs-string">'stores only 10 characters'</span>, () =&gt; {
   */</span>
 });
 </code></pre>
+<h4><a class="anchor" aria-hidden="true" id="async"></a><a href="#async" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>async</h4>
+<p>If your custom inline snapshot matcher is async i.e. uses <code>async</code>-<code>await</code> you might encounter an error like &quot;Multiple inline snapshots for the same call are not supported&quot;. Jest needs additional context information to find where the custom inline snapshot matcher was used to update the snapshots properly.</p>
+<pre><code class="hljs css language-js"><span class="hljs-keyword">const</span> {toMatchInlineSnapshot} = <span class="hljs-built_in">require</span>(<span class="hljs-string">'jest-snapshot'</span>);
+
+expect.extend({
+  <span class="hljs-keyword">async</span> toMatchObservationInlineSnapshot(fn, ...rest) {
+    <span class="hljs-comment">// The error (and its stacktrace) must be created before any `await`</span>
+    <span class="hljs-keyword">this</span>.error = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>();
+
+    <span class="hljs-comment">// The implementation of `observe` doesn't matter.</span>
+    <span class="hljs-comment">// It only matters that the custom snapshot matcher is async.</span>
+    <span class="hljs-keyword">const</span> observation = <span class="hljs-keyword">await</span> observe(<span class="hljs-keyword">async</span> () =&gt; {
+      <span class="hljs-keyword">await</span> fn();
+    });
+
+    <span class="hljs-keyword">return</span> toMatchInlineSnapshot.call(<span class="hljs-keyword">this</span>, recording, ...rest);
+  },
+});
+
+it(<span class="hljs-string">'observes something'</span>, <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">await</span> expect(<span class="hljs-keyword">async</span> () =&gt; {
+    <span class="hljs-keyword">return</span> <span class="hljs-string">'async action'</span>;
+  }).toMatchTrimmedInlineSnapshot();
+  <span class="hljs-comment">/*
+  The snapshot will be added inline like
+  await expect(async () =&gt; {
+    return 'async action';
+  }).toMatchTrimmedInlineSnapshot(`"async action"`);
+  */</span>
+});
+</code></pre>
 <h3><a class="anchor" aria-hidden="true" id="expectanything"></a><a href="#expectanything" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>expect.anything()</code></h3>
 <p><code>expect.anything()</code> відповідає будь-якому значенню, окрім <code>null</code> та <code>undefined</code>. Ви можете використовувати його всередині <code>toEqual</code> чи <code>toBeCalledWith</code> замість явного вказання значень. Наприклад, якщо ви хочете перевірити, що мок функція була викликана з аргументом, не рівним null:</p>
 <pre><code class="hljs css language-js">test(<span class="hljs-string">'map calls its argument with a non-null argument'</span>, () =&gt; {
