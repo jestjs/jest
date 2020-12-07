@@ -11,6 +11,7 @@ import runJest from '../runJest';
 
 test('works with custom inline snapshot matchers', () => {
   const {stderr} = runJest('custom-inline-snapshot-matchers', [
+    // Prevent adding new snapshots or rather changing the test.
     '--ci',
     'asynchronous.test.js',
   ]);
