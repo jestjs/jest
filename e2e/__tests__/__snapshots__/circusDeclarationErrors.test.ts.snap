@@ -16,7 +16,7 @@ FAIL __tests__/asyncDefinition.test.js
       14 |   });
       15 | });
 
-      at eventHandler (../../packages/jest-circus/build/eventHandler.js:143:11)
+      at eventHandler (../../packages/jest-circus/build/eventHandler.js:145:11)
       at test (__tests__/asyncDefinition.test.js:12:5)
 
   ● Test suite failed to run
@@ -46,7 +46,7 @@ FAIL __tests__/asyncDefinition.test.js
       20 | });
       21 | 
 
-      at eventHandler (../../packages/jest-circus/build/eventHandler.js:143:11)
+      at eventHandler (../../packages/jest-circus/build/eventHandler.js:145:11)
       at test (__tests__/asyncDefinition.test.js:18:3)
 
   ● Test suite failed to run
