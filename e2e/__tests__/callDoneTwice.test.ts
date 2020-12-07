@@ -6,8 +6,8 @@
  */
 import wrap from 'jest-snapshot-serializer-raw';
 import {skipSuiteOnJasmine} from '@jest/test-utils';
-import runJest from '../runJest';
 import {extractSummary} from '../Utils';
+import runJest from '../runJest';
 
 skipSuiteOnJasmine();
 test('`done()` should not be called more than once', () => {
