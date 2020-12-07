@@ -27,7 +27,7 @@ test('mismatching async, inline snapshots', async () => {
   await expect(async () => 'result #1').toMatchObservationInlineSnapshot(
     `"result #?"`,
   );
-  await expect(async () => 'result #1').toMatchObservationInlineSnapshot(
+  await expect(async () => 'result #2').toMatchObservationInlineSnapshot(
     `"result #?"`,
   );
 });
