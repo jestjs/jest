@@ -779,8 +779,8 @@ describe('ScriptTransformer', () => {
 
     scriptTransformer.transform(fileName2, getCoverageOptions());
 
-    expect(testPreprocessor.getCacheKey.mock.calls[0][2].cacheFS).toBeDefined()
-    expect(testPreprocessor.process.mock.calls[0][2].cacheFS).toBeDefined()
+    expect(testPreprocessor.getCacheKey.mock.calls[0][2].cacheFS).toBeDefined();
+    expect(testPreprocessor.process.mock.calls[0][2].cacheFS).toBeDefined();
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     expect(fs.readFileSync).toBeCalledWith(fileName1, 'utf8');
   });
