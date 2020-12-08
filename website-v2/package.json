@@ -3,19 +3,14 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "docusaurus": "docusaurus",
     "start": "docusaurus start",
     "build": "docusaurus build",
-    "gh-pages": "docusaurus-publish",
-    "examples": "docusaurus-examples",
-    "crowdin-upload": "crowdin --config ../crowdin.yaml upload sources --auto-update -b master",
-    "crowdin-download": "crowdin --config ../crowdin.yaml download -b master",
-    "publish-gh-pages": "docusaurus-publish",
-    "write-translations": "docusaurus-write-translations",
-    "version": "docusaurus-version",
-    "rename-version": "docusaurus-rename-version",
+    "crowdin:upload": "cd .. && crowdin upload sources --config crowdin-v2.yaml",
+    "crowdin:download": "cd .. && crowdin download --config crowdin-v2.yaml",
+    "write-translations": "docusaurus write-translations",
     "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
-    "docusaurus": "docusaurus"
+    "deploy": "docusaurus deploy"
   },
   "dependencies": {
     "@docusaurus/core": "2.0.0-alpha.bd62be93d",
