@@ -480,18 +480,7 @@ const matchers: MatchersObject = {
         'received',
       )} value is a string`;
 
-      if (expected == null) {
-        throw new Error(
-          matcherErrorMessage(
-            matcherHint(matcherName, received, String(expected), options),
-            wrongTypeErrorMessage,
-            printWithType('Expected', expected, printExpected) +
-              '\n' +
-              printWithType('Received', received, printReceived),
-          ),
-        );
-      }
-      if (typeof expected === 'number') {
+      if (typeof expected !== 'string') {
         throw new Error(
           matcherErrorMessage(
             matcherHint(matcherName, received, String(expected), options),
