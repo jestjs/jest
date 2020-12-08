@@ -192,15 +192,6 @@ export const callAsyncCircusFn = (
       let returnedValue: unknown = undefined;
 
       const done = (reason?: Error | string): void => {
-        if (testOrHook.seenDone) {
-          throw new ErrorWithStack(
-            'Expected done to be called once, but it was called multiple times.',
-            done,
-          );
-        } else {
-          testOrHook.seenDone = true;
-        }
-
         // We need to keep a stack here before the promise tick
         const errorAtDone = new ErrorWithStack(undefined, done);
 
@@ -232,6 +223,15 @@ export const callAsyncCircusFn = (
               errorAsErrorObject.message;
 
             throw errorAsErrorObject;
+          }
+
+          if (testOrHook.seenDone) {
+            throw new ErrorWithStack(
+              'Expected done to be called once, but it was called multiple times.',
+              done,
+            );
+          } else {
+            testOrHook.seenDone = true;
           }
 
           return reason ? reject(errorAsErrorObject) : resolve();
