@@ -286,7 +286,7 @@ Jest: Coverage data for global was not found.
 <p><em>Note: You can pass additional options to the istanbul reporter using the tuple form. 例：</em></p>
 <pre><code class="hljs css language-json">[<span class="hljs-string">"json"</span>, [<span class="hljs-string">"lcov"</span>, {<span class="hljs-attr">"projectRoot"</span>: <span class="hljs-string">"../../"</span>}]]
 </code></pre>
-<p>For the additional information about the options object shape you can refer to <code>CoverageReporterWithOptions</code> type in the <a href="https://github.com/facebook/jest/tree/master/packages/jest-types/src/Config.ts">type definitions</a>.</p>
+<p>オプション オブジェクトに関する追加情報については、 <code>種類定義</code> の <a href="https://github.com/facebook/jest/tree/master/packages/jest-types/src/Config.ts">CoverageReporterWithOptions</a> 型を参照してください。</p>
 <h3><a class="anchor" aria-hidden="true" id="coveragethreshold-object"></a><a href="#coveragethreshold-object" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>coverageThreshold</code> [object]</h3>
 <p>デフォルト: <code>undefined</code></p>
 <p>このオプションはカバレッジ取得結果の最小しきい値を強制的に設定します。 しきい値は、 <code>global</code>、 <a href="https://github.com/isaacs/node-glob#glob-primer">glob</a> およびディレクトリもしくはファイルパスを指定できます。 しきい値に到達しなかった場合、Jest はテストが失敗したと判定します。 正の値で指定されたしきい値を、最小限求められるカバレッジのパーセンテージとして設定します。 負のしきい値を設定することで、カバーされなかった部分の最大許容量を指定します。</p>
@@ -305,7 +305,7 @@ Jest: Coverage data for global was not found.
   }
 }
 </code></pre>
-<p>もし glob またはパスが <code>global</code> として指定されていれば、一致したパスのカバレッジデータは全体のカバレッジからは除外され、独自のしきい値が適用されます。 glob へのしきい値はその globs と一致する全てのファイルに適用されます。 If the file specified by path is not found, an error is returned.</p>
+<p>もし glob またはパスが <code>global</code> として指定されていれば、一致したパスのカバレッジデータは全体のカバレッジからは除外され、独自のしきい値が適用されます。 glob へのしきい値はその globs と一致する全てのファイルに適用されます。 指定されたパスのファイルが見つからない場合は、エラーが返されます。</p>
 <p>例えば、以下の設定では：</p>
 <pre><code class="hljs css language-json">{
   ...
@@ -365,7 +365,7 @@ Jest: Coverage data for global was not found.
 <p>That module can also contain a <code>getCacheKey</code> function to generate a cache key to determine if the logic has changed and any cached artifacts relying on it should be discarded.</p>
 <h3><a class="anchor" aria-hidden="true" id="displayname-string-object"></a><a href="#displayname-string-object" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><code>displayName</code> [string, object]</h3>
 <p>デフォルト: <code>undefined</code></p>
-<p>Allows for a label to be printed alongside a test while it is running. This becomes more useful in multi-project repositories where there can be many jest configuration files. This visually tells which project a test belongs to. Here are sample valid values.</p>
+<p>実行中に、テストの横にラベルを表示できます。 多くの Jest の設定ファイルがあるマルチプロジェクト・リポジトリで役立ちます。 This visually tells which project a test belongs to. Here are sample valid values.</p>
 <pre><code class="hljs css language-js"><span class="hljs-built_in">module</span>.exports = {
   <span class="hljs-attr">displayName</span>: <span class="hljs-string">'CLIENT'</span>,
 };
