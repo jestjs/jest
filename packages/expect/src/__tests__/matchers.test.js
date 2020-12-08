@@ -1470,6 +1470,14 @@ describe('.toContain(), .toContainEqual()', () => {
     expect(() =>
       jestExpect('undefined').toContain(undefined),
     ).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      jestExpect('false').toContain(false),
+    ).toThrowErrorMatchingSnapshot();
+    if (isBigIntDefined) {
+      expect(() => jestExpect('1').toContain(BigInt(1))).toThrowError(
+        'toContain',
+      );
+    }
   });
 
   [
