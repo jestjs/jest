@@ -53,3 +53,5 @@ package-lock.json
 !**/.yarn/sdks
 !**/.yarn/versions
 **/.pnp.*
+
+crowdin-cli.jar

@@ -3,19 +3,23 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "docusaurus": "docusaurus",
     "start": "docusaurus start",
     "build": "docusaurus build",
-    "gh-pages": "docusaurus-publish",
-    "examples": "docusaurus-examples",
-    "crowdin-upload": "crowdin --config ../crowdin.yaml upload sources --auto-update -b master",
-    "crowdin-download": "crowdin --config ../crowdin.yaml download -b master",
-    "publish-gh-pages": "docusaurus-publish",
-    "write-translations": "docusaurus-write-translations",
-    "version": "docusaurus-version",
-    "rename-version": "docusaurus-rename-version",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
-    "docusaurus": "docusaurus"
+    "serve": "docusaurus serve",
+    "crowdin:upload": "cd .. && crowdin upload sources --config crowdin-v2.yaml",
+    "crowdin:downloadTranslations": "cd .. && crowdin download --config crowdin-v2.yaml",
+    "crowdin:fixTranslations": "node fixCrowdinTranslations",
+    "write-translations": "docusaurus write-translations",
+    "fetchSupporters": "node fetchSupporters.js",
+    "netlify:ci:build": "yarn netlify:prepare && yarn netlify:crowdin && yarn build",
+    "netlify:ci:deployPreview": "yarn netlify:prepare && yarn build -l en",
+    "netlify:prepare": "yarn fetchSupporters && yarn build:js",
+    "netlify:crowdin": "yarn netlify:crowdin:install && yarn netlify:crowdin:downloadTranslations && yarn crowdin:fixTranslations",
+    "netlify:crowdin:install": "cd .. && java -version && curl https://hardcore-ride-8fbb5a.netlify.app/crowdin-cli.jar --output crowdin-cli.jar && java -jar crowdin-cli.jar --version",
+    "netlify:crowdin:downloadTranslations": "cd .. && java -jar crowdin-cli.jar download --config ./crowdin-v2.yaml"
   },
   "dependencies": {
     "@docusaurus/core": "2.0.0-alpha.bd62be93d",
@@ -25,7 +29,9 @@
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-github-btn": "^1.2.0",
-    "react-markdown": "^5.0.3"
+    "react-markdown": "^5.0.3",
+    "fs-extra": "^9.0.1",
+    "globby": "^11.0.1"
   },
   "devDependencies": {
     "crowdin-cli": "^0.3.0",
