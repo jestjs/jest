@@ -2,48 +2,62 @@
 
 const path = require('path');
 
+// The top-30 locales on Crowdin are enabled
+// but we enable only a subset of those
+const locales = [
+  'en',
+  'ja',
+  //'ar',
+  //'bs-BA',
+  //'ca',
+  //'cs',
+  //'da',
+  //'de',
+  //'el',
+  'es-ES',
+  //'fa-IR',
+  //'fi',
+  //'fr',
+  //'he',
+  //'hu',
+  //'id-ID',
+  //'it',
+  //'af',
+  //'ko',
+  //'mr-IN',
+  //'nl',
+  //'no-NO',
+  //'pl',
+  //'pt-PT',
+  'pt-BR',
+  'ro',
+  'ru',
+  //'sk-SK',
+  //'sr',
+  //'sv-SE',
+  //'tr',
+  'uk',
+  //'vi',
+  'zh-Hans',
+  //'zh-Hant',
+];
+
+// TODO temporary
+const LocaleToLabel = {
+  en: 'English',
+  ja: '日本語',
+  'es-ES': 'Español',
+  'pt-BR': 'Português (Brasil)',
+  ro: 'Română',
+  ru: 'Русский',
+  uk: 'Українська',
+  'zh-Hans': '简体中文',
+};
+
 module.exports = {
   i18n: {
     defaultLocale: 'en',
-    // The top-30 locales on Crowdin are enabled
-    // but we enable only a subset of those
-    locales: [
-      'en',
-      'ja',
-      //'ar',
-      //'bs-BA',
-      //'ca',
-      //'cs',
-      //'da',
-      //'de',
-      //'el',
-      'es-ES',
-      //'fa-IR',
-      //'fi',
-      //'fr',
-      //'he',
-      //'hu',
-      //'id-ID',
-      //'it',
-      //'af',
-      //'ko',
-      //'mr-IN',
-      //'nl',
-      //'no-NO',
-      //'pl',
-      //'pt-PT',
-      'pt-BR',
-      'ro',
-      'ru',
-      //'sk-SK',
-      //'sr',
-      //'sv-SE',
-      //'tr',
-      'uk',
-      //'vi',
-      'zh-Hans',
-      //'zh-Hant',
-    ],
+    locales,
   },
   title: 'Jest',
   titleDelimiter: '·',
@@ -86,6 +100,18 @@ module.exports = {
     navbar: {
       title: 'Jest',
       items: [
+        // left items
+        {
+          type: 'docsVersionDropdown',
+          position: 'left',
+          dropdownItemsAfter: [
+            {
+              to: '/versions',
+              label: 'All versions',
+            },
+          ],
+        },
+        // right items
         {
           to: 'docs/getting-started',
           label: 'Docs',
@@ -103,14 +129,15 @@ module.exports = {
         },
         {to: 'blog', label: 'Blog', position: 'right'},
         {
-          type: 'docsVersionDropdown',
-          position: 'left',
-          dropdownItemsAfter: [
-            {
-              to: '/versions',
-              label: 'All versions',
-            },
-          ],
+          // TODO temporary
+          to: 'pathname:///',
+          label: 'English',
+          position: 'right',
+          items: locales.map(locale => ({
+            to: `pathname:///${locale === 'en' ? '' : locale}`,
+            label: LocaleToLabel[locale] || locale,
+            target: '_self',
+          })),
         },
         {
           href: 'https://github.com/facebook/jest',
