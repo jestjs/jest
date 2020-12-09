@@ -9,5 +9,7 @@
 
 # deploy preview build
 [context.deploy-preview]
+  base = "/"
   command = "yarn workspace jest-website-v2 netlify:ci:deployPreview"
+  publish = "/website-v2/build"
 
