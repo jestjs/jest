@@ -80,21 +80,23 @@ files:
       'languages_mapping': *languages_mapping,
       'ignore': ['/**/.DS_Store'],
     },
-    {
-      'source': '/website-v2/src/pages/**/*',
-      'translation': '/website-v2/i18n/%locale%/docusaurus-plugin-content-pages/**/%original_file_name%',
-      'languages_mapping': *languages_mapping,
-      'ignore':
-        [
-          '/**/*.js',
-          '/**/*.jsx',
-          '/**/*.ts',
-          '/**/*.tsx',
-          '/**/*.css',
-          '/**/*.scss',
-          '/**/.DS_Store',
-        ],
-    },
+
+# Enable this if Docusaurus site use markdown pages
+#    {
+#      'source': 'https://github.com/jest-website-migration/jest/blob/docusaurus-2/crowdin-v2.yaml',
+#      'translation': '/website-v2/i18n/%locale%/docusaurus-plugin-content-pages/**/%original_file_name%',
+#      'languages_mapping': *languages_mapping,
+#      'ignore':
+#        [
+#          '/**/*.js',
+#          '/**/*.jsx',
+#          '/**/*.ts',
+#          '/**/*.tsx',
+#          '/**/*.css',
+#          '/**/*.scss',
+#          '/**/.DS_Store',
+#        ],
+#    },
   ]
 #
 # Source files filter
