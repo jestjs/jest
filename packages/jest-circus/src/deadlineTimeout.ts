@@ -17,7 +17,11 @@ export function deadline(): number {
 }
 
 export async function withinDeadline<T>(promise: Promise<T>): Promise<T> {
-  return timeout(promise, deadline() - Date.now());
+  const ms = deadline() - Date.now();
+  if (ms <= 0) {
+    throw removeUsFromStack(new Error('deadline already exceeded'));
+  }
+  return timeout(promise, ms);
 }
 
 function isUs(line: string): boolean {
