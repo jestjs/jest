@@ -3,7 +3,7 @@
 
 # production build
 [build]
-  base = "/"
+  base = "/website-2"
   command = "yarn workspace jest-website-v2 netlify:ci:build"
   publish = "website-2/build"
 
