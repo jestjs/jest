@@ -19,3 +19,14 @@ describe('`done()` called more than once', () => {
       .catch(err => err);
   });
 });
+
+describe('multiple `done()` inside a hook', () => {
+  beforeEach(done => {
+    done();
+    done();
+  });
+
+  it('should fail', () => {
+    expect('foo').toMatch('foo');
+  });
+});

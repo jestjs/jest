@@ -5,6 +5,8 @@ FAIL __tests__/index.test.js
   \`done()\` called more than once
     ✕ should fail
     ✕ should fail inside a promise
+  multiple \`done()\` inside a hook
+    ✕ should fail
 
   ● \`done()\` called more than once › should fail
 
@@ -33,4 +35,18 @@ FAIL __tests__/index.test.js
       20 |   });
 
       at done (__tests__/index.test.js:17:9)
+
+  ● multiple \`done()\` inside a hook › should fail
+
+    Expected done to be called once, but it was called multiple times.
+
+      24 |   beforeEach(done => {
+      25 |     done();
+    > 26 |     done();
+         |     ^
+      27 |   });
+      28 | 
+      29 |   it('should fail', () => {
+
+      at Object.done (__tests__/index.test.js:26:5)
 `;
