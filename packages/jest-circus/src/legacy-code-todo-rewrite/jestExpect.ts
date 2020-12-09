@@ -14,7 +14,7 @@ import {
   toThrowErrorMatchingInlineSnapshot,
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
-import { deadline, withinDeadline } from '../deadlineTimeout';
+import {deadline, withinDeadline} from '../deadlineTimeout';
 
 export type Expect = typeof expect;
 
