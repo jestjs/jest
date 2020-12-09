@@ -149,6 +149,7 @@ const _callCircusHook = async ({
   testContext?: Circus.TestContext;
 }): Promise<void> => {
   await dispatch({hook, name: 'hook_start'});
+  hook.seenDone = false;
   const timeout = hook.timeout || getState().testTimeout;
 
   try {
@@ -167,6 +168,7 @@ const _callCircusTest = async (
   testContext: Circus.TestContext,
 ): Promise<void> => {
   await dispatch({name: 'test_fn_start', test});
+  test.seenDone = false;
   const timeout = test.timeout || getState().testTimeout;
   invariant(test.fn, `Tests with no 'fn' should have 'mode' set to 'skipped'`);
 
