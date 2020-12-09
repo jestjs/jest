@@ -3,11 +3,10 @@
 
 # production build
 [build]
-  base = "/website-v2"
+  base = "/"
   command = "yarn workspace jest-website-v2 netlify:ci:build"
-  publish = "/build"
+  publish = "/website-v2/build"
 
 # deploy preview build
 [context.deploy-preview]
   command = "yarn workspace jest-website-v2 netlify:ci:deployPreview"
-  publish = "/build"
