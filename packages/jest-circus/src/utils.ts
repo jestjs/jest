@@ -193,10 +193,14 @@ export const callAsyncCircusFn = (
 
       const done = (reason?: Error | string): void => {
         if (!completed && testOrHook.seenDone) {
-          throw new ErrorWithStack(
-            'Expected done to be called once, but it was called multiple times.',
-            done,
-          );
+          let message =
+            'Expected done to be called once, but it was called multiple times.';
+
+          if (reason) {
+            message += reason.toString();
+          }
+
+          throw new ErrorWithStack(message, done);
         } else {
           testOrHook.seenDone = true;
         }
