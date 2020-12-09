@@ -24,6 +24,16 @@ function isUs(line: string): boolean {
   return line.includes('deadlineTimeout') && line.includes('jest-circus');
 }
 
+// jest-message-util won't strip internals from the stack if the internals
+// happen on the first line, so we need to remove it in advance
+function removeUsFromStack(err: Error): Error {
+  err.stack = err.stack
+    ?.split('\n')
+    .filter(line => !isUs(line))
+    .join('\n');
+  return err;
+}
+
 async function timeout<T>(promise: Promise<T>, ms: number): Promise<T> {
   const {promise: sleepCancelled, clear} = cancellableSleep(ms);
   try {
@@ -33,12 +43,9 @@ async function timeout<T>(promise: Promise<T>, ms: number): Promise<T> {
         if (await sleepCancelled) {
           return undefined as never;
         }
-        const here = new Error(`deadline exceeded (waited here for ${formatTime(ms)})`);
-        here.stack = here.stack
-          ?.split('\n')
-          .filter(line => !isUs(line))
-          .join('\n');
-        throw here;
+        throw removeUsFromStack(
+          new Error(`deadline exceeded (waited here for ${formatTime(ms)})`),
+        );
       })(),
     ]);
   } finally {
