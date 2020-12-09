@@ -15358,6 +15358,8 @@ fsevents@~2.1.2:
     clsx: ^1.1.1
     crowdin-cli: ^0.3.0
     docusaurus-plugin-sass: ^0.1.11
+    fs-extra: ^9.0.1
+    globby: ^11.0.1
     graphql: ^15.3.0
     graphql-request: ^3.1.0
     react: ^16.10.2
