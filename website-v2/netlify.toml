@@ -10,3 +10,4 @@
 # deploy preview build
 [context.deploy-preview]
   command = "yarn workspace jest-website-v2 netlify:ci:deployPreview"
+
