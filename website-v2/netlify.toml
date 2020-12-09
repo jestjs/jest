@@ -1,0 +1,13 @@
+
+# Note: this file's config override the Netlify UI admin config
+
+# production build
+[build]
+  base = "/"
+  command = "yarn workspace jest-website-v2 netlify:ci:build"
+  publish = "website-2/build"
+
+# deploy preview build
+[context.deploy-preview]
+  command = "yarn workspace jest-website-v2 netlify:ci:deployPreview"
+  publish = "website-2/build"
