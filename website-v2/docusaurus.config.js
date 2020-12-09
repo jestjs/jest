@@ -134,7 +134,8 @@ module.exports = {
         {to: 'blog', label: 'Blog', position: 'right'},
         {
           // TODO temporary
-          to: 'pathname:///',
+          to: 'https://jest-v2.netlify.app/',
+          target: '_self',
           label: 'English',
           position: 'right',
           items: locales.map(locale => ({
