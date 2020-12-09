@@ -2,18 +2,35 @@
 
 exports[`\`done()\` should not be called more than once 1`] = `
 FAIL __tests__/index.test.js
-  ✕ \`done()\` should not be called more than once
+  \`done()\` called more than once
+    ✕ should fail
+    ✕ should fail inside a promise
 
-  ● \`done()\` should not be called more than once
+  ● \`done()\` called more than once › should fail
 
     Expected done to be called once, but it was called multiple times.
 
-       7 | test('\`done()\` should not be called more than once', done => {
-       8 |   done();
-    >  9 |   done();
-         |   ^
-      10 | });
-      11 | 
+       8 |   it('should fail', done => {
+       9 |     done();
+    > 10 |     done();
+         |     ^
+      11 |   });
+      12 | 
+      13 |   it('should fail inside a promise', done => {
 
-      at Object.done (__tests__/index.test.js:9:3)
+      at Object.done (__tests__/index.test.js:10:5)
+
+  ● \`done()\` called more than once › should fail inside a promise
+
+    Expected done to be called once, but it was called multiple times.
+
+      15 |       .then(() => {
+      16 |         done();
+    > 17 |         done();
+         |         ^
+      18 |       })
+      19 |       .catch(err => err);
+      20 |   });
+
+      at done (__tests__/index.test.js:17:9)
 `;

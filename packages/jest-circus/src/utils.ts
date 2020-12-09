@@ -192,20 +192,22 @@ export const callAsyncCircusFn = (
       let returnedValue: unknown = undefined;
 
       const done = (reason?: Error | string): void => {
+        // We need to keep a stack here before the promise tick
+        const errorAtDone = new ErrorWithStack(undefined, done);
+
         if (!completed && testOrHook.seenDone) {
-          let message =
+          errorAtDone.message =
             'Expected done to be called once, but it was called multiple times.';
 
           if (reason) {
-            message += ' Reason: ' + prettyFormat(reason, {maxDepth: 3});
+            errorAtDone.message +=
+              ' Reason: ' + prettyFormat(reason, {maxDepth: 3});
           }
-
-          throw new ErrorWithStack(message, done);
+          reject(errorAtDone);
+          throw errorAtDone;
         } else {
           testOrHook.seenDone = true;
         }
-        // We need to keep a stack here before the promise tick
-        const errorAtDone = new ErrorWithStack(undefined, done);
 
         // Use `Promise.resolve` to allow the event loop to go a single tick in case `done` is called synchronously
         Promise.resolve().then(() => {
