@@ -125,40 +125,36 @@
           "id": "version-26.6/testing-frameworks"
         }
       ]
+    }
+  ],
+  "version-26.6/api": [
+    {
+      "type": "doc",
+      "id": "version-26.6/api"
     },
     {
-      "type": "category",
-      "label": "API Reference",
-      "items": [
-        {
-          "type": "doc",
-          "id": "version-26.6/api"
-        },
-        {
-          "type": "doc",
-          "id": "version-26.6/expect"
-        },
-        {
-          "type": "doc",
-          "id": "version-26.6/mock-function-api"
-        },
-        {
-          "type": "doc",
-          "id": "version-26.6/jest-object"
-        },
-        {
-          "type": "doc",
-          "id": "version-26.6/configuration"
-        },
-        {
-          "type": "doc",
-          "id": "version-26.6/cli"
-        },
-        {
-          "type": "doc",
-          "id": "version-26.6/environment-variables"
-        }
-      ]
+      "type": "doc",
+      "id": "version-26.6/expect"
+    },
+    {
+      "type": "doc",
+      "id": "version-26.6/mock-function-api"
+    },
+    {
+      "type": "doc",
+      "id": "version-26.6/jest-object"
+    },
+    {
+      "type": "doc",
+      "id": "version-26.6/configuration"
+    },
+    {
+      "type": "doc",
+      "id": "version-26.6/cli"
+    },
+    {
+      "type": "doc",
+      "id": "version-26.6/environment-variables"
     }
   ]
 }
