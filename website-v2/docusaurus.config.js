@@ -137,7 +137,7 @@ module.exports = {
           label: 'English',
           position: 'right',
           items: locales.map(locale => ({
-            to: `pathname:///${locale === 'en' ? '' : locale}`,
+            to: `https://jest-v2.netlify.app/${locale === 'en' ? '' : locale}`,
             label: LocaleToLabel[locale] || locale,
             target: '_self',
           })),
