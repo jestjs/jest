@@ -197,7 +197,7 @@ export const callAsyncCircusFn = (
             'Expected done to be called once, but it was called multiple times.';
 
           if (reason) {
-            message += ' Reason: ' + reason.toString();
+            message += ' Reason: ' + prettyFormat(reason, {maxDepth: 3});
           }
 
           throw new ErrorWithStack(message, done);
