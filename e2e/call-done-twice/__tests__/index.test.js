@@ -20,8 +20,41 @@ describe('`done()` called more than once', () => {
   });
 });
 
-describe('multiple `done()` inside a hook', () => {
+describe('multiple `done()` inside beforeEach', () => {
   beforeEach(done => {
+    done();
+    done();
+  });
+
+  it('should fail', () => {
+    expect('foo').toMatch('foo');
+  });
+});
+
+describe('multiple `done()` inside afterEach', () => {
+  afterEach(done => {
+    done();
+    done();
+  });
+
+  it('should fail', () => {
+    expect('foo').toMatch('foo');
+  });
+});
+
+describe('multiple `done()` inside beforeAll', () => {
+  beforeAll(done => {
+    done();
+    done();
+  });
+
+  it('should fail', () => {
+    expect('foo').toMatch('foo');
+  });
+});
+
+describe('multiple `done()` inside afterAll', () => {
+  afterAll(done => {
     done();
     done();
   });
