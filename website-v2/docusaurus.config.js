@@ -29,14 +29,14 @@ const locales = [
   //'no-NO',
   //'pl',
   //'pt-PT',
-  //'pt-BR', // TODO re-enable
-  //'ro', // TODO re-enable
-  //'ru', // TODO re-enable
+  'pt-BR',
+  'ro',
+  'ru',
   //'sk-SK',
   //'sr',
   //'sv-SE',
   //'tr',
-  //'uk', // TODO re-enable
+  'uk',
   //'vi',
   'zh-Hans',
   //'zh-Hant',
