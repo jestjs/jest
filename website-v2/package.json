@@ -22,16 +22,16 @@
     "netlify:crowdin:downloadTranslations": "cd .. && java -jar crowdin-cli.jar download --config ./crowdin-v2.yaml"
   },
   "dependencies": {
-    "@docusaurus/core": "2.0.0-alpha.bd62be93d",
-    "@docusaurus/preset-classic": "2.0.0-alpha.bd62be93d",
+    "@docusaurus/core": "2.0.0-alpha.37c95e668",
+    "@docusaurus/preset-classic": "2.0.0-alpha.37c95e668",
     "clsx": "^1.1.1",
     "docusaurus-plugin-sass": "^0.1.11",
+    "fs-extra": "^9.0.1",
+    "globby": "^11.0.1",
     "react": "^16.10.2",
     "react-dom": "^16.10.2",
     "react-github-btn": "^1.2.0",
-    "react-markdown": "^5.0.3",
-    "fs-extra": "^9.0.1",
-    "globby": "^11.0.1"
+    "react-markdown": "^5.0.3"
   },
   "devDependencies": {
     "crowdin-cli": "^0.3.0",
