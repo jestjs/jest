@@ -30,6 +30,8 @@ export type HasteConfig = {
   throwOnModuleCollision?: boolean;
 };
 
+export type ExtToTreatAsESM = Exclude<string, '.js' | '.cjs' | '.mjs'>;
+
 export type CoverageReporterName = keyof ReportOptions;
 
 export type CoverageReporterWithOptions<
@@ -64,7 +66,7 @@ export type DefaultOptions = {
   coverageProvider: CoverageProvider;
   errorOnDeprecated: boolean;
   expand: boolean;
-  extensionsToTreatAsEsm: Array<Path>;
+  extensionsToTreatAsEsm: Array<ExtToTreatAsESM>;
   forceCoverageMatch: Array<Glob>;
   globals: ConfigGlobals;
   haste: HasteConfig;
@@ -139,7 +141,7 @@ export type InitialOptions = Partial<{
   detectOpenHandles: boolean;
   displayName: string | DisplayName;
   expand: boolean;
-  extensionsToTreatAsEsm: Array<Path>;
+  extensionsToTreatAsEsm: Array<ExtToTreatAsESM>;
   extraGlobals: Array<string>;
   filter: Path;
   findRelatedTests: boolean;
@@ -324,7 +326,7 @@ export type ProjectConfig = {
   detectOpenHandles: boolean;
   displayName?: DisplayName;
   errorOnDeprecated: boolean;
-  extensionsToTreatAsEsm: Array<Path>;
+  extensionsToTreatAsEsm: Array<ExtToTreatAsESM>;
   extraGlobals: Array<keyof NodeJS.Global>;
   filter?: Path;
   forceCoverageMatch: Array<Glob>;
