@@ -197,6 +197,7 @@ export type InitialOptions = Partial<{
   prettierPath: string | null | undefined;
   projects: Array<string | InitialProjectOptions>;
   replname: string | null | undefined;
+  reportPhasingResults: boolean;
   resetMocks: boolean;
   resetModules: boolean;
   resolver: string | null | undefined;
@@ -371,6 +372,7 @@ export type ProjectConfig = {
   modulePaths?: Array<string>;
   name: string;
   prettierPath: string;
+  reportPhasingResults: boolean;
   resetMocks: boolean;
   resetModules: boolean;
   resolver?: string;

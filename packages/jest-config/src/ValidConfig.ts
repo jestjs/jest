@@ -90,6 +90,7 @@ const initialOptions: Config.InitialOptions = {
   preset: 'react-native',
   prettierPath: '<rootDir>/node_modules/prettier',
   projects: ['project-a', 'project-b/'],
+  reportPhasingResults: false,
   reporters: [
     'default',
     'custom-reporter-1',
