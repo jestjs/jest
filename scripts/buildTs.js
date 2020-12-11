@@ -62,9 +62,11 @@ const readFilePromise = util.promisify(fs.readFile);
           return false;
         }
 
-        // this is just `require.resolve`-ed
+        // these are just `require.resolve`-ed
         if (pkg.name === 'jest-config') {
-          return dep !== 'babel-jest';
+          if (dep === '@jest/test-sequencer' || dep === 'babel-jest') {
+            return false;
+          }
         }
 
         return true;
