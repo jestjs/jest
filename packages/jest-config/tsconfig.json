@@ -4,7 +4,7 @@
     "rootDir": "src",
     "outDir": "build"
   },
-  // TODO: This is missing `jest-jasmine2`, but that is just
+  // TODO: This is missing `babel-jest`, `jest-jasmine2` and `jest-circus`, but that is just
   // `require.resolve`d, so no real use for its types
   "references": [
     {"path": "../jest-environment-jsdom"},
@@ -12,6 +12,7 @@
     {"path": "../jest-get-type"},
     {"path": "../jest-regex-util"},
     {"path": "../jest-resolve"},
+    {"path": "../jest-test-sequencer"},
     {"path": "../jest-types"},
     {"path": "../jest-util"},
     {"path": "../jest-validate"},
