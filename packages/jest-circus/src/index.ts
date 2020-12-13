@@ -5,10 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import chalk = require('chalk');
 import type {Circus, Global} from '@jest/types';
 import {bind as bindEach} from 'jest-each';
-import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack, isPromise} from 'jest-util';
 import {dispatchSync} from './state';
 
@@ -60,36 +58,17 @@ const _dispatchDescribe = (
   });
   const describeReturn = blockFn();
 
-  // TODO throw in Jest 25
   if (isPromise(describeReturn)) {
-    // eslint-disable-next-line no-console
-    console.log(
-      formatExecError(
-        new ErrorWithStack(
-          chalk.yellow(
-            'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
-              'Returning a value from "describe" will fail the test in a future version of Jest.',
-          ),
-          describeFn,
-        ),
-        {rootDir: '', testMatch: []},
-        {noStackTrace: false},
-      ),
+    throw new ErrorWithStack(
+      'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
+        'Returning a value from "describe" will fail the test in a future version of Jest.',
+      describeFn,
     );
   } else if (describeReturn !== undefined) {
-    // eslint-disable-next-line no-console
-    console.log(
-      formatExecError(
-        new ErrorWithStack(
-          chalk.yellow(
-            'A "describe" callback must not return a value.\n' +
-              'Returning a value from "describe" will fail the test in a future version of Jest.',
-          ),
-          describeFn,
-        ),
-        {rootDir: '', testMatch: []},
-        {noStackTrace: false},
-      ),
+    throw new ErrorWithStack(
+      'A "describe" callback must not return a value.\n' +
+        'Returning a value from "describe" will fail the test in a future version of Jest.',
+      describeFn,
     );
   }
 
