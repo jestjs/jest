@@ -444,13 +444,11 @@ export default function (j$: Jasmine) {
 
         if (isPromise(describeReturnValue)) {
           declarationError = new Error(
-            'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
-              'Returning a value from "describe" will fail the test in a future version of Jest.',
+            'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.',
           );
         } else if (describeReturnValue !== undefined) {
           declarationError = new Error(
-            'A "describe" callback must not return a value.\n' +
-              'Returning a value from "describe" will fail the test in a future version of Jest.',
+            'A "describe" callback must not return a value.',
           );
         }
 
