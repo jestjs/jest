@@ -34,7 +34,7 @@
     "debug": "^4.0.1",
     "dedent": "^0.7.0",
     "eslint": "^7.7.0",
-    "eslint-config-prettier": "^6.1.0",
+    "eslint-config-prettier": "^7.0.0",
     "eslint-plugin-eslint-comments": "^3.1.2",
     "eslint-plugin-import": "^2.6.0",
     "eslint-plugin-jest": "^24.0.0",
@@ -76,6 +76,7 @@
     "stealthy-require": "^1.1.1",
     "string-length": "^4.0.1",
     "strip-ansi": "^6.0.0",
+    "strip-json-comments": "^3.1.1",
     "tempy": "^1.0.0",
     "throat": "^5.0.0",
     "ts-node": "^9.0.0",
@@ -98,7 +99,6 @@
     "lint": "eslint . --cache --ext js,jsx,ts,tsx,md",
     "lint:prettier": "prettier '**/*.{md,yml,yaml}' 'website/static/**/*.{css,js}' --write --ignore-path .gitignore",
     "lint:prettier:ci": "prettier '**/*.{md,yml,yaml}' 'website/static/**/*.{css,js}' --check --ignore-path .gitignore",
-    "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-types": "yarn jest --config jest.config.types.js",
     "test-ci": "yarn jest-coverage --color -i --config jest.config.ci.js && yarn test-leak && node ./scripts/mapCoverage.js && codecov",
     "test-ci-partial": "yarn test-ci-partial:parallel -i",
@@ -148,6 +148,10 @@
     "@testing-library/dom/pretty-format": "26.6.1",
     "@types/jest/jest-diff": "^25.1.0",
     "@types/jest/pretty-format": "^25.1.0",
-    "fbjs-scripts": "patch:fbjs-scripts@^1.1.0#./patches/fbjs-scripts.patch"
+    "babel-jest": "workspace:*",
+    "fbjs-scripts": "patch:fbjs-scripts@^1.1.0#./patches/fbjs-scripts.patch",
+    "jest": "workspace:*",
+    "jest-environment-node": "workspace:*",
+    "react-native": "patch:react-native@0.63.2#./patches/react-native.patch"
   }
 }

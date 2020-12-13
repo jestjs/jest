@@ -15,6 +15,8 @@ class RecrawlWarning {
         return warning;
       }
     }
+
+    return undefined;
   }
 
   static isRecrawlWarningDupe(warningMessage) {

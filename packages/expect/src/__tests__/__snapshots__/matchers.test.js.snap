@@ -1958,6 +1958,48 @@ exports[`.toContain(), .toContainEqual() error cases 1`] = `
 Received has value: <r>null</>
 `;
 
+exports[`.toContain(), .toContainEqual() error cases 2`] = `
+<d>expect(</><r>-0</><d>).</>toContain<d>(</><g>0</><d>) // indexOf</>
+
+<b>Matcher error</>: <g>expected</> value must be a string if <r>received</> value is a string
+
+Expected has type:  number
+Expected has value: <g>-0</>
+Received has type:  string
+Received has value: <r>"-0"</>
+`;
+
+exports[`.toContain(), .toContainEqual() error cases 3`] = `
+<d>expect(</><r>null</><d>).</>toContain<d>(</><g>null</><d>) // indexOf</>
+
+<b>Matcher error</>: <g>expected</> value must be a string if <r>received</> value is a string
+
+Expected has value: <g>null</>
+Received has type:  string
+Received has value: <r>"null"</>
+`;
+
+exports[`.toContain(), .toContainEqual() error cases 4`] = `
+<d>expect(</><r>undefined</><d>).</>toContain<d>(</><g>undefined</><d>) // indexOf</>
+
+<b>Matcher error</>: <g>expected</> value must be a string if <r>received</> value is a string
+
+Expected has value: <g>undefined</>
+Received has type:  string
+Received has value: <r>"undefined"</>
+`;
+
+exports[`.toContain(), .toContainEqual() error cases 5`] = `
+<d>expect(</><r>false</><d>).</>toContain<d>(</><g>false</><d>) // indexOf</>
+
+<b>Matcher error</>: <g>expected</> value must be a string if <r>received</> value is a string
+
+Expected has type:  boolean
+Expected has value: <g>false</>
+Received has type:  string
+Received has value: <r>"false"</>
+`;
+
 exports[`.toContain(), .toContainEqual() error cases for toContainEqual 1`] = `
 <d>expect(</><r>received</><d>).</>toContainEqual<d>(</><g>expected</><d>) // deep equality</>
 

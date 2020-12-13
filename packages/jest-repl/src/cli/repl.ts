@@ -15,6 +15,7 @@ import type {Transformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 
 let transformer: Transformer;
+let transformerConfig: unknown;
 
 const evalCommand: repl.REPLEval = (
   cmd: string,
@@ -37,6 +38,7 @@ const evalCommand: repl.REPLEval = (
           supportsExportNamespaceFrom: false,
           supportsStaticESM: false,
           supportsTopLevelAwait: false,
+          transformerConfig,
         },
       );
       cmd =
@@ -69,6 +71,7 @@ if (jestProjectConfig.transform) {
   for (let i = 0; i < jestProjectConfig.transform.length; i++) {
     if (new RegExp(jestProjectConfig.transform[i][0]).test('foobar.js')) {
       transformerPath = jestProjectConfig.transform[i][1];
+      transformerConfig = jestProjectConfig.transform[i][2];
       break;
     }
   }

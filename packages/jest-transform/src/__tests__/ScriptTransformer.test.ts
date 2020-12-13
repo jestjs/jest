@@ -663,7 +663,10 @@ describe('ScriptTransformer', () => {
   });
 
   it('passes expected transform options to getCacheKey', () => {
-    config = {...config, transform: [['\\.js$', 'test_preprocessor', {}]]};
+    config = {
+      ...config,
+      transform: [['\\.js$', 'test_preprocessor', {configKey: 'configValue'}]],
+    };
     const scriptTransformer = new ScriptTransformer(config);
 
     scriptTransformer.transform(
@@ -779,8 +782,8 @@ describe('ScriptTransformer', () => {
 
     scriptTransformer.transform(fileName2, getCoverageOptions());
 
-    expect(testPreprocessor.getCacheKey.mock.calls[0][2].cacheFS).toBeDefined()
-    expect(testPreprocessor.process.mock.calls[0][2].cacheFS).toBeDefined()
+    expect(testPreprocessor.getCacheKey.mock.calls[0][2].cacheFS).toBeDefined();
+    expect(testPreprocessor.process.mock.calls[0][2].cacheFS).toBeDefined();
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
     expect(fs.readFileSync).toBeCalledWith(fileName1, 'utf8');
   });

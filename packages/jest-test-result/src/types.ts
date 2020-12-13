@@ -113,10 +113,6 @@ export type TestResult = {
     unmatched: number;
     updated: number;
   };
-  // TODO - Remove in Jest 26
-  sourceMaps?: {
-    [sourcePath: string]: string;
-  };
   testExecError?: SerializableError;
   testFilePath: Config.Path;
   testResults: Array<AssertionResult>;

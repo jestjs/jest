@@ -35,17 +35,17 @@ interface Transformer<OptionType = unknown> {
   getCacheKey?: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions,
+    options: TransformOptions<OptionType>,
   ) => string;
 
   process: (
     sourceText: string,
     sourcePath: string,
-    options: TransformOptions,
+    options: TransformOptions<OptionType>,
   ) => TransformedSource;
 }
 
-interface TransformOptions {
+interface TransformOptions<OptionType> {
   /**
    * If a transformer does module resolution and reads files, it should populate `cacheFS` so that
    * Jest avoids reading the same files again, improving performance. `cacheFS` stores entries of
@@ -61,6 +61,8 @@ interface TransformOptions {
   supportsExportNamespaceFrom: boolean;
   supportsStaticESM: boolean;
   supportsTopLevelAwait: boolean;
+  /** the options passed through Jest's config by the user */
+  transformerConfig: OptionType;
 }
 
 type TransformedSource =

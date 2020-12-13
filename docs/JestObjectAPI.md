@@ -582,9 +582,9 @@ Restores all mocks back to their original value. Equivalent to calling [`.mockRe
 
 ### `jest.useFakeTimers(implementation?: 'modern' | 'legacy')`
 
-Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate`).
+Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate` as well as `Date`).
 
-If you pass `'modern'` as an argument, [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers) will be used as implementation instead of Jest's own fake timers. This also mocks additional timers like `Date`. `'modern'` will be the default behavior in Jest 27.
+If you pass `'legacy'` as an argument, Jest's legacy implementation will be used rather than one based on [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
 
 Returns the `jest` object for chaining.
 
