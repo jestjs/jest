@@ -8,7 +8,7 @@
 
 'use strict';
 
-describe('Promise describe warns', () => {
+describe('Promise describe errors', () => {
   it('t', () => {});
   return Promise.resolve();
 });
