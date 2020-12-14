@@ -42,22 +42,38 @@ const locales = [
   //'zh-Hant',
 ];
 
-// TODO temporary
-const LocaleToLabel = {
-  en: 'English',
-  ja: '日本語',
-  'es-ES': 'Español',
-  'pt-BR': 'Português (Brasil)',
-  ro: 'Română',
-  ru: 'Русский',
-  uk: 'Українська',
-  'zh-Hans': '简体中文',
+const localeConfigs = {
+  en: {
+    label: 'English',
+  },
+  ja: {
+    label: '日本語',
+  },
+  'es-ES': {
+    label: 'Español',
+  },
+  'pt-BR': {
+    label: 'Português (Brasil)',
+  },
+  ro: {
+    label: 'Română',
+  },
+  ru: {
+    label: 'Русский',
+  },
+  uk: {
+    label: 'Українська',
+  },
+  'zh-Hans': {
+    label: '简体中文',
+  },
 };
 
 module.exports = {
   i18n: {
     defaultLocale: 'en',
     locales,
+    localeConfigs,
   },
   title: 'Jest',
   titleDelimiter: '·',
@@ -132,20 +148,7 @@ module.exports = {
           position: 'right',
         },
         {to: 'blog', label: 'Blog', position: 'right'},
-        {
-          // TODO temporary
-          to: 'https://jest-v2.netlify.app/',
-          target: '_self',
-          label: 'English',
-          position: 'right',
-          items: locales.map(locale => ({
-            to: `https://jest-v2.netlify.app/${
-              locale === 'en' ? '' : `${locale}/`
-            }`,
-            label: LocaleToLabel[locale] || locale,
-            target: '_self',
-          })),
-        },
+        {type: 'localeDropdown', position: 'right'},
         {
           href: 'https://github.com/facebook/jest',
           position: 'right',
