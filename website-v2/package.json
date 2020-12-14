@@ -22,8 +22,8 @@
     "netlify:crowdin:downloadTranslations": "cd .. && java -jar crowdin-cli.jar download --config ./crowdin-v2.yaml"
   },
   "dependencies": {
-    "@docusaurus/core": "2.0.0-alpha.aff656182",
-    "@docusaurus/preset-classic": "2.0.0-alpha.aff656182",
+    "@docusaurus/core": "2.0.0-alpha.6703f8420",
+    "@docusaurus/preset-classic": "2.0.0-alpha.6703f8420",
     "clsx": "^1.1.1",
     "docusaurus-plugin-sass": "^0.1.11",
     "fs-extra": "^9.0.1",
