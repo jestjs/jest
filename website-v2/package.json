@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@docusaurus/core": "2.0.0-alpha.6703f8420",
+    "@docusaurus/plugin-client-redirects": "2.0.0-alpha.6703f8420",
     "@docusaurus/preset-classic": "2.0.0-alpha.6703f8420",
     "clsx": "^1.1.1",
     "docusaurus-plugin-sass": "^0.1.11",

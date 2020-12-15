@@ -1920,6 +1920,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@docusaurus/plugin-client-redirects@npm:2.0.0-alpha.6703f8420":
+  version: 2.0.0-alpha.6703f8420
+  resolution: "@docusaurus/plugin-client-redirects@npm:2.0.0-alpha.6703f8420"
+  dependencies:
+    "@docusaurus/core": 2.0.0-alpha.6703f8420
+    "@docusaurus/types": 2.0.0-alpha.6703f8420
+    "@docusaurus/utils": 2.0.0-alpha.6703f8420
+    "@docusaurus/utils-validation": 2.0.0-alpha.6703f8420
+    chalk: ^3.0.0
+    eta: ^1.11.0
+    fs-extra: ^9.0.1
+    globby: ^10.0.1
+    joi: ^17.2.1
+    lodash: ^4.17.20
+  peerDependencies:
+    react: ^16.8.4
+    react-dom: ^16.8.4
+  checksum: 2b242bd3e25321caf87f39fdbb07318fda73cacb5a561d73378d5c2c56680321ad3f986e6d6792b5475e1385ba2c40d72638cf79f2dd4cf1f5cb390f64227a72
+  languageName: node
+  linkType: hard
+
 "@docusaurus/plugin-content-blog@npm:2.0.0-alpha.6703f8420":
   version: 2.0.0-alpha.6703f8420
   resolution: "@docusaurus/plugin-content-blog@npm:2.0.0-alpha.6703f8420"
@@ -15355,6 +15376,7 @@ fsevents@~2.1.2:
   resolution: "jest-website-v2@workspace:website-v2"
   dependencies:
     "@docusaurus/core": 2.0.0-alpha.6703f8420
+    "@docusaurus/plugin-client-redirects": 2.0.0-alpha.6703f8420
     "@docusaurus/preset-classic": 2.0.0-alpha.6703f8420
     clsx: ^1.1.1
     crowdin-cli: ^0.3.0
