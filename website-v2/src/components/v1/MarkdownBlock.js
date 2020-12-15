@@ -8,16 +8,24 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import Link from '@docusaurus/Link';
-import Translate from '@docusaurus/Translate';
+import Translate, {translate} from '@docusaurus/Translate';
 
 const renderers = {
   link: ({node: _node, ...props}) => <Link {...props} />,
 };
 
-// TODO hacky temp solution
+/**
+handle this case:
+<MarkdownBlock>
+  <Translate>localized md text</Translate>
+</MarkdownBlock>
+ */
 function getMarkdown(children) {
   if (children?.type === Translate) {
-    return children?.props?.children;
+    return translate({
+      id: children.props.id,
+      message: children?.props?.children,
+    });
   } else {
     return children;
   }
