@@ -16,7 +16,7 @@
     "fetchSupporters": "node fetchSupporters.js",
     "netlify:ci:build": "yarn netlify:prepare && yarn netlify:crowdin && yarn build",
     "netlify:ci:deployPreview": "yarn netlify:prepare && yarn build -l en",
-    "netlify:prepare": "yarn fetchSupporters && yarn build:js",
+    "netlify:prepare": "yarn fetchSupporters && yarn build:js && yarn write-translations",
     "netlify:crowdin": "yarn netlify:crowdin:install && yarn netlify:crowdin:downloadTranslations && yarn crowdin:fixTranslations",
     "netlify:crowdin:install": "cd .. && java -version && curl https://hardcore-ride-8fbb5a.netlify.app/crowdin-cli.jar --output crowdin-cli.jar && java -jar crowdin-cli.jar --version",
     "netlify:crowdin:downloadTranslations": "cd .. && java -jar crowdin-cli.jar download --config ./crowdin-v2.yaml"
