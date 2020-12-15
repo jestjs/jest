@@ -1,7 +1,6 @@
 ---
 id: using-matchers
 title: Using Matchers
-original_id: using-matchers
 ---
 
 Jest uses "matchers" to let you test values in different ways. This document will introduce some commonly used matchers. For the full list, see the [`expect` API doc](ExpectAPI.md).

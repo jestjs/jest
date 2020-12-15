@@ -1,7 +1,6 @@
 ---
 id: ecmascript-modules
 title: ECMAScript Modules
-original_id: ecmascript-modules
 ---
 
 Jest ships with _experimental_ support for ECMAScript Modules (ESM).

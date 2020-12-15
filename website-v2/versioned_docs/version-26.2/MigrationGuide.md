@@ -1,7 +1,6 @@
 ---
 id: migration-guide
 title: Migrating to Jest
-original_id: migration-guide
 ---
 
 If you'd like to try out Jest with an existing codebase, there are a number of ways to convert to Jest:

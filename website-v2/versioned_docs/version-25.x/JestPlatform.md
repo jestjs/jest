@@ -1,7 +1,6 @@
 ---
 id: jest-platform
 title: Jest Platform
-original_id: jest-platform
 ---
 
 You can cherry pick specific features of Jest and use them as standalone packages. Here's a list of the available packages:

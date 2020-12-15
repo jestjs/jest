@@ -1,7 +1,6 @@
 ---
 id: tutorial-async
 title: An Async Example
-original_id: tutorial-async
 ---
 
 First, enable Babel support in Jest as documented in the [Getting Started](GettingStarted.md#using-babel) guide.

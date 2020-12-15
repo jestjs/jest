@@ -1,7 +1,6 @@
 ---
 id: es6-class-mocks
 title: ES6 Class Mocks
-original_id: es6-class-mocks
 ---
 
 Jest can be used to mock ES6 classes that are imported into files you want to test.

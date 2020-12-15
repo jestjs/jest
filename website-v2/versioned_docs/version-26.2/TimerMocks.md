@@ -1,7 +1,6 @@
 ---
 id: timer-mocks
 title: Timer Mocks
-original_id: timer-mocks
 ---
 
 The native timer functions (i.e., `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`) are less than ideal for a testing environment since they depend on real time to elapse. Jest can swap out timers with functions that allow you to control the passage of time. [Great Scott!](https://www.youtube.com/watch?v=QZoJ2Pt27BY)

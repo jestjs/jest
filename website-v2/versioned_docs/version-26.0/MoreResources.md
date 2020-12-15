@@ -1,7 +1,6 @@
 ---
 id: more-resources
 title: More Resources
-original_id: more-resources
 ---
 
 By now you should have a good idea of how Jest can help you test your applications. If you're interested in learning more, here's some related stuff you might want to check out.

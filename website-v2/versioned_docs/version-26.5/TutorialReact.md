@@ -1,7 +1,6 @@
 ---
 id: tutorial-react
 title: Testing React Apps
-original_id: tutorial-react
 ---
 
 At Facebook, we use Jest to test [React](https://reactjs.org/) applications.

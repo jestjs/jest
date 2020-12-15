@@ -1,7 +1,6 @@
 ---
 title: Jest Community
 id: jest-community
-original_id: jest-community
 ---
 
 The community around Jest is working hard to make the testing experience even greater.

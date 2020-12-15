@@ -1,7 +1,6 @@
 ---
 id: environment-variables
 title: Environment Variables
-original_id: environment-variables
 ---
 
 Jest sets the following environment variables:

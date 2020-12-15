@@ -1,7 +1,6 @@
 ---
 id: tutorial-jquery
 title: DOM Manipulation
-original_id: tutorial-jquery
 ---
 
 Another class of functions that is often considered difficult to test is code that directly manipulates the DOM. Let's see how we can test the following snippet of jQuery code that listens to a click event, fetches some data asynchronously and sets the content of a span.

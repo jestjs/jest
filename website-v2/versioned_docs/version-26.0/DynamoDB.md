@@ -1,7 +1,6 @@
 ---
 id: dynamodb
 title: Using with DynamoDB
-original_id: dynamodb
 ---
 
 With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async Test Environment](Configuration.md#testenvironment-string) APIs, Jest can work smoothly with [DynamoDB](https://aws.amazon.com/dynamodb/).

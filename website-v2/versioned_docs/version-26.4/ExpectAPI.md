@@ -1,7 +1,6 @@
 ---
 id: expect
 title: Expect
-original_id: expect
 ---
 
 When you're writing tests, you often need to check that values meet certain conditions. `expect` gives you access to a number of "matchers" that let you validate different things.

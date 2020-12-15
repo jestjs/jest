@@ -1,7 +1,6 @@
 ---
 id: getting-started
 title: Getting Started
-original_id: getting-started
 ---
 
 Install Jest using [`yarn`](https://yarnpkg.com/en/package/jest):

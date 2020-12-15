@@ -1,7 +1,6 @@
 ---
 id: tutorial-react-native
 title: Testing React Native Apps
-original_id: tutorial-react-native
 ---
 
 At Facebook, we use Jest to test [React Native](https://reactnative.dev/) applications.
