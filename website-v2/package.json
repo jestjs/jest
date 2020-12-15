@@ -11,7 +11,7 @@
     "serve": "docusaurus serve",
     "crowdin:upload": "cd .. && crowdin upload sources --config crowdin-v2.yaml",
     "crowdin:downloadTranslations": "cd .. && crowdin download --config crowdin-v2.yaml",
-    "crowdin:fixTranslations": "node fixCrowdinTranslations",
+    "crowdin:fixTranslations": "echo 'temporary disable' || node fixCrowdinTranslations",
     "write-translations": "docusaurus write-translations",
     "fetchSupporters": "node fetchSupporters.js",
     "netlify:ci:build": "yarn netlify:prepare && yarn netlify:crowdin && yarn build",
