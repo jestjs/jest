@@ -21,7 +21,7 @@ const HG = 'hg --config ui.username=jest_test';
 
 const gitVersionSupportsInitialBranch = (() => {
   const {stdout} = run(`${GIT} --version`);
-  const gitVersion = stdout.split(' ').slice(-1)[0];
+  const gitVersion = stdout;
 
   const match = gitVersion.match(/(?<version>\d+\.\d+\.\d+)/);
 
