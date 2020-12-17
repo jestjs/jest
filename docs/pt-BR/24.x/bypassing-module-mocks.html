@@ -76,19 +76,15 @@
             });
         </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><a class="edit-page-link button" href="https://github.com/facebook/jest/edit/master/docs/BypassingModuleMocks.md" target="_blank" rel="noreferrer noopener">Edit</a><h1 id="__docusaurus" class="postHeaderTitle">Bypassing module mocks</h1></header><article><div><span><p>Jest allows you to mock out whole modules in your tests, which can be useful for testing if your code is calling functions from that module correctly. Entretanto, as vezes você deseja usar partes do módulo mockado em seus <em>arquivo de teste</em>, nesse caso você precisa acessar a implementação original, ao invés de uma versão mockada.</p>
 <p>Considere escrever um caso de testes para a função <code>createUser</code>:</p>
-<pre><code class="hljs css language-javascript">&lt;code&gt;
-// createUser.js
-import fetch from 'node-fetch';
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// createUser.js</span>
+<span class="hljs-keyword">import</span> fetch <span class="hljs-keyword">from</span> <span class="hljs-string">'node-fetch'</span>;
 
-export const createUser = async () =&gt; {
-  const response = await fetch('http://website.com/users', {method: 'POST'});
-  const userId = await response.text();
-  return userId;
+<span class="hljs-keyword">export</span> <span class="hljs-keyword">const</span> createUser = <span class="hljs-keyword">async</span> () =&gt; {
+  <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> fetch(<span class="hljs-string">'http://website.com/users'</span>, {<span class="hljs-attr">method</span>: <span class="hljs-string">'POST'</span>});
+  <span class="hljs-keyword">const</span> userId = <span class="hljs-keyword">await</span> response.text();
+  <span class="hljs-keyword">return</span> userId;
 };
-&lt;/code&gt;;
 </code></pre>
-<p>;
-</code></p>
 <p>Seu teste provavelm, ente irá &quot;mockar&quot; (mock) a função <code>fetch</code> para que possamos ter certeza que esta será chamada sem realmente fazer um request ao endpoint. Contudo, você também precisará &quot;mockar&quot; o valor de retorno da função <code>fetch</code> com uma <code>Response</code> (encapsulada em uma <code>Promise</code>). Então você pode inicialmente tentar escrever um teste como este:</p>
 <pre><code class="hljs css language-javascript">jest.mock(<span class="hljs-string">'node-fetch'</span>);
 

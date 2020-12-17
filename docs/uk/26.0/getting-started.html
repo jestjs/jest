@@ -80,7 +80,7 @@
 <p>Або <a href="https://www.npmjs.com/package/jest"><code>npm</code></a>:</p>
 <pre><code class="hljs css language-bash">npm install --save-dev jest
 </code></pre>
-<p>Примітка: документація Jest використовує команди <code>yarn</code>, проте <code>npm</code> також спрацює. Ви можете порівняти команди <code>yarn</code> та <code>npm</code> в <a href="https://yarnpkg.com/en/docs/migrating-from-npm#toc-cli-commands-comparison">в документації yarn</a>.</p>
+<p>Примітка: документація Jest використовує команди <code>yarn</code>, проте <code>npm</code> також спрацює. Ви можете порівняти команди <code>yarn</code> та <code>npm</code> в <a href="https://yarnpkg.com/en/docs/migrating-from-npm#toc-cli-commands-comparison">документації yarn</a>.</p>
 <p>Let's get started by writing a test for a hypothetical function that adds two numbers. First, create a <code>sum.js</code> file:</p>
 <pre><code class="hljs css language-javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">sum</span>(<span class="hljs-params">a, b</span>) </span>{
   <span class="hljs-keyword">return</span> a + b;
@@ -101,14 +101,14 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
   }
 }
 </code></pre>
-<p>І, нарешті, запустіть <code>yarn test</code> і Jest виведе це повідомлення:</p>
+<p>Зрештою, запустіть <code>yarn test</code> або <code>npm run test</code> і Jest виведе це повідомлення:</p>
 <pre><code class="hljs css language-bash">PASS  ./sum.test.js
 ✓ adds 1 + 2 to equal 3 (5ms)
 </code></pre>
 <p><strong>Ви тільки що успішно написали свій перший тест, використовуючи Jest!</strong></p>
 <p>Цей тест використовує <code>expect</code> and <code>toBe</code> для перевірки, що два значення абсолютно ідентичні. Щоб дізнатися про інші речі, які Jest може тестувати, перегляньте <a href="/docs/uk/26.0/using-matchers"> Використання Matchers</a>.</p>
 <h2><a class="anchor" aria-hidden="true" id="запуск-з-командного-рядка"></a><a href="#запуск-з-командного-рядка" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Запуск з командного рядка</h2>
-<p>You can run Jest directly from the CLI (if it's globally available in your <code>PATH</code>, e.g. by <code>yarn global add jest</code> or <code>npm install jest --global</code>) with a variety of useful options.</p>
+<p>Ви можете запустити Jest безпосередньо з командного рядка (якщо він доступний глобально у вашому <code>PATH</code>, наприклад <code>yarn global add jest</code> або <code>npm install jest --global</code>) з широким набором корисних параметрів.</p>
 <p>Ось як можна запустити Jest для файлів, назва яких відповідає шаблону <code>my-test</code>, використовуючи <code>config.json</code> як файл конфігурації та з відображенням нативних сповіщень ОС після запуску:</p>
 <pre><code class="hljs css language-bash">jest my-test --notify --config=config.json
 </code></pre>
@@ -164,24 +164,24 @@ test(<span class="hljs-string">'adds 1 + 2 to equal 3'</span>, () =&gt; {
 <h3><a class="anchor" aria-hidden="true" id="використання-webpack"></a><a href="#використання-webpack" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Використання webpack</h3>
 <p>Jest може застосовуватися в проектах, які використовують <a href="https://webpack.js.org/"> webpack</a> для керування ресурсами, стилями та компіляції коду. webpack кидає певні унікальні виклики для використання інших інструментів. Перегляньте <a href="/docs/uk/26.0/webpack">посібник по роботі з webpack</a> щоб почати його використовувати.</p>
 <h3><a class="anchor" aria-hidden="true" id="using-parcel"></a><a href="#using-parcel" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Using parcel</h3>
-<p>Jest can be used in projects that use <a href="https://parceljs.org/">parcel-bundler</a> to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration. Refer to the official <a href="https://parceljs.org/getting_started.html">docs</a> to get started.</p>
+<p>Jest може використовуватись в проектах, що використовують <a href="https://parseljs.org">parsel-bundler</a> для керування ресурсами, стилями та компіляції, подібної до webpack. Parcel вимагає нульову конфігурацію. Зверніться до офіційної <a href="https://parceljs.org/getting_started.html">документації</a> , щоб розпочати роботу.</p>
 <h3><a class="anchor" aria-hidden="true" id="використання-typescript"></a><a href="#використання-typescript" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Використання TypeScript</h3>
-<p>Jest supports TypeScript, via Babel. First, make sure you followed the instructions on <a href="#using-babel">using Babel</a> above. Next, install the <code>@babel/preset-typescript</code> via <code>yarn</code>:</p>
+<p>Jest supports TypeScript, via Babel. По-перше, переконайтеся, що ви дотримувались інструкцій <a href="#using-babel">використовуючи Babel</a> вище. Далі, встановіть <code>@babel/preset-typescript</code> через <code>yarn</code>:</p>
 <pre><code class="hljs css language-bash">yarn add --dev @babel/preset-typescript
 </code></pre>
 <p>Then add <code>@babel/preset-typescript</code> to the list of presets in your <code>babel.config.js</code>.</p>
 <pre><code class="hljs css language-diff">// babel.config.js
-module.exports = {
+module.export = {
   presets: [
     ['@babel/preset-env', {targets: {node: 'current'}}],
-<span class="hljs-addition">+    '@babel/preset-typescript',</span>
+<span class="hljs-addition">+ '@babel/preset-typescript',</span>
   ],
 };
 </code></pre>
-<p>Проте, є деякі <a href="https://babeljs.io/docs/en/babel-plugin-transform-typescript#caveats">застереження</a> щодо використання TypeScript з Babel. Because TypeScript support in Babel is purely transpilation, Jest will not type-check your tests as they are run. If you want that, you can use <a href="https://github.com/kulshekhar/ts-jest">ts-jest</a> instead, or just run the TypeScript compiler <a href="https://www.typescriptlang.org/docs/handbook/compiler-options.html">tsc</a> separately (or as part of your build process).</p>
-<p>You may also want to install the <a href="https://www.npmjs.com/package/@types/jest"><code>@types/jest</code></a> module for the version of Jest you're using. This will help provide full typing when writing your tests with TypeScript.</p>
+<p>Проте, є деякі <a href="https://babeljs.io/docs/en/babel-plugin-transform-typescript#caveats">застереження</a> щодо використання TypeScript з Babel. Оскільки TypeScript в Babel є суто транспіляцією, Jest не буде перевіряти ваші тести, коли вони будуть запущені. Якщо вам це потрібно, ви можете використовувати <a href="https://github.com/kulshekhar/ts-jest">ts-jest</a> , або просто запустіть компілятор TypeScript <a href="https://www.typescriptlang.org/docs/handbook/compiler-options.html">tsc</a> окремо (або до вашої частини процесу збірки).</p>
+<p>Ви також можете встановити модуль <a href="https://www.npmjs.com/package/@types/jest"><code>@types/jest</code></a> для версії Jest, яку ви використовуєте. Це допоможе забезпечити повним набором під час написання тестів з TypeScript.</p>
 <blockquote>
-<p>For <code>@types/*</code> modules it's recommended to try to match the version of the associated module. For example, if you are using <code>26.4.0</code> of <code>jest</code> then using <code>26.4.x</code> of <code>@types/jest</code> is ideal. In general, try to match the major (<code>26</code>) and minor (<code>4</code>) version as closely as possible.</p>
+<p>Для <code>@types/*</code> модулів рекомендується спробувати встановити відповідність версії відповідного модуля. Наприклад, якщо ви використовуєте <code>26.4.0</code> версію <code>jest</code>, тоді використання <code>26.4.x</code> версії <code>@types/jest</code> є ідеальним. Взагалі, спробуйте поєднати мажорні (<code>26</code>) та другорядну (<code>4</code>) версію якомога точніше.</p>
 </blockquote>
 <pre><code class="hljs css language-bash">yarn add --dev @types/jest
 </code></pre>
