@@ -129,5 +129,3 @@ jobs:
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests using jest-jasmine
         run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }}
-        env:
-          CI: true
