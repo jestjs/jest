@@ -29,9 +29,9 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ubuntu-latest-node-12.x-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: yarn2-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ubuntu-latest-node-12.x-yarn-
+            yarn2-
       - uses: actions/setup-node@v2.1.4
         with:
           node-version: 12.x
@@ -72,9 +72,9 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: yarn2-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-
+            yarn2-
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2.1.4
         with:
@@ -113,9 +113,9 @@ jobs:
       - uses: actions/cache@v2
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-14.x-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: yarn2-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-node-14.x-yarn-
+            yarn2-
       - name: Use Node.js 14.x
         uses: actions/setup-node@v2.1.4
         with:
