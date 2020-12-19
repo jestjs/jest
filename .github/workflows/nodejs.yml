@@ -24,6 +24,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: actions/setup-node@v2.1.2
+        with:
+          node-version: 14.x
+
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
@@ -34,10 +38,6 @@ jobs:
           key: yarn2-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             yarn2-
-
-      - uses: actions/setup-node@v2.1.2
-        with:
-          node-version: 14.x
 
       - name: Validate cache
         env:
@@ -54,6 +54,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2.1.4
+        with:
+          node-version: 12.x
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
@@ -63,9 +66,6 @@ jobs:
           key: yarn2-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             yarn2-
-      - uses: actions/setup-node@v2.1.4
-        with:
-          node-version: 12.x
       - name: install
         run: yarn --immutable
       - name: build
@@ -98,6 +98,10 @@ jobs:
           git config --global core.symlinks true
         if: runner.os == 'Windows'
       - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: ${{ matrix.node-version }}
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
@@ -107,10 +111,6 @@ jobs:
           key: yarn2-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             yarn2-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2.1.4
-        with:
-          node-version: ${{ matrix.node-version }}
       - name: install
         run: yarn --immutable
       - name: build
@@ -140,6 +140,10 @@ jobs:
           git config --global core.symlinks true
         if: runner.os == 'Windows'
       - uses: actions/checkout@v2
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: 14.x
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
@@ -149,10 +153,6 @@ jobs:
           key: yarn2-${{ hashFiles('yarn.lock') }}
           restore-keys: |
             yarn2-
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v2.1.4
-        with:
-          node-version: 14.x
       - name: install
         run: yarn --immutable
       - name: build
