@@ -610,13 +610,10 @@ export default class Runtime {
     if (options?.isInternalModule) {
       moduleRegistry = this._internalModuleRegistry;
     } else {
-      if (
-        this._moduleRegistry.get(modulePath) ||
-        !this._isolatedModuleRegistry
-      ) {
-        moduleRegistry = this._moduleRegistry;
-      } else {
+      if (this._isolatedModuleRegistry) {
         moduleRegistry = this._isolatedModuleRegistry;
+      } else {
+        moduleRegistry = this._moduleRegistry;
       }
     }
 
