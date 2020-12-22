@@ -117,8 +117,8 @@ describe('watchman watch', () => {
     watchman.Client.mock.instances[0].command.mockClear();
   });
 
-  test('returns a list of all files when there are no clocks', () =>
-    watchmanCrawl({
+  test('returns a list of all files when there are no clocks', async () => {
+    const {changedFiles, hasteMap, removedFiles} = await watchmanCrawl({
       data: {
         clocks: new Map(),
         files: new Map(),
@@ -127,53 +127,53 @@ describe('watchman watch', () => {
       ignore: pearMatcher,
       rootDir: ROOT_MOCK,
       roots: ROOTS,
-    }).then(({changedFiles, hasteMap, removedFiles}) => {
-      const client = watchman.Client.mock.instances[0];
-      const calls = client.command.mock.calls;
+    });
+    const client = watchman.Client.mock.instances[0];
+    const calls = client.command.mock.calls;
 
-      expect(client.on).toBeCalled();
-      expect(client.on).toBeCalledWith('error', expect.any(Function));
+    expect(client.on).toBeCalled();
+    expect(client.on).toBeCalledWith('error', expect.any(Function));
 
-      // Call 0 and 1 are for ['watch-project']
-      expect(calls[0][0][0]).toEqual('watch-project');
-      expect(calls[1][0][0]).toEqual('watch-project');
+    // Call 0 and 1 are for ['watch-project']
+    expect(calls[0][0][0]).toEqual('watch-project');
+    expect(calls[1][0][0]).toEqual('watch-project');
 
-      // Call 2 is the query
-      const query = calls[2][0];
-      expect(query[0]).toEqual('query');
+    // Call 2 is the query
+    const query = calls[2][0];
+    expect(query[0]).toEqual('query');
 
-      expect(query[2].expression).toEqual([
-        'allof',
-        ['type', 'f'],
-        ['anyof', ['suffix', 'js'], ['suffix', 'json']],
-        ['anyof', ['dirname', 'fruits'], ['dirname', 'vegetables']],
-      ]);
+    expect(query[2].expression).toEqual([
+      'allof',
+      ['type', 'f'],
+      ['anyof', ['suffix', 'js'], ['suffix', 'json']],
+      ['anyof', ['dirname', 'fruits'], ['dirname', 'vegetables']],
+    ]);
 
-      expect(query[2].fields).toEqual(['name', 'exists', 'mtime_ms', 'size']);
+    expect(query[2].fields).toEqual(['name', 'exists', 'mtime_ms', 'size']);
 
-      expect(query[2].glob).toEqual([
-        'fruits/**/*.js',
-        'fruits/**/*.json',
-        'vegetables/**/*.js',
-        'vegetables/**/*.json',
-      ]);
+    expect(query[2].glob).toEqual([
+      'fruits/**/*.js',
+      'fruits/**/*.json',
+      'vegetables/**/*.js',
+      'vegetables/**/*.json',
+    ]);
 
-      expect(hasteMap.clocks).toEqual(
-        createMap({
-          '': 'c:fake-clock:1',
-        }),
-      );
+    expect(hasteMap.clocks).toEqual(
+      createMap({
+        '': 'c:fake-clock:1',
+      }),
+    );
 
-      expect(changedFiles).toEqual(undefined);
+    expect(changedFiles).toEqual(undefined);
 
-      expect(hasteMap.files).toEqual(mockFiles);
+    expect(hasteMap.files).toEqual(mockFiles);
 
-      expect(removedFiles).toEqual(new Map());
+    expect(removedFiles).toEqual(new Map());
 
-      expect(client.end).toBeCalled();
-    }));
+    expect(client.end).toBeCalled();
+  });
 
-  test('updates file map and removedFiles when the clock is given', () => {
+  test('updates file map and removedFiles when the clock is given', async () => {
     mockResponse = {
       'list-capabilities': {
         [undefined]: {
@@ -208,7 +208,7 @@ describe('watchman watch', () => {
       '': 'c:fake-clock:1',
     });
 
-    return watchmanCrawl({
+    const {changedFiles, hasteMap, removedFiles} = await watchmanCrawl({
       data: {
         clocks,
         files: mockFiles,
@@ -217,39 +217,39 @@ describe('watchman watch', () => {
       ignore: pearMatcher,
       rootDir: ROOT_MOCK,
       roots: ROOTS,
-    }).then(({changedFiles, hasteMap, removedFiles}) => {
-      // The object was reused.
-      expect(hasteMap.files).toBe(mockFiles);
-
-      expect(hasteMap.clocks).toEqual(
-        createMap({
-          '': 'c:fake-clock:2',
-        }),
-      );
-
-      expect(changedFiles).toEqual(
-        createMap({
-          [KIWI_RELATIVE]: ['', 42, 40, 0, '', null],
-        }),
-      );
-
-      expect(hasteMap.files).toEqual(
-        createMap({
-          [KIWI_RELATIVE]: ['', 42, 40, 0, '', null],
-          [MELON_RELATIVE]: ['', 33, 43, 0, '', null],
-          [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, '', null],
-        }),
-      );
-
-      expect(removedFiles).toEqual(
-        createMap({
-          [TOMATO_RELATIVE]: ['', 31, 41, 0, '', null],
-        }),
-      );
     });
+
+    // The object was reused.
+    expect(hasteMap.files).toBe(mockFiles);
+
+    expect(hasteMap.clocks).toEqual(
+      createMap({
+        '': 'c:fake-clock:2',
+      }),
+    );
+
+    expect(changedFiles).toEqual(
+      createMap({
+        [KIWI_RELATIVE]: ['', 42, 40, 0, '', null],
+      }),
+    );
+
+    expect(hasteMap.files).toEqual(
+      createMap({
+        [KIWI_RELATIVE]: ['', 42, 40, 0, '', null],
+        [MELON_RELATIVE]: ['', 33, 43, 0, '', null],
+        [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, '', null],
+      }),
+    );
+
+    expect(removedFiles).toEqual(
+      createMap({
+        [TOMATO_RELATIVE]: ['', 31, 41, 0, '', null],
+      }),
+    );
   });
 
-  test('resets the file map and tracks removedFiles when watchman is fresh', () => {
+  test('resets the file map and tracks removedFiles when watchman is fresh', async () => {
     const mockTomatoSha1 = '321f6b7e8bf7f29aab89c5e41a555b1b0baa41a9';
 
     mockResponse = {
@@ -298,7 +298,7 @@ describe('watchman watch', () => {
       '': 'c:fake-clock:1',
     });
 
-    return watchmanCrawl({
+    const {changedFiles, hasteMap, removedFiles} = await watchmanCrawl({
       data: {
         clocks,
         files: mockFiles,
@@ -307,44 +307,44 @@ describe('watchman watch', () => {
       ignore: pearMatcher,
       rootDir: ROOT_MOCK,
       roots: ROOTS,
-    }).then(({changedFiles, hasteMap, removedFiles}) => {
-      // The file object was *not* reused.
-      expect(hasteMap.files).not.toBe(mockFiles);
-
-      expect(hasteMap.clocks).toEqual(
-        createMap({
-          '': 'c:fake-clock:3',
-        }),
-      );
-
-      expect(changedFiles).toEqual(undefined);
-
-      // strawberry and melon removed from the file list.
-      expect(hasteMap.files).toEqual(
-        createMap({
-          [BANANA_RELATIVE]: mockBananaMetadata,
-          [KIWI_RELATIVE]: ['', 42, 52, 0, '', null],
-          [TOMATO_RELATIVE]: ['Tomato', 76, 41, 1, [], mockTomatoSha1],
-        }),
-      );
-
-      // Even though the file list was reset, old file objects are still reused
-      // if no changes have been made
-      expect(hasteMap.files.get(BANANA_RELATIVE)).toBe(mockBananaMetadata);
-
-      // Old file objects are not reused if they have a different mtime
-      expect(hasteMap.files.get(TOMATO_RELATIVE)).not.toBe(mockTomatoMetadata);
-
-      expect(removedFiles).toEqual(
-        createMap({
-          [MELON_RELATIVE]: ['', 33, 43, 0, '', null],
-          [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, '', null],
-        }),
-      );
     });
+
+    // The file object was *not* reused.
+    expect(hasteMap.files).not.toBe(mockFiles);
+
+    expect(hasteMap.clocks).toEqual(
+      createMap({
+        '': 'c:fake-clock:3',
+      }),
+    );
+
+    expect(changedFiles).toEqual(undefined);
+
+    // strawberry and melon removed from the file list.
+    expect(hasteMap.files).toEqual(
+      createMap({
+        [BANANA_RELATIVE]: mockBananaMetadata,
+        [KIWI_RELATIVE]: ['', 42, 52, 0, '', null],
+        [TOMATO_RELATIVE]: ['Tomato', 76, 41, 1, [], mockTomatoSha1],
+      }),
+    );
+
+    // Even though the file list was reset, old file objects are still reused
+    // if no changes have been made
+    expect(hasteMap.files.get(BANANA_RELATIVE)).toBe(mockBananaMetadata);
+
+    // Old file objects are not reused if they have a different mtime
+    expect(hasteMap.files.get(TOMATO_RELATIVE)).not.toBe(mockTomatoMetadata);
+
+    expect(removedFiles).toEqual(
+      createMap({
+        [MELON_RELATIVE]: ['', 33, 43, 0, '', null],
+        [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, '', null],
+      }),
+    );
   });
 
-  test('properly resets the file map when only one watcher is reset', () => {
+  test('properly resets the file map when only one watcher is reset', async () => {
     mockResponse = {
       'list-capabilities': {
         [undefined]: {
@@ -394,7 +394,7 @@ describe('watchman watch', () => {
       [VEGETABLES_RELATIVE]: 'c:fake-clock:2',
     });
 
-    return watchmanCrawl({
+    const {changedFiles, hasteMap, removedFiles} = await watchmanCrawl({
       data: {
         clocks,
         files: mockFiles,
@@ -403,33 +403,33 @@ describe('watchman watch', () => {
       ignore: pearMatcher,
       rootDir: ROOT_MOCK,
       roots: ROOTS,
-    }).then(({changedFiles, hasteMap, removedFiles}) => {
-      expect(hasteMap.clocks).toEqual(
-        createMap({
-          [FRUITS_RELATIVE]: 'c:fake-clock:3',
-          [VEGETABLES_RELATIVE]: 'c:fake-clock:4',
-        }),
-      );
-
-      expect(changedFiles).toEqual(undefined);
-
-      expect(hasteMap.files).toEqual(
-        createMap({
-          [KIWI_RELATIVE]: ['', 42, 52, 0, '', null],
-          [MELON_RELATIVE]: ['', 33, 43, 0, '', null],
-        }),
-      );
-
-      expect(removedFiles).toEqual(
-        createMap({
-          [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, '', null],
-          [TOMATO_RELATIVE]: ['', 31, 41, 0, '', null],
-        }),
-      );
     });
+
+    expect(hasteMap.clocks).toEqual(
+      createMap({
+        [FRUITS_RELATIVE]: 'c:fake-clock:3',
+        [VEGETABLES_RELATIVE]: 'c:fake-clock:4',
+      }),
+    );
+
+    expect(changedFiles).toEqual(undefined);
+
+    expect(hasteMap.files).toEqual(
+      createMap({
+        [KIWI_RELATIVE]: ['', 42, 52, 0, '', null],
+        [MELON_RELATIVE]: ['', 33, 43, 0, '', null],
+      }),
+    );
+
+    expect(removedFiles).toEqual(
+      createMap({
+        [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, '', null],
+        [TOMATO_RELATIVE]: ['', 31, 41, 0, '', null],
+      }),
+    );
   });
 
-  test('does not add directory filters to query when watching a ROOT', () => {
+  test('does not add directory filters to query when watching a ROOT', async () => {
     mockResponse = {
       'list-capabilities': {
         [undefined]: {
@@ -459,7 +459,7 @@ describe('watchman watch', () => {
       },
     };
 
-    return watchmanCrawl({
+    const {changedFiles, hasteMap, removedFiles} = await watchmanCrawl({
       data: {
         clocks: new Map(),
         files: new Map(),
@@ -468,46 +468,46 @@ describe('watchman watch', () => {
       ignore: pearMatcher,
       rootDir: ROOT_MOCK,
       roots: [...ROOTS, ROOT_MOCK],
-    }).then(({changedFiles, hasteMap, removedFiles}) => {
-      const client = watchman.Client.mock.instances[0];
-      const calls = client.command.mock.calls;
-
-      expect(client.on).toBeCalled();
-      expect(client.on).toBeCalledWith('error', expect.any(Function));
-
-      // First 3 calls are for ['watch-project']
-      expect(calls[0][0][0]).toEqual('watch-project');
-      expect(calls[1][0][0]).toEqual('watch-project');
-      expect(calls[2][0][0]).toEqual('watch-project');
-
-      // Call 4 is the query
-      const query = calls[3][0];
-      expect(query[0]).toEqual('query');
-
-      expect(query[2].expression).toEqual([
-        'allof',
-        ['type', 'f'],
-        ['anyof', ['suffix', 'js'], ['suffix', 'json']],
-      ]);
-
-      expect(query[2].fields).toEqual(['name', 'exists', 'mtime_ms', 'size']);
-
-      expect(query[2].glob).toEqual(['**/*.js', '**/*.json']);
-
-      expect(hasteMap.clocks).toEqual(
-        createMap({
-          '': 'c:fake-clock:1',
-        }),
-      );
-
-      expect(changedFiles).toEqual(new Map());
-
-      expect(hasteMap.files).toEqual(new Map());
-
-      expect(removedFiles).toEqual(new Map());
-
-      expect(client.end).toBeCalled();
     });
+
+    const client = watchman.Client.mock.instances[0];
+    const calls = client.command.mock.calls;
+
+    expect(client.on).toBeCalled();
+    expect(client.on).toBeCalledWith('error', expect.any(Function));
+
+    // First 3 calls are for ['watch-project']
+    expect(calls[0][0][0]).toEqual('watch-project');
+    expect(calls[1][0][0]).toEqual('watch-project');
+    expect(calls[2][0][0]).toEqual('watch-project');
+
+    // Call 4 is the query
+    const query = calls[3][0];
+    expect(query[0]).toEqual('query');
+
+    expect(query[2].expression).toEqual([
+      'allof',
+      ['type', 'f'],
+      ['anyof', ['suffix', 'js'], ['suffix', 'json']],
+    ]);
+
+    expect(query[2].fields).toEqual(['name', 'exists', 'mtime_ms', 'size']);
+
+    expect(query[2].glob).toEqual(['**/*.js', '**/*.json']);
+
+    expect(hasteMap.clocks).toEqual(
+      createMap({
+        '': 'c:fake-clock:1',
+      }),
+    );
+
+    expect(changedFiles).toEqual(new Map());
+
+    expect(hasteMap.files).toEqual(new Map());
+
+    expect(removedFiles).toEqual(new Map());
+
+    expect(client.end).toBeCalled();
   });
 
   test('SHA-1 requested and available', async () => {
