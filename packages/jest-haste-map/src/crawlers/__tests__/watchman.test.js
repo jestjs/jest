@@ -589,4 +589,89 @@ describe('watchman watch', () => {
     expect(calls[0][0]).toEqual(['list-capabilities']);
     expect(calls[2][0][2].fields).not.toContain('content.sha1hex');
   });
+
+  test('source control query', async () => {
+    mockResponse = {
+      'list-capabilities': {
+        [undefined]: {
+          capabilities: ['field-content.sha1hex'],
+        },
+      },
+      query: {
+        [ROOT_MOCK]: {
+          clock: {
+            clock: 'c:1608612057:79675:1:139410',
+            scm: {
+              mergebase: 'master',
+              'mergebase-with': 'master',
+            },
+          },
+          files: [
+            {
+              exists: true,
+              mtime_ms: {toNumber: () => 42},
+              name: 'fruits/kiwi.js',
+              size: 40,
+            },
+            {
+              exists: false,
+              mtime_ms: null,
+              name: 'fruits/tomato.js',
+              size: 0,
+            },
+          ],
+          // Watchman is going to tell us that we have a fresh instance.
+          is_fresh_instance: true,
+          version: '4.5.0',
+        },
+      },
+      'watch-project': WATCH_PROJECT_MOCK,
+    };
+
+    // Start with a source-control clock.
+    const clocks = createMap({
+      '': {scm: {'mergebase-with': 'master'}},
+    });
+
+    const {changedFiles, hasteMap, removedFiles} = await watchmanCrawl({
+      data: {
+        clocks,
+        files: mockFiles,
+      },
+      extensions: ['js', 'json'],
+      ignore: pearMatcher,
+      rootDir: ROOT_MOCK,
+      roots: ROOTS,
+    });
+
+    // The object was reused.
+    expect(hasteMap.files).toBe(mockFiles);
+
+    // Transformed into a normal clock.
+    expect(hasteMap.clocks).toEqual(
+      createMap({
+        '': 'c:1608612057:79675:1:139410',
+      }),
+    );
+
+    expect(changedFiles).toEqual(
+      createMap({
+        [KIWI_RELATIVE]: ['', 42, 40, 0, '', null],
+      }),
+    );
+
+    expect(hasteMap.files).toEqual(
+      createMap({
+        [KIWI_RELATIVE]: ['', 42, 40, 0, '', null],
+        [MELON_RELATIVE]: ['', 33, 43, 0, '', null],
+        [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, '', null],
+      }),
+    );
+
+    expect(removedFiles).toEqual(
+      createMap({
+        [TOMATO_RELATIVE]: ['', 31, 41, 0, '', null],
+      }),
+    );
+  });
 });
