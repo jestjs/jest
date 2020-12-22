@@ -600,11 +600,11 @@ describe('watchman watch', () => {
       query: {
         [ROOT_MOCK]: {
           clock: {
-            scm: {
-              'mergebase-with': 'master',
-              mergebase: 'master',
-            },
             clock: 'c:1608612057:79675:1:139410',
+            scm: {
+              mergebase: 'master',
+              'mergebase-with': 'master',
+            },
           },
           files: [
             {

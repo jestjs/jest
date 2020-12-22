@@ -188,8 +188,8 @@ export = async function watchmanCrawl(
     );
 
     return {
-      results,
       isFresh,
+      results,
     };
   }
 
