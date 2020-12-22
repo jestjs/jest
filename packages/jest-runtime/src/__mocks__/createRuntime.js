@@ -35,27 +35,14 @@ const setupModuleNameMapper = (config, rootDir) => {
 };
 
 const setupTransform = (config, rootDir) => {
-  if (config && config.transform) {
+  if (config?.transform) {
     const transform = config.transform;
     return Object.keys(transform).map(regex => [
       regex,
       path.resolve(rootDir, transform[regex]),
     ]);
   }
-  return [
-    [
-      '^.+\\.[jt]sx?$',
-      path.resolve(
-        __dirname,
-        '..',
-        '..',
-        '..',
-        'babel-jest',
-        'build',
-        'index.js',
-      ),
-    ],
-  ];
+  return [['^.+\\.[jt]sx?$', require.resolve('babel-jest')]];
 };
 
 module.exports = async function createRuntime(filename, config) {
@@ -67,32 +54,29 @@ module.exports = async function createRuntime(filename, config) {
   const moduleNameMapper = setupModuleNameMapper(config, rootDir);
   const transform = setupTransform(config, rootDir);
 
-  config = makeProjectConfig(
-    {
-      cacheDirectory: getCacheDirectory(),
-      cwd: path.resolve(__dirname, '..', '..', '..', '..'),
-      haste: {
-        hasteImplModulePath: path.resolve(
-          __dirname,
-          '..',
-          '..',
-          '..',
-          'jest-haste-map',
-          'src',
-          '__tests__',
-          'haste_impl.js',
-        ),
-      },
-      moduleDirectories: ['node_modules'],
-      moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
-      name: 'Runtime-' + filename.replace(/\W/, '-') + '.tests',
-      rootDir,
-      ...config,
-      moduleNameMapper,
-      transform,
+  config = makeProjectConfig({
+    cacheDirectory: getCacheDirectory(),
+    cwd: path.resolve(__dirname, '..', '..', '..', '..'),
+    haste: {
+      hasteImplModulePath: path.resolve(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        'jest-haste-map',
+        'src',
+        '__tests__',
+        'haste_impl.js',
+      ),
     },
-    {},
-  );
+    moduleDirectories: ['node_modules'],
+    moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
+    name: 'Runtime-' + filename.replace(/\W/, '-') + '.tests',
+    rootDir,
+    ...config,
+    moduleNameMapper,
+    transform,
+  });
 
   if (!config.roots.length) {
     config.roots = [config.rootDir];
@@ -110,7 +94,7 @@ module.exports = async function createRuntime(filename, config) {
     config,
     environment,
     Runtime.createResolver(config, hasteMap.moduleMap),
-    undefined,
+    new Map(),
     undefined,
     filename,
   );
