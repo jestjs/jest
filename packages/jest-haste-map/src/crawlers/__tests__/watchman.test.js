@@ -633,7 +633,7 @@ describe('watchman watch', () => {
       '': {scm: {'mergebase-with': 'master'}},
     });
 
-    return watchmanCrawl({
+    const {changedFiles, hasteMap, removedFiles} = await watchmanCrawl({
       data: {
         clocks,
         files: mockFiles,
@@ -642,36 +642,36 @@ describe('watchman watch', () => {
       ignore: pearMatcher,
       rootDir: ROOT_MOCK,
       roots: ROOTS,
-    }).then(({changedFiles, hasteMap, removedFiles}) => {
-      // The object was reused.
-      expect(hasteMap.files).toBe(mockFiles);
-
-      // Transformed into a normal clock.
-      expect(hasteMap.clocks).toEqual(
-        createMap({
-          '': 'c:1608612057:79675:1:139410',
-        }),
-      );
-
-      expect(changedFiles).toEqual(
-        createMap({
-          [KIWI_RELATIVE]: ['', 42, 40, 0, '', null],
-        }),
-      );
-
-      expect(hasteMap.files).toEqual(
-        createMap({
-          [KIWI_RELATIVE]: ['', 42, 40, 0, '', null],
-          [MELON_RELATIVE]: ['', 33, 43, 0, '', null],
-          [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, '', null],
-        }),
-      );
-
-      expect(removedFiles).toEqual(
-        createMap({
-          [TOMATO_RELATIVE]: ['', 31, 41, 0, '', null],
-        }),
-      );
     });
+
+    // The object was reused.
+    expect(hasteMap.files).toBe(mockFiles);
+
+    // Transformed into a normal clock.
+    expect(hasteMap.clocks).toEqual(
+      createMap({
+        '': 'c:1608612057:79675:1:139410',
+      }),
+    );
+
+    expect(changedFiles).toEqual(
+      createMap({
+        [KIWI_RELATIVE]: ['', 42, 40, 0, '', null],
+      }),
+    );
+
+    expect(hasteMap.files).toEqual(
+      createMap({
+        [KIWI_RELATIVE]: ['', 42, 40, 0, '', null],
+        [MELON_RELATIVE]: ['', 33, 43, 0, '', null],
+        [STRAWBERRY_RELATIVE]: ['', 30, 40, 0, '', null],
+      }),
+    );
+
+    expect(removedFiles).toEqual(
+      createMap({
+        [TOMATO_RELATIVE]: ['', 31, 41, 0, '', null],
+      }),
+    );
   });
 });

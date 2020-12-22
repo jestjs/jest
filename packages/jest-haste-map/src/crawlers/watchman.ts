@@ -153,8 +153,16 @@ export = async function watchmanCrawl(
             }
           }
 
-          const relativeRoot = fastPath.relative(rootDir, root);
-          const since = clocks.get(relativeRoot);
+          // Jest is only going to store one type of clock; a string that
+          // represents a local clock. However, the Watchman crawler supports
+          // a second type of clock that can be written by automation outside of
+          // Jest, called an "scm query", which fetches changed files based on
+          // source control mergebases. The reason this is necessary is because
+          // local clocks are not portable across systems, but scm queries are.
+          // By using scm queries, we can create the haste map on a different
+          // system and import it, transforming the clock into a local clock.
+          const since = clocks.get(fastPath.relative(rootDir, root));
+
           const query =
             since !== undefined
               ? // Use the `since` generator if we have a clock available
