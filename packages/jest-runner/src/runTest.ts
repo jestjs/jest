@@ -146,7 +146,7 @@ async function runTestInternal(
     ? new LeakDetector(environment)
     : null;
 
-  const cacheFS = {[path]: testSource};
+  const cacheFS = new Map([[path, testSource]]);
   setGlobal(environment.global, 'console', testConsole);
 
   const runtime = new Runtime(
@@ -182,8 +182,7 @@ async function runTestInternal(
     environment: 'node',
     handleUncaughtExceptions: false,
     retrieveSourceMap: source => {
-      const sourceMaps = runtime.getSourceMaps();
-      const sourceMapSource = sourceMaps && sourceMaps[source];
+      const sourceMapSource = runtime.getSourceMaps()?.get(source);
 
       if (sourceMapSource) {
         try {

@@ -91,7 +91,7 @@ export async function run(
       config,
       environment,
       hasteMap.resolver,
-      undefined,
+      new Map(),
       undefined,
       filePath,
     );
