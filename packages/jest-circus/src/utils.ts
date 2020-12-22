@@ -70,6 +70,7 @@ export const makeTest = (
   mode,
   name: convertDescriptorToString(name),
   parent,
+  seenDone: false,
   startedAt: null,
   status: null,
   timeout,
@@ -189,9 +190,25 @@ export const callAsyncCircusFn = (
     // soon as `done` called.
     if (takesDoneCallback(fn)) {
       let returnedValue: unknown = undefined;
+
       const done = (reason?: Error | string): void => {
         // We need to keep a stack here before the promise tick
         const errorAtDone = new ErrorWithStack(undefined, done);
+
+        if (!completed && testOrHook.seenDone) {
+          errorAtDone.message =
+            'Expected done to be called once, but it was called multiple times.';
+
+          if (reason) {
+            errorAtDone.message +=
+              ' Reason: ' + prettyFormat(reason, {maxDepth: 3});
+          }
+          reject(errorAtDone);
+          throw errorAtDone;
+        } else {
+          testOrHook.seenDone = true;
+        }
+
         // Use `Promise.resolve` to allow the event loop to go a single tick in case `done` is called synchronously
         Promise.resolve().then(() => {
           if (returnedValue !== undefined) {
@@ -203,7 +220,6 @@ export const callAsyncCircusFn = (
           }
 
           let errorAsErrorObject: Error;
-
           if (checkIsError(reason)) {
             errorAsErrorObject = reason;
           } else {
@@ -274,12 +290,12 @@ export const callAsyncCircusFn = (
       completed = true;
       // If timeout is not cleared/unrefed the node process won't exit until
       // it's resolved.
-      timeoutID.unref && timeoutID.unref();
+      timeoutID.unref?.();
       clearTimeout(timeoutID);
     })
     .catch(error => {
       completed = true;
-      timeoutID.unref && timeoutID.unref();
+      timeoutID.unref?.();
       clearTimeout(timeoutID);
       throw error;
     });

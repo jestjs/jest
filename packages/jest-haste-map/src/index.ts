@@ -16,7 +16,7 @@ import type {Stats} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import serializer from 'jest-serializer';
-import Worker from 'jest-worker';
+import {Worker} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
 import H from './constants';
@@ -254,14 +254,8 @@ export default class HasteMap extends EventEmitter {
           options.ignorePattern.flags,
         );
       } else {
-        const ignorePattern = options.ignorePattern;
-        const vcsIgnoreRegExp = new RegExp(VCS_DIRECTORIES);
-        this._options.ignorePattern = (filePath: string) =>
-          vcsIgnoreRegExp.test(filePath) || ignorePattern(filePath);
-
-        this._console.warn(
-          'jest-haste-map: the `ignorePattern` options as a function is being ' +
-            'deprecated. Provide a RegExp instead. See https://github.com/facebook/jest/pull/4063.',
+        throw new Error(
+          'jest-haste-map: the `ignorePattern` option must be a RegExp',
         );
       }
     } else {

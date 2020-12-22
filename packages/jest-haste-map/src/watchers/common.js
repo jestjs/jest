@@ -27,7 +27,7 @@ exports.ALL_EVENT = 'all';
  * @public
  */
 
-exports.assignOptions = function(watcher, opts) {
+exports.assignOptions = function (watcher, opts) {
   opts = opts || {};
   watcher.globs = opts.glob || [];
   watcher.dot = opts.dot || false;
@@ -56,12 +56,12 @@ exports.assignOptions = function(watcher, opts) {
  * @public
  */
 
-exports.isFileIncluded = function(globs, dot, doIgnore, relativePath) {
+exports.isFileIncluded = function (globs, dot, doIgnore, relativePath) {
   if (doIgnore(relativePath)) {
     return false;
   }
   return globs.length
-    ? micromatch.some(relativePath, globs, { dot })
+    ? micromatch.some(relativePath, globs, {dot})
     : dot || micromatch.some(relativePath, '**/*');
 };
 
@@ -76,13 +76,13 @@ exports.isFileIncluded = function(globs, dot, doIgnore, relativePath) {
  * @public
  */
 
-exports.recReaddir = function(
+exports.recReaddir = function (
   dir,
   dirCallback,
   fileCallback,
   endCallback,
   errorCallback,
-  ignored
+  ignored,
 ) {
   walker(dir)
     .filterDir(currentDir => !anymatch(ignored, currentDir))

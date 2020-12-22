@@ -155,7 +155,6 @@ export type InitialOptions = Partial<{
   logHeapUsage: boolean;
   lastCommit: boolean;
   listTests: boolean;
-  mapCoverage: boolean;
   maxConcurrency: number;
   maxWorkers: number | string;
   moduleDirectories: Array<string>;

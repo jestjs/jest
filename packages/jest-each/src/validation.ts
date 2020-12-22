@@ -50,7 +50,7 @@ const isEmptyTable = (table: Array<unknown>) => table.length === 0;
 const isEmptyString = (str: string | unknown) =>
   typeof str === 'string' && str.trim() === '';
 
-export const validateTemplateTableHeadings = (
+export const validateTemplateTableArguments = (
   headings: Array<string>,
   data: TemplateData,
 ): void => {
@@ -74,3 +74,28 @@ export const validateTemplateTableHeadings = (
 
 const pluralize = (word: string, count: number) =>
   word + (count === 1 ? '' : 's');
+
+const START_OF_LINE = '^';
+const NEWLINE = '\\n';
+const HEADING = '\\s*\\w+\\s*';
+const PIPE = '\\|';
+const REPEATABLE_HEADING = `(${PIPE}${HEADING})*`;
+const HEADINGS_FORMAT = new RegExp(
+  START_OF_LINE + NEWLINE + HEADING + REPEATABLE_HEADING + NEWLINE,
+  'g',
+);
+
+export const extractValidTemplateHeadings = (headings: string): string => {
+  const matches = headings.match(HEADINGS_FORMAT);
+  if (matches === null) {
+    throw new Error(
+      'Table headings do not conform to expected format:\n\n' +
+        EXPECTED_COLOR('heading1 | headingN') +
+        '\n\n' +
+        'Received:\n\n' +
+        RECEIVED_COLOR(pretty(headings)),
+    );
+  }
+
+  return matches[0];
+};
