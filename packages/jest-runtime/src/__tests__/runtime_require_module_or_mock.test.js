@@ -218,6 +218,33 @@ describe('resetModules', () => {
 });
 
 describe('isolateModules', () => {
+  it("keeps it's registry isolated from global one", () =>
+    createRuntime(__filename, {
+      moduleNameMapper,
+    }).then(runtime => {
+      let exports;
+      exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'ModuleWithState',
+      );
+      exports.increment();
+      expect(exports.getState()).toBe(2);
+
+      runtime.isolateModules(() => {
+        exports = runtime.requireModuleOrMock(
+          runtime.__mockRootPath,
+          'ModuleWithState',
+        );
+        expect(exports.getState()).toBe(1);
+      });
+
+      exports = runtime.requireModuleOrMock(
+        runtime.__mockRootPath,
+        'ModuleWithState',
+      );
+      expect(exports.getState()).toBe(2);
+    }));
+
   it('resets all modules after the block', () =>
     createRuntime(__filename, {
       moduleNameMapper,

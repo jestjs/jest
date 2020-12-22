@@ -9,6 +9,7 @@
     {"path": "../jest-serializer"},
     {"path": "../jest-types"},
     {"path": "../jest-util"},
-    {"path": "../jest-worker"}
+    {"path": "../jest-worker"},
+    {"path": "../test-utils"}
   ]
 }
