@@ -290,12 +290,12 @@ export const callAsyncCircusFn = (
       completed = true;
       // If timeout is not cleared/unrefed the node process won't exit until
       // it's resolved.
-      timeoutID.unref && timeoutID.unref();
+      timeoutID.unref?.();
       clearTimeout(timeoutID);
     })
     .catch(error => {
       completed = true;
-      timeoutID.unref && timeoutID.unref();
+      timeoutID.unref?.();
       clearTimeout(timeoutID);
       throw error;
     });
