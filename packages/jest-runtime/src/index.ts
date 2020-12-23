@@ -716,6 +716,8 @@ export default class Runtime {
   async unstable_importModule(
     from: string,
     moduleName?: string,
+    // TODO: implement this
+    _isImportActual = false,
   ): Promise<void> {
     invariant(
       runtimeSupportsVmModules,
@@ -793,6 +795,7 @@ export default class Runtime {
             this.setExport(key, value);
           });
         },
+        // should identifier be `node://${moduleName}`?
         {context, identifier: moduleName},
       );
 
@@ -801,7 +804,69 @@ export default class Runtime {
       return evaluateSyntheticModule(module);
     }
 
-    throw new Error('Attempting to import a mock without a factory');
+    const manualMockOrStub = this._resolver.getMockModule(from, moduleName);
+
+    let modulePath =
+      this._resolver.getMockModule(from, moduleName) ||
+      this._resolveModule(from, moduleName);
+
+    let isManualMock =
+      manualMockOrStub &&
+      !this._resolver.resolveStubModuleName(from, moduleName);
+    if (!isManualMock) {
+      // If the actual module file has a __mocks__ dir sitting immediately next
+      // to it, look to see if there is a manual mock for this file.
+      //
+      // subDir1/my_module.js
+      // subDir1/__mocks__/my_module.js
+      // subDir2/my_module.js
+      // subDir2/__mocks__/my_module.js
+      //
+      // Where some other module does a relative require into each of the
+      // respective subDir{1,2} directories and expects a manual mock
+      // corresponding to that particular my_module.js file.
+
+      const moduleDir = path.dirname(modulePath);
+      const moduleFileName = path.basename(modulePath);
+      const potentialManualMock = path.join(
+        moduleDir,
+        '__mocks__',
+        moduleFileName,
+      );
+      if (fs.existsSync(potentialManualMock)) {
+        isManualMock = true;
+        modulePath = potentialManualMock;
+      }
+    }
+    if (isManualMock) {
+      const localModule: InitialModule = {
+        children: [],
+        exports: {},
+        filename: modulePath,
+        id: modulePath,
+        loaded: false,
+        path: modulePath,
+      };
+
+      this._loadModule(
+        localModule,
+        from,
+        moduleName,
+        modulePath,
+        undefined,
+        this._moduleMockRegistry,
+      );
+
+      this._moduleMockRegistry.set(moduleID, localModule.exports);
+    } else {
+      // Look for a real module to generate an automock from
+      this._moduleMockRegistry.set(
+        moduleID,
+        this._generateMock(from, moduleName),
+      );
+    }
+
+    return this._moduleMockRegistry.get(moduleID);
   }
 
   private getExportsOfCjs(modulePath: string) {
@@ -2041,16 +2106,22 @@ export default class Runtime {
       this.setMock(from, moduleName, mockFactory, options);
       return jestObject;
     };
-    const mockModule: Jest['unstable_mockModule'] = (
+    const mockModule: Jest['mockModule'] = (
       moduleName,
       mockFactory,
       options,
     ) => {
-      if (typeof mockFactory !== 'function') {
-        throw new Error('`unstable_mockModule` must be passed a mock factory');
+      if (mockFactory !== undefined) {
+        this.setModuleMock(from, moduleName, mockFactory, options);
+        return jestObject;
       }
 
-      this.setModuleMock(from, moduleName, mockFactory, options);
+      const moduleID = this._resolver.getModuleID(
+        this._virtualMocks,
+        from,
+        moduleName,
+      );
+      this._explicitShouldMockModule.set(moduleID, true);
       return jestObject;
     };
     const clearAllMocks = () => {
@@ -2161,6 +2232,7 @@ export default class Runtime {
       isolateModules,
       mock,
       mocked,
+      mockModule,
       requireActual: this.requireActual.bind(this, from),
       requireMock: this.requireMock.bind(this, from),
       resetAllMocks,
@@ -2197,7 +2269,6 @@ export default class Runtime {
       setTimeout,
       spyOn,
       unmock,
-      unstable_mockModule: mockModule,
       useFakeTimers,
       useRealTimers,
     };

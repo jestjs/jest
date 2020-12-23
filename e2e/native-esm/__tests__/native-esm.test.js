@@ -184,7 +184,7 @@ test('require of ESM should throw correct error', () => {
 });
 
 test('can mock module', async () => {
-  jestObject.unstable_mockModule('../mockedModule.mjs', () => ({foo: 'bar'}), {
+  jestObject.mockModule('../mockedModule.mjs', () => ({foo: 'bar'}), {
     virtual: true,
   });
 
