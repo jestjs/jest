@@ -202,7 +202,7 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 
 ## How to Get in Touch
 
-`#testing` on [Reactiflux](https://www.reactiflux.com/)
+[`#testing` on Reactiflux](https://discord.gg/j6FKKQQrW9)
 
 ## Code Conventions
 
