@@ -11,8 +11,7 @@ import type {ConsoleBuffer} from '@jest/console';
 import type {Config, TestResult, TransformTypes} from '@jest/types';
 
 export interface RuntimeTransformResult extends TransformTypes.TransformResult {
-  // TODO: Make mandatory in Jest 27
-  wrapperLength?: number;
+  wrapperLength: number;
 }
 
 export type V8CoverageResult = Array<{
