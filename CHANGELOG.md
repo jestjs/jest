@@ -63,6 +63,7 @@
 - `[jest-resolve]` [**BREAKING**] Migrate to ESM ([#10688](https://github.com/facebook/jest/pull/10688))
 - `[jest-resolve-dependencies]` [**BREAKING**] Migrate to ESM ([#10876](https://github.com/facebook/jest/pull/10876))
 - `[jest-mock]` [**BREAKING**] Migrate to ESM ([#10887](https://github.com/facebook/jest/pull/10887))
+- `[jest-reporters]` [**BREAKING**] Make `node-notifier` a peer dependency ([#10977](https://github.com/facebook/jest/pull/10977))
 - `[jest-resolve, jest-runtime]` [**BREAKING**] Use `Map`s instead of objects for all cached resources ([#10968](https://github.com/facebook/jest/pull/10968))
 - `[jest-runner]` [**BREAKING**] Migrate to ESM ([#10900](https://github.com/facebook/jest/pull/10900))
 - `[jest-runtime]` [**BREAKING**] Remove deprecated and unnused `getSourceMapInfo` from Runtime ([#9969](https://github.com/facebook/jest/pull/9969))
