@@ -166,7 +166,7 @@ export default class Runtime {
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
   private readonly _esmoduleRegistry: Map<string, EsmModuleCache>;
-  private readonly _testPath: Config.Path | undefined;
+  private readonly _testPath: Config.Path;
   private readonly _resolver: Resolver;
   private _shouldAutoMock: boolean;
   private readonly _shouldMockModuleCache: Map<string, boolean>;
@@ -191,20 +191,12 @@ export default class Runtime {
     environment: JestEnvironment,
     resolver: Resolver,
     cacheFS: Map<string, string>,
-    coverageOptions?: ShouldInstrumentOptions,
-    // TODO: Make mandatory in Jest 27
-    testPath?: Config.Path,
+    coverageOptions: ShouldInstrumentOptions,
+    testPath: Config.Path,
   ) {
     this._cacheFS = cacheFS;
     this._config = config;
-    this._coverageOptions = coverageOptions || {
-      changedFiles: undefined,
-      collectCoverage: false,
-      collectCoverageFrom: [],
-      collectCoverageOnlyFrom: undefined,
-      coverageProvider: 'babel',
-      sourcesRelatedToTestsInChangedFiles: undefined,
-    };
+    this._coverageOptions = coverageOptions;
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
     this._explicitShouldMock = new Map();

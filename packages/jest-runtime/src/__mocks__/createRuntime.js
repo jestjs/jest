@@ -95,7 +95,14 @@ module.exports = async function createRuntime(filename, config) {
     environment,
     Runtime.createResolver(config, hasteMap.moduleMap),
     new Map(),
-    undefined,
+    {
+      changedFiles: undefined,
+      collectCoverage: false,
+      collectCoverageFrom: [],
+      collectCoverageOnlyFrom: undefined,
+      coverageProvider: 'v8',
+      sourcesRelatedToTestsInChangedFiles: undefined,
+    },
     filename,
   );
 
