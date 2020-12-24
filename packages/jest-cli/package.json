@@ -32,6 +32,14 @@
     "@types/prompts": "^2.0.1",
     "@types/yargs": "^15.0.0"
   },
+  "peerDependencies": {
+    "node-notifier": "^8.0.1 || ^9.0.0"
+  },
+  "peerDependenciesMeta": {
+    "node-notifier": {
+      "optional": true
+    }
+  },
   "bin": {
     "jest": "./bin/jest.js"
   },

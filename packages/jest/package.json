@@ -14,6 +14,14 @@
     "import-local": "^3.0.2",
     "jest-cli": "^27.0.0-next.2"
   },
+  "peerDependencies": {
+    "node-notifier": "^8.0.1 || ^9.0.0"
+  },
+  "peerDependenciesMeta": {
+    "node-notifier": {
+      "optional": true
+    }
+  },
   "bin": "./bin/jest.js",
   "engines": {
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"

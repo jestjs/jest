@@ -1820,6 +1820,11 @@ __metadata:
     rimraf: ^3.0.0
     slash: ^3.0.0
     strip-ansi: ^6.0.0
+  peerDependencies:
+    node-notifier: ^8.0.1 || ^9.0.0
+  peerDependenciesMeta:
+    node-notifier:
+      optional: true
   languageName: unknown
   linkType: soft
 
@@ -1945,6 +1950,7 @@ __metadata:
     micromatch: ^4.0.2
     mlh-tsd: ^0.14.1
     mock-fs: ^4.4.1
+    node-notifier: ^9.0.0
     prettier: ^2.1.1
     progress: ^2.0.0
     promise: ^8.0.2
@@ -2000,14 +2006,15 @@ __metadata:
     jest-util: ^27.0.0-next.1
     jest-worker: ^27.0.0-next.2
     mock-fs: ^4.4.1
-    node-notifier: ^8.0.0
     slash: ^3.0.0
     source-map: ^0.6.0
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
     terminal-link: ^2.0.0
     v8-to-istanbul: ^7.0.0
-  dependenciesMeta:
+  peerDependencies:
+    node-notifier: ^8.0.1 || ^9.0.0
+  peerDependenciesMeta:
     node-notifier:
       optional: true
   languageName: unknown
@@ -11591,6 +11598,11 @@ fsevents@^1.2.7:
     jest-validate: ^27.0.0-next.1
     prompts: ^2.0.1
     yargs: ^16.0.3
+  peerDependencies:
+    node-notifier: ^8.0.1 || ^9.0.0
+  peerDependenciesMeta:
+    node-notifier:
+      optional: true
   bin:
     jest: ./bin/jest.js
   languageName: unknown
@@ -12362,6 +12374,11 @@ fsevents@^1.2.7:
     "@jest/core": ^27.0.0-next.2
     import-local: ^3.0.2
     jest-cli: ^27.0.0-next.2
+  peerDependencies:
+    node-notifier: ^8.0.1 || ^9.0.0
+  peerDependenciesMeta:
+    node-notifier:
+      optional: true
   bin:
     jest: ./bin/jest.js
   languageName: unknown
@@ -14559,9 +14576,9 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"node-notifier@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "node-notifier@npm:8.0.0"
+"node-notifier@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "node-notifier@npm:9.0.0"
   dependencies:
     growly: ^1.3.0
     is-wsl: ^2.2.0
@@ -14569,7 +14586,7 @@ fsevents@^1.2.7:
     shellwords: ^0.1.1
     uuid: ^8.3.0
     which: ^2.0.2
-  checksum: 3016eccb32cbfc0ec26129500570a0d875c32e28c43aef9c32d4cea24617cdd870eaf39247faffed5b89f78ef69ca4506270d2f8f76f027222597b700cc8aec9
+  checksum: 10e6ba45afb246ea8bd0189960b883c4c0cb04de82a7c091b536f7652327910a4929fd3862cc32bdea20e53bb52a4ddae2ff1eb3aee751aba6e27242602193b3
   languageName: node
   linkType: hard
 

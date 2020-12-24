@@ -48,8 +48,13 @@
     "mock-fs": "^4.4.1",
     "strip-ansi": "^6.0.0"
   },
-  "optionalDependencies": {
-    "node-notifier": "^8.0.0"
+  "peerDependencies": {
+    "node-notifier": "^8.0.1 || ^9.0.0"
+  },
+  "peerDependenciesMeta": {
+    "node-notifier": {
+      "optional": true
+    }
   },
   "engines": {
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"

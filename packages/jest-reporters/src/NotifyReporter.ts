@@ -145,10 +145,10 @@ function loadNotifier(): typeof import('node-notifier') {
   } catch (err) {
     if (err.code !== 'MODULE_NOT_FOUND') {
       throw err;
-    } else {
-      throw Error(
-        'notify reporter requires optional dependeny node-notifier but it was not found',
-      );
     }
+
+    throw Error(
+      'notify reporter requires optional peer dependency "node-notifier" but it was not found',
+    );
   }
 }
