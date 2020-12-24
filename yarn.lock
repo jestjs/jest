@@ -1820,6 +1820,11 @@ __metadata:
     rimraf: ^3.0.0
     slash: ^3.0.0
     strip-ansi: ^6.0.0
+  peerDependencies:
+    node-notifier: ^8.0.1 || ^9.0.0
+  peerDependenciesMeta:
+    node-notifier:
+      optional: true
   languageName: unknown
   linkType: soft
 
@@ -1945,6 +1950,7 @@ __metadata:
     micromatch: ^4.0.2
     mlh-tsd: ^0.14.1
     mock-fs: ^4.4.1
+    node-notifier: ^9.0.0
     prettier: ^2.1.1
     progress: ^2.0.0
     promise: ^8.0.2
@@ -2000,7 +2006,6 @@ __metadata:
     jest-util: ^27.0.0-next.1
     jest-worker: ^27.0.0-next.2
     mock-fs: ^4.4.1
-    node-notifier: ^9.0.0
     slash: ^3.0.0
     source-map: ^0.6.0
     string-length: ^4.0.1
@@ -11593,6 +11598,11 @@ fsevents@^1.2.7:
     jest-validate: ^27.0.0-next.1
     prompts: ^2.0.1
     yargs: ^16.0.3
+  peerDependencies:
+    node-notifier: ^8.0.1 || ^9.0.0
+  peerDependenciesMeta:
+    node-notifier:
+      optional: true
   bin:
     jest: ./bin/jest.js
   languageName: unknown
@@ -12364,6 +12374,11 @@ fsevents@^1.2.7:
     "@jest/core": ^27.0.0-next.2
     import-local: ^3.0.2
     jest-cli: ^27.0.0-next.2
+  peerDependencies:
+    node-notifier: ^8.0.1 || ^9.0.0
+  peerDependenciesMeta:
+    node-notifier:
+      optional: true
   bin:
     jest: ./bin/jest.js
   languageName: unknown

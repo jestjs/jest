@@ -46,7 +46,6 @@
     "@types/istanbul-reports": "^3.0.0",
     "@types/node-notifier": "^8.0.0",
     "mock-fs": "^4.4.1",
-    "node-notifier": "^9.0.0",
     "strip-ansi": "^6.0.0"
   },
   "peerDependencies": {
