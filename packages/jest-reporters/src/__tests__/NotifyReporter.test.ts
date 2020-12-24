@@ -230,7 +230,7 @@ describe('node-notifier is an optional dependency', () => {
     });
 
     expect(ctor).toThrow(
-      'notify reporter requires optional peer dependency node-notifier but it was not found',
+      'notify reporter requires optional peer dependency "node-notifier" but it was not found',
     );
   });
 
