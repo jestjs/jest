@@ -21,9 +21,9 @@ const HG = 'hg --config ui.username=jest_test';
 
 const gitVersionSupportsInitialBranch = (() => {
   const {stdout} = run(`${GIT} --version`);
-  const gitVersion = stdout.split(' ').slice(-1)[0];
+  const gitVersion = stdout.trim();
 
-  const match = gitVersion.match(/(?<version>\d+\.\d+\.\d+)/);
+  const match = gitVersion.match(/^git version (?<version>\d+\.\d+\.\d+)/);
 
   if (match?.groups?.version == null) {
     throw new Error(`Unable to parse git version from string "${gitVersion}"`);
