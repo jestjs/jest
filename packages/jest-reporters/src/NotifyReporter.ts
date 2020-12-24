@@ -148,7 +148,7 @@ function loadNotifier(): typeof import('node-notifier') {
     }
 
     throw Error(
-      'notify reporter requires optional peer dependency node-notifier but it was not found',
+      'notify reporter requires optional peer dependency "node-notifier" but it was not found',
     );
   }
 }
