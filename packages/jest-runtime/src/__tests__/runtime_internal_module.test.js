@@ -20,53 +20,53 @@ describe('Runtime', () => {
   });
 
   describe('internalModule', () => {
-    it('loads modules and applies transforms', () =>
-      createRuntime(__filename, {
+    it('loads modules and applies transforms', async () => {
+      const runtime = await createRuntime(__filename, {
         transform: {'\\.js$': './test_preprocessor'},
-      }).then(runtime => {
-        const modulePath = path.resolve(
-          path.dirname(runtime.__mockRootPath),
-          'internal-root.js',
-        );
-        expect(() => {
-          runtime.requireModule(modulePath);
-        }).toThrow(new Error('preprocessor must not run.'));
-      }));
+      });
+      const modulePath = path.resolve(
+        path.dirname(runtime.__mockRootPath),
+        'internal-root.js',
+      );
+      expect(() => {
+        runtime.requireModule(modulePath);
+      }).toThrow(new Error('preprocessor must not run.'));
+    });
 
-    it('loads internal modules without applying transforms', () =>
-      createRuntime(__filename, {
+    it('loads internal modules without applying transforms', async () => {
+      const runtime = await createRuntime(__filename, {
         transform: {'\\.js$': './test_preprocessor'},
-      }).then(runtime => {
-        const modulePath = path.resolve(
-          path.dirname(runtime.__mockRootPath),
-          'internal-root.js',
-        );
-        const exports = runtime.requireInternalModule(modulePath);
-        expect(exports()).toBe('internal-module-data');
-      }));
+      });
+      const modulePath = path.resolve(
+        path.dirname(runtime.__mockRootPath),
+        'internal-root.js',
+      );
+      const exports = runtime.requireInternalModule(modulePath);
+      expect(exports()).toBe('internal-module-data');
+    });
 
-    it('loads JSON modules and applies transforms', () =>
-      createRuntime(__filename, {
+    it('loads JSON modules and applies transforms', async () => {
+      const runtime = await createRuntime(__filename, {
         transform: {'\\.json$': './test_json_preprocessor'},
-      }).then(runtime => {
-        const modulePath = path.resolve(
-          path.dirname(runtime.__mockRootPath),
-          'internal-root.json',
-        );
-        const exports = runtime.requireModule(modulePath);
-        expect(exports).toEqual({foo: 'foo'});
-      }));
+      });
+      const modulePath = path.resolve(
+        path.dirname(runtime.__mockRootPath),
+        'internal-root.json',
+      );
+      const exports = runtime.requireModule(modulePath);
+      expect(exports).toEqual({foo: 'foo'});
+    });
 
-    it('loads internal JSON modules without applying transforms', () =>
-      createRuntime(__filename, {
+    it('loads internal JSON modules without applying transforms', async () => {
+      const runtime = await createRuntime(__filename, {
         transform: {'\\.json$': './test_json_preprocessor'},
-      }).then(runtime => {
-        const modulePath = path.resolve(
-          path.dirname(runtime.__mockRootPath),
-          'internal-root.json',
-        );
-        const exports = runtime.requireInternalModule(modulePath);
-        expect(exports).toEqual({foo: 'bar'});
-      }));
+      });
+      const modulePath = path.resolve(
+        path.dirname(runtime.__mockRootPath),
+        'internal-root.json',
+      );
+      const exports = runtime.requireInternalModule(modulePath);
+      expect(exports).toEqual({foo: 'bar'});
+    });
   });
 });

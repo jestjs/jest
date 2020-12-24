@@ -1605,10 +1605,10 @@ describe('moduleFileExtensions', () => {
 
     expect(options.moduleFileExtensions).toEqual([
       'js',
-      'json',
       'jsx',
       'ts',
       'tsx',
+      'json',
       'node',
     ]);
   });

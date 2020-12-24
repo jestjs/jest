@@ -102,18 +102,6 @@ type ResolveOptions = Parameters<typeof require.resolve>[1] & {
   [JEST_RESOLVE_OUTSIDE_VM_OPTION]?: true;
 };
 
-type StringMap = Map<string, string>;
-type BooleanMap = Map<string, boolean>;
-
-const fromEntries: typeof Object.fromEntries =
-  Object.fromEntries ??
-  function fromEntries<T>(iterable: Iterable<[string, T]>) {
-    return [...iterable].reduce<Record<string, T>>((obj, [key, val]) => {
-      obj[key] = val;
-      return obj;
-    }, {});
-  };
-
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
 
@@ -154,12 +142,12 @@ const supportsTopLevelAwait =
   })();
 
 export default class Runtime {
-  private readonly _cacheFS: StringMap;
+  private readonly _cacheFS: Map<string, string>;
   private readonly _config: Config.ProjectConfig;
   private readonly _coverageOptions: ShouldInstrumentOptions;
   private _currentlyExecutingModulePath: string;
   private readonly _environment: JestEnvironment;
-  private readonly _explicitShouldMock: BooleanMap;
+  private readonly _explicitShouldMock: Map<string, boolean>;
   private _fakeTimersImplementation:
     | LegacyFakeTimers<unknown>
     | ModernFakeTimers
@@ -178,19 +166,22 @@ export default class Runtime {
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
   private readonly _esmoduleRegistry: Map<string, EsmModuleCache>;
-  private readonly _testPath: Config.Path | undefined;
+  private readonly _testPath: Config.Path;
   private readonly _resolver: Resolver;
   private _shouldAutoMock: boolean;
-  private readonly _shouldMockModuleCache: BooleanMap;
-  private readonly _shouldUnmockTransitiveDependenciesCache: BooleanMap;
-  private readonly _sourceMapRegistry: StringMap;
+  private readonly _shouldMockModuleCache: Map<string, boolean>;
+  private readonly _shouldUnmockTransitiveDependenciesCache: Map<
+    string,
+    boolean
+  >;
+  private readonly _sourceMapRegistry: Map<string, string>;
   private readonly _scriptTransformer: ScriptTransformer;
   private readonly _fileTransforms: Map<string, RuntimeTransformResult>;
   private _v8CoverageInstrumenter: CoverageInstrumenter | undefined;
   private _v8CoverageResult: V8Coverage | undefined;
-  private readonly _transitiveShouldMock: BooleanMap;
+  private readonly _transitiveShouldMock: Map<string, boolean>;
   private _unmockList: RegExp | undefined;
-  private readonly _virtualMocks: BooleanMap;
+  private readonly _virtualMocks: Map<string, boolean>;
   private _moduleImplementation?: typeof nativeModule.Module;
   private readonly jestObjectCaches: Map<string, Jest>;
   private jestGlobals?: JestGlobals;
@@ -199,21 +190,13 @@ export default class Runtime {
     config: Config.ProjectConfig,
     environment: JestEnvironment,
     resolver: Resolver,
-    cacheFS: Record<string, string> = {},
-    coverageOptions?: ShouldInstrumentOptions,
-    // TODO: Make mandatory in Jest 27
-    testPath?: Config.Path,
+    cacheFS: Map<string, string>,
+    coverageOptions: ShouldInstrumentOptions,
+    testPath: Config.Path,
   ) {
-    this._cacheFS = new Map(Object.entries(cacheFS));
+    this._cacheFS = cacheFS;
     this._config = config;
-    this._coverageOptions = coverageOptions || {
-      changedFiles: undefined,
-      collectCoverage: false,
-      collectCoverageFrom: [],
-      collectCoverageOnlyFrom: undefined,
-      coverageProvider: 'babel',
-      sourcesRelatedToTestsInChangedFiles: undefined,
-    };
+    this._coverageOptions = coverageOptions;
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
     this._explicitShouldMock = new Map();
@@ -222,8 +205,11 @@ export default class Runtime {
     this._mainModule = null;
     this._mockFactories = new Map();
     this._mockRegistry = new Map();
-    // during setup, this cannot be null (and it's fine to explode if it is)
-    this._moduleMocker = this._environment.moduleMocker!;
+    invariant(
+      this._environment.moduleMocker,
+      '`moduleMocker` must be set on an environment when created',
+    );
+    this._moduleMocker = this._environment.moduleMocker;
     this._isolatedModuleRegistry = null;
     this._isolatedMockRegistry = null;
     this._moduleRegistry = new Map();
@@ -256,10 +242,12 @@ export default class Runtime {
     }
 
     if (config.automock) {
-      const virtualMocks = fromEntries(this._virtualMocks);
       config.setupFiles.forEach(filePath => {
-        if (filePath && filePath.includes(NODE_MODULES)) {
-          const moduleID = this._resolver.getModuleID(virtualMocks, filePath);
+        if (filePath.includes(NODE_MODULES)) {
+          const moduleID = this._resolver.getModuleID(
+            this._virtualMocks,
+            filePath,
+          );
           this._transitiveShouldMock.set(moduleID, false);
         }
       });
@@ -575,7 +563,7 @@ export default class Runtime {
     isRequireActual?: boolean | null,
   ): T {
     const moduleID = this._resolver.getModuleID(
-      fromEntries(this._virtualMocks),
+      this._virtualMocks,
       from,
       moduleName,
     );
@@ -610,13 +598,10 @@ export default class Runtime {
     if (options?.isInternalModule) {
       moduleRegistry = this._internalModuleRegistry;
     } else {
-      if (
-        this._moduleRegistry.get(modulePath) ||
-        !this._isolatedModuleRegistry
-      ) {
-        moduleRegistry = this._moduleRegistry;
-      } else {
+      if (this._isolatedModuleRegistry) {
         moduleRegistry = this._isolatedModuleRegistry;
+      } else {
+        moduleRegistry = this._moduleRegistry;
       }
     }
 
@@ -673,7 +658,7 @@ export default class Runtime {
 
   requireMock<T = unknown>(from: Config.Path, moduleName: string): T {
     const moduleID = this._resolver.getModuleID(
-      fromEntries(this._virtualMocks),
+      this._virtualMocks,
       from,
       moduleName,
     );
@@ -925,7 +910,7 @@ export default class Runtime {
   }
 
   getSourceMaps(): SourceMapRegistry {
-    return fromEntries(this._sourceMapRegistry);
+    return this._sourceMapRegistry;
   }
 
   setMock(
@@ -940,7 +925,7 @@ export default class Runtime {
       this._virtualMocks.set(mockPath, true);
     }
     const moduleID = this._resolver.getModuleID(
-      fromEntries(this._virtualMocks),
+      this._virtualMocks,
       from,
       moduleName,
     );
@@ -1368,7 +1353,7 @@ export default class Runtime {
   private _shouldMock(from: Config.Path, moduleName: string): boolean {
     const explicitShouldMock = this._explicitShouldMock;
     const moduleID = this._resolver.getModuleID(
-      fromEntries(this._virtualMocks),
+      this._virtualMocks,
       from,
       moduleName,
     );
@@ -1411,7 +1396,7 @@ export default class Runtime {
 
     // transitive unmocking for package managers that store flat packages (npm3)
     const currentModuleID = this._resolver.getModuleID(
-      fromEntries(this._virtualMocks),
+      this._virtualMocks,
       from,
     );
     if (
@@ -1496,7 +1481,7 @@ export default class Runtime {
     };
     const unmock = (moduleName: string) => {
       const moduleID = this._resolver.getModuleID(
-        fromEntries(this._virtualMocks),
+        this._virtualMocks,
         from,
         moduleName,
       );
@@ -1505,7 +1490,7 @@ export default class Runtime {
     };
     const deepUnmock = (moduleName: string) => {
       const moduleID = this._resolver.getModuleID(
-        fromEntries(this._virtualMocks),
+        this._virtualMocks,
         from,
         moduleName,
       );
@@ -1519,7 +1504,7 @@ export default class Runtime {
       }
 
       const moduleID = this._resolver.getModuleID(
-        fromEntries(this._virtualMocks),
+        this._virtualMocks,
         from,
         moduleName,
       );

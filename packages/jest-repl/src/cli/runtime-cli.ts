@@ -91,8 +91,15 @@ export async function run(
       config,
       environment,
       hasteMap.resolver,
-      undefined,
-      undefined,
+      new Map(),
+      {
+        changedFiles: undefined,
+        collectCoverage: false,
+        collectCoverageFrom: [],
+        collectCoverageOnlyFrom: undefined,
+        coverageProvider: 'v8',
+        sourcesRelatedToTestsInChangedFiles: undefined,
+      },
       filePath,
     );
 

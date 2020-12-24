@@ -17,24 +17,55 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     if: "!startsWith(github.ref, 'refs/tags/') && github.ref != 'refs/heads/master'"
 
-  lint-and-typecheck:
-    name: Running TypeScript compiler & ESLint
+  prepare-yarn-cache:
+    name: Prepare yarn cache
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2.1.4
+        with:
+          node-version: 14.x
+
+      - name: Get yarn cache
+        id: yarn-cache
+        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+
+      - uses: actions/cache@v2
+        with:
+          path: ${{ steps.yarn-cache.outputs.dir }}
+          key: yarn2-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            yarn2-
+
+      - name: Validate cache
+        env:
+          # Use PnP and disable postinstall scripts as this just needs to
+          # populate the cache for the other jobs
+          YARN_NODE_LINKER: pnp
+          YARN_ENABLE_SCRIPTS: false
+        run: yarn --immutable
+
+  lint-and-typecheck:
+    name: Running TypeScript compiler & ESLint
+    runs-on: ubuntu-latest
+    needs: prepare-yarn-cache
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2.1.4
+        with:
+          node-version: 12.x
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
       - uses: actions/cache@v2
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ubuntu-latest-node-12.x-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: yarn2-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ubuntu-latest-node-12.x-yarn-
-      - uses: actions/setup-node@v2.1.4
-        with:
-          node-version: 12.x
+            yarn2-
       - name: install
         run: yarn --immutable
       - name: build
@@ -57,6 +88,7 @@ jobs:
         node-version: [10.x, 12.x, 14.x, 15.x]
         os: [ubuntu-latest, macOS-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+    needs: prepare-yarn-cache
 
     steps:
       - name: Set git config
@@ -66,19 +98,19 @@ jobs:
           git config --global core.symlinks true
         if: runner.os == 'Windows'
       - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: ${{ matrix.node-version }}
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
       - uses: actions/cache@v2
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: yarn2-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-node-${{ matrix.node-version }}-yarn-
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2.1.4
-        with:
-          node-version: ${{ matrix.node-version }}
+            yarn2-
       - name: install
         run: yarn --immutable
       - name: build
@@ -88,8 +120,6 @@ jobs:
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests
         run: yarn test-ci-partial:parallel --max-workers ${{ steps.cpu-cores.outputs.count }}
-        env:
-          CI: true
 
   test-jasmine:
     name: Node LTS on ${{ matrix.os }} using jest-jasmine2
@@ -98,6 +128,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+    needs: prepare-yarn-cache
 
     steps:
       - name: Set git config
@@ -107,19 +138,19 @@ jobs:
           git config --global core.symlinks true
         if: runner.os == 'Windows'
       - uses: actions/checkout@v2
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v2.1.4
+        with:
+          node-version: 14.x
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
       - uses: actions/cache@v2
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
-          key: ${{ runner.os }}-node-14.x-yarn-${{ hashFiles('**/yarn.lock') }}
+          key: yarn2-${{ hashFiles('yarn.lock') }}
           restore-keys: |
-            ${{ runner.os }}-node-14.x-yarn-
-      - name: Use Node.js 14.x
-        uses: actions/setup-node@v2.1.4
-        with:
-          node-version: 14.x
+            yarn2-
       - name: install
         run: yarn --immutable
       - name: build
@@ -129,5 +160,3 @@ jobs:
         uses: SimenB/github-actions-cpu-cores@v1
       - name: run tests using jest-jasmine
         run: yarn jest-jasmine-ci --max-workers ${{ steps.cpu-cores.outputs.count }}
-        env:
-          CI: true

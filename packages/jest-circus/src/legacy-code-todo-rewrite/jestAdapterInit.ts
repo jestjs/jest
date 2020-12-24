@@ -59,7 +59,7 @@ export const initialize = async ({
   testPath: Config.Path;
   parentProcess: Process;
   sendMessageToJest?: TestFileEvent;
-  setGlobalsForRuntime?: (globals: JestGlobals) => void;
+  setGlobalsForRuntime: (globals: JestGlobals) => void;
 }): Promise<{
   globals: Global.TestFrameworkGlobals;
   snapshotState: SnapshotStateType;
@@ -126,11 +126,9 @@ export const initialize = async ({
     ...globalsObject,
     expect: createExpect(globalConfig),
   };
-  // TODO: `jest-circus` might be newer than `jest-runtime` - remove `?.` for Jest 27
-  setGlobalsForRuntime?.(runtimeGlobals);
+  setGlobalsForRuntime(runtimeGlobals);
 
-  // TODO: `jest-circus` might be newer than `jest-config` - remove `??` for Jest 27
-  if (config.injectGlobals ?? true) {
+  if (config.injectGlobals) {
     Object.assign(environment.global, runtimeGlobals);
   }
 

@@ -31,9 +31,6 @@ type FindNodeModuleConfig = {
   throwIfNotFound?: boolean;
 };
 
-// TODO: replace with a Map in Jest 27
-type BooleanObject = Record<string, boolean>;
-
 export type ResolveModuleConfig = {
   skipNodeResolution?: boolean;
   paths?: Array<Config.Path>;
@@ -314,7 +311,7 @@ class Resolver {
   }
 
   getModuleID(
-    virtualMocks: BooleanObject,
+    virtualMocks: Map<string, boolean>,
     from: Config.Path,
     _moduleName?: string,
   ): string {
@@ -346,7 +343,7 @@ class Resolver {
   }
 
   private _getAbsolutePath(
-    virtualMocks: BooleanObject,
+    virtualMocks: Map<string, boolean>,
     from: Config.Path,
     moduleName: string,
   ): Config.Path | null {
@@ -368,12 +365,12 @@ class Resolver {
   }
 
   private _getVirtualMockPath(
-    virtualMocks: BooleanObject,
+    virtualMocks: Map<string, boolean>,
     from: Config.Path,
     moduleName: string,
   ): Config.Path {
     const virtualMockPath = this.getModulePath(from, moduleName);
-    return virtualMocks[virtualMockPath]
+    return virtualMocks.get(virtualMockPath)
       ? virtualMockPath
       : moduleName
       ? this.resolveModule(from, moduleName)
