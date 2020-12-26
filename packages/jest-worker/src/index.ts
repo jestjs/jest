@@ -104,8 +104,8 @@ export class Worker {
       this._workerPool.send.bind(this._workerPool),
       {
         computeWorkerKey: this._options.computeWorkerKey,
-        workerSchedulingPolicy: this._options.workerSchedulingPolicy,
         taskQueue: this._options.taskQueue,
+        workerSchedulingPolicy: this._options.workerSchedulingPolicy,
       },
     );
 

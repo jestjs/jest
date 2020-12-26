@@ -149,6 +149,8 @@ export default class Farm {
   }
 
   private _push(task: QueueChildMessage): Farm {
+    this._taskQueue.enqueue(task);
+
     const offset =
       this._workerSchedulingPolicy === 'round-robin' ? this._offset++ : 0;
 
