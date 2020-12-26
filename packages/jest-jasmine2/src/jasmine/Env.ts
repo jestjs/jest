@@ -31,8 +31,6 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 /* eslint-disable sort-keys, local/prefer-spread-eventually, local/prefer-rest-params-eventually */
 
 import {AssertionError} from 'assert';
-import chalk = require('chalk');
-import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack, isPromise} from 'jest-util';
 import assertionErrorMessage from '../assertionErrorMessage';
 import isError from '../isError';
@@ -52,6 +50,8 @@ import type {default as Spec, SpecResult} from './Spec';
 import type Suite from './Suite';
 
 export default function (j$: Jasmine) {
+  // https://github.com/typescript-eslint/typescript-eslint/pull/2833
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return class Env {
     specFilter: (spec: Spec) => boolean;
     catchExceptions: (value: unknown) => boolean;
@@ -442,34 +442,13 @@ export default function (j$: Jasmine) {
           declarationError = e;
         }
 
-        // TODO throw in Jest 25: declarationError = new Error
         if (isPromise(describeReturnValue)) {
-          // eslint-disable-next-line no-console
-          console.log(
-            formatExecError(
-              new Error(
-                chalk.yellow(
-                  'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.\n' +
-                    'Returning a value from "describe" will fail the test in a future version of Jest.',
-                ),
-              ),
-              {rootDir: '', testMatch: []},
-              {noStackTrace: false},
-            ),
+          declarationError = new Error(
+            'Returning a Promise from "describe" is not supported. Tests must be defined synchronously.',
           );
         } else if (describeReturnValue !== undefined) {
-          // eslint-disable-next-line no-console
-          console.log(
-            formatExecError(
-              new Error(
-                chalk.yellow(
-                  'A "describe" callback must not return a value.\n' +
-                    'Returning a value from "describe" will fail the test in a future version of Jest.',
-                ),
-              ),
-              {rootDir: '', testMatch: []},
-              {noStackTrace: false},
-            ),
+          declarationError = new Error(
+            'A "describe" callback must not return a value.',
           );
         }
 

@@ -10,8 +10,8 @@ import {EventEmitter} from 'events';
 import path from 'path';
 import watchman from 'fb-watchman';
 import * as fs from 'graceful-fs';
-import common from 'sane/src/common';
-import RecrawlWarning from 'sane/src/utils/recrawl-warning-dedupe';
+import RecrawlWarning from './RecrawlWarning';
+import common from './common';
 
 const CHANGE_EVENT = common.CHANGE_EVENT;
 const DELETE_EVENT = common.DELETE_EVENT;
@@ -278,14 +278,12 @@ WatchmanWatcher.prototype.emitEvent = function (
 /**
  * Closes the watcher.
  *
- * @param {function} callback
- * @private
  */
 
-WatchmanWatcher.prototype.close = function (callback) {
+WatchmanWatcher.prototype.close = function () {
   this.client.removeAllListeners();
   this.client.end();
-  callback && callback(null, true);
+  return Promise.resolve();
 };
 
 /**

@@ -100,7 +100,7 @@ module.exports = {
         'packages/jest-core/src/plugins/UpdateSnapshotsInteractive.ts',
         'packages/jest-fake-timers/src/legacyFakeTimers.ts',
         'packages/jest-haste-map/src/index.ts',
-        'packages/jest-haste-map/src/lib/FSEventsWatcher.ts',
+        'packages/jest-haste-map/src/watchers/FSEventsWatcher.ts',
         'packages/jest-jasmine2/src/jasmine/SpyStrategy.ts',
         'packages/jest-jasmine2/src/jasmine/Suite.ts',
         'packages/jest-leak-detector/src/index.ts',
@@ -245,7 +245,7 @@ module.exports = {
         '**/__tests__/**',
         '**/__performance_tests__/**',
         'packages/diff-sequences/perf/index.js',
-        'packages/pretty-format/perf/test.js'
+        'packages/pretty-format/perf/test.js',
       ],
       rules: {
         'import/no-unresolved': 'off',
@@ -258,7 +258,7 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
-  plugins: ['markdown', 'import', 'jest'],
+  plugins: ['markdown', 'import', 'jest', 'prettier'],
   rules: {
     'accessor-pairs': ['warn', {setWithoutGet: true}],
     'block-scoped-var': 'off',
@@ -442,6 +442,7 @@ module.exports = {
     'prefer-arrow-callback': ['error', {allowNamedFunctions: true}],
     'prefer-const': 'error',
     'prefer-template': 'off',
+    'prettier/prettier': 'error',
     quotes: [
       'error',
       'single',

@@ -130,13 +130,12 @@ class FSEventsWatcher extends EventEmitter {
   /**
    * End watching.
    */
-  close(callback?: () => void): void {
-    this.fsEventsWatchStopper().then(() => {
-      this.removeAllListeners();
-      if (typeof callback === 'function') {
-        process.nextTick(callback.bind(null, null, true));
-      }
-    });
+  async close(callback?: () => void): Promise<void> {
+    await this.fsEventsWatchStopper();
+    this.removeAllListeners();
+    if (typeof callback === 'function') {
+      process.nextTick(callback.bind(null, null, true));
+    }
   }
 
   private isFileIncluded(relativePath: string) {

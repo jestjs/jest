@@ -25,7 +25,7 @@
     "@typescript-eslint/eslint-plugin": "^4.1.0",
     "@typescript-eslint/parser": "^4.1.0",
     "ansi-regex": "^5.0.0",
-    "ansi-styles": "^4.2.0",
+    "ansi-styles": "^5.0.0",
     "babel-plugin-replace-ts-export-assignment": "^0.0.2",
     "camelcase": "^6.0.0",
     "chalk": "^4.0.0",
@@ -34,14 +34,14 @@
     "debug": "^4.0.1",
     "dedent": "^0.7.0",
     "eslint": "^7.7.0",
-    "eslint-config-prettier": "^6.1.0",
+    "eslint-config-prettier": "^7.0.0",
     "eslint-plugin-eslint-comments": "^3.1.2",
     "eslint-plugin-import": "^2.6.0",
     "eslint-plugin-jest": "^24.0.0",
     "eslint-plugin-local": "^1.0.0",
     "eslint-plugin-markdown": "^1.0.0",
     "eslint-plugin-prettier": "^3.0.1",
-    "execa": "^4.0.0",
+    "execa": "^5.0.0",
     "fast-check": "^2.0.0",
     "find-process": "^1.4.1",
     "glob": "^7.1.1",
@@ -56,7 +56,7 @@
     "jest-junit": "^12.0.0",
     "jest-mock": "workspace:*",
     "jest-runner-tsd": "^1.1.0",
-    "jest-silent-reporter": "^0.3.0",
+    "jest-silent-reporter": "^0.4.0",
     "jest-snapshot": "workspace:*",
     "jest-snapshot-serializer-raw": "^1.1.0",
     "jest-watch-typeahead": "^0.6.0",
@@ -65,6 +65,7 @@
     "micromatch": "^4.0.2",
     "mlh-tsd": "^0.14.1",
     "mock-fs": "^4.4.1",
+    "node-notifier": "^9.0.0",
     "prettier": "^2.1.1",
     "progress": "^2.0.0",
     "promise": "^8.0.2",
@@ -76,6 +77,7 @@
     "stealthy-require": "^1.1.1",
     "string-length": "^4.0.1",
     "strip-ansi": "^6.0.0",
+    "strip-json-comments": "^3.1.1",
     "tempy": "^1.0.0",
     "throat": "^5.0.0",
     "ts-node": "^9.0.0",
@@ -98,7 +100,6 @@
     "lint": "eslint . --cache --ext js,jsx,ts,tsx,md",
     "lint:prettier": "prettier '**/*.{md,yml,yaml}' 'website/static/**/*.{css,js}' --write --ignore-path .gitignore",
     "lint:prettier:ci": "prettier '**/*.{md,yml,yaml}' 'website/static/**/*.{css,js}' --check --ignore-path .gitignore",
-    "publish": "yarn build-clean && yarn build && lerna publish --silent",
     "test-types": "yarn jest --config jest.config.types.js",
     "test-ci": "yarn jest-coverage --color -i --config jest.config.ci.js && yarn test-leak && node ./scripts/mapCoverage.js && codecov",
     "test-ci-partial": "yarn test-ci-partial:parallel -i",
@@ -127,6 +128,12 @@
         "options": {
           "trailingComma": "es5"
         }
+      },
+      {
+        "files": ".yarnrc.yml",
+        "options": {
+          "singleQuote": false
+        }
       }
     ]
   },
@@ -142,6 +149,10 @@
     "@testing-library/dom/pretty-format": "26.6.1",
     "@types/jest/jest-diff": "^25.1.0",
     "@types/jest/pretty-format": "^25.1.0",
-    "fbjs-scripts": "patch:fbjs-scripts@^1.1.0#./patches/fbjs-scripts.patch"
+    "babel-jest": "workspace:*",
+    "fbjs-scripts": "patch:fbjs-scripts@^1.1.0#./patches/fbjs-scripts.patch",
+    "jest": "workspace:*",
+    "jest-environment-node": "workspace:*",
+    "react-native": "patch:react-native@0.63.2#./patches/react-native.patch"
   }
 }

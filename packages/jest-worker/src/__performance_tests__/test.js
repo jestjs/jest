@@ -10,7 +10,7 @@
 const assert = require('assert');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const workerFarm = require('worker-farm');
-const JestWorker = require('../../build').default;
+const JestWorker = require('../../build').Worker;
 const {performance} = require('perf_hooks');
 
 

@@ -353,6 +353,23 @@ Default: `false`
 
 Make calling deprecated APIs throw helpful error messages. Useful for easing the upgrade process.
 
+### `extensionsToTreatAsEsm` [array\<string>]
+
+Default: `[]`
+
+Jest will run `.mjs` and `.js` files with nearest `package.json`'s `type` field set to `module` as ECMAScript Modules. If you have any other files that should run with native ESM, you need to specify their file extension here.
+
+> Note: Jest's ESM support is still experimental, see [its docs for more details](ECMAScriptModules.md).
+
+```json
+{
+  ...
+  "jest": {
+    "extensionsToTreatAsEsm": [".ts"]
+  }
+}
+```
+
 ### `extraGlobals` [array\<string>]
 
 Default: `undefined`
@@ -517,7 +534,7 @@ An array of directory names to be searched recursively up from the requiring mod
 
 ### `moduleFileExtensions` [array\<string>]
 
-Default: `["js", "json", "jsx", "ts", "tsx", "node"]`
+Default: `["js", "jsx", "ts", "tsx", "json", "node"]`
 
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for, in left-to-right order.
 

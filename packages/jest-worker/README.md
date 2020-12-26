@@ -189,7 +189,7 @@ This example covers the usage with a `computeWorkerKey` method:
 ### File `parent.js`
 
 ```javascript
-import JestWorker from 'jest-worker';
+import {Worker as JestWorker} from 'jest-worker';
 
 async function main() {
   const myWorker = new JestWorker(require.resolve('./Worker'), {

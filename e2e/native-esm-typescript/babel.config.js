@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-test('Dummy', () => {
-  expect(2).toBe(2);
-});
+module.exports = {
+  // importantly this does _not_ include `preset-env`
+  presets: ['@babel/preset-typescript'],
+};

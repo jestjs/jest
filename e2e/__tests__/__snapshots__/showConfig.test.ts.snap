@@ -15,6 +15,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "detectLeaks": false,
       "detectOpenHandles": false,
       "errorOnDeprecated": false,
+      "extensionsToTreatAsEsm": [],
       "extraGlobals": [],
       "forceCoverageMatch": [],
       "globals": {},
@@ -28,10 +29,10 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       "moduleFileExtensions": [
         "js",
-        "json",
         "jsx",
         "ts",
         "tsx",
+        "json",
         "node"
       ],
       "moduleNameMapper": [],

@@ -20,12 +20,6 @@ const deprecatedOptions: DeprecatedOptions = {
   }
   `,
 
-  mapCoverage: () => `  Option ${chalk.bold(
-    '"mapCoverage"',
-  )} has been removed, as it's no longer necessary.
-
-  Please update your configuration.`,
-
   preprocessorIgnorePatterns: (options: {
     preprocessorIgnorePatterns?: Array<string>;
   }) => `  Option ${chalk.bold(
