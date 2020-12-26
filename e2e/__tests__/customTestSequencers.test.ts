@@ -59,3 +59,23 @@ test('run prioritySequence first async', () => {
     './e.test.js',
   ]);
 });
+
+test('run failed tests async', () => {
+  const result = runJest(
+    dir,
+    [
+      '--onlyFailures',
+      '-i',
+      '--config',
+      JSON.stringify({
+        testSequencer: '<rootDir>/testSequencerAsync.js',
+      }),
+    ],
+    {},
+  );
+  expect(result.exitCode).toBe(0);
+  const sequence = extractSummary(result.stderr)
+    .rest.replace(/PASS /g, '')
+    .split('\n');
+  expect(sequence).toEqual(['./c.test.js', './d.test.js']);
+});

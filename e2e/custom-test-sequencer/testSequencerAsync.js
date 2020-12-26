@@ -7,16 +7,20 @@
 
 const Sequencer = require('@jest/test-sequencer').default;
 
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+
 class CustomSequencer extends Sequencer {
-  sort(tests) {
-    return new Promise(resolve => {
-      setTimeout(() => {
-        const copyTests = Array.from(tests);
-        resolve(
-          copyTests.sort((testA, testB) => (testA.path > testB.path ? 1 : -1)),
-        );
-      }, 50);
-    });
+  async sort(tests) {
+    await sleep(50);
+    const copyTests = Array.from(tests);
+    return copyTests.sort((testA, testB) => (testA.path > testB.path ? 1 : -1));
+  }
+
+  async allFailedTests(tests) {
+    await sleep(50);
+    return tests.filter(
+      t => t.path.endsWith('c.test.js') || t.path.endsWith('d.test.js'),
+    );
   }
 }
 

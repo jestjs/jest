@@ -204,7 +204,7 @@ export default async function runJest({
     if (failedTestsCache) {
       allTests = failedTestsCache.filterTests(allTests);
     } else {
-      allTests = sequencer.allFailedTests(allTests);
+      allTests = await sequencer.allFailedTests(allTests);
     }
   }
 
@@ -272,7 +272,7 @@ export default async function runJest({
     testSchedulerContext,
   ).scheduleTests(allTests, testWatcher);
 
-  sequencer.cacheResults(allTests, results);
+  await sequencer.cacheResults(allTests, results);
 
   if (hasTests) {
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});
