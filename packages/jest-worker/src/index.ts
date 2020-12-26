@@ -14,10 +14,12 @@ import type {
   FarmOptions,
   PoolExitResult,
   PromiseWithCustomMessage,
+  TaskQueue,
   WorkerPoolInterface,
   WorkerPoolOptions,
 } from './types';
 export {default as PriorityQueue} from './PriorityQueue';
+export {default as FifoQueue} from './FifoQueue';
 export {default as messageParent} from './workers/messageParent';
 
 function getExposedMethods(
@@ -156,4 +158,4 @@ export class Worker {
   }
 }
 
-export type {PromiseWithCustomMessage};
+export type {PromiseWithCustomMessage, TaskQueue};

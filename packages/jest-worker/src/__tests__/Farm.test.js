@@ -209,7 +209,7 @@ describe('Farm', () => {
 
   it('checks that once a sticked task finishes, next time is sent to that worker', async () => {
     const farm = new Farm(4, callback, {
-      computeWorkerKey: () => '1234567890abcdef'
+      computeWorkerKey: () => '1234567890abcdef',
     });
 
     // Worker 1 successfully replies with "17" as a result.
@@ -251,7 +251,7 @@ describe('Farm', () => {
 
   it('checks that even before a sticked task finishes, next time is sent to that worker', async () => {
     const farm = new Farm(4, callback, {
-      computeWorkerKey: () => '1234567890abcdef'
+      computeWorkerKey: () => '1234567890abcdef',
     });
 
     // Note that the worker is sending a start response synchronously.

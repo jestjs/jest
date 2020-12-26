@@ -8,11 +8,10 @@
 'use strict';
 
 const assert = require('assert');
+const {performance} = require('perf_hooks');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const workerFarm = require('worker-farm');
 const JestWorker = require('../../build').Worker;
-const {performance} = require('perf_hooks');
-
 
 // Typical tests: node --expose-gc test.js empty 100000
 //                node --expose-gc test.js loadTest 10000

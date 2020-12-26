@@ -87,7 +87,7 @@ export interface TaskQueue {
 
   /**
    * Dequeues the next item from the queue for the speified worker
-   * @param workerId the id of the worker for whcih the next task should be retrieved
+   * @param workerId the id of the worker for which the next task should be retrieved
    */
   dequeue(workerId: number): QueueChildMessage | null;
 }
@@ -100,7 +100,7 @@ export type FarmOptions = {
   setupArgs?: Array<unknown>;
   maxRetries?: number;
   numWorkers?: number;
-  taskQueue?: TaskQueue,
+  taskQueue?: TaskQueue;
   WorkerPool?: (
     workerPath: string,
     options?: WorkerPoolOptions,
