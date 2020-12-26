@@ -44,6 +44,7 @@ const initialOptions: Config.InitialOptions = {
   } as const),
   errorOnDeprecated: false,
   expand: false,
+  extensionsToTreatAsEsm: [],
   extraGlobals: [],
   filter: '<rootDir>/filter.js',
   forceCoverageMatch: ['**/*.t.js'],

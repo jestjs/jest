@@ -361,13 +361,6 @@ export const options = {
       'node.',
     type: 'boolean',
   },
-  mapCoverage: {
-    default: undefined,
-    description:
-      'Maps code coverage reports against original source code ' +
-      'when transformers supply source maps.\n\nDEPRECATED',
-    type: 'boolean',
-  },
   maxConcurrency: {
     default: 5,
     description:

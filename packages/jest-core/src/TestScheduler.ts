@@ -419,7 +419,7 @@ export default class TestScheduler {
     throw new Error('Reporter should be either a string or an array');
   }
 
-  private _bailIfNeeded(
+  private async _bailIfNeeded(
     contexts: Set<Context>,
     aggregatedResults: AggregatedResult,
     watcher: TestWatcher,
@@ -429,17 +429,17 @@ export default class TestScheduler {
       aggregatedResults.numFailedTests >= this._globalConfig.bail
     ) {
       if (watcher.isWatchMode()) {
-        watcher.setState({interrupted: true});
-      } else {
-        const failureExit = () => exit(1);
+        await watcher.setState({interrupted: true});
+        return;
+      }
 
-        return this._dispatcher
-          .onRunComplete(contexts, aggregatedResults)
-          .then(failureExit)
-          .catch(failureExit);
+      try {
+        await this._dispatcher.onRunComplete(contexts, aggregatedResults);
+      } finally {
+        const exitCode = this._globalConfig.testFailureExitCode;
+        exit(exitCode);
       }
     }
-    return Promise.resolve();
   }
 }
 

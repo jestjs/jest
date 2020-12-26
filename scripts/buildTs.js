@@ -15,6 +15,7 @@ const util = require('util');
 const chalk = require('chalk');
 const execa = require('execa');
 const globby = require('globby');
+const stripJsonComments = require('strip-json-comments');
 const throat = require('throat');
 const {getPackages} = require('./buildUtils');
 
@@ -27,8 +28,22 @@ const readFilePromise = util.promisify(fs.readFile);
     fs.existsSync(path.resolve(p, 'tsconfig.json')),
   );
 
+  const {stdout: allWorkspacesString} = await execa('yarn', [
+    'workspaces',
+    'list',
+    '--json',
+  ]);
+
+  const workspacesWithTs = new Map(
+    JSON.parse(`[${allWorkspacesString.split('\n').join(',')}]`)
+      .filter(({location}) =>
+        packagesWithTs.some(pkg => pkg.endsWith(location)),
+      )
+      .map(({location, name}) => [name, location]),
+  );
+
   packagesWithTs.forEach(pkgDir => {
-    const pkg = require(pkgDir + '/package.json');
+    const pkg = require(`${pkgDir}/package.json`);
 
     assert.ok(pkg.types, `Package ${pkg.name} is missing \`types\` field`);
 
@@ -37,6 +52,47 @@ const readFilePromise = util.promisify(fs.readFile);
       pkg.main.replace(/\.js$/, '.d.ts'),
       `\`main\` and \`types\` field of ${pkg.name} does not match`,
     );
+
+    const jestDependenciesOfPackage = Object.keys(pkg.dependencies || {})
+      .concat(Object.keys(pkg.devDependencies || {}))
+      .filter(dep => workspacesWithTs.has(dep))
+      .filter(dep => {
+        // nothing should depend on these
+        if (dep === 'jest-circus' || dep === 'jest-jasmine2') {
+          return false;
+        }
+
+        // these are just `require.resolve`-ed
+        if (pkg.name === 'jest-config') {
+          if (dep === '@jest/test-sequencer' || dep === 'babel-jest') {
+            return false;
+          }
+        }
+
+        return true;
+      })
+      .map(dep =>
+        path.relative(pkgDir, `${pkgDir}/../../${workspacesWithTs.get(dep)}`),
+      )
+      .sort();
+
+    if (jestDependenciesOfPackage.length > 0) {
+      const tsConfig = JSON.parse(
+        stripJsonComments(fs.readFileSync(`${pkgDir}/tsconfig.json`, 'utf8')),
+      );
+
+      const references = tsConfig.references.map(({path}) => path);
+
+      assert.deepStrictEqual(
+        references,
+        jestDependenciesOfPackage,
+        `Expected declared references to match dependencies in packages ${
+          pkg.name
+        }. Got:\n\n${references.join(
+          '\n',
+        )}\nExpected:\n\n${jestDependenciesOfPackage.join('\n')}`,
+      );
+    }
   });
 
   const args = ['tsc', '-b', ...packagesWithTs, ...process.argv.slice(2)];

@@ -15,25 +15,25 @@ describe('Runtime requireActual', () => {
     createRuntime = require('createRuntime');
   });
 
-  it('requires node module when manual mock exists', () =>
-    createRuntime(__filename).then(runtime => {
-      const exports = runtime.requireActual(
-        runtime.__mockRootPath,
-        'mocked-node-module',
-      );
-      expect(exports.isManualMockModule).toBe(false);
-    }));
+  it('requires node module when manual mock exists', async () => {
+    const runtime = await createRuntime(__filename);
+    const exports = runtime.requireActual(
+      runtime.__mockRootPath,
+      'mocked-node-module',
+    );
+    expect(exports.isManualMockModule).toBe(false);
+  });
 
-  test('requireActual with moduleNameMapper', () =>
-    createRuntime(__filename, {
+  test('requireActual with moduleNameMapper', async () => {
+    const runtime = await createRuntime(__filename, {
       moduleNameMapper: {
         '^testMapped/(.*)': '<rootDir>/mapped_dir/$1',
       },
-    }).then(runtime => {
-      const exports = runtime.requireActual(
-        runtime.__mockRootPath,
-        'testMapped/moduleInMapped',
-      );
-      expect(exports).toBe('in_mapped');
-    }));
+    });
+    const exports = runtime.requireActual(
+      runtime.__mockRootPath,
+      'testMapped/moduleInMapped',
+    );
+    expect(exports).toBe('in_mapped');
+  });
 });

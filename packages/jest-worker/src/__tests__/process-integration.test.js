@@ -55,7 +55,7 @@ describe('Jest Worker Integration', () => {
       },
     }));
 
-    Farm = require('../index').default;
+    Farm = require('../index').Worker;
   });
 
   afterEach(() => {

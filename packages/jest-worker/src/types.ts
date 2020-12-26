@@ -75,6 +75,23 @@ export interface PromiseWithCustomMessage<T> extends Promise<T> {
 
 export type {ForkOptions};
 
+export interface TaskQueue {
+  /**
+   * Enqueues the task in the queue for the specified worker or adds it to the
+   * queue shared by all workers
+   * @param task the task to queue
+   * @param workerId the id of the worker that should process this task or undefined
+   * if there's no preference.
+   */
+  enqueue(task: QueueChildMessage, workerId?: number): void;
+
+  /**
+   * Dequeues the next item from the queue for the speified worker
+   * @param workerId the id of the worker for which the next task should be retrieved
+   */
+  dequeue(workerId: number): QueueChildMessage | null;
+}
+
 export type FarmOptions = {
   computeWorkerKey?: (method: string, ...args: Array<unknown>) => string | null;
   exposedMethods?: ReadonlyArray<string>;
@@ -84,6 +101,7 @@ export type FarmOptions = {
   setupArgs?: Array<unknown>;
   maxRetries?: number;
   numWorkers?: number;
+  taskQueue?: TaskQueue;
   WorkerPool?: (
     workerPath: string,
     options?: WorkerPoolOptions,
@@ -177,13 +195,8 @@ export type OnEnd = (err: Error | null, result: unknown) => void;
 export type OnCustomMessage = (message: Array<unknown> | unknown) => void;
 
 export type QueueChildMessage = {
-  request: ChildMessage;
+  request: ChildMessageCall;
   onStart: OnStart;
   onEnd: OnEnd;
   onCustomMessage: OnCustomMessage;
-};
-
-export type QueueItem = {
-  task: QueueChildMessage;
-  next: QueueItem | null;
 };

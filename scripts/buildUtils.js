@@ -55,6 +55,18 @@ module.exports.getPackages = function getPackages() {
       },
       `Package ${pkg.name} does not export correct files`,
     );
+
+    if (pkg.bin) {
+      Object.entries(pkg.bin).forEach(([binName, binPath]) => {
+        const fullBinPath = path.resolve(packageDir, binPath);
+
+        if (!fs.existsSync(fullBinPath)) {
+          throw new Error(
+            `Binary in package ${pkg.name} with name "${binName}" at ${binPath} does not exist`,
+          );
+        }
+      });
+    }
   });
 
   return packages;

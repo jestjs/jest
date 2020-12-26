@@ -20,48 +20,48 @@ describe('Runtime', () => {
   });
 
   describe('createMockFromModule', () => {
-    it('does not cause side effects in the rest of the module system when generating a mock', () =>
-      createRuntime(__filename).then(runtime => {
-        const testRequire = runtime.requireModule.bind(
-          runtime,
-          runtime.__mockRootPath,
-        );
-
-        const module = testRequire('RegularModule');
-        const origModuleStateValue = module.getModuleStateValue();
-
-        expect(origModuleStateValue).toBe('default');
-
-        // Generate a mock for a module with side effects
-        const mock = module.jest.createMockFromModule('ModuleWithSideEffects');
-
-        // Make sure we get a mock.
-        expect(mock.fn()).toBe(undefined);
-        expect(module.getModuleStateValue()).toBe(origModuleStateValue);
-      }));
-
-    it('resolves mapped modules correctly', () =>
-      createRuntime(__filename, {moduleNameMapper}).then(runtime => {
-        const root = runtime.requireModule(runtime.__mockRootPath);
-        const mockModule = root.jest.createMockFromModule(
-          'module/name/createMockFromModule',
-        );
-
-        expect(mockModule.test.mock).toBeTruthy();
-      }));
-  });
-
-  it('creates mock objects in the right environment', () =>
-    createRuntime(__filename).then(runtime => {
+    it('does not cause side effects in the rest of the module system when generating a mock', async () => {
+      const runtime = await createRuntime(__filename);
       const testRequire = runtime.requireModule.bind(
         runtime,
         runtime.__mockRootPath,
       );
 
       const module = testRequire('RegularModule');
-      const mockModule = module.jest.createMockFromModule('RegularModule');
-      const testObjectPrototype = Object.getPrototypeOf(module.object);
-      const mockObjectPrototype = Object.getPrototypeOf(mockModule.object);
-      expect(mockObjectPrototype).toBe(testObjectPrototype);
-    }));
+      const origModuleStateValue = module.getModuleStateValue();
+
+      expect(origModuleStateValue).toBe('default');
+
+      // Generate a mock for a module with side effects
+      const mock = module.jest.createMockFromModule('ModuleWithSideEffects');
+
+      // Make sure we get a mock.
+      expect(mock.fn()).toBe(undefined);
+      expect(module.getModuleStateValue()).toBe(origModuleStateValue);
+    });
+
+    it('resolves mapped modules correctly', async () => {
+      const runtime = await createRuntime(__filename, {moduleNameMapper});
+      const root = runtime.requireModule(runtime.__mockRootPath);
+      const mockModule = root.jest.createMockFromModule(
+        'module/name/createMockFromModule',
+      );
+
+      expect(mockModule.test.mock).toBeTruthy();
+    });
+  });
+
+  it('creates mock objects in the right environment', async () => {
+    const runtime = await createRuntime(__filename);
+    const testRequire = runtime.requireModule.bind(
+      runtime,
+      runtime.__mockRootPath,
+    );
+
+    const module = testRequire('RegularModule');
+    const mockModule = module.jest.createMockFromModule('RegularModule');
+    const testObjectPrototype = Object.getPrototypeOf(module.object);
+    const mockObjectPrototype = Object.getPrototypeOf(mockModule.object);
+    expect(mockObjectPrototype).toBe(testObjectPrototype);
+  });
 });
