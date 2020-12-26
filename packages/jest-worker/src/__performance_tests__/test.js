@@ -8,6 +8,7 @@
 'use strict';
 
 const assert = require('assert');
+const {performance} = require('perf_hooks');
 // eslint-disable-next-line import/no-extraneous-dependencies
 const workerFarm = require('worker-farm');
 const JestWorker = require('../../build').Worker;
@@ -24,13 +25,13 @@ const threads = 6;
 
 function testWorkerFarm() {
   return new Promise(async resolve => {
-    const startTime = Date.now();
+    const startTime = performance.now();
     let count = 0;
 
     async function countToFinish() {
       if (++count === calls) {
         workerFarm.end(api);
-        const endTime = Date.now();
+        const endTime = performance.now();
 
         // Let all workers go down.
         await sleep(2000);
@@ -55,7 +56,7 @@ function testWorkerFarm() {
     // Let all workers come up.
     await sleep(2000);
 
-    const startProcess = Date.now();
+    const startProcess = performance.now();
 
     for (let i = 0; i < calls; i++) {
       const promisified = new Promise((resolve, reject) => {
@@ -75,13 +76,13 @@ function testWorkerFarm() {
 
 function testJestWorker() {
   return new Promise(async resolve => {
-    const startTime = Date.now();
+    const startTime = performance.now();
     let count = 0;
 
     async function countToFinish() {
       if (++count === calls) {
         farm.end();
-        const endTime = Date.now();
+        const endTime = performance.now();
 
         // Let all workers go down.
         await sleep(2000);
@@ -96,7 +97,7 @@ function testJestWorker() {
     const farm = new JestWorker(require.resolve('./workers/jest_worker'), {
       exposedMethods: [method],
       forkOptions: {execArgv: []},
-      workers: threads,
+      numWorkers: threads,
     });
 
     farm.getStdout().pipe(process.stdout);
@@ -105,7 +106,7 @@ function testJestWorker() {
     // Let all workers come up.
     await sleep(2000);
 
-    const startProcess = Date.now();
+    const startProcess = performance.now();
 
     for (let i = 0; i < calls; i++) {
       const promisified = farm[method]();
@@ -125,7 +126,7 @@ function profileEnd(x) {
 
 async function main() {
   if (!global.gc) {
-    console.log('GC not present');
+    console.warn('GC not present, start with node --expose-gc');
   }
 
   const wFResults = [];

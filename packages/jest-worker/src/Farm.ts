@@ -7,6 +7,7 @@
 
 /* eslint-disable local/ban-types-eventually */
 
+import FifoQueue from './FifoQueue';
 import {
   CHILD_MESSAGE_CALL,
   ChildMessage,
@@ -16,7 +17,7 @@ import {
   OnStart,
   PromiseWithCustomMessage,
   QueueChildMessage,
-  QueueItem,
+  TaskQueue,
   WorkerInterface,
 } from './types';
 
@@ -24,28 +25,26 @@ export default class Farm {
   private _computeWorkerKey: FarmOptions['computeWorkerKey'];
   private _cacheKeys: Record<string, WorkerInterface>;
   private _callback: Function;
-  private _last: Array<QueueItem>;
   private _locks: Array<boolean>;
   private _numOfWorkers: number;
   private _offset: number;
-  private _queue: Array<QueueItem | null>;
+  private _taskQueue: TaskQueue;
 
   constructor(
     numOfWorkers: number,
     callback: Function,
-    computeWorkerKey?: FarmOptions['computeWorkerKey'],
+    options: {
+      computeWorkerKey?: FarmOptions['computeWorkerKey'];
+      taskQueue?: TaskQueue;
+    } = {},
   ) {
     this._cacheKeys = Object.create(null);
     this._callback = callback;
-    this._last = [];
     this._locks = [];
     this._numOfWorkers = numOfWorkers;
     this._offset = 0;
-    this._queue = [];
-
-    if (computeWorkerKey) {
-      this._computeWorkerKey = computeWorkerKey;
-    }
+    this._computeWorkerKey = options.computeWorkerKey;
+    this._taskQueue = options.taskQueue ?? new FifoQueue();
   }
 
   doWork(
@@ -96,7 +95,8 @@ export default class Farm {
         const task = {onCustomMessage, onEnd, onStart, request};
 
         if (worker) {
-          this._enqueue(task, worker.getWorkerId());
+          this._taskQueue.enqueue(task, worker.getWorkerId());
+          this._process(worker.getWorkerId());
         } else {
           this._push(task);
         }
@@ -108,27 +108,19 @@ export default class Farm {
     return promise;
   }
 
-  private _getNextTask(workerId: number): QueueChildMessage | null {
-    let queueHead = this._queue[workerId];
-
-    while (queueHead && queueHead.task.request[1]) {
-      queueHead = queueHead.next || null;
-    }
-
-    this._queue[workerId] = queueHead;
-
-    return queueHead && queueHead.task;
-  }
-
   private _process(workerId: number): Farm {
     if (this._isLocked(workerId)) {
       return this;
     }
 
-    const task = this._getNextTask(workerId);
+    const task = this._taskQueue.dequeue(workerId);
 
     if (!task) {
       return this;
+    }
+
+    if (task.request[1]) {
+      throw new Error('Queue implementation returned processed task');
     }
 
     const onEnd = (error: Error | null, result: unknown) => {
@@ -152,28 +144,15 @@ export default class Farm {
     return this;
   }
 
-  private _enqueue(task: QueueChildMessage, workerId: number): Farm {
-    const item = {next: null, task};
-
-    if (task.request[1]) {
-      return this;
-    }
-
-    if (this._queue[workerId]) {
-      this._last[workerId].next = item;
-    } else {
-      this._queue[workerId] = item;
-    }
-
-    this._last[workerId] = item;
-    this._process(workerId);
-
-    return this;
-  }
-
   private _push(task: QueueChildMessage): Farm {
+    this._taskQueue.enqueue(task);
+
     for (let i = 0; i < this._numOfWorkers; i++) {
-      this._enqueue(task, (this._offset + i) % this._numOfWorkers);
+      this._process((this._offset + i) % this._numOfWorkers);
+
+      if (task.request[1]) {
+        break;
+      }
     }
 
     this._offset++;

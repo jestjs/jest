@@ -14,9 +14,12 @@ import type {
   FarmOptions,
   PoolExitResult,
   PromiseWithCustomMessage,
+  TaskQueue,
   WorkerPoolInterface,
   WorkerPoolOptions,
 } from './types';
+export {default as PriorityQueue} from './PriorityQueue';
+export {default as FifoQueue} from './FifoQueue';
 export {default as messageParent} from './workers/messageParent';
 
 function getExposedMethods(
@@ -99,7 +102,10 @@ export class Worker {
     this._farm = new Farm(
       workerPoolOptions.numWorkers,
       this._workerPool.send.bind(this._workerPool),
-      this._options.computeWorkerKey,
+      {
+        computeWorkerKey: this._options.computeWorkerKey,
+        taskQueue: this._options.taskQueue,
+      },
     );
 
     this._bindExposedWorkerMethods(workerPath, this._options);
@@ -152,4 +158,4 @@ export class Worker {
   }
 }
 
-export type {PromiseWithCustomMessage};
+export type {PromiseWithCustomMessage, TaskQueue};
