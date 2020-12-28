@@ -16,7 +16,6 @@ import {
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
 } from '../types';
-import {serialize} from './utils';
 
 let file: string | null = null;
 let setupArgs: Array<unknown> = [];
@@ -65,7 +64,7 @@ function reportSuccess(result: unknown) {
     throw new Error('Child can only be used on a forked process');
   }
 
-  process.send([PARENT_MESSAGE_OK, serialize(result)]);
+  process.send([PARENT_MESSAGE_OK, result]);
 }
 
 function reportClientError(error: Error) {
@@ -87,7 +86,7 @@ function reportError(error: Error, type: PARENT_MESSAGE_ERROR) {
 
   process.send([
     type,
-    error.constructor?.name,
+    error.constructor && error.constructor.name,
     error.message,
     error.stack,
     typeof error === 'object' ? {...error} : error,

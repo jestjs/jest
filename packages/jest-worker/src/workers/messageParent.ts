@@ -6,7 +6,6 @@
  */
 
 import {PARENT_MESSAGE_CUSTOM} from '../types';
-import {serialize} from './utils';
 
 const isWorkerThread: boolean = (() => {
   try {
@@ -31,9 +30,9 @@ export default function messageParent(
       parentPort,
     } = require('worker_threads') as typeof import('worker_threads');
     // ! is safe due to `null` check in `isWorkerThread`
-    parentPort!.postMessage([PARENT_MESSAGE_CUSTOM, serialize(message)]);
+    parentPort!.postMessage([PARENT_MESSAGE_CUSTOM, message]);
   } else if (typeof parentProcess.send === 'function') {
-    parentProcess.send([PARENT_MESSAGE_CUSTOM, serialize(message)]);
+    parentProcess.send([PARENT_MESSAGE_CUSTOM, message]);
   } else {
     throw new Error('"messageParent" can only be used inside a worker');
   }
