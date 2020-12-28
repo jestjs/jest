@@ -73,7 +73,7 @@ List of method names that can be called on the child processes from the parent p
 
 #### `forkOptions: ForkOptions` (optional)
 
-Allow customizing all options passed to `child_process.fork`. By default, some values are set (`cwd`, `env` and `execArgv`), but you can override them and customize the rest. For a list of valid values, check [the Node documentation](https://nodejs.org/api/child_process.html#child_processforkmodulepath-args-options).
+Allow customizing all options passed to `child_process.fork`. By default, some values are set (`cwd`, `env`, `execArgv` and `serialization`), but you can override them and customize the rest. For a list of valid values, check [the Node documentation](https://nodejs.org/api/child_process.html#child_process_child_process_fork_modulepath_args_options).
 
 #### `maxRetries: number` (optional)
 
