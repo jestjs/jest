@@ -224,9 +224,9 @@ const sortTests = (stdout: string) =>
     .split('\n')
     .reduce((tests: Array<Array<string>>, line) => {
       if (['RUNS', 'PASS', 'FAIL'].includes(line.slice(0, 4))) {
-        tests.push([line.trimRight()]);
-      } else if (line) {
-        tests[tests.length - 1].push(line.trimRight());
+        tests.push([line]);
+      } else {
+        tests[tests.length - 1].push(line);
       }
       return tests;
     }, [])
@@ -278,6 +278,17 @@ export const normalizeIcons = (str: string) => {
   return str
     .replace(new RegExp('\u00D7', 'g'), '\u2715')
     .replace(new RegExp('\u221A', 'g'), '\u2713');
+};
+
+export const rightTrimStdout = (str: string) => {
+  if (!str) {
+    return str;
+  }
+
+  return str
+    .split('\n')
+    .map(str => str.trimRight())
+    .join('\n');
 };
 
 // Certain environments (like CITGM and GH Actions) do not come with mercurial installed

@@ -13,5 +13,5 @@ PASS __tests__/console.test.js
          |             ^
       13 |   });
       14 | });
-      15 | 
+      15 |
 `;

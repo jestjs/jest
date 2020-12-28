@@ -11,7 +11,7 @@ FAIL __tests__/index.test.js
     > 10 |     done();
          |     ^
       11 |   });
-      12 | 
+      12 |
       13 |   it('should fail inside a promise', done => {
 
       at Object.done (__tests__/index.test.js:10:5)
@@ -39,7 +39,7 @@ FAIL __tests__/index.test.js
     > 26 |     done();
          |     ^
       27 |   });
-      28 | 
+      28 |
       29 |   it('should fail', () => {
 
       at Object.done (__tests__/index.test.js:26:5)
@@ -53,7 +53,7 @@ FAIL __tests__/index.test.js
     > 37 |     done();
          |     ^
       38 |   });
-      39 | 
+      39 |
       40 |   it('should fail', () => {
 
       at Object.done (__tests__/index.test.js:37:5)
@@ -67,7 +67,7 @@ FAIL __tests__/index.test.js
     > 48 |     done();
          |     ^
       49 |   });
-      50 | 
+      50 |
       51 |   it('should fail', () => {
 
       at done (__tests__/index.test.js:48:5)
@@ -82,7 +82,7 @@ FAIL __tests__/index.test.js
     > 59 |     done();
          |     ^
       60 |   });
-      61 | 
+      61 |
       62 |   it('should fail', () => {
 
       at done (__tests__/index.test.js:59:5)

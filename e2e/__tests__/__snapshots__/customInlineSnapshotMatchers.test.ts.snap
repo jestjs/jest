@@ -17,13 +17,13 @@ FAIL __tests__/asynchronous.test.js
 
     Received: "result #1"
 
-      20 | 
+      20 |
       21 | test('new async, inline snapshots', async () => {
     > 22 |   await expect(async () => 'result #1').toMatchObservationInlineSnapshot();
          |                                         ^
       23 |   await expect(async () => 'result #2').toMatchObservationInlineSnapshot();
       24 | });
-      25 | 
+      25 |
 
       at Object.toMatchObservationInlineSnapshot (__tests__/asynchronous.test.js:22:41)
 
@@ -44,7 +44,7 @@ FAIL __tests__/asynchronous.test.js
     > 23 |   await expect(async () => 'result #2').toMatchObservationInlineSnapshot();
          |                                         ^
       24 | });
-      25 | 
+      25 |
       26 | test('mismatching async, inline snapshots', async () => {
 
       at Object.toMatchObservationInlineSnapshot (__tests__/asynchronous.test.js:23:41)
@@ -58,7 +58,7 @@ FAIL __tests__/asynchronous.test.js
     Snapshot: "result #?"
     Received: "result #1"
 
-      25 | 
+      25 |
       26 | test('mismatching async, inline snapshots', async () => {
     > 27 |   await expect(async () => 'result #1').toMatchObservationInlineSnapshot(
          |                                         ^
