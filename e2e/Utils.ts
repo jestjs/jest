@@ -169,7 +169,6 @@ export const sortLines = (output: string) =>
     .split('\n')
     .sort()
     .map(str => str.trim())
-    .filter(Boolean)
     .join('\n');
 
 const DEFAULT_PACKAGE_JSON: PackageJson = {
