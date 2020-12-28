@@ -50,6 +50,7 @@
 - `[jest-transform]` [**BREAKING**] Refactor API of transformers to pass an options bag rather than separate `config` and other options ([#10834](https://github.com/facebook/jest/pull/10834))
 - `[jest-worker]` [**BREAKING**] Use named exports ([#10623] (https://github.com/facebook/jest/pull/10623))
 - `[jest-worker]` Do not swallow errors during serialization ([#10984] (https://github.com/facebook/jest/pull/10984))
+- `[jest-worker]` Handle passing messages with circular data ([#10981] (https://github.com/facebook/jest/pull/10981))
 - `[pretty-format]` [**BREAKING**] Convert to ES Modules ([#10515](https://github.com/facebook/jest/pull/10515))
 
 ### Chore & Maintenance

@@ -23,6 +23,7 @@ import {
   WorkerInterface,
   WorkerOptions,
 } from '../types';
+import {parse} from './utils';
 
 const SIGNAL_BASE_EXIT_CODE = 128;
 const SIGKILL_EXIT_CODE = SIGNAL_BASE_EXIT_CODE + 9;
@@ -162,7 +163,7 @@ export default class ChildProcessWorker implements WorkerInterface {
 
     switch (response[0]) {
       case PARENT_MESSAGE_OK:
-        this._onProcessEnd(null, response[1]);
+        this._onProcessEnd(null, parse(response[1]));
         break;
 
       case PARENT_MESSAGE_CLIENT_ERROR:
@@ -195,7 +196,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         this._onProcessEnd(error, null);
         break;
       case PARENT_MESSAGE_CUSTOM:
-        this._onCustomMessage(response[1]);
+        this._onCustomMessage(parse(response[1]));
         break;
       default:
         throw new TypeError('Unexpected response from worker: ' + response[0]);

@@ -1,0 +1,97 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`handles circular inequality properly 1`] = `
+FAIL __tests__/test-1.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Object {}
+    + Object {
+    +   "ref": [Circular],
+    + }
+
+      3 |   foo.ref = foo;
+      4 |
+    > 5 |   expect(foo).toEqual({});
+        |               ^
+      6 | });
+      7 |
+      8 | it('test 2', () => {
+
+      at Object.toEqual (__tests__/test-1.js:5:15)
+
+  ● test 2
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Object {}
+    + Object {
+    +   "ref": [Circular],
+    + }
+
+      10 |   foo.ref = foo;
+      11 |
+    > 12 |   expect(foo).toEqual({});
+         |               ^
+      13 | });
+
+      at Object.toEqual (__tests__/test-1.js:12:15)
+
+FAIL __tests__/test-2.js
+  ● test
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Object {}
+    + Object {
+    +   "ref": [Circular],
+    + }
+
+      3 |   foo.ref = foo;
+      4 |
+    > 5 |   expect(foo).toEqual({});
+        |               ^
+      6 | });
+      7 |
+      8 | it('test 2', () => {
+
+      at Object.toEqual (__tests__/test-2.js:5:15)
+
+  ● test 2
+
+    expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 3
+
+    - Object {}
+    + Object {
+    +   "ref": [Circular],
+    + }
+
+      10 |   foo.ref = foo;
+      11 |
+    > 12 |   expect(foo).toEqual({});
+         |               ^
+      13 | });
+
+      at Object.toEqual (__tests__/test-2.js:12:15)
+`;
+
+exports[`handles circular inequality properly 2`] = `
+Test Suites: 2 failed, 2 total
+Tests:       4 failed, 4 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;

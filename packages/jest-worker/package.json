@@ -16,7 +16,8 @@
   "dependencies": {
     "@types/node": "*",
     "merge-stream": "^2.0.0",
-    "supports-color": "^8.0.0"
+    "supports-color": "^8.0.0",
+    "telejson": "^5.1.0"
   },
   "devDependencies": {
     "@types/merge-stream": "^1.1.2",
