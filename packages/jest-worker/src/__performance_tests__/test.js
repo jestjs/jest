@@ -16,12 +16,13 @@ const JestWorker = require('../../build').Worker;
 // Typical tests: node --expose-gc test.js empty 100000
 //                node --expose-gc test.js loadTest 10000
 assert(process.argv[2], 'Pass a child method name');
-assert(process.argv[3], 'Pass the number of iteratitons');
+assert(process.argv[3], 'Pass the number of iterations');
 
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const method = process.argv[2];
 const calls = +process.argv[3];
 const threads = 6;
+const iterations = 10;
 
 function testWorkerFarm() {
   return new Promise(async resolve => {
@@ -132,7 +133,7 @@ async function main() {
   const wFResults = [];
   const jWResults = [];
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < iterations; i++) {
     console.log('-'.repeat(75));
 
     profile('worker farm');
@@ -161,7 +162,7 @@ async function main() {
   let jWGT = 0;
   let jWPT = 0;
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < iterations; i++) {
     wFGT += wFResults[i].globalTime;
     wFPT += wFResults[i].processingTime;
 

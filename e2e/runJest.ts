@@ -108,10 +108,10 @@ function normalizeStdoutAndStderr(
   result: RunJestResult,
   options: RunJestOptions,
 ): RunJestResult {
-  result.stdout = normalizeIcons(rightTrimStdout(result.stdout));
   if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);
-  result.stderr = normalizeIcons(rightTrimStdout(result.stderr));
+  result.stdout = normalizeIcons(rightTrimStdout(result.stdout));
   if (options.stripAnsi) result.stderr = stripAnsi(result.stderr);
+  result.stderr = normalizeIcons(rightTrimStdout(result.stderr));
 
   return result;
 }
