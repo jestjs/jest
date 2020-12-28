@@ -9,5 +9,5 @@ ReferenceError: You are trying to access a property or method of the Jest enviro
          |          ^
       12 |   }, 0);
       13 | });
-      14 | 
+      14 |
 `;

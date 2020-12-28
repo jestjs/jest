@@ -8,7 +8,7 @@ FAIL __tests__/asyncDefinition.test.js
 
     Cannot add a test after tests have started running. Tests must be defined synchronously.
 
-      10 | 
+      10 |
       11 |   Promise.resolve().then(() => {
     > 12 |     test('async definition inside describe', () => {});
          |     ^
@@ -29,7 +29,7 @@ FAIL __tests__/asyncDefinition.test.js
          |     ^
       14 |   });
       15 | });
-      16 | 
+      16 |
 
       at eventHandler (../../packages/jest-circus/build/eventHandler.js:114:11)
       at afterAll (__tests__/asyncDefinition.test.js:13:5)
@@ -38,13 +38,13 @@ FAIL __tests__/asyncDefinition.test.js
 
     Cannot add a test after tests have started running. Tests must be defined synchronously.
 
-      16 | 
+      16 |
       17 | Promise.resolve().then(() => {
     > 18 |   test('async definition outside describe', () => {});
          |   ^
       19 |   afterAll(() => {});
       20 | });
-      21 | 
+      21 |
 
       at eventHandler (../../packages/jest-circus/build/eventHandler.js:146:11)
       at test (__tests__/asyncDefinition.test.js:18:3)
@@ -58,7 +58,7 @@ FAIL __tests__/asyncDefinition.test.js
     > 19 |   afterAll(() => {});
          |   ^
       20 | });
-      21 | 
+      21 |
 
       at eventHandler (../../packages/jest-circus/build/eventHandler.js:114:11)
       at afterAll (__tests__/asyncDefinition.test.js:19:3)
