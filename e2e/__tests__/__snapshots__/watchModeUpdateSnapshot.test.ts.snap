@@ -21,7 +21,6 @@ FAIL __tests__/bar.spec.js
  › 1 snapshot failed.
 Snapshot Summary
  › 1 snapshot failed from 1 test suite. Inspect your code changes or press \`u\` to update them.
-
 `;
 
 exports[`can press "u" to update snapshots: test results 2`] = `
@@ -31,7 +30,6 @@ PASS __tests__/bar.spec.js
  › 1 snapshot updated.
 Snapshot Summary
  › 1 snapshot updated from 1 test suite.
-
 `;
 
 exports[`can press "u" to update snapshots: test summary 1`] = `

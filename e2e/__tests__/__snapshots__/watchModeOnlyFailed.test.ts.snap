@@ -32,7 +32,6 @@ FAIL __tests__/bar.spec.js
         |                                     ^
 
       at Object.toBe (__tests__/bar.spec.js:1:37)
-
 `;
 
 exports[`can press "f" to run only failed tests: test summary 1`] = `

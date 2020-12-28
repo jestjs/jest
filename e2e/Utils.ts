@@ -221,7 +221,7 @@ export const extractSummary = (stdout: string) => {
 const sortTests = (stdout: string) =>
   stdout
     .split('\n')
-    .reduce((tests: Array<Array<string>>, line) => {
+    .reduce<Array<Array<string>>>((tests, line) => {
       if (['RUNS', 'PASS', 'FAIL'].includes(line.slice(0, 4))) {
         tests.push([line]);
       } else {
@@ -229,13 +229,17 @@ const sortTests = (stdout: string) =>
       }
       return tests;
     }, [])
-    .sort(([a], [b]) => (a > b ? 1 : -1))
-    .reduce(
-      (array, lines = []) =>
-        lines.length > 1 ? array.concat(lines, '') : array.concat(lines),
-      [],
+    .map(strings =>
+      strings.length > 1 ? `${strings.join('\n').trimRight()}\n` : strings[0],
     )
-    .join('\n');
+    .sort((a, b) => {
+      const [aFirstLine] = a.split('\n');
+      const [bFirstLine] = b.split('\n');
+
+      return aFirstLine > bFirstLine ? 1 : -1;
+    })
+    .join('\n')
+    .trim();
 
 export const extractSortedSummary = (stdout: string) => {
   const {rest, summary} = extractSummary(stdout);
