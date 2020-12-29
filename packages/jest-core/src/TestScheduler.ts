@@ -115,7 +115,7 @@ class TestScheduler {
         return Promise.resolve();
       }
 
-      if (testResult.testResults.length === 0) {
+      if (!testResult.testResults.some(({phasing}) => !phasing)) {
         const message = 'Your test suite must contain at least one test.';
 
         return onFailure(test, {
@@ -139,6 +139,12 @@ class TestScheduler {
           message,
           stack: new Error(message).stack,
         });
+      }
+
+      if (!test.context.config.reportPhasingResults) {
+        testResult.testResults = testResult.testResults.filter(
+          ({phasing}) => !phasing,
+        );
       }
 
       addResult(aggregatedResults, testResult);

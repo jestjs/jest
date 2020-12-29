@@ -23,6 +23,7 @@ export type AssertionResult = {
   fullName: string;
   invocations?: number;
   location?: Callsite | null;
+  phasing?: boolean;
   numPassingAsserts: number;
   status: Status;
   title: string;

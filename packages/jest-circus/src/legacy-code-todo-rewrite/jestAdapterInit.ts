@@ -187,9 +187,8 @@ export const runAndTransformResultsToJestFormat = async ({
   let numPendingTests = 0;
   let numTodoTests = 0;
 
-  const assertionResults: Array<AssertionResult> = runResult.testResults
-    .filter(testResult => config.reportPhasingResults || !testResult.phasing)
-    .map(testResult => {
+  const assertionResults: Array<AssertionResult> = runResult.testResults.map(
+    testResult => {
       let status: Status;
       if (testResult.status === 'skip') {
         status = 'pending';
@@ -202,7 +201,9 @@ export const runAndTransformResultsToJestFormat = async ({
         numFailingTests += 1;
       } else {
         status = 'passed';
-        numPassingTests += 1;
+        if (!testResult.phasing) {
+          numPassingTests += 1;
+        }
       }
 
       const ancestorTitles = testResult.testPath.filter(
@@ -221,10 +222,12 @@ export const runAndTransformResultsToJestFormat = async ({
         invocations: testResult.invocations,
         location: testResult.location,
         numPassingAsserts: 0,
+        phasing: testResult.phasing,
         status,
         title: testResult.testPath[testResult.testPath.length - 1],
       };
-    });
+    },
+  );
 
   let failureMessage = formatResultsErrors(
     assertionResults,
