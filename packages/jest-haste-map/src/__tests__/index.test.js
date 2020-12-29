@@ -21,12 +21,12 @@ jest.mock('child_process', () => ({
 
 jest.mock('jest-worker', () => ({
   Worker: jest.fn(worker => {
-    mockWorker = jest.fn((...args) => require(worker).worker(...args));
+    mockWorkerProcess = jest.fn((...args) => require(worker).process(...args));
     mockEnd = jest.fn();
 
     return {
       end: mockEnd,
-      worker: mockWorker,
+      process: mockWorkerProcess,
     };
   }),
 }));
@@ -140,7 +140,7 @@ let HasteMap;
 let mockClocks;
 let mockEmitters;
 let mockEnd;
-let mockWorker;
+let mockWorkerProcess;
 let getCacheFilePath;
 
 describe('HasteMap', () => {
@@ -1180,9 +1180,9 @@ describe('HasteMap', () => {
 
     expect(jestWorker.mock.calls.length).toBe(1);
 
-    expect(mockWorker.mock.calls.length).toBe(5);
+    expect(mockWorkerProcess.mock.calls.length).toBe(5);
 
-    expect(mockWorker.mock.calls).toEqual([
+    expect(mockWorkerProcess.mock.calls).toEqual([
       [
         {
           computeDependencies: true,
@@ -1236,6 +1236,75 @@ describe('HasteMap', () => {
     ]);
 
     expect(mockEnd).toBeCalled();
+  });
+
+  it('uses the provided worker factory to create the worker', async () => {
+    const mockWorker = {
+      end: jest.fn().mockName('mockWorker.end'),
+      getSha1: jest.fn().mockName('mockWorker.getSha1'),
+      process: jest
+        .fn()
+        .mockName('mockWorker.process')
+        .mockReturnValue(Promise.resolve({})),
+    };
+
+    const mockWorkerFactory = jest
+      .fn()
+      .mockName('mockWorkerFactory')
+      .mockReturnValue(mockWorker);
+    const dependencyExtractor = path.join(__dirname, 'dependencyExtractor.js');
+    const {__hasteMapForTest: data} = await new HasteMap({
+      ...defaultConfig,
+      dependencyExtractor,
+      hasteImplModulePath: undefined,
+      workerFactory: mockWorkerFactory,
+    }).build();
+
+    expect(mockWorkerFactory).toHaveBeenCalledWith({forceInBand: false});
+
+    expect(mockWorker.process).toHaveBeenCalledWith({
+      computeDependencies: true,
+      computeSha1: false,
+      dependencyExtractor,
+      filePath: path.join('/', 'project', 'fruits', 'Banana.js'),
+      hasteImplModulePath: undefined,
+      rootDir: path.join('/', 'project'),
+    });
+    expect(mockWorker.process).toHaveBeenCalledWith({
+      computeDependencies: true,
+      computeSha1: false,
+      dependencyExtractor,
+      filePath: path.join('/', 'project', 'fruits', 'Pear.js'),
+      hasteImplModulePath: undefined,
+      rootDir: path.join('/', 'project'),
+    });
+    expect(mockWorker.process).toHaveBeenCalledWith({
+      computeDependencies: true,
+      computeSha1: false,
+      dependencyExtractor,
+      filePath: path.join('/', 'project', 'fruits', 'Strawberry.js'),
+      hasteImplModulePath: undefined,
+      rootDir: path.join('/', 'project'),
+    });
+    expect(mockWorker.process).toHaveBeenCalledWith({
+      computeDependencies: true,
+      computeSha1: false,
+      dependencyExtractor,
+      filePath: path.join('/', 'project', 'fruits', '__mocks__', 'Pear.js'),
+      hasteImplModulePath: undefined,
+      rootDir: path.join('/', 'project'),
+    });
+    expect(mockWorker.process).toHaveBeenCalledWith({
+      computeDependencies: true,
+      computeSha1: false,
+      dependencyExtractor,
+      filePath: path.join('/', 'project', 'vegetables', 'Melon.js'),
+      hasteImplModulePath: undefined,
+      rootDir: path.join('/', 'project'),
+    });
+
+    expect(mockWorker.process).toHaveBeenCalledTimes(5);
+    expect(mockWorker.end).toHaveBeenCalled();
   });
 
   it('tries to crawl using node as a fallback', async () => {

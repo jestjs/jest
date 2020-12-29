@@ -28,6 +28,16 @@ export type WorkerMetadata = {
   sha1: string | undefined | null;
 };
 
+export type WorkerInterface = {
+  process(data: WorkerMessage): Promise<WorkerMetadata>;
+  getSha1(data: WorkerMessage): Promise<WorkerMetadata>;
+  end(): void;
+};
+
+export type WorkerFactory = (options: {
+  forceInBand: boolean;
+}) => WorkerInterface;
+
 export type CrawlerOptions = {
   computeSha1: boolean;
   data: InternalHasteMap;

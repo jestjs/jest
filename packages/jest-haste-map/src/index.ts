@@ -16,12 +16,12 @@ import type {Stats} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {escapePathForRegex} from 'jest-regex-util';
 import serializer from 'jest-serializer';
-import {Worker} from 'jest-worker';
 import HasteFS from './HasteFS';
 import HasteModuleMap from './ModuleMap';
 import H from './constants';
 import nodeCrawl = require('./crawlers/node');
 import watchmanCrawl = require('./crawlers/watchman');
+import createJestWorkerWorkerFactory from './createJestWorkerWorkerFactory';
 import getMockName from './getMockName';
 import * as fastPath from './lib/fast_path';
 import getPlatformExtension from './lib/getPlatformExtension';
@@ -38,6 +38,8 @@ import type {
   MockData,
   ModuleMapData,
   ModuleMetaData,
+  WorkerFactory,
+  WorkerInterface,
   WorkerMetadata,
 } from './types';
 import FSEventsWatcher = require('./watchers/FSEventsWatcher');
@@ -45,7 +47,6 @@ import FSEventsWatcher = require('./watchers/FSEventsWatcher');
 import NodeWatcher from './watchers/NodeWatcher';
 // @ts-expect-error: not converted to TypeScript - it's a fork: https://github.com/facebook/jest/pull/5387
 import WatchmanWatcher from './watchers/WatchmanWatcher';
-import {getSha1, worker} from './worker';
 // TypeScript doesn't like us importing from outside `rootDir`, but it doesn't
 // understand `require`.
 const {version: VERSION} = require('../package.json');
@@ -61,6 +62,7 @@ type Options = {
   hasteImplModulePath?: string;
   ignorePattern?: HasteRegExp;
   maxWorkers: number;
+  workerFactory?: WorkerFactory;
   mocksPattern?: string;
   name: string;
   platforms: Array<string>;
@@ -83,7 +85,7 @@ type InternalOptions = {
   forceNodeFilesystemAPI: boolean;
   hasteImplModulePath?: string;
   ignorePattern?: HasteRegExp;
-  maxWorkers: number;
+  workerFactory: WorkerFactory;
   mocksPattern: RegExp | null;
   name: string;
   platforms: Array<string>;
@@ -101,12 +103,16 @@ type Watcher = {
   close(): Promise<void>;
 };
 
-type WorkerInterface = {worker: typeof worker; getSha1: typeof getSha1};
-
 export {default as ModuleMap} from './ModuleMap';
 export type {SerializableModuleMap} from './ModuleMap';
 export type {default as FS} from './HasteFS';
-export type {ChangeEvent, HasteMap as HasteMapObject} from './types';
+export type {
+  ChangeEvent,
+  HasteMap as HasteMapObject,
+  WorkerFactory,
+  WorkerInterface,
+} from './types';
+export {process, getSha1} from './worker';
 
 const CHANGE_INTERVAL = 30;
 const MAX_WAIT_TIME = 240000;
@@ -230,7 +236,6 @@ export default class HasteMap extends EventEmitter {
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
-      maxWorkers: options.maxWorkers,
       mocksPattern: options.mocksPattern
         ? new RegExp(options.mocksPattern)
         : null,
@@ -244,6 +249,9 @@ export default class HasteMap extends EventEmitter {
       throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman: options.useWatchman == null ? true : options.useWatchman,
       watch: !!options.watch,
+      workerFactory:
+        options.workerFactory ??
+        createJestWorkerWorkerFactory({maxWorkers: options.maxWorkers}),
     };
     this._console = options.console || global.console;
 
@@ -608,7 +616,7 @@ export default class HasteMap extends EventEmitter {
     }
 
     return this._getWorker(workerOptions)
-      .worker({
+      .process({
         computeDependencies: this._options.computeDependencies,
         computeSha1,
         dependencyExtractor: this._options.dependencyExtractor,
@@ -681,9 +689,7 @@ export default class HasteMap extends EventEmitter {
   private _cleanup() {
     const worker = this._worker;
 
-    // @ts-expect-error
-    if (worker && typeof worker.end === 'function') {
-      // @ts-expect-error
+    if (worker != null && typeof worker.end === 'function') {
       worker.end();
     }
 
@@ -700,18 +706,9 @@ export default class HasteMap extends EventEmitter {
   /**
    * Creates workers or parses files and extracts metadata in-process.
    */
-  private _getWorker(options?: {forceInBand: boolean}): WorkerInterface {
+  private _getWorker(options = {forceInBand: false}): WorkerInterface {
     if (!this._worker) {
-      if ((options && options.forceInBand) || this._options.maxWorkers <= 1) {
-        this._worker = {getSha1, worker};
-      } else {
-        // @ts-expect-error: assignment of a worker with custom properties.
-        this._worker = new Worker(require.resolve('./worker'), {
-          exposedMethods: ['getSha1', 'worker'],
-          maxRetries: 3,
-          numWorkers: this._options.maxWorkers,
-        }) as WorkerInterface;
-      }
+      this._worker = this._options.workerFactory(options);
     }
 
     return this._worker;

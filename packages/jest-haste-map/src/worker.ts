@@ -22,7 +22,7 @@ function sha1hex(content: string | Buffer): string {
   return createHash('sha1').update(content).digest('hex');
 }
 
-export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
+export async function process(data: WorkerMessage): Promise<WorkerMetadata> {
   if (
     data.hasteImplModulePath &&
     data.hasteImplModulePath !== hasteImplModulePath
