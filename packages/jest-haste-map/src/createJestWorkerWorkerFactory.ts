@@ -6,7 +6,6 @@
  */
 
 import type {WorkerFactory, WorkerInterface} from './types';
-const {getSha1, process} = require('./worker');
 
 export default function createJestWorkerWorkerFactory({
   maxWorkers,
@@ -14,11 +13,12 @@ export default function createJestWorkerWorkerFactory({
   maxWorkers: number;
 }): WorkerFactory {
   return ({forceInBand}) => {
-    const Worker = require('jest-worker').Worker;
-
     if (forceInBand || maxWorkers <= 1) {
+      const {getSha1, process} = require('./worker');
       return {end: () => {}, getSha1, process};
     }
+
+    const Worker = require('jest-worker').Worker;
 
     return new Worker(require.resolve('./worker'), {
       exposedMethods: ['getSha1', 'process'],
