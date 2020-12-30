@@ -48,9 +48,7 @@ test('handles circular inequality properly', async () => {
     {stripAnsi: true, timeout: 5000},
   );
 
-  await waitUntil(({stderr}) => {
-    return stderr.includes('Ran all test suites.');
-  });
+  await waitUntil(({stderr}) => stderr.includes('Ran all test suites.'));
 
   const {stderr} = await end();
 
