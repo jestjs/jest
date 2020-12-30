@@ -47,7 +47,7 @@ export type {
 export default class TestRunner {
   private readonly _globalConfig: Config.GlobalConfig;
   private readonly _context: TestRunnerContext;
-  private readonly eventEmitter = new Emittery.Typed<TestEvents>();
+  private readonly eventEmitter = new Emittery<TestEvents>();
   readonly __PRIVATE_UNSTABLE_API_supportsEventEmitters__: boolean = true;
 
   readonly isSerial?: boolean;
