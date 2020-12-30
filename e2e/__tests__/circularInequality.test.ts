@@ -34,13 +34,6 @@ test('handles circular inequality properly', async () => {
 
       expect(foo).toEqual({});
     });
-
-    it('test 2', () => {
-      const foo = {};
-      foo.ref = foo;
-
-      expect(foo).toEqual({});
-    });
   `;
 
   writeFiles(tempDir, {
