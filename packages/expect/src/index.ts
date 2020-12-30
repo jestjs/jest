@@ -50,7 +50,7 @@ import type {
 import {iterableEquality, subsetEquality} from './utils';
 
 class JestAssertionError extends Error {
-  matcherResult?: SyncExpectationResult;
+  matcherResult?: Omit<SyncExpectationResult, 'message'> & {message: string};
 }
 
 const isPromise = <T extends any>(obj: any): obj is PromiseLike<T> =>
@@ -293,7 +293,7 @@ const makeThrowingMatcher = (
         // Passing the result of the matcher with the error so that a custom
         // reporter could access the actual and expected objects of the result
         // for example in order to display a custom visual diff
-        error.matcherResult = result;
+        error.matcherResult = {...result, message};
 
         if (throws) {
           throw error;
