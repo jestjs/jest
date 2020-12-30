@@ -34,6 +34,10 @@ test('that the failureDetails property is set', () => {
               "matcherResult": Object {
                 "actual": true,
                 "expected": false,
+                "message": "expect(received).toBe(expected) // Object.is equality
+
+      Expected: false
+      Received: true",
                 "name": "toBe",
                 "pass": false,
               },
@@ -59,6 +63,10 @@ test('that the failureDetails property is set', () => {
               "matcherResult": Object {
                 "actual": true,
                 "expected": false,
+                "message": "expect(received).toBe(expected) // Object.is equality
+
+      Expected: false
+      Received: true",
                 "name": "toBe",
                 "pass": false,
               },
@@ -90,6 +98,18 @@ test('that the failureDetails property is set', () => {
         \\"p1\\": \\"hello\\",
         \\"p2\\": \\"sunshine\\",
       }",
+                "message": "expect(received).toMatchInlineSnapshot(snapshot)
+
+      Snapshot name: \`my test a snapshot failure 1\`
+
+      - Snapshot  - 1
+      + Received  + 1
+
+        Object {
+          \\"p1\\": \\"hello\\",
+      -   \\"p2\\": \\"sunshine\\",
+      +   \\"p2\\": \\"world\\",
+        }",
                 "name": "toMatchInlineSnapshot",
                 "pass": false,
               },
@@ -169,6 +189,10 @@ test('that the failureDetails property is set', () => {
             "matcherResult": Object {
               "actual": true,
               "expected": false,
+              "message": "expect(received).toBe(expected) // Object.is equality
+
+      Expected: false
+      Received: true",
               "name": "toBe",
               "pass": false,
             },
@@ -179,6 +203,10 @@ test('that the failureDetails property is set', () => {
             "matcherResult": Object {
               "actual": true,
               "expected": false,
+              "message": "expect(received).toBe(expected) // Object.is equality
+
+      Expected: false
+      Received: true",
               "name": "toBe",
               "pass": false,
             },
@@ -195,6 +223,18 @@ test('that the failureDetails property is set', () => {
         \\"p1\\": \\"hello\\",
         \\"p2\\": \\"sunshine\\",
       }",
+              "message": "expect(received).toMatchInlineSnapshot(snapshot)
+
+      Snapshot name: \`my test a snapshot failure 1\`
+
+      - Snapshot  - 1
+      + Received  + 1
+
+        Object {
+          \\"p1\\": \\"hello\\",
+      -   \\"p2\\": \\"sunshine\\",
+      +   \\"p2\\": \\"world\\",
+        }",
               "name": "toMatchInlineSnapshot",
               "pass": false,
             },
