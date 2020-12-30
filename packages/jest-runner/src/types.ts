@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Typed as EmitteryTyped} from 'emittery';
+import Emittery = require('emittery');
 import type {JestEnvironment} from '@jest/environment';
 import type {
   AssertionResult,
@@ -80,7 +80,7 @@ export type TestRunnerSerializedContext = {
 
 // TODO: Should live in `@jest/core` or `jest-watcher`
 type WatcherState = {interrupted: boolean};
-export interface TestWatcher extends EmitteryTyped<{change: WatcherState}> {
+export interface TestWatcher extends Emittery<{change: WatcherState}> {
   state: WatcherState;
   setState(state: WatcherState): void;
   isInterrupted(): boolean;
