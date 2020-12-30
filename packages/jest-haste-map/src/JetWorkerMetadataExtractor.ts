@@ -6,10 +6,10 @@
  */
 
 import type {
-  MetadataExtractor,
-  MetadataExtractorOptions,
   ExtractMetadataDefinition,
   ExtractedFileMetaData,
+  MetadataExtractor,
+  MetadataExtractorOptions,
 } from './types';
 import {extractMetadata, getSha1} from './worker';
 
@@ -29,7 +29,9 @@ export default class JestWorkerMetadataExtractor implements MetadataExtractor {
     this._forceInBand = forceInBand;
   }
 
-  extractMetadata(data: ExtractMetadataDefinition): Promise<ExtractedFileMetaData> {
+  extractMetadata(
+    data: ExtractMetadataDefinition,
+  ): Promise<ExtractedFileMetaData> {
     return this._getWorker().extractMetadata(data);
   }
 
