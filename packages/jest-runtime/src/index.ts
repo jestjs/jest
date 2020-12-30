@@ -165,7 +165,8 @@ export default class Runtime {
   private readonly _moduleMocker: ModuleMocker;
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
-  private readonly _esmoduleRegistry: Map<string, EsmModuleCache>;
+  private readonly _esmoduleRegistry: Map<Config.Path, EsmModuleCache>;
+  private readonly _cjsNamedExports: Map<Config.Path, Set<string>>;
   private readonly _testPath: Config.Path;
   private readonly _resolver: Resolver;
   private _shouldAutoMock: boolean;
@@ -214,6 +215,7 @@ export default class Runtime {
     this._isolatedMockRegistry = null;
     this._moduleRegistry = new Map();
     this._esmoduleRegistry = new Map();
+    this._cjsNamedExports = new Map();
     this._testPath = testPath;
     this._resolver = resolver;
     this._scriptTransformer = new ScriptTransformer(config, this._cacheFS);
@@ -524,21 +526,15 @@ export default class Runtime {
     // CJS loaded via `import` should share cache with other CJS: https://github.com/nodejs/modules/issues/503
     const cjs = this.requireModuleOrMock(from, modulePath);
 
-    const transformedCode = this._fileTransforms.get(modulePath);
+    const parsedExports = this.getExportsOfCjs(modulePath);
 
-    let cjsExports: ReadonlyArray<string> = [];
-
-    if (transformedCode) {
-      const {exports} = parseCjs(transformedCode.code);
-
-      cjsExports = exports.filter(exportName => {
-        // we don't wanna respect any exports _names_ default as a named export
-        if (exportName === 'default') {
-          return false;
-        }
-        return Object.hasOwnProperty.call(cjs, exportName);
-      });
-    }
+    const cjsExports = [...parsedExports].filter(exportName => {
+      // we don't wanna respect any exports _named_ default as a named export
+      if (exportName === 'default') {
+        return false;
+      }
+      return Object.hasOwnProperty.call(cjs, exportName);
+    });
 
     const module = new SyntheticModule(
       [...cjsExports, 'default'],
@@ -554,6 +550,33 @@ export default class Runtime {
     );
 
     return evaluateSyntheticModule(module);
+  }
+
+  private getExportsOfCjs(modulePath: Config.Path) {
+    const cachedNamedExports = this._cjsNamedExports.get(modulePath);
+
+    if (cachedNamedExports) {
+      return cachedNamedExports;
+    }
+
+    const transformedCode =
+      this._fileTransforms.get(modulePath)?.code ?? this.readFile(modulePath);
+
+    const {exports, reexports} = parseCjs(transformedCode);
+
+    const namedExports = new Set(exports);
+
+    reexports.forEach(reexport => {
+      const resolved = this._resolveModule(modulePath, reexport);
+
+      const exports = this.getExportsOfCjs(resolved);
+
+      exports.forEach(namedExports.add, namedExports);
+    });
+
+    this._cjsNamedExports.set(modulePath, namedExports);
+
+    return namedExports;
   }
 
   requireModule<T = unknown>(
@@ -845,6 +868,7 @@ export default class Runtime {
     this._mockRegistry.clear();
     this._moduleRegistry.clear();
     this._esmoduleRegistry.clear();
+    this._cjsNamedExports.clear();
 
     if (this._environment) {
       if (this._environment.global) {

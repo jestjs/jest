@@ -14,7 +14,7 @@ import {fileURLToPath} from 'url';
 import {jest as jestObject} from '@jest/globals';
 import staticImportedStatefulFromCjs from '../fromCjs.mjs';
 import {double} from '../index';
-import defaultFromCjs, {namedFunction} from '../namedExport.cjs';
+import defaultFromCjs, {half, namedFunction} from '../namedExport.cjs';
 // eslint-disable-next-line import/named
 import {bag} from '../namespaceExport.js';
 import staticImportedStateful from '../stateful.mjs';
@@ -139,10 +139,15 @@ test('varies module cache by query', () => {
 });
 
 test('supports named imports from CJS', () => {
+  expect(half(4)).toBe(2);
   expect(namedFunction()).toBe('hello from a named CJS function!');
   expect(defaultFromCjs.default()).toBe('"default" export');
 
-  expect(Object.keys(defaultFromCjs)).toEqual(['namedFunction', 'default']);
+  expect(Object.keys(defaultFromCjs)).toEqual([
+    'half',
+    'namedFunction',
+    'default',
+  ]);
 });
 
 test('supports file urls as imports', async () => {
