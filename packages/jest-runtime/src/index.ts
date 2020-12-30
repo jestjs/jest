@@ -524,21 +524,15 @@ export default class Runtime {
     // CJS loaded via `import` should share cache with other CJS: https://github.com/nodejs/modules/issues/503
     const cjs = this.requireModuleOrMock(from, modulePath);
 
-    const transformedCode = this._fileTransforms.get(modulePath);
+    const parsedExports = this.getExportsOfCjs(modulePath);
 
-    let cjsExports: ReadonlyArray<string> = [];
-
-    if (transformedCode) {
-      const {exports} = parseCjs(transformedCode.code);
-
-      cjsExports = exports.filter(exportName => {
-        // we don't wanna respect any exports _names_ default as a named export
-        if (exportName === 'default') {
-          return false;
-        }
-        return Object.hasOwnProperty.call(cjs, exportName);
-      });
-    }
+    const cjsExports = [...parsedExports].filter(exportName => {
+      // we don't wanna respect any exports _named_ default as a named export
+      if (exportName === 'default') {
+        return false;
+      }
+      return Object.hasOwnProperty.call(cjs, exportName);
+    });
 
     const module = new SyntheticModule(
       [...cjsExports, 'default'],
@@ -554,6 +548,25 @@ export default class Runtime {
     );
 
     return evaluateSyntheticModule(module);
+  }
+
+  private getExportsOfCjs(modulePath: Config.Path) {
+    const transformedCode =
+      this._fileTransforms.get(modulePath)?.code ?? this.readFile(modulePath);
+
+    const {exports, reexports} = parseCjs(transformedCode);
+
+    let namedExports = new Set(exports);
+
+    reexports.forEach(reexport => {
+      const resolved = this._resolveModule(modulePath, reexport);
+
+      const exports = this.getExportsOfCjs(resolved);
+
+      namedExports = new Set([...namedExports, ...exports]);
+    });
+
+    return namedExports;
   }
 
   requireModule<T = unknown>(
