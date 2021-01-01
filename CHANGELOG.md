@@ -7,6 +7,7 @@
 ### Fixes
 
 - `[jest-core]` Capture execError during `TestScheduler.scheduleTests` and dispatch to reporters ([#13203](https://github.com/facebook/jest/pull/13203))
+- `[jest-leak-detector]` Try even harder to cleanup before declaring a leak ([#10994](https://github.com/facebook/jest/pull/10994))
 
 ### Chore & Maintenance
 
