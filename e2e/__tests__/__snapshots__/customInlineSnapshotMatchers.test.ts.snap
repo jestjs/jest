@@ -1,5 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`can bail with a custom inline snapshot matcher 1`] = `
+FAIL __tests__/bail.test.js
+  ✕ matches both snapshots
+
+  ● matches both snapshots
+
+    expect(received).toMatchInlineSnapshot(snapshot)
+
+    Snapshot name: \`matches both snapshots 1\`
+
+    Snapshot: "one"
+    Received: "two"
+
+      16 |
+      17 | test('matches both snapshots', () => {
+    > 18 |   expect('two').toMatchBailingInlineSnapshot(\`"one"\`);
+         |                 ^
+      19 |   expect('three').toMatchBailingInlineSnapshot(\`"two"\`);
+      20 | });
+      21 |
+
+      at Object.toMatchBailingInlineSnapshot (__tests__/bail.test.js:18:17)
+
+ › 1 snapshot failed.
+Snapshot Summary
+ › 1 snapshot failed from 1 test suite. Inspect your code changes or re-run jest with \`-u\` to update them.
+`;
+
 exports[`works with custom inline snapshot matchers 1`] = `
 FAIL __tests__/asynchronous.test.js
   ✕ new async, inline snapshots

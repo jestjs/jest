@@ -234,6 +234,49 @@ exports[`stores only 10 characters: toMatchTrimmedSnapshot 1`] = `"extra long"`;
 */
 ```
 
+
+##### Bail out
+
+Usually `jest` tries to match every snapshot that is expected in a test.
+
+Sometimes it might not make sense to continue the test if a prior snapshot failed. For example, when you make snapshots of a state-machine after various transitions you can abort the test once one transition produced the wrong state.
+
+In that case you can implement a custom snapshot matcher that throws on the first mismatch instead of collecting every mismatch.
+
+```js
+const {toMatchInlineSnapshot} = require('jest-snapshot');
+
+expect.extend({
+  toMatchStateInlineSnapshot(...args) {
+    this.dontThrow = () => {};
+
+    return toMatchInlineSnapshot.call(this, ...args);
+  },
+});
+
+let state = 'initial';
+
+function transition() {
+  // Typo in the implementation should cause the test to fail
+  if (state === 'INITIAL') {
+    state = 'pending';
+  } else if (state === 'pending') {
+    state = 'done';
+  }
+}
+
+it('transitions as expected', () => {
+  expect(state).toMatchStateInlineSnapshot(`"initial"`);
+
+  transition();
+  // Already produces a mismatch. No point in continuing the test.
+  expect(state).toMatchStateInlineSnapshot(`"loading"`);
+
+  transition();
+  expect(state).toMatchStateInlineSnapshot(`"done"`);
+});
+```
+
 ### `expect.anything()`
 
 `expect.anything()` matches anything but `null` or `undefined`. You can use it inside `toEqual` or `toBeCalledWith` instead of a literal value. For example, if you want to check that a mock function is called with a non-null argument:
