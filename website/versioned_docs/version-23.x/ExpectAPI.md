@@ -234,7 +234,6 @@ exports[`stores only 10 characters: toMatchTrimmedSnapshot 1`] = `"extra long"`;
 */
 ```
 
-
 ##### Bail out
 
 Usually `jest` tries to match every snapshot that is expected in a test.
