@@ -7,14 +7,27 @@
 const {toMatchInlineSnapshot} = require('jest-snapshot');
 
 expect.extend({
-  toMatchBailingInlineSnapshot(...args) {
+  toMatchStateInlineSnapshot(...args) {
     this.dontThrow = () => {};
-
     return toMatchInlineSnapshot.call(this, ...args);
   },
 });
 
-test('matches both snapshots', () => {
-  expect('two').toMatchBailingInlineSnapshot(`"one"`);
-  expect('three').toMatchBailingInlineSnapshot(`"two"`);
+let state = 'initial';
+function transition() {
+  // Typo in the implementation should cause the test to fail
+  if (state === 'INITIAL') {
+    state = 'pending';
+  } else if (state === 'pending') {
+    state = 'done';
+  }
+}
+
+it('transitions as expected', () => {
+  expect(state).toMatchStateInlineSnapshot(`"initial"`);
+  transition();
+  // Already produces a mismatch. No point in continuing the test.
+  expect(state).toMatchStateInlineSnapshot(`"loading"`);
+  transition();
+  expect(state).toMatchStateInlineSnapshot(`"done"`);
 });

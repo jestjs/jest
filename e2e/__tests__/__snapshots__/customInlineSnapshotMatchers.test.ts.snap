@@ -2,26 +2,26 @@
 
 exports[`can bail with a custom inline snapshot matcher 1`] = `
 FAIL __tests__/bail.test.js
-  ✕ matches both snapshots
+  ✕ transitions as expected
 
-  ● matches both snapshots
+  ● transitions as expected
 
     expect(received).toMatchInlineSnapshot(snapshot)
 
-    Snapshot name: \`matches both snapshots 1\`
+    Snapshot name: \`transitions as expected 2\`
 
-    Snapshot: "one"
-    Received: "two"
+    Snapshot: "loading"
+    Received: "initial"
 
-      16 |
-      17 | test('matches both snapshots', () => {
-    > 18 |   expect('two').toMatchBailingInlineSnapshot(\`"one"\`);
+      28 |   transition();
+      29 |   // Already produces a mismatch. No point in continuing the test.
+    > 30 |   expect(state).toMatchStateInlineSnapshot(\`"loading"\`);
          |                 ^
-      19 |   expect('three').toMatchBailingInlineSnapshot(\`"two"\`);
-      20 | });
-      21 |
+      31 |   transition();
+      32 |   expect(state).toMatchStateInlineSnapshot(\`"done"\`);
+      33 | });
 
-      at Object.toMatchBailingInlineSnapshot (__tests__/bail.test.js:18:17)
+      at Object.toMatchStateInlineSnapshot (__tests__/bail.test.js:30:17)
 
  › 1 snapshot failed.
 Snapshot Summary
