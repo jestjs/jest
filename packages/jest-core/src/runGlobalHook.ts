@@ -61,11 +61,13 @@ export default async ({
         });
       } catch (error) {
         if (util.types.isNativeError(error)) {
+          error.message = `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${error.message}`;
+
           throw error;
         }
 
         throw new Error(
-          `Got error running ${moduleName} - ${modulePath}, reason: ${prettyFormat(
+          `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${prettyFormat(
             error,
             {maxDepth: 3},
           )}`,
