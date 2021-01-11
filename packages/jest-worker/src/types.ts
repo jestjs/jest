@@ -96,6 +96,7 @@ export type FarmOptions = {
   computeWorkerKey?: (method: string, ...args: Array<unknown>) => string | null;
   exposedMethods?: ReadonlyArray<string>;
   forkOptions?: ForkOptions;
+  workerSchedulingPolicy?: 'round-robin' | 'in-order';
   resourceLimits?: ResourceLimits;
   setupArgs?: Array<unknown>;
   maxRetries?: number;

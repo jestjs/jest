@@ -105,6 +105,7 @@ export class Worker {
       {
         computeWorkerKey: this._options.computeWorkerKey,
         taskQueue: this._options.taskQueue,
+        workerSchedulingPolicy: this._options.workerSchedulingPolicy,
       },
     );
 

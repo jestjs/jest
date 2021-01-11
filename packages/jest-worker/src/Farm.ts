@@ -22,28 +22,29 @@ import {
 } from './types';
 
 export default class Farm {
-  private _computeWorkerKey: FarmOptions['computeWorkerKey'];
-  private _cacheKeys: Record<string, WorkerInterface>;
-  private _callback: Function;
-  private _locks: Array<boolean>;
-  private _numOfWorkers: number;
-  private _offset: number;
-  private _taskQueue: TaskQueue;
+  private readonly _computeWorkerKey: FarmOptions['computeWorkerKey'];
+  private readonly _workerSchedulingPolicy: NonNullable<
+    FarmOptions['workerSchedulingPolicy']
+  >;
+  private readonly _cacheKeys: Record<string, WorkerInterface> = Object.create(
+    null,
+  );
+  private readonly _locks: Array<boolean> = [];
+  private _offset = 0;
+  private readonly _taskQueue: TaskQueue;
 
   constructor(
-    numOfWorkers: number,
-    callback: Function,
+    private _numOfWorkers: number,
+    private _callback: Function,
     options: {
       computeWorkerKey?: FarmOptions['computeWorkerKey'];
+      workerSchedulingPolicy?: FarmOptions['workerSchedulingPolicy'];
       taskQueue?: TaskQueue;
     } = {},
   ) {
-    this._cacheKeys = Object.create(null);
-    this._callback = callback;
-    this._locks = [];
-    this._numOfWorkers = numOfWorkers;
-    this._offset = 0;
     this._computeWorkerKey = options.computeWorkerKey;
+    this._workerSchedulingPolicy =
+      options.workerSchedulingPolicy ?? 'round-robin';
     this._taskQueue = options.taskQueue ?? new FifoQueue();
   }
 
@@ -147,17 +148,28 @@ export default class Farm {
   private _push(task: QueueChildMessage): Farm {
     this._taskQueue.enqueue(task);
 
+    const offset = this._getNextWorkerOffset();
     for (let i = 0; i < this._numOfWorkers; i++) {
-      this._process((this._offset + i) % this._numOfWorkers);
+      this._process((offset + i) % this._numOfWorkers);
 
       if (task.request[1]) {
         break;
       }
     }
 
-    this._offset++;
-
     return this;
+  }
+
+  // Typescript ensures that the switch statement is exhaustive.
+  // Adding an explicit return at the end would disable the exhaustive check void.
+  // eslint-disable-next-line consistent-return
+  private _getNextWorkerOffset(): number {
+    switch (this._workerSchedulingPolicy) {
+      case 'in-order':
+        return 0;
+      case 'round-robin':
+        return this._offset++;
+    }
   }
 
   private _lock(workerId: number): void {
