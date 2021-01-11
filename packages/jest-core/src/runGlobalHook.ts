@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as util from 'util';
 import pEachSeries = require('p-each-series');
 import {ScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
@@ -59,6 +60,10 @@ export default async ({
           await globalModule(globalConfig);
         });
       } catch (error) {
+        if (util.types.isNativeError(error)) {
+          throw error;
+        }
+
         throw new Error(
           `Got error running ${moduleName} - ${modulePath}, reason: ${prettyFormat(
             error,
