@@ -19,6 +19,7 @@
 - `[jest-runtime, jest-transform]` share `cacheFS` between runtime and transformer ([#10901](https://github.com/facebook/jest/pull/10901))
 - `[jest-transform]` Pass config options defined in Jest's config to transformer's `process` and `getCacheKey` functions ([#10926](https://github.com/facebook/jest/pull/10926))
 - `[jest-worker]` Add support for custom task queues and adds a `PriorityQueue` implementation. ([#10921](https://github.com/facebook/jest/pull/10921))
+- `[jest-worker]` Add in-order scheduling policy to jest worker ([10902](https://github.com/facebook/jest/pull/10902))
 
 ### Fixes
 
@@ -49,9 +50,10 @@
 - `[jest-transform]` Show enhanced `SyntaxError` message for all `SyntaxError`s ([#10749](https://github.com/facebook/jest/pull/10749))
 - `[jest-transform]` [**BREAKING**] Refactor API to pass an options bag around rather than multiple boolean options ([#10753](https://github.com/facebook/jest/pull/10753))
 - `[jest-transform]` [**BREAKING**] Refactor API of transformers to pass an options bag rather than separate `config` and other options ([#10834](https://github.com/facebook/jest/pull/10834))
-- `[jest-worker]` [**BREAKING**] Use named exports ([#10623] (https://github.com/facebook/jest/pull/10623))
-- `[jest-worker]` Do not swallow errors during serialization ([#10984] (https://github.com/facebook/jest/pull/10984))
+- `[jest-worker]` [**BREAKING**] Use named exports ([#10623](https://github.com/facebook/jest/pull/10623))
+- `[jest-worker]` Do not swallow errors during serialization ([#10984](https://github.com/facebook/jest/pull/10984))
 - `[pretty-format]` [**BREAKING**] Convert to ES Modules ([#10515](https://github.com/facebook/jest/pull/10515))
+- `[pretty-format]` Only call `hasAttribute` if it's a function ([#11000](https://github.com/facebook/jest/pull/11000))
 
 ### Chore & Maintenance
 
