@@ -71,8 +71,9 @@ test('jest throws an error when globalSetup does not export a function', () => {
   ]);
 
   expect(exitCode).toBe(1);
-  expect(stderr).toMatch(
-    `TypeError: globalSetup file must export a function at ${setupPath}`,
+  expect(stderr).toContain('Jest: Got error running globalSetup');
+  expect(stderr).toContain(
+    `globalSetup file must export a function at ${setupPath}`,
   );
 });
 
@@ -154,8 +155,9 @@ test('globalSetup throws with named export', () => {
   ]);
 
   expect(exitCode).toBe(1);
-  expect(stderr).toMatch(
-    `TypeError: globalSetup file must export a function at ${setupPath}`,
+  expect(stderr).toContain('Jest: Got error running globalSetup');
+  expect(stderr).toContain(
+    `globalSetup file must export a function at ${setupPath}`,
   );
 });
 
