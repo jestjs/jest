@@ -1,0 +1,18 @@
+name: Issue Labeled
+
+on:
+  issues:
+    types: [labeled]
+
+jobs:
+  issue-labeled:
+    runs-on: ubuntu-latest
+    steps:
+      - name: bug
+        if: github.event.label.name == '🐛 Bug'
+        uses: actions-cool/issues-helper@v1.11
+        with:
+          actions: 'remove-labels'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.issue.number }}
+          labels: 'Bug Report, Needs Repro, Needs Triage'
