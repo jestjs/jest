@@ -50,6 +50,8 @@ export default class CoverageReporter extends BaseReporter {
   private _options: CoverageReporterOptions;
   private _v8CoverageResults: Array<V8CoverageResult>;
 
+  static readonly filename = __filename;
+
   constructor(
     globalConfig: Config.GlobalConfig,
     options?: CoverageReporterOptions,

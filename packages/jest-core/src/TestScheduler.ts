@@ -458,11 +458,11 @@ const createAggregatedResults = (numTotalTestSuites: number) => {
 };
 
 const getEstimatedTime = (timings: Array<number>, workers: number) => {
-  if (!timings.length) {
+  if (timings.length === 0) {
     return 0;
   }
 
-  const max = Math.max.apply(null, timings);
+  const max = Math.max(...timings);
   return timings.length <= workers
     ? max
     : Math.max(timings.reduce((sum, time) => sum + time) / workers, max);

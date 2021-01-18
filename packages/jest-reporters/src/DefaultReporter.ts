@@ -33,6 +33,8 @@ export default class DefaultReporter extends BaseReporter {
   private _status: Status;
   private _bufferedOutput: Set<FlushBufferedOutput>;
 
+  static readonly filename = __filename;
+
   constructor(globalConfig: Config.GlobalConfig) {
     super();
     this._globalConfig = globalConfig;
