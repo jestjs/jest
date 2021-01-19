@@ -2032,6 +2032,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@crowdin/cli@npm:^3.5.2":
+  version: 3.5.2
+  resolution: "@crowdin/cli@npm:3.5.2"
+  dependencies:
+    shelljs: ^0.7.5
+  bin:
+    crowdin: jdeploy-bundle/jdeploy.js
+  checksum: 24501bd385f55d244a61be9d097b03a635eb090fb74109966cff4651cf1188bc953a9dcfe14240dd346c855e0314aa3dc520937e35d4e2c164a5078fe75b3d66
+  languageName: node
+  linkType: hard
+
 "@csstools/convert-colors@npm:^1.4.0":
   version: 1.4.0
   resolution: "@csstools/convert-colors@npm:1.4.0"
@@ -2831,6 +2842,7 @@ __metadata:
     "@babel/preset-react": ^7.0.0
     "@babel/preset-typescript": ^7.0.0
     "@babel/register": ^7.0.0
+    "@crowdin/cli": ^3.5.2
     "@jest/globals": "workspace:*"
     "@jest/test-utils": "workspace:*"
     "@types/babel__core": ^7.0.0
@@ -15677,11 +15689,11 @@ fsevents@~2.3.1:
   version: 0.0.0-use.local
   resolution: "jest-website-v2@workspace:website-v2"
   dependencies:
+    "@crowdin/cli": ^3.5.2
     "@docusaurus/core": 2.0.0-alpha.6703f8420
     "@docusaurus/plugin-client-redirects": 2.0.0-alpha.6703f8420
     "@docusaurus/preset-classic": 2.0.0-alpha.6703f8420
     clsx: ^1.1.1
-    crowdin-cli: ^0.3.0
     docusaurus-plugin-sass: ^0.1.11
     fs-extra: ^9.0.1
     globby: ^11.0.1
@@ -23275,6 +23287,19 @@ react-native@0.63.2:
   version: 1.7.2
   resolution: "shell-quote@npm:1.7.2"
   checksum: 3b3d06814ca464cde8594c27bdd57a1f4c06b26ad2988b08b5819f97ac1edfd7cb7313fda1c909da33211972c72c5a7906b7da2b62078109f9d3274d3f404fa9
+  languageName: node
+  linkType: hard
+
+"shelljs@npm:^0.7.5":
+  version: 0.7.8
+  resolution: "shelljs@npm:0.7.8"
+  dependencies:
+    glob: ^7.0.0
+    interpret: ^1.0.0
+    rechoir: ^0.6.2
+  bin:
+    shjs: ./bin/shjs
+  checksum: 6eedffec68b3c32f6b8b95c7925785bfc0cc0ce16b4263e37df1d30ba3332b234ee2588bf35336502227689bbc46667da31e7b1b420cc49d5b380de3b534d5ba
   languageName: node
   linkType: hard
 

@@ -4,7 +4,7 @@
 # production build
 [build]
   base = "/"
-  command = "yarn workspace jest-website-v2 netlify:ci:build"
+  command = "yarn workspace jest-website-v2 netlify:ci:production"
   publish = "/website-v2/build"
 
 # deploy preview build
