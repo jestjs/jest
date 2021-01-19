@@ -50,10 +50,17 @@ export interface ReducedTransformOptions extends CallerTransformOptions {
   instrument: boolean;
 }
 
-export interface TransformOptions extends ReducedTransformOptions {
+export type StringMap = Map<string, string>;
+
+export interface TransformOptions<OptionType = unknown>
+  extends ReducedTransformOptions {
+  /** a cached file system which is used in jest-runtime - useful to improve performance */
+  cacheFS: StringMap;
   config: Config.ProjectConfig;
   /** A stringified version of the configuration - useful in cache busting */
   configString: string;
+  /** the options passed through Jest's config by the user */
+  transformerConfig: OptionType;
 }
 
 export interface Transformer<OptionType = unknown> {
@@ -63,12 +70,12 @@ export interface Transformer<OptionType = unknown> {
   getCacheKey?: (
     sourceText: string,
     sourcePath: Config.Path,
-    options: TransformOptions,
+    options: TransformOptions<OptionType>,
   ) => string;
 
   process: (
     sourceText: string,
     sourcePath: Config.Path,
-    options: TransformOptions,
+    options: TransformOptions<OptionType>,
   ) => TransformedSource;
 }

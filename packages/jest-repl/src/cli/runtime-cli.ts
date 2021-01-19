@@ -54,7 +54,7 @@ export async function run(
   }
 
   const root = tryRealpath(process.cwd());
-  const filePath = path.resolve(root, argv._[0]);
+  const filePath = path.resolve(root, argv._[0].toString());
 
   if (argv.debug) {
     const info = cliInfo ? ', ' + cliInfo.join(', ') : '';
@@ -91,14 +91,20 @@ export async function run(
       config,
       environment,
       hasteMap.resolver,
-      undefined,
-      undefined,
+      new Map(),
+      {
+        changedFiles: undefined,
+        collectCoverage: false,
+        collectCoverageFrom: [],
+        collectCoverageOnlyFrom: undefined,
+        coverageProvider: 'v8',
+        sourcesRelatedToTestsInChangedFiles: undefined,
+      },
       filePath,
     );
 
     for (const path of config.setupFiles) {
-      // TODO: remove ? in Jest 26
-      const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+      const esm = runtime.unstable_shouldLoadAsEsm(path);
 
       if (esm) {
         await runtime.unstable_importModule(path);
@@ -106,8 +112,7 @@ export async function run(
         runtime.requireModule(path);
       }
     }
-    // TODO: remove ? in Jest 26
-    const esm = runtime.unstable_shouldLoadAsEsm?.(filePath);
+    const esm = runtime.unstable_shouldLoadAsEsm(filePath);
 
     if (esm) {
       await runtime.unstable_importModule(filePath);

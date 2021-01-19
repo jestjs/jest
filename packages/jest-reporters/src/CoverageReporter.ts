@@ -24,7 +24,7 @@ import type {
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {clearLine, isInteractive} from 'jest-util';
-import Worker from 'jest-worker';
+import {Worker} from 'jest-worker';
 import BaseReporter from './BaseReporter';
 import getWatermarks from './getWatermarks';
 import type {
@@ -49,6 +49,8 @@ export default class CoverageReporter extends BaseReporter {
   private _sourceMapStore: libSourceMaps.MapStore;
   private _options: CoverageReporterOptions;
   private _v8CoverageResults: Array<V8CoverageResult>;
+
+  static readonly filename = __filename;
 
   constructor(
     globalConfig: Config.GlobalConfig,

@@ -116,4 +116,4 @@ More importantly, adding new tests causes total runtime to grow very slowly. Eng
 
 With Jest's recent 0.9 release and performance improvements from the [node-haste2 integration](https://github.com/facebook/jest/pull/599), the runtime of the [Relay](https://github.com/facebook/relay) framework's test suite went down from 60 seconds to about 25 and the [react-native](https://github.com/facebook/react-native) test suite now finishes in less than ten seconds on a 13” MacBook Pro.
 
-We're very happy with the wins we've seen so far, and we're going to keep working on Jest and making it better. If you are curious about contributing to Jest, feel free get in touch on GitHub, [Discord](/help) or Facebook :)
+We're very happy with the wins we've seen so far, and we're going to keep working on Jest and making it better. If you are curious about contributing to Jest, feel free get in touch on GitHub, [Discord](https://discord.gg/j6FKKQQrW9) or Facebook :)

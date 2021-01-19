@@ -87,4 +87,4 @@ Recently the Jest core team and other contributors started to talk more about Je
 - Rogelio Guzman did a talk about [Jest Snapshots and Beyond](https://www.youtube.com/watch?time_continue=416&v=HAuXJVI_bUs) at React Conf.
 - I spoke about [Building High-Quality JavaScript Tools](https://developers.facebook.com/videos/f8-2017/building-high-quality-javascript-tools/) at Facebook's F8 conference.
 
-_As always, this release couldn't have been possible without you, the JavaScript community. We are incredibly grateful that we get the opportunity to work on improving JavaScript testing together. If you'd like to contribute to Jest, please don't hesitate to reach out to us on [GitHub](https://github.com/facebook/jest) or on [Discord](https://www.reactiflux.com/)._
+_As always, this release couldn't have been possible without you, the JavaScript community. We are incredibly grateful that we get the opportunity to work on improving JavaScript testing together. If you'd like to contribute to Jest, please don't hesitate to reach out to us on [GitHub](https://github.com/facebook/jest) or on [Discord](https://discord.gg/j6FKKQQrW9)._

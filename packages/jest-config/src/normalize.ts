@@ -474,6 +474,7 @@ const buildTestPathPattern = (argv: Config.Argv): string => {
 const showTestPathPatternError = (testPathPattern: string) => {
   clearLine(process.stdout);
 
+  // eslint-disable-next-line no-console
   console.log(
     chalk.red(
       `  Invalid testPattern ${testPathPattern} supplied. ` +
@@ -481,6 +482,63 @@ const showTestPathPatternError = (testPathPattern: string) => {
     ),
   );
 };
+
+function validateExtensionsToTreatAsEsm(
+  extensionsToTreatAsEsm: Config.InitialOptions['extensionsToTreatAsEsm'],
+) {
+  if (!extensionsToTreatAsEsm || extensionsToTreatAsEsm.length === 0) {
+    return;
+  }
+
+  function printConfig(opts: Array<string>) {
+    const string = opts.map(ext => `'${ext}'`).join(', ');
+
+    return chalk.bold(`extensionsToTreatAsEsm: [${string}]`);
+  }
+
+  const extensionWithoutDot = extensionsToTreatAsEsm.some(
+    ext => !ext.startsWith('.'),
+  );
+
+  if (extensionWithoutDot) {
+    throw createConfigError(
+      `  Option: ${printConfig(
+        extensionsToTreatAsEsm,
+      )} includes a string that does not start with a period (${chalk.bold(
+        '.',
+      )}).
+  Please change your configuration to ${printConfig(
+    extensionsToTreatAsEsm.map(ext => (ext.startsWith('.') ? ext : `.${ext}`)),
+  )}.`,
+    );
+  }
+
+  if (extensionsToTreatAsEsm.includes('.js')) {
+    throw createConfigError(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+        "'.js'",
+      )} which is always inferred based on ${chalk.bold(
+        'type',
+      )} in its nearest ${chalk.bold('package.json')}.`,
+    );
+  }
+
+  if (extensionsToTreatAsEsm.includes('.cjs')) {
+    throw createConfigError(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+        "'.cjs'",
+      )} which is always treated as CommonJS.`,
+    );
+  }
+
+  if (extensionsToTreatAsEsm.includes('.mjs')) {
+    throw createConfigError(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+        "'.mjs'",
+      )} which is always treated as an ECMAScript Module.`,
+    );
+  }
+}
 
 export default function normalize(
   initialOptions: Config.InitialOptions,
@@ -495,7 +553,7 @@ export default function normalize(
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
-    recursiveBlacklist: [
+    recursiveDenylist: [
       'collectCoverageOnlyFrom',
       // 'coverageThreshold' allows to use 'global' and glob strings on the same
       // level, there's currently no way we can deal with such config
@@ -582,6 +640,8 @@ export default function normalize(
       rootDir: options.rootDir,
     });
   }
+
+  validateExtensionsToTreatAsEsm(options.extensionsToTreatAsEsm);
 
   const optionKeys = Object.keys(options) as Array<keyof Config.InitialOptions>;
 
@@ -887,6 +947,7 @@ export default function normalize(
       case 'detectOpenHandles':
       case 'errorOnDeprecated':
       case 'expand':
+      case 'extensionsToTreatAsEsm':
       case 'extraGlobals':
       case 'globals':
       case 'findRelatedTests':
@@ -897,7 +958,6 @@ export default function normalize(
       case 'listTests':
       case 'logHeapUsage':
       case 'maxConcurrency':
-      case 'mapCoverage':
       case 'name':
       case 'noStackTrace':
       case 'notify':
@@ -974,7 +1034,7 @@ export default function normalize(
     rootDir: options.rootDir,
   });
 
-  newOptions.nonFlagArgs = argv._;
+  newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
   newOptions.testPathPattern = buildTestPathPattern(argv);
   newOptions.json = !!argv.json;
 
@@ -1063,7 +1123,7 @@ export default function normalize(
   // where arguments to `--collectCoverageFrom` should be globs (or relative
   // paths to the rootDir)
   if (newOptions.collectCoverage && argv.findRelatedTests) {
-    let collectCoverageFrom = argv._.map(filename => {
+    let collectCoverageFrom = newOptions.nonFlagArgs.map(filename => {
       filename = replaceRootDirInPath(options.rootDir, filename);
       return path.isAbsolute(filename)
         ? path.relative(options.rootDir, filename)

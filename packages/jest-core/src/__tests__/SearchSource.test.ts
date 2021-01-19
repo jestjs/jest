@@ -9,7 +9,7 @@
 import * as path from 'path';
 import type {Config} from '@jest/types';
 import {normalize} from 'jest-config';
-import {Test} from 'jest-runner';
+import type {Test} from 'jest-runner';
 import Runtime from 'jest-runtime';
 import SearchSource, {SearchResult} from '../SearchSource';
 
@@ -415,7 +415,7 @@ describe('SearchSource', () => {
     );
     const rootPath = path.join(rootDir, 'root.js');
 
-    beforeEach(done => {
+    beforeEach(async () => {
       const {options: config} = normalize(
         {
           haste: {
@@ -435,12 +435,11 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      Runtime.createContext(config, {maxWorkers, watchman: false}).then(
-        context => {
-          searchSource = new SearchSource(context);
-          done();
-        },
-      );
+      const context = await Runtime.createContext(config, {
+        maxWorkers,
+        watchman: false,
+      });
+      searchSource = new SearchSource(context);
     });
 
     it('makes sure a file is related to itself', () => {
@@ -477,7 +476,7 @@ describe('SearchSource', () => {
   });
 
   describe('findRelatedTestsFromPattern', () => {
-    beforeEach(done => {
+    beforeEach(async () => {
       const {options: config} = normalize(
         {
           moduleFileExtensions: ['js', 'jsx', 'foobar'],
@@ -487,12 +486,11 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      Runtime.createContext(config, {maxWorkers, watchman: false}).then(
-        context => {
-          searchSource = new SearchSource(context);
-          done();
-        },
-      );
+      const context = await Runtime.createContext(config, {
+        maxWorkers,
+        watchman: false,
+      });
+      searchSource = new SearchSource(context);
     });
 
     it('returns empty search result for empty input', () => {

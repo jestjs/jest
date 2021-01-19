@@ -146,7 +146,7 @@ async function runTestInternal(
     ? new LeakDetector(environment)
     : null;
 
-  const cacheFS = {[path]: testSource};
+  const cacheFS = new Map([[path, testSource]]);
   setGlobal(environment.global, 'console', testConsole);
 
   const runtime = new Runtime(
@@ -169,8 +169,7 @@ async function runTestInternal(
   const start = Date.now();
 
   for (const path of config.setupFiles) {
-    // TODO: remove ? in Jest 26
-    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);
@@ -183,8 +182,7 @@ async function runTestInternal(
     environment: 'node',
     handleUncaughtExceptions: false,
     retrieveSourceMap: source => {
-      const sourceMaps = runtime.getSourceMaps();
-      const sourceMapSource = sourceMaps && sourceMaps[source];
+      const sourceMapSource = runtime.getSourceMaps()?.get(source);
 
       if (sourceMapSource) {
         try {

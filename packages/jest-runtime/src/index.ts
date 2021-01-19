@@ -57,6 +57,11 @@ import type {Context} from './types';
 
 export type {Context} from './types';
 
+interface EsmModuleCache {
+  beforeEvaluation: Promise<VMModule>;
+  fullyEvaluated: Promise<VMModule>;
+}
+
 const esmIsAvailable = typeof SourceTextModule === 'function';
 
 interface JestGlobals extends Global.TestFrameworkGlobals {
@@ -96,18 +101,6 @@ const JEST_RESOLVE_OUTSIDE_VM_OPTION = Symbol.for(
 type ResolveOptions = Parameters<typeof require.resolve>[1] & {
   [JEST_RESOLVE_OUTSIDE_VM_OPTION]?: true;
 };
-
-type StringMap = Map<string, string>;
-type BooleanMap = Map<string, boolean>;
-
-const fromEntries: typeof Object.fromEntries =
-  Object.fromEntries ??
-  function fromEntries<T>(iterable: Iterable<[string, T]>) {
-    return [...iterable].reduce<Record<string, T>>((obj, [key, val]) => {
-      obj[key] = val;
-      return obj;
-    }, {});
-  };
 
 const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 const retryTimesSymbol = Symbol.for('RETRY_TIMES');
@@ -149,66 +142,62 @@ const supportsTopLevelAwait =
   })();
 
 export default class Runtime {
-  private _cacheFS: StringMap;
-  private _config: Config.ProjectConfig;
-  private _coverageOptions: ShouldInstrumentOptions;
+  private readonly _cacheFS: Map<string, string>;
+  private readonly _config: Config.ProjectConfig;
+  private readonly _coverageOptions: ShouldInstrumentOptions;
   private _currentlyExecutingModulePath: string;
-  private _environment: JestEnvironment;
-  private _explicitShouldMock: BooleanMap;
+  private readonly _environment: JestEnvironment;
+  private readonly _explicitShouldMock: Map<string, boolean>;
   private _fakeTimersImplementation:
     | LegacyFakeTimers<unknown>
     | ModernFakeTimers
     | null;
-  private _internalModuleRegistry: ModuleRegistry;
+  private readonly _internalModuleRegistry: ModuleRegistry;
   private _isCurrentlyExecutingManualMock: string | null;
   private _mainModule: Module | null;
-  private _mockFactories: Map<string, () => unknown>;
-  private _mockMetaDataCache: Map<
+  private readonly _mockFactories: Map<string, () => unknown>;
+  private readonly _mockMetaDataCache: Map<
     string,
     MockFunctionMetadata<unknown, Array<unknown>>
   >;
   private _mockRegistry: Map<string, any>;
   private _isolatedMockRegistry: Map<string, any> | null;
-  private _moduleMocker: ModuleMocker;
+  private readonly _moduleMocker: ModuleMocker;
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
-  private _esmoduleRegistry: Map<string, Promise<VMModule>>;
-  private _testPath: Config.Path | undefined;
-  private _resolver: Resolver;
+  private readonly _esmoduleRegistry: Map<Config.Path, EsmModuleCache>;
+  private readonly _cjsNamedExports: Map<Config.Path, Set<string>>;
+  private readonly _testPath: Config.Path;
+  private readonly _resolver: Resolver;
   private _shouldAutoMock: boolean;
-  private _shouldMockModuleCache: BooleanMap;
-  private _shouldUnmockTransitiveDependenciesCache: BooleanMap;
-  private _sourceMapRegistry: StringMap;
-  private _scriptTransformer: ScriptTransformer;
-  private _fileTransforms: Map<string, RuntimeTransformResult>;
+  private readonly _shouldMockModuleCache: Map<string, boolean>;
+  private readonly _shouldUnmockTransitiveDependenciesCache: Map<
+    string,
+    boolean
+  >;
+  private readonly _sourceMapRegistry: Map<string, string>;
+  private readonly _scriptTransformer: ScriptTransformer;
+  private readonly _fileTransforms: Map<string, RuntimeTransformResult>;
   private _v8CoverageInstrumenter: CoverageInstrumenter | undefined;
   private _v8CoverageResult: V8Coverage | undefined;
-  private _transitiveShouldMock: BooleanMap;
+  private readonly _transitiveShouldMock: Map<string, boolean>;
   private _unmockList: RegExp | undefined;
-  private _virtualMocks: BooleanMap;
+  private readonly _virtualMocks: Map<string, boolean>;
   private _moduleImplementation?: typeof nativeModule.Module;
-  private jestObjectCaches: Map<string, Jest>;
+  private readonly jestObjectCaches: Map<string, Jest>;
   private jestGlobals?: JestGlobals;
 
   constructor(
     config: Config.ProjectConfig,
     environment: JestEnvironment,
     resolver: Resolver,
-    cacheFS: Record<string, string> = {},
-    coverageOptions?: ShouldInstrumentOptions,
-    // TODO: Make mandatory in Jest 27
-    testPath?: Config.Path,
+    cacheFS: Map<string, string>,
+    coverageOptions: ShouldInstrumentOptions,
+    testPath: Config.Path,
   ) {
-    this._cacheFS = new Map(Object.entries(cacheFS));
+    this._cacheFS = cacheFS;
     this._config = config;
-    this._coverageOptions = coverageOptions || {
-      changedFiles: undefined,
-      collectCoverage: false,
-      collectCoverageFrom: [],
-      collectCoverageOnlyFrom: undefined,
-      coverageProvider: 'babel',
-      sourcesRelatedToTestsInChangedFiles: undefined,
-    };
+    this._coverageOptions = coverageOptions;
     this._currentlyExecutingModulePath = '';
     this._environment = environment;
     this._explicitShouldMock = new Map();
@@ -217,15 +206,19 @@ export default class Runtime {
     this._mainModule = null;
     this._mockFactories = new Map();
     this._mockRegistry = new Map();
-    // during setup, this cannot be null (and it's fine to explode if it is)
-    this._moduleMocker = this._environment.moduleMocker!;
+    invariant(
+      this._environment.moduleMocker,
+      '`moduleMocker` must be set on an environment when created',
+    );
+    this._moduleMocker = this._environment.moduleMocker;
     this._isolatedModuleRegistry = null;
     this._isolatedMockRegistry = null;
     this._moduleRegistry = new Map();
     this._esmoduleRegistry = new Map();
+    this._cjsNamedExports = new Map();
     this._testPath = testPath;
     this._resolver = resolver;
-    this._scriptTransformer = new ScriptTransformer(config);
+    this._scriptTransformer = new ScriptTransformer(config, this._cacheFS);
     this._shouldAutoMock = config.automock;
     this._sourceMapRegistry = new Map();
     this._fileTransforms = new Map();
@@ -238,9 +231,9 @@ export default class Runtime {
     this._transitiveShouldMock = new Map();
 
     this._fakeTimersImplementation =
-      config.timers === 'modern'
-        ? this._environment.fakeTimersModern
-        : this._environment.fakeTimers;
+      config.timers === 'legacy'
+        ? this._environment.fakeTimers
+        : this._environment.fakeTimersModern;
 
     this._unmockList = unmockRegExpCache.get(config);
     if (!this._unmockList && config.unmockedModulePathPatterns) {
@@ -251,10 +244,12 @@ export default class Runtime {
     }
 
     if (config.automock) {
-      const virtualMocks = fromEntries(this._virtualMocks);
       config.setupFiles.forEach(filePath => {
-        if (filePath && filePath.includes(NODE_MODULES)) {
-          const moduleID = this._resolver.getModuleID(virtualMocks, filePath);
+        if (filePath.includes(NODE_MODULES)) {
+          const moduleID = this._resolver.getModuleID(
+            this._virtualMocks,
+            filePath,
+          );
           this._transitiveShouldMock.set(moduleID, false);
         }
       });
@@ -358,11 +353,17 @@ export default class Runtime {
   }
 
   // unstable as it should be replaced by https://github.com/nodejs/modules/issues/393, and we don't want people to use it
-  unstable_shouldLoadAsEsm = Resolver.unstable_shouldLoadAsEsm;
+  unstable_shouldLoadAsEsm(path: Config.Path): boolean {
+    return Resolver.unstable_shouldLoadAsEsm(
+      path,
+      this._config.extensionsToTreatAsEsm,
+    );
+  }
 
   private async loadEsmModule(
     modulePath: Config.Path,
     query = '',
+    isStaticImport = false,
   ): Promise<VMModule> {
     const cacheKey = modulePath + query;
 
@@ -378,7 +379,10 @@ export default class Runtime {
 
       if (this._resolver.isCoreModule(modulePath)) {
         const core = this._importCoreModule(modulePath, context);
-        this._esmoduleRegistry.set(cacheKey, core);
+        this._esmoduleRegistry.set(cacheKey, {
+          beforeEvaluation: core,
+          fullyEvaluated: core,
+        });
         return core;
       }
 
@@ -401,31 +405,56 @@ export default class Runtime {
             specifier,
             referencingModule.identifier,
             referencingModule.context,
+            false,
           ),
         initializeImportMeta(meta: ImportMeta) {
           meta.url = pathToFileURL(modulePath).href;
         },
       });
 
+      let resolve: (value: VMModule) => void;
+      let reject: (value: any) => void;
+      const promise = new Promise<VMModule>((_resolve, _reject) => {
+        resolve = _resolve;
+        reject = _reject;
+      });
+
+      // add to registry before link so that circular import won't end up stack overflow
       this._esmoduleRegistry.set(
         cacheKey,
         // we wanna put the linking promise in the cache so modules loaded in
         // parallel can all await it. We then await it synchronously below, so
         // we shouldn't get any unhandled rejections
-        module
-          .link((specifier: string, referencingModule: VMModule) =>
-            this.linkModules(
-              specifier,
-              referencingModule.identifier,
-              referencingModule.context,
-            ),
-          )
-          .then(() => module.evaluate())
-          .then(() => module),
+        {
+          beforeEvaluation: Promise.resolve(module),
+          fullyEvaluated: promise,
+        },
       );
+
+      module
+        .link((specifier: string, referencingModule: VMModule) =>
+          this.linkModules(
+            specifier,
+            referencingModule.identifier,
+            referencingModule.context,
+            true,
+          ),
+        )
+        .then(() => module.evaluate())
+        .then(
+          () => resolve(module),
+          (e: any) => reject(e),
+        );
     }
 
-    const module = this._esmoduleRegistry.get(cacheKey);
+    const entry = this._esmoduleRegistry.get(cacheKey);
+
+    // return the already resolved, pre-evaluation promise
+    // is loaded through static import to prevent promise deadlock
+    // because module is evaluated after all static import is resolved
+    const module = isStaticImport
+      ? entry?.beforeEvaluation
+      : entry?.fullyEvaluated;
 
     invariant(module);
 
@@ -436,15 +465,21 @@ export default class Runtime {
     specifier: string,
     referencingIdentifier: string,
     context: VMContext,
+    isStaticImport: boolean,
   ) {
     if (specifier === '@jest/globals') {
       const fromCache = this._esmoduleRegistry.get('@jest/globals');
 
       if (fromCache) {
-        return fromCache;
+        return isStaticImport
+          ? fromCache.beforeEvaluation
+          : fromCache.fullyEvaluated;
       }
       const globals = this.getGlobalsForEsm(referencingIdentifier, context);
-      this._esmoduleRegistry.set('@jest/globals', globals);
+      this._esmoduleRegistry.set('@jest/globals', {
+        beforeEvaluation: globals,
+        fullyEvaluated: globals,
+      });
 
       return globals;
     }
@@ -461,7 +496,7 @@ export default class Runtime {
       this._resolver.isCoreModule(resolved) ||
       this.unstable_shouldLoadAsEsm(resolved)
     ) {
-      return this.loadEsmModule(resolved, query);
+      return this.loadEsmModule(resolved, query, isStaticImport);
     }
 
     return this.loadCjsAsEsm(referencingIdentifier, resolved, context);
@@ -491,21 +526,15 @@ export default class Runtime {
     // CJS loaded via `import` should share cache with other CJS: https://github.com/nodejs/modules/issues/503
     const cjs = this.requireModuleOrMock(from, modulePath);
 
-    const transformedCode = this._fileTransforms.get(modulePath);
+    const parsedExports = this.getExportsOfCjs(modulePath);
 
-    let cjsExports: ReadonlyArray<string> = [];
-
-    if (transformedCode) {
-      const {exports} = parseCjs(transformedCode.code);
-
-      cjsExports = exports.filter(exportName => {
-        // we don't wanna respect any exports _names_ default as a named export
-        if (exportName === 'default') {
-          return false;
-        }
-        return Object.hasOwnProperty.call(cjs, exportName);
-      });
-    }
+    const cjsExports = [...parsedExports].filter(exportName => {
+      // we don't wanna respect any exports _named_ default as a named export
+      if (exportName === 'default') {
+        return false;
+      }
+      return Object.hasOwnProperty.call(cjs, exportName);
+    });
 
     const module = new SyntheticModule(
       [...cjsExports, 'default'],
@@ -523,6 +552,33 @@ export default class Runtime {
     return evaluateSyntheticModule(module);
   }
 
+  private getExportsOfCjs(modulePath: Config.Path) {
+    const cachedNamedExports = this._cjsNamedExports.get(modulePath);
+
+    if (cachedNamedExports) {
+      return cachedNamedExports;
+    }
+
+    const transformedCode =
+      this._fileTransforms.get(modulePath)?.code ?? this.readFile(modulePath);
+
+    const {exports, reexports} = parseCjs(transformedCode);
+
+    const namedExports = new Set(exports);
+
+    reexports.forEach(reexport => {
+      const resolved = this._resolveModule(modulePath, reexport);
+
+      const exports = this.getExportsOfCjs(resolved);
+
+      exports.forEach(namedExports.add, namedExports);
+    });
+
+    this._cjsNamedExports.set(modulePath, namedExports);
+
+    return namedExports;
+  }
+
   requireModule<T = unknown>(
     from: Config.Path,
     moduleName?: string,
@@ -530,7 +586,7 @@ export default class Runtime {
     isRequireActual?: boolean | null,
   ): T {
     const moduleID = this._resolver.getModuleID(
-      fromEntries(this._virtualMocks),
+      this._virtualMocks,
       from,
       moduleName,
     );
@@ -565,13 +621,10 @@ export default class Runtime {
     if (options?.isInternalModule) {
       moduleRegistry = this._internalModuleRegistry;
     } else {
-      if (
-        this._moduleRegistry.get(modulePath) ||
-        !this._isolatedModuleRegistry
-      ) {
-        moduleRegistry = this._moduleRegistry;
-      } else {
+      if (this._isolatedModuleRegistry) {
         moduleRegistry = this._isolatedModuleRegistry;
+      } else {
+        moduleRegistry = this._moduleRegistry;
       }
     }
 
@@ -628,7 +681,7 @@ export default class Runtime {
 
   requireMock<T = unknown>(from: Config.Path, moduleName: string): T {
     const moduleID = this._resolver.getModuleID(
-      fromEntries(this._virtualMocks),
+      this._virtualMocks,
       from,
       moduleName,
     );
@@ -815,6 +868,7 @@ export default class Runtime {
     this._mockRegistry.clear();
     this._moduleRegistry.clear();
     this._esmoduleRegistry.clear();
+    this._cjsNamedExports.clear();
 
     if (this._environment) {
       if (this._environment.global) {
@@ -879,13 +933,8 @@ export default class Runtime {
       });
   }
 
-  // TODO - remove in Jest 27
-  getSourceMapInfo(_coveredFiles: Set<string>): Record<string, string> {
-    return {};
-  }
-
   getSourceMaps(): SourceMapRegistry {
-    return fromEntries(this._sourceMapRegistry);
+    return this._sourceMapRegistry;
   }
 
   setMock(
@@ -900,7 +949,7 @@ export default class Runtime {
       this._virtualMocks.set(mockPath, true);
     }
     const moduleID = this._resolver.getModuleID(
-      fromEntries(this._virtualMocks),
+      this._virtualMocks,
       from,
       moduleName,
     );
@@ -1169,7 +1218,7 @@ export default class Runtime {
 
           invariant(context);
 
-          return this.linkModules(specifier, scriptFilename, context);
+          return this.linkModules(specifier, scriptFilename, context, false);
         },
       });
     } catch (e) {
@@ -1328,7 +1377,7 @@ export default class Runtime {
   private _shouldMock(from: Config.Path, moduleName: string): boolean {
     const explicitShouldMock = this._explicitShouldMock;
     const moduleID = this._resolver.getModuleID(
-      fromEntries(this._virtualMocks),
+      this._virtualMocks,
       from,
       moduleName,
     );
@@ -1371,7 +1420,7 @@ export default class Runtime {
 
     // transitive unmocking for package managers that store flat packages (npm3)
     const currentModuleID = this._resolver.getModuleID(
-      fromEntries(this._virtualMocks),
+      this._virtualMocks,
       from,
     );
     if (
@@ -1456,7 +1505,7 @@ export default class Runtime {
     };
     const unmock = (moduleName: string) => {
       const moduleID = this._resolver.getModuleID(
-        fromEntries(this._virtualMocks),
+        this._virtualMocks,
         from,
         moduleName,
       );
@@ -1465,7 +1514,7 @@ export default class Runtime {
     };
     const deepUnmock = (moduleName: string) => {
       const moduleID = this._resolver.getModuleID(
-        fromEntries(this._virtualMocks),
+        this._virtualMocks,
         from,
         moduleName,
       );
@@ -1479,7 +1528,7 @@ export default class Runtime {
       }
 
       const moduleID = this._resolver.getModuleID(
-        fromEntries(this._virtualMocks),
+        this._virtualMocks,
         from,
         moduleName,
       );
@@ -1518,11 +1567,11 @@ export default class Runtime {
 
       return this._fakeTimersImplementation!;
     };
-    const useFakeTimers = (type: string = 'legacy') => {
-      if (type === 'modern') {
-        this._fakeTimersImplementation = this._environment.fakeTimersModern;
-      } else {
+    const useFakeTimers: Jest['useFakeTimers'] = (type = 'modern') => {
+      if (type === 'legacy') {
         this._fakeTimersImplementation = this._environment.fakeTimers;
+      } else {
+        this._fakeTimersImplementation = this._environment.fakeTimersModern;
       }
       this._fakeTimersImplementation!.useFakeTimers();
       return jestObject;

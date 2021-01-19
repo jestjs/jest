@@ -8,6 +8,8 @@
 
 import crypto from 'crypto';
 import path from 'path';
+import {wrap} from 'jest-snapshot-serializer-raw';
+import stripAnsi from 'strip-ansi';
 import {escapeStrForRegex} from 'jest-regex-util';
 import Defaults from '../Defaults';
 import {DEFAULT_JS_PATTERN} from '../constants';
@@ -1603,10 +1605,10 @@ describe('moduleFileExtensions', () => {
 
     expect(options.moduleFileExtensions).toEqual([
       'js',
-      'json',
       'jsx',
       'ts',
       'tsx',
+      'json',
       'node',
     ]);
   });
@@ -1726,5 +1728,38 @@ describe('testTimeout', () => {
     expect(() =>
       normalize({rootDir: '/root/', testTimeout: -1}, {}),
     ).toThrowErrorMatchingSnapshot();
+  });
+});
+
+describe('extensionsToTreatAsEsm', () => {
+  function matchErrorSnapshot(callback) {
+    expect.assertions(1);
+
+    try {
+      callback();
+    } catch (error) {
+      expect(wrap(stripAnsi(error.message).trim())).toMatchSnapshot();
+    }
+  }
+
+  it('should pass valid config through', () => {
+    const {options} = normalize(
+      {extensionsToTreatAsEsm: ['.ts'], rootDir: '/root/'},
+      {},
+    );
+
+    expect(options.extensionsToTreatAsEsm).toEqual(['.ts']);
+  });
+
+  it('should enforce leading dots', () => {
+    matchErrorSnapshot(() =>
+      normalize({extensionsToTreatAsEsm: ['ts'], rootDir: '/root/'}, {}),
+    );
+  });
+
+  it.each(['.js', '.mjs', '.cjs'])('throws on %s', ext => {
+    matchErrorSnapshot(() =>
+      normalize({extensionsToTreatAsEsm: [ext], rootDir: '/root/'}, {}),
+    );
   });
 });

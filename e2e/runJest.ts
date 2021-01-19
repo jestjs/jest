@@ -13,7 +13,7 @@ import * as fs from 'graceful-fs';
 import stripAnsi = require('strip-ansi');
 import type {FormattedTestResults} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {normalizeIcons} from './Utils';
+import {normalizeIcons, rightTrimStdout} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
@@ -108,10 +108,10 @@ function normalizeStdoutAndStderr(
   result: RunJestResult,
   options: RunJestOptions,
 ): RunJestResult {
-  result.stdout = normalizeIcons(result.stdout);
   if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);
-  result.stderr = normalizeIcons(result.stderr);
+  result.stdout = normalizeIcons(rightTrimStdout(result.stdout));
   if (options.stripAnsi) result.stderr = stripAnsi(result.stderr);
+  result.stderr = normalizeIcons(rightTrimStdout(result.stderr));
 
   return result;
 }

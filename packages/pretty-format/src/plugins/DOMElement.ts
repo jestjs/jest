@@ -27,7 +27,7 @@ const testNode = (val: any) => {
   const {nodeType, tagName} = val;
   const isCustomElement =
     (typeof tagName === 'string' && tagName.includes('-')) ||
-    val.hasAttribute?.('is');
+    (typeof val.hasAttribute === 'function' && val.hasAttribute('is'));
 
   return (
     (nodeType === ELEMENT_NODE &&

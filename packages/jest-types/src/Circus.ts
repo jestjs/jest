@@ -20,7 +20,7 @@ export type HookFn = Global.HookFn;
 export type AsyncFn = TestFn | HookFn;
 export type SharedHookType = 'afterAll' | 'beforeAll';
 export type HookType = SharedHookType | 'afterEach' | 'beforeEach';
-export type TestContext = Record<string, unknown>;
+export type TestContext = Global.TestContext;
 export type Exception = any; // Since in JS anything can be thrown as an error.
 export type FormattedError = string; // String representation of error.
 export type Hook = {
@@ -28,6 +28,7 @@ export type Hook = {
   fn: HookFn;
   type: HookType;
   parent: DescribeBlock;
+  seenDone: boolean;
   timeout: number | undefined | null;
 };
 
@@ -238,6 +239,7 @@ export type TestEntry = {
   parent: DescribeBlock;
   startedAt?: number | null;
   duration?: number | null;
+  seenDone: boolean;
   status?: TestStatus | null; // whether the test has been skipped or run already
   timeout?: number;
 };

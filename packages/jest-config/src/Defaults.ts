@@ -26,6 +26,7 @@ const defaultOptions: Config.DefaultOptions = {
   coverageReporters: ['json', 'text', 'lcov', 'clover'],
   errorOnDeprecated: false,
   expand: false,
+  extensionsToTreatAsEsm: [],
   forceCoverageMatch: [],
   globals: {},
   haste: {
@@ -36,7 +37,7 @@ const defaultOptions: Config.DefaultOptions = {
   maxConcurrency: 5,
   maxWorkers: '50%',
   moduleDirectories: ['node_modules'],
-  moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
+  moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
   moduleNameMapper: {},
   modulePathIgnorePatterns: [],
   noStackTrace: false,

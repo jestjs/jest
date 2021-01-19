@@ -130,4 +130,4 @@ Full talk is available [here](https://www.youtube.com/watch?v=cAKYQpTC7MA).
 
 The turnout was amazing, and we were able to meet a lot of the London-based community in person. Thank you to everyone who joined us and for your continued support! Stay tuned for our next post which will outline the Jest Open Collective and the plans we have for the future.
 
-_As always, this release couldn't have been possible without you, the JavaScript community. We are incredibly grateful that we get the opportunity to work on improving JavaScript testing together. If you'd like to contribute to Jest, please don't hesitate to reach out to us on_ _[GitHub](https://github.com/facebook/jest) or on_ _[Discord](https://www.reactiflux.com/)._
+_As always, this release couldn't have been possible without you, the JavaScript community. We are incredibly grateful that we get the opportunity to work on improving JavaScript testing together. If you'd like to contribute to Jest, please don't hesitate to reach out to us on_ _[GitHub](https://github.com/facebook/jest) or on_ _[Discord](https://discord.gg/j6FKKQQrW9)._
