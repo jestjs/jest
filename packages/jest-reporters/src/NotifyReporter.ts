@@ -24,6 +24,8 @@ export default class NotifyReporter extends BaseReporter {
   private _globalConfig: Config.GlobalConfig;
   private _context: TestSchedulerContext;
 
+  static readonly filename = __filename;
+
   constructor(
     globalConfig: Config.GlobalConfig,
     startRun: (globalConfig: Config.GlobalConfig) => unknown,

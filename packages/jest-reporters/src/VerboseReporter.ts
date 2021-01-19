@@ -22,6 +22,8 @@ const {ICONS} = specialChars;
 export default class VerboseReporter extends DefaultReporter {
   protected _globalConfig: Config.GlobalConfig;
 
+  static readonly filename = __filename;
+
   constructor(globalConfig: Config.GlobalConfig) {
     super(globalConfig);
     this._globalConfig = globalConfig;
