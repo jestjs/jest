@@ -5,36 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-.mainContainer a {
+.mainContainerV1 a {
   text-decoration: underline;
 }
 
-.mainContainer a:hover,
-.mainContainer a:active {
+.mainContainerV1 a:hover,
+.mainContainerV1 a:active {
   text-decoration: none;
 }
 
-.fixedHeaderContainer header img.logo {
-  height: 60px;
-  margin-top: -20px;
-  margin-bottom: -20px;
-  margin-right: -20px;
-}
-
-#languages-dropdown-items a {
-  color: white;
-}
-
-#languages-dropdown-items a:hover {
-  color: var(--green);
-}
-
+/*
+REPL: used on blog posts!
+ */
 div.jest-repl {
   margin: 0 5%;
   position: relative;
   width: 600px;
 }
-
 div.jest-repl iframe {
   display: block;
   margin: 0 auto 10px;
@@ -46,7 +33,7 @@ div.bottom-margin {
   margin-bottom: 40px;
 }
 
-.docs .wrapper {
+.docs .wrapperV1 {
   display: flex;
 }
 
@@ -90,25 +77,9 @@ div.jest-hero-interactive {
   position: relative;
 }
 
-div.hero-github-button-container {
-  min-height: 20px;
-  position: absolute;
-  left: initial;
-  right: 10px;
-  top: 20px;
-  visibility: hidden;
-  z-index: 1000;
-}
-
 /* Means the links doesn't push the vertical */
 .hash-link {
   position: absolute;
-}
-
-@media only screen and (min-width: 580px) {
-  div.hero-github-button-container {
-    visibility: visible;
-  }
 }
 
 div.jest-hand {
@@ -213,6 +184,10 @@ div.jest-button-container {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+}
+
+html[data-theme="dark"] div.jest-button-container {
+  background-color: rgba(24, 25, 26, 0.5);
 }
 
 a.jest-button {

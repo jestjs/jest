@@ -20,19 +20,13 @@
 /packages/*/coverage/
 /packages/*/node_modules/
 
+
+/website/.docusaurus
 /website/build
 /website/backers.json
 /website/node_modules
 /website/yarn.lock
-/website/translated_docs
 /website/i18n/*
-
-/website-v2/.docusaurus
-/website-v2/build
-/website-v2/backers.json
-/website-v2/node_modules
-/website-v2/yarn.lock
-/website-v2/i18n/*
 
 /reports/*
 

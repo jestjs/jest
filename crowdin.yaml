@@ -26,23 +26,23 @@ languages_mapping: &languages_mapping
 files:
   [
     {
-      'source': '/website-v2/i18n/en/**/*',
-      'translation': '/website-v2/i18n/%locale%/**/%original_file_name%',
+      'source': '/website/i18n/en/**/*',
+      'translation': '/website/i18n/%locale%/**/%original_file_name%',
       'languages_mapping': *languages_mapping,
     },
     {
       'source': '/docs/**/*',
-      'translation': '/website-v2/i18n/%locale%/docusaurus-plugin-content-docs/current/**/%original_file_name%',
+      'translation': '/website/i18n/%locale%/docusaurus-plugin-content-docs/current/**/%original_file_name%',
       'languages_mapping': *languages_mapping,
     },
     {
-      'source': '/website-v2/versioned_docs/**/*',
-      'translation': '/website-v2/i18n/%locale%/docusaurus-plugin-content-docs/**/%original_file_name%',
+      'source': '/website/versioned_docs/**/*',
+      'translation': '/website/i18n/%locale%/docusaurus-plugin-content-docs/**/%original_file_name%',
       'languages_mapping': *languages_mapping,
     },
     {
       'source': '/website/blog/**/*',
-      'translation': '/website-v2/i18n/%locale%/docusaurus-plugin-content-blog/**/%original_file_name%',
+      'translation': '/website/i18n/%locale%/docusaurus-plugin-content-blog/**/%original_file_name%',
       'languages_mapping': *languages_mapping,
     },
   ]
