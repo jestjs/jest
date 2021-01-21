@@ -301,3 +301,29 @@ body
     display: block;
   }
 }
+
+// Temporary fix for not ideal Docusaurus 2 layout
+// May be removed when we close https://github.com/facebook/docusaurus/issues/4083
+.main-wrapper.blog-wrapper .container .row {
+
+  // Blog post list
+  .col.col--2:first-child {
+    --ifm-col-width: 22%;
+    div[class^='sidebar'] {
+      padding-right: 1rem;
+    }
+  }
+
+  // Center
+  .col.col--8 {
+    --ifm-col-width: 62%;
+    @media only screen and (max-width: 996px) {
+      --ifm-col-width: 100% !important;
+    }
+  }
+
+  // TOC
+  .col.col--2:last-child {
+    --ifm-col-width: 16%;
+  }
+}
