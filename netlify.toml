@@ -14,5 +14,3 @@
 [context.deploy-preview]
   command = "yarn workspace jest-website netlify:ci:deployPreview"
 
-
-
