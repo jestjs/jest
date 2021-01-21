@@ -1,0 +1,17 @@
+
+# File to setup Netlify server-side redirects
+
+# Initially used to handle the Docusaurus v1-v2 migration url changes
+# https://github.com/jest-website-migration/jest
+# https://github.com/facebook/jest/pull/11021
+
+
+/en/*                 /:splat
+/docs/en/*            /docs/:splat
+/docs/ja/*            /ja/docs/:splat
+/docs/es-ES/*         /es-ES/docs/:splat
+/docs/pt-BR/*         /pt-BR/docs/:splat
+/docs/ro/*            /ro/docs/:splat
+/docs/ru/*            /ru/docs/:splat
+/docs/uk/*            /uk/docs/:splat
+/docs/zh-Hans/*       /zh-Hans/docs/:splat
