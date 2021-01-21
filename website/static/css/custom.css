@@ -186,7 +186,7 @@ div.jest-button-container {
   flex-wrap: wrap;
 }
 
-html[data-theme="dark"] div.jest-button-container {
+html[data-theme='dark'] div.jest-button-container {
   background-color: rgba(24, 25, 26, 0.5);
 }
 
