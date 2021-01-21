@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable import/order */
-/* eslint-disable import/no-unresolved */
 import React from 'react';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
@@ -78,7 +76,7 @@ export default function VersionsPage() {
                           </Link>
                         </td>
                       </tr>
-                    ),
+                    )
                 )}
               </tbody>
             </table>

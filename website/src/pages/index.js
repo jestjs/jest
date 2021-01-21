@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable import/order */
-/* eslint-disable import/no-unresolved */
 import React, {useEffect} from 'react';
 import Layout from '@theme/Layout';
 import Head from '@docusaurus/Head';
@@ -144,7 +142,7 @@ class Contributors extends React.Component {
               b =>
                 b.tier &&
                 b.tier.slug === 'backer' &&
-                !b.fromAccount.slug.includes('adult'),
+                !b.fromAccount.slug.includes('adult')
             )
             .map(Backer)}
         </div>

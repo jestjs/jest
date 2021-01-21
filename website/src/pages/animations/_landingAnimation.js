@@ -75,7 +75,7 @@ export function setupLandingAnimation() {
       },
       index === 2
         ? baseMinimalTime + minTime
-        : Math.random() * baseMinimalTime + minTime,
+        : Math.random() * baseMinimalTime + minTime
     );
   }
 
@@ -171,7 +171,7 @@ export function setupLandingAnimation() {
           .querySelectorAll('.matchers .button.landing')
           .forEach(
             b =>
-              (b.className = 'button button--primary button--outline landing'),
+              (b.className = 'button button--primary button--outline landing')
           );
         clickButton.className =
           'button button--primary button--outline landing button--active';
@@ -184,7 +184,7 @@ export function setupLandingAnimation() {
     matcherSection.appendChild(buttonWrapper);
 
     const firstButton = document.querySelector(
-      '.matchers .blockContent .button',
+      '.matchers .blockContent .button'
     );
     firstButton.onclick();
   }

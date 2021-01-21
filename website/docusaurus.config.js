@@ -1,5 +1,3 @@
-/* eslint-disable sort-keys */
-
 const path = require('path');
 
 // The top-30 locales on Crowdin are enabled
