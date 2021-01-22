@@ -47,6 +47,8 @@ const locales = [
   //'zh-Hant',
 ];
 
+const JestThemeColor = '#15c213';
+
 const localeConfigs = {
   en: {
     label: 'English',
@@ -102,7 +104,7 @@ module.exports = {
           sidebarPath: './sidebars.json',
         },
         blog: {
-          path: path.join(__dirname, '..', 'website', 'blog'),
+          path: 'blog',
           blogSidebarCount: 'ALL',
         },
         theme: {
@@ -143,7 +145,7 @@ module.exports = {
           {
             tagName: 'meta',
             name: 'theme-color',
-            content: '#15c213',
+            content: JestThemeColor,
           },
           {
             tagName: 'meta',
@@ -164,7 +166,7 @@ module.exports = {
             tagName: 'link',
             rel: 'mask-icon',
             href: 'img/jest.svg',
-            color: '#15c213',
+            color: JestThemeColor,
           },
           {
             tagName: 'meta',
