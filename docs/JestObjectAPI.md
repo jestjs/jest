@@ -127,7 +127,7 @@ This is how `createMockFromModule` will mock the following data types:
 
 #### `Function`
 
-Creates a new [mock function](/docs/mock-functions). The new function has no formal parameters and when called will return `undefined`. This functionality also applies to `async` functions.
+Creates a new [mock function](mock-functions). The new function has no formal parameters and when called will return `undefined`. This functionality also applies to `async` functions.
 
 #### `Class`
 
