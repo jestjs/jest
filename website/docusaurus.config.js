@@ -7,81 +7,12 @@
 
 const path = require('path');
 
+const i18n = require('./i18n');
+
 const JestThemeColor = '#15c213';
 
-// The top-30 locales on Crowdin are enabled
-// but we enable only a subset of those
-const locales = [
-  'en',
-  'ja',
-  //'ar',
-  //'bs-BA',
-  //'ca',
-  //'cs',
-  //'da',
-  //'de',
-  //'el',
-  'es-ES',
-  //'fa-IR',
-  //'fi',
-  //'fr',
-  //'he',
-  //'hu',
-  //'id-ID',
-  //'it',
-  //'af',
-  //'ko',
-  //'mr-IN',
-  //'nl',
-  //'no-NO',
-  //'pl',
-  //'pt-PT',
-  'pt-BR',
-  'ro',
-  'ru',
-  //'sk-SK',
-  //'sr',
-  //'sv-SE',
-  //'tr',
-  'uk',
-  //'vi',
-  'zh-Hans',
-  //'zh-Hant',
-];
-
-const localeConfigs = {
-  en: {
-    label: 'English',
-  },
-  ja: {
-    label: '日本語',
-  },
-  'es-ES': {
-    label: 'Español',
-  },
-  'pt-BR': {
-    label: 'Português (Brasil)',
-  },
-  ro: {
-    label: 'Română',
-  },
-  ru: {
-    label: 'Русский',
-  },
-  uk: {
-    label: 'Українська',
-  },
-  'zh-Hans': {
-    label: '简体中文',
-  },
-};
-
 module.exports = {
-  i18n: {
-    defaultLocale: 'en',
-    locales,
-    localeConfigs,
-  },
+  i18n,
   title: 'Jest',
   titleDelimiter: '·',
   tagline: '🃏 Delightful JavaScript Testing',
