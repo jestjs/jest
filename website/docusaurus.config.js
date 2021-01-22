@@ -7,6 +7,8 @@
 
 const path = require('path');
 
+const JestThemeColor = '#15c213';
+
 // The top-30 locales on Crowdin are enabled
 // but we enable only a subset of those
 const locales = [
@@ -46,8 +48,6 @@ const locales = [
   'zh-Hans',
   //'zh-Hant',
 ];
-
-const JestThemeColor = '#15c213';
 
 const localeConfigs = {
   en: {
