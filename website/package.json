@@ -16,10 +16,9 @@
     "netlify:ci:production": "yarn netlify:prepare && yarn netlify:crowdin && yarn build",
     "netlify:ci:deployPreview": "yarn netlify:prepare && yarn build -l en",
     "netlify:prepare": "yarn fetchSupporters && yarn build:js",
-    "netlify:crowdin": "yarn write-translations && cd .. && yarn crowdin:upload && yarn crowdin:download"
+    "netlify:crowdin": "yarn workspace @jest/monorepo crowdin:upload && yarn workspace @jest/monorepo crowdin:download"
   },
   "dependencies": {
-    "@crowdin/cli": "^3.5.2",
     "@docusaurus/core": "2.0.0-alpha.a8ee7fd3e",
     "@docusaurus/plugin-client-redirects": "2.0.0-alpha.a8ee7fd3e",
     "@docusaurus/plugin-pwa": "2.0.0-alpha.a8ee7fd3e",
@@ -34,6 +33,7 @@
     "react-markdown": "^5.0.3"
   },
   "devDependencies": {
+    "@crowdin/cli": "^3.5.2",
     "graphql": "^15.3.0",
     "graphql-request": "^3.1.0"
   }
