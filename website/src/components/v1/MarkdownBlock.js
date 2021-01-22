@@ -14,10 +14,10 @@ const renderers = {
   link: ({node: _node, ...props}) => <Link {...props} />,
 };
 
-/**
-handle this case:
+/*
+Handle this case:
 <MarkdownBlock>
-  <Translate>localized md text</Translate>
+  <Translate>Markdown **content** with [links](https://facebook.com) can be translated</Translate>
 </MarkdownBlock>
  */
 function getMarkdown(children) {

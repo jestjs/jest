@@ -9,8 +9,8 @@ import React from 'react';
 import clsx from 'clsx';
 import MarkdownBlock from './MarkdownBlock';
 
-export default class GridBlock extends React.Component {
-  renderBlock(origBlock, i) {
+export default function GridBlock(props) {
+  function renderBlock(origBlock, i) {
     const blockDefaults = {
       imageAlign: 'left',
     };
@@ -20,10 +20,10 @@ export default class GridBlock extends React.Component {
       ...origBlock,
     };
 
-    const blockClasses = clsx('blockElement', this.props.className, {
-      alignCenter: this.props.align === 'center',
-      alignRight: this.props.align === 'right',
-      fourByGridBlock: this.props.layout === 'fourColumn',
+    const blockClasses = clsx('blockElement', props.className, {
+      alignCenter: props.align === 'center',
+      alignRight: props.align === 'right',
+      fourByGridBlock: props.layout === 'fourColumn',
       imageAlignSide:
         block.image &&
         (block.imageAlign === 'left' || block.imageAlign === 'right'),
@@ -31,23 +31,23 @@ export default class GridBlock extends React.Component {
       imageAlignRight: block.image && block.imageAlign === 'right',
       imageAlignBottom: block.image && block.imageAlign === 'bottom',
       imageAlignLeft: block.image && block.imageAlign === 'left',
-      threeByGridBlock: this.props.layout === 'threeColumn',
-      twoByGridBlock: this.props.layout === 'twoColumn',
+      threeByGridBlock: props.layout === 'threeColumn',
+      twoByGridBlock: props.layout === 'twoColumn',
     });
 
     const topLeftImage =
       (block.imageAlign === 'top' || block.imageAlign === 'left') &&
-      this.renderBlockImage(block.image, block.imageLink, block.imageAlt);
+      renderBlockImage(block.image, block.imageLink, block.imageAlt);
 
     const bottomRightImage =
       (block.imageAlign === 'bottom' || block.imageAlign === 'right') &&
-      this.renderBlockImage(block.image, block.imageLink, block.imageAlt);
+      renderBlockImage(block.image, block.imageLink, block.imageAlt);
 
     return (
       <div className={blockClasses} key={i}>
         {topLeftImage}
         <div className="blockContent">
-          {this.renderBlockTitle(block.title)}
+          {renderBlockTitle(block.title)}
           <MarkdownBlock>{block.content}</MarkdownBlock>
         </div>
         {bottomRightImage}
@@ -55,7 +55,7 @@ export default class GridBlock extends React.Component {
     );
   }
 
-  renderBlockImage(image, imageLink, imageAlt) {
+  function renderBlockImage(image, imageLink, imageAlt) {
     if (!image) {
       return null;
     }
@@ -73,7 +73,7 @@ export default class GridBlock extends React.Component {
     );
   }
 
-  renderBlockTitle(title) {
+  function renderBlockTitle(title) {
     if (!title) {
       return null;
     }
@@ -85,13 +85,7 @@ export default class GridBlock extends React.Component {
     );
   }
 
-  render() {
-    return (
-      <div className="gridBlockV1">
-        {this.props.contents.map(this.renderBlock, this)}
-      </div>
-    );
-  }
+  return <div className="gridBlockV1">{props.contents.map(renderBlock)}</div>;
 }
 
 GridBlock.defaultProps = {

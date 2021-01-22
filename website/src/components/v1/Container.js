@@ -8,31 +8,29 @@
 import React from 'react';
 import clsx from 'clsx';
 
-export default class Container extends React.Component {
-  render() {
-    const containerClasses = clsx('containerV1', this.props.className, {
-      darkBackground: this.props.background === 'dark',
-      highlightBackground: this.props.background === 'highlight',
-      lightBackground: this.props.background === 'light',
-      paddingAll: this.props.padding.indexOf('all') >= 0,
-      paddingBottom: this.props.padding.indexOf('bottom') >= 0,
-      paddingLeft: this.props.padding.indexOf('left') >= 0,
-      paddingRight: this.props.padding.indexOf('right') >= 0,
-      paddingTop: this.props.padding.indexOf('top') >= 0,
-    });
-    let wrappedChildren;
+export default function Container(props) {
+  const containerClasses = clsx('containerV1', props.className, {
+    darkBackground: props.background === 'dark',
+    highlightBackground: props.background === 'highlight',
+    lightBackground: props.background === 'light',
+    paddingAll: props.padding.indexOf('all') >= 0,
+    paddingBottom: props.padding.indexOf('bottom') >= 0,
+    paddingLeft: props.padding.indexOf('left') >= 0,
+    paddingRight: props.padding.indexOf('right') >= 0,
+    paddingTop: props.padding.indexOf('top') >= 0,
+  });
+  let wrappedChildren;
 
-    if (this.props.wrapper) {
-      wrappedChildren = <div className="wrapperV1">{this.props.children}</div>;
-    } else {
-      wrappedChildren = this.props.children;
-    }
-    return (
-      <div className={containerClasses} id={this.props.id}>
-        {wrappedChildren}
-      </div>
-    );
+  if (props.wrapper) {
+    wrappedChildren = <div className="wrapperV1">{props.children}</div>;
+  } else {
+    wrappedChildren = props.children;
   }
+  return (
+    <div className={containerClasses} id={props.id}>
+      {wrappedChildren}
+    </div>
+  );
 }
 
 Container.defaultProps = {
