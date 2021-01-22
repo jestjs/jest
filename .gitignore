@@ -20,7 +20,6 @@
 /packages/*/coverage/
 /packages/*/node_modules/
 
-
 /website/.docusaurus
 /website/build
 /website/backers.json
