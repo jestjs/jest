@@ -34,7 +34,7 @@
     "slash": "^3.0.0"
   },
   "optionalDependencies": {
-    "fsevents": "^2.1.2"
+    "fsevents": "^2.2.1"
   },
   "engines": {
     "node": ">= 10.14.2"
