@@ -326,7 +326,7 @@ describe('HasteMap', () => {
     `;
     const {moduleMap} = await new HasteMap(config).build();
     expect(moduleMap.getModule('Apple.json')).toEqual(
-      '/project/fruits/Apple.json',
+      path.join('/', 'project', 'fruits', 'Apple.json'),
     );
     expect(moduleMap.getModule('Kiwi.gif')).toEqual(null);
   });
