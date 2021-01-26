@@ -34,14 +34,14 @@ FAIL __tests__/index.js
     }
 
        8 | 'use strict';
-       9 | 
+       9 |
     > 10 | require('./style.css');
          | ^
-      11 | 
+      11 |
       12 | module.exports = () => 'test';
-      13 | 
+      13 |
 
-      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/index.js:551:17)
+      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/index.js:556:17)
       at Object.require (index.js:10:1)
 `;
 
@@ -63,13 +63,13 @@ FAIL __tests__/index.js
     }
 
        8 | 'use strict';
-       9 | 
+       9 |
     > 10 | require('./style.css');
          | ^
-      11 | 
+      11 |
       12 | module.exports = () => 'test';
-      13 | 
+      13 |
 
-      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/index.js:551:17)
+      at createNoMappedModuleFoundError (../../packages/jest-resolve/build/index.js:556:17)
       at Object.require (index.js:10:1)
 `;

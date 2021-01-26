@@ -361,13 +361,6 @@ export const options = {
       'node.',
     type: 'boolean',
   },
-  mapCoverage: {
-    default: undefined,
-    description:
-      'Maps code coverage reports against original source code ' +
-      'when transformers supply source maps.\n\nDEPRECATED',
-    type: 'boolean',
-  },
   maxConcurrency: {
     default: 5,
     description:
@@ -650,9 +643,9 @@ export const options = {
   },
   testRunner: {
     description:
-      'Allows to specify a custom test runner. The default is ' +
-      ' `jasmine2`. A path to a custom test runner can be provided: ' +
-      '`<rootDir>/path/to/testRunner.js`.',
+      'Allows to specify a custom test runner. The default is' +
+      ' `jest-circus/runner`. A path to a custom test runner can be provided:' +
+      ' `<rootDir>/path/to/testRunner.js`.',
     type: 'string',
   },
   testSequencer: {

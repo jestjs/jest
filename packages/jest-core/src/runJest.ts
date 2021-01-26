@@ -188,11 +188,13 @@ export default async function runJest({
 
   if (globalConfig.listTests) {
     const testsPaths = Array.from(new Set(allTests.map(test => test.path)));
+    /* eslint-disable no-console */
     if (globalConfig.json) {
       console.log(JSON.stringify(testsPaths));
     } else {
       console.log(testsPaths.join('\n'));
     }
+    /* eslint-enable */
 
     onComplete && onComplete(makeEmptyAggregatedTestResult());
     return;
@@ -201,9 +203,8 @@ export default async function runJest({
   if (globalConfig.onlyFailures) {
     if (failedTestsCache) {
       allTests = failedTestsCache.filterTests(allTests);
-      globalConfig = failedTestsCache.updateConfig(globalConfig);
     } else {
-      allTests = sequencer.allFailedTests(allTests);
+      allTests = await sequencer.allFailedTests(allTests);
     }
   }
 
@@ -271,7 +272,7 @@ export default async function runJest({
     testSchedulerContext,
   ).scheduleTests(allTests, testWatcher);
 
-  sequencer.cacheResults(allTests, results);
+  await sequencer.cacheResults(allTests, results);
 
   if (hasTests) {
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});

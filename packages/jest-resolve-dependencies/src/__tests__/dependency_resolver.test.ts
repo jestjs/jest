@@ -9,9 +9,9 @@ import {tmpdir} from 'os';
 import * as path from 'path';
 import {makeProjectConfig} from '@jest/test-utils';
 import type {Config} from '@jest/types';
-import Resolver = require('jest-resolve');
+import type Resolver from 'jest-resolve';
 import {buildSnapshotResolver} from 'jest-snapshot';
-import DependencyResolver from '../index';
+import {DependencyResolver} from '../index';
 
 const maxWorkers = 1;
 let dependencyResolver: DependencyResolver;
@@ -26,7 +26,7 @@ const filter = (path: Config.Path) =>
   Object.keys(cases).every(key => cases[key](path));
 
 beforeEach(() => {
-  Runtime = require('jest-runtime');
+  Runtime = require('jest-runtime').default;
   config = makeProjectConfig({
     cacheDirectory: path.resolve(tmpdir(), 'jest-resolve-dependencies-test'),
     moduleDirectories: ['node_modules'],

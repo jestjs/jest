@@ -613,7 +613,6 @@ describe('Watch mode flows', () => {
     ${'✖︎'} | ${'coverageThreshold'}
     ${'✖︎'} | ${'detectLeaks'}
     ${'✖︎'} | ${'detectOpenHandles'}
-    ${'✖︎'} | ${'enabledTestsMap'}
     ${'✖︎'} | ${'errorOnDeprecated'}
     ${'✖︎'} | ${'expand'}
     ${'✖︎'} | ${'filter'}

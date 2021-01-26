@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {EventEmitter} from 'events';
+import Emittery = require('emittery');
 import type {JestEnvironment} from '@jest/environment';
 import type {
   AssertionResult,
@@ -14,8 +14,8 @@ import type {
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
-import type {ResolverType} from 'jest-resolve';
-import type {RuntimeType} from 'jest-runtime';
+import type Resolver from 'jest-resolve';
+import type RuntimeType from 'jest-runtime';
 
 export type ErrorWithCode = Error & {code?: string};
 export type Test = {
@@ -28,7 +28,7 @@ export type Context = {
   config: Config.ProjectConfig;
   hasteFS: HasteFS;
   moduleMap: ModuleMap;
-  resolver: ResolverType;
+  resolver: Resolver;
 };
 
 export type OnTestStart = (test: Test) => Promise<void>;
@@ -79,10 +79,8 @@ export type TestRunnerSerializedContext = {
 };
 
 // TODO: Should live in `@jest/core` or `jest-watcher`
-export type WatcherState = {
-  interrupted: boolean;
-};
-export interface TestWatcher extends EventEmitter {
+type WatcherState = {interrupted: boolean};
+export interface TestWatcher extends Emittery<{change: WatcherState}> {
   state: WatcherState;
   setState(state: WatcherState): void;
   isInterrupted(): boolean;

@@ -40,37 +40,42 @@ export type TransformResult = TransformTypes.TransformResult;
 
 export interface CallerTransformOptions {
   // names are copied from babel: https://babeljs.io/docs/en/options#caller
-  supportsDynamicImport?: boolean;
-  supportsExportNamespaceFrom?: boolean;
-  supportsStaticESM?: boolean;
-  supportsTopLevelAwait?: boolean;
+  supportsDynamicImport: boolean;
+  supportsExportNamespaceFrom: boolean;
+  supportsStaticESM: boolean;
+  supportsTopLevelAwait: boolean;
 }
 
-export interface TransformOptions extends CallerTransformOptions {
+export interface ReducedTransformOptions extends CallerTransformOptions {
   instrument: boolean;
 }
 
-// TODO: For Jest 26 we should combine these into one options shape
-export interface CacheKeyOptions extends TransformOptions {
+export type StringMap = Map<string, string>;
+
+export interface TransformOptions<OptionType = unknown>
+  extends ReducedTransformOptions {
+  /** a cached file system which is used in jest-runtime - useful to improve performance */
+  cacheFS: StringMap;
   config: Config.ProjectConfig;
-  rootDir: string;
+  /** A stringified version of the configuration - useful in cache busting */
+  configString: string;
+  /** the options passed through Jest's config by the user */
+  transformerConfig: OptionType;
 }
 
-export interface Transformer {
+export interface Transformer<OptionType = unknown> {
   canInstrument?: boolean;
-  createTransformer?: (options?: any) => Transformer;
+  createTransformer?: (options?: OptionType) => Transformer;
 
   getCacheKey?: (
-    fileData: string,
-    filePath: Config.Path,
-    configStr: string,
-    options: CacheKeyOptions,
+    sourceText: string,
+    sourcePath: Config.Path,
+    options: TransformOptions<OptionType>,
   ) => string;
 
   process: (
     sourceText: string,
     sourcePath: Config.Path,
-    config: Config.ProjectConfig,
-    options?: TransformOptions,
+    options: TransformOptions<OptionType>,
   ) => TransformedSource;
 }

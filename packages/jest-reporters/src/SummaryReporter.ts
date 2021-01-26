@@ -54,6 +54,8 @@ export default class SummaryReporter extends BaseReporter {
   private _estimatedTime: number;
   private _globalConfig: Config.GlobalConfig;
 
+  static readonly filename = __filename;
+
   constructor(globalConfig: Config.GlobalConfig) {
     super();
     this._globalConfig = globalConfig;

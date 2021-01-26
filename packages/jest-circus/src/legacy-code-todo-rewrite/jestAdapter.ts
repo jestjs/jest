@@ -9,7 +9,7 @@ import type {JestEnvironment} from '@jest/environment';
 import type {TestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {TestFileEvent} from 'jest-runner';
-import type {RuntimeType as Runtime} from 'jest-runtime';
+import type Runtime from 'jest-runtime';
 import type {SnapshotStateType} from 'jest-snapshot';
 import {deepCyclicCopy} from 'jest-util';
 
@@ -30,28 +30,22 @@ const jestAdapter = async (
     FRAMEWORK_INITIALIZER,
   );
 
-  const getPrettier = () =>
-    config.prettierPath ? require(config.prettierPath) : null;
-  const getBabelTraverse = () => require('@babel/traverse').default;
-
   const {globals, snapshotState} = await initialize({
     config,
     environment,
-    getBabelTraverse,
-    getPrettier,
     globalConfig,
     localRequire: runtime.requireModule.bind(runtime),
     parentProcess: process,
     sendMessageToJest,
-    setGlobalsForRuntime: runtime.setGlobalsForRuntime?.bind(runtime),
+    setGlobalsForRuntime: runtime.setGlobalsForRuntime.bind(runtime),
     testPath,
   });
 
-  if (config.timers === 'fake' || config.timers === 'legacy') {
+  if (config.timers === 'fake' || config.timers === 'modern') {
     // during setup, this cannot be null (and it's fine to explode if it is)
-    environment.fakeTimers!.useFakeTimers();
-  } else if (config.timers === 'modern') {
     environment.fakeTimersModern!.useFakeTimers();
+  } else if (config.timers === 'legacy') {
+    environment.fakeTimers!.useFakeTimers();
   }
 
   globals.beforeEach(() => {
@@ -66,7 +60,7 @@ const jestAdapter = async (
     if (config.resetMocks) {
       runtime.resetAllMocks();
 
-      if (config.timers === 'fake') {
+      if (config.timers === 'legacy') {
         // during setup, this cannot be null (and it's fine to explode if it is)
         environment.fakeTimers!.useFakeTimers();
       }
@@ -78,8 +72,7 @@ const jestAdapter = async (
   });
 
   for (const path of config.setupFilesAfterEnv) {
-    // TODO: remove ? in Jest 26
-    const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
 
     if (esm) {
       await runtime.unstable_importModule(path);
@@ -87,9 +80,7 @@ const jestAdapter = async (
       runtime.requireModule(path);
     }
   }
-
-  // TODO: remove ? in Jest 26
-  const esm = runtime.unstable_shouldLoadAsEsm?.(testPath);
+  const esm = runtime.unstable_shouldLoadAsEsm(testPath);
 
   if (esm) {
     await runtime.unstable_importModule(testPath);

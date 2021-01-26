@@ -12,8 +12,8 @@ import * as fs from 'graceful-fs';
 import rimraf = require('rimraf');
 import type {AggregatedResult} from '@jest/test-result';
 import {normalize} from 'jest-config';
-import HasteMap = require('jest-haste-map');
-import Runtime = require('jest-runtime');
+import type HasteMap from 'jest-haste-map';
+import Runtime from 'jest-runtime';
 import {JestHook} from 'jest-watcher';
 
 describe('Watch mode flows with changed files', () => {

@@ -9,16 +9,27 @@ import * as path from 'path';
 import co from 'co';
 import dedent = require('dedent');
 import isGeneratorFn from 'is-generator-fn';
+import slash = require('slash');
 import StackUtils = require('stack-utils');
 import type {AssertionResult, Status} from '@jest/test-result';
-import type {Circus} from '@jest/types';
+import type {Circus, Global} from '@jest/types';
 import {ErrorWithStack, convertDescriptorToString, formatTime} from 'jest-util';
-import prettyFormat = require('pretty-format');
+import prettyFormat from 'pretty-format';
 import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
 
 const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
-const jestEachBuildDir = path.dirname(require.resolve('jest-each'));
+const jestEachBuildDir = slash(path.dirname(require.resolve('jest-each')));
+
+function takesDoneCallback(fn: Circus.AsyncFn): fn is Global.DoneTakingTestFn {
+  return fn.length > 0;
+}
+
+function isGeneratorFunction(
+  fn: Global.PromiseReturningTestFn | Global.GeneratorReturningTestFn,
+): fn is Global.GeneratorReturningTestFn {
+  return isGeneratorFn(fn);
+}
 
 export const makeDescribe = (
   name: Circus.BlockName,
@@ -59,6 +70,7 @@ export const makeTest = (
   mode,
   name: convertDescriptorToString(name),
   parent,
+  seenDone: false,
   startedAt: null,
   status: null,
   timeout,
@@ -176,11 +188,27 @@ export const callAsyncCircusFn = (
 
     // If this fn accepts `done` callback we return a promise that fulfills as
     // soon as `done` called.
-    if (fn.length) {
+    if (takesDoneCallback(fn)) {
       let returnedValue: unknown = undefined;
+
       const done = (reason?: Error | string): void => {
         // We need to keep a stack here before the promise tick
         const errorAtDone = new ErrorWithStack(undefined, done);
+
+        if (!completed && testOrHook.seenDone) {
+          errorAtDone.message =
+            'Expected done to be called once, but it was called multiple times.';
+
+          if (reason) {
+            errorAtDone.message +=
+              ' Reason: ' + prettyFormat(reason, {maxDepth: 3});
+          }
+          reject(errorAtDone);
+          throw errorAtDone;
+        } else {
+          testOrHook.seenDone = true;
+        }
+
         // Use `Promise.resolve` to allow the event loop to go a single tick in case `done` is called synchronously
         Promise.resolve().then(() => {
           if (returnedValue !== undefined) {
@@ -192,7 +220,6 @@ export const callAsyncCircusFn = (
           }
 
           let errorAsErrorObject: Error;
-
           if (checkIsError(reason)) {
             errorAsErrorObject = reason;
           } else {
@@ -220,8 +247,8 @@ export const callAsyncCircusFn = (
       return;
     }
 
-    let returnedValue;
-    if (isGeneratorFn(fn)) {
+    let returnedValue: Global.TestReturnValue;
+    if (isGeneratorFunction(fn)) {
       returnedValue = co.wrap(fn).call({});
     } else {
       try {
@@ -263,12 +290,12 @@ export const callAsyncCircusFn = (
       completed = true;
       // If timeout is not cleared/unrefed the node process won't exit until
       // it's resolved.
-      timeoutID.unref && timeoutID.unref();
+      timeoutID.unref?.();
       clearTimeout(timeoutID);
     })
     .catch(error => {
       completed = true;
-      timeoutID.unref && timeoutID.unref();
+      timeoutID.unref?.();
       clearTimeout(timeoutID);
       throw error;
     });

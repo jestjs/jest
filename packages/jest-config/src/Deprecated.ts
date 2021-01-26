@@ -7,7 +7,7 @@
 
 import chalk = require('chalk');
 import type {DeprecatedOptions} from 'jest-validate';
-import prettyFormat = require('pretty-format');
+import prettyFormat from 'pretty-format';
 
 const format = (value: unknown) => prettyFormat(value, {min: true});
 
@@ -19,12 +19,6 @@ const deprecatedOptions: DeprecatedOptions = {
     ${chalk.bold('"resolver"')}: ${chalk.bold('"browser-resolve"')}
   }
   `,
-
-  mapCoverage: () => `  Option ${chalk.bold(
-    '"mapCoverage"',
-  )} has been removed, as it's no longer necessary.
-
-  Please update your configuration.`,
 
   preprocessorIgnorePatterns: (options: {
     preprocessorIgnorePatterns?: Array<string>;

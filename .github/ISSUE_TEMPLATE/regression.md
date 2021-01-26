@@ -8,7 +8,7 @@ about: Report unexpected behavior that worked in previous versions
 
 ## 💥 Regression Report
 
-A clear and concise description of what the regression is.
+<!-- A clear and concise description of what the regression is. -->
 
 ## Last working version
 
@@ -22,13 +22,15 @@ Steps to reproduce the behavior:
 
 ## Expected behavior
 
-A clear and concise description of what you expected to happen.
+<!-- A clear and concise description of what you expected to happen. -->
 
 ## Link to repl or repo (highly encouraged)
 
-Please provide either a [repl.it demo](https://repl.it/languages/jest) or a minimal repository on GitHub.
-
+<!-- Please provide either a [repl.it demo](https://repl.it/languages/jest) or a minimal repository on GitHub.
 Issues without a reproduction link are likely to stall.
+
+See https://stackoverflow.com/help/minimal-reproducible-example for information on how to create good reproductions
+-->
 
 ## Run `npx envinfo --preset jest`
 

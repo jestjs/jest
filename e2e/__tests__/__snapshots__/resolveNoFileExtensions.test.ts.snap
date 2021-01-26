@@ -32,11 +32,11 @@ FAIL __tests__/test.js
     See https://jestjs.io/docs/en/configuration#modulefileextensions-arraystring
 
       6 |  */
-      7 | 
+      7 |
     > 8 | module.exports = require('./some-json-file');
         |                  ^
-      9 | 
+      9 |
 
-      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:306:11)
+      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:311:11)
       at Object.require (index.js:8:18)
 `;

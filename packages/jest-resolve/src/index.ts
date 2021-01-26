@@ -31,16 +31,10 @@ type FindNodeModuleConfig = {
   throwIfNotFound?: boolean;
 };
 
-// TODO: replace with a Map in Jest 26
-type BooleanObject = Record<string, boolean>;
-
-declare namespace Resolver {
-  export type ResolveModuleConfig = {
-    skipNodeResolution?: boolean;
-    paths?: Array<Config.Path>;
-  };
-  export type ResolverType = Resolver;
-}
+export type ResolveModuleConfig = {
+  skipNodeResolution?: boolean;
+  paths?: Array<Config.Path>;
+};
 
 const NATIVE_PLATFORM = 'native';
 
@@ -139,7 +133,7 @@ class Resolver {
   resolveModuleFromDirIfExists(
     dirname: Config.Path,
     moduleName: string,
-    options?: Resolver.ResolveModuleConfig,
+    options?: ResolveModuleConfig,
   ): Config.Path | null {
     const paths = (options && options.paths) || this._options.modulePaths;
     const moduleDirectory = this._options.moduleDirectories;
@@ -227,7 +221,7 @@ class Resolver {
   resolveModule(
     from: Config.Path,
     moduleName: string,
-    options?: Resolver.ResolveModuleConfig,
+    options?: ResolveModuleConfig,
   ): Config.Path {
     const dirname = path.dirname(from);
     const module =
@@ -317,7 +311,7 @@ class Resolver {
   }
 
   getModuleID(
-    virtualMocks: BooleanObject,
+    virtualMocks: Map<string, boolean>,
     from: Config.Path,
     _moduleName?: string,
   ): string {
@@ -349,7 +343,7 @@ class Resolver {
   }
 
   private _getAbsolutePath(
-    virtualMocks: BooleanObject,
+    virtualMocks: Map<string, boolean>,
     from: Config.Path,
     moduleName: string,
   ): Config.Path | null {
@@ -371,12 +365,12 @@ class Resolver {
   }
 
   private _getVirtualMockPath(
-    virtualMocks: BooleanObject,
+    virtualMocks: Map<string, boolean>,
     from: Config.Path,
     moduleName: string,
   ): Config.Path {
     const virtualMockPath = this.getModulePath(from, moduleName);
-    return virtualMocks[virtualMockPath]
+    return virtualMocks.get(virtualMockPath)
       ? virtualMockPath
       : moduleName
       ? this.resolveModule(from, moduleName)
@@ -502,4 +496,4 @@ Please check your configuration for these entries:
   return error;
 };
 
-export = Resolver;
+export default Resolver;

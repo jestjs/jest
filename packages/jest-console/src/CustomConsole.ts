@@ -7,7 +7,7 @@
 
 import assert = require('assert');
 import {Console} from 'console';
-import {format} from 'util';
+import {format, formatWithOptions, inspect} from 'util';
 import chalk = require('chalk');
 import {clearLine, formatTime} from 'jest-util';
 import type {LogCounters, LogMessage, LogTimers, LogType} from './types';
@@ -73,8 +73,9 @@ export default class CustomConsole extends Console {
     this._log('debug', format(firstArg, ...args));
   }
 
-  dir(firstArg: unknown, ...args: Array<unknown>): void {
-    this._log('dir', format(firstArg, ...args));
+  dir(firstArg: unknown, options: NodeJS.InspectOptions = {}): void {
+    const representation = inspect(firstArg, options);
+    this._log('dir', formatWithOptions(options, representation));
   }
 
   dirxml(firstArg: unknown, ...args: Array<unknown>): void {

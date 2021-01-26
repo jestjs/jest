@@ -17,7 +17,7 @@ import {addHook} from 'pirates';
 import slash = require('slash');
 import {sync as writeFileAtomic} from 'write-file-atomic';
 import type {Config} from '@jest/types';
-import HasteMap = require('jest-haste-map');
+import HasteMap from 'jest-haste-map';
 import {
   createDirectory,
   interopRequireDefault,
@@ -28,6 +28,8 @@ import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';
 import shouldInstrument from './shouldInstrument';
 import type {
   Options,
+  ReducedTransformOptions,
+  StringMap,
   TransformResult,
   TransformedSource,
   Transformer,
@@ -62,13 +64,21 @@ async function waitForPromiseWithCleanup(
 }
 
 export default class ScriptTransformer {
-  private _cache: ProjectCache;
-  private _config: Config.ProjectConfig;
-  private _transformCache: Map<Config.Path, Transformer>;
-  private _transformConfigCache: Map<Config.Path, unknown>;
+  private readonly _cache: ProjectCache;
+  private readonly _cacheFS: StringMap;
+  private readonly _config: Config.ProjectConfig;
+  private readonly _transformCache: Map<
+    Config.Path,
+    {transformer: Transformer; transformerConfig: unknown}
+  >;
+  private readonly _transformConfigCache: Map<Config.Path, unknown>;
 
-  constructor(config: Config.ProjectConfig) {
+  constructor(
+    config: Config.ProjectConfig,
+    cacheFS: StringMap = new Map<string, string>(),
+  ) {
     this._config = config;
+    this._cacheFS = cacheFS;
     this._transformCache = new Map();
     this._transformConfigCache = new Map();
 
@@ -92,22 +102,21 @@ export default class ScriptTransformer {
   private _getCacheKey(
     fileData: string,
     filename: Config.Path,
-    instrument: boolean,
-    supportsDynamicImport: boolean,
-    supportsStaticESM: boolean,
+    options: ReducedTransformOptions,
   ): string {
     const configString = this._cache.configString;
-    const transformer = this._getTransformer(filename);
+    const {transformer, transformerConfig = {}} =
+      this._getTransformer(filename) || {};
 
     if (transformer && typeof transformer.getCacheKey === 'function') {
       return createHash('md5')
         .update(
-          transformer.getCacheKey(fileData, filename, configString, {
+          transformer.getCacheKey(fileData, filename, {
+            ...options,
+            cacheFS: this._cacheFS,
             config: this._config,
-            instrument,
-            rootDir: this._config.rootDir,
-            supportsDynamicImport,
-            supportsStaticESM,
+            configString,
+            transformerConfig,
           }),
         )
         .update(CACHE_VERSION)
@@ -116,7 +125,7 @@ export default class ScriptTransformer {
       return createHash('md5')
         .update(fileData)
         .update(configString)
-        .update(instrument ? 'instrument' : '')
+        .update(options.instrument ? 'instrument' : '')
         .update(filename)
         .update(CACHE_VERSION)
         .digest('hex');
@@ -126,22 +135,14 @@ export default class ScriptTransformer {
   private _getFileCachePath(
     filename: Config.Path,
     content: string,
-    instrument: boolean,
-    supportsDynamicImport: boolean,
-    supportsStaticESM: boolean,
+    options: ReducedTransformOptions,
   ): Config.Path {
     const baseCacheDir = HasteMap.getCacheFilePath(
       this._config.cacheDirectory,
       'jest-transform-cache-' + this._config.name,
       VERSION,
     );
-    const cacheKey = this._getCacheKey(
-      content,
-      filename,
-      instrument,
-      supportsDynamicImport,
-      supportsStaticESM,
-    );
+    const cacheKey = this._getCacheKey(content, filename, options);
     // Create sub folders based on the cacheKey to avoid creating one
     // directory with many files.
     const cacheDir = path.join(baseCacheDir, cacheKey[0] + cacheKey[1]);
@@ -185,36 +186,37 @@ export default class ScriptTransformer {
       return null;
     }
 
-    const transformer = this._transformCache.get(transformPath);
-    if (transformer) {
-      return transformer;
+    const cached = this._transformCache.get(transformPath);
+    if (cached) {
+      return cached;
     }
 
-    let transform: Transformer = require(transformPath);
+    let transformer: Transformer = require(transformPath);
 
-    if (!transform) {
+    if (!transformer) {
       throw new TypeError('Jest: a transform must export something.');
     }
-    const transformerConfig = this._transformConfigCache.get(transformPath);
-    if (typeof transform.createTransformer === 'function') {
-      transform = transform.createTransformer(transformerConfig);
+    const transformerConfig =
+      this._transformConfigCache.get(transformPath) || {};
+    if (typeof transformer.createTransformer === 'function') {
+      transformer = transformer.createTransformer(transformerConfig);
     }
-    if (typeof transform.process !== 'function') {
+    if (typeof transformer.process !== 'function') {
       throw new TypeError(
         'Jest: a transform must export a `process` function.',
       );
     }
-    this._transformCache.set(transformPath, transform);
+    const res = {transformer, transformerConfig};
+    this._transformCache.set(transformPath, res);
 
-    return transform;
+    return res;
   }
 
   private _instrumentFile(
     filename: Config.Path,
     input: TransformedSource,
-    supportsDynamicImport: boolean,
-    supportsStaticESM: boolean,
     canMapToInput: boolean,
+    options: ReducedTransformOptions,
   ): TransformedSource {
     const inputCode = typeof input === 'string' ? input : input.code;
     const inputMap = typeof input === 'string' ? null : input.map;
@@ -224,8 +226,10 @@ export default class ScriptTransformer {
       babelrc: false,
       caller: {
         name: '@jest/transform',
-        supportsDynamicImport,
-        supportsStaticESM,
+        supportsDynamicImport: options.supportsDynamicImport,
+        supportsExportNamespaceFrom: options.supportsExportNamespaceFrom,
+        supportsStaticESM: options.supportsStaticESM,
+        supportsTopLevelAwait: options.supportsTopLevelAwait,
       },
       configFile: false,
       filename,
@@ -259,33 +263,25 @@ export default class ScriptTransformer {
     this._getTransformer(filepath);
   }
 
-  // TODO: replace third argument with TransformOptions in Jest 26
   transformSource(
     filepath: Config.Path,
     content: string,
-    instrument: boolean,
-    supportsDynamicImport = false,
-    supportsStaticESM = false,
+    options: ReducedTransformOptions,
   ): TransformResult {
     const filename = tryRealpath(filepath);
-    const transform = this._getTransformer(filename);
-    const cacheFilePath = this._getFileCachePath(
-      filename,
-      content,
-      instrument,
-      supportsDynamicImport,
-      supportsStaticESM,
-    );
+    const {transformer, transformerConfig = {}} =
+      this._getTransformer(filename) || {};
+    const cacheFilePath = this._getFileCachePath(filename, content, options);
     let sourceMapPath: Config.Path | null = cacheFilePath + '.map';
     // Ignore cache if `config.cache` is set (--no-cache)
     let code = this._config.cache ? readCodeCacheFile(cacheFilePath) : null;
 
-    const shouldCallTransform = transform && this.shouldTransform(filename);
+    const shouldCallTransform = transformer && this.shouldTransform(filename);
 
     // That means that the transform has a custom instrumentation
     // logic and will handle it based on `config.collectCoverage` option
     const transformWillInstrument =
-      shouldCallTransform && transform && transform.canInstrument;
+      shouldCallTransform && transformer && transformer.canInstrument;
 
     if (code) {
       // This is broken: we return the code, and a path for the source map
@@ -304,11 +300,13 @@ export default class ScriptTransformer {
       map: null,
     };
 
-    if (transform && shouldCallTransform) {
-      const processed = transform.process(content, filename, this._config, {
-        instrument,
-        supportsDynamicImport,
-        supportsStaticESM,
+    if (transformer && shouldCallTransform) {
+      const processed = transformer.process(content, filename, {
+        ...options,
+        cacheFS: this._cacheFS,
+        config: this._config,
+        configString: this._cache.configString,
+        transformerConfig,
       });
 
       if (typeof processed === 'string') {
@@ -343,7 +341,7 @@ export default class ScriptTransformer {
 
     // Apply instrumentation to the code if necessary, keeping the instrumented code and new map
     let map = transformed.map;
-    if (!transformWillInstrument && instrument) {
+    if (!transformWillInstrument && options.instrument) {
       /**
        * We can map the original source code to the instrumented code ONLY if
        * - the process of transforming the code produced a source map e.g. ts-jest
@@ -354,14 +352,13 @@ export default class ScriptTransformer {
        *
        */
       const shouldEmitSourceMaps =
-        (transform != null && map != null) || transform == null;
+        (transformer != null && map != null) || transformer == null;
 
       const instrumented = this._instrumentFile(
         filename,
         transformed,
-        supportsDynamicImport,
-        supportsStaticESM,
         shouldEmitSourceMaps,
+        options,
       );
 
       code =
@@ -391,18 +388,16 @@ export default class ScriptTransformer {
   private _transformAndBuildScript(
     filename: Config.Path,
     options: Options,
-    instrument: boolean,
+    transformOptions: ReducedTransformOptions,
     fileSource?: string,
   ): TransformResult {
-    const {
-      isCoreModule,
-      isInternalModule,
-      supportsDynamicImport,
-      supportsStaticESM,
-    } = options;
-    const content = stripShebang(
-      fileSource || fs.readFileSync(filename, 'utf8'),
-    );
+    const {isCoreModule, isInternalModule} = options;
+    let fileContent = fileSource ?? this._cacheFS.get(filename);
+    if (!fileContent) {
+      fileContent = fs.readFileSync(filename, 'utf8');
+      this._cacheFS.set(filename, fileContent);
+    }
+    const content = stripShebang(fileContent);
 
     let code = content;
     let sourceMapPath: string | null = null;
@@ -410,16 +405,14 @@ export default class ScriptTransformer {
     const willTransform =
       !isInternalModule &&
       !isCoreModule &&
-      (this.shouldTransform(filename) || instrument);
+      (transformOptions.instrument || this.shouldTransform(filename));
 
     try {
       if (willTransform) {
         const transformedSource = this.transformSource(
           filename,
           content,
-          instrument,
-          supportsDynamicImport,
-          supportsStaticESM,
+          transformOptions,
         );
 
         code = transformedSource.code;
@@ -458,7 +451,7 @@ export default class ScriptTransformer {
     const result = this._transformAndBuildScript(
       filename,
       options,
-      instrument,
+      {...options, instrument},
       fileSource,
     );
 
@@ -474,12 +467,7 @@ export default class ScriptTransformer {
     options: Options,
     fileSource: string,
   ): string {
-    const {
-      isCoreModule,
-      isInternalModule,
-      supportsDynamicImport,
-      supportsStaticESM,
-    } = options;
+    const {isCoreModule, isInternalModule} = options;
     const willTransform =
       !isInternalModule && !isCoreModule && this.shouldTransform(filename);
 
@@ -487,9 +475,7 @@ export default class ScriptTransformer {
       const {code: transformedJsonSource} = this.transformSource(
         filename,
         fileSource,
-        false,
-        supportsDynamicImport,
-        supportsStaticESM,
+        {...options, instrument: false},
       );
       return transformedJsonSource;
     }
@@ -500,14 +486,23 @@ export default class ScriptTransformer {
   requireAndTranspileModule<ModuleType = unknown>(
     moduleName: string,
     callback?: (module: ModuleType) => void,
+    transformOptions?: ReducedTransformOptions,
   ): ModuleType;
   requireAndTranspileModule<ModuleType = unknown>(
     moduleName: string,
     callback?: (module: ModuleType) => Promise<void>,
+    transformOptions?: ReducedTransformOptions,
   ): Promise<ModuleType>;
   requireAndTranspileModule<ModuleType = unknown>(
     moduleName: string,
     callback?: (module: ModuleType) => void | Promise<void>,
+    transformOptions: ReducedTransformOptions = {
+      instrument: false,
+      supportsDynamicImport: false,
+      supportsExportNamespaceFrom: false,
+      supportsStaticESM: false,
+      supportsTopLevelAwait: false,
+    },
   ): ModuleType | Promise<ModuleType> {
     // Load the transformer to avoid a cycle where we need to load a
     // transformer in order to transform it in the require hooks
@@ -519,9 +514,7 @@ export default class ScriptTransformer {
         try {
           transforming = true;
           return (
-            // we might wanna do `supportsDynamicImport` at some point
-            this.transformSource(filename, code, false, false, false).code ||
-            code
+            this.transformSource(filename, code, transformOptions).code || code
           );
         } finally {
           transforming = false;
@@ -560,14 +553,6 @@ export default class ScriptTransformer {
     }
 
     return module;
-  }
-
-  /**
-   * @deprecated use `this.shouldTransform` instead
-   */
-  // @ts-expect-error: Unused and private - remove in Jest 25
-  private _shouldTransform(filename: Config.Path): boolean {
-    return this.shouldTransform(filename);
   }
 
   shouldTransform(filename: Config.Path): boolean {

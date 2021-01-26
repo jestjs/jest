@@ -25,9 +25,10 @@ import {
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
+import {ScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
-import TestRunner = require('jest-runner');
+import TestRunner, {Test} from 'jest-runner';
 import type {Context} from 'jest-runtime';
 import snapshot = require('jest-snapshot');
 import {interopRequireDefault} from 'jest-util';
@@ -75,7 +76,7 @@ export default class TestScheduler {
   }
 
   async scheduleTests(
-    tests: Array<TestRunner.Test>,
+    tests: Array<Test>,
     watcher: TestWatcher,
   ): Promise<AggregatedResult> {
     const onTestFileStart = this._dispatcher.onTestFileStart.bind(
@@ -97,7 +98,7 @@ export default class TestScheduler {
 
     const runInBand = shouldRunInBand(tests, timings, this._globalConfig);
 
-    const onResult = async (test: TestRunner.Test, testResult: TestResult) => {
+    const onResult = async (test: Test, testResult: TestResult) => {
       if (watcher.isInterrupted()) {
         return Promise.resolve();
       }
@@ -137,10 +138,7 @@ export default class TestScheduler {
       return this._bailIfNeeded(contexts, aggregatedResults, watcher);
     };
 
-    const onFailure = async (
-      test: TestRunner.Test,
-      error: SerializableError,
-    ) => {
+    const onFailure = async (test: Test, error: SerializableError) => {
       if (watcher.isInterrupted()) {
         return;
       }
@@ -193,7 +191,10 @@ export default class TestScheduler {
     contexts.forEach(context => {
       const {config} = context;
       if (!testRunners[config.runner]) {
-        const Runner: typeof TestRunner = require(config.runner);
+        const transformer = new ScriptTransformer(config);
+        const Runner: typeof TestRunner = interopRequireDefault(
+          transformer.requireAndTranspileModule(config.runner),
+        ).default;
         const runner = new Runner(this._globalConfig, {
           changedFiles: this._context?.changedFiles,
           sourcesRelatedToTestsInChangedFiles: this._context
@@ -238,7 +239,7 @@ export default class TestScheduler {
               testRunner.on(
                 'test-case-result',
                 ([testPath, testCaseResult]) => {
-                  const test: TestRunner.Test = {context, path: testPath};
+                  const test: Test = {context, path: testPath};
                   this._dispatcher.onTestCaseResult(test, testCaseResult);
                 },
               ),
@@ -293,8 +294,8 @@ export default class TestScheduler {
 
   private _partitionTests(
     testRunners: Record<string, TestRunner>,
-    tests: Array<TestRunner.Test>,
-  ): Record<string, Array<TestRunner.Test>> | null {
+    tests: Array<Test>,
+  ): Record<string, Array<Test>> | null {
     if (Object.keys(testRunners).length > 1) {
       return tests.reduce((testRuns, test) => {
         const runner = test.context.config.runner;
@@ -418,7 +419,7 @@ export default class TestScheduler {
     throw new Error('Reporter should be either a string or an array');
   }
 
-  private _bailIfNeeded(
+  private async _bailIfNeeded(
     contexts: Set<Context>,
     aggregatedResults: AggregatedResult,
     watcher: TestWatcher,
@@ -428,17 +429,17 @@ export default class TestScheduler {
       aggregatedResults.numFailedTests >= this._globalConfig.bail
     ) {
       if (watcher.isWatchMode()) {
-        watcher.setState({interrupted: true});
-      } else {
-        const failureExit = () => exit(1);
+        await watcher.setState({interrupted: true});
+        return;
+      }
 
-        return this._dispatcher
-          .onRunComplete(contexts, aggregatedResults)
-          .then(failureExit)
-          .catch(failureExit);
+      try {
+        await this._dispatcher.onRunComplete(contexts, aggregatedResults);
+      } finally {
+        const exitCode = this._globalConfig.testFailureExitCode;
+        exit(exitCode);
       }
     }
-    return Promise.resolve();
   }
 }
 
@@ -457,11 +458,11 @@ const createAggregatedResults = (numTotalTestSuites: number) => {
 };
 
 const getEstimatedTime = (timings: Array<number>, workers: number) => {
-  if (!timings.length) {
+  if (timings.length === 0) {
     return 0;
   }
 
-  const max = Math.max.apply(null, timings);
+  const max = Math.max(...timings);
   return timings.length <= workers
     ? max
     : Math.max(timings.reduce((sum, time) => sum + time) / workers, max);

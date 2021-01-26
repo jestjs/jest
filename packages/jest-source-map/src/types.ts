@@ -5,4 +5,4 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-export type SourceMapRegistry = Record<string, string>;
+export type SourceMapRegistry = Map<string, string>;

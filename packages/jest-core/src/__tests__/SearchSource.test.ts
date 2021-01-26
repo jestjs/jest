@@ -9,8 +9,8 @@
 import * as path from 'path';
 import type {Config} from '@jest/types';
 import {normalize} from 'jest-config';
-import {Test} from 'jest-runner';
-import Runtime = require('jest-runtime');
+import type {Test} from 'jest-runner';
+import Runtime from 'jest-runtime';
 import SearchSource, {SearchResult} from '../SearchSource';
 
 jest.setTimeout(15000);
@@ -415,7 +415,7 @@ describe('SearchSource', () => {
     );
     const rootPath = path.join(rootDir, 'root.js');
 
-    beforeEach(done => {
+    beforeEach(async () => {
       const {options: config} = normalize(
         {
           haste: {
@@ -435,12 +435,11 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      Runtime.createContext(config, {maxWorkers, watchman: false}).then(
-        context => {
-          searchSource = new SearchSource(context);
-          done();
-        },
-      );
+      const context = await Runtime.createContext(config, {
+        maxWorkers,
+        watchman: false,
+      });
+      searchSource = new SearchSource(context);
     });
 
     it('makes sure a file is related to itself', () => {
@@ -451,14 +450,12 @@ describe('SearchSource', () => {
     it('finds tests that depend directly on the path', () => {
       const filePath = path.join(rootDir, 'RegularModule.js');
       const file2Path = path.join(rootDir, 'RequireRegularModule.js');
-      const loggingDep = path.join(rootDir, 'logging.js');
       const parentDep = path.join(rootDir, 'ModuleWithSideEffects.js');
       const data = searchSource.findRelatedTests(new Set([filePath]), false);
       expect(toPaths(data.tests).sort()).toEqual([
         parentDep,
         filePath,
         file2Path,
-        loggingDep,
         rootPath,
       ]);
     });
@@ -479,7 +476,7 @@ describe('SearchSource', () => {
   });
 
   describe('findRelatedTestsFromPattern', () => {
-    beforeEach(done => {
+    beforeEach(async () => {
       const {options: config} = normalize(
         {
           moduleFileExtensions: ['js', 'jsx', 'foobar'],
@@ -489,12 +486,11 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      Runtime.createContext(config, {maxWorkers, watchman: false}).then(
-        context => {
-          searchSource = new SearchSource(context);
-          done();
-        },
-      );
+      const context = await Runtime.createContext(config, {
+        maxWorkers,
+        watchman: false,
+      });
+      searchSource = new SearchSource(context);
     });
 
     it('returns empty search result for empty input', () => {

@@ -7,14 +7,14 @@
 
 import React from 'react';
 import renderer from 'react-test-renderer';
-import prettyFormat from '..';
-import {OptionsReceived} from '../types';
+import prettyFormat, {plugins} from '..';
+import type {OptionsReceived} from '../types';
 
 const elementSymbol = Symbol.for('react.element');
 const fragmentSymbol = Symbol.for('react.fragment');
 const suspenseSymbol = Symbol.for('react.suspense');
 const testSymbol = Symbol.for('react.test.json');
-const {ReactElement, ReactTestComponent} = prettyFormat.plugins;
+const {ReactElement, ReactTestComponent} = plugins;
 
 const formatElement = (element: unknown, options?: OptionsReceived) =>
   prettyFormat(element, {plugins: [ReactElement], ...options});
@@ -706,7 +706,7 @@ test('ReactTestComponent plugin highlights syntax with color from theme option',
 });
 
 test('supports forwardRef with a child', () => {
-  function Cat(props: any) {
+  function Cat(props: any, _ref: any) {
     return React.createElement('div', props, props.children);
   }
 

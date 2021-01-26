@@ -8,7 +8,7 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {realpathSync} from 'graceful-fs';
-import HasteMap = require('jest-haste-map');
+import HasteMap from 'jest-haste-map';
 import {cleanup, writeFiles} from '../Utils';
 
 const DIR = path.resolve(realpathSync.native(tmpdir()), 'haste_map_size');

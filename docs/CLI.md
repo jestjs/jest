@@ -208,7 +208,7 @@ test('some test', () => {
 });
 ```
 
-_Note: This option is only supported using `jest-circus`._
+_Note: This option is only supported using the default `jest-circus`. test runner_
 
 ### `--json`
 
@@ -265,6 +265,10 @@ Run tests from one or more projects, found in the specified paths; also takes pa
 Run tests with specified reporters. [Reporter options](configuration#reporters-arraymodulename--modulename-options) are not available via CLI. Example with multiple reporters:
 
 `jest --reporters="default" --reporters="jest-junit"`
+
+### `--roots`
+
+A list of paths to directories that Jest should use to search for files in.
 
 ### `--runInBand`
 

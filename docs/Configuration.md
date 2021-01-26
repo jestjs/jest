@@ -353,6 +353,23 @@ Default: `false`
 
 Make calling deprecated APIs throw helpful error messages. Useful for easing the upgrade process.
 
+### `extensionsToTreatAsEsm` [array\<string>]
+
+Default: `[]`
+
+Jest will run `.mjs` and `.js` files with nearest `package.json`'s `type` field set to `module` as ECMAScript Modules. If you have any other files that should run with native ESM, you need to specify their file extension here.
+
+> Note: Jest's ESM support is still experimental, see [its docs for more details](ECMAScriptModules.md).
+
+```json
+{
+  ...
+  "jest": {
+    "extensionsToTreatAsEsm": [".ts"]
+  }
+}
+```
+
 ### `extraGlobals` [array\<string>]
 
 Default: `undefined`
@@ -501,7 +518,7 @@ test('some test', () => {
 });
 ```
 
-_Note: This option is only supported using `jest-circus`._
+_Note: This option is only supported using the default `jest-circus`. test runner_
 
 ### `maxConcurrency` [number]
 
@@ -517,7 +534,7 @@ An array of directory names to be searched recursively up from the requiring mod
 
 ### `moduleFileExtensions` [array\<string>]
 
-Default: `["js", "json", "jsx", "ts", "tsx", "node"]`
+Default: `["js", "jsx", "ts", "tsx", "json", "node"]`
 
 An array of file extensions your modules use. If you require modules without specifying a file extension, these are the extensions Jest will look for, in left-to-right order.
 
@@ -989,9 +1006,9 @@ More about serializers API can be found [here](https://github.com/facebook/jest/
 
 ### `testEnvironment` [string]
 
-Default: `"jsdom"`
+Default: `"node"`
 
-The test environment that will be used for testing. The default environment in Jest is a browser-like environment through [jsdom](https://github.com/jsdom/jsdom). If you are building a node service, you can use the `node` option to use a node-like environment instead.
+The test environment that will be used for testing. The default environment in Jest is a Node.js environment. If you are building a web app, you can use a browser-like environment through [`jsdom`](https://github.com/jsdom/jsdom) instead.
 
 By adding a `@jest-environment` docblock at the top of the file, you can specify another environment to be used for all tests in that file:
 
@@ -1011,6 +1028,14 @@ You can create your own module that will be used for setting up the test environ
 The class may optionally expose an asynchronous `handleTestEvent` method to bind to events fired by [`jest-circus`](https://github.com/facebook/jest/tree/master/packages/jest-circus). Normally, `jest-circus` test runner would pause until a promise returned from `handleTestEvent` gets fulfilled, **except for the next events**: `start_describe_definition`, `finish_describe_definition`, `add_hook`, `add_test` or `error` (for the up-to-date list you can look at [SyncEvent type in the types definitions](https://github.com/facebook/jest/tree/master/packages/jest-types/src/Circus.ts)). That is caused by backward compatibility reasons and `process.on('unhandledRejection', callback)` signature, but that usually should not be a problem for most of the use cases.
 
 Any docblock pragmas in test files will be passed to the environment constructor and can be used for per-test configuration. If the pragma does not have a value, it will be present in the object with its value set to an empty string. If the pragma is not present, it will not be present in the object.
+
+To use this class as your custom environment, refer to it by its full path within the project. For example, if your class is stored in `my-custom-environment.js` in some subfolder of your project, then the annotation might looke like this:
+
+```js
+/**
+ * @jest-environment ./src/test/my-custom-environment
+ */
+```
 
 _Note: TestEnvironment is sandboxed. Each test suite will trigger setup/teardown in their own TestEnvironment._
 
@@ -1060,6 +1085,9 @@ module.exports = CustomEnvironment;
 
 ```js
 // my-test-suite
+/**
+ * @jest-environment ./my-custom-environment
+ */
 let someGlobalObject;
 
 beforeAll(() => {
@@ -1071,7 +1099,7 @@ beforeAll(() => {
 
 Default: `{}`
 
-Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{userAgent: "Agent/007"}`.
+Test environment options that will be passed to the `testEnvironment`. The relevant options depend on the environment. For example, you can override options given to [jsdom](https://github.com/jsdom/jsdom) such as `{userAgent: "Agent/007"}`.
 
 ### `testFailureExitCode` [number]
 
@@ -1170,9 +1198,9 @@ This option allows the use of a custom results processor. This processor must be
 
 ### `testRunner` [string]
 
-Default: `jasmine2`
+Default: `jest-circus/runner`
 
-This option allows the use of a custom test runner. The default is jasmine2. A custom test runner can be provided by specifying a path to a test runner implementation.
+This option allows the use of a custom test runner. The default is `jest-circus`. A custom test runner can be provided by specifying a path to a test runner implementation.
 
 The test runner module must export a function with the following signature:
 
@@ -1252,8 +1280,7 @@ Examples of such compilers include:
 
 - [Babel](https://babeljs.io/)
 - [TypeScript](http://www.typescriptlang.org/)
-- [async-to-gen](http://github.com/leebyron/async-to-gen#jest)
-- To build your own please visit the [Custom Transformer](TutorialReact.md#custom-transformers) section
+- To build your own please visit the [Custom Transformer](CodeTransformation.md#writing-custom-transformers) section
 
 You can pass configuration to a transformer like `{filePattern: ['path-to-transformer', {options}]}` For example, to configure babel-jest for non-default behavior, `{"\\.js$": ['babel-jest', {rootMode: "upward"}]}`
 

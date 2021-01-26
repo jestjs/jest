@@ -8,7 +8,7 @@
 'use strict';
 
 module.exports = {
-  process(src, filename, config, options) {
+  process(src, filename) {
     if (/bar.js$/.test(filename)) {
       return `${src};\nmodule.exports = createPlugin('bar');`;
     }

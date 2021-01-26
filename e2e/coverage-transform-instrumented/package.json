@@ -6,6 +6,12 @@
     },
     "testRegex": "/__tests__/.*\\.(js)$",
     "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "jest-circus",
+      "jest-each",
+      "jest-environment-node/",
+      "jest-jasmine2"
+    ],
     "moduleFileExtensions": [
       "js"
     ]
