@@ -213,7 +213,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         this._onProcessEnd(error, null);
       });
 
-      await new Promise((resolve, reject) => {
+      await new Promise<void>((resolve, reject) => {
         this._options.inspector?.post('Debugger.pause', (err: Error) => {
           if (err === null) {
             resolve();

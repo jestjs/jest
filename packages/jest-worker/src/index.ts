@@ -119,7 +119,7 @@ export class Worker {
   public static create = async (
     workerPath: string,
     options?: FarmOptions,
-  ): Promise<JestWorker> => {
+  ): Promise<Worker> => {
     const setUpInspector = async () => {
       // Open V8 Inspector
       inspector.open();
@@ -128,7 +128,7 @@ export class Worker {
       if (inspectorUrl) {
         const session = new inspector.Session();
         session.connect();
-        await new Promise((resolve, reject) => {
+        await new Promise<void>((resolve, reject) => {
           session.post('Debugger.enable', (err: Error) => {
             if (err === null) {
               resolve();
@@ -142,7 +142,7 @@ export class Worker {
       return undefined;
     };
 
-    const jestWorker = new JestWorker(workerPath, options);
+    const jestWorker = new Worker(workerPath, options);
     const inspectorSession = await setUpInspector();
 
     jestWorker._inspectorSession = inspectorSession;

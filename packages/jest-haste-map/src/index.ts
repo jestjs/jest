@@ -50,9 +50,6 @@ import {getSha1, worker} from './worker';
 // understand `require`.
 const {version: VERSION} = require('../package.json');
 
-import inspector = require('inspector');
-type HType = typeof H;
-
 type Options = {
   cacheDirectory?: string;
   computeDependencies?: boolean;
