@@ -2,9 +2,9 @@
 
 exports[`instruments and collects coverage for typescript files 1`] = `
 ------------|---------|----------|---------|---------|-------------------
-File        | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+File        | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ------------|---------|----------|---------|---------|-------------------
-All files   |     100 |      100 |     100 |     100 |
- covered.ts |     100 |      100 |     100 |     100 |
+All files   |     100 |      100 |     100 |     100 |                   
+ covered.ts |     100 |      100 |     100 |     100 |                   
 ------------|---------|----------|---------|---------|-------------------
 `;
