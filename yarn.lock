@@ -10836,15 +10836,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"docusaurus-plugin-sass@npm:^0.1.11":
+"docusaurus-plugin-sass@git+https://github.com/slorber/docusaurus-plugin-sass.git#patch-2":
   version: 0.1.11
-  resolution: "docusaurus-plugin-sass@npm:0.1.11"
+  resolution: "docusaurus-plugin-sass@https://github.com/slorber/docusaurus-plugin-sass.git#commit=1cb0a8d9e0f1a553782fe931a821d5b7cf8c6d20"
   dependencies:
     node-sass: ^4.13.1
     sass-loader: ^10.0.2
   peerDependencies:
     "@docusaurus/core": ^2.0.0
-  checksum: 2ac96c2d3afa4a73d96774cb59e814f53c22f3b6cfd96f7c844c503198bef0c22ca5b392f81870cf17df50c39b01f558f4f6d7757fab921973163d3a812b8c0d
+  checksum: 3b577d5e41bdebbbf80b8152b634627c2db0b1c12027a2841f59ec44c34fe69bfeb9e9862115d895f131b08ab91e3010e9fcd98370c372c17b292b5889d80c18
   languageName: node
   linkType: hard
 
@@ -16124,7 +16124,7 @@ fsevents@~2.3.1:
     "@docusaurus/plugin-pwa": 2.0.0-alpha.dbfa256a7
     "@docusaurus/preset-classic": 2.0.0-alpha.dbfa256a7
     clsx: ^1.1.1
-    docusaurus-plugin-sass: ^0.1.11
+    docusaurus-plugin-sass: "git+https://github.com/slorber/docusaurus-plugin-sass.git#patch-2"
     fs-extra: ^9.0.1
     globby: ^11.0.1
     graphql: ^15.3.0

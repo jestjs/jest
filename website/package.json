@@ -23,7 +23,7 @@
     "@docusaurus/plugin-pwa": "2.0.0-alpha.dbfa256a7",
     "@docusaurus/preset-classic": "2.0.0-alpha.dbfa256a7",
     "clsx": "^1.1.1",
-    "docusaurus-plugin-sass": "^0.1.11",
+    "docusaurus-plugin-sass": "git+https://github.com/slorber/docusaurus-plugin-sass.git#patch-2",
     "fs-extra": "^9.0.1",
     "globby": "^11.0.1",
     "react": "^16.10.2",

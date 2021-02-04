@@ -128,7 +128,7 @@ div.jest-card-front {
 
 div.jest-card-back {
   background-color: #c2a813;
-  background-image: url(/img/running-card-background.png);
+  background-image: url('@site/static/img/running-card-background.png');
   background-size: 20px;
   border: 5px solid #c2a813;
   backface-visibility: hidden;
@@ -256,7 +256,7 @@ div.jest-card-pass .jest-card-logo-container {
 div.jest-card-pass .jest-card-logo {
   width: 90%;
   height: 90%;
-  background-image: url(/img/jest-card-pass.svg);
+  background-image: url(@site/static/img/jest-card-pass.svg);
   transform: rotate(-65deg);
   background-size: 65% 65%;
   background-position: 50% 75%;
@@ -269,7 +269,7 @@ div.jest-card-fail .jest-card-logo-container {
 div.jest-card-fail .jest-card-logo {
   background-position: 50% 65%;
   background-size: 65% 65%;
-  background-image: url(/img/jest-card-fail.svg);
+  background-image: url(@site/static/img/jest-card-fail.svg);
 }
 
 div.jest-card-run .jest-card-logo-container {
@@ -277,7 +277,7 @@ div.jest-card-run .jest-card-logo-container {
 }
 
 div.jest-card-run .jest-card-logo {
-  background-image: url(/img/jest-card-run.svg);
+  background-image: url(@site/static/img/jest-card-run.svg);
 }
 
 @keyframes spin {
