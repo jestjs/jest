@@ -5,11 +5,11 @@
   "scripts": {
     "start": "docusaurus-start",
     "build": "docusaurus-build",
-    "gh-pages": "docusaurus-publish",
+    "gh-pages": "echo 'replaced by Netlify deployment!'",
     "examples": "docusaurus-examples",
-    "crowdin-upload": "crowdin --config ../crowdin.yaml upload sources --auto-update -b master",
-    "crowdin-download": "crowdin --config ../crowdin.yaml download -b master",
-    "publish-gh-pages": "docusaurus-publish",
+    "crowdin-upload": "java -jar crowdin-cli-v2.jar --config ../crowdin.yaml upload sources --auto-update -b master",
+    "crowdin-download": "java -jar crowdin-cli-v2.jar --config ../crowdin.yaml download -b master",
+    "publish-gh-pages": "echo 'replaced by Netlify deployment!'",
     "write-translations": "docusaurus-write-translations",
     "version": "docusaurus-version",
     "rename-version": "docusaurus-rename-version"
