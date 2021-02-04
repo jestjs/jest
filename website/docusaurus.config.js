@@ -6,8 +6,8 @@
  */
 
 const path = require('path');
-
 const i18n = require('./i18n');
+const ArchivedVersions = require('./archivedVersions.json');
 
 const JestThemeColor = '#15c213';
 
@@ -123,6 +123,12 @@ module.exports = {
           position: 'left',
           dropdownActiveClassDisabled: true,
           dropdownItemsAfter: [
+            ...Object.entries(ArchivedVersions).map(
+              ([versionName, versionUrl]) => ({
+                to: versionUrl,
+                label: versionName,
+              })
+            ),
             {
               to: '/versions',
               label: 'All versions',

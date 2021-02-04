@@ -10,6 +10,7 @@ import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import versions from '@site/versions.json';
+import ArchivedVersions from '@site/archivedVersions.json';
 
 // TODO legacy Docusaurus v1 components
 import Container from '@site/src/components/v1/Container';
@@ -74,6 +75,25 @@ export default function VersionsPage() {
                           <Link to={`/docs/${version}/getting-started`}>
                             Documentation
                           </Link>
+                        </td>
+                      </tr>
+                    )
+                )}
+              </tbody>
+            </table>
+            <h3 id="archive">Archived Versions</h3>
+            <p>
+              Here you can find documentation for archived versions of Jest.
+            </p>
+            <table>
+              <tbody>
+                {Object.entries(ArchivedVersions).map(
+                  ([version, versionUrl]) =>
+                    version !== latestVersion && (
+                      <tr key={version}>
+                        <th>{version}</th>
+                        <td>
+                          <Link to={versionUrl}>Documentation</Link>
                         </td>
                       </tr>
                     )
