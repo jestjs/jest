@@ -18,10 +18,10 @@
     "netlify:crowdin": "yarn write-translations && yarn workspace @jest/monorepo crowdin:upload && yarn workspace @jest/monorepo crowdin:download"
   },
   "dependencies": {
-    "@docusaurus/core": "2.0.0-alpha.a8ee7fd3e",
-    "@docusaurus/plugin-client-redirects": "2.0.0-alpha.a8ee7fd3e",
-    "@docusaurus/plugin-pwa": "2.0.0-alpha.a8ee7fd3e",
-    "@docusaurus/preset-classic": "2.0.0-alpha.a8ee7fd3e",
+    "@docusaurus/core": "2.0.0-alpha.dbfa256a7",
+    "@docusaurus/plugin-client-redirects": "2.0.0-alpha.dbfa256a7",
+    "@docusaurus/plugin-pwa": "2.0.0-alpha.dbfa256a7",
+    "@docusaurus/preset-classic": "2.0.0-alpha.dbfa256a7",
     "clsx": "^1.1.1",
     "docusaurus-plugin-sass": "^0.1.11",
     "fs-extra": "^9.0.1",
