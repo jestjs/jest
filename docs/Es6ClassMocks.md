@@ -150,6 +150,7 @@ A limitation with the factory parameter is that, since calls to `jest.mock()` ar
 ```javascript
 // Note: this will fail
 import SoundPlayer from './sound-player';
+// Must start with 'mock' e.g. mockPlaySoundFile as above
 const fakePlaySoundFile = jest.fn();
 jest.mock('./sound-player', () => {
   return jest.fn().mockImplementation(() => {
