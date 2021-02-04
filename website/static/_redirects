@@ -15,3 +15,15 @@
 /docs/ru/*            /ru/docs/:splat
 /docs/uk/*            /uk/docs/:splat
 /docs/zh-Hans/*       /zh-Hans/docs/:splat
+
+
+# Redirect each country to appropriate 404
+# See https://docs.netlify.com/routing/redirects/redirect-options/#custom-404-page-handling
+
+/ja/*         /ja/404.html          404
+/es-ES/*      /es-ES/404.html       404
+/pt-BR/*      /pt-BR/404.html       404
+/ro/*         /ro/404.html          404
+/ru/*         /ru/404.html          404
+/uk/*         /uk/404.html          404
+/zh-Hans/*    /zh-Hans/404.html     404
