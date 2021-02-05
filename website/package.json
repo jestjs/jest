@@ -12,7 +12,8 @@
     "publish-gh-pages": "echo 'replaced by Netlify deployment!'",
     "write-translations": "docusaurus-write-translations",
     "version": "docusaurus-version",
-    "rename-version": "docusaurus-rename-version"
+    "rename-version": "docusaurus-rename-version",
+    "netlify:archive": "yarn crowdin-download && node fetchSupporters.js && yarn build"
   },
   "dependencies": {
     "docusaurus": "^1.14.2"
