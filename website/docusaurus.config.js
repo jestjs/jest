@@ -30,7 +30,12 @@ module.exports = {
           // homePageId: 'getting-started',
           showLastUpdateAuthor: true,
           showLastUpdateTime: true,
-          editUrl: 'https://github.com/facebook/jest/edit/master/docs/',
+          editUrl: ({locale, versionDocsDirPath, docPath}) => {
+            if (locale !== 'en') {
+              return `https://crowdin.com/project/jest-v2/${locale}`;
+            }
+            return `https://github.com/facebook/jest/edit/master/docs/${versionDocsDirPath}/${docPath}`;
+          },
           path: '../docs',
           sidebarPath: './sidebars.json',
         },
