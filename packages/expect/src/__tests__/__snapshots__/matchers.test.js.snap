@@ -2078,6 +2078,20 @@ Expected: <g>[]</>
 Received: serializes to the same string
 `;
 
+exports[`.toEqual() {pass: false} expect([]).toEqual([]) 2`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: <g>[]</>
+Received: serializes to the same string
+`;
+
+exports[`.toEqual() {pass: false} expect([]).toEqual([]) 3`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: <g>[]</>
+Received: serializes to the same string
+`;
+
 exports[`.toEqual() {pass: false} expect([]).toEqual([1]) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 

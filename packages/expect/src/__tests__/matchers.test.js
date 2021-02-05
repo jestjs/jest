@@ -603,8 +603,18 @@ describe('.toEqual()', () => {
       Object.assign([], {4294967295: 2}), // issue 11056
     ],
     [
+      // eslint-disable-next-line no-useless-computed-key
       Object.assign([], {['-0']: 1}),
-      Object.assign([], {['0']: 1}), // issue 11056: add check for -0, 0
+      // eslint-disable-next-line no-useless-computed-key
+      Object.assign([], {['0']: 1}), // issue 11056: also check (-0, 0)
+    ],
+    [
+      Object.assign([], {a: 1}),
+      Object.assign([], {b: 1}), // issue 11056: also check strings
+    ],
+    [
+      Object.assign([], {[Symbol()]: 1}),
+      Object.assign([], {[Symbol()]: 1}), // issue 11056: also check symbols
     ],
   ].forEach(([a, b]) => {
     test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
