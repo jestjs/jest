@@ -2150,6 +2150,21 @@ exports[`.toEqual() {pass: false} expect([97, 98, 99]).toEqual([97, 98, 100]) 1`
 <d>  ]</>
 `;
 
+exports[`.toEqual() {pass: false} expect([undefined, undefined, 1, undefined]).toEqual([undefined, undefined, 2, undefined]) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Array [</>
+<d>    undefined,</>
+<d>    undefined,</>
+<g>-   2,</>
+<r>+   1,</>
+<d>    undefined,</>
+<d>  ]</>
+`;
+
 exports[`.toEqual() {pass: false} expect({"0": "a", "1": "b", "2": "c"}).toEqual("abc") 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
@@ -2764,6 +2779,20 @@ exports[`.toEqual() {pass: true} expect([Function anonymous]).not.toEqual(Any<Fu
 
 Expected: not <g>Any<Function></>
 Received:     <r>[Function anonymous]</>
+`;
+
+exports[`.toEqual() {pass: true} expect([undefined, undefined, 1, undefined, undefined]).not.toEqual([undefined, undefined, 1, undefined, undefined]) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>[undefined, undefined, 1, undefined, undefined]</>
+
+`;
+
+exports[`.toEqual() {pass: true} expect([undefined, undefined, 1, undefined]).not.toEqual([undefined, undefined, 1, undefined]) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>[undefined, undefined, 1, undefined]</>
+
 `;
 
 exports[`.toEqual() {pass: true} expect({"a": 1, "b": [Function b], "c": true}).not.toEqual({"a": 1, "b": Any<Function>, "c": Anything}) 1`] = `
