@@ -9,7 +9,6 @@
     "examples": "docusaurus-examples",
     "crowdin-upload": "java -jar crowdin-cli-v2.jar --config ../crowdin.yaml upload sources --auto-update -b master",
     "crowdin-download": "java -jar crowdin-cli-v2.jar --config ../crowdin.yaml download -b master",
-    "publish-gh-pages": "echo 'replaced by Netlify deployment!'",
     "write-translations": "docusaurus-write-translations",
     "version": "docusaurus-version",
     "rename-version": "docusaurus-rename-version",
