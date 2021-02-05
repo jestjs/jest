@@ -12335,7 +12335,6 @@ fsevents@~2.1.2:
   version: 0.0.0-use.local
   resolution: "jest-website@workspace:website"
   dependencies:
-    crowdin-cli: ^0.3.0
     docusaurus: ^1.14.2
     graphql: ^15.3.0
     graphql-request: ^3.1.0

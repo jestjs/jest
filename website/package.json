@@ -5,20 +5,18 @@
   "scripts": {
     "start": "docusaurus-start",
     "build": "docusaurus-build",
-    "gh-pages": "docusaurus-publish",
     "examples": "docusaurus-examples",
-    "crowdin-upload": "crowdin --config ../crowdin.yaml upload sources --auto-update -b master",
-    "crowdin-download": "crowdin --config ../crowdin.yaml download -b master",
-    "publish-gh-pages": "docusaurus-publish",
+    "crowdin-upload": "java -jar crowdin-cli-v2.jar --config ../crowdin.yaml upload sources --auto-update -b master",
+    "crowdin-download": "java -jar crowdin-cli-v2.jar --config ../crowdin.yaml download -b master",
     "write-translations": "docusaurus-write-translations",
     "version": "docusaurus-version",
-    "rename-version": "docusaurus-rename-version"
+    "rename-version": "docusaurus-rename-version",
+    "netlify:archive": "yarn write-translations && yarn crowdin-download && node fetchSupporters.js && yarn build"
   },
   "dependencies": {
     "docusaurus": "^1.14.2"
   },
   "devDependencies": {
-    "crowdin-cli": "^0.3.0",
     "graphql": "^15.3.0",
     "graphql-request": "^3.1.0"
   }
