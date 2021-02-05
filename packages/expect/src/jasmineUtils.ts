@@ -198,7 +198,7 @@ function keys(
   isArray: boolean,
   hasKey: (obj: object, key: string) => boolean,
 ) {
-  var allKeys = (function (o) {
+  var allKeys = (function(o) {
     var keys = [];
     for (var key in o) {
       if (hasKey(o, key)) {
