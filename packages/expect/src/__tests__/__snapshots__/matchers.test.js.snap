@@ -2071,6 +2071,25 @@ Expected: <g>/abc/g</>
 Received: <r>/abc/gsy</>
 `;
 
+exports[`.toEqual() {pass: false} expect([]).toEqual([]) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: <g>[]</>
+Received: serializes to the same string
+`;
+
+exports[`.toEqual() {pass: false} expect([]).toEqual([1]) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 3</>
+<r>+ Received  + 1</>
+
+<g>- Array [</>
+<g>-   1,</>
+<g>- ]</>
+<r>+ Array []</>
+`;
+
 exports[`.toEqual() {pass: false} expect([1, 2]).toEqual([2, 1]) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
