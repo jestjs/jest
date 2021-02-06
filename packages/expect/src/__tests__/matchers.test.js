@@ -339,6 +339,7 @@ describe('.toStrictEqual()', () => {
   });
 
   it('does not consider holes as undefined in sparse arrays', () => {
+    // eslint-disable-next-line no-sparse-arrays
     expect([, , , 1, , ,]).not.toStrictEqual([, , , 1, undefined, ,]);
   });
 
@@ -603,7 +604,9 @@ describe('.toEqual()', () => {
       },
     ],
     [
+      // eslint-disable-next-line no-sparse-arrays
       [, , 1, ,],
+      // eslint-disable-next-line no-sparse-arrays
       [, , 2, ,],
     ],
     [
@@ -821,11 +824,15 @@ describe('.toEqual()', () => {
       },
     ],
     [
+      // eslint-disable-next-line no-sparse-arrays
       [, , 1, ,],
+      // eslint-disable-next-line no-sparse-arrays
       [, , 1, ,],
     ],
     [
+      // eslint-disable-next-line no-sparse-arrays
       [, , 1, , ,],
+      // eslint-disable-next-line no-sparse-arrays
       [, , 1, undefined, ,], // same length but hole replaced by undefined
     ],
   ].forEach(([a, b]) => {
