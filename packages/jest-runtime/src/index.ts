@@ -100,6 +100,7 @@ type ModuleRegistry = Map<string, InitialModule | Module>;
 // * take sufficiently long to require to warrant an optimization.
 // When required from the outside, they use the worker's require cache and are thus
 // only loaded once per worker, not once per test file.
+// Use /benchmarks/test-file-overhead to measure the impact.
 // Note that this only applies when they are required in an internal context;
 // users who require one of these modules in their tests will still get the module from inside the VM.
 // Prefer listing a module here only if it is impractical to use the jest-resolve-outside-vm-option where it is required,
