@@ -29,7 +29,7 @@
     "jest-util": "^27.0.0-next.1",
     "jest-worker": "^27.0.0-next.2",
     "slash": "^3.0.0",
-    "source-map": "^0.6.0",
+    "source-map-js": "^0.6.2",
     "string-length": "^4.0.1",
     "terminal-link": "^2.0.0",
     "v8-to-istanbul": "^7.0.0"

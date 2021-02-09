@@ -14,7 +14,7 @@ import istanbulCoverage = require('istanbul-lib-coverage');
 import istanbulReport = require('istanbul-lib-report');
 import libSourceMaps = require('istanbul-lib-source-maps');
 import istanbulReports = require('istanbul-reports');
-import type {RawSourceMap} from 'source-map';
+import type {RawSourceMap} from 'source-map-js';
 import v8toIstanbul = require('v8-to-istanbul');
 import type {
   AggregatedResult,

@@ -6,7 +6,7 @@
  */
 
 const Handlebars = require('handlebars/dist/cjs/handlebars.js');
-const {SourceMapConsumer, SourceNode} = require('source-map');
+const {SourceMapConsumer, SourceNode} = require('source-map-js');
 
 exports.process = (code, filename) => {
   const pc = Handlebars.precompile(code, {srcName: filename});

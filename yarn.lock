@@ -2007,7 +2007,7 @@ __metadata:
     jest-worker: ^27.0.0-next.2
     mock-fs: ^4.4.1
     slash: ^3.0.0
-    source-map: ^0.6.0
+    source-map-js: ^0.6.2
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
     terminal-link: ^2.0.0
@@ -2027,7 +2027,7 @@ __metadata:
     "@types/graceful-fs": ^4.1.2
     callsites: ^3.0.0
     graceful-fs: ^4.2.4
-    source-map: ^0.6.0
+    source-map-js: ^0.6.2
   languageName: unknown
   linkType: soft
 
@@ -2130,7 +2130,7 @@ __metadata:
     micromatch: ^4.0.2
     pirates: ^4.0.1
     slash: ^3.0.0
-    source-map: ^0.6.1
+    source-map-js: ^0.6.2
     write-file-atomic: ^3.0.0
   languageName: unknown
   linkType: soft
@@ -18066,6 +18066,13 @@ react-native@0.63.2:
   dependencies:
     is-plain-obj: ^1.0.0
   checksum: c0437ce7fbcc35e6f255f46cc4ba350cadac3199f4af3ee8c8b305f50a35b6ead4fec814a4d86ffa49c8ec9e5bf064877232a7d45270c6e31f725209a1c4ef3d
+  languageName: node
+  linkType: hard
+
+"source-map-js@npm:^0.6.2":
+  version: 0.6.2
+  resolution: "source-map-js@npm:0.6.2"
+  checksum: 8e2f992cfbedb71286fa6f6e011e2fa756b7f4d944ea4b0f49e9ff6ea34ad0a17dc655f067fdddb32efa7b45000e8c59e47a2e875d91744c86a56329b5f58b32
   languageName: node
   linkType: hard
 

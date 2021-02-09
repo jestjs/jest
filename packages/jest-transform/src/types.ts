@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {RawSourceMap} from 'source-map';
+import type {RawSourceMap} from 'source-map-js';
 import type {Config, TransformTypes} from '@jest/types';
 
 export type ShouldInstrumentOptions = Pick<
