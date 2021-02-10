@@ -74,7 +74,7 @@ it('We can check if the consumer called a method on the class instance', () => {
   expect(SoundPlayer).toHaveBeenCalledTimes(1);
 
   const coolSoundFileName = 'song.mp3';
-  soundPlayerConsumer.playSomethingCool();
+  soundPlayerConsumer.playSoundFile(coolSoundFileName);
 
   // mock.instances is available with automatic mocks:
   const mockSoundPlayerInstance = SoundPlayer.mock.instances[0];
