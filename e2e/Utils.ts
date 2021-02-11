@@ -282,17 +282,6 @@ export const normalizeIcons = (str: string) => {
     .replace(new RegExp('\u221A', 'g'), '\u2713');
 };
 
-export const rightTrimStdout = (str: string) => {
-  if (!str) {
-    return str;
-  }
-
-  return str
-    .split('\n')
-    .map(str => str.trimRight())
-    .join('\n');
-};
-
 // Certain environments (like CITGM and GH Actions) do not come with mercurial installed
 let hgIsInstalled: boolean | null = null;
 

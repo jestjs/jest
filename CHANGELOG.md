@@ -64,6 +64,7 @@
 - `[*]` [**BREAKING**] Remove deprecated `mapCoverage` ([#9968](https://github.com/facebook/jest/pull/9968))
 - `[jest-config]` [**BREAKING**] Remove `enabledTestsMap` config, use `filter` instead ([#10787](https://github.com/facebook/jest/pull/10787))
 - `[jest-console]` [**BREAKING**] Move `root` into `config` and take `GlobalConfig` as mandatory parameter for `getConsoleOutput` ([#10126](https://github.com/facebook/jest/pull/10126))
+- `[jest-console]` Export LogEntry ([#11017](https://github.com/facebook/jest/pull/11017))
 - `[jest-fake-timers]` Clarify global behavior of `jest.useFakeTimers` and `jest.useRealTimers` ([#10867](https://github.com/facebook/jest/pull/10867))
 - `[jest-haste-map]` [**BREAKING**] Migrate to ESM ([#10875](https://github.com/facebook/jest/pull/10875))
 - `[jest-haste-map]` [**BREAKING**] Remove support for deprecated option `ignorePattern` as function ([#10348](https://github.com/facebook/jest/pull/10348))
