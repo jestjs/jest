@@ -50,6 +50,8 @@ export default function defaultResolver(
     packageFilter: options.packageFilter,
     paths: options.paths,
     preserveSymlinks: false,
+    // @ts-expect-error: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/51182
+    readPackageSync,
     realpathSync,
   });
 
@@ -61,6 +63,7 @@ export default function defaultResolver(
 export function clearDefaultResolverCache(): void {
   checkedPaths.clear();
   checkedRealpathPaths.clear();
+  packageContents.clear();
 }
 
 enum IPathType {
@@ -118,6 +121,21 @@ function realpathCached(path: Config.Path): Config.Path {
   return result;
 }
 
+const packageContents = new Map<string, unknown>();
+function readPackageCached(path: Config.Path): unknown {
+  let result = packageContents.get(path);
+
+  if (result !== undefined) {
+    return result;
+  }
+
+  result = JSON.parse(fs.readFileSync(path, 'utf8'));
+
+  packageContents.set(path, result);
+
+  return result;
+}
+
 /*
  * helper functions
  */
@@ -131,4 +149,8 @@ function isDirectory(dir: Config.Path): boolean {
 
 function realpathSync(file: Config.Path): Config.Path {
   return realpathCached(file);
+}
+
+function readPackageSync(_: unknown, file: Config.Path): unknown {
+  return readPackageCached(file);
 }

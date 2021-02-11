@@ -12074,7 +12074,7 @@ fsevents@^1.2.7:
     jest-haste-map: ^27.0.0-next.2
     jest-pnp-resolver: ^1.2.2
     jest-util: ^27.0.0-next.1
-    resolve: ^1.18.1
+    resolve: ^1.20.0
     slash: ^3.0.0
   languageName: unknown
   linkType: soft
@@ -17276,7 +17276,7 @@ react-native@0.63.2:
   languageName: node
   linkType: hard
 
-"resolve@^1.1.6, resolve@^1.10.0, resolve@^1.13.1, resolve@^1.15.0, resolve@^1.17.0, resolve@^1.18.1, resolve@^1.5.0":
+"resolve@^1.1.6, resolve@^1.10.0, resolve@^1.13.1, resolve@^1.15.0, resolve@^1.17.0, resolve@^1.20.0, resolve@^1.5.0":
   version: 1.20.0
   resolution: "resolve@npm:1.20.0"
   dependencies:
@@ -17286,7 +17286,7 @@ react-native@0.63.2:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.1.6#builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#builtin<compat/resolve>, resolve@patch:resolve@^1.13.1#builtin<compat/resolve>, resolve@patch:resolve@^1.15.0#builtin<compat/resolve>, resolve@patch:resolve@^1.17.0#builtin<compat/resolve>, resolve@patch:resolve@^1.18.1#builtin<compat/resolve>, resolve@patch:resolve@^1.5.0#builtin<compat/resolve>":
+"resolve@patch:resolve@^1.1.6#builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#builtin<compat/resolve>, resolve@patch:resolve@^1.13.1#builtin<compat/resolve>, resolve@patch:resolve@^1.15.0#builtin<compat/resolve>, resolve@patch:resolve@^1.17.0#builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#builtin<compat/resolve>, resolve@patch:resolve@^1.5.0#builtin<compat/resolve>":
   version: 1.20.0
   resolution: "resolve@patch:resolve@npm%3A1.20.0#builtin<compat/resolve>::version=1.20.0&hash=3388aa"
   dependencies:
