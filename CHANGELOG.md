@@ -84,6 +84,8 @@
 
 ### Performance
 
+- `[jest-runtime]` Load `chalk` only once per worker ([#10864](https://github.com/facebook/jest/pull/10864))
+
 ## 26.6.3
 
 ### Fixes
