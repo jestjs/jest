@@ -1,40 +1,40 @@
 {
-  "version-26.6/docs": [
+  "version-26.x/docs": [
     {
       "type": "category",
       "label": "Introduction",
       "items": [
         {
           "type": "doc",
-          "id": "version-26.6/getting-started"
+          "id": "version-26.x/getting-started"
         },
         {
           "type": "doc",
-          "id": "version-26.6/using-matchers"
+          "id": "version-26.x/using-matchers"
         },
         {
           "type": "doc",
-          "id": "version-26.6/asynchronous"
+          "id": "version-26.x/asynchronous"
         },
         {
           "type": "doc",
-          "id": "version-26.6/setup-teardown"
+          "id": "version-26.x/setup-teardown"
         },
         {
           "type": "doc",
-          "id": "version-26.6/mock-functions"
+          "id": "version-26.x/mock-functions"
         },
         {
           "type": "doc",
-          "id": "version-26.6/jest-platform"
+          "id": "version-26.x/jest-platform"
         },
         {
           "type": "doc",
-          "id": "version-26.6/jest-community"
+          "id": "version-26.x/jest-community"
         },
         {
           "type": "doc",
-          "id": "version-26.6/more-resources"
+          "id": "version-26.x/more-resources"
         }
       ]
     },
@@ -44,67 +44,67 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-26.6/snapshot-testing"
+          "id": "version-26.x/snapshot-testing"
         },
         {
           "type": "doc",
-          "id": "version-26.6/tutorial-async"
+          "id": "version-26.x/tutorial-async"
         },
         {
           "type": "doc",
-          "id": "version-26.6/timer-mocks"
+          "id": "version-26.x/timer-mocks"
         },
         {
           "type": "doc",
-          "id": "version-26.6/manual-mocks"
+          "id": "version-26.x/manual-mocks"
         },
         {
           "type": "doc",
-          "id": "version-26.6/es6-class-mocks"
+          "id": "version-26.x/es6-class-mocks"
         },
         {
           "type": "doc",
-          "id": "version-26.6/bypassing-module-mocks"
+          "id": "version-26.x/bypassing-module-mocks"
         },
         {
           "type": "doc",
-          "id": "version-26.6/ecmascript-modules"
+          "id": "version-26.x/ecmascript-modules"
         },
         {
           "type": "doc",
-          "id": "version-26.6/webpack"
+          "id": "version-26.x/webpack"
         },
         {
           "type": "doc",
-          "id": "version-26.6/puppeteer"
+          "id": "version-26.x/puppeteer"
         },
         {
           "type": "doc",
-          "id": "version-26.6/mongodb"
+          "id": "version-26.x/mongodb"
         },
         {
           "type": "doc",
-          "id": "version-26.6/dynamodb"
+          "id": "version-26.x/dynamodb"
         },
         {
           "type": "doc",
-          "id": "version-26.6/tutorial-jquery"
+          "id": "version-26.x/tutorial-jquery"
         },
         {
           "type": "doc",
-          "id": "version-26.6/watch-plugins"
+          "id": "version-26.x/watch-plugins"
         },
         {
           "type": "doc",
-          "id": "version-26.6/migration-guide"
+          "id": "version-26.x/migration-guide"
         },
         {
           "type": "doc",
-          "id": "version-26.6/troubleshooting"
+          "id": "version-26.x/troubleshooting"
         },
         {
           "type": "doc",
-          "id": "version-26.6/architecture"
+          "id": "version-26.x/architecture"
         }
       ]
     },
@@ -114,47 +114,47 @@
       "items": [
         {
           "type": "doc",
-          "id": "version-26.6/tutorial-react"
+          "id": "version-26.x/tutorial-react"
         },
         {
           "type": "doc",
-          "id": "version-26.6/tutorial-react-native"
+          "id": "version-26.x/tutorial-react-native"
         },
         {
           "type": "doc",
-          "id": "version-26.6/testing-frameworks"
+          "id": "version-26.x/testing-frameworks"
         }
       ]
     }
   ],
-  "version-26.6/api": [
+  "version-26.x/api": [
     {
       "type": "doc",
-      "id": "version-26.6/api"
+      "id": "version-26.x/api"
     },
     {
       "type": "doc",
-      "id": "version-26.6/expect"
+      "id": "version-26.x/expect"
     },
     {
       "type": "doc",
-      "id": "version-26.6/mock-function-api"
+      "id": "version-26.x/mock-function-api"
     },
     {
       "type": "doc",
-      "id": "version-26.6/jest-object"
+      "id": "version-26.x/jest-object"
     },
     {
       "type": "doc",
-      "id": "version-26.6/configuration"
+      "id": "version-26.x/configuration"
     },
     {
       "type": "doc",
-      "id": "version-26.6/cli"
+      "id": "version-26.x/cli"
     },
     {
       "type": "doc",
-      "id": "version-26.6/environment-variables"
+      "id": "version-26.x/environment-variables"
     }
   ]
 }
