@@ -1,0 +1,16 @@
+
+# Note: this file's config override the Netlify UI admin config
+
+# production build
+[build]
+  base = "/"
+  command = "yarn workspace jest-website netlify:ci:production"
+  publish = "/website/build"
+  # No not build the site if there's no site-related changes
+  ignore = "git diff --quiet HEAD^ HEAD -- website/"
+
+
+# deploy preview build (faster config)
+[context.deploy-preview]
+  command = "yarn workspace jest-website netlify:ci:deployPreview"
+

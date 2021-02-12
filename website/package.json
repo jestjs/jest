@@ -3,22 +3,36 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "docusaurus-start",
-    "build": "docusaurus-build",
-    "gh-pages": "docusaurus-publish",
-    "examples": "docusaurus-examples",
-    "crowdin-upload": "crowdin --config ../crowdin.yaml upload sources --auto-update -b master",
-    "crowdin-download": "crowdin --config ../crowdin.yaml download -b master",
-    "publish-gh-pages": "docusaurus-publish",
-    "write-translations": "docusaurus-write-translations",
-    "version": "docusaurus-version",
-    "rename-version": "docusaurus-rename-version"
+    "start": "docusaurus start",
+    "build": "docusaurus build",
+    "swizzle": "docusaurus swizzle",
+    "deploy": "docusaurus deploy",
+    "serve": "docusaurus serve",
+    "crowdin:upload": "cd .. && crowdin upload sources --config crowdin-v2.yaml",
+    "crowdin:downloadTranslations": "cd .. && crowdin download --config crowdin-v2.yaml",
+    "write-translations": "docusaurus write-translations",
+    "fetchSupporters": "node fetchSupporters.js",
+    "netlify:ci:production": "yarn netlify:prepare && yarn netlify:crowdin && yarn build",
+    "netlify:ci:deployPreview": "yarn netlify:prepare && yarn build -l en",
+    "netlify:prepare": "yarn fetchSupporters && yarn build:js",
+    "netlify:crowdin": "yarn write-translations && yarn crowdin:upload && yarn crowdin:download"
   },
   "dependencies": {
-    "docusaurus": "^1.14.2"
+    "@docusaurus/core": "2.0.0-alpha.dbfa256a7",
+    "@docusaurus/plugin-client-redirects": "2.0.0-alpha.dbfa256a7",
+    "@docusaurus/plugin-pwa": "2.0.0-alpha.dbfa256a7",
+    "@docusaurus/preset-classic": "2.0.0-alpha.dbfa256a7",
+    "clsx": "^1.1.1",
+    "docusaurus-plugin-sass": "patch:docusaurus-plugin-sass@^0.1.11#./patches/docusaurus-plugin-sass.diff",
+    "fs-extra": "^9.0.1",
+    "globby": "^11.0.1",
+    "react": "^16.10.2",
+    "react-dom": "^16.10.2",
+    "react-github-btn": "^1.2.0",
+    "react-markdown": "^5.0.3"
   },
   "devDependencies": {
-    "crowdin-cli": "^0.3.0",
+    "@crowdin/cli": "^3.5.2",
     "graphql": "^15.3.0",
     "graphql-request": "^3.1.0"
   }

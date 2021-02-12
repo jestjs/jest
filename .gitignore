@@ -20,11 +20,11 @@
 /packages/*/coverage/
 /packages/*/node_modules/
 
+/website/.docusaurus
 /website/build
 /website/backers.json
 /website/node_modules
 /website/yarn.lock
-/website/translated_docs
 /website/i18n/*
 
 /reports/*
@@ -46,3 +46,5 @@ package-lock.json
 !**/.yarn/sdks
 !**/.yarn/versions
 **/.pnp.*
+
+crowdin-cli.jar

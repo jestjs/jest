@@ -1,7 +1,6 @@
 ---
-id: version-25.x-jest-object
+id: jest-object
 title: The Jest Object
-original_id: jest-object
 ---
 
 The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior. It can also be imported explicitly by via `import {jest} from '@jest/globals'`.
