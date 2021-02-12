@@ -18,16 +18,16 @@
     "netlify:crowdin": "yarn write-translations && yarn crowdin:upload && yarn crowdin:download"
   },
   "dependencies": {
-    "@docusaurus/core": "2.0.0-alpha.dbfa256a7",
-    "@docusaurus/plugin-client-redirects": "2.0.0-alpha.dbfa256a7",
-    "@docusaurus/plugin-pwa": "2.0.0-alpha.dbfa256a7",
-    "@docusaurus/preset-classic": "2.0.0-alpha.dbfa256a7",
+    "@docusaurus/core": "2.0.0-alpha.175d9c3c8",
+    "@docusaurus/plugin-client-redirects": "2.0.0-alpha.175d9c3c8",
+    "@docusaurus/plugin-pwa": "2.0.0-alpha.175d9c3c8",
+    "@docusaurus/preset-classic": "2.0.0-alpha.175d9c3c8",
     "clsx": "^1.1.1",
     "docusaurus-plugin-sass": "patch:docusaurus-plugin-sass@^0.1.11#./patches/docusaurus-plugin-sass.diff",
     "fs-extra": "^9.0.1",
     "globby": "^11.0.1",
-    "react": "^16.10.2",
-    "react-dom": "^16.10.2",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
     "react-github-btn": "^1.2.0",
     "react-markdown": "^5.0.3"
   },
