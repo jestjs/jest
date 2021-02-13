@@ -511,6 +511,8 @@ type HasteConfig = {
   throwOnModuleCollision?: boolean;
   /** Custom HasteMap module */
   hasteMapModulePath?: string;
+  /** Whether to retain all files, allowing e.g. search for tests in `node_modules`. */
+  retainAllFiles?: boolean;
 };
 ```
 
