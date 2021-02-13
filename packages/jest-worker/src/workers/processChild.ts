@@ -91,6 +91,7 @@ function reportInitializeError(error: Error) {
 }
 
 function reportError(error: Error, type: PARENT_MESSAGE_ERROR) {
+  clearInterval(monitorHeartbeat);
   if (!process || !process.send) {
     throw new Error('Child can only be used on a forked process');
   }

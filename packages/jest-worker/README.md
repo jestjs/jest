@@ -65,7 +65,7 @@ Amount of workers to spawn. Defaults to the number of CPUs minus 1.
 
 #### `workerHeartbeatTimeout: number` (optional)
 
-Heartbeat timeout used to ping the parent process when child workers are alive. Defaults to 5000 ms.
+Heartbeat timeout used to ping the parent process when child workers are alive. Defaults to 10000 ms.
 
 #### `maxRetries: number` (optional)
 

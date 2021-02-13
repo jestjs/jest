@@ -1225,71 +1225,7 @@ describe('HasteMap', () => {
       dependencyExtractor,
       hasteImplModulePath: undefined,
       maxWorkers: 4,
-    })
-      .build()
-      .then(({__hasteMapForTest: data}) => {
-        expect(jestWorker.create.mock.calls.length).toBe(1);
-
-        expect(mockWorker.mock.calls.length).toBe(5);
-
-        expect(mockWorker.mock.calls).toEqual([
-          [
-            {
-              computeDependencies: true,
-              computeSha1: false,
-              dependencyExtractor,
-              filePath: path.join('/', 'project', 'fruits', 'Banana.js'),
-              hasteImplModulePath: undefined,
-              rootDir: path.join('/', 'project'),
-            },
-          ],
-          [
-            {
-              computeDependencies: true,
-              computeSha1: false,
-              dependencyExtractor,
-              filePath: path.join('/', 'project', 'fruits', 'Pear.js'),
-              hasteImplModulePath: undefined,
-              rootDir: path.join('/', 'project'),
-            },
-          ],
-          [
-            {
-              computeDependencies: true,
-              computeSha1: false,
-              dependencyExtractor,
-              filePath: path.join('/', 'project', 'fruits', 'Strawberry.js'),
-              hasteImplModulePath: undefined,
-              rootDir: path.join('/', 'project'),
-            },
-          ],
-          [
-            {
-              computeDependencies: true,
-              computeSha1: false,
-              dependencyExtractor,
-              filePath: path.join(
-                '/',
-                'project',
-                'fruits',
-                '__mocks__',
-                'Pear.js',
-              ),
-              hasteImplModulePath: undefined,
-              rootDir: path.join('/', 'project'),
-            },
-          ],
-          [
-            {
-              computeDependencies: true,
-              computeSha1: false,
-              dependencyExtractor,
-              filePath: path.join('/', 'project', 'vegetables', 'Melon.js'),
-              hasteImplModulePath: undefined,
-              rootDir: path.join('/', 'project'),
-            },
-          ],
-        ]);
+    }).build();
 
     expect(jestWorker.mock.calls.length).toBe(1);
 

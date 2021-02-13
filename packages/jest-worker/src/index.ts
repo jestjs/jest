@@ -90,7 +90,7 @@ export class Worker {
       numWorkers: this._options.numWorkers ?? Math.max(cpus().length - 1, 1),
       resourceLimits: this._options.resourceLimits ?? {},
       setupArgs: this._options.setupArgs ?? [],
-      workerHeartbeatTimeout: this._options.workerHeartbeatTimeout ?? 5000,
+      workerHeartbeatTimeout: this._options.workerHeartbeatTimeout ?? 10000,
     };
 
     if (this._options.WorkerPool) {

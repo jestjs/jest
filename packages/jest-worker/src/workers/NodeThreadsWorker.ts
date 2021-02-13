@@ -167,7 +167,7 @@ export default class ExperimentalWorker implements WorkerInterface {
         `Test worker was unresponsive for ${this._options.workerHeartbeatTimeout} milliseconds. There was an inspector connected so we were able to capture stack frames before it was terminated.`,
       );
       this._options.inspector.on('Debugger.paused', (message: any) => {
-        const frames: ErrorFrame[] = [];
+        const frames: Array<ErrorFrame> = [];
         const callFrames = message.params.callFrames.slice(0, 20);
         for (const callFrame of callFrames) {
           const loc = callFrame.location;

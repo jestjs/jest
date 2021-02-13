@@ -187,7 +187,7 @@ export default class ChildProcessWorker implements WorkerInterface {
         `Test worker was unresponsive for ${this._options.workerHeartbeatTimeout} milliseconds. There was an inspector connected so we were able to capture stack frames before it was terminated.`,
       );
       this._options.inspector.on('Debugger.paused', (message: any) => {
-        const frames: ErrorFrame[] = [];
+        const frames: Array<ErrorFrame> = [];
         const callFrames = message.params.callFrames.slice(0, 20);
         for (const callFrame of callFrames) {
           const loc = callFrame.location;
@@ -243,10 +243,6 @@ export default class ChildProcessWorker implements WorkerInterface {
         break;
 
       case PARENT_MESSAGE_CLIENT_ERROR:
-        if (this._heartbeatTimeout) {
-          clearTimeout(this._heartbeatTimeout);
-          this.forceExit();
-        }
         error = response[4];
 
         if (error != null && typeof error === 'object') {
@@ -336,8 +332,10 @@ export default class ChildProcessWorker implements WorkerInterface {
       () => this._child.kill('SIGKILL'),
       SIGKILL_DELAY,
     );
-    this._exitPromise.then(() => clearTimeout(sigkillTimeout));
-    clearTimeout(this._heartbeatTimeout);
+    this._exitPromise.then(() => {
+      clearTimeout(sigkillTimeout);
+      clearTimeout(this._heartbeatTimeout);
+    });
   }
 
   getWorkerId(): number {

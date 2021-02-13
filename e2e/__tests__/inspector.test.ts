@@ -35,12 +35,8 @@ test('fails a test which causes an infinite loop', () => {
   `,
   });
 
-  const {exitCode, stdout, stderr} = runJest(DIR, ['--maxWorkers=2']);
+  const {exitCode, stderr} = runJest(DIR, ['--maxWorkers=2']);
 
-  console.log({exitCode, stdout, stderr});
-
-  const numberOfTestsPassed = (stderr.match(/\bPASS\b/g) || []).length;
-
-  expect(numberOfTestsPassed).toBe(Object.keys(testFiles).length - 1);
-  expect(stderr).toContain('FAIL __tests__/inspector.test.js');
+  expect(exitCode).toBe(1);
+  expect(stderr).toContain('Error: Test worker was unresponsive');
 });
