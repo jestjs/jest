@@ -8,8 +8,6 @@
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "serve": "docusaurus serve",
-    "crowdin:upload": "cd .. && crowdin upload sources --config crowdin-v2.yaml",
-    "crowdin:downloadTranslations": "cd .. && crowdin download --config crowdin-v2.yaml",
     "write-translations": "docusaurus write-translations",
     "fetchSupporters": "node fetchSupporters.js",
     "netlify:ci:production": "yarn netlify:prepare && yarn netlify:crowdin && yarn build",
