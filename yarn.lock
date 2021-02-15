@@ -2007,7 +2007,7 @@ __metadata:
     jest-worker: ^27.0.0-next.2
     mock-fs: ^4.4.1
     slash: ^3.0.0
-    source-map-js: ^0.6.2
+    source-map-sync: ^0.8.0-beta.1
     string-length: ^4.0.1
     strip-ansi: ^6.0.0
     terminal-link: ^2.0.0
@@ -2027,7 +2027,7 @@ __metadata:
     "@types/graceful-fs": ^4.1.2
     callsites: ^3.0.0
     graceful-fs: ^4.2.4
-    source-map-js: ^0.6.2
+    source-map-sync: ^0.8.0-beta.1
   languageName: unknown
   linkType: soft
 
@@ -2130,7 +2130,7 @@ __metadata:
     micromatch: ^4.0.2
     pirates: ^4.0.1
     slash: ^3.0.0
-    source-map-js: ^0.6.2
+    source-map-sync: ^0.8.0-beta.1
     write-file-atomic: ^3.0.0
   languageName: unknown
   linkType: soft
@@ -18069,13 +18069,6 @@ react-native@0.63.2:
   languageName: node
   linkType: hard
 
-"source-map-js@npm:^0.6.2":
-  version: 0.6.2
-  resolution: "source-map-js@npm:0.6.2"
-  checksum: 8e2f992cfbedb71286fa6f6e011e2fa756b7f4d944ea4b0f49e9ff6ea34ad0a17dc655f067fdddb32efa7b45000e8c59e47a2e875d91744c86a56329b5f58b32
-  languageName: node
-  linkType: hard
-
 "source-map-resolve@npm:^0.5.0":
   version: 0.5.3
   resolution: "source-map-resolve@npm:0.5.3"
@@ -18106,6 +18099,15 @@ react-native@0.63.2:
     buffer-from: ^1.0.0
     source-map: ^0.6.0
   checksum: e4877c5d653fcce19d8f1d0b697cd6f435632cb26275699b580fc7bb6d3146bb49aceee2cb9b3159fd66747ce34e8dd9b348b9aecdae22bcc41c5e841e901dfa
+  languageName: node
+  linkType: hard
+
+"source-map-sync@npm:^0.8.0-beta.1":
+  version: 0.8.0-beta.1
+  resolution: "source-map-sync@npm:0.8.0-beta.1"
+  dependencies:
+    whatwg-url: ^7.0.0
+  checksum: a45bf3b3075404b80794a890f43addd75d0eb1d7c2694f6d9c60284e5942945d051e66b13de6a7f13be5e99ca8b0b775ec334aff347a8a02cd21afc8b08268c2
   languageName: node
   linkType: hard
 
