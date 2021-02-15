@@ -8,14 +8,12 @@
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "serve": "docusaurus serve",
-    "crowdin:upload": "cd .. && crowdin upload sources --config crowdin-v2.yaml",
-    "crowdin:downloadTranslations": "cd .. && crowdin download --config crowdin-v2.yaml",
     "write-translations": "docusaurus write-translations",
     "fetchSupporters": "node fetchSupporters.js",
     "netlify:ci:production": "yarn netlify:prepare && yarn netlify:crowdin && yarn build",
     "netlify:ci:deployPreview": "yarn netlify:prepare && yarn build -l en",
     "netlify:prepare": "yarn fetchSupporters && yarn build:js",
-    "netlify:crowdin": "yarn write-translations && yarn workspace @jest/monorepo crowdin:upload && yarn workspace @jest/monorepo crowdin:download"
+    "netlify:crowdin": "yarn write-translations && yarn crowdin:upload && yarn crowdin:download"
   },
   "dependencies": {
     "@docusaurus/core": "2.0.0-alpha.dbfa256a7",
