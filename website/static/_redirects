@@ -27,3 +27,7 @@
 /ru/*         /ru/404.html          404
 /uk/*         /uk/404.html          404
 /zh-Hans/*    /zh-Hans/404.html     404
+
+
+# Redirect Docusaurus v1 blog RSS feed
+/blog/feed.xml   /blog/rss.xml
