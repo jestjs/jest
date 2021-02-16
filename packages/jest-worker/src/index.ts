@@ -78,14 +78,18 @@ export class Worker {
   private _workerPool: WorkerPoolInterface;
   private _inspectorSession: inspector.Session | undefined;
 
-  constructor(workerPath: string, options?: FarmOptions) {
+  constructor(
+    workerPath: string,
+    inspectorSession?: inspector.Session,
+    options?: FarmOptions,
+  ) {
     this._options = {...options};
     this._ending = false;
 
     const workerPoolOptions: WorkerPoolOptions = {
       enableWorkerThreads: this._options.enableWorkerThreads ?? false,
       forkOptions: this._options.forkOptions ?? {},
-      inspector: this._inspectorSession,
+      inspector: inspectorSession,
       maxRetries: this._options.maxRetries ?? 3,
       numWorkers: this._options.numWorkers ?? Math.max(cpus().length - 1, 1),
       resourceLimits: this._options.resourceLimits ?? {},
@@ -142,10 +146,8 @@ export class Worker {
       return undefined;
     };
 
-    const jestWorker = new Worker(workerPath, options);
     const inspectorSession = await setUpInspector();
-
-    jestWorker._inspectorSession = inspectorSession;
+    const jestWorker = new Worker(workerPath, inspectorSession, options);
 
     return jestWorker;
   };

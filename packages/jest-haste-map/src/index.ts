@@ -723,7 +723,7 @@ export default class HasteMap extends EventEmitter {
         this._worker = Promise.resolve({getSha1, worker});
       } else {
         // @ts-expect-error: assignment of a worker with custom properties.
-        this._worker = Worker.create(require.resolve('./worker'), {
+        this._worker = await Worker.create(require.resolve('./worker'), {
           exposedMethods: ['getSha1', 'worker'],
           maxRetries: 3,
           numWorkers: this._options.maxWorkers,
