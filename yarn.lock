@@ -3830,12 +3830,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/resolve@npm:^1.17.0":
-  version: 1.19.0
-  resolution: "@types/resolve@npm:1.19.0"
-  dependencies:
-    "@types/node": "*"
-  checksum: 6dab5d4bf568d4fe7ed2207f839736d3558e04f994cdad122ce3c0a3d75f56080f4f63a297d5dcf61a1d3f450ebb99a8ca3719e3b7147c863d80436f1a9890e2
+"@types/resolve@npm:^1.20.0":
+  version: 1.20.0
+  resolution: "@types/resolve@npm:1.20.0"
+  checksum: 3c75135d5cf3652453ef8f099b109f7fec5e82fe67bf38048226614dbcd11a943affee383e5d28c12c5f03b049281a3e486395326b9810297f9649c7b00f41fd
   languageName: node
   linkType: hard
 
@@ -12067,14 +12065,14 @@ fsevents@^1.2.7:
   dependencies:
     "@jest/types": ^27.0.0-next.1
     "@types/graceful-fs": ^4.1.3
-    "@types/resolve": ^1.17.0
+    "@types/resolve": ^1.20.0
     chalk: ^4.0.0
     escalade: ^3.1.1
     graceful-fs: ^4.2.4
     jest-haste-map: ^27.0.0-next.2
     jest-pnp-resolver: ^1.2.2
     jest-util: ^27.0.0-next.1
-    resolve: ^1.18.1
+    resolve: ^1.20.0
     slash: ^3.0.0
   languageName: unknown
   linkType: soft
@@ -17276,7 +17274,7 @@ react-native@0.63.2:
   languageName: node
   linkType: hard
 
-"resolve@^1.1.6, resolve@^1.10.0, resolve@^1.13.1, resolve@^1.15.0, resolve@^1.17.0, resolve@^1.18.1, resolve@^1.5.0":
+"resolve@^1.1.6, resolve@^1.10.0, resolve@^1.13.1, resolve@^1.15.0, resolve@^1.17.0, resolve@^1.20.0, resolve@^1.5.0":
   version: 1.20.0
   resolution: "resolve@npm:1.20.0"
   dependencies:
@@ -17286,7 +17284,7 @@ react-native@0.63.2:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.1.6#builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#builtin<compat/resolve>, resolve@patch:resolve@^1.13.1#builtin<compat/resolve>, resolve@patch:resolve@^1.15.0#builtin<compat/resolve>, resolve@patch:resolve@^1.17.0#builtin<compat/resolve>, resolve@patch:resolve@^1.18.1#builtin<compat/resolve>, resolve@patch:resolve@^1.5.0#builtin<compat/resolve>":
+"resolve@patch:resolve@^1.1.6#builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#builtin<compat/resolve>, resolve@patch:resolve@^1.13.1#builtin<compat/resolve>, resolve@patch:resolve@^1.15.0#builtin<compat/resolve>, resolve@patch:resolve@^1.17.0#builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#builtin<compat/resolve>, resolve@patch:resolve@^1.5.0#builtin<compat/resolve>":
   version: 1.20.0
   resolution: "resolve@patch:resolve@npm%3A1.20.0#builtin<compat/resolve>::version=1.20.0&hash=3388aa"
   dependencies:
