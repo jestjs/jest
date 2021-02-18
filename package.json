@@ -81,7 +81,7 @@
     "tempy": "^1.0.0",
     "throat": "^5.0.0",
     "ts-node": "^9.0.0",
-    "type-fest": "^0.20.1",
+    "type-fest": "^0.21.1",
     "typescript": "^4.0.2",
     "which": "^2.0.1"
   },

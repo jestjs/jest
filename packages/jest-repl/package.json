@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@jest/test-utils": "^27.0.0-next.1",
-    "@types/yargs": "^15.0.0",
+    "@types/yargs": "^16.0.0",
     "execa": "^5.0.0"
   },
   "bin": {

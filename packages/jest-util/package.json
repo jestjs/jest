@@ -18,7 +18,7 @@
     "@types/node": "*",
     "chalk": "^4.0.0",
     "graceful-fs": "^4.2.4",
-    "is-ci": "^2.0.0",
+    "is-ci": "^3.0.0",
     "micromatch": "^4.0.2"
   },
   "devDependencies": {
