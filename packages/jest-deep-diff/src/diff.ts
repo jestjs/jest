@@ -1,10 +1,10 @@
-import getType = require('jest-get-type');
-import {DiffObject, DiffPlugin, Memos, Path} from './types';
-import {wrapIfHasCircularity} from './complex/circularObjects';
-import {createEqual, createUnequalType, createUpdated} from './diffObject';
-import {diffObjects} from './complex/object';
 import {diffArrays} from './complex/array';
+import {wrapIfHasCircularity} from './complex/circularObjects';
 import {diffMaps} from './complex/map';
+import {diffObjects} from './complex/object';
+import {createEqual, createUpdated} from './diffObject';
+import {getType, isLeafType} from './getType';
+import {markChildrenRecursively as defaultMarkChildrenRecursively} from './markChildrenRecursively';
 import {
   diffBooleans,
   diffDates,
@@ -13,7 +13,9 @@ import {
   diffNumbers,
   diffRegExps,
   diffStrings,
+  emptyValue,
 } from './primitives';
+import {DiffObject, DiffPlugin, Kind, Memos, Path} from './types';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type PrimitiveWrapper = String | Number | Boolean;
@@ -23,47 +25,96 @@ function diff(
   b: unknown,
   path?: Path,
   memos?: Memos,
-  customDiffs: Array<DiffPlugin> = [],
+  plugins: Array<DiffPlugin> = [],
 ): DiffObject {
-  if (Object.is(a, b)) return createEqual(a, b, path);
+  const markChildrenRecursively = <T>(
+    kind: Kind.INSERTED | Kind.DELETED,
+    val: T,
+    path: Path,
+  ) => defaultMarkChildrenRecursively(kind, val, path, new Set(), plugins);
 
-  const diffWithCustomDiffs = (
+  if (a === emptyValue) {
+    return markChildrenRecursively(Kind.INSERTED, b, path);
+  }
+  if (b === emptyValue) {
+    return markChildrenRecursively(Kind.DELETED, a, path);
+  }
+
+  const diffWithPlugins = (
     a: unknown,
     b: unknown,
     path?: Path,
     memos?: Memos,
-  ) => diff(a, b, path, memos, customDiffs);
+  ) => diff(a, b, path, memos, plugins);
 
-  for (const customDiff of customDiffs) {
+  for (const customDiff of plugins) {
     if (customDiff.test(a) || customDiff.test(b)) {
-      return customDiff.diff(a, b, path, memos, diffWithCustomDiffs);
+      return customDiff.diff(
+        a,
+        b,
+        path,
+        memos,
+        diffWithPlugins,
+        markChildrenRecursively,
+      );
     }
   }
 
   const aType = getType(a);
-
   const bType = getType(b);
+
   if (aType !== bType) {
-    return createUnequalType(a, b, path);
+    return {
+      a,
+      aChildDiffs: markChildrenRecursively(Kind.DELETED, a, path).childDiffs,
+      b,
+      bChildDiffs: markChildrenRecursively(Kind.INSERTED, b, path).childDiffs,
+      kind: Kind.UNEQUAL_TYPE,
+      path,
+    };
   }
 
-  if (a instanceof Error) {
-    return diffErrors(a, b as Error, path);
+  if (isLeafType(a)) {
+    if (Object.is(a, b)) return createEqual(a, b, path);
+
+    switch (aType) {
+      case 'string':
+        return diffStrings(a as string, b as string, path);
+      case 'number':
+        return diffNumbers(a as number, b as number, path);
+      case 'boolean':
+        return diffBooleans(a as boolean, b as boolean, path);
+      case 'date':
+        return diffDates(a as Date, b as Date, path);
+      case 'regexp':
+        return diffRegExps(a as RegExp, b as RegExp, path);
+      case 'function':
+        // eslint-disable-next-line @typescript-eslint/ban-types
+        return diffFunctions(a as Function, b as Function, path);
+      case 'error':
+        return diffErrors(a as Error, b as Error, path);
+      case 'Number':
+      case 'String':
+      case 'Boolean':
+        return Object.is(
+          (a as PrimitiveWrapper).valueOf(),
+          (b as PrimitiveWrapper).valueOf(),
+        )
+          ? createEqual(a, b, path)
+          : createUpdated(a, b, path);
+    }
   }
 
-  switch (aType) {
-    case 'string':
-      return diffStrings(a as string, b as string, path);
-    case 'number':
-      return diffNumbers(a as number, b as number, path);
-    case 'boolean':
-      return diffBooleans(a as boolean, b as boolean, path);
-    case 'date':
-      return diffDates(a as Date, b as Date, path);
-    case 'regexp':
-      return diffRegExps(a as RegExp, b as RegExp, path);
-    case 'function':
-      return diffFunctions(a as Function, b as Function, path);
+  // Here we already know that a and b are both complex structures
+  if (!Object.is(Object.getPrototypeOf(a), Object.getPrototypeOf(b))) {
+    return {
+      a,
+      aChildDiffs: markChildrenRecursively(Kind.DELETED, a, path).childDiffs,
+      b,
+      bChildDiffs: markChildrenRecursively(Kind.INSERTED, b, path).childDiffs,
+      kind: Kind.UNEQUAL_TYPE,
+      path,
+    };
   }
 
   // adapted from node assert
@@ -99,20 +150,8 @@ function diff(
   memos.a.set(a, memos.position);
   memos.b.set(b, memos.position);
 
-  if (!Object.is(Object.getPrototypeOf(a), Object.getPrototypeOf(b))) {
-    return createUnequalType(a, b, path);
-  }
-
-  // TODO: DOM Node
-
-  if (a instanceof Number || a instanceof String || a instanceof Boolean) {
-    return Object.is(a.valueOf(), (b as PrimitiveWrapper).valueOf())
-      ? createEqual(a, b, path)
-      : createUpdated(a, b, path);
-  }
-
   const diffWithMemosAndCustomDiffs = (a: unknown, b: unknown, path: Path) =>
-    diffWithCustomDiffs(a, b, path, memos);
+    diffWithPlugins(a, b, path, memos);
 
   switch (aType) {
     case 'array':
@@ -136,8 +175,6 @@ function diff(
         path,
         diffWithMemosAndCustomDiffs,
       );
-    // case 'set':
-    //   return compareSets(a as Set<unknown>, b as Set<unknown>, path, deepDiff);
     default:
       throw new Error('oopsie ' + aType);
   }

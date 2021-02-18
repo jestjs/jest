@@ -37,6 +37,8 @@ There is support for plugins. I have made ReactElement and AsymmetricMatcher Plu
 
 I am quite happy with this module. It's clear to me what it does. It recursively marks values as Inserted, Updated, Deleted, Equal or TypeUnequal and returns an object which represents the differences between 2 values.
 
+Note: Diff will also traverse and mark all the children of complex value
+
 ## `format`
 
 - [x] primitives
@@ -87,36 +89,3 @@ or
 
 ...more diff
 ```
-
-### `Print`
-
-The second part of `format` is the print function. It serializes the `val` from the `Line` and builds a final diff string. `serialize` function currently is `pretty-format` with extra plugins;
-
-## Problems of implementation:
-
-`serialize` and `diffFormat` needs to be manually kept in sync.
-
-```ts
-const a = {
-  a: {
-    a: 1,
-  },
-};
-const b = {
-  a: 'a',
-};
-
-console.log(newDiff(a, b));
-/**
- *    Object { <- Constructor name and properties are formated by diffFormat
- * -    "a": Object { <-- Constructor name and properties are formatted by serialize
- *        "a": 1,
- *      },
- * +    "a": 'a',
- *    }
- */
-```
-
-In `jest-diff` this is the output. If we are going to keep it, then maybe the current abstraction is not the best. I would expect that there is no need to fully print the inner object.
-
-Maybe there should be a single format function that is used for diff formatting and serialization? That could easily get very complicated and put a lot of restrictions, so is it worth it?

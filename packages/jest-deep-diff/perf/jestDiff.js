@@ -48,7 +48,7 @@ function testCase(name, fn) {
   };
 }
 
-function test(name, a, b, diffOpts) {
+function test(name, a, b) {
   const oldDiffResult = testCase('Old diff', () => oldDiff(a, b));
 
   const diffResult = testCase('Deep diff', () => diff(a, b));
@@ -66,8 +66,10 @@ function test(name, a, b, diffOpts) {
     let message = current.name;
 
     if (current.timeout) {
-      message += `  Could not complete ${TIMES_TO_RUN} iterations under ${LIMIT_EXECUTION_TIME /
-        NANOSECONDS}s`;
+      message += `  Could not complete ${TIMES_TO_RUN} iterations under ${
+        LIMIT_EXECUTION_TIME / NANOSECONDS
+      }s`;
+      // eslint-disable-next-line no-console
       console.log('  ' + chalk.bgRed.black(message));
       return;
     }
@@ -105,11 +107,14 @@ function test(name, a, b, diffOpts) {
       message = chalk.dim(message);
     }
 
+    // eslint-disable-next-line no-console
     console.log('  ' + message);
   }
 
+  // eslint-disable-next-line no-console
   console.log(name + ': ');
   results.forEach(log);
+  // eslint-disable-next-line no-console
   console.log();
 }
 

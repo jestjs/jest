@@ -8,9 +8,8 @@
 // adapted from jest-diff
 import chalk = require('chalk');
 import prettyFormat = require('pretty-format');
-
-import {FormatOptions, FormatOptionsNormalized} from './types';
 import {wrappedCircularSerializer} from './complex/circularObjects';
+import type {FormatOptions, FormatOptionsNormalized} from './types';
 
 export const noColor = (string: string): string => string;
 

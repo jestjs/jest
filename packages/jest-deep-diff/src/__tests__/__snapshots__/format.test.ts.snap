@@ -43,3 +43,29 @@ exports[`circular values only one side has circularity 2`] = `
     },
   }
 `;
+
+exports[`circular values other side is primitive 1`] = `
+  Object {
+    "x": Object {
+-     "y": Object {
+-       "x": Object {
+-         "y": [Circular],
+-       },
+-     },
++     "y": 3,
+    },
+  }
+`;
+
+exports[`circular values other side is primitive 2`] = `
+  Object {
+    "x": Object {
+-     "y": 3,
++     "y": Object {
++       "x": Object {
++         "y": [Circular],
++       },
++     },
+    },
+  }
+`;

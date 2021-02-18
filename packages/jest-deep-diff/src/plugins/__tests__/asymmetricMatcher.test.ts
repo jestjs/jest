@@ -1,9 +1,9 @@
 import stripAnsi = require('strip-ansi');
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
 import diff from '../../diff';
-import asymmetricMatcherPlugin from '../asymmetricMatcher';
-import {Kind} from '../../types';
 import diffAndFormat from '../../index';
+import {Kind} from '../../types';
+import asymmetricMatcherPlugin from '../asymmetricMatcher';
 
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
@@ -17,6 +17,7 @@ const strippedDiffAndFormat = (a, b) =>
 
 const diffPlugin = {
   diff: asymmetricMatcherPlugin.diff,
+  markChildrenRecursively: asymmetricMatcherPlugin.markChildrenRecursively,
   test: asymmetricMatcherPlugin.test,
 };
 
@@ -34,10 +35,9 @@ describe('diff', () => {
       const b = expect.any(String);
 
       const actual = diff(a, b, undefined, undefined, [diffPlugin]);
-      expect(actual.kind).toBe(Kind.UPDATED);
+      expect(actual.kind).toBe(Kind.UNEQUAL_TYPE);
     });
   });
-
   test.todo('expect.objectContaining()');
 });
 
@@ -103,8 +103,70 @@ describe('format', () => {
         '+   "a": Any<String>,',
         '  }',
       ].join('\n');
-
       expect(strippedDiffAndFormat(a, b)).toBe(expected);
+    });
+
+    test('formats deleted assymetric matcher', () => {
+      const a = {b: expect.any(String)};
+
+      const b = {a: {a: 1}};
+      const expected = [
+        '  Object {',
+        '-   "b": Any<String>,',
+        '+   "a": Object {',
+        '+     "a": 1,',
+        '+   },',
+        '  }',
+      ].join('\n');
+      const actual = strippedDiffAndFormat(a, b);
+      expect(actual).toBe(expected);
+    });
+    test('formats inserted assymetric matcher', () => {
+      const a = {a: {a: 1}};
+      const b = {b: expect.any(String)};
+
+      const expected = [
+        '  Object {',
+        '-   "a": Object {',
+        '-     "a": 1,',
+        '-   },',
+        '+   "b": Any<String>,',
+        '  }',
+      ].join('\n');
+      const actual = strippedDiffAndFormat(a, b);
+      expect(actual).toBe(expected);
+    });
+
+    test('formats updated with complex object', () => {
+      const a = {a: expect.any(String)};
+
+      const b = {a: {a: 1}};
+      const expected = [
+        '  Object {',
+        '-   "a": Any<String>,',
+        '+   "a": Object {',
+        '+     "a": 1,',
+        '+   },',
+        '  }',
+      ].join('\n');
+
+      const actual = strippedDiffAndFormat(a, b);
+      expect(actual).toBe(expected);
+    });
+    test('formats equal with complex object', () => {
+      const a = {a: expect.any(Object), b: 1};
+
+      const b = {a: {a: 1}};
+      const expected = [
+        '  Object {',
+        '    "a": Object {',
+        '      "a": 1,',
+        '    },',
+        '-   "b": 1,',
+        '  }',
+      ].join('\n');
+      const actual = strippedDiffAndFormat(a, b);
+      expect(actual).toBe(expected);
     });
   });
 

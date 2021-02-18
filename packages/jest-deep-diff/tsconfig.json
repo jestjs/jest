@@ -2,17 +2,17 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "build",
-    "lib": [
-      "es2019"
-    ]
+    "outDir": "build"
   },
   "references": [
     {
-      "path": "../jest-get-type"
+      "path": "../diff-sequences"
+    },
+    {
+      "path": "../jest-diff"
     },
     {
       "path": "../pretty-format"
-    },
+    }
   ]
 }

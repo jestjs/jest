@@ -7,8 +7,9 @@
 
 // adapted from jest-diff/__tests__/diff.test.ts
 import chalk = require('chalk');
+import fc from 'fast-check';
 import oldDiff from 'jest-diff';
-import diff from '../';
+import diff from '../index';
 import {noColor} from '../normalizeDiffOptions';
 import {DeepDiffOptions} from '../types';
 
@@ -211,7 +212,7 @@ Options:
   });
 });
 
-describe('React elements', () => {
+describe.skip('React elements', () => {
   const a = {
     $$typeof: elementSymbol,
     props: {
@@ -473,4 +474,44 @@ describe.skip('context', () => {
   testDiffContextLines(2);
   testDiffContextLines(3.1); // (5 default)
   testDiffContextLines(); // (5 default)
+});
+// settings for anything arbitrary
+const anythingSettings = {
+  key: fc.oneof(fc.string(), fc.constantFrom('k1', 'k2', 'k3')),
+  maxDepth: 2, // Limit object depth (default: 2)
+  maxKeys: 5, // Limit number of keys per object (default: 5)
+  // withBoxedValues: true,
+  // Issue #7975 have to be fixed before enabling the generation of Map
+  withMap: false,
+  // Issue #7975 have to be fixed before enabling the generation of Set
+  withSet: false,
+};
+
+const assertSettings = {
+  numRuns: 1000,
+};
+
+describe.skip('property tests', () => {
+  it('should be equivalent to old diff', () => {
+    fc.assert(
+      fc.property(
+        fc.anything(anythingSettings),
+        fc.anything(anythingSettings),
+        (a, b) => {
+          if (
+            (a && Object.keys(a).length === 0) ||
+            (a && Object.keys(b).length === 0)
+          )
+            return;
+          try {
+            expect(diff(a, b, unexpandedBe)).toBe(oldDiff(a, b, unexpandedBe));
+          } catch (err) {
+            console.log(diff(a, b, unexpandedBe));
+            throw err;
+          }
+        },
+      ),
+      assertSettings,
+    );
+  });
 });

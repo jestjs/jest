@@ -1,8 +1,9 @@
 import stripAnsi = require('strip-ansi');
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
-import format from '../format';
 import diff from '../diff';
+import format from '../format';
 
+// @ts-expect-error
 expect.addSnapshotSerializer(alignedAnsiStyleSerializer);
 
 const strippedFormat = valueDiff =>
@@ -20,7 +21,7 @@ test('booleans', () => {
   expect(strippedFormat(diff(false, true))).toBe('- false\n+ true');
 });
 
-test('online strings', () => {
+test('one line strings', () => {
   expect(strippedFormat(diff('banana', 'apple'))).toBe('- banana\n+ apple');
 });
 
@@ -47,14 +48,21 @@ describe('Objects', () => {
   test('if property is set to undefined it should show up in diff', () => {
     const a = {a: 2};
     const b = {a: undefined};
-    const expected = [
+    const expected1 = [
       '  Object {',
       '-   "a": 2,',
       '+   "a": undefined,',
       '  }',
     ].join('\n');
 
-    expect(strippedFormat(diff(a, b))).toEqual(expected);
+    const expected2 = [
+      '  Object {',
+      '-   "a": undefined,',
+      '+   "a": 2,',
+      '  }',
+    ].join('\n');
+    expect(strippedFormat(diff(a, b))).toEqual(expected1);
+    expect(strippedFormat(diff(b, a))).toEqual(expected2);
   });
 
   test('one property is complex and other is primitive', () => {
@@ -70,13 +78,53 @@ describe('Objects', () => {
       '  Object {',
       '-   "a": 2,',
       '+   "a": Object {',
-      '      "b": Object {',
-      '        "c": 3,',
-      '      },',
-      '    },',
+      '+     "b": Object {',
+      '+       "c": 3,',
+      '+     },',
+      '+   },',
+      '  }',
+    ].join('\n');
+    const actual = strippedFormat(diff(a, b));
+    expect(actual).toEqual(expected);
+  });
+
+  test('inserted  and deleted properties', () => {
+    const a = {a: {a: 1}};
+    const b = {
+      b: {
+        b: {
+          c: 3,
+        },
+      },
+    };
+    const expected = [
+      '  Object {',
+      '-   "a": Object {',
+      '-     "a": 1,',
+      '-   },',
+      '+   "b": Object {',
+      '+     "b": Object {',
+      '+       "c": 3,',
+      '+     },',
+      '+   },',
       '  }',
     ].join('\n');
     expect(strippedFormat(diff(a, b))).toEqual(expected);
+  });
+
+  test('equal objects as values of object properties', () => {
+    const a = {a: {a: 1}};
+    const b = {a: {a: 1}, c: 2};
+    const actual = strippedFormat(diff(a, b));
+    const expected = [
+      '  Object {',
+      '    "a": Object {',
+      '      "a": 1,',
+      '    },',
+      '+   "c": 2,',
+      '  }',
+    ].join('\n');
+    expect(actual).toEqual(expected);
   });
 
   describe.skip('multiline string as value of object property', () => {
@@ -192,6 +240,41 @@ describe('Arrays', () => {
 
     expect(actual).toBe(expected);
   });
+
+  test('inserted nested objects', () => {
+    const a = [1];
+    const b = [1, {a: 1, b: 2, d: 30}];
+    const actual = strippedFormat(diff(a, b));
+    const expected = [
+      '  Array [',
+      '    1,',
+      '+   Object {',
+      '+     "a": 1,',
+      '+     "b": 2,',
+      '+     "d": 30,',
+      '+   },',
+      '  ]',
+    ].join('\n');
+
+    expect(actual).toBe(expected);
+  });
+  test('deleted nested objects', () => {
+    const a = [1, {a: 1, b: 2, d: 30}];
+    const b = [1];
+    const actual = strippedFormat(diff(a, b));
+    const expected = [
+      '  Array [',
+      '    1,',
+      '-   Object {',
+      '-     "a": 1,',
+      '-     "b": 2,',
+      '-     "d": 30,',
+      '-   },',
+      '  ]',
+    ].join('\n');
+
+    expect(actual).toBe(expected);
+  });
 });
 
 describe.skip('Maps', () => {
@@ -290,7 +373,7 @@ describe('circular values', () => {
     expect(strippedFormat(diff(a, b))).toMatchSnapshot();
   });
 
-  test.skip('nested circular values', () => {
+  test('nested circular values', () => {
     const a: Record<string, unknown> = {b: 1};
     a.x = {y: a};
     const b: Record<string, unknown> = {};
@@ -309,6 +392,20 @@ describe('circular values', () => {
             b: 3,
           },
         },
+      },
+    };
+
+    expect(strippedFormat(diff(a, b))).toMatchSnapshot();
+
+    expect(strippedFormat(diff(b, a))).toMatchSnapshot();
+  });
+
+  test('other side is primitive', () => {
+    const a: Record<string, unknown> = {};
+    a.x = {y: a};
+    const b = {
+      x: {
+        y: 3,
       },
     };
 

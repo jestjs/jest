@@ -1,26 +1,23 @@
 import chalk = require('chalk');
-import {
-  isKindDeleted,
-  isKindEqual,
-  isKindInserted,
-  isKindUnequalType,
-} from './diffObject';
+import {formatArrayDiff} from './complex/array';
+import {formatCircularDiff, isWrappedCircular} from './complex/circularObjects';
+import {formatMapDiff} from './complex/map';
+import {formatObjectDiff} from './complex/object';
+import {getType} from './getType';
+import {createDeletedLine, createInsertedLine} from './line';
+import {normalizeDiffOptions} from './normalizeDiffOptions';
+import {formatPrimitiveDiff, formatStringDiff} from './primitives';
 import {
   DiffObject,
   Format,
+  FormatComplexDiffObject,
   FormatOptions,
   FormatOptionsNormalized,
+  FormatPrimitiveDiffObject,
+  Kind,
   Line,
   LineType,
 } from './types';
-import {formatCircularDiff, isWrappedCircular} from './complex/circularObjects';
-import getType = require('jest-get-type');
-import {normalizeDiffOptions} from './normalizeDiffOptions';
-import {formatObjectDiff} from './complex/object';
-import {formatMapDiff} from './complex/map';
-import {formatArrayDiff} from './complex/array';
-import {formatPrimitiveDiff, formatStringDiff} from './primitives';
-import {createDeletedLine, createInsertedLine, formatUpdated} from './line';
 
 export const printAnnotation = ({
   aAnnotation,
@@ -56,13 +53,8 @@ const addIntendation = (string: string, padding: string) =>
 function print(lines: Array<Line>, opts: FormatOptionsNormalized) {
   // eslint-disable-next-line consistent-return
   function printLine(line: Line) {
-    const serializedVal = line.skipSerialize
-      ? `${line.val}`
-      : opts.serialize(line.val);
-
     const formattedLineContent =
-      ' ' +
-      addIntendation(line.prefix + serializedVal + line.suffix, line.indent);
+      ' ' + addIntendation(line.prefix + line.val + line.suffix, line.indent);
 
     switch (line.type) {
       case LineType.COMMON:
@@ -79,71 +71,138 @@ function print(lines: Array<Line>, opts: FormatOptionsNormalized) {
 
 const formatDiff: Format = (diff, context, opts) => {
   for (const plugin of opts.plugins) {
-    if (plugin.test(diff.a) || plugin.test(diff.b)) {
-      return plugin.format(diff, context, opts, formatDiff);
+    if ('a' in diff) {
+      if (plugin.test(diff.a)) {
+        return plugin.format(diff, context, opts, formatDiff);
+      }
+    }
+    if ('b' in diff) {
+      if (plugin.test(diff.b)) {
+        return plugin.format(diff, context, opts, formatDiff);
+      }
     }
   }
 
-  if (isKindUnequalType(diff.kind)) {
-    return formatUpdated(diff.a, diff.b, context);
+  let type;
+
+  if (diff.kind === Kind.UNEQUAL_TYPE) {
+    const deletedLines = formatDiff(
+      {
+        a: diff.a,
+        childDiffs: diff.aChildDiffs,
+        kind: Kind.DELETED,
+        path: diff.path,
+      },
+      context,
+      opts,
+    );
+    const insertedLines = formatDiff(
+      {
+        b: diff.b,
+        childDiffs: diff.bChildDiffs,
+        kind: Kind.INSERTED,
+        path: diff.path,
+      },
+      context,
+      opts,
+    );
+    return [...deletedLines, ...insertedLines];
+  } else if (diff.kind === Kind.INSERTED) {
+    type = getType(diff.b);
+
+    if (isWrappedCircular(diff.b)) {
+      return formatCircularDiff(diff, context, opts);
+    }
+
+    switch (type) {
+      case 'number':
+      case 'boolean':
+      case 'function':
+      case 'string':
+      case 'undefined':
+      case 'null':
+      case 'symbol':
+        return [createInsertedLine(opts.serialize(diff.b), context)];
+    }
+  } else if (diff.kind === Kind.DELETED) {
+    type = getType(diff.a);
+
+    if (isWrappedCircular(diff.a)) {
+      return formatCircularDiff(diff, context, opts);
+    }
+
+    switch (type) {
+      case 'number':
+      case 'boolean':
+      case 'function':
+      case 'string':
+      case 'undefined':
+      case 'null':
+      case 'symbol':
+        return [createDeletedLine(opts.serialize(diff.a), context)];
+    }
+  } else {
+    type = getType(diff.a);
+
+    if (isWrappedCircular(diff.a) || isWrappedCircular(diff.b)) {
+      return formatCircularDiff(diff, context, opts);
+    }
+    switch (type) {
+      case 'number':
+      case 'boolean':
+      case 'function':
+      case 'symbol':
+        return formatPrimitiveDiff(diff, context, opts);
+      case 'string':
+        return formatStringDiff(
+          diff as FormatPrimitiveDiffObject<string, string>,
+          context,
+          opts,
+        );
+    }
   }
 
-  if (isKindInserted(diff.kind)) {
-    return [createInsertedLine(diff.b, context)];
-  }
-
-  if (isKindDeleted(diff.kind)) {
-    return [createDeletedLine(diff.a, context)];
-  }
-
-  if (isWrappedCircular(diff.a) || isWrappedCircular(diff.b)) {
-    return formatCircularDiff(diff, context, opts);
-  }
-
-  const aType = getType(diff.a);
-  switch (aType) {
-    case 'number':
-    case 'boolean':
-    case 'function':
-      return formatPrimitiveDiff(diff, context, opts);
-    case 'string':
-      return formatStringDiff(diff, context, opts);
+  switch (type) {
     case 'array':
       return formatArrayDiff(
-        diff as DiffObject<Array<unknown>>,
+        diff as FormatComplexDiffObject<Array<unknown>>,
         context,
         opts,
         formatDiff,
       );
     case 'map':
       return formatMapDiff(
-        diff as DiffObject<Map<unknown, unknown>>,
+        diff as FormatComplexDiffObject<Map<unknown, unknown>>,
         context,
         opts,
         formatDiff,
       );
-    case 'object':
+    case 'object': {
       return formatObjectDiff(
-        diff as DiffObject<Record<PropertyKey, unknown>>,
+        diff as FormatComplexDiffObject<Record<PropertyKey, unknown>>,
         context,
         opts,
         formatDiff,
       );
+    }
   }
 
-  throw Error('ooppsie ');
+  throw new Error(`unknown type: ${type}`);
 };
 
 function format(
   diff: DiffObject<unknown, unknown>,
   options: FormatOptions = {},
-) {
+): string {
   const normalizedOptions = normalizeDiffOptions(options);
-  if (isKindEqual(diff.kind)) {
-    return chalk.dim('Compared values have no visual difference.');
+  if (diff.kind === Kind.EQUAL) {
+    return normalizedOptions.commonColor(
+      'Compared values have no visual difference.',
+    );
   }
 
-  if (isKindUnequalType(diff.kind)) {
+  if (diff.kind === Kind.UNEQUAL_TYPE) {
+    diff;
     return (
       '  Comparing two different types of values.' +
       ` Expected ${chalk.green(getType(diff.a))} but ` +
@@ -159,7 +218,10 @@ function format(
       formatDiff(
         diff,
         {indent: '', prefix: '', sufix: ''},
-        {plugins: normalizedOptions.plugins},
+        {
+          plugins: normalizedOptions.plugins,
+          serialize: normalizedOptions.serialize,
+        },
       ),
       normalizedOptions,
     )

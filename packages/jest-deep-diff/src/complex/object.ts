@@ -1,26 +1,24 @@
-import {
-  createDeleted,
-  createInserted,
-  getComplexValueDiffKind,
-} from '../diffObject';
+import {getComplexValueDiffKind} from '../diffObject';
+import {createCommonLine, createDeletedLine, createInsertedLine} from '../line';
+import {emptyValue} from '../primitives';
 import {
   Context,
+  DiffFunction,
   DiffObject,
   Format,
   FormatComplexDiff,
+  Kind,
   Line,
   LineGenerationOptions,
   Path,
 } from '../types';
-import {createCommonLine} from '../line';
 import {getConstructorName} from './utils';
 
 /** https://github.com/microsoft/TypeScript/issues/1863 */
 export type Key = any;
 
-function getKeys(o: object) {
+export function getKeys(o: Record<Key, unknown>): Array<Key> {
   const keys: Array<string | symbol> = Object.keys(o);
-
   return keys.concat(
     Object.getOwnPropertySymbols(o).filter(
       symbol => Object.getOwnPropertyDescriptor(o, symbol)!.enumerable,
@@ -32,10 +30,9 @@ export function diffObjects(
   a: Record<Key, unknown>,
   b: Record<Key, unknown>,
   path: Path,
-  diffFunc: Function,
+  diffFunc: DiffFunction,
 ): DiffObject<Record<Key, unknown>> {
   const childDiffs = [];
-
   const aKeys: Array<Key | null> = getKeys(a);
   const bKeys: Array<Key | null> = getKeys(b);
   for (let i = 0; i < aKeys.length; i++) {
@@ -47,13 +44,13 @@ export function diffObjects(
       childDiffs.push(diffFunc(a[key], b[key], key));
       bKeys[otherIndex] = null;
     } else {
-      childDiffs.push(createDeleted(a[key], undefined, key));
+      childDiffs.push(diffFunc(a[key], emptyValue, key));
     }
   }
   for (let i = 0; i <= bKeys.length; i++) {
     const key = bKeys[i];
     if (typeof key !== 'undefined' && key !== null) {
-      childDiffs.push(createInserted(undefined, b[key], key));
+      childDiffs.push(diffFunc(emptyValue, b[key], key));
     }
   }
 
@@ -66,6 +63,15 @@ export function diffObjects(
   };
 }
 
+export function traverseObject(
+  a: unknown,
+  f: (val: unknown, key: unknown) => DiffObject,
+): Array<DiffObject> {
+  return getKeys(a as Record<Key, unknown>).map(key =>
+    f((a as Record<Key, unknown>)[key], key),
+  );
+}
+
 function formatObjectProperties(
   childDiffs: Array<DiffObject<unknown, unknown>>,
   context: Readonly<Context>,
@@ -76,10 +82,13 @@ function formatObjectProperties(
     indent: context.indent + '  ',
     sufix: ',',
   };
-  return childDiffs.flatMap(diff => {
-    nextContext.prefix = `"${diff.path}": `;
-    return format(diff, nextContext, opts);
-  });
+
+  let lines: Array<Line> = [];
+  for (const childDiff of childDiffs) {
+    nextContext.prefix = `"${childDiff.path}": `;
+    lines = lines.concat(...format(childDiff, nextContext, opts));
+  }
+  return lines;
 }
 
 export const formatObjectDiff: FormatComplexDiff<Record<Key, unknown>> = (
@@ -88,20 +97,77 @@ export const formatObjectDiff: FormatComplexDiff<Record<Key, unknown>> = (
   opts,
   format,
 ) => {
-  const firstLine = createCommonLine(
-    getConstructorName(diff.a as Record<Key, unknown>) + ' {',
-    {...context, skipSerialize: true, sufix: ''},
-  );
-
   const formattedChildDiffs = diff.childDiffs
     ? formatObjectProperties(diff.childDiffs, context, opts, format)
     : [];
 
-  const lastLine = createCommonLine('}', {
-    ...context,
-    prefix: '',
-    skipSerialize: true,
-  });
+  if (diff.kind === Kind.INSERTED) {
+    if (formattedChildDiffs.length > 0) {
+      const firstLine = createInsertedLine(getConstructorName(diff.b) + ' {', {
+        ...context,
+        sufix: '',
+      });
+      const lastLine = createInsertedLine('}', {
+        ...context,
+        prefix: '',
+      });
 
-  return [firstLine, ...formattedChildDiffs, lastLine];
+      return [firstLine, ...formattedChildDiffs, lastLine];
+    } else {
+      const constructorLine = createInsertedLine(
+        getConstructorName(diff.b) + ' { }',
+        {
+          ...context,
+          sufix: '',
+        },
+      );
+      return [constructorLine];
+    }
+  }
+
+  if (diff.kind === Kind.DELETED) {
+    if (formattedChildDiffs.length > 0) {
+      const firstLine = createDeletedLine(getConstructorName(diff.a) + ' {', {
+        ...context,
+        sufix: '',
+      });
+      const lastLine = createDeletedLine('}', {
+        ...context,
+        prefix: '',
+      });
+
+      return [firstLine, ...formattedChildDiffs, lastLine];
+    } else {
+      const constructorLine = createDeletedLine(
+        getConstructorName(diff.a) + ' { }',
+        {
+          ...context,
+          sufix: '',
+        },
+      );
+      return [constructorLine];
+    }
+  }
+
+  if (formattedChildDiffs.length > 0) {
+    const firstLine = createCommonLine(getConstructorName(diff.a) + ' {', {
+      ...context,
+      sufix: '',
+    });
+    const lastLine = createCommonLine('}', {
+      ...context,
+      prefix: '',
+    });
+
+    return [firstLine, ...formattedChildDiffs, lastLine];
+  } else {
+    const constructorLine = createCommonLine(
+      getConstructorName(diff.a) + ' { }',
+      {
+        ...context,
+        sufix: '',
+      },
+    );
+    return [constructorLine];
+  }
 };

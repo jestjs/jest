@@ -1,6 +1,5 @@
-import {isKindEqual} from '../diffObject';
 import {createCommonLine, createDeletedLine, createInsertedLine} from '../line';
-import {Format} from '../types';
+import {Format, Kind} from '../types';
 
 export const circularVal = Symbol('circularVal');
 
@@ -9,9 +8,9 @@ export interface WrappedCircularObject {
   circularToDepth?: number;
 }
 
-function wrapCircularObject(
+export function wrapCircularObject(
   obj: unknown,
-  circularToDepth: number,
+  circularToDepth?: number,
 ): WrappedCircularObject {
   return {
     circularToDepth,
@@ -30,20 +29,32 @@ export function wrapIfHasCircularity<T>(
 }
 
 export function isWrappedCircular(obj: unknown): obj is WrappedCircularObject {
-  return obj && Object.prototype.hasOwnProperty.call(obj, circularVal);
+  return Boolean(obj) && Object.prototype.hasOwnProperty.call(obj, circularVal);
 }
 
-const serialize = (circular: WrappedCircularObject) =>
-  `[Circular to depth ${circular.circularToDepth}]`;
+const serialize = (circular: WrappedCircularObject): string =>
+  typeof circular.circularToDepth === 'number'
+    ? `[Circular to depth ${circular.circularToDepth}]`
+    : `[Circular]`;
 
-export const formatCircularDiff: Format = (diff, context) => {
-  if (isKindEqual(diff.kind)) {
-    return [createCommonLine(diff.a, context)];
+export const formatCircularDiff: Format = (diff, context, opts) => {
+  if (diff.kind === Kind.EQUAL) {
+    return [createCommonLine(opts.serialize(diff.a), context)];
   }
-  return [
-    createDeletedLine(diff.a, context),
-    createInsertedLine(diff.b, context),
-  ];
+  if (diff.kind === Kind.INSERTED) {
+    return [createInsertedLine(opts.serialize(diff.b), context)];
+  }
+  if (diff.kind === Kind.DELETED) {
+    return [createDeletedLine(opts.serialize(diff.a), context)];
+  }
+  if (diff.kind === Kind.UPDATED) {
+    return [
+      createDeletedLine(opts.serialize(diff.a), context),
+      createInsertedLine(opts.serialize(diff.b), context),
+    ];
+  }
+
+  throw new Error('CircularDiff can only be EQUAL or UPDATED');
 };
 
 export const wrappedCircularSerializer = {

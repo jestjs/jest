@@ -10,11 +10,11 @@
 import assert from 'assert';
 import fc from 'fast-check';
 import {onNodeVersions} from '@jest/test-utils';
-import {isKindEqual} from '../diffObject';
 import diff from '../diff';
+import {Kind} from '../types';
 
 // settings for anything arbitrary
-export const anythingSettings = {
+const anythingSettings = {
   key: fc.oneof(fc.string(), fc.constantFrom('k1', 'k2', 'k3')),
   maxDepth: 2, // Limit object depth (default: 2)
   maxKeys: 5, // Limit number of keys per object (default: 5)
@@ -26,12 +26,12 @@ export const anythingSettings = {
 };
 
 // assertion settings
-export const assertSettings = {
+const assertSettings = {
   numRuns: 1000,
 };
 
 describe('DiffObject', () => {
-  const isDeepEqual = (a, b) => isKindEqual(diff(a, b).kind);
+  const isDeepEqual = (a, b) => diff(a, b).kind === Kind.EQUAL;
 
   const safeStrictEquals = (a, b) => {
     try {
@@ -50,6 +50,7 @@ describe('DiffObject', () => {
       return false;
     }
   };
+
   it('should be reflexive', () => {
     fc.assert(
       fc.property(fc.dedup(fc.anything(anythingSettings), 2), ([a, b]) => {

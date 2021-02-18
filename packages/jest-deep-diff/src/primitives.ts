@@ -1,14 +1,10 @@
 import diffSequence from 'diff-sequences';
-import {DiffObject, Format, Path} from './types';
 import {
   createDeleted,
   createEqual,
   createInserted,
   createUpdated,
   getComplexValueDiffKind,
-  isKindDeleted,
-  isKindEqual,
-  isKindInserted,
 } from './diffObject';
 import {
   createCommonLine,
@@ -16,12 +12,15 @@ import {
   createInsertedLine,
   formatUpdated,
 } from './line';
+import {DiffObject, FormatPrimitives, Kind, Path} from './types';
 
 type DiffPrimitive<T1 = unknown, T2 = T1> = (
   a: T1,
   b: T2,
   path: Path,
 ) => DiffObject<T1, T2>;
+
+export const emptyValue = Symbol('@jest-deep-diff/emptyValue');
 
 const compareErrors = (a: Error, b: Error) => a.message == b.message;
 
@@ -30,8 +29,10 @@ export const diffErrors: DiffPrimitive<Error, Error> = (a, b, path) => {
   return createUpdated(a, b, path);
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 const compareFunctions = (a: Function, b: Function) => Object.is(a, b);
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export const diffFunctions: DiffPrimitive<Function, Function> = (a, b, path) =>
   compareFunctions(a, b) ? createEqual(a, b, path) : createUpdated(a, b, path);
 
@@ -56,11 +57,11 @@ const compareNumbers = (a: number, b: number) => Object.is(a, b);
 export const diffNumbers: DiffPrimitive<number, number> = (a, b, path) =>
   compareNumbers(a, b) ? createEqual(a, b, path) : createUpdated(a, b, path);
 
-export const formatPrimitiveDiff: Format = (diff, context) => {
-  if (isKindEqual(diff.kind)) {
-    return [createCommonLine(diff.a, context)];
+export const formatPrimitiveDiff: FormatPrimitives = (diff, context, opts) => {
+  if (diff.kind === Kind.EQUAL) {
+    return [createCommonLine(opts.serialize(diff.a), context)];
   }
-  return formatUpdated(diff.a, diff.b, context);
+  return formatUpdated(opts.serialize(diff.a), opts.serialize(diff.b), context);
 };
 
 export const splitLines0 = (string: string): Array<string> =>
@@ -131,14 +132,23 @@ export const diffStrings: DiffPrimitive<string, string> = (a, b, path) => {
 
 const stringQuote = '"';
 
-export const formatStringDiff: Format = (diff, context) => {
-  context.skipSerialize = typeof diff.path === 'undefined';
-  if (isKindEqual(diff.kind)) {
-    return [createCommonLine(diff.a as string, context)];
+export const formatStringDiff: FormatPrimitives<string, string> = (
+  diff,
+  context,
+  opts,
+) => {
+  const serializer =
+    typeof diff.path === 'undefined' ? (id: string) => id : opts.serialize;
+  if (diff.kind === Kind.EQUAL) {
+    return [createCommonLine(serializer(diff.a as string), context)];
   }
 
   if (!diff.childDiffs)
-    return formatUpdated(diff.a as string, diff.b as string, context);
+    return formatUpdated(
+      serializer(diff.a) as string,
+      serializer(diff.b) as string,
+      context,
+    );
 
   return diff.childDiffs.map((childDiff, i, arr) => {
     let prefix = '';
@@ -152,16 +162,16 @@ export const formatStringDiff: Format = (diff, context) => {
       }
     }
 
-    if (isKindInserted(childDiff.kind)) {
+    if (childDiff.kind === Kind.INSERTED) {
       return createInsertedLine(prefix + childDiff.b + sufix, context);
     }
 
-    const a = prefix + childDiff.a + sufix;
-    if (isKindDeleted(childDiff.kind)) {
+    const a = prefix + (childDiff.a as string) + sufix;
+    if (childDiff.kind === Kind.DELETED) {
       return createDeletedLine(a as string, context);
     }
 
-    if (isKindEqual(childDiff.kind)) {
+    if (childDiff.kind === Kind.EQUAL) {
       return createCommonLine(a as string, context);
     }
 

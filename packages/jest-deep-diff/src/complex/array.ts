@@ -1,22 +1,23 @@
-import {createDeleted, createInserted, isKindEqual} from '../diffObject';
+import {createCommonLine, createDeletedLine, createInsertedLine} from '../line';
+import {emptyValue} from '../primitives';
 import {
   Context,
-  DiffFunc,
+  DiffFunction,
   DiffObject,
   Format,
   FormatComplexDiff,
   Kind,
+  Line,
   LineGenerationOptions,
   Path,
 } from '../types';
-import {createCommonLine} from '../line';
 import {getConstructorName} from './utils';
 
 export function diffArrays(
   a: Array<unknown>,
   b: Array<unknown>,
   path: Path,
-  diff: DiffFunc<unknown, unknown>,
+  diff: DiffFunction<unknown, unknown>,
 ): DiffObject<Array<unknown>> {
   let kind = Kind.EQUAL;
   const childDiffs = [];
@@ -24,18 +25,18 @@ export function diffArrays(
   let bIndex = b.length - 1;
   while (aIndex > bIndex) {
     kind = Kind.UPDATED;
-    childDiffs.push(createDeleted(a[aIndex], undefined, aIndex));
+    childDiffs.push(diff(a[aIndex], emptyValue, aIndex));
     aIndex--;
   }
   while (bIndex > aIndex) {
     kind = Kind.UPDATED;
-    childDiffs.push(createInserted(undefined, b[bIndex], bIndex));
+    childDiffs.push(diff(emptyValue, b[bIndex], bIndex));
     bIndex--;
   }
   while (aIndex >= 0) {
     const propDiff = diff(a[aIndex], b[aIndex], aIndex);
     childDiffs.push(propDiff);
-    if (isKindEqual(kind) && !isKindEqual(propDiff.kind)) {
+    if (kind === Kind.EQUAL && propDiff.kind !== Kind.EQUAL) {
       kind = Kind.UPDATED;
     }
     aIndex--;
@@ -50,6 +51,13 @@ export function diffArrays(
   };
 }
 
+export function traverseArray(
+  val: Array<unknown>,
+  f: (val: unknown, key: number) => DiffObject,
+): Array<DiffObject> {
+  return val.map(f);
+}
+
 function formatArrayProperties(
   childDiffs: Array<DiffObject>,
   context: Readonly<Context>,
@@ -60,7 +68,12 @@ function formatArrayProperties(
     indent: context.indent + '  ',
     sufix: ',',
   };
-  return childDiffs.flatMap(diff => format(diff, nextContext, opts));
+
+  let lines: Array<Line> = [];
+  for (const childDiff of childDiffs) {
+    lines = lines.concat(...format(childDiff, nextContext, opts));
+  }
+  return lines;
 }
 
 export const formatArrayDiff: FormatComplexDiff<Array<unknown>> = (
@@ -69,20 +82,77 @@ export const formatArrayDiff: FormatComplexDiff<Array<unknown>> = (
   opts,
   format,
 ) => {
-  const firstLine = createCommonLine(
-    getConstructorName(diff.a as Array<unknown>) + ' [',
-    {...context, skipSerialize: true, sufix: ''},
-  );
-
   const formattedChildDiffs = diff.childDiffs
     ? formatArrayProperties(diff.childDiffs, context, opts, format)
     : [];
 
-  const lastLine = createCommonLine(']', {
-    ...context,
-    prefix: '',
-    skipSerialize: true,
-  });
+  if (diff.kind === Kind.INSERTED) {
+    if (formattedChildDiffs.length > 0) {
+      const firstLine = createInsertedLine(getConstructorName(diff.b) + ' [', {
+        ...context,
+        sufix: '',
+      });
+      const lastLine = createInsertedLine(']', {
+        ...context,
+        prefix: '',
+      });
 
-  return [firstLine, ...formattedChildDiffs, lastLine];
+      return [firstLine, ...formattedChildDiffs, lastLine];
+    } else {
+      const constructorLine = createInsertedLine(
+        getConstructorName(diff.b) + ' [ ]',
+        {
+          ...context,
+          sufix: '',
+        },
+      );
+      return [constructorLine];
+    }
+  }
+
+  if (diff.kind === Kind.DELETED) {
+    if (formattedChildDiffs.length > 0) {
+      const firstLine = createDeletedLine(getConstructorName(diff.a) + ' [', {
+        ...context,
+        sufix: '',
+      });
+      const lastLine = createDeletedLine(']', {
+        ...context,
+        prefix: '',
+      });
+
+      return [firstLine, ...formattedChildDiffs, lastLine];
+    } else {
+      const constructorLine = createDeletedLine(
+        getConstructorName(diff.a) + ' [ ]',
+        {
+          ...context,
+          sufix: '',
+        },
+      );
+      return [constructorLine];
+    }
+  }
+
+  if (formattedChildDiffs.length > 0) {
+    const firstLine = createCommonLine(getConstructorName(diff.a) + ' [', {
+      ...context,
+      sufix: '',
+    });
+    const lastLine = createCommonLine(']', {
+      ...context,
+      prefix: '',
+    });
+
+    return [firstLine, ...formattedChildDiffs, lastLine];
+  } else {
+    const constructorLine = createCommonLine(
+      getConstructorName(diff.a) + ' [ ]',
+      {
+        ...context,
+        sufix: '',
+      },
+    );
+    return [constructorLine];
+  }
 };

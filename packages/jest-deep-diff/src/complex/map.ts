@@ -1,7 +1,6 @@
-import {Context, DiffObject, FormatComplexDiff, Kind, Path} from '../types';
-import {createDeleted, createInserted, isKindEqual} from '../diffObject';
+import {createDeleted, createInserted} from '../diffObject';
 import {createCommonLine} from '../line';
-import {getConstructorName} from './utils';
+import {Context, DiffObject, FormatComplexDiff, Kind, Path} from '../types';
 
 // Maps Diff and Format are not fully implemented yet
 export function diffMaps(
@@ -40,7 +39,7 @@ export function diffMaps(
   while (aIndex >= 0) {
     const propDiff = diffFunc(aEntries[aIndex], bEntries[aIndex], aIndex);
     childDiffs.push(propDiff);
-    if (isKindEqual(kind) && !isKindEqual(propDiff.kind)) {
+    if (kind === Kind.EQUAL && propDiff.kind !== Kind.EQUAL) {
       kind = Kind.UPDATED;
     }
     aIndex--;
@@ -59,22 +58,23 @@ export function diffMaps(
   return diff;
 }
 
-function formatMapEntries() {
-  return [];
-}
-
 export const formatMapDiff: FormatComplexDiff<Map<unknown, unknown>> = (
   diff: DiffObject,
   context: Context,
 ) => {
-  const firstLine = createCommonLine(
-    getConstructorName(diff.a as Map<unknown, unknown>) + ' {',
-    context,
-  );
-
-  const formattedChildDiffsResults = diff.childDiffs ? formatMapEntries() : [];
-
-  const lastLine = createCommonLine('}', context);
-
-  return [firstLine, ...formattedChildDiffsResults, lastLine];
+  if (diff.kind === Kind.EQUAL) {
+    return [
+      createCommonLine('Map {', {
+        ...context,
+        sufix: '',
+      }),
+      createCommonLine('}', {
+        ...context,
+        prefix: '',
+      }),
+    ];
+  } else {
+    // TODO: implement Map diff
+    throw new Error('Map formatting is not implemented yet');
+  }
 };
