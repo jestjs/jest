@@ -1895,7 +1895,7 @@ __metadata:
     eslint-plugin-import: ^2.6.0
     eslint-plugin-jest: ^24.0.0
     eslint-plugin-local: ^1.0.0
-    eslint-plugin-markdown: ^2.0.0
+    eslint-plugin-markdown: ^1.0.0
     eslint-plugin-prettier: ^3.0.1
     execa: ^5.0.0
     fast-check: ^2.0.0
@@ -8132,15 +8132,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-markdown@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "eslint-plugin-markdown@npm:2.0.0"
+"eslint-plugin-markdown@npm:^1.0.0":
+  version: 1.0.2
+  resolution: "eslint-plugin-markdown@npm:1.0.2"
   dependencies:
+    object-assign: ^4.0.1
     remark-parse: ^5.0.0
     unified: ^6.1.2
-  peerDependencies:
-    eslint: ">=6.0.0"
-  checksum: 4166bebb5c28fe37fc87a1622a6eb852ae58f6e3289b0cd7e70b1de16ac46d9575e2f17d9d411fd7a46473db158e7520f320ae619512273287da3e5a075d3781
+  checksum: fed8f897de63f61f44a4c4f0d91150f5498d0f93852c81378335332384f807004a1b953fe7fb211c817cfc06ef4dd4a5fbda41d251e7cdf4b64ae2a696a624b2
   languageName: node
   linkType: hard
 

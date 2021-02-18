@@ -39,7 +39,7 @@
     "eslint-plugin-import": "^2.6.0",
     "eslint-plugin-jest": "^24.0.0",
     "eslint-plugin-local": "^1.0.0",
-    "eslint-plugin-markdown": "^2.0.0",
+    "eslint-plugin-markdown": "^1.0.0",
     "eslint-plugin-prettier": "^3.0.1",
     "execa": "^5.0.0",
     "fast-check": "^2.0.0",
