@@ -7,7 +7,7 @@
 
 import * as fs from 'graceful-fs';
 import pnpResolver from 'jest-pnp-resolver';
-import {Opts as ResolveOpts, sync as resolveSync} from 'resolve';
+import {sync as resolveSync} from 'resolve';
 import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';
 
@@ -19,7 +19,7 @@ type ResolverOptions = {
   moduleDirectory?: Array<string>;
   paths?: Array<Config.Path>;
   rootDir?: Config.Path;
-  packageFilter?: ResolveOpts['packageFilter'];
+  packageFilter?: (pkg: any, pkgfile: string) => any;
 };
 
 // https://github.com/facebook/jest/pull/10617
@@ -50,7 +50,6 @@ export default function defaultResolver(
     packageFilter: options.packageFilter,
     paths: options.paths,
     preserveSymlinks: false,
-    // @ts-expect-error: https://github.com/DefinitelyTyped/DefinitelyTyped/pull/51182
     readPackageSync,
     realpathSync,
   });
@@ -121,15 +120,17 @@ function realpathCached(path: Config.Path): Config.Path {
   return result;
 }
 
-const packageContents = new Map<string, unknown>();
-function readPackageCached(path: Config.Path): unknown {
+type PkgJson = Record<string, unknown>;
+
+const packageContents = new Map<string, PkgJson>();
+function readPackageCached(path: Config.Path): PkgJson {
   let result = packageContents.get(path);
 
   if (result !== undefined) {
     return result;
   }
 
-  result = JSON.parse(fs.readFileSync(path, 'utf8'));
+  result = JSON.parse(fs.readFileSync(path, 'utf8')) as PkgJson;
 
   packageContents.set(path, result);
 
@@ -151,6 +152,6 @@ function realpathSync(file: Config.Path): Config.Path {
   return realpathCached(file);
 }
 
-function readPackageSync(_: unknown, file: Config.Path): unknown {
+function readPackageSync(_: unknown, file: Config.Path): PkgJson {
   return readPackageCached(file);
 }

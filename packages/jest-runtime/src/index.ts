@@ -271,7 +271,7 @@ export default class Runtime {
 
   static shouldInstrument = shouldInstrument;
 
-  static createContext(
+  static async createContext(
     config: Config.ProjectConfig,
     options: {
       console?: Console;
@@ -288,17 +288,14 @@ export default class Runtime {
       watch: options.watch,
       watchman: options.watchman,
     });
-    return instance.build().then(
-      hasteMap => ({
-        config,
-        hasteFS: hasteMap.hasteFS,
-        moduleMap: hasteMap.moduleMap,
-        resolver: Runtime.createResolver(config, hasteMap.moduleMap),
-      }),
-      error => {
-        throw error;
-      },
-    );
+    const hasteMap = await instance.build();
+
+    return {
+      config,
+      hasteFS: hasteMap.hasteFS,
+      moduleMap: hasteMap.moduleMap,
+      resolver: Runtime.createResolver(config, hasteMap.moduleMap),
+    };
   }
 
   static createHasteMap(
