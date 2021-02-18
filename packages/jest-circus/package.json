@@ -33,7 +33,7 @@
     "jest-util": "^27.0.0-next.1",
     "pretty-format": "^27.0.0-next.1",
     "stack-utils": "^2.0.3",
-    "throat": "^5.0.0"
+    "throat": "^6.0.1"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",

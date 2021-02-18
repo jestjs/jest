@@ -39,7 +39,7 @@
     "eslint-plugin-import": "^2.6.0",
     "eslint-plugin-jest": "^24.0.0",
     "eslint-plugin-local": "^1.0.0",
-    "eslint-plugin-markdown": "^1.0.0",
+    "eslint-plugin-markdown": "^2.0.0",
     "eslint-plugin-prettier": "^3.0.1",
     "execa": "^5.0.0",
     "fast-check": "^2.0.0",
@@ -81,7 +81,7 @@
     "tempy": "^1.0.0",
     "throat": "^5.0.0",
     "ts-node": "^9.0.0",
-    "type-fest": "^0.20.1",
+    "type-fest": "^0.21.1",
     "typescript": "^4.0.2",
     "which": "^2.0.1"
   },

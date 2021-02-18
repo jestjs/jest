@@ -31,7 +31,7 @@
     "jest-snapshot": "^27.0.0-next.2",
     "jest-util": "^27.0.0-next.1",
     "pretty-format": "^27.0.0-next.1",
-    "throat": "^5.0.0"
+    "throat": "^6.0.1"
   },
   "devDependencies": {
     "@types/babel__traverse": "^7.0.4",
