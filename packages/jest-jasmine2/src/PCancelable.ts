@@ -26,7 +26,6 @@ export default class PCancelable<T> extends Promise<T> {
       reject: (reason?: unknown) => void,
     ) => void,
   ) {
-    // @ts-expect-error
     super(resolve => resolve());
 
     this._promise = new Promise((resolve, reject) => {
@@ -38,7 +37,6 @@ export default class PCancelable<T> extends Promise<T> {
         },
         val => {
           this._pending = false;
-          // @ts-expect-error
           resolve(val);
         },
         err => {
