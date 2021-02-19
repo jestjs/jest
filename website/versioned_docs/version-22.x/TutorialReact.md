@@ -62,7 +62,7 @@ Your `package.json` should look something like this (where `<current-version>` i
 Let's create a [snapshot test](SnapshotTesting.md) for a Link component that renders hyperlinks:
 
 ```tsx
-// Link.react.js
+// src/Link.js
 import React from 'react';
 
 const STATUS = {
@@ -108,10 +108,10 @@ export default class Link extends React.Component {
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
 
 ```tsx
-// Link.react.test.js
+// src/Link.test.js
 import React from 'react';
 import renderer from 'react-test-renderer';
-import Link from '../Link.react';
+import Link from './Link';
 
 test('Link changes the class when hovered', () => {
   const component = renderer.create(
@@ -137,33 +137,71 @@ test('Link changes the class when hovered', () => {
 When you run `yarn test` or `jest`, this will produce an output file like this:
 
 ```javascript
-// __tests__/__snapshots__/Link.react.test.js.snap
-exports[`Link changes the class when hovered 1`] = `
+// src/__snapshots__/Link.test.js.snap
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`changes the class when hovered 1`] = `
 <a
   className="normal"
   href="http://www.facebook.com"
   onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
+  onMouseLeave={[Function]}
+>
   Facebook
 </a>
 `;
 
-exports[`Link changes the class when hovered 2`] = `
+exports[`changes the class when hovered 2`] = `
 <a
   className="hovered"
   href="http://www.facebook.com"
   onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
+  onMouseLeave={[Function]}
+>
   Facebook
 </a>
 `;
 
-exports[`Link changes the class when hovered 3`] = `
+exports[`changes the class when hovered 3`] = `
 <a
   className="normal"
   href="http://www.facebook.com"
   onMouseEnter={[Function]}
-  onMouseLeave={[Function]}>
+  onMouseLeave={[Function]}
+>
+  Facebook
+</a>
+`;
+
+exports[`properly escapes quotes 1`] = `
+<a
+  className="normal"
+  href="#"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+>
+  "Facebook" \\'is \\ 'awesome'
+</a>
+`;
+
+exports[`renders as an anchor when no page is set 1`] = `
+<a
+  className="normal"
+  href="#"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+>
+  Facebook
+</a>
+`;
+
+exports[`renders correctly 1`] = `
+<a
+  className="normal"
+  href="http://www.facebook.com"
+  onMouseEnter={[Function]}
+  onMouseLeave={[Function]}
+>
   Facebook
 </a>
 `;
