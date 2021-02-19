@@ -2,30 +2,20 @@
 
 import React from 'react';
 
-export default class Clock extends React.Component {
-  constructor() {
-    super();
+export default function Clock() {
+  const [seconds, setSeconds] = React.useState(Date.now() / 1000);
 
-    this.state = {seconds: Date.now() / 1000};
-  }
+  const tick = () => {
+    setSeconds(Date.now() / 1000);
+  };
 
-  componentDidMount() {
-    this.timerID = setInterval(() => this.tick(), 1000);
-  }
+  React.useEffect(() => {
+    const timerID = setInterval(() => tick(), 1000);
 
-  componentWillUnmount() {
-    clearInterval(this.timerID);
-  }
+    return () => {
+      clearInterval(timerID);
+    };
+  }, []);
 
-  tick() {
-    this.setState({
-      seconds: Date.now() / 1000,
-    });
-  }
-
-  render() {
-    return (
-      <p>{this.state.seconds} seconds have ellapsed since the UNIX epoch.</p>
-    );
-  }
+  return <p>{seconds} seconds have elapsed since the UNIX epoch.</p>;
 }

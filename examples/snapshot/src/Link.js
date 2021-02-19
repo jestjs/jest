@@ -7,33 +7,25 @@ const STATUS = {
   NORMAL: 'normal',
 };
 
-export default class Link extends React.Component {
-  constructor() {
-    super();
+export default function Link(props) {
+  const [cssClass, setCssClass] = React.useState(STATUS.NORMAL);
 
-    this.state = {
-      class: STATUS.NORMAL,
-    };
-  }
-
-  _onMouseEnter = () => {
-    this.setState({class: STATUS.HOVERED});
+  const _onMouseEnter = () => {
+    setCssClass(STATUS.HOVERED);
   };
 
-  _onMouseLeave = () => {
-    this.setState({class: STATUS.NORMAL});
+  const _onMouseLeave = () => {
+    setCssClass(STATUS.NORMAL);
   };
 
-  render() {
-    return (
-      <a
-        className={this.state.class}
-        href={this.props.page || '#'}
-        onMouseEnter={this._onMouseEnter}
-        onMouseLeave={this._onMouseLeave}
-      >
-        {this.props.children}
-      </a>
-    );
-  }
+  return (
+    <a
+      className={cssClass}
+      href={props.page || '#'}
+      onMouseEnter={_onMouseEnter}
+      onMouseLeave={_onMouseLeave}
+    >
+      {props.children}
+    </a>
+  );
 }
