@@ -192,6 +192,9 @@ export default class ScriptTransformer {
     }
 
     let transformer: Transformer = require(transformPath);
+    if ('__esModule' in transformer && 'default' in transformer) {
+      transformer = transformer.default;
+    }
 
     if (!transformer) {
       throw new TypeError('Jest: a transform must export something.');
