@@ -193,7 +193,7 @@ export default class ScriptTransformer {
 
     let transformer: Transformer = require(transformPath);
     if ('__esModule' in transformer && 'default' in (transformer as any)) {
-      transformer = transformer.default;
+      transformer = (transformer as any).default;
     }
 
     if (!transformer) {
