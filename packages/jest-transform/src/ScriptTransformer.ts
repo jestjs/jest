@@ -191,8 +191,8 @@ export default class ScriptTransformer {
       return cached;
     }
 
-    let transformer: Transformer = require(transformPath);
-    if ('__esModule' in transformer && 'default' in (transformer as any)) {
+    let transformer: Transformer = interopRequireDefault(require(transformPath));
+    if ('default' in (transformer as any)) {
       transformer = (transformer as any).default;
     }
 
