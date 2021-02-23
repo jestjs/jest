@@ -191,7 +191,9 @@ export default class ScriptTransformer {
       return cached;
     }
 
-    let transformer: Transformer = interopRequireDefault(require(transformPath));
+    let transformer: Transformer = interopRequireDefault(
+      require(transformPath),
+    );
     if ('default' in (transformer as any)) {
       transformer = (transformer as any).default;
     }
