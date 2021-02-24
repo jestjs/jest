@@ -57,6 +57,7 @@
 - `[jest-worker]` Do not swallow errors during serialization ([#10984](https://github.com/facebook/jest/pull/10984))
 - `[pretty-format]` [**BREAKING**] Convert to ES Modules ([#10515](https://github.com/facebook/jest/pull/10515))
 - `[pretty-format]` Only call `hasAttribute` if it's a function ([#11000](https://github.com/facebook/jest/pull/11000))
+- `[jest-types]` Fix inaccurate/missing types ([#11115](https://github.com/facebook/jest/pull/11115))
 
 ### Chore & Maintenance
 
