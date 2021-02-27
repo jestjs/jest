@@ -31,5 +31,6 @@ describe('collectHandles', () => {
     const openHandles = handleCollector();
 
     expect(openHandles.length).toEqual(0);
+    obs.disconnect();
   });
 });
