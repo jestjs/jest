@@ -17,7 +17,7 @@ describe('collectHandles', () => {
 
     const openHandles = handleCollector();
 
-    expect(openHandles.length).toEqual(1);
+    expect(openHandles).toHaveLength(1);
     expect(openHandles[0].message).toContain('Timeout');
 
     clearInterval(interval);
@@ -30,7 +30,7 @@ describe('collectHandles', () => {
 
     const openHandles = handleCollector();
 
-    expect(openHandles.length).toEqual(0);
+    expect(openHandles).toHaveLength(0);
     obs.disconnect();
   });
 });
