@@ -35,6 +35,7 @@
 - `[jest-cli]` Print custom error if error thrown from global hooks is not an error already ([#11003](https://github.com/facebook/jest/pull/11003))
 - `[jest-config]` [**BREAKING**] Change default file extension order by moving json behind ts and tsx ([10572](https://github.com/facebook/jest/pull/10572))
 - `[jest-console]` `console.dir` now respects the second argument correctly ([#10638](https://github.com/facebook/jest/pull/10638))
+- `[jest-core]` Don't report PerformanceObserver as open handle ([#11123](https://github.com/facebook/jest/pull/11123))
 - `[jest-each]` [**BREAKING**] Ignore excess words in headings ([#8766](https://github.com/facebook/jest/pull/8766))
 - `[jest-environment-jsdom]` Use inner realm’s `ArrayBuffer` constructor ([#10885](https://github.com/facebook/jest/pull/10885))
 - `[jest-globals]` [**BREAKING**] Disallow return values other than a `Promise` from hooks and tests ([#10512](https://github.com/facebook/jest/pull/10512))
