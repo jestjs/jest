@@ -583,3 +583,50 @@ Testing.`;
     );
   });
 });
+
+describe('DOMElement Plugin with a null printer', () => {
+  beforeAll(() => {
+    setPrettyPrint([
+      {
+        serialize() {
+          return '';
+        },
+        test(value) {
+          return (
+            DOMElement.test(value) &&
+            (value.tagName === 'SCRIPT' || value.nodeType === 8)
+          );
+        },
+      },
+      DOMElement,
+    ]);
+  });
+
+  afterAll(() => {
+    setPrettyPrint([DOMElement]);
+  });
+
+  it('filters children', () => {
+    const div = document.createElement('div');
+
+    const script = document.createElement('script');
+    script.setAttribute('src', 'index.js');
+    div.appendChild(script);
+
+    const comment = document.createComment('Hello, Dave!');
+    div.appendChild(comment);
+
+    const main = document.createElement('main');
+    main.appendChild(document.createTextNode('Hello, World!'));
+    div.appendChild(main);
+
+    const expected = [
+      '<div>',
+      '  <main>',
+      '    Hello, World!',
+      '  </main>',
+      '</div>',
+    ].join('\n');
+    expect(div).toPrettyPrintTo(expected);
+  });
+});

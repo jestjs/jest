@@ -68,7 +68,13 @@ export const printChildren = (
           ? printText(child, config)
           : printer(child, config, indentation, depth, refs);
 
-      if (printedChild === '') {
+      if (
+        printedChild === '' &&
+        typeof child === 'object' &&
+        child !== null &&
+        (child as Node).nodeType !== 3
+      ) {
+        // A plugin serialized this element to '' meaning we should ignore it.
         return '';
       }
       return config.spacingOuter + indentation + printedChild;
