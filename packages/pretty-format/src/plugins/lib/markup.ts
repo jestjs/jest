@@ -62,14 +62,17 @@ export const printChildren = (
   printer: Printer,
 ): string =>
   children
-    .map(
-      child =>
-        config.spacingOuter +
-        indentation +
-        (typeof child === 'string'
+    .map(child => {
+      const printedChild =
+        typeof child === 'string'
           ? printText(child, config)
-          : printer(child, config, indentation, depth, refs)),
-    )
+          : printer(child, config, indentation, depth, refs);
+
+      if (printedChild === '') {
+        return '';
+      }
+      return config.spacingOuter + indentation + printedChild;
+    })
     .join('');
 
 export const printText = (text: string, config: Config): string => {
