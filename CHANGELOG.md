@@ -22,6 +22,7 @@
 - `[jest-transform]` Pass config options defined in Jest's config to transformer's `process` and `getCacheKey` functions ([#10926](https://github.com/facebook/jest/pull/10926))
 - `[jest-worker]` Add support for custom task queues and adds a `PriorityQueue` implementation. ([#10921](https://github.com/facebook/jest/pull/10921))
 - `[jest-worker]` Add in-order scheduling policy to jest worker ([10902](https://github.com/facebook/jest/pull/10902))
+- `[pretty-format]` Ignore DOM nodes (except text nodes) that are serialized as an empty string (only affects usages of `pretty-format` with custom plugins). ([11130](https://github.com/facebook/jest/pull/11130))
 
 ### Fixes
 
