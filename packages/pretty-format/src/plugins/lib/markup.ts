@@ -52,6 +52,9 @@ export const printProps = (
     .join('');
 };
 
+// https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType#node_type_constants
+const NodeTypeTextNode = 3;
+
 // Return empty string if children is empty.
 export const printChildren = (
   children: Array<unknown>,
@@ -72,9 +75,9 @@ export const printChildren = (
         printedChild === '' &&
         typeof child === 'object' &&
         child !== null &&
-        (child as Node).nodeType !== 3
+        (child as Node).nodeType !== NodeTypeTextNode
       ) {
-        // A plugin serialized this element to '' meaning we should ignore it.
+        // A plugin serialized this Node to '' meaning we should ignore it.
         return '';
       }
       return config.spacingOuter + indentation + printedChild;
