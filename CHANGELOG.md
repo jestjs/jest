@@ -65,6 +65,7 @@
 - `[*]` [**BREAKING**] Add `exports` field to all `package.json`s ([#9921](https://github.com/facebook/jest/pull/9921))
 - `[*]` Make it easier for Jest's packages to use the VM escape hatch ([#10824](https://github.com/facebook/jest/pull/10824))
 - `[*]` [**BREAKING**] Remove deprecated `mapCoverage` ([#9968](https://github.com/facebook/jest/pull/9968))
+- `[docs]` Correct example using `browser-resolve` ([#11140](https://github.com/facebook/jest/pull/11140))
 - `[jest-config]` [**BREAKING**] Remove `enabledTestsMap` config, use `filter` instead ([#10787](https://github.com/facebook/jest/pull/10787))
 - `[jest-console]` [**BREAKING**] Move `root` into `config` and take `GlobalConfig` as mandatory parameter for `getConsoleOutput` ([#10126](https://github.com/facebook/jest/pull/10126))
 - `[jest-console]` Export LogEntry ([#11017](https://github.com/facebook/jest/pull/11017))
