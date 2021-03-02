@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/* eslint-env browser */
+
 'use strict';
 
 const div = document.createElement('div');
