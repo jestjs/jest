@@ -12,7 +12,7 @@ const lineCommentRe = /\/\/.*/g;
 const LOAD_MODULE_RE = /(?:^|[^.]\s*)(\bloadModule\s*?\(\s*?)([`'"])([^`'"]+)(\2\s*?\))/g;
 
 export function extract(code, filePath, defaultDependencyExtractor) {
-  const dependencies = defaultDependencyExtractor(code);
+  const dependencies = defaultDependencyExtractor(code, filePath);
 
   const addDependency = (match, pre, quot, dep, post) => {
     dependencies.add(dep);
