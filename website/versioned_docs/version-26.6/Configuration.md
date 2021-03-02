@@ -768,9 +768,16 @@ For example, if you want to respect Browserify's [`"browser"` field](https://git
 {
   ...
   "jest": {
-    "resolver": "browser-resolve"
+    "resolver": "<rootDir>/resolver.js"
   }
 }
+```
+
+```js
+// resolver.js
+const browserResolve = require('browser-resolve');
+
+module.exports = browserResolve.sync;
 ```
 
 By combining `defaultResolver` and `packageFilter` we can implement a `package.json` "pre-processor" that allows us to change how the default resolver will resolve modules. For example, imagine we want to use the field `"module"` if it is present, otherwise fallback to `"main"`:
