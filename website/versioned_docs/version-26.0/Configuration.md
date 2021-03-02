@@ -721,9 +721,16 @@ For example, if you want to respect Browserify's [`"browser"` field](https://git
 {
   ...
   "jest": {
-    "resolver": "browser-resolve"
+    "resolver": "<rootDir>/resolver.js"
   }
 }
+```
+
+```js
+// resolver.js
+const browserResolve = require('browser-resolve');
+
+module.exports = browserResolve.sync;
 ```
 
 ### `restoreMocks` [boolean]
