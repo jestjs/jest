@@ -5,11 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import * as util from 'util';
 import pEachSeries = require('p-each-series');
 import {ScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import type {Test} from 'jest-runner';
 import {interopRequireDefault} from 'jest-util';
+import prettyFormat from 'pretty-format';
 
 export default async ({
   allTests,
@@ -29,7 +31,7 @@ export default async ({
   }
 
   if (globalModulePaths.size > 0) {
-    await pEachSeries(Array.from(globalModulePaths), async modulePath => {
+    await pEachSeries(globalModulePaths, async modulePath => {
       if (!modulePath) {
         return;
       }
@@ -45,17 +47,32 @@ export default async ({
 
       const transformer = new ScriptTransformer(projectConfig);
 
-      await transformer.requireAndTranspileModule(modulePath, async m => {
-        const globalModule = interopRequireDefault(m).default;
+      try {
+        await transformer.requireAndTranspileModule(modulePath, async m => {
+          const globalModule = interopRequireDefault(m).default;
 
-        if (typeof globalModule !== 'function') {
-          throw new TypeError(
-            `${moduleName} file must export a function at ${modulePath}`,
-          );
+          if (typeof globalModule !== 'function') {
+            throw new TypeError(
+              `${moduleName} file must export a function at ${modulePath}`,
+            );
+          }
+
+          await globalModule(globalConfig);
+        });
+      } catch (error) {
+        if (util.types.isNativeError(error)) {
+          error.message = `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${error.message}`;
+
+          throw error;
         }
 
-        await globalModule(globalConfig);
-      });
+        throw new Error(
+          `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${prettyFormat(
+            error,
+            {maxDepth: 3},
+          )}`,
+        );
+      }
     });
   }
 

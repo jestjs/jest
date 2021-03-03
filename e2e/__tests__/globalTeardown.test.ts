@@ -55,8 +55,9 @@ test('jest throws an error when globalTeardown does not export a function', () =
   ]);
 
   expect(exitCode).toBe(1);
-  expect(stderr).toMatch(
-    `TypeError: globalTeardown file must export a function at ${teardownPath}`,
+  expect(stderr).toContain('Jest: Got error running globalTeardown');
+  expect(stderr).toContain(
+    `globalTeardown file must export a function at ${teardownPath}`,
   );
 });
 
@@ -125,7 +126,8 @@ test('globalTeardown throws with named export', () => {
   ]);
 
   expect(exitCode).toBe(1);
-  expect(stderr).toMatch(
-    `TypeError: globalTeardown file must export a function at ${teardownPath}`,
+  expect(stderr).toContain('Jest: Got error running globalTeardown');
+  expect(stderr).toContain(
+    `globalTeardown file must export a function at ${teardownPath}`,
   );
 });

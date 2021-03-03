@@ -27,6 +27,8 @@
 /website/yarn.lock
 /website/i18n/*
 
+/benchmarks/*/node_modules/
+
 /reports/*
 
 coverage
