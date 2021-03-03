@@ -10,7 +10,7 @@
 
 [context.production]
   # Do not build the site if there's no site-related changes
-  ignore = "git diff --quiet HEAD^ HEAD -- website/"
+  ignore = "git diff --quiet HEAD^ HEAD -- website/ docs/"
 
 # deploy preview build (faster config)
 [context.deploy-preview]
