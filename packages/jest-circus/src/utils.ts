@@ -180,7 +180,7 @@ export const callAsyncCircusFn = (
 
   const {fn, asyncError} = testOrHook;
 
-  return new Promise((resolve, reject) => {
+  return new Promise<void>((resolve, reject) => {
     timeoutID = setTimeout(
       () => reject(_makeTimeoutMessage(timeout, isHook)),
       timeout,
@@ -266,7 +266,7 @@ export const callAsyncCircusFn = (
       returnedValue !== null &&
       typeof returnedValue.then === 'function'
     ) {
-      returnedValue.then(resolve, reject);
+      returnedValue.then(() => resolve(), reject);
       return;
     }
 

@@ -32,7 +32,6 @@ describe('Runtime', () => {
         runtime.requireModule(modulePath);
       }).toThrow(new Error('preprocessor must not run.'));
     });
-
     it('loads internal modules without applying transforms', async () => {
       const runtime = await createRuntime(__filename, {
         transform: {'\\.js$': './test_preprocessor'},
@@ -56,7 +55,6 @@ describe('Runtime', () => {
       const exports = runtime.requireModule(modulePath);
       expect(exports).toEqual({foo: 'foo'});
     });
-
     it('loads internal JSON modules without applying transforms', async () => {
       const runtime = await createRuntime(__filename, {
         transform: {'\\.json$': './test_json_preprocessor'},
@@ -68,5 +66,29 @@ describe('Runtime', () => {
       const exports = runtime.requireInternalModule(modulePath);
       expect(exports).toEqual({foo: 'bar'});
     });
+
+    const OPTIMIZED_MODULE_EXAMPLE = 'chalk';
+    it('loads modules normally even if on the optimization list', () =>
+      createRuntime(__filename).then(runtime => {
+        const modulePath = path.resolve(
+          path.dirname(runtime.__mockRootPath),
+          'require-by-name.js',
+        );
+        const requireByName = runtime.requireModule(modulePath);
+        expect(requireByName(OPTIMIZED_MODULE_EXAMPLE)).not.toBe(
+          require(OPTIMIZED_MODULE_EXAMPLE),
+        );
+      }));
+    it('loads internal modules from outside if on the optimization list', () =>
+      createRuntime(__filename).then(runtime => {
+        const modulePath = path.resolve(
+          path.dirname(runtime.__mockRootPath),
+          'require-by-name.js',
+        );
+        const requireByName = runtime.requireInternalModule(modulePath);
+        expect(requireByName(OPTIMIZED_MODULE_EXAMPLE)).toBe(
+          require(OPTIMIZED_MODULE_EXAMPLE),
+        );
+      }));
   });
 });

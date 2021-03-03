@@ -208,7 +208,7 @@ export const runContinuous = function (
     },
 
     async waitUntil(fn: ConditionFunction) {
-      await new Promise(resolve => {
+      await new Promise<void>(resolve => {
         const check = (state: StdErrAndOutString) => {
           if (fn(state)) {
             pending.delete(check);

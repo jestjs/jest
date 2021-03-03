@@ -282,7 +282,12 @@ export default class TestRunner {
     return Promise.race([runAllTests, onInterrupt]).then(cleanup, cleanup);
   }
 
-  on = this.eventEmitter.on.bind(this.eventEmitter);
+  on<Name extends keyof TestEvents>(
+    eventName: Name,
+    listener: (eventData: TestEvents[Name]) => void | Promise<void>,
+  ): Emittery.UnsubscribeFn {
+    return this.eventEmitter.on(eventName, listener);
+  }
 }
 
 class CancelRun extends Error {
