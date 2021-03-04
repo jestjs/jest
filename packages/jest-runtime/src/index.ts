@@ -57,11 +57,6 @@ import type {Context} from './types';
 
 export type {Context} from './types';
 
-interface EsmModuleCache {
-  beforeEvaluation: Promise<VMModule>;
-  fullyEvaluated: Promise<VMModule>;
-}
-
 const esmIsAvailable = typeof SourceTextModule === 'function';
 
 interface JestGlobals extends Global.TestFrameworkGlobals {
@@ -176,8 +171,9 @@ export default class Runtime {
   private readonly _moduleMocker: ModuleMocker;
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
-  private readonly _esmoduleRegistry: Map<Config.Path, EsmModuleCache>;
+  private readonly _esmoduleRegistry: Map<Config.Path, VMModule>;
   private readonly _cjsNamedExports: Map<Config.Path, Set<string>>;
+  private readonly _esmModuleLinkingMap: WeakMap<VMModule, Promise<unknown>>;
   private readonly _testPath: Config.Path;
   private readonly _resolver: Resolver;
   private _shouldAutoMock: boolean;
@@ -227,6 +223,7 @@ export default class Runtime {
     this._moduleRegistry = new Map();
     this._esmoduleRegistry = new Map();
     this._cjsNamedExports = new Map();
+    this._esmModuleLinkingMap = new WeakMap();
     this._testPath = testPath;
     this._resolver = resolver;
     this._scriptTransformer = new ScriptTransformer(config, this._cacheFS);
@@ -368,10 +365,10 @@ export default class Runtime {
     );
   }
 
+  // not async _now_, but transform will be
   private async loadEsmModule(
     modulePath: Config.Path,
     query = '',
-    isStaticImport = false,
   ): Promise<VMModule> {
     const cacheKey = modulePath + query;
 
@@ -387,10 +384,7 @@ export default class Runtime {
 
       if (this._resolver.isCoreModule(modulePath)) {
         const core = this._importCoreModule(modulePath, context);
-        this._esmoduleRegistry.set(cacheKey, {
-          beforeEvaluation: core,
-          fullyEvaluated: core,
-        });
+        this._esmoduleRegistry.set(cacheKey, core);
         return core;
       }
 
@@ -405,89 +399,46 @@ export default class Runtime {
       const module = new SourceTextModule(transformedCode, {
         context,
         identifier: modulePath,
-        importModuleDynamically: (
+        importModuleDynamically: async (
           specifier: string,
           referencingModule: VMModule,
-        ) =>
-          this.linkModules(
+        ) => {
+          const module = await this.resolveModule(
             specifier,
             referencingModule.identifier,
             referencingModule.context,
-            false,
-          ),
+          );
+
+          return this.linkAndEvaluateModule(module);
+        },
         initializeImportMeta(meta: ImportMeta) {
           meta.url = pathToFileURL(modulePath).href;
         },
       });
 
-      let resolve: (value: VMModule) => void;
-      let reject: (value: any) => void;
-      const promise = new Promise<VMModule>((_resolve, _reject) => {
-        resolve = _resolve;
-        reject = _reject;
-      });
-
-      // add to registry before link so that circular import won't end up stack overflow
-      this._esmoduleRegistry.set(
-        cacheKey,
-        // we wanna put the linking promise in the cache so modules loaded in
-        // parallel can all await it. We then await it synchronously below, so
-        // we shouldn't get any unhandled rejections
-        {
-          beforeEvaluation: Promise.resolve(module),
-          fullyEvaluated: promise,
-        },
-      );
-
-      module
-        .link((specifier: string, referencingModule: VMModule) =>
-          this.linkModules(
-            specifier,
-            referencingModule.identifier,
-            referencingModule.context,
-            true,
-          ),
-        )
-        .then(() => module.evaluate())
-        .then(
-          () => resolve(module),
-          (e: any) => reject(e),
-        );
+      this._esmoduleRegistry.set(cacheKey, module);
     }
 
-    const entry = this._esmoduleRegistry.get(cacheKey);
-
-    // return the already resolved, pre-evaluation promise
-    // is loaded through static import to prevent promise deadlock
-    // because module is evaluated after all static import is resolved
-    const module = isStaticImport
-      ? entry?.beforeEvaluation
-      : entry?.fullyEvaluated;
+    const module = this._esmoduleRegistry.get(cacheKey);
 
     invariant(module);
 
     return module;
   }
 
-  private linkModules(
+  private resolveModule(
     specifier: string,
     referencingIdentifier: string,
     context: VMContext,
-    isStaticImport: boolean,
   ) {
     if (specifier === '@jest/globals') {
       const fromCache = this._esmoduleRegistry.get('@jest/globals');
 
       if (fromCache) {
-        return isStaticImport
-          ? fromCache.beforeEvaluation
-          : fromCache.fullyEvaluated;
+        return fromCache;
       }
       const globals = this.getGlobalsForEsm(referencingIdentifier, context);
-      this._esmoduleRegistry.set('@jest/globals', {
-        beforeEvaluation: globals,
-        fullyEvaluated: globals,
-      });
+      this._esmoduleRegistry.set('@jest/globals', globals);
 
       return globals;
     }
@@ -504,10 +455,35 @@ export default class Runtime {
       this._resolver.isCoreModule(resolved) ||
       this.unstable_shouldLoadAsEsm(resolved)
     ) {
-      return this.loadEsmModule(resolved, query, isStaticImport);
+      return this.loadEsmModule(resolved, query);
     }
 
     return this.loadCjsAsEsm(referencingIdentifier, resolved, context);
+  }
+
+  private async linkAndEvaluateModule(module: VMModule) {
+    if (module.status === 'unlinked') {
+      // since we might attempt to link the same module in parallel, stick the promise in a weak map so every call to
+      // this method can await it
+      this._esmModuleLinkingMap.set(
+        module,
+        module.link((specifier: string, referencingModule: VMModule) =>
+          this.resolveModule(
+            specifier,
+            referencingModule.identifier,
+            referencingModule.context,
+          ),
+        ),
+      );
+    }
+
+    await this._esmModuleLinkingMap.get(module);
+
+    if (module.status === 'linked') {
+      await module.evaluate();
+    }
+
+    return module;
   }
 
   async unstable_importModule(
@@ -523,7 +499,9 @@ export default class Runtime {
 
     const modulePath = this._resolveModule(from, path);
 
-    return this.loadEsmModule(modulePath, query);
+    const module = await this.loadEsmModule(modulePath, query);
+
+    return this.linkAndEvaluateModule(module);
   }
 
   private loadCjsAsEsm(
@@ -1227,12 +1205,18 @@ export default class Runtime {
         displayErrors: true,
         filename: scriptFilename,
         // @ts-expect-error: Experimental ESM API
-        importModuleDynamically: (specifier: string) => {
+        importModuleDynamically: async (specifier: string) => {
           const context = this._environment.getVmContext?.();
 
           invariant(context);
 
-          return this.linkModules(specifier, scriptFilename, context, false);
+          const module = await this.resolveModule(
+            specifier,
+            scriptFilename,
+            context,
+          );
+
+          return this.linkAndEvaluateModule(module);
         },
       });
     } catch (e) {
