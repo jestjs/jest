@@ -380,7 +380,7 @@ export default class Runtime {
 
       const context = this._environment.getVmContext();
 
-      invariant(context);
+      invariant(context, 'Test environment has been torn down');
 
       if (this._resolver.isCoreModule(modulePath)) {
         const core = this._importCoreModule(modulePath, context);
@@ -421,7 +421,10 @@ export default class Runtime {
 
     const module = this._esmoduleRegistry.get(cacheKey);
 
-    invariant(module);
+    invariant(
+      module,
+      'Module cache does not contain module. This is a bug in Jest, please open up an issue',
+    );
 
     return module;
   }
@@ -1208,7 +1211,7 @@ export default class Runtime {
         importModuleDynamically: async (specifier: string) => {
           const context = this._environment.getVmContext?.();
 
-          invariant(context);
+          invariant(context, 'Test environment has been torn down');
 
           const module = await this.resolveModule(
             specifier,
