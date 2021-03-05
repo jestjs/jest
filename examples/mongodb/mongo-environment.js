@@ -28,10 +28,6 @@ class MongoEnvironment extends NodeEnvironment {
 
     await super.teardown();
   }
-
-  runScript(script) {
-    return super.runScript(script);
-  }
 }
 
 module.exports = MongoEnvironment;

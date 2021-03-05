@@ -142,6 +142,13 @@ async function runTestInternal(
     docblockPragmas,
     testPath: path,
   });
+
+  if (typeof environment.getVmContext !== 'function') {
+    throw new Error(
+      `Test environment found at "testEnvironment" does not export a "getVmContext" method, which is mandatory from Jest 27`,
+    );
+  }
+
   const leakDetector = config.detectLeaks
     ? new LeakDetector(environment)
     : null;

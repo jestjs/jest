@@ -1076,8 +1076,8 @@ class CustomEnvironment extends NodeEnvironment {
     await super.teardown();
   }
 
-  runScript(script) {
-    return super.runScript(script);
+  getVmContext() {
+    return super.getVmContext();
   }
 
   async handleTestEvent(event, state) {

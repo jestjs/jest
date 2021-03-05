@@ -33,10 +33,6 @@ class TestEnvironment extends JSDOMEnvironment {
       fs.writeFileSync(DIR + '/teardown', 'teardown');
     });
   }
-
-  runScript(script) {
-    return super.runScript(script);
-  }
 }
 
 module.exports = TestEnvironment;
