@@ -28,6 +28,10 @@ class MongoEnvironment extends NodeEnvironment {
 
     await super.teardown();
   }
+
+  getVmContext() {
+    return super.getVmContext();
+  }
 }
 
 module.exports = MongoEnvironment;
