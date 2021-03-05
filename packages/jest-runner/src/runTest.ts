@@ -148,18 +148,8 @@ async function runTestInternal(
   });
 
   if (typeof environment.getVmContext !== 'function') {
-    const originalStack = new TypeError(
-      `Test environment found at "${testEnvironment}" does not export a "getVmContext" method, which is mandatory from Jest 27. This method is a replacement for "runScript".`,
-    )
-      .stack!.split('\n')
-      // Remove this file from the stack (jest-message-utils will keep one line)
-      .filter(line => line.indexOf(__filename) === -1)
-      .join('\n');
-
-    const {message, stack} = separateMessageFromStack(originalStack);
-
     console.error(
-      `\n${message}\n` + formatStackTrace(stack, config, {noStackTrace: false}),
+      `Test environment found at "${testEnvironment}" does not export a "getVmContext" method, which is mandatory from Jest 27. This method is a replacement for "runScript".`,
     );
     process.exit(1);
   }
