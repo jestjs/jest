@@ -320,12 +320,14 @@ test('randocall calls its callback with a number', () => {
 
 ### `expect.arrayContaining(array)`
 
-`expect.arrayContaining(array)` matches a received array which contains all of the elements in the expected array. That is, the expected array is a **subset** of the received array. Therefore, it matches a received array which contains elements that are **not** in the expected array.
+`expect.arrayContaining(array)` matches the received value if it is an array which contains all of the elements in the expected array. That is, the expected array is a **subset** of the received array.
 
 You can use it instead of a literal value:
 
 - in `toEqual` or `toBeCalledWith`
 - to match a property in `objectContaining` or `toMatchObject`
+
+As a special case, `expect.arrayContaining([])` matches any value, including non-arrays.
 
 ```js
 describe('arrayContaining', () => {
@@ -397,7 +399,9 @@ The `expect.hasAssertions()` call ensures that the `prepareState` callback actua
 
 ### `expect.not.arrayContaining(array)`
 
-`expect.not.arrayContaining(array)` matches a received array which does not contain all of the elements in the expected array. That is, the expected array **is not a subset** of the received array.
+`expect.not.arrayContaining(array)` matches the received value if it is not an array or if it is an array that does not contain all of the elements in the expected array. That is, the expected array **is not a subset** of the received value.
+
+As a special case, `expect.not.arrayContaining([])` matches nothing.
 
 It is the inverse of `expect.arrayContaining`.
 
