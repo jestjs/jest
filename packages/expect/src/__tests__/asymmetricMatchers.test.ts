@@ -228,9 +228,14 @@ test('ObjectContaining boxes truthy autoboxable primitives', () => {
   jestExpect(
     objectContaining({toExponential: any(Function)}).asymmetricMatch(1),
   ).toBe(true);
-  jestExpect(
-    objectContaining({description: any(String)}).asymmetricMatch(Symbol('foo')),
-  ).toBe(true);
+  // Symbol.prototype.description isn't present on Node 10
+  if (Symbol('foo').description) {
+    jestExpect(
+      objectContaining({description: any(String)}).asymmetricMatch(
+        Symbol('foo'),
+      ),
+    ).toBe(true);
+  }
 });
 
 test('ObjectContaining does not box falsy autoboxable primitives', () => {
