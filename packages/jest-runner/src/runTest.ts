@@ -24,7 +24,11 @@ import type {Config} from '@jest/types';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import LeakDetector from 'jest-leak-detector';
-import {formatExecError} from 'jest-message-util';
+import {
+  formatExecError,
+  formatStackTrace,
+  separateMessageFromStack,
+} from 'jest-message-util';
 import type Resolver from 'jest-resolve';
 import type RuntimeClass from 'jest-runtime';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
@@ -144,9 +148,20 @@ async function runTestInternal(
   });
 
   if (typeof environment.getVmContext !== 'function') {
-    throw new Error(
+    const originalStack = new TypeError(
       `Test environment found at "${testEnvironment}" does not export a "getVmContext" method, which is mandatory from Jest 27. This method is a replacement for "runScript".`,
+    )
+      .stack!.split('\n')
+      // Remove this file from the stack (jest-message-utils will keep one line)
+      .filter(line => line.indexOf(__filename) === -1)
+      .join('\n');
+
+    const {message, stack} = separateMessageFromStack(originalStack);
+
+    console.error(
+      `\n${message}\n` + formatStackTrace(stack, config, {noStackTrace: false}),
     );
+    process.exit(1);
   }
 
   const leakDetector = config.detectLeaks
