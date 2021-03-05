@@ -24,11 +24,7 @@ import type {Config} from '@jest/types';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import LeakDetector from 'jest-leak-detector';
-import {
-  formatExecError,
-  formatStackTrace,
-  separateMessageFromStack,
-} from 'jest-message-util';
+import {formatExecError} from 'jest-message-util';
 import type Resolver from 'jest-resolve';
 import type RuntimeClass from 'jest-runtime';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
