@@ -1808,7 +1808,7 @@ __metadata:
     debug: ^4.0.1
     dedent: ^0.7.0
     eslint: ^7.7.0
-    eslint-config-prettier: ^7.0.0
+    eslint-config-prettier: ^8.1.0
     eslint-plugin-eslint-comments: ^3.1.2
     eslint-plugin-import: ^2.6.0
     eslint-plugin-jest: ^24.0.0
@@ -1853,7 +1853,7 @@ __metadata:
     strip-ansi: ^6.0.0
     strip-json-comments: ^3.1.1
     tempy: ^1.0.0
-    throat: ^5.0.0
+    throat: ^6.0.1
     ts-node: ^9.0.0
     type-fest: ^0.21.1
     typescript: ^4.0.2
@@ -7943,14 +7943,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^7.0.0":
-  version: 7.2.0
-  resolution: "eslint-config-prettier@npm:7.2.0"
+"eslint-config-prettier@npm:^8.1.0":
+  version: 8.1.0
+  resolution: "eslint-config-prettier@npm:8.1.0"
   peerDependencies:
     eslint: ">=7.0.0"
   bin:
     eslint-config-prettier: bin/cli.js
-  checksum: 6812150ea49703cd64035527205b4905bc1edcd34646e71f71665e1acff9ab4648f872598389bdb209964093ad73993830a2c821ba12642764a5293513b92a58
+  checksum: 409d3a071f8228d4c958a6a9be9d5ec2b357ce21b7b6cbb137096cade2c31f008a0a3c3533dee8979c0cd944f220a959710b30fd86f8b96f0ef1f4f557d740b3
   languageName: node
   linkType: hard
 
