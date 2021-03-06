@@ -6,10 +6,10 @@
  */
 
 import {createRequire} from 'module';
-import {fileURLToPath} from 'url';
 
-const thisFile = fileURLToPath(import.meta.url);
-const fileToTransform = createRequire(thisFile).resolve('./module')
+const require = createRequire(import.meta.url);
+
+const fileToTransform = require.resolve('./module');
 
 export default {
   process(src, filepath) {
