@@ -8,6 +8,7 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
+import {onNodeVersions} from '@jest/test-utils';
 import {
   cleanup,
   copyDir,
@@ -239,13 +240,15 @@ describe('transform-testrunner', () => {
   });
 });
 
-describe('esm-transformer', () => {
-  const dir = path.resolve(__dirname, '../transform/esm-transformer');
+onNodeVersions('^12.17.0 || >=13.2.0', () => {
+  describe('esm-transformer', () => {
+    const dir = path.resolve(__dirname, '../transform/esm-transformer');
 
-  it('should transform with transformer written in ESM', () => {
-    const {json, stderr} = runWithJson(dir, ['--no-cache']);
-    expect(stderr).toMatch(/PASS/);
-    expect(json.success).toBe(true);
-    expect(json.numPassedTests).toBe(1);
+    it('should transform with transformer written in ESM', () => {
+      const {json, stderr} = runWithJson(dir, ['--no-cache']);
+      expect(stderr).toMatch(/PASS/);
+      expect(json.success).toBe(true);
+      expect(json.numPassedTests).toBe(1);
+    });
   });
 });
