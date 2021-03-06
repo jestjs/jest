@@ -4,7 +4,10 @@ exports[`chai assertion errors should display properly 1`] = `
 FAIL __tests__/chai_assertion.js
   ● chai.js assertion library test › expect
 
-    Expected value   "hello sunshine"
+    assert.strictEqual(received, expected)
+
+    Expected value to strictly be equal to:
+      "hello sunshine"
     Received:
       "hello world"
 
@@ -31,7 +34,10 @@ FAIL __tests__/chai_assertion.js
 
   ● chai.js assertion library test › should
 
-    Expected value   "hello world"
+    assert.strictEqual(received, expected)
+
+    Expected value to strictly be equal to:
+      "hello world"
     Received:
       "hello sunshine"
 
@@ -58,7 +64,10 @@ FAIL __tests__/chai_assertion.js
 
   ● chai.js assertion library test › assert
 
-    Expected value   "hello sunshine"
+    assert.strictEqual(received, expected)
+
+    Expected value to strictly be equal to:
+      "hello sunshine"
     Received:
       "hello world"
 
