@@ -9,7 +9,7 @@ import type {V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
 import {FileCoverage, createFileCoverage} from 'istanbul-lib-coverage';
 import {readInitialCoverage} from 'istanbul-lib-instrument';
-import {ScriptTransformer, shouldInstrument} from '@jest/transform';
+import {createScriptTransformer, shouldInstrument} from '@jest/transform';
 import type {Config} from '@jest/types';
 
 type SingleV8Coverage = V8Coverage[number];
@@ -24,14 +24,14 @@ export type CoverageWorkerResult =
       result: SingleV8Coverage;
     };
 
-export default function (
+export default async function (
   source: string,
   filename: Config.Path,
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
   changedFiles?: Set<Config.Path>,
   sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>,
-): CoverageWorkerResult | null {
+): Promise<CoverageWorkerResult | null> {
   const coverageOptions = {
     changedFiles,
     collectCoverage: globalConfig.collectCoverage,
@@ -66,18 +66,16 @@ export default function (
       };
     }
 
+    const scriptTransformer = await createScriptTransformer(config);
+
     // Transform file with instrumentation to make sure initial coverage data is well mapped to original code.
-    const {code} = new ScriptTransformer(config).transformSource(
-      filename,
-      source,
-      {
-        instrument: true,
-        supportsDynamicImport: true,
-        supportsExportNamespaceFrom: true,
-        supportsStaticESM: true,
-        supportsTopLevelAwait: true,
-      },
-    );
+    const {code} = scriptTransformer.transformSource(filename, source, {
+      instrument: true,
+      supportsDynamicImport: true,
+      supportsExportNamespaceFrom: true,
+      supportsStaticESM: true,
+      supportsTopLevelAwait: true,
+    });
     // TODO: consider passing AST
     const extracted = readInitialCoverage(code);
     // Check extracted initial coverage is not null, this can happen when using /* istanbul ignore file */

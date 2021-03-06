@@ -238,3 +238,14 @@ describe('transform-testrunner', () => {
     expect(json.numPassedTests).toBe(1);
   });
 });
+
+describe('esm-transformer', () => {
+  const dir = path.resolve(__dirname, '../transform/esm-transformer');
+
+  it('should transform with transformer written in ESM', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
+  });
+});

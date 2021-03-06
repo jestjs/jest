@@ -153,7 +153,7 @@ const getCachePath = (
   return null;
 };
 
-let ScriptTransformer: typeof import('../ScriptTransformer').default;
+let createScriptTransformer: typeof import('../ScriptTransformer').createScriptTransformer;
 let config: Config.ProjectConfig;
 let fs: typeof import('fs');
 let mockFs: Record<Config.Path, string>;
@@ -228,14 +228,15 @@ describe('ScriptTransformer', () => {
       transformIgnorePatterns: ['/node_modules/'],
     });
 
-    ScriptTransformer = require('../ScriptTransformer').default;
+    createScriptTransformer = require('../ScriptTransformer')
+      .createScriptTransformer;
   };
 
   beforeEach(reset);
   afterEach(() => jest.unmock('../shouldInstrument'));
 
-  it('transforms a file properly', () => {
-    const scriptTransformer = new ScriptTransformer(config);
+  it('transforms a file properly', async () => {
+    const scriptTransformer = await createScriptTransformer(config);
     const transformedBananaWithCoverage = scriptTransformer.transform(
       '/fruits/banana.js',
       getCoverageOptions({collectCoverage: true}),
@@ -278,11 +279,11 @@ describe('ScriptTransformer', () => {
     );
   });
 
-  it('does not transform Node core modules', () => {
+  it('does not transform Node core modules', async () => {
     jest.mock('../shouldInstrument');
 
     const shouldInstrument = require('../shouldInstrument').default;
-    const scriptTransformer = new ScriptTransformer(config);
+    const scriptTransformer = await createScriptTransformer(config);
     const fsSourceCode = 'muaha, fake source!';
 
     const response = scriptTransformer.transform(
@@ -297,61 +298,52 @@ describe('ScriptTransformer', () => {
     expect(shouldInstrument).toHaveBeenCalledTimes(0);
   });
 
-  it(
-    "throws an error if `process` doesn't return a string or an object" +
-      'containing `code` key with processed string',
-    () => {
-      config = {
-        ...config,
-        transform: [['\\.js$', 'passthrough-preprocessor', {}]],
-      };
-      const scriptTransformer = new ScriptTransformer(config);
+  it("throws an error if `process` doesn't return a string or an object containing `code` key with processed string", async () => {
+    config = {
+      ...config,
+      transform: [['\\.js$', 'passthrough-preprocessor', {}]],
+    };
+    const scriptTransformer = await createScriptTransformer(config);
 
-      const incorrectReturnValues = [
-        [undefined, '/fruits/banana.js'],
-        [{a: 'a'}, '/fruits/kiwi.js'],
-        [[], '/fruits/grapefruit.js'],
-      ];
+    const incorrectReturnValues = [
+      [undefined, '/fruits/banana.js'],
+      [{a: 'a'}, '/fruits/kiwi.js'],
+      [[], '/fruits/grapefruit.js'],
+    ];
 
-      incorrectReturnValues.forEach(([returnValue, filePath]) => {
-        invariant(typeof filePath === 'string');
-        require('passthrough-preprocessor').process.mockReturnValue(
-          returnValue,
-        );
-        expect(() =>
-          scriptTransformer.transform(filePath, getCoverageOptions()),
-        ).toThrow('must return a string');
-      });
+    incorrectReturnValues.forEach(([returnValue, filePath]) => {
+      invariant(typeof filePath === 'string');
+      require('passthrough-preprocessor').process.mockReturnValue(returnValue);
+      expect(() =>
+        scriptTransformer.transform(filePath, getCoverageOptions()),
+      ).toThrow('must return a string');
+    });
 
-      const correctReturnValues = [
-        ['code', '/fruits/banana.js'],
-        [{code: 'code'}, '/fruits/kiwi.js'],
-      ];
+    const correctReturnValues = [
+      ['code', '/fruits/banana.js'],
+      [{code: 'code'}, '/fruits/kiwi.js'],
+    ];
 
-      correctReturnValues.forEach(([returnValue, filePath]) => {
-        invariant(typeof filePath === 'string');
-        require('passthrough-preprocessor').process.mockReturnValue(
-          returnValue,
-        );
-        expect(() =>
-          scriptTransformer.transform(filePath, getCoverageOptions()),
-        ).not.toThrow();
-      });
-    },
-  );
+    correctReturnValues.forEach(([returnValue, filePath]) => {
+      invariant(typeof filePath === 'string');
+      require('passthrough-preprocessor').process.mockReturnValue(returnValue);
+      expect(() =>
+        scriptTransformer.transform(filePath, getCoverageOptions()),
+      ).not.toThrow();
+    });
+  });
 
-  it("throws an error if `process` doesn't defined", () => {
+  it("throws an error if `process` isn't defined", async () => {
     config = {
       ...config,
       transform: [['\\.js$', 'skipped-required-props-preprocessor', {}]],
     };
-    const scriptTransformer = new ScriptTransformer(config);
-    expect(() =>
-      scriptTransformer.transformSource('sample.js', '', {instrument: false}),
-    ).toThrow('Jest: a transform must export a `process` function.');
+    await expect(() => createScriptTransformer(config)).rejects.toThrow(
+      'Jest: a transform must export a `process` function.',
+    );
   });
 
-  it('throws an error if createTransformer returns object without `process` method', () => {
+  it('throws an error if createTransformer returns object without `process` method', async () => {
     config = {
       ...config,
       transform: [
@@ -362,26 +354,25 @@ describe('ScriptTransformer', () => {
         ],
       ],
     };
-    const scriptTransformer = new ScriptTransformer(config);
-    expect(() =>
-      scriptTransformer.transformSource('sample.js', '', {instrument: false}),
-    ).toThrow('Jest: a transform must export a `process` function.');
+    await expect(() => createScriptTransformer(config)).rejects.toThrow(
+      'Jest: a transform must export a `process` function.',
+    );
   });
 
-  it("shouldn't throw error without process method. But with corrent createTransformer method", () => {
+  it("shouldn't throw error without process method. But with corrent createTransformer method", async () => {
     config = {
       ...config,
       transform: [['\\.js$', 'skipped-process-method-preprocessor', {}]],
     };
-    const scriptTransformer = new ScriptTransformer(config);
+    const scriptTransformer = await createScriptTransformer(config);
     expect(() =>
       scriptTransformer.transformSource('sample.js', '', {instrument: false}),
     ).not.toThrow();
   });
 
-  it('uses the supplied preprocessor', () => {
+  it('uses the supplied preprocessor', async () => {
     config = {...config, transform: [['\\.js$', 'test_preprocessor', {}]]};
-    const scriptTransformer = new ScriptTransformer(config);
+    const scriptTransformer = await createScriptTransformer(config);
     const res1 = scriptTransformer.transform(
       '/fruits/banana.js',
       getCoverageOptions(),
@@ -399,7 +390,7 @@ describe('ScriptTransformer', () => {
     expect(wrap(res2.code)).toMatchSnapshot();
   });
 
-  it('uses multiple preprocessors', () => {
+  it('uses multiple preprocessors', async () => {
     config = {
       ...config,
       transform: [
@@ -407,7 +398,7 @@ describe('ScriptTransformer', () => {
         ['\\.css$', 'css-preprocessor', {}],
       ],
     };
-    const scriptTransformer = new ScriptTransformer(config);
+    const scriptTransformer = await createScriptTransformer(config);
 
     const res1 = scriptTransformer.transform(
       '/fruits/banana.js',
@@ -431,12 +422,12 @@ describe('ScriptTransformer', () => {
     expect(wrap(res3.code)).toMatchSnapshot();
   });
 
-  it('writes source map if preprocessor supplies it', () => {
+  it('writes source map if preprocessor supplies it', async () => {
     config = {
       ...config,
       transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
     };
-    const scriptTransformer = new ScriptTransformer(config);
+    const scriptTransformer = await createScriptTransformer(config);
 
     const map = {
       mappings: ';AAAA',
@@ -461,12 +452,12 @@ describe('ScriptTransformer', () => {
     });
   });
 
-  it('writes source map if preprocessor inlines it', () => {
+  it('writes source map if preprocessor inlines it', async () => {
     config = {
       ...config,
       transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
     };
-    const scriptTransformer = new ScriptTransformer(config);
+    const scriptTransformer = await createScriptTransformer(config);
 
     const sourceMap = JSON.stringify({
       mappings: 'AAAA,IAAM,CAAC,GAAW,CAAC,CAAC',
@@ -493,7 +484,7 @@ describe('ScriptTransformer', () => {
     );
   });
 
-  it('warns of unparseable inlined source maps from the preprocessor', () => {
+  it('warns of unparseable inlined source maps from the preprocessor', async () => {
     const warn = console.warn;
     console.warn = jest.fn();
 
@@ -501,7 +492,7 @@ describe('ScriptTransformer', () => {
       ...config,
       transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
     };
-    const scriptTransformer = new ScriptTransformer(config);
+    const scriptTransformer = await createScriptTransformer(config);
 
     const sourceMap = JSON.stringify({
       mappings: 'AAAA,IAAM,CAAC,GAAW,CAAC,CAAC',
@@ -528,12 +519,12 @@ describe('ScriptTransformer', () => {
     console.warn = warn;
   });
 
-  it('writes source maps if given by the transformer', () => {
+  it('writes source maps if given by the transformer', async () => {
     config = {
       ...config,
       transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
     };
-    const scriptTransformer = new ScriptTransformer(config);
+    const scriptTransformer = await createScriptTransformer(config);
 
     const map = {
       mappings: ';AAAA',
@@ -561,12 +552,12 @@ describe('ScriptTransformer', () => {
     );
   });
 
-  it('does not write source map if not given by the transformer', () => {
+  it('does not write source map if not given by the transformer', async () => {
     config = {
       ...config,
       transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
     };
-    const scriptTransformer = new ScriptTransformer(config);
+    const scriptTransformer = await createScriptTransformer(config);
 
     require('preprocessor-with-sourcemaps').process.mockReturnValue({
       code: 'content',
@@ -581,12 +572,12 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).toHaveBeenCalledTimes(1);
   });
 
-  it('should write a source map for the instrumented file when transformed', () => {
+  it('should write a source map for the instrumented file when transformed', async () => {
     const transformerConfig: Config.ProjectConfig = {
       ...config,
       transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
     };
-    const scriptTransformer = new ScriptTransformer(transformerConfig);
+    const scriptTransformer = await createScriptTransformer(transformerConfig);
 
     const map = {
       mappings: ';AAAA',
@@ -626,8 +617,8 @@ describe('ScriptTransformer', () => {
     expect(result.code).toContain('//# sourceMappingURL');
   });
 
-  it('should write a source map for the instrumented file when not transformed', () => {
-    const scriptTransformer = new ScriptTransformer(config);
+  it('should write a source map for the instrumented file when not transformed', async () => {
+    const scriptTransformer = await createScriptTransformer(config);
 
     // A map from the original source to the instrumented output
     /* eslint-disable sort-keys */
@@ -662,12 +653,12 @@ describe('ScriptTransformer', () => {
     expect(result.code).toContain('//# sourceMappingURL');
   });
 
-  it('passes expected transform options to getCacheKey', () => {
+  it('passes expected transform options to getCacheKey', async () => {
     config = {
       ...config,
       transform: [['\\.js$', 'test_preprocessor', {configKey: 'configValue'}]],
     };
-    const scriptTransformer = new ScriptTransformer(config);
+    const scriptTransformer = await createScriptTransformer(config);
 
     scriptTransformer.transform(
       '/fruits/banana.js',
@@ -678,12 +669,12 @@ describe('ScriptTransformer', () => {
     expect(getCacheKey).toMatchSnapshot();
   });
 
-  it('creates transformer with config', () => {
+  it('creates transformer with config', async () => {
     const transformerConfig = {};
     config = Object.assign(config, {
       transform: [['\\.js$', 'configureable-preprocessor', transformerConfig]],
     });
-    const scriptTransformer = new ScriptTransformer(config);
+    const scriptTransformer = await createScriptTransformer(config);
 
     scriptTransformer.transform('/fruits/banana.js', {});
     expect(
@@ -691,12 +682,12 @@ describe('ScriptTransformer', () => {
     ).toHaveBeenCalledWith(transformerConfig);
   });
 
-  it('reads values from the cache', () => {
+  it('reads values from the cache', async () => {
     const transformConfig: Config.ProjectConfig = {
       ...config,
       transform: [['\\.js$', 'test_preprocessor', {}]],
     };
-    let scriptTransformer = new ScriptTransformer(transformConfig);
+    let scriptTransformer = await createScriptTransformer(transformConfig);
     scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
 
     const cachePath = getCachePath(mockFs, config);
@@ -710,7 +701,7 @@ describe('ScriptTransformer', () => {
 
     // Restore the cached fs
     mockFs = mockFsCopy;
-    scriptTransformer = new ScriptTransformer(transformConfig);
+    scriptTransformer = await createScriptTransformer(transformConfig);
     scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
@@ -723,7 +714,7 @@ describe('ScriptTransformer', () => {
     reset();
     mockFs = mockFsCopy;
     transformConfig.cache = false;
-    scriptTransformer = new ScriptTransformer(transformConfig);
+    scriptTransformer = await createScriptTransformer(transformConfig);
     scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(1);
@@ -732,12 +723,12 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).toBeCalled();
   });
 
-  it('reads values from the cache when the file contains colons', () => {
+  it('reads values from the cache when the file contains colons', async () => {
     const transformConfig: Config.ProjectConfig = {
       ...config,
       transform: [['\\.js$', 'test_preprocessor', {}]],
     };
-    let scriptTransformer = new ScriptTransformer(transformConfig);
+    let scriptTransformer = await createScriptTransformer(transformConfig);
     scriptTransformer.transform(
       '/fruits/banana:colon.js',
       getCoverageOptions(),
@@ -754,7 +745,7 @@ describe('ScriptTransformer', () => {
 
     // Restore the cached fs
     mockFs = mockFsCopy;
-    scriptTransformer = new ScriptTransformer(transformConfig);
+    scriptTransformer = await createScriptTransformer(transformConfig);
     scriptTransformer.transform('/fruits/banana:colon.js', {});
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
@@ -763,10 +754,10 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).not.toBeCalled();
   });
 
-  it('should reuse the value from in-memory cache which is set by custom transformer', () => {
+  it('should reuse the value from in-memory cache which is set by custom transformer', async () => {
     const cacheFS = new Map<string, string>();
     const testPreprocessor = require('cache_fs_preprocessor');
-    const scriptTransformer = new ScriptTransformer(
+    const scriptTransformer = await createScriptTransformer(
       {
         ...config,
         transform: [['\\.js$', 'cache_fs_preprocessor', {}]],
@@ -788,15 +779,15 @@ describe('ScriptTransformer', () => {
     expect(fs.readFileSync).toBeCalledWith(fileName1, 'utf8');
   });
 
-  it('does not reuse the in-memory cache between different projects', () => {
-    const scriptTransformer = new ScriptTransformer({
+  it('does not reuse the in-memory cache between different projects', async () => {
+    const scriptTransformer = await createScriptTransformer({
       ...config,
       transform: [['\\.js$', 'test_preprocessor', {}]],
     });
 
     scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
 
-    const anotherScriptTransformer = new ScriptTransformer({
+    const anotherScriptTransformer = await createScriptTransformer({
       ...config,
       transform: [['\\.js$', 'css-preprocessor', {}]],
     });
@@ -810,17 +801,11 @@ describe('ScriptTransformer', () => {
     expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
   });
 
-  it('preload transformer when using `preloadTransformer`', () => {
-    const scriptTransformer = new ScriptTransformer({
+  it('preload transformer when using `createScriptTransformer`', async () => {
+    const scriptTransformer = await createScriptTransformer({
       ...config,
       transform: [['\\.js$', 'test_preprocessor', {}]],
     });
-
-    expect(Array.from(scriptTransformer._transformCache.entries())).toEqual([]);
-
-    expect(
-      scriptTransformer.preloadTransformer('/fruits/banana.js'),
-    ).toBeUndefined();
 
     expect(Array.from(scriptTransformer._transformCache.entries())).toEqual([
       ['test_preprocessor', expect.any(Object)],

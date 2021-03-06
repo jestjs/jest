@@ -475,7 +475,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-proposal-dynamic-import@npm:^7.13.8, @babel/plugin-proposal-dynamic-import@npm:^7.8.3":
+"@babel/plugin-proposal-dynamic-import@npm:^7.13.8":
   version: 7.13.8
   resolution: "@babel/plugin-proposal-dynamic-import@npm:7.13.8"
   dependencies:
@@ -1805,8 +1805,6 @@ __metadata:
   dependencies:
     "@babel/core": ^7.3.4
     "@babel/plugin-proposal-class-properties": ^7.3.4
-    "@babel/plugin-proposal-dynamic-import": ^7.8.3
-    "@babel/plugin-syntax-dynamic-import": ^7.8.3
     "@babel/plugin-transform-modules-commonjs": ^7.1.0
     "@babel/plugin-transform-strict-mode": ^7.0.0
     "@babel/preset-env": ^7.1.0
