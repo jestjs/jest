@@ -66,8 +66,6 @@ async function waitForPromiseWithCleanup(
 
 class ScriptTransformer {
   private readonly _cache: ProjectCache;
-  private readonly _cacheFS: StringMap;
-  private readonly _config: Config.ProjectConfig;
   private readonly _transformCache: Map<
     Config.Path,
     {transformer: Transformer; transformerConfig: unknown}
@@ -75,11 +73,9 @@ class ScriptTransformer {
   private _transformsAreLoaded = false;
 
   constructor(
-    config: Config.ProjectConfig,
-    cacheFS: StringMap = new Map<string, string>(),
+    private readonly _config: Config.ProjectConfig,
+    private readonly _cacheFS: StringMap,
   ) {
-    this._config = config;
-    this._cacheFS = cacheFS;
     this._transformCache = new Map();
 
     const configString = stableStringify(this._config);
@@ -763,8 +759,8 @@ export type TransformerType = ScriptTransformer;
 
 export async function createScriptTransformer(
   config: Config.ProjectConfig,
-  cacheFS = new Map<string, string>(),
-): Promise<ScriptTransformer> {
+  cacheFS: StringMap = new Map(),
+): Promise<TransformerType> {
   const transformer = new ScriptTransformer(config, cacheFS);
 
   await transformer.loadTransformers();
