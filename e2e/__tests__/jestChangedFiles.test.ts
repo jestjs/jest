@@ -44,6 +44,10 @@ function gitInit(dir: string) {
   run(initCommand, dir);
 }
 
+function gitCreateBranch(branchName: string, dir: string) {
+  run(`git branch ${branchName}`, dir);
+}
+
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
 
@@ -171,9 +175,11 @@ test('gets changed files for git', async () => {
   gitInit(DIR);
 
   const roots = [
-    '',
+    // same first root name with existing branch name makes pitfall that
+    // causes "ambiguous argument" git error.
     'nested-dir',
     'nested-dir/second-nested-dir',
+    '',
   ].map(filename => path.resolve(DIR, filename));
 
   let {changedFiles: files} = await getChangedFilesForRoots(roots, {});
@@ -189,6 +195,8 @@ test('gets changed files for git', async () => {
   // paragraphs. This is done to ensure that `changedFiles` only
   // returns files and not parts of commit messages.
   run(`${GIT} commit --no-gpg-sign -m "test" -m "extra-line"`, DIR);
+
+  gitCreateBranch('nested-dir', DIR);
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {}));
   expect(Array.from(files)).toEqual([]);
