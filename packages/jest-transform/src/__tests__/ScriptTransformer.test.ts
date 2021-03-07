@@ -278,25 +278,6 @@ describe('ScriptTransformer', () => {
     );
   });
 
-  it('does not transform Node core modules', () => {
-    jest.mock('../shouldInstrument');
-
-    const shouldInstrument = require('../shouldInstrument').default;
-    const scriptTransformer = new ScriptTransformer(config);
-    const fsSourceCode = 'muaha, fake source!';
-
-    const response = scriptTransformer.transform(
-      'fs',
-      {...getCoverageOptions(), isCoreModule: true},
-      fsSourceCode,
-    );
-
-    expect(response.code).toEqual(fsSourceCode);
-
-    // Native files should never be transformed.
-    expect(shouldInstrument).toHaveBeenCalledTimes(0);
-  });
-
   it(
     "throws an error if `process` doesn't return a string or an object" +
       'containing `code` key with processed string',
