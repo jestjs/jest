@@ -8,19 +8,23 @@
 import type {RawSourceMap} from 'source-map';
 import type {Config, TransformTypes} from '@jest/types';
 
-export type ShouldInstrumentOptions = Pick<
-  Config.GlobalConfig,
-  | 'collectCoverage'
-  | 'collectCoverageFrom'
-  | 'collectCoverageOnlyFrom'
-  | 'coverageProvider'
-> & {
+export interface ShouldInstrumentOptions
+  extends Pick<
+    Config.GlobalConfig,
+    | 'collectCoverage'
+    | 'collectCoverageFrom'
+    | 'collectCoverageOnlyFrom'
+    | 'coverageProvider'
+  > {
   changedFiles?: Set<Config.Path>;
   sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
-};
+}
 
-export type Options = ShouldInstrumentOptions &
-  CallerTransformOptions & {isInternalModule?: boolean};
+export interface Options
+  extends ShouldInstrumentOptions,
+    CallerTransformOptions {
+  isInternalModule?: boolean;
+}
 
 // This is fixed in source-map@0.7.x, but we can't upgrade yet since it's async
 interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
