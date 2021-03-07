@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Context, Script} from 'vm';
+import type {Context} from 'vm';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Circus, Config, Global} from '@jest/types';
 import type {
@@ -14,13 +14,11 @@ import type {
   ModuleMocker,
 } from 'jest-mock';
 
-// In Jest 25, remove `Partial` since it's incorrect. The properties are always
-// passed, or not. The context itself is optional, not properties within it.
-export type EnvironmentContext = Partial<{
+export type EnvironmentContext = {
   console: Console;
   docblockPragmas: Record<string, string | Array<string>>;
   testPath: Config.Path;
-}>;
+};
 
 // Different Order than https://nodejs.org/api/modules.html#modules_the_module_wrapper , however needs to be in the form [jest-transform]ScriptTransformer accepts
 export type ModuleWrapper = (
@@ -40,17 +38,10 @@ export declare class JestEnvironment {
   fakeTimers: LegacyFakeTimers<unknown> | null;
   fakeTimersModern: ModernFakeTimers | null;
   moduleMocker: ModuleMocker | null;
-  /**
-   * @deprecated implement getVmContext instead
-   */
-  runScript<T = unknown>(script: Script): T | null;
-  getVmContext?(): Context | null;
+  getVmContext(): Context | null;
   setup(): Promise<void>;
   teardown(): Promise<void>;
-  handleTestEvent?(
-    event: Circus.Event,
-    state: Circus.State,
-  ): void | Promise<void>;
+  handleTestEvent?: Circus.EventHandler;
 }
 
 export type Module = NodeModule;

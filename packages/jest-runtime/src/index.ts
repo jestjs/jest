@@ -1108,15 +1108,10 @@ export default class Runtime {
 
     let runScript: RunScriptEvalResult | null = null;
 
-    // Use this if available instead of deprecated `JestEnvironment.runScript`
-    if (typeof this._environment.getVmContext === 'function') {
-      const vmContext = this._environment.getVmContext();
+    const vmContext = this._environment.getVmContext();
 
-      if (vmContext) {
-        runScript = script.runInContext(vmContext, {filename});
-      }
-    } else {
-      runScript = this._environment.runScript<RunScriptEvalResult>(script);
+    if (vmContext) {
+      runScript = script.runInContext(vmContext, {filename});
     }
 
     if (runScript !== null) {
