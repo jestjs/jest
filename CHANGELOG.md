@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-changed-files]` Use '--' to separate paths from revisions ([#11160](https://github.com/facebook/jest/pull/11160))
 - `[jest-circus]` [**BREAKING**] Fail tests when multiple `done()` calls are made ([#10624](https://github.com/facebook/jest/pull/10624))
 - `[jest-circus, jest-jasmine2]` [**BREAKING**] Fail the test instead of just warning when describe returns a value ([#10947](https://github.com/facebook/jest/pull/10947))
 - `[jest-config]` [**BREAKING**] Default to Node testing environment instead of browser (JSDOM) ([#9874](https://github.com/facebook/jest/pull/9874))
@@ -39,6 +40,7 @@
 - `[jest-console]` `console.dir` now respects the second argument correctly ([#10638](https://github.com/facebook/jest/pull/10638))
 - `[jest-core]` Don't report PerformanceObserver as open handle ([#11123](https://github.com/facebook/jest/pull/11123))
 - `[jest-each]` [**BREAKING**] Ignore excess words in headings ([#8766](https://github.com/facebook/jest/pull/8766))
+- `[jest-environment]` [**BREAKING**] Drop support for `runScript` for test environments ([#11155](https://github.com/facebook/jest/pull/11155))
 - `[jest-environment-jsdom]` Use inner realm’s `ArrayBuffer` constructor ([#10885](https://github.com/facebook/jest/pull/10885))
 - `[jest-globals]` [**BREAKING**] Disallow return values other than a `Promise` from hooks and tests ([#10512](https://github.com/facebook/jest/pull/10512))
 - `[jest-globals]` [**BREAKING**] Disallow mixing a done callback and returning a `Promise` from hooks and tests ([#10512](https://github.com/facebook/jest/pull/10512))
@@ -59,6 +61,7 @@
 - `[jest-transform]` [**BREAKING**] Refactor API of transformers to pass an options bag rather than separate `config` and other options ([#10834](https://github.com/facebook/jest/pull/10834))
 - `[jest-worker]` [**BREAKING**] Use named exports ([#10623](https://github.com/facebook/jest/pull/10623))
 - `[jest-worker]` Do not swallow errors during serialization ([#10984](https://github.com/facebook/jest/pull/10984))
+- `[jest-worker]` Handle `ERR_IPC_CHANNEL_CLOSED` errors properly ([#11143](https://github.com/facebook/jest/pull/11143))
 - `[pretty-format]` [**BREAKING**] Convert to ES Modules ([#10515](https://github.com/facebook/jest/pull/10515))
 - `[pretty-format]` Only call `hasAttribute` if it's a function ([#11000](https://github.com/facebook/jest/pull/11000))
 
@@ -83,8 +86,9 @@
 - `[jest-reporters]` [**BREAKING**] Make `node-notifier` a peer dependency ([#10977](https://github.com/facebook/jest/pull/10977))
 - `[jest-resolve, jest-runtime]` [**BREAKING**] Use `Map`s instead of objects for all cached resources ([#10968](https://github.com/facebook/jest/pull/10968))
 - `[jest-runner]` [**BREAKING**] Migrate to ESM ([#10900](https://github.com/facebook/jest/pull/10900))
-- `[jest-runtime]` [**BREAKING**] Remove deprecated and unnused `getSourceMapInfo` from Runtime ([#9969](https://github.com/facebook/jest/pull/9969))
+- `[jest-runtime]` [**BREAKING**] Remove deprecated and unused `getSourceMapInfo` from Runtime ([#9969](https://github.com/facebook/jest/pull/9969))
 - `[jest-runtime]` Detect reexports from CJS as named exports in ESM ([#10988](https://github.com/facebook/jest/pull/10988))
+- `[jest-transformer]` [**BREAKING**] Remove unused `isCoreModule` option ([#11166](https://github.com/facebook/jest/pull/11166))
 - `[jest-util]` No longer checking `enumerable` when adding `process.domain` ([#10862](https://github.com/facebook/jest/pull/10862))
 - `[jest-validate]` [**BREAKING**] Remove `recursiveBlacklist ` option in favor of previously introduced `recursiveDenylist` ([#10650](https://github.com/facebook/jest/pull/10650))
 

@@ -404,6 +404,10 @@ export default class Runtime {
           specifier: string,
           referencingModule: VMModule,
         ) => {
+          invariant(
+            runtimeSupportsVmModules,
+            'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/en/ecmascript-modules',
+          );
           const module = await this.resolveModule(
             specifier,
             referencingModule.identifier,
@@ -496,7 +500,7 @@ export default class Runtime {
   ): Promise<void> {
     invariant(
       runtimeSupportsVmModules,
-      'You need to run with a version of node that supports ES Modules in the VM API.',
+      'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/en/ecmascript-modules',
     );
 
     const [path, query] = (moduleName ?? '').split('?');
@@ -1105,15 +1109,10 @@ export default class Runtime {
 
     let runScript: RunScriptEvalResult | null = null;
 
-    // Use this if available instead of deprecated `JestEnvironment.runScript`
-    if (typeof this._environment.getVmContext === 'function') {
-      const vmContext = this._environment.getVmContext();
+    const vmContext = this._environment.getVmContext();
 
-      if (vmContext) {
-        runScript = script.runInContext(vmContext, {filename});
-      }
-    } else {
-      runScript = this._environment.runScript<RunScriptEvalResult>(script);
+    if (vmContext) {
+      runScript = script.runInContext(vmContext, {filename});
     }
 
     if (runScript !== null) {
@@ -1210,6 +1209,11 @@ export default class Runtime {
         filename: scriptFilename,
         // @ts-expect-error: Experimental ESM API
         importModuleDynamically: async (specifier: string) => {
+          invariant(
+            runtimeSupportsVmModules,
+            'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/en/ecmascript-modules',
+          );
+
           const context = this._environment.getVmContext?.();
 
           invariant(context, 'Test environment has been torn down');

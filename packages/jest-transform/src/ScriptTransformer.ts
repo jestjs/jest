@@ -416,7 +416,7 @@ class ScriptTransformer {
     transformOptions: ReducedTransformOptions,
     fileSource?: string,
   ): TransformResult {
-    const {isCoreModule, isInternalModule} = options;
+    const {isInternalModule} = options;
     let fileContent = fileSource ?? this._cacheFS.get(filename);
     if (!fileContent) {
       fileContent = fs.readFileSync(filename, 'utf8');
@@ -429,7 +429,6 @@ class ScriptTransformer {
 
     const willTransform =
       !isInternalModule &&
-      !isCoreModule &&
       (transformOptions.instrument || this.shouldTransform(filename));
 
     try {
@@ -459,21 +458,17 @@ class ScriptTransformer {
     options: Options,
     fileSource?: string,
   ): TransformResult {
-    let scriptCacheKey = undefined;
-    let instrument = false;
+    const instrument =
+      options.coverageProvider === 'babel' &&
+      shouldInstrument(filename, options, this._config);
+    const scriptCacheKey = getScriptCacheKey(filename, instrument);
 
-    if (!options.isCoreModule) {
-      instrument =
-        options.coverageProvider === 'babel' &&
-        shouldInstrument(filename, options, this._config);
-      scriptCacheKey = getScriptCacheKey(filename, instrument);
-      const result = this._cache.transformedFiles.get(scriptCacheKey);
-      if (result) {
-        return result;
-      }
+    let result = this._cache.transformedFiles.get(scriptCacheKey);
+    if (result) {
+      return result;
     }
 
-    const result = this._transformAndBuildScript(
+    result = this._transformAndBuildScript(
       filename,
       options,
       {...options, instrument},
@@ -492,9 +487,8 @@ class ScriptTransformer {
     options: Options,
     fileSource: string,
   ): string {
-    const {isCoreModule, isInternalModule} = options;
-    const willTransform =
-      !isInternalModule && !isCoreModule && this.shouldTransform(filename);
+    const {isInternalModule} = options;
+    const willTransform = !isInternalModule && this.shouldTransform(filename);
 
     if (willTransform) {
       const {code: transformedJsonSource} = this.transformSource(
