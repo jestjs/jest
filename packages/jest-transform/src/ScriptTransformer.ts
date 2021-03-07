@@ -7,6 +7,7 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
+import {pathToFileURL} from 'url';
 import {transformSync as babelTransform} from '@babel/core';
 // @ts-expect-error: should just be `require.resolve`, but the tests mess that up
 import babelPluginIstanbul from 'babel-plugin-istanbul';
@@ -63,24 +64,19 @@ async function waitForPromiseWithCleanup(
   }
 }
 
-export default class ScriptTransformer {
+class ScriptTransformer {
   private readonly _cache: ProjectCache;
-  private readonly _cacheFS: StringMap;
-  private readonly _config: Config.ProjectConfig;
   private readonly _transformCache: Map<
     Config.Path,
     {transformer: Transformer; transformerConfig: unknown}
   >;
-  private readonly _transformConfigCache: Map<Config.Path, unknown>;
+  private _transformsAreLoaded = false;
 
   constructor(
-    config: Config.ProjectConfig,
-    cacheFS: StringMap = new Map<string, string>(),
+    private readonly _config: Config.ProjectConfig,
+    private readonly _cacheFS: StringMap,
   ) {
-    this._config = config;
-    this._cacheFS = cacheFS;
     this._transformCache = new Map();
-    this._transformConfigCache = new Map();
 
     const configString = stableStringify(this._config);
     let projectCache = projectCaches.get(configString);
@@ -165,18 +161,69 @@ export default class ScriptTransformer {
 
     for (let i = 0; i < transformRegExp.length; i++) {
       if (transformRegExp[i][0].test(filename)) {
-        const transformPath = transformRegExp[i][1];
-        this._transformConfigCache.set(transformPath, transformRegExp[i][2]);
-
-        return transformPath;
+        return transformRegExp[i][1];
       }
     }
 
     return undefined;
   }
 
+  async loadTransformers(): Promise<void> {
+    await Promise.all(
+      this._config.transform.map(
+        async ([, transformPath, transformerConfig]) => {
+          let transformer: Transformer;
+
+          try {
+            transformer = require(transformPath);
+          } catch (error) {
+            if (error.code === 'ERR_REQUIRE_ESM') {
+              const configUrl = pathToFileURL(transformPath);
+
+              // node `import()` supports URL, but TypeScript doesn't know that
+              const importedConfig = await import(configUrl.href);
+
+              if (!importedConfig.default) {
+                throw new Error(
+                  `Jest: Failed to load ESM transformer at ${transformPath} - did you use a default export?`,
+                );
+              }
+
+              transformer = importedConfig.default;
+            } else {
+              throw error;
+            }
+          }
+
+          if (!transformer) {
+            throw new TypeError('Jest: a transform must export something.');
+          }
+          if (typeof transformer.createTransformer === 'function') {
+            transformer = transformer.createTransformer(transformerConfig);
+          }
+          if (typeof transformer.process !== 'function') {
+            throw new TypeError(
+              'Jest: a transform must export a `process` function.',
+            );
+          }
+
+          const res = {transformer, transformerConfig};
+          this._transformCache.set(transformPath, res);
+        },
+      ),
+    );
+
+    this._transformsAreLoaded = true;
+  }
+
   private _getTransformer(filename: Config.Path) {
-    if (!this._config.transform || !this._config.transform.length) {
+    if (!this._transformsAreLoaded) {
+      throw new Error(
+        'Jest: Transformers have not been loaded yet - make sure to run `loadTransformers` and wait for it to complete before starting to transform files',
+      );
+    }
+
+    if (this._config.transform.length === 0) {
       return null;
     }
 
@@ -191,25 +238,9 @@ export default class ScriptTransformer {
       return cached;
     }
 
-    let transformer: Transformer = require(transformPath);
-
-    if (!transformer) {
-      throw new TypeError('Jest: a transform must export something.');
-    }
-    const transformerConfig =
-      this._transformConfigCache.get(transformPath) || {};
-    if (typeof transformer.createTransformer === 'function') {
-      transformer = transformer.createTransformer(transformerConfig);
-    }
-    if (typeof transformer.process !== 'function') {
-      throw new TypeError(
-        'Jest: a transform must export a `process` function.',
-      );
-    }
-    const res = {transformer, transformerConfig};
-    this._transformCache.set(transformPath, res);
-
-    return res;
+    throw new Error(
+      `Jest was unable to load the transformer defined for ${filename}. This is a bug in Jest, please open up an issue`,
+    );
   }
 
   private _instrumentFile(
@@ -255,12 +286,6 @@ export default class ScriptTransformer {
     }
 
     return input;
-  }
-
-  // We don't want to expose transformers to the outside - this function is just
-  // to warm up `this._transformCache`
-  preloadTransformer(filepath: Config.Path): void {
-    this._getTransformer(filepath);
   }
 
   transformSource(
@@ -498,10 +523,6 @@ export default class ScriptTransformer {
       supportsTopLevelAwait: false,
     },
   ): ModuleType | Promise<ModuleType> {
-    // Load the transformer to avoid a cycle where we need to load a
-    // transformer in order to transform it in the require hooks
-    this.preloadTransformer(moduleName);
-
     let transforming = false;
     const revertHook = addHook(
       (code, filename) => {
@@ -560,13 +581,15 @@ export default class ScriptTransformer {
 }
 
 // TODO: do we need to define the generics twice?
-export function createTranspilingRequire(
+export async function createTranspilingRequire(
   config: Config.ProjectConfig,
-): <TModuleType = unknown>(
-  resolverPath: string,
-  applyInteropRequireDefault?: boolean,
-) => TModuleType {
-  const transformer = new ScriptTransformer(config);
+): Promise<
+  <TModuleType = unknown>(
+    resolverPath: string,
+    applyInteropRequireDefault?: boolean,
+  ) => TModuleType
+> {
+  const transformer = await createScriptTransformer(config);
 
   return function requireAndTranspileModule<TModuleType = unknown>(
     resolverPath: string,
@@ -725,3 +748,16 @@ const calcTransformRegExp = (config: Config.ProjectConfig) => {
 
   return transformRegexp;
 };
+
+export type TransformerType = ScriptTransformer;
+
+export async function createScriptTransformer(
+  config: Config.ProjectConfig,
+  cacheFS: StringMap = new Map(),
+): Promise<TransformerType> {
+  const transformer = new ScriptTransformer(config, cacheFS);
+
+  await transformer.loadTransformers();
+
+  return transformer;
+}

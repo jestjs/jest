@@ -198,6 +198,7 @@ export default class Runtime {
     config: Config.ProjectConfig,
     environment: JestEnvironment,
     resolver: Resolver,
+    transformer: ScriptTransformer,
     cacheFS: Map<string, string>,
     coverageOptions: ShouldInstrumentOptions,
     testPath: Config.Path,
@@ -226,7 +227,7 @@ export default class Runtime {
     this._esmModuleLinkingMap = new WeakMap();
     this._testPath = testPath;
     this._resolver = resolver;
-    this._scriptTransformer = new ScriptTransformer(config, this._cacheFS);
+    this._scriptTransformer = transformer;
     this._shouldAutoMock = config.automock;
     this._sourceMapRegistry = new Map();
     this._fileTransforms = new Map();

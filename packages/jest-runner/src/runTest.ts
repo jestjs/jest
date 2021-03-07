@@ -19,7 +19,7 @@ import {
 } from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
 import type {TestResult} from '@jest/test-result';
-import {ScriptTransformer} from '@jest/transform';
+import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
@@ -103,7 +103,9 @@ async function runTestInternal(
     });
   }
 
-  const transformer = new ScriptTransformer(config);
+  const cacheFS = new Map([[path, testSource]]);
+  const transformer = await createScriptTransformer(config, cacheFS);
+
   const TestEnvironment: typeof JestEnvironment = interopRequireDefault(
     transformer.requireAndTranspileModule(testEnvironment),
   ).default;
@@ -154,13 +156,13 @@ async function runTestInternal(
     ? new LeakDetector(environment)
     : null;
 
-  const cacheFS = new Map([[path, testSource]]);
   setGlobal(environment.global, 'console', testConsole);
 
   const runtime = new Runtime(
     config,
     environment,
     resolver,
+    transformer,
     cacheFS,
     {
       changedFiles: context?.changedFiles,

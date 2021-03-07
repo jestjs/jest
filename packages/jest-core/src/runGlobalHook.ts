@@ -7,7 +7,7 @@
 
 import * as util from 'util';
 import pEachSeries = require('p-each-series');
-import {ScriptTransformer} from '@jest/transform';
+import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import type {Test} from 'jest-runner';
 import {interopRequireDefault} from 'jest-util';
@@ -45,7 +45,7 @@ export default async ({
         : // Fallback to first config
           allTests[0].context.config;
 
-      const transformer = new ScriptTransformer(projectConfig);
+      const transformer = await createScriptTransformer(projectConfig);
 
       try {
         await transformer.requireAndTranspileModule(modulePath, async m => {
