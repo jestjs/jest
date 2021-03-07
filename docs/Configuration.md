@@ -1295,6 +1295,8 @@ _Note: a transformer is only run once per file unless the file has changed. Duri
 
 _Note: when adding additional code transformers, this will overwrite the default config and `babel-jest` is no longer automatically loaded. If you want to use it to compile JavaScript or Typescript, it has to be explicitly defined by adding `{"\\.[jt]sx?$": "babel-jest"}` to the transform property. See [babel-jest plugin](https://github.com/facebook/jest/tree/master/packages/babel-jest#setup)_
 
+A transformer must be an object with at least a `process` function, and it's also recommended to include a `getCacheKey` function. If your transformer is written in ESM you should have a default export with that object.
+
 ### `transformIgnorePatterns` [array\<string>]
 
 Default: `["/node_modules/", "\\.pnp\\.[^\\\/]+$"]`
