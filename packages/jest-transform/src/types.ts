@@ -20,11 +20,7 @@ export type ShouldInstrumentOptions = Pick<
 };
 
 export type Options = ShouldInstrumentOptions &
-  Partial<{
-    isCoreModule: boolean;
-    isInternalModule: boolean;
-  }> &
-  CallerTransformOptions;
+  CallerTransformOptions & {isInternalModule?: boolean};
 
 // This is fixed in source-map@0.7.x, but we can't upgrade yet since it's async
 interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
