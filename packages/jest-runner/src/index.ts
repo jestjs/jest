@@ -166,12 +166,7 @@ export default class TestRunner {
 
     const worker = new Worker(TEST_WORKER_PATH, {
       exposedMethods: ['worker'],
-      forkOptions: {
-        // use advanced serialization in order to transfer objects with circular references
-        // @ts-expect-error: option does not exist on the node 10 types
-        serialization: 'advanced',
-        stdio: 'pipe',
-      },
+      forkOptions: {stdio: 'pipe'},
       maxRetries: 3,
       numWorkers: this._globalConfig.maxWorkers,
       setupArgs: [

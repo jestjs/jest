@@ -50,7 +50,6 @@
 - `[jest-reporter]` Handle empty files when reporting code coverage with V8 ([#10819](https://github.com/facebook/jest/pull/10819))
 - `[jest-resolve]` Replace read-pkg-up with escalade package ([#10781](https://github.com/facebook/jest/pull/10781))
 - `[jest-resolve]` Disable `jest-pnp-resolver` for Yarn 2 ([#10847](https://github.com/facebook/jest/pull/10847))
-- `[jest-runner]` Handle test failures with circular objects ([#10981](https://github.com/facebook/jest/pull/10981))
 - `[jest-runtime]` [**BREAKING**] Do not inject `global` variable into module wrapper ([#10644](https://github.com/facebook/jest/pull/10644))
 - `[jest-runtime]` [**BREAKING**] remove long-deprecated `jest.addMatchers`, `jest.resetModuleRegistry`, and `jest.runTimersToTime` ([#9853](https://github.com/facebook/jest/pull/9853))
 - `[jest-runtime]` Fix stack overflow and promise deadlock when importing mutual dependant ES module ([#10892](https://github.com/facebook/jest/pull/10892))
