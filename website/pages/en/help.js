@@ -68,7 +68,7 @@ class Help extends React.Component {
             <p>
               <translate>
                 Jest is worked on by a team of volunteers in their spare time.
-                You can find find out ways to talk to other community members below.
+                You can find find out ways to talk to community members below.
               </translate>
             </p>
             <GridBlock contents={supportLinks} layout="threeColumn" />
