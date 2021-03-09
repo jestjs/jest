@@ -16,10 +16,10 @@
     "netlify:crowdin": "yarn write-translations && yarn crowdin:upload && yarn crowdin:download"
   },
   "dependencies": {
-    "@docusaurus/core": "2.0.0-alpha.175d9c3c8",
-    "@docusaurus/plugin-client-redirects": "2.0.0-alpha.175d9c3c8",
-    "@docusaurus/plugin-pwa": "2.0.0-alpha.175d9c3c8",
-    "@docusaurus/preset-classic": "2.0.0-alpha.175d9c3c8",
+    "@docusaurus/core": "2.0.0-alpha.f8884044f",
+    "@docusaurus/plugin-client-redirects": "2.0.0-alpha.f8884044f",
+    "@docusaurus/plugin-pwa": "2.0.0-alpha.f8884044f",
+    "@docusaurus/preset-classic": "2.0.0-alpha.f8884044f",
     "clsx": "^1.1.1",
     "docusaurus-plugin-sass": "patch:docusaurus-plugin-sass@^0.1.11#./patches/docusaurus-plugin-sass.diff",
     "fs-extra": "^9.0.1",

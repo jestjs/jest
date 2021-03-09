@@ -326,3 +326,10 @@ body
     --ifm-col-width: 16%;
   }
 }
+
+// For large screens, make the container a bit larger than Docusaurus default
+@media (min-width: 1650px) {
+  .container {
+    max-width: 1500px;
+  }
+}
