@@ -8,7 +8,7 @@ authorImageURL: https://github.com/slorber.png
 
 We are excited to present the **new Jest website**!
 
-It was just upgraded from **[Docusaurus 1](https://v1.docusaurus.io/)** to **[Docusaurus 2](https://v2.docusaurus.io/)**.
+The Jest site was upgraded from **[Docusaurus 1](https://v1.docusaurus.io/)** to **[Docusaurus 2](https://v2.docusaurus.io/)**, and is an early adopter of the [newly released Docusaurus 2 i18n support](https://v2.docusaurus.io/blog/2021/03/09/releasing-docusaurus-i18n).
 
 So, what's new exactly?
 
