@@ -34,7 +34,7 @@ class Help extends React.Component {
           <Translate>
             {`Ask questions and find answers from other Jest users like you.
 - Join the \`#testing\` channel on [Reactiflux](https://www.reactiflux.com/), a Discord community.
-- Many members of the community use Stack Overflow. Read through the [existingquestions](https://stackoverflow.com/questions/tagged/jestjs) tagged with **jestjs** or [ask your own](https://stackoverflow.com/questions/ask)!`}
+- Many members of the community use Stack Overflow. Read through the [existing questions](https://stackoverflow.com/questions/tagged/jestjs) tagged with **jestjs** or [ask your own](https://stackoverflow.com/questions/ask)!`}
           </Translate>
         ),
         title: <Translate>Join the community</Translate>,
@@ -43,9 +43,9 @@ class Help extends React.Component {
         content: (
           <Translate>
             {`Find out what's new with Jest.
-- Follow[Jest](https://twitter.com/fbjest) on Twitter.
-- Subscribe to the[Jest blog](/blog/).
-- Look at the[changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md).`}
+- Follow [Jest](https://twitter.com/fbjest) on Twitter.
+- Subscribe to the [Jest blog](/blog/).
+- Look at the [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md).`}
           </Translate>
         ),
         title: <Translate>Stay up to date</Translate>,
