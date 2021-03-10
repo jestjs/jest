@@ -540,15 +540,15 @@ function validateExtensionsToTreatAsEsm(
   }
 }
 
-export default function normalize(
+export default async function normalize(
   initialOptions: Config.InitialOptions,
   argv: Config.Argv,
   configPath?: Config.Path | null,
   projectIndex: number = Infinity,
-): {
+): Promise<{
   hasDeprecationWarnings: boolean;
   options: AllOptions;
-} {
+}> {
   const {hasDeprecationWarnings} = validate(initialOptions, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
