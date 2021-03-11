@@ -7,6 +7,7 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
+import {pathToFileURL} from 'url';
 import chalk = require('chalk');
 import merge = require('deepmerge');
 import {sync as glob} from 'glob';
@@ -39,7 +40,7 @@ import {
 } from './utils';
 import validatePattern from './validatePattern';
 const ERROR = `${BULLET}Validation Error`;
-const PRESET_EXTENSIONS = ['.json', '.js'];
+const PRESET_EXTENSIONS = ['.json', '.js', '.cjs', '.mjs'];
 const PRESET_NAME = 'jest-preset';
 
 type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
@@ -116,10 +117,10 @@ const mergeGlobalsWithPreset = (
   }
 };
 
-const setupPreset = (
+const setupPreset = async (
   options: Config.InitialOptionsWithRootDir,
   optionsPreset: string,
-): Config.InitialOptionsWithRootDir => {
+): Promise<Config.InitialOptionsWithRootDir> => {
   let preset: Config.InitialOptions;
   const presetPath = replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
@@ -176,11 +177,36 @@ const setupPreset = (
       );
     }
 
-    throw createConfigError(
-      `  An unknown error occurred in ${chalk.bold(presetPath)}:\n\n  ${
-        error.message
-      }\n  ${error.stack}`,
-    );
+    if (presetModule && error.code === 'ERR_REQUIRE_ESM') {
+      try {
+        const presetModuleUrl = pathToFileURL(presetModule);
+
+        // node `import()` supports URL, but TypeScript doesn't know that
+        const importedPreset = await import(presetModuleUrl.href);
+
+        if (!importedPreset.default) {
+          throw createConfigError(
+            `Jest: Failed to load mjs config file ${presetModule} - did you use a default export?`,
+          );
+        }
+
+        preset = importedPreset.default;
+      } catch (innerError) {
+        if (innerError.message === 'Not supported') {
+          throw createConfigError(
+            `Jest: Your version of Node does not support dynamic import - please enable it or use a .cjs file extension for file ${presetModule}`,
+          );
+        }
+
+        throw innerError;
+      }
+    } else {
+      throw createConfigError(
+        `  An unknown error occurred in ${chalk.bold(presetPath)}:\n\n  ${
+          error.message
+        }\n  ${error.stack}`,
+      );
+    }
   }
 
   if (options.setupFiles) {
@@ -576,7 +602,7 @@ export default async function normalize(
   );
 
   if (options.preset) {
-    options = setupPreset(options, options.preset);
+    options = await setupPreset(options, options.preset);
   }
 
   if (!options.setupFilesAfterEnv) {
