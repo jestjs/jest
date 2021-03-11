@@ -28,7 +28,7 @@ Here's a good overview of the most visible improvements:
 
 - **Search**: try the new Algolia **DocSearch v3** user-experience. It is now possible to **search in blog posts**.
 
-- **I18n**: Jest is the first website using the **[new i18n feature of Docusaurus 2](https://v2.docusaurus.io/docs/next/i18n/introduction)**. It is now possible to **translate blog posts**.
+- **I18n**: Jest is the first website using the **[new i18n feature of Docusaurus 2](https://v2.docusaurus.io/docs/i18n/introduction)**. It is now possible to **translate blog posts**.
 
 - **MDX**: embedding React components in Markdown will allow maintainers to make the **documentation more interactive**.
 
