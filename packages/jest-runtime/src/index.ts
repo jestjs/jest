@@ -57,11 +57,6 @@ import type {Context} from './types';
 
 export type {Context} from './types';
 
-interface EsmModuleCache {
-  beforeEvaluation: Promise<VMModule>;
-  fullyEvaluated: Promise<VMModule>;
-}
-
 const esmIsAvailable = typeof SourceTextModule === 'function';
 
 interface JestGlobals extends Global.TestFrameworkGlobals {
@@ -95,6 +90,17 @@ const defaultTransformOptions: InternalModuleOptions = {
 type InitialModule = Omit<Module, 'require' | 'parent' | 'paths'>;
 type ModuleRegistry = Map<string, InitialModule | Module>;
 
+// These are modules that we know
+// * are safe to require from the outside (not stateful, not prone to errors passing in instances from different realms), and
+// * take sufficiently long to require to warrant an optimization.
+// When required from the outside, they use the worker's require cache and are thus
+// only loaded once per worker, not once per test file.
+// Use /benchmarks/test-file-overhead to measure the impact.
+// Note that this only applies when they are required in an internal context;
+// users who require one of these modules in their tests will still get the module from inside the VM.
+// Prefer listing a module here only if it is impractical to use the jest-resolve-outside-vm-option where it is required,
+// e.g. because there are many require sites spread across the dependency graph.
+const INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES = new Set(['chalk']);
 const JEST_RESOLVE_OUTSIDE_VM_OPTION = Symbol.for(
   'jest-resolve-outside-vm-option',
 );
@@ -165,8 +171,9 @@ export default class Runtime {
   private readonly _moduleMocker: ModuleMocker;
   private _isolatedModuleRegistry: ModuleRegistry | null;
   private _moduleRegistry: ModuleRegistry;
-  private readonly _esmoduleRegistry: Map<Config.Path, EsmModuleCache>;
+  private readonly _esmoduleRegistry: Map<Config.Path, VMModule>;
   private readonly _cjsNamedExports: Map<Config.Path, Set<string>>;
+  private readonly _esmModuleLinkingMap: WeakMap<VMModule, Promise<unknown>>;
   private readonly _testPath: Config.Path;
   private readonly _resolver: Resolver;
   private _shouldAutoMock: boolean;
@@ -191,6 +198,7 @@ export default class Runtime {
     config: Config.ProjectConfig,
     environment: JestEnvironment,
     resolver: Resolver,
+    transformer: ScriptTransformer,
     cacheFS: Map<string, string>,
     coverageOptions: ShouldInstrumentOptions,
     testPath: Config.Path,
@@ -216,9 +224,10 @@ export default class Runtime {
     this._moduleRegistry = new Map();
     this._esmoduleRegistry = new Map();
     this._cjsNamedExports = new Map();
+    this._esmModuleLinkingMap = new WeakMap();
     this._testPath = testPath;
     this._resolver = resolver;
-    this._scriptTransformer = new ScriptTransformer(config, this._cacheFS);
+    this._scriptTransformer = transformer;
     this._shouldAutoMock = config.automock;
     this._sourceMapRegistry = new Map();
     this._fileTransforms = new Map();
@@ -260,7 +269,7 @@ export default class Runtime {
 
   static shouldInstrument = shouldInstrument;
 
-  static createContext(
+  static async createContext(
     config: Config.ProjectConfig,
     options: {
       console?: Console;
@@ -277,17 +286,14 @@ export default class Runtime {
       watch: options.watch,
       watchman: options.watchman,
     });
-    return instance.build().then(
-      hasteMap => ({
-        config,
-        hasteFS: hasteMap.hasteFS,
-        moduleMap: hasteMap.moduleMap,
-        resolver: Runtime.createResolver(config, hasteMap.moduleMap),
-      }),
-      error => {
-        throw error;
-      },
-    );
+    const hasteMap = await instance.build();
+
+    return {
+      config,
+      hasteFS: hasteMap.hasteFS,
+      moduleMap: hasteMap.moduleMap,
+      resolver: Runtime.createResolver(config, hasteMap.moduleMap),
+    };
   }
 
   static createHasteMap(
@@ -360,10 +366,10 @@ export default class Runtime {
     );
   }
 
+  // not async _now_, but transform will be
   private async loadEsmModule(
     modulePath: Config.Path,
     query = '',
-    isStaticImport = false,
   ): Promise<VMModule> {
     const cacheKey = modulePath + query;
 
@@ -375,14 +381,11 @@ export default class Runtime {
 
       const context = this._environment.getVmContext();
 
-      invariant(context);
+      invariant(context, 'Test environment has been torn down');
 
       if (this._resolver.isCoreModule(modulePath)) {
         const core = this._importCoreModule(modulePath, context);
-        this._esmoduleRegistry.set(cacheKey, {
-          beforeEvaluation: core,
-          fullyEvaluated: core,
-        });
+        this._esmoduleRegistry.set(cacheKey, core);
         return core;
       }
 
@@ -397,89 +400,53 @@ export default class Runtime {
       const module = new SourceTextModule(transformedCode, {
         context,
         identifier: modulePath,
-        importModuleDynamically: (
+        importModuleDynamically: async (
           specifier: string,
           referencingModule: VMModule,
-        ) =>
-          this.linkModules(
+        ) => {
+          invariant(
+            runtimeSupportsVmModules,
+            'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/en/ecmascript-modules',
+          );
+          const module = await this.resolveModule(
             specifier,
             referencingModule.identifier,
             referencingModule.context,
-            false,
-          ),
+          );
+
+          return this.linkAndEvaluateModule(module);
+        },
         initializeImportMeta(meta: ImportMeta) {
           meta.url = pathToFileURL(modulePath).href;
         },
       });
 
-      let resolve: (value: VMModule) => void;
-      let reject: (value: any) => void;
-      const promise = new Promise<VMModule>((_resolve, _reject) => {
-        resolve = _resolve;
-        reject = _reject;
-      });
-
-      // add to registry before link so that circular import won't end up stack overflow
-      this._esmoduleRegistry.set(
-        cacheKey,
-        // we wanna put the linking promise in the cache so modules loaded in
-        // parallel can all await it. We then await it synchronously below, so
-        // we shouldn't get any unhandled rejections
-        {
-          beforeEvaluation: Promise.resolve(module),
-          fullyEvaluated: promise,
-        },
-      );
-
-      module
-        .link((specifier: string, referencingModule: VMModule) =>
-          this.linkModules(
-            specifier,
-            referencingModule.identifier,
-            referencingModule.context,
-            true,
-          ),
-        )
-        .then(() => module.evaluate())
-        .then(
-          () => resolve(module),
-          (e: any) => reject(e),
-        );
+      this._esmoduleRegistry.set(cacheKey, module);
     }
 
-    const entry = this._esmoduleRegistry.get(cacheKey);
+    const module = this._esmoduleRegistry.get(cacheKey);
 
-    // return the already resolved, pre-evaluation promise
-    // is loaded through static import to prevent promise deadlock
-    // because module is evaluated after all static import is resolved
-    const module = isStaticImport
-      ? entry?.beforeEvaluation
-      : entry?.fullyEvaluated;
-
-    invariant(module);
+    invariant(
+      module,
+      'Module cache does not contain module. This is a bug in Jest, please open up an issue',
+    );
 
     return module;
   }
 
-  private linkModules(
+  private resolveModule(
     specifier: string,
     referencingIdentifier: string,
     context: VMContext,
-    isStaticImport: boolean,
   ) {
     if (specifier === '@jest/globals') {
       const fromCache = this._esmoduleRegistry.get('@jest/globals');
 
       if (fromCache) {
-        return isStaticImport
-          ? fromCache.beforeEvaluation
-          : fromCache.fullyEvaluated;
+        return fromCache;
       }
       const globals = this.getGlobalsForEsm(referencingIdentifier, context);
-      this._esmoduleRegistry.set('@jest/globals', {
-        beforeEvaluation: globals,
-        fullyEvaluated: globals,
-      });
+      this._esmoduleRegistry.set('@jest/globals', globals);
 
       return globals;
     }
@@ -496,10 +463,35 @@ export default class Runtime {
       this._resolver.isCoreModule(resolved) ||
       this.unstable_shouldLoadAsEsm(resolved)
     ) {
-      return this.loadEsmModule(resolved, query, isStaticImport);
+      return this.loadEsmModule(resolved, query);
     }
 
     return this.loadCjsAsEsm(referencingIdentifier, resolved, context);
+  }
+
+  private async linkAndEvaluateModule(module: VMModule) {
+    if (module.status === 'unlinked') {
+      // since we might attempt to link the same module in parallel, stick the promise in a weak map so every call to
+      // this method can await it
+      this._esmModuleLinkingMap.set(
+        module,
+        module.link((specifier: string, referencingModule: VMModule) =>
+          this.resolveModule(
+            specifier,
+            referencingModule.identifier,
+            referencingModule.context,
+          ),
+        ),
+      );
+    }
+
+    await this._esmModuleLinkingMap.get(module);
+
+    if (module.status === 'linked') {
+      await module.evaluate();
+    }
+
+    return module;
   }
 
   async unstable_importModule(
@@ -508,14 +500,16 @@ export default class Runtime {
   ): Promise<void> {
     invariant(
       runtimeSupportsVmModules,
-      'You need to run with a version of node that supports ES Modules in the VM API.',
+      'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/en/ecmascript-modules',
     );
 
     const [path, query] = (moduleName ?? '').split('?');
 
     const modulePath = this._resolveModule(from, path);
 
-    return this.loadEsmModule(modulePath, query);
+    const module = await this.loadEsmModule(modulePath, query);
+
+    return this.linkAndEvaluateModule(module);
   }
 
   private loadCjsAsEsm(
@@ -660,6 +654,12 @@ export default class Runtime {
 
   requireInternalModule<T = unknown>(from: Config.Path, to?: string): T {
     if (to) {
+      const require = (
+        nativeModule.createRequire ?? nativeModule.createRequireFromPath
+      )(from);
+      if (INTERNAL_MODULE_REQUIRE_OUTSIDE_OPTIMIZED_MODULES.has(to)) {
+        return require(to);
+      }
       const outsideJestVmPath = decodePossibleOutsideJestVmPath(to);
       if (outsideJestVmPath) {
         return require(outsideJestVmPath);
@@ -1109,15 +1109,10 @@ export default class Runtime {
 
     let runScript: RunScriptEvalResult | null = null;
 
-    // Use this if available instead of deprecated `JestEnvironment.runScript`
-    if (typeof this._environment.getVmContext === 'function') {
-      const vmContext = this._environment.getVmContext();
+    const vmContext = this._environment.getVmContext();
 
-      if (vmContext) {
-        runScript = script.runInContext(vmContext, {filename});
-      }
-    } else {
-      runScript = this._environment.runScript<RunScriptEvalResult>(script);
+    if (vmContext) {
+      runScript = script.runInContext(vmContext, {filename});
     }
 
     if (runScript !== null) {
@@ -1213,12 +1208,23 @@ export default class Runtime {
         displayErrors: true,
         filename: scriptFilename,
         // @ts-expect-error: Experimental ESM API
-        importModuleDynamically: (specifier: string) => {
+        importModuleDynamically: async (specifier: string) => {
+          invariant(
+            runtimeSupportsVmModules,
+            'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/en/ecmascript-modules',
+          );
+
           const context = this._environment.getVmContext?.();
 
-          invariant(context);
+          invariant(context, 'Test environment has been torn down');
 
-          return this.linkModules(specifier, scriptFilename, context, false);
+          const module = await this.resolveModule(
+            specifier,
+            scriptFilename,
+            context,
+          );
+
+          return this.linkAndEvaluateModule(module);
         },
       });
     } catch (e) {

@@ -57,7 +57,8 @@ export default function collectHandles(): () => Array<Error> {
       if (
         type === 'PROMISE' ||
         type === 'TIMERWRAP' ||
-        type === 'ELDHISTOGRAM'
+        type === 'ELDHISTOGRAM' ||
+        type === 'PerformanceObserver'
       ) {
         return;
       }

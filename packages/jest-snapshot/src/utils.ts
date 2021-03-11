@@ -74,7 +74,7 @@ const validateSnapshotVersion = (snapshotContents: string) => {
 };
 
 function isObject(item: unknown): boolean {
-  return item && typeof item === 'object' && !Array.isArray(item);
+  return item != null && typeof item === 'object' && !Array.isArray(item);
 }
 
 export const testNameToKey = (testName: Config.Path, count: number): string =>

@@ -1,0 +1,10 @@
+{
+  "name": "fake-pkg",
+  "version": "1.0.0",
+  "main": "./nope.js",
+  "browser": {
+    "./nope.js": "./main.js"
+  },
+  "dependencies": {
+  }
+}

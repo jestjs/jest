@@ -39,6 +39,7 @@ import {
   filterInteractivePlugins,
   getSortedUsageRows,
 } from './lib/watchPluginsHelpers';
+import FailedTestsInteractivePlugin from './plugins/FailedTestsInteractive';
 import QuitPlugin from './plugins/Quit';
 import TestNamePatternPlugin from './plugins/TestNamePattern';
 import TestPathPatternPlugin from './plugins/TestPathPattern';
@@ -61,6 +62,7 @@ const {print: preRunMessagePrint} = preRunMessage;
 let hasExitListener = false;
 
 const INTERNAL_PLUGINS = [
+  FailedTestsInteractivePlugin,
   TestPathPatternPlugin,
   TestNamePatternPlugin,
   UpdateSnapshotsPlugin,
