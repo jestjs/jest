@@ -153,6 +153,14 @@ module.exports = {
       },
     },
     {
+      files: ['website/**/*'],
+      rules: {
+        'import/order': 'off',
+        'import/sort-keys': 'off',
+        'sort-keys': 'off',
+      },
+    },
+    {
       files: ['examples/**/*'],
       rules: {
         'import/no-unresolved': ['error', {ignore: ['^react-native$']}],
