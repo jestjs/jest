@@ -24,7 +24,7 @@ describe('generateEmptyCoverage', () => {
   const rootDir = __dirname;
   const filepath = path.join(rootDir, './sum.js');
 
-  it('generates an empty coverage object for a file without running it', () => {
+  it('generates an empty coverage object for a file without running it', async () => {
     const src = `
     throw new Error('this should not be thrown');
 
@@ -42,7 +42,7 @@ describe('generateEmptyCoverage', () => {
 
     shouldInstrument.mockReturnValueOnce(true);
 
-    const emptyCoverage = generateEmptyCoverage(
+    const emptyCoverage = await generateEmptyCoverage(
       src,
       filepath,
       makeGlobalConfig(),
@@ -71,7 +71,7 @@ describe('generateEmptyCoverage', () => {
     });
   });
 
-  it('generates a null coverage result when using /* istanbul ignore file */', () => {
+  it('generates a null coverage result when using /* istanbul ignore file */', async () => {
     const src = `
     /* istanbul ignore file */
     const a = (b, c) => {
@@ -86,7 +86,7 @@ describe('generateEmptyCoverage', () => {
 
     shouldInstrument.mockReturnValueOnce(true);
 
-    const nullCoverage = generateEmptyCoverage(
+    const nullCoverage = await generateEmptyCoverage(
       src,
       filepath,
       makeGlobalConfig(),
@@ -101,7 +101,7 @@ describe('generateEmptyCoverage', () => {
     expect(nullCoverage).toBeNull();
   });
 
-  it('generates a null coverage result when collectCoverage global config is false', () => {
+  it('generates a null coverage result when collectCoverage global config is false', async () => {
     const src = `
     const a = (b, c) => {
       if (b) {
@@ -115,7 +115,7 @@ describe('generateEmptyCoverage', () => {
 
     shouldInstrument.mockReturnValueOnce(false);
 
-    const nullCoverage = generateEmptyCoverage(
+    const nullCoverage = await generateEmptyCoverage(
       src,
       filepath,
       makeGlobalConfig(),

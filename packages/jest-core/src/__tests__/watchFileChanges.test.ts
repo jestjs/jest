@@ -14,6 +14,7 @@ import type {AggregatedResult} from '@jest/test-result';
 import {normalize} from 'jest-config';
 import type HasteMap from 'jest-haste-map';
 import Runtime from 'jest-runtime';
+import {interopRequireDefault} from 'jest-util';
 import {JestHook} from 'jest-watcher';
 
 describe('Watch mode flows with changed files', () => {
@@ -31,8 +32,8 @@ describe('Watch mode flows with changed files', () => {
   const cacheDirectory = path.resolve(tmpdir(), `tmp${Math.random()}`);
   let hasteMapInstance: HasteMap;
 
-  beforeEach(async () => {
-    watch = (await import('../watch')).default;
+  beforeEach(() => {
+    watch = interopRequireDefault(require('../watch')).default;
     pipe = {write: jest.fn()} as unknown;
     stdin = new MockStdin();
     rimraf.sync(cacheDirectory);
@@ -63,23 +64,25 @@ describe('Watch mode flows with changed files', () => {
       `,
     );
 
-    const config = normalize(
-      {
-        cache: false,
-        cacheDirectory,
-        coverageReporters: [],
-        maxConcurrency: 1,
-        maxWorkers: 1,
-        moduleDirectories: ['node_modules'],
-        onlyChanged: false,
-        reporters: [],
-        rootDir: testDirectory,
-        silent: true,
-        testRegex: ['watch-test-fake\\.test\\.js$'],
-        watch: false,
-        watchman: false,
-      },
-      {} as unknown,
+    const config = (
+      await normalize(
+        {
+          cache: false,
+          cacheDirectory,
+          coverageReporters: [],
+          maxConcurrency: 1,
+          maxWorkers: 1,
+          moduleDirectories: ['node_modules'],
+          onlyChanged: false,
+          reporters: [],
+          rootDir: testDirectory,
+          silent: true,
+          testRegex: ['watch-test-fake\\.test\\.js$'],
+          watch: false,
+          watchman: false,
+        },
+        {} as unknown,
+      )
     ).options;
 
     hasteMapInstance = await Runtime.createHasteMap(config, {

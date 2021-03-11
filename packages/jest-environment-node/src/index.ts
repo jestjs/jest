@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Context, Script, createContext, runInContext} from 'vm';
+import {Context, createContext, runInContext} from 'vm';
 import type {JestEnvironment} from '@jest/environment';
 import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Config, Global} from '@jest/types';
@@ -102,15 +102,6 @@ class NodeEnvironment implements JestEnvironment {
     this.context = null;
     this.fakeTimers = null;
     this.fakeTimersModern = null;
-  }
-
-  // TS infers the return type to be `any`, since that's what `runInContext`
-  // returns.
-  runScript<T = unknown>(script: Script): T | null {
-    if (this.context) {
-      return script.runInContext(this.context);
-    }
-    return null;
   }
 
   getVmContext(): Context | null {

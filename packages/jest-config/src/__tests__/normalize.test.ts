@@ -6,10 +6,11 @@
  *
  */
 
-import crypto from 'crypto';
+import {createHash} from 'crypto';
 import path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import stripAnsi from 'strip-ansi';
+import {Config} from '@jest/types';
 import {escapeStrForRegex} from 'jest-regex-util';
 import Defaults from '../Defaults';
 import {DEFAULT_JS_PATTERN} from '../constants';
@@ -46,8 +47,8 @@ const findNodeModule = jest.fn(name => {
 // Windows uses backslashes for path separators, which need to be escaped in
 // regular expressions. This little helper function helps us generate the
 // expected strings for checking path patterns.
-function joinForPattern() {
-  return Array.prototype.join.call(arguments, escapeStrForRegex(path.sep));
+function joinForPattern(...args) {
+  return args.join(escapeStrForRegex(path.sep));
 }
 
 beforeEach(() => {
@@ -66,51 +67,55 @@ afterEach(() => {
   console.warn.mockRestore();
 });
 
-it('picks a name based on the rootDir', () => {
+it('picks a name based on the rootDir', async () => {
   const rootDir = '/root/path/foo';
-  const expected = crypto
-    .createHash('md5')
+  const expected = createHash('md5')
     .update('/root/path/foo')
     .update(String(Infinity))
     .digest('hex');
-  expect(
-    normalize(
-      {
-        rootDir,
-      },
-      {},
-    ).options.name,
-  ).toBe(expected);
+  const {options} = await normalize(
+    {
+      rootDir,
+    },
+    {} as Config.Argv,
+  );
+  expect(options.name).toBe(expected);
 });
 
-it('keeps custom project name based on the projects rootDir', () => {
+it('keeps custom project name based on the projects rootDir', async () => {
   const name = 'test';
-  const options = normalize(
+  const {options} = await normalize(
     {
       projects: [{name, rootDir: '/path/to/foo'}],
       rootDir: '/root/path/baz',
     },
-    {},
+    {} as Config.Argv,
   );
 
-  expect(options.options.projects[0].name).toBe(name);
+  expect(options.projects[0].name).toBe(name);
 });
 
-it('keeps custom names based on the rootDir', () => {
-  expect(
-    normalize(
-      {
-        name: 'custom-name',
-        rootDir: '/root/path/foo',
-      },
-      {},
-    ).options.name,
-  ).toBe('custom-name');
+it('keeps custom names based on the rootDir', async () => {
+  const {options} = await normalize(
+    {
+      name: 'custom-name',
+      rootDir: '/root/path/foo',
+    },
+    {} as Config.Argv,
+  );
+
+  expect(options.name).toBe('custom-name');
 });
 
-it('minimal config is stable across runs', () => {
-  const firstNormalization = normalize({rootDir: '/root/path/foo'}, {});
-  const secondNormalization = normalize({rootDir: '/root/path/foo'}, {});
+it('minimal config is stable across runs', async () => {
+  const firstNormalization = await normalize(
+    {rootDir: '/root/path/foo'},
+    {} as Config.Argv,
+  );
+  const secondNormalization = await normalize(
+    {rootDir: '/root/path/foo'},
+    {} as Config.Argv,
+  );
 
   expect(firstNormalization).toEqual(secondNormalization);
   expect(JSON.stringify(firstNormalization)).toBe(
@@ -118,36 +123,38 @@ it('minimal config is stable across runs', () => {
   );
 });
 
-it('sets coverageReporters correctly when argv.json is set', () => {
-  expect(
-    normalize(
-      {
-        rootDir: '/root/path/foo',
-      },
-      {
-        json: true,
-      },
-    ).options.coverageReporters,
-  ).toEqual(['json', 'lcov', 'clover']);
+it('sets coverageReporters correctly when argv.json is set', async () => {
+  const {options} = await normalize(
+    {
+      rootDir: '/root/path/foo',
+    },
+    {
+      json: true,
+    } as Config.Argv,
+  );
+
+  expect(options.coverageReporters).toEqual(['json', 'lcov', 'clover']);
 });
 
 describe('rootDir', () => {
-  it('throws if the options is missing a rootDir property', () => {
-    expect(() => {
-      normalize({}, {});
-    }).toThrowErrorMatchingSnapshot();
+  it('throws if the options is missing a rootDir property', async () => {
+    expect.assertions(1);
+
+    await expect(
+      normalize({}, {} as Config.Argv),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 });
 
 describe('automock', () => {
-  it('falsy automock is not overwritten', () => {
+  it('falsy automock is not overwritten', async () => {
     console.warn.mockImplementation(() => {});
-    const {options} = normalize(
+    const {options} = await normalize(
       {
         automock: false,
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.automock).toBe(false);
@@ -155,8 +162,8 @@ describe('automock', () => {
 });
 
 describe('collectCoverageOnlyFrom', () => {
-  it('normalizes all paths relative to rootDir', () => {
-    const {options} = normalize(
+  it('normalizes all paths relative to rootDir', async () => {
+    const {options} = await normalize(
       {
         collectCoverageOnlyFrom: {
           'bar/baz': true,
@@ -164,7 +171,7 @@ describe('collectCoverageOnlyFrom', () => {
         },
         rootDir: '/root/path/foo/',
       },
-      {},
+      {} as Config.Argv,
     );
 
     const expected = {};
@@ -174,8 +181,8 @@ describe('collectCoverageOnlyFrom', () => {
     expect(options.collectCoverageOnlyFrom).toEqual(expected);
   });
 
-  it('does not change absolute paths', () => {
-    const {options} = normalize(
+  it('does not change absolute paths', async () => {
+    const {options} = await normalize(
       {
         collectCoverageOnlyFrom: {
           '/an/abs/path': true,
@@ -183,7 +190,7 @@ describe('collectCoverageOnlyFrom', () => {
         },
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     const expected = {};
@@ -193,15 +200,15 @@ describe('collectCoverageOnlyFrom', () => {
     expect(options.collectCoverageOnlyFrom).toEqual(expected);
   });
 
-  it('substitutes <rootDir> tokens', () => {
-    const {options} = normalize(
+  it('substitutes <rootDir> tokens', async () => {
+    const {options} = await normalize(
       {
         collectCoverageOnlyFrom: {
           '<rootDir>/bar/baz': true,
         },
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     const expected = {};
@@ -212,12 +219,12 @@ describe('collectCoverageOnlyFrom', () => {
 });
 
 describe('collectCoverageFrom', () => {
-  it('substitutes <rootDir> tokens', () => {
+  it('substitutes <rootDir> tokens', async () => {
     const barBaz = 'bar/baz';
     const quxQuux = 'qux/quux/';
     const notQuxQuux = `!${quxQuux}`;
 
-    const {options} = normalize(
+    const {options} = await normalize(
       {
         collectCoverageFrom: [
           barBaz,
@@ -227,7 +234,7 @@ describe('collectCoverageFrom', () => {
         ],
         rootDir: '/root/path/foo/',
       },
-      {},
+      {} as Config.Argv,
     );
 
     const expected = [barBaz, notQuxQuux, barBaz, notQuxQuux];
@@ -237,10 +244,10 @@ describe('collectCoverageFrom', () => {
 });
 
 describe('findRelatedTests', () => {
-  it('it generates --coverageCoverageFrom patterns when needed', () => {
+  it('it generates --coverageCoverageFrom patterns when needed', async () => {
     const sourceFile = 'file1.js';
 
-    const {options} = normalize(
+    const {options} = await normalize(
       {
         collectCoverage: true,
         rootDir: '/root/path/foo/',
@@ -252,7 +259,7 @@ describe('findRelatedTests', () => {
           `<rootDir>/bar/${sourceFile}`,
         ],
         findRelatedTests: true,
-      },
+      } as Config.Argv,
     );
 
     const expected = [`../${sourceFile}`, `${sourceFile}`, `bar/${sourceFile}`];
@@ -262,37 +269,37 @@ describe('findRelatedTests', () => {
 });
 
 function testPathArray(key) {
-  it('normalizes all paths relative to rootDir', () => {
-    const {options} = normalize(
+  it('normalizes all paths relative to rootDir', async () => {
+    const {options} = await normalize(
       {
         [key]: ['bar/baz', 'qux/quux/'],
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options[key]).toEqual([expectedPathFooBar, expectedPathFooQux]);
   });
 
-  it('does not change absolute paths', () => {
-    const {options} = normalize(
+  it('does not change absolute paths', async () => {
+    const {options} = await normalize(
       {
         [key]: ['/an/abs/path', '/another/abs/path'],
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options[key]).toEqual([expectedPathAbs, expectedPathAbsAnother]);
   });
 
-  it('substitutes <rootDir> tokens', () => {
-    const {options} = normalize(
+  it('substitutes <rootDir> tokens', async () => {
+    const {options} = await normalize(
       {
         [key]: ['<rootDir>/bar/baz'],
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options[key]).toEqual([expectedPathFooBar]);
@@ -310,8 +317,8 @@ describe('transform', () => {
     Resolver.findNodeModule = jest.fn(name => name);
   });
 
-  it('normalizes the path', () => {
-    const {options} = normalize(
+  it('normalizes the path', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root/',
         transform: {
@@ -320,7 +327,7 @@ describe('transform', () => {
           'abs-path': '/qux/quux',
         },
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.transform).toEqual([
@@ -329,8 +336,8 @@ describe('transform', () => {
       ['abs-path', '/qux/quux', {}],
     ]);
   });
-  it("pulls in config if it's passed as an array, and defaults to empty object", () => {
-    const {options} = normalize(
+  it("pulls in config if it's passed as an array, and defaults to empty object", async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root/',
         transform: {
@@ -339,7 +346,7 @@ describe('transform', () => {
           'abs-path': '/qux/quux',
         },
       },
-      {},
+      {} as Config.Argv,
     );
     expect(options.transform).toEqual([
       [DEFAULT_CSS_PATTERN, '/root/node_modules/jest-regex-util', {}],
@@ -356,15 +363,15 @@ describe('haste', () => {
     Resolver.findNodeModule = jest.fn(name => name);
   });
 
-  it('normalizes the path for hasteImplModulePath', () => {
-    const {options} = normalize(
+  it('normalizes the path for hasteImplModulePath', async () => {
+    const {options} = await normalize(
       {
         haste: {
           hasteImplModulePath: '<rootDir>/haste_impl.js',
         },
         rootDir: '/root/',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.haste).toEqual({
@@ -382,37 +389,37 @@ describe('setupFilesAfterEnv', () => {
     );
   });
 
-  it('normalizes the path according to rootDir', () => {
-    const {options} = normalize(
+  it('normalizes the path according to rootDir', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
         setupFilesAfterEnv: ['bar/baz'],
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.setupFilesAfterEnv).toEqual([expectedPathFooBar]);
   });
 
-  it('does not change absolute paths', () => {
-    const {options} = normalize(
+  it('does not change absolute paths', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
         setupFilesAfterEnv: ['/an/abs/path'],
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.setupFilesAfterEnv).toEqual([expectedPathAbs]);
   });
 
-  it('substitutes <rootDir> tokens', () => {
-    const {options} = normalize(
+  it('substitutes <rootDir> tokens', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
         setupFilesAfterEnv: ['<rootDir>/bar/baz'],
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.setupFilesAfterEnv).toEqual([expectedPathFooBar]);
@@ -430,42 +437,42 @@ describe('setupTestFrameworkScriptFile', () => {
     );
   });
 
-  it('logs a deprecation warning when `setupTestFrameworkScriptFile` is used', () => {
-    normalize(
+  it('logs a deprecation warning when `setupTestFrameworkScriptFile` is used', async () => {
+    await normalize(
       {
         rootDir: '/root/path/foo',
         setupTestFrameworkScriptFile: 'bar/baz',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
   });
 
-  it('logs an error when `setupTestFrameworkScriptFile` and `setupFilesAfterEnv` are used', () => {
-    expect(() =>
+  it('logs an error when `setupTestFrameworkScriptFile` and `setupFilesAfterEnv` are used', async () => {
+    await expect(
       normalize(
         {
           rootDir: '/root/path/foo',
           setupFilesAfterEnv: ['bar/baz'],
           setupTestFrameworkScriptFile: 'bar/baz',
         },
-        {},
+        {} as Config.Argv,
       ),
-    ).toThrowErrorMatchingSnapshot();
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 });
 
 describe('coveragePathIgnorePatterns', () => {
-  it('does not normalize paths relative to rootDir', () => {
+  it('does not normalize paths relative to rootDir', async () => {
     // This is a list of patterns, so we can't assume any of them are
     // directories
-    const {options} = normalize(
+    const {options} = await normalize(
       {
         coveragePathIgnorePatterns: ['bar/baz', 'qux/quux'],
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.coveragePathIgnorePatterns).toEqual([
@@ -474,15 +481,15 @@ describe('coveragePathIgnorePatterns', () => {
     ]);
   });
 
-  it('does not normalize trailing slashes', () => {
+  it('does not normalize trailing slashes', async () => {
     // This is a list of patterns, so we can't assume any of them are
     // directories
-    const {options} = normalize(
+    const {options} = await normalize(
       {
         coveragePathIgnorePatterns: ['bar/baz', 'qux/quux/'],
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.coveragePathIgnorePatterns).toEqual([
@@ -491,13 +498,13 @@ describe('coveragePathIgnorePatterns', () => {
     ]);
   });
 
-  it('substitutes <rootDir> tokens', () => {
-    const {options} = normalize(
+  it('substitutes <rootDir> tokens', async () => {
+    const {options} = await normalize(
       {
         coveragePathIgnorePatterns: ['hasNoToken', '<rootDir>/hasAToken'],
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.coveragePathIgnorePatterns).toEqual([
@@ -508,15 +515,15 @@ describe('coveragePathIgnorePatterns', () => {
 });
 
 describe('watchPathIgnorePatterns', () => {
-  it('does not normalize paths relative to rootDir', () => {
+  it('does not normalize paths relative to rootDir', async () => {
     // This is a list of patterns, so we can't assume any of them are
     // directories
-    const {options} = normalize(
+    const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
         watchPathIgnorePatterns: ['bar/baz', 'qux/quux'],
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.watchPathIgnorePatterns).toEqual([
@@ -525,15 +532,15 @@ describe('watchPathIgnorePatterns', () => {
     ]);
   });
 
-  it('does not normalize trailing slashes', () => {
+  it('does not normalize trailing slashes', async () => {
     // This is a list of patterns, so we can't assume any of them are
     // directories
-    const {options} = normalize(
+    const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
         watchPathIgnorePatterns: ['bar/baz', 'qux/quux/'],
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.watchPathIgnorePatterns).toEqual([
@@ -542,13 +549,13 @@ describe('watchPathIgnorePatterns', () => {
     ]);
   });
 
-  it('substitutes <rootDir> tokens', () => {
-    const {options} = normalize(
+  it('substitutes <rootDir> tokens', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
         watchPathIgnorePatterns: ['hasNoToken', '<rootDir>/hasAToken'],
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.watchPathIgnorePatterns).toEqual([
@@ -559,15 +566,15 @@ describe('watchPathIgnorePatterns', () => {
 });
 
 describe('testPathIgnorePatterns', () => {
-  it('does not normalize paths relative to rootDir', () => {
+  it('does not normalize paths relative to rootDir', async () => {
     // This is a list of patterns, so we can't assume any of them are
     // directories
-    const {options} = normalize(
+    const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
         testPathIgnorePatterns: ['bar/baz', 'qux/quux'],
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.testPathIgnorePatterns).toEqual([
@@ -576,15 +583,15 @@ describe('testPathIgnorePatterns', () => {
     ]);
   });
 
-  it('does not normalize trailing slashes', () => {
+  it('does not normalize trailing slashes', async () => {
     // This is a list of patterns, so we can't assume any of them are
     // directories
-    const {options} = normalize(
+    const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
         testPathIgnorePatterns: ['bar/baz', 'qux/quux/'],
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.testPathIgnorePatterns).toEqual([
@@ -593,13 +600,13 @@ describe('testPathIgnorePatterns', () => {
     ]);
   });
 
-  it('substitutes <rootDir> tokens', () => {
-    const {options} = normalize(
+  it('substitutes <rootDir> tokens', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
         testPathIgnorePatterns: ['hasNoToken', '<rootDir>/hasAToken'],
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.testPathIgnorePatterns).toEqual([
@@ -610,15 +617,15 @@ describe('testPathIgnorePatterns', () => {
 });
 
 describe('modulePathIgnorePatterns', () => {
-  it('does not normalize paths relative to rootDir', () => {
+  it('does not normalize paths relative to rootDir', async () => {
     // This is a list of patterns, so we can't assume any of them are
     // directories
-    const {options} = normalize(
+    const {options} = await normalize(
       {
         modulePathIgnorePatterns: ['bar/baz', 'qux/quux'],
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.modulePathIgnorePatterns).toEqual([
@@ -627,15 +634,15 @@ describe('modulePathIgnorePatterns', () => {
     ]);
   });
 
-  it('does not normalize trailing slashes', () => {
+  it('does not normalize trailing slashes', async () => {
     // This is a list of patterns, so we can't assume any of them are
     // directories
-    const {options} = normalize(
+    const {options} = await normalize(
       {
         modulePathIgnorePatterns: ['bar/baz', 'qux/quux/'],
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.modulePathIgnorePatterns).toEqual([
@@ -644,13 +651,13 @@ describe('modulePathIgnorePatterns', () => {
     ]);
   });
 
-  it('substitutes <rootDir> tokens', () => {
-    const {options} = normalize(
+  it('substitutes <rootDir> tokens', async () => {
+    const {options} = await normalize(
       {
         modulePathIgnorePatterns: ['hasNoToken', '<rootDir>/hasAToken'],
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.modulePathIgnorePatterns).toEqual([
@@ -661,42 +668,42 @@ describe('modulePathIgnorePatterns', () => {
 });
 
 describe('testRunner', () => {
-  it('defaults to Circus', () => {
-    const {options} = normalize(
+  it('defaults to Circus', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.testRunner).toMatch('jest-circus');
   });
 
-  it('resolves jasmine', () => {
+  it('resolves jasmine', async () => {
     const Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name => name);
-    const {options} = normalize(
+    const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
       },
       {
         testRunner: 'jasmine2',
-      },
+      } as Config.Argv,
     );
 
     expect(options.testRunner).toMatch('jest-jasmine2');
   });
 
-  it('is overwritten by argv', () => {
+  it('is overwritten by argv', async () => {
     const Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name => name);
-    const {options} = normalize(
+    const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
       },
       {
         testRunner: 'mocha',
-      },
+      } as Config.Argv,
     );
 
     expect(options.testRunner).toBe('mocha');
@@ -704,12 +711,12 @@ describe('testRunner', () => {
 });
 
 describe('coverageDirectory', () => {
-  it('defaults to <rootDir>/coverage', () => {
-    const {options} = normalize(
+  it('defaults to <rootDir>/coverage', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.coverageDirectory).toBe('/root/path/foo/coverage');
@@ -731,13 +738,13 @@ describe('testEnvironment', () => {
     });
   });
 
-  it('resolves to an environment and prefers jest-environment-`name`', () => {
-    const {options} = normalize(
+  it('resolves to an environment and prefers jest-environment-`name`', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root',
         testEnvironment: 'jsdom',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.testEnvironment).toEqual(
@@ -745,25 +752,25 @@ describe('testEnvironment', () => {
     );
   });
 
-  it('throws on invalid environment names', () => {
-    expect(() =>
+  it('throws on invalid environment names', async () => {
+    await expect(
       normalize(
         {
           rootDir: '/root',
           testEnvironment: 'phantom',
         },
-        {},
+        {} as Config.Argv,
       ),
-    ).toThrowErrorMatchingSnapshot();
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  it('works with rootDir', () => {
-    const {options} = normalize(
+  it('works with rootDir', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root',
         testEnvironment: '<rootDir>/testEnvironment.js',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.testEnvironment).toEqual('/root/testEnvironment.js');
@@ -781,28 +788,28 @@ describe('babel-jest', () => {
     );
   });
 
-  it('correctly identifies and uses babel-jest', () => {
-    const {options} = normalize(
+  it('correctly identifies and uses babel-jest', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.transform[0][0]).toBe(DEFAULT_JS_PATTERN);
     expect(options.transform[0][1]).toEqual(require.resolve('babel-jest'));
   });
 
-  it('uses babel-jest if babel-jest is explicitly specified in a custom transform options', () => {
+  it('uses babel-jest if babel-jest is explicitly specified in a custom transform options', async () => {
     const customJSPattern = '\\.js$';
-    const {options} = normalize(
+    const {options} = await normalize(
       {
         rootDir: '/root',
         transform: {
           [customJSPattern]: 'babel-jest',
         },
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.transform[0][0]).toBe(customJSPattern);
@@ -823,14 +830,14 @@ describe('Upgrade help', () => {
     });
   });
 
-  it('logs a warning when `scriptPreprocessor` and/or `preprocessorIgnorePatterns` are used', () => {
-    const {options: options, hasDeprecationWarnings} = normalize(
+  it('logs a warning when `scriptPreprocessor` and/or `preprocessorIgnorePatterns` are used', async () => {
+    const {options: options, hasDeprecationWarnings} = await normalize(
       {
         preprocessorIgnorePatterns: ['bar/baz', 'qux/quux'],
         rootDir: '/root/path/foo',
         scriptPreprocessor: 'bar/baz',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.transform).toEqual([['.*', '/node_modules/bar/baz', {}]]);
@@ -848,35 +855,35 @@ describe('Upgrade help', () => {
 });
 
 describe('testRegex', () => {
-  it('testRegex empty string is mapped to empty array', () => {
-    const {options} = normalize(
+  it('testRegex empty string is mapped to empty array', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root',
         testRegex: '',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.testRegex).toEqual([]);
   });
-  it('testRegex string is mapped to an array', () => {
-    const {options} = normalize(
+  it('testRegex string is mapped to an array', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root',
         testRegex: '.*',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.testRegex).toEqual(['.*']);
   });
-  it('testRegex array is preserved', () => {
-    const {options} = normalize(
+  it('testRegex array is preserved', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root',
         testRegex: ['.*', 'foo\\.bar'],
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.testRegex).toEqual(['.*', 'foo\\.bar']);
@@ -884,50 +891,50 @@ describe('testRegex', () => {
 });
 
 describe('testMatch', () => {
-  it('testMatch default not applied if testRegex is set', () => {
-    const {options} = normalize(
+  it('testMatch default not applied if testRegex is set', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root',
         testRegex: '.*',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.testMatch.length).toBe(0);
   });
 
-  it('testRegex default not applied if testMatch is set', () => {
-    const {options} = normalize(
+  it('testRegex default not applied if testMatch is set', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root',
         testMatch: ['**/*.js'],
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.testRegex).toEqual([]);
   });
 
-  it('throws if testRegex and testMatch are both specified', () => {
-    expect(() => {
+  it('throws if testRegex and testMatch are both specified', async () => {
+    await expect(
       normalize(
         {
           rootDir: '/root',
           testMatch: ['**/*.js'],
           testRegex: '.*',
         },
-        {},
-      );
-    }).toThrowErrorMatchingSnapshot();
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  it('normalizes testMatch', () => {
-    const {options} = normalize(
+  it('normalizes testMatch', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root',
         testMatch: ['<rootDir>/**/*.js'],
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.testMatch).toEqual(['/root/**/*.js']);
@@ -935,19 +942,19 @@ describe('testMatch', () => {
 });
 
 describe('moduleDirectories', () => {
-  it('defaults to node_modules', () => {
-    const {options} = normalize({rootDir: '/root'}, {});
+  it('defaults to node_modules', async () => {
+    const {options} = await normalize({rootDir: '/root'}, {} as Config.Argv);
 
     expect(options.moduleDirectories).toEqual(['node_modules']);
   });
 
-  it('normalizes moduleDirectories', () => {
-    const {options} = normalize(
+  it('normalizes moduleDirectories', async () => {
+    const {options} = await normalize(
       {
         moduleDirectories: ['<rootDir>/src', '<rootDir>/node_modules'],
         rootDir: '/root',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.moduleDirectories).toEqual([
@@ -1028,70 +1035,74 @@ describe('preset', () => {
     jest.dontMock('/node_modules/react-native/jest-preset.json');
   });
 
-  test('throws when preset not found', () => {
-    expect(() => {
+  test('throws when preset not found', async () => {
+    await expect(
       normalize(
         {
           preset: 'doesnt-exist',
           rootDir: '/root/path/foo',
         },
-        {},
-      );
-    }).toThrowErrorMatchingSnapshot();
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  test('throws when module was found but no "jest-preset.js" or "jest-preset.json" files', () => {
-    expect(() => {
+  test('throws when module was found but no "jest-preset.js" or "jest-preset.json" files', async () => {
+    await expect(
       normalize(
         {
           preset: 'exist-but-no-jest-preset',
           rootDir: '/root/path/foo',
         },
-        {},
-      );
-    }).toThrowErrorMatchingSnapshot();
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  test('throws when a dependency is missing in the preset', () => {
+  test('throws when a dependency is missing in the preset', async () => {
     jest.doMock(
       '/node_modules/react-native-js-preset/jest-preset.js',
       () => {
         require('library-that-is-not-installed');
         return {
-          transform: {},
+          transform: {} as Config.Argv,
         };
       },
       {virtual: true},
     );
 
-    expect(() => {
+    await expect(
       normalize(
         {
           preset: 'react-native-js-preset',
           rootDir: '/root/path/foo',
         },
-        {},
-      );
-    }).toThrowError(/Cannot find module 'library-that-is-not-installed'/);
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowError(
+      /Cannot find module 'library-that-is-not-installed'/,
+    );
   });
 
-  test('throws when preset is invalid', () => {
+  test('throws when preset is invalid', async () => {
     jest.doMock('/node_modules/react-native/jest-preset.json', () =>
       jest.requireActual('./jest-preset.json'),
     );
 
-    expect(() => {
+    await expect(
       normalize(
         {
           preset: 'react-native',
           rootDir: '/root/path/foo',
         },
-        {},
-      );
-    }).toThrowError(/Unexpected token } in JSON at position 104[\s\S]* at /);
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowError(
+      /Unexpected token } in JSON at position 104[\s\S]* at /,
+    );
   });
 
-  test('throws when preset evaluation throws type error', () => {
+  test('throws when preset evaluation throws type error', async () => {
     jest.doMock(
       '/node_modules/react-native-js-preset/jest-preset.js',
       () => ({
@@ -1100,48 +1111,48 @@ describe('preset', () => {
       {virtual: true},
     );
 
-    expect(() => {
+    await expect(
       normalize(
         {
           preset: 'react-native-js-preset',
           rootDir: '/root/path/foo',
         },
-        {},
-      );
-    }).toThrowError(
+        {} as Config.Argv,
+      ),
+    ).rejects.toThrowError(
       /TypeError: Cannot read property 'call' of undefined[\s\S]* at /,
     );
   });
 
-  test('works with "react-native"', () => {
-    expect(() => {
+  test('works with "react-native"', async () => {
+    await expect(
       normalize(
         {
           preset: 'react-native',
           rootDir: '/root/path/foo',
         },
-        {},
-      );
-    }).not.toThrow();
+        {} as Config.Argv,
+      ),
+    ).resolves.not.toThrow();
   });
 
-  test('searches for .json and .js preset files', () => {
+  test('searches for .json and .js preset files', async () => {
     const Resolver = require('jest-resolve').default;
 
-    normalize(
+    await normalize(
       {
         preset: 'react-native',
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     const options = Resolver.findNodeModule.mock.calls[0][1];
     expect(options.extensions).toEqual(['.json', '.js']);
   });
 
-  test('merges with options', () => {
-    const {options} = normalize(
+  test('merges with options', async () => {
+    const {options} = await normalize(
       {
         moduleNameMapper: {a: 'a'},
         modulePathIgnorePatterns: ['a'],
@@ -1151,7 +1162,7 @@ describe('preset', () => {
         setupFilesAfterEnv: ['a'],
         transform: {a: 'a'},
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.moduleNameMapper).toEqual([
@@ -1173,7 +1184,7 @@ describe('preset', () => {
     ]);
   });
 
-  test('merges with options and moduleNameMapper preset is overridden by options', () => {
+  test('merges with options and moduleNameMapper preset is overridden by options', async () => {
     // Object initializer not used for properties as a workaround for
     //  sort-keys eslint rule while specifying properties in
     //  non-alphabetical order for a better test
@@ -1182,13 +1193,13 @@ describe('preset', () => {
     moduleNameMapper.b = 'bb';
     moduleNameMapper.c = 'cc';
     moduleNameMapper.a = 'aa';
-    const {options} = normalize(
+    const {options} = await normalize(
       {
         moduleNameMapper,
         preset: 'react-native',
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.moduleNameMapper).toEqual([
@@ -1199,7 +1210,7 @@ describe('preset', () => {
     ]);
   });
 
-  test('merges with options and transform preset is overridden by options', () => {
+  test('merges with options and transform preset is overridden by options', async () => {
     /* eslint-disable sort-keys */
     const transform = {
       e: 'ee',
@@ -1208,13 +1219,13 @@ describe('preset', () => {
       a: 'aa',
     };
     /* eslint-enable */
-    const {options} = normalize(
+    const {options} = await normalize(
       {
         preset: 'react-native',
         rootDir: '/root/path/foo',
         transform,
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.transform).toEqual([
@@ -1225,13 +1236,13 @@ describe('preset', () => {
     ]);
   });
 
-  test('extracts setupFilesAfterEnv from preset', () => {
-    const {options} = normalize(
+  test('extracts setupFilesAfterEnv from preset', async () => {
+    const {options} = await normalize(
       {
         preset: 'react-native',
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.setupFilesAfterEnv).toEqual(['/node_modules/b']);
@@ -1267,8 +1278,8 @@ describe('preset with globals', () => {
     jest.dontMock('/node_modules/global-foo/jest-preset.json');
   });
 
-  test('should merge the globals preset correctly', () => {
-    const {options} = normalize(
+  test('should merge the globals preset correctly', async () => {
+    const {options} = await normalize(
       {
         globals: {
           __DEV__: true,
@@ -1281,7 +1292,7 @@ describe('preset with globals', () => {
         preset: 'global-foo',
         rootDir: '/root/path/foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.globals).toEqual({
@@ -1322,14 +1333,14 @@ describe.each(['setupFiles', 'setupFilesAfterEnv'])(
       jest.dontMock('/node_modules/react-foo/jest-preset');
     });
 
-    it(`should normalize ${configKey} correctly`, () => {
-      const {options} = normalize(
+    it(`should normalize ${configKey} correctly`, async () => {
+      const {options} = await normalize(
         {
           [configKey]: ['a'],
           preset: 'react-foo',
           rootDir: '/root/path/foo',
         },
-        {},
+        {} as Config.Argv,
       );
 
       expect(options).toEqual(
@@ -1354,46 +1365,46 @@ describe('runner', () => {
     });
   });
 
-  it('defaults to `jest-runner`', () => {
-    const {options} = normalize({rootDir: '/root'}, {});
+  it('defaults to `jest-runner`', async () => {
+    const {options} = await normalize({rootDir: '/root'}, {});
 
     expect(options.runner).toBe('jest-runner');
   });
 
-  it('resolves to runners that do not have the prefix', () => {
-    const {options} = normalize(
+  it('resolves to runners that do not have the prefix', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root/',
         runner: 'my-runner-foo',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.runner).toBe('node_modules/my-runner-foo');
   });
 
-  it('resolves to runners and prefers jest-runner-`name`', () => {
-    const {options} = normalize(
+  it('resolves to runners and prefers jest-runner-`name`', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root/',
         runner: 'eslint',
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.runner).toBe('node_modules/jest-runner-eslint');
   });
 
-  it('throw error when a runner is not found', () => {
-    expect(() =>
+  it('throw error when a runner is not found', async () => {
+    await expect(
       normalize(
         {
           rootDir: '/root/',
           runner: 'missing-runner',
         },
-        {},
+        {} as Config.Argv,
       ),
-    ).toThrowErrorMatchingSnapshot();
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -1415,65 +1426,65 @@ describe('watchPlugins', () => {
     });
   });
 
-  it('defaults to undefined', () => {
-    const {options} = normalize({rootDir: '/root'}, {});
+  it('defaults to undefined', async () => {
+    const {options} = await normalize({rootDir: '/root'}, {});
 
     expect(options.watchPlugins).toEqual(undefined);
   });
 
-  it('resolves to watch plugins and prefers jest-watch-`name`', () => {
-    const {options} = normalize(
+  it('resolves to watch plugins and prefers jest-watch-`name`', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root/',
         watchPlugins: ['typeahead'],
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.watchPlugins).toEqual([
-      {config: {}, path: 'node_modules/jest-watch-typeahead'},
+      {config: {} as Config.Argv, path: 'node_modules/jest-watch-typeahead'},
     ]);
   });
 
-  it('resolves watch plugins that do not have the prefix', () => {
-    const {options} = normalize(
+  it('resolves watch plugins that do not have the prefix', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root/',
         watchPlugins: ['my-watch-plugin'],
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.watchPlugins).toEqual([
-      {config: {}, path: 'node_modules/my-watch-plugin'},
+      {config: {} as Config.Argv, path: 'node_modules/my-watch-plugin'},
     ]);
   });
 
-  it('normalizes multiple watchPlugins', () => {
-    const {options} = normalize(
+  it('normalizes multiple watchPlugins', async () => {
+    const {options} = await normalize(
       {
         rootDir: '/root/',
         watchPlugins: ['jest-watch-typeahead', '<rootDir>/path/to/plugin'],
       },
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.watchPlugins).toEqual([
-      {config: {}, path: 'node_modules/jest-watch-typeahead'},
-      {config: {}, path: '/root/path/to/plugin'},
+      {config: {} as Config.Argv, path: 'node_modules/jest-watch-typeahead'},
+      {config: {} as Config.Argv, path: '/root/path/to/plugin'},
     ]);
   });
 
-  it('throw error when a watch plugin is not found', () => {
-    expect(() =>
+  it('throw error when a watch plugin is not found', async () => {
+    await expect(
       normalize(
         {
           rootDir: '/root/',
           watchPlugins: ['missing-plugin'],
         },
-        {},
+        {} as Config.Argv,
       ),
-    ).toThrowErrorMatchingSnapshot();
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 });
 
@@ -1489,8 +1500,9 @@ describe('testPathPattern', () => {
     console.log = consoleLog;
   });
 
-  it('defaults to empty', () => {
-    const {options} = normalize(initialOptions, {});
+  it('defaults to empty', async () => {
+    const {options} = await normalize(initialOptions, {});
+
     expect(options.testPathPattern).toBe('');
   });
 
@@ -1500,32 +1512,34 @@ describe('testPathPattern', () => {
   ];
   for (const opt of cliOptions) {
     describe(opt.name, () => {
-      it('uses ' + opt.name + ' if set', () => {
-        const argv = {[opt.property]: ['a/b']};
-        const {options} = normalize(initialOptions, argv);
+      it('uses ' + opt.name + ' if set', async () => {
+        const argv = {[opt.property]: ['a/b']} as Config.Argv;
+        const {options} = await normalize(initialOptions, argv);
 
         expect(options.testPathPattern).toBe('a/b');
       });
 
-      it('ignores invalid regular expressions and logs a warning', () => {
-        const argv = {[opt.property]: ['a(']};
-        const {options} = normalize(initialOptions, argv);
+      it('ignores invalid regular expressions and logs a warning', async () => {
+        const argv = {[opt.property]: ['a(']} as Config.Argv;
+        const {options} = await normalize(initialOptions, argv);
 
         expect(options.testPathPattern).toBe('');
         expect(console.log.mock.calls[0][0]).toMatchSnapshot();
       });
 
-      it('joins multiple ' + opt.name + ' if set', () => {
-        const argv = {testPathPattern: ['a/b', 'c/d']};
-        const {options} = normalize(initialOptions, argv);
+      it('joins multiple ' + opt.name + ' if set', async () => {
+        const argv = {testPathPattern: ['a/b', 'c/d']} as Config.Argv;
+        const {options} = await normalize(initialOptions, argv);
 
         expect(options.testPathPattern).toBe('a/b|c/d');
       });
 
       describe('posix', () => {
-        it('should not escape the pattern', () => {
-          const argv = {[opt.property]: ['a\\/b', 'a/b', 'a\\b', 'a\\\\b']};
-          const {options} = normalize(initialOptions, argv);
+        it('should not escape the pattern', async () => {
+          const argv = {
+            [opt.property]: ['a\\/b', 'a/b', 'a\\b', 'a\\\\b'],
+          } as Config.Argv;
+          const {options} = await normalize(initialOptions, argv);
 
           expect(options.testPathPattern).toBe('a\\/b|a/b|a\\b|a\\\\b');
         });
@@ -1541,9 +1555,9 @@ describe('testPathPattern', () => {
           jest.resetModules();
         });
 
-        it('preserves any use of "\\"', () => {
+        it('preserves any use of "\\"', async () => {
           const argv = {[opt.property]: ['a\\b', 'c\\\\d']};
-          const {options} = require('../normalize').default(
+          const {options} = await require('../normalize').default(
             initialOptions,
             argv,
           );
@@ -1551,9 +1565,9 @@ describe('testPathPattern', () => {
           expect(options.testPathPattern).toBe('a\\b|c\\\\d');
         });
 
-        it('replaces POSIX path separators', () => {
+        it('replaces POSIX path separators', async () => {
           const argv = {[opt.property]: ['a/b']};
-          const {options} = require('../normalize').default(
+          const {options} = await require('../normalize').default(
             initialOptions,
             argv,
           );
@@ -1561,9 +1575,9 @@ describe('testPathPattern', () => {
           expect(options.testPathPattern).toBe('a\\\\b');
         });
 
-        it('replaces POSIX paths in multiple args', () => {
+        it('replaces POSIX paths in multiple args', async () => {
           const argv = {[opt.property]: ['a/b', 'c/d']};
-          const {options} = require('../normalize').default(
+          const {options} = await require('../normalize').default(
             initialOptions,
             argv,
           );
@@ -1571,9 +1585,9 @@ describe('testPathPattern', () => {
           expect(options.testPathPattern).toBe('a\\\\b|c\\\\d');
         });
 
-        it('coerces all patterns to strings', () => {
-          const argv = {[opt.property]: [1]};
-          const {options} = normalize(initialOptions, argv);
+        it('coerces all patterns to strings', async () => {
+          const argv = {[opt.property]: [1]} as Config.Argv;
+          const {options} = await normalize(initialOptions, argv);
 
           expect(options.testPathPattern).toBe('1');
         });
@@ -1581,27 +1595,27 @@ describe('testPathPattern', () => {
     });
   }
 
-  it('joins multiple --testPathPatterns and <regexForTestFiles>', () => {
-    const {options} = normalize(initialOptions, {
+  it('joins multiple --testPathPatterns and <regexForTestFiles>', async () => {
+    const {options} = await normalize(initialOptions, {
       _: ['a', 'b'],
       testPathPattern: ['c', 'd'],
-    });
+    } as Config.Argv);
     expect(options.testPathPattern).toBe('a|b|c|d');
   });
 
-  it('gives precedence to --all', () => {
-    const {options} = normalize(initialOptions, {
+  it('gives precedence to --all', async () => {
+    const {options} = await normalize(initialOptions, {
       all: true,
       onlyChanged: true,
-    });
+    } as Config.Argv);
 
     expect(options.onlyChanged).toBe(false);
   });
 });
 
 describe('moduleFileExtensions', () => {
-  it('defaults to something useful', () => {
-    const {options} = normalize({rootDir: '/root'}, {});
+  it('defaults to something useful', async () => {
+    const {options} = await normalize({rootDir: '/root'}, {} as Config.Argv);
 
     expect(options.moduleFileExtensions).toEqual([
       'js',
@@ -1613,49 +1627,50 @@ describe('moduleFileExtensions', () => {
     ]);
   });
 
-  it('throws if missing `js` but using jest-runner', () => {
-    [undefined, 'jest-runner'].forEach(runner =>
-      expect(() =>
+  it.each([undefined, 'jest-runner'])(
+    'throws if missing `js` but using jest-runner',
+    async runner => {
+      await expect(
         normalize(
           {
             moduleFileExtensions: ['json', 'jsx'],
             rootDir: '/root/',
             runner,
           },
-          {},
+          {} as Config.Argv,
         ),
-      ).toThrowError("moduleFileExtensions must include 'js'"),
-    );
-  });
+      ).rejects.toThrowError("moduleFileExtensions must include 'js'");
+    },
+  );
 
-  it('does not throw if missing `js` with a custom runner', () => {
-    expect(() =>
+  it('does not throw if missing `js` with a custom runner', async () => {
+    await expect(
       normalize(
         {
           moduleFileExtensions: ['json', 'jsx'],
           rootDir: '/root/',
           runner: './', // does not need to be a valid runner for this validation
         },
-        {},
+        {} as Config.Argv,
       ),
-    ).not.toThrow();
+    ).resolves.not.toThrow();
   });
 });
 
 describe('cwd', () => {
-  it('is set to process.cwd', () => {
-    const {options} = normalize({rootDir: '/root/'}, {});
+  it('is set to process.cwd', async () => {
+    const {options} = await normalize({rootDir: '/root/'}, {} as Config.Argv);
     expect(options.cwd).toBe(process.cwd());
   });
 
-  it('is not lost if the config has its own cwd property', () => {
+  it('is not lost if the config has its own cwd property', async () => {
     console.warn.mockImplementation(() => {});
-    const {options} = normalize(
+    const {options} = await normalize(
       {
         cwd: '/tmp/config-sets-cwd-itself',
         rootDir: '/root/',
-      },
-      {},
+      } as Config.InitialOptions,
+      {} as Config.Argv,
     );
     expect(options.cwd).toBe(process.cwd());
     expect(console.warn).toHaveBeenCalled();
@@ -1663,8 +1678,8 @@ describe('cwd', () => {
 });
 
 describe('Defaults', () => {
-  it('should be accepted by normalize', () => {
-    normalize({...Defaults, rootDir: '/root'}, {});
+  it('should be accepted by normalize', async () => {
+    await normalize({...Defaults, rootDir: '/root'}, {} as Config.Argv);
 
     expect(console.warn).not.toHaveBeenCalled();
   });
@@ -1679,16 +1694,16 @@ describe('displayName', () => {
     ${{color: 2, name: []}} | ${'using invalid values'}
   `(
     'should throw an error when displayName is $description',
-    ({displayName}) => {
-      expect(() => {
+    async ({displayName}) => {
+      await expect(
         normalize(
           {
             displayName,
             rootDir: '/root/',
           },
-          {},
-        );
-      }).toThrowErrorMatchingSnapshot();
+          {} as Config.Argv,
+        ),
+      ).rejects.toThrowErrorMatchingSnapshot();
     },
   );
 
@@ -1698,17 +1713,17 @@ describe('displayName', () => {
     'jest-runner-eslint',
     'jest-runner-tslint',
     'jest-runner-tsc',
-  ])('generates a default color for the runner %s', runner => {
+  ])('generates a default color for the runner %s', async runner => {
     virtualModuleRegexes.push(/jest-runner-.+/);
     const {
       options: {displayName},
-    } = normalize(
+    } = await normalize(
       {
         displayName: 'project',
         rootDir: '/root/',
         runner,
       },
-      {},
+      {} as Config.Argv,
     );
     expect(displayName.name).toBe('project');
     expect(displayName.color).toMatchSnapshot();
@@ -1716,50 +1731,59 @@ describe('displayName', () => {
 });
 
 describe('testTimeout', () => {
-  it('should return timeout value if defined', () => {
+  it('should return timeout value if defined', async () => {
     console.warn.mockImplementation(() => {});
-    const {options} = normalize({rootDir: '/root/', testTimeout: 1000}, {});
+    const {options} = await normalize(
+      {rootDir: '/root/', testTimeout: 1000},
+      {} as Config.Argv,
+    );
 
     expect(options.testTimeout).toBe(1000);
     expect(console.warn).not.toHaveBeenCalled();
   });
 
-  it('should throw an error if timeout is a negative number', () => {
-    expect(() =>
-      normalize({rootDir: '/root/', testTimeout: -1}, {}),
-    ).toThrowErrorMatchingSnapshot();
+  it('should throw an error if timeout is a negative number', async () => {
+    await expect(
+      normalize({rootDir: '/root/', testTimeout: -1}, {} as Config.Argv),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 });
 
 describe('extensionsToTreatAsEsm', () => {
-  function matchErrorSnapshot(callback) {
+  async function matchErrorSnapshot(callback) {
     expect.assertions(1);
 
     try {
-      callback();
+      await callback();
     } catch (error) {
       expect(wrap(stripAnsi(error.message).trim())).toMatchSnapshot();
     }
   }
 
-  it('should pass valid config through', () => {
-    const {options} = normalize(
+  it('should pass valid config through', async () => {
+    const {options} = await normalize(
       {extensionsToTreatAsEsm: ['.ts'], rootDir: '/root/'},
-      {},
+      {} as Config.Argv,
     );
 
     expect(options.extensionsToTreatAsEsm).toEqual(['.ts']);
   });
 
-  it('should enforce leading dots', () => {
-    matchErrorSnapshot(() =>
-      normalize({extensionsToTreatAsEsm: ['ts'], rootDir: '/root/'}, {}),
+  it('should enforce leading dots', async () => {
+    await matchErrorSnapshot(async () =>
+      normalize(
+        {extensionsToTreatAsEsm: ['ts'], rootDir: '/root/'},
+        {} as Config.Argv,
+      ),
     );
   });
 
-  it.each(['.js', '.mjs', '.cjs'])('throws on %s', ext => {
-    matchErrorSnapshot(() =>
-      normalize({extensionsToTreatAsEsm: [ext], rootDir: '/root/'}, {}),
+  it.each(['.js', '.mjs', '.cjs'])('throws on %s', async ext => {
+    await matchErrorSnapshot(async () =>
+      normalize(
+        {extensionsToTreatAsEsm: [ext], rootDir: '/root/'},
+        {} as Config.Argv,
+      ),
     );
   });
 });
