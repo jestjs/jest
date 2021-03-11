@@ -64,23 +64,25 @@ describe('Watch mode flows with changed files', () => {
       `,
     );
 
-    const config = normalize(
-      {
-        cache: false,
-        cacheDirectory,
-        coverageReporters: [],
-        maxConcurrency: 1,
-        maxWorkers: 1,
-        moduleDirectories: ['node_modules'],
-        onlyChanged: false,
-        reporters: [],
-        rootDir: testDirectory,
-        silent: true,
-        testRegex: ['watch-test-fake\\.test\\.js$'],
-        watch: false,
-        watchman: false,
-      },
-      {} as unknown,
+    const config = (
+      await normalize(
+        {
+          cache: false,
+          cacheDirectory,
+          coverageReporters: [],
+          maxConcurrency: 1,
+          maxWorkers: 1,
+          moduleDirectories: ['node_modules'],
+          onlyChanged: false,
+          reporters: [],
+          rootDir: testDirectory,
+          silent: true,
+          testRegex: ['watch-test-fake\\.test\\.js$'],
+          watch: false,
+          watchman: false,
+        },
+        {} as unknown,
+      )
     ).options;
 
     hasteMapInstance = await Runtime.createHasteMap(config, {
