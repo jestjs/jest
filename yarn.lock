@@ -2602,9 +2602,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@docusaurus/core@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/core@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/core@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/core@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
     "@babel/core": ^7.12.16
     "@babel/generator": ^7.12.15
@@ -2618,11 +2618,11 @@ __metadata:
     "@babel/runtime": ^7.12.5
     "@babel/runtime-corejs3": ^7.12.13
     "@babel/traverse": ^7.12.13
-    "@docusaurus/cssnano-preset": 2.0.0-alpha.f8884044f
+    "@docusaurus/cssnano-preset": 2.0.0-alpha.c32d8bd11
     "@docusaurus/react-loadable": 5.5.0
-    "@docusaurus/types": 2.0.0-alpha.f8884044f
-    "@docusaurus/utils": 2.0.0-alpha.f8884044f
-    "@docusaurus/utils-validation": 2.0.0-alpha.f8884044f
+    "@docusaurus/types": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/utils": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/utils-validation": 2.0.0-alpha.c32d8bd11
     "@endiliey/static-site-generator-webpack-plugin": ^4.0.0
     "@svgr/webpack": ^5.5.0
     autoprefixer: ^10.2.5
@@ -2689,29 +2689,29 @@ __metadata:
     react-dom: ^16.8.4 || ^17.0.0
   bin:
     docusaurus: bin/docusaurus.js
-  checksum: 75034d9326523a4618b9a13fecffb993a7d6b31b8824bd8d82395c41b8e42ccc0fb89a7f3e1a35b72b0f8c4ce7d8472bdca3f18189f474e896a65b4498d076b4
+  checksum: d5abfb3db264e980ac2905690c9cbcc3f677c995f604b992e0fce9e9f09683c906f40c10f2b24a018d56ce0aa99ee868dd3a05eb86a6ccbaf86bfad6c5f34dc5
   languageName: node
   linkType: hard
 
-"@docusaurus/cssnano-preset@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/cssnano-preset@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/cssnano-preset@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/cssnano-preset@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
     cssnano-preset-advanced: ^4.0.7
     postcss: ^7.0.2
     postcss-sort-media-queries: ^1.7.26
-  checksum: becde1a70b881ec74672adb6d165fb4e873486ee05e286bd0cac5908c882d9f3320e20b4675fe695c8e02e8303b61f768fca4d912a2b2c6b83266a108371620b
+  checksum: ffc6a3c916897f9eb16992edb52e513d5e5d2a1f6107382b2f332a4a486e05bde6f672555a170a5e589e53397e1313c7e568215b325d6b4f599fcfb6c3a121b0
   languageName: node
   linkType: hard
 
-"@docusaurus/mdx-loader@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/mdx-loader@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/mdx-loader@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/mdx-loader@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
     "@babel/parser": ^7.12.16
     "@babel/traverse": ^7.12.13
-    "@docusaurus/core": 2.0.0-alpha.f8884044f
-    "@docusaurus/utils": 2.0.0-alpha.f8884044f
+    "@docusaurus/core": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/utils": 2.0.0-alpha.c32d8bd11
     "@mdx-js/mdx": ^1.6.21
     "@mdx-js/react": ^1.6.21
     escape-html: ^1.0.3
@@ -2729,18 +2729,18 @@ __metadata:
   peerDependencies:
     react: ^16.8.4 || ^17.0.0
     react-dom: ^16.8.4 || ^17.0.0
-  checksum: 3c2d1aa2bd9d1e7e632c089227d8fc4a1ced882e89770c543f671aafd0a3df013544da12eaa8e26f5914b04dadcda40202e814c497e8c8feeca032a78b7bed88
+  checksum: bbb16da8ca57d5b1574d7ef4fb1829eb81e823017e9640d1592a171cbcffd8581291932447f3f99d79f38d715998b2d6c026a172eac57c9407e90f7799d68689
   languageName: node
   linkType: hard
 
-"@docusaurus/plugin-client-redirects@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/plugin-client-redirects@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/plugin-client-redirects@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/plugin-client-redirects@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
-    "@docusaurus/core": 2.0.0-alpha.f8884044f
-    "@docusaurus/types": 2.0.0-alpha.f8884044f
-    "@docusaurus/utils": 2.0.0-alpha.f8884044f
-    "@docusaurus/utils-validation": 2.0.0-alpha.f8884044f
+    "@docusaurus/core": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/types": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/utils": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/utils-validation": 2.0.0-alpha.c32d8bd11
     chalk: ^3.0.0
     eta: ^1.11.0
     fs-extra: ^9.1.0
@@ -2750,19 +2750,19 @@ __metadata:
   peerDependencies:
     react: ^16.8.4 || ^17.0.0
     react-dom: ^16.8.4 || ^17.0.0
-  checksum: db8f70b4a85dde0dcf5f36e30b06f3aa7d85e7eeee8021976f514fed2f29db99cb419a7843165aeeefe08d7196395098603e26f77cdc39394ce16b792adcd3e3
+  checksum: 90f95fe9dfa98068d3bd2afdecacc8c772780fc6d0461d05edb2cefd68e5ae8a454872fdcbe868bb96a6054854c171806f3ef284b1bea9be45fe6ebb9f073983
   languageName: node
   linkType: hard
 
-"@docusaurus/plugin-content-blog@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/plugin-content-blog@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/plugin-content-blog@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/plugin-content-blog@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
-    "@docusaurus/core": 2.0.0-alpha.f8884044f
-    "@docusaurus/mdx-loader": 2.0.0-alpha.f8884044f
-    "@docusaurus/types": 2.0.0-alpha.f8884044f
-    "@docusaurus/utils": 2.0.0-alpha.f8884044f
-    "@docusaurus/utils-validation": 2.0.0-alpha.f8884044f
+    "@docusaurus/core": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/mdx-loader": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/types": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/utils": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/utils-validation": 2.0.0-alpha.c32d8bd11
     chalk: ^4.1.0
     feed: ^4.2.2
     fs-extra: ^9.1.0
@@ -2776,19 +2776,19 @@ __metadata:
   peerDependencies:
     react: ^16.8.4 || ^17.0.0
     react-dom: ^16.8.4 || ^17.0.0
-  checksum: a48ff7e98e2732548ed5bd5e3cf1ad00249dee6c85814aa24ab0d93df4f4b130b453bc54e6365c5b5aa87678e495c85a03798d7482f6b0e6f30991fb4de95442
+  checksum: 093b478b95e61ad7486d130f520d57472a29866d3c47c74a156d989615e969318e583a622fa8c6b6a99d438aa6836e283777be0e3971112e7a6971c9b0df8567
   languageName: node
   linkType: hard
 
-"@docusaurus/plugin-content-docs@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/plugin-content-docs@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/plugin-content-docs@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/plugin-content-docs@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
-    "@docusaurus/core": 2.0.0-alpha.f8884044f
-    "@docusaurus/mdx-loader": 2.0.0-alpha.f8884044f
-    "@docusaurus/types": 2.0.0-alpha.f8884044f
-    "@docusaurus/utils": 2.0.0-alpha.f8884044f
-    "@docusaurus/utils-validation": 2.0.0-alpha.f8884044f
+    "@docusaurus/core": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/mdx-loader": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/types": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/utils": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/utils-validation": 2.0.0-alpha.c32d8bd11
     chalk: ^4.1.0
     execa: ^5.0.0
     fs-extra: ^9.1.0
@@ -2804,19 +2804,19 @@ __metadata:
   peerDependencies:
     react: ^16.8.4 || ^17.0.0
     react-dom: ^16.8.4 || ^17.0.0
-  checksum: 8dda70e389714e53b43c48a6ceb2a362e5af8f8e70a0dec6981ea2a1f6475abcb8a13f0deee77a3d33b80e1572fba1a2566c62900439249ae70a700e6a5b2a96
+  checksum: 46aad5e78759d2a290b099425a4a0ee05312ceb4594097d8931523700e6b0e368844cd9e35d88642305fefb3607671a779fb17d9fe0bd3aa08baa04e5149ca9e
   languageName: node
   linkType: hard
 
-"@docusaurus/plugin-content-pages@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/plugin-content-pages@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/plugin-content-pages@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/plugin-content-pages@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
-    "@docusaurus/core": 2.0.0-alpha.f8884044f
-    "@docusaurus/mdx-loader": 2.0.0-alpha.f8884044f
-    "@docusaurus/types": 2.0.0-alpha.f8884044f
-    "@docusaurus/utils": 2.0.0-alpha.f8884044f
-    "@docusaurus/utils-validation": 2.0.0-alpha.f8884044f
+    "@docusaurus/core": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/mdx-loader": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/types": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/utils": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/utils-validation": 2.0.0-alpha.c32d8bd11
     globby: ^11.0.2
     joi: ^17.4.0
     loader-utils: ^1.2.3
@@ -2828,57 +2828,57 @@ __metadata:
   peerDependencies:
     react: ^16.8.4 || ^17.0.0
     react-dom: ^16.8.4 || ^17.0.0
-  checksum: bee3d46c6c7890600200b952c754b85bcc4c04f30514eccecb149d132846e5a0757ecdcaee7b4ae3a102805ad1293a7dc9d1a6a1ac402749ac5ac36ebcc887ba
+  checksum: f0be19635a1910b996bf1b07783406908df8ec59a0f3d146cfa8fed815f335717d3083dca564a5169cc0e1387475b99f7f93a8e846afe773360b7175c95fd471
   languageName: node
   linkType: hard
 
-"@docusaurus/plugin-debug@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/plugin-debug@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/plugin-debug@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/plugin-debug@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
-    "@docusaurus/core": 2.0.0-alpha.f8884044f
-    "@docusaurus/types": 2.0.0-alpha.f8884044f
-    "@docusaurus/utils": 2.0.0-alpha.f8884044f
+    "@docusaurus/core": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/types": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/utils": 2.0.0-alpha.c32d8bd11
     react-json-view: ^1.21.1
   peerDependencies:
     react: ^16.8.4 || ^17.0.0
     react-dom: ^16.8.4 || ^17.0.0
-  checksum: 795d2967bd4ebcf4270f89bb9bbe3d337a7121d7fddbdb8faea5ed2bdd220e7ed154c0765c0ccfb574942b67dd49303b4ea5b8bf3bffe299375bd94d3837c90a
+  checksum: 57c70f3e3de64ec0c3115a741ace3d1f6c450c09ca50cbed1c9755fb36d3457f8a0d7eefc9fb9330f3120122d4c2cf0ce341e90336f538b6d25ea20d2e707758
   languageName: node
   linkType: hard
 
-"@docusaurus/plugin-google-analytics@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/plugin-google-analytics@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/plugin-google-analytics@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/plugin-google-analytics@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
-    "@docusaurus/core": 2.0.0-alpha.f8884044f
+    "@docusaurus/core": 2.0.0-alpha.c32d8bd11
   peerDependencies:
     react: ^16.8.4 || ^17.0.0
     react-dom: ^16.8.4 || ^17.0.0
-  checksum: b3e84baf464bd94e87a518d1135ba72de9bdd5ed2858eb4236ef9911ce7808817cb0e69a4f64b26c472d3e344c524c239645a6ef0906a998da3886c5bb238bf8
+  checksum: 03501732b52db830e883d46a85ff94f17cfd6e973cfad824f06e1f41ef0a5125438171bd4084733602f88ba8c969dbb6efd5449d0925db975796a52f1de52a35
   languageName: node
   linkType: hard
 
-"@docusaurus/plugin-google-gtag@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/plugin-google-gtag@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/plugin-google-gtag@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/plugin-google-gtag@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
-    "@docusaurus/core": 2.0.0-alpha.f8884044f
+    "@docusaurus/core": 2.0.0-alpha.c32d8bd11
   peerDependencies:
     react: ^16.8.4 || ^17.0.0
     react-dom: ^16.8.4 || ^17.0.0
-  checksum: 5adabad44f2b7792590220949d7e2d0345338ac673a3d4c10e1e271865e4895944f566a4ae7ffd1427dc9a66d401a870841328d72a6b4030ca9c4c7aeec315af
+  checksum: c885c83fdbaec187b6b1ce0643d838f608766a017fdd57540bd13120980d35bda59be0b61ed1b18ec1f5b235ce0b2e581509dd08df91ccd875ed359a86fcd558
   languageName: node
   linkType: hard
 
-"@docusaurus/plugin-pwa@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/plugin-pwa@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/plugin-pwa@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/plugin-pwa@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
     "@babel/plugin-proposal-nullish-coalescing-operator": ^7.12.13
     "@babel/plugin-proposal-optional-chaining": ^7.12.16
     "@babel/preset-env": ^7.12.16
-    "@docusaurus/core": 2.0.0-alpha.f8884044f
+    "@docusaurus/core": 2.0.0-alpha.c32d8bd11
     babel-loader: ^8.2.2
     clsx: ^1.1.1
     core-js: ^2.6.5
@@ -2886,51 +2886,51 @@ __metadata:
     terser-webpack-plugin: ^4.1.0
     webpack: ^4.44.1
     webpack-merge: ^4.2.2
-    workbox-build: ^6.1.0
-    workbox-precaching: ^6.1.0
-    workbox-window: ^6.1.0
+    workbox-build: ^6.1.1
+    workbox-precaching: ^6.1.1
+    workbox-window: ^6.1.1
   peerDependencies:
     react: ^16.8.4 || ^17.0.0
     react-dom: ^16.8.4 || ^17.0.0
-  checksum: f3c6c0e7e682b2d5a0d55e4170639c26bc99bc7e6ee325145f3e7b477bb852083a23dec02b4a2dbc070ff21dd94d0e522717c741e74ede3c3cef09b7c5ad66e6
+  checksum: 88a34319ecad9d50c0b78824b98025159f4b25b923ec2d484e681dc10674008817714e436b79137ea34fb2269fd5131f0139ad9b6ae49b51c98f5afcb6f618d2
   languageName: node
   linkType: hard
 
-"@docusaurus/plugin-sitemap@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/plugin-sitemap@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/plugin-sitemap@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/plugin-sitemap@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
-    "@docusaurus/core": 2.0.0-alpha.f8884044f
-    "@docusaurus/types": 2.0.0-alpha.f8884044f
-    "@docusaurus/utils": 2.0.0-alpha.f8884044f
+    "@docusaurus/core": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/types": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/utils": 2.0.0-alpha.c32d8bd11
     fs-extra: ^9.1.0
     joi: ^17.4.0
     sitemap: ^6.3.6
   peerDependencies:
     react: ^16.8.4 || ^17.0.0
     react-dom: ^16.8.4 || ^17.0.0
-  checksum: 808b94356754f3d84634640bb859df56ec71ebb5a81ca518d3a3107a32a45619a7e718240d40573cf9ff99dbd1c5b1e9a408e72898b96662e0067108f0d1ecd1
+  checksum: 1b8ae78d7c32e3dfde5e7f0c6b4d7292d90eaf3ee69f5d6d1ea108989eeea209b324925c0cbd320a9fb09b8c07201dab604c0e2f5929d4bf37e090a51a1c163d
   languageName: node
   linkType: hard
 
-"@docusaurus/preset-classic@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/preset-classic@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/preset-classic@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/preset-classic@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
-    "@docusaurus/core": 2.0.0-alpha.f8884044f
-    "@docusaurus/plugin-content-blog": 2.0.0-alpha.f8884044f
-    "@docusaurus/plugin-content-docs": 2.0.0-alpha.f8884044f
-    "@docusaurus/plugin-content-pages": 2.0.0-alpha.f8884044f
-    "@docusaurus/plugin-debug": 2.0.0-alpha.f8884044f
-    "@docusaurus/plugin-google-analytics": 2.0.0-alpha.f8884044f
-    "@docusaurus/plugin-google-gtag": 2.0.0-alpha.f8884044f
-    "@docusaurus/plugin-sitemap": 2.0.0-alpha.f8884044f
-    "@docusaurus/theme-classic": 2.0.0-alpha.f8884044f
-    "@docusaurus/theme-search-algolia": 2.0.0-alpha.f8884044f
+    "@docusaurus/core": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/plugin-content-blog": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/plugin-content-docs": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/plugin-content-pages": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/plugin-debug": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/plugin-google-analytics": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/plugin-google-gtag": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/plugin-sitemap": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/theme-classic": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/theme-search-algolia": 2.0.0-alpha.c32d8bd11
   peerDependencies:
     react: ^16.8.4 || ^17.0.0
     react-dom: ^16.8.4 || ^17.0.0
-  checksum: 07ba11e04f61ca6b8a22bfe254532e5381da208f4e97566d9eb341beb84805ae468f9b6703443414e3d0ffc6f533e6732c1b134d67e86a62086ea562d9d9901d
+  checksum: bf82dc4c0955f93ec0b8a281e8a13230c819e776e6199864e580daaaa097ad70cadd95fd2d46ede6319833884f062740d732d4eb8e528505d377047a4c1b9176
   languageName: node
   linkType: hard
 
@@ -2945,18 +2945,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@docusaurus/theme-classic@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/theme-classic@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/theme-classic@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/theme-classic@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
-    "@docusaurus/core": 2.0.0-alpha.f8884044f
-    "@docusaurus/plugin-content-blog": 2.0.0-alpha.f8884044f
-    "@docusaurus/plugin-content-docs": 2.0.0-alpha.f8884044f
-    "@docusaurus/plugin-content-pages": 2.0.0-alpha.f8884044f
-    "@docusaurus/theme-common": 2.0.0-alpha.f8884044f
-    "@docusaurus/types": 2.0.0-alpha.f8884044f
-    "@docusaurus/utils": 2.0.0-alpha.f8884044f
-    "@docusaurus/utils-validation": 2.0.0-alpha.f8884044f
+    "@docusaurus/core": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/plugin-content-blog": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/plugin-content-docs": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/plugin-content-pages": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/theme-common": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/types": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/utils": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/utils-validation": 2.0.0-alpha.c32d8bd11
     "@mdx-js/mdx": ^1.6.21
     "@mdx-js/react": ^1.6.21
     "@types/react-toggle": ^4.0.2
@@ -2979,34 +2979,34 @@ __metadata:
   peerDependencies:
     react: ^16.8.4 || ^17.0.0
     react-dom: ^16.8.4 || ^17.0.0
-  checksum: 6491bc1eb3b205c011ff2a17260d3b4b4975ca747e0fb70c1e0473cae221d8839d3b7cc0c5199d9ef2f860c082997b429ffc236cf3378fcb1ef2b00f9cb7fd10
+  checksum: b8391b6566770b7115447b3abd38fb7db2fb175332a53c96ddb461e5ac84bd780bb82e9cfdea87fe9f222878562295ebffe47923998d2f5390a773b3b47e76f7
   languageName: node
   linkType: hard
 
-"@docusaurus/theme-common@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/theme-common@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/theme-common@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/theme-common@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
-    "@docusaurus/core": 2.0.0-alpha.f8884044f
-    "@docusaurus/plugin-content-blog": 2.0.0-alpha.f8884044f
-    "@docusaurus/plugin-content-docs": 2.0.0-alpha.f8884044f
-    "@docusaurus/plugin-content-pages": 2.0.0-alpha.f8884044f
-    "@docusaurus/types": 2.0.0-alpha.f8884044f
+    "@docusaurus/core": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/plugin-content-blog": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/plugin-content-docs": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/plugin-content-pages": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/types": 2.0.0-alpha.c32d8bd11
   peerDependencies:
     react: ^16.8.4 || ^17.0.0
     react-dom: ^16.8.4 || ^17.0.0
-  checksum: f012f9f83e67e60175f5923ba5340fef597d0d78bca8a30beb1b142353dcc2009b7e0482ce4aaa08b3f2065b7024a02cf87e73c5e340a8c49fd02a31ddc14683
+  checksum: e52d00ecfd878753d72400409eb83cf8364030d863d82de1612d13dace70a96cf8ce329f37733c8d5d01f6ac290a1d256675ea6988b28be67f698e1bc07dba2b
   languageName: node
   linkType: hard
 
-"@docusaurus/theme-search-algolia@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/theme-search-algolia@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/theme-search-algolia@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/theme-search-algolia@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
     "@docsearch/react": ^3.0.0-alpha.33
-    "@docusaurus/core": 2.0.0-alpha.f8884044f
-    "@docusaurus/theme-common": 2.0.0-alpha.f8884044f
-    "@docusaurus/utils": 2.0.0-alpha.f8884044f
+    "@docusaurus/core": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/theme-common": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/utils": 2.0.0-alpha.c32d8bd11
     algoliasearch: ^4.8.4
     algoliasearch-helper: ^3.3.4
     clsx: ^1.1.1
@@ -3016,48 +3016,48 @@ __metadata:
   peerDependencies:
     react: ^16.8.4 || ^17.0.0
     react-dom: ^16.8.4 || ^17.0.0
-  checksum: d7f63f55dbc5312074754b925068d3f47d7ef36d24ba0b27ab9f8d9ba30c1c4bbd6d576c4ee67a49cfe76b4c4503a4e026928ec4d6a367acd83f8508cd7cc0e5
+  checksum: 7cd1152d55a954a19d605aaa3a481ba94f90f5121962e31bebf8649ef234ac17893d4ee771e8f5cc0b4841f584ebb6510a35bbb28c5635ca0ed0c9a3db7e2c4b
   languageName: node
   linkType: hard
 
-"@docusaurus/types@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/types@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/types@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/types@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
     "@types/webpack": ^4.41.0
     commander: ^5.1.0
     querystring: 0.2.0
     webpack-merge: ^4.2.2
-  checksum: 318a8b13c1f373d012bee2d9b179811a976c60241fd641a22202900f3000cfcfc6aaba5fb936e92803da191dfc96a3187b44c7c377ed07e718d9152540e9253c
+  checksum: a7d5801fbd3211d27334e5ccf687ddd63c8270557a0b1044d2304159e48f3882ea939b039d02b780b9e4d43330d20b1c61737d62798b33e99cf6872340032f9a
   languageName: node
   linkType: hard
 
-"@docusaurus/utils-validation@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/utils-validation@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/utils-validation@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/utils-validation@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
-    "@docusaurus/utils": 2.0.0-alpha.f8884044f
+    "@docusaurus/utils": 2.0.0-alpha.c32d8bd11
     chalk: ^4.1.0
     joi: ^17.4.0
-  checksum: 0d52525bf0e966bd2572819e675bdc2961a8ac4069be88bf2fbd2869a4e53a8c4fb2c97c5965db928535002fe481bc3fcd71a5e28d36b9c4eba08b05a8f179fe
+  checksum: c592cd946e4ee63f1f95312c53f1b9b05741e177977b92305512e8e4f4cd94072bac19d01a35188276eb48263d3bfa408bc056bcaf9a3bffe1319dd578cec3cc
   languageName: node
   linkType: hard
 
-"@docusaurus/utils@npm:2.0.0-alpha.f8884044f":
-  version: 2.0.0-alpha.f8884044f
-  resolution: "@docusaurus/utils@npm:2.0.0-alpha.f8884044f"
+"@docusaurus/utils@npm:2.0.0-alpha.c32d8bd11":
+  version: 2.0.0-alpha.c32d8bd11
+  resolution: "@docusaurus/utils@npm:2.0.0-alpha.c32d8bd11"
   dependencies:
-    "@docusaurus/types": 2.0.0-alpha.f8884044f
+    "@docusaurus/types": 2.0.0-alpha.c32d8bd11
     "@types/github-slugger": ^1.3.0
     chalk: ^4.1.0
     escape-string-regexp: ^4.0.0
     fs-extra: ^9.1.0
     gray-matter: ^4.0.2
     intl: ^1.2.5
-    intl-locales-supported: ^1.8.12
+    intl-locales-supported: 1.8.11
     lodash: ^4.17.20
     resolve-pathname: ^3.0.0
-  checksum: 2173d5dade7df462cfd5c81f3f406f8186d48861c9dca9ba5feb15e631602b3c5d239b77ef0e0e01ecb9a3fc39642ef277cc4643cad94b189638795cfd23b696
+  checksum: 067f509e8e0ab03f68a8a0489d953a31b5ab017ac4f387934e7cef7b3e8f054eb4d70802cace80fa927bc93a200cbfef01f54d8b4dd8130340dd424c848bd045
   languageName: node
   linkType: hard
 
@@ -10239,27 +10239,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-docusaurus-plugin-sass@^0.1.11:
-  version: 0.1.11
-  resolution: "docusaurus-plugin-sass@npm:0.1.11"
+"docusaurus-plugin-sass@npm:^0.1.12":
+  version: 0.1.12
+  resolution: "docusaurus-plugin-sass@npm:0.1.12"
   dependencies:
     node-sass: ^4.13.1
-    sass-loader: ^10.0.2
+    sass-loader: ^10.1.1
   peerDependencies:
     "@docusaurus/core": ^2.0.0
-  checksum: 2ac96c2d3afa4a73d96774cb59e814f53c22f3b6cfd96f7c844c503198bef0c22ca5b392f81870cf17df50c39b01f558f4f6d7757fab921973163d3a812b8c0d
-  languageName: node
-  linkType: hard
-
-"docusaurus-plugin-sass@patch:docusaurus-plugin-sass@^0.1.11#./patches/docusaurus-plugin-sass.diff::locator=jest-website%40workspace%3Awebsite":
-  version: 0.1.11
-  resolution: "docusaurus-plugin-sass@patch:docusaurus-plugin-sass@npm%3A0.1.11#./patches/docusaurus-plugin-sass.diff::version=0.1.11&hash=a015a8&locator=jest-website%40workspace%3Awebsite"
-  dependencies:
-    node-sass: ^4.13.1
-    sass-loader: ^10.0.2
-  peerDependencies:
-    "@docusaurus/core": ^2.0.0
-  checksum: de4d847cdf18f71d5c2b2594f213f80d596a762ba0ce540fa5ef954a5aa26352709db3bc6f0e64b9bddcb87b64eb5aa5c32e6808d11c56e82b7d130a9901fef0
+  checksum: 373c9a59b0d277446572cef6b788bc4f132e8655364b3e16854f2dfea68ec3900c16315209f41407a85fc67770d4b032835ba8d8c679b62c0eb4a7cdfb2be93e
   languageName: node
   linkType: hard
 
@@ -13860,10 +13848,10 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"intl-locales-supported@npm:^1.8.12":
-  version: 1.8.12
-  resolution: "intl-locales-supported@npm:1.8.12"
-  checksum: 8f612fdc1a60060e7933d9a5ca042dd72edba91477500a8dc4f01d6c250ac8c9dab84ee2c3a3998c5b6c01d3f041f0b1bef90b83b853702475358c8dfc78b69c
+"intl-locales-supported@npm:1.8.11":
+  version: 1.8.11
+  resolution: "intl-locales-supported@npm:1.8.11"
+  checksum: d22b46b95dd5122288fea0fe2110b50ec836fbe082c492db30f2468aaa9dd30f4162cc5455bbc5bad25b8d6bc12418e1c61b1699b0d15693e3b7ec896e9cf5b3
   languageName: node
   linkType: hard
 
@@ -15439,12 +15427,12 @@ fsevents@^1.2.7:
   resolution: "jest-website@workspace:website"
   dependencies:
     "@crowdin/cli": ^3.5.2
-    "@docusaurus/core": 2.0.0-alpha.f8884044f
-    "@docusaurus/plugin-client-redirects": 2.0.0-alpha.f8884044f
-    "@docusaurus/plugin-pwa": 2.0.0-alpha.f8884044f
-    "@docusaurus/preset-classic": 2.0.0-alpha.f8884044f
+    "@docusaurus/core": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/plugin-client-redirects": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/plugin-pwa": 2.0.0-alpha.c32d8bd11
+    "@docusaurus/preset-classic": 2.0.0-alpha.c32d8bd11
     clsx: ^1.1.1
-    docusaurus-plugin-sass: "patch:docusaurus-plugin-sass@^0.1.11#./patches/docusaurus-plugin-sass.diff"
+    docusaurus-plugin-sass: ^0.1.12
     fs-extra: ^9.0.1
     globby: ^11.0.1
     graphql: ^15.3.0
@@ -22126,7 +22114,7 @@ react-native@0.63.2:
   languageName: node
   linkType: hard
 
-"sass-loader@npm:^10.0.2":
+"sass-loader@npm:^10.1.1":
   version: 10.1.1
   resolution: "sass-loader@npm:10.1.1"
   dependencies:
@@ -25617,7 +25605,7 @@ react-native@0.63.2:
   languageName: node
   linkType: hard
 
-"workbox-build@npm:^6.1.0":
+"workbox-build@npm:^6.1.1":
   version: 6.1.1
   resolution: "workbox-build@npm:6.1.1"
   dependencies:
@@ -25708,7 +25696,7 @@ react-native@0.63.2:
   languageName: node
   linkType: hard
 
-"workbox-precaching@npm:^6.1.0, workbox-precaching@npm:^6.1.1":
+"workbox-precaching@npm:^6.1.1":
   version: 6.1.1
   resolution: "workbox-precaching@npm:6.1.1"
   dependencies:
@@ -25777,7 +25765,7 @@ react-native@0.63.2:
   languageName: node
   linkType: hard
 
-"workbox-window@npm:^6.1.0, workbox-window@npm:^6.1.1":
+"workbox-window@npm:^6.1.1":
   version: 6.1.1
   resolution: "workbox-window@npm:6.1.1"
   dependencies:
