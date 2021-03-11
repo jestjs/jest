@@ -59,6 +59,10 @@ class NodeEnvironment implements JestEnvironment {
     if (typeof queueMicrotask !== 'undefined') {
       global.queueMicrotask = queueMicrotask;
     }
+    // AbortController is global in Node >= 15
+    if (typeof AbortController !== 'undefined') {
+      global.AbortController = AbortController;
+    }
     installCommonGlobals(global, config.globals);
     this.moduleMocker = new ModuleMocker(global);
 
