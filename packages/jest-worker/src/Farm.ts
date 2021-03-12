@@ -71,8 +71,8 @@ export default class Farm {
       // retaine args for the closure.
       ((
         args: Array<unknown>,
-        resolve: null | ((value: unknown) => void),
-        reject: null | ((reason?: any) => void),
+        resolve: (value: unknown) => void,
+        reject: (reason?: any) => void,
       ) => {
         const computeWorkerKey = this._computeWorkerKey;
         const request: ChildMessage = [CHILD_MESSAGE_CALL, false, method, args];
@@ -94,14 +94,10 @@ export default class Farm {
         const onEnd: OnEnd = (error: Error | null, result: unknown) => {
           customMessageListeners.clear();
           if (error) {
-            reject?.(error);
+            reject(error);
           } else {
-            resolve?.(result);
+            resolve(result);
           }
-
-          // Delete reference to the Promise so its result can be garbage
-          // collected after calling this method.
-          reject = resolve = null;
         };
 
         const task = {onCustomMessage, onEnd, onStart, request};
