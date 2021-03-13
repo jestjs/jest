@@ -36,6 +36,7 @@ import {
   CallerTransformOptions,
   ScriptTransformer,
   ShouldInstrumentOptions,
+  TransformResult,
   TransformationOptions,
   handlePotentialSyntaxError,
   shouldInstrument,
@@ -389,7 +390,7 @@ export default class Runtime {
         return core;
       }
 
-      const transformedCode = this.transformFile(modulePath, {
+      const transformedCode = await this.transformFileAsync(modulePath, {
         isInternalModule: false,
         supportsDynamicImport: true,
         supportsExportNamespaceFrom: true,
@@ -1182,7 +1183,50 @@ export default class Runtime {
       return source;
     }
 
-    const transformedFile = this._scriptTransformer.transform(
+    let transformedFile: TransformResult | undefined = this._fileTransforms.get(
+      filename,
+    );
+
+    if (transformedFile) {
+      return transformedFile.code;
+    }
+
+    transformedFile = this._scriptTransformer.transform(
+      filename,
+      this._getFullTransformationOptions(options),
+      source,
+    );
+
+    this._fileTransforms.set(filename, {
+      ...transformedFile,
+      wrapperLength: this.constructModuleWrapperStart().length,
+    });
+
+    if (transformedFile.sourceMapPath) {
+      this._sourceMapRegistry.set(filename, transformedFile.sourceMapPath);
+    }
+    return transformedFile.code;
+  }
+
+  private async transformFileAsync(
+    filename: string,
+    options?: InternalModuleOptions,
+  ): Promise<string> {
+    const source = this.readFile(filename);
+
+    if (options?.isInternalModule) {
+      return source;
+    }
+
+    let transformedFile: TransformResult | undefined = this._fileTransforms.get(
+      filename,
+    );
+
+    if (transformedFile) {
+      return transformedFile.code;
+    }
+
+    transformedFile = await this._scriptTransformer.transformAsync(
       filename,
       this._getFullTransformationOptions(options),
       source,

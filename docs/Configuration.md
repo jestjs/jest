@@ -1299,6 +1299,8 @@ _Note: when adding additional code transformers, this will overwrite the default
 
 A transformer must be an object with at least a `process` function, and it's also recommended to include a `getCacheKey` function. If your transformer is written in ESM you should have a default export with that object.
 
+If the tests are written using [native ESM](ECMAScriptModules.md) the transformer can export `processAsync` and `getCacheKeyAsync` instead or in addition to the synchronous variants.
+
 ### `transformIgnorePatterns` \[array&lt;string&gt;]
 
 Default: `["/node_modules/", "\\.pnp\\.[^\\\/]+$"]`
