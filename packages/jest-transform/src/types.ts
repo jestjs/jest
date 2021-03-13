@@ -65,7 +65,7 @@ export interface TransformOptions<OptionType = unknown>
 
 export interface SyncTransformer<OptionType = unknown> {
   canInstrument?: boolean;
-  createTransformer?: (options?: OptionType) => SyncTransformer;
+  createTransformer?: (options?: OptionType) => SyncTransformer<OptionType>;
 
   getCacheKey?: (
     sourceText: string,
@@ -76,7 +76,7 @@ export interface SyncTransformer<OptionType = unknown> {
   getCacheKeyAsync?: (
     sourceText: string,
     sourcePath: Config.Path,
-    options: TransformOptions,
+    options: TransformOptions<OptionType>,
   ) => Promise<string>;
 
   process: (
@@ -88,37 +88,39 @@ export interface SyncTransformer<OptionType = unknown> {
   processAsync?: (
     sourceText: string,
     sourcePath: Config.Path,
-    options?: TransformOptions,
+    options: TransformOptions<OptionType>,
   ) => Promise<TransformedSource>;
 }
 
 export interface AsyncTransformer<OptionType = unknown> {
   canInstrument?: boolean;
-  createTransformer?: (options?: OptionType) => AsyncTransformer;
+  createTransformer?: (options?: OptionType) => AsyncTransformer<OptionType>;
 
   getCacheKey?: (
     sourceText: string,
     sourcePath: Config.Path,
-    options: TransformOptions,
+    options: TransformOptions<OptionType>,
   ) => string;
 
   getCacheKeyAsync?: (
     sourceText: string,
     sourcePath: Config.Path,
-    options: TransformOptions,
+    options: TransformOptions<OptionType>,
   ) => Promise<string>;
 
   process?: (
     sourceText: string,
     sourcePath: Config.Path,
-    options?: TransformOptions,
+    options: TransformOptions<OptionType>,
   ) => TransformedSource;
 
   processAsync: (
     sourceText: string,
     sourcePath: Config.Path,
-    options?: TransformOptions,
+    options: TransformOptions<OptionType>,
   ) => Promise<TransformedSource>;
 }
 
-export type Transformer = SyncTransformer | AsyncTransformer;
+export type Transformer<OptionType = unknown> =
+  | SyncTransformer<OptionType>
+  | AsyncTransformer<OptionType>;
