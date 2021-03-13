@@ -252,7 +252,7 @@ onNodeVersions('^12.17.0 || >=13.2.0', () => {
     });
   });
 
-  describe.only('async-transformer', () => {
+  describe('async-transformer', () => {
     const dir = path.resolve(__dirname, '../transform/async-transformer');
 
     it('should transform with transformer with only async transforms', () => {
