@@ -256,7 +256,9 @@ onNodeVersions('^12.17.0 || >=13.2.0', () => {
     const dir = path.resolve(__dirname, '../transform/async-transformer');
 
     it('should transform with transformer with only async transforms', () => {
-      const {json, stderr} = runWithJson(dir, ['--no-cache']);
+      const {json, stderr} = runWithJson(dir, ['--no-cache'], {
+        nodeOptions: '--experimental-vm-modules',
+      });
       expect(stderr).toMatch(/PASS/);
       expect(json.success).toBe(true);
       expect(json.numPassedTests).toBe(1);
