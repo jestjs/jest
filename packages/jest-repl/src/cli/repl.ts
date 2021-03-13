@@ -11,10 +11,11 @@ declare const jestProjectConfig: Config.ProjectConfig;
 import * as path from 'path';
 import * as repl from 'repl';
 import {runInThisContext} from 'vm';
-import type {Transformer} from '@jest/transform';
+import type {SyncTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 
-let transformer: Transformer;
+// TODO: support async as well
+let transformer: SyncTransformer;
 let transformerConfig: unknown;
 
 const evalCommand: repl.REPLEval = (

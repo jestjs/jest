@@ -14,6 +14,8 @@ export {default as shouldInstrument} from './shouldInstrument';
 export type {
   CallerTransformOptions,
   Transformer,
+  SyncTransformer,
+  AsyncTransformer,
   ShouldInstrumentOptions,
   Options as TransformationOptions,
   TransformOptions,

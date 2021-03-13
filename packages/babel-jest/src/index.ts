@@ -17,7 +17,7 @@ import * as fs from 'graceful-fs';
 import slash = require('slash');
 import type {
   TransformOptions as JestTransformOptions,
-  Transformer,
+  SyncTransformer,
 } from '@jest/transform';
 import type {Config} from '@jest/types';
 import {loadPartialConfig} from './loadBabelConfig';
@@ -26,7 +26,7 @@ const THIS_FILE = fs.readFileSync(__filename);
 const jestPresetPath = require.resolve('babel-preset-jest');
 const babelIstanbulPlugin = require.resolve('babel-plugin-istanbul');
 
-type CreateTransformer = Transformer<TransformOptions>['createTransformer'];
+type CreateTransformer = SyncTransformer<TransformOptions>['createTransformer'];
 
 const createTransformer: CreateTransformer = userOptions => {
   const inputOptions = userOptions ?? {};
@@ -160,7 +160,7 @@ const createTransformer: CreateTransformer = userOptions => {
   };
 };
 
-const transformer: Transformer<TransformOptions> = {
+const transformer: SyncTransformer<TransformOptions> = {
   ...createTransformer(),
   // Assigned here so only the exported transformer has `createTransformer`,
   // instead of all created transformers by the function
