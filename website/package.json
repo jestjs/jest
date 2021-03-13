@@ -31,7 +31,9 @@
     "react-markdown": "^5.0.3"
   },
   "devDependencies": {
+    "@babel/core": "^7.0.0",
     "@crowdin/cli": "^3.5.2",
+    "@types/react": "^17.0.3",
     "graphql": "^15.3.0",
     "graphql-request": "^3.1.0"
   }
