@@ -25,7 +25,7 @@ const ELEMENT_REGEXP = /^((HTML|SVG)\w*)?Element$/;
 const testHasAttribute = (val: any) => {
   try {
     return typeof val.hasAttribute === 'function' && val.hasAttribute('is');
-  } catch (_) {
+  } catch {
     return false;
   }
 };
