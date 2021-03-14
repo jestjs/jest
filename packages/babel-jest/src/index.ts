@@ -101,22 +101,66 @@ function getCacheKeyFromConfig(
     .digest('hex');
 }
 
-const createTransformer: CreateTransformer = userOptions => {
-  const inputOptions = userOptions ?? {};
+function loadBabelConfig(
+  cwd: Config.Path,
+  filename: Config.Path,
+  transformOptions: TransformOptions,
+): PartialConfig {
+  const babelConfig = loadPartialConfig(transformOptions);
 
+  assertLoadedBabelConfig(babelConfig, cwd, filename);
+
+  return babelConfig;
+}
+
+async function loadBabelConfigAsync(
+  cwd: Config.Path,
+  filename: Config.Path,
+  transformOptions: TransformOptions,
+): Promise<PartialConfig> {
+  const babelConfig = await loadPartialConfigAsync(transformOptions);
+
+  assertLoadedBabelConfig(babelConfig, cwd, filename);
+
+  return babelConfig;
+}
+
+function loadBabelOptions(
+  cwd: Config.Path,
+  filename: Config.Path,
+  transformOptions: TransformOptions,
+  jestTransformOptions: JestTransformOptions,
+): TransformOptions {
+  const {options} = loadBabelConfig(cwd, filename, transformOptions);
+
+  return addIstanbulInstrumentation(options, jestTransformOptions);
+}
+
+async function loadBabelOptionsAsync(
+  cwd: Config.Path,
+  filename: Config.Path,
+  transformOptions: TransformOptions,
+  jestTransformOptions: JestTransformOptions,
+): Promise<TransformOptions> {
+  const {options} = await loadBabelConfigAsync(cwd, filename, transformOptions);
+
+  return addIstanbulInstrumentation(options, jestTransformOptions);
+}
+
+const createTransformer: CreateTransformer = (userOptions = {}) => {
   const options = {
-    ...inputOptions,
+    ...userOptions,
     caller: {
       name: 'babel-jest',
       supportsDynamicImport: false,
       supportsExportNamespaceFrom: false,
       supportsStaticESM: false,
       supportsTopLevelAwait: false,
-      ...inputOptions.caller,
+      ...userOptions.caller,
     },
     compact: false,
-    plugins: inputOptions.plugins ?? [],
-    presets: (inputOptions.presets ?? []).concat(jestPresetPath),
+    plugins: userOptions.plugins ?? [],
+    presets: (userOptions.presets ?? []).concat(jestPresetPath),
     sourceMaps: 'both',
   } as const;
 
@@ -148,54 +192,14 @@ const createTransformer: CreateTransformer = userOptions => {
     };
   }
 
-  function loadBabelConfig(
-    filename: Config.Path,
-    transformOptions: JestTransformOptions,
-  ): PartialConfig {
-    const babelConfig = loadPartialConfig(
-      mergeBabelTransformOptions(filename, transformOptions),
-    );
-
-    assertLoadedBabelConfig(babelConfig, transformOptions.config.cwd, filename);
-
-    return babelConfig;
-  }
-
-  async function loadBabelConfigAsync(
-    filename: Config.Path,
-    transformOptions: JestTransformOptions,
-  ): Promise<PartialConfig> {
-    const babelConfig = await loadPartialConfigAsync(
-      mergeBabelTransformOptions(filename, transformOptions),
-    );
-
-    assertLoadedBabelConfig(babelConfig, transformOptions.config.cwd, filename);
-
-    return babelConfig;
-  }
-
-  function loadBabelOptions(
-    filename: Config.Path,
-    transformOptions: JestTransformOptions,
-  ): TransformOptions {
-    const {options} = loadBabelConfig(filename, transformOptions);
-
-    return addIstanbulInstrumentation(options, transformOptions);
-  }
-
-  async function loadBabelOptionsAsync(
-    filename: Config.Path,
-    transformOptions: JestTransformOptions,
-  ): Promise<TransformOptions> {
-    const {options} = await loadBabelConfigAsync(filename, transformOptions);
-
-    return addIstanbulInstrumentation(options, transformOptions);
-  }
-
   return {
     canInstrument: true,
     getCacheKey(sourceText, sourcePath, transformOptions) {
-      const babelOptions = loadBabelConfig(sourcePath, transformOptions);
+      const babelOptions = loadBabelConfig(
+        transformOptions.config.cwd,
+        sourcePath,
+        mergeBabelTransformOptions(sourcePath, transformOptions),
+      );
 
       return getCacheKeyFromConfig(
         sourceText,
@@ -206,8 +210,9 @@ const createTransformer: CreateTransformer = userOptions => {
     },
     async getCacheKeyAsync(sourceText, sourcePath, transformOptions) {
       const babelOptions = await loadBabelConfigAsync(
+        transformOptions.config.cwd,
         sourcePath,
-        transformOptions,
+        mergeBabelTransformOptions(sourcePath, transformOptions),
       );
 
       return getCacheKeyFromConfig(
@@ -218,7 +223,12 @@ const createTransformer: CreateTransformer = userOptions => {
       );
     },
     process(sourceText, sourcePath, transformOptions) {
-      const babelOptions = loadBabelOptions(sourcePath, transformOptions);
+      const babelOptions = loadBabelOptions(
+        transformOptions.config.cwd,
+        sourcePath,
+        mergeBabelTransformOptions(sourcePath, transformOptions),
+        transformOptions,
+      );
 
       const transformResult = babelTransform(sourceText, babelOptions);
 
@@ -233,7 +243,9 @@ const createTransformer: CreateTransformer = userOptions => {
     },
     async processAsync(sourceText, sourcePath, transformOptions) {
       const babelOptions = await loadBabelOptionsAsync(
+        transformOptions.config.cwd,
         sourcePath,
+        mergeBabelTransformOptions(sourcePath, transformOptions),
         transformOptions,
       );
 
