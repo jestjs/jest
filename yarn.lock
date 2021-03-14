@@ -14641,6 +14641,7 @@ fsevents@^1.2.7:
     "@types/node": "*"
     "@types/supports-color": ^7.2.0
     get-stream: ^6.0.0
+    jest-leak-detector: ^27.0.0-next.3
     merge-stream: ^2.0.0
     supports-color: ^8.0.0
     worker-farm: ^1.6.0
