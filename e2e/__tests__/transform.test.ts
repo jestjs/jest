@@ -264,4 +264,21 @@ onNodeVersions('^12.17.0 || >=13.2.0', () => {
       expect(json.numPassedTests).toBe(1);
     });
   });
+
+  describe('babel-jest-async', () => {
+    const dir = path.resolve(__dirname, '../transform/babel-jest-async');
+
+    beforeAll(() => {
+      runYarnInstall(dir);
+    });
+
+    it("should use babel-jest's async transforms", () => {
+      const {json, stderr} = runWithJson(dir, ['--no-cache'], {
+        nodeOptions: '--experimental-vm-modules',
+      });
+      expect(stderr).toMatch(/PASS/);
+      expect(json.success).toBe(true);
+      expect(json.numPassedTests).toBe(1);
+    });
+  });
 });
