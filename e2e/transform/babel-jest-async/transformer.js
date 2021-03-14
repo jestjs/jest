@@ -9,7 +9,7 @@ import {fileURLToPath} from 'url';
 import babelJest from 'babel-jest';
 
 export default {
-  ...babelJest.createTransformer({
+  ...babelJest.default.createTransformer({
     presets: ['@babel/preset-flow'],
     root: fileURLToPath(import.meta.url),
   }),

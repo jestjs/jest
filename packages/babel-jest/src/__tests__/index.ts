@@ -6,7 +6,7 @@
  */
 
 import {makeProjectConfig} from '@jest/test-utils';
-import babelJest = require('../index');
+import babelJest from '../index';
 import {loadPartialConfig} from '../loadBabelConfig';
 
 jest.mock('../loadBabelConfig', () => {

@@ -255,7 +255,7 @@ class ScriptTransformer {
           let transformer: Transformer;
 
           try {
-            transformer = require(transformPath);
+            transformer = interopRequireDefault(require(transformPath)).default;
           } catch (error) {
             if (error.code === 'ERR_REQUIRE_ESM') {
               const configUrl = pathToFileURL(transformPath);
