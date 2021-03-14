@@ -147,20 +147,22 @@ async function loadBabelOptionsAsync(
   return addIstanbulInstrumentation(options, jestTransformOptions);
 }
 
-const createTransformer: CreateTransformer = (userOptions = {}) => {
+const createTransformer: CreateTransformer = userOptions => {
+  const inputOptions = userOptions ?? {};
+
   const options = {
-    ...userOptions,
+    ...inputOptions,
     caller: {
       name: 'babel-jest',
       supportsDynamicImport: false,
       supportsExportNamespaceFrom: false,
       supportsStaticESM: false,
       supportsTopLevelAwait: false,
-      ...userOptions.caller,
+      ...inputOptions.caller,
     },
     compact: false,
-    plugins: userOptions.plugins ?? [],
-    presets: (userOptions.presets ?? []).concat(jestPresetPath),
+    plugins: inputOptions.plugins ?? [],
+    presets: (inputOptions.presets ?? []).concat(jestPresetPath),
     sourceMaps: 'both',
   } as const;
 
