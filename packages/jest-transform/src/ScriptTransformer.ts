@@ -7,7 +7,6 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import {pathToFileURL} from 'url';
 import {transformSync as babelTransform} from '@babel/core';
 // @ts-expect-error: should just be `require.resolve`, but the tests mess that up
 import babelPluginIstanbul from 'babel-plugin-istanbul';
@@ -21,6 +20,7 @@ import type {Config} from '@jest/types';
 import HasteMap from 'jest-haste-map';
 import {
   createDirectory,
+  importModule,
   interopRequireDefault,
   isPromise,
   tryRealpath,
@@ -252,28 +252,7 @@ class ScriptTransformer {
     await Promise.all(
       this._config.transform.map(
         async ([, transformPath, transformerConfig]) => {
-          let transformer: Transformer;
-
-          try {
-            transformer = interopRequireDefault(require(transformPath)).default;
-          } catch (error) {
-            if (error.code === 'ERR_REQUIRE_ESM') {
-              const configUrl = pathToFileURL(transformPath);
-
-              // node `import()` supports URL, but TypeScript doesn't know that
-              const importedConfig = await import(configUrl.href);
-
-              if (!importedConfig.default) {
-                throw new Error(
-                  `Jest: Failed to load ESM transformer at ${transformPath} - did you use a default export?`,
-                );
-              }
-
-              transformer = importedConfig.default;
-            } else {
-              throw error;
-            }
-          }
+          let transformer: Transformer = await importModule(transformPath);
 
           if (!transformer) {
             throw new TypeError('Jest: a transform must export something.');
