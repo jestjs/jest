@@ -20,7 +20,6 @@
 - `[jest-runner]` [**BREAKING**] set exit code to 1 if test logs after teardown ([#10728](https://github.com/facebook/jest/pull/10728))
 - `[jest-runner]` [**BREAKING**] Run transforms over `runnner` ([#8823](https://github.com/facebook/jest/pull/8823))
 - `[jest-runner]` [**BREAKING**] Run transforms over `testRunnner` ([#8823](https://github.com/facebook/jest/pull/8823))
-- `[jest-runtime, jest-transform]` share `cacheFS` between runtime and transformer ([#10901](https://github.com/facebook/jest/pull/10901))
 - `[jest-runtime]` Support for async code transformations ([#11191](https://github.com/facebook/jest/pull/11191))
 - `[jest-reporters]` Add static filepath property to all reporters ([#11015](https://github.com/facebook/jest/pull/11015))
 - `[jest-snapshot]` [**BREAKING**] Make prettier optional for inline snapshots - fall back to string replacement ([#7792](https://github.com/facebook/jest/pull/7792))
@@ -96,11 +95,12 @@
 - `[jest-runtime]` Detect reexports from CJS as named exports in ESM ([#10988](https://github.com/facebook/jest/pull/10988))
 - `[jest-transformer]` [**BREAKING**] Remove unused `isCoreModule` option ([#11166](https://github.com/facebook/jest/pull/11166))
 - `[jest-util]` No longer checking `enumerable` when adding `process.domain` ([#10862](https://github.com/facebook/jest/pull/10862))
-- `[jest-validate]` [**BREAKING**] Remove `recursiveBlacklist ` option in favor of previously introduced `recursiveDenylist` ([#10650](https://github.com/facebook/jest/pull/10650))
+- `[jest-validate]` [**BREAKING**] Remove `recursiveBlacklist` option in favor of previously introduced `recursiveDenylist` ([#10650](https://github.com/facebook/jest/pull/10650))
 
 ### Performance
 
 - `[jest-resolve]` Cache reading and parsing of `package.json`s ([#11076](https://github.com/facebook/jest/pull/11076))
+- `[jest-runtime, jest-transform]` share `cacheFS` between runtime and transformer ([#10901](https://github.com/facebook/jest/pull/10901))
 - `[jest-runtime]` Load `chalk` only once per worker ([#10864](https://github.com/facebook/jest/pull/10864))
 
 ## 26.6.3
