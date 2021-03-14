@@ -1488,17 +1488,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-strict-mode@npm:^7.0.0":
-  version: 7.12.13
-  resolution: "@babel/plugin-transform-strict-mode@npm:7.12.13"
-  dependencies:
-    "@babel/helper-plugin-utils": ^7.12.13
-  peerDependencies:
-    "@babel/core": ^7.0.0-0
-  checksum: fa40e3296d8c5777f42b0437955ff44c2de18e400a152b27b2525dc31c35686a063f54fee0ef3e85613785e6687b8d73b96a4229ed288e521c2d88d4f96d1fee
-  languageName: node
-  linkType: hard
-
 "@babel/plugin-transform-template-literals@npm:^7.0.0, @babel/plugin-transform-template-literals@npm:^7.13.0":
   version: 7.13.0
   resolution: "@babel/plugin-transform-template-literals@npm:7.13.0"
@@ -2538,7 +2527,6 @@ __metadata:
     "@babel/core": ^7.3.4
     "@babel/plugin-proposal-class-properties": ^7.3.4
     "@babel/plugin-transform-modules-commonjs": ^7.1.0
-    "@babel/plugin-transform-strict-mode": ^7.0.0
     "@babel/preset-env": ^7.1.0
     "@babel/preset-react": ^7.0.0
     "@babel/preset-typescript": ^7.0.0
