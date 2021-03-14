@@ -13,6 +13,7 @@ import * as repl from 'repl';
 import {runInThisContext} from 'vm';
 import type {SyncTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
+import {interopRequireDefault} from 'jest-util';
 
 // TODO: support async as well
 let transformer: SyncTransformer;
@@ -77,7 +78,7 @@ if (jestProjectConfig.transform) {
     }
   }
   if (transformerPath) {
-    transformer = require(transformerPath);
+    transformer = interopRequireDefault(require(transformerPath)).default;
     if (typeof transformer.process !== 'function') {
       throw new TypeError(
         'Jest: a transformer must export a `process` function.',
