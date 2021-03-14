@@ -64,7 +64,6 @@
 - `[jest-worker]` Handle `ERR_IPC_CHANNEL_CLOSED` errors properly ([#11143](https://github.com/facebook/jest/pull/11143))
 - `[pretty-format]` [**BREAKING**] Convert to ES Modules ([#10515](https://github.com/facebook/jest/pull/10515))
 - `[pretty-format]` Only call `hasAttribute` if it's a function ([#11000](https://github.com/facebook/jest/pull/11000))
-- `[jest-worker]` Fix memory leaks of jest-worker ([#11187](https://github.com/facebook/jest/pull/11187))
 
 ### Chore & Maintenance
 
@@ -97,6 +96,7 @@
 
 - `[jest-resolve]` Cache reading and parsing of `package.json`s ([#11076](https://github.com/facebook/jest/pull/11076))
 - `[jest-runtime]` Load `chalk` only once per worker ([#10864](https://github.com/facebook/jest/pull/10864))
+- `[jest-worker]` Fix memory leak of previous task arguments while no new task is scheduled ([#11187](https://github.com/facebook/jest/pull/11187))
 
 ## 26.6.3
 
