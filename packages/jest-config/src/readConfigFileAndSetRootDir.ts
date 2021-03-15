@@ -6,11 +6,10 @@
  */
 
 import * as path from 'path';
-import {pathToFileURL} from 'url';
 import * as fs from 'graceful-fs';
 import type {Register} from 'ts-node';
 import type {Config} from '@jest/types';
-import {interopRequireDefault} from 'jest-util';
+import {interopRequireDefault, requireOrImportModule} from 'jest-util';
 import {
   JEST_CONFIG_EXT_JSON,
   JEST_CONFIG_EXT_TS,
@@ -35,33 +34,10 @@ export default async function readConfigFileAndSetRootDir(
     if (isTS) {
       configObject = await loadTSConfigFile(configPath);
     } else {
-      configObject = require(configPath);
+      configObject = await requireOrImportModule<any>(configPath);
     }
   } catch (error) {
-    if (error.code === 'ERR_REQUIRE_ESM') {
-      try {
-        const configUrl = pathToFileURL(configPath);
-
-        // node `import()` supports URL, but TypeScript doesn't know that
-        const importedConfig = await import(configUrl.href);
-
-        if (!importedConfig.default) {
-          throw new Error(
-            `Jest: Failed to load mjs config file ${configPath} - did you use a default export?`,
-          );
-        }
-
-        configObject = importedConfig.default;
-      } catch (innerError) {
-        if (innerError.message === 'Not supported') {
-          throw new Error(
-            `Jest: Your version of Node does not support dynamic import - please enable it or use a .cjs file extension for file ${configPath}`,
-          );
-        }
-
-        throw innerError;
-      }
-    } else if (isJSON) {
+    if (isJSON) {
       throw new Error(
         `Jest: Failed to parse config file ${configPath}\n` +
           `  ${jsonlint.errors(fs.readFileSync(configPath, 'utf8'))}`,
