@@ -1,7 +1,9 @@
 import {pathToFileURL} from 'url';
 import interopRequireDefault from './interopRequireDefault';
 
-export default async function importModule<T>(filePath: string): Promise<T> {
+export default async function requireOrImportModule<T>(
+  filePath: string,
+): Promise<T> {
   let module: T;
   try {
     module = interopRequireDefault(require(filePath)).default;

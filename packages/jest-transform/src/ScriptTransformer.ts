@@ -20,9 +20,9 @@ import type {Config} from '@jest/types';
 import HasteMap from 'jest-haste-map';
 import {
   createDirectory,
-  importModule,
   interopRequireDefault,
   isPromise,
+  requireOrImportModule,
   tryRealpath,
 } from 'jest-util';
 import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';
@@ -252,7 +252,9 @@ class ScriptTransformer {
     await Promise.all(
       this._config.transform.map(
         async ([, transformPath, transformerConfig]) => {
-          let transformer: Transformer = await importModule(transformPath);
+          let transformer: Transformer = await requireOrImportModule(
+            transformPath,
+          );
 
           if (!transformer) {
             throw new TypeError('Jest: a transform must export something.');
