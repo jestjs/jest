@@ -1,8 +1,9 @@
 import {pathToFileURL} from 'url';
+import type {Config} from '@jest/types';
 import interopRequireDefault from './interopRequireDefault';
 
 export default async function requireOrImportModule<T>(
-  filePath: string,
+  filePath: Config.Path,
 ): Promise<T> {
   let module: T;
   try {
