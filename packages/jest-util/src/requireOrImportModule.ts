@@ -1,3 +1,4 @@
+import {isAbsolute} from 'path';
 import {pathToFileURL} from 'url';
 import type {Config} from '@jest/types';
 import interopRequireDefault from './interopRequireDefault';
@@ -6,6 +7,9 @@ export default async function requireOrImportModule<T>(
   filePath: Config.Path,
 ): Promise<T> {
   let module: T;
+  if (!isAbsolute(filePath) && filePath[0] === '.') {
+    throw new Error(`Jest: requireOrImportModule path must be absolute`);
+  }
   try {
     module = interopRequireDefault(require(filePath)).default;
   } catch (error) {
