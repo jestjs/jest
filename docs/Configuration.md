@@ -616,7 +616,7 @@ Specifies notification mode. Requires `notify: true`.
 
 Default: `undefined`
 
-A preset that is used as a base for Jest's configuration. A preset should point to an npm module that has a `jest-preset.json` or `jest-preset.js` file at the root.
+A preset that is used as a base for Jest's configuration. A preset should point to an npm module that has a `jest-preset.json`, `jest-preset.js`, `jest-preset.cjs` or `jest-preset.mjs` file at the root.
 
 For example, this preset `foo-bar/jest-preset.js` will be configured as follows:
 

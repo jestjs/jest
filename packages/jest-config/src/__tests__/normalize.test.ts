@@ -10,7 +10,7 @@ import {createHash} from 'crypto';
 import path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import stripAnsi from 'strip-ansi';
-import {Config} from '@jest/types';
+import type {Config} from '@jest/types';
 import {escapeStrForRegex} from 'jest-regex-util';
 import Defaults from '../Defaults';
 import {DEFAULT_JS_PATTERN} from '../constants';
@@ -29,13 +29,13 @@ jest
     };
   });
 
-let root;
-let expectedPathFooBar;
-let expectedPathFooQux;
-let expectedPathAbs;
-let expectedPathAbsAnother;
+let root: string;
+let expectedPathFooBar: string;
+let expectedPathFooQux: string;
+let expectedPathAbs: string;
+let expectedPathAbsAnother: string;
 
-let virtualModuleRegexes;
+let virtualModuleRegexes: Array<RegExp>;
 beforeEach(() => (virtualModuleRegexes = [/jest-circus/, /babel-jest/]));
 const findNodeModule = jest.fn(name => {
   if (virtualModuleRegexes.some(regex => regex.test(name))) {
@@ -47,7 +47,7 @@ const findNodeModule = jest.fn(name => {
 // Windows uses backslashes for path separators, which need to be escaped in
 // regular expressions. This little helper function helps us generate the
 // expected strings for checking path patterns.
-function joinForPattern(...args) {
+function joinForPattern(...args: Array<string>) {
   return args.join(escapeStrForRegex(path.sep));
 }
 
@@ -64,7 +64,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  console.warn.mockRestore();
+  ((console.warn as unknown) as jest.SpyInstance).mockRestore();
 });
 
 it('picks a name based on the rootDir', async () => {
@@ -148,7 +148,9 @@ describe('rootDir', () => {
 
 describe('automock', () => {
   it('falsy automock is not overwritten', async () => {
-    console.warn.mockImplementation(() => {});
+    ((console.warn as unknown) as jest.SpyInstance).mockImplementation(
+      () => {},
+    );
     const {options} = await normalize(
       {
         automock: false,
@@ -174,7 +176,7 @@ describe('collectCoverageOnlyFrom', () => {
       {} as Config.Argv,
     );
 
-    const expected = {};
+    const expected = Object.create(null);
     expected[expectedPathFooBar] = true;
     expected[expectedPathFooQux] = true;
 
@@ -193,7 +195,7 @@ describe('collectCoverageOnlyFrom', () => {
       {} as Config.Argv,
     );
 
-    const expected = {};
+    const expected = Object.create(null);
     expected[expectedPathAbs] = true;
     expected[expectedPathAbsAnother] = true;
 
@@ -211,7 +213,7 @@ describe('collectCoverageOnlyFrom', () => {
       {} as Config.Argv,
     );
 
-    const expected = {};
+    const expected = Object.create(null);
     expected[expectedPathFooBar] = true;
 
     expect(options.collectCoverageOnlyFrom).toEqual(expected);
@@ -268,7 +270,7 @@ describe('findRelatedTests', () => {
   });
 });
 
-function testPathArray(key) {
+function testPathArray(key: string) {
   it('normalizes all paths relative to rootDir', async () => {
     const {options} = await normalize(
       {
@@ -430,7 +432,9 @@ describe('setupTestFrameworkScriptFile', () => {
   let Resolver;
 
   beforeEach(() => {
-    console.warn.mockImplementation(() => {});
+    ((console.warn as unknown) as jest.SpyInstance).mockImplementation(
+      () => {},
+    );
     Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name =>
       name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
@@ -446,7 +450,9 @@ describe('setupTestFrameworkScriptFile', () => {
       {} as Config.Argv,
     );
 
-    expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+    expect(
+      ((console.warn as unknown) as jest.SpyInstance).mock.calls[0][0],
+    ).toMatchSnapshot();
   });
 
   it('logs an error when `setupTestFrameworkScriptFile` and `setupFilesAfterEnv` are used', async () => {
@@ -819,7 +825,9 @@ describe('babel-jest', () => {
 
 describe('Upgrade help', () => {
   beforeEach(() => {
-    console.warn.mockImplementation(() => {});
+    ((console.warn as unknown) as jest.SpyInstance).mockImplementation(
+      () => {},
+    );
 
     const Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name => {
@@ -846,11 +854,13 @@ describe('Upgrade help', () => {
       joinForPattern('qux', 'quux'),
     ]);
 
-    expect(options.scriptPreprocessor).toBe(undefined);
-    expect(options.preprocessorIgnorePatterns).toBe(undefined);
+    expect(options).not.toHaveProperty('scriptPreprocessor');
+    expect(options).not.toHaveProperty('preprocessorIgnorePatterns');
     expect(hasDeprecationWarnings).toBeTruthy();
 
-    expect(console.warn.mock.calls[0][0]).toMatchSnapshot();
+    expect(
+      ((console.warn as unknown) as jest.SpyInstance).mock.calls[0][0],
+    ).toMatchSnapshot();
   });
 });
 
@@ -976,6 +986,14 @@ describe('preset', () => {
         return '/node_modules/react-native-js-preset/jest-preset.js';
       }
 
+      if (name === 'cjs-preset/jest-preset') {
+        return '/node_modules/cjs-preset/jest-preset.cjs';
+      }
+
+      if (name === 'mjs-preset/jest-preset') {
+        return '/node_modules/mjs-preset/jest-preset.mjs';
+      }
+
       if (name.includes('doesnt-exist')) {
         return null;
       }
@@ -1002,29 +1020,20 @@ describe('preset', () => {
       }),
       {virtual: true},
     );
-    jest.mock(
-      '/node_modules/with-json-ext/jest-preset.json',
+    jest.doMock(
+      '/node_modules/cjs-preset/jest-preset.cjs',
       () => ({
         moduleNameMapper: {
-          json: true,
+          cjs: true,
         },
       }),
       {virtual: true},
     );
-    jest.mock(
-      '/node_modules/with-js-ext/jest-preset.js',
+    jest.doMock(
+      '/node_modules/mjs-preset/jest-preset.mjs',
       () => ({
         moduleNameMapper: {
-          js: true,
-        },
-      }),
-      {virtual: true},
-    );
-    jest.mock(
-      '/node_modules/exist-but-no-jest-preset/index.js',
-      () => ({
-        moduleNameMapper: {
-          js: true,
+          mjs: true,
         },
       }),
       {virtual: true},
@@ -1033,6 +1042,9 @@ describe('preset', () => {
 
   afterEach(() => {
     jest.dontMock('/node_modules/react-native/jest-preset.json');
+    jest.dontMock('/node_modules/react-native-js-preset/jest-preset.js');
+    jest.dontMock('/node_modules/cjs-preset/jest-preset.cjs');
+    jest.dontMock('/node_modules/mjs-preset/jest-preset.mjs');
   });
 
   test('throws when preset not found', async () => {
@@ -1136,7 +1148,34 @@ describe('preset', () => {
     ).resolves.not.toThrow();
   });
 
-  test('searches for .json and .js preset files', async () => {
+  test.each(['react-native-js-preset', 'cjs-preset'])(
+    'works with cjs preset',
+    async presetName => {
+      await expect(
+        normalize(
+          {
+            preset: presetName,
+            rootDir: '/root/path/foo',
+          },
+          {} as Config.Argv,
+        ),
+      ).resolves.not.toThrow();
+    },
+  );
+
+  test('works with esm preset', async () => {
+    await expect(
+      normalize(
+        {
+          preset: 'mjs-preset',
+          rootDir: '/root/path/foo',
+        },
+        {} as Config.Argv,
+      ),
+    ).resolves.not.toThrow();
+  });
+
+  test('searches for .json, .js, .cjs, .mjs preset files', async () => {
     const Resolver = require('jest-resolve').default;
 
     await normalize(
@@ -1148,7 +1187,7 @@ describe('preset', () => {
     );
 
     const options = Resolver.findNodeModule.mock.calls[0][1];
-    expect(options.extensions).toEqual(['.json', '.js']);
+    expect(options.extensions).toEqual(['.json', '.js', '.cjs', '.mjs']);
   });
 
   test('merges with options', async () => {
@@ -1188,7 +1227,7 @@ describe('preset', () => {
     // Object initializer not used for properties as a workaround for
     //  sort-keys eslint rule while specifying properties in
     //  non-alphabetical order for a better test
-    const moduleNameMapper = {};
+    const moduleNameMapper = {} as Record<string, string>;
     moduleNameMapper.e = 'ee';
     moduleNameMapper.b = 'bb';
     moduleNameMapper.c = 'cc';
@@ -1366,7 +1405,7 @@ describe('runner', () => {
   });
 
   it('defaults to `jest-runner`', async () => {
-    const {options} = await normalize({rootDir: '/root'}, {});
+    const {options} = await normalize({rootDir: '/root'}, {} as Config.Argv);
 
     expect(options.runner).toBe('jest-runner');
   });
@@ -1427,7 +1466,7 @@ describe('watchPlugins', () => {
   });
 
   it('defaults to undefined', async () => {
-    const {options} = await normalize({rootDir: '/root'}, {});
+    const {options} = await normalize({rootDir: '/root'}, {} as Config.Argv);
 
     expect(options.watchPlugins).toEqual(undefined);
   });
@@ -1501,7 +1540,7 @@ describe('testPathPattern', () => {
   });
 
   it('defaults to empty', async () => {
-    const {options} = await normalize(initialOptions, {});
+    const {options} = await normalize(initialOptions, {} as Config.Argv);
 
     expect(options.testPathPattern).toBe('');
   });
@@ -1524,7 +1563,9 @@ describe('testPathPattern', () => {
         const {options} = await normalize(initialOptions, argv);
 
         expect(options.testPathPattern).toBe('');
-        expect(console.log.mock.calls[0][0]).toMatchSnapshot();
+        expect(
+          ((console.log as unknown) as jest.SpyInstance).mock.calls[0][0],
+        ).toMatchSnapshot();
       });
 
       it('joins multiple ' + opt.name + ' if set', async () => {
@@ -1664,7 +1705,9 @@ describe('cwd', () => {
   });
 
   it('is not lost if the config has its own cwd property', async () => {
-    console.warn.mockImplementation(() => {});
+    ((console.warn as unknown) as jest.SpyInstance).mockImplementation(
+      () => {},
+    );
     const {options} = await normalize(
       {
         cwd: '/tmp/config-sets-cwd-itself',
@@ -1725,14 +1768,16 @@ describe('displayName', () => {
       },
       {} as Config.Argv,
     );
-    expect(displayName.name).toBe('project');
-    expect(displayName.color).toMatchSnapshot();
+    expect(displayName!.name).toBe('project');
+    expect(displayName!.color).toMatchSnapshot();
   });
 });
 
 describe('testTimeout', () => {
   it('should return timeout value if defined', async () => {
-    console.warn.mockImplementation(() => {});
+    ((console.warn as unknown) as jest.SpyInstance).mockImplementation(
+      () => {},
+    );
     const {options} = await normalize(
       {rootDir: '/root/', testTimeout: 1000},
       {} as Config.Argv,
@@ -1750,7 +1795,17 @@ describe('testTimeout', () => {
 });
 
 describe('extensionsToTreatAsEsm', () => {
-  async function matchErrorSnapshot(callback) {
+  async function matchErrorSnapshot(callback: {
+    (): Promise<{
+      hasDeprecationWarnings: boolean;
+      options: Config.ProjectConfig & Config.GlobalConfig;
+    }>;
+    (): Promise<{
+      hasDeprecationWarnings: boolean;
+      options: Config.ProjectConfig & Config.GlobalConfig;
+    }>;
+    (): any;
+  }) {
     expect.assertions(1);
 
     try {
