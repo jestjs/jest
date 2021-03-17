@@ -25,22 +25,26 @@ export const isSnapshotPath = (path: string): boolean =>
 
 const cache: Map<Config.Path, SnapshotResolver> = new Map();
 
-export const buildSnapshotResolver = (
+type LocalRequire = (module: string) => unknown;
+
+export const buildSnapshotResolver = async (
   config: Config.ProjectConfig,
-  localRequire: (module: string) => any = createTranspilingRequire(config),
-): SnapshotResolver => {
+  localRequire: Promise<LocalRequire> | LocalRequire = createTranspilingRequire(
+    config,
+  ),
+): Promise<SnapshotResolver> => {
   const key = config.rootDir;
   if (!cache.has(key)) {
     cache.set(
       key,
-      createSnapshotResolver(localRequire, config.snapshotResolver),
+      createSnapshotResolver(await localRequire, config.snapshotResolver),
     );
   }
   return cache.get(key)!;
 };
 
 function createSnapshotResolver(
-  localRequire: (moduleName: string) => SnapshotResolver,
+  localRequire: LocalRequire,
   snapshotResolverPath?: Config.Path | null,
 ): SnapshotResolver {
   return typeof snapshotResolverPath === 'string'
@@ -73,7 +77,7 @@ function createDefaultSnapshotResolver(): SnapshotResolver {
 
 function createCustomSnapshotResolver(
   snapshotResolverPath: Config.Path,
-  localRequire: (moduleName: string) => SnapshotResolver,
+  localRequire: LocalRequire,
 ): SnapshotResolver {
   const custom: SnapshotResolver = interopRequireDefault(
     localRequire(snapshotResolverPath),
