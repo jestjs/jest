@@ -6,22 +6,25 @@
  */
 
 import * as path from 'path';
+import {onNodeVersions} from '@jest/test-utils';
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 const dir = path.resolve(__dirname, '../custom-esm-test-sequencer');
 
-test('run prioritySequence', () => {
-  const result = runJest(dir, ['-i']);
+onNodeVersions('^12.16.0 || >=13.7.0', () => {
+  test('run prioritySequence', () => {
+    const result = runJest(dir, ['-i']);
 
-  expect(result.exitCode).toBe(0);
-  const sequence = extractSummary(result.stderr)
-    .rest.replace(/PASS /g, '')
-    .split('\n');
-  expect(sequence).toEqual([
-    './a.test.js',
-    './b.test.js',
-    './c.test.js',
-    './d.test.js',
-    './e.test.js',
-  ]);
+    expect(result.exitCode).toBe(0);
+    const sequence = extractSummary(result.stderr)
+      .rest.replace(/PASS /g, '')
+      .split('\n');
+    expect(sequence).toEqual([
+      './a.test.js',
+      './b.test.js',
+      './c.test.js',
+      './d.test.js',
+      './e.test.js',
+    ]);
+  });
 });
