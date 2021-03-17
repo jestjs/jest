@@ -14,7 +14,7 @@ const dir = path.resolve(__dirname, '../custom-esm-test-sequencer');
 onNodeVersions('^12.16.0 || >=13.7.0', () => {
   test('run prioritySequence', () => {
     const result = runJest(dir, ['-i'], {
-      nodeOptions: '--experimental-vm-modules',
+      nodeOptions: '--experimental-vm-modules --no-warnings',
     });
 
     expect(result.exitCode).toBe(0);
