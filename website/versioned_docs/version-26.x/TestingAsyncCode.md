@@ -120,7 +120,7 @@ test('the data is peanut butter', async () => {
 });
 
 test('the fetch fails with an error', async () => {
-  await expect(fetchData()).rejects.toMatch'error');
+  await expect(fetchData()).rejects.toMatch('error');
 });
 ```
 
