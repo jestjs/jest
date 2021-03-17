@@ -66,7 +66,14 @@ export default class Farm {
     };
 
     const promise: PromiseWithCustomMessage<unknown> = new Promise(
-      (resolve, reject) => {
+      // Bind args to this function so it won't reference to the parent scope.
+      // This prevents a memory leak in v8, because otherwise the function will
+      // retaine args for the closure.
+      ((
+        args: Array<unknown>,
+        resolve: (value: unknown) => void,
+        reject: (reason?: any) => void,
+      ) => {
         const computeWorkerKey = this._computeWorkerKey;
         const request: ChildMessage = [CHILD_MESSAGE_CALL, false, method, args];
 
@@ -101,7 +108,7 @@ export default class Farm {
         } else {
           this._push(task);
         }
-      },
+      }).bind(null, args),
     );
 
     promise.UNSTABLE_onCustomMessage = addCustomMessageListener;
@@ -124,8 +131,12 @@ export default class Farm {
       throw new Error('Queue implementation returned processed task');
     }
 
+    // Reference the task object outside so it won't be retained by onEnd,
+    // and other properties of the task object, such as task.request can be
+    // garbage collected.
+    const taskOnEnd = task.onEnd;
     const onEnd = (error: Error | null, result: unknown) => {
-      task.onEnd(error, result);
+      taskOnEnd(error, result);
 
       this._unlock(workerId);
       this._process(workerId);

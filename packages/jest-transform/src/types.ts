@@ -8,23 +8,23 @@
 import type {RawSourceMap} from 'source-map';
 import type {Config, TransformTypes} from '@jest/types';
 
-export type ShouldInstrumentOptions = Pick<
-  Config.GlobalConfig,
-  | 'collectCoverage'
-  | 'collectCoverageFrom'
-  | 'collectCoverageOnlyFrom'
-  | 'coverageProvider'
-> & {
+export interface ShouldInstrumentOptions
+  extends Pick<
+    Config.GlobalConfig,
+    | 'collectCoverage'
+    | 'collectCoverageFrom'
+    | 'collectCoverageOnlyFrom'
+    | 'coverageProvider'
+  > {
   changedFiles?: Set<Config.Path>;
   sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
-};
+}
 
-export type Options = ShouldInstrumentOptions &
-  Partial<{
-    isCoreModule: boolean;
-    isInternalModule: boolean;
-  }> &
-  CallerTransformOptions;
+export interface Options
+  extends ShouldInstrumentOptions,
+    CallerTransformOptions {
+  isInternalModule?: boolean;
+}
 
 // This is fixed in source-map@0.7.x, but we can't upgrade yet since it's async
 interface FixedRawSourceMap extends Omit<RawSourceMap, 'version'> {
@@ -63,9 +63,9 @@ export interface TransformOptions<OptionType = unknown>
   transformerConfig: OptionType;
 }
 
-export interface Transformer<OptionType = unknown> {
+export interface SyncTransformer<OptionType = unknown> {
   canInstrument?: boolean;
-  createTransformer?: (options?: OptionType) => Transformer;
+  createTransformer?: (options?: OptionType) => SyncTransformer<OptionType>;
 
   getCacheKey?: (
     sourceText: string,
@@ -73,9 +73,54 @@ export interface Transformer<OptionType = unknown> {
     options: TransformOptions<OptionType>,
   ) => string;
 
+  getCacheKeyAsync?: (
+    sourceText: string,
+    sourcePath: Config.Path,
+    options: TransformOptions<OptionType>,
+  ) => Promise<string>;
+
   process: (
     sourceText: string,
     sourcePath: Config.Path,
     options: TransformOptions<OptionType>,
   ) => TransformedSource;
+
+  processAsync?: (
+    sourceText: string,
+    sourcePath: Config.Path,
+    options: TransformOptions<OptionType>,
+  ) => Promise<TransformedSource>;
 }
+
+export interface AsyncTransformer<OptionType = unknown> {
+  canInstrument?: boolean;
+  createTransformer?: (options?: OptionType) => AsyncTransformer<OptionType>;
+
+  getCacheKey?: (
+    sourceText: string,
+    sourcePath: Config.Path,
+    options: TransformOptions<OptionType>,
+  ) => string;
+
+  getCacheKeyAsync?: (
+    sourceText: string,
+    sourcePath: Config.Path,
+    options: TransformOptions<OptionType>,
+  ) => Promise<string>;
+
+  process?: (
+    sourceText: string,
+    sourcePath: Config.Path,
+    options: TransformOptions<OptionType>,
+  ) => TransformedSource;
+
+  processAsync: (
+    sourceText: string,
+    sourcePath: Config.Path,
+    options: TransformOptions<OptionType>,
+  ) => Promise<TransformedSource>;
+}
+
+export type Transformer<OptionType = unknown> =
+  | SyncTransformer<OptionType>
+  | AsyncTransformer<OptionType>;

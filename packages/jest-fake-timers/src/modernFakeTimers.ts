@@ -102,7 +102,6 @@ export default class FakeTimers {
       this._clock = this._fakeTimers.install({
         loopLimit: this._maxLoops,
         now: Date.now(),
-        target: this._global,
         toFake,
       });
 
