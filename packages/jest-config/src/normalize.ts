@@ -7,7 +7,6 @@
 
 import {createHash} from 'crypto';
 import * as path from 'path';
-import {pathToFileURL} from 'url';
 import chalk = require('chalk');
 import merge = require('deepmerge');
 import {sync as glob} from 'glob';
@@ -16,7 +15,12 @@ import micromatch = require('micromatch');
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import Resolver from 'jest-resolve';
-import {clearLine, replacePathSepForGlob, tryRealpath} from 'jest-util';
+import {
+  clearLine,
+  replacePathSepForGlob,
+  requireOrImportModule,
+  tryRealpath,
+} from 'jest-util';
 import {ValidationError, validate} from 'jest-validate';
 import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
@@ -143,7 +147,7 @@ const setupPreset = async (
       delete require.cache[require.resolve(presetModule)];
     } catch {}
 
-    preset = require(presetModule);
+    preset = await requireOrImportModule(presetModule);
   } catch (error) {
     if (error instanceof SyntaxError || error instanceof TypeError) {
       throw createConfigError(
@@ -177,36 +181,11 @@ const setupPreset = async (
       );
     }
 
-    if (presetModule && error.code === 'ERR_REQUIRE_ESM') {
-      try {
-        const presetModuleUrl = pathToFileURL(presetModule);
-
-        // node `import()` supports URL, but TypeScript doesn't know that
-        const importedPreset = await import(presetModuleUrl.href);
-
-        if (!importedPreset.default) {
-          throw createConfigError(
-            `Jest: Failed to load mjs config file ${presetModule} - did you use a default export?`,
-          );
-        }
-
-        preset = importedPreset.default;
-      } catch (innerError) {
-        if (innerError.message === 'Not supported') {
-          throw createConfigError(
-            `Jest: Your version of Node does not support dynamic import - please enable it or use a .cjs file extension for file ${presetModule}`,
-          );
-        }
-
-        throw innerError;
-      }
-    } else {
-      throw createConfigError(
-        `  An unknown error occurred in ${chalk.bold(presetPath)}:\n\n  ${
-          error.message
-        }\n  ${error.stack}`,
-      );
-    }
+    throw createConfigError(
+      `  An unknown error occurred in ${chalk.bold(presetPath)}:\n\n  ${
+        error.message
+      }\n  ${error.stack}`,
+    );
   }
 
   if (options.setupFiles) {
