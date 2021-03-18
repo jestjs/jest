@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import type {Register} from 'ts-node';
+import type {Service} from 'ts-node';
 import type {Config} from '@jest/types';
 import {interopRequireDefault, requireOrImportModule} from 'jest-util';
 import {
@@ -79,7 +79,7 @@ export default async function readConfigFileAndSetRootDir(
 const loadTSConfigFile = async (
   configPath: Config.Path,
 ): Promise<Config.InitialOptions> => {
-  let registerer: Register;
+  let registerer: Service;
 
   // Register TypeScript compiler instance
   try {
