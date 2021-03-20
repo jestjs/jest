@@ -186,6 +186,7 @@ export default class Runtime {
   private readonly _sourceMapRegistry: Map<string, string>;
   private readonly _scriptTransformer: ScriptTransformer;
   private readonly _fileTransforms: Map<string, RuntimeTransformResult>;
+  private readonly _fileTransformsMutex: Map<string, Promise<void>>;
   private _v8CoverageInstrumenter: CoverageInstrumenter | undefined;
   private _v8CoverageResult: V8Coverage | undefined;
   private readonly _transitiveShouldMock: Map<string, boolean>;
@@ -232,6 +233,7 @@ export default class Runtime {
     this._shouldAutoMock = config.automock;
     this._sourceMapRegistry = new Map();
     this._fileTransforms = new Map();
+    this._fileTransformsMutex = new Map();
     this._virtualMocks = new Map();
     this.jestObjectCaches = new Map();
 
@@ -374,6 +376,10 @@ export default class Runtime {
   ): Promise<VMModule> {
     const cacheKey = modulePath + query;
 
+    if (this._fileTransformsMutex.has(cacheKey)) {
+      await this._fileTransformsMutex.get(cacheKey);
+    }
+
     if (!this._esmoduleRegistry.has(cacheKey)) {
       invariant(
         typeof this._environment.getVmContext === 'function',
@@ -384,9 +390,28 @@ export default class Runtime {
 
       invariant(context, 'Test environment has been torn down');
 
+      let transformResolve: () => void;
+      let transformReject: (error?: unknown) => void;
+
+      this._fileTransformsMutex.set(
+        cacheKey,
+        new Promise((resolve, reject) => {
+          transformResolve = resolve;
+          transformReject = reject;
+        }),
+      );
+
+      invariant(
+        transformResolve! && transformReject!,
+        'Promise initialization should be sync - please report this bug to Jest!',
+      );
+
       if (this._resolver.isCoreModule(modulePath)) {
         const core = this._importCoreModule(modulePath, context);
         this._esmoduleRegistry.set(cacheKey, core);
+
+        transformResolve();
+
         return core;
       }
 
@@ -398,31 +423,43 @@ export default class Runtime {
         supportsTopLevelAwait,
       });
 
-      const module = new SourceTextModule(transformedCode, {
-        context,
-        identifier: modulePath,
-        importModuleDynamically: async (
-          specifier: string,
-          referencingModule: VMModule,
-        ) => {
-          invariant(
-            runtimeSupportsVmModules,
-            'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/en/ecmascript-modules',
-          );
-          const module = await this.resolveModule(
-            specifier,
-            referencingModule.identifier,
-            referencingModule.context,
-          );
+      try {
+        const module = new SourceTextModule(transformedCode, {
+          context,
+          identifier: modulePath,
+          importModuleDynamically: async (
+            specifier: string,
+            referencingModule: VMModule,
+          ) => {
+            invariant(
+              runtimeSupportsVmModules,
+              'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/en/ecmascript-modules',
+            );
+            const module = await this.resolveModule(
+              specifier,
+              referencingModule.identifier,
+              referencingModule.context,
+            );
 
-          return this.linkAndEvaluateModule(module);
-        },
-        initializeImportMeta(meta: ImportMeta) {
-          meta.url = pathToFileURL(modulePath).href;
-        },
-      });
+            return this.linkAndEvaluateModule(module);
+          },
+          initializeImportMeta(meta: ImportMeta) {
+            meta.url = pathToFileURL(modulePath).href;
+          },
+        });
 
-      this._esmoduleRegistry.set(cacheKey, module);
+        invariant(
+          !this._esmoduleRegistry.has(cacheKey),
+          `Module cache already has entry ${cacheKey}. This is a bug in Jest, please report it!`,
+        );
+
+        this._esmoduleRegistry.set(cacheKey, module);
+
+        transformResolve();
+      } catch (error: unknown) {
+        transformReject(error);
+        throw error;
+      }
     }
 
     const module = this._esmoduleRegistry.get(cacheKey);
@@ -990,6 +1027,7 @@ export default class Runtime {
     this._sourceMapRegistry.clear();
 
     this._fileTransforms.clear();
+    this._fileTransformsMutex.clear();
     this.jestObjectCaches.clear();
 
     this._v8CoverageResult = [];

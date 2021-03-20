@@ -5,8 +5,4 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import symbol from './some-symbol';
-
-export const exportedSymbol = symbol;
-
-export default 'It was not transformed!!';
+export default Symbol('hello!');
