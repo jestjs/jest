@@ -10,7 +10,9 @@ const {isArrayBuffer} = require('util').types;
 const isJSDOM =
   typeof window !== 'undefined' && typeof document !== 'undefined';
 
-test('Buffer', () => {
+const skipTestJSDOM = isJSDOM ? test.skip : test;
+
+skipTestJSDOM('Buffer', () => {
   const bufFromArray = Buffer.from([0x62, 0x75, 0x66, 0x66, 0x65, 0x72]);
   expect(isArrayBuffer(bufFromArray.buffer)).toBeTruthy();
   const bufFromArrayBuffer = Buffer.from(new ArrayBuffer(6));
