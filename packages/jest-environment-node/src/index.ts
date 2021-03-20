@@ -36,6 +36,9 @@ class NodeEnvironment implements JestEnvironment {
     global.clearTimeout = clearTimeout;
     global.setInterval = setInterval;
     global.setTimeout = setTimeout;
+    global.Buffer = Buffer;
+    global.setImmediate = setImmediate;
+    global.clearImmediate = clearImmediate;
     global.ArrayBuffer = ArrayBuffer;
     // TextEncoder (global or via 'util') references a Uint8Array constructor
     // different than the global one used by users in tests. This makes sure the
@@ -64,6 +67,7 @@ class NodeEnvironment implements JestEnvironment {
       global.AbortController = AbortController;
     }
     installCommonGlobals(global, config.globals);
+
     this.moduleMocker = new ModuleMocker(global);
 
     const timerIdToRef = (id: number) => ({
