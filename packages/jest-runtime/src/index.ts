@@ -652,10 +652,12 @@ export default class Runtime {
 
     if (options?.isInternalModule) {
       moduleRegistry = this._internalModuleRegistry;
-    } else if (this._isolatedModuleRegistry) {
-      moduleRegistry = this._isolatedModuleRegistry;
     } else {
-      moduleRegistry = this._moduleRegistry;
+      if (this._isolatedModuleRegistry) {
+        moduleRegistry = this._isolatedModuleRegistry;
+      } else {
+        moduleRegistry = this._moduleRegistry;
+      }
     }
 
     const module = moduleRegistry.get(modulePath);
@@ -1820,11 +1822,6 @@ export default class Runtime {
       }
       throw moduleNotFoundError;
     }
-
-    e.message = `Jest: Got error evaluating ${path.relative(
-      this._config.rootDir,
-      module.filename,
-    )}.\n${e.message}`;
 
     throw e;
   }
