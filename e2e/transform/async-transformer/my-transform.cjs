@@ -7,14 +7,29 @@
 
 'use strict';
 
+const {promisify} = require('util');
+
+const wait = promisify(setTimeout);
+
 const fileToTransform = require.resolve('./module-under-test');
+const fileToTransform2 = require.resolve('./some-symbol');
 
 module.exports = {
   async processAsync(src, filepath) {
-    if (filepath !== fileToTransform) {
+    if (filepath !== fileToTransform && filepath !== fileToTransform2) {
       throw new Error(`Unsupported filepath ${filepath}`);
     }
 
-    return 'export default 42;';
+    if (filepath === fileToTransform2) {
+      // we want to wait to ensure the module cache is populated with the correct module
+      await wait(100);
+
+      return src;
+    }
+
+    return src.replace(
+      "export default 'It was not transformed!!'",
+      'export default 42',
+    );
   },
 };

@@ -261,7 +261,7 @@ onNodeVersions('^12.17.0 || >=13.2.0', () => {
       });
       expect(stderr).toMatch(/PASS/);
       expect(json.success).toBe(true);
-      expect(json.numPassedTests).toBe(1);
+      expect(json.numPassedTests).toBe(2);
     });
   });
 

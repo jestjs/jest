@@ -3,7 +3,8 @@
   "jest": {
     "testEnvironment": "node",
     "transform": {
-      "module-under-test\\.js$": "<rootDir>/my-transform.cjs"
+      "module-under-test\\.js$": "<rootDir>/my-transform.cjs",
+      "some-symbol\\.js$": "<rootDir>/my-transform.cjs"
     }
   }
 }

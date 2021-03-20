@@ -5,8 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import m from '../module-under-test';
+import m, {exportedSymbol} from '../module-under-test';
+import symbol from '../some-symbol';
 
 test('ESM transformer intercepts', () => {
   expect(m).toEqual(42);
+});
+
+test('reexported symbol is same instance', () => {
+  expect(exportedSymbol).toBe(symbol);
 });
