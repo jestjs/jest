@@ -1,0 +1,8 @@
+{
+  "type": "module",
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {},
+    "testSequencer": "<rootDir>/testSequencer.mjs"
+  }
+}
