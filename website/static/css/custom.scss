@@ -106,7 +106,6 @@ div.jest-card {
   height: 340px;
   transition: transform 0.2s;
   transform-style: preserve-3d;
-  outline: 1px solid transparent;
 }
 
 div.jest-card-front,
@@ -120,6 +119,7 @@ div.jest-card-front,
   display: flex;
   justify-content: center;
   align-items: center;
+  outline: 1px solid transparent;
 }
 
 div.jest-card-front {
