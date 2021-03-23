@@ -263,21 +263,6 @@ describe('transform-runner', () => {
   });
 });
 
-onNodeVersions('^12.16.0 || >=13.7.0', () => {
-  describe('transform-esm-runner', () => {
-    const dir = path.resolve(__dirname, '../transform/transform-esm-runner');
-    test('runs test with native ESM', () => {
-      const {json, stderr} = runWithJson(dir, ['--no-cache'], {
-        nodeOptions: '--experimental-vm-modules',
-      });
-
-      expect(stderr).toMatch(/PASS/);
-      expect(json.success).toBe(true);
-      expect(json.numPassedTests).toBe(1);
-    });
-  });
-});
-
 describe('transform-testrunner', () => {
   const dir = path.resolve(__dirname, '../transform/transform-testrunner');
 
@@ -325,6 +310,19 @@ onNodeVersions('^12.17.0 || >=13.2.0', () => {
       const {json, stderr} = runWithJson(dir, ['--no-cache'], {
         nodeOptions: '--experimental-vm-modules',
       });
+      expect(stderr).toMatch(/PASS/);
+      expect(json.success).toBe(true);
+      expect(json.numPassedTests).toBe(1);
+    });
+  });
+
+  describe('transform-esm-runner', () => {
+    const dir = path.resolve(__dirname, '../transform/transform-esm-runner');
+    test('runs test with native ESM', () => {
+      const {json, stderr} = runWithJson(dir, ['--no-cache'], {
+        nodeOptions: '--experimental-vm-modules',
+      });
+
       expect(stderr).toMatch(/PASS/);
       expect(json.success).toBe(true);
       expect(json.numPassedTests).toBe(1);
