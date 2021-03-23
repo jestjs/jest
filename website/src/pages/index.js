@@ -21,7 +21,7 @@ import MarkdownBlock from '@site/src/components/v1/MarkdownBlock';
 
 import UsersJSON from '@site/users.json';
 
-import styles from './index.module.scss';
+import styles from './index.module.css';
 
 import GitHubButton from 'react-github-btn';
 
