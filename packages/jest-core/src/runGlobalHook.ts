@@ -5,14 +5,12 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {pathToFileURL} from 'url';
 import * as util from 'util';
 import pEachSeries = require('p-each-series');
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import type {Test} from 'jest-runner';
-import {interopRequireDefault} from 'jest-util';
-import {format as prettyFormat} from 'pretty-format';
+import prettyFormat from 'pretty-format';
 
 export default async ({
   allTests,
@@ -49,53 +47,31 @@ export default async ({
       const transformer = await createScriptTransformer(projectConfig);
 
       try {
-        await transformer.requireAndTranspileModule(modulePath, async m => {
-          const globalModule = interopRequireDefault(m).default;
+        await transformer.requireAndTranspileModule(
+          modulePath,
+          async globalModule => {
+            if (typeof globalModule !== 'function') {
+              throw new TypeError(
+                `${moduleName} file must export a function at ${modulePath}`,
+              );
+            }
 
-          if (typeof globalModule !== 'function') {
-            throw new TypeError(
-              `${moduleName} file must export a function at ${modulePath}`,
-            );
-          }
-
-          await globalModule(globalConfig);
-        });
+            await globalModule(globalConfig);
+          },
+        );
       } catch (error) {
-        if (error && error.code === 'ERR_REQUIRE_ESM') {
-          const configUrl = pathToFileURL(modulePath);
+        if (util.types.isNativeError(error)) {
+          error.message = `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${error.message}`;
 
-          // node `import()` supports URL, but TypeScript doesn't know that
-          const importedConfig = await import(configUrl.href);
-
-          if (!importedConfig.default) {
-            throw new Error(
-              `Jest: Failed to load ESM transformer at ${modulePath} - did you use a default export?`,
-            );
-          }
-
-          const globalModule = importedConfig.default;
-
-          if (typeof globalModule !== 'function') {
-            throw new TypeError(
-              `${moduleName} file must export a function at ${modulePath}`,
-            );
-          }
-
-          await globalModule(globalConfig);
-        } else {
-          if (util.types.isNativeError(error)) {
-            error.message = `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${error.message}`;
-
-            throw error;
-          }
-
-          throw new Error(
-            `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${prettyFormat(
-              error,
-              {maxDepth: 3},
-            )}`,
-          );
+          throw error;
         }
+
+        throw new Error(
+          `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${prettyFormat(
+            error,
+            {maxDepth: 3},
+          )}`,
+        );
       }
     });
   }

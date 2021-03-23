@@ -37,19 +37,19 @@ export const buildSnapshotResolver = async (
 
   const resolver =
     cache.get(key) ??
-    createSnapshotResolver(await localRequire, config.snapshotResolver);
+    (await createSnapshotResolver(await localRequire, config.snapshotResolver));
 
   cache.set(key, resolver);
 
   return resolver;
 };
 
-function createSnapshotResolver(
+async function createSnapshotResolver(
   localRequire: LocalRequire,
   snapshotResolverPath?: Config.Path | null,
-): SnapshotResolver {
+): Promise<SnapshotResolver> {
   return typeof snapshotResolverPath === 'string'
-    ? createCustomSnapshotResolver(snapshotResolverPath, localRequire)
+    ? await createCustomSnapshotResolver(snapshotResolverPath, localRequire)
     : createDefaultSnapshotResolver();
 }
 
@@ -76,12 +76,12 @@ function createDefaultSnapshotResolver(): SnapshotResolver {
   };
 }
 
-function createCustomSnapshotResolver(
+async function createCustomSnapshotResolver(
   snapshotResolverPath: Config.Path,
   localRequire: LocalRequire,
-): SnapshotResolver {
+): Promise<SnapshotResolver> {
   const custom: SnapshotResolver = interopRequireDefault(
-    localRequire(snapshotResolverPath),
+    await localRequire(snapshotResolverPath),
   ).default;
 
   const keys: Array<[keyof SnapshotResolver, string]> = [

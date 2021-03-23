@@ -20,7 +20,6 @@ import type {Config} from '@jest/types';
 import HasteMap from 'jest-haste-map';
 import {
   createDirectory,
-  interopRequireDefault,
   isPromise,
   requireOrImportModule,
   tryRealpath,
@@ -30,6 +29,7 @@ import shouldInstrument from './shouldInstrument';
 import type {
   Options,
   ReducedTransformOptions,
+  RequireAndTranspileModuleOptions,
   StringMap,
   SyncTransformer,
   TransformOptions,
@@ -735,28 +735,20 @@ class ScriptTransformer {
     return fileSource;
   }
 
-  requireAndTranspileModule<ModuleType = unknown>(
-    moduleName: string,
-    callback?: (module: ModuleType) => void,
-    transformOptions?: ReducedTransformOptions,
-  ): ModuleType;
-  requireAndTranspileModule<ModuleType = unknown>(
-    moduleName: string,
-    callback?: (module: ModuleType) => Promise<void>,
-    transformOptions?: ReducedTransformOptions,
-  ): Promise<ModuleType>;
-  requireAndTranspileModule<ModuleType = unknown>(
+  async requireAndTranspileModule<ModuleType = unknown>(
     moduleName: string,
     callback?: (module: ModuleType) => void | Promise<void>,
-    transformOptions: ReducedTransformOptions = {
+    options: RequireAndTranspileModuleOptions = {
+      applyInteropRequireDefault: true,
       instrument: false,
       supportsDynamicImport: false,
       supportsExportNamespaceFrom: false,
       supportsStaticESM: false,
       supportsTopLevelAwait: false,
     },
-  ): ModuleType | Promise<ModuleType> {
+  ): Promise<ModuleType> {
     let transforming = false;
+    const {applyInteropRequireDefault, ...transformOptions} = options;
     const revertHook = addHook(
       (code, filename) => {
         try {
@@ -780,7 +772,10 @@ class ScriptTransformer {
         },
       },
     );
-    const module: ModuleType = require(moduleName);
+    const module: ModuleType = await requireOrImportModule(
+      moduleName,
+      applyInteropRequireDefault,
+    );
 
     if (!callback) {
       revertHook();
@@ -818,21 +813,28 @@ export async function createTranspilingRequire(
   <TModuleType = unknown>(
     resolverPath: string,
     applyInteropRequireDefault?: boolean,
-  ) => TModuleType
+  ) => Promise<TModuleType>
 > {
   const transformer = await createScriptTransformer(config);
 
-  return function requireAndTranspileModule<TModuleType = unknown>(
+  return async function requireAndTranspileModule<TModuleType = unknown>(
     resolverPath: string,
     applyInteropRequireDefault: boolean = false,
-  ): TModuleType {
-    const transpiledModule = transformer.requireAndTranspileModule<TModuleType>(
+  ) {
+    const transpiledModule = await transformer.requireAndTranspileModule<TModuleType>(
       resolverPath,
+      () => {},
+      {
+        applyInteropRequireDefault,
+        instrument: false,
+        supportsDynamicImport: false,
+        supportsExportNamespaceFrom: false,
+        supportsStaticESM: false,
+        supportsTopLevelAwait: false,
+      },
     );
 
-    return applyInteropRequireDefault
-      ? interopRequireDefault(transpiledModule).default
-      : transpiledModule;
+    return transpiledModule;
   };
 }
 
