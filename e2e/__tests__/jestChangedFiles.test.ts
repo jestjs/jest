@@ -7,7 +7,6 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import semver = require('semver');
 import slash = require('slash');
 import {findRepos, getChangedFilesForRoots} from 'jest-changed-files';
@@ -354,7 +353,8 @@ test('handles a bad revision for "changedSince", for git', async () => {
   const {exitCode, stderr} = runJest(DIR, ['--changedSince=^blablabla']);
 
   expect(exitCode).toBe(1);
-  expect(wrap(stderr)).toMatchSnapshot();
+  expect(stderr).toContain('Test suite failed to run');
+  expect(stderr).toContain("fatal: bad revision '^blablabla...HEAD'");
 });
 
 testIfHg('gets changed files for hg', async () => {
@@ -508,5 +508,6 @@ testIfHg('handles a bad revision for "changedSince", for hg', async () => {
   const {exitCode, stderr} = runJest(DIR, ['--changedSince=blablabla']);
 
   expect(exitCode).toBe(1);
-  expect(wrap(stderr)).toMatchSnapshot();
+  expect(stderr).toContain('Test suite failed to run');
+  expect(stderr).toContain("abort: unknown revision 'blablabla'");
 });
