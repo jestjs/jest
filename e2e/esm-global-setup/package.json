@@ -1,0 +1,10 @@
+{
+  "type": "module",
+  "jest": {
+    "testEnvironment": "node",
+    "globalSetup": "<rootDir>/setup.mjs"
+  },
+  "devDependencies": {
+    "jest-util": "*"
+  }
+}
