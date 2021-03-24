@@ -210,7 +210,7 @@ test('some test', () => {
 });
 ```
 
-_Note: This option is only supported using the default `jest-circus`. test runner_
+_Note: This option is only supported using the default `jest-circus` test runner._
 
 ### `--json`
 
