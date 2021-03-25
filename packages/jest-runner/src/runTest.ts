@@ -206,24 +206,13 @@ async function runTestInternal(
     },
   };
 
-  const isBrowserEnv = typeof environment.global?.document !== 'undefined';
-
   // For tests
-  if (isBrowserEnv) {
-    runtime.requireInternalModule(
-      require.resolve('source-map-support/browser-source-map-support'),
-    );
-    const sourceMapSupport = environment.global
-      .sourceMapSupport as typeof sourcemapSupport;
-
-    sourceMapSupport.install({...sourcemapOptions, environment: 'browser'});
-  } else {
-    runtime
-      .requireInternalModule<typeof sourcemapSupport>(
-        require.resolve('source-map-support'),
-      )
-      .install(sourcemapOptions);
-  }
+  runtime
+    .requireInternalModule<typeof import('source-map-support')>(
+      require.resolve('source-map-support'),
+      'source-map-support',
+    )
+    .install(sourcemapOptions);
 
   // For runtime errors
   sourcemapSupport.install(sourcemapOptions);
