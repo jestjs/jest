@@ -8,7 +8,9 @@ import crypto from 'crypto';
 import os from 'os';
 import path from 'path';
 import fs from 'graceful-fs';
-import {createDirectory} from 'jest-util';
+import jestUtil from 'jest-util';
+
+const {createDirectory} = jestUtil;
 
 const DIR = path.join(os.tmpdir(), 'jest-esm-global-setup');
 

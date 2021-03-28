@@ -6,7 +6,9 @@
  */
 
 import throat from 'throat';
-import {createEmptyTestResult} from '@jest/test-result';
+import testResult from '@jest/test-result';
+
+const {createEmptyTestResult} = testResult;
 
 export default class BaseTestRunner {
   constructor(globalConfig, context) {
