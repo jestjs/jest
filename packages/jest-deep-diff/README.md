@@ -37,7 +37,7 @@ There is support for plugins. I have made ReactElement and AsymmetricMatcher Plu
 
 I am quite happy with this module. It's clear to me what it does. It recursively marks values as Inserted, Updated, Deleted, Equal or TypeUnequal and returns an object which represents the differences between 2 values.
 
-Note: Diff will also traverse and mark all the children of complex value
+Note: Diff will also traverse and mark all the children of complex values
 
 ## `format`
 
