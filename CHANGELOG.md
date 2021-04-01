@@ -63,6 +63,7 @@
 - `[jest-runtime]` Fix stack overflow and promise deadlock when importing mutual dependant ES module ([#10892](https://github.com/facebook/jest/pull/10892))
 - `[jest-runtime]` Prevent global module registry from leaking into `isolateModules` registry ([#10963](https://github.com/facebook/jest/pull/10963))
 - `[jest-runtime]` Refactor to prevent race condition when linking and evaluating ES Modules ([#11150](https://github.com/facebook/jest/pull/11150))
+- `[jest-runtime]` Throw correct error when attempting to load ESM via `require` ([#11260](https://github.com/facebook/jest/pull/11260))
 - `[jest-transform]` Show enhanced `SyntaxError` message for all `SyntaxError`s ([#10749](https://github.com/facebook/jest/pull/10749))
 - `[jest-transform]` [**BREAKING**] Refactor API to pass an options bag around rather than multiple boolean options ([#10753](https://github.com/facebook/jest/pull/10753))
 - `[jest-transform]` [**BREAKING**] Refactor API of transformers to pass an options bag rather than separate `config` and other options ([#10834](https://github.com/facebook/jest/pull/10834))
