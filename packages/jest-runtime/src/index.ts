@@ -648,16 +648,26 @@ export default class Runtime {
       modulePath = this._resolveModule(from, moduleName);
     }
 
+    if (this.unstable_shouldLoadAsEsm(modulePath)) {
+      // Node includes more info in the message
+      const error = new Error(
+        `Must use import to load ES Module: ${modulePath}`,
+      );
+
+      // @ts-expect-error
+      error.code = 'ERR_REQUIRE_ESM';
+
+      throw error;
+    }
+
     let moduleRegistry;
 
     if (options?.isInternalModule) {
       moduleRegistry = this._internalModuleRegistry;
+    } else if (this._isolatedModuleRegistry) {
+      moduleRegistry = this._isolatedModuleRegistry;
     } else {
-      if (this._isolatedModuleRegistry) {
-        moduleRegistry = this._isolatedModuleRegistry;
-      } else {
-        moduleRegistry = this._moduleRegistry;
-      }
+      moduleRegistry = this._moduleRegistry;
     }
 
     const module = moduleRegistry.get(modulePath);
