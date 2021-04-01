@@ -118,7 +118,7 @@ Array [
 exports[`init project with package.json and no jest config all questions answered with answer: "No" should return the default configuration (an empty config) 1`] = `
 "/*
  * For a detailed explanation regarding each configuration property, visit:
- * https://jestjs.io/docs/en/configuration.html
+ * https://jestjs.io/docs/configuration
  */
 
 module.exports = {

@@ -433,7 +433,7 @@ export default class Runtime {
           ) => {
             invariant(
               runtimeSupportsVmModules,
-              'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/en/ecmascript-modules',
+              'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
             );
             const module = await this.resolveModule(
               specifier,
@@ -538,7 +538,7 @@ export default class Runtime {
   ): Promise<void> {
     invariant(
       runtimeSupportsVmModules,
-      'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/en/ecmascript-modules',
+      'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
     );
 
     const [path, query] = (moduleName ?? '').split('?');
@@ -1293,7 +1293,7 @@ export default class Runtime {
         importModuleDynamically: async (specifier: string) => {
           invariant(
             runtimeSupportsVmModules,
-            'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/en/ecmascript-modules',
+            'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
           );
 
           const context = this._environment.getVmContext?.();

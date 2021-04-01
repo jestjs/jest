@@ -307,7 +307,7 @@
 - `[jest-jasmine2]` Refine typings of `queueRunner` ([#10215](https://github.com/facebook/jest/pull/10215))
 - `[jest-jasmine2]` Remove usage of `Function` type ([#10216](https://github.com/facebook/jest/pull/10216))
 - `[jest-resolve]` Improve types ([#10239](https://github.com/facebook/jest/pull/10239))
-- `[docs]` Clarify the [`jest.requireActual(moduleName)`](https://jestjs.io/docs/en/jest-object#jestrequireactualmodulename) example
+- `[docs]` Clarify the [`jest.requireActual(moduleName)`](https://jestjs.io/docs/jest-object#jestrequireactualmodulename) example
 - `[jest-types]` Refine typings of `coverageReporters` ([#10275](https://github.com/facebook/jest/pull/10275))
 
 ## 26.1.0
@@ -2500,7 +2500,7 @@ See https://jestjs.io/blog/2016/12/15/2016-in-jest.html
 - Added `jest-resolve` as a standalone package based on the Facebook module resolution algorithm.
 - Added `jest-changed-files` as a standalone package to detect changed files in a git or hg repo.
 - Added `--setupTestFrameworkFile` to cli.
-- Added support for coverage thresholds. See https://jestjs.io/docs/en/configuration#coveragethreshold-object.
+- Added support for coverage thresholds. See https://jestjs.io/docs/configuration#coveragethreshold-object.
 - Updated to jsdom 9.0.
 - Updated and improved stack trace reporting.
 - Added `module.filename` and removed the invalid `module.__filename` field.
