@@ -654,7 +654,7 @@ export default class Runtime {
         `Must use import to load ES Module: ${modulePath}`,
       );
 
-      // @ts-expect-error
+      // @ts-expect-error: `code` is not defined
       error.code = 'ERR_REQUIRE_ESM';
 
       throw error;
