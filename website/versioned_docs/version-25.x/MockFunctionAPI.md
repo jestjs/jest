@@ -382,7 +382,7 @@ test('calculate calls add', () => {
     // Yes, this mock is still adding two numbers but imagine this
     // was a complex function we are mocking.
     return  a + b
-  }));
+  });
 
   // `mockAdd` is properly typed and therefore accepted by
   // anything requiring `add`.

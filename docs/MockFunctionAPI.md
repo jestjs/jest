@@ -381,16 +381,16 @@ test('calculate calls add', () => {
   mockAdd.mockImplementation((a, b) => {
     // Yes, this mock is still adding two numbers but imagine this
     // was a complex function we are mocking.
-    return  a + b
-  }));
+    return a + b;
+  });
 
   // `mockAdd` is properly typed and therefore accepted by
   // anything requiring `add`.
-  calculate(mockAdd, 1 , 2);
+  calculate(mockAdd, 1, 2);
 
   expect(mockAdd).toBeCalledTimes(1);
   expect(mockAdd).toBeCalledWith(1, 2);
-})
+});
 ```
 
 ### `jest.MockedClass`
