@@ -88,7 +88,7 @@ export async function readConfig(
     rawOptions = await rawOptions();
   }
 
-  const {options, hasDeprecationWarnings} = normalize(
+  const {options, hasDeprecationWarnings} = await normalize(
     rawOptions,
     argv,
     configPath,
@@ -123,7 +123,6 @@ const groupOptions = (
     coverageThreshold: options.coverageThreshold,
     detectLeaks: options.detectLeaks,
     detectOpenHandles: options.detectOpenHandles,
-    enabledTestsMap: options.enabledTestsMap,
     errorOnDeprecated: options.errorOnDeprecated,
     expand: options.expand,
     filter: options.filter,
@@ -179,6 +178,7 @@ const groupOptions = (
     detectOpenHandles: options.detectOpenHandles,
     displayName: options.displayName,
     errorOnDeprecated: options.errorOnDeprecated,
+    extensionsToTreatAsEsm: options.extensionsToTreatAsEsm,
     extraGlobals: options.extraGlobals,
     filter: options.filter,
     forceCoverageMatch: options.forceCoverageMatch,

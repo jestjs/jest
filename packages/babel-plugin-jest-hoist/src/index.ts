@@ -85,7 +85,11 @@ const ALLOWED_IDENTIFIERS = new Set<string>(
     'jest',
     'parseFloat',
     'parseInt',
+    'exports',
     'require',
+    'module',
+    '__filename',
+    '__dirname',
     'undefined',
     ...Object.getOwnPropertyNames(global),
   ].sort(),
@@ -318,7 +322,6 @@ export default (): PluginObj<{
         CallExpression: visitCallExpr,
         VariableDeclarator: visitVariableDeclarator,
         // do not traverse into nested blocks, or we'll hoist calls in there out to this block
-        // @ts-expect-error blacklist is not known
         blacklist: ['BlockStatement'],
       });
       callsHoistPoint.remove();

@@ -15,8 +15,9 @@
     {"path": "../jest-resolve"},
     {"path": "../jest-runtime"},
     {"path": "../jest-test-result"},
+    {"path": "../jest-transform"},
     {"path": "../jest-types"},
-    {"path": "../jest-worker"},
-    {"path": "../jest-util"}
+    {"path": "../jest-util"},
+    {"path": "../jest-worker"}
   ]
 }

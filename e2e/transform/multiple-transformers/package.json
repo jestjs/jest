@@ -5,7 +5,12 @@
       "\\.js$": "<rootDir>/jsPreprocessor.js",
       "\\.svg$": "<rootDir>/filePreprocessor.js"
     },
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "jest-circus",
+      "jest-environment-node",
+      "jest-jasmine2"
+    ]
   },
   "dependencies": {
     "@babel/core": "^7.0.0",

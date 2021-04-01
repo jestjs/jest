@@ -1,0 +1,10 @@
+{
+  "type": "module",
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "module-under-test\\.js$": "<rootDir>/my-transform.cjs",
+      "some-symbol\\.js$": "<rootDir>/my-transform.cjs"
+    }
+  }
+}

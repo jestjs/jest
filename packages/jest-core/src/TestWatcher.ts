@@ -5,13 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {EventEmitter} from 'events';
+import emittery = require('emittery');
 
 type State = {
   interrupted: boolean;
 };
 
-export default class TestWatcher extends EventEmitter {
+export default class TestWatcher extends emittery<{change: State}> {
   state: State;
   private _isWatchMode: boolean;
 
@@ -21,9 +21,9 @@ export default class TestWatcher extends EventEmitter {
     this._isWatchMode = isWatchMode;
   }
 
-  setState(state: State): void {
+  async setState(state: State): Promise<void> {
     Object.assign(this.state, state);
-    this.emit('change', this.state);
+    await this.emit('change', this.state);
   }
 
   isInterrupted(): boolean {

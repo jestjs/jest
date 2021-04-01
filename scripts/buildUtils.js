@@ -35,13 +35,38 @@ module.exports.getPackages = function getPackages() {
 
     assert.strictEqual(
       pkg.engines.node,
-      pkg.name === 'jest-worker'
-        ? '>= 10.13.0'
-        : pkg.name === 'pretty-format'
-        ? '>= 10'
-        : nodeEngineRequirement,
+      nodeEngineRequirement,
       `Engine requirement in ${pkg.name} should match root`,
     );
+
+    assert.ok(pkg.exports, `Package ${pkg.name} is missing \`exports\` field`);
+    assert.deepStrictEqual(
+      pkg.exports,
+      {
+        '.': pkg.main,
+        './package.json': './package.json',
+        ...Object.values(pkg.bin || {}).reduce(
+          (mem, curr) =>
+            Object.assign(mem, {[curr.replace(/\.js$/, '')]: curr}),
+          {},
+        ),
+        ...(pkg.name === 'jest-circus' ? {'./runner': './runner.js'} : {}),
+        ...(pkg.name === 'expect' ? {'./build/utils': './build/utils.js'} : {}),
+      },
+      `Package ${pkg.name} does not export correct files`,
+    );
+
+    if (pkg.bin) {
+      Object.entries(pkg.bin).forEach(([binName, binPath]) => {
+        const fullBinPath = path.resolve(packageDir, binPath);
+
+        if (!fs.existsSync(fullBinPath)) {
+          throw new Error(
+            `Binary in package ${pkg.name} with name "${binName}" at ${binPath} does not exist`,
+          );
+        }
+      });
+    }
   });
 
   return packages;

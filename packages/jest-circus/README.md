@@ -32,6 +32,8 @@ Note, that `jest-circus` test runner would pause until a promise returned from `
 
 ## Installation
 
+> Note: As of Jest 27, `jest-circus` is the default test runner, so you do not have to install it to use it.
+
 Install `jest-circus` using yarn:
 
 ```bash

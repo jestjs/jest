@@ -1,5 +1,5 @@
 ---
-title: Jest 24: 💅 Refreshing, Polished, TypeScript-friendly
+title: 'Jest 24: 💅 Refreshing, Polished, TypeScript-friendly'
 author: Simen Bekkhus
 authorURL: https://github.com/SimenB
 authorFBID: 100003004880942
@@ -75,8 +75,8 @@ The second one is an issue where Jest runs out of memory if the difference in se
 - You can [configure](https://github.com/facebook/jest/pull/6143) Jest's snapshot location, this is mainly useful if you are building tools which use Jest in a larger build process.
 - A quirk of Jest's CLI has been that while some flags and options have been camel cased (such as `runInBand`), others have not been (such as `no-cache`). In Jest 24, both are recognized, meaning you can write your CLI arguments however you want.
 - We've renamed `setupTestFrameworkScriptFile` to `setupFilesAfterEnv`, and made it into an array. We hope this will make it more obvious what the options is for. We have plans to further overhaul the configuration in the next major, see the paragraph in the section below.
-- To reduce the amount of magic Jest performs to “just work™”, in this release we decided to drop automatic injection of `regenerator-runtime`, which is sometimes used in compiled async code. Including `regenerator-runtime` is not always necessary and we believe it's the user's responsibility to include it if it's needed. If you use `@babel/preset-env` with `targets` set to a modern Node version (e.g. Node 6+) you will not need to include it. Please see our [Using Babel docs](/docs/en/getting-started#using-babel) for more information.
-- Node.js 10 came with an experimental module [called `worker_threads`](https://nodejs.org/api/worker_threads.html), which is similar to Worker threads in the browser. `jest-worker`, part of the [Jest platform](/docs/en/jest-platform), will be able to use `worker_threads` if available instead of `child_process`, which makes it even faster! [Benchmarks](https://github.com/facebook/jest/pull/6676) show a 50% improvement. Due to its experimental nature, it's not enabled when using Jest as a test runner, but you can use it in your own projects today! We plan to enable it by default when it's promoted from experimental status in Node.js.
+- To reduce the amount of magic Jest performs to “just work™”, in this release we decided to drop automatic injection of `regenerator-runtime`, which is sometimes used in compiled async code. Including `regenerator-runtime` is not always necessary and we believe it's the user's responsibility to include it if it's needed. If you use `@babel/preset-env` with `targets` set to a modern Node version (e.g. Node 6+) you will not need to include it. Please see our [Using Babel docs](/docs/getting-started#using-babel) for more information.
+- Node.js 10 came with an experimental module [called `worker_threads`](https://nodejs.org/api/worker_threads.html), which is similar to Worker threads in the browser. `jest-worker`, part of the [Jest platform](/docs/jest-platform), will be able to use `worker_threads` if available instead of `child_process`, which makes it even faster! [Benchmarks](https://github.com/facebook/jest/pull/6676) show a 50% improvement. Due to its experimental nature, it's not enabled when using Jest as a test runner, but you can use it in your own projects today! We plan to enable it by default when it's promoted from experimental status in Node.js.
 
 ## Breaking Changes
 
@@ -99,6 +99,6 @@ We have already started to make plans for the next release of Jest 25, with the 
 
 You might also have heard that we are planning to migrate the code base from Flow to TypeScript. We are hopeful that this migration will enable even more contributors to jump in and help make 2019 even better for JavaScript testing. 🚀 The plan is to land this in a minor release in the not too distant future. Feedback on this choice can be added to [the RFC](https://github.com/facebook/jest/pull/7554).
 
-Lastly, if you've ever wondered about how Jest is built, [@cpojer](https://twitter.com/cpojer) has recorded a video with an architectural overview of how Jest is put together under the hood. Feel free to reach out if you have any further questions about it. The video is available on our [website](https://jestjs.io/docs/en/next/architecture).
+Lastly, if you've ever wondered about how Jest is built, [@cpojer](https://twitter.com/cpojer) has recorded a video with an architectural overview of how Jest is put together under the hood. Feel free to reach out if you have any further questions about it. The video is available on our [website](/docs/architecture).
 
 Happy Jesting! 🃏

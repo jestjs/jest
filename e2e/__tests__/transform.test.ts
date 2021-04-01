@@ -8,13 +8,14 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
+import {onNodeVersions} from '@jest/test-utils';
 import {
   cleanup,
   copyDir,
   createEmptyPackage,
   extractSummary,
   linkJestPackage,
-  runYarn,
+  runYarnInstall,
 } from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
 
@@ -22,7 +23,7 @@ describe('babel-jest', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
 
   beforeEach(() => {
-    runYarn(dir);
+    runYarnInstall(dir);
   });
 
   it('runs transpiled code', () => {
@@ -59,7 +60,7 @@ describe('babel-jest with manual transformer', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest-manual');
 
   beforeEach(() => {
-    runYarn(dir);
+    runYarnInstall(dir);
   });
 
   it('runs transpiled code', () => {
@@ -133,7 +134,7 @@ describe('multiple-transformers', () => {
   const dir = path.resolve(__dirname, '..', 'transform/multiple-transformers');
 
   beforeEach(() => {
-    runYarn(dir);
+    runYarnInstall(dir);
   });
 
   it('transforms dependencies using specific transformers', () => {
@@ -164,7 +165,7 @@ describe('transformer-config', () => {
   const dir = path.resolve(__dirname, '..', 'transform/transformer-config');
 
   beforeEach(() => {
-    runYarn(dir);
+    runYarnInstall(dir);
   });
 
   it('runs transpiled code', () => {
@@ -203,5 +204,81 @@ describe('transformer caching', () => {
 
     // We run with 2 workers, so the file should be transformed twice
     expect(loggedFiles).toHaveLength(2);
+  });
+});
+
+describe('transform-environment', () => {
+  const dir = path.resolve(__dirname, '../transform/transform-environment');
+
+  it('should transform the environment', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
+  });
+});
+
+describe('transform-runner', () => {
+  const dir = path.resolve(__dirname, '../transform/transform-runner');
+
+  it('should transform runner', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
+  });
+});
+
+describe('transform-testrunner', () => {
+  const dir = path.resolve(__dirname, '../transform/transform-testrunner');
+
+  it('should transform testRunner', () => {
+    const {json, stderr} = runWithJson(dir, ['--no-cache']);
+    expect(stderr).toMatch(/PASS/);
+    expect(json.success).toBe(true);
+    expect(json.numPassedTests).toBe(1);
+  });
+});
+
+onNodeVersions('^12.17.0 || >=13.2.0', () => {
+  describe('esm-transformer', () => {
+    const dir = path.resolve(__dirname, '../transform/esm-transformer');
+
+    it('should transform with transformer written in ESM', () => {
+      const {json, stderr} = runWithJson(dir, ['--no-cache']);
+      expect(stderr).toMatch(/PASS/);
+      expect(json.success).toBe(true);
+      expect(json.numPassedTests).toBe(1);
+    });
+  });
+
+  describe('async-transformer', () => {
+    const dir = path.resolve(__dirname, '../transform/async-transformer');
+
+    it('should transform with transformer with only async transforms', () => {
+      const {json, stderr} = runWithJson(dir, ['--no-cache'], {
+        nodeOptions: '--experimental-vm-modules',
+      });
+      expect(stderr).toMatch(/PASS/);
+      expect(json.success).toBe(true);
+      expect(json.numPassedTests).toBe(2);
+    });
+  });
+
+  describe('babel-jest-async', () => {
+    const dir = path.resolve(__dirname, '../transform/babel-jest-async');
+
+    beforeAll(() => {
+      runYarnInstall(dir);
+    });
+
+    it("should use babel-jest's async transforms", () => {
+      const {json, stderr} = runWithJson(dir, ['--no-cache'], {
+        nodeOptions: '--experimental-vm-modules',
+      });
+      expect(stderr).toMatch(/PASS/);
+      expect(json.success).toBe(true);
+      expect(json.numPassedTests).toBe(1);
+    });
   });
 });

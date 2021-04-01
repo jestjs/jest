@@ -18,10 +18,10 @@ PASS __tests__/console.test.js
       This is a warning message.
 
       12 |   console.info('This is an info message.');
-      13 | 
+      13 |
     > 14 |   console.warn('This is a warning message.');
          |           ^
-      15 | 
+      15 |
       16 |   console.error('This is an error message.');
       17 | });
 
@@ -31,11 +31,11 @@ PASS __tests__/console.test.js
       This is an error message.
 
       14 |   console.warn('This is a warning message.');
-      15 | 
+      15 |
     > 16 |   console.error('This is an error message.');
          |           ^
       17 | });
-      18 | 
+      18 |
 
       at Object.error (__tests__/console.test.js:16:11)
 `;
@@ -63,10 +63,10 @@ exports[`console printing with --verbose 1`] = `
     This is a warning message.
 
       12 |   console.info('This is an info message.');
-      13 | 
+      13 |
     > 14 |   console.warn('This is a warning message.');
          |           ^
-      15 | 
+      15 |
       16 |   console.error('This is an error message.');
       17 | });
 
@@ -76,11 +76,11 @@ exports[`console printing with --verbose 1`] = `
     This is an error message.
 
       14 |   console.warn('This is a warning message.');
-      15 | 
+      15 |
     > 16 |   console.error('This is an error message.');
          |           ^
       17 | });
-      18 | 
+      18 |
 
       at Object.error (__tests__/console.test.js:16:11)
 

@@ -7,24 +7,15 @@
 
 import chalk = require('chalk');
 import type {DeprecatedOptions} from 'jest-validate';
-import prettyFormat = require('pretty-format');
+import prettyFormat from 'pretty-format';
 
 const format = (value: unknown) => prettyFormat(value, {min: true});
 
 const deprecatedOptions: DeprecatedOptions = {
-  browser: () => `  Option ${chalk.bold(
-    '"browser"',
-  )} has been deprecated. Please install "browser-resolve" and use the "resolver" option in Jest configuration as follows:
-  {
-    ${chalk.bold('"resolver"')}: ${chalk.bold('"browser-resolve"')}
-  }
-  `,
-
-  mapCoverage: () => `  Option ${chalk.bold(
-    '"mapCoverage"',
-  )} has been removed, as it's no longer necessary.
-
-  Please update your configuration.`,
+  browser: () =>
+    `  Option ${chalk.bold(
+      '"browser"',
+    )} has been deprecated. Please install "browser-resolve" and use the "resolver" option in Jest configuration as shown in the documentation: https://jestjs.io/docs/en/configuration#resolver-string`,
 
   preprocessorIgnorePatterns: (options: {
     preprocessorIgnorePatterns?: Array<string>;

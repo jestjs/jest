@@ -35,8 +35,6 @@ describe('getConsoleOutput', () => {
     ${'warn'}
   `('takes noStackTrace and pass it on for $logType', logType => {
     getConsoleOutput(
-      'someRootPath',
-      true,
       BufferedConsole.write([], logType as LogType, 'message', 4),
       {
         rootDir: 'root',

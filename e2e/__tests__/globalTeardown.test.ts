@@ -9,7 +9,7 @@ import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {createDirectory} from 'jest-util';
-import {cleanup, runYarn} from '../Utils';
+import {cleanup, runYarnInstall} from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
 
 const DIR = path.join(tmpdir(), 'jest-global-teardown');
@@ -18,7 +18,7 @@ const project2DIR = path.join(tmpdir(), 'jest-global-teardown-project-2');
 const e2eDir = path.resolve(__dirname, '../global-teardown');
 
 beforeAll(() => {
-  runYarn(e2eDir);
+  runYarnInstall(e2eDir);
 });
 
 beforeEach(() => {
@@ -55,8 +55,9 @@ test('jest throws an error when globalTeardown does not export a function', () =
   ]);
 
   expect(exitCode).toBe(1);
-  expect(stderr).toMatch(
-    `TypeError: globalTeardown file must export a function at ${teardownPath}`,
+  expect(stderr).toContain('Jest: Got error running globalTeardown');
+  expect(stderr).toContain(
+    `globalTeardown file must export a function at ${teardownPath}`,
   );
 });
 
@@ -125,7 +126,8 @@ test('globalTeardown throws with named export', () => {
   ]);
 
   expect(exitCode).toBe(1);
-  expect(stderr).toMatch(
-    `TypeError: globalTeardown file must export a function at ${teardownPath}`,
+  expect(stderr).toContain('Jest: Got error running globalTeardown');
+  expect(stderr).toContain(
+    `globalTeardown file must export a function at ${teardownPath}`,
   );
 });

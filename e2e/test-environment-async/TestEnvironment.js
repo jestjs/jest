@@ -34,8 +34,8 @@ class TestEnvironment extends JSDOMEnvironment {
     });
   }
 
-  runScript(script) {
-    return super.runScript(script);
+  getVmContext() {
+    return super.getVmContext();
   }
 }
 

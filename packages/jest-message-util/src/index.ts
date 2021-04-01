@@ -13,7 +13,7 @@ import micromatch = require('micromatch');
 import slash = require('slash');
 import StackUtils = require('stack-utils');
 import type {Config, TestResult} from '@jest/types';
-import prettyFormat = require('pretty-format');
+import prettyFormat from 'pretty-format';
 import type {Frame} from './types';
 
 export type {Frame} from './types';
@@ -26,8 +26,7 @@ const stackUtils = new StackUtils({cwd: 'something which does not exist'});
 let nodeInternals: Array<RegExp> = [];
 
 try {
-  // https://github.com/tapjs/stack-utils/issues/54
-  nodeInternals = StackUtils.nodeInternals().concat(/\s*\(node:/);
+  nodeInternals = StackUtils.nodeInternals();
 } catch {
   // `StackUtils.nodeInternals()` fails in browsers. We don't need to remove
   // node internals in the browser though, so no issue.

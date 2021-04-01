@@ -9,8 +9,8 @@
 import * as path from 'path';
 import type {Config} from '@jest/types';
 import {normalize} from 'jest-config';
-import {Test} from 'jest-runner';
-import Runtime = require('jest-runtime');
+import type {Test} from 'jest-runner';
+import Runtime from 'jest-runtime';
 import SearchSource, {SearchResult} from '../SearchSource';
 
 jest.setTimeout(15000);
@@ -46,14 +46,16 @@ describe('SearchSource', () => {
   describe('isTestFilePath', () => {
     let config;
 
-    beforeEach(() => {
-      config = normalize(
-        {
-          name,
-          rootDir: '.',
-          roots: [],
-        },
-        {} as Config.Argv,
+    beforeEach(async () => {
+      config = (
+        await normalize(
+          {
+            name,
+            rootDir: '.',
+            roots: [],
+          },
+          {} as Config.Argv,
+        )
       ).options;
       return Runtime.createContext(config, {maxWorkers, watchman: false}).then(
         context => {
@@ -64,17 +66,19 @@ describe('SearchSource', () => {
 
     // micromatch doesn't support '..' through the globstar ('**') to avoid
     // infinite recursion.
-    it('supports ../ paths and unix separators via testRegex', () => {
+    it('supports ../ paths and unix separators via testRegex', async () => {
       if (process.platform !== 'win32') {
-        config = normalize(
-          {
-            name,
-            rootDir: '.',
-            roots: [],
-            testMatch: undefined,
-            testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
-          },
-          {} as Config.Argv,
+        config = (
+          await normalize(
+            {
+              name,
+              rootDir: '.',
+              roots: [],
+              testMatch: undefined,
+              testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.jsx?$',
+            },
+            {} as Config.Argv,
+          )
         ).options;
         return Runtime.createContext(config, {
           maxWorkers,
@@ -114,8 +118,8 @@ describe('SearchSource', () => {
         }).then(context => new SearchSource(context).findMatchingTests());
     });
 
-    it('finds tests matching a pattern via testRegex', () => {
-      const {options: config} = normalize(
+    it('finds tests matching a pattern via testRegex', async () => {
+      const {options: config} = await normalize(
         {
           moduleFileExtensions: ['js', 'jsx', 'txt'],
           name,
@@ -138,8 +142,8 @@ describe('SearchSource', () => {
       });
     });
 
-    it('finds tests matching a pattern via testMatch', () => {
-      const {options: config} = normalize(
+    it('finds tests matching a pattern via testMatch', async () => {
+      const {options: config} = await normalize(
         {
           moduleFileExtensions: ['js', 'jsx', 'txt'],
           name,
@@ -162,8 +166,8 @@ describe('SearchSource', () => {
       });
     });
 
-    it('finds tests matching a JS regex pattern', () => {
-      const {options: config} = normalize(
+    it('finds tests matching a JS regex pattern', async () => {
+      const {options: config} = await normalize(
         {
           moduleFileExtensions: ['js', 'jsx'],
           name,
@@ -184,8 +188,8 @@ describe('SearchSource', () => {
       });
     });
 
-    it('finds tests matching a JS glob pattern', () => {
-      const {options: config} = normalize(
+    it('finds tests matching a JS glob pattern', async () => {
+      const {options: config} = await normalize(
         {
           moduleFileExtensions: ['js', 'jsx'],
           name,
@@ -206,8 +210,8 @@ describe('SearchSource', () => {
       });
     });
 
-    it('finds tests matching a JS with overriding glob patterns', () => {
-      const {options: config} = normalize(
+    it('finds tests matching a JS with overriding glob patterns', async () => {
+      const {options: config} = await normalize(
         {
           moduleFileExtensions: ['js', 'jsx'],
           name,
@@ -234,8 +238,8 @@ describe('SearchSource', () => {
       });
     });
 
-    it('finds tests with default file extensions using testRegex', () => {
-      const {options: config} = normalize(
+    it('finds tests with default file extensions using testRegex', async () => {
+      const {options: config} = await normalize(
         {
           name,
           rootDir,
@@ -255,8 +259,8 @@ describe('SearchSource', () => {
       });
     });
 
-    it('finds tests with default file extensions using testMatch', () => {
-      const {options: config} = normalize(
+    it('finds tests with default file extensions using testMatch', async () => {
+      const {options: config} = await normalize(
         {
           name,
           rootDir,
@@ -276,8 +280,8 @@ describe('SearchSource', () => {
       });
     });
 
-    it('finds tests with parentheses in their rootDir when using testMatch', () => {
-      const {options: config} = normalize(
+    it('finds tests with parentheses in their rootDir when using testMatch', async () => {
+      const {options: config} = await normalize(
         {
           name,
           rootDir: path.resolve(__dirname, 'test_root_with_(parentheses)'),
@@ -296,8 +300,8 @@ describe('SearchSource', () => {
       });
     });
 
-    it('finds tests with similar but custom file extensions', () => {
-      const {options: config} = normalize(
+    it('finds tests with similar but custom file extensions', async () => {
+      const {options: config} = await normalize(
         {
           moduleFileExtensions: ['js', 'jsx'],
           name,
@@ -317,8 +321,8 @@ describe('SearchSource', () => {
       });
     });
 
-    it('finds tests with totally custom foobar file extensions', () => {
-      const {options: config} = normalize(
+    it('finds tests with totally custom foobar file extensions', async () => {
+      const {options: config} = await normalize(
         {
           moduleFileExtensions: ['js', 'foobar'],
           name,
@@ -338,8 +342,8 @@ describe('SearchSource', () => {
       });
     });
 
-    it('finds tests with many kinds of file extensions', () => {
-      const {options: config} = normalize(
+    it('finds tests with many kinds of file extensions', async () => {
+      const {options: config} = await normalize(
         {
           moduleFileExtensions: ['js', 'jsx'],
           name,
@@ -359,8 +363,8 @@ describe('SearchSource', () => {
       });
     });
 
-    it('finds tests using a regex only', () => {
-      const {options: config} = normalize(
+    it('finds tests using a regex only', async () => {
+      const {options: config} = await normalize(
         {
           name,
           rootDir,
@@ -380,8 +384,8 @@ describe('SearchSource', () => {
       });
     });
 
-    it('finds tests using a glob only', () => {
-      const {options: config} = normalize(
+    it('finds tests using a glob only', async () => {
+      const {options: config} = await normalize(
         {
           name,
           rootDir,
@@ -415,8 +419,8 @@ describe('SearchSource', () => {
     );
     const rootPath = path.join(rootDir, 'root.js');
 
-    beforeEach(done => {
-      const {options: config} = normalize(
+    beforeEach(async () => {
+      const {options: config} = await normalize(
         {
           haste: {
             hasteImplModulePath: path.join(
@@ -435,12 +439,11 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      Runtime.createContext(config, {maxWorkers, watchman: false}).then(
-        context => {
-          searchSource = new SearchSource(context);
-          done();
-        },
-      );
+      const context = await Runtime.createContext(config, {
+        maxWorkers,
+        watchman: false,
+      });
+      searchSource = new SearchSource(context);
     });
 
     it('makes sure a file is related to itself', () => {
@@ -451,14 +454,12 @@ describe('SearchSource', () => {
     it('finds tests that depend directly on the path', () => {
       const filePath = path.join(rootDir, 'RegularModule.js');
       const file2Path = path.join(rootDir, 'RequireRegularModule.js');
-      const loggingDep = path.join(rootDir, 'logging.js');
       const parentDep = path.join(rootDir, 'ModuleWithSideEffects.js');
       const data = searchSource.findRelatedTests(new Set([filePath]), false);
       expect(toPaths(data.tests).sort()).toEqual([
         parentDep,
         filePath,
         file2Path,
-        loggingDep,
         rootPath,
       ]);
     });
@@ -479,8 +480,8 @@ describe('SearchSource', () => {
   });
 
   describe('findRelatedTestsFromPattern', () => {
-    beforeEach(done => {
-      const {options: config} = normalize(
+    beforeEach(async () => {
+      const {options: config} = await normalize(
         {
           moduleFileExtensions: ['js', 'jsx', 'foobar'],
           name,
@@ -489,12 +490,11 @@ describe('SearchSource', () => {
         },
         {} as Config.Argv,
       );
-      Runtime.createContext(config, {maxWorkers, watchman: false}).then(
-        context => {
-          searchSource = new SearchSource(context);
-          done();
-        },
-      );
+      const context = await Runtime.createContext(config, {
+        maxWorkers,
+        watchman: false,
+      });
+      searchSource = new SearchSource(context);
     });
 
     it('returns empty search result for empty input', () => {
@@ -539,13 +539,15 @@ describe('SearchSource', () => {
 
     it('does not mistake roots folders with prefix names', async () => {
       if (process.platform !== 'win32') {
-        const config = normalize(
-          {
-            name,
-            rootDir: '.',
-            roots: ['/foo/bar/prefix'],
-          },
-          {} as Config.Argv,
+        const config = (
+          await normalize(
+            {
+              name,
+              rootDir: '.',
+              roots: ['/foo/bar/prefix'],
+            },
+            {} as Config.Argv,
+          )
         ).options;
 
         searchSource = new SearchSource(
@@ -566,7 +568,7 @@ describe('SearchSource', () => {
     );
 
     beforeEach(async () => {
-      const {options: config} = normalize(
+      const {options: config} = await normalize(
         {
           haste: {
             hasteImplModulePath: path.resolve(

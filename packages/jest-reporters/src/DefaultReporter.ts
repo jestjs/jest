@@ -33,6 +33,8 @@ export default class DefaultReporter extends BaseReporter {
   private _status: Status;
   private _bufferedOutput: Set<FlushBufferedOutput>;
 
+  static readonly filename = __filename;
+
   constructor(globalConfig: Config.GlobalConfig) {
     super();
     this._globalConfig = globalConfig;
@@ -186,13 +188,7 @@ export default class DefaultReporter extends BaseReporter {
         '  ' +
           TITLE_BULLET +
           'Console\n\n' +
-          getConsoleOutput(
-            config.cwd,
-            !!this._globalConfig.verbose,
-            result.console,
-            config,
-            this._globalConfig,
-          ),
+          getConsoleOutput(result.console, config, this._globalConfig),
       );
     }
   }

@@ -19,7 +19,7 @@ exports[`should work without error 1`] = `
     > 14 |   expect(div1).toBe(div2);
          |                ^
       15 | });
-      16 | 
+      16 |
       17 | test('compare span and div', () => {
 
       at Object.toBe (__tests__/dom.test.js:14:16)
@@ -34,12 +34,12 @@ exports[`should work without error 1`] = `
     - <span />
     + <div />
 
-      16 | 
+      16 |
       17 | test('compare span and div', () => {
     > 18 |   expect(document.createElement('div')).toBe(document.createElement('span'));
          |                                         ^
       19 | });
-      20 | 
+      20 |
 
       at Object.toBe (__tests__/dom.test.js:18:41)
 

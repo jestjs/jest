@@ -1,5 +1,5 @@
 ---
-title: 🃏 Jest 19: Immersive Watch Mode & Test Platform Improvements
+title: '🃏 Jest 19: Immersive Watch Mode & Test Platform Improvements'
 author: Rogelio Guzman
 authorURL: http://twitter.com/rogeliog
 authorFBID: 511230566
@@ -77,9 +77,9 @@ We now also error on invalid CLI arguments instead of ignoring them. But we've g
 
 ## `expect` Improvements
 
-- [`expect.addSnapshotSerializer`](/docs/expect.html#expectaddsnapshotserializerserializer)
-- [`expect.stringContaining`](/docs/expect.html#expectstringcontainingstring)
-- [`jest.spyOn`](/docs/jest-object.html#jestspyonobject-methodname)
+- [`expect.addSnapshotSerializer`](/docs/expect#expectaddsnapshotserializerserializer)
+- [`expect.stringContaining`](/docs/expect#expectstringcontainingstring)
+- [`jest.spyOn`](/docs/jest-object#jestspyonobject-methodname)
 
 We're close to almost full feature parity with the `expect` npm package. [Michael Jackson](https://twitter.com/mjackson), the author of the package, agreed to [donate](https://github.com/facebook/jest/issues/1679) it to the Jest project, which means that `jest-matchers` will be renamed to `expect`. Since our version of `expect` is not intended to be fully compatible, [Christopher Chedeau](https://twitter.com/Vjeux) is working on a codemod to make the transition painless. Christopher also worked on a number of improvements to `jest-matchers` which enables it to be used outside of Jest and even [works inside browsers](https://github.com/facebook/jest/pull/2795).
 
@@ -105,7 +105,7 @@ We're happy to announce that `jest-validate` is validating config options of [pr
 
 ## Improved asymmetric matchers
 
-We moved the asymmetric matchers implementation from Jasmine into Jest, which enabled us to further improve the user experience around them. As a result, asymmetric matchers are now pretty-printed nicely, we added the new [`expect.stringContaining()`](https://jestjs.io/docs/expect.html#expectstringcontainingstring) matcher and we also paired them with [`expect.toMatchObject()`](https://jestjs.io/docs/expect.html#tomatchobjectobject) so you can use the best of both:
+We moved the asymmetric matchers implementation from Jasmine into Jest, which enabled us to further improve the user experience around them. As a result, asymmetric matchers are now pretty-printed nicely, we added the new [`expect.stringContaining()`](/docs/expect#expectstringcontainingstring) matcher and we also paired them with [`expect.toMatchObject()`](/docs/expect#tomatchobjectobject) so you can use the best of both:
 
 ![asymmetric-matchers](/img/blog/19-asymmetric-matchers.png)
 
@@ -121,8 +121,8 @@ As a part of our cleanups and fixes we removed the `mocksPattern` configuration 
 
 As you may have already seen, [Hector Ramos](https://twitter.com/hectorramos) and [Kevin Lacker](https://twitter.com/lacker) gave Jest's documentation a fresh new look. We changed the way we organize the website and it now features Docs and API as separate pages:
 
-- Under [Docs](https://jestjs.io/docs/getting-started.html#content) you can find an introduction to Jest, including [Getting Started](https://jestjs.io/docs/getting-started.html#content) or [Testing Asynchronous Code](https://jestjs.io/docs/asynchronous.html#content) and handy guides like [Snapshot Testing](https://jestjs.io/docs/snapshot-testing.html#content), [Testing React Native App](https://jestjs.io/docs/tutorial-react-native.html#content), [Using with webpack](https://jestjs.io/docs/webpack.html#content) or [Migrating to Jest](https://jestjs.io/docs/migration-guide.html#content) and many more!
-- The [API](https://jestjs.io/docs/api.html) section on the other hand lists all available methods exposed by Jest: the `expect` and `jest` objects, mock functions, globals, along with configuration options from _package.json_ and from the CLI.
+- Under [Docs](/docs/getting-started#content) you can find an introduction to Jest, including [Getting Started](/docs/getting-started#content) or [Testing Asynchronous Code](/docs/asynchronous#content) and handy guides like [Snapshot Testing](/docs/snapshot-testing#content), [Testing React Native App](/docs/tutorial-react-native#content), [Using with webpack](/docs/webpack#content) or [Migrating to Jest](/docs/migration-guide#content) and many more!
+- The [API](/docs/api) section on the other hand lists all available methods exposed by Jest: the `expect` and `jest` objects, mock functions, globals, along with configuration options from _package.json_ and from the CLI.
 
 The homepage was completely redesigned to be more descriptive of what Jest is about: “_Zero configuration testing platform_”. We also made sure it reads better on mobile devices. And for those using RSS – we finally provide a [feed for our blog](https://jestjs.io/blog/feed.xml).
 
