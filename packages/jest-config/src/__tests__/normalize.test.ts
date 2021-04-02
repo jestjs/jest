@@ -1865,3 +1865,15 @@ describe('haste.enableSymlinks', () => {
     expect(options.watchman).toBe(false);
   });
 });
+
+describe('haste.forceNodeFilesystemAPI', () => {
+  it('should pass option through', async () => {
+    const {options} = await normalize(
+      {haste: {forceNodeFilesystemAPI: true}, rootDir: '/root/'},
+      {},
+    );
+
+    expect(options.haste.forceNodeFilesystemAPI).toBe(true);
+    expect(console.warn).not.toHaveBeenCalled();
+  });
+});

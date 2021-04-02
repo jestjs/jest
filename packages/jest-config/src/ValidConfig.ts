@@ -56,6 +56,7 @@ const initialOptions: Config.InitialOptions = {
     computeSha1: true,
     defaultPlatform: 'ios',
     enableSymlinks: false,
+    forceNodeFilesystemAPI: false,
     hasteImplModulePath: '<rootDir>/haste_impl.js',
     platforms: ['ios', 'android'],
     throwOnModuleCollision: false,
