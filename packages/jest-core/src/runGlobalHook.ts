@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {pathToFileURL} from 'url';
 import * as util from 'util';
 import pEachSeries = require('p-each-series');
 import {createScriptTransformer} from '@jest/transform';
@@ -60,18 +61,41 @@ export default async ({
           await globalModule(globalConfig);
         });
       } catch (error) {
-        if (util.types.isNativeError(error)) {
-          error.message = `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${error.message}`;
+        if (error && error.code === 'ERR_REQUIRE_ESM') {
+          const configUrl = pathToFileURL(modulePath);
 
-          throw error;
+          // node `import()` supports URL, but TypeScript doesn't know that
+          const importedConfig = await import(configUrl.href);
+
+          if (!importedConfig.default) {
+            throw new Error(
+              `Jest: Failed to load ESM transformer at ${modulePath} - did you use a default export?`,
+            );
+          }
+
+          const globalModule = importedConfig.default;
+
+          if (typeof globalModule !== 'function') {
+            throw new TypeError(
+              `${moduleName} file must export a function at ${modulePath}`,
+            );
+          }
+
+          await globalModule(globalConfig);
+        } else {
+          if (util.types.isNativeError(error)) {
+            error.message = `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${error.message}`;
+
+            throw error;
+          }
+
+          throw new Error(
+            `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${prettyFormat(
+              error,
+              {maxDepth: 3},
+            )}`,
+          );
         }
-
-        throw new Error(
-          `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${prettyFormat(
-            error,
-            {maxDepth: 3},
-          )}`,
-        );
       }
     });
   }
