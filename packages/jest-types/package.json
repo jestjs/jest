@@ -1,6 +1,6 @@
 {
   "name": "@jest/types",
-  "version": "27.0.0-next.3",
+  "version": "27.0.0-next.7",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
