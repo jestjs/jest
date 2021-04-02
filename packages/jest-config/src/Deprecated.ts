@@ -15,7 +15,7 @@ const deprecatedOptions: DeprecatedOptions = {
   browser: () =>
     `  Option ${chalk.bold(
       '"browser"',
-    )} has been deprecated. Please install "browser-resolve" and use the "resolver" option in Jest configuration as shown in the documentation: https://jestjs.io/docs/en/configuration#resolver-string`,
+    )} has been deprecated. Please install "browser-resolve" and use the "resolver" option in Jest configuration as shown in the documentation: https://jestjs.io/docs/configuration#resolver-string`,
 
   preprocessorIgnorePatterns: (options: {
     preprocessorIgnorePatterns?: Array<string>;

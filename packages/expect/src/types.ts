@@ -310,7 +310,7 @@ export interface Matchers<R> {
   /* TODO: START snapshot matchers are not from `expect`, the types should not be here */
   /**
    * This ensures that a value matches the most recent snapshot with property matchers.
-   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/en/snapshot-testing) for more information.
+   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/snapshot-testing) for more information.
    */
   toMatchSnapshot<T extends {[P in keyof R]: unknown}>(
     propertyMatchers: Partial<T>,
@@ -318,13 +318,13 @@ export interface Matchers<R> {
   ): R;
   /**
    * This ensures that a value matches the most recent snapshot.
-   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/en/snapshot-testing) for more information.
+   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/snapshot-testing) for more information.
    */
   toMatchSnapshot(snapshotName?: string): R;
   /**
    * This ensures that a value matches the most recent snapshot with property matchers.
    * Instead of writing the snapshot value to a .snap file, it will be written into the source code automatically.
-   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/en/snapshot-testing) for more information.
+   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/snapshot-testing) for more information.
    */
   toMatchInlineSnapshot<T extends {[P in keyof R]: unknown}>(
     propertyMatchers: Partial<T>,
@@ -333,7 +333,7 @@ export interface Matchers<R> {
   /**
    * This ensures that a value matches the most recent snapshot with property matchers.
    * Instead of writing the snapshot value to a .snap file, it will be written into the source code automatically.
-   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/en/snapshot-testing) for more information.
+   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/snapshot-testing) for more information.
    */
   toMatchInlineSnapshot(snapshot?: string): R;
   /**

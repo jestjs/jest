@@ -374,23 +374,23 @@ test('calculate calls add', () => {
 
   // Now we can easily set up mock implementations.
   // All the `.mock*` API can now give you proper types for `add`.
-  // https://jestjs.io/docs/en/mock-function-api
+  // https://jestjs.io/docs/mock-function-api
 
   // `.mockImplementation` can now infer that `a` and `b` are `number`
   // and that the returned value is a `number`.
   mockAdd.mockImplementation((a, b) => {
     // Yes, this mock is still adding two numbers but imagine this
     // was a complex function we are mocking.
-    return  a + b
-  }));
+    return a + b;
+  });
 
   // `mockAdd` is properly typed and therefore accepted by
   // anything requiring `add`.
-  calculate(mockAdd, 1 , 2);
+  calculate(mockAdd, 1, 2);
 
   expect(mockAdd).toBeCalledTimes(1);
   expect(mockAdd).toBeCalledWith(1, 2);
-})
+});
 ```
 
 ### `jest.MockedClass`

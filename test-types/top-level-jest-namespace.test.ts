@@ -73,26 +73,26 @@ expectType<typeof jest>(jest.useRealTimers());
 expectType<void>(jest.advanceTimersToNextTimer());
 expectType<void>(jest.advanceTimersToNextTimer(2));
 
-// https://jestjs.io/docs/en/jest-object#jestusefaketimersimplementation-modern--legacy
+// https://jestjs.io/docs/jest-object#jestusefaketimersimplementation-modern--legacy
 expectType<typeof jest>(jest.useFakeTimers('modern'));
 expectType<typeof jest>(jest.useFakeTimers('legacy'));
 
 expectError(jest.useFakeTimers('foo'));
 
-// https://jestjs.io/docs/en/jest-object#jestsetsystemtimenow-number--date
+// https://jestjs.io/docs/jest-object#jestsetsystemtimenow-number--date
 expectType<void>(jest.setSystemTime());
 expectType<void>(jest.setSystemTime(0));
 expectType<void>(jest.setSystemTime(new Date(0)));
 
 expectError(jest.setSystemTime('foo'));
 
-// https://jestjs.io/docs/en/jest-object#jestgetrealsystemtime
+// https://jestjs.io/docs/jest-object#jestgetrealsystemtime
 expectType<number>(jest.getRealSystemTime());
 
 expectError(jest.getRealSystemTime('foo'));
 
-// https://jestjs.io/docs/en/jest-object#jestrequireactualmodulename
+// https://jestjs.io/docs/jest-object#jestrequireactualmodulename
 expectType<unknown>(jest.requireActual('./thisReturnsTheActualModule'));
 
-// https://jestjs.io/docs/en/jest-object#jestrequiremockmodulename
+// https://jestjs.io/docs/jest-object#jestrequiremockmodulename
 expectType<unknown>(jest.requireMock('./thisAlwaysReturnsTheMock'));

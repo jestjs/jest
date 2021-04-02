@@ -28,7 +28,7 @@ const timeout = 5;
 const testName = 'Test name';
 const testTable = [[1, 2]];
 
-// https://jestjs.io/docs/en/api#methods
+// https://jestjs.io/docs/api#methods
 expectType<void>(afterAll(fn));
 expectType<void>(afterAll(asyncFn));
 expectType<void>(afterAll(genFn));
