@@ -84,6 +84,19 @@ let mockChangedFiles;
 let mockFs;
 
 jest.mock('graceful-fs', () => ({
+  existsSync: jest.fn(path => {
+    // A file change can be triggered by writing into the
+    // mockChangedFiles object.
+    if (mockChangedFiles && path in mockChangedFiles) {
+      return true;
+    }
+
+    if (mockFs[path]) {
+      return true;
+    }
+
+    return false;
+  }),
   readFileSync: jest.fn((path, options) => {
     // A file change can be triggered by writing into the
     // mockChangedFiles object.
@@ -492,6 +505,42 @@ describe('HasteMap', () => {
     // The cache file must exactly mirror the data structure returned from a
     // build
     expect(useBuitinsInContext(hasteMap.read())).toEqual(data);
+  });
+
+  it('throws if both symlinks and watchman is enabled', () => {
+    expect(
+      () => new HasteMap({...defaultConfig, enableSymlinks: true}),
+    ).toThrow(
+      'Set either `enableSymlinks` to false or `useWatchman` to false.',
+    );
+    expect(
+      () =>
+        new HasteMap({
+          ...defaultConfig,
+          enableSymlinks: true,
+          useWatchman: true,
+        }),
+    ).toThrow(
+      'Set either `enableSymlinks` to false or `useWatchman` to false.',
+    );
+
+    expect(
+      () =>
+        new HasteMap({
+          ...defaultConfig,
+          enableSymlinks: false,
+          useWatchman: true,
+        }),
+    ).not.toThrow();
+
+    expect(
+      () =>
+        new HasteMap({
+          ...defaultConfig,
+          enableSymlinks: true,
+          useWatchman: false,
+        }),
+    ).not.toThrow();
   });
 
   describe('builds a haste map on a fresh cache with SHA-1s', () => {

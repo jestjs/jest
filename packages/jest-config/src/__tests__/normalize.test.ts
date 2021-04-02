@@ -1842,3 +1842,26 @@ describe('extensionsToTreatAsEsm', () => {
     );
   });
 });
+
+describe('haste.enableSymlinks', () => {
+  it('should throw if watchman is not disabled', async () => {
+    await expect(
+      normalize({haste: {enableSymlinks: true}, rootDir: '/root/'}, {}),
+    ).rejects.toThrow('haste.enableSymlinks is incompatible with watchman');
+
+    await expect(
+      normalize(
+        {haste: {enableSymlinks: true}, rootDir: '/root/', watchman: true},
+        {},
+      ),
+    ).rejects.toThrow('haste.enableSymlinks is incompatible with watchman');
+
+    const {options} = await normalize(
+      {haste: {enableSymlinks: true}, rootDir: '/root/', watchman: false},
+      {},
+    );
+
+    expect(options.haste.enableSymlinks).toBe(true);
+    expect(options.watchman).toBe(false);
+  });
+});

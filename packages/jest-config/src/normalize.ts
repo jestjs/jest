@@ -648,6 +648,10 @@ export default async function normalize(
 
   validateExtensionsToTreatAsEsm(options.extensionsToTreatAsEsm);
 
+  if (options.watchman == null) {
+    options.watchman = DEFAULT_CONFIG.watchman;
+  }
+
   const optionKeys = Object.keys(options) as Array<keyof Config.InitialOptions>;
 
   optionKeys.reduce((newOptions, key: keyof Config.InitialOptions) => {
@@ -1022,6 +1026,14 @@ export default async function normalize(
     newOptions[key] = value;
     return newOptions;
   }, newOptions);
+
+  if (options.watchman && options.haste?.enableSymlinks) {
+    throw new ValidationError(
+      'Validation Error',
+      'haste.enableSymlinks is incompatible with watchman',
+      'Either set haste.enableSymlinks to false or do not use watchman',
+    );
+  }
 
   newOptions.roots.forEach((root, i) => {
     verifyDirectoryExists(root, `roots[${i}]`);
