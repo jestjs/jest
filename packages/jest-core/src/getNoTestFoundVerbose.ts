@@ -43,7 +43,7 @@ export default function getNoTestFoundVerbose(
           `Make sure Jest's configuration does not exclude this directory.` +
           `\nTo set up Jest, make sure a package.json file exists.\n` +
           `Jest Documentation: ` +
-          `facebook.github.io/jest/docs/configuration.html`;
+          `https://jestjs.io/docs/configuration`;
   });
   let dataMessage;
 

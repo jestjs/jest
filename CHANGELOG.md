@@ -2272,7 +2272,7 @@ We skipped 24.2.0 because a draft was accidentally published. Please use `24.3.0
 
 ## jest 18.0.0
 
-See https://jestjs.io/blog/2016/12/15/2016-in-jest.html
+See https://jestjs.io/blog/2016/12/15/2016-in-jest
 
 - The testResultsProcessor function is now required to return the modified results.
 - Removed `pit` and `mockImpl`. Use `it` or `mockImplementation` instead.
@@ -2409,7 +2409,7 @@ See https://jestjs.io/blog/2016/12/15/2016-in-jest.html
 
 ## jest 15.0.0
 
-- See https://jestjs.io/blog/2016/09/01/jest-15.html
+- See https://jestjs.io/blog/2016/09/01/jest-15
 - Jest by default now also recognizes files ending in `.spec.js` and `.test.js` as test files.
 - Completely replaced most Jasmine matchers with new Jest matchers.
 - Rewrote Jest's CLI output for test failures and summaries.
