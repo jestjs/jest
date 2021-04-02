@@ -64,6 +64,7 @@ module.exports = {
         fromExtensions: ['html'],
       },
     ],
+    /*
     [
       '@docusaurus/plugin-pwa',
       {
@@ -117,6 +118,7 @@ module.exports = {
         ],
       },
     ],
+     */
   ],
   themeConfig: {
     navbar: {
