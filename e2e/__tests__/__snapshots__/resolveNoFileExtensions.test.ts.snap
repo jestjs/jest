@@ -9,7 +9,7 @@ exports[`show error message when no js moduleFileExtensions 1`] = `
   Please change your configuration to include 'js'.
 
   Configuration Documentation:
-  https://jestjs.io/docs/configuration.html
+  https://jestjs.io/docs/configuration
 
 `;
 

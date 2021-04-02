@@ -97,7 +97,7 @@ function mustImplement(propName: string, requiredType: string) {
     chalk.bold(
       `Custom snapshot resolver must implement a \`${propName}\` as a ${requiredType}.`,
     ) +
-    '\nDocumentation: https://facebook.github.io/jest/docs/configuration.html#snapshotResolver'
+    '\nDocumentation: https://jestjs.io/docs/configuration#snapshotresolver-string'
   );
 }
 

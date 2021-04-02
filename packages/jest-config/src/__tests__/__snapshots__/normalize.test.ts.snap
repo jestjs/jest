@@ -13,7 +13,7 @@ exports[`Upgrade help logs a warning when \`scriptPreprocessor\` and/or \`prepro
 <yellow>  Please update your configuration.</>
 <yellow></>
 <yellow>  <bold>Configuration Documentation:</></>
-<yellow>  https://jestjs.io/docs/configuration.html</>
+<yellow>  https://jestjs.io/docs/configuration</>
 <yellow></>"
 `;
 
@@ -39,7 +39,7 @@ exports[`displayName should throw an error when displayName is is an empty objec
 <red></>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration</>
 <red></>"
 `;
 
@@ -55,7 +55,7 @@ exports[`displayName should throw an error when displayName is missing color 1`]
 <red></>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration</>
 <red></>"
 `;
 
@@ -71,7 +71,7 @@ exports[`displayName should throw an error when displayName is missing name 1`] 
 <red></>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration</>
 <red></>"
 `;
 
@@ -87,7 +87,7 @@ exports[`displayName should throw an error when displayName is using invalid val
 <red></>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration</>
 <red></>"
 `;
 
@@ -98,7 +98,7 @@ exports[`extensionsToTreatAsEsm should enforce leading dots 1`] = `
   Please change your configuration to extensionsToTreatAsEsm: ['.ts'].
 
   Configuration Documentation:
-  https://jestjs.io/docs/configuration.html
+  https://jestjs.io/docs/configuration
 `;
 
 exports[`extensionsToTreatAsEsm throws on .cjs 1`] = `
@@ -107,7 +107,7 @@ exports[`extensionsToTreatAsEsm throws on .cjs 1`] = `
   Option: extensionsToTreatAsEsm: ['.cjs'] includes '.cjs' which is always treated as CommonJS.
 
   Configuration Documentation:
-  https://jestjs.io/docs/configuration.html
+  https://jestjs.io/docs/configuration
 `;
 
 exports[`extensionsToTreatAsEsm throws on .js 1`] = `
@@ -116,7 +116,7 @@ exports[`extensionsToTreatAsEsm throws on .js 1`] = `
   Option: extensionsToTreatAsEsm: ['.js'] includes '.js' which is always inferred based on type in its nearest package.json.
 
   Configuration Documentation:
-  https://jestjs.io/docs/configuration.html
+  https://jestjs.io/docs/configuration
 `;
 
 exports[`extensionsToTreatAsEsm throws on .mjs 1`] = `
@@ -125,7 +125,7 @@ exports[`extensionsToTreatAsEsm throws on .mjs 1`] = `
   Option: extensionsToTreatAsEsm: ['.mjs'] includes '.mjs' which is always treated as an ECMAScript Module.
 
   Configuration Documentation:
-  https://jestjs.io/docs/configuration.html
+  https://jestjs.io/docs/configuration
 `;
 
 exports[`preset throws when module was found but no "jest-preset.js" or "jest-preset.json" files 1`] = `
@@ -134,7 +134,7 @@ exports[`preset throws when module was found but no "jest-preset.js" or "jest-pr
 <red>  Module <bold>exist-but-no-jest-preset</> should have \\"jest-preset.js\\" or \\"jest-preset.json\\" file at the root.</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration</>
 <red></>"
 `;
 
@@ -144,7 +144,7 @@ exports[`preset throws when preset not found 1`] = `
 <red>  Preset <bold>doesnt-exist</> not found.</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration</>
 <red></>"
 `;
 
@@ -154,7 +154,7 @@ exports[`rootDir throws if the options is missing a rootDir property 1`] = `
 <red>  Configuration option <bold>rootDir</> must be specified.</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration</>
 <red></>"
 `;
 
@@ -164,7 +164,7 @@ exports[`runner throw error when a runner is not found 1`] = `
 <red>  Jest Runner <bold>missing-runner</> cannot be found. Make sure the <bold>runner</> configuration option points to an existing node module.</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration</>
 <red></>"
 `;
 
@@ -176,7 +176,7 @@ exports[`setupTestFrameworkScriptFile logs a deprecation warning when \`setupTes
 <yellow>  Please update your configuration.</>
 <yellow></>
 <yellow>  <bold>Configuration Documentation:</></>
-<yellow>  https://jestjs.io/docs/configuration.html</>
+<yellow>  https://jestjs.io/docs/configuration</>
 <yellow></>"
 `;
 
@@ -187,7 +187,7 @@ exports[`setupTestFrameworkScriptFile logs an error when \`setupTestFrameworkScr
 <red>  Please change your configuration to only use <bold>setupFilesAfterEnv</>.</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration</>
 <red></>"
 `;
 
@@ -197,7 +197,7 @@ exports[`testEnvironment throws on invalid environment names 1`] = `
 <red>  Test environment <bold>phantom</> cannot be found. Make sure the <bold>testEnvironment</> configuration option points to an existing node module.</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration</>
 <red></>"
 `;
 
@@ -207,7 +207,7 @@ exports[`testMatch throws if testRegex and testMatch are both specified 1`] = `
 <red>  Configuration options <bold>testMatch</> and <bold>testRegex</> cannot be used together.</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration</>
 <red></>"
 `;
 
@@ -221,7 +221,7 @@ exports[`testTimeout should throw an error if timeout is a negative number 1`] =
 <red>  Option \\"<bold>testTimeout</>\\" must be a natural number.</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration</>
 <red></>"
 `;
 
@@ -231,6 +231,6 @@ exports[`watchPlugins throw error when a watch plugin is not found 1`] = `
 <red>  Watch plugin <bold>missing-plugin</> cannot be found. Make sure the <bold>watchPlugins</> configuration option points to an existing node module.</>
 <red></>
 <red>  <bold>Configuration Documentation:</></>
-<red>  https://jestjs.io/docs/configuration.html</>
+<red>  https://jestjs.io/docs/configuration</>
 <red></>"
 `;

@@ -12,6 +12,6 @@ about: If you have questions, please check Reactiflux or StackOverflow
 
 For questions or help please see:
 
-- [The Jest help page](https://jestjs.io/en/help.html)
+- [The Jest help page](https://jestjs.io/help)
 - [Our `#testing` channel in Reactiflux](https://discord.gg/j6FKKQQrW9)
 - The [jestjs](https://stackoverflow.com/questions/tagged/jestjs) tag on [StackOverflow](https://stackoverflow.com/questions/ask)
