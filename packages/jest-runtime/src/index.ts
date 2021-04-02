@@ -688,14 +688,19 @@ export default class Runtime {
     };
     moduleRegistry.set(modulePath, localModule);
 
-    this._loadModule(
-      localModule,
-      from,
-      moduleName,
-      modulePath,
-      options,
-      moduleRegistry,
-    );
+    try {
+      this._loadModule(
+        localModule,
+        from,
+        moduleName,
+        modulePath,
+        options,
+        moduleRegistry,
+      );
+    } catch (error: unknown) {
+      moduleRegistry.delete(modulePath);
+      throw error;
+    }
 
     return localModule.exports;
   }

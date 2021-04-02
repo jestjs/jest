@@ -349,6 +349,16 @@ describe('Runtime requireModule', () => {
     expect(Module1).toBe(Module2);
   });
 
+  it('does not cache modules that throw during evaluation', async () => {
+    const runtime = await createRuntime(__filename);
+    expect(() =>
+      runtime.requireModule(runtime.__mockRootPath, 'throwing'),
+    ).toThrowError();
+    expect(() =>
+      runtime.requireModule(runtime.__mockRootPath, 'throwing'),
+    ).toThrowError();
+  });
+
   onNodeVersions('>=12.12.0', () => {
     it('overrides module.createRequire', async () => {
       const runtime = await createRuntime(__filename);
