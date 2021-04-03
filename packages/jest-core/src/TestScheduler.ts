@@ -158,21 +158,29 @@ export default class TestScheduler {
     };
 
     const updateSnapshotState = async () => {
-      await Promise.all(
-        Array.from(contexts).map(async context => {
-          const status = snapshot.cleanup(
-            context.hasteFS,
-            this._globalConfig.updateSnapshot,
-            await snapshot.buildSnapshotResolver(context.config),
-            context.config.testPathIgnorePatterns,
-          );
-
-          aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
-          aggregatedResults.snapshot.filesRemovedList = (
-            aggregatedResults.snapshot.filesRemovedList || []
-          ).concat(status.filesRemovedList);
-        }),
+      const contextsWithSnapshotResolvers = await Promise.all(
+        Array.from(contexts).map(
+          async context =>
+            [
+              context,
+              await snapshot.buildSnapshotResolver(context.config),
+            ] as const,
+        ),
       );
+
+      contextsWithSnapshotResolvers.forEach(([context, snapshotResolver]) => {
+        const status = snapshot.cleanup(
+          context.hasteFS,
+          this._globalConfig.updateSnapshot,
+          snapshotResolver,
+          context.config.testPathIgnorePatterns,
+        );
+
+        aggregatedResults.snapshot.filesRemoved += status.filesRemoved;
+        aggregatedResults.snapshot.filesRemovedList = (
+          aggregatedResults.snapshot.filesRemovedList || []
+        ).concat(status.filesRemovedList);
+      });
       const updateAll = this._globalConfig.updateSnapshot === 'all';
       aggregatedResults.snapshot.didUpdate = updateAll;
       aggregatedResults.snapshot.failure = !!(
