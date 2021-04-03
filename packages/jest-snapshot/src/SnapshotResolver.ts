@@ -23,7 +23,7 @@ export const DOT_EXTENSION = '.' + EXTENSION;
 export const isSnapshotPath = (path: string): boolean =>
   path.endsWith(DOT_EXTENSION);
 
-const cache: Map<Config.Path, SnapshotResolver> = new Map();
+const cache = new Map<Config.Path, SnapshotResolver>();
 
 type LocalRequire = (module: string) => unknown;
 
