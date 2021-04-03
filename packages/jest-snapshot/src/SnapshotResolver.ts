@@ -34,13 +34,14 @@ export const buildSnapshotResolver = async (
   ),
 ): Promise<SnapshotResolver> => {
   const key = config.rootDir;
-  if (!cache.has(key)) {
-    cache.set(
-      key,
-      createSnapshotResolver(await localRequire, config.snapshotResolver),
-    );
-  }
-  return cache.get(key)!;
+
+  const resolver =
+    cache.get(key) ??
+    createSnapshotResolver(await localRequire, config.snapshotResolver);
+
+  cache.set(key, resolver);
+
+  return resolver;
 };
 
 function createSnapshotResolver(
