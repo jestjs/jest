@@ -727,11 +727,11 @@ export default class HasteMap extends EventEmitter {
           exposedMethods: ['getSha1', 'worker'],
           maxRetries: 3,
           numWorkers: this._options.maxWorkers,
-        }) as Promise<WorkerInterface>;
+        });
       }
     }
 
-    return this._worker;
+    return this._worker!;
   }
 
   private _crawl(hasteMap: InternalHasteMap) {

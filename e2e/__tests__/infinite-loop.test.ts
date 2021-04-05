@@ -15,28 +15,23 @@ import runJest from '../runJest';
 
 const DIR = path.resolve(tmpdir(), 'inspector');
 
-beforeEach(() => cleanup(DIR));
-afterAll(() => cleanup(DIR));
+afterEach(() => cleanup(DIR));
 
-test('fails a test which causes an infinite loop', () => {
-  const testFiles = {
-    ...generateTestFilesToForceUsingWorkers(),
-    'package.json': `{
-        "testEnvironment": "node"
-    }`,
-  };
+it('fails a test which causes an infinite loop', () => {
+  const testFiles = generateTestFilesToForceUsingWorkers();
 
   writeFiles(DIR, {
     ...testFiles,
     '__tests__/inspector.test.js': `
-    test('infinite loop error', () => {
-      while(true) {}
-    });
-  `,
+      test('infinite loop error', () => {
+        while(true) {}
+      });
+    `,
+    'package.json': '{}',
   });
 
   const {exitCode, stderr} = runJest(DIR, ['--maxWorkers=2']);
 
   expect(exitCode).toBe(1);
-  expect(stderr).toContain('Error: Test worker was unresponsive');
+  expect(stderr).toMatch(/worker.+unresponsive/);
 });
