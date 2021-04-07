@@ -112,27 +112,31 @@ async function runTestInternal(
       transformer.requireAndTranspileModule(testEnvironment),
     ).default;
   } catch (err) {
-    try {
-      const configUrl = pathToFileURL(testEnvironment);
+    if (err.code === 'ERR_REQUIRE_ESM') {
+      try {
+        const configUrl = pathToFileURL(testEnvironment);
 
-      // node `import()` supports URL, but TypeScript doesn't know that
-      const importedConfig = await import(configUrl.href);
+        // node `import()` supports URL, but TypeScript doesn't know that
+        const importedConfig = await import(configUrl.href);
 
-      if (!importedConfig.default) {
-        throw new Error(
-          `Jest: Failed to load mjs config file ${testEnvironment} - did you use a default export?`,
-        );
+        if (!importedConfig.default) {
+          throw new Error(
+            `Jest: Failed to load mjs config file ${testEnvironment} - did you use a default export?`,
+          );
+        }
+
+        TestEnvironment = importedConfig.default;
+      } catch (innerError) {
+        if (innerError.message === 'Not supported') {
+          throw new Error(
+            `Jest: Your version of Node does not support dynamic import - please enable it or use a .cjs file extension for file ${testEnvironment}`,
+          );
+        }
+
+        throw innerError;
       }
-
-      TestEnvironment = importedConfig.default;
-    } catch (innerError) {
-      if (innerError.message === 'Not supported') {
-        throw new Error(
-          `Jest: Your version of Node does not support dynamic import - please enable it or use a .cjs file extension for file ${testEnvironment}`,
-        );
-      }
-
-      throw innerError;
+    } else {
+      throw err;
     }
   }
   const testFramework: TestFramework = interopRequireDefault(
