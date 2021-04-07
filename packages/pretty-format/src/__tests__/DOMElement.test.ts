@@ -582,4 +582,9 @@ Testing.`;
       ].join('\n'),
     );
   });
+
+  it('handles jsdom attributes properly', () => {
+    const attributes = require('jsdom/lib/jsdom/living/attributes');
+    expect(DOMElement.test(attributes)).toBe(false);
+  });
 });

@@ -64,7 +64,7 @@ export const findSiblingsWithFileExtension = (
         return (
           foundMessage +
           "\n\nYou might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently " +
-          `[${mappedModuleFileExtensions}].\n\nSee https://jestjs.io/docs/en/configuration#modulefileextensions-arraystring`
+          `[${mappedModuleFileExtensions}].\n\nSee https://jestjs.io/docs/configuration#modulefileextensions-arraystring`
         );
       }
     } catch {}

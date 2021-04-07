@@ -22,7 +22,7 @@ export const BULLET: string = chalk.bold('\u25cf ');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold(
   'Configuration Documentation:',
 )}
-  https://jestjs.io/docs/configuration.html
+  https://jestjs.io/docs/configuration
 `;
 
 const createValidationError = (message: string) =>

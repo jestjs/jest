@@ -13,7 +13,7 @@ import * as fs from 'graceful-fs';
 import stripAnsi = require('strip-ansi');
 import type {FormattedTestResults} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {normalizeIcons, rightTrimStdout} from './Utils';
+import {normalizeIcons} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
 
@@ -109,9 +109,9 @@ function normalizeStdoutAndStderr(
   options: RunJestOptions,
 ): RunJestResult {
   if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);
-  result.stdout = normalizeIcons(rightTrimStdout(result.stdout));
+  result.stdout = normalizeIcons(result.stdout);
   if (options.stripAnsi) result.stderr = stripAnsi(result.stderr);
-  result.stderr = normalizeIcons(rightTrimStdout(result.stderr));
+  result.stderr = normalizeIcons(result.stderr);
 
   return result;
 }
@@ -208,7 +208,7 @@ export const runContinuous = function (
     },
 
     async waitUntil(fn: ConditionFunction) {
-      await new Promise(resolve => {
+      await new Promise<void>(resolve => {
         const check = (state: StdErrAndOutString) => {
           if (fn(state)) {
             pending.delete(check);

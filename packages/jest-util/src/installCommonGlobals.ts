@@ -62,10 +62,5 @@ export default function (
     };
   });
 
-  // Forward some others (this breaks the sandbox but for now it's OK).
-  globalObject.Buffer = global.Buffer;
-  globalObject.setImmediate = global.setImmediate;
-  globalObject.clearImmediate = global.clearImmediate;
-
   return Object.assign(globalObject, deepCyclicCopy(globals));
 }

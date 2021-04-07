@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {createTransformer} = require('babel-jest');
+const {createTransformer} = require('babel-jest').default;
 
 module.exports = createTransformer({
   presets: ['@babel/preset-flow'],

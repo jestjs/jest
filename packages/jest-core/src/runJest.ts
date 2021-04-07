@@ -20,7 +20,7 @@ import type {Config} from '@jest/types';
 import type {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
 import type {Test} from 'jest-runner';
 import type {Context} from 'jest-runtime';
-import {interopRequireDefault, tryRealpath} from 'jest-util';
+import {requireOrImportModule, tryRealpath} from 'jest-util';
 import {JestHook, JestHookEmitter} from 'jest-watcher';
 import type FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
@@ -142,9 +142,9 @@ export default async function runJest({
   failedTestsCache?: FailedTestsCache;
   filter?: Filter;
 }): Promise<void> {
-  const Sequencer: typeof TestSequencer = interopRequireDefault(
-    require(globalConfig.testSequencer),
-  ).default;
+  const Sequencer: typeof TestSequencer = await requireOrImportModule(
+    globalConfig.testSequencer,
+  );
   const sequencer = new Sequencer();
   let allTests: Array<Test> = [];
 

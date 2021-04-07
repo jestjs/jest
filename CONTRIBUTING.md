@@ -194,7 +194,7 @@ The best way to get your bug fixed is to provide a reduced test case. Please pro
 
 ### Docs translation
 
-We get translations from crowdin, see https://crowdin.com/project/jest. Any and all help is very much appreciated!
+We get translations from Crowdin, see https://crowdin.com/project/jest-v2. Any and all help is very much appreciated!
 
 ### Security Bugs
 

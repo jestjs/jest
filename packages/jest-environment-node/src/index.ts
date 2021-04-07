@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {Context, Script, createContext, runInContext} from 'vm';
+import {Context, createContext, runInContext} from 'vm';
 import type {JestEnvironment} from '@jest/environment';
 import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Config, Global} from '@jest/types';
@@ -36,6 +36,9 @@ class NodeEnvironment implements JestEnvironment {
     global.clearTimeout = clearTimeout;
     global.setInterval = setInterval;
     global.setTimeout = setTimeout;
+    global.Buffer = Buffer;
+    global.setImmediate = setImmediate;
+    global.clearImmediate = clearImmediate;
     global.ArrayBuffer = ArrayBuffer;
     // TextEncoder (global or via 'util') references a Uint8Array constructor
     // different than the global one used by users in tests. This makes sure the
@@ -59,7 +62,12 @@ class NodeEnvironment implements JestEnvironment {
     if (typeof queueMicrotask !== 'undefined') {
       global.queueMicrotask = queueMicrotask;
     }
+    // AbortController is global in Node >= 15
+    if (typeof AbortController !== 'undefined') {
+      global.AbortController = AbortController;
+    }
     installCommonGlobals(global, config.globals);
+
     this.moduleMocker = new ModuleMocker(global);
 
     const timerIdToRef = (id: number) => ({
@@ -102,15 +110,6 @@ class NodeEnvironment implements JestEnvironment {
     this.context = null;
     this.fakeTimers = null;
     this.fakeTimersModern = null;
-  }
-
-  // TS infers the return type to be `any`, since that's what `runInContext`
-  // returns.
-  runScript<T = unknown>(script: Script): T | null {
-    if (this.context) {
-      return script.runInContext(this.context);
-    }
-    return null;
   }
 
   getVmContext(): Context | null {

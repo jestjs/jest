@@ -111,7 +111,7 @@ function warnAboutWrongTestEnvironment(error: string, env: 'jsdom' | 'node') {
   return (
     chalk.bold.red(
       `The error below may be caused by using the wrong test environment, see ${chalk.dim.underline(
-        'https://jestjs.io/docs/en/configuration#testenvironment-string',
+        'https://jestjs.io/docs/configuration#testenvironment-string',
       )}.\nConsider using the "${env}" test environment.\n\n`,
     ) + error
   );

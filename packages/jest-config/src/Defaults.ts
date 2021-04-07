@@ -31,6 +31,8 @@ const defaultOptions: Config.DefaultOptions = {
   globals: {},
   haste: {
     computeSha1: false,
+    enableSymlinks: false,
+    forceNodeFilesystemAPI: false,
     throwOnModuleCollision: false,
   },
   injectGlobals: true,

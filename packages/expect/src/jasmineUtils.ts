@@ -224,7 +224,11 @@ function keys(
   }
 
   for (var x = 0; x < allKeys.length; x++) {
-    if (typeof allKeys[x] === 'symbol' || !allKeys[x].match(/^[0-9]+$/)) {
+    if (
+      typeof allKeys[x] === 'symbol' ||
+      !allKeys[x].match(/^[0-9]+$/) ||
+      Number(allKeys[x]) >= 4294967295
+    ) {
       extraKeys.push(allKeys[x]);
     }
   }

@@ -15,10 +15,10 @@ PASS __tests__/a.test.js
 
 exports[`--findRelatedTests flag coverage configuration is applied correctly 3`] = `
 ----------|---------|----------|---------|---------|-------------------
-File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ----------|---------|----------|---------|---------|-------------------
-All files |     100 |      100 |     100 |     100 |
- a.js     |     100 |      100 |     100 |     100 |
+All files |     100 |      100 |     100 |     100 |                   
+ a.js     |     100 |      100 |     100 |     100 |                   
 ----------|---------|----------|---------|---------|-------------------
 `;
 
@@ -37,11 +37,11 @@ PASS __tests__/b.test.js
 
 exports[`--findRelatedTests flag generates coverage report for filename 3`] = `
 ----------|---------|----------|---------|---------|-------------------
-File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ----------|---------|----------|---------|---------|-------------------
-All files |     100 |      100 |     100 |     100 |
- a.js     |     100 |      100 |     100 |     100 |
- b.js     |     100 |      100 |     100 |     100 |
+All files |     100 |      100 |     100 |     100 |                   
+ a.js     |     100 |      100 |     100 |     100 |                   
+ b.js     |     100 |      100 |     100 |     100 |                   
 ----------|---------|----------|---------|---------|-------------------
 `;
 
@@ -60,9 +60,9 @@ PASS __tests__/a.test.js
 
 exports[`--findRelatedTests flag generates coverage report for filename 6`] = `
 ----------|---------|----------|---------|---------|-------------------
-File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
+File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 ----------|---------|----------|---------|---------|-------------------
-All files |     100 |      100 |     100 |     100 |
- a.js     |     100 |      100 |     100 |     100 |
+All files |     100 |      100 |     100 |     100 |                   
+ a.js     |     100 |      100 |     100 |     100 |                   
 ----------|---------|----------|---------|---------|-------------------
 `;

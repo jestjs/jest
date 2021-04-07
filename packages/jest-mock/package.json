@@ -1,6 +1,6 @@
 {
   "name": "jest-mock",
-  "version": "27.0.0-next.1",
+  "version": "27.0.0-next.7",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,7 +10,7 @@
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
   },
   "dependencies": {
-    "@jest/types": "^27.0.0-next.1",
+    "@jest/types": "^27.0.0-next.7",
     "@types/node": "*"
   },
   "license": "MIT",

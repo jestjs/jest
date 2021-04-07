@@ -202,9 +202,10 @@ export default class ChildProcessWorker implements WorkerInterface {
     }
   }
 
-  private _onExit(exitCode: number) {
+  private _onExit(exitCode: number | null) {
     if (
       exitCode !== 0 &&
+      exitCode !== null &&
       exitCode !== SIGTERM_EXIT_CODE &&
       exitCode !== SIGKILL_EXIT_CODE
     ) {
@@ -236,7 +237,7 @@ export default class ChildProcessWorker implements WorkerInterface {
 
     this._request = request;
     this._retries = 0;
-    this._child.send(request);
+    this._child.send(request, () => {});
   }
 
   waitForExit(): Promise<void> {
