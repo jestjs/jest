@@ -84,7 +84,6 @@
     "which": "^2.0.1"
   },
   "scripts": {
-    "prepare": "yarn build",
     "build-clean": "rimraf './packages/*/build' './packages/*/tsconfig.tsbuildinfo'",
     "build": "yarn build:js && yarn build:ts",
     "build:js": "node ./scripts/build.js",
