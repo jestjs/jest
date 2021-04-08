@@ -22,6 +22,12 @@ export const printDisplayName = (config: Config.ProjectConfig): string => {
     return '';
   }
 
+  // given just a string, default to white
+  if (typeof displayName === 'string') {
+    return white(` ${displayName} `);
+  }
+
+  // given name and a color
   const {name, color} = displayName;
   const chosenColor = chalk.reset.inverse[color]
     ? chalk.reset.inverse[color]
