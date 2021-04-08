@@ -218,7 +218,7 @@ module.exports = {
               to: '/blog',
             },
             {
-              label: 'Github',
+              label: 'GitHub',
               to: 'https://github.com/facebook/jest',
             },
             {
