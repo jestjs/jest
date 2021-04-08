@@ -32,4 +32,12 @@ expectAssignable<Config.InitialOptions>({
       statements: 50,
     },
   },
+  projects: [
+    // projects can be globs or objects
+    './src/**',
+    {
+      displayName: 'A Project',
+      rootDir: './src/components',
+    },
+  ],
 });
