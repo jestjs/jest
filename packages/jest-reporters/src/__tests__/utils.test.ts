@@ -152,14 +152,4 @@ describe('printDisplayName', () => {
       ),
     ).toMatchSnapshot();
   });
-
-  it('should correctly print the displayName when given just a string', () => {
-    expect(
-      printDisplayName(
-        makeProjectConfig({
-          displayName: 'hello',
-        }),
-      ),
-    ).toMatchSnapshot();
-  });
 });
