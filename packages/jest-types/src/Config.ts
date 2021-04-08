@@ -184,7 +184,7 @@ export type InitialOptions = Partial<{
   preprocessorIgnorePatterns: Array<Glob>;
   preset: string | null | undefined;
   prettierPath: string | null | undefined;
-  projects: Array<Glob>;
+  projects: Array<Glob> | Array<Omit<InitialOptions, 'projects'>>;
   replname: string | null | undefined;
   resetMocks: boolean;
   resetModules: boolean;
@@ -330,7 +330,7 @@ export type ProjectConfig = {
   dependencyExtractor?: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
-  displayName?: DisplayName | string;
+  displayName?: DisplayName;
   errorOnDeprecated: boolean;
   extensionsToTreatAsEsm: Array<Path>;
   extraGlobals: Array<keyof NodeJS.Global>;
@@ -344,7 +344,7 @@ export type ProjectConfig = {
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
   moduleLoader?: Path;
-  moduleNameMapper: Record<string, string | Array<string>>;
+  moduleNameMapper: Array<[string, string]>;
   modulePathIgnorePatterns: Array<string>;
   modulePaths?: Array<string>;
   name: string;
@@ -428,7 +428,7 @@ export type Argv = Arguments<
     onlyFailures: boolean;
     outputFile: string;
     preset: string | null | undefined;
-    projects: Array<string> | Array<Partial<ProjectConfig>>;
+    projects: Array<string>;
     prettierPath: string | null | undefined;
     resetMocks: boolean;
     resetModules: boolean;
