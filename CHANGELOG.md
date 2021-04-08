@@ -48,6 +48,7 @@
 - `[jest-config]` [**BREAKING**] Change default file extension order by moving json behind ts and tsx ([10572](https://github.com/facebook/jest/pull/10572))
 - `[jest-console]` `console.dir` now respects the second argument correctly ([#10638](https://github.com/facebook/jest/pull/10638))
 - `[jest-core]` Don't report PerformanceObserver as open handle ([#11123](https://github.com/facebook/jest/pull/11123))
+- `[jest-core]` Use `WeakRef` to hold timers when detecting open handles ([#11277](https://github.com/facebook/jest/pull/11277))
 - `[jest-each]` [**BREAKING**] Ignore excess words in headings ([#8766](https://github.com/facebook/jest/pull/8766))
 - `[jest-environment]` [**BREAKING**] Drop support for `runScript` for test environments ([#11155](https://github.com/facebook/jest/pull/11155))
 - `[jest-environment-jsdom]` Use inner realm’s `ArrayBuffer` constructor ([#10885](https://github.com/facebook/jest/pull/10885))
