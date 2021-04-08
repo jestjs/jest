@@ -59,7 +59,7 @@
 - `[jest-jasmine2]` Fixed the issue of `beforeAll` & `afterAll` hooks getting executed even if it is inside a skipped `describe` block when it has child `tests` marked as either `only` or `todo` [#10451](https://github.com/facebook/jest/issues/10451)
 - `[jest-jasmine2]` Fixed the issues of child `tests` marked with `only` or `todo` getting executed even if it is inside a skipped parent `describe` block [#10451](https://github.com/facebook/jest/issues/10451)
 - `[jest-reporter]` Handle empty files when reporting code coverage with V8 ([#10819](https://github.com/facebook/jest/pull/10819))
-- `[jest-reporters]` Fix `Config.ts` `projects` types and better handle `displayName` ([#11285](https://github.com/facebook/jest/pull/11285))
+- `[jest-reporters]` Fix `Config.ts` `projects` types ([#11285](https://github.com/facebook/jest/pull/11285))
 - `[jest-resolve]` Replace read-pkg-up with escalade package ([#10781](https://github.com/facebook/jest/pull/10781))
 - `[jest-resolve]` Disable `jest-pnp-resolver` for Yarn 2 ([#10847](https://github.com/facebook/jest/pull/10847))
 - `[jest-runtime]` [**BREAKING**] Do not inject `global` variable into module wrapper ([#10644](https://github.com/facebook/jest/pull/10644))
