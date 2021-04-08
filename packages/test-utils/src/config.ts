@@ -87,7 +87,7 @@ const DEFAULT_PROJECT_CONFIG: Config.ProjectConfig = {
   moduleDirectories: [],
   moduleFileExtensions: ['js'],
   moduleLoader: '/test_module_loader_path',
-  moduleNameMapper: [],
+  moduleNameMapper: {},
   modulePathIgnorePatterns: [],
   modulePaths: [],
   name: 'test_name',
