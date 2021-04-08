@@ -8,12 +8,15 @@
 /* eslint-disable local/ban-types-eventually */
 
 import * as asyncHooks from 'async_hooks';
+import {promisify} from 'util';
+import {setFlagsFromString} from 'v8';
+import {runInNewContext} from 'vm';
 import stripAnsi = require('strip-ansi');
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';
 
-export type HandleCollectionResult = () => Array<Error>;
+export type HandleCollectionResult = () => Promise<Array<Error>>;
 
 function stackIsFromUser(stack: string) {
   // Either the test file, or something required by it
@@ -40,6 +43,21 @@ function stackIsFromUser(stack: string) {
 const alwaysActive = () => true;
 
 const hasWeakRef = typeof WeakRef === 'function';
+
+const tick = promisify(setImmediate);
+
+function runGarbageCollector() {
+  const isGarbageCollectorHidden = !global.gc;
+
+  // GC is usually hidden, so we have to expose it before running.
+  setFlagsFromString('--expose-gc');
+  runInNewContext('gc')();
+
+  // The GC was not initially exposed, so let's hide it again.
+  if (isGarbageCollectorHidden) {
+    setFlagsFromString('--no-expose-gc');
+  }
+}
 
 // Inspired by https://github.com/mafintosh/why-is-node-running/blob/master/index.js
 // Extracted as we want to format the result ourselves
@@ -100,7 +118,14 @@ export default function collectHandles(): HandleCollectionResult {
 
   hook.enable();
 
-  return () => {
+  return async () => {
+    runGarbageCollector();
+
+    // wait some ticks to allow GC to run properly, see https://github.com/nodejs/node/issues/34636#issuecomment-669366235
+    for (let i = 0; i < 10; i++) {
+      await tick();
+    }
+
     hook.disable();
 
     // Get errors for every async resource still referenced at this moment
