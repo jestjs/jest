@@ -344,7 +344,7 @@ export type ProjectConfig = {
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
   moduleLoader?: Path;
-  moduleNameMapper: Array<[string, string]>;
+  moduleNameMapper: Record<string, string | Array<string>>;
   modulePathIgnorePatterns: Array<string>;
   modulePaths?: Array<string>;
   name: string;
