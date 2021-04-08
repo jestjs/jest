@@ -184,7 +184,7 @@ export type InitialOptions = Partial<{
   preprocessorIgnorePatterns: Array<Glob>;
   preset: string | null | undefined;
   prettierPath: string | null | undefined;
-  projects: Array<Glob> | Array<Omit<InitialOptions, keyof GlobalConfig>>;
+  projects: Array<Glob | Omit<InitialOptions, keyof GlobalConfig>>;
   replname: string | null | undefined;
   resetMocks: boolean;
   resetModules: boolean;

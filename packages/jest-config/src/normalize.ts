@@ -822,6 +822,12 @@ export default async function normalize(
               : project,
           )
           .reduce<Array<string>>((projects, project) => {
+            // Projects can be specified as objects;
+            // we ignore these here
+            if (typeof project === 'object') {
+              return projects;
+            }
+
             // Project can be specified as globs. If a glob matches any files,
             // We expand it to these paths. If not, we keep the original path
             // for the future resolution.
