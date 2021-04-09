@@ -330,7 +330,7 @@ export type ProjectConfig = {
   dependencyExtractor?: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
-  displayName?: DisplayName;
+  displayName?: DisplayName | string;
   errorOnDeprecated: boolean;
   extensionsToTreatAsEsm: Array<Path>;
   extraGlobals: Array<keyof NodeJS.Global>;
@@ -428,7 +428,7 @@ export type Argv = Arguments<
     onlyFailures: boolean;
     outputFile: string;
     preset: string | null | undefined;
-    projects: Array<string>;
+    projects: Array<string> | Array<Partial<ProjectConfig>>;
     prettierPath: string | null | undefined;
     resetMocks: boolean;
     resetModules: boolean;
