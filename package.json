@@ -60,7 +60,7 @@
     "jest-watch-typeahead": "^0.6.0",
     "jquery": "^3.2.1",
     "lerna": "^4.0.0",
-    "micromatch": "^4.0.2",
+    "micromatch": "^4.0.4",
     "mlh-tsd": "^0.14.1",
     "mock-fs": "^4.4.1",
     "node-notifier": "^9.0.0",
