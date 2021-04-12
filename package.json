@@ -153,7 +153,6 @@
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
     "jest-environment-node": "workspace:*",
-    "@types/picomatch": "patch:@types/picomatch@2.2.1#./patches/@types__picomatch.patch",
     "react-native": "patch:react-native@0.64.0#./patches/react-native.patch"
   }
 }

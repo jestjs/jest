@@ -4780,17 +4780,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/picomatch@2.2.1":
-  version: 2.2.1
-  resolution: "@types/picomatch@npm:2.2.1"
-  checksum: 6da30597711a4f8688a04d07cfa462324c4e62d96d9b6075d5da580c1512b818af3c574cde3a60f36dd5d4d6c8186cb6d42ad85e8d8fa204176246dda641251d
-  languageName: node
-  linkType: hard
-
-"@types/picomatch@patch:@types/picomatch@2.2.1#./patches/@types__picomatch.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
-  version: 2.2.1
-  resolution: "@types/picomatch@patch:@types/picomatch@npm%3A2.2.1#./patches/@types__picomatch.patch::version=2.2.1&hash=cf34c6&locator=%40jest%2Fmonorepo%40workspace%3A."
-  checksum: 4481f311dcdb469cd5bbed5c6f653cb9f60654af2f5fcf63b9a58801a41912335eb254252e6f2b18ab28edcd6f8aee54b5453aea15775705c78f5bc10b7fff76
+"@types/picomatch@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "@types/picomatch@npm:2.2.2"
+  checksum: f55b30a9c532bd701f502132127c905739acd53cd5c0e5b3ef4b6bdbe7387c028f44cd3e8dd5b6df584ff57d0ca0dea22c2433b2fe137265a87c4893aefa8a61
   languageName: node
   linkType: hard
 
@@ -14024,7 +14017,7 @@ fsevents@^1.2.7:
     "@types/is-ci": ^2.0.0
     "@types/micromatch": ^4.0.1
     "@types/node": "*"
-    "@types/picomatch": ^2.2.1
+    "@types/picomatch": ^2.2.2
     chalk: ^4.0.0
     graceful-fs: ^4.2.4
     is-ci: ^3.0.0
