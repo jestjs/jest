@@ -24,7 +24,7 @@
     "jest-haste-map": "^27.0.0-next.7",
     "jest-regex-util": "^27.0.0-next.0",
     "jest-util": "^27.0.0-next.7",
-    "micromatch": "^4.0.2",
+    "micromatch": "^4.0.4",
     "pirates": "^4.0.1",
     "slash": "^3.0.0",
     "source-map": "^0.6.1",
@@ -36,7 +36,7 @@
     "@types/convert-source-map": "^1.5.1",
     "@types/fast-json-stable-stringify": "^2.0.0",
     "@types/graceful-fs": "^4.1.2",
-    "@types/micromatch": "^4.0.0",
+    "@types/micromatch": "^4.0.1",
     "@types/write-file-atomic": "^3.0.0",
     "dedent": "^0.7.0",
     "jest-snapshot-serializer-raw": "^1.1.0"

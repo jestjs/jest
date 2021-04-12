@@ -2439,7 +2439,7 @@ __metadata:
     "@jest/types": ^27.0.0-next.7
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.2
-    "@types/micromatch": ^4.0.0
+    "@types/micromatch": ^4.0.1
     "@types/node": "*"
     "@types/rimraf": ^3.0.0
     ansi-escapes: ^4.2.1
@@ -2461,7 +2461,7 @@ __metadata:
     jest-util: ^27.0.0-next.7
     jest-validate: ^27.0.0-next.7
     jest-watcher: ^27.0.0-next.7
-    micromatch: ^4.0.2
+    micromatch: ^4.0.4
     p-each-series: ^2.1.0
     rimraf: ^3.0.0
     slash: ^3.0.0
@@ -2727,7 +2727,7 @@ __metadata:
     "@types/convert-source-map": ^1.5.1
     "@types/fast-json-stable-stringify": ^2.0.0
     "@types/graceful-fs": ^4.1.2
-    "@types/micromatch": ^4.0.0
+    "@types/micromatch": ^4.0.1
     "@types/write-file-atomic": ^3.0.0
     babel-plugin-istanbul: ^6.0.0
     chalk: ^4.0.0
@@ -2739,7 +2739,7 @@ __metadata:
     jest-regex-util: ^27.0.0-next.0
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.0.0-next.7
-    micromatch: ^4.0.2
+    micromatch: ^4.0.4
     pirates: ^4.0.1
     slash: ^3.0.0
     source-map: ^0.6.1
@@ -4690,7 +4690,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/micromatch@npm:^4.0.0, @types/micromatch@npm:^4.0.1":
+"@types/micromatch@npm:^4.0.1":
   version: 4.0.1
   resolution: "@types/micromatch@npm:4.0.1"
   dependencies:
@@ -4780,10 +4780,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/picomatch@npm:^2.2.1":
+"@types/picomatch@2.2.1":
   version: 2.2.1
   resolution: "@types/picomatch@npm:2.2.1"
   checksum: 6da30597711a4f8688a04d07cfa462324c4e62d96d9b6075d5da580c1512b818af3c574cde3a60f36dd5d4d6c8186cb6d42ad85e8d8fa204176246dda641251d
+  languageName: node
+  linkType: hard
+
+"@types/picomatch@patch:@types/picomatch@2.2.1#./patches/@types__picomatch.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
+  version: 2.2.1
+  resolution: "@types/picomatch@patch:@types/picomatch@npm%3A2.2.1#./patches/@types__picomatch.patch::version=2.2.1&hash=cf34c6&locator=%40jest%2Fmonorepo%40workspace%3A."
+  checksum: 4481f311dcdb469cd5bbed5c6f653cb9f60654af2f5fcf63b9a58801a41912335eb254252e6f2b18ab28edcd6f8aee54b5453aea15775705c78f5bc10b7fff76
   languageName: node
   linkType: hard
 
@@ -13457,7 +13464,7 @@ fsevents@^1.2.7:
     "@types/babel__core": ^7.0.4
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.3
-    "@types/micromatch": ^4.0.0
+    "@types/micromatch": ^4.0.1
     babel-jest: ^27.0.0-next.7
     chalk: ^4.0.0
     deepmerge: ^4.2.2
@@ -13473,7 +13480,7 @@ fsevents@^1.2.7:
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.0.0-next.7
     jest-validate: ^27.0.0-next.7
-    micromatch: ^4.0.2
+    micromatch: ^4.0.4
     pretty-format: ^27.0.0-next.7
     strip-ansi: ^6.0.0
     ts-node: ^9.0.0
@@ -13600,7 +13607,7 @@ fsevents@^1.2.7:
     "@types/anymatch": ^1.3.1
     "@types/fb-watchman": ^2.0.0
     "@types/graceful-fs": ^4.1.2
-    "@types/micromatch": ^4.0.0
+    "@types/micromatch": ^4.0.1
     "@types/node": "*"
     anymatch: ^3.0.3
     fb-watchman: ^2.0.0
@@ -13611,7 +13618,7 @@ fsevents@^1.2.7:
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.0.0-next.7
     jest-worker: ^27.0.0-next.7
-    micromatch: ^4.0.2
+    micromatch: ^4.0.4
     slash: ^3.0.0
     walker: ^1.0.7
   dependenciesMeta:
@@ -13716,11 +13723,11 @@ fsevents@^1.2.7:
     "@jest/types": ^27.0.0-next.7
     "@types/babel__code-frame": ^7.0.0
     "@types/graceful-fs": ^4.1.3
-    "@types/micromatch": ^4.0.0
+    "@types/micromatch": ^4.0.1
     "@types/stack-utils": ^2.0.0
     chalk: ^4.0.0
     graceful-fs: ^4.2.4
-    micromatch: ^4.0.2
+    micromatch: ^4.0.4
     pretty-format: ^27.0.0-next.7
     slash: ^3.0.0
     stack-utils: ^2.0.3
@@ -15870,17 +15877,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"micromatch@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "micromatch@npm:4.0.2"
-  dependencies:
-    braces: ^3.0.1
-    picomatch: ^2.0.5
-  checksum: 0cb0e11d647cbb65e398a0a8a1340a7fb751ae2722346219c435704cfac8b3275a94a6464236fe867f52ad46a24046d3bc4ac11b3d21ddb73bc44e27cf1e4904
-  languageName: node
-  linkType: hard
-
-"micromatch@npm:^4.0.4":
+"micromatch@npm:^4.0.2, micromatch@npm:^4.0.4":
   version: 4.0.4
   resolution: "micromatch@npm:4.0.4"
   dependencies:
@@ -17877,14 +17874,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"picomatch@npm:^2.0.4, picomatch@npm:^2.0.5, picomatch@npm:^2.2.1, picomatch@npm:^2.2.2":
-  version: 2.2.2
-  resolution: "picomatch@npm:2.2.2"
-  checksum: 20fa75e0a58b39d83425b3db68744d5f6f361fd4fd66ec7745d884036d502abba0d553a637703af79939b844164b13e60eea339ccb043d7fbd74c3da2592b864
-  languageName: node
-  linkType: hard
-
-"picomatch@npm:^2.2.3":
+"picomatch@npm:^2.0.4, picomatch@npm:^2.2.1, picomatch@npm:^2.2.2, picomatch@npm:^2.2.3":
   version: 2.2.3
   resolution: "picomatch@npm:2.2.3"
   checksum: f8c9323bc3b21ff448e81dd32277135d781abae5d53a1415d69a4ce6317a2c11404d449c550110b8fa402c07d5e80ff0e2657f263a312517cc809e9010d25791
