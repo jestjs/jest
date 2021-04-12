@@ -23,7 +23,7 @@ const picomatchOptions = {dot: true};
  * globs.
  *
  * Every time picomatch is called, it will parse the glob strings and turn
- * them into regexp instances. Instead of calling micromatch repeatedly with
+ * them into regexp instances. Instead of calling picomatch repeatedly with
  * the same globs, we can use this function which will build the picomatch
  * matchers ahead of time and then have an optimized path for determining
  * whether an individual path matches.
