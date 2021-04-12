@@ -26,7 +26,7 @@ import type FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
 import TestScheduler, {TestSchedulerContext} from './TestScheduler';
 import type TestWatcher from './TestWatcher';
-import collectNodeHandles from './collectHandles';
+import collectNodeHandles, {HandleCollectionResult} from './collectHandles';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
 import runGlobalHook from './runGlobalHook';
 import type {Filter, TestRunData} from './types';
@@ -70,7 +70,7 @@ type ProcessResultOptions = Pick<
   Config.GlobalConfig,
   'json' | 'outputFile' | 'testResultsProcessor'
 > & {
-  collectHandles?: () => Array<Error>;
+  collectHandles?: HandleCollectionResult;
   onComplete?: (result: AggregatedResult) => void;
   outputStream: NodeJS.WriteStream;
 };
@@ -111,7 +111,7 @@ const processResults = (
     }
   }
 
-  return onComplete && onComplete(runResults);
+  onComplete?.(runResults);
 };
 
 const testSchedulerContext: TestSchedulerContext = {
@@ -278,7 +278,7 @@ export default async function runJest({
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});
   }
 
-  await processResults(results, {
+  processResults(results, {
     collectHandles,
     json: globalConfig.json,
     onComplete,
