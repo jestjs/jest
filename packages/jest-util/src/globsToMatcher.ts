@@ -28,7 +28,9 @@ const picomatchOptions = {dot: true};
  * matchers ahead of time and then have an optimized path for determining
  * whether an individual path matches.
  *
- * This function is intended to match the behavior of `micromatch()`.
+ * This function is based on the behavior of `micromatch()` version 3.
+ * micromatch version 4 does respect order which does not make sense here, so
+ * globs can appear in any order and will always yield the same result.
  *
  * @example
  * const isMatch = globsToMatcher(['*.js', '!*.test.js']);
@@ -44,13 +46,17 @@ export default function globsToMatcher(globs: Array<Config.Glob>): Matcher {
 
   const matchers = globs.map(glob => {
     if (!globsToMatchersMap.has(glob)) {
-      const isMatch = picomatch(glob, picomatchOptions, true);
+      const negated = glob.startsWith('!');
+      const isMatch = picomatch(
+        negated ? glob.slice(1) : glob,
+        picomatchOptions,
+      );
 
       const matcher = {
         isMatch,
         // Matchers that are negated have different behavior than matchers that
         // are not negated, so we need to store this information ahead of time.
-        negated: isMatch.state.negated || !!isMatch.state.negatedExtglob,
+        negated,
       };
 
       globsToMatchersMap.set(glob, matcher);
@@ -69,20 +75,25 @@ export default function globsToMatcher(globs: Array<Config.Glob>): Matcher {
 
       if (negated) {
         negatives++;
+      } else if (kept !== undefined) {
+        // The current pattern is not negated and we already have `kept` set to
+        // either true or false, so we do not need to do anything, because if
+        // kept===true we don't need to check if it matches anything more and if
+        // kept===false the file is already ignored and we do not want to
+        // overwrite that.
+        continue;
       }
 
       const matched = isMatch(replacedPath);
 
-      if (!matched && negated) {
-        // The path was not matched, and the matcher is a negated matcher, so we
-        // want to omit the path. This means that the negative matcher is
-        // filtering the path out.
-        kept = false;
-      } else if (matched && !negated) {
-        // The path was matched, and the matcher is not a negated matcher, so we
-        // want to keep the path.
-        kept = true;
+      if (!matched) {
+        continue;
       }
+
+      // The path was matched, and if the matcher is a negated matcher, we
+      // want to omit the path. If the matcher is not a negated matcher we
+      // want to keep the path.
+      kept = !negated;
     }
 
     // If all of the globs were negative globs, then we want to include the path
