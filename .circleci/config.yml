@@ -1,3 +1,5 @@
+version: 2.1
+
 aliases:
   - &filter-ignore-gh-pages
     branches:
@@ -11,15 +13,18 @@ aliases:
 
 orbs:
   node: circleci/node@4.0.0
-version: 2.1
+
 jobs:
-  test-node-10:
+  test-node:
+    parameters:
+      node-version:
+        type: string
     working_directory: ~/jest
     executor: node/default
     steps:
       - checkout
       - node/install:
-          node-version: '10'
+          node-version: << parameters.node-version >>
           install-npm: false
       - node/install-packages: *install
       - run:
@@ -41,55 +46,12 @@ jobs:
       - store_test_results:
           path: reports/junit
 
-  test-node-12:
-    working_directory: ~/jest
-    executor: node/default
-    steps:
-      - checkout
-      - node/install:
-          node-version: '12'
-          install-npm: false
-      - node/install-packages: *install
-      - run:
-          command: yarn test-ci-partial
-      - store_test_results:
-          path: reports/junit
-
-  test-node-14:
-    working_directory: ~/jest
-    executor: node/default
-    steps:
-      - checkout
-      - node/install:
-          node-version: '14'
-          install-npm: false
-      - node/install-packages: *install
-      - run:
-          command: yarn test-ci
-      - store_test_results:
-          path: reports/junit
-
-  test-node-15:
-    working_directory: ~/jest
-    executor: node/default
-    steps:
-      - checkout
-      - node/install:
-          node-version: '15'
-          install-npm: false
-      - node/install-packages: *install
-      - run:
-          command: yarn test-ci-partial
-      - store_test_results:
-          path: reports/junit
-
 # Workflows enables us to run multiple jobs in parallel
 workflows:
-  version: 2
   build-and-deploy:
     jobs:
-      - test-node-10
-      - test-node-12
-      - test-node-14
-      - test-node-15 # current
+      - test-node:
+          matrix:
+            parameters:
+              node-version: ['10', '12', '14', '15']
       - test-jest-jasmine
