@@ -16,6 +16,7 @@
 - `[jest-core]` Run failed tests interactively the same way we do with snapshots ([#10858](https://github.com/facebook/jest/pull/10858))
 - `[jest-core]` more `TestSequencer` methods can be async ([#10980](https://github.com/facebook/jest/pull/10980))
 - `[jest-core]` Add support for `testSequencer` written in ESM ([#11207](https://github.com/facebook/jest/pull/11207))
+- `[jest-core]` Add support for `globalSetup` written in ESM ([#11267](https://github.com/facebook/jest/pull/11267))
 - `[jest-environment-node]` Add AbortController to globals ([#11182](https://github.com/facebook/jest/pull/11182))
 - `[@jest/fake-timers]` Update to `@sinonjs/fake-timers` to v7 ([#11198](https://github.com/facebook/jest/pull/11198))
 - `[jest-haste-map]` Handle injected scm clocks ([#10966](https://github.com/facebook/jest/pull/10966))
@@ -34,7 +35,6 @@
 - `[jest-transform]` Support transpiled transformers ([#11193](https://github.com/facebook/jest/pull/11193))
 - `[jest-worker]` Add support for custom task queues and adds a `PriorityQueue` implementation. ([#10921](https://github.com/facebook/jest/pull/10921))
 - `[jest-worker]` Add in-order scheduling policy to jest worker ([10902](https://github.com/facebook/jest/pull/10902))
-- `[jest-core]` Add support for `globalSetup` written in ESM ([#11267](https://github.com/facebook/jest/pull/11267))
 
 ### Fixes
 
