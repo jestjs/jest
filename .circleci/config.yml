@@ -19,6 +19,9 @@ jobs:
     parameters:
       node-version:
         type: string
+      partial:
+        type: boolean
+        default: false
     working_directory: ~/jest
     executor: node/default
     steps:
@@ -27,8 +30,16 @@ jobs:
           node-version: << parameters.node-version >>
           install-npm: false
       - node/install-packages: *install
-      - run:
-          command: yarn test-ci-partial
+      - when:
+          condition: << parameters.partial >>
+          steps:
+            - run:
+                command: yarn test-ci-partial
+      - unless:
+          condition: << parameters.partial >>
+          steps:
+            - run:
+                command: yarn test-ci
       - store_test_results:
           path: reports/junit
 
@@ -53,5 +64,11 @@ workflows:
       - test-node:
           matrix:
             parameters:
-              node-version: ['10', '12', '14', '15']
+              node-version: ['14']
+      - test-node:
+          name: "test-node-partial"
+          partial: true
+          matrix:
+            parameters:
+              node-version: ['10', '12', '15']
       - test-jest-jasmine
