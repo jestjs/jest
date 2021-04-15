@@ -1,0 +1,10 @@
+{
+  "type": "module",
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {}
+  },
+  "devDependencies": {
+    "jest-util": "*"
+  }
+}
