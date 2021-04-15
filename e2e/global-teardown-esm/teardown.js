@@ -8,12 +8,14 @@ import crypto from 'crypto';
 import os from 'os';
 import path from 'path';
 import fs from 'graceful-fs';
-import {createDirectory} from 'jest-util';
+import jestUtil from 'jest-util';
 
-const DIR = path.join(os.tmpdir(), 'jest-global-teardown');
+const {createDirectory} = jestUtil;
+
+const DIR = path.join(os.tmpdir(), 'jest-global-teardown-esm');
 
 export default function () {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     createDirectory(DIR);
     const fileId = crypto.randomBytes(20).toString('hex');
     fs.writeFileSync(path.join(DIR, fileId), 'teardown');

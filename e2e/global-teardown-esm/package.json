@@ -2,9 +2,7 @@
   "type": "module",
   "jest": {
     "testEnvironment": "node",
+    "globalTeardown": "<rootDir>/teardown.js",
     "transform": {}
-  },
-  "devDependencies": {
-    "jest-util": "*"
   }
 }
