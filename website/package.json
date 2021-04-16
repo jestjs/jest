@@ -29,10 +29,10 @@
     ]
   },
   "dependencies": {
-    "@docusaurus/core": "2.0.0-alpha.a4bb8789ff",
-    "@docusaurus/plugin-client-redirects": "2.0.0-alpha.a4bb8789ff",
-    "@docusaurus/plugin-pwa": "2.0.0-alpha.a4bb8789ff",
-    "@docusaurus/preset-classic": "2.0.0-alpha.a4bb8789ff",
+    "@docusaurus/core": "2.0.0-alpha.b305145da9",
+    "@docusaurus/plugin-client-redirects": "2.0.0-alpha.b305145da9",
+    "@docusaurus/plugin-pwa": "2.0.0-alpha.b305145da9",
+    "@docusaurus/preset-classic": "2.0.0-alpha.b305145da9",
     "clsx": "^1.1.1",
     "docusaurus-plugin-sass": "^0.1.12",
     "fs-extra": "^9.0.1",
