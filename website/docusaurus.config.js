@@ -34,7 +34,7 @@ module.exports = {
             if (locale !== 'en') {
               return `https://crowdin.com/project/jest-v2/${locale}`;
             }
-            return `https://github.com/facebook/jest/edit/master/docs/${versionDocsDirPath}/${docPath}`;
+            return `https://github.com/facebook/jest/edit/master/website/${versionDocsDirPath}/${docPath}`;
           },
           path: '../docs',
           sidebarPath: './sidebars.json',
