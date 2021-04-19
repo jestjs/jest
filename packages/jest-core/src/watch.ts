@@ -18,7 +18,12 @@ import type {
 import {formatExecError} from 'jest-message-util';
 import Resolver from 'jest-resolve';
 import type {Context} from 'jest-runtime';
-import {isInteractive, preRunMessage, specialChars} from 'jest-util';
+import {
+  isInteractive,
+  preRunMessage,
+  requireOrImportModule,
+  specialChars,
+} from 'jest-util';
 import {ValidationError} from 'jest-validate';
 import {
   AllowedConfigOptions,
@@ -85,7 +90,7 @@ const RESERVED_KEY_PLUGINS = new Map<
   [QuitPlugin, {forbiddenOverwriteMessage: 'quitting watch mode'}],
 ]);
 
-export default function watch(
+export default async function watch(
   initialGlobalConfig: Config.GlobalConfig,
   contexts: Array<Context>,
   outputStream: NodeJS.WriteStream,
@@ -187,7 +192,9 @@ export default function watch(
     for (const pluginWithConfig of globalConfig.watchPlugins) {
       let plugin: WatchPlugin;
       try {
-        const ThirdPartyPlugin = require(pluginWithConfig.path);
+        const ThirdPartyPlugin = await requireOrImportModule<WatchPluginClass>(
+          pluginWithConfig.path,
+        );
         plugin = new ThirdPartyPlugin({
           config: pluginWithConfig.config,
           stdin,
