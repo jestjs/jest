@@ -24,18 +24,22 @@ module.exports = timerGame;
 // __tests__/timerGame-test.js
 'use strict';
 
-jest.useFakeTimers();
+jest.useFakeTimers(); // or you can set "timers": "fake" globally in configuration file
 
-test('waits 1 second before ending the game', () => {
+test('waits 1 second before ending the game', () => {re
   const timerGame = require('../timerGame');
   timerGame();
-
+  
+  jest.runAllTimers();
+  
   expect(setTimeout).toHaveBeenCalledTimes(1);
   expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
 });
 ```
 
 Here we enable fake timers by calling `jest.useFakeTimers();`. This mocks out setTimeout and other timer functions with mock functions. If running multiple tests inside of one file or describe block, `jest.useFakeTimers();` can be called before each test manually or with a setup function such as `beforeEach`. Not doing so will result in the internal usage counter not being reset.
+
+> All of the following functions need fake timers to be set, either by `useFakeTimers()` or via `"timers": "fake"` in the config file.
 
 ## Run All Timers
 
