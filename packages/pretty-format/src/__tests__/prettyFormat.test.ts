@@ -51,6 +51,13 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('Array [\n  1,\n  ,\n  ,\n  4,\n]');
   });
 
+  it('prints a sparse array also containing undefined values', () => {
+    const val = [1, , undefined, undefined, , 4];
+    expect(prettyFormat(val)).toEqual(
+      'Array [\n  1,\n  ,\n  undefined,\n  undefined,\n  ,\n  4,\n]',
+    );
+  });
+
   it('prints a empty typed array', () => {
     const val = new Uint32Array(0);
     expect(prettyFormat(val)).toEqual('Uint32Array []');
