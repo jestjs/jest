@@ -1,5 +1,3 @@
-// Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
-
 import * as React from 'react';
 import * as TestUtils from 'react-dom/test-utils';
 
