@@ -6,19 +6,19 @@ const STATUS = {
 };
 
 const Link = ({page, children}) => {
-  const [className, setClassName] = useState(STATUS.NORMAL);
+  const [status, setStatus] = useState(STATUS.NORMAL);
 
   const onMouseEnter = () => {
-    setClassName(STATUS.HOVERED);
+    setStatus(STATUS.HOVERED);
   };
 
   const onMouseLeave = () => {
-    setClassName(STATUS.NORMAL);
+    setStatus(STATUS.NORMAL);
   };
 
   return (
     <a
-      className={className}
+      className={status}
       href={page || '#'}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
