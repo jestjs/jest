@@ -45,18 +45,17 @@ module.exports = {
         },
         theme: {
           customCss: [
+            path.resolve('src/css/docusaurusTheme.css'),
+            path.resolve('src/css/algoliaDocSearchTheme.css'),
             path.resolve('src/components/v1/legacyCSS.css'),
-            path.resolve('src/css/docusaurusTheme.scss'),
-            path.resolve('src/css/algoliaDocSearchTheme.scss'),
-            path.resolve('static/css/custom.scss'),
-            path.resolve('static/css/jest.scss'),
+            path.resolve('static/css/custom.css'),
+            path.resolve('static/css/jest.css'),
           ],
         },
       },
     ],
   ],
   plugins: [
-    'docusaurus-plugin-sass',
     [
       '@docusaurus/plugin-client-redirects',
       {
