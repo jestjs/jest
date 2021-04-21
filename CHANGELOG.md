@@ -24,6 +24,7 @@
 - `[jest-runner]` [**BREAKING**] set exit code to 1 if test logs after teardown ([#10728](https://github.com/facebook/jest/pull/10728))
 - `[jest-runner]` [**BREAKING**] Run transforms over `runnner` ([#8823](https://github.com/facebook/jest/pull/8823))
 - `[jest-runner]` [**BREAKING**] Run transforms over `testRunnner` ([#8823](https://github.com/facebook/jest/pull/8823))
+- `[jest-runner]` Possibility to use ESM for test environment ([11033](https://github.com/facebook/jest/pull/11033))
 - `[jest-runtime]` Support for async code transformations ([#11191](https://github.com/facebook/jest/pull/11191) & [#11220](https://github.com/facebook/jest/pull/11220))
 - `[jest-reporters]` Add static filepath property to all reporters ([#11015](https://github.com/facebook/jest/pull/11015))
 - `[jest-snapshot]` [**BREAKING**] Make prettier optional for inline snapshots - fall back to string replacement ([#7792](https://github.com/facebook/jest/pull/7792))
@@ -34,7 +35,6 @@
 - `[jest-transform]` Support transpiled transformers ([#11193](https://github.com/facebook/jest/pull/11193))
 - `[jest-worker]` Add support for custom task queues and adds a `PriorityQueue` implementation. ([#10921](https://github.com/facebook/jest/pull/10921))
 - `[jest-worker]` Add in-order scheduling policy to jest worker ([10902](https://github.com/facebook/jest/pull/10902))
-- `[jest-runner]` Possibility to use ESM for test environment ([11033](https://github.com/facebook/jest/pull/11033))
 
 ### Fixes
 
