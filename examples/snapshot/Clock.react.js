@@ -1,31 +1,19 @@
-// Copyright 2004-present Facebook. All Rights Reserved.
+import React, {useEffect, useState} from 'react';
 
-import React from 'react';
+const Clock = () => {
+  const [seconds, setSeconds] = useState(Date.now() / 1000);
 
-export default class Clock extends React.Component {
-  constructor() {
-    super();
+  const tick = () => {
+    setSeconds(Date.now() / 1000);
+  };
 
-    this.state = {seconds: Date.now() / 1000};
-  }
+  useEffect(() => {
+    const timerID = setInterval(() => tick(), 1000);
 
-  componentDidMount() {
-    this.timerID = setInterval(() => this.tick(), 1000);
-  }
+    return () => clearInterval(timerID);
+  }, []);
 
-  componentWillUnmount() {
-    clearInterval(this.timerID);
-  }
+  return <p>{seconds} seconds have ellapsed since the UNIX epoch.</p>;
+};
 
-  tick() {
-    this.setState({
-      seconds: Date.now() / 1000,
-    });
-  }
-
-  render() {
-    return (
-      <p>{this.state.seconds} seconds have ellapsed since the UNIX epoch.</p>
-    );
-  }
-}
+export default Clock;
