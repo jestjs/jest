@@ -30,7 +30,6 @@ yarn add --dev jest babel-jest @babel/preset-env @babel/preset-react react-test-
 Your `package.json` should look something like this (where `<current-version>` is the actual latest version number for the package). Please add the scripts and jest configuration entries:
 
 ```json
-// package.json
   "dependencies": {
     "react": "<current-version>",
     "react-dom": "<current-version>"
