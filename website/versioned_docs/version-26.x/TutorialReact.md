@@ -62,46 +62,37 @@ Let's create a [snapshot test](SnapshotTesting.md) for a Link component that ren
 
 ```tsx
 // Link.react.js
-import React from 'react';
+import React, {useState} from 'react';
 
 const STATUS = {
   HOVERED: 'hovered',
   NORMAL: 'normal',
 };
 
-export default class Link extends React.Component {
-  constructor(props) {
-    super(props);
+const Link = ({page, children}) => {
+  const [className, setClassName] = useState(STATUS.NORMAL);
 
-    this._onMouseEnter = this._onMouseEnter.bind(this);
-    this._onMouseLeave = this._onMouseLeave.bind(this);
+  const onMouseEnter = () => {
+    setClassName(STATUS.HOVERED);
+  };
 
-    this.state = {
-      class: STATUS.NORMAL,
-    };
-  }
+  const onMouseLeave = () => {
+    setClassName(STATUS.NORMAL);
+  };
 
-  _onMouseEnter() {
-    this.setState({class: STATUS.HOVERED});
-  }
+  return (
+    <a
+      className={className}
+      href={page || '#'}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      {children}
+    </a>
+  );
+};
 
-  _onMouseLeave() {
-    this.setState({class: STATUS.NORMAL});
-  }
-
-  render() {
-    return (
-      <a
-        className={this.state.class}
-        href={this.props.page || '#'}
-        onMouseEnter={this._onMouseEnter}
-        onMouseLeave={this._onMouseLeave}
-      >
-        {this.props.children}
-      </a>
-    );
-  }
-}
+export default Link;
 ```
 
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
@@ -218,36 +209,24 @@ Let's implement a checkbox which swaps between two labels:
 
 ```tsx
 // CheckboxWithLabel.js
+import React, {useState} from 'react';
 
-import React from 'react';
+const CheckboxWithLabel = ({labelOn, labelOff}) => {
+  const [isChecked, setIsChecked] = useState(false);
 
-export default class CheckboxWithLabel extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {isChecked: false};
+  const onChange = () => {
+    setIsChecked(!isChecked);
+  };
 
-    // bind manually because React class components don't auto-bind
-    // https://reactjs.org/blog/2015/01/27/react-v0.13.0-beta-1.html#autobinding
-    this.onChange = this.onChange.bind(this);
-  }
+  return (
+    <label>
+      <input type="checkbox" checked={isChecked} onChange={onChange} />
+      {isChecked ? labelOn : labelOff}
+    </label>
+  );
+};
 
-  onChange() {
-    this.setState({isChecked: !this.state.isChecked});
-  }
-
-  render() {
-    return (
-      <label>
-        <input
-          type="checkbox"
-          checked={this.state.isChecked}
-          onChange={this.onChange}
-        />
-        {this.state.isChecked ? this.props.labelOn : this.props.labelOff}
-      </label>
-    );
-  }
-}
+export default CheckboxWithLabel;
 ```
 
 ```tsx
