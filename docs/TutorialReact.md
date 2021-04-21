@@ -95,6 +95,8 @@ const Link = ({page, children}) => {
 export default Link;
 ```
 
+> Note: Examples are using Function components, but Class components can be tested in the same way. See [React: Function and Class Components](https://reactjs.org/docs/components-and-props.html#function-and-class-components). **Reminders** that with Class components, we expect Jest to be used to test props and not methods directly.
+
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
 
 ```tsx
