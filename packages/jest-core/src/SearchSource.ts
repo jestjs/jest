@@ -108,12 +108,12 @@ export default class SearchSource {
     }
   }
 
-  private _getOrBuildDependencyResolver(): DependencyResolver {
+  private async _getOrBuildDependencyResolver(): Promise<DependencyResolver> {
     if (!this._dependencyResolver) {
       this._dependencyResolver = new DependencyResolver(
         this._context.resolver,
         this._context.hasteFS,
-        buildSnapshotResolver(this._context.config),
+        await buildSnapshotResolver(this._context.config),
       );
     }
     return this._dependencyResolver;
@@ -178,11 +178,11 @@ export default class SearchSource {
     return this._getAllTestPaths(testPathPattern);
   }
 
-  findRelatedTests(
+  async findRelatedTests(
     allPaths: Set<Config.Path>,
     collectCoverage: boolean,
-  ): SearchResult {
-    const dependencyResolver = this._getOrBuildDependencyResolver();
+  ): Promise<SearchResult> {
+    const dependencyResolver = await this._getOrBuildDependencyResolver();
 
     if (!collectCoverage) {
       return {
@@ -246,10 +246,10 @@ export default class SearchSource {
     };
   }
 
-  findRelatedTestsFromPattern(
+  async findRelatedTestsFromPattern(
     paths: Array<Config.Path>,
     collectCoverage: boolean,
-  ): SearchResult {
+  ): Promise<SearchResult> {
     if (Array.isArray(paths) && paths.length) {
       const resolvedPaths = paths.map(p =>
         path.resolve(this._context.config.cwd, p),
@@ -259,10 +259,10 @@ export default class SearchSource {
     return {tests: []};
   }
 
-  findTestRelatedToChangedFiles(
+  async findTestRelatedToChangedFiles(
     changedFilesInfo: ChangedFiles,
     collectCoverage: boolean,
-  ): SearchResult {
+  ): Promise<SearchResult> {
     if (!hasSCM(changedFilesInfo)) {
       return {noSCM: true, tests: []};
     }
@@ -270,10 +270,10 @@ export default class SearchSource {
     return this.findRelatedTests(changedFiles, collectCoverage);
   }
 
-  private _getTestPaths(
+  private async _getTestPaths(
     globalConfig: Config.GlobalConfig,
     changedFiles?: ChangedFiles,
-  ): SearchResult {
+  ): Promise<SearchResult> {
     if (globalConfig.onlyChanged) {
       if (!changedFiles) {
         throw new Error('Changed files must be set when running with -o.');
@@ -321,7 +321,7 @@ export default class SearchSource {
     changedFiles: ChangedFiles | undefined,
     filter?: Filter,
   ): Promise<SearchResult> {
-    const searchResult = this._getTestPaths(globalConfig, changedFiles);
+    const searchResult = await this._getTestPaths(globalConfig, changedFiles);
 
     const filterPath = globalConfig.filter;
 
@@ -349,14 +349,14 @@ export default class SearchSource {
     return searchResult;
   }
 
-  findRelatedSourcesFromTestsInChangedFiles(
+  async findRelatedSourcesFromTestsInChangedFiles(
     changedFilesInfo: ChangedFiles,
-  ): Array<string> {
+  ): Promise<Array<string>> {
     if (!hasSCM(changedFilesInfo)) {
       return [];
     }
     const {changedFiles} = changedFilesInfo;
-    const dependencyResolver = this._getOrBuildDependencyResolver();
+    const dependencyResolver = await this._getOrBuildDependencyResolver();
     const relatedSourcesSet = new Set<string>();
     changedFiles.forEach(filePath => {
       if (this.isTestFilePath(filePath)) {
