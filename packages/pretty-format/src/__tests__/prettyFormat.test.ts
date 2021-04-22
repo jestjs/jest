@@ -53,6 +53,12 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('Array [\n  1,\n  ,\n  ,\n  4,\n]');
   });
 
+  it('prints a sparse array with value surrounded by holes', () => {
+    // eslint-disable-next-line no-sparse-arrays
+    const val = [, 5, ,];
+    expect(prettyFormat(val)).toEqual('Array [\n  ,\n  5,\n  ,\n]');
+  });
+
   it('prints a sparse array also containing undefined values', () => {
     // eslint-disable-next-line no-sparse-arrays
     const val = [1, , undefined, undefined, , 4];
