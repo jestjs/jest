@@ -1,3 +1,5 @@
+// Copyright 2004-present Facebook. All Rights Reserved.
+
 import React, {useState} from 'react';
 
 const CheckboxWithLabel = ({labelOn, labelOff}) => {

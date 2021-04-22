@@ -1,3 +1,5 @@
+// Copyright 2004-present Facebook. All Rights Reserved.
+
 import React, {useEffect, useState} from 'react';
 
 const Clock = () => {
