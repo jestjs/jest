@@ -70,5 +70,5 @@ workflows:
           partial: true
           matrix:
             parameters:
-              node-version: ['10', '12', '15']
+              node-version: ['10', '12', '15', '16']
       - test-jest-jasmine

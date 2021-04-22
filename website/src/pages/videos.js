@@ -15,7 +15,7 @@ import Container from '@site/src/components/v1/Container';
 import MarkdownBlock from '@site/src/components/v1/MarkdownBlock';
 
 import VideosJSON from '@site/videos.json';
-import styles from './videos.module.scss';
+import styles from './videos.module.css';
 
 const VideoTypes = {
   YOUTUBE: 'youtube',
