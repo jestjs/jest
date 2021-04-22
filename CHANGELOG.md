@@ -53,6 +53,7 @@
 - `[jest-core]` Don't report PerformanceObserver as open handle ([#11123](https://github.com/facebook/jest/pull/11123))
 - `[jest-core]` Use `WeakRef` to hold timers when detecting open handles ([#11277](https://github.com/facebook/jest/pull/11277))
 - `[jest-each]` [**BREAKING**] Ignore excess words in headings ([#8766](https://github.com/facebook/jest/pull/8766))
+- `[jest-each]` Support array index with template strings ([#10763](https://github.com/facebook/jest/pull/10763))
 - `[jest-environment]` [**BREAKING**] Drop support for `runScript` for test environments ([#11155](https://github.com/facebook/jest/pull/11155))
 - `[jest-environment-jsdom]` Use inner realm’s `ArrayBuffer` constructor ([#10885](https://github.com/facebook/jest/pull/10885))
 - `[jest-environment-jsdom]` [**BREAKING**] Remove Node globals `setImmediate` and `clearImmediate` [#11222](https://github.com/facebook/jest/pull/11222)
