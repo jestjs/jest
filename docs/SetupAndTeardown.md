@@ -87,8 +87,8 @@ describe('matching cities to foods', () => {
     return initializeFoodDatabase();
   });
 
-  test('Vienna <3 cutlet', () => {
-    expect(isValidCityFoodPair('Vienna', 'Wiener Schnitzel')).toBe(true);
+  test('Vienna <3 sausage', () => {
+    expect(isValidCityFoodPair('Vienna', 'Wiener Würstchen')).toBe(true);
   });
 
   test('San Juan <3 plantains', () => {
