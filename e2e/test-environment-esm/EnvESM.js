@@ -10,8 +10,6 @@ import NodeEnvironment from 'jest-environment-node';
 export default class Env extends NodeEnvironment {
   constructor() {
     super();
-    this.global = global;
     this.global.someVar = 42;
-    this.moduleMocker = {};
   }
 }
