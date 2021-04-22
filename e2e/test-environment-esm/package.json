@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "jest": {
     "testEnvironment": "<rootDir>/EnvESM.js"
   }
