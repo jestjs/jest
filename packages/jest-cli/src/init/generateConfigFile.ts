@@ -57,9 +57,9 @@ const generateConfigFile = (
     });
   }
 
-  if (environment === 'node') {
+  if (environment === 'jsdom') {
     Object.assign(overrides, {
-      testEnvironment: 'node',
+      testEnvironment: 'jsdom',
     });
   }
 
@@ -91,7 +91,7 @@ const generateConfigFile = (
  * For a detailed explanation regarding each configuration property${
    useTypescript ? ' and type check' : ''
  }, visit:
- * https://jestjs.io/docs/en/configuration.html
+ * https://jestjs.io/docs/configuration
  */
 
 `;

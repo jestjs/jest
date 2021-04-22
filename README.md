@@ -110,7 +110,7 @@ Here's how to run Jest on files matching `my-test`, using `config.json` as a con
 jest my-test --notify --config=config.json
 ```
 
-If you'd like to learn more about running `jest` through the command line, take a look at the [Jest CLI Options](https://jestjs.io/docs/en/cli) page.
+If you'd like to learn more about running `jest` through the command line, take a look at the [Jest CLI Options](https://jestjs.io/docs/cli) page.
 
 ## Additional Configuration
 
@@ -172,7 +172,7 @@ module.exports = {
 
 ### Using webpack
 
-Jest can be used in projects that use [webpack](https://webpack.js.org/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](https://jestjs.io/docs/en/webpack) to get started.
+Jest can be used in projects that use [webpack](https://webpack.js.org/) to manage assets, styles, and compilation. webpack does offer some unique challenges over other tools. Refer to the [webpack guide](https://jestjs.io/docs/webpack) to get started.
 
 ### Using parcel
 
@@ -206,10 +206,10 @@ However, there are some [caveats](https://babeljs.io/docs/en/babel-plugin-transf
 
 Learn more about using [Jest on the official site!](https://jestjs.io)
 
-- [Getting Started](https://jestjs.io/docs/en/getting-started)
-- [Guides](https://jestjs.io/docs/en/snapshot-testing)
-- [API Reference](https://jestjs.io/docs/en/api)
-- [Configuring Jest](https://jestjs.io/docs/en/configuration)
+- [Getting Started](https://jestjs.io/docs/getting-started)
+- [Guides](https://jestjs.io/docs/snapshot-testing)
+- [API Reference](https://jestjs.io/docs/api)
+- [Configuring Jest](https://jestjs.io/docs/configuration)
 
 ## Badge
 

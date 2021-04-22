@@ -598,6 +598,24 @@ describe('.toEqual()', () => {
         [Symbol.for('bar')]: 1,
       },
     ],
+    [
+      Object.assign([], {4294967295: 1}),
+      Object.assign([], {4294967295: 2}), // issue 11056
+    ],
+    [
+      // eslint-disable-next-line no-useless-computed-key
+      Object.assign([], {['-0']: 1}),
+      // eslint-disable-next-line no-useless-computed-key
+      Object.assign([], {['0']: 1}), // issue 11056: also check (-0, 0)
+    ],
+    [
+      Object.assign([], {a: 1}),
+      Object.assign([], {b: 1}), // issue 11056: also check strings
+    ],
+    [
+      Object.assign([], {[Symbol()]: 1}),
+      Object.assign([], {[Symbol()]: 1}), // issue 11056: also check symbols
+    ],
   ].forEach(([a, b]) => {
     test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
       b,
@@ -1463,6 +1481,21 @@ describe('.toContain(), .toContainEqual()', () => {
 
   test('error cases', () => {
     expect(() => jestExpect(null).toContain(1)).toThrowErrorMatchingSnapshot();
+    expect(() => jestExpect('-0').toContain(-0)).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      jestExpect('null').toContain(null),
+    ).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      jestExpect('undefined').toContain(undefined),
+    ).toThrowErrorMatchingSnapshot();
+    expect(() =>
+      jestExpect('false').toContain(false),
+    ).toThrowErrorMatchingSnapshot();
+    if (isBigIntDefined) {
+      expect(() => jestExpect('1').toContain(BigInt(1))).toThrowError(
+        'toContain',
+      );
+    }
   });
 
   [

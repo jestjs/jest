@@ -1,0 +1,6 @@
+{
+  "type": "module",
+  "jest": {
+    "watchPlugins": ["./my-watch-plugin.js"]
+  }
+}

@@ -13,8 +13,8 @@ import type {AggregatedResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {ChangedFilesPromise} from 'jest-changed-files';
 import {readConfigs} from 'jest-config';
-import HasteMap = require('jest-haste-map');
-import Runtime = require('jest-runtime');
+import type HasteMap from 'jest-haste-map';
+import Runtime, {Context} from 'jest-runtime';
 import {createDirectory, preRunMessage} from 'jest-util';
 import TestWatcher from '../TestWatcher';
 import {formatHandleErrors} from '../collectHandles';
@@ -32,7 +32,7 @@ import watch from '../watch';
 
 const {print: preRunMessagePrint} = preRunMessage;
 
-type OnCompleteCallback = (results: AggregatedResult) => void;
+type OnCompleteCallback = (results: AggregatedResult) => void | undefined;
 
 export async function runCLI(
   argv: Config.Argv,
@@ -89,7 +89,9 @@ export async function runCLI(
     configsOfProjectsToRun,
     hasDeprecationWarnings,
     outputStream,
-    r => (results = r),
+    r => {
+      results = r;
+    },
   );
 
   if (argv.watch || argv.watchAll) {
@@ -218,7 +220,7 @@ const _run10000 = async (
 };
 
 const runWatch = async (
-  contexts: Array<Runtime.Context>,
+  contexts: Array<Context>,
   _configs: Array<Config.ProjectConfig>,
   hasDeprecationWarnings: boolean,
   globalConfig: Config.GlobalConfig,
@@ -256,7 +258,7 @@ const runWatch = async (
 
 const runWithoutWatch = async (
   globalConfig: Config.GlobalConfig,
-  contexts: Array<Runtime.Context>,
+  contexts: Array<Context>,
   outputStream: NodeJS.WriteStream,
   onComplete: OnCompleteCallback,
   changedFilesPromise?: ChangedFilesPromise,

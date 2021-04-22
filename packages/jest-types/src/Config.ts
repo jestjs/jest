@@ -18,10 +18,23 @@ export type Path = string;
 export type Glob = string;
 
 export type HasteConfig = {
+  /** Whether to hash files using SHA-1. */
   computeSha1?: boolean;
+  /** The platform to use as the default, e.g. 'ios'. */
   defaultPlatform?: string | null;
+  /** Force use of Node's `fs` APIs rather than shelling out to `find` */
+  forceNodeFilesystemAPI?: boolean;
+  /**
+   * Whether to follow symlinks when crawling for files.
+   *   This options cannot be used in projects which use watchman.
+   *   Projects with `watchman` set to true will error if this option is set to true.
+   */
+  enableSymlinks?: boolean;
+  /** Path to a custom implementation of Haste. */
   hasteImplModulePath?: string;
+  /** All platforms to target, e.g ['ios', 'android']. */
   platforms?: Array<string>;
+  /** Whether to throw on error on module collision. */
   throwOnModuleCollision?: boolean;
 };
 
@@ -59,6 +72,7 @@ export type DefaultOptions = {
   coverageProvider: CoverageProvider;
   errorOnDeprecated: boolean;
   expand: boolean;
+  extensionsToTreatAsEsm: Array<Path>;
   forceCoverageMatch: Array<Glob>;
   globals: ConfigGlobals;
   haste: HasteConfig;
@@ -110,6 +124,11 @@ export type DisplayName = {
 export type InitialOptionsWithRootDir = InitialOptions &
   Required<Pick<InitialOptions, 'rootDir'>>;
 
+export type InitialProjectOptions = Pick<
+  InitialOptions & {cwd?: string},
+  keyof ProjectConfig
+>;
+
 export type InitialOptions = Partial<{
   automock: boolean;
   bail: boolean | number;
@@ -127,16 +146,13 @@ export type InitialOptions = Partial<{
   coveragePathIgnorePatterns: Array<string>;
   coverageProvider: CoverageProvider;
   coverageReporters: CoverageReporters;
-  coverageThreshold: {
-    global: {
-      [key: string]: number;
-    };
-  };
+  coverageThreshold: CoverageThreshold;
   dependencyExtractor: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
   displayName: string | DisplayName;
   expand: boolean;
+  extensionsToTreatAsEsm: Array<Path>;
   extraGlobals: Array<string>;
   filter: Path;
   findRelatedTests: boolean;
@@ -152,7 +168,6 @@ export type InitialOptions = Partial<{
   logHeapUsage: boolean;
   lastCommit: boolean;
   listTests: boolean;
-  mapCoverage: boolean;
   maxConcurrency: number;
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
@@ -174,7 +189,7 @@ export type InitialOptions = Partial<{
   preprocessorIgnorePatterns: Array<Glob>;
   preset: string | null | undefined;
   prettierPath: string | null | undefined;
-  projects: Array<Glob>;
+  projects: Array<Glob | InitialProjectOptions>;
   replname: string | null | undefined;
   resetMocks: boolean;
   resetModules: boolean;
@@ -263,11 +278,6 @@ export type GlobalConfig = {
   coverageThreshold?: CoverageThreshold;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
-  enabledTestsMap?: {
-    [key: string]: {
-      [key: string]: boolean;
-    };
-  };
   expand: boolean;
   filter?: Path;
   findRelatedTests: boolean;
@@ -327,6 +337,7 @@ export type ProjectConfig = {
   detectOpenHandles: boolean;
   displayName?: DisplayName;
   errorOnDeprecated: boolean;
+  extensionsToTreatAsEsm: Array<Path>;
   extraGlobals: Array<keyof NodeJS.Global>;
   filter?: Path;
   forceCoverageMatch: Array<Glob>;

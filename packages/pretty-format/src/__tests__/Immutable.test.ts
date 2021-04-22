@@ -9,10 +9,10 @@
 
 import Immutable from 'immutable';
 import React from 'react';
-import prettyFormat from '..';
+import {plugins} from '..';
 import setPrettyPrint from './setPrettyPrint';
 
-const {Immutable: ImmutablePlugin, ReactElement} = prettyFormat.plugins;
+const {Immutable: ImmutablePlugin, ReactElement} = plugins;
 
 setPrettyPrint([ReactElement, ImmutablePlugin]);
 

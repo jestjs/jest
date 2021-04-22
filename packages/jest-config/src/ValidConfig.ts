@@ -44,6 +44,7 @@ const initialOptions: Config.InitialOptions = {
   } as const),
   errorOnDeprecated: false,
   expand: false,
+  extensionsToTreatAsEsm: [],
   extraGlobals: [],
   filter: '<rootDir>/filter.js',
   forceCoverageMatch: ['**/*.t.js'],
@@ -54,6 +55,8 @@ const initialOptions: Config.InitialOptions = {
   haste: {
     computeSha1: true,
     defaultPlatform: 'ios',
+    enableSymlinks: false,
+    forceNodeFilesystemAPI: false,
     hasteImplModulePath: '<rootDir>/haste_impl.js',
     platforms: ['ios', 'android'],
     throwOnModuleCollision: false,
@@ -114,7 +117,7 @@ const initialOptions: Config.InitialOptions = {
     ['/__tests__/\\.test\\.[jt]sx?$', '/__tests__/\\.spec\\.[jt]sx?$'],
   ),
   testResultsProcessor: 'processor-node-module',
-  testRunner: 'jasmine2',
+  testRunner: 'circus',
   testSequencer: '@jest/test-sequencer',
   testTimeout: 5000,
   testURL: 'http://localhost',
@@ -128,6 +131,7 @@ const initialOptions: Config.InitialOptions = {
   useStderr: false,
   verbose: false,
   watch: false,
+  watchAll: false,
   watchPathIgnorePatterns: ['<rootDir>/e2e/'],
   watchPlugins: [
     'path/to/yourWatchPlugin',

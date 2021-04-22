@@ -8,10 +8,10 @@
  */
 /* eslint-env browser*/
 
-import prettyFormat from '../';
+import prettyFormat, {plugins} from '../';
 import setPrettyPrint from './setPrettyPrint';
 
-const {DOMElement} = prettyFormat.plugins;
+const {DOMElement} = plugins;
 
 setPrettyPrint([DOMElement]);
 
@@ -581,5 +581,10 @@ Testing.`;
         '}',
       ].join('\n'),
     );
+  });
+
+  it('handles jsdom attributes properly', () => {
+    const attributes = require('jsdom/lib/jsdom/living/attributes');
+    expect(DOMElement.test(attributes)).toBe(false);
   });
 });

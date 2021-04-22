@@ -15,11 +15,14 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "detectLeaks": false,
       "detectOpenHandles": false,
       "errorOnDeprecated": false,
+      "extensionsToTreatAsEsm": [],
       "extraGlobals": [],
       "forceCoverageMatch": [],
       "globals": {},
       "haste": {
         "computeSha1": false,
+        "enableSymlinks": false,
+        "forceNodeFilesystemAPI": false,
         "throwOnModuleCollision": false
       },
       "injectGlobals": true,
@@ -28,10 +31,10 @@ exports[`--showConfig outputs config info and exits 1`] = `
       ],
       "moduleFileExtensions": [
         "js",
-        "json",
         "jsx",
         "ts",
         "tsx",
+        "json",
         "node"
       ],
       "moduleNameMapper": [],
@@ -51,7 +54,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "skipFilter": false,
       "slowTestThreshold": 5,
       "snapshotSerializers": [],
-      "testEnvironment": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-environment-jsdom/build/index.js",
+      "testEnvironment": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-environment-node/build/index.js",
       "testEnvironmentOptions": {},
       "testLocationInResults": false,
       "testMatch": [
@@ -62,7 +65,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
         "/node_modules/"
       ],
       "testRegex": [],
-      "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-jasmine2/build/index.js",
+      "testRunner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-circus/runner.js",
       "testURL": "http://localhost",
       "timers": "real",
       "transform": [

@@ -14,8 +14,13 @@ import {statSync} from 'graceful-fs';
 import micromatch = require('micromatch');
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
-import Resolver = require('jest-resolve');
-import {clearLine, replacePathSepForGlob, tryRealpath} from 'jest-util';
+import Resolver from 'jest-resolve';
+import {
+  clearLine,
+  replacePathSepForGlob,
+  requireOrImportModule,
+  tryRealpath,
+} from 'jest-util';
 import {ValidationError, validate} from 'jest-validate';
 import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
@@ -39,7 +44,7 @@ import {
 } from './utils';
 import validatePattern from './validatePattern';
 const ERROR = `${BULLET}Validation Error`;
-const PRESET_EXTENSIONS = ['.json', '.js'];
+const PRESET_EXTENSIONS = ['.json', '.js', '.cjs', '.mjs'];
 const PRESET_NAME = 'jest-preset';
 
 type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
@@ -116,10 +121,10 @@ const mergeGlobalsWithPreset = (
   }
 };
 
-const setupPreset = (
+const setupPreset = async (
   options: Config.InitialOptionsWithRootDir,
   optionsPreset: string,
-): Config.InitialOptionsWithRootDir => {
+): Promise<Config.InitialOptionsWithRootDir> => {
   let preset: Config.InitialOptions;
   const presetPath = replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
@@ -142,7 +147,7 @@ const setupPreset = (
       delete require.cache[require.resolve(presetModule)];
     } catch {}
 
-    preset = require(presetModule);
+    preset = await requireOrImportModule(presetModule);
   } catch (error) {
     if (error instanceof SyntaxError || error instanceof TypeError) {
       throw createConfigError(
@@ -474,6 +479,7 @@ const buildTestPathPattern = (argv: Config.Argv): string => {
 const showTestPathPatternError = (testPathPattern: string) => {
   clearLine(process.stdout);
 
+  // eslint-disable-next-line no-console
   console.log(
     chalk.red(
       `  Invalid testPattern ${testPathPattern} supplied. ` +
@@ -482,20 +488,77 @@ const showTestPathPatternError = (testPathPattern: string) => {
   );
 };
 
-export default function normalize(
+function validateExtensionsToTreatAsEsm(
+  extensionsToTreatAsEsm: Config.InitialOptions['extensionsToTreatAsEsm'],
+) {
+  if (!extensionsToTreatAsEsm || extensionsToTreatAsEsm.length === 0) {
+    return;
+  }
+
+  function printConfig(opts: Array<string>) {
+    const string = opts.map(ext => `'${ext}'`).join(', ');
+
+    return chalk.bold(`extensionsToTreatAsEsm: [${string}]`);
+  }
+
+  const extensionWithoutDot = extensionsToTreatAsEsm.some(
+    ext => !ext.startsWith('.'),
+  );
+
+  if (extensionWithoutDot) {
+    throw createConfigError(
+      `  Option: ${printConfig(
+        extensionsToTreatAsEsm,
+      )} includes a string that does not start with a period (${chalk.bold(
+        '.',
+      )}).
+  Please change your configuration to ${printConfig(
+    extensionsToTreatAsEsm.map(ext => (ext.startsWith('.') ? ext : `.${ext}`)),
+  )}.`,
+    );
+  }
+
+  if (extensionsToTreatAsEsm.includes('.js')) {
+    throw createConfigError(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+        "'.js'",
+      )} which is always inferred based on ${chalk.bold(
+        'type',
+      )} in its nearest ${chalk.bold('package.json')}.`,
+    );
+  }
+
+  if (extensionsToTreatAsEsm.includes('.cjs')) {
+    throw createConfigError(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+        "'.cjs'",
+      )} which is always treated as CommonJS.`,
+    );
+  }
+
+  if (extensionsToTreatAsEsm.includes('.mjs')) {
+    throw createConfigError(
+      `  Option: ${printConfig(extensionsToTreatAsEsm)} includes ${chalk.bold(
+        "'.mjs'",
+      )} which is always treated as an ECMAScript Module.`,
+    );
+  }
+}
+
+export default async function normalize(
   initialOptions: Config.InitialOptions,
   argv: Config.Argv,
   configPath?: Config.Path | null,
   projectIndex: number = Infinity,
-): {
+): Promise<{
   hasDeprecationWarnings: boolean;
   options: AllOptions;
-} {
+}> {
   const {hasDeprecationWarnings} = validate(initialOptions, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
     exampleConfig: VALID_CONFIG,
-    recursiveBlacklist: [
+    recursiveDenylist: [
       'collectCoverageOnlyFrom',
       // 'coverageThreshold' allows to use 'global' and glob strings on the same
       // level, there's currently no way we can deal with such config
@@ -518,7 +581,7 @@ export default function normalize(
   );
 
   if (options.preset) {
-    options = setupPreset(options, options.preset);
+    options = await setupPreset(options, options.preset);
   }
 
   if (!options.setupFilesAfterEnv) {
@@ -555,7 +618,13 @@ export default function normalize(
     options.roots = [options.rootDir];
   }
 
-  if (!options.testRunner || options.testRunner === 'jasmine2') {
+  if (
+    !options.testRunner ||
+    options.testRunner === 'circus' ||
+    options.testRunner === 'jest-circus'
+  ) {
+    options.testRunner = require.resolve('jest-circus/runner');
+  } else if (options.testRunner === 'jasmine2') {
     options.testRunner = require.resolve('jest-jasmine2');
   }
 
@@ -575,6 +644,12 @@ export default function normalize(
       key: 'resolver',
       rootDir: options.rootDir,
     });
+  }
+
+  validateExtensionsToTreatAsEsm(options.extensionsToTreatAsEsm);
+
+  if (options.watchman == null) {
+    options.watchman = DEFAULT_CONFIG.watchman;
   }
 
   const optionKeys = Object.keys(options) as Array<keyof Config.InitialOptions>;
@@ -746,14 +821,19 @@ export default function normalize(
               ? _replaceRootDirTags(options.rootDir, project)
               : project,
           )
-          .reduce<Array<string>>((projects, project) => {
-            // Project can be specified as globs. If a glob matches any files,
-            // We expand it to these paths. If not, we keep the original path
-            // for the future resolution.
-            const globMatches =
-              typeof project === 'string' ? glob(project) : [];
-            return projects.concat(globMatches.length ? globMatches : project);
-          }, []);
+          .reduce<Array<string | Config.InitialProjectOptions>>(
+            (projects, project) => {
+              // Project can be specified as globs. If a glob matches any files,
+              // We expand it to these paths. If not, we keep the original path
+              // for the future resolution.
+              const globMatches =
+                typeof project === 'string' ? glob(project) : [];
+              return projects.concat(
+                globMatches.length ? globMatches : project,
+              );
+            },
+            [],
+          );
         break;
       case 'moduleDirectories':
       case 'testMatch':
@@ -881,6 +961,7 @@ export default function normalize(
       case 'detectOpenHandles':
       case 'errorOnDeprecated':
       case 'expand':
+      case 'extensionsToTreatAsEsm':
       case 'extraGlobals':
       case 'globals':
       case 'findRelatedTests':
@@ -891,7 +972,6 @@ export default function normalize(
       case 'listTests':
       case 'logHeapUsage':
       case 'maxConcurrency':
-      case 'mapCoverage':
       case 'name':
       case 'noStackTrace':
       case 'notify':
@@ -952,6 +1032,14 @@ export default function normalize(
     return newOptions;
   }, newOptions);
 
+  if (options.watchman && options.haste?.enableSymlinks) {
+    throw new ValidationError(
+      'Validation Error',
+      'haste.enableSymlinks is incompatible with watchman',
+      'Either set haste.enableSymlinks to false or do not use watchman',
+    );
+  }
+
   newOptions.roots.forEach((root, i) => {
     verifyDirectoryExists(root, `roots[${i}]`);
   });
@@ -968,7 +1056,7 @@ export default function normalize(
     rootDir: options.rootDir,
   });
 
-  newOptions.nonFlagArgs = argv._;
+  newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
   newOptions.testPathPattern = buildTestPathPattern(argv);
   newOptions.json = !!argv.json;
 
@@ -1057,7 +1145,7 @@ export default function normalize(
   // where arguments to `--collectCoverageFrom` should be globs (or relative
   // paths to the rootDir)
   if (newOptions.collectCoverage && argv.findRelatedTests) {
-    let collectCoverageFrom = argv._.map(filename => {
+    let collectCoverageFrom = newOptions.nonFlagArgs.map(filename => {
       filename = replaceRootDirInPath(options.rootDir, filename);
       return path.isAbsolute(filename)
         ? path.relative(options.rootDir, filename)

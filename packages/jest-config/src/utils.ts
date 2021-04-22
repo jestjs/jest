@@ -8,7 +8,7 @@
 import * as path from 'path';
 import chalk = require('chalk');
 import type {Config} from '@jest/types';
-import Resolver = require('jest-resolve');
+import Resolver from 'jest-resolve';
 import {ValidationError} from 'jest-validate';
 
 type ResolveOptions = {
@@ -22,7 +22,7 @@ export const BULLET: string = chalk.bold('\u25cf ');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold(
   'Configuration Documentation:',
 )}
-  https://jestjs.io/docs/configuration.html
+  https://jestjs.io/docs/configuration
 `;
 
 const createValidationError = (message: string) =>

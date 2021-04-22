@@ -7,7 +7,7 @@
 
 import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
-import {extractSummary, runYarn} from '../Utils';
+import {extractSummary, runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
 const dir = path.resolve(__dirname, '../failures');
@@ -24,7 +24,7 @@ function cleanStderr(stderr: string) {
 const nodeMajorVersion = Number(process.versions.node.split('.')[0]);
 
 beforeAll(() => {
-  runYarn(dir);
+  runYarnInstall(dir);
 });
 
 test('not throwing Error objects', () => {

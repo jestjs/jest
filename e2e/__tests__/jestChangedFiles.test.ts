@@ -7,8 +7,8 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
-import slash from 'slash';
+import semver = require('semver');
+import slash = require('slash');
 import {findRepos, getChangedFilesForRoots} from 'jest-changed-files';
 import {cleanup, run, testIfHg, writeFiles} from '../Utils';
 import runJest from '../runJest';
@@ -17,6 +17,35 @@ const DIR = path.resolve(tmpdir(), 'jest-changed-files-test-dir');
 
 const GIT = 'git -c user.name=jest_test -c user.email=jest_test@test.com';
 const HG = 'hg --config ui.username=jest_test';
+
+const gitVersionSupportsInitialBranch = (() => {
+  const {stdout} = run(`${GIT} --version`);
+  const gitVersion = stdout.trim();
+
+  const match = gitVersion.match(/^git version (?<version>\d+\.\d+\.\d+)/);
+
+  if (match?.groups?.version == null) {
+    throw new Error(`Unable to parse git version from string "${gitVersion}"`);
+  }
+
+  const {version} = match.groups;
+
+  return semver.gte(version, '2.28.0');
+})();
+
+const mainBranchName = gitVersionSupportsInitialBranch ? 'main' : 'master';
+
+function gitInit(dir: string) {
+  const initCommand = gitVersionSupportsInitialBranch
+    ? `${GIT} init --initial-branch=${mainBranchName}`
+    : `${GIT} init`;
+
+  run(initCommand, dir);
+}
+
+function gitCreateBranch(branchName: string, dir: string) {
+  run(`git branch ${branchName}`, dir);
+}
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
@@ -70,8 +99,8 @@ test('gets git SCM roots and dedupes them', async () => {
     'second-repo/nested-dir/second-nested-dir/file3.txt': 'file3',
   });
 
-  run(`${GIT} init`, path.resolve(DIR, 'first-repo'));
-  run(`${GIT} init`, path.resolve(DIR, 'second-repo'));
+  gitInit(path.resolve(DIR, 'first-repo'));
+  gitInit(path.resolve(DIR, 'second-repo'));
 
   const roots = [
     '',
@@ -108,7 +137,7 @@ testIfHg('gets mixed git and hg SCM roots and dedupes them', async () => {
     'second-repo/nested-dir/second-nested-dir/file3.txt': 'file3',
   });
 
-  run(`${GIT} init`, path.resolve(DIR, 'first-repo'));
+  gitInit(path.resolve(DIR, 'first-repo'));
   run(`${HG} init`, path.resolve(DIR, 'second-repo'));
 
   const roots = [
@@ -142,12 +171,14 @@ test('gets changed files for git', async () => {
     'nested-dir/second-nested-dir/file3.txt': 'file3',
   });
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
 
   const roots = [
-    '',
+    // same first root name with existing branch name makes pitfall that
+    // causes "ambiguous argument" git error.
     'nested-dir',
     'nested-dir/second-nested-dir',
+    '',
   ].map(filename => path.resolve(DIR, filename));
 
   let {changedFiles: files} = await getChangedFilesForRoots(roots, {});
@@ -163,6 +194,8 @@ test('gets changed files for git', async () => {
   // paragraphs. This is done to ensure that `changedFiles` only
   // returns files and not parts of commit messages.
   run(`${GIT} commit --no-gpg-sign -m "test" -m "extra-line"`, DIR);
+
+  gitCreateBranch('nested-dir', DIR);
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {}));
   expect(Array.from(files)).toEqual([]);
@@ -235,9 +268,9 @@ test('gets changed files for git', async () => {
   run(`${GIT} commit --no-gpg-sign -m "test5"`, DIR);
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {
-    changedSince: 'master',
+    changedSince: mainBranchName,
   }));
-  // Returns files from this branch but not ones that only exist on master
+  // Returns files from this branch but not ones that only exist on mainBranchName
   expect(
     Array.from(files)
       .map(filePath => path.basename(filePath))
@@ -252,7 +285,7 @@ test('monitors only root paths for git', async () => {
     'nested-dir/second-nested-dir/file3.txt': 'file3',
   });
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
 
   const roots = [path.resolve(DIR, 'nested-dir')];
 
@@ -267,11 +300,9 @@ test('monitors only root paths for git', async () => {
 it('does not find changes in files with no diff, for git', async () => {
   const roots = [path.resolve(DIR)];
 
-  // create an empty file, commit it to "master"
-  writeFiles(DIR, {
-    'file1.txt': '',
-  });
-  run(`${GIT} init`, DIR);
+  // create an empty file, commit it to "mainBranchName"
+  writeFiles(DIR, {'file1.txt': ''});
+  gitInit(DIR);
   run(`${GIT} add file1.txt`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "initial"`, DIR);
 
@@ -315,14 +346,15 @@ test('handles a bad revision for "changedSince", for git', async () => {
     'package.json': '{}',
   });
 
-  run(`${GIT} init`, DIR);
+  gitInit(DIR);
   run(`${GIT} add .`, DIR);
   run(`${GIT} commit --no-gpg-sign -m "first"`, DIR);
 
   const {exitCode, stderr} = runJest(DIR, ['--changedSince=^blablabla']);
 
   expect(exitCode).toBe(1);
-  expect(wrap(stderr)).toMatchSnapshot();
+  expect(stderr).toContain('Test suite failed to run');
+  expect(stderr).toContain("fatal: bad revision '^blablabla...HEAD'");
 });
 
 testIfHg('gets changed files for hg', async () => {
@@ -476,5 +508,6 @@ testIfHg('handles a bad revision for "changedSince", for hg', async () => {
   const {exitCode, stderr} = runJest(DIR, ['--changedSince=blablabla']);
 
   expect(exitCode).toBe(1);
-  expect(wrap(stderr)).toMatchSnapshot();
+  expect(stderr).toContain('Test suite failed to run');
+  expect(stderr).toContain("abort: unknown revision 'blablabla'");
 });

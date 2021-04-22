@@ -127,7 +127,7 @@ This is how `createMockFromModule` will mock the following data types:
 
 #### `Function`
 
-Creates a new [mock function](https://jestjs.io/docs/en/mock-functions.html). The new function has no formal parameters and when called will return `undefined`. This functionality also applies to `async` functions.
+Creates a new [mock function](mock-functions). The new function has no formal parameters and when called will return `undefined`. This functionality also applies to `async` functions.
 
 #### `Class`
 
@@ -582,9 +582,9 @@ Restores all mocks back to their original value. Equivalent to calling [`.mockRe
 
 ### `jest.useFakeTimers(implementation?: 'modern' | 'legacy')`
 
-Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate`).
+Instructs Jest to use fake versions of the standard timer functions (`setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`, `nextTick`, `setImmediate` and `clearImmediate` as well as `Date`).
 
-If you pass `'modern'` as an argument, [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers) will be used as implementation instead of Jest's own fake timers. This also mocks additional timers like `Date`. `'modern'` will be the default behavior in Jest 27.
+If you pass `'legacy'` as an argument, Jest's legacy implementation will be used rather than one based on [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
 
 Returns the `jest` object for chaining.
 
@@ -615,10 +615,6 @@ Exhausts all tasks queued by `setImmediate()`.
 > Note: This function is not available when using modern fake timers implementation
 
 ### `jest.advanceTimersByTime(msToRun)`
-
-##### renamed in Jest **22.0.0+**
-
-Also under the alias: `.runTimersToTime()`
 
 Executes only the macro task queue (i.e. all tasks queued by `setTimeout()` or `setInterval()` and `setImmediate()`).
 
@@ -676,7 +672,7 @@ jest.setTimeout(1000); // 1 second
 
 ### `jest.retryTimes()`
 
-Runs failed tests n-times until they pass or until the max number of retries is exhausted. This only works with [jest-circus](https://github.com/facebook/jest/tree/master/packages/jest-circus)!
+Runs failed tests n-times until they pass or until the max number of retries is exhausted. This only works with the default [jest-circus](https://github.com/facebook/jest/tree/master/packages/jest-circus) runner!
 
 Example in a test:
 

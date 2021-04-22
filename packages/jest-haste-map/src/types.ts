@@ -30,6 +30,7 @@ export type WorkerMetadata = {
 
 export type CrawlerOptions = {
   computeSha1: boolean;
+  enableSymlinks: boolean;
   data: InternalHasteMap;
   extensions: Array<string>;
   forceNodeFilesystemAPI: boolean;
@@ -55,7 +56,8 @@ export type FileMetaData = [
 
 export type MockData = Map<string, Config.Path>;
 export type ModuleMapData = Map<string, ModuleMapItem>;
-export type WatchmanClocks = Map<Config.Path, string>;
+export type WatchmanClockSpec = string | {scm: {'mergebase-with': string}};
+export type WatchmanClocks = Map<Config.Path, WatchmanClockSpec>;
 export type HasteRegExp = RegExp | ((str: string) => boolean);
 
 export type DuplicatesSet = Map<string, /* type */ number>;

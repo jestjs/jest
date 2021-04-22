@@ -42,7 +42,7 @@ _Before_ submitting a pull request, please make sure the following is done…
     python --version
     ```
 
-1.  Make sure you have a compatible version of `node` installed (As of October 25th 2019, `v12.x` is recommended).
+1.  Make sure you have a compatible version of `node` installed (As of April 14th 2021, `v14.x` is recommended).
 
     ```sh
     node -v
@@ -158,13 +158,6 @@ In order to accept your pull request, we need you to submit a CLA. You only need
 
 ## How to try a development build of Jest in another project
 
-To link `jest` on the command line to `jest-cli/bin/jest.js` in a development build:
-
-```sh-session
-$ cd /path/to/your/Jest_clone/packages/jest-cli
-$ yarn link
-```
-
 To build Jest:
 
 ```sh-session
@@ -184,19 +177,10 @@ To run tests in another project with the development build of Jest:
 ```sh-session
 $ cd /path/to/another/project
 
-# link development build to the other project
-$ yarn link jest-cli
-
-$ jest [options] # run jest-cli/bin/jest.js in the development build
+$ node /path/to/your/JestClone/packages/jest/bin/jest [options] # run jest-cli/bin/jest.js in the development build
 ```
 
 - To decide whether to specify any options, see `test` under `scripts` in the `package.json` file of the other project.
-
-To unlink `jest` on the command line from `jest-cli/bin/jest.js` in a development build:
-
-```sh
-yarn unlink jest-cli
-```
 
 ## Bugs
 
@@ -210,7 +194,7 @@ The best way to get your bug fixed is to provide a reduced test case. Please pro
 
 ### Docs translation
 
-We get translations from crowdin, see https://crowdin.com/project/jest. Any and all help is very much appreciated!
+We get translations from Crowdin, see https://crowdin.com/project/jest-v2. Any and all help is very much appreciated!
 
 ### Security Bugs
 
@@ -218,7 +202,7 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 
 ## How to Get in Touch
 
-`#testing` on [Reactiflux](https://www.reactiflux.com/)
+[`#testing` on Reactiflux](https://discord.gg/j6FKKQQrW9)
 
 ## Code Conventions
 
