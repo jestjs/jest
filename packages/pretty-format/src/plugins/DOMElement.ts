@@ -22,12 +22,20 @@ const FRAGMENT_NODE = 11;
 
 const ELEMENT_REGEXP = /^((HTML|SVG)\w*)?Element$/;
 
+const testHasAttribute = (val: any) => {
+  try {
+    return typeof val.hasAttribute === 'function' && val.hasAttribute('is');
+  } catch {
+    return false;
+  }
+};
+
 const testNode = (val: any) => {
   const constructorName = val.constructor.name;
   const {nodeType, tagName} = val;
   const isCustomElement =
     (typeof tagName === 'string' && tagName.includes('-')) ||
-    (typeof val.hasAttribute === 'function' && val.hasAttribute('is'));
+    testHasAttribute(val);
 
   return (
     (nodeType === ELEMENT_NODE &&

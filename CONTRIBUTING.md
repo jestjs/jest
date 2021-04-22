@@ -42,7 +42,7 @@ _Before_ submitting a pull request, please make sure the following is done…
     python --version
     ```
 
-1.  Make sure you have a compatible version of `node` installed (As of October 25th 2019, `v12.x` is recommended).
+1.  Make sure you have a compatible version of `node` installed (As of April 14th 2021, `v14.x` is recommended).
 
     ```sh
     node -v
@@ -194,7 +194,7 @@ The best way to get your bug fixed is to provide a reduced test case. Please pro
 
 ### Docs translation
 
-We get translations from crowdin, see https://crowdin.com/project/jest. Any and all help is very much appreciated!
+We get translations from Crowdin, see https://crowdin.com/project/jest-v2. Any and all help is very much appreciated!
 
 ### Security Bugs
 

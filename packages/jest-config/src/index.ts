@@ -88,7 +88,7 @@ export async function readConfig(
     rawOptions = await rawOptions();
   }
 
-  const {options, hasDeprecationWarnings} = normalize(
+  const {options, hasDeprecationWarnings} = await normalize(
     rawOptions,
     argv,
     configPath,

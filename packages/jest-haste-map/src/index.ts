@@ -56,6 +56,7 @@ type Options = {
   computeSha1?: boolean;
   console?: Console;
   dependencyExtractor?: string | null;
+  enableSymlinks?: boolean;
   extensions: Array<string>;
   forceNodeFilesystemAPI?: boolean;
   hasteImplModulePath?: string;
@@ -79,6 +80,7 @@ type InternalOptions = {
   computeDependencies: boolean;
   computeSha1: boolean;
   dependencyExtractor: string | null;
+  enableSymlinks: boolean;
   extensions: Array<string>;
   forceNodeFilesystemAPI: boolean;
   hasteImplModulePath?: string;
@@ -227,6 +229,7 @@ export default class HasteMap extends EventEmitter {
           : options.computeDependencies,
       computeSha1: options.computeSha1 || false,
       dependencyExtractor: options.dependencyExtractor || null,
+      enableSymlinks: options.enableSymlinks || false,
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
@@ -260,6 +263,14 @@ export default class HasteMap extends EventEmitter {
       }
     } else {
       this._options.ignorePattern = new RegExp(VCS_DIRECTORIES);
+    }
+
+    if (this._options.enableSymlinks && this._options.useWatchman) {
+      throw new Error(
+        'jest-haste-map: enableSymlinks config option was set, but ' +
+          'is incompatible with watchman.\n' +
+          'Set either `enableSymlinks` to false or `useWatchman` to false.',
+      );
     }
 
     const rootDirHash = createHash('md5').update(options.rootDir).digest('hex');
@@ -725,6 +736,7 @@ export default class HasteMap extends EventEmitter {
     const crawlerOptions: CrawlerOptions = {
       computeSha1: options.computeSha1,
       data: hasteMap,
+      enableSymlinks: options.enableSymlinks,
       extensions: options.extensions,
       forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
       ignore,

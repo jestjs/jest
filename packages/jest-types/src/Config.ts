@@ -22,6 +22,14 @@ export type HasteConfig = {
   computeSha1?: boolean;
   /** The platform to use as the default, e.g. 'ios'. */
   defaultPlatform?: string | null;
+  /** Force use of Node's `fs` APIs rather than shelling out to `find` */
+  forceNodeFilesystemAPI?: boolean;
+  /**
+   * Whether to follow symlinks when crawling for files.
+   *   This options cannot be used in projects which use watchman.
+   *   Projects with `watchman` set to true will error if this option is set to true.
+   */
+  enableSymlinks?: boolean;
   /** Path to a custom implementation of Haste. */
   hasteImplModulePath?: string;
   /** All platforms to target, e.g ['ios', 'android']. */
@@ -116,6 +124,11 @@ export type DisplayName = {
 export type InitialOptionsWithRootDir = InitialOptions &
   Required<Pick<InitialOptions, 'rootDir'>>;
 
+export type InitialProjectOptions = Pick<
+  InitialOptions & {cwd?: string},
+  keyof ProjectConfig
+>;
+
 export type InitialOptions = Partial<{
   automock: boolean;
   bail: boolean | number;
@@ -176,7 +189,7 @@ export type InitialOptions = Partial<{
   preprocessorIgnorePatterns: Array<Glob>;
   preset: string | null | undefined;
   prettierPath: string | null | undefined;
-  projects: Array<Glob>;
+  projects: Array<Glob | InitialProjectOptions>;
   replname: string | null | undefined;
   resetMocks: boolean;
   resetModules: boolean;

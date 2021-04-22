@@ -15,7 +15,12 @@ import micromatch = require('micromatch');
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import Resolver from 'jest-resolve';
-import {clearLine, replacePathSepForGlob, tryRealpath} from 'jest-util';
+import {
+  clearLine,
+  replacePathSepForGlob,
+  requireOrImportModule,
+  tryRealpath,
+} from 'jest-util';
 import {ValidationError, validate} from 'jest-validate';
 import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
@@ -39,7 +44,7 @@ import {
 } from './utils';
 import validatePattern from './validatePattern';
 const ERROR = `${BULLET}Validation Error`;
-const PRESET_EXTENSIONS = ['.json', '.js'];
+const PRESET_EXTENSIONS = ['.json', '.js', '.cjs', '.mjs'];
 const PRESET_NAME = 'jest-preset';
 
 type AllOptions = Config.ProjectConfig & Config.GlobalConfig;
@@ -116,10 +121,10 @@ const mergeGlobalsWithPreset = (
   }
 };
 
-const setupPreset = (
+const setupPreset = async (
   options: Config.InitialOptionsWithRootDir,
   optionsPreset: string,
-): Config.InitialOptionsWithRootDir => {
+): Promise<Config.InitialOptionsWithRootDir> => {
   let preset: Config.InitialOptions;
   const presetPath = replaceRootDirInPath(options.rootDir, optionsPreset);
   const presetModule = Resolver.findNodeModule(
@@ -142,7 +147,7 @@ const setupPreset = (
       delete require.cache[require.resolve(presetModule)];
     } catch {}
 
-    preset = require(presetModule);
+    preset = await requireOrImportModule(presetModule);
   } catch (error) {
     if (error instanceof SyntaxError || error instanceof TypeError) {
       throw createConfigError(
@@ -540,15 +545,15 @@ function validateExtensionsToTreatAsEsm(
   }
 }
 
-export default function normalize(
+export default async function normalize(
   initialOptions: Config.InitialOptions,
   argv: Config.Argv,
   configPath?: Config.Path | null,
   projectIndex: number = Infinity,
-): {
+): Promise<{
   hasDeprecationWarnings: boolean;
   options: AllOptions;
-} {
+}> {
   const {hasDeprecationWarnings} = validate(initialOptions, {
     comment: DOCUMENTATION_NOTE,
     deprecatedConfig: DEPRECATED_CONFIG,
@@ -576,7 +581,7 @@ export default function normalize(
   );
 
   if (options.preset) {
-    options = setupPreset(options, options.preset);
+    options = await setupPreset(options, options.preset);
   }
 
   if (!options.setupFilesAfterEnv) {
@@ -642,6 +647,10 @@ export default function normalize(
   }
 
   validateExtensionsToTreatAsEsm(options.extensionsToTreatAsEsm);
+
+  if (options.watchman == null) {
+    options.watchman = DEFAULT_CONFIG.watchman;
+  }
 
   const optionKeys = Object.keys(options) as Array<keyof Config.InitialOptions>;
 
@@ -812,14 +821,19 @@ export default function normalize(
               ? _replaceRootDirTags(options.rootDir, project)
               : project,
           )
-          .reduce<Array<string>>((projects, project) => {
-            // Project can be specified as globs. If a glob matches any files,
-            // We expand it to these paths. If not, we keep the original path
-            // for the future resolution.
-            const globMatches =
-              typeof project === 'string' ? glob(project) : [];
-            return projects.concat(globMatches.length ? globMatches : project);
-          }, []);
+          .reduce<Array<string | Config.InitialProjectOptions>>(
+            (projects, project) => {
+              // Project can be specified as globs. If a glob matches any files,
+              // We expand it to these paths. If not, we keep the original path
+              // for the future resolution.
+              const globMatches =
+                typeof project === 'string' ? glob(project) : [];
+              return projects.concat(
+                globMatches.length ? globMatches : project,
+              );
+            },
+            [],
+          );
         break;
       case 'moduleDirectories':
       case 'testMatch':
@@ -1017,6 +1031,14 @@ export default function normalize(
     newOptions[key] = value;
     return newOptions;
   }, newOptions);
+
+  if (options.watchman && options.haste?.enableSymlinks) {
+    throw new ValidationError(
+      'Validation Error',
+      'haste.enableSymlinks is incompatible with watchman',
+      'Either set haste.enableSymlinks to false or do not use watchman',
+    );
+  }
 
   newOptions.roots.forEach((root, i) => {
     verifyDirectoryExists(root, `roots[${i}]`);

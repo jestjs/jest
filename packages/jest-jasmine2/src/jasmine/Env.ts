@@ -50,8 +50,6 @@ import type {default as Spec, SpecResult} from './Spec';
 import type Suite from './Suite';
 
 export default function (j$: Jasmine) {
-  // https://github.com/typescript-eslint/typescript-eslint/pull/2833
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return class Env {
     specFilter: (spec: Spec) => boolean;
     catchExceptions: (value: unknown) => boolean;
@@ -101,7 +99,7 @@ export default function (j$: Jasmine) {
       specDefinitions: SpecDefinitionsFn,
     ) => Suite;
 
-    constructor(_options?: Record<string, unknown>) {
+    constructor() {
       let totalSpecsDefined = 0;
 
       let catchExceptions = true;

@@ -206,7 +206,7 @@ export default class ExperimentalWorker implements WorkerInterface {
   send(
     request: ChildMessage,
     onProcessStart: OnStart,
-    onProcessEnd: OnEnd,
+    onProcessEnd: OnEnd | null,
     onCustomMessage: OnCustomMessage,
   ): void {
     onProcessStart(this);
@@ -214,7 +214,13 @@ export default class ExperimentalWorker implements WorkerInterface {
       // Clean the request to avoid sending past requests to workers that fail
       // while waiting for a new request (timers, unhandled rejections...)
       this._request = null;
-      return onProcessEnd(...args);
+
+      const res = onProcessEnd?.(...args);
+
+      // Clean up the reference so related closures can be garbage collected.
+      onProcessEnd = null;
+
+      return res;
     };
 
     this._onCustomMessage = (...arg) => onCustomMessage(...arg);

@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2.1.4
+      - uses: actions/setup-node@v2.1.5
         with:
           node-version: 14.x
 
@@ -32,7 +32,7 @@ jobs:
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
 
-      - uses: actions/cache@v2
+      - uses: actions/cache@v2.1.5
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: yarn2-${{ hashFiles('yarn.lock') }}
@@ -54,13 +54,13 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2.1.4
+      - uses: actions/setup-node@v2.1.5
         with:
           node-version: 12.x
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v2
+      - uses: actions/cache@v2.1.5
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: yarn2-${{ hashFiles('yarn.lock') }}
@@ -85,7 +85,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x]
+        node-version: [10.x, 12.x, 14.x, 15.x, 16.x]
         os: [ubuntu-latest, macOS-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     needs: prepare-yarn-cache
@@ -99,13 +99,13 @@ jobs:
         if: runner.os == 'Windows'
       - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2.1.4
+        uses: actions/setup-node@v2.1.5
         with:
           node-version: ${{ matrix.node-version }}
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v2
+      - uses: actions/cache@v2.1.5
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: yarn2-${{ hashFiles('yarn.lock') }}
@@ -139,13 +139,13 @@ jobs:
         if: runner.os == 'Windows'
       - uses: actions/checkout@v2
       - name: Use Node.js 14.x
-        uses: actions/setup-node@v2.1.4
+        uses: actions/setup-node@v2.1.5
         with:
           node-version: 14.x
       - name: Get yarn cache
         id: yarn-cache
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - uses: actions/cache@v2
+      - uses: actions/cache@v2.1.5
         with:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: yarn2-${{ hashFiles('yarn.lock') }}

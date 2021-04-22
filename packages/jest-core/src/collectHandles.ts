@@ -13,6 +13,8 @@ import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';
 
+export type HandleCollectionResult = () => Array<Error>;
+
 function stackIsFromUser(stack: string) {
   // Either the test file, or something required by it
   if (stack.includes('Runtime.requireModule')) {
@@ -37,13 +39,15 @@ function stackIsFromUser(stack: string) {
 
 const alwaysActive = () => true;
 
+const hasWeakRef = typeof WeakRef === 'function';
+
 // Inspired by https://github.com/mafintosh/why-is-node-running/blob/master/index.js
 // Extracted as we want to format the result ourselves
-export default function collectHandles(): () => Array<Error> {
-  const activeHandles: Map<
+export default function collectHandles(): HandleCollectionResult {
+  const activeHandles = new Map<
     number,
     {error: Error; isActive: () => boolean}
-  > = new Map();
+  >();
   const hook = asyncHooks.createHook({
     destroy(asyncId) {
       activeHandles.delete(asyncId);
@@ -57,7 +61,8 @@ export default function collectHandles(): () => Array<Error> {
       if (
         type === 'PROMISE' ||
         type === 'TIMERWRAP' ||
-        type === 'ELDHISTOGRAM'
+        type === 'ELDHISTOGRAM' ||
+        type === 'PerformanceObserver'
       ) {
         return;
       }
@@ -67,10 +72,18 @@ export default function collectHandles(): () => Array<Error> {
         let isActive: () => boolean;
 
         if (type === 'Timeout' || type === 'Immediate') {
+          // Timer that supports hasRef (Node v11+)
           if ('hasRef' in resource) {
-            // Timer that supports hasRef (Node v11+)
-            // @ts-expect-error: doesn't exist in v10 typings
-            isActive = resource.hasRef.bind(resource);
+            if (hasWeakRef) {
+              const ref = new WeakRef(resource);
+              isActive = () => {
+                // @ts-expect-error: doesn't exist in v10 typings
+                return ref.deref()?.hasRef() ?? false;
+              };
+            } else {
+              // @ts-expect-error: doesn't exist in v10 typings
+              isActive = resource.hasRef.bind(resource);
+            }
           } else {
             // Timer that doesn't support hasRef
             isActive = alwaysActive;
@@ -87,7 +100,7 @@ export default function collectHandles(): () => Array<Error> {
 
   hook.enable();
 
-  return (): Array<Error> => {
+  return () => {
     hook.disable();
 
     // Get errors for every async resource still referenced at this moment

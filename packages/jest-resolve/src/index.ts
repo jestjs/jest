@@ -48,7 +48,7 @@ const nodePaths = NODE_PATH
       .map(p => path.resolve(resolvedCwd, p))
   : undefined;
 
-class Resolver {
+export default class Resolver {
   private readonly _options: ResolverConfig;
   private readonly _moduleMap: ModuleMap;
   private readonly _moduleIDCache: Map<string, string>;
@@ -495,5 +495,3 @@ Please check your configuration for these entries:
 
   return error;
 };
-
-export default Resolver;

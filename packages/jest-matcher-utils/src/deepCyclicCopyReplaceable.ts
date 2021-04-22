@@ -7,9 +7,8 @@
 
 import {plugins} from 'pretty-format';
 
-const builtInObject = [
+const builtInObject: Array<unknown> = [
   Array,
-  Buffer,
   Date,
   Float32Array,
   Float64Array,
@@ -24,6 +23,10 @@ const builtInObject = [
   Uint8Array,
   Uint8ClampedArray,
 ];
+
+if (typeof Buffer !== 'undefined') {
+  builtInObject.push(Buffer);
+}
 
 const isBuiltInObject = (object: any) =>
   builtInObject.includes(object.constructor);

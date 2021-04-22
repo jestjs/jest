@@ -110,8 +110,8 @@ class PuppeteerEnvironment extends NodeEnvironment {
     await super.teardown();
   }
 
-  runScript(script) {
-    return super.runScript(script);
+  getVmContext() {
+    return super.getVmContext();
   }
 }
 

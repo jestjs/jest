@@ -6,7 +6,7 @@
  */
 
 import {makeProjectConfig} from '@jest/test-utils';
-import babelJest = require('../index');
+import babelJest from '../index';
 import {loadPartialConfig} from '../loadBabelConfig';
 
 jest.mock('../loadBabelConfig', () => {
@@ -14,6 +14,9 @@ jest.mock('../loadBabelConfig', () => {
 
   return {
     loadPartialConfig: jest.fn((...args) => actual.loadPartialConfig(...args)),
+    loadPartialConfigAsync: jest.fn((...args) =>
+      actual.loadPartialConfigAsync(...args),
+    ),
   };
 });
 
@@ -40,6 +43,25 @@ test('Returns source string with inline maps when no transformOptions is passed'
     configString: JSON.stringify(makeProjectConfig()),
     instrument: false,
   }) as any;
+  expect(typeof result).toBe('object');
+  expect(result.code).toBeDefined();
+  expect(result.map).toBeDefined();
+  expect(result.code).toMatch('//# sourceMappingURL');
+  expect(result.code).toMatch('customMultiply');
+  expect(result.map!.sources).toEqual(['dummy_path.js']);
+  expect(JSON.stringify(result.map!.sourcesContent)).toMatch('customMultiply');
+});
+
+test('Returns source string with inline maps when no transformOptions is passed async', async () => {
+  const result: any = await babelJest.processAsync!(
+    sourceString,
+    'dummy_path.js',
+    {
+      config: makeProjectConfig(),
+      configString: JSON.stringify(makeProjectConfig()),
+      instrument: false,
+    },
+  );
   expect(typeof result).toBe('object');
   expect(result.code).toBeDefined();
   expect(result.map).toBeDefined();

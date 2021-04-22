@@ -1,5 +1,5 @@
 ---
-title: Jest 23: 🔥 Blazing Fast Delightful Testing
+title: 'Jest 23: 🔥 Blazing Fast Delightful Testing'
 author: Rick Hanlon II
 authorURL: https://twitter.com/rickhanlonii
 authorFBID: 160800566
@@ -21,7 +21,7 @@ We've added a new default watch menu option we're calling Interactive Snapshot M
 
 ![Interactive snapshot mode in action](/img/blog/23-interactive.gif)
 
-See the Interactive Snapshot Mode docs [here](https://jestjs.io/docs/en/snapshot-testing.html#interactive-snapshot-mode).
+See the Interactive Snapshot Mode docs [here](/docs/snapshot-testing#interactive-snapshot-mode).
 
 ## Snapshot Property Matchers
 
@@ -29,7 +29,7 @@ Often, objects you're snapshotting contain generated values like Dates and IDs. 
 
 ![Snapshot Property Matchers](/img/blog/23-snapshot-matchers.png)
 
-See the updated `toMatchSnapshot` [docs](https://jestjs.io/docs/en/expect.html#tomatchsnapshotpropertymatchers-snapshotname) or the Property Matcher [guide](https://jestjs.io/docs/en/snapshot-testing.html#property-matchers) for more information.
+See the updated `toMatchSnapshot` [docs](/docs/expect#tomatchsnapshotpropertymatchers-snapshotname) or the Property Matcher [guide](/docs/snapshot-testing#property-matchers) for more information.
 
 ## Custom Asynchronous matchers
 
@@ -37,7 +37,7 @@ We now support asynchronous matchers with `expect.extends`! Async matchers retur
 
 ![Custom asynchronous matchers in action](/img/blog/23-async-matchers.png)
 
-Docs available [here](https://jestjs.io/docs/en/expect.html#expectextendmatchers).
+Docs available [here](/docs/expect#expectextendmatchers).
 
 ## Custom Asymmetric Matchers
 
@@ -47,7 +47,7 @@ Asymmetric matchers are a great tool to use when you only care about asymmetric 
 
 ## Jest Each
 
-[@mattphillipsio](https://twitter.com/mattphillipsio) has donated the `jest-each` package to Jest Core (thanks Matt!). `jest-each` is a library inspired by [`mocha-each`](https://yarnpkg.com/en/package/mocha-each) and [Spock Data Tables](http://spockframework.org/spock/docs/1.1/data_driven_testing.html#data-tables) which allows you to define a table of test cases, and then run a test for each row with the specified column values. We support both array types and template literals for all flavors of `describe` and `test`. Docs are available [here](https://jestjs.io/docs/en/api.html#testeachtable-name-fn), and for those not on Jest 23 yet, we're still publishing [`jest-each`](https://yarnpkg.com/en/package/jest-each) separately!
+[@mattphillipsio](https://twitter.com/mattphillipsio) has donated the `jest-each` package to Jest Core (thanks Matt!). `jest-each` is a library inspired by [`mocha-each`](https://yarnpkg.com/en/package/mocha-each) and [Spock Data Tables](http://spockframework.org/spock/docs/1.1/data_driven_testing.html#data-tables) which allows you to define a table of test cases, and then run a test for each row with the specified column values. We support both array types and template literals for all flavors of `describe` and `test`. Docs are available [here](/docs/api#testeachtable-name-fn), and for those not on Jest 23 yet, we're still publishing [`jest-each`](https://yarnpkg.com/en/package/jest-each) separately!
 
 ![jest-each in action](/img/blog/23-jest-each.png)
 
@@ -67,7 +67,7 @@ We only add matchers to core if we believe they will be useful to a large amount
 
 ![New matchers in action](/img/blog/23-new-matchers.png)
 
-See the updated expect docs [here](https://jestjs.io/docs/en/expect.html).
+See the updated expect docs [here](/docs/expect).
 
 ## Debug Hanging Tests
 
@@ -81,11 +81,11 @@ And we offer a new flag `--detectOpenHandles` to help find the open handles:
 
 ![Running detectOpenHandles](/img/blog/23-hanging-after.png)
 
-See the updated CLI docs [here](https://jestjs.io/docs/en/cli.html#detectopenhandles).
+See the updated CLI docs [here](/docs/cli#detectopenhandles).
 
 ## Watch Mode Plugins
 
-We have completely rewritten the watch mode system to allow adding custom plugins to watch mode. Watch Mode Plugins now make it possible to hook into Jest events and provide custom menu options in the Watch Mode Menu. All of the default Watch Mode prompts are implemented as plugins in this system, and the docs to create your own are available [here](https://jestjs.io/docs/en/watch-plugins.html).
+We have completely rewritten the watch mode system to allow adding custom plugins to watch mode. Watch Mode Plugins now make it possible to hook into Jest events and provide custom menu options in the Watch Mode Menu. All of the default Watch Mode prompts are implemented as plugins in this system, and the docs to create your own are available [here](/docs/watch-plugins).
 
 With this change, we're also now able to bring back typeahead support as a Watch Mode Plugin via [jest-watch-typeahead](https://yarnpkg.com/en/package/jest-watch-typeahead)!
 
