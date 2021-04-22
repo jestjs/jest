@@ -1,6 +1,6 @@
 {
   "name": "@jest/transform",
-  "version": "27.0.0-next.7",
+  "version": "27.0.0-next.8",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -15,28 +15,28 @@
   },
   "dependencies": {
     "@babel/core": "^7.1.0",
-    "@jest/types": "^27.0.0-next.7",
+    "@jest/types": "^27.0.0-next.8",
     "babel-plugin-istanbul": "^6.0.0",
     "chalk": "^4.0.0",
     "convert-source-map": "^1.4.0",
     "fast-json-stable-stringify": "^2.0.0",
     "graceful-fs": "^4.2.4",
-    "jest-haste-map": "^27.0.0-next.7",
+    "jest-haste-map": "^27.0.0-next.8",
     "jest-regex-util": "^27.0.0-next.0",
-    "jest-util": "^27.0.0-next.7",
-    "micromatch": "^4.0.2",
+    "jest-util": "^27.0.0-next.8",
+    "micromatch": "^4.0.4",
     "pirates": "^4.0.1",
     "slash": "^3.0.0",
     "source-map": "^0.6.1",
     "write-file-atomic": "^3.0.0"
   },
   "devDependencies": {
-    "@jest/test-utils": "^27.0.0-next.7",
+    "@jest/test-utils": "^27.0.0-next.8",
     "@types/babel__core": "^7.1.0",
     "@types/convert-source-map": "^1.5.1",
     "@types/fast-json-stable-stringify": "^2.0.0",
     "@types/graceful-fs": "^4.1.2",
-    "@types/micromatch": "^4.0.0",
+    "@types/micromatch": "^4.0.1",
     "@types/write-file-atomic": "^3.0.0",
     "dedent": "^0.7.0",
     "jest-snapshot-serializer-raw": "^1.1.0"

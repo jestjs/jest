@@ -22,7 +22,6 @@
     "@docusaurus/plugin-pwa": "2.0.0-alpha.c32d8bd11",
     "@docusaurus/preset-classic": "2.0.0-alpha.c32d8bd11",
     "clsx": "^1.1.1",
-    "docusaurus-plugin-sass": "^0.1.12",
     "fs-extra": "^9.0.1",
     "globby": "^11.0.1",
     "react": "^17.0.1",
