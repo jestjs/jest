@@ -36,6 +36,7 @@
 - `[jest-transform]` Support transpiled transformers ([#11193](https://github.com/facebook/jest/pull/11193))
 - `[jest-worker]` Add support for custom task queues and adds a `PriorityQueue` implementation. ([#10921](https://github.com/facebook/jest/pull/10921))
 - `[jest-worker]` Add in-order scheduling policy to jest worker ([10902](https://github.com/facebook/jest/pull/10902))
+- `[pretty-format]` Better print for sparse arrays ([11326](https://github.com/facebook/jest/pull/11326))
 
 ### Fixes
 
