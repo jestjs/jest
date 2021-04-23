@@ -117,4 +117,4 @@ class NodeEnvironment implements JestEnvironment {
   }
 }
 
-export = NodeEnvironment;
+export default NodeEnvironment;

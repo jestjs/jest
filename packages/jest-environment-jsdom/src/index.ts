@@ -136,4 +136,4 @@ class JSDOMEnvironment implements JestEnvironment {
   }
 }
 
-export = JSDOMEnvironment;
+export default JSDOMEnvironment;

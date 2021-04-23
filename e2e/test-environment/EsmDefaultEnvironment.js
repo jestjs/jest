@@ -8,7 +8,7 @@
 
 exports.__esModule = true;
 
-const NodeEnvironment = require('jest-environment-node');
+const NodeEnvironment = require('jest-environment-node').default;
 
 class Env extends NodeEnvironment {
   constructor(config, options) {

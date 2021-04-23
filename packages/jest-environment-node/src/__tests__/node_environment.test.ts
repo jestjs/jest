@@ -6,7 +6,7 @@
  */
 
 import {makeProjectConfig} from '@jest/test-utils';
-import NodeEnvironment = require('../');
+import NodeEnvironment from '../';
 
 const isTextEncoderDefined = typeof TextEncoder === 'function';
 

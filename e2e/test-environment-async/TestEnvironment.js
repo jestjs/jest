@@ -9,7 +9,7 @@
 
 const fs = require('fs');
 const os = require('os');
-const JSDOMEnvironment = require('jest-environment-jsdom');
+const JSDOMEnvironment = require('jest-environment-jsdom').default;
 const {createDirectory} = require('jest-util');
 
 const DIR = os.tmpdir() + '/jest-test-environment';

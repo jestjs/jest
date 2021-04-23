@@ -6,7 +6,7 @@
  */
 
 import {makeProjectConfig} from '@jest/test-utils';
-import JSDomEnvironment = require('../');
+import JSDomEnvironment from '../';
 
 describe('JSDomEnvironment', () => {
   it('should configure setTimeout/setInterval to use the browser api', () => {
