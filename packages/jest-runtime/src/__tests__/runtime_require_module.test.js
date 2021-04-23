@@ -384,6 +384,16 @@ describe('Runtime requireModule', () => {
         expect(customRequire('./create_require_module').foo).toBe('foo');
       }
 
+      expect(exports.syncBuiltinESMExports).not.toThrow();
+      expect(exports.builtinModules).toEqual(builtinModules);
+    });
+  });
+
+  onNodeVersions('>=12.12.0 <16.0.0', () => {
+    it('overrides module.createRequireFromPath', async () => {
+      const runtime = await createRuntime(__filename);
+      const exports = runtime.requireModule(runtime.__mockRootPath, 'module');
+
       // createRequire with relative module path
       expect(() => exports.createRequireFromPath('./relative/path')).toThrow(
         new TypeError(
@@ -409,9 +419,6 @@ describe('Runtime requireModule', () => {
           )}'. Use createRequire for URL filename.`,
         ),
       );
-
-      expect(exports.syncBuiltinESMExports).not.toThrow();
-      expect(exports.builtinModules).toEqual(builtinModules);
     });
   });
 });
