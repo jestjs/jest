@@ -8,9 +8,10 @@
 import {resolve} from 'path';
 import {run} from '../Utils';
 
-const dir = resolve(__dirname, '..', 'runcli-multiple-projects');
+const dir = resolve(__dirname, '..', 'run-programmatically-multiple-projects');
 
-test('runcli programmatically with multiple projects', () => {
-  const {stdout} = run(`node run-jest.js `, dir);
-  expect(stdout).toMatch(/2 passed/);
+test('run programmatically with multiple projects', () => {
+  const {stdout, exitCode} = run(`node run-jest.js `, dir);
+  expect(exitCode).toEqual(0);
+  expect(stdout).toMatch(/Done/);
 });
