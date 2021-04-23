@@ -8,7 +8,7 @@
 import {resolve} from 'path';
 import {run} from '../Utils';
 
-const dir = resolve(__dirname, '..', 'run-programmatically-multiple-projects');
+const dir = resolve(__dirname, '../run-programmatically-multiple-projects');
 
 test('run programmatically with multiple projects', () => {
   const {stdout, exitCode} = run(`node run-jest.js `, dir);

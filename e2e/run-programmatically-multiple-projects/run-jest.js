@@ -1,4 +1,4 @@
-const {runCLI} = require('../../packages/jest/build/jest');
+const {runCLI} = require('@jest/core');
 
 const config = {
   projects: [
