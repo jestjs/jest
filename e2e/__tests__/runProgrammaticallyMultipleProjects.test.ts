@@ -6,12 +6,13 @@
  */
 
 import {resolve} from 'path';
-import {run} from '../Utils';
+import {extractSummaries, run} from '../Utils';
 
 const dir = resolve(__dirname, '../run-programmatically-multiple-projects');
 
 test('run programmatically with multiple projects', () => {
-  const {stdout, exitCode} = run(`node run-jest.js `, dir);
+  const {stderr, exitCode} = run(`node run-jest.js `, dir);
+  const summary = extractSummaries(stderr);
   expect(exitCode).toEqual(0);
-  expect(stdout).toMatch(/Done/);
+  expect(summary).toMatchSnapshot();
 });
