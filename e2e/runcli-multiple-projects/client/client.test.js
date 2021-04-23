@@ -1,4 +1,3 @@
 describe('client', () => {
-
-    it('should work', () => {});
+  it('should work', () => {});
 });

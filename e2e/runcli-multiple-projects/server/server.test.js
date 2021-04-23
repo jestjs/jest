@@ -1,4 +1,3 @@
 describe('server', () => {
-
-    it('should work', () => {});
+  it('should work', () => {});
 });

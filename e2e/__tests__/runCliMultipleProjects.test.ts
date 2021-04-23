@@ -14,4 +14,3 @@ test('runcli programmatically with multiple projects', () => {
   const {stdout} = run(`node run-jest.js `, dir);
   expect(stdout).toMatch(/2 passed/);
 });
-
