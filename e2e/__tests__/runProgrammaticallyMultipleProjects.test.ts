@@ -6,13 +6,15 @@
  */
 
 import {resolve} from 'path';
-import {extractSummaries, run} from '../Utils';
+import {wrap} from 'jest-snapshot-serializer-raw';
+import {extractSummary, run} from '../Utils';
 
 const dir = resolve(__dirname, '../run-programmatically-multiple-projects');
 
 test('run programmatically with multiple projects', () => {
-  const {stderr, exitCode} = run(`node run-jest.js `, dir);
-  const summary = extractSummaries(stderr);
+  const {stderr, exitCode} = run(`node run-jest.js`, dir);
+  const {summary, rest} = extractSummary(stderr);
   expect(exitCode).toEqual(0);
-  expect(summary).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot('summary');
+  expect(wrap(rest)).toMatchSnapshot('rest');
 });
