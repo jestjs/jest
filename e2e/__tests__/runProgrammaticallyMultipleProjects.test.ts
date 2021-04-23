@@ -13,8 +13,7 @@ const dir = resolve(__dirname, '../run-programmatically-multiple-projects');
 
 test('run programmatically with multiple projects', () => {
   const {stderr, exitCode} = run(`node run-jest.js`, dir);
-  const {summary, rest} = extractSummary(stderr);
+  const {summary} = extractSummary(stderr);
   expect(exitCode).toEqual(0);
   expect(wrap(summary)).toMatchSnapshot('summary');
-  expect(wrap(rest)).toMatchSnapshot('rest');
 });

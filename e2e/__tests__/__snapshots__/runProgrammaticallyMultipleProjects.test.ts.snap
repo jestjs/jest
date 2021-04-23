@@ -1,10 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`run programmatically with multiple projects: rest 1`] = `
-PASS client/client.test.js
-PASS server/server.test.js
-`;
-
 exports[`run programmatically with multiple projects: summary 1`] = `
 Test Suites: 2 passed, 2 total
 Tests:       2 passed, 2 total
