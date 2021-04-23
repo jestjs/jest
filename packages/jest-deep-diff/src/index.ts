@@ -11,6 +11,8 @@ import format from './format';
 import {isLeafType} from './getType';
 import type {DeepDiffOptions, DiffPlugin, FormatPlugin, Plugin} from './types';
 
+export type {DiffObject} from './types';
+
 const serialize = (val: unknown) => {
   if (isLeafType(val)) {
     return prettyFormat(val, {

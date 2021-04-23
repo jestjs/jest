@@ -6,7 +6,17 @@
  */
 import prettyFormat = require('pretty-format');
 import {createCommonLine, createDeletedLine, createInsertedLine} from '../line';
-import {CustomDiff, CustomFormat, DiffObject, Kind, Path} from '../types';
+import {
+  CustomDiff,
+  CustomFormat,
+  DeletedDiffObject,
+  DiffObject,
+  EqualDiffObject,
+  InsertedDiffObject,
+  Kind,
+  MarkChildrenRecursivelyWithScopedPlugins,
+  Path,
+} from '../types';
 
 const asymmetricMatcher =
   typeof Symbol === 'function' && Symbol.for
@@ -22,26 +32,72 @@ const serializeAsymmetricMatcher = (val: AsymmetricMatcher) =>
   prettyFormat(val, {plugins: [prettyFormat.plugins.AsymmetricMatcher]});
 interface AsymmetricMatcher {
   asymmetricMatch: (a: unknown) => boolean;
+  sample: unknown;
+  inverse?: boolean;
 }
 
 const diff: CustomDiff = (a, b, path, memos, diff, markChildrenRecursively) => {
-  if (test(a)) {
-    return a.asymmetricMatch(b)
-      ? diff(b, b, path, memos)
-      : {
+  const matcher = (test(a) ? a : b) as AsymmetricMatcher;
+  const other = test(a) ? b : a;
+
+  const isMatch = matcher.asymmetricMatch(other);
+  const matcherName = matcher.toString();
+  console.log(matcherName);
+
+  if (
+    matcherName === 'ObjectContaining' ||
+    matcherName === 'ObjectNotContaining'
+  ) {
+    if (isMatch) {
+      return diff(other, other, path, memos);
+    } else {
+      const c = diff(
+        matcher === a ? matcher.sample : a,
+        matcher === b ? matcher.sample : b,
+        path,
+        memos,
+      );
+      if (c.kind === Kind.UNEQUAL_TYPE) {
+        return {
+          ...c,
           a,
-          aChildDiffs: markChildrenRecursively(Kind.DELETED, a, path)
-            .childDiffs,
           b,
-          bChildDiffs: markChildrenRecursively(Kind.INSERTED, b, path)
-            .childDiffs,
-          kind: Kind.UNEQUAL_TYPE,
-          path,
         };
+      }
+      if (c.kind === Kind.UPDATED) {
+        return {
+          ...c,
+          childDiffs: c.childDiffs?.map(childDiff => {
+            const hasKey =
+              (childDiff.path as string) in
+              (matcher.sample as Record<string, unknown>);
+            console.log(childDiff);
+            if (matcher.inverse ? !hasKey : hasKey) {
+              return childDiff;
+            } else {
+              const equalDiff = {
+                ...childDiff,
+                a: Object.prototype.hasOwnProperty.call(childDiff, 'a')
+                  ? (childDiff as {a: unknown}).a
+                  : (childDiff as {b: unknown}).b,
+                b: Object.prototype.hasOwnProperty.call(childDiff, 'b')
+                  ? (childDiff as {b: unknown}).b
+                  : (childDiff as {a: unknown}).a,
+                kind: Kind.EQUAL,
+              } as EqualDiffObject;
+
+              return equalDiff;
+            }
+          }),
+        };
+      }
+
+      throw new Error('Unexpected Error,');
+    }
   }
 
-  return (b as AsymmetricMatcher).asymmetricMatch(a)
-    ? diff(a, a, path, memos)
+  return isMatch
+    ? diff(other, other, path, memos)
     : {
         a,
         aChildDiffs: markChildrenRecursively(Kind.DELETED, a, path).childDiffs,
@@ -57,6 +113,16 @@ const format: CustomFormat = (diffObj, context, options, originalFormat) => {
     case Kind.EQUAL: {
       const val = test(diffObj.a) ? diffObj.b : diffObj.a;
       return [createCommonLine(options.serialize(val), context)];
+    }
+    case Kind.UPDATED: {
+      if (test(diffObj.a)) {
+        diffObj.a = diffObj.a.sample;
+      }
+      if (test(diffObj.b)) {
+        diffObj.b = diffObj.b.sample;
+      }
+
+      return originalFormat(diffObj, context, options);
     }
     case Kind.UNEQUAL_TYPE: {
       const insertedDiff: DiffObject = {
@@ -77,6 +143,22 @@ const format: CustomFormat = (diffObj, context, options, originalFormat) => {
       ];
     }
     case Kind.INSERTED: {
+      const name = (diffObj.b as AsymmetricMatcher).toString();
+      if (name === 'ObjectContaining' || name === 'ObjectNotContaining') {
+        const lines = originalFormat(
+          {...diffObj, b: (diffObj.b as AsymmetricMatcher).sample},
+          context,
+          options,
+        );
+        lines.shift();
+
+        const firstLine = createInsertedLine('ObjectContaining {', {
+          ...context,
+          sufix: '',
+        });
+
+        return [firstLine, ...lines];
+      }
       return [
         createInsertedLine(
           serializeAsymmetricMatcher(diffObj.b as AsymmetricMatcher),
@@ -93,15 +175,32 @@ const format: CustomFormat = (diffObj, context, options, originalFormat) => {
       ];
     }
   }
-  throw new Error('Assymetric matcher should never return UNEQUAL_TYPE');
 };
 
 function markChildrenRecursively(
   kind: Kind.DELETED | Kind.INSERTED,
   val: unknown,
   path: Path,
-): DiffObject {
+  refs: Set<unknown>,
+  markChildrenRecursivelyWithScopedPlugins: MarkChildrenRecursivelyWithScopedPlugins,
+): InsertedDiffObject | DeletedDiffObject {
+  if (!test(val)) throw new Error('value must be an asymmetric matcher');
+
   if (kind === Kind.DELETED) {
+    if (
+      val.toString() === 'ObjectContaining' ||
+      val.toString() === 'ObjectNotContaining'
+    ) {
+      return {
+        ...markChildrenRecursivelyWithScopedPlugins(
+          kind,
+          val.sample,
+          path,
+          refs,
+        ),
+        a: val,
+      };
+    }
     return {
       a: val,
       kind,

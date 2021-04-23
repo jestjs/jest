@@ -9,6 +9,9 @@
       "path": "../diff-sequences"
     },
     {
+      "path": "../expect"
+    },
+    {
       "path": "../jest-diff"
     },
     {

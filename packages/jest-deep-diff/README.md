@@ -34,6 +34,9 @@ There is support for plugins. I have made ReactElement and AsymmetricMatcher Plu
 - [ ] Map
 - [ ] Set
 - [ ] DOM Node
+- [x] Asymmetric Any
+- [ ] Asymmetric Object
+- [ ] React
 
 I am quite happy with this module. It's clear to me what it does. It recursively marks values as Inserted, Updated, Deleted, Equal or TypeUnequal and returns an object which represents the differences between 2 values.
 
