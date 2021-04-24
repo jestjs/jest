@@ -2530,7 +2530,7 @@ __metadata:
     ansi-regex: ^5.0.0
     ansi-styles: ^5.0.0
     babel-plugin-replace-ts-export-assignment: ^0.0.2
-    camelcase: ^6.0.0
+    camelcase: ^6.2.0
     chalk: ^4.0.0
     chokidar: ^3.3.0
     codecov: ^3.0.0
@@ -13352,7 +13352,7 @@ fsevents@^1.2.7:
   dependencies:
     "@jest/types": ^27.0.0-next.8
     "@types/yargs": ^16.0.0
-    camelcase: ^6.0.0
+    camelcase: ^6.2.0
     chalk: ^4.0.0
     jest-get-type: ^27.0.0-next.9
     leven: ^3.1.0

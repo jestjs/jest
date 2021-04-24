@@ -25,7 +25,7 @@
     "ansi-regex": "^5.0.0",
     "ansi-styles": "^5.0.0",
     "babel-plugin-replace-ts-export-assignment": "^0.0.2",
-    "camelcase": "^6.0.0",
+    "camelcase": "^6.2.0",
     "chalk": "^4.0.0",
     "chokidar": "^3.3.0",
     "codecov": "^3.0.0",
