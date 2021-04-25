@@ -78,12 +78,12 @@ function print(lines: Array<Line>, opts: FormatOptionsNormalized) {
 const formatDiff: Format = (diff, context, opts) => {
   for (const plugin of opts.plugins) {
     if ('a' in diff) {
-      if (plugin.test(diff.a)) {
+      if (plugin.test(diff.a) || plugin.test(diff.b)) {
         return plugin.format(diff, context, opts, formatDiff);
       }
     }
-    if ('b' in diff) {
-      if (plugin.test(diff.b)) {
+    if ('val' in diff) {
+      if (plugin.test(diff.val)) {
         return plugin.format(diff, context, opts, formatDiff);
       }
     }
@@ -94,29 +94,29 @@ const formatDiff: Format = (diff, context, opts) => {
   if (diff.kind === Kind.UNEQUAL_TYPE) {
     const deletedLines = formatDiff(
       {
-        a: diff.a,
         childDiffs: diff.aChildDiffs,
         kind: Kind.DELETED,
         path: diff.path,
+        val: diff.a,
       },
       context,
       opts,
     );
     const insertedLines = formatDiff(
       {
-        b: diff.b,
         childDiffs: diff.bChildDiffs,
         kind: Kind.INSERTED,
         path: diff.path,
+        val: diff.b,
       },
       context,
       opts,
     );
     return [...deletedLines, ...insertedLines];
   } else if (diff.kind === Kind.INSERTED) {
-    type = getType(diff.b);
+    type = getType(diff.val);
 
-    if (isWrappedCircular(diff.b)) {
+    if (isWrappedCircular(diff.val)) {
       return formatCircularDiff(diff, context, opts);
     }
 
@@ -128,12 +128,12 @@ const formatDiff: Format = (diff, context, opts) => {
       case 'undefined':
       case 'null':
       case 'symbol':
-        return [createInsertedLine(opts.serialize(diff.b), context)];
+        return [createInsertedLine(opts.serialize(diff.val), context)];
     }
   } else if (diff.kind === Kind.DELETED) {
-    type = getType(diff.a);
+    type = getType(diff.val);
 
-    if (isWrappedCircular(diff.a)) {
+    if (isWrappedCircular(diff.val)) {
       return formatCircularDiff(diff, context, opts);
     }
 
@@ -145,7 +145,7 @@ const formatDiff: Format = (diff, context, opts) => {
       case 'undefined':
       case 'null':
       case 'symbol':
-        return [createDeletedLine(opts.serialize(diff.a), context)];
+        return [createDeletedLine(opts.serialize(diff.val), context)];
     }
   } else {
     type = getType(diff.a);

@@ -4,14 +4,20 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import {DiffObject, Kind, Path} from './types';
+import {
+  DiffObject,
+  EqualDiffObject,
+  Kind,
+  Path,
+  UpdatedDiffObject,
+} from './types';
 
 export function createDiffObject<T1, T2>(
-  kind: Kind,
+  kind: Kind.EQUAL | Kind.UPDATED,
   a: T1,
   b: T2,
   path: Path,
-): DiffObject<T1, T2> {
+): EqualDiffObject<T1, T2> | UpdatedDiffObject<T1, T2> {
   return {
     a,
     b,
@@ -32,11 +38,17 @@ export const createEqual: CreateDiffObjectWithFixedKind = (a, b, path) =>
 export const createUpdated: CreateDiffObjectWithFixedKind = (a, b, path) =>
   createDiffObject(Kind.UPDATED, a, b, path);
 
-export const createDeleted: CreateDiffObjectWithFixedKind = (a, b, path) =>
-  createDiffObject(Kind.DELETED, a, b, path);
+export const createDeleted: CreateDiffObjectWithFixedKind = (a, _, path) => ({
+  val: a,
+  kind: Kind.DELETED,
+  ...(typeof path !== 'undefined' && {path}),
+});
 
-export const createInserted: CreateDiffObjectWithFixedKind = (a, b, path) =>
-  createDiffObject(Kind.INSERTED, a, b, path);
+export const createInserted: CreateDiffObjectWithFixedKind = (_, b, path) => ({
+  kind: Kind.INSERTED,
+  val: b,
+  ...(typeof path !== 'undefined' && {path}),
+});
 
 export function getComplexValueDiffKind(
   childrenDiffs: Array<DiffObject<unknown, unknown>>,

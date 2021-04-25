@@ -48,10 +48,10 @@ export const formatCircularDiff: Format = (diff, context, opts) => {
     return [createCommonLine(opts.serialize(diff.a), context)];
   }
   if (diff.kind === Kind.INSERTED) {
-    return [createInsertedLine(opts.serialize(diff.b), context)];
+    return [createInsertedLine(opts.serialize(diff.val), context)];
   }
   if (diff.kind === Kind.DELETED) {
-    return [createDeletedLine(opts.serialize(diff.a), context)];
+    return [createDeletedLine(opts.serialize(diff.val), context)];
   }
   if (diff.kind === Kind.UPDATED) {
     return [

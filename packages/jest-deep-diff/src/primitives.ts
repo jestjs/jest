@@ -169,14 +169,14 @@ export const formatStringDiff: FormatPrimitives<string, string> = (
     }
 
     if (childDiff.kind === Kind.INSERTED) {
-      return createInsertedLine(prefix + childDiff.b + sufix, context);
+      return createInsertedLine(prefix + childDiff.val + sufix, context);
+    }
+
+    if (childDiff.kind === Kind.DELETED) {
+      return createDeletedLine(prefix + childDiff.val, context);
     }
 
     const a = prefix + (childDiff.a as string) + sufix;
-    if (childDiff.kind === Kind.DELETED) {
-      return createDeletedLine(a as string, context);
-    }
-
     if (childDiff.kind === Kind.EQUAL) {
       return createCommonLine(a as string, context);
     }

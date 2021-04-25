@@ -37,12 +37,12 @@ interface AsymmetricMatcher {
 }
 
 const diff: CustomDiff = (a, b, path, memos, diff, markChildrenRecursively) => {
-  const matcher = (test(a) ? a : b) as AsymmetricMatcher;
-  const other = test(a) ? b : a;
+  const isAMatcher = test(a);
+  const matcher = (isAMatcher ? a : b) as AsymmetricMatcher;
+  const other = isAMatcher ? b : a;
 
   const isMatch = matcher.asymmetricMatch(other);
   const matcherName = matcher.toString();
-  console.log(matcherName);
 
   if (
     matcherName === 'ObjectContaining' ||
@@ -52,8 +52,8 @@ const diff: CustomDiff = (a, b, path, memos, diff, markChildrenRecursively) => {
       return diff(other, other, path, memos);
     } else {
       const c = diff(
-        matcher === a ? matcher.sample : a,
-        matcher === b ? matcher.sample : b,
+        isAMatcher ? matcher.sample : a,
+        isAMatcher ? b : matcher.sample,
         path,
         memos,
       );
@@ -68,26 +68,43 @@ const diff: CustomDiff = (a, b, path, memos, diff, markChildrenRecursively) => {
         return {
           ...c,
           childDiffs: c.childDiffs?.map(childDiff => {
-            const hasKey =
-              (childDiff.path as string) in
-              (matcher.sample as Record<string, unknown>);
-            console.log(childDiff);
-            if (matcher.inverse ? !hasKey : hasKey) {
-              return childDiff;
-            } else {
-              const equalDiff = {
-                ...childDiff,
-                a: Object.prototype.hasOwnProperty.call(childDiff, 'a')
-                  ? (childDiff as {a: unknown}).a
-                  : (childDiff as {b: unknown}).b,
-                b: Object.prototype.hasOwnProperty.call(childDiff, 'b')
-                  ? (childDiff as {b: unknown}).b
-                  : (childDiff as {a: unknown}).a,
-                kind: Kind.EQUAL,
-              } as EqualDiffObject;
+            switch (childDiff.kind) {
+              case Kind.DELETED: {
+                if (!isAMatcher) {
+                  const equalDiff = {
+                    ...childDiff,
+                    a: childDiff.val,
+                    b: childDiff.val,
+                    kind: Kind.EQUAL,
+                  } as EqualDiffObject;
+                  return equalDiff;
+                }
+                return childDiff;
+              }
+              case Kind.INSERTED: {
+                if (isAMatcher) {
+                  const equalDiff = {
+                    ...childDiff,
+                    a: childDiff.val,
+                    b: childDiff.val,
+                    kind: Kind.EQUAL,
+                  } as EqualDiffObject;
+                  return equalDiff;
+                }
+                return childDiff;
+              }
+              case Kind.EQUAL: {
+                if (matcher.inverse) {
+                  const val = isAMatcher ? childDiff.b : childDiff.a;
+                  const kind = isAMatcher ? Kind.INSERTED : Kind.DELETED;
+                  return markChildrenRecursively(kind, val, childDiff.path);
+                }
 
-              return equalDiff;
+                return childDiff;
+              }
             }
+
+            return childDiff;
           }),
         };
       }
@@ -126,16 +143,16 @@ const format: CustomFormat = (diffObj, context, options, originalFormat) => {
     }
     case Kind.UNEQUAL_TYPE: {
       const insertedDiff: DiffObject = {
-        b: diffObj.b,
         childDiffs: diffObj.bChildDiffs,
         kind: Kind.INSERTED,
         path: diffObj.path,
+        val: diffObj.b,
       };
       const deletedDiff: DiffObject = {
-        a: diffObj.a,
         childDiffs: diffObj.aChildDiffs,
         kind: Kind.DELETED,
         path: diffObj.path,
+        val: diffObj.a,
       };
       return [
         ...originalFormat(deletedDiff, context, options),
@@ -143,10 +160,10 @@ const format: CustomFormat = (diffObj, context, options, originalFormat) => {
       ];
     }
     case Kind.INSERTED: {
-      const name = (diffObj.b as AsymmetricMatcher).toString();
+      const name = (diffObj.val as AsymmetricMatcher).toString();
       if (name === 'ObjectContaining' || name === 'ObjectNotContaining') {
         const lines = originalFormat(
-          {...diffObj, b: (diffObj.b as AsymmetricMatcher).sample},
+          {...diffObj, val: (diffObj.val as AsymmetricMatcher).sample},
           context,
           options,
         );
@@ -161,7 +178,7 @@ const format: CustomFormat = (diffObj, context, options, originalFormat) => {
       }
       return [
         createInsertedLine(
-          serializeAsymmetricMatcher(diffObj.b as AsymmetricMatcher),
+          serializeAsymmetricMatcher(diffObj.val as AsymmetricMatcher),
           context,
         ),
       ];
@@ -169,7 +186,7 @@ const format: CustomFormat = (diffObj, context, options, originalFormat) => {
     case Kind.DELETED: {
       return [
         createDeletedLine(
-          serializeAsymmetricMatcher(diffObj.a as AsymmetricMatcher),
+          serializeAsymmetricMatcher(diffObj.val as AsymmetricMatcher),
           context,
         ),
       ];
@@ -186,31 +203,20 @@ function markChildrenRecursively(
 ): InsertedDiffObject | DeletedDiffObject {
   if (!test(val)) throw new Error('value must be an asymmetric matcher');
 
-  if (kind === Kind.DELETED) {
-    if (
-      val.toString() === 'ObjectContaining' ||
-      val.toString() === 'ObjectNotContaining'
-    ) {
-      return {
-        ...markChildrenRecursivelyWithScopedPlugins(
-          kind,
-          val.sample,
-          path,
-          refs,
-        ),
-        a: val,
-      };
-    }
+  if (
+    val.toString() === 'ObjectContaining' ||
+    val.toString() === 'ObjectNotContaining'
+  ) {
     return {
-      a: val,
-      kind,
-      path,
+      ...markChildrenRecursivelyWithScopedPlugins(kind, val.sample, path, refs),
+      val,
     };
   }
+
   return {
-    b: val,
     kind,
     path,
+    val,
   };
 }
 

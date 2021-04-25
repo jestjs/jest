@@ -109,10 +109,13 @@ export const formatObjectDiff: FormatComplexDiff<Record<Key, unknown>> = (
 
   if (diff.kind === Kind.INSERTED) {
     if (formattedChildDiffs.length > 0) {
-      const firstLine = createInsertedLine(getConstructorName(diff.b) + ' {', {
-        ...context,
-        sufix: '',
-      });
+      const firstLine = createInsertedLine(
+        getConstructorName(diff.val) + ' {',
+        {
+          ...context,
+          sufix: '',
+        },
+      );
       const lastLine = createInsertedLine('}', {
         ...context,
         prefix: '',
@@ -121,7 +124,7 @@ export const formatObjectDiff: FormatComplexDiff<Record<Key, unknown>> = (
       return [firstLine, ...formattedChildDiffs, lastLine];
     } else {
       const constructorLine = createInsertedLine(
-        getConstructorName(diff.b) + ' { }',
+        getConstructorName(diff.val) + ' { }',
         {
           ...context,
           sufix: '',
@@ -133,7 +136,7 @@ export const formatObjectDiff: FormatComplexDiff<Record<Key, unknown>> = (
 
   if (diff.kind === Kind.DELETED) {
     if (formattedChildDiffs.length > 0) {
-      const firstLine = createDeletedLine(getConstructorName(diff.a) + ' {', {
+      const firstLine = createDeletedLine(getConstructorName(diff.val) + ' {', {
         ...context,
         sufix: '',
       });
@@ -145,7 +148,7 @@ export const formatObjectDiff: FormatComplexDiff<Record<Key, unknown>> = (
       return [firstLine, ...formattedChildDiffs, lastLine];
     } else {
       const constructorLine = createDeletedLine(
-        getConstructorName(diff.a) + ' { }',
+        getConstructorName(diff.val) + ' { }',
         {
           ...context,
           sufix: '',

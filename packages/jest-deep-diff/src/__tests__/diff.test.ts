@@ -110,7 +110,7 @@ describe('primitive wrappers', () => {
   });
 });
 
-describe.skip('RegExp', () => {
+describe('RegExp', () => {
   test('regexps with same source and same flags are equal', () => {
     const a = /abc/g;
     const b = /abc/g;
@@ -163,29 +163,7 @@ describe.skip('Objects', () => {
       b: 3,
     };
 
-    const expected: DiffObject = {
-      a,
-      b,
-
-      childDiffs: [
-        {
-          a: a.a,
-          b: b.a,
-          kind: Kind.EQUAL,
-          path: 'a',
-        },
-        {
-          a: a.b,
-          b: b.b,
-          kind: Kind.UPDATED,
-          path: 'b',
-        },
-      ],
-      kind: Kind.UPDATED,
-      path: undefined,
-    };
-
-    expect(diff(a, b)).toStrictEqual(expected);
+    expect(diff(a, b)).toMatchSnapshot();
   });
 
   test('marks deleted field', () => {
@@ -198,28 +176,7 @@ describe.skip('Objects', () => {
       a: 1,
     };
 
-    const expected: DiffObject = {
-      a,
-      b,
-      childDiffs: [
-        {
-          a: a.a,
-          b: b.a,
-          kind: Kind.EQUAL,
-          path: 'a',
-        },
-        {
-          a: a.b,
-          b: undefined,
-          kind: Kind.DELETED,
-          path: 'b',
-        },
-      ],
-      kind: Kind.UPDATED,
-      path: undefined,
-    };
-
-    expect(diff(a, b)).toStrictEqual(expected);
+    expect(diff(a, b)).toMatchSnapshot();
   });
 
   test('marks inserted field', () => {
@@ -634,18 +591,16 @@ describe('full-traversal diff', () => {
       b,
       childDiffs: [
         {
-          a: undefined,
-          b: b.x,
           childDiffs: [
             {
-              a: undefined,
-              b: b.x.y,
               kind: Kind.INSERTED,
               path: 'y',
+              val: b.x.y,
             },
           ],
           kind: Kind.INSERTED,
           path: 'x',
+          val: b.x,
         },
       ],
       kind: Kind.UPDATED,

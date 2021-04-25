@@ -8,7 +8,7 @@ import {traverseArray} from './complex/array';
 import {wrapCircularObject} from './complex/circularObjects';
 import {traverseObject} from './complex/object';
 import {getType, isLeafType} from './getType';
-import {
+import type {
   DeletedDiffObject,
   DiffObject,
   DiffPlugin,
@@ -59,64 +59,30 @@ export function markChildrenRecursively<T = unknown>(
     }
   }
 
-  if (kind === Kind.INSERTED) {
-    if (isLeafType(val)) {
-      return {
-        b: val,
-        kind: Kind.INSERTED,
-        path,
-      };
-    }
-
-    if (refs.has(val)) {
-      return {
-        b: wrapCircularObject(val),
-        kind,
-        path,
-      };
-    }
-
-    refs.add(val);
-
-    return {
-      b: val,
-      childDiffs: traverse(val, (childVal, childKey) =>
-        markChildrenRecursivelyWithScopedPlugins(
-          kind,
-          childVal,
-          childKey,
-          refs,
-        ),
-      ),
-      kind,
-      path,
-    };
-  }
-
   if (isLeafType(val)) {
     return {
-      a: val,
       kind,
       path,
+      val,
     };
   }
 
   if (refs.has(val)) {
     return {
-      a: wrapCircularObject(val),
       kind,
       path,
+      val: wrapCircularObject(val),
     };
   }
 
   refs.add(val);
 
   return {
-    a: val,
     childDiffs: traverse(val, (childVal, childKey) =>
       markChildrenRecursivelyWithScopedPlugins(kind, childVal, childKey, refs),
     ),
     kind,
     path,
+    val,
   };
 }

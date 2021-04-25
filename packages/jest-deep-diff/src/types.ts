@@ -72,13 +72,13 @@ export enum Kind {
 export type InsertedDiffObject<T = unknown> = {
   kind: Kind.INSERTED;
   path?: Path;
-  b: T;
+  val: T;
   childDiffs?: Array<DiffObject>;
 };
 export type DeletedDiffObject<T = unknown> = {
   kind: Kind.DELETED;
   path?: Path;
-  a: T;
+  val: T;
   childDiffs?: Array<DiffObject>;
 };
 
