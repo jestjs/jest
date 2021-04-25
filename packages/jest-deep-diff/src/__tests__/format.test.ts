@@ -7,6 +7,7 @@
 
 import stripAnsi = require('strip-ansi');
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
+import oldDiff from 'jest-diff';
 import diff from '../diff';
 import format from '../format';
 
@@ -134,17 +135,8 @@ describe('Objects', () => {
     expect(actual).toEqual(expected);
   });
 
-  describe.skip('multiline string as value of object property', () => {
-    const expected = [
-      '  Object {',
-      '    "id": "J",',
-      '    "points": "0.5,0.460',
-      '+ 0.5,0.875',
-      '  0.25,0.875",',
-      '  }',
-    ].join('\n');
-
-    test('(non-snapshot)', () => {
+  describe('multiline string as value of object property', () => {
+    test('updated diff', () => {
       const a = {
         id: 'J',
         points: '0.5,0.460\n0.25,0.875',
@@ -154,8 +146,59 @@ describe('Objects', () => {
         points: '0.5,0.460\n0.5,0.460\n0.25,0.875',
       };
 
+      const expected = [
+        '  Object {',
+        '    "id": "J",',
+        '    "points": "0.5,0.460',
+        '+   0.5,0.460',
+        '    0.25,0.875",',
+        '  }',
+      ].join('\n');
+
       const actual = strippedFormat(diff(a, b));
-      console.log(actual);
+      expect(actual).toBe(expected);
+    });
+
+    test('equal', () => {
+      const expected = [
+        '  Object {',
+        '-   "id": "B",',
+        '+   "id": "J",',
+        '    "points": "0.5,0.460',
+        '    0.5,0.460',
+        '    0.25,0.875",',
+        '  }',
+      ].join('\n');
+      const a = {
+        id: 'B',
+        points: '0.5,0.460\n0.5,0.460\n0.25,0.875',
+      };
+      const b = {
+        id: 'J',
+        points: '0.5,0.460\n0.5,0.460\n0.25,0.875',
+      };
+
+      const actual = strippedFormat(diff(a, b));
+      expect(actual).toBe(expected);
+    });
+    test('inserted', () => {
+      const expected = [
+        '  Object {',
+        '    "id": "J",',
+        '+   "points": "0.5,0.460',
+        '+   0.5,0.460',
+        '+   0.25,0.875",',
+        '  }',
+      ].join('\n');
+      const a = {
+        id: 'J',
+      };
+      const b = {
+        id: 'J',
+        points: '0.5,0.460\n0.5,0.460\n0.25,0.875',
+      };
+
+      const actual = strippedFormat(diff(a, b));
       expect(actual).toBe(expected);
     });
   });
@@ -284,7 +327,7 @@ describe('Arrays', () => {
   });
 });
 
-describe.skip('Maps', () => {
+describe('Maps', () => {
   test('primitive keys', () => {
     const a = new Map([
       ['a', 1],
@@ -311,7 +354,7 @@ describe.skip('Maps', () => {
     expect(actual).toEqual(expected);
   });
 
-  test('complex keys', () => {
+  test.skip('complex keys', () => {
     const a = new Map([
       [{a: 1}, {a: 2}],
       [{a: 2}, {a: 3}],
@@ -403,7 +446,6 @@ describe('circular values', () => {
     };
 
     expect(strippedFormat(diff(a, b))).toMatchSnapshot();
-
     expect(strippedFormat(diff(b, a))).toMatchSnapshot();
   });
 
@@ -417,7 +459,6 @@ describe('circular values', () => {
     };
 
     expect(strippedFormat(diff(a, b))).toMatchSnapshot();
-
     expect(strippedFormat(diff(b, a))).toMatchSnapshot();
   });
 });

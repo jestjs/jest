@@ -88,7 +88,7 @@ describe('no visual difference', () => {
     });
   });
 
-  test.skip('Map key order should be irrelevant', () => {
+  test('Map key order should be irrelevant', () => {
     const arg1 = new Map([
       [1, 'foo'],
       [2, 'bar'],
@@ -238,6 +238,7 @@ describe.skip('React elements', () => {
   });
 });
 
+// This is expected to be different
 describe.skip('multiline string as value of object property', () => {
   describe('(non-snapshot)', () => {
     const a = {
@@ -258,7 +259,7 @@ describe.skip('multiline string as value of object property', () => {
   });
 });
 
-describe.skip('indentation in JavaScript structures', () => {
+describe('color of text', () => {
   const searching = '';
   const object = {
     descending: false,
@@ -270,44 +271,12 @@ describe.skip('indentation in JavaScript structures', () => {
   };
   const b = {
     searching,
-    sorting: [object],
-  };
-
-  describe('from less to more', () => {
-    test('(unexpanded)', () => {
-      expect(diff(a, b, unexpandedBe)).toBe(oldDiff(a, b, unexpandedBe));
-    });
-    test('(expanded)', () => {
-      expect(diff(a, b, expandedBe)).toBe(oldDiff(a, b, expandedBe));
-    });
-  });
-
-  describe('from more to less', () => {
-    test('(unexpanded)', () => {
-      expect(diff(a, b, unexpandedBe)).toBe(oldDiff(a, b, unexpandedBe));
-    });
-    test('(expanded)', () => {
-      expect(diff(a, b, expandedBe)).toBe(oldDiff(a, b, expandedBe));
-    });
-  });
-});
-
-describe.skip('color of text', () => {
-  const searching = '';
-  const object = {
-    descending: false,
-    fieldKey: 'what',
-  };
-  const a = {
-    searching,
-    sorting: object,
-  };
-  const b = {
-    searching,
-    sorting: [object],
+    sorting: {
+      ...object,
+      descending: true,
+    },
   };
   const received = diff(a, b, expanded);
-
   test('(expanded)', () => {
     expect(received).toBe(oldDiff(a, b, expanded));
   });
@@ -411,33 +380,12 @@ describe.skip('outer React element (non-snapshot)', () => {
   });
 });
 
-describe.skip('trailing newline in multiline string not enclosed in quotes', () => {
-  const a = ['line 1', 'line 2', 'line 3'].join('\n');
-  const b = a + '\n';
-
-  describe('from less to more', () => {
-    test('(unexpanded)', () => {
-      expect(diff(a, b, unexpandedBe)).toBe(oldDiff(a, b, unexpandedBe));
-    });
-    test('(expanded)', () => {
-      expect(diff(a, b, expandedBe)).toBe(oldDiff(a, b, expandedBe));
-    });
-  });
-
-  describe('from more to less', () => {
-    test('(unexpanded)', () => {
-      expect(diff(b, a, unexpandedBe)).toBe(oldDiff(a, b, unexpanded));
-    });
-    test('(expanded)', () => {
-      expect(diff(b, a, expandedBe)).toBe(oldDiff(a, b, expanded));
-    });
-  });
-});
-
 test.skip('collapses big diffs to patch format', () => {
   const arg1 = {test: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]};
   const arg2 = {test: [1, 2, 3, 4, 5, 6, 7, 8, 10, 9]};
   const result = diff(arg1, arg2, unexpanded);
+  console.log(result);
+  console.log(oldDiff(arg1, arg2, unexpanded));
   expect(result).toBe(oldDiff(arg1, arg2, unexpanded));
 });
 
@@ -491,6 +439,7 @@ const assertSettings = {
   numRuns: 1000,
 };
 
+// This will never pass but it's used now for finding some edge cases
 describe.skip('property tests', () => {
   it('should be equivalent to old diff', () => {
     fc.assert(

@@ -151,7 +151,7 @@ describe('RegExp', () => {
   });
 });
 
-describe.skip('Objects', () => {
+describe('Objects', () => {
   test('marks updated field', () => {
     const a = {
       a: 1,
@@ -176,7 +176,27 @@ describe.skip('Objects', () => {
       a: 1,
     };
 
-    expect(diff(a, b)).toMatchSnapshot();
+    const expected: DiffObject = {
+      a,
+      b,
+      childDiffs: [
+        {
+          a: a.a,
+          b: b.a,
+          kind: Kind.EQUAL,
+          path: 'a',
+        },
+        {
+          kind: Kind.DELETED,
+          path: 'b',
+          val: a.b,
+        },
+      ],
+      kind: Kind.UPDATED,
+      path: undefined,
+    };
+
+    expect(diff(a, b)).toEqual(expected);
   });
 
   test('marks inserted field', () => {
@@ -200,17 +220,16 @@ describe.skip('Objects', () => {
           path: 'a',
         },
         {
-          a: undefined,
-          b: b.b,
           kind: Kind.INSERTED,
           path: 'b',
+          val: b.b,
         },
       ],
       kind: Kind.UPDATED,
       path: undefined,
     };
 
-    expect(diff(a, b)).toStrictEqual(expected);
+    expect(diff(a, b)).toEqual(expected);
   });
 
   test('different constructors are not equal', () => {
@@ -226,7 +245,7 @@ describe.skip('Objects', () => {
       kind: Kind.UNEQUAL_TYPE,
     };
 
-    expect(diff(a, b)).toStrictEqual(expected);
+    expect(diff(a, b)).toMatchObject(expected);
   });
 
   test('non-enumerable members should be skipped during equal', () => {
@@ -249,7 +268,7 @@ describe.skip('Objects', () => {
         {
           a: 3,
           b: 3,
-          kind: 0,
+          kind: Kind.EQUAL,
           path: 'x',
         },
       ],
@@ -281,7 +300,7 @@ describe.skip('Objects', () => {
         {
           a: 3,
           b: 3,
-          kind: 0,
+          kind: Kind.EQUAL,
           path: 'x',
         },
       ],
@@ -311,11 +330,48 @@ describe.skip('Objects', () => {
       },
     };
 
-    expect(diff(a, b)).toMatchSnapshot();
+    const expected: DiffObject = {
+      a,
+      b,
+      childDiffs: [
+        {
+          a: 1,
+          b: 1,
+          kind: Kind.EQUAL,
+          path: 'a',
+        },
+        {
+          a: a.b,
+          b: b.b,
+          childDiffs: [
+            {
+              a: a.b.c,
+              b: b.b.c,
+              childDiffs: [
+                {
+                  a: a.b.c.d,
+                  b: b.b.c.d,
+                  kind: Kind.UPDATED,
+                  path: 'd',
+                },
+              ],
+              kind: Kind.UPDATED,
+              path: 'c',
+            },
+          ],
+          kind: Kind.UPDATED,
+          path: 'b',
+        },
+      ],
+      kind: Kind.UPDATED,
+      path: undefined,
+    };
+
+    expect(diff(a, b)).toStrictEqual(expected);
   });
 });
 
-describe.skip('Arrays', () => {
+describe('Arrays', () => {
   test('marks updated field', () => {
     const a = [1, 2];
     const b = [1, 3];
@@ -359,10 +415,9 @@ describe.skip('Arrays', () => {
           path: 0,
         },
         {
-          a: a[1],
-          b: b[1],
           kind: Kind.INSERTED,
           path: 1,
+          val: b[1],
         },
       ],
       kind: Kind.UPDATED,
@@ -387,10 +442,9 @@ describe.skip('Arrays', () => {
           path: 0,
         },
         {
-          a: a[1],
-          b: b[1],
           kind: Kind.DELETED,
           path: 1,
+          val: a[1],
         },
       ],
       kind: Kind.UPDATED,
@@ -401,7 +455,7 @@ describe.skip('Arrays', () => {
   });
 });
 
-describe.skip('Maps', () => {
+describe('Maps', () => {
   test('marks updated field', () => {
     const a = new Map([
       ['a', 1],
@@ -415,22 +469,18 @@ describe.skip('Maps', () => {
     const expected: DiffObject = {
       a,
       b,
-
       childDiffs: [
-        {
-          a: a.get('b'),
-          b: b.get('b'),
-          kind: Kind.UPDATED,
-          path: {
-            a: 'b',
-            b: 'b',
-            kind: Kind.EQUAL,
-          },
-        },
         {
           a: a.get('a'),
           b: b.get('a'),
           kind: Kind.EQUAL,
+          path: 'a',
+        },
+        {
+          a: a.get('b'),
+          b: b.get('b'),
+          kind: Kind.UPDATED,
+          path: 'b',
         },
       ],
       kind: Kind.UPDATED,
@@ -453,19 +503,14 @@ describe.skip('Maps', () => {
       childDiffs: [
         {
           a: a.get('b'),
-          b: undefined,
-          kind: Kind.DELETED,
+          b: b.get('b'),
+          kind: Kind.EQUAL,
           path: 'b',
         },
         {
-          a: a.get('a'),
-          b: b.get('a'),
-          kind: Kind.EQUAL,
-          path: {
-            a: 'a',
-            b: 'a',
-            kind: Kind.EQUAL,
-          },
+          kind: Kind.DELETED,
+          path: 'a',
+          val: a.get('a'),
         },
       ],
       kind: Kind.UPDATED,
@@ -487,40 +532,18 @@ describe.skip('Maps', () => {
       b,
       childDiffs: [
         {
-          a: undefined,
-          b: b.get('a'),
-          kind: Kind.INSERTED,
-          path: 'a',
-        },
-        {
           a: a.get('b'),
           b: b.get('b'),
           kind: Kind.EQUAL,
-          path: {
-            a: 'b',
-            b: 'b',
-            kind: Kind.EQUAL,
-          },
+          path: 'b',
+        },
+        {
+          kind: Kind.INSERTED,
+          path: 'a',
+          val: b.get('a'),
         },
       ],
       kind: Kind.UPDATED,
-      path: undefined,
-    };
-
-    expect(diff(a, b)).toStrictEqual(expected);
-  });
-  test('checks deep equality of keys and values', () => {
-    const a = new Map([[{a: 1}, 'abcd']]);
-    const b = new Map([
-      [{a: 1}, 'dsds'],
-      [{a: 1}, 'dsassa'],
-      [{a: 1}, 'abcd'],
-    ]);
-
-    const expected = {
-      a,
-      b,
-      kind: Kind.EQUAL,
       path: undefined,
     };
 
@@ -583,7 +606,7 @@ describe('Circular objects', () => {
 });
 
 describe('full-traversal diff', () => {
-  test('basic example', () => {
+  test('mark all children recursively', () => {
     const a = {};
     const b = {x: {y: 1}};
     const expected: DiffObject = {

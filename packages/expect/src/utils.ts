@@ -128,6 +128,7 @@ export const getObjectSubset = (
           ? seenReferences.get(object[key])
           : getObjectSubset(object[key], subset[key], seenReferences);
       });
+
     if (Object.keys(trimmed).length > 0) {
       return trimmed;
     }

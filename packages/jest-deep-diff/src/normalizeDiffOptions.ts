@@ -7,7 +7,7 @@
 
 // adapted from jest-diff
 import chalk = require('chalk');
-import prettyFormat = require('pretty-format');
+import prettyFormat from 'pretty-format';
 import {wrappedCircularSerializer} from './complex/circularObjects';
 import type {FormatOptions, FormatOptionsNormalized} from './types';
 

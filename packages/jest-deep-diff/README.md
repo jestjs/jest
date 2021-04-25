@@ -31,12 +31,12 @@ There is support for plugins. I have made ReactElement and AsymmetricMatcher Plu
 - [x] Array
 - [x] Object
 - [x] Circular
-- [ ] Map
+- [x] Map (Does not checks equality of complex value keys)
 - [ ] Set
 - [ ] DOM Node
-- [x] Asymmetric Any
-- [ ] Asymmetric Object
 - [ ] React
+- [x] Asymmetric Any
+- [x] Asymmetric Object
 
 I am quite happy with this module. It's clear to me what it does. It recursively marks values as Inserted, Updated, Deleted, Equal or TypeUnequal and returns an object which represents the differences between 2 values.
 
@@ -51,9 +51,12 @@ Note: Diff will also traverse and mark all the children of complex values
 - [x] Circular
 - [ ] Date
 - [ ] RegExp
-- [ ] Map
+- [x] Map
 - [ ] Set
 - [ ] DOM Node
+- [ ] React
+- [x] Asymmetric Any
+- [x] Asymmetric Object
 
 `format` has two parts, `diffFormat`(desperately needs a name) and `print`. The first one returns an array of `Line` objects and the second serializes this array based on options.
 

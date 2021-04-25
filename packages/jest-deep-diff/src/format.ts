@@ -19,7 +19,6 @@ import {
   FormatComplexDiffObject,
   FormatOptions,
   FormatOptionsNormalized,
-  FormatPrimitiveDiffObject,
   Kind,
   Line,
   LineType,
@@ -124,7 +123,6 @@ const formatDiff: Format = (diff, context, opts) => {
       case 'number':
       case 'boolean':
       case 'function':
-      case 'string':
       case 'undefined':
       case 'null':
       case 'symbol':
@@ -141,7 +139,6 @@ const formatDiff: Format = (diff, context, opts) => {
       case 'number':
       case 'boolean':
       case 'function':
-      case 'string':
       case 'undefined':
       case 'null':
       case 'symbol':
@@ -159,16 +156,17 @@ const formatDiff: Format = (diff, context, opts) => {
       case 'function':
       case 'symbol':
         return formatPrimitiveDiff(diff, context, opts);
-      case 'string':
-        return formatStringDiff(
-          diff as FormatPrimitiveDiffObject<string, string>,
-          context,
-          opts,
-        );
     }
   }
 
   switch (type) {
+    case 'string':
+      return formatStringDiff(
+        diff as FormatComplexDiffObject<string, string>,
+        context,
+        opts,
+        formatDiff,
+      );
     case 'array':
       return formatArrayDiff(
         diff as FormatComplexDiffObject<Array<unknown>>,

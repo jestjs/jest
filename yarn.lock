@@ -8610,7 +8610,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"diff-sequences@npm:^26.1.0, diff-sequences@npm:^26.6.2":
+"diff-sequences@npm:^26.6.2":
   version: 26.6.2
   resolution: "diff-sequences@npm:26.6.2"
   checksum: dd1eb6e52f0a200228b836876a69c90690003b8991cf7d9264d6e6063acde8fe852084b6a196f2a13f169d309e30c24c457e9c8db617aed186c665efb50af1d8
@@ -9858,7 +9858,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expect@^27.0.0-next.8, expect@workspace:packages/expect":
+"expect@^27.0.0-next.6, expect@^27.0.0-next.8, expect@workspace:packages/expect":
   version: 0.0.0-use.local
   resolution: "expect@workspace:packages/expect"
   dependencies:
@@ -12813,11 +12813,11 @@ fsevents@^1.2.7:
   resolution: "jest-deep-diff@workspace:packages/jest-deep-diff"
   dependencies:
     chalk: ^4.0.0
-    diff-sequences: ^26.1.0
+    diff-sequences: ^27.0.0-next.0
     expect: ^27.0.0-next.6
     fast-check: ^1.23.0
     jest-diff: ^26.1.0
-    pretty-format: ^26.1.0
+    pretty-format: ^27.0.0-next.6
     strip-ansi: ^6.0.0
   languageName: unknown
   linkType: soft
@@ -17646,7 +17646,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"pretty-format@^27.0.0-next.8, pretty-format@workspace:packages/pretty-format":
+"pretty-format@^27.0.0-next.6, pretty-format@^27.0.0-next.8, pretty-format@workspace:packages/pretty-format":
   version: 0.0.0-use.local
   resolution: "pretty-format@workspace:packages/pretty-format"
   dependencies:
@@ -17689,7 +17689,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"pretty-format@npm:^26.1.0, pretty-format@npm:^26.5.2, pretty-format@npm:^26.6.2":
+"pretty-format@npm:^26.5.2, pretty-format@npm:^26.6.2":
   version: 26.6.2
   resolution: "pretty-format@npm:26.6.2"
   dependencies:

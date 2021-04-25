@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "chalk": "^4.0.0",
-    "diff-sequences": "^27.0.0-next.6",
+    "diff-sequences": "^27.0.0-next.0",
     "expect": "^27.0.0-next.6",
     "pretty-format": "^27.0.0-next.6"
   },

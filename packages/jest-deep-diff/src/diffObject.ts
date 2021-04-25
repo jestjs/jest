@@ -5,8 +5,10 @@
  * LICENSE file in the root directory of this source tree.
  */
 import {
+  DeletedDiffObject,
   DiffObject,
   EqualDiffObject,
+  InsertedDiffObject,
   Kind,
   Path,
   UpdatedDiffObject,
@@ -38,16 +40,19 @@ export const createEqual: CreateDiffObjectWithFixedKind = (a, b, path) =>
 export const createUpdated: CreateDiffObjectWithFixedKind = (a, b, path) =>
   createDiffObject(Kind.UPDATED, a, b, path);
 
-export const createDeleted: CreateDiffObjectWithFixedKind = (a, _, path) => ({
-  val: a,
+export const createDeleted = <T>(val: T, path: Path): DeletedDiffObject<T> => ({
   kind: Kind.DELETED,
   ...(typeof path !== 'undefined' && {path}),
+  val,
 });
 
-export const createInserted: CreateDiffObjectWithFixedKind = (_, b, path) => ({
+export const createInserted = <T>(
+  val: T,
+  path: Path,
+): InsertedDiffObject<T> => ({
   kind: Kind.INSERTED,
-  val: b,
   ...(typeof path !== 'undefined' && {path}),
+  val,
 });
 
 export function getComplexValueDiffKind(

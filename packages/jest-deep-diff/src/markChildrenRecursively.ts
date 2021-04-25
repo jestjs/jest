@@ -8,6 +8,7 @@ import {traverseArray} from './complex/array';
 import {wrapCircularObject} from './complex/circularObjects';
 import {traverseObject} from './complex/object';
 import {getType, isLeafType} from './getType';
+import {splitLines} from './primitives';
 import type {
   DeletedDiffObject,
   DiffObject,
@@ -61,6 +62,19 @@ export function markChildrenRecursively<T = unknown>(
 
   if (isLeafType(val)) {
     return {
+      kind,
+      path,
+      val,
+    };
+  }
+
+  if (typeof val === 'string') {
+    const lines = splitLines(val);
+    return {
+      childDiffs:
+        lines.length === 1
+          ? undefined
+          : lines.map(childVal => ({kind, val: childVal})),
       kind,
       path,
       val,

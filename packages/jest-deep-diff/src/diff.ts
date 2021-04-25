@@ -84,8 +84,6 @@ function diff(
     if (Object.is(a, b)) return createEqual(a, b, path);
 
     switch (aType) {
-      case 'string':
-        return diffStrings(a as string, b as string, path);
       case 'number':
         return diffNumbers(a as number, b as number, path);
       case 'boolean':
@@ -109,6 +107,10 @@ function diff(
           ? createEqual(a, b, path)
           : createUpdated(a, b, path);
     }
+  }
+
+  if (aType === 'string') {
+    return diffStrings(a as string, b as string, path);
   }
 
   // Here we already know that a and b are both complex structures

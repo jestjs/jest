@@ -4,7 +4,7 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
-import prettyFormat = require('pretty-format');
+import prettyFormat, {plugins as prettyFormatPlugins} from 'pretty-format';
 import {createCommonLine, createDeletedLine, createInsertedLine} from '../line';
 import {
   CustomDiff,
@@ -29,7 +29,7 @@ const test = (val: unknown): val is AsymmetricMatcher =>
   (val as Record<string, unknown>).$$typeof === asymmetricMatcher;
 
 const serializeAsymmetricMatcher = (val: AsymmetricMatcher) =>
-  prettyFormat(val, {plugins: [prettyFormat.plugins.AsymmetricMatcher]});
+  prettyFormat(val, {plugins: [prettyFormatPlugins.AsymmetricMatcher]});
 interface AsymmetricMatcher {
   asymmetricMatch: (a: unknown) => boolean;
   sample: unknown;
@@ -51,23 +51,23 @@ const diff: CustomDiff = (a, b, path, memos, diff, markChildrenRecursively) => {
     if (isMatch) {
       return diff(other, other, path, memos);
     } else {
-      const c = diff(
+      const diffObj = diff(
         isAMatcher ? matcher.sample : a,
         isAMatcher ? b : matcher.sample,
         path,
         memos,
       );
-      if (c.kind === Kind.UNEQUAL_TYPE) {
+      if (diffObj.kind === Kind.UNEQUAL_TYPE) {
         return {
-          ...c,
+          ...diffObj,
           a,
           b,
         };
       }
-      if (c.kind === Kind.UPDATED) {
+      if (diffObj.kind === Kind.UPDATED) {
         return {
-          ...c,
-          childDiffs: c.childDiffs?.map(childDiff => {
+          ...diffObj,
+          childDiffs: diffObj.childDiffs?.map(childDiff => {
             switch (childDiff.kind) {
               case Kind.DELETED: {
                 if (!isAMatcher) {

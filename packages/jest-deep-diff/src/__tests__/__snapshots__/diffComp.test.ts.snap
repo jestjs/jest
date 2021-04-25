@@ -22,25 +22,6 @@ exports[`collapses big diffs to patch format 1`] = `
 <d>  }</>
 `;
 
-exports[`color of text (expanded) 1`] = `
-<g>- Expected</>
-<r>+ Received</>
-
-<d>  Object {</>
-<d>    "searching": "",</>
-<g>-   "sorting": Object {</>
-<g>      "descending": false,</>
-<g>      "fieldKey": "what",</>
-<g>    },</>
-<r>+   "sorting": Array [</>
-<r>      Object {</>
-<r>        "descending": false,</>
-<r>        "fieldKey": "what",</>
-<r>      },</>
-<r>    ],</>
-<d>  }</>
-`;
-
 exports[`context number of lines: -1 (5 default) 1`] = `
 <g>- Expected</>
 <r>+ Received</>

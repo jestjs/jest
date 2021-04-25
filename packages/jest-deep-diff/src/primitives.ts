@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 import diffSequence from 'diff-sequences';
+import prettyFormat from 'pretty-format';
 import {
   createDeleted,
   createEqual,
@@ -18,7 +19,13 @@ import {
   createInsertedLine,
   formatUpdated,
 } from './line';
-import {DiffObject, FormatPrimitives, Kind, Path} from './types';
+import {
+  DiffObject,
+  FormatComplexDiff,
+  FormatPrimitives,
+  Kind,
+  Path,
+} from './types';
 
 type DiffPrimitive<T1 = unknown, T2 = T1> = (
   a: T1,
@@ -70,8 +77,7 @@ export const formatPrimitiveDiff: FormatPrimitives = (diff, context, opts) => {
   return formatUpdated(opts.serialize(diff.a), opts.serialize(diff.b), context);
 };
 
-export const splitLines0 = (string: string): Array<string> =>
-  string.length === 0 ? [] : string.split('\n');
+export const splitLines = (string: string): Array<string> => string.split('\n');
 
 // adapted from jest-diff
 const diffLinesRaw = (
@@ -94,10 +100,10 @@ const diffLinesRaw = (
     bCommon: number,
   ) => {
     for (; aIndex !== aCommon; aIndex += 1) {
-      diffs.push(createDeleted(aLines[aIndex], undefined, undefined));
+      diffs.push(createDeleted(aLines[aIndex], undefined));
     }
     for (; bIndex !== bCommon; bIndex += 1) {
-      diffs.push(createInserted(undefined, bLines[bIndex], undefined));
+      diffs.push(createInserted(bLines[bIndex], undefined));
     }
     for (; nCommon !== 0; nCommon -= 1, aIndex += 1, bIndex += 1) {
       diffs.push(createEqual(bLines[bIndex], bLines[bIndex], undefined));
@@ -108,77 +114,91 @@ const diffLinesRaw = (
 
   // After the last common subsequence, push remaining change items.
   for (; aIndex !== aLength; aIndex += 1) {
-    diffs.push(createDeleted(aLines[aIndex], undefined, undefined));
+    diffs.push(createDeleted(aLines[aIndex], undefined));
   }
   for (; bIndex !== bLength; bIndex += 1) {
-    diffs.push(createInserted(undefined, bLines[bIndex], undefined));
+    diffs.push(createInserted(bLines[bIndex], undefined));
   }
 
   return diffs;
 };
 
 export const diffStrings: DiffPrimitive<string, string> = (a, b, path) => {
-  const aLines = splitLines0(a);
-  const bLines = splitLines0(b);
+  const aLines = splitLines(a);
+  const bLines = splitLines(b);
+
   if (aLines.length === 1 && bLines.length === 1) {
     if (Object.is(a, b)) {
       return createEqual(a, b, path);
     }
     return createUpdated(a, b, path);
   }
-  const childrenDiffs = diffLinesRaw(aLines, bLines);
+
+  const childDiffs = diffLinesRaw(aLines, bLines);
+
   return {
     a,
     b,
-    childDiffs: childrenDiffs,
-    kind: getComplexValueDiffKind(childrenDiffs),
+    childDiffs,
+    kind: getComplexValueDiffKind(childDiffs),
     path,
   };
 };
 
 const stringQuote = '"';
 
-export const formatStringDiff: FormatPrimitives<string, string> = (
+const noop = (id: string) => id;
+
+export const formatStringDiff: FormatComplexDiff<string, string> = (
   diff,
   context,
-  opts,
 ) => {
-  const serializer =
-    typeof diff.path === 'undefined' ? (id: string) => id : opts.serialize;
-  if (diff.kind === Kind.EQUAL) {
-    return [createCommonLine(serializer(diff.a as string), context)];
-  }
+  if (!diff.childDiffs) {
+    const serializer = typeof diff.path === 'undefined' ? noop : prettyFormat;
 
-  if (!diff.childDiffs)
+    if (diff.kind === Kind.EQUAL) {
+      return [createCommonLine(serializer(diff.a as string), context)];
+    }
+
+    if (diff.kind === Kind.INSERTED) {
+      return [createInsertedLine(serializer(diff.val), context)];
+    }
+
+    if (diff.kind === Kind.DELETED) {
+      return [createDeletedLine(serializer(diff.val), context)];
+    }
+
     return formatUpdated(
       serializer(diff.a) as string,
       serializer(diff.b) as string,
       context,
     );
+  }
 
   return diff.childDiffs.map((childDiff, i, arr) => {
-    let prefix = '';
-    let sufix = '';
+    const updatedContext = {...context, prefix: '', sufix: ''};
     if (typeof diff.path !== 'undefined') {
       if (i === 0) {
-        prefix = stringQuote;
+        const previousPrefix = context.prefix || '';
+        updatedContext.prefix = previousPrefix + stringQuote;
       }
+
       if (i === arr.length - 1) {
-        sufix = stringQuote;
+        const previousSuffix = context.sufix || '';
+        updatedContext.sufix = stringQuote + previousSuffix;
       }
     }
 
     if (childDiff.kind === Kind.INSERTED) {
-      return createInsertedLine(prefix + childDiff.val + sufix, context);
+      return createInsertedLine(childDiff.val as string, updatedContext);
     }
 
     if (childDiff.kind === Kind.DELETED) {
-      return createDeletedLine(prefix + childDiff.val, context);
+      return createDeletedLine(childDiff.val as string, updatedContext);
     }
 
-    const a = prefix + (childDiff.a as string) + sufix;
     if (childDiff.kind === Kind.EQUAL) {
-      return createCommonLine(a as string, context);
+      return createCommonLine(childDiff.a as string, updatedContext);
     }
 
     throw new Error(`Unknown diff result ${childDiff.kind}`);

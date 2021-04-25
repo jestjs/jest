@@ -72,7 +72,6 @@ export function getType(value: unknown): ValueType {
 
 export function isLeafType(a: unknown): boolean {
   return [
-    'string',
     'number',
     'null',
     'undefined',
