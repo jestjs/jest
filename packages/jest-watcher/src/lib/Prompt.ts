@@ -73,6 +73,12 @@ export default class Prompt {
         this._onSuccess(this._selection || this._value);
         this.abort();
         break;
+      case KEYS.CONTROL_U:
+        this._value = "";
+        this._offset = -1;
+        this._selection = null;
+        this._onChange();
+        break;
       case KEYS.ESCAPE:
         this._entering = false;
         this._onCancel(this._value);
