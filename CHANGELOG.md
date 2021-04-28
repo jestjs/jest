@@ -36,6 +36,7 @@
 - `[jest-transform]` [**BREAKING**] Do not export `ScriptTransformer` class, instead export the async function `createScriptTransformer` ([#11163](https://github.com/facebook/jest/pull/11163))
 - `[jest-transform]` Async code transformations ([#9889](https://github.com/facebook/jest/pull/9889))
 - `[jest-transform]` Support transpiled transformers ([#11193](https://github.com/facebook/jest/pull/11193))
+- `[jest-watcher]` Added support for clearing the line when `<C-u>` is pressed in a watch mode pattern prompt ([#11358](https://github.com/facebook/jest/pull/11358))
 - `[jest-worker]` Add support for custom task queues and adds a `PriorityQueue` implementation. ([#10921](https://github.com/facebook/jest/pull/10921))
 - `[jest-worker]` Add in-order scheduling policy to jest worker ([10902](https://github.com/facebook/jest/pull/10902))
 - `[pretty-format]` Better print for sparse arrays ([11326](https://github.com/facebook/jest/pull/11326))
