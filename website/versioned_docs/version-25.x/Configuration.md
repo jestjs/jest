@@ -18,9 +18,12 @@ Or through JavaScript:
 
 ```js
 // jest.config.js
-module.exports = {
+/** @type {import('@jest/types').Config.InitialOptions} */
+const config = {
   verbose: true,
 };
+
+module.exports = config;
 ```
 
 Please keep in mind that the resulting configuration must be JSON-serializable.

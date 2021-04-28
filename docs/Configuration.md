@@ -19,9 +19,12 @@ Or through JavaScript:
 ```js
 // jest.config.js
 // Sync object
-module.exports = {
+/** @type {import('@jest/types').Config.InitialOptions} */
+const config = {
   verbose: true,
 };
+
+module.exports = config;
 
 // Or async function
 module.exports = async () => {
