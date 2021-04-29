@@ -143,19 +143,22 @@ describe('jest-each', () => {
           ],
         ]);
         const testFunction = get(eachObject, keyPath);
-        testFunction('expected string: %s %d %s %s %d %j %s %j %d %d %#', noop);
+        testFunction(
+          'expected string: %% %%s %s %d %s %s %d %j %s %j %d %d %#',
+          noop,
+        );
 
         const globalMock = get(globalTestMocks, keyPath);
         expect(globalMock).toHaveBeenCalledTimes(2);
         expect(globalMock).toHaveBeenCalledWith(
-          `expected string: hello 1 null undefined 1.2 ${JSON.stringify({
+          `expected string: % %s hello 1 null undefined 1.2 ${JSON.stringify({
             foo: 'bar',
           })} () => {} [] Infinity NaN 0`,
           expectFunction,
           undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
-          `expected string: world 1 null undefined 1.2 ${JSON.stringify({
+          `expected string: % %s world 1 null undefined 1.2 ${JSON.stringify({
             baz: 'qux',
           })} () => {} [] Infinity NaN 1`,
           expectFunction,
