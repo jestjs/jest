@@ -19,6 +19,9 @@ const localeConfigs = {
   'es-ES': {
     label: 'Español',
   },
+  'fr': {
+    label: 'Français',
+  },
   'pt-BR': {
     label: 'Português (Brasil)',
   },
