@@ -77,7 +77,7 @@ Module that identifies the primitive type of any JavaScript value. Exports a fun
 ### Example
 
 ```javascript
-const getType = require('jest-get-type');
+const {getType} = require('jest-get-type');
 
 const array = [1, 2, 3];
 const nullValue = null;
