@@ -8,7 +8,7 @@
 
 import type {Global} from '@jest/types';
 import {isPrimitive} from 'jest-get-type';
-import pretty from 'pretty-format';
+import {format as pretty} from 'pretty-format';
 import type {EachTests} from '../bind';
 
 type Template = Record<string, unknown>;
