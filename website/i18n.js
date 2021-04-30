@@ -7,7 +7,7 @@
 
 // The top-30 locales on Crowdin are enabled
 // but we enable only a subset of those
-const locales = ['en', 'ja', 'es-ES', 'pt-BR', 'ro', 'ru', 'uk', 'zh-Hans'];
+const locales = ['en', 'ja', 'es-ES', 'fr', 'pt-BR', 'ro', 'ru', 'uk', 'zh-Hans'];
 
 const localeConfigs = {
   en: {
