@@ -6,6 +6,7 @@
  *
  */
 
+import {pathToFileURL} from 'url';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import sourcemapSupport = require('source-map-support');
@@ -105,10 +106,39 @@ async function runTestInternal(
 
   const cacheFS = new Map([[path, testSource]]);
   const transformer = await createScriptTransformer(config, cacheFS);
+  let TestEnvironment: typeof JestEnvironment;
+  try {
+    TestEnvironment = interopRequireDefault(
+      transformer.requireAndTranspileModule(testEnvironment),
+    ).default;
+  } catch (err) {
+    if (err.code === 'ERR_REQUIRE_ESM') {
+      try {
+        const configUrl = pathToFileURL(testEnvironment);
 
-  const TestEnvironment: typeof JestEnvironment = interopRequireDefault(
-    transformer.requireAndTranspileModule(testEnvironment),
-  ).default;
+        // node `import()` supports URL, but TypeScript doesn't know that
+        const importedConfig = await import(configUrl.href);
+
+        if (!importedConfig.default) {
+          throw new Error(
+            `Jest: Failed to load mjs config file ${testEnvironment} - did you use a default export?`,
+          );
+        }
+
+        TestEnvironment = importedConfig.default;
+      } catch (innerError) {
+        if (innerError.message === 'Not supported') {
+          throw new Error(
+            `Jest: Your version of Node does not support dynamic import - please enable it or use a .cjs file extension for file ${testEnvironment}`,
+          );
+        }
+
+        throw innerError;
+      }
+    } else {
+      throw err;
+    }
+  }
   const testFramework: TestFramework = interopRequireDefault(
     transformer.requireAndTranspileModule(
       process.env.JEST_JASMINE === '1' ? 'jest-jasmine2' : config.testRunner,
