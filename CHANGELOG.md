@@ -121,6 +121,7 @@
 - `[website]` Replace 'Github' with 'GitHub' ([#11279](https://github.com/facebook/jest/pull/11279))
 - `[website]` Remove a language code from the link to the Node.js website ([#11282](https://github.com/facebook/jest/pull/11282))
 - `[website]` Remove a duplicated word ([#11281](https://github.com/facebook/jest/pull/11281))
+- `[website]` Add french to website ([#11361](https://github.com/facebook/jest/pull/11361))
 
 ### Performance
 
