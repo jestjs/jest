@@ -89,6 +89,7 @@
 - `[pretty-format]` [**BREAKING**] Convert to ES Modules ([#10515](https://github.com/facebook/jest/pull/10515))
 - `[pretty-format]` Only call `hasAttribute` if it's a function ([#11000](https://github.com/facebook/jest/pull/11000))
 - `[pretty-format]` Handle jsdom attributes properly ([#11189](https://github.com/facebook/jest/pull/11189))
+- `[pretty-format]` Import pretty-format using named imports ([#11360](https://github.com/facebook/jest/pull/11360))
 
 ### Chore & Maintenance
 

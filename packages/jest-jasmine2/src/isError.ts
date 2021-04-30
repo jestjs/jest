@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import prettyFormat from 'pretty-format';
+import {format as prettyFormat} from 'pretty-format';
 
 export default function isError(
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

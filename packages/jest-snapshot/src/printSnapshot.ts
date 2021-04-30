@@ -34,7 +34,7 @@ import {
   getLabelPrinter,
   matcherHint,
 } from 'jest-matcher-utils';
-import prettyFormat from 'pretty-format';
+import {format as prettyFormat} from 'pretty-format';
 import {
   aBackground2,
   aBackground3,

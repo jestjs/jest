@@ -12,7 +12,7 @@ import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import type {Test} from 'jest-runner';
 import {interopRequireDefault} from 'jest-util';
-import prettyFormat from 'pretty-format';
+import {format as prettyFormat} from 'pretty-format';
 
 export default async ({
   allTests,
