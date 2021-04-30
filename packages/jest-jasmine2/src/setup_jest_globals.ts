@@ -89,12 +89,12 @@ const patchJasmine = () => {
   })((global.jasmine as Jasmine).Spec);
 };
 
-export default ({
+export default async ({
   config,
   globalConfig,
   localRequire,
   testPath,
-}: SetupOptions): SnapshotStateType => {
+}: SetupOptions): Promise<SnapshotStateType> => {
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
   config.snapshotSerializers
@@ -107,7 +107,7 @@ export default ({
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;
   const {prettierPath} = config;
-  const snapshotResolver = buildSnapshotResolver(config);
+  const snapshotResolver = await buildSnapshotResolver(config, localRequire);
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,

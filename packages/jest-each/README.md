@@ -338,6 +338,7 @@ each`
 
 - name: `String` the title of the `test`, use `$variable` in the name string to inject test values into the test title from the tagged template expressions
   - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
+  - You can use `$#` to inject the index of the table row.
 - testFn: `Function` the test logic, this is the function that will receive the parameters of each row as function arguments
 
 #### `each[tagged template].describe(name, suiteFn)`

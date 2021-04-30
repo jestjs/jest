@@ -16,12 +16,14 @@ describe('defaults', () => {
     // snapshotResolver: null,
   });
 
-  beforeEach(() => {
-    snapshotResolver = buildSnapshotResolver(projectConfig);
+  beforeEach(async () => {
+    snapshotResolver = await buildSnapshotResolver(projectConfig);
   });
 
-  it('returns cached object if called multiple times', () => {
-    expect(buildSnapshotResolver(projectConfig)).toBe(snapshotResolver);
+  it('returns cached object if called multiple times', async () => {
+    await expect(buildSnapshotResolver(projectConfig)).resolves.toBe(
+      snapshotResolver,
+    );
   });
 
   it('resolveSnapshotPath()', () => {
@@ -49,12 +51,14 @@ describe('custom resolver in project config', () => {
     snapshotResolver: customSnapshotResolverFile,
   });
 
-  beforeEach(() => {
-    snapshotResolver = buildSnapshotResolver(projectConfig);
+  beforeEach(async () => {
+    snapshotResolver = await buildSnapshotResolver(projectConfig);
   });
 
-  it('returns cached object if called multiple times', () => {
-    expect(buildSnapshotResolver(projectConfig)).toBe(snapshotResolver);
+  it('returns cached object if called multiple times', async () => {
+    await expect(buildSnapshotResolver(projectConfig)).resolves.toBe(
+      snapshotResolver,
+    );
   });
 
   it('resolveSnapshotPath()', () => {
@@ -87,39 +91,39 @@ describe('malformed custom resolver in project config', () => {
     });
   };
 
-  it('missing resolveSnapshotPath throws ', () => {
+  it('missing resolveSnapshotPath throws ', async () => {
     const projectConfig = newProjectConfig(
       'customSnapshotResolver-missing-resolveSnapshotPath.js',
     );
-    expect(() => {
-      buildSnapshotResolver(projectConfig);
-    }).toThrowErrorMatchingSnapshot();
+    await expect(
+      buildSnapshotResolver(projectConfig),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  it('missing resolveTestPath throws ', () => {
+  it('missing resolveTestPath throws ', async () => {
     const projectConfig = newProjectConfig(
       'customSnapshotResolver-missing-resolveTestPath.js',
     );
-    expect(() => {
-      buildSnapshotResolver(projectConfig);
-    }).toThrowErrorMatchingSnapshot();
+    await expect(
+      buildSnapshotResolver(projectConfig),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  it('missing testPathForConsistencyCheck throws ', () => {
+  it('missing testPathForConsistencyCheck throws ', async () => {
     const projectConfig = newProjectConfig(
       'customSnapshotResolver-missing-test-path-for-consistency-check.js',
     );
-    expect(() => {
-      buildSnapshotResolver(projectConfig);
-    }).toThrowErrorMatchingSnapshot();
+    await expect(
+      buildSnapshotResolver(projectConfig),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 
-  it('inconsistent functions throws ', () => {
+  it('inconsistent functions throws ', async () => {
     const projectConfig = newProjectConfig(
       'customSnapshotResolver-inconsistent-fns.js',
     );
-    expect(() => {
-      buildSnapshotResolver(projectConfig);
-    }).toThrowErrorMatchingSnapshot();
+    await expect(
+      buildSnapshotResolver(projectConfig),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 });

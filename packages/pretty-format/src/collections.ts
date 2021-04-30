@@ -142,9 +142,11 @@ export function printListItems(
     const indentationNext = indentation + config.indent;
 
     for (let i = 0; i < list.length; i++) {
-      result +=
-        indentationNext +
-        printer(list[i], config, indentationNext, depth, refs);
+      result += indentationNext;
+
+      if (i in list) {
+        result += printer(list[i], config, indentationNext, depth, refs);
+      }
 
       if (i < list.length - 1) {
         result += ',' + config.spacingInner;
