@@ -7,5 +7,5 @@
 'use strict';
 
 test('dummy', () => {
-  expect(global.someVar).toBe(1);
+  expect(global.someVar).toBe(42);
 });

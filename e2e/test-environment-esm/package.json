@@ -1,6 +1,7 @@
 {
   "type": "module",
   "jest": {
-    "testEnvironment": "<rootDir>/EnvESM.js"
+    "testEnvironment": "<rootDir>/EnvESM.js",
+    "transform": {}
   }
 }
