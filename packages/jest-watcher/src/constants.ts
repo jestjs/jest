@@ -15,6 +15,7 @@ export const KEYS = {
   BACKSPACE: Buffer.from(isWindows ? '08' : '7f', 'hex').toString(),
   CONTROL_C: '\u0003',
   CONTROL_D: '\u0004',
+  CONTROL_U: '\u0015',
   ENTER: '\r',
   ESCAPE: '\u001b',
 };
