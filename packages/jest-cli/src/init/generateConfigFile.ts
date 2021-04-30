@@ -47,6 +47,7 @@ const generateConfigFile = (
 
   if (coverage) {
     Object.assign(overrides, {
+      collectCoverage: true,
       coverageDirectory: 'coverage',
     });
   }

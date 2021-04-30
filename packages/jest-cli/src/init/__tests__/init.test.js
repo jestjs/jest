@@ -92,7 +92,10 @@ describe('init', () => {
         const writtenJestConfig = fs.writeFileSync.mock.calls[0][1];
         const evaluatedConfig = eval(writtenJestConfig);
 
-        expect(evaluatedConfig).toEqual({coverageDirectory: 'coverage'});
+        expect(evaluatedConfig).toEqual({
+          collectCoverage: true,
+          coverageDirectory: 'coverage',
+        });
       });
 
       it('should create configuration for {coverageProvider: "babel"}', async () => {
