@@ -137,7 +137,7 @@ export default async function jasmine2(
     });
   }
 
-  const snapshotState: SnapshotStateType = runtime
+  const snapshotState: SnapshotStateType = await runtime
     .requireInternalModule<typeof import('./setup_jest_globals')>(
       path.resolve(__dirname, './setup_jest_globals.js'),
     )

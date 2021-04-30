@@ -19,9 +19,12 @@ Or through JavaScript:
 ```js
 // jest.config.js
 // Sync object
-module.exports = {
+/** @type {import('@jest/types').Config.InitialOptions} */
+const config = {
   verbose: true,
 };
+
+module.exports = config;
 
 // Or async function
 module.exports = async () => {
@@ -159,7 +162,7 @@ Indicates whether the coverage information should be collected while executing t
 
 Default: `undefined`
 
-An array of [glob patterns](https://github.com/jonschlinkert/micromatch) indicating a set of files for which coverage information should be collected. If a file matches the specified glob pattern, coverage information will be collected for it even if no tests exist for this file and it's never required in the test suite.
+An array of [glob patterns](https://github.com/micromatch/micromatch) indicating a set of files for which coverage information should be collected. If a file matches the specified glob pattern, coverage information will be collected for it even if no tests exist for this file and it's never required in the test suite.
 
 Example:
 
@@ -174,6 +177,8 @@ Example:
 ```
 
 This will collect coverage information for all the files inside the project's `rootDir`, except the ones that match `**/node_modules/**` or `**/vendor/**`.
+
+_Note: Each glob pattern is applied in the order they are specified in the config. (For example `["!**/__tests__/**", "**/*.js"]` will not exclude `__tests__` because the negation is overwritten with the second pattern. In order to make the negated glob work in this example it has to come after `**/*.js`.)_
 
 _Note: This option requires `collectCoverage` to be set to true or Jest to be invoked with `--coverage`._
 
@@ -191,7 +196,7 @@ Lines        : Unknown% ( 0/0 )
 Jest: Coverage data for global was not found.
 ```
 
-Most likely your glob patterns are not matching any files. Refer to the [micromatch](https://github.com/jonschlinkert/micromatch) documentation to ensure your globs are compatible.
+Most likely your glob patterns are not matching any files. Refer to the [micromatch](https://github.com/micromatch/micromatch) documentation to ensure your globs are compatible.
 
 </details>
 
@@ -1113,9 +1118,11 @@ _Note: This does not change the exit code in the case of Jest errors (e.g. inval
 
 The glob patterns Jest uses to detect test files. By default it looks for `.js`, `.jsx`, `.ts` and `.tsx` files inside of `__tests__` folders, as well as any files with a suffix of `.test` or `.spec` (e.g. `Component.test.js` or `Component.spec.js`). It will also find files called `test.js` or `spec.js`.
 
-See the [micromatch](https://github.com/jonschlinkert/micromatch) package for details of the patterns you can specify.
+See the [micromatch](https://github.com/micromatch/micromatch) package for details of the patterns you can specify.
 
 See also [`testRegex` [string | array&lt;string&gt;]](#testregex-string--arraystring), but note that you cannot specify both options.
+
+_Note: Each glob pattern is applied in the order they are specified in the config. (For example `["!**/__fixtures__/**", "**/__tests__/**/*.js"]` will not exclude `__fixtures__` because the negation is overwritten with the second pattern. In order to make the negated glob work in this example it has to come after `**/__tests__/**/*.js`.)_
 
 ### `testPathIgnorePatterns` \[array&lt;string&gt;]
 

@@ -22,9 +22,9 @@ export default (
 ): EachTests => {
   const table = convertRowToTable(row, headings);
   const templates = convertTableToTemplates(table, headings);
-  return templates.map(template => ({
+  return templates.map((template, index) => ({
     arguments: [template],
-    title: interpolate(title, template),
+    title: interpolate(title, template, index),
   }));
 };
 
@@ -47,10 +47,11 @@ const convertTableToTemplates = (
     ),
   );
 
-const interpolate = (title: string, template: Template) =>
+const interpolate = (title: string, template: Template, index: number) =>
   Object.keys(template)
     .reduce(getMatchingKeyPaths(title), []) // aka flatMap
-    .reduce(replaceKeyPathWithValue(template), title);
+    .reduce(replaceKeyPathWithValue(template), title)
+    .replace('$#', '' + index);
 
 const getMatchingKeyPaths = (title: string) => (
   matches: Headings,

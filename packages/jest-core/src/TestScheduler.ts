@@ -157,12 +157,22 @@ export default class TestScheduler {
       );
     };
 
-    const updateSnapshotState = () => {
-      contexts.forEach(context => {
+    const updateSnapshotState = async () => {
+      const contextsWithSnapshotResolvers = await Promise.all(
+        Array.from(contexts).map(
+          async context =>
+            [
+              context,
+              await snapshot.buildSnapshotResolver(context.config),
+            ] as const,
+        ),
+      );
+
+      contextsWithSnapshotResolvers.forEach(([context, snapshotResolver]) => {
         const status = snapshot.cleanup(
           context.hasteFS,
           this._globalConfig.updateSnapshot,
-          snapshot.buildSnapshotResolver(context.config),
+          snapshotResolver,
           context.config.testPathIgnorePatterns,
         );
 
@@ -275,7 +285,7 @@ export default class TestScheduler {
       }
     }
 
-    updateSnapshotState();
+    await updateSnapshotState();
     aggregatedResults.wasInterrupted = watcher.isInterrupted();
     await this._dispatcher.onRunComplete(contexts, aggregatedResults);
 
