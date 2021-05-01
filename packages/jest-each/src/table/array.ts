@@ -51,8 +51,11 @@ const formatTitle = (
     .replace(new RegExp(JEST_EACH_PLACEHOLDER_ESCAPE, 'g'), PLACEHOLDER_PREFIX);
 
 const normalisePlaceholderValue = (value: unknown) =>
-  typeof value === 'string' && SUPPORTED_PLACEHOLDERS.test(value)
-    ? value.replace(PLACEHOLDER_PREFIX, JEST_EACH_PLACEHOLDER_ESCAPE)
+  typeof value === 'string'
+    ? value.replace(
+        new RegExp(PLACEHOLDER_PREFIX, 'g'),
+        JEST_EACH_PLACEHOLDER_ESCAPE,
+      )
     : value;
 
 const getMatchingPlaceholders = (title: string) =>
