@@ -17,6 +17,7 @@ const DIR = path.join(tmpdir(), 'jest-global-teardown');
 const project1DIR = path.join(tmpdir(), 'jest-global-teardown-project-1');
 const project2DIR = path.join(tmpdir(), 'jest-global-teardown-project-2');
 const e2eDir = path.resolve(__dirname, '../global-teardown');
+const esmTmpDir = path.join(tmpdir(), 'jest-global-teardown-esm');
 
 beforeAll(() => {
   runYarnInstall(e2eDir);
@@ -26,11 +27,13 @@ beforeEach(() => {
   cleanup(DIR);
   cleanup(project1DIR);
   cleanup(project2DIR);
+  cleanup(esmTmpDir);
 });
 afterAll(() => {
   cleanup(DIR);
   cleanup(project1DIR);
   cleanup(project2DIR);
+  cleanup(esmTmpDir);
 });
 
 test('globalTeardown is triggered once after all test suites', () => {
