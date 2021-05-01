@@ -143,19 +143,22 @@ describe('jest-each', () => {
           ],
         ]);
         const testFunction = get(eachObject, keyPath);
-        testFunction('expected string: %s %d %s %s %d %j %s %j %d %d %#', noop);
+        testFunction(
+          'expected string: %% %%s %s %d %s %s %d %j %s %j %d %d %#',
+          noop,
+        );
 
         const globalMock = get(globalTestMocks, keyPath);
         expect(globalMock).toHaveBeenCalledTimes(2);
         expect(globalMock).toHaveBeenCalledWith(
-          `expected string: hello 1 null undefined 1.2 ${JSON.stringify({
+          `expected string: % %s hello 1 null undefined 1.2 ${JSON.stringify({
             foo: 'bar',
           })} () => {} [] Infinity NaN 0`,
           expectFunction,
           undefined,
         );
         expect(globalMock).toHaveBeenCalledWith(
-          `expected string: world 1 null undefined 1.2 ${JSON.stringify({
+          `expected string: % %s world 1 null undefined 1.2 ${JSON.stringify({
             baz: 'qux',
           })} () => {} [] Infinity NaN 1`,
           expectFunction,
@@ -400,12 +403,13 @@ describe('jest-each', () => {
         const eachObject = each.withGlobal(globalTestMocks)([
           ['hello', '%d', 10, '%s', {foo: 'bar'}],
           ['world', '%i', 1991, '%p', {foo: 'bar'}],
+          ['joe', '%d %d', 10, '%%s', {foo: 'bar'}],
         ]);
         const testFunction = get(eachObject, keyPath);
         testFunction('expected string: %s %s %d %s %p', () => {});
 
         const globalMock = get(globalTestMocks, keyPath);
-        expect(globalMock).toHaveBeenCalledTimes(2);
+        expect(globalMock).toHaveBeenCalledTimes(3);
         expect(globalMock).toHaveBeenCalledWith(
           'expected string: hello %d 10 %s {"foo": "bar"}',
           expectFunction,
@@ -413,6 +417,11 @@ describe('jest-each', () => {
         );
         expect(globalMock).toHaveBeenCalledWith(
           'expected string: world %i 1991 %p {"foo": "bar"}',
+          expectFunction,
+          undefined,
+        );
+        expect(globalMock).toHaveBeenCalledWith(
+          'expected string: joe %d %d 10 %%s {"foo": "bar"}',
           expectFunction,
           undefined,
         );
