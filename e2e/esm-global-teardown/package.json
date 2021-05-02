@@ -1,7 +1,0 @@
-{
-  "type": "module",
-  "jest": {
-    "testEnvironment": "node",
-    "globalTeardown": "<rootDir>/teardown.mjs"
-  }
-}
