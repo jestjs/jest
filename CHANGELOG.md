@@ -19,7 +19,6 @@
 - `[jest-core]` Add support for `globalSetup` and `globalTeardown` written in ESM ([#11267](https://github.com/facebook/jest/pull/11267))
 - `[jest-core]` Add support for `watchPlugins` written in ESM ([#11315](https://github.com/facebook/jest/pull/11315))
 - `[jest-core]` Add support for `runner` written in ESM ([#11232](https://github.com/facebook/jest/pull/11232))
-- `[jest-core]` Handle `globalSetup` and `globalTeardown` ESM support by requireAndTranspileModule ([#11232](https://github.com/facebook/jest/pull/11232))
 - `[jest-environment-node]` Add AbortController to globals ([#11182](https://github.com/facebook/jest/pull/11182))
 - `[@jest/fake-timers]` Update to `@sinonjs/fake-timers` to v7 ([#11198](https://github.com/facebook/jest/pull/11198))
 - `[jest-haste-map]` Handle injected scm clocks ([#10966](https://github.com/facebook/jest/pull/10966))
