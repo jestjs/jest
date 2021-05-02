@@ -50,6 +50,11 @@ export interface ReducedTransformOptions extends CallerTransformOptions {
   instrument: boolean;
 }
 
+export interface RequireAndTranspileModuleOptions
+  extends ReducedTransformOptions {
+  applyInteropRequireDefault: boolean;
+}
+
 export type StringMap = Map<string, string>;
 
 export interface TransformOptions<OptionType = unknown>

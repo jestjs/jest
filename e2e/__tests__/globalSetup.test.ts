@@ -27,6 +27,7 @@ const customTransformDIR = path.join(
 const nodeModulesDIR = path.join(tmpdir(), 'jest-global-setup-node-modules');
 const rejectionDir = path.join(tmpdir(), 'jest-global-setup-rejection');
 const e2eDir = path.resolve(__dirname, '../global-setup');
+const esmTmpDir = path.join(tmpdir(), 'jest-global-setup-esm');
 
 beforeAll(() => {
   runYarnInstall(e2eDir);
@@ -39,6 +40,7 @@ beforeEach(() => {
   cleanup(customTransformDIR);
   cleanup(nodeModulesDIR);
   cleanup(rejectionDir);
+  cleanup(esmTmpDir);
 });
 
 afterAll(() => {
@@ -48,6 +50,7 @@ afterAll(() => {
   cleanup(customTransformDIR);
   cleanup(nodeModulesDIR);
   cleanup(rejectionDir);
+  cleanup(esmTmpDir);
 });
 
 test('globalSetup is triggered once before all test suites', () => {
