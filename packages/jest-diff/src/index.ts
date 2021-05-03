@@ -60,7 +60,7 @@ const FALLBACK_FORMAT_OPTIONS_0 = {...FALLBACK_FORMAT_OPTIONS, indent: 0};
 // Generate a string that will highlight the difference between two values
 // with green and red. (similar to how github does code diffing)
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-function diff(a: any, b: any, options?: DiffOptions): string | null {
+export function diff(a: any, b: any, options?: DiffOptions): string | null {
   if (Object.is(a, b)) {
     return getCommonMessage(NO_DIFF_MESSAGE, options);
   }
@@ -190,5 +190,3 @@ function compareObjects(
 
   return difference;
 }
-
-export default diff;

@@ -213,7 +213,9 @@ describe('ensureNoExpected()', () => {
   });
 });
 
-jest.mock('jest-diff', () => () => 'diff output');
+jest.mock('jest-diff', () => ({
+  diff: () => 'diff output',
+}));
 describe('diff', () => {
   test('forwards to jest-diff', () => {
     [

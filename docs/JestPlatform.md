@@ -32,7 +32,7 @@ Tool for visualizing changes in data. Exports a function that compares two value
 ### Example
 
 ```javascript
-const diff = require('jest-diff').default;
+const {diff} = require('jest-diff');
 
 const a = {a: {b: {c: 5}}};
 const b = {a: {b: {c: 6}}};

@@ -156,7 +156,7 @@ There are a number of helpful tools exposed on `this.utils` primarily consisting
 The most useful ones are `matcherHint`, `printExpected` and `printReceived` to format the error messages nicely. For example, take a look at the implementation for the `toBe` matcher:
 
 ```js
-const diff = require('jest-diff');
+const {diff} = require('jest-diff');
 expect.extend({
   toBe(received, expected) {
     const options = {
