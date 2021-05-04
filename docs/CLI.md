@@ -180,6 +180,10 @@ Make calling deprecated APIs throw helpful error messages. Useful for easing the
 
 Alias: `-e`. Use this flag to show full diffs and errors instead of a patch.
 
+### `--filter=<file>`
+
+Path to a module exporting a filtering function. This method receives a list of tests which can be manipulated to exclude tests from running. Especially useful when used in conjunction with a testing infrastructure to filter known broken.
+
 ### `--findRelatedTests <spaceSeparatedListOfSourceFiles>`
 
 Find and run the tests that cover a space separated list of source files that were passed in as arguments. Useful for pre-commit hook integration to run the minimal amount of tests necessary. Can be used together with `--coverage` to include a test coverage for the source files, no duplicate `--collectCoverageFrom` arguments needed.
