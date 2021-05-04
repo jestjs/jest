@@ -50,7 +50,7 @@ FAIL __tests__/jasmine.addMatchers.test.js
          |         ^
       10 |   theSpanishInquisition: () => ({
       11 |     compare: (actual, expected) => ({
-      12 |       message: 'Nobdy expects the Spanish Inquisition!',
+      12 |       message: () => 'Nobdy expects the Spanish Inquisition!',
 
       at Object.addMatchers (__tests__/jasmine.addMatchers.test.js:9:9)
 `;

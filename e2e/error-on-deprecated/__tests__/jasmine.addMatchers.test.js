@@ -9,7 +9,7 @@
 jasmine.addMatchers({
   theSpanishInquisition: () => ({
     compare: (actual, expected) => ({
-      message: 'Nobdy expects the Spanish Inquisition!',
+      message: () => 'Nobdy expects the Spanish Inquisition!',
       pass: false,
     }),
   }),
