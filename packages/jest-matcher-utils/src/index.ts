@@ -8,12 +8,13 @@
 /* eslint-disable local/ban-types-eventually */
 
 import chalk = require('chalk');
-import diffDefault, {
+import {
   DIFF_DELETE,
   DIFF_EQUAL,
   DIFF_INSERT,
   Diff,
   DiffOptions as ImportDiffOptions,
+  diff as diffDefault,
   diffStringsRaw,
   diffStringsUnified,
 } from 'jest-diff';
