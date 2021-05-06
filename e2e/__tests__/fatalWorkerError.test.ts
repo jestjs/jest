@@ -41,5 +41,5 @@ test('fails a test that terminates the worker with a fatal error', () => {
   expect(exitCode).not.toBe(0);
   expect(numberOfTestsPassed).toBe(Object.keys(testFiles).length - 1);
   expect(stderr).toContain('FAIL __tests__/fatalWorkerError.test.js');
-  expect(stderr).toContain('Call retries were exceeded');
+  expect(stderr).toContain('Jest worker encountered 4 child process exceptions, exceeding retry limit');
 });
