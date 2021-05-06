@@ -134,7 +134,7 @@ export default class ChildProcessWorker implements WorkerInterface {
     // coming from the child. This avoids code duplication related with cleaning
     // the queue, and scheduling the next call.
     if (this._retries > this._options.maxRetries) {
-      const error = new Error('Call retries were exceeded');
+      const error = new Error(`Jest worker encountered ${this._retries} child process exceptions, exceeding retry limit`);
 
       this._onMessage([
         PARENT_MESSAGE_CLIENT_ERROR,
