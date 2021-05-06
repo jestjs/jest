@@ -6,6 +6,7 @@
  *
  */
 
+import http from 'http';
 import {PerformanceObserver} from 'perf_hooks';
 import collectHandles from '../collectHandles';
 
@@ -32,5 +33,21 @@ describe('collectHandles', () => {
 
     expect(openHandles).toHaveLength(0);
     obs.disconnect();
+  });
+
+  it('should collect handles opened in test functions with `done` callbacks', done => {
+    const handleCollector = collectHandles();
+    const server = http.createServer((_, response) => response.end('ok'));
+    server.listen(0, () => {
+      // Collect results while server is still open.
+      const openHandles = handleCollector();
+
+      server.close(() => {
+        expect(openHandles).toContainEqual(
+          expect.objectContaining({message: 'TCPSERVERWRAP'}),
+        );
+        done();
+      });
+    });
   });
 });

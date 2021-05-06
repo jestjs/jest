@@ -123,3 +123,25 @@ it('prints out info about open handlers from inside tests', async () => {
 
   expect(wrap(textAfterTest)).toMatchSnapshot();
 });
+
+it('prints out info about open handlers from tests with a `done` callback', async () => {
+  const {stderr} = runJest('detect-open-handles', [
+    'in-done-function',
+    '--detectOpenHandles',
+    '--forceExit',
+  ]);
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(textAfterTest).toContain('TCPSERVERWRAP');
+});
+
+it('prints out info about open handlers from lifecycle functions with a `done` callback', async () => {
+  const {stderr} = runJest('detect-open-handles', [
+    'in-done-lifecycle',
+    '--detectOpenHandles',
+    '--forceExit',
+  ]);
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(textAfterTest).toContain('TCPSERVERWRAP');
+});
