@@ -1296,7 +1296,7 @@ This option sets the URL for the jsdom environment. It is reflected in propertie
 
 Default: `real`
 
-Setting this value to `fake` or `modern` enables fake timers for all tests by default. Fake timers are useful when a piece of code sets a long timeout that we don't want to wait for in a test. You can learn more about fake timers [here](https://jestjs.io/docs/jest-object#jestusefaketimersimplementation-modern--legacy).
+Setting this value to `fake` or `modern` enables fake timers for all tests by default. Fake timers are useful when a piece of code sets a long timeout that we don't want to wait for in a test. You can learn more about fake timers [here](JestObjectAPI.md#jestusefaketimersimplementation-modern--legacy).
 
 If the value is `legacy`, the old implementation will be used as implementation instead of one backed by [`@sinonjs/fake-timers`](https://github.com/sinonjs/fake-timers).
 
