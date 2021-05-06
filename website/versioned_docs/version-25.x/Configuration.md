@@ -1181,7 +1181,7 @@ This option sets the URL for the jsdom environment. It is reflected in propertie
 
 Default: `real`
 
-Setting this value to `legacy` or `fake` allows the use of fake timers for functions such as `setTimeout`. Fake timers are useful when a piece of code sets a long timeout that we don't want to wait for in a test.
+Setting this value to `legacy` or `fake` enables fake timers for all tests by default. Fake timers are useful when a piece of code sets a long timeout that we don't want to wait for in a test. You can learn more about fake timers [here](JestObjectAPI.md#jestusefaketimers).
 
 ### `transform` \[object\&lt;string, pathToTransformer | \[pathToTransformer, object]&gt;]
 

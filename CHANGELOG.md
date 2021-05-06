@@ -109,6 +109,7 @@
 - `[*]` [**BREAKING**] Remove deprecated `mapCoverage` ([#9968](https://github.com/facebook/jest/pull/9968))
 - `[babel-jest]` [**BREAKING**] Migrate to ESM ([#11193](https://github.com/facebook/jest/pull/11193))
 - `[docs]` Correct example using `browser-resolve` ([#11140](https://github.com/facebook/jest/pull/11140))
+- `[docs]` Clarify `timers` configuration property ([#11376](https://github.com/facebook/jest/pull/11376))
 - `[jest-config]` [**BREAKING**] Remove `enabledTestsMap` config, use `filter` instead ([#10787](https://github.com/facebook/jest/pull/10787))
 - `[jest-console]` [**BREAKING**] Move `root` into `config` and take `GlobalConfig` as mandatory parameter for `getConsoleOutput` ([#10126](https://github.com/facebook/jest/pull/10126))
 - `[jest-console]` Export LogEntry ([#11017](https://github.com/facebook/jest/pull/11017))
