@@ -228,7 +228,7 @@ FAIL __tests__/duringTests.test.js
       45 |
       46 | test('done(non-error)', done => {
 
-      at __tests__/duringTests.test.js:43:8
+      at Object.<anonymous> (__tests__/duringTests.test.js:43:8)
 
   ● done(non-error)
 
@@ -249,7 +249,7 @@ FAIL __tests__/duringTests.test.js
       49 |
       50 | test('returned promise rejection', () => Promise.reject(deepObject));
 
-      at done (__tests__/duringTests.test.js:47:3)
+      at Object.done (__tests__/duringTests.test.js:47:3)
 
   ● returned promise rejection
 

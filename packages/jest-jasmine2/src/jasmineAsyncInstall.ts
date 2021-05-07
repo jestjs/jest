@@ -52,7 +52,11 @@ function promisifyLifeCycleFunction(
     if (hasDoneCallback) {
       // Give the function a name so it can be detected in call stacks, but
       // otherwise Jasmine will handle it.
-      const asyncJestLifecycleWithCallback = (done: DoneFn) => fn(done);
+      // @ts-expect-error: Support possible extra args at runtime
+      const asyncJestLifecycleWithCallback = function (this: any, ...args) {
+        // @ts-expect-error: Support possible extra args at runtime
+        return fn.apply(this, args);
+      };
       return originalFn.call(env, asyncJestLifecycleWithCallback, timeout);
     }
 
@@ -119,7 +123,11 @@ function promisifyIt(
     if (hasDoneCallback) {
       // Give the function a name so it can be detected in call stacks, but
       // otherwise Jasmine will handle it.
-      const asyncJestTestWithCallback = (done: DoneFn) => fn(done);
+      // @ts-expect-error: Support possible extra args at runtime
+      const asyncJestTestWithCallback = function (this: any, ...args) {
+        // @ts-expect-error: Support possible extra args at runtime
+        return fn.apply(this, args);
+      };
       return originalFn.call(env, specName, asyncJestTestWithCallback, timeout);
     }
 
