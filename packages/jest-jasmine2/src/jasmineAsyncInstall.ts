@@ -42,9 +42,12 @@ function promisifyLifeCycleFunction(
     if (!fn) {
       // @ts-expect-error: missing fn arg is handled by originalFn
       return originalFn.call(env);
+    } else if (typeof fn !== 'function') {
+      // Pass non-functions to Jest, which throws a nice error.
+      return originalFn.call(env, fn, timeout);
     }
 
-    const hasDoneCallback = typeof fn === 'function' && fn.length > 0;
+    const hasDoneCallback = fn.length > 0;
 
     if (hasDoneCallback) {
       // Give the function a name so it can be detected in call stacks, but
@@ -106,6 +109,9 @@ function promisifyIt(
       const spec = originalFn.call(env, specName);
       spec.pend('not implemented');
       return spec;
+    } else if (typeof fn !== 'function') {
+      // Pass non-functions to Jest, which throws a nice error.
+      return originalFn.call(env, specName, fn, timeout);
     }
 
     const hasDoneCallback = fn.length > 0;
