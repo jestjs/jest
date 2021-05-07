@@ -134,6 +134,8 @@ it('renders correctly', () => {
 
 That's all there is to it! You can even update the snapshots with `--updateSnapshot` or using the `u` key in `--watch` mode.
 
+By default, Jest uses Prettier to format inline snapshots. To disable this, set `prettierPath: null` in the config.
+
 ### Property Matchers
 
 Often there are fields in the object you want to snapshot which are generated (like IDs and Dates). If you try to snapshot these objects, they will force the snapshot to fail on every run:
