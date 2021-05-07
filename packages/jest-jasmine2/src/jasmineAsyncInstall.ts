@@ -47,8 +47,10 @@ function promisifyLifeCycleFunction(
     const hasDoneCallback = typeof fn === 'function' && fn.length > 0;
 
     if (hasDoneCallback) {
-      // Jasmine will handle it
-      return originalFn.call(env, fn, timeout);
+      // Give the function a name so it can be detected in call stacks, but
+      // otherwise Jasmine will handle it.
+      const asyncJestLifecycleWithCallback = (done: DoneFn) => fn(done);
+      return originalFn.call(env, asyncJestLifecycleWithCallback, timeout);
     }
 
     const extraError = new Error();
@@ -109,7 +111,10 @@ function promisifyIt(
     const hasDoneCallback = fn.length > 0;
 
     if (hasDoneCallback) {
-      return originalFn.call(env, specName, fn, timeout);
+      // Give the function a name so it can be detected in call stacks, but
+      // otherwise Jasmine will handle it.
+      const asyncJestTestWithCallback = (done: DoneFn) => fn(done);
+      return originalFn.call(env, specName, asyncJestTestWithCallback, timeout);
     }
 
     const extraError = new Error();
