@@ -115,7 +115,9 @@ function promisifyIt(
       const spec = originalFn.call(env, specName);
       spec.pend('not implemented');
       return spec;
-    } else if (typeof fn !== 'function') {
+    }
+
+    if (typeof fn !== 'function') {
       // Pass non-functions to Jest, which throws a nice error.
       return originalFn.call(env, specName, fn, timeout);
     }
