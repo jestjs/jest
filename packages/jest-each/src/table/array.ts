@@ -10,6 +10,8 @@ import * as util from 'util';
 import type {Global} from '@jest/types';
 import {format as pretty} from 'pretty-format';
 import type {EachTests} from '../bind';
+import type {Templates} from './interpolation';
+import {interpolateVariables} from './interpolation';
 
 const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp]/g;
 const PRETTY_PLACEHOLDER = '%p';
@@ -18,11 +20,29 @@ const PLACEHOLDER_PREFIX = '%';
 const ESCAPED_PLACEHOLDER_PREFIX = /%%/g;
 const JEST_EACH_PLACEHOLDER_ESCAPE = '@@__JEST_EACH_PLACEHOLDER_ESCAPE__@@';
 
-export default (title: string, arrayTable: Global.ArrayTable): EachTests =>
-  normaliseTable(arrayTable).map((row, index) => ({
+export default (title: string, arrayTable: Global.ArrayTable): EachTests => {
+  if (isTemplates(title, arrayTable)) {
+    return arrayTable.map((template, index) => ({
+      arguments: [template],
+      title: interpolateVariables(title, template, index).replace(
+        ESCAPED_PLACEHOLDER_PREFIX,
+        PLACEHOLDER_PREFIX,
+      ),
+    }));
+  }
+  return normaliseTable(arrayTable).map((row, index) => ({
     arguments: row,
     title: formatTitle(title, row, index),
   }));
+};
+
+const isTemplates = (
+  title: string,
+  arrayTable: Global.ArrayTable,
+): arrayTable is Templates =>
+  !SUPPORTED_PLACEHOLDERS.test(interpolateEscapedPlaceholders(title)) &&
+  !isTable(arrayTable) &&
+  arrayTable.every(col => col != null && typeof col === 'object');
 
 const normaliseTable = (table: Global.ArrayTable): Global.Table =>
   isTable(table) ? table : table.map(colToRow);
