@@ -42,7 +42,9 @@ function promisifyLifeCycleFunction(
     if (!fn) {
       // @ts-expect-error: missing fn arg is handled by originalFn
       return originalFn.call(env);
-    } else if (typeof fn !== 'function') {
+    }
+
+    if (typeof fn !== 'function') {
       // Pass non-functions to Jest, which throws a nice error.
       return originalFn.call(env, fn, timeout);
     }
