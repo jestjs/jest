@@ -54,8 +54,10 @@ function promisifyLifeCycleFunction(
     if (hasDoneCallback) {
       // Give the function a name so it can be detected in call stacks, but
       // otherwise Jasmine will handle it.
-      // @ts-expect-error: Support possible extra args at runtime
-      const asyncJestLifecycleWithCallback = function (this: any, ...args) {
+      const asyncJestLifecycleWithCallback = function (
+        this: Global.TestContext,
+        ...args: Array<any>
+      ) {
         // @ts-expect-error: Support possible extra args at runtime
         return fn.apply(this, args);
       };
@@ -127,8 +129,10 @@ function promisifyIt(
     if (hasDoneCallback) {
       // Give the function a name so it can be detected in call stacks, but
       // otherwise Jasmine will handle it.
-      // @ts-expect-error: Support possible extra args at runtime
-      const asyncJestTestWithCallback = function (this: any, ...args) {
+      const asyncJestTestWithCallback = function (
+        this: Global.TestContext,
+        ...args: Array<any>
+      ) {
         // @ts-expect-error: Support possible extra args at runtime
         return fn.apply(this, args);
       };
