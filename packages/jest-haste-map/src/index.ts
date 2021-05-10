@@ -238,7 +238,8 @@ export default class HasteMap extends EventEmitter {
 
   static create(options: Options): HasteMap {
     if (options.hasteMapModulePath) {
-      return require(options.hasteMapModulePath);
+      const CustomHasteMap = require(options.hasteMapModulePath);
+      return new CustomHasteMap(options);
     }
     return new HasteMap(options);
   }

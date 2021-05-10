@@ -9,7 +9,7 @@
 import exit = require('exit');
 import type {SerializableError, TestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {SerializableModuleMap, getHasteMapStatic} from 'jest-haste-map';
+import HasteMap, {SerializableModuleMap} from 'jest-haste-map';
 import {separateMessageFromStack} from 'jest-message-util';
 import type Resolver from 'jest-resolve';
 import Runtime from 'jest-runtime';
@@ -74,8 +74,9 @@ export function setup(setupData: {
     config,
     serializableModuleMap,
   } of setupData.serializableResolvers) {
-    const HasteMapClass = getHasteMapStatic(config);
-    const moduleMap = HasteMapClass.getModuleMapFromJSON(serializableModuleMap);
+    const moduleMap = HasteMap.getStatic(config).getModuleMapFromJSON(
+      serializableModuleMap,
+    );
     resolvers.set(config.name, Runtime.createResolver(config, moduleMap));
   }
 }
