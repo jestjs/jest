@@ -18,12 +18,14 @@ import type {Config} from '@jest/types';
 import type {Frame} from 'jest-message-util';
 import {escapeBacktickString} from './utils';
 
+// prettier-ignore
 const babelTraverse = (
-// @ts-expect-error requireOutside Babel transform
+  // @ts-expect-error requireOutside Babel transform
   requireOutside('@babel/traverse') as typeof import('@babel/traverse')
 ).default;
+// prettier-ignore
 const generate = (
-// @ts-expect-error requireOutside Babel transform
+  // @ts-expect-error requireOutside Babel transform
   requireOutside('@babel/generator') as typeof import('@babel/generator')
 ).default;
 // @ts-expect-error requireOutside Babel transform
