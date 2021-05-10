@@ -279,14 +279,8 @@ const toMatchInlineSnapshot = function (
 };
 
 const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
-  const {
-    context,
-    hint,
-    inlineSnapshot,
-    isInline,
-    matcherName,
-    properties,
-  } = config;
+  const {context, hint, inlineSnapshot, isInline, matcherName, properties} =
+    config;
   let {received} = config;
 
   context.dontThrow && context.dontThrow();
@@ -479,14 +473,8 @@ const _toThrowErrorMatchingSnapshot = (
   config: MatchSnapshotConfig,
   fromPromise?: boolean,
 ) => {
-  const {
-    context,
-    hint,
-    inlineSnapshot,
-    isInline,
-    matcherName,
-    received,
-  } = config;
+  const {context, hint, inlineSnapshot, isInline, matcherName, received} =
+    config;
 
   context.dontThrow && context.dontThrow();
 

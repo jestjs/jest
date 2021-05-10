@@ -599,15 +599,14 @@ describe('SearchSource', () => {
         rootDir,
         'RequireRegularModule.js',
       );
-      const sources = await searchSource.findRelatedSourcesFromTestsInChangedFiles(
-        {
+      const sources =
+        await searchSource.findRelatedSourcesFromTestsInChangedFiles({
           changedFiles: new Set([requireRegularModule]),
           repos: {
             git: new Set(),
             hg: new Set(),
           },
-        },
-      );
+        });
       expect(sources).toEqual([]);
     });
 
@@ -617,15 +616,14 @@ describe('SearchSource', () => {
         rootDir,
         'RequireRegularModule.js',
       );
-      const sources = await searchSource.findRelatedSourcesFromTestsInChangedFiles(
-        {
+      const sources =
+        await searchSource.findRelatedSourcesFromTestsInChangedFiles({
           changedFiles: new Set([requireRegularModule]),
           repos: {
             git: new Set('/path/to/git'),
             hg: new Set(),
           },
-        },
-      );
+        });
       expect(sources).toEqual([regularModule]);
     });
   });

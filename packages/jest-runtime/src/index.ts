@@ -833,9 +833,8 @@ export default class Runtime {
         text,
       );
 
-      localModule.exports = this._environment.global.JSON.parse(
-        transformedFile,
-      );
+      localModule.exports =
+        this._environment.global.JSON.parse(transformedFile);
     } else if (path.extname(modulePath) === '.node') {
       localModule.exports = require(modulePath);
     } else {
@@ -951,7 +950,8 @@ export default class Runtime {
     if (!this._v8CoverageInstrumenter) {
       throw new Error('You need to call `collectV8Coverage` first.');
     }
-    this._v8CoverageResult = await this._v8CoverageInstrumenter.stopInstrumenting();
+    this._v8CoverageResult =
+      await this._v8CoverageInstrumenter.stopInstrumenting();
   }
 
   getAllCoverageInfoCopy(): JestEnvironment['global']['__coverage__'] {
@@ -1233,9 +1233,8 @@ export default class Runtime {
       return source;
     }
 
-    let transformedFile: TransformResult | undefined = this._fileTransforms.get(
-      filename,
-    );
+    let transformedFile: TransformResult | undefined =
+      this._fileTransforms.get(filename);
 
     if (transformedFile) {
       return transformedFile.code;
@@ -1268,9 +1267,8 @@ export default class Runtime {
       return source;
     }
 
-    let transformedFile: TransformResult | undefined = this._fileTransforms.get(
-      filename,
-    );
+    let transformedFile: TransformResult | undefined =
+      this._fileTransforms.get(filename);
 
     if (transformedFile) {
       return transformedFile.code;
@@ -1559,10 +1557,12 @@ export default class Runtime {
     resolve.paths = (moduleName: string) =>
       this._requireResolvePaths(from.filename, moduleName);
 
-    const moduleRequire = (options?.isInternalModule
-      ? (moduleName: string) =>
-          this.requireInternalModule(from.filename, moduleName)
-      : this.requireModuleOrMock.bind(this, from.filename)) as NodeRequire;
+    const moduleRequire = (
+      options?.isInternalModule
+        ? (moduleName: string) =>
+            this.requireInternalModule(from.filename, moduleName)
+        : this.requireModuleOrMock.bind(this, from.filename)
+    ) as NodeRequire;
     moduleRequire.extensions = Object.create(null);
     moduleRequire.resolve = resolve;
     moduleRequire.cache = (() => {

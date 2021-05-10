@@ -359,15 +359,13 @@ export const printDiffOrStringify = (
   }
 
   if (isLineDiffable(expected, received)) {
-    const {
-      replacedExpected,
-      replacedReceived,
-    } = replaceMatchedToAsymmetricMatcher(
-      deepCyclicCopyReplaceable(expected),
-      deepCyclicCopyReplaceable(received),
-      [],
-      [],
-    );
+    const {replacedExpected, replacedReceived} =
+      replaceMatchedToAsymmetricMatcher(
+        deepCyclicCopyReplaceable(expected),
+        deepCyclicCopyReplaceable(received),
+        [],
+        [],
+      );
     const difference = diffDefault(replacedExpected, replacedReceived, {
       aAnnotation: expectedLabel,
       bAnnotation: receivedLabel,

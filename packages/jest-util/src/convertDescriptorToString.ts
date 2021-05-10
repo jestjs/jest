@@ -9,7 +9,7 @@
 
 // See: https://github.com/facebook/jest/pull/5154
 export default function convertDescriptorToString<
-  T extends number | string | Function | undefined
+  T extends number | string | Function | undefined,
 >(descriptor: T): T | string {
   if (
     typeof descriptor === 'string' ||

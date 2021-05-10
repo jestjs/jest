@@ -15,8 +15,9 @@ import init from '../';
 const {JEST_CONFIG_EXT_ORDER} = constants;
 
 jest.mock('prompts');
-jest.mock('../../../../jest-config/build/getCacheDirectory', () => () =>
-  '/tmp/jest',
+jest.mock(
+  '../../../../jest-config/build/getCacheDirectory',
+  () => () => '/tmp/jest',
 );
 jest.mock('path', () => ({...jest.requireActual('path'), sep: '/'}));
 jest.mock('graceful-fs', () => ({

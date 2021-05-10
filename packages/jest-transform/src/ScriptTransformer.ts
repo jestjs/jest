@@ -821,18 +821,19 @@ export async function createTranspilingRequire(
     resolverPath: string,
     applyInteropRequireDefault: boolean = false,
   ) {
-    const transpiledModule = await transformer.requireAndTranspileModule<TModuleType>(
-      resolverPath,
-      () => {},
-      {
-        applyInteropRequireDefault,
-        instrument: false,
-        supportsDynamicImport: false, // this might be true, depending on node version.
-        supportsExportNamespaceFrom: false,
-        supportsStaticESM: false,
-        supportsTopLevelAwait: false,
-      },
-    );
+    const transpiledModule =
+      await transformer.requireAndTranspileModule<TModuleType>(
+        resolverPath,
+        () => {},
+        {
+          applyInteropRequireDefault,
+          instrument: false,
+          supportsDynamicImport: false, // this might be true, depending on node version.
+          supportsExportNamespaceFrom: false,
+          supportsStaticESM: false,
+          supportsTopLevelAwait: false,
+        },
+      );
 
     return transpiledModule;
   };

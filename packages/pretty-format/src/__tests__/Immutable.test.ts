@@ -41,15 +41,17 @@ describe('Immutable.OrderedSet', () => {
   });
 
   it('supports a single string element', () => {
-    expect(
-      Immutable.OrderedSet(['foo']),
-    ).toPrettyPrintTo('Immutable.OrderedSet ["foo"]', {min: true});
+    expect(Immutable.OrderedSet(['foo'])).toPrettyPrintTo(
+      'Immutable.OrderedSet ["foo"]',
+      {min: true},
+    );
   });
 
   it('supports a single integer element', () => {
-    expect(
-      Immutable.OrderedSet([1]),
-    ).toPrettyPrintTo('Immutable.OrderedSet [1]', {min: true});
+    expect(Immutable.OrderedSet([1])).toPrettyPrintTo(
+      'Immutable.OrderedSet [1]',
+      {min: true},
+    );
   });
 
   it('supports multiple string elements {min: true}', () => {
@@ -62,18 +64,17 @@ describe('Immutable.OrderedSet', () => {
   });
 
   it('supports multiple string elements {min: false}', () => {
-    expect(
-      Immutable.OrderedSet(['jhon', 'mike', 'cristian']),
-    ).toPrettyPrintTo(
+    expect(Immutable.OrderedSet(['jhon', 'mike', 'cristian'])).toPrettyPrintTo(
       'Immutable.OrderedSet [\n  "jhon",\n  "mike",\n  "cristian",\n]',
       {min: false},
     );
   });
 
   it('supports multiple integer elements {min: true}', () => {
-    expect(
-      Immutable.OrderedSet([1, 2, 3]),
-    ).toPrettyPrintTo('Immutable.OrderedSet [1, 2, 3]', {min: true});
+    expect(Immutable.OrderedSet([1, 2, 3])).toPrettyPrintTo(
+      'Immutable.OrderedSet [1, 2, 3]',
+      {min: true},
+    );
   });
 
   it('supports multiple integer elements {min: false}', () => {
@@ -95,9 +96,7 @@ describe('Immutable.OrderedSet', () => {
   });
 
   it('supports object elements {min: false}', () => {
-    expect(
-      Immutable.OrderedSet([{a: 1, b: 2, c: 3}]),
-    ).toPrettyPrintTo(
+    expect(Immutable.OrderedSet([{a: 1, b: 2, c: 3}])).toPrettyPrintTo(
       'Immutable.OrderedSet [\n  Object {\n    "a": 1,\n    "b": 2,\n    "c": 3,\n  },\n]',
       {min: false},
     );
@@ -115,9 +114,7 @@ describe('Immutable.OrderedSet', () => {
 
   it('supports React elements {min: false}', () => {
     const reactElement = React.createElement('Mouse', null, 'Hello World');
-    expect(
-      Immutable.OrderedSet([reactElement, reactElement]),
-    ).toPrettyPrintTo(
+    expect(Immutable.OrderedSet([reactElement, reactElement])).toPrettyPrintTo(
       'Immutable.OrderedSet [\n  <Mouse>\n    Hello World\n  </Mouse>,\n]',
       {min: false},
     );
@@ -165,9 +162,10 @@ describe('Immutable.List', () => {
   });
 
   it('supports multiple integer elements {min: true}', () => {
-    expect(
-      Immutable.List([1, 2, 3]),
-    ).toPrettyPrintTo('Immutable.List [1, 2, 3]', {min: true});
+    expect(Immutable.List([1, 2, 3])).toPrettyPrintTo(
+      'Immutable.List [1, 2, 3]',
+      {min: true},
+    );
   });
 
   it('supports multiple integer elements {min: false}', () => {
@@ -177,9 +175,10 @@ describe('Immutable.List', () => {
   });
 
   it('supports object elements {min: true}', () => {
-    expect(
-      Immutable.List([{a: 1, b: 2, c: 3}]),
-    ).toPrettyPrintTo('Immutable.List [{"a": 1, "b": 2, "c": 3}]', {min: true});
+    expect(Immutable.List([{a: 1, b: 2, c: 3}])).toPrettyPrintTo(
+      'Immutable.List [{"a": 1, "b": 2, "c": 3}]',
+      {min: true},
+    );
   });
 
   it('supports object elements {min: false}', () => {
@@ -190,9 +189,7 @@ describe('Immutable.List', () => {
 
   it('supports React elements {min: true}', () => {
     const reactElement = React.createElement('Mouse', null, 'Hello World');
-    expect(
-      Immutable.List([reactElement, reactElement]),
-    ).toPrettyPrintTo(
+    expect(Immutable.List([reactElement, reactElement])).toPrettyPrintTo(
       'Immutable.List [<Mouse>Hello World</Mouse>, <Mouse>Hello World</Mouse>]',
       {min: true},
     );
@@ -248,9 +245,10 @@ describe('Immutable.Stack', () => {
   });
 
   it('supports multiple integer elements {min: true}', () => {
-    expect(
-      Immutable.Stack([1, 2, 3]),
-    ).toPrettyPrintTo('Immutable.Stack [1, 2, 3]', {min: true});
+    expect(Immutable.Stack([1, 2, 3])).toPrettyPrintTo(
+      'Immutable.Stack [1, 2, 3]',
+      {min: true},
+    );
   });
 
   it('supports multiple integer elements {min: false}', () => {
@@ -276,9 +274,7 @@ describe('Immutable.Stack', () => {
 
   it('supports React elements {min: true}', () => {
     const reactElement = React.createElement('Mouse', null, 'Hello World');
-    expect(
-      Immutable.Stack([reactElement, reactElement]),
-    ).toPrettyPrintTo(
+    expect(Immutable.Stack([reactElement, reactElement])).toPrettyPrintTo(
       'Immutable.Stack [<Mouse>Hello World</Mouse>, <Mouse>Hello World</Mouse>]',
       {min: true},
     );
@@ -344,9 +340,10 @@ describe('Immutable.Set', () => {
   });
 
   it('supports object elements {min: true}', () => {
-    expect(
-      Immutable.Set([{a: 1, b: 2, c: 3}]),
-    ).toPrettyPrintTo('Immutable.Set [{"a": 1, "b": 2, "c": 3}]', {min: true});
+    expect(Immutable.Set([{a: 1, b: 2, c: 3}])).toPrettyPrintTo(
+      'Immutable.Set [{"a": 1, "b": 2, "c": 3}]',
+      {min: true},
+    );
   });
 
   it('supports object elements {min: false}', () => {
@@ -391,9 +388,10 @@ describe('Immutable.Map', () => {
   });
 
   it('supports an object with multiple keys {min: true}', () => {
-    expect(
-      Immutable.Map({a: 1, b: 2, c: 3}),
-    ).toPrettyPrintTo('Immutable.Map {"a": 1, "b": 2, "c": 3}', {min: true});
+    expect(Immutable.Map({a: 1, b: 2, c: 3})).toPrettyPrintTo(
+      'Immutable.Map {"a": 1, "b": 2, "c": 3}',
+      {min: true},
+    );
   });
 
   it('supports an object with multiple keys {min: false}', () => {
@@ -419,9 +417,7 @@ describe('Immutable.Map', () => {
 
   it('supports React elements {min: true}', () => {
     const reactElement = React.createElement('Mouse', null, 'Hello World');
-    expect(
-      Immutable.Map({a: reactElement, b: reactElement}),
-    ).toPrettyPrintTo(
+    expect(Immutable.Map({a: reactElement, b: reactElement})).toPrettyPrintTo(
       'Immutable.Map {"a": <Mouse>Hello World</Mouse>, "b": <Mouse>Hello World</Mouse>}',
       {min: true},
     );
@@ -451,9 +447,10 @@ describe('Immutable.OrderedMap', () => {
   });
 
   it('supports an object with single key', () => {
-    expect(
-      Immutable.OrderedMap({a: 1}),
-    ).toPrettyPrintTo('Immutable.OrderedMap {"a": 1}', {min: true});
+    expect(Immutable.OrderedMap({a: 1})).toPrettyPrintTo(
+      'Immutable.OrderedMap {"a": 1}',
+      {min: true},
+    );
   });
 
   it('supports an object with multiple keys {min: true}', () => {
@@ -585,9 +582,10 @@ describe('Immutable.Record', () => {
   it('supports a record with values {min: true}', () => {
     const ABRecord = Immutable.Record({a: 1, b: 2}, 'ABRecord');
 
-    expect(
-      ABRecord({a: 3, b: 4}),
-    ).toPrettyPrintTo('Immutable.ABRecord {"a": 3, "b": 4}', {min: true});
+    expect(ABRecord({a: 3, b: 4})).toPrettyPrintTo(
+      'Immutable.ABRecord {"a": 3, "b": 4}',
+      {min: true},
+    );
   });
 
   it('supports a record with values {min: false}', () => {
@@ -627,9 +625,7 @@ describe('Immutable.Record', () => {
     const CDRecord = Immutable.Record({c: 3, d: 4}, 'CDRecord');
     const ABRecord = Immutable.Record({a: CDRecord(), b: 2}, 'ABRecord');
 
-    expect(
-      ABRecord(),
-    ).toPrettyPrintTo(
+    expect(ABRecord()).toPrettyPrintTo(
       'Immutable.ABRecord {"a": Immutable.CDRecord {"c": 3, "d": 4}, "b": 2}',
       {min: true},
     );
@@ -864,9 +860,10 @@ describe('Immutable.Seq', () => {
     );
   });
   it('supports a non-empty sequence from array {min: false}', () => {
-    expect(
-      Immutable.Seq([0, 1, 2]),
-    ).toPrettyPrintTo('Immutable.Seq [\n  0,\n  1,\n  2,\n]', {min: false});
+    expect(Immutable.Seq([0, 1, 2])).toPrettyPrintTo(
+      'Immutable.Seq [\n  0,\n  1,\n  2,\n]',
+      {min: false},
+    );
   });
 
   it('supports a non-empty sequence from arguments', () => {

@@ -26,9 +26,8 @@ export default class Farm {
   private readonly _workerSchedulingPolicy: NonNullable<
     FarmOptions['workerSchedulingPolicy']
   >;
-  private readonly _cacheKeys: Record<string, WorkerInterface> = Object.create(
-    null,
-  );
+  private readonly _cacheKeys: Record<string, WorkerInterface> =
+    Object.create(null);
   private readonly _locks: Array<boolean> = [];
   private _offset = 0;
   private readonly _taskQueue: TaskQueue;

@@ -634,9 +634,9 @@ export default async function normalize(
 
   setupBabelJest(options);
   // TODO: Type this properly
-  const newOptions = ({
+  const newOptions = {
     ...DEFAULT_CONFIG,
-  } as unknown) as AllOptions;
+  } as unknown as AllOptions;
 
   if (options.resolver) {
     newOptions.resolver = resolve(null, {
@@ -1061,7 +1061,7 @@ export default async function normalize(
   newOptions.json = !!argv.json;
 
   newOptions.testFailureExitCode = parseInt(
-    (newOptions.testFailureExitCode as unknown) as string,
+    newOptions.testFailureExitCode as unknown as string,
     10,
   );
 
@@ -1113,7 +1113,7 @@ export default async function normalize(
       : 'new';
 
   newOptions.maxConcurrency = parseInt(
-    (newOptions.maxConcurrency as unknown) as string,
+    newOptions.maxConcurrency as unknown as string,
     10,
   );
   newOptions.maxWorkers = getMaxWorkers(argv, options);

@@ -75,9 +75,8 @@ export async function run(
     });
 
     const transformer = await createScriptTransformer(config);
-    const Environment: typeof JestEnvironment = await transformer.requireAndTranspileModule(
-      config.testEnvironment,
-    );
+    const Environment: typeof JestEnvironment =
+      await transformer.requireAndTranspileModule(config.testEnvironment);
 
     const environment = new Environment(config);
     setGlobal(
