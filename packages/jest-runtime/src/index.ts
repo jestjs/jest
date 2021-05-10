@@ -21,6 +21,7 @@ import {
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import * as fs from 'graceful-fs';
+import type {IModuleMap} from 'jest-haste-map/src/ModuleMap';
 import stripBOM = require('strip-bom');
 import type {
   Jest,
@@ -42,7 +43,7 @@ import {
   shouldInstrument,
 } from '@jest/transform';
 import type {Config, Global} from '@jest/types';
-import HasteMap, {ModuleMap} from 'jest-haste-map';
+import HasteMap, {HasteMapStatic} from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import type {MockFunctionMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
@@ -314,7 +315,11 @@ export default class Runtime {
         ? new RegExp(ignorePatternParts.join('|'))
         : undefined;
 
-    return new HasteMap({
+    const HasteMapClass = config.haste.hasteMapModulePath
+      ? (require(config.haste.hasteMapModulePath) as HasteMapStatic)
+      : HasteMap;
+
+    return new HasteMapClass({
       cacheDirectory: config.cacheDirectory,
       computeSha1: config.haste.computeSha1,
       console: options?.console,
@@ -340,7 +345,7 @@ export default class Runtime {
 
   static createResolver(
     config: Config.ProjectConfig,
-    moduleMap: ModuleMap,
+    moduleMap: IModuleMap,
   ): Resolver {
     return new Resolver(moduleMap, {
       defaultPlatform: config.haste.defaultPlatform,

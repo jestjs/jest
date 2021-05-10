@@ -8,7 +8,10 @@
 import type {Stats} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type HasteFS from './HasteFS';
+// eslint-disable-next-line import/no-duplicates
 import type ModuleMap from './ModuleMap';
+// eslint-disable-next-line import/no-duplicates
+import type {IModuleMap} from './ModuleMap';
 
 export type IgnoreMatcher = (item: string) => boolean;
 
@@ -69,6 +72,12 @@ export type InternalHasteMap = {
   files: FileData;
   map: ModuleMapData;
   mocks: MockData;
+};
+
+export type IHasteMap = {
+  hasteFS: HasteFS;
+  moduleMap: IModuleMap;
+  __hasteMapForTest?: InternalHasteMap | null;
 };
 
 export type HasteMap = {

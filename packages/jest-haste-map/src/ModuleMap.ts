@@ -29,7 +29,28 @@ export type SerializableModuleMap = {
   rootDir: Config.Path;
 };
 
-export default class ModuleMap {
+export interface IModuleMap<S = SerializableModuleMap> {
+  getModule(
+    name: string,
+    platform?: string | null,
+    supportsNativePlatform?: boolean | null,
+    type?: HTypeValue | null,
+  ): Config.Path | null;
+
+  getPackage(
+    name: string,
+    platform: string | null | undefined,
+    _supportsNativePlatform: boolean | null,
+  ): Config.Path | null;
+
+  getMockModule(name: string): Config.Path | undefined;
+
+  getRawModuleMap(): RawModuleMap;
+
+  toJSON(): S;
+}
+
+export default class ModuleMap implements IModuleMap<SerializableModuleMap> {
   static DuplicateHasteCandidatesError: typeof DuplicateHasteCandidatesError;
   private readonly _raw: RawModuleMap;
   private json: SerializableModuleMap | undefined;

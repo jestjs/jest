@@ -18,7 +18,7 @@ import {escapePathForRegex} from 'jest-regex-util';
 import serializer from 'jest-serializer';
 import {Worker} from 'jest-worker';
 import HasteFS from './HasteFS';
-import HasteModuleMap from './ModuleMap';
+import HasteModuleMap, {IModuleMap, SerializableModuleMap} from './ModuleMap';
 import H from './constants';
 import nodeCrawl = require('./crawlers/node');
 import watchmanCrawl = require('./crawlers/watchman');
@@ -131,6 +131,16 @@ function invariant(condition: unknown, message?: string): asserts condition {
     throw new Error(message);
   }
 }
+
+export type HasteMapStatic<S = SerializableModuleMap> = {
+  new (options: Options): HasteMap;
+  getCacheFilePath(
+    tmpdir: Config.Path,
+    name: string,
+    ...extra: Array<string>
+  ): string;
+  getModuleMapFromJSON(json: S): IModuleMap<S>;
+};
 
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
@@ -322,6 +332,10 @@ export default class HasteMap extends EventEmitter {
       tmpdir,
       name.replace(/\W/g, '-') + '-' + hash.digest('hex'),
     );
+  }
+
+  static getModuleMapFromJSON(json: SerializableModuleMap): HasteModuleMap {
+    return HasteModuleMap.fromJSON(json);
   }
 
   getCacheFilePath(): string {
