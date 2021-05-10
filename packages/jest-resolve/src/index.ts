@@ -9,9 +9,9 @@
 
 import * as path from 'path';
 import chalk = require('chalk');
-import type {IModuleMap} from 'jest-haste-map/src/ModuleMap';
 import slash = require('slash');
 import type {Config} from '@jest/types';
+import type {IModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
 import ModuleNotFoundError from './ModuleNotFoundError';
 import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';

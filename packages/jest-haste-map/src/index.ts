@@ -18,7 +18,7 @@ import {escapePathForRegex} from 'jest-regex-util';
 import serializer from 'jest-serializer';
 import {Worker} from 'jest-worker';
 import HasteFS from './HasteFS';
-import HasteModuleMap, {IModuleMap, SerializableModuleMap} from './ModuleMap';
+import HasteModuleMap, {SerializableModuleMap} from './ModuleMap';
 import H from './constants';
 import nodeCrawl = require('./crawlers/node');
 import watchmanCrawl = require('./crawlers/watchman');
@@ -32,12 +32,14 @@ import type {
   EventsQueue,
   FileData,
   FileMetaData,
+  HTypeValue,
   HasteRegExp,
   InternalHasteMap,
   HasteMap as InternalHasteMapObject,
   MockData,
   ModuleMapData,
   ModuleMetaData,
+  RawModuleMap,
   WorkerMetadata,
 } from './types';
 import FSEventsWatcher = require('./watchers/FSEventsWatcher');
@@ -131,6 +133,27 @@ function invariant(condition: unknown, message?: string): asserts condition {
   if (!condition) {
     throw new Error(message);
   }
+}
+
+export interface IModuleMap<S = SerializableModuleMap> {
+  getModule(
+    name: string,
+    platform?: string | null,
+    supportsNativePlatform?: boolean | null,
+    type?: HTypeValue | null,
+  ): Config.Path | null;
+
+  getPackage(
+    name: string,
+    platform: string | null | undefined,
+    _supportsNativePlatform: boolean | null,
+  ): Config.Path | null;
+
+  getMockModule(name: string): Config.Path | undefined;
+
+  getRawModuleMap(): RawModuleMap;
+
+  toJSON(): S;
 }
 
 export type HasteMapStatic<S = SerializableModuleMap> = {

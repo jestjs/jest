@@ -16,6 +16,7 @@ import type {
   ModuleMetaData,
   RawModuleMap,
 } from './types';
+import type {IModuleMap} from '.';
 
 const EMPTY_OBJ: Record<string, ModuleMetaData> = {};
 const EMPTY_MAP = new Map();
@@ -28,27 +29,6 @@ export type SerializableModuleMap = {
   mocks: ReadonlyArray<[string, ValueType<MockData>]>;
   rootDir: Config.Path;
 };
-
-export interface IModuleMap<S = SerializableModuleMap> {
-  getModule(
-    name: string,
-    platform?: string | null,
-    supportsNativePlatform?: boolean | null,
-    type?: HTypeValue | null,
-  ): Config.Path | null;
-
-  getPackage(
-    name: string,
-    platform: string | null | undefined,
-    _supportsNativePlatform: boolean | null,
-  ): Config.Path | null;
-
-  getMockModule(name: string): Config.Path | undefined;
-
-  getRawModuleMap(): RawModuleMap;
-
-  toJSON(): S;
-}
 
 export default class ModuleMap implements IModuleMap<SerializableModuleMap> {
   static DuplicateHasteCandidatesError: typeof DuplicateHasteCandidatesError;

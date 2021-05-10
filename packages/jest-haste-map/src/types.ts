@@ -8,10 +8,8 @@
 import type {Stats} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type HasteFS from './HasteFS';
-// eslint-disable-next-line import/no-duplicates
 import type ModuleMap from './ModuleMap';
-// eslint-disable-next-line import/no-duplicates
-import type {IModuleMap} from './ModuleMap';
+import type {IModuleMap} from '.';
 
 export type IgnoreMatcher = (item: string) => boolean;
 
