@@ -17,7 +17,7 @@ import {addHook} from 'pirates';
 import slash = require('slash');
 import {sync as writeFileAtomic} from 'write-file-atomic';
 import type {Config} from '@jest/types';
-import HasteMap, {HasteMapStatic} from 'jest-haste-map';
+import HasteMap from 'jest-haste-map';
 import {
   createDirectory,
   isPromise,
@@ -194,9 +194,7 @@ class ScriptTransformer {
     filename: Config.Path,
     cacheKey: string,
   ): Config.Path {
-    const HasteMapClass = this._config.haste.hasteMapModulePath
-      ? (require(this._config.haste.hasteMapModulePath) as HasteMapStatic)
-      : HasteMap;
+    const HasteMapClass = HasteMap.getStatic(this._config);
     const baseCacheDir = HasteMapClass.getCacheFilePath(
       this._config.cacheDirectory,
       'jest-transform-cache-' + this._config.name,

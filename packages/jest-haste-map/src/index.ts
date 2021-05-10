@@ -60,6 +60,7 @@ type Options = {
   extensions: Array<string>;
   forceNodeFilesystemAPI?: boolean;
   hasteImplModulePath?: string;
+  hasteMapModulePath?: string;
   ignorePattern?: HasteRegExp;
   maxWorkers: number;
   mocksPattern?: string;
@@ -133,7 +134,6 @@ function invariant(condition: unknown, message?: string): asserts condition {
 }
 
 export type HasteMapStatic<S = SerializableModuleMap> = {
-  new (options: Options): HasteMap;
   getCacheFilePath(
     tmpdir: Config.Path,
     name: string,
@@ -229,7 +229,21 @@ export default class HasteMap extends EventEmitter {
   private _watchers: Array<Watcher>;
   private _worker: WorkerInterface | null;
 
-  constructor(options: Options) {
+  static getStatic(config: Config.ProjectConfig): HasteMapStatic {
+    if (config.haste.hasteMapModulePath) {
+      return require(config.haste.hasteMapModulePath);
+    }
+    return this;
+  }
+
+  static create(options: Options): HasteMap {
+    if (options.hasteMapModulePath) {
+      return require(options.hasteMapModulePath);
+    }
+    return new HasteMap(options);
+  }
+
+  private constructor(options: Options) {
     super();
     this._options = {
       cacheDirectory: options.cacheDirectory || tmpdir(),
