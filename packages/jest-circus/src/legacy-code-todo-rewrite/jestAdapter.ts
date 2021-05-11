@@ -23,12 +23,10 @@ const jestAdapter = async (
   testPath: string,
   sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> => {
-  const {
-    initialize,
-    runAndTransformResultsToJestFormat,
-  } = runtime.requireInternalModule<typeof import('./jestAdapterInit')>(
-    FRAMEWORK_INITIALIZER,
-  );
+  const {initialize, runAndTransformResultsToJestFormat} =
+    runtime.requireInternalModule<typeof import('./jestAdapterInit')>(
+      FRAMEWORK_INITIALIZER,
+    );
 
   const {globals, snapshotState} = await initialize({
     config,

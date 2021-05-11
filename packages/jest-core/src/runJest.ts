@@ -151,9 +151,9 @@ export default async function runJest({
   if (changedFilesPromise && globalConfig.watch) {
     const {repos} = await changedFilesPromise;
 
-    const noSCM = (Object.keys(repos) as Array<
-      keyof ChangedFiles['repos']
-    >).every(scm => repos[scm].size === 0);
+    const noSCM = (
+      Object.keys(repos) as Array<keyof ChangedFiles['repos']>
+    ).every(scm => repos[scm].size === 0);
     if (noSCM) {
       process.stderr.write(
         '\n' +

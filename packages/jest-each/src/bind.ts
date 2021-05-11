@@ -29,33 +29,34 @@ type GlobalCallback = (
 ) => void;
 
 export default <EachCallback extends Global.TestCallback>(
-  cb: GlobalCallback,
-  supportsDone: boolean = true,
-) => (table: Global.EachTable, ...taggedTemplateData: Global.TemplateData) =>
-  function eachBind(
-    title: string,
-    test: Global.EachTestFn<EachCallback>,
-    timeout?: number,
-  ): void {
-    try {
-      const tests = isArrayTable(taggedTemplateData)
-        ? buildArrayTests(title, table)
-        : buildTemplateTests(title, table, taggedTemplateData);
+    cb: GlobalCallback,
+    supportsDone: boolean = true,
+  ) =>
+  (table: Global.EachTable, ...taggedTemplateData: Global.TemplateData) =>
+    function eachBind(
+      title: string,
+      test: Global.EachTestFn<EachCallback>,
+      timeout?: number,
+    ): void {
+      try {
+        const tests = isArrayTable(taggedTemplateData)
+          ? buildArrayTests(title, table)
+          : buildTemplateTests(title, table, taggedTemplateData);
 
-      return tests.forEach(row =>
-        cb(
-          row.title,
-          applyArguments(supportsDone, row.arguments, test),
-          timeout,
-        ),
-      );
-    } catch (e) {
-      const error = new ErrorWithStack(e.message, eachBind);
-      return cb(title, () => {
-        throw error;
-      });
-    }
-  };
+        return tests.forEach(row =>
+          cb(
+            row.title,
+            applyArguments(supportsDone, row.arguments, test),
+            timeout,
+          ),
+        );
+      } catch (e) {
+        const error = new ErrorWithStack(e.message, eachBind);
+        return cb(title, () => {
+          throw error;
+        });
+      }
+    };
 
 const isArrayTable = (data: Global.TemplateData) => data.length === 0;
 

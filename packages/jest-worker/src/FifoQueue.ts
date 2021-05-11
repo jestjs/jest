@@ -25,9 +25,8 @@ type WorkerQueueValue = {
  * across the worker specific and shared queue.
  */
 export default class FifoQueue implements TaskQueue {
-  private _workerQueues: Array<
-    InternalQueue<WorkerQueueValue> | undefined
-  > = [];
+  private _workerQueues: Array<InternalQueue<WorkerQueueValue> | undefined> =
+    [];
   private _sharedQueue = new InternalQueue<QueueChildMessage>();
 
   enqueue(task: QueueChildMessage, workerId?: number): void {
@@ -38,9 +37,8 @@ export default class FifoQueue implements TaskQueue {
 
     let workerQueue = this._workerQueues[workerId];
     if (workerQueue == null) {
-      workerQueue = this._workerQueues[
-        workerId
-      ] = new InternalQueue<WorkerQueueValue>();
+      workerQueue = this._workerQueues[workerId] =
+        new InternalQueue<WorkerQueueValue>();
     }
 
     const sharedTop = this._sharedQueue.peekLast();

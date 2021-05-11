@@ -50,6 +50,7 @@ class RecrawlWarning {
 }
 
 RecrawlWarning.RECRAWL_WARNINGS = [];
-RecrawlWarning.REGEXP = /Recrawled this watch (\d+) times, most recently because:\n([^:]+)/;
+RecrawlWarning.REGEXP =
+  /Recrawled this watch (\d+) times, most recently because:\n([^:]+)/;
 
 module.exports = RecrawlWarning;

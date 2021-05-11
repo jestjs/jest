@@ -203,13 +203,12 @@ export default class TestScheduler {
         const {config} = context;
         if (!testRunners[config.runner]) {
           const transformer = await createScriptTransformer(config);
-          const Runner: typeof TestRunner = await transformer.requireAndTranspileModule(
-            config.runner,
-          );
+          const Runner: typeof TestRunner =
+            await transformer.requireAndTranspileModule(config.runner);
           const runner = new Runner(this._globalConfig, {
             changedFiles: this._context?.changedFiles,
-            sourcesRelatedToTestsInChangedFiles: this._context
-              ?.sourcesRelatedToTestsInChangedFiles,
+            sourcesRelatedToTestsInChangedFiles:
+              this._context?.sourcesRelatedToTestsInChangedFiles,
           });
           testRunners[config.runner] = runner;
           contextsByTestRunner.set(runner, context);
@@ -350,8 +349,8 @@ export default class TestScheduler {
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
           changedFiles: this._context?.changedFiles,
-          sourcesRelatedToTestsInChangedFiles: this._context
-            ?.sourcesRelatedToTestsInChangedFiles,
+          sourcesRelatedToTestsInChangedFiles:
+            this._context?.sourcesRelatedToTestsInChangedFiles,
         }),
       );
     }
@@ -382,8 +381,8 @@ export default class TestScheduler {
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
           changedFiles: this._context?.changedFiles,
-          sourcesRelatedToTestsInChangedFiles: this._context
-            ?.sourcesRelatedToTestsInChangedFiles,
+          sourcesRelatedToTestsInChangedFiles:
+            this._context?.sourcesRelatedToTestsInChangedFiles,
         }),
       );
     }
@@ -418,9 +417,10 @@ export default class TestScheduler {
    * Get properties of a reporter in an object
    * to make dealing with them less painful.
    */
-  private _getReporterProps(
-    reporter: string | Config.ReporterConfig,
-  ): {path: string; options: Record<string, unknown>} {
+  private _getReporterProps(reporter: string | Config.ReporterConfig): {
+    path: string;
+    options: Record<string, unknown>;
+  } {
     if (typeof reporter === 'string') {
       return {options: this._options, path: reporter};
     } else if (Array.isArray(reporter)) {

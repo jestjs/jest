@@ -40,13 +40,12 @@ export type HasteConfig = {
 
 export type CoverageReporterName = keyof ReportOptions;
 
-export type CoverageReporterWithOptions<
-  K = CoverageReporterName
-> = K extends CoverageReporterName
-  ? ReportOptions[K] extends never
-    ? never
-    : [K, Partial<ReportOptions[K]>]
-  : never;
+export type CoverageReporterWithOptions<K = CoverageReporterName> =
+  K extends CoverageReporterName
+    ? ReportOptions[K] extends never
+      ? never
+      : [K, Partial<ReportOptions[K]>]
+    : never;
 
 export type CoverageReporters = Array<
   CoverageReporterName | CoverageReporterWithOptions

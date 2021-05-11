@@ -106,12 +106,12 @@ async function runTestInternal(
   const cacheFS = new Map([[path, testSource]]);
   const transformer = await createScriptTransformer(config, cacheFS);
 
-  const TestEnvironment: typeof JestEnvironment = await transformer.requireAndTranspileModule(
-    testEnvironment,
-  );
-  const testFramework: TestFramework = await transformer.requireAndTranspileModule(
-    process.env.JEST_JASMINE === '1' ? 'jest-jasmine2' : config.testRunner,
-  );
+  const TestEnvironment: typeof JestEnvironment =
+    await transformer.requireAndTranspileModule(testEnvironment);
+  const testFramework: TestFramework =
+    await transformer.requireAndTranspileModule(
+      process.env.JEST_JASMINE === '1' ? 'jest-jasmine2' : config.testRunner,
+    );
   const Runtime: typeof RuntimeClass = interopRequireDefault(
     config.moduleLoader
       ? require(config.moduleLoader)
