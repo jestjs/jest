@@ -102,7 +102,7 @@
     flex-flow: row wrap-reverse;
   }
 
-  /* Makes the image is alway visible and has space to center correctly */
+  /* Makes the image is always visible and has space to center correctly */
   .imageAlignSide .blockImage {
     display: block;
     max-width: 100%;
