@@ -350,9 +350,7 @@ export const partition = <T>(
 export const isError = (value: unknown): value is Error => {
   switch (Object.prototype.toString.call(value)) {
     case '[object Error]':
-      return true;
     case '[object Exception]':
-      return true;
     case '[object DOMException]':
       return true;
     default:
