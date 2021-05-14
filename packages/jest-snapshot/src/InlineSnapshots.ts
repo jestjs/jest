@@ -54,7 +54,7 @@ export function saveInlineSnapshots(
     try {
       // @ts-expect-error requireOutside Babel transform
       prettier = requireOutside(prettierPath) as Prettier;
-    } catch (_) {
+    } catch {
       // Continue even if prettier is not installed.
     }
   }
