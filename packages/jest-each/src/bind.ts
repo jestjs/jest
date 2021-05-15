@@ -82,7 +82,7 @@ const applyArguments = <EachCallback extends Global.TestCallback>(
   supportsDone: boolean,
   params: Array<unknown>,
   test: Global.EachTestFn<EachCallback>,
-  index: Number
+  index: number,
 ): Global.EachTestFn<any> =>
   supportsDone && params.length < test.length
     ? (done: Global.DoneFn) => test(...params, done, index)

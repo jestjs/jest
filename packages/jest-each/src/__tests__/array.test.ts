@@ -166,6 +166,21 @@ describe('jest-each', () => {
         );
       });
 
+      test('enumerate test cases', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)([
+          {a: 'hello'},
+          {a: 'world'},
+        ]);
+        const testFunction = get(eachObject, keyPath);
+        const indexes = [];
+        testFunction('expected string: %s', (_, index) => {
+          indexes.push(index);
+        });
+
+        expect(indexes).toBe([0, 1]);
+      });
+
       test('does not call global test with title containing more param values than sprintf placeholders', () => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)([
