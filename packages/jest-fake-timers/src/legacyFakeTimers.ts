@@ -526,9 +526,8 @@ export default class FakeTimers<TimerRef> {
 
     switch (timer.type) {
       case 'timeout':
-        const callback = timer.callback;
         this._timers.delete(timerHandle);
-        callback();
+        timer.callback();
         break;
 
       case 'interval':
