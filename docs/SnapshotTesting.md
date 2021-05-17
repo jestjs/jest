@@ -43,7 +43,7 @@ The snapshot artifact should be committed alongside code changes, and reviewed a
 
 > Note: The snapshot is directly scoped to the data you render – in our example the `<Link />` component with `page` prop passed to it. This implies that even if any other file has missing props (Say, `App.js`) in the `<Link />` component, it will still pass the test as the test doesn't know the usage of `<Link />` component and it's scoped only to the `Link.react.js`. Also, Rendering the same component with different props in other snapshot tests will not affect the first one, as the tests don't know about each other.
 
-More information on how snapshot testing works and why we built it can be found on the [release blog post](https://jestjs.io/blog/2016/07/27/jest-14.html). We recommend reading [this blog post](http://benmccormick.org/2016/09/19/testing-with-jest-snapshots-first-impressions/) to get a good sense of when you should use snapshot testing. We also recommend watching this [egghead video](https://egghead.io/lessons/javascript-use-jest-s-snapshot-testing-feature?pl=testing-javascript-with-jest-a36c4074) on Snapshot Testing with Jest.
+More information on how snapshot testing works and why we built it can be found on the [release blog post](/blog/2016/07/27/jest-14). We recommend reading [this blog post](http://benmccormick.org/2016/09/19/testing-with-jest-snapshots-first-impressions/) to get a good sense of when you should use snapshot testing. We also recommend watching this [egghead video](https://egghead.io/lessons/javascript-use-jest-s-snapshot-testing-feature?pl=testing-javascript-with-jest-a36c4074) on Snapshot Testing with Jest.
 
 ### Updating Snapshots
 
@@ -99,10 +99,6 @@ Once you're finished, Jest will give you a summary before returning back to watc
 
 Inline snapshots behave identically to external snapshots (`.snap` files), except the snapshot values are written automatically back into the source code. This means you can get the benefits of automatically generated snapshots without having to switch to an external file to make sure the correct value was written.
 
-> Inline snapshots are powered by [Prettier](https://prettier.io). To use inline snapshots you must have `prettier` installed in your project. Your Prettier configuration will be respected when writing to test files.
->
-> If you have `prettier` installed in a location where Jest can't find it, you can tell Jest how to find it using the [`"prettierPath"`](./Configuration.md#prettierpath-string) configuration property.
-
 **Example:**
 
 First, you write a test, calling `.toMatchInlineSnapshot()` with no arguments:
@@ -110,7 +106,7 @@ First, you write a test, calling `.toMatchInlineSnapshot()` with no arguments:
 ```tsx
 it('renders correctly', () => {
   const tree = renderer
-    .create(<Link page="https://prettier.io">Prettier</Link>)
+    .create(<Link page="https://example.com">Example Site</Link>)
     .toJSON();
   expect(tree).toMatchInlineSnapshot();
 });
@@ -121,16 +117,16 @@ The next time you run Jest, `tree` will be evaluated, and a snapshot will be wri
 ```tsx
 it('renders correctly', () => {
   const tree = renderer
-    .create(<Link page="https://prettier.io">Prettier</Link>)
+    .create(<Link page="https://example.com">Example Site</Link>)
     .toJSON();
   expect(tree).toMatchInlineSnapshot(`
 <a
   className="normal"
-  href="https://prettier.io"
+  href="https://example.com"
   onMouseEnter={[Function]}
   onMouseLeave={[Function]}
 >
-  Prettier
+  Example Site
 </a>
 `);
 });
@@ -295,7 +291,7 @@ Yes, all snapshot files should be committed alongside the modules they are cover
 
 ### What's the difference between snapshot testing and visual regression testing?
 
-Snapshot testing and visual regression testing are two distinct ways of testing UIs, and they serve different purposes. Visual regression testing tools take screenshots of web pages and compare the resulting images pixel by pixel. With Snapshot testing values are serialized, stored within text files, and compared using a diff algorithm. There are different trade-offs to consider and we listed the reasons why snapshot testing was built in the [Jest blog](https://jestjs.io/blog/2016/07/27/jest-14.html#why-snapshot-testing).
+Snapshot testing and visual regression testing are two distinct ways of testing UIs, and they serve different purposes. Visual regression testing tools take screenshots of web pages and compare the resulting images pixel by pixel. With Snapshot testing values are serialized, stored within text files, and compared using a diff algorithm. There are different trade-offs to consider and we listed the reasons why snapshot testing was built in the [Jest blog](/blog/2016/07/27/jest-14#why-snapshot-testing).
 
 ### Does snapshot testing replace unit testing?
 

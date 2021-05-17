@@ -5,15 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-:root {
-  --yellow: #c2a813;
-  --green: #15c213;
-  --red: #c21325;
-  --grey: #aaaaaa;
-  --grey2: #ededed;
-  --grey3: #545454;
-}
-
 .debug * {
   outline: 1px solid rebeccapurple;
 }
@@ -91,27 +82,27 @@
   margin: 16px 0 0 18px;
 }
 
-.container.intro p {
+.containerV1.intro p {
   font-size: 1.8rem;
   font-family: Monaco, Courier, monospace;
   color: var(--grey3);
 }
 
-.container.intro .wrapper {
+.containerV1.intro .wrapperV1 {
   max-width: 960px;
 }
-.container .wrapper .imageAlignSide p {
+.containerV1 .wrapperV1 .imageAlignSide p {
   margin-bottom: 0;
 }
 
-/*  On mobile, show the screenshot under the body */
+/* On mobile, show the screenshot under the body */
 @media only screen and (max-width: 780px) {
   /* Ensure the consistent order of text first, then image */
-  .container .wrapper .imageAlignLeft {
+  .containerV1 .wrapperV1 .imageAlignLeft {
     flex-flow: row wrap-reverse;
   }
 
-  /* Makes the image is alway visible and has space to center correctly */
+  /* Makes the image is always visible and has space to center correctly */
   .imageAlignSide .blockImage {
     display: block;
     max-width: 100%;
@@ -125,11 +116,11 @@
   }
 }
 
-.container.section-container {
+.containerV1.section-container {
   padding: 20px 0 0 0;
 }
 
-.container.section-container.philosophy {
+.containerV1.section-container.philosophy {
   padding: 30px 0;
 }
 
@@ -142,14 +133,22 @@
   height: 280px;
 }
 
-.container.features .yellow.blockElement h2,
-.container.features .yellow.blockElement p {
+.containerV1.features .yellow.blockElement h2,
+.containerV1.features .yellow.blockElement p {
   text-align: left;
   margin: 16px 0 0 18px;
 }
 
 .section-container .blockImage img {
   padding-top: 10px;
+}
+
+.section-container.community {
+  padding-bottom: 30px;
+}
+
+.opencollective-avatars {
+  padding: 12px 0;
 }
 
 .logos > a {
@@ -162,13 +161,13 @@
 
 @media only screen and (min-width: 736px) {
   /* Medium desktop and up */
-  .container .yellow.blockElement {
+  .containerV1 .yellow.blockElement {
     width: 25%;
   }
 }
 
-.gridBlock.philosophy > *:first-child,
-.gridBlock.logos > *:first-child {
+.gridBlockV1.philosophy > *:first-child,
+.gridBlockV1.logos > *:first-child {
   margin-left: 0;
 }
 
@@ -178,7 +177,7 @@
   width: 56px;
 }
 
-.gridBlock > *:first-child {
+.gridBlockV1 > *:first-child {
   margin: 0 12px;
 }
 
@@ -212,22 +211,25 @@
 }
 
 /* Logo */
-.headerTitleWithLogo {
+.navbar__title {
   background-color: var(--green);
   text-transform: uppercase;
-  color: var(--grey2);
+  color: var(--ifm-color-content-inverse);
+  font-size: 20px;
+  line-height: 20px;
+  font-weight: 500;
   padding: 6px 15px;
 }
 
-.container.features {
+.containerV1.features {
   padding: 40px 0;
 }
 
-.features .gridBlock {
+.features .gridBlockV1 {
   flex-wrap: nowrap;
 }
 
-.features .gridBlock .fourByGridBlock {
+.features .gridBlockV1 .fourByGridBlock {
   flex: initial;
 }
 
@@ -239,22 +241,23 @@
 }
 
 .features .blockElement {
-  margin: 0;
+  margin: 0 !important;
 }
 
 .button.landing {
   margin: 4px 10px;
   cursor: pointer;
   text-transform: none;
+  text-decoration: none;
+}
+@media only screen and (max-width: 780px) {
+  .button.landing {
+    padding: 5px 10px;
+  }
 }
 
-.container .gridBlock .blockContent p.buttons-wrapper {
+.containerV1 .gridBlockV1 .blockContent p.buttons-wrapper {
   margin: 8px;
-}
-
-.button.landing.active {
-  background: var(--green);
-  color: #fff;
 }
 
 .navigationSlider .slidingNav ul li a,
@@ -296,5 +299,42 @@ body
   }
   .hide-small {
     display: block;
+  }
+}
+
+/* Temporary fix for not ideal Docusaurus 2 layout */
+/* May be removed when we close https://github.com/facebook/docusaurus/issues/4083 */
+.main-wrapper.blog-wrapper .container .row .col.col--2:first-child {
+  --ifm-col-width: 22%;
+}
+
+.main-wrapper.blog-wrapper
+  .container
+  .row
+  /* Blog post list */
+  .col.col--2:first-child
+  div[class^='sidebar'] {
+  padding-right: 1rem;
+}
+
+/* Center */
+.main-wrapper.blog-wrapper .container .row .col.col--8 {
+  --ifm-col-width: 62%;
+}
+@media only screen and (max-width: 996px) {
+  .main-wrapper.blog-wrapper .container .row .col.col--8 {
+    --ifm-col-width: 100% !important;
+  }
+}
+
+/* TOC */
+.main-wrapper.blog-wrapper .container .row .col.col--2:last-child {
+  --ifm-col-width: 16%;
+}
+
+/* For large screens, make the container a bit larger than Docusaurus default */
+@media (min-width: 1650px) {
+  .container {
+    max-width: 1500px;
   }
 }

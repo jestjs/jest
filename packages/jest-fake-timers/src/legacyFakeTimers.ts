@@ -356,7 +356,7 @@ export default class FakeTimers<TimerRef> {
           `\`"timers": "fake"\` in ` +
           `the configuration file. This warning is likely a result of a ` +
           `default configuration change in Jest 15.\n\n` +
-          `Release Blog Post: https://jestjs.io/blog/2016/09/01/jest-15.html\n` +
+          `Release Blog Post: https://jestjs.io/blog/2016/09/01/jest-15\n` +
           `Stack Trace:\n` +
           formatStackTrace(new Error().stack!, this._config, {
             noStackTrace: false,
@@ -526,9 +526,8 @@ export default class FakeTimers<TimerRef> {
 
     switch (timer.type) {
       case 'timeout':
-        const callback = timer.callback;
         this._timers.delete(timerHandle);
-        callback();
+        timer.callback();
         break;
 
       case 'interval':

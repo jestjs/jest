@@ -7,7 +7,7 @@
 
 import chalk = require('chalk');
 import type {Config} from '@jest/types';
-import getType = require('jest-get-type');
+import {getType} from 'jest-get-type';
 import {ValidationError} from 'jest-validate';
 import {BULLET, DOCUMENTATION_NOTE} from './utils';
 

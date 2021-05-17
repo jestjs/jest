@@ -151,7 +151,7 @@ export const initialize = async ({
     .forEach(path => addSerializer(localRequire(path)));
 
   const {expand, updateSnapshot} = globalConfig;
-  const snapshotResolver = buildSnapshotResolver(config);
+  const snapshotResolver = await buildSnapshotResolver(config, localRequire);
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
@@ -263,16 +263,15 @@ export const runAndTransformResultsToJestFormat = async ({
   };
 };
 
-const handleSnapshotStateAfterRetry = (snapshotState: SnapshotStateType) => (
-  event: Circus.Event,
-) => {
-  switch (event.name) {
-    case 'test_retry': {
-      // Clear any snapshot data that occurred in previous test run
-      snapshotState.clear();
+const handleSnapshotStateAfterRetry =
+  (snapshotState: SnapshotStateType) => (event: Circus.Event) => {
+    switch (event.name) {
+      case 'test_retry': {
+        // Clear any snapshot data that occurred in previous test run
+        snapshotState.clear();
+      }
     }
-  }
-};
+  };
 
 const eventHandler = async (event: Circus.Event) => {
   switch (event.name) {

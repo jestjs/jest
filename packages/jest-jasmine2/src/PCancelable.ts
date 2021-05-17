@@ -12,7 +12,7 @@ class CancelError extends Error {
   }
 }
 
-export default class PCancelable<T> extends Promise<T> {
+export default class PCancelable<T> implements PromiseLike<T> {
   private _pending = true;
   private _canceled = false;
   private _promise: Promise<T>;
@@ -22,12 +22,10 @@ export default class PCancelable<T> extends Promise<T> {
   constructor(
     executor: (
       onCancel: (cancelHandler: () => void) => void,
-      resolve: (value?: T | PromiseLike<T>) => void,
+      resolve: (value: T | PromiseLike<T>) => void,
       reject: (reason?: unknown) => void,
     ) => void,
   ) {
-    super(resolve => resolve());
-
     this._promise = new Promise((resolve, reject) => {
       this._reject = reject;
 

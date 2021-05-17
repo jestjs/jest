@@ -37,7 +37,8 @@ describe('Runtime statics', () => {
     Runtime.createHasteMap(projectConfig, {...options, watch: true});
     expect(HasteMap).toBeCalledWith(
       expect.objectContaining({
-        ignorePattern: /\/root\/ignore-1|\/root\/ignore-2|\/watch-root\/ignore-1/,
+        ignorePattern:
+          /\/root\/ignore-1|\/root\/ignore-2|\/watch-root\/ignore-1/,
         watch: true,
       }),
     );

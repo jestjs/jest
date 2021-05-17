@@ -23,15 +23,14 @@ module.exports = {
   },
   extends: [
     'plugin:import/errors',
-    'prettier',
     'plugin:eslint-comments/recommended',
+    'plugin:prettier/recommended',
   ],
   overrides: [
     {
       extends: [
         'plugin:@typescript-eslint/eslint-recommended',
         'plugin:import/typescript',
-        'prettier/@typescript-eslint',
       ],
       files: ['*.ts', '*.tsx'],
       plugins: ['@typescript-eslint/eslint-plugin', 'local'],
@@ -154,6 +153,14 @@ module.exports = {
       },
     },
     {
+      files: ['website/**/*'],
+      rules: {
+        'import/order': 'off',
+        'import/sort-keys': 'off',
+        'sort-keys': 'off',
+      },
+    },
+    {
       files: ['examples/**/*'],
       rules: {
         'import/no-unresolved': ['error', {ignore: ['^react-native$']}],
@@ -258,7 +265,7 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
-  plugins: ['markdown', 'import', 'jest', 'prettier'],
+  plugins: ['markdown', 'import', 'jest'],
   rules: {
     'accessor-pairs': ['warn', {setWithoutGet: true}],
     'block-scoped-var': 'off',
@@ -442,7 +449,6 @@ module.exports = {
     'prefer-arrow-callback': ['error', {allowNamedFunctions: true}],
     'prefer-const': 'error',
     'prefer-template': 'off',
-    'prettier/prettier': 'error',
     quotes: [
       'error',
       'single',

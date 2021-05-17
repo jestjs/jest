@@ -84,6 +84,19 @@ let mockChangedFiles;
 let mockFs;
 
 jest.mock('graceful-fs', () => ({
+  existsSync: jest.fn(path => {
+    // A file change can be triggered by writing into the
+    // mockChangedFiles object.
+    if (mockChangedFiles && path in mockChangedFiles) {
+      return true;
+    }
+
+    if (mockFs[path]) {
+      return true;
+    }
+
+    return false;
+  }),
   readFileSync: jest.fn((path, options) => {
     // A file change can be triggered by writing into the
     // mockChangedFiles object.
@@ -166,10 +179,7 @@ describe('HasteMap', () => {
         // Melon!
       `,
       [path.join('/', 'project', 'video', 'video.mp4')]: Buffer.from([
-        0xfa,
-        0xce,
-        0xb0,
-        0x0c,
+        0xfa, 0xce, 0xb0, 0x0c,
       ]).toString(),
     });
     mockClocks = createMap({
@@ -492,6 +502,42 @@ describe('HasteMap', () => {
     // The cache file must exactly mirror the data structure returned from a
     // build
     expect(useBuitinsInContext(hasteMap.read())).toEqual(data);
+  });
+
+  it('throws if both symlinks and watchman is enabled', () => {
+    expect(
+      () => new HasteMap({...defaultConfig, enableSymlinks: true}),
+    ).toThrow(
+      'Set either `enableSymlinks` to false or `useWatchman` to false.',
+    );
+    expect(
+      () =>
+        new HasteMap({
+          ...defaultConfig,
+          enableSymlinks: true,
+          useWatchman: true,
+        }),
+    ).toThrow(
+      'Set either `enableSymlinks` to false or `useWatchman` to false.',
+    );
+
+    expect(
+      () =>
+        new HasteMap({
+          ...defaultConfig,
+          enableSymlinks: false,
+          useWatchman: true,
+        }),
+    ).not.toThrow();
+
+    expect(
+      () =>
+        new HasteMap({
+          ...defaultConfig,
+          enableSymlinks: true,
+          useWatchman: false,
+        }),
+    ).not.toThrow();
   });
 
   describe('builds a haste map on a fresh cache with SHA-1s', () => {
@@ -1051,11 +1097,8 @@ describe('HasteMap', () => {
             g: createMap({
               [path.join('fruits', 'Strawberry.js')]: H.MODULE,
               [path.join('fruits', 'another', 'Strawberry.js')]: H.MODULE,
-              [path.join(
-                'fruits',
-                'strawberryPackage',
-                'package.json',
-              )]: H.PACKAGE,
+              [path.join('fruits', 'strawberryPackage', 'package.json')]:
+                H.PACKAGE,
             }),
           }),
         }),
@@ -1586,9 +1629,8 @@ describe('HasteMap', () => {
           moduleMap.getModule('Pear');
           throw new Error('should be unreachable');
         } catch (error) {
-          const {
-            DuplicateHasteCandidatesError,
-          } = require('../ModuleMap').default;
+          const {DuplicateHasteCandidatesError} =
+            require('../ModuleMap').default;
           expect(error).toBeInstanceOf(DuplicateHasteCandidatesError);
           expect(error.hasteName).toBe('Pear');
           expect(error.platform).toBe('g');
@@ -1596,13 +1638,8 @@ describe('HasteMap', () => {
           expect(error.duplicatesSet).toEqual(
             createMap({
               [path.join('/', 'project', 'fruits', 'Pear.js')]: H.MODULE,
-              [path.join(
-                '/',
-                'project',
-                'fruits',
-                'another',
-                'Pear.js',
-              )]: H.MODULE,
+              [path.join('/', 'project', 'fruits', 'another', 'Pear.js')]:
+                H.MODULE,
             }),
           );
           expect(wrap(error.message.replace(/\\/g, '/'))).toMatchSnapshot();
@@ -1644,9 +1681,8 @@ describe('HasteMap', () => {
 
       hm_it('recovers when the most recent duplicate is fixed', async hm => {
         await setupDuplicates(hm);
-        mockFs[
-          path.join('/', 'project', 'fruits', 'another', 'Pear.js')
-        ] = null;
+        mockFs[path.join('/', 'project', 'fruits', 'another', 'Pear.js')] =
+          null;
         mockFs[path.join('/', 'project', 'fruits', 'another', 'Pear2.js')] = `
           // Pear too!
         `;

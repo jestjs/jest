@@ -8,7 +8,7 @@ FAIL __tests__/node.js
 
   ● use document
 
-    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
     Consider using the "jsdom" test environment.
 
     ReferenceError: document is not defined
@@ -32,7 +32,7 @@ FAIL __tests__/node.js
 
   ● use navigator
 
-    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
     Consider using the "jsdom" test environment.
 
     ReferenceError: navigator is not defined
@@ -54,7 +54,7 @@ FAIL __tests__/jsdom.js
 
   ● use unref
 
-    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
     Consider using the "node" test environment.
 
     TypeError: setTimeout(...).unref is not a function
@@ -78,7 +78,7 @@ FAIL __tests__/node.js
 
   ● use window
 
-    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
     Consider using the "jsdom" test environment.
 
     ReferenceError: window is not defined
@@ -98,7 +98,7 @@ exports[`Wrong globals for environment print useful error when it explodes durin
 FAIL __tests__/beforeTest.js
   ● Test suite failed to run
 
-    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/en/configuration#testenvironment-string.
+    The error below may be caused by using the wrong test environment, see https://jestjs.io/docs/configuration#testenvironment-string.
     Consider using the "jsdom" test environment.
 
     ReferenceError: document is not defined

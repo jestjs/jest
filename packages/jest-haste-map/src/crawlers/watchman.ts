@@ -57,9 +57,7 @@ function WatchmanError(error: Error): Error {
   return error;
 }
 
-export = async function watchmanCrawl(
-  options: CrawlerOptions,
-): Promise<{
+export = async function watchmanCrawl(options: CrawlerOptions): Promise<{
   changedFiles?: FileData;
   removedFiles: FileData;
   hasteMap: InternalHasteMap;

@@ -8,6 +8,7 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
+import {onNodeVersions} from '@jest/test-utils';
 import {createDirectory} from 'jest-util';
 import {cleanup, runYarnInstall} from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
@@ -16,6 +17,7 @@ const DIR = path.join(tmpdir(), 'jest-global-teardown');
 const project1DIR = path.join(tmpdir(), 'jest-global-teardown-project-1');
 const project2DIR = path.join(tmpdir(), 'jest-global-teardown-project-2');
 const e2eDir = path.resolve(__dirname, '../global-teardown');
+const esmTmpDir = path.join(tmpdir(), 'jest-global-teardown-esm');
 
 beforeAll(() => {
   runYarnInstall(e2eDir);
@@ -25,11 +27,13 @@ beforeEach(() => {
   cleanup(DIR);
   cleanup(project1DIR);
   cleanup(project2DIR);
+  cleanup(esmTmpDir);
 });
 afterAll(() => {
   cleanup(DIR);
   cleanup(project1DIR);
   cleanup(project2DIR);
+  cleanup(esmTmpDir);
 });
 
 test('globalTeardown is triggered once after all test suites', () => {
@@ -55,8 +59,9 @@ test('jest throws an error when globalTeardown does not export a function', () =
   ]);
 
   expect(exitCode).toBe(1);
-  expect(stderr).toMatch(
-    `TypeError: globalTeardown file must export a function at ${teardownPath}`,
+  expect(stderr).toContain('Jest: Got error running globalTeardown');
+  expect(stderr).toContain(
+    `globalTeardown file must export a function at ${teardownPath}`,
   );
 });
 
@@ -125,7 +130,18 @@ test('globalTeardown throws with named export', () => {
   ]);
 
   expect(exitCode).toBe(1);
-  expect(stderr).toMatch(
-    `TypeError: globalTeardown file must export a function at ${teardownPath}`,
+  expect(stderr).toContain('Jest: Got error running globalTeardown');
+  expect(stderr).toContain(
+    `globalTeardown file must export a function at ${teardownPath}`,
   );
+});
+
+onNodeVersions('^12.17.0 || >=13.2.0', () => {
+  test('globalTeardown works with ESM modules', () => {
+    const {exitCode} = runJest('global-teardown-esm', [`--no-cache`], {
+      nodeOptions: '--experimental-vm-modules --no-warnings',
+    });
+
+    expect(exitCode).toBe(0);
+  });
 });

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Context, Script} from 'vm';
+import type {Context} from 'vm';
 import {JSDOM, VirtualConsole} from 'jsdom';
 import type {EnvironmentContext, JestEnvironment} from '@jest/environment';
 import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
@@ -30,16 +30,16 @@ class JSDOMEnvironment implements JestEnvironment {
   errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
 
-  constructor(config: Config.ProjectConfig, options: EnvironmentContext = {}) {
+  constructor(config: Config.ProjectConfig, options?: EnvironmentContext) {
     this.dom = new JSDOM('<!DOCTYPE html>', {
       pretendToBeVisual: true,
       runScripts: 'dangerously',
       url: config.testURL,
-      virtualConsole: new VirtualConsole().sendTo(options.console || console),
+      virtualConsole: new VirtualConsole().sendTo(options?.console || console),
       ...config.testEnvironmentOptions,
     });
-    const global = (this.global = (this.dom.window.document
-      .defaultView as unknown) as Win);
+    const global = (this.global = this.dom.window.document
+      .defaultView as unknown as Win);
 
     if (!global) {
       throw new Error('JSDOM did not return a Window object');
@@ -52,6 +52,9 @@ class JSDOMEnvironment implements JestEnvironment {
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
     installCommonGlobals(global as any, config.globals);
+
+    // TODO: remove this ASAP, but it currntly causes tests to run really slow
+    global.Buffer = Buffer;
 
     // Report uncaught errors.
     this.errorEventListener = event => {
@@ -123,13 +126,6 @@ class JSDOMEnvironment implements JestEnvironment {
     this.dom = null;
     this.fakeTimers = null;
     this.fakeTimersModern = null;
-  }
-
-  runScript<T = unknown>(script: Script): T | null {
-    if (this.dom) {
-      return script.runInContext(this.dom.getInternalVMContext());
-    }
-    return null;
   }
 
   getVmContext(): Context | null {

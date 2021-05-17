@@ -44,15 +44,14 @@ const NPM_EVENTS = new Set([
   'postrestart',
 ]);
 
-const {
-  npm_config_user_agent,
-  npm_lifecycle_event,
-  npm_lifecycle_script,
-} = process.env;
+const {npm_config_user_agent, npm_lifecycle_event, npm_lifecycle_script} =
+  process.env;
 
 export default class SummaryReporter extends BaseReporter {
   private _estimatedTime: number;
   private _globalConfig: Config.GlobalConfig;
+
+  static readonly filename = __filename;
 
   constructor(globalConfig: Config.GlobalConfig) {
     super();

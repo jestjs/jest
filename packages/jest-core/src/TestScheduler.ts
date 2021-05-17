@@ -25,7 +25,7 @@ import {
   buildFailureTestResult,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
-import {ScriptTransformer} from '@jest/transform';
+import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import TestRunner, {Test} from 'jest-runner';
@@ -157,12 +157,22 @@ export default class TestScheduler {
       );
     };
 
-    const updateSnapshotState = () => {
-      contexts.forEach(context => {
+    const updateSnapshotState = async () => {
+      const contextsWithSnapshotResolvers = await Promise.all(
+        Array.from(contexts).map(
+          async context =>
+            [
+              context,
+              await snapshot.buildSnapshotResolver(context.config),
+            ] as const,
+        ),
+      );
+
+      contextsWithSnapshotResolvers.forEach(([context, snapshotResolver]) => {
         const status = snapshot.cleanup(
           context.hasteFS,
           this._globalConfig.updateSnapshot,
-          snapshot.buildSnapshotResolver(context.config),
+          snapshotResolver,
           context.config.testPathIgnorePatterns,
         );
 
@@ -188,22 +198,23 @@ export default class TestScheduler {
 
     const testRunners: {[key: string]: TestRunner} = Object.create(null);
     const contextsByTestRunner = new WeakMap<TestRunner, Context>();
-    contexts.forEach(context => {
-      const {config} = context;
-      if (!testRunners[config.runner]) {
-        const transformer = new ScriptTransformer(config);
-        const Runner: typeof TestRunner = interopRequireDefault(
-          transformer.requireAndTranspileModule(config.runner),
-        ).default;
-        const runner = new Runner(this._globalConfig, {
-          changedFiles: this._context?.changedFiles,
-          sourcesRelatedToTestsInChangedFiles: this._context
-            ?.sourcesRelatedToTestsInChangedFiles,
-        });
-        testRunners[config.runner] = runner;
-        contextsByTestRunner.set(runner, context);
-      }
-    });
+    await Promise.all(
+      Array.from(contexts).map(async context => {
+        const {config} = context;
+        if (!testRunners[config.runner]) {
+          const transformer = await createScriptTransformer(config);
+          const Runner: typeof TestRunner =
+            await transformer.requireAndTranspileModule(config.runner);
+          const runner = new Runner(this._globalConfig, {
+            changedFiles: this._context?.changedFiles,
+            sourcesRelatedToTestsInChangedFiles:
+              this._context?.sourcesRelatedToTestsInChangedFiles,
+          });
+          testRunners[config.runner] = runner;
+          contextsByTestRunner.set(runner, context);
+        }
+      }),
+    );
 
     const testsByRunner = this._partitionTests(testRunners, tests);
 
@@ -273,7 +284,7 @@ export default class TestScheduler {
       }
     }
 
-    updateSnapshotState();
+    await updateSnapshotState();
     aggregatedResults.wasInterrupted = watcher.isInterrupted();
     await this._dispatcher.onRunComplete(contexts, aggregatedResults);
 
@@ -338,8 +349,8 @@ export default class TestScheduler {
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
           changedFiles: this._context?.changedFiles,
-          sourcesRelatedToTestsInChangedFiles: this._context
-            ?.sourcesRelatedToTestsInChangedFiles,
+          sourcesRelatedToTestsInChangedFiles:
+            this._context?.sourcesRelatedToTestsInChangedFiles,
         }),
       );
     }
@@ -370,8 +381,8 @@ export default class TestScheduler {
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
           changedFiles: this._context?.changedFiles,
-          sourcesRelatedToTestsInChangedFiles: this._context
-            ?.sourcesRelatedToTestsInChangedFiles,
+          sourcesRelatedToTestsInChangedFiles:
+            this._context?.sourcesRelatedToTestsInChangedFiles,
         }),
       );
     }
@@ -406,9 +417,10 @@ export default class TestScheduler {
    * Get properties of a reporter in an object
    * to make dealing with them less painful.
    */
-  private _getReporterProps(
-    reporter: string | Config.ReporterConfig,
-  ): {path: string; options: Record<string, unknown>} {
+  private _getReporterProps(reporter: string | Config.ReporterConfig): {
+    path: string;
+    options: Record<string, unknown>;
+  } {
     if (typeof reporter === 'string') {
       return {options: this._options, path: reporter};
     } else if (Array.isArray(reporter)) {
@@ -458,11 +470,11 @@ const createAggregatedResults = (numTotalTestSuites: number) => {
 };
 
 const getEstimatedTime = (timings: Array<number>, workers: number) => {
-  if (!timings.length) {
+  if (timings.length === 0) {
     return 0;
   }
 
-  const max = Math.max.apply(null, timings);
+  const max = Math.max(...timings);
   return timings.length <= workers
     ? max
     : Math.max(timings.reduce((sum, time) => sum + time) / workers, max);

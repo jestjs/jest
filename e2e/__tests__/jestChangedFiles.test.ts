@@ -7,7 +7,6 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
 import semver = require('semver');
 import slash = require('slash');
 import {findRepos, getChangedFilesForRoots} from 'jest-changed-files';
@@ -42,6 +41,10 @@ function gitInit(dir: string) {
     : `${GIT} init`;
 
   run(initCommand, dir);
+}
+
+function gitCreateBranch(branchName: string, dir: string) {
+  run(`git branch ${branchName}`, dir);
 }
 
 beforeEach(() => cleanup(DIR));
@@ -171,9 +174,11 @@ test('gets changed files for git', async () => {
   gitInit(DIR);
 
   const roots = [
-    '',
+    // same first root name with existing branch name makes pitfall that
+    // causes "ambiguous argument" git error.
     'nested-dir',
     'nested-dir/second-nested-dir',
+    '',
   ].map(filename => path.resolve(DIR, filename));
 
   let {changedFiles: files} = await getChangedFilesForRoots(roots, {});
@@ -189,6 +194,8 @@ test('gets changed files for git', async () => {
   // paragraphs. This is done to ensure that `changedFiles` only
   // returns files and not parts of commit messages.
   run(`${GIT} commit --no-gpg-sign -m "test" -m "extra-line"`, DIR);
+
+  gitCreateBranch('nested-dir', DIR);
 
   ({changedFiles: files} = await getChangedFilesForRoots(roots, {}));
   expect(Array.from(files)).toEqual([]);
@@ -346,7 +353,8 @@ test('handles a bad revision for "changedSince", for git', async () => {
   const {exitCode, stderr} = runJest(DIR, ['--changedSince=^blablabla']);
 
   expect(exitCode).toBe(1);
-  expect(wrap(stderr)).toMatchSnapshot();
+  expect(stderr).toContain('Test suite failed to run');
+  expect(stderr).toContain("fatal: bad revision '^blablabla...HEAD'");
 });
 
 testIfHg('gets changed files for hg', async () => {
@@ -370,11 +378,9 @@ testIfHg('gets changed files for hg', async () => {
 
   run(`${HG} init`, DIR);
 
-  const roots = [
-    '',
-    'nested-dir',
-    'nested-dir/second-nested-dir',
-  ].map(filename => path.resolve(DIR, filename));
+  const roots = ['', 'nested-dir', 'nested-dir/second-nested-dir'].map(
+    filename => path.resolve(DIR, filename),
+  );
 
   let {changedFiles: files} = await getChangedFilesForRoots(roots, {});
   expect(
@@ -500,5 +506,6 @@ testIfHg('handles a bad revision for "changedSince", for hg', async () => {
   const {exitCode, stderr} = runJest(DIR, ['--changedSince=blablabla']);
 
   expect(exitCode).toBe(1);
-  expect(wrap(stderr)).toMatchSnapshot();
+  expect(stderr).toContain('Test suite failed to run');
+  expect(stderr).toContain("abort: unknown revision 'blablabla'");
 });

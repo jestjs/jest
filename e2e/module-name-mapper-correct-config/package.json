@@ -2,7 +2,10 @@
   "jest": {
     "moduleNameMapper": {
       "\\.(css|less)$": "./__mocks__/styleMock.js",
-      "\\.(sass)$": ["./__mocks__/nonExistentMock.js", "./__mocks__/styleMock.js"]
+      "\\.(sass)$": [
+        "./__mocks__/nonExistentMock.js",
+        "./__mocks__/styleMock.js"
+      ]
     }
   }
 }

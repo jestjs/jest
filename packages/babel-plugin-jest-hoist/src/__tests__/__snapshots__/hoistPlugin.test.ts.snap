@@ -8,21 +8,23 @@ jest.mock('./App', () => () => <div>Hello world</div>);
 
 var _jsxFileName = "/root/project/src/file.js";
 
-_getJestObj().mock("./App", () => () =>
-  /*#__PURE__*/ _jsxDEV(
-    "div",
-    {
-      children: "Hello world",
-    },
-    void 0,
-    false,
-    {
-      fileName: _jsxFileName,
-      lineNumber: 1,
-      columnNumber: 32,
-    },
-    this
-  )
+_getJestObj().mock(
+  "./App",
+  () => () =>
+    /*#__PURE__*/ _jsxDEV(
+      "div",
+      {
+        children: "Hello world",
+      },
+      void 0,
+      false,
+      {
+        fileName: _jsxFileName,
+        lineNumber: 1,
+        columnNumber: 32,
+      },
+      this
+    )
 );
 
 import { jsxDEV as _jsxDEV } from "react/jsx-dev-runtime";

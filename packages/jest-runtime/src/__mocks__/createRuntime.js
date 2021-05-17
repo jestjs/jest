@@ -8,7 +8,10 @@
 import {tmpdir} from 'os';
 import path from 'path';
 import {makeProjectConfig} from '@jest/test-utils';
+import {createScriptTransformer} from '@jest/transform';
+import NodeEnvironment from 'jest-environment-node';
 import {tryRealpath} from 'jest-util';
+import Runtime from '../';
 
 // Copy from jest-config (since we don't want to depend on this package)
 const getCacheDirectory = () => {
@@ -46,9 +49,6 @@ const setupTransform = (config, rootDir) => {
 };
 
 module.exports = async function createRuntime(filename, config) {
-  const {default: NodeEnvironment} = await import('jest-environment-node');
-  const {default: Runtime} = await import('../');
-
   const rootDir = path.resolve(path.dirname(filename), 'test_root');
 
   const moduleNameMapper = setupModuleNameMapper(config, rootDir);
@@ -90,11 +90,15 @@ module.exports = async function createRuntime(filename, config) {
     resetCache: false,
   }).build();
 
+  const cacheFS = new Map();
+  const scriptTransformer = await createScriptTransformer(config, cacheFS);
+
   const runtime = new Runtime(
     config,
     environment,
     Runtime.createResolver(config, hasteMap.moduleMap),
-    new Map(),
+    scriptTransformer,
+    cacheFS,
     {
       changedFiles: undefined,
       collectCoverage: false,

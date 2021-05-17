@@ -18,7 +18,7 @@ export default function (
 ): NodeJS.Global & Config.ConfigGlobals {
   globalObject.process = createProcessObject();
 
-  const symbol = (globalObject.Symbol as unknown) as SymbolConstructor;
+  const symbol = globalObject.Symbol as unknown as SymbolConstructor;
   // Keep a reference to some globals that Jest needs
   Object.defineProperties(globalObject, {
     [symbol.for('jest-native-promise')]: {
@@ -61,11 +61,6 @@ export default function (
       return global[dtrace].apply(this, args);
     };
   });
-
-  // Forward some others (this breaks the sandbox but for now it's OK).
-  globalObject.Buffer = global.Buffer;
-  globalObject.setImmediate = global.setImmediate;
-  globalObject.clearImmediate = global.clearImmediate;
 
   return Object.assign(globalObject, deepCyclicCopy(globals));
 }

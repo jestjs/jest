@@ -8,7 +8,13 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import {cleanup, runYarnInstall} from '../Utils';
+import {onNodeVersions} from '@jest/test-utils';
+import {
+  cleanup,
+  createEmptyPackage,
+  runYarnInstall,
+  writeFiles,
+} from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
 
 const DIR = path.join(tmpdir(), 'jest-global-setup');
@@ -19,7 +25,9 @@ const customTransformDIR = path.join(
   'jest-global-setup-custom-transform',
 );
 const nodeModulesDIR = path.join(tmpdir(), 'jest-global-setup-node-modules');
+const rejectionDir = path.join(tmpdir(), 'jest-global-setup-rejection');
 const e2eDir = path.resolve(__dirname, '../global-setup');
+const esmTmpDir = path.join(tmpdir(), 'jest-global-setup-esm');
 
 beforeAll(() => {
   runYarnInstall(e2eDir);
@@ -31,13 +39,18 @@ beforeEach(() => {
   cleanup(project2DIR);
   cleanup(customTransformDIR);
   cleanup(nodeModulesDIR);
+  cleanup(rejectionDir);
+  cleanup(esmTmpDir);
 });
+
 afterAll(() => {
   cleanup(DIR);
   cleanup(project1DIR);
   cleanup(project2DIR);
   cleanup(customTransformDIR);
   cleanup(nodeModulesDIR);
+  cleanup(rejectionDir);
+  cleanup(esmTmpDir);
 });
 
 test('globalSetup is triggered once before all test suites', () => {
@@ -62,8 +75,9 @@ test('jest throws an error when globalSetup does not export a function', () => {
   ]);
 
   expect(exitCode).toBe(1);
-  expect(stderr).toMatch(
-    `TypeError: globalSetup file must export a function at ${setupPath}`,
+  expect(stderr).toContain('Jest: Got error running globalSetup');
+  expect(stderr).toContain(
+    `globalSetup file must export a function at ${setupPath}`,
   );
 });
 
@@ -145,8 +159,9 @@ test('globalSetup throws with named export', () => {
   ]);
 
   expect(exitCode).toBe(1);
-  expect(stderr).toMatch(
-    `TypeError: globalSetup file must export a function at ${setupPath}`,
+  expect(stderr).toContain('Jest: Got error running globalSetup');
+  expect(stderr).toContain(
+    `globalSetup file must export a function at ${setupPath}`,
   );
 });
 
@@ -160,4 +175,34 @@ test('should transform node_modules if configured by transformIgnorePatterns', (
   const {exitCode} = runJest('global-setup-node-modules', [`--no-cache`]);
 
   expect(exitCode).toBe(0);
+});
+
+test('properly handle rejections', () => {
+  createEmptyPackage(rejectionDir, {jest: {globalSetup: '<rootDir>/setup.js'}});
+  writeFiles(rejectionDir, {
+    'setup.js': `
+      module.exports = () => Promise.reject();
+    `,
+    'test.js': `
+      test('dummy', () => {
+        expect(true).toBe(true);
+      });
+    `,
+  });
+
+  const {exitCode, stderr} = runJest(rejectionDir, [`--no-cache`]);
+
+  expect(exitCode).toBe(1);
+  expect(stderr).toContain('Error: Jest: Got error running globalSetup');
+  expect(stderr).toContain('reason: undefined');
+});
+
+onNodeVersions('^12.17.0 || >=13.2.0', () => {
+  test('globalSetup works with ESM modules', () => {
+    const {exitCode} = runJest('global-setup-esm', [`--no-cache`], {
+      nodeOptions: '--experimental-vm-modules --no-warnings',
+    });
+
+    expect(exitCode).toBe(0);
+  });
 });

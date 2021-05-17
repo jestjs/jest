@@ -31,9 +31,10 @@ export default async function jasmine2(
   testPath: string,
 ): Promise<TestResult> {
   const reporter = new JasmineReporter(globalConfig, config, testPath);
-  const jasmineFactory = runtime.requireInternalModule<
-    typeof import('./jasmine/jasmineLight')
-  >(JASMINE);
+  const jasmineFactory =
+    runtime.requireInternalModule<typeof import('./jasmine/jasmineLight')>(
+      JASMINE,
+    );
   const jasmine = jasmineFactory.create({
     process,
     testPath,
@@ -66,7 +67,7 @@ export default async function jasmine2(
 
         return it;
       };
-      return (wrapped as any) as T;
+      return wrapped as any as T;
     }
 
     environment.global.it = wrapIt(environment.global.it);
@@ -137,7 +138,7 @@ export default async function jasmine2(
     });
   }
 
-  const snapshotState: SnapshotStateType = runtime
+  const snapshotState: SnapshotStateType = await runtime
     .requireInternalModule<typeof import('./setup_jest_globals')>(
       path.resolve(__dirname, './setup_jest_globals.js'),
     )

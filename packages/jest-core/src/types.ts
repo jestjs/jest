@@ -41,8 +41,6 @@ export type FilterResult = {
   message: string;
 };
 
-export type Filter = (
-  testPaths: Array<string>,
-) => Promise<{
+export type Filter = (testPaths: Array<string>) => Promise<{
   filtered: Array<FilterResult>;
 }>;

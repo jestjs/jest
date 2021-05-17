@@ -22,6 +22,14 @@ export type HasteConfig = {
   computeSha1?: boolean;
   /** The platform to use as the default, e.g. 'ios'. */
   defaultPlatform?: string | null;
+  /** Force use of Node's `fs` APIs rather than shelling out to `find` */
+  forceNodeFilesystemAPI?: boolean;
+  /**
+   * Whether to follow symlinks when crawling for files.
+   *   This options cannot be used in projects which use watchman.
+   *   Projects with `watchman` set to true will error if this option is set to true.
+   */
+  enableSymlinks?: boolean;
   /** Path to a custom implementation of Haste. */
   hasteImplModulePath?: string;
   /** All platforms to target, e.g ['ios', 'android']. */
@@ -32,13 +40,12 @@ export type HasteConfig = {
 
 export type CoverageReporterName = keyof ReportOptions;
 
-export type CoverageReporterWithOptions<
-  K = CoverageReporterName
-> = K extends CoverageReporterName
-  ? ReportOptions[K] extends never
-    ? never
-    : [K, Partial<ReportOptions[K]>]
-  : never;
+export type CoverageReporterWithOptions<K = CoverageReporterName> =
+  K extends CoverageReporterName
+    ? ReportOptions[K] extends never
+      ? never
+      : [K, Partial<ReportOptions[K]>]
+    : never;
 
 export type CoverageReporters = Array<
   CoverageReporterName | CoverageReporterWithOptions
@@ -57,11 +64,14 @@ export type DefaultOptions = {
   cache: boolean;
   cacheDirectory: Path;
   changedFilesWithAncestor: boolean;
+  ci: boolean;
   clearMocks: boolean;
   collectCoverage: boolean;
   coveragePathIgnorePatterns: Array<string>;
   coverageReporters: Array<CoverageReporterName>;
   coverageProvider: CoverageProvider;
+  detectLeaks: boolean;
+  detectOpenHandles: boolean;
   errorOnDeprecated: boolean;
   expand: boolean;
   extensionsToTreatAsEsm: Array<Path>;
@@ -69,6 +79,7 @@ export type DefaultOptions = {
   globals: ConfigGlobals;
   haste: HasteConfig;
   injectGlobals: boolean;
+  listTests: boolean;
   maxConcurrency: number;
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
@@ -78,6 +89,7 @@ export type DefaultOptions = {
   noStackTrace: boolean;
   notify: boolean;
   notifyMode: NotifyMode;
+  passWithNoTests: boolean;
   prettierPath: string;
   resetMocks: boolean;
   resetModules: boolean;
@@ -116,11 +128,17 @@ export type DisplayName = {
 export type InitialOptionsWithRootDir = InitialOptions &
   Required<Pick<InitialOptions, 'rootDir'>>;
 
+export type InitialProjectOptions = Pick<
+  InitialOptions & {cwd?: string},
+  keyof ProjectConfig
+>;
+
 export type InitialOptions = Partial<{
   automock: boolean;
   bail: boolean | number;
   cache: boolean;
   cacheDirectory: Path;
+  ci: boolean;
   clearMocks: boolean;
   changedFilesWithAncestor: boolean;
   changedSince: string;
@@ -176,7 +194,7 @@ export type InitialOptions = Partial<{
   preprocessorIgnorePatterns: Array<Glob>;
   preset: string | null | undefined;
   prettierPath: string | null | undefined;
-  projects: Array<Glob>;
+  projects: Array<Glob | InitialProjectOptions>;
   replname: string | null | undefined;
   resetMocks: boolean;
   resetModules: boolean;

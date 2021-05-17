@@ -69,15 +69,15 @@ export const linkJestPackage = (packageName: string, cwd: Config.Path) => {
   fs.symlinkSync(packagePath, destination, 'junction');
 };
 
-export const makeTemplate = (
-  str: string,
-): ((values?: Array<unknown>) => string) => (values = []) =>
-  str.replace(/\$(\d+)/g, (_match, number) => {
-    if (!Array.isArray(values)) {
-      throw new Error('Array of values must be passed to the template.');
-    }
-    return values[number - 1];
-  });
+export const makeTemplate =
+  (str: string): ((values?: Array<unknown>) => string) =>
+  (values = []) =>
+    str.replace(/\$(\d+)/g, (_match, number) => {
+      if (!Array.isArray(values)) {
+        throw new Error('Array of values must be passed to the template.');
+      }
+      return values[number - 1];
+    });
 
 export const cleanup = (directory: string) => rimraf.sync(directory);
 
@@ -251,7 +251,8 @@ export const extractSortedSummary = (stdout: string) => {
 export const extractSummaries = (
   stdout: string,
 ): Array<{rest: string; summary: string}> => {
-  const regex = /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm;
+  const regex =
+    /Test Suites:.*\nTests.*\nSnapshots.*\nTime.*(\nRan all test suites)*.*\n*$/gm;
 
   let match = regex.exec(stdout);
   const matches: Array<RegExpExecArray> = [];
@@ -280,17 +281,6 @@ export const normalizeIcons = (str: string) => {
   return str
     .replace(new RegExp('\u00D7', 'g'), '\u2715')
     .replace(new RegExp('\u221A', 'g'), '\u2713');
-};
-
-export const rightTrimStdout = (str: string) => {
-  if (!str) {
-    return str;
-  }
-
-  return str
-    .split('\n')
-    .map(str => str.trimRight())
-    .join('\n');
 };
 
 // Certain environments (like CITGM and GH Actions) do not come with mercurial installed

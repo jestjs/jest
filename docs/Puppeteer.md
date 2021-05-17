@@ -17,7 +17,7 @@ With the [Global Setup/Teardown](Configuration.md#globalsetup-string) and [Async
 yarn add --dev jest-puppeteer
 ```
 
-2.  Specify preset in your Jest configuration:
+2.  Specify preset in your [Jest configuration](Configuration.md):
 
 ```json
 {
@@ -110,8 +110,8 @@ class PuppeteerEnvironment extends NodeEnvironment {
     await super.teardown();
   }
 
-  runScript(script) {
-    return super.runScript(script);
+  getVmContext() {
+    return super.getVmContext();
   }
 }
 

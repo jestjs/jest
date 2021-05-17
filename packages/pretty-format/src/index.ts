@@ -42,6 +42,7 @@ export type {
   NewPlugin,
   Plugin,
   Plugins,
+  Printer,
   Refs,
   Theme,
 } from './types';

@@ -1,6 +1,6 @@
 {
   "name": "jest-util",
-  "version": "27.0.0-next.1",
+  "version": "27.0.0-next.9",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -14,17 +14,18 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^27.0.0-next.1",
+    "@jest/types": "^27.0.0-next.8",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "graceful-fs": "^4.2.4",
-    "is-ci": "^2.0.0",
-    "micromatch": "^4.0.2"
+    "is-ci": "^3.0.0",
+    "picomatch": "^2.2.3"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.2",
-    "@types/is-ci": "^2.0.0",
-    "@types/micromatch": "^4.0.0"
+    "@types/is-ci": "^3.0.0",
+    "@types/micromatch": "^4.0.1",
+    "@types/picomatch": "^2.2.2"
   },
   "engines": {
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"

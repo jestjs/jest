@@ -2071,6 +2071,54 @@ Expected: <g>/abc/g</>
 Received: <r>/abc/gsy</>
 `;
 
+exports[`.toEqual() {pass: false} expect([, , 1, ]).toEqual([, , 2, ]) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 1</>
+<r>+ Received  + 1</>
+
+<d>  Array [</>
+<d>    undefined,</>
+<d>    undefined,</>
+<g>-   2,</>
+<r>+   1,</>
+<d>    undefined,</>
+<d>  ]</>
+`;
+
+exports[`.toEqual() {pass: false} expect([]).toEqual([]) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: <g>[]</>
+Received: serializes to the same string
+`;
+
+exports[`.toEqual() {pass: false} expect([]).toEqual([]) 2`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: <g>[]</>
+Received: serializes to the same string
+`;
+
+exports[`.toEqual() {pass: false} expect([]).toEqual([]) 3`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: <g>[]</>
+Received: serializes to the same string
+`;
+
+exports[`.toEqual() {pass: false} expect([]).toEqual([1]) 1`] = `
+<d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+<g>- Expected  - 3</>
+<r>+ Received  + 1</>
+
+<g>- Array [</>
+<g>-   1,</>
+<g>- ]</>
+<r>+ Array []</>
+`;
+
 exports[`.toEqual() {pass: false} expect([1, 2]).toEqual([2, 1]) 1`] = `
 <d>expect(</><r>received</><d>).</>toEqual<d>(</><g>expected</><d>) // deep equality</>
 
@@ -2696,6 +2744,20 @@ exports[`.toEqual() {pass: true} expect("abcd").not.toEqual(StringMatching /bc/)
 
 Expected: not <g>StringMatching /bc/</>
 Received:     <r>"abcd"</>
+`;
+
+exports[`.toEqual() {pass: true} expect([, , 1, , ]).not.toEqual([, , 1, undefined, ]) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>[, , 1, undefined, ]</>
+Received:     <r>[, , 1, , ]</>
+`;
+
+exports[`.toEqual() {pass: true} expect([, , 1, ]).not.toEqual([, , 1, ]) 1`] = `
+<d>expect(</><r>received</><d>).</>not<d>.</>toEqual<d>(</><g>expected</><d>) // deep equality</>
+
+Expected: not <g>[, , 1, ]</>
+
 `;
 
 exports[`.toEqual() {pass: true} expect([1, 2, 3]).not.toEqual(ArrayContaining [2, 3]) 1`] = `

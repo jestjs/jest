@@ -10,7 +10,7 @@ import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import naturalCompare = require('natural-compare');
 import type {Config} from '@jest/types';
-import prettyFormat from 'pretty-format';
+import {format as prettyFormat} from 'pretty-format';
 import {getSerializers} from './plugins';
 import type {SnapshotData} from './types';
 
@@ -74,7 +74,7 @@ const validateSnapshotVersion = (snapshotContents: string) => {
 };
 
 function isObject(item: unknown): boolean {
-  return item && typeof item === 'object' && !Array.isArray(item);
+  return item != null && typeof item === 'object' && !Array.isArray(item);
 }
 
 export const testNameToKey = (testName: Config.Path, count: number): string =>
