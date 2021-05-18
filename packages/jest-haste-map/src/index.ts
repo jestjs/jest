@@ -18,7 +18,7 @@ import {escapePathForRegex} from 'jest-regex-util';
 import serializer from 'jest-serializer';
 import {Worker} from 'jest-worker';
 import HasteFS from './HasteFS';
-import HasteModuleMap, {SerializableModuleMap} from './ModuleMap';
+import HasteModuleMap from './ModuleMap';
 import H from './constants';
 import nodeCrawl = require('./crawlers/node');
 import watchmanCrawl = require('./crawlers/watchman');
@@ -32,14 +32,14 @@ import type {
   EventsQueue,
   FileData,
   FileMetaData,
-  HTypeValue,
+  HasteMapStatic,
   HasteRegExp,
   InternalHasteMap,
   HasteMap as InternalHasteMapObject,
   MockData,
   ModuleMapData,
   ModuleMetaData,
-  RawModuleMap,
+  SerializableModuleMap,
   WorkerMetadata,
 } from './types';
 import FSEventsWatcher = require('./watchers/FSEventsWatcher');
@@ -109,7 +109,8 @@ type Watcher = {
 type WorkerInterface = {worker: typeof worker; getSha1: typeof getSha1};
 
 export {default as ModuleMap} from './ModuleMap';
-export type {SerializableModuleMap} from './ModuleMap';
+export type {SerializableModuleMap} from './types';
+export type {IModuleMap} from './types';
 export type {default as FS} from './HasteFS';
 export type {ChangeEvent, HasteMap as HasteMapObject} from './types';
 
@@ -134,36 +135,6 @@ function invariant(condition: unknown, message?: string): asserts condition {
     throw new Error(message);
   }
 }
-
-export interface IModuleMap<S = SerializableModuleMap> {
-  getModule(
-    name: string,
-    platform?: string | null,
-    supportsNativePlatform?: boolean | null,
-    type?: HTypeValue | null,
-  ): Config.Path | null;
-
-  getPackage(
-    name: string,
-    platform: string | null | undefined,
-    _supportsNativePlatform: boolean | null,
-  ): Config.Path | null;
-
-  getMockModule(name: string): Config.Path | undefined;
-
-  getRawModuleMap(): RawModuleMap;
-
-  toJSON(): S;
-}
-
-export type HasteMapStatic<S = SerializableModuleMap> = {
-  getCacheFilePath(
-    tmpdir: Config.Path,
-    name: string,
-    ...extra: Array<string>
-  ): string;
-  getModuleMapFromJSON(json: S): IModuleMap<S>;
-};
 
 /**
  * HasteMap is a JavaScript implementation of Facebook's haste module system.
@@ -256,7 +227,7 @@ export default class HasteMap extends EventEmitter {
     if (config.haste.hasteMapModulePath) {
       return require(config.haste.hasteMapModulePath);
     }
-    return this;
+    return HasteMap;
   }
 
   static create(options: Options): HasteMap {

@@ -11,24 +11,14 @@ import * as fastPath from './lib/fast_path';
 import type {
   DuplicatesSet,
   HTypeValue,
-  MockData,
-  ModuleMapData,
+  IModuleMap,
   ModuleMetaData,
   RawModuleMap,
+  SerializableModuleMap,
 } from './types';
-import type {IModuleMap} from '.';
 
 const EMPTY_OBJ: Record<string, ModuleMetaData> = {};
 const EMPTY_MAP = new Map();
-
-type ValueType<T> = T extends Map<string, infer V> ? V : never;
-
-export type SerializableModuleMap = {
-  duplicates: ReadonlyArray<[string, [string, [string, [string, number]]]]>;
-  map: ReadonlyArray<[string, ValueType<ModuleMapData>]>;
-  mocks: ReadonlyArray<[string, ValueType<MockData>]>;
-  rootDir: Config.Path;
-};
 
 export default class ModuleMap implements IModuleMap<SerializableModuleMap> {
   static DuplicateHasteCandidatesError: typeof DuplicateHasteCandidatesError;
