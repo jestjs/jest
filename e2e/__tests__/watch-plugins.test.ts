@@ -28,6 +28,7 @@ test.each(['js', 'cjs'])('supports %s watch plugins', async watchPluginDir => {
 
 onNodeVersions('^12.17.0 || >=13.2.0', () => {
   test.each(['mjs', 'js-type-module'])(
+    // eslint-disable-next-line jest/no-identical-title
     'supports %s watch plugins',
     async watchPluginDir => {
       const testRun = runContinuous(`watch-plugins/${watchPluginDir}`, [
