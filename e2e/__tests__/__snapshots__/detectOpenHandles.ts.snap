@@ -52,7 +52,7 @@ Jest has detected the following 1 open handle potentially keeping Jest from exit
       11 | });
       12 |
 
-      at Object.setTimeout (__tests__/in-done-lifecycle.js:9:3)
+      at setTimeout (__tests__/in-done-lifecycle.js:9:3)
 `;
 
 exports[`prints out info about open handlers from tests with a \`done\` callback 1`] = `
