@@ -59,7 +59,7 @@ function promisifyLifeCycleFunction(
         ...args: Array<any>
       ) {
         // @ts-expect-error: Support possible extra args at runtime
-        return fn(...args);
+        return fn.apply(this, args);
       };
       return originalFn.call(env, asyncJestLifecycleWithCallback, timeout);
     }

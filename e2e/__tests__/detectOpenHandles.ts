@@ -140,11 +140,18 @@ it('prints out info about open handlers from lifecycle functions with a `done` c
   const run = runContinuous('detect-open-handles', [
     'in-done-lifecycle',
     '--detectOpenHandles',
-    '--forceExit',
   ]);
   await run.waitUntil(({stderr}) => stderr.includes('Jest has detected'));
   const {stderr} = await run.end();
-  const textAfterTest = getTextAfterTest(stderr);
+  let textAfterTest = getTextAfterTest(stderr);
+
+  // Circus and Jasmine have different contexts, leading to slightly different
+  // names for call stack functions. The difference shouldn't be problematic
+  // for users, so this normalizes them so the test works in both environments.
+  textAfterTest = textAfterTest.replace(
+    'at Object.setTimeout',
+    'at setTimeout',
+  );
 
   expect(wrap(textAfterTest)).toMatchSnapshot();
 });
