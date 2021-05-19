@@ -38,3 +38,35 @@ Jest has detected the following 1 open handle potentially keeping Jest from exit
 
       at Object.setTimeout (__tests__/inside.js:9:3)
 `;
+
+exports[`prints out info about open handlers from lifecycle functions with a \`done\` callback 1`] = `
+Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+
+  ●  Timeout
+
+       7 |
+       8 | beforeAll(done => {
+    >  9 |   setTimeout(() => {}, 10000);
+         |   ^
+      10 |   done();
+      11 | });
+      12 |
+
+      at Object.setTimeout (__tests__/in-done-lifecycle.js:9:3)
+`;
+
+exports[`prints out info about open handlers from tests with a \`done\` callback 1`] = `
+Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+
+  ●  Timeout
+
+       7 |
+       8 | test('something', done => {
+    >  9 |   setTimeout(() => {}, 10000);
+         |   ^
+      10 |   expect(true).toBe(true);
+      11 |   done();
+      12 | });
+
+      at Object.setTimeout (__tests__/in-done-function.js:9:3)
+`;
