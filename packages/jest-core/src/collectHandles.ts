@@ -8,7 +8,6 @@
 /* eslint-disable local/ban-types-eventually */
 
 import * as asyncHooks from 'async_hooks';
-import {promisify} from 'util';
 import stripAnsi = require('strip-ansi');
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
@@ -43,7 +42,9 @@ const alwaysActive = () => true;
 // @ts-expect-error: doesn't exist in v10 typings
 const hasWeakRef = typeof WeakRef === 'function';
 
-const nextTask = promisify(setImmediate);
+function asycSleep(milliseconds: number) {
+  return new Promise(resolve => setTimeout(resolve, milliseconds));
+}
 
 // Inspired by https://github.com/mafintosh/why-is-node-running/blob/master/index.js
 // Extracted as we want to format the result ourselves
@@ -117,12 +118,12 @@ export default function collectHandles(): HandleCollectionResult {
   hook.enable();
 
   return async () => {
-    // Wait until the next JS task for any async resources that have been queued
-    // for destruction to actually be destroyed.
+    // Wait briefly for any async resources that have been queued for
+    // destruction to actually be destroyed.
     // For example, Node.js TCP Servers are not destroyed until *after* their
     // `close` callback runs. If someone finishes a test from the `close`
     // callback, we will not yet have seen the resource be destroyed here.
-    await nextTask();
+    await asycSleep(100);
 
     hook.disable();
 
