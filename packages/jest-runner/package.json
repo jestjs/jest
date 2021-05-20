@@ -1,6 +1,6 @@
 {
   "name": "jest-runner",
-  "version": "27.0.0-next.9",
+  "version": "27.0.0-next.10",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -14,25 +14,25 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/console": "^27.0.0-next.9",
-    "@jest/environment": "^27.0.0-next.9",
-    "@jest/test-result": "^27.0.0-next.9",
-    "@jest/transform": "^27.0.0-next.9",
-    "@jest/types": "^27.0.0-next.8",
+    "@jest/console": "^27.0.0-next.10",
+    "@jest/environment": "^27.0.0-next.10",
+    "@jest/test-result": "^27.0.0-next.10",
+    "@jest/transform": "^27.0.0-next.10",
+    "@jest/types": "^27.0.0-next.10",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "emittery": "^0.8.1",
     "exit": "^0.1.2",
     "graceful-fs": "^4.2.4",
-    "jest-config": "^27.0.0-next.9",
-    "jest-docblock": "^27.0.0-next.0",
-    "jest-haste-map": "^27.0.0-next.9",
-    "jest-leak-detector": "^27.0.0-next.9",
-    "jest-message-util": "^27.0.0-next.9",
-    "jest-resolve": "^27.0.0-next.9",
-    "jest-runtime": "^27.0.0-next.9",
-    "jest-util": "^27.0.0-next.9",
-    "jest-worker": "^27.0.0-next.9",
+    "jest-config": "^27.0.0-next.10",
+    "jest-docblock": "^27.0.0-next.10",
+    "jest-haste-map": "^27.0.0-next.10",
+    "jest-leak-detector": "^27.0.0-next.10",
+    "jest-message-util": "^27.0.0-next.10",
+    "jest-resolve": "^27.0.0-next.10",
+    "jest-runtime": "^27.0.0-next.10",
+    "jest-util": "^27.0.0-next.10",
+    "jest-worker": "^27.0.0-next.10",
     "source-map-support": "^0.5.6",
     "throat": "^6.0.1"
   },
@@ -40,7 +40,7 @@
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
     "@types/source-map-support": "^0.5.0",
-    "jest-jasmine2": "^27.0.0-next.9"
+    "jest-jasmine2": "^27.0.0-next.10"
   },
   "engines": {
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
