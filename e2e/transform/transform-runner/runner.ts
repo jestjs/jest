@@ -38,29 +38,27 @@ export default class BaseTestRunner {
       (promise, test) =>
         mutex(() =>
           promise
-            .then(
-              async (): Promise<TestResult> => {
-                await onStart(test);
-                return {
-                  ...createEmptyTestResult(),
-                  numPassingTests: 1,
-                  testFilePath: test.path,
-                  testResults: [
-                    {
-                      ancestorTitles: [],
-                      duration: 2,
-                      failureDetails: [],
-                      failureMessages: [],
-                      fullName: 'sample test',
-                      location: null,
-                      numPassingAsserts: 1,
-                      status: 'passed',
-                      title: 'sample test',
-                    },
-                  ],
-                };
-              },
-            )
+            .then(async (): Promise<TestResult> => {
+              await onStart(test);
+              return {
+                ...createEmptyTestResult(),
+                numPassingTests: 1,
+                testFilePath: test.path,
+                testResults: [
+                  {
+                    ancestorTitles: [],
+                    duration: 2,
+                    failureDetails: [],
+                    failureMessages: [],
+                    fullName: 'sample test',
+                    location: null,
+                    numPassingAsserts: 1,
+                    status: 'passed',
+                    title: 'sample test',
+                  },
+                ],
+              };
+            })
             .then(result => onResult(test, result))
             .catch(err => onFailure(test, err)),
         ),

@@ -23,6 +23,7 @@ const context = {
   config: {
     cache: true,
     cacheDirectory: '/cache',
+    haste: {},
     name: 'test',
   },
   hasteFS: {
@@ -34,6 +35,7 @@ const secondContext = {
   config: {
     cache: true,
     cacheDirectory: '/cache2',
+    haste: {},
     name: 'test2',
   },
   hasteFS: {

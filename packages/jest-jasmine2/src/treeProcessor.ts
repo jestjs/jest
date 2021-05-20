@@ -26,13 +26,8 @@ export type TreeNode = {
 } & Pick<Suite, 'getResult' | 'parentSuite' | 'result' | 'markedPending'>;
 
 export default function treeProcessor(options: Options): void {
-  const {
-    nodeComplete,
-    nodeStart,
-    queueRunnerFactory,
-    runnableIds,
-    tree,
-  } = options;
+  const {nodeComplete, nodeStart, queueRunnerFactory, runnableIds, tree} =
+    options;
 
   function isEnabled(node: TreeNode, parentEnabled: boolean) {
     return parentEnabled || runnableIds.indexOf(node.id) !== -1;

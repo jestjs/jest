@@ -8,7 +8,7 @@
 
 import {SummaryReporter} from '@jest/reporters';
 import {makeProjectConfig} from '@jest/test-utils';
-import TestScheduler from '../TestScheduler';
+import {createTestScheduler} from '../TestScheduler';
 import * as testSchedulerHelper from '../testSchedulerHelper';
 
 jest.mock('@jest/reporters');
@@ -35,8 +35,8 @@ beforeEach(() => {
   spyShouldRunInBand.mockClear();
 });
 
-test('config for reporters supports `default`', () => {
-  const undefinedReportersScheduler = new TestScheduler(
+test('config for reporters supports `default`', async () => {
+  const undefinedReportersScheduler = await createTestScheduler(
     {
       reporters: undefined,
     },
@@ -45,7 +45,7 @@ test('config for reporters supports `default`', () => {
   const numberOfReporters =
     undefinedReportersScheduler._dispatcher._reporters.length;
 
-  const stringDefaultReportersScheduler = new TestScheduler(
+  const stringDefaultReportersScheduler = await createTestScheduler(
     {
       reporters: ['default'],
     },
@@ -55,7 +55,7 @@ test('config for reporters supports `default`', () => {
     numberOfReporters,
   );
 
-  const defaultReportersScheduler = new TestScheduler(
+  const defaultReportersScheduler = await createTestScheduler(
     {
       reporters: [['default', {}]],
     },
@@ -65,7 +65,7 @@ test('config for reporters supports `default`', () => {
     numberOfReporters,
   );
 
-  const emptyReportersScheduler = new TestScheduler(
+  const emptyReportersScheduler = await createTestScheduler(
     {
       reporters: [],
     },
@@ -74,8 +74,8 @@ test('config for reporters supports `default`', () => {
   expect(emptyReportersScheduler._dispatcher._reporters.length).toBe(0);
 });
 
-test('.addReporter() .removeReporter()', () => {
-  const scheduler = new TestScheduler({}, {});
+test('.addReporter() .removeReporter()', async () => {
+  const scheduler = await createTestScheduler({}, {});
   const reporter = new SummaryReporter();
   scheduler.addReporter(reporter);
   expect(scheduler._dispatcher._reporters).toContain(reporter);
@@ -84,7 +84,7 @@ test('.addReporter() .removeReporter()', () => {
 });
 
 test('schedule tests run in parallel per default', async () => {
-  const scheduler = new TestScheduler({}, {});
+  const scheduler = await createTestScheduler({}, {});
   const test = {
     context: {
       config: makeProjectConfig({
@@ -107,7 +107,7 @@ test('schedule tests run in parallel per default', async () => {
 });
 
 test('schedule tests run in serial if the runner flags them', async () => {
-  const scheduler = new TestScheduler({}, {});
+  const scheduler = await createTestScheduler({}, {});
   const test = {
     context: {
       config: makeProjectConfig({
@@ -130,7 +130,7 @@ test('schedule tests run in serial if the runner flags them', async () => {
 });
 
 test('should bail after `n` failures', async () => {
-  const scheduler = new TestScheduler({bail: 2}, {});
+  const scheduler = await createTestScheduler({bail: 2}, {});
   const test = {
     context: {
       config: makeProjectConfig({
@@ -162,7 +162,7 @@ test('should bail after `n` failures', async () => {
 });
 
 test('should not bail if less than `n` failures', async () => {
-  const scheduler = new TestScheduler({bail: 2}, {});
+  const scheduler = await createTestScheduler({bail: 2}, {});
   const test = {
     context: {
       config: makeProjectConfig({
@@ -194,7 +194,7 @@ test('should not bail if less than `n` failures', async () => {
 });
 
 test('should set runInBand to run in serial', async () => {
-  const scheduler = new TestScheduler({}, {});
+  const scheduler = await createTestScheduler({}, {});
   const test = {
     context: {
       config: makeProjectConfig({
@@ -220,7 +220,7 @@ test('should set runInBand to run in serial', async () => {
 });
 
 test('should set runInBand to not run in serial', async () => {
-  const scheduler = new TestScheduler({}, {});
+  const scheduler = await createTestScheduler({}, {});
   const test = {
     context: {
       config: makeProjectConfig({

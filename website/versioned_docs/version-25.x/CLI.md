@@ -184,6 +184,10 @@ Make calling deprecated APIs throw helpful error messages. Useful for easing the
 
 Alias: `-e`. Use this flag to show full diffs and errors instead of a patch.
 
+### `--filter=<file>`
+
+Path to a module exporting a filtering function. This method receives a list of tests which can be manipulated to exclude tests from running. Especially useful when used in conjunction with a testing infrastructure to filter known broken.
+
 ### `--findRelatedTests <spaceSeparatedListOfSourceFiles>`
 
 Find and run the tests that cover a space separated list of source files that were passed in as arguments. Useful for pre-commit hook integration to run the minimal amount of tests necessary. Can be used together with `--coverage` to include a test coverage for the source files, no duplicate `--collectCoverageFrom` arguments needed.
@@ -305,9 +309,11 @@ Note that `column` is 0-indexed while `line` is not.
 
 A regexp pattern string that is matched against all tests paths before executing the test. On Windows, you will need to use `/` as a path separator or escape `\` as `\\`.
 
-### `--testPathIgnorePatterns=[array]`
+### `--testPathIgnorePatterns=<regex>|[array]`
 
-An array of regexp pattern strings that are tested against all tests paths before executing the test. Contrary to `--testPathPattern`, it will only run those tests with a path that does not match with the provided regexp expressions.
+A single or array of regexp pattern strings that are tested against all tests paths before executing the test. Contrary to `--testPathPattern`, it will only run those tests with a path that does not match with the provided regexp expressions.
+
+To pass as an array use escaped parentheses and space delimited regexps such as `\(/node_modules/ /tests/e2e/\)`. Alternatively, you can omit parentheses by combining regexps into a single regexp like `/node_modules/|/tests/e2e/`. These two examples are equivalent.
 
 ### `--testRunner=<path>`
 

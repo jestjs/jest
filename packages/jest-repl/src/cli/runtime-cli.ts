@@ -15,7 +15,7 @@ import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {deprecationEntries, readConfig} from 'jest-config';
 import Runtime from 'jest-runtime';
-import {interopRequireDefault, setGlobal, tryRealpath} from 'jest-util';
+import {setGlobal, tryRealpath} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import * as args from './args';
 import {VERSION} from './version';
@@ -75,9 +75,9 @@ export async function run(
     });
 
     const transformer = await createScriptTransformer(config);
-    const Environment: typeof JestEnvironment = interopRequireDefault(
-      transformer.requireAndTranspileModule(config.testEnvironment),
-    ).default;
+    const Environment: typeof JestEnvironment =
+      await transformer.requireAndTranspileModule(config.testEnvironment);
+
     const environment = new Environment(config);
     setGlobal(
       environment.global,

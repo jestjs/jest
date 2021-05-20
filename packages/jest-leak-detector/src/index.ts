@@ -11,7 +11,7 @@ import {promisify} from 'util';
 import {setFlagsFromString} from 'v8';
 import {runInNewContext} from 'vm';
 import {isPrimitive} from 'jest-get-type';
-import prettyFormat from 'pretty-format';
+import {format as prettyFormat} from 'pretty-format';
 
 const tick = promisify(setImmediate);
 

@@ -25,60 +25,61 @@ const resetAssertionsLocalState = () => {
 
 // Create and format all errors related to the mismatched number of `expect`
 // calls and reset the matcher's state.
-const extractExpectedAssertionsErrors: Expect['extractExpectedAssertionsErrors'] = () => {
-  const result: ExpectedAssertionsErrors = [];
-  const {
-    assertionCalls,
-    expectedAssertionsNumber,
-    expectedAssertionsNumberError,
-    isExpectingAssertions,
-    isExpectingAssertionsError,
-  } = getState();
+const extractExpectedAssertionsErrors: Expect['extractExpectedAssertionsErrors'] =
+  () => {
+    const result: ExpectedAssertionsErrors = [];
+    const {
+      assertionCalls,
+      expectedAssertionsNumber,
+      expectedAssertionsNumberError,
+      isExpectingAssertions,
+      isExpectingAssertionsError,
+    } = getState();
 
-  resetAssertionsLocalState();
+    resetAssertionsLocalState();
 
-  if (
-    typeof expectedAssertionsNumber === 'number' &&
-    assertionCalls !== expectedAssertionsNumber
-  ) {
-    const numOfAssertionsExpected = EXPECTED_COLOR(
-      pluralize('assertion', expectedAssertionsNumber),
-    );
+    if (
+      typeof expectedAssertionsNumber === 'number' &&
+      assertionCalls !== expectedAssertionsNumber
+    ) {
+      const numOfAssertionsExpected = EXPECTED_COLOR(
+        pluralize('assertion', expectedAssertionsNumber),
+      );
 
-    expectedAssertionsNumberError!.message =
-      matcherHint('.assertions', '', String(expectedAssertionsNumber), {
-        isDirectExpectCall: true,
-      }) +
-      '\n\n' +
-      `Expected ${numOfAssertionsExpected} to be called but received ` +
-      RECEIVED_COLOR(pluralize('assertion call', assertionCalls || 0)) +
-      '.';
+      expectedAssertionsNumberError!.message =
+        matcherHint('.assertions', '', String(expectedAssertionsNumber), {
+          isDirectExpectCall: true,
+        }) +
+        '\n\n' +
+        `Expected ${numOfAssertionsExpected} to be called but received ` +
+        RECEIVED_COLOR(pluralize('assertion call', assertionCalls || 0)) +
+        '.';
 
-    result.push({
-      actual: assertionCalls.toString(),
-      error: expectedAssertionsNumberError!,
-      expected: expectedAssertionsNumber.toString(),
-    });
-  }
-  if (isExpectingAssertions && assertionCalls === 0) {
-    const expected = EXPECTED_COLOR('at least one assertion');
-    const received = RECEIVED_COLOR('received none');
+      result.push({
+        actual: assertionCalls.toString(),
+        error: expectedAssertionsNumberError!,
+        expected: expectedAssertionsNumber.toString(),
+      });
+    }
+    if (isExpectingAssertions && assertionCalls === 0) {
+      const expected = EXPECTED_COLOR('at least one assertion');
+      const received = RECEIVED_COLOR('received none');
 
-    isExpectingAssertionsError!.message =
-      matcherHint('.hasAssertions', '', '', {
-        isDirectExpectCall: true,
-      }) +
-      '\n\n' +
-      `Expected ${expected} to be called but ${received}.`;
+      isExpectingAssertionsError!.message =
+        matcherHint('.hasAssertions', '', '', {
+          isDirectExpectCall: true,
+        }) +
+        '\n\n' +
+        `Expected ${expected} to be called but ${received}.`;
 
-    result.push({
-      actual: 'none',
-      error: isExpectingAssertionsError!,
-      expected: 'at least one',
-    });
-  }
+      result.push({
+        actual: 'none',
+        error: isExpectingAssertionsError!,
+        expected: 'at least one',
+      });
+    }
 
-  return result;
-};
+    return result;
+  };
 
 export default extractExpectedAssertionsErrors;

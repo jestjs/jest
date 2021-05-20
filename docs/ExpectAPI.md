@@ -156,7 +156,7 @@ There are a number of helpful tools exposed on `this.utils` primarily consisting
 The most useful ones are `matcherHint`, `printExpected` and `printReceived` to format the error messages nicely. For example, take a look at the implementation for the `toBe` matcher:
 
 ```js
-const diff = require('jest-diff');
+const {diff} = require('jest-diff');
 expect.extend({
   toBe(received, expected) {
     const options = {
@@ -289,6 +289,48 @@ it('observes something', async () => {
     return 'async action';
   }).toMatchTrimmedInlineSnapshot(`"async action"`);
   */
+});
+```
+
+#### Bail out
+
+Usually `jest` tries to match every snapshot that is expected in a test.
+
+Sometimes it might not make sense to continue the test if a prior snapshot failed. For example, when you make snapshots of a state-machine after various transitions you can abort the test once one transition produced the wrong state.
+
+In that case you can implement a custom snapshot matcher that throws on the first mismatch instead of collecting every mismatch.
+
+```js
+const {toMatchInlineSnapshot} = require('jest-snapshot');
+
+expect.extend({
+  toMatchStateInlineSnapshot(...args) {
+    this.dontThrow = () => {};
+
+    return toMatchInlineSnapshot.call(this, ...args);
+  },
+});
+
+let state = 'initial';
+
+function transition() {
+  // Typo in the implementation should cause the test to fail
+  if (state === 'INITIAL') {
+    state = 'pending';
+  } else if (state === 'pending') {
+    state = 'done';
+  }
+}
+
+it('transitions as expected', () => {
+  expect(state).toMatchStateInlineSnapshot(`"initial"`);
+
+  transition();
+  // Already produces a mismatch. No point in continuing the test.
+  expect(state).toMatchStateInlineSnapshot(`"loading"`);
+
+  transition();
+  expect(state).toMatchStateInlineSnapshot(`"done"`);
 });
 ```
 

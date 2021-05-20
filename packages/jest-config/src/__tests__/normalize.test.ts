@@ -64,7 +64,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  ((console.warn as unknown) as jest.SpyInstance).mockRestore();
+  (console.warn as unknown as jest.SpyInstance).mockRestore();
 });
 
 it('picks a name based on the rootDir', async () => {
@@ -148,9 +148,7 @@ describe('rootDir', () => {
 
 describe('automock', () => {
   it('falsy automock is not overwritten', async () => {
-    ((console.warn as unknown) as jest.SpyInstance).mockImplementation(
-      () => {},
-    );
+    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
     const {options} = await normalize(
       {
         automock: false,
@@ -432,9 +430,7 @@ describe('setupTestFrameworkScriptFile', () => {
   let Resolver;
 
   beforeEach(() => {
-    ((console.warn as unknown) as jest.SpyInstance).mockImplementation(
-      () => {},
-    );
+    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
     Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name =>
       name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
@@ -451,7 +447,7 @@ describe('setupTestFrameworkScriptFile', () => {
     );
 
     expect(
-      ((console.warn as unknown) as jest.SpyInstance).mock.calls[0][0],
+      (console.warn as unknown as jest.SpyInstance).mock.calls[0][0],
     ).toMatchSnapshot();
   });
 
@@ -825,9 +821,7 @@ describe('babel-jest', () => {
 
 describe('Upgrade help', () => {
   beforeEach(() => {
-    ((console.warn as unknown) as jest.SpyInstance).mockImplementation(
-      () => {},
-    );
+    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
 
     const Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name => {
@@ -859,7 +853,7 @@ describe('Upgrade help', () => {
     expect(hasDeprecationWarnings).toBeTruthy();
 
     expect(
-      ((console.warn as unknown) as jest.SpyInstance).mock.calls[0][0],
+      (console.warn as unknown as jest.SpyInstance).mock.calls[0][0],
     ).toMatchSnapshot();
   });
 });
@@ -1564,7 +1558,7 @@ describe('testPathPattern', () => {
 
         expect(options.testPathPattern).toBe('');
         expect(
-          ((console.log as unknown) as jest.SpyInstance).mock.calls[0][0],
+          (console.log as unknown as jest.SpyInstance).mock.calls[0][0],
         ).toMatchSnapshot();
       });
 
@@ -1705,9 +1699,7 @@ describe('cwd', () => {
   });
 
   it('is not lost if the config has its own cwd property', async () => {
-    ((console.warn as unknown) as jest.SpyInstance).mockImplementation(
-      () => {},
-    );
+    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
     const {options} = await normalize(
       {
         cwd: '/tmp/config-sets-cwd-itself',
@@ -1775,9 +1767,7 @@ describe('displayName', () => {
 
 describe('testTimeout', () => {
   it('should return timeout value if defined', async () => {
-    ((console.warn as unknown) as jest.SpyInstance).mockImplementation(
-      () => {},
-    );
+    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
     const {options} = await normalize(
       {rootDir: '/root/', testTimeout: 1000},
       {} as Config.Argv,

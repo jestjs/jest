@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import prettyFormat from 'pretty-format';
+import {format as prettyFormat} from 'pretty-format';
 import plugin from '../mockSerializer';
 
 test('mock with 0 calls and default name', () => {

@@ -39,6 +39,7 @@ function stackIsFromUser(stack: string) {
 
 const alwaysActive = () => true;
 
+// @ts-expect-error: doesn't exist in v10 typings
 const hasWeakRef = typeof WeakRef === 'function';
 
 // Inspired by https://github.com/mafintosh/why-is-node-running/blob/master/index.js
@@ -76,9 +77,9 @@ export default function collectHandles(): HandleCollectionResult {
           // Timer that supports hasRef (Node v11+)
           if ('hasRef' in resource) {
             if (hasWeakRef) {
+              // @ts-expect-error: doesn't exist in v10 typings
               const ref = new WeakRef(resource);
               isActive = () => {
-                // @ts-expect-error: doesn't exist in v10 typings
                 return ref.deref()?.hasRef() ?? false;
               };
             } else {
