@@ -194,7 +194,8 @@ class ScriptTransformer {
     filename: Config.Path,
     cacheKey: string,
   ): Config.Path {
-    const baseCacheDir = HasteMap.getCacheFilePath(
+    const HasteMapClass = HasteMap.getStatic(this._config);
+    const baseCacheDir = HasteMapClass.getCacheFilePath(
       this._config.cacheDirectory,
       'jest-transform-cache-' + this._config.name,
       VERSION,

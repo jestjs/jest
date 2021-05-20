@@ -514,6 +514,8 @@ type HasteConfig = {
   platforms?: Array<string>;
   /** Whether to throw on error on module collision. */
   throwOnModuleCollision?: boolean;
+  /** Custom HasteMap module */
+  hasteMapModulePath?: string;
 };
 ```
 

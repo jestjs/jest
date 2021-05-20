@@ -61,6 +61,7 @@ const initialOptions: Config.InitialOptions = {
     enableSymlinks: false,
     forceNodeFilesystemAPI: false,
     hasteImplModulePath: '<rootDir>/haste_impl.js',
+    hasteMapModulePath: '',
     platforms: ['ios', 'android'],
     throwOnModuleCollision: false,
   },

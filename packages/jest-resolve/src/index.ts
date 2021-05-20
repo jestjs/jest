@@ -11,7 +11,7 @@ import * as path from 'path';
 import chalk = require('chalk');
 import slash = require('slash');
 import type {Config} from '@jest/types';
-import type {ModuleMap} from 'jest-haste-map';
+import type {IModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
 import ModuleNotFoundError from './ModuleNotFoundError';
 import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
@@ -50,13 +50,13 @@ const nodePaths = NODE_PATH
 
 export default class Resolver {
   private readonly _options: ResolverConfig;
-  private readonly _moduleMap: ModuleMap;
+  private readonly _moduleMap: IModuleMap;
   private readonly _moduleIDCache: Map<string, string>;
   private readonly _moduleNameCache: Map<string, Config.Path>;
   private readonly _modulePathCache: Map<string, Array<Config.Path>>;
   private readonly _supportsNativePlatform: boolean;
 
-  constructor(moduleMap: ModuleMap, options: ResolverConfig) {
+  constructor(moduleMap: IModuleMap, options: ResolverConfig) {
     this._options = {
       defaultPlatform: options.defaultPlatform,
       extensions: options.extensions,
