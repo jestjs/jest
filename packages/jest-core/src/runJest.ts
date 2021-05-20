@@ -24,7 +24,7 @@ import {requireOrImportModule, tryRealpath} from 'jest-util';
 import {JestHook, JestHookEmitter} from 'jest-watcher';
 import type FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
-import TestScheduler, {TestSchedulerContext} from './TestScheduler';
+import {TestSchedulerContext, createTestScheduler} from './TestScheduler';
 import type TestWatcher from './TestWatcher';
 import collectNodeHandles, {HandleCollectionResult} from './collectHandles';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
@@ -268,11 +268,13 @@ export default async function runJest({
     }
   }
 
-  const results = await new TestScheduler(
+  const scheduler = await createTestScheduler(
     globalConfig,
     {startRun},
     testSchedulerContext,
-  ).scheduleTests(allTests, testWatcher);
+  );
+
+  const results = await scheduler.scheduleTests(allTests, testWatcher);
 
   await sequencer.cacheResults(allTests, results);
 

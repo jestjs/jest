@@ -7,8 +7,8 @@
 
 export {
   SearchSource,
-  TestScheduler,
   TestWatcher,
+  createTestScheduler,
   getVersion,
   runCLI,
 } from '@jest/core';
