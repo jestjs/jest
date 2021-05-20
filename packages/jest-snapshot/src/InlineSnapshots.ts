@@ -49,10 +49,15 @@ export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
   prettierPath: Config.Path,
 ): void {
-  const prettier = prettierPath
-    ? // @ts-expect-error requireOutside Babel transform
-      (requireOutside(prettierPath) as Prettier)
-    : undefined;
+  let prettier: Prettier | null = null;
+  if (prettierPath) {
+    try {
+      // @ts-expect-error requireOutside Babel transform
+      prettier = requireOutside(prettierPath) as Prettier;
+    } catch {
+      // Continue even if prettier is not installed.
+    }
+  }
 
   const snapshotsByFile = groupSnapshotsByFile(snapshots);
 

@@ -66,7 +66,8 @@ export default function collectHandles(): HandleCollectionResult {
         type === 'PROMISE' ||
         type === 'TIMERWRAP' ||
         type === 'ELDHISTOGRAM' ||
-        type === 'PerformanceObserver'
+        type === 'PerformanceObserver' ||
+        type === 'RANDOMBYTESREQUEST'
       ) {
         return;
       }
