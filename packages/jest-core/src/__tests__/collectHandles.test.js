@@ -64,4 +64,25 @@ describe('collectHandles', () => {
     const openHandles = await handleCollector();
     expect(openHandles).toHaveLength(0);
   });
+
+  it('should collect handles indirectly triggered by user code', async () => {
+    const handleCollector = collectHandles();
+
+    // Calling `server.listen` with just a port (e.g. `server.listen(0)`)
+    // creates a `TCPSERVERWRAP` async resource. However, including a `host`
+    // option instead creates a `GETADDRINFOREQWRAP` resource that only
+    // lasts for the lifetime of the `listen()` call, but which *indirectly*
+    // creates a long-lived `TCPSERVERWRAP` resource. We want to make sure we
+    // capture that long-lived resource.
+    const server = new http.Server();
+    await new Promise(r => server.listen({host: 'localhost', port: 0}, r));
+
+    const openHandles = await handleCollector();
+
+    await new Promise(r => server.close(r));
+
+    expect(openHandles).toContainEqual(
+      expect.objectContaining({message: 'TCPSERVERWRAP'}),
+    );
+  });
 });

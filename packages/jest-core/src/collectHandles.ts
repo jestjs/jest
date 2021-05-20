@@ -59,7 +59,7 @@ export default function collectHandles(): HandleCollectionResult {
     init: function initHook(
       asyncId,
       type,
-      _triggerAsyncId,
+      triggerAsyncId,
       resource: {} | NodeJS.Timeout,
     ) {
       if (
@@ -71,8 +71,20 @@ export default function collectHandles(): HandleCollectionResult {
         return;
       }
       const error = new ErrorWithStack(type, initHook);
+      let fromUser = stackIsFromUser(error.stack || '');
 
-      if (stackIsFromUser(error.stack || '')) {
+      // If the async resource was not directly created by user code, but was
+      // triggered by another async resource from user code, track it and use
+      // the original triggering resource's stack.
+      if (!fromUser) {
+        const triggeringHandle = activeHandles.get(triggerAsyncId);
+        if (triggeringHandle) {
+          fromUser = true;
+          error.stack = triggeringHandle.error.stack;
+        }
+      }
+
+      if (fromUser) {
         let isActive: () => boolean;
 
         if (type === 'Timeout' || type === 'Immediate') {

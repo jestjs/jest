@@ -10,9 +10,15 @@ export default class ErrorWithStack extends Error {
     message: string | undefined,
     callsite: (...args: Array<any>) => unknown,
   ) {
+    // Ensure we have a large stack length so we get full details.
+    const stackLimit = Error.stackTraceLimit;
+    Error.stackTraceLimit = Math.max(100, stackLimit || 10);
+
     super(message);
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, callsite);
     }
+
+    Error.stackTraceLimit = stackLimit;
   }
 }
