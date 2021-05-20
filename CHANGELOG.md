@@ -2,7 +2,6 @@
 
 ### Features
 
-- `[jest-config, jest-haste-map, jest-resolve, jest-runner, jest-runtime, jest-test-sequencer, jest-transform, jest-types]` [**BREAKING**] Add custom HasteMap class implementation config option ([#11107](https://github.com/facebook/jest/pull/11107))
 - `[babel-jest]` Add async transformation ([#11192](https://github.com/facebook/jest/pull/11192))
 - `[jest-changed-files]` Use '--' to separate paths from revisions ([#11160](https://github.com/facebook/jest/pull/11160))
 - `[jest-circus]` [**BREAKING**] Fail tests when multiple `done()` calls are made ([#10624](https://github.com/facebook/jest/pull/10624))
@@ -13,6 +12,7 @@
 - `[jest-config, jest-runtime]` Support ESM for files other than `.js` and `.mjs` ([#10823](https://github.com/facebook/jest/pull/10823))
 - `[jest-config, jest-runtime]` [**BREAKING**] Use "modern" implementation as default for fake timers ([#10874](https://github.com/facebook/jest/pull/10874) & [#11197](https://github.com/facebook/jest/pull/11197))
 - `[jest-config` Allow passing `forceNodeFilesystemAPI` through to `jest-haste-map` ([#11264](https://github.com/facebook/jest/pull/11264))
+- `[jest-config, jest-haste-map, jest-resolve, jest-runner, jest-runtime, jest-test-sequencer, jest-transform, jest-types]` [**BREAKING**] Add custom HasteMap class implementation config option ([#11107](https://github.com/facebook/jest/pull/11107))
 - `[jest-core]` make `TestWatcher` extend `emittery` ([#10324](https://github.com/facebook/jest/pull/10324))
 - `[jest-core]` Run failed tests interactively the same way we do with snapshots ([#10858](https://github.com/facebook/jest/pull/10858))
 - `[jest-core]` more `TestSequencer` methods can be async ([#10980](https://github.com/facebook/jest/pull/10980))
@@ -20,6 +20,7 @@
 - `[jest-core]` Add support for `globalSetup` and `globalTeardown` written in ESM ([#11267](https://github.com/facebook/jest/pull/11267))
 - `[jest-core]` Add support for `watchPlugins` written in ESM ([#11315](https://github.com/facebook/jest/pull/11315))
 - `[jest-core]` Add support for `runner` written in ESM ([#11232](https://github.com/facebook/jest/pull/11232))
+- `[jest-core]` Add support for `reporters` written in ESM ([#11427](https://github.com/facebook/jest/pull/11427))
 - `[jest-each]` Add support for interpolation with object properties ([#11388](https://github.com/facebook/jest/pull/11388))
 - `[jest-environment-node]` Add AbortController to globals ([#11182](https://github.com/facebook/jest/pull/11182))
 - `[@jest/fake-timers]` Update to `@sinonjs/fake-timers` to v7 ([#11198](https://github.com/facebook/jest/pull/11198))
@@ -117,6 +118,7 @@
 - `[babel-jest]` [**BREAKING**] Migrate to ESM ([#11193](https://github.com/facebook/jest/pull/11193))
 - `[docs]` Correct example using `browser-resolve` ([#11140](https://github.com/facebook/jest/pull/11140))
 - `[docs]` Clarify `timers` configuration property ([#11376](https://github.com/facebook/jest/pull/11376))
+- `[jest, jest-core]` [**BREAKING**] Replace `TestScheduler` export with `createTestScheduler` ([#11427](https://github.com/facebook/jest/pull/11427))
 - `[jest-config]` [**BREAKING**] Remove `enabledTestsMap` config, use `filter` instead ([#10787](https://github.com/facebook/jest/pull/10787))
 - `[jest-console]` [**BREAKING**] Move `root` into `config` and take `GlobalConfig` as mandatory parameter for `getConsoleOutput` ([#10126](https://github.com/facebook/jest/pull/10126))
 - `[jest-console]` Export LogEntry ([#11017](https://github.com/facebook/jest/pull/11017))
