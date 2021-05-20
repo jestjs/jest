@@ -75,7 +75,7 @@ type ProcessResultOptions = Pick<
   outputStream: NodeJS.WriteStream;
 };
 
-const processResults = (
+const processResults = async (
   runResults: AggregatedResult,
   options: ProcessResultOptions,
 ) => {
@@ -89,7 +89,7 @@ const processResults = (
   } = options;
 
   if (collectHandles) {
-    runResults.openHandles = collectHandles();
+    runResults.openHandles = await collectHandles();
   } else {
     runResults.openHandles = [];
   }
@@ -282,7 +282,7 @@ export default async function runJest({
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});
   }
 
-  processResults(results, {
+  await processResults(results, {
     collectHandles,
     json: globalConfig.json,
     onComplete,

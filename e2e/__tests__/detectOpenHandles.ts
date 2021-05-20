@@ -166,3 +166,15 @@ it('prints out info about open handlers from lifecycle functions with a `done` c
 
   expect(wrap(textAfterTest)).toMatchSnapshot();
 });
+
+it('does not print info about open handlers for a server that is already closed', async () => {
+  const run = runContinuous('detect-open-handles', [
+    'recently-closed',
+    '--detectOpenHandles',
+  ]);
+  await run.waitUntil(({stderr}) => stderr.includes('Ran all test suites'));
+  const {stderr} = await run.end();
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(wrap(textAfterTest)).toMatchSnapshot();
+});

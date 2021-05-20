@@ -8,12 +8,13 @@
 /* eslint-disable local/ban-types-eventually */
 
 import * as asyncHooks from 'async_hooks';
+import {promisify} from 'util';
 import stripAnsi = require('strip-ansi');
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';
 
-export type HandleCollectionResult = () => Array<Error>;
+export type HandleCollectionResult = () => Promise<Array<Error>>;
 
 function stackIsFromUser(stack: string) {
   // Either the test file, or something required by it
@@ -42,6 +43,8 @@ const alwaysActive = () => true;
 // @ts-expect-error: doesn't exist in v10 typings
 const hasWeakRef = typeof WeakRef === 'function';
 
+const asyncSleep = promisify(setTimeout);
+
 // Inspired by https://github.com/mafintosh/why-is-node-running/blob/master/index.js
 // Extracted as we want to format the result ourselves
 export default function collectHandles(): HandleCollectionResult {
@@ -56,7 +59,7 @@ export default function collectHandles(): HandleCollectionResult {
     init: function initHook(
       asyncId,
       type,
-      _triggerAsyncId,
+      triggerAsyncId,
       resource: {} | NodeJS.Timeout,
     ) {
       if (
@@ -68,9 +71,21 @@ export default function collectHandles(): HandleCollectionResult {
       ) {
         return;
       }
-      const error = new ErrorWithStack(type, initHook);
+      const error = new ErrorWithStack(type, initHook, 100);
+      let fromUser = stackIsFromUser(error.stack || '');
 
-      if (stackIsFromUser(error.stack || '')) {
+      // If the async resource was not directly created by user code, but was
+      // triggered by another async resource from user code, track it and use
+      // the original triggering resource's stack.
+      if (!fromUser) {
+        const triggeringHandle = activeHandles.get(triggerAsyncId);
+        if (triggeringHandle) {
+          fromUser = true;
+          error.stack = triggeringHandle.error.stack;
+        }
+      }
+
+      if (fromUser) {
         let isActive: () => boolean;
 
         if (type === 'Timeout' || type === 'Immediate') {
@@ -102,7 +117,14 @@ export default function collectHandles(): HandleCollectionResult {
 
   hook.enable();
 
-  return () => {
+  return async () => {
+    // Wait briefly for any async resources that have been queued for
+    // destruction to actually be destroyed.
+    // For example, Node.js TCP Servers are not destroyed until *after* their
+    // `close` callback runs. If someone finishes a test from the `close`
+    // callback, we will not yet have seen the resource be destroyed here.
+    await asyncSleep(100);
+
     hook.disable();
 
     // Get errors for every async resource still referenced at this moment
