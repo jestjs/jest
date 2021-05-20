@@ -11,12 +11,12 @@ import {PerformanceObserver} from 'perf_hooks';
 import collectHandles from '../collectHandles';
 
 describe('collectHandles', () => {
-  it('should collect Timeout', () => {
+  it('should collect Timeout', async () => {
     const handleCollector = collectHandles();
 
     const interval = setInterval(() => {}, 100);
 
-    const openHandles = handleCollector();
+    const openHandles = await handleCollector();
 
     expect(openHandles).toHaveLength(1);
     expect(openHandles[0].message).toContain('Timeout');
@@ -24,12 +24,12 @@ describe('collectHandles', () => {
     clearInterval(interval);
   });
 
-  it('should not collect the PerformanceObserver open handle', () => {
+  it('should not collect the PerformanceObserver open handle', async () => {
     const handleCollector = collectHandles();
     const obs = new PerformanceObserver((list, observer) => {});
     obs.observe({entryTypes: ['mark']});
 
-    const openHandles = handleCollector();
+    const openHandles = await handleCollector();
 
     expect(openHandles).toHaveLength(0);
     obs.disconnect();
@@ -40,14 +40,28 @@ describe('collectHandles', () => {
     const server = http.createServer((_, response) => response.end('ok'));
     server.listen(0, () => {
       // Collect results while server is still open.
-      const openHandles = handleCollector();
-
-      server.close(() => {
-        expect(openHandles).toContainEqual(
-          expect.objectContaining({message: 'TCPSERVERWRAP'}),
-        );
-        done();
-      });
+      handleCollector()
+        .then(openHandles => {
+          server.close(() => {
+            expect(openHandles).toContainEqual(
+              expect.objectContaining({message: 'TCPSERVERWRAP'}),
+            );
+            done();
+          });
+        })
+        .catch(done);
     });
+  });
+
+  it('should not collect handles that have been queued to close', async () => {
+    const handleCollector = collectHandles();
+    const server = http.createServer((_, response) => response.end('ok'));
+
+    // Start and stop server.
+    await new Promise(r => server.listen(0, r));
+    await new Promise(r => server.close(r));
+
+    const openHandles = await handleCollector();
+    expect(openHandles).toHaveLength(0);
   });
 });
