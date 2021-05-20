@@ -167,14 +167,3 @@ it('does not print info about open handlers for a server that is already closed'
 
   expect(wrap(textAfterTest)).toMatchSnapshot();
 });
-
-it('does not report crypto random data', () => {
-  // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
-  const {stderr} = runJest('detect-open-handles', [
-    'crypto',
-    '--detectOpenHandles',
-  ]);
-  const textAfterTest = getTextAfterTest(stderr);
-
-  expect(textAfterTest).toBe('');
-});
