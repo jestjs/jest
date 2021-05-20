@@ -18,8 +18,9 @@ describe('collectHandles', () => {
 
     const openHandles = await handleCollector();
 
-    expect(openHandles).toHaveLength(1);
-    expect(openHandles[0].message).toContain('Timeout');
+    expect(openHandles).toContainEqual(
+      expect.objectContaining({message: 'Timeout'}),
+    );
 
     clearInterval(interval);
   });
@@ -31,7 +32,9 @@ describe('collectHandles', () => {
 
     const openHandles = await handleCollector();
 
-    expect(openHandles).toHaveLength(0);
+    expect(openHandles).not.toContainEqual(
+      expect.objectContaining({message: 'PerformanceObserver'}),
+    );
     obs.disconnect();
   });
 
