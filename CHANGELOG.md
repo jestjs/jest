@@ -70,6 +70,7 @@
 - `[jest-core]` Don't report PerformanceObserver as open handle ([#11123](https://github.com/facebook/jest/pull/11123))
 - `[jest-core]` Use `WeakRef` to hold timers when detecting open handles ([#11277](https://github.com/facebook/jest/pull/11277))
 - `[jest-core]` Correctly detect open handles that were created in test functions using `done` callbacks ([#11382](https://github.com/facebook/jest/pull/11382))
+- `[jest-core]` Do not collect `RANDOMBYTESREQUEST` as open handles ([#11278](https://github.com/facebook/jest/pull/11278))
 - `[jest-diff]` [**BREAKING**] Use only named exports ([#11371](https://github.com/facebook/jest/pull/11371))
 - `[jest-each]` [**BREAKING**] Ignore excess words in headings ([#8766](https://github.com/facebook/jest/pull/8766))
 - `[jest-each]` Support array index with template strings ([#10763](https://github.com/facebook/jest/pull/10763))
