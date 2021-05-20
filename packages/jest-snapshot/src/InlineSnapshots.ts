@@ -49,7 +49,7 @@ export function saveInlineSnapshots(
   snapshots: Array<InlineSnapshot>,
   prettierPath: Config.Path,
 ): void {
-  let prettier;
+  let prettier: Prettier | null = null;
   if (prettierPath) {
     try {
       // @ts-expect-error requireOutside Babel transform
