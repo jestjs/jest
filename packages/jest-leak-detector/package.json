@@ -1,6 +1,6 @@
 {
   "name": "jest-leak-detector",
-  "version": "27.0.0-next.10",
+  "version": "27.0.0-next.11",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "jest-get-type": "^27.0.0-next.9",
-    "pretty-format": "^27.0.0-next.10"
+    "pretty-format": "^27.0.0-next.11"
   },
   "devDependencies": {
     "@types/weak-napi": "^2.0.0",
