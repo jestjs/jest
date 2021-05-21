@@ -337,9 +337,9 @@ export const formatResultsErrors = (
 ): string | null => {
   const failedResults: FailedResults = testResults.reduce<FailedResults>(
     (errors, result) => {
-      result.failureMessages
-        .map(checkForCommonEnvironmentErrors)
-        .forEach(content => errors.push({content, result}));
+      result.failureMessages.forEach(item => {
+        errors.push({content: checkForCommonEnvironmentErrors(item), result});
+      });
       return errors;
     },
     [],
