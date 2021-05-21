@@ -32,7 +32,7 @@ Tool for visualizing changes in data. Exports a function that compares two value
 ### Example
 
 ```javascript
-const diff = require('jest-diff').default;
+const {diff} = require('jest-diff');
 
 const a = {a: {b: {c: 5}}};
 const b = {a: {b: {c: 6}}};
@@ -77,7 +77,7 @@ Module that identifies the primitive type of any JavaScript value. Exports a fun
 ### Example
 
 ```javascript
-const getType = require('jest-get-type');
+const {getType} = require('jest-get-type');
 
 const array = [1, 2, 3];
 const nullValue = null;

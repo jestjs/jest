@@ -4,8 +4,5 @@
     "rootDir": "src",
     "outDir": "build"
   },
-  "references": [
-    {"path": "../jest-cli"},
-    {"path": "../jest-core"}
-  ]
+  "references": [{"path": "../jest-cli"}, {"path": "../jest-core"}]
 }

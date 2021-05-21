@@ -32,12 +32,14 @@ import type {
   EventsQueue,
   FileData,
   FileMetaData,
+  HasteMapStatic,
   HasteRegExp,
   InternalHasteMap,
   HasteMap as InternalHasteMapObject,
   MockData,
   ModuleMapData,
   ModuleMetaData,
+  SerializableModuleMap,
   WorkerMetadata,
 } from './types';
 import FSEventsWatcher = require('./watchers/FSEventsWatcher');
@@ -60,6 +62,7 @@ type Options = {
   extensions: Array<string>;
   forceNodeFilesystemAPI?: boolean;
   hasteImplModulePath?: string;
+  hasteMapModulePath?: string;
   ignorePattern?: HasteRegExp;
   maxWorkers: number;
   mocksPattern?: string;
@@ -106,7 +109,8 @@ type Watcher = {
 type WorkerInterface = {worker: typeof worker; getSha1: typeof getSha1};
 
 export {default as ModuleMap} from './ModuleMap';
-export type {SerializableModuleMap} from './ModuleMap';
+export type {SerializableModuleMap} from './types';
+export type {IModuleMap} from './types';
 export type {default as FS} from './HasteFS';
 export type {ChangeEvent, HasteMap as HasteMapObject} from './types';
 
@@ -219,7 +223,22 @@ export default class HasteMap extends EventEmitter {
   private _watchers: Array<Watcher>;
   private _worker: WorkerInterface | null;
 
-  constructor(options: Options) {
+  static getStatic(config: Config.ProjectConfig): HasteMapStatic {
+    if (config.haste.hasteMapModulePath) {
+      return require(config.haste.hasteMapModulePath);
+    }
+    return HasteMap;
+  }
+
+  static create(options: Options): HasteMap {
+    if (options.hasteMapModulePath) {
+      const CustomHasteMap = require(options.hasteMapModulePath);
+      return new CustomHasteMap(options);
+    }
+    return new HasteMap(options);
+  }
+
+  private constructor(options: Options) {
     super();
     this._options = {
       cacheDirectory: options.cacheDirectory || tmpdir(),
@@ -322,6 +341,10 @@ export default class HasteMap extends EventEmitter {
       tmpdir,
       name.replace(/\W/g, '-') + '-' + hash.digest('hex'),
     );
+  }
+
+  static getModuleMapFromJSON(json: SerializableModuleMap): HasteModuleMap {
+    return HasteModuleMap.fromJSON(json);
   }
 
   getCacheFilePath(): string {

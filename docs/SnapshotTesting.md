@@ -99,10 +99,6 @@ Once you're finished, Jest will give you a summary before returning back to watc
 
 Inline snapshots behave identically to external snapshots (`.snap` files), except the snapshot values are written automatically back into the source code. This means you can get the benefits of automatically generated snapshots without having to switch to an external file to make sure the correct value was written.
 
-> Inline snapshots are powered by [Prettier](https://prettier.io). To use inline snapshots you must have `prettier` installed in your project. Your Prettier configuration will be respected when writing to test files.
->
-> If you have `prettier` installed in a location where Jest can't find it, you can tell Jest how to find it using the [`"prettierPath"`](./Configuration.md#prettierpath-string) configuration property.
-
 **Example:**
 
 First, you write a test, calling `.toMatchInlineSnapshot()` with no arguments:
@@ -110,7 +106,7 @@ First, you write a test, calling `.toMatchInlineSnapshot()` with no arguments:
 ```tsx
 it('renders correctly', () => {
   const tree = renderer
-    .create(<Link page="https://prettier.io">Prettier</Link>)
+    .create(<Link page="https://example.com">Example Site</Link>)
     .toJSON();
   expect(tree).toMatchInlineSnapshot();
 });
@@ -121,16 +117,16 @@ The next time you run Jest, `tree` will be evaluated, and a snapshot will be wri
 ```tsx
 it('renders correctly', () => {
   const tree = renderer
-    .create(<Link page="https://prettier.io">Prettier</Link>)
+    .create(<Link page="https://example.com">Example Site</Link>)
     .toJSON();
   expect(tree).toMatchInlineSnapshot(`
 <a
   className="normal"
-  href="https://prettier.io"
+  href="https://example.com"
   onMouseEnter={[Function]}
   onMouseLeave={[Function]}
 >
-  Prettier
+  Example Site
 </a>
 `);
 });

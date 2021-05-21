@@ -8,7 +8,7 @@
 
 import chalk = require('chalk');
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
-import prettyFormat from 'pretty-format';
+import {format as prettyFormat} from 'pretty-format';
 import {
   MatcherHintOptions,
   diff,
@@ -213,7 +213,9 @@ describe('ensureNoExpected()', () => {
   });
 });
 
-jest.mock('jest-diff', () => () => 'diff output');
+jest.mock('jest-diff', () => ({
+  diff: () => 'diff output',
+}));
 describe('diff', () => {
   test('forwards to jest-diff', () => {
     [

@@ -24,7 +24,7 @@ import {
   diffStringsRaw,
   diffStringsUnified,
 } from 'jest-diff';
-import getType = require('jest-get-type');
+import {getType, isPrimitive} from 'jest-get-type';
 import {
   BOLD_WEIGHT,
   EXPECTED_COLOR,
@@ -34,7 +34,7 @@ import {
   getLabelPrinter,
   matcherHint,
 } from 'jest-matcher-utils';
-import prettyFormat from 'pretty-format';
+import {format as prettyFormat} from 'pretty-format';
 import {
   aBackground2,
   aBackground3,
@@ -171,7 +171,7 @@ const joinDiffs = (
 const isLineDiffable = (received: unknown): boolean => {
   const receivedType = getType(received);
 
-  if (getType.isPrimitive(received)) {
+  if (isPrimitive(received)) {
     return typeof received === 'string';
   }
 

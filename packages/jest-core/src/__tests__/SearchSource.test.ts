@@ -446,16 +446,22 @@ describe('SearchSource', () => {
       searchSource = new SearchSource(context);
     });
 
-    it('makes sure a file is related to itself', () => {
-      const data = searchSource.findRelatedTests(new Set([rootPath]), false);
+    it('makes sure a file is related to itself', async () => {
+      const data = await searchSource.findRelatedTests(
+        new Set([rootPath]),
+        false,
+      );
       expect(toPaths(data.tests)).toEqual([rootPath]);
     });
 
-    it('finds tests that depend directly on the path', () => {
+    it('finds tests that depend directly on the path', async () => {
       const filePath = path.join(rootDir, 'RegularModule.js');
       const file2Path = path.join(rootDir, 'RequireRegularModule.js');
       const parentDep = path.join(rootDir, 'ModuleWithSideEffects.js');
-      const data = searchSource.findRelatedTests(new Set([filePath]), false);
+      const data = await searchSource.findRelatedTests(
+        new Set([filePath]),
+        false,
+      );
       expect(toPaths(data.tests).sort()).toEqual([
         parentDep,
         filePath,
@@ -464,12 +470,12 @@ describe('SearchSource', () => {
       ]);
     });
 
-    it('excludes untested files from coverage', () => {
+    it('excludes untested files from coverage', async () => {
       const unrelatedFile = path.join(rootDir, 'JSONFile.json');
       const regular = path.join(rootDir, 'RegularModule.js');
       const requireRegular = path.join(rootDir, 'RequireRegularMode.js');
 
-      const data = searchSource.findRelatedTests(
+      const data = await searchSource.findRelatedTests(
         new Set([regular, requireRegular, unrelatedFile]),
         true,
       );
@@ -497,39 +503,39 @@ describe('SearchSource', () => {
       searchSource = new SearchSource(context);
     });
 
-    it('returns empty search result for empty input', () => {
+    it('returns empty search result for empty input', async () => {
       const input: Array<Config.Path> = [];
-      const data = searchSource.findRelatedTestsFromPattern(input, false);
+      const data = await searchSource.findRelatedTestsFromPattern(input, false);
       expect(data.tests).toEqual([]);
     });
 
-    it('returns empty search result for invalid input', () => {
+    it('returns empty search result for invalid input', async () => {
       const input = ['non-existend.js'];
-      const data = searchSource.findRelatedTestsFromPattern(input, false);
+      const data = await searchSource.findRelatedTestsFromPattern(input, false);
       expect(data.tests).toEqual([]);
     });
 
-    it('returns empty search result if no related tests were found', () => {
+    it('returns empty search result if no related tests were found', async () => {
       const input = ['no_tests.js'];
-      const data = searchSource.findRelatedTestsFromPattern(input, false);
+      const data = await searchSource.findRelatedTestsFromPattern(input, false);
       expect(data.tests).toEqual([]);
     });
 
-    it('finds tests for a single file', () => {
+    it('finds tests for a single file', async () => {
       const input = ['packages/jest-core/src/__tests__/test_root/module.jsx'];
-      const data = searchSource.findRelatedTestsFromPattern(input, false);
+      const data = await searchSource.findRelatedTestsFromPattern(input, false);
       expect(toPaths(data.tests).sort()).toEqual([
         path.join(rootDir, '__testtests__', 'test.js'),
         path.join(rootDir, '__testtests__', 'test.jsx'),
       ]);
     });
 
-    it('finds tests for multiple files', () => {
+    it('finds tests for multiple files', async () => {
       const input = [
         'packages/jest-core/src/__tests__/test_root/module.jsx',
         'packages/jest-core/src/__tests__/test_root/module.foobar',
       ];
-      const data = searchSource.findRelatedTestsFromPattern(input, false);
+      const data = await searchSource.findRelatedTestsFromPattern(input, false);
       expect(toPaths(data.tests).sort()).toEqual([
         path.join(rootDir, '__testtests__', 'test.foobar'),
         path.join(rootDir, '__testtests__', 'test.js'),
@@ -588,34 +594,36 @@ describe('SearchSource', () => {
       searchSource = new SearchSource(context);
     });
 
-    it('return empty set if no SCM', () => {
+    it('return empty set if no SCM', async () => {
       const requireRegularModule = path.join(
         rootDir,
         'RequireRegularModule.js',
       );
-      const sources = searchSource.findRelatedSourcesFromTestsInChangedFiles({
-        changedFiles: new Set([requireRegularModule]),
-        repos: {
-          git: new Set(),
-          hg: new Set(),
-        },
-      });
+      const sources =
+        await searchSource.findRelatedSourcesFromTestsInChangedFiles({
+          changedFiles: new Set([requireRegularModule]),
+          repos: {
+            git: new Set(),
+            hg: new Set(),
+          },
+        });
       expect(sources).toEqual([]);
     });
 
-    it('return sources required by tests', () => {
+    it('return sources required by tests', async () => {
       const regularModule = path.join(rootDir, 'RegularModule.js');
       const requireRegularModule = path.join(
         rootDir,
         'RequireRegularModule.js',
       );
-      const sources = searchSource.findRelatedSourcesFromTestsInChangedFiles({
-        changedFiles: new Set([requireRegularModule]),
-        repos: {
-          git: new Set('/path/to/git'),
-          hg: new Set(),
-        },
-      });
+      const sources =
+        await searchSource.findRelatedSourcesFromTestsInChangedFiles({
+          changedFiles: new Set([requireRegularModule]),
+          repos: {
+            git: new Set('/path/to/git'),
+            hg: new Set(),
+          },
+        });
       expect(sources).toEqual([regularModule]);
     });
   });

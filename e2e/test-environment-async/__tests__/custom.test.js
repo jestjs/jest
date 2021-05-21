@@ -6,7 +6,6 @@
  *
  */
 'use strict';
-/* eslint-env browser*/
 
 test('setup', () => {
   expect(global.setup).toBe('setup');

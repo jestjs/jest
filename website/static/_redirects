@@ -10,6 +10,7 @@
 /docs/en/*            /docs/:splat
 /docs/ja/*            /ja/docs/:splat
 /docs/es-ES/*         /es-ES/docs/:splat
+/docs/fr/*            /fr/docs/:splat
 /docs/pt-BR/*         /pt-BR/docs/:splat
 /docs/ro/*            /ro/docs/:splat
 /docs/ru/*            /ru/docs/:splat
@@ -22,6 +23,7 @@
 
 /ja/*         /ja/404.html          404
 /es-ES/*      /es-ES/404.html       404
+/fr/*         /fr/404.html          404
 /pt-BR/*      /pt-BR/404.html       404
 /ro/*         /ro/404.html          404
 /ru/*         /ru/404.html          404

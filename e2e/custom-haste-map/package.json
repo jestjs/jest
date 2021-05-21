@@ -1,0 +1,7 @@
+{
+  "jest": {
+    "haste": {
+      "hasteMapModulePath": "<rootDir>/hasteMap.js"
+    }
+  }
+}

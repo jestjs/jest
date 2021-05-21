@@ -36,17 +36,18 @@ export type HasteConfig = {
   platforms?: Array<string>;
   /** Whether to throw on error on module collision. */
   throwOnModuleCollision?: boolean;
+  /** Custom HasteMap module */
+  hasteMapModulePath?: string;
 };
 
 export type CoverageReporterName = keyof ReportOptions;
 
-export type CoverageReporterWithOptions<
-  K = CoverageReporterName
-> = K extends CoverageReporterName
-  ? ReportOptions[K] extends never
-    ? never
-    : [K, Partial<ReportOptions[K]>]
-  : never;
+export type CoverageReporterWithOptions<K = CoverageReporterName> =
+  K extends CoverageReporterName
+    ? ReportOptions[K] extends never
+      ? never
+      : [K, Partial<ReportOptions[K]>]
+    : never;
 
 export type CoverageReporters = Array<
   CoverageReporterName | CoverageReporterWithOptions
@@ -65,11 +66,14 @@ export type DefaultOptions = {
   cache: boolean;
   cacheDirectory: Path;
   changedFilesWithAncestor: boolean;
+  ci: boolean;
   clearMocks: boolean;
   collectCoverage: boolean;
   coveragePathIgnorePatterns: Array<string>;
   coverageReporters: Array<CoverageReporterName>;
   coverageProvider: CoverageProvider;
+  detectLeaks: boolean;
+  detectOpenHandles: boolean;
   errorOnDeprecated: boolean;
   expand: boolean;
   extensionsToTreatAsEsm: Array<Path>;
@@ -77,6 +81,7 @@ export type DefaultOptions = {
   globals: ConfigGlobals;
   haste: HasteConfig;
   injectGlobals: boolean;
+  listTests: boolean;
   maxConcurrency: number;
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
@@ -86,6 +91,7 @@ export type DefaultOptions = {
   noStackTrace: boolean;
   notify: boolean;
   notifyMode: NotifyMode;
+  passWithNoTests: boolean;
   prettierPath: string;
   resetMocks: boolean;
   resetModules: boolean;
@@ -124,11 +130,17 @@ export type DisplayName = {
 export type InitialOptionsWithRootDir = InitialOptions &
   Required<Pick<InitialOptions, 'rootDir'>>;
 
+export type InitialProjectOptions = Pick<
+  InitialOptions & {cwd?: string},
+  keyof ProjectConfig
+>;
+
 export type InitialOptions = Partial<{
   automock: boolean;
   bail: boolean | number;
   cache: boolean;
   cacheDirectory: Path;
+  ci: boolean;
   clearMocks: boolean;
   changedFilesWithAncestor: boolean;
   changedSince: string;
@@ -184,7 +196,7 @@ export type InitialOptions = Partial<{
   preprocessorIgnorePatterns: Array<Glob>;
   preset: string | null | undefined;
   prettierPath: string | null | undefined;
-  projects: Array<Glob>;
+  projects: Array<Glob | InitialProjectOptions>;
   replname: string | null | undefined;
   resetMocks: boolean;
   resetModules: boolean;

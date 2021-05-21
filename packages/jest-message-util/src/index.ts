@@ -13,7 +13,7 @@ import micromatch = require('micromatch');
 import slash = require('slash');
 import StackUtils = require('stack-utils');
 import type {Config, TestResult} from '@jest/types';
-import prettyFormat from 'pretty-format';
+import {format as prettyFormat} from 'pretty-format';
 import type {Frame} from './types';
 
 export type {Frame} from './types';
@@ -46,8 +46,10 @@ const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
 const PATH_JEST_PACKAGES = `${path.sep}jest${path.sep}packages${path.sep}`;
 
 // filter for noisy stack trace lines
-const JASMINE_IGNORE = /^\s+at(?:(?:.jasmine\-)|\s+jasmine\.buildExpectationResult)/;
-const JEST_INTERNALS_IGNORE = /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
+const JASMINE_IGNORE =
+  /^\s+at(?:(?:.jasmine\-)|\s+jasmine\.buildExpectationResult)/;
+const JEST_INTERNALS_IGNORE =
+  /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
 const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
 const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
 const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
@@ -335,9 +337,9 @@ export const formatResultsErrors = (
 ): string | null => {
   const failedResults: FailedResults = testResults.reduce<FailedResults>(
     (errors, result) => {
-      result.failureMessages
-        .map(checkForCommonEnvironmentErrors)
-        .forEach(content => errors.push({content, result}));
+      result.failureMessages.forEach(item => {
+        errors.push({content: checkForCommonEnvironmentErrors(item), result});
+      });
       return errors;
     },
     [],

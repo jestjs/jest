@@ -38,7 +38,7 @@ export async function readConfig(
   // `project` property, we don't want to read `--config` value and rather
   // read individual configs for every project.
   skipArgvConfigOption?: boolean,
-  parentConfigPath?: Config.Path | null,
+  parentConfigDirname?: Config.Path | null,
   projectIndex: number = Infinity,
 ): Promise<ReadConfig> {
   let rawOptions:
@@ -47,8 +47,7 @@ export async function readConfig(
   let configPath = null;
 
   if (typeof packageRootOrConfig !== 'string') {
-    if (parentConfigPath) {
-      const parentConfigDirname = path.dirname(parentConfigPath);
+    if (parentConfigDirname) {
       rawOptions = packageRootOrConfig;
       rawOptions.rootDir = rawOptions.rootDir
         ? replaceRootDirInPath(parentConfigDirname, rawOptions.rootDir)
@@ -301,10 +300,9 @@ export async function readConfigs(
   }
 
   if (projects.length > 0) {
-    const projectIsCwd =
-      process.platform === 'win32'
-        ? projects[0] === tryRealpath(process.cwd())
-        : projects[0] === process.cwd();
+    const cwd =
+      process.platform === 'win32' ? tryRealpath(process.cwd()) : process.cwd();
+    const projectIsCwd = projects[0] === cwd;
 
     const parsedConfigs = await Promise.all(
       projects
@@ -332,7 +330,7 @@ export async function readConfigs(
             argv,
             root,
             skipArgvConfigOption,
-            configPath,
+            configPath ? path.dirname(configPath) : cwd,
             projectIndex,
           );
         }),

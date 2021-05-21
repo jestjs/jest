@@ -8,20 +8,41 @@
 
 import * as util from 'util';
 import type {Global} from '@jest/types';
-import pretty from 'pretty-format';
+import {format as pretty} from 'pretty-format';
 import type {EachTests} from '../bind';
+import type {Templates} from './interpolation';
+import {interpolateVariables} from './interpolation';
 
-const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp%]/g;
+const SUPPORTED_PLACEHOLDERS = /%[sdifjoOp]/g;
 const PRETTY_PLACEHOLDER = '%p';
 const INDEX_PLACEHOLDER = '%#';
 const PLACEHOLDER_PREFIX = '%';
+const ESCAPED_PLACEHOLDER_PREFIX = /%%/g;
 const JEST_EACH_PLACEHOLDER_ESCAPE = '@@__JEST_EACH_PLACEHOLDER_ESCAPE__@@';
 
-export default (title: string, arrayTable: Global.ArrayTable): EachTests =>
-  normaliseTable(arrayTable).map((row, index) => ({
+export default (title: string, arrayTable: Global.ArrayTable): EachTests => {
+  if (isTemplates(title, arrayTable)) {
+    return arrayTable.map((template, index) => ({
+      arguments: [template],
+      title: interpolateVariables(title, template, index).replace(
+        ESCAPED_PLACEHOLDER_PREFIX,
+        PLACEHOLDER_PREFIX,
+      ),
+    }));
+  }
+  return normaliseTable(arrayTable).map((row, index) => ({
     arguments: row,
     title: formatTitle(title, row, index),
   }));
+};
+
+const isTemplates = (
+  title: string,
+  arrayTable: Global.ArrayTable,
+): arrayTable is Templates =>
+  !SUPPORTED_PLACEHOLDERS.test(interpolateEscapedPlaceholders(title)) &&
+  !isTable(arrayTable) &&
+  arrayTable.every(col => col != null && typeof col === 'object');
 
 const normaliseTable = (table: Global.ArrayTable): Global.Table =>
   isTable(table) ? table : table.map(colToRow);
@@ -46,16 +67,22 @@ const formatTitle = (
         return interpolatePrettyPlaceholder(formattedTitle, normalisedValue);
 
       return util.format(formattedTitle, normalisedValue);
-    }, interpolateTitleIndex(title, rowIndex))
+    }, interpolateTitleIndex(interpolateEscapedPlaceholders(title), rowIndex))
     .replace(new RegExp(JEST_EACH_PLACEHOLDER_ESCAPE, 'g'), PLACEHOLDER_PREFIX);
 
 const normalisePlaceholderValue = (value: unknown) =>
-  typeof value === 'string' && SUPPORTED_PLACEHOLDERS.test(value)
-    ? value.replace(PLACEHOLDER_PREFIX, JEST_EACH_PLACEHOLDER_ESCAPE)
+  typeof value === 'string'
+    ? value.replace(
+        new RegExp(PLACEHOLDER_PREFIX, 'g'),
+        JEST_EACH_PLACEHOLDER_ESCAPE,
+      )
     : value;
 
 const getMatchingPlaceholders = (title: string) =>
   title.match(SUPPORTED_PLACEHOLDERS) || [];
+
+const interpolateEscapedPlaceholders = (title: string) =>
+  title.replace(ESCAPED_PLACEHOLDER_PREFIX, JEST_EACH_PLACEHOLDER_ESCAPE);
 
 const interpolateTitleIndex = (title: string, index: number) =>
   title.replace(INDEX_PLACEHOLDER, index.toString());

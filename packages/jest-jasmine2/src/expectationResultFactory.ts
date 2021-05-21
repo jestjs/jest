@@ -6,7 +6,7 @@
  */
 
 import type {FailedAssertion} from '@jest/test-result';
-import prettyFormat from 'pretty-format';
+import {format as prettyFormat} from 'pretty-format';
 
 function messageFormatter({error, message, passed}: Options) {
   if (passed) {

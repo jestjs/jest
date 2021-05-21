@@ -10,7 +10,6 @@ import pEachSeries = require('p-each-series');
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import type {Test} from 'jest-runner';
-import {interopRequireDefault} from 'jest-util';
 import prettyFormat from 'pretty-format';
 
 export default async ({
@@ -48,17 +47,18 @@ export default async ({
       const transformer = await createScriptTransformer(projectConfig);
 
       try {
-        await transformer.requireAndTranspileModule(modulePath, async m => {
-          const globalModule = interopRequireDefault(m).default;
+        await transformer.requireAndTranspileModule(
+          modulePath,
+          async globalModule => {
+            if (typeof globalModule !== 'function') {
+              throw new TypeError(
+                `${moduleName} file must export a function at ${modulePath}`,
+              );
+            }
 
-          if (typeof globalModule !== 'function') {
-            throw new TypeError(
-              `${moduleName} file must export a function at ${modulePath}`,
-            );
-          }
-
-          await globalModule(globalConfig);
-        });
+            await globalModule(globalConfig);
+          },
+        );
       } catch (error) {
         if (util.types.isNativeError(error)) {
           error.message = `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${error.message}`;

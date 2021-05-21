@@ -44,11 +44,24 @@ function promisifyLifeCycleFunction(
       return originalFn.call(env);
     }
 
-    const hasDoneCallback = typeof fn === 'function' && fn.length > 0;
+    if (typeof fn !== 'function') {
+      // Pass non-functions to Jest, which throws a nice error.
+      return originalFn.call(env, fn, timeout);
+    }
+
+    const hasDoneCallback = fn.length > 0;
 
     if (hasDoneCallback) {
-      // Jasmine will handle it
-      return originalFn.call(env, fn, timeout);
+      // Give the function a name so it can be detected in call stacks, but
+      // otherwise Jasmine will handle it.
+      const asyncJestLifecycleWithCallback = function (
+        this: Global.TestContext,
+        ...args: Array<any>
+      ) {
+        // @ts-expect-error: Support possible extra args at runtime
+        return fn.apply(this, args);
+      };
+      return originalFn.call(env, asyncJestLifecycleWithCallback, timeout);
     }
 
     const extraError = new Error();
@@ -106,10 +119,24 @@ function promisifyIt(
       return spec;
     }
 
+    if (typeof fn !== 'function') {
+      // Pass non-functions to Jest, which throws a nice error.
+      return originalFn.call(env, specName, fn, timeout);
+    }
+
     const hasDoneCallback = fn.length > 0;
 
     if (hasDoneCallback) {
-      return originalFn.call(env, specName, fn, timeout);
+      // Give the function a name so it can be detected in call stacks, but
+      // otherwise Jasmine will handle it.
+      const asyncJestTestWithCallback = function (
+        this: Global.TestContext,
+        ...args: Array<any>
+      ) {
+        // @ts-expect-error: Support possible extra args at runtime
+        return fn.apply(this, args);
+      };
+      return originalFn.call(env, specName, asyncJestTestWithCallback, timeout);
     }
 
     const extraError = new Error();

@@ -179,10 +179,7 @@ describe('HasteMap', () => {
         // Melon!
       `,
       [path.join('/', 'project', 'video', 'video.mp4')]: Buffer.from([
-        0xfa,
-        0xce,
-        0xb0,
-        0x0c,
+        0xfa, 0xce, 0xb0, 0x0c,
       ]).toString(),
     });
     mockClocks = createMap({
@@ -1100,11 +1097,8 @@ describe('HasteMap', () => {
             g: createMap({
               [path.join('fruits', 'Strawberry.js')]: H.MODULE,
               [path.join('fruits', 'another', 'Strawberry.js')]: H.MODULE,
-              [path.join(
-                'fruits',
-                'strawberryPackage',
-                'package.json',
-              )]: H.PACKAGE,
+              [path.join('fruits', 'strawberryPackage', 'package.json')]:
+                H.PACKAGE,
             }),
           }),
         }),
@@ -1635,9 +1629,8 @@ describe('HasteMap', () => {
           moduleMap.getModule('Pear');
           throw new Error('should be unreachable');
         } catch (error) {
-          const {
-            DuplicateHasteCandidatesError,
-          } = require('../ModuleMap').default;
+          const {DuplicateHasteCandidatesError} =
+            require('../ModuleMap').default;
           expect(error).toBeInstanceOf(DuplicateHasteCandidatesError);
           expect(error.hasteName).toBe('Pear');
           expect(error.platform).toBe('g');
@@ -1645,13 +1638,8 @@ describe('HasteMap', () => {
           expect(error.duplicatesSet).toEqual(
             createMap({
               [path.join('/', 'project', 'fruits', 'Pear.js')]: H.MODULE,
-              [path.join(
-                '/',
-                'project',
-                'fruits',
-                'another',
-                'Pear.js',
-              )]: H.MODULE,
+              [path.join('/', 'project', 'fruits', 'another', 'Pear.js')]:
+                H.MODULE,
             }),
           );
           expect(wrap(error.message.replace(/\\/g, '/'))).toMatchSnapshot();
@@ -1693,9 +1681,8 @@ describe('HasteMap', () => {
 
       hm_it('recovers when the most recent duplicate is fixed', async hm => {
         await setupDuplicates(hm);
-        mockFs[
-          path.join('/', 'project', 'fruits', 'another', 'Pear.js')
-        ] = null;
+        mockFs[path.join('/', 'project', 'fruits', 'another', 'Pear.js')] =
+          null;
         mockFs[path.join('/', 'project', 'fruits', 'another', 'Pear2.js')] = `
           // Pear too!
         `;

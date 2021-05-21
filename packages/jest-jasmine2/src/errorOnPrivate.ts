@@ -50,9 +50,9 @@ export function installErrorOnPrivate(global: Global.Global): void {
     },
   );
 
-  (Object.keys(
-    disabledJasmineMethods,
-  ) as Array<DisabledJasmineMethodsKeys>).forEach(methodName => {
+  (
+    Object.keys(disabledJasmineMethods) as Array<DisabledJasmineMethodsKeys>
+  ).forEach(methodName => {
     // @ts-expect-error
     jasmine[methodName] = () => {
       throwAtFunction(disabledJasmineMethods[methodName], jasmine[methodName]);
