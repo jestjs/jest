@@ -158,6 +158,12 @@ const each = require('jest-each').default;
 Alias: `.it(name, fn)`
 
 ```js
+each([0, 1, 2]).test('match the index', (a, index) => {
+  expect(a).toBe(index);
+});
+```
+
+```js
 each([
   [1, 1, 2],
   [1, 2, 3],
@@ -274,6 +280,15 @@ each([['hello'], ['mr'], ['spy']]).test(
 ```
 
 #### `.describe(name, fn)`
+
+
+```js
+each([0, 1, 2]).describe('match the index with row', (a, index) => {
+  test(`matching ${index}`, () => {
+    expect(a).toBe(index);
+  });
+});
+```
 
 ```js
 each([
