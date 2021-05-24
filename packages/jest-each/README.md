@@ -123,7 +123,7 @@ const each = require('jest-each').default;
     - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
     - You can use `$#` to inject the index of the test case
     - You cannot use `$variable` with the `printf` formatting except for `%%`
-- testFn: `Function` the test logic, this is the function that will receive the parameters of each row as function arguments
+- testFn: `Function` the test logic, this is the function that will receive the parameters of each row as function arguments as well as the `index` of row as an optional argument.
 
 #### `each([parameters]).describe(name, suiteFn)`
 
@@ -149,7 +149,7 @@ const each = require('jest-each').default;
     - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
     - You can use `$#` to inject the index of the test case
     - You cannot use `$variable` with the `printf` formatting except for `%%`
-- suiteFn: `Function` the suite of `test`/`it`s to be ran, this is the function that will receive the parameters in each row as function arguments
+- suiteFn: `Function` the suite of `test`/`it`s to be ran, this is the function that will receive the parameters in each row as function arguments as well as the `index` of row as an optional argument.
 
 ### Usage
 
