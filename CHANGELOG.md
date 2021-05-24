@@ -51,6 +51,7 @@
 - `[jest-worker]` Add support for custom task queues and adds a `PriorityQueue` implementation. ([#10921](https://github.com/facebook/jest/pull/10921))
 - `[jest-worker]` Add in-order scheduling policy to jest worker ([10902](https://github.com/facebook/jest/pull/10902))
 - `[pretty-format]` Better print for sparse arrays ([11326](https://github.com/facebook/jest/pull/11326))
+- `[pretty-print]` Add option `printBasicPrototype` which determines whether or not the prototype should be printed for raw objects or arrays ([#11441](https://github.com/facebook/jest/pull/11441))
 
 ### Fixes
 

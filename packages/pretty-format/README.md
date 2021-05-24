@@ -66,18 +66,19 @@ console.log(prettyFormat(onClick, options));
 ```
 
 <!-- prettier-ignore -->
-| key                 | type      | default    | description                                             |
-| :------------------ | :-------- | :--------- | :------------------------------------------------------ |
-| `callToJSON`        | `boolean` | `true`     | call `toJSON` method (if it exists) on objects          |
-| `escapeRegex`       | `boolean` | `false`    | escape special characters in regular expressions        |
-| `escapeString`      | `boolean` | `true`     | escape special characters in strings                    |
-| `highlight`         | `boolean` | `false`    | highlight syntax with colors in terminal (some plugins) |
-| `indent`            | `number`  | `2`        | spaces in each level of indentation                     |
-| `maxDepth`          | `number`  | `Infinity` | levels to print in arrays, objects, elements, and so on |
-| `min`               | `boolean` | `false`    | minimize added space: no indentation nor line breaks    |
-| `plugins`           | `array`   | `[]`       | plugins to serialize application-specific data types    |
-| `printFunctionName` | `boolean` | `true`     | include or omit the name of a function                  |
-| `theme`             | `object`  |            | colors to highlight syntax in terminal                  |
+| key                   | type      | default    | description                                             |
+| :-------------------- | :-------- | :--------- | :------------------------------------------------------ |
+| `callToJSON`          | `boolean` | `true`     | call `toJSON` method (if it exists) on objects          |
+| `escapeRegex`         | `boolean` | `false`    | escape special characters in regular expressions        |
+| `escapeString`        | `boolean` | `true`     | escape special characters in strings                    |
+| `highlight`           | `boolean` | `false`    | highlight syntax with colors in terminal (some plugins) |
+| `indent`              | `number`  | `2`        | spaces in each level of indentation                     |
+| `maxDepth`            | `number`  | `Infinity` | levels to print in arrays, objects, elements, and so on |
+| `min`                 | `boolean` | `false`    | minimize added space: no indentation nor line breaks    |
+| `plugins`             | `array`   | `[]`       | plugins to serialize application-specific data types    |
+| `printBasicPrototype` | `boolean` | `false`    | print the prototype for plain objects and arrays        |
+| `printFunctionName`   | `boolean` | `true`     | include or omit the name of a function                  |
+| `theme`               | `object`  |            | colors to highlight syntax in terminal                  |
 
 Property values of `theme` are from [ansi-styles colors](https://github.com/chalk/ansi-styles#colors)
 
