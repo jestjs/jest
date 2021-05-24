@@ -38,7 +38,12 @@ jest
     },
   }))
   .mock('jest-haste-map', () => ({
-    getCacheFilePath: (cacheDir: string, baseDir: string) => cacheDir + baseDir,
+    getStatic() {
+      return {
+        getCacheFilePath: (cacheDir: string, baseDir: string) =>
+          cacheDir + baseDir,
+      };
+    },
   }))
   .mock('jest-util', () => ({
     ...jest.requireActual('jest-util'),

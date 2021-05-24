@@ -36,7 +36,6 @@ export default (
       replacePathSepForRegex(options.testPathPattern) || '';
   }
 
-  newConfig.onlyChanged = false;
   newConfig.onlyChanged =
     !newConfig.watchAll &&
     !newConfig.testNamePattern &&

@@ -1,5 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`can bail with a custom inline snapshot matcher 1`] = `
+FAIL __tests__/bail.test.js
+  ✕ transitions as expected
+
+  ● transitions as expected
+
+    expect(received).toMatchInlineSnapshot(snapshot)
+
+    Snapshot name: \`transitions as expected 2\`
+
+    Snapshot: "loading"
+    Received: "initial"
+
+      28 |   transition();
+      29 |   // Already produces a mismatch. No point in continuing the test.
+    > 30 |   expect(state).toMatchStateInlineSnapshot(\`"loading"\`);
+         |                 ^
+      31 |   transition();
+      32 |   expect(state).toMatchStateInlineSnapshot(\`"done"\`);
+      33 | });
+
+      at Object.toMatchStateInlineSnapshot (__tests__/bail.test.js:30:17)
+
+ › 1 snapshot failed.
+Snapshot Summary
+ › 1 snapshot failed from 1 test suite. Inspect your code changes or re-run jest with \`-u\` to update them.
+`;
+
 exports[`works with custom inline snapshot matchers 1`] = `
 FAIL __tests__/asynchronous.test.js
   ✕ new async, inline snapshots

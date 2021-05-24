@@ -24,7 +24,7 @@ import {requireOrImportModule, tryRealpath} from 'jest-util';
 import {JestHook, JestHookEmitter} from 'jest-watcher';
 import type FailedTestsCache from './FailedTestsCache';
 import SearchSource from './SearchSource';
-import TestScheduler, {TestSchedulerContext} from './TestScheduler';
+import {TestSchedulerContext, createTestScheduler} from './TestScheduler';
 import type TestWatcher from './TestWatcher';
 import collectNodeHandles, {HandleCollectionResult} from './collectHandles';
 import getNoTestsFoundMessage from './getNoTestsFoundMessage';
@@ -75,7 +75,7 @@ type ProcessResultOptions = Pick<
   outputStream: NodeJS.WriteStream;
 };
 
-const processResults = (
+const processResults = async (
   runResults: AggregatedResult,
   options: ProcessResultOptions,
 ) => {
@@ -89,7 +89,7 @@ const processResults = (
   } = options;
 
   if (collectHandles) {
-    runResults.openHandles = collectHandles();
+    runResults.openHandles = await collectHandles();
   } else {
     runResults.openHandles = [];
   }
@@ -268,11 +268,13 @@ export default async function runJest({
     }
   }
 
-  const results = await new TestScheduler(
+  const scheduler = await createTestScheduler(
     globalConfig,
     {startRun},
     testSchedulerContext,
-  ).scheduleTests(allTests, testWatcher);
+  );
+
+  const results = await scheduler.scheduleTests(allTests, testWatcher);
 
   await sequencer.cacheResults(allTests, results);
 
@@ -280,7 +282,7 @@ export default async function runJest({
     await runGlobalHook({allTests, globalConfig, moduleName: 'globalTeardown'});
   }
 
-  processResults(results, {
+  await processResults(results, {
     collectHandles,
     json: globalConfig.json,
     onComplete,
