@@ -11,7 +11,7 @@
 
 [context.production]
   # Do not build the site if there's no site-related changes
-  ignore = "git diff --quiet HEAD^ HEAD -- website/ docs/"
+  ignore = "git diff --quiet HEAD^ HEAD -- website/ docs/ netlify.toml"
 
 # deploy preview build (faster config)
 [context.deploy-preview]
