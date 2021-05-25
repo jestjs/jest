@@ -524,6 +524,31 @@ describe('prettyFormat()', () => {
     });
   });
 
+  it('can omit basic prototypes', () => {
+    const val = {
+      deeply: {nested: {object: {}}},
+      'empty array': {},
+      'empty object': {},
+      'nested array': [[[]]],
+      'typed array': new Uint8Array(),
+    };
+    expect(prettyFormat(val, {maxDepth: 2, printBasicPrototype: false})).toBe(
+      [
+        '{',
+        '  "deeply": {',
+        '    "nested": [Object],',
+        '  },',
+        '  "empty array": {},',
+        '  "empty object": {},',
+        '  "nested array": [',
+        '    [Array],',
+        '  ],',
+        '  "typed array": Uint8Array [],',
+        '}',
+      ].join('\n'),
+    );
+  });
+
   it('can customize the max depth', () => {
     const val = [
       {

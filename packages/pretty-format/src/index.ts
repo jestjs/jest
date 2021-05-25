@@ -237,7 +237,11 @@ function printComplexValue(
   if (isToStringedArrayType(toStringed)) {
     return hitMaxDepth
       ? '[' + val.constructor.name + ']'
-      : (min ? '' : val.constructor.name + ' ') +
+      : (min
+          ? ''
+          : !config.printBasicPrototype && val.constructor.name === 'Array'
+          ? ''
+          : val.constructor.name + ' ') +
           '[' +
           printListItems(val, config, indentation, depth, refs, printer) +
           ']';
@@ -276,7 +280,11 @@ function printComplexValue(
   // For example, not even relevant if window is prop of React element.
   return hitMaxDepth || isWindow(val)
     ? '[' + getConstructorName(val) + ']'
-    : (min ? '' : getConstructorName(val) + ' ') +
+    : (min
+        ? ''
+        : !config.printBasicPrototype && getConstructorName(val) === 'Object'
+        ? ''
+        : getConstructorName(val) + ' ') +
         '{' +
         printObjectProperties(val, config, indentation, depth, refs, printer) +
         '}';
@@ -395,6 +403,7 @@ const DEFAULT_OPTIONS: Options = {
   maxDepth: Infinity,
   min: false,
   plugins: [],
+  printBasicPrototype: true,
   printFunctionName: true,
   theme: DEFAULT_THEME,
 };
@@ -495,6 +504,7 @@ const getConfig = (options?: OptionsReceived): Config => ({
     options && options.plugins !== undefined
       ? options.plugins
       : DEFAULT_OPTIONS.plugins,
+  printBasicPrototype: options?.printBasicPrototype ?? true,
   printFunctionName: getPrintFunctionName(options),
   spacingInner: options && options.min ? ' ' : '\n',
   spacingOuter: options && options.min ? '' : '\n',

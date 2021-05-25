@@ -41,6 +41,7 @@ export type Options = {
   maxDepth: number;
   min: boolean;
   plugins: Plugins;
+  printBasicPrototype: boolean;
   printFunctionName: boolean;
   theme: Theme;
 };
@@ -54,6 +55,7 @@ export type OptionsReceived = {
   maxDepth?: number;
   min?: boolean;
   plugins?: Plugins;
+  printBasicPrototype?: boolean;
   printFunctionName?: boolean;
   theme?: ThemeReceived;
 };
@@ -67,6 +69,7 @@ export type Config = {
   maxDepth: number;
   min: boolean;
   plugins: Plugins;
+  printBasicPrototype: boolean;
   printFunctionName: boolean;
   spacingInner: string;
   spacingOuter: string;
