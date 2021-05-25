@@ -37,7 +37,7 @@ module.exports = {
             return `https://github.com/facebook/jest/edit/master/website/${versionDocsDirPath}/${docPath}`;
           },
           path: '../docs',
-          sidebarPath: './sidebars.json',
+          sidebarPath: path.resolve(__dirname, './sidebars.json'),
         },
         blog: {
           path: 'blog',
