@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-environment-jsdom]` Bump version of JSDOM to avoid deprecated `request` package ([#11442](https://github.com/facebook/jest/pull/11442))
+
 ### Chore & Maintenance
 
 ### Performance
