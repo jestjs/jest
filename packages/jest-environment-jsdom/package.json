@@ -20,7 +20,7 @@
     "@types/node": "*",
     "jest-mock": "^27.0.0-next.10",
     "jest-util": "^27.0.0-next.11",
-    "jsdom": "^16.4.0"
+    "jsdom": "^16.6.0"
   },
   "devDependencies": {
     "@jest/test-utils": "^27.0.0",
