@@ -63,7 +63,6 @@
     "micromatch": "^4.0.4",
     "mlh-tsd": "^0.14.1",
     "mock-fs": "^4.4.1",
-    "netlify-plugin-cache": "^1.0.3",
     "node-notifier": "^9.0.0",
     "prettier": "^2.1.1",
     "progress": "^2.0.0",
