@@ -8,9 +8,9 @@
 
 ### Performance
 
-### Features
-
 ## 27.0.0
+
+### Features
 
 - `[babel-jest]` Add async transformation ([#11192](https://github.com/facebook/jest/pull/11192))
 - `[jest-changed-files]` Use '--' to separate paths from revisions ([#11160](https://github.com/facebook/jest/pull/11160))
