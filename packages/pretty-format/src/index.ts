@@ -504,7 +504,7 @@ const getConfig = (options?: OptionsReceived): Config => ({
     options && options.plugins !== undefined
       ? options.plugins
       : DEFAULT_OPTIONS.plugins,
-  printBasicPrototype: Boolean(options?.printBasicPrototype ?? true),
+  printBasicPrototype: options?.printBasicPrototype ?? true,
   printFunctionName: getPrintFunctionName(options),
   spacingInner: options && options.min ? ' ' : '\n',
   spacingOuter: options && options.min ? '' : '\n',
