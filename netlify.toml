@@ -6,6 +6,7 @@
   base = "/"
   command = "yarn workspace jest-website netlify:ci:production"
   publish = "/website/build"
+  environment = { NODE_VERSION = "14.x" }
 
 
 [context.production]
