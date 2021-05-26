@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-worker]` Loosen engine requirement to `>= 10.13.0` ([#11451](https://github.com/facebook/jest/pull/11451))
+
 ### Chore & Maintenance
 
 ### Performance
