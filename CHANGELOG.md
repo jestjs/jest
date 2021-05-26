@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-worker]` Loosen engine requirement to `>= 10.13.0`
+
 ### Chore & Maintenance
 
 ### Performance
