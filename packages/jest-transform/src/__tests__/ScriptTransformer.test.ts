@@ -52,9 +52,10 @@ jest
   .mock('path', () => jest.requireActual('path').posix);
 
 jest.mock(
-  'test_preprocessor',
+  `${__dirname}/test_preprocessor`,
   () => {
-    const escapeStrings = (str: string) => str.replace(/'/, `'`);
+    const escapeStrings = (str: string) =>
+      str.replace(/'/, `'`).replace(new RegExp(__dirname, 'g'), '<rootDir>');
 
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'ab'),
@@ -73,9 +74,10 @@ jest.mock(
 );
 
 jest.mock(
-  'test_async_preprocessor',
+  `${__dirname}/test_async_preprocessor`,
   () => {
-    const escapeStrings = (str: string) => str.replace(/'/, `'`);
+    const escapeStrings = (str: string) =>
+      str.replace(/'/, `'`).replace(new RegExp(__dirname, 'g'), '<rootDir>');
 
     const transformer: Transformer = {
       getCacheKeyAsync: jest.fn().mockResolvedValue('ab'),
@@ -95,7 +97,7 @@ jest.mock(
 );
 
 jest.mock(
-  'configureable-preprocessor',
+  `${__dirname}/configureable-preprocessor`,
   () => ({
     createTransformer: jest.fn(() => ({
       process: jest.fn(() => 'processedCode'),
@@ -105,7 +107,7 @@ jest.mock(
 );
 
 jest.mock(
-  'cache_fs_preprocessor',
+  `${__dirname}/cache_fs_preprocessor`,
   () => ({
     getCacheKey: jest.fn(() => 'ab'),
     process: jest.fn(() => 'processedCode'),
@@ -114,7 +116,7 @@ jest.mock(
 );
 
 jest.mock(
-  'cache_fs_async_preprocessor',
+  `${__dirname}/cache_fs_async_preprocessor`,
   () => ({
     getCacheKeyAsync: jest.fn().mockResolvedValue('ab'),
     processAsync: jest.fn().mockResolvedValue('processedCode'),
@@ -123,7 +125,7 @@ jest.mock(
 );
 
 jest.mock(
-  'preprocessor-with-sourcemaps',
+  `${__dirname}/preprocessor-with-sourcemaps`,
   () => ({
     getCacheKey: jest.fn(() => 'ab'),
     process: jest.fn(),
@@ -132,7 +134,7 @@ jest.mock(
 );
 
 jest.mock(
-  'async-preprocessor-with-sourcemaps',
+  `${__dirname}/async-preprocessor-with-sourcemaps`,
   () => ({
     getCacheKeyAsync: jest.fn(() => 'ab'),
     processAsync: jest.fn(),
@@ -141,7 +143,7 @@ jest.mock(
 );
 
 jest.mock(
-  'css-preprocessor',
+  `${__dirname}/css-preprocessor`,
   () => {
     const transformer: Transformer = {
       getCacheKey: jest.fn(() => 'cd'),
@@ -158,30 +160,34 @@ jest.mock(
   {virtual: true},
 );
 
-jest.mock('passthrough-preprocessor', () => ({process: jest.fn()}), {
+jest.mock(
+  `${__dirname}/passthrough-preprocessor`,
+  () => ({process: jest.fn()}),
+  {virtual: true},
+);
+
+// Bad preprocessor
+jest.mock(`${__dirname}/skipped-required-props-preprocessor`, () => ({}), {
   virtual: true,
 });
 
 // Bad preprocessor
-jest.mock('skipped-required-props-preprocessor', () => ({}), {virtual: true});
-
-// Bad preprocessor
 jest.mock(
-  'skipped-required-props-preprocessor-only-sync',
+  `${__dirname}/skipped-required-props-preprocessor-only-sync`,
   () => ({process: () => ''}),
   {virtual: true},
 );
 
 // Bad preprocessor
 jest.mock(
-  'skipped-required-props-preprocessor-only-async',
+  `${__dirname}/skipped-required-props-preprocessor-only-async`,
   () => ({processAsync: async () => ''}),
   {virtual: true},
 );
 
 // Bad preprocessor
 jest.mock(
-  'skipped-required-create-transformer-props-preprocessor',
+  `${__dirname}/skipped-required-create-transformer-props-preprocessor`,
   () => ({
     createTransformer() {
       return {};
@@ -191,7 +197,7 @@ jest.mock(
 );
 
 jest.mock(
-  'skipped-process-method-preprocessor',
+  `${__dirname}/skipped-process-method-preprocessor`,
   () => ({
     createTransformer() {
       return {process: jest.fn(() => 'code')};
@@ -201,7 +207,7 @@ jest.mock(
 );
 
 jest.mock(
-  'factory-for-async-preprocessor',
+  `${__dirname}/factory-for-async-preprocessor`,
   () => ({
     createTransformer() {
       return {processAsync: jest.fn().mockResolvedValue('code')};
@@ -400,7 +406,7 @@ describe('ScriptTransformer', () => {
   it("throws an error if `process` doesn't return a string or an object containing `code` key with processed string", async () => {
     config = {
       ...config,
-      transform: [['\\.js$', 'passthrough-preprocessor', {}]],
+      transform: [['\\.js$', `${__dirname}/passthrough-preprocessor`, {}]],
     };
     const scriptTransformer = await createScriptTransformer(config);
 
@@ -412,7 +418,9 @@ describe('ScriptTransformer', () => {
 
     incorrectReturnValues.forEach(([returnValue, filePath]) => {
       invariant(typeof filePath === 'string');
-      require('passthrough-preprocessor').process.mockReturnValue(returnValue);
+      require(`${__dirname}/passthrough-preprocessor`).process.mockReturnValue(
+        returnValue,
+      );
       expect(() =>
         scriptTransformer.transform(filePath, getCoverageOptions()),
       ).toThrow('must return a string');
@@ -425,7 +433,9 @@ describe('ScriptTransformer', () => {
 
     correctReturnValues.forEach(([returnValue, filePath]) => {
       invariant(typeof filePath === 'string');
-      require('passthrough-preprocessor').process.mockReturnValue(returnValue);
+      require(`${__dirname}/passthrough-preprocessor`).process.mockReturnValue(
+        returnValue,
+      );
       expect(() =>
         scriptTransformer.transform(filePath, getCoverageOptions()),
       ).not.toThrow();
@@ -445,7 +455,7 @@ describe('ScriptTransformer', () => {
     ];
 
     const buildPromise = async ([returnValue, filePath]): Promise<any> => {
-      const processorName = `passthrough-preprocessor${filePath.replace(
+      const processorName = `${__dirname}/passthrough-preprocessor${filePath.replace(
         /\.|\//g,
         '-',
       )}`;
@@ -489,7 +499,9 @@ describe('ScriptTransformer', () => {
   it('throws an error if neither `process` nor `processAsync is defined', async () => {
     config = {
       ...config,
-      transform: [['\\.js$', 'skipped-required-props-preprocessor', {}]],
+      transform: [
+        ['\\.js$', `${__dirname}/skipped-required-props-preprocessor`, {}],
+      ],
     };
     await expect(() => createScriptTransformer(config)).rejects.toThrow(
       'Jest: a transform must export a `process` or `processAsync` function.',
@@ -500,14 +512,18 @@ describe('ScriptTransformer', () => {
     config = {
       ...config,
       transform: [
-        ['\\.js$', 'skipped-required-props-preprocessor-only-async', {}],
+        [
+          '\\.js$',
+          `${__dirname}/skipped-required-props-preprocessor-only-async`,
+          {},
+        ],
       ],
     };
     const scriptTransformer = await createScriptTransformer(config);
     expect(() =>
       scriptTransformer.transformSource('sample.js', '', {instrument: false}),
     ).toThrow(
-      'Jest: synchronous transformer skipped-required-props-preprocessor-only-async must export a "process" function.',
+      `Jest: synchronous transformer ${__dirname}/skipped-required-props-preprocessor-only-async must export a "process" function.`,
     );
   });
 
@@ -515,7 +531,11 @@ describe('ScriptTransformer', () => {
     config = {
       ...config,
       transform: [
-        ['\\.js$', 'skipped-required-props-preprocessor-only-sync', {}],
+        [
+          '\\.js$',
+          `${__dirname}/skipped-required-props-preprocessor-only-sync`,
+          {},
+        ],
       ],
     };
     const scriptTransformer = await createScriptTransformer(config);
@@ -532,7 +552,7 @@ describe('ScriptTransformer', () => {
       transform: [
         [
           '\\.js$',
-          'skipped-required-create-transformer-props-preprocessor',
+          `${__dirname}/skipped-required-create-transformer-props-preprocessor`,
           {},
         ],
       ],
@@ -545,7 +565,9 @@ describe('ScriptTransformer', () => {
   it("shouldn't throw error without process method. But with correct createTransformer method", async () => {
     config = {
       ...config,
-      transform: [['\\.js$', 'skipped-process-method-preprocessor', {}]],
+      transform: [
+        ['\\.js$', `${__dirname}/skipped-process-method-preprocessor`, {}],
+      ],
     };
     const scriptTransformer = await createScriptTransformer(config);
     expect(() =>
@@ -557,8 +579,12 @@ describe('ScriptTransformer', () => {
     config = {
       ...config,
       transform: [
-        ['async-sample.js', 'factory-for-async-preprocessor', {}],
-        ['sync-sample.js', 'skipped-process-method-preprocessor', {}],
+        ['async-sample.js', `${__dirname}/factory-for-async-preprocessor`, {}],
+        [
+          'sync-sample.js',
+          `${__dirname}/skipped-process-method-preprocessor`,
+          {},
+        ],
       ],
     };
     const scriptTransformer = await createScriptTransformer(config);
@@ -577,14 +603,17 @@ describe('ScriptTransformer', () => {
   });
 
   it('uses the supplied preprocessor', async () => {
-    config = {...config, transform: [['\\.js$', 'test_preprocessor', {}]]};
+    config = {
+      ...config,
+      transform: [['\\.js$', `${__dirname}/test_preprocessor`, {}]],
+    };
     const scriptTransformer = await createScriptTransformer(config);
     const res1 = scriptTransformer.transform(
       '/fruits/banana.js',
       getCoverageOptions(),
     );
 
-    expect(require('test_preprocessor').getCacheKey).toBeCalled();
+    expect(require(`${__dirname}/test_preprocessor`).getCacheKey).toBeCalled();
 
     expect(wrap(res1.code)).toMatchSnapshot();
 
@@ -597,14 +626,17 @@ describe('ScriptTransformer', () => {
   });
 
   it('in async mode, uses the supplied preprocessor', async () => {
-    config = {...config, transform: [['\\.js$', 'test_preprocessor', {}]]};
+    config = {
+      ...config,
+      transform: [['\\.js$', `${__dirname}/test_preprocessor`, {}]],
+    };
     const scriptTransformer = await createScriptTransformer(config);
     const res1 = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
       getCoverageOptions(),
     );
 
-    expect(require('test_preprocessor').getCacheKey).toBeCalled();
+    expect(require(`${__dirname}/test_preprocessor`).getCacheKey).toBeCalled();
 
     expect(wrap(res1.code)).toMatchSnapshot();
 
@@ -619,7 +651,7 @@ describe('ScriptTransformer', () => {
   it('in async mode, uses the supplied async preprocessor', async () => {
     config = {
       ...config,
-      transform: [['\\.js$', 'test_async_preprocessor', {}]],
+      transform: [['\\.js$', `${__dirname}/test_async_preprocessor`, {}]],
     };
     const scriptTransformer = await createScriptTransformer(config);
     const res1 = await scriptTransformer.transformAsync(
@@ -627,7 +659,9 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
 
-    expect(require('test_async_preprocessor').getCacheKeyAsync).toBeCalled();
+    expect(
+      require(`${__dirname}/test_async_preprocessor`).getCacheKeyAsync,
+    ).toBeCalled();
 
     expect(wrap(res1.code)).toMatchSnapshot();
 
@@ -643,8 +677,8 @@ describe('ScriptTransformer', () => {
     config = {
       ...config,
       transform: [
-        ['\\.js$', 'test_preprocessor', {}],
-        ['\\.css$', 'css-preprocessor', {}],
+        ['\\.js$', `${__dirname}/test_preprocessor`, {}],
+        ['\\.css$', `${__dirname}/css-preprocessor`, {}],
       ],
     };
     const scriptTransformer = await createScriptTransformer(config);
@@ -658,8 +692,8 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
 
-    expect(require('test_preprocessor').getCacheKey).toBeCalled();
-    expect(require('css-preprocessor').getCacheKey).toBeCalled();
+    expect(require(`${__dirname}/test_preprocessor`).getCacheKey).toBeCalled();
+    expect(require(`${__dirname}/css-preprocessor`).getCacheKey).toBeCalled();
     expect(wrap(res1.code)).toMatchSnapshot();
     expect(wrap(res2.code)).toMatchSnapshot();
 
@@ -675,8 +709,8 @@ describe('ScriptTransformer', () => {
     config = {
       ...config,
       transform: [
-        ['\\.js$', 'test_async_preprocessor', {}],
-        ['\\.css$', 'css-preprocessor', {}],
+        ['\\.js$', `${__dirname}/test_async_preprocessor`, {}],
+        ['\\.css$', `${__dirname}/css-preprocessor`, {}],
       ],
     };
     const scriptTransformer = await createScriptTransformer(config);
@@ -690,8 +724,10 @@ describe('ScriptTransformer', () => {
       getCoverageOptions(),
     );
 
-    expect(require('test_async_preprocessor').getCacheKeyAsync).toBeCalled();
-    expect(require('css-preprocessor').getCacheKey).toBeCalled();
+    expect(
+      require(`${__dirname}/test_async_preprocessor`).getCacheKeyAsync,
+    ).toBeCalled();
+    expect(require(`${__dirname}/css-preprocessor`).getCacheKey).toBeCalled();
     expect(wrap(res1.code)).toMatchSnapshot();
     expect(wrap(res2.code)).toMatchSnapshot();
 
@@ -706,7 +742,7 @@ describe('ScriptTransformer', () => {
   it('writes source map if preprocessor supplies it', async () => {
     config = {
       ...config,
-      transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
+      transform: [['\\.js$', `${__dirname}/preprocessor-with-sourcemaps`, {}]],
     };
     const scriptTransformer = await createScriptTransformer(config);
 
@@ -715,10 +751,12 @@ describe('ScriptTransformer', () => {
       version: 3,
     };
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map,
-    });
+    require(`${__dirname}/preprocessor-with-sourcemaps`).process.mockReturnValue(
+      {
+        code: 'content',
+        map,
+      },
+    );
 
     const result = scriptTransformer.transform(
       '/fruits/banana.js',
@@ -736,7 +774,7 @@ describe('ScriptTransformer', () => {
   it('in async mode, writes source map if preprocessor supplies it', async () => {
     config = {
       ...config,
-      transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
+      transform: [['\\.js$', `${__dirname}/preprocessor-with-sourcemaps`, {}]],
     };
     const scriptTransformer = await createScriptTransformer(config);
 
@@ -745,10 +783,12 @@ describe('ScriptTransformer', () => {
       version: 3,
     };
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map,
-    });
+    require(`${__dirname}/preprocessor-with-sourcemaps`).process.mockReturnValue(
+      {
+        code: 'content',
+        map,
+      },
+    );
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
@@ -766,7 +806,9 @@ describe('ScriptTransformer', () => {
   it('in async mode, writes source map if async preprocessor supplies it', async () => {
     config = {
       ...config,
-      transform: [['\\.js$', 'async-preprocessor-with-sourcemaps', {}]],
+      transform: [
+        ['\\.js$', `${__dirname}/async-preprocessor-with-sourcemaps`, {}],
+      ],
     };
     const scriptTransformer = await createScriptTransformer(config);
 
@@ -775,7 +817,7 @@ describe('ScriptTransformer', () => {
       version: 3,
     };
 
-    require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
+    require(`${__dirname}/async-preprocessor-with-sourcemaps`).processAsync.mockResolvedValue(
       {
         code: 'content',
         map,
@@ -798,7 +840,7 @@ describe('ScriptTransformer', () => {
   it('writes source map if preprocessor inlines it', async () => {
     config = {
       ...config,
-      transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
+      transform: [['\\.js$', `${__dirname}/preprocessor-with-sourcemaps`, {}]],
     };
     const scriptTransformer = await createScriptTransformer(config);
 
@@ -812,7 +854,9 @@ describe('ScriptTransformer', () => {
       '//# sourceMappingURL=data:application/json;base64,' +
       Buffer.from(sourceMap).toString('base64');
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
+    require(`${__dirname}/preprocessor-with-sourcemaps`).process.mockReturnValue(
+      content,
+    );
 
     const result = scriptTransformer.transform(
       '/fruits/banana.js',
@@ -830,7 +874,7 @@ describe('ScriptTransformer', () => {
   it('in async mode, writes source map if preprocessor inlines it', async () => {
     config = {
       ...config,
-      transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
+      transform: [['\\.js$', `${__dirname}/preprocessor-with-sourcemaps`, {}]],
     };
     const scriptTransformer = await createScriptTransformer(config);
 
@@ -844,7 +888,9 @@ describe('ScriptTransformer', () => {
       '//# sourceMappingURL=data:application/json;base64,' +
       Buffer.from(sourceMap).toString('base64');
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
+    require(`${__dirname}/preprocessor-with-sourcemaps`).process.mockReturnValue(
+      content,
+    );
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
@@ -862,7 +908,9 @@ describe('ScriptTransformer', () => {
   it('writes source map if async preprocessor inlines it', async () => {
     config = {
       ...config,
-      transform: [['\\.js$', 'async-preprocessor-with-sourcemaps', {}]],
+      transform: [
+        ['\\.js$', `${__dirname}/async-preprocessor-with-sourcemaps`, {}],
+      ],
     };
     const scriptTransformer = await createScriptTransformer(config);
 
@@ -876,7 +924,7 @@ describe('ScriptTransformer', () => {
       '//# sourceMappingURL=data:application/json;base64,' +
       Buffer.from(sourceMap).toString('base64');
 
-    require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
+    require(`${__dirname}/async-preprocessor-with-sourcemaps`).processAsync.mockResolvedValue(
       content,
     );
 
@@ -899,7 +947,7 @@ describe('ScriptTransformer', () => {
 
     config = {
       ...config,
-      transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
+      transform: [['\\.js$', `${__dirname}/preprocessor-with-sourcemaps`, {}]],
     };
     const scriptTransformer = await createScriptTransformer(config);
 
@@ -914,7 +962,9 @@ describe('ScriptTransformer', () => {
       '//# sourceMappingURL=data:application/json;base64,' +
       Buffer.from(sourceMap).toString('base64').slice(0, 16);
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
+    require(`${__dirname}/preprocessor-with-sourcemaps`).process.mockReturnValue(
+      content,
+    );
 
     const result = scriptTransformer.transform(
       '/fruits/banana.js',
@@ -924,7 +974,14 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).toBeCalledTimes(1);
 
     expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(wrap(console.warn.mock.calls[0][0])).toMatchSnapshot();
+    expect(
+      wrap(
+        console.warn.mock.calls[0][0].replace(
+          new RegExp(__dirname, 'g'),
+          '<rootDir>',
+        ),
+      ),
+    ).toMatchSnapshot();
     console.warn = warn;
   });
 
@@ -934,7 +991,7 @@ describe('ScriptTransformer', () => {
 
     config = {
       ...config,
-      transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
+      transform: [['\\.js$', `${__dirname}/preprocessor-with-sourcemaps`, {}]],
     };
     const scriptTransformer = await createScriptTransformer(config);
 
@@ -949,42 +1006,7 @@ describe('ScriptTransformer', () => {
       '//# sourceMappingURL=data:application/json;base64,' +
       Buffer.from(sourceMap).toString('base64').slice(0, 16);
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue(content);
-
-    const result = await scriptTransformer.transformAsync(
-      '/fruits/banana.js',
-      getCoverageOptions({collectCoverage: true}),
-    );
-    expect(result.sourceMapPath).toBeNull();
-    expect(writeFileAtomic.sync).toBeCalledTimes(1);
-
-    expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(wrap(console.warn.mock.calls[0][0])).toMatchSnapshot();
-    console.warn = warn;
-  });
-
-  it('warns of unparseable inlined source maps from the async preprocessor', async () => {
-    const warn = console.warn;
-    console.warn = jest.fn();
-
-    config = {
-      ...config,
-      transform: [['\\.js$', 'async-preprocessor-with-sourcemaps', {}]],
-    };
-    const scriptTransformer = await createScriptTransformer(config);
-
-    const sourceMap = JSON.stringify({
-      mappings: 'AAAA,IAAM,CAAC,GAAW,CAAC,CAAC',
-      version: 3,
-    });
-
-    // Cut off the inlined map prematurely with slice so the JSON ends abruptly
-    const content =
-      'var x = 1;\n' +
-      '//# sourceMappingURL=data:application/json;base64,' +
-      Buffer.from(sourceMap).toString('base64').slice(0, 16);
-
-    require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
+    require(`${__dirname}/preprocessor-with-sourcemaps`).process.mockReturnValue(
       content,
     );
 
@@ -996,7 +1018,60 @@ describe('ScriptTransformer', () => {
     expect(writeFileAtomic.sync).toBeCalledTimes(1);
 
     expect(console.warn).toHaveBeenCalledTimes(1);
-    expect(wrap(console.warn.mock.calls[0][0])).toMatchSnapshot();
+    expect(
+      wrap(
+        console.warn.mock.calls[0][0].replace(
+          new RegExp(__dirname, 'g'),
+          '<rootDir>',
+        ),
+      ),
+    ).toMatchSnapshot();
+    console.warn = warn;
+  });
+
+  it('warns of unparseable inlined source maps from the async preprocessor', async () => {
+    const warn = console.warn;
+    console.warn = jest.fn();
+
+    config = {
+      ...config,
+      transform: [
+        ['\\.js$', `${__dirname}/async-preprocessor-with-sourcemaps`, {}],
+      ],
+    };
+    const scriptTransformer = await createScriptTransformer(config);
+
+    const sourceMap = JSON.stringify({
+      mappings: 'AAAA,IAAM,CAAC,GAAW,CAAC,CAAC',
+      version: 3,
+    });
+
+    // Cut off the inlined map prematurely with slice so the JSON ends abruptly
+    const content =
+      'var x = 1;\n' +
+      '//# sourceMappingURL=data:application/json;base64,' +
+      Buffer.from(sourceMap).toString('base64').slice(0, 16);
+
+    require(`${__dirname}/async-preprocessor-with-sourcemaps`).processAsync.mockResolvedValue(
+      content,
+    );
+
+    const result = await scriptTransformer.transformAsync(
+      '/fruits/banana.js',
+      getCoverageOptions({collectCoverage: true}),
+    );
+    expect(result.sourceMapPath).toBeNull();
+    expect(writeFileAtomic.sync).toBeCalledTimes(1);
+
+    expect(console.warn).toHaveBeenCalledTimes(1);
+    expect(
+      wrap(
+        console.warn.mock.calls[0][0].replace(
+          new RegExp(__dirname, 'g'),
+          '<rootDir>',
+        ),
+      ),
+    ).toMatchSnapshot();
     console.warn = warn;
   });
 
@@ -1004,7 +1079,7 @@ describe('ScriptTransformer', () => {
   it('writes source maps if given by the transformer', async () => {
     config = {
       ...config,
-      transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
+      transform: [['\\.js$', `${__dirname}/preprocessor-with-sourcemaps`, {}]],
     };
     const scriptTransformer = await createScriptTransformer(config);
 
@@ -1013,10 +1088,12 @@ describe('ScriptTransformer', () => {
       version: 3,
     };
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map,
-    });
+    require(`${__dirname}/preprocessor-with-sourcemaps`).process.mockReturnValue(
+      {
+        code: 'content',
+        map,
+      },
+    );
 
     const result = scriptTransformer.transform(
       '/fruits/banana.js',
@@ -1037,14 +1114,16 @@ describe('ScriptTransformer', () => {
   it('does not write source map if not given by the transformer', async () => {
     config = {
       ...config,
-      transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
+      transform: [['\\.js$', `${__dirname}/preprocessor-with-sourcemaps`, {}]],
     };
     const scriptTransformer = await createScriptTransformer(config);
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map: null,
-    });
+    require(`${__dirname}/preprocessor-with-sourcemaps`).process.mockReturnValue(
+      {
+        code: 'content',
+        map: null,
+      },
+    );
 
     const result = scriptTransformer.transform(
       '/fruits/banana.js',
@@ -1057,14 +1136,16 @@ describe('ScriptTransformer', () => {
   it('in async mode, does not write source map if not given by the transformer', async () => {
     config = {
       ...config,
-      transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
+      transform: [['\\.js$', `${__dirname}/preprocessor-with-sourcemaps`, {}]],
     };
     const scriptTransformer = await createScriptTransformer(config);
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map: null,
-    });
+    require(`${__dirname}/preprocessor-with-sourcemaps`).process.mockReturnValue(
+      {
+        code: 'content',
+        map: null,
+      },
+    );
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
@@ -1077,11 +1158,13 @@ describe('ScriptTransformer', () => {
   it('does not write source map if not given by the async preprocessor', async () => {
     config = {
       ...config,
-      transform: [['\\.js$', 'async-preprocessor-with-sourcemaps', {}]],
+      transform: [
+        ['\\.js$', `${__dirname}/async-preprocessor-with-sourcemaps`, {}],
+      ],
     };
     const scriptTransformer = await createScriptTransformer(config);
 
-    require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
+    require(`${__dirname}/async-preprocessor-with-sourcemaps`).processAsync.mockResolvedValue(
       {
         code: 'content',
         map: null,
@@ -1099,7 +1182,7 @@ describe('ScriptTransformer', () => {
   it('should write a source map for the instrumented file when transformed', async () => {
     const transformerConfig: Config.ProjectConfig = {
       ...config,
-      transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
+      transform: [['\\.js$', `${__dirname}/preprocessor-with-sourcemaps`, {}]],
     };
     const scriptTransformer = await createScriptTransformer(transformerConfig);
 
@@ -1120,10 +1203,12 @@ describe('ScriptTransformer', () => {
     };
     /* eslint-enable */
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map,
-    });
+    require(`${__dirname}/preprocessor-with-sourcemaps`).process.mockReturnValue(
+      {
+        code: 'content',
+        map,
+      },
+    );
 
     const result = scriptTransformer.transform(
       '/fruits/banana.js',
@@ -1144,7 +1229,7 @@ describe('ScriptTransformer', () => {
   it('in async mode, should write a source map for the instrumented file when transformed', async () => {
     const transformerConfig: Config.ProjectConfig = {
       ...config,
-      transform: [['\\.js$', 'preprocessor-with-sourcemaps', {}]],
+      transform: [['\\.js$', `${__dirname}/preprocessor-with-sourcemaps`, {}]],
     };
     const scriptTransformer = await createScriptTransformer(transformerConfig);
 
@@ -1165,10 +1250,12 @@ describe('ScriptTransformer', () => {
     };
     /* eslint-enable */
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map,
-    });
+    require(`${__dirname}/preprocessor-with-sourcemaps`).process.mockReturnValue(
+      {
+        code: 'content',
+        map,
+      },
+    );
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
@@ -1189,7 +1276,9 @@ describe('ScriptTransformer', () => {
   it('should write a source map for the instrumented file when async transformed', async () => {
     const transformerConfig: Config.ProjectConfig = {
       ...config,
-      transform: [['\\.js$', 'async-preprocessor-with-sourcemaps', {}]],
+      transform: [
+        ['\\.js$', `${__dirname}/async-preprocessor-with-sourcemaps`, {}],
+      ],
     };
     const scriptTransformer = await createScriptTransformer(transformerConfig);
 
@@ -1210,7 +1299,7 @@ describe('ScriptTransformer', () => {
     };
     /* eslint-enable */
 
-    require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
+    require(`${__dirname}/async-preprocessor-with-sourcemaps`).processAsync.mockResolvedValue(
       {
         code: 'content',
         map,
@@ -1248,10 +1337,12 @@ describe('ScriptTransformer', () => {
     };
     /* eslint-enable */
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map: null,
-    });
+    require(`${__dirname}/preprocessor-with-sourcemaps`).process.mockReturnValue(
+      {
+        code: 'content',
+        map: null,
+      },
+    );
 
     const result = scriptTransformer.transform(
       '/fruits/banana.js',
@@ -1284,10 +1375,12 @@ describe('ScriptTransformer', () => {
     };
     /* eslint-enable */
 
-    require('preprocessor-with-sourcemaps').process.mockReturnValue({
-      code: 'content',
-      map: null,
-    });
+    require(`${__dirname}/preprocessor-with-sourcemaps`).process.mockReturnValue(
+      {
+        code: 'content',
+        map: null,
+      },
+    );
 
     const result = await scriptTransformer.transformAsync(
       '/fruits/banana.js',
@@ -1320,7 +1413,7 @@ describe('ScriptTransformer', () => {
     };
     /* eslint-enable */
 
-    require('async-preprocessor-with-sourcemaps').processAsync.mockResolvedValue(
+    require(`${__dirname}/async-preprocessor-with-sourcemaps`).processAsync.mockResolvedValue(
       {
         code: 'content',
         map: null,
@@ -1346,7 +1439,13 @@ describe('ScriptTransformer', () => {
   it('passes expected transform options to getCacheKey', async () => {
     config = {
       ...config,
-      transform: [['\\.js$', 'test_preprocessor', {configKey: 'configValue'}]],
+      transform: [
+        [
+          '\\.js$',
+          `${__dirname}/test_preprocessor`,
+          {configKey: 'configValue'},
+        ],
+      ],
     };
     const scriptTransformer = await createScriptTransformer(config);
 
@@ -1355,31 +1454,19 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
 
-    const {getCacheKey} = require('test_preprocessor');
+    const {getCacheKey} = require(`${__dirname}/test_preprocessor`);
     expect(getCacheKey).toMatchSnapshot();
   });
 
   it('in async mode, passes expected transform options to getCacheKey', async () => {
     config = {
       ...config,
-      transform: [['\\.js$', 'test_preprocessor', {configKey: 'configValue'}]],
-    };
-    const scriptTransformer = await createScriptTransformer(config);
-
-    await scriptTransformer.transformAsync(
-      '/fruits/banana.js',
-      getCoverageOptions({collectCoverage: true}),
-    );
-
-    const {getCacheKey} = require('test_preprocessor');
-    expect(getCacheKey).toMatchSnapshot();
-  });
-
-  it('passes expected transform options to getCacheKeyAsync', async () => {
-    config = {
-      ...config,
       transform: [
-        ['\\.js$', 'test_async_preprocessor', {configKey: 'configValue'}],
+        [
+          '\\.js$',
+          `${__dirname}/test_preprocessor`,
+          {configKey: 'configValue'},
+        ],
       ],
     };
     const scriptTransformer = await createScriptTransformer(config);
@@ -1389,27 +1476,55 @@ describe('ScriptTransformer', () => {
       getCoverageOptions({collectCoverage: true}),
     );
 
-    const {getCacheKeyAsync} = require('test_async_preprocessor');
+    const {getCacheKey} = require(`${__dirname}/test_preprocessor`);
+    expect(getCacheKey).toMatchSnapshot();
+  });
+
+  it('passes expected transform options to getCacheKeyAsync', async () => {
+    config = {
+      ...config,
+      transform: [
+        [
+          '\\.js$',
+          `${__dirname}/test_async_preprocessor`,
+          {configKey: 'configValue'},
+        ],
+      ],
+    };
+    const scriptTransformer = await createScriptTransformer(config);
+
+    await scriptTransformer.transformAsync(
+      '/fruits/banana.js',
+      getCoverageOptions({collectCoverage: true}),
+    );
+
+    const {getCacheKeyAsync} = require(`${__dirname}/test_async_preprocessor`);
     expect(getCacheKeyAsync).toMatchSnapshot();
   });
 
   it('creates transformer with config', async () => {
     const transformerConfig = {};
     config = Object.assign(config, {
-      transform: [['\\.js$', 'configureable-preprocessor', transformerConfig]],
+      transform: [
+        [
+          '\\.js$',
+          `${__dirname}/configureable-preprocessor`,
+          transformerConfig,
+        ],
+      ],
     });
     const scriptTransformer = await createScriptTransformer(config);
 
     scriptTransformer.transform('/fruits/banana.js', {});
     expect(
-      require('configureable-preprocessor').createTransformer,
+      require(`${__dirname}/configureable-preprocessor`).createTransformer,
     ).toHaveBeenCalledWith(transformerConfig);
   });
 
   it('reads values from the cache', async () => {
     const transformConfig: Config.ProjectConfig = {
       ...config,
-      transform: [['\\.js$', 'test_preprocessor', {}]],
+      transform: [['\\.js$', `${__dirname}/test_preprocessor`, {}]],
     };
     let scriptTransformer = await createScriptTransformer(transformConfig);
     scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
@@ -1450,7 +1565,7 @@ describe('ScriptTransformer', () => {
   it('in async mode, reads values from the cache', async () => {
     const transformConfig: Config.ProjectConfig = {
       ...config,
-      transform: [['\\.js$', 'test_preprocessor', {}]],
+      transform: [['\\.js$', `${__dirname}/test_preprocessor`, {}]],
     };
     let scriptTransformer = await createScriptTransformer(transformConfig);
     await scriptTransformer.transformAsync(
@@ -1500,7 +1615,7 @@ describe('ScriptTransformer', () => {
   it('reads values from the cache when using async preprocessor', async () => {
     const transformConfig: Config.ProjectConfig = {
       ...config,
-      transform: [['\\.js$', 'test_async_preprocessor', {}]],
+      transform: [['\\.js$', `${__dirname}/test_async_preprocessor`, {}]],
     };
     let scriptTransformer = await createScriptTransformer(transformConfig);
     await scriptTransformer.transformAsync(
@@ -1550,7 +1665,7 @@ describe('ScriptTransformer', () => {
   it('reads values from the cache when the file contains colons', async () => {
     const transformConfig: Config.ProjectConfig = {
       ...config,
-      transform: [['\\.js$', 'test_preprocessor', {}]],
+      transform: [['\\.js$', `${__dirname}/test_preprocessor`, {}]],
     };
     let scriptTransformer = await createScriptTransformer(transformConfig);
     scriptTransformer.transform(
@@ -1581,7 +1696,7 @@ describe('ScriptTransformer', () => {
   it('in async mode, reads values from the cache when the file contains colons', async () => {
     const transformConfig: Config.ProjectConfig = {
       ...config,
-      transform: [['\\.js$', 'test_preprocessor', {}]],
+      transform: [['\\.js$', `${__dirname}/test_preprocessor`, {}]],
     };
     let scriptTransformer = await createScriptTransformer(transformConfig);
     await scriptTransformer.transformAsync(
@@ -1612,7 +1727,7 @@ describe('ScriptTransformer', () => {
   it('with async preprocessor, reads values from the cache when the file contains colons', async () => {
     const transformConfig: Config.ProjectConfig = {
       ...config,
-      transform: [['\\.js$', 'test_async_preprocessor', {}]],
+      transform: [['\\.js$', `${__dirname}/test_async_preprocessor`, {}]],
     };
     let scriptTransformer = await createScriptTransformer(transformConfig);
     await scriptTransformer.transformAsync(
@@ -1642,11 +1757,11 @@ describe('ScriptTransformer', () => {
 
   it('should reuse the value from in-memory cache which is set by custom transformer', async () => {
     const cacheFS = new Map<string, string>();
-    const testPreprocessor = require('cache_fs_preprocessor');
+    const testPreprocessor = require(`${__dirname}/cache_fs_preprocessor`);
     const scriptTransformer = await createScriptTransformer(
       {
         ...config,
-        transform: [['\\.js$', 'cache_fs_preprocessor', {}]],
+        transform: [['\\.js$', `${__dirname}/cache_fs_preprocessor`, {}]],
       },
       cacheFS,
     );
@@ -1667,11 +1782,11 @@ describe('ScriptTransformer', () => {
 
   it('in async mode, should reuse the value from in-memory cache which is set by custom preprocessor', async () => {
     const cacheFS = new Map<string, string>();
-    const testPreprocessor = require('cache_fs_preprocessor');
+    const testPreprocessor = require(`${__dirname}/cache_fs_preprocessor`);
     const scriptTransformer = await createScriptTransformer(
       {
         ...config,
-        transform: [['\\.js$', 'cache_fs_preprocessor', {}]],
+        transform: [['\\.js$', `${__dirname}/cache_fs_preprocessor`, {}]],
       },
       cacheFS,
     );
@@ -1692,11 +1807,11 @@ describe('ScriptTransformer', () => {
 
   it('should reuse the value from in-memory cache which is set by custom async preprocessor', async () => {
     const cacheFS = new Map<string, string>();
-    const testPreprocessor = require('cache_fs_async_preprocessor');
+    const testPreprocessor = require(`${__dirname}/cache_fs_async_preprocessor`);
     const scriptTransformer = await createScriptTransformer(
       {
         ...config,
-        transform: [['\\.js$', 'cache_fs_async_preprocessor', {}]],
+        transform: [['\\.js$', `${__dirname}/cache_fs_async_preprocessor`, {}]],
       },
       cacheFS,
     );
@@ -1722,14 +1837,14 @@ describe('ScriptTransformer', () => {
   it('does not reuse the in-memory cache between different projects', async () => {
     const scriptTransformer = await createScriptTransformer({
       ...config,
-      transform: [['\\.js$', 'test_preprocessor', {}]],
+      transform: [['\\.js$', `${__dirname}/test_preprocessor`, {}]],
     });
 
     scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
 
     const anotherScriptTransformer = await createScriptTransformer({
       ...config,
-      transform: [['\\.js$', 'css-preprocessor', {}]],
+      transform: [['\\.js$', `${__dirname}/css-preprocessor`, {}]],
     });
 
     anotherScriptTransformer.transform(
@@ -1744,7 +1859,7 @@ describe('ScriptTransformer', () => {
   it('async mode does not reuse the in-memory cache between different projects', async () => {
     const scriptTransformer = await createScriptTransformer({
       ...config,
-      transform: [['\\.js$', 'test_preprocessor', {}]],
+      transform: [['\\.js$', `${__dirname}/test_preprocessor`, {}]],
     });
 
     await scriptTransformer.transformAsync(
@@ -1754,7 +1869,7 @@ describe('ScriptTransformer', () => {
 
     const anotherScriptTransformer = await createScriptTransformer({
       ...config,
-      transform: [['\\.js$', 'css-preprocessor', {}]],
+      transform: [['\\.js$', `${__dirname}/css-preprocessor`, {}]],
     });
 
     await anotherScriptTransformer.transformAsync(
@@ -1769,14 +1884,14 @@ describe('ScriptTransformer', () => {
   it('regardless of sync/async, does not reuse the in-memory cache between different projects', async () => {
     const scriptTransformer = await createScriptTransformer({
       ...config,
-      transform: [['\\.js$', 'test_preprocessor', {}]],
+      transform: [['\\.js$', `${__dirname}/test_preprocessor`, {}]],
     });
 
     scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
 
     const anotherScriptTransformer = await createScriptTransformer({
       ...config,
-      transform: [['\\.js$', 'css-preprocessor', {}]],
+      transform: [['\\.js$', `${__dirname}/css-preprocessor`, {}]],
     });
 
     await anotherScriptTransformer.transformAsync(
@@ -1786,7 +1901,7 @@ describe('ScriptTransformer', () => {
 
     const yetAnotherScriptTransformer = await createScriptTransformer({
       ...config,
-      transform: [['\\.js$', 'test_preprocessor', {}]],
+      transform: [['\\.js$', `${__dirname}/test_preprocessor`, {}]],
     });
     yetAnotherScriptTransformer.transform(
       '/fruits/banana.js',
@@ -1795,7 +1910,7 @@ describe('ScriptTransformer', () => {
 
     const fruityScriptTransformer = await createScriptTransformer({
       ...config,
-      transform: [['\\.js$', 'test_async_preprocessor', {}]],
+      transform: [['\\.js$', `${__dirname}/test_async_preprocessor`, {}]],
     });
     await fruityScriptTransformer.transformAsync(
       '/fruits/banana.js',
@@ -1809,11 +1924,11 @@ describe('ScriptTransformer', () => {
   it('preload transformer when using `createScriptTransformer`', async () => {
     const scriptTransformer = await createScriptTransformer({
       ...config,
-      transform: [['\\.js$', 'test_preprocessor', {}]],
+      transform: [['\\.js$', `${__dirname}/test_preprocessor`, {}]],
     });
 
     expect(Array.from(scriptTransformer._transformCache.entries())).toEqual([
-      ['test_preprocessor', expect.any(Object)],
+      [`${__dirname}/test_preprocessor`, expect.any(Object)],
     ]);
   });
 });
