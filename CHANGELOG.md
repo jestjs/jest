@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-reporters]` Expose the `getResultHeader` util, for e.g. [fingers-crossed](https://github.com/mozilla/addons-frontend/blob/master/tests/jest-reporters/fingers-crossed.js) ([#11460](https://github.com/facebook/jest/pull/11460))
+- `[jest-reporters]` Expose the `getResultHeader` util ([#11460](https://github.com/facebook/jest/pull/11460))
 
 ### Fixes
 
