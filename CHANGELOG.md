@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-reporters]` Expose the `getResultHeader` util, for e.g. [fingers-crossed](https://github.com/mozilla/addons-frontend/blob/master/tests/jest-reporters/fingers-crossed.js) ([#11460](https://github.com/facebook/jest/pull/11460))
+
 ### Fixes
 
 - `[jest-worker]` Loosen engine requirement to `>= 10.13.0` ([#11451](https://github.com/facebook/jest/pull/11451))

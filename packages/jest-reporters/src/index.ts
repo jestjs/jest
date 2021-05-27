@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import getResultHeader from './getResultHeader';
 import {
   formatTestPath,
   printDisplayName,
@@ -33,6 +34,7 @@ export type {
 } from './types';
 export const utils = {
   formatTestPath,
+  getResultHeader,
   printDisplayName,
   relativePath,
   trimAndFormatPath,
