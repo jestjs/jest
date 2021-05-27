@@ -13,11 +13,11 @@ import {
   TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
+import type {TestFileEvent} from '@jest/test-result';
 import type {Circus, Config, Global} from '@jest/types';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {bind} from 'jest-each';
 import {formatExecError, formatResultsErrors} from 'jest-message-util';
-import type {TestFileEvent} from 'jest-runner';
 import {
   SnapshotState,
   SnapshotStateType,

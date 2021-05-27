@@ -20,6 +20,7 @@ import {
 import {
   AggregatedResult,
   SerializableError,
+  Test,
   TestResult,
   addResult,
   buildFailureTestResult,
@@ -28,17 +29,13 @@ import {
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
-import TestRunner, {Test} from 'jest-runner';
+import type TestRunner from 'jest-runner';
 import type {Context} from 'jest-runtime';
 import snapshot = require('jest-snapshot');
 import {requireOrImportModule} from 'jest-util';
 import ReporterDispatcher from './ReporterDispatcher';
 import type TestWatcher from './TestWatcher';
 import {shouldRunInBand} from './testSchedulerHelper';
-
-// The default jest-runner is required because it is the default test runner
-// and required implicitly through the `runner` ProjectConfig option.
-TestRunner;
 
 export type TestSchedulerOptions = {
   startRun: (globalConfig: Config.GlobalConfig) => void;

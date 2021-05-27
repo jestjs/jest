@@ -18,7 +18,7 @@ import {
   getConsoleOutput,
 } from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
-import type {TestResult} from '@jest/test-result';
+import type {TestFileEvent, TestResult} from '@jest/test-result';
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import * as docblock from 'jest-docblock';
@@ -27,7 +27,7 @@ import {formatExecError} from 'jest-message-util';
 import Resolver, {resolveTestEnvironment} from 'jest-resolve';
 import type RuntimeClass from 'jest-runtime';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
-import type {TestFileEvent, TestFramework, TestRunnerContext} from './types';
+import type {TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {
   leakDetector: LeakDetector | null;

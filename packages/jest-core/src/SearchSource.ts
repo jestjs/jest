@@ -8,12 +8,12 @@
 import * as os from 'os';
 import * as path from 'path';
 import micromatch = require('micromatch');
+import type {Test} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type {ChangedFiles} from 'jest-changed-files';
 import {replaceRootDirInPath} from 'jest-config';
 import {escapePathForRegex} from 'jest-regex-util';
 import {DependencyResolver} from 'jest-resolve-dependencies';
-import type {Test} from 'jest-runner';
 import type {Context} from 'jest-runtime';
 import {buildSnapshotResolver} from 'jest-snapshot';
 import {globsToMatcher, testPathPatternToRegExp} from 'jest-util';

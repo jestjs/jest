@@ -2761,7 +2761,6 @@ __metadata:
     "@types/graceful-fs": ^4.1.3
     graceful-fs: ^4.2.4
     jest-haste-map: ^27.0.1
-    jest-runner: ^27.0.1
     jest-runtime: ^27.0.1
   languageName: unknown
   linkType: soft
@@ -13262,7 +13261,6 @@ fsevents@^1.2.7:
     jest-each: ^27.0.1
     jest-matcher-utils: ^27.0.1
     jest-message-util: ^27.0.1
-    jest-runner: ^27.0.1
     jest-runtime: ^27.0.1
     jest-snapshot: ^27.0.1
     jest-snapshot-serializer-raw: ^1.1.0
