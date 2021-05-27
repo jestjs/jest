@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-reporters]` Expose the `getResultHeader` util ([#11460](https://github.com/facebook/jest/pull/11460))
+
 ### Fixes
 
 - `[jest-worker]` Loosen engine requirement to `>= 10.13.0` ([#11451](https://github.com/facebook/jest/pull/11451))
