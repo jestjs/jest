@@ -38,6 +38,7 @@
     "jest-jasmine2": "^27.0.1",
     "jest-regex-util": "^27.0.1",
     "jest-resolve": "^27.0.1",
+    "jest-runner": "^27.0.1",
     "jest-util": "^27.0.1",
     "jest-validate": "^27.0.1",
     "micromatch": "^4.0.4",

@@ -1058,6 +1058,10 @@ export default async function normalize(
     rootDir: options.rootDir,
   });
 
+  if (newOptions.runner === DEFAULT_CONFIG.runner) {
+    newOptions.runner = require.resolve(newOptions.runner);
+  }
+
   newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
   newOptions.testPathPattern = buildTestPathPattern(argv);
   newOptions.json = !!argv.json;

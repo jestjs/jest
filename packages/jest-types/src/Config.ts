@@ -98,7 +98,7 @@ export type DefaultOptions = {
   restoreMocks: boolean;
   roots: Array<Path>;
   runTestsByPath: boolean;
-  runner: 'jest-runner';
+  runner: string;
   setupFiles: Array<Path>;
   setupFilesAfterEnv: Array<Path>;
   skipFilter: boolean;

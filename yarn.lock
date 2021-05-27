@@ -13328,6 +13328,7 @@ fsevents@^1.2.7:
     jest-jasmine2: ^27.0.1
     jest-regex-util: ^27.0.1
     jest-resolve: ^27.0.1
+    jest-runner: ^27.0.1
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.0.1
     jest-validate: ^27.0.1

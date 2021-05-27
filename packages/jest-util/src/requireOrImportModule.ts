@@ -14,8 +14,10 @@ export default async function requireOrImportModule<T>(
   filePath: Config.Path,
   applyInteropRequireDefault = true,
 ): Promise<T> {
-  if (!isAbsolute(filePath) && filePath[0] === '.') {
-    throw new Error(`Jest: requireOrImportModule path must be absolute`);
+  if (!isAbsolute(filePath)) {
+    throw new Error(
+      `Jest: requireOrImportModule path must be absolute, was "${filePath}"`,
+    );
   }
   try {
     const requiredModule = require(filePath);
