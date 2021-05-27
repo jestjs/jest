@@ -13266,6 +13266,7 @@ fsevents@^1.2.7:
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.0.1
     pretty-format: ^27.0.1
+    slash: ^3.0.0
     stack-utils: ^2.0.3
     throat: ^6.0.1
   languageName: unknown

@@ -8,6 +8,7 @@
 
 ### Fixes
 
+- `[jest-circus]` Add missing `slash` dependency ([#11465](https://github.com/facebook/jest/pull/11465))
 - `[jest-circus, @jest/test-sequencer]` Remove dependency on `jest-runner` ([#11466](https://github.com/facebook/jest/pull/11466))
 - `[jest-runner]` Remove dependency on `jest-config` ([#11466](https://github.com/facebook/jest/pull/11466))
 - `[jest-worker]` Loosen engine requirement to `>= 10.13.0` ([#11451](https://github.com/facebook/jest/pull/11451))
