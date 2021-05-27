@@ -15,7 +15,11 @@ import normalize from './normalize';
 import readConfigFileAndSetRootDir from './readConfigFileAndSetRootDir';
 import resolveConfigPath from './resolveConfigPath';
 import {isJSONString, replaceRootDirInPath} from './utils';
-export {getTestEnvironment, isJSONString} from './utils';
+
+// TODO: remove export in Jest 28
+export {resolveTestEnvironment as getTestEnvironment} from 'jest-resolve';
+
+export {isJSONString} from './utils';
 export {default as normalize} from './normalize';
 export {default as deprecationEntries} from './Deprecated';
 export {replaceRootDirInPath} from './utils';

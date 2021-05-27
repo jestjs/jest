@@ -21,11 +21,10 @@ import type {JestEnvironment} from '@jest/environment';
 import type {TestResult} from '@jest/test-result';
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
-import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import LeakDetector from 'jest-leak-detector';
 import {formatExecError} from 'jest-message-util';
-import type Resolver from 'jest-resolve';
+import Resolver, {resolveTestEnvironment} from 'jest-resolve';
 import type RuntimeClass from 'jest-runtime';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
 import type {TestFileEvent, TestFramework, TestRunnerContext} from './types';
@@ -97,7 +96,7 @@ async function runTestInternal(
         )}"`,
       );
     }
-    testEnvironment = getTestEnvironment({
+    testEnvironment = resolveTestEnvironment({
       ...config,
       testEnvironment: customEnvironment,
     });

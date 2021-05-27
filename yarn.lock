@@ -13698,6 +13698,7 @@ fsevents@^1.2.7:
     jest-haste-map: ^27.0.1
     jest-pnp-resolver: ^1.2.2
     jest-util: ^27.0.1
+    jest-validate: ^27.0.1
     resolve: ^1.20.0
     slash: ^3.0.0
   languageName: unknown
@@ -13731,7 +13732,6 @@ fsevents@^1.2.7:
     emittery: ^0.8.1
     exit: ^0.1.2
     graceful-fs: ^4.2.4
-    jest-config: ^27.0.1
     jest-docblock: ^27.0.1
     jest-haste-map: ^27.0.1
     jest-jasmine2: ^27.0.1
