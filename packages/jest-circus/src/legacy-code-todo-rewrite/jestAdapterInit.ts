@@ -10,10 +10,10 @@ import type {JestEnvironment} from '@jest/environment';
 import {
   AssertionResult,
   Status,
+  TestFileEvent,
   TestResult,
   createEmptyTestResult,
 } from '@jest/test-result';
-import type {TestFileEvent} from '@jest/test-result';
 import type {Circus, Config, Global} from '@jest/types';
 import {extractExpectedAssertionsErrors, getState, setState} from 'expect';
 import {bind} from 'jest-each';

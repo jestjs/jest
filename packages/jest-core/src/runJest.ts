@@ -12,10 +12,10 @@ import * as fs from 'graceful-fs';
 import {CustomConsole} from '@jest/console';
 import {
   AggregatedResult,
+  Test,
   formatTestResults,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
-import type {Test} from '@jest/test-result';
 import type TestSequencer from '@jest/test-sequencer';
 import type {Config} from '@jest/types';
 import type {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
