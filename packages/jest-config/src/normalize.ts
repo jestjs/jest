@@ -14,7 +14,12 @@ import {statSync} from 'graceful-fs';
 import micromatch = require('micromatch');
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
-import Resolver from 'jest-resolve';
+import Resolver, {
+  resolveRunner,
+  resolveSequencer,
+  resolveTestEnvironment,
+  resolveWatchPlugin,
+} from 'jest-resolve';
 import {
   clearLine,
   replacePathSepForGlob,
@@ -35,14 +40,11 @@ import {
   DOCUMENTATION_NOTE,
   _replaceRootDirTags,
   escapeGlobCharacters,
-  getRunner,
-  getSequencer,
-  getTestEnvironment,
-  getWatchPlugin,
   replaceRootDirInPath,
   resolve,
 } from './utils';
 import validatePattern from './validatePattern';
+
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js', '.cjs', '.mjs'];
 const PRESET_NAME = 'jest-preset';
@@ -604,7 +606,7 @@ export default async function normalize(
     options.setupFilesAfterEnv.push(options.setupTestFrameworkScriptFile);
   }
 
-  options.testEnvironment = getTestEnvironment({
+  options.testEnvironment = resolveTestEnvironment({
     rootDir: options.rootDir,
     testEnvironment: options.testEnvironment || DEFAULT_CONFIG.testEnvironment,
   });
@@ -739,7 +741,7 @@ export default async function normalize(
           const option = oldOptions[key];
           value =
             option &&
-            getRunner(newOptions.resolver, {
+            resolveRunner(newOptions.resolver, {
               filePath: option,
               rootDir: options.rootDir,
             });
@@ -1010,7 +1012,7 @@ export default async function normalize(
           if (typeof watchPlugin === 'string') {
             return {
               config: {},
-              path: getWatchPlugin(newOptions.resolver, {
+              path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin,
                 rootDir: options.rootDir,
               }),
@@ -1018,7 +1020,7 @@ export default async function normalize(
           } else {
             return {
               config: watchPlugin[1] || {},
-              path: getWatchPlugin(newOptions.resolver, {
+              path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin[0],
                 rootDir: options.rootDir,
               }),
@@ -1051,7 +1053,7 @@ export default async function normalize(
     // ignored
   }
 
-  newOptions.testSequencer = getSequencer(newOptions.resolver, {
+  newOptions.testSequencer = resolveSequencer(newOptions.resolver, {
     filePath: options.testSequencer || DEFAULT_CONFIG.testSequencer,
     rootDir: options.rootDir,
   });

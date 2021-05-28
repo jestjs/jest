@@ -82,7 +82,7 @@ describe('Stack Trace', () => {
     );
 
     expect(stderr).toMatch(
-      /\s+at\s(?:.+?)\s\((?:.+?)jest-resolve\/build\/index\.js/,
+      /\s+at\s(?:.+?)\s\((?:.+?)jest-resolve\/build\/resolver\.js/,
     );
   });
 

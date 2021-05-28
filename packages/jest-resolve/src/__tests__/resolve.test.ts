@@ -10,10 +10,10 @@ import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {sync as resolveSync} from 'resolve';
 import {ModuleMap} from 'jest-haste-map';
-import Resolver from '../';
 import userResolver from '../__mocks__/userResolver';
 import defaultResolver from '../defaultResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
+import Resolver from '../resolver';
 import type {ResolverConfig} from '../types';
 
 jest.mock('../__mocks__/userResolver');

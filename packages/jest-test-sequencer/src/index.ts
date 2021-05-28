@@ -6,9 +6,8 @@
  */
 
 import * as fs from 'graceful-fs';
-import type {AggregatedResult} from '@jest/test-result';
+import type {AggregatedResult, Test} from '@jest/test-result';
 import HasteMap from 'jest-haste-map';
-import type {Test} from 'jest-runner';
 import type {Context} from 'jest-runtime';
 
 const FAIL = 0;

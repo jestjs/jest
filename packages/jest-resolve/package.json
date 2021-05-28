@@ -20,6 +20,7 @@
     "graceful-fs": "^4.2.4",
     "jest-pnp-resolver": "^1.2.2",
     "jest-util": "^27.0.1",
+    "jest-validate": "^27.0.1",
     "resolve": "^1.20.0",
     "slash": "^3.0.0"
   },
