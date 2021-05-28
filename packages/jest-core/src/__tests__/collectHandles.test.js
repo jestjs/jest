@@ -6,6 +6,7 @@
  *
  */
 
+import {promises as dns} from 'dns';
 import http from 'http';
 import {PerformanceObserver} from 'perf_hooks';
 import collectHandles from '../collectHandles';
@@ -36,6 +37,19 @@ describe('collectHandles', () => {
       expect.objectContaining({message: 'PerformanceObserver'}),
     );
     obs.disconnect();
+  });
+
+  it('should not collect the DNSCHANNEL open handle', async () => {
+    const handleCollector = collectHandles();
+
+    const resolver = new dns.Resolver();
+    resolver.getServers();
+
+    const openHandles = await handleCollector();
+
+    expect(openHandles).not.toContainEqual(
+      expect.objectContaining({message: 'DNSCHANNEL'}),
+    );
   });
 
   it('should collect handles opened in test functions with `done` callbacks', done => {

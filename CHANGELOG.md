@@ -9,6 +9,7 @@
 ### Fixes
 
 - `[jest-circus, @jest/test-sequencer]` Remove dependency on `jest-runner` ([#11466](https://github.com/facebook/jest/pull/11466))
+- `[jest-core]` Do not warn about `DNSCHANNEL` handles when using the `--detectOpenHandles` option ([#11470](https://github.com/facebook/jest/pull/11470))
 - `[jest-runner]` Remove dependency on `jest-config` ([#11466](https://github.com/facebook/jest/pull/11466))
 - `[jest-worker]` Loosen engine requirement to `>= 10.13.0` ([#11451](https://github.com/facebook/jest/pull/11451))
 
