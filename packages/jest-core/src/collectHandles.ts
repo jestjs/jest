@@ -62,12 +62,16 @@ export default function collectHandles(): HandleCollectionResult {
       triggerAsyncId,
       resource: {} | NodeJS.Timeout,
     ) {
+      // Skip resources that should not generally prevent the process from
+      // exiting, not last a meaningfully long time, or otherwise shouldn't be
+      // tracked.
       if (
         type === 'PROMISE' ||
         type === 'TIMERWRAP' ||
         type === 'ELDHISTOGRAM' ||
         type === 'PerformanceObserver' ||
-        type === 'RANDOMBYTESREQUEST'
+        type === 'RANDOMBYTESREQUEST' ||
+        type === 'DNSCHANNEL'
       ) {
         return;
       }
