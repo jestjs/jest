@@ -16,20 +16,16 @@ const mockSerialRunner = {
   isSerial: true,
   runTests: jest.fn(),
 };
-jest.mock(
-  `${__dirname}/jest-runner-serial`,
-  () => jest.fn(() => mockSerialRunner),
-  {virtual: true},
-);
+jest.mock('jest-runner-serial', () => jest.fn(() => mockSerialRunner), {
+  virtual: true,
+});
 
 const mockParallelRunner = {
   runTests: jest.fn(),
 };
-jest.mock(
-  `${__dirname}/jest-runner-parallel`,
-  () => jest.fn(() => mockParallelRunner),
-  {virtual: true},
-);
+jest.mock('jest-runner-parallel', () => jest.fn(() => mockParallelRunner), {
+  virtual: true,
+});
 
 const spyShouldRunInBand = jest.spyOn(testSchedulerHelper, 'shouldRunInBand');
 
@@ -93,7 +89,7 @@ test('schedule tests run in parallel per default', async () => {
     context: {
       config: makeProjectConfig({
         moduleFileExtensions: ['.js'],
-        runner: `${__dirname}/jest-runner-parallel`,
+        runner: 'jest-runner-parallel',
         transform: [],
       }),
       hasteFS: {
@@ -116,7 +112,7 @@ test('schedule tests run in serial if the runner flags them', async () => {
     context: {
       config: makeProjectConfig({
         moduleFileExtensions: ['.js'],
-        runner: `${__dirname}/jest-runner-serial`,
+        runner: 'jest-runner-serial',
         transform: [],
       }),
       hasteFS: {
@@ -140,7 +136,7 @@ test('should bail after `n` failures', async () => {
       config: makeProjectConfig({
         moduleFileExtensions: ['.js'],
         rootDir: './',
-        runner: `${__dirname}/jest-runner-serial`,
+        runner: 'jest-runner-serial',
         transform: [],
       }),
       hasteFS: {
@@ -172,7 +168,7 @@ test('should not bail if less than `n` failures', async () => {
       config: makeProjectConfig({
         moduleFileExtensions: ['.js'],
         rootDir: './',
-        runner: `${__dirname}/jest-runner-serial`,
+        runner: 'jest-runner-serial',
         transform: [],
       }),
       hasteFS: {
@@ -203,7 +199,7 @@ test('should set runInBand to run in serial', async () => {
     context: {
       config: makeProjectConfig({
         moduleFileExtensions: ['.js'],
-        runner: `${__dirname}/jest-runner-parallel`,
+        runner: 'jest-runner-parallel',
         transform: [],
       }),
       hasteFS: {
@@ -229,7 +225,7 @@ test('should set runInBand to not run in serial', async () => {
     context: {
       config: makeProjectConfig({
         moduleFileExtensions: ['.js'],
-        runner: `${__dirname}/jest-runner-parallel`,
+        runner: 'jest-runner-parallel',
         transform: [],
       }),
       hasteFS: {
