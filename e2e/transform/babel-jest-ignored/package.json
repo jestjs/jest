@@ -1,5 +1,8 @@
 {
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "jest-runner"
+    ]
   }
 }
