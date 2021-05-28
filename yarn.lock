@@ -10334,10 +10334,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"flatted@npm:^3.1.0":
-  version: 3.2.4
-  resolution: "flatted@npm:3.2.4"
-  checksum: f4b26136e71c54d7e0680ca0af898d0ccd7146f2b4a50b41dbd7b231c43487914ec87a7a74e8628ba4f79d347980b55f0ef63378a74bbe82400367d6260d196b
+"flatted@npm:^3.1.0, flatted@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "flatted@npm:3.1.1"
+  checksum: 1065cd78294ea651b8c1b96c298a3e70893a23da655e2288e40c06d5d9b1ebce4bd977e604678e01065a92580f3de5078d60d9ee4cdcede9a9989859d7eb5057
   languageName: node
   linkType: hard
 
@@ -13311,6 +13311,7 @@ __metadata:
     "@types/merge-stream": ^1.1.2
     "@types/node": "*"
     "@types/supports-color": ^8.1.0
+    flatted: ^3.1.1
     get-stream: ^6.0.0
     jest-leak-detector: ^27.4.6
     merge-stream: ^2.0.0
