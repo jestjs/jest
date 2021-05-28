@@ -1401,7 +1401,7 @@ describe('runner', () => {
   it('defaults to `jest-runner`', async () => {
     const {options} = await normalize({rootDir: '/root'}, {} as Config.Argv);
 
-    expect(options.runner).toBe('jest-runner');
+    expect(options.runner).toBe(require.resolve('jest-runner'));
   });
 
   it('resolves to runners that do not have the prefix', async () => {

@@ -109,7 +109,9 @@ async function runTestInternal(
     await transformer.requireAndTranspileModule(testEnvironment);
   const testFramework: TestFramework =
     await transformer.requireAndTranspileModule(
-      process.env.JEST_JASMINE === '1' ? 'jest-jasmine2' : config.testRunner,
+      process.env.JEST_JASMINE === '1'
+        ? require.resolve('jest-jasmine2')
+        : config.testRunner,
     );
   const Runtime: typeof RuntimeClass = interopRequireDefault(
     config.moduleLoader
