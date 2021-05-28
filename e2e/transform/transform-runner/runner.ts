@@ -6,13 +6,12 @@
  */
 
 import throat from 'throat';
-import {TestResult, createEmptyTestResult} from '@jest/test-result';
+import {Test, TestResult, createEmptyTestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import {
+import type {
   OnTestFailure,
   OnTestStart,
   OnTestSuccess,
-  Test,
   TestRunnerContext,
   TestWatcher,
 } from 'jest-runner';

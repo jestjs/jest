@@ -24,7 +24,6 @@
     "emittery": "^0.8.1",
     "exit": "^0.1.2",
     "graceful-fs": "^4.2.4",
-    "jest-config": "^27.0.1",
     "jest-docblock": "^27.0.1",
     "jest-haste-map": "^27.0.1",
     "jest-leak-detector": "^27.0.1",

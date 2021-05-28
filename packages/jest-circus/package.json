@@ -27,7 +27,6 @@
     "jest-each": "^27.0.1",
     "jest-matcher-utils": "^27.0.1",
     "jest-message-util": "^27.0.1",
-    "jest-runner": "^27.0.1",
     "jest-runtime": "^27.0.1",
     "jest-snapshot": "^27.0.1",
     "jest-util": "^27.0.1",

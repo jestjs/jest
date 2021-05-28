@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {Test} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import type {Test} from 'jest-runner';
 import type {Context} from 'jest-runtime';
 
 export type Stats = {

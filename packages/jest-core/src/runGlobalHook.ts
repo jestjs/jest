@@ -7,9 +7,9 @@
 
 import * as util from 'util';
 import pEachSeries = require('p-each-series');
+import type {Test} from '@jest/test-result';
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
-import type {Test} from 'jest-runner';
 import prettyFormat from 'pretty-format';
 
 export default async ({

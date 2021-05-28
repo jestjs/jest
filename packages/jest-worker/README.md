@@ -21,7 +21,7 @@ This example covers the minimal usage:
 ### File `parent.js`
 
 ```javascript
-import JestWorker from 'jest-worker';
+import {Worker as JestWorker} from 'jest-worker';
 
 async function main() {
   const worker = new JestWorker(require.resolve('./Worker'));
@@ -47,7 +47,7 @@ Since `worker_threads` are considered experimental in Node, you have to opt-in t
 
 ## API
 
-The only exposed method is a constructor (`JestWorker`) that is initialized by passing the worker path, plus an options object.
+The `Worker` export is a constructor that is initialized by passing the worker path, plus an options object.
 
 ### `workerPath: string` (required)
 
@@ -153,7 +153,7 @@ This example covers the standard usage:
 ### File `parent.js`
 
 ```javascript
-import JestWorker from 'jest-worker';
+import {Worker as JestWorker} from 'jest-worker';
 
 async function main() {
   const myWorker = new JestWorker(require.resolve('./Worker'), {
