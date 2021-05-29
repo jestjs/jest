@@ -2,6 +2,17 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 27.0.2
+
+### Features
+
+- `[jest-circus]` Add some APIs to make it easier to build your own test runner
 - `[jest-reporters]` Expose the `getResultHeader` util ([#11460](https://github.com/facebook/jest/pull/11460))
 - `[jest-resolver]` Export `resolve*` utils for different Jest modules ([#11466](https://github.com/facebook/jest/pull/11466))
 - `[@jest/test-result]` Export `Test`, `TestEvents` and `TestFileEvent` ([#11466](https://github.com/facebook/jest/pull/11466))
@@ -15,10 +26,6 @@
 - `[jest-core]` Do not warn about `DNSCHANNEL` handles when using the `--detectOpenHandles` option ([#11470](https://github.com/facebook/jest/pull/11470))
 - `[jest-runner]` Remove dependency on `jest-config` ([#11466](https://github.com/facebook/jest/pull/11466))
 - `[jest-worker]` Loosen engine requirement to `>= 10.13.0` ([#11451](https://github.com/facebook/jest/pull/11451))
-
-### Chore & Maintenance
-
-### Performance
 
 ## 27.0.1
 
