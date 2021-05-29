@@ -1,17 +1,17 @@
 {
   "name": "@jest/create-cache-key-function",
-  "version": "27.0.1",
+  "version": "27.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
     "directory": "packages/jest-create-cache-key-function"
   },
   "dependencies": {
-    "@jest/types": "^27.0.1"
+    "@jest/types": "^27.0.2"
   },
   "devDependencies": {
     "@types/node": "*",
-    "jest-util": "^27.0.1"
+    "jest-util": "^27.0.2"
   },
   "engines": {
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
