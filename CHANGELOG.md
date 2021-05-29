@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-config]` `require.resolve` on default test sequencer and test environment ([#11482](https://github.com/facebook/jest/pull/11482))
+
 ### Chore & Maintenance
 
 ### Performance
