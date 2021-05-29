@@ -177,6 +177,7 @@ module.exports = {
       files: 'packages/**/*.ts',
       rules: {
         '@typescript-eslint/explicit-module-boundary-types': 'error',
+        'import/no-unresolved': 'off',
       },
     },
     {
