@@ -608,7 +608,9 @@ export default async function normalize(
 
   options.testEnvironment = resolveTestEnvironment({
     rootDir: options.rootDir,
-    testEnvironment: options.testEnvironment || DEFAULT_CONFIG.testEnvironment,
+    testEnvironment:
+      options.testEnvironment ||
+      require.resolve(DEFAULT_CONFIG.testEnvironment),
   });
 
   if (!options.roots && options.testPathDirs) {
@@ -1054,7 +1056,8 @@ export default async function normalize(
   }
 
   newOptions.testSequencer = resolveSequencer(newOptions.resolver, {
-    filePath: options.testSequencer || DEFAULT_CONFIG.testSequencer,
+    filePath:
+      options.testSequencer || require.resolve(DEFAULT_CONFIG.testSequencer),
     rootDir: options.rootDir,
   });
 

@@ -754,6 +754,19 @@ describe('testEnvironment', () => {
     );
   });
 
+  it('resolves to node environment by default', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.testEnvironment).toEqual(
+      require.resolve('jest-environment-node'),
+    );
+  });
+
   it('throws on invalid environment names', async () => {
     await expect(
       normalize(
