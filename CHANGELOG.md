@@ -8,6 +8,12 @@
 
 ### Performance
 
+## 27.0.3
+
+### Fixes
+
+- `[jest-mock]` Fixed `fn` and `spyOn` exports ([#11480](https://github.com/facebook/jest/pull/11480))
+
 ## 27.0.2
 
 ### Features

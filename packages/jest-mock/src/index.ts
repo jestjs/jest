@@ -1112,5 +1112,5 @@ export class ModuleMocker {
 
 const JestMock = new ModuleMocker(global);
 
-export const fn = JestMock.fn;
-export const spyOn = JestMock.spyOn;
+export const fn = JestMock.fn.bind(JestMock);
+export const spyOn = JestMock.spyOn.bind(JestMock);
