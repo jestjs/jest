@@ -1,6 +1,6 @@
 {
   "name": "jest-runner",
-  "version": "27.0.2",
+  "version": "27.0.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@jest/console": "^27.0.2",
-    "@jest/environment": "^27.0.2",
+    "@jest/environment": "^27.0.3",
     "@jest/test-result": "^27.0.2",
     "@jest/transform": "^27.0.2",
     "@jest/types": "^27.0.2",
@@ -29,7 +29,7 @@
     "jest-leak-detector": "^27.0.2",
     "jest-message-util": "^27.0.2",
     "jest-resolve": "^27.0.2",
-    "jest-runtime": "^27.0.2",
+    "jest-runtime": "^27.0.3",
     "jest-util": "^27.0.2",
     "jest-worker": "^27.0.2",
     "source-map-support": "^0.5.6",
@@ -39,7 +39,7 @@
     "@types/exit": "^0.1.30",
     "@types/graceful-fs": "^4.1.2",
     "@types/source-map-support": "^0.5.0",
-    "jest-jasmine2": "^27.0.2"
+    "jest-jasmine2": "^27.0.3"
   },
   "engines": {
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"

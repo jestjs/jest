@@ -1,6 +1,6 @@
 {
   "name": "@jest/test-sequencer",
-  "version": "27.0.2",
+  "version": "27.0.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,7 +17,7 @@
     "@jest/test-result": "^27.0.2",
     "graceful-fs": "^4.2.4",
     "jest-haste-map": "^27.0.2",
-    "jest-runtime": "^27.0.2"
+    "jest-runtime": "^27.0.3"
   },
   "devDependencies": {
     "@types/graceful-fs": "^4.1.3"
