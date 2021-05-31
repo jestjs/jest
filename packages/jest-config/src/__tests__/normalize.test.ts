@@ -64,7 +64,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  ((console.warn as unknown) as jest.SpyInstance).mockRestore();
+  (console.warn as unknown as jest.SpyInstance).mockRestore();
 });
 
 it('picks a name based on the rootDir', async () => {
@@ -148,9 +148,7 @@ describe('rootDir', () => {
 
 describe('automock', () => {
   it('falsy automock is not overwritten', async () => {
-    ((console.warn as unknown) as jest.SpyInstance).mockImplementation(
-      () => {},
-    );
+    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
     const {options} = await normalize(
       {
         automock: false,
@@ -432,9 +430,7 @@ describe('setupTestFrameworkScriptFile', () => {
   let Resolver;
 
   beforeEach(() => {
-    ((console.warn as unknown) as jest.SpyInstance).mockImplementation(
-      () => {},
-    );
+    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
     Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name =>
       name.startsWith('/') ? name : '/root/path/foo' + path.sep + name,
@@ -451,7 +447,7 @@ describe('setupTestFrameworkScriptFile', () => {
     );
 
     expect(
-      ((console.warn as unknown) as jest.SpyInstance).mock.calls[0][0],
+      (console.warn as unknown as jest.SpyInstance).mock.calls[0][0],
     ).toMatchSnapshot();
   });
 
@@ -758,6 +754,19 @@ describe('testEnvironment', () => {
     );
   });
 
+  it('resolves to node environment by default', async () => {
+    const {options} = await normalize(
+      {
+        rootDir: '/root',
+      },
+      {} as Config.Argv,
+    );
+
+    expect(options.testEnvironment).toEqual(
+      require.resolve('jest-environment-node'),
+    );
+  });
+
   it('throws on invalid environment names', async () => {
     await expect(
       normalize(
@@ -825,9 +834,7 @@ describe('babel-jest', () => {
 
 describe('Upgrade help', () => {
   beforeEach(() => {
-    ((console.warn as unknown) as jest.SpyInstance).mockImplementation(
-      () => {},
-    );
+    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
 
     const Resolver = require('jest-resolve').default;
     Resolver.findNodeModule = jest.fn(name => {
@@ -859,7 +866,7 @@ describe('Upgrade help', () => {
     expect(hasDeprecationWarnings).toBeTruthy();
 
     expect(
-      ((console.warn as unknown) as jest.SpyInstance).mock.calls[0][0],
+      (console.warn as unknown as jest.SpyInstance).mock.calls[0][0],
     ).toMatchSnapshot();
   });
 });
@@ -1407,7 +1414,7 @@ describe('runner', () => {
   it('defaults to `jest-runner`', async () => {
     const {options} = await normalize({rootDir: '/root'}, {} as Config.Argv);
 
-    expect(options.runner).toBe('jest-runner');
+    expect(options.runner).toBe(require.resolve('jest-runner'));
   });
 
   it('resolves to runners that do not have the prefix', async () => {
@@ -1564,7 +1571,7 @@ describe('testPathPattern', () => {
 
         expect(options.testPathPattern).toBe('');
         expect(
-          ((console.log as unknown) as jest.SpyInstance).mock.calls[0][0],
+          (console.log as unknown as jest.SpyInstance).mock.calls[0][0],
         ).toMatchSnapshot();
       });
 
@@ -1705,9 +1712,7 @@ describe('cwd', () => {
   });
 
   it('is not lost if the config has its own cwd property', async () => {
-    ((console.warn as unknown) as jest.SpyInstance).mockImplementation(
-      () => {},
-    );
+    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
     const {options} = await normalize(
       {
         cwd: '/tmp/config-sets-cwd-itself',
@@ -1775,9 +1780,7 @@ describe('displayName', () => {
 
 describe('testTimeout', () => {
   it('should return timeout value if defined', async () => {
-    ((console.warn as unknown) as jest.SpyInstance).mockImplementation(
-      () => {},
-    );
+    (console.warn as unknown as jest.SpyInstance).mockImplementation(() => {});
     const {options} = await normalize(
       {rootDir: '/root/', testTimeout: 1000},
       {} as Config.Argv,
@@ -1840,5 +1843,40 @@ describe('extensionsToTreatAsEsm', () => {
         {} as Config.Argv,
       ),
     );
+  });
+});
+
+describe('haste.enableSymlinks', () => {
+  it('should throw if watchman is not disabled', async () => {
+    await expect(
+      normalize({haste: {enableSymlinks: true}, rootDir: '/root/'}, {}),
+    ).rejects.toThrow('haste.enableSymlinks is incompatible with watchman');
+
+    await expect(
+      normalize(
+        {haste: {enableSymlinks: true}, rootDir: '/root/', watchman: true},
+        {},
+      ),
+    ).rejects.toThrow('haste.enableSymlinks is incompatible with watchman');
+
+    const {options} = await normalize(
+      {haste: {enableSymlinks: true}, rootDir: '/root/', watchman: false},
+      {},
+    );
+
+    expect(options.haste.enableSymlinks).toBe(true);
+    expect(options.watchman).toBe(false);
+  });
+});
+
+describe('haste.forceNodeFilesystemAPI', () => {
+  it('should pass option through', async () => {
+    const {options} = await normalize(
+      {haste: {forceNodeFilesystemAPI: true}, rootDir: '/root/'},
+      {},
+    );
+
+    expect(options.haste.forceNodeFilesystemAPI).toBe(true);
+    expect(console.warn).not.toHaveBeenCalled();
   });
 });

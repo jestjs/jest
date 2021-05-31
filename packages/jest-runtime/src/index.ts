@@ -42,7 +42,8 @@ import {
   shouldInstrument,
 } from '@jest/transform';
 import type {Config, Global} from '@jest/types';
-import HasteMap, {ModuleMap} from 'jest-haste-map';
+import type {IModuleMap} from 'jest-haste-map';
+import HasteMap from 'jest-haste-map';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
 import type {MockFunctionMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
@@ -314,31 +315,34 @@ export default class Runtime {
         ? new RegExp(ignorePatternParts.join('|'))
         : undefined;
 
-    return new HasteMap({
+    return HasteMap.create({
       cacheDirectory: config.cacheDirectory,
       computeSha1: config.haste.computeSha1,
-      console: options && options.console,
+      console: options?.console,
       dependencyExtractor: config.dependencyExtractor,
+      enableSymlinks: config.haste.enableSymlinks,
       extensions: [Snapshot.EXTENSION].concat(config.moduleFileExtensions),
+      forceNodeFilesystemAPI: config.haste.forceNodeFilesystemAPI,
       hasteImplModulePath: config.haste.hasteImplModulePath,
+      hasteMapModulePath: config.haste.hasteMapModulePath,
       ignorePattern,
-      maxWorkers: (options && options.maxWorkers) || 1,
+      maxWorkers: options?.maxWorkers || 1,
       mocksPattern: escapePathForRegex(path.sep + '__mocks__' + path.sep),
       name: config.name,
       platforms: config.haste.platforms || ['ios', 'android'],
-      resetCache: options && options.resetCache,
+      resetCache: options?.resetCache,
       retainAllFiles: false,
       rootDir: config.rootDir,
       roots: config.roots,
       throwOnModuleCollision: config.haste.throwOnModuleCollision,
-      useWatchman: options && options.watchman,
-      watch: options && options.watch,
+      useWatchman: options?.watchman,
+      watch: options?.watch,
     });
   }
 
   static createResolver(
     config: Config.ProjectConfig,
-    moduleMap: ModuleMap,
+    moduleMap: IModuleMap,
   ): Resolver {
     return new Resolver(moduleMap, {
       defaultPlatform: config.haste.defaultPlatform,
@@ -433,7 +437,7 @@ export default class Runtime {
           ) => {
             invariant(
               runtimeSupportsVmModules,
-              'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/en/ecmascript-modules',
+              'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
             );
             const module = await this.resolveModule(
               specifier,
@@ -538,7 +542,7 @@ export default class Runtime {
   ): Promise<void> {
     invariant(
       runtimeSupportsVmModules,
-      'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/en/ecmascript-modules',
+      'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
     );
 
     const [path, query] = (moduleName ?? '').split('?');
@@ -648,16 +652,26 @@ export default class Runtime {
       modulePath = this._resolveModule(from, moduleName);
     }
 
+    if (this.unstable_shouldLoadAsEsm(modulePath)) {
+      // Node includes more info in the message
+      const error = new Error(
+        `Must use import to load ES Module: ${modulePath}`,
+      );
+
+      // @ts-expect-error: `code` is not defined
+      error.code = 'ERR_REQUIRE_ESM';
+
+      throw error;
+    }
+
     let moduleRegistry;
 
     if (options?.isInternalModule) {
       moduleRegistry = this._internalModuleRegistry;
+    } else if (this._isolatedModuleRegistry) {
+      moduleRegistry = this._isolatedModuleRegistry;
     } else {
-      if (this._isolatedModuleRegistry) {
-        moduleRegistry = this._isolatedModuleRegistry;
-      } else {
-        moduleRegistry = this._moduleRegistry;
-      }
+      moduleRegistry = this._moduleRegistry;
     }
 
     const module = moduleRegistry.get(modulePath);
@@ -678,14 +692,19 @@ export default class Runtime {
     };
     moduleRegistry.set(modulePath, localModule);
 
-    this._loadModule(
-      localModule,
-      from,
-      moduleName,
-      modulePath,
-      options,
-      moduleRegistry,
-    );
+    try {
+      this._loadModule(
+        localModule,
+        from,
+        moduleName,
+        modulePath,
+        options,
+        moduleRegistry,
+      );
+    } catch (error: unknown) {
+      moduleRegistry.delete(modulePath);
+      throw error;
+    }
 
     return localModule.exports;
   }
@@ -821,9 +840,8 @@ export default class Runtime {
         text,
       );
 
-      localModule.exports = this._environment.global.JSON.parse(
-        transformedFile,
-      );
+      localModule.exports =
+        this._environment.global.JSON.parse(transformedFile);
     } else if (path.extname(modulePath) === '.node') {
       localModule.exports = require(modulePath);
     } else {
@@ -939,7 +957,8 @@ export default class Runtime {
     if (!this._v8CoverageInstrumenter) {
       throw new Error('You need to call `collectV8Coverage` first.');
     }
-    this._v8CoverageResult = await this._v8CoverageInstrumenter.stopInstrumenting();
+    this._v8CoverageResult =
+      await this._v8CoverageInstrumenter.stopInstrumenting();
   }
 
   getAllCoverageInfoCopy(): JestEnvironment['global']['__coverage__'] {
@@ -1221,9 +1240,8 @@ export default class Runtime {
       return source;
     }
 
-    let transformedFile: TransformResult | undefined = this._fileTransforms.get(
-      filename,
-    );
+    let transformedFile: TransformResult | undefined =
+      this._fileTransforms.get(filename);
 
     if (transformedFile) {
       return transformedFile.code;
@@ -1256,9 +1274,8 @@ export default class Runtime {
       return source;
     }
 
-    let transformedFile: TransformResult | undefined = this._fileTransforms.get(
-      filename,
-    );
+    let transformedFile: TransformResult | undefined =
+      this._fileTransforms.get(filename);
 
     if (transformedFile) {
       return transformedFile.code;
@@ -1293,7 +1310,7 @@ export default class Runtime {
         importModuleDynamically: async (specifier: string) => {
           invariant(
             runtimeSupportsVmModules,
-            'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/en/ecmascript-modules',
+            'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
           );
 
           const context = this._environment.getVmContext?.();
@@ -1451,7 +1468,7 @@ export default class Runtime {
       if (mockMetadata == null) {
         throw new Error(
           `Failed to get mock metadata: ${modulePath}\n\n` +
-            `See: https://jestjs.io/docs/manual-mocks.html#content`,
+            `See: https://jestjs.io/docs/manual-mocks#content`,
         );
       }
       this._mockMetaDataCache.set(modulePath, mockMetadata);
@@ -1547,10 +1564,12 @@ export default class Runtime {
     resolve.paths = (moduleName: string) =>
       this._requireResolvePaths(from.filename, moduleName);
 
-    const moduleRequire = (options?.isInternalModule
-      ? (moduleName: string) =>
-          this.requireInternalModule(from.filename, moduleName)
-      : this.requireModuleOrMock.bind(this, from.filename)) as NodeRequire;
+    const moduleRequire = (
+      options?.isInternalModule
+        ? (moduleName: string) =>
+            this.requireInternalModule(from.filename, moduleName)
+        : this.requireModuleOrMock.bind(this, from.filename)
+    ) as NodeRequire;
     moduleRequire.extensions = Object.create(null);
     moduleRequire.resolve = resolve;
     moduleRequire.cache = (() => {

@@ -14,7 +14,12 @@ import {statSync} from 'graceful-fs';
 import micromatch = require('micromatch');
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
-import Resolver from 'jest-resolve';
+import Resolver, {
+  resolveRunner,
+  resolveSequencer,
+  resolveTestEnvironment,
+  resolveWatchPlugin,
+} from 'jest-resolve';
 import {
   clearLine,
   replacePathSepForGlob,
@@ -35,14 +40,11 @@ import {
   DOCUMENTATION_NOTE,
   _replaceRootDirTags,
   escapeGlobCharacters,
-  getRunner,
-  getSequencer,
-  getTestEnvironment,
-  getWatchPlugin,
   replaceRootDirInPath,
   resolve,
 } from './utils';
 import validatePattern from './validatePattern';
+
 const ERROR = `${BULLET}Validation Error`;
 const PRESET_EXTENSIONS = ['.json', '.js', '.cjs', '.mjs'];
 const PRESET_NAME = 'jest-preset';
@@ -604,9 +606,11 @@ export default async function normalize(
     options.setupFilesAfterEnv.push(options.setupTestFrameworkScriptFile);
   }
 
-  options.testEnvironment = getTestEnvironment({
+  options.testEnvironment = resolveTestEnvironment({
     rootDir: options.rootDir,
-    testEnvironment: options.testEnvironment || DEFAULT_CONFIG.testEnvironment,
+    testEnvironment:
+      options.testEnvironment ||
+      require.resolve(DEFAULT_CONFIG.testEnvironment),
   });
 
   if (!options.roots && options.testPathDirs) {
@@ -634,9 +638,9 @@ export default async function normalize(
 
   setupBabelJest(options);
   // TODO: Type this properly
-  const newOptions = ({
+  const newOptions = {
     ...DEFAULT_CONFIG,
-  } as unknown) as AllOptions;
+  } as unknown as AllOptions;
 
   if (options.resolver) {
     newOptions.resolver = resolve(null, {
@@ -647,6 +651,10 @@ export default async function normalize(
   }
 
   validateExtensionsToTreatAsEsm(options.extensionsToTreatAsEsm);
+
+  if (options.watchman == null) {
+    options.watchman = DEFAULT_CONFIG.watchman;
+  }
 
   const optionKeys = Object.keys(options) as Array<keyof Config.InitialOptions>;
 
@@ -735,7 +743,7 @@ export default async function normalize(
           const option = oldOptions[key];
           value =
             option &&
-            getRunner(newOptions.resolver, {
+            resolveRunner(newOptions.resolver, {
               filePath: option,
               rootDir: options.rootDir,
             });
@@ -817,14 +825,19 @@ export default async function normalize(
               ? _replaceRootDirTags(options.rootDir, project)
               : project,
           )
-          .reduce<Array<string>>((projects, project) => {
-            // Project can be specified as globs. If a glob matches any files,
-            // We expand it to these paths. If not, we keep the original path
-            // for the future resolution.
-            const globMatches =
-              typeof project === 'string' ? glob(project) : [];
-            return projects.concat(globMatches.length ? globMatches : project);
-          }, []);
+          .reduce<Array<string | Config.InitialProjectOptions>>(
+            (projects, project) => {
+              // Project can be specified as globs. If a glob matches any files,
+              // We expand it to these paths. If not, we keep the original path
+              // for the future resolution.
+              const globMatches =
+                typeof project === 'string' ? glob(project) : [];
+              return projects.concat(
+                globMatches.length ? globMatches : project,
+              );
+            },
+            [],
+          );
         break;
       case 'moduleDirectories':
       case 'testMatch':
@@ -1001,7 +1014,7 @@ export default async function normalize(
           if (typeof watchPlugin === 'string') {
             return {
               config: {},
-              path: getWatchPlugin(newOptions.resolver, {
+              path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin,
                 rootDir: options.rootDir,
               }),
@@ -1009,7 +1022,7 @@ export default async function normalize(
           } else {
             return {
               config: watchPlugin[1] || {},
-              path: getWatchPlugin(newOptions.resolver, {
+              path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin[0],
                 rootDir: options.rootDir,
               }),
@@ -1023,6 +1036,14 @@ export default async function normalize(
     return newOptions;
   }, newOptions);
 
+  if (options.watchman && options.haste?.enableSymlinks) {
+    throw new ValidationError(
+      'Validation Error',
+      'haste.enableSymlinks is incompatible with watchman',
+      'Either set haste.enableSymlinks to false or do not use watchman',
+    );
+  }
+
   newOptions.roots.forEach((root, i) => {
     verifyDirectoryExists(root, `roots[${i}]`);
   });
@@ -1034,17 +1055,22 @@ export default async function normalize(
     // ignored
   }
 
-  newOptions.testSequencer = getSequencer(newOptions.resolver, {
-    filePath: options.testSequencer || DEFAULT_CONFIG.testSequencer,
+  newOptions.testSequencer = resolveSequencer(newOptions.resolver, {
+    filePath:
+      options.testSequencer || require.resolve(DEFAULT_CONFIG.testSequencer),
     rootDir: options.rootDir,
   });
+
+  if (newOptions.runner === DEFAULT_CONFIG.runner) {
+    newOptions.runner = require.resolve(newOptions.runner);
+  }
 
   newOptions.nonFlagArgs = argv._?.map(arg => `${arg}`);
   newOptions.testPathPattern = buildTestPathPattern(argv);
   newOptions.json = !!argv.json;
 
   newOptions.testFailureExitCode = parseInt(
-    (newOptions.testFailureExitCode as unknown) as string,
+    newOptions.testFailureExitCode as unknown as string,
     10,
   );
 
@@ -1096,7 +1122,7 @@ export default async function normalize(
       : 'new';
 
   newOptions.maxConcurrency = parseInt(
-    (newOptions.maxConcurrency as unknown) as string,
+    newOptions.maxConcurrency as unknown as string,
     10,
   );
   newOptions.maxWorkers = getMaxWorkers(argv, options);

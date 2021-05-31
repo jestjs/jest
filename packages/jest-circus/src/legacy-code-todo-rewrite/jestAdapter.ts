@@ -6,9 +6,8 @@
  */
 
 import type {JestEnvironment} from '@jest/environment';
-import type {TestResult} from '@jest/test-result';
+import type {TestFileEvent, TestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
-import type {TestFileEvent} from 'jest-runner';
 import type Runtime from 'jest-runtime';
 import type {SnapshotStateType} from 'jest-snapshot';
 import {deepCyclicCopy} from 'jest-util';
@@ -23,12 +22,10 @@ const jestAdapter = async (
   testPath: string,
   sendMessageToJest?: TestFileEvent,
 ): Promise<TestResult> => {
-  const {
-    initialize,
-    runAndTransformResultsToJestFormat,
-  } = runtime.requireInternalModule<typeof import('./jestAdapterInit')>(
-    FRAMEWORK_INITIALIZER,
-  );
+  const {initialize, runAndTransformResultsToJestFormat} =
+    runtime.requireInternalModule<typeof import('./jestAdapterInit')>(
+      FRAMEWORK_INITIALIZER,
+    );
 
   const {globals, snapshotState} = await initialize({
     config,

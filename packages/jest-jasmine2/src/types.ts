@@ -77,9 +77,7 @@ export type Jasmine = {
   _DEFAULT_TIMEOUT_INTERVAL: number;
   DEFAULT_TIMEOUT_INTERVAL: number;
   currentEnv_: ReturnType<typeof Env>['prototype'];
-  getEnv: (
-    options?: Record<string, unknown>,
-  ) => ReturnType<typeof Env>['prototype'];
+  getEnv: () => ReturnType<typeof Env>['prototype'];
   createSpy: typeof createSpy;
   Env: ReturnType<typeof Env>;
   JsApiReporter: typeof JsApiReporter;

@@ -73,6 +73,36 @@ expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
   );
 });
 
+test('saveInlineSnapshots() with bad prettier path leaves formatting outside of snapshots alone', () => {
+  const filename = path.join(dir, 'my.test.js');
+  fs.writeFileSync(
+    filename,
+    `
+const a = [1,            2];
+expect(a).toMatchInlineSnapshot(\`an out-of-date and also multi-line
+snapshot\`);
+expect(a).toMatchInlineSnapshot();
+expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
+`.trim() + '\n',
+  );
+
+  saveInlineSnapshots(
+    [2, 4, 5].map(line => ({
+      frame: {column: 11, file: filename, line} as Frame,
+      snapshot: `[1, 2]`,
+    })),
+    'bad-prettier',
+  );
+
+  expect(fs.readFileSync(filename, 'utf8')).toBe(
+    `const a = [1,            2];
+expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
+expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
+expect(a).toMatchInlineSnapshot(\`[1, 2]\`);
+`,
+  );
+});
+
 test('saveInlineSnapshots() can handle typescript without prettier', () => {
   const filename = path.join(dir, 'my.test.ts');
   fs.writeFileSync(

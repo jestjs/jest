@@ -58,6 +58,10 @@ export default async function readConfigFileAndSetRootDir(
     configObject = configObject.jest || {};
   }
 
+  if (typeof configObject === 'function') {
+    configObject = await configObject();
+  }
+
   if (configObject.rootDir) {
     // We don't touch it if it has an absolute path specified
     if (!path.isAbsolute(configObject.rootDir)) {

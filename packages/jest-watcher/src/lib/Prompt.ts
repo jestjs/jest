@@ -89,6 +89,12 @@ export default class Prompt {
       case KEYS.ARROW_LEFT:
       case KEYS.ARROW_RIGHT:
         break;
+      case KEYS.CONTROL_U:
+        this._value = '';
+        this._offset = -1;
+        this._selection = null;
+        this._onChange();
+        break;
       default:
         this._value =
           key === KEYS.BACKSPACE ? this._value.slice(0, -1) : this._value + key;

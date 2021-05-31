@@ -22,7 +22,7 @@ export type MockFunctionMetadataType =
 export type MockFunctionMetadata<
   T,
   Y extends Array<unknown>,
-  Type = MockFunctionMetadataType
+  Type = MockFunctionMetadataType,
 > = {
   ref?: number;
   members?: Record<string, MockFunctionMetadata<T, Y>>;
@@ -614,10 +614,10 @@ export class ModuleMocker {
         return finalReturnValue;
       }, metadata.length || 0);
 
-      const f = (this._createMockFunction(
+      const f = this._createMockFunction(
         metadata,
         mockConstructor,
-      ) as unknown) as Mock<T, Y>;
+      ) as unknown as Mock<T, Y>;
       f._isMockFunction = true;
       f.getMockImplementation = () => this._ensureMockConfig(f).mockImpl;
 
@@ -1112,5 +1112,5 @@ export class ModuleMocker {
 
 const JestMock = new ModuleMocker(global);
 
-export const fn = JestMock.fn;
-export const spyOn = JestMock.spyOn;
+export const fn = JestMock.fn.bind(JestMock);
+export const spyOn = JestMock.spyOn.bind(JestMock);

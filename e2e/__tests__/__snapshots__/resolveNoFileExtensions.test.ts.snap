@@ -9,7 +9,7 @@ exports[`show error message when no js moduleFileExtensions 1`] = `
   Please change your configuration to include 'js'.
 
   Configuration Documentation:
-  https://jestjs.io/docs/configuration.html
+  https://jestjs.io/docs/configuration
 
 `;
 
@@ -29,7 +29,7 @@ FAIL __tests__/test.js
 
     You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['js'].
 
-    See https://jestjs.io/docs/en/configuration#modulefileextensions-arraystring
+    See https://jestjs.io/docs/configuration#modulefileextensions-arraystring
 
       6 |  */
       7 |
@@ -37,6 +37,6 @@ FAIL __tests__/test.js
         |                  ^
       9 |
 
-      at Resolver.resolveModule (../../packages/jest-resolve/build/index.js:311:11)
+      at Resolver.resolveModule (../../packages/jest-resolve/build/resolver.js:311:11)
       at Object.require (index.js:8:18)
 `;

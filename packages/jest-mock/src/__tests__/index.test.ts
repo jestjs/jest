@@ -9,7 +9,7 @@
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
 import vm, {Context} from 'vm';
-import {ModuleMocker} from '../';
+import {ModuleMocker, fn, spyOn} from '../';
 
 describe('moduleMocker', () => {
   let moduleMocker: ModuleMocker;
@@ -1438,4 +1438,11 @@ describe('moduleMocker', () => {
       expect(spy2.mock.calls.length).toBe(1);
     });
   });
+});
+
+test('`fn` and `spyOn` do not throw', () => {
+  expect(() => {
+    fn();
+    spyOn({apple: () => {}}, 'apple');
+  }).not.toThrow();
 });

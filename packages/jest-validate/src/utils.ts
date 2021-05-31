@@ -7,7 +7,7 @@
 
 import chalk = require('chalk');
 import leven from 'leven';
-import prettyFormat from 'pretty-format';
+import {format as prettyFormat} from 'pretty-format';
 
 const BULLET: string = chalk.bold('\u25cf');
 export const DEPRECATION = `${BULLET} Deprecation Warning`;

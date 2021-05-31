@@ -9,7 +9,13 @@ import chalk = require('chalk');
 import Emittery = require('emittery');
 import exit = require('exit');
 import throat from 'throat';
-import type {SerializableError, TestResult} from '@jest/test-result';
+import type {
+  SerializableError,
+  Test,
+  TestEvents,
+  TestFileEvent,
+  TestResult,
+} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import {deepCyclicCopy} from 'jest-util';
 import {PromiseWithCustomMessage, Worker} from 'jest-worker';
@@ -19,13 +25,13 @@ import type {
   OnTestFailure,
   OnTestStart,
   OnTestSuccess,
-  Test,
-  TestEvents,
-  TestFileEvent,
   TestRunnerContext,
   TestRunnerOptions,
   TestWatcher,
 } from './types';
+
+// TODO: remove re-export in Jest 28
+export type {Test, TestFileEvent, TestEvents} from '@jest/test-result';
 
 const TEST_WORKER_PATH = require.resolve('./testWorker');
 
@@ -34,14 +40,12 @@ interface WorkerInterface extends Worker {
 }
 
 export type {
-  Test,
   OnTestFailure,
   OnTestStart,
   OnTestSuccess,
   TestWatcher,
   TestRunnerContext,
   TestRunnerOptions,
-  TestFileEvent,
 } from './types';
 
 export default class TestRunner {

@@ -21,6 +21,8 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "globals": {},
       "haste": {
         "computeSha1": false,
+        "enableSymlinks": false,
+        "forceNodeFilesystemAPI": false,
         "throwOnModuleCollision": false
       },
       "injectGlobals": true,
@@ -46,7 +48,7 @@ exports[`--showConfig outputs config info and exits 1`] = `
       "roots": [
         "<<REPLACED_ROOT_DIR>>"
       ],
-      "runner": "jest-runner",
+      "runner": "<<REPLACED_JEST_PACKAGES_DIR>>/jest-runner/build/index.js",
       "setupFiles": [],
       "setupFilesAfterEnv": [],
       "skipFilter": false,

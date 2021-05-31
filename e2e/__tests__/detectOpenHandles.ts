@@ -71,6 +71,17 @@ it('does not report promises', () => {
   expect(textAfterTest).toBe('');
 });
 
+it('does not report crypto random data', () => {
+  // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
+  const {stderr} = runJest('detect-open-handles', [
+    'crypto',
+    '--detectOpenHandles',
+  ]);
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(textAfterTest).toBe('');
+});
+
 onNodeVersions('>=11.10.0', () => {
   it('does not report ELD histograms', () => {
     const {stderr} = runJest('detect-open-handles', [
@@ -118,6 +129,50 @@ it('prints out info about open handlers from inside tests', async () => {
     '--detectOpenHandles',
   ]);
   await run.waitUntil(({stderr}) => stderr.includes('Jest has detected'));
+  const {stderr} = await run.end();
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(wrap(textAfterTest)).toMatchSnapshot();
+});
+
+it('prints out info about open handlers from tests with a `done` callback', async () => {
+  const run = runContinuous('detect-open-handles', [
+    'in-done-function',
+    '--detectOpenHandles',
+  ]);
+  await run.waitUntil(({stderr}) => stderr.includes('Jest has detected'));
+  const {stderr} = await run.end();
+  const textAfterTest = getTextAfterTest(stderr);
+
+  expect(wrap(textAfterTest)).toMatchSnapshot();
+});
+
+it('prints out info about open handlers from lifecycle functions with a `done` callback', async () => {
+  const run = runContinuous('detect-open-handles', [
+    'in-done-lifecycle',
+    '--detectOpenHandles',
+  ]);
+  await run.waitUntil(({stderr}) => stderr.includes('Jest has detected'));
+  const {stderr} = await run.end();
+  let textAfterTest = getTextAfterTest(stderr);
+
+  // Circus and Jasmine have different contexts, leading to slightly different
+  // names for call stack functions. The difference shouldn't be problematic
+  // for users, so this normalizes them so the test works in both environments.
+  textAfterTest = textAfterTest.replace(
+    'at Object.setTimeout',
+    'at setTimeout',
+  );
+
+  expect(wrap(textAfterTest)).toMatchSnapshot();
+});
+
+it('does not print info about open handlers for a server that is already closed', async () => {
+  const run = runContinuous('detect-open-handles', [
+    'recently-closed',
+    '--detectOpenHandles',
+  ]);
+  await run.waitUntil(({stderr}) => stderr.includes('Ran all test suites'));
   const {stderr} = await run.end();
   const textAfterTest = getTextAfterTest(stderr);
 

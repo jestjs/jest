@@ -33,9 +33,7 @@ export type QueueableFn = {
 
 type PromiseCallback = (() => void | PromiseLike<void>) | undefined | null;
 
-export default function queueRunner(
-  options: Options,
-): PromiseLike<void> & {
+export default function queueRunner(options: Options): PromiseLike<void> & {
   cancel: () => void;
   catch: (onRejected?: PromiseCallback) => Promise<void>;
 } {

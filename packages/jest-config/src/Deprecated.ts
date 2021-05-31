@@ -7,7 +7,7 @@
 
 import chalk = require('chalk');
 import type {DeprecatedOptions} from 'jest-validate';
-import prettyFormat from 'pretty-format';
+import {format as prettyFormat} from 'pretty-format';
 
 const format = (value: unknown) => prettyFormat(value, {min: true});
 
@@ -15,7 +15,7 @@ const deprecatedOptions: DeprecatedOptions = {
   browser: () =>
     `  Option ${chalk.bold(
       '"browser"',
-    )} has been deprecated. Please install "browser-resolve" and use the "resolver" option in Jest configuration as shown in the documentation: https://jestjs.io/docs/en/configuration#resolver-string`,
+    )} has been deprecated. Please install "browser-resolve" and use the "resolver" option in Jest configuration as shown in the documentation: https://jestjs.io/docs/configuration#resolver-string`,
 
   preprocessorIgnorePatterns: (options: {
     preprocessorIgnorePatterns?: Array<string>;

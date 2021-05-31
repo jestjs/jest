@@ -10,6 +10,45 @@ import type {Config} from '@jest/types';
 import type HasteFS from './HasteFS';
 import type ModuleMap from './ModuleMap';
 
+type ValueType<T> = T extends Map<string, infer V> ? V : never;
+
+export type SerializableModuleMap = {
+  duplicates: ReadonlyArray<[string, [string, [string, [string, number]]]]>;
+  map: ReadonlyArray<[string, ValueType<ModuleMapData>]>;
+  mocks: ReadonlyArray<[string, ValueType<MockData>]>;
+  rootDir: Config.Path;
+};
+
+export interface IModuleMap<S = SerializableModuleMap> {
+  getModule(
+    name: string,
+    platform?: string | null,
+    supportsNativePlatform?: boolean | null,
+    type?: HTypeValue | null,
+  ): Config.Path | null;
+
+  getPackage(
+    name: string,
+    platform: string | null | undefined,
+    _supportsNativePlatform: boolean | null,
+  ): Config.Path | null;
+
+  getMockModule(name: string): Config.Path | undefined;
+
+  getRawModuleMap(): RawModuleMap;
+
+  toJSON(): S;
+}
+
+export type HasteMapStatic<S = SerializableModuleMap> = {
+  getCacheFilePath(
+    tmpdir: Config.Path,
+    name: string,
+    ...extra: Array<string>
+  ): string;
+  getModuleMapFromJSON(json: S): IModuleMap<S>;
+};
+
 export type IgnoreMatcher = (item: string) => boolean;
 
 export type WorkerMessage = {
@@ -30,6 +69,7 @@ export type WorkerMetadata = {
 
 export type CrawlerOptions = {
   computeSha1: boolean;
+  enableSymlinks: boolean;
   data: InternalHasteMap;
   extensions: Array<string>;
   forceNodeFilesystemAPI: boolean;
@@ -68,6 +108,12 @@ export type InternalHasteMap = {
   files: FileData;
   map: ModuleMapData;
   mocks: MockData;
+};
+
+export type IHasteMap = {
+  hasteFS: HasteFS;
+  moduleMap: IModuleMap;
+  __hasteMapForTest?: InternalHasteMap | null;
 };
 
 export type HasteMap = {

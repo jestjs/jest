@@ -7,7 +7,9 @@
 
 import * as path from 'path';
 import chalk = require('chalk');
+import {createTranspilingRequire} from '@jest/transform';
 import type {Config} from '@jest/types';
+import {interopRequireDefault} from 'jest-util';
 
 export type SnapshotResolver = {
   testPathForConsistencyCheck: string;
@@ -21,22 +23,33 @@ export const DOT_EXTENSION = '.' + EXTENSION;
 export const isSnapshotPath = (path: string): boolean =>
   path.endsWith(DOT_EXTENSION);
 
-const cache: Map<Config.Path, SnapshotResolver> = new Map();
-export const buildSnapshotResolver = (
+const cache = new Map<Config.Path, SnapshotResolver>();
+
+type LocalRequire = (module: string) => unknown;
+
+export const buildSnapshotResolver = async (
   config: Config.ProjectConfig,
-): SnapshotResolver => {
+  localRequire: Promise<LocalRequire> | LocalRequire = createTranspilingRequire(
+    config,
+  ),
+): Promise<SnapshotResolver> => {
   const key = config.rootDir;
-  if (!cache.has(key)) {
-    cache.set(key, createSnapshotResolver(config.snapshotResolver));
-  }
-  return cache.get(key)!;
+
+  const resolver =
+    cache.get(key) ??
+    (await createSnapshotResolver(await localRequire, config.snapshotResolver));
+
+  cache.set(key, resolver);
+
+  return resolver;
 };
 
-function createSnapshotResolver(
+async function createSnapshotResolver(
+  localRequire: LocalRequire,
   snapshotResolverPath?: Config.Path | null,
-): SnapshotResolver {
+): Promise<SnapshotResolver> {
   return typeof snapshotResolverPath === 'string'
-    ? createCustomSnapshotResolver(snapshotResolverPath)
+    ? await createCustomSnapshotResolver(snapshotResolverPath, localRequire)
     : createDefaultSnapshotResolver();
 }
 
@@ -63,10 +76,13 @@ function createDefaultSnapshotResolver(): SnapshotResolver {
   };
 }
 
-function createCustomSnapshotResolver(
+async function createCustomSnapshotResolver(
   snapshotResolverPath: Config.Path,
-): SnapshotResolver {
-  const custom: SnapshotResolver = require(snapshotResolverPath);
+  localRequire: LocalRequire,
+): Promise<SnapshotResolver> {
+  const custom: SnapshotResolver = interopRequireDefault(
+    await localRequire(snapshotResolverPath),
+  ).default;
 
   const keys: Array<[keyof SnapshotResolver, string]> = [
     ['resolveSnapshotPath', 'function'],
@@ -97,7 +113,7 @@ function mustImplement(propName: string, requiredType: string) {
     chalk.bold(
       `Custom snapshot resolver must implement a \`${propName}\` as a ${requiredType}.`,
     ) +
-    '\nDocumentation: https://facebook.github.io/jest/docs/en/configuration.html#snapshotResolver'
+    '\nDocumentation: https://jestjs.io/docs/configuration#snapshotresolver-string'
   );
 }
 

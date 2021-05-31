@@ -38,7 +38,12 @@ jest
     },
   }))
   .mock('jest-haste-map', () => ({
-    getCacheFilePath: (cacheDir: string, baseDir: string) => cacheDir + baseDir,
+    getStatic() {
+      return {
+        getCacheFilePath: (cacheDir: string, baseDir: string) =>
+          cacheDir + baseDir,
+      };
+    },
   }))
   .mock('jest-util', () => ({
     ...jest.requireActual('jest-util'),
@@ -294,8 +299,8 @@ describe('ScriptTransformer', () => {
       transformIgnorePatterns: ['/node_modules/'],
     });
 
-    createScriptTransformer = require('../ScriptTransformer')
-      .createScriptTransformer;
+    createScriptTransformer =
+      require('../ScriptTransformer').createScriptTransformer;
   };
 
   beforeEach(reset);
@@ -347,10 +352,11 @@ describe('ScriptTransformer', () => {
 
   it('transforms a file async properly', async () => {
     const scriptTransformer = await createScriptTransformer(config);
-    const transformedBananaWithCoverage = await scriptTransformer.transformAsync(
-      '/fruits/banana.js',
-      getCoverageOptions({collectCoverage: true}),
-    );
+    const transformedBananaWithCoverage =
+      await scriptTransformer.transformAsync(
+        '/fruits/banana.js',
+        getCoverageOptions({collectCoverage: true}),
+      );
 
     expect(wrap(transformedBananaWithCoverage.code)).toMatchSnapshot();
 
@@ -359,10 +365,11 @@ describe('ScriptTransformer', () => {
     expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
 
     // in-memory cache
-    const transformedBananaWithCoverageAgain = await scriptTransformer.transformAsync(
-      '/fruits/banana.js',
-      getCoverageOptions({collectCoverage: true}),
-    );
+    const transformedBananaWithCoverageAgain =
+      await scriptTransformer.transformAsync(
+        '/fruits/banana.js',
+        getCoverageOptions({collectCoverage: true}),
+      );
     expect(transformedBananaWithCoverageAgain).toBe(
       transformedBananaWithCoverage,
     );
@@ -379,10 +386,11 @@ describe('ScriptTransformer', () => {
     expect(transformedBananaWithCoverage.code).not.toMatch(/instrumented kiwi/);
 
     // If we disable coverage, we get a different result.
-    const transformedKiwiWithoutCoverage = await scriptTransformer.transformAsync(
-      '/fruits/kiwi.js',
-      getCoverageOptions({collectCoverage: false}),
-    );
+    const transformedKiwiWithoutCoverage =
+      await scriptTransformer.transformAsync(
+        '/fruits/kiwi.js',
+        getCoverageOptions({collectCoverage: false}),
+      );
 
     expect(transformedKiwiWithoutCoverage.code).not.toEqual(
       transformedKiwiWithCoverage.code,
@@ -454,10 +462,9 @@ describe('ScriptTransformer', () => {
 
       config = {
         ...config,
-        transform: [
-          ...incorrectReturnValues,
-          ...correctReturnValues,
-        ].map(([_, filePath]) => [filePath, processorName, {}]),
+        transform: [...incorrectReturnValues, ...correctReturnValues].map(
+          ([_, filePath]) => [filePath, processorName, {}],
+        ),
       };
 
       const scriptTransformer = await createScriptTransformer(config);

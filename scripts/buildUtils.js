@@ -35,7 +35,8 @@ module.exports.getPackages = function getPackages() {
 
     assert.strictEqual(
       pkg.engines.node,
-      nodeEngineRequirement,
+      // TODO: remove special casing for Jest 28
+      pkg.name === 'jest-worker' ? '>= 10.13.0' : nodeEngineRequirement,
       `Engine requirement in ${pkg.name} should match root`,
     );
 

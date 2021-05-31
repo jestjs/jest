@@ -18,17 +18,16 @@ import {
   getConsoleOutput,
 } from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
-import type {TestResult} from '@jest/test-result';
+import type {TestFileEvent, TestResult} from '@jest/test-result';
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
-import {getTestEnvironment} from 'jest-config';
 import * as docblock from 'jest-docblock';
 import LeakDetector from 'jest-leak-detector';
 import {formatExecError} from 'jest-message-util';
-import type Resolver from 'jest-resolve';
+import Resolver, {resolveTestEnvironment} from 'jest-resolve';
 import type RuntimeClass from 'jest-runtime';
 import {ErrorWithStack, interopRequireDefault, setGlobal} from 'jest-util';
-import type {TestFileEvent, TestFramework, TestRunnerContext} from './types';
+import type {TestFramework, TestRunnerContext} from './types';
 
 type RunTestInternalResult = {
   leakDetector: LeakDetector | null;
@@ -97,7 +96,7 @@ async function runTestInternal(
         )}"`,
       );
     }
-    testEnvironment = getTestEnvironment({
+    testEnvironment = resolveTestEnvironment({
       ...config,
       testEnvironment: customEnvironment,
     });
@@ -106,14 +105,14 @@ async function runTestInternal(
   const cacheFS = new Map([[path, testSource]]);
   const transformer = await createScriptTransformer(config, cacheFS);
 
-  const TestEnvironment: typeof JestEnvironment = interopRequireDefault(
-    transformer.requireAndTranspileModule(testEnvironment),
-  ).default;
-  const testFramework: TestFramework = interopRequireDefault(
-    transformer.requireAndTranspileModule(
-      process.env.JEST_JASMINE === '1' ? 'jest-jasmine2' : config.testRunner,
-    ),
-  ).default;
+  const TestEnvironment: typeof JestEnvironment =
+    await transformer.requireAndTranspileModule(testEnvironment);
+  const testFramework: TestFramework =
+    await transformer.requireAndTranspileModule(
+      process.env.JEST_JASMINE === '1'
+        ? require.resolve('jest-jasmine2')
+        : config.testRunner,
+    );
   const Runtime: typeof RuntimeClass = interopRequireDefault(
     config.moduleLoader
       ? require(config.moduleLoader)

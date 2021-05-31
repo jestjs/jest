@@ -38,8 +38,8 @@ class JSDOMEnvironment implements JestEnvironment {
       virtualConsole: new VirtualConsole().sendTo(options?.console || console),
       ...config.testEnvironmentOptions,
     });
-    const global = (this.global = (this.dom.window.document
-      .defaultView as unknown) as Win);
+    const global = (this.global = this.dom.window.document
+      .defaultView as unknown as Win);
 
     if (!global) {
       throw new Error('JSDOM did not return a Window object');
@@ -52,6 +52,9 @@ class JSDOMEnvironment implements JestEnvironment {
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
     installCommonGlobals(global as any, config.globals);
+
+    // TODO: remove this ASAP, but it currntly causes tests to run really slow
+    global.Buffer = Buffer;
 
     // Report uncaught errors.
     this.errorEventListener = event => {

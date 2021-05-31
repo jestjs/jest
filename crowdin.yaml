@@ -12,6 +12,7 @@ preserve_hierarchy: true
 languages_mapping: &languages_mapping
   locale:
     'es-ES': 'es-ES'
+    'fr': 'fr'
     'ja': 'ja'
     'pt-BR': 'pt-BR'
     'ro': 'ro'

@@ -15,7 +15,11 @@ import normalize from './normalize';
 import readConfigFileAndSetRootDir from './readConfigFileAndSetRootDir';
 import resolveConfigPath from './resolveConfigPath';
 import {isJSONString, replaceRootDirInPath} from './utils';
-export {getTestEnvironment, isJSONString} from './utils';
+
+// TODO: remove export in Jest 28
+export {resolveTestEnvironment as getTestEnvironment} from 'jest-resolve';
+
+export {isJSONString} from './utils';
 export {default as normalize} from './normalize';
 export {default as deprecationEntries} from './Deprecated';
 export {replaceRootDirInPath} from './utils';
@@ -38,17 +42,14 @@ export async function readConfig(
   // `project` property, we don't want to read `--config` value and rather
   // read individual configs for every project.
   skipArgvConfigOption?: boolean,
-  parentConfigPath?: Config.Path | null,
+  parentConfigDirname?: Config.Path | null,
   projectIndex: number = Infinity,
 ): Promise<ReadConfig> {
-  let rawOptions:
-    | Config.InitialOptions
-    | (() => Config.InitialOptions | Promise<Config.InitialOptions>);
+  let rawOptions: Config.InitialOptions;
   let configPath = null;
 
   if (typeof packageRootOrConfig !== 'string') {
-    if (parentConfigPath) {
-      const parentConfigDirname = path.dirname(parentConfigPath);
+    if (parentConfigDirname) {
       rawOptions = packageRootOrConfig;
       rawOptions.rootDir = rawOptions.rootDir
         ? replaceRootDirInPath(parentConfigDirname, rawOptions.rootDir)
@@ -82,10 +83,6 @@ export async function readConfig(
     // Otherwise just try to find config in the current rootDir.
     configPath = resolveConfigPath(packageRootOrConfig, process.cwd());
     rawOptions = await readConfigFileAndSetRootDir(configPath);
-  }
-
-  if (typeof rawOptions === 'function') {
-    rawOptions = await rawOptions();
   }
 
   const {options, hasDeprecationWarnings} = await normalize(
@@ -301,10 +298,9 @@ export async function readConfigs(
   }
 
   if (projects.length > 0) {
-    const projectIsCwd =
-      process.platform === 'win32'
-        ? projects[0] === tryRealpath(process.cwd())
-        : projects[0] === process.cwd();
+    const cwd =
+      process.platform === 'win32' ? tryRealpath(process.cwd()) : process.cwd();
+    const projectIsCwd = projects[0] === cwd;
 
     const parsedConfigs = await Promise.all(
       projects
@@ -332,7 +328,7 @@ export async function readConfigs(
             argv,
             root,
             skipArgvConfigOption,
-            configPath,
+            configPath ? path.dirname(configPath) : cwd,
             projectIndex,
           );
         }),

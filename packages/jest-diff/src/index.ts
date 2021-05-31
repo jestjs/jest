@@ -6,8 +6,11 @@
  */
 
 import chalk = require('chalk');
-import getType = require('jest-get-type');
-import prettyFormat, {plugins as prettyFormatPlugins} from 'pretty-format';
+import {getType} from 'jest-get-type';
+import {
+  format as prettyFormat,
+  plugins as prettyFormatPlugins,
+} from 'pretty-format';
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
 import {diffLinesRaw, diffLinesUnified, diffLinesUnified2} from './diffLines';
@@ -57,7 +60,7 @@ const FALLBACK_FORMAT_OPTIONS_0 = {...FALLBACK_FORMAT_OPTIONS, indent: 0};
 // Generate a string that will highlight the difference between two values
 // with green and red. (similar to how github does code diffing)
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-function diff(a: any, b: any, options?: DiffOptions): string | null {
+export function diff(a: any, b: any, options?: DiffOptions): string | null {
   if (Object.is(a, b)) {
     return getCommonMessage(NO_DIFF_MESSAGE, options);
   }
@@ -187,5 +190,3 @@ function compareObjects(
 
   return difference;
 }
-
-export default diff;

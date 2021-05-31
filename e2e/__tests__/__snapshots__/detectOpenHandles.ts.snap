@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`does not print info about open handlers for a server that is already closed 1`] = ``;
+
 exports[`prints message about flag on forceExit 1`] = `Force exiting Jest: Have you considered using \`--detectOpenHandles\` to detect async operations that kept running after all tests finished?`;
 
 exports[`prints message about flag on slow tests 1`] = `
@@ -11,7 +13,7 @@ This usually means that there are asynchronous operations that weren't stopped i
 exports[`prints out info about open handlers 1`] = `
 Jest has detected the following 1 open handle potentially keeping Jest from exiting:
 
-  ●  GETADDRINFOREQWRAP
+  ●  TCPSERVERWRAP
 
       12 | const app = new Server();
       13 |
@@ -37,4 +39,36 @@ Jest has detected the following 1 open handle potentially keeping Jest from exit
       12 |
 
       at Object.setTimeout (__tests__/inside.js:9:3)
+`;
+
+exports[`prints out info about open handlers from lifecycle functions with a \`done\` callback 1`] = `
+Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+
+  ●  Timeout
+
+       7 |
+       8 | beforeAll(done => {
+    >  9 |   setTimeout(() => {}, 10000);
+         |   ^
+      10 |   done();
+      11 | });
+      12 |
+
+      at setTimeout (__tests__/in-done-lifecycle.js:9:3)
+`;
+
+exports[`prints out info about open handlers from tests with a \`done\` callback 1`] = `
+Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+
+  ●  Timeout
+
+       7 |
+       8 | test('something', done => {
+    >  9 |   setTimeout(() => {}, 10000);
+         |   ^
+      10 |   expect(true).toBe(true);
+      11 |   done();
+      12 | });
+
+      at Object.setTimeout (__tests__/in-done-function.js:9:3)
 `;

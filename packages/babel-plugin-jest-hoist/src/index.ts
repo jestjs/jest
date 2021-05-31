@@ -278,9 +278,8 @@ export default (): PluginObj<{
         return this.jestObjGetterIdentifier;
       }
 
-      this.jestObjGetterIdentifier = program.scope.generateUidIdentifier(
-        'getJestObj',
-      );
+      this.jestObjGetterIdentifier =
+        program.scope.generateUidIdentifier('getJestObj');
 
       program.unshiftContainer('body', [
         createJestObjectGetter({

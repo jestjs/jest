@@ -12,28 +12,38 @@ import interopRequireDefault from './interopRequireDefault';
 
 export default async function requireOrImportModule<T>(
   filePath: Config.Path,
+  applyInteropRequireDefault = true,
 ): Promise<T> {
-  let module: T;
   if (!isAbsolute(filePath) && filePath[0] === '.') {
-    throw new Error(`Jest: requireOrImportModule path must be absolute`);
+    throw new Error(
+      `Jest: requireOrImportModule path must be absolute, was "${filePath}"`,
+    );
   }
   try {
-    module = interopRequireDefault(require(filePath)).default;
+    const requiredModule = require(filePath);
+    if (!applyInteropRequireDefault) {
+      return requiredModule;
+    }
+    return interopRequireDefault(requiredModule).default;
   } catch (error) {
     if (error.code === 'ERR_REQUIRE_ESM') {
       try {
-        const configUrl = pathToFileURL(filePath);
+        const moduleUrl = pathToFileURL(filePath);
 
         // node `import()` supports URL, but TypeScript doesn't know that
-        const importedConfig = await import(configUrl.href);
+        const importedModule = await import(moduleUrl.href);
 
-        if (!importedConfig.default) {
+        if (!applyInteropRequireDefault) {
+          return importedModule;
+        }
+
+        if (!importedModule.default) {
           throw new Error(
             `Jest: Failed to load ESM at ${filePath} - did you use a default export?`,
           );
         }
 
-        module = importedConfig.default;
+        return importedModule.default;
       } catch (innerError) {
         if (innerError.message === 'Not supported') {
           throw new Error(
@@ -46,5 +56,4 @@ export default async function requireOrImportModule<T>(
       throw error;
     }
   }
-  return module;
 }

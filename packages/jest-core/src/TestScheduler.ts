@@ -20,6 +20,7 @@ import {
 import {
   AggregatedResult,
   SerializableError,
+  Test,
   TestResult,
   addResult,
   buildFailureTestResult,
@@ -28,17 +29,13 @@ import {
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
-import TestRunner, {Test} from 'jest-runner';
+import type TestRunner from 'jest-runner';
 import type {Context} from 'jest-runtime';
 import snapshot = require('jest-snapshot');
-import {interopRequireDefault} from 'jest-util';
+import {requireOrImportModule} from 'jest-util';
 import ReporterDispatcher from './ReporterDispatcher';
 import type TestWatcher from './TestWatcher';
 import {shouldRunInBand} from './testSchedulerHelper';
-
-// The default jest-runner is required because it is the default test runner
-// and required implicitly through the `runner` ProjectConfig option.
-TestRunner;
 
 export type TestSchedulerOptions = {
   startRun: (globalConfig: Config.GlobalConfig) => void;
@@ -49,7 +46,20 @@ export type TestSchedulerContext = {
   changedFiles?: Set<Config.Path>;
   sourcesRelatedToTestsInChangedFiles?: Set<Config.Path>;
 };
-export default class TestScheduler {
+
+export async function createTestScheduler(
+  globalConfig: Config.GlobalConfig,
+  options: TestSchedulerOptions,
+  context: TestSchedulerContext,
+): Promise<TestScheduler> {
+  const scheduler = new TestScheduler(globalConfig, options, context);
+
+  await scheduler._setupReporters();
+
+  return scheduler;
+}
+
+class TestScheduler {
   private readonly _dispatcher: ReporterDispatcher;
   private readonly _globalConfig: Config.GlobalConfig;
   private readonly _options: TestSchedulerOptions;
@@ -64,7 +74,6 @@ export default class TestScheduler {
     this._globalConfig = globalConfig;
     this._options = options;
     this._context = context;
-    this._setupReporters();
   }
 
   addReporter(reporter: Reporter): void {
@@ -157,12 +166,22 @@ export default class TestScheduler {
       );
     };
 
-    const updateSnapshotState = () => {
-      contexts.forEach(context => {
+    const updateSnapshotState = async () => {
+      const contextsWithSnapshotResolvers = await Promise.all(
+        Array.from(contexts).map(
+          async context =>
+            [
+              context,
+              await snapshot.buildSnapshotResolver(context.config),
+            ] as const,
+        ),
+      );
+
+      contextsWithSnapshotResolvers.forEach(([context, snapshotResolver]) => {
         const status = snapshot.cleanup(
           context.hasteFS,
           this._globalConfig.updateSnapshot,
-          snapshot.buildSnapshotResolver(context.config),
+          snapshotResolver,
           context.config.testPathIgnorePatterns,
         );
 
@@ -193,13 +212,12 @@ export default class TestScheduler {
         const {config} = context;
         if (!testRunners[config.runner]) {
           const transformer = await createScriptTransformer(config);
-          const Runner: typeof TestRunner = interopRequireDefault(
-            transformer.requireAndTranspileModule(config.runner),
-          ).default;
+          const Runner: typeof TestRunner =
+            await transformer.requireAndTranspileModule(config.runner);
           const runner = new Runner(this._globalConfig, {
             changedFiles: this._context?.changedFiles,
-            sourcesRelatedToTestsInChangedFiles: this._context
-              ?.sourcesRelatedToTestsInChangedFiles,
+            sourcesRelatedToTestsInChangedFiles:
+              this._context?.sourcesRelatedToTestsInChangedFiles,
           });
           testRunners[config.runner] = runner;
           contextsByTestRunner.set(runner, context);
@@ -275,7 +293,7 @@ export default class TestScheduler {
       }
     }
 
-    updateSnapshotState();
+    await updateSnapshotState();
     aggregatedResults.wasInterrupted = watcher.isInterrupted();
     await this._dispatcher.onRunComplete(contexts, aggregatedResults);
 
@@ -328,7 +346,7 @@ export default class TestScheduler {
     );
   }
 
-  private _setupReporters() {
+  async _setupReporters() {
     const {collectCoverage, notify, reporters} = this._globalConfig;
     const isDefault = this._shouldAddDefaultReporters(reporters);
 
@@ -340,8 +358,8 @@ export default class TestScheduler {
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
           changedFiles: this._context?.changedFiles,
-          sourcesRelatedToTestsInChangedFiles: this._context
-            ?.sourcesRelatedToTestsInChangedFiles,
+          sourcesRelatedToTestsInChangedFiles:
+            this._context?.sourcesRelatedToTestsInChangedFiles,
         }),
       );
     }
@@ -357,7 +375,7 @@ export default class TestScheduler {
     }
 
     if (reporters && Array.isArray(reporters)) {
-      this._addCustomReporters(reporters);
+      await this._addCustomReporters(reporters);
     }
   }
 
@@ -372,8 +390,8 @@ export default class TestScheduler {
       this.addReporter(
         new CoverageReporter(this._globalConfig, {
           changedFiles: this._context?.changedFiles,
-          sourcesRelatedToTestsInChangedFiles: this._context
-            ?.sourcesRelatedToTestsInChangedFiles,
+          sourcesRelatedToTestsInChangedFiles:
+            this._context?.sourcesRelatedToTestsInChangedFiles,
         }),
       );
     }
@@ -381,17 +399,16 @@ export default class TestScheduler {
     this.addReporter(new SummaryReporter(this._globalConfig));
   }
 
-  private _addCustomReporters(
+  private async _addCustomReporters(
     reporters: Array<string | Config.ReporterConfig>,
   ) {
-    reporters.forEach(reporter => {
+    for (const reporter of reporters) {
       const {options, path} = this._getReporterProps(reporter);
 
-      if (path === 'default') return;
+      if (path === 'default') continue;
 
       try {
-        // TODO: Use `requireAndTranspileModule` for Jest 26
-        const Reporter = interopRequireDefault(require(path)).default;
+        const Reporter = await requireOrImportModule<any>(path, true);
         this.addReporter(new Reporter(this._globalConfig, options));
       } catch (error) {
         error.message =
@@ -401,16 +418,17 @@ export default class TestScheduler {
           error.message;
         throw error;
       }
-    });
+    }
   }
 
   /**
    * Get properties of a reporter in an object
    * to make dealing with them less painful.
    */
-  private _getReporterProps(
-    reporter: string | Config.ReporterConfig,
-  ): {path: string; options: Record<string, unknown>} {
+  private _getReporterProps(reporter: string | Config.ReporterConfig): {
+    path: string;
+    options: Record<string, unknown>;
+  } {
     if (typeof reporter === 'string') {
       return {options: this._options, path: reporter};
     } else if (Array.isArray(reporter)) {

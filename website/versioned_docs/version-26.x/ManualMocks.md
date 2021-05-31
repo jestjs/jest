@@ -9,13 +9,13 @@ Manual mocks are used to stub out functionality with mock data. For example, ins
 
 Manual mocks are defined by writing a module in a `__mocks__/` subdirectory immediately adjacent to the module. For example, to mock a module called `user` in the `models` directory, create a file called `user.js` and put it in the `models/__mocks__` directory. Note that the `__mocks__` folder is case-sensitive, so naming the directory `__MOCKS__` will break on some systems.
 
-> When we require that module in our tests, explicitly calling `jest.mock('./moduleName')` is **required**.
+> When we require that module in our tests (meaning we want to use the manual mock instead of the real implementation), explicitly calling `jest.mock('./moduleName')` is **required**.
 
 ## Mocking Node modules
 
 If the module you are mocking is a Node module (e.g.: `lodash`), the mock should be placed in the `__mocks__` directory adjacent to `node_modules` (unless you configured [`roots`](Configuration.md#roots-arraystring) to point to a folder other than the project root) and will be **automatically** mocked. There's no need to explicitly call `jest.mock('module_name')`.
 
-Scoped modules can be mocked by creating a file in a directory structure that matches the name of the scoped module. For example, to mock a scoped module called `@scope/project-name`, create a file at `__mocks__/@scope/project-name.js`, creating the `@scope/` directory accordingly.
+Scoped modules (also known as [scoped packages](https://docs.npmjs.com/cli/v6/using-npm/scope)) can be mocked by creating a file in a directory structure that matches the name of the scoped module. For example, to mock a scoped module called `@scope/project-name`, create a file at `__mocks__/@scope/project-name.js`, creating the `@scope/` directory accordingly.
 
 > Warning: If we want to mock Node's core modules (e.g.: `fs` or `path`), then explicitly calling e.g. `jest.mock('path')` is **required**, because core Node modules are not mocked by default.
 
@@ -115,9 +115,8 @@ describe('listFilesInDirectorySync', () => {
 
   test('includes all files in the directory in the summary', () => {
     const FileSummarizer = require('../FileSummarizer');
-    const fileSummary = FileSummarizer.summarizeFilesInDirectorySync(
-      '/path/to',
-    );
+    const fileSummary =
+      FileSummarizer.summarizeFilesInDirectorySync('/path/to');
 
     expect(fileSummary.length).toBe(2);
   });

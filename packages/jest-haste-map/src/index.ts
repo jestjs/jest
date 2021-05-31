@@ -32,12 +32,14 @@ import type {
   EventsQueue,
   FileData,
   FileMetaData,
+  HasteMapStatic,
   HasteRegExp,
   InternalHasteMap,
   HasteMap as InternalHasteMapObject,
   MockData,
   ModuleMapData,
   ModuleMetaData,
+  SerializableModuleMap,
   WorkerMetadata,
 } from './types';
 import FSEventsWatcher = require('./watchers/FSEventsWatcher');
@@ -56,9 +58,11 @@ type Options = {
   computeSha1?: boolean;
   console?: Console;
   dependencyExtractor?: string | null;
+  enableSymlinks?: boolean;
   extensions: Array<string>;
   forceNodeFilesystemAPI?: boolean;
   hasteImplModulePath?: string;
+  hasteMapModulePath?: string;
   ignorePattern?: HasteRegExp;
   maxWorkers: number;
   mocksPattern?: string;
@@ -79,6 +83,7 @@ type InternalOptions = {
   computeDependencies: boolean;
   computeSha1: boolean;
   dependencyExtractor: string | null;
+  enableSymlinks: boolean;
   extensions: Array<string>;
   forceNodeFilesystemAPI: boolean;
   hasteImplModulePath?: string;
@@ -104,7 +109,8 @@ type Watcher = {
 type WorkerInterface = {worker: typeof worker; getSha1: typeof getSha1};
 
 export {default as ModuleMap} from './ModuleMap';
-export type {SerializableModuleMap} from './ModuleMap';
+export type {SerializableModuleMap} from './types';
+export type {IModuleMap} from './types';
 export type {default as FS} from './HasteFS';
 export type {ChangeEvent, HasteMap as HasteMapObject} from './types';
 
@@ -217,7 +223,22 @@ export default class HasteMap extends EventEmitter {
   private _watchers: Array<Watcher>;
   private _worker: WorkerInterface | null;
 
-  constructor(options: Options) {
+  static getStatic(config: Config.ProjectConfig): HasteMapStatic {
+    if (config.haste.hasteMapModulePath) {
+      return require(config.haste.hasteMapModulePath);
+    }
+    return HasteMap;
+  }
+
+  static create(options: Options): HasteMap {
+    if (options.hasteMapModulePath) {
+      const CustomHasteMap = require(options.hasteMapModulePath);
+      return new CustomHasteMap(options);
+    }
+    return new HasteMap(options);
+  }
+
+  private constructor(options: Options) {
     super();
     this._options = {
       cacheDirectory: options.cacheDirectory || tmpdir(),
@@ -227,6 +248,7 @@ export default class HasteMap extends EventEmitter {
           : options.computeDependencies,
       computeSha1: options.computeSha1 || false,
       dependencyExtractor: options.dependencyExtractor || null,
+      enableSymlinks: options.enableSymlinks || false,
       extensions: options.extensions,
       forceNodeFilesystemAPI: !!options.forceNodeFilesystemAPI,
       hasteImplModulePath: options.hasteImplModulePath,
@@ -260,6 +282,14 @@ export default class HasteMap extends EventEmitter {
       }
     } else {
       this._options.ignorePattern = new RegExp(VCS_DIRECTORIES);
+    }
+
+    if (this._options.enableSymlinks && this._options.useWatchman) {
+      throw new Error(
+        'jest-haste-map: enableSymlinks config option was set, but ' +
+          'is incompatible with watchman.\n' +
+          'Set either `enableSymlinks` to false or `useWatchman` to false.',
+      );
     }
 
     const rootDirHash = createHash('md5').update(options.rootDir).digest('hex');
@@ -311,6 +341,10 @@ export default class HasteMap extends EventEmitter {
       tmpdir,
       name.replace(/\W/g, '-') + '-' + hash.digest('hex'),
     );
+  }
+
+  static getModuleMapFromJSON(json: SerializableModuleMap): HasteModuleMap {
+    return HasteModuleMap.fromJSON(json);
   }
 
   getCacheFilePath(): string {
@@ -725,6 +759,7 @@ export default class HasteMap extends EventEmitter {
     const crawlerOptions: CrawlerOptions = {
       computeSha1: options.computeSha1,
       data: hasteMap,
+      enableSymlinks: options.enableSymlinks,
       extensions: options.extensions,
       forceNodeFilesystemAPI: options.forceNodeFilesystemAPI,
       ignore,

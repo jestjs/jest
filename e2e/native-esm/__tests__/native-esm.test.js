@@ -166,3 +166,14 @@ test('handle circular dependency', async () => {
   expect(moduleA.moduleB.id).toBe('circularDependentB');
   expect(moduleA.moduleB.moduleA).toBe(moduleA);
 });
+
+test('require of ESM should throw correct error', () => {
+  const require = createRequire(import.meta.url);
+
+  expect(() => require('../fromCjs.mjs')).toThrow(
+    expect.objectContaining({
+      code: 'ERR_REQUIRE_ESM',
+      message: expect.stringContaining('Must use import to load ES Module'),
+    }),
+  );
+});

@@ -34,10 +34,10 @@ module.exports = {
             if (locale !== 'en') {
               return `https://crowdin.com/project/jest-v2/${locale}`;
             }
-            return `https://github.com/facebook/jest/edit/master/docs/${versionDocsDirPath}/${docPath}`;
+            return `https://github.com/facebook/jest/edit/master/website/${versionDocsDirPath}/${docPath}`;
           },
           path: '../docs',
-          sidebarPath: './sidebars.json',
+          sidebarPath: path.resolve(__dirname, './sidebars.json'),
         },
         blog: {
           path: 'blog',
@@ -45,18 +45,17 @@ module.exports = {
         },
         theme: {
           customCss: [
+            path.resolve('src/css/docusaurusTheme.css'),
+            path.resolve('src/css/algoliaDocSearchTheme.css'),
             path.resolve('src/components/v1/legacyCSS.css'),
-            path.resolve('src/css/docusaurusTheme.scss'),
-            path.resolve('src/css/algoliaDocSearchTheme.scss'),
-            path.resolve('static/css/custom.scss'),
-            path.resolve('static/css/jest.scss'),
+            path.resolve('static/css/custom.css'),
+            path.resolve('static/css/jest.css'),
           ],
         },
       },
     ],
   ],
   plugins: [
-    'docusaurus-plugin-sass',
     [
       '@docusaurus/plugin-client-redirects',
       {
@@ -218,7 +217,7 @@ module.exports = {
               to: '/blog',
             },
             {
-              label: 'Github',
+              label: 'GitHub',
               to: 'https://github.com/facebook/jest',
             },
             {
