@@ -607,6 +607,7 @@ export default async function normalize(
   }
 
   options.testEnvironment = resolveTestEnvironment({
+    requireResolveFunction: require.resolve,
     rootDir: options.rootDir,
     testEnvironment:
       options.testEnvironment ||
@@ -745,6 +746,7 @@ export default async function normalize(
             option &&
             resolveRunner(newOptions.resolver, {
               filePath: option,
+              requireResolveFunction: require.resolve,
               rootDir: options.rootDir,
             });
         }
@@ -1016,6 +1018,7 @@ export default async function normalize(
               config: {},
               path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin,
+                requireResolveFunction: require.resolve,
                 rootDir: options.rootDir,
               }),
             };
@@ -1024,6 +1027,7 @@ export default async function normalize(
               config: watchPlugin[1] || {},
               path: resolveWatchPlugin(newOptions.resolver, {
                 filePath: watchPlugin[0],
+                requireResolveFunction: require.resolve,
                 rootDir: options.rootDir,
               }),
             };
@@ -1058,6 +1062,7 @@ export default async function normalize(
   newOptions.testSequencer = resolveSequencer(newOptions.resolver, {
     filePath:
       options.testSequencer || require.resolve(DEFAULT_CONFIG.testSequencer),
+    requireResolveFunction: require.resolve,
     rootDir: options.rootDir,
   });
 

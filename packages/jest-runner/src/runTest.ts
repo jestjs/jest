@@ -98,6 +98,7 @@ async function runTestInternal(
     }
     testEnvironment = resolveTestEnvironment({
       ...config,
+      requireResolveFunction: require.resolve,
       testEnvironment: customEnvironment,
     });
   }
