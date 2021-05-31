@@ -8,6 +8,12 @@
 
 ### Performance
 
+## 27.0.4
+
+### Fixes
+
+- `[jest-config, jest-resolve]` Pass in `require.resolve` to resolvers to resolve from correct base ([#11493](https://github.com/facebook/jest/pull/11493))
+
 ## 27.0.3
 
 ### Fixes
