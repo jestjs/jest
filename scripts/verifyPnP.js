@@ -43,7 +43,7 @@ try {
   );
   fs.writeFileSync(
     path.join(cwd, 'test.js'),
-    `
+    dedent`
      /*
       * @jest-environment jsdom
       */
@@ -57,10 +57,7 @@ try {
     cwd,
     stdio: 'inherit',
   });
-  execa.sync('yarn', ['jest'], {
-    cwd,
-    stdio: 'inherit',
-  });
+  execa.sync('yarn', ['jest'], {cwd, stdio: 'inherit'});
 
   console.log(chalk.inverse.green(` Successfully ran Jest with PnP linker `));
 } finally {
