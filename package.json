@@ -107,6 +107,7 @@
     "test-leak": "yarn jest -i --detectLeaks jest-mock jest-diff jest-repl pretty-format",
     "test": "yarn lint && yarn jest",
     "verify-old-ts": "node ./scripts/verifyOldTs.js",
+    "verify-pnp": "node ./scripts/verifyPnP.js",
     "watch": "yarn build:js && node ./scripts/watch.js",
     "watch:ts": "yarn build:ts --watch"
   },
