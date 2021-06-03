@@ -64,10 +64,7 @@ try {
     `,
   );
   execa.sync('yarn', [], {cwd, stdio: 'inherit'});
-  execa.sync('yarn', ['node', '-e', "require('jest/bin/jest')"], {
-    cwd,
-    stdio: 'inherit',
-  });
+  execa.sync('yarn', ['jest'], {cwd, stdio: 'inherit'});
 
   console.log(chalk.inverse.green(` Successfully ran Jest with PnP linker `));
 } finally {
