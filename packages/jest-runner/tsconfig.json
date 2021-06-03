@@ -8,6 +8,8 @@
     {"path": "../jest-console"},
     {"path": "../jest-docblock"},
     {"path": "../jest-environment"},
+    {"path": "../jest-environment-jsdom"},
+    {"path": "../jest-environment-node"},
     {"path": "../jest-haste-map"},
     {"path": "../jest-leak-detector"},
     {"path": "../jest-message-util"},
