@@ -226,6 +226,9 @@ describe('transform-snapshotResolver', () => {
     }
   };
 
+  beforeAll(() => {
+    runYarnInstall(dir);
+  });
   beforeEach(cleanupTest);
   afterAll(cleanupTest);
 
