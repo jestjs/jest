@@ -10,6 +10,7 @@
 const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
+const dedent = require('dedent');
 const execa = require('execa');
 const rimraf = require('rimraf');
 const tempy = require('tempy');
@@ -21,11 +22,11 @@ const cwd = tempy.directory();
 try {
   fs.writeFileSync(
     path.join(cwd, '.yarnrc.yml'),
-    `
+    dedent`
       enableGlobalCache: true
 
-      yarnPath: ${require.resolve('../.yarn/releases/yarn-2.4.1.cjs')}
-  `,
+      yarnPath: ${require.resolve('../.yarn/releases/yarn-2.4.2.cjs')}
+    `,
   );
   fs.writeFileSync(
     path.join(cwd, 'package.json'),
@@ -35,9 +36,6 @@ try {
           jest: `*`,
         },
         name: 'test-pnp',
-        resolutions: {
-          typescript: '~4.2.0',
-        },
       },
       null,
       2,
