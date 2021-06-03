@@ -19,3 +19,11 @@
 [context.deploy-preview]
   command = "yarn workspace jest-website netlify:ci:deployPreview"
 
+
+[[plugins]]
+  package = "netlify-plugin-cache"
+  [plugins.inputs]
+    paths = [
+      "website/node_modules/.cache",
+    ]
+
