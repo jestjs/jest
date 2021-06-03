@@ -53,7 +53,7 @@ try {
      });
     `,
   );
-  execa.sync('yarn', ['link', '-p', '-A', rootDirectory], {
+  execa.sync('yarn', ['link', '--private', '--all', rootDirectory], {
     cwd,
     stdio: 'inherit',
   });
