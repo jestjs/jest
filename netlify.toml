@@ -6,8 +6,10 @@
   base = "/"
   command = "yarn workspace jest-website netlify:ci:production"
   publish = "/website/build"
-  environment = { NODE_VERSION = "v14.17.0" }
 
+[build.environment]
+  NODE_VERSION = "v14.17.0"
+  NODE_OPTIONS = "--max_old_space_size=4096"
 
 [context.production]
   # Do not build the site if there's no site-related changes
@@ -17,3 +19,10 @@
 [context.deploy-preview]
   command = "yarn workspace jest-website netlify:ci:deployPreview"
 
+
+[[plugins]]
+  package = "netlify-plugin-cache"
+  [plugins.inputs]
+    paths = [
+      "website/node_modules/.cache",
+    ]
