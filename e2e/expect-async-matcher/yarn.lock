@@ -12,6 +12,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/helper-validator-option@npm:^7.12.17":
+  version: 7.12.17
+  resolution: "@babel/helper-validator-option@npm:7.12.17"
+  checksum: 9201d17a5634b05a6f3d561b95e73a4e4f9ba2e56c55cfc3b9a2a9618c4090b4b507720ac7a2e77209e68dc9bdc00a59b5ba7ad9ecbca3fb2c9217e814b7b5a5
+  languageName: node
+  linkType: hard
+
 "@babel/plugin-syntax-flow@npm:^7.12.13":
   version: 7.12.13
   resolution: "@babel/plugin-syntax-flow@npm:7.12.13"
@@ -23,7 +30,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-transform-flow-strip-types@npm:^7.12.13":
+"@babel/plugin-transform-flow-strip-types@npm:^7.13.0":
   version: 7.13.0
   resolution: "@babel/plugin-transform-flow-strip-types@npm:7.13.0"
   dependencies:
@@ -36,14 +43,15 @@ __metadata:
   linkType: hard
 
 "@babel/preset-flow@npm:^7.0.0":
-  version: 7.12.13
-  resolution: "@babel/preset-flow@npm:7.12.13"
+  version: 7.13.13
+  resolution: "@babel/preset-flow@npm:7.13.13"
   dependencies:
-    "@babel/helper-plugin-utils": ^7.12.13
-    "@babel/plugin-transform-flow-strip-types": ^7.12.13
+    "@babel/helper-plugin-utils": ^7.13.0
+    "@babel/helper-validator-option": ^7.12.17
+    "@babel/plugin-transform-flow-strip-types": ^7.13.0
   peerDependencies:
     "@babel/core": ^7.0.0-0
-  checksum: 47fe1001194a57fbdb33250adcb4c3aa9ff551cfb4eea1a16b123ff5fe78730a7ebfb839bacbe18390fc50fa4bf67fdd5293703b859876de45d52f50d4da0d44
+  checksum: b4f3e74e52def7fe63bd0b1f46c8be217c3df17d04cf31072e2c3297bc906c96ce0d3076959b52680ab684c44d54e068a612a0cb5e63ce490e2428d0010840a2
   languageName: node
   linkType: hard
 
