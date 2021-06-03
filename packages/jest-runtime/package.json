@@ -1,6 +1,6 @@
 {
   "name": "jest-runtime",
-  "version": "27.0.3",
+  "version": "27.0.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -33,8 +33,8 @@
     "jest-message-util": "^27.0.2",
     "jest-mock": "^27.0.3",
     "jest-regex-util": "^27.0.1",
-    "jest-resolve": "^27.0.2",
-    "jest-snapshot": "^27.0.2",
+    "jest-resolve": "^27.0.4",
+    "jest-snapshot": "^27.0.4",
     "jest-util": "^27.0.2",
     "jest-validate": "^27.0.2",
     "slash": "^3.0.0",

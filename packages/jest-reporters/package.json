@@ -1,7 +1,7 @@
 {
   "name": "@jest/reporters",
   "description": "Jest's reporters",
-  "version": "27.0.2",
+  "version": "27.0.4",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
@@ -25,7 +25,7 @@
     "istanbul-lib-source-maps": "^4.0.0",
     "istanbul-reports": "^3.0.2",
     "jest-haste-map": "^27.0.2",
-    "jest-resolve": "^27.0.2",
+    "jest-resolve": "^27.0.4",
     "jest-util": "^27.0.2",
     "jest-worker": "^27.0.2",
     "slash": "^3.0.0",
