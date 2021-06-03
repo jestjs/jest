@@ -11,12 +11,10 @@ const fs = require('fs');
 const path = require('path');
 const chalk = require('chalk');
 const execa = require('execa');
-const glob = require('glob');
 const rimraf = require('rimraf');
 const tempy = require('tempy');
 
-const packagesDirectory = path.resolve(__dirname, '../packages');
-const jestDirectory = path.resolve(packagesDirectory, './jest');
+const rootDirectory = path.resolve(__dirname, '..');
 
 const cwd = tempy.directory();
 
@@ -34,18 +32,12 @@ try {
     JSON.stringify(
       {
         dependencies: {
-          jest: `link:${jestDirectory}`,
+          jest: `*`,
         },
         name: 'test-pnp',
-        // resolutions: Object.fromEntries(
-        //   glob
-        //     .sync(packagesDirectory + '/*')
-        //     .map(pkgDir => [
-        //       require(path.join(pkgDir, 'package.json')).name,
-        //       `portal:${pkgDir}`,
-        //     ])
-        //     .sort(([l], [r]) => l.localeCompare(r)),
-        // ),
+        resolutions: {
+          typescript: '~4.2.0',
+        },
       },
       null,
       2,
@@ -63,8 +55,14 @@ try {
      });
     `,
   );
-  execa.sync('yarn', [], {cwd, stdio: 'inherit'});
-  execa.sync('yarn', ['jest'], {cwd, stdio: 'inherit'});
+  execa.sync('yarn', ['link', '-p', '-A', rootDirectory], {
+    cwd,
+    stdio: 'inherit',
+  });
+  execa.sync('yarn', ['jest'], {
+    cwd,
+    stdio: 'inherit',
+  });
 
   console.log(chalk.inverse.green(` Successfully ran Jest with PnP linker `));
 } finally {
