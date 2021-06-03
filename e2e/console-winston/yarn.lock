@@ -105,9 +105,9 @@ __metadata:
   linkType: hard
 
 "fecha@npm:^4.2.0":
-  version: 4.2.0
-  resolution: "fecha@npm:4.2.0"
-  checksum: aa64b6bbd6c11c7f6ec66255a2abfcbb307a1c13e46235ef6055f695e7aa688f782807f32fcbf663bd248fd682ab4f7c3ab68ae15cf6bfcc3c0a019efe56a1f6
+  version: 4.2.1
+  resolution: "fecha@npm:4.2.1"
+  checksum: 17e08368e29422fa46df0ec9a3c6b471e7de37552fba1450313baafd10a92ac0dcfa788d3258d91da86e70306ab05edf10068d3c6a42a22d1348ce5d87095a39
   languageName: node
   linkType: hard
 

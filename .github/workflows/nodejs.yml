@@ -74,6 +74,8 @@ jobs:
         run: yarn test-types
       - name: verify TypeScript@3.8 compatibility
         run: yarn verify-old-ts
+      - name: verify Yarn PnP compatibility
+        run: yarn verify-pnp
       - name: run eslint
         run: yarn lint
       - name: run prettier
