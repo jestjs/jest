@@ -8,5 +8,5 @@
 import * as types from './types';
 
 test('dummy-test', () => {
-  expect(types).toEqual({default: {}});
+  expect(types).toEqual({});
 });
