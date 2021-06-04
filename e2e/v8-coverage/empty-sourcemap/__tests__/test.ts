@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as types from './types';
+import * as types from '../types';
 
 test('dummy-test', () => {
-  expect(types).toEqual({default: {}});
+  expect(types).toEqual({});
 });
