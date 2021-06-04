@@ -98,7 +98,6 @@ export default class CoverageReporter extends BaseReporter {
             maxCols: process.stdout.columns || Infinity,
             ...additionalOptions,
           })
-          // @ts-expect-error
           .execute(reportContext);
       });
       aggregatedResults.coverageMap = map;
