@@ -7,6 +7,8 @@ The native timer functions (i.e., `setTimeout`, `setInterval`, `clearTimeout`, `
 
 ```javascript
 // timerGame.js
+'use strict';
+
 function timerGame(callback) {
   console.log('Ready....go!');
   setTimeout(() => {
@@ -19,7 +21,9 @@ module.exports = timerGame;
 ```
 
 ```javascript
-// timerGame.test.js
+// __tests__/timerGame-test.js
+'use strict';
+
 jest.useFakeTimers(); // or you can set "timers": "fake" globally in configuration file
 
 test('waits 1 second before ending the game', () => {
@@ -66,6 +70,8 @@ There are also scenarios where you might have a recursive timer -- that is a tim
 
 ```javascript
 // infiniteTimerGame.js
+'use strict';
+
 function infiniteTimerGame(callback) {
   console.log('Ready....go!');
 
@@ -84,7 +90,9 @@ module.exports = infiniteTimerGame;
 ```
 
 ```javascript
-// infiniteTimerGame.test.js
+// __tests__/infiniteTimerGame-test.js
+'use strict';
+
 jest.useFakeTimers();
 
 describe('infiniteTimerGame', () => {
@@ -122,6 +130,8 @@ Another possibility is use `jest.advanceTimersByTime(msToRun)`. When this API is
 
 ```javascript
 // timerGame.js
+'use strict';
+
 function timerGame(callback) {
   console.log('Ready....go!');
   setTimeout(() => {
@@ -134,7 +144,7 @@ module.exports = timerGame;
 ```
 
 ```javascript
-// timerGame.test.js
+// __tests__/timerGame-test.js
 jest.useFakeTimers();
 
 it('calls the callback after 1 second via advanceTimersByTime', () => {
