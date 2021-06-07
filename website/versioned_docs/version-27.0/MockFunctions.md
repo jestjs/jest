@@ -168,14 +168,13 @@ import defaultExport, {bar, foo} from '../foo-bar-baz';
 
 jest.mock('../foo-bar-baz', () => {
   const originalModule = jest.requireActual('../foo-bar-baz');
-  const mockedModule = jest.createMockFromModule('../foo-bar-baz');
 
   //Mock the default export and named export 'foo'
   return {
-    ...mockedModule,
+    __esModule: true,
     ...originalModule,
-    foo: 'mocked foo',
     default: jest.fn(() => 'mocked baz'),
+    foo: 'mocked foo',
   };
 });
 
