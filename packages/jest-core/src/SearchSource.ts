@@ -288,18 +288,7 @@ export default class SearchSource {
     let paths = globalConfig.nonFlagArgs;
 
     if (globalConfig.findRelatedTests && 'win32' === os.platform()) {
-      const allFiles = this._context.hasteFS.getAllFiles();
-      const options = {nocase: true, windows: false};
-
-      paths = paths
-        .map(p => {
-          const relativePath = path
-            .resolve(this._context.config.cwd, p)
-            .replace(/\\/g, '\\\\');
-          const match = micromatch(allFiles, relativePath, options);
-          return match[0];
-        })
-        .filter(Boolean);
+      paths = this.filterPathsWin32(paths);
     }
 
     if (globalConfig.runTestsByPath && paths && paths.length) {
@@ -314,6 +303,27 @@ export default class SearchSource {
     } else {
       return {tests: []};
     }
+  }
+
+  public filterPathsWin32(paths: Array<string>): Array<string> {
+    const allFiles = this._context.hasteFS.getAllFiles();
+    const options = {nocase: true, windows: false};
+
+    paths = paths
+      .map(p => {
+        const relativePath = path
+          .resolve(this._context.config.cwd, p)
+          .replace(/\\/g, '\\\\')
+          // Escape extended globs without a pattern: https://github.com/micromatch/micromatch#extended-globbing
+          // (* and ? are forbidden in file names)
+          .replace(/(@|\+|!)([^\(])/g, '\\$1$2')
+          // Allow search in hidden directories
+          .replace(/\\\./g, '\\\\.');
+        const match = micromatch(allFiles, relativePath, options);
+        return match[0];
+      })
+      .filter(Boolean);
+    return paths;
   }
 
   async getTestPaths(
