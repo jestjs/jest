@@ -475,6 +475,10 @@ describe('SearchSource', () => {
         path.resolve('packages/programs (x86)/my-program.ts'),
       ]);
     });
+    it('should allow no results found', () => {
+      const result = searchSource.filterPathsWin32(['not/exists']);
+      expect(result).toHaveLength(0);
+    });
   });
 
   describe('findRelatedTests', () => {
