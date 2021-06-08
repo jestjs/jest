@@ -7,15 +7,22 @@
 
 import * as fs from 'graceful-fs';
 import pnpResolver from 'jest-pnp-resolver';
-import {Opts as ResolveOpts, sync as resolveSync} from 'resolve';
+import {
+  AsyncOpts,
+  Opts as ResolveOpts,
+  SyncOpts,
+  sync as resolveSync,
+} from 'resolve';
+import resolveAsync = require('resolve');
 import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';
+import type {PackageMeta} from './types';
 
 interface ResolverOptions extends ResolveOpts {
   basedir: Config.Path;
   browser?: boolean;
   conditions?: Array<string>;
-  defaultResolver: typeof defaultResolver;
+  defaultResolver: typeof defaultResolverSync;
   extensions?: Array<string>;
   rootDir?: Config.Path;
 }
@@ -29,7 +36,7 @@ declare global {
   }
 }
 
-export default function defaultResolver(
+export default function defaultResolverSync(
   path: Config.Path,
   options: ResolverOptions,
 ): Config.Path {
@@ -39,18 +46,63 @@ export default function defaultResolver(
     return pnpResolver(path, options);
   }
 
-  const result = resolveSync(path, {
-    ...options,
-    isDirectory,
-    isFile,
-    preserveSymlinks: false,
-    readPackageSync,
-    realpathSync,
-  });
+  const result = resolveSync(path, getSyncResolveOptions(options));
 
   // Dereference symlinks to ensure we don't create a separate
   // module instance depending on how it was referenced.
   return realpathSync(result);
+}
+
+export function defaultResolverAsync(
+  path: Config.Path,
+  options: ResolverOptions,
+): Promise<{path: Config.Path; meta?: PackageMeta}> {
+  // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
+  // needed for Yarn 1 which implements version 1 of the pnp spec
+  if (process.versions.pnp === '1') {
+    // QUESTION: do we need an async version of pnpResolver?
+    return Promise.resolve({path: pnpResolver(path, options)});
+  }
+
+  return new Promise((resolve, reject) => {
+    function resolveCb(err: Error | null, result?: string, meta?: PackageMeta) {
+      if (err) {
+        reject(err);
+      }
+      if (result) {
+        resolve({meta, path: realpathSync(result)});
+      }
+    }
+    resolveAsync(path, getAsyncResolveOptions(options), resolveCb);
+  });
+}
+
+/**
+ * getSyncResolveOptions returns resolution options that are used synchronously.
+ */
+function getSyncResolveOptions(options: ResolverOptions): SyncOpts {
+  return {
+    ...options,
+    isDirectory: isDirectorySync,
+    isFile: isFileSync,
+    preserveSymlinks: false,
+    readPackageSync,
+    realpathSync,
+  };
+}
+
+/**
+ * getAsyncResolveOptions returns resolution options that are used asynchronously.
+ */
+function getAsyncResolveOptions(options: ResolverOptions): AsyncOpts {
+  return {
+    ...options,
+    isDirectory: isDirectoryAsync,
+    isFile: isFileAsync,
+    preserveSymlinks: false,
+    readPackage: readPackageAsync,
+    realpath: realpathAsync,
+  };
 }
 
 export function clearDefaultResolverCache(): void {
@@ -134,18 +186,71 @@ function readPackageCached(path: Config.Path): PkgJson {
 /*
  * helper functions
  */
-function isFile(file: Config.Path): boolean {
+function isFileSync(file: Config.Path): boolean {
   return statSyncCached(file) === IPathType.FILE;
 }
 
-function isDirectory(dir: Config.Path): boolean {
+function isFileAsync(
+  file: Config.Path,
+  cb: (err: Error | null, isFile?: boolean) => void,
+): void {
+  try {
+    // QUESTION: do we need an async version of statSyncCached?
+    const isFile = statSyncCached(file) === IPathType.FILE;
+    cb(null, isFile);
+  } catch (err) {
+    cb(err);
+  }
+}
+
+function isDirectorySync(dir: Config.Path): boolean {
   return statSyncCached(dir) === IPathType.DIRECTORY;
+}
+
+function isDirectoryAsync(
+  dir: Config.Path,
+  cb: (err: Error | null, isDir?: boolean) => void,
+): void {
+  try {
+    // QUESTION: do we need an async version of statSyncCached?
+    const isDir = statSyncCached(dir) === IPathType.DIRECTORY;
+    cb(null, isDir);
+  } catch (err) {
+    cb(err);
+  }
 }
 
 function realpathSync(file: Config.Path): Config.Path {
   return realpathCached(file);
 }
 
+function realpathAsync(
+  file: string,
+  cb: (err: Error | null, resolved?: string) => void,
+): void {
+  try {
+    // QUESTION: do we need an async version of realpathCached?
+    const resolved = realpathCached(file);
+    cb(null, resolved);
+  } catch (err) {
+    cb(err);
+  }
+}
+
 function readPackageSync(_: unknown, file: Config.Path): PkgJson {
   return readPackageCached(file);
+}
+
+function readPackageAsync(
+  _: unknown,
+  pkgfile: string,
+  cb: (err: Error | null, pkgJson?: Record<string, unknown>) => void,
+): void {
+  try {
+    // QUESTION: do we need an async version of readPackageCached?
+    const pkgJson = readPackageCached(pkgfile);
+    cb(null, pkgJson);
+  } catch (err) {
+    cb(err);
+  }
 }
