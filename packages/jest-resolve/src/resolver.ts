@@ -193,6 +193,10 @@ class BaseResolver {
     this._options.resolver = resolver;
   }
 
+  setAsyncResolver(asyncResolver?: Config.Path | null) {
+    this._options.asyncResolver = asyncResolver;
+  }
+
   isCoreModule(moduleName: string): boolean {
     return (
       this._options.hasCoreModules &&
@@ -246,7 +250,7 @@ class BaseResolver {
 export class ResolverAsync extends BaseResolver {
   constructor(moduleMap: IModuleMap, options: ResolverConfig) {
     super(moduleMap, options);
-    this.setResolver(options.asyncResolver);
+    this.setAsyncResolver(options.asyncResolver);
   }
 
   private async _getAbsolutePathAsync(
