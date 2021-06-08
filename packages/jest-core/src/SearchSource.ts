@@ -324,9 +324,10 @@ export default class SearchSource {
           normalizedPath,
           options,
         );
-        return match.length && path.resolve(match[0]);
+        return match[0];
       })
-      .filter(Boolean);
+      .filter(Boolean)
+      .map(p => path.resolve(p));
     return paths;
   }
 
