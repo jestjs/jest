@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-fake-timers]` Flush callbacks scheduled with `requestAnimationFrame` every 16ms when using legacy timers.
+- `[jest-fake-timers]` Flush callbacks scheduled with `requestAnimationFrame` every 16ms when using legacy timers. ([#11523](https://github.com/facebook/jest/pull/11567))
 
 ### Fixes
 
