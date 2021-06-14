@@ -667,12 +667,14 @@ describe('FakeTimers', () => {
       });
       timers.useFakeTimers();
 
-      const runOrder: Array<string> = [];
+      const runOrder: Array<string | ['animationFrame', number]> = [];
       const mock1 = jest.fn(() => runOrder.push('mock1'));
       const mock2 = jest.fn(() => runOrder.push('mock2'));
       const mock3 = jest.fn(() => runOrder.push('mock3'));
       const mock4 = jest.fn(() => runOrder.push('mock4'));
-      const mockAnimationFrame = jest.fn(() => runOrder.push('animationFrame'));
+      const mockAnimationFrame = jest.fn(timestamp =>
+        runOrder.push(['animationFrame', timestamp]),
+      );
 
       global.setTimeout(mock1, 100);
       global.setTimeout(mock2, 0);
@@ -686,24 +688,29 @@ describe('FakeTimers', () => {
       timers.advanceTimersByTime(15);
       expect(runOrder).toEqual(['mock2', 'mock3']);
 
-      // Move forward to t=17
-      timers.advanceTimersByTime(2);
-      expect(runOrder).toEqual(['mock2', 'mock3', 'animationFrame']);
+      // Move forward to t=16
+      timers.advanceTimersByTime(1);
+      expect(runOrder).toEqual(['mock2', 'mock3', ['animationFrame', 16]]);
 
       // Move forward to t=60
-      timers.advanceTimersByTime(43);
-      expect(runOrder).toEqual(['mock2', 'mock3', 'animationFrame']);
+      timers.advanceTimersByTime(44);
+      expect(runOrder).toEqual(['mock2', 'mock3', ['animationFrame', 16]]);
 
       // Move forward to t=100
       timers.advanceTimersByTime(40);
-      expect(runOrder).toEqual(['mock2', 'mock3', 'animationFrame', 'mock1']);
+      expect(runOrder).toEqual([
+        'mock2',
+        'mock3',
+        ['animationFrame', 16],
+        'mock1',
+      ]);
 
       // Move forward to t=200
       timers.advanceTimersByTime(100);
       expect(runOrder).toEqual([
         'mock2',
         'mock3',
-        'animationFrame',
+        ['animationFrame', 16],
         'mock1',
         'mock4',
       ]);
@@ -713,7 +720,7 @@ describe('FakeTimers', () => {
       expect(runOrder).toEqual([
         'mock2',
         'mock3',
-        'animationFrame',
+        ['animationFrame', 16],
         'mock1',
         'mock4',
         'mock4',

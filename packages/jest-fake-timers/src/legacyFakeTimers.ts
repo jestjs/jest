@@ -471,7 +471,10 @@ export default class FakeTimers<TimerRef> {
   }
 
   private _fakeRequestAnimationFrame(callback: Callback) {
-    return this._fakeSetTimeout(callback, 1000 / 60);
+    return this._fakeSetTimeout(() => {
+      // TODO: Use performance.now() once it's mocked
+      callback(this._now);
+    }, 1000 / 60);
   }
 
   private _fakeSetImmediate(callback: Callback, ...args: Array<any>) {

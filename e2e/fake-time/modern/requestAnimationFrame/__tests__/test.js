@@ -10,17 +10,17 @@
 'use strict';
 
 test('requestAnimationFrame', () => {
-  jest.useFakeTimers('legacy');
-  let exited = false;
-  requestAnimationFrame(() => {
-    exited = true;
+  jest.useFakeTimers('modern');
+  let frameTimestamp = -1;
+  requestAnimationFrame(timestamp => {
+    frameTimestamp = timestamp;
   });
 
   jest.advanceTimersByTime(15);
 
-  expect(exited).toBe(false);
+  expect(frameTimestamp).toBe(-1);
 
   jest.advanceTimersByTime(1);
 
-  expect(exited).toBe(true);
+  expect(frameTimestamp).toBeGreaterThan(15);
 });
