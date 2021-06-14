@@ -134,7 +134,7 @@ it('renders correctly', () => {
 
 That's all there is to it! You can even update the snapshots with `--updateSnapshot` or using the `u` key in `--watch` mode.
 
-The writing of snapshots into your source code is performed via [prettier](https://www.npmjs.com/package/prettier). If you're not already using it in your project but want to use inline snapshots, you'll just need to install it under your `devDependencies`.
+By default, Jest handles the writing of snapshots into your source code. However, if you're using [prettier](https://www.npmjs.com/package/prettier) in your project, Jest will detect this and delegate the work to prettier instead (including honoring your configuration).
 
 ### Property Matchers
 
