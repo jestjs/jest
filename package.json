@@ -100,7 +100,7 @@
     "lint": "eslint . --cache --ext js,jsx,ts,tsx,md",
     "lint:prettier": "prettier '**/*.{md,yml,yaml}' 'website/**/*.{css,js}' --write --ignore-path .gitignore",
     "lint:prettier:ci": "prettier '**/*.{md,yml,yaml}' 'website/**/*.{css,js}' --check --ignore-path .gitignore",
-    "remove-examples": "rimraf examples/",
+    "remove-examples": "node ./scripts/remove-examples.js",
     "test-types": "yarn jest --config jest.config.types.js",
     "test-ci": "yarn jest-coverage --color -i --config jest.config.ci.js && yarn test-leak && node ./scripts/mapCoverage.js && codecov",
     "test-ci-partial": "yarn test-ci-partial:parallel -i",
