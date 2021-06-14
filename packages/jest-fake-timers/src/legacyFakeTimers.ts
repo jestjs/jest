@@ -29,13 +29,13 @@ type Timer = {
 };
 
 type TimerAPI = {
-  cancelAnimationFrame: typeof window.cancelAnimationFrame | undefined;
+  cancelAnimationFrame: FakeTimersGlobal['cancelAnimationFrame'];
   clearImmediate: typeof global.clearImmediate;
   clearInterval: typeof global.clearInterval;
   clearTimeout: typeof global.clearTimeout;
   nextTick: typeof process.nextTick;
 
-  requestAnimationFrame: typeof window.requestAnimationFrame | undefined;
+  requestAnimationFrame: FakeTimersGlobal['requestAnimationFrame'];
   setImmediate: typeof global.setImmediate;
   setInterval: typeof global.setInterval;
   setTimeout: typeof global.setTimeout;
@@ -49,8 +49,8 @@ type TimerConfig<Ref> = {
 const MS_IN_A_YEAR = 31536000000;
 
 interface FakeTimersGlobal extends NodeJS.Global {
-  cancelAnimationFrame?: typeof window.cancelAnimationFrame;
-  requestAnimationFrame?: typeof window.requestAnimationFrame;
+  cancelAnimationFrame?: (handle: number) => void;
+  requestAnimationFrame?: (callback: (time: number) => void) => number;
 }
 
 export default class FakeTimers<TimerRef> {
