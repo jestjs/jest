@@ -681,7 +681,7 @@ Use `test.each` if you keep duplicating the same test with different data. `test
     - `%%` - single percent sign ('%'). This does not consume an argument.
   - Or generate unique test titles by injecting properties of test case object with `$variable`
     - To inject nested object values use you can supply a keyPath i.e. `$variable.path.to.value`
-    - You can use `$#` to inject the index of the test case
+    - You can use `%#` to inject the index of the test case
     - You cannot use `$variable` with the `printf` formatting except for `%%`
 - `fn`: `Function` the test to be ran, this is the function that will receive the parameters in each row as function arguments.
 - Optionally, you can provide a `timeout` (in milliseconds) for specifying how long to wait for each row before aborting. _Note: The default timeout is 5 seconds._
