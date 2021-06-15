@@ -13,6 +13,8 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Fix the example syntax for injecting the test case index into the test title for `test.each()`
+
 ### Performance
 
 ## 27.0.4
