@@ -3,6 +3,7 @@
 ### Features
 
 - `[jest-fake-timers]` Flush callbacks scheduled with `requestAnimationFrame` every 16ms when using legacy timers. ([#11523](https://github.com/facebook/jest/pull/11567))
+- `[pretty-format]` Use `globalThis` (with polyfill if required) to bring support for esbuild's browser bundling mode ([#11569](https://github.com/facebook/jest/pull/11569)
 
 ### Fixes
 
