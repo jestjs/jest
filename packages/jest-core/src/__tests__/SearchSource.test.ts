@@ -406,6 +406,81 @@ describe('SearchSource', () => {
     });
   });
 
+  describe('filterPathsWin32', () => {
+    beforeEach(async () => {
+      const config = (
+        await normalize(
+          {
+            name,
+            rootDir: '.',
+            roots: [],
+          },
+          {} as Config.Argv,
+        )
+      ).options;
+      const context = await Runtime.createContext(config, {
+        maxWorkers,
+        watchman: false,
+      });
+
+      searchSource = new SearchSource(context);
+      context.hasteFS.getAllFiles = () => [
+        path.resolve('packages/lib/my-lib.ts'),
+        path.resolve('packages/@core/my-app.ts'),
+        path.resolve('packages/+cli/my-cli.ts'),
+        path.resolve('packages/.hidden/my-app-hidden.ts'),
+        path.resolve('packages/programs (x86)/my-program.ts'),
+      ];
+    });
+
+    it('should allow a simple match', async () => {
+      const result = searchSource.filterPathsWin32(['packages/lib/my-lib.ts']);
+      expect(result).toEqual([path.resolve('packages/lib/my-lib.ts')]);
+    });
+    it('should allow to match a file inside a hidden directory', async () => {
+      const result = searchSource.filterPathsWin32([
+        'packages/.hidden/my-app-hidden.ts',
+      ]);
+      expect(result).toEqual([
+        path.resolve('packages/.hidden/my-app-hidden.ts'),
+      ]);
+    });
+    it('should allow to match a file inside a directory prefixed with a "@"', async () => {
+      const result = searchSource.filterPathsWin32([
+        'packages/@core/my-app.ts',
+      ]);
+      expect(result).toEqual([path.resolve('packages/@core/my-app.ts')]);
+    });
+    it('should allow to match a file inside a directory prefixed with a "+"', async () => {
+      const result = searchSource.filterPathsWin32(['packages/+cli/my-cli.ts']);
+      expect(result).toEqual([path.resolve('packages/+cli/my-cli.ts')]);
+    });
+    it('should allow an @(pattern)', () => {
+      const result = searchSource.filterPathsWin32([
+        'packages/@(@core)/my-app.ts',
+      ]);
+      expect(result).toEqual([path.resolve('packages/@core/my-app.ts')]);
+    });
+    it('should allow a +(pattern)', () => {
+      const result = searchSource.filterPathsWin32([
+        'packages/+(@core)/my-app.ts',
+      ]);
+      expect(result).toEqual([path.resolve('packages/@core/my-app.ts')]);
+    });
+    it('should allow for (pattern) in file path', () => {
+      const result = searchSource.filterPathsWin32([
+        'packages/programs (x86)/my-program.ts',
+      ]);
+      expect(result).toEqual([
+        path.resolve('packages/programs (x86)/my-program.ts'),
+      ]);
+    });
+    it('should allow no results found', () => {
+      const result = searchSource.filterPathsWin32(['not/exists']);
+      expect(result).toHaveLength(0);
+    });
+  });
+
   describe('findRelatedTests', () => {
     const rootDir = path.join(
       __dirname,

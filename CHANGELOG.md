@@ -2,10 +2,14 @@
 
 ### Features
 
+- `[jest-fake-timers]` Flush callbacks scheduled with `requestAnimationFrame` every 16ms when using legacy timers. ([#11523](https://github.com/facebook/jest/pull/11567))
+- `[pretty-format]` Use `globalThis` (with polyfill if required) to bring support for esbuild's browser bundling mode ([#11569](https://github.com/facebook/jest/pull/11569)
+
 ### Fixes
 
 - `[jest-reporter]` Allow `node-notifier@10` as peer dependency ([#11523](https://github.com/facebook/jest/pull/11523))
 - `[jest-reporter]` Update `v8-to-istanbul` ([#11523](https://github.com/facebook/jest/pull/11523))
+- `[jest-core]` Support special characters like `@`, `+` and `()` on windows with `--findRelatedTests` ([#11548](https://github.com/facebook/jest/pull/11548))
 
 ### Chore & Maintenance
 

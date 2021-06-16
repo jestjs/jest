@@ -288,18 +288,7 @@ export default class SearchSource {
     let paths = globalConfig.nonFlagArgs;
 
     if (globalConfig.findRelatedTests && 'win32' === os.platform()) {
-      const allFiles = this._context.hasteFS.getAllFiles();
-      const options = {nocase: true, windows: false};
-
-      paths = paths
-        .map(p => {
-          const relativePath = path
-            .resolve(this._context.config.cwd, p)
-            .replace(/\\/g, '\\\\');
-          const match = micromatch(allFiles, relativePath, options);
-          return match[0];
-        })
-        .filter(Boolean);
+      paths = this.filterPathsWin32(paths);
     }
 
     if (globalConfig.runTestsByPath && paths && paths.length) {
@@ -314,6 +303,32 @@ export default class SearchSource {
     } else {
       return {tests: []};
     }
+  }
+
+  public filterPathsWin32(paths: Array<string>): Array<string> {
+    const allFiles = this._context.hasteFS.getAllFiles();
+    const options = {nocase: true, windows: false};
+
+    function normalizePosix(filePath: string) {
+      return filePath.replace(/\\/g, '/');
+    }
+
+    paths = paths
+      .map(p => {
+        // micromatch works with forward slashes: https://github.com/micromatch/micromatch#backslashes
+        const normalizedPath = normalizePosix(
+          path.resolve(this._context.config.cwd, p),
+        );
+        const match = micromatch(
+          allFiles.map(normalizePosix),
+          normalizedPath,
+          options,
+        );
+        return match[0];
+      })
+      .filter(Boolean)
+      .map(p => path.resolve(p));
+    return paths;
   }
 
   async getTestPaths(
