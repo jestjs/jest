@@ -143,7 +143,7 @@ Creates a new property with the same primitive value as the original property.
 
 Example:
 
-```
+```js
 // example.js
 module.exports = {
   function: function square(a, b) {
