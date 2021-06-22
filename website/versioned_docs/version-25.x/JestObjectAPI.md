@@ -150,7 +150,7 @@ module.exports = {
     return a * b;
   },
   asyncFunction: async function asyncSquare(a, b) {
-    const result = await a * b;
+    const result = (await a) * b;
     return result;
   },
   class: new (class Bar {
