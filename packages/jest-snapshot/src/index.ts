@@ -39,7 +39,12 @@ import {
   printReceived,
   printSnapshotAndReceived,
 } from './printSnapshot';
-import type {Context, ExpectationResult, MatchSnapshotConfig} from './types';
+import type {
+  Context,
+  ExpectationResult,
+  MatchSnapshotConfig,
+  SnapshotNameConfig
+} from './types';
 import * as utils from './utils';
 
 const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
@@ -69,6 +74,18 @@ const printSnapshotName = (
     '`'
   );
 };
+
+const getSnapshotName = (config: SnapshotNameConfig): string => {
+  const { snapshotName, currentTestName, hint } = config
+  if (snapshotName) {
+    return snapshotName
+  }
+  if (currentTestName && hint) {
+    return `${currentTestName}: ${hint}`
+  }
+  // future BREAKING change: || hint
+  return currentTestName || ''
+}
 
 function stripAddedIndentation(inlineSnapshot: string) {
   // Find indentation if exists.
@@ -213,6 +230,64 @@ const toMatchSnapshot = function (
   });
 };
 
+const toMatchNamedSnapshot = function (
+  this: Context,
+  received: unknown,
+  propertiesOrSnapshotName?: object | Config.Path,
+  snapshotName?: Config.Path,
+): ExpectationResult {
+  const matcherName = 'toMatchNamedSnapshot';
+  let properties;
+
+  const length = arguments.length;
+  if (length === 2 && typeof propertiesOrSnapshotName === 'string') {
+    snapshotName = propertiesOrSnapshotName;
+  } else if (length >= 2) {
+    if (typeof propertiesOrSnapshotName !== 'object' || propertiesOrSnapshotName === null) {
+      const options: MatcherHintOptions = {
+        isNot: this.isNot,
+        promise: this.promise,
+      };
+      let printedWithType = printWithType(
+        'Expected properties',
+        propertiesOrSnapshotName,
+        printExpected,
+      );
+
+      if (length === 3) {
+        options.secondArgument = 'snapshotName';
+        options.secondArgumentColor = BOLD_WEIGHT;
+
+        if (propertiesOrSnapshotName == null) {
+          printedWithType += `\n\nTo provide a name without properties: toMatchNamedSnapshot('snapshot name')`;
+        }
+      }
+
+      throw new Error(
+        matcherErrorMessage(
+          matcherHint(matcherName, undefined, PROPERTIES_ARG, options),
+          `Expected ${EXPECTED_COLOR('properties')} must be an object`,
+          printedWithType,
+        ),
+      );
+    }
+
+    // Future breaking change: Snapshot hint must be a string
+    // if (arguments.length === 3 && typeof hint !== 'string') {}
+
+    properties = propertiesOrSnapshotName;
+  }
+
+  return _toMatchSnapshot({
+    context: this,
+    snapshotName,
+    isInline: false,
+    matcherName,
+    properties,
+    received,
+  });
+};
+
 const toMatchInlineSnapshot = function (
   this: Context,
   received: unknown,
@@ -279,8 +354,15 @@ const toMatchInlineSnapshot = function (
 };
 
 const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
-  const {context, hint, inlineSnapshot, isInline, matcherName, properties} =
-    config;
+  const {
+    context,
+    hint,
+    inlineSnapshot,
+    isInline,
+    matcherName,
+    snapshotName,
+    properties
+  } = config;
   let {received} = config;
 
   context.dontThrow && context.dontThrow();
@@ -309,10 +391,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     );
   }
 
-  const fullTestName =
-    currentTestName && hint
-      ? `${currentTestName}: ${hint}`
-      : currentTestName || ''; // future BREAKING change: || hint
+  const fullTestName = getSnapshotName({ snapshotName, hint, currentTestName })
 
   if (typeof properties === 'object') {
     if (typeof received !== 'object' || received === null) {
@@ -542,6 +621,7 @@ const JestSnapshot = {
   isSnapshotPath,
   toMatchInlineSnapshot,
   toMatchSnapshot,
+  toMatchNamedSnapshot,
   toThrowErrorMatchingInlineSnapshot,
   toThrowErrorMatchingSnapshot,
   utils,
