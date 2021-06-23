@@ -29,7 +29,7 @@ export type SnapshotNameConfig = {
   hint?: string;
   snapshotName?: string;
   currentTestName?: string;
-}
+};
 
 export type SnapshotData = Record<string, string>;
 

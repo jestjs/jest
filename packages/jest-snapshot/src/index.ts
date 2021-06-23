@@ -43,7 +43,7 @@ import type {
   Context,
   ExpectationResult,
   MatchSnapshotConfig,
-  SnapshotNameConfig
+  SnapshotNameConfig,
 } from './types';
 import * as utils from './utils';
 
@@ -76,16 +76,16 @@ const printSnapshotName = (
 };
 
 const getSnapshotName = (config: SnapshotNameConfig): string => {
-  const { snapshotName, currentTestName, hint } = config
+  const {snapshotName, currentTestName, hint} = config;
   if (snapshotName) {
-    return snapshotName
+    return snapshotName;
   }
   if (currentTestName && hint) {
-    return `${currentTestName}: ${hint}`
+    return `${currentTestName}: ${hint}`;
   }
   // future BREAKING change: || hint
-  return currentTestName || ''
-}
+  return currentTestName || '';
+};
 
 function stripAddedIndentation(inlineSnapshot: string) {
   // Find indentation if exists.
@@ -243,7 +243,10 @@ const toMatchNamedSnapshot = function (
   if (length === 2 && typeof propertiesOrSnapshotName === 'string') {
     snapshotName = propertiesOrSnapshotName;
   } else if (length >= 2) {
-    if (typeof propertiesOrSnapshotName !== 'object' || propertiesOrSnapshotName === null) {
+    if (
+      typeof propertiesOrSnapshotName !== 'object' ||
+      propertiesOrSnapshotName === null
+    ) {
       const options: MatcherHintOptions = {
         isNot: this.isNot,
         promise: this.promise,
@@ -280,11 +283,11 @@ const toMatchNamedSnapshot = function (
 
   return _toMatchSnapshot({
     context: this,
-    snapshotName,
     isInline: false,
     matcherName,
     properties,
     received,
+    snapshotName,
   });
 };
 
@@ -361,7 +364,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     isInline,
     matcherName,
     snapshotName,
-    properties
+    properties,
   } = config;
   let {received} = config;
 
@@ -391,7 +394,7 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
     );
   }
 
-  const fullTestName = getSnapshotName({ snapshotName, hint, currentTestName })
+  const fullTestName = getSnapshotName({currentTestName, hint, snapshotName});
 
   if (typeof properties === 'object') {
     if (typeof received !== 'object' || received === null) {
@@ -620,8 +623,8 @@ const JestSnapshot = {
   getSerializers,
   isSnapshotPath,
   toMatchInlineSnapshot,
-  toMatchSnapshot,
   toMatchNamedSnapshot,
+  toMatchSnapshot,
   toThrowErrorMatchingInlineSnapshot,
   toThrowErrorMatchingSnapshot,
   utils,
