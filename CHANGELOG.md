@@ -8,6 +8,12 @@
 
 ### Performance
 
+## 27.0.7
+
+### Chore & Maintenance
+
+- `[docs]` Correct expects.assertions documentation by adding async/await for asynchronous function.
+
 ## 27.0.6
 
 ### Fixes
