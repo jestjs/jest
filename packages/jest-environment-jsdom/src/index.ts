@@ -22,7 +22,7 @@ type Win = Window &
     };
   };
 
-class JSDOMEnvironment implements JestEnvironment {
+class JSDOMEnvironment implements JestEnvironment<number> {
   dom: JSDOM | null;
   fakeTimers: LegacyFakeTimers<number> | null;
   fakeTimersModern: ModernFakeTimers | null;
@@ -51,15 +51,14 @@ class JSDOMEnvironment implements JestEnvironment {
       throw new Error('JSDOM did not return a Window object');
     }
 
-    // for "universal" code (code should use `globalThis`)
-    global.global = global;
+    global.global = global as any;
 
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
     installCommonGlobals(global as any, config.globals);
 
-    // TODO: remove this ASAP, but it currntly causes tests to run really slow
+    // TODO: remove this ASAP, but it currently causes tests to run really slow
     global.Buffer = Buffer;
 
     // Report uncaught errors.
@@ -101,12 +100,15 @@ class JSDOMEnvironment implements JestEnvironment {
 
     this.fakeTimers = new LegacyFakeTimers({
       config,
-      global,
+      global: global as any as typeof globalThis,
       moduleMocker: this.moduleMocker,
       timerConfig,
     });
 
-    this.fakeTimersModern = new ModernFakeTimers({config, global});
+    this.fakeTimersModern = new ModernFakeTimers({
+      config,
+      global: global as any as typeof globalThis,
+    });
   }
 
   async setup(): Promise<void> {}

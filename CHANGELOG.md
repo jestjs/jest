@@ -6,6 +6,7 @@
 
 ### Fixes
 
+- `[jest-types]` Compat with `@types/node` v16 ([#11645](https://github.com/facebook/jest/pull/11645))
 - `[jest-environment-jsdom]` Add support for `userAgent` option ([#11773](https://github.com/facebook/jest/pull/11773))
 - `[jest-environment-node]` Add `Event` and `EventTarget` to node global environment. ([#11705](https://github.com/facebook/jest/issues/11705))
 - `[jest-mock]` Fix `spyOn` to use `Object.prototype.hasOwnProperty` [#11721](https://github.com/facebook/jest/pull/11721)

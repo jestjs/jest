@@ -64,7 +64,7 @@ export default (config: {expand: boolean}): void => {
       };
     });
 
-    const expect = global.expect;
+    const expect = global.expect as any;
     expect.extend(jestMatchersObject);
   };
 };

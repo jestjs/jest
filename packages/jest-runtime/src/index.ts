@@ -929,16 +929,18 @@ export default class Runtime {
     if (this._environment) {
       if (this._environment.global) {
         const envGlobal = this._environment.global;
-        (Object.keys(envGlobal) as Array<keyof NodeJS.Global>).forEach(key => {
-          const globalMock = envGlobal[key];
-          if (
-            ((typeof globalMock === 'object' && globalMock !== null) ||
-              typeof globalMock === 'function') &&
-            globalMock._isMockFunction === true
-          ) {
-            globalMock.mockClear();
-          }
-        });
+        (Object.keys(envGlobal) as Array<keyof typeof globalThis>).forEach(
+          key => {
+            const globalMock = envGlobal[key];
+            if (
+              ((typeof globalMock === 'object' && globalMock !== null) ||
+                typeof globalMock === 'function') &&
+              globalMock._isMockFunction === true
+            ) {
+              globalMock.mockClear();
+            }
+          },
+        );
       }
 
       if (this._environment.fakeTimers) {
