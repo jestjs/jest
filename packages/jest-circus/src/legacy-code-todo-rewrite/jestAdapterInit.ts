@@ -155,6 +155,7 @@ export const initialize = async ({
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
+    preferSimpleForInline: config.inlineSnapshotFormatter === 'simple',
     prettierPath: config.prettierPath,
     updateSnapshot,
   });

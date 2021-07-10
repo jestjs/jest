@@ -171,6 +171,7 @@ export type InitialOptions = Partial<{
   globalTeardown: string | null | undefined;
   haste: HasteConfig;
   injectGlobals: boolean;
+  inlineSnapshotFormatter: 'exposed prototypes' | 'simple';
   reporters: Array<string | ReporterConfig>;
   logHeapUsage: boolean;
   lastCommit: boolean;
@@ -292,6 +293,7 @@ export type GlobalConfig = {
   json: boolean;
   globalSetup?: string;
   globalTeardown?: string;
+  inlineSnapshotFormatter: 'exposed prototypes' | 'simple';
   lastCommit: boolean;
   logHeapUsage: boolean;
   listTests: boolean;
@@ -352,6 +354,7 @@ export type ProjectConfig = {
   globalTeardown?: string;
   globals: ConfigGlobals;
   haste: HasteConfig;
+  inlineSnapshotFormatter: 'exposed prototypes' | 'simple';
   injectGlobals: boolean;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;

@@ -152,12 +152,17 @@ export const removeLinesBeforeExternalMatcherTrap = (stack: string): string => {
 const escapeRegex = true;
 const printFunctionName = false;
 
-export const serialize = (val: unknown, indent = 2): string =>
+export const serialize = (
+  val: unknown,
+  indent = 2,
+  printBasicPrototype: boolean = true,
+): string =>
   normalizeNewlines(
     prettyFormat(val, {
       escapeRegex,
       indent,
       plugins: getSerializers(),
+      printBasicPrototype,
       printFunctionName,
     }),
   );

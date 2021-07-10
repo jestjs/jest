@@ -25,6 +25,7 @@ export type SnapshotStateOptions = {
   updateSnapshot: Config.SnapshotUpdateState;
   prettierPath: Config.Path;
   expand?: boolean;
+  preferSimpleForInline?: boolean;
 };
 
 export type SnapshotMatchOptions = {
@@ -61,6 +62,7 @@ export default class SnapshotState {
   private _inlineSnapshots: Array<InlineSnapshot>;
   private _uncheckedKeys: Set<string>;
   private _prettierPath: Config.Path;
+  private _preferSimpleInlineSnapshots: boolean;
 
   added: number;
   expand: boolean;
@@ -88,6 +90,7 @@ export default class SnapshotState {
     this.unmatched = 0;
     this._updateSnapshot = options.updateSnapshot;
     this.updated = 0;
+    this._preferSimpleInlineSnapshots = options.preferSimpleForInline || false;
   }
 
   markSnapshotsAsCheckedForTest(testName: string): void {
@@ -201,7 +204,13 @@ export default class SnapshotState {
       this._uncheckedKeys.delete(key);
     }
 
-    const receivedSerialized = addExtraLineBreaks(serialize(received));
+    const hasOptedInToSimpleInline =
+      isInline && this._preferSimpleInlineSnapshots;
+    debugger;
+    console.log({hasOptedInToSimpleInline, isInline});
+    const receivedSerialized = addExtraLineBreaks(
+      serialize(received, undefined, hasOptedInToSimpleInline),
+    );
     const expected = isInline ? inlineSnapshot : this._snapshotData[key];
     const pass = expected === receivedSerialized;
     const hasSnapshot = expected !== undefined;

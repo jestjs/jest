@@ -66,6 +66,10 @@ const initialOptions: Config.InitialOptions = {
     throwOnModuleCollision: false,
   },
   injectGlobals: true,
+  inlineSnapshotFormatter: multipleValidOptions(
+    'exposed prototypes',
+    'simple',
+  ) as any,
   json: false,
   lastCommit: false,
   listTests: false,
