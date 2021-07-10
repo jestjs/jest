@@ -204,10 +204,11 @@ export default class SnapshotState {
       this._uncheckedKeys.delete(key);
     }
 
+    // There is an option to allow for not showing 'Object' and 'Array' on
+    // snapshots, which we'd like to allow for opting into with inline snapshots.
     const hasOptedInToSimpleInline =
       isInline && this._preferSimpleInlineSnapshots;
-    debugger;
-    console.log({hasOptedInToSimpleInline, isInline});
+
     const receivedSerialized = addExtraLineBreaks(
       serialize(received, undefined, hasOptedInToSimpleInline),
     );

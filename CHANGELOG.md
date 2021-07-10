@@ -2,6 +2,9 @@
 
 ### Features
 
+- `[jest-cli]` Adds an option (`inlineSnapshotFormatter` with `simple`) for having inline snapshot serializers use the printBasicPrototype option to show literals as literals.  ([#11654](https://github.com/facebook/jest/pull/11654))
+
+
 ### Fixes
 
 ### Chore & Maintenance
