@@ -54,6 +54,12 @@ module.exports = {
         },
       },
     ],
+    [
+      'docusaurus-preset-shiki-twoslash',
+      {
+        themes: ['min-light', 'nord'],
+      },
+    ],
   ],
   plugins: [
     [
