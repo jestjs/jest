@@ -26,7 +26,6 @@ export type SnapshotStateOptions = {
   updateSnapshot: Config.SnapshotUpdateState;
   prettierPath: Config.Path;
   expand?: boolean;
-  preferSimpleForInline?: boolean;
   snapshotFormat: PrettyFormatOptions;
   inlineSnapshotFormat: PrettyFormatOptions;
 };
