@@ -23,7 +23,7 @@ describe('snapshot serializer', () => {
 `);
   });
 
-  it('prototypes for object and array', () => {
+  it('uses 8 chars for indent, and shows no prototypes for object and array in a snapshot', () => {
     const object = {
       array: [{hello: 'Danger'}],
     };
