@@ -8,7 +8,6 @@
 import type {ForegroundColor} from 'chalk';
 import type {ReportOptions} from 'istanbul-reports';
 import type {Arguments} from 'yargs';
-import type {OptionsReceived as PrettyFormatOptions} from 'pretty-format';
 
 type CoverageProvider = 'babel' | 'v8';
 
@@ -60,6 +59,9 @@ export type TransformerConfig = [string, Record<string, unknown>];
 export interface ConfigGlobals {
   [K: string]: unknown;
 }
+
+// This interface gets filled out when pretty-format is included
+interface PrettyFormatOptions {}
 
 export type DefaultOptions = {
   automock: boolean;
