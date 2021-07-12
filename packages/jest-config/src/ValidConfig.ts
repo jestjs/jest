@@ -8,6 +8,7 @@
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {multipleValidOptions} from 'jest-validate';
+import {DEFAULT_OPTIONS as PRETTY_FORMAT_DEFAULTS} from 'pretty-format';
 import {NODE_MODULES} from './constants';
 
 const NODE_MODULES_REGEXP = replacePathSepForRegex(NODE_MODULES);
@@ -66,10 +67,7 @@ const initialOptions: Config.InitialOptions = {
     throwOnModuleCollision: false,
   },
   injectGlobals: true,
-  inlineSnapshotFormatter: multipleValidOptions(
-    'exposed prototypes',
-    'simple',
-  ) as any,
+  inlineSnapshotFormat: PRETTY_FORMAT_DEFAULTS,
   json: false,
   lastCommit: false,
   listTests: false,
@@ -113,6 +111,7 @@ const initialOptions: Config.InitialOptions = {
   skipFilter: false,
   skipNodeResolution: false,
   slowTestThreshold: 5,
+  snapshotFormat: PRETTY_FORMAT_DEFAULTS,
   snapshotResolver: '<rootDir>/snapshotResolver.js',
   snapshotSerializers: ['my-serializer-module'],
   testEnvironment: 'jest-environment-jsdom',

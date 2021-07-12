@@ -7,8 +7,8 @@
  */
 'use strict';
 
-describe('inline snapshot serializer', () => {
-  it('does not show prototypes for object and array', () => {
+describe('snapshot serializer', () => {
+  it('does not show prototypes for object and array inline', () => {
     const object = {
       array: [{hello: 'Danger'}],
     };
@@ -21,5 +21,12 @@ describe('inline snapshot serializer', () => {
   ],
 }
 `);
+  });
+
+  it('prototypes for object and array', () => {
+    const object = {
+      array: [{hello: 'Danger'}],
+    };
+    expect(object).toMatchSnapshot('no prototypes');
   });
 });

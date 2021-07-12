@@ -8,6 +8,7 @@
 import type {ForegroundColor} from 'chalk';
 import type {ReportOptions} from 'istanbul-reports';
 import type {Arguments} from 'yargs';
+import type {OptionsReceived as PrettyFormatOptions} from 'pretty-format';
 
 type CoverageProvider = 'babel' | 'v8';
 
@@ -171,7 +172,7 @@ export type InitialOptions = Partial<{
   globalTeardown: string | null | undefined;
   haste: HasteConfig;
   injectGlobals: boolean;
-  inlineSnapshotFormatter: 'exposed prototypes' | 'simple';
+  inlineSnapshotFormat: PrettyFormatOptions;
   reporters: Array<string | ReporterConfig>;
   logHeapUsage: boolean;
   lastCommit: boolean;
@@ -217,6 +218,7 @@ export type InitialOptions = Partial<{
   slowTestThreshold: number;
   snapshotResolver: Path;
   snapshotSerializers: Array<Path>;
+  snapshotFormat: PrettyFormatOptions;
   errorOnDeprecated: boolean;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
@@ -293,7 +295,7 @@ export type GlobalConfig = {
   json: boolean;
   globalSetup?: string;
   globalTeardown?: string;
-  inlineSnapshotFormatter: 'exposed prototypes' | 'simple';
+  inlineSnapshotFormat: PrettyFormatOptions;
   lastCommit: boolean;
   logHeapUsage: boolean;
   listTests: boolean;
@@ -315,6 +317,7 @@ export type GlobalConfig = {
   rootDir: Path;
   silent?: boolean;
   skipFilter: boolean;
+  snapshotFormat: PrettyFormatOptions;
   errorOnDeprecated: boolean;
   testFailureExitCode: number;
   testNamePattern?: string;
@@ -354,7 +357,7 @@ export type ProjectConfig = {
   globalTeardown?: string;
   globals: ConfigGlobals;
   haste: HasteConfig;
-  inlineSnapshotFormatter: 'exposed prototypes' | 'simple';
+  inlineSnapshotFormat: PrettyFormatOptions;
   injectGlobals: boolean;
   moduleDirectories: Array<string>;
   moduleFileExtensions: Array<string>;
@@ -378,6 +381,7 @@ export type ProjectConfig = {
   slowTestThreshold: number;
   snapshotResolver?: Path;
   snapshotSerializers: Array<Path>;
+  snapshotFormat: PrettyFormatOptions;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
   testMatch: Array<Glob>;

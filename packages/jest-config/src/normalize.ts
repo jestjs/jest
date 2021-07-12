@@ -27,6 +27,7 @@ import {
   tryRealpath,
 } from 'jest-util';
 import {ValidationError, validate} from 'jest-validate';
+import {DEFAULT_OPTIONS as PRETTY_FORMAT_DEFAULTS} from 'pretty-format';
 import DEFAULT_CONFIG from './Defaults';
 import DEPRECATED_CONFIG from './Deprecated';
 import {validateReporters} from './ReporterValidationErrors';
@@ -970,6 +971,7 @@ export default async function normalize(
       case 'extensionsToTreatAsEsm':
       case 'extraGlobals':
       case 'globals':
+      case 'inlineSnapshotFormat':
       case 'findRelatedTests':
       case 'forceCoverageMatch':
       case 'forceExit':
@@ -997,6 +999,7 @@ export default async function normalize(
       case 'skipFilter':
       case 'skipNodeResolution':
       case 'slowTestThreshold':
+      case 'snapshotFormat':
       case 'testEnvironment':
       case 'testEnvironmentOptions':
       case 'testFailureExitCode':

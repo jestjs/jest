@@ -155,8 +155,9 @@ export const initialize = async ({
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
-    preferSimpleForInline: config.inlineSnapshotFormatter === 'simple',
+    inlineSnapshotFormat: config.inlineSnapshotFormat,
     prettierPath: config.prettierPath,
+    snapshotFormat: config.snapshotFormat,
     updateSnapshot,
   });
   // @ts-expect-error: snapshotState is a jest extension of `expect`

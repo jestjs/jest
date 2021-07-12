@@ -10,7 +10,10 @@ import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import naturalCompare = require('natural-compare');
 import type {Config} from '@jest/types';
-import {format as prettyFormat} from 'pretty-format';
+import {
+  OptionsReceived as PrettyFormatOptions,
+  format as prettyFormat,
+} from 'pretty-format';
 import {getSerializers} from './plugins';
 import type {SnapshotData} from './types';
 
@@ -155,15 +158,15 @@ const printFunctionName = false;
 export const serialize = (
   val: unknown,
   indent = 2,
-  printBasicPrototype: boolean = true,
+  formatOverrides: PrettyFormatOptions = {},
 ): string =>
   normalizeNewlines(
     prettyFormat(val, {
       escapeRegex,
       indent,
       plugins: getSerializers(),
-      printBasicPrototype,
       printFunctionName,
+      ...formatOverrides,
     }),
   );
 

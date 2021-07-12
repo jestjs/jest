@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot serializer prototypes for object and array: no prototypes 1`] = `
+{
+        "array": [
+                {
+                        "hello": "Danger",
+                },
+        ],
+}
+`;
