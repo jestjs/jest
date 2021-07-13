@@ -537,7 +537,6 @@ test('some test', () => {
 
 _Note: This option is only supported using the default `jest-circus`. test runner_
 
-
 ### `inlineSnapshotFormat` \[object]
 
 Default: `undefined`
@@ -549,7 +548,7 @@ Allows to overriding specific snapshot formatting options documented in the [pre
   "jest": {
     "inlineSnapshotFormat": {
       "printBasicPrototype": false
-    },
+    }
   }
 }
 ```
@@ -558,10 +557,10 @@ Allows to overriding specific snapshot formatting options documented in the [pre
 import {expect, test} from '@jest/globals';
 
 test('does not show prototypes for object and array inline', () => {
-    const object = {
-      array: [{hello: 'Danger'}],
-    };
-    expect(object).toMatchInlineSnapshot(`
+  const object = {
+    array: [{hello: 'Danger'}],
+  };
+  expect(object).toMatchInlineSnapshot(`
 {
   "array": [
     {
@@ -574,7 +573,6 @@ test('does not show prototypes for object and array inline', () => {
 ```
 
 There is a corresponding [`snapshotFormat`](#snapshotformat-object) option for separate file snapshots.
-
 
 ### `maxConcurrency` \[number]
 
@@ -984,7 +982,6 @@ Default: `5`
 
 The number of seconds after which a test is considered as slow and reported as such in the results.
 
-
 ### `snapshotFormat` \[object]
 
 Default: `undefined`
@@ -996,7 +993,7 @@ Allows to overriding specific snapshot formatting options documented in the [pre
   "jest": {
     "snapshotFormat": {
       "indent": 4
-    },
+    }
   }
 }
 ```
