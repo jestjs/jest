@@ -68,3 +68,9 @@ it('tests error with async/await and rejects', async () => {
     error: 'User with 3 not found.',
   });
 });
+
+it('works with fakeTimers', async () => {
+  jest.useFakeTimers('modern', {ignore: ['nextTick']});
+  expect.assertions(1);
+  return user.getUserName(4).then(data => expect(data).toEqual('Mark'));
+});
