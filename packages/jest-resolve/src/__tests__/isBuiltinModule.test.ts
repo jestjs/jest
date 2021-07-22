@@ -23,4 +23,8 @@ describe('isBuiltinModule', () => {
   it('should return false for any internal node builtins', () => {
     expect(isBuiltinModule('internal/http')).toBe(false);
   });
+
+  it('should return true for the `node:http` module', () => {
+    expect(isBuiltinModule('node:http')).toBe(true);
+  });
 });

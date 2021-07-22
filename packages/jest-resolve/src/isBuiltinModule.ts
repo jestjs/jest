@@ -23,5 +23,10 @@ const BUILTIN_MODULES = new Set(
 );
 
 export default function isBuiltinModule(module: string): boolean {
-  return BUILTIN_MODULES.has(module);
+  // https://nodejs.org/api/modules.html#modules_core_modules
+  // Core modules can also be identified using the node: prefix, for instance, require('node:http')
+
+  return BUILTIN_MODULES.has(
+    module.startsWith('node:') ? module.slice(5) : module,
+  );
 }
