@@ -14,6 +14,10 @@
 
 - `[docs]` Correct expects.assertions documentation by adding async/await for asynchronous function.
 
+### Fixes
+
+- `[jest-resolve]` Allow usage of `node:` prefix for Node.js builtins. ([#11686](https://github.com/facebook/jest/pull/11686))
+
 ## 27.0.6
 
 ### Fixes
