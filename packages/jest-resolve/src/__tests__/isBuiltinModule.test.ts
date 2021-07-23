@@ -27,4 +27,8 @@ describe('isBuiltinModule', () => {
   it('should return true for the `node:http` module', () => {
     expect(isBuiltinModule('node:http')).toBe(true);
   });
+
+  it('should return false for the `node:unknown` module', () => {
+    expect(isBuiltinModule('node:unknown')).toBe(true);
+  });
 });
