@@ -29,6 +29,6 @@ describe('isBuiltinModule', () => {
   });
 
   it('should return false for the `node:unknown` module', () => {
-    expect(isBuiltinModule('node:unknown')).toBe(true);
+    expect(isBuiltinModule('node:unknown')).toBe(false);
   });
 });
