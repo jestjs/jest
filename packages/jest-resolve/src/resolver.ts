@@ -251,6 +251,9 @@ export default class Resolver {
   }
 
   isCoreModule(moduleName: string): boolean {
+    moduleName = moduleName.startsWith('node:')
+      ? moduleName.slice(5)
+      : moduleName;
     return (
       this._options.hasCoreModules &&
       isBuiltinModule(moduleName) &&
