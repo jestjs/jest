@@ -11,6 +11,7 @@ import {
   printDisplayName,
   relativePath,
   trimAndFormatPath,
+  getSummary,
 } from './utils';
 
 export type {Config} from '@jest/types';
@@ -33,6 +34,7 @@ export type {
   Test,
 } from './types';
 export const utils = {
+  getSummary,
   formatTestPath,
   getResultHeader,
   printDisplayName,
