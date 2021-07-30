@@ -1,6 +1,6 @@
 {
   "name": "babel-preset-jest",
-  "version": "27.0.1",
+  "version": "27.0.6",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -13,7 +13,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "babel-plugin-jest-hoist": "^27.0.1",
+    "babel-plugin-jest-hoist": "^27.0.6",
     "babel-preset-current-node-syntax": "^1.0.0"
   },
   "peerDependencies": {

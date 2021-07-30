@@ -8,6 +8,38 @@
 
 ### Performance
 
+## 27.0.7
+
+### Chore & Maintenance
+
+- `[docs]` Correct expects.assertions documentation by adding async/await for asynchronous function.
+
+## 27.0.6
+
+### Fixes
+
+- `[*]` Publish all modules to include the build change in [#11569](https://github.com/facebook/jest/pull/11569)
+
+## 27.0.5
+
+### Features
+
+- `[@jest/fake-timers]` Flush callbacks scheduled with `requestAnimationFrame` every 16ms when using legacy timers. ([#11523](https://github.com/facebook/jest/pull/11567))
+- `[pretty-format]` Use `globalThis` (with polyfill if required) to bring support for esbuild's browser bundling mode ([#11569](https://github.com/facebook/jest/pull/11569))
+
+### Fixes
+
+- `[jest-core]` Support special characters like `@`, `+` and `()` on Windows with `--findRelatedTests` ([#11548](https://github.com/facebook/jest/pull/11548))
+- `[@jest/fake-timers]` Do not add `setImmediate` and `clearImmediate` if they do not exist in the global environment ([#11599](https://github.com/facebook/jest/pull/11599))
+- `[@jest/reporters]` Allow `node-notifier@10` as peer dependency ([#11523](https://github.com/facebook/jest/pull/11523))
+- `[@jest/reporters]` Update `v8-to-istanbul` ([#11523](https://github.com/facebook/jest/pull/11523))
+
+## 27.0.4
+
+### Fixes
+
+- `[jest-config, jest-resolve]` Pass in `require.resolve` to resolvers to resolve from correct base ([#11493](https://github.com/facebook/jest/pull/11493))
+
 ## 27.0.3
 
 ### Fixes
@@ -71,8 +103,8 @@
 - `[jest-repl, jest-runner]` [**BREAKING**] Run transforms over environment ([#8751](https://github.com/facebook/jest/pull/8751))
 - `[jest-repl]` Add support for `testEnvironment` written in ESM ([#11232](https://github.com/facebook/jest/pull/11232))
 - `[jest-runner]` [**BREAKING**] set exit code to 1 if test logs after teardown ([#10728](https://github.com/facebook/jest/pull/10728))
-- `[jest-runner]` [**BREAKING**] Run transforms over `runnner` ([#8823](https://github.com/facebook/jest/pull/8823))
-- `[jest-runner]` [**BREAKING**] Run transforms over `testRunnner` ([#8823](https://github.com/facebook/jest/pull/8823))
+- `[jest-runner]` [**BREAKING**] Run transforms over `runner` ([#8823](https://github.com/facebook/jest/pull/8823))
+- `[jest-runner]` [**BREAKING**] Run transforms over `testRunner` ([#8823](https://github.com/facebook/jest/pull/8823))
 - `[jest-runner]` Possibility to use ESM for test environment ([11033](https://github.com/facebook/jest/pull/11033))
 - `[jest-runner]` Add support for `testRunner` written in ESM ([#11232](https://github.com/facebook/jest/pull/11232))
 - `[jest-runtime]` Detect reexports from CJS as named exports in ESM ([#10988](https://github.com/facebook/jest/pull/10988))

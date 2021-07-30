@@ -142,6 +142,68 @@ describe('FakeTimers', () => {
       timers.useFakeTimers();
       expect(global.clearImmediate).not.toBe(origClearImmediate);
     });
+
+    it('does not mock requestAnimationFrame if not available', () => {
+      const global = {
+        process,
+      } as unknown as NodeJS.Global & Window;
+      const timers = new FakeTimers({
+        config,
+        global,
+        moduleMocker,
+        timerConfig,
+      });
+      timers.useFakeTimers();
+      expect(global.requestAnimationFrame).toBe(undefined);
+    });
+
+    it('mocks requestAnimationFrame if available on global', () => {
+      const origRequestAnimationFrame = () => {};
+      const global = {
+        process,
+        requestAnimationFrame: origRequestAnimationFrame,
+      } as unknown as NodeJS.Global & Window;
+      const timers = new FakeTimers({
+        config,
+        global,
+        moduleMocker,
+        timerConfig,
+      });
+      timers.useFakeTimers();
+      expect(global.requestAnimationFrame).not.toBe(undefined);
+      expect(global.requestAnimationFrame).not.toBe(origRequestAnimationFrame);
+    });
+
+    it('does not mock cancelAnimationFrame if not available on global', () => {
+      const global = {
+        process,
+      } as unknown as NodeJS.Global & Window;
+      const timers = new FakeTimers({
+        config,
+        global,
+        moduleMocker,
+        timerConfig,
+      });
+      timers.useFakeTimers();
+      expect(global.cancelAnimationFrame).toBe(undefined);
+    });
+
+    it('mocks cancelAnimationFrame if available on global', () => {
+      const origCancelAnimationFrame = () => {};
+      const global = {
+        cancelAnimationFrame: origCancelAnimationFrame,
+        process,
+      } as unknown as NodeJS.Global & Window;
+      const timers = new FakeTimers({
+        config,
+        global,
+        moduleMocker,
+        timerConfig,
+      });
+      timers.useFakeTimers();
+      expect(global.cancelAnimationFrame).not.toBe(undefined);
+      expect(global.cancelAnimationFrame).not.toBe(origCancelAnimationFrame);
+    });
   });
 
   describe('runAllTicks', () => {
@@ -399,7 +461,11 @@ describe('FakeTimers', () => {
 
   describe('runAllTimers', () => {
     it('runs all timers in order', () => {
-      const global = {process} as unknown as NodeJS.Global;
+      const global = {
+        cancelAnimationFrame: () => {},
+        process,
+        requestAnimationFrame: () => {},
+      } as unknown as NodeJS.Global & Window;
       const timers = new FakeTimers({
         config,
         global,
@@ -415,6 +481,7 @@ describe('FakeTimers', () => {
       const mock4 = jest.fn(() => runOrder.push('mock4'));
       const mock5 = jest.fn(() => runOrder.push('mock5'));
       const mock6 = jest.fn(() => runOrder.push('mock6'));
+      const mockAnimatioNFrame = jest.fn(() => runOrder.push('animationFrame'));
 
       global.setTimeout(mock1, 100);
       global.setTimeout(mock2, NaN);
@@ -425,6 +492,7 @@ describe('FakeTimers', () => {
       }, 200);
       global.setTimeout(mock5, Infinity);
       global.setTimeout(mock6, -Infinity);
+      global.requestAnimationFrame(mockAnimatioNFrame);
 
       timers.runAllTimers();
       expect(runOrder).toEqual([
@@ -432,6 +500,7 @@ describe('FakeTimers', () => {
         'mock3',
         'mock5',
         'mock6',
+        'animationFrame',
         'mock1',
         'mock4',
       ]);
@@ -585,7 +654,11 @@ describe('FakeTimers', () => {
 
   describe('advanceTimersByTime', () => {
     it('runs timers in order', () => {
-      const global = {process} as unknown as NodeJS.Global;
+      const global = {
+        cancelAnimationFrame: () => {},
+        process,
+        requestAnimationFrame: () => {},
+      } as unknown as NodeJS.Global & Window;
       const timers = new FakeTimers({
         config,
         global,
@@ -594,11 +667,14 @@ describe('FakeTimers', () => {
       });
       timers.useFakeTimers();
 
-      const runOrder: Array<string> = [];
+      const runOrder: Array<string | ['animationFrame', number]> = [];
       const mock1 = jest.fn(() => runOrder.push('mock1'));
       const mock2 = jest.fn(() => runOrder.push('mock2'));
       const mock3 = jest.fn(() => runOrder.push('mock3'));
       const mock4 = jest.fn(() => runOrder.push('mock4'));
+      const mockAnimationFrame = jest.fn(timestamp =>
+        runOrder.push(['animationFrame', timestamp]),
+      );
 
       global.setTimeout(mock1, 100);
       global.setTimeout(mock2, 0);
@@ -606,26 +682,49 @@ describe('FakeTimers', () => {
       global.setInterval(() => {
         mock4();
       }, 200);
+      global.requestAnimationFrame(mockAnimationFrame);
 
-      // Move forward to t=50
-      timers.advanceTimersByTime(50);
+      // Move forward to t=15
+      timers.advanceTimersByTime(15);
       expect(runOrder).toEqual(['mock2', 'mock3']);
+
+      // Move forward to t=16
+      timers.advanceTimersByTime(1);
+      expect(runOrder).toEqual(['mock2', 'mock3', ['animationFrame', 16]]);
 
       // Move forward to t=60
-      timers.advanceTimersByTime(10);
-      expect(runOrder).toEqual(['mock2', 'mock3']);
+      timers.advanceTimersByTime(44);
+      expect(runOrder).toEqual(['mock2', 'mock3', ['animationFrame', 16]]);
 
       // Move forward to t=100
       timers.advanceTimersByTime(40);
-      expect(runOrder).toEqual(['mock2', 'mock3', 'mock1']);
+      expect(runOrder).toEqual([
+        'mock2',
+        'mock3',
+        ['animationFrame', 16],
+        'mock1',
+      ]);
 
       // Move forward to t=200
       timers.advanceTimersByTime(100);
-      expect(runOrder).toEqual(['mock2', 'mock3', 'mock1', 'mock4']);
+      expect(runOrder).toEqual([
+        'mock2',
+        'mock3',
+        ['animationFrame', 16],
+        'mock1',
+        'mock4',
+      ]);
 
       // Move forward to t=400
       timers.advanceTimersByTime(200);
-      expect(runOrder).toEqual(['mock2', 'mock3', 'mock1', 'mock4', 'mock4']);
+      expect(runOrder).toEqual([
+        'mock2',
+        'mock3',
+        ['animationFrame', 16],
+        'mock1',
+        'mock4',
+        'mock4',
+      ]);
     });
 
     it('does nothing when no timers have been scheduled', () => {
@@ -668,7 +767,11 @@ describe('FakeTimers', () => {
 
   describe('advanceTimersToNextTimer', () => {
     it('runs timers in order', () => {
-      const global = {process} as unknown as NodeJS.Global;
+      const global = {
+        cancelAnimationFrame: () => {},
+        process,
+        requestAnimationFrame: () => {},
+      } as unknown as NodeJS.Global & Window;
       const timers = new FakeTimers({
         config,
         global,
@@ -682,6 +785,7 @@ describe('FakeTimers', () => {
       const mock2 = jest.fn(() => runOrder.push('mock2'));
       const mock3 = jest.fn(() => runOrder.push('mock3'));
       const mock4 = jest.fn(() => runOrder.push('mock4'));
+      const mockAnimationFrame = jest.fn(() => runOrder.push('animationFrame'));
 
       global.setTimeout(mock1, 100);
       global.setTimeout(mock2, 0);
@@ -689,26 +793,48 @@ describe('FakeTimers', () => {
       global.setInterval(() => {
         mock4();
       }, 200);
+      global.requestAnimationFrame(mockAnimationFrame);
 
       timers.advanceTimersToNextTimer();
       // Move forward to t=0
       expect(runOrder).toEqual(['mock2', 'mock3']);
 
       timers.advanceTimersToNextTimer();
+      // Move forward to t=17
+      expect(runOrder).toEqual(['mock2', 'mock3', 'animationFrame']);
+
+      timers.advanceTimersToNextTimer();
       // Move forward to t=100
-      expect(runOrder).toEqual(['mock2', 'mock3', 'mock1']);
+      expect(runOrder).toEqual(['mock2', 'mock3', 'animationFrame', 'mock1']);
 
       timers.advanceTimersToNextTimer();
       // Move forward to t=200
-      expect(runOrder).toEqual(['mock2', 'mock3', 'mock1', 'mock4']);
+      expect(runOrder).toEqual([
+        'mock2',
+        'mock3',
+        'animationFrame',
+        'mock1',
+        'mock4',
+      ]);
 
       timers.advanceTimersToNextTimer();
       // Move forward to t=400
-      expect(runOrder).toEqual(['mock2', 'mock3', 'mock1', 'mock4', 'mock4']);
+      expect(runOrder).toEqual([
+        'mock2',
+        'mock3',
+        'animationFrame',
+        'mock1',
+        'mock4',
+        'mock4',
+      ]);
     });
 
     it('run correct amount of steps', () => {
-      const global = {process} as unknown as NodeJS.Global;
+      const global = {
+        cancelAnimationFrame: () => {},
+        process,
+        requestAnimationFrame: () => {},
+      } as unknown as NodeJS.Global & Window;
       const timers = new FakeTimers({
         config,
         global,
@@ -722,6 +848,7 @@ describe('FakeTimers', () => {
       const mock2 = jest.fn(() => runOrder.push('mock2'));
       const mock3 = jest.fn(() => runOrder.push('mock3'));
       const mock4 = jest.fn(() => runOrder.push('mock4'));
+      const mockAnimationFrame = jest.fn(() => runOrder.push('animationFrame'));
 
       global.setTimeout(mock1, 100);
       global.setTimeout(mock2, 0);
@@ -729,16 +856,22 @@ describe('FakeTimers', () => {
       global.setInterval(() => {
         mock4();
       }, 200);
+      global.requestAnimationFrame(mockAnimationFrame);
+
+      // Move forward to t=17
+      timers.advanceTimersToNextTimer(2);
+      expect(runOrder).toEqual(['mock2', 'mock3', 'animationFrame']);
 
       // Move forward to t=100
-      timers.advanceTimersToNextTimer(2);
-      expect(runOrder).toEqual(['mock2', 'mock3', 'mock1']);
+      timers.advanceTimersToNextTimer(1);
+      expect(runOrder).toEqual(['mock2', 'mock3', 'animationFrame', 'mock1']);
 
       // Move forward to t=600
       timers.advanceTimersToNextTimer(3);
       expect(runOrder).toEqual([
         'mock2',
         'mock3',
+        'animationFrame',
         'mock1',
         'mock4',
         'mock4',
@@ -825,6 +958,28 @@ describe('FakeTimers', () => {
       expect(mock1).toHaveBeenCalledTimes(0);
     });
 
+    it('resets all pending animation frames', () => {
+      const global = {
+        cancelAnimationFrame: () => {},
+        process,
+        requestAnimationFrame: () => {},
+      } as unknown as NodeJS.Global & Window;
+      const timers = new FakeTimers({
+        config,
+        global,
+        moduleMocker,
+        timerConfig,
+      });
+      timers.useFakeTimers();
+
+      const mock1 = jest.fn();
+      global.requestAnimationFrame(mock1);
+
+      timers.reset();
+      timers.runAllTimers();
+      expect(mock1).toHaveBeenCalledTimes(0);
+    });
+
     it('resets all pending ticks callbacks & immediates', () => {
       const global = {
         process: {
@@ -877,9 +1032,11 @@ describe('FakeTimers', () => {
       const nativeSetImmediate = jest.fn();
 
       const global = {
+        cancelAnimationFrame: () => {},
         process,
+        requestAnimationFrame: () => {},
         setImmediate: nativeSetImmediate,
-      } as unknown as NodeJS.Global;
+      } as unknown as NodeJS.Global & Window;
 
       const timers = new FakeTimers({
         config,
@@ -914,18 +1071,32 @@ describe('FakeTimers', () => {
         global.setTimeout(cb, 400);
       });
 
-      timers.runOnlyPendingTimers();
-      expect(runOrder).toEqual(['mock4', 'mock5', 'mock2', 'mock1', 'mock3']);
+      global.requestAnimationFrame(function cb() {
+        runOrder.push('animationFrame');
+        global.requestAnimationFrame(cb);
+      });
 
       timers.runOnlyPendingTimers();
       expect(runOrder).toEqual([
         'mock4',
         'mock5',
         'mock2',
+        'animationFrame',
+        'mock1',
+        'mock3',
+      ]);
+
+      timers.runOnlyPendingTimers();
+      expect(runOrder).toEqual([
+        'mock4',
+        'mock5',
+        'mock2',
+        'animationFrame',
         'mock1',
         'mock3',
 
         'mock2',
+        'animationFrame',
         'mock1',
         'mock3',
         'mock5',
@@ -1186,6 +1357,36 @@ describe('FakeTimers', () => {
       expect(global.setImmediate).toBe(nativeSetImmediate);
       expect(global.clearImmediate).toBe(nativeClearImmediate);
     });
+
+    it('resets native requestAnimationFrame when present', () => {
+      const nativeCancelAnimationFrame = jest.fn();
+      const nativeRequestAnimationFrame = jest.fn();
+
+      const global = {
+        cancelAnimationFrame: nativeCancelAnimationFrame,
+        process,
+        requestAnimationFrame: nativeRequestAnimationFrame,
+      } as unknown as NodeJS.Global & Window;
+      const timers = new FakeTimers({
+        config,
+        global,
+        moduleMocker,
+        timerConfig,
+      });
+      timers.useFakeTimers();
+
+      // Ensure that timers has overridden the native timer APIs
+      // (because if it didn't, this test might pass when it shouldn't)
+      expect(global.cancelAnimationFrame).not.toBe(nativeCancelAnimationFrame);
+      expect(global.requestAnimationFrame).not.toBe(
+        nativeRequestAnimationFrame,
+      );
+
+      timers.useRealTimers();
+
+      expect(global.cancelAnimationFrame).toBe(nativeCancelAnimationFrame);
+      expect(global.requestAnimationFrame).toBe(nativeRequestAnimationFrame);
+    });
   });
 
   describe('useFakeTimers', () => {
@@ -1275,6 +1476,36 @@ describe('FakeTimers', () => {
       expect(global.setImmediate).not.toBe(nativeSetImmediate);
       expect(global.clearImmediate).not.toBe(nativeClearImmediate);
     });
+
+    it('resets mock requestAnimationFrame when present', () => {
+      const nativeCancelAnimationFrame = jest.fn();
+      const nativeRequestAnimationFrame = jest.fn();
+
+      const global = {
+        cancelAnimationFrame: nativeCancelAnimationFrame,
+        process,
+        requestAnimationFrame: nativeRequestAnimationFrame,
+      } as unknown as NodeJS.Global & Window;
+      const fakeTimers = new FakeTimers({
+        config,
+        global,
+        moduleMocker,
+        timerConfig,
+      });
+      fakeTimers.useRealTimers();
+
+      // Ensure that the real timers are installed at this point
+      // (because if they aren't, this test might pass when it shouldn't)
+      expect(global.cancelAnimationFrame).toBe(nativeCancelAnimationFrame);
+      expect(global.requestAnimationFrame).toBe(nativeRequestAnimationFrame);
+
+      fakeTimers.useFakeTimers();
+
+      expect(global.cancelAnimationFrame).not.toBe(nativeCancelAnimationFrame);
+      expect(global.requestAnimationFrame).not.toBe(
+        nativeRequestAnimationFrame,
+      );
+    });
   });
 
   describe('getTimerCount', () => {
@@ -1331,6 +1562,28 @@ describe('FakeTimers', () => {
       timers.useFakeTimers();
 
       global.setImmediate(() => {});
+      expect(timers.getTimerCount()).toEqual(1);
+      timers.clearAllTimers();
+
+      expect(timers.getTimerCount()).toEqual(0);
+    });
+
+    it('includes animation frames', () => {
+      const global = {
+        cancelAnimationFrame: () => {},
+        process,
+        requestAnimationFrame: () => {},
+      } as unknown as NodeJS.Global & Window;
+      const timers = new FakeTimers({
+        config,
+        global,
+        moduleMocker,
+        timerConfig,
+      });
+
+      timers.useFakeTimers();
+
+      global.requestAnimationFrame(() => {});
       expect(timers.getTimerCount()).toEqual(1);
       timers.clearAllTimers();
 

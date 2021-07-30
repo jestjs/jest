@@ -55,7 +55,7 @@ Here's an example of the GlobalSetup script
 
 ```js
 // setup.js
-const fs = require('fs');
+const {writeFile} = require('fs').promises;
 const os = require('os');
 const path = require('path');
 const mkdirp = require('mkdirp');
@@ -71,7 +71,7 @@ module.exports = async function () {
 
   // use the file system to expose the wsEndpoint for TestEnvironments
   mkdirp.sync(DIR);
-  fs.writeFileSync(path.join(DIR, 'wsEndpoint'), browser.wsEndpoint());
+  await writeFile(path.join(DIR, 'wsEndpoint'), browser.wsEndpoint());
 };
 ```
 
@@ -79,7 +79,7 @@ Then we need a custom Test Environment for puppeteer
 
 ```js
 // puppeteer_environment.js
-const fs = require('fs');
+const {readFile} = require('fs').promises;
 const os = require('os');
 const path = require('path');
 const puppeteer = require('puppeteer');
@@ -95,7 +95,7 @@ class PuppeteerEnvironment extends NodeEnvironment {
   async setup() {
     await super.setup();
     // get the wsEndpoint
-    const wsEndpoint = fs.readFileSync(path.join(DIR, 'wsEndpoint'), 'utf8');
+    const wsEndpoint = await readFile(path.join(DIR, 'wsEndpoint'), 'utf8');
     if (!wsEndpoint) {
       throw new Error('wsEndpoint not found');
     }

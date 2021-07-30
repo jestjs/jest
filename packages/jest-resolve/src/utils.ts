@@ -40,12 +40,14 @@ const resolveWithPrefix = (
     humanOptionName,
     optionName,
     prefix,
+    requireResolveFunction,
     rootDir,
   }: {
     filePath: string;
     humanOptionName: string;
     optionName: string;
     prefix: string;
+    requireResolveFunction: (moduleName: string) => string;
     rootDir: Config.Path;
   },
 ): string => {
@@ -59,7 +61,7 @@ const resolveWithPrefix = (
   }
 
   try {
-    return require.resolve(`${prefix}${fileName}`);
+    return requireResolveFunction(`${prefix}${fileName}`);
   } catch {}
 
   module = Resolver.findNodeModule(fileName, {
@@ -71,7 +73,7 @@ const resolveWithPrefix = (
   }
 
   try {
-    return require.resolve(fileName);
+    return requireResolveFunction(fileName);
   } catch {}
 
   throw createValidationError(
@@ -94,15 +96,19 @@ const resolveWithPrefix = (
 export const resolveTestEnvironment = ({
   rootDir,
   testEnvironment: filePath,
+  // TODO: remove default in Jest 28
+  requireResolveFunction = require.resolve,
 }: {
   rootDir: Config.Path;
   testEnvironment: string;
+  requireResolveFunction?: (moduleName: string) => string;
 }): string =>
   resolveWithPrefix(undefined, {
     filePath,
     humanOptionName: 'Test environment',
     optionName: 'testEnvironment',
     prefix: 'jest-environment-',
+    requireResolveFunction,
     rootDir,
   });
 
@@ -116,13 +122,23 @@ export const resolveTestEnvironment = ({
  */
 export const resolveWatchPlugin = (
   resolver: string | undefined | null,
-  {filePath, rootDir}: {filePath: string; rootDir: Config.Path},
+  {
+    filePath,
+    rootDir,
+    // TODO: remove default in Jest 28
+    requireResolveFunction = require.resolve,
+  }: {
+    filePath: string;
+    rootDir: Config.Path;
+    requireResolveFunction?: (moduleName: string) => string;
+  },
 ): string =>
   resolveWithPrefix(resolver, {
     filePath,
     humanOptionName: 'Watch plugin',
     optionName: 'watchPlugins',
     prefix: 'jest-watch-',
+    requireResolveFunction,
     rootDir,
   });
 
@@ -136,24 +152,44 @@ export const resolveWatchPlugin = (
  */
 export const resolveRunner = (
   resolver: string | undefined | null,
-  {filePath, rootDir}: {filePath: string; rootDir: Config.Path},
+  {
+    filePath,
+    rootDir,
+    // TODO: remove default in Jest 28
+    requireResolveFunction = require.resolve,
+  }: {
+    filePath: string;
+    rootDir: Config.Path;
+    requireResolveFunction?: (moduleName: string) => string;
+  },
 ): string =>
   resolveWithPrefix(resolver, {
     filePath,
     humanOptionName: 'Jest Runner',
     optionName: 'runner',
     prefix: 'jest-runner-',
+    requireResolveFunction,
     rootDir,
   });
 
 export const resolveSequencer = (
   resolver: string | undefined | null,
-  {filePath, rootDir}: {filePath: string; rootDir: Config.Path},
+  {
+    filePath,
+    rootDir,
+    // TODO: remove default in Jest 28
+    requireResolveFunction = require.resolve,
+  }: {
+    filePath: string;
+    rootDir: Config.Path;
+    requireResolveFunction?: (moduleName: string) => string;
+  },
 ): string =>
   resolveWithPrefix(resolver, {
     filePath,
     humanOptionName: 'Jest Sequencer',
     optionName: 'testSequencer',
     prefix: 'jest-sequencer-',
+    requireResolveFunction,
     rootDir,
   });
