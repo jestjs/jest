@@ -54,45 +54,6 @@ test('exits with 1 if coverage threshold is not met', () => {
   expect(wrap(stdout)).toMatchSnapshot('stdout');
 });
 
-test('exits with 1 if path threshold group is not found in coverage data', () => {
-  const pkgJson = {
-    jest: {
-      collectCoverage: true,
-      collectCoverageFrom: ['**/*.js'],
-      coverageThreshold: {
-        'apple.js': {
-          lines: 100,
-        },
-      },
-    },
-  };
-
-  writeFiles(DIR, {
-    '__tests__/banana.test.js': `
-      const banana = require('../banana.js');
-      test('banana', () => expect(banana()).toBe(3));
-    `,
-    'banana.js': `
-      module.exports = () => {
-        return 1 + 2;
-      };
-    `,
-    'package.json': JSON.stringify(pkgJson, null, 2),
-  });
-
-  const {stdout, stderr, exitCode} = runJest(
-    DIR,
-    ['--coverage', '--ci=false'],
-    {stripAnsi: true},
-  );
-  const {rest, summary} = extractSummary(stderr);
-
-  expect(exitCode).toBe(1);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
-  expect(wrap(stdout)).toMatchSnapshot('stdout');
-});
-
 test('exits with 0 if global threshold group is not found in coverage data', () => {
   const pkgJson = {
     jest: {

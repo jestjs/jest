@@ -58,30 +58,6 @@ All files       |      50 |      100 |       0 |      50 |
 ----------------|---------|----------|---------|---------|-------------------
 `;
 
-exports[`exits with 1 if path threshold group is not found in coverage data 1`] = `
-PASS __tests__/banana.test.js
-  ✓ banana
-
-Jest: Coverage data for apple.js was not found.
-`;
-
-exports[`exits with 1 if path threshold group is not found in coverage data 2`] = `
-Test Suites: 1 passed, 1 total
-Tests:       1 passed, 1 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites.
-`;
-
-exports[`exits with 1 if path threshold group is not found in coverage data: stdout 1`] = `
------------|---------|----------|---------|---------|-------------------
-File       | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
------------|---------|----------|---------|---------|-------------------
-All files  |     100 |      100 |     100 |     100 |                   
- banana.js |     100 |      100 |     100 |     100 |                   
------------|---------|----------|---------|---------|-------------------
-`;
-
 exports[`file is matched by all path and glob threshold groups 1`] = `
 PASS __tests__/banana.test.js
   ✓ banana
