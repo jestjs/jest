@@ -101,53 +101,9 @@ Object {
 }
 `;
 
-exports[`Custom Reporters Integration invalid format for adding reporters 1`] = `
-● Reporter Validation Error:
-
-  Unexpected value for Path at index 0 of reporter at index 0
-  Expected:
-    string
-  Got:
-    number
-  Reporter configuration:
-    [
-      3243242
-    ]
-
-  Configuration Documentation:
-  https://jestjs.io/docs/configuration
-
-`;
-
 exports[`Custom Reporters Integration reporters can be default exports 1`] = `
 run start
 test start
 test complete
 run complete
-`;
-
-exports[`Custom Reporters Integration valid array format for adding reporters 1`] = `
-{
-    "onRunComplete": {
-        "called": true,
-        "numPassedTests": 1,
-        "numFailedTests": 0,
-        "numTotalTests": 1
-    },
-    "onRunStart": {
-        "called": true,
-        "options": "object"
-    },
-    "onTestResult": {
-        "times": 1,
-        "called": true
-    },
-    "onTestStart": {
-        "called": true,
-        "path": false
-    },
-    "options": {
-        "Aaron Abramov": "Awesome"
-    }
-}
 `;
