@@ -134,29 +134,6 @@ Time:        <<REPLACED>>
 Ran all test suites.
 `;
 
-exports[`only with expand arg 1`] = `
-PASS __tests__/onlyConstructs.test.js
-  ○ it
-  ✓ test.only
-  ✓ it.only
-  ✓ fit
-  fdescribe
-    ✓ it
-    ✓ test
-  describe.only
-    ✓ test
-    describe
-      ✓ test
-`;
-
-exports[`only with expand arg 2`] = `
-Test Suites: 1 passed, 1 total
-Tests:       1 skipped, 7 passed, 8 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites.
-`;
-
 exports[`skips 1`] = `
 PASS __tests__/skipsConstructs.test.js
   ✓ it
@@ -174,30 +151,6 @@ PASS __tests__/skipsConstructs.test.js
 `;
 
 exports[`skips 2`] = `
-Test Suites: 1 passed, 1 total
-Tests:       8 skipped, 1 passed, 9 total
-Snapshots:   0 total
-Time:        <<REPLACED>>
-Ran all test suites.
-`;
-
-exports[`skips with expand arg 1`] = `
-PASS __tests__/skipsConstructs.test.js
-  ✓ it
-  ○ xtest
-  ○ xit
-  ○ it.skip
-  ○ test.skip
-  xdescribe
-    ○ it
-    ○ test
-  describe.skip
-    ○ test
-    describe
-      ○ test
-`;
-
-exports[`skips with expand arg 2`] = `
 Test Suites: 1 passed, 1 total
 Tests:       8 skipped, 1 passed, 9 total
 Snapshots:   0 total

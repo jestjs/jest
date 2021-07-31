@@ -185,67 +185,6 @@ test('cannot test with no implementation', () => {
   expect(exitCode).toBe(1);
 });
 
-test('skips with expand arg', () => {
-  const filename = 'skipsConstructs.test.js';
-  const content = `
-    it('it', () => {});
-    xtest('xtest', () => {});
-    xit('xit', () => {});
-    it.skip('it.skip', () => {});
-    test.skip('test.skip', () => {});
-
-    xdescribe('xdescribe', () => {
-      it('it', () => {});
-      test('test', () => {});
-    });
-
-    describe.skip('describe.skip', () => {
-      test('test', () => {});
-      describe('describe', () => {
-        test('test', () => {});
-      });
-    });
-  `;
-
-  writeFiles(TEST_DIR, {[filename]: content});
-  const {stderr, exitCode} = runJest(DIR, ['--expand']);
-
-  const {summary, rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
-  expect(exitCode).toBe(0);
-});
-
-test('only with expand arg', () => {
-  const filename = 'onlyConstructs.test.js';
-  const content = `
-    it('it', () => {});
-    test.only('test.only', () => {});
-    it.only('it.only', () => {});
-    fit('fit', () => {});
-
-    fdescribe('fdescribe', () => {
-      it('it', () => {});
-      test('test', () => {});
-    });
-
-    describe.only('describe.only', () => {
-      test('test', () => {});
-      describe('describe', () => {
-        test('test', () => {});
-      });
-    });
-  `;
-
-  writeFiles(TEST_DIR, {[filename]: content});
-  const {stderr, exitCode} = runJest(DIR, ['--expand']);
-
-  const {summary, rest} = extractSummary(stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-  expect(wrap(summary)).toMatchSnapshot();
-  expect(exitCode).toBe(0);
-});
-
 test('cannot test with no implementation with expand arg', () => {
   const filename = 'onlyConstructs.test.js';
   const content = `
