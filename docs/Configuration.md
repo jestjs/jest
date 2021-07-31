@@ -541,7 +541,7 @@ _Note: This option is only supported using the default `jest-circus`. test runne
 
 Default: `undefined`
 
-Allows to overriding specific snapshot formatting options documented in the [pretty-format readme](https://www.npmjs.com/package/pretty-format#usage-with-options). For example, this config would have the inline snapshot formatter not print a prefix for "Object" and "Array":
+Allows overriding specific snapshot formatting options documented in the [pretty-format readme](https://www.npmjs.com/package/pretty-format#usage-with-options). For example, this config would have the inline snapshot formatter not print a prefix for "Object" and "Array":
 
 ```json
 {
@@ -986,7 +986,7 @@ The number of seconds after which a test is considered as slow and reported as s
 
 Default: `undefined`
 
-Allows to overriding specific snapshot formatting options documented in the [pretty-format readme](https://www.npmjs.com/package/pretty-format#usage-with-options). For example, this config would have the snapshot formatter which prints with 4 spaces instead of 2:
+Allows overriding specific snapshot formatting options documented in the [pretty-format readme](https://www.npmjs.com/package/pretty-format#usage-with-options). For example, this config would have the snapshot formatter which prints with 4 spaces instead of 2:
 
 ```json
 {
