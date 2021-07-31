@@ -1,0 +1,13 @@
+{
+"jest": {
+  "collectCoverage": true,
+  "collectCoverageFrom": [
+    "**/*.js"
+  ],
+  "coverageThreshold": {
+    "global": {
+      "lines": 90
+    }
+  }
+}
+}

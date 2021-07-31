@@ -9,15 +9,6 @@ FAIL __tests__/ignoredFile.test.js
       at assertLoadedBabelConfig (../../../packages/babel-jest/build/index.js:130:11)
 `;
 
-exports[`babel-jest instruments only specific files and collects coverage 1`] = `
-------------|---------|----------|---------|---------|-------------------
-File        | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
-------------|---------|----------|---------|---------|-------------------
-All files   |   83.33 |      100 |      50 |      80 |                   
- covered.js |   83.33 |      100 |      50 |      80 | 13                
-------------|---------|----------|---------|---------|-------------------
-`;
-
 exports[`custom transformer instruments files 1`] = `
 ----------|---------|----------|---------|---------|-------------------
 File      | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
