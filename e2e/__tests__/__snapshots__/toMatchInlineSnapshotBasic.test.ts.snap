@@ -1,0 +1,40 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`basic support: initial write 1`] = `
+test('inline snapshots', () =>
+  expect({apple: 'original value'}).toMatchInlineSnapshot(\`
+    Object {
+      "apple": "original value",
+    }
+  \`));
+
+`;
+
+exports[`basic support: snapshot mismatch 1`] = `
+test('inline snapshots', () =>
+expect({apple: 'updated value'}).toMatchInlineSnapshot(\`
+  Object {
+    "apple": "original value",
+  }
+\`));
+`;
+
+exports[`basic support: snapshot passed 1`] = `
+test('inline snapshots', () =>
+  expect({apple: 'original value'}).toMatchInlineSnapshot(\`
+    Object {
+      "apple": "original value",
+    }
+  \`));
+
+`;
+
+exports[`basic support: snapshot updated 1`] = `
+test('inline snapshots', () =>
+  expect({apple: 'updated value'}).toMatchInlineSnapshot(\`
+    Object {
+      "apple": "updated value",
+    }
+  \`));
+
+`;

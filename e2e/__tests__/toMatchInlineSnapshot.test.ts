@@ -20,57 +20,6 @@ const readFile = (filename: string) =>
 beforeEach(() => cleanup(TESTS_DIR));
 afterAll(() => cleanup(TESTS_DIR));
 
-test('basic support', () => {
-  const filename = 'basic-support.test.js';
-  const template = makeTemplate(
-    `test('inline snapshots', () => expect($1).toMatchInlineSnapshot());\n`,
-  );
-
-  {
-    writeFiles(TESTS_DIR, {
-      [filename]: template(['{apple: "original value"}']),
-    });
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    const fileAfter = readFile(filename);
-    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-    expect(exitCode).toBe(0);
-    expect(wrap(fileAfter)).toMatchSnapshot('initial write');
-  }
-
-  {
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    const fileAfter = readFile(filename);
-    expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
-    expect(stderr).not.toMatch('1 snapshot written from 1 test suite.');
-    expect(exitCode).toBe(0);
-    expect(wrap(fileAfter)).toMatchSnapshot('snapshot passed');
-  }
-
-  {
-    writeFiles(TESTS_DIR, {
-      [filename]: readFile(filename).replace('original value', 'updated value'),
-    });
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    const fileAfter = readFile(filename);
-    expect(stderr).toMatch('Snapshot name: `inline snapshots 1`');
-    expect(exitCode).toBe(1);
-    expect(wrap(fileAfter)).toMatchSnapshot('snapshot mismatch');
-  }
-
-  {
-    const {stderr, exitCode} = runJest(DIR, [
-      '-w=1',
-      '--ci=false',
-      filename,
-      '-u',
-    ]);
-    const fileAfter = readFile(filename);
-    expect(stderr).toMatch('1 snapshot updated from 1 test suite.');
-    expect(exitCode).toBe(0);
-    expect(wrap(fileAfter)).toMatchSnapshot('snapshot updated');
-  }
-});
-
 test('do not indent empty lines', () => {
   const filename = 'empty-line-indent.test.js';
   const template = makeTemplate(
@@ -95,59 +44,6 @@ test('do not indent empty lines', () => {
     expect(stderr).not.toMatch('1 snapshot written from 1 test suite.');
     expect(exitCode).toBe(0);
     expect(wrap(fileAfter)).toMatchSnapshot('snapshot passed');
-  }
-});
-
-test('handles property matchers', () => {
-  const filename = 'handle-property-matchers.test.js';
-  const template = makeTemplate(`test('handles property matchers', () => {
-      expect({createdAt: $1}).toMatchInlineSnapshot({createdAt: expect.any(Date)});
-    });
-    `);
-
-  {
-    writeFiles(TESTS_DIR, {[filename]: template(['new Date()'])});
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    const fileAfter = readFile(filename);
-    expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-    expect(exitCode).toBe(0);
-    expect(wrap(fileAfter)).toMatchSnapshot('initial write');
-  }
-
-  {
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    const fileAfter = readFile(filename);
-    expect(stderr).toMatch('Snapshots:   1 passed, 1 total');
-    expect(exitCode).toBe(0);
-    expect(wrap(fileAfter)).toMatchSnapshot('snapshot passed');
-  }
-
-  {
-    writeFiles(TESTS_DIR, {
-      [filename]: readFile(filename).replace('new Date()', '"string"'),
-    });
-    const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-    const fileAfter = readFile(filename);
-    expect(stderr).toMatch('Snapshot name: `handles property matchers 1`');
-    expect(stderr).toMatch('Snapshots:   1 failed, 1 total');
-    expect(exitCode).toBe(1);
-    expect(wrap(fileAfter)).toMatchSnapshot('snapshot failed');
-  }
-
-  {
-    writeFiles(TESTS_DIR, {
-      [filename]: readFile(filename).replace('any(Date)', 'any(String)'),
-    });
-    const {stderr, exitCode} = runJest(DIR, [
-      '-w=1',
-      '--ci=false',
-      filename,
-      '-u',
-    ]);
-    const fileAfter = readFile(filename);
-    expect(stderr).toMatch('1 snapshot updated from 1 test suite.');
-    expect(exitCode).toBe(0);
-    expect(wrap(fileAfter)).toMatchSnapshot('snapshot updated');
   }
 });
 

@@ -1,0 +1,56 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`handles property matchers: initial write 1`] = `
+test('handles property matchers', () => {
+  expect({createdAt: new Date()}).toMatchInlineSnapshot(
+    {createdAt: expect.any(Date)},
+    \`
+    Object {
+      "createdAt": Any<Date>,
+    }
+  \`,
+  );
+});
+
+`;
+
+exports[`handles property matchers: snapshot failed 1`] = `
+test('handles property matchers', () => {
+expect({createdAt: "string"}).toMatchInlineSnapshot(
+  {createdAt: expect.any(Date)},
+  \`
+  Object {
+    "createdAt": Any<Date>,
+  }
+\`,
+);
+});
+`;
+
+exports[`handles property matchers: snapshot passed 1`] = `
+test('handles property matchers', () => {
+  expect({createdAt: new Date()}).toMatchInlineSnapshot(
+    {createdAt: expect.any(Date)},
+    \`
+    Object {
+      "createdAt": Any<Date>,
+    }
+  \`,
+  );
+});
+
+`;
+
+exports[`handles property matchers: snapshot updated 1`] = `
+test('handles property matchers', () => {
+  expect({createdAt: 'string'}).toMatchInlineSnapshot(
+    {createdAt: expect.any(String)},
+    \`
+    Object {
+      "createdAt": Any<String>,
+    }
+  \`,
+  );
+});
+
+`;
