@@ -20,32 +20,6 @@ import {
 } from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
 
-describe('babel-jest', () => {
-  const dir = path.resolve(__dirname, '..', 'transform/babel-jest');
-
-  beforeEach(() => {
-    runYarnInstall(dir);
-  });
-
-  it('runs transpiled code', () => {
-    // --no-cache because babel can cache stuff and result in false green
-    const {json} = runWithJson(dir, ['--no-cache']);
-    expect(json.success).toBe(true);
-    expect(json.numTotalTests).toBeGreaterThanOrEqual(2);
-  });
-
-  it('instruments only specific files and collects coverage', () => {
-    const {stdout} = runJest(dir, ['--coverage', '--no-cache'], {
-      stripAnsi: true,
-    });
-    expect(stdout).toMatch('covered.js');
-    expect(stdout).not.toMatch('notCovered.js');
-    expect(stdout).not.toMatch('excludedFromCoverage.js');
-    // coverage result should not change
-    expect(wrap(stdout)).toMatchSnapshot();
-  });
-});
-
 describe('babel-jest ignored', () => {
   const dir = path.resolve(__dirname, '..', 'transform/babel-jest-ignored');
 
@@ -128,22 +102,6 @@ describe('custom transformer', () => {
     // coverage should be empty because there's no real instrumentation
     expect(wrap(stdout)).toMatchSnapshot();
     expect(exitCode).toBe(0);
-  });
-});
-
-describe('multiple-transformers', () => {
-  const dir = path.resolve(__dirname, '..', 'transform/multiple-transformers');
-
-  beforeEach(() => {
-    runYarnInstall(dir);
-  });
-
-  it('transforms dependencies using specific transformers', () => {
-    const {json, stderr} = runWithJson(dir, ['--no-cache']);
-
-    expect(stderr).toMatch(/PASS/);
-    expect(json.numTotalTests).toBe(1);
-    expect(json.numPassedTests).toBe(1);
   });
 });
 
