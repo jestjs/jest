@@ -1,0 +1,282 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`not throwing Error objects 1`] = `
+FAIL __tests__/throwNumber.test.js
+  ● Test suite failed to run
+
+    Expected an Error, but "1" was thrown
+`;
+
+exports[`not throwing Error objects 2`] = `
+FAIL __tests__/throwString.test.js
+  ● Test suite failed to run
+
+    banana
+`;
+
+exports[`not throwing Error objects 3`] = `
+FAIL __tests__/throwObject.test.js
+  ● Test suite failed to run
+
+    thrown: Object {}
+`;
+
+exports[`not throwing Error objects 4`] = `
+FAIL __tests__/assertionCount.test.js
+  .assertions()
+    ✕ throws
+    ✕ throws on redeclare of assertion count
+    ✕ throws on assertion
+  .hasAssertions()
+    ✕ throws when there are not assertions
+
+  ● .assertions() › throws
+
+    expect(received).toBeTruthy()
+
+    Received: false
+
+      10 | const throws = () => {
+      11 |   expect.assertions(2);
+    > 12 |   expect(false).toBeTruthy();
+         |                 ^
+      13 | };
+      14 | const redeclare = () => {
+      15 |   expect.assertions(1);
+
+      at Object.toBeTruthy (__tests__/assertionCount.test.js:12:17)
+
+  ● .assertions() › throws
+
+    expect.assertions(2)
+
+    Expected two assertions to be called but received one assertion call.
+
+       9 |
+      10 | const throws = () => {
+    > 11 |   expect.assertions(2);
+         |          ^
+      12 |   expect(false).toBeTruthy();
+      13 | };
+      14 | const redeclare = () => {
+
+      at Object.assertions (__tests__/assertionCount.test.js:11:10)
+
+  ● .assertions() › throws on redeclare of assertion count
+
+    expect(received).toBeTruthy()
+
+    Received: false
+
+      14 | const redeclare = () => {
+      15 |   expect.assertions(1);
+    > 16 |   expect(false).toBeTruthy();
+         |                 ^
+      17 |   expect.assertions(2);
+      18 | };
+      19 |
+
+      at Object.toBeTruthy (__tests__/assertionCount.test.js:16:17)
+
+  ● .assertions() › throws on assertion
+
+    expect.assertions(0)
+
+    Expected zero assertions to be called but received one assertion call.
+
+      19 |
+      20 | const noAssertions = () => {
+    > 21 |   expect.assertions(0);
+         |          ^
+      22 |   expect(true).toBeTruthy();
+      23 | };
+      24 |
+
+      at Object.assertions (__tests__/assertionCount.test.js:21:10)
+
+  ● .hasAssertions() › throws when there are not assertions
+
+    expect.hasAssertions()
+
+    Expected at least one assertion to be called but received none.
+
+      24 |
+      25 | const hasNoAssertions = () => {
+    > 26 |   expect.hasAssertions();
+         |          ^
+      27 | };
+      28 |
+      29 | describe('.assertions()', () => {
+
+      at Object.hasAssertions (__tests__/assertionCount.test.js:26:10)
+`;
+
+exports[`not throwing Error objects 5`] = `
+FAIL __tests__/duringTests.test.js
+  ✕ Promise thrown during test
+  ✕ Boolean thrown during test
+  ✕ undefined thrown during test
+  ✕ Object thrown during test
+  ✕ Object with stack prop thrown during test
+  ✕ Error during test
+  ✕ done(Error)
+  ✕ done(non-error)
+  ✕ returned promise rejection
+
+  ● Promise thrown during test
+
+    thrown: Promise {}
+
+      12 | };
+      13 |
+    > 14 | test('Promise thrown during test', () => {
+         | ^
+      15 |   throw Promise.resolve(5);
+      16 | });
+      17 |
+
+      at Object.test (__tests__/duringTests.test.js:14:1)
+
+  ● Boolean thrown during test
+
+    thrown: false
+
+      16 | });
+      17 |
+    > 18 | test('Boolean thrown during test', () => {
+         | ^
+      19 |   // eslint-disable-next-line no-throw-literal
+      20 |   throw false;
+      21 | });
+
+      at Object.test (__tests__/duringTests.test.js:18:1)
+
+  ● undefined thrown during test
+
+    thrown: undefined
+
+      21 | });
+      22 |
+    > 23 | test('undefined thrown during test', () => {
+         | ^
+      24 |   // eslint-disable-next-line no-throw-literal
+      25 |   throw undefined;
+      26 | });
+
+      at Object.test (__tests__/duringTests.test.js:23:1)
+
+  ● Object thrown during test
+
+    thrown: Object {
+      "notAnError": Array [
+        Object {
+          "hello": true,
+          "tooDeep": [Object],
+        },
+      ],
+    }
+
+      26 | });
+      27 |
+    > 28 | test('Object thrown during test', () => {
+         | ^
+      29 |   throw deepObject;
+      30 | });
+      31 |
+
+      at Object.test (__tests__/duringTests.test.js:28:1)
+
+  ● Object with stack prop thrown during test
+
+    thrown: Object {
+      "stack": 42,
+    }
+
+      30 | });
+      31 |
+    > 32 | test('Object with stack prop thrown during test', () => {
+         | ^
+      33 |   // eslint-disable-next-line no-throw-literal
+      34 |   throw {stack: 42};
+      35 | });
+
+      at Object.test (__tests__/duringTests.test.js:32:1)
+
+  ● Error during test
+
+    ReferenceError: doesNotExist is not defined
+
+      37 | test('Error during test', () => {
+      38 |   // eslint-disable-next-line no-undef
+    > 39 |   doesNotExist.alsoThisNot;
+         |   ^
+      40 | });
+      41 |
+      42 | test('done(Error)', done => {
+
+      at Object.doesNotExist (__tests__/duringTests.test.js:39:3)
+
+  ● done(Error)
+
+    this is an error
+
+      41 |
+      42 | test('done(Error)', done => {
+    > 43 |   done(new Error('this is an error'));
+         |        ^
+      44 | });
+      45 |
+      46 | test('done(non-error)', done => {
+
+      at Object.<anonymous> (__tests__/duringTests.test.js:43:8)
+
+  ● done(non-error)
+
+    thrown: Object {
+      "notAnError": Array [
+        Object {
+          "hello": true,
+          "tooDeep": [Object],
+        },
+      ],
+    }
+
+      45 |
+      46 | test('done(non-error)', done => {
+    > 47 |   done(deepObject);
+         |   ^
+      48 | });
+      49 |
+      50 | test('returned promise rejection', () => Promise.reject(deepObject));
+
+      at Object.done (__tests__/duringTests.test.js:47:3)
+
+  ● returned promise rejection
+
+    thrown: Object {
+      "notAnError": Array [
+        Object {
+          "hello": true,
+          "tooDeep": [Object],
+        },
+      ],
+    }
+
+      48 | });
+      49 |
+    > 50 | test('returned promise rejection', () => Promise.reject(deepObject));
+         | ^
+      51 |
+
+      at Object.test (__tests__/duringTests.test.js:50:1)
+`;
+
+exports[`not throwing Error objects 6`] = `
+FAIL __tests__/throwObjectWithStackProp.test.js
+  ● Test suite failed to run
+
+    thrown: Object {
+
+        "stack": 42,
+      }
+`;

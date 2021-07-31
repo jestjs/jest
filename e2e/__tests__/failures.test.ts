@@ -27,34 +27,6 @@ beforeAll(() => {
   runYarnInstall(dir);
 });
 
-test('not throwing Error objects', () => {
-  let stderr;
-  stderr = runJest(dir, ['throwNumber.test.js']).stderr;
-  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
-  stderr = runJest(dir, ['throwString.test.js']).stderr;
-  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
-  stderr = runJest(dir, ['throwObject.test.js']).stderr;
-  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
-  stderr = runJest(dir, ['assertionCount.test.js']).stderr;
-  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
-  stderr = runJest(dir, ['duringTests.test.js']).stderr;
-
-  if (nodeMajorVersion < 12) {
-    const lineEntry = '(__tests__/duringTests.test.js:43:8)';
-
-    expect(stderr).toContain(`at Object.<anonymous>.done ${lineEntry}`);
-
-    stderr = stderr.replace(
-      `at Object.<anonymous>.done ${lineEntry}`,
-      `at Object.<anonymous> ${lineEntry}`,
-    );
-  }
-
-  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
-  stderr = runJest(dir, ['throwObjectWithStackProp.test.js']).stderr;
-  expect(wrap(cleanStderr(stderr))).toMatchSnapshot();
-});
-
 test('works with node assert', () => {
   const {stderr} = runJest(dir, ['assertionError.test.js']);
   const summary = normalizeDots(cleanStderr(stderr));
