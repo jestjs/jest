@@ -11,7 +11,6 @@ import {wrap} from 'jest-snapshot-serializer-raw';
 import {extractSummary} from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
 
-const emptyTest = 'describe("", () => {it("", () => {})})';
 const snapshotDir = path.resolve(
   __dirname,
   '../snapshot/__tests__/__snapshots__',
@@ -26,7 +25,7 @@ const originalTestPath = path.resolve(
   __dirname,
   '../snapshot/__tests__/snapshot.test.js',
 );
-const originalTestContent = fs.readFileSync(originalTestPath, 'utf8');
+
 const copyOfTestPath = originalTestPath.replace(/\.js$/, '_copy.js');
 
 const snapshotEscapeDir = path.resolve(
@@ -61,12 +60,6 @@ const fileExists = (filePath: string) => {
     return fs.statSync(filePath).isFile();
   } catch {}
   return false;
-};
-const getSnapshotOfCopy = () => {
-  const exports = Object.create(null);
-  // eslint-disable-next-line no-eval
-  eval(fs.readFileSync(snapshotOfCopy, 'utf8'));
-  return exports;
 };
 
 describe('Snapshot', () => {
@@ -218,115 +211,4 @@ describe('Snapshot', () => {
     expect(result.exitCode).toBe(0);
   });
 
-  describe('Validation', () => {
-    beforeEach(() => {
-      fs.writeFileSync(copyOfTestPath, originalTestContent);
-    });
-
-    it('does not save snapshots in CI mode by default', () => {
-      const result = runWithJson('snapshot', ['-w=1', '--ci=true']);
-
-      expect(result.json.success).toBe(false);
-      expect(result.json.numTotalTests).toBe(9);
-      expect(result.json.snapshot.added).toBe(0);
-      expect(result.json.snapshot.total).toBe(9);
-      const {rest, summary} = extractSummary(result.stderr);
-
-      expect(rest).toMatch('New snapshot was not written');
-      expect(wrap(summary)).toMatchSnapshot();
-    });
-
-    it('works on subsequent runs without `-u`', () => {
-      const firstRun = runWithJson('snapshot', ['-w=1', '--ci=false']);
-
-      const content = require(snapshotOfCopy);
-      expect(content).not.toBe(undefined);
-      const secondRun = runWithJson('snapshot', []);
-
-      expect(firstRun.json.numTotalTests).toBe(9);
-      expect(secondRun.json.numTotalTests).toBe(9);
-      expect(secondRun.json.success).toBe(true);
-
-      expect(firstRun.stderr).toMatch('9 snapshots written from 3 test suites');
-      expect(secondRun.stderr).toMatch('9 passed, 9 total');
-      expect(wrap(extractSummary(firstRun.stderr).summary)).toMatchSnapshot();
-      expect(wrap(extractSummary(secondRun.stderr).summary)).toMatchSnapshot();
-    });
-
-    it('deletes the snapshot if the test suite has been removed', () => {
-      const firstRun = runWithJson('snapshot', ['-w=1', '--ci=false']);
-      fs.unlinkSync(copyOfTestPath);
-
-      const content = require(snapshotOfCopy);
-      expect(content).not.toBe(undefined);
-      const secondRun = runWithJson('snapshot', ['-w=1', '--ci=false', '-u']);
-
-      expect(firstRun.json.numTotalTests).toBe(9);
-      expect(secondRun.json.numTotalTests).toBe(5);
-      expect(fileExists(snapshotOfCopy)).toBe(false);
-
-      expect(firstRun.stderr).toMatch('9 snapshots written from 3 test suites');
-      expect(secondRun.stderr).toMatch(
-        '1 snapshot file removed from 1 test suite',
-      );
-      expect(wrap(extractSummary(firstRun.stderr).summary)).toMatchSnapshot();
-      expect(wrap(extractSummary(secondRun.stderr).summary)).toMatchSnapshot();
-    });
-
-    it('deletes a snapshot when a test does removes all the snapshots', () => {
-      const firstRun = runWithJson('snapshot', ['-w=1', '--ci=false']);
-
-      fs.writeFileSync(copyOfTestPath, emptyTest);
-      const secondRun = runWithJson('snapshot', ['-w=1', '--ci=false', '-u']);
-      fs.unlinkSync(copyOfTestPath);
-
-      expect(firstRun.json.numTotalTests).toBe(9);
-      expect(secondRun.json.numTotalTests).toBe(6);
-
-      expect(fileExists(snapshotOfCopy)).toBe(false);
-      expect(firstRun.stderr).toMatch('9 snapshots written from 3 test suites');
-      expect(secondRun.stderr).toMatch(
-        '1 snapshot file removed from 1 test suite',
-      );
-      expect(wrap(extractSummary(firstRun.stderr).summary)).toMatchSnapshot();
-      expect(wrap(extractSummary(secondRun.stderr).summary)).toMatchSnapshot();
-    });
-
-    it('updates the snapshot when a test removes some snapshots', () => {
-      const firstRun = runWithJson('snapshot', ['-w=1', '--ci=false']);
-      fs.unlinkSync(copyOfTestPath);
-      const beforeRemovingSnapshot = getSnapshotOfCopy();
-
-      fs.writeFileSync(
-        copyOfTestPath,
-        originalTestContent.replace(
-          '.toMatchSnapshot()',
-          '.not.toBe(undefined)',
-        ),
-      );
-      const secondRun = runWithJson('snapshot', ['-w=1', '--ci=false', '-u']);
-      fs.unlinkSync(copyOfTestPath);
-
-      expect(firstRun.json.numTotalTests).toBe(9);
-      expect(secondRun.json.numTotalTests).toBe(9);
-      expect(fileExists(snapshotOfCopy)).toBe(true);
-      const afterRemovingSnapshot = getSnapshotOfCopy();
-
-      expect(Object.keys(beforeRemovingSnapshot).length - 1).toBe(
-        Object.keys(afterRemovingSnapshot).length,
-      );
-      const keyToCheck =
-        'snapshot works with plain objects and the ' +
-        'title has `escape` characters 2';
-      expect(beforeRemovingSnapshot[keyToCheck]).not.toBe(undefined);
-      expect(afterRemovingSnapshot[keyToCheck]).toBe(undefined);
-
-      expect(wrap(extractSummary(firstRun.stderr).summary)).toMatchSnapshot();
-      expect(firstRun.stderr).toMatch('9 snapshots written from 3 test suites');
-
-      expect(wrap(extractSummary(secondRun.stderr).summary)).toMatchSnapshot();
-      expect(secondRun.stderr).toMatch('1 snapshot updated from 1 test suite');
-      expect(secondRun.stderr).toMatch('1 snapshot removed from 1 test suite');
-    });
-  });
 });
