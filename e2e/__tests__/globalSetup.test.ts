@@ -53,20 +53,6 @@ afterAll(() => {
   cleanup(esmTmpDir);
 });
 
-test('globalSetup is triggered once before all test suites', () => {
-  const setupPath = path.join(e2eDir, 'setup.js');
-  const result = runWithJson(e2eDir, [
-    `--globalSetup=${setupPath}`,
-    `--testPathPattern=__tests__`,
-  ]);
-
-  expect(result.exitCode).toBe(0);
-  const files = fs.readdirSync(DIR);
-  expect(files).toHaveLength(1);
-  const setup = fs.readFileSync(path.join(DIR, files[0]), 'utf8');
-  expect(setup).toBe('setup');
-});
-
 test('jest throws an error when globalSetup does not export a function', () => {
   const setupPath = path.resolve(__dirname, '../global-setup/invalidSetup.js');
   const {exitCode, stderr} = runJest(e2eDir, [
@@ -135,19 +121,6 @@ test('should not call any globalSetup if there are no tests to run', () => {
   expect(fs.existsSync(DIR)).toBe(false);
   expect(fs.existsSync(project1DIR)).toBe(false);
   expect(fs.existsSync(project2DIR)).toBe(false);
-});
-
-test('globalSetup works with default export', () => {
-  const setupPath = path.resolve(e2eDir, 'setupWithDefaultExport.js');
-
-  const testPathPattern = 'pass';
-
-  const result = runJest(e2eDir, [
-    `--globalSetup=${setupPath}`,
-    `--testPathPattern=${testPathPattern}`,
-  ]);
-
-  expect(result.stdout).toBe(testPathPattern);
 });
 
 test('globalSetup throws with named export', () => {
