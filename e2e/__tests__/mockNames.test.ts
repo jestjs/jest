@@ -39,15 +39,6 @@ test('suite with mock name, mock called, expect fail', () => {
   expect(stderr).toMatch(/expect\(myMockedFunction\)\.not\.toHaveBeenCalled/);
 });
 
-test('suite with mock name, mock called 5 times', () => {
-  const {stderr, exitCode} = runJest(
-    'mock-names/with-mock-name-call-times-pass',
-  );
-
-  expect(exitCode).toBe(0);
-  expect(stderr).toMatch(/PASS/);
-});
-
 test('suite with mock name, mock not called 5 times, expect fail', () => {
   const {stderr, exitCode} = runJest(
     'mock-names/with-mock-name-call-times-fail',
