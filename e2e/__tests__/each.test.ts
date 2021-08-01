@@ -17,23 +17,6 @@ test('works with passing tests', () => {
   expect(result.exitCode).toBe(0);
 });
 
-test('shows error message when not enough arguments are supplied to tests', () => {
-  const result = runJest(dir, ['eachException.test.js']);
-  expect(result.exitCode).toBe(1);
-  const {rest} = extractSummary(result.stderr);
-  expect(wrap(rest)).toMatchSnapshot();
-});
-
-test('shows the correct errors in stderr when failing tests', () => {
-  const result = runJest(dir, ['failure.test.js']);
-  expect(result.exitCode).toBe(1);
-  const output = extractSummary(result.stderr)
-    .rest.split('\n')
-    .map(line => line.trimRight())
-    .join('\n');
-  expect(wrap(output)).toMatchSnapshot();
-});
-
 test('shows only the tests with .only as being ran', () => {
   const result = runJest(dir, ['eachOnly.test.js']);
   expect(result.exitCode).toBe(0);
