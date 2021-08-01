@@ -9,7 +9,6 @@ import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {onNodeVersions} from '@jest/test-utils';
-import {createDirectory} from 'jest-util';
 import {cleanup, runYarnInstall} from '../Utils';
 import runJest, {json as runWithJson} from '../runJest';
 
@@ -34,21 +33,6 @@ afterAll(() => {
   cleanup(project1DIR);
   cleanup(project2DIR);
   cleanup(esmTmpDir);
-});
-
-test('globalTeardown is triggered once after all test suites', () => {
-  createDirectory(DIR);
-  const teardownPath = path.resolve(e2eDir, 'teardown.js');
-  const result = runWithJson('global-teardown', [
-    `--globalTeardown=${teardownPath}`,
-    `--testPathPattern=__tests__`,
-  ]);
-
-  expect(result.exitCode).toBe(0);
-  const files = fs.readdirSync(DIR);
-  expect(files).toHaveLength(1);
-  const teardown = fs.readFileSync(path.join(DIR, files[0]), 'utf8');
-  expect(teardown).toBe('teardown');
 });
 
 test('jest throws an error when globalTeardown does not export a function', () => {
