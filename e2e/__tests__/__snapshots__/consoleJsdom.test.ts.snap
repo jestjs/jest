@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`the jsdom console is the same as the test console 1`] = ``;
+
+exports[`the jsdom console is the same as the test console 2`] = `
+PASS __tests__/console.test.js
+  ✓ can mock console.error calls from jsdom
+`;
+
+exports[`the jsdom console is the same as the test console 3`] = `
+Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites.
+`;
