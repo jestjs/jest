@@ -83,6 +83,7 @@ export interface AsyncTransformer<OptionType = unknown> {
 export type Transformer<OptionType = unknown> =
   | SyncTransformer<OptionType>
   | AsyncTransformer<OptionType>;
+
 interface TransformOptions<OptionType> {
   /**
    * If a transformer does module resolution and reads files, it should populate `cacheFS` so that
