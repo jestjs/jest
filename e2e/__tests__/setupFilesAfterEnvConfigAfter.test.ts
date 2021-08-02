@@ -22,10 +22,11 @@ afterAll(() => {
 });
 
 describe('setupFilesAfterEnv', () => {
-  it('requires multiple setup files before each file in the suite', () => {
+
+  it('requires setup files *after* the test runners are required', () => {
     const pkgJson = {
       jest: {
-        setupFilesAfterEnv: ['./setup1.js', './setup2.js'],
+        setupFilesAfterEnv: ['./setupHooksIntoRunner.js'],
       },
     };
 
@@ -34,14 +35,12 @@ describe('setupFilesAfterEnv', () => {
     });
 
     const result = runWithJson('setup-files-after-env-config', [
-      'test1.test.js',
-      'test2.test.js',
+      'runnerPatch.test.js',
     ]);
 
-    expect(result.json.numTotalTests).toBe(2);
-    expect(result.json.numPassedTests).toBe(2);
-    expect(result.json.testResults.length).toBe(2);
+    expect(result.json.numTotalTests).toBe(1);
+    expect(result.json.numPassedTests).toBe(1);
+    expect(result.json.testResults.length).toBe(1);
     expect(result.exitCode).toBe(0);
   });
-
 });
