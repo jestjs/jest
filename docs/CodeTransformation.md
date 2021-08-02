@@ -22,29 +22,67 @@ If you override the `transform` configuration option `babel-jest` will no longer
 You can write you own transformer. The API of a transformer is as follows:
 
 ```ts
-interface Transformer<OptionType = unknown> {
-  /**
-   * Indicates if the transformer is capabale of instrumenting the code for code coverage.
-   *
-   * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
-   * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
-   */
+export interface SyncTransformer<OptionType = unknown> {
   canInstrument?: boolean;
-  createTransformer?: (options?: OptionType) => Transformer;
+  createTransformer?: (options?: OptionType) => SyncTransformer<OptionType>;
 
   getCacheKey?: (
     sourceText: string,
-    sourcePath: string,
+    sourcePath: Config.Path,
     options: TransformOptions<OptionType>,
   ) => string;
 
+  getCacheKeyAsync?: (
+    sourceText: string,
+    sourcePath: Config.Path,
+    options: TransformOptions<OptionType>,
+  ) => Promise<string>;
+
   process: (
     sourceText: string,
-    sourcePath: string,
+    sourcePath: Config.Path,
     options: TransformOptions<OptionType>,
   ) => TransformedSource;
+
+  processAsync?: (
+    sourceText: string,
+    sourcePath: Config.Path,
+    options: TransformOptions<OptionType>,
+  ) => Promise<TransformedSource>;
 }
 
+export interface AsyncTransformer<OptionType = unknown> {
+  canInstrument?: boolean;
+  createTransformer?: (options?: OptionType) => AsyncTransformer<OptionType>;
+
+  getCacheKey?: (
+    sourceText: string,
+    sourcePath: Config.Path,
+    options: TransformOptions<OptionType>,
+  ) => string;
+
+  getCacheKeyAsync?: (
+    sourceText: string,
+    sourcePath: Config.Path,
+    options: TransformOptions<OptionType>,
+  ) => Promise<string>;
+
+  process?: (
+    sourceText: string,
+    sourcePath: Config.Path,
+    options: TransformOptions<OptionType>,
+  ) => TransformedSource;
+
+  processAsync: (
+    sourceText: string,
+    sourcePath: Config.Path,
+    options: TransformOptions<OptionType>,
+  ) => Promise<TransformedSource>;
+}
+
+export type Transformer<OptionType = unknown> =
+  | SyncTransformer<OptionType>
+  | AsyncTransformer<OptionType>;
 interface TransformOptions<OptionType> {
   /**
    * If a transformer does module resolution and reads files, it should populate `cacheFS` so that
