@@ -88,19 +88,3 @@ test('cannot be used with .not', () => {
   }
 });
 
-test('should support rejecting promises', () => {
-  const filename = 'should-support-rejecting-promises.test.js';
-  const template = makeTemplate(`
-    test('should support rejecting promises', async () => {
-      await expect(Promise.reject(new Error('octopus')))
-        .rejects.toThrowErrorMatchingInlineSnapshot();
-    });
-  `);
-
-  writeFiles(TESTS_DIR, {[filename]: template()});
-  const {stderr, exitCode} = runJest(DIR, ['-w=1', '--ci=false', filename]);
-  const fileAfter = readFile(filename);
-  expect(stderr).toMatch('1 snapshot written from 1 test suite.');
-  expect(wrap(fileAfter)).toMatchSnapshot();
-  expect(exitCode).toBe(0);
-});
