@@ -1,4 +1,8 @@
 ## master
+The older versions of path-parse have security audit issues. The upgraded version of the resolve package uses the latest version of path-parse package in which the issues have been resolved
+
+https://github.com/facebook/jest/pull/11712
+## master
 
 ### Features
 
