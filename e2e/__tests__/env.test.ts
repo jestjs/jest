@@ -10,11 +10,6 @@ import runJest, {RunJestResult} from '../runJest';
 const getLog = (result: RunJestResult) => result.stdout.split('\n')[1].trim();
 
 describe('Environment override', () => {
-  it('uses jsdom when specified', () => {
-    const result = runJest('env-test', ['--env=jsdom', 'env.test.js']);
-    expect(result.exitCode).toBe(0);
-    expect(getLog(result)).toBe('WINDOW');
-  });
 
   it('uses node as default from package.json', () => {
     const result = runJest('env-test', ['env.test.js']);
