@@ -32,16 +32,6 @@ test('works with sane config JSON', () => {
   expect(result.stderr).toMatch('works just fine');
 });
 
-test('watchman config option is respected over default argv', () => {
-  const {stdout} = runJest('verbose-reporter', [
-    '--env=node',
-    '--watchman=false',
-    '--debug',
-  ]);
-
-  expect(stdout).toMatch('"watchman": false');
-});
-
 test('config from argv is respected with sane config JSON', () => {
   const {stdout} = runJest('verbose-reporter', [
     '--config=' +
