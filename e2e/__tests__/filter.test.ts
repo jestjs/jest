@@ -24,16 +24,6 @@ describe('Dynamic test filtering', () => {
     expect(result.stderr).toContain('1 total');
   });
 
-  it('ignores the filter if requested to do so', () => {
-    const result = runJest('filter', [
-      '--filter=<rootDir>/my-secondary-filter.js',
-      '--skipFilter',
-    ]);
-
-    expect(result.exitCode).toBe(0);
-    expect(result.stderr).toContain('2 total');
-  });
-
   it('throws when you return clowny stuff', () => {
     const result = runJest('filter', [
       '--filter=<rootDir>/my-clowny-filter.js',
@@ -42,13 +32,6 @@ describe('Dynamic test filtering', () => {
     expect(result.exitCode).toBe(1);
     expect(result.stderr).toContain('did not return a valid test list');
     expect(result.stderr).toContain('my-clowny-filter');
-  });
-
-  it('will call setup on filter before filtering', () => {
-    const result = runJest('filter', ['--filter=<rootDir>/my-setup-filter.js']);
-
-    expect(result.exitCode).toBe(0);
-    expect(result.stderr).toContain('1 total');
   });
 
   it('will print error when filter throws', () => {
