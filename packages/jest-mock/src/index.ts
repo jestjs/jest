@@ -976,7 +976,10 @@ export class ModuleMocker {
         );
       }
 
-      const isMethodOwner = object.hasOwnProperty(methodName);
+      const isMethodOwner = Object.prototype.hasOwnProperty.call(
+        object,
+        methodName,
+      );
 
       let descriptor = Object.getOwnPropertyDescriptor(object, methodName);
       let proto = Object.getPrototypeOf(object);

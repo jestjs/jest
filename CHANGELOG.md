@@ -14,6 +14,10 @@
 
 - `[docs]` Correct expects.assertions documentation by adding async/await for asynchronous function.
 
+### Fixes
+
+- `[jest-mock]` Fix `spyOn` to use `Object.prototype.hasOwnProperty` [#11721](https://github.com/facebook/jest/pull/11721)
+
 ## 27.0.6
 
 ### Fixes
