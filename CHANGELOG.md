@@ -6,6 +6,8 @@
 
 ### Chore & Maintenance
 
+- `[website]` Use a darker background color for Note style admonitions in dark mode
+
 ### Performance
 
 ## 27.1.0

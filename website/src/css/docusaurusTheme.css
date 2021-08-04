@@ -70,3 +70,10 @@ html[data-theme='dark'] .footer--dark {
 .footer--dark .text--center {
   color: var(--grey);
 }
+
+/** less bright background for Note style admonitions in dark theme **/
+html[data-theme='dark'] .alert--secondary {
+  --ifm-alert-background-color: var(--ifm-color-emphasis-300);
+  --ifm-alert-border-color: var(--ifm-color-emphasis-300);
+  --ifm-alert-color: var(--ifm-color-black);
+}
