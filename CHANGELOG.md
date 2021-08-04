@@ -8,6 +8,7 @@
 
 - `[website]` Use a darker background color for Note style admonitions in dark mode
 - `[website]` Add CSS for line highlighting in docusaurus code blocks
+- `[docs]` Update Timer Mocks guide for Jest 27 to be in line with the new default `modern` fake timers.
 
 ### Performance
 
