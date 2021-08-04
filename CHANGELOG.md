@@ -7,6 +7,7 @@
 ### Chore & Maintenance
 
 - `[website]` Use a darker background color for Note style admonitions in dark mode
+- `[website]` Add CSS for line highlighting in docusaurus code blocks
 
 ### Performance
 
