@@ -81,7 +81,13 @@ export default class NotifyReporter extends BaseReporter {
         result.numPassedTests,
       )} passed`;
 
-      this._notifier.notify({icon, message, timeout: false, title});
+      this._notifier.notify({
+        hint: 'int:transient:1',
+        icon,
+        message,
+        timeout: false,
+        title
+      });
     } else if (
       testsHaveRun &&
       !success &&
@@ -109,12 +115,19 @@ export default class NotifyReporter extends BaseReporter {
       const quitAnswer = 'Exit tests';
 
       if (!watchMode) {
-        this._notifier.notify({icon, message, timeout: false, title});
+        this._notifier.notify({
+          hint: 'int:transient:1',
+          icon,
+          message,
+          timeout: false,
+          title
+        });
       } else {
         this._notifier.notify(
           {
             actions: [restartAnswer, quitAnswer],
             closeLabel: 'Close',
+            hint: 'int:transient:1',
             icon,
             message,
             timeout: false,
