@@ -57,7 +57,6 @@ const config = {
     region: 'local-env',
   }),
 };
-//DynamoDB Document client
 const ddb = new DocumentClient(config);
 ```
 
