@@ -43,6 +43,8 @@ module.exports = {
 
 4.  Configure DynamoDB client
 
+
+
 ```js
 const {DocumentClient} = require('aws-sdk/clients/dynamodb');
 
@@ -55,7 +57,7 @@ const config = {
     region: 'local-env',
   }),
 };
-
+//DynamoDB Document client
 const ddb = new DocumentClient(config);
 ```
 
@@ -79,3 +81,10 @@ it('should insert item into table', async () => {
 There's no need to load any dependencies.
 
 See [documentation](https://github.com/shelfio/jest-dynamodb) for details.
+
+## Use jest-dynalite Preset
+
+Pretty similar to `jest-dynamodb` option, however, `jest-dynalite` does not require your environment to provide any `java` runtime.
+
+Just follow the [documentation](https://github.com/freshollie/jest-dynalite) for more details.
+
