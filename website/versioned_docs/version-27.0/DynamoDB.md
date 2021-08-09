@@ -83,7 +83,6 @@ See [documentation](https://github.com/shelfio/jest-dynamodb) for details.
 
 ## Use jest-dynalite Preset
 
-Pretty similar to `jest-dynamodb` option, however, `jest-dynalite` does not require your environment to provide any `java` runtime.
+This fork of `jest-dynamodb` comes without the `java` requirement.
 
 Just follow the [documentation](https://github.com/freshollie/jest-dynalite) for more details.
-
