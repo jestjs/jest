@@ -85,4 +85,4 @@ See [documentation](https://github.com/shelfio/jest-dynamodb) for details.
 
 This fork of `jest-dynamodb` comes without the `java` requirement.
 
-Just follow the [documentation](https://github.com/freshollie/jest-dynalite) for more details.
+See [documentation](https://github.com/freshollie/jest-dynalite) for details.
