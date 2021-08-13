@@ -2,7 +2,7 @@
 
 ### Features
 
-- `[jest-cli]` Adds 2 config ptions (`inlineSnapshotFormatter` and `snapshotFormat`) which offers a way to override any of the formatting settings which come with [pretty-format](https://www.npmjs.com/package/pretty-format#usage-with-options). ([#11654](https://github.com/facebook/jest/pull/11654))
+- `[jest-cli]` Adds 2 config options (`inlineSnapshotFormatter` and `snapshotFormat`) which offers a way to override any of the formatting settings which come with [pretty-format](https://www.npmjs.com/package/pretty-format#usage-with-options). ([#11654](https://github.com/facebook/jest/pull/11654))
 
 ### Fixes
 
