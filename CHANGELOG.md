@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- `[jest-environment-node]` Add `Event` and `EventTarget` to node global environment. ([#11705](https://github.com/facebook/jest/issues/11705))
+
 ### Chore & Maintenance
 
 ### Performance

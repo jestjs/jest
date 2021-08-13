@@ -66,6 +66,14 @@ class NodeEnvironment implements JestEnvironment {
     if (typeof AbortController !== 'undefined') {
       global.AbortController = AbortController;
     }
+    // Event is global in Node >= 15.4
+    if (typeof Event !== 'undefined') {
+      global.Event = Event;
+    }
+    // EventTarget is global in Node >= 15.4
+    if (typeof EventTarget !== 'undefined') {
+      global.EventTarget = EventTarget;
+    }
     installCommonGlobals(global, config.globals);
 
     this.moduleMocker = new ModuleMocker(global);
