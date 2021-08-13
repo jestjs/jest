@@ -23,6 +23,12 @@ You can write you own transformer. The API of a transformer is as follows:
 
 ```ts
 export interface SyncTransformer<OptionType = unknown> {
+  /**
+   * Indicates if the transformer is capabale of instrumenting the code for code coverage.
+   *
+   * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
+   * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
+   */
   canInstrument?: boolean;
   createTransformer?: (options?: OptionType) => SyncTransformer<OptionType>;
 
@@ -52,6 +58,12 @@ export interface SyncTransformer<OptionType = unknown> {
 }
 
 export interface AsyncTransformer<OptionType = unknown> {
+  /**
+   * Indicates if the transformer is capabale of instrumenting the code for code coverage.
+   *
+   * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
+   * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
+   */
   canInstrument?: boolean;
   createTransformer?: (options?: OptionType) => AsyncTransformer<OptionType>;
 
