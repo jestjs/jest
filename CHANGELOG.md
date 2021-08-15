@@ -10,10 +10,13 @@
 
 ## 27.0.7
 
+### Features
+
+- `[jest-reporters]` Expose the `getSummary` util ([#11695](https://github.com/facebook/jest/pull/11695)).
+
 ### Chore & Maintenance
 
 - `[docs]` Correct expects.assertions documentation by adding async/await for asynchronous function.
-- `[jest-reporters]` Expose the `getSummary` util ([#11695](https://github.com/facebook/jest/pull/11695))
 
 ## 27.0.6
 
