@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[jest-environment-node]` Add `Event` and `EventTarget` to node global environment. ([#11705](https://github.com/facebook/jest/issues/11705))
+- `[jest-mock]` Fix `spyOn` to use `Object.prototype.hasOwnProperty` [#11721](https://github.com/facebook/jest/pull/11721)
 
 ### Chore & Maintenance
 
