@@ -188,15 +188,17 @@ describe('Runtime requireModule', () => {
     }).not.toThrow();
   });
 
-  it('finds node core built-in modules with node:prefix', async () => {
-    const runtime = await createRuntime(__filename);
+  onNodeVersions('^16.0.0', () => {
+    it('finds node core built-in modules with node:prefix', async () => {
+      const runtime = await createRuntime(__filename);
 
-    expect(runtime.requireModule(runtime.__mockRootPath, 'fs')).toBe(
-      runtime.requireModule(runtime.__mockRootPath, 'node:fs'),
-    );
-    expect(runtime.requireModule(runtime.__mockRootPath, 'module')).toBe(
-      runtime.requireModule(runtime.__mockRootPath, 'node:module'),
-    );
+      expect(runtime.requireModule(runtime.__mockRootPath, 'fs')).toBe(
+        runtime.requireModule(runtime.__mockRootPath, 'node:fs'),
+      );
+      expect(runtime.requireModule(runtime.__mockRootPath, 'module')).toBe(
+        runtime.requireModule(runtime.__mockRootPath, 'node:module'),
+      );
+    });
   });
 
   it('finds and loads JSON files without file extension', async () => {

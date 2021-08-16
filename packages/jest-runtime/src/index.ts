@@ -149,6 +149,28 @@ const supportsTopLevelAwait =
     }
   })();
 
+const supportsNodeColonModulePrefixInRequire = (() => {
+  try {
+    require('node:fs');
+
+    return true;
+  } catch {
+    return false;
+  }
+})();
+
+const supportsNodeColonModulePrefixInImport = (async () => {
+  try {
+    // @ts-expect-error
+    // eslint-disable-next-line import/no-unresolved
+    await import('node:fs');
+
+    return true;
+  } catch {
+    return false;
+  }
+})();
+
 export default class Runtime {
   private readonly _cacheFS: Map<string, string>;
   private readonly _config: Config.ProjectConfig;
@@ -411,7 +433,7 @@ export default class Runtime {
       );
 
       if (this._resolver.isCoreModule(modulePath)) {
-        const core = this._importCoreModule(modulePath, context);
+        const core = await this._importCoreModule(modulePath, context);
         this._esmoduleRegistry.set(cacheKey, core);
 
         transformResolve();
@@ -645,7 +667,10 @@ export default class Runtime {
     }
 
     if (moduleName && this._resolver.isCoreModule(moduleName)) {
-      return this._requireCoreModule(moduleName);
+      return this._requireCoreModule(
+        moduleName,
+        supportsNodeColonModulePrefixInRequire,
+      );
     }
 
     if (!modulePath) {
@@ -1333,10 +1358,11 @@ export default class Runtime {
     }
   }
 
-  private _requireCoreModule(moduleName: string) {
-    const moduleWithoutNodePrefix = moduleName.startsWith('node:')
-      ? moduleName.slice('node:'.length)
-      : moduleName;
+  private _requireCoreModule(moduleName: string, supportPrefix: boolean) {
+    const moduleWithoutNodePrefix =
+      supportPrefix && moduleName.startsWith('node:')
+        ? moduleName.slice('node:'.length)
+        : moduleName;
 
     if (moduleWithoutNodePrefix === 'process') {
       return this._environment.global.process;
@@ -1349,8 +1375,11 @@ export default class Runtime {
     return require(moduleWithoutNodePrefix);
   }
 
-  private _importCoreModule(moduleName: string, context: VMContext) {
-    const required = this._requireCoreModule(moduleName);
+  private async _importCoreModule(moduleName: string, context: VMContext) {
+    const required = this._requireCoreModule(
+      moduleName,
+      await supportsNodeColonModulePrefixInImport,
+    );
 
     const module = new SyntheticModule(
       ['default', ...Object.keys(required)],
