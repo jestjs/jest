@@ -4621,13 +4621,13 @@ __metadata:
   linkType: hard
 
 "@types/jsdom@npm:^16.2.4":
-  version: 16.2.13
-  resolution: "@types/jsdom@npm:16.2.13"
+  version: 16.2.7
+  resolution: "@types/jsdom@npm:16.2.7"
   dependencies:
     "@types/node": "*"
     "@types/parse5": "*"
     "@types/tough-cookie": "*"
-  checksum: ddfbdce9b9707a1a3cc9b247c4cc7e99be6d456484011c4aef41b1647b460834c12cbaecdae3ffad43be6971ca8be11b1f8dbfd0f02812e0f7dd3fe38a3dc96e
+  checksum: 2acc361cf2aea5a13d78c3d9e63f4101f19ed02d202d6c870279dc51aa06c1f4e060a52322f9dcd660653334f890ccb3c594c23fc714cb3edf3b8641c7c66565
   languageName: node
   linkType: hard
 
