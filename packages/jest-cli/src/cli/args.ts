@@ -425,6 +425,10 @@ export const options = {
       'Will not fail if no tests are found (for example while using `--testPathPattern`.)',
     type: 'boolean',
   },
+  platform: {
+    description: 'Specifies which platform to target.',
+    type: 'string',
+  },
   preset: {
     description: "A preset that is used as a base for Jest's configuration.",
     type: 'string',

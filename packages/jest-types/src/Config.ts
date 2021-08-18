@@ -445,6 +445,7 @@ export type Argv = Arguments<
     onlyChanged: boolean;
     onlyFailures: boolean;
     outputFile: string;
+    platform: string | null | undefined;
     preset: string | null | undefined;
     projects: Array<string>;
     prettierPath: string | null | undefined;

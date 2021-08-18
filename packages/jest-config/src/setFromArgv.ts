@@ -24,6 +24,14 @@ export default function setFromArgv(
         case 'json':
           options.useStderr = argv[key];
           break;
+        case 'platform':
+          options.haste = {
+            ...(options.haste && typeof options.haste === 'object'
+              ? options.haste
+              : undefined),
+            defaultPlatform: argv[key],
+          };
+          break;
         case 'watchAll':
           options.watch = false;
           options.watchAll = argv[key];
