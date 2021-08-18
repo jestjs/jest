@@ -262,6 +262,10 @@ Alias: `-o`. Attempts to identify which tests to run based on which files have c
 
 Allows the test suite to pass when no files are found.
 
+### `--platform`
+
+Specifies which platform to target. Overrides `haste.defaultPlatform` option.
+
 ### `--projects <path1> ... <pathN>`
 
 Run tests from one or more projects, found in the specified paths; also takes path globs. This option is the CLI equivalent of the [`projects`](configuration#projects-arraystring--projectconfig) configuration option. Note that if configuration files are found in the specified paths, _all_ projects specified within those configuration files will be run.
