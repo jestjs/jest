@@ -17,9 +17,9 @@ __metadata:
   linkType: hard
 
 "async@npm:^3.1.0":
-  version: 3.2.0
-  resolution: "async@npm:3.2.0"
-  checksum: 5c7913c08496877a9896dc6670d3a6c64f02d350e74b9e9191194959c473414a0732539ebdfec0fd2f34c20f439714773a30c20e0e68eb27bd8ee5ec9d8ff5ba
+  version: 3.2.1
+  resolution: "async@npm:3.2.1"
+  checksum: 2ec69da2266d9418eefbf828a4b238f62cf07a5d5ba2d7fb91bc74aa588e38bbf7aef03df6d267dd38999802e97061768e5f58c8a38c62d71eb5c1a0b2957ef4
   languageName: node
   linkType: hard
 
@@ -47,12 +47,12 @@ __metadata:
   linkType: hard
 
 "color-string@npm:^1.5.2":
-  version: 1.5.5
-  resolution: "color-string@npm:1.5.5"
+  version: 1.6.0
+  resolution: "color-string@npm:1.6.0"
   dependencies:
     color-name: ^1.0.0
     simple-swizzle: ^0.2.2
-  checksum: 3d7799f70d389214757c83bdc27380081dbeee18f90148b883ff7e86e9a599c68ccb8a956b7175e761dcd98d1061fdc58ca89ca4b1f6ca20f8ce05cc8c4e564a
+  checksum: d48692037a6d38bd1deb91886a075d8af82e4e8269c5ab33eadf174d8aa5e82753a2f3edfe6749e24e48898ea2eb76df706b603c65a721e10ddc57c5d6a078cf
   languageName: node
   linkType: hard
 
@@ -98,9 +98,9 @@ __metadata:
   linkType: hard
 
 "fast-safe-stringify@npm:^2.0.4":
-  version: 2.0.7
-  resolution: "fast-safe-stringify@npm:2.0.7"
-  checksum: 7bd22543263b707870d70c6f2336b6e8563e34d6807dc388cc0566895e31e0a8273af017a7eb1c9538d0ef54288284e1c0585b557bd856491295a847159fd929
+  version: 2.0.8
+  resolution: "fast-safe-stringify@npm:2.0.8"
+  checksum: 2198ef6c4917ac6ad7a3cff8b80abc2762c89a0c700548459288fce45598a2488c0ae393cd456b4212a8259fed9d1630303106efe4ae3b1c35dab2fb66526cdd
   languageName: node
   linkType: hard
 
@@ -133,9 +133,9 @@ __metadata:
   linkType: hard
 
 "is-stream@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "is-stream@npm:2.0.0"
-  checksum: f92ba04a8b8fafbade79bdaada53a044025db2fbd3fc2be978434db9a097a4afa457c2e3222c70c2ffc38854bde3a352593d6315463a54394f08ca9e51e32b50
+  version: 2.0.1
+  resolution: "is-stream@npm:2.0.1"
+  checksum: cb55da98dd26abb697a18df525c9ed9472a74bab70fbefc7ac82c015af62f85c213bd4cf88c6f4bc1e3b50dec317a352ba1001e8c25aaee33718d3415323ad31
   languageName: node
   linkType: hard
 
