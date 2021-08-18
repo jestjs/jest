@@ -426,7 +426,7 @@ export const options = {
     type: 'boolean',
   },
   platform: {
-    description: 'Specifies which platform to target.',
+    description: 'Specifies which platform to target. Overrides `haste.defaultPlatform` option.',
     type: 'string',
   },
   preset: {

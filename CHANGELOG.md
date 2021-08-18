@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config]` Add `--platform` flag to override `haste.defaultPlatform` option ([#11764](https://github.com/facebook/jest/pull/11764))
+
 ### Fixes
 
 ### Chore & Maintenance
