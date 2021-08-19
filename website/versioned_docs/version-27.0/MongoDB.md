@@ -56,6 +56,12 @@ describe('insert', () => {
 });
 ```
 
+If you are using multiple test files with many tests, you might want to consider using the following parameter:
+```
+jest --runInBand
+```
+This parameter will make sure your tests won't run in parallel, which could cause issues with data being deleted from collections while you are accessing them.
+
 There's no need to load any dependencies.
 
 See [documentation](https://github.com/shelfio/jest-mongodb) for details (configuring MongoDB version, etc).
