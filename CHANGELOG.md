@@ -10,6 +10,8 @@
 
 ### Chore & Maintenance
 
+- `[docs]` Added explaination for using `--runInBand` in the 'Using with MongoDB' documentation
+
 ### Performance
 
 ## 27.0.7
