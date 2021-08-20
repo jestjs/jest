@@ -27,4 +27,14 @@ describe('JSDomEnvironment', () => {
 
     expect(env.fakeTimersModern).toBeDefined();
   });
+
+  it('should respect userAgent option', () => {
+    const env = new JSDomEnvironment(makeProjectConfig({
+      testEnvironmentOptions: {
+        userAgent: 'foo',
+      },
+    }));
+
+    expect(env.dom.window.navigator.userAgent).toEqual('foo');
+  });
 });
