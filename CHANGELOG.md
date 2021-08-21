@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-environment-jsdom]` Add support for `userAgent` option ([#11773](https://github.com/facebook/jest/pull/11773))
+
 ### Fixes
 
 - `[jest-environment-node]` Add `Event` and `EventTarget` to node global environment. ([#11705](https://github.com/facebook/jest/issues/11705))
