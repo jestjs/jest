@@ -27,7 +27,6 @@ export type SnapshotStateOptions = {
   prettierPath: Config.Path;
   expand?: boolean;
   snapshotFormat: PrettyFormatOptions;
-  inlineSnapshotFormat: PrettyFormatOptions;
 };
 
 export type SnapshotMatchOptions = {
@@ -65,7 +64,6 @@ export default class SnapshotState {
   private _uncheckedKeys: Set<string>;
   private _prettierPath: Config.Path;
   private _snapshotFormat: PrettyFormatOptions;
-  private _inlineSnapshotFormat: PrettyFormatOptions;
 
   added: number;
   expand: boolean;
@@ -95,7 +93,6 @@ export default class SnapshotState {
     this.updated = 0;
 
     this._snapshotFormat = options.snapshotFormat;
-    this._inlineSnapshotFormat = options.inlineSnapshotFormat;
   }
 
   markSnapshotsAsCheckedForTest(testName: string): void {
@@ -209,12 +206,8 @@ export default class SnapshotState {
       this._uncheckedKeys.delete(key);
     }
 
-    const customFormat = isInline
-      ? this._inlineSnapshotFormat
-      : this._snapshotFormat;
-
     const receivedSerialized = addExtraLineBreaks(
-      serialize(received, undefined, customFormat),
+      serialize(received, undefined, this._snapshotFormat),
     );
     const expected = isInline ? inlineSnapshot : this._snapshotData[key];
     const pass = expected === receivedSerialized;

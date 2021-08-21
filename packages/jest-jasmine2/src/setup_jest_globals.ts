@@ -106,12 +106,11 @@ export default async ({
 
   patchJasmine();
   const {expand, updateSnapshot} = globalConfig;
-  const {prettierPath, inlineSnapshotFormat, snapshotFormat} = config;
+  const {prettierPath, snapshotFormat} = config;
   const snapshotResolver = await buildSnapshotResolver(config, localRequire);
   const snapshotPath = snapshotResolver.resolveSnapshotPath(testPath);
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
-    inlineSnapshotFormat,
     prettierPath,
     snapshotFormat,
     updateSnapshot,

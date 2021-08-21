@@ -67,7 +67,6 @@ const initialOptions: Config.InitialOptions = {
     throwOnModuleCollision: false,
   },
   injectGlobals: true,
-  inlineSnapshotFormat: PRETTY_FORMAT_DEFAULTS,
   json: false,
   lastCommit: false,
   listTests: false,

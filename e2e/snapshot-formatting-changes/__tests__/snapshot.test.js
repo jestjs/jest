@@ -14,11 +14,11 @@ describe('snapshot serializer', () => {
     };
     expect(object).toMatchInlineSnapshot(`
 {
-  "array": [
-    {
-      "hello": "Danger",
-    },
-  ],
+        "array": [
+                {
+                        "hello": "Danger",
+                },
+        ],
 }
 `);
   });
