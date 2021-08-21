@@ -980,7 +980,6 @@ test('does not show prototypes for object and array inline', () => {
 });
 ```
 
-
 ### `snapshotResolver` \[string]
 
 Default: `undefined`
