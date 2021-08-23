@@ -91,7 +91,6 @@ export default class SnapshotState {
     this.unmatched = 0;
     this._updateSnapshot = options.updateSnapshot;
     this.updated = 0;
-
     this._snapshotFormat = options.snapshotFormat;
   }
 
