@@ -6,7 +6,7 @@
  */
 
 import type {Context} from 'vm';
-import {JSDOM, VirtualConsole, ResourceLoader} from 'jsdom';
+import {JSDOM, ResourceLoader, VirtualConsole} from 'jsdom';
 import type {EnvironmentContext, JestEnvironment} from '@jest/environment';
 import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Config, Global} from '@jest/types';
@@ -33,12 +33,15 @@ class JSDOMEnvironment implements JestEnvironment {
   constructor(config: Config.ProjectConfig, options?: EnvironmentContext) {
     this.dom = new JSDOM('<!DOCTYPE html>', {
       pretendToBeVisual: true,
+      resources:
+        typeof config.testEnvironmentOptions.userAgent === 'string'
+          ? new ResourceLoader({
+              userAgent: config.testEnvironmentOptions.userAgent,
+            })
+          : undefined,
       runScripts: 'dangerously',
       url: config.testURL,
       virtualConsole: new VirtualConsole().sendTo(options?.console || console),
-      resources: config.testEnvironmentOptions.userAgent ? new ResourceLoader({
-        userAgent: config.testEnvironmentOptions.userAgent as string,
-      }) : undefined,
       ...config.testEnvironmentOptions,
     });
     const global = (this.global = this.dom.window.document
