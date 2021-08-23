@@ -8,6 +8,7 @@
 import getResultHeader from './getResultHeader';
 import {
   formatTestPath,
+  getSummary,
   printDisplayName,
   relativePath,
   trimAndFormatPath,
@@ -35,6 +36,7 @@ export type {
 export const utils = {
   formatTestPath,
   getResultHeader,
+  getSummary,
   printDisplayName,
   relativePath,
   trimAndFormatPath,

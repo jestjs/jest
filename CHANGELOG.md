@@ -7,12 +7,18 @@
 ### Fixes
 
 - `[jest-environment-node]` Add `Event` and `EventTarget` to node global environment. ([#11705](https://github.com/facebook/jest/issues/11705))
+- `[jest-mock]` Fix `spyOn` to use `Object.prototype.hasOwnProperty` [#11721](https://github.com/facebook/jest/pull/11721)
+- `[jest-resolver]` Add dependency on `jest-haste-map` [#11759](https://github.com/facebook/jest/pull/11759)
 
 ### Chore & Maintenance
 
 ### Performance
 
 ## 27.0.7
+
+### Features
+
+- `[jest-reporters]` Expose the `getSummary` util ([#11695](https://github.com/facebook/jest/pull/11695)).
 
 ### Chore & Maintenance
 

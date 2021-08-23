@@ -1216,6 +1216,18 @@ describe('moduleMocker', () => {
       expect(originalCallArguments[1]).toBe(secondArg);
       expect(spy).not.toHaveBeenCalled();
     });
+
+    it('should work with object of null prototype', () => {
+      const Foo = Object.assign(Object.create(null), {
+        foo() {},
+      });
+
+      const spy = moduleMocker.spyOn(Foo, 'foo');
+
+      Foo.foo();
+
+      expect(spy).toHaveBeenCalled();
+    });
   });
 
   describe('spyOnProperty', () => {
