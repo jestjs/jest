@@ -33,12 +33,29 @@ body:
     attributes:
       value: |
         :bangbang: &nbsp; Bug reports without a minimal reproduction will be rejected. :bangbang:
-  - type: textarea
-    id: what-happened
+
+        ---
+  - type: input
+    id: version
     attributes:
-      label: Describe the bug
-      description: A clear and concise description of the unexpected behavior.
-      placeholder: A bug happened!
+      label: Version
+      description: |
+        The version of Jest you are using.
+        Is it the [latest](https://github.com/facebook/jest/releases)? Test and see if the bug has already been fixed.
+      placeholder: ex. 27.0.6
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Please link to a repository with a minimal reproduction and describe accurately how we can reproduce/verify the bug.
+      placeholder: |
+        Example steps (replace with your own):
+        1. Clone my repo at https://github.com/<myuser>/example
+        2. yarn install
+        3. yarn test
+        4. You should see the error come up
     validations:
       required: true
   - type: textarea
@@ -50,27 +67,20 @@ body:
     validations:
       required: true
   - type: textarea
-    id: reproduction
+    id: what-happened
     attributes:
-      label: Steps to reproduce
-      description: Please link to a repository with a minimal reproduction and describe accurately how we can reproduce/verify the bug.
-      placeholder: |
-        Example steps (replace with your own):
-        1. Clone my repo at https://github.com/<myuser>/example
-        2. npm run test
-        3. You should see the error come up
+      label: Actual behavior
+      description: A clear and concise description of the unexpected behavior.
+      placeholder: A bug happened!
     validations:
       required: true
-  - type: input
-    id: version
+  - type: textarea
+    id: context
     attributes:
-      label: Version
-      description: |
-        The version of Jest you are using.
-        Is it the [latest](https://github.com/facebook/jest/releases)? Test and see if the bug has already been fixed.
-      placeholder: ex. 27.0.6
+      label: Additional context
+      description: Anything else that might be relevant
     validations:
-      required: true
+      required: false
   - type: textarea
     id: envinfo
     attributes:
@@ -91,10 +101,3 @@ body:
       render: shell
     validations:
       required: true
-  - type: textarea
-    id: context
-    attributes:
-      label: Additional context
-      description: Anything else that might be relevant
-    validations:
-      required: false
