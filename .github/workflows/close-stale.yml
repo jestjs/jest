@@ -21,3 +21,4 @@ jobs:
           exempt-all-milestones: true
           exempt-all-assignees: true
           any-of-issue-labels: 'Needs Triage'
+          debug-only: true

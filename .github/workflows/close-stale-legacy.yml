@@ -21,3 +21,4 @@ jobs:
           exempt-all-milestones: true
           exempt-all-assignees: true
           operations-per-run: 1000
+          debug-only: true
