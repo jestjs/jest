@@ -2,18 +2,48 @@
 
 ### Features
 
-- `[jest-fake-timers]` Flush callbacks scheduled with `requestAnimationFrame` every 16ms when using legacy timers. ([#11523](https://github.com/facebook/jest/pull/11567))
-- `[pretty-format]` Use `globalThis` (with polyfill if required) to bring support for esbuild's browser bundling mode ([#11569](https://github.com/facebook/jest/pull/11569)
+- `[jest-cli]` Adds a new config options `snapshotFormat` which offers a way to override any of the formatting settings which come with [pretty-format](https://www.npmjs.com/package/pretty-format#usage-with-options). ([#11654](https://github.com/facebook/jest/pull/11654))
 
 ### Fixes
 
-- `[jest-reporter]` Allow `node-notifier@10` as peer dependency ([#11523](https://github.com/facebook/jest/pull/11523))
-- `[jest-reporter]` Update `v8-to-istanbul` ([#11523](https://github.com/facebook/jest/pull/11523))
-- `[jest-core]` Support special characters like `@`, `+` and `()` on windows with `--findRelatedTests` ([#11548](https://github.com/facebook/jest/pull/11548))
+- `[jest-environment-jsdom]` Add support for `userAgent` option ([#11773](https://github.com/facebook/jest/pull/11773))
+- `[jest-environment-node]` Add `Event` and `EventTarget` to node global environment. ([#11705](https://github.com/facebook/jest/issues/11705))
+- `[jest-mock]` Fix `spyOn` to use `Object.prototype.hasOwnProperty` [#11721](https://github.com/facebook/jest/pull/11721)
+- `[jest-resolver]` Add dependency on `jest-haste-map` [#11759](https://github.com/facebook/jest/pull/11759)
 
 ### Chore & Maintenance
 
 ### Performance
+
+## 27.0.7
+
+### Features
+
+- `[jest-reporters]` Expose the `getSummary` util ([#11695](https://github.com/facebook/jest/pull/11695)).
+
+### Chore & Maintenance
+
+- `[docs]` Correct expects.assertions documentation by adding async/await for asynchronous function.
+
+## 27.0.6
+
+### Fixes
+
+- `[*]` Publish all modules to include the build change in [#11569](https://github.com/facebook/jest/pull/11569)
+
+## 27.0.5
+
+### Features
+
+- `[@jest/fake-timers]` Flush callbacks scheduled with `requestAnimationFrame` every 16ms when using legacy timers. ([#11523](https://github.com/facebook/jest/pull/11567))
+- `[pretty-format]` Use `globalThis` (with polyfill if required) to bring support for esbuild's browser bundling mode ([#11569](https://github.com/facebook/jest/pull/11569))
+
+### Fixes
+
+- `[jest-core]` Support special characters like `@`, `+` and `()` on Windows with `--findRelatedTests` ([#11548](https://github.com/facebook/jest/pull/11548))
+- `[@jest/fake-timers]` Do not add `setImmediate` and `clearImmediate` if they do not exist in the global environment ([#11599](https://github.com/facebook/jest/pull/11599))
+- `[@jest/reporters]` Allow `node-notifier@10` as peer dependency ([#11523](https://github.com/facebook/jest/pull/11523))
+- `[@jest/reporters]` Update `v8-to-istanbul` ([#11523](https://github.com/facebook/jest/pull/11523))
 
 ## 27.0.4
 

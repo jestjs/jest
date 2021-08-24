@@ -31,11 +31,11 @@ __metadata:
   linkType: hard
 
 "is-core-module@npm:^2.2.0":
-  version: 2.4.0
-  resolution: "is-core-module@npm:2.4.0"
+  version: 2.5.0
+  resolution: "is-core-module@npm:2.5.0"
   dependencies:
     has: ^1.0.3
-  checksum: caa2b30873ed14dff76e5351e3c55a677b890cf19cc4263e9894702eb4bd64f81ce78552daad878ba72adcdc9e62cad45ca57928fc8b4bdc84a7ff8acf934389
+  checksum: 25cbd8f2477855f446b339d24c56d7b3e3809c1653c8a748b090384d7728a0b18cf128bff613a8f512f8340dc91c1f43abe5fa774d077925012bbfeb109fe215
   languageName: node
   linkType: hard
 

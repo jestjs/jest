@@ -106,7 +106,7 @@ const result = [11, 12].filter(num => filterTestFn(num));
 console.log(result);
 // > [11]
 console.log(filterTestFn.mock.calls[0][0]); // 11
-console.log(filterTestFn.mock.calls[0][1]); // 12
+console.log(filterTestFn.mock.calls[1][0]); // 12
 ```
 
 Most real-world examples actually involve getting ahold of a mock function on a dependent component and configuring that, but the technique is the same. In these cases, try to avoid the temptation to implement logic inside of any function that's not directly being tested.
@@ -148,6 +148,43 @@ test('should fetch users', () => {
   // axios.get.mockImplementation(() => Promise.resolve(resp))
 
   return Users.all().then(data => expect(data).toEqual(users));
+});
+```
+
+## Mocking Partials
+
+Subsets of a module can be mocked and the rest of the module can keep their actual implementation:
+
+```js
+// foo-bar-baz.js
+export const foo = 'foo';
+export const bar = () => 'bar';
+export default () => 'baz';
+```
+
+```js
+//test.js
+import defaultExport, {bar, foo} from '../foo-bar-baz';
+
+jest.mock('../foo-bar-baz', () => {
+  const originalModule = jest.requireActual('../foo-bar-baz');
+
+  //Mock the default export and named export 'foo'
+  return {
+    __esModule: true,
+    ...originalModule,
+    default: jest.fn(() => 'mocked baz'),
+    foo: 'mocked foo',
+  };
+});
+
+test('should do a partial mock', () => {
+  const defaultExportResult = defaultExport();
+  expect(defaultExportResult).toBe('mocked baz');
+  expect(defaultExport).toHaveBeenCalled();
+
+  expect(foo).toBe('mocked foo');
+  expect(bar()).toBe('bar');
 });
 ```
 

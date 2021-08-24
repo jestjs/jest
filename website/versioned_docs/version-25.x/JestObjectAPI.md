@@ -143,22 +143,22 @@ Creates a new property with the same primitive value as the original property.
 
 Example:
 
-```
+```js
 // example.js
 module.exports = {
   function: function square(a, b) {
     return a * b;
   },
   asyncFunction: async function asyncSquare(a, b) {
-    const result = await a * b;
+    const result = (await a) * b;
     return result;
   },
-  class: new class Bar {
+  class: new (class Bar {
     constructor() {
       this.array = [1, 2, 3];
     }
     foo() {}
-  },
+  })(),
   object: {
     baz: 'foo',
     bar: {

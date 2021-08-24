@@ -945,6 +945,41 @@ Default: `5`
 
 The number of seconds after which a test is considered as slow and reported as such in the results.
 
+### `snapshotFormat` \[object]
+
+Default: `undefined`
+
+Allows overriding specific snapshot formatting options documented in the [pretty-format readme](https://www.npmjs.com/package/pretty-format#usage-with-options). For example, this config would have the snapshot formatter not print a prefix for "Object" and "Array":
+
+```json
+{
+  "jest": {
+    "snapshotFormat": {
+      "printBasicPrototype": false
+    }
+  }
+}
+```
+
+```ts
+import {expect, test} from '@jest/globals';
+
+test('does not show prototypes for object and array inline', () => {
+  const object = {
+    array: [{hello: 'Danger'}],
+  };
+  expect(object).toMatchInlineSnapshot(`
+{
+  "array": [
+    {
+      "hello": "Danger",
+    },
+  ],
+}
+    `);
+});
+```
+
 ### `snapshotResolver` \[string]
 
 Default: `undefined`
@@ -1223,6 +1258,10 @@ This option allows the use of a custom results processor. This processor must be
     "testFilePath": absolute path to test file,
     "coverage": {}
   },
+  "testExecError:" (exists if there was a top-level failure) {
+    "message": string
+    "stack": string
+  }
   ...
   ]
 }

@@ -997,6 +997,7 @@ export default async function normalize(
       case 'skipFilter':
       case 'skipNodeResolution':
       case 'slowTestThreshold':
+      case 'snapshotFormat':
       case 'testEnvironment':
       case 'testEnvironmentOptions':
       case 'testFailureExitCode':
