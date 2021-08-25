@@ -67,7 +67,8 @@ export = async function watchmanCrawl(options: CrawlerOptions): Promise<{
   const defaultWatchExpression = [
     'allof',
     ['type', 'f'],
-    ['anyof', ...extensions.map(extension => ['suffix', extension])],
+    // suffix-set https://facebook.github.io/watchman/docs/expr/suffix.html#suffix-set
+    ['suffix', extensions]
   ];
   const clocks = data.clocks;
   const client = new watchman.Client();
