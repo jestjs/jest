@@ -551,6 +551,10 @@ export default class Runtime {
 
     const module = await this.loadEsmModule(modulePath, query);
 
+    if (!this._mainModule && modulePath === this._testPath) {
+      this._mainModule = module;
+    }
+
     return this.linkAndEvaluateModule(module);
   }
 
