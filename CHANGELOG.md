@@ -14,6 +14,7 @@
 
 - `[jest-haste-map]` Use watchman suffix-set option for faster file indexing. ([#11784](https://github.com/facebook/jest/pull/11784))
 - `[jest-cli]` Adds a new config options `snapshotFormat` which offers a way to override any of the formatting settings which come with [pretty-format](https://www.npmjs.com/package/pretty-format#usage-with-options). ([#11654](https://github.com/facebook/jest/pull/11654))
+- `[jest-reporters]` Expose the `getSummary` util ([#11695](https://github.com/facebook/jest/pull/11695)).
 - `[jest-resolver]` Support `node:` prefix when importing Node core modules ([#11331](https://github.com/facebook/jest/pull/11331))
 
 ### Fixes
@@ -25,15 +26,9 @@
 - `[jest-resolver]` Add dependency on `jest-haste-map` ([#11759](https://github.com/facebook/jest/pull/11759))
 - `[jest-types]` Compat with `@types/node` v16 ([#11645](https://github.com/facebook/jest/pull/11645))
 
-## 27.0.7
-
-### Features
-
-- `[jest-reporters]` Expose the `getSummary` util ([#11695](https://github.com/facebook/jest/pull/11695)).
-
 ### Chore & Maintenance
 
-- `[docs]` Correct expects.assertions documentation by adding async/await for asynchronous function.
+- `[docs]` Correct `expects.assertions` documentation by adding async/await for asynchronous function.
 
 ## 27.0.6
 
