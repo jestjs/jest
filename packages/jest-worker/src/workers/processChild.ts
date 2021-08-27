@@ -34,7 +34,7 @@ let initialized = false;
  * If an invalid message is detected, the child will exit (by throwing) with a
  * non-zero exit code.
  */
-const messageListener: NodeJS.MessageListener = request => {
+const messageListener: NodeJS.MessageListener = (request: any) => {
   switch (request[0]) {
     case CHILD_MESSAGE_INITIALIZE:
       const init: ChildMessageInitialize = request;

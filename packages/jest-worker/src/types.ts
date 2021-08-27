@@ -14,6 +14,7 @@ export interface ResourceLimits {
   maxYoungGenerationSizeMb?: number;
   maxOldGenerationSizeMb?: number;
   codeRangeSizeMb?: number;
+  stackSizeMb?: number;
 }
 
 // Because of the dynamic nature of a worker communication process, all messages
