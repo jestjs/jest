@@ -161,11 +161,15 @@ const supportsNodeColonModulePrefixInRequire = (() => {
 })();
 
 const supportsNodeColonModulePrefixInImport = (() => {
-  const res = execSync(
-    `node --eval 'import("node:fs").then(() => console.log(true), () => console.log(false));'`,
-  );
+  try {
+    const res = execSync(
+      `node --eval 'import("node:fs").then(() => console.log(true), () => console.log(false));'`,
+    );
 
-  return res.toString().trim() === 'true';
+    return res.toString().trim() === 'true';
+  } catch {
+    return false;
+  }
 })();
 
 export default class Runtime {
