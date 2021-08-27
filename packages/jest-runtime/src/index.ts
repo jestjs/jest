@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {execSync} from 'child_process';
 import * as nativeModule from 'module';
 import * as path from 'path';
 import {URL, fileURLToPath, pathToFileURL} from 'url';
@@ -21,6 +20,7 @@ import {
 } from 'vm';
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
+import execa = require('execa');
 import * as fs from 'graceful-fs';
 import stripBOM = require('strip-bom');
 import type {
@@ -161,15 +161,16 @@ const supportsNodeColonModulePrefixInRequire = (() => {
 })();
 
 const supportsNodeColonModulePrefixInImport = (() => {
-  try {
-    const res = execSync(
-      `node --eval 'import("node:fs").then(() => console.log(true), () => console.log(false));'`,
-    );
+  const {stdout} = execa.sync(
+    'node',
+    [
+      '--eval',
+      'import("node:fs").then(() => console.log(true), () => console.log(false));',
+    ],
+    {reject: false},
+  );
 
-    return res.toString().trim() === 'true';
-  } catch {
-    return false;
-  }
+  return stdout === 'true';
 })();
 
 export default class Runtime {
