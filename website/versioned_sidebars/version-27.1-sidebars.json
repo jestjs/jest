@@ -1,0 +1,167 @@
+{
+  "version-27.1/docs": [
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Introduction",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-27.1/getting-started"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/using-matchers"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/asynchronous"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/setup-teardown"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/mock-functions"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/jest-platform"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/jest-community"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/more-resources"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Guides",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-27.1/snapshot-testing"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/tutorial-async"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/timer-mocks"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/manual-mocks"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/es6-class-mocks"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/bypassing-module-mocks"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/ecmascript-modules"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/webpack"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/puppeteer"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/mongodb"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/dynamodb"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/tutorial-jquery"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/watch-plugins"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/migration-guide"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/troubleshooting"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/architecture"
+        }
+      ]
+    },
+    {
+      "collapsed": true,
+      "type": "category",
+      "label": "Framework Guides",
+      "items": [
+        {
+          "type": "doc",
+          "id": "version-27.1/tutorial-react"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/tutorial-react-native"
+        },
+        {
+          "type": "doc",
+          "id": "version-27.1/testing-frameworks"
+        }
+      ]
+    }
+  ],
+  "version-27.1/api": [
+    {
+      "type": "doc",
+      "id": "version-27.1/api"
+    },
+    {
+      "type": "doc",
+      "id": "version-27.1/expect"
+    },
+    {
+      "type": "doc",
+      "id": "version-27.1/mock-function-api"
+    },
+    {
+      "type": "doc",
+      "id": "version-27.1/jest-object"
+    },
+    {
+      "type": "doc",
+      "id": "version-27.1/configuration"
+    },
+    {
+      "type": "doc",
+      "id": "version-27.1/cli"
+    },
+    {
+      "type": "doc",
+      "id": "version-27.1/environment-variables"
+    },
+    {
+      "type": "doc",
+      "id": "version-27.1/code-transformation"
+    }
+  ]
+}

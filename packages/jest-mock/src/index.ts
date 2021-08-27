@@ -7,8 +7,6 @@
 
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
-type Global = NodeJS.Global; // | Window – add once TS improves typings;
-
 export type MockFunctionMetadataType =
   | 'object'
   | 'array'
@@ -364,7 +362,7 @@ function isReadonlyProp(object: any, prop: string): boolean {
 }
 
 export class ModuleMocker {
-  private _environmentGlobal: Global;
+  private _environmentGlobal: typeof globalThis;
   private _mockState: WeakMap<Mock<any, any>, MockFunctionState<any, any>>;
   private _mockConfigRegistry: WeakMap<Function, MockFunctionConfig>;
   private _spyState: Set<() => void>;
@@ -375,7 +373,7 @@ export class ModuleMocker {
    * @param global Global object of the test environment, used to create
    * mocks
    */
-  constructor(global: Global) {
+  constructor(global: typeof globalThis) {
     this._environmentGlobal = global;
     this._mockState = new WeakMap();
     this._mockConfigRegistry = new WeakMap();
@@ -976,7 +974,10 @@ export class ModuleMocker {
         );
       }
 
-      const isMethodOwner = object.hasOwnProperty(methodName);
+      const isMethodOwner = Object.prototype.hasOwnProperty.call(
+        object,
+        methodName,
+      );
 
       let descriptor = Object.getOwnPropertyDescriptor(object, methodName);
       let proto = Object.getPrototypeOf(object);
@@ -1110,7 +1111,7 @@ export class ModuleMocker {
   }
 }
 
-const JestMock = new ModuleMocker(global);
+const JestMock = new ModuleMocker(global as unknown as typeof globalThis);
 
 export const fn = JestMock.fn.bind(JestMock);
 export const spyOn = JestMock.spyOn.bind(JestMock);

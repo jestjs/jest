@@ -20,6 +20,7 @@ import {
 } from 'vm';
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
+import execa = require('execa');
 import * as fs from 'graceful-fs';
 import stripBOM = require('strip-bom');
 import type {
@@ -148,6 +149,29 @@ const supportsTopLevelAwait =
       return false;
     }
   })();
+
+const supportsNodeColonModulePrefixInRequire = (() => {
+  try {
+    require('node:fs');
+
+    return true;
+  } catch {
+    return false;
+  }
+})();
+
+const supportsNodeColonModulePrefixInImport = (() => {
+  const {stdout} = execa.sync(
+    'node',
+    [
+      '--eval',
+      'import("node:fs").then(() => console.log(true), () => console.log(false));',
+    ],
+    {reject: false},
+  );
+
+  return stdout === 'true';
+})();
 
 export default class Runtime {
   private readonly _cacheFS: Map<string, string>;
@@ -645,7 +669,10 @@ export default class Runtime {
     }
 
     if (moduleName && this._resolver.isCoreModule(moduleName)) {
-      return this._requireCoreModule(moduleName);
+      return this._requireCoreModule(
+        moduleName,
+        supportsNodeColonModulePrefixInRequire,
+      );
     }
 
     if (!modulePath) {
@@ -929,16 +956,18 @@ export default class Runtime {
     if (this._environment) {
       if (this._environment.global) {
         const envGlobal = this._environment.global;
-        (Object.keys(envGlobal) as Array<keyof NodeJS.Global>).forEach(key => {
-          const globalMock = envGlobal[key];
-          if (
-            ((typeof globalMock === 'object' && globalMock !== null) ||
-              typeof globalMock === 'function') &&
-            globalMock._isMockFunction === true
-          ) {
-            globalMock.mockClear();
-          }
-        });
+        (Object.keys(envGlobal) as Array<keyof typeof globalThis>).forEach(
+          key => {
+            const globalMock = envGlobal[key];
+            if (
+              ((typeof globalMock === 'object' && globalMock !== null) ||
+                typeof globalMock === 'function') &&
+              globalMock._isMockFunction === true
+            ) {
+              globalMock.mockClear();
+            }
+          },
+        );
       }
 
       if (this._environment.fakeTimers) {
@@ -1331,20 +1360,28 @@ export default class Runtime {
     }
   }
 
-  private _requireCoreModule(moduleName: string) {
-    if (moduleName === 'process') {
+  private _requireCoreModule(moduleName: string, supportPrefix: boolean) {
+    const moduleWithoutNodePrefix =
+      supportPrefix && moduleName.startsWith('node:')
+        ? moduleName.slice('node:'.length)
+        : moduleName;
+
+    if (moduleWithoutNodePrefix === 'process') {
       return this._environment.global.process;
     }
 
-    if (moduleName === 'module') {
+    if (moduleWithoutNodePrefix === 'module') {
       return this._getMockedNativeModule();
     }
 
-    return require(moduleName);
+    return require(moduleWithoutNodePrefix);
   }
 
   private _importCoreModule(moduleName: string, context: VMContext) {
-    const required = this._requireCoreModule(moduleName);
+    const required = this._requireCoreModule(
+      moduleName,
+      supportsNodeColonModulePrefixInImport,
+    );
 
     const module = new SyntheticModule(
       ['default', ...Object.keys(required)],

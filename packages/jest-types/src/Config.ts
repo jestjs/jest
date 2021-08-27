@@ -60,6 +60,9 @@ export interface ConfigGlobals {
   [K: string]: unknown;
 }
 
+// This interface gets filled out when pretty-format is included
+interface PrettyFormatOptions {}
+
 export type DefaultOptions = {
   automock: boolean;
   bail: number;
@@ -216,6 +219,7 @@ export type InitialOptions = Partial<{
   slowTestThreshold: number;
   snapshotResolver: Path;
   snapshotSerializers: Array<Path>;
+  snapshotFormat: PrettyFormatOptions;
   errorOnDeprecated: boolean;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
@@ -313,6 +317,7 @@ export type GlobalConfig = {
   rootDir: Path;
   silent?: boolean;
   skipFilter: boolean;
+  snapshotFormat: PrettyFormatOptions;
   errorOnDeprecated: boolean;
   testFailureExitCode: number;
   testNamePattern?: string;
@@ -345,7 +350,7 @@ export type ProjectConfig = {
   displayName?: DisplayName;
   errorOnDeprecated: boolean;
   extensionsToTreatAsEsm: Array<Path>;
-  extraGlobals: Array<keyof NodeJS.Global>;
+  extraGlobals: Array<keyof typeof globalThis>;
   filter?: Path;
   forceCoverageMatch: Array<Glob>;
   globalSetup?: string;
@@ -375,6 +380,7 @@ export type ProjectConfig = {
   slowTestThreshold: number;
   snapshotResolver?: Path;
   snapshotSerializers: Array<Path>;
+  snapshotFormat: PrettyFormatOptions;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
   testMatch: Array<Glob>;

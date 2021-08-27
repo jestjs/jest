@@ -1196,6 +1196,10 @@ This option allows the use of a custom results processor. This processor must be
     "testFilePath": absolute path to test file,
     "coverage": {}
   },
+  "testExecError:" (exists if there was a top-level failure) {
+    "message": string
+    "stack": string
+  }
   ...
   ]
 }
