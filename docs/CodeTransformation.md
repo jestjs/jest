@@ -22,7 +22,7 @@ If you override the `transform` configuration option `babel-jest` will no longer
 You can write you own transformer. The API of a transformer is as follows:
 
 ```ts
-export interface SyncTransformer<OptionType = unknown> {
+interface SyncTransformer<OptionType = unknown> {
   /**
    * Indicates if the transformer is capabale of instrumenting the code for code coverage.
    *
@@ -57,7 +57,7 @@ export interface SyncTransformer<OptionType = unknown> {
   ) => Promise<TransformedSource>;
 }
 
-export interface AsyncTransformer<OptionType = unknown> {
+interface AsyncTransformer<OptionType = unknown> {
   /**
    * Indicates if the transformer is capabale of instrumenting the code for code coverage.
    *
@@ -92,7 +92,7 @@ export interface AsyncTransformer<OptionType = unknown> {
   ) => Promise<TransformedSource>;
 }
 
-export type Transformer<OptionType = unknown> =
+type Transformer<OptionType = unknown> =
   | SyncTransformer<OptionType>
   | AsyncTransformer<OptionType>;
 
