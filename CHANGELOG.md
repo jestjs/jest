@@ -4,6 +4,7 @@
 
 - `[jest-haste-map]` Use watchman suffix-set option for faster file indexing. ([#11784](https://github.com/facebook/jest/pull/11784))
 - `[jest-cli]` Adds a new config options `snapshotFormat` which offers a way to override any of the formatting settings which come with [pretty-format](https://www.npmjs.com/package/pretty-format#usage-with-options). ([#11654](https://github.com/facebook/jest/pull/11654))
+- `[jest-resolver]` Support `node:` prefix when importing Node core modules ([#11331](https://github.com/facebook/jest/pull/11331))
 
 ### Fixes
 
@@ -116,6 +117,7 @@
 - `[jest-haste-map]` Add `enableSymlinks` configuration option to follow symlinks for test files ([#9351](https://github.com/facebook/jest/pull/9351))
 - `[jest-repl, jest-runner]` [**BREAKING**] Run transforms over environment ([#8751](https://github.com/facebook/jest/pull/8751))
 - `[jest-repl]` Add support for `testEnvironment` written in ESM ([#11232](https://github.com/facebook/jest/pull/11232))
+- `[jest-reporters]` Add static filepath property to all reporters ([#11015](https://github.com/facebook/jest/pull/11015))
 - `[jest-runner]` [**BREAKING**] set exit code to 1 if test logs after teardown ([#10728](https://github.com/facebook/jest/pull/10728))
 - `[jest-runner]` [**BREAKING**] Run transforms over `runner` ([#8823](https://github.com/facebook/jest/pull/8823))
 - `[jest-runner]` [**BREAKING**] Run transforms over `testRunner` ([#8823](https://github.com/facebook/jest/pull/8823))
@@ -123,7 +125,6 @@
 - `[jest-runner]` Add support for `testRunner` written in ESM ([#11232](https://github.com/facebook/jest/pull/11232))
 - `[jest-runtime]` Detect reexports from CJS as named exports in ESM ([#10988](https://github.com/facebook/jest/pull/10988))
 - `[jest-runtime]` Support for async code transformations ([#11191](https://github.com/facebook/jest/pull/11191) & [#11220](https://github.com/facebook/jest/pull/11220))
-- `[jest-reporters]` Add static filepath property to all reporters ([#11015](https://github.com/facebook/jest/pull/11015))
 - `[jest-snapshot]` [**BREAKING**] Make prettier optional for inline snapshots - fall back to string replacement ([#7792](https://github.com/facebook/jest/pull/7792) & [#11192](https://github.com/facebook/jest/pull/11192))
 - `[jest-snapshot]` [**BREAKING**] Run transforms over `snapshotResolver` ([#8751](https://github.com/facebook/jest/pull/8829))
 - `[jest-transform]` Pass config options defined in Jest's config to transformer's `process` and `getCacheKey` functions ([#10926](https://github.com/facebook/jest/pull/10926))
