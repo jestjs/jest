@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {execSync} from 'child_process';
 import * as nativeModule from 'module';
 import * as path from 'path';
 import {URL, fileURLToPath, pathToFileURL} from 'url';
@@ -159,16 +160,12 @@ const supportsNodeColonModulePrefixInRequire = (() => {
   }
 })();
 
-const supportsNodeColonModulePrefixInImport = (async () => {
-  try {
-    // @ts-expect-error
-    // eslint-disable-next-line import/no-unresolved
-    await import('node:fs');
+const supportsNodeColonModulePrefixInImport = (() => {
+  const res = execSync(
+    `node --eval 'import("node:fs").then(() => console.log(true), () => console.log(false));'`,
+  );
 
-    return true;
-  } catch {
-    return false;
-  }
+  return res.toString().trim() === 'true';
 })();
 
 export default class Runtime {
@@ -433,7 +430,7 @@ export default class Runtime {
       );
 
       if (this._resolver.isCoreModule(modulePath)) {
-        const core = await this._importCoreModule(modulePath, context);
+        const core = this._importCoreModule(modulePath, context);
         this._esmoduleRegistry.set(cacheKey, core);
 
         transformResolve();
@@ -1375,10 +1372,10 @@ export default class Runtime {
     return require(moduleWithoutNodePrefix);
   }
 
-  private async _importCoreModule(moduleName: string, context: VMContext) {
+  private _importCoreModule(moduleName: string, context: VMContext) {
     const required = this._requireCoreModule(
       moduleName,
-      await supportsNodeColonModulePrefixInImport,
+      supportsNodeColonModulePrefixInImport,
     );
 
     const module = new SyntheticModule(
