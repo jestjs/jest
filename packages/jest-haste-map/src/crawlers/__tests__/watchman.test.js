@@ -153,7 +153,7 @@ describe('watchman watch', () => {
     expect(query[2].expression).toEqual([
       'allof',
       ['type', 'f'],
-      ['anyof', ['suffix', 'js'], ['suffix', 'json']],
+      ['suffix', ['js', 'json']],
       ['anyof', ['dirname', 'fruits'], ['dirname', 'vegetables']],
     ]);
 
@@ -496,7 +496,7 @@ describe('watchman watch', () => {
     expect(query[2].expression).toEqual([
       'allof',
       ['type', 'f'],
-      ['anyof', ['suffix', 'js'], ['suffix', 'json']],
+      ['suffix', ['js', 'json']],
     ]);
 
     expect(query[2].fields).toEqual(['name', 'exists', 'mtime_ms', 'size']);
