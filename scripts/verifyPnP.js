@@ -36,6 +36,9 @@ try {
           jest: `*`,
         },
         name: 'test-pnp',
+        resolutions: {
+          typescript: '~4.3',
+        },
       },
       null,
       2,
