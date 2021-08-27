@@ -13,6 +13,14 @@ const path = require('path');
 jest.mock('fb-watchman', () => {
   const normalizePathSep = require('../../lib/normalizePathSep').default;
   const Client = jest.fn();
+  Client.prototype.capabilityCheck = jest.fn((args, callback) =>
+    setImmediate(() => {
+      callback(null, {
+        capabilities: {'suffix-set': true},
+        version: '2021.06.07.00',
+      });
+    }),
+  );
   Client.prototype.command = jest.fn((args, callback) =>
     setImmediate(() => {
       const path = args[1] ? normalizePathSep(args[1]) : undefined;
