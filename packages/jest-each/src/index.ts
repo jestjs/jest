@@ -9,8 +9,9 @@
 import type {Global} from '@jest/types';
 import bind from './bind';
 
+type Global = Global.Global;
 const install = (
-  g: typeof globalThis,
+  g: Global,
   table: Global.EachTable,
   ...data: Global.TemplateData
 ) => {
@@ -69,10 +70,10 @@ const each = (
   table: Global.EachTable,
   ...data: Global.TemplateData
 ): ReturnType<typeof install> =>
-  install(global as unknown as typeof globalThis, table, ...data);
+  install(global as unknown as Global, table, ...data);
 
 each.withGlobal =
-  (g: typeof globalThis) =>
+  (g: Global) =>
   (table: Global.EachTable, ...data: Global.TemplateData) =>
     install(g, table, ...data);
 

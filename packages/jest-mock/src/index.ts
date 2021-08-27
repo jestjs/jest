@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-/* eslint-disable local/prefer-rest-params-eventually */
+/* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
 export type MockFunctionMetadataType =
   | 'object'

@@ -51,6 +51,7 @@ class JSDOMEnvironment implements JestEnvironment<number> {
       throw new Error('JSDOM did not return a Window object');
     }
 
+    // for "universal" code (code should use `globalThis`)
     global.global = global as any;
 
     // Node's error-message stack size is limited at 10, but it's pretty useful
@@ -100,14 +101,14 @@ class JSDOMEnvironment implements JestEnvironment<number> {
 
     this.fakeTimers = new LegacyFakeTimers({
       config,
-      global: global as any as typeof globalThis,
+      global: global as unknown as typeof globalThis,
       moduleMocker: this.moduleMocker,
       timerConfig,
     });
 
     this.fakeTimersModern = new ModernFakeTimers({
       config,
-      global: global as any as typeof globalThis,
+      global: global as unknown as typeof globalThis,
     });
   }
 

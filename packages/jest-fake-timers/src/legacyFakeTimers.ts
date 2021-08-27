@@ -78,7 +78,7 @@ export default class FakeTimers<TimerRef> {
     config,
     maxLoops,
   }: {
-    global: typeof globalThis;
+    global: FakeTimersGlobal;
     moduleMocker: ModuleMocker;
     timerConfig: TimerConfig<TimerRef>;
     config: StackTraceConfig;
