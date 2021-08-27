@@ -2,12 +2,17 @@
 
 ### Features
 
+- `[jest-haste-map]` Use watchman suffix-set option for faster file indexing. ([#11784](https://github.com/facebook/jest/pull/11784))
+- `[jest-cli]` Adds a new config options `snapshotFormat` which offers a way to override any of the formatting settings which come with [pretty-format](https://www.npmjs.com/package/pretty-format#usage-with-options). ([#11654](https://github.com/facebook/jest/pull/11654))
+
 ### Fixes
 
+- `[jest-each]` Relaxed the validation to allow multibyte characters in headings ([#11575](https://github.com/facebook/jest/pull/11575))
+- `[jest-environment-jsdom]` Add support for `userAgent` option ([#11773](https://github.com/facebook/jest/pull/11773))
 - `[jest-environment-node]` Add `Event` and `EventTarget` to node global environment. ([#11705](https://github.com/facebook/jest/issues/11705))
 - `[jest-mock]` Fix `spyOn` to use `Object.prototype.hasOwnProperty` [#11721](https://github.com/facebook/jest/pull/11721)
 - `[jest-resolver]` Add dependency on `jest-haste-map` [#11759](https://github.com/facebook/jest/pull/11759)
-- `[jest-each]` Relaxed the validation to allow multibyte characters in headings ([#11575](https://github.com/facebook/jest/pull/11575))
+- `[jest-types]` Compat with `@types/node` v16 ([#11645](https://github.com/facebook/jest/pull/11645))
 
 ### Chore & Maintenance
 
