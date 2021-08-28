@@ -37,3 +37,5 @@ jest-haste-map: Haste module naming collision: Strawberry
     * <rootDir>/fruits/other/Strawberry.js
 
 `;
+
+exports[`HasteMap workers should time out when workers are slow to resolve 1`] = `"jest-haste-map: timed out waiting for workers. This might be a bug in Jest, please open up an issue."`;

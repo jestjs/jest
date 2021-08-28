@@ -76,6 +76,7 @@ type Options = {
   throwOnModuleCollision?: boolean;
   useWatchman?: boolean;
   watch?: boolean;
+  workerTimeout?: number;
 };
 
 type InternalOptions = {
@@ -100,6 +101,7 @@ type InternalOptions = {
   throwOnModuleCollision: boolean;
   useWatchman: boolean;
   watch: boolean;
+  workerTimeout: number;
 };
 
 type Watcher = {
@@ -115,6 +117,7 @@ export type {default as FS} from './HasteFS';
 export type {ChangeEvent, HasteMap as HasteMapObject} from './types';
 
 const CHANGE_INTERVAL = 30;
+const DEFAULT_WORKER_TIMEOUT = 3000;
 const MAX_WAIT_TIME = 240000;
 const NODE_MODULES = path.sep + 'node_modules' + path.sep;
 const PACKAGE_JSON = path.sep + 'package.json';
@@ -266,6 +269,7 @@ export default class HasteMap extends EventEmitter {
       throwOnModuleCollision: !!options.throwOnModuleCollision,
       useWatchman: options.useWatchman == null ? true : options.useWatchman,
       watch: !!options.watch,
+      workerTimeout: options.workerTimeout || DEFAULT_WORKER_TIMEOUT,
     };
     this._console = options.console || global.console;
 
@@ -679,7 +683,7 @@ export default class HasteMap extends EventEmitter {
       this._recoverDuplicates(hasteMap, relativeFilePath, fileMetadata[H.ID]);
     }
 
-    const promises = [];
+    const workerPromises = [];
     for (const relativeFilePath of filesToProcess.keys()) {
       if (
         this._options.skipPackageJson &&
@@ -694,22 +698,41 @@ export default class HasteMap extends EventEmitter {
       );
       const promise = this._processFile(hasteMap, map, mocks, filePath);
       if (promise) {
-        promises.push(promise);
+        workerPromises.push(promise);
       }
     }
 
-    return Promise.all(promises).then(
-      () => {
-        this._cleanup();
-        hasteMap.map = map;
-        hasteMap.mocks = mocks;
-        return hasteMap;
-      },
-      error => {
-        this._cleanup();
-        throw error;
-      },
+    let timerHandle: ReturnType<typeof setTimeout>;
+    const rejectAfterDelay = (rejectCallback: any) => {
+      timerHandle = setTimeout(
+        rejectCallback,
+        this._options.workerTimeout,
+        new Error(
+          'jest-haste-map: timed out waiting for workers. This might be a bug in Jest, please open up an issue.',
+        ),
+      );
+    };
+
+    const allWorkerPromises = Promise.all(workerPromises);
+    const timeoutPromise = new Promise((_resolve, reject) =>
+      rejectAfterDelay(reject),
     );
+
+    return Promise.race([allWorkerPromises, timeoutPromise])
+      .then(
+        () => {
+          hasteMap.map = map;
+          hasteMap.mocks = mocks;
+          return hasteMap;
+        },
+        error => {
+          throw error;
+        },
+      )
+      .finally(() => {
+        this._cleanup();
+        clearTimeout(timerHandle);
+      });
   }
 
   private _cleanup() {

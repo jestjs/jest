@@ -1210,75 +1210,125 @@ describe('HasteMap', () => {
     );
   });
 
-  it('distributes work across workers', async () => {
-    const jestWorker = require('jest-worker').Worker;
-    const path = require('path');
-    const dependencyExtractor = path.join(__dirname, 'dependencyExtractor.js');
-    const {__hasteMapForTest: data} = await new HasteMap({
-      ...defaultConfig,
-      dependencyExtractor,
-      hasteImplModulePath: undefined,
-      maxWorkers: 4,
-    }).build();
+  describe('workers', () => {
+    it('distributes work across workers', async () => {
+      const jestWorker = require('jest-worker').Worker;
+      const path = require('path');
+      const dependencyExtractor = path.join(
+        __dirname,
+        'dependencyExtractor.js',
+      );
+      const {__hasteMapForTest: data} = await new HasteMap({
+        ...defaultConfig,
+        dependencyExtractor,
+        hasteImplModulePath: undefined,
+        maxWorkers: 4,
+      }).build();
 
-    expect(jestWorker.mock.calls.length).toBe(1);
+      expect(jestWorker.mock.calls.length).toBe(1);
 
-    expect(mockWorker.mock.calls.length).toBe(5);
+      expect(mockWorker.mock.calls.length).toBe(5);
 
-    expect(mockWorker.mock.calls).toEqual([
-      [
-        {
-          computeDependencies: true,
-          computeSha1: false,
-          dependencyExtractor,
-          filePath: path.join('/', 'project', 'fruits', 'Banana.js'),
-          hasteImplModulePath: undefined,
-          rootDir: path.join('/', 'project'),
-        },
-      ],
-      [
-        {
-          computeDependencies: true,
-          computeSha1: false,
-          dependencyExtractor,
-          filePath: path.join('/', 'project', 'fruits', 'Pear.js'),
-          hasteImplModulePath: undefined,
-          rootDir: path.join('/', 'project'),
-        },
-      ],
-      [
-        {
-          computeDependencies: true,
-          computeSha1: false,
-          dependencyExtractor,
-          filePath: path.join('/', 'project', 'fruits', 'Strawberry.js'),
-          hasteImplModulePath: undefined,
-          rootDir: path.join('/', 'project'),
-        },
-      ],
-      [
-        {
-          computeDependencies: true,
-          computeSha1: false,
-          dependencyExtractor,
-          filePath: path.join('/', 'project', 'fruits', '__mocks__', 'Pear.js'),
-          hasteImplModulePath: undefined,
-          rootDir: path.join('/', 'project'),
-        },
-      ],
-      [
-        {
-          computeDependencies: true,
-          computeSha1: false,
-          dependencyExtractor,
-          filePath: path.join('/', 'project', 'vegetables', 'Melon.js'),
-          hasteImplModulePath: undefined,
-          rootDir: path.join('/', 'project'),
-        },
-      ],
-    ]);
+      expect(mockWorker.mock.calls).toEqual([
+        [
+          {
+            computeDependencies: true,
+            computeSha1: false,
+            dependencyExtractor,
+            filePath: path.join('/', 'project', 'fruits', 'Banana.js'),
+            hasteImplModulePath: undefined,
+            rootDir: path.join('/', 'project'),
+          },
+        ],
+        [
+          {
+            computeDependencies: true,
+            computeSha1: false,
+            dependencyExtractor,
+            filePath: path.join('/', 'project', 'fruits', 'Pear.js'),
+            hasteImplModulePath: undefined,
+            rootDir: path.join('/', 'project'),
+          },
+        ],
+        [
+          {
+            computeDependencies: true,
+            computeSha1: false,
+            dependencyExtractor,
+            filePath: path.join('/', 'project', 'fruits', 'Strawberry.js'),
+            hasteImplModulePath: undefined,
+            rootDir: path.join('/', 'project'),
+          },
+        ],
+        [
+          {
+            computeDependencies: true,
+            computeSha1: false,
+            dependencyExtractor,
+            filePath: path.join(
+              '/',
+              'project',
+              'fruits',
+              '__mocks__',
+              'Pear.js',
+            ),
+            hasteImplModulePath: undefined,
+            rootDir: path.join('/', 'project'),
+          },
+        ],
+        [
+          {
+            computeDependencies: true,
+            computeSha1: false,
+            dependencyExtractor,
+            filePath: path.join('/', 'project', 'vegetables', 'Melon.js'),
+            hasteImplModulePath: undefined,
+            rootDir: path.join('/', 'project'),
+          },
+        ],
+      ]);
 
-    expect(mockEnd).toBeCalled();
+      expect(mockEnd).toBeCalled();
+    });
+
+    it('should time out when workers are slow to resolve', async () => {
+      let timerHandle;
+      const resolveAfterDelay = resolveCallback => {
+        timerHandle = setTimeout(() => {
+          resolveCallback('does not resolve before timeout');
+        }, 10000);
+      };
+      const createPromiseWithDelay = () =>
+        new Promise(resolve => resolveAfterDelay(resolve));
+
+      const jestWorker = require('jest-worker').Worker;
+      jestWorker.mockImplementation(worker => {
+        return {
+          worker: jest
+            .fn()
+            .mockImplementation((...args) => require(worker).worker(...args))
+            .mockImplementationOnce(createPromiseWithDelay),
+        };
+      });
+
+      const path = require('path');
+      const dependencyExtractor = path.join(
+        __dirname,
+        'dependencyExtractor.js',
+      );
+      const hasteMapInstance = new HasteMap({
+        ...defaultConfig,
+        dependencyExtractor,
+        hasteImplModulePath: undefined,
+        maxWorkers: 4,
+        workerTimeout: 100,
+      });
+
+      await expect(() =>
+        hasteMapInstance.build(),
+      ).rejects.toThrowErrorMatchingSnapshot();
+      clearTimeout(timerHandle);
+    }, 1000);
   });
 
   it('tries to crawl using node as a fallback', async () => {

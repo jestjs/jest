@@ -38,6 +38,8 @@ export type HasteConfig = {
   throwOnModuleCollision?: boolean;
   /** Custom HasteMap module */
   hasteMapModulePath?: string;
+  /** Override timeout for unresponsive workers (milliseconds) */
+  workerTimeout?: number;
 };
 
 export type CoverageReporterName = keyof ReportOptions;

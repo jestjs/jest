@@ -361,6 +361,7 @@ export default class Runtime {
       throwOnModuleCollision: config.haste.throwOnModuleCollision,
       useWatchman: options?.watchman,
       watch: options?.watch,
+      workerTimeout: config.haste.workerTimeout,
     });
   }
 

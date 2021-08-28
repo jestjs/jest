@@ -65,6 +65,7 @@ const initialOptions: Config.InitialOptions = {
     hasteMapModulePath: '',
     platforms: ['ios', 'android'],
     throwOnModuleCollision: false,
+    workerTimeout: 3000,
   },
   injectGlobals: true,
   json: false,

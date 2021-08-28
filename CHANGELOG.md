@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-haste-map]` Add a `workerTimeout` failsafe to Throw if worker threads are slow to resolve. ([#11795](https://github.com/facebook/jest/pull/11795))
+
 ### Fixes
 
 ### Chore & Maintenance
