@@ -1367,7 +1367,13 @@ If the tests are written using [native ESM](ECMAScriptModules.md) the transforme
 
 Default: `["/node_modules/", "\\.pnp\\.[^\\\/]+$"]`
 
-An array of regexp pattern strings that are matched against all source file paths before transformation. If the file path matches any of the patterns, it will not be transformed.
+An array of regexp pattern strings that are matched against all source file paths before transformation. If the file path matches **any** of the patterns, it will not be transformed.
+
+Patterns that overlap with each other may result in a file not being transformed unexpectedly. For example:
+
+`["/node_modules/(?!foo|bar)", ".*/bar/"]`
+
+The first matches any `node_modules` folders except for `node_modules/foo` and `node_modules/bar`, but the second one matches any with `bar` in the path. In this case, `node_modules/bar` will not be transformed.
 
 These pattern strings match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories.
 

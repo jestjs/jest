@@ -148,6 +148,19 @@ By default the jest-react-native preset only processes the project's own source 
 }
 ```
 
+Because `transformIgnorePatterns` will not transform a file if it matches **any** pattern provided, it is necessary to only use the above exclusion pattern only once. Otherwise, a folder that doesn't match in one pattern will match in the other. In the example below, neither module will be transformed:
+
+```json
+{
+  "transformIgnorePatterns": [
+    "node_modules/(?!(foo)/)",
+    "node_modules/(?!(bar)/)"
+  ]
+}
+```
+
+
+
 ### setupFiles
 
 If you'd like to provide additional configuration for every test file, the [`setupFiles` configuration option](configuration#setupfiles-array) can be used to specify setup scripts.
