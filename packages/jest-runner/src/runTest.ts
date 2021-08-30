@@ -156,7 +156,11 @@ async function runTestInternal(
     ? new LeakDetector(environment)
     : null;
 
-  setGlobal(environment.global, 'console', testConsole);
+  setGlobal(
+    environment.global as unknown as typeof globalThis,
+    'console',
+    testConsole,
+  );
 
   const runtime = new Runtime(
     config,
