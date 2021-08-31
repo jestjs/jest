@@ -26,6 +26,10 @@ interface ResolverOptions extends ResolveOpts {
   rootDir?: Config.Path;
 }
 
+type ResolverOptionsAsync = ResolverOptions & {
+  defaultResolverAsync: typeof defaultResolverAsync;
+};
+
 // https://github.com/facebook/jest/pull/10617
 declare global {
   namespace NodeJS {
@@ -54,12 +58,14 @@ export default function defaultResolverSync(
 
 export function defaultResolverAsync(
   path: Config.Path,
-  options: ResolverOptions,
+  options: ResolverOptionsAsync,
 ): Promise<Config.Path> {
   // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
   // needed for Yarn 1 which implements version 1 of the pnp spec
   if (process.versions.pnp === '1') {
     // QUESTION: do we need an async version of pnpResolver?
+    // It seems ugly to require a default sync resolver in the async method,
+    // just to deal with this.
     return Promise.resolve(pnpResolver(path, options));
   }
 

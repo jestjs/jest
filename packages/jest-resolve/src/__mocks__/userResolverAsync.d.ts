@@ -8,9 +8,11 @@
 import {defaultResolverAsync} from '../defaultResolver';
 
 // todo: can be replaced with jest.MockedFunction
-declare const userResolver: jest.MockInstance<
-  ReturnType<typeof defaultResolverAsync>,
-  Parameters<typeof defaultResolverAsync>
->;
+declare const userResolver: {
+  async: jest.MockInstance<
+    ReturnType<typeof defaultResolverAsync>,
+    Parameters<typeof defaultResolverAsync>
+  >;
+};
 
 export default userResolver;

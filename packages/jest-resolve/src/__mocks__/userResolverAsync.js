@@ -7,6 +7,8 @@
 
 'use strict';
 
-module.exports = function userResolver(path, options) {
-  return Promise.resolve('module');
+module.exports = {
+  async: function userResolver(path, options) {
+    return Promise.resolve('module');
+  },
 };
