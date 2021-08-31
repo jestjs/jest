@@ -165,8 +165,7 @@ export default class Resolver {
       const result = await resolver(path, {
         basedir: options.basedir,
         browser: options.browser,
-        defaultResolver,
-        defaultResolverAsync,
+        defaultResolver: defaultResolverAsync,
         extensions: options.extensions,
         moduleDirectory: options.moduleDirectory,
         paths: paths ? (nodePaths || []).concat(paths) : nodePaths,

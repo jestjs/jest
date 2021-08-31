@@ -26,8 +26,8 @@ export interface ResolverOptions extends ResolveOpts {
   rootDir?: Config.Path;
 }
 
-type ResolverOptionsAsync = ResolverOptions & {
-  defaultResolverAsync: typeof defaultResolverAsync;
+type ResolverOptionsAsync = Omit<ResolverOptions, 'defaultResolver'> & {
+  defaultResolver: typeof defaultResolverAsync;
 };
 
 // https://github.com/facebook/jest/pull/10617
@@ -56,17 +56,14 @@ export function defaultResolver(
   return realpathSync(result);
 }
 
-export function defaultResolverAsync(
+export async function defaultResolverAsync(
   path: Config.Path,
   options: ResolverOptionsAsync,
 ): Promise<Config.Path> {
   // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
   // needed for Yarn 1 which implements version 1 of the pnp spec
   if (process.versions.pnp === '1') {
-    // QUESTION: do we need an async version of pnpResolver?
-    // It seems ugly to require a default sync resolver in the async method,
-    // just to deal with this.
-    return Promise.resolve(pnpResolver(path, options));
+    return Promise.resolve(await pnpResolver(path, options));
   }
 
   return new Promise((resolve, reject) => {
@@ -100,7 +97,7 @@ function getSyncResolveOptions(options: ResolverOptions): SyncOpts {
 /**
  * getAsyncResolveOptions returns resolution options that are used asynchronously.
  */
-function getAsyncResolveOptions(options: ResolverOptions): AsyncOpts {
+function getAsyncResolveOptions(options: ResolverOptionsAsync): AsyncOpts {
   return {
     ...options,
     isDirectory: isDirectoryAsync,
