@@ -181,10 +181,12 @@ TODO: Info about / link to more code examples here.
 
 ### Timer functions are no longer a mock or spy function. How can I assert against them?
 
-In the legacy fake timers, prior to Jest 27, native timer functions were replaced by Jest mock functions. After moving to a new implementation based on an [external library][fake-timers-github], this is no longer a feature. So the short answer is that you can't... at least not directly.
+In the legacy fake timers, prior to Jest 27, native timer functions were replaced by Jest mock functions. After moving to a new implementation based on an [external library][fake-timers-github], this is no longer a feature.
 
-The specific timer function used should be considered an implementation detail, and it would generally be more robust to test against what you expect to happen when a task runs.
+You can still spy on the global yourself after enabling the fake timers, but it would generally be more robust to test against what you expect to happen when a task runs. The specific timer function used should be considered an implementation detail.
 
 Looking back at the first code example on this page, you will see that we assert if the mocked callback function is called with the parameter we expect. This decouples us from the details of what happens inside `timerTest()`. At some point in the future, we can safely replace `setTimeout()` with another timer without invalidating the test.
 
 If you need to verify that callbacks are scheduled with a particular time or interval, consider using `jest.advanceTimersByTime()` and make assertions based on what you expect at different points in time.
+
+TODO: Polish this...
