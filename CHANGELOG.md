@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-types]` Export the `PrettyFormatOptions` interface ([#11801](https://github.com/facebook/jest/pull/11801))
+
 ### Chore & Maintenance
 
 ### Performance
