@@ -1361,10 +1361,9 @@ export default class Runtime {
   }
 
   private _requireCoreModule(moduleName: string, supportPrefix: boolean) {
-    const moduleWithoutNodePrefix =
-      supportPrefix && moduleName.startsWith('node:')
-        ? moduleName.slice('node:'.length)
-        : moduleName;
+    const moduleWithoutNodePrefix = moduleName.startsWith('node:')
+      ? moduleName.slice('node:'.length)
+      : moduleName;
 
     if (moduleWithoutNodePrefix === 'process') {
       return this._environment.global.process;
@@ -1374,7 +1373,7 @@ export default class Runtime {
       return this._getMockedNativeModule();
     }
 
-    return require(moduleWithoutNodePrefix);
+    return require(supportPrefix ? moduleName : moduleWithoutNodePrefix);
   }
 
   private _importCoreModule(moduleName: string, context: VMContext) {
