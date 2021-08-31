@@ -12,7 +12,7 @@ import resolveAsync = require('resolve');
 import {ModuleMap} from 'jest-haste-map';
 import userResolver from '../__mocks__/userResolver';
 import userResolverAsync from '../__mocks__/userResolverAsync';
-import defaultResolver, {defaultResolverAsync} from '../defaultResolver';
+import {defaultResolver, defaultResolverAsync} from '../defaultResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
 import Resolver from '../resolver';
 import type {ResolverConfig} from '../types';

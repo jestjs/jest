@@ -14,8 +14,9 @@ import type {Config} from '@jest/types';
 import type {IModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
 import ModuleNotFoundError from './ModuleNotFoundError';
-import defaultResolver, {
+import {
   clearDefaultResolverCache,
+  defaultResolver,
   defaultResolverAsync,
 } from './defaultResolver';
 import isBuiltinModule from './isBuiltinModule';

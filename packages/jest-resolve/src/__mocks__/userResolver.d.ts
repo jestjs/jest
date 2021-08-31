@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import defaultResolver from '../defaultResolver';
+import {defaultResolver} from '../defaultResolver';
 
 // todo: can be replaced with jest.MockedFunction
 declare const userResolver: jest.MockInstance<

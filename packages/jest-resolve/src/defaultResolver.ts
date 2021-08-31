@@ -17,11 +17,11 @@ import resolveAsync = require('resolve');
 import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';
 
-interface ResolverOptions extends ResolveOpts {
+export interface ResolverOptions extends ResolveOpts {
   basedir: Config.Path;
   browser?: boolean;
   conditions?: Array<string>;
-  defaultResolver: typeof defaultResolverSync;
+  defaultResolver: typeof defaultResolver;
   extensions?: Array<string>;
   rootDir?: Config.Path;
 }
@@ -39,7 +39,7 @@ declare global {
   }
 }
 
-export default function defaultResolverSync(
+export function defaultResolver(
   path: Config.Path,
   options: ResolverOptions,
 ): Config.Path {
