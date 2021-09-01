@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-util]` Return correct value from `process.send` stub ([#11799](https://github.com/facebook/jest/pull/11799))
+
 ### Chore & Maintenance
 
 ### Performance
