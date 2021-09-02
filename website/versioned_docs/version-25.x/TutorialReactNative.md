@@ -136,15 +136,25 @@ The preset sets up the environment and is very opinionated and based on what we 
 
 ### transformIgnorePatterns customization
 
-The [`transformIgnorePatterns`](configuration#transformignorepatterns-arraystring) option can be used to specify which files shall be transformed by Babel. Many react-native npm modules unfortunately don't pre-compile their source code before publishing.
+The [`transformIgnorePatterns`](configuration#transformignorepatterns-arraystring) option can be used to specify which files shall be transformed by Babel. Many `react-native` npm modules unfortunately don't pre-compile their source code before publishing.
 
-By default the jest-react-native preset only processes the project's own source files and react-native. If you have npm dependencies that have to be transformed you can customize this configuration option by including modules other than react-native:
+By default the `jest-react-native` preset only processes the project's own source files and `react-native`. If you have npm dependencies that have to be transformed you can customize this configuration option by including modules other than `react-native` by grouping them and separating them with the `|` operator:
 
 ```json
 {
   "transformIgnorePatterns": [
     "node_modules/(?!(react-native|my-project|react-native-button)/)"
   ]
+}
+```
+
+You can test which paths would match (and thus be excluded from transformation) with a tool [like this](https://regex101.com/r/JsLIDM/1).
+
+`transformIgnorePatterns` will exclude a file from transformation if the path matches against **any** pattern provided. Splitting into multiple patterns could therefore have unintended results if you are not careful. In the example below, the exclusion (also known as a negative lookahead assertion) for `foo` and `bar` cancel each other out:
+
+```json
+{
+  "transformIgnorePatterns": ["node_modules/(?!foo/)", "node_modules/(?!bar/)"] // not what you want
 }
 ```
 
