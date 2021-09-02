@@ -320,7 +320,7 @@ export const typeEquality = (a: any, b: any): boolean | undefined => {
 };
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const arrayBufferEquality = (a: any, b: any): boolean | undefined => {
+export const arrayBufferEquality = (a: unknown, b: unknown): boolean | undefined => {
   if (!(a instanceof ArrayBuffer) || !(b instanceof ArrayBuffer)) {
     return undefined;
   }
