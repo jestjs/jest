@@ -333,7 +333,7 @@ export const arrayBufferEquality = (a: any, b: any): boolean | undefined => {
     return false;
   }
 
-  // Compare each arraryBuffer byte's buffers
+  // Check if every byte value is equal to each other
   for (let i = 0;i < dataViewA.byteLength; i++) {
     if (dataViewA.getUint8(i) != dataViewB.getUint8(i)) {
       return false;
