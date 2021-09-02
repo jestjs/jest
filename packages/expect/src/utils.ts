@@ -329,7 +329,7 @@ export const arrayBufferEquality = (a: any, b: any): boolean | undefined => {
   const dataViewB = new DataView(b);
 
   // Buffers are not equal when they do not have the same byte length
-  if (dataViewA.byteLength != dataViewB.byteLength) {
+  if (dataViewA.byteLength !== dataViewB.byteLength) {
     return false;
   }
 
