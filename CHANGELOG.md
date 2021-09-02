@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[expect]` Add equality checks for Array Buffers in `expect.ToStrictEqual()`
+
 ### Fixes
 
 ### Chore & Maintenance
