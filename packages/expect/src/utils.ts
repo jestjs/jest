@@ -325,17 +325,17 @@ export const arrayBufferEquality = (a: any, b: any): boolean | undefined => {
     return undefined;
   }
 
-  const d1 = new DataView(a);
-  const d2 = new DataView(b);
+  const dataViewA = new DataView(a);
+  const dataViewB = new DataView(b);
 
   // Buffers are not equal when they do not have the same byte length
-  if (d1.byteLength != d2.byteLength) {
+  if (dataViewA.byteLength != dataViewB.byteLength) {
     return false;
   }
 
   // Compare each arraryBuffer byte's buffers
-  for (let i = 0;i < d1.byteLength; i++) {
-    if (d1.getUint8(i) != d2.getUint8(i)) {
+  for (let i = 0;i < dataViewA.byteLength; i++) {
+    if (dataViewA.getUint8(i) != dataViewB.getUint8(i)) {
       return false;
     }
   }
