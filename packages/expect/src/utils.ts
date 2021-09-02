@@ -319,6 +319,30 @@ export const typeEquality = (a: any, b: any): boolean | undefined => {
   return false;
 };
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const arrayBufferEquality = (a: any, b: any): boolean | undefined => {
+  if (!(a instanceof ArrayBuffer) || !(b instanceof ArrayBuffer)) {
+    return undefined;
+  }
+
+  const d1 = new DataView(a);
+  const d2 = new DataView(b);
+
+  // Buffers are not equal when they do not have the same byte length
+  if (d1.byteLength != d2.byteLength) {
+    return false;
+  }
+
+  // Compare each arraryBuffer byte's buffers
+  for (let i = 0;i < d1.byteLength; i++) {
+    if (d1.getUint8(i) != d2.getUint8(i)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 export const sparseArrayEquality = (
   a: unknown,
   b: unknown,
