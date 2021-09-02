@@ -426,6 +426,10 @@ describe('.toStrictEqual()', () => {
   it('does not pass when equally sparse arrays have different values', () => {
     expect([, 1]).not.toStrictEqual([, 2]);
   });
+
+  it('does not pass when ArrayBuffers are not equal', () => {
+    expect(Uint8Array.from([1, 2]).buffer).not.toStrictEqual(Uint8Array.from([0, 0]).buffer);
+  })
   /* eslint-enable */
 });
 
