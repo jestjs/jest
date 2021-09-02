@@ -340,7 +340,7 @@ export const arrayBufferEquality = (a: unknown, b: unknown): boolean | undefined
   }
 
   return true;
-}
+};
 
 export const sparseArrayEquality = (
   a: unknown,

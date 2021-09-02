@@ -437,7 +437,7 @@ describe('.toStrictEqual()', () => {
     expect(Uint8Array.from([1]).buffer).toStrictEqual(Uint8Array.from([1]).buffer);
     expect(Uint8Array.from([]).buffer).toStrictEqual(Uint8Array.from([]).buffer);
     expect(Uint8Array.from([9,3]).buffer).toStrictEqual(Uint8Array.from([9,3]).buffer);
-  })
+  });
   /* eslint-enable */
 });
 
