@@ -581,8 +581,6 @@ export default class Runtime {
   async unstable_importModule(
     from: Config.Path,
     moduleName?: string,
-    // TODO: implement this
-    _isImportActual = false,
   ): Promise<void> {
     invariant(
       runtimeSupportsVmModules,
