@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-runtime]` Add experimental, limited (and undocumented) support for mocking ECMAScript Modules ([#11818](https://github.com/facebook/jest/pull/11818))
+
 ### Fixes
 
 - `[jest-types]` Export the `PrettyFormatOptions` interface ([#11801](https://github.com/facebook/jest/pull/11801))
