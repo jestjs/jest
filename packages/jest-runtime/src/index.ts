@@ -1772,7 +1772,7 @@ export default class Runtime {
       mockFactory,
       options,
     ) => {
-      if (mockFactory === undefined) {
+      if (typeof mockFactory !== 'function') {
         throw new Error('`unstable_mockModule` must be passed a mock factory');
       }
 
