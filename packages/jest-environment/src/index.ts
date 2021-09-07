@@ -138,6 +138,14 @@ export interface Jest {
     options?: {virtual?: boolean},
   ): Jest;
   /**
+   * Mocks a module with the provided module factory when it is being imported.
+   */
+  unstable_mockModule<T = unknown>(
+    moduleName: string,
+    moduleFactory: () => Promise<T> | T,
+    options?: {virtual?: boolean},
+  ): Jest;
+  /**
    * Returns the actual module instead of a mock, bypassing all checks on
    * whether the module should receive a mock implementation or not.
    *
