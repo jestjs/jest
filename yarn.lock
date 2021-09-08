@@ -18119,50 +18119,6 @@ react-native@0.64.0:
   languageName: node
   linkType: hard
 
-"react-native@patch:react-native@0.64.0#./patches/react-native.patch::locator=%40jest%2Fmonorepo%40workspace%3A.":
-  version: 0.64.0
-  resolution: "react-native@patch:react-native@npm%3A0.64.0#./patches/react-native.patch::version=0.64.0&hash=c73352&locator=%40jest%2Fmonorepo%40workspace%3A."
-  dependencies:
-    "@jest/create-cache-key-function": ^26.5.0
-    "@react-native-community/cli": ^5.0.1-alpha.0
-    "@react-native-community/cli-platform-android": ^5.0.1-alpha.0
-    "@react-native-community/cli-platform-ios": ^5.0.1-alpha.0
-    "@react-native/assets": 1.0.0
-    "@react-native/normalize-color": 1.0.0
-    "@react-native/polyfills": 1.0.0
-    abort-controller: ^3.0.0
-    anser: ^1.4.9
-    base64-js: ^1.1.2
-    event-target-shim: ^5.0.1
-    hermes-engine: ~0.7.0
-    invariant: ^2.2.4
-    jsc-android: ^245459.0.0
-    metro-babel-register: 0.64.0
-    metro-react-native-babel-transformer: 0.64.0
-    metro-runtime: 0.64.0
-    metro-source-map: 0.64.0
-    nullthrows: ^1.1.1
-    pretty-format: ^26.5.2
-    promise: ^8.0.3
-    prop-types: ^15.7.2
-    react-devtools-core: ^4.6.0
-    react-native-codegen: ^0.0.6
-    react-refresh: ^0.4.0
-    regenerator-runtime: ^0.13.2
-    scheduler: ^0.20.1
-    shelljs: ^0.8.4
-    stacktrace-parser: ^0.1.3
-    use-subscription: ^1.0.0
-    whatwg-fetch: ^3.0.0
-    ws: ^6.1.4
-  peerDependencies:
-    react: 17.0.1
-  bin:
-    react-native: cli.js
-  checksum: 5685b7f4d3bbf967ca3d90365cc5fc3d64421bc22b2b08ccc548d2d4e9e9211d0e52abde0fca807203564257d187d3d955cb05a66114eb17f1958305cc30dce2
-  languageName: node
-  linkType: hard
-
 "react-refresh@npm:^0.4.0":
   version: 0.4.3
   resolution: "react-refresh@npm:0.4.3"
