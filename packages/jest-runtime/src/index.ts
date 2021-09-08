@@ -1451,22 +1451,7 @@ export default class Runtime {
       return this._getMockedNativeModule();
     }
 
-    try {
-      return require(moduleWithoutNodePrefix);
-    } catch (e) {
-      console.error(
-        'Error requiring core module',
-        {
-          moduleName,
-          moduleWithoutNodePrefix,
-          supportPrefix,
-          supportsNodeColonModulePrefixInImport,
-          supportsNodeColonModulePrefixInRequire,
-        },
-        e,
-      );
-      throw e;
-    }
+    return require(moduleWithoutNodePrefix);
   }
 
   private _importCoreModule(moduleName: string, context: VMContext) {
