@@ -476,14 +476,14 @@ describe('arrayBufferEquality', () => {
   });
 
   test('returns false when given non-matching buffers', () => {
-    const a = Uint8Array.from([2,4]).buffer;
-    const b = Uint16Array.from([1,7]).buffer;
+    const a = Uint8Array.from([2, 4]).buffer;
+    const b = Uint16Array.from([1, 7]).buffer;
     expect(arrayBufferEquality(a, b)).not.toBeTruthy();
   });
 
   test('returns true when given matching buffers', () => {
-    const a = Uint8Array.from([1,2]).buffer;
-    const b = Uint8Array.from([1,2]).buffer;
+    const a = Uint8Array.from([1, 2]).buffer;
+    const b = Uint8Array.from([1, 2]).buffer;
     expect(arrayBufferEquality(a, b)).toBeTruthy();
-  })
+  });
 });

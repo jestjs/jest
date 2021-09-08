@@ -319,7 +319,10 @@ export const typeEquality = (a: any, b: any): boolean | undefined => {
   return false;
 };
 
-export const arrayBufferEquality = (a: unknown, b: unknown): boolean | undefined => {
+export const arrayBufferEquality = (
+  a: unknown,
+  b: unknown,
+): boolean | undefined => {
   if (!(a instanceof ArrayBuffer) || !(b instanceof ArrayBuffer)) {
     return undefined;
   }
@@ -333,7 +336,7 @@ export const arrayBufferEquality = (a: unknown, b: unknown): boolean | undefined
   }
 
   // Check if every byte value is equal to each other
-  for (let i = 0;i < dataViewA.byteLength; i++) {
+  for (let i = 0; i < dataViewA.byteLength; i++) {
     if (dataViewA.getUint8(i) !== dataViewB.getUint8(i)) {
       return false;
     }
