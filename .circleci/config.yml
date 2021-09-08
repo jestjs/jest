@@ -70,5 +70,6 @@ workflows:
           partial: true
           matrix:
             parameters:
-              node-version: ['10', '12', '15', '16']
+              # https://github.com/nodejs/node/issues/40030
+              node-version: ['10', '12', '15', '16.8']
       - test-jest-jasmine
