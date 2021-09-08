@@ -1,5 +1,0 @@
-fixtures/failing-jsons/
-packages/jest-diff/src/cleanupSemantic.ts
-packages/jest-config/src/__tests__/jest-preset.json
-packages/pretty-format/perf/world.geo.json
-website/versions.json
