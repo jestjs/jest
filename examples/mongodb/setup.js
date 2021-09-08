@@ -18,7 +18,7 @@ module.exports = async () => {
 
   const mongoConfig = {
     mongoDBName: 'jest',
-    mongoUri: await mongod.getConnectionString(),
+    mongoUri: await mongod.getUri(),
   };
 
   // Write global config to disk because all tests run in different contexts.
