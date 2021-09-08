@@ -29,9 +29,14 @@ onNodeVersions('^12.16.0 || >=13.7.0', () => {
 
     const {summary} = extractSummary(stderr);
 
-    expect(wrap(summary)).toMatchSnapshot();
-    expect(stdout).toBe('');
-    expect(exitCode).toBe(0);
+    try {
+      expect(wrap(summary)).toMatchSnapshot();
+      expect(stdout).toBe('');
+      expect(exitCode).toBe(0);
+    } catch (e) {
+      console.log(stderr);
+      throw e;
+    }
   });
 });
 
