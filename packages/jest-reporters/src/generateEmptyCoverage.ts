@@ -69,13 +69,17 @@ export default async function (
     const scriptTransformer = await createScriptTransformer(config);
 
     // Transform file with instrumentation to make sure initial coverage data is well mapped to original code.
-    const {code} = scriptTransformer.transformSource(filename, source, {
-      instrument: true,
-      supportsDynamicImport: true,
-      supportsExportNamespaceFrom: true,
-      supportsStaticESM: true,
-      supportsTopLevelAwait: true,
-    });
+    const {code} = await scriptTransformer.transformSourceAsync(
+      filename,
+      source,
+      {
+        instrument: true,
+        supportsDynamicImport: true,
+        supportsExportNamespaceFrom: true,
+        supportsStaticESM: true,
+        supportsTopLevelAwait: true,
+      },
+    );
     // TODO: consider passing AST
     const extracted = readInitialCoverage(code);
     // Check extracted initial coverage is not null, this can happen when using /* istanbul ignore file */
