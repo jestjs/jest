@@ -2,16 +2,22 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 27.1.1
+
+### Features
+
 - `[jest-runtime]` Add experimental, limited (and undocumented) support for mocking ECMAScript Modules ([#11818](https://github.com/facebook/jest/pull/11818))
 
 ### Fixes
 
 - `[jest-resolver]` Support `node:` prefix when importing Node core modules with ESM ([#11817](https://github.com/facebook/jest/pull/11817))
 - `[jest-types]` Export the `PrettyFormatOptions` interface ([#11801](https://github.com/facebook/jest/pull/11801))
-
-### Chore & Maintenance
-
-### Performance
 
 ## 27.1.0
 
