@@ -65,4 +65,4 @@ The function being tested adds an event listener on the `#button` DOM element, s
 
 We are mocking `fetchCurrentUser.js` so that our test doesn't make a real network request but instead resolves to mock data locally. This ensures that our test can complete in milliseconds rather than seconds and guarantees a fast unit test iteration speed.
 
-The code for this example is available at [examples/jquery](https://github.com/facebook/jest/tree/master/examples/jquery).
+The code for this example is available at [examples/jquery](https://github.com/facebook/jest/tree/main/examples/jquery).

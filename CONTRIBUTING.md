@@ -10,9 +10,9 @@ Facebook has adopted a Code of Conduct that we expect project participants to ad
 
 All work on Jest happens directly on [GitHub](/). Both core team members and external contributors send pull requests which go through the same review process.
 
-### `master` is unsafe
+### `main` is unsafe
 
-We will do our best to keep `master` in good shape, with tests passing at all times. But in order to move fast, we will make API changes that your application might not be compatible with. We will do our best to communicate these changes and always version appropriately so you can lock into a specific version if need be.
+We will do our best to keep `main` in good shape, with tests passing at all times. But in order to move fast, we will make API changes that your application might not be compatible with. We will do our best to communicate these changes and always version appropriately so you can lock into a specific version if need be.
 
 ### Workflow and Pull Requests
 
@@ -20,7 +20,7 @@ The core team will be monitoring for pull requests. When we get one, we'll run s
 
 _Before_ submitting a pull request, please make sure the following is done…
 
-1.  Fork the repo and create your branch from `master`. A guide on how to fork a repository: https://help.github.com/articles/fork-a-repo/
+1.  Fork the repo and create your branch from `main`. A guide on how to fork a repository: https://help.github.com/articles/fork-a-repo/
 
     Open terminal (e.g. Terminal, iTerm, Git Bash or Git Shell) and type:
 
