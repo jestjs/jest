@@ -161,7 +161,7 @@ const supportsNodeColonModulePrefixInRequire = (() => {
 })();
 
 const supportsNodeColonModulePrefixInImport = (() => {
-  const {stdout, stderr} = execa.sync(
+  const {stdout} = execa.sync(
     'node',
     [
       '--eval',
@@ -169,8 +169,6 @@ const supportsNodeColonModulePrefixInImport = (() => {
     ],
     {reject: false},
   );
-
-  console.log('is supported???', {stdout, stderr});
 
   return stdout === 'true';
 })();
