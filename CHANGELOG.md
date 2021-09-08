@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[@jest/reporters]` Use async transform if available to transform files with no coverage ([#11852](https://github.com/facebook/jest/pull/11852))
+
 ### Chore & Maintenance
 
 ### Performance
