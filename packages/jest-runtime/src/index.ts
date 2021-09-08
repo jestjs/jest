@@ -169,11 +169,8 @@ const supportsNodeColonModulePrefixInImport = (() => {
     ],
     {reject: false},
   );
-  const {stdout: nodeVersion} = execa.sync('node', ['--version'], {
-    reject: false,
-  });
 
-  console.log('is supported???', {nodeVersion, stderr, stdout});
+  console.log('is supported???', {stdout, stderr});
 
   return stdout === 'true';
 })();
