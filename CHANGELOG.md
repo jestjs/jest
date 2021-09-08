@@ -6,6 +6,7 @@
 
 ### Fixes
 
+- `[jest-resolver]` Support `node:` prefix when importing Node core modules with ESM ([#11817](https://github.com/facebook/jest/pull/11817))
 - `[jest-types]` Export the `PrettyFormatOptions` interface ([#11801](https://github.com/facebook/jest/pull/11801))
 
 ### Chore & Maintenance
