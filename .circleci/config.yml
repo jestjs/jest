@@ -12,7 +12,7 @@ aliases:
     app-dir: ~/jest
 
 orbs:
-  node: circleci/node@4.0.0
+  node: circleci/node@4.7.0
 
 jobs:
   test-node:
@@ -70,5 +70,6 @@ workflows:
           partial: true
           matrix:
             parameters:
-              node-version: ['10', '12', '15', '16']
+              # https://github.com/nodejs/node/issues/40030
+              node-version: ['10', '12', '15', '16.8']
       - test-jest-jasmine
