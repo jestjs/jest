@@ -110,7 +110,7 @@ export default function (): NodeJS.Process {
   }
 
   newProcess.env = createProcessEnv();
-  newProcess.send = () => {};
+  newProcess.send = () => true;
 
   Object.defineProperty(newProcess, 'domain', {
     get() {

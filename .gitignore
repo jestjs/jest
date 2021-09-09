@@ -41,8 +41,9 @@ package-lock.json
 
 *.tsbuildinfo
 
-# https://yarnpkg.com/advanced/qa#which-files-should-be-gitignored but nested for e2e directories
+# https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored but nested for e2e directories
 **/.yarn/*
+!**/.yarn/patches
 !**/.yarn/releases
 !**/.yarn/plugins
 !**/.yarn/sdks
