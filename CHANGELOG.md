@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[@jest/reporters]` Use async transform if available to transform files with no coverage ([#11852](https://github.com/facebook/jest/pull/11852))
+- `[jest-util]` Return correct value from `process.send` stub ([#11799](https://github.com/facebook/jest/pull/11799))
 
 ### Chore & Maintenance
 
