@@ -327,7 +327,7 @@ If you are using [Create React App](https://create-react-app.dev) then the [Type
 
 Otherwise, please see our [Getting Started](GettingStarted.md#using-typescript) guide for to get setup with TypeScript.
 
-You can see an example of using Jest with TypeScript in our [GitHub repository](https://github.com/facebook/jest/tree/master/examples/typescript).
+You can see an example of using Jest with TypeScript in our [GitHub repository](https://github.com/facebook/jest/tree/main/examples/typescript).
 
 ### `jest.MockedFunction`
 

@@ -3,7 +3,7 @@ name: Node CI
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
       - '**'
@@ -15,7 +15,7 @@ jobs:
       - uses: rokroskar/workflow-run-cleanup-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    if: "!startsWith(github.ref, 'refs/tags/') && github.ref != 'refs/heads/master'"
+    if: "!startsWith(github.ref, 'refs/tags/') && github.ref != 'refs/heads/main'"
 
   prepare-yarn-cache:
     name: Prepare yarn cache
@@ -69,7 +69,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x, 16.x]
+        # https://github.com/nodejs/node/issues/40030
+        node-version: [10.x, 12.x, 14.x, 15.x, 16.8]
         os: [ubuntu-latest, macOS-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     needs: prepare-yarn-cache

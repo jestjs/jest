@@ -1,14 +1,26 @@
-## master
+## main
 
 ### Features
 
 ### Fixes
 
+- `[@jest/reporters]` Use async transform if available to transform files with no coverage ([#11852](https://github.com/facebook/jest/pull/11852))
 - `[jest-util]` Return correct value from `process.send` stub ([#11799](https://github.com/facebook/jest/pull/11799))
 
 ### Chore & Maintenance
 
 ### Performance
+
+## 27.1.1
+
+### Features
+
+- `[jest-runtime]` Add experimental, limited (and undocumented) support for mocking ECMAScript Modules ([#11818](https://github.com/facebook/jest/pull/11818))
+
+### Fixes
+
+- `[jest-resolver]` Support `node:` prefix when importing Node core modules with ESM ([#11817](https://github.com/facebook/jest/pull/11817))
+- `[jest-types]` Export the `PrettyFormatOptions` interface ([#11801](https://github.com/facebook/jest/pull/11801))
 
 ## 27.1.0
 
@@ -2127,7 +2139,7 @@ We skipped 24.2.0 because a draft was accidentally published. Please use `24.3.0
 - Fix inconsistent name of complex values in pretty-format ([#4001](https://github.com/facebook/jest/pull/4001))
 - Fix issue mocking bound method ([#3805](https://github.com/facebook/jest/pull/3805))
 - Fix jest-circus ([#4290](https://github.com/facebook/jest/pull/4290))
-- Fix lint warning in master
+- Fix lint warning in main
 
   ([#4132](https://github.com/facebook/jest/pull/4132))
 
@@ -2229,7 +2241,7 @@ We skipped 24.2.0 because a draft was accidentally published. Please use `24.3.0
 - Support maxDepth option in React plugins ([#4208](https://github.com/facebook/jest/pull/4208))
 - Support SVG elements in HTMLElement plugin ([#4335](https://github.com/facebook/jest/pull/4335))
 - Test empty Immutable collections with {min: false} option ([#4121](https://github.com/facebook/jest/pull/4121))
-- test to debug travis failure in master ([#4145](https://github.com/facebook/jest/pull/4145))
+- test to debug travis failure in main ([#4145](https://github.com/facebook/jest/pull/4145))
 - testPathPattern message test ([#4006](https://github.com/facebook/jest/pull/4006))
 - Throw Error When Using Nested It Specs ([#4039](https://github.com/facebook/jest/pull/4039))
 - Throw when moduleNameMapper points to inexistent module ([#3567](https://github.com/facebook/jest/pull/3567))
@@ -2419,7 +2431,7 @@ See https://jestjs.io/blog/2016/12/15/2016-in-jest
 - Renamed `--jsonOutputFile` to `--outputFile`.
 - Added `jest-editor-support` for vscode and Nuclide integration.
 - Fixed `test.concurrent` unhandled promise rejections.
-- The Jest website is now auto-deployed when merging into master.
+- The Jest website is now auto-deployed when merging into main.
 - Updated `testRegex` to include `test.js` and `spec.js` files.
 - Fixes for `babel-plugin-jest-hoist` when using `jest.mock` with three arguments.
 - The `JSON` global in `jest-environment-node` now comes from the vm context instead of the parent context.
@@ -2740,7 +2752,7 @@ See https://jestjs.io/blog/2016/12/15/2016-in-jest
 - Fixed a memory leak with test contexts. Jest now properly cleans up test environments after each test. Added `--logHeapUsage` to log memory usage after each test. Note: this is option is meant for debugging memory leaks and might significantly slow down your test run.
 - Removed `mock-modules`, `node-haste` and `mocks` virtual modules. This is a breaking change of undocumented public API. Usage of this API can safely be automatically updated through an automated codemod:
 - Example: http://astexplorer.net/#/zrybZ6UvRA
-- Codemod: https://github.com/cpojer/js-codemod/blob/master/transforms/jest-update.js
+- Codemod: https://github.com/cpojer/js-codemod/blob/main/transforms/jest-update.js
 - jscodeshift: https://github.com/facebook/jscodeshift
 - Removed `navigator.onLine` and `mockSetReadOnlyProperty` from the global jsdom environment. Use `window.navigator.onLine = true;` in your test setup and `Object.defineProperty` instead.
 

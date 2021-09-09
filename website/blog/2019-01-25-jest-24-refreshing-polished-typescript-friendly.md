@@ -7,7 +7,7 @@ authorFBID: 100003004880942
 
 Today we are happy to announce the next major release of Jest - version 24! It's been 4 months since the last minor release, and 8 months since Jest 23, so this upgrade is a big one, with something for everyone! Highlights include built-in support for TypeScript by upgrading the Jest internals to Babel 7, fixing some long-standing issues with missing console output and performance issues when computing large diffs, and a brand new sparkling website. ✨
 
-For a full list of all changes see the [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md).
+For a full list of all changes see the [changelog](https://github.com/facebook/jest/blob/main/CHANGELOG.md).
 
 <!--truncate-->
 
@@ -80,7 +80,7 @@ The second one is an issue where Jest runs out of memory if the difference in se
 
 ## Breaking Changes
 
-While all breaking changes are listed in the [changelog](https://github.com/facebook/jest/blob/master/CHANGELOG.md), there's a few of them that are worth highlighting:
+While all breaking changes are listed in the [changelog](https://github.com/facebook/jest/blob/main/CHANGELOG.md), there's a few of them that are worth highlighting:
 
 - We've upgraded to Micromatch 3. While this might not affect every user, it is stricter in its parsing of globs than version 2, which is used in Jest 23. Please read through [this](https://github.com/micromatch/micromatch/issues/133#issuecomment-404211484) and linked issues for examples of invalid globs in case you have problems.
 - We've removed code remnants that was needed for Node 4. It was previously technically possible to run Jest 23 on Node 4 - that is no longer possible without polyfilling and transpiling.

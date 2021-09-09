@@ -176,8 +176,12 @@ export default class Resolver {
     const skipResolution =
       options && options.skipNodeResolution && !moduleName.includes(path.sep);
 
-    const resolveNodeModule = (name: Config.Path, throwIfNotFound = false) =>
-      Resolver.findNodeModule(name, {
+    const resolveNodeModule = (name: Config.Path, throwIfNotFound = false) => {
+      if (this.isCoreModule(name)) {
+        return name;
+      }
+
+      return Resolver.findNodeModule(name, {
         basedir: dirname,
         extensions,
         moduleDirectory,
@@ -186,6 +190,7 @@ export default class Resolver {
         rootDir: this._options.rootDir,
         throwIfNotFound,
       });
+    };
 
     if (!skipResolution) {
       module = resolveNodeModule(moduleName, Boolean(process.versions.pnp));

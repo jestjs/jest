@@ -5,12 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import dns from 'dns';
 // the point here is that it's the node core module
 // eslint-disable-next-line no-restricted-imports
 import {readFileSync} from 'fs';
 import {createRequire} from 'module';
 import {dirname, resolve} from 'path';
 import {fileURLToPath} from 'url';
+import prefixDns from 'node:dns';
 import {jest as jestObject} from '@jest/globals';
 import staticImportedStatefulFromCjs from '../fromCjs.mjs';
 import {double} from '../index';
@@ -176,4 +178,19 @@ test('require of ESM should throw correct error', () => {
       message: expect.stringContaining('Must use import to load ES Module'),
     }),
   );
+});
+
+test('can mock module', async () => {
+  jestObject.unstable_mockModule('../mockedModule.mjs', () => ({foo: 'bar'}), {
+    virtual: true,
+  });
+
+  const importedMock = await import('../mockedModule.mjs');
+
+  expect(Object.keys(importedMock)).toEqual(['foo']);
+  expect(importedMock.foo).toEqual('bar');
+});
+
+test('supports imports using "node:" prefix', () => {
+  expect(dns).toBe(prefixDns);
 });

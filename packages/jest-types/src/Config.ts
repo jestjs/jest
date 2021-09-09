@@ -61,7 +61,7 @@ export interface ConfigGlobals {
 }
 
 // This interface gets filled out when pretty-format is included
-interface PrettyFormatOptions {}
+export interface PrettyFormatOptions {}
 
 export type DefaultOptions = {
   automock: boolean;
