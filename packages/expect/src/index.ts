@@ -31,6 +31,10 @@ import {
   setState,
 } from './jestMatchersObject';
 import matchers from './matchers';
+import {
+  printReceivedStringContainExpectedResult,
+  printReceivedStringContainExpectedSubstring,
+} from './print';
 import spyMatchers from './spyMatchers';
 import toThrowMatchers, {
   createMatcher as createThrowMatcher,
@@ -357,6 +361,11 @@ const makeThrowingMatcher = (
 expect.extend = (matchers: MatchersObject): void =>
   setMatchers(matchers, false, expect);
 expect.matchers = matchers;
+
+expect.print = {
+  printReceivedStringContainExpectedResult,
+  printReceivedStringContainExpectedSubstring,
+};
 
 expect.anything = anything;
 expect.any = any;

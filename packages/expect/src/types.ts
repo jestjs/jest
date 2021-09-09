@@ -84,6 +84,17 @@ export type Expect = {
   [id: string]: AsymmetricMatcher;
   not: {[id: string]: AsymmetricMatcher};
   matchers: MatchersObject;
+  print: {
+    printReceivedStringContainExpectedResult(
+      received: string,
+      result: RegExpExecArray | null,
+    ): string;
+    printReceivedStringContainExpectedSubstring(
+      received: string,
+      start: number,
+      length: number,
+    ): string;
+  };
 };
 
 interface Constructable {
