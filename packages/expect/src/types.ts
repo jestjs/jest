@@ -29,6 +29,36 @@ export type RawMatcherFn = {
 export type ThrowingMatcherFn = (actual: any) => void;
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
 
+export type PrintObject = {
+  closeTo: (
+    receivedDiff: number,
+    expectedDiff: number,
+    precision: number,
+    isNot: boolean,
+  ) => string;
+  expectedConstructorName: (label: string, expected: Function) => string;
+  expectedConstructorNameNot: (label: string, expected: Function) => string;
+  receivedArrayContainExpectedItem: (
+    received: Array<unknown>,
+    index: number,
+  ) => string;
+  receivedConstructorName: (label: string, received: Function) => string;
+  receivedConstructorNameNot: (
+    label: string,
+    received: Function,
+    expected: Function,
+  ) => string;
+  receivedStringContainExpectedResult: (
+    received: string,
+    result: RegExpExecArray | null,
+  ) => string;
+  receivedStringContainExpectedSubstring: (
+    received: string,
+    start: number,
+    length: number,
+  ) => string;
+};
+
 export type Tester = (a: any, b: any) => boolean | undefined;
 
 export type MatcherState = {
@@ -84,17 +114,7 @@ export type Expect = {
   [id: string]: AsymmetricMatcher;
   not: {[id: string]: AsymmetricMatcher};
   matchers: MatchersObject;
-  print: {
-    printReceivedStringContainExpectedResult(
-      received: string,
-      result: RegExpExecArray | null,
-    ): string;
-    printReceivedStringContainExpectedSubstring(
-      received: string,
-      start: number,
-      length: number,
-    ): string;
-  };
+  print: PrintObject;
 };
 
 interface Constructable {

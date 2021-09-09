@@ -28,16 +28,7 @@ import {
   stringify,
 } from 'jest-matcher-utils';
 import {equals} from './jasmineUtils';
-import {
-  printCloseTo,
-  printExpectedConstructorName,
-  printExpectedConstructorNameNot,
-  printReceivedArrayContainExpectedItem,
-  printReceivedConstructorName,
-  printReceivedConstructorNameNot,
-  printReceivedStringContainExpectedResult,
-  printReceivedStringContainExpectedSubstring,
-} from './print';
+import print from './print';
 import type {MatcherState, MatchersObject} from './types';
 import {
   getObjectSubset,
@@ -183,14 +174,14 @@ const matchers: MatchersObject = {
             ? ''
             : `Received:     ${printReceived(received)}\n` +
               '\n' +
-              printCloseTo(receivedDiff, expectedDiff, precision, isNot))
+              print.closeTo(receivedDiff, expectedDiff, precision, isNot))
       : () =>
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           `Expected: ${printExpected(expected)}\n` +
           `Received: ${printReceived(received)}\n` +
           '\n' +
-          printCloseTo(receivedDiff, expectedDiff, precision, isNot);
+          print.closeTo(receivedDiff, expectedDiff, precision, isNot);
 
     return {message, pass};
   },
@@ -302,10 +293,10 @@ const matchers: MatchersObject = {
       ? () =>
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
-          printExpectedConstructorNameNot('Expected constructor', expected) +
+          print.expectedConstructorNameNot('Expected constructor', expected) +
           (typeof received.constructor === 'function' &&
           received.constructor !== expected
-            ? printReceivedConstructorNameNot(
+            ? print.receivedConstructorNameNot(
                 'Received constructor',
                 received.constructor,
                 expected,
@@ -314,14 +305,14 @@ const matchers: MatchersObject = {
       : () =>
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
-          printExpectedConstructorName('Expected constructor', expected) +
+          print.expectedConstructorName('Expected constructor', expected) +
           (isPrimitive(received) || Object.getPrototypeOf(received) === null
             ? `\nReceived value has no prototype\nReceived value: ${printReceived(
                 received,
               )}`
             : typeof received.constructor !== 'function'
             ? `\nReceived value: ${printReceived(received)}`
-            : printReceivedConstructorName(
+            : print.receivedConstructorName(
                 'Received constructor',
                 received.constructor,
               ));
@@ -509,7 +500,7 @@ const matchers: MatchersObject = {
           )}\n` +
           `${printLabel(labelReceived)}${isNot ? '    ' : ''}${
             isNot
-              ? printReceivedStringContainExpectedSubstring(
+              ? print.receivedStringContainExpectedSubstring(
                   received,
                   index,
                   String(expected).length,
@@ -539,7 +530,7 @@ const matchers: MatchersObject = {
         )}\n` +
         `${printLabel(labelReceived)}${isNot ? '    ' : ''}${
           isNot && Array.isArray(received)
-            ? printReceivedArrayContainExpectedItem(received, index)
+            ? print.receivedArrayContainExpectedItem(received, index)
             : printReceived(received)
         }` +
         (!isNot &&
@@ -595,7 +586,7 @@ const matchers: MatchersObject = {
         )}\n` +
         `${printLabel(labelReceived)}${isNot ? '    ' : ''}${
           isNot && Array.isArray(received)
-            ? printReceivedArrayContainExpectedItem(received, index)
+            ? print.receivedArrayContainExpectedItem(received, index)
             : printReceived(received)
         }`
       );
@@ -859,7 +850,7 @@ const matchers: MatchersObject = {
             ? matcherHint(matcherName, undefined, undefined, options) +
               '\n\n' +
               `Expected substring: not ${printExpected(expected)}\n` +
-              `Received string:        ${printReceivedStringContainExpectedSubstring(
+              `Received string:        ${print.receivedStringContainExpectedSubstring(
                 received,
                 received.indexOf(expected),
                 expected.length,
@@ -867,7 +858,7 @@ const matchers: MatchersObject = {
             : matcherHint(matcherName, undefined, undefined, options) +
               '\n\n' +
               `Expected pattern: not ${printExpected(expected)}\n` +
-              `Received string:      ${printReceivedStringContainExpectedResult(
+              `Received string:      ${print.receivedStringContainExpectedResult(
                 received,
                 typeof expected.exec === 'function'
                   ? expected.exec(received)

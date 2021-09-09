@@ -20,14 +20,7 @@ import {
   printWithType,
 } from 'jest-matcher-utils';
 import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
-import {
-  printExpectedConstructorName,
-  printExpectedConstructorNameNot,
-  printReceivedConstructorName,
-  printReceivedConstructorNameNot,
-  printReceivedStringContainExpectedResult,
-  printReceivedStringContainExpectedSubstring,
-} from './print';
+import print from './print';
 import type {
   ExpectationResult,
   MatcherState,
@@ -271,12 +264,12 @@ const toThrowExpectedClass = (
     ? () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        printExpectedConstructorNameNot('Expected constructor', expected) +
+        print.expectedConstructorNameNot('Expected constructor', expected) +
         (thrown !== null &&
         thrown.value != null &&
         typeof thrown.value.constructor === 'function' &&
         thrown.value.constructor !== expected
-          ? printReceivedConstructorNameNot(
+          ? print.receivedConstructorNameNot(
               'Received constructor',
               thrown.value.constructor,
               expected,
@@ -290,12 +283,12 @@ const toThrowExpectedClass = (
     : () =>
         matcherHint(matcherName, undefined, undefined, options) +
         '\n\n' +
-        printExpectedConstructorName('Expected constructor', expected) +
+        print.expectedConstructorName('Expected constructor', expected) +
         (thrown === null
           ? '\n' + DID_NOT_THROW
           : (thrown.value != null &&
             typeof thrown.value.constructor === 'function'
-              ? printReceivedConstructorName(
+              ? print.receivedConstructorName(
                   'Received constructor',
                   thrown.value.constructor,
                 )
@@ -389,7 +382,7 @@ const formatReceived = (
       if (index !== -1) {
         return (
           label +
-          printReceivedStringContainExpectedSubstring(
+          print.receivedStringContainExpectedSubstring(
             message,
             index,
             expected.length,
@@ -400,7 +393,7 @@ const formatReceived = (
     } else if (expected instanceof RegExp) {
       return (
         label +
-        printReceivedStringContainExpectedResult(
+        print.receivedStringContainExpectedResult(
           message,
           typeof expected.exec === 'function' ? expected.exec(message) : null,
         ) +
