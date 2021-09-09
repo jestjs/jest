@@ -356,6 +356,7 @@ const makeThrowingMatcher = (
 
 expect.extend = (matchers: MatchersObject): void =>
   setMatchers(matchers, false, expect);
+expect.matchers = matchers;
 
 expect.anything = anything;
 expect.any = any;

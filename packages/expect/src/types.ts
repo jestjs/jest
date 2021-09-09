@@ -83,6 +83,7 @@ export type Expect = {
   stringMatching(expected: string | RegExp): AsymmetricMatcher;
   [id: string]: AsymmetricMatcher;
   not: {[id: string]: AsymmetricMatcher};
+  matchers: MatchersObject;
 };
 
 interface Constructable {
