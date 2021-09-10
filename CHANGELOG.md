@@ -2,6 +2,9 @@
 
 ### Features
 
+- `[jest-resolver, jest-runtime]` Pass `conditions` to custom resolvers to enable them to implement support for package.json `exports` field ([#11859](https://github.com/facebook/jest/pull/11859))
+
+
 ### Fixes
 
 - `[@jest/reporters]` Use async transform if available to transform files with no coverage ([#11852](https://github.com/facebook/jest/pull/11852))
