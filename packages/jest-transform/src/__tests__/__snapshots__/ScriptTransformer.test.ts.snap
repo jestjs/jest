@@ -55,6 +55,7 @@ exports[`ScriptTransformer in async mode, passes expected transform options to g
           "skipFilter": false,
           "skipNodeResolution": false,
           "slowTestThreshold": 5,
+          "snapshotFormat": {},
           "snapshotResolver": undefined,
           "snapshotSerializers": Array [],
           "testEnvironment": "node",
