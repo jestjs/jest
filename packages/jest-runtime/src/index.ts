@@ -173,7 +173,7 @@ const supportsNodeColonModulePrefixInImport = (() => {
   return stdout === 'true';
 })();
 
-// consider "node" condition as well - maybe switching on `global.window` in the test env?
+// consider `node` & `browser` condition as well - maybe switching on `global.window` in the test env?
 const esmConditions = ['import', 'default'];
 const cjsConditions = ['require', 'default'];
 
@@ -299,8 +299,12 @@ export default class Runtime {
             this._virtualMocks,
             filePath,
             undefined,
-            // is this correct?
-            {conditions: cjsConditions},
+            // shouldn't really matter, but in theory this will make sure the caching is correct
+            {
+              conditions: this.unstable_shouldLoadAsEsm(filePath)
+                ? esmConditions
+                : cjsConditions,
+            },
           );
           this._transitiveShouldMock.set(moduleID, false);
         }
