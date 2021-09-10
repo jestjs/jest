@@ -788,11 +788,13 @@ This option allows the use of a custom resolver. This resolver must be a node mo
 ```json
 {
   "basedir": string,
+  "conditions": [string],
   "defaultResolver": "function(request, options)",
   "extensions": [string],
   "moduleDirectory": [string],
   "paths": [string],
   "packageFilter": "function(pkg, pkgdir)",
+  "pathFilter": "function(pkg, path, relativePath)",
   "rootDir": [string]
 }
 ```
@@ -848,6 +850,8 @@ module.exports = (request, options) => {
   });
 };
 ```
+
+While Jest does not support [package `exports`](https://nodejs.org/api/packages.html#packages_package_entry_points) (beyond `main`), Jest will provide `conditions` as an option when calling custom resolvers, which can be used to implement support for `exports` in userland. Jest will pass `['import', 'default']` when running a test in ESM mode, and `['require', 'default']` when running with CJS.
 
 ### `restoreMocks` \[boolean]
 
