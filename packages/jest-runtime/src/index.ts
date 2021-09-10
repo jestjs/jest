@@ -1143,7 +1143,7 @@ export default class Runtime {
       this._virtualModuleMocks,
       from,
       moduleName,
-      {conditions: cjsConditions},
+      {conditions: esmConditions},
     );
     this._explicitShouldMockModule.set(moduleID, true);
     this._moduleMockFactories.set(moduleID, mockFactory);
