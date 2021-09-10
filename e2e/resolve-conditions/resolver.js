@@ -10,12 +10,6 @@
 const {resolve: resolveExports} = require('resolve.exports');
 
 module.exports = (path, options) => {
-  const doWeCare = path.includes('fake-dep');
-
-  if (doWeCare) {
-    // console.log(path, options, new Error().stack);
-  }
-
   return options.defaultResolver(path, {
     ...options,
     pathFilter: options.conditions

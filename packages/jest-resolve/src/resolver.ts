@@ -140,7 +140,8 @@ export default class Resolver {
   ): Config.Path | null {
     const paths = options?.paths || this._options.modulePaths;
     const moduleDirectory = this._options.moduleDirectories;
-    const key = dirname + path.delimiter + moduleName;
+    const stringifiedOptions = options ? JSON.stringify(options) : '';
+    const key = dirname + path.delimiter + moduleName + stringifiedOptions;
     const defaultPlatform = this._options.defaultPlatform;
     const extensions = this._options.extensions.slice();
     let module;
@@ -327,7 +328,8 @@ export default class Resolver {
     moduleName = '',
     options?: ResolveModuleConfig,
   ): string {
-    const key = from + path.delimiter + moduleName;
+    const stringifiedOptions = options ? JSON.stringify(options) : '';
+    const key = from + path.delimiter + moduleName + stringifiedOptions;
     const cachedModuleID = this._moduleIDCache.get(key);
     if (cachedModuleID) {
       return cachedModuleID;
@@ -347,7 +349,8 @@ export default class Resolver {
       moduleType +
       sep +
       (absolutePath ? absolutePath + sep : '') +
-      (mockPath ? mockPath + sep : '');
+      (mockPath ? mockPath + sep : '') +
+      (stringifiedOptions ? stringifiedOptions + sep : '');
 
     this._moduleIDCache.set(key, id);
     return id;

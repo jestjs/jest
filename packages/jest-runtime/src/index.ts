@@ -298,6 +298,9 @@ export default class Runtime {
           const moduleID = this._resolver.getModuleID(
             this._virtualMocks,
             filePath,
+            undefined,
+            // is this correct?
+            {conditions: cjsConditions},
           );
           this._transitiveShouldMock.set(moduleID, false);
         }
@@ -648,6 +651,7 @@ export default class Runtime {
       this._virtualModuleMocks,
       from,
       moduleName,
+      {conditions: esmConditions},
     );
 
     if (this._moduleMockRegistry.has(moduleID)) {
@@ -714,10 +718,12 @@ export default class Runtime {
     options?: InternalModuleOptions,
     isRequireActual = false,
   ): T {
+    const isInternal = options?.isInternalModule ?? false;
     const moduleID = this._resolver.getModuleID(
       this._virtualMocks,
       from,
       moduleName,
+      isInternal ? undefined : {conditions: cjsConditions},
     );
     let modulePath: string | undefined;
 
@@ -745,9 +751,11 @@ export default class Runtime {
     }
 
     if (!modulePath) {
-      modulePath = this._resolveModule(from, moduleName, {
-        conditions: cjsConditions,
-      });
+      modulePath = this._resolveModule(
+        from,
+        moduleName,
+        isInternal ? undefined : {conditions: cjsConditions},
+      );
     }
 
     if (this.unstable_shouldLoadAsEsm(modulePath)) {
@@ -764,7 +772,7 @@ export default class Runtime {
 
     let moduleRegistry;
 
-    if (options?.isInternalModule) {
+    if (isInternal) {
       moduleRegistry = this._internalModuleRegistry;
     } else if (this._isolatedModuleRegistry) {
       moduleRegistry = this._isolatedModuleRegistry;
@@ -839,6 +847,7 @@ export default class Runtime {
       this._virtualMocks,
       from,
       moduleName,
+      {conditions: cjsConditions},
     );
 
     const mockRegistry = this._isolatedMockRegistry || this._mockRegistry;
@@ -1109,6 +1118,7 @@ export default class Runtime {
       this._virtualMocks,
       from,
       moduleName,
+      {conditions: cjsConditions},
     );
     this._explicitShouldMock.set(moduleID, true);
     this._mockFactories.set(moduleID, mockFactory);
@@ -1129,6 +1139,7 @@ export default class Runtime {
       this._virtualModuleMocks,
       from,
       moduleName,
+      {conditions: cjsConditions},
     );
     this._explicitShouldMockModule.set(moduleID, true);
     this._moduleMockFactories.set(moduleID, mockFactory);
@@ -1180,7 +1191,7 @@ export default class Runtime {
   private _resolveModule(
     from: Config.Path,
     to: string | undefined,
-    options: ResolveModuleConfig,
+    options?: ResolveModuleConfig,
   ) {
     return to ? this._resolver.resolveModule(from, to, options) : from;
   }
@@ -1667,6 +1678,8 @@ export default class Runtime {
     const currentModuleID = this._resolver.getModuleID(
       this._virtualMocks,
       from,
+      undefined,
+      options,
     );
     if (
       this._transitiveShouldMock.get(currentModuleID) === false ||
@@ -1755,6 +1768,7 @@ export default class Runtime {
         this._virtualMocks,
         from,
         moduleName,
+        {conditions: cjsConditions},
       );
       this._explicitShouldMock.set(moduleID, false);
       return jestObject;
@@ -1764,6 +1778,7 @@ export default class Runtime {
         this._virtualMocks,
         from,
         moduleName,
+        {conditions: cjsConditions},
       );
       this._explicitShouldMock.set(moduleID, false);
       this._transitiveShouldMock.set(moduleID, false);
@@ -1778,6 +1793,7 @@ export default class Runtime {
         this._virtualMocks,
         from,
         moduleName,
+        {conditions: cjsConditions},
       );
       this._explicitShouldMock.set(moduleID, true);
       return jestObject;
