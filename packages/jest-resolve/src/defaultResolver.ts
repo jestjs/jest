@@ -59,6 +59,7 @@ export async function defaultResolverAsync(
   // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
   // needed for Yarn 1 which implements version 1 of the pnp spec
   if (process.versions.pnp === '1') {
+    // @ts-expect-error until https://github.com/arcanis/jest-pnp-resolver/pull/10 is released
     return pnpResolver(path, options);
   }
 
