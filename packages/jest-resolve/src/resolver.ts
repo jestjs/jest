@@ -733,8 +733,12 @@ export default class Resolver {
     const resolveNodeModule = async (
       name: Config.Path,
       throwIfNotFound = false,
-    ) =>
-      await Resolver.findNodeModuleAsync(name, {
+    ) => {
+      if (this.isCoreModule(name)) {
+        return name;
+      }
+
+      return await Resolver.findNodeModuleAsync(name, {
         basedir: dirname,
         conditions: options?.conditions,
         extensions,
@@ -744,6 +748,7 @@ export default class Resolver {
         rootDir: this._options.rootDir,
         throwIfNotFound,
       });
+    };
 
     if (!skipResolution) {
       module = await resolveNodeModule(
