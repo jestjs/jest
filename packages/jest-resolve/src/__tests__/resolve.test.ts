@@ -180,8 +180,7 @@ describe('findNodeModuleAsync', () => {
     expect(userResolverAsync.async.mock.calls[0][1]).toStrictEqual({
       basedir: '/',
       browser: true,
-      defaultResolver,
-      defaultResolverAsync,
+      defaultResolver: defaultResolverAsync,
       extensions: ['js'],
       moduleDirectory: ['node_modules'],
       paths: (nodePaths || []).concat(['/something']),
