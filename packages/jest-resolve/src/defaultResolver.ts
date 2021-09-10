@@ -7,15 +7,11 @@
 
 import * as fs from 'graceful-fs';
 import pnpResolver from 'jest-pnp-resolver';
-import {
-  AsyncOpts,
-  Opts as ResolveOpts,
-  SyncOpts,
-  sync as resolveSync,
-} from 'resolve';
 import resolveAsync = require('resolve');
+import type {AsyncOpts, Opts as ResolveOpts, SyncOpts} from 'resolve';
 import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';
+const resolveSync = resolveAsync.sync;
 
 export interface ResolverOptions extends ResolveOpts {
   basedir: Config.Path;
