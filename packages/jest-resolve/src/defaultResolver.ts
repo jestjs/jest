@@ -59,7 +59,7 @@ export async function defaultResolverAsync(
   // Yarn 2 adds support to `resolve` automatically so the pnpResolver is only
   // needed for Yarn 1 which implements version 1 of the pnp spec
   if (process.versions.pnp === '1') {
-    return Promise.resolve(await pnpResolver(path, options));
+    return pnpResolver(path, options);
   }
 
   return new Promise((resolve, reject) => {
