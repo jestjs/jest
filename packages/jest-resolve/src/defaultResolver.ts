@@ -194,7 +194,7 @@ function isFileAsync(
   cb: (err: Error | null, isFile?: boolean) => void,
 ): void {
   try {
-    // QUESTION: do we need an async version of statSyncCached?
+    // TODO: create an async version of statSyncCached
     const isFile = statSyncCached(file) === IPathType.FILE;
     cb(null, isFile);
   } catch (err) {
@@ -211,7 +211,7 @@ function isDirectoryAsync(
   cb: (err: Error | null, isDir?: boolean) => void,
 ): void {
   try {
-    // QUESTION: do we need an async version of statSyncCached?
+    // TODO: create an async version of statSyncCached
     const isDir = statSyncCached(dir) === IPathType.DIRECTORY;
     cb(null, isDir);
   } catch (err) {
@@ -228,7 +228,7 @@ function realpathAsync(
   cb: (err: Error | null, resolved?: string) => void,
 ): void {
   try {
-    // QUESTION: do we need an async version of realpathCached?
+    // TODO: create an async version of realpathCached
     const resolved = realpathCached(file);
     cb(null, resolved);
   } catch (err) {
@@ -246,7 +246,7 @@ function readPackageAsync(
   cb: (err: Error | null, pkgJson?: Record<string, unknown>) => void,
 ): void {
   try {
-    // QUESTION: do we need an async version of readPackageCached?
+    // TODO: create an async version of readPackageCached
     const pkgJson = readPackageCached(pkgfile);
     cb(null, pkgJson);
   } catch (err) {
