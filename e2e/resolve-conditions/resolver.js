@@ -25,9 +25,11 @@ function createPathFilter(conditions) {
 
     return (
       resolveExports(pkg, path, {
+        // `resolve.exports adds `node` unless `browser` is `false`, so let's add this ugly thing
+        browser: conditions.includes('browser'),
         conditions,
         // `resolve.exports adds `import` unless `require` is `false`, so let's add this ugly thing
-        require: !conditions.includes('import'),
+        require: conditions.includes('require'),
       }) || relativePath
     );
   };
