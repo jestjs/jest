@@ -173,7 +173,8 @@ const supportsNodeColonModulePrefixInImport = (() => {
   return stdout === 'true';
 })();
 
-const esmConditions = ['import', 'require', 'default'];
+// consider "node" condition as well - maybe switching on `global.window` in the test env?
+const esmConditions = ['import', 'default'];
 const cjsConditions = ['require', 'default'];
 
 export default class Runtime {
