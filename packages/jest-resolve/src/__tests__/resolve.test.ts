@@ -24,10 +24,12 @@ jest.mock('../__mocks__/userResolverAsync');
 // in very strange ways. Instead just spy on it and its `sync` method.
 jest.mock('resolve', () => {
   const originalModule = jest.requireActual('resolve');
-  return {
-    ...originalModule,
-    sync: jest.spyOn(originalModule, 'sync'),
-  };
+
+  const m = jest.fn((...args) => originalModule(...args));
+  Object.assign(m, originalModule);
+  m.sync = jest.spyOn(originalModule, 'sync');
+
+  return m;
 });
 
 const mockResolveSync = <

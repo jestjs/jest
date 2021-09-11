@@ -8,12 +8,12 @@
 import * as fs from 'graceful-fs';
 import pnpResolver from 'jest-pnp-resolver';
 import resolveAsync = require('resolve');
-import type {AsyncOpts, Opts as ResolveOpts, SyncOpts} from 'resolve';
 import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';
+
 const resolveSync = resolveAsync.sync;
 
-export interface ResolverOptions extends ResolveOpts {
+export interface ResolverOptions extends resolveAsync.Opts {
   basedir: Config.Path;
   browser?: boolean;
   conditions?: Array<string>;
@@ -80,7 +80,9 @@ export async function defaultResolverAsync(
 /**
  * getSyncResolveOptions returns resolution options that are used synchronously.
  */
-function getSyncResolveOptions(options: ResolverOptions): SyncOpts {
+function getSyncResolveOptions(
+  options: ResolverOptions,
+): resolveAsync.SyncOpts {
   return {
     ...options,
     isDirectory: isDirectorySync,
@@ -94,7 +96,9 @@ function getSyncResolveOptions(options: ResolverOptions): SyncOpts {
 /**
  * getAsyncResolveOptions returns resolution options that are used asynchronously.
  */
-function getAsyncResolveOptions(options: ResolverOptionsAsync): AsyncOpts {
+function getAsyncResolveOptions(
+  options: ResolverOptionsAsync,
+): resolveAsync.AsyncOpts {
   return {
     ...options,
     isDirectory: isDirectoryAsync,
