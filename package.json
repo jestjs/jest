@@ -154,6 +154,7 @@
     "@types/jest/pretty-format": "^25.1.0",
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
-    "jest-environment-node": "workspace:*"
+    "jest-environment-node": "workspace:*",
+    "react-native": "patch:react-native@0.64.0#./patches/react-native.patch"
   }
 }
