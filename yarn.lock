@@ -18074,7 +18074,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"react-native@npm:0.64.0":
+react-native@0.64.0:
   version: 0.64.0
   resolution: "react-native@npm:0.64.0"
   dependencies:
