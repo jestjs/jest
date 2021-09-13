@@ -83,7 +83,7 @@ mockFn.mock.instances[1] === b; // true
 
 Resets all information stored in the [`mockFn.mock.calls`](#mockfnmockcalls) and [`mockFn.mock.instances`](#mockfnmockinstances) arrays.
 
-Often this is useful when you want to clean up a mock's usage data between two assertions.
+Often this is useful when you want to clean up a mocks usage data between two assertions.
 
 Beware that `mockClear` will replace `mockFn.mock`, not just [`mockFn.mock.calls`](#mockfnmockcalls) and [`mockFn.mock.instances`](#mockfnmockinstances). You should, therefore, avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data.
 
