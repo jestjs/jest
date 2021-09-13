@@ -3,6 +3,7 @@
 ### Features
 
 - `[jest-resolver, jest-runtime]` Pass `conditions` to custom resolvers to enable them to implement support for package.json `exports` field ([#11859](https://github.com/facebook/jest/pull/11859))
+- `[jest-runtime]` Allow custom envs to specify `exportConditions` which is passed together with Jest's own conditions to custom resolvers ([#11863](https://github.com/facebook/jest/pull/11863))
 
 ### Fixes
 

@@ -42,6 +42,7 @@ export declare class JestEnvironment<Timer = unknown> {
   setup(): Promise<void>;
   teardown(): Promise<void>;
   handleTestEvent?: Circus.EventHandler;
+  exportConditions?: () => Array<string>;
 }
 
 export type Module = NodeModule;
