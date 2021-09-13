@@ -23,6 +23,7 @@ import type {ResolverConfig} from './types';
 type FindNodeModuleConfig = {
   basedir: Config.Path;
   browser?: boolean;
+  conditions?: Array<string>;
   extensions?: Array<string>;
   moduleDirectory?: Array<string>;
   paths?: Array<Config.Path>;
@@ -32,6 +33,7 @@ type FindNodeModuleConfig = {
 };
 
 export type ResolveModuleConfig = {
+  conditions?: Array<string>;
   skipNodeResolution?: boolean;
   paths?: Array<Config.Path>;
 };
@@ -113,6 +115,7 @@ export default class Resolver {
       return resolver(path, {
         basedir: options.basedir,
         browser: options.browser,
+        conditions: options.conditions,
         defaultResolver,
         extensions: options.extensions,
         moduleDirectory: options.moduleDirectory,
@@ -137,7 +140,8 @@ export default class Resolver {
   ): Config.Path | null {
     const paths = options?.paths || this._options.modulePaths;
     const moduleDirectory = this._options.moduleDirectories;
-    const key = dirname + path.delimiter + moduleName;
+    const stringifiedOptions = options ? JSON.stringify(options) : '';
+    const key = dirname + path.delimiter + moduleName + stringifiedOptions;
     const defaultPlatform = this._options.defaultPlatform;
     const extensions = this._options.extensions.slice();
     let module;
@@ -183,6 +187,7 @@ export default class Resolver {
 
       return Resolver.findNodeModule(name, {
         basedir: dirname,
+        conditions: options?.conditions,
         extensions,
         moduleDirectory,
         paths,
@@ -321,15 +326,22 @@ export default class Resolver {
     virtualMocks: Map<string, boolean>,
     from: Config.Path,
     moduleName = '',
+    options?: ResolveModuleConfig,
   ): string {
-    const key = from + path.delimiter + moduleName;
+    const stringifiedOptions = options ? JSON.stringify(options) : '';
+    const key = from + path.delimiter + moduleName + stringifiedOptions;
     const cachedModuleID = this._moduleIDCache.get(key);
     if (cachedModuleID) {
       return cachedModuleID;
     }
 
     const moduleType = this._getModuleType(moduleName);
-    const absolutePath = this._getAbsolutePath(virtualMocks, from, moduleName);
+    const absolutePath = this._getAbsolutePath(
+      virtualMocks,
+      from,
+      moduleName,
+      options,
+    );
     const mockPath = this._getMockPath(from, moduleName);
 
     const sep = path.delimiter;
@@ -337,7 +349,8 @@ export default class Resolver {
       moduleType +
       sep +
       (absolutePath ? absolutePath + sep : '') +
-      (mockPath ? mockPath + sep : '');
+      (mockPath ? mockPath + sep : '') +
+      (stringifiedOptions ? stringifiedOptions + sep : '');
 
     this._moduleIDCache.set(key, id);
     return id;
@@ -351,13 +364,14 @@ export default class Resolver {
     virtualMocks: Map<string, boolean>,
     from: Config.Path,
     moduleName: string,
+    options?: ResolveModuleConfig,
   ): Config.Path | null {
     if (this.isCoreModule(moduleName)) {
       return moduleName;
     }
     return this._isModuleResolved(from, moduleName)
       ? this.getModule(moduleName)
-      : this._getVirtualMockPath(virtualMocks, from, moduleName);
+      : this._getVirtualMockPath(virtualMocks, from, moduleName, options);
   }
 
   private _getMockPath(
@@ -373,12 +387,13 @@ export default class Resolver {
     virtualMocks: Map<string, boolean>,
     from: Config.Path,
     moduleName: string,
+    options?: ResolveModuleConfig,
   ): Config.Path {
     const virtualMockPath = this.getModulePath(from, moduleName);
     return virtualMocks.get(virtualMockPath)
       ? virtualMockPath
       : moduleName
-      ? this.resolveModule(from, moduleName)
+      ? this.resolveModule(from, moduleName, options)
       : from;
   }
 

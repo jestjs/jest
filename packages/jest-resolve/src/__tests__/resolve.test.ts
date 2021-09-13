@@ -105,6 +105,7 @@ describe('findNodeModule', () => {
     const newPath = Resolver.findNodeModule('test', {
       basedir: '/',
       browser: true,
+      conditions: ['conditions, woooo'],
       extensions: ['js'],
       moduleDirectory: ['node_modules'],
       paths: ['/something'],
@@ -116,6 +117,7 @@ describe('findNodeModule', () => {
     expect(userResolver.mock.calls[0][1]).toStrictEqual({
       basedir: '/',
       browser: true,
+      conditions: ['conditions, woooo'],
       defaultResolver,
       extensions: ['js'],
       moduleDirectory: ['node_modules'],

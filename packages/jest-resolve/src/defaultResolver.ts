@@ -19,7 +19,16 @@ type ResolverOptions = {
   moduleDirectory?: Array<string>;
   paths?: Array<Config.Path>;
   rootDir?: Config.Path;
-  packageFilter?: (pkg: any, pkgfile: string) => any;
+  packageFilter?: (
+    pkg: Record<string, unknown>,
+    pkgfile: string,
+  ) => Record<string, unknown>;
+  pathFilter?: (
+    pkg: Record<string, unknown>,
+    path: string,
+    relativePath: string,
+  ) => string;
+  conditions?: Array<string>;
 };
 
 // https://github.com/facebook/jest/pull/10617
@@ -48,6 +57,7 @@ export default function defaultResolver(
     isFile,
     moduleDirectory: options.moduleDirectory,
     packageFilter: options.packageFilter,
+    pathFilter: options.pathFilter,
     paths: options.paths,
     preserveSymlinks: false,
     readPackageSync,
