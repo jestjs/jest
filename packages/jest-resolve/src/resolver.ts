@@ -132,6 +132,7 @@ export default class Resolver {
       return resolver(path, {
         basedir: options.basedir,
         browser: options.browser,
+        conditions: options.conditions,
         defaultResolver,
         extensions: options.extensions,
         moduleDirectory: options.moduleDirectory,
@@ -165,6 +166,7 @@ export default class Resolver {
       const result = await resolver(path, {
         basedir: options.basedir,
         browser: options.browser,
+        conditions: options.conditions,
         defaultResolver: defaultResolverAsync,
         extensions: options.extensions,
         moduleDirectory: options.moduleDirectory,

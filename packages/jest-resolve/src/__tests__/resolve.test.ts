@@ -171,6 +171,7 @@ describe('findNodeModuleAsync', () => {
     const newPath = await Resolver.findNodeModuleAsync('test', {
       basedir: '/',
       browser: true,
+      conditions: ['conditions, woooo'],
       extensions: ['js'],
       moduleDirectory: ['node_modules'],
       paths: ['/something'],
@@ -182,6 +183,7 @@ describe('findNodeModuleAsync', () => {
     expect(userResolverAsync.async.mock.calls[0][1]).toStrictEqual({
       basedir: '/',
       browser: true,
+      conditions: ['conditions, woooo'],
       defaultResolver: defaultResolverAsync,
       extensions: ['js'],
       moduleDirectory: ['node_modules'],
