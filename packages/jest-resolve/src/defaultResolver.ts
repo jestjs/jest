@@ -7,29 +7,18 @@
 
 import * as fs from 'graceful-fs';
 import pnpResolver from 'jest-pnp-resolver';
-import {sync as resolveSync} from 'resolve';
+import {Opts as ResolveOpts, sync as resolveSync} from 'resolve';
 import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';
 
-type ResolverOptions = {
+interface ResolverOptions extends ResolveOpts {
   basedir: Config.Path;
   browser?: boolean;
+  conditions?: Array<string>;
   defaultResolver: typeof defaultResolver;
   extensions?: Array<string>;
-  moduleDirectory?: Array<string>;
-  paths?: Array<Config.Path>;
   rootDir?: Config.Path;
-  packageFilter?: (
-    pkg: Record<string, unknown>,
-    pkgfile: string,
-  ) => Record<string, unknown>;
-  pathFilter?: (
-    pkg: Record<string, unknown>,
-    path: string,
-    relativePath: string,
-  ) => string;
-  conditions?: Array<string>;
-};
+}
 
 // https://github.com/facebook/jest/pull/10617
 declare global {
@@ -51,14 +40,9 @@ export default function defaultResolver(
   }
 
   const result = resolveSync(path, {
-    basedir: options.basedir,
-    extensions: options.extensions,
+    ...options,
     isDirectory,
     isFile,
-    moduleDirectory: options.moduleDirectory,
-    packageFilter: options.packageFilter,
-    pathFilter: options.pathFilter,
-    paths: options.paths,
     preserveSymlinks: false,
     readPackageSync,
     realpathSync,
