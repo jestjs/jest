@@ -294,7 +294,7 @@ onNodeVersions('^12.17.0 || >=13.2.0', () => {
 
     it('should transform with transformer with only async transforms', () => {
       const {json, stderr} = runWithJson(dir, ['--no-cache'], {
-        nodeOptions: '--experimental-vm-modules',
+        nodeOptions: '--experimental-vm-modules --no-warnings',
       });
       expect(stderr).toMatch(/PASS/);
       expect(json.success).toBe(true);
@@ -311,7 +311,7 @@ onNodeVersions('^12.17.0 || >=13.2.0', () => {
 
     it("should use babel-jest's async transforms", () => {
       const {json, stderr} = runWithJson(dir, ['--no-cache'], {
-        nodeOptions: '--experimental-vm-modules',
+        nodeOptions: '--experimental-vm-modules --no-warnings',
       });
       expect(stderr).toMatch(/PASS/);
       expect(json.success).toBe(true);
@@ -323,7 +323,7 @@ onNodeVersions('^12.17.0 || >=13.2.0', () => {
     const dir = path.resolve(__dirname, '../transform/transform-esm-runner');
     test('runs test with native ESM', () => {
       const {json, stderr} = runWithJson(dir, ['--no-cache'], {
-        nodeOptions: '--experimental-vm-modules',
+        nodeOptions: '--experimental-vm-modules --no-warnings',
       });
 
       expect(stderr).toMatch(/PASS/);
@@ -339,7 +339,7 @@ onNodeVersions('^12.17.0 || >=13.2.0', () => {
     );
     test('runs test with native ESM', () => {
       const {json, stderr} = runWithJson(dir, ['--no-cache'], {
-        nodeOptions: '--experimental-vm-modules',
+        nodeOptions: '--experimental-vm-modules --no-warnings',
       });
 
       expect(stderr).toMatch(/PASS/);

@@ -15,7 +15,7 @@ const DIR = resolve(__dirname, '../native-esm-typescript');
 onNodeVersions('^12.16.0 || >=13.7.0', () => {
   test('runs TS test with native ESM', () => {
     const {exitCode, json} = runJest(DIR, [], {
-      nodeOptions: '--experimental-vm-modules',
+      nodeOptions: '--experimental-vm-modules --no-warnings',
     });
 
     expect(exitCode).toBe(0);

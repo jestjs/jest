@@ -24,7 +24,7 @@ test('test config is without transform', () => {
 onNodeVersions('^12.16.0 || >=13.7.0', () => {
   test('runs test with native ESM', () => {
     const {exitCode, stderr, stdout} = runJest(DIR, ['native-esm.test.js'], {
-      nodeOptions: '--experimental-vm-modules',
+      nodeOptions: '--experimental-vm-modules --no-warnings',
     });
 
     const {summary} = extractSummary(stderr);
@@ -41,7 +41,7 @@ onNodeVersions('>=14.3.0', () => {
     const {exitCode, stderr, stdout} = runJest(
       DIR,
       ['native-esm.tla.test.js'],
-      {nodeOptions: '--experimental-vm-modules'},
+      {nodeOptions: '--experimental-vm-modules --no-warnings'},
     );
 
     const {summary} = extractSummary(stderr);

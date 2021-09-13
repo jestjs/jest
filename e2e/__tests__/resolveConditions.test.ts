@@ -22,7 +22,7 @@ onNodeVersions('^12.16.0 || >=13.7.0', () => {
     // run multiple times to ensure there are no caching errors
     for (let i = 0; i < 5; i++) {
       const {exitCode} = runJest(dir, [], {
-        nodeOptions: '--experimental-vm-modules',
+        nodeOptions: '--experimental-vm-modules --no-warnings',
       });
       try {
         expect(exitCode).toBe(0);
