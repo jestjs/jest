@@ -19,6 +19,7 @@ languages_mapping: &languages_mapping
     'ru': 'ru'
     'uk': 'uk'
     'zh-CN': 'zh-Hans'
+    'vi': 'vi'
 
 #
 # Files configuration

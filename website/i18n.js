@@ -47,6 +47,9 @@ const localeConfigs = {
   'zh-Hans': {
     label: '简体中文',
   },
+  'vi': {
+    label: 'Vietnamese'
+  }
 };
 
 // Docusaurus 2 i18n config
