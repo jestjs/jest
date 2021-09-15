@@ -2,11 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "build",
-    // TODO: remove when shipped types are better
-    "paths": {
-      "@sinonjs/fake-timers": ["../../node_modules/@types/sinonjs__fake-timers"]
-    }
+    "outDir": "build"
   },
   "references": [
     {"path": "../jest-message-util"},
