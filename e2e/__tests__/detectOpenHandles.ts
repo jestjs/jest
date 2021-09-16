@@ -82,7 +82,7 @@ it('does not report crypto random data', () => {
   expect(textAfterTest).toBe('');
 });
 
-onNodeVersions('>=12.0.0', () => {
+onNodeVersions('>=12', () => {
   it('does not report ELD histograms', () => {
     const {stderr} = runJest('detect-open-handles', [
       'histogram',
