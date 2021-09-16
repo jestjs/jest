@@ -17,7 +17,7 @@ beforeAll(() => {
 });
 
 // The versions where vm.Module exists and commonjs with "exports" is not broken
-onNodeVersions('^12.16.0 || >=13.7.0', () => {
+onNodeVersions('>=12.16.0', () => {
   test('resolves package exports correctly with custom resolver', () => {
     // run multiple times to ensure there are no caching errors
     for (let i = 0; i < 5; i++) {

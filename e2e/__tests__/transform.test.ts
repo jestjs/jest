@@ -277,7 +277,7 @@ describe('transform-testrunner', () => {
   });
 });
 
-onNodeVersions('^12.17.0 || >=13.2.0', () => {
+onNodeVersions('>=12.17.0', () => {
   describe('esm-transformer', () => {
     const dir = path.resolve(__dirname, '../transform/esm-transformer');
 

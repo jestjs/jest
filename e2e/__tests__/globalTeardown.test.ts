@@ -136,7 +136,7 @@ test('globalTeardown throws with named export', () => {
   );
 });
 
-onNodeVersions('^12.17.0 || >=13.2.0', () => {
+onNodeVersions('>=12.17.0', () => {
   test('globalTeardown works with ESM modules', () => {
     const {exitCode} = runJest('global-teardown-esm', [`--no-cache`], {
       nodeOptions: '--experimental-vm-modules --no-warnings',
