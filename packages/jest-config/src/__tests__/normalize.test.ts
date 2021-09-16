@@ -9,6 +9,7 @@
 import {createHash} from 'crypto';
 import path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
+import semver = require('semver');
 import stripAnsi from 'strip-ansi';
 import type {Config} from '@jest/types';
 import {escapeStrForRegex} from 'jest-regex-util';
@@ -1130,6 +1131,10 @@ describe('preset', () => {
       {virtual: true},
     );
 
+    const errorMessage = semver.satisfies(process.versions.node, '>=16.9.1')
+      ? "TypeError: Cannot read properties of undefined (reading 'call')"
+      : /TypeError: Cannot read property 'call' of undefined[\s\S]* at /;
+
     await expect(
       normalize(
         {
@@ -1138,9 +1143,7 @@ describe('preset', () => {
         },
         {} as Config.Argv,
       ),
-    ).rejects.toThrowError(
-      /TypeError: Cannot read property 'call' of undefined[\s\S]* at /,
-    );
+    ).rejects.toThrowError(errorMessage);
   });
 
   test('works with "react-native"', async () => {
