@@ -69,8 +69,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # https://github.com/nodejs/node/issues/40030
-        node-version: [10.x, 12.x, 14.x, 15.x, 16.8]
+        node-version: [10.x, 12.x, 14.x, 15.x, 16.x]
         os: [ubuntu-latest, macOS-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     needs: prepare-yarn-cache
