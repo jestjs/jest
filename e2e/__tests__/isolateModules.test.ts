@@ -7,13 +7,7 @@
 
 import {tmpdir} from 'os';
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
-import {
-  cleanup,
-  createEmptyPackage,
-  extractSummary,
-  writeFiles,
-} from '../Utils';
+import {cleanup, createEmptyPackage, writeFiles} from '../Utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(tmpdir(), 'isolate-modules.test');
