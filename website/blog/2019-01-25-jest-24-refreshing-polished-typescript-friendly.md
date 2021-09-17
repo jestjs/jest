@@ -19,13 +19,13 @@ The aim of the redesign was to highlight more of what makes Jest awesome, and to
 
 ## TypeScript support
 
-See [this instructions](https://jestjs.io/docs/getting-started#using-typescript) to enable TypeScript support.
-
 We've upgraded to Babel 7 internally for Jest 24, which comes with support for TypeScript projects. That means Jest can support transpiling TypeScript out of the box, as long as you configure Babel to use it with `@babel/preset-typescript`. One caveat to the default TypeScript support, similar to Flow, is that Babel will only strip out the type annotations to make your code valid JavaScript. It will _not_ typecheck your code.
 
 While Jest has supported Babel 7 since version 22 released in December 2017, it required usage of a bridge module in order to fit in with Jest's support of Babel 6. In Jest 24 we have migrated entirely over to Babel 7, with great help from community member [@milesj](https://github.com/milesj). This means that setup is now easier and we can take advantage of other Babel 7 features, such as config loading and automatic `modules` transpilation. Make sure to remove the `babel-core@^7.0.0-bridge.0` as it's not needed now.
 
 If you want to run typechecks while you test, you should use [`ts-jest`](https://github.com/kulshekhar/ts-jest). You will need to configure the transformer, as Jest by default applies Babel to `.ts` (and `.tsx`) files. Alternatively, you can run `tsc` or even use a Jest runner to simultaneously transpile your TypeScript whilst running your tests! See [`jest-runner-tsc`](https://github.com/azz/jest-runner-tsc) for more information.
+
+See [the docs](/docs/getting-started#using-typescript) for more details.
 
 _Note that if you for whatever reason cannot upgrade to Babel 7, you can still use Jest 24 with `babel@6` as long as you keep `babel-jest` at version 23._
 
