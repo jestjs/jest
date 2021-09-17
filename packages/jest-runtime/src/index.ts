@@ -861,11 +861,13 @@ export default class Runtime {
       {conditions: this.cjsConditions},
     );
 
-    const mockRegistry = this._isolatedMockRegistry || this._mockRegistry;
-
-    if (mockRegistry.get(moduleID)) {
-      return mockRegistry.get(moduleID);
+    if (this._isolatedMockRegistry?.has(moduleID)) {
+      return this._isolatedMockRegistry.get(moduleID);
+    } else if (this._mockRegistry.has(moduleID)) {
+      return this._mockRegistry.get(moduleID);
     }
+
+    const mockRegistry = this._isolatedMockRegistry || this._mockRegistry;
 
     if (this._mockFactories.has(moduleID)) {
       // has check above makes this ok

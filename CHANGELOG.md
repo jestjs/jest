@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-runtime]` Fix regression when using `jest.isolateModules` and mocks ([#11882](https://github.com/facebook/jest/pull/11882))
+
 ### Chore & Maintenance
 
 ### Performance
