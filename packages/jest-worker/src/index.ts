@@ -45,7 +45,7 @@ function getExposedMethods(
   return exposedMethods;
 }
 
-export function serializeBigInt(data: unknown): unknown {
+export function serializerWithBigInt(data: unknown): unknown {
   if (typeof data === 'bigint') {
     return data.toString();
   }
