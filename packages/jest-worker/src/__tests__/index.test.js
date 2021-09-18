@@ -14,7 +14,7 @@ let Queue;
 beforeEach(() => {
   jest.mock('../Farm', () => {
     const fakeClass = jest.fn(() => ({
-      doWork: jest.fn().mockResolvedValue(42),
+      doWork: jest.fn().mockResolvedValue({bigIntValue: 2n, value: 42}),
     }));
 
     return {
@@ -158,7 +158,24 @@ it('calls doWork', async () => {
 
   const promise = farm.foo('car', 'plane');
 
-  expect(await promise).toEqual(42);
+  expect(await promise).toEqual({bigIntValue: 2n, value: 42});
+});
+
+it('checks if bigInt type is preserved', async () => {
+  const farm = new Farm('/tmp/baz.js', {
+    exposedMethods: ['foo', 'bar'],
+    numWorkers: 1,
+  });
+
+  const promise = farm.foo('car', 'plane');
+
+  expect(await promise).toEqual(
+    expect.objectContaining({
+      /* global BigInt */
+      bigIntValue: expect.any(BigInt),
+      value: expect.any(Number),
+    }),
+  );
 });
 
 it('calls getStderr and getStdout from worker', async () => {
