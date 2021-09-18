@@ -15,10 +15,12 @@
   },
   "dependencies": {
     "@types/node": "*",
+    "json-bigint": "^1.0.0",
     "merge-stream": "^2.0.0",
     "supports-color": "^8.0.0"
   },
   "devDependencies": {
+    "@types/json-bigint": "^1.0.1",
     "@types/merge-stream": "^1.1.2",
     "@types/supports-color": "^8.1.0",
     "get-stream": "^6.0.0",

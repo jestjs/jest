@@ -8,6 +8,7 @@
 /* eslint-disable local/ban-types-eventually */
 
 import {cpus} from 'os';
+import * as JSONbig from 'json-bigint';
 import Farm from './Farm';
 import WorkerPool from './WorkerPool';
 import type {
@@ -46,10 +47,7 @@ function getExposedMethods(
 }
 
 export function serializerWithBigInt(data: unknown): unknown {
-  if (typeof data === 'bigint') {
-    return data.toString();
-  }
-  return data;
+  return JSONbig.parse(JSONbig.stringify(data));
 }
 
 /**
