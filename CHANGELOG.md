@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-transform]` Improve the unexpected token error message. ([#11807](https://github.com/facebook/jest/pull/11807))
+
 ### Fixes
 
 ### Chore & Maintenance
