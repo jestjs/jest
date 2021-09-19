@@ -46,7 +46,7 @@ ${DOT}If you are trying to use ECMAScript Modules, see ${chalk.underline(
       'https://jestjs.io/docs/ecmascript-modules',
     )} for how to enable it.
 ${DOT}If you are trying to use TypeScript, see ${chalk.underline(
-      'https://jestjs.io/docs/getting-started#using-typescript'
+      'https://jestjs.io/docs/getting-started#using-typescript',
     )}
 ${DOT}To have some of your "node_modules" files transformed, you can specify a custom ${chalk.bold(
       '"transformIgnorePatterns"',
