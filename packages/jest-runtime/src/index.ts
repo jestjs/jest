@@ -22,6 +22,7 @@ import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import execa = require('execa');
 import * as fs from 'graceful-fs';
+import slash = require('slash');
 import stripBOM = require('strip-bom');
 import type {
   Jest,
@@ -2004,7 +2005,7 @@ export default class Runtime {
 
   private _logFormattedReferenceError(errorMessage: string) {
     const testPath = this._testPath
-      ? ` From ${path.relative(this._config.rootDir, this._testPath)}.`
+      ? ` From ${slash(path.relative(this._config.rootDir, this._testPath))}.`
       : '';
     const originalStack = new ReferenceError(`${errorMessage}${testPath}`)
       .stack!.split('\n')
