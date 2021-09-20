@@ -1975,7 +1975,10 @@ export default class Runtime {
   }
 
   private _logFormattedReferenceError(errorMessage: string) {
-    const originalStack = new ReferenceError(errorMessage)
+    const testPath = this._testPath
+      ? ` From test ${path.relative(this._config.rootDir, this._testPath)}.`
+      : '';
+    const originalStack = new ReferenceError(`${errorMessage}${testPath}`)
       .stack!.split('\n')
       // Remove this file from the stack (jest-message-utils will keep one line)
       .filter(line => line.indexOf(__filename) === -1)
