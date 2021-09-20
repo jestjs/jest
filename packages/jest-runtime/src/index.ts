@@ -226,6 +226,7 @@ export default class Runtime {
   private jestGlobals?: JestGlobals;
   private readonly esmConditions: Array<string>;
   private readonly cjsConditions: Array<string>;
+  private isTornDown = false;
 
   constructor(
     config: Config.ProjectConfig,
@@ -1199,6 +1200,8 @@ export default class Runtime {
     this._v8CoverageResult = [];
     this._v8CoverageInstrumenter = undefined;
     this._moduleImplementation = undefined;
+
+    this.isTornDown = true;
   }
 
   private _resolveModule(
@@ -1284,6 +1287,14 @@ export default class Runtime {
     moduleRegistry: ModuleRegistry,
     from: Config.Path | null,
   ) {
+    if (this.isTornDown) {
+      this._logFormattedReferenceError(
+        'You are trying to `import` a file after the Jest environment has been torn down.',
+      );
+      process.exitCode = 1;
+      return;
+    }
+
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
       return;
@@ -1847,6 +1858,7 @@ export default class Runtime {
     };
     const _getFakeTimers = () => {
       if (
+        this.isTornDown ||
         !(this._environment.fakeTimers || this._environment.fakeTimersModern)
       ) {
         this._logFormattedReferenceError(
