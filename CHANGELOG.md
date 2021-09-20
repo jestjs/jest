@@ -5,6 +5,8 @@
 ### Fixes
 
 - `[jest-runtime]` Fix regression when using `jest.isolateModules` and mocks ([#11882](https://github.com/facebook/jest/pull/11882))
+- `[jest-runtime]` Include test name when importing modules after test has completed ([#11885](https://github.com/facebook/jest/pull/11885))
+- `[jest-runtime]` Error when ESM import is used after test is torn down ([#11885](https://github.com/facebook/jest/pull/11885))
 
 ### Chore & Maintenance
 
