@@ -22,6 +22,7 @@ import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import execa = require('execa');
 import * as fs from 'graceful-fs';
+import slash = require('slash');
 import stripBOM = require('strip-bom');
 import type {
   Jest,
@@ -226,6 +227,7 @@ export default class Runtime {
   private jestGlobals?: JestGlobals;
   private readonly esmConditions: Array<string>;
   private readonly cjsConditions: Array<string>;
+  private isTornDown = false;
 
   constructor(
     config: Config.ProjectConfig,
@@ -531,6 +533,14 @@ export default class Runtime {
     referencingIdentifier: string,
     context: VMContext,
   ) {
+    if (this.isTornDown) {
+      this._logFormattedReferenceError(
+        'You are trying to `import` a file after the Jest environment has been torn down.',
+      );
+      process.exitCode = 1;
+      return;
+    }
+
     if (specifier === '@jest/globals') {
       const fromCache = this._esmoduleRegistry.get('@jest/globals');
 
@@ -575,6 +585,14 @@ export default class Runtime {
   }
 
   private async linkAndEvaluateModule(module: VMModule) {
+    if (this.isTornDown) {
+      this._logFormattedReferenceError(
+        'You are trying to `import` a file after the Jest environment has been torn down.',
+      );
+      process.exitCode = 1;
+      return;
+    }
+
     if (module.status === 'unlinked') {
       // since we might attempt to link the same module in parallel, stick the promise in a weak map so every call to
       // this method can await it
@@ -1199,6 +1217,8 @@ export default class Runtime {
     this._v8CoverageResult = [];
     this._v8CoverageInstrumenter = undefined;
     this._moduleImplementation = undefined;
+
+    this.isTornDown = true;
   }
 
   private _resolveModule(
@@ -1284,6 +1304,14 @@ export default class Runtime {
     moduleRegistry: ModuleRegistry,
     from: Config.Path | null,
   ) {
+    if (this.isTornDown) {
+      this._logFormattedReferenceError(
+        'You are trying to `import` a file after the Jest environment has been torn down.',
+      );
+      process.exitCode = 1;
+      return;
+    }
+
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
       return;
@@ -1847,6 +1875,7 @@ export default class Runtime {
     };
     const _getFakeTimers = () => {
       if (
+        this.isTornDown ||
         !(this._environment.fakeTimers || this._environment.fakeTimersModern)
       ) {
         this._logFormattedReferenceError(
@@ -1975,7 +2004,10 @@ export default class Runtime {
   }
 
   private _logFormattedReferenceError(errorMessage: string) {
-    const originalStack = new ReferenceError(errorMessage)
+    const testPath = this._testPath
+      ? ` From ${slash(path.relative(this._config.rootDir, this._testPath))}.`
+      : '';
+    const originalStack = new ReferenceError(`${errorMessage}${testPath}`)
       .stack!.split('\n')
       // Remove this file from the stack (jest-message-utils will keep one line)
       .filter(line => line.indexOf(__filename) === -1)
