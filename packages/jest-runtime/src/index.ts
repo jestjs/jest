@@ -2004,7 +2004,7 @@ export default class Runtime {
 
   private _logFormattedReferenceError(errorMessage: string) {
     const testPath = this._testPath
-      ? ` From test ${path.relative(this._config.rootDir, this._testPath)}.`
+      ? ` From ${path.relative(this._config.rootDir, this._testPath)}.`
       : '';
     const originalStack = new ReferenceError(`${errorMessage}${testPath}`)
       .stack!.split('\n')
