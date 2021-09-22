@@ -14,7 +14,7 @@
     "@types/jest": "*",
     "@types/node": "*",
     "@types/semver": "^7.1.0",
-    "ansi-regex": "^5.0.0",
+    "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
     "pretty-format": "^27.2.0",
     "semver": "^7.3.2"
