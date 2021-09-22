@@ -89,7 +89,7 @@ Add the following section to your `package.json`:
 }
 ```
 
-Finally, run `yarn test` or `npm run test` and Jest will print this message:
+Finally, run `yarn test` or `npm test` and Jest will print this message:
 
 ```bash
 PASS  ./sum.test.js
