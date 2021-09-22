@@ -2574,7 +2574,7 @@ __metadata:
     "@types/which": ^2.0.0
     "@typescript-eslint/eslint-plugin": ^4.1.0
     "@typescript-eslint/parser": ^4.1.0
-    ansi-regex: ^5.0.0
+    ansi-regex: ^5.0.1
     ansi-styles: ^5.0.0
     babel-plugin-replace-ts-export-assignment: ^0.0.2
     camelcase: ^6.2.0
@@ -2727,7 +2727,7 @@ __metadata:
     "@types/jest": "*"
     "@types/node": "*"
     "@types/semver": ^7.1.0
-    ansi-regex: ^5.0.0
+    ansi-regex: ^5.0.1
     ansi-styles: ^5.0.0
     pretty-format: ^27.2.0
     semver: ^7.3.2
@@ -5636,10 +5636,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ansi-regex@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "ansi-regex@npm:5.0.0"
-  checksum: cbd9b5c9dbbb4a949c2a6e93f1c6cc19f0683d8a4724d08d2158627be6d373f0f3ba1f4ada01dce7ee141f2ba2628fbbd29932c7d49926e3b630c7f329f3178b
+"ansi-regex@npm:^5.0.0, ansi-regex@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "ansi-regex@npm:5.0.1"
+  checksum: c944e1229f022a2071f7477ea425964328c577d2c752083fe564ea0513b6d733c9ec65102f6d4d2b54cba0cb2dc969648b60d567abeff13dc95ecc0b9b97737d
   languageName: node
   linkType: hard
 
@@ -13176,7 +13176,7 @@ fsevents@^1.2.7:
     "@types/natural-compare": ^1.4.0
     "@types/prettier": ^2.1.5
     "@types/semver": ^7.1.0
-    ansi-regex: ^5.0.0
+    ansi-regex: ^5.0.1
     ansi-styles: ^5.0.0
     babel-preset-current-node-syntax: ^1.0.0
     chalk: ^4.0.0
@@ -17443,7 +17443,7 @@ fsevents@^1.2.7:
     "@types/react": "*"
     "@types/react-is": ^17.0.0
     "@types/react-test-renderer": "*"
-    ansi-regex: ^5.0.0
+    ansi-regex: ^5.0.1
     ansi-styles: ^5.0.0
     immutable: 4.0.0-rc.9
     jest-util: ^27.2.0
