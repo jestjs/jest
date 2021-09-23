@@ -14,6 +14,6 @@ test('prints useful error for environment methods after test is done', () => {
 
   expect(wrap(interestingLines)).toMatchSnapshot();
   expect(stderr.split('\n')[9]).toBe(
-    'ReferenceError: You are trying to access a property or method of the Jest environment after it has been torn down.',
+    'ReferenceError: You are trying to access a property or method of the Jest environment after it has been torn down. From __tests__/afterTeardown.test.js.',
   );
 });

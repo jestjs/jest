@@ -42,6 +42,7 @@ export declare class JestEnvironment<Timer = unknown> {
   setup(): Promise<void>;
   teardown(): Promise<void>;
   handleTestEvent?: Circus.EventHandler;
+  exportConditions?: () => Array<string>;
 }
 
 export type Module = NodeModule;
@@ -135,6 +136,14 @@ export interface Jest {
   mock(
     moduleName: string,
     moduleFactory?: () => unknown,
+    options?: {virtual?: boolean},
+  ): Jest;
+  /**
+   * Mocks a module with the provided module factory when it is being imported.
+   */
+  unstable_mockModule<T = unknown>(
+    moduleName: string,
+    moduleFactory: () => Promise<T> | T,
     options?: {virtual?: boolean},
   ): Jest;
   /**

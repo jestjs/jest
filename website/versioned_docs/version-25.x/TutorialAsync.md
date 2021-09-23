@@ -160,6 +160,6 @@ it('tests error with async/await and rejects', async () => {
 });
 ```
 
-The code for this example is available at [examples/async](https://github.com/facebook/jest/tree/master/examples/async).
+The code for this example is available at [examples/async](https://github.com/facebook/jest/tree/main/examples/async).
 
 If you'd like to test timers, like `setTimeout`, take a look at the [Timer mocks](TimerMocks.md) documentation.

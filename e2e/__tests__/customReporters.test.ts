@@ -161,7 +161,7 @@ describe('Custom Reporters Integration', () => {
     expect(exitCode).toBe(1);
   });
 
-  onNodeVersions('^12.17.0 || >=13.2.0', () => {
+  onNodeVersions('>=12.17.0', () => {
     test('supports reporter written in ESM', () => {
       writeFiles(DIR, {
         '__tests__/test.test.js': `test('test', () => {});`,

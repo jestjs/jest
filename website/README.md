@@ -30,7 +30,7 @@ Note, you can also use `yarn workspace jest-website start` from the root of the 
 
 ## Publish the website
 
-The site is deployed on each PR merged to master by Netlify:
+The site is deployed on each PR merged to main by Netlify:
 
 - Netlify site: https://app.netlify.com/sites/jestjs
 - Netlify url: https://jestjs.netlify.app

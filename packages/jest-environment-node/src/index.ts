@@ -18,7 +18,7 @@ type Timer = {
   unref: () => Timer;
 };
 
-class NodeEnvironment implements JestEnvironment {
+class NodeEnvironment implements JestEnvironment<Timer> {
   context: Context | null;
   fakeTimers: LegacyFakeTimers<Timer> | null;
   fakeTimersModern: ModernFakeTimers | null;
