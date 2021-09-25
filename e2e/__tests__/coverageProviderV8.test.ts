@@ -7,6 +7,7 @@
 
 import * as path from 'path';
 import wrap from 'jest-snapshot-serializer-raw';
+import {onNodeVersions} from '@jest/test-utils';
 import runJest from '../runJest';
 
 const DIR = path.resolve(__dirname, '../coverage-provider-v8');
@@ -63,34 +64,40 @@ test('prints correct coverage report, if a TS module is transpiled by Babel to C
   expect(wrap(stdout)).toMatchSnapshot();
 });
 
-test('prints correct coverage report, if an ESM module is put under test without transformation', () => {
-  const sourcemapDir = path.join(DIR, 'esm-native-without-sourcemap');
+// The versions where vm.Module exists and commonjs with "exports" is not broken
+onNodeVersions('>=12.16.0', () => {
+  test('prints correct coverage report, if an ESM module is put under test without transformation', () => {
+    const sourcemapDir = path.join(DIR, 'esm-native-without-sourcemap');
 
-  const {stdout, exitCode} = runJest(
-    sourcemapDir,
-    ['--coverage', '--coverage-provider', 'v8', '--no-cache'],
-    {
-      nodeOptions: '--experimental-vm-modules --no-warnings',
-      stripAnsi: true,
-    },
-  );
+    const {stdout, exitCode} = runJest(
+      sourcemapDir,
+      ['--coverage', '--coverage-provider', 'v8', '--no-cache'],
+      {
+        nodeOptions: '--experimental-vm-modules --no-warnings',
+        stripAnsi: true,
+      },
+    );
 
-  expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
+    expect(exitCode).toBe(0);
+    expect(wrap(stdout)).toMatchSnapshot();
+  });
 });
 
-test('prints correct coverage report, if a TS module is transpiled by custom transformer to ESM put under test', () => {
-  const sourcemapDir = path.join(DIR, 'esm-with-custom-transformer');
+// The versions where vm.Module exists and commonjs with "exports" is not broken
+onNodeVersions('>=12.16.0', () => {
+  test('prints correct coverage report, if a TS module is transpiled by custom transformer to ESM put under test', () => {
+    const sourcemapDir = path.join(DIR, 'esm-with-custom-transformer');
 
-  const {stdout, exitCode} = runJest(
-    sourcemapDir,
-    ['--coverage', '--coverage-provider', 'v8', '--no-cache'],
-    {
-      nodeOptions: '--experimental-vm-modules --no-warnings',
-      stripAnsi: true,
-    },
-  );
+    const {stdout, exitCode} = runJest(
+      sourcemapDir,
+      ['--coverage', '--coverage-provider', 'v8', '--no-cache'],
+      {
+        nodeOptions: '--experimental-vm-modules --no-warnings',
+        stripAnsi: true,
+      },
+    );
 
-  expect(exitCode).toBe(0);
-  expect(wrap(stdout)).toMatchSnapshot();
+    expect(exitCode).toBe(0);
+    expect(wrap(stdout)).toMatchSnapshot();
+  });
 });
