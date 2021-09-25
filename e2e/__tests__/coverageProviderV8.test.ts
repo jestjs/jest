@@ -81,10 +81,7 @@ onNodeVersions('>=12.16.0', () => {
     expect(exitCode).toBe(0);
     expect(wrap(stdout)).toMatchSnapshot();
   });
-});
 
-// The versions where vm.Module exists and commonjs with "exports" is not broken
-onNodeVersions('>=12.16.0', () => {
   test('prints correct coverage report, if a TS module is transpiled by custom transformer to ESM put under test', () => {
     const sourcemapDir = path.join(DIR, 'esm-with-custom-transformer');
 
