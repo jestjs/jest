@@ -1470,7 +1470,7 @@ export default class Runtime {
 
     this._fileTransforms.set(filename, {
       ...transformedFile,
-      wrapperLength: this.constructModuleWrapperStart().length,
+      wrapperLength: 0,
     });
 
     if (transformedFile.sourceMapPath) {

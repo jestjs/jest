@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-runtime]` Correct `wrapperLength` value for ESM modules. ([#11893](https://github.com/facebook/jest/pull/11893))
+
 ### Chore & Maintenance
 
 ### Performance
