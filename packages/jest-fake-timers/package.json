@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@jest/types": "^27.1.1",
-    "@sinonjs/fake-timers": "^8.0.0",
+    "@sinonjs/fake-timers": "^8.0.1",
     "@types/node": "*",
     "jest-message-util": "^27.2.0",
     "jest-mock": "^27.1.1",
