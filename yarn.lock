@@ -2531,7 +2531,7 @@ __metadata:
   resolution: "@jest/fake-timers@workspace:packages/jest-fake-timers"
   dependencies:
     "@jest/types": ^27.1.1
-    "@sinonjs/fake-timers": ^7.0.2
+    "@sinonjs/fake-timers": ^8.0.1
     "@types/node": "*"
     "@types/sinonjs__fake-timers": ^6.0.1
     jest-message-util: ^27.2.2
@@ -4151,12 +4151,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sinonjs/fake-timers@npm:^7.0.2":
-  version: 7.1.2
-  resolution: "@sinonjs/fake-timers@npm:7.1.2"
+"@sinonjs/fake-timers@npm:^8.0.1":
+  version: 8.0.1
+  resolution: "@sinonjs/fake-timers@npm:8.0.1"
   dependencies:
     "@sinonjs/commons": ^1.7.0
-  checksum: 5ce48e40db14d7e1419bae287b84559133d580cb56130b51d7479dff318bfafed87531f8b48f618f07e3c9a6113c9e3f00286805d55de64986b9cccb8eb6d5cf
+  checksum: f9f73504278c94ab9337d36e9f594082451f55fa7824e8fcd650354aaa0427c3bfb4ea26ff9afdb10e0d3c48da46452d0754bc0248aeb987584d47af63115e3d
   languageName: node
   linkType: hard
 

@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[@jest/fake-timers]` Update `@sinonjs/fake-timers` to v8 ([#11879](https://github.com/facebook/jest/pull/11879))
+
 ### Fixes
 
 ### Chore & Maintenance
