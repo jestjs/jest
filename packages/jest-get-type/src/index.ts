@@ -57,7 +57,7 @@ export function getType(value: unknown): ValueType {
     return 'symbol';
   }
 
-  throw new Error(`value of unknown type: ${value}`);
+  throw new Error(`value of unknown type: ${typeof value} (${value})`);
 }
 
 export const isPrimitive = (value: unknown): boolean => Object(value) !== value;
