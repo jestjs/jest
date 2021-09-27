@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- `[jest-reporters]` Call `destroy` on `v8-to-istanbul` converters to free memory ([#11896](https://github.com/facebook/jest/pull/11896))
+
 ### Chore & Maintenance
 
 ### Performance
