@@ -40,7 +40,7 @@
     "jest-validate": "^27.2.3",
     "slash": "^3.0.0",
     "strip-bom": "^4.0.0",
-    "yargs": "^16.0.3"
+    "yargs": "^16.2.0"
   },
   "devDependencies": {
     "@jest/test-utils": "^27.2.3",
