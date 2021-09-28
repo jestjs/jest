@@ -220,8 +220,7 @@ Indicates which provider should be used to instrument code for coverage. Allowed
 
 Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
 
-
-### `coverageReporters` \[array&lt;string | [string, options]&gt;]
+### `coverageReporters` \[array&lt;string | \[string, options]&gt;]
 
 Default: `["clover", "json", "lcov", "text"]`
 
@@ -233,9 +232,7 @@ Additional options can be passed using the tuple form. For example, you may hide
 
 ```json
 {
-  "coverageReporters": [
-    "clover", "json", "lcov", ["text", {"skipFull": true}]
-  ]
+  "coverageReporters": ["clover", "json", "lcov", ["text", {"skipFull": true}]]
 }
 ```
 
