@@ -302,6 +302,10 @@ Print your Jest config and then exits.
 
 Prevent tests from printing messages through the console.
 
+### `--testEnvironmentOptions`
+
+A JSON string with options that will be passed to the `testEnvironment`. The relevant options depend on the environment.
+
 ### `--testNamePattern=<regex>`
 
 Alias: `-t`. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like `"GET /api/posts with auth"`, then you can use `jest -t=auth`.
