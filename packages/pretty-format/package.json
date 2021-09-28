@@ -25,7 +25,7 @@
     "@types/react": "*",
     "@types/react-is": "^17.0.0",
     "@types/react-test-renderer": "*",
-    "immutable": "4.0.0-rc.15",
+    "immutable": "4.0.0-rc.9",
     "jest-util": "^27.2.3",
     "react": "*",
     "react-dom": "*",
