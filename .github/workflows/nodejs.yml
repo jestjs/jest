@@ -22,9 +22,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2
 
-      - uses: actions/setup-node@v2.4.0
+      - uses: actions/setup-node@v2
         with:
           node-version: 14.x
           cache: yarn
@@ -43,8 +43,8 @@ jobs:
     needs: prepare-yarn-cache
 
     steps:
-      - uses: actions/checkout@v2.3.4
-      - uses: actions/setup-node@v2.4.0
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
         with:
           node-version: 12.x
           cache: yarn
@@ -81,9 +81,9 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.symlinks true
         if: runner.os == 'Windows'
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2.4.0
+        uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
           cache: yarn
@@ -113,9 +113,9 @@ jobs:
           git config --global core.autocrlf false
           git config --global core.symlinks true
         if: runner.os == 'Windows'
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v2
       - name: Use Node.js 14.x
-        uses: actions/setup-node@v2.4.0
+        uses: actions/setup-node@v2
         with:
           node-version: 14.x
           cache: yarn
