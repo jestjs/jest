@@ -34,7 +34,6 @@
     "jest-validate": "^27.2.3",
     "jest-watcher": "^27.2.3",
     "micromatch": "^4.0.4",
-    "p-each-series": "^2.1.0",
     "rimraf": "^3.0.0",
     "slash": "^3.0.0",
     "strip-ansi": "^6.0.0"

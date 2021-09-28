@@ -6,7 +6,6 @@
  */
 
 import * as util from 'util';
-import pEachSeries = require('p-each-series');
 import type {Test} from '@jest/test-result';
 import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
@@ -30,9 +29,9 @@ export default async ({
   }
 
   if (globalModulePaths.size > 0) {
-    await pEachSeries(globalModulePaths, async modulePath => {
+    for (const modulePath of globalModulePaths) {
       if (!modulePath) {
-        return;
+        continue;
       }
 
       const correctConfig = allTests.find(
@@ -73,8 +72,6 @@ export default async ({
           )}`,
         );
       }
-    });
+    }
   }
-
-  return Promise.resolve();
 };
