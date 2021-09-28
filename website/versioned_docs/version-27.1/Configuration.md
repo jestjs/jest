@@ -220,21 +220,26 @@ Indicates which provider should be used to instrument code for coverage. Allowed
 
 Note that using `v8` is considered experimental. This uses V8's builtin code coverage rather than one based on Babel. It is not as well tested, and it has also improved in the last few releases of Node. Using the latest versions of node (v14 at the time of this writing) will yield better results.
 
-### `coverageReporters` \[array&lt;string *| \[*string, options]&gt;]
 
-Default: `["json", "lcov", "text", "clover"]`
+### `coverageReporters` \[array&lt;string | [string, options]&gt;]
+
+Default: `["clover", "json", "lcov", "text"]`
 
 A list of reporter names that Jest uses when writing coverage reports. Any [istanbul reporter](https://github.com/istanbuljs/istanbuljs/tree/master/packages/istanbul-reports/lib) can be used.
 
 _Note: Setting this option overwrites the default values. Add `"text"` or `"text-summary"` to see a coverage summary in the console output._
 
-_Note: You can pass additional options to the istanbul reporter using the tuple form. For example:_
+Additional options can be passed using the tuple form. For example, you may hide coverage report lines for all fully-covered files:
 
 ```json
-["json", ["lcov", {"projectRoot": "../../"}]]
+{
+  "coverageReporters": [
+    "clover", "json", "lcov", ["text", {"skipFull": true}]
+  ]
+}
 ```
 
-For the additional information about the options object shape you can refer to `CoverageReporterWithOptions` type in the [type definitions](https://github.com/facebook/jest/tree/main/packages/jest-types/src/Config.ts).
+For more information about the options object shape refer to `CoverageReporterWithOptions` type in the [type definitions](https://github.com/facebook/jest/tree/main/packages/jest-types/src/Config.ts).
 
 ### `coverageThreshold` \[object]
 
