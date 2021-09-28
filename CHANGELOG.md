@@ -6,6 +6,7 @@
 
 ### Fixes
 
+- `[jest-config]` Parse `testEnvironmentOptions` if received from CLI ([#11902](https://github.com/facebook/jest/pull/11902))
 - `[jest-reporters]` Call `destroy` on `v8-to-istanbul` converters to free memory ([#11896](https://github.com/facebook/jest/pull/11896))
 
 ### Chore & Maintenance
