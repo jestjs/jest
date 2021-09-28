@@ -302,7 +302,7 @@ Print your Jest config and then exits.
 
 Prevent tests from printing messages through the console.
 
-### `--testEnvironmentOptions`
+### `--testEnvironmentOptions=<json string>`
 
 A JSON string with options that will be passed to the `testEnvironment`. The relevant options depend on the environment.
 
