@@ -34,7 +34,10 @@ export default function runJest(
   args?: Array<string>,
   options: RunJestOptions = {},
 ): RunJestResult {
-  return normalizeStdoutAndStderr(spawnJest(dir, args, options), options);
+  return normalizeStdoutAndStderrOnResult(
+    spawnJest(dir, args, options),
+    options,
+  );
 }
 
 function spawnJest(
@@ -104,16 +107,24 @@ export interface RunJestJsonResult extends RunJestResult {
   json: FormattedTestResults;
 }
 
-function normalizeStdoutAndStderr(
+function normalizeStreamString(
+  stream: string,
+  options: RunJestOptions,
+): string {
+  if (options.stripAnsi) stream = stripAnsi(stream);
+  stream = normalizeIcons(stream);
+
+  return stream;
+}
+
+function normalizeStdoutAndStderrOnResult(
   result: RunJestResult,
   options: RunJestOptions,
 ): RunJestResult {
-  if (options.stripAnsi) result.stdout = stripAnsi(result.stdout);
-  result.stdout = normalizeIcons(result.stdout);
-  if (options.stripAnsi) result.stderr = stripAnsi(result.stderr);
-  result.stderr = normalizeIcons(result.stderr);
+  const stdout = normalizeStreamString(result.stdout, options);
+  const stderr = normalizeStreamString(result.stderr, options);
 
-  return result;
+  return {...result, stderr, stdout};
 }
 
 // Runs `jest` with `--json` option and adds `json` property to the result obj.
@@ -146,6 +157,7 @@ export const json = function (
 
 type StdErrAndOutString = {stderr: string; stdout: string};
 type ConditionFunction = (arg: StdErrAndOutString) => boolean;
+type CheckerFunction = (arg: StdErrAndOutString) => void;
 
 // Runs `jest` continously (watch mode) and allows the caller to wait for
 // conditions on stdout and stderr and to end the process.
@@ -158,7 +170,21 @@ export const runContinuous = function (
 
   let stderr = '';
   let stdout = '';
-  const pending = new Set<(arg: StdErrAndOutString) => void>();
+  const pending = new Set<CheckerFunction>();
+  const pendingRejection = new WeakMap<CheckerFunction, () => void>();
+
+  jestPromise.addListener('exit', () => {
+    for (const fn of pending) {
+      const reject = pendingRejection.get(fn);
+
+      if (reject) {
+        console.log('stdout', normalizeStreamString(stdout, options));
+        console.log('stderr', normalizeStreamString(stderr, options));
+
+        reject();
+      }
+    }
+  });
 
   const dispatch = () => {
     for (const fn of pending) {
@@ -196,7 +222,7 @@ export const runContinuous = function (
       result.stdout = stdout;
       result.stderr = stderr;
 
-      return normalizeStdoutAndStderr(result, options);
+      return normalizeStdoutAndStderrOnResult(result, options);
     },
 
     getCurrentOutput(): StdErrAndOutString {
@@ -208,13 +234,16 @@ export const runContinuous = function (
     },
 
     async waitUntil(fn: ConditionFunction) {
-      await new Promise<void>(resolve => {
-        const check = (state: StdErrAndOutString) => {
+      await new Promise<void>((resolve, reject) => {
+        const check: CheckerFunction = state => {
           if (fn(state)) {
             pending.delete(check);
+            pendingRejection.delete(check);
             resolve();
           }
         };
+        const error = new Error('Process exited');
+        pendingRejection.set(check, () => reject(error));
         pending.add(check);
       });
     },
