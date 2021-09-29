@@ -40,6 +40,7 @@ import {
 } from './print';
 import type {MatcherState, MatchersObject} from './types';
 import {
+  arrayBufferEquality,
   getObjectSubset,
   getPath,
   iterableEquality,
@@ -61,6 +62,7 @@ const toStrictEqualTesters = [
   iterableEquality,
   typeEquality,
   sparseArrayEquality,
+  arrayBufferEquality,
 ];
 
 type ContainIterable =

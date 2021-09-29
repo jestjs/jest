@@ -181,7 +181,7 @@ function printBasicValue(
   }
   if (toStringed === '[object RegExp]') {
     if (escapeRegex) {
-      // https://github.com/benjamingr/RegExp.escape/blob/master/polyfill.js
+      // https://github.com/benjamingr/RegExp.escape/blob/main/polyfill.js
       return regExpToString.call(val).replace(/[\\^$*+?.()|[\]{}]/g, '\\$&');
     }
     return regExpToString.call(val);
@@ -394,7 +394,7 @@ const DEFAULT_THEME_KEYS = Object.keys(DEFAULT_THEME) as Array<
   keyof typeof DEFAULT_THEME
 >;
 
-const DEFAULT_OPTIONS: Options = {
+export const DEFAULT_OPTIONS: Options = {
   callToJSON: true,
   escapeRegex: false,
   escapeString: true,

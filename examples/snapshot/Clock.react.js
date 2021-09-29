@@ -15,7 +15,7 @@ const Clock = () => {
     return () => clearInterval(timerID);
   }, []);
 
-  return <p>{seconds} seconds have ellapsed since the UNIX epoch.</p>;
+  return <p>{seconds} seconds have elapsed since the UNIX epoch.</p>;
 };
 
 export default Clock;

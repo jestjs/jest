@@ -90,7 +90,7 @@ export type Jasmine = {
   testPath: Config.Path;
   addMatchers: (matchers: JasmineMatchersObject) => void;
 } & typeof expect &
-  NodeJS.Global;
+  typeof globalThis;
 
 declare global {
   module NodeJS {

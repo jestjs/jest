@@ -197,7 +197,7 @@ test('properly handle rejections', () => {
   expect(stderr).toContain('reason: undefined');
 });
 
-onNodeVersions('^12.17.0 || >=13.2.0', () => {
+onNodeVersions('>=12.17.0', () => {
   test('globalSetup works with ESM modules', () => {
     const {exitCode} = runJest('global-setup-esm', [`--no-cache`], {
       nodeOptions: '--experimental-vm-modules --no-warnings',

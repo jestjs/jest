@@ -1,0 +1,10 @@
+{
+  "name": "fake-dual-dep",
+  "version": "1.0.0",
+  "exports": {
+    ".": {
+      "node": "./node.mjs",
+      "browser": "./browser.mjs"
+    }
+  }
+}

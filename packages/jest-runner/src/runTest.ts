@@ -156,7 +156,11 @@ async function runTestInternal(
     ? new LeakDetector(environment)
     : null;
 
-  setGlobal(environment.global, 'console', testConsole);
+  setGlobal(
+    environment.global as unknown as typeof globalThis,
+    'console',
+    testConsole,
+  );
 
   const runtime = new Runtime(
     config,
@@ -325,9 +329,8 @@ async function runTestInternal(
       setImmediate(() => resolve({leakDetector, result}));
     });
   } finally {
+    runtime.teardown();
     await environment.teardown();
-    // TODO: this function might be missing, remove ? in Jest 26
-    runtime.teardown?.();
 
     sourcemapSupport.resetRetrieveHandlers();
   }
