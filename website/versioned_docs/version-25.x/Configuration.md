@@ -214,9 +214,7 @@ Additional options can be passed using the tuple form. For example, you may hide
 
 ```json
 {
-  "coverageReporters": [
-    "clover", "json", "lcov", ["text", {"skipFull": true}]
-  ]
+  "coverageReporters": ["clover", "json", "lcov", ["text", {"skipFull": true}]]
 }
 ```
 
