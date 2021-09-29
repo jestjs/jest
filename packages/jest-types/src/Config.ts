@@ -211,6 +211,9 @@ export type InitialOptions = Partial<{
   runTestsByPath: boolean;
   scriptPreprocessor: string;
   setupFiles: Array<Path>;
+  /**
+   * @deprecated Use `setupFilesAfterEnv` options instead.
+   */
   setupTestFrameworkScriptFile: Path;
   setupFilesAfterEnv: Array<Path>;
   silent: boolean;
