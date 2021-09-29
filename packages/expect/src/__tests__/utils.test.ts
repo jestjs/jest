@@ -8,6 +8,7 @@
 
 import {stringify} from 'jest-matcher-utils';
 import {
+  arrayBufferEquality,
   emptyObject,
   getObjectSubset,
   getPath,
@@ -464,5 +465,25 @@ describe('iterableEquality', () => {
     b.set('a', b);
 
     expect(iterableEquality(a, b)).toBe(true);
+  });
+});
+
+describe('arrayBufferEquality', () => {
+  test('returns undefined if given a non instance of ArrayBuffer', () => {
+    expect(arrayBufferEquality(2, 's')).toBeUndefined();
+    expect(arrayBufferEquality(undefined, 2)).toBeUndefined();
+    expect(arrayBufferEquality(new Date(), new ArrayBuffer(2))).toBeUndefined();
+  });
+
+  test('returns false when given non-matching buffers', () => {
+    const a = Uint8Array.from([2, 4]).buffer;
+    const b = Uint16Array.from([1, 7]).buffer;
+    expect(arrayBufferEquality(a, b)).not.toBeTruthy();
+  });
+
+  test('returns true when given matching buffers', () => {
+    const a = Uint8Array.from([1, 2]).buffer;
+    const b = Uint8Array.from([1, 2]).buffer;
+    expect(arrayBufferEquality(a, b)).toBeTruthy();
   });
 });
