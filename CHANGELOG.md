@@ -2,15 +2,21 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 27.2.4
+
+### Features
+
 - `[expect]` Add equality checks for Array Buffers in `expect.ToStrictEqual()` ([#11805](https://github.com/facebook/jest/pull/11805))
 
 ### Fixes
 
 - `[jest-snapshot]` Correctly indent inline snapshots ([#11560](https://github.com/facebook/jest/pull/11560))
-
-### Chore & Maintenance
-
-### Performance
 
 ## 27.2.3
 
