@@ -462,6 +462,7 @@ export type Argv = Arguments<
     silent: boolean;
     snapshotSerializers: Array<string>;
     testEnvironment: string;
+    testEnvironmentOptions: string;
     testFailureExitCode: string | null | undefined;
     testMatch: Array<string>;
     testNamePattern: string;

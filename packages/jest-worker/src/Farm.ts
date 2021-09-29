@@ -170,9 +170,6 @@ export default class Farm {
     return this;
   }
 
-  // Typescript ensures that the switch statement is exhaustive.
-  // Adding an explicit return at the end would disable the exhaustive check void.
-  // eslint-disable-next-line consistent-return
   private _getNextWorkerOffset(): number {
     switch (this._workerSchedulingPolicy) {
       case 'in-order':

@@ -471,7 +471,11 @@ export default class CoverageReporter extends BaseReporter {
 
           converter.applyCoverage(res.functions);
 
-          return converter.toIstanbul();
+          const istanbulData = converter.toIstanbul();
+
+          converter.destroy();
+
+          return istanbulData;
         }),
       );
 
