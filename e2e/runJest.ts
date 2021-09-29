@@ -13,6 +13,7 @@ import * as fs from 'graceful-fs';
 import stripAnsi = require('strip-ansi');
 import type {FormattedTestResults} from '@jest/test-result';
 import type {Config} from '@jest/types';
+import {ErrorWithStack} from 'jest-util';
 import {normalizeIcons} from './Utils';
 
 const JEST_PATH = path.resolve(__dirname, '../packages/jest-cli/bin/jest.js');
@@ -212,7 +213,7 @@ export const runContinuous = function (
     }),
   );
 
-  return {
+  const continuousRun = {
     async end() {
       jestPromise.kill();
 
@@ -242,12 +243,17 @@ export const runContinuous = function (
             resolve();
           }
         };
-        const error = new Error('Process exited');
+        const error = new ErrorWithStack(
+          'Process exited',
+          continuousRun.waitUntil,
+        );
         pendingRejection.set(check, () => reject(error));
         pending.add(check);
       });
     },
   };
+
+  return continuousRun;
 };
 
 // return type matches output of logDebugMessages
