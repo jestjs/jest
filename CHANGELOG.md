@@ -6,6 +6,8 @@
 
 ### Fixes
 
+- `[jest-snapshot]` Correctly indent inline snapshots ([#11560](https://github.com/facebook/jest/pull/11560))
+
 ### Chore & Maintenance
 
 ### Performance
