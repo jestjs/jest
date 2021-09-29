@@ -202,7 +202,7 @@ Note that using `v8` is considered experimental. This uses V8's builtin code cov
 1. Tests needs to run in Node test environment (support for `jsdom` requires [`jest-environment-jsdom-sixteen`](https://www.npmjs.com/package/jest-environment-jsdom-sixteen))
 1. V8 has way better data in the later versions, so using the latest versions of node (v13 at the time of this writing) will yield better results
 
-### `coverageReporters` \[array&lt;string | [string, options]&gt;]
+### `coverageReporters` \[array&lt;string | \[string, options]&gt;]
 
 Default: `["clover", "json", "lcov", "text"]`
 
