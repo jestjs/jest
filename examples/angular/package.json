@@ -13,7 +13,7 @@
     "@angular/platform-browser": "^12.0.0",
     "@angular/platform-browser-dynamic": "^12.0.0",
     "core-js": "^3.2.1",
-    "rxjs": "^6.5.3",
+    "rxjs": "^7.3.0",
     "tslib": "^2.0.0",
     "typescript": "*",
     "zone.js": "~0.11.3"

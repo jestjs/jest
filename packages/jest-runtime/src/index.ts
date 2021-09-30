@@ -528,11 +528,11 @@ export default class Runtime {
     return module;
   }
 
-  private resolveModule(
+  private resolveModule<T = unknown>(
     specifier: string,
     referencingIdentifier: string,
     context: VMContext,
-  ) {
+  ): Promise<T> | T | void {
     if (this.isTornDown) {
       this._logFormattedReferenceError(
         'You are trying to `import` a file after the Jest environment has been torn down.',
@@ -584,7 +584,9 @@ export default class Runtime {
     return this.loadCjsAsEsm(referencingIdentifier, resolved, context);
   }
 
-  private async linkAndEvaluateModule(module: VMModule) {
+  private async linkAndEvaluateModule(
+    module: VMModule,
+  ): Promise<VMModule | void> {
     if (this.isTornDown) {
       this._logFormattedReferenceError(
         'You are trying to `import` a file after the Jest environment has been torn down.',

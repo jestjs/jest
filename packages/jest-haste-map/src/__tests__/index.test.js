@@ -265,6 +265,20 @@ describe('HasteMap', () => {
     expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
   });
 
+  it('creates different cache file paths for different values of computeDependencies', () => {
+    jest.resetModules();
+    const HasteMap = require('../').default;
+    const hasteMap1 = new HasteMap({
+      ...defaultConfig,
+      computeDependencies: true,
+    });
+    const hasteMap2 = new HasteMap({
+      ...defaultConfig,
+      computeDependencies: false,
+    });
+    expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
+  });
+
   it('creates different cache file paths for different hasteImplModulePath cache keys', () => {
     jest.resetModules();
     const HasteMap = require('../').default;

@@ -1,6 +1,6 @@
 {
   "name": "jest-util",
-  "version": "27.2.0",
+  "version": "27.2.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -14,7 +14,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^27.1.1",
+    "@jest/types": "^27.2.4",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "graceful-fs": "^4.2.4",
