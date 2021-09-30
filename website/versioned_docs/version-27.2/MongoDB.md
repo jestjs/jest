@@ -35,15 +35,15 @@ describe('insert', () => {
   beforeAll(async () => {
     connection = await MongoClient.connect(global.__MONGO_URI__, {
       useNewUrlParser: true,
+      useUnifiedTopology: true,
     });
-    db = await connection.db(global.__MONGO_DB_NAME__);
+    db = await connection.db();
   });
 
   afterAll(async () => {
     await connection.close();
-    await db.close();
   });
-
+  
   it('should insert a doc into collection', async () => {
     const users = db.collection('users');
 
@@ -54,6 +54,7 @@ describe('insert', () => {
     expect(insertedUser).toEqual(mockUser);
   });
 });
+
 ```
 
 There's no need to load any dependencies.
