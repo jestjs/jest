@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[@jest/types]` Mark deprecated configuration options as `@deprecated` ([#11913](https://github.com/facebook/jest/pull/11913))
+- `[jest-cli]` Improve `--help` printout by removing defunct `--browser` option ([#11914](https://github.com/facebook/jest/pull/11914))
 
 ### Chore & Maintenance
 
