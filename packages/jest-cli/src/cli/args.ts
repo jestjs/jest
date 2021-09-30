@@ -107,13 +107,6 @@ export const options = {
       'Exit the test suite immediately after `n` number of failing tests.',
     type: 'boolean',
   },
-  browser: {
-    description:
-      'Respect the "browser" field in package.json ' +
-      'when resolving modules. Some packages export different versions ' +
-      'based on whether they are operating in node.js or a browser.',
-    type: 'boolean',
-  },
   cache: {
     description:
       'Whether to use the transform cache. Disable the cache ' +
