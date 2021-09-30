@@ -6,7 +6,6 @@
 
 - `[@jest/types]` Mark deprecated configuration options as `@deprecated` ([#11913](https://github.com/facebook/jest/pull/11913))
 
-
 ### Chore & Maintenance
 
 ### Performance
