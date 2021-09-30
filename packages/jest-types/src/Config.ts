@@ -196,6 +196,9 @@ export type InitialOptions = Partial<{
   onlyFailures: boolean;
   outputFile: Path;
   passWithNoTests: boolean;
+  /**
+   * @deprecated Use `transformIgnorePatterns` options instead.
+   */
   preprocessorIgnorePatterns: Array<Glob>;
   preset: string | null | undefined;
   prettierPath: string | null | undefined;
@@ -209,6 +212,9 @@ export type InitialOptions = Partial<{
   roots: Array<Path>;
   runner: string;
   runTestsByPath: boolean;
+  /**
+   * @deprecated Use `transform` options instead.
+   */
   scriptPreprocessor: string;
   setupFiles: Array<Path>;
   /**
@@ -230,6 +236,9 @@ export type InitialOptions = Partial<{
   testLocationInResults: boolean;
   testMatch: Array<Glob>;
   testNamePattern: string;
+  /**
+   * @deprecated Use `roots` options instead.
+   */
   testPathDirs: Array<Path>;
   testPathIgnorePatterns: Array<string>;
   testRegex: string | Array<string>;
