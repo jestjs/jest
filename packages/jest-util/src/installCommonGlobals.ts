@@ -64,6 +64,9 @@ export default function (
   });
 
   addInstanceOfAlias(globalObject.Error, Error);
+  addInstanceOfAlias(globalObject.Promise, Promise);
+  addInstanceOfAlias(globalObject.Object, Object);
+  addInstanceOfAlias(globalObject.Function, Function);
 
   return Object.assign(globalObject, deepCyclicCopy(globals));
 }
