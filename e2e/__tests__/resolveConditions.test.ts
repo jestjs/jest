@@ -7,14 +7,9 @@
 
 import {resolve} from 'path';
 import {onNodeVersions} from '@jest/test-utils';
-import {runYarnInstall} from '../Utils';
 import runJest from '../runJest';
 
 const dir = resolve(__dirname, '..', 'resolve-conditions');
-
-beforeAll(() => {
-  runYarnInstall(dir);
-});
 
 // The versions where vm.Module exists and commonjs with "exports" is not broken
 onNodeVersions('>=12.16.0', () => {

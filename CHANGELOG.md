@@ -3,6 +3,7 @@
 ### Features
 
 - `[jest-config]` Add `testEnvironmentOptions.html` to apply to jsdom input ([11950](https://github.com/facebook/jest/pull/11950))
+- `[jest-resolver]` Support default export (`.`) in `exports` field _if_ `main` is missing ([#11919](https://github.com/facebook/jest/pull/11919))
 
 ### Fixes
 

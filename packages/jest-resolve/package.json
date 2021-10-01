@@ -23,6 +23,7 @@
     "jest-util": "^27.2.5",
     "jest-validate": "^27.2.5",
     "resolve": "^1.20.0",
+    "resolve.exports": "^1.1.0",
     "slash": "^3.0.0"
   },
   "devDependencies": {

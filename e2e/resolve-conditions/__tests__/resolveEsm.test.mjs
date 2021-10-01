@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {fn} from '../fake-dep';
+import {fn} from 'fake-dep';
 
 test('returns correct message', () => {
   expect(fn()).toEqual('hello from ESM');

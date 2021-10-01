@@ -13027,6 +13027,7 @@ fsevents@^1.2.7:
     jest-util: ^27.2.5
     jest-validate: ^27.2.5
     resolve: ^1.20.0
+    resolve.exports: ^1.1.0
     slash: ^3.0.0
   languageName: unknown
   linkType: soft
@@ -18942,6 +18943,13 @@ react-native@0.64.0:
   version: 0.2.1
   resolution: "resolve-url@npm:0.2.1"
   checksum: 9e1cd0028d0f2e157a889a02653637c1c1d7f133aa47b75261b4590e84105e63fae3b6be31bad50d5b94e01898d9dbe6b95abe28db7eab46e22321f7cbf00273
+  languageName: node
+  linkType: hard
+
+"resolve.exports@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "resolve.exports@npm:1.1.0"
+  checksum: d04d2ce651fac14fe6ba13b377690f790cbbe91e6211b8fbec97ee08282e278875c74073a9b6243143a64e33d95eefb479e1dd4965664edc73b28b712100b36c
   languageName: node
   linkType: hard
 

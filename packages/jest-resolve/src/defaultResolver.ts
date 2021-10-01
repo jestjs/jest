@@ -8,6 +8,10 @@
 import * as fs from 'graceful-fs';
 import pnpResolver from 'jest-pnp-resolver';
 import {Opts as ResolveOpts, sync as resolveSync} from 'resolve';
+import {
+  Options as ResolveExportsOptions,
+  resolve as resolveExports,
+} from 'resolve.exports';
 import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';
 
@@ -43,6 +47,10 @@ export default function defaultResolver(
     ...options,
     isDirectory,
     isFile,
+    packageFilter: createPackageFilter(
+      options.conditions,
+      options.packageFilter,
+    ),
     preserveSymlinks: false,
     readPackageSync,
     realpathSync,
@@ -148,4 +156,35 @@ function realpathSync(file: Config.Path): Config.Path {
 
 function readPackageSync(_: unknown, file: Config.Path): PkgJson {
   return readPackageCached(file);
+}
+
+function createPackageFilter(
+  conditions?: Array<string>,
+  userFilter?: ResolverOptions['packageFilter'],
+): ResolverOptions['packageFilter'] {
+  function attemptExportsFallback(pkg: PkgJson) {
+    const options: ResolveExportsOptions = conditions
+      ? {conditions, unsafe: true}
+      : // no conditions were passed - let's assume this is Jest internal and it should be `require`
+        {browser: false, require: true};
+
+    try {
+      return resolveExports(pkg, '.', options);
+    } catch {
+      return undefined;
+    }
+  }
+
+  return function packageFilter(pkg: PkgJson, ...rest) {
+    let filteredPkg = pkg;
+
+    if (userFilter) {
+      filteredPkg = userFilter(filteredPkg, ...rest);
+    }
+
+    return {
+      ...filteredPkg,
+      main: filteredPkg.main ?? attemptExportsFallback(filteredPkg),
+    };
+  };
 }
