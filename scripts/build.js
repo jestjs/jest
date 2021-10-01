@@ -112,14 +112,7 @@ function buildFile(file, silent) {
           Array.isArray(plugin) &&
           plugin[0] === '@babel/plugin-transform-modules-commonjs'
         ) {
-          return [
-            plugin[0],
-            Object.assign({}, plugin[1], {
-              lazy: string =>
-                // we want to lazyload all non-local modules - this is buggy though as it doesn't pick up `../` etc. We should consider just `: true` which works correctly or even () => true which would also transform any local imports
-                !string.startsWith('./'),
-            }),
-          ];
+          return [plugin[0], Object.assign({}, plugin[1], {lazy: true})];
         }
 
         return plugin;
