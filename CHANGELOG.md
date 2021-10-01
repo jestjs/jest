@@ -7,6 +7,7 @@
 - `[@jest/types]` Mark deprecated configuration options as `@deprecated` ([#11913](https://github.com/facebook/jest/pull/11913))
 - `[jest-cli]` Improve `--help` printout by removing defunct `--browser` option ([#11914](https://github.com/facebook/jest/pull/11914))
 - `[jest-haste-map]` Use distinct cache paths for different values of `computeDependencies` ([#11916](https://github.com/facebook/jest/pull/11916))
+- `[jest-transform]` Fix potential race condition while reading from cache file if the cache file is deleted while processing. ([#11920](https://github.com/facebook/jest/pull/11920))
 
 ### Chore & Maintenance
 
