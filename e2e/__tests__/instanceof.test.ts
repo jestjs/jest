@@ -3,15 +3,12 @@
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
- *
- * @flow
  */
-'use strict';
 
 import runJest from '../runJest';
 
 test('suite with `instanceof` checks', () => {
-  const {status} = runJest('instanceof');
+  const {exitCode} = runJest('instanceof');
 
-  expect(status).toBe(0);
+  expect(exitCode).toBe(0);
 });
