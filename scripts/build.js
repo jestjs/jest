@@ -116,8 +116,8 @@ function buildFile(file, silent) {
             plugin[0],
             Object.assign({}, plugin[1], {
               lazy: string =>
-                // we want to lazyload all non-local modules plus `importEsm` - the latter to avoid syntax errors. Set to just `true` when we drop support for node 8
-                !string.startsWith('./') || string === './importEsm',
+                // we want to lazyload all non-local modules - this is buggy though as it doesn't pick up `../` etc. We should consider just `: true` which works correctly or even () => true which would also transform any local imports
+                !string.startsWith('./'),
             }),
           ];
         }
