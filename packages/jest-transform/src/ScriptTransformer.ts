@@ -926,21 +926,22 @@ const cacheWriteErrorSafeToIgnore = (
   fs.existsSync(cachePath);
 
 const readCacheFile = (cachePath: Config.Path): string | null => {
-  if (!fs.existsSync(cachePath)) {
-    return null;
-  }
-
   let fileData;
   try {
     fileData = fs.readFileSync(cachePath, 'utf8');
   } catch (e) {
-    e.message =
-      'jest: failed to read cache file: ' +
-      cachePath +
-      '\nFailure message: ' +
-      e.message;
-    removeFile(cachePath);
-    throw e;
+    if (e.code === 'ENOENT') {
+      return null;
+    } else {
+      e.message =
+        'jest: failed to read cache file: ' +
+        cachePath +
+        '\nFailure message: ' +
+        e.message;
+      removeFile(cachePath);
+      throw e;
+    }
+    
   }
 
   if (fileData == null) {
