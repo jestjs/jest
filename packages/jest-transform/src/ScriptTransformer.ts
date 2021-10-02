@@ -926,6 +926,10 @@ const cacheWriteErrorSafeToIgnore = (
   fs.existsSync(cachePath);
 
 const readCacheFile = (cachePath: Config.Path): string | null => {
+  if (!fs.existsSync(cachePath)) {
+    return null;
+  }
+
   let fileData;
   try {
     fileData = fs.readFileSync(cachePath, 'utf8');
