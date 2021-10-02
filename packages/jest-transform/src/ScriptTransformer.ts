@@ -941,7 +941,6 @@ const readCacheFile = (cachePath: Config.Path): string | null => {
       removeFile(cachePath);
       throw e;
     }
-    
   }
 
   if (fileData == null) {

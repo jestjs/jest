@@ -266,7 +266,11 @@ describe('ScriptTransformer', () => {
         return mockFs[path];
       }
 
-      throw new Error(`Cannot read path '${path}'.`);
+      const err: NodeJS.ErrnoException = new Error(`Cannot read path '${path}'.`);
+      err.code = 'ENOENT';
+      err.syscall = 'open';
+      err.errno = 2;
+      throw err;
     });
     fs.writeFileSync = jest.fn((path, data, options) => {
       invariant(typeof path === 'string');
