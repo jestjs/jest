@@ -1828,11 +1828,11 @@ describe('ScriptTransformer', () => {
 
     const scriptTransformer = await createScriptTransformer(config);
 
-    scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
+    scriptTransformer.transform('/fruits/deleted_file.js', getCoverageOptions());
 
     expect(fs.readFileSync).toHaveBeenCalledTimes(2);
-    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
-    expect(fs.readFileSync).toBeCalledWith(expect.stringMatching(/\/cache\/jest-transform-cache-test\/[0-9a-f]{2}\/banana_.+/), 'utf8');
+    expect(fs.readFileSync).toBeCalledWith('/fruits/deleted_file.js', 'utf8');
+    expect(fs.readFileSync).toBeCalledWith(expect.stringMatching(/\/cache\/jest-transform-cache-test\/[0-9a-f]{2}\/deleted_file_.+/), 'utf8');
   });
   
 });
