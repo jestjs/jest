@@ -82,7 +82,7 @@ it('does not report crypto random data', () => {
   expect(textAfterTest).toBe('');
 });
 
-onNodeVersions('>=11.10.0', () => {
+onNodeVersions('>=12', () => {
   it('does not report ELD histograms', () => {
     const {stderr} = runJest('detect-open-handles', [
       'histogram',
@@ -110,7 +110,7 @@ describe('notify', () => {
   });
 });
 
-onNodeVersions('>=11', () => {
+onNodeVersions('>=12', () => {
   it('does not report timeouts using unref', () => {
     // The test here is basically that it exits cleanly without reporting anything (does not need `until`)
     const {stderr} = runJest('detect-open-handles', [

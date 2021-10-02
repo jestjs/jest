@@ -47,7 +47,7 @@ exports[`generates coverage when using the testRegex config param  1`] = `
 File                                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------------------------------|---------|----------|---------|---------|-------------------
 All files                            |      60 |        0 |      50 |      60 |                   
- coverage-report                     |   47.37 |        0 |      25 |      50 |                   
+ coverage-report                     |   47.36 |        0 |      25 |      50 |                   
   file.js                            |     100 |      100 |     100 |     100 |                   
   notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 8-19              
   otherFile.js                       |     100 |      100 |     100 |     100 |                   
@@ -73,7 +73,7 @@ exports[`outputs coverage report 1`] = `
 File                                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------------------------------|---------|----------|---------|---------|-------------------
 All files                            |      60 |        0 |      50 |      60 |                   
- coverage-report                     |   47.37 |        0 |      25 |      50 |                   
+ coverage-report                     |   47.36 |        0 |      25 |      50 |                   
   file.js                            |     100 |      100 |     100 |     100 |                   
   notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 8-19              
   otherFile.js                       |     100 |      100 |     100 |     100 |                   
@@ -98,7 +98,7 @@ Lines        : 60% ( 12/20 )
 File                                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------------------------------|---------|----------|---------|---------|-------------------
 All files                            |      60 |        0 |      50 |      60 |                   
- coverage-report                     |   47.37 |        0 |      25 |      50 |                   
+ coverage-report                     |   47.36 |        0 |      25 |      50 |                   
   file.js                            |     100 |      100 |     100 |     100 |                   
   notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 8-19              
   otherFile.js                       |     100 |      100 |     100 |     100 |                   
@@ -116,7 +116,7 @@ exports[`outputs coverage report when text is requested 1`] = `
 File                                 | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
 -------------------------------------|---------|----------|---------|---------|-------------------
 All files                            |      60 |        0 |      50 |      60 |                   
- coverage-report                     |   47.37 |        0 |      25 |      50 |                   
+ coverage-report                     |   47.36 |        0 |      25 |      50 |                   
   file.js                            |     100 |      100 |     100 |     100 |                   
   notRequiredInTestSuite.js          |       0 |        0 |       0 |       0 | 8-19              
   otherFile.js                       |     100 |      100 |     100 |     100 |                   

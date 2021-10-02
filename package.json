@@ -22,7 +22,7 @@
     "@types/which": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^4.1.0",
     "@typescript-eslint/parser": "^4.1.0",
-    "ansi-regex": "^5.0.0",
+    "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
     "babel-plugin-replace-ts-export-assignment": "^0.0.2",
     "camelcase": "^6.2.0",

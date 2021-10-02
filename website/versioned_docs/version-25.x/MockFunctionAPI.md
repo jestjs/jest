@@ -83,7 +83,7 @@ mockFn.mock.instances[1] === b; // true
 
 Resets all information stored in the [`mockFn.mock.calls`](#mockfnmockcalls) and [`mockFn.mock.instances`](#mockfnmockinstances) arrays.
 
-Often this is useful when you want to clean up a mock's usage data between two assertions.
+Often this is useful when you want to clean up a mocks usage data between two assertions.
 
 Beware that `mockClear` will replace `mockFn.mock`, not just [`mockFn.mock.calls`](#mockfnmockcalls) and [`mockFn.mock.instances`](#mockfnmockinstances). You should, therefore, avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data.
 
@@ -327,7 +327,7 @@ If you are using [Create React App](https://create-react-app.dev) then the [Type
 
 Otherwise, please see our [Getting Started](GettingStarted.md#using-typescript) guide for to get setup with TypeScript.
 
-You can see an example of using Jest with TypeScript in our [GitHub repository](https://github.com/facebook/jest/tree/master/examples/typescript).
+You can see an example of using Jest with TypeScript in our [GitHub repository](https://github.com/facebook/jest/tree/main/examples/typescript).
 
 ### `jest.MockedFunction`
 

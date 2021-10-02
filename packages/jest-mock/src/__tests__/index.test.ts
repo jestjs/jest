@@ -14,7 +14,7 @@ import {ModuleMocker, fn, spyOn} from '../';
 describe('moduleMocker', () => {
   let moduleMocker: ModuleMocker;
   let mockContext: Context;
-  let mockGlobals: NodeJS.Global;
+  let mockGlobals: typeof globalThis;
 
   beforeEach(() => {
     mockContext = vm.createContext();
@@ -1215,6 +1215,18 @@ describe('moduleMocker', () => {
       expect(originalCallArguments[0]).toBe(firstArg);
       expect(originalCallArguments[1]).toBe(secondArg);
       expect(spy).not.toHaveBeenCalled();
+    });
+
+    it('should work with object of null prototype', () => {
+      const Foo = Object.assign(Object.create(null), {
+        foo() {},
+      });
+
+      const spy = moduleMocker.spyOn(Foo, 'foo');
+
+      Foo.foo();
+
+      expect(spy).toHaveBeenCalled();
     });
   });
 

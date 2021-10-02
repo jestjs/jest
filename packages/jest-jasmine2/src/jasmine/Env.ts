@@ -104,8 +104,10 @@ export default function (j$: Jasmine) {
 
       let catchExceptions = true;
 
-      const realSetTimeout = global.setTimeout;
-      const realClearTimeout = global.clearTimeout;
+      const realSetTimeout =
+        global.setTimeout as typeof globalThis['setTimeout'];
+      const realClearTimeout =
+        global.clearTimeout as typeof globalThis['clearTimeout'];
 
       const runnableResources: Record<string, {spies: Array<Spy>}> = {};
       const currentlyExecutingSuites: Array<Suite> = [];

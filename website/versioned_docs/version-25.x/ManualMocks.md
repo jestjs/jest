@@ -127,7 +127,7 @@ The example mock shown here uses [`jest.genMockFromModule`](JestObjectAPI.md#jes
 
 To ensure that a manual mock and its real implementation stay in sync, it might be useful to require the real module using [`jest.requireActual(moduleName)`](JestObjectAPI.md#jestrequireactualmodulename) in your manual mock and amending it with mock functions before exporting it.
 
-The code for this example is available at [examples/manual-mocks](https://github.com/facebook/jest/tree/master/examples/manual-mocks).
+The code for this example is available at [examples/manual-mocks](https://github.com/facebook/jest/tree/main/examples/manual-mocks).
 
 ## Using with ES module imports
 
