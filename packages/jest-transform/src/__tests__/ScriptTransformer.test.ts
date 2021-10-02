@@ -266,7 +266,9 @@ describe('ScriptTransformer', () => {
         return mockFs[path];
       }
 
-      const err: NodeJS.ErrnoException = new Error(`Cannot read path '${path}'.`);
+      const err: NodeJS.ErrnoException = new Error(
+        `Cannot read path '${path}'.`,
+      );
       err.code = 'ENOENT';
       err.syscall = 'open';
       err.errno = 2;
