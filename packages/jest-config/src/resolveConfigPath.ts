@@ -60,14 +60,16 @@ const resolveConfigPathByTraversing = (
   const jestConfig = JEST_CONFIG_EXT_ORDER.map(ext =>
     path.resolve(pathToResolve, getConfigFilename(ext)),
   ).find(isFile);
-  if (jestConfig) {
-    return jestConfig;
+
+  const packageJson = findPackageJsonWithJestConfig(pathToResolve);
+
+  // If user has jestConfig and 'jest' in package.json it's probably a mistake.
+  if (jestConfig && packageJson) {
+    throw new Error(makeMultipleConfigsErrorMessage(jestConfig, packageJson));
   }
 
-  const packageJson = path.resolve(pathToResolve, PACKAGE_JSON);
-  if (isFile(packageJson)) {
-    return packageJson;
-  }
+  const configPath = jestConfig ?? packageJson;
+  if (configPath) return configPath;
 
   // This is the system root.
   // We tried everything, config is nowhere to be found ¯\_(ツ)_/¯
@@ -83,6 +85,20 @@ const resolveConfigPathByTraversing = (
   );
 };
 
+const findPackageJsonWithJestConfig = (pathToResolve: Config.Path) => {
+  const packagePath = path.resolve(pathToResolve, PACKAGE_JSON);
+  if (isFile(packagePath) && 'jest' in parsePackageJson(packagePath)) {
+    return packagePath;
+  }
+
+  return undefined;
+};
+
+const parsePackageJson = (packagePath: Config.Path) => {
+  const content = String(fs.readFileSync(packagePath));
+  return JSON.parse(content);
+};
+
 const makeResolutionErrorMessage = (
   initialPath: Config.Path,
   cwd: Config.Path,
@@ -95,3 +111,17 @@ const makeResolutionErrorMessage = (
   `traverse directory tree up, until it finds one of those files in exact order: ${JEST_CONFIG_EXT_ORDER.map(
     ext => `"${getConfigFilename(ext)}"`,
   ).join(' or ')}.`;
+
+const makeMultipleConfigsErrorMessage = (
+  jestConfigPath: Config.Path,
+  packagePath: Config.Path,
+) =>
+  '● Multiple configurations found:\n\n' +
+  `Jest will use \`${jestConfigPath}\` for configuration, but Jest also\n` +
+  `found configuration in \`${packagePath}\`. Delete the \`"jest"\` key\n` +
+  `in that file to silence this warning, or delete the \`${path.basename(
+    jestConfigPath,
+  )}\` file\n` +
+  `to use the configuration from \`${path.basename(packagePath)}\`.\n\n` +
+  'Configuration Documentation:\n' +
+  'https://jestjs.io/docs/en/configuration.html\n';
