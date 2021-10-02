@@ -14,7 +14,6 @@ import resolveConfigPath from '../resolveConfigPath';
 const DIR = path.resolve(tmpdir(), 'resolve_config_path_test');
 const ERROR_PATTERN = /Could not find a config file based on provided values/;
 const NO_ROOT_DIR_ERROR_PATTERN = /Can't find a root directory/;
-const MULTIPLE_CONFIGS_ERROR_PATTERN = /Multiple configurations found/;
 
 beforeEach(() => cleanup(DIR));
 afterEach(() => cleanup(DIR));
@@ -67,7 +66,7 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
         resolveConfigPath(path.dirname(relativeJestConfigPath), DIR),
       ).toThrowError(ERROR_PATTERN);
 
-      writeFiles(DIR, {[relativePackageJsonPath]: JSON.stringify({jest: {}})});
+      writeFiles(DIR, {[relativePackageJsonPath]: ''});
 
       // absolute
       expect(
@@ -81,17 +80,17 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
 
       writeFiles(DIR, {[relativeJestConfigPath]: ''});
 
-      // jest.config.js and package.json are not allowed together
+      // jest.config.js takes precedence
 
       // absolute
-      expect(() =>
+      expect(
         resolveConfigPath(path.dirname(absolutePackageJsonPath), DIR),
-      ).toThrowError(MULTIPLE_CONFIGS_ERROR_PATTERN);
+      ).toBe(absoluteJestConfigPath);
 
       // relative
-      expect(() =>
+      expect(
         resolveConfigPath(path.dirname(relativePackageJsonPath), DIR),
-      ).toThrowError(MULTIPLE_CONFIGS_ERROR_PATTERN);
+      ).toBe(absoluteJestConfigPath);
 
       expect(() => {
         resolveConfigPath(

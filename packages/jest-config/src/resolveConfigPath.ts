@@ -61,10 +61,10 @@ const resolveConfigPathByTraversing = (
     path.resolve(pathToResolve, getConfigFilename(ext)),
   ).find(isFile);
 
-  const packageJson = findPackageJsonWithJestConfig(pathToResolve);
+  const packageJson = findPackageJson(pathToResolve);
 
   // If user has jestConfig and 'jest' in package.json it's probably a mistake.
-  if (jestConfig && packageJson) {
+  if (jestConfig && packageJson && hasPackageJsonJestKey(packageJson)) {
     throw new Error(makeMultipleConfigsErrorMessage(jestConfig, packageJson));
   }
 
@@ -85,18 +85,23 @@ const resolveConfigPathByTraversing = (
   );
 };
 
-const findPackageJsonWithJestConfig = (pathToResolve: Config.Path) => {
+const findPackageJson = (pathToResolve: Config.Path) => {
   const packagePath = path.resolve(pathToResolve, PACKAGE_JSON);
-  if (isFile(packagePath) && 'jest' in parsePackageJson(packagePath)) {
+  if (isFile(packagePath)) {
     return packagePath;
   }
 
   return undefined;
 };
 
-const parsePackageJson = (packagePath: Config.Path) => {
+const hasPackageJsonJestKey = (packagePath: Config.Path) => {
   const content = String(fs.readFileSync(packagePath));
-  return JSON.parse(content);
+  try {
+    return 'jest' in JSON.parse(content);
+  } catch {
+    // If package is not a valid JSON
+    return false;
+  }
 };
 
 const makeResolutionErrorMessage = (
