@@ -322,8 +322,9 @@ describe('ScriptTransformer', () => {
     expect(wrap(transformedBananaWithCoverage.code)).toMatchSnapshot();
 
     // no-cache case
-    expect(fs.readFileSync).toHaveBeenCalledTimes(1);
+    expect(fs.readFileSync).toHaveBeenCalledTimes(2);
     expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toBeCalledWith(expect.stringMatching(/\/cache\/jest-transform-cache-test\/[0-9a-f]{2}\/banana_.+/), 'utf8');
 
     // in-memory cache
     const transformedBananaWithCoverageAgain = scriptTransformer.transform(
