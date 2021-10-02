@@ -1822,6 +1822,19 @@ describe('ScriptTransformer', () => {
       ['test_preprocessor', expect.any(Object)],
     ]);
   });
+
+  it('regardless of sync/async, handles race condition where cache was deleted (fs.existsSync returns true but readFileSync returns ENOENT)', async () => {
+    fs.existsSync = jest.fn(() => true);
+
+    const scriptTransformer = await createScriptTransformer(config);
+
+    scriptTransformer.transform('/fruits/banana.js', getCoverageOptions());
+
+    expect(fs.readFileSync).toHaveBeenCalledTimes(2);
+    expect(fs.readFileSync).toBeCalledWith('/fruits/banana.js', 'utf8');
+    expect(fs.readFileSync).toBeCalledWith(expect.stringMatching(/\/cache\/jest-transform-cache-test\/[0-9a-f]{2}\/banana_.+/), 'utf8');
+  });
+  
 });
 
 function getCoverageOptions(
