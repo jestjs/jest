@@ -149,6 +149,10 @@ class JSDOMEnvironment implements JestEnvironment<number> {
     this.fakeTimersModern = null;
   }
 
+  exportConditions() {
+    return ['browser'];
+  }
+
   getVmContext(): Context | null {
     if (this.dom) {
       return this.dom.getInternalVMContext();

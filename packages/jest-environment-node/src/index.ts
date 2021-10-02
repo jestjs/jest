@@ -133,6 +133,10 @@ class NodeEnvironment implements JestEnvironment<Timer> {
     this.fakeTimersModern = null;
   }
 
+  exportConditions() {
+    return ['node'];
+  }
+
   getVmContext(): Context | null {
     return this.context;
   }
