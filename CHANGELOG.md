@@ -2,6 +2,10 @@
 
 ### Features
 
+- `[jest-environment-jsdom, jest-environment-node]` Add default
+  `exportConditions` for both `jsdom` and `node` environments
+  ([#11924](https://github.com/facebook/jest/pull/11924))
+
 ### Fixes
 
 ### Chore & Maintenance
