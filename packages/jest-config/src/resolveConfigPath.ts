@@ -95,7 +95,7 @@ const findPackageJson = (pathToResolve: Config.Path) => {
 };
 
 const hasPackageJsonJestKey = (packagePath: Config.Path) => {
-  const content = String(fs.readFileSync(packagePath));
+  const content = fs.readFileSync(packagePath, 'utf8');
   try {
     return 'jest' in JSON.parse(content);
   } catch {
@@ -129,4 +129,4 @@ const makeMultipleConfigsErrorMessage = (
   )}\` file\n` +
   `to use the configuration from \`${path.basename(packagePath)}\`.\n\n` +
   'Configuration Documentation:\n' +
-  'https://jestjs.io/docs/en/configuration.html\n';
+  'https://jestjs.io/docs/configuration.html\n';
