@@ -63,22 +63,21 @@ export const setMatchers = (
 
       class CustomMatcher extends AsymmetricMatcher<[unknown, unknown]> {
         constructor(inverse: boolean = false, ...sample: [unknown, unknown]) {
-          super(sample);
-          this.inverse = inverse;
+          super(sample, inverse);
         }
 
         asymmetricMatch(other: unknown) {
-          // @ts-expect-error: asymmetric matchers are not called with context
-          const {pass} = matcher(
+          const {pass} = matcher.call(
+            this.matcherState,
             other,
             ...this.sample,
           ) as SyncExpectationResult;
 
-          return this.inverse ? !pass : pass;
+          return this.matcherState.isNot ? !pass : pass;
         }
 
         toString() {
-          return `${this.inverse ? 'not.' : ''}${key}`;
+          return `${this.matcherState.isNot ? 'not.' : ''}${key}`;
         }
 
         getExpectedType() {

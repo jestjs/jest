@@ -18,8 +18,14 @@ jestExpect.extend({
   toBeDivisibleBy(actual: number, expected: number) {
     const pass = actual % expected === 0;
     const message = pass
-      ? () => `expected ${actual} not to be divisible by ${expected}`
-      : () => `expected ${actual} to be divisible by ${expected}`;
+      ? () =>
+          `expected ${this.utils.printReceived(
+            actual,
+          )} not to be divisible by ${expected}`
+      : () =>
+          `expected ${this.utils.printReceived(
+            actual,
+          )} to be divisible by ${expected}`;
 
     return {message, pass};
   },
@@ -33,8 +39,14 @@ jestExpect.extend({
   toBeWithinRange(actual: number, floor: number, ceiling: number) {
     const pass = actual >= floor && actual <= ceiling;
     const message = pass
-      ? () => `expected ${actual} not to be within range ${floor} - ${ceiling}`
-      : () => `expected ${actual} to be within range ${floor} - ${ceiling}`;
+      ? () =>
+          `expected ${this.utils.printReceived(
+            actual,
+          )} not to be within range ${floor} - ${ceiling}`
+      : () =>
+          `expected ${this.utils.printReceived(
+            actual,
+          )} to be within range ${floor} - ${ceiling}`;
 
     return {message, pass};
   },
