@@ -57,19 +57,22 @@ const resolveConfigPathByTraversing = (
   initialPath: Config.Path,
   cwd: Config.Path,
 ): Config.Path => {
-  const jestConfig = JEST_CONFIG_EXT_ORDER.map(ext =>
+  const configFiles = JEST_CONFIG_EXT_ORDER.map(ext =>
     path.resolve(pathToResolve, getConfigFilename(ext)),
-  ).find(isFile);
+  ).filter(isFile);
 
   const packageJson = findPackageJson(pathToResolve);
-
-  // If user has jestConfig and 'jest' in package.json it's probably a mistake.
-  if (jestConfig && packageJson && hasPackageJsonJestKey(packageJson)) {
-    throw new Error(makeMultipleConfigsErrorMessage(jestConfig, packageJson));
+  if (packageJson && hasPackageJsonJestKey(packageJson)) {
+    configFiles.push(packageJson);
   }
 
-  const configPath = jestConfig ?? packageJson;
-  if (configPath) return configPath;
+  if (configFiles.length > 1) {
+    throw new Error(makeMultipleConfigsError(configFiles));
+  }
+
+  if (configFiles.length || packageJson) {
+    return configFiles[0] ?? packageJson;
+  }
 
   // This is the system root.
   // We tried everything, config is nowhere to be found ¯\_(ツ)_/¯
@@ -117,16 +120,26 @@ const makeResolutionErrorMessage = (
     ext => `"${getConfigFilename(ext)}"`,
   ).join(' or ')}.`;
 
-const makeMultipleConfigsErrorMessage = (
-  jestConfigPath: Config.Path,
-  packagePath: Config.Path,
-) =>
+const makeMultipleConfigsError = (configPaths: Array<Config.Path>) =>
   '● Multiple configurations found:\n\n' +
-  `Jest will use \`${jestConfigPath}\` for configuration, but Jest also\n` +
-  `found configuration in \`${packagePath}\`. Delete the \`"jest"\` key\n` +
-  `in that file to silence this warning, or delete the \`${path.basename(
-    jestConfigPath,
-  )}\` file\n` +
-  `to use the configuration from \`${path.basename(packagePath)}\`.\n\n` +
+  `Jest found configuration in ${concatenateWords(
+    configPaths.map(wrapInBackticks),
+  )}.\n` +
+  'This is not allowed because it is probably a mistake.\n\n' +
   'Configuration Documentation:\n' +
   'https://jestjs.io/docs/configuration.html\n';
+
+const wrapInBackticks = (word: string) => `\`${word}\``;
+
+const concatenateWords = (words: Array<string>): string => {
+  if (words.length === 0) {
+    throw new Error('Cannot concatenate an empty array.');
+  } else if (words.length <= 2) {
+    return words.join(' and ');
+  } else {
+    return concatenateWords([
+      words.slice(0, -1).join(', '),
+      words[words.length - 1],
+    ]);
+  }
+};

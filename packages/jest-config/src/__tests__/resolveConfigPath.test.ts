@@ -114,5 +114,28 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
         );
       }).toThrowError(NO_ROOT_DIR_ERROR_PATTERN);
     });
+
+    describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
+      `jest.config.%s and jest.config${extension}`,
+      extension2 => {
+        if (extension === extension2) return;
+
+        const relativeJestConfigPaths = [
+          `a/b/c/jest.config${extension}`,
+          `a/b/c/jest.config${extension2}`,
+        ];
+
+        writeFiles(DIR, {
+          [relativeJestConfigPaths[0]]: '',
+          [relativeJestConfigPaths[1]]: '',
+        });
+
+        // multiple configs here, should throw
+
+        expect(() =>
+          resolveConfigPath(path.dirname(relativeJestConfigPaths[0]), DIR),
+        ).toThrowError(MULTIPLE_CONFIGS_ERROR_PATTERN);
+      },
+    );
   },
 );
