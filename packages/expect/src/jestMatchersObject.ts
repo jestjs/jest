@@ -68,6 +68,7 @@ export const setMatchers = (
         }
 
         asymmetricMatch(other: unknown) {
+          // @ts-expect-error: asymmetric matchers are not called with context
           const {pass} = matcher(
             other,
             ...this.sample,
