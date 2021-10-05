@@ -21,20 +21,22 @@ const utils = Object.freeze({
   subsetEquality,
 });
 
-export abstract class AsymmetricMatcher<T>
-  implements AsymmetricMatcherInterface
+export abstract class AsymmetricMatcher<
+  T,
+  State extends MatcherState = MatcherState,
+> implements AsymmetricMatcherInterface
 {
   $$typeof = Symbol.for('jest.asymmetricMatcher');
 
   constructor(protected sample: T, protected inverse = false) {}
 
-  protected getMatcherContext(): MatcherState {
+  protected getMatcherContext(): State {
     return {
       ...getState(),
       equals,
       isNot: this.inverse,
       utils,
-    };
+    } as State;
   }
 
   abstract asymmetricMatch(other: unknown): boolean;
