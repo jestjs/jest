@@ -67,7 +67,7 @@ const resolveConfigPathByTraversing = (
   }
 
   if (configFiles.length > 1) {
-    throw new Error(makeMultipleConfigsError(configFiles));
+    console.warn(makeMultipleConfigsWarning(configFiles));
   }
 
   if (configFiles.length > 0 || packageJson) {
@@ -120,14 +120,14 @@ const makeResolutionErrorMessage = (
     ext => `"${getConfigFilename(ext)}"`,
   ).join(' or ')}.`;
 
-const makeMultipleConfigsError = (configPaths: Array<Config.Path>) =>
+const makeMultipleConfigsWarning = (configPaths: Array<Config.Path>) =>
   [
     '● Multiple configurations found:',
-    ...configPaths.map(configPath => `  * ${configPath}`),
+    ...configPaths.map(configPath => `    * ${configPath}`),
     '',
-    'Implicit config resolution does not allow multiple configuration files.',
-    'Either remove unused config files or select one explicitly with `--config`.',
+    '  Implicit config resolution does not allow multiple configuration files.',
+    '  Either remove unused config files or select one explicitly with `--config`.',
     '',
-    'Configuration Documentation:',
-    'https://jestjs.io/docs/configuration.html',
+    '  Configuration Documentation:',
+    '  https://jestjs.io/docs/configuration.html',
   ].join('\n');

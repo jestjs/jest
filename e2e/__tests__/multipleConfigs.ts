@@ -6,22 +6,25 @@
  */
 
 import * as path from 'path';
-import {wrap} from 'jest-snapshot-serializer-raw';
+import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
-const MULTIPLE_CONFIGS_ERROR_TEXT = 'Multiple configurations found';
+const MULTIPLE_CONFIGS_WARNING_TEXT = 'Multiple configurations found';
 
 test('multiple configs will throw matching error', () => {
   const rootDir = path.resolve(__dirname, '..', '..');
-  const {exitCode, stderr} = runJest('multiple-configs', ['--show-config'], {
+  const {exitCode, stderr} = runJest('multiple-configs', [], {
     skipPkgJsonCheck: true,
   });
 
-  expect(exitCode).toBe(1);
-  expect(stderr).toContain(MULTIPLE_CONFIGS_ERROR_TEXT);
+  expect(exitCode).toBe(0);
+  expect(stderr).toContain(MULTIPLE_CONFIGS_WARNING_TEXT);
 
   const cleanStdErr = stderr.replace(new RegExp(rootDir, 'g'), '<rootDir>');
-  expect(wrap(cleanStdErr)).toMatchSnapshot();
+  const {rest, summary} = extractSummary(cleanStdErr);
+
+  expect(rest).toMatchSnapshot();
+  expect(summary).toMatchSnapshot();
 });
 
 test('multiple configs error can be remove by --config', () => {
@@ -34,5 +37,5 @@ test('multiple configs error can be remove by --config', () => {
   );
 
   expect(exitCode).toBe(0);
-  expect(stderr).not.toContain(MULTIPLE_CONFIGS_ERROR_TEXT);
+  expect(stderr).not.toContain(MULTIPLE_CONFIGS_WARNING_TEXT);
 });

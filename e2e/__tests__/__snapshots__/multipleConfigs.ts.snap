@@ -1,24 +1,34 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`multiple configs will throw matching error 1`] = `
-Error: ● Multiple configurations found:
-  * <rootDir>/e2e/multiple-configs/jest.config.js
-  * <rootDir>/e2e/multiple-configs/jest.config.json
-  * <rootDir>/e2e/multiple-configs/package.json
+"● Multiple configurations found:
+    * <rootDir>/e2e/multiple-configs/jest.config.js
+    * <rootDir>/e2e/multiple-configs/jest.config.json
+    * <rootDir>/e2e/multiple-configs/package.json
 
-Implicit config resolution does not allow multiple configuration files.
-Either remove unused config files or select one explicitly with \`--config\`.
+  Implicit config resolution does not allow multiple configuration files.
+  Either remove unused config files or select one explicitly with \`--config\`.
+  
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration.html
+● Multiple configurations found:
+    * <rootDir>/e2e/multiple-configs/jest.config.js
+    * <rootDir>/e2e/multiple-configs/jest.config.json
+    * <rootDir>/e2e/multiple-configs/package.json
 
-Configuration Documentation:
-https://jestjs.io/docs/configuration.html
-    at resolveConfigPathByTraversing (<rootDir>/packages/jest-config/build/resolveConfigPath.js:130:11)
-    at _default (<rootDir>/packages/jest-config/build/resolveConfigPath.js:113:10)
-    at readConfig (<rootDir>/packages/jest-config/build/index.js:223:49)
-    at readConfigs (<rootDir>/packages/jest-config/build/index.js:414:32)
-    at runCLI (<rootDir>/packages/jest-core/build/cli/index.js:133:29)
-    at Object.run (<rootDir>/packages/jest-cli/build/cli/index.js:155:62)
-    at Object.<anonymous> (<rootDir>/packages/jest-cli/bin/jest.js:16:27)
-    at Module._compile (internal/modules/cjs/loader.js:1072:14)
-    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1101:10)
-    at Module.load (internal/modules/cjs/loader.js:937:32)
+  Implicit config resolution does not allow multiple configuration files.
+  Either remove unused config files or select one explicitly with \`--config\`.
+  
+  Configuration Documentation:
+  https://jestjs.io/docs/configuration.html
+PASS Config from js file __tests__/test.js
+  ✓ dummy test"
+`;
+
+exports[`multiple configs will throw matching error 2`] = `
+"Test Suites: 1 passed, 1 total
+Tests:       1 passed, 1 total
+Snapshots:   0 total
+Time:        <<REPLACED>>
+Ran all test suites."
 `;
