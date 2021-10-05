@@ -121,25 +121,13 @@ const makeResolutionErrorMessage = (
   ).join(' or ')}.`;
 
 const makeMultipleConfigsError = (configPaths: Array<Config.Path>) =>
-  '● Multiple configurations found:\n\n' +
-  `Jest found configuration in ${concatenateWords(
-    configPaths.map(wrapInBackticks),
-  )}.\n` +
-  'This is not allowed because it is probably a mistake.\n\n' +
-  'Configuration Documentation:\n' +
-  'https://jestjs.io/docs/configuration.html\n';
-
-const wrapInBackticks = (word: string) => `\`${word}\``;
-
-const concatenateWords = (words: Array<string>): string => {
-  if (words.length === 0) {
-    throw new Error('Cannot concatenate an empty array.');
-  } else if (words.length <= 2) {
-    return words.join(' and ');
-  } else {
-    return concatenateWords([
-      words.slice(0, -1).join(', '),
-      words[words.length - 1],
-    ]);
-  }
-};
+  [
+    '● Multiple configurations found:',
+    ...configPaths.map(configPath => `  * \`${configPath}\``),
+    '',
+    'Implicit config resolution does not allow multiple configuration files.',
+    'Either remove unused config files or select one explicitly with `--config`.',
+    '',
+    'Configuration Documentation:',
+    'https://jestjs.io/docs/configuration.html',
+  ].join('\n');
