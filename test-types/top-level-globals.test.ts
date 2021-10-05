@@ -115,6 +115,12 @@ expectType<void>(describe.skip.each(testTable)(testName, fn, timeout));
 expectType<void>(expect(2).toBe(2));
 expectType<Promise<void>>(expect(2).resolves.toBe(2));
 
+expectType<void>(expect(() => {}).toThrow());
+expectType<void>(expect(() => {}).toThrow(/error/));
+expectType<void>(expect(() => {}).toThrow('error'));
+expectType<void>(expect(() => {}).toThrow(Error));
+expectType<void>(expect(() => {}).toThrow(new Error('error')));
+
 expectType<void>(expect('Hello').toEqual(expect.any(String)));
 
 // this currently does not error due to `[id: string]` in ExtraAsymmetricMatchers - we should have nothing there and force people to use interface merging
