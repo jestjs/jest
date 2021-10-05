@@ -9,6 +9,8 @@ import * as path from 'path';
 import {wrap} from 'jest-snapshot-serializer-raw';
 import runJest from '../runJest';
 
+const MULTIPLE_CONFIGS_ERROR_TEXT = 'Multiple configurations found';
+
 test('multiple configs will throw matching error', () => {
   const rootDir = path.resolve(__dirname, '..', '..');
   const {exitCode, stderr} = runJest('multiple-configs', ['--show-config'], {
@@ -16,12 +18,14 @@ test('multiple configs will throw matching error', () => {
   });
 
   expect(exitCode).toBe(1);
+  expect(stderr).toContain(MULTIPLE_CONFIGS_ERROR_TEXT);
+
   const cleanStdErr = stderr.replace(new RegExp(rootDir, 'g'), '<rootDir>');
   expect(wrap(cleanStdErr)).toMatchSnapshot();
 });
 
 test('multiple configs error can be remove by --config', () => {
-  const {exitCode} = runJest(
+  const {exitCode, stderr} = runJest(
     'multiple-configs',
     ['--config', 'jest.config.json'],
     {
@@ -30,4 +34,5 @@ test('multiple configs error can be remove by --config', () => {
   );
 
   expect(exitCode).toBe(0);
+  expect(stderr).not.toContain(MULTIPLE_CONFIGS_ERROR_TEXT);
 });
