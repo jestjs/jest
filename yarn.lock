@@ -2602,7 +2602,7 @@ __metadata:
     istanbul-reports: ^3.0.0
     jest: "workspace:*"
     jest-changed-files: "workspace:*"
-    jest-junit: ^12.0.0
+    jest-junit: ^13.0.0
     jest-mock: "workspace:*"
     jest-runner-tsd: ^1.1.0
     jest-silent-reporter: ^0.5.0
@@ -6027,20 +6027,20 @@ __metadata:
   linkType: hard
 
 "autoprefixer@npm:^10.2.0, autoprefixer@npm:^10.2.5":
-  version: 10.3.6
-  resolution: "autoprefixer@npm:10.3.6"
+  version: 10.3.7
+  resolution: "autoprefixer@npm:10.3.7"
   dependencies:
-    browserslist: ^4.17.1
-    caniuse-lite: ^1.0.30001260
+    browserslist: ^4.17.3
+    caniuse-lite: ^1.0.30001264
     fraction.js: ^4.1.1
-    nanocolors: ^0.2.8
     normalize-range: ^0.1.2
+    picocolors: ^0.2.1
     postcss-value-parser: ^4.1.0
   peerDependencies:
     postcss: ^8.1.0
   bin:
     autoprefixer: bin/autoprefixer
-  checksum: 2e1b990592a6f982dfc2311a7c58494080b783ab45531277eed14949994c91704c25c596251fc0967dd2749a0cb6459a110781f724805f3c576dde4d3aa886d2
+  checksum: bbd835343f14de4aaa9246d2196374eaafa59f2f9de3070ac4f9d7c5a92901b8fd6d03b5b0b33ed2b33c971946a010a69dc3703005456774ced5d98bb0e275e0
   languageName: node
   linkType: hard
 
@@ -6612,18 +6612,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browserslist@npm:^4.0.0, browserslist@npm:^4.14.5, browserslist@npm:^4.16.0, browserslist@npm:^4.16.6, browserslist@npm:^4.17.1":
-  version: 4.17.1
-  resolution: "browserslist@npm:4.17.1"
+"browserslist@npm:^4.0.0, browserslist@npm:^4.14.5, browserslist@npm:^4.16.0, browserslist@npm:^4.16.6, browserslist@npm:^4.17.1, browserslist@npm:^4.17.3":
+  version: 4.17.3
+  resolution: "browserslist@npm:4.17.3"
   dependencies:
-    caniuse-lite: ^1.0.30001259
-    electron-to-chromium: ^1.3.846
+    caniuse-lite: ^1.0.30001264
+    electron-to-chromium: ^1.3.857
     escalade: ^3.1.1
-    nanocolors: ^0.1.5
-    node-releases: ^1.1.76
+    node-releases: ^1.1.77
+    picocolors: ^0.2.1
   bin:
     browserslist: cli.js
-  checksum: 735d4f007dc74f5281d80c7f1677e22d750b78cf9e3c934e8ff4308674fcd4b561c9ec4a8aca7fecd34366077489b29004ca472a480140ccd7674d739c21b7f6
+  checksum: a68e1d1d5802cdcc4403ffc11df2d7b029ac5e36a8de245b8ab234e9b9cb83923b8f4f69b312b5f7fa2183c43a7091436b22949afddda796cc1ffcfd573effb9
   languageName: node
   linkType: hard
 
@@ -6870,10 +6870,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001125, caniuse-lite@npm:^1.0.30001259, caniuse-lite@npm:^1.0.30001260":
-  version: 1.0.30001261
-  resolution: "caniuse-lite@npm:1.0.30001261"
-  checksum: 7739142d9388560b287e0cedef5c4a9699cc8516afb3d0dc954e15dc6506729f893dc780438d398fb49234f5a2aec9e90e1021a7fbeb33c55368c4a4f5d17b59
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001125, caniuse-lite@npm:^1.0.30001264":
+  version: 1.0.30001264
+  resolution: "caniuse-lite@npm:1.0.30001264"
+  checksum: 98c7297f333e2a637315c33aaa8e15e98b42829d483d7ffb41a0eecd6216375f8a40670ec1e7239985fd7b495f5cdcc5e415ce61cc0a7d9748a19b8450d5b211
   languageName: node
   linkType: hard
 
@@ -8823,10 +8823,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"electron-to-chromium@npm:^1.3.564, electron-to-chromium@npm:^1.3.846":
-  version: 1.3.851
-  resolution: "electron-to-chromium@npm:1.3.851"
-  checksum: f8bc608881f1d5a7b989155ecb11cd39f766c0f3adb675dcc712b0c86443b9242a83372189f7b0b7a731aaddab394bcecec39e84252faad9fc702af1ab7d5f6f
+"electron-to-chromium@npm:^1.3.564, electron-to-chromium@npm:^1.3.857":
+  version: 1.3.859
+  resolution: "electron-to-chromium@npm:1.3.859"
+  checksum: 3a838b14612ab02cf57d1dcc5afc07b579aec6619f3cd2d8d7b7adcbb132ffe0facc6f4ddccc12cabbe2416f647c3240151e19ef7c82337965b47342f49f536f
   languageName: node
   linkType: hard
 
@@ -12874,15 +12874,15 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"jest-junit@npm:^12.0.0":
-  version: 12.3.0
-  resolution: "jest-junit@npm:12.3.0"
+"jest-junit@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "jest-junit@npm:13.0.0"
   dependencies:
     mkdirp: ^1.0.4
-    strip-ansi: ^5.2.0
+    strip-ansi: ^6.0.1
     uuid: ^8.3.2
     xml: ^1.0.1
-  checksum: a8b90538db7c61dd2bd4c287914927a6631bbc602e221cf1252be729db9ab66473c2f38381d0baaa7358f9efcaee224b5b0de9b4965e58cab588405cfa7fdda8
+  checksum: d81252785ccb1b97e035c47d49c32f1ef3a1c9c11638a05c79396af18ee8322e5cc76539f9a51a90fea7733856fef8fc3caebdfffa1c2309f5c60b0271c37825
   languageName: node
   linkType: hard
 
@@ -15465,21 +15465,14 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"nanocolors@npm:^0.1.12, nanocolors@npm:^0.1.5":
+"nanocolors@npm:^0.1.12":
   version: 0.1.12
   resolution: "nanocolors@npm:0.1.12"
   checksum: be3529320c895fcd16b79185c830c3c997c83026ca14d1119025d817b9ddcf175ac2b04b50f7e8928edf4082b98a0a106e6723ebc5ad73ccfd7366aeb8ce66a6
   languageName: node
   linkType: hard
 
-"nanocolors@npm:^0.2.2, nanocolors@npm:^0.2.8":
-  version: 0.2.11
-  resolution: "nanocolors@npm:0.2.11"
-  checksum: f9d6cafb1d8d2f0423db81d22aed1ea9d82ce77dd919dcf6e79e7a779d7d9ab51e5415a6c92e13a131f85bf154f033cbd9646bbbcba4b9f66494e945927dc93f
-  languageName: node
-  linkType: hard
-
-"nanoid@npm:^3.1.25":
+"nanoid@npm:^3.1.28":
   version: 3.1.28
   resolution: "nanoid@npm:3.1.28"
   bin:
@@ -15726,10 +15719,10 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"node-releases@npm:^1.1.61, node-releases@npm:^1.1.76":
-  version: 1.1.76
-  resolution: "node-releases@npm:1.1.76"
-  checksum: 965c5a4f5a3d8953e95388178d9d0df76da443eb8108817dc19e7fc9a6c97e3f4c6f7f7728b99912c41d7f80f468573395b47c9c6bdd3e319a61b4bb173fcac4
+"node-releases@npm:^1.1.61, node-releases@npm:^1.1.77":
+  version: 1.1.77
+  resolution: "node-releases@npm:1.1.77"
+  checksum: acc54c73e9a23a854bc04c3e5b948e9f043498e744b8bc7b9169331fed0fba291cb60adc4552809d6d95ef9ed45d16047441205cd80d33c140c68ee0fb767dfc
   languageName: node
   linkType: hard
 
@@ -16779,6 +16772,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"picocolors@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "picocolors@npm:0.2.1"
+  checksum: 84da675558ed004c61a7fa7b0bcce6338c8e3ef1eadb43b5263059d1d745f4567464aa6aa603c506a82942a5a7dfda5bb023605a5f4c9888d7adc154845d579e
+  languageName: node
+  linkType: hard
+
 "picomatch@npm:^2.0.4, picomatch@npm:^2.2.1, picomatch@npm:^2.2.2, picomatch@npm:^2.2.3":
   version: 2.3.0
   resolution: "picomatch@npm:2.3.0"
@@ -17374,13 +17374,13 @@ fsevents@^1.2.7:
   linkType: hard
 
 "postcss@npm:^8.2.15, postcss@npm:^8.2.4, postcss@npm:^8.2.9":
-  version: 8.3.8
-  resolution: "postcss@npm:8.3.8"
+  version: 8.3.9
+  resolution: "postcss@npm:8.3.9"
   dependencies:
-    nanocolors: ^0.2.2
-    nanoid: ^3.1.25
+    nanoid: ^3.1.28
+    picocolors: ^0.2.1
     source-map-js: ^0.6.2
-  checksum: bea4f2f367c803739ca89c6773aa80ecad6480171db7e1ebb211fabe7eaf7ff68b3b4d007e41f84d561344a588d62d1b50b3e46e1f5c368712100df553fc09ca
+  checksum: f67654ab01ec6ec9126eb5ed64b06f602dfce7e6a38aa7f4d3cdb67fe40fe97234286c5fd6769f56138206ea80e944c62f909052b00c351239064ef3b850664d
   languageName: node
   linkType: hard
 
