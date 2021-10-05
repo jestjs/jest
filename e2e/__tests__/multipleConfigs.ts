@@ -19,3 +19,15 @@ test('multiple configs will throw matching error', () => {
   const cleanStdErr = stderr.replace(new RegExp(rootDir, 'g'), '<rootDir>');
   expect(wrap(cleanStdErr)).toMatchSnapshot();
 });
+
+test('multiple configs error can be remove by --config', () => {
+  const {exitCode} = runJest(
+    'multiple-configs',
+    ['--config', 'jest.config.json'],
+    {
+      skipPkgJsonCheck: true,
+    },
+  );
+
+  expect(exitCode).toBe(0);
+});
