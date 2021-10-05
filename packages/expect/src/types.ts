@@ -22,7 +22,12 @@ export type AsyncExpectationResult = Promise<SyncExpectationResult>;
 export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
 export type RawMatcherFn = {
-  (received: any, expected: any, options?: any): ExpectationResult;
+  (
+    this: MatcherState,
+    received: any,
+    expected: any,
+    options?: any,
+  ): ExpectationResult;
   [INTERNAL_MATCHER_FLAG]?: boolean;
 };
 
