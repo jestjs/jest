@@ -70,7 +70,7 @@ const resolveConfigPathByTraversing = (
     throw new Error(makeMultipleConfigsError(configFiles));
   }
 
-  if (configFiles.length || packageJson) {
+  if (configFiles.length > 0 || packageJson) {
     return configFiles[0] ?? packageJson;
   }
 
