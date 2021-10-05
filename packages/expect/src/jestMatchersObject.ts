@@ -68,16 +68,16 @@ export const setMatchers = (
 
         asymmetricMatch(other: unknown) {
           const {pass} = matcher.call(
-            this.matcherState,
+            this.getMatcherContext(),
             other,
             ...this.sample,
           ) as SyncExpectationResult;
 
-          return this.matcherState.isNot ? !pass : pass;
+          return this.inverse ? !pass : pass;
         }
 
         toString() {
-          return `${this.matcherState.isNot ? 'not.' : ''}${key}`;
+          return `${this.inverse ? 'not.' : ''}${key}`;
         }
 
         getExpectedType() {
@@ -92,7 +92,9 @@ export const setMatchers = (
       expect[key] = (...sample: [unknown, unknown]) =>
         new CustomMatcher(false, ...sample);
       if (!expect.not) {
-        expect.not = {};
+        throw new Error(
+          '`expect.not` is not defined - please report this bug to https://github.com/facebook/jest',
+        );
       }
       expect.not[key] = (...sample: [unknown, unknown]) =>
         new CustomMatcher(true, ...sample);

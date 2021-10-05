@@ -12,30 +12,28 @@ import {getState} from './jestMatchersObject';
 import type {MatcherState} from './types';
 import {iterableEquality, subsetEquality} from './utils';
 
-export class AsymmetricMatcher<T> {
-  protected sample: T;
-  protected readonly matcherState: MatcherState;
-  $$typeof: symbol;
-  // TODO: remove this field in Jest 28 (use `matcherState`)
-  inverse?: boolean;
+const utils = Object.freeze({
+  ...matcherUtils,
+  iterableEquality,
+  subsetEquality,
+});
 
-  constructor(sample: T, isNot = false) {
-    this.$$typeof = Symbol.for('jest.asymmetricMatcher');
-    this.sample = sample;
+export abstract class AsymmetricMatcher<T> {
+  $$typeof = Symbol.for('jest.asymmetricMatcher');
 
-    const utils = {...matcherUtils, iterableEquality, subsetEquality};
+  constructor(protected sample: T, protected inverse = false) {}
 
-    const matcherContext: MatcherState = {
+  protected getMatcherContext(): MatcherState {
+    return {
       ...getState(),
       equals,
-      isNot,
+      isNot: this.inverse,
       utils,
     };
-
-    this.inverse = matcherContext.isNot;
-
-    this.matcherState = matcherContext;
   }
+
+  abstract asymmetricMatch(other: unknown): boolean;
+  abstract toString(): string;
 }
 
 class Any extends AsymmetricMatcher<any> {
@@ -152,11 +150,11 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
           other.some(another => equals(item, another)),
         ));
 
-    return this.matcherState.isNot ? !result : result;
+    return this.inverse ? !result : result;
   }
 
   toString() {
-    return `Array${this.matcherState.isNot ? 'Not' : ''}Containing`;
+    return `Array${this.inverse ? 'Not' : ''}Containing`;
   }
 
   getExpectedType() {
@@ -190,11 +188,11 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
       }
     }
 
-    return this.matcherState.isNot ? !result : result;
+    return this.inverse ? !result : result;
   }
 
   toString() {
-    return `Object${this.matcherState.isNot ? 'Not' : ''}Containing`;
+    return `Object${this.inverse ? 'Not' : ''}Containing`;
   }
 
   getExpectedType() {
@@ -213,11 +211,11 @@ class StringContaining extends AsymmetricMatcher<string> {
   asymmetricMatch(other: string) {
     const result = isA('String', other) && other.includes(this.sample);
 
-    return this.matcherState.isNot ? !result : result;
+    return this.inverse ? !result : result;
   }
 
   toString() {
-    return `String${this.matcherState.isNot ? 'Not' : ''}Containing`;
+    return `String${this.inverse ? 'Not' : ''}Containing`;
   }
 
   getExpectedType() {
@@ -236,11 +234,11 @@ class StringMatching extends AsymmetricMatcher<RegExp> {
   asymmetricMatch(other: string) {
     const result = isA('String', other) && this.sample.test(other);
 
-    return this.matcherState.isNot ? !result : result;
+    return this.inverse ? !result : result;
   }
 
   toString() {
-    return `String${this.matcherState.isNot ? 'Not' : ''}Matching`;
+    return `String${this.inverse ? 'Not' : ''}Matching`;
   }
 
   getExpectedType() {
