@@ -2,9 +2,9 @@
 
 exports[`multiple configs will throw matching error 1`] = `
 Error: ● Multiple configurations found:
-  * \`<rootDir>/e2e/multiple-configs/jest.config.js\`
-  * \`<rootDir>/e2e/multiple-configs/jest.config.json\`
-  * \`<rootDir>/e2e/multiple-configs/package.json\`
+  * <rootDir>/e2e/multiple-configs/jest.config.js
+  * <rootDir>/e2e/multiple-configs/jest.config.json
+  * <rootDir>/e2e/multiple-configs/package.json
 
 Implicit config resolution does not allow multiple configuration files.
 Either remove unused config files or select one explicitly with \`--config\`.
