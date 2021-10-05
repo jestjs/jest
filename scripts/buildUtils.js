@@ -52,7 +52,12 @@ module.exports.getPackages = function getPackages() {
           {},
         ),
         ...(pkg.name === 'jest-circus' ? {'./runner': './runner.js'} : {}),
-        ...(pkg.name === 'expect' ? {'./build/utils': './build/utils.js'} : {}),
+        ...(pkg.name === 'expect'
+          ? {
+              './build/matchers': './build/matchers.js',
+              './build/utils': './build/utils.js',
+            }
+          : {}),
       },
       `Package ${pkg.name} does not export correct files`,
     );
