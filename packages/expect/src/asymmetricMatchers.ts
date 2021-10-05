@@ -9,7 +9,10 @@
 import * as matcherUtils from 'jest-matcher-utils';
 import {equals, fnNameFor, hasProperty, isA, isUndefined} from './jasmineUtils';
 import {getState} from './jestMatchersObject';
-import type {MatcherState} from './types';
+import type {
+  AsymmetricMatcher as AsymmetricMatcherInterface,
+  MatcherState,
+} from './types';
 import {iterableEquality, subsetEquality} from './utils';
 
 const utils = Object.freeze({
@@ -18,22 +21,28 @@ const utils = Object.freeze({
   subsetEquality,
 });
 
-export abstract class AsymmetricMatcher<T> {
+export abstract class AsymmetricMatcher<
+  T,
+  State extends MatcherState = MatcherState,
+> implements AsymmetricMatcherInterface
+{
   $$typeof = Symbol.for('jest.asymmetricMatcher');
 
   constructor(protected sample: T, protected inverse = false) {}
 
-  protected getMatcherContext(): MatcherState {
+  protected getMatcherContext(): State {
     return {
       ...getState(),
       equals,
       isNot: this.inverse,
       utils,
-    };
+    } as State;
   }
 
   abstract asymmetricMatch(other: unknown): boolean;
   abstract toString(): string;
+  getExpectedType?(): string;
+  toAsymmetricMatcher?(): string;
 }
 
 class Any extends AsymmetricMatcher<any> {
