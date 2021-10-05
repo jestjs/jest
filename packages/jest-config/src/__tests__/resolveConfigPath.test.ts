@@ -139,3 +139,23 @@ describe.each(JEST_CONFIG_EXT_ORDER.slice(0))(
     );
   },
 );
+
+describe.each(JEST_CONFIG_EXT_ORDER.map((_, i) => i + 1).filter(i => i >= 2))(
+  'multiple errors has correct snapshot with %s config files',
+  configCount => {
+    const usedExtensions = JEST_CONFIG_EXT_ORDER.slice(0, configCount);
+    const relativeJestConfigPaths = usedExtensions.map(
+      extension => `a/b/c/jest.config${extension}`,
+    );
+
+    relativeJestConfigPaths.forEach(configPath =>
+      writeFiles(DIR, {
+        [configPath]: '',
+      }),
+    );
+
+    expect(() =>
+      resolveConfigPath(path.dirname(relativeJestConfigPaths[0]), DIR),
+    ).toThrowErrorMatchingSnapshot();
+  },
+);
