@@ -14,8 +14,7 @@ test('multiple configs will throw matching error', () => {
     skipPkgJsonCheck: true,
   });
 
-  expect(exitCode).not.toBe(0);
-  expect(
-    stderr.replace(new RegExp(rootDir, 'g'), '<rootDir>'),
-  ).toMatchSnapshot();
+  expect(exitCode).toBe(1);
+  const cleanStdErr = stderr.replace(new RegExp(rootDir, 'g'), '<rootDir>');
+  expect(wrap(cleanStdErr)).toMatchSnapshot();
 });
