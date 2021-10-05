@@ -3,19 +3,19 @@
 exports[`multiple configs will throw matching error 1`] = `
 "Error: ● Multiple configurations found:
 
-Jest found configuration in \`<rootDir>/jest.config.js\`, \`<rootDir>/jest.config.json\` and \`<rootDir>/package.json\`.
+Jest found configuration in \`<rootDir>/e2e/multiple-configs/jest.config.js\`, \`<rootDir>/e2e/multiple-configs/jest.config.json\` and \`<rootDir>/e2e/multiple-configs/package.json\`.
 This is not allowed because it is probably a mistake.
 
 Configuration Documentation:
 https://jestjs.io/docs/configuration.html
 
-    at resolveConfigPathByTraversing (/Users/jankaifer/Projects/jest/packages/jest-config/build/resolveConfigPath.js:130:11)
-    at _default (/Users/jankaifer/Projects/jest/packages/jest-config/build/resolveConfigPath.js:113:10)
-    at readConfig (/Users/jankaifer/Projects/jest/packages/jest-config/build/index.js:223:49)
-    at readConfigs (/Users/jankaifer/Projects/jest/packages/jest-config/build/index.js:414:32)
-    at runCLI (/Users/jankaifer/Projects/jest/packages/jest-core/build/cli/index.js:133:29)
-    at Object.run (/Users/jankaifer/Projects/jest/packages/jest-cli/build/cli/index.js:155:62)
-    at Object.<anonymous> (/Users/jankaifer/Projects/jest/packages/jest-cli/bin/jest.js:16:27)
+    at resolveConfigPathByTraversing (<rootDir>/packages/jest-config/build/resolveConfigPath.js:130:11)
+    at _default (<rootDir>/packages/jest-config/build/resolveConfigPath.js:113:10)
+    at readConfig (<rootDir>/packages/jest-config/build/index.js:223:49)
+    at readConfigs (<rootDir>/packages/jest-config/build/index.js:414:32)
+    at runCLI (<rootDir>/packages/jest-core/build/cli/index.js:133:29)
+    at Object.run (<rootDir>/packages/jest-cli/build/cli/index.js:155:62)
+    at Object.<anonymous> (<rootDir>/packages/jest-cli/bin/jest.js:16:27)
     at Module._compile (internal/modules/cjs/loader.js:1072:14)
     at Object.Module._extensions..js (internal/modules/cjs/loader.js:1101:10)
     at Module.load (internal/modules/cjs/loader.js:937:32)"

@@ -9,8 +9,8 @@ import * as path from 'path';
 import runJest from '../runJest';
 
 test('multiple configs will throw matching error', () => {
-  const rootDir = path.resolve(__dirname, '..', 'multiple-configs');
-  const {exitCode, stderr} = runJest(rootDir, ['--show-config'], {
+  const rootDir = path.resolve(__dirname, '..', '..');
+  const {exitCode, stderr} = runJest('multiple-configs', ['--show-config'], {
     skipPkgJsonCheck: true,
   });
 
