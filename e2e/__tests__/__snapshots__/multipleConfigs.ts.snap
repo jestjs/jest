@@ -8,7 +8,7 @@ exports[`multiple configs will throw matching error 1`] = `
 
   Implicit config resolution does not allow multiple configuration files.
   Either remove unused config files or select one explicitly with \`--config\`.
-  
+
   Configuration Documentation:
   https://jestjs.io/docs/configuration.html
 ● Multiple configurations found:
@@ -18,7 +18,7 @@ exports[`multiple configs will throw matching error 1`] = `
 
   Implicit config resolution does not allow multiple configuration files.
   Either remove unused config files or select one explicitly with \`--config\`.
-  
+
   Configuration Documentation:
   https://jestjs.io/docs/configuration.html
 PASS Config from js file __tests__/test.js
