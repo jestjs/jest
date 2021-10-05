@@ -6,6 +6,7 @@
 
 - `[expect]` Pass matcher context to asymmetric matchers ([#11926](https://github.com/facebook/jest/pull/11926) & [#11930](https://github.com/facebook/jest/pull/11930))
 - `[expect]` Improve TypeScript types ([#11931](https://github.com/facebook/jest/pull/11931))
+- `[expect]` Improve typings of `toThrow()` and `toThrowError()` matchers ([#11929](https://github.com/facebook/jest/pull/11929))
 - `[@jest/types]` Mark deprecated configuration options as `@deprecated` ([#11913](https://github.com/facebook/jest/pull/11913))
 - `[jest-cli]` Improve `--help` printout by removing defunct `--browser` option ([#11914](https://github.com/facebook/jest/pull/11914))
 - `[jest-haste-map]` Use distinct cache paths for different values of `computeDependencies` ([#11916](https://github.com/facebook/jest/pull/11916))

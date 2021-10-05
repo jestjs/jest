@@ -106,10 +106,6 @@ export type Expect<State extends MatcherState = MatcherState> = {
     not: InverseAsymmetricMatchers & ExtraAsymmetricMatchers;
   };
 
-interface Constructable {
-  new (...args: Array<unknown>): unknown;
-}
-
 // This is a copy from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/de6730f4463cba69904698035fafd906a72b9664/types/jest/index.d.ts#L570-L817
 export interface Matchers<R> {
   /**
@@ -322,11 +318,11 @@ export interface Matchers<R> {
   /**
    * Used to test that a function throws when it is called.
    */
-  toThrow(error?: string | Constructable | RegExp | Error): R;
+  toThrow(error?: unknown): R;
   /**
    * If you want to test that a specific error is thrown inside a function.
    */
-  toThrowError(error?: string | Constructable | RegExp | Error): R;
+  toThrowError(error?: unknown): R;
 
   /* TODO: START snapshot matchers are not from `expect`, the types should not be here */
   /**
