@@ -12,6 +12,8 @@
 
 ### Chore & Maintenance
 
+- `[expect]` Expose default matchers ([#11932](https://github.com/facebook/jest/pull/11932))
+
 ### Performance
 
 ## 27.2.4

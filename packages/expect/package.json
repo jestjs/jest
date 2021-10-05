@@ -12,7 +12,8 @@
   "exports": {
     ".": "./build/index.js",
     "./package.json": "./package.json",
-    "./build/utils": "./build/utils.js"
+    "./build/utils": "./build/utils.js",
+    "./build/matchers": "./build/matchers.js"
   },
   "dependencies": {
     "@jest/types": "^27.2.4",
