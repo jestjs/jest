@@ -61,8 +61,13 @@ export const setMatchers = (
     if (!isInternal) {
       // expect is defined
 
-      class CustomMatcher extends AsymmetricMatcher<[unknown, unknown]> {
-        constructor(inverse: boolean = false, ...sample: [unknown, unknown]) {
+      class CustomMatcher extends AsymmetricMatcher<
+        [unknown, ...Array<unknown>]
+      > {
+        constructor(
+          inverse: boolean = false,
+          ...sample: [unknown, ...Array<unknown>]
+        ) {
           super(sample, inverse);
         }
 
@@ -89,14 +94,14 @@ export const setMatchers = (
         }
       }
 
-      expect[key] = (...sample: [unknown, unknown]) =>
+      expect[key] = (...sample: [unknown, ...Array<unknown>]) =>
         new CustomMatcher(false, ...sample);
       if (!expect.not) {
         throw new Error(
           '`expect.not` is not defined - please report this bug to https://github.com/facebook/jest',
         );
       }
-      expect.not[key] = (...sample: [unknown, unknown]) =>
+      expect.not[key] = (...sample: [unknown, ...Array<unknown>]) =>
         new CustomMatcher(true, ...sample);
     }
   });
