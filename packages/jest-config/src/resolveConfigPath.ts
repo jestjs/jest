@@ -20,7 +20,11 @@ const isFile = (filePath: Config.Path) =>
 
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
-export default (pathToResolve: Config.Path, cwd: Config.Path): Config.Path => {
+export default (
+  pathToResolve: Config.Path,
+  cwd: Config.Path,
+  skipMultipleConfigWarning: boolean,
+): Config.Path => {
   if (!path.isAbsolute(cwd)) {
     throw new Error(`"cwd" must be an absolute path. cwd: ${cwd}`);
   }
@@ -50,13 +54,19 @@ export default (pathToResolve: Config.Path, cwd: Config.Path): Config.Path => {
     );
   }
 
-  return resolveConfigPathByTraversing(absolutePath, pathToResolve, cwd);
+  return resolveConfigPathByTraversing(
+    absolutePath,
+    pathToResolve,
+    cwd,
+    skipMultipleConfigWarning,
+  );
 };
 
 const resolveConfigPathByTraversing = (
   pathToResolve: Config.Path,
   initialPath: Config.Path,
   cwd: Config.Path,
+  skipMultipleConfigWarning: boolean,
 ): Config.Path => {
   const configFiles = JEST_CONFIG_EXT_ORDER.map(ext =>
     path.resolve(pathToResolve, getConfigFilename(ext)),
@@ -67,7 +77,7 @@ const resolveConfigPathByTraversing = (
     configFiles.push(packageJson);
   }
 
-  if (configFiles.length > 1) {
+  if (!skipMultipleConfigWarning && configFiles.length > 1) {
     console.warn(makeMultipleConfigsWarning(configFiles));
   }
 
@@ -86,6 +96,7 @@ const resolveConfigPathByTraversing = (
     path.dirname(pathToResolve),
     initialPath,
     cwd,
+    skipMultipleConfigWarning,
   );
 };
 
@@ -131,4 +142,5 @@ const makeMultipleConfigsWarning = (configPaths: Array<Config.Path>) =>
     '',
     '  Configuration Documentation:',
     '  https://jestjs.io/docs/configuration.html',
+    '',
   ].join('\n');
