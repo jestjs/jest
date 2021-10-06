@@ -14,6 +14,7 @@ import {
   beforeAll,
   beforeEach,
   describe,
+  expect,
   test,
 } from '@jest/globals';
 import type {Global} from '@jest/types';
@@ -108,3 +109,42 @@ expectType<void>(describe.only.each(testTable)(testName, fn));
 expectType<void>(describe.only.each(testTable)(testName, fn, timeout));
 expectType<void>(describe.skip.each(testTable)(testName, fn));
 expectType<void>(describe.skip.each(testTable)(testName, fn, timeout));
+
+/// expect
+
+expectType<void>(expect(2).toBe(2));
+expectType<Promise<void>>(expect(2).resolves.toBe(2));
+
+expectType<void>(expect(() => {}).toThrow());
+expectType<void>(expect(() => {}).toThrow(/error/));
+expectType<void>(expect(() => {}).toThrow('error'));
+expectType<void>(expect(() => {}).toThrow(Error));
+expectType<void>(expect(() => {}).toThrow(new Error('error')));
+
+expectType<void>(expect('Hello').toEqual(expect.any(String)));
+
+// this currently does not error due to `[id: string]` in ExtraAsymmetricMatchers - we should have nothing there and force people to use interface merging
+// expectError(expect('Hello').toEqual(expect.not.any(Number)));
+
+expectType<void>(
+  expect.extend({
+    toBeDivisibleBy(actual: number, expected: number) {
+      expectType<boolean>(this.isNot);
+
+      const pass = actual % expected === 0;
+      const message = pass
+        ? () =>
+            `expected ${this.utils.printReceived(
+              actual,
+            )} not to be divisible by ${expected}`
+        : () =>
+            `expected ${this.utils.printReceived(
+              actual,
+            )} to be divisible by ${expected}`;
+
+      return {message, pass};
+    },
+  }),
+);
+
+// TODO: some way of calling `expect(4).toBeDivisbleBy(2)` and `expect.toBeDivisbleBy(2)`

@@ -21,8 +21,8 @@ export type AsyncExpectationResult = Promise<SyncExpectationResult>;
 
 export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
-export type RawMatcherFn = {
-  (received: any, expected: any, options?: any): ExpectationResult;
+export type RawMatcherFn<T extends MatcherState = MatcherState> = {
+  (this: T, received: any, expected: any, options?: any): ExpectationResult;
   [INTERNAL_MATCHER_FLAG]?: boolean;
 };
 
@@ -57,37 +57,54 @@ export type MatcherState = {
   };
 };
 
-export type AsymmetricMatcher = Record<string, any>;
-export type MatchersObject = {[id: string]: RawMatcherFn};
+export interface AsymmetricMatcher {
+  asymmetricMatch(other: unknown): boolean;
+  toString(): string;
+  getExpectedType?(): string;
+  toAsymmetricMatcher?(): string;
+}
+export type MatchersObject<T extends MatcherState = MatcherState> = {
+  [id: string]: RawMatcherFn<T>;
+};
 export type ExpectedAssertionsErrors = Array<{
   actual: string | number;
   error: Error;
   expected: string;
 }>;
-export type Expect = {
-  <T = unknown>(actual: T): Matchers<T>;
-  // TODO: this is added by test runners, not `expect` itself
-  addSnapshotSerializer(arg0: any): void;
-  assertions(arg0: number): void;
-  extend(arg0: any): void;
-  extractExpectedAssertionsErrors: () => ExpectedAssertionsErrors;
-  getState(): MatcherState;
-  hasAssertions(): void;
-  setState(state: Partial<MatcherState>): void;
 
-  any(expectedObject: any): AsymmetricMatcher;
-  anything(): AsymmetricMatcher;
+interface InverseAsymmetricMatchers {
   arrayContaining(sample: Array<unknown>): AsymmetricMatcher;
   objectContaining(sample: Record<string, unknown>): AsymmetricMatcher;
   stringContaining(expected: string): AsymmetricMatcher;
   stringMatching(expected: string | RegExp): AsymmetricMatcher;
-  [id: string]: AsymmetricMatcher;
-  not: {[id: string]: AsymmetricMatcher};
-};
-
-interface Constructable {
-  new (...args: Array<unknown>): unknown;
 }
+
+interface AsymmetricMatchers extends InverseAsymmetricMatchers {
+  any(expectedObject: unknown): AsymmetricMatcher;
+  anything(): AsymmetricMatcher;
+}
+
+// Should use interface merging somehow
+interface ExtraAsymmetricMatchers {
+  // at least one argument is needed - that's probably wrong. Should allow `expect.toBeDivisibleBy2()` like `expect.anything()`
+  [id: string]: (...sample: [unknown, ...Array<unknown>]) => AsymmetricMatcher;
+}
+
+export type Expect<State extends MatcherState = MatcherState> = {
+  <T = unknown>(actual: T): Matchers<void>;
+  // TODO: this is added by test runners, not `expect` itself
+  addSnapshotSerializer(serializer: unknown): void;
+  assertions(numberOfAssertions: number): void;
+  // TODO: remove this `T extends` - should get from some interface merging
+  extend<T extends MatcherState = State>(matchers: MatchersObject<T>): void;
+  extractExpectedAssertionsErrors: () => ExpectedAssertionsErrors;
+  getState(): State;
+  hasAssertions(): void;
+  setState(state: Partial<State>): void;
+} & AsymmetricMatchers &
+  ExtraAsymmetricMatchers & {
+    not: InverseAsymmetricMatchers & ExtraAsymmetricMatchers;
+  };
 
 // This is a copy from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/de6730f4463cba69904698035fafd906a72b9664/types/jest/index.d.ts#L570-L817
 export interface Matchers<R> {
@@ -301,11 +318,11 @@ export interface Matchers<R> {
   /**
    * Used to test that a function throws when it is called.
    */
-  toThrow(error?: string | Constructable | RegExp | Error): R;
+  toThrow(error?: unknown): R;
   /**
    * If you want to test that a specific error is thrown inside a function.
    */
-  toThrowError(error?: string | Constructable | RegExp | Error): R;
+  toThrowError(error?: unknown): R;
 
   /* TODO: START snapshot matchers are not from `expect`, the types should not be here */
   /**
