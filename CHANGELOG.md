@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config]` Warn when multiple Jest configs are located ([#11922](https://github.com/facebook/jest/pull/11922))
+
 ### Fixes
 
 - `[expect]` Pass matcher context to asymmetric matchers ([#11926](https://github.com/facebook/jest/pull/11926) & [#11930](https://github.com/facebook/jest/pull/11930))
