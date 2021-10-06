@@ -11,7 +11,7 @@ import runJest from '../runJest';
 
 const MULTIPLE_CONFIGS_WARNING_TEXT = 'Multiple configurations found';
 
-test('multiple configs will throw matching error', () => {
+test('multiple configs will warn', () => {
   const rootDir = path.resolve(__dirname, '..', '..');
   const {exitCode, stderr} = runJest('multiple-configs', [], {
     skipPkgJsonCheck: true,
@@ -27,7 +27,7 @@ test('multiple configs will throw matching error', () => {
   expect(summary).toMatchSnapshot();
 });
 
-test('multiple configs error can be remove by --config', () => {
+test('multiple configs warning can be suppressed by using --config', () => {
   const {exitCode, stderr} = runJest(
     'multiple-configs',
     ['--config', 'jest.config.json'],
