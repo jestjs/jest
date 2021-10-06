@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import chalk = require('chalk');
 import * as fs from 'graceful-fs';
 import slash = require('slash');
 import type {Config} from '@jest/types';
@@ -133,14 +134,16 @@ const makeResolutionErrorMessage = (
   ).join(' or ')}.`;
 
 const makeMultipleConfigsWarning = (configPaths: Array<Config.Path>) =>
-  [
-    '● Multiple configurations found:',
-    ...configPaths.map(configPath => `    * ${slash(configPath)}`),
-    '',
-    '  Implicit config resolution does not allow multiple configuration files.',
-    '  Either remove unused config files or select one explicitly with `--config`.',
-    '',
-    '  Configuration Documentation:',
-    '  https://jestjs.io/docs/configuration.html',
-    '',
-  ].join('\n');
+  chalk.yellow(
+    [
+      chalk.bold('\u25cf Multiple configurations found:'),
+      ...configPaths.map(configPath => `    * ${slash(configPath)}`),
+      '',
+      '  Implicit config resolution does not allow multiple configuration files.',
+      '  Either remove unused config files or select one explicitly with `--config`.',
+      '',
+      '  Configuration Documentation:',
+      '  https://jestjs.io/docs/configuration.html',
+      '',
+    ].join('\n'),
+  );
