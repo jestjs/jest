@@ -11,19 +11,18 @@ const stdoutWrite = require('../stdout-spy');
 process.stdout.write = jest.fn(process.stdout.write);
 
 test('verbose mode prints console output synchronously', () => {
+  // test only works consistently without tty
+  expect(process.stdout.isTTY).not.toBe(true);
+
   console.log('test');
 
   // this asserts the console log exists in the output before this test exits
   expect(stdoutWrite.text).toMatchInlineSnapshot(`
     Array [
-      "Determining test suites to run...",
-      "RUNS  __tests__/console-debugging.test.js",
-      "RUNS  __tests__/console-debugging.test.js",
       "console.log
         test
 
-          at Object.log (__tests__/console-debugging.test.js:14:11)",
-      "RUNS  __tests__/console-debugging.test.js",
+          at Object.log (__tests__/console-debugging.test.js:17:11)",
     ]
   `);
 });
