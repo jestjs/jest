@@ -16,13 +16,12 @@ test('verbose mode prints console output synchronously', () => {
 
   console.log('test');
 
-  // this asserts the console log exists in the output before this test exits
   expect(stdoutWrite.text).toMatchInlineSnapshot(`
-    Array [
-      "console.log
+    "  console.log
         test
 
-          at Object.log (__tests__/console-debugging.test.js:17:11)",
-    ]
+          at Object.log (__tests__/console-debugging.test.js:17:11)
+
+    "
   `);
 });
