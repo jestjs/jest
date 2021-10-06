@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config]` Warn when multiple Jest configs are located ([#11922](https://github.com/facebook/jest/pull/11922))
+
 ### Fixes
 
 - `[@jest/types]` Mark deprecated configuration options as `@deprecated` ([#11913](https://github.com/facebook/jest/pull/11913))
