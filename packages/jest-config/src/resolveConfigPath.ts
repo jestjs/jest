@@ -133,11 +133,22 @@ const makeResolutionErrorMessage = (
     ext => `"${getConfigFilename(ext)}"`,
   ).join(' or ')}.`;
 
+function extraIfPackageJson(configPath: Config.Path) {
+  if (configPath.endsWith('package.json')) {
+    return '`jest` key in ';
+  }
+
+  return '';
+}
+
 const makeMultipleConfigsWarning = (configPaths: Array<Config.Path>) =>
   chalk.yellow(
     [
       chalk.bold('\u25cf Multiple configurations found:'),
-      ...configPaths.map(configPath => `    * ${slash(configPath)}`),
+      ...configPaths.map(
+        configPath =>
+          `    * ${extraIfPackageJson(configPath)}${slash(configPath)}`,
+      ),
       '',
       '  Implicit config resolution does not allow multiple configuration files.',
       '  Either remove unused config files or select one explicitly with `--config`.',
