@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import {wrap} from 'jest-snapshot-serializer-raw';
 import slash = require('slash');
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
@@ -24,8 +25,8 @@ test('multiple configs will warn', () => {
   const cleanStdErr = stderr.replace(new RegExp(rootDir, 'g'), '<rootDir>');
   const {rest, summary} = extractSummary(cleanStdErr);
 
-  expect(rest).toMatchSnapshot();
-  expect(summary).toMatchSnapshot();
+  expect(wrap(rest)).toMatchSnapshot();
+  expect(wrap(summary)).toMatchSnapshot();
 });
 
 test('multiple configs warning can be suppressed by using --config', () => {
