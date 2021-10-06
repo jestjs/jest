@@ -123,7 +123,7 @@ const makeResolutionErrorMessage = (
 const makeMultipleConfigsWarning = (configPaths: Array<Config.Path>) =>
   [
     '● Multiple configurations found:',
-    ...configPaths.map(configPath => `    * ${configPath}`),
+    ...configPaths.map(configPath => `    * ${slash(configPath)}`),
     '',
     '  Implicit config resolution does not allow multiple configuration files.',
     '  Either remove unused config files or select one explicitly with `--config`.',
