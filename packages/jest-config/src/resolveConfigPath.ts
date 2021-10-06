@@ -24,7 +24,7 @@ const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 export default (
   pathToResolve: Config.Path,
   cwd: Config.Path,
-  skipMultipleConfigWarning: boolean,
+  skipMultipleConfigWarning: boolean = false,
 ): Config.Path => {
   if (!path.isAbsolute(cwd)) {
     throw new Error(`"cwd" must be an absolute path. cwd: ${cwd}`);
