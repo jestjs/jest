@@ -146,7 +146,8 @@ const pickPairsWithSameOrder = <T>(array: ReadonlyArray<T>) =>
     .map((value1, idx, arr) =>
       arr.slice(idx + 1).map(value2 => [value1, value2]),
     )
-    .flat();
+    // TODO: use .flat() when we drop Node 10
+    .reduce((acc, val) => acc.concat(val), []);
 
 test('pickPairsWithSameOrder', () => {
   expect(pickPairsWithSameOrder([1, 2, 3])).toStrictEqual([
