@@ -134,7 +134,7 @@ const makeResolutionErrorMessage = (
   ).join(' or ')}.`;
 
 function extraIfPackageJson(configPath: Config.Path) {
-  if (configPath.endsWith('package.json')) {
+  if (configPath.endsWith(PACKAGE_JSON)) {
     return '`jest` key in ';
   }
 
