@@ -6,13 +6,14 @@
  */
 
 import * as path from 'path';
+import slash = require('slash');
 import {extractSummary} from '../Utils';
 import runJest from '../runJest';
 
 const MULTIPLE_CONFIGS_WARNING_TEXT = 'Multiple configurations found';
 
 test('multiple configs will warn', () => {
-  const rootDir = path.resolve(__dirname, '..', '..');
+  const rootDir = slash(path.resolve(__dirname, '../..'));
   const {exitCode, stderr} = runJest('multiple-configs', [], {
     skipPkgJsonCheck: true,
   });
