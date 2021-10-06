@@ -13,12 +13,17 @@ process.stdout.write = jest.fn(process.stdout.write);
 test('verbose mode prints console output synchronously', () => {
   console.log('test');
 
+  // this asserts the console log exists in the output before this test exits
   expect(stdoutWrite.text).toMatchInlineSnapshot(`
-"  console.log
-    test
+    Array [
+      "Determining test suites to run...",
+      "RUNS  __tests__/console-debugging.test.js",
+      "RUNS  __tests__/console-debugging.test.js",
+      "console.log
+        test
 
-      at Object.log (__tests__/console-debugging.test.js:14:11)
-
-"
-`);
+          at Object.log (__tests__/console-debugging.test.js:14:11)",
+      "RUNS  __tests__/console-debugging.test.js",
+    ]
+  `);
 });

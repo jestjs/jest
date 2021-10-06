@@ -6,6 +6,8 @@
  */
 'use strict';
 
+const stripAnsi = require('strip-ansi');
+
 const originalStdoutWrite = process.stdout.write.bind(process.stdout);
 
 global.process.__stdoutWriteMock = global.process.__stdoutWriteMock || null;
@@ -16,9 +18,14 @@ global.process.__stdoutWriteMock = global.process.__stdoutWriteMock || null;
 */
 if (!global.process.__stdoutWriteMock) {
   global.process.__stdoutWriteMock = (...args) => {
-    global.process.__stdoutWriteMock.text = args[0];
+    const plainText = stripAnsi(args[0]).trim();
+    if (plainText.length > 0) {
+      global.process.__stdoutWriteMock.text.push(plainText);
+    }
     originalStdoutWrite(...args);
   };
+
+  global.process.__stdoutWriteMock.text = [];
 
   process.stdout.write = global.process.__stdoutWriteMock;
 }
