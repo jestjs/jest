@@ -1,4 +1,4 @@
-const originalStdoutWrite = process.stdout.write;
+const originalStdoutWrite = process.stdout.write.bind(process.stdout);
 
 global.process.__stdoutWriteMock = global.process.__stdoutWriteMock || null;
 
