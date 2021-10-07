@@ -29,6 +29,7 @@
     "chalk": "^4.0.0",
     "chokidar": "^3.3.0",
     "codecov": "^3.0.0",
+    "common-tags": "^1.8.2",
     "debug": "^4.0.1",
     "dedent": "^0.7.0",
     "eslint": "^7.7.0",
@@ -155,6 +156,7 @@
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
     "jest-environment-node": "workspace:*",
-    "react-native": "patch:react-native@0.64.0#./patches/react-native.patch"
+    "react-native": "patch:react-native@0.64.0#./patches/react-native.patch",
+    "@jest/monorepo": "portal:/home/conartist6/dev/repos/jest"
   }
 }

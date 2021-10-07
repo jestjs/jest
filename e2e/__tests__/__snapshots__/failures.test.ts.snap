@@ -276,7 +276,6 @@ FAIL __tests__/throwObjectWithStackProp.test.js
   ● Test suite failed to run
 
     thrown: Object {
-
         "stack": 42,
       }
 `;

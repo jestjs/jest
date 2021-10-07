@@ -6,18 +6,16 @@
  */
 
 import * as path from 'path';
+import {getAbsoluteSitePath, parseFrame} from '@stack-tools/node-tools';
 import co from 'co';
 import dedent = require('dedent');
 import isGeneratorFn from 'is-generator-fn';
 import slash = require('slash');
-import StackUtils = require('stack-utils');
 import type {AssertionResult, Status} from '@jest/test-result';
 import type {Circus, Global} from '@jest/types';
 import {ErrorWithStack, convertDescriptorToString, formatTime} from 'jest-util';
 import {format as prettyFormat} from 'pretty-format';
 import {ROOT_DESCRIBE_BLOCK_NAME, getState} from './state';
-
-const stackUtils = new StackUtils({cwd: 'A path that does not exist'});
 
 const jestEachBuildDir = slash(path.dirname(require.resolve('jest-each')));
 
@@ -30,6 +28,13 @@ function isGeneratorFunction(
 ): fn is Global.GeneratorReturningTestFn {
   return isGeneratorFn(fn);
 }
+
+const parseLine = (line: string) => {
+  try {
+    return parseFrame(line);
+  } catch (e) {}
+  return null;
+};
 
 export const makeDescribe = (
   name: Circus.BlockName,
@@ -332,20 +337,21 @@ export const makeSingleTestResult = (
   if (includeTestLocationInResult) {
     const stackLines = test.asyncError.stack.split('\n');
     const stackLine = stackLines[1];
-    let parsedLine = stackUtils.parseLine(stackLine);
-    if (parsedLine?.file?.startsWith(jestEachBuildDir)) {
+    let parsedLine = parseLine(stackLine);
+    if (
+      parsedLine &&
+      getAbsoluteSitePath(parsedLine)?.startsWith(jestEachBuildDir)
+    ) {
       const stackLine = stackLines[4];
-      parsedLine = stackUtils.parseLine(stackLine);
+      parsedLine = parseLine(stackLine);
     }
     if (
       parsedLine &&
-      typeof parsedLine.column === 'number' &&
-      typeof parsedLine.line === 'number'
+      parsedLine.type === 'CallSiteFrame' &&
+      parsedLine.callSite.site.type === 'FileSite'
     ) {
-      location = {
-        column: parsedLine.column,
-        line: parsedLine.line,
-      };
+      const {column, line} = parsedLine.callSite.site.position;
+      location = {column, line};
     }
   }
 
@@ -417,6 +423,10 @@ const _getError = (
   asyncError.message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
 
   return asyncError;
+};
+
+export const isError = (e: unknown): e is Error => {
+  return String(e) === '[object Error]' || e instanceof Error;
 };
 
 const getErrorStack = (error: Error): string =>

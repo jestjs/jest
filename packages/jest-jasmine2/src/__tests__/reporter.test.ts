@@ -15,7 +15,7 @@ describe('Jasmine2Reporter', () => {
 
   beforeEach(() => {
     // @ts-expect-error
-    reporter = new JasmineReporter({});
+    reporter = new JasmineReporter({}, {});
   });
 
   it('reports nested suites', () => {

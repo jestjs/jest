@@ -5,32 +5,30 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as path from 'path';
-import {codeFrameColumns} from '@babel/code-frame';
+import {
+  ErrorChainNode,
+  ErrorNode,
+  FrameNode,
+  getAbsoluteSitePath,
+  isInternalFrame as isNodeInternalFrame,
+  parseError,
+  parseErrors,
+  parseFrame,
+  printNode,
+} from '@stack-tools/node-tools';
 import chalk = require('chalk');
-import * as fs from 'graceful-fs';
-import micromatch = require('micromatch');
-import slash = require('slash');
-import StackUtils = require('stack-utils');
 import type {Config, TestResult} from '@jest/types';
 import {format as prettyFormat} from 'pretty-format';
 import type {Frame} from './types';
+import {
+  JestVisitor,
+  JestVisitorOptions,
+  getTopFrame as __getTopFrame,
+} from './visitor';
 
-export type {Frame} from './types';
+export type {Frame};
 
 type Path = Config.Path;
-
-// stack utils tries to create pretty stack by making paths relative.
-const stackUtils = new StackUtils({cwd: 'something which does not exist'});
-
-let nodeInternals: Array<RegExp> = [];
-
-try {
-  nodeInternals = StackUtils.nodeInternals();
-} catch {
-  // `StackUtils.nodeInternals()` fails in browsers. We don't need to remove
-  // node internals in the browser though, so no issue.
-}
 
 export type StackTraceConfig = Pick<
   Config.ProjectConfig,
@@ -38,85 +36,55 @@ export type StackTraceConfig = Pick<
 >;
 
 export type StackTraceOptions = {
-  noStackTrace: boolean;
+  noStackTrace?: boolean;
   noCodeFrame?: boolean;
+  indentHeader?: string;
+  indentFrames?: string;
 };
 
-const PATH_NODE_MODULES = `${path.sep}node_modules${path.sep}`;
-const PATH_JEST_PACKAGES = `${path.sep}jest${path.sep}packages${path.sep}`;
-
 // filter for noisy stack trace lines
-const JASMINE_IGNORE =
-  /^\s+at(?:(?:.jasmine\-)|\s+jasmine\.buildExpectationResult)/;
-const JEST_INTERNALS_IGNORE =
-  /^\s+at.*?jest(-.*?)?(\/|\\)(build|node_modules|packages)(\/|\\)/;
-const ANONYMOUS_FN_IGNORE = /^\s+at <anonymous>.*$/;
-const ANONYMOUS_PROMISE_IGNORE = /^\s+at (new )?Promise \(<anonymous>\).*$/;
-const ANONYMOUS_GENERATOR_IGNORE = /^\s+at Generator.next \(<anonymous>\).*$/;
-const NATIVE_NEXT_IGNORE = /^\s+at next \(native\).*$/;
-const TITLE_INDENT = '  ';
-const MESSAGE_INDENT = '    ';
-const STACK_INDENT = '      ';
 const ANCESTRY_SEPARATOR = ' \u203A ';
 const TITLE_BULLET = chalk.bold('\u25cf ');
-const STACK_TRACE_COLOR = chalk.dim;
-const STACK_PATH_REGEXP = /\s*at.*\(?(\:\d*\:\d*|native)\)?/;
 const EXEC_ERROR_MESSAGE = 'Test suite failed to run';
 const NOT_EMPTY_LINE_REGEXP = /^(?!$)/gm;
 
-const indentAllLines = (lines: string, indent: string) =>
+export const indentLines = (lines: string, indent: string = '  '): string =>
   lines.replace(NOT_EMPTY_LINE_REGEXP, indent);
 
-const trim = (string: string) => (string || '').trim();
+// export const stripIndent = (lines: string): string => {
+//   const match = lines.match(/^[^\S\n]*(?=\S)/gm);
+//   const indent = match && Math.min(...match.map(el => el.length));
+//   if (indent) {
+//     const regexp = new RegExp(`^.{${indent}}`, 'gm');
+//     return lines.replace(regexp, '');
+//   }
+//   return lines;
+// };
 
-// Some errors contain not only line numbers in stack traces
-// e.g. SyntaxErrors can contain snippets of code, and we don't
-// want to trim those, because they may have pointers to the column/character
-// which will get misaligned.
-const trimPaths = (string: string) =>
-  string.match(STACK_PATH_REGEXP) ? trim(string) : string;
-
-const getRenderedCallsite = (
-  fileContent: string,
-  line: number,
-  column?: number,
-) => {
-  let renderedCallsite = codeFrameColumns(
-    fileContent,
-    {start: {column, line}},
-    {highlightCode: true},
-  );
-
-  renderedCallsite = indentAllLines(renderedCallsite, MESSAGE_INDENT);
-
-  renderedCallsite = `\n${renderedCallsite}\n`;
-  return renderedCallsite;
-};
-
-const blankStringRegexp = /^\s*$/;
-
-function checkForCommonEnvironmentErrors(error: string) {
-  if (
-    error.includes('ReferenceError: document is not defined') ||
-    error.includes('ReferenceError: window is not defined') ||
-    error.includes('ReferenceError: navigator is not defined')
-  ) {
-    return warnAboutWrongTestEnvironment(error, 'jsdom');
-  } else if (error.includes('.unref is not a function')) {
-    return warnAboutWrongTestEnvironment(error, 'node');
+function getWrongEnvironmentWarning(error: ErrorNode) {
+  if (error.message) {
+    const {message} = error.message;
+    let considerEnv: 'jsdom' | 'node' | undefined;
+    if (
+      (error.name?.name === 'ReferenceError' &&
+        message.includes('document is not defined')) ||
+      message.includes('window is not defined') ||
+      message.includes('navigator is not defined')
+    ) {
+      considerEnv = 'jsdom';
+    } else if (message.includes('.unref is not a function')) {
+      considerEnv = 'node';
+    }
+    if (considerEnv) {
+      return chalk.bold.red(
+        `The error below may be caused by using the wrong test environment, see ${chalk.dim.underline(
+          'https://jestjs.io/docs/configuration#testenvironment-string',
+        )}.\nConsider using the "${considerEnv}" test environment.`,
+      );
+    }
   }
 
-  return error;
-}
-
-function warnAboutWrongTestEnvironment(error: string, env: 'jsdom' | 'node') {
-  return (
-    chalk.bold.red(
-      `The error below may be caused by using the wrong test environment, see ${chalk.dim.underline(
-        'https://jestjs.io/docs/configuration#testenvironment-string',
-      )}.\nConsider using the "${env}" test environment.\n\n`,
-    ) + error
-  );
+  return undefined;
 }
 
 // ExecError is an error thrown outside of the test suite (not inside an `it` or
@@ -134,194 +102,207 @@ export const formatExecError = (
     error.stack = '';
   }
 
-  let message, stack;
+  let parsedErrors;
+  let printed;
 
-  if (typeof error === 'string' || !error) {
-    error || (error = 'EMPTY ERROR');
-    message = '';
-    stack = error;
+  try {
+    if (typeof error === 'string') {
+      parsedErrors = parseErrors(error);
+    } else if (error.stack) {
+      parsedErrors = parseErrors(error.stack);
+      const topError = parsedErrors.errors[0];
+      if (error.message && !topError.name && !topError.message) {
+        parsedErrors.errors[0] = {
+          ...parseError(error.message),
+          frames: topError.frames,
+        };
+      }
+    } else if (error.message) {
+      parsedErrors = parseErrors(error.message);
+    }
+  } catch (e) {}
+
+  if (parsedErrors) {
+    const topError = parsedErrors.errors[0];
+    const envWarning = topError && getWrongEnvironmentWarning(topError);
+
+    cleanErrors(parsedErrors, options);
+
+    const visitorOptions = buildVisitorOptions(config, options, testPath);
+    const printedErrors = JestVisitor.visit(parsedErrors, visitorOptions) || '';
+
+    printed = envWarning
+      ? `${indentLines(envWarning, '    ')}\n\n${printedErrors}`
+      : printedErrors;
+
+    if (reuseMessage)
+      printed = printed.slice(visitorOptions.indentHeader.length);
   } else {
-    message = error.message;
-    stack =
-      typeof error.stack === 'string'
-        ? error.stack
-        : `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
+    printed = indentLines(
+      `thrown: ${prettyFormat(error, {maxDepth: 3})}`,
+      '      ',
+    ).slice(2);
   }
 
-  const separated = separateMessageFromStack(stack || '');
-  stack = separated.stack;
+  const title = reuseMessage ? ' ' : `${EXEC_ERROR_MESSAGE}\n\n`;
 
-  if (separated.message.includes(trim(message))) {
-    // Often stack trace already contains the duplicate of the message
-    message = separated.message;
-  }
-
-  message = checkForCommonEnvironmentErrors(message);
-
-  message = indentAllLines(message, MESSAGE_INDENT);
-
-  stack =
-    stack && !options.noStackTrace
-      ? '\n' + formatStackTrace(stack, config, options, testPath)
-      : '';
-
-  if (
-    typeof stack !== 'string' ||
-    (blankStringRegexp.test(message) && blankStringRegexp.test(stack))
-  ) {
-    // this can happen if an empty object is thrown.
-    message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
-  }
-
-  let messageToUse;
-
-  if (reuseMessage) {
-    messageToUse = ` ${message.trim()}`;
-  } else {
-    messageToUse = `${EXEC_ERROR_MESSAGE}\n\n${message}`;
-  }
-
-  return TITLE_INDENT + TITLE_BULLET + messageToUse + stack + '\n';
+  return `  ${TITLE_BULLET}${title}${printed}\n`;
 };
 
-const removeInternalStackEntries = (
-  lines: Array<string>,
-  options: StackTraceOptions,
-): Array<string> => {
-  let pathCounter = 0;
+const cleanFrames = (
+  frames: Array<FrameNode> | undefined,
+  options: StackTraceOptions = {},
+): Array<FrameNode> => {
+  let frames_ = frames || [];
+  frames_ = frames_.filter(frame => !isInternalFrame(frame));
 
-  return lines.filter(line => {
-    if (ANONYMOUS_FN_IGNORE.test(line)) {
-      return false;
+  const firstFrame = frames_[0];
+
+  frames_ = frames_.filter(frame => !isJestInternalFrame(frame));
+
+  if (!firstFrame && !frames_.length) {
+    frames_ = [{type: 'OmittedFrame'}];
+  } else if (firstFrame) {
+    // always keep the first frame even if it's from Jest
+    if (!frames_.length || options.noStackTrace) {
+      frames_ = [firstFrame];
+    } else if (firstFrame !== frames_[0]) {
+      frames_.unshift(firstFrame);
     }
+  }
 
-    if (ANONYMOUS_PROMISE_IGNORE.test(line)) {
-      return false;
+  return frames_;
+};
+
+const cleanErrors = (
+  errors: ErrorChainNode,
+  options: StackTraceOptions = {},
+): ErrorChainNode => {
+  for (const error of errors.errors) {
+    if (error.frames) {
+      error.frames = cleanFrames(error.frames, options);
     }
+  }
+  return errors;
+};
 
-    if (ANONYMOUS_GENERATOR_IGNORE.test(line)) {
-      return false;
-    }
+const isJestInternalFrame = (frame: FrameNode) => {
+  if (frame.type !== 'CallSiteFrame') {
+    return false;
+  } else {
+    const absPath = getAbsoluteSitePath(frame);
+    return absPath
+      ? /\/jest[^/]*\/(build|node_modules|packages)\//.test(absPath)
+      : false;
+  }
+};
 
-    if (NATIVE_NEXT_IGNORE.test(line)) {
-      return false;
-    }
+const isInternalFrame = (frame: FrameNode) => {
+  if (frame.type !== 'CallSiteFrame') {
+    return false;
+  }
 
-    if (nodeInternals.some(internal => internal.test(line))) {
-      return false;
-    }
+  const {call, site} = frame.callSite;
 
-    if (!STACK_PATH_REGEXP.test(line)) {
+  if (call) {
+    if (call.function === '<anonymous>') {
       return true;
     }
 
-    if (JASMINE_IGNORE.test(line)) {
-      return false;
+    if (call.function === 'Promise' && site.type === 'AnonymousSite') {
+      return true;
     }
 
-    if (++pathCounter === 1) {
-      return true; // always keep the first line even if it's from Jest
+    if (call.function === 'Generator.next' && site.type === 'AnonymousSite') {
+      return true;
     }
 
-    if (options.noStackTrace) {
-      return false;
+    if (call.function === 'next' && site.type === 'NativeSite') {
+      return true;
     }
+  }
 
-    if (JEST_INTERNALS_IGNORE.test(line)) {
-      return false;
-    }
-
+  if (
+    isNodeInternalFrame(site)
+    // || (site.type === 'FileSite' && nodeInternals.some(internal => internal.test(site.file))
+  ) {
     return true;
-  });
+  }
+
+  if (call && call.function.startsWith('jasmine')) {
+    return true;
+  }
+
+  return false;
 };
 
-const formatPaths = (
+const buildVisitorOptions = (
   config: StackTraceConfig,
-  relativeTestPath: Path | null,
-  line: string,
-) => {
-  // Extract the file path from the trace line.
-  const match = line.match(/(^\s*at .*?\(?)([^()]+)(:[0-9]+:[0-9]+\)?.*$)/);
-  if (!match) {
-    return line;
-  }
-
-  let filePath = slash(path.relative(config.rootDir, match[2]));
-  // highlight paths from the current test file
-  if (
-    (config.testMatch &&
-      config.testMatch.length &&
-      micromatch([filePath], config.testMatch).length > 0) ||
-    filePath === relativeTestPath
-  ) {
-    filePath = chalk.reset.cyan(filePath);
-  }
-  return STACK_TRACE_COLOR(match[1]) + filePath + STACK_TRACE_COLOR(match[3]);
+  options: StackTraceOptions = {},
+  relativeTestPath: Path | null = null,
+): JestVisitorOptions => {
+  const {rootDir, testMatch} = config;
+  const {
+    noStackTrace = false,
+    noCodeFrame = false,
+    indentHeader = '    ',
+    indentFrames = '    ',
+  } = options;
+  return {
+    frames: !noStackTrace,
+    indentFrames,
+    indentHeader,
+    noCodeFrame: noStackTrace || noCodeFrame,
+    noStackTrace,
+    relativeTestPath,
+    rootDir,
+    testMatch,
+  };
 };
 
 export const getStackTraceLines = (
-  stack: string,
+  frames: string,
   options: StackTraceOptions = {noCodeFrame: false, noStackTrace: false},
-): Array<string> => removeInternalStackEntries(stack.split(/\n/), options);
+): Array<string> => {
+  const parsedError = parseError(frames);
 
-export const getTopFrame = (lines: Array<string>): Frame | null => {
-  for (const line of lines) {
-    if (line.includes(PATH_NODE_MODULES) || line.includes(PATH_JEST_PACKAGES)) {
-      continue;
-    }
+  parsedError.frames = cleanFrames(parsedError.frames, options);
 
-    const parsedFrame = stackUtils.parseLine(line.trim());
-
-    if (parsedFrame && parsedFrame.file) {
-      return parsedFrame as Frame;
-    }
-  }
-
-  return null;
+  return parsedError.frames
+    ? parsedError.frames.map(frame => printNode(frame)!)
+    : [];
 };
 
 export const formatStackTrace = (
-  stack: string,
+  error: string | ErrorNode,
   config: StackTraceConfig,
-  options: StackTraceOptions,
+  options?: StackTraceOptions,
   testPath?: Path,
 ): string => {
-  const lines = getStackTraceLines(stack, options);
-  let renderedCallsite = '';
-  const relativeTestPath = testPath
-    ? slash(path.relative(config.rootDir, testPath))
-    : null;
+  const visitorOptions = {
+    ...buildVisitorOptions(config, options, testPath),
+    frames: true,
+    indentFrames: '    ',
+    indentHeader: '',
+  };
+  const parsedError = typeof error === 'string' ? parseError(error) : error;
 
-  if (!options.noStackTrace && !options.noCodeFrame) {
-    const topFrame = getTopFrame(lines);
-    if (topFrame) {
-      const {column, file: filename, line} = topFrame;
+  parsedError.frames = cleanFrames(parsedError.frames, options);
 
-      if (line && filename && path.isAbsolute(filename)) {
-        let fileContent;
-        try {
-          // TODO: check & read HasteFS instead of reading the filesystem:
-          // see: https://github.com/facebook/jest/pull/5405#discussion_r164281696
-          fileContent = fs.readFileSync(filename, 'utf8');
-          renderedCallsite = getRenderedCallsite(fileContent, line, column);
-        } catch {
-          // the file does not exist or is inaccessible, we ignore
-        }
-      }
+  return '\n' + JestVisitor.visit(parsedError, visitorOptions) || '';
+};
+
+export const getTopFrame = (frames: Array<string>): Frame | null => {
+  const frameNode = __getTopFrame(frames.map(frame => parseFrame(frame)));
+  const site = frameNode?.callSite?.site || null;
+
+  return (
+    site && {
+      column: site.position.column,
+      file: site.locator.path,
+      line: site.position.line,
     }
-  }
-
-  const stacktrace = lines
-    .filter(Boolean)
-    .map(
-      line =>
-        STACK_INDENT + formatPaths(config, relativeTestPath, trimPaths(line)),
-    )
-    .join('\n');
-
-  return renderedCallsite
-    ? `${renderedCallsite}\n${stacktrace}`
-    : `\n${stacktrace}`;
+  );
 };
 
 type FailedResults = Array<{
@@ -335,10 +316,16 @@ export const formatResultsErrors = (
   options: StackTraceOptions,
   testPath?: Path,
 ): string | null => {
+  const visitorOptions = {
+    ...buildVisitorOptions(config, options, testPath),
+    indentFrames: '    ',
+    indentHeader: '    ',
+  };
+
   const failedResults: FailedResults = testResults.reduce<FailedResults>(
     (errors, result) => {
       result.failureMessages.forEach(item => {
-        errors.push({content: checkForCommonEnvironmentErrors(item), result});
+        errors.push({content: item, result});
       });
       return errors;
     },
@@ -351,61 +338,36 @@ export const formatResultsErrors = (
 
   return failedResults
     .map(({result, content}) => {
-      let {message, stack} = separateMessageFromStack(content);
-      stack = options.noStackTrace
-        ? ''
-        : STACK_TRACE_COLOR(
-            formatStackTrace(stack, config, options, testPath),
-          ) + '\n';
+      let error;
+      let printed;
+      try {
+        error = parseError(content);
 
-      message = indentAllLines(message, MESSAGE_INDENT);
+        const envWarning = error && getWrongEnvironmentWarning(error);
+
+        if (error.frames) {
+          error.frames = cleanFrames(error.frames, options);
+        }
+
+        const printedError = JestVisitor.visit(error, visitorOptions);
+
+        printed = envWarning
+          ? `${indentLines(envWarning, '    ')}\n\n${printedError}`
+          : printedError;
+      } catch (e) {
+        printed = content;
+      }
 
       const title =
         chalk.bold.red(
-          TITLE_INDENT +
+          '  ' +
             TITLE_BULLET +
             result.ancestorTitles.join(ANCESTRY_SEPARATOR) +
             (result.ancestorTitles.length ? ANCESTRY_SEPARATOR : '') +
             result.title,
         ) + '\n';
 
-      return title + '\n' + message + '\n' + stack;
+      return title + '\n' + printed + '\n';
     })
     .join('\n');
-};
-
-const errorRegexp = /^Error:?\s*$/;
-
-const removeBlankErrorLine = (str: string) =>
-  str
-    .split('\n')
-    // Lines saying just `Error:` are useless
-    .filter(line => !errorRegexp.test(line))
-    .join('\n')
-    .trimRight();
-
-// jasmine and worker farm sometimes don't give us access to the actual
-// Error object, so we have to regexp out the message from the stack string
-// to format it.
-export const separateMessageFromStack = (
-  content: string,
-): {message: string; stack: string} => {
-  if (!content) {
-    return {message: '', stack: ''};
-  }
-
-  // All lines up to what looks like a stack -- or if nothing looks like a stack
-  // (maybe it's a code frame instead), just the first non-empty line.
-  // If the error is a plain "Error:" instead of a SyntaxError or TypeError we
-  // remove the prefix from the message because it is generally not useful.
-  const messageMatch = content.match(
-    /^(?:Error: )?([\s\S]*?(?=\n\s*at\s.*:\d*:\d*)|\s*.*)([\s\S]*)$/,
-  );
-  if (!messageMatch) {
-    // For typescript
-    throw new Error('If you hit this error, the regex above is buggy.');
-  }
-  const message = removeBlankErrorLine(messageMatch[1]);
-  const stack = removeBlankErrorLine(messageMatch[2]);
-  return {message, stack};
 };

@@ -19,7 +19,7 @@ import {
   printReceived,
   printWithType,
 } from 'jest-matcher-utils';
-import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
+import {formatStackTrace} from 'jest-message-util';
 import {
   printExpectedConstructorName,
   printExpectedConstructorNameNot,
@@ -428,7 +428,7 @@ const formatStack = (thrown: Thrown | null) =>
   thrown === null || !thrown.isError
     ? ''
     : formatStackTrace(
-        separateMessageFromStack(thrown.value.stack!).stack,
+        thrown.value.stack!,
         {
           rootDir: process.cwd(),
           testMatch: [],

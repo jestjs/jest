@@ -21,6 +21,7 @@
     "@jest/environment": "^27.4.2",
     "@jest/test-result": "^27.4.2",
     "@jest/types": "^27.4.2",
+    "@stack-tools/node-tools": "0.1.0",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "co": "^4.6.0",
@@ -35,7 +36,6 @@
     "jest-util": "^27.4.2",
     "pretty-format": "^27.4.2",
     "slash": "^3.0.0",
-    "stack-utils": "^2.0.3",
     "throat": "^6.0.1"
   },
   "devDependencies": {
@@ -45,7 +45,6 @@
     "@types/co": "^4.6.0",
     "@types/dedent": "^0.7.0",
     "@types/graceful-fs": "^4.1.3",
-    "@types/stack-utils": "^2.0.0",
     "execa": "^5.0.0",
     "graceful-fs": "^4.2.4",
     "jest-snapshot-serializer-raw": "^1.1.0"

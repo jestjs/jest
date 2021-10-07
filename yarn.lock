@@ -2580,6 +2580,7 @@ __metadata:
     chalk: ^4.0.0
     chokidar: ^3.3.0
     codecov: ^3.0.0
+    common-tags: ^1.8.2
     debug: ^4.0.1
     dedent: ^0.7.0
     eslint: ^7.7.0
@@ -4161,6 +4162,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@stack-tools/node-tools@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@stack-tools/node-tools@npm:0.1.0"
+  dependencies:
+    "@stack-tools/v8-tools": 0.1.0
+  checksum: b98cd8b0069eb4ed013bf4c894df7d01b942b1a730cc062423c83fe672f8c5ea51013c26771d58c928d097ec91b77a352faed827d2238c3203f73825ef48538a
+  languageName: node
+  linkType: hard
+
+"@stack-tools/v8-tools@npm:0.1.0":
+  version: 0.1.0
+  resolution: "@stack-tools/v8-tools@npm:0.1.0"
+  dependencies:
+    iserror: 0.0.2
+    moo: ^0.5.1
+    nearley: ^2.20.1
+    stack-tools: 0.1.0
+  checksum: d33a23e7d49c9787f88bf36c4dce7ebf9646ab15485ff0bb4ed48fe7679fe2d09ce3bcb92c880e7db1843df1e7a3928b9d8cd9dcfd07064a77567bc6fab26b85
+  languageName: node
+  linkType: hard
+
 "@surma/rollup-plugin-off-main-thread@npm:^1.4.1":
   version: 1.4.2
   resolution: "@surma/rollup-plugin-off-main-thread@npm:1.4.2"
@@ -4904,13 +4926,6 @@ __metadata:
   dependencies:
     source-map: ^0.6.0
   checksum: 448a3aa4fa18837f19881783e158ecaf135c8c266533506c2b50c86d6cd60e3c41b1060c4ec8c750fa38424772fccaf613fb1daa1b9428a8e62795750910051b
-  languageName: node
-  linkType: hard
-
-"@types/stack-utils@npm:^2.0.0":
-  version: 2.0.1
-  resolution: "@types/stack-utils@npm:2.0.1"
-  checksum: a5277189a3316b84cfe9381e5b9b12ceaae82e0592d7c5f963c29061a51f90870b7c54c3882975bdf6cd3b98b87fcaa08246ca0e078679c896f7a16ec4558c4d
   languageName: node
   linkType: hard
 
@@ -7453,6 +7468,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"common-tags@npm:^1.8.2":
+  version: 1.8.2
+  resolution: "common-tags@npm:1.8.2"
+  checksum: 92fd1d7ae0d25838784d3c2481589d6a4ca42cb9eec408308a3c6e264a6432e106b994163c723fc233614447649f4af8bfb1d18234c4d1b86255ae9c740b330e
+  languageName: node
+  linkType: hard
+
 "commondir@npm:^1.0.1":
   version: 1.0.1
   resolution: "commondir@npm:1.0.1"
@@ -9135,7 +9157,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"escape-string-regexp@npm:2.0.0, escape-string-regexp@npm:^2.0.0":
+"escape-string-regexp@npm:2.0.0":
   version: 2.0.0
   resolution: "escape-string-regexp@npm:2.0.0"
   checksum: f3500f264e864aef0c336a2efb3adb1cee9ba1abbe15d69f0d9dab423607cac91aa009b23011b4e6cfd6d6b79888873e21dad1882047aa2e1555dd307428c51d
@@ -12487,6 +12509,13 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
+"iserror@npm:0.0.2":
+  version: 0.0.2
+  resolution: "iserror@npm:0.0.2"
+  checksum: b474182344fcbbad3a45046cdbd200e60a5757f7eae0a9aa9bb5cf9515bd317c3e3f5ccc83511fbba65c5a0e67a0b44203fcd279ec0e9362e11b9d98a35e6570
+  languageName: node
+  linkType: hard
+
 "isexe@npm:^2.0.0":
   version: 2.0.0
   resolution: "isexe@npm:2.0.0"
@@ -12588,11 +12617,11 @@ fsevents@^1.2.7:
     "@jest/test-result": ^27.4.2
     "@jest/test-utils": ^27.4.2
     "@jest/types": ^27.4.2
+    "@stack-tools/node-tools": 0.1.0
     "@types/co": ^4.6.0
     "@types/dedent": ^0.7.0
     "@types/graceful-fs": ^4.1.3
     "@types/node": "*"
-    "@types/stack-utils": ^2.0.0
     chalk: ^4.0.0
     co: ^4.6.0
     dedent: ^0.7.0
@@ -12609,7 +12638,6 @@ fsevents@^1.2.7:
     jest-util: ^27.4.2
     pretty-format: ^27.4.2
     slash: ^3.0.0
-    stack-utils: ^2.0.3
     throat: ^6.0.1
   languageName: unknown
   linkType: soft
@@ -12915,16 +12943,15 @@ fsevents@^1.2.7:
   dependencies:
     "@babel/code-frame": ^7.12.13
     "@jest/types": ^27.4.2
+    "@stack-tools/node-tools": 0.1.0
     "@types/babel__code-frame": ^7.0.0
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
-    "@types/stack-utils": ^2.0.0
     chalk: ^4.0.0
     graceful-fs: ^4.2.4
     micromatch: ^4.0.4
     pretty-format: ^27.4.2
     slash: ^3.0.0
-    stack-utils: ^2.0.3
   languageName: unknown
   linkType: soft
 
@@ -13049,6 +13076,7 @@ fsevents@^1.2.7:
     "@jest/test-result": ^27.4.2
     "@jest/transform": ^27.4.2
     "@jest/types": ^27.4.2
+    "@stack-tools/node-tools": 0.1.0
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.2
     "@types/node": "*"
@@ -13086,6 +13114,7 @@ fsevents@^1.2.7:
     "@jest/test-utils": ^27.4.2
     "@jest/transform": ^27.4.2
     "@jest/types": ^27.4.2
+    "@stack-tools/node-tools": 0.1.0
     "@types/exit": ^0.1.30
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.2
@@ -15380,7 +15409,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"moo@npm:^0.5.0":
+"moo@npm:^0.5.0, moo@npm:^0.5.1":
   version: 0.5.1
   resolution: "moo@npm:0.5.1"
   checksum: d637b67ae6768e3470939ee96b1916d6efdf737068b4bfce77f3f360c005a7417c0863a5aaf696c5efdb718eb09ad05239830aa6dc438b85870372c149b4fb80
@@ -15505,7 +15534,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"nearley@npm:^2.7.10":
+"nearley@npm:^2.20.1, nearley@npm:^2.7.10":
   version: 2.20.1
   resolution: "nearley@npm:2.20.1"
   dependencies:
@@ -20060,12 +20089,12 @@ react-native@0.64.0:
   languageName: node
   linkType: hard
 
-"stack-utils@npm:^2.0.3":
-  version: 2.0.5
-  resolution: "stack-utils@npm:2.0.5"
+"stack-tools@npm:0.1.0":
+  version: 0.1.0
+  resolution: "stack-tools@npm:0.1.0"
   dependencies:
-    escape-string-regexp: ^2.0.0
-  checksum: 46260ff0dacf98db05696cc153a8f56a923f403dbef74d32014e9b8f8616ece3eb0f5fc7a4c311f00dca1e52b8fcaba12a6e9e8b821b1ea8d0c579e927a08b06
+    iserror: 0.0.2
+  checksum: b985e41d030a814059440a17c33f41dde53e18b09c5a324db7261c2cefae91ffcbb63aa5e86488d26adc7963df95be2f58f051db8cc1479f2a34c1a9258a7c9b
   languageName: node
   linkType: hard
 

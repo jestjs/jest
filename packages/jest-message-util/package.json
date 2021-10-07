@@ -22,13 +22,12 @@
   "dependencies": {
     "@babel/code-frame": "^7.12.13",
     "@jest/types": "^27.4.2",
-    "@types/stack-utils": "^2.0.0",
+    "@stack-tools/node-tools": "0.1.0",
     "chalk": "^4.0.0",
     "graceful-fs": "^4.2.4",
     "micromatch": "^4.0.4",
     "pretty-format": "^27.4.2",
-    "slash": "^3.0.0",
-    "stack-utils": "^2.0.3"
+    "slash": "^3.0.0"
   },
   "devDependencies": {
     "@types/babel__code-frame": "^7.0.0",

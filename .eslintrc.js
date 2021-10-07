@@ -94,6 +94,12 @@ module.exports = {
       },
     },
     {
+      files: ['packages/jest-message-util/**/*'],
+      rules: {
+        'no-console': 'error',
+      },
+    },
+    {
       files: [
         'e2e/babel-plugin-jest-hoist/__tests__/typescript.test.ts',
         'e2e/coverage-remapping/covered.ts',

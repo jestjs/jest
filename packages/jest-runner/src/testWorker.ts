@@ -6,6 +6,7 @@
  *
  */
 
+import {parseError, printError, printNode} from '@stack-tools/node-tools';
 import exit = require('exit');
 import type {
   SerializableError,
@@ -14,7 +15,6 @@ import type {
 } from '@jest/test-result';
 import type {Config} from '@jest/types';
 import HasteMap, {SerializableModuleMap} from 'jest-haste-map';
-import {separateMessageFromStack} from 'jest-message-util';
 import type Resolver from 'jest-resolve';
 import Runtime from 'jest-runtime';
 import {messageParent} from 'jest-worker';
@@ -40,21 +40,14 @@ process.on('uncaughtException', err => {
 });
 
 const formatError = (error: string | ErrorWithCode): SerializableError => {
-  if (typeof error === 'string') {
-    const {message, stack} = separateMessageFromStack(error);
-    return {
-      message,
-      stack,
-      type: 'Error',
-    };
-  }
+  const parsedError = parseError(error, {parseFrames: false});
 
-  return {
-    code: error.code || undefined,
-    message: error.message,
-    stack: error.stack,
-    type: 'Error',
-  };
+  const message = printError(parsedError, {frames: false});
+  const stack = parsedError.frames?.map(frame => printNode(frame)).join('\n');
+
+  return typeof error === 'string'
+    ? {message, stack, type: 'Error'}
+    : {code: error.code || undefined, message, stack, type: 'Error'};
 };
 
 const resolvers = new Map<string, Resolver>();

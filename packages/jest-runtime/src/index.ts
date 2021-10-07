@@ -18,6 +18,7 @@ import {
   // @ts-expect-error: experimental, not added to the types
   Module as VMModule,
 } from 'vm';
+import {getAbsoluteSitePath, parseError} from '@stack-tools/node-tools';
 import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import execa = require('execa');
@@ -46,7 +47,7 @@ import {
 import type {Config, Global} from '@jest/types';
 import type {IModuleMap} from 'jest-haste-map';
 import HasteMap from 'jest-haste-map';
-import {formatStackTrace, separateMessageFromStack} from 'jest-message-util';
+import {formatStackTrace} from 'jest-message-util';
 import type {MockFunctionMetadata, ModuleMocker} from 'jest-mock';
 import {escapePathForRegex} from 'jest-regex-util';
 import Resolver, {ResolveModuleConfig} from 'jest-resolve';
@@ -2022,18 +2023,15 @@ export default class Runtime {
     const testPath = this._testPath
       ? ` From ${slash(path.relative(this._config.rootDir, this._testPath))}.`
       : '';
-    const originalStack = new ReferenceError(`${errorMessage}${testPath}`)
-      .stack!.split('\n')
-      // Remove this file from the stack (jest-message-utils will keep one line)
-      .filter(line => line.indexOf(__filename) === -1)
-      .join('\n');
-
-    const {message, stack} = separateMessageFromStack(originalStack);
-
-    console.error(
-      `\n${message}\n` +
-        formatStackTrace(stack, this._config, {noStackTrace: false}),
+    const parsedError = parseError(
+      new ReferenceError(`${errorMessage}${testPath}`),
     );
+
+    parsedError.frames = parsedError.frames?.filter(frame => {
+      return getAbsoluteSitePath(frame) !== __filename;
+    });
+
+    console.error(formatStackTrace(parsedError, this._config));
   }
 
   private wrapCodeInModuleWrapper(content: string) {
