@@ -2654,6 +2654,7 @@ __metadata:
     "@types/istanbul-lib-report": ^3.0.0
     "@types/istanbul-lib-source-maps": ^4.0.0
     "@types/istanbul-reports": ^3.0.0
+    "@types/node": "*"
     "@types/node-notifier": ^8.0.0
     chalk: ^4.0.0
     collect-v8-coverage: ^1.0.0

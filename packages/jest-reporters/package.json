@@ -14,6 +14,7 @@
     "@jest/test-result": "^27.2.4",
     "@jest/transform": "^27.2.4",
     "@jest/types": "^27.2.4",
+    "@types/node": "*",
     "chalk": "^4.0.0",
     "collect-v8-coverage": "^1.0.0",
     "exit": "^0.1.2",
