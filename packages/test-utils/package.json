@@ -1,6 +1,6 @@
 {
   "name": "@jest/test-utils",
-  "version": "27.2.4",
+  "version": "27.2.5",
   "private": true,
   "license": "MIT",
   "main": "./build/index.js",
@@ -10,13 +10,13 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^27.2.4",
+    "@jest/types": "^27.2.5",
     "@types/jest": "*",
     "@types/node": "*",
     "@types/semver": "^7.1.0",
     "ansi-regex": "^5.0.1",
     "ansi-styles": "^5.0.0",
-    "pretty-format": "^27.2.4",
+    "pretty-format": "^27.2.5",
     "semver": "^7.3.2"
   },
   "engines": {

@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve",
-  "version": "27.2.4",
+  "version": "27.2.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -14,14 +14,14 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^27.2.4",
+    "@jest/types": "^27.2.5",
     "chalk": "^4.0.0",
     "escalade": "^3.1.1",
     "graceful-fs": "^4.2.4",
-    "jest-haste-map": "^27.2.4",
+    "jest-haste-map": "^27.2.5",
     "jest-pnp-resolver": "^1.2.2",
-    "jest-util": "^27.2.4",
-    "jest-validate": "^27.2.4",
+    "jest-util": "^27.2.5",
+    "jest-validate": "^27.2.5",
     "resolve": "^1.20.0",
     "slash": "^3.0.0"
   },
