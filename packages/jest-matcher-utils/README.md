@@ -12,31 +12,13 @@ To add this package as a dependency of a project, run either of the following co
 ## Exports ([src/index.ts](jest-matcher-utils/src/index.ts))
 
 ### Functions
-`stringify`
-`highlightTrailingWhitespace`
-`printReceived`
-`printExpected`
-`printWithType`
-`ensureNoExpected`
-`ensureActualIsNumber`
-`ensureExpectedIsNumber`
-`ensureNumbers`
-`ensureExpectedIsNonNegativeInteger`
-`printDiffOrStringify`
-`diff`
-`pluralize`
-`getLabelPrinter`
-`matcherErrorMessage`
-`matcherHint`
+
+`stringify` `highlightTrailingWhitespace` `printReceived` `printExpected` `printWithType` `ensureNoExpected` `ensureActualIsNumber` `ensureExpectedIsNumber` `ensureNumbers` `ensureExpectedIsNonNegativeInteger` `printDiffOrStringify` `diff` `pluralize` `getLabelPrinter` `matcherErrorMessage` `matcherHint`
 
 ### Types
-`MatcherHintOptions`
-`DiffOptions`
+
+`MatcherHintOptions` `DiffOptions`
 
 ### Constants
-`EXPECTED_COLOR`
-`RECEIVED_COLOR`
-`INVERTED_COLOR`
-`BOLD_WEIGHT`
-`DIM_COLOR`
-`SUGGEST_TO_CONTAIN_EQUAL`
+
+`EXPECTED_COLOR` `RECEIVED_COLOR` `INVERTED_COLOR` `BOLD_WEIGHT` `DIM_COLOR` `SUGGEST_TO_CONTAIN_EQUAL`
