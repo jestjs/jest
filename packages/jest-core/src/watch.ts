@@ -18,7 +18,12 @@ import type {
 import {formatExecError} from 'jest-message-util';
 import Resolver from 'jest-resolve';
 import type {Context} from 'jest-runtime';
-import {isInteractive, preRunMessage, specialChars} from 'jest-util';
+import {
+  isInteractive,
+  preRunMessage,
+  requireOrImportModule,
+  specialChars,
+} from 'jest-util';
 import {ValidationError} from 'jest-validate';
 import {
   AllowedConfigOptions,
@@ -39,6 +44,7 @@ import {
   filterInteractivePlugins,
   getSortedUsageRows,
 } from './lib/watchPluginsHelpers';
+import FailedTestsInteractivePlugin from './plugins/FailedTestsInteractive';
 import QuitPlugin from './plugins/Quit';
 import TestNamePatternPlugin from './plugins/TestNamePattern';
 import TestPathPatternPlugin from './plugins/TestPathPattern';
@@ -61,6 +67,7 @@ const {print: preRunMessagePrint} = preRunMessage;
 let hasExitListener = false;
 
 const INTERNAL_PLUGINS = [
+  FailedTestsInteractivePlugin,
   TestPathPatternPlugin,
   TestNamePatternPlugin,
   UpdateSnapshotsPlugin,
@@ -83,7 +90,7 @@ const RESERVED_KEY_PLUGINS = new Map<
   [QuitPlugin, {forbiddenOverwriteMessage: 'quitting watch mode'}],
 ]);
 
-export default function watch(
+export default async function watch(
   initialGlobalConfig: Config.GlobalConfig,
   contexts: Array<Context>,
   outputStream: NodeJS.WriteStream,
@@ -185,7 +192,9 @@ export default function watch(
     for (const pluginWithConfig of globalConfig.watchPlugins) {
       let plugin: WatchPlugin;
       try {
-        const ThirdPartyPlugin = require(pluginWithConfig.path);
+        const ThirdPartyPlugin = await requireOrImportModule<WatchPluginClass>(
+          pluginWithConfig.path,
+        );
         plugin = new ThirdPartyPlugin({
           config: pluginWithConfig.config,
           stdin,
@@ -354,10 +363,9 @@ export default function watch(
     }
 
     // Abort test run
-    const pluginKeys = getSortedUsageRows(
-      watchPlugins,
-      globalConfig,
-    ).map(usage => Number(usage.key).toString(16));
+    const pluginKeys = getSortedUsageRows(watchPlugins, globalConfig).map(
+      usage => Number(usage.key).toString(16),
+    );
     if (
       isRunning &&
       testWatcher &&

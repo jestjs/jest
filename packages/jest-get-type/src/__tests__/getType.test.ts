@@ -6,7 +6,7 @@
  *
  */
 
-import getType from '../';
+import {getType} from '../';
 
 describe('.getType()', () => {
   test('null', () => expect(getType(null)).toBe('null'));

@@ -5,8 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Context, Script} from 'vm';
-import {JSDOM, VirtualConsole} from 'jsdom';
+import type {Context} from 'vm';
+import {JSDOM, ResourceLoader, VirtualConsole} from 'jsdom';
 import type {EnvironmentContext, JestEnvironment} from '@jest/environment';
 import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Config, Global} from '@jest/types';
@@ -22,7 +22,7 @@ type Win = Window &
     };
   };
 
-class JSDOMEnvironment implements JestEnvironment {
+class JSDOMEnvironment implements JestEnvironment<number> {
   dom: JSDOM | null;
   fakeTimers: LegacyFakeTimers<number> | null;
   fakeTimersModern: ModernFakeTimers | null;
@@ -30,28 +30,37 @@ class JSDOMEnvironment implements JestEnvironment {
   errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
 
-  constructor(config: Config.ProjectConfig, options: EnvironmentContext = {}) {
+  constructor(config: Config.ProjectConfig, options?: EnvironmentContext) {
     this.dom = new JSDOM('<!DOCTYPE html>', {
       pretendToBeVisual: true,
+      resources:
+        typeof config.testEnvironmentOptions.userAgent === 'string'
+          ? new ResourceLoader({
+              userAgent: config.testEnvironmentOptions.userAgent,
+            })
+          : undefined,
       runScripts: 'dangerously',
       url: config.testURL,
-      virtualConsole: new VirtualConsole().sendTo(options.console || console),
+      virtualConsole: new VirtualConsole().sendTo(options?.console || console),
       ...config.testEnvironmentOptions,
     });
-    const global = (this.global = (this.dom.window.document
-      .defaultView as unknown) as Win);
+    const global = (this.global = this.dom.window.document
+      .defaultView as unknown as Win);
 
     if (!global) {
       throw new Error('JSDOM did not return a Window object');
     }
 
     // for "universal" code (code should use `globalThis`)
-    global.global = global;
+    global.global = global as any;
 
     // Node's error-message stack size is limited at 10, but it's pretty useful
     // to see more than that when a test fails.
     this.global.Error.stackTraceLimit = 100;
     installCommonGlobals(global as any, config.globals);
+
+    // TODO: remove this ASAP, but it currently causes tests to run really slow
+    global.Buffer = Buffer;
 
     // Report uncaught errors.
     this.errorEventListener = event => {
@@ -92,12 +101,15 @@ class JSDOMEnvironment implements JestEnvironment {
 
     this.fakeTimers = new LegacyFakeTimers({
       config,
-      global,
+      global: global as unknown as typeof globalThis,
       moduleMocker: this.moduleMocker,
       timerConfig,
     });
 
-    this.fakeTimersModern = new ModernFakeTimers({config, global});
+    this.fakeTimersModern = new ModernFakeTimers({
+      config,
+      global: global as unknown as typeof globalThis,
+    });
   }
 
   async setup(): Promise<void> {}
@@ -123,13 +135,6 @@ class JSDOMEnvironment implements JestEnvironment {
     this.dom = null;
     this.fakeTimers = null;
     this.fakeTimersModern = null;
-  }
-
-  runScript<T = unknown>(script: Script): T | null {
-    if (this.dom) {
-      return script.runInContext(this.dom.getInternalVMContext());
-    }
-    return null;
   }
 
   getVmContext(): Context | null {

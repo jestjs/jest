@@ -4,8 +4,5 @@
     "rootDir": "src",
     "outDir": "build"
   },
-  "references": [
-    {"path": "../jest-types"},
-    {"path": "../pretty-format"}
-  ]
+  "references": [{"path": "../jest-types"}, {"path": "../pretty-format"}]
 }

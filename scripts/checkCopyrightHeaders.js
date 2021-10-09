@@ -99,7 +99,6 @@ const GENERIC_IGNORED_PATTERNS = [
 const CUSTOM_IGNORED_PATTERNS = [
   '\\.(example|map)$',
   '^examples/.*',
-  '^flow-typed/.*',
   '^packages/expect/src/jasmineUtils\\.ts$',
   '^packages/jest-config/src/vendor/jsonlint\\.js$',
   '^packages/jest-diff/src/cleanupSemantic\\.ts$',
@@ -107,7 +106,8 @@ const CUSTOM_IGNORED_PATTERNS = [
   '^packages/jest-haste-map/src/watchers/NodeWatcher\\.js$',
   '^packages/jest-haste-map/src/watchers/RecrawlWarning\\.js$',
   '^website/static/css/code-block-buttons\\.css$',
-  '^website/static/js/code-block-buttons\\.js',
+  '^website/static/js/code-block-buttons\\.js$',
+  '^benchmarks/test-file-overhead/prepare\\.sh$',
 ].map(createRegExp);
 
 const IGNORED_PATTERNS = [

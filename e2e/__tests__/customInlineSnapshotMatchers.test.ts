@@ -25,3 +25,20 @@ test('works with custom inline snapshot matchers', () => {
 
   expect(wrap(rest)).toMatchSnapshot();
 });
+
+test('can bail with a custom inline snapshot matcher', () => {
+  const {stderr} = runJest('custom-inline-snapshot-matchers', [
+    // Prevent adding new snapshots or rather changing the test.
+    '--ci',
+    'bail.test.js',
+  ]);
+
+  let {rest} = extractSummary(stderr);
+
+  rest = rest
+    .split('\n')
+    .filter(line => line.indexOf('at Error (native)') < 0)
+    .join('\n');
+
+  expect(wrap(rest)).toMatchSnapshot();
+});

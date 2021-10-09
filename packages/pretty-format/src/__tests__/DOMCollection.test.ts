@@ -35,9 +35,10 @@ describe('DOMCollection plugin for object properties', () => {
     el.setAttribute('name1', 'value1');
     el.setAttribute('name2', 'value2');
 
-    expect(
-      el.attributes,
-    ).toPrettyPrintTo('{"name1": "value1", "name2": "value2"}', {min: true});
+    expect(el.attributes).toPrettyPrintTo(
+      '{"name1": "value1", "name2": "value2"}',
+      {min: true},
+    );
   });
 });
 

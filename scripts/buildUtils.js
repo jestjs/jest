@@ -35,7 +35,8 @@ module.exports.getPackages = function getPackages() {
 
     assert.strictEqual(
       pkg.engines.node,
-      nodeEngineRequirement,
+      // TODO: remove special casing for Jest 28
+      pkg.name === 'jest-worker' ? '>= 10.13.0' : nodeEngineRequirement,
       `Engine requirement in ${pkg.name} should match root`,
     );
 
@@ -51,7 +52,12 @@ module.exports.getPackages = function getPackages() {
           {},
         ),
         ...(pkg.name === 'jest-circus' ? {'./runner': './runner.js'} : {}),
-        ...(pkg.name === 'expect' ? {'./build/utils': './build/utils.js'} : {}),
+        ...(pkg.name === 'expect'
+          ? {
+              './build/matchers': './build/matchers.js',
+              './build/utils': './build/utils.js',
+            }
+          : {}),
       },
       `Package ${pkg.name} does not export correct files`,
     );

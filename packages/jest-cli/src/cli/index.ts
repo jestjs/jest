@@ -37,7 +37,7 @@ export async function run(
   } catch (error) {
     clearLine(process.stderr);
     clearLine(process.stdout);
-    if (error.stack) {
+    if (error?.stack) {
       console.error(chalk.red(error.stack));
     } else {
       console.error(chalk.red(error));

@@ -9,7 +9,8 @@
     "transformIgnorePatterns": [
       "jest-circus",
       "jest-environment-node",
-      "jest-jasmine2"
+      "jest-jasmine2",
+      "jest-runner"
     ]
   },
   "dependencies": {

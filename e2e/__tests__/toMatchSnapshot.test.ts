@@ -231,7 +231,8 @@ test('handles invalid property matchers', () => {
 
 test('handles property matchers with hint', () => {
   const filename = 'handle-property-matchers-with-hint.test.js';
-  const template = makeTemplate(`test('handles property matchers with hint', () => {
+  const template =
+    makeTemplate(`test('handles property matchers with hint', () => {
       expect({createdAt: $1}).toMatchSnapshot({createdAt: expect.any(Date)}, 'descriptive hint');
     });
     `);
@@ -263,7 +264,8 @@ test('handles property matchers with hint', () => {
 
 test('handles property matchers with deep properties', () => {
   const filename = 'handle-property-matchers-with-name.test.js';
-  const template = makeTemplate(`test('handles property matchers with deep properties', () => {
+  const template =
+    makeTemplate(`test('handles property matchers with deep properties', () => {
       expect({ user: { createdAt: $1, name: $2 }}).toMatchSnapshot({ user: { createdAt: expect.any(Date), name: $2 }});
     });
     `);

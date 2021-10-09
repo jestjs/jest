@@ -13,7 +13,7 @@ import type {
   WatchPlugin,
 } from './types';
 
-class BaseWatchPlugin implements WatchPlugin {
+abstract class BaseWatchPlugin implements WatchPlugin {
   protected _stdin: NodeJS.ReadStream;
   protected _stdout: NodeJS.WriteStream;
 

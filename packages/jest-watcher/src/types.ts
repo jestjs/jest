@@ -83,6 +83,7 @@ export interface WatchPlugin {
 }
 export interface WatchPluginClass {
   new (options: {
+    config: Record<string, unknown>;
     stdin: NodeJS.ReadStream;
     stdout: NodeJS.WriteStream;
   }): WatchPlugin;

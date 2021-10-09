@@ -4,15 +4,15 @@ exports[`malformed custom resolver in project config inconsistent functions thro
 
 exports[`malformed custom resolver in project config missing resolveSnapshotPath throws  1`] = `
 "<bold>Custom snapshot resolver must implement a \`resolveSnapshotPath\` as a function.</>
-Documentation: https://facebook.github.io/jest/docs/en/configuration.html#snapshotResolver"
+Documentation: https://jestjs.io/docs/configuration#snapshotresolver-string"
 `;
 
 exports[`malformed custom resolver in project config missing resolveTestPath throws  1`] = `
 "<bold>Custom snapshot resolver must implement a \`resolveTestPath\` as a function.</>
-Documentation: https://facebook.github.io/jest/docs/en/configuration.html#snapshotResolver"
+Documentation: https://jestjs.io/docs/configuration#snapshotresolver-string"
 `;
 
 exports[`malformed custom resolver in project config missing testPathForConsistencyCheck throws  1`] = `
 "<bold>Custom snapshot resolver must implement a \`testPathForConsistencyCheck\` as a string.</>
-Documentation: https://facebook.github.io/jest/docs/en/configuration.html#snapshotResolver"
+Documentation: https://jestjs.io/docs/configuration#snapshotresolver-string"
 `;

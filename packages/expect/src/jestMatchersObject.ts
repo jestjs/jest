@@ -37,18 +37,21 @@ if (!global.hasOwnProperty(JEST_MATCHERS_OBJECT)) {
   });
 }
 
-export const getState = (): MatcherState =>
+export const getState = <State extends MatcherState = MatcherState>(): State =>
   (global as any)[JEST_MATCHERS_OBJECT].state;
 
-export const setState = (state: Partial<MatcherState>): void => {
+export const setState = <State extends MatcherState = MatcherState>(
+  state: Partial<State>,
+): void => {
   Object.assign((global as any)[JEST_MATCHERS_OBJECT].state, state);
 };
 
-export const getMatchers = (): MatchersObject =>
-  (global as any)[JEST_MATCHERS_OBJECT].matchers;
+export const getMatchers = <
+  State extends MatcherState = MatcherState,
+>(): MatchersObject<State> => (global as any)[JEST_MATCHERS_OBJECT].matchers;
 
-export const setMatchers = (
-  matchers: MatchersObject,
+export const setMatchers = <State extends MatcherState = MatcherState>(
+  matchers: MatchersObject<State>,
   isInternal: boolean,
   expect: Expect,
 ): void => {
@@ -61,14 +64,20 @@ export const setMatchers = (
     if (!isInternal) {
       // expect is defined
 
-      class CustomMatcher extends AsymmetricMatcher<[unknown, unknown]> {
-        constructor(inverse: boolean = false, ...sample: [unknown, unknown]) {
-          super(sample);
-          this.inverse = inverse;
+      class CustomMatcher extends AsymmetricMatcher<
+        [unknown, ...Array<unknown>],
+        State
+      > {
+        constructor(
+          inverse: boolean = false,
+          ...sample: [unknown, ...Array<unknown>]
+        ) {
+          super(sample, inverse);
         }
 
         asymmetricMatch(other: unknown) {
-          const {pass} = matcher(
+          const {pass} = matcher.call(
+            this.getMatcherContext(),
             other,
             ...this.sample,
           ) as SyncExpectationResult;
@@ -89,12 +98,14 @@ export const setMatchers = (
         }
       }
 
-      expect[key] = (...sample: [unknown, unknown]) =>
+      expect[key] = (...sample: [unknown, ...Array<unknown>]) =>
         new CustomMatcher(false, ...sample);
       if (!expect.not) {
-        expect.not = {};
+        throw new Error(
+          '`expect.not` is not defined - please report this bug to https://github.com/facebook/jest',
+        );
       }
-      expect.not[key] = (...sample: [unknown, unknown]) =>
+      expect.not[key] = (...sample: [unknown, ...Array<unknown>]) =>
         new CustomMatcher(true, ...sample);
     }
   });

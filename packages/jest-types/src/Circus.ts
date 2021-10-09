@@ -28,6 +28,7 @@ export type Hook = {
   fn: HookFn;
   type: HookType;
   parent: DescribeBlock;
+  seenDone: boolean;
   timeout: number | undefined | null;
 };
 
@@ -238,6 +239,7 @@ export type TestEntry = {
   parent: DescribeBlock;
   startedAt?: number | null;
   duration?: number | null;
+  seenDone: boolean;
   status?: TestStatus | null; // whether the test has been skipped or run already
   timeout?: number;
 };

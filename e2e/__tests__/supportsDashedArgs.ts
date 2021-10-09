@@ -48,7 +48,7 @@ test('throws error for unknown dashed & camelcase args', () => {
       ["doesNotExist", "also-does-not-exist"]
 
       CLI Options Documentation:
-      https://jestjs.io/docs/en/cli.html
+      https://jestjs.io/docs/cli
 
   `);
   expect(exitCode).toBe(1);

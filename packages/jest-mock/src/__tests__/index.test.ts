@@ -9,12 +9,12 @@
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
 import vm, {Context} from 'vm';
-import {ModuleMocker} from '../';
+import {ModuleMocker, fn, spyOn} from '../';
 
 describe('moduleMocker', () => {
   let moduleMocker: ModuleMocker;
   let mockContext: Context;
-  let mockGlobals: NodeJS.Global;
+  let mockGlobals: typeof globalThis;
 
   beforeEach(() => {
     mockContext = vm.createContext();
@@ -1216,6 +1216,18 @@ describe('moduleMocker', () => {
       expect(originalCallArguments[1]).toBe(secondArg);
       expect(spy).not.toHaveBeenCalled();
     });
+
+    it('should work with object of null prototype', () => {
+      const Foo = Object.assign(Object.create(null), {
+        foo() {},
+      });
+
+      const spy = moduleMocker.spyOn(Foo, 'foo');
+
+      Foo.foo();
+
+      expect(spy).toHaveBeenCalled();
+    });
   });
 
   describe('spyOnProperty', () => {
@@ -1438,4 +1450,11 @@ describe('moduleMocker', () => {
       expect(spy2.mock.calls.length).toBe(1);
     });
   });
+});
+
+test('`fn` and `spyOn` do not throw', () => {
+  expect(() => {
+    fn();
+    spyOn({apple: () => {}}, 'apple');
+  }).not.toThrow();
 });

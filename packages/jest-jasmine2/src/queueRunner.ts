@@ -9,14 +9,12 @@ import {formatTime} from 'jest-util';
 import PCancelable from './PCancelable';
 import pTimeout from './pTimeout';
 
-type Global = NodeJS.Global;
-
 export type Options = {
-  clearTimeout: Global['clearTimeout'];
+  clearTimeout: typeof globalThis['clearTimeout'];
   fail: (error: Error) => void;
   onException: (error: Error) => void;
   queueableFns: Array<QueueableFn>;
-  setTimeout: Global['setTimeout'];
+  setTimeout: typeof globalThis['setTimeout'];
   userContext: unknown;
 };
 
@@ -33,9 +31,7 @@ export type QueueableFn = {
 
 type PromiseCallback = (() => void | PromiseLike<void>) | undefined | null;
 
-export default function queueRunner(
-  options: Options,
-): PromiseLike<void> & {
+export default function queueRunner(options: Options): PromiseLike<void> & {
   cancel: () => void;
   catch: (onRejected?: PromiseCallback) => Promise<void>;
 } {

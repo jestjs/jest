@@ -8,10 +8,13 @@
 /* eslint-disable local/ban-types-eventually */
 
 import * as asyncHooks from 'async_hooks';
+import {promisify} from 'util';
 import stripAnsi = require('strip-ansi');
 import type {Config} from '@jest/types';
 import {formatExecError} from 'jest-message-util';
 import {ErrorWithStack} from 'jest-util';
+
+export type HandleCollectionResult = () => Promise<Array<Error>>;
 
 function stackIsFromUser(stack: string) {
   // Either the test file, or something required by it
@@ -37,13 +40,18 @@ function stackIsFromUser(stack: string) {
 
 const alwaysActive = () => true;
 
+// @ts-expect-error: doesn't exist in v10 typings
+const hasWeakRef = typeof WeakRef === 'function';
+
+const asyncSleep = promisify(setTimeout);
+
 // Inspired by https://github.com/mafintosh/why-is-node-running/blob/master/index.js
 // Extracted as we want to format the result ourselves
-export default function collectHandles(): () => Array<Error> {
-  const activeHandles: Map<
+export default function collectHandles(): HandleCollectionResult {
+  const activeHandles = new Map<
     number,
     {error: Error; isActive: () => boolean}
-  > = new Map();
+  >();
   const hook = asyncHooks.createHook({
     destroy(asyncId) {
       activeHandles.delete(asyncId);
@@ -51,26 +59,52 @@ export default function collectHandles(): () => Array<Error> {
     init: function initHook(
       asyncId,
       type,
-      _triggerAsyncId,
+      triggerAsyncId,
       resource: {} | NodeJS.Timeout,
     ) {
+      // Skip resources that should not generally prevent the process from
+      // exiting, not last a meaningfully long time, or otherwise shouldn't be
+      // tracked.
       if (
         type === 'PROMISE' ||
         type === 'TIMERWRAP' ||
-        type === 'ELDHISTOGRAM'
+        type === 'ELDHISTOGRAM' ||
+        type === 'PerformanceObserver' ||
+        type === 'RANDOMBYTESREQUEST' ||
+        type === 'DNSCHANNEL'
       ) {
         return;
       }
-      const error = new ErrorWithStack(type, initHook);
+      const error = new ErrorWithStack(type, initHook, 100);
+      let fromUser = stackIsFromUser(error.stack || '');
 
-      if (stackIsFromUser(error.stack || '')) {
+      // If the async resource was not directly created by user code, but was
+      // triggered by another async resource from user code, track it and use
+      // the original triggering resource's stack.
+      if (!fromUser) {
+        const triggeringHandle = activeHandles.get(triggerAsyncId);
+        if (triggeringHandle) {
+          fromUser = true;
+          error.stack = triggeringHandle.error.stack;
+        }
+      }
+
+      if (fromUser) {
         let isActive: () => boolean;
 
         if (type === 'Timeout' || type === 'Immediate') {
+          // Timer that supports hasRef (Node v11+)
           if ('hasRef' in resource) {
-            // Timer that supports hasRef (Node v11+)
-            // @ts-expect-error: doesn't exist in v10 typings
-            isActive = resource.hasRef.bind(resource);
+            if (hasWeakRef) {
+              // @ts-expect-error: doesn't exist in v10 typings
+              const ref = new WeakRef(resource);
+              isActive = () => {
+                return ref.deref()?.hasRef() ?? false;
+              };
+            } else {
+              // @ts-expect-error: doesn't exist in v10 typings
+              isActive = resource.hasRef.bind(resource);
+            }
           } else {
             // Timer that doesn't support hasRef
             isActive = alwaysActive;
@@ -87,7 +121,14 @@ export default function collectHandles(): () => Array<Error> {
 
   hook.enable();
 
-  return (): Array<Error> => {
+  return async () => {
+    // Wait briefly for any async resources that have been queued for
+    // destruction to actually be destroyed.
+    // For example, Node.js TCP Servers are not destroyed until *after* their
+    // `close` callback runs. If someone finishes a test from the `close`
+    // callback, we will not yet have seen the resource be destroyed here.
+    await asyncSleep(100);
+
     hook.disable();
 
     // Get errors for every async resource still referenced at this moment

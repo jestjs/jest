@@ -10,9 +10,5 @@ import type {Config} from '@jest/types';
 export default function getProjectDisplayName(
   projectConfig: Config.ProjectConfig,
 ): string | undefined {
-  const {displayName} = projectConfig;
-  if (!displayName) {
-    return undefined;
-  }
-  return displayName.name;
+  return projectConfig.displayName?.name || undefined;
 }

@@ -61,7 +61,7 @@ FAIL __tests__/eachException.test.js
     Missing 1 argument
 
        6 |  */
-       7 | 
+       7 |
     >  8 | it.each\`
          | ^
        9 |   left    | right
@@ -84,7 +84,7 @@ FAIL __tests__/eachException.test.js
     Missing 2 arguments
 
       17 | );
-      18 | 
+      18 |
     > 19 | it.each\`
          | ^
       20 |   left    | right   | up | down

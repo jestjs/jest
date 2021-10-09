@@ -8,7 +8,7 @@
 
 import chalk = require('chalk');
 import type {Global} from '@jest/types';
-import pretty from 'pretty-format';
+import {format as pretty} from 'pretty-format';
 
 type TemplateData = Global.TemplateData;
 
@@ -77,7 +77,7 @@ const pluralize = (word: string, count: number) =>
 
 const START_OF_LINE = '^';
 const NEWLINE = '\\n';
-const HEADING = '\\s*\\w+\\s*';
+const HEADING = '\\s*[^\\s]+\\s*';
 const PIPE = '\\|';
 const REPEATABLE_HEADING = `(${PIPE}${HEADING})*`;
 const HEADINGS_FORMAT = new RegExp(

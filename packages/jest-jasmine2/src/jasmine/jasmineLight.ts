@@ -45,8 +45,8 @@ export const create = function (createOptions: Record<string, any>): Jasmine {
 
   j$._DEFAULT_TIMEOUT_INTERVAL = createOptions.testTimeout || 5000;
 
-  j$.getEnv = function (options?: Record<string, unknown>) {
-    const env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env(options));
+  j$.getEnv = function () {
+    const env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env());
     //jasmine. singletons in here (setTimeout blah blah).
     return env;
   };

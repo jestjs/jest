@@ -706,7 +706,7 @@ test('ReactTestComponent plugin highlights syntax with color from theme option',
 });
 
 test('supports forwardRef with a child', () => {
-  function Cat(props: any) {
+  function Cat(props: any, _ref: any) {
     return React.createElement('div', props, props.children);
   }
 

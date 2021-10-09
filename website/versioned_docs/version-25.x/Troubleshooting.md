@@ -1,7 +1,6 @@
 ---
-id: version-25.x-troubleshooting
+id: troubleshooting
 title: Troubleshooting
-original_id: troubleshooting
 ---
 
 Uh oh, something went wrong? Use this guide to resolve issues with Jest.
@@ -208,4 +207,4 @@ _Note:_ This means when you are using `test.each` you cannot set the table async
 
 ## Still unresolved?
 
-See [Help](/help.html).
+See [Help](/help).

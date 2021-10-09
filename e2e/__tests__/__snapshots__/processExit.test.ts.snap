@@ -4,10 +4,10 @@ exports[`prints stack trace pointing to process.exit call 1`] = `
   ●  process.exit called with "1"
 
        6 |  */
-       7 | 
+       7 |
     >  8 | process.exit(1);
          |         ^
-       9 | 
+       9 |
       10 | test('something', () => {
       11 |   expect(true).toBe(true);
 

@@ -8,17 +8,21 @@
 /* eslint-disable local/ban-types-eventually */
 
 import chalk = require('chalk');
-import diffDefault, {
+import {
   DIFF_DELETE,
   DIFF_EQUAL,
   DIFF_INSERT,
   Diff,
   DiffOptions as ImportDiffOptions,
+  diff as diffDefault,
   diffStringsRaw,
   diffStringsUnified,
 } from 'jest-diff';
-import getType = require('jest-get-type');
-import prettyFormat, {plugins as prettyFormatPlugins} from 'pretty-format';
+import {getType, isPrimitive} from 'jest-get-type';
+import {
+  format as prettyFormat,
+  plugins as prettyFormatPlugins,
+} from 'pretty-format';
 import Replaceable from './Replaceable';
 import deepCyclicCopyReplaceable from './deepCyclicCopyReplaceable';
 
@@ -264,7 +268,7 @@ const isLineDiffable = (expected: unknown, received: unknown): boolean => {
     return false;
   }
 
-  if (getType.isPrimitive(expected)) {
+  if (isPrimitive(expected)) {
     // Print generic line diff for strings only:
     // * if neither string is empty
     // * if either string has more than one line
@@ -355,15 +359,13 @@ export const printDiffOrStringify = (
   }
 
   if (isLineDiffable(expected, received)) {
-    const {
-      replacedExpected,
-      replacedReceived,
-    } = replaceMatchedToAsymmetricMatcher(
-      deepCyclicCopyReplaceable(expected),
-      deepCyclicCopyReplaceable(received),
-      [],
-      [],
-    );
+    const {replacedExpected, replacedReceived} =
+      replaceMatchedToAsymmetricMatcher(
+        deepCyclicCopyReplaceable(expected),
+        deepCyclicCopyReplaceable(received),
+        [],
+        [],
+      );
     const difference = diffDefault(replacedExpected, replacedReceived, {
       aAnnotation: expectedLabel,
       bAnnotation: receivedLabel,

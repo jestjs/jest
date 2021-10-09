@@ -12,8 +12,8 @@ exports[`codeframe 1`] = `
 
     Whoops!
 
-    </><red><bold>></></><gray> 1 | </><cyan>throw</> <cyan>new</> <yellow>Error</>(<green>\\"Whoops!\\"</>)<yellow>;</></>
-    </> <gray>   | </>      <red><bold>^</></></>
+    </><red><bold>></></><gray> 1 |</> <cyan>throw</> <cyan>new</> <yellow>Error</>(<green>\\"Whoops!\\"</>)<yellow>;</></>
+    </> <gray>   |</>       <red><bold>^</></></>
 
       <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
 "
@@ -33,8 +33,8 @@ exports[`formatStackTrace does not print codeframe when noStackTrace = true 1`] 
 
 exports[`formatStackTrace prints code frame and stacktrace 1`] = `
 "
-    </><red><bold>></></><gray> 1 | </><cyan>throw</> <cyan>new</> <yellow>Error</>(<green>\\"Whoops!\\"</>)<yellow>;</></>
-    </> <gray>   | </>      <red><bold>^</></></>
+    </><red><bold>></></><gray> 1 |</> <cyan>throw</> <cyan>new</> <yellow>Error</>(<green>\\"Whoops!\\"</>)<yellow>;</></>
+    </> <gray>   |</>       <red><bold>^</></></>
 
       <dim>at Object.<anonymous> (</>file.js<dim>:1:7)</>
         "

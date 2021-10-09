@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Context, Script} from 'vm';
+import type {Context} from 'vm';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Circus, Config, Global} from '@jest/types';
 import type {
@@ -14,13 +14,11 @@ import type {
   ModuleMocker,
 } from 'jest-mock';
 
-// In Jest 25, remove `Partial` since it's incorrect. The properties are always
-// passed, or not. The context itself is optional, not properties within it.
-export type EnvironmentContext = Partial<{
+export type EnvironmentContext = {
   console: Console;
   docblockPragmas: Record<string, string | Array<string>>;
   testPath: Config.Path;
-}>;
+};
 
 // Different Order than https://nodejs.org/api/modules.html#modules_the_module_wrapper , however needs to be in the form [jest-transform]ScriptTransformer accepts
 export type ModuleWrapper = (
@@ -34,23 +32,17 @@ export type ModuleWrapper = (
   ...extraGlobals: Array<Global.Global[keyof Global.Global]>
 ) => unknown;
 
-export declare class JestEnvironment {
+export declare class JestEnvironment<Timer = unknown> {
   constructor(config: Config.ProjectConfig, context?: EnvironmentContext);
   global: Global.Global;
-  fakeTimers: LegacyFakeTimers<unknown> | null;
+  fakeTimers: LegacyFakeTimers<Timer> | null;
   fakeTimersModern: ModernFakeTimers | null;
   moduleMocker: ModuleMocker | null;
-  /**
-   * @deprecated implement getVmContext instead
-   */
-  runScript<T = unknown>(script: Script): T | null;
-  getVmContext?(): Context | null;
+  getVmContext(): Context | null;
   setup(): Promise<void>;
   teardown(): Promise<void>;
-  handleTestEvent?(
-    event: Circus.Event,
-    state: Circus.State,
-  ): void | Promise<void>;
+  handleTestEvent?: Circus.EventHandler;
+  exportConditions?: () => Array<string>;
 }
 
 export type Module = NodeModule;
@@ -144,6 +136,14 @@ export interface Jest {
   mock(
     moduleName: string,
     moduleFactory?: () => unknown,
+    options?: {virtual?: boolean},
+  ): Jest;
+  /**
+   * Mocks a module with the provided module factory when it is being imported.
+   */
+  unstable_mockModule<T = unknown>(
+    moduleName: string,
+    moduleFactory: () => Promise<T> | T,
     options?: {virtual?: boolean},
   ): Jest;
   /**

@@ -8,7 +8,7 @@
 import chalk = require('chalk');
 import stripAnsi = require('strip-ansi');
 import {alignedAnsiStyleSerializer} from '@jest/test-utils';
-import diff from '../';
+import {diff} from '../';
 import {NO_DIFF_MESSAGE} from '../constants';
 import {diffLinesUnified, diffLinesUnified2} from '../diffLines';
 import {noColor} from '../normalizeDiffOptions';
@@ -1072,11 +1072,11 @@ describe('options', () => {
       'insert 1 trailing space: ',
     ].join('\n');
 
-    test('diffDefault default no color', () => {
+    test('diff default no color', () => {
       expect(diff(aTrailingSpaces, bTrailingSpaces)).toMatchSnapshot();
     });
 
-    test('diffDefault middle dot', () => {
+    test('diff middle dot', () => {
       const replaceSpacesWithMiddleDot = string => '·'.repeat(string.length);
       const options = {
         changeLineTrailingSpaceColor: replaceSpacesWithMiddleDot,
@@ -1086,7 +1086,7 @@ describe('options', () => {
       expect(diff(aTrailingSpaces, bTrailingSpaces, options)).toMatchSnapshot();
     });
 
-    test('diffDefault yellowish common', () => {
+    test('diff yellowish common', () => {
       const options = {
         commonLineTrailingSpaceColor: chalk.bgYellow,
       };
@@ -1112,7 +1112,7 @@ describe('options', () => {
       '',
     ].join('\n');
 
-    test('diffDefault', () => {
+    test('diff', () => {
       expect(diff(aEmpty, bEmpty, options)).toBe(expected);
     });
 

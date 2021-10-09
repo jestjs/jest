@@ -11,7 +11,7 @@ type State = {
   interrupted: boolean;
 };
 
-export default class TestWatcher extends emittery.Typed<{change: State}> {
+export default class TestWatcher extends emittery<{change: State}> {
   state: State;
   private _isWatchMode: boolean;
 

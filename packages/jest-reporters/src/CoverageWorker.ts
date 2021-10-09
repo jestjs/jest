@@ -33,7 +33,7 @@ export function worker({
   globalConfig,
   path,
   options,
-}: CoverageWorkerData): CoverageWorkerResult | null {
+}: CoverageWorkerData): Promise<CoverageWorkerResult | null> {
   return generateEmptyCoverage(
     fs.readFileSync(path, 'utf8'),
     path,

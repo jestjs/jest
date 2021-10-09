@@ -32,7 +32,7 @@ import watch from '../watch';
 
 const {print: preRunMessagePrint} = preRunMessage;
 
-type OnCompleteCallback = (results: AggregatedResult) => void;
+type OnCompleteCallback = (results: AggregatedResult) => void | undefined;
 
 export async function runCLI(
   argv: Config.Argv,
@@ -89,7 +89,9 @@ export async function runCLI(
     configsOfProjectsToRun,
     hasDeprecationWarnings,
     outputStream,
-    r => (results = r),
+    r => {
+      results = r;
+    },
   );
 
   if (argv.watch || argv.watchAll) {

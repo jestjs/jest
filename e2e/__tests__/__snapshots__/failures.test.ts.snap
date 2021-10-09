@@ -52,7 +52,7 @@ FAIL __tests__/assertionCount.test.js
 
     Expected two assertions to be called but received one assertion call.
 
-       9 | 
+       9 |
       10 | const throws = () => {
     > 11 |   expect.assertions(2);
          |          ^
@@ -74,7 +74,7 @@ FAIL __tests__/assertionCount.test.js
          |                 ^
       17 |   expect.assertions(2);
       18 | };
-      19 | 
+      19 |
 
       at Object.toBeTruthy (__tests__/assertionCount.test.js:16:17)
 
@@ -84,13 +84,13 @@ FAIL __tests__/assertionCount.test.js
 
     Expected zero assertions to be called but received one assertion call.
 
-      19 | 
+      19 |
       20 | const noAssertions = () => {
     > 21 |   expect.assertions(0);
          |          ^
       22 |   expect(true).toBeTruthy();
       23 | };
-      24 | 
+      24 |
 
       at Object.assertions (__tests__/assertionCount.test.js:21:10)
 
@@ -100,12 +100,12 @@ FAIL __tests__/assertionCount.test.js
 
     Expected at least one assertion to be called but received none.
 
-      24 | 
+      24 |
       25 | const hasNoAssertions = () => {
     > 26 |   expect.hasAssertions();
          |          ^
       27 | };
-      28 | 
+      28 |
       29 | describe('.assertions()', () => {
 
       at Object.hasAssertions (__tests__/assertionCount.test.js:26:10)
@@ -128,12 +128,12 @@ FAIL __tests__/duringTests.test.js
     thrown: Promise {}
 
       12 | };
-      13 | 
+      13 |
     > 14 | test('Promise thrown during test', () => {
          | ^
       15 |   throw Promise.resolve(5);
       16 | });
-      17 | 
+      17 |
 
       at Object.test (__tests__/duringTests.test.js:14:1)
 
@@ -142,7 +142,7 @@ FAIL __tests__/duringTests.test.js
     thrown: false
 
       16 | });
-      17 | 
+      17 |
     > 18 | test('Boolean thrown during test', () => {
          | ^
       19 |   // eslint-disable-next-line no-throw-literal
@@ -156,7 +156,7 @@ FAIL __tests__/duringTests.test.js
     thrown: undefined
 
       21 | });
-      22 | 
+      22 |
     > 23 | test('undefined thrown during test', () => {
          | ^
       24 |   // eslint-disable-next-line no-throw-literal
@@ -177,12 +177,12 @@ FAIL __tests__/duringTests.test.js
     }
 
       26 | });
-      27 | 
+      27 |
     > 28 | test('Object thrown during test', () => {
          | ^
       29 |   throw deepObject;
       30 | });
-      31 | 
+      31 |
 
       at Object.test (__tests__/duringTests.test.js:28:1)
 
@@ -193,7 +193,7 @@ FAIL __tests__/duringTests.test.js
     }
 
       30 | });
-      31 | 
+      31 |
     > 32 | test('Object with stack prop thrown during test', () => {
          | ^
       33 |   // eslint-disable-next-line no-throw-literal
@@ -211,7 +211,7 @@ FAIL __tests__/duringTests.test.js
     > 39 |   doesNotExist.alsoThisNot;
          |   ^
       40 | });
-      41 | 
+      41 |
       42 | test('done(Error)', done => {
 
       at Object.doesNotExist (__tests__/duringTests.test.js:39:3)
@@ -220,12 +220,12 @@ FAIL __tests__/duringTests.test.js
 
     this is an error
 
-      41 | 
+      41 |
       42 | test('done(Error)', done => {
     > 43 |   done(new Error('this is an error'));
          |        ^
       44 | });
-      45 | 
+      45 |
       46 | test('done(non-error)', done => {
 
       at Object.<anonymous> (__tests__/duringTests.test.js:43:8)
@@ -241,12 +241,12 @@ FAIL __tests__/duringTests.test.js
       ],
     }
 
-      45 | 
+      45 |
       46 | test('done(non-error)', done => {
     > 47 |   done(deepObject);
          |   ^
       48 | });
-      49 | 
+      49 |
       50 | test('returned promise rejection', () => Promise.reject(deepObject));
 
       at Object.done (__tests__/duringTests.test.js:47:3)
@@ -263,10 +263,10 @@ FAIL __tests__/duringTests.test.js
     }
 
       48 | });
-      49 | 
+      49 |
     > 50 | test('returned promise rejection', () => Promise.reject(deepObject));
          | ^
-      51 | 
+      51 |
 
       at Object.test (__tests__/duringTests.test.js:50:1)
 `;
@@ -292,12 +292,12 @@ FAIL __tests__/testMacro.test.js
     Expected: 2
     Received: 1
 
-       8 | 
+       8 |
        9 | module.exports = (one: any, two: any) => {
     > 10 |   expect(one).toEqual(two);
          |               ^
       11 | };
-      12 | 
+      12 |
 
       at toEqual (macros.js:10:15)
       at Object.shouldEqual (__tests__/testMacro.test.js:13:3)
@@ -323,11 +323,11 @@ FAIL __tests__/asyncFailures.test.js
     +   "foo": "bar",
       }
 
-       9 | 
+       9 |
       10 | test('resolve, but fail', () =>
     > 11 |   expect(Promise.resolve({foo: 'bar'})).resolves.toEqual({baz: 'bar'}));
          |                                                  ^
-      12 | 
+      12 |
       13 | test('reject, but fail', () =>
       14 |   expect(Promise.reject({foo: 'bar'})).rejects.toEqual({baz: 'bar'}));
 
@@ -345,11 +345,11 @@ FAIL __tests__/asyncFailures.test.js
     +   "foo": "bar",
       }
 
-      12 | 
+      12 |
       13 | test('reject, but fail', () =>
     > 14 |   expect(Promise.reject({foo: 'bar'})).rejects.toEqual({baz: 'bar'}));
          |                                                ^
-      15 | 
+      15 |
       16 | test('expect reject', () =>
       17 |   expect(Promise.resolve({foo: 'bar'})).rejects.toEqual({foo: 'bar'}));
 
@@ -362,11 +362,11 @@ FAIL __tests__/asyncFailures.test.js
     Received promise resolved instead of rejected
     Resolved to value: {"foo": "bar"}
 
-      15 | 
+      15 |
       16 | test('expect reject', () =>
     > 17 |   expect(Promise.resolve({foo: 'bar'})).rejects.toEqual({foo: 'bar'}));
          |   ^
-      18 | 
+      18 |
       19 | test('expect resolve', () =>
       20 |   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
 
@@ -379,11 +379,11 @@ FAIL __tests__/asyncFailures.test.js
     Received promise rejected instead of resolved
     Rejected to value: {"foo": "bar"}
 
-      18 | 
+      18 |
       19 | test('expect resolve', () =>
     > 20 |   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
          |   ^
-      21 | 
+      21 |
       22 | test('timeout', done => {
       23 |   setTimeout(done, 50);
 
@@ -394,12 +394,12 @@ FAIL __tests__/asyncFailures.test.js
 <REPLACED>
 
       20 |   expect(Promise.reject({foo: 'bar'})).resolves.toEqual({foo: 'bar'}));
-      21 | 
+      21 |
     > 22 | test('timeout', done => {
          | ^
       23 |   setTimeout(done, 50);
       24 | }, 5);
-      25 | 
+      25 |
 
       at Object.test (__tests__/asyncFailures.test.js:22:1)
 `;
@@ -435,12 +435,12 @@ FAIL __tests__/assertionError.test.js
     Received:
       false
 
-      12 | 
+      12 |
       13 | test('assert', () => {
     > 14 |   assert(false);
          |   ^
       15 | });
-      16 | 
+      16 |
       17 | test('assert with a message', () => {
 
       at Object.assert (__tests__/assertionError.test.js:14:3)
@@ -457,12 +457,12 @@ FAIL __tests__/assertionError.test.js
     Message:
       this is a message
 
-      16 | 
+      16 |
       17 | test('assert with a message', () => {
     > 18 |   assert(false, 'this is a message');
          |   ^
       19 | });
-      20 | 
+      20 |
       21 | test('assert.ok', () => {
 
       at Object.assert (__tests__/assertionError.test.js:18:3)
@@ -476,12 +476,12 @@ FAIL __tests__/assertionError.test.js
     Received:
       false
 
-      20 | 
+      20 |
       21 | test('assert.ok', () => {
     > 22 |   assert.ok(false);
          |          ^
       23 | });
-      24 | 
+      24 |
       25 | test('assert.ok with a message', () => {
 
       at Object.ok (__tests__/assertionError.test.js:22:10)
@@ -498,12 +498,12 @@ FAIL __tests__/assertionError.test.js
     Message:
       this is a message
 
-      24 | 
+      24 |
       25 | test('assert.ok with a message', () => {
     > 26 |   assert.ok(false, 'this is a message');
          |          ^
       27 | });
-      28 | 
+      28 |
       29 | test('assert.equal', () => {
 
       at Object.ok (__tests__/assertionError.test.js:26:10)
@@ -517,12 +517,12 @@ FAIL __tests__/assertionError.test.js
     Received:
       1
 
-      28 | 
+      28 |
       29 | test('assert.equal', () => {
     > 30 |   assert.equal(1, 2);
          |          ^
       31 | });
-      32 | 
+      32 |
       33 | test('assert.notEqual', () => {
 
       at Object.equal (__tests__/assertionError.test.js:30:10)
@@ -536,12 +536,12 @@ FAIL __tests__/assertionError.test.js
     Received:
       1
 
-      32 | 
+      32 |
       33 | test('assert.notEqual', () => {
     > 34 |   assert.notEqual(1, 1);
          |          ^
       35 | });
-      36 | 
+      36 |
       37 | test('assert.deepEqual', () => {
 
       at Object.notEqual (__tests__/assertionError.test.js:34:10)
@@ -569,12 +569,12 @@ FAIL __tests__/assertionError.test.js
         },
       }
 
-      36 | 
+      36 |
       37 | test('assert.deepEqual', () => {
     > 38 |   assert.deepEqual({a: {b: {c: 5}}}, {a: {b: {c: 6}}});
          |          ^
       39 | });
-      40 | 
+      40 |
       41 | test('assert.deepEqual with a message', () => {
 
       at Object.deepEqual (__tests__/assertionError.test.js:38:10)
@@ -605,12 +605,12 @@ FAIL __tests__/assertionError.test.js
         },
       }
 
-      40 | 
+      40 |
       41 | test('assert.deepEqual with a message', () => {
     > 42 |   assert.deepEqual({a: {b: {c: 5}}}, {a: {b: {c: 7}}}, 'this is a message');
          |          ^
       43 | });
-      44 | 
+      44 |
       45 | test('assert.notDeepEqual', () => {
 
       at Object.deepEqual (__tests__/assertionError.test.js:42:10)
@@ -628,12 +628,12 @@ FAIL __tests__/assertionError.test.js
 
     Compared values have no visual difference.
 
-      44 | 
+      44 |
       45 | test('assert.notDeepEqual', () => {
     > 46 |   assert.notDeepEqual({a: 1}, {a: 1});
          |          ^
       47 | });
-      48 | 
+      48 |
       49 | test('assert.strictEqual', () => {
 
       at Object.notDeepEqual (__tests__/assertionError.test.js:46:10)
@@ -647,12 +647,12 @@ FAIL __tests__/assertionError.test.js
     Received:
       1
 
-      48 | 
+      48 |
       49 | test('assert.strictEqual', () => {
     > 50 |   assert.strictEqual(1, NaN);
          |          ^
       51 | });
-      52 | 
+      52 |
       53 | test('assert.notStrictEqual', () => {
 
       at Object.strictEqual (__tests__/assertionError.test.js:50:10)
@@ -669,12 +669,12 @@ FAIL __tests__/assertionError.test.js
     Message:
       My custom error message
 
-      52 | 
+      52 |
       53 | test('assert.notStrictEqual', () => {
     > 54 |   assert.notStrictEqual(1, 1, 'My custom error message');
          |          ^
       55 | });
-      56 | 
+      56 |
       57 | test('assert.deepStrictEqual', () => {
 
       at Object.notStrictEqual (__tests__/assertionError.test.js:54:10)
@@ -698,12 +698,12 @@ FAIL __tests__/assertionError.test.js
     +   "a": 1,
       }
 
-      56 | 
+      56 |
       57 | test('assert.deepStrictEqual', () => {
     > 58 |   assert.deepStrictEqual({a: 1}, {a: 2});
          |          ^
       59 | });
-      60 | 
+      60 |
       61 | test('assert.notDeepStrictEqual', () => {
 
       at Object.deepStrictEqual (__tests__/assertionError.test.js:58:10)
@@ -721,12 +721,12 @@ FAIL __tests__/assertionError.test.js
 
     Compared values have no visual difference.
 
-      60 | 
+      60 |
       61 | test('assert.notDeepStrictEqual', () => {
     > 62 |   assert.notDeepStrictEqual({a: 1}, {a: 1});
          |          ^
       63 | });
-      64 | 
+      64 |
       65 | test('assert.ifError', () => {
 
       at Object.notDeepStrictEqual (__tests__/assertionError.test.js:62:10)
@@ -747,12 +747,12 @@ FAIL __tests__/assertionError.test.js
 
       Comparing two different types of values. Expected null but received number.
 
-      64 | 
+      64 |
       65 | test('assert.ifError', () => {
     > 66 |   assert.ifError(1);
          |          ^
       67 | });
-      68 | 
+      68 |
       69 | test('assert.doesNotThrow', () => {
 
       at Object.ifError (__tests__/assertionError.test.js:66:10)
@@ -769,7 +769,7 @@ FAIL __tests__/assertionError.test.js
       Got unwanted exception.
     Actual message: "err!"
 
-      68 | 
+      68 |
       69 | test('assert.doesNotThrow', () => {
     > 70 |   assert.doesNotThrow(() => {
          |          ^
@@ -789,12 +789,12 @@ FAIL __tests__/assertionError.test.js
     Message:
       Missing expected exception.
 
-      74 | 
+      74 |
       75 | test('assert.throws', () => {
     > 76 |   assert.throws(() => {});
          |          ^
       77 | });
-      78 | 
+      78 |
       79 | test('async', async () => {
 
       at Object.throws (__tests__/assertionError.test.js:76:10)
@@ -820,12 +820,12 @@ FAIL __tests__/assertionError.test.js
       hello
     + goodbye
 
-      78 | 
+      78 |
       79 | test('async', async () => {
     > 80 |   assert.equal('hello\\ngoodbye', 'hello', 'hmmm');
          |          ^
       81 | });
-      82 | 
+      82 |
       83 | test('assert.fail', () => {
 
       at Object.equal (__tests__/assertionError.test.js:80:10)
@@ -834,12 +834,12 @@ FAIL __tests__/assertionError.test.js
 
     assert.fail(received, expected)
 
-      82 | 
+      82 |
       83 | test('assert.fail', () => {
     > 84 |   assert.fail();
          |          ^
       85 | });
-      86 | 
+      86 |
       87 | test('assert.fail with a message', () => {
 
       at Object.fail (__tests__/assertionError.test.js:84:10)
@@ -851,12 +851,12 @@ FAIL __tests__/assertionError.test.js
     Message:
       error!
 
-      86 | 
+      86 |
       87 | test('assert.fail with a message', () => {
     > 88 |   assert.fail('error!');
          |          ^
       89 | });
-      90 | 
+      90 |
 
       at Object.fail (__tests__/assertionError.test.js:88:10)
 `;
@@ -874,12 +874,12 @@ FAIL __tests__/snapshot.test.js
     Snapshot: "bar"
     Received: "foo"
 
-       9 | 
+       9 |
       10 | test('failing snapshot', () => {
     > 11 |   expect('foo').toMatchSnapshot();
          |                 ^
       12 | });
-      13 | 
+      13 |
 
       at Object.toMatchSnapshot (__tests__/snapshot.test.js:11:17)
 
@@ -900,12 +900,12 @@ FAIL __tests__/snapshotWithHint.test.js
     Snapshot: "bar"
     Received: "foo"
 
-       9 | 
+       9 |
       10 | test('failing snapshot with hint', () => {
     > 11 |   expect('foo').toMatchSnapshot('descriptive hint');
          |                 ^
       12 | });
-      13 | 
+      13 |
 
       at Object.toMatchSnapshot (__tests__/snapshotWithHint.test.js:11:17)
 

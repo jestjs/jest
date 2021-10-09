@@ -8,7 +8,7 @@
 import {tmpdir} from 'os';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
-import prettyFormat from 'pretty-format';
+import {format as prettyFormat} from 'pretty-format';
 import serializer from '..';
 
 const objs = [

@@ -7,7 +7,10 @@
 
 import * as path from 'path';
 import {PassThrough} from 'stream';
-import {Worker} from 'worker_threads';
+import {
+  Worker,
+  WorkerOptions as WorkerThreadsWorkerOptions,
+} from 'worker_threads';
 import mergeStream = require('merge-stream');
 import {
   CHILD_MESSAGE_INITIALIZE,
@@ -61,7 +64,6 @@ export default class ExperimentalWorker implements WorkerInterface {
   initialize(): void {
     this._worker = new Worker(path.resolve(__dirname, './threadChild.js'), {
       eval: false,
-      // @ts-expect-error: added in newer versions
       resourceLimits: this._options.resourceLimits,
       stderr: true,
       stdout: true,
@@ -76,7 +78,7 @@ export default class ExperimentalWorker implements WorkerInterface {
         silent: true,
         ...this._options.forkOptions,
       },
-    });
+    } as WorkerThreadsWorkerOptions);
 
     if (this._worker.stdout) {
       if (!this._stdout) {
@@ -206,7 +208,7 @@ export default class ExperimentalWorker implements WorkerInterface {
   send(
     request: ChildMessage,
     onProcessStart: OnStart,
-    onProcessEnd: OnEnd,
+    onProcessEnd: OnEnd | null,
     onCustomMessage: OnCustomMessage,
   ): void {
     onProcessStart(this);
@@ -214,7 +216,13 @@ export default class ExperimentalWorker implements WorkerInterface {
       // Clean the request to avoid sending past requests to workers that fail
       // while waiting for a new request (timers, unhandled rejections...)
       this._request = null;
-      return onProcessEnd(...args);
+
+      const res = onProcessEnd?.(...args);
+
+      // Clean up the reference so related closures can be garbage collected.
+      onProcessEnd = null;
+
+      return res;
     };
 
     this._onCustomMessage = (...arg) => onCustomMessage(...arg);

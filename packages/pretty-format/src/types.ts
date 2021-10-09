@@ -41,11 +41,12 @@ export type Options = {
   maxDepth: number;
   min: boolean;
   plugins: Plugins;
+  printBasicPrototype: boolean;
   printFunctionName: boolean;
   theme: Theme;
 };
 
-export type OptionsReceived = {
+export interface PrettyFormatOptions {
   callToJSON?: boolean;
   escapeRegex?: boolean;
   escapeString?: boolean;
@@ -54,9 +55,12 @@ export type OptionsReceived = {
   maxDepth?: number;
   min?: boolean;
   plugins?: Plugins;
+  printBasicPrototype?: boolean;
   printFunctionName?: boolean;
   theme?: ThemeReceived;
-};
+}
+
+export type OptionsReceived = PrettyFormatOptions;
 
 export type Config = {
   callToJSON: boolean;
@@ -67,6 +71,7 @@ export type Config = {
   maxDepth: number;
   min: boolean;
   plugins: Plugins;
+  printBasicPrototype: boolean;
   printFunctionName: boolean;
   spacingInner: string;
   spacingOuter: string;

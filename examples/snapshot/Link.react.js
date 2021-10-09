@@ -1,39 +1,33 @@
 // Copyright 2004-present Facebook. All Rights Reserved.
 
-import React from 'react';
+import React, {useState} from 'react';
 
 const STATUS = {
   HOVERED: 'hovered',
   NORMAL: 'normal',
 };
 
-export default class Link extends React.Component {
-  constructor() {
-    super();
+const Link = ({page, children}) => {
+  const [status, setStatus] = useState(STATUS.NORMAL);
 
-    this.state = {
-      class: STATUS.NORMAL,
-    };
-  }
-
-  _onMouseEnter = () => {
-    this.setState({class: STATUS.HOVERED});
+  const onMouseEnter = () => {
+    setStatus(STATUS.HOVERED);
   };
 
-  _onMouseLeave = () => {
-    this.setState({class: STATUS.NORMAL});
+  const onMouseLeave = () => {
+    setStatus(STATUS.NORMAL);
   };
 
-  render() {
-    return (
-      <a
-        className={this.state.class}
-        href={this.props.page || '#'}
-        onMouseEnter={this._onMouseEnter}
-        onMouseLeave={this._onMouseLeave}
-      >
-        {this.props.children}
-      </a>
-    );
-  }
-}
+  return (
+    <a
+      className={status}
+      href={page || '#'}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      {children}
+    </a>
+  );
+};
+
+export default Link;

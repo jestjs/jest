@@ -41,6 +41,32 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('Array [\n  1,\n  2,\n  3,\n]');
   });
 
+  it('prints a sparse array with only holes', () => {
+    // eslint-disable-next-line no-sparse-arrays
+    const val = [, , ,];
+    expect(prettyFormat(val)).toEqual('Array [\n  ,\n  ,\n  ,\n]');
+  });
+
+  it('prints a sparse array with items', () => {
+    // eslint-disable-next-line no-sparse-arrays
+    const val = [1, , , 4];
+    expect(prettyFormat(val)).toEqual('Array [\n  1,\n  ,\n  ,\n  4,\n]');
+  });
+
+  it('prints a sparse array with value surrounded by holes', () => {
+    // eslint-disable-next-line no-sparse-arrays
+    const val = [, 5, ,];
+    expect(prettyFormat(val)).toEqual('Array [\n  ,\n  5,\n  ,\n]');
+  });
+
+  it('prints a sparse array also containing undefined values', () => {
+    // eslint-disable-next-line no-sparse-arrays
+    const val = [1, , undefined, undefined, , 4];
+    expect(prettyFormat(val)).toEqual(
+      'Array [\n  1,\n  ,\n  undefined,\n  undefined,\n  ,\n  4,\n]',
+    );
+  });
+
   it('prints a empty typed array', () => {
     const val = new Uint32Array(0);
     expect(prettyFormat(val)).toEqual('Uint32Array []');
@@ -496,6 +522,31 @@ describe('prettyFormat()', () => {
         expected.replace(/ {2}/g, ' '.repeat(indent)),
       );
     });
+  });
+
+  it('can omit basic prototypes', () => {
+    const val = {
+      deeply: {nested: {object: {}}},
+      'empty array': {},
+      'empty object': {},
+      'nested array': [[[]]],
+      'typed array': new Uint8Array(),
+    };
+    expect(prettyFormat(val, {maxDepth: 2, printBasicPrototype: false})).toBe(
+      [
+        '{',
+        '  "deeply": {',
+        '    "nested": [Object],',
+        '  },',
+        '  "empty array": {},',
+        '  "empty object": {},',
+        '  "nested array": [',
+        '    [Array],',
+        '  ],',
+        '  "typed array": Uint8Array [],',
+        '}',
+      ].join('\n'),
+    );
   });
 
   it('can customize the max depth', () => {

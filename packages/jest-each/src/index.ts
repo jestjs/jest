@@ -69,12 +69,13 @@ const install = (
 const each = (
   table: Global.EachTable,
   ...data: Global.TemplateData
-): ReturnType<typeof install> => install(global as Global, table, ...data);
+): ReturnType<typeof install> =>
+  install(global as unknown as Global, table, ...data);
 
-each.withGlobal = (g: Global) => (
-  table: Global.EachTable,
-  ...data: Global.TemplateData
-) => install(g, table, ...data);
+each.withGlobal =
+  (g: Global) =>
+  (table: Global.EachTable, ...data: Global.TemplateData) =>
+    install(g, table, ...data);
 
 export {bind};
 

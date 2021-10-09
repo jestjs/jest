@@ -8,7 +8,7 @@
 
 /* eslint-disable local/ban-types-eventually */
 
-import getType = require('jest-get-type');
+import {getType, isPrimitive} from 'jest-get-type';
 import {
   DIM_COLOR,
   EXPECTED_COLOR,
@@ -38,8 +38,9 @@ import {
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
 } from './print';
-import type {MatcherState, MatchersObject} from './types';
+import type {MatchersObject} from './types';
 import {
+  arrayBufferEquality,
   getObjectSubset,
   getPath,
   iterableEquality,
@@ -61,6 +62,7 @@ const toStrictEqualTesters = [
   iterableEquality,
   typeEquality,
   sparseArrayEquality,
+  arrayBufferEquality,
 ];
 
 type ContainIterable =
@@ -71,7 +73,7 @@ type ContainIterable =
   | HTMLCollectionOf<any>;
 
 const matchers: MatchersObject = {
-  toBe(this: MatcherState, received: unknown, expected: unknown) {
+  toBe(received: unknown, expected: unknown) {
     const matcherName = 'toBe';
     const options: MatcherHintOptions = {
       comment: 'Object.is equality',
@@ -124,12 +126,7 @@ const matchers: MatchersObject = {
     return {actual: received, expected, message, name: matcherName, pass};
   },
 
-  toBeCloseTo(
-    this: MatcherState,
-    received: number,
-    expected: number,
-    precision: number = 2,
-  ) {
+  toBeCloseTo(received: number, expected: number, precision: number = 2) {
     const matcherName = 'toBeCloseTo';
     const secondArgument = arguments.length === 3 ? 'precision' : undefined;
     const isNot = this.isNot;
@@ -195,7 +192,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeDefined(this: MatcherState, received: unknown, expected: void) {
+  toBeDefined(received: unknown, expected: void) {
     const matcherName = 'toBeDefined';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -213,7 +210,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeFalsy(this: MatcherState, received: unknown, expected: void) {
+  toBeFalsy(received: unknown, expected: void) {
     const matcherName = 'toBeFalsy';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -231,11 +228,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeGreaterThan(
-    this: MatcherState,
-    received: number | bigint,
-    expected: number | bigint,
-  ) {
+  toBeGreaterThan(received: number | bigint, expected: number | bigint) {
     const matcherName = 'toBeGreaterThan';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
@@ -255,11 +248,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeGreaterThanOrEqual(
-    this: MatcherState,
-    received: number | bigint,
-    expected: number | bigint,
-  ) {
+  toBeGreaterThanOrEqual(received: number | bigint, expected: number | bigint) {
     const matcherName = 'toBeGreaterThanOrEqual';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
@@ -279,7 +268,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeInstanceOf(this: MatcherState, received: any, expected: Function) {
+  toBeInstanceOf(received: any, expected: Function) {
     const matcherName = 'toBeInstanceOf';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -315,8 +304,7 @@ const matchers: MatchersObject = {
           matcherHint(matcherName, undefined, undefined, options) +
           '\n\n' +
           printExpectedConstructorName('Expected constructor', expected) +
-          (getType.isPrimitive(received) ||
-          Object.getPrototypeOf(received) === null
+          (isPrimitive(received) || Object.getPrototypeOf(received) === null
             ? `\nReceived value has no prototype\nReceived value: ${printReceived(
                 received,
               )}`
@@ -330,11 +318,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeLessThan(
-    this: MatcherState,
-    received: number | bigint,
-    expected: number | bigint,
-  ) {
+  toBeLessThan(received: number | bigint, expected: number | bigint) {
     const matcherName = 'toBeLessThan';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
@@ -354,11 +338,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeLessThanOrEqual(
-    this: MatcherState,
-    received: number | bigint,
-    expected: number | bigint,
-  ) {
+  toBeLessThanOrEqual(received: number | bigint, expected: number | bigint) {
     const matcherName = 'toBeLessThanOrEqual';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
@@ -378,7 +358,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeNaN(this: MatcherState, received: any, expected: void) {
+  toBeNaN(received: any, expected: void) {
     const matcherName = 'toBeNaN';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -396,7 +376,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeNull(this: MatcherState, received: unknown, expected: void) {
+  toBeNull(received: unknown, expected: void) {
     const matcherName = 'toBeNull';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -414,7 +394,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeTruthy(this: MatcherState, received: unknown, expected: void) {
+  toBeTruthy(received: unknown, expected: void) {
     const matcherName = 'toBeTruthy';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -432,7 +412,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toBeUndefined(this: MatcherState, received: unknown, expected: void) {
+  toBeUndefined(received: unknown, expected: void) {
     const matcherName = 'toBeUndefined';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -450,11 +430,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toContain(
-    this: MatcherState,
-    received: ContainIterable | string,
-    expected: unknown,
-  ) {
+  toContain(received: ContainIterable | string, expected: unknown) {
     const matcherName = 'toContain';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
@@ -555,11 +531,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toContainEqual(
-    this: MatcherState,
-    received: ContainIterable,
-    expected: unknown,
-  ) {
+  toContainEqual(received: ContainIterable, expected: unknown) {
     const matcherName = 'toContainEqual';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
@@ -605,7 +577,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toEqual(this: MatcherState, received: unknown, expected: unknown) {
+  toEqual(received: unknown, expected: unknown) {
     const matcherName = 'toEqual';
     const options: MatcherHintOptions = {
       comment: 'deep equality',
@@ -640,7 +612,7 @@ const matchers: MatchersObject = {
     return {actual: received, expected, message, name: matcherName, pass};
   },
 
-  toHaveLength(this: MatcherState, received: any, expected: number) {
+  toHaveLength(received: any, expected: number) {
     const matcherName = 'toHaveLength';
     const isNot = this.isNot;
     const options: MatcherHintOptions = {
@@ -695,7 +667,6 @@ const matchers: MatchersObject = {
   },
 
   toHaveProperty(
-    this: MatcherState,
     received: object,
     expectedPath: string | Array<string>,
     expectedValue?: unknown,
@@ -817,7 +788,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toMatch(this: MatcherState, received: string, expected: string | RegExp) {
+  toMatch(received: string, expected: string | RegExp) {
     const matcherName = 'toMatch';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -892,7 +863,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toMatchObject(this: MatcherState, received: object, expected: object) {
+  toMatchObject(received: object, expected: object) {
     const matcherName = 'toMatchObject';
     const options: MatcherHintOptions = {
       isNot: this.isNot,
@@ -943,7 +914,7 @@ const matchers: MatchersObject = {
     return {message, pass};
   },
 
-  toStrictEqual(this: MatcherState, received: unknown, expected: unknown) {
+  toStrictEqual(received: unknown, expected: unknown) {
     const matcherName = 'toStrictEqual';
     const options: MatcherHintOptions = {
       comment: 'deep equality',

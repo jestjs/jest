@@ -338,6 +338,11 @@ describe('.toStrictEqual()', () => {
     expect([{a: [{a: undefined}]}]).not.toStrictEqual([{a: [{}]}]);
   });
 
+  it('does not consider holes as undefined in sparse arrays', () => {
+    // eslint-disable-next-line no-sparse-arrays
+    expect([, , , 1, , ,]).not.toStrictEqual([, , , 1, undefined, ,]);
+  });
+
   it('passes when comparing same type', () => {
     expect({
       test: new TestClassA(1, 2),
@@ -420,6 +425,30 @@ describe('.toStrictEqual()', () => {
 
   it('does not pass when equally sparse arrays have different values', () => {
     expect([, 1]).not.toStrictEqual([, 2]);
+  });
+
+  it('does not pass when ArrayBuffers are not equal', () => {
+    expect(Uint8Array.from([1, 2]).buffer).not.toStrictEqual(
+      Uint8Array.from([0, 0]).buffer,
+    );
+    expect(Uint8Array.from([2, 1]).buffer).not.toStrictEqual(
+      Uint8Array.from([2, 2]).buffer,
+    );
+    expect(Uint8Array.from([]).buffer).not.toStrictEqual(
+      Uint8Array.from([1]).buffer,
+    );
+  });
+
+  it('passes for matching buffers', () => {
+    expect(Uint8Array.from([1]).buffer).toStrictEqual(
+      Uint8Array.from([1]).buffer,
+    );
+    expect(Uint8Array.from([]).buffer).toStrictEqual(
+      Uint8Array.from([]).buffer,
+    );
+    expect(Uint8Array.from([9, 3]).buffer).toStrictEqual(
+      Uint8Array.from([9, 3]).buffer,
+    );
   });
   /* eslint-enable */
 });
@@ -597,6 +626,30 @@ describe('.toEqual()', () => {
         [Symbol.for('foo')]: jestExpect.any(Number),
         [Symbol.for('bar')]: 1,
       },
+    ],
+    [
+      // eslint-disable-next-line no-sparse-arrays
+      [, , 1, ,],
+      // eslint-disable-next-line no-sparse-arrays
+      [, , 2, ,],
+    ],
+    [
+      Object.assign([], {4294967295: 1}),
+      Object.assign([], {4294967295: 2}), // issue 11056
+    ],
+    [
+      // eslint-disable-next-line no-useless-computed-key
+      Object.assign([], {['-0']: 1}),
+      // eslint-disable-next-line no-useless-computed-key
+      Object.assign([], {['0']: 1}), // issue 11056: also check (-0, 0)
+    ],
+    [
+      Object.assign([], {a: 1}),
+      Object.assign([], {b: 1}), // issue 11056: also check strings
+    ],
+    [
+      Object.assign([], {[Symbol()]: 1}),
+      Object.assign([], {[Symbol()]: 1}), // issue 11056: also check symbols
     ],
   ].forEach(([a, b]) => {
     test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
@@ -793,6 +846,18 @@ describe('.toEqual()', () => {
         [Symbol.for('foo')]: jestExpect.any(Number),
         [Symbol.for('bar')]: 2,
       },
+    ],
+    [
+      // eslint-disable-next-line no-sparse-arrays
+      [, , 1, ,],
+      // eslint-disable-next-line no-sparse-arrays
+      [, , 1, ,],
+    ],
+    [
+      // eslint-disable-next-line no-sparse-arrays
+      [, , 1, , ,],
+      // eslint-disable-next-line no-sparse-arrays
+      [, , 1, undefined, ,], // same length but hole replaced by undefined
     ],
   ].forEach(([a, b]) => {
     test(`{pass: true} expect(${stringify(a)}).not.toEqual(${stringify(

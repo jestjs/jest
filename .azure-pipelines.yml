@@ -5,13 +5,13 @@
 jobs:
   - job: Linux
     pool:
-      vmImage: ubuntu-16.04
+      vmImage: ubuntu-latest
     steps:
       - template: .azure-pipelines-steps.yml
 
   - job: Windows
     pool:
-      vmImage: vs2017-win2016
+      vmImage: windows-latest
     steps:
       - script: |
           git config --global core.autocrlf false
@@ -21,7 +21,7 @@ jobs:
 
   - job: macOS
     pool:
-      vmImage: macos-10.15
+      vmImage: macos-latest
     steps:
       # This step can be removed once Mercurial gets installed on the macOS image. See https://github.com/Microsoft/azure-pipelines-image-generation/issues/604
       - script: HOMEBREW_NO_AUTO_UPDATE=1 brew install mercurial

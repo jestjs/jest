@@ -31,7 +31,7 @@ describe('getCallsite', () => {
       throw new Error('Mock error');
     });
 
-    const site = getCallsite(0, {[__filename]: 'mockedSourceMapFile'});
+    const site = getCallsite(0, new Map([[__filename, 'mockedSourceMapFile']]));
 
     expect(site.getFileName()).toEqual(__filename);
     expect(site.getColumnNumber()).toEqual(expect.any(Number));
@@ -59,7 +59,7 @@ describe('getCallsite', () => {
       }
     };
 
-    const site = getCallsite(0, {[__filename]: 'mockedSourceMapFile'});
+    const site = getCallsite(0, new Map([[__filename, 'mockedSourceMapFile']]));
 
     expect(site.getFileName()).toEqual(__filename);
     expect(site.getColumnNumber()).toEqual(sourceMapColumn);

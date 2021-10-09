@@ -5,17 +5,18 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import dns from 'dns';
 // the point here is that it's the node core module
 // eslint-disable-next-line no-restricted-imports
 import {readFileSync} from 'fs';
 import {createRequire} from 'module';
 import {dirname, resolve} from 'path';
 import {fileURLToPath} from 'url';
+import prefixDns from 'node:dns';
 import {jest as jestObject} from '@jest/globals';
 import staticImportedStatefulFromCjs from '../fromCjs.mjs';
 import {double} from '../index';
-import defaultFromCjs, {namedFunction} from '../namedExport.cjs';
-// eslint-disable-next-line import/named
+import defaultFromCjs, {half, namedFunction} from '../namedExport.cjs';
 import {bag} from '../namespaceExport.js';
 import staticImportedStateful from '../stateful.mjs';
 import staticImportedStatefulWithQuery from '../stateful.mjs?query=1';
@@ -139,10 +140,15 @@ test('varies module cache by query', () => {
 });
 
 test('supports named imports from CJS', () => {
+  expect(half(4)).toBe(2);
   expect(namedFunction()).toBe('hello from a named CJS function!');
   expect(defaultFromCjs.default()).toBe('"default" export');
 
-  expect(Object.keys(defaultFromCjs)).toEqual(['namedFunction', 'default']);
+  expect(Object.keys(defaultFromCjs)).toEqual([
+    'half',
+    'namedFunction',
+    'default',
+  ]);
 });
 
 test('supports file urls as imports', async () => {
@@ -160,4 +166,30 @@ test('handle circular dependency', async () => {
   expect(moduleA.id).toBe('circularDependentA');
   expect(moduleA.moduleB.id).toBe('circularDependentB');
   expect(moduleA.moduleB.moduleA).toBe(moduleA);
+});
+
+test('require of ESM should throw correct error', () => {
+  const require = createRequire(import.meta.url);
+
+  expect(() => require('../fromCjs.mjs')).toThrow(
+    expect.objectContaining({
+      code: 'ERR_REQUIRE_ESM',
+      message: expect.stringContaining('Must use import to load ES Module'),
+    }),
+  );
+});
+
+test('can mock module', async () => {
+  jestObject.unstable_mockModule('../mockedModule.mjs', () => ({foo: 'bar'}), {
+    virtual: true,
+  });
+
+  const importedMock = await import('../mockedModule.mjs');
+
+  expect(Object.keys(importedMock)).toEqual(['foo']);
+  expect(importedMock.foo).toEqual('bar');
+});
+
+test('supports imports using "node:" prefix', () => {
+  expect(dns).toBe(prefixDns);
 });

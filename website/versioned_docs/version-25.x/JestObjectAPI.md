@@ -1,7 +1,6 @@
 ---
-id: version-25.x-jest-object
+id: jest-object
 title: The Jest Object
-original_id: jest-object
 ---
 
 The `jest` object is automatically in scope within every test file. The methods in the `jest` object help create mocks and let you control Jest's overall behavior. It can also be imported explicitly by via `import {jest} from '@jest/globals'`.
@@ -124,7 +123,7 @@ This is how `genMockFromModule` will mock the following data types:
 
 #### `Function`
 
-Creates a new [mock function](https://jestjs.io/docs/en/mock-functions.html). The new function has no formal parameters and when called will return `undefined`. This functionality also applies to `async` functions.
+Creates a new [mock function](MockFunctions.md). The new function has no formal parameters and when called will return `undefined`. This functionality also applies to `async` functions.
 
 #### `Class`
 
@@ -144,22 +143,22 @@ Creates a new property with the same primitive value as the original property.
 
 Example:
 
-```
+```js
 // example.js
 module.exports = {
   function: function square(a, b) {
     return a * b;
   },
   asyncFunction: async function asyncSquare(a, b) {
-    const result = await a * b;
+    const result = (await a) * b;
     return result;
   },
-  class: new class Bar {
+  class: new (class Bar {
     constructor() {
       this.array = [1, 2, 3];
     }
     foo() {}
-  },
+  })(),
   object: {
     baz: 'foo',
     bar: {
@@ -273,7 +272,7 @@ jest.mock(
 );
 ```
 
-> **Warning:** Importing a module in a setup file (as specified by `setupTestFrameworkScriptFile`) will prevent mocking for the module in question, as well as all the modules that it imports.
+> **Warning:** Importing a module in a setup file (as specified by `setupFilesAfterEnv`) will prevent mocking for the module in question, as well as all the modules that it imports.
 
 Modules that are mocked with `jest.mock` are mocked only for the file that calls `jest.mock`. Another file that imports the module will get the original implementation even if it runs after the test file that mocks the module.
 
@@ -657,7 +656,7 @@ jest.setTimeout(1000); // 1 second
 
 ### `jest.retryTimes()`
 
-Runs failed tests n-times until they pass or until the max number of retries is exhausted. This only works with [jest-circus](https://github.com/facebook/jest/tree/master/packages/jest-circus)!
+Runs failed tests n-times until they pass or until the max number of retries is exhausted. This only works with [jest-circus](https://github.com/facebook/jest/tree/main/packages/jest-circus)!
 
 Example in a test:
 

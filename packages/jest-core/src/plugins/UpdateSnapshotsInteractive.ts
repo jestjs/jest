@@ -13,9 +13,8 @@ import {BaseWatchPlugin, JestHookSubscriber, UsageData} from 'jest-watcher';
 import SnapshotInteractiveMode from '../SnapshotInteractiveMode';
 
 class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
-  private _snapshotInteractiveMode: SnapshotInteractiveMode = new SnapshotInteractiveMode(
-    this._stdout,
-  );
+  private _snapshotInteractiveMode: SnapshotInteractiveMode =
+    new SnapshotInteractiveMode(this._stdout);
   private _failedSnapshotTestAssertions: Array<AssertionLocation> = [];
   isInternal: true = true;
 
@@ -45,9 +44,8 @@ class UpdateSnapshotInteractivePlugin extends BaseWatchPlugin {
 
   apply(hooks: JestHookSubscriber): void {
     hooks.onTestRunComplete(results => {
-      this._failedSnapshotTestAssertions = this.getFailedSnapshotTestAssertions(
-        results,
-      );
+      this._failedSnapshotTestAssertions =
+        this.getFailedSnapshotTestAssertions(results);
       if (this._snapshotInteractiveMode.isActive()) {
         this._snapshotInteractiveMode.updateWithResults(results);
       }

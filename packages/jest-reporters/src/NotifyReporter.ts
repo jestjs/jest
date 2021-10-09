@@ -24,6 +24,8 @@ export default class NotifyReporter extends BaseReporter {
   private _globalConfig: Config.GlobalConfig;
   private _context: TestSchedulerContext;
 
+  static readonly filename = __filename;
+
   constructor(
     globalConfig: Config.GlobalConfig,
     startRun: (globalConfig: Config.GlobalConfig) => unknown,
@@ -145,10 +147,10 @@ function loadNotifier(): typeof import('node-notifier') {
   } catch (err) {
     if (err.code !== 'MODULE_NOT_FOUND') {
       throw err;
-    } else {
-      throw Error(
-        'notify reporter requires optional dependeny node-notifier but it was not found',
-      );
     }
+
+    throw Error(
+      'notify reporter requires optional peer dependency "node-notifier" but it was not found',
+    );
   }
 }
