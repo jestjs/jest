@@ -1,16 +1,5 @@
 version: 2.1
 
-aliases:
-  - &filter-ignore-gh-pages
-    branches:
-      ignore: gh-pages
-  - &install
-    pkg-manager: yarn
-    override-ci-command: yarn install --immutable && yarn build:js
-    cache-path: ~/.yarn/berry/cache
-    include-branch-in-cache-key: false
-    app-dir: ~/jest
-
 orbs:
   node: circleci/node@5.0.3
 
@@ -26,27 +15,14 @@ jobs:
       - checkout
       - node/install:
           node-version: << parameters.node-version >>
-      - node/install-packages: *install
+      - node/install-packages:
+          pkg-manager: yarn
+          override-ci-command: yarn install --immutable && yarn build:js
+          cache-path: ~/.yarn/berry/cache
+          include-branch-in-cache-key: false
+          app-dir: ~/jest
       - run:
           command: yarn test-ci-partial --shard=$(expr $CIRCLE_NODE_INDEX + 1)/$CIRCLE_NODE_TOTAL
-      - store_test_results:
-          path: reports/junit
-
-  test-jest-jasmine:
-    working_directory: ~/jest
-    executor: node/default
-    parallelism: 4
-    steps:
-      - checkout
-      - node/install:
-          node-version: lts/*
-      - node/install-packages: *install
-      - run:
-          name: Test
-          command: JEST_JASMINE=1 yarn test-ci-partial --shard=$(expr $CIRCLE_NODE_INDEX + 1)/$CIRCLE_NODE_TOTAL
-      - run:
-          name: Leak test
-          command: JEST_JASMINE=1 yarn test-leak
       - store_test_results:
           path: reports/junit
 
@@ -59,4 +35,3 @@ workflows:
           matrix:
             parameters:
               node-version: ['14', '16', '18', '19']
-      - test-jest-jasmine

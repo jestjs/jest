@@ -140,6 +140,8 @@ jobs:
         run: yarn build:js
       - name: run tests with leak detection
         run: yarn test-leak
+      - name: run tests with leak detection with jest-jasmine
+        run: JEST_JASMINE=1 yarn test-leak
 
   test-coverage:
     name: Node LTS on Ubuntu with coverage (${{ matrix.shard }})
