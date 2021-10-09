@@ -1242,28 +1242,39 @@ export default class Runtime {
       );
     }
 
-    const {paths} = options;
-
-    if (paths) {
-      for (const p of paths) {
-        const absolutePath = path.resolve(from, '..', p);
-        const module = this._resolver.resolveModuleFromDirIfExists(
-          absolutePath,
-          moduleName,
-          // required to also resolve files without leading './' directly in the path
-          {conditions: this.cjsConditions, paths: [absolutePath]},
-        );
-        if (module) {
-          return module;
-        }
-      }
-
-      throw new Resolver.ModuleNotFoundError(
-        `Cannot resolve module '${moduleName}' from paths ['${paths.join(
-          "', '",
-        )}'] from ${from}`,
+    if (path.isAbsolute(moduleName)) {
+      const module = this._resolver.resolveModuleFromDirIfExists(
+        moduleName,
+        moduleName,
+        {conditions: this.cjsConditions, paths: []},
       );
+      if (module) {
+        return module;
+      }
+    } else {
+      const {paths} = options;
+      if (paths) {
+        for (const p of paths) {
+          const absolutePath = path.resolve(from, '..', p);
+          const module = this._resolver.resolveModuleFromDirIfExists(
+            absolutePath,
+            moduleName,
+            // required to also resolve files without leading './' directly in the path
+            {conditions: this.cjsConditions, paths: [absolutePath]},
+          );
+          if (module) {
+            return module;
+          }
+        }
+
+        throw new Resolver.ModuleNotFoundError(
+          `Cannot resolve module '${moduleName}' from paths ['${paths.join(
+            "', '",
+          )}'] from ${from}`,
+        );
+      }
     }
+
     try {
       return this._resolveModule(from, moduleName, {
         conditions: this.cjsConditions,
