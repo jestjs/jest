@@ -46,7 +46,10 @@ export declare class JestEnvironment<Timer = unknown> {
   exportConditions?: () => Array<string>;
 }
 
-export type Module = NodeModule;
+export interface Module extends NodeModule {
+  // for some reason missing: https://nodejs.org/api/modules.html#modules_module_path
+  path: string;
+}
 
 // TODO: Move to some separate package
 export interface Jest {
