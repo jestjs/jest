@@ -4,7 +4,7 @@
 
 ### Fixes
 
- - `[jest-runtime]` Ensure absolute paths can be resolved within test modules ([11943](https://github.com/facebook/jest/pull/11943))
+- `[jest-runtime]` Ensure absolute paths can be resolved within test modules ([11943](https://github.com/facebook/jest/pull/11943))
 
 ### Chore & Maintenance
 
