@@ -132,7 +132,7 @@ describe('Watch mode flows', () => {
     jest.resetModules();
   });
 
-  it('Correctly passing test path pattern', () => {
+  it.only('Correctly passing test path pattern', () => {
     globalConfig.testPathPattern = 'test-*';
 
     watch(globalConfig, contexts, pipe, hasteMapInstances, stdin);
