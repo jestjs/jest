@@ -31,7 +31,7 @@ class JSDOMEnvironment implements JestEnvironment<number> {
   moduleMocker: ModuleMocker | null;
 
   constructor(config: Config.ProjectConfig, options?: EnvironmentContext) {
-    this.dom = new JSDOM('<!DOCTYPE html>', {
+    this.dom = new JSDOM(typeof config.testEnvironmentOptions.html === 'string' ? config.testEnvironmentOptions.html : '<!DOCTYPE html>', {
       pretendToBeVisual: true,
       resources:
         typeof config.testEnvironmentOptions.userAgent === 'string'
