@@ -43,7 +43,7 @@ describe('isError', () => {
     testErrorFromDifferentContext((win: Window) => {
       try {
         win.document.querySelectorAll('');
-      } catch (e: unknown) {
+      } catch (e) {
         return e;
       }
       return null;

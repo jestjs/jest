@@ -286,7 +286,7 @@ class TestScheduler {
             );
           }
         }
-      } catch (error: unknown) {
+      } catch (error) {
         if (!watcher.isInterrupted()) {
           throw error;
         }

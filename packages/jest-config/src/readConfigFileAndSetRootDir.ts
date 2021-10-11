@@ -39,7 +39,7 @@ export default async function readConfigFileAndSetRootDir(
     } else {
       configObject = await requireOrImportModule<any>(configPath);
     }
-  } catch (error: unknown) {
+  } catch (error) {
     if (isTS) {
       throw new Error(
         `Jest: Failed to parse the TypeScript config file ${configPath}\n` +

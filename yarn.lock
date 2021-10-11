@@ -2600,7 +2600,7 @@ __metadata:
     "@jest/globals": "workspace:*"
     "@jest/test-utils": "workspace:*"
     "@tsconfig/node12": ^1.0.9
-    "@tsd/typescript": ~4.3.5
+    "@tsd/typescript": ~4.4.4
     "@types/babel__core": ^7.0.0
     "@types/babel__generator": ^7.0.0
     "@types/babel__template": ^7.0.0
@@ -2803,7 +2803,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@jest/types@workspace:packages/jest-types"
   dependencies:
-    "@tsd/typescript": ~4.3.5
+    "@tsd/typescript": ~4.4.4
     "@types/istanbul-lib-coverage": ^2.0.0
     "@types/istanbul-reports": ^3.0.0
     "@types/node": "*"
@@ -4471,13 +4471,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsd/typescript@npm:~4.3.5":
-  version: 4.3.5
-  resolution: "@tsd/typescript@npm:4.3.5"
+"@tsd/typescript@npm:~4.4.4":
+  version: 4.4.4
+  resolution: "@tsd/typescript@npm:4.4.4"
   bin:
     tsc: typescript/bin/tsc
     tsserver: typescript/bin/tsserver
-  checksum: 28e7ead0687b767bf56aa3456aeabe8830c6d2175364ca6f278fdda074beca20a856483948db3a068490a7ffdac35fe92891029d37912b9e7afe55fc545ccc9d
+  checksum: 092a49faaad0ff8e3a84d2d695a29125a05a9cc0801260cec84ff2b62aa826db1437c20c9d96f9de4cff724e53e7fd31051bd4b70692e043350d33ae16b2372b
   languageName: node
   linkType: hard
 
@@ -9920,7 +9920,7 @@ __metadata:
   dependencies:
     "@jest/test-utils": ^27.5.1
     "@jest/types": ^27.5.1
-    "@tsd/typescript": ~4.3.5
+    "@tsd/typescript": ~4.4.4
     chalk: ^4.0.0
     fast-check: ^2.0.0
     immutable: ^4.0.0
@@ -20912,22 +20912,22 @@ react-native@0.64.0:
   linkType: hard
 
 "typescript@*, typescript@^4.0.2, typescript@^4.0.3":
-  version: 4.3.5
-  resolution: "typescript@npm:4.3.5"
+  version: 4.4.4
+  resolution: "typescript@npm:4.4.4"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: bab033b5e2b0790dd35b77fd005df976ef80b8d84fd2c6e63cc31808151875beae9216e5a315fe7068e8499905c3c354248fe83272cdfc13b7705635f0c66c97
+  checksum: 89ecb8436bb48ef5594d49289f5f89103071716b6e4844278f4fb3362856e31203e187a9c76d205c3f0b674d221a058fd28310dbcbcf5d95e9a57229bb5203f1
   languageName: node
   linkType: hard
 
 "typescript@patch:typescript@*#~builtin<compat/typescript>, typescript@patch:typescript@^4.0.2#~builtin<compat/typescript>, typescript@patch:typescript@^4.0.3#~builtin<compat/typescript>":
-  version: 4.3.5
-  resolution: "typescript@patch:typescript@npm%3A4.3.5#~builtin<compat/typescript>::version=4.3.5&hash=493e53"
+  version: 4.4.4
+  resolution: "typescript@patch:typescript@npm%3A4.4.4#~builtin<compat/typescript>::version=4.4.4&hash=493e53"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 61fc1a2ca5037420de5bbe17c6ddc4cbcc0d52301ed94f0a7b5821c55ff9eb96307f0816f745ca8f0fc87ed92f3951cde6d97cd6fd6bc6920c02ea63b5b26259
+  checksum: bd629ad0da4a15d79aaad56baf3ee7d96f6a181760d430ae77f8c5325df7bffd9edee57544a3970e3651e8b796fe03a5838a7eb39c6d46cc3866c0b23d36a0dd
   languageName: node
   linkType: hard
 

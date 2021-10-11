@@ -308,7 +308,7 @@ export default class FakeTimers<TimerRef> {
     let errThrown = false;
     try {
       cb();
-    } catch (e: unknown) {
+    } catch (e) {
       errThrown = true;
       cbErr = e;
     }

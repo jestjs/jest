@@ -157,7 +157,7 @@ const _callCircusHook = async ({
       timeout,
     });
     await dispatch({describeBlock, hook, name: 'hook_success', test});
-  } catch (error: unknown) {
+  } catch (error) {
     await dispatch({describeBlock, error, hook, name: 'hook_failure', test});
   }
 };
@@ -180,7 +180,7 @@ const _callCircusTest = async (
       timeout,
     });
     await dispatch({name: 'test_fn_success', test});
-  } catch (error: unknown) {
+  } catch (error) {
     await dispatch({error, name: 'test_fn_failure', test});
   }
 };
