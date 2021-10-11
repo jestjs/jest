@@ -59,7 +59,7 @@ it('stack trace points to correct location when throwing from a custom matcher',
 
       foo();
     }).toCustomMatch('bar');
-  } catch (error: unknown) {
+  } catch (error: any) {
     expect(error.stack).toContain('stacktrace.test.ts:57');
   }
 });
