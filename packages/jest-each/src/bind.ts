@@ -50,7 +50,7 @@ export default <EachCallback extends Global.TestCallback>(
             timeout,
           ),
         );
-      } catch (e) {
+      } catch (e: any) {
         const error = new ErrorWithStack(e.message, eachBind);
         return cb(title, () => {
           throw error;

@@ -52,7 +52,7 @@ export default class CustomConsole extends Console {
   assert(value: unknown, message?: string | Error): asserts value {
     try {
       assert(value, message);
-    } catch (error) {
+    } catch (error: any) {
       this._logError('assert', error.toString());
     }
   }

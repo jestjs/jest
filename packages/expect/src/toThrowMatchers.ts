@@ -107,7 +107,7 @@ export const createMatcher = (
       } else {
         try {
           received();
-        } catch (e) {
+        } catch (e: unknown) {
           thrown = getThrown(e);
         }
       }

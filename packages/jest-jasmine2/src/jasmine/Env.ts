@@ -438,7 +438,7 @@ export default function (j$: Jasmine) {
         let describeReturnValue: unknown | Error;
         try {
           describeReturnValue = specDefinitions.call(suite);
-        } catch (e) {
+        } catch (e: any) {
           declarationError = e;
         }
 

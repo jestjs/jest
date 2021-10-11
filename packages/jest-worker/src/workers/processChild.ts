@@ -152,7 +152,7 @@ function execFunction(
 
   try {
     result = fn.apply(ctx, args);
-  } catch (err) {
+  } catch (err: any) {
     onError(err);
 
     return;

@@ -144,7 +144,7 @@ export const json = function (
       ...result,
       json: JSON.parse(result.stdout || ''),
     };
-  } catch (e) {
+  } catch (e: any) {
     throw new Error(
       `
       Can't parse JSON.

@@ -74,7 +74,7 @@ function statSyncCached(path: string): IPathType {
   let stat;
   try {
     stat = fs.statSync(path);
-  } catch (e) {
+  } catch (e: any) {
     if (!(e && (e.code === 'ENOENT' || e.code === 'ENOTDIR'))) {
       throw e;
     }

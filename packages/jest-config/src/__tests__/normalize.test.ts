@@ -1816,7 +1816,7 @@ describe('extensionsToTreatAsEsm', () => {
 
     try {
       await callback();
-    } catch (error) {
+    } catch (error: any) {
       expect(wrap(stripAnsi(error.message).trim())).toMatchSnapshot();
     }
   }

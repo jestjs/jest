@@ -128,7 +128,7 @@ export async function run(
     } else {
       runtime.requireModule(filePath);
     }
-  } catch (e) {
+  } catch (e: any) {
     console.error(chalk.red(e.stack || e));
     process.on('exit', () => (process.exitCode = 1));
   }

@@ -58,7 +58,7 @@ export default async ({
             await globalModule(globalConfig);
           },
         );
-      } catch (error) {
+      } catch (error: unknown) {
         if (util.types.isNativeError(error)) {
           error.message = `Jest: Got error running ${moduleName} - ${modulePath}, reason: ${error.message}`;
 

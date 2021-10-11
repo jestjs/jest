@@ -101,7 +101,7 @@ export default class CoverageReporter extends BaseReporter {
           .execute(reportContext);
       });
       aggregatedResults.coverageMap = map;
-    } catch (e) {
+    } catch (e: any) {
       console.error(
         chalk.red(`
         Failed to write coverage reports:
@@ -197,7 +197,7 @@ export default class CoverageReporter extends BaseReporter {
               this._coverageMap.addFileCoverage(result.coverage);
             }
           }
-        } catch (error) {
+        } catch (error: any) {
           console.error(
             chalk.red(
               [
