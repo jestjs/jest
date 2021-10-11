@@ -75,7 +75,7 @@ export default class PCancelable<T> implements PromiseLike<T> {
     if (typeof this._cancel === 'function') {
       try {
         this._cancel();
-      } catch (err) {
+      } catch (err: unknown) {
         this._reject(err);
       }
     }

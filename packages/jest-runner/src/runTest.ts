@@ -270,7 +270,7 @@ async function runTestInternal(
         path,
         sendMessageToJest,
       );
-    } catch (err) {
+    } catch (err: any) {
       // Access stack before uninstalling sourcemaps
       err.stack;
 

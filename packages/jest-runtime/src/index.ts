@@ -1013,7 +1013,7 @@ export default class Runtime {
       } else {
         return this.requireModule<T>(from, moduleName);
       }
-    } catch (e) {
+    } catch (e: unknown) {
       const moduleNotFound = Resolver.tryCastModuleNotFoundError(e);
       if (moduleNotFound) {
         if (
@@ -1279,7 +1279,7 @@ export default class Runtime {
       return this._resolveModule(from, moduleName, {
         conditions: this.cjsConditions,
       });
-    } catch (err) {
+    } catch (err: unknown) {
       const module = this._resolver.getMockModule(from, moduleName);
 
       if (module) {
@@ -1416,7 +1416,7 @@ export default class Runtime {
         // @ts-expect-error
         ...lastArgs.filter(notEmpty),
       );
-    } catch (error) {
+    } catch (error: any) {
       this.handleExecutionError(error, module);
     }
 
@@ -1520,7 +1520,7 @@ export default class Runtime {
           return this.linkAndEvaluateModule(module);
         },
       });
-    } catch (e) {
+    } catch (e: any) {
       throw handlePotentialSyntaxError(e);
     }
   }
@@ -1630,7 +1630,9 @@ export default class Runtime {
       };
     }
     if ('syncBuiltinESMExports' in nativeModule) {
-      Module.syncBuiltinESMExports = function syncBuiltinESMExports() {};
+      // cast since TS seems very confused about whether it exists or not
+      (Module as any).syncBuiltinESMExports =
+        function syncBuiltinESMExports() {};
     }
 
     this._moduleImplementation = Module;
@@ -1716,7 +1718,7 @@ export default class Runtime {
     let modulePath;
     try {
       modulePath = this._resolveModule(from, moduleName, options);
-    } catch (e) {
+    } catch (e: unknown) {
       const manualMock = this._resolver.getMockModule(from, moduleName);
       if (manualMock) {
         this._shouldMockModuleCache.set(moduleID, true);

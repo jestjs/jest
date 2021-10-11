@@ -55,7 +55,7 @@ export default function queueRunner(options: Options): PromiseLike<void> & {
       };
       try {
         fn.call(options.userContext, next);
-      } catch (e) {
+      } catch (e: any) {
         options.onException(e);
         resolve();
       }

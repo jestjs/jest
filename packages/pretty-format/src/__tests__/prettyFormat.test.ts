@@ -667,7 +667,7 @@ describe('prettyFormat()', () => {
 
     try {
       prettyFormat('', options);
-    } catch (error) {
+    } catch (error: any) {
       expect(error.name).toBe('PrettyFormatPluginError');
     }
   });
@@ -687,7 +687,7 @@ describe('prettyFormat()', () => {
 
     try {
       prettyFormat('', options);
-    } catch (error) {
+    } catch (error: any) {
       expect(error.name).toBe('PrettyFormatPluginError');
     }
   });
@@ -707,7 +707,7 @@ describe('prettyFormat()', () => {
 
     try {
       prettyFormat('', options);
-    } catch (error) {
+    } catch (error: any) {
       expect(error.name).toBe('PrettyFormatPluginError');
     }
   });

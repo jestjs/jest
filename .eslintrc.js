@@ -37,6 +37,10 @@ module.exports = {
       rules: {
         '@typescript-eslint/array-type': ['error', {default: 'generic'}],
         '@typescript-eslint/ban-types': 'error',
+        '@typescript-eslint/no-implicit-any-catch': [
+          'error',
+          {allowExplicitAny: true},
+        ],
         '@typescript-eslint/no-unused-vars': [
           'error',
           {argsIgnorePattern: '^_'},

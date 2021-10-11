@@ -793,7 +793,7 @@ export default class HasteMap extends EventEmitter {
 
     try {
       return crawl(crawlerOptions).catch(retry);
-    } catch (error) {
+    } catch (error: any) {
       return retry(error);
     }
   }

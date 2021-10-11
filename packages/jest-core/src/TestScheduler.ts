@@ -286,7 +286,7 @@ class TestScheduler {
             );
           }
         }
-      } catch (error) {
+      } catch (error: unknown) {
         if (!watcher.isInterrupted()) {
           throw error;
         }
@@ -410,7 +410,7 @@ class TestScheduler {
       try {
         const Reporter = await requireOrImportModule<any>(path, true);
         this.addReporter(new Reporter(this._globalConfig, options));
-      } catch (error) {
+      } catch (error: any) {
         error.message =
           'An error occurred while adding the reporter at path "' +
           chalk.bold(path) +

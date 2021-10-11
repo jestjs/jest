@@ -11,7 +11,7 @@ import runJest, {runContinuous} from '../runJest';
 
 try {
   require('async_hooks');
-} catch (e) {
+} catch (e: any) {
   if (e.code === 'MODULE_NOT_FOUND') {
     // eslint-disable-next-line jest/no-focused-tests
     fit('skip test for unsupported nodes', () => {

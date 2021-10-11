@@ -349,7 +349,7 @@ const makeThrowingMatcher = (
 
         return processResult(syncResult);
       }
-    } catch (error) {
+    } catch (error: any) {
       return handleError(error);
     }
   };

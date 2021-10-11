@@ -122,7 +122,7 @@ export default class Resolver {
         paths: paths ? (nodePaths || []).concat(paths) : nodePaths,
         rootDir: options.rootDir,
       });
-    } catch (e) {
+    } catch (e: unknown) {
       if (options.throwIfNotFound) {
         throw e;
       }

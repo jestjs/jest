@@ -74,7 +74,7 @@ export default class BufferedConsole extends Console {
   assert(value: unknown, message?: string | Error): void {
     try {
       assert(value, message);
-    } catch (error) {
+    } catch (error: any) {
       this._log('assert', error.toString());
     }
   }

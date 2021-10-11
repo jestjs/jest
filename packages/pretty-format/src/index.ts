@@ -324,7 +324,7 @@ function printPlugin(
           },
           config.colors,
         );
-  } catch (error) {
+  } catch (error: any) {
     throw new PrettyFormatPluginError(error.message, error.stack);
   }
   if (typeof printed !== 'string') {
@@ -341,7 +341,7 @@ function findPlugin(plugins: Plugins, val: unknown) {
       if (plugins[p].test(val)) {
         return plugins[p];
       }
-    } catch (error) {
+    } catch (error: any) {
       throw new PrettyFormatPluginError(error.message, error.stack);
     }
   }

@@ -611,7 +611,7 @@ class ScriptTransformer {
         originalCode: content,
         sourceMapPath,
       };
-    } catch (e) {
+    } catch (e: any) {
       throw handlePotentialSyntaxError(e);
     }
   }
@@ -654,7 +654,7 @@ class ScriptTransformer {
         originalCode: content,
         sourceMapPath,
       };
-    } catch (e) {
+    } catch (e: any) {
       throw handlePotentialSyntaxError(e);
     }
   }
@@ -896,7 +896,7 @@ function readCodeCacheFile(cachePath: Config.Path): string | null {
 const writeCacheFile = (cachePath: Config.Path, fileData: string) => {
   try {
     writeFileAtomic(cachePath, fileData, {encoding: 'utf8', fsync: false});
-  } catch (e) {
+  } catch (e: any) {
     if (cacheWriteErrorSafeToIgnore(e, cachePath)) {
       return;
     }
@@ -933,7 +933,7 @@ const readCacheFile = (cachePath: Config.Path): string | null => {
   let fileData;
   try {
     fileData = fs.readFileSync(cachePath, 'utf8');
-  } catch (e) {
+  } catch (e: any) {
     e.message =
       'jest: failed to read cache file: ' +
       cachePath +
