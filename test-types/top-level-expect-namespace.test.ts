@@ -104,7 +104,7 @@ expectError(expect(1).toBeLessThanOrEqual());
 expectError(expect(1).toBeLessThanOrEqual('10'));
 
 expectType<void>(expect(() => {}).toBeInstanceOf(Function));
-expectError(expect(() => {}).toBeInstanceOf('function'));
+expectError(expect(() => {}).toBeInstanceOf());
 
 expectType<void>(expect(Number('ten')).toBeNaN());
 expectError(expect(Number('10')).not.toBeNaN(true));
