@@ -70,7 +70,7 @@ module.exports = async function () {
   global.__BROWSER_GLOBAL__ = browser;
 
   // use the file system to expose the wsEndpoint for TestEnvironments
-  mkdirp.sync(DIR);
+  await mkdirp(DIR);
   await writeFile(path.join(DIR, 'wsEndpoint'), browser.wsEndpoint());
 };
 ```
