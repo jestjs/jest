@@ -1,7 +1,7 @@
 ## main
 
 ### Features
-
+- `[jest-config]` Add `testEnvironmentOptions.html` to apply to jsdom input ([11950](https://github.com/facebook/jest/pull/11950))
 ### Fixes
 
 - `[jest-runtime]` Ensure absolute paths can be resolved within test modules ([11943](https://github.com/facebook/jest/pull/11943))
