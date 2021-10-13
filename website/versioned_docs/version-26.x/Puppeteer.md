@@ -55,10 +55,9 @@ Here's an example of the GlobalSetup script
 
 ```js
 // setup.js
-const {writeFile} = require('fs').promises;
+const {mkdir, writeFile} = require('fs').promises;
 const os = require('os');
 const path = require('path');
-const mkdirp = require('mkdirp');
 const puppeteer = require('puppeteer');
 
 const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
@@ -70,7 +69,7 @@ module.exports = async function () {
   global.__BROWSER_GLOBAL__ = browser;
 
   // use the file system to expose the wsEndpoint for TestEnvironments
-  mkdirp.sync(DIR);
+  await mkdir(DIR, {recursive: true});
   await writeFile(path.join(DIR, 'wsEndpoint'), browser.wsEndpoint());
 };
 ```
