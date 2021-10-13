@@ -121,9 +121,9 @@ Finally, we can close the puppeteer instance and clean-up the file
 
 ```js
 // teardown.js
+const fs = require('fs').promises;
 const os = require('os');
 const path = require('path');
-const rimraf = require('rimraf');
 
 const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
 module.exports = async function () {
@@ -131,7 +131,7 @@ module.exports = async function () {
   await global.__BROWSER_GLOBAL__.close();
 
   // clean-up the wsEndpoint file
-  rimraf.sync(DIR);
+  await fs.rm(DIR, {recursive: true, force: true});
 };
 ```
 
