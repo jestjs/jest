@@ -4922,10 +4922,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/supports-color@npm:^8.1.0":
-  version: 8.1.1
-  resolution: "@types/supports-color@npm:8.1.1"
-  checksum: 024855a1123b4da83c191f11da96eb939915ffee8dec7b9c7e8ccecea3b454a971884658096a5798f84d4b750629ffe4a16bc18b40ae34163e530213dec0740b
+"@types/supports-color@npm:^7.2.1":
+  version: 7.2.1
+  resolution: "@types/supports-color@npm:7.2.1"
+  checksum: 07b6dd790a9809a1470e7a2c3e46b6697c3b5c260120c11be5da29880f70833958bc8e730079a31c64914ebc324af2d281813601c2cf0b9794d5315ac0d69415
   languageName: node
   linkType: hard
 
@@ -13313,11 +13313,11 @@ fsevents@^1.2.7:
   dependencies:
     "@types/merge-stream": ^1.1.2
     "@types/node": "*"
-    "@types/supports-color": ^8.1.0
+    "@types/supports-color": ^7.2.1
     get-stream: ^6.0.0
     jest-leak-detector: ^27.2.5
     merge-stream: ^2.0.0
-    supports-color: ^8.0.0
+    supports-color: ^7.2.0
     worker-farm: ^1.6.0
   languageName: unknown
   linkType: soft
@@ -20434,21 +20434,12 @@ react-native@0.64.0:
   languageName: node
   linkType: hard
 
-"supports-color@npm:^7.0.0, supports-color@npm:^7.1.0":
+"supports-color@npm:^7.0.0, supports-color@npm:^7.1.0, supports-color@npm:^7.2.0":
   version: 7.2.0
   resolution: "supports-color@npm:7.2.0"
   dependencies:
     has-flag: ^4.0.0
   checksum: 8e57067c39216f3c2ffce7cc14ca934d54746192571203aa9c9922d97d2d55cc1bdaa9e41a11f91e620670b5a74ebdec6b548a885d8cc2dea7cab59e21416029
-  languageName: node
-  linkType: hard
-
-"supports-color@npm:^8.0.0":
-  version: 8.1.1
-  resolution: "supports-color@npm:8.1.1"
-  dependencies:
-    has-flag: ^4.0.0
-  checksum: 0219f5c91753fea8dc8046cd4b18d39458b5dc0c6421c67c1072209faae9ba93b89283252e3b05d5c18901fd9f8b95001e3247fb93e2265f66d584a676522c75
   languageName: node
   linkType: hard
 
