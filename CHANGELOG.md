@@ -6,6 +6,7 @@
 
 - `[expect]` Tweak and improve types ([#11949](https://github.com/facebook/jest/pull/11949))
 - `[jest-runtime]` Ensure absolute paths can be resolved within test modules ([#11943](https://github.com/facebook/jest/pull/11943))
+- `[jest-runtime]` Fix `instanceof` for `ModernFakeTimers` and `LegacyFakeTimers` methods ([#11946](https://github.com/facebook/jest/pull/11946))
 
 ### Chore & Maintenance
 

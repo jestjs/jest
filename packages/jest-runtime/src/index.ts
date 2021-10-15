@@ -30,7 +30,7 @@ import type {
   Module,
   ModuleWrapper,
 } from '@jest/environment';
-import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
+import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type * as JestGlobals from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
 import type {RuntimeTransformResult, V8CoverageResult} from '@jest/test-result';
@@ -1963,7 +1963,7 @@ export default class Runtime {
       getRealSystemTime: () => {
         const fakeTimers = _getFakeTimers();
 
-        if (fakeTimers instanceof ModernFakeTimers) {
+        if (fakeTimers === this._environment.fakeTimersModern) {
           return fakeTimers.getRealSystemTime();
         } else {
           throw new TypeError(
@@ -1984,7 +1984,7 @@ export default class Runtime {
       runAllImmediates: () => {
         const fakeTimers = _getFakeTimers();
 
-        if (fakeTimers instanceof LegacyFakeTimers) {
+        if (fakeTimers === this._environment.fakeTimers) {
           fakeTimers.runAllImmediates();
         } else {
           throw new TypeError(
@@ -2000,7 +2000,7 @@ export default class Runtime {
       setSystemTime: (now?: number | Date) => {
         const fakeTimers = _getFakeTimers();
 
-        if (fakeTimers instanceof ModernFakeTimers) {
+        if (fakeTimers === this._environment.fakeTimersModern) {
           fakeTimers.setSystemTime(now);
         } else {
           throw new TypeError(

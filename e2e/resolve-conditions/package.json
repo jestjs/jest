@@ -13,6 +13,6 @@
     "transform": {}
   },
   "dependencies": {
-    "resolve.exports": "^1.0.2"
+    "resolve.exports": "^1.1.0"
   }
 }

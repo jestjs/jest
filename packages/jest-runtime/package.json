@@ -16,7 +16,6 @@
   "dependencies": {
     "@jest/console": "^27.2.5",
     "@jest/environment": "^27.2.5",
-    "@jest/fake-timers": "^27.2.5",
     "@jest/globals": "^27.2.5",
     "@jest/source-map": "^27.0.6",
     "@jest/test-result": "^27.2.5",
@@ -43,6 +42,7 @@
     "yargs": "^16.2.0"
   },
   "devDependencies": {
+    "@jest/fake-timers": "^27.2.5",
     "@jest/test-utils": "^27.2.5",
     "@types/exit": "^0.1.30",
     "@types/glob": "^7.1.1",
