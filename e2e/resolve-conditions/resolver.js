@@ -24,13 +24,7 @@ function createPathFilter(conditions) {
     const path = relativePath === 'index' ? '.' : relativePath;
 
     return (
-      resolveExports(pkg, path, {
-        // `resolve.exports adds `node` unless `browser` is `false`, so let's add this ugly thing
-        browser: conditions.includes('browser'),
-        conditions,
-        // `resolve.exports adds `import` unless `require` is `false`, so let's add this ugly thing
-        require: conditions.includes('require'),
-      }) || relativePath
+      resolveExports(pkg, path, {conditions, unsafe: true}) || relativePath
     );
   };
 }
