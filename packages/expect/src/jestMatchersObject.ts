@@ -98,15 +98,14 @@ export const setMatchers = <State extends MatcherState = MatcherState>(
         }
       }
 
-      expect[key] = (...sample: [unknown, ...Array<unknown>]) =>
-        new CustomMatcher(false, ...sample);
-      if (!expect.not) {
-        throw new Error(
-          '`expect.not` is not defined - please report this bug to https://github.com/facebook/jest',
-        );
-      }
-      expect.not[key] = (...sample: [unknown, ...Array<unknown>]) =>
-        new CustomMatcher(true, ...sample);
+      Object.defineProperty(expect, key, {
+        value: (...sample: [unknown, ...Array<unknown>]) =>
+          new CustomMatcher(false, ...sample),
+      });
+      Object.defineProperty(expect.not, key, {
+        value: (...sample: [unknown, ...Array<unknown>]) =>
+          new CustomMatcher(true, ...sample),
+      });
     }
   });
 

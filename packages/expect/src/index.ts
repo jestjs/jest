@@ -431,7 +431,7 @@ const expectExport = expect as Expect;
 
 declare namespace expectExport {
   export type MatcherState = JestMatcherState;
-  export interface Matchers<R> extends MatcherInterface<R> {}
+  export interface Matchers<R, T> extends MatcherInterface<R, T> {}
 }
 
 export = expectExport;

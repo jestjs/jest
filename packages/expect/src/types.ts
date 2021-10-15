@@ -6,8 +6,6 @@
  *
  */
 
-/* eslint-disable local/ban-types-eventually */
-
 import type {Config} from '@jest/types';
 import type * as jestMatcherUtils from 'jest-matcher-utils';
 import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
@@ -72,26 +70,17 @@ export type ExpectedAssertionsErrors = Array<{
   expected: string;
 }>;
 
-interface InverseAsymmetricMatchers {
+interface AsymmetricMatchers {
+  any(sample: unknown): AsymmetricMatcher;
+  anything(): AsymmetricMatcher;
   arrayContaining(sample: Array<unknown>): AsymmetricMatcher;
   objectContaining(sample: Record<string, unknown>): AsymmetricMatcher;
-  stringContaining(expected: string): AsymmetricMatcher;
-  stringMatching(expected: string | RegExp): AsymmetricMatcher;
-}
-
-interface AsymmetricMatchers extends InverseAsymmetricMatchers {
-  any(expectedObject: unknown): AsymmetricMatcher;
-  anything(): AsymmetricMatcher;
-}
-
-// Should use interface merging somehow
-interface ExtraAsymmetricMatchers {
-  // at least one argument is needed - that's probably wrong. Should allow `expect.toBeDivisibleBy2()` like `expect.anything()`
-  [id: string]: (...sample: [unknown, ...Array<unknown>]) => AsymmetricMatcher;
+  stringContaining(sample: string): AsymmetricMatcher;
+  stringMatching(sample: string | RegExp): AsymmetricMatcher;
 }
 
 export type Expect<State extends MatcherState = MatcherState> = {
-  <T = unknown>(actual: T): Matchers<void>;
+  <T = unknown>(actual: T): Matchers<void, T>;
   // TODO: this is added by test runners, not `expect` itself
   addSnapshotSerializer(serializer: unknown): void;
   assertions(numberOfAssertions: number): void;
@@ -101,43 +90,42 @@ export type Expect<State extends MatcherState = MatcherState> = {
   getState(): State;
   hasAssertions(): void;
   setState(state: Partial<State>): void;
-} & AsymmetricMatchers &
-  ExtraAsymmetricMatchers & {
-    not: InverseAsymmetricMatchers & ExtraAsymmetricMatchers;
+} & AsymmetricMatchers & {
+    not: Omit<AsymmetricMatchers, 'any' | 'anything'>;
   };
 
 // This is a copy from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/de6730f4463cba69904698035fafd906a72b9664/types/jest/index.d.ts#L570-L817
-export interface Matchers<R> {
+export interface Matchers<R, T = unknown> {
   /**
    * Ensures the last call to a mock function was provided specific args.
    */
-  lastCalledWith(...args: Array<unknown>): R;
+  lastCalledWith(...expected: [unknown, ...Array<unknown>]): R;
   /**
    * Ensure that the last call to a mock function has returned a specified value.
    */
-  lastReturnedWith(value: unknown): R;
+  lastReturnedWith(expected: unknown): R;
   /**
    * If you know how to test something, `.not` lets you test its opposite.
    */
-  not: Matchers<R>;
+  not: Matchers<R, T>;
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
-  nthCalledWith(nthCall: number, ...args: Array<unknown>): R;
+  nthCalledWith(nth: number, ...expected: [unknown, ...Array<unknown>]): R;
   /**
    * Ensure that the nth call to a mock function has returned a specified value.
    */
-  nthReturnedWith(n: number, value: unknown): R;
+  nthReturnedWith(nth: number, expected: unknown): R;
   /**
    * Use resolves to unwrap the value of a fulfilled promise so any other
    * matcher can be chained. If the promise is rejected the assertion fails.
    */
-  resolves: Matchers<Promise<R>>;
+  resolves: Matchers<Promise<R>, T>;
   /**
    * Unwraps the reason of a rejected promise so any other matcher can be chained.
    * If the promise is fulfilled the assertion fails.
    */
-  rejects: Matchers<Promise<R>>;
+  rejects: Matchers<Promise<R>, T>;
   /**
    * Checks that a value is what you expect. It uses `===` to check strict equality.
    * Don't use `toBe` with floating-point numbers.
@@ -154,13 +142,13 @@ export interface Matchers<R> {
   /**
    * Ensure that a mock function is called with specific arguments.
    */
-  toBeCalledWith(...args: Array<unknown>): R;
+  toBeCalledWith(...expected: [unknown, ...Array<unknown>]): R;
   /**
    * Using exact equality with floating point numbers is a bad idea.
    * Rounding means that intuitive things fail.
-   * The default for numDigits is 2.
+   * The default for `precision` is 2.
    */
-  toBeCloseTo(expected: number, numDigits?: number): R;
+  toBeCloseTo(expected: number, precision?: number): R;
   /**
    * Ensure that a variable is not undefined.
    */
@@ -182,7 +170,7 @@ export interface Matchers<R> {
    * Ensure that an object is an instance of a class.
    * This matcher uses `instanceof` underneath.
    */
-  toBeInstanceOf(expected: Function): R;
+  toBeInstanceOf(expected: unknown): R;
   /**
    * For comparing floating point numbers.
    */
@@ -237,16 +225,19 @@ export interface Matchers<R> {
   /**
    * Ensure that a mock function is called with specific arguments.
    */
-  toHaveBeenCalledWith(...args: Array<unknown>): R;
+  toHaveBeenCalledWith(...expected: [unknown, ...Array<unknown>]): R;
   /**
    * Ensure that a mock function is called with specific arguments on an Nth call.
    */
-  toHaveBeenNthCalledWith(nthCall: number, ...args: Array<unknown>): R;
+  toHaveBeenNthCalledWith(
+    nth: number,
+    ...expected: [unknown, ...Array<unknown>]
+  ): R;
   /**
    * If you have a mock function, you can use `.toHaveBeenLastCalledWith`
    * to test what arguments it was last called with.
    */
-  toHaveBeenLastCalledWith(...args: Array<unknown>): R;
+  toHaveBeenLastCalledWith(...expected: [unknown, ...Array<unknown>]): R;
   /**
    * Use to test the specific value that a mock function last returned.
    * If the last call to the mock function threw an error, then this matcher will fail
@@ -263,7 +254,7 @@ export interface Matchers<R> {
    * If the nth call to the mock function threw an error, then this matcher will fail
    * no matter what value you provided as the expected return value.
    */
-  toHaveNthReturnedWith(nthCall: number, expected: unknown): R;
+  toHaveNthReturnedWith(nth: number, expected: unknown): R;
   /**
    * Use to check if property at provided reference keyPath exists for an object.
    * For checking deeply nested properties in an object you may use dot notation or an array containing
@@ -277,7 +268,10 @@ export interface Matchers<R> {
    *
    * expect(houseForSale).toHaveProperty('kitchen.area', 20);
    */
-  toHaveProperty(keyPath: string | Array<string>, value?: unknown): R;
+  toHaveProperty(
+    expectedPath: string | Array<string>,
+    expectedValue?: unknown,
+  ): R;
   /**
    * Use to test that the mock function successfully returned (i.e., did not throw an error) at least one time
    */
@@ -298,7 +292,9 @@ export interface Matchers<R> {
   /**
    * Used to check that a JavaScript object matches a subset of the properties of an object
    */
-  toMatchObject(expected: Record<string, unknown> | Array<unknown>): R;
+  toMatchObject(
+    expected: Record<string, unknown> | Array<Record<string, unknown>>,
+  ): R;
   /**
    * Ensure that a mock function has returned (as opposed to thrown) at least once.
    */
@@ -306,11 +302,11 @@ export interface Matchers<R> {
   /**
    * Ensure that a mock function has returned (as opposed to thrown) a specified number of times.
    */
-  toReturnTimes(count: number): R;
+  toReturnTimes(expected: number): R;
   /**
    * Ensure that a mock function has returned a specified value at least once.
    */
-  toReturnWith(value: unknown): R;
+  toReturnWith(expected: unknown): R;
   /**
    * Use to test that objects have the same types as well as structure.
    */
@@ -318,34 +314,25 @@ export interface Matchers<R> {
   /**
    * Used to test that a function throws when it is called.
    */
-  toThrow(error?: unknown): R;
+  toThrow(expected?: unknown): R;
   /**
    * If you want to test that a specific error is thrown inside a function.
    */
-  toThrowError(error?: unknown): R;
+  toThrowError(expected?: unknown): R;
 
   /* TODO: START snapshot matchers are not from `expect`, the types should not be here */
   /**
    * This ensures that a value matches the most recent snapshot with property matchers.
    * Check out [the Snapshot Testing guide](https://jestjs.io/docs/snapshot-testing) for more information.
    */
-  toMatchSnapshot<T extends {[P in keyof R]: unknown}>(
-    propertyMatchers: Partial<T>,
-    snapshotName?: string,
-  ): R;
+  toMatchSnapshot(hint?: string): R;
   /**
    * This ensures that a value matches the most recent snapshot.
    * Check out [the Snapshot Testing guide](https://jestjs.io/docs/snapshot-testing) for more information.
    */
-  toMatchSnapshot(snapshotName?: string): R;
-  /**
-   * This ensures that a value matches the most recent snapshot with property matchers.
-   * Instead of writing the snapshot value to a .snap file, it will be written into the source code automatically.
-   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/snapshot-testing) for more information.
-   */
-  toMatchInlineSnapshot<T extends {[P in keyof R]: unknown}>(
-    propertyMatchers: Partial<T>,
-    snapshot?: string,
+  toMatchSnapshot<U extends Record<keyof T, unknown>>(
+    propertyMatchers: Partial<U>,
+    hint?: string,
   ): R;
   /**
    * This ensures that a value matches the most recent snapshot with property matchers.
@@ -354,9 +341,18 @@ export interface Matchers<R> {
    */
   toMatchInlineSnapshot(snapshot?: string): R;
   /**
+   * This ensures that a value matches the most recent snapshot with property matchers.
+   * Instead of writing the snapshot value to a .snap file, it will be written into the source code automatically.
+   * Check out [the Snapshot Testing guide](https://jestjs.io/docs/snapshot-testing) for more information.
+   */
+  toMatchInlineSnapshot<U extends Record<keyof T, unknown>>(
+    propertyMatchers: Partial<U>,
+    snapshot?: string,
+  ): R;
+  /**
    * Used to test that a function throws a error matching the most recent snapshot when it is called.
    */
-  toThrowErrorMatchingSnapshot(): R;
+  toThrowErrorMatchingSnapshot(hint?: string): R;
   /**
    * Used to test that a function throws a error matching the most recent snapshot when it is called.
    * Instead of writing the snapshot value to a .snap file, it will be written into the source code automatically.
