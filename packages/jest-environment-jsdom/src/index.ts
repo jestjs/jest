@@ -31,19 +31,26 @@ class JSDOMEnvironment implements JestEnvironment<number> {
   moduleMocker: ModuleMocker | null;
 
   constructor(config: Config.ProjectConfig, options?: EnvironmentContext) {
-    this.dom = new JSDOM('<!DOCTYPE html>', {
-      pretendToBeVisual: true,
-      resources:
-        typeof config.testEnvironmentOptions.userAgent === 'string'
-          ? new ResourceLoader({
-              userAgent: config.testEnvironmentOptions.userAgent,
-            })
-          : undefined,
-      runScripts: 'dangerously',
-      url: config.testURL,
-      virtualConsole: new VirtualConsole().sendTo(options?.console || console),
-      ...config.testEnvironmentOptions,
-    });
+    this.dom = new JSDOM(
+      typeof config.testEnvironmentOptions.html === 'string'
+        ? config.testEnvironmentOptions.html
+        : '<!DOCTYPE html>',
+      {
+        pretendToBeVisual: true,
+        resources:
+          typeof config.testEnvironmentOptions.userAgent === 'string'
+            ? new ResourceLoader({
+                userAgent: config.testEnvironmentOptions.userAgent,
+              })
+            : undefined,
+        runScripts: 'dangerously',
+        url: config.testURL,
+        virtualConsole: new VirtualConsole().sendTo(
+          options?.console || console,
+        ),
+        ...config.testEnvironmentOptions,
+      },
+    );
     const global = (this.global = this.dom.window.document
       .defaultView as unknown as Win);
 

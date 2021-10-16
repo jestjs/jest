@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-config]` Add `testEnvironmentOptions.html` to apply to jsdom input ([11950](https://github.com/facebook/jest/pull/11950))
+
 ### Fixes
 
 - `[expect]` Tweak and improve types ([#11949](https://github.com/facebook/jest/pull/11949))
