@@ -120,7 +120,7 @@ function createPackageFilter(
 
     return {
       ...filteredPkg,
-      main: filteredPkg.main ?? attemptExportsFallback(filteredPkg),
+      main: attemptExportsFallback(filteredPkg),
     };
   };
 }
