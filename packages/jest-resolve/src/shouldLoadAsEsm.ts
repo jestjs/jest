@@ -5,12 +5,11 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import {dirname, extname} from 'path';
+import {dirname, extname, resolve} from 'path';
 // @ts-expect-error: experimental, not added to the types
 import {SyntheticModule} from 'vm';
-import escalade from 'escalade/sync';
 import type {Config} from '@jest/types';
-import {readPackageCached} from './defaultResolver';
+import {isDirectory, isFile, readPackageCached} from './fileWalkers';
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
@@ -73,14 +72,27 @@ function shouldLoadAsEsm(
   return cachedLookup;
 }
 
+// adapted from https://github.com/lukeed/escalade/blob/2477005062cdbd8407afc90d3f48f4930354252b/src/sync.js to use cached `fs.stat` calls
+function findClosestPackageJson(start: Config.Path): Config.Path | undefined {
+  let dir = resolve('.', start);
+  if (isDirectory(dir)) {
+    dir = dirname(dir);
+  }
+
+  let tmp;
+
+  while (true) {
+    tmp = resolve(dir, './package.json');
+    if (isFile(tmp)) return tmp;
+    dir = dirname((tmp = dir));
+    if (tmp === dir) break;
+  }
+
+  return undefined;
+}
+
 function cachedPkgCheck(cwd: Config.Path): boolean {
-  const pkgPath = escalade(cwd, (_dir, names) => {
-    if (names.includes('package.json')) {
-      // will be resolved into absolute
-      return 'package.json';
-    }
-    return false;
-  });
+  const pkgPath = findClosestPackageJson(cwd);
   if (!pkgPath) {
     return false;
   }

@@ -16,7 +16,6 @@
   "dependencies": {
     "@jest/types": "^27.2.5",
     "chalk": "^4.0.0",
-    "escalade": "^3.1.1",
     "graceful-fs": "^4.2.4",
     "jest-haste-map": "^27.2.5",
     "jest-pnp-resolver": "^1.2.2",
