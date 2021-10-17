@@ -65,7 +65,7 @@ test('selectiveRunInBand', () => {
 
   // Be sure that all the tests should overlap if parallel enabled at project level
   expect(
-    testResults.every(test => test.endTime - test.startTime >= 500),
+    testResults.every(test => test.endTime - test.startTime >= 1000),
   ).toBeTruthy();
 
   // all the firsts tests would be expected to run at the same time
