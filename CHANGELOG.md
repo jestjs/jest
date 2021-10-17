@@ -2,6 +2,16 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 27.3.0
+
+### Features
+
 - `[jest-config]` Add `testEnvironmentOptions.html` to apply to jsdom input ([11950](https://github.com/facebook/jest/pull/11950))
 - `[jest-resolver]` Support default export (`.`) in `exports` field _if_ `main` is missing ([#11919](https://github.com/facebook/jest/pull/11919))
 
@@ -10,10 +20,6 @@
 - `[expect]` Tweak and improve types ([#11949](https://github.com/facebook/jest/pull/11949))
 - `[jest-runtime]` Ensure absolute paths can be resolved within test modules ([#11943](https://github.com/facebook/jest/pull/11943))
 - `[jest-runtime]` Fix `instanceof` for `ModernFakeTimers` and `LegacyFakeTimers` methods ([#11946](https://github.com/facebook/jest/pull/11946))
-
-### Chore & Maintenance
-
-### Performance
 
 ## 27.2.5
 
@@ -34,8 +40,6 @@
 
 - `[expect]` Export default matchers ([#11932](https://github.com/facebook/jest/pull/11932))
 - `[@jest/types]` Mark deprecated configuration options as `@deprecated` ([#11913](https://github.com/facebook/jest/pull/11913))
-
-### Performance
 
 ## 27.2.4
 
