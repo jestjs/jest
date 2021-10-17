@@ -14,7 +14,8 @@ import type {Config} from '@jest/types';
 import type {IModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
 import ModuleNotFoundError from './ModuleNotFoundError';
-import defaultResolver, {clearDefaultResolverCache} from './defaultResolver';
+import defaultResolver from './defaultResolver';
+import {clearFsCache} from './fileWalkers';
 import isBuiltinModule from './isBuiltinModule';
 import nodeModulesPaths from './nodeModulesPaths';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
@@ -98,7 +99,7 @@ export default class Resolver {
   }
 
   static clearDefaultResolverCache(): void {
-    clearDefaultResolverCache();
+    clearFsCache();
     clearCachedLookups();
   }
 
