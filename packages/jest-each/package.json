@@ -1,6 +1,6 @@
 {
   "name": "jest-each",
-  "version": "27.2.5",
+  "version": "27.3.0",
   "description": "Parameterised tests for Jest",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
@@ -25,8 +25,8 @@
     "@jest/types": "^27.2.5",
     "chalk": "^4.0.0",
     "jest-get-type": "^27.0.6",
-    "jest-util": "^27.2.5",
-    "pretty-format": "^27.2.5"
+    "jest-util": "^27.3.0",
+    "pretty-format": "^27.3.0"
   },
   "engines": {
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
