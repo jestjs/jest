@@ -19,6 +19,7 @@ import {
 import type TestSequencer from '@jest/test-sequencer';
 import type {Config} from '@jest/types';
 import type {ChangedFiles, ChangedFilesPromise} from 'jest-changed-files';
+import Resolver from 'jest-resolve';
 import type {Context} from 'jest-runtime';
 import {requireOrImportModule, tryRealpath} from 'jest-util';
 import {JestHook, JestHookEmitter} from 'jest-watcher';
@@ -142,6 +143,10 @@ export default async function runJest({
   failedTestsCache?: FailedTestsCache;
   filter?: Filter;
 }): Promise<void> {
+  // Clear cache for required modules - there might be different resolutions
+  // from Jest's config loading to running the tests
+  Resolver.clearDefaultResolverCache();
+
   const Sequencer: typeof TestSequencer = await requireOrImportModule(
     globalConfig.testSequencer,
   );
