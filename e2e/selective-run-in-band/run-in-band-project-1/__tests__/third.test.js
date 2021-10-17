@@ -5,10 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-it('should run in band within the project in band project', done => {
-  setTimeout(done, 1000);
-});
-
-it('should run parallel within the project parallel project', done => {
+test('a long executing test', done => {
   setTimeout(done, 1000);
 });
