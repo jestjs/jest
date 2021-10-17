@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {dirname, resolve} from 'path';
 import * as fs from 'graceful-fs';
 import type {Config} from '@jest/types';
 import {tryRealpath} from 'jest-util';
@@ -85,6 +86,25 @@ export function readPackageCached(path: Config.Path): PkgJson {
   packageContents.set(path, result);
 
   return result;
+}
+
+// adapted from https://github.com/lukeed/escalade/blob/2477005062cdbd8407afc90d3f48f4930354252b/src/sync.js to use cached `fs.stat` calls
+export function findClosestPackageJson(
+  start: Config.Path,
+): Config.Path | undefined {
+  let dir = resolve('.', start);
+  if (isDirectory(dir)) {
+    dir = dirname(dir);
+  }
+
+  let tmp;
+
+  while (true) {
+    tmp = resolve(dir, './package.json');
+    if (isFile(tmp)) return tmp;
+    dir = dirname((tmp = dir));
+    if (tmp === dir) return undefined;
+  }
 }
 
 /*
