@@ -5,6 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {resolve} from 'path';
 import * as fs from 'graceful-fs';
 import pnpResolver from 'jest-pnp-resolver';
 import {Opts as ResolveOpts, sync as resolveSync} from 'resolve';
@@ -175,11 +176,24 @@ function createPackageFilter(
     }
   }
 
-  return function packageFilter(pkg: PkgJson, ...rest) {
+  return function packageFilter(pkg: PkgJson, path) {
     let filteredPkg = pkg;
 
     if (userFilter) {
-      filteredPkg = userFilter(filteredPkg, ...rest);
+      filteredPkg = userFilter(filteredPkg, path);
+    }
+
+    if (filteredPkg.main) {
+      return filteredPkg;
+    }
+
+    const indexInRoot = resolve(path, './index.js');
+
+    // if the module contains an `index.js` file in root, `resolve` will request
+    // that if there is no `main`. Since we don't wanna break that, add this
+    // check
+    if (isFile(indexInRoot)) {
+      return filteredPkg;
     }
 
     return {
