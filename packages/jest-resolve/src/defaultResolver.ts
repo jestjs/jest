@@ -7,7 +7,7 @@
 
 import {resolve} from 'path';
 import pnpResolver from 'jest-pnp-resolver';
-import {Opts as ResolveOpts, sync as resolveSync} from 'resolve';
+import {sync as resolveSync} from 'resolve';
 import {
   Options as ResolveExportsOptions,
   resolve as resolveExports,
@@ -21,13 +21,19 @@ import {
   realpathSync,
 } from './fileWalkers';
 
-interface ResolverOptions extends ResolveOpts {
+// copy from `resolve`'s types so we don't have their types in our definition
+// files
+interface ResolverOptions {
   basedir: Config.Path;
   browser?: boolean;
   conditions?: Array<string>;
   defaultResolver: typeof defaultResolver;
   extensions?: Array<string>;
+  moduleDirectory?: Array<string>;
+  paths?: Array<Config.Path>;
   rootDir?: Config.Path;
+  packageFilter?: (pkg: PkgJson, dir: string) => PkgJson;
+  pathFilter?: (pkg: PkgJson, path: string, relativePath: string) => string;
 }
 
 // https://github.com/facebook/jest/pull/10617
@@ -92,18 +98,18 @@ function createPackageFilter(
     }
   }
 
-  return function packageFilter(pkg: PkgJson, path) {
+  return function packageFilter(pkg, packageDir) {
     let filteredPkg = pkg;
 
     if (userFilter) {
-      filteredPkg = userFilter(filteredPkg, path);
+      filteredPkg = userFilter(filteredPkg, packageDir);
     }
 
     if (filteredPkg.main) {
       return filteredPkg;
     }
 
-    const indexInRoot = resolve(path, './index.js');
+    const indexInRoot = resolve(packageDir, './index.js');
 
     // if the module contains an `index.js` file in root, `resolve` will request
     // that if there is no `main`. Since we don't wanna break that, add this
