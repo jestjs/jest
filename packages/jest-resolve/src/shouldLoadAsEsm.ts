@@ -9,8 +9,8 @@ import {dirname, extname} from 'path';
 // @ts-expect-error: experimental, not added to the types
 import {SyntheticModule} from 'vm';
 import escalade from 'escalade/sync';
-import {readFileSync} from 'graceful-fs';
 import type {Config} from '@jest/types';
+import {readPackageCached} from './defaultResolver';
 
 const runtimeSupportsVmModules = typeof SyntheticModule === 'function';
 
@@ -91,7 +91,7 @@ function cachedPkgCheck(cwd: Config.Path): boolean {
   }
 
   try {
-    const pkg = JSON.parse(readFileSync(pkgPath, 'utf-8'));
+    const pkg = readPackageCached(pkgPath);
     hasModuleField = pkg.type === 'module';
   } catch {
     hasModuleField = false;

@@ -67,7 +67,7 @@ enum IPathType {
 const checkedPaths = new Map<string, IPathType>();
 function statSyncCached(path: string): IPathType {
   const result = checkedPaths.get(path);
-  if (result !== undefined) {
+  if (result != null) {
     return result;
   }
 
@@ -98,7 +98,7 @@ const checkedRealpathPaths = new Map<string, string>();
 function realpathCached(path: Config.Path): Config.Path {
   let result = checkedRealpathPaths.get(path);
 
-  if (result !== undefined) {
+  if (result != null) {
     return result;
   }
 
@@ -117,10 +117,10 @@ function realpathCached(path: Config.Path): Config.Path {
 type PkgJson = Record<string, unknown>;
 
 const packageContents = new Map<string, PkgJson>();
-function readPackageCached(path: Config.Path): PkgJson {
+export function readPackageCached(path: Config.Path): PkgJson {
   let result = packageContents.get(path);
 
-  if (result !== undefined) {
+  if (result != null) {
     return result;
   }
 
