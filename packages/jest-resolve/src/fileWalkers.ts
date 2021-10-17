@@ -14,6 +14,7 @@ export function clearFsCache(): void {
   checkedPaths.clear();
   checkedRealpathPaths.clear();
   packageContents.clear();
+  packageJsonInDir.clear();
 }
 
 enum IPathType {
@@ -88,6 +89,21 @@ export function readPackageCached(path: Config.Path): PkgJson {
   return result;
 }
 
+const packageJsonInDir = new Map<string, boolean>();
+function directoryHasPackageJson(file: Config.Path): boolean {
+  let cachedValue = packageJsonInDir.get(file);
+
+  if (cachedValue != null) {
+    return cachedValue;
+  }
+
+  cachedValue = fs.existsSync(file);
+
+  packageJsonInDir.set(file, cachedValue);
+
+  return cachedValue;
+}
+
 // adapted from https://github.com/lukeed/escalade/blob/2477005062cdbd8407afc90d3f48f4930354252b/src/sync.js to use cached `fs.stat` calls
 export function findClosestPackageJson(
   start: Config.Path,
@@ -98,16 +114,17 @@ export function findClosestPackageJson(
   }
 
   while (true) {
-    let tmp = resolve(dir, './package.json');
+    const pkgJsonFile = resolve(dir, './package.json');
+    const hasPackageJson = directoryHasPackageJson(pkgJsonFile);
 
-    if (isFile(tmp)) {
-      return tmp;
+    if (hasPackageJson) {
+      return pkgJsonFile;
     }
 
-    tmp = dir;
+    const prevDir = dir;
     dir = dirname(dir);
 
-    if (tmp === dir) {
+    if (prevDir === dir) {
       return undefined;
     }
   }
