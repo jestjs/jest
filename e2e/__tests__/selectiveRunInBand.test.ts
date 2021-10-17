@@ -48,7 +48,7 @@ const expectTestsDontOverlap = (tests: Array<TestResult>) => {
 };
 
 test('selectiveRunInBand', () => {
-  const result = runWithJson('selective-run-in-band', ['--verbose']);
+  const result = runWithJson('selective-run-in-band');
   const testResults = result.json.testResults;
 
   const parallelTests = testResults.filter(({name}) =>
@@ -73,4 +73,11 @@ test('selectiveRunInBand', () => {
   expectTestsOverlap(parallelTests);
   expectTestsDontOverlap(inBandTests1);
   expectTestsDontOverlap(inBandTests2);
+});
+
+test('override with --runInBand', () => {
+  const result = runWithJson('selective-run-in-band', ['--runInBand']);
+  const testResults = result.json.testResults;
+
+  expectTestsDontOverlap(testResults);
 });
