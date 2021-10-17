@@ -6,13 +6,9 @@
       "mjs",
       "json"
     ],
-    "resolver": "<rootDir>/resolver.js",
     "testMatch": [
       "<rootDir>/**/*.test.*"
     ],
     "transform": {}
-  },
-  "dependencies": {
-    "resolve.exports": "^1.1.0"
   }
 }

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-const {fn} = require('../fake-dep');
+const {fn} = require('fake-dep');
 
 test('returns correct message', () => {
   expect(fn()).toEqual('hello from CJS');
