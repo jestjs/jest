@@ -16,11 +16,11 @@
   "dependencies": {
     "@types/node": "*",
     "merge-stream": "^2.0.0",
-    "supports-color": "^7.2.0"
+    "supports-color": "^8.0.0"
   },
   "devDependencies": {
     "@types/merge-stream": "^1.1.2",
-    "@types/supports-color": "^7.2.1",
+    "@types/supports-color": "^8.1.0",
     "get-stream": "^6.0.0",
     "jest-leak-detector": "^27.2.5",
     "worker-farm": "^1.6.0"
