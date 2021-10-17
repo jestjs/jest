@@ -1,7 +1,7 @@
 name: 'Questions / Help 💬'
 description: If you have questions, please check Reactiflux or StackOverflow
 title: '[Please read the message below]'
-labels: ['💬 Question']
+labels: [':speech_balloon: Question']
 body:
   - type: markdown
     attributes:
