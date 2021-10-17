@@ -93,17 +93,23 @@ export function findClosestPackageJson(
   start: Config.Path,
 ): Config.Path | undefined {
   let dir = resolve('.', start);
-  if (isDirectory(dir)) {
+  if (!isDirectory(dir)) {
     dir = dirname(dir);
   }
 
-  let tmp;
-
   while (true) {
-    tmp = resolve(dir, './package.json');
-    if (isFile(tmp)) return tmp;
-    dir = dirname((tmp = dir));
-    if (tmp === dir) return undefined;
+    let tmp = resolve(dir, './package.json');
+
+    if (isFile(tmp)) {
+      return tmp;
+    }
+
+    tmp = dir;
+    dir = dirname(dir);
+
+    if (tmp === dir) {
+      return undefined;
+    }
   }
 }
 
