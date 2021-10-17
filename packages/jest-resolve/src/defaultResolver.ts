@@ -105,7 +105,7 @@ function createPackageFilter(
       filteredPkg = userFilter(filteredPkg, packageDir);
     }
 
-    if (filteredPkg.main) {
+    if (filteredPkg.main != null) {
       return filteredPkg;
     }
 
