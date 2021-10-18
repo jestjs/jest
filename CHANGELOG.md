@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[expect]` Fix `.any()` checks on primitive wrapper classes ([11976](https://github.com/facebook/jest/pull/11976))
+
 ### Chore & Maintenance
 
 - `[jest-config, jest-util]` Use `ci-info` instead of `is-ci` to detect CI environment ([11973](https://github.com/facebook/jest/pull/11973))
