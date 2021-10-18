@@ -25,6 +25,7 @@ module.exports = timerGame;
 'use strict';
 
 jest.useFakeTimers();
+jest.spyOn(global, 'setTimeout');
 
 test('waits 1 second before ending the game', () => {
   const timerGame = require('../timerGame');
