@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[expect]` Make expect extension properties `configurable`
+
 ### Chore & Maintenance
 
 - `[jest-config, jest-util]` Use `ci-info` instead of `is-ci` to detect CI environment ([11973](https://github.com/facebook/jest/pull/11973))
