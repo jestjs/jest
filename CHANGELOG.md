@@ -4,6 +4,14 @@
 
 ### Fixes
 
+### Chore & Maintenance
+
+### Performance
+
+## 27.3.1
+
+### Fixes
+
 - `[expect]` Make `expect` extension properties `configurable` ([#11978](https://github.com/facebook/jest/pull/11978))
 - `[expect]` Fix `.any()` checks on primitive wrapper classes ([#11976](https://github.com/facebook/jest/pull/11976))
 
@@ -11,8 +19,6 @@
 
 - `[expect]` `BigInt` global is always defined, don't check for its existence at runtime ([#11979](https://github.com/facebook/jest/pull/11979))
 - `[jest-config, jest-util]` Use `ci-info` instead of `is-ci` to detect CI environment ([#11973](https://github.com/facebook/jest/pull/11973))
-
-### Performance
 
 ## 27.3.0
 
