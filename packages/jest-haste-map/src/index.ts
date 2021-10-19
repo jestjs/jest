@@ -334,14 +334,11 @@ export default class HasteMap extends EventEmitter {
 
   static getCacheFilePath(
     tmpdir: Config.Path,
-    name: string,
+    id: string,
     ...extra: Array<string>
   ): string {
     const hash = createHash('md5').update(extra.join(''));
-    return path.join(
-      tmpdir,
-      name.replace(/\W/g, '-') + '-' + hash.digest('hex'),
-    );
+    return path.join(tmpdir, id.replace(/\W/g, '-') + '-' + hash.digest('hex'));
   }
 
   static getModuleMapFromJSON(json: SerializableModuleMap): HasteModuleMap {

@@ -24,7 +24,8 @@
 ### Chore & Maintenance
 
 - `[expect]` `BigInt` global is always defined, don't check for its existence at runtime ([#11979](https://github.com/facebook/jest/pull/11979))
-- `[jest-config, jest-util]` Use `ci-info` instead of `is-ci` to detect CI environment ([#11973](https://github.com/facebook/jest/pull/11973)) -`[jest-config]` [**BREAKING**] Change project config from `name` to `id` ([#11089](https://github.com/facebook/jest/pull/11981))
+- `[jest-config, jest-util]` Use `ci-info` instead of `is-ci` to detect CI environment ([#11973](https://github.com/facebook/jest/pull/11973))
+- `[jest-config, jest-haste-map]` [**BREAKING**] Rename config option `name` to `id` - does not affect `displayName` ([#11981](https://github.com/facebook/jest/pull/11981))
 
 ## 27.3.0
 
