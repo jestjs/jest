@@ -4,7 +4,8 @@
 
 ### Fixes
 
-- `[expect]` Make expect extension properties `configurable` ([#11978](https://github.com/facebook/jest/pull/11978))
+- `[expect]` Make `expect` extension properties `configurable` ([#11978](https://github.com/facebook/jest/pull/11978))
+- `[expect]` Fix `.any()` checks on primitive wrapper classes ([#11976](https://github.com/facebook/jest/pull/11976))
 
 ### Chore & Maintenance
 

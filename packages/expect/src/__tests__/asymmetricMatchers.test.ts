@@ -40,6 +40,24 @@ test('Any.asymmetricMatch()', () => {
   });
 });
 
+test('Any.asymmetricMatch() on primitive wrapper classes', () => {
+  [
+    // eslint-disable-next-line no-new-wrappers
+    any(String).asymmetricMatch(new String('jest')),
+    // eslint-disable-next-line no-new-wrappers
+    any(Number).asymmetricMatch(new Number(1)),
+    // eslint-disable-next-line no-new-func
+    any(Function).asymmetricMatch(new Function('() => {}')),
+    // eslint-disable-next-line no-new-wrappers
+    any(Boolean).asymmetricMatch(new Boolean(true)),
+    /* global BigInt */
+    any(BigInt).asymmetricMatch(Object(1n)),
+    any(Symbol).asymmetricMatch(Object(Symbol())),
+  ].forEach(test => {
+    jestExpect(test).toBe(true);
+  });
+});
+
 test('Any.toAsymmetricMatcher()', () => {
   jestExpect(any(Number).toAsymmetricMatcher()).toBe('Any<Number>');
 });
