@@ -28,7 +28,6 @@ test('Any.asymmetricMatch()', () => {
     any(Number).asymmetricMatch(1),
     any(Function).asymmetricMatch(() => {}),
     any(Boolean).asymmetricMatch(true),
-    /* global BigInt */
     any(BigInt).asymmetricMatch(1n),
     any(Symbol).asymmetricMatch(Symbol()),
     any(Object).asymmetricMatch({}),
@@ -50,7 +49,6 @@ test('Any.asymmetricMatch() on primitive wrapper classes', () => {
     any(Function).asymmetricMatch(new Function('() => {}')),
     // eslint-disable-next-line no-new-wrappers
     any(Boolean).asymmetricMatch(new Boolean(true)),
-    /* global BigInt */
     any(BigInt).asymmetricMatch(Object(1n)),
     any(Symbol).asymmetricMatch(Object(Symbol())),
   ].forEach(test => {

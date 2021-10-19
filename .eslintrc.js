@@ -26,6 +26,9 @@ module.exports = {
     'plugin:eslint-comments/recommended',
     'plugin:prettier/recommended',
   ],
+  globals: {
+    BigInt: 'readonly',
+  },
   overrides: [
     {
       extends: [

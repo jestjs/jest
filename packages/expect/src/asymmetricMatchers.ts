@@ -73,7 +73,6 @@ class Any extends AsymmetricMatcher<any> {
       return typeof other == 'boolean' || other instanceof Boolean;
     }
 
-    /* global BigInt */
     if (this.sample == BigInt) {
       return typeof other == 'bigint' || other instanceof BigInt;
     }
