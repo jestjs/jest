@@ -22,9 +22,6 @@ afterAll(() => {
   chalk.enabled = chalkEnabled;
 });
 
-/* global BigInt */
-const isBigIntDefined = typeof BigInt === 'function';
-
 it('should throw if passed two arguments', () => {
   expect(() => jestExpect('foo', 'bar')).toThrow(
     new Error('Expect takes at most one argument.'),
@@ -209,11 +206,9 @@ describe('.toBe()', () => {
     jestExpect(null).toBe(null);
     jestExpect(undefined).toBe(undefined);
     jestExpect(NaN).toBe(NaN);
-    if (isBigIntDefined) {
-      jestExpect(BigInt(1)).not.toBe(BigInt(2));
-      jestExpect(BigInt(1)).not.toBe(1);
-      jestExpect(BigInt(1)).toBe(BigInt(1));
-    }
+    jestExpect(BigInt(1)).not.toBe(BigInt(2));
+    jestExpect(BigInt(1)).not.toBe(1);
+    jestExpect(BigInt(1)).toBe(BigInt(1));
   });
 
   [
@@ -247,16 +242,14 @@ describe('.toBe()', () => {
     });
   });
 
-  if (isBigIntDefined) {
-    [
-      [BigInt(1), BigInt(2)],
-      [{a: BigInt(1)}, {a: BigInt(1)}],
-    ].forEach(([a, b]) => {
-      it(`fails for: ${stringify(a)} and ${stringify(b)}`, () => {
-        expect(() => jestExpect(a).toBe(b)).toThrowError('toBe');
-      });
+  [
+    [BigInt(1), BigInt(2)],
+    [{a: BigInt(1)}, {a: BigInt(1)}],
+  ].forEach(([a, b]) => {
+    it(`fails for: ${stringify(a)} and ${stringify(b)}`, () => {
+      expect(() => jestExpect(a).toBe(b)).toThrowError('toBe');
     });
-  }
+  });
 
   [false, 1, 'a', undefined, null, {}, []].forEach(v => {
     it(`fails for '${stringify(v)}' with '.not'`, () => {
@@ -264,13 +257,11 @@ describe('.toBe()', () => {
     });
   });
 
-  if (isBigIntDefined) {
-    [BigInt(1), BigInt('1')].forEach(v => {
-      it(`fails for '${stringify(v)}' with '.not'`, () => {
-        expect(() => jestExpect(v).not.toBe(v)).toThrowError('toBe');
-      });
+  [BigInt(1), BigInt('1')].forEach(v => {
+    it(`fails for '${stringify(v)}' with '.not'`, () => {
+      expect(() => jestExpect(v).not.toBe(v)).toThrowError('toBe');
     });
-  }
+  });
 
   it('does not crash on circular references', () => {
     const obj = {};
@@ -660,19 +651,17 @@ describe('.toEqual()', () => {
     });
   });
 
-  if (isBigIntDefined) {
-    [
-      [BigInt(1), BigInt(2)],
-      [BigInt(1), 1],
-    ].forEach(([a, b]) => {
-      test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
-        b,
-      )})`, () => {
-        expect(() => jestExpect(a).toEqual(b)).toThrowError('toEqual');
-        jestExpect(a).not.toEqual(b);
-      });
+  [
+    [BigInt(1), BigInt(2)],
+    [BigInt(1), 1],
+  ].forEach(([a, b]) => {
+    test(`{pass: false} expect(${stringify(a)}).toEqual(${stringify(
+      b,
+    )})`, () => {
+      expect(() => jestExpect(a).toEqual(b)).toThrowError('toEqual');
+      jestExpect(a).not.toEqual(b);
     });
-  }
+  });
 
   [
     [true, true],
@@ -868,27 +857,25 @@ describe('.toEqual()', () => {
     });
   });
 
-  if (isBigIntDefined) {
+  [
+    [BigInt(1), BigInt(1)],
+    [BigInt(0), BigInt('0')],
+    [[BigInt(1)], [BigInt(1)]],
     [
-      [BigInt(1), BigInt(1)],
-      [BigInt(0), BigInt('0')],
-      [[BigInt(1)], [BigInt(1)]],
-      [
-        [BigInt(1), 2],
-        [BigInt(1), 2],
-      ],
-      [Immutable.List([BigInt(1)]), Immutable.List([BigInt(1)])],
-      [{a: BigInt(99)}, {a: BigInt(99)}],
-      [new Set([BigInt(1), BigInt(2)]), new Set([BigInt(1), BigInt(2)])],
-    ].forEach(([a, b]) => {
-      test(`{pass: true} expect(${stringify(a)}).not.toEqual(${stringify(
-        b,
-      )})`, () => {
-        jestExpect(a).toEqual(b);
-        expect(() => jestExpect(a).not.toEqual(b)).toThrowError('toEqual');
-      });
+      [BigInt(1), 2],
+      [BigInt(1), 2],
+    ],
+    [Immutable.List([BigInt(1)]), Immutable.List([BigInt(1)])],
+    [{a: BigInt(99)}, {a: BigInt(99)}],
+    [new Set([BigInt(1), BigInt(2)]), new Set([BigInt(1), BigInt(2)])],
+  ].forEach(([a, b]) => {
+    test(`{pass: true} expect(${stringify(a)}).not.toEqual(${stringify(
+      b,
+    )})`, () => {
+      jestExpect(a).toEqual(b);
+      expect(() => jestExpect(a).not.toEqual(b)).toThrowError('toEqual');
     });
-  }
+  });
 
   test('assertion error matcherResult property contains matcher name, expected and actual values', () => {
     const actual = {a: 1};
@@ -1093,18 +1080,16 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
     });
   });
 
-  if (isBigIntDefined) {
-    [BigInt(1)].forEach(v => {
-      test(`'${stringify(v)}' is truthy`, () => {
-        jestExpect(v).toBeTruthy();
-        jestExpect(v).not.toBeFalsy();
+  [BigInt(1)].forEach(v => {
+    test(`'${stringify(v)}' is truthy`, () => {
+      jestExpect(v).toBeTruthy();
+      jestExpect(v).not.toBeFalsy();
 
-        expect(() => jestExpect(v).not.toBeTruthy()).toThrowError('toBeTruthy');
+      expect(() => jestExpect(v).not.toBeTruthy()).toThrowError('toBeTruthy');
 
-        expect(() => jestExpect(v).toBeFalsy()).toThrowError('toBeFalsy');
-      });
+      expect(() => jestExpect(v).toBeFalsy()).toThrowError('toBeFalsy');
     });
-  }
+  });
 
   [false, null, NaN, 0, '', undefined].forEach(v => {
     test(`'${stringify(v)}' is falsy`, () => {
@@ -1119,18 +1104,16 @@ describe('.toBeTruthy(), .toBeFalsy()', () => {
     });
   });
 
-  if (isBigIntDefined) {
-    [BigInt(0)].forEach(v => {
-      test(`'${stringify(v)}' is falsy`, () => {
-        jestExpect(v).toBeFalsy();
-        jestExpect(v).not.toBeTruthy();
+  [BigInt(0)].forEach(v => {
+    test(`'${stringify(v)}' is falsy`, () => {
+      jestExpect(v).toBeFalsy();
+      jestExpect(v).not.toBeTruthy();
 
-        expect(() => jestExpect(v).toBeTruthy()).toThrowError('toBeTruthy');
+      expect(() => jestExpect(v).toBeTruthy()).toThrowError('toBeTruthy');
 
-        expect(() => jestExpect(v).not.toBeFalsy()).toThrowError('toBeFalsy');
-      });
+      expect(() => jestExpect(v).not.toBeFalsy()).toThrowError('toBeFalsy');
     });
-  }
+  });
 });
 
 describe('.toBeNaN()', () => {
@@ -1187,22 +1170,16 @@ describe('.toBeDefined(), .toBeUndefined()', () => {
     });
   });
 
-  if (isBigIntDefined) {
-    [BigInt(1)].forEach(v => {
-      test(`'${stringify(v)}' is defined`, () => {
-        jestExpect(v).toBeDefined();
-        jestExpect(v).not.toBeUndefined();
+  [BigInt(1)].forEach(v => {
+    test(`'${stringify(v)}' is defined`, () => {
+      jestExpect(v).toBeDefined();
+      jestExpect(v).not.toBeUndefined();
 
-        expect(() => jestExpect(v).not.toBeDefined()).toThrowError(
-          'toBeDefined',
-        );
+      expect(() => jestExpect(v).not.toBeDefined()).toThrowError('toBeDefined');
 
-        expect(() => jestExpect(v).toBeUndefined()).toThrowError(
-          'toBeUndefined',
-        );
-      });
+      expect(() => jestExpect(v).toBeUndefined()).toThrowError('toBeUndefined');
     });
-  }
+  });
 
   test('undefined is undefined', () => {
     jestExpect(undefined).toBeUndefined();
@@ -1298,104 +1275,101 @@ describe(
       });
     });
 
-    if (isBigIntDefined) {
-      test('can compare BigInt to Numbers', () => {
-        const a = BigInt(2);
-        jestExpect(a).toBeGreaterThan(1);
-        jestExpect(a).toBeGreaterThanOrEqual(2);
-        jestExpect(2).toBeLessThanOrEqual(a);
-        jestExpect(a).toBeLessThan(3);
-        jestExpect(a).toBeLessThanOrEqual(2);
+    test('can compare BigInt to Numbers', () => {
+      const a = BigInt(2);
+      jestExpect(a).toBeGreaterThan(1);
+      jestExpect(a).toBeGreaterThanOrEqual(2);
+      jestExpect(2).toBeLessThanOrEqual(a);
+      jestExpect(a).toBeLessThan(3);
+      jestExpect(a).toBeLessThanOrEqual(2);
+    });
+    [
+      [BigInt(1), BigInt(2)],
+      [BigInt(0x11), BigInt(0x22)],
+      [-1, BigInt(2)],
+    ].forEach(([small, big]) => {
+      it(`{pass: true} expect(${stringify(small)}).toBeLessThan(${stringify(
+        big,
+      )})`, () => {
+        jestExpect(small).toBeLessThan(big);
       });
 
-      [
-        [BigInt(1), BigInt(2)],
-        [BigInt(0x11), BigInt(0x22)],
-        [-1, BigInt(2)],
-      ].forEach(([small, big]) => {
-        it(`{pass: true} expect(${stringify(small)}).toBeLessThan(${stringify(
-          big,
-        )})`, () => {
-          jestExpect(small).toBeLessThan(big);
-        });
-
-        it(`{pass: false} expect(${stringify(big)}).toBeLessThan(${stringify(
-          small,
-        )})`, () => {
-          jestExpect(big).not.toBeLessThan(small);
-        });
-
-        it(`{pass: true} expect(${stringify(big)}).toBeGreaterThan(${stringify(
-          small,
-        )})`, () => {
-          jestExpect(big).toBeGreaterThan(small);
-        });
-
-        it(`{pass: false} expect(${stringify(
-          small,
-        )}).toBeGreaterThan(${stringify(big)})`, () => {
-          jestExpect(small).not.toBeGreaterThan(big);
-        });
-
-        it(`{pass: true} expect(${stringify(
-          small,
-        )}).toBeLessThanOrEqual(${stringify(big)})`, () => {
-          jestExpect(small).toBeLessThanOrEqual(big);
-        });
-
-        it(`{pass: false} expect(${stringify(
-          big,
-        )}).toBeLessThanOrEqual(${stringify(small)})`, () => {
-          jestExpect(big).not.toBeLessThanOrEqual(small);
-        });
-
-        it(`{pass: true} expect(${stringify(
-          big,
-        )}).toBeGreaterThanOrEqual(${stringify(small)})`, () => {
-          jestExpect(big).toBeGreaterThanOrEqual(small);
-        });
-
-        it(`{pass: false} expect(${stringify(
-          small,
-        )}).toBeGreaterThanOrEqual(${stringify(big)})`, () => {
-          jestExpect(small).not.toBeGreaterThanOrEqual(big);
-        });
-
-        it(`throws: [${stringify(small)}, ${stringify(big)}]`, () => {
-          expect(() => jestExpect(small).toBeGreaterThan(big)).toThrowError(
-            'toBeGreaterThan',
-          );
-
-          expect(() => jestExpect(small).not.toBeLessThan(big)).toThrowError(
-            'toBeLessThan',
-          );
-
-          expect(() => jestExpect(big).not.toBeGreaterThan(small)).toThrowError(
-            'toBeGreaterThan',
-          );
-
-          expect(() => jestExpect(big).toBeLessThan(small)).toThrowError(
-            'toBeLessThan',
-          );
-
-          expect(() =>
-            jestExpect(small).toBeGreaterThanOrEqual(big),
-          ).toThrowError('toBeGreaterThanOrEqual');
-
-          expect(() =>
-            jestExpect(small).not.toBeLessThanOrEqual(big),
-          ).toThrowError('toBeLessThanOrEqual');
-
-          expect(() =>
-            jestExpect(big).not.toBeGreaterThanOrEqual(small),
-          ).toThrowError('toBeGreaterThanOrEqual');
-
-          expect(() => jestExpect(big).toBeLessThanOrEqual(small)).toThrowError(
-            'toBeLessThanOrEqual',
-          );
-        });
+      it(`{pass: false} expect(${stringify(big)}).toBeLessThan(${stringify(
+        small,
+      )})`, () => {
+        jestExpect(big).not.toBeLessThan(small);
       });
-    }
+
+      it(`{pass: true} expect(${stringify(big)}).toBeGreaterThan(${stringify(
+        small,
+      )})`, () => {
+        jestExpect(big).toBeGreaterThan(small);
+      });
+
+      it(`{pass: false} expect(${stringify(small)}).toBeGreaterThan(${stringify(
+        big,
+      )})`, () => {
+        jestExpect(small).not.toBeGreaterThan(big);
+      });
+
+      it(`{pass: true} expect(${stringify(
+        small,
+      )}).toBeLessThanOrEqual(${stringify(big)})`, () => {
+        jestExpect(small).toBeLessThanOrEqual(big);
+      });
+
+      it(`{pass: false} expect(${stringify(
+        big,
+      )}).toBeLessThanOrEqual(${stringify(small)})`, () => {
+        jestExpect(big).not.toBeLessThanOrEqual(small);
+      });
+
+      it(`{pass: true} expect(${stringify(
+        big,
+      )}).toBeGreaterThanOrEqual(${stringify(small)})`, () => {
+        jestExpect(big).toBeGreaterThanOrEqual(small);
+      });
+
+      it(`{pass: false} expect(${stringify(
+        small,
+      )}).toBeGreaterThanOrEqual(${stringify(big)})`, () => {
+        jestExpect(small).not.toBeGreaterThanOrEqual(big);
+      });
+
+      it(`throws: [${stringify(small)}, ${stringify(big)}]`, () => {
+        expect(() => jestExpect(small).toBeGreaterThan(big)).toThrowError(
+          'toBeGreaterThan',
+        );
+
+        expect(() => jestExpect(small).not.toBeLessThan(big)).toThrowError(
+          'toBeLessThan',
+        );
+
+        expect(() => jestExpect(big).not.toBeGreaterThan(small)).toThrowError(
+          'toBeGreaterThan',
+        );
+
+        expect(() => jestExpect(big).toBeLessThan(small)).toThrowError(
+          'toBeLessThan',
+        );
+
+        expect(() =>
+          jestExpect(small).toBeGreaterThanOrEqual(big),
+        ).toThrowError('toBeGreaterThanOrEqual');
+
+        expect(() =>
+          jestExpect(small).not.toBeLessThanOrEqual(big),
+        ).toThrowError('toBeLessThanOrEqual');
+
+        expect(() =>
+          jestExpect(big).not.toBeGreaterThanOrEqual(small),
+        ).toThrowError('toBeGreaterThanOrEqual');
+
+        expect(() => jestExpect(big).toBeLessThanOrEqual(small)).toThrowError(
+          'toBeLessThanOrEqual',
+        );
+      });
+    });
 
     [
       [1, 1],
@@ -1418,25 +1392,23 @@ describe(
       });
     });
 
-    if (isBigIntDefined) {
-      [
-        [BigInt(1), BigInt(1)],
-        [BigInt(Number.MAX_SAFE_INTEGER), BigInt(Number.MAX_SAFE_INTEGER)],
-      ].forEach(([n1, n2]) => {
-        test(`equal numbers: [${n1}, ${n2}]`, () => {
-          jestExpect(n1).toBeGreaterThanOrEqual(n2);
-          jestExpect(n1).toBeLessThanOrEqual(n2);
+    [
+      [BigInt(1), BigInt(1)],
+      [BigInt(Number.MAX_SAFE_INTEGER), BigInt(Number.MAX_SAFE_INTEGER)],
+    ].forEach(([n1, n2]) => {
+      test(`equal numbers: [${n1}, ${n2}]`, () => {
+        jestExpect(n1).toBeGreaterThanOrEqual(n2);
+        jestExpect(n1).toBeLessThanOrEqual(n2);
 
-          expect(() =>
-            jestExpect(n1).not.toBeGreaterThanOrEqual(n2),
-          ).toThrowError('toBeGreaterThanOrEqual');
+        expect(() =>
+          jestExpect(n1).not.toBeGreaterThanOrEqual(n2),
+        ).toThrowError('toBeGreaterThanOrEqual');
 
-          expect(() => jestExpect(n1).not.toBeLessThanOrEqual(n2)).toThrowError(
-            'toBeLessThanOrEqual',
-          );
-        });
+        expect(() => jestExpect(n1).not.toBeLessThanOrEqual(n2)).toThrowError(
+          'toBeLessThanOrEqual',
+        );
       });
-    }
+    });
   },
 );
 
@@ -1486,20 +1458,16 @@ describe('.toContain(), .toContainEqual()', () => {
     });
   });
 
-  if (isBigIntDefined) {
-    [
-      [[BigInt(1), BigInt(2), BigInt(3), BigInt(4)], BigInt(1)],
-      [[1, 2, 3, BigInt(3), 4], BigInt(3)],
-    ].forEach(([list, v]) => {
-      it(`'${stringify(list)}' contains '${stringify(v)}'`, () => {
-        jestExpect(list).toContain(v);
+  [
+    [[BigInt(1), BigInt(2), BigInt(3), BigInt(4)], BigInt(1)],
+    [[1, 2, 3, BigInt(3), 4], BigInt(3)],
+  ].forEach(([list, v]) => {
+    it(`'${stringify(list)}' contains '${stringify(v)}'`, () => {
+      jestExpect(list).toContain(v);
 
-        expect(() => jestExpect(list).not.toContain(v)).toThrowError(
-          'toContain',
-        );
-      });
+      expect(() => jestExpect(list).not.toContain(v)).toThrowError('toContain');
     });
-  }
+  });
 
   [
     [[1, 2, 3], 4],
@@ -1516,15 +1484,13 @@ describe('.toContain(), .toContainEqual()', () => {
     });
   });
 
-  if (isBigIntDefined) {
-    [[[BigInt(1), BigInt(2), BigInt(3)], 3]].forEach(([list, v]) => {
-      it(`'${stringify(list)}' does not contain '${stringify(v)}'`, () => {
-        jestExpect(list).not.toContain(v);
+  [[[BigInt(1), BigInt(2), BigInt(3)], 3]].forEach(([list, v]) => {
+    it(`'${stringify(list)}' does not contain '${stringify(v)}'`, () => {
+      jestExpect(list).not.toContain(v);
 
-        expect(() => jestExpect(list).toContain(v)).toThrowError('toContain');
-      });
+      expect(() => jestExpect(list).toContain(v)).toThrowError('toContain');
     });
-  }
+  });
 
   test('error cases', () => {
     expect(() => jestExpect(null).toContain(1)).toThrowErrorMatchingSnapshot();
@@ -1538,11 +1504,9 @@ describe('.toContain(), .toContainEqual()', () => {
     expect(() =>
       jestExpect('false').toContain(false),
     ).toThrowErrorMatchingSnapshot();
-    if (isBigIntDefined) {
-      expect(() => jestExpect('1').toContain(BigInt(1))).toThrowError(
-        'toContain',
-      );
-    }
+    expect(() => jestExpect('1').toContain(BigInt(1))).toThrowError(
+      'toContain',
+    );
   });
 
   [
