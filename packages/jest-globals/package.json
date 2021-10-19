@@ -1,6 +1,6 @@
 {
   "name": "@jest/globals",
-  "version": "27.3.0",
+  "version": "27.3.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,9 +17,9 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/environment": "^27.3.0",
+    "@jest/environment": "^27.3.1",
     "@jest/types": "^27.2.5",
-    "expect": "^27.3.0"
+    "expect": "^27.3.1"
   },
   "publishConfig": {
     "access": "public"
