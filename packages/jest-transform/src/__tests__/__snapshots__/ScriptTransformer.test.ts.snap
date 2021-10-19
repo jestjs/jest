@@ -32,6 +32,7 @@ exports[`ScriptTransformer in async mode, passes expected transform options to g
           "globalTeardown": undefined,
           "globals": Object {},
           "haste": Object {},
+          "id": "test",
           "injectGlobals": true,
           "moduleDirectories": Array [],
           "moduleFileExtensions": Array [
@@ -41,7 +42,6 @@ exports[`ScriptTransformer in async mode, passes expected transform options to g
           "moduleNameMapper": Array [],
           "modulePathIgnorePatterns": Array [],
           "modulePaths": Array [],
-          "name": "test",
           "prettierPath": "prettier",
           "resetMocks": false,
           "resetModules": false,
@@ -160,6 +160,7 @@ exports[`ScriptTransformer passes expected transform options to getCacheKey 1`] 
           "globalTeardown": undefined,
           "globals": Object {},
           "haste": Object {},
+          "id": "test",
           "injectGlobals": true,
           "moduleDirectories": Array [],
           "moduleFileExtensions": Array [
@@ -169,7 +170,6 @@ exports[`ScriptTransformer passes expected transform options to getCacheKey 1`] 
           "moduleNameMapper": Array [],
           "modulePathIgnorePatterns": Array [],
           "modulePaths": Array [],
-          "name": "test",
           "prettierPath": "prettier",
           "resetMocks": false,
           "resetModules": false,
@@ -266,6 +266,7 @@ exports[`ScriptTransformer passes expected transform options to getCacheKeyAsync
           "globalTeardown": undefined,
           "globals": Object {},
           "haste": Object {},
+          "id": "test",
           "injectGlobals": true,
           "moduleDirectories": Array [],
           "moduleFileExtensions": Array [
@@ -275,7 +276,6 @@ exports[`ScriptTransformer passes expected transform options to getCacheKeyAsync
           "moduleNameMapper": Array [],
           "modulePathIgnorePatterns": Array [],
           "modulePaths": Array [],
-          "name": "test",
           "prettierPath": "prettier",
           "resetMocks": false,
           "resetModules": false,

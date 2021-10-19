@@ -207,8 +207,8 @@ describe('HasteMap', () => {
     defaultConfig = {
       extensions: ['js', 'json'],
       hasteImplModulePath: require.resolve('./haste_impl.js'),
+      id: 'haste-map-test',
       maxWorkers: 1,
-      name: 'haste-map-test',
       platforms: ['ios', 'android'],
       resetCache: false,
       rootDir: path.join('/', 'project'),
