@@ -9,6 +9,7 @@
 
 ### Chore & Maintenance
 
+- `[expect]` `BigInt` global is always defined, don't check for its existence at runtime ([#11979](https://github.com/facebook/jest/pull/11979))
 - `[jest-config, jest-util]` Use `ci-info` instead of `is-ci` to detect CI environment ([#11973](https://github.com/facebook/jest/pull/11973))
 
 ### Performance
