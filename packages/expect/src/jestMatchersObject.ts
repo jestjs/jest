@@ -99,12 +99,18 @@ export const setMatchers = <State extends MatcherState = MatcherState>(
       }
 
       Object.defineProperty(expect, key, {
+        configurable: true,
+        enumerable: true,
         value: (...sample: [unknown, ...Array<unknown>]) =>
           new CustomMatcher(false, ...sample),
+        writable: true,
       });
       Object.defineProperty(expect.not, key, {
+        configurable: true,
+        enumerable: true,
         value: (...sample: [unknown, ...Array<unknown>]) =>
           new CustomMatcher(true, ...sample),
+        writable: true,
       });
     }
   });
