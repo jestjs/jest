@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[expect]` Make expect extension properties `configurable`
+- `[expect]` Make expect extension properties `configurable` ([11978](https://github.com/facebook/jest/pull/11978))
 
 ### Chore & Maintenance
 
