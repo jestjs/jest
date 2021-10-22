@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-circus, jest-jasmine2]` Avoid false concurrent test failures due to unhandled promise rejections
+
 ### Chore & Maintenance
 
 ### Performance
