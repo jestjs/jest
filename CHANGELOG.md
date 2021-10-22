@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[jest-circus, jest-jasmine2]` Avoid false concurrent test failures due to unhandled promise rejections
+- `[jest-circus, jest-jasmine2]` Avoid false concurrent test failures due to unhandled promise rejections ([#11987](https://github.com/facebook/jest/pull/11987))
 
 ### Chore & Maintenance
 
