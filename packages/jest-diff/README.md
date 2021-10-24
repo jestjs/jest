@@ -401,6 +401,7 @@ For other applications, you can provide an options object as a third argument:
 | `includeChangeCounts`             | `false`            |
 | `omitAnnotationLines`             | `false`            |
 | `patchColor`                      | `chalk.yellow`     |
+
 For more information about the options, see the following examples.
 
 ### Example of options for labels

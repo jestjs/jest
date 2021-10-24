@@ -487,7 +487,7 @@ const getConfig = (options?: OptionsReceived): Config => ({
       ? getColorsHighlight(options)
       : getColorsEmpty(),
   compareKeys:
-    options && options.compareKeys !== undefined
+    options && typeof options.compareKeys === 'function'
       ? options.compareKeys
       : DEFAULT_OPTIONS.compareKeys,
   escapeRegex: getEscapeRegex(options),
