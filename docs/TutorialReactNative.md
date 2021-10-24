@@ -30,8 +30,7 @@ Run `yarn test` to run tests with Jest.
 
 Let's create a [snapshot test](SnapshotTesting.md) for a small intro component with a few views and text components and some styles:
 
-```tsx
-// Intro.js
+```tsx title="Intro.js"
 import React, {Component} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 
@@ -72,8 +71,7 @@ export default Intro;
 
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
 
-```tsx
-// __tests__/Intro-test.js
+```tsx title="__tests__/Intro-test.js"
 import React from 'react';
 import renderer from 'react-test-renderer';
 import Intro from '../Intro';
@@ -86,8 +84,7 @@ test('renders correctly', () => {
 
 When you run `yarn test` or `jest`, this will produce an output file like this:
 
-```javascript
-// __tests__/__snapshots__/Intro-test.js.snap
+```javascript title="__tests__/__snapshots__/Intro-test.js.snap"
 exports[`Intro renders correctly 1`] = `
 <View
   style={

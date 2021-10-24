@@ -53,8 +53,7 @@ You can also hook up puppeteer from scratch. The basic idea is to:
 
 Here's an example of the GlobalSetup script
 
-```js
-// setup.js
+```js title="setup.js"
 const {mkdir, writeFile} = require('fs').promises;
 const os = require('os');
 const path = require('path');
@@ -76,8 +75,7 @@ module.exports = async function () {
 
 Then we need a custom Test Environment for puppeteer
 
-```js
-// puppeteer_environment.js
+```js title="puppeteer_environment.js"
 const {readFile} = require('fs').promises;
 const os = require('os');
 const path = require('path');
@@ -119,8 +117,7 @@ module.exports = PuppeteerEnvironment;
 
 Finally, we can close the puppeteer instance and clean-up the file
 
-```js
-// teardown.js
+```js title="teardown.js"
 const fs = require('fs').promises;
 const os = require('os');
 const path = require('path');
@@ -137,8 +134,7 @@ module.exports = async function () {
 
 With all the things set up, we can now write our tests like this:
 
-```js
-// test.js
+```js title="test.js"
 const timeout = 5000;
 
 describe(

@@ -115,8 +115,7 @@ Most real-world examples actually involve getting ahold of a mock function on a 
 
 Suppose we have a class that fetches users from our API. The class uses [axios](https://github.com/axios/axios) to call the API then returns the `data` attribute which contains all the users:
 
-```js
-// users.js
+```js title="users.js"
 import axios from 'axios';
 
 class Users {
@@ -132,8 +131,7 @@ Now, in order to test this method without actually hitting the API (and thus cre
 
 Once we mock the module we can provide a `mockResolvedValue` for `.get` that returns the data we want our test to assert against. In effect, we are saying that we want `axios.get('/users.json')` to return a fake response.
 
-```js
-// users.test.js
+```js title="users.test.js"
 import axios from 'axios';
 import Users from './users';
 
@@ -155,8 +153,7 @@ test('should fetch users', () => {
 
 Subsets of a module can be mocked and the rest of the module can keep their actual implementation:
 
-```js
-// foo-bar-baz.js
+```js title="foo-bar-baz.js"
 export const foo = 'foo';
 export const bar = () => 'bar';
 export default () => 'baz';
@@ -201,13 +198,13 @@ myMockFn((err, val) => console.log(val));
 
 The `mockImplementation` method is useful when you need to define the default implementation of a mock function that is created from another module:
 
-```js
-// foo.js
+```js title="foo.js"
 module.exports = function () {
   // some implementation;
 };
+```
 
-// test.js
+```js title="test.js"
 jest.mock('../foo'); // this happens automatically with automocking
 const foo = require('../foo');
 

@@ -25,8 +25,7 @@ Jest configuration:
 
 Example:
 
-```js
-// utils.js
+```js title="utils.js"
 export default {
   authorize: () => {
     return 'token';
@@ -34,8 +33,7 @@ export default {
 };
 ```
 
-```js
-// __tests__/disableAutomocking.js
+```js title="__tests__/disableAutomocking.js"
 import utils from '../utils';
 
 jest.disableAutomock();
@@ -65,8 +63,7 @@ Returns the `jest` object for chaining.
 
 Example:
 
-```js
-// utils.js
+```js title="utils.js"
 export default {
   authorize: () => {
     return 'token';
@@ -75,8 +72,7 @@ export default {
 };
 ```
 
-```js
-// __tests__/enableAutomocking.js
+```js title="__tests__/enableAutomocking.js"
 jest.enableAutomock();
 
 import utils from '../utils';
@@ -102,8 +98,7 @@ This is useful when you want to create a [manual mock](ManualMocks.md) that exte
 
 Example:
 
-```js
-// utils.js
+```js title="utils.js"
 export default {
   authorize: () => {
     return 'token';
@@ -112,8 +107,7 @@ export default {
 };
 ```
 
-```js
-// __tests__/createMockFromModule.test.js
+```js title="__tests__/createMockFromModule.test.js"
 const utils = jest.createMockFromModule('../utils').default;
 utils.isAuthorized = jest.fn(secret => secret === 'not wizard');
 
@@ -147,8 +141,7 @@ Creates a new property with the same primitive value as the original property.
 
 Example:
 
-```js
-// example.js
+```js title="example.js"
 module.exports = {
   function: function square(a, b) {
     return a * b;
@@ -178,8 +171,7 @@ module.exports = {
 };
 ```
 
-```js
-// __tests__/example.test.js
+```js title="__tests__/example.test.js"
 const example = jest.createMockFromModule('./example');
 
 test('should run example code', () => {
@@ -220,11 +212,11 @@ test('should run example code', () => {
 
 Mocks a module with an auto-mocked version when it is being required. `factory` and `options` are optional. For example:
 
-```js
-// banana.js
+```js title="banana.js"
 module.exports = () => 'banana';
+```
 
-// __tests__/test.js
+```js title="__tests__/test.js"
 jest.mock('../banana');
 
 const banana = require('../banana'); // banana will be explicitly mocked.

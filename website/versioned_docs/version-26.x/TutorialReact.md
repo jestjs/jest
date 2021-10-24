@@ -46,8 +46,7 @@ Your `package.json` should look something like this (where `<current-version>` i
   }
 ```
 
-```js
-// babel.config.js
+```js title="babel.config.js"
 module.exports = {
   presets: ['@babel/preset-env', '@babel/preset-react'],
 };
@@ -59,8 +58,7 @@ module.exports = {
 
 Let's create a [snapshot test](SnapshotTesting.md) for a Link component that renders hyperlinks:
 
-```tsx
-// Link.react.js
+```tsx title="Link.react.js"
 import React, {useState} from 'react';
 
 const STATUS = {
@@ -98,8 +96,7 @@ export default Link;
 
 Now let's use React's test renderer and Jest's snapshot feature to interact with the component and capture the rendered output and create a snapshot file:
 
-```tsx
-// Link.react.test.js
+```tsx title="Link.react.test.js"
 import React from 'react';
 import renderer from 'react-test-renderer';
 import Link from '../Link.react';
@@ -127,8 +124,7 @@ test('Link changes the class when hovered', () => {
 
 When you run `yarn test` or `jest`, this will produce an output file like this:
 
-```javascript
-// __tests__/__snapshots__/Link.react.test.js.snap
+```javascript title="__tests__/__snapshots__/Link.react.test.js.snap"
 exports[`Link changes the class when hovered 1`] = `
 <a
   className="normal"
@@ -208,8 +204,7 @@ You have to run `yarn add --dev @testing-library/react` to use react-testing-lib
 
 Let's implement a checkbox which swaps between two labels:
 
-```tsx
-// CheckboxWithLabel.js
+```tsx title="CheckboxWithLabel.js"
 import React, {useState} from 'react';
 
 const CheckboxWithLabel = ({labelOn, labelOff}) => {
@@ -230,8 +225,7 @@ const CheckboxWithLabel = ({labelOn, labelOff}) => {
 export default CheckboxWithLabel;
 ```
 
-```tsx
-// __tests__/CheckboxWithLabel-test.js
+```tsx title="__tests__/CheckboxWithLabel-test.js"
 import React from 'react';
 import {cleanup, fireEvent, render} from '@testing-library/react';
 import CheckboxWithLabel from '../CheckboxWithLabel';
@@ -261,9 +255,7 @@ You have to run `yarn add --dev enzyme` to use Enzyme. If you are using a React 
 
 Let's rewrite the test from above using Enzyme instead of react-testing-library. We use Enzyme's [shallow renderer](http://airbnb.io/enzyme/docs/api/shallow.html) in this example.
 
-```tsx
-// __tests__/CheckboxWithLabel-test.js
-
+```tsx title="__tests__/CheckboxWithLabel-test.js"
 import React from 'react';
 import {shallow} from 'enzyme';
 import CheckboxWithLabel from '../CheckboxWithLabel';
@@ -286,8 +278,7 @@ The code for this example is available at [examples/enzyme](https://github.com/f
 
 If you need more advanced functionality, you can also build your own transformer. Instead of using `babel-jest`, here is an example of using `@babel/core`:
 
-```javascript
-// custom-transformer.js
+```javascript title="custom-transformer.js"
 'use strict';
 
 const {transform} = require('@babel/core');

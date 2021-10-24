@@ -16,8 +16,7 @@ Jest's configuration can be defined in the `package.json` file of your project, 
 
 Or through JavaScript:
 
-```js
-// jest.config.js
+```js title="jest.config.js"
 // Sync object
 /** @type {import('@jest/types').Config.InitialOptions} */
 const config = {
@@ -36,8 +35,7 @@ module.exports = async () => {
 
 Or through TypeScript (if `ts-node` is installed):
 
-```ts
-// jest.config.ts
+```ts title="jest.config.ts"
 import type {Config} from '@jest/types';
 
 // Sync object
@@ -73,8 +71,7 @@ These options let you control Jest's behavior in your `package.json` file. The J
 
 You can retrieve Jest's default options to expand them if needed:
 
-```js
-// jest.config.js
+```js title="jest.config.js"
 const {defaults} = require('jest-config');
 module.exports = {
   // ...
@@ -99,8 +96,7 @@ This option tells Jest that all imported modules in your tests should be mocked 
 
 Example:
 
-```js
-// utils.js
+```js title="utils.js"
 export default {
   authorize: () => {
     return 'token';
@@ -404,9 +400,7 @@ Test files are normally ignored from collecting code coverage. With this option,
 
 For example, if you have tests in source files named with `.t.js` extension as following:
 
-```javascript
-// sum.t.js
-
+```javascript title="sum.t.js"
 export function sum(a, b) {
   return a + b;
 }
@@ -464,8 +458,7 @@ _Note: While code transformation is applied to the linked setup-file, Jest will 
 
 Example:
 
-```js
-// setup.js
+```js title="setup.js"
 module.exports = async () => {
   // ...
   // Set reference to mongod in order to close the server during teardown.
@@ -473,8 +466,7 @@ module.exports = async () => {
 };
 ```
 
-```js
-// teardown.js
+```js title="teardown.js"
 module.exports = async function () {
   await global.__MONGOD__.stop();
 };
@@ -735,8 +727,7 @@ Custom reporter modules must define a class that takes a `GlobalConfig` and repo
 
 Example reporter:
 
-```js
-// my-custom-reporter.js
+```js title="my-custom-reporter.js"
 class MyCustomReporter {
   constructor(globalConfig, options) {
     this._globalConfig = globalConfig;
@@ -816,8 +807,7 @@ For example, if you want to respect Browserify's [`"browser"` field](https://git
 }
 ```
 
-```js
-// resolver.js
+```js title="resolver.js"
 const browserResolve = require('browser-resolve');
 
 module.exports = browserResolve.sync;
@@ -1303,8 +1293,7 @@ Example:
 
 Sort test path alphabetically.
 
-```js
-// testSequencer.js
+```js title="testSequencer.js"
 const Sequencer = require('@jest/test-sequencer').default;
 
 class CustomSequencer extends Sequencer {
