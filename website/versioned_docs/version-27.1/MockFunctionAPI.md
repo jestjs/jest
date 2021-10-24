@@ -136,6 +136,7 @@ module.exports = class SomeClass {
   m(a, b) {}
 };
 ```
+
 ```js title="OtherModule.test.js"
 jest.mock('./SomeClass'); // this happens automatically with automocking
 const SomeClass = require('./SomeClass');
