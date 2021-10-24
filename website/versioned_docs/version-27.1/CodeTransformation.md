@@ -138,8 +138,7 @@ While `babel-jest` by default will transpile TypeScript files, Babel will not ve
 
 Importing images is a way to include them in your browser bundle, but they are not valid JavaScript. One way of handling it in Jest is to replace the imported value with its filename.
 
-```js
-// fileTransformer.js
+```js title="fileTransformer.js"
 const path = require('path');
 
 module.exports = {
@@ -149,9 +148,7 @@ module.exports = {
 };
 ```
 
-```js
-// jest.config.js
-
+```js title="jest.config.js"
 module.exports = {
   transform: {
     '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':

@@ -123,9 +123,7 @@ Module used for parallelization of tasks. Exports a class `Worker` that takes th
 
 ### Example
 
-```javascript
-// heavy-task.js
-
+```javascript title="heavy-task.js"
 module.exports = {
   myHeavyTask: args => {
     // long running CPU intensive task.
@@ -133,9 +131,7 @@ module.exports = {
 };
 ```
 
-```javascript
-// main.js
-
+```javascript title="main.js"
 async function main() {
   const worker = new Worker(require.resolve('./heavy-task.js'));
 

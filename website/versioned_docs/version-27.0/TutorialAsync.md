@@ -7,8 +7,7 @@ First, enable Babel support in Jest as documented in the [Getting Started](Getti
 
 Let's implement a module that fetches user data from an API and returns the user name.
 
-```js
-// user.js
+```js title="user.js"
 import request from './request';
 
 export function getUserName(userID) {
@@ -20,8 +19,7 @@ In the above implementation, we expect the `request.js` module to return a promi
 
 Now imagine an implementation of `request.js` that goes to the network and fetches some user data:
 
-```js
-// request.js
+```js title="request.js"
 const http = require('http');
 
 export default function request(url) {
@@ -40,8 +38,7 @@ export default function request(url) {
 
 Because we don't want to go to the network in our test, we are going to create a manual mock for our `request.js` module in the `__mocks__` folder (the folder is case-sensitive, `__MOCKS__` will not work). It could look something like this:
 
-```js
-// __mocks__/request.js
+```js title="__mocks__/request.js"
 const users = {
   4: {name: 'Mark'},
   5: {name: 'Paul'},
@@ -63,8 +60,7 @@ export default function request(url) {
 
 Now let's write a test for our async functionality.
 
-```js
-// __tests__/user-test.js
+```js title="__tests__/user-test.js"
 jest.mock('../request');
 
 import * as user from '../user';
