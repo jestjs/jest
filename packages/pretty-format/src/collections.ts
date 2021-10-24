@@ -6,10 +6,14 @@
  *
  */
 
+import type {CompareKeys} from 'jest-diff/src/types';
 import type {Config, Printer, Refs} from './types';
 
-const getKeysOfEnumerableProperties = (object: Record<string, unknown>) => {
-  const keys: Array<string | symbol> = Object.keys(object).sort();
+const getKeysOfEnumerableProperties = (
+  object: Record<string, unknown>,
+  compareKeys: CompareKeys,
+) => {
+  const keys: Array<string | symbol> = Object.keys(object).sort(compareKeys);
 
   if (Object.getOwnPropertySymbols) {
     Object.getOwnPropertySymbols(object).forEach(symbol => {
@@ -175,7 +179,7 @@ export function printObjectProperties(
   printer: Printer,
 ): string {
   let result = '';
-  const keys = getKeysOfEnumerableProperties(val);
+  const keys = getKeysOfEnumerableProperties(val, config.compareKeys);
 
   if (keys.length) {
     result += config.spacingOuter;

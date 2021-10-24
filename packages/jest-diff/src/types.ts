@@ -7,6 +7,8 @@
 
 export type DiffOptionsColor = (arg: string) => string; // subset of Chalk type
 
+export type CompareKeys = ((a: string, b: string) => number) | undefined;
+
 export type DiffOptions = {
   aAnnotation?: string;
   aColor?: DiffOptionsColor;
@@ -25,6 +27,7 @@ export type DiffOptions = {
   includeChangeCounts?: boolean;
   omitAnnotationLines?: boolean;
   patchColor?: DiffOptionsColor;
+  compareKeys?: CompareKeys;
 };
 
 export type DiffOptionsNormalized = {
@@ -39,6 +42,7 @@ export type DiffOptionsNormalized = {
   commonColor: DiffOptionsColor;
   commonIndicator: string;
   commonLineTrailingSpaceColor: DiffOptionsColor;
+  compareKeys: CompareKeys;
   contextLines: number;
   emptyFirstOrLastLinePlaceholder: string;
   expand: boolean;

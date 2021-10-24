@@ -5,6 +5,8 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import type {CompareKeys} from 'jest-diff/src/types';
+
 export type Colors = {
   comment: {close: string; open: string};
   content: {close: string; open: string};
@@ -34,6 +36,7 @@ type ThemeReceived = {
 
 export type Options = {
   callToJSON: boolean;
+  compareKeys: CompareKeys;
   escapeRegex: boolean;
   escapeString: boolean;
   highlight: boolean;
@@ -48,6 +51,7 @@ export type Options = {
 
 export interface PrettyFormatOptions {
   callToJSON?: boolean;
+  compareKeys?: CompareKeys;
   escapeRegex?: boolean;
   escapeString?: boolean;
   highlight?: boolean;
@@ -64,6 +68,7 @@ export type OptionsReceived = PrettyFormatOptions;
 
 export type Config = {
   callToJSON: boolean;
+  compareKeys: CompareKeys;
   colors: Colors;
   escapeRegex: boolean;
   escapeString: boolean;

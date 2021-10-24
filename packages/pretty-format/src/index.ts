@@ -396,6 +396,7 @@ const DEFAULT_THEME_KEYS = Object.keys(DEFAULT_THEME) as Array<
 
 export const DEFAULT_OPTIONS: Options = {
   callToJSON: true,
+  compareKeys: undefined,
   escapeRegex: false,
   escapeString: true,
   highlight: false,
@@ -485,6 +486,10 @@ const getConfig = (options?: OptionsReceived): Config => ({
     options && options.highlight
       ? getColorsHighlight(options)
       : getColorsEmpty(),
+  compareKeys:
+    options && options.compareKeys !== undefined
+      ? options.compareKeys
+      : DEFAULT_OPTIONS.compareKeys,
   escapeRegex: getEscapeRegex(options),
   escapeString: getEscapeString(options),
   indent:

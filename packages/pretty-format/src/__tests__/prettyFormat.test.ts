@@ -335,6 +335,24 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('Object {\n  "a": 2,\n  "b": 1,\n}');
   });
 
+  it('prints an object with keys in their original order', () => {
+    /* eslint-disable sort-keys */
+    const val = {b: 1, a: 2};
+    /* eslint-enable sort-keys */
+    const compareKeys = () => 0;
+    expect(prettyFormat(val, {compareKeys})).toEqual(
+      'Object {\n  "b": 1,\n  "a": 2,\n}',
+    );
+  });
+
+  it('prints an object with keys sorted in reverse order', () => {
+    const val = {a: 1, b: 2};
+    const compareKeys = (a: string, b: string) => (a > b ? -1 : 1);
+    expect(prettyFormat(val, {compareKeys})).toEqual(
+      'Object {\n  "b": 2,\n  "a": 1,\n}',
+    );
+  });
+
   it('prints regular expressions from constructors', () => {
     const val = new RegExp('regexp');
     expect(prettyFormat(val)).toEqual('/regexp/');

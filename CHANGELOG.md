@@ -10,6 +10,9 @@
 
 ## 27.3.1
 
+### Features
+- `[jest-diff, pretty-format]` Add `compareKeys` option for custom sorting of object keys 
+
 ### Fixes
 
 - `[expect]` Make `expect` extension properties `configurable` ([#11978](https://github.com/facebook/jest/pull/11978))
