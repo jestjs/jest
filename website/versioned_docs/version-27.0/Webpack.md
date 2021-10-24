@@ -72,7 +72,7 @@ yarn add --dev identity-obj-proxy
 
 Then all your className lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`). This is pretty handy for React [Snapshot Testing](SnapshotTesting.md).
 
-```json title="package.json" (for CSS Modules)
+```json title="package.json (for CSS Modules)"
 {
   "jest": {
     "moduleNameMapper": {
@@ -97,7 +97,7 @@ module.exports = {
 };
 ```
 
-```json title="package.json" (for custom transformers and CSS Modules)
+```json title="package.json (for custom transformers and CSS Modules)"
 {
   "jest": {
     "moduleNameMapper": {
