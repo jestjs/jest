@@ -84,7 +84,7 @@ test('renders correctly', () => {
 
 When you run `yarn test` or `jest`, this will produce an output file like this:
 
-```javascript title="__tests__/__snapshots__/Intro-test.js".snap
+```javascript title="__tests__/__snapshots__/Intro-test.js.snap"
 exports[`Intro renders correctly 1`] = `
 <View
   style={

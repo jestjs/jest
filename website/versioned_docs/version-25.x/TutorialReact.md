@@ -124,7 +124,7 @@ test('Link changes the class when hovered', () => {
 
 When you run `yarn test` or `jest`, this will produce an output file like this:
 
-```javascript title="__tests__/__snapshots__/Link.react.test.js".snap
+```javascript title="__tests__/__snapshots__/Link.react.test.js.snap"
 exports[`Link changes the class when hovered 1`] = `
 <a
   className="normal"
