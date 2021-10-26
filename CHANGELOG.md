@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[expect]` Allow again `expect.Matchers` generic with single value ([#11986](https://github.com/facebook/jest/pull/11986))
+- `[jest-transform]` Improve the invalid transformer module error message ([#11998](https://github.com/facebook/jest/pull/11998))
 
 ### Chore & Maintenance
 
