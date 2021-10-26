@@ -340,6 +340,26 @@ exports[`ScriptTransformer passes expected transform options to getCacheKeyAsync
 }
 `;
 
+exports[`ScriptTransformer throws an error if createTransformer returns object without \`process\` method 1`] = `
+"<red><bold>● Invalid transformer module:</></>
+<red>  \\"skipped-required-create-transformer-props-preprocessor\\" specified in the \\"transform\\" object of Jest configuration</>
+<red>  must export a \`process\` or \`processAsync\` or \`createTransformer\` function.</>
+<red></>
+<red>  Code Transformation Documentation:</>
+<red>  https://jestjs.io/docs/code-transformation</>
+<red></>"
+`;
+
+exports[`ScriptTransformer throws an error if neither \`process\` nor \`processAsync\` is defined 1`] = `
+"<red><bold>● Invalid transformer module:</></>
+<red>  \\"skipped-required-props-preprocessor\\" specified in the \\"transform\\" object of Jest configuration</>
+<red>  must export a \`process\` or \`processAsync\` or \`createTransformer\` function.</>
+<red></>
+<red>  Code Transformation Documentation:</>
+<red>  https://jestjs.io/docs/code-transformation</>
+<red></>"
+`;
+
 exports[`ScriptTransformer transforms a file async properly 1`] = `
 /* istanbul ignore next */
 function cov_25u22311x4() {

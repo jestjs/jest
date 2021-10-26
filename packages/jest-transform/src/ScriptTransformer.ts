@@ -10,6 +10,7 @@ import * as path from 'path';
 import {transformSync as babelTransform} from '@babel/core';
 // @ts-expect-error: should just be `require.resolve`, but the tests mess that up
 import babelPluginIstanbul from 'babel-plugin-istanbul';
+import chalk = require('chalk');
 import {fromSource as sourcemapFromSource} from 'convert-source-map';
 import stableStringify = require('fast-json-stable-stringify');
 import * as fs from 'graceful-fs';
@@ -250,6 +251,21 @@ class ScriptTransformer {
   }
 
   async loadTransformers(): Promise<void> {
+    const makeInvalidTransformerError = (transformPath: string) =>
+      chalk.red(
+        [
+          chalk.bold('\u25cf Invalid transformer module:'),
+          `  "${slash(
+            transformPath,
+          )}" specified in the "transform" object of Jest configuration`,
+          '  must export a `process` or `processAsync` or `createTransformer` function.',
+          '',
+          '  Code Transformation Documentation:',
+          '  https://jestjs.io/docs/code-transformation',
+          '',
+        ].join('\n'),
+      );
+
     await Promise.all(
       this._config.transform.map(
         async ([, transformPath, transformerConfig]) => {
@@ -258,7 +274,7 @@ class ScriptTransformer {
           );
 
           if (!transformer) {
-            throw new TypeError('Jest: a transform must export something.');
+            throw new Error(makeInvalidTransformerError(transformPath));
           }
           if (typeof transformer.createTransformer === 'function') {
             transformer = transformer.createTransformer(transformerConfig);
@@ -267,9 +283,7 @@ class ScriptTransformer {
             typeof transformer.process !== 'function' &&
             typeof transformer.processAsync !== 'function'
           ) {
-            throw new TypeError(
-              'Jest: a transform must export a `process` or `processAsync` function.',
-            );
+            throw new Error(makeInvalidTransformerError(transformPath));
           }
           const res = {transformer, transformerConfig};
           this._transformCache.set(transformPath, res);
