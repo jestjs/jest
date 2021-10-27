@@ -5,8 +5,7 @@ title: DOM Manipulation
 
 Another class of functions that is often considered difficult to test is code that directly manipulates the DOM. Let's see how we can test the following snippet of jQuery code that listens to a click event, fetches some data asynchronously and sets the content of a span.
 
-```javascript
-// displayUser.js
+```javascript title="displayUser.js"
 'use strict';
 
 const $ = require('jquery');
@@ -22,8 +21,7 @@ $('#button').click(() => {
 
 Again, we create a test file in the `__tests__/` folder:
 
-```javascript
-// __tests__/displayUser-test.js
+```javascript title="__tests__/displayUser-test.js"
 'use strict';
 
 jest.mock('../fetchCurrentUser');

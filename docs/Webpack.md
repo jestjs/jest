@@ -9,8 +9,7 @@ Jest can be used in projects that use [webpack](https://webpack.js.org/) to mana
 
 Let's start with a common sort of webpack config file and translate it to a Jest setup.
 
-```js
-// webpack.config.js
+```js title="webpack.config.js"
 module.exports = {
   module: {
     loaders: [
@@ -42,8 +41,7 @@ If you have JavaScript files that are transformed by Babel, you can [enable supp
 
 Next, let's configure Jest to gracefully handle asset files such as stylesheets and images. Usually, these files aren't particularly useful in tests so we can safely mock them out. However, if you are using CSS Modules then it's better to mock a proxy for your className lookups.
 
-```json
-// package.json
+```json title="package.json"
 {
   "jest": {
     "moduleNameMapper": {
@@ -56,15 +54,11 @@ Next, let's configure Jest to gracefully handle asset files such as stylesheets 
 
 And the mock files themselves:
 
-```js
-// __mocks__/styleMock.js
-
+```js title="__mocks__/styleMock.js"
 module.exports = {};
 ```
 
-```js
-// __mocks__/fileMock.js
-
+```js title="__mocks__/fileMock.js"
 module.exports = 'test-file-stub';
 ```
 
@@ -78,8 +72,7 @@ yarn add --dev identity-obj-proxy
 
 Then all your className lookups on the styles object will be returned as-is (e.g., `styles.foobar === 'foobar'`). This is pretty handy for React [Snapshot Testing](SnapshotTesting.md).
 
-```json
-// package.json (for CSS Modules)
+```json title="package.json (for CSS Modules)"
 {
   "jest": {
     "moduleNameMapper": {
@@ -94,8 +87,7 @@ Then all your className lookups on the styles object will be returned as-is (e.g
 
 If `moduleNameMapper` cannot fulfill your requirements, you can use Jest's [`transform`](Configuration.md#transform-objectstring-pathtotransformer--pathtotransformer-object) config option to specify how assets are transformed. For example, a transformer that returns the basename of a file (such that `require('logo.jpg');` returns `'logo'`) can be written as:
 
-```js
-// fileTransformer.js
+```js title="fileTransformer.js"
 const path = require('path');
 
 module.exports = {
@@ -105,8 +97,7 @@ module.exports = {
 };
 ```
 
-```json
-// package.json (for custom transformers and CSS Modules)
+```json title="package.json (for custom transformers and CSS Modules)"
 {
   "jest": {
     "moduleNameMapper": {
@@ -135,8 +126,7 @@ _Note: if you are using babel-jest with additional code preprocessors, you have 
 
 Now that Jest knows how to process our files, we need to tell it how to _find_ them. For webpack's `modulesDirectories`, and `extensions` options there are direct analogs in Jest's `moduleDirectories` and `moduleFileExtensions` options.
 
-```json
-// package.json
+```json title="package.json"
 {
   "jest": {
     "moduleFileExtensions": ["js", "jsx"],
@@ -154,8 +144,7 @@ Now that Jest knows how to process our files, we need to tell it how to _find_ t
 
 Similarly, webpack's `resolve.root` option functions like setting the `NODE_PATH` env variable, which you can set, or make use of the `modulePaths` option.
 
-```json
-// package.json
+```json title="package.json"
 {
   "jest": {
     "modulePaths": ["/shared/vendor/modules"],
@@ -171,8 +160,7 @@ Similarly, webpack's `resolve.root` option functions like setting the `NODE_PATH
 
 And finally, we have to handle the webpack `alias`. For that, we can make use of the `moduleNameMapper` option again.
 
-```json
-// package.json
+```json title="package.json"
 {
   "jest": {
     "modulePaths": ["/shared/vendor/modules"],
