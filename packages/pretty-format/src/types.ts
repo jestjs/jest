@@ -5,8 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {CompareKeys} from 'jest-diff/src/types';
-
 export type Colors = {
   comment: {close: string; open: string};
   content: {close: string; open: string};
@@ -33,6 +31,8 @@ type ThemeReceived = {
   tag?: string;
   value?: string;
 };
+
+export type CompareKeys = ((a: string, b: string) => number) | undefined;
 
 export type Options = {
   callToJSON: boolean;

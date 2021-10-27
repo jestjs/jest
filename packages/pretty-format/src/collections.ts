@@ -6,8 +6,7 @@
  *
  */
 
-import type {CompareKeys} from 'jest-diff/src/types';
-import type {Config, Printer, Refs} from './types';
+import type {CompareKeys, Config, Printer, Refs} from './types';
 
 const getKeysOfEnumerableProperties = (
   object: Record<string, unknown>,

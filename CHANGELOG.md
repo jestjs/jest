@@ -11,6 +11,7 @@
 ## 27.3.1
 
 ### Features
+
 - `[jest-diff, pretty-format]` Add `compareKeys` option for custom sorting of object keys ([#11992](https://github.com/facebook/jest/pull/11992))
 
 ### Fixes

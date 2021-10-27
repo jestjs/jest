@@ -4,10 +4,9 @@
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
  */
+import type {CompareKeys} from 'pretty-format';
 
 export type DiffOptionsColor = (arg: string) => string; // subset of Chalk type
-
-export type CompareKeys = ((a: string, b: string) => number) | undefined;
 
 export type DiffOptions = {
   aAnnotation?: string;

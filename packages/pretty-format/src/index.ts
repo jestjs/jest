@@ -45,6 +45,8 @@ export type {
   Printer,
   Refs,
   Theme,
+  PrettyFormatOptions,
+  CompareKeys,
 } from './types';
 
 const toString = Object.prototype.toString;

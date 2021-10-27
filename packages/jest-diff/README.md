@@ -616,8 +616,7 @@ If a content line is empty, then the corresponding comparison line is automatica
 
 ### Example of option for sorting object keys
 
-When two objects are compared their keys are printed in alphabetical order by default.
-If this was not the original order of the keys the diff becomes harder to read as the keys are not in their original position.
+When two objects are compared their keys are printed in alphabetical order by default. If this was not the original order of the keys the diff becomes harder to read as the keys are not in their original position.
 
 Use `compareKeys` to pass a function which will be used when sorting the object keys.
 
