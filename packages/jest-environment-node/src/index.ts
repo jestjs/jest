@@ -72,7 +72,7 @@ class NodeEnvironment implements JestEnvironment<Timer> {
     }
     // EventTarget is global in Node >= 15.4
     if (typeof EventTarget !== 'undefined') {
-      global.EventTarget = EventTarget;``
+      global.EventTarget = EventTarget;
     }
     // performance is global in Node >= 16
     if(typeof performance !=='undefined'){
