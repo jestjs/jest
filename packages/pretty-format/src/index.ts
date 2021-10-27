@@ -35,6 +35,7 @@ import type {
 
 export type {
   Colors,
+  CompareKeys,
   Config,
   Options,
   OptionsReceived,
@@ -42,11 +43,10 @@ export type {
   NewPlugin,
   Plugin,
   Plugins,
+  PrettyFormatOptions,
   Printer,
   Refs,
   Theme,
-  PrettyFormatOptions,
-  CompareKeys,
 } from './types';
 
 const toString = Object.prototype.toString;
