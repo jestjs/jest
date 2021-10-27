@@ -16,6 +16,7 @@
   "dependencies": {
     "@jest/environment": "^27.3.1",
     "@jest/fake-timers": "^27.3.1",
+    "@types/jsdom": "^16.2.4",
     "@jest/types": "^27.2.5",
     "@types/node": "*",
     "jest-mock": "^27.3.0",
@@ -23,8 +24,7 @@
     "jsdom": "^16.6.0"
   },
   "devDependencies": {
-    "@jest/test-utils": "^27.3.1",
-    "@types/jsdom": "^16.2.4"
+    "@jest/test-utils": "^27.3.1"
   },
   "engines": {
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"
