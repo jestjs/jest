@@ -13,6 +13,7 @@ import {CustomConsole} from '@jest/console';
 import {
   AggregatedResult,
   Test,
+  TestResultsProcessor,
   formatTestResults,
   makeEmptyAggregatedTestResult,
 } from '@jest/test-result';
@@ -96,7 +97,10 @@ const processResults = async (
   }
 
   if (testResultsProcessor) {
-    runResults = require(testResultsProcessor)(runResults);
+    const processor = await requireOrImportModule<TestResultsProcessor>(
+      testResultsProcessor,
+    );
+    runResults = processor(runResults);
   }
   if (isJSON) {
     if (outputFile) {
