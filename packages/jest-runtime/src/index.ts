@@ -622,7 +622,7 @@ export default class Runtime {
   async unstable_importModule(
     from: Config.Path,
     moduleName?: string,
-  ): Promise<void> {
+  ): Promise<VMModule | void> {
     invariant(
       runtimeSupportsVmModules,
       'You need to run with a version of node that supports ES Modules in the VM API. See https://jestjs.io/docs/ecmascript-modules',
