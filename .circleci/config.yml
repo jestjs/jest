@@ -49,7 +49,7 @@ jobs:
     steps:
       - checkout
       - node/install:
-          node-version: '14'
+          node-version: '16'
           install-npm: false
       - node/install-packages: *install
       - run:
@@ -64,7 +64,7 @@ workflows:
       - test-node:
           matrix:
             parameters:
-              node-version: ['14']
+              node-version: ['16']
       - test-node:
           name: test-node-partial-<< matrix.node-version >>
           partial: true
