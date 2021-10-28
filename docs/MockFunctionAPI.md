@@ -131,13 +131,13 @@ mockFn.mock.calls[1][0] === 1; // true
 
 `mockImplementation` can also be used to mock class constructors:
 
-```js
-// SomeClass.js
+```js title="SomeClass.js"
 module.exports = class SomeClass {
   m(a, b) {}
 };
+```
 
-// OtherModule.test.js
+```js title="OtherModule.test.js"
 jest.mock('./SomeClass'); // this happens automatically with automocking
 const SomeClass = require('./SomeClass');
 const mMock = jest.fn();
