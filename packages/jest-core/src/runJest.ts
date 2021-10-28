@@ -100,7 +100,7 @@ const processResults = async (
     const processor = await requireOrImportModule<TestResultsProcessor>(
       testResultsProcessor,
     );
-    processor(runResults);
+    runResults = processor(runResults);
   }
   if (isJSON) {
     if (outputFile) {
