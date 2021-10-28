@@ -2,6 +2,8 @@
 
 ### Features
 
+- `[jest-core]` Add support for `testResultsProcessor` written in ESM ([#12006](https://github.com/facebook/jest/pull/12006))
+
 ### Fixes
 
 - `[expect]` Allow again `expect.Matchers` generic with single value ([#11986](https://github.com/facebook/jest/pull/11986))
