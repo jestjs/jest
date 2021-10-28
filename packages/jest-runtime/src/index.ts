@@ -338,7 +338,7 @@ export default class Runtime {
     },
   ): Promise<Context> {
     createDirectory(config.cacheDirectory);
-    const instance = Runtime.createHasteMap(config, {
+    const instance = await Runtime.createHasteMap(config, {
       console: options.console,
       maxWorkers: options.maxWorkers,
       resetCache: !config.cache,
@@ -358,7 +358,7 @@ export default class Runtime {
   static createHasteMap(
     config: Config.ProjectConfig,
     options?: HasteMapOptions,
-  ): HasteMap {
+  ): Promise<HasteMap> {
     const ignorePatternParts = [
       ...config.modulePathIgnorePatterns,
       ...(options && options.watch ? config.watchPathIgnorePatterns : []),

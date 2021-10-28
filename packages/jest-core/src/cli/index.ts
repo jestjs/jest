@@ -134,7 +134,7 @@ const buildContextsAndHasteMaps = async (
   const contexts = await Promise.all(
     configs.map(async (config, index) => {
       createDirectory(config.cacheDirectory);
-      const hasteMapInstance = Runtime.createHasteMap(config, {
+      const hasteMapInstance = await Runtime.createHasteMap(config, {
         console: new CustomConsole(outputStream, outputStream),
         maxWorkers: Math.max(
           1,

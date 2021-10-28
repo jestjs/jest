@@ -10,6 +10,7 @@
 
 import * as path from 'path';
 import * as fs from 'graceful-fs';
+import {onNodeVersions} from '@jest/test-utils';
 import H from '../constants';
 import {getSha1, worker} from '../worker';
 
@@ -89,6 +90,22 @@ describe('worker', () => {
       }),
     ).toEqual({
       dependencies: ['Banana', 'Strawberry', 'Lime'],
+    });
+  });
+
+  // The versions where vm.Module exists and commonjs with "exports" is not broken
+  onNodeVersions('>=12.16.0', () => {
+    it('accepts a custom dependency extractor written in ESM', async () => {
+      expect(
+        await worker({
+          computeDependencies: true,
+          dependencyExtractor: path.join(__dirname, 'dependencyExtractor.mjs'),
+          filePath: path.join('/project', 'fruits', 'Pear.js'),
+          rootDir,
+        }),
+      ).toEqual({
+        dependencies: ['Banana', 'Strawberry', 'Lime'],
+      });
     });
   });
 

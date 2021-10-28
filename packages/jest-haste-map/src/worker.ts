@@ -8,6 +8,7 @@
 import {createHash} from 'crypto';
 import * as path from 'path';
 import * as fs from 'graceful-fs';
+import {requireOrImportModule} from 'jest-util';
 import blacklist from './blacklist';
 import H from './constants';
 import * as dependencyExtractor from './lib/dependencyExtractor';
@@ -73,11 +74,9 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
       const content = getContent();
       dependencies = Array.from(
         data.dependencyExtractor
-          ? require(data.dependencyExtractor).extract(
-              content,
-              filePath,
-              dependencyExtractor.extract,
-            )
+          ? (
+              await requireOrImportModule<any>(data.dependencyExtractor, false)
+            ).extract(content, filePath, dependencyExtractor.extract)
           : dependencyExtractor.extract(content),
       );
     }
