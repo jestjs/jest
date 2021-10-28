@@ -97,9 +97,10 @@ const processResults = async (
   }
 
   if (testResultsProcessor) {
-    runResults = (
-      await requireOrImportModule<TestResultsProcessor>(testResultsProcessor)
-    )(runResults);
+    const processor = await requireOrImportModule<TestResultsProcessor>(
+      testResultsProcessor,
+    );
+    processor(runResults);
   }
   if (isJSON) {
     if (outputFile) {
