@@ -1,0 +1,12 @@
+{
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "\\.js$": "<rootDir>/transformer.js"
+    },
+    "snapshotSerializers": [
+      "./plugins/foo",
+      "<rootDir>/plugins/bar"
+    ]
+  }
+}
