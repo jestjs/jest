@@ -10,7 +10,7 @@ import type {TestFileEvent, TestResult} from '@jest/test-result';
 import type {Config} from '@jest/types';
 import type Runtime from 'jest-runtime';
 import type {SnapshotState} from 'jest-snapshot';
-import {deepCyclicCopy} from 'jest-util';
+import {deepCyclicCopy, interopRequireDefault} from 'jest-util';
 
 const FRAMEWORK_INITIALIZER = require.resolve('./jestAdapterInit');
 
@@ -27,11 +27,28 @@ const jestAdapter = async (
       FRAMEWORK_INITIALIZER,
     );
 
+  const localRequire = async <T = unknown>(
+    path: string,
+    applyInteropRequireDefault: boolean = false,
+  ): Promise<T> => {
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
+
+    if (esm) {
+      return runtime.unstable_importModule(path) as any;
+    } else {
+      const requiredModule = runtime.requireModule<T>(path);
+      if (!applyInteropRequireDefault) {
+        return requiredModule;
+      }
+      return interopRequireDefault(requiredModule).default;
+    }
+  };
+
   const {globals, snapshotState} = await initialize({
     config,
     environment,
     globalConfig,
-    localRequire: runtime.requireModule.bind(runtime),
+    localRequire,
     parentProcess: process,
     runtime,
     sendMessageToJest,
@@ -76,22 +93,10 @@ const jestAdapter = async (
 
   const setupAfterEnvStart = Date.now();
   for (const path of config.setupFilesAfterEnv) {
-    const esm = runtime.unstable_shouldLoadAsEsm(path);
-
-    if (esm) {
-      await runtime.unstable_importModule(path);
-    } else {
-      runtime.requireModule(path);
-    }
+    await localRequire(path);
   }
   const setupAfterEnvEnd = Date.now();
-  const esm = runtime.unstable_shouldLoadAsEsm(testPath);
-
-  if (esm) {
-    await runtime.unstable_importModule(testPath);
-  } else {
-    runtime.requireModule(testPath);
-  }
+  await localRequire(testPath);
 
   const setupAfterEnvPerfStats = {
     setupAfterEnvEnd,

@@ -344,4 +344,42 @@ describe('transform-esm-testrunner', () => {
     expect(json.success).toBe(true);
     expect(json.numPassedTests).toBe(1);
   });
+
+  describe('transform-esm-snapshotResolver', () => {
+    const dir = path.resolve(
+      __dirname,
+      '..',
+      'transform/transform-esm-snapshotResolver',
+    );
+    const snapshotDir = path.resolve(dir, '__snapshots__');
+    const snapshotFile = path.resolve(snapshotDir, 'snapshot.test.js.snap');
+
+    const cleanupTest = () => {
+      if (fs.existsSync(snapshotFile)) {
+        fs.unlinkSync(snapshotFile);
+      }
+      if (fs.existsSync(snapshotDir)) {
+        fs.rmdirSync(snapshotDir);
+      }
+    };
+
+    beforeAll(() => {
+      runYarnInstall(dir);
+    });
+    beforeEach(cleanupTest);
+    afterAll(cleanupTest);
+
+    it('should transform the snapshotResolver', () => {
+      const result = runJest(dir, ['-w=1', '--no-cache', '--ci=false'], {
+        nodeOptions: '--experimental-vm-modules --no-warnings',
+      });
+
+      expect(result.stderr).toMatch('1 snapshot written from 1 test suite');
+
+      const contents = require(snapshotFile);
+      expect(contents).toHaveProperty(
+        'snapshots are written to custom location 1',
+      );
+    });
+  });
 });

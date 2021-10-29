@@ -769,7 +769,11 @@ export default class Runtime {
 
     const module = await this.loadEsmModule(modulePath, query);
 
-    return this.linkAndEvaluateModule(module);
+    const evaluatedModule = await this.linkAndEvaluateModule(module);
+
+    return evaluatedModule instanceof SourceTextModule
+      ? evaluatedModule.namespace.default
+      : evaluatedModule;
   }
 
   private loadCjsAsEsm(from: string, modulePath: string, context: VMContext) {

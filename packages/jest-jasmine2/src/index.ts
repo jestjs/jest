@@ -12,7 +12,7 @@ import type {TestResult} from '@jest/test-result';
 import type {Config, Global} from '@jest/types';
 import type Runtime from 'jest-runtime';
 import type {SnapshotState} from 'jest-snapshot';
-import {ErrorWithStack} from 'jest-util';
+import {interopRequireDefault, ErrorWithStack} from 'jest-util';
 import installEach from './each';
 import {installErrorOnPrivate} from './errorOnPrivate';
 import type Spec from './jasmine/Spec';
@@ -163,6 +163,23 @@ export default async function jasmine2(
     });
   }
 
+  const localRequire = async <T = unknown>(
+    path: string,
+    applyInteropRequireDefault: boolean = false,
+  ): Promise<T> => {
+    const esm = runtime.unstable_shouldLoadAsEsm(path);
+
+    if (esm) {
+      return runtime.unstable_importModule(path) as any;
+    } else {
+      const requiredModule = runtime.requireModule<T>(path);
+      if (!applyInteropRequireDefault) {
+        return requiredModule;
+      }
+      return interopRequireDefault(requiredModule).default;
+    }
+  };
+
   const snapshotState: SnapshotState = await runtime
     .requireInternalModule<typeof import('./setup_jest_globals')>(
       require.resolve('./setup_jest_globals.js'),
@@ -170,7 +187,7 @@ export default async function jasmine2(
     .default({
       config,
       globalConfig,
-      localRequire: runtime.requireModule.bind(runtime),
+      localRequire,
       testPath,
     });
 

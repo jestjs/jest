@@ -81,6 +81,45 @@ describe('custom resolver in project config', () => {
   });
 });
 
+describe('custom resolver written in ESM in project config', () => {
+  let snapshotResolver: SnapshotResolver;
+  const customSnapshotResolverFile = path.join(
+    __dirname,
+    'fixtures',
+    'customSnapshotResolver.mjs',
+  );
+  const projectConfig = makeProjectConfig({
+    rootDir: 'custom1',
+    snapshotResolver: customSnapshotResolverFile,
+  });
+
+  beforeEach(async () => {
+    snapshotResolver = await buildSnapshotResolver(projectConfig);
+  });
+
+  it('returns cached object if called multiple times', async () => {
+    await expect(buildSnapshotResolver(projectConfig)).resolves.toBe(
+      snapshotResolver,
+    );
+  });
+
+  it('resolveSnapshotPath()', () => {
+    expect(
+      snapshotResolver.resolveSnapshotPath(
+        path.resolve('/abc/cde/__tests__/a.test.js'),
+      ),
+    ).toBe(path.resolve('/abc/cde/__snapshots__/a.test.js.snap'));
+  });
+
+  it('resolveTestPath()', () => {
+    expect(
+      snapshotResolver.resolveTestPath(
+        path.resolve('/abc', 'cde', '__snapshots__', 'a.test.js.snap'),
+      ),
+    ).toBe(path.resolve('/abc/cde/__tests__/a.test.js'));
+  });
+});
+
 describe('malformed custom resolver in project config', () => {
   const newProjectConfig = (filename: string) => {
     const customSnapshotResolverFile = path.join(
