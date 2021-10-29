@@ -2,10 +2,14 @@
 
 ### Features
 
+- `[jest-core]` Add support for `testResultsProcessor` written in ESM ([#12006](https://github.com/facebook/jest/pull/12006))
+- `[jest-diff, pretty-format]` Add `compareKeys` option for custom sorting of object keys ([#11992](https://github.com/facebook/jest/pull/11992))
+
 ### Fixes
 
 - `[expect]` Allow again `expect.Matchers` generic with single value ([#11986](https://github.com/facebook/jest/pull/11986))
-- `[jest-transform]` Improve the invalid transformer module error message ([#11998](https://github.com/facebook/jest/pull/11998))
+- `[jest-environment-jsdom]` Add `@types/jsdom` dependency ([#11999](https://github.com/facebook/jest/pull/11999))
+- `[jest-transform]` Improve error and warning messages ([#11998](https://github.com/facebook/jest/pull/11998))
 
 ### Chore & Maintenance
 
