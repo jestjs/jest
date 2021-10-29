@@ -506,9 +506,7 @@ describe('ScriptTransformer', () => {
     const scriptTransformer = await createScriptTransformer(config);
     expect(() =>
       scriptTransformer.transformSource('sample.js', '', {instrument: false}),
-    ).toThrow(
-      'Jest: synchronous transformer skipped-required-props-preprocessor-only-async must export a "process" function.',
-    );
+    ).toThrowErrorMatchingSnapshot();
   });
 
   it('(in async mode) handles only sync `process`', async () => {

@@ -10,7 +10,6 @@ import * as path from 'path';
 import {transformSync as babelTransform} from '@babel/core';
 // @ts-expect-error: should just be `require.resolve`, but the tests mess that up
 import babelPluginIstanbul from 'babel-plugin-istanbul';
-import chalk = require('chalk');
 import {fromSource as sourcemapFromSource} from 'convert-source-map';
 import stableStringify = require('fast-json-stable-stringify');
 import * as fs from 'graceful-fs';
@@ -26,6 +25,12 @@ import {
   tryRealpath,
 } from 'jest-util';
 import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';
+import {
+  makeInvalidReturnValueError,
+  makeInvalidSourceMapWarning,
+  makeInvalidSyncTransformerError,
+  makeInvalidTransformerError,
+} from './runtimeErrorsAndWarnings';
 import shouldInstrument from './shouldInstrument';
 import type {
   Options,
@@ -251,21 +256,6 @@ class ScriptTransformer {
   }
 
   async loadTransformers(): Promise<void> {
-    const makeInvalidTransformerError = (transformPath: string) =>
-      chalk.red(
-        [
-          chalk.bold('\u25cf Invalid transformer module:'),
-          `  "${slash(
-            transformPath,
-          )}" specified in the "transform" object of Jest configuration`,
-          '  must export a `process` or `processAsync` or `createTransformer` function.',
-          '',
-          '  Code Transformation Documentation:',
-          '  https://jestjs.io/docs/code-transformation',
-          '',
-        ].join('\n'),
-      );
-
     await Promise.all(
       this._config.transform.map(
         async ([, transformPath, transformerConfig]) => {
@@ -387,11 +377,7 @@ class ScriptTransformer {
       } else if (processed != null && typeof processed.code === 'string') {
         transformed = processed;
       } else {
-        throw new TypeError(
-          "Jest: a transform's `process` function must return a string, " +
-            'or an object with `code` key containing this string. ' +
-            "It's `processAsync` function must return a Promise resolving to it.",
-        );
+        throw new Error(makeInvalidReturnValueError());
       }
     }
 
@@ -405,11 +391,8 @@ class ScriptTransformer {
         }
       } catch {
         const transformPath = this._getTransformPath(filename);
-        console.warn(
-          `jest-transform: The source map produced for the file ${filename} ` +
-            `by ${transformPath} was invalid. Proceeding without source ` +
-            'mapping for that file.',
-        );
+        invariant(transformPath);
+        console.warn(makeInvalidSourceMapWarning(filename, transformPath));
       }
     }
 
@@ -1011,7 +994,7 @@ function assertSyncTransformer(
   invariant(name);
   invariant(
     typeof transformer.process === 'function',
-    `Jest: synchronous transformer ${name} must export a "process" function.`,
+    makeInvalidSyncTransformerError(name),
   );
 }
 
