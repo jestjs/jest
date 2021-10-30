@@ -75,8 +75,8 @@ class NodeEnvironment implements JestEnvironment<Timer> {
       global.EventTarget = EventTarget;
     }
     // performance is global in Node >= 16
-    if(typeof performance !=='undefined'){
-      global.performance = performance
+    if (typeof performance !== 'undefined') {
+      global.performance = performance;
     }
     installCommonGlobals(global, config.globals);
 
