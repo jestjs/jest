@@ -19,7 +19,7 @@ If you override the `transform` configuration option `babel-jest` will no longer
 
 ## Writing custom transformers
 
-You can write you own transformer. The API of a transformer is as follows:
+You can write your own transformer. The API of a transformer is as follows:
 
 ```ts
 interface SyncTransformer<OptionType = unknown> {
