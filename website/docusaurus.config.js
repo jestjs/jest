@@ -80,7 +80,7 @@ module.exports = {
           {
             tagName: 'meta',
             name: 'theme-color',
-            content: JestThemeColor,
+            content: '#FFF',
           },
           {
             tagName: 'meta',
