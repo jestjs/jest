@@ -293,8 +293,8 @@ describe('HasteMap', () => {
   it('creates different cache file paths for different projects', () => {
     jest.resetModules();
     const HasteMap = require('../').default;
-    const hasteMap1 = new HasteMap({...defaultConfig, name: '@scoped/package'});
-    const hasteMap2 = new HasteMap({...defaultConfig, name: '-scoped-package'});
+    const hasteMap1 = new HasteMap({...defaultConfig, id: '@scoped/package'});
+    const hasteMap2 = new HasteMap({...defaultConfig, id: '-scoped-package'});
     expect(hasteMap1.getCacheFilePath()).not.toBe(hasteMap2.getCacheFilePath());
   });
 
