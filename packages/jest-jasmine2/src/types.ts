@@ -93,7 +93,7 @@ export type Jasmine = {
   typeof globalThis;
 
 declare global {
-  module NodeJS {
+  namespace NodeJS {
     interface Global {
       expect: typeof expect;
     }
