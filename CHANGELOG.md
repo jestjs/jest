@@ -8,6 +8,7 @@
 ### Fixes
 
 - `[expect]` Allow again `expect.Matchers` generic with single value ([#11986](https://github.com/facebook/jest/pull/11986))
+- `[jest-core]` Incorrect detection of open ZLIB handles ([#12022](https://github.com/facebook/jest/pull/12022))
 - `[jest-environment-jsdom]` Add `@types/jsdom` dependency ([#11999](https://github.com/facebook/jest/pull/11999))
 - `[jest-transform]` Improve error and warning messages ([#11998](https://github.com/facebook/jest/pull/11998))
 
