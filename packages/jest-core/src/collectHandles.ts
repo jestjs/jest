@@ -71,7 +71,8 @@ export default function collectHandles(): HandleCollectionResult {
         type === 'ELDHISTOGRAM' ||
         type === 'PerformanceObserver' ||
         type === 'RANDOMBYTESREQUEST' ||
-        type === 'DNSCHANNEL'
+        type === 'DNSCHANNEL' ||
+        type === 'ZLIB'
       ) {
         return;
       }
