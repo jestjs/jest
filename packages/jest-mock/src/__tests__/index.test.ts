@@ -553,7 +553,7 @@ describe('moduleMocker', () => {
 
       moduleMocker.spyOn(child, 'func').mockReturnValue('efgh');
 
-      expect(child.hasOwnProperty('func')).toBe(true);
+      expect(Object.prototype.hasOwnProperty.call(child, 'func')).toBe(true);
       expect(child.func()).toEqual('efgh');
       expect(parent.func()).toEqual('abcd');
     });
@@ -569,7 +569,7 @@ describe('moduleMocker', () => {
 
       moduleMocker.spyOn(parent, 'func').mockReturnValue('jklm');
 
-      expect(child.hasOwnProperty('func')).toBe(false);
+      expect(Object.prototype.hasOwnProperty.call(child, 'func')).toBe(false);
       expect(child.func()).toEqual('jklm');
     });
 
