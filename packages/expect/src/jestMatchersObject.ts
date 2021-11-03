@@ -22,7 +22,7 @@ const JEST_MATCHERS_OBJECT = Symbol.for('$$jest-matchers-object');
 // Jest may override the stack trace of Errors thrown by internal matchers.
 export const INTERNAL_MATCHER_FLAG = Symbol.for('$$jest-internal-matcher');
 
-if (!global.hasOwnProperty(JEST_MATCHERS_OBJECT)) {
+if (!Object.prototype.hasOwnProperty.call(global, JEST_MATCHERS_OBJECT)) {
   const defaultState: Partial<MatcherState> = {
     assertionCalls: 0,
     expectedAssertionsNumber: null,

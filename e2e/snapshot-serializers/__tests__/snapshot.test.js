@@ -69,7 +69,7 @@ describe('snapshot serializers', () => {
     // Add plugin that overrides foo specified by Jest config in package.json
     expect.addSnapshotSerializer({
       print: (val, serialize) => `Foo: ${serialize(val.foo)}`,
-      test: val => val && val.hasOwnProperty('foo'),
+      test: val => val && Object.prototype.hasOwnProperty.call(val, 'foo'),
     });
     expect(test).toMatchSnapshot();
   });
