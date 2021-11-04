@@ -12,7 +12,7 @@ const stringifyOption = (
   option: keyof Config.InitialOptions,
   map: Partial<Config.InitialOptions>,
   linePrefix = '',
-  ): string => {
+): string => {
   const optionDescription = `  // ${descriptions[option]}`;
   const stringifiedObject = `${option}: ${JSON.stringify(
     map[option],
