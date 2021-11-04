@@ -14,9 +14,13 @@
     "./package.json": "./package.json"
   },
   "peerDependencies": {
+    "esbuild": ">=0.13.12",
     "ts-node": ">=9.0.0"
   },
   "peerDependenciesMeta": {
+    "esbuild": {
+      "optional": true
+    },
     "ts-node": {
       "optional": true
     }

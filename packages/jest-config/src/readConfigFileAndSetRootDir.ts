@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import type {build} from 'esbuild';
 import * as fs from 'graceful-fs';
 import type {Service} from 'ts-node';
 import type {Config} from '@jest/types';
@@ -94,9 +95,40 @@ const loadTSConfigFile = async (
     });
   } catch (e: any) {
     if (e.code === 'MODULE_NOT_FOUND') {
-      throw new Error(
-        `Jest: 'ts-node' is required for the TypeScript configuration files. Make sure it is installed\nError: ${e.message}`,
-      );
+      let esbuild: typeof build;
+
+      try {
+        esbuild = require('esbuild').build;
+      } catch (error: any) {
+        if (error.code === 'MODULE_NOT_FOUND') {
+          throw new Error(
+            `Jest: 'ts-node' or 'esbuild' is required for the TypeScript configuration files. Make sure it is installed\nError: ${e.message}`,
+          );
+        }
+
+        throw error;
+      }
+
+      const outfile = 'node_modules/jest-config/_jest.config.js';
+
+      await esbuild({
+        // By bundling we add support for importing stuff in the config file.
+        bundle: true,
+        entryPoints: [configPath],
+        format: 'cjs',
+        outfile,
+      });
+
+      let configObject = interopRequireDefault(require(outfile)).default;
+
+      await require('fs').unlink(outfile);
+
+      // In case the config is a function which imports more Typescript code
+      if (typeof configObject === 'function') {
+        configObject = await configObject();
+      }
+
+      return configObject;
     }
 
     throw e;
