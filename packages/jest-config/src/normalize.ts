@@ -552,7 +552,7 @@ export default async function normalize(
   argv: Config.Argv,
   configPath?: Config.Path | null,
   projectIndex = Infinity,
-  ): Promise<{
+): Promise<{
   hasDeprecationWarnings: boolean;
   options: AllOptions;
 }> {
