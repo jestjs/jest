@@ -43,7 +43,7 @@ export async function readConfig(
   // read individual configs for every project.
   skipArgvConfigOption?: boolean,
   parentConfigDirname?: Config.Path | null,
-  projectIndex: number = Infinity,
+  projectIndex = Infinity,
   skipMultipleConfigWarning = false,
 ): Promise<ReadConfig> {
   let rawOptions: Config.InitialOptions;

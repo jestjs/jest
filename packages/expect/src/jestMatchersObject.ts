@@ -69,7 +69,7 @@ export const setMatchers = <State extends MatcherState = MatcherState>(
         State
       > {
         constructor(
-          inverse: boolean = false,
+          inverse = false,
           ...sample: [unknown, ...Array<unknown>]
         ) {
           super(sample, inverse);

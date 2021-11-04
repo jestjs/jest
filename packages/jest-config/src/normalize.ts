@@ -551,8 +551,8 @@ export default async function normalize(
   initialOptions: Config.InitialOptions,
   argv: Config.Argv,
   configPath?: Config.Path | null,
-  projectIndex: number = Infinity,
-): Promise<{
+  projectIndex = Infinity,
+  ): Promise<{
   hasDeprecationWarnings: boolean;
   options: AllOptions;
 }> {
