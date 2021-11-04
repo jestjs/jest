@@ -5,7 +5,7 @@ title: Configuring Jest
 
 Jest's configuration can be defined in the `package.json` file of your project, or through a `jest.config.js`, or `jest.config.ts` file or through the `--config <path/to/file.js|ts|cjs|mjs|json>` option. If you'd like to use your `package.json` to store Jest's config, the `"jest"` key should be used on the top level so Jest will know how to find your settings:
 
-```json
+```json title="package.json"
 {
   "name": "my-project",
   "jest": {
@@ -54,9 +54,9 @@ export default async (): Promise<Config.InitialOptions> => {
 
 Please keep in mind that the resulting configuration must be JSON-serializable.
 
-When using the `--config` option, the JSON file must not contain a "jest" key:
+When using the `--config` option, the JSON file must not contain a `"jest"` key:
 
-```json
+```json title="jest.config.json"
 {
   "bail": 1,
   "verbose": true
@@ -98,15 +98,12 @@ Example:
 
 ```js title="utils.js"
 export default {
-  authorize: () => {
-    return 'token';
-  },
+  authorize: () => 'token',
   isAuthorized: secret => secret === 'wizard',
 };
 ```
 
-```js
-//__tests__/automocking.test.js
+```js title="__tests__/automock.test.js"
 import utils from '../utils';
 
 test('if utils mocked automatically', () => {
@@ -160,8 +157,6 @@ Default: `undefined`
 
 An array of [glob patterns](https://github.com/micromatch/micromatch) indicating a set of files for which coverage information should be collected. If a file matches the specified glob pattern, coverage information will be collected for it even if no tests exist for this file and it's never required in the test suite.
 
-Example:
-
 ```json
 {
   "collectCoverageFrom": [
@@ -182,7 +177,7 @@ _Note: This option requires `collectCoverage` to be set to true or Jest to be in
   <summary>Help:</summary>
   If you are seeing coverage output such as...
 
-```
+```bash
 =============================== Coverage summary ===============================
 Statements   : Unknown% ( 0/0 )
 Branches     : Unknown% ( 0/0 )
@@ -244,15 +239,12 @@ For example, with the following configuration jest will fail if there is less th
 
 ```json
 {
-  ...
-  "jest": {
-    "coverageThreshold": {
-      "global": {
-        "branches": 80,
-        "functions": 80,
-        "lines": 80,
-        "statements": -10
-      }
+  "coverageThreshold": {
+    "global": {
+      "branches": 80,
+      "functions": 80,
+      "lines": 80,
+      "statements": -10
     }
   }
 }
@@ -264,28 +256,25 @@ For example, with the following configuration:
 
 ```json
 {
-  ...
-  "jest": {
-    "coverageThreshold": {
-      "global": {
-        "branches": 50,
-        "functions": 50,
-        "lines": 50,
-        "statements": 50
-      },
-      "./src/components/": {
-        "branches": 40,
-        "statements": 40
-      },
-      "./src/reducers/**/*.js": {
-        "statements": 90
-      },
-      "./src/api/very-important-module.js": {
-        "branches": 100,
-        "functions": 100,
-        "lines": 100,
-        "statements": 100
-      }
+  "coverageThreshold": {
+    "global": {
+      "branches": 50,
+      "functions": 50,
+      "lines": 50,
+      "statements": 50
+    },
+    "./src/components/": {
+      "branches": 40,
+      "statements": 40
+    },
+    "./src/reducers/**/*.js": {
+      "statements": 90
+    },
+    "./src/api/very-important-module.js": {
+      "branches": 100,
+      "functions": 100,
+      "lines": 100,
+      "statements": 100
     }
   }
 }
@@ -333,21 +322,21 @@ default: `undefined`
 
 Allows for a label to be printed alongside a test while it is running. This becomes more useful in multi-project repositories where there can be many jest configuration files. This visually tells which project a test belongs to. Here are sample valid values.
 
-```js
-module.exports = {
-  displayName: 'CLIENT',
-};
+```json
+{
+  "displayName": "CLIENT"
+}
 ```
 
 or
 
-```js
-module.exports = {
-  displayName: {
-    name: 'CLIENT',
-    color: 'blue',
-  },
-};
+```json
+{
+  "displayName": {
+    "name": "CLIENT",
+    "color": "blue"
+  }
+}
 ```
 
 As a secondary option, an object with the properties `name` and `color` can be passed. This allows for a custom configuration of the background color of the displayName. `displayName` defaults to white when its value is a string. Jest uses [chalk](https://github.com/chalk/chalk) to provide the color. As such, all of the valid options for colors supported by chalk are also supported by jest.
@@ -368,10 +357,7 @@ Jest will run `.mjs` and `.js` files with nearest `package.json`'s `type` field 
 
 ```json
 {
-  ...
-  "jest": {
-    "extensionsToTreatAsEsm": [".ts"]
-  }
+  "extensionsToTreatAsEsm": [".ts"]
 }
 ```
 
@@ -385,10 +371,7 @@ For example, if your tests call `Math` often, you can pass it by setting `extraG
 
 ```json
 {
-  ...
-  "jest": {
-    "extraGlobals": ["Math"]
-  }
+  "extraGlobals": ["Math"]
 }
 ```
 
@@ -416,10 +399,7 @@ You can collect coverage from those files with setting `forceCoverageMatch`.
 
 ```json
 {
-  ...
-  "jest": {
-    "forceCoverageMatch": ["**/*.t.js"]
-  }
+  "forceCoverageMatch": ["**/*.t.js"]
 }
 ```
 
@@ -433,11 +413,8 @@ For example, the following would create a global `__DEV__` variable set to `true
 
 ```json
 {
-  ...
-  "jest": {
-    "globals": {
-      "__DEV__": true
-    }
+  "globals": {
+    "__DEV__": true
   }
 }
 ```
@@ -460,7 +437,6 @@ Example:
 
 ```js title="setup.js"
 module.exports = async () => {
-  // ...
   // Set reference to mongod in order to close the server during teardown.
   global.__MONGOD__ = mongod;
 };
@@ -529,7 +505,7 @@ test('some test', () => {
 });
 ```
 
-_Note: This option is only supported using the default `jest-circus`. test runner_
+_Note: This option is only supported using the default `jest-circus` test runner._
 
 ### `maxConcurrency` \[number]
 
@@ -541,7 +517,13 @@ A number limiting the number of tests that are allowed to run at the same time w
 
 Specifies the maximum number of workers the worker-pool will spawn for running tests. In single run mode, this defaults to the number of the cores available on your machine minus one for the main thread. In watch mode, this defaults to half of the available cores on your machine to ensure Jest is unobtrusive and does not grind your machine to a halt. It may be useful to adjust this in resource limited environments like CIs but the defaults should be adequate for most use-cases.
 
-For environments with variable CPUs available, you can use percentage based configuration: `"maxWorkers": "50%"`
+For environments with variable CPUs available, you can use percentage based configuration:
+
+```json
+{
+  "maxWorkers": "50%"
+}
+```
 
 ### `moduleDirectories` \[array&lt;string&gt;]
 
@@ -568,8 +550,6 @@ Modules that are mapped to an alias are unmocked by default, regardless of wheth
 Use `<rootDir>` string token to refer to [`rootDir`](#rootdir-string) value if you want to use file paths.
 
 Additionally, you can substitute captured regex groups using numbered backreferences.
-
-Example:
 
 ```json
 {
@@ -610,7 +590,7 @@ Default: `false`
 
 Activates notifications for test results.
 
-**Beware:** Jest uses [node-notifier](https://github.com/mikaelbr/node-notifier) to display desktop notifications. On Windows, it creates a new start menu entry on the first use and not display the notification. Notifications will be properly displayed on subsequent runs
+**Beware:** Jest uses [node-notifier](https://github.com/mikaelbr/node-notifier) to display desktop notifications. On Windows, it creates a new start menu entry on the first use and not display the notification. Notifications will be properly displayed on subsequent runs.
 
 ### `notifyMode` \[string]
 
@@ -700,7 +680,7 @@ This will override default reporters:
 
 ```json
 {
-  "reporters": ["<rootDir>/my-custom-reporter.js"]
+  "reporters": ["<rootDir>/custom-reporter.js"]
 }
 ```
 
@@ -708,7 +688,7 @@ This will use custom reporter in addition to default reporters that Jest provide
 
 ```json
 {
-  "reporters": ["default", "<rootDir>/my-custom-reporter.js"]
+  "reporters": ["default", "<rootDir>/custom-reporter.js"]
 }
 ```
 
@@ -718,17 +698,15 @@ Additionally, custom reporters can be configured by passing an `options` object 
 {
   "reporters": [
     "default",
-    ["<rootDir>/my-custom-reporter.js", {"banana": "yes", "pineapple": "no"}]
+    ["<rootDir>/custom-reporter.js", {"banana": "yes", "pineapple": "no"}]
   ]
 }
 ```
 
-Custom reporter modules must define a class that takes a `GlobalConfig` and reporter options as constructor arguments:
+Custom reporter modules must define a class that takes a `globalConfig` and reporter `options` as constructor arguments:
 
-Example reporter:
-
-```js title="my-custom-reporter.js"
-class MyCustomReporter {
+```js title="custom-reporter.js"
+class CustomReporter {
   constructor(globalConfig, options) {
     this._globalConfig = globalConfig;
     this._options = options;
@@ -741,18 +719,18 @@ class MyCustomReporter {
   }
 }
 
-module.exports = MyCustomReporter;
-// or export default MyCustomReporter;
+module.exports = CustomReporter;
+// or export default CustomReporter;
 ```
 
 Custom reporters can also force Jest to exit with non-0 code by returning an Error from `getLastError()` methods
 
 ```js
-class MyCustomReporter {
+class CustomReporter {
   // ...
   getLastError() {
     if (this._shouldFail) {
-      return new Error('my-custom-reporter.js reported an error');
+      return new Error('Custom reporter returned an error');
     }
   }
 }
@@ -796,35 +774,21 @@ Note: the defaultResolver passed as an option is the Jest default resolver which
 
 For example, if you want to respect Browserify's [`"browser"` field](https://github.com/browserify/browserify-handbook/blob/master/readme.markdown#browser-field), you can use the following configuration:
 
-```json
-{
-  ...
-  "jest": {
-    "resolver": "<rootDir>/resolver.js"
-  }
-}
-```
-
 ```js title="resolver.js"
 const browserResolve = require('browser-resolve');
 
 module.exports = browserResolve.sync;
 ```
 
-By combining `defaultResolver` and `packageFilter` we can implement a `package.json` "pre-processor" that allows us to change how the default resolver will resolve modules. For example, imagine we want to use the field `"module"` if it is present, otherwise fallback to `"main"`:
-
 ```json
 {
-  ...
-  "jest": {
-    "resolver": "my-module-resolve"
-  }
+  "resolver": "path/to/resolver.js"
 }
 ```
 
-```js
-// my-module-resolve package
+By combining `defaultResolver` and `packageFilter` we can implement a `package.json` "pre-processor" that allows us to change how the default resolver will resolve modules. For example, imagine we want to use the field `"module"` if it is present, otherwise fallback to `"main"`:
 
+```js title="module-field-resolver.js"
 module.exports = (request, options) => {
   // Call the defaultResolver, so we leverage its cache, error handling, etc.
   return options.defaultResolver(request, {
@@ -915,12 +879,12 @@ If you want a path to be [relative to the root directory of your project](#rootd
 
 For example, Jest ships with several plug-ins to `jasmine` that work by monkey-patching the jasmine API. If you wanted to add even more jasmine plugins to the mix (or if you wanted some custom, project-wide matchers for example), you could do so in these modules.
 
-Example `setupFilesAfterEnv` array in a jest.config.js:
+Example `setupFilesAfterEnv` array in Jest configuration file:
 
-```js
-module.exports = {
-  setupFilesAfterEnv: ['./jest.setup.js'],
-};
+```json
+{
+  "setupFilesAfterEnv": ["./jest.setup.js"]
+}
 ```
 
 Example `jest.setup.js` file
@@ -943,10 +907,8 @@ Allows overriding specific snapshot formatting options documented in the [pretty
 
 ```json
 {
-  "jest": {
-    "snapshotFormat": {
-      "printBasicPrototype": false
-    }
+  "snapshotFormat": {
+    "printBasicPrototype": false
   }
 }
 ```
@@ -976,9 +938,7 @@ Default: `undefined`
 
 The path to a module that can resolve test<->snapshot path. This config option lets you customize where Jest stores snapshot files on disk.
 
-Example snapshot resolver module:
-
-```js
+```js title="custom-resolver.js"
 module.exports = {
   // resolves from test to snapshot path
   resolveSnapshotPath: (testPath, snapshotExtension) =>
@@ -1003,10 +963,7 @@ A list of paths to snapshot serializer modules Jest should use for snapshot test
 
 Jest has default serializers for built-in JavaScript types, HTML elements (Jest 20.0.0+), ImmutableJS (Jest 20.0.0+) and for React elements. See [snapshot test tutorial](TutorialReactNative.md#snapshot-test) for more information.
 
-Example serializer module:
-
-```js
-// my-serializer-module
+```js title="custom-serializer.js"
 module.exports = {
   serialize(val, config, indentation, depth, refs, printer) {
     return 'Pretty foo: ' + printer(val.foo);
@@ -1020,14 +977,11 @@ module.exports = {
 
 `printer` is a function that serializes a value using existing plugins.
 
-To use `my-serializer-module` as a serializer, configuration would be as follows:
+Add `custom-serializer` to your Jest configuration file:
 
 ```json
 {
-  ...
-  "jest": {
-    "snapshotSerializers": ["my-serializer-module"]
-  }
+  "snapshotSerializers": ["path/to/custom-serializer"]
 }
 ```
 
@@ -1283,11 +1237,9 @@ Default: `@jest/test-sequencer`
 
 This option allows you to use a custom sequencer instead of Jest's default. `sort` may optionally return a Promise.
 
-Example:
+For example, you may sort test paths alphabetically:
 
-Sort test path alphabetically.
-
-```js title="testSequencer.js"
+```js title="custom-sequencer.js"
 const Sequencer = require('@jest/test-sequencer').default;
 
 class CustomSequencer extends Sequencer {
@@ -1302,11 +1254,11 @@ class CustomSequencer extends Sequencer {
 module.exports = CustomSequencer;
 ```
 
-Use it in your Jest config file like this:
+Add `custom-sequencer` to your Jest configuration file:
 
 ```json
 {
-  "testSequencer": "path/to/testSequencer.js"
+  "testSequencer": "path/to/custom-sequencer.js"
 }
 ```
 
@@ -1437,9 +1389,7 @@ No default
 
 This option allows comments in `package.json`. Include the comment text as the value of this key anywhere in `package.json`.
 
-Example:
-
-```json
+```json title="package.json"
 {
   "name": "my-project",
   "jest": {
