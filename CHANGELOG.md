@@ -2,6 +2,7 @@
 
 ### Features
 
+- `[jest-config]` Add esbuild resolver for `jest.config.ts` as a `ts-node` alternative ([#12041](https://github.com/facebook/jest/pull/12041))
 - `[jest-core]` Add support for `testResultsProcessor` written in ESM ([#12006](https://github.com/facebook/jest/pull/12006))
 - `[jest-diff, pretty-format]` Add `compareKeys` option for custom sorting of object keys ([#11992](https://github.com/facebook/jest/pull/11992))
 
