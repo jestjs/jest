@@ -109,7 +109,11 @@ const loadTSConfigFile = async (
         throw error;
       }
 
-      const outfile = 'node_modules/jest-config/_jest.config.js';
+      const outfile = require('path').join(
+        require('os').tmpdir(),
+        'jest',
+        '_jest.config.js',
+      );
 
       await esbuild({
         // By bundling we add support for importing stuff in the config file.
