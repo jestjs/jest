@@ -6,7 +6,6 @@
  */
 
 import * as path from 'path';
-import type {build} from 'esbuild';
 import * as fs from 'graceful-fs';
 import type {Service} from 'ts-node';
 import type {Config} from '@jest/types';
@@ -85,6 +84,7 @@ const loadTSConfigFile = async (
   configPath: Config.Path,
 ): Promise<Config.InitialOptions> => {
   let registerer: Service;
+  let tsNode;
 
   // Register TypeScript compiler instance
   try {
@@ -93,12 +93,11 @@ const loadTSConfigFile = async (
         module: 'CommonJS',
       },
     });
+    tsNode = true;
   } catch (e: any) {
     if (e.code === 'MODULE_NOT_FOUND') {
-      let esbuild: typeof build;
-
       try {
-        esbuild = require('esbuild').build;
+        require('esbuild');
       } catch (error: any) {
         if (error.code === 'MODULE_NOT_FOUND') {
           throw new Error(
@@ -109,36 +108,15 @@ const loadTSConfigFile = async (
         throw error;
       }
 
-      const outfile = require('path').join(
-        require('os').tmpdir(),
-        'jest',
-        '_jest.config.js',
-      );
-
-      await esbuild({
-        // By bundling we add support for importing stuff in the config file.
-        bundle: true,
-        entryPoints: [configPath],
-        format: 'cjs',
-        outfile,
-      });
-
-      let configObject = interopRequireDefault(require(outfile)).default;
-
-      await require('fs').unlink(outfile);
-
-      // In case the config is a function which imports more Typescript code
-      if (typeof configObject === 'function') {
-        configObject = await configObject();
-      }
-
-      return configObject;
+      registerer = require('esbuild-register').register();
     }
 
     throw e;
   }
 
-  registerer.enabled(true);
+  if (tsNode) {
+    registerer.enabled(true);
+  }
 
   let configObject = interopRequireDefault(require(configPath)).default;
 
@@ -147,7 +125,9 @@ const loadTSConfigFile = async (
     configObject = await configObject();
   }
 
-  registerer.enabled(false);
+  if (tsNode) {
+    registerer.enabled(false);
+  }
 
   return configObject;
 };
