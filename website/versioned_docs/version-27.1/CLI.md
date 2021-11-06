@@ -138,6 +138,10 @@ When this option is provided, Jest will assume it is running in a CI environment
 
 Deletes the Jest cache directory and then exits without running tests. Will delete `cacheDirectory` if the option is passed, or Jest's default cache directory. The default cache directory can be found by calling `jest --showConfig`. _Note: clearing the cache will reduce performance._
 
+### `--clearMocks`
+
+Automatically clear mock calls, instances and results before every test. Equivalent to calling [`jest.clearAllMocks()`](JestObjectAPI.md#jestclearallmocks) before each test. This does not remove any mock implementation that may have been provided.
+
 ### `--collectCoverageFrom=<glob>`
 
 A glob pattern relative to `rootDir` matching the files that coverage info needs to be collected from.
@@ -271,6 +275,14 @@ Run tests from one or more projects, found in the specified paths; also takes pa
 Run tests with specified reporters. [Reporter options](configuration#reporters-arraymodulename--modulename-options) are not available via CLI. Example with multiple reporters:
 
 `jest --reporters="default" --reporters="jest-junit"`
+
+### `--resetMocks`
+
+Automatically reset mock state before every test. Equivalent to calling [`jest.resetAllMocks()`](JestObjectAPI.md#jestresetallmocks) before each test. This will lead to any mocks having their fake implementations removed but does not restore their initial implementation.
+
+### `--restoreMocks`
+
+Automatically restore mock state and implementation before every test. Equivalent to calling [`jest.restoreAllMocks()`](JestObjectAPI.md#jestrestoreallmocks) before each test. This will lead to any mocks having their fake implementations removed and restores their initial implementation.
 
 ### `--roots`
 
