@@ -84,7 +84,6 @@ const loadTSConfigFile = async (
   configPath: Config.Path,
 ): Promise<Config.InitialOptions> => {
   let registerer: Service;
-  let tsNode;
 
   // Register TypeScript compiler instance
   try {
@@ -93,11 +92,10 @@ const loadTSConfigFile = async (
         module: 'CommonJS',
       },
     });
-    tsNode = true;
   } catch (e: any) {
     if (e.code === 'MODULE_NOT_FOUND') {
       try {
-        require('esbuild');
+        registerer = require('esbuild-register');
       } catch (error: any) {
         if (error.code === 'MODULE_NOT_FOUND') {
           throw new Error(
@@ -107,16 +105,12 @@ const loadTSConfigFile = async (
 
         throw error;
       }
-
-      registerer = require('esbuild-register').register();
     }
 
     throw e;
   }
 
-  if (tsNode) {
-    registerer.enabled(true);
-  }
+  registerer.enabled(true);
 
   let configObject = interopRequireDefault(require(configPath)).default;
 
@@ -125,9 +119,7 @@ const loadTSConfigFile = async (
     configObject = await configObject();
   }
 
-  if (tsNode) {
-    registerer.enabled(false);
-  }
+  registerer.enabled(false);
 
   return configObject;
 };

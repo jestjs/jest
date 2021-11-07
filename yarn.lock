@@ -1619,7 +1619,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-env@npm:*, @babel/preset-env@npm:^7.1.0, @babel/preset-env@npm:^7.11.0, @babel/preset-env@npm:^7.12.1, @babel/preset-env@npm:^7.12.16":
+"@babel/preset-env@npm:*, @babel/preset-env@npm:^7.11.0, @babel/preset-env@npm:^7.12.1, @babel/preset-env@npm:^7.12.16":
   version: 7.15.6
   resolution: "@babel/preset-env@npm:7.15.6"
   dependencies:
@@ -2556,8 +2556,6 @@ __metadata:
   dependencies:
     "@babel/core": ^7.3.4
     "@babel/plugin-proposal-class-properties": ^7.3.4
-    "@babel/plugin-transform-modules-commonjs": ^7.1.0
-    "@babel/preset-env": ^7.1.0
     "@babel/preset-react": ^7.0.0
     "@babel/preset-typescript": ^7.0.0
     "@babel/register": ^7.0.0
@@ -2582,6 +2580,7 @@ __metadata:
     codecov: ^3.0.0
     debug: ^4.0.1
     dedent: ^0.7.0
+    esbuild-register: ^3.0.0
     eslint: ^7.7.0
     eslint-config-prettier: ^8.1.0
     eslint-plugin-eslint-comments: ^3.1.2
@@ -12653,7 +12652,6 @@ fsevents@^1.2.7:
     chalk: ^4.0.0
     ci-info: ^3.2.0
     deepmerge: ^4.2.2
-    esbuild-register: ^3.0.0
     glob: ^7.1.1
     graceful-fs: ^4.2.4
     jest-circus: ^27.3.1
@@ -12674,10 +12672,10 @@ fsevents@^1.2.7:
     ts-node: ^9.0.0
     typescript: ^4.0.3
   peerDependencies:
-    esbuild: ">=0.13.12"
+    esbuild-register: ">=3.0.0"
     ts-node: ">=9.0.0"
   peerDependenciesMeta:
-    esbuild:
+    esbuild-register:
       optional: true
     ts-node:
       optional: true

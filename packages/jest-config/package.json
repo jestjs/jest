@@ -14,11 +14,11 @@
     "./package.json": "./package.json"
   },
   "peerDependencies": {
-    "esbuild": ">=0.13.12",
+    "esbuild-register": ">=3.0.0",
     "ts-node": ">=9.0.0"
   },
   "peerDependenciesMeta": {
-    "esbuild": {
+    "esbuild-register": {
       "optional": true
     },
     "ts-node": {
@@ -33,7 +33,6 @@
     "chalk": "^4.0.0",
     "ci-info": "^3.2.0",
     "deepmerge": "^4.2.2",
-    "esbuild-register": "^3.0.0",
     "glob": "^7.1.1",
     "graceful-fs": "^4.2.4",
     "jest-circus": "^27.3.1",
