@@ -6,6 +6,7 @@
  */
 
 import * as path from 'path';
+import type {Register} from 'esbuild-register/dist/node';
 import * as fs from 'graceful-fs';
 import type {Service} from 'ts-node';
 import type {Config} from '@jest/types';
@@ -83,11 +84,12 @@ export default async function readConfigFileAndSetRootDir(
 const loadTSConfigFile = async (
   configPath: Config.Path,
 ): Promise<Config.InitialOptions> => {
-  let registerer: Service;
+  let tsNode: Service | undefined;
+  let esbuild: Register | undefined;
 
   // Register TypeScript compiler instance
   try {
-    registerer = require('ts-node').register({
+    tsNode = require('ts-node').register({
       compilerOptions: {
         module: 'CommonJS',
       },
@@ -95,7 +97,9 @@ const loadTSConfigFile = async (
   } catch (e: any) {
     if (e.code === 'MODULE_NOT_FOUND') {
       try {
-        registerer = require('esbuild-register');
+        esbuild = require('esbuild-register').register({
+          target: `node${process.version.slice(1)}`,
+        });
       } catch (error: any) {
         if (error.code === 'MODULE_NOT_FOUND') {
           throw new Error(
@@ -110,7 +114,7 @@ const loadTSConfigFile = async (
     throw e;
   }
 
-  registerer.enabled(true);
+  tsNode?.enabled(true);
 
   let configObject = interopRequireDefault(require(configPath)).default;
 
@@ -119,7 +123,8 @@ const loadTSConfigFile = async (
     configObject = await configObject();
   }
 
-  registerer.enabled(false);
+  tsNode?.enabled(false);
+  esbuild?.unregister();
 
   return configObject;
 };

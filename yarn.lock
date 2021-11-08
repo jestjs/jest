@@ -2580,7 +2580,7 @@ __metadata:
     codecov: ^3.0.0
     debug: ^4.0.1
     dedent: ^0.7.0
-    esbuild-register: ^3.0.0
+    esbuild-register: ^3.1.0
     eslint: ^7.7.0
     eslint-config-prettier: ^8.1.0
     eslint-plugin-eslint-comments: ^3.1.2
@@ -9112,14 +9112,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"esbuild-register@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "esbuild-register@npm:3.0.0"
+"esbuild-register@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "esbuild-register@npm:3.1.0"
   dependencies:
     jsonc-parser: ^3.0.0
   peerDependencies:
     esbuild: ">=0.12 <1"
-  checksum: 9d60f690f9b1ed6b08fdca1d9d40ac464d9580bfec439be9cc5df8a5cab565e0ded8671c07726f35fea0299f94d69ea3e1cd6b46f762c6783b93c1a58fae7503
+  checksum: 6177ce57f7599bf2f83684611b445e002766183d804eee01f3a33f776bbd2e97e24083e090ee638a39f9711ab44cd9f3587db458ea090d7d801de7c3bd027701
   languageName: node
   linkType: hard
 

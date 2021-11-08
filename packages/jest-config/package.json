@@ -14,7 +14,7 @@
     "./package.json": "./package.json"
   },
   "peerDependencies": {
-    "esbuild-register": ">=3.0.0",
+    "esbuild-register": ">=3.1.0",
     "ts-node": ">=9.0.0"
   },
   "peerDependenciesMeta": {
