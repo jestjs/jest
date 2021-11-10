@@ -9810,7 +9810,7 @@ __metadata:
     jest-matcher-utils: ^27.3.1
     jest-message-util: ^27.3.1
     jest-regex-util: ^27.0.6
-    mlh-tsd: "*"
+    mlh-tsd: ^0.14.1
   languageName: unknown
   linkType: soft
 
@@ -15272,7 +15272,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"mlh-tsd@npm:*, mlh-tsd@npm:^0.14.1":
+"mlh-tsd@npm:^0.14.1":
   version: 0.14.1
   resolution: "mlh-tsd@npm:0.14.1"
   dependencies:
