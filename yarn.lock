@@ -2547,7 +2547,6 @@ __metadata:
     "@jest/environment": ^27.3.1
     "@jest/types": ^27.2.5
     jest-matcher-utils: ^27.3.1
-    mlh-tsd: ^0.14.1
   languageName: unknown
   linkType: soft
 
@@ -9811,7 +9810,7 @@ __metadata:
     jest-matcher-utils: ^27.3.1
     jest-message-util: ^27.3.1
     jest-regex-util: ^27.0.6
-    mlh-tsd: ^0.14.1
+    mlh-tsd: "*"
   languageName: unknown
   linkType: soft
 
@@ -15273,7 +15272,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"mlh-tsd@npm:^0.14.1":
+"mlh-tsd@npm:*, mlh-tsd@npm:^0.14.1":
   version: 0.14.1
   resolution: "mlh-tsd@npm:0.14.1"
   dependencies:
