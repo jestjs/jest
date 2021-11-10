@@ -2540,13 +2540,14 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/globals@^27.3.1, @jest/globals@workspace:*, @jest/globals@workspace:packages/jest-globals":
+"@jest/globals@*, @jest/globals@^27.3.1, @jest/globals@workspace:*, @jest/globals@workspace:packages/jest-globals":
   version: 0.0.0-use.local
   resolution: "@jest/globals@workspace:packages/jest-globals"
   dependencies:
     "@jest/environment": ^27.3.1
     "@jest/types": ^27.2.5
-    expect: ^27.3.1
+    jest-matcher-utils: ^27.3.1
+    mlh-tsd: ^0.14.1
   languageName: unknown
   linkType: soft
 
@@ -2774,6 +2775,7 @@ __metadata:
     "@types/node": "*"
     "@types/yargs": ^16.0.0
     chalk: ^4.0.0
+    mlh-tsd: ^0.14.1
   languageName: unknown
   linkType: soft
 
@@ -9573,6 +9575,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"example-expect-extend@workspace:examples/expect-extend":
+  version: 0.0.0-use.local
+  resolution: "example-expect-extend@workspace:examples/expect-extend"
+  dependencies:
+    "@babel/core": "*"
+    "@babel/preset-env": "*"
+    "@babel/preset-typescript": "*"
+    "@jest/globals": "*"
+    babel-jest: "*"
+    jest: "*"
+  languageName: unknown
+  linkType: soft
+
 "example-getting-started@workspace:examples/getting-started":
   version: 0.0.0-use.local
   resolution: "example-getting-started@workspace:examples/getting-started"
@@ -9796,6 +9811,7 @@ __metadata:
     jest-matcher-utils: ^27.3.1
     jest-message-util: ^27.3.1
     jest-regex-util: ^27.0.6
+    mlh-tsd: ^0.14.1
   languageName: unknown
   linkType: soft
 

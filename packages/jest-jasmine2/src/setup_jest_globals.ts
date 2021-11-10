@@ -115,7 +115,7 @@ export default async ({
     snapshotFormat,
     updateSnapshot,
   });
-  // @ts-expect-error: snapshotState is a jest extension of `expect`
+
   setState({snapshotState, testPath});
   // Return it back to the outer scope (test runner outside the VM).
   return snapshotState;

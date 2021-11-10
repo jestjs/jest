@@ -19,7 +19,7 @@
   "dependencies": {
     "@jest/environment": "^27.3.1",
     "@jest/types": "^27.2.5",
-    "expect": "^27.3.1"
+    "jest-matcher-utils": "^27.3.1"
   },
   "publishConfig": {
     "access": "public"

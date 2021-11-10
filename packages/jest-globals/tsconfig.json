@@ -7,8 +7,8 @@
     "outDir": "build"
   },
   "references": [
-    {"path": "../expect"},
     {"path": "../jest-environment"},
+    {"path": "../jest-matcher-utils"},
     {"path": "../jest-types"}
   ]
 }

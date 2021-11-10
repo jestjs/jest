@@ -1,0 +1,29 @@
+{
+  "private": true,
+  "version": "0.0.0",
+  "name": "example-expect-extend",
+  "devDependencies": {
+    "@babel/core": "*",
+    "@babel/preset-env": "*",
+    "@babel/preset-typescript": "*",
+    "@jest/globals": "*",
+    "babel-jest": "*",
+    "jest": "*"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ],
+      "@babel/preset-typescript"
+    ]
+  }
+}

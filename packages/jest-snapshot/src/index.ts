@@ -8,7 +8,7 @@
 /* eslint-disable local/ban-types-eventually */
 
 import * as fs from 'graceful-fs';
-import type {Config} from '@jest/types';
+import type {Config, Expect} from '@jest/types';
 import type {FS as HasteFS} from 'jest-haste-map';
 import {
   BOLD_WEIGHT,
@@ -39,7 +39,7 @@ import {
   printReceived,
   printSnapshotAndReceived,
 } from './printSnapshot';
-import type {Context, ExpectationResult, MatchSnapshotConfig} from './types';
+import type {MatchSnapshotConfig} from './types';
 import * as utils from './utils';
 
 const DID_NOT_THROW = 'Received function did not throw'; // same as toThrow
@@ -156,11 +156,11 @@ const cleanup = (
 };
 
 const toMatchSnapshot = function (
-  this: Context,
+  this: Expect.MatcherState,
   received: unknown,
   propertiesOrHint?: object | Config.Path,
   hint?: Config.Path,
-): ExpectationResult {
+): Expect.ExpectationResult {
   const matcherName = 'toMatchSnapshot';
   let properties;
 
@@ -214,11 +214,11 @@ const toMatchSnapshot = function (
 };
 
 const toMatchInlineSnapshot = function (
-  this: Context,
+  this: Expect.MatcherState,
   received: unknown,
   propertiesOrSnapshot?: object | string,
   inlineSnapshot?: string,
-): ExpectationResult {
+): Expect.ExpectationResult {
   const matcherName = 'toMatchInlineSnapshot';
   let properties;
 
@@ -408,11 +408,11 @@ const _toMatchSnapshot = (config: MatchSnapshotConfig) => {
 };
 
 const toThrowErrorMatchingSnapshot = function (
-  this: Context,
+  this: Expect.MatcherState,
   received: unknown,
   hint: string | undefined, // because error TS1016 for hint?: string
   fromPromise: boolean,
-): ExpectationResult {
+): Expect.ExpectationResult {
   const matcherName = 'toThrowErrorMatchingSnapshot';
 
   // Future breaking change: Snapshot hint must be a string
@@ -431,11 +431,11 @@ const toThrowErrorMatchingSnapshot = function (
 };
 
 const toThrowErrorMatchingInlineSnapshot = function (
-  this: Context,
+  this: Expect.MatcherState,
   received: unknown,
   inlineSnapshot?: string,
   fromPromise?: boolean,
-): ExpectationResult {
+): Expect.ExpectationResult {
   const matcherName = 'toThrowErrorMatchingInlineSnapshot';
 
   if (inlineSnapshot !== undefined && typeof inlineSnapshot !== 'string') {

@@ -8,6 +8,7 @@
 
 /* eslint-disable local/ban-types-eventually */
 
+import type {Expect} from '@jest/types';
 import {getType, isPrimitive} from 'jest-get-type';
 import {
   DIM_COLOR,
@@ -38,7 +39,6 @@ import {
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
 } from './print';
-import type {MatchersObject} from './types';
 import {
   arrayBufferEquality,
   getObjectSubset,
@@ -72,7 +72,7 @@ type ContainIterable =
   | DOMTokenList
   | HTMLCollectionOf<any>;
 
-const matchers: MatchersObject = {
+const matchers: Expect.MatchersObject = {
   toBe(received: unknown, expected: unknown) {
     const matcherName = 'toBe';
     const options: MatcherHintOptions = {

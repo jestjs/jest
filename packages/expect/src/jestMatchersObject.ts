@@ -6,13 +6,8 @@
  *
  */
 
+import type {Expect} from '@jest/types';
 import {AsymmetricMatcher} from './asymmetricMatchers';
-import type {
-  Expect,
-  MatcherState,
-  MatchersObject,
-  SyncExpectationResult,
-} from './types';
 
 // Global matchers object holds the list of available matchers and
 // the state, that can hold matcher specific values that change over time.
@@ -22,8 +17,16 @@ const JEST_MATCHERS_OBJECT = Symbol.for('$$jest-matchers-object');
 // Jest may override the stack trace of Errors thrown by internal matchers.
 export const INTERNAL_MATCHER_FLAG = Symbol.for('$$jest-internal-matcher');
 
+export type JestRawMatcherFn = Expect.RawMatcherFn & {
+  [INTERNAL_MATCHER_FLAG]?: boolean;
+};
+
+export type JestMatchersObject = {
+  [matcherName: string]: JestRawMatcherFn;
+};
+
 if (!global.hasOwnProperty(JEST_MATCHERS_OBJECT)) {
-  const defaultState: Partial<MatcherState> = {
+  const defaultState: Partial<Expect.MatcherState> = {
     assertionCalls: 0,
     expectedAssertionsNumber: null,
     isExpectingAssertions: false,
@@ -37,23 +40,20 @@ if (!global.hasOwnProperty(JEST_MATCHERS_OBJECT)) {
   });
 }
 
-export const getState = <State extends MatcherState = MatcherState>(): State =>
+export const getState = (): Expect.MatcherState =>
   (global as any)[JEST_MATCHERS_OBJECT].state;
 
-export const setState = <State extends MatcherState = MatcherState>(
-  state: Partial<State>,
-): void => {
+export const setState = (state: Partial<Expect.MatcherState>): void => {
   Object.assign((global as any)[JEST_MATCHERS_OBJECT].state, state);
 };
 
-export const getMatchers = <
-  State extends MatcherState = MatcherState,
->(): MatchersObject<State> => (global as any)[JEST_MATCHERS_OBJECT].matchers;
+export const getMatchers = (): Expect.MatchersObject =>
+  (global as any)[JEST_MATCHERS_OBJECT].matchers;
 
-export const setMatchers = <State extends MatcherState = MatcherState>(
-  matchers: MatchersObject<State>,
+export const setMatchers = (
+  matchers: Expect.MatchersObject,
   isInternal: boolean,
-  expect: Expect,
+  expect: Expect.Expect,
 ): void => {
   Object.keys(matchers).forEach(key => {
     const matcher = matchers[key];
@@ -65,8 +65,7 @@ export const setMatchers = <State extends MatcherState = MatcherState>(
       // expect is defined
 
       class CustomMatcher extends AsymmetricMatcher<
-        [unknown, ...Array<unknown>],
-        State
+        [unknown, ...Array<unknown>]
       > {
         constructor(
           inverse: boolean = false,
@@ -80,7 +79,7 @@ export const setMatchers = <State extends MatcherState = MatcherState>(
             this.getMatcherContext(),
             other,
             ...this.sample,
-          ) as SyncExpectationResult;
+          ) as Expect.SyncExpectationResult;
 
           return this.inverse ? !pass : pass;
         }

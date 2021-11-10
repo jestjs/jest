@@ -7,15 +7,12 @@
 
 /* eslint-disable local/ban-types-eventually */
 
-import type {MatcherState} from 'expect';
-import type SnapshotState from './State';
-
-export type Context = MatcherState & {
-  snapshotState: SnapshotState;
-};
+import type {Expect} from '@jest/types';
+import type * as jestMatcherUtils from 'jest-matcher-utils';
+import type SnapshotStateType from './State';
 
 export type MatchSnapshotConfig = {
-  context: Context;
+  context: Expect.MatcherState;
   hint?: string;
   inlineSnapshot?: string;
   isInline: boolean;
@@ -26,8 +23,16 @@ export type MatchSnapshotConfig = {
 
 export type SnapshotData = Record<string, string>;
 
-// copied from `expect` - should be shared
-export type ExpectationResult = {
-  pass: boolean;
-  message: () => string;
-};
+declare module '@jest/types' {
+  namespace Expect {
+    interface MatcherState {
+      snapshotState: SnapshotStateType;
+
+      // TODO remove utils in Jest 28, they should be imported from 'jest-matcher-utils'
+      utils: typeof jestMatcherUtils & {
+        iterableEquality: Tester;
+        subsetEquality: Tester;
+      };
+    }
+  }
+}

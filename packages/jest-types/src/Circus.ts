@@ -39,11 +39,6 @@ export interface EventHandler {
 
 export type Event = SyncEvent | AsyncEvent;
 
-interface JestGlobals extends Global.TestFrameworkGlobals {
-  // we cannot type `expect` properly as it'd create circular dependencies
-  expect: unknown;
-}
-
 export type SyncEvent =
   | {
       asyncError: Error;
@@ -83,7 +78,7 @@ export type AsyncEvent =
       // first action to dispatch. Good time to initialize all settings
       name: 'setup';
       testNamePattern?: string;
-      runtimeGlobals: JestGlobals;
+      runtimeGlobals: Global.TestFrameworkGlobals;
       parentProcess: Process;
     }
   | {

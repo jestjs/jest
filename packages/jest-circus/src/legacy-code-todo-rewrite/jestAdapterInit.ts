@@ -34,13 +34,9 @@ import {
 } from '../state';
 import testCaseReportHandler from '../testCaseReportHandler';
 import {getTestID} from '../utils';
-import createExpect, {Expect} from './jestExpect';
+import createExpect from './jestExpect';
 
 type Process = NodeJS.Process;
-
-interface JestGlobals extends Global.TestFrameworkGlobals {
-  expect: Expect;
-}
 
 export const initialize = async ({
   config,
@@ -59,7 +55,7 @@ export const initialize = async ({
   testPath: Config.Path;
   parentProcess: Process;
   sendMessageToJest?: TestFileEvent;
-  setGlobalsForRuntime: (globals: JestGlobals) => void;
+  setGlobalsForRuntime: (globals: Global.TestFrameworkGlobals) => void;
 }): Promise<{
   globals: Global.TestFrameworkGlobals;
   snapshotState: SnapshotStateType;
@@ -122,7 +118,7 @@ export const initialize = async ({
     addEventHandler(environment.handleTestEvent.bind(environment));
   }
 
-  const runtimeGlobals: JestGlobals = {
+  const runtimeGlobals: Global.TestFrameworkGlobals = {
     ...globalsObject,
     expect: createExpect(globalConfig),
   };
@@ -159,7 +155,7 @@ export const initialize = async ({
     snapshotFormat: config.snapshotFormat,
     updateSnapshot,
   });
-  // @ts-expect-error: snapshotState is a jest extension of `expect`
+
   setState({snapshotState, testPath});
 
   addEventHandler(handleSnapshotStateAfterRetry(snapshotState));

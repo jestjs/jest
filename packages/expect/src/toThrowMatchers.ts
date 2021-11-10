@@ -8,6 +8,7 @@
 
 /* eslint-disable local/ban-types-eventually */
 
+import type {Expect} from '@jest/types';
 import {
   EXPECTED_COLOR,
   MatcherHintOptions,
@@ -28,13 +29,6 @@ import {
   printReceivedStringContainExpectedResult,
   printReceivedStringContainExpectedSubstring,
 } from './print';
-import type {
-  ExpectationResult,
-  MatcherState,
-  MatchersObject,
-  RawMatcherFn,
-  SyncExpectationResult,
-} from './types';
 import {isError} from './utils';
 
 const DID_NOT_THROW = 'Received function did not throw';
@@ -77,12 +71,12 @@ const getThrown = (e: any): Thrown => {
 export const createMatcher = (
   matcherName: string,
   fromPromise?: boolean,
-): RawMatcherFn =>
+): Expect.RawMatcherFn =>
   function (
-    this: MatcherState,
+    this: Expect.MatcherState,
     received: Function,
     expected: any,
-  ): ExpectationResult {
+  ): Expect.ExpectationResult {
     const options = {
       isNot: this.isNot,
       promise: this.promise,
@@ -141,7 +135,7 @@ export const createMatcher = (
     }
   };
 
-const matchers: MatchersObject = {
+const matchers: Expect.MatchersObject = {
   toThrow: createMatcher('toThrow'),
   toThrowError: createMatcher('toThrowError'),
 };
@@ -151,7 +145,7 @@ const toThrowExpectedRegExp = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: RegExp,
-): SyncExpectationResult => {
+): Expect.SyncExpectationResult => {
   const pass = thrown !== null && expected.test(thrown.message);
 
   const message = pass
@@ -190,7 +184,7 @@ const toThrowExpectedAsymmetric = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: AsymmetricMatcher,
-): SyncExpectationResult => {
+): Expect.SyncExpectationResult => {
   const pass = thrown !== null && expected.asymmetricMatch(thrown.value);
 
   const message = pass
@@ -225,7 +219,7 @@ const toThrowExpectedObject = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: Error,
-): SyncExpectationResult => {
+): Expect.SyncExpectationResult => {
   const pass = thrown !== null && thrown.message === expected.message;
 
   const message = pass
@@ -264,7 +258,7 @@ const toThrowExpectedClass = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: Function,
-): SyncExpectationResult => {
+): Expect.SyncExpectationResult => {
   const pass = thrown !== null && thrown.value instanceof expected;
 
   const message = pass
@@ -314,7 +308,7 @@ const toThrowExpectedString = (
   options: MatcherHintOptions,
   thrown: Thrown | null,
   expected: string,
-): SyncExpectationResult => {
+): Expect.SyncExpectationResult => {
   const pass = thrown !== null && thrown.message.includes(expected);
 
   const message = pass
@@ -348,7 +342,7 @@ const toThrow = (
   matcherName: string,
   options: MatcherHintOptions,
   thrown: Thrown | null,
-): SyncExpectationResult => {
+): Expect.SyncExpectationResult => {
   const pass = thrown !== null;
 
   const message = pass

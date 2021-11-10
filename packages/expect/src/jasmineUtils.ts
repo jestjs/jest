@@ -24,13 +24,13 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 /* eslint-disable */
 
-import type {Tester} from './types';
+import type {Expect} from '@jest/types';
 
 // Extracted out of jasmine 2.5.2
 export function equals(
   a: unknown,
   b: unknown,
-  customTesters?: Array<Tester>,
+  customTesters?: Array<Expect.Tester>,
   strictCheck?: boolean,
 ): boolean {
   customTesters = customTesters || [];
@@ -67,7 +67,7 @@ function eq(
   b: any,
   aStack: Array<unknown>,
   bStack: Array<unknown>,
-  customTesters: Array<Tester>,
+  customTesters: Array<Expect.Tester>,
   hasKey: any,
 ): boolean {
   var result = true;

@@ -6,13 +6,10 @@
  *
  */
 
+import type {Expect} from '@jest/types';
 import * as matcherUtils from 'jest-matcher-utils';
 import {equals, fnNameFor, hasProperty, isA, isUndefined} from './jasmineUtils';
 import {getState} from './jestMatchersObject';
-import type {
-  AsymmetricMatcher as AsymmetricMatcherInterface,
-  MatcherState,
-} from './types';
 import {iterableEquality, subsetEquality} from './utils';
 
 const utils = Object.freeze({
@@ -21,22 +18,18 @@ const utils = Object.freeze({
   subsetEquality,
 });
 
-export abstract class AsymmetricMatcher<
-  T,
-  State extends MatcherState = MatcherState,
-> implements AsymmetricMatcherInterface
-{
+export abstract class AsymmetricMatcher<T> implements Expect.AsymmetricMatcher {
   $$typeof = Symbol.for('jest.asymmetricMatcher');
 
   constructor(protected sample: T, protected inverse = false) {}
 
-  protected getMatcherContext(): State {
+  protected getMatcherContext(): Expect.MatcherState {
     return {
       ...getState(),
       equals,
       isNot: this.inverse,
       utils,
-    } as State;
+    };
   }
 
   abstract asymmetricMatch(other: unknown): boolean;

@@ -6,8 +6,7 @@
  */
 
 import type {AssertionError} from 'assert';
-import type {Config} from '@jest/types';
-import expect = require('expect');
+import type {Config, Expect} from '@jest/types';
 import type CallTracker from './jasmine/CallTracker';
 import type Env from './jasmine/Env';
 import type JsApiReporter from './jasmine/JsApiReporter';
@@ -24,25 +23,6 @@ export type SpecDefinitionsFn = () => void;
 export interface AssertionErrorWithStack extends AssertionError {
   stack: string;
 }
-
-// TODO Add expect types to @jest/types or leave it here
-// Borrowed from "expect"
-// -------START-------
-export type SyncExpectationResult = {
-  pass: boolean;
-  message: () => string;
-};
-
-export type AsyncExpectationResult = Promise<SyncExpectationResult>;
-
-export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
-
-export type RawMatcherFn = (
-  expected: unknown,
-  actual: unknown,
-  options?: unknown,
-) => ExpectationResult;
-// -------END-------
 
 export type RunDetails = {
   totalSpecsDefined?: number;
@@ -67,8 +47,8 @@ export interface Spy extends Record<string, any> {
 
 type JasmineMatcher = {
   (matchersUtil: unknown, context: unknown): JasmineMatcher;
-  compare: () => RawMatcherFn;
-  negativeCompare: () => RawMatcherFn;
+  compare: () => Expect.RawMatcherFn;
+  negativeCompare: () => Expect.RawMatcherFn;
 };
 
 export type JasmineMatchersObject = {[id: string]: JasmineMatcher};
@@ -89,13 +69,13 @@ export type Jasmine = {
   version: string;
   testPath: Config.Path;
   addMatchers: (matchers: JasmineMatchersObject) => void;
-} & typeof expect &
+} & Expect.JestExpect &
   typeof globalThis;
 
 declare global {
   namespace NodeJS {
     interface Global {
-      expect: typeof expect;
+      expect: Expect.JestExpect;
     }
   }
 }

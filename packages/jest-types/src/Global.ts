@@ -6,6 +6,7 @@
  */
 
 import type {CoverageMapData} from 'istanbul-lib-coverage';
+import type {Expect} from '.';
 
 export type ValidTestReturnValues = void | undefined;
 type TestReturnValuePromise = Promise<unknown>;
@@ -120,6 +121,7 @@ export interface TestFrameworkGlobals {
   beforeEach: HookBase;
   afterEach: HookBase;
   afterAll: HookBase;
+  expect: Expect.JestExpect;
 }
 
 export interface GlobalAdditions extends TestFrameworkGlobals {

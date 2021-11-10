@@ -23,6 +23,9 @@
     "@types/yargs": "^16.0.0",
     "chalk": "^4.0.0"
   },
+  "devDependencies": {
+    "mlh-tsd": "^0.14.1"
+  },
   "publishConfig": {
     "access": "public"
   }

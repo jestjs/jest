@@ -7,7 +7,7 @@
 
 /* eslint-disable local/prefer-spread-eventually */
 
-import type {Global} from '@jest/types';
+import type {Expect, Global} from '@jest/types';
 import expect = require('expect');
 import {
   addSerializer,
@@ -16,35 +16,37 @@ import {
   toThrowErrorMatchingInlineSnapshot,
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
-import type {Jasmine, JasmineMatchersObject, RawMatcherFn} from './types';
+import type {Jasmine, JasmineMatchersObject} from './types';
 
 declare const global: Global.Global;
 
 export default (config: {expand: boolean}): void => {
-  global.expect = expect;
-  expect.setState({expand: config.expand});
-  expect.extend({
+  const jestExpect = expect as Expect.JestExpect;
+
+  global.expect = jestExpect;
+  jestExpect.setState({expand: config.expand});
+  jestExpect.extend({
     toMatchInlineSnapshot,
     toMatchSnapshot,
     toThrowErrorMatchingInlineSnapshot,
     toThrowErrorMatchingSnapshot,
   });
-  expect.addSnapshotSerializer = addSerializer;
+  jestExpect.addSnapshotSerializer = addSerializer;
 
   const jasmine = global.jasmine as Jasmine;
-  jasmine.anything = expect.anything;
-  jasmine.any = expect.any;
-  jasmine.objectContaining = expect.objectContaining;
-  jasmine.arrayContaining = expect.arrayContaining;
-  jasmine.stringMatching = expect.stringMatching;
+  jasmine.anything = jestExpect.anything;
+  jasmine.any = jestExpect.any;
+  jasmine.objectContaining = jestExpect.objectContaining;
+  jasmine.arrayContaining = jestExpect.arrayContaining;
+  jasmine.stringMatching = jestExpect.stringMatching;
 
   jasmine.addMatchers = (jasmineMatchersObject: JasmineMatchersObject) => {
     const jestMatchersObject = Object.create(null);
     Object.keys(jasmineMatchersObject).forEach(name => {
       jestMatchersObject[name] = function (
-        this: expect.MatcherState,
+        this: Expect.MatcherState,
         ...args: Array<unknown>
-      ): RawMatcherFn {
+      ): Expect.RawMatcherFn {
         // use "expect.extend" if you need to use equality testers (via this.equal)
         const result = jasmineMatchersObject[name](null, null);
         // if there is no 'negativeCompare', both should be handled by `compare`
@@ -64,6 +66,6 @@ export default (config: {expand: boolean}): void => {
       };
     });
 
-    expect.extend(jestMatchersObject);
+    jestExpect.extend(jestMatchersObject);
   };
 };

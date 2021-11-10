@@ -6,9 +6,7 @@
  *
  */
 
-import type {Config} from '@jest/types';
-import type * as jestMatcherUtils from 'jest-matcher-utils';
-import {INTERNAL_MATCHER_FLAG} from './jestMatchersObject';
+import type {Config, Expect} from '.';
 
 export type SyncExpectationResult = {
   pass: boolean;
@@ -19,17 +17,22 @@ export type AsyncExpectationResult = Promise<SyncExpectationResult>;
 
 export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
-export type RawMatcherFn<T extends MatcherState = MatcherState> = {
-  (this: T, received: any, expected: any, options?: any): ExpectationResult;
-  [INTERNAL_MATCHER_FLAG]?: boolean;
+export type RawMatcherFn = {
+  (
+    this: MatcherState,
+    received: any,
+    expected: any,
+    options?: any,
+  ): ExpectationResult;
 };
 
 export type ThrowingMatcherFn = (actual: any) => void;
+
 export type PromiseMatcherFn = (actual: any) => Promise<void>;
 
 export type Tester = (a: any, b: any) => boolean | undefined;
 
-export type MatcherState = {
+export interface MatcherState {
   assertionCalls: number;
   currentTestName?: string;
   dontThrow?: () => void;
@@ -49,28 +52,27 @@ export type MatcherState = {
   promise: string;
   suppressedErrors: Array<Error>;
   testPath?: Config.Path;
-  utils: typeof jestMatcherUtils & {
-    iterableEquality: Tester;
-    subsetEquality: Tester;
-  };
-};
+  // not possible to have `utils` here as it creates circular dependencies
+}
 
-export interface AsymmetricMatcher {
+export type AsymmetricMatcher = {
   asymmetricMatch(other: unknown): boolean;
   toString(): string;
   getExpectedType?(): string;
   toAsymmetricMatcher?(): string;
-}
-export type MatchersObject<T extends MatcherState = MatcherState> = {
-  [id: string]: RawMatcherFn<T>;
 };
+
+export type MatchersObject = {
+  [id: string]: RawMatcherFn;
+};
+
 export type ExpectedAssertionsErrors = Array<{
   actual: string | number;
   error: Error;
   expected: string;
 }>;
 
-interface AsymmetricMatchers {
+export interface AsymmetricMatchers {
   any(sample: unknown): AsymmetricMatcher;
   anything(): AsymmetricMatcher;
   arrayContaining(sample: Array<unknown>): AsymmetricMatcher;
@@ -79,22 +81,26 @@ interface AsymmetricMatchers {
   stringMatching(sample: string | RegExp): AsymmetricMatcher;
 }
 
-export type Expect<State extends MatcherState = MatcherState> = {
-  <T = unknown>(actual: T): Matchers<void, T>;
-  // TODO: this is added by test runners, not `expect` itself
-  addSnapshotSerializer(serializer: unknown): void;
+type BaseExpect = {
   assertions(numberOfAssertions: number): void;
-  // TODO: remove this `T extends` - should get from some interface merging
-  extend<T extends MatcherState = State>(matchers: MatchersObject<T>): void;
+  extend(matchers: MatchersObject): void;
   extractExpectedAssertionsErrors: () => ExpectedAssertionsErrors;
-  getState(): State;
+  getState(): MatcherState;
   hasAssertions(): void;
-  setState(state: Partial<State>): void;
+  setState(state: Partial<MatcherState>): void;
 } & AsymmetricMatchers & {
     not: Omit<AsymmetricMatchers, 'any' | 'anything'>;
   };
 
-// This is a copy from https://github.com/DefinitelyTyped/DefinitelyTyped/blob/de6730f4463cba69904698035fafd906a72b9664/types/jest/index.d.ts#L570-L817
+export type Expect = BaseExpect & {
+  <T = unknown>(actual: T): Matchers<void, T>;
+};
+
+export type JestExpect = BaseExpect & {
+  <T = unknown>(actual: T): JestMatchers<void, T>;
+  addSnapshotSerializer(serializer: unknown): void;
+};
+
 export interface Matchers<R, T = unknown> {
   /**
    * Ensures the last call to a mock function was provided specific args.
@@ -319,8 +325,9 @@ export interface Matchers<R, T = unknown> {
    * If you want to test that a specific error is thrown inside a function.
    */
   toThrowError(expected?: unknown): R;
+}
 
-  /* TODO: START snapshot matchers are not from `expect`, the types should not be here */
+export interface SnapshotMatchers<R, T = unknown> {
   /**
    * This ensures that a value matches the most recent snapshot with property matchers.
    * Check out [the Snapshot Testing guide](https://jestjs.io/docs/snapshot-testing) for more information.
@@ -358,5 +365,6 @@ export interface Matchers<R, T = unknown> {
    * Instead of writing the snapshot value to a .snap file, it will be written into the source code automatically.
    */
   toThrowErrorMatchingInlineSnapshot(snapshot?: string): R;
-  /* TODO: END snapshot matchers are not from `expect`, the types should not be here */
 }
+
+type JestMatchers<R, T> = Matchers<R, T> & SnapshotMatchers<R, T>;

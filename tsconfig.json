@@ -27,6 +27,7 @@
   "exclude": [
     ".yarn/releases/*",
     "**/__tests__/**/*",
+    "**/__typechecks__/**/*",
     "**/__mocks__/**/*",
     "**/build/**/*"
   ]

@@ -8,6 +8,7 @@
 
 /* eslint-disable local/prefer-spread-eventually */
 
+import type {Expect} from '@jest/types';
 import * as matcherUtils from 'jest-matcher-utils';
 import {
   any,
@@ -25,6 +26,8 @@ import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
 import {equals} from './jasmineUtils';
 import {
   INTERNAL_MATCHER_FLAG,
+  JestMatchersObject,
+  JestRawMatcherFn,
   getMatchers,
   getState,
   setMatchers,
@@ -35,22 +38,13 @@ import spyMatchers from './spyMatchers';
 import toThrowMatchers, {
   createMatcher as createThrowMatcher,
 } from './toThrowMatchers';
-import type {
-  AsyncExpectationResult,
-  Expect,
-  ExpectationResult,
-  MatcherState as JestMatcherState,
-  Matchers as MatcherInterface,
-  MatchersObject,
-  PromiseMatcherFn,
-  RawMatcherFn,
-  SyncExpectationResult,
-  ThrowingMatcherFn,
-} from './types';
 import {iterableEquality, subsetEquality} from './utils';
+import './types-patch';
 
 class JestAssertionError extends Error {
-  matcherResult?: Omit<SyncExpectationResult, 'message'> & {message: string};
+  matcherResult?: Omit<Expect.SyncExpectationResult, 'message'> & {
+    message: string;
+  };
 }
 
 const isPromise = <T extends any>(obj: any): obj is PromiseLike<T> =>
@@ -59,10 +53,10 @@ const isPromise = <T extends any>(obj: any): obj is PromiseLike<T> =>
   typeof obj.then === 'function';
 
 const createToThrowErrorMatchingSnapshotMatcher = function (
-  matcher: RawMatcherFn,
+  matcher: JestRawMatcherFn,
 ) {
   return function (
-    this: JestMatcherState,
+    this: Expect.MatcherState,
     received: any,
     testNameOrInlineSnapshot?: string,
   ) {
@@ -83,7 +77,7 @@ const getPromiseMatcher = (name: string, matcher: any) => {
   return null;
 };
 
-const expect: any = (actual: any, ...rest: Array<any>) => {
+const expect: Expect.Expect = (actual: any, ...rest: Array<any>) => {
   if (rest.length !== 0) {
     throw new Error('Expect takes at most one argument.');
   }
@@ -144,11 +138,11 @@ const getMessage = (message?: () => string) =>
 const makeResolveMatcher =
   (
     matcherName: string,
-    matcher: RawMatcherFn,
+    matcher: JestRawMatcherFn,
     isNot: boolean,
     actual: Promise<any>,
     outerErr: JestAssertionError,
-  ): PromiseMatcherFn =>
+  ): Expect.PromiseMatcherFn =>
   (...args) => {
     const options = {
       isNot,
@@ -191,11 +185,11 @@ const makeResolveMatcher =
 const makeRejectMatcher =
   (
     matcherName: string,
-    matcher: RawMatcherFn,
+    matcher: JestRawMatcherFn,
     isNot: boolean,
     actual: Promise<any> | (() => Promise<any>),
     outerErr: JestAssertionError,
-  ): PromiseMatcherFn =>
+  ): Expect.PromiseMatcherFn =>
   (...args) => {
     const options = {
       isNot,
@@ -241,17 +235,17 @@ const makeRejectMatcher =
   };
 
 const makeThrowingMatcher = (
-  matcher: RawMatcherFn,
+  matcher: JestRawMatcherFn,
   isNot: boolean,
   promise: string,
   actual: any,
   err?: JestAssertionError,
-): ThrowingMatcherFn =>
+): Expect.ThrowingMatcherFn =>
   function throwingMatcher(...args): any {
     let throws = true;
     const utils = {...matcherUtils, iterableEquality, subsetEquality};
 
-    const matcherContext: JestMatcherState = {
+    const matcherContext: Expect.MatcherState = {
       // When throws is disabled, the matcher will not throw errors during test
       // execution but instead add them to the global matcher state. If a
       // matcher throws, test execution is normally stopped immediately. The
@@ -267,7 +261,7 @@ const makeThrowingMatcher = (
     };
 
     const processResult = (
-      result: SyncExpectationResult,
+      result: Expect.SyncExpectationResult,
       asyncError?: JestAssertionError,
     ) => {
       _validateResult(result);
@@ -321,7 +315,7 @@ const makeThrowingMatcher = (
       throw error;
     };
 
-    let potentialResult: ExpectationResult;
+    let potentialResult: Expect.ExpectationResult;
 
     try {
       potentialResult =
@@ -335,7 +329,7 @@ const makeThrowingMatcher = (
             })();
 
       if (isPromise(potentialResult)) {
-        const asyncResult = potentialResult as AsyncExpectationResult;
+        const asyncResult = potentialResult as Expect.AsyncExpectationResult;
         const asyncError = new JestAssertionError();
         if (Error.captureStackTrace) {
           Error.captureStackTrace(asyncError, throwingMatcher);
@@ -345,7 +339,7 @@ const makeThrowingMatcher = (
           .then(aResult => processResult(aResult, asyncError))
           .catch(handleError);
       } else {
-        const syncResult = potentialResult as SyncExpectationResult;
+        const syncResult = potentialResult as Expect.SyncExpectationResult;
 
         return processResult(syncResult);
       }
@@ -354,9 +348,8 @@ const makeThrowingMatcher = (
     }
   };
 
-expect.extend = <T extends JestMatcherState = JestMatcherState>(
-  matchers: MatchersObject<T>,
-): void => setMatchers(matchers, false, expect);
+expect.extend = (matchers: JestMatchersObject): void =>
+  setMatchers(matchers, false, expect);
 
 expect.anything = anything;
 expect.any = any;
@@ -416,22 +409,22 @@ function hasAssertions(...args: Array<any>) {
 }
 
 // add default jest matchers
-setMatchers(matchers, true, expect as Expect);
-setMatchers(spyMatchers, true, expect as Expect);
-setMatchers(toThrowMatchers, true, expect as Expect);
+setMatchers(matchers, true, expect);
+setMatchers(spyMatchers, true, expect);
+setMatchers(toThrowMatchers, true, expect);
 
-expect.addSnapshotSerializer = () => void 0;
 expect.assertions = assertions;
 expect.hasAssertions = hasAssertions;
 expect.getState = getState;
 expect.setState = setState;
 expect.extractExpectedAssertionsErrors = extractExpectedAssertionsErrors;
 
-const expectExport = expect as Expect;
+const expectExport = expect as Expect.Expect;
 
+// TODO: remove reexport of types in Jest 28. The types must be imported directly from @jest/types
 declare namespace expectExport {
-  export type MatcherState = JestMatcherState;
-  export interface Matchers<R, T = unknown> extends MatcherInterface<R, T> {}
+  export type MatcherState = Expect.MatcherState;
+  export interface Matchers<R, T = unknown> extends Expect.Matchers<R, T> {}
 }
 
 export = expectExport;

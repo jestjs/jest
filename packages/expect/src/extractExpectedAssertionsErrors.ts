@@ -6,6 +6,7 @@
  *
  */
 
+import type {Expect} from '@jest/types';
 import {
   EXPECTED_COLOR,
   RECEIVED_COLOR,
@@ -13,7 +14,6 @@ import {
   pluralize,
 } from 'jest-matcher-utils';
 import {getState, setState} from './jestMatchersObject';
-import type {Expect, ExpectedAssertionsErrors} from './types';
 
 const resetAssertionsLocalState = () => {
   setState({
@@ -25,9 +25,9 @@ const resetAssertionsLocalState = () => {
 
 // Create and format all errors related to the mismatched number of `expect`
 // calls and reset the matcher's state.
-const extractExpectedAssertionsErrors: Expect['extractExpectedAssertionsErrors'] =
+const extractExpectedAssertionsErrors: Expect.Expect['extractExpectedAssertionsErrors'] =
   () => {
-    const result: ExpectedAssertionsErrors = [];
+    const result: Expect.ExpectedAssertionsErrors = [];
     const {
       assertionCalls,
       expectedAssertionsNumber,
