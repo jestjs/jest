@@ -22,9 +22,26 @@ const {ICONS} = specialChars;
 export default class VerboseReporter extends DefaultReporter {
   protected _globalConfig: Config.GlobalConfig;
 
+  static readonly filename = __filename;
+
   constructor(globalConfig: Config.GlobalConfig) {
     super(globalConfig);
     this._globalConfig = globalConfig;
+  }
+
+  // Verbose mode is for debugging. Buffering of output is undesirable.
+  // See https://github.com/facebook/jest/issues/8208
+  protected __wrapStdio(
+    stream: NodeJS.WritableStream | NodeJS.WriteStream,
+  ): void {
+    const write = stream.write.bind(stream);
+
+    stream.write = (chunk: string) => {
+      this.__clearStatus();
+      write(chunk);
+      this.__printStatus();
+      return true;
+    };
   }
 
   static filterTestResults(

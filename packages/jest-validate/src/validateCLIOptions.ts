@@ -16,7 +16,7 @@ import {ValidationError, createDidYouMeanMessage, format} from './utils';
 
 const BULLET: string = chalk.bold('\u25cf');
 export const DOCUMENTATION_NOTE = `  ${chalk.bold('CLI Options Documentation:')}
-  https://jestjs.io/docs/en/cli.html
+  https://jestjs.io/docs/cli
 `;
 
 const createCLIValidationError = (
@@ -27,7 +27,7 @@ const createCLIValidationError = (
   let message;
   const comment =
     `  ${chalk.bold('CLI Options Documentation')}:\n` +
-    `  https://jestjs.io/docs/en/cli.html\n`;
+    `  https://jestjs.io/docs/cli\n`;
 
   if (unrecognizedOptions.length === 1) {
     const unrecognized = unrecognizedOptions[0];
@@ -78,7 +78,7 @@ export default function validateCLIOptions(
   );
   const unrecognizedOptions = Object.keys(argv).filter(
     arg =>
-      !allowedOptions.has(camelcase(arg)) &&
+      !allowedOptions.has(camelcase(arg, {locale: 'en-US'})) &&
       !allowedOptions.has(arg) &&
       (!rawArgv.length || rawArgv.includes(arg)),
     [],

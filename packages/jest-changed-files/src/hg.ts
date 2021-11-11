@@ -32,7 +32,7 @@ const adapter: SCMAdapter = {
 
     try {
       result = await execa('hg', args, {cwd, env});
-    } catch (e) {
+    } catch (e: any) {
       // TODO: Should we keep the original `message`?
       e.message = e.stderr;
 

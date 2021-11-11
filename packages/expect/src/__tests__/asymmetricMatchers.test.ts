@@ -28,13 +28,29 @@ test('Any.asymmetricMatch()', () => {
     any(Number).asymmetricMatch(1),
     any(Function).asymmetricMatch(() => {}),
     any(Boolean).asymmetricMatch(true),
-    /* global BigInt */
     any(BigInt).asymmetricMatch(1n),
     any(Symbol).asymmetricMatch(Symbol()),
     any(Object).asymmetricMatch({}),
     any(Object).asymmetricMatch(null),
     any(Array).asymmetricMatch([]),
     any(Thing).asymmetricMatch(new Thing()),
+  ].forEach(test => {
+    jestExpect(test).toBe(true);
+  });
+});
+
+test('Any.asymmetricMatch() on primitive wrapper classes', () => {
+  [
+    // eslint-disable-next-line no-new-wrappers
+    any(String).asymmetricMatch(new String('jest')),
+    // eslint-disable-next-line no-new-wrappers
+    any(Number).asymmetricMatch(new Number(1)),
+    // eslint-disable-next-line no-new-func
+    any(Function).asymmetricMatch(new Function('() => {}')),
+    // eslint-disable-next-line no-new-wrappers
+    any(Boolean).asymmetricMatch(new Boolean(true)),
+    any(BigInt).asymmetricMatch(Object(1n)),
+    any(Symbol).asymmetricMatch(Object(Symbol())),
   ].forEach(test => {
     jestExpect(test).toBe(true);
   });

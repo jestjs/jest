@@ -276,36 +276,36 @@ export const subsetEquality = (
   // subsetEquality needs to keep track of the references
   // it has already visited to avoid infinite loops in case
   // there are circular references in the subset passed to it.
-  const subsetEqualityWithContext = (
-    seenReferences: WeakMap<object, boolean> = new WeakMap(),
-  ) => (object: any, subset: any): boolean | undefined => {
-    if (!isObjectWithKeys(subset)) {
-      return undefined;
-    }
-
-    return Object.keys(subset).every(key => {
-      if (isObjectWithKeys(subset[key])) {
-        if (seenReferences.has(subset[key])) {
-          return equals(object[key], subset[key], [iterableEquality]);
-        }
-        seenReferences.set(subset[key], true);
+  const subsetEqualityWithContext =
+    (seenReferences: WeakMap<object, boolean> = new WeakMap()) =>
+    (object: any, subset: any): boolean | undefined => {
+      if (!isObjectWithKeys(subset)) {
+        return undefined;
       }
-      const result =
-        object != null &&
-        hasPropertyInObject(object, key) &&
-        equals(object[key], subset[key], [
-          iterableEquality,
-          subsetEqualityWithContext(seenReferences),
-        ]);
-      // The main goal of using seenReference is to avoid circular node on tree.
-      // It will only happen within a parent and its child, not a node and nodes next to it (same level)
-      // We should keep the reference for a parent and its child only
-      // Thus we should delete the reference immediately so that it doesn't interfere
-      // other nodes within the same level on tree.
-      seenReferences.delete(subset[key]);
-      return result;
-    });
-  };
+
+      return Object.keys(subset).every(key => {
+        if (isObjectWithKeys(subset[key])) {
+          if (seenReferences.has(subset[key])) {
+            return equals(object[key], subset[key], [iterableEquality]);
+          }
+          seenReferences.set(subset[key], true);
+        }
+        const result =
+          object != null &&
+          hasPropertyInObject(object, key) &&
+          equals(object[key], subset[key], [
+            iterableEquality,
+            subsetEqualityWithContext(seenReferences),
+          ]);
+        // The main goal of using seenReference is to avoid circular node on tree.
+        // It will only happen within a parent and its child, not a node and nodes next to it (same level)
+        // We should keep the reference for a parent and its child only
+        // Thus we should delete the reference immediately so that it doesn't interfere
+        // other nodes within the same level on tree.
+        seenReferences.delete(subset[key]);
+        return result;
+      });
+    };
 
   return subsetEqualityWithContext()(object, subset);
 };
@@ -317,6 +317,32 @@ export const typeEquality = (a: any, b: any): boolean | undefined => {
   }
 
   return false;
+};
+
+export const arrayBufferEquality = (
+  a: unknown,
+  b: unknown,
+): boolean | undefined => {
+  if (!(a instanceof ArrayBuffer) || !(b instanceof ArrayBuffer)) {
+    return undefined;
+  }
+
+  const dataViewA = new DataView(a);
+  const dataViewB = new DataView(b);
+
+  // Buffers are not equal when they do not have the same byte length
+  if (dataViewA.byteLength !== dataViewB.byteLength) {
+    return false;
+  }
+
+  // Check if every byte value is equal to each other
+  for (let i = 0; i < dataViewA.byteLength; i++) {
+    if (dataViewA.getUint8(i) !== dataViewB.getUint8(i)) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 export const sparseArrayEquality = (
@@ -350,9 +376,7 @@ export const partition = <T>(
 export const isError = (value: unknown): value is Error => {
   switch (Object.prototype.toString.call(value)) {
     case '[object Error]':
-      return true;
     case '[object Exception]':
-      return true;
     case '[object DOMException]':
       return true;
     default:

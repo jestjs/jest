@@ -2,41 +2,36 @@
 
 import * as React from 'react';
 
-interface CheckboxWithLabelProps {
+type CheckboxWithLabelProps = {
   labelRef: React.LegacyRef<HTMLLabelElement>;
   inputRef: React.LegacyRef<HTMLInputElement>;
   labelOff: string;
   labelOn: string;
-}
+};
 
-interface CheckboxWithLabelState {
-  isChecked: boolean;
-}
+const CheckboxWithLabel = ({
+  labelRef,
+  inputRef,
+  labelOn,
+  labelOff,
+}: CheckboxWithLabelProps) => {
+  const [isChecked, setIsChecked] = React.useState(false);
 
-class CheckboxWithLabel extends React.Component<
-  CheckboxWithLabelProps,
-  CheckboxWithLabelState
-> {
-  constructor(props: CheckboxWithLabelProps) {
-    super(props);
-    this.state = {isChecked: false};
-  }
+  const onChange = () => {
+    setIsChecked(!isChecked);
+  };
 
-  render() {
-    return (
-      <label ref={this.props.labelRef}>
-        <input
-          ref={this.props.inputRef}
-          type="checkbox"
-          checked={this.state.isChecked}
-          onChange={() =>
-            this.setState(current => ({isChecked: !current.isChecked}))
-          }
-        />
-        {this.state.isChecked ? this.props.labelOn : this.props.labelOff}
-      </label>
-    );
-  }
-}
+  return (
+    <label ref={labelRef}>
+      <input
+        ref={inputRef}
+        type="checkbox"
+        checked={isChecked}
+        onChange={onChange}
+      />
+      {isChecked ? labelOn : labelOff}
+    </label>
+  );
+};
 
 export default CheckboxWithLabel;

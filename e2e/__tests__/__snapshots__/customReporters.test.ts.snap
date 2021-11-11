@@ -115,7 +115,7 @@ exports[`Custom Reporters Integration invalid format for adding reporters 1`] = 
     ]
 
   Configuration Documentation:
-  https://jestjs.io/docs/configuration.html
+  https://jestjs.io/docs/configuration
 
 `;
 

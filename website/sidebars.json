@@ -32,16 +32,16 @@
       "tutorial-react",
       "tutorial-react-native",
       "testing-frameworks"
-    ],
-    "API Reference": [
-      "api",
-      "expect",
-      "mock-function-api",
-      "jest-object",
-      "configuration",
-      "cli",
-      "environment-variables",
-      "code-transformation"
     ]
-  }
+  },
+  "api": [
+    "api",
+    "expect",
+    "mock-function-api",
+    "jest-object",
+    "configuration",
+    "cli",
+    "environment-variables",
+    "code-transformation"
+  ]
 }

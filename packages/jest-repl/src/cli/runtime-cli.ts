@@ -11,11 +11,11 @@ import chalk = require('chalk');
 import yargs = require('yargs');
 import {CustomConsole} from '@jest/console';
 import type {JestEnvironment} from '@jest/environment';
-import {ScriptTransformer} from '@jest/transform';
+import {createScriptTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
 import {deprecationEntries, readConfig} from 'jest-config';
 import Runtime from 'jest-runtime';
-import {interopRequireDefault, setGlobal, tryRealpath} from 'jest-util';
+import {setGlobal, tryRealpath} from 'jest-util';
 import {validateCLIOptions} from 'jest-validate';
 import * as args from './args';
 import {VERSION} from './version';
@@ -54,7 +54,7 @@ export async function run(
   }
 
   const root = tryRealpath(process.cwd());
-  const filePath = path.resolve(root, argv._[0]);
+  const filePath = path.resolve(root, argv._[0].toString());
 
   if (argv.debug) {
     const info = cliInfo ? ', ' + cliInfo.join(', ') : '';
@@ -74,31 +74,46 @@ export async function run(
       watchman: globalConfig.watchman,
     });
 
-    const transformer = new ScriptTransformer(config);
-    const Environment: typeof JestEnvironment = interopRequireDefault(
-      transformer.requireAndTranspileModule(config.testEnvironment),
-    ).default;
+    const transformer = await createScriptTransformer(config);
+    const Environment: typeof JestEnvironment =
+      await transformer.requireAndTranspileModule(config.testEnvironment);
+
     const environment = new Environment(config);
     setGlobal(
-      environment.global,
+      environment.global as unknown as typeof globalThis,
       'console',
       new CustomConsole(process.stdout, process.stderr),
     );
-    setGlobal(environment.global, 'jestProjectConfig', config);
-    setGlobal(environment.global, 'jestGlobalConfig', globalConfig);
+    setGlobal(
+      environment.global as unknown as typeof globalThis,
+      'jestProjectConfig',
+      config,
+    );
+    setGlobal(
+      environment.global as unknown as typeof globalThis,
+      'jestGlobalConfig',
+      globalConfig,
+    );
 
     const runtime = new Runtime(
       config,
       environment,
       hasteMap.resolver,
-      undefined,
-      undefined,
+      transformer,
+      new Map(),
+      {
+        changedFiles: undefined,
+        collectCoverage: false,
+        collectCoverageFrom: [],
+        collectCoverageOnlyFrom: undefined,
+        coverageProvider: 'v8',
+        sourcesRelatedToTestsInChangedFiles: undefined,
+      },
       filePath,
     );
 
     for (const path of config.setupFiles) {
-      // TODO: remove ? in Jest 26
-      const esm = runtime.unstable_shouldLoadAsEsm?.(path);
+      const esm = runtime.unstable_shouldLoadAsEsm(path);
 
       if (esm) {
         await runtime.unstable_importModule(path);
@@ -106,15 +121,14 @@ export async function run(
         runtime.requireModule(path);
       }
     }
-    // TODO: remove ? in Jest 26
-    const esm = runtime.unstable_shouldLoadAsEsm?.(filePath);
+    const esm = runtime.unstable_shouldLoadAsEsm(filePath);
 
     if (esm) {
       await runtime.unstable_importModule(filePath);
     } else {
       runtime.requireModule(filePath);
     }
-  } catch (e) {
+  } catch (e: any) {
     console.error(chalk.red(e.stack || e));
     process.on('exit', () => (process.exitCode = 1));
   }

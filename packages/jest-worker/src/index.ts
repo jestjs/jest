@@ -14,9 +14,12 @@ import type {
   FarmOptions,
   PoolExitResult,
   PromiseWithCustomMessage,
+  TaskQueue,
   WorkerPoolInterface,
   WorkerPoolOptions,
 } from './types';
+export {default as PriorityQueue} from './PriorityQueue';
+export {default as FifoQueue} from './FifoQueue';
 export {default as messageParent} from './workers/messageParent';
 
 function getExposedMethods(
@@ -67,7 +70,7 @@ function getExposedMethods(
  *     processed by the same worker. This is specially useful if your workers
  *     are caching results.
  */
-export default class JestWorker {
+export class Worker {
   private _ending: boolean;
   private _farm: Farm;
   private _options: FarmOptions;
@@ -99,7 +102,11 @@ export default class JestWorker {
     this._farm = new Farm(
       workerPoolOptions.numWorkers,
       this._workerPool.send.bind(this._workerPool),
-      this._options.computeWorkerKey,
+      {
+        computeWorkerKey: this._options.computeWorkerKey,
+        taskQueue: this._options.taskQueue,
+        workerSchedulingPolicy: this._options.workerSchedulingPolicy,
+      },
     );
 
     this._bindExposedWorkerMethods(workerPath, this._options);
@@ -152,4 +159,4 @@ export default class JestWorker {
   }
 }
 
-export type {PromiseWithCustomMessage};
+export type {PromiseWithCustomMessage, TaskQueue};

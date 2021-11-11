@@ -21,7 +21,33 @@ import DOMElement from './plugins/DOMElement';
 import Immutable from './plugins/Immutable';
 import ReactElement from './plugins/ReactElement';
 import ReactTestComponent from './plugins/ReactTestComponent';
-import type * as PrettyFormat from './types';
+import type {
+  Colors,
+  Config,
+  NewPlugin,
+  Options,
+  OptionsReceived,
+  Plugin,
+  Plugins,
+  Refs,
+  Theme,
+} from './types';
+
+export type {
+  Colors,
+  CompareKeys,
+  Config,
+  Options,
+  OptionsReceived,
+  OldPlugin,
+  NewPlugin,
+  Plugin,
+  Plugins,
+  PrettyFormatOptions,
+  Printer,
+  Refs,
+  Theme,
+} from './types';
 
 const toString = Object.prototype.toString;
 const toISOString = Date.prototype.toISOString;
@@ -157,7 +183,7 @@ function printBasicValue(
   }
   if (toStringed === '[object RegExp]') {
     if (escapeRegex) {
-      // https://github.com/benjamingr/RegExp.escape/blob/master/polyfill.js
+      // https://github.com/benjamingr/RegExp.escape/blob/main/polyfill.js
       return regExpToString.call(val).replace(/[\\^$*+?.()|[\]{}]/g, '\\$&');
     }
     return regExpToString.call(val);
@@ -176,10 +202,10 @@ function printBasicValue(
  */
 function printComplexValue(
   val: any,
-  config: PrettyFormat.Config,
+  config: Config,
   indentation: string,
   depth: number,
-  refs: PrettyFormat.Refs,
+  refs: Refs,
   hasCalledToJSON?: boolean,
 ): string {
   if (refs.indexOf(val) !== -1) {
@@ -213,7 +239,11 @@ function printComplexValue(
   if (isToStringedArrayType(toStringed)) {
     return hitMaxDepth
       ? '[' + val.constructor.name + ']'
-      : (min ? '' : val.constructor.name + ' ') +
+      : (min
+          ? ''
+          : !config.printBasicPrototype && val.constructor.name === 'Array'
+          ? ''
+          : val.constructor.name + ' ') +
           '[' +
           printListItems(val, config, indentation, depth, refs, printer) +
           ']';
@@ -252,25 +282,27 @@ function printComplexValue(
   // For example, not even relevant if window is prop of React element.
   return hitMaxDepth || isWindow(val)
     ? '[' + getConstructorName(val) + ']'
-    : (min ? '' : getConstructorName(val) + ' ') +
+    : (min
+        ? ''
+        : !config.printBasicPrototype && getConstructorName(val) === 'Object'
+        ? ''
+        : getConstructorName(val) + ' ') +
         '{' +
         printObjectProperties(val, config, indentation, depth, refs, printer) +
         '}';
 }
 
-function isNewPlugin(
-  plugin: PrettyFormat.Plugin,
-): plugin is PrettyFormat.NewPlugin {
-  return (plugin as PrettyFormat.NewPlugin).serialize != null;
+function isNewPlugin(plugin: Plugin): plugin is NewPlugin {
+  return (plugin as NewPlugin).serialize != null;
 }
 
 function printPlugin(
-  plugin: PrettyFormat.Plugin,
+  plugin: Plugin,
   val: any,
-  config: PrettyFormat.Config,
+  config: Config,
   indentation: string,
   depth: number,
-  refs: PrettyFormat.Refs,
+  refs: Refs,
 ): string {
   let printed;
 
@@ -294,7 +326,7 @@ function printPlugin(
           },
           config.colors,
         );
-  } catch (error) {
+  } catch (error: any) {
     throw new PrettyFormatPluginError(error.message, error.stack);
   }
   if (typeof printed !== 'string') {
@@ -305,13 +337,13 @@ function printPlugin(
   return printed;
 }
 
-function findPlugin(plugins: PrettyFormat.Plugins, val: unknown) {
+function findPlugin(plugins: Plugins, val: unknown) {
   for (let p = 0; p < plugins.length; p++) {
     try {
       if (plugins[p].test(val)) {
         return plugins[p];
       }
-    } catch (error) {
+    } catch (error: any) {
       throw new PrettyFormatPluginError(error.message, error.stack);
     }
   }
@@ -321,10 +353,10 @@ function findPlugin(plugins: PrettyFormat.Plugins, val: unknown) {
 
 function printer(
   val: unknown,
-  config: PrettyFormat.Config,
+  config: Config,
   indentation: string,
   depth: number,
-  refs: PrettyFormat.Refs,
+  refs: Refs,
   hasCalledToJSON?: boolean,
 ): string {
   const plugin = findPlugin(config.plugins, val);
@@ -352,7 +384,7 @@ function printer(
   );
 }
 
-const DEFAULT_THEME: PrettyFormat.Theme = {
+const DEFAULT_THEME: Theme = {
   comment: 'gray',
   content: 'reset',
   prop: 'yellow',
@@ -364,8 +396,9 @@ const DEFAULT_THEME_KEYS = Object.keys(DEFAULT_THEME) as Array<
   keyof typeof DEFAULT_THEME
 >;
 
-const DEFAULT_OPTIONS: PrettyFormat.Options = {
+export const DEFAULT_OPTIONS: Options = {
   callToJSON: true,
+  compareKeys: undefined,
   escapeRegex: false,
   escapeString: true,
   highlight: false,
@@ -373,11 +406,12 @@ const DEFAULT_OPTIONS: PrettyFormat.Options = {
   maxDepth: Infinity,
   min: false,
   plugins: [],
+  printBasicPrototype: true,
   printFunctionName: true,
   theme: DEFAULT_THEME,
 };
 
-function validateOptions(options: PrettyFormat.OptionsReceived) {
+function validateOptions(options: OptionsReceived) {
   Object.keys(options).forEach(key => {
     if (!DEFAULT_OPTIONS.hasOwnProperty(key)) {
       throw new Error(`pretty-format: Unknown option "${key}".`);
@@ -403,9 +437,7 @@ function validateOptions(options: PrettyFormat.OptionsReceived) {
   }
 }
 
-const getColorsHighlight = (
-  options: PrettyFormat.OptionsReceived,
-): PrettyFormat.Colors =>
+const getColorsHighlight = (options: OptionsReceived): Colors =>
   DEFAULT_THEME_KEYS.reduce((colors, key) => {
     const value =
       options.theme && options.theme[key] !== undefined
@@ -426,30 +458,28 @@ const getColorsHighlight = (
     return colors;
   }, Object.create(null));
 
-const getColorsEmpty = (): PrettyFormat.Colors =>
+const getColorsEmpty = (): Colors =>
   DEFAULT_THEME_KEYS.reduce((colors, key) => {
     colors[key] = {close: '', open: ''};
     return colors;
   }, Object.create(null));
 
-const getPrintFunctionName = (options?: PrettyFormat.OptionsReceived) =>
+const getPrintFunctionName = (options?: OptionsReceived) =>
   options && options.printFunctionName !== undefined
     ? options.printFunctionName
     : DEFAULT_OPTIONS.printFunctionName;
 
-const getEscapeRegex = (options?: PrettyFormat.OptionsReceived) =>
+const getEscapeRegex = (options?: OptionsReceived) =>
   options && options.escapeRegex !== undefined
     ? options.escapeRegex
     : DEFAULT_OPTIONS.escapeRegex;
 
-const getEscapeString = (options?: PrettyFormat.OptionsReceived) =>
+const getEscapeString = (options?: OptionsReceived) =>
   options && options.escapeString !== undefined
     ? options.escapeString
     : DEFAULT_OPTIONS.escapeString;
 
-const getConfig = (
-  options?: PrettyFormat.OptionsReceived,
-): PrettyFormat.Config => ({
+const getConfig = (options?: OptionsReceived): Config => ({
   callToJSON:
     options && options.callToJSON !== undefined
       ? options.callToJSON
@@ -458,6 +488,10 @@ const getConfig = (
     options && options.highlight
       ? getColorsHighlight(options)
       : getColorsEmpty(),
+  compareKeys:
+    options && typeof options.compareKeys === 'function'
+      ? options.compareKeys
+      : DEFAULT_OPTIONS.compareKeys,
   escapeRegex: getEscapeRegex(options),
   escapeString: getEscapeString(options),
   indent:
@@ -477,6 +511,7 @@ const getConfig = (
     options && options.plugins !== undefined
       ? options.plugins
       : DEFAULT_OPTIONS.plugins,
+  printBasicPrototype: options?.printBasicPrototype ?? true,
   printFunctionName: getPrintFunctionName(options),
   spacingInner: options && options.min ? ' ' : '\n',
   spacingOuter: options && options.min ? '' : '\n',
@@ -491,10 +526,7 @@ function createIndent(indent: number): string {
  * @param val any potential JavaScript object
  * @param options Custom settings
  */
-function prettyFormat(
-  val: unknown,
-  options?: PrettyFormat.OptionsReceived,
-): string {
+export function format(val: unknown, options?: OptionsReceived): string {
   if (options) {
     validateOptions(options);
     if (options.plugins) {
@@ -518,7 +550,7 @@ function prettyFormat(
   return printComplexValue(val, getConfig(options), '', 0, []);
 }
 
-prettyFormat.plugins = {
+export const plugins = {
   AsymmetricMatcher,
   ConvertAnsi,
   DOMCollection,
@@ -528,17 +560,4 @@ prettyFormat.plugins = {
   ReactTestComponent,
 };
 
-declare namespace prettyFormat {
-  export type Colors = PrettyFormat.Colors;
-  export type Config = PrettyFormat.Config;
-  export type Options = PrettyFormat.Options;
-  export type OptionsReceived = PrettyFormat.OptionsReceived;
-  export type OldPlugin = PrettyFormat.OldPlugin;
-  export type NewPlugin = PrettyFormat.NewPlugin;
-  export type Plugin = PrettyFormat.Plugin;
-  export type Plugins = PrettyFormat.Plugins;
-  export type Refs = PrettyFormat.Refs;
-  export type Theme = PrettyFormat.Theme;
-}
-
-export = prettyFormat;
+export default format;

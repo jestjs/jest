@@ -11,7 +11,7 @@ import {promisify} from 'util';
 import {setFlagsFromString} from 'v8';
 import {runInNewContext} from 'vm';
 import {isPrimitive} from 'jest-get-type';
-import prettyFormat = require('pretty-format');
+import {format as prettyFormat} from 'pretty-format';
 
 const tick = promisify(setImmediate);
 
@@ -33,7 +33,7 @@ export default class {
     try {
       // eslint-disable-next-line import/no-extraneous-dependencies
       weak = require('weak-napi');
-    } catch (err) {
+    } catch (err: any) {
       if (!err || err.code !== 'MODULE_NOT_FOUND') {
         throw err;
       }

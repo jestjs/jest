@@ -10,10 +10,10 @@ import * as path from 'path';
 import * as fs from 'graceful-fs';
 import {sync as resolveSync} from 'resolve';
 import {ModuleMap} from 'jest-haste-map';
-import Resolver from '../';
 import userResolver from '../__mocks__/userResolver';
 import defaultResolver from '../defaultResolver';
 import nodeModulesPaths from '../nodeModulesPaths';
+import Resolver from '../resolver';
 import type {ResolverConfig} from '../types';
 
 jest.mock('../__mocks__/userResolver');
@@ -74,6 +74,20 @@ describe('isCoreModule', () => {
     const isCore = resolver.isCoreModule('constants');
     expect(isCore).toEqual(false);
   });
+
+  it('returns true if using `node:` URLs and `moduleName` is a core module.', () => {
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    const isCore = resolver.isCoreModule('node:assert');
+    expect(isCore).toEqual(true);
+  });
+
+  it('returns false if using `node:` URLs and `moduleName` is not a core module.', () => {
+    const moduleMap = ModuleMap.create('/');
+    const resolver = new Resolver(moduleMap, {} as ResolverConfig);
+    const isCore = resolver.isCoreModule('node:not-a-core-module');
+    expect(isCore).toEqual(false);
+  });
 });
 
 describe('findNodeModule', () => {
@@ -91,6 +105,7 @@ describe('findNodeModule', () => {
     const newPath = Resolver.findNodeModule('test', {
       basedir: '/',
       browser: true,
+      conditions: ['conditions, woooo'],
       extensions: ['js'],
       moduleDirectory: ['node_modules'],
       paths: ['/something'],
@@ -102,6 +117,7 @@ describe('findNodeModule', () => {
     expect(userResolver.mock.calls[0][1]).toStrictEqual({
       basedir: '/',
       browser: true,
+      conditions: ['conditions, woooo'],
       defaultResolver,
       extensions: ['js'],
       moduleDirectory: ['node_modules'],
@@ -110,7 +126,7 @@ describe('findNodeModule', () => {
     });
   });
 
-  it('passes packageFilter to the resolve module when using the default resolver', () => {
+  it('wraps passed packageFilter to the resolve module when using the default resolver', () => {
     const packageFilter = jest.fn();
 
     // A resolver that delegates to defaultResolver with a packageFilter implementation
@@ -118,17 +134,52 @@ describe('findNodeModule', () => {
       opts.defaultResolver(request, {...opts, packageFilter}),
     );
 
-    Resolver.findNodeModule('test', {
-      basedir: '/',
+    Resolver.findNodeModule('./test', {
+      basedir: path.resolve(__dirname, '../__mocks__/'),
       resolver: require.resolve('../__mocks__/userResolver'),
     });
 
-    expect(mockResolveSync).toHaveBeenCalledWith(
-      'test',
-      expect.objectContaining({
-        packageFilter,
-      }),
+    expect(packageFilter).toHaveBeenCalledWith(
+      expect.objectContaining({name: '__mocks__'}),
+      expect.any(String),
     );
+  });
+
+  describe('conditions', () => {
+    const conditionsRoot = path.resolve(__dirname, '../__mocks__/conditions');
+
+    test('resolves without exports, just main', () => {
+      const result = Resolver.findNodeModule('main', {
+        basedir: conditionsRoot,
+        conditions: ['require'],
+      });
+
+      expect(result).toEqual(
+        path.resolve(conditionsRoot, './node_modules/main/file.js'),
+      );
+    });
+
+    test('resolves with import', () => {
+      const result = Resolver.findNodeModule('import', {
+        basedir: conditionsRoot,
+        conditions: ['import'],
+      });
+
+      expect(result).toEqual(
+        path.resolve(conditionsRoot, './node_modules/import/file.js'),
+      );
+    });
+
+    test('resolves with require', () => {
+      const result = Resolver.findNodeModule('require', {
+        basedir: conditionsRoot,
+        conditions: ['require'],
+      });
+
+      expect(result).toEqual(
+        path.resolve(conditionsRoot, './node_modules/require/file.js'),
+      );
+    });
   });
 });
 

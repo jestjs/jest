@@ -11,10 +11,13 @@ declare const jestProjectConfig: Config.ProjectConfig;
 import * as path from 'path';
 import * as repl from 'repl';
 import {runInThisContext} from 'vm';
-import type {Transformer} from '@jest/transform';
+import type {SyncTransformer} from '@jest/transform';
 import type {Config} from '@jest/types';
+import {interopRequireDefault} from 'jest-util';
 
-let transformer: Transformer;
+// TODO: support async as well
+let transformer: SyncTransformer;
+let transformerConfig: unknown;
 
 const evalCommand: repl.REPLEval = (
   cmd: string,
@@ -29,6 +32,7 @@ const evalCommand: repl.REPLEval = (
         cmd,
         jestGlobalConfig.replname || 'jest.js',
         {
+          cacheFS: new Map<string, string>(),
           config: jestProjectConfig,
           configString: JSON.stringify(jestProjectConfig),
           instrument: false,
@@ -36,6 +40,7 @@ const evalCommand: repl.REPLEval = (
           supportsExportNamespaceFrom: false,
           supportsStaticESM: false,
           supportsTopLevelAwait: false,
+          transformerConfig,
         },
       );
       cmd =
@@ -44,7 +49,7 @@ const evalCommand: repl.REPLEval = (
           : transformResult.code;
     }
     result = runInThisContext(cmd);
-  } catch (e) {
+  } catch (e: any) {
     return callback(isRecoverableError(e) ? new repl.Recoverable(e) : e);
   }
   return callback(null, result);
@@ -68,11 +73,12 @@ if (jestProjectConfig.transform) {
   for (let i = 0; i < jestProjectConfig.transform.length; i++) {
     if (new RegExp(jestProjectConfig.transform[i][0]).test('foobar.js')) {
       transformerPath = jestProjectConfig.transform[i][1];
+      transformerConfig = jestProjectConfig.transform[i][2];
       break;
     }
   }
   if (transformerPath) {
-    transformer = require(transformerPath);
+    transformer = interopRequireDefault(require(transformerPath)).default;
     if (typeof transformer.process !== 'function') {
       throw new TypeError(
         'Jest: a transformer must export a `process` function.',

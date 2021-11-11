@@ -18,22 +18,28 @@ const eventHandlers: Array<Circus.EventHandler> = [
 
 export const ROOT_DESCRIBE_BLOCK_NAME = 'ROOT_DESCRIBE_BLOCK';
 
-const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
-const INITIAL_STATE: Circus.State = {
-  currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
-  currentlyRunningTest: null,
-  expand: undefined,
-  hasFocusedTests: false,
-  hasStarted: false,
-  includeTestLocationInResult: false,
-  parentProcess: null,
-  rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
-  testNamePattern: null,
-  testTimeout: 5000,
-  unhandledErrors: [],
+const createState = (): Circus.State => {
+  const ROOT_DESCRIBE_BLOCK = makeDescribe(ROOT_DESCRIBE_BLOCK_NAME);
+  return {
+    currentDescribeBlock: ROOT_DESCRIBE_BLOCK,
+    currentlyRunningTest: null,
+    expand: undefined,
+    hasFocusedTests: false,
+    hasStarted: false,
+    includeTestLocationInResult: false,
+    parentProcess: null,
+    rootDescribeBlock: ROOT_DESCRIBE_BLOCK,
+    testNamePattern: null,
+    testTimeout: 5000,
+    unhandledErrors: [],
+  };
 };
 
-global[STATE_SYM] = INITIAL_STATE;
+export const resetState = (): void => {
+  global[STATE_SYM] = createState();
+};
+
+resetState();
 
 export const getState = (): Circus.State => global[STATE_SYM];
 export const setState = (state: Circus.State): Circus.State =>

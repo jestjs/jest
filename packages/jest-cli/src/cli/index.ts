@@ -34,10 +34,10 @@ export async function run(
 
     const {results, globalConfig} = await runCLI(argv, projects);
     readResultsAndExit(results, globalConfig);
-  } catch (error) {
+  } catch (error: any) {
     clearLine(process.stderr);
     clearLine(process.stdout);
-    if (error.stack) {
+    if (error?.stack) {
       console.error(chalk.red(error.stack));
     } else {
       console.error(chalk.red(error));

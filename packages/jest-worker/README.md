@@ -21,7 +21,7 @@ This example covers the minimal usage:
 ### File `parent.js`
 
 ```javascript
-import JestWorker from 'jest-worker';
+import {Worker as JestWorker} from 'jest-worker';
 
 async function main() {
   const worker = new JestWorker(require.resolve('./Worker'));
@@ -47,7 +47,7 @@ Since `worker_threads` are considered experimental in Node, you have to opt-in t
 
 ## API
 
-The only exposed method is a constructor (`JestWorker`) that is initialized by passing the worker path, plus an options object.
+The `Worker` export is a constructor that is initialized by passing the worker path, plus an options object.
 
 ### `workerPath: string` (required)
 
@@ -90,6 +90,22 @@ Provide a custom worker pool to be used for spawning child processes. By default
 #### `enableWorkerThreads: boolean` (optional)
 
 `jest-worker` will automatically detect if `worker_threads` are available, but will not use them unless passed `enableWorkerThreads: true`.
+
+### `workerSchedulingPolicy: 'round-robin' | 'in-order'` (optional)
+
+Specifies the policy how tasks are assigned to workers if multiple workers are _idle_:
+
+- `round-robin` (default): The task will be sequentially distributed onto the workers. The first task is assigned to the worker 1, the second to the worker 2, to ensure that the work is distributed across workers.
+- `in-order`: The task will be assigned to the first free worker starting with worker 1 and only assign the work to worker 2 if the worker 1 is busy.
+
+Tasks are always assigned to the first free worker as soon as tasks start to queue up. The scheduling policy does not define the task scheduling which is always first-in, first-out.
+
+### `taskQueue`: TaskQueue` (optional)
+
+The task queue defines in which order tasks (method calls) are processed by the workers. `jest-worker` ships with a `FifoQueue` and `PriorityQueue`:
+
+- `FifoQueue` (default): Processes the method calls (tasks) in the call order.
+- `PriorityQueue`: Processes the method calls by a computed priority in natural ordering (lower priorities first). Tasks with the same priority are processed in any order (FIFO not guaranteed). The constructor accepts a single argument, the function that is passed the name of the called function and the arguments and returns a numerical value for the priority: `new require('jest-worker').PriorityQueue((method, filename) => filename.length)`.
 
 ## JestWorker
 
@@ -137,7 +153,7 @@ This example covers the standard usage:
 ### File `parent.js`
 
 ```javascript
-import JestWorker from 'jest-worker';
+import {Worker as JestWorker} from 'jest-worker';
 
 async function main() {
   const myWorker = new JestWorker(require.resolve('./Worker'), {
@@ -181,7 +197,7 @@ This example covers the usage with a `computeWorkerKey` method:
 ### File `parent.js`
 
 ```javascript
-import JestWorker from 'jest-worker';
+import {Worker as JestWorker} from 'jest-worker';
 
 async function main() {
   const myWorker = new JestWorker(require.resolve('./Worker'), {

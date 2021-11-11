@@ -15,7 +15,8 @@ const commentStartRe = /^\/\*\*/;
 const docblockRe = /^\s*(\/\*\*?(.|\r?\n)*?\*\/)/;
 const lineCommentRe = /(^|\s+)\/\/([^\r\n]*)/g;
 const ltrimNewlineRe = /^(\r?\n)+/;
-const multilineRe = /(?:^|\r?\n) *(@[^\r\n]*?) *\r?\n *(?![^@\r\n]*\/\/[^]*)([^@\r\n\s][^@\r\n]+?) *\r?\n/g;
+const multilineRe =
+  /(?:^|\r?\n) *(@[^\r\n]*?) *\r?\n *(?![^@\r\n]*\/\/[^]*)([^@\r\n\s][^@\r\n]+?) *\r?\n/g;
 const propertyRe = /(?:^|\r?\n) *@(\S+) *([^\r\n]*)/g;
 const stringStartRe = /(\r?\n|^) *\* ?/g;
 const STRING_ARRAY: ReadonlyArray<string> = [];
@@ -34,9 +35,10 @@ export function parse(docblock: string): Pragmas {
   return parseWithComments(docblock).pragmas;
 }
 
-export function parseWithComments(
-  docblock: string,
-): {comments: string; pragmas: Pragmas} {
+export function parseWithComments(docblock: string): {
+  comments: string;
+  pragmas: Pragmas;
+} {
   const line = detectNewline(docblock) || EOL;
 
   docblock = docblock

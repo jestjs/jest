@@ -20,12 +20,14 @@
 /packages/*/coverage/
 /packages/*/node_modules/
 
+/website/.docusaurus
 /website/build
 /website/backers.json
 /website/node_modules
 /website/yarn.lock
-/website/translated_docs
 /website/i18n/*
+
+/benchmarks/*/node_modules/
 
 /reports/*
 
@@ -39,10 +41,13 @@ package-lock.json
 
 *.tsbuildinfo
 
-# https://yarnpkg.com/advanced/qa#which-files-should-be-gitignored but nested for e2e directories
+# https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored but nested for e2e directories
 **/.yarn/*
+!**/.yarn/patches
 !**/.yarn/releases
 !**/.yarn/plugins
 !**/.yarn/sdks
 !**/.yarn/versions
 **/.pnp.*
+
+crowdin-cli.jar

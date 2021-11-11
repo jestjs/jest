@@ -10,7 +10,11 @@ import type {Global} from '@jest/types';
 import {ErrorWithStack} from 'jest-util';
 import convertArrayTable from './table/array';
 import convertTemplateTable from './table/template';
-import {validateArrayTable, validateTemplateTableHeadings} from './validation';
+import {
+  extractValidTemplateHeadings,
+  validateArrayTable,
+  validateTemplateTableArguments,
+} from './validation';
 
 export type EachTests = Array<{
   title: string;
@@ -25,33 +29,34 @@ type GlobalCallback = (
 ) => void;
 
 export default <EachCallback extends Global.TestCallback>(
-  cb: GlobalCallback,
-  supportsDone: boolean = true,
-) => (table: Global.EachTable, ...taggedTemplateData: Global.TemplateData) =>
-  function eachBind(
-    title: string,
-    test: Global.EachTestFn<EachCallback>,
-    timeout?: number,
-  ): void {
-    try {
-      const tests = isArrayTable(taggedTemplateData)
-        ? buildArrayTests(title, table)
-        : buildTemplateTests(title, table, taggedTemplateData);
+    cb: GlobalCallback,
+    supportsDone: boolean = true,
+  ) =>
+  (table: Global.EachTable, ...taggedTemplateData: Global.TemplateData) =>
+    function eachBind(
+      title: string,
+      test: Global.EachTestFn<EachCallback>,
+      timeout?: number,
+    ): void {
+      try {
+        const tests = isArrayTable(taggedTemplateData)
+          ? buildArrayTests(title, table)
+          : buildTemplateTests(title, table, taggedTemplateData);
 
-      return tests.forEach(row =>
-        cb(
-          row.title,
-          applyArguments(supportsDone, row.arguments, test),
-          timeout,
-        ),
-      );
-    } catch (e) {
-      const error = new ErrorWithStack(e.message, eachBind);
-      return cb(title, () => {
-        throw error;
-      });
-    }
-  };
+        return tests.forEach(row =>
+          cb(
+            row.title,
+            applyArguments(supportsDone, row.arguments, test),
+            timeout,
+          ),
+        );
+      } catch (e: any) {
+        const error = new ErrorWithStack(e.message, eachBind);
+        return cb(title, () => {
+          throw error;
+        });
+      }
+    };
 
 const isArrayTable = (data: Global.TemplateData) => data.length === 0;
 
@@ -66,12 +71,12 @@ const buildTemplateTests = (
   taggedTemplateData: Global.TemplateData,
 ): EachTests => {
   const headings = getHeadingKeys(table[0] as string);
-  validateTemplateTableHeadings(headings, taggedTemplateData);
+  validateTemplateTableArguments(headings, taggedTemplateData);
   return convertTemplateTable(title, headings, taggedTemplateData);
 };
 
 const getHeadingKeys = (headings: string): Array<string> =>
-  headings.replace(/\s/g, '').split('|');
+  extractValidTemplateHeadings(headings).replace(/\s/g, '').split('|');
 
 const applyArguments = <EachCallback extends Global.TestCallback>(
   supportsDone: boolean,

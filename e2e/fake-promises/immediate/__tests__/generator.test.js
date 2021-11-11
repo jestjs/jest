@@ -13,7 +13,7 @@ test('fake promises', () => {
     someValue = 'foobar';
   });
 
-  jest.runAllImmediates();
+  jest.runAllTimers();
 
   expect(someValue).toBe('foobar');
 });

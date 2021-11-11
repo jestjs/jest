@@ -6,6 +6,9 @@
  *
  */
 
+import os from 'os';
+import path from 'path';
+import {promises as fs} from 'graceful-fs';
 import type {Config} from '@jest/types';
 import type Runtime from '..';
 import {createOutsideJestVmPath} from '../helpers';
@@ -14,6 +17,9 @@ let createRuntime: (
   path: string,
   config?: Config.InitialOptions,
 ) => Promise<Runtime & {__mockRootPath: string}>;
+
+const getTmpDir = async () =>
+  await fs.mkdtemp(path.join(os.tmpdir(), 'jest-resolve-test-'));
 
 describe('Runtime require.resolve', () => {
   beforeEach(() => {
@@ -27,6 +33,47 @@ describe('Runtime require.resolve', () => {
       './resolve_self.js',
     );
     expect(resolved).toEqual(require.resolve('./test_root/resolve_self.js'));
+  });
+
+  it('resolves an absolute module path', async () => {
+    const absoluteFilePath = path.join(await getTmpDir(), 'test.js');
+    await fs.writeFile(
+      absoluteFilePath,
+      'module.exports = require.resolve(__filename);',
+      'utf-8',
+    );
+
+    const runtime = await createRuntime(__filename);
+    const resolved = runtime.requireModule(
+      runtime.__mockRootPath,
+      absoluteFilePath,
+    );
+
+    expect(resolved).toEqual(require.resolve(absoluteFilePath));
+  });
+
+  it('required modules can resolve absolute module paths with no paths entries passed', async () => {
+    const tmpdir = await getTmpDir();
+    const entrypoint = path.join(tmpdir, 'test.js');
+    const target = path.join(tmpdir, 'target.js');
+
+    // we want to test the require.resolve implementation within a
+    // runtime-required module, so we need to create a module that then resolves
+    // an absolute path, so we need two files: the entrypoint, and an absolute
+    // target to require.
+    await fs.writeFile(
+      entrypoint,
+      `module.exports = require.resolve(${JSON.stringify(
+        target,
+      )}, {paths: []});`,
+      'utf-8',
+    );
+
+    await fs.writeFile(target, `module.exports = {}`, 'utf-8');
+
+    const runtime = await createRuntime(__filename);
+    const resolved = runtime.requireModule(runtime.__mockRootPath, entrypoint);
+    expect(resolved).toEqual(require.resolve(target, {paths: []}));
   });
 
   it('resolves a module path with moduleNameMapper', async () => {

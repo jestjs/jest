@@ -16,44 +16,44 @@ describe('Runtime', () => {
   });
 
   describe('jest.spyOn', () => {
-    it('calls the original function', () =>
-      createRuntime(__filename).then(runtime => {
-        const root = runtime.requireModule(runtime.__mockRootPath);
+    it('calls the original function', async () => {
+      const runtime = await createRuntime(__filename);
+      const root = runtime.requireModule(runtime.__mockRootPath);
 
-        let isOriginalCalled = false;
-        const obj = {
-          method: () => {
-            isOriginalCalled = true;
-          },
-        };
+      let isOriginalCalled = false;
+      const obj = {
+        method: () => {
+          isOriginalCalled = true;
+        },
+      };
 
-        const spy = root.jest.spyOn(obj, 'method');
+      const spy = root.jest.spyOn(obj, 'method');
 
-        obj.method();
+      obj.method();
 
-        expect(isOriginalCalled).toBe(true);
-        expect(spy).toHaveBeenCalled();
-      }));
+      expect(isOriginalCalled).toBe(true);
+      expect(spy).toHaveBeenCalled();
+    });
   });
 
   describe('jest.spyOnProperty', () => {
-    it('calls the original function', () =>
-      createRuntime(__filename).then(runtime => {
-        const root = runtime.requireModule(runtime.__mockRootPath);
+    it('calls the original function', async () => {
+      const runtime = await createRuntime(__filename);
+      const root = runtime.requireModule(runtime.__mockRootPath);
 
-        let isOriginalCalled = false;
-        const obj = {
-          get method() {
-            return () => (isOriginalCalled = true);
-          },
-        };
+      let isOriginalCalled = false;
+      const obj = {
+        get method() {
+          return () => (isOriginalCalled = true);
+        },
+      };
 
-        const spy = root.jest.spyOn(obj, 'method', 'get');
+      const spy = root.jest.spyOn(obj, 'method', 'get');
 
-        obj.method();
+      obj.method();
 
-        expect(isOriginalCalled).toBe(true);
-        expect(spy).toHaveBeenCalled();
-      }));
+      expect(isOriginalCalled).toBe(true);
+      expect(spy).toHaveBeenCalled();
+    });
   });
 });

@@ -22,7 +22,6 @@
     {"path": "../jest-types"},
     {"path": "../jest-util"},
     {"path": "../jest-validate"},
-    {"path": "../pretty-format"},
     {"path": "../test-utils"}
   ]
 }

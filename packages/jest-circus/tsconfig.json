@@ -5,11 +5,11 @@
     "rootDir": "src"
   },
   "references": [
+    {"path": "../expect"},
     {"path": "../jest-each"},
     {"path": "../jest-environment"},
     {"path": "../jest-matcher-utils"},
     {"path": "../jest-message-util"},
-    {"path": "../jest-runner"},
     {"path": "../jest-runtime"},
     {"path": "../jest-snapshot"},
     {"path": "../jest-test-result"},

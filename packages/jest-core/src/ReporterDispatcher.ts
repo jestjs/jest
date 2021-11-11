@@ -10,10 +10,10 @@
 import type {Reporter, ReporterOnStartOptions} from '@jest/reporters';
 import type {
   AggregatedResult,
+  Test,
   TestCaseResult,
   TestResult,
 } from '@jest/test-result';
-import type {Test} from 'jest-runner';
 import type {Context} from 'jest-runtime';
 
 export default class ReporterDispatcher {
@@ -47,7 +47,6 @@ export default class ReporterDispatcher {
     }
 
     // Release memory if unused later.
-    testResult.sourceMaps = undefined;
     testResult.coverage = undefined;
     testResult.console = undefined;
   }

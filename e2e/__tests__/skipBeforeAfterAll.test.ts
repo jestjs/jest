@@ -12,8 +12,7 @@ const DIR = path.resolve(__dirname, '../before-all-skipped');
 
 test('correctly skip `beforeAll`s in skipped tests', () => {
   const {json} = runWithJson(DIR);
-
-  expect(json.numTotalTests).toBe(6);
+  expect(json.numTotalTests).toBe(8);
   expect(json.numPassedTests).toBe(4);
-  expect(json.numPendingTests).toBe(2);
+  expect(json.numPendingTests).toBe(4);
 });

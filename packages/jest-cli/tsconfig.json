@@ -5,11 +5,12 @@
     "outDir": "build"
   },
   "references": [
-    {"path": "../jest-core"},
     {"path": "../jest-config"},
+    {"path": "../jest-core"},
     {"path": "../jest-test-result"},
     {"path": "../jest-types"},
     {"path": "../jest-util"},
-    {"path": "../jest-validate"}
+    {"path": "../jest-validate"},
+    {"path": "../test-utils"}
   ]
 }

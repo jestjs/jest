@@ -37,7 +37,8 @@ const TS_FILES_PATTERN = '**/*.ts';
 const IGNORE_PATTERN = '**/__{tests,mocks}__/**';
 const PACKAGES_DIR = path.resolve(__dirname, '../packages');
 
-const INLINE_REQUIRE_EXCLUDE_LIST = /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
+const INLINE_REQUIRE_EXCLUDE_LIST =
+  /packages\/expect|(jest-(circus|diff|get-type|jasmine2|matcher-utils|message-util|regex-util|snapshot))|pretty-format\//;
 
 const prettierConfig = prettier.resolveConfig.sync(__filename);
 prettierConfig.trailingComma = 'none';
@@ -111,14 +112,7 @@ function buildFile(file, silent) {
           Array.isArray(plugin) &&
           plugin[0] === '@babel/plugin-transform-modules-commonjs'
         ) {
-          return [
-            plugin[0],
-            Object.assign({}, plugin[1], {
-              lazy: string =>
-                // we want to lazyload all non-local modules plus `importEsm` - the latter to avoid syntax errors. Set to just `true` when we drop support for node 8
-                !string.startsWith('./') || string === './importEsm',
-            }),
-          ];
+          return [plugin[0], Object.assign({}, plugin[1], {lazy: true})];
         }
 
         return plugin;

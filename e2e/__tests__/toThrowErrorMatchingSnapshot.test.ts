@@ -19,7 +19,8 @@ afterAll(() => cleanup(TESTS_DIR));
 
 test('works fine when function throws error', () => {
   const filename = 'works-fine-when-function-throws-error.test.js';
-  const template = makeTemplate(`test('works fine when function throws error', () => {
+  const template =
+    makeTemplate(`test('works fine when function throws error', () => {
        expect(() => { throw new Error('apple'); })
          .toThrowErrorMatchingSnapshot();
     });
@@ -35,7 +36,8 @@ test('works fine when function throws error', () => {
 
 test(`throws the error if tested function didn't throw error`, () => {
   const filename = 'throws-if-tested-function-did-not-throw.test.js';
-  const template = makeTemplate(`test('throws the error if tested function did not throw error', () => {
+  const template =
+    makeTemplate(`test('throws the error if tested function did not throw error', () => {
       expect(() => {}).toThrowErrorMatchingSnapshot();
     });
     `);
@@ -83,7 +85,8 @@ test('cannot be used with .not', () => {
 
 test('should support rejecting promises', () => {
   const filename = 'should-support-rejecting-promises.test.js';
-  const template = makeTemplate(`test('should support rejecting promises', () => {
+  const template =
+    makeTemplate(`test('should support rejecting promises', () => {
       return expect(Promise.reject(new Error('octopus'))).rejects.toThrowErrorMatchingSnapshot();
     });
   `);

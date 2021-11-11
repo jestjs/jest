@@ -22,23 +22,32 @@ export type HasteConfig = {
   computeSha1?: boolean;
   /** The platform to use as the default, e.g. 'ios'. */
   defaultPlatform?: string | null;
+  /** Force use of Node's `fs` APIs rather than shelling out to `find` */
+  forceNodeFilesystemAPI?: boolean;
+  /**
+   * Whether to follow symlinks when crawling for files.
+   *   This options cannot be used in projects which use watchman.
+   *   Projects with `watchman` set to true will error if this option is set to true.
+   */
+  enableSymlinks?: boolean;
   /** Path to a custom implementation of Haste. */
   hasteImplModulePath?: string;
   /** All platforms to target, e.g ['ios', 'android']. */
   platforms?: Array<string>;
   /** Whether to throw on error on module collision. */
   throwOnModuleCollision?: boolean;
+  /** Custom HasteMap module */
+  hasteMapModulePath?: string;
 };
 
 export type CoverageReporterName = keyof ReportOptions;
 
-export type CoverageReporterWithOptions<
-  K = CoverageReporterName
-> = K extends CoverageReporterName
-  ? ReportOptions[K] extends never
-    ? never
-    : [K, Partial<ReportOptions[K]>]
-  : never;
+export type CoverageReporterWithOptions<K = CoverageReporterName> =
+  K extends CoverageReporterName
+    ? ReportOptions[K] extends never
+      ? never
+      : [K, Partial<ReportOptions[K]>]
+    : never;
 
 export type CoverageReporters = Array<
   CoverageReporterName | CoverageReporterWithOptions
@@ -51,23 +60,31 @@ export interface ConfigGlobals {
   [K: string]: unknown;
 }
 
+// This interface gets filled out when pretty-format is included
+export interface PrettyFormatOptions {}
+
 export type DefaultOptions = {
   automock: boolean;
   bail: number;
   cache: boolean;
   cacheDirectory: Path;
   changedFilesWithAncestor: boolean;
+  ci: boolean;
   clearMocks: boolean;
   collectCoverage: boolean;
   coveragePathIgnorePatterns: Array<string>;
   coverageReporters: Array<CoverageReporterName>;
   coverageProvider: CoverageProvider;
+  detectLeaks: boolean;
+  detectOpenHandles: boolean;
   errorOnDeprecated: boolean;
   expand: boolean;
+  extensionsToTreatAsEsm: Array<Path>;
   forceCoverageMatch: Array<Glob>;
   globals: ConfigGlobals;
   haste: HasteConfig;
   injectGlobals: boolean;
+  listTests: boolean;
   maxConcurrency: number;
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
@@ -77,13 +94,14 @@ export type DefaultOptions = {
   noStackTrace: boolean;
   notify: boolean;
   notifyMode: NotifyMode;
+  passWithNoTests: boolean;
   prettierPath: string;
   resetMocks: boolean;
   resetModules: boolean;
   restoreMocks: boolean;
   roots: Array<Path>;
   runTestsByPath: boolean;
-  runner: 'jest-runner';
+  runner: string;
   setupFiles: Array<Path>;
   setupFilesAfterEnv: Array<Path>;
   skipFilter: boolean;
@@ -115,11 +133,17 @@ export type DisplayName = {
 export type InitialOptionsWithRootDir = InitialOptions &
   Required<Pick<InitialOptions, 'rootDir'>>;
 
+export type InitialProjectOptions = Pick<
+  InitialOptions & {cwd?: string},
+  keyof ProjectConfig
+>;
+
 export type InitialOptions = Partial<{
   automock: boolean;
   bail: boolean | number;
   cache: boolean;
   cacheDirectory: Path;
+  ci: boolean;
   clearMocks: boolean;
   changedFilesWithAncestor: boolean;
   changedSince: string;
@@ -132,16 +156,13 @@ export type InitialOptions = Partial<{
   coveragePathIgnorePatterns: Array<string>;
   coverageProvider: CoverageProvider;
   coverageReporters: CoverageReporters;
-  coverageThreshold: {
-    global: {
-      [key: string]: number;
-    };
-  };
+  coverageThreshold: CoverageThreshold;
   dependencyExtractor: string;
   detectLeaks: boolean;
   detectOpenHandles: boolean;
   displayName: string | DisplayName;
   expand: boolean;
+  extensionsToTreatAsEsm: Array<Path>;
   extraGlobals: Array<string>;
   filter: Path;
   findRelatedTests: boolean;
@@ -157,7 +178,6 @@ export type InitialOptions = Partial<{
   logHeapUsage: boolean;
   lastCommit: boolean;
   listTests: boolean;
-  mapCoverage: boolean;
   maxConcurrency: number;
   maxWorkers: number | string;
   moduleDirectories: Array<string>;
@@ -176,10 +196,13 @@ export type InitialOptions = Partial<{
   onlyFailures: boolean;
   outputFile: Path;
   passWithNoTests: boolean;
+  /**
+   * @deprecated Use `transformIgnorePatterns` options instead.
+   */
   preprocessorIgnorePatterns: Array<Glob>;
   preset: string | null | undefined;
   prettierPath: string | null | undefined;
-  projects: Array<Glob>;
+  projects: Array<Glob | InitialProjectOptions>;
   replname: string | null | undefined;
   resetMocks: boolean;
   resetModules: boolean;
@@ -189,8 +212,14 @@ export type InitialOptions = Partial<{
   roots: Array<Path>;
   runner: string;
   runTestsByPath: boolean;
+  /**
+   * @deprecated Use `transform` options instead.
+   */
   scriptPreprocessor: string;
   setupFiles: Array<Path>;
+  /**
+   * @deprecated Use `setupFilesAfterEnv` options instead.
+   */
   setupTestFrameworkScriptFile: Path;
   setupFilesAfterEnv: Array<Path>;
   silent: boolean;
@@ -199,6 +228,7 @@ export type InitialOptions = Partial<{
   slowTestThreshold: number;
   snapshotResolver: Path;
   snapshotSerializers: Array<Path>;
+  snapshotFormat: PrettyFormatOptions;
   errorOnDeprecated: boolean;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
@@ -206,6 +236,9 @@ export type InitialOptions = Partial<{
   testLocationInResults: boolean;
   testMatch: Array<Glob>;
   testNamePattern: string;
+  /**
+   * @deprecated Use `roots` options instead.
+   */
   testPathDirs: Array<Path>;
   testPathIgnorePatterns: Array<string>;
   testRegex: string | Array<string>;
@@ -296,6 +329,7 @@ export type GlobalConfig = {
   rootDir: Path;
   silent?: boolean;
   skipFilter: boolean;
+  snapshotFormat: PrettyFormatOptions;
   errorOnDeprecated: boolean;
   testFailureExitCode: number;
   testNamePattern?: string;
@@ -327,7 +361,8 @@ export type ProjectConfig = {
   detectOpenHandles: boolean;
   displayName?: DisplayName;
   errorOnDeprecated: boolean;
-  extraGlobals: Array<keyof NodeJS.Global>;
+  extensionsToTreatAsEsm: Array<Path>;
+  extraGlobals: Array<keyof typeof globalThis>;
   filter?: Path;
   forceCoverageMatch: Array<Glob>;
   globalSetup?: string;
@@ -357,6 +392,7 @@ export type ProjectConfig = {
   slowTestThreshold: number;
   snapshotResolver?: Path;
   snapshotSerializers: Array<Path>;
+  snapshotFormat: PrettyFormatOptions;
   testEnvironment: string;
   testEnvironmentOptions: Record<string, unknown>;
   testMatch: Array<Glob>;
@@ -438,6 +474,7 @@ export type Argv = Arguments<
     silent: boolean;
     snapshotSerializers: Array<string>;
     testEnvironment: string;
+    testEnvironmentOptions: string;
     testFailureExitCode: string | null | undefined;
     testMatch: Array<string>;
     testNamePattern: string;

@@ -9,10 +9,11 @@ import type {V8Coverage} from 'collect-v8-coverage';
 import type {CoverageMap, CoverageMapData} from 'istanbul-lib-coverage';
 import type {ConsoleBuffer} from '@jest/console';
 import type {Config, TestResult, TransformTypes} from '@jest/types';
+import type {FS as HasteFS, ModuleMap} from 'jest-haste-map';
+import type Resolver from 'jest-resolve';
 
 export interface RuntimeTransformResult extends TransformTypes.TransformResult {
-  // TODO: Make mandatory in Jest 27
-  wrapperLength?: number;
+  wrapperLength: number;
 }
 
 export type V8CoverageResult = Array<{
@@ -77,6 +78,10 @@ export type AggregatedResult = AggregatedResultWithoutCoverage & {
   coverageMap?: CoverageMap | null;
 };
 
+export type TestResultsProcessor = (
+  results: AggregatedResult,
+) => AggregatedResult;
+
 export type Suite = {
   title: string;
   suites: Array<Suite>;
@@ -112,10 +117,6 @@ export type TestResult = {
     uncheckedKeys: Array<string>;
     unmatched: number;
     updated: number;
-  };
-  // TODO - Remove in Jest 26
-  sourceMaps?: {
-    [sourcePath: string]: string;
   };
   testExecError?: SerializableError;
   testFilePath: Config.Path;
@@ -180,3 +181,29 @@ export type SnapshotSummary = {
   unmatched: number;
   updated: number;
 };
+
+export type Test = {
+  context: Context;
+  duration?: number;
+  path: Config.Path;
+};
+
+type Context = {
+  config: Config.ProjectConfig;
+  hasteFS: HasteFS;
+  moduleMap: ModuleMap;
+  resolver: Resolver;
+};
+
+// Typings for `sendMessageToJest` events
+export type TestEvents = {
+  'test-file-start': [Test];
+  'test-file-success': [Test, TestResult];
+  'test-file-failure': [Test, SerializableError];
+  'test-case-result': [Config.Path, AssertionResult];
+};
+
+export type TestFileEvent<T extends keyof TestEvents = keyof TestEvents> = (
+  eventName: T,
+  args: TestEvents[T],
+) => unknown;

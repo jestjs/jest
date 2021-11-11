@@ -11,7 +11,7 @@ import type {Config} from '@jest/types';
 export default function tryRealpath(path: Config.Path): Config.Path {
   try {
     path = realpathSync.native(path);
-  } catch (error) {
+  } catch (error: any) {
     if (error.code !== 'ENOENT') {
       throw error;
     }

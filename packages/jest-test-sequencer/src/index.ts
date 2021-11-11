@@ -6,9 +6,8 @@
  */
 
 import * as fs from 'graceful-fs';
-import type {AggregatedResult} from '@jest/test-result';
-import {getCacheFilePath} from 'jest-haste-map';
-import type {Test} from 'jest-runner';
+import type {AggregatedResult, Test} from '@jest/test-result';
+import HasteMap from 'jest-haste-map';
 import type {Context} from 'jest-runtime';
 
 const FAIL = 0;
@@ -36,7 +35,11 @@ export default class TestSequencer {
 
   _getCachePath(context: Context): string {
     const {config} = context;
-    return getCacheFilePath(config.cacheDirectory, 'perf-cache-' + config.name);
+    const HasteMapClass = HasteMap.getStatic(config);
+    return HasteMapClass.getCacheFilePath(
+      config.cacheDirectory,
+      'perf-cache-' + config.name,
+    );
   }
 
   _getCache(test: Test): Cache {

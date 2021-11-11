@@ -9,12 +9,12 @@
 
 import semver = require('semver');
 
-export function isJestCircusRun(): boolean {
-  return process.env.JEST_CIRCUS === '1';
+export function isJestJasmineRun(): boolean {
+  return process.env.JEST_JASMINE === '1';
 }
 
 export function skipSuiteOnJasmine(): void {
-  if (!isJestCircusRun()) {
+  if (isJestJasmineRun()) {
     test.only('does not work on Jasmine', () => {
       console.warn('[SKIP] Does not work on Jasmine');
     });
@@ -22,7 +22,7 @@ export function skipSuiteOnJasmine(): void {
 }
 
 export function skipSuiteOnJestCircus(): void {
-  if (isJestCircusRun()) {
+  if (!isJestJasmineRun()) {
     test.only('does not work on jest-circus', () => {
       console.warn('[SKIP] Does not work on jest-circus');
     });
@@ -34,12 +34,12 @@ export function onNodeVersions(
   testBody: () => void,
 ): void {
   const description = `on node ${versionRange}`;
-  if (!semver.satisfies(process.versions.node, versionRange)) {
-    describe.skip(description, () => {
+  if (semver.satisfies(process.versions.node, versionRange)) {
+    describe(description, () => {
       testBody();
     });
   } else {
-    describe(description, () => {
+    describe.skip(description, () => {
       testBody();
     });
   }

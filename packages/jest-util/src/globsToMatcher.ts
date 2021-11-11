@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import micromatch = require('micromatch');
+import picomatch = require('picomatch');
 import type {Config} from '@jest/types';
 import replacePathSepForGlob from './replacePathSepForGlob';
 
@@ -16,15 +16,15 @@ const globsToMatchersMap = new Map<
   {isMatch: Matcher; negated: boolean}
 >();
 
-const micromatchOptions = {dot: true};
+const picomatchOptions = {dot: true};
 
 /**
  * Converts a list of globs into a function that matches a path against the
  * globs.
  *
- * Every time micromatch is called, it will parse the glob strings and turn
- * them into regexp instances. Instead of calling micromatch repeatedly with
- * the same globs, we can use this function which will build the micromatch
+ * Every time picomatch is called, it will parse the glob strings and turn
+ * them into regexp instances. Instead of calling picomatch repeatedly with
+ * the same globs, we can use this function which will build the picomatch
  * matchers ahead of time and then have an optimized path for determining
  * whether an individual path matches.
  *
@@ -44,13 +44,13 @@ export default function globsToMatcher(globs: Array<Config.Glob>): Matcher {
 
   const matchers = globs.map(glob => {
     if (!globsToMatchersMap.has(glob)) {
-      // Matchers that are negated have different behavior than matchers that
-      // are not negated, so we need to store this information ahead of time.
-      const {negated} = micromatch.scan(glob, micromatchOptions);
+      const isMatch = picomatch(glob, picomatchOptions, true);
 
       const matcher = {
-        isMatch: micromatch.matcher(glob, micromatchOptions),
-        negated,
+        isMatch,
+        // Matchers that are negated have different behavior than matchers that
+        // are not negated, so we need to store this information ahead of time.
+        negated: isMatch.state.negated || !!isMatch.state.negatedExtglob,
       };
 
       globsToMatchersMap.set(glob, matcher);

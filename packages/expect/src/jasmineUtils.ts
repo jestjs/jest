@@ -147,30 +147,19 @@ function eq(
   // Add the first object to the stack of traversed objects.
   aStack.push(a);
   bStack.push(b);
-  var size = 0;
   // Recursively compare objects and arrays.
   // Compare array lengths to determine if a deep comparison is necessary.
-  if (className == '[object Array]') {
-    size = a.length;
-    if (size !== b.length) {
-      return false;
-    }
-
-    while (size--) {
-      result = eq(a[size], b[size], aStack, bStack, customTesters, hasKey);
-      if (!result) {
-        return false;
-      }
-    }
+  if (className == '[object Array]' && a.length !== b.length) {
+    return false;
   }
 
   // Deep compare objects.
-  var aKeys = keys(a, className == '[object Array]', hasKey),
+  var aKeys = keys(a, hasKey),
     key;
-  size = aKeys.length;
+  var size = aKeys.length;
 
   // Ensure that both objects contain the same number of properties before comparing deep equality.
-  if (keys(b, className == '[object Array]', hasKey).length !== size) {
+  if (keys(b, hasKey).length !== size) {
     return false;
   }
 
@@ -193,43 +182,20 @@ function eq(
   return result;
 }
 
-function keys(
-  obj: object,
-  isArray: boolean,
-  hasKey: (obj: object, key: string) => boolean,
-) {
-  var allKeys = (function(o) {
-    var keys = [];
-    for (var key in o) {
-      if (hasKey(o, key)) {
-        keys.push(key);
-      }
-    }
-    return keys.concat(
-      (Object.getOwnPropertySymbols(o) as Array<any>).filter(
-        symbol =>
-          (Object.getOwnPropertyDescriptor(o, symbol) as PropertyDescriptor)
-            .enumerable,
-      ),
-    );
-  })(obj);
-
-  if (!isArray) {
-    return allKeys;
-  }
-
-  var extraKeys = [];
-  if (allKeys.length === 0) {
-    return allKeys;
-  }
-
-  for (var x = 0; x < allKeys.length; x++) {
-    if (typeof allKeys[x] === 'symbol' || !allKeys[x].match(/^[0-9]+$/)) {
-      extraKeys.push(allKeys[x]);
+function keys(obj: object, hasKey: (obj: object, key: string) => boolean) {
+  var keys = [];
+  for (var key in obj) {
+    if (hasKey(obj, key)) {
+      keys.push(key);
     }
   }
-
-  return extraKeys;
+  return keys.concat(
+    (Object.getOwnPropertySymbols(obj) as Array<any>).filter(
+      symbol =>
+        (Object.getOwnPropertyDescriptor(obj, symbol) as PropertyDescriptor)
+          .enumerable,
+    ),
+  );
 }
 
 function hasDefinedKey(obj: any, key: string) {

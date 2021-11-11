@@ -61,3 +61,36 @@ test('describe block _can_ have hooks if a child describe block has tests', () =
   `);
   expect(wrap(result.stdout)).toMatchSnapshot();
 });
+
+test('describe block hooks must not run if describe block is skipped', () => {
+  const result = runTest(`
+    describe.skip('describe', () => {
+      afterAll(() => console.log('> afterAll'));
+      beforeAll(() => console.log('> beforeAll'));
+      test('my test', () => console.log('> my test'));
+    })
+  `);
+  expect(wrap(result.stdout)).toMatchSnapshot();
+});
+
+test('child tests marked with todo should not run if describe block is skipped', () => {
+  const result = runTest(`
+    describe.skip('describe', () => {
+      afterAll(() => console.log('> afterAll'));
+      beforeAll(() => console.log('> beforeAll'));
+      test.todo('my test');
+    })
+  `);
+  expect(wrap(result.stdout)).toMatchSnapshot();
+});
+
+test('child tests marked with only should not run if describe block is skipped', () => {
+  const result = runTest(`
+    describe.skip('describe', () => {
+      afterAll(() => console.log('> afterAll'));
+      beforeAll(() => console.log('> beforeAll'));
+      test.only('my test', () => console.log('> my test'));
+    })
+  `);
+  expect(wrap(result.stdout)).toMatchSnapshot();
+});

@@ -5,7 +5,6 @@
  * LICENSE file in the root directory of this source tree.
  *
  */
-'use strict';
 
 import {spawnSync} from 'child_process';
 import path from 'path';
@@ -29,6 +28,7 @@ describe('Repl', () => {
         encoding: 'utf8',
         env: process.env,
       });
+      expect(output.stderr.trim()).toBe('');
       expect(output.stdout.trim()).toMatch(/›/);
     });
   });

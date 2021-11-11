@@ -41,6 +41,32 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('Array [\n  1,\n  2,\n  3,\n]');
   });
 
+  it('prints a sparse array with only holes', () => {
+    // eslint-disable-next-line no-sparse-arrays
+    const val = [, , ,];
+    expect(prettyFormat(val)).toEqual('Array [\n  ,\n  ,\n  ,\n]');
+  });
+
+  it('prints a sparse array with items', () => {
+    // eslint-disable-next-line no-sparse-arrays
+    const val = [1, , , 4];
+    expect(prettyFormat(val)).toEqual('Array [\n  1,\n  ,\n  ,\n  4,\n]');
+  });
+
+  it('prints a sparse array with value surrounded by holes', () => {
+    // eslint-disable-next-line no-sparse-arrays
+    const val = [, 5, ,];
+    expect(prettyFormat(val)).toEqual('Array [\n  ,\n  5,\n  ,\n]');
+  });
+
+  it('prints a sparse array also containing undefined values', () => {
+    // eslint-disable-next-line no-sparse-arrays
+    const val = [1, , undefined, undefined, , 4];
+    expect(prettyFormat(val)).toEqual(
+      'Array [\n  1,\n  ,\n  undefined,\n  undefined,\n  ,\n  4,\n]',
+    );
+  });
+
   it('prints a empty typed array', () => {
     const val = new Uint32Array(0);
     expect(prettyFormat(val)).toEqual('Uint32Array []');
@@ -226,28 +252,25 @@ describe('prettyFormat()', () => {
     expect(prettyFormat(val)).toEqual('-0');
   });
 
-  /* global BigInt */
-  if (typeof BigInt === 'function') {
-    it('prints a positive bigint', () => {
-      const val = BigInt(123);
-      expect(prettyFormat(val)).toEqual('123n');
-    });
+  it('prints a positive bigint', () => {
+    const val = BigInt(123);
+    expect(prettyFormat(val)).toEqual('123n');
+  });
 
-    it('prints a negative bigint', () => {
-      const val = BigInt(-123);
-      expect(prettyFormat(val)).toEqual('-123n');
-    });
+  it('prints a negative bigint', () => {
+    const val = BigInt(-123);
+    expect(prettyFormat(val)).toEqual('-123n');
+  });
 
-    it('prints zero bigint', () => {
-      const val = BigInt(0);
-      expect(prettyFormat(val)).toEqual('0n');
-    });
+  it('prints zero bigint', () => {
+    const val = BigInt(0);
+    expect(prettyFormat(val)).toEqual('0n');
+  });
 
-    it('prints negative zero bigint', () => {
-      const val = BigInt(-0);
-      expect(prettyFormat(val)).toEqual('0n');
-    });
-  }
+  it('prints negative zero bigint', () => {
+    const val = BigInt(-0);
+    expect(prettyFormat(val)).toEqual('0n');
+  });
 
   it('prints a date', () => {
     const val = new Date(10e11);
@@ -306,10 +329,26 @@ describe('prettyFormat()', () => {
   });
 
   it('prints an object with sorted properties', () => {
-    /* eslint-disable sort-keys */
+    // eslint-disable-next-line sort-keys
     const val = {b: 1, a: 2};
-    /* eslint-enable sort-keys */
     expect(prettyFormat(val)).toEqual('Object {\n  "a": 2,\n  "b": 1,\n}');
+  });
+
+  it('prints an object with keys in their original order', () => {
+    // eslint-disable-next-line sort-keys
+    const val = {b: 1, a: 2};
+    const compareKeys = () => 0;
+    expect(prettyFormat(val, {compareKeys})).toEqual(
+      'Object {\n  "b": 1,\n  "a": 2,\n}',
+    );
+  });
+
+  it('prints an object with keys sorted in reverse order', () => {
+    const val = {a: 1, b: 2};
+    const compareKeys = (a: string, b: string) => (a > b ? -1 : 1);
+    expect(prettyFormat(val, {compareKeys})).toEqual(
+      'Object {\n  "b": 2,\n  "a": 1,\n}',
+    );
   });
 
   it('prints regular expressions from constructors', () => {
@@ -498,6 +537,31 @@ describe('prettyFormat()', () => {
     });
   });
 
+  it('can omit basic prototypes', () => {
+    const val = {
+      deeply: {nested: {object: {}}},
+      'empty array': {},
+      'empty object': {},
+      'nested array': [[[]]],
+      'typed array': new Uint8Array(),
+    };
+    expect(prettyFormat(val, {maxDepth: 2, printBasicPrototype: false})).toBe(
+      [
+        '{',
+        '  "deeply": {',
+        '    "nested": [Object],',
+        '  },',
+        '  "empty array": {},',
+        '  "empty object": {},',
+        '  "nested array": [',
+        '    [Array],',
+        '  ],',
+        '  "typed array": Uint8Array [],',
+        '}',
+      ].join('\n'),
+    );
+  });
+
   it('can customize the max depth', () => {
     const val = [
       {
@@ -616,7 +680,7 @@ describe('prettyFormat()', () => {
 
     try {
       prettyFormat('', options);
-    } catch (error) {
+    } catch (error: any) {
       expect(error.name).toBe('PrettyFormatPluginError');
     }
   });
@@ -636,7 +700,7 @@ describe('prettyFormat()', () => {
 
     try {
       prettyFormat('', options);
-    } catch (error) {
+    } catch (error: any) {
       expect(error.name).toBe('PrettyFormatPluginError');
     }
   });
@@ -656,7 +720,7 @@ describe('prettyFormat()', () => {
 
     try {
       prettyFormat('', options);
-    } catch (error) {
+    } catch (error: any) {
       expect(error.name).toBe('PrettyFormatPluginError');
     }
   });

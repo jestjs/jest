@@ -8,7 +8,10 @@
 import {tmpdir} from 'os';
 import path from 'path';
 import {makeProjectConfig} from '@jest/test-utils';
+import {createScriptTransformer} from '@jest/transform';
+import NodeEnvironment from 'jest-environment-node';
 import {tryRealpath} from 'jest-util';
+import Runtime from '../';
 
 // Copy from jest-config (since we don't want to depend on this package)
 const getCacheDirectory = () => {
@@ -35,64 +38,45 @@ const setupModuleNameMapper = (config, rootDir) => {
 };
 
 const setupTransform = (config, rootDir) => {
-  if (config && config.transform) {
+  if (config?.transform) {
     const transform = config.transform;
     return Object.keys(transform).map(regex => [
       regex,
       path.resolve(rootDir, transform[regex]),
     ]);
   }
-  return [
-    [
-      '^.+\\.[jt]sx?$',
-      path.resolve(
-        __dirname,
-        '..',
-        '..',
-        '..',
-        'babel-jest',
-        'build',
-        'index.js',
-      ),
-    ],
-  ];
+  return [['^.+\\.[jt]sx?$', require.resolve('babel-jest')]];
 };
 
 module.exports = async function createRuntime(filename, config) {
-  const {default: NodeEnvironment} = await import('jest-environment-node');
-  const {default: Runtime} = await import('../');
-
   const rootDir = path.resolve(path.dirname(filename), 'test_root');
 
   const moduleNameMapper = setupModuleNameMapper(config, rootDir);
   const transform = setupTransform(config, rootDir);
 
-  config = makeProjectConfig(
-    {
-      cacheDirectory: getCacheDirectory(),
-      cwd: path.resolve(__dirname, '..', '..', '..', '..'),
-      haste: {
-        hasteImplModulePath: path.resolve(
-          __dirname,
-          '..',
-          '..',
-          '..',
-          'jest-haste-map',
-          'src',
-          '__tests__',
-          'haste_impl.js',
-        ),
-      },
-      moduleDirectories: ['node_modules'],
-      moduleFileExtensions: ['js', 'json', 'jsx', 'ts', 'tsx', 'node'],
-      name: 'Runtime-' + filename.replace(/\W/, '-') + '.tests',
-      rootDir,
-      ...config,
-      moduleNameMapper,
-      transform,
+  config = makeProjectConfig({
+    cacheDirectory: getCacheDirectory(),
+    cwd: path.resolve(__dirname, '..', '..', '..', '..'),
+    haste: {
+      hasteImplModulePath: path.resolve(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        'jest-haste-map',
+        'src',
+        '__tests__',
+        'haste_impl.js',
+      ),
     },
-    {},
-  );
+    moduleDirectories: ['node_modules'],
+    moduleFileExtensions: ['js', 'jsx', 'ts', 'tsx', 'json', 'node'],
+    name: 'Runtime-' + filename.replace(/\W/, '-') + '.tests',
+    rootDir,
+    ...config,
+    moduleNameMapper,
+    transform,
+  });
 
   if (!config.roots.length) {
     config.roots = [config.rootDir];
@@ -106,12 +90,23 @@ module.exports = async function createRuntime(filename, config) {
     resetCache: false,
   }).build();
 
+  const cacheFS = new Map();
+  const scriptTransformer = await createScriptTransformer(config, cacheFS);
+
   const runtime = new Runtime(
     config,
     environment,
     Runtime.createResolver(config, hasteMap.moduleMap),
-    undefined,
-    undefined,
+    scriptTransformer,
+    cacheFS,
+    {
+      changedFiles: undefined,
+      collectCoverage: false,
+      collectCoverageFrom: [],
+      collectCoverageOnlyFrom: undefined,
+      coverageProvider: 'v8',
+      sourcesRelatedToTestsInChangedFiles: undefined,
+    },
     filename,
   );
 

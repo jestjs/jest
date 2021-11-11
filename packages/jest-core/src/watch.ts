@@ -11,11 +11,18 @@ import chalk = require('chalk');
 import exit = require('exit');
 import slash = require('slash');
 import type {Config} from '@jest/types';
-import HasteMap = require('jest-haste-map');
+import type {
+  ChangeEvent as HasteChangeEvent,
+  default as HasteMap,
+} from 'jest-haste-map';
 import {formatExecError} from 'jest-message-util';
-import Resolver from 'jest-resolve';
 import type {Context} from 'jest-runtime';
-import {isInteractive, preRunMessage, specialChars} from 'jest-util';
+import {
+  isInteractive,
+  preRunMessage,
+  requireOrImportModule,
+  specialChars,
+} from 'jest-util';
 import {ValidationError} from 'jest-validate';
 import {
   AllowedConfigOptions,
@@ -36,6 +43,7 @@ import {
   filterInteractivePlugins,
   getSortedUsageRows,
 } from './lib/watchPluginsHelpers';
+import FailedTestsInteractivePlugin from './plugins/FailedTestsInteractive';
 import QuitPlugin from './plugins/Quit';
 import TestNamePatternPlugin from './plugins/TestNamePattern';
 import TestPathPatternPlugin from './plugins/TestPathPattern';
@@ -58,6 +66,7 @@ const {print: preRunMessagePrint} = preRunMessage;
 let hasExitListener = false;
 
 const INTERNAL_PLUGINS = [
+  FailedTestsInteractivePlugin,
   TestPathPatternPlugin,
   TestNamePatternPlugin,
   UpdateSnapshotsPlugin,
@@ -80,7 +89,7 @@ const RESERVED_KEY_PLUGINS = new Map<
   [QuitPlugin, {forbiddenOverwriteMessage: 'quitting watch mode'}],
 ]);
 
-export default function watch(
+export default async function watch(
   initialGlobalConfig: Config.GlobalConfig,
   contexts: Array<Context>,
   outputStream: NodeJS.WriteStream,
@@ -182,13 +191,15 @@ export default function watch(
     for (const pluginWithConfig of globalConfig.watchPlugins) {
       let plugin: WatchPlugin;
       try {
-        const ThirdPartyPlugin = require(pluginWithConfig.path);
+        const ThirdPartyPlugin = await requireOrImportModule<WatchPluginClass>(
+          pluginWithConfig.path,
+        );
         plugin = new ThirdPartyPlugin({
           config: pluginWithConfig.config,
           stdin,
           stdout: outputStream,
         });
-      } catch (error) {
+      } catch (error: any) {
         const errorWithContext = new Error(
           `Failed to initialize watch plugin "${chalk.bold(
             slash(path.relative(process.cwd(), pluginWithConfig.path)),
@@ -234,7 +245,7 @@ export default function watch(
   hasteMapInstances.forEach((hasteMapInstance, index) => {
     hasteMapInstance.on(
       'change',
-      ({eventsQueue, hasteFS, moduleMap}: HasteMap.HasteChangeEvent) => {
+      ({eventsQueue, hasteFS, moduleMap}: HasteChangeEvent) => {
         const validPaths = eventsQueue.filter(({filePath}) =>
           isValidPath(globalConfig, filePath),
         );
@@ -282,8 +293,6 @@ export default function watch(
     isRunning = true;
     const configs = contexts.map(context => context.config);
     const changedFilesPromise = getChangedFilesPromise(globalConfig, configs);
-    // Clear cache for required modules
-    Resolver.clearDefaultResolverCache();
 
     return runJest({
       changedFilesPromise,
@@ -351,10 +360,9 @@ export default function watch(
     }
 
     // Abort test run
-    const pluginKeys = getSortedUsageRows(
-      watchPlugins,
-      globalConfig,
-    ).map(usage => Number(usage.key).toString(16));
+    const pluginKeys = getSortedUsageRows(watchPlugins, globalConfig).map(
+      usage => Number(usage.key).toString(16),
+    );
     if (
       isRunning &&
       testWatcher &&

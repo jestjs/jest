@@ -52,7 +52,7 @@ beforeEach(() => {
     virtual: true,
   });
 
-  Farm = require('..').default;
+  Farm = require('..').Worker;
   Queue = require('../Farm').default;
   WorkerPool = require('../WorkerPool').default;
 });

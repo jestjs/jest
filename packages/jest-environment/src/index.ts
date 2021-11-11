@@ -5,21 +5,20 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import type {Context, Script} from 'vm';
+import type {Context} from 'vm';
 import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Circus, Config, Global} from '@jest/types';
-import jestMock = require('jest-mock');
+import type {
+  fn as JestMockFn,
+  spyOn as JestMockSpyOn,
+  ModuleMocker,
+} from 'jest-mock';
 
-type JestMockFn = typeof jestMock.fn;
-type JestMockSpyOn = typeof jestMock.spyOn;
-
-// In Jest 25, remove `Partial` since it's incorrect. The properties are always
-// passed, or not. The context itself is optional, not properties within it.
-export type EnvironmentContext = Partial<{
+export type EnvironmentContext = {
   console: Console;
   docblockPragmas: Record<string, string | Array<string>>;
   testPath: Config.Path;
-}>;
+};
 
 // Different Order than https://nodejs.org/api/modules.html#modules_the_module_wrapper , however needs to be in the form [jest-transform]ScriptTransformer accepts
 export type ModuleWrapper = (
@@ -33,23 +32,17 @@ export type ModuleWrapper = (
   ...extraGlobals: Array<Global.Global[keyof Global.Global]>
 ) => unknown;
 
-export declare class JestEnvironment {
+export declare class JestEnvironment<Timer = unknown> {
   constructor(config: Config.ProjectConfig, context?: EnvironmentContext);
   global: Global.Global;
-  fakeTimers: LegacyFakeTimers<unknown> | null;
+  fakeTimers: LegacyFakeTimers<Timer> | null;
   fakeTimersModern: ModernFakeTimers | null;
-  moduleMocker: jestMock.ModuleMocker | null;
-  /**
-   * @deprecated implement getVmContext instead
-   */
-  runScript<T = unknown>(script: Script): T | null;
-  getVmContext?(): Context | null;
+  moduleMocker: ModuleMocker | null;
+  getVmContext(): Context | null;
   setup(): Promise<void>;
   teardown(): Promise<void>;
-  handleTestEvent?(
-    event: Circus.Event,
-    state: Circus.State,
-  ): void | Promise<void>;
+  handleTestEvent?: Circus.EventHandler;
+  exportConditions?: () => Array<string>;
 }
 
 export type Module = NodeModule;
@@ -112,7 +105,7 @@ export interface Jest {
   /**
    * Creates a mock function. Optionally takes a mock implementation.
    */
-  fn: JestMockFn;
+  fn: typeof JestMockFn;
   /**
    * Given the name of a module, use the automatic mocking system to generate a
    * mocked version of the module for you.
@@ -136,13 +129,21 @@ export interface Jest {
    */
   isMockFunction(
     fn: (...args: Array<any>) => unknown,
-  ): fn is ReturnType<JestMockFn>;
+  ): fn is ReturnType<typeof JestMockFn>;
   /**
    * Mocks a module with an auto-mocked version when it is being required.
    */
   mock(
     moduleName: string,
     moduleFactory?: () => unknown,
+    options?: {virtual?: boolean},
+  ): Jest;
+  /**
+   * Mocks a module with the provided module factory when it is being imported.
+   */
+  unstable_mockModule<T = unknown>(
+    moduleName: string,
+    moduleFactory: () => Promise<T> | T,
     options?: {virtual?: boolean},
   ): Jest;
   /**
@@ -252,7 +253,7 @@ export interface Jest {
    * Note: By default, jest.spyOn also calls the spied method. This is
    * different behavior from most other test libraries.
    */
-  spyOn: JestMockSpyOn;
+  spyOn: typeof JestMockSpyOn;
   /**
    * Indicates that the module system should never return a mocked version of
    * the specified module from require() (e.g. that it should always return the

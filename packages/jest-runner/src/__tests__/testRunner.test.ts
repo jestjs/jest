@@ -11,8 +11,8 @@ import TestRunner from '../index';
 
 let mockWorkerFarm;
 
-jest.mock('jest-worker', () =>
-  jest.fn(
+jest.mock('jest-worker', () => ({
+  Worker: jest.fn(
     worker =>
       (mockWorkerFarm = {
         end: jest.fn().mockResolvedValue({forceExited: false}),
@@ -21,7 +21,7 @@ jest.mock('jest-worker', () =>
         worker: jest.fn((data, callback) => require(worker)(data, callback)),
       }),
   ),
-);
+}));
 
 jest.mock('../testWorker', () => {});
 

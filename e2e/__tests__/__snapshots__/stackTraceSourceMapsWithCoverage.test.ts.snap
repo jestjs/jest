@@ -8,12 +8,12 @@ FAIL __tests__/fails.ts
 
     This did not work!
 
-      13 | 
+      13 |
       14 | export function error() {
     > 15 |   throw new Error('This did not work!');
          |         ^
       16 | }
-      17 | 
+      17 |
 
       at Object.error (lib.ts:15:9)
       at Object.<anonymous> (__tests__/fails.ts:10:3)

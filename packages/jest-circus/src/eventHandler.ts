@@ -31,6 +31,7 @@ const eventHandler: Circus.EventHandler = (
       break;
     }
     case 'hook_start': {
+      event.hook.seenDone = false;
       break;
     }
     case 'start_describe_definition': {
@@ -79,6 +80,7 @@ const eventHandler: Circus.EventHandler = (
       }
       if (
         !state.hasFocusedTests &&
+        currentDescribeBlock.mode !== 'skip' &&
         currentDescribeBlock.children.some(
           child => child.type === 'test' && child.mode === 'only',
         )
@@ -112,7 +114,14 @@ const eventHandler: Circus.EventHandler = (
       }
       const parent = currentDescribeBlock;
 
-      currentDescribeBlock.hooks.push({asyncError, fn, parent, timeout, type});
+      currentDescribeBlock.hooks.push({
+        asyncError,
+        fn,
+        parent,
+        seenDone: false,
+        timeout,
+        type,
+      });
       break;
     }
     case 'add_test': {
@@ -143,7 +152,7 @@ const eventHandler: Circus.EventHandler = (
         timeout,
         asyncError,
       );
-      if (test.mode === 'only') {
+      if (currentDescribeBlock.mode !== 'skip' && test.mode === 'only') {
         state.hasFocusedTests = true;
       }
       currentDescribeBlock.children.push(test);
@@ -185,6 +194,10 @@ const eventHandler: Circus.EventHandler = (
       state.currentlyRunningTest = event.test;
       event.test.startedAt = Date.now();
       event.test.invocations += 1;
+      break;
+    }
+    case 'test_fn_start': {
+      event.test.seenDone = false;
       break;
     }
     case 'test_fn_failure': {

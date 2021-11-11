@@ -12,10 +12,6 @@ import runJest from '../runJest';
 const dir = path.resolve(__dirname, '..', 'native-async-mock');
 
 test('mocks async functions', () => {
-  if (process.versions.node < '7.6.0') {
-    return;
-  }
-
   runYarnInstall(dir);
 
   // --no-cache because babel can cache stuff and result in false green
