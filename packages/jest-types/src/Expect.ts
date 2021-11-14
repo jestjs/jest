@@ -17,14 +17,12 @@ export type AsyncExpectationResult = Promise<SyncExpectationResult>;
 
 export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
-export type RawMatcherFn = {
-  (
-    this: MatcherState,
-    received: any,
-    expected: any,
-    options?: any,
-  ): ExpectationResult;
-};
+export type RawMatcherFn = (
+  this: MatcherState,
+  received: any,
+  expected: any,
+  options?: any,
+) => ExpectationResult;
 
 export type ThrowingMatcherFn = (actual: any) => void;
 
