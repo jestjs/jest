@@ -25,9 +25,8 @@ import {
 import extractExpectedAssertionsErrors from './extractExpectedAssertionsErrors';
 import {equals} from './jasmineUtils';
 import {
-  INTERNAL_MATCHER_FLAG,
-  JestMatchersObject,
-  JestRawMatcherFn,
+  BUILD_IN_MATCHER_FLAG,
+  BuildInRawMatcherFn,
   getMatchers,
   getState,
   setMatchers,
@@ -53,7 +52,7 @@ const isPromise = <T extends any>(obj: any): obj is PromiseLike<T> =>
   typeof obj.then === 'function';
 
 const createToThrowErrorMatchingSnapshotMatcher = function (
-  matcher: JestRawMatcherFn,
+  matcher: Expect.RawMatcherFn,
 ) {
   return function (
     this: Expect.MatcherState,
@@ -64,7 +63,7 @@ const createToThrowErrorMatchingSnapshotMatcher = function (
   };
 };
 
-const getPromiseMatcher = (name: string, matcher: any) => {
+const getPromiseMatcher = (name: string, matcher: Expect.RawMatcherFn) => {
   if (name === 'toThrow' || name === 'toThrowError') {
     return createThrowMatcher(name, true);
   } else if (
@@ -138,7 +137,7 @@ const getMessage = (message?: () => string) =>
 const makeResolveMatcher =
   (
     matcherName: string,
-    matcher: JestRawMatcherFn,
+    matcher: Expect.RawMatcherFn,
     isNot: boolean,
     actual: Promise<any>,
     outerErr: JestAssertionError,
@@ -185,7 +184,7 @@ const makeResolveMatcher =
 const makeRejectMatcher =
   (
     matcherName: string,
-    matcher: JestRawMatcherFn,
+    matcher: Expect.RawMatcherFn,
     isNot: boolean,
     actual: Promise<any> | (() => Promise<any>),
     outerErr: JestAssertionError,
@@ -235,7 +234,7 @@ const makeRejectMatcher =
   };
 
 const makeThrowingMatcher = (
-  matcher: JestRawMatcherFn,
+  matcher: BuildInRawMatcherFn,
   isNot: boolean,
   promise: string,
   actual: any,
@@ -303,7 +302,7 @@ const makeThrowingMatcher = (
 
     const handleError = (error: Error) => {
       if (
-        matcher[INTERNAL_MATCHER_FLAG] === true &&
+        matcher[BUILD_IN_MATCHER_FLAG] === true &&
         !(error instanceof JestAssertionError) &&
         error.name !== 'PrettyFormatPluginError' &&
         // Guard for some environments (browsers) that do not support this feature.
@@ -319,7 +318,7 @@ const makeThrowingMatcher = (
 
     try {
       potentialResult =
-        matcher[INTERNAL_MATCHER_FLAG] === true
+        matcher[BUILD_IN_MATCHER_FLAG] === true
           ? matcher.call(matcherContext, actual, ...args)
           : // It's a trap specifically for inline snapshot to capture this name
             // in the stack trace, so that it can correctly get the custom matcher
@@ -348,7 +347,7 @@ const makeThrowingMatcher = (
     }
   };
 
-expect.extend = (matchers: JestMatchersObject): void =>
+expect.extend = (matchers: Expect.MatchersObject): void =>
   setMatchers(matchers, false, expect);
 
 expect.anything = anything;

@@ -13,16 +13,11 @@ import {AsymmetricMatcher} from './asymmetricMatchers';
 // the state, that can hold matcher specific values that change over time.
 const JEST_MATCHERS_OBJECT = Symbol.for('$$jest-matchers-object');
 
-// Notes a built-in/internal Jest matcher.
-// Jest may override the stack trace of Errors thrown by internal matchers.
-export const INTERNAL_MATCHER_FLAG = Symbol.for('$$jest-internal-matcher');
+// Expect may override the stack trace of Errors thrown by built-in matchers.
+export const BUILD_IN_MATCHER_FLAG = Symbol.for('$$build-in-matcher');
 
-export type JestRawMatcherFn = Expect.RawMatcherFn & {
-  [INTERNAL_MATCHER_FLAG]?: boolean;
-};
-
-export type JestMatchersObject = {
-  [matcherName: string]: JestRawMatcherFn;
+export type BuildInRawMatcherFn = Expect.RawMatcherFn & {
+  [BUILD_IN_MATCHER_FLAG]?: boolean;
 };
 
 if (!global.hasOwnProperty(JEST_MATCHERS_OBJECT)) {
@@ -52,16 +47,14 @@ export const getMatchers = (): Expect.MatchersObject =>
 
 export const setMatchers = (
   matchers: Expect.MatchersObject,
-  isInternal: boolean,
+  isBuildIn: boolean,
   expect: Expect.Expect,
 ): void => {
   Object.keys(matchers).forEach(key => {
-    const matcher = matchers[key];
-    Object.defineProperty(matcher, INTERNAL_MATCHER_FLAG, {
-      value: isInternal,
-    });
+    const matcher = matchers[key] as BuildInRawMatcherFn;
+    matcher[BUILD_IN_MATCHER_FLAG] = isBuildIn;
 
-    if (!isInternal) {
+    if (!isBuildIn) {
       // expect is defined
 
       class CustomMatcher extends AsymmetricMatcher<
