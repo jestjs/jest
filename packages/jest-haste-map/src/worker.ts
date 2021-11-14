@@ -63,7 +63,7 @@ export async function worker(data: WorkerMessage): Promise<WorkerMetadata> {
     } catch (err: any) {
       throw new Error(`Cannot parse ${filePath} as JSON: ${err.message}`);
     }
-  } else if (!blacklist.has(filePath.substr(filePath.lastIndexOf('.')))) {
+  } else if (!blacklist.has(filePath.substring(filePath.lastIndexOf('.')))) {
     // Process a random file that is returned as a MODULE.
     if (hasteImpl) {
       id = hasteImpl.getHasteName(filePath);
