@@ -63,22 +63,20 @@ export default class ExperimentalWorker implements WorkerInterface {
 
   initialize(): void {
     this._worker = new Worker(path.resolve(__dirname, './threadChild.js'), {
+      env: {
+        ...process.env,
+        JEST_WORKER_ID: String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
+      },
       eval: false,
+      // Suppress --debug / --inspect flags while preserving others (like --harmony).
+      execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
+      // @ts-expect-error: added in newer versions
       resourceLimits: this._options.resourceLimits,
       stderr: true,
       stdout: true,
-      workerData: {
-        cwd: process.cwd(),
-        env: {
-          ...process.env,
-          JEST_WORKER_ID: String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
-        } as NodeJS.ProcessEnv,
-        // Suppress --debug / --inspect flags while preserving others (like --harmony).
-        execArgv: process.execArgv.filter(v => !/^--(debug|inspect)/.test(v)),
-        silent: true,
-        ...this._options.forkOptions,
-      },
-    } as WorkerThreadsWorkerOptions);
+      workerData: this._options.workerData,
+      ...this._options.forkOptions,
+    });
 
     if (this._worker.stdout) {
       if (!this._stdout) {
