@@ -73,7 +73,7 @@ it('passes fork options down to worker_threads.Worker, adding the defaults', () 
   expect(workerThreads.mock.calls[0][1]).toEqual({
     env: process.env, // Default option.
     eval: false,
-    execArgv: ['-p'], // Filtered option.
+    execArgv: ['--inspect', '-p'],
     execPath: 'hello', // Added option.
     resourceLimits: undefined,
     stderr: true,
