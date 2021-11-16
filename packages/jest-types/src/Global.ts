@@ -121,10 +121,13 @@ export interface TestFrameworkGlobals {
   beforeEach: HookBase;
   afterEach: HookBase;
   afterAll: HookBase;
+}
+
+export interface RuntimeGlobals extends TestFrameworkGlobals {
   expect: Expect.JestExpect;
 }
 
-export interface GlobalAdditions extends TestFrameworkGlobals {
+export interface GlobalAdditions extends RuntimeGlobals {
   __coverage__: CoverageMapData;
   jasmine: Jasmine;
   fail: () => void;

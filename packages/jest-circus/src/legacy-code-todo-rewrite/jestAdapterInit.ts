@@ -55,7 +55,7 @@ export const initialize = async ({
   testPath: Config.Path;
   parentProcess: Process;
   sendMessageToJest?: TestFileEvent;
-  setGlobalsForRuntime: (globals: Global.TestFrameworkGlobals) => void;
+  setGlobalsForRuntime: (runtimeGlobals: Global.RuntimeGlobals) => void;
 }): Promise<{
   globals: Global.TestFrameworkGlobals;
   snapshotState: SnapshotStateType;
@@ -118,7 +118,7 @@ export const initialize = async ({
     addEventHandler(environment.handleTestEvent.bind(environment));
   }
 
-  const runtimeGlobals: Global.TestFrameworkGlobals = {
+  const runtimeGlobals: Global.RuntimeGlobals = {
     ...globalsObject,
     expect: createExpect(globalConfig),
   };

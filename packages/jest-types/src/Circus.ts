@@ -78,7 +78,7 @@ export type AsyncEvent =
       // first action to dispatch. Good time to initialize all settings
       name: 'setup';
       testNamePattern?: string;
-      runtimeGlobals: Global.TestFrameworkGlobals;
+      runtimeGlobals: Global.RuntimeGlobals;
       parentProcess: Process;
     }
   | {
