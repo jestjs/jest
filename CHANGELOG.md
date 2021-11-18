@@ -16,6 +16,8 @@
 
 ### Chore & Maintenance
 
+- `[*]` Replaced `substr` method with `substring` ([#12066](https://github.com/facebook/jest/pull/12066))
+
 ### Performance
 
 ## 27.3.1
