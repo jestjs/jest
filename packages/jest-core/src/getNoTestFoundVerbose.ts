@@ -39,7 +39,7 @@ export default function getNoTestFoundVerbose(
       ? `In ${chalk.bold(config.rootDir)}\n` +
           `  ${pluralize('file', testRun.matches.total || 0, 's')} checked.\n` +
           statsMessage
-      : `No files found in ${config.rootDir}.\n` +
+      : `No files found in '${config.rootDir}'\n` +
           `Make sure Jest's configuration does not exclude this directory.` +
           `\nTo set up Jest, make sure a package.json file exists.\n` +
           `Jest Documentation: ` +
