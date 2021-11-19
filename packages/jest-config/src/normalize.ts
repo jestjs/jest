@@ -65,7 +65,7 @@ function verifyDirectoryExists(path: Config.Path, key: string) {
         )} option is not a directory.`,
       );
     }
-  } catch (err) {
+  } catch (err: any) {
     if (err instanceof ValidationError) {
       throw err;
     }
@@ -150,7 +150,7 @@ const setupPreset = async (
     } catch {}
 
     preset = await requireOrImportModule(presetModule);
-  } catch (error) {
+  } catch (error: any) {
     if (error instanceof SyntaxError || error instanceof TypeError) {
       throw createConfigError(
         `  Preset ${chalk.bold(presetPath)} is invalid:\n\n  ${
@@ -997,6 +997,7 @@ export default async function normalize(
       case 'skipFilter':
       case 'skipNodeResolution':
       case 'slowTestThreshold':
+      case 'snapshotFormat':
       case 'testEnvironment':
       case 'testEnvironmentOptions':
       case 'testFailureExitCode':

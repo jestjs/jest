@@ -69,5 +69,5 @@ test('force exits a worker that fails to exit gracefully', async () => {
 
   const [pid] = execRes!;
 
-  expect(await findProcess('pid', pid)).toHaveLength(0);
+  expect(await findProcess('pid', Number(pid))).toHaveLength(0);
 });

@@ -11,8 +11,7 @@ ES6 classes are constructor functions with some syntactic sugar. Therefore, any 
 
 We'll use a contrived example of a class that plays sound files, `SoundPlayer`, and a consumer class which uses that class, `SoundPlayerConsumer`. We'll mock `SoundPlayer` in our tests for `SoundPlayerConsumer`.
 
-```javascript
-// sound-player.js
+```javascript title="sound-player.js"
 export default class SoundPlayer {
   constructor() {
     this.foo = 'bar';
@@ -24,8 +23,7 @@ export default class SoundPlayer {
 }
 ```
 
-```javascript
-// sound-player-consumer.js
+```javascript title="sound-player-consumer.js"
 import SoundPlayer from './sound-player';
 
 export default class SoundPlayerConsumer {
@@ -90,9 +88,7 @@ it('We can check if the consumer called a method on the class instance', () => {
 
 Create a [manual mock](ManualMocks.md) by saving a mock implementation in the `__mocks__` folder. This allows you to specify the implementation, and it can be used across test files.
 
-```javascript
-// __mocks__/sound-player.js
-
+```javascript title="__mocks__/sound-player.js"
 // Import this named export into your test file:
 export const mockPlaySoundFile = jest.fn();
 const mock = jest.fn().mockImplementation(() => {
@@ -104,8 +100,7 @@ export default mock;
 
 Import the mock and the mock method shared by all instances:
 
-```javascript
-// sound-player-consumer.test.js
+```javascript title="sound-player-consumer.test.js"
 import SoundPlayer, {mockPlaySoundFile} from './sound-player';
 import SoundPlayerConsumer from './sound-player-consumer';
 jest.mock('./sound-player'); // SoundPlayer is now a mock constructor
@@ -198,8 +193,7 @@ If you define an ES6 class using the same filename as the mocked class in the `_
 
 For the contrived example, the mock might look like this:
 
-```javascript
-// __mocks__/sound-player.js
+```javascript title="__mocks__/sound-player.js"
 export default class SoundPlayer {
   constructor() {
     console.log('Mock SoundPlayer: constructor was called');
@@ -297,9 +291,7 @@ jest.mock('./sound-player', () => {
 
 The manual mock equivalent of this would be:
 
-```javascript
-// __mocks__/sound-player.js
-
+```javascript title="__mocks__/sound-player.js"
 // Import this named export into your test file
 export const mockPlaySoundFile = jest.fn();
 const mock = jest.fn().mockImplementation(() => {
@@ -326,8 +318,7 @@ beforeEach(() => {
 
 Here's a complete test file which uses the module factory parameter to `jest.mock`:
 
-```javascript
-// sound-player-consumer.test.js
+```javascript title="sound-player-consumer.test.js"
 import SoundPlayer from './sound-player';
 import SoundPlayerConsumer from './sound-player-consumer';
 

@@ -32,16 +32,17 @@ export type ModuleWrapper = (
   ...extraGlobals: Array<Global.Global[keyof Global.Global]>
 ) => unknown;
 
-export declare class JestEnvironment {
+export declare class JestEnvironment<Timer = unknown> {
   constructor(config: Config.ProjectConfig, context?: EnvironmentContext);
   global: Global.Global;
-  fakeTimers: LegacyFakeTimers<unknown> | null;
+  fakeTimers: LegacyFakeTimers<Timer> | null;
   fakeTimersModern: ModernFakeTimers | null;
   moduleMocker: ModuleMocker | null;
   getVmContext(): Context | null;
   setup(): Promise<void>;
   teardown(): Promise<void>;
   handleTestEvent?: Circus.EventHandler;
+  exportConditions?: () => Array<string>;
 }
 
 export type Module = NodeModule;
@@ -135,6 +136,14 @@ export interface Jest {
   mock(
     moduleName: string,
     moduleFactory?: () => unknown,
+    options?: {virtual?: boolean},
+  ): Jest;
+  /**
+   * Mocks a module with the provided module factory when it is being imported.
+   */
+  unstable_mockModule<T = unknown>(
+    moduleName: string,
+    moduleFactory: () => Promise<T> | T,
     options?: {virtual?: boolean},
   ): Jest;
   /**

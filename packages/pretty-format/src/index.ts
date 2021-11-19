@@ -35,6 +35,7 @@ import type {
 
 export type {
   Colors,
+  CompareKeys,
   Config,
   Options,
   OptionsReceived,
@@ -42,6 +43,7 @@ export type {
   NewPlugin,
   Plugin,
   Plugins,
+  PrettyFormatOptions,
   Printer,
   Refs,
   Theme,
@@ -181,7 +183,7 @@ function printBasicValue(
   }
   if (toStringed === '[object RegExp]') {
     if (escapeRegex) {
-      // https://github.com/benjamingr/RegExp.escape/blob/master/polyfill.js
+      // https://github.com/benjamingr/RegExp.escape/blob/main/polyfill.js
       return regExpToString.call(val).replace(/[\\^$*+?.()|[\]{}]/g, '\\$&');
     }
     return regExpToString.call(val);
@@ -324,7 +326,7 @@ function printPlugin(
           },
           config.colors,
         );
-  } catch (error) {
+  } catch (error: any) {
     throw new PrettyFormatPluginError(error.message, error.stack);
   }
   if (typeof printed !== 'string') {
@@ -341,7 +343,7 @@ function findPlugin(plugins: Plugins, val: unknown) {
       if (plugins[p].test(val)) {
         return plugins[p];
       }
-    } catch (error) {
+    } catch (error: any) {
       throw new PrettyFormatPluginError(error.message, error.stack);
     }
   }
@@ -394,8 +396,9 @@ const DEFAULT_THEME_KEYS = Object.keys(DEFAULT_THEME) as Array<
   keyof typeof DEFAULT_THEME
 >;
 
-const DEFAULT_OPTIONS: Options = {
+export const DEFAULT_OPTIONS: Options = {
   callToJSON: true,
+  compareKeys: undefined,
   escapeRegex: false,
   escapeString: true,
   highlight: false,
@@ -485,6 +488,10 @@ const getConfig = (options?: OptionsReceived): Config => ({
     options && options.highlight
       ? getColorsHighlight(options)
       : getColorsEmpty(),
+  compareKeys:
+    options && typeof options.compareKeys === 'function'
+      ? options.compareKeys
+      : DEFAULT_OPTIONS.compareKeys,
   escapeRegex: getEscapeRegex(options),
   escapeString: getEscapeString(options),
   indent:

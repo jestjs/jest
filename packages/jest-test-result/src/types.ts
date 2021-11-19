@@ -78,6 +78,10 @@ export type AggregatedResult = AggregatedResultWithoutCoverage & {
   coverageMap?: CoverageMap | null;
 };
 
+export type TestResultsProcessor = (
+  results: AggregatedResult,
+) => AggregatedResult;
+
 export type Suite = {
   title: string;
   suites: Array<Suite>;

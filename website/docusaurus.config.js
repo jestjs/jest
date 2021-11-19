@@ -34,7 +34,7 @@ module.exports = {
             if (locale !== 'en') {
               return `https://crowdin.com/project/jest-v2/${locale}`;
             }
-            return `https://github.com/facebook/jest/edit/master/website/${versionDocsDirPath}/${docPath}`;
+            return `https://github.com/facebook/jest/edit/main/website/${versionDocsDirPath}/${docPath}`;
           },
           path: '../docs',
           sidebarPath: path.resolve(__dirname, './sidebars.json'),
@@ -80,7 +80,7 @@ module.exports = {
           {
             tagName: 'meta',
             name: 'theme-color',
-            content: JestThemeColor,
+            content: '#FFF',
           },
           {
             tagName: 'meta',

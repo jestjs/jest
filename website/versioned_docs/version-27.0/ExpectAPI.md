@@ -151,7 +151,7 @@ A boolean to let you know this matcher was called with an `expand` option. When 
 
 #### `this.utils`
 
-There are a number of helpful tools exposed on `this.utils` primarily consisting of the exports from [`jest-matcher-utils`](https://github.com/facebook/jest/tree/master/packages/jest-matcher-utils).
+There are a number of helpful tools exposed on `this.utils` primarily consisting of the exports from [`jest-matcher-utils`](https://github.com/facebook/jest/tree/main/packages/jest-matcher-utils).
 
 The most useful ones are `matcherHint`, `printExpected` and `printReceived` to format the error messages nicely. For example, take a look at the implementation for the `toBe` matcher:
 
@@ -406,7 +406,7 @@ describe('Beware of a misunderstanding! A sequence of dice rolls', () => {
 For example, let's say that we have a function `doAsync` that receives two callbacks `callback1` and `callback2`, it will asynchronously call both of them in an unknown order. We can test this with:
 
 ```js
-test('doAsync calls both callbacks', () => {
+test('doAsync calls both callbacks', async () => {
   expect.assertions(2);
   function callback1(data) {
     expect(data).toBeTruthy();
@@ -415,7 +415,7 @@ test('doAsync calls both callbacks', () => {
     expect(data).toBeTruthy();
   }
 
-  doAsync(callback1, callback2);
+  await doAsync(callback1, callback2);
 });
 ```
 

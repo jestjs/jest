@@ -81,21 +81,15 @@ mockFn.mock.instances[1] === b; // true
 
 ### `mockFn.mockClear()`
 
-Resets all information stored in the [`mockFn.mock.calls`](#mockfnmockcalls) and [`mockFn.mock.instances`](#mockfnmockinstances) arrays.
+Resets all information stored in the [`mockFn.mock.calls`](#mockfnmockcalls), [`mockFn.mock.instances`](#mockfnmockinstances) and [`mockFn.mock.results`](#mockfnmockresults) arrays. Often this is useful when you want to clean up a mocks usage data between two assertions.
 
-Often this is useful when you want to clean up a mock's usage data between two assertions.
-
-Beware that `mockClear` will replace `mockFn.mock`, not just [`mockFn.mock.calls`](#mockfnmockcalls) and [`mockFn.mock.instances`](#mockfnmockinstances). You should, therefore, avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data.
-
-The [`clearMocks`](configuration#clearmocks-boolean) configuration option is available to clear mocks automatically between tests.
+Beware that `mockClear` will replace `mockFn.mock`, not just these three properties! You should, therefore, avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data. The [`clearMocks`](configuration#clearmocks-boolean) configuration option is available to clear mocks automatically between tests.
 
 ### `mockFn.mockReset()`
 
 Does everything that [`mockFn.mockClear()`](#mockfnmockclear) does, and also removes any mocked return values or implementations.
 
 This is useful when you want to completely reset a _mock_ back to its initial state. (Note that resetting a _spy_ will result in a function with no return value).
-
-Beware that `mockReset` will replace `mockFn.mock`, not just [`mockFn.mock.calls`](#mockfnmockcalls) and [`mockFn.mock.instances`](#mockfnmockinstances). You should, therefore, avoid assigning `mockFn.mock` to other variables, temporary or not, to make sure you don't access stale data.
 
 ### `mockFn.mockRestore()`
 
@@ -131,13 +125,13 @@ mockFn.mock.calls[1][0] === 1; // true
 
 `mockImplementation` can also be used to mock class constructors:
 
-```js
-// SomeClass.js
+```js title="SomeClass.js"
 module.exports = class SomeClass {
   m(a, b) {}
 };
+```
 
-// OtherModule.test.js
+```js title="OtherModule.test.js"
 jest.mock('./SomeClass'); // this happens automatically with automocking
 const SomeClass = require('./SomeClass');
 const mMock = jest.fn();
@@ -327,7 +321,7 @@ If you are using [Create React App](https://create-react-app.dev) then the [Type
 
 Otherwise, please see our [Getting Started](GettingStarted.md#using-typescript) guide for to get setup with TypeScript.
 
-You can see an example of using Jest with TypeScript in our [GitHub repository](https://github.com/facebook/jest/tree/master/examples/typescript).
+You can see an example of using Jest with TypeScript in our [GitHub repository](https://github.com/facebook/jest/tree/main/examples/typescript).
 
 ### `jest.MockedFunction`
 

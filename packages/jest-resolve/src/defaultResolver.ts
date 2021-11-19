@@ -5,22 +5,36 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-import * as fs from 'graceful-fs';
+import {resolve} from 'path';
 import pnpResolver from 'jest-pnp-resolver';
 import {sync as resolveSync} from 'resolve';
+import {
+  Options as ResolveExportsOptions,
+  resolve as resolveExports,
+} from 'resolve.exports';
 import type {Config} from '@jest/types';
-import {tryRealpath} from 'jest-util';
+import {
+  PkgJson,
+  isDirectory,
+  isFile,
+  readPackageCached,
+  realpathSync,
+} from './fileWalkers';
 
-type ResolverOptions = {
+// copy from `resolve`'s types so we don't have their types in our definition
+// files
+interface ResolverOptions {
   basedir: Config.Path;
   browser?: boolean;
+  conditions?: Array<string>;
   defaultResolver: typeof defaultResolver;
   extensions?: Array<string>;
   moduleDirectory?: Array<string>;
   paths?: Array<Config.Path>;
   rootDir?: Config.Path;
-  packageFilter?: (pkg: any, pkgfile: string) => any;
-};
+  packageFilter?: (pkg: PkgJson, dir: string) => PkgJson;
+  pathFilter?: (pkg: PkgJson, path: string, relativePath: string) => string;
+}
 
 // https://github.com/facebook/jest/pull/10617
 declare global {
@@ -42,13 +56,13 @@ export default function defaultResolver(
   }
 
   const result = resolveSync(path, {
-    basedir: options.basedir,
-    extensions: options.extensions,
+    ...options,
     isDirectory,
     isFile,
-    moduleDirectory: options.moduleDirectory,
-    packageFilter: options.packageFilter,
-    paths: options.paths,
+    packageFilter: createPackageFilter(
+      options.conditions,
+      options.packageFilter,
+    ),
     preserveSymlinks: false,
     readPackageSync,
     realpathSync,
@@ -59,99 +73,54 @@ export default function defaultResolver(
   return realpathSync(result);
 }
 
-export function clearDefaultResolverCache(): void {
-  checkedPaths.clear();
-  checkedRealpathPaths.clear();
-  packageContents.clear();
-}
-
-enum IPathType {
-  FILE = 1,
-  DIRECTORY = 2,
-  OTHER = 3,
-}
-const checkedPaths = new Map<string, IPathType>();
-function statSyncCached(path: string): IPathType {
-  const result = checkedPaths.get(path);
-  if (result !== undefined) {
-    return result;
-  }
-
-  let stat;
-  try {
-    stat = fs.statSync(path);
-  } catch (e) {
-    if (!(e && (e.code === 'ENOENT' || e.code === 'ENOTDIR'))) {
-      throw e;
-    }
-  }
-
-  if (stat) {
-    if (stat.isFile() || stat.isFIFO()) {
-      checkedPaths.set(path, IPathType.FILE);
-      return IPathType.FILE;
-    } else if (stat.isDirectory()) {
-      checkedPaths.set(path, IPathType.DIRECTORY);
-      return IPathType.DIRECTORY;
-    }
-  }
-
-  checkedPaths.set(path, IPathType.OTHER);
-  return IPathType.OTHER;
-}
-
-const checkedRealpathPaths = new Map<string, string>();
-function realpathCached(path: Config.Path): Config.Path {
-  let result = checkedRealpathPaths.get(path);
-
-  if (result !== undefined) {
-    return result;
-  }
-
-  result = tryRealpath(path);
-
-  checkedRealpathPaths.set(path, result);
-
-  if (path !== result) {
-    // also cache the result in case it's ever referenced directly - no reason to `realpath` that as well
-    checkedRealpathPaths.set(result, result);
-  }
-
-  return result;
-}
-
-type PkgJson = Record<string, unknown>;
-
-const packageContents = new Map<string, PkgJson>();
-function readPackageCached(path: Config.Path): PkgJson {
-  let result = packageContents.get(path);
-
-  if (result !== undefined) {
-    return result;
-  }
-
-  result = JSON.parse(fs.readFileSync(path, 'utf8')) as PkgJson;
-
-  packageContents.set(path, result);
-
-  return result;
-}
-
 /*
  * helper functions
  */
-function isFile(file: Config.Path): boolean {
-  return statSyncCached(file) === IPathType.FILE;
-}
-
-function isDirectory(dir: Config.Path): boolean {
-  return statSyncCached(dir) === IPathType.DIRECTORY;
-}
-
-function realpathSync(file: Config.Path): Config.Path {
-  return realpathCached(file);
-}
 
 function readPackageSync(_: unknown, file: Config.Path): PkgJson {
   return readPackageCached(file);
+}
+
+function createPackageFilter(
+  conditions?: Array<string>,
+  userFilter?: ResolverOptions['packageFilter'],
+): ResolverOptions['packageFilter'] {
+  function attemptExportsFallback(pkg: PkgJson) {
+    const options: ResolveExportsOptions = conditions
+      ? {conditions, unsafe: true}
+      : // no conditions were passed - let's assume this is Jest internal and it should be `require`
+        {browser: false, require: true};
+
+    try {
+      return resolveExports(pkg, '.', options);
+    } catch {
+      return undefined;
+    }
+  }
+
+  return function packageFilter(pkg, packageDir) {
+    let filteredPkg = pkg;
+
+    if (userFilter) {
+      filteredPkg = userFilter(filteredPkg, packageDir);
+    }
+
+    if (filteredPkg.main != null) {
+      return filteredPkg;
+    }
+
+    const indexInRoot = resolve(packageDir, './index.js');
+
+    // if the module contains an `index.js` file in root, `resolve` will request
+    // that if there is no `main`. Since we don't wanna break that, add this
+    // check
+    if (isFile(indexInRoot)) {
+      return filteredPkg;
+    }
+
+    return {
+      ...filteredPkg,
+      main: attemptExportsFallback(filteredPkg),
+    };
+  };
 }

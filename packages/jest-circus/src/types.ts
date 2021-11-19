@@ -21,7 +21,7 @@ export const TEST_TIMEOUT_SYMBOL = Symbol.for(
 ) as unknown as 'TEST_TIMEOUT_SYMBOL';
 
 declare global {
-  module NodeJS {
+  namespace NodeJS {
     interface Global {
       STATE_SYM_SYMBOL: Circus.State;
       RETRY_TIMES_SYMBOL: string;

@@ -6,7 +6,7 @@
  */
 
 import {sep} from 'path';
-import isCI = require('is-ci');
+import {isCI} from 'ci-info';
 import type {Config} from '@jest/types';
 import {replacePathSepForRegex} from 'jest-regex-util';
 import {NODE_MODULES} from './constants';

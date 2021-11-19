@@ -24,6 +24,13 @@ type WatchmanListCapabilitiesResponse = {
   capabilities: Array<string>;
 };
 
+type WatchmanCapabilityCheckResponse = {
+  // { 'suffix-set': true }
+  capabilities: Record<string, boolean>;
+  // '2021.06.07.00'
+  version: string;
+};
+
 type WatchmanWatchProjectResponse = {
   watch: string;
   relative_path: string;
@@ -57,6 +64,32 @@ function WatchmanError(error: Error): Error {
   return error;
 }
 
+/**
+ * Wrap watchman capabilityCheck method as a promise.
+ *
+ * @param client watchman client
+ * @param caps capabilities to verify
+ * @returns a promise resolving to a list of verified capabilities
+ */
+async function capabilityCheck(
+  client: watchman.Client,
+  caps: Partial<watchman.Capabilities>,
+): Promise<WatchmanCapabilityCheckResponse> {
+  return new Promise((resolve, reject) => {
+    client.capabilityCheck(
+      // @ts-expect-error: incorrectly typed
+      caps,
+      (error, response) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(response);
+        }
+      },
+    );
+  });
+}
+
 export = async function watchmanCrawl(options: CrawlerOptions): Promise<{
   changedFiles?: FileData;
   removedFiles: FileData;
@@ -64,13 +97,29 @@ export = async function watchmanCrawl(options: CrawlerOptions): Promise<{
 }> {
   const fields = ['name', 'exists', 'mtime_ms', 'size'];
   const {data, extensions, ignore, rootDir, roots} = options;
-  const defaultWatchExpression = [
-    'allof',
-    ['type', 'f'],
-    ['anyof', ...extensions.map(extension => ['suffix', extension])],
-  ];
+  const defaultWatchExpression: Array<any> = ['allof', ['type', 'f']];
   const clocks = data.clocks;
   const client = new watchman.Client();
+
+  // https://facebook.github.io/watchman/docs/capabilities.html
+  // Check adds about ~28ms
+  const capabilities = await capabilityCheck(client, {
+    // If a required capability is missing then an error will be thrown,
+    // we don't need this assertion, so using optional instead.
+    optional: ['suffix-set'],
+  });
+
+  if (capabilities?.capabilities['suffix-set']) {
+    // If available, use the optimized `suffix-set` operation:
+    // https://facebook.github.io/watchman/docs/expr/suffix.html#suffix-set
+    defaultWatchExpression.push(['suffix', extensions]);
+  } else {
+    // Otherwise use the older and less optimal suffix tuple array
+    defaultWatchExpression.push([
+      'anyof',
+      ...extensions.map(extension => ['suffix', extension]),
+    ]);
+  }
 
   let clientError;
   client.on('error', error => (clientError = WatchmanError(error)));

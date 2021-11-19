@@ -70,6 +70,26 @@ describe('jest-each', () => {
         expect(testCallBack).not.toHaveBeenCalled();
       });
 
+      test('does not throw error when there are multibyte characters in first column headings', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+         ʅ(ツ)ʃ  | b    | expected
+          ${1}          | ${1} | ${2}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('accept multibyte characters', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() => globalMock.mock.calls[0][1]()).not.toThrowError();
+        expect(testCallBack).toHaveBeenCalledWith({
+          b: 1,
+          expected: 2,
+          'ʅ(ツ)ʃ': 1,
+        });
+      });
+
       test('throws error when there are additional words in second column heading', () => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)`
@@ -88,6 +108,26 @@ describe('jest-each', () => {
         expect(testCallBack).not.toHaveBeenCalled();
       });
 
+      test('does not throw error when there are multibyte characters in second column headings', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a    | ☝(ʕ⊙ḕ⊙ʔ)☝  | expected
+          ${1} | ${1}           | ${2}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('accept multibyte characters', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() => globalMock.mock.calls[0][1]()).not.toThrowError();
+        expect(testCallBack).toHaveBeenCalledWith({
+          a: 1,
+          expected: 2,
+          '☝(ʕ⊙ḕ⊙ʔ)☝': 1,
+        });
+      });
+
       test('throws error when there are additional words in last column heading', () => {
         const globalTestMocks = getGlobalTestMocks();
         const eachObject = each.withGlobal(globalTestMocks)`
@@ -104,6 +144,26 @@ describe('jest-each', () => {
           globalMock.mock.calls[0][1](),
         ).toThrowErrorMatchingSnapshot();
         expect(testCallBack).not.toHaveBeenCalled();
+      });
+
+      test('does not throw error when there are multibyte characters in last column headings', () => {
+        const globalTestMocks = getGlobalTestMocks();
+        const eachObject = each.withGlobal(globalTestMocks)`
+          a    | b    | (๑ఠ‿ఠ๑)＜expected
+          ${1} | ${1} | ${2}
+        `;
+        const testFunction = get(eachObject, keyPath);
+        const testCallBack = jest.fn();
+        testFunction('accept multibyte characters', testCallBack);
+
+        const globalMock = get(globalTestMocks, keyPath);
+
+        expect(() => globalMock.mock.calls[0][1]()).not.toThrowError();
+        expect(testCallBack).toHaveBeenCalledWith({
+          '(๑ఠ‿ఠ๑)＜expected': 2,
+          a: 1,
+          b: 1,
+        });
       });
 
       test('does not throw error when there is additional words in template after heading row', () => {

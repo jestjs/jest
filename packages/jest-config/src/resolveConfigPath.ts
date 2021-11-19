@@ -6,7 +6,9 @@
  */
 
 import * as path from 'path';
+import chalk = require('chalk');
 import * as fs from 'graceful-fs';
+import slash = require('slash');
 import type {Config} from '@jest/types';
 import {
   JEST_CONFIG_BASE_NAME,
@@ -19,7 +21,11 @@ const isFile = (filePath: Config.Path) =>
 
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
 
-export default (pathToResolve: Config.Path, cwd: Config.Path): Config.Path => {
+export default (
+  pathToResolve: Config.Path,
+  cwd: Config.Path,
+  skipMultipleConfigWarning = false,
+): Config.Path => {
   if (!path.isAbsolute(cwd)) {
     throw new Error(`"cwd" must be an absolute path. cwd: ${cwd}`);
   }
@@ -49,24 +55,35 @@ export default (pathToResolve: Config.Path, cwd: Config.Path): Config.Path => {
     );
   }
 
-  return resolveConfigPathByTraversing(absolutePath, pathToResolve, cwd);
+  return resolveConfigPathByTraversing(
+    absolutePath,
+    pathToResolve,
+    cwd,
+    skipMultipleConfigWarning,
+  );
 };
 
 const resolveConfigPathByTraversing = (
   pathToResolve: Config.Path,
   initialPath: Config.Path,
   cwd: Config.Path,
+  skipMultipleConfigWarning: boolean,
 ): Config.Path => {
-  const jestConfig = JEST_CONFIG_EXT_ORDER.map(ext =>
+  const configFiles = JEST_CONFIG_EXT_ORDER.map(ext =>
     path.resolve(pathToResolve, getConfigFilename(ext)),
-  ).find(isFile);
-  if (jestConfig) {
-    return jestConfig;
+  ).filter(isFile);
+
+  const packageJson = findPackageJson(pathToResolve);
+  if (packageJson && hasPackageJsonJestKey(packageJson)) {
+    configFiles.push(packageJson);
   }
 
-  const packageJson = path.resolve(pathToResolve, PACKAGE_JSON);
-  if (isFile(packageJson)) {
-    return packageJson;
+  if (!skipMultipleConfigWarning && configFiles.length > 1) {
+    console.warn(makeMultipleConfigsWarning(configFiles));
+  }
+
+  if (configFiles.length > 0 || packageJson) {
+    return configFiles[0] ?? packageJson;
   }
 
   // This is the system root.
@@ -80,7 +97,27 @@ const resolveConfigPathByTraversing = (
     path.dirname(pathToResolve),
     initialPath,
     cwd,
+    skipMultipleConfigWarning,
   );
+};
+
+const findPackageJson = (pathToResolve: Config.Path) => {
+  const packagePath = path.resolve(pathToResolve, PACKAGE_JSON);
+  if (isFile(packagePath)) {
+    return packagePath;
+  }
+
+  return undefined;
+};
+
+const hasPackageJsonJestKey = (packagePath: Config.Path) => {
+  const content = fs.readFileSync(packagePath, 'utf8');
+  try {
+    return 'jest' in JSON.parse(content);
+  } catch {
+    // If package is not a valid JSON
+    return false;
+  }
 };
 
 const makeResolutionErrorMessage = (
@@ -95,3 +132,29 @@ const makeResolutionErrorMessage = (
   `traverse directory tree up, until it finds one of those files in exact order: ${JEST_CONFIG_EXT_ORDER.map(
     ext => `"${getConfigFilename(ext)}"`,
   ).join(' or ')}.`;
+
+function extraIfPackageJson(configPath: Config.Path) {
+  if (configPath.endsWith(PACKAGE_JSON)) {
+    return '`jest` key in ';
+  }
+
+  return '';
+}
+
+const makeMultipleConfigsWarning = (configPaths: Array<Config.Path>) =>
+  chalk.yellow(
+    [
+      chalk.bold('\u25cf Multiple configurations found:'),
+      ...configPaths.map(
+        configPath =>
+          `    * ${extraIfPackageJson(configPath)}${slash(configPath)}`,
+      ),
+      '',
+      '  Implicit config resolution does not allow multiple configuration files.',
+      '  Either remove unused config files or select one explicitly with `--config`.',
+      '',
+      '  Configuration Documentation:',
+      '  https://jestjs.io/docs/configuration.html',
+      '',
+    ].join('\n'),
+  );

@@ -89,8 +89,7 @@ yarn add --dev babel-jest @babel/core @babel/preset-env
 
 Configure Babel to target your current version of Node by creating a `babel.config.js` file in the root of your project:
 
-```javascript
-// babel.config.js
+```javascript title="babel.config.js"
 module.exports = {
   presets: [['@babel/preset-env', {targets: {node: 'current'}}]],
 };
@@ -102,8 +101,7 @@ _The ideal configuration for Babel will depend on your project._ See [Babel's do
 
 Jest will set `process.env.NODE_ENV` to `'test'` if it's not set to something else. You can use that in your configuration to conditionally setup only the compilation needed for Jest, e.g.
 
-```javascript
-// babel.config.js
+```javascript title="babel.config.js"
 module.exports = api => {
   const isTest = api.env('test');
   // You can use isTest to determine what presets and plugins to use.
@@ -116,8 +114,7 @@ module.exports = api => {
 
 > Note: `babel-jest` is automatically installed when installing Jest and will automatically transform files if a babel configuration exists in your project. To avoid this behavior, you can explicitly reset the `transform` configuration option:
 
-```javascript
-// jest.config.js
+```javascript title="jest.config.js"
 module.exports = {
   transform: {},
 };
@@ -148,7 +145,7 @@ Jest can be used in projects that use [webpack](https://webpack.js.org/) to mana
 
 ### Using parcel
 
-Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration. Refer to the official [docs](https://parceljs.org/getting_started.html) to get started.
+Jest can be used in projects that use [parcel-bundler](https://parceljs.org/) to manage assets, styles, and compilation similar to webpack. Parcel requires zero configuration. Refer to the official [docs](https://parceljs.org/docs/) to get started.
 
 ### Using TypeScript
 
@@ -160,12 +157,12 @@ yarn add --dev @babel/preset-typescript
 
 Then add `@babel/preset-typescript` to the list of presets in your `babel.config.js`.
 
-```diff
-// babel.config.js
+```javascript title="babel.config.js"
 module.exports = {
   presets: [
     ['@babel/preset-env', {targets: {node: 'current'}}],
-+    '@babel/preset-typescript',
+    // highlight-next-line
+    '@babel/preset-typescript',
   ],
 };
 ```

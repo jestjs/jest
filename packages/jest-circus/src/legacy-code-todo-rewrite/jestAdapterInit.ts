@@ -156,6 +156,7 @@ export const initialize = async ({
   const snapshotState = new SnapshotState(snapshotPath, {
     expand,
     prettierPath: config.prettierPath,
+    snapshotFormat: config.snapshotFormat,
     updateSnapshot,
   });
   // @ts-expect-error: snapshotState is a jest extension of `expect`

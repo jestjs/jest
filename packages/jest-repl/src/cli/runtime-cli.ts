@@ -80,12 +80,20 @@ export async function run(
 
     const environment = new Environment(config);
     setGlobal(
-      environment.global,
+      environment.global as unknown as typeof globalThis,
       'console',
       new CustomConsole(process.stdout, process.stderr),
     );
-    setGlobal(environment.global, 'jestProjectConfig', config);
-    setGlobal(environment.global, 'jestGlobalConfig', globalConfig);
+    setGlobal(
+      environment.global as unknown as typeof globalThis,
+      'jestProjectConfig',
+      config,
+    );
+    setGlobal(
+      environment.global as unknown as typeof globalThis,
+      'jestGlobalConfig',
+      globalConfig,
+    );
 
     const runtime = new Runtime(
       config,
@@ -120,7 +128,7 @@ export async function run(
     } else {
       runtime.requireModule(filePath);
     }
-  } catch (e) {
+  } catch (e: any) {
     console.error(chalk.red(e.stack || e));
     process.on('exit', () => (process.exitCode = 1));
   }

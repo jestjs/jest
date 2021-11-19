@@ -48,9 +48,11 @@ type TimerConfig<Ref> = {
 
 const MS_IN_A_YEAR = 31536000000;
 
-interface FakeTimersGlobal extends NodeJS.Global {
-  cancelAnimationFrame?: (handle: number) => void;
-  requestAnimationFrame?: (callback: (time: number) => void) => number;
+type GlobalThis = typeof globalThis;
+
+interface FakeTimersGlobal extends GlobalThis {
+  cancelAnimationFrame: (handle: number) => void;
+  requestAnimationFrame: (callback: (time: number) => void) => number;
 }
 
 export default class FakeTimers<TimerRef> {
@@ -306,7 +308,7 @@ export default class FakeTimers<TimerRef> {
     let errThrown = false;
     try {
       cb();
-    } catch (e) {
+    } catch (e: unknown) {
       errThrown = true;
       cbErr = e;
     }
@@ -334,7 +336,9 @@ export default class FakeTimers<TimerRef> {
         this._timerAPIs.cancelAnimationFrame,
       );
     }
-    setGlobal(global, 'clearImmediate', this._timerAPIs.clearImmediate);
+    if (typeof global.clearImmediate === 'function') {
+      setGlobal(global, 'clearImmediate', this._timerAPIs.clearImmediate);
+    }
     setGlobal(global, 'clearInterval', this._timerAPIs.clearInterval);
     setGlobal(global, 'clearTimeout', this._timerAPIs.clearTimeout);
     if (typeof global.requestAnimationFrame === 'function') {
@@ -344,7 +348,9 @@ export default class FakeTimers<TimerRef> {
         this._timerAPIs.requestAnimationFrame,
       );
     }
-    setGlobal(global, 'setImmediate', this._timerAPIs.setImmediate);
+    if (typeof global.setImmediate === 'function') {
+      setGlobal(global, 'setImmediate', this._timerAPIs.setImmediate);
+    }
     setGlobal(global, 'setInterval', this._timerAPIs.setInterval);
     setGlobal(global, 'setTimeout', this._timerAPIs.setTimeout);
 
@@ -362,7 +368,9 @@ export default class FakeTimers<TimerRef> {
         this._fakeTimerAPIs.cancelAnimationFrame,
       );
     }
-    setGlobal(global, 'clearImmediate', this._fakeTimerAPIs.clearImmediate);
+    if (typeof global.clearImmediate === 'function') {
+      setGlobal(global, 'clearImmediate', this._fakeTimerAPIs.clearImmediate);
+    }
     setGlobal(global, 'clearInterval', this._fakeTimerAPIs.clearInterval);
     setGlobal(global, 'clearTimeout', this._fakeTimerAPIs.clearTimeout);
     if (typeof global.requestAnimationFrame === 'function') {
@@ -372,7 +380,9 @@ export default class FakeTimers<TimerRef> {
         this._fakeTimerAPIs.requestAnimationFrame,
       );
     }
-    setGlobal(global, 'setImmediate', this._fakeTimerAPIs.setImmediate);
+    if (typeof global.setImmediate === 'function') {
+      setGlobal(global, 'setImmediate', this._fakeTimerAPIs.setImmediate);
+    }
     setGlobal(global, 'setInterval', this._fakeTimerAPIs.setInterval);
     setGlobal(global, 'setTimeout', this._fakeTimerAPIs.setTimeout);
 

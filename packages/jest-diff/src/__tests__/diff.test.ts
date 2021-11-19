@@ -1120,4 +1120,43 @@ describe('options', () => {
       expect(diffStringsUnified(aEmpty, bEmpty, options)).toBe(expected);
     });
   });
+
+  describe('compare keys', () => {
+    const a = {a: {d: 1, e: 1, f: 1}, b: 1, c: 1};
+    const b = {a: {d: 1, e: 2, f: 1}, b: 1, c: 1};
+
+    test('keeps the object keys in their original order', () => {
+      const compareKeys = () => 0;
+      const expected = [
+        '  Object {',
+        '    "a": Object {',
+        '      "d": 1,',
+        '-     "e": 1,',
+        '+     "e": 2,',
+        '      "f": 1,',
+        '    },',
+        '    "b": 1,',
+        '    "c": 1,',
+        '  }',
+      ].join('\n');
+      expect(diff(a, b, {...optionsBe, compareKeys})).toBe(expected);
+    });
+
+    test('sorts the object keys in reverse order', () => {
+      const compareKeys = (a: string, b: string) => (a > b ? -1 : 1);
+      const expected = [
+        '  Object {',
+        '    "c": 1,',
+        '    "b": 1,',
+        '    "a": Object {',
+        '      "f": 1,',
+        '-     "e": 1,',
+        '+     "e": 2,',
+        '      "d": 1,',
+        '    },',
+        '  }',
+      ].join('\n');
+      expect(diff(a, b, {...optionsBe, compareKeys})).toBe(expected);
+    });
+  });
 });

@@ -11,6 +11,7 @@ import {
   format as prettyFormat,
   plugins as prettyFormatPlugins,
 } from 'pretty-format';
+import type {PrettyFormatOptions} from 'pretty-format';
 import {DIFF_DELETE, DIFF_EQUAL, DIFF_INSERT, Diff} from './cleanupSemantic';
 import {NO_DIFF_MESSAGE, SIMILAR_MESSAGE} from './constants';
 import {diffLinesRaw, diffLinesUnified, diffLinesUnified2} from './diffLines';
@@ -49,13 +50,11 @@ const PLUGINS = [
 const FORMAT_OPTIONS = {
   plugins: PLUGINS,
 };
-const FORMAT_OPTIONS_0 = {...FORMAT_OPTIONS, indent: 0};
 const FALLBACK_FORMAT_OPTIONS = {
   callToJSON: false,
   maxDepth: 10,
   plugins: PLUGINS,
 };
-const FALLBACK_FORMAT_OPTIONS_0 = {...FALLBACK_FORMAT_OPTIONS, indent: 0};
 
 // Generate a string that will highlight the difference between two values
 // with green and red. (similar to how github does code diffing)
@@ -137,50 +136,20 @@ function compareObjects(
 ) {
   let difference;
   let hasThrown = false;
-  const noDiffMessage = getCommonMessage(NO_DIFF_MESSAGE, options);
 
   try {
-    const aCompare = prettyFormat(a, FORMAT_OPTIONS_0);
-    const bCompare = prettyFormat(b, FORMAT_OPTIONS_0);
-
-    if (aCompare === bCompare) {
-      difference = noDiffMessage;
-    } else {
-      const aDisplay = prettyFormat(a, FORMAT_OPTIONS);
-      const bDisplay = prettyFormat(b, FORMAT_OPTIONS);
-
-      difference = diffLinesUnified2(
-        aDisplay.split('\n'),
-        bDisplay.split('\n'),
-        aCompare.split('\n'),
-        bCompare.split('\n'),
-        options,
-      );
-    }
+    const formatOptions = getFormatOptions(FORMAT_OPTIONS, options);
+    difference = getObjectsDifference(a, b, formatOptions, options);
   } catch {
     hasThrown = true;
   }
 
+  const noDiffMessage = getCommonMessage(NO_DIFF_MESSAGE, options);
   // If the comparison yields no results, compare again but this time
   // without calling `toJSON`. It's also possible that toJSON might throw.
   if (difference === undefined || difference === noDiffMessage) {
-    const aCompare = prettyFormat(a, FALLBACK_FORMAT_OPTIONS_0);
-    const bCompare = prettyFormat(b, FALLBACK_FORMAT_OPTIONS_0);
-
-    if (aCompare === bCompare) {
-      difference = noDiffMessage;
-    } else {
-      const aDisplay = prettyFormat(a, FALLBACK_FORMAT_OPTIONS);
-      const bDisplay = prettyFormat(b, FALLBACK_FORMAT_OPTIONS);
-
-      difference = diffLinesUnified2(
-        aDisplay.split('\n'),
-        bDisplay.split('\n'),
-        aCompare.split('\n'),
-        bCompare.split('\n'),
-        options,
-      );
-    }
+    const formatOptions = getFormatOptions(FALLBACK_FORMAT_OPTIONS, options);
+    difference = getObjectsDifference(a, b, formatOptions, options);
 
     if (difference !== noDiffMessage && !hasThrown) {
       difference =
@@ -189,4 +158,42 @@ function compareObjects(
   }
 
   return difference;
+}
+
+function getFormatOptions(
+  formatOptions: PrettyFormatOptions,
+  options?: DiffOptions,
+): PrettyFormatOptions {
+  const {compareKeys} = normalizeDiffOptions(options);
+
+  return {
+    ...formatOptions,
+    compareKeys,
+  };
+}
+
+function getObjectsDifference(
+  a: Record<string, any>,
+  b: Record<string, any>,
+  formatOptions: PrettyFormatOptions,
+  options?: DiffOptions,
+): string {
+  const formatOptionsZeroIndent = {...formatOptions, indent: 0};
+  const aCompare = prettyFormat(a, formatOptionsZeroIndent);
+  const bCompare = prettyFormat(b, formatOptionsZeroIndent);
+
+  if (aCompare === bCompare) {
+    return getCommonMessage(NO_DIFF_MESSAGE, options);
+  } else {
+    const aDisplay = prettyFormat(a, formatOptions);
+    const bDisplay = prettyFormat(b, formatOptions);
+
+    return diffLinesUnified2(
+      aDisplay.split('\n'),
+      bDisplay.split('\n'),
+      aCompare.split('\n'),
+      bCompare.split('\n'),
+      options,
+    );
+  }
 }

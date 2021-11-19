@@ -349,13 +349,14 @@ const makeThrowingMatcher = (
 
         return processResult(syncResult);
       }
-    } catch (error) {
+    } catch (error: any) {
       return handleError(error);
     }
   };
 
-expect.extend = (matchers: MatchersObject): void =>
-  setMatchers(matchers, false, expect);
+expect.extend = <T extends JestMatcherState = JestMatcherState>(
+  matchers: MatchersObject<T>,
+): void => setMatchers(matchers, false, expect);
 
 expect.anything = anything;
 expect.any = any;
@@ -396,8 +397,10 @@ function assertions(expected: number) {
     Error.captureStackTrace(error, assertions);
   }
 
-  getState().expectedAssertionsNumber = expected;
-  getState().expectedAssertionsNumberError = error;
+  setState({
+    expectedAssertionsNumber: expected,
+    expectedAssertionsNumberError: error,
+  });
 }
 function hasAssertions(...args: Array<any>) {
   const error = new Error();
@@ -406,8 +409,10 @@ function hasAssertions(...args: Array<any>) {
   }
 
   matcherUtils.ensureNoExpected(args[0], '.hasAssertions');
-  getState().isExpectingAssertions = true;
-  getState().isExpectingAssertionsError = error;
+  setState({
+    isExpectingAssertions: true,
+    isExpectingAssertionsError: error,
+  });
 }
 
 // add default jest matchers
@@ -426,7 +431,7 @@ const expectExport = expect as Expect;
 
 declare namespace expectExport {
   export type MatcherState = JestMatcherState;
-  export interface Matchers<R> extends MatcherInterface<R> {}
+  export interface Matchers<R, T = unknown> extends MatcherInterface<R, T> {}
 }
 
 export = expectExport;

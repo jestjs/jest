@@ -53,12 +53,10 @@ You can also hook up puppeteer from scratch. The basic idea is to:
 
 Here's an example of the GlobalSetup script
 
-```js
-// setup.js
-const {writeFile} = require('fs').promises;
+```js title="setup.js"
+const {mkdir, writeFile} = require('fs').promises;
 const os = require('os');
 const path = require('path');
-const mkdirp = require('mkdirp');
 const puppeteer = require('puppeteer');
 
 const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
@@ -70,15 +68,14 @@ module.exports = async function () {
   global.__BROWSER_GLOBAL__ = browser;
 
   // use the file system to expose the wsEndpoint for TestEnvironments
-  mkdirp.sync(DIR);
+  await mkdir(DIR, {recursive: true});
   await writeFile(path.join(DIR, 'wsEndpoint'), browser.wsEndpoint());
 };
 ```
 
 Then we need a custom Test Environment for puppeteer
 
-```js
-// puppeteer_environment.js
+```js title="puppeteer_environment.js"
 const {readFile} = require('fs').promises;
 const os = require('os');
 const path = require('path');
@@ -120,11 +117,10 @@ module.exports = PuppeteerEnvironment;
 
 Finally, we can close the puppeteer instance and clean-up the file
 
-```js
-// teardown.js
+```js title="teardown.js"
+const fs = require('fs').promises;
 const os = require('os');
 const path = require('path');
-const rimraf = require('rimraf');
 
 const DIR = path.join(os.tmpdir(), 'jest_puppeteer_global_setup');
 module.exports = async function () {
@@ -132,14 +128,13 @@ module.exports = async function () {
   await global.__BROWSER_GLOBAL__.close();
 
   // clean-up the wsEndpoint file
-  rimraf.sync(DIR);
+  await fs.rm(DIR, {recursive: true, force: true});
 };
 ```
 
 With all the things set up, we can now write our tests like this:
 
-```js
-// test.js
+```js title="test.js"
 const timeout = 5000;
 
 describe(

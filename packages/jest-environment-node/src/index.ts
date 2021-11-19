@@ -18,7 +18,7 @@ type Timer = {
   unref: () => Timer;
 };
 
-class NodeEnvironment implements JestEnvironment {
+class NodeEnvironment implements JestEnvironment<Timer> {
   context: Context | null;
   fakeTimers: LegacyFakeTimers<Timer> | null;
   fakeTimersModern: ModernFakeTimers | null;
@@ -65,6 +65,14 @@ class NodeEnvironment implements JestEnvironment {
     // AbortController is global in Node >= 15
     if (typeof AbortController !== 'undefined') {
       global.AbortController = AbortController;
+    }
+    // Event is global in Node >= 15.4
+    if (typeof Event !== 'undefined') {
+      global.Event = Event;
+    }
+    // EventTarget is global in Node >= 15.4
+    if (typeof EventTarget !== 'undefined') {
+      global.EventTarget = EventTarget;
     }
     installCommonGlobals(global, config.globals);
 

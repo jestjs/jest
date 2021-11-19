@@ -46,8 +46,8 @@ module.exports = {
       '@babel/preset-env',
       {
         bugfixes: true,
-        // a runtime error is preferable, and we need a real `import`
-        exclude: ['@babel/plugin-proposal-dynamic-import'],
+        // we manually include the CJS plugin above, so let's make preset-env do less work
+        modules: false,
         shippedProposals: true,
         targets: {node: supportedNodeVersion},
       },

@@ -99,7 +99,7 @@ function stripAddedIndentation(inlineSnapshot: string) {
         return inlineSnapshot;
       }
 
-      lines[i] = lines[i].substr(indentation.length);
+      lines[i] = lines[i].substring(indentation.length);
     }
   }
 
@@ -510,7 +510,7 @@ const _toThrowErrorMatchingSnapshot = (
   } else {
     try {
       received();
-    } catch (e) {
+    } catch (e: unknown) {
       error = e;
     }
   }
