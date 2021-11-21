@@ -26,6 +26,7 @@
 
 - `[expect]` Make `expect` extension properties `configurable` ([#11978](https://github.com/facebook/jest/pull/11978))
 - `[expect]` Fix `.any()` checks on primitive wrapper classes ([#11976](https://github.com/facebook/jest/pull/11976))
+- `[jest-haste-map]` Use `fs.stat` and `fs.lstat` based on correct condition in node crawler ([#12081](https://github.com/facebook/jest/pull/12081))
 
 ### Chore & Maintenance
 
