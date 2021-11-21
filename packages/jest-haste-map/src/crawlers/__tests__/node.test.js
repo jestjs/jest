@@ -409,7 +409,7 @@ describe('node crawler', () => {
       // 3. /project/fruits/tomato.js
       // 4. /project/fruits/symlink
       // (we never call lstat on the root /project/fruits, since we know it's a directory)
-      expect(fs.lstat).toHaveBeenCalledTimes(4);
+      expect(fs.stat).toHaveBeenCalledTimes(4);
     });
 
     it('avoids calling lstat for directories and symlinks if readdir withFileTypes is supported', async () => {
@@ -437,7 +437,7 @@ describe('node crawler', () => {
       // once for /project/fruits, once for /project/fruits/directory
       expect(fs.readdir).toHaveBeenCalledTimes(2);
       // once for strawberry.js, once for tomato.js
-      expect(fs.lstat).toHaveBeenCalledTimes(2);
+      expect(fs.stat).toHaveBeenCalledTimes(2);
     });
   });
 });

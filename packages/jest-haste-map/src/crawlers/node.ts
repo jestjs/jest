@@ -99,7 +99,7 @@ function find(
 
         activeCalls++;
 
-        const stat = enableSymlinks ? fs.stat : fs.lstat;
+        const stat = enableSymlinks ? fs.lstat : fs.stat;
 
         stat(file, (err, stat) => {
           activeCalls--;
