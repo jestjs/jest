@@ -42,7 +42,8 @@
     "jest-util": "^27.3.1",
     "jest-validate": "^27.3.1",
     "micromatch": "^4.0.4",
-    "pretty-format": "^27.3.1"
+    "pretty-format": "^27.3.1",
+    "slash": "^4.0.0"
   },
   "devDependencies": {
     "@types/babel__core": "^7.0.4",
