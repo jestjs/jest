@@ -8,7 +8,7 @@
 import * as path from 'path';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
-import slash from 'slash';
+import slash = require('slash');
 import type {Config} from '@jest/types';
 import {
   JEST_CONFIG_BASE_NAME,
@@ -147,7 +147,7 @@ const makeMultipleConfigsWarning = (configPaths: Array<Config.Path>) =>
       chalk.bold('\u25cf Multiple configurations found:'),
       ...configPaths.map(
         configPath =>
-          `    * ${extraIfPackageJson(configPath)}${slash(configPath)}`,
+          `    * ${extraIfPackageJson(configPath)}${slash.default(configPath)}`,
       ),
       '',
       '  Implicit config resolution does not allow multiple configuration files.',
