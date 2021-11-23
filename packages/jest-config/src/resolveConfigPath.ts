@@ -8,7 +8,7 @@
 import * as path from 'path';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
-import slash = require('slash');
+import slash from 'slash';
 import type {Config} from '@jest/types';
 import {
   JEST_CONFIG_BASE_NAME,
