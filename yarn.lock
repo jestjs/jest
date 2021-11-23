@@ -12658,6 +12658,7 @@ fsevents@^1.2.7:
     micromatch: ^4.0.4
     pretty-format: ^27.3.1
     semver: ^7.3.5
+    slash: ^4.0.0
     strip-ansi: ^6.0.0
     ts-node: ^9.0.0
     typescript: ^4.0.3
@@ -19638,6 +19639,13 @@ react-native@0.64.0:
   version: 3.0.0
   resolution: "slash@npm:3.0.0"
   checksum: fc3e8597d822ee3ba6cd76e9b001cd5be315f9b81c3a03a29bb611c003d1484e3b29a9e7bc020298fa669b585ff7c9268f44513f60c186216eb6af3111a3e838
+  languageName: node
+  linkType: hard
+
+"slash@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "slash@npm:4.0.0"
+  checksum: 714b10473dd5efce5ebaad47c74d69201baf7715fa58e8049d3d2716d9da25a9571bfd3ecc50c3b7f4165948e2d8d5a1aa7faeaeca4891ee71a2fbd408268091
   languageName: node
   linkType: hard
 
