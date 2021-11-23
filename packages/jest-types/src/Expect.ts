@@ -6,7 +6,7 @@
  *
  */
 
-import type {Config, Expect} from '.';
+import type {Config} from '.';
 
 export type SyncExpectationResult = {
   pass: boolean;
@@ -19,7 +19,7 @@ export type ExpectationResult = SyncExpectationResult | AsyncExpectationResult;
 
 export type RawMatcherFn = (
   this: MatcherState,
-  received: any,
+  actual: any,
   expected: any,
   options?: any,
 ) => ExpectationResult;
