@@ -8,7 +8,7 @@
 import * as path from 'path';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
-import slashModule = require('slash');
+import slash = require('slash');
 import type {Config} from '@jest/types';
 import {
   JEST_CONFIG_BASE_NAME,
@@ -20,10 +20,6 @@ const isFile = (filePath: Config.Path) =>
   fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
 
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
-
-// Fix incorrect TypeScript definition for `slash` package.
-const slash: typeof slashModule.default =
-  slashModule as unknown as typeof slashModule.default;
 
 export default (
   pathToResolve: Config.Path,
