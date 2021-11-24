@@ -17,6 +17,7 @@
 
 ### Chore & Maintenance
 
+- `[jest-runner]` Add info regarding timers to forcedExit message([#12083](https://github.com/facebook/jest/pull/12083))
 - `[*]` Replaced `substr` method with `substring` ([#12066](https://github.com/facebook/jest/pull/12066))
 
 ### Performance
