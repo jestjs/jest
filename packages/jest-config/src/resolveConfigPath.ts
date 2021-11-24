@@ -8,7 +8,7 @@
 import * as path from 'path';
 import chalk = require('chalk');
 import * as fs from 'graceful-fs';
-import slash = require('slash');
+import slashModule = require('slash');
 import type {Config} from '@jest/types';
 import {
   JEST_CONFIG_BASE_NAME,
@@ -20,6 +20,10 @@ const isFile = (filePath: Config.Path) =>
   fs.existsSync(filePath) && !fs.lstatSync(filePath).isDirectory();
 
 const getConfigFilename = (ext: string) => JEST_CONFIG_BASE_NAME + ext;
+
+// Fix incorrect TypeScript definition for `slash` package.
+const slash: typeof slashModule.default =
+  slashModule as unknown as typeof slashModule.default;
 
 export default (
   pathToResolve: Config.Path,
@@ -147,7 +151,7 @@ const makeMultipleConfigsWarning = (configPaths: Array<Config.Path>) =>
       chalk.bold('\u25cf Multiple configurations found:'),
       ...configPaths.map(
         configPath =>
-          `    * ${extraIfPackageJson(configPath)}${slash.default(configPath)}`,
+          `    * ${extraIfPackageJson(configPath)}${slash(configPath)}`,
       ),
       '',
       '  Implicit config resolution does not allow multiple configuration files.',
