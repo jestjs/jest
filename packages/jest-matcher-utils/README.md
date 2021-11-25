@@ -9,7 +9,7 @@ To add this package as a dependency of a project, run either of the following co
 - `npm install jest-matcher-utils`
 - `yarn add jest-matcher-utils`
 
-## Exports ([src/index.ts](jest-matcher-utils/src/index.ts))
+## Exports ([src/index.ts](https://github.com/facebook/jest/blob/HEAD/packages/jest-matcher-utils/src/index.ts))
 
 ### Functions
 
