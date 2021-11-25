@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
@@ -31,6 +32,38 @@ export type MockFunctionMetadata<
   value?: T;
   length?: number;
 };
+
+export type MockableFunction = (...args:Array<unknown>) => any
+export type MethodKeysOf<T> = { [K in keyof T]: T[K] extends MockableFunction ? K : never }[keyof T]
+export type PropertyKeysOf<T> = { [K in keyof T]: T[K] extends MockableFunction ? never : K }[keyof T]
+
+export type ArgumentsOf<T> = T extends (...args: infer A) => any ? A : never
+
+export type ConstructorArgumentsOf<T> = T extends new (...args: infer A) => any ? A : never
+
+export interface MockWithArgs<T extends MockableFunction> extends jest.MockInstance<ReturnType<T>, ArgumentsOf<T>> {
+  new (...args: ConstructorArgumentsOf<T>): T
+  (...args: ArgumentsOf<T>): ReturnType<T>
+}
+export type MaybeMockedConstructor<T> = T extends new (...args:Array<unknown>) => infer R
+  ? jest.MockInstance<R, ConstructorArgumentsOf<T>>
+  : T
+export type MockedFunction<T extends MockableFunction> = MockWithArgs<T> & { [K in keyof T]: T[K] }
+export type MockedFunctionDeep<T extends MockableFunction> = MockWithArgs<T> & MockedObjectDeep<T>
+export type MockedObject<T> = MaybeMockedConstructor<T> & {
+  [K in MethodKeysOf<T>]: T[K] extends MockableFunction ? MockedFunction<T[K]> : T[K]
+} & { [K in PropertyKeysOf<T>]: T[K] }
+export type MockedObjectDeep<T> = MaybeMockedConstructor<T> & {
+  [K in MethodKeysOf<T>]: T[K] extends MockableFunction ? MockedFunctionDeep<T[K]> : T[K]
+} & { [K in PropertyKeysOf<T>]: MaybeMockedDeep<T[K]> }
+
+export type MaybeMockedDeep<T> = T extends MockableFunction
+  ? MockedFunctionDeep<T>
+  : T extends object 
+  ? MockedObjectDeep<T>
+  : T
+
+export type MaybeMocked<T> = T extends MockableFunction ? MockedFunction<T> : T extends object ? MockedObject<T> : T
 
 export interface Mock<T, Y extends Array<unknown> = Array<unknown>>
   extends Function,
@@ -1109,9 +1142,22 @@ export class ModuleMocker {
   private _typeOf(value: any): string {
     return value == null ? '' + value : typeof value;
   }
+
+  // the typings test helper
+  mocked<T>(item: T, deep?: false): MaybeMocked<T>
+
+  mocked<T>(item: T, deep: true): MaybeMockedDeep<T>
+
+  mocked<T>(item: T, _deep = false): MaybeMocked<T> | MaybeMockedDeep<T> {
+  
+  return item as any
+}
+
 }
 
 const JestMock = new ModuleMocker(global as unknown as typeof globalThis);
 
 export const fn = JestMock.fn.bind(JestMock);
 export const spyOn = JestMock.spyOn.bind(JestMock);
+export const mocked=JestMock.mocked.bind(JestMock);
+

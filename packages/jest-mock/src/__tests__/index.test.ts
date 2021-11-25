@@ -1,3 +1,4 @@
+
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
@@ -9,7 +10,8 @@
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
 import vm, {Context} from 'vm';
-import {ModuleMocker, fn, spyOn} from '../';
+import {ModuleMocker, fn, mocked,spyOn} from '../';
+
 
 describe('moduleMocker', () => {
   let moduleMocker: ModuleMocker;
@@ -1450,6 +1452,13 @@ describe('moduleMocker', () => {
       expect(spy2.mock.calls.length).toBe(1);
     });
   });
+});
+
+describe('mocked', () => {
+  it('should return unmodified input', () => {
+    const subject = {}
+    expect(mocked(subject)).toBe(subject)
+  })
 });
 
 test('`fn` and `spyOn` do not throw', () => {
