@@ -1166,9 +1166,10 @@ export class ModuleMocker {
  return item as any
 
 }
+}
 
 const JestMock = new ModuleMocker(global as unknown as typeof globalThis);
 
 export const fn = JestMock.fn.bind(JestMock);
 export const spyOn = JestMock.spyOn.bind(JestMock);
-export const mocked=JestMock.mocked.bind(JestMock);
+export const mocked= JestMock.mocked.bind(JestMock);
