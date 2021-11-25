@@ -1,4 +1,5 @@
 
+
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
@@ -18,11 +19,7 @@ export type MockFunctionMetadataType =
   | 'null'
   | 'undefined';
 
-export type MockFunctionMetadata<
-  T,
-  Y extends Array<unknown>,
-  Type = MockFunctionMetadataType,
-> = {
+export type MockFunctionMetadata< T,  Y extends Array<unknown>, Type = MockFunctionMetadataType,> = {
   ref?: number;
   members?: Record<string, MockFunctionMetadata<T, Y>>;
   mockImpl?: (...args: Y) => T;
@@ -33,18 +30,13 @@ export type MockFunctionMetadata<
   length?: number;
 };
 
-export type MockableFunction = (...args:Array<unknown>) => any
+export type MockableFunction = (...args: Array<unknown>) => any
 export type MethodKeysOf<T> = { [K in keyof T]: T[K] extends MockableFunction ? K : never }[keyof T]
 export type PropertyKeysOf<T> = { [K in keyof T]: T[K] extends MockableFunction ? never : K }[keyof T]
 
 export type ArgumentsOf<T> = T extends (...args: infer A) => any ? A : never
 
 export type ConstructorArgumentsOf<T> = T extends new (...args: infer A) => any ? A : never
-
-export interface MockWithArgs<T extends MockableFunction> extends jest.MockInstance<ReturnType<T>, ArgumentsOf<T>> {
-  new (...args: ConstructorArgumentsOf<T>): T
-  (...args: ArgumentsOf<T>): ReturnType<T>
-}
 export type MaybeMockedConstructor<T> = T extends new (...args:Array<unknown>) => infer R
   ? jest.MockInstance<R, ConstructorArgumentsOf<T>>
   : T
@@ -64,6 +56,28 @@ export type MaybeMockedDeep<T> = T extends MockableFunction
   : T
 
 export type MaybeMocked<T> = T extends MockableFunction ? MockedFunction<T> : T extends object ? MockedObject<T> : T
+
+
+export type Mocked<T> = {
+  [P in keyof T]: T[P] extends (...args: Array<unknown>) => any
+      ? MockInstance<ReturnType<T[P]>, jest.ArgsType<T[P]>>
+      : T[P] extends jest.Constructable
+      ? MockedClass<T[P]>
+      : T[P]
+} &
+  T;
+
+export type MockedClass<T extends jest.Constructable> = MockInstance<
+        InstanceType<T>,
+        T extends new (...args: infer P) => any ? P : never
+    > & {
+        prototype: T extends { prototype: any } ? Mocked<T['prototype']> : never;
+    } & T;
+
+export interface MockWithArgs<T extends MockableFunction> extends jest.MockInstance<ReturnType<T>, ArgumentsOf<T>> {
+  new (...args: ConstructorArgumentsOf<T>): T
+  (...args: ArgumentsOf<T>): ReturnType<T>
+}
 
 export interface Mock<T, Y extends Array<unknown> = Array<unknown>>
   extends Function,
