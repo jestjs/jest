@@ -8,15 +8,16 @@
 ### Fixes
 
 - `[expect]` Allow again `expect.Matchers` generic with single value ([#11986](https://github.com/facebook/jest/pull/11986))
+- `[jest-config]` Add missing `slash` dependency to `package.json` ([#12080](https://github.com/facebook/jest/pull/12080))
 - `[jest-core]` Incorrect detection of open ZLIB handles ([#12022](https://github.com/facebook/jest/pull/12022))
 - `[jest-diff]` Break dependency cycle ([#10818](https://github.com/facebook/jest/pull/10818))
 - `[jest-environment-jsdom]` Add `@types/jsdom` dependency ([#11999](https://github.com/facebook/jest/pull/11999))
 - `[jest-environment-jsdom]` Do not reset the global.document too early on teardown ([#11871](https://github.com/facebook/jest/pull/11871))
 - `[jest-transform]` Improve error and warning messages ([#11998](https://github.com/facebook/jest/pull/11998))
-- `[jest-config, jest-haste-map, jest-snapshot, jest-transform]` replaced string substr(deprecated) method  with substring ([#12066](https://github.com/facebook/jest/pull/12066))
-
 
 ### Chore & Maintenance
+
+- `[*]` Replaced `substr` method with `substring` ([#12066](https://github.com/facebook/jest/pull/12066))
 
 ### Performance
 
