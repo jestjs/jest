@@ -29,14 +29,14 @@ export type MockFunctionMetadata< T,  Y extends Array<unknown>, Type = MockFunct
   length?: number;
 };
 
-export type MockableFunction = (...args: Array<unknown>) => any
+export type MockableFunction = (...args: Array<any>) => any
 export type MethodKeysOf<T> = { [K in keyof T]: T[K] extends MockableFunction ? K : never }[keyof T]
 export type PropertyKeysOf<T> = { [K in keyof T]: T[K] extends MockableFunction ? never : K }[keyof T]
 
 export type ArgumentsOf<T> = T extends (...args: infer A) => any ? A : never
 
 export type ConstructorArgumentsOf<T> = T extends new (...args: infer A) => any ? A : never
-export type MaybeMockedConstructor<T> = T extends new (...args:Array<unknown>) => infer R
+export type MaybeMockedConstructor<T> = T extends new (...args:Array<any>) => infer R
   ? jest.MockInstance<R, ConstructorArgumentsOf<T>>
   : T
 export type MockedFunction<T extends MockableFunction> = MockWithArgs<T> & { [K in keyof T]: T[K] }
@@ -58,7 +58,7 @@ export type MaybeMocked<T> = T extends MockableFunction ? MockedFunction<T> : T 
 
 
 export type Mocked<T> = {
-  [P in keyof T]: T[P] extends (...args: Array<unknown>) => any
+  [P in keyof T]: T[P] extends (...args: Array<any>) => any
       ? MockInstance<ReturnType<T[P]>, jest.ArgsType<T[P]>>
       : T[P] extends jest.Constructable
       ? MockedClass<T[P]>
