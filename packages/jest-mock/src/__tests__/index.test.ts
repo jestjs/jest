@@ -9,7 +9,7 @@
 /* eslint-disable local/ban-types-eventually, local/prefer-rest-params-eventually */
 
 import vm, {Context} from 'vm';
-import {ModuleMocker, fn, mocked,spyOn} from '../';
+import {ModuleMocker, fn, mocked, spyOn} from '../';
 
 describe('moduleMocker', () => {
   let moduleMocker: ModuleMocker;
@@ -1454,9 +1454,9 @@ describe('moduleMocker', () => {
 
 describe('mocked', () => {
   it('should return unmodified input', () => {
-    const subject = {}
-    expect(mocked(subject)).toBe(subject)
-  })
+    const subject = {};
+    expect(mocked(subject)).toBe(subject);
+  });
 });
 
 test('`fn` and `spyOn` do not throw', () => {

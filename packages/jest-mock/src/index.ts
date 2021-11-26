@@ -1,4 +1,3 @@
-
 /**
  * Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
  *
@@ -18,7 +17,11 @@ export type MockFunctionMetadataType =
   | 'null'
   | 'undefined';
 
-export type MockFunctionMetadata< T,  Y extends Array<unknown>, Type = MockFunctionMetadataType,> = {
+export type MockFunctionMetadata<
+  T,
+  Y extends Array<unknown>,
+  Type = MockFunctionMetadataType,
+> = {
   ref?: number;
   members?: Record<string, MockFunctionMetadata<T, Y>>;
   mockImpl?: (...args: Y) => T;
@@ -29,56 +32,75 @@ export type MockFunctionMetadata< T,  Y extends Array<unknown>, Type = MockFunct
   length?: number;
 };
 
-export type MockableFunction = (...args: Array<any>) => any
-export type MethodKeysOf<T> = { [K in keyof T]: T[K] extends MockableFunction ? K : never }[keyof T]
-export type PropertyKeysOf<T> = { [K in keyof T]: T[K] extends MockableFunction ? never : K }[keyof T]
+export type MockableFunction = (...args: Array<any>) => any;
+export type MethodKeysOf<T> = {
+  [K in keyof T]: T[K] extends MockableFunction ? K : never;
+}[keyof T];
+export type PropertyKeysOf<T> = {
+  [K in keyof T]: T[K] extends MockableFunction ? never : K;
+}[keyof T];
 
-export type ArgumentsOf<T> = T extends (...args: infer A) => any ? A : never
+export type ArgumentsOf<T> = T extends (...args: infer A) => any ? A : never;
 
-export type ConstructorArgumentsOf<T> = T extends new (...args: infer A) => any ? A : never
-export type MaybeMockedConstructor<T> = T extends new (...args:Array<any>) => infer R
+export type ConstructorArgumentsOf<T> = T extends new (...args: infer A) => any
+  ? A
+  : never;
+export type MaybeMockedConstructor<T> = T extends new (
+  ...args: Array<any>
+) => infer R
   ? MockInstance<R, ConstructorArgumentsOf<T>>
-  : T
-export type MockedFunction<T extends MockableFunction> = MockWithArgs<T> & { [K in keyof T]: T[K] }
-export type MockedFunctionDeep<T extends MockableFunction> = MockWithArgs<T> & MockedObjectDeep<T>
+  : T;
+export type MockedFunction<T extends MockableFunction> = MockWithArgs<T> & {
+  [K in keyof T]: T[K];
+};
+export type MockedFunctionDeep<T extends MockableFunction> = MockWithArgs<T> &
+  MockedObjectDeep<T>;
 export type MockedObject<T> = MaybeMockedConstructor<T> & {
-  [K in MethodKeysOf<T>]: T[K] extends MockableFunction ? MockedFunction<T[K]> : T[K]
-} & { [K in PropertyKeysOf<T>]: T[K] }
+  [K in MethodKeysOf<T>]: T[K] extends MockableFunction
+    ? MockedFunction<T[K]>
+    : T[K];
+} & {[K in PropertyKeysOf<T>]: T[K]};
 export type MockedObjectDeep<T> = MaybeMockedConstructor<T> & {
-  [K in MethodKeysOf<T>]: T[K] extends MockableFunction ? MockedFunctionDeep<T[K]> : T[K]
-} & { [K in PropertyKeysOf<T>]: MaybeMockedDeep<T[K]> }
+  [K in MethodKeysOf<T>]: T[K] extends MockableFunction
+    ? MockedFunctionDeep<T[K]>
+    : T[K];
+} & {[K in PropertyKeysOf<T>]: MaybeMockedDeep<T[K]>};
 
 export type MaybeMockedDeep<T> = T extends MockableFunction
   ? MockedFunctionDeep<T>
-  : T extends object 
+  : T extends object
   ? MockedObjectDeep<T>
-  : T
+  : T;
 
-export type MaybeMocked<T> = T extends MockableFunction ? MockedFunction<T> : T extends object ? MockedObject<T> : T
+export type MaybeMocked<T> = T extends MockableFunction
+  ? MockedFunction<T>
+  : T extends object
+  ? MockedObject<T>
+  : T;
 
 export type ArgsType<T> = T extends (...args: infer A) => any ? A : never;
 export type Mocked<T> = {
   [P in keyof T]: T[P] extends (...args: Array<any>) => any
-      ? MockInstance<ReturnType<T[P]>, ArgsType<T[P]>>
-      : T[P] extends Constructable
-      ? MockedClass<T[P]>
-      : T[P]
-} &
-  T;
+    ? MockInstance<ReturnType<T[P]>, ArgsType<T[P]>>
+    : T[P] extends Constructable
+    ? MockedClass<T[P]>
+    : T[P];
+} & T;
 export type MockedClass<T extends Constructable> = MockInstance<
-        InstanceType<T>,
-        T extends new (...args: infer P) => any ? P : never
-    > & {
-        prototype: T extends { prototype: any } ? Mocked<T['prototype']> : never;
-    } & T;
+  InstanceType<T>,
+  T extends new (...args: infer P) => any ? P : never
+> & {
+  prototype: T extends {prototype: any} ? Mocked<T['prototype']> : never;
+} & T;
 
 export interface Constructable {
-      new (...args: Array<any>): any;
-  }
+  new (...args: Array<any>): any;
+}
 
-export interface MockWithArgs<T extends MockableFunction> extends MockInstance<ReturnType<T>, ArgumentsOf<T>> {
-  new (...args: ConstructorArgumentsOf<T>): T
-  (...args: ArgumentsOf<T>): ReturnType<T>
+export interface MockWithArgs<T extends MockableFunction>
+  extends MockInstance<ReturnType<T>, ArgumentsOf<T>> {
+  new (...args: ConstructorArgumentsOf<T>): T;
+  (...args: ArgumentsOf<T>): ReturnType<T>;
 }
 
 export interface Mock<T, Y extends Array<unknown> = Array<unknown>>
@@ -1158,21 +1180,19 @@ export class ModuleMocker {
   private _typeOf(value: any): string {
     return value == null ? '' + value : typeof value;
   }
- 
- // the typings test helper
- mocked<T>(item: T, deep?: false): MaybeMocked<T>
 
- mocked<T>(item: T, deep: true): MaybeMockedDeep<T>
+  // the typings test helper
+  mocked<T>(item: T, deep?: false): MaybeMocked<T>;
 
- mocked<T>(item: T, _deep = false): MaybeMocked<T> | MaybeMockedDeep<T> {
+  mocked<T>(item: T, deep: true): MaybeMockedDeep<T>;
 
- return item as any
-
-}
+  mocked<T>(item: T, _deep = false): MaybeMocked<T> | MaybeMockedDeep<T> {
+    return item as any;
+  }
 }
 
 const JestMock = new ModuleMocker(global as unknown as typeof globalThis);
 
 export const fn = JestMock.fn.bind(JestMock);
 export const spyOn = JestMock.spyOn.bind(JestMock);
-export const mocked= JestMock.mocked.bind(JestMock);
+export const mocked = JestMock.mocked.bind(JestMock);
