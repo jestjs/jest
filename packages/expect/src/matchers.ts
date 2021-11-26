@@ -126,7 +126,7 @@ const matchers: MatchersObject = {
     return {actual: received, expected, message, name: matcherName, pass};
   },
 
-  toBeCloseTo(received: number, expected: number, precision: number = 2) {
+  toBeCloseTo(received: number, expected: number, precision = 2) {
     const matcherName = 'toBeCloseTo';
     const secondArgument = arguments.length === 3 ? 'precision' : undefined;
     const isNot = this.isNot;
