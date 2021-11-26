@@ -37,7 +37,7 @@ export type ArgumentsOf<T> = T extends (...args: infer A) => any ? A : never
 
 export type ConstructorArgumentsOf<T> = T extends new (...args: infer A) => any ? A : never
 export type MaybeMockedConstructor<T> = T extends new (...args:Array<any>) => infer R
-  ? jest.MockInstance<R, ConstructorArgumentsOf<T>>
+  ? MockInstance<R, ConstructorArgumentsOf<T>>
   : T
 export type MockedFunction<T extends MockableFunction> = MockWithArgs<T> & { [K in keyof T]: T[K] }
 export type MockedFunctionDeep<T extends MockableFunction> = MockWithArgs<T> & MockedObjectDeep<T>
@@ -56,24 +56,27 @@ export type MaybeMockedDeep<T> = T extends MockableFunction
 
 export type MaybeMocked<T> = T extends MockableFunction ? MockedFunction<T> : T extends object ? MockedObject<T> : T
 
-
+export type ArgsType<T> = T extends (...args: infer A) => any ? A : never;
 export type Mocked<T> = {
   [P in keyof T]: T[P] extends (...args: Array<any>) => any
-      ? MockInstance<ReturnType<T[P]>, jest.ArgsType<T[P]>>
-      : T[P] extends jest.Constructable
+      ? MockInstance<ReturnType<T[P]>, ArgsType<T[P]>>
+      : T[P] extends Constructable
       ? MockedClass<T[P]>
       : T[P]
 } &
   T;
-
-export type MockedClass<T extends jest.Constructable> = MockInstance<
+export type MockedClass<T extends Constructable> = MockInstance<
         InstanceType<T>,
         T extends new (...args: infer P) => any ? P : never
     > & {
         prototype: T extends { prototype: any } ? Mocked<T['prototype']> : never;
     } & T;
 
-export interface MockWithArgs<T extends MockableFunction> extends jest.MockInstance<ReturnType<T>, ArgumentsOf<T>> {
+export interface Constructable {
+      new (...args: Array<any>): any;
+  }
+
+export interface MockWithArgs<T extends MockableFunction> extends MockInstance<ReturnType<T>, ArgumentsOf<T>> {
   new (...args: ConstructorArgumentsOf<T>): T
   (...args: ArgumentsOf<T>): ReturnType<T>
 }
