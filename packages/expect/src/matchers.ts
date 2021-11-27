@@ -44,6 +44,7 @@ import {
   getObjectSubset,
   getPath,
   iterableEquality,
+  pathAsArray,
   sparseArrayEquality,
   subsetEquality,
   typeEquality,
@@ -704,7 +705,7 @@ const matchers: MatchersObject = {
 
     const expectedPathLength =
       typeof expectedPath === 'string'
-        ? expectedPath.split('.').length
+        ? pathAsArray(expectedPath).length
         : expectedPath.length;
 
     if (expectedPathType === 'array' && expectedPathLength === 0) {
