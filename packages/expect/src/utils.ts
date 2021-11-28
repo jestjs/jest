@@ -377,7 +377,7 @@ export const pathAsArray = (propertyPath: string): Array<any> => {
   const pattern = RegExp('[^.[\\]]+|(?=(?:\\.)(?:\\.|$))', 'g');
   const properties: Array<string> = [];
 
-  // because the regex won't match the first dot, if present.
+  // Because the regex won't match a dot in the beginning of the path, if present.
   if (propertyPath[0] === '.') {
     properties.push('');
   }

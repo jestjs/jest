@@ -3334,6 +3334,15 @@ Expected value: <g>1</>
 Received value: <r>{"c": {"d": 1}}</>
 `;
 
+exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": {}}}}).toHaveProperty('.a.b.c') 1`] = `
+<d>expect(</><r>received</><d>).</>toHaveProperty<d>(</><g>path</><d>)</>
+
+Expected path: <g>".a.b.c"</>
+Received path: <r>[]</>
+
+Received value: <r>{"a": {"b": {"c": {}}}}</>
+`;
+
 exports[`.toHaveProperty() {pass: false} expect({"a": {"b": {"c": {}}}}).toHaveProperty('a.b.c.d') 1`] = `
 <d>expect(</><r>received</><d>).</>toHaveProperty<d>(</><g>path</><d>)</>
 
