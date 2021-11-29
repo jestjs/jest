@@ -4,6 +4,8 @@
 
 - `[jest-core]` Add support for `testResultsProcessor` written in ESM ([#12006](https://github.com/facebook/jest/pull/12006))
 - `[jest-diff, pretty-format]` Add `compareKeys` option for custom sorting of object keys ([#11992](https://github.com/facebook/jest/pull/11992))
+- `[jest-circus, jest-jasmine2, jest-runtime, jest-snapshot]` Add support for `snapshotResolver` and `snapshotSerializers` written in ESM ([#12014](https://github.com/facebook/jest/pull/12014))
+
 
 ### Fixes
 

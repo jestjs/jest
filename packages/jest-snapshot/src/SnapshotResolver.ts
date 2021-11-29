@@ -9,7 +9,6 @@ import * as path from 'path';
 import chalk = require('chalk');
 import {createTranspilingRequire} from '@jest/transform';
 import type {Config} from '@jest/types';
-import {interopRequireDefault} from 'jest-util';
 
 export type SnapshotResolver = {
   testPathForConsistencyCheck: string;
@@ -25,13 +24,16 @@ export const isSnapshotPath = (path: string): boolean =>
 
 const cache = new Map<Config.Path, SnapshotResolver>();
 
-type LocalRequire = (module: string) => unknown;
+type LocalRequire<T = unknown> = (
+  path: string,
+  applyInteropRequireDefault?: boolean,
+) => Promise<T>;
 
 export const buildSnapshotResolver = async (
   config: Config.ProjectConfig,
-  localRequire: Promise<LocalRequire> | LocalRequire = createTranspilingRequire(
-    config,
-  ),
+  localRequire:
+    | Promise<LocalRequire<SnapshotResolver>>
+    | LocalRequire<SnapshotResolver> = createTranspilingRequire(config),
 ): Promise<SnapshotResolver> => {
   const key = config.rootDir;
 
@@ -45,7 +47,7 @@ export const buildSnapshotResolver = async (
 };
 
 async function createSnapshotResolver(
-  localRequire: LocalRequire,
+  localRequire: LocalRequire<SnapshotResolver>,
   snapshotResolverPath?: Config.Path | null,
 ): Promise<SnapshotResolver> {
   return typeof snapshotResolverPath === 'string'
@@ -78,11 +80,12 @@ function createDefaultSnapshotResolver(): SnapshotResolver {
 
 async function createCustomSnapshotResolver(
   snapshotResolverPath: Config.Path,
-  localRequire: LocalRequire,
+  localRequire: LocalRequire<SnapshotResolver>,
 ): Promise<SnapshotResolver> {
-  const custom: SnapshotResolver = interopRequireDefault(
-    await localRequire(snapshotResolverPath),
-  ).default;
+  const custom: SnapshotResolver = await localRequire(
+    snapshotResolverPath,
+    true,
+  );
 
   const keys: Array<[keyof SnapshotResolver, string]> = [
     ['resolveSnapshotPath', 'function'],

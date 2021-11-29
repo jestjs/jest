@@ -55,7 +55,10 @@ export const initialize = async ({
   config: Config.ProjectConfig;
   environment: JestEnvironment;
   globalConfig: Config.GlobalConfig;
-  localRequire: <T = unknown>(path: Config.Path) => T;
+  localRequire: <T = unknown>(
+    path: Config.Path,
+    applyInteropRequireDefault?: boolean,
+  ) => Promise<T>;
   testPath: Config.Path;
   parentProcess: Process;
   sendMessageToJest?: TestFileEvent;
@@ -145,10 +148,10 @@ export const initialize = async ({
 
   // Jest tests snapshotSerializers in order preceding built-in serializers.
   // Therefore, add in reverse because the last added is the first tested.
-  config.snapshotSerializers
-    .concat()
-    .reverse()
-    .forEach(path => addSerializer(localRequire(path)));
+  const snapshotSerializers = config.snapshotSerializers.concat().reverse();
+  for (const path of snapshotSerializers) {
+    addSerializer(await localRequire(path));
+  }
 
   const {expand, updateSnapshot} = globalConfig;
   const snapshotResolver = await buildSnapshotResolver(config, localRequire);
