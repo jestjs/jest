@@ -93,6 +93,9 @@ export const initialize = async ({
       // that will result in this test to be skipped, so we'll be executing the promise function anyway,
       // even if it ends up being skipped.
       const promise = mutex(() => testFn());
+      // Avoid triggering the uncaught promise rejection handler in case the test errors before
+      // being awaited on.
+      promise.catch(() => {});
       globalsObject.test(testName, () => promise, timeout);
     };
 

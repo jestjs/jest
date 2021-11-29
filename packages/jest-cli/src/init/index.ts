@@ -48,7 +48,7 @@ export default async (
   }
 
   const questions = defaultQuestions.slice(0);
-  let hasJestProperty: boolean = false;
+  let hasJestProperty = false;
   let projectPackageJson: ProjectPackageJson;
 
   try {
@@ -99,7 +99,7 @@ export default async (
     ),
   );
 
-  let promptAborted: boolean = false;
+  let promptAborted = false;
 
   // @ts-expect-error: Return type cannot be object - faulty typings
   const results: PromptsResults = await prompts(questions, {
