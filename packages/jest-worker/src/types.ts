@@ -125,7 +125,7 @@ export type WorkerOptions = {
   setupArgs: Array<unknown>;
   maxRetries: number;
   workerId: number;
-  workerData?: any;
+  workerData?: unknown;
   workerPath: string;
 };
 
