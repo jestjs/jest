@@ -148,8 +148,8 @@ export const options = {
   },
   clearMocks: {
     description:
-      'Automatically clear mock calls and instances between every ' +
-      'test. Equivalent to calling jest.clearAllMocks() between each test.',
+      'Automatically clear mock calls, instances and results before every test. ' +
+      'Equivalent to calling jest.clearAllMocks() before each test.',
     type: 'boolean',
   },
   collectCoverage: {
@@ -440,8 +440,8 @@ export const options = {
   },
   resetMocks: {
     description:
-      'Automatically reset mock state between every test. ' +
-      'Equivalent to calling jest.resetAllMocks() between each test.',
+      'Automatically reset mock state before every test. ' +
+      'Equivalent to calling jest.resetAllMocks() before each test.',
     type: 'boolean',
   },
   resetModules: {
@@ -456,8 +456,8 @@ export const options = {
   },
   restoreMocks: {
     description:
-      'Automatically restore mock state and implementation between every test. ' +
-      'Equivalent to calling jest.restoreAllMocks() between each test.',
+      'Automatically restore mock state and implementation before every test. ' +
+      'Equivalent to calling jest.restoreAllMocks() before each test.',
     type: 'boolean',
   },
   rootDir: {
