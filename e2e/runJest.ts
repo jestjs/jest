@@ -59,7 +59,7 @@ function spawnJest(
   dir: string,
   args: Array<string> = [],
   options: RunJestOptions = {},
-  spawnAsync: boolean = false,
+  spawnAsync = false,
 ): execa.ExecaSyncReturnValue | execa.ExecaChildProcess {
   const isRelative = !path.isAbsolute(dir);
 
