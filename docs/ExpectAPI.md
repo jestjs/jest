@@ -898,12 +898,12 @@ const houseForSale = {
   livingroom: {
     amenities: [
       {
-        'couch': [
-          ['large', { dimensions: [20,20] }], 
-          ['small', { dimensions: [10,10] }],
-        ]
+        couch: [
+          ['large', {dimensions: [20, 20]}],
+          ['small', {dimensions: [10, 10]}],
+        ],
       },
-    ]
+    ],
   },
   'ceiling.height': 2,
 };
@@ -932,7 +932,10 @@ test('this house has my desired features', () => {
     ['oven', 'stove', 'washer'],
   );
   expect(houseForSale).toHaveProperty(['kitchen', 'amenities', 0], 'oven');
-  expect(houseForSale).toHaveProperty('livingroom.amenities[0].couch[0][1].dimensions[0]', 20);
+  expect(houseForSale).toHaveProperty(
+    'livingroom.amenities[0].couch[0][1].dimensions[0]',
+    20,
+  );
   expect(houseForSale).toHaveProperty(['kitchen', 'nice.oven']);
   expect(houseForSale).not.toHaveProperty(['kitchen', 'open']);
 
