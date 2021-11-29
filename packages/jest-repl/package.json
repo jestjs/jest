@@ -10,7 +10,10 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
-    ".": "./build/index.js",
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
     "./package.json": "./package.json",
     "./bin/jest-repl": "./bin/jest-repl.js",
     "./bin/jest-runtime-cli": "./bin/jest-runtime-cli.js"
