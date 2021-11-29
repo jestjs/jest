@@ -2,10 +2,20 @@
 
 ### Features
 
+### Fixes
+
+### Chore & Maintenance
+
+### Performance
+
+## 27.4.0
+
+### Features
+
+- `[expect]` Enhancing the `toHaveProperty` matcher to support array selection ([#12092](https://github.com/facebook/jest/pull/12092))
 - `[jest-core]` Add support for `testResultsProcessor` written in ESM ([#12006](https://github.com/facebook/jest/pull/12006))
 - `[jest-diff, pretty-format]` Add `compareKeys` option for custom sorting of object keys ([#11992](https://github.com/facebook/jest/pull/11992))
 - `[jest-mock]` Add `ts-jest` mock util functions ([#12089](https://github.com/facebook/jest/pull/12089))
-- `[expect]` Enhancing the `toHaveProperty` matcher to support array selection ([#12092](https://github.com/facebook/jest/pull/12092))
 
 ### Fixes
 
@@ -17,15 +27,13 @@
 - `[jest-environment-jsdom]` Add `@types/jsdom` dependency ([#11999](https://github.com/facebook/jest/pull/11999))
 - `[jest-environment-jsdom]` Do not reset the global.document too early on teardown ([#11871](https://github.com/facebook/jest/pull/11871))
 - `[jest-transform]` Improve error and warning messages ([#11998](https://github.com/facebook/jest/pull/11998))
-- `[docs]` CLI options alphabetized ([#11586](https://github.com/facebook/jest/pull/11586))
 
 ### Chore & Maintenance
 
+- `[docs]` CLI options alphabetized ([#11586](https://github.com/facebook/jest/pull/11586))
 - `[jest-runner]` Add info regarding timers to forcedExit message([#12083](https://github.com/facebook/jest/pull/12083))
 - `[*]` Replaced `substr` method with `substring` ([#12066](https://github.com/facebook/jest/pull/12066))
 - `[*]` Add `types` entry to all export maps ([#12073](https://github.com/facebook/jest/pull/12073))
-
-### Performance
 
 ## 27.3.1
 
