@@ -138,7 +138,7 @@ class Anything extends AsymmetricMatcher<void> {
 }
 
 class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
-  constructor(sample: Array<unknown>, inverse: boolean = false) {
+  constructor(sample: Array<unknown>, inverse = false) {
     super(sample, inverse);
   }
 
@@ -171,7 +171,7 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
 }
 
 class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
-  constructor(sample: Record<string, unknown>, inverse: boolean = false) {
+  constructor(sample: Record<string, unknown>, inverse = false) {
     super(sample, inverse);
   }
 
@@ -209,7 +209,7 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
 }
 
 class StringContaining extends AsymmetricMatcher<string> {
-  constructor(sample: string, inverse: boolean = false) {
+  constructor(sample: string, inverse = false) {
     if (!isA('String', sample)) {
       throw new Error('Expected is not a string');
     }
@@ -232,7 +232,7 @@ class StringContaining extends AsymmetricMatcher<string> {
 }
 
 class StringMatching extends AsymmetricMatcher<RegExp> {
-  constructor(sample: string | RegExp, inverse: boolean = false) {
+  constructor(sample: string | RegExp, inverse = false) {
     if (!isA('String', sample) && !isA('RegExp', sample)) {
       throw new Error('Expected is not a String or a RegExp');
     }

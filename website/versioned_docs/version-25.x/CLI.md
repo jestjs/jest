@@ -286,12 +286,6 @@ Print your Jest config and then exits.
 
 Prevent tests from printing messages through the console.
 
-### `--testNamePattern=<regex>`
-
-Alias: `-t`. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like `"GET /api/posts with auth"`, then you can use `jest -t=auth`.
-
-_Note: The regex is matched against the full name, which is a combination of the test name and all its surrounding describe blocks._
-
 ### `--testLocationInResults`
 
 Adds a `location` field to test results. Useful if you want to report the location of a test in a reporter.
@@ -305,15 +299,21 @@ Note that `column` is 0-indexed while `line` is not.
 }
 ```
 
-### `--testPathPattern=<regex>`
+### `--testNamePattern=<regex>`
 
-A regexp pattern string that is matched against all tests paths before executing the test. On Windows, you will need to use `/` as a path separator or escape `\` as `\\`.
+Alias: `-t`. Run only tests with a name that matches the regex. For example, suppose you want to run only tests related to authorization which will have names like `"GET /api/posts with auth"`, then you can use `jest -t=auth`.
+
+_Note: The regex is matched against the full name, which is a combination of the test name and all its surrounding describe blocks._
 
 ### `--testPathIgnorePatterns=<regex>|[array]`
 
 A single or array of regexp pattern strings that are tested against all tests paths before executing the test. Contrary to `--testPathPattern`, it will only run those tests with a path that does not match with the provided regexp expressions.
 
 To pass as an array use escaped parentheses and space delimited regexps such as `\(/node_modules/ /tests/e2e/\)`. Alternatively, you can omit parentheses by combining regexps into a single regexp like `/node_modules/|/tests/e2e/`. These two examples are equivalent.
+
+### `--testPathPattern=<regex>`
+
+A regexp pattern string that is matched against all tests paths before executing the test. On Windows, you will need to use `/` as a path separator or escape `\` as `\\`.
 
 ### `--testRunner=<path>`
 

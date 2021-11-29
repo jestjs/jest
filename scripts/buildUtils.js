@@ -44,7 +44,14 @@ module.exports.getPackages = function getPackages() {
     assert.deepStrictEqual(
       pkg.exports,
       {
-        '.': pkg.main,
+        '.':
+          pkg.types == null
+            ? pkg.main
+            : {
+                types: pkg.types,
+                // eslint-disable-next-line sort-keys
+                default: pkg.main,
+              },
         './package.json': './package.json',
         ...Object.values(pkg.bin || {}).reduce(
           (mem, curr) =>
