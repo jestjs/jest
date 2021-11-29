@@ -65,7 +65,7 @@ export default class ExperimentalWorker implements WorkerInterface {
         JEST_WORKER_ID: String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
       },
       eval: false,
-      execArgv: process.execArgv,
+      execArgv: process.execArgv.filter(v => !/^--(max_old_space_size)/.test(v)),
       // @ts-expect-error: added in newer versions
       resourceLimits: this._options.resourceLimits,
       stderr: true,
