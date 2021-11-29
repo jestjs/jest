@@ -2584,6 +2584,7 @@ __metadata:
     dedent: ^0.7.0
     eslint: ^7.7.0
     eslint-config-prettier: ^8.1.0
+    eslint-import-resolver-typescript: ^2.5.0
     eslint-plugin-eslint-comments: ^3.1.2
     eslint-plugin-import: ^2.6.0
     eslint-plugin-jest: ^24.0.0
@@ -9211,6 +9212,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"eslint-import-resolver-typescript@npm:^2.5.0":
+  version: 2.5.0
+  resolution: "eslint-import-resolver-typescript@npm:2.5.0"
+  dependencies:
+    debug: ^4.3.1
+    glob: ^7.1.7
+    is-glob: ^4.0.1
+    resolve: ^1.20.0
+    tsconfig-paths: ^3.9.0
+  peerDependencies:
+    eslint: "*"
+    eslint-plugin-import: "*"
+  checksum: c13542b1f6283ac354c151f11f5e6e6fb69471ed66c6b6491a72a1ead3504404bf3dca830c9b093e26d419c89ee48433ba45cab1e3a1c3fb968fc7ffa9454cad
+  languageName: node
+  linkType: hard
+
 "eslint-module-utils@npm:^2.6.2":
   version: 2.6.2
   resolution: "eslint-module-utils@npm:2.6.2"
@@ -10743,7 +10760,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"glob@npm:^7.0.0, glob@npm:^7.0.3, glob@npm:^7.1.1, glob@npm:^7.1.2, glob@npm:^7.1.3, glob@npm:^7.1.4, glob@npm:^7.1.6":
+"glob@npm:^7.0.0, glob@npm:^7.0.3, glob@npm:^7.1.1, glob@npm:^7.1.2, glob@npm:^7.1.3, glob@npm:^7.1.4, glob@npm:^7.1.6, glob@npm:^7.1.7":
   version: 7.2.0
   resolution: "glob@npm:7.2.0"
   dependencies:
@@ -21002,7 +21019,7 @@ react-native@0.64.0:
   languageName: node
   linkType: hard
 
-"tsconfig-paths@npm:^3.11.0":
+"tsconfig-paths@npm:^3.11.0, tsconfig-paths@npm:^3.9.0":
   version: 3.11.0
   resolution: "tsconfig-paths@npm:3.11.0"
   dependencies:

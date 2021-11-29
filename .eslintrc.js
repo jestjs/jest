@@ -485,5 +485,8 @@ module.exports = {
     'import/internal-regex': new RegExp(
       internalPackages.map(pkg => `^${pkg}$`).join('|'),
     ).source,
+    'import/resolver': {
+      typescript: {},
+    },
   },
 };
