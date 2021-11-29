@@ -14,6 +14,7 @@
 - `[jest-environment-jsdom]` Add `@types/jsdom` dependency ([#11999](https://github.com/facebook/jest/pull/11999))
 - `[jest-environment-jsdom]` Do not reset the global.document too early on teardown ([#11871](https://github.com/facebook/jest/pull/11871))
 - `[jest-transform]` Improve error and warning messages ([#11998](https://github.com/facebook/jest/pull/11998))
+- `[docs]` CLI options alphabetized ([#11586](https://github.com/facebook/jest/pull/11586))
 
 ### Chore & Maintenance
 
