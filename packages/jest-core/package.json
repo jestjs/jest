@@ -5,7 +5,10 @@
   "main": "./build/jest.js",
   "types": "./build/jest.d.ts",
   "exports": {
-    ".": "./build/jest.js",
+    ".": {
+      "types": "./build/jest.d.ts",
+      "default": "./build/jest.js"
+    },
     "./package.json": "./package.json"
   },
   "dependencies": {

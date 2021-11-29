@@ -215,6 +215,9 @@ function makeConcurrent(
     } catch (error: unknown) {
       promise = Promise.reject(error);
     }
+    // Avoid triggering the uncaught promise rejection handler in case the test errors before
+    // being awaited on.
+    promise.catch(() => {});
 
     return spec;
   };
