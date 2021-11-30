@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-worker]` Add additonal `execArgv` to filter ([#12103](https://github.com/facebook/jest/pull/12103))
+
 ### Chore & Maintenance
 
 ### Performance
