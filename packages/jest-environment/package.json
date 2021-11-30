@@ -1,6 +1,6 @@
 {
   "name": "@jest/environment",
-  "version": "27.4.1",
+  "version": "27.4.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,10 +17,10 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/fake-timers": "^27.4.1",
-    "@jest/types": "^27.4.1",
+    "@jest/fake-timers": "^27.4.2",
+    "@jest/types": "^27.4.2",
     "@types/node": "*",
-    "jest-mock": "^27.4.1"
+    "jest-mock": "^27.4.2"
   },
   "engines": {
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"

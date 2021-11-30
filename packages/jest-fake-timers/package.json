@@ -1,6 +1,6 @@
 {
   "name": "@jest/fake-timers",
-  "version": "27.4.1",
+  "version": "27.4.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,12 +17,12 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^27.4.1",
+    "@jest/types": "^27.4.2",
     "@sinonjs/fake-timers": "^8.0.1",
     "@types/node": "*",
-    "jest-message-util": "^27.4.1",
-    "jest-mock": "^27.4.1",
-    "jest-util": "^27.4.1"
+    "jest-message-util": "^27.4.2",
+    "jest-mock": "^27.4.2",
+    "jest-util": "^27.4.2"
   },
   "devDependencies": {
     "@types/sinonjs__fake-timers": "^6.0.1",
