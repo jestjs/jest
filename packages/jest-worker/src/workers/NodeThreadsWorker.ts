@@ -66,7 +66,9 @@ export default class ExperimentalWorker implements WorkerInterface {
       },
       eval: false,
       // Suppress --debug / --inspect / --max_old_space_size flags while preserving others (like --harmony).
-      execArgv: process.execArgv.filter(v => !/^--(debug|inspect|max_old_space_size)/.test(v)),
+      execArgv: process.execArgv.filter(
+        v => !/^--(debug|inspect|max_old_space_size)/.test(v),
+      ),
       // @ts-expect-error: added in newer versions
       resourceLimits: this._options.resourceLimits,
       stderr: true,
