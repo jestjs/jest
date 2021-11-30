@@ -35,8 +35,8 @@ module.exports = {
     require.resolve('jest-snapshot-serializer-raw'),
   ],
   testPathIgnorePatterns: [
-    '/test-types/',
     '/__arbitraries__/',
+    '/__typechecks__/',
     '/node_modules/',
     '/examples/',
     '/e2e/.*/__tests__',

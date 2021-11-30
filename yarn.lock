@@ -2613,7 +2613,6 @@ __metadata:
     jquery: ^3.2.1
     lerna: ^4.0.0
     micromatch: ^4.0.4
-    mlh-tsd: ^0.14.1
     mock-fs: ^4.4.1
     netlify-plugin-cache: ^1.0.3
     node-notifier: ^10.0.0
@@ -2775,6 +2774,7 @@ __metadata:
     "@types/node": "*"
     "@types/yargs": ^16.0.0
     chalk: ^4.0.0
+    mlh-tsd: ^0.14.1
   languageName: unknown
   linkType: soft
 
@@ -9813,6 +9813,7 @@ __metadata:
     jest-matcher-utils: ^27.4.0
     jest-message-util: ^27.4.0
     jest-regex-util: ^27.4.0
+    mlh-tsd: ^0.14.1
   languageName: unknown
   linkType: soft
 

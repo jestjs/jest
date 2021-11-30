@@ -7,20 +7,7 @@
 
 'use strict';
 
-const assert = require('assert');
-const baseConfig = require('./jest.config');
-
-const {
-  modulePathIgnorePatterns,
-  testPathIgnorePatterns,
-  watchPathIgnorePatterns,
-} = baseConfig;
-
-assert.strictEqual(
-  testPathIgnorePatterns[0],
-  '/test-types/',
-  'First entry must be types',
-);
+const {modulePathIgnorePatterns} = require('./jest.config');
 
 module.exports = {
   displayName: {
@@ -28,8 +15,7 @@ module.exports = {
     name: 'types',
   },
   modulePathIgnorePatterns,
+  roots: ['<rootDir>/packages'],
   runner: 'jest-runner-tsd',
-  testMatch: ['<rootDir>/test-types/*.test.ts'],
-  testPathIgnorePatterns: testPathIgnorePatterns.slice(1),
-  watchPathIgnorePatterns,
+  testMatch: ['**/__typechecks__/**/*.ts'],
 };

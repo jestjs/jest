@@ -30,7 +30,8 @@
     "@jest/test-utils": "^27.4.0",
     "chalk": "^4.0.0",
     "fast-check": "^2.0.0",
-    "immutable": "^4.0.0-rc.12"
+    "immutable": "^4.0.0-rc.12",
+    "mlh-tsd": "^0.14.1"
   },
   "engines": {
     "node": "^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0"

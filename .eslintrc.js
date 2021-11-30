@@ -234,7 +234,7 @@ module.exports = {
       },
     },
     {
-      files: ['test-types/*.test.ts', '*.md'],
+      files: ['**/__typechecks__/**', '*.md'],
       rules: {
         'jest/no-focused-tests': 'off',
         'jest/no-identical-title': 'off',
@@ -301,9 +301,9 @@ module.exports = {
       'error',
       {
         devDependencies: [
-          '/test-types/**',
-          '**/__tests__/**',
           '**/__mocks__/**',
+          '**/__tests__/**',
+          '**/__typechecks__/**',
           '**/?(*.)(spec|test).js?(x)',
           'scripts/**',
           'babel.config.js',
