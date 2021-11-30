@@ -2775,6 +2775,7 @@ __metadata:
     "@types/node": "*"
     "@types/yargs": ^16.0.0
     chalk: ^4.0.0
+    mlh-tsd: ^0.14.1
   languageName: unknown
   linkType: soft
 
@@ -9813,6 +9814,7 @@ __metadata:
     jest-matcher-utils: ^27.4.0
     jest-message-util: ^27.4.0
     jest-regex-util: ^27.4.0
+    mlh-tsd: ^0.14.1
   languageName: unknown
   linkType: soft
 
