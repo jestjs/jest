@@ -23,11 +23,11 @@ type Win = Window &
   };
 
 class JSDOMEnvironment implements JestEnvironment<number> {
-  dom: JSDOM | null;
+  private dom: JSDOM | null;
   fakeTimers: LegacyFakeTimers<number> | null;
   fakeTimersModern: ModernFakeTimers | null;
   global: Win;
-  errorEventListener: ((event: Event & {error: Error}) => void) | null;
+  private errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
 
   constructor(config: Config.ProjectConfig, options?: EnvironmentContext) {
