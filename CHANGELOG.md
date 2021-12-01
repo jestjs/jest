@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[jest-environment-jsdom]` Remove `@types/jsdom` dependency (and make its `dom` property `private`) ([#11999](https://github.com/facebook/jest/pull/11999))
+
 ### Chore & Maintenance
 
 ### Performance
