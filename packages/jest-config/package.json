@@ -1,6 +1,6 @@
 {
   "name": "jest-config",
-  "version": "27.4.2",
+  "version": "27.4.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -35,13 +35,13 @@
     "glob": "^7.1.1",
     "graceful-fs": "^4.2.4",
     "jest-circus": "^27.4.2",
-    "jest-environment-jsdom": "^27.4.2",
+    "jest-environment-jsdom": "^27.4.3",
     "jest-environment-node": "^27.4.2",
     "jest-get-type": "^27.4.0",
     "jest-jasmine2": "^27.4.2",
     "jest-regex-util": "^27.4.0",
     "jest-resolve": "^27.4.2",
-    "jest-runner": "^27.4.2",
+    "jest-runner": "^27.4.3",
     "jest-util": "^27.4.2",
     "jest-validate": "^27.4.2",
     "micromatch": "^4.0.4",

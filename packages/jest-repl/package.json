@@ -1,6 +1,6 @@
 {
   "name": "jest-repl",
-  "version": "27.4.2",
+  "version": "27.4.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -24,7 +24,7 @@
     "@jest/transform": "^27.4.2",
     "@jest/types": "^27.4.2",
     "chalk": "^4.0.0",
-    "jest-config": "^27.4.2",
+    "jest-config": "^27.4.3",
     "jest-runtime": "^27.4.2",
     "jest-util": "^27.4.2",
     "jest-validate": "^27.4.2",

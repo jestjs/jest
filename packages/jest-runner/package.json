@@ -1,6 +1,6 @@
 {
   "name": "jest-runner",
-  "version": "27.4.2",
+  "version": "27.4.3",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -28,7 +28,7 @@
     "exit": "^0.1.2",
     "graceful-fs": "^4.2.4",
     "jest-docblock": "^27.4.0",
-    "jest-environment-jsdom": "^27.4.2",
+    "jest-environment-jsdom": "^27.4.3",
     "jest-environment-node": "^27.4.2",
     "jest-haste-map": "^27.4.2",
     "jest-leak-detector": "^27.4.2",
