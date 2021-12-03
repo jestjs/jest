@@ -51,16 +51,6 @@ const NOT_EMPTY_LINE_REGEXP = /^(?!$)/gm;
 export const indentLines = (lines: string, indent: string = '  '): string =>
   lines.replace(NOT_EMPTY_LINE_REGEXP, indent);
 
-// export const stripIndent = (lines: string): string => {
-//   const match = lines.match(/^[^\S\n]*(?=\S)/gm);
-//   const indent = match && Math.min(...match.map(el => el.length));
-//   if (indent) {
-//     const regexp = new RegExp(`^.{${indent}}`, 'gm');
-//     return lines.replace(regexp, '');
-//   }
-//   return lines;
-// };
-
 function getWrongEnvironmentWarning(error: ErrorNode) {
   if (error.message) {
     const {message} = error.message;
@@ -86,68 +76,6 @@ function getWrongEnvironmentWarning(error: ErrorNode) {
 
   return undefined;
 }
-
-// ExecError is an error thrown outside of the test suite (not inside an `it` or
-// `before/after each` hooks). If it's thrown, none of the tests in the file
-// are executed.
-export const formatExecError = (
-  error: Error | TestResult.SerializableError | string | undefined,
-  config: StackTraceConfig,
-  options: StackTraceOptions,
-  testPath?: Path,
-  reuseMessage?: boolean,
-): string => {
-  if (!error || typeof error === 'number') {
-    error = new Error(`Expected an Error, but "${String(error)}" was thrown`);
-    error.stack = '';
-  }
-
-  let parsedErrors;
-  let printed;
-
-  try {
-    if (typeof error === 'string') {
-      parsedErrors = parseErrors(error);
-    } else if (error.stack) {
-      parsedErrors = parseErrors(error.stack);
-      const topError = parsedErrors.errors[0];
-      if (error.message && !topError.name && !topError.message) {
-        parsedErrors.errors[0] = {
-          ...parseError(error.message),
-          frames: topError.frames,
-        };
-      }
-    } else if (error.message) {
-      parsedErrors = parseErrors(error.message);
-    }
-  } catch (e) {}
-
-  if (parsedErrors) {
-    const topError = parsedErrors.errors[0];
-    const envWarning = topError && getWrongEnvironmentWarning(topError);
-
-    cleanErrors(parsedErrors, options);
-
-    const visitorOptions = buildVisitorOptions(config, options, testPath);
-    const printedErrors = JestVisitor.visit(parsedErrors, visitorOptions) || '';
-
-    printed = envWarning
-      ? `${indentLines(envWarning, '    ')}\n\n${printedErrors}`
-      : printedErrors;
-
-    if (reuseMessage)
-      printed = printed.slice(visitorOptions.indentHeader.length);
-  } else {
-    printed = indentLines(
-      `thrown: ${prettyFormat(error, {maxDepth: 3})}`,
-      '      ',
-    ).slice(2);
-  }
-
-  const title = reuseMessage ? ' ' : `${EXEC_ERROR_MESSAGE}\n\n`;
-
-  return `  ${TITLE_BULLET}${title}${printed}\n`;
-};
 
 const cleanFrames = (
   frames: Array<FrameNode> | undefined,
@@ -305,6 +233,68 @@ export const getTopFrame = (frames: Array<string>): Frame | null => {
   );
 };
 
+// ExecError is an error thrown outside of the test suite (not inside an `it` or
+// `before/after each` hooks). If it's thrown, none of the tests in the file
+// are executed.
+export const formatExecError = (
+  error: Error | TestResult.SerializableError | string | undefined,
+  config: StackTraceConfig,
+  options: StackTraceOptions,
+  testPath?: Path,
+  reuseMessage?: boolean,
+): string => {
+  if (!error || typeof error === 'number') {
+    error = new Error(`Expected an Error, but "${String(error)}" was thrown`);
+    error.stack = '';
+  }
+
+  let parsedErrors;
+  let printed;
+
+  try {
+    if (typeof error === 'string') {
+      parsedErrors = parseErrors(error);
+    } else if (error.stack) {
+      parsedErrors = parseErrors(error.stack);
+      const topError = parsedErrors.errors[0];
+      if (error.message && !topError.name && !topError.message) {
+        parsedErrors.errors[0] = {
+          ...parseError(error.message),
+          frames: topError.frames,
+        };
+      }
+    } else if (error.message) {
+      parsedErrors = parseErrors(error.message);
+    }
+  } catch (e: unknown) {}
+
+  if (parsedErrors) {
+    const topError = parsedErrors.errors[0];
+    const envWarning = topError && getWrongEnvironmentWarning(topError);
+
+    cleanErrors(parsedErrors, options);
+
+    const visitorOptions = buildVisitorOptions(config, options, testPath);
+    const printedErrors = JestVisitor.visit(parsedErrors, visitorOptions) || '';
+
+    printed = envWarning
+      ? `${indentLines(envWarning, '    ')}\n\n${printedErrors}`
+      : printedErrors;
+
+    if (reuseMessage)
+      printed = printed.slice(visitorOptions.indentHeader.length);
+  } else {
+    printed = indentLines(
+      `thrown: ${prettyFormat(error, {maxDepth: 3})}`,
+      '      ',
+    ).slice(2);
+  }
+
+  const title = reuseMessage ? ' ' : `${EXEC_ERROR_MESSAGE}\n\n`;
+
+  return `  ${TITLE_BULLET}${title}${printed}\n`;
+};
+
 type FailedResults = Array<{
   content: string;
   result: TestResult.AssertionResult;
@@ -354,7 +344,7 @@ export const formatResultsErrors = (
         printed = envWarning
           ? `${indentLines(envWarning, '    ')}\n\n${printedError}`
           : printedError;
-      } catch (e) {
+      } catch (e: unknown) {
         printed = content;
       }
 

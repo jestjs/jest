@@ -32,7 +32,7 @@ function isGeneratorFunction(
 const parseLine = (line: string) => {
   try {
     return parseFrame(line);
-  } catch (e) {}
+  } catch (e: unknown) {}
   return null;
 };
 
@@ -423,10 +423,6 @@ const _getError = (
   asyncError.message = `thrown: ${prettyFormat(error, {maxDepth: 3})}`;
 
   return asyncError;
-};
-
-export const isError = (e: unknown): e is Error => {
-  return String(e) === '[object Error]' || e instanceof Error;
 };
 
 const getErrorStack = (error: Error): string =>
