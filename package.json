@@ -156,7 +156,6 @@
     "babel-jest": "workspace:*",
     "jest": "workspace:*",
     "jest-environment-node": "workspace:*",
-    "react-native": "patch:react-native@0.64.0#./patches/react-native.patch",
-    "@jest/monorepo": "portal:/home/conartist6/dev/repos/jest"
+    "react-native": "patch:react-native@0.64.0#./patches/react-native.patch"
   }
 }
