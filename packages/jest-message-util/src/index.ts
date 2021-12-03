@@ -150,10 +150,7 @@ const isInternalFrame = (frame: FrameNode) => {
     }
   }
 
-  if (
-    isNodeInternalFrame(site)
-    // || (site.type === 'FileSite' && nodeInternals.some(internal => internal.test(site.file))
-  ) {
+  if (isNodeInternalFrame(site)) {
     return true;
   }
 
