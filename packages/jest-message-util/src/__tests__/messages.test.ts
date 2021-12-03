@@ -223,7 +223,7 @@ it('codeframe', () => {
     'path_test',
   );
 
-  expect(message.replace(slash(rootDir), '')).toMatchSnapshot();
+  expect(message).toMatchSnapshot();
 });
 
 it('no codeframe', () => {
@@ -252,7 +252,7 @@ it('no codeframe', () => {
     'path_test',
   );
 
-  expect(message.replace(slash(rootDir), '')).toMatchSnapshot();
+  expect(message).toMatchSnapshot();
 });
 
 it('no stack', () => {
@@ -308,7 +308,7 @@ describe('formatStackTrace', () => {
       'path_test',
     );
 
-    expect(message.replace(slash(rootDir), '')).toMatchSnapshot();
+    expect(message).toMatchSnapshot();
   });
 
   it('does not print code frame when noCodeFrame = true', () => {
@@ -333,7 +333,7 @@ describe('formatStackTrace', () => {
       'path_test',
     );
 
-    expect(message.replace(slash(rootDir), '')).toMatchSnapshot();
+    expect(message).toMatchSnapshot();
   });
 
   it('does not print codeframe when noStackTrace = true', () => {
@@ -357,6 +357,6 @@ describe('formatStackTrace', () => {
       'path_test',
     );
 
-    expect(message.replace(slash(rootDir), '')).toMatchSnapshot();
+    expect(message).toMatchSnapshot();
   });
 });
