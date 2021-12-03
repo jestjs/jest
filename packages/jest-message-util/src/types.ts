@@ -10,4 +10,3 @@ export interface Frame {
   line: number | undefined;
   column: number | undefined;
 }
-w;
