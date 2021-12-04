@@ -4162,24 +4162,24 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stack-tools/node-tools@npm:0.1.0":
-  version: 0.1.0
-  resolution: "@stack-tools/node-tools@npm:0.1.0"
+"@stack-tools/node-tools@npm:0.2.0":
+  version: 0.2.0
+  resolution: "@stack-tools/node-tools@npm:0.2.0"
   dependencies:
-    "@stack-tools/v8-tools": 0.1.0
-  checksum: b98cd8b0069eb4ed013bf4c894df7d01b942b1a730cc062423c83fe672f8c5ea51013c26771d58c928d097ec91b77a352faed827d2238c3203f73825ef48538a
+    "@stack-tools/v8-tools": ^0.2.0
+  checksum: 5cccde994200e2c20f67000f6ee2aa3ef1fe7a8b6bc51781bd0d004c26d080ca05486bdcdbe6f9b5f9d0084202e25b920d74278b883949af594f99576bc0b4d8
   languageName: node
   linkType: hard
 
-"@stack-tools/v8-tools@npm:0.1.0":
-  version: 0.1.0
-  resolution: "@stack-tools/v8-tools@npm:0.1.0"
+"@stack-tools/v8-tools@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@stack-tools/v8-tools@npm:0.2.0"
   dependencies:
     iserror: 0.0.2
     moo: ^0.5.1
     nearley: ^2.20.1
-    stack-tools: 0.1.0
-  checksum: d33a23e7d49c9787f88bf36c4dce7ebf9646ab15485ff0bb4ed48fe7679fe2d09ce3bcb92c880e7db1843df1e7a3928b9d8cd9dcfd07064a77567bc6fab26b85
+    stack-tools: ^0.2.0
+  checksum: 6b1358a9164208c9f593bc6f880a1a5848e305b74e77950c093b0abd841138b1feb2ce5d85eeb9d319840ab0497e7a4831783d4e1536c3b68db3851f412ec194
   languageName: node
   linkType: hard
 
@@ -12617,7 +12617,7 @@ fsevents@^1.2.7:
     "@jest/test-result": ^27.4.2
     "@jest/test-utils": ^27.4.2
     "@jest/types": ^27.4.2
-    "@stack-tools/node-tools": 0.1.0
+    "@stack-tools/node-tools": 0.2.0
     "@types/co": ^4.6.0
     "@types/dedent": ^0.7.0
     "@types/graceful-fs": ^4.1.3
@@ -12943,7 +12943,7 @@ fsevents@^1.2.7:
   dependencies:
     "@babel/code-frame": ^7.12.13
     "@jest/types": ^27.4.2
-    "@stack-tools/node-tools": 0.1.0
+    "@stack-tools/node-tools": 0.2.0
     "@types/babel__code-frame": ^7.0.0
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
@@ -13076,7 +13076,7 @@ fsevents@^1.2.7:
     "@jest/test-result": ^27.4.2
     "@jest/transform": ^27.4.2
     "@jest/types": ^27.4.2
-    "@stack-tools/node-tools": 0.1.0
+    "@stack-tools/node-tools": 0.2.0
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.2
     "@types/node": "*"
@@ -13114,7 +13114,7 @@ fsevents@^1.2.7:
     "@jest/test-utils": ^27.4.2
     "@jest/transform": ^27.4.2
     "@jest/types": ^27.4.2
-    "@stack-tools/node-tools": 0.1.0
+    "@stack-tools/node-tools": 0.2.0
     "@types/exit": ^0.1.30
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.2
@@ -20089,12 +20089,12 @@ react-native@0.64.0:
   languageName: node
   linkType: hard
 
-"stack-tools@npm:0.1.0":
-  version: 0.1.0
-  resolution: "stack-tools@npm:0.1.0"
+"stack-tools@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "stack-tools@npm:0.2.0"
   dependencies:
     iserror: 0.0.2
-  checksum: b985e41d030a814059440a17c33f41dde53e18b09c5a324db7261c2cefae91ffcbb63aa5e86488d26adc7963df95be2f58f051db8cc1479f2a34c1a9258a7c9b
+  checksum: 525b0789d5020b2335dcc35b4faf35149d102b74ad3fe7c44e502da9934ab378e3bd41a284cf6c718e7ee1b4e940f883c94850adde8335a70c0ff8560e3c060b
   languageName: node
   linkType: hard
 

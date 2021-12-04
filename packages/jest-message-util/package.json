@@ -22,7 +22,7 @@
   "dependencies": {
     "@babel/code-frame": "^7.12.13",
     "@jest/types": "^27.4.2",
-    "@stack-tools/node-tools": "0.1.0",
+    "@stack-tools/node-tools": "0.2.0",
     "chalk": "^4.0.0",
     "graceful-fs": "^4.2.4",
     "micromatch": "^4.0.4",

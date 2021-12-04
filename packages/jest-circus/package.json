@@ -21,7 +21,7 @@
     "@jest/environment": "^27.4.2",
     "@jest/test-result": "^27.4.2",
     "@jest/types": "^27.4.2",
-    "@stack-tools/node-tools": "0.1.0",
+    "@stack-tools/node-tools": "0.2.0",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "co": "^4.6.0",
