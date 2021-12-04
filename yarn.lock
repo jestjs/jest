@@ -2468,6 +2468,7 @@ __metadata:
     "@jest/test-utils": ^27.4.2
     "@jest/transform": ^27.4.2
     "@jest/types": ^27.4.2
+    "@stack-tools/node-tools": ^0.2.4
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.2
     "@types/micromatch": ^4.0.1
@@ -2762,6 +2763,7 @@ __metadata:
     pirates: ^4.0.1
     slash: ^3.0.0
     source-map: ^0.6.1
+    stack-tools: ^0.2.2
     write-file-atomic: ^3.0.0
   languageName: unknown
   linkType: soft
@@ -4162,24 +4164,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stack-tools/node-tools@npm:0.2.0":
-  version: 0.2.0
-  resolution: "@stack-tools/node-tools@npm:0.2.0"
+"@stack-tools/node-tools@npm:^0.2.4":
+  version: 0.2.4
+  resolution: "@stack-tools/node-tools@npm:0.2.4"
   dependencies:
-    "@stack-tools/v8-tools": ^0.2.0
-  checksum: 5cccde994200e2c20f67000f6ee2aa3ef1fe7a8b6bc51781bd0d004c26d080ca05486bdcdbe6f9b5f9d0084202e25b920d74278b883949af594f99576bc0b4d8
+    "@stack-tools/v8-tools": ^0.2.4
+  checksum: 4dbd0a989257eed50f8f3cd824e7b775b28405e07e3172aa4a13f4a8371e6cc3e3e9284c7f792829acb4ce968df4bdb21959db7f78540c69b59ac29775494ea6
   languageName: node
   linkType: hard
 
-"@stack-tools/v8-tools@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@stack-tools/v8-tools@npm:0.2.0"
+"@stack-tools/v8-tools@npm:^0.2.4":
+  version: 0.2.4
+  resolution: "@stack-tools/v8-tools@npm:0.2.4"
   dependencies:
-    iserror: 0.0.2
     moo: ^0.5.1
     nearley: ^2.20.1
-    stack-tools: ^0.2.0
-  checksum: 6b1358a9164208c9f593bc6f880a1a5848e305b74e77950c093b0abd841138b1feb2ce5d85eeb9d319840ab0497e7a4831783d4e1536c3b68db3851f412ec194
+    stack-tools: ^0.2.2
+  checksum: 57a93c9a1a500b025f0743da43fa8a6afdc841abb0aba4d39328afde2fcd04de90a3e972929a50b779c2eed327f6d7650454a833057aeee5b042bd626ff6d08d
   languageName: node
   linkType: hard
 
@@ -12509,13 +12510,6 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"iserror@npm:0.0.2":
-  version: 0.0.2
-  resolution: "iserror@npm:0.0.2"
-  checksum: b474182344fcbbad3a45046cdbd200e60a5757f7eae0a9aa9bb5cf9515bd317c3e3f5ccc83511fbba65c5a0e67a0b44203fcd279ec0e9362e11b9d98a35e6570
-  languageName: node
-  linkType: hard
-
 "isexe@npm:^2.0.0":
   version: 2.0.0
   resolution: "isexe@npm:2.0.0"
@@ -12617,7 +12611,7 @@ fsevents@^1.2.7:
     "@jest/test-result": ^27.4.2
     "@jest/test-utils": ^27.4.2
     "@jest/types": ^27.4.2
-    "@stack-tools/node-tools": 0.2.0
+    "@stack-tools/node-tools": ^0.2.4
     "@types/co": ^4.6.0
     "@types/dedent": ^0.7.0
     "@types/graceful-fs": ^4.1.3
@@ -12943,7 +12937,7 @@ fsevents@^1.2.7:
   dependencies:
     "@babel/code-frame": ^7.12.13
     "@jest/types": ^27.4.2
-    "@stack-tools/node-tools": 0.2.0
+    "@stack-tools/node-tools": ^0.2.4
     "@types/babel__code-frame": ^7.0.0
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
@@ -13076,7 +13070,7 @@ fsevents@^1.2.7:
     "@jest/test-result": ^27.4.2
     "@jest/transform": ^27.4.2
     "@jest/types": ^27.4.2
-    "@stack-tools/node-tools": 0.2.0
+    "@stack-tools/node-tools": ^0.2.4
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.2
     "@types/node": "*"
@@ -13114,7 +13108,7 @@ fsevents@^1.2.7:
     "@jest/test-utils": ^27.4.2
     "@jest/transform": ^27.4.2
     "@jest/types": ^27.4.2
-    "@stack-tools/node-tools": 0.2.0
+    "@stack-tools/node-tools": ^0.2.4
     "@types/exit": ^0.1.30
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.2
@@ -14099,6 +14093,13 @@ fsevents@^1.2.7:
   version: 4.5.0
   resolution: "lodash.isequal@npm:4.5.0"
   checksum: 5b47e094641c18a915497343894c66f7da6aebb9aaa2a3fcc5643455aaf29d19df60ebbed664c8374fb959c8b4ce96810ee6becd8a71ac58c6c2ca8d29762947
+  languageName: node
+  linkType: hard
+
+"lodash.iserror@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "lodash.iserror@npm:3.1.1"
+  checksum: 82b6fcd5939f5ee2f2ed46310774a0ef268094cdeb3b807e1cd802a9c8b1579acb93c2bc01e330260642901a6f5122754aa755250351a36586b9e50358937dfe
   languageName: node
   linkType: hard
 
@@ -20089,12 +20090,12 @@ react-native@0.64.0:
   languageName: node
   linkType: hard
 
-"stack-tools@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "stack-tools@npm:0.2.0"
+"stack-tools@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "stack-tools@npm:0.2.2"
   dependencies:
-    iserror: 0.0.2
-  checksum: 525b0789d5020b2335dcc35b4faf35149d102b74ad3fe7c44e502da9934ab378e3bd41a284cf6c718e7ee1b4e940f883c94850adde8335a70c0ff8560e3c060b
+    lodash.iserror: ^3.1.1
+  checksum: 81915da8b2003d9786b206a2f59153141d70af9009188255d0b6c9efd989a658490604761c2980e982ab941d076caa4deb26735845adb5441d57c7c20063f670
   languageName: node
   linkType: hard
 

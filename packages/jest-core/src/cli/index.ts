@@ -110,7 +110,7 @@ export async function runCLI(
   const {openHandles} = results;
 
   if (openHandles && openHandles.length) {
-    const formatted = formatHandleErrors(openHandles);
+    const formatted = formatHandleErrors(openHandles, configs[0]);
 
     const openHandlesString = pluralize('open handle', formatted.length, 's');
 

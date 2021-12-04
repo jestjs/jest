@@ -49,14 +49,12 @@ test('triggers unexpected token error message for untranspiled node_modules', ()
   const {stdout, stderr} = runJest(DIR, ['']);
 
   expect(stdout).toBe('');
-  expect(stderr).toMatch(/Jest encountered an unexpected token/);
+  expect(stderr).toMatch(/SyntaxError: Jest encountered an unexpected token/);
   expect(stderr).toMatch(/import {module}/);
   if (nodeMajorVersion < 12) {
     expect(stderr).toMatch(/Unexpected token/);
   } else {
-    expect(stderr).toMatch(
-      /SyntaxError: Cannot use import statement outside a module/,
-    );
+    expect(stderr).toMatch(/Cannot use import statement outside a module/);
   }
 });
 

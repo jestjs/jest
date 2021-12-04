@@ -17,7 +17,7 @@
     "@jest/test-result": "^27.4.2",
     "@jest/transform": "^27.4.2",
     "@jest/types": "^27.4.2",
-    "@stack-tools/node-tools": "0.2.0",
+    "@stack-tools/node-tools": "^0.2.4",
     "@types/node": "*",
     "ansi-escapes": "^4.2.1",
     "chalk": "^4.0.0",

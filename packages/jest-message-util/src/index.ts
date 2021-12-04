@@ -10,6 +10,7 @@ import {
   ErrorNode,
   FrameNode,
   getAbsoluteSitePath,
+  isError,
   isInternalFrame as isNodeInternalFrame,
   parseError,
   parseErrors,
@@ -236,13 +237,15 @@ export const getTopFrame = (frames: Array<string>): Frame | null => {
 export const formatExecError = (
   error: Error | TestResult.SerializableError | string | undefined,
   config: StackTraceConfig,
-  options: StackTraceOptions,
+  options: StackTraceOptions = {},
   testPath?: Path,
   reuseMessage?: boolean,
 ): string => {
   if (!error || typeof error === 'number') {
-    error = new Error(`Expected an Error, but "${String(error)}" was thrown`);
-    error.stack = '';
+    error = {
+      message: `Expected an Error, but "${String(error)}" was thrown`,
+      stack: '',
+    };
   }
 
   let parsedErrors;
@@ -250,6 +253,8 @@ export const formatExecError = (
 
   try {
     if (typeof error === 'string') {
+      parsedErrors = parseErrors(error);
+    } else if (isError(error)) {
       parsedErrors = parseErrors(error);
     } else if (error.stack) {
       parsedErrors = parseErrors(error.stack);
@@ -300,7 +305,7 @@ type FailedResults = Array<{
 export const formatResultsErrors = (
   testResults: Array<TestResult.AssertionResult>,
   config: StackTraceConfig,
-  options: StackTraceOptions,
+  options: StackTraceOptions = {},
   testPath?: Path,
 ): string | null => {
   const visitorOptions = {

@@ -10,7 +10,9 @@
 import * as asyncHooks from 'async_hooks';
 import {promisify} from 'util';
 import {ErrorWithStack} from 'jest-util';
-import {parseError, printError} from '@stack-tools/node-tools';
+import type {Config} from '@jest/types';
+import {parseError} from '@stack-tools/node-tools';
+import {formatExecError} from 'jest-message-util';
 
 export type HandleCollectionResult = () => Promise<Array<Error>>;
 
@@ -140,25 +142,24 @@ export default function collectHandles(): HandleCollectionResult {
   };
 }
 
-export function formatHandleErrors(errors: Array<Error>): Array<string> {
+export function formatHandleErrors(
+  errors: Array<Error>,
+  config: Config.ProjectConfig,
+): Array<string> {
   const stacks = new Set();
 
   return (
     errors
-      .map(err => parseError(err, {parseFrames: false}))
       // E.g. timeouts might give multiple traces to the same line of code
       // This hairy filtering tries to remove entries with duplicate stack traces
       .filter(err => {
-        const stack = err.frames?.map(frame => (frame as any).text).join('\n');
+        const {frames} = parseError(err, {parseFrames: false});
+        const stack = frames?.map(frame => (frame as any).text).join('\n');
 
-        if (stacks.has(stack)) {
-          return false;
-        }
-
+        if (stacks.has(stack)) return false;
         stacks.add(stack);
-
         return true;
       })
-      .map(err => printError(err))
+      .map(err => formatExecError(err, config, undefined, undefined, true))
   );
 }
