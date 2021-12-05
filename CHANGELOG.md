@@ -12,6 +12,7 @@
 
 ### Fixes
 
+- `[babel-jest]` Add `process.version` chunk to the cache key ([#12122](https://github.com/facebook/jest/pull/12122))
 - `[jest-worker]` Filter `execArgv` correctly ([#12097](https://github.com/facebook/jest/pull/12097))
 
 ## 27.4.0
