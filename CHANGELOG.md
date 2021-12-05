@@ -4,6 +4,8 @@
 
 ### Fixes
 
+- `[babel-jest]` Add `process.version` chunk to the cache key ([#12122](https://github.com/facebook/jest/pull/12122))
+
 ### Chore & Maintenance
 
 ### Performance
