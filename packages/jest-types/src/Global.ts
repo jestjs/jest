@@ -6,7 +6,7 @@
  */
 
 import type {CoverageMapData} from 'istanbul-lib-coverage';
-import type {Expect} from '.';
+import type * as Expect from './Expect';
 
 export type ValidTestReturnValues = void | undefined;
 type TestReturnValuePromise = Promise<unknown>;

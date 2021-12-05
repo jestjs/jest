@@ -6,7 +6,7 @@
  *
  */
 
-import type {Config} from '.';
+import type * as Config from './Config';
 
 export type SyncExpectationResult = {
   pass: boolean;
