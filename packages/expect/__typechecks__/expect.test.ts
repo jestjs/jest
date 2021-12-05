@@ -11,8 +11,8 @@ import type * as jestMatcherUtils from 'jest-matcher-utils';
 
 export type M = expect.Matchers<void, unknown>;
 export type N = expect.Matchers<void>;
-// @ts-expect-error
-export type E = expect.Matchers<>;
+// @ts-expect-error: Generic type 'Matchers<R, T>' requires between 1 and 2 type arguments.
+export type E = expect.Matchers;
 
 // extend
 

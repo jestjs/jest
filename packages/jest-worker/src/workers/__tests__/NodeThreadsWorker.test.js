@@ -51,7 +51,7 @@ afterEach(() => {
   process.execArgv = originalExecArgv;
 });
 
-it('passes fork options down to child_process.fork, adding the defaults', () => {
+it('passes fork options down to worker_threads.Worker, adding the defaults', () => {
   const thread = require.resolve('../threadChild');
 
   process.execArgv = ['--inspect', '-p'];
@@ -59,25 +59,28 @@ it('passes fork options down to child_process.fork, adding the defaults', () => 
   // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {
-      cwd: '/tmp',
       execPath: 'hello',
     },
     maxRetries: 3,
+    workerData: {
+      foo: 'bar',
+    },
     workerId: process.env.JEST_WORKER_ID - 1,
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
   expect(workerThreads.mock.calls[0][0]).toBe(thread.replace(/\.ts$/, '.js'));
   expect(workerThreads.mock.calls[0][1]).toEqual({
+    env: process.env, // Default option.
     eval: false,
+    execArgv: ['--inspect', '-p'],
+    execPath: 'hello', // Added option.
+    resourceLimits: undefined,
     stderr: true,
     stdout: true,
     workerData: {
-      cwd: '/tmp', // Overridden default option.
-      env: process.env, // Default option.
-      execArgv: ['-p'], // Filtered option.
-      execPath: 'hello', // Added option.
-      silent: true, // Default option.
+      // Added option.
+      foo: 'bar',
     },
   });
 });
@@ -91,9 +94,7 @@ it('passes workerId to the thread and assign it to env.JEST_WORKER_ID', () => {
     workerPath: '/tmp/foo',
   });
 
-  expect(workerThreads.mock.calls[0][1].workerData.env.JEST_WORKER_ID).toEqual(
-    '3',
-  );
+  expect(workerThreads.mock.calls[0][1].env.JEST_WORKER_ID).toEqual('3');
 });
 
 it('initializes the thread with the given workerPath', () => {

@@ -1885,6 +1885,9 @@ describe('.toHaveProperty()', () => {
     [{a: {b: undefined}}, 'a.b', undefined],
     [{a: {}}, 'a.b', undefined], // delete for breaking change in future major
     [{a: {b: {c: 5}}}, 'a.b', {c: 5}],
+    [{a: {b: [{c: [{d: 1}]}]}}, 'a.b[0].c[0].d', 1],
+    [{a: {b: [{c: {d: [{e: 1}, {f: 2}]}}]}}, 'a.b[0].c.d[1].f', 2],
+    [{a: {b: [[{c: [{d: 1}]}]]}}, 'a.b[0][0].c[0].d', 1],
     [Object.assign(Object.create(null), {property: 1}), 'property', 1],
     [new Foo(), 'a', undefined],
     [new Foo(), 'b', 'b'],
@@ -1955,6 +1958,7 @@ describe('.toHaveProperty()', () => {
 
   [
     [{a: {b: {c: {}}}}, 'a.b.c.d'],
+    [{a: {b: {c: {}}}}, '.a.b.c'],
     [{a: 1}, 'a.b.c.d'],
     [{}, 'a'],
     [1, 'a.b.c'],

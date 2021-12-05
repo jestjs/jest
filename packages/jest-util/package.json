@@ -1,6 +1,6 @@
 {
   "name": "jest-util",
-  "version": "27.3.1",
+  "version": "27.4.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,11 +10,14 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
-    ".": "./build/index.js",
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^27.2.5",
+    "@jest/types": "^27.4.2",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "ci-info": "^3.2.0",

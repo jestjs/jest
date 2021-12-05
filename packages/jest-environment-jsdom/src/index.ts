@@ -23,11 +23,11 @@ type Win = Window &
   };
 
 class JSDOMEnvironment implements JestEnvironment<number> {
-  dom: JSDOM | null;
+  private dom: JSDOM | null;
   fakeTimers: LegacyFakeTimers<number> | null;
   fakeTimersModern: ModernFakeTimers | null;
   global: Win;
-  errorEventListener: ((event: Event & {error: Error}) => void) | null;
+  private errorEventListener: ((event: Event & {error: Error}) => void) | null;
   moduleMocker: ModuleMocker | null;
 
   constructor(config: Config.ProjectConfig, options?: EnvironmentContext) {
@@ -132,9 +132,14 @@ class JSDOMEnvironment implements JestEnvironment<number> {
       if (this.errorEventListener) {
         this.global.removeEventListener('error', this.errorEventListener);
       }
-      // Dispose "document" to prevent "load" event from triggering.
-      Object.defineProperty(this.global, 'document', {value: null});
       this.global.close();
+
+      // Dispose "document" to prevent "load" event from triggering.
+
+      // Note that this.global.close() will trigger the CustomElement::disconnectedCallback
+      // Do not reset the document before CustomElement disconnectedCallback function has finished running,
+      // document should be accessible within disconnectedCallback.
+      Object.defineProperty(this.global, 'document', {value: null});
     }
     this.errorEventListener = null;
     // @ts-expect-error

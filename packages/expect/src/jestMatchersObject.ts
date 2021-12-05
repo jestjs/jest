@@ -60,10 +60,7 @@ export const setMatchers = (
       class CustomMatcher extends AsymmetricMatcher<
         [unknown, ...Array<unknown>]
       > {
-        constructor(
-          inverse: boolean = false,
-          ...sample: [unknown, ...Array<unknown>]
-        ) {
+        constructor(inverse = false, ...sample: [unknown, ...Array<unknown>]) {
           super(sample, inverse);
         }
 

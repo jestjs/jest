@@ -301,8 +301,8 @@ module.exports = {
       'error',
       {
         devDependencies: [
-          '**/__tests__/**',
           '**/__mocks__/**',
+          '**/__tests__/**',
           '**/__typechecks__/**',
           '**/?(*.)(spec|test).js?(x)',
           'scripts/**',
@@ -485,5 +485,8 @@ module.exports = {
     'import/internal-regex': new RegExp(
       internalPackages.map(pkg => `^${pkg}$`).join('|'),
     ).source,
+    'import/resolver': {
+      typescript: {},
+    },
   },
 };

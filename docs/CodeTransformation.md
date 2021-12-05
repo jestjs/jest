@@ -24,7 +24,7 @@ You can write your own transformer. The API of a transformer is as follows:
 ```ts
 interface SyncTransformer<OptionType = unknown> {
   /**
-   * Indicates if the transformer is capabale of instrumenting the code for code coverage.
+   * Indicates if the transformer is capable of instrumenting the code for code coverage.
    *
    * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
    * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
@@ -59,7 +59,7 @@ interface SyncTransformer<OptionType = unknown> {
 
 interface AsyncTransformer<OptionType = unknown> {
   /**
-   * Indicates if the transformer is capabale of instrumenting the code for code coverage.
+   * Indicates if the transformer is capable of instrumenting the code for code coverage.
    *
    * If V8 coverage is _not_ active, and this is `true`, Jest will assume the code is instrumented.
    * If V8 coverage is _not_ active, and this is `false`. Jest will instrument the code returned by this transformer using Babel.
@@ -120,7 +120,7 @@ type TransformedSource =
   | {code: string; map?: RawSourceMap | string | null}
   | string;
 
-// Config.ProjectConfig can be seen in in code [here](https://github.com/facebook/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L323)
+// Config.ProjectConfig can be seen in code [here](https://github.com/facebook/jest/blob/v26.6.3/packages/jest-types/src/Config.ts#L323)
 // RawSourceMap comes from [`source-map`](https://github.com/mozilla/source-map/blob/0.6.1/source-map.d.ts#L6-L12)
 ```
 
