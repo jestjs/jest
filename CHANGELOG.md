@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[babel-jest]` Add `process.version` chunk to the cache key ([#12122](https://github.com/facebook/jest/pull/12122))
+- `[jest-jasmine2, jest-types]` Move all `jasmine` specific types from `@jest/types` to its own package ([#12125](https://github.com/facebook/jest/pull/12125))
 
 ### Chore & Maintenance
 
