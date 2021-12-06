@@ -118,7 +118,7 @@ Alias: `-b`. Exit the test suite immediately upon `n` number of failing test sui
 
 ### `--cache`
 
-Whether to use the cache. Defaults to true. Disable the cache using `--no-cache`. _Note: the cache should only be disabled if you are experiencing caching related problems. On average, disabling the cache makes Jest at least two times slower._
+Whether to use the cache. Defaults to true. Disable the cache with `--cache=false`. _Note: the cache should only be disabled if you are experiencing caching related problems. On average, disabling the cache makes Jest at least two times slower._
 
 If you want to inspect the cache, use `--showConfig` and look at the `cacheDirectory` value. If you need to clear the cache, use `--clearCache`.
 
