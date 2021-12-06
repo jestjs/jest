@@ -1926,12 +1926,8 @@ export default class Runtime {
     const spyOn = this._moduleMocker.spyOn.bind(this._moduleMocker);
 
     const setTimeout = (timeout: number) => {
-      if (this._environment.global.jasmine) {
-        this._environment.global.jasmine._DEFAULT_TIMEOUT_INTERVAL = timeout;
-      } else {
-        // @ts-expect-error: https://github.com/Microsoft/TypeScript/issues/24587
-        this._environment.global[testTimeoutSymbol] = timeout;
-      }
+      // @ts-expect-error: https://github.com/Microsoft/TypeScript/issues/24587
+      this._environment.global[testTimeoutSymbol] = timeout;
       return jestObject;
     };
 
