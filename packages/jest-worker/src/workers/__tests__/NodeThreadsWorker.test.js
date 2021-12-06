@@ -57,8 +57,8 @@ it('passes fork options down to worker_threads.Worker, adding the defaults', () 
   // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {
+      execArgv: ['--inspect', '-p'],
       execPath: 'hello',
-      execArgv: ['--inspect', '-p']
     },
     maxRetries: 3,
     workerData: {
