@@ -7,29 +7,17 @@
 
 import type {Global} from '@jest/types';
 import {ErrorWithStack} from 'jest-util';
-import type {Jasmine} from './types';
-
-type DisabledGlobalKeys = 'fail' | 'pending' | 'spyOn' | 'spyOnProperty';
 
 // prettier-ignore
-const disabledGlobals: Record<DisabledGlobalKeys, string> = {
+const disabledGlobals: Record<string, string> = {
   fail: 'Illegal usage of global `fail`, prefer throwing an error, or the `done.fail` callback.',
   pending: 'Illegal usage of global `pending`, prefer explicitly skipping a test using `test.skip`',
   spyOn: 'Illegal usage of global `spyOn`, prefer `jest.spyOn`.',
   spyOnProperty: 'Illegal usage of global `spyOnProperty`, prefer `jest.spyOn`.',
 };
 
-type DisabledJasmineMethodsKeys =
-  | 'addMatchers'
-  | 'any'
-  | 'anything'
-  | 'arrayContaining'
-  | 'createSpy'
-  | 'objectContaining'
-  | 'stringMatching';
-
 // prettier-ignore
-const disabledJasmineMethods: Record<DisabledJasmineMethodsKeys, string> = {
+const disabledJasmineMethods: Record<string, string> = {
   addMatchers: 'Illegal usage of `jasmine.addMatchers`, prefer `expect.extends`.',
   any: 'Illegal usage of `jasmine.any`, prefer `expect.any`.',
   anything: 'Illegal usage of `jasmine.anything`, prefer `expect.anything`.',
@@ -40,21 +28,19 @@ const disabledJasmineMethods: Record<DisabledJasmineMethodsKeys, string> = {
 };
 
 export function installErrorOnPrivate(global: Global.Global): void {
-  const jasmine = global.jasmine as Jasmine;
+  const jasmine = global.jasmine;
 
-  (Object.keys(disabledGlobals) as Array<DisabledGlobalKeys>).forEach(
-    functionName => {
-      global[functionName] = () => {
-        throwAtFunction(disabledGlobals[functionName], global[functionName]);
-      };
-    },
-  );
+  Object.keys(disabledGlobals).forEach(functionName => {
+    global[functionName] = () => {
+      // @ts-expect-error
+      throwAtFunction(disabledGlobals[functionName], global[functionName]);
+    };
+  });
 
-  (
-    Object.keys(disabledJasmineMethods) as Array<DisabledJasmineMethodsKeys>
-  ).forEach(methodName => {
+  Object.keys(disabledJasmineMethods).forEach(methodName => {
     // @ts-expect-error
     jasmine[methodName] = () => {
+      // @ts-expect-error
       throwAtFunction(disabledJasmineMethods[methodName], jasmine[methodName]);
     };
   });

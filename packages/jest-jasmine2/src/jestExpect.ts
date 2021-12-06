@@ -7,7 +7,6 @@
 
 /* eslint-disable local/prefer-spread-eventually */
 
-import type {Global} from '@jest/types';
 import expect = require('expect');
 import {
   addSerializer,
@@ -16,9 +15,7 @@ import {
   toThrowErrorMatchingInlineSnapshot,
   toThrowErrorMatchingSnapshot,
 } from 'jest-snapshot';
-import type {Jasmine, JasmineMatchersObject, RawMatcherFn} from './types';
-
-declare const global: Global.Global;
+import type {JasmineMatchersObject, RawMatcherFn} from './types';
 
 export default (config: {expand: boolean}): void => {
   global.expect = expect;
@@ -31,7 +28,7 @@ export default (config: {expand: boolean}): void => {
   });
   expect.addSnapshotSerializer = addSerializer;
 
-  const jasmine = global.jasmine as Jasmine;
+  const jasmine = global.jasmine;
   jasmine.anything = expect.anything;
   jasmine.any = expect.any;
   jasmine.objectContaining = expect.objectContaining;
