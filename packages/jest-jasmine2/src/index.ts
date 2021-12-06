@@ -23,8 +23,6 @@ const JASMINE = require.resolve('./jasmine/jasmineLight');
 
 const jestEachBuildDir = path.dirname(require.resolve('jest-each'));
 
-const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
-
 export default async function jasmine2(
   globalConfig: Config.GlobalConfig,
   config: Config.ProjectConfig,
@@ -132,12 +130,10 @@ export default async function jasmine2(
       configurable: true,
       enumerable: true,
       get() {
-        // @ts-expect-error: https://github.com/Microsoft/TypeScript/issues/24587
-        return environment.global[testTimeoutSymbol];
+        return this._DEFAULT_TIMEOUT_INTERVAL;
       },
       set(value) {
-        // @ts-expect-error: https://github.com/Microsoft/TypeScript/issues/24587
-        environment.global[testTimeoutSymbol] = value;
+        this._DEFAULT_TIMEOUT_INTERVAL = value;
       },
     });
   }

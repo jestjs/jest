@@ -49,8 +49,6 @@ import type {
 import type {default as Spec, SpecResult} from './Spec';
 import type Suite from './Suite';
 
-const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
-
 export default function (j$: Jasmine) {
   return class Env {
     specFilter: (spec: Spec) => boolean;
@@ -512,7 +510,7 @@ export default function (j$: Jasmine) {
           queueableFn: {
             fn,
             timeout() {
-              return timeout || (global as any)[testTimeoutSymbol];
+              return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
             },
           },
           throwOnExpectationFailure,
@@ -624,7 +622,7 @@ export default function (j$: Jasmine) {
         currentDeclarationSuite.beforeEach({
           fn: beforeEachFunction,
           timeout() {
-            return timeout || (global as any)[testTimeoutSymbol];
+            return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
           },
         });
       };
@@ -633,7 +631,7 @@ export default function (j$: Jasmine) {
         currentDeclarationSuite.beforeAll({
           fn: beforeAllFunction,
           timeout() {
-            return timeout || (global as any)[testTimeoutSymbol];
+            return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
           },
         });
       };
@@ -642,7 +640,7 @@ export default function (j$: Jasmine) {
         currentDeclarationSuite.afterEach({
           fn: afterEachFunction,
           timeout() {
-            return timeout || (global as any)[testTimeoutSymbol];
+            return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
           },
         });
       };
@@ -651,7 +649,7 @@ export default function (j$: Jasmine) {
         currentDeclarationSuite.afterAll({
           fn: afterAllFunction,
           timeout() {
-            return timeout || (global as any)[testTimeoutSymbol];
+            return timeout || j$._DEFAULT_TIMEOUT_INTERVAL;
           },
         });
       };

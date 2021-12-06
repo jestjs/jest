@@ -74,6 +74,7 @@ type JasmineMatcher = {
 export type JasmineMatchersObject = {[id: string]: JasmineMatcher};
 
 export type Jasmine = {
+  _DEFAULT_TIMEOUT_INTERVAL: number;
   DEFAULT_TIMEOUT_INTERVAL: number;
   currentEnv_: ReturnType<typeof Env>['prototype'];
   getEnv: () => ReturnType<typeof Env>['prototype'];

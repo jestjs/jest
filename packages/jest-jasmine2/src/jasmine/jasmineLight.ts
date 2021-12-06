@@ -45,7 +45,18 @@ const testTimeoutSymbol = Symbol.for('TEST_TIMEOUT_SYMBOL');
 export const create = function (createOptions: Record<string, any>): Jasmine {
   const j$ = {...createOptions} as Jasmine;
 
-  (global as any)[testTimeoutSymbol] = createOptions.testTimeout || 5000;
+  Object.defineProperty(j$, '_DEFAULT_TIMEOUT_INTERVAL', {
+    configurable: true,
+    enumerable: true,
+    get() {
+      return (
+        (global as any)[testTimeoutSymbol] || createOptions.testTimeout || 5000
+      );
+    },
+    set(value) {
+      (global as any)[testTimeoutSymbol] = value;
+    },
+  });
 
   j$.getEnv = function () {
     const env = (j$.currentEnv_ = j$.currentEnv_ || new j$.Env());
