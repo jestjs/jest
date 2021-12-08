@@ -10,6 +10,7 @@ import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type {Circus, Config, Global} from '@jest/types';
 import type {
   fn as JestMockFn,
+  mocked as JestMockMocked,
   spyOn as JestMockSpyOn,
   ModuleMocker,
 } from 'jest-mock';
@@ -191,6 +192,7 @@ export interface Jest {
    * jest.spyOn; other mocks will require you to manually restore them.
    */
   restoreAllMocks(): Jest;
+  mocked: typeof JestMockMocked;
   /**
    * Runs failed tests n-times until they pass or until the max number of
    * retries is exhausted. This only works with `jest-circus`!
