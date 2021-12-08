@@ -1943,20 +1943,24 @@ export default class Runtime {
     };
 
     const jestObject: Jest = {
-      advanceTimersByTime: (msToRun: number) => _getFakeTimers().advanceTimersByTime(msToRun),
-      advanceTimersToNextTimer: (steps?: number) => _getFakeTimers().advanceTimersToNextTimer(steps),
+      advanceTimersByTime: (msToRun: number) =>
+        _getFakeTimers().advanceTimersByTime(msToRun),
+      advanceTimersToNextTimer: (steps?: number) =>
+        _getFakeTimers().advanceTimersToNextTimer(steps),
       autoMockOff: disableAutomock,
       autoMockOn: enableAutomock,
       clearAllMocks,
       clearAllTimers: () => _getFakeTimers().clearAllTimers(),
-      createMockFromModule: (moduleName: string) => this._generateMock(from, moduleName),
+      createMockFromModule: (moduleName: string) =>
+        this._generateMock(from, moduleName),
       deepUnmock,
       disableAutomock,
       doMock: mock,
       dontMock: unmock,
       enableAutomock,
       fn,
-      genMockFromModule: (moduleName: string) => this._generateMock(from, moduleName),
+      genMockFromModule: (moduleName: string) =>
+        this._generateMock(from, moduleName),
       getRealSystemTime: () => {
         const fakeTimers = _getFakeTimers();
 
@@ -1964,7 +1968,7 @@ export default class Runtime {
           return fakeTimers.getRealSystemTime();
         } else {
           throw new TypeError(
-            'getRealSystemTime is not available when not using modern timers'
+            'getRealSystemTime is not available when not using modern timers',
           );
         }
       },
@@ -1972,6 +1976,7 @@ export default class Runtime {
       isMockFunction: this._moduleMocker.isMockFunction,
       isolateModules,
       mock,
+      mocked,
       requireActual: this.requireActual.bind(this, from),
       requireMock: this.requireMock.bind(this, from),
       resetAllMocks,
@@ -1985,14 +1990,15 @@ export default class Runtime {
           fakeTimers.runAllImmediates();
         } else {
           throw new TypeError(
-            'runAllImmediates is not available when using modern timers'
+            'runAllImmediates is not available when using modern timers',
           );
         }
       },
       runAllTicks: () => _getFakeTimers().runAllTicks(),
       runAllTimers: () => _getFakeTimers().runAllTimers(),
       runOnlyPendingTimers: () => _getFakeTimers().runOnlyPendingTimers(),
-      setMock: (moduleName: string, mock: unknown) => setMockFactory(moduleName, () => mock),
+      setMock: (moduleName: string, mock: unknown) =>
+        setMockFactory(moduleName, () => mock),
       setSystemTime: (now?: number | Date) => {
         const fakeTimers = _getFakeTimers();
 
@@ -2000,7 +2006,7 @@ export default class Runtime {
           fakeTimers.setSystemTime(now);
         } else {
           throw new TypeError(
-            'setSystemTime is not available when not using modern timers'
+            'setSystemTime is not available when not using modern timers',
           );
         }
       },
@@ -2010,7 +2016,6 @@ export default class Runtime {
       unstable_mockModule: mockModule,
       useFakeTimers,
       useRealTimers,
-      mocked,
     };
     return jestObject;
   }
