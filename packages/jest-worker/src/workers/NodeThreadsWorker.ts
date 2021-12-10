@@ -65,10 +65,6 @@ export default class ExperimentalWorker implements WorkerInterface {
         JEST_WORKER_ID: String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
       },
       eval: false,
-      // Suppress --max_old_space_size flags while preserving others (like --harmony). See https://nodejs.org/api/worker_threads.html#new-workerfilename-options
-      execArgv: process.execArgv.filter(
-        v => !/^--(max_old_space_size|max-old-space-size)/.test(v),
-      ),
       // @ts-expect-error: added in newer versions
       resourceLimits: this._options.resourceLimits,
       stderr: true,

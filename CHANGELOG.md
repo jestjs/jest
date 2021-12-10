@@ -5,6 +5,7 @@
 ### Fixes
 
 - `[babel-jest]` Add `process.version` chunk to the cache key ([#12122](https://github.com/facebook/jest/pull/12122))
+- `[jest-worker]` Stop explicitly passing `execArgv` ([#12128](https://github.com/facebook/jest/pull/12128))
 - `[website]` Fix the card front that looks overlapping part of the card back
 
 ### Chore & Maintenance

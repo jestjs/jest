@@ -54,11 +54,10 @@ afterEach(() => {
 it('passes fork options down to worker_threads.Worker, adding the defaults', () => {
   const thread = require.resolve('../threadChild');
 
-  process.execArgv = ['--inspect', '-p'];
-
   // eslint-disable-next-line no-new
   new Worker({
     forkOptions: {
+      execArgv: ['--inspect', '-p'],
       execPath: 'hello',
     },
     maxRetries: 3,
