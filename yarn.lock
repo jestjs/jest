@@ -2457,16 +2457,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/core@^27.4.3, @jest/core@workspace:packages/jest-core":
+"@jest/core@^27.4.4, @jest/core@workspace:packages/jest-core":
   version: 0.0.0-use.local
   resolution: "@jest/core@workspace:packages/jest-core"
   dependencies:
     "@jest/console": ^27.4.2
-    "@jest/reporters": ^27.4.2
+    "@jest/reporters": ^27.4.4
     "@jest/test-result": ^27.4.2
-    "@jest/test-sequencer": ^27.4.2
+    "@jest/test-sequencer": ^27.4.4
     "@jest/test-utils": ^27.4.2
-    "@jest/transform": ^27.4.2
+    "@jest/transform": ^27.4.4
     "@jest/types": ^27.4.2
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.2
@@ -2479,15 +2479,15 @@ __metadata:
     exit: ^0.1.2
     graceful-fs: ^4.2.4
     jest-changed-files: ^27.4.2
-    jest-config: ^27.4.3
-    jest-haste-map: ^27.4.2
+    jest-config: ^27.4.4
+    jest-haste-map: ^27.4.4
     jest-message-util: ^27.4.2
     jest-regex-util: ^27.4.0
-    jest-resolve: ^27.4.2
-    jest-resolve-dependencies: ^27.4.2
-    jest-runner: ^27.4.3
-    jest-runtime: ^27.4.2
-    jest-snapshot: ^27.4.2
+    jest-resolve: ^27.4.4
+    jest-resolve-dependencies: ^27.4.4
+    jest-runner: ^27.4.4
+    jest-runtime: ^27.4.4
+    jest-snapshot: ^27.4.4
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.4.2
     jest-validate: ^27.4.2
@@ -2514,7 +2514,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/environment@^27.4.2, @jest/environment@workspace:packages/jest-environment":
+"@jest/environment@^27.4.4, @jest/environment@workspace:packages/jest-environment":
   version: 0.0.0-use.local
   resolution: "@jest/environment@workspace:packages/jest-environment"
   dependencies:
@@ -2540,11 +2540,11 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/globals@^27.4.2, @jest/globals@workspace:*, @jest/globals@workspace:packages/jest-globals":
+"@jest/globals@^27.4.4, @jest/globals@workspace:*, @jest/globals@workspace:packages/jest-globals":
   version: 0.0.0-use.local
   resolution: "@jest/globals@workspace:packages/jest-globals"
   dependencies:
-    "@jest/environment": ^27.4.2
+    "@jest/environment": ^27.4.4
     "@jest/types": ^27.4.2
     expect: ^27.4.2
   languageName: unknown
@@ -2636,7 +2636,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/reporters@^27.4.2, @jest/reporters@workspace:packages/jest-reporters":
+"@jest/reporters@^27.4.4, @jest/reporters@workspace:packages/jest-reporters":
   version: 0.0.0-use.local
   resolution: "@jest/reporters@workspace:packages/jest-reporters"
   dependencies:
@@ -2644,7 +2644,7 @@ __metadata:
     "@jest/console": ^27.4.2
     "@jest/test-result": ^27.4.2
     "@jest/test-utils": ^27.4.2
-    "@jest/transform": ^27.4.2
+    "@jest/transform": ^27.4.4
     "@jest/types": ^27.4.2
     "@types/exit": ^0.1.30
     "@types/glob": ^7.1.1
@@ -2666,10 +2666,10 @@ __metadata:
     istanbul-lib-report: ^3.0.0
     istanbul-lib-source-maps: ^4.0.0
     istanbul-reports: ^3.0.2
-    jest-haste-map: ^27.4.2
-    jest-resolve: ^27.4.2
+    jest-haste-map: ^27.4.4
+    jest-resolve: ^27.4.4
     jest-util: ^27.4.2
-    jest-worker: ^27.4.2
+    jest-worker: ^27.4.4
     mock-fs: ^4.4.1
     slash: ^3.0.0
     source-map: ^0.6.0
@@ -2707,15 +2707,15 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/test-sequencer@^27.4.2, @jest/test-sequencer@workspace:packages/jest-test-sequencer":
+"@jest/test-sequencer@^27.4.4, @jest/test-sequencer@workspace:packages/jest-test-sequencer":
   version: 0.0.0-use.local
   resolution: "@jest/test-sequencer@workspace:packages/jest-test-sequencer"
   dependencies:
     "@jest/test-result": ^27.4.2
     "@types/graceful-fs": ^4.1.3
     graceful-fs: ^4.2.4
-    jest-haste-map: ^27.4.2
-    jest-runtime: ^27.4.2
+    jest-haste-map: ^27.4.4
+    jest-runtime: ^27.4.4
   languageName: unknown
   linkType: soft
 
@@ -2734,7 +2734,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@jest/transform@^27.4.2, @jest/transform@workspace:packages/jest-transform":
+"@jest/transform@^27.4.4, @jest/transform@workspace:packages/jest-transform":
   version: 0.0.0-use.local
   resolution: "@jest/transform@workspace:packages/jest-transform"
   dependencies:
@@ -2753,7 +2753,7 @@ __metadata:
     dedent: ^0.7.0
     fast-json-stable-stringify: ^2.0.0
     graceful-fs: ^4.2.4
-    jest-haste-map: ^27.4.2
+    jest-haste-map: ^27.4.4
     jest-regex-util: ^27.4.0
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.4.2
@@ -6075,7 +6075,7 @@ __metadata:
   dependencies:
     "@babel/core": ^7.1.0
     "@jest/test-utils": ^27.4.2
-    "@jest/transform": ^27.4.2
+    "@jest/transform": ^27.4.4
     "@jest/types": ^27.4.2
     "@types/babel__core": ^7.1.14
     "@types/graceful-fs": ^4.1.3
@@ -12578,13 +12578,13 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"jest-circus@^27.4.2, jest-circus@workspace:packages/jest-circus":
+"jest-circus@^27.4.4, jest-circus@workspace:packages/jest-circus":
   version: 0.0.0-use.local
   resolution: "jest-circus@workspace:packages/jest-circus"
   dependencies:
     "@babel/core": ^7.1.0
     "@babel/register": ^7.0.0
-    "@jest/environment": ^27.4.2
+    "@jest/environment": ^27.4.4
     "@jest/test-result": ^27.4.2
     "@jest/test-utils": ^27.4.2
     "@jest/types": ^27.4.2
@@ -12603,8 +12603,8 @@ fsevents@^1.2.7:
     jest-each: ^27.4.2
     jest-matcher-utils: ^27.4.2
     jest-message-util: ^27.4.2
-    jest-runtime: ^27.4.2
-    jest-snapshot: ^27.4.2
+    jest-runtime: ^27.4.4
+    jest-snapshot: ^27.4.4
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.4.2
     pretty-format: ^27.4.2
@@ -12614,11 +12614,11 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"jest-cli@^27.4.3, jest-cli@workspace:packages/jest-cli":
+"jest-cli@^27.4.4, jest-cli@workspace:packages/jest-cli":
   version: 0.0.0-use.local
   resolution: "jest-cli@workspace:packages/jest-cli"
   dependencies:
-    "@jest/core": ^27.4.3
+    "@jest/core": ^27.4.4
     "@jest/test-result": ^27.4.2
     "@jest/test-utils": ^27.4.2
     "@jest/types": ^27.4.2
@@ -12630,7 +12630,7 @@ fsevents@^1.2.7:
     exit: ^0.1.2
     graceful-fs: ^4.2.4
     import-local: ^3.0.2
-    jest-config: ^27.4.3
+    jest-config: ^27.4.4
     jest-util: ^27.4.2
     jest-validate: ^27.4.2
     prompts: ^2.0.1
@@ -12645,31 +12645,31 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"jest-config@^27.4.3, jest-config@workspace:packages/jest-config":
+"jest-config@^27.4.4, jest-config@workspace:packages/jest-config":
   version: 0.0.0-use.local
   resolution: "jest-config@workspace:packages/jest-config"
   dependencies:
     "@babel/core": ^7.1.0
-    "@jest/test-sequencer": ^27.4.2
+    "@jest/test-sequencer": ^27.4.4
     "@jest/types": ^27.4.2
     "@types/babel__core": ^7.0.4
     "@types/glob": ^7.1.1
     "@types/graceful-fs": ^4.1.3
     "@types/micromatch": ^4.0.1
-    babel-jest: ^27.4.2
+    babel-jest: ^27.4.4
     chalk: ^4.0.0
     ci-info: ^3.2.0
     deepmerge: ^4.2.2
     glob: ^7.1.1
     graceful-fs: ^4.2.4
-    jest-circus: ^27.4.2
-    jest-environment-jsdom: ^27.4.3
-    jest-environment-node: ^27.4.2
+    jest-circus: ^27.4.4
+    jest-environment-jsdom: ^27.4.4
+    jest-environment-node: ^27.4.4
     jest-get-type: ^27.4.0
-    jest-jasmine2: ^27.4.2
+    jest-jasmine2: ^27.4.4
     jest-regex-util: ^27.4.0
-    jest-resolve: ^27.4.2
-    jest-runner: ^27.4.3
+    jest-resolve: ^27.4.4
+    jest-runner: ^27.4.4
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.4.2
     jest-validate: ^27.4.2
@@ -12743,11 +12743,11 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"jest-environment-jsdom@^27.4.3, jest-environment-jsdom@workspace:packages/jest-environment-jsdom":
+"jest-environment-jsdom@^27.4.4, jest-environment-jsdom@workspace:packages/jest-environment-jsdom":
   version: 0.0.0-use.local
   resolution: "jest-environment-jsdom@workspace:packages/jest-environment-jsdom"
   dependencies:
-    "@jest/environment": ^27.4.2
+    "@jest/environment": ^27.4.4
     "@jest/fake-timers": ^27.4.2
     "@jest/test-utils": ^27.4.2
     "@jest/types": ^27.4.2
@@ -12763,7 +12763,7 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "jest-environment-node@workspace:packages/jest-environment-node"
   dependencies:
-    "@jest/environment": ^27.4.2
+    "@jest/environment": ^27.4.4
     "@jest/fake-timers": ^27.4.2
     "@jest/test-utils": ^27.4.2
     "@jest/types": ^27.4.2
@@ -12793,7 +12793,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-haste-map@^27.4.2, jest-haste-map@workspace:packages/jest-haste-map":
+"jest-haste-map@^27.4.4, jest-haste-map@workspace:packages/jest-haste-map":
   version: 0.0.0-use.local
   resolution: "jest-haste-map@workspace:packages/jest-haste-map"
   dependencies:
@@ -12811,7 +12811,7 @@ fsevents@^1.2.7:
     jest-serializer: ^27.4.0
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.4.2
-    jest-worker: ^27.4.2
+    jest-worker: ^27.4.4
     micromatch: ^4.0.4
     slash: ^3.0.0
     walker: ^1.0.7
@@ -12846,12 +12846,12 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-jasmine2@^27.4.2, jest-jasmine2@workspace:packages/jest-jasmine2":
+"jest-jasmine2@^27.4.4, jest-jasmine2@workspace:packages/jest-jasmine2":
   version: 0.0.0-use.local
   resolution: "jest-jasmine2@workspace:packages/jest-jasmine2"
   dependencies:
     "@babel/traverse": ^7.1.0
-    "@jest/environment": ^27.4.2
+    "@jest/environment": ^27.4.4
     "@jest/source-map": ^27.4.0
     "@jest/test-result": ^27.4.2
     "@jest/types": ^27.4.2
@@ -12865,8 +12865,8 @@ fsevents@^1.2.7:
     jest-each: ^27.4.2
     jest-matcher-utils: ^27.4.2
     jest-message-util: ^27.4.2
-    jest-runtime: ^27.4.2
-    jest-snapshot: ^27.4.2
+    jest-runtime: ^27.4.4
+    jest-snapshot: ^27.4.4
     jest-util: ^27.4.2
     pretty-format: ^27.4.2
     throat: ^6.0.1
@@ -12977,15 +12977,15 @@ fsevents@^1.2.7:
   resolution: "jest-repl@workspace:packages/jest-repl"
   dependencies:
     "@jest/console": ^27.4.2
-    "@jest/environment": ^27.4.2
+    "@jest/environment": ^27.4.4
     "@jest/test-utils": ^27.4.2
-    "@jest/transform": ^27.4.2
+    "@jest/transform": ^27.4.4
     "@jest/types": ^27.4.2
     "@types/yargs": ^16.0.0
     chalk: ^4.0.0
     execa: ^5.0.0
-    jest-config: ^27.4.3
-    jest-runtime: ^27.4.2
+    jest-config: ^27.4.4
+    jest-runtime: ^27.4.4
     jest-util: ^27.4.2
     jest-validate: ^27.4.2
     repl: ^0.1.3
@@ -12996,21 +12996,21 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"jest-resolve-dependencies@^27.4.2, jest-resolve-dependencies@workspace:packages/jest-resolve-dependencies":
+"jest-resolve-dependencies@^27.4.4, jest-resolve-dependencies@workspace:packages/jest-resolve-dependencies":
   version: 0.0.0-use.local
   resolution: "jest-resolve-dependencies@workspace:packages/jest-resolve-dependencies"
   dependencies:
     "@jest/test-utils": ^27.4.2
     "@jest/types": ^27.4.2
-    jest-haste-map: ^27.4.2
+    jest-haste-map: ^27.4.4
     jest-regex-util: ^27.4.0
-    jest-resolve: ^27.4.2
-    jest-runtime: ^27.4.2
-    jest-snapshot: ^27.4.2
+    jest-resolve: ^27.4.4
+    jest-runtime: ^27.4.4
+    jest-snapshot: ^27.4.4
   languageName: unknown
   linkType: soft
 
-"jest-resolve@^27.4.2, jest-resolve@workspace:packages/jest-resolve":
+"jest-resolve@^27.4.4, jest-resolve@workspace:packages/jest-resolve":
   version: 0.0.0-use.local
   resolution: "jest-resolve@workspace:packages/jest-resolve"
   dependencies:
@@ -13019,7 +13019,7 @@ fsevents@^1.2.7:
     "@types/resolve": ^1.20.0
     chalk: ^4.0.0
     graceful-fs: ^4.2.4
-    jest-haste-map: ^27.4.2
+    jest-haste-map: ^27.4.4
     jest-pnp-resolver: ^1.2.2
     jest-util: ^27.4.2
     jest-validate: ^27.4.2
@@ -13040,14 +13040,14 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-runner@^27.4.3, jest-runner@workspace:packages/jest-runner":
+"jest-runner@^27.4.4, jest-runner@workspace:packages/jest-runner":
   version: 0.0.0-use.local
   resolution: "jest-runner@workspace:packages/jest-runner"
   dependencies:
     "@jest/console": ^27.4.2
-    "@jest/environment": ^27.4.2
+    "@jest/environment": ^27.4.4
     "@jest/test-result": ^27.4.2
-    "@jest/transform": ^27.4.2
+    "@jest/transform": ^27.4.4
     "@jest/types": ^27.4.2
     "@types/exit": ^0.1.30
     "@types/graceful-fs": ^4.1.2
@@ -13058,33 +13058,33 @@ fsevents@^1.2.7:
     exit: ^0.1.2
     graceful-fs: ^4.2.4
     jest-docblock: ^27.4.0
-    jest-environment-jsdom: ^27.4.3
-    jest-environment-node: ^27.4.2
-    jest-haste-map: ^27.4.2
-    jest-jasmine2: ^27.4.2
+    jest-environment-jsdom: ^27.4.4
+    jest-environment-node: ^27.4.4
+    jest-haste-map: ^27.4.4
+    jest-jasmine2: ^27.4.4
     jest-leak-detector: ^27.4.2
     jest-message-util: ^27.4.2
-    jest-resolve: ^27.4.2
-    jest-runtime: ^27.4.2
+    jest-resolve: ^27.4.4
+    jest-runtime: ^27.4.4
     jest-util: ^27.4.2
-    jest-worker: ^27.4.2
+    jest-worker: ^27.4.4
     source-map-support: ^0.5.6
     throat: ^6.0.1
   languageName: unknown
   linkType: soft
 
-"jest-runtime@^27.4.2, jest-runtime@workspace:packages/jest-runtime":
+"jest-runtime@^27.4.4, jest-runtime@workspace:packages/jest-runtime":
   version: 0.0.0-use.local
   resolution: "jest-runtime@workspace:packages/jest-runtime"
   dependencies:
     "@jest/console": ^27.4.2
-    "@jest/environment": ^27.4.2
+    "@jest/environment": ^27.4.4
     "@jest/fake-timers": ^27.4.2
-    "@jest/globals": ^27.4.2
+    "@jest/globals": ^27.4.4
     "@jest/source-map": ^27.4.0
     "@jest/test-result": ^27.4.2
     "@jest/test-utils": ^27.4.2
-    "@jest/transform": ^27.4.2
+    "@jest/transform": ^27.4.4
     "@jest/types": ^27.4.2
     "@types/exit": ^0.1.30
     "@types/glob": ^7.1.1
@@ -13098,13 +13098,13 @@ fsevents@^1.2.7:
     exit: ^0.1.2
     glob: ^7.1.3
     graceful-fs: ^4.2.4
-    jest-environment-node: ^27.4.2
-    jest-haste-map: ^27.4.2
+    jest-environment-node: ^27.4.4
+    jest-haste-map: ^27.4.4
     jest-message-util: ^27.4.2
     jest-mock: ^27.4.2
     jest-regex-util: ^27.4.0
-    jest-resolve: ^27.4.2
-    jest-snapshot: ^27.4.2
+    jest-resolve: ^27.4.4
+    jest-snapshot: ^27.4.4
     jest-snapshot-serializer-raw: ^1.1.0
     jest-util: ^27.4.2
     jest-validate: ^27.4.2
@@ -13151,7 +13151,7 @@ fsevents@^1.2.7:
   languageName: node
   linkType: hard
 
-"jest-snapshot@^27.4.2, jest-snapshot@workspace:*, jest-snapshot@workspace:packages/jest-snapshot":
+"jest-snapshot@^27.4.4, jest-snapshot@workspace:*, jest-snapshot@workspace:packages/jest-snapshot":
   version: 0.0.0-use.local
   resolution: "jest-snapshot@workspace:packages/jest-snapshot"
   dependencies:
@@ -13164,7 +13164,7 @@ fsevents@^1.2.7:
     "@babel/traverse": ^7.7.2
     "@babel/types": ^7.0.0
     "@jest/test-utils": ^27.4.2
-    "@jest/transform": ^27.4.2
+    "@jest/transform": ^27.4.4
     "@jest/types": ^27.4.2
     "@types/babel__traverse": ^7.0.4
     "@types/graceful-fs": ^4.1.3
@@ -13179,10 +13179,10 @@ fsevents@^1.2.7:
     graceful-fs: ^4.2.4
     jest-diff: ^27.4.2
     jest-get-type: ^27.4.0
-    jest-haste-map: ^27.4.2
+    jest-haste-map: ^27.4.4
     jest-matcher-utils: ^27.4.2
     jest-message-util: ^27.4.2
-    jest-resolve: ^27.4.2
+    jest-resolve: ^27.4.4
     jest-util: ^27.4.2
     natural-compare: ^1.4.0
     prettier: ^2.0.0
@@ -13303,7 +13303,7 @@ fsevents@^1.2.7:
   languageName: unknown
   linkType: soft
 
-"jest-worker@^27.0.6, jest-worker@^27.4.2, jest-worker@workspace:packages/jest-worker":
+"jest-worker@^27.0.6, jest-worker@^27.4.4, jest-worker@workspace:packages/jest-worker":
   version: 0.0.0-use.local
   resolution: "jest-worker@workspace:packages/jest-worker"
   dependencies:
@@ -13352,9 +13352,9 @@ fsevents@^1.2.7:
   version: 0.0.0-use.local
   resolution: "jest@workspace:packages/jest"
   dependencies:
-    "@jest/core": ^27.4.3
+    "@jest/core": ^27.4.4
     import-local: ^3.0.2
-    jest-cli: ^27.4.3
+    jest-cli: ^27.4.4
   peerDependencies:
     node-notifier: ^8.0.1 || ^9.0.0 || ^10.0.0
   peerDependenciesMeta:
