@@ -88,8 +88,8 @@ it('initializes the thread with the given workerPath and workerId', () => {
     forkOptions: {},
     maxRetries: 3,
     setupArgs: ['foo', 'bar'],
-    workerPath: '/tmp/foo/bar/baz.js',
     workerId: 2,
+    workerPath: '/tmp/foo/bar/baz.js',
   });
 
   expect(worker._worker.postMessage.mock.calls[0][0]).toEqual([
@@ -97,7 +97,7 @@ it('initializes the thread with the given workerPath and workerId', () => {
     false,
     '/tmp/foo/bar/baz.js',
     ['foo', 'bar'],
-    '3'
+    '3',
   ]);
 });
 

@@ -134,11 +134,11 @@ it('sets env.JEST_WORKER_ID', () => {
     true, // Not really used here, but for flow type purity.
     './my-fancy-worker',
     [],
-    '3'
+    '3',
   ]);
 
   expect(process.env.JEST_WORKER_ID).toBe('3');
-})
+});
 
 it('lazily requires the file', () => {
   expect(mockCount).toBe(0);
