@@ -70,7 +70,6 @@ it('passes fork options down to worker_threads.Worker, adding the defaults', () 
 
   expect(workerThreads.mock.calls[0][0]).toBe(thread.replace(/\.ts$/, '.js'));
   expect(workerThreads.mock.calls[0][1]).toEqual({
-    env: process.env, // Default option.
     eval: false,
     execArgv: ['--inspect', '-p'],
     execPath: 'hello', // Added option.
@@ -84,23 +83,12 @@ it('passes fork options down to worker_threads.Worker, adding the defaults', () 
   });
 });
 
-it('passes workerId to the thread and assign it to env.JEST_WORKER_ID', () => {
-  // eslint-disable-next-line no-new
-  new Worker({
-    forkOptions: {},
-    maxRetries: 3,
-    workerId: 2,
-    workerPath: '/tmp/foo',
-  });
-
-  expect(workerThreads.mock.calls[0][1].env.JEST_WORKER_ID).toEqual('3');
-});
-
-it('initializes the thread with the given workerPath', () => {
+it('initializes the thread with the given workerPath and workerId', () => {
   const worker = new Worker({
     forkOptions: {},
     maxRetries: 3,
     setupArgs: ['foo', 'bar'],
+    workerId: 2,
     workerPath: '/tmp/foo/bar/baz.js',
   });
 
@@ -109,6 +97,7 @@ it('initializes the thread with the given workerPath', () => {
     false,
     '/tmp/foo/bar/baz.js',
     ['foo', 'bar'],
+    '3',
   ]);
 });
 

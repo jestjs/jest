@@ -60,10 +60,6 @@ export default class ExperimentalWorker implements WorkerInterface {
 
   initialize(): void {
     this._worker = new Worker(path.resolve(__dirname, './threadChild.js'), {
-      env: {
-        ...process.env,
-        JEST_WORKER_ID: String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
-      },
       eval: false,
       // @ts-expect-error: added in newer versions
       resourceLimits: this._options.resourceLimits,
@@ -101,6 +97,7 @@ export default class ExperimentalWorker implements WorkerInterface {
       false,
       this._options.workerPath,
       this._options.setupArgs,
+      String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
     ]);
 
     this._retries++;
