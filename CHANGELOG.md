@@ -8,6 +8,12 @@
 
 ### Performance
 
+## 27.4.5
+
+### Fixes
+
+- `[jest-worker]` Stop explicitly passing `process.env` ([#12141](https://github.com/facebook/jest/pull/12141))
+
 ## 27.4.4
 
 ### Fixes
