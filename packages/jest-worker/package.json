@@ -1,6 +1,6 @@
 {
   "name": "jest-worker",
-  "version": "27.4.4",
+  "version": "27.4.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
