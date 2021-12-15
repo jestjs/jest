@@ -126,6 +126,10 @@ function getAsyncResolveOptions(
     ...options,
     isDirectory: isDirectoryAsync,
     isFile: isFileAsync,
+    packageFilter: createPackageFilter(
+      options.conditions,
+      options.packageFilter,
+    ),
     preserveSymlinks: false,
     readPackage: readPackageAsync,
     realpath: realpathAsync,
