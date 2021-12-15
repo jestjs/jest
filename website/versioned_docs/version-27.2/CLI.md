@@ -290,9 +290,9 @@ Run only the tests that were specified with their exact paths.
 
 _Note: The default regex matching works fine on small runs, but becomes slow if provided with multiple patterns and/or against a lot of tests. This option replaces the regex matching logic and by that optimizes the time it takes Jest to filter specific test files_
 
-### `--setupTestFrameworkScriptFile=<file>`
+### `--setupFilesAfterEnv <path1> ... <pathN>`
 
-The path to a module that runs some code to configure or set up the testing framework before each test. Beware that files imported by the setup script will not be mocked during testing.
+A list of paths to modules that run some code to configure or to set up the testing framework before each test. Beware that files imported by the setup scripts will not be mocked during testing.
 
 ### `--showConfig`
 
@@ -301,6 +301,10 @@ Print your Jest config and then exits.
 ### `--silent`
 
 Prevent tests from printing messages through the console.
+
+### `--testEnvironmentOptions=<json string>`
+
+A JSON string with options that will be passed to the `testEnvironment`. The relevant options depend on the environment.
 
 ### `--testNamePattern=<regex>`
 

@@ -22,6 +22,7 @@ import {parse as parseCjs} from 'cjs-module-lexer';
 import {CoverageInstrumenter, V8Coverage} from 'collect-v8-coverage';
 import execa = require('execa');
 import * as fs from 'graceful-fs';
+import slash = require('slash');
 import stripBOM = require('strip-bom');
 import type {
   Jest,
@@ -29,7 +30,7 @@ import type {
   Module,
   ModuleWrapper,
 } from '@jest/environment';
-import {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
+import type {LegacyFakeTimers, ModernFakeTimers} from '@jest/fake-timers';
 import type * as JestGlobals from '@jest/globals';
 import type {SourceMapRegistry} from '@jest/source-map';
 import type {RuntimeTransformResult, V8CoverageResult} from '@jest/test-result';
@@ -226,6 +227,7 @@ export default class Runtime {
   private jestGlobals?: JestGlobals;
   private readonly esmConditions: Array<string>;
   private readonly cjsConditions: Array<string>;
+  private isTornDown = false;
 
   constructor(
     config: Config.ProjectConfig,
@@ -526,11 +528,19 @@ export default class Runtime {
     return module;
   }
 
-  private resolveModule(
+  private resolveModule<T = unknown>(
     specifier: string,
     referencingIdentifier: string,
     context: VMContext,
-  ) {
+  ): Promise<T> | T | void {
+    if (this.isTornDown) {
+      this._logFormattedReferenceError(
+        'You are trying to `import` a file after the Jest environment has been torn down.',
+      );
+      process.exitCode = 1;
+      return;
+    }
+
     if (specifier === '@jest/globals') {
       const fromCache = this._esmoduleRegistry.get('@jest/globals');
 
@@ -574,7 +584,17 @@ export default class Runtime {
     return this.loadCjsAsEsm(referencingIdentifier, resolved, context);
   }
 
-  private async linkAndEvaluateModule(module: VMModule) {
+  private async linkAndEvaluateModule(
+    module: VMModule,
+  ): Promise<VMModule | void> {
+    if (this.isTornDown) {
+      this._logFormattedReferenceError(
+        'You are trying to `import` a file after the Jest environment has been torn down.',
+      );
+      process.exitCode = 1;
+      return;
+    }
+
     if (module.status === 'unlinked') {
       // since we might attempt to link the same module in parallel, stick the promise in a weak map so every call to
       // this method can await it
@@ -861,11 +881,13 @@ export default class Runtime {
       {conditions: this.cjsConditions},
     );
 
-    const mockRegistry = this._isolatedMockRegistry || this._mockRegistry;
-
-    if (mockRegistry.get(moduleID)) {
-      return mockRegistry.get(moduleID);
+    if (this._isolatedMockRegistry?.has(moduleID)) {
+      return this._isolatedMockRegistry.get(moduleID);
+    } else if (this._mockRegistry.has(moduleID)) {
+      return this._mockRegistry.get(moduleID);
     }
+
+    const mockRegistry = this._isolatedMockRegistry || this._mockRegistry;
 
     if (this._mockFactories.has(moduleID)) {
       // has check above makes this ok
@@ -991,7 +1013,7 @@ export default class Runtime {
       } else {
         return this.requireModule<T>(from, moduleName);
       }
-    } catch (e) {
+    } catch (e: unknown) {
       const moduleNotFound = Resolver.tryCastModuleNotFoundError(e);
       if (moduleNotFound) {
         if (
@@ -1197,6 +1219,8 @@ export default class Runtime {
     this._v8CoverageResult = [];
     this._v8CoverageInstrumenter = undefined;
     this._moduleImplementation = undefined;
+
+    this.isTornDown = true;
   }
 
   private _resolveModule(
@@ -1218,33 +1242,44 @@ export default class Runtime {
       );
     }
 
-    const {paths} = options;
-
-    if (paths) {
-      for (const p of paths) {
-        const absolutePath = path.resolve(from, '..', p);
-        const module = this._resolver.resolveModuleFromDirIfExists(
-          absolutePath,
-          moduleName,
-          // required to also resolve files without leading './' directly in the path
-          {conditions: this.cjsConditions, paths: [absolutePath]},
-        );
-        if (module) {
-          return module;
-        }
-      }
-
-      throw new Resolver.ModuleNotFoundError(
-        `Cannot resolve module '${moduleName}' from paths ['${paths.join(
-          "', '",
-        )}'] from ${from}`,
+    if (path.isAbsolute(moduleName)) {
+      const module = this._resolver.resolveModuleFromDirIfExists(
+        moduleName,
+        moduleName,
+        {conditions: this.cjsConditions, paths: []},
       );
+      if (module) {
+        return module;
+      }
+    } else {
+      const {paths} = options;
+      if (paths) {
+        for (const p of paths) {
+          const absolutePath = path.resolve(from, '..', p);
+          const module = this._resolver.resolveModuleFromDirIfExists(
+            absolutePath,
+            moduleName,
+            // required to also resolve files without leading './' directly in the path
+            {conditions: this.cjsConditions, paths: [absolutePath]},
+          );
+          if (module) {
+            return module;
+          }
+        }
+
+        throw new Resolver.ModuleNotFoundError(
+          `Cannot resolve module '${moduleName}' from paths ['${paths.join(
+            "', '",
+          )}'] from ${from}`,
+        );
+      }
     }
+
     try {
       return this._resolveModule(from, moduleName, {
         conditions: this.cjsConditions,
       });
-    } catch (err) {
+    } catch (err: unknown) {
       const module = this._resolver.getMockModule(from, moduleName);
 
       if (module) {
@@ -1282,6 +1317,14 @@ export default class Runtime {
     moduleRegistry: ModuleRegistry,
     from: Config.Path | null,
   ) {
+    if (this.isTornDown) {
+      this._logFormattedReferenceError(
+        'You are trying to `import` a file after the Jest environment has been torn down.',
+      );
+      process.exitCode = 1;
+      return;
+    }
+
     // If the environment was disposed, prevent this module from being executed.
     if (!this._environment.global) {
       return;
@@ -1373,7 +1416,7 @@ export default class Runtime {
         // @ts-expect-error
         ...lastArgs.filter(notEmpty),
       );
-    } catch (error) {
+    } catch (error: any) {
       this.handleExecutionError(error, module);
     }
 
@@ -1440,7 +1483,7 @@ export default class Runtime {
 
     this._fileTransforms.set(filename, {
       ...transformedFile,
-      wrapperLength: this.constructModuleWrapperStart().length,
+      wrapperLength: 0,
     });
 
     if (transformedFile.sourceMapPath) {
@@ -1477,7 +1520,7 @@ export default class Runtime {
           return this.linkAndEvaluateModule(module);
         },
       });
-    } catch (e) {
+    } catch (e: any) {
       throw handlePotentialSyntaxError(e);
     }
   }
@@ -1587,7 +1630,9 @@ export default class Runtime {
       };
     }
     if ('syncBuiltinESMExports' in nativeModule) {
-      Module.syncBuiltinESMExports = function syncBuiltinESMExports() {};
+      // cast since TS seems very confused about whether it exists or not
+      (Module as any).syncBuiltinESMExports =
+        function syncBuiltinESMExports() {};
     }
 
     this._moduleImplementation = Module;
@@ -1673,7 +1718,7 @@ export default class Runtime {
     let modulePath;
     try {
       modulePath = this._resolveModule(from, moduleName, options);
-    } catch (e) {
+    } catch (e: unknown) {
       const manualMock = this._resolver.getMockModule(from, moduleName);
       if (manualMock) {
         this._shouldMockModuleCache.set(moduleID, true);
@@ -1845,6 +1890,7 @@ export default class Runtime {
     };
     const _getFakeTimers = () => {
       if (
+        this.isTornDown ||
         !(this._environment.fakeTimers || this._environment.fakeTimersModern)
       ) {
         this._logFormattedReferenceError(
@@ -1917,7 +1963,7 @@ export default class Runtime {
       getRealSystemTime: () => {
         const fakeTimers = _getFakeTimers();
 
-        if (fakeTimers instanceof ModernFakeTimers) {
+        if (fakeTimers === this._environment.fakeTimersModern) {
           return fakeTimers.getRealSystemTime();
         } else {
           throw new TypeError(
@@ -1938,7 +1984,7 @@ export default class Runtime {
       runAllImmediates: () => {
         const fakeTimers = _getFakeTimers();
 
-        if (fakeTimers instanceof LegacyFakeTimers) {
+        if (fakeTimers === this._environment.fakeTimers) {
           fakeTimers.runAllImmediates();
         } else {
           throw new TypeError(
@@ -1954,7 +2000,7 @@ export default class Runtime {
       setSystemTime: (now?: number | Date) => {
         const fakeTimers = _getFakeTimers();
 
-        if (fakeTimers instanceof ModernFakeTimers) {
+        if (fakeTimers === this._environment.fakeTimersModern) {
           fakeTimers.setSystemTime(now);
         } else {
           throw new TypeError(
@@ -1973,7 +2019,10 @@ export default class Runtime {
   }
 
   private _logFormattedReferenceError(errorMessage: string) {
-    const originalStack = new ReferenceError(errorMessage)
+    const testPath = this._testPath
+      ? ` From ${slash(path.relative(this._config.rootDir, this._testPath))}.`
+      : '';
+    const originalStack = new ReferenceError(`${errorMessage}${testPath}`)
       .stack!.split('\n')
       // Remove this file from the stack (jest-message-utils will keep one line)
       .filter(line => line.indexOf(__filename) === -1)

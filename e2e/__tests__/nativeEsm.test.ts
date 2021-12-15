@@ -21,7 +21,7 @@ test('test config is without transform', () => {
 });
 
 // The versions where vm.Module exists and commonjs with "exports" is not broken
-onNodeVersions('^12.16.0 || >=13.7.0', () => {
+onNodeVersions('>=12.16.0', () => {
   test('runs test with native ESM', () => {
     const {exitCode, stderr, stdout} = runJest(DIR, ['native-esm.test.js'], {
       nodeOptions: '--experimental-vm-modules --no-warnings',

@@ -2,11 +2,78 @@
 
 ### Features
 
+- `[jest-config]` Add `testEnvironmentOptions.html` to apply to jsdom input ([11950](https://github.com/facebook/jest/pull/11950))
+
 ### Fixes
+
+- `[expect]` Tweak and improve types ([#11949](https://github.com/facebook/jest/pull/11949))
+- `[jest-runtime]` Ensure absolute paths can be resolved within test modules ([#11943](https://github.com/facebook/jest/pull/11943))
+- `[jest-runtime]` Fix `instanceof` for `ModernFakeTimers` and `LegacyFakeTimers` methods ([#11946](https://github.com/facebook/jest/pull/11946))
 
 ### Chore & Maintenance
 
 ### Performance
+
+## 27.2.5
+
+### Features
+
+- `[jest-config]` Warn when multiple Jest configs are located ([#11922](https://github.com/facebook/jest/pull/11922))
+
+### Fixes
+
+- `[expect]` Pass matcher context to asymmetric matchers ([#11926](https://github.com/facebook/jest/pull/11926) & [#11930](https://github.com/facebook/jest/pull/11930))
+- `[expect]` Improve TypeScript types ([#11931](https://github.com/facebook/jest/pull/11931))
+- `[expect]` Improve typings of `toThrow()` and `toThrowError()` matchers ([#11929](https://github.com/facebook/jest/pull/11929))
+- `[jest-cli]` Improve `--help` printout by removing defunct `--browser` option ([#11914](https://github.com/facebook/jest/pull/11914))
+- `[jest-haste-map]` Use distinct cache paths for different values of `computeDependencies` ([#11916](https://github.com/facebook/jest/pull/11916))
+- `[@jest/reporters]` Do not buffer `console.log`s when using verbose reporter ([#11054](https://github.com/facebook/jest/pull/11054))
+
+### Chore & Maintenance
+
+- `[expect]` Export default matchers ([#11932](https://github.com/facebook/jest/pull/11932))
+- `[@jest/types]` Mark deprecated configuration options as `@deprecated` ([#11913](https://github.com/facebook/jest/pull/11913))
+
+### Performance
+
+## 27.2.4
+
+### Features
+
+- `[expect]` Add equality checks for Array Buffers in `expect.ToStrictEqual()` ([#11805](https://github.com/facebook/jest/pull/11805))
+
+### Fixes
+
+- `[jest-snapshot]` Correctly indent inline snapshots ([#11560](https://github.com/facebook/jest/pull/11560))
+
+## 27.2.3
+
+### Features
+
+- `[@jest/fake-timers]` Update `@sinonjs/fake-timers` to v8 ([#11879](https://github.com/facebook/jest/pull/11879))
+
+### Fixes
+
+- `[jest-config]` Parse `testEnvironmentOptions` if received from CLI ([#11902](https://github.com/facebook/jest/pull/11902))
+- `[jest-reporters]` Call `destroy` on `v8-to-istanbul` converters to free memory ([#11896](https://github.com/facebook/jest/pull/11896))
+
+## 27.2.2
+
+### Fixes
+
+- `[jest-runtime]` Correct `wrapperLength` value for ESM modules. ([#11893](https://github.com/facebook/jest/pull/11893))
+
+## 27.2.1
+
+### Features
+
+- `[jest-transform]` Improve the unexpected token error message. ([#11807](https://github.com/facebook/jest/pull/11807))
+
+### Fixes
+
+- `[jest-runtime]` Fix regression when using `jest.isolateModules` and mocks ([#11882](https://github.com/facebook/jest/pull/11882))
+- `[jest-runtime]` Include test name when importing modules after test has completed ([#11885](https://github.com/facebook/jest/pull/11885))
+- `[jest-runtime]` Error when ESM import is used after test is torn down ([#11885](https://github.com/facebook/jest/pull/11885))
 
 ## 27.2.0
 

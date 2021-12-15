@@ -37,11 +37,17 @@ module.exports = {
       rules: {
         '@typescript-eslint/array-type': ['error', {default: 'generic'}],
         '@typescript-eslint/ban-types': 'error',
+        '@typescript-eslint/no-implicit-any-catch': [
+          'error',
+          {allowExplicitAny: true},
+        ],
         '@typescript-eslint/no-unused-vars': [
           'error',
           {argsIgnorePattern: '^_'},
         ],
         '@typescript-eslint/prefer-ts-expect-error': 'error',
+        // TS verifies this
+        'consistent-return': 'off',
         // Since we do `export =`. Remove for Jest 27
         'import/default': 'off',
         'no-dupe-class-members': 'off',

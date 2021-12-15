@@ -319,6 +319,32 @@ export const typeEquality = (a: any, b: any): boolean | undefined => {
   return false;
 };
 
+export const arrayBufferEquality = (
+  a: unknown,
+  b: unknown,
+): boolean | undefined => {
+  if (!(a instanceof ArrayBuffer) || !(b instanceof ArrayBuffer)) {
+    return undefined;
+  }
+
+  const dataViewA = new DataView(a);
+  const dataViewB = new DataView(b);
+
+  // Buffers are not equal when they do not have the same byte length
+  if (dataViewA.byteLength !== dataViewB.byteLength) {
+    return false;
+  }
+
+  // Check if every byte value is equal to each other
+  for (let i = 0; i < dataViewA.byteLength; i++) {
+    if (dataViewA.getUint8(i) !== dataViewB.getUint8(i)) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
 export const sparseArrayEquality = (
   a: unknown,
   b: unknown,

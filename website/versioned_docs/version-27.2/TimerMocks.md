@@ -124,7 +124,7 @@ describe('infiniteTimerGame', () => {
     // (but not any new timers that get created during that process)
     jest.runOnlyPendingTimers();
 
-    // At this point, our 1-second timer should have fired it's callback
+    // At this point, our 1-second timer should have fired its callback
     expect(callback).toBeCalled();
 
     // And it should have created a new timer to start the game over in

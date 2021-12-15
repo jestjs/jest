@@ -36,7 +36,7 @@ export default async function readConfigFileAndSetRootDir(
     } else {
       configObject = await requireOrImportModule<any>(configPath);
     }
-  } catch (error) {
+  } catch (error: unknown) {
     if (isJSON) {
       throw new Error(
         `Jest: Failed to parse config file ${configPath}\n` +
@@ -92,7 +92,7 @@ const loadTSConfigFile = async (
         module: 'CommonJS',
       },
     });
-  } catch (e) {
+  } catch (e: any) {
     if (e.code === 'MODULE_NOT_FOUND') {
       throw new Error(
         `Jest: 'ts-node' is required for the TypeScript configuration files. Make sure it is installed\nError: ${e.message}`,

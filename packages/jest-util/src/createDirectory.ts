@@ -11,7 +11,7 @@ import type {Config} from '@jest/types';
 export default function createDirectory(path: Config.Path): void {
   try {
     fs.mkdirSync(path, {recursive: true});
-  } catch (e) {
+  } catch (e: any) {
     if (e.code !== 'EEXIST') {
       throw e;
     }

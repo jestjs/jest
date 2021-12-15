@@ -33,7 +33,7 @@ jestExpect.extend({
 it('stack trace points to correct location when using matchers', () => {
   try {
     jestExpect(true).toBe(false);
-  } catch (error) {
+  } catch (error: any) {
     expect(error.stack).toContain('stacktrace.test.ts:35');
   }
 });
@@ -43,7 +43,7 @@ it('stack trace points to correct location when using nested matchers', () => {
     jestExpect(true).toMatchPredicate((value: unknown) => {
       jestExpect(value).toBe(false);
     });
-  } catch (error) {
+  } catch (error: any) {
     expect(error.stack).toContain('stacktrace.test.ts:44');
   }
 });
@@ -59,7 +59,7 @@ it('stack trace points to correct location when throwing from a custom matcher',
 
       foo();
     }).toCustomMatch('bar');
-  } catch (error) {
+  } catch (error: any) {
     expect(error.stack).toContain('stacktrace.test.ts:57');
   }
 });

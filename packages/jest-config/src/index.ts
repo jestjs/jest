@@ -44,6 +44,7 @@ export async function readConfig(
   skipArgvConfigOption?: boolean,
   parentConfigDirname?: Config.Path | null,
   projectIndex: number = Infinity,
+  skipMultipleConfigWarning = false,
 ): Promise<ReadConfig> {
   let rawOptions: Config.InitialOptions;
   let configPath = null;
@@ -77,11 +78,19 @@ export async function readConfig(
     // A string passed to `--config`, which is either a direct path to the config
     // or a path to directory containing `package.json`, `jest.config.js` or `jest.config.ts`
   } else if (!skipArgvConfigOption && typeof argv.config == 'string') {
-    configPath = resolveConfigPath(argv.config, process.cwd());
+    configPath = resolveConfigPath(
+      argv.config,
+      process.cwd(),
+      skipMultipleConfigWarning,
+    );
     rawOptions = await readConfigFileAndSetRootDir(configPath);
   } else {
     // Otherwise just try to find config in the current rootDir.
-    configPath = resolveConfigPath(packageRootOrConfig, process.cwd());
+    configPath = resolveConfigPath(
+      packageRootOrConfig,
+      process.cwd(),
+      skipMultipleConfigWarning,
+    );
     rawOptions = await readConfigFileAndSetRootDir(configPath);
   }
 
@@ -332,6 +341,8 @@ export async function readConfigs(
             skipArgvConfigOption,
             configPath ? path.dirname(configPath) : cwd,
             projectIndex,
+            // we wanna skip the warning if this is the "main" project
+            projectIsCwd,
           );
         }),
     );

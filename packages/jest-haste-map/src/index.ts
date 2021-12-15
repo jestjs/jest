@@ -325,6 +325,7 @@ export default class HasteMap extends EventEmitter {
       (options.ignorePattern || '').toString(),
       hasteImplHash,
       dependencyExtractorHash,
+      this._options.computeDependencies.toString(),
     );
     this._buildPromise = null;
     this._watchers = [];
@@ -792,7 +793,7 @@ export default class HasteMap extends EventEmitter {
 
     try {
       return crawl(crawlerOptions).catch(retry);
-    } catch (error) {
+    } catch (error: any) {
       return retry(error);
     }
   }

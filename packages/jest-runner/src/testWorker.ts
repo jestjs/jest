@@ -106,7 +106,7 @@ export async function worker({
       },
       sendMessageToJest,
     );
-  } catch (error) {
+  } catch (error: any) {
     throw formatError(error);
   }
 }

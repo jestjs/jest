@@ -112,14 +112,7 @@ function buildFile(file, silent) {
           Array.isArray(plugin) &&
           plugin[0] === '@babel/plugin-transform-modules-commonjs'
         ) {
-          return [
-            plugin[0],
-            Object.assign({}, plugin[1], {
-              lazy: string =>
-                // we want to lazyload all non-local modules plus `importEsm` - the latter to avoid syntax errors. Set to just `true` when we drop support for node 8
-                !string.startsWith('./') || string === './importEsm',
-            }),
-          ];
+          return [plugin[0], Object.assign({}, plugin[1], {lazy: true})];
         }
 
         return plugin;

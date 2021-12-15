@@ -212,7 +212,7 @@ function makeConcurrent(
           `Jest: concurrent test "${spec.getFullName()}" must return a Promise.`,
         );
       });
-    } catch (error) {
+    } catch (error: unknown) {
       promise = Promise.reject(error);
     }
 

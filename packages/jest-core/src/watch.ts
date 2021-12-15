@@ -200,7 +200,7 @@ export default async function watch(
           stdin,
           stdout: outputStream,
         });
-      } catch (error) {
+      } catch (error: any) {
         const errorWithContext = new Error(
           `Failed to initialize watch plugin "${chalk.bold(
             slash(path.relative(process.cwd(), pluginWithConfig.path)),

@@ -19,7 +19,7 @@ const findChangedFilesUsingCommand = async (
 
   try {
     result = await execa('git', args, {cwd});
-  } catch (e) {
+  } catch (e: any) {
     // TODO: Should we keep the original `message`?
     e.message = e.stderr;
 
