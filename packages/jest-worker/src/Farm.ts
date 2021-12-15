@@ -33,8 +33,8 @@ export default class Farm {
   private readonly _taskQueue: TaskQueue;
 
   constructor(
-    private _numOfWorkers: number,
-    private _callback: Function,
+    _numOfWorkers: number,
+    _callback: Function,
     options: {
       computeWorkerKey?: FarmOptions['computeWorkerKey'];
       workerSchedulingPolicy?: FarmOptions['workerSchedulingPolicy'];

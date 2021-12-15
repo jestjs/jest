@@ -30,8 +30,7 @@ export default class PriorityQueue implements TaskQueue {
   private _queue: Array<MinHeap<QueueItem>> = [];
   private _sharedQueue = new MinHeap<QueueItem>();
 
-  constructor(private _computePriority: ComputeTaskPriorityCallback) {}
-
+  constructor(_computePriority: ComputeTaskPriorityCallback) {}
   enqueue(task: QueueChildMessage, workerId?: number): void {
     if (workerId == null) {
       this._enqueue(task, this._sharedQueue);

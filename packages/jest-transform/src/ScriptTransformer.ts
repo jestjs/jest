@@ -81,8 +81,8 @@ class ScriptTransformer {
   private _transformsAreLoaded = false;
 
   constructor(
-    private readonly _config: Config.ProjectConfig,
-    private readonly _cacheFS: StringMap,
+    readonly _config: Config.ProjectConfig,
+    readonly _cacheFS: StringMap,
   ) {
     const configString = stableStringify(this._config);
     let projectCache = projectCaches.get(configString);

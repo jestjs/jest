@@ -28,7 +28,7 @@ export default class FailedTestsInteractiveMode {
   private _testAssertions: Array<AssertionLocation> = [];
   private _updateTestRunnerConfig?: RunnerUpdateFunction;
 
-  constructor(private _pipe: NodeJS.WritableStream) {}
+  constructor(_pipe: NodeJS.WritableStream) {}
 
   isActive(): boolean {
     return this._isActive;

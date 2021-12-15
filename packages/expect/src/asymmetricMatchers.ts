@@ -28,8 +28,7 @@ export abstract class AsymmetricMatcher<
 {
   $$typeof = Symbol.for('jest.asymmetricMatcher');
 
-  constructor(protected sample: T, protected inverse = false) {}
-
+  constructor(sample: T, inverse = false) {}
   protected getMatcherContext(): State {
     return {
       ...getState(),
