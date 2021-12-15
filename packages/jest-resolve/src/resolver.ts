@@ -14,11 +14,8 @@ import type {Config} from '@jest/types';
 import type {IModuleMap} from 'jest-haste-map';
 import {tryRealpath} from 'jest-util';
 import ModuleNotFoundError from './ModuleNotFoundError';
-import {
-  clearDefaultResolverCache,
-  defaultResolver,
-  defaultResolverAsync,
-} from './defaultResolver';
+import {defaultResolver, defaultResolverAsync} from './defaultResolver';
+import {clearFsCache} from './fileWalkers';
 import isBuiltinModule from './isBuiltinModule';
 import nodeModulesPaths from './nodeModulesPaths';
 import shouldLoadAsEsm, {clearCachedLookups} from './shouldLoadAsEsm';
@@ -102,7 +99,7 @@ export default class Resolver {
   }
 
   static clearDefaultResolverCache(): void {
-    clearDefaultResolverCache();
+    clearFsCache();
     clearCachedLookups();
   }
 
@@ -174,7 +171,7 @@ export default class Resolver {
         rootDir: options.rootDir,
       });
       return result;
-    } catch (e) {
+    } catch (e: unknown) {
       if (options.throwIfNotFound) {
         throw e;
       }
@@ -783,7 +780,6 @@ export default class Resolver {
     return null;
   }
 
-  /* eslint-disable-next-line consistent-return */
   resolveModule(
     from: Config.Path,
     moduleName: string,
@@ -801,7 +797,6 @@ export default class Resolver {
     this._throwModNotFoundError(from, moduleName);
   }
 
-  /* eslint-disable-next-line consistent-return */
   async resolveModuleAsync(
     from: Config.Path,
     moduleName: string,
