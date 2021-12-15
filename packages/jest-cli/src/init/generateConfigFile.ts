@@ -11,7 +11,7 @@ import {defaults, descriptions} from 'jest-config';
 const stringifyOption = (
   option: keyof Config.InitialOptions,
   map: Partial<Config.InitialOptions>,
-  linePrefix: string = '',
+  linePrefix = '',
 ): string => {
   const optionDescription = `  // ${descriptions[option]}`;
   const stringifiedObject = `${option}: ${JSON.stringify(

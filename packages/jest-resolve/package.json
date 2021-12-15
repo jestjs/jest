@@ -1,6 +1,6 @@
 {
   "name": "jest-resolve",
-  "version": "27.2.5",
+  "version": "27.4.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -10,18 +10,22 @@
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
-    ".": "./build/index.js",
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/types": "^27.2.5",
+    "@jest/types": "^27.4.2",
     "chalk": "^4.0.0",
     "graceful-fs": "^4.2.4",
-    "jest-haste-map": "^27.2.5",
+    "jest-haste-map": "^27.4.5",
     "jest-pnp-resolver": "^1.2.2",
-    "jest-util": "^27.2.5",
-    "jest-validate": "^27.2.5",
+    "jest-util": "^27.4.2",
+    "jest-validate": "^27.4.2",
     "resolve": "^1.20.0",
+    "resolve.exports": "^1.1.0",
     "slash": "^3.0.0"
   },
   "devDependencies": {

@@ -32,8 +32,11 @@ type ThemeReceived = {
   value?: string;
 };
 
+export type CompareKeys = ((a: string, b: string) => number) | undefined;
+
 export type Options = {
   callToJSON: boolean;
+  compareKeys: CompareKeys;
   escapeRegex: boolean;
   escapeString: boolean;
   highlight: boolean;
@@ -48,6 +51,7 @@ export type Options = {
 
 export interface PrettyFormatOptions {
   callToJSON?: boolean;
+  compareKeys?: CompareKeys;
   escapeRegex?: boolean;
   escapeString?: boolean;
   highlight?: boolean;
@@ -64,6 +68,7 @@ export type OptionsReceived = PrettyFormatOptions;
 
 export type Config = {
   callToJSON: boolean;
+  compareKeys: CompareKeys;
   colors: Colors;
   escapeRegex: boolean;
   escapeString: boolean;

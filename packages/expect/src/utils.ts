@@ -45,7 +45,7 @@ export const getPath = (
   propertyPath: string | Array<string>,
 ): GetPath => {
   if (!Array.isArray(propertyPath)) {
-    propertyPath = (propertyPath as string).split('.');
+    propertyPath = pathAsArray(propertyPath);
   }
 
   if (propertyPath.length) {
@@ -370,6 +370,24 @@ export const partition = <T>(
   items.forEach(item => result[predicate(item) ? 0 : 1].push(item));
 
   return result;
+};
+
+export const pathAsArray = (propertyPath: string): Array<any> => {
+  // will match everything that's not a dot or a bracket, and "" for consecutive dots.
+  const pattern = RegExp('[^.[\\]]+|(?=(?:\\.)(?:\\.|$))', 'g');
+  const properties: Array<string> = [];
+
+  // Because the regex won't match a dot in the beginning of the path, if present.
+  if (propertyPath[0] === '.') {
+    properties.push('');
+  }
+
+  propertyPath.replace(pattern, match => {
+    properties.push(match);
+    return match;
+  });
+
+  return properties;
 };
 
 // Copied from https://github.com/graingert/angular.js/blob/a43574052e9775cbc1d7dd8a086752c979b0f020/src/Angular.js#L685-L693

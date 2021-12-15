@@ -26,6 +26,9 @@ module.exports = {
     'plugin:eslint-comments/recommended',
     'plugin:prettier/recommended',
   ],
+  globals: {
+    BigInt: 'readonly',
+  },
   overrides: [
     {
       extends: [
@@ -231,7 +234,7 @@ module.exports = {
       },
     },
     {
-      files: ['test-types/*.test.ts', '*.md'],
+      files: ['**/__typechecks__/**', '*.md'],
       rules: {
         'jest/no-focused-tests': 'off',
         'jest/no-identical-title': 'off',
@@ -298,9 +301,9 @@ module.exports = {
       'error',
       {
         devDependencies: [
-          '/test-types/**',
-          '**/__tests__/**',
           '**/__mocks__/**',
+          '**/__tests__/**',
+          '**/__typechecks__/**',
           '**/?(*.)(spec|test).js?(x)',
           'scripts/**',
           'babel.config.js',
@@ -482,5 +485,8 @@ module.exports = {
     'import/internal-regex': new RegExp(
       internalPackages.map(pkg => `^${pkg}$`).join('|'),
     ).source,
+    'import/resolver': {
+      typescript: {},
+    },
   },
 };

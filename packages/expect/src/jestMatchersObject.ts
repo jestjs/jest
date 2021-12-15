@@ -68,10 +68,7 @@ export const setMatchers = <State extends MatcherState = MatcherState>(
         [unknown, ...Array<unknown>],
         State
       > {
-        constructor(
-          inverse: boolean = false,
-          ...sample: [unknown, ...Array<unknown>]
-        ) {
+        constructor(inverse = false, ...sample: [unknown, ...Array<unknown>]) {
           super(sample, inverse);
         }
 
@@ -99,12 +96,18 @@ export const setMatchers = <State extends MatcherState = MatcherState>(
       }
 
       Object.defineProperty(expect, key, {
+        configurable: true,
+        enumerable: true,
         value: (...sample: [unknown, ...Array<unknown>]) =>
           new CustomMatcher(false, ...sample),
+        writable: true,
       });
       Object.defineProperty(expect.not, key, {
+        configurable: true,
+        enumerable: true,
         value: (...sample: [unknown, ...Array<unknown>]) =>
           new CustomMatcher(true, ...sample),
+        writable: true,
       });
     }
   });

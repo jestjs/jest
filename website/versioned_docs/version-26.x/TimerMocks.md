@@ -5,8 +5,7 @@ title: Timer Mocks
 
 The native timer functions (i.e., `setTimeout`, `setInterval`, `clearTimeout`, `clearInterval`) are less than ideal for a testing environment since they depend on real time to elapse. Jest can swap out timers with functions that allow you to control the passage of time. [Great Scott!](https://www.youtube.com/watch?v=QZoJ2Pt27BY)
 
-```javascript
-// timerGame.js
+```javascript title="timerGame.js"
 'use strict';
 
 function timerGame(callback) {
@@ -20,8 +19,7 @@ function timerGame(callback) {
 module.exports = timerGame;
 ```
 
-```javascript
-// __tests__/timerGame-test.js
+```javascript title="__tests__/timerGame-test.js"
 'use strict';
 
 jest.useFakeTimers();
@@ -64,8 +62,7 @@ test('calls the callback after 1 second', () => {
 
 There are also scenarios where you might have a recursive timer -- that is a timer that sets a new timer in its own callback. For these, running all the timers would be an endless loop… so something like `jest.runAllTimers()` is not desirable. For these cases you might use `jest.runOnlyPendingTimers()`:
 
-```javascript
-// infiniteTimerGame.js
+```javascript title="infiniteTimerGame.js"
 'use strict';
 
 function infiniteTimerGame(callback) {
@@ -85,8 +82,7 @@ function infiniteTimerGame(callback) {
 module.exports = infiniteTimerGame;
 ```
 
-```javascript
-// __tests__/infiniteTimerGame-test.js
+```javascript title="__tests__/infiniteTimerGame-test.js"
 'use strict';
 
 jest.useFakeTimers();
@@ -124,8 +120,7 @@ describe('infiniteTimerGame', () => {
 
 Another possibility is use `jest.advanceTimersByTime(msToRun)`. When this API is called, all timers are advanced by `msToRun` milliseconds. All pending "macro-tasks" that have been queued via setTimeout() or setInterval(), and would be executed during this time frame, will be executed. Additionally, if those macro-tasks schedule new macro-tasks that would be executed within the same time frame, those will be executed until there are no more macro-tasks remaining in the queue that should be run within msToRun milliseconds.
 
-```javascript
-// timerGame.js
+```javascript title="timerGame.js"
 'use strict';
 
 function timerGame(callback) {

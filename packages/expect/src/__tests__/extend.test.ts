@@ -167,3 +167,21 @@ it('prints the Symbol into the error message', () => {
     }),
   ).toThrowErrorMatchingSnapshot();
 });
+
+it('allows overriding existing extension', () => {
+  jestExpect.extend({
+    toAllowOverridingExistingMatcher(_expected: unknown) {
+      return {pass: _expected === 'bar'};
+    },
+  });
+
+  jestExpect('foo').not.toAllowOverridingExistingMatcher();
+
+  jestExpect.extend({
+    toAllowOverridingExistingMatcher(_expected: unknown) {
+      return {pass: _expected === 'foo'};
+    },
+  });
+
+  jestExpect('foo').toAllowOverridingExistingMatcher();
+});

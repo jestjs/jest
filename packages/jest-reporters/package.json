@@ -1,19 +1,22 @@
 {
   "name": "@jest/reporters",
   "description": "Jest's reporters",
-  "version": "27.2.5",
+  "version": "27.4.5",
   "main": "./build/index.js",
   "types": "./build/index.d.ts",
   "exports": {
-    ".": "./build/index.js",
+    ".": {
+      "types": "./build/index.d.ts",
+      "default": "./build/index.js"
+    },
     "./package.json": "./package.json"
   },
   "dependencies": {
     "@bcoe/v8-coverage": "^0.2.3",
-    "@jest/console": "^27.2.5",
-    "@jest/test-result": "^27.2.5",
-    "@jest/transform": "^27.2.5",
-    "@jest/types": "^27.2.5",
+    "@jest/console": "^27.4.2",
+    "@jest/test-result": "^27.4.2",
+    "@jest/transform": "^27.4.5",
+    "@jest/types": "^27.4.2",
     "@types/node": "*",
     "chalk": "^4.0.0",
     "collect-v8-coverage": "^1.0.0",
@@ -25,10 +28,10 @@
     "istanbul-lib-report": "^3.0.0",
     "istanbul-lib-source-maps": "^4.0.0",
     "istanbul-reports": "^3.0.2",
-    "jest-haste-map": "^27.2.5",
-    "jest-resolve": "^27.2.5",
-    "jest-util": "^27.2.5",
-    "jest-worker": "^27.2.5",
+    "jest-haste-map": "^27.4.5",
+    "jest-resolve": "^27.4.5",
+    "jest-util": "^27.4.2",
+    "jest-worker": "^27.4.5",
     "slash": "^3.0.0",
     "source-map": "^0.6.0",
     "string-length": "^4.0.1",
@@ -36,7 +39,7 @@
     "v8-to-istanbul": "^8.1.0"
   },
   "devDependencies": {
-    "@jest/test-utils": "^27.2.5",
+    "@jest/test-utils": "^27.4.2",
     "@types/exit": "^0.1.30",
     "@types/glob": "^7.1.1",
     "@types/graceful-fs": "^4.1.3",

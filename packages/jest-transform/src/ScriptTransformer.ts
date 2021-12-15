@@ -25,6 +25,12 @@ import {
   tryRealpath,
 } from 'jest-util';
 import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';
+import {
+  makeInvalidReturnValueError,
+  makeInvalidSourceMapWarning,
+  makeInvalidSyncTransformerError,
+  makeInvalidTransformerError,
+} from './runtimeErrorsAndWarnings';
 import shouldInstrument from './shouldInstrument';
 import type {
   Options,
@@ -258,7 +264,7 @@ class ScriptTransformer {
           );
 
           if (!transformer) {
-            throw new TypeError('Jest: a transform must export something.');
+            throw new Error(makeInvalidTransformerError(transformPath));
           }
           if (typeof transformer.createTransformer === 'function') {
             transformer = transformer.createTransformer(transformerConfig);
@@ -267,9 +273,7 @@ class ScriptTransformer {
             typeof transformer.process !== 'function' &&
             typeof transformer.processAsync !== 'function'
           ) {
-            throw new TypeError(
-              'Jest: a transform must export a `process` or `processAsync` function.',
-            );
+            throw new Error(makeInvalidTransformerError(transformPath));
           }
           const res = {transformer, transformerConfig};
           this._transformCache.set(transformPath, res);
@@ -373,11 +377,7 @@ class ScriptTransformer {
       } else if (processed != null && typeof processed.code === 'string') {
         transformed = processed;
       } else {
-        throw new TypeError(
-          "Jest: a transform's `process` function must return a string, " +
-            'or an object with `code` key containing this string. ' +
-            "It's `processAsync` function must return a Promise resolving to it.",
-        );
+        throw new Error(makeInvalidReturnValueError());
       }
     }
 
@@ -391,11 +391,8 @@ class ScriptTransformer {
         }
       } catch {
         const transformPath = this._getTransformPath(filename);
-        console.warn(
-          `jest-transform: The source map produced for the file ${filename} ` +
-            `by ${transformPath} was invalid. Proceeding without source ` +
-            'mapping for that file.',
-        );
+        invariant(transformPath);
+        console.warn(makeInvalidSourceMapWarning(filename, transformPath));
       }
     }
 
@@ -879,9 +876,9 @@ function readCodeCacheFile(cachePath: Config.Path): string | null {
   if (content == null) {
     return null;
   }
-  const code = content.substr(33);
+  const code = content.substring(33);
   const checksum = createHash('md5').update(code).digest('hex');
-  if (checksum === content.substr(0, 32)) {
+  if (checksum === content.substring(0, 32)) {
     return code;
   }
   return null;
@@ -997,7 +994,7 @@ function assertSyncTransformer(
   invariant(name);
   invariant(
     typeof transformer.process === 'function',
-    `Jest: synchronous transformer ${name} must export a "process" function.`,
+    makeInvalidSyncTransformerError(name),
   );
 }
 

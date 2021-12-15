@@ -49,7 +49,7 @@ jobs:
     steps:
       - checkout
       - node/install:
-          lts: true
+          node-version: '14'
           install-npm: false
       - node/install-packages: *install
       - run:
@@ -70,5 +70,5 @@ workflows:
           partial: true
           matrix:
             parameters:
-              node-version: ['10', '12', '15', '16']
+              node-version: ['10', '12', '15', '16', '17']
       - test-jest-jasmine

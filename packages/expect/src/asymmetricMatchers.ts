@@ -69,21 +69,20 @@ class Any extends AsymmetricMatcher<any> {
       return typeof other == 'function' || other instanceof Function;
     }
 
-    if (this.sample == Object) {
-      return typeof other == 'object';
-    }
-
     if (this.sample == Boolean) {
-      return typeof other == 'boolean';
+      return typeof other == 'boolean' || other instanceof Boolean;
     }
 
-    /* global BigInt */
     if (this.sample == BigInt) {
-      return typeof other == 'bigint';
+      return typeof other == 'bigint' || other instanceof BigInt;
     }
 
     if (this.sample == Symbol) {
-      return typeof other == 'symbol';
+      return typeof other == 'symbol' || other instanceof Symbol;
+    }
+
+    if (this.sample == Object) {
+      return typeof other == 'object';
     }
 
     return other instanceof this.sample;
@@ -139,7 +138,7 @@ class Anything extends AsymmetricMatcher<void> {
 }
 
 class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
-  constructor(sample: Array<unknown>, inverse: boolean = false) {
+  constructor(sample: Array<unknown>, inverse = false) {
     super(sample, inverse);
   }
 
@@ -172,7 +171,7 @@ class ArrayContaining extends AsymmetricMatcher<Array<unknown>> {
 }
 
 class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
-  constructor(sample: Record<string, unknown>, inverse: boolean = false) {
+  constructor(sample: Record<string, unknown>, inverse = false) {
     super(sample, inverse);
   }
 
@@ -210,7 +209,7 @@ class ObjectContaining extends AsymmetricMatcher<Record<string, unknown>> {
 }
 
 class StringContaining extends AsymmetricMatcher<string> {
-  constructor(sample: string, inverse: boolean = false) {
+  constructor(sample: string, inverse = false) {
     if (!isA('String', sample)) {
       throw new Error('Expected is not a string');
     }
@@ -233,7 +232,7 @@ class StringContaining extends AsymmetricMatcher<string> {
 }
 
 class StringMatching extends AsymmetricMatcher<RegExp> {
-  constructor(sample: string | RegExp, inverse: boolean = false) {
+  constructor(sample: string | RegExp, inverse = false) {
     if (!isA('String', sample) && !isA('RegExp', sample)) {
       throw new Error('Expected is not a String or a RegExp');
     }

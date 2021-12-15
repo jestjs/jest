@@ -7,7 +7,7 @@
  * @jest-environment <rootDir>/browser-env.js
  */
 
-import {fn} from '../fake-dual-dep';
+import {fn} from 'fake-dual-dep';
 
 test('returns correct message', () => {
   expect(fn()).toEqual('hello from browser');

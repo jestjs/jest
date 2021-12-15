@@ -486,14 +486,14 @@ describe('ScriptTransformer', () => {
     await Promise.all([...promisesToReject, ...promisesToResolve]);
   });
 
-  it('throws an error if neither `process` nor `processAsync is defined', async () => {
+  it('throws an error if neither `process` nor `processAsync` is defined', async () => {
     config = {
       ...config,
       transform: [['\\.js$', 'skipped-required-props-preprocessor', {}]],
     };
-    await expect(() => createScriptTransformer(config)).rejects.toThrow(
-      'Jest: a transform must export a `process` or `processAsync` function.',
-    );
+    await expect(() =>
+      createScriptTransformer(config),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 
   it("(in sync mode) throws an error if `process` isn't defined", async () => {
@@ -506,9 +506,7 @@ describe('ScriptTransformer', () => {
     const scriptTransformer = await createScriptTransformer(config);
     expect(() =>
       scriptTransformer.transformSource('sample.js', '', {instrument: false}),
-    ).toThrow(
-      'Jest: synchronous transformer skipped-required-props-preprocessor-only-async must export a "process" function.',
-    );
+    ).toThrowErrorMatchingSnapshot();
   });
 
   it('(in async mode) handles only sync `process`', async () => {
@@ -537,9 +535,9 @@ describe('ScriptTransformer', () => {
         ],
       ],
     };
-    await expect(() => createScriptTransformer(config)).rejects.toThrow(
-      'Jest: a transform must export a `process` or `processAsync` function.',
-    );
+    await expect(() =>
+      createScriptTransformer(config),
+    ).rejects.toThrowErrorMatchingSnapshot();
   });
 
   it("shouldn't throw error without process method. But with correct createTransformer method", async () => {

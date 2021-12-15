@@ -1,5 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`ScriptTransformer (in sync mode) throws an error if \`process\` isn't defined 1`] = `
+"<red><bold>● Invalid synchronous transformer module:</></>
+<red>  \\"skipped-required-props-preprocessor-only-async\\" specified in the \\"transform\\" object of Jest configuration</>
+<red>  must export a \`process\` function.</>
+<red>  <bold>Code Transformation Documentation:</></>
+<red>  https://jestjs.io/docs/code-transformation</>
+<red></>"
+`;
+
 exports[`ScriptTransformer in async mode, passes expected transform options to getCacheKey 1`] = `
 [MockFunction] {
   "calls": Array [
@@ -126,7 +135,11 @@ const TRANSFORMED = {
 
 exports[`ScriptTransformer in async mode, uses the supplied preprocessor 2`] = `module.exports = "react";`;
 
-exports[`ScriptTransformer in async mode, warns of unparseable inlined source maps from the preprocessor 1`] = `jest-transform: The source map produced for the file /fruits/banana.js by preprocessor-with-sourcemaps was invalid. Proceeding without source mapping for that file.`;
+exports[`ScriptTransformer in async mode, warns of unparseable inlined source maps from the preprocessor 1`] = `
+[33m[1m● Invalid source map:[22m[39m
+[33m  The source map for "/fruits/banana.js" returned by "preprocessor-with-sourcemaps" is invalid.[39m
+[33m  Proceeding without source mapping for that file.[39m
+`;
 
 exports[`ScriptTransformer passes expected transform options to getCacheKey 1`] = `
 [MockFunction] {
@@ -338,6 +351,24 @@ exports[`ScriptTransformer passes expected transform options to getCacheKeyAsync
     },
   ],
 }
+`;
+
+exports[`ScriptTransformer throws an error if createTransformer returns object without \`process\` method 1`] = `
+"<red><bold>● Invalid transformer module:</></>
+<red>  \\"skipped-required-create-transformer-props-preprocessor\\" specified in the \\"transform\\" object of Jest configuration</>
+<red>  must export a \`process\` or \`processAsync\` or \`createTransformer\` function.</>
+<red>  <bold>Code Transformation Documentation:</></>
+<red>  https://jestjs.io/docs/code-transformation</>
+<red></>"
+`;
+
+exports[`ScriptTransformer throws an error if neither \`process\` nor \`processAsync\` is defined 1`] = `
+"<red><bold>● Invalid transformer module:</></>
+<red>  \\"skipped-required-props-preprocessor\\" specified in the \\"transform\\" object of Jest configuration</>
+<red>  must export a \`process\` or \`processAsync\` or \`createTransformer\` function.</>
+<red>  <bold>Code Transformation Documentation:</></>
+<red>  https://jestjs.io/docs/code-transformation</>
+<red></>"
 `;
 
 exports[`ScriptTransformer transforms a file async properly 1`] = `
@@ -688,6 +719,14 @@ const TRANSFORMED = {
 
 exports[`ScriptTransformer uses the supplied preprocessor 2`] = `module.exports = "react";`;
 
-exports[`ScriptTransformer warns of unparseable inlined source maps from the async preprocessor 1`] = `jest-transform: The source map produced for the file /fruits/banana.js by async-preprocessor-with-sourcemaps was invalid. Proceeding without source mapping for that file.`;
+exports[`ScriptTransformer warns of unparseable inlined source maps from the async preprocessor 1`] = `
+[33m[1m● Invalid source map:[22m[39m
+[33m  The source map for "/fruits/banana.js" returned by "async-preprocessor-with-sourcemaps" is invalid.[39m
+[33m  Proceeding without source mapping for that file.[39m
+`;
 
-exports[`ScriptTransformer warns of unparseable inlined source maps from the preprocessor 1`] = `jest-transform: The source map produced for the file /fruits/banana.js by preprocessor-with-sourcemaps was invalid. Proceeding without source mapping for that file.`;
+exports[`ScriptTransformer warns of unparseable inlined source maps from the preprocessor 1`] = `
+[33m[1m● Invalid source map:[22m[39m
+[33m  The source map for "/fruits/banana.js" returned by "preprocessor-with-sourcemaps" is invalid.[39m
+[33m  Proceeding without source mapping for that file.[39m
+`;

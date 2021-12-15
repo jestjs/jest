@@ -5,8 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+import {resolve} from 'path';
 import pnpResolver from 'jest-pnp-resolver';
 import resolveAsync = require('resolve');
+import {
+  Options as ResolveExportsOptions,
+  resolve as resolveExports,
+} from 'resolve.exports';
 import type {Config} from '@jest/types';
 import {
   PkgJson,
@@ -21,13 +26,19 @@ import {
 
 const resolveSync = resolveAsync.sync;
 
-export interface ResolverOptions extends resolveAsync.Opts {
+// copy from `resolve`'s types so we don't have their types in our definition
+// files
+export interface ResolverOptions {
   basedir: Config.Path;
   browser?: boolean;
   conditions?: Array<string>;
   defaultResolver: typeof defaultResolver;
   extensions?: Array<string>;
+  moduleDirectory?: Array<string>;
+  paths?: Array<Config.Path>;
   rootDir?: Config.Path;
+  packageFilter?: (pkg: PkgJson, dir: string) => PkgJson;
+  pathFilter?: (pkg: PkgJson, path: string, relativePath: string) => string;
 }
 
 type ResolverOptionsAsync = Omit<ResolverOptions, 'defaultResolver'> & {
@@ -95,6 +106,10 @@ function getSyncResolveOptions(
     ...options,
     isDirectory: isDirectorySync,
     isFile: isFileSync,
+    packageFilter: createPackageFilter(
+      options.conditions,
+      options.packageFilter,
+    ),
     preserveSymlinks: false,
     readPackageSync,
     realpathSync,
@@ -137,4 +152,48 @@ function readPackageAsync(
   } catch (err: any) {
     cb(err);
   }
+}
+
+function createPackageFilter(
+  conditions?: Array<string>,
+  userFilter?: ResolverOptions['packageFilter'],
+): ResolverOptions['packageFilter'] {
+  function attemptExportsFallback(pkg: PkgJson) {
+    const options: ResolveExportsOptions = conditions
+      ? {conditions, unsafe: true}
+      : // no conditions were passed - let's assume this is Jest internal and it should be `require`
+        {browser: false, require: true};
+
+    try {
+      return resolveExports(pkg, '.', options);
+    } catch {
+      return undefined;
+    }
+  }
+
+  return function packageFilter(pkg, packageDir) {
+    let filteredPkg = pkg;
+
+    if (userFilter) {
+      filteredPkg = userFilter(filteredPkg, packageDir);
+    }
+
+    if (filteredPkg.main != null) {
+      return filteredPkg;
+    }
+
+    const indexInRoot = resolve(packageDir, './index.js');
+
+    // if the module contains an `index.js` file in root, `resolve` will request
+    // that if there is no `main`. Since we don't wanna break that, add this
+    // check
+    if (isFileSync(indexInRoot)) {
+      return filteredPkg;
+    }
+
+    return {
+      ...filteredPkg,
+      main: attemptExportsFallback(filteredPkg),
+    };
+  };
 }
