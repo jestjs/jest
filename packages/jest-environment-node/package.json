@@ -1,6 +1,6 @@
 {
   "name": "jest-environment-node",
-  "version": "27.4.2",
+  "version": "27.4.4",
   "repository": {
     "type": "git",
     "url": "https://github.com/facebook/jest.git",
@@ -17,7 +17,7 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@jest/environment": "^27.4.2",
+    "@jest/environment": "^27.4.4",
     "@jest/fake-timers": "^27.4.2",
     "@jest/types": "^27.4.2",
     "@types/node": "*",

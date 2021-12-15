@@ -60,15 +60,7 @@ export default class ExperimentalWorker implements WorkerInterface {
 
   initialize(): void {
     this._worker = new Worker(path.resolve(__dirname, './threadChild.js'), {
-      env: {
-        ...process.env,
-        JEST_WORKER_ID: String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
-      },
       eval: false,
-      // Suppress --max_old_space_size flags while preserving others (like --harmony). See https://nodejs.org/api/worker_threads.html#new-workerfilename-options
-      execArgv: process.execArgv.filter(
-        v => !/^--(max_old_space_size|max-old-space-size)/.test(v),
-      ),
       // @ts-expect-error: added in newer versions
       resourceLimits: this._options.resourceLimits,
       stderr: true,
@@ -105,6 +97,7 @@ export default class ExperimentalWorker implements WorkerInterface {
       false,
       this._options.workerPath,
       this._options.setupArgs,
+      String(this._options.workerId + 1), // 0-indexed workerId, 1-indexed JEST_WORKER_ID
     ]);
 
     this._retries++;
