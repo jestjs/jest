@@ -16668,16 +16668,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pirates@npm:^4.0.0":
-  version: 4.0.1
-  resolution: "pirates@npm:4.0.1"
-  dependencies:
-    node-modules-regexp: ^1.0.0
-  checksum: 21604008c36ab6e14ac458e1a267dd7322cfd36b9e1042e9e277dd064582717e30b9aba8c0a47d738bf004ee7946ed27f6b982d30968534f2c6b5b168a52b555
-  languageName: node
-  linkType: hard
-
-"pirates@npm:^4.0.4":
+"pirates@npm:^4.0.0, pirates@npm:^4.0.4":
   version: 4.0.4
   resolution: "pirates@npm:4.0.4"
   checksum: eabc769e9b3387a0494327134ae7a8c770c102f232ac59e45363a1d64089ff1762b1162926a3c577e5d747c27a7248a072d517a8105c6751e390fcc25b0d1f23
