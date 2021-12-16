@@ -4,7 +4,7 @@
 
 ### Fixes
 
-- `[@jest/transform]` Update dependency package `pirates` to 4.0.4  ([#12136](https://github.com/facebook/jest/pull/12136))
+- `[@jest/transform]` Update dependency package `pirates` to 4.0.4 ([#12136](https://github.com/facebook/jest/pull/12136))
 
 ### Chore & Maintenance
 
