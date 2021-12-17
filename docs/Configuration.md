@@ -1017,7 +1017,7 @@ module.exports = {
   },
 
   test(val) {
-    return val && Object.prototype.hasOwnProperty(val,'foo')
+    return val && Object.prototype.hasOwnProperty(val, 'foo');
   },
 };
 ```
