@@ -79,15 +79,15 @@ export default async function readConfigFileAndSetRootDir(
   return configObject;
 }
 
+let registerer: Service;
+
 // Load the TypeScript configuration
 const loadTSConfigFile = async (
   configPath: Config.Path,
 ): Promise<Config.InitialOptions> => {
-  let registerer: Service;
-
   // Register TypeScript compiler instance
   try {
-    registerer = require('ts-node').register({
+    registerer ||= require('ts-node').register({
       compilerOptions: {
         module: 'CommonJS',
       },
