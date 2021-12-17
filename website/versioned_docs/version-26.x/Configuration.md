@@ -949,7 +949,7 @@ module.exports = {
   },
 
   test(val) {
-    return val && val.hasOwnProperty('foo');
+    return val && Object.prototype.hasOwnProperty.call(val,'foo')
   },
 };
 ```
