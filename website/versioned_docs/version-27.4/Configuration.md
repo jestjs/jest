@@ -459,7 +459,7 @@ _Note: While code transformation is applied to the linked setup-file, Jest will 
 Example:
 
 ```js title="setup.js"
-// can be synchoronous
+// can be synchronous
 module.exports = async () => {
   // ...
   // Set reference to mongod in order to close the server during teardown.
