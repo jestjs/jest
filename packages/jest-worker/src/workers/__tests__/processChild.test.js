@@ -177,7 +177,10 @@ it('returns results immediately when function is synchronous', () => {
     [],
   ]);
 
-  expect(process.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 1989]);
+  expect(process.send.mock.calls[0][0]).toEqual([
+    PARENT_MESSAGE_OK,
+    {stringifiedMessage: '[1989]'},
+  ]);
 
   process.emit('message', [
     CHILD_MESSAGE_CALL,
@@ -258,7 +261,10 @@ it('returns results when it gets resolved if function is asynchronous', async ()
 
   await sleep(10);
 
-  expect(process.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 1989]);
+  expect(process.send.mock.calls[0][0]).toEqual([
+    PARENT_MESSAGE_OK,
+    {stringifiedMessage: '[1989]'},
+  ]);
 
   process.emit('message', [
     CHILD_MESSAGE_CALL,
@@ -294,7 +300,10 @@ it('calls the main module if the method call is "default"', () => {
     [],
   ]);
 
-  expect(process.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 12345]);
+  expect(process.send.mock.calls[0][0]).toEqual([
+    PARENT_MESSAGE_OK,
+    {stringifiedMessage: '[12345]'},
+  ]);
 });
 
 it('calls the main export if the method call is "default" and it is a Babel transpiled one', () => {
@@ -311,7 +320,10 @@ it('calls the main export if the method call is "default" and it is a Babel tran
     [],
   ]);
 
-  expect(process.send.mock.calls[0][0]).toEqual([PARENT_MESSAGE_OK, 67890]);
+  expect(process.send.mock.calls[0][0]).toEqual([
+    PARENT_MESSAGE_OK,
+    {stringifiedMessage: '[67890]'},
+  ]);
 });
 
 it('removes the message listener on END message', () => {

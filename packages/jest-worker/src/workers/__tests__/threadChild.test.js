@@ -201,7 +201,7 @@ it('returns results immediately when function is synchronous', () => {
 
   expect(thread.postMessage.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    1989,
+    {stringifiedMessage: '[1989]'},
   ]);
 
   thread.emit('message', [
@@ -287,7 +287,7 @@ it('returns results when it gets resolved if function is asynchronous', async ()
 
   expect(thread.postMessage.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    1989,
+    {stringifiedMessage: '[1989]'},
   ]);
 
   thread.emit('message', [
@@ -326,7 +326,7 @@ it('calls the main module if the method call is "default"', () => {
 
   expect(thread.postMessage.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    12345,
+    {stringifiedMessage: '[12345]'},
   ]);
 });
 
@@ -346,7 +346,7 @@ it('calls the main export if the method call is "default" and it is a Babel tran
 
   expect(thread.postMessage.mock.calls[0][0]).toEqual([
     PARENT_MESSAGE_OK,
-    67890,
+    {stringifiedMessage: '[67890]'},
   ]);
 });
 
