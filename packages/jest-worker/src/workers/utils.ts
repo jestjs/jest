@@ -14,8 +14,12 @@ export const stringify = (message: unknown): StringifiedMessage => {
   return {stringifiedMessage: flatted.stringify(message)};
 };
 
+const hasStringifiedMessage = (obj: unknown): obj is StringifiedMessage => {
+  return typeof obj === 'object' && !!obj && 'stringifiedMessage' in obj;
+};
+
 export const parse = ([, re]: WorkerResponse): unknown => {
-  if (typeof re === 'object' && re && 'stringifiedMessage' in re) {
+  if (hasStringifiedMessage(re)) {
     return flatted.parse(re.stringifiedMessage);
   }
 
