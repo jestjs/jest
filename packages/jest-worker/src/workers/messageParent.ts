@@ -6,6 +6,7 @@
  */
 
 import {PARENT_MESSAGE_CUSTOM} from '../types';
+import {stringify} from './utils';
 
 const isWorkerThread: boolean = (() => {
   try {
@@ -29,9 +30,7 @@ export default function messageParent(
     // ! is safe due to `null` check in `isWorkerThread`
     parentPort!.postMessage([PARENT_MESSAGE_CUSTOM, message]);
   } else if (typeof parentProcess.send === 'function') {
-    const m = {stringifiedMessage: require('flatted').stringify(message)};
-    // const m = message;
-    parentProcess.send([PARENT_MESSAGE_CUSTOM, m]);
+    parentProcess.send([PARENT_MESSAGE_CUSTOM, stringify(message)]);
   } else {
     throw new Error('"messageParent" can only be used inside a worker');
   }

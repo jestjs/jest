@@ -17,6 +17,7 @@ import {
   PARENT_MESSAGE_OK,
   PARENT_MESSAGE_SETUP_ERROR,
 } from '../types';
+import {stringify} from './utils';
 
 let file: string | null = null;
 let setupArgs: Array<unknown> = [];
@@ -66,7 +67,7 @@ function reportSuccess(result: unknown) {
     throw new Error('Child can only be used on a forked process');
   }
 
-  parentPort!.postMessage([PARENT_MESSAGE_OK, result]);
+  parentPort!.postMessage([PARENT_MESSAGE_OK, stringify(result)]);
 }
 
 function reportClientError(error: Error) {
