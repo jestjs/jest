@@ -2570,6 +2570,7 @@ __metadata:
     "@crowdin/cli": ^3.5.2
     "@jest/globals": "workspace:*"
     "@jest/test-utils": "workspace:*"
+    "@tsconfig/node10": ^1.0.8
     "@types/babel__core": ^7.0.0
     "@types/babel__generator": ^7.0.0
     "@types/babel__template": ^7.0.0
@@ -4408,6 +4409,13 @@ __metadata:
   version: 0.2.0
   resolution: "@trysound/sax@npm:0.2.0"
   checksum: 55c7d0801a51848b8032b943590a15d8a2155480c123ed4338d2b4299293398037ea05c65c586ad35c4d52c3fc1dfade5745cf6666158c0653df291ceef425e5
+  languageName: node
+  linkType: hard
+
+"@tsconfig/node10@npm:^1.0.8":
+  version: 1.0.8
+  resolution: "@tsconfig/node10@npm:1.0.8"
+  checksum: 0336493b89fb7c06409a1247a3fb00fac2755f21f3f8ae4b9dd2457859abfc5e8ca42b6d9ca5a279fe81bc70fe1f3450eef61e5dd5a63a7b4a6946ff31874816
   languageName: node
   linkType: hard
 
