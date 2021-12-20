@@ -11,6 +11,8 @@
 
 ### Performance
 
+- `jest-config` perf: only register ts-node once when loading TS config files ([#12160](https://github.com/facebook/jest/pull/12160))
+
 ## 27.4.5
 
 ### Fixes
