@@ -1413,12 +1413,10 @@ These patterns match against the full path. Use the `<rootDir>` string token to 
 Even if nothing is specified here, the watcher will ignore changes to the version control folders (.git, .hg). Other hidden files and directories, i.e. those that begin with a dot (`.`), are watched by default. Remember to escape the dot when you add them to `watchPathIgnorePatterns` as it is a special RegExp character.
 
 Example:
+
 ```json
 {
-  "watchPathIgnorePatterns": [
-    "<rootDir>/\\.tmp/",
-    "<rootDir>/bar/"
-  ]
+  "watchPathIgnorePatterns": ["<rootDir>/\\.tmp/", "<rootDir>/bar/"]
 }
 ```
 
