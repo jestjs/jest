@@ -129,7 +129,7 @@ export function isFileAsync(
 ): void {
   try {
     // TODO: create an async version of statSyncCached
-    const isFile = statSyncCached(file) === IPathType.FILE;
+    const isFile = isFileSync(file);
     cb(null, isFile);
   } catch (err: any) {
     cb(err);
