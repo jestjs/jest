@@ -146,7 +146,7 @@ function readPackageSync(_: unknown, file: Config.Path): PkgJson {
 
 function readPackageAsync(
   _: unknown,
-  pkgfile: string,
+  pkgfile: Config.Path,
   cb: (err: Error | null, pkgJson?: PkgJson) => void,
 ): void {
   try {
