@@ -146,7 +146,7 @@ export function isDirectoryAsync(
 ): void {
   try {
     // TODO: create an async version of statSyncCached
-    const isDir = statSyncCached(dir) === IPathType.DIRECTORY;
+    const isDir = isDirectorySync(dir);
     cb(null, isDir);
   } catch (err: any) {
     cb(err);
