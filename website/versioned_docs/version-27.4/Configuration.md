@@ -1411,7 +1411,7 @@ An array of RegExp patterns that are matched against all source file paths befor
 
 These patterns match against the full path. Use the `<rootDir>` string token to include the path to your project's root directory to prevent it from accidentally ignoring all of your files in different environments that may have different root directories. Example: `["<rootDir>/node_modules/"]`.
 
-Hidden files and directories, i.e. files and folders that begin with a dot (`.`), are watched by default. Add them to `watchPathIgnorePatterns` if you need to ignore them. Remember to escape the dot as it is a special RegExp character.
+Even if nothing is specified here, the watcher will ignore changes to the version control folders (.git, .hg). Other hidden files and directories, i.e. those that begin with a dot (`.`), are watched by default. Remember to escape the dot when you add them to `watchPathIgnorePatterns` as it is a special RegExp character.
 
 Example:
 ```json
