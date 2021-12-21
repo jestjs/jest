@@ -147,7 +147,7 @@ function readPackageSync(_: unknown, file: Config.Path): PkgJson {
 function readPackageAsync(
   _: unknown,
   pkgfile: string,
-  cb: (err: Error | null, pkgJson?: Record<string, unknown>) => void,
+  cb: (err: Error | null, pkgJson?: PkgJson) => void,
 ): void {
   try {
     // TODO: create an async version of readPackageCached
