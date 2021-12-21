@@ -5,10 +5,13 @@
 ### Fixes
 
 - `[@jest/transform]` Update dependency package `pirates` to 4.0.4 ([#12136](https://github.com/facebook/jest/pull/12136))
+- `[jest-environment-node]` Add `AbortSignal` ([#12157](https://github.com/facebook/jest/pull/12157))
 
 ### Chore & Maintenance
 
 ### Performance
+
+- `jest-config` perf: only register ts-node once when loading TS config files ([#12160](https://github.com/facebook/jest/pull/12160))
 
 ## 27.4.5
 

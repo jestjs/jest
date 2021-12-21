@@ -13,6 +13,7 @@
     "@crowdin/cli": "^3.5.2",
     "@jest/globals": "workspace:*",
     "@jest/test-utils": "workspace:*",
+    "@tsconfig/node10": "^1.0.8",
     "@types/babel__core": "^7.0.0",
     "@types/babel__generator": "^7.0.0",
     "@types/babel__template": "^7.0.0",
