@@ -56,7 +56,9 @@ export type MockedFunction<T extends MockableFunction> = MockWithArgs<T> & {
 export type MockedFunctionDeep<T extends MockableFunction> = MockWithArgs<T> &
   MockedObjectDeep<T>;
 export type MockedObject<T> = MaybeMockedConstructor<T> & {
-  [K in MethodKeysOf<T>]: T[K] extends MockableFunction ? MockedFunction<T[K]> : T[K];
+  [K in MethodKeysOf<T>]: T[K] extends MockableFunction
+    ? MockedFunction<T[K]>
+    : T[K];
 } & {[K in PropertyKeysOf<T>]: T[K]};
 export type MockedObjectDeep<T> = MaybeMockedConstructor<T> & {
   [K in MethodKeysOf<T>]: T[K] extends MockableFunction
