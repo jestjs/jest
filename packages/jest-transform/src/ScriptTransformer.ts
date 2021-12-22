@@ -11,19 +11,12 @@ import {transformSync as babelTransform} from '@babel/core';
 // @ts-expect-error: should just be `require.resolve`, but the tests mess that up
 import babelPluginIstanbul from 'babel-plugin-istanbul';
 import {fromSource as sourcemapFromSource} from 'convert-source-map';
-import stableStringify = require('fast-json-stable-stringify');
 import * as fs from 'graceful-fs';
 import {addHook} from 'pirates';
-import slash = require('slash');
 import {sync as writeFileAtomic} from 'write-file-atomic';
 import type {Config} from '@jest/types';
 import HasteMap from 'jest-haste-map';
-import {
-  createDirectory,
-  isPromise,
-  requireOrImportModule,
-  tryRealpath,
-} from 'jest-util';
+import {createDirectory, isPromise, requireOrImportModule, tryRealpath} from 'jest-util';
 import handlePotentialSyntaxError from './enhanceUnexpectedTokenMessage';
 import {
   makeInvalidReturnValueError,
@@ -38,11 +31,13 @@ import type {
   RequireAndTranspileModuleOptions,
   StringMap,
   SyncTransformer,
-  TransformOptions,
-  TransformResult,
   TransformedSource,
   Transformer,
+  TransformOptions,
+  TransformResult,
 } from './types';
+import stableStringify = require('fast-json-stable-stringify');
+import slash = require('slash');
 // Use `require` to avoid TS rootDir
 const {version: VERSION} = require('../package.json');
 
@@ -101,7 +96,7 @@ class ScriptTransformer {
     this._cache = projectCache;
   }
 
-  private _buildCacheKeyFromFileInfo(
+  private static _buildCacheKeyFromFileInfo(
     fileData: string,
     filename: Config.Path,
     transformOptions: TransformOptions,
@@ -149,7 +144,7 @@ class ScriptTransformer {
       );
     }
 
-    return this._buildCacheKeyFromFileInfo(
+    return ScriptTransformer._buildCacheKeyFromFileInfo(
       fileData,
       filename,
       transformOptions,
@@ -188,7 +183,7 @@ class ScriptTransformer {
       }
     }
 
-    return this._buildCacheKeyFromFileInfo(
+    return ScriptTransformer._buildCacheKeyFromFileInfo(
       fileData,
       filename,
       transformOptions,
@@ -374,7 +369,7 @@ class ScriptTransformer {
     if (transformer && shouldCallTransform) {
       if (typeof processed === 'string') {
         transformed.code = processed;
-      } else if (processed != null && typeof processed.code === 'string') {
+      } else if (processed != null) {
         transformed = processed;
       } else {
         throw new Error(makeInvalidReturnValueError());
@@ -819,21 +814,19 @@ export async function createTranspilingRequire(
     resolverPath: string,
     applyInteropRequireDefault: boolean = false,
   ) {
-    const transpiledModule =
-      await transformer.requireAndTranspileModule<TModuleType>(
-        resolverPath,
-        () => {},
-        {
-          applyInteropRequireDefault,
-          instrument: false,
-          supportsDynamicImport: false, // this might be true, depending on node version.
-          supportsExportNamespaceFrom: false,
-          supportsStaticESM: false,
-          supportsTopLevelAwait: false,
-        },
-      );
-
-    return transpiledModule;
+    return await transformer.requireAndTranspileModule<TModuleType>(
+      resolverPath,
+      () => {
+      },
+      {
+        applyInteropRequireDefault,
+        instrument: false,
+        supportsDynamicImport: false, // this might be true, depending on node version.
+        supportsExportNamespaceFrom: false,
+        supportsStaticESM: false,
+        supportsTopLevelAwait: false,
+      },
+    );
   };
 }
 
