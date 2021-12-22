@@ -288,7 +288,7 @@ export const callAsyncCircusFn = (
   })
     .then(() => {
       completed = true;
-      // If timeout is not cleared/unrefed the node process won't exit until
+      // If timeout is not cleared/unrefereed the node process won't exit until
       // it's resolved.
       timeoutID.unref?.();
       clearTimeout(timeoutID);
