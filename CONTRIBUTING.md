@@ -213,7 +213,7 @@ Facebook has a [bounty program](https://www.facebook.com/whitehat/) for the safe
 - Use [TypeScript](https://www.typescriptlang.org/).
 - Use semicolons;
 - Trailing commas,
-- Avd abbr wrds.
+- Avd abbr words.
 
 ## Credits
 
