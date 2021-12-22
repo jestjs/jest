@@ -50,13 +50,13 @@ export type MaybeMockedConstructor<T> = T extends new (
 ) => infer R
   ? MockInstance<R, ConstructorArgumentsOf<T>>
   : T;
-export type MockedFn<T extends MockableFunction> = MockWithArgs<T> & {
+export type MockedFunction<T extends MockableFunction> = MockWithArgs<T> & {
   [K in keyof T]: T[K];
 };
 export type MockedFunctionDeep<T extends MockableFunction> = MockWithArgs<T> &
   MockedObjectDeep<T>;
 export type MockedObject<T> = MaybeMockedConstructor<T> & {
-  [K in MethodKeysOf<T>]: T[K] extends MockableFunction ? MockedFn<T[K]> : T[K];
+  [K in MethodKeysOf<T>]: T[K] extends MockableFunction ? MockedFunction<T[K]> : T[K];
 } & {[K in PropertyKeysOf<T>]: T[K]};
 export type MockedObjectDeep<T> = MaybeMockedConstructor<T> & {
   [K in MethodKeysOf<T>]: T[K] extends MockableFunction
@@ -71,7 +71,7 @@ export type MaybeMockedDeep<T> = T extends MockableFunction
   : T;
 
 export type MaybeMocked<T> = T extends MockableFunction
-  ? MockedFn<T>
+  ? MockedFunction<T>
   : T extends object
   ? MockedObject<T>
   : T;
