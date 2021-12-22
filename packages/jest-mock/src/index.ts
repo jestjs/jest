@@ -50,14 +50,14 @@ export type MaybeMockedConstructor<T> = T extends new (
 ) => infer R
   ? MockInstance<R, ConstructorArgumentsOf<T>>
   : T;
-export type MockedFunction<T extends MockableFunction> = MockWithArgs<T> & {
+export type MockedFn<T extends MockableFunction> = MockWithArgs<T> & {
   [K in keyof T]: T[K];
 };
 export type MockedFunctionDeep<T extends MockableFunction> = MockWithArgs<T> &
   MockedObjectDeep<T>;
 export type MockedObject<T> = MaybeMockedConstructor<T> & {
   [K in MethodKeysOf<T>]: T[K] extends MockableFunction
-    ? MockedFunction<T[K]>
+    ? MockedFn<T[K]>
     : T[K];
 } & {[K in PropertyKeysOf<T>]: T[K]};
 export type MockedObjectDeep<T> = MaybeMockedConstructor<T> & {
@@ -73,25 +73,12 @@ export type MaybeMockedDeep<T> = T extends MockableFunction
   : T;
 
 export type MaybeMocked<T> = T extends MockableFunction
-  ? MockedFunction<T>
+  ? MockedFn<T>
   : T extends object
   ? MockedObject<T>
   : T;
 
 export type ArgsType<T> = T extends (...args: infer A) => any ? A : never;
-export type Mocked<T> = {
-  [P in keyof T]: T[P] extends (...args: Array<any>) => any
-    ? MockInstance<ReturnType<T[P]>, ArgsType<T[P]>>
-    : T[P] extends Constructable
-    ? MockedClass<T[P]>
-    : T[P];
-} & T;
-export type MockedClass<T extends Constructable> = MockInstance<
-  InstanceType<T>,
-  T extends new (...args: infer P) => any ? P : never
-> & {
-  prototype: T extends {prototype: any} ? Mocked<T['prototype']> : never;
-} & T;
 
 export interface Constructable {
   new (...args: Array<any>): any;
