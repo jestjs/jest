@@ -297,6 +297,7 @@ export default async function runJest({
     onComplete,
     outputFile: globalConfig.outputFile,
     outputStream,
+    nestStream,
     testResultsProcessor: globalConfig.testResultsProcessor,
   });
 }
