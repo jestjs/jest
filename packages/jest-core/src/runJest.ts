@@ -193,7 +193,7 @@ export default async function runJest({
     }),
   );
 
-  allTests = await sequencer.sort(allTests);
+  allTests = sequencer.sort(allTests);
 
   if (globalConfig.listTests) {
     const testsPaths = Array.from(new Set(allTests.map(test => test.path)));
@@ -213,7 +213,7 @@ export default async function runJest({
     if (failedTestsCache) {
       allTests = failedTestsCache.filterTests(allTests);
     } else {
-      allTests = await sequencer.allFailedTests(allTests);
+      allTests = sequencer.allFailedTests(allTests);
     }
   }
 
