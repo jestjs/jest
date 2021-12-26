@@ -17,7 +17,6 @@
     "./package.json": "./package.json"
   },
   "dependencies": {
-    "@babel/traverse": "^7.1.0",
     "@jest/environment": "^27.4.4",
     "@jest/source-map": "^27.4.0",
     "@jest/test-result": "^27.4.2",
@@ -37,7 +36,6 @@
     "throat": "^6.0.1"
   },
   "devDependencies": {
-    "@types/babel__traverse": "^7.0.4",
     "@types/co": "^4.6.2"
   },
   "engines": {

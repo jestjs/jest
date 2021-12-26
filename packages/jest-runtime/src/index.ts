@@ -212,7 +212,7 @@ export default class Runtime {
     string,
     boolean
   >;
-  private readonly _sourceMapRegistry: Map<string, string>;
+  private readonly _sourceMapRegistry: SourceMapRegistry;
   private readonly _scriptTransformer: ScriptTransformer;
   private readonly _fileTransforms: Map<string, RuntimeTransformResult>;
   private readonly _fileTransformsMutex: Map<string, Promise<void>>;

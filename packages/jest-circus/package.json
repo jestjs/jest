@@ -39,9 +39,7 @@
     "throat": "^6.0.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.0",
     "@babel/register": "^7.0.0",
-    "@jest/test-utils": "^27.4.2",
     "@types/co": "^4.6.0",
     "@types/dedent": "^0.7.0",
     "@types/graceful-fs": "^4.1.3",
