@@ -4718,14 +4718,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jsdom@npm:^16.2.4":
-  version: 16.2.7
-  resolution: "@types/jsdom@npm:16.2.7"
+"@types/jsdom@^16.2.14":
+  version: 16.2.14
+  resolution: "@types/jsdom@npm:16.2.14"
   dependencies:
     "@types/node": "*"
     "@types/parse5": "*"
     "@types/tough-cookie": "*"
-  checksum: 2acc361cf2aea5a13d78c3d9e63f4101f19ed02d202d6c870279dc51aa06c1f4e060a52322f9dcd660653334f890ccb3c594c23fc714cb3edf3b8641c7c66565
+  checksum: ff0c6c17c9a499c8444808874ac8d731fea90a5fc909ecdbd38145a7ce47a8fa3d2b2d26f2389a6061d6e19df9e27bde88613d65c48d3689fe1bc0ba451fb6e0
+  languageName: node
+  linkType: hard
+
+"@types/jsdom@patch:@types/jsdom@^16.2.14#../.././patches/@types-jsdom.patch::locator=jest-environment-jsdom%40workspace%3Apackages%2Fjest-environment-jsdom":
+  version: 16.2.14
+  resolution: "@types/jsdom@patch:@types/jsdom@npm%3A16.2.14#../.././patches/@types-jsdom.patch::version=16.2.14&hash=f9e5dd&locator=jest-environment-jsdom%40workspace%3Apackages%2Fjest-environment-jsdom"
+  dependencies:
+    "@types/node": "*"
+    "@types/parse5": "*"
+    "@types/tough-cookie": "*"
+  checksum: fdcf637b490d478f282744cdd86a33bd76e5001f6437d01f2fdb805b6f1b3b1a5faed1f628aada0ffeca1e69c25d0b4994345b553ac3d25c02a1739517ce6b24
   languageName: node
   linkType: hard
 
@@ -12706,7 +12717,7 @@ __metadata:
     "@jest/fake-timers": ^27.4.2
     "@jest/test-utils": ^27.4.2
     "@jest/types": ^27.4.2
-    "@types/jsdom": ^16.2.4
+    "@types/jsdom": "patch:@types/jsdom@^16.2.14#../.././patches/@types-jsdom.patch"
     "@types/node": "*"
     jest-mock: ^27.4.2
     jest-util: ^27.4.2

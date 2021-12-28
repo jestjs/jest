@@ -2,7 +2,7 @@
   "extends": "@tsconfig/node10/tsconfig.json",
   "compilerOptions": {
     // Object.fromEntries
-    "lib": ["dom", "es2019.object"],
+    "lib": ["es2019.object"],
     "declaration": true,
     "composite": true,
     "emitDeclarationOnly": true,
